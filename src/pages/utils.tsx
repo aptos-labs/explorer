@@ -15,9 +15,16 @@ export function renderDebug(data: any) {
   );
 }
 
-function ensureMillisecondTimestamp(timestamp: string) {
+function ensureMillisecondTimestamp(timestamp: string): number {
+  /*
+  Could be: 1646458457
+        or: 1646440953658538
+   */
   if (timestamp.length > 13) {
-    return parseInt(timestamp.slice(0, -3));
+    timestamp = timestamp.slice(0, 13);
+  }
+  if (timestamp.length == 10) {
+    timestamp = timestamp + "000";
   }
   return parseInt(timestamp);
 }
