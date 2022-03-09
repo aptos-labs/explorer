@@ -7,6 +7,8 @@
     "@emotion/styled": "latest",
     "@mui/icons-material": "^5.4.2",
     "@mui/material": "latest",
+    "@sentry/react": "^6.18.2",
+    "@sentry/tracing": "^6.18.2",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/lodash": "^4.14.179",
     "@types/react": "latest",

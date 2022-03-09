@@ -2,9 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import {Card, CardContent} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
-import Container from "@mui/material/Container";
 
 const bull = (
   <Box
