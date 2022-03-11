@@ -18,6 +18,7 @@
     "moment": "^2.29.1",
     "react": "latest",
     "react-dom": "latest",
+    "react-ga4": "^1.4.1",
     "react-number-format": "^4.9.1",
     "react-router-dom": "^6.2.1",
     "react-scripts": "latest",

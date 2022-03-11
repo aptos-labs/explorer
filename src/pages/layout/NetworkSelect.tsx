@@ -4,7 +4,6 @@ import {FormControl, InputLabel, Select, SelectChangeEvent} from "@mui/material"
 import {networks} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import {alpha, styled} from "@mui/material/styles";
-import {useLocation} from "react-router-dom";
 
 const Holder = styled(Box)(({theme}) => ({
   borderRadius: theme.shape.borderRadius,
