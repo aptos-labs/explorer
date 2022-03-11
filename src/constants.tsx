@@ -1,9 +1,8 @@
-export const testnet_url = process.env.APTOS_TESTNET_URL || "http://localhost:8080";
+export const devnetUrl = process.env.APTOS_DEVNET_URL || "https://dev.fullnode.aptoslabs.com";
 
 export const networks: Record<string, string> = {
   "local": "http://localhost:8080",
-  "testnet": testnet_url,
-  "dev_testnet": "https://dev.fullnode.aptoslabs.com",
+  "devnet": devnetUrl,
 };
 // Remove trailing slashes
 for (let key of Object.keys(networks)) {
@@ -12,8 +11,10 @@ for (let key of Object.keys(networks)) {
   }
 }
 
-export const default_network: string = "dev_testnet";
+export const defaultNetworkName: string = "devnet";
 
-if (!(default_network in networks)) {
-  throw `DefaultNetwork '${default_network}' not in Networks!`;
+if (!(defaultNetworkName in networks)) {
+  throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;
 }
+
+export const defaultNetwork = networks[defaultNetworkName];

@@ -1,8 +1,8 @@
 import React from "react";
-import {networks, default_network} from "./constants";
+import {networks, defaultNetworkName} from "./constants";
 
 
-const selected_network = localStorage.getItem("selected_network") || default_network;
+const selected_network = localStorage.getItem("selected_network") || defaultNetworkName;
 
 export type GlobalState = {
   network_name: string,

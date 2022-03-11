@@ -3,7 +3,7 @@ import React from "react";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import MuiAppBar from "@mui/material/AppBar";
-import {styled} from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import LogoWhite from "../../assets/aptos_icon_transparent_wht2.png";
 import HeaderSearch from "./Search";
@@ -15,6 +15,7 @@ import * as RRD from "react-router-dom";
 const HeaderAppBar = styled(MuiAppBar)(
   ({theme}) => ({
     zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: "rgb(0,0,0,0.3)",
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
