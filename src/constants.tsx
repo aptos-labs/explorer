@@ -1,4 +1,4 @@
-export const devnetUrl = process.env.APTOS_DEVNET_URL || "https://dev.fullnode.aptoslabs.com";
+export const devnetUrl = process.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
 
 export const networks: Record<string, string> = {
   "local": "http://localhost:8080",
