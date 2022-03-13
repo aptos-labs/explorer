@@ -7,6 +7,7 @@ import {
   GenesisTransaction,
   OnChainTransaction,
   UserTransaction,
+  PendingTransaction,
   Event,
   WriteSetPayload,
   WriteSet,
@@ -242,6 +243,38 @@ function renderUserTransaction(transaction: UserTransaction) {
   </>);
 }
 
+
+function renderPendingTransaction(transaction: PendingTransaction) {
+  return (<>
+    {RenderHeader(
+      <Stack direction="column"
+             spacing={2}
+             divider={<Divider orientation="horizontal"/>}
+      >
+        {renderRow("Type:", renderTransactionType(transaction.type))}
+        {renderRow("Sender:", <AccountLink hideAccount address={transaction.sender} color="auto"/>)}
+        {renderRow("Sequence Number:", transaction.sequenceNumber)}
+        {renderRow("Expiration Timestamp", renderTimestamp(transaction.expirationTimestampSecs))}
+        {renderRow("Hash:", transaction.hash)}
+        {renderRow("Max Gas:", renderGas(transaction.maxGasAmount))}
+        {renderRow("Gas Unit Price:", renderGas(transaction.gasUnitPrice))}
+        {renderRow("Gas Currency:", transaction.gasCurrencyCode)}
+        {renderRow("Signature:", renderDebug(transaction.signature))}
+      </Stack>)}
+    {renderSection(
+      <>
+        <Stack direction="column"
+               spacing={2}
+        >
+          <Divider orientation="horizontal"/>
+          {renderDebug(transaction.payload)}
+        </Stack>
+      </>
+      , "Payload"
+    )}
+  </>);
+}
+
 function RenderHeader(children: React.ReactNode) {
   let {txnHashOrVersion} = useParams();
 
@@ -289,6 +322,9 @@ function RenderTransaction({data, error}: { data?: OnChainTransaction, error?: R
       break;
     case "user_transaction":
       result = renderUserTransaction(transaction as UserTransaction);
+      break;
+    case "pending_transaction":
+      result = renderPendingTransaction(transaction as PendingTransaction);
       break;
     default:
       throw `Unknown OnChainTransaction type!: ${transaction.type}`;

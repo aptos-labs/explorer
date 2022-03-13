@@ -71,8 +71,10 @@ export function renderTransactionType(transaction_type: string) {
       return "GenesisTransaction";
     case "user_transaction":
       return "UserTransaction";
+    case "pending_transaction":
+      return "PendingTransaction";
     default:
-      throw `Unknown:${transaction_type}`;
+      throw `Unknown renderTransactionType:${transaction_type}`;
   }
 }
 
