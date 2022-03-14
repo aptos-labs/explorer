@@ -7,6 +7,7 @@ import {ResponseError} from "../api/client";
 import {CircularProgress} from "@mui/material";
 import Box from "@mui/material/Box";
 import {useGlobalState} from "../GlobalState";
+import { ErrorBoundary } from "@sentry/react";
 
 export type LoadingState<T, E> = Result<T, E> | { isLoading: true }
 
@@ -39,6 +40,14 @@ interface RequestComponentProps<T, E> {
   request: (...args: any[]) => Promise<Result<T, E>>;
   refresh_interval_ms?: number;
   args?: any[];
+}
+
+export function SafeRequestComponent<T, E = ResponseError>(props: RequestComponentProps<T, E>) {
+  return (
+    <ErrorBoundary>
+      <RequestComponent {...props}/>
+    </ErrorBoundary>
+  );
 }
 
 export function RequestComponent<T, E = ResponseError>({

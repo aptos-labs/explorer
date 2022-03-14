@@ -6,7 +6,7 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Title from "../../components/Title";
-import {RequestComponent} from "../../components/RequestComponent";
+import { SafeRequestComponent } from "../../components/RequestComponent";
 import {
   LedgerInfo,
   OnChainTransaction, UserTransaction,
@@ -128,12 +128,12 @@ export function TransactionsPreview() {
     <>
       <Title>Recent Transactions</Title>
       <Stack spacing={3}>
-        <RequestComponent
+        <SafeRequestComponent
           request={(network: string) => getTransactions({limit}, network)}
           args={[state.network_value]}
         >
           <RenderTransactionContent/>
-        </RequestComponent>
+        </SafeRequestComponent>
         <Link
           component={RRD.Link}
           to="/transactions"
@@ -192,12 +192,12 @@ function TransactionsPageInner({data}: { data?: LedgerInfo }) {
   return (<>
       <Title>Transactions</Title>
       <Stack spacing={3}>
-        <RequestComponent
+        <SafeRequestComponent
           request={(network: string) => getTransactions({start, limit}, network)}
           args={[state.network_value, page]}
         >
           <RenderTransactionContent/>
-        </RequestComponent>
+        </SafeRequestComponent>
         <RenderPagination {...{
           currentPage,
           setPage,
@@ -215,13 +215,13 @@ export function TransactionsPage() {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Paper sx={{p: 2, display: "flex", flexDirection: "column", mb: 3}}>
-          <RequestComponent
+          <SafeRequestComponent
             request={(network: string) => getLedgerInfo(network)}
             args={[state.network_value]}
             refresh_interval_ms={10000}
           >
             <TransactionsPageInner/>
-          </RequestComponent>
+          </SafeRequestComponent>
         </Paper>
 
       </Grid>

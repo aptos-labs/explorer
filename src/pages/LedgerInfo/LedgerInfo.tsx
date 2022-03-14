@@ -1,6 +1,6 @@
 import React from "react";
 import {LedgerInfo} from "../../api_client";
-import {RequestComponent} from "../../components/RequestComponent";
+import {SafeRequestComponent} from "../../components/RequestComponent";
 import {getLedgerInfo} from "../../api";
 import {parseTimestamp, renderDebug, timestampDisplay} from "../utils";
 import {CardContent} from "@mui/material";
@@ -69,13 +69,13 @@ export default function RenderLedgerInfo() {
           <Title>Ledger Info</Title>
         </Grid>
         <Grid item>
-          <RequestComponent
+          <SafeRequestComponent
             request={(network: string) => getLedgerInfo(network)}
             args={[state.network_value]}
             refresh_interval_ms={1000}
           >
             <RenderLedgerInfoInner/>
-          </RequestComponent>
+          </SafeRequestComponent>
         </Grid>
       </Grid>
     </Paper>

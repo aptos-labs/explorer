@@ -3,7 +3,7 @@ import {getTransaction} from "../../api";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import {styled, alpha} from "@mui/material/styles";
-import {RequestComponent} from "../../components/RequestComponent";
+import { SafeRequestComponent } from "../../components/RequestComponent";
 import {useGlobalState} from "../../GlobalState";
 import {GetTransactionRequest, OnChainTransaction} from "../../api_client";
 import {ResponseError} from "../../api/client";
@@ -172,12 +172,12 @@ function SearchTransaction({txnHashOrVersion}: GetTransactionRequest) {
   const [state, _] = useGlobalState();
 
   return (
-    <RequestComponent
+    <SafeRequestComponent
       request={(network: string) => getTransaction({txnHashOrVersion}, network)}
       args={[state.network_value]}
     >
       <SearchTransactionInner/>
-    </RequestComponent>
+    </SafeRequestComponent>
   );
 }
 

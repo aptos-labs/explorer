@@ -1,7 +1,7 @@
 import React from "react";
 import Title from "../../components/Title";
 import {useParams} from "react-router-dom";
-import {RequestComponent} from "../../components/RequestComponent";
+import { SafeRequestComponent } from "../../components/RequestComponent";
 import {
   BlockMetadataTransaction,
   GenesisTransaction,
@@ -345,12 +345,12 @@ export default function Transaction() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <RequestComponent
+        <SafeRequestComponent
           request={(network: string) => getTransaction({txnHashOrVersion: txnHashOrVersion as string}, network)}
           args={[state.network_value]}
         >
           <RenderTransaction/>
-        </RequestComponent>
+        </SafeRequestComponent>
       </Grid>
     </Grid>
   );

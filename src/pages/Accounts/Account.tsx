@@ -5,7 +5,7 @@ import {Alert, Stack} from "@mui/material";
 import React from "react";
 import {useGlobalState} from "../../GlobalState";
 import Grid from "@mui/material/Grid";
-import {RequestComponent} from "../../components/RequestComponent";
+import {SafeRequestComponent} from "../../components/RequestComponent";
 import {getAccount, getAccountModules, getAccountResources} from "../../api";
 import {renderRow, renderSection} from "../Transactions/helpers";
 import Divider from "@mui/material/Divider";
@@ -126,26 +126,26 @@ export default function AccountPage() {
     <Grid container spacing={3}>
       <Grid item xs={12}>
 
-        <RequestComponent
+        <SafeRequestComponent
           request={(network: string) => getAccount({address: address as string}, network)}
           args={[state.network_value]}
         >
           <RenderAccount/>
-        </RequestComponent>
+        </SafeRequestComponent>
 
-        <RequestComponent
+        <SafeRequestComponent
           request={(network: string) => getAccountResources({address: address as string}, network)}
           args={[state.network_value]}
         >
           <RenderAccountResources/>
-        </RequestComponent>
+        </SafeRequestComponent>
 
-        <RequestComponent
+        <SafeRequestComponent
           request={(network: string) => getAccountModules({address: address as string}, network)}
           args={[state.network_value]}
         >
           <RenderAccountModules/>
-        </RequestComponent>
+        </SafeRequestComponent>
 
       </Grid>
     </Grid>
