@@ -11,15 +11,16 @@ import {
   LedgerInfo,
   OnChainTransaction, UserTransaction,
 } from "../../api_client/";
-import {getLedgerInfo, getTransactions} from "../../api";
-import {useGlobalState} from "../../GlobalState";
-import {renderGas, renderSuccess, renderTimestamp, renderTransactionType} from "./helpers";
+import { getLedgerInfo, getTransactions } from "../../api";
+import { useGlobalState } from "../../GlobalState";
+import { renderGas, renderSuccess, renderTimestamp, renderTransactionType } from "./helpers";
 import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
-import {useSearchParams} from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import {Pagination, PaginationItem, Stack} from "@mui/material";
+import { Pagination, PaginationItem, Stack } from "@mui/material";
+import { ErrorBoundary } from "@sentry/react";
 
 const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;
@@ -28,7 +29,11 @@ function renderTimestampTransaction(transaction: OnChainTransaction) {
   if (transaction.type == "genesis_transaction") {
     return null;
   }
-  return renderTimestamp((transaction as UserTransaction).timestamp);
+  return (
+    <ErrorBoundary>
+      {renderTimestamp((transaction as UserTransaction).timestamp)}
+    </ErrorBoundary>
+  );
 }
 
 function RenderTransactionRows({data}: { data: Array<OnChainTransaction> }) {
@@ -37,11 +42,11 @@ function RenderTransactionRows({data}: { data: Array<OnChainTransaction> }) {
       {
         data.map((transaction) => (
           <TableRow key={transaction.accumulatorRootHash}>
-            <TableCell>{renderTransactionType(transaction.type)}</TableCell>
+            <TableCell><ErrorBoundary>{renderTransactionType(transaction.type)}</ErrorBoundary></TableCell>
             <TableCell>
               <RRD.Link to={`/txn/${transaction.version}`}>{transaction.version}</RRD.Link>
             </TableCell>
-            <TableCell>{renderGas(transaction.gasUsed)}</TableCell>
+            <TableCell><ErrorBoundary>{renderGas(transaction.gasUsed)}</ErrorBoundary></TableCell>
             <TableCell>
               {renderSuccess(transaction.success)}
               <Box

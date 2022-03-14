@@ -327,7 +327,20 @@ function RenderTransaction({data, error}: { data?: OnChainTransaction, error?: R
       result = renderPendingTransaction(transaction as PendingTransaction);
       break;
     default:
-      throw `Unknown OnChainTransaction type!: ${transaction.type}`;
+      result = (
+        <>
+          {RenderHeader(
+            <Stack direction="column"
+                   spacing={2}
+                   divider={<Divider orientation="horizontal"/>}
+            >
+              {renderRow("", (<div style={{color: "red", fontWeight: "bold"}}>
+                  Unknown transaction type: "{transaction.type}"
+              </div>))}
+              {renderRow("Data:", renderDebug(transaction))}
+            </Stack>)}
+        </>
+      );
   }
 
   return (
