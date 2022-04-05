@@ -1,22 +1,22 @@
 import React from "react";
-import {getTransaction} from "../../api";
+import { getTransaction } from "../../api";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import {styled, alpha} from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import { SafeRequestComponent } from "../../components/RequestComponent";
-import {useGlobalState} from "../../GlobalState";
-import {GetTransactionRequest, OnChainTransaction} from "../../api_client";
-import {ResponseError} from "../../api/client";
+import { useGlobalState } from "../../GlobalState";
+import { GetTransactionRequest, OnChainTransaction } from "../../api_client";
+import { ResponseError, ResponseErrorType } from "../../api/client";
 import Link from "@mui/material/Link";
 import * as RRD from "react-router-dom";
-import {throttle} from "lodash";
-import {Autocomplete, Stack, TextField} from "@mui/material";
+import { throttle } from "lodash";
+import { Autocomplete, Stack, TextField } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import {AccountLink} from "../Accounts/helpers";
+import { AccountLink } from "../Accounts/helpers";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
-const Search = styled("div")(({theme}) => ({
+const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
@@ -32,7 +32,7 @@ const Search = styled("div")(({theme}) => ({
   },
 }));
 
-const SearchIconWrapper = styled("div")(({theme}) => ({
+const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: "100%",
   position: "absolute",
@@ -42,7 +42,7 @@ const SearchIconWrapper = styled("div")(({theme}) => ({
   justifyContent: "center",
 }));
 
-const StyledInputBase = styled(InputBase)(({theme}) => ({
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
@@ -59,8 +59,8 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
   },
 }));
 
-function SearchTransactionInner({data, error}: { data?: OnChainTransaction, error?: ResponseError }) {
-  if (!data)
+function SearchTransactionInner({ data, error }: { data?: OnChainTransaction, error?: ResponseError }) {
+  if (!data || error)
     // TODO: handle errors
     return null;
   return (
@@ -127,7 +127,7 @@ function AutocompleteSearch() {
               <SearchIcon/>
             </SearchIconWrapper>
             <StyledInputBase ref={params.InputProps.ref}
-                             inputProps={{"aria-label": "search", ...params.inputProps}}
+                             inputProps={{ "aria-label": "search", ...params.inputProps }}
                              placeholder="Search…"
             />
           </Search>
@@ -152,28 +152,29 @@ function AutocompleteSearch() {
 }
 
 function searchResults(searchText: string) {
+  searchText = searchText.trim();
   if (!HEX_REGEXP.test(searchText)) {
     // if it's not hexadecimal characters, no results
     return [];
   }
   const results = [
-    <SearchTransaction txnHashOrVersion={searchText}/>
+    <SearchTransaction key={`st-${searchText}`} txnHashOrVersion={searchText}/>
   ];
-  // if it's hex, and is <= (32 + 2 for 0x) char long
-  if (searchText.startsWith("0x") && searchText.length <= 34) {
+  // if it's hex, and is <= (64 + 2 for 0x) char long
+  if (searchText.startsWith("0x") && searchText.length <= 66) {
     results.push(
-      <AccountLink address={searchText}/>
+      <AccountLink key={`al-${searchText}`} address={searchText}/>
     );
   }
   return results;
 }
 
-function SearchTransaction({txnHashOrVersion}: GetTransactionRequest) {
+function SearchTransaction({ txnHashOrVersion }: GetTransactionRequest) {
   const [state, _] = useGlobalState();
 
   return (
     <SafeRequestComponent
-      request={(network: string) => getTransaction({txnHashOrVersion}, network)}
+      request={(network: string) => getTransaction({ txnHashOrVersion }, network)}
       args={[state.network_value]}
     >
       <SearchTransactionInner/>
