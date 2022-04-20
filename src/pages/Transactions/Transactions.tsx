@@ -6,6 +6,7 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Title from "../../components/Title";
+import Button from '@mui/material/Button';
 import { SafeRequestComponent } from "../../components/RequestComponent";
 import {
   LedgerInfo,
@@ -18,9 +19,11 @@ import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import { Pagination, PaginationItem, Stack } from "@mui/material";
 import { ErrorBoundary } from "@sentry/react";
+import Typography from "@mui/material/Typography";
+import { useTheme } from '@mui/material';
+
 
 const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;
@@ -36,27 +39,30 @@ function renderTimestampTransaction(transaction: OnChainTransaction) {
   );
 }
 
-function RenderTransactionRows({data}: { data: Array<OnChainTransaction> }) {
+function RenderTransactionRows({ data }: { data: Array<OnChainTransaction> }) {
+
+  const theme = useTheme();
+
   return (
     <TableBody>
       {
         data.map((transaction) => (
-          <TableRow key={transaction.accumulatorRootHash}>
-            <TableCell><ErrorBoundary>{renderTransactionType(transaction.type)}</ErrorBoundary></TableCell>
-            <TableCell>
-              <RRD.Link to={`/txn/${transaction.version}`}>{transaction.version}</RRD.Link>
-            </TableCell>
-            <TableCell><ErrorBoundary>{renderGas(transaction.gasUsed)}</ErrorBoundary></TableCell>
-            <TableCell>
+          <TableRow key={transaction.accumulatorRootHash} hover>
+            <TableCell sx={{ textAlign: 'left' }}>
               {renderSuccess(transaction.success)}
               <Box
                 component={"span"}
-                sx={{display: "block"}}
+                sx={{ display: "inline-block" }}
               >
-                {transaction.vmStatus}
+                {/* {transaction.vmStatus} */}
               </Box>
             </TableCell>
-            <TableCell>{renderTimestampTransaction(transaction)}</TableCell>
+            <TableCell sx={{ textAlign: 'left' }}>{renderTimestampTransaction(transaction)}</TableCell>
+            <TableCell><ErrorBoundary>{renderTransactionType(transaction.type)}</ErrorBoundary></TableCell>
+            <TableCell sx={{ textAlign: 'right' }}>
+              <Link component={RRD.Link} to={`/txn/${transaction.version}`} color="primary">{transaction.version}</Link>
+            </TableCell>
+            <TableCell sx={{ textAlign: 'right' }}><ErrorBoundary>{renderGas(transaction.gasUsed)}</ErrorBoundary></TableCell>
           </TableRow>
         ))
       }
@@ -68,10 +74,10 @@ type PageSetter = React.Dispatch<React.SetStateAction<number>>;
 type PageSetterProps = { setPage: PageSetter }
 
 function RenderPagination({
-                            currentPage,
-                            setPage,
-                            numPages
-                          }: { numPages: number } & CurrentPageProps & PageSetterProps) {
+  currentPage,
+  setPage,
+  numPages
+}: { numPages: number } & CurrentPageProps & PageSetterProps) {
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -79,6 +85,7 @@ function RenderPagination({
 
   return (
     <Pagination
+      sx={{ mt: 6 }}
       count={numPages}
       variant="outlined"
       showFirstButton
@@ -93,6 +100,7 @@ function RenderPagination({
           component={RRD.Link}
           to={`/transactions?page=${item.page}`}
           {...item}
+          sx={{ mb: 1 }}
         />
       )}
     />
@@ -104,24 +112,27 @@ type CurrentPageProps = {
 }
 
 function RenderTransactionContent({
-                                    data,
-                                  }: { data?: Array<OnChainTransaction> }) {
+  data,
+}: { data?: Array<OnChainTransaction> }) {
   if (!data)
     // TODO: error handling!
     return null;
+
+  const theme = useTheme();
+  const tableCellBackgroundColor = theme.palette.background.paper;
 
   return (
     <Table size="small">
       <TableHead>
         <TableRow>
-          <TableCell>Type</TableCell>
-          <TableCell>Version</TableCell>
-          <TableCell>Gas Used</TableCell>
-          <TableCell>Success</TableCell>
-          <TableCell>Time</TableCell>
+          <TableCell sx={{ textAlign: 'left', width: '2%', background: `${tableCellBackgroundColor}`, borderRadius: '8px 0 0 8px' }}></TableCell>
+          <TableCell sx={{ textAlign: 'left', background: `${tableCellBackgroundColor}` }}><Typography variant="subtitle1">Timestamp ↓</Typography></TableCell>
+          <TableCell sx={{ textAlign: 'left', background: `${tableCellBackgroundColor}` }}><Typography variant="subtitle1">Type ↓</Typography></TableCell>
+          <TableCell sx={{ textAlign: 'right', background: `${tableCellBackgroundColor}` }}><Typography variant="subtitle1">Version ↓</Typography></TableCell>
+          <TableCell sx={{ textAlign: 'right', background: `${tableCellBackgroundColor}`, borderRadius: '0 8px 8px 0' }}><Typography variant="subtitle1">Gas Used ↓</Typography></TableCell>
         </TableRow>
       </TableHead>
-      <RenderTransactionRows data={data}/>
+      <RenderTransactionRows data={data} />
     </Table>
   );
 }
@@ -131,23 +142,33 @@ export function TransactionsPreview() {
   const limit = PREVIEW_LIMIT;
   return (
     <>
-      <Title>Recent Transactions</Title>
-      <Stack spacing={3}>
-        <SafeRequestComponent
-          request={(network: string) => getTransactions({limit}, network)}
-          args={[state.network_value]}
-        >
-          <RenderTransactionContent/>
-        </SafeRequestComponent>
-        <Link
-          component={RRD.Link}
-          to="/transactions"
-          color="primary"
-          sx={{mt: 3}}
-        >
-          See more Transactions
-        </Link>
+
+      <Stack spacing={2}>
+        <Title>Latest Transactions</Title>
+        <Box sx={{ width: 'auto', overflowX: 'auto' }}>
+          <SafeRequestComponent
+            request={(network: string) => getTransactions({ limit }, network)}
+            args={[state.network_value]}
+          >
+            <RenderTransactionContent />
+          </SafeRequestComponent>
+        </Box>
+
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Button
+            component={RRD.Link}
+            to="/transactions"
+            // color="primary"
+            // size="large"
+            variant="cta"
+            sx={{ marginLeft: 'auto', mt: 6 }}
+          >
+            See more Transactions
+          </Button>
+        </Box>
+
       </Stack>
+
     </>
   );
 }
@@ -167,7 +188,7 @@ function getCurrentPage(): number | null {
   return null;
 }
 
-function TransactionsPageInner({data}: { data?: LedgerInfo }) {
+function TransactionsPageInner({ data }: { data?: LedgerInfo }) {
   if (!data)
     // TODO: handle errors
     return (<>No ledger info</>);
@@ -195,21 +216,28 @@ function TransactionsPageInner({data}: { data?: LedgerInfo }) {
 
   const [page, setPage] = React.useState(currentPage);
   return (<>
-      <Title>Transactions</Title>
-      <Stack spacing={3}>
+    <Stack spacing={2}>
+      <Title>All Transactions</Title>
+      <Box sx={{ width: 'auto', overflowX: 'auto' }}>
         <SafeRequestComponent
-          request={(network: string) => getTransactions({start, limit}, network)}
+          request={(network: string) => getTransactions({ start, limit }, network)}
           args={[state.network_value, page]}
         >
-          <RenderTransactionContent/>
+          <RenderTransactionContent />
         </SafeRequestComponent>
+      </Box>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <RenderPagination {...{
           currentPage,
           setPage,
           numPages
         }} />
-      </Stack>
-    </>
+      </Box>
+
+    </Stack>
+
+  </>
   );
 }
 
@@ -219,15 +247,15 @@ export function TransactionsPage() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Paper sx={{p: 2, display: "flex", flexDirection: "column", mb: 3}}>
-          <SafeRequestComponent
-            request={(network: string) => getLedgerInfo(network)}
-            args={[state.network_value]}
-            refresh_interval_ms={10000}
-          >
-            <TransactionsPageInner/>
-          </SafeRequestComponent>
-        </Paper>
+
+        <SafeRequestComponent
+          request={(network: string) => getLedgerInfo(network)}
+          args={[state.network_value]}
+          refresh_interval_ms={10000}
+        >
+          <TransactionsPageInner />
+        </SafeRequestComponent>
+
 
       </Grid>
     </Grid>

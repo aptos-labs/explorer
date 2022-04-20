@@ -1,6 +1,6 @@
 {
-  "short_name": "Your Orders",
-  "name": "Your Orders",
+  "short_name": "Aptos Explorer",
+  "name": "Aptos Block Explorer",
   "icons": [
     {
       "src": "favicon.ico",

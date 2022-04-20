@@ -1,16 +1,19 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
-import {parseTimestamp, timestampDisplay} from "../utils";
+import { parseTimestamp, timestampDisplay } from "../utils";
 import NumberFormat from "react-number-format";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
-import {useLocation} from "react-router-dom";
-import Paper from "@mui/material/Paper";
+import { useLocation } from "react-router-dom";
 import Title from "../../components/Title";
 import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+
+import { useTheme } from '@mui/material';
 
 export function useQuery() {
-  const {search} = useLocation();
+  const { search } = useLocation();
   return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
@@ -27,9 +30,11 @@ export function renderTimestamp(timestamp?: string) {
 
   return (
     <>
-      {timestamp}
-      <Typography
-        variant="subtitle2">{timestamp_display.local_formatted} ({timestamp_display.formatted_time_delta})</Typography>
+      {/* {timestamp} */}
+      {timestamp_display.local_formatted}
+      <Typography>
+        {/* ({timestamp_display.formatted_time_delta}) */}
+      </Typography>
     </>
   );
 }
@@ -45,20 +50,21 @@ export function renderGas(gas: string) {
 }
 
 export function renderSuccess(success: boolean) {
+
   if (success)
     return (
       <CheckCircleOutlinedIcon
-        fontSize="small"
+        fontSize="medium"
         color="success"
-        titleAccess="Success"
+        titleAccess="Executed successfully"
       />
     );
 
   return (
     <ErrorOutlineOutlinedIcon
-      fontSize="small"
+      fontSize="medium"
       color="error"
-      titleAccess="Failure"
+      titleAccess="Failed to Execute"
     />
   );
 }
@@ -80,23 +86,31 @@ export function renderTransactionType(transaction_type: string) {
 
 export function renderSection(children: React.ReactNode, title: React.ReactNode) {
   return (
-    <Paper sx={{p: 2, display: "flex", flexDirection: "column", mb: 3}}>
+
+    <Stack direction="column"
+      spacing={4} sx={{ mb: 6 }}
+    >
       <Title>{title}</Title>
       {children}
-    </Paper>
+    </Stack>
+
   );
 }
 
 export function renderRow(key: React.ReactNode, value: React.ReactNode, i?: any) {
+  const theme = useTheme();
   return (
-    <Grid container key={i} sx={{overflowWrap: "break-word"}}>
-      <Grid item xs={2}>
-        {key}
+    <Box>
+      <Grid container direction={{ xs: "column", md: "row" }} rowSpacing={1} columnSpacing={4} key={i}>
+        <Grid item md={3}>
+          <Typography variant="subtitle1">{key}</Typography>
+        </Grid>
+        <Grid item md={9} sx={{width: 1, overflowWrap: "break-word" }}>
+          <Box>
+            {value}
+          </Box>
+        </Grid>
       </Grid>
-      <Grid item xs={1}/>
-      <Grid item xs={8}>
-        {value}
-      </Grid>
-    </Grid>
+    </Box>
   );
 }
