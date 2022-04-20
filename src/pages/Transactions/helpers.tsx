@@ -30,11 +30,7 @@ export function renderTimestamp(timestamp?: string) {
 
   return (
     <>
-      {/* {timestamp} */}
       {timestamp_display.local_formatted}
-      <Typography>
-        {/* ({timestamp_display.formatted_time_delta}) */}
-      </Typography>
     </>
   );
 }
@@ -105,7 +101,7 @@ export function renderRow(key: React.ReactNode, value: React.ReactNode, i?: any)
         <Grid item md={3}>
           <Typography variant="subtitle1">{key}</Typography>
         </Grid>
-        <Grid item md={9} sx={{width: 1, overflowWrap: "break-word" }}>
+        <Grid item md={9} sx={{ width: 1, overflowWrap: "break-word" }}>
           <Box>
             {value}
           </Box>
