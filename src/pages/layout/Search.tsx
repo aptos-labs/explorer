@@ -12,24 +12,15 @@ import * as RRD from "react-router-dom";
 import {throttle} from "lodash";
 import {Autocomplete, Stack, TextField} from "@mui/material";
 import Divider from "@mui/material/Divider";
-import {AccountLink} from "../Accounts/helpers";
+import { AccountLink } from "../Accounts/helpers";
+import Paper from "@mui/material/Paper";
+import { teal, grey } from '@mui/material/colors';
+import { useTheme } from '@mui/material';
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
 const Search = styled("div")(({theme}) => ({
   position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: "100%",
-  marginRight: theme.spacing(3),
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
 }));
 
 const SearchIconWrapper = styled("div")(({theme}) => ({
@@ -40,22 +31,29 @@ const SearchIconWrapper = styled("div")(({theme}) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
+  opacity: "0.5",
+  right: "0",
+  top: "0"
 }));
 
 const StyledInputBase = styled(InputBase)(({theme}) => ({
   color: "inherit",
+  width: "100%",
+  padding: "0",
   "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
+    padding: theme.spacing(1, 4, 1, 1),
     // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
+    // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    // transition: theme.transitions.create("width"),
+    transition: "none",
     width: "100%",
+    fontWeight: theme.typography.fontWeightLight,
     [theme.breakpoints.up("sm")]: {
-      width: "22ch",
-      "&:focus": {
-        width: "24ch",
-      },
+      fontSize: "1rem",
     },
+    [theme.breakpoints.up("md")]: {
+      fontSize: "1.2rem",
+    }
   },
 }));
 
@@ -70,11 +68,13 @@ function SearchTransactionInner({
     // TODO: handle errors
     return null;
   return (
-    <Link
-      component={RRD.Link}
+    <Link component={RRD.Link}
       to={`/txn/${data.version}`}
       color="inherit"
       underline="none"
+      sx={{
+        padding: "8px", display: "block", borderRadius: "0.45em", width: "100%", opacity: "0.8", "&:hover": { background: teal['A400'], color: grey[900] },
+      }}
     >
       Transaction {data.version}
     </Link>
@@ -117,33 +117,63 @@ function AutocompleteSearch() {
     };
   }, [inputValue, fetch]);
 
+  // hide autocomplete dropdown until text has been entered
+  const [open, setOpen] = React.useState(false);
+
+  const theme = useTheme();
+
   return (
     <Autocomplete
+      fullWidth
+      PaperComponent={({ children }) => (
+        <Paper sx={{
+          borderTop: "1px dotted grey",
+          p: 1,
+          transform: 'translateY(-8px)',
+          borderRadius: "0 0 8px 8px",
+          boxShadow: "0 50px 50px -12px rgba(0, 0, 0, 0.75)"
+        }}>
+          {children}
+        </Paper>
+      )}
+
+      open={open}
+      sx={{ flexGrow: 1 }}
       forcePopupIcon={false}
-      noOptionsText="Enter a transaction hash, version, Account Address or more to search!"
+      selectOnFocus={true}
+      noOptionsText="No Results"
       getOptionLabel={(option) => ""}
       filterOptions={(x) => x.filter((x) => !!x)}
       options={options}
+      inputValue={inputValue}
       onChange={(event, newValue) => null}
-      onInputChange={(
-        event: any,
-        newInputValue: React.SetStateAction<string>,
-      ) => {
-        setInputValue(newInputValue);
+      onInputChange={(event: any, newInputValue: React.SetStateAction<string>, reason) => {
+        if (newInputValue.length === 0) {
+          if (open) setOpen(false);
+        } else {
+          if (!open) setOpen(true);
+        }
+        if (event && event.type === 'blur') {
+          setInputValue('');
+        } else if (reason !== 'reset') {
+          setInputValue(newInputValue);
+        }
       }}
+      onClose={() => setOpen(false)}
       renderInput={(params) => {
-        params.fullWidth = false;
+        params.fullWidth = true;
         params.InputProps.className = "";
         return (
           <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              ref={params.InputProps.ref}
-              inputProps={{"aria-label": "search", ...params.inputProps}}
-              placeholder="Search…"
-            />
+            <Paper sx={{ mt: { xs: 8, md: 14 }, mb: { xs: 4, md: 8 } }} >
+              <SearchIconWrapper>
+                <SearchIcon sx={{ width: "2rem", height: "2rem" }} />
+              </SearchIconWrapper>
+              <StyledInputBase sx={{ p: 2 }} ref={params.InputProps.ref}
+                inputProps={{ "aria-label": "search", ...params.inputProps }}
+                placeholder="Search by Transaction Hash, Version, Account Address…"
+              />
+            </Paper>
           </Search>
         );
       }}
@@ -151,13 +181,9 @@ function AutocompleteSearch() {
         if (!option) return null;
         return (
           <li {...props}>
-            <Stack
-              direction="column"
-              spacing={2}
-              divider={<Divider orientation="horizontal" />}
-            >
-              {option}
-            </Stack>
+
+            {option}
+
           </li>
         );
       }}

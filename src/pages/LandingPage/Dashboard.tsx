@@ -6,14 +6,12 @@ import LedgerInfo from "../LedgerInfo/LedgerInfo";
 
 export default function Dashboard() {
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={8}>
       <Grid item xs={12}>
         <LedgerInfo />
       </Grid>
       <Grid item xs={12}>
-        <Paper sx={{p: 2, display: "flex", flexDirection: "column"}}>
-          <TransactionsPreview />
-        </Paper>
+          <TransactionsPreview/>
       </Grid>
     </Grid>
   );

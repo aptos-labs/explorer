@@ -1,11 +1,13 @@
 import React from "react";
 import moment from "moment";
 import Box from "@mui/material/Box";
+import { useTheme } from '@mui/material';
 
 export function renderDebug(data: any) {
+  const theme = useTheme();
   return (
     <Box
-      sx={{overflow: "auto"}}
+      sx={{ overflow: "auto", fontWeight: theme.typography.fontWeightRegular,}}
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(data || null, null, 2)
           .replaceAll("\n", "<br/>")
@@ -42,7 +44,7 @@ export interface TimestampDisplay {
 export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
   return {
     formatted: timestamp.format("MM/DD/YY HH:mm:ss [UTC]"),
-    local_formatted: timestamp.local().format("MM/DD/YY HH:mm:ss"),
+    local_formatted: timestamp.local().format("D MMM YYYY HH:mm:ss"),
     formatted_time_delta: timestamp.fromNow(),
   };
 }
