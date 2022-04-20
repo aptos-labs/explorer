@@ -6,6 +6,7 @@ import { useTheme } from "@mui/material/styles";
 import MenuItem from '@mui/material/MenuItem';
 import { grey, teal } from '@mui/material/colors';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
+import Box from "@mui/material/Box";
 
 export default function NetworkSelect() {
   const [state, dispatch] = useGlobalState();
@@ -15,7 +16,7 @@ export default function NetworkSelect() {
     const network_value = networks[network_name];
     dispatch({ network_name, network_value });
   };
-  
+
   function DropdownIcon(props: SvgIconProps) {
     return (
       <SvgIcon {...props}>
@@ -28,79 +29,77 @@ export default function NetworkSelect() {
 
   return (
 
-    <FormControl size="small">
+    <Box>
+      <FormControl size="small">
 
-      <Select
-        id="network-select"
-        inputProps={{ 'aria-label': 'Select Network' }}
-        value={state.network_name}
-        onChange={handleChange}
-        onClose={() => {
-          setTimeout(() => {
-            (document.activeElement as HTMLElement).blur();
-          }, 0);
-        }}
-        variant="outlined"
-        autoWidth={true}
-        IconComponent={DropdownIcon}
-        sx={{
-          fontWeight:'400',
-          minWidth: 110,
-          ml: 1,
-          color: '#ffffff',
-          alignItems: 'center',
-          "& .MuiSvgIcon-root": {
-            color: "inherit",
-          },
-          "&& fieldset": {
-            border: `1px solid ${theme.palette.mode === 'dark' ? grey[500] : grey[100]}`
-          },
-          "&:hover": {
-            backgroundColor: grey[900],
+        <Select
+          id="network-select"
+          inputProps={{ 'aria-label': 'Select Network' }}
+          value={state.network_name}
+          onChange={handleChange}
+          onClose={() => {
+            setTimeout(() => {
+              (document.activeElement as HTMLElement).blur();
+            }, 0);
+          }}
+          variant="outlined"
+          autoWidth
+          IconComponent={DropdownIcon}
+          sx={{
+            fontWeight: '400',
+            minWidth: 110,
+            ml: 1,
+            color: '#ffffff',
+            alignItems: 'center',
+            "& .MuiSvgIcon-root": {
+              color: "inherit",
+            },
             "&& fieldset": {
-              border: `1px solid ${theme.palette.mode === 'dark' ? grey[100] : grey[100]}`
+              border: `1px solid ${theme.palette.mode === 'dark' ? grey[500] : grey[100]}`
+            },
+            "&:hover": {
+              backgroundColor: grey[900],
+              "&& fieldset": {
+                border: `1px solid ${theme.palette.mode === 'dark' ? grey[100] : grey[100]}`
+              }
+            },
+            "&.Mui-focused": {
+              backgroundColor: grey[900],
+            },
+          }}
+          // dropdown container overrides
+          MenuProps={{
+            disableScrollLock: true,
+            PaperProps: {
+              sx: {
+                minWidth: 240,
+                boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
+                marginTop: '8px',
+                "& .MuiMenuItem-root.Mui-selected": {
+                  backgroundColor: `${theme.palette.mode === 'dark' ? grey[800] : grey[200]}!important`,
+                  pointerEvents: 'none'
+                },
+                "& .MuiMenuItem-root:hover": {
+                  backgroundColor: `${theme.palette.primary.main}`,
+                  color: grey[900],
+                },
+              }
             }
-          },
-          "&.Mui-focused": {
-            backgroundColor: grey[900],
-          },
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-          //  borderWidth:'1px',
-          }, 
-        }}
-        // dropdown container overrides
-        MenuProps={{
-          disableScrollLock: true,
-          PaperProps: {
-            sx: {
-              minWidth: 240,
-              boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)',
-              marginTop: '8px',
-              "& .MuiMenuItem-root.Mui-selected": {
-                backgroundColor: `${theme.palette.mode === 'dark' ? grey[800] : grey[200]}!important`,
-                pointerEvents: 'none'
-              },
-              "& .MuiMenuItem-root:hover": {
-                backgroundColor: `${theme.palette.primary.main}`,
-                color: grey[900],
-              },
-            }
-          }
-        }}
-      >
-        <MenuItem disabled value="">
-          Select Network
-        </MenuItem>
-        {Object.keys(networks).map((network_name: string) => (
-          <MenuItem
-            key={network_name}
-            value={network_name}
-          >
-            {network_name}
+          }}
+        >
+          <MenuItem disabled value="">
+            Select Network
           </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-
+          {Object.keys(networks).map((network_name: string) => (
+            <MenuItem
+              key={network_name}
+              value={network_name}
+            >
+              {network_name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
   );
 }
