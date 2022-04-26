@@ -58,9 +58,37 @@ function RenderLedgerInfoInner({data}: { data?: LedgerInfo }) {
   );
 }
 
+let eventSource: EventSource | null = null;
 
 export default function RenderLedgerInfo() {
   const [state, _] = useGlobalState();
+
+  const [ledgerInfo, setLedgerInfo] = React.useState<LedgerInfo | undefined>(undefined);
+
+  React.useEffect(() => {
+    if (eventSource != null) {
+      eventSource.close();
+    }
+
+    eventSource = new EventSource(`${state.network_value}/sse`);
+    eventSource.onmessage = (event) => {
+      if (event.data && typeof event.data === 'string') {
+        const data = JSON.parse(event.data);
+        if (typeof data.chain_id == 'number' && typeof data.ledger_version === 'string' && typeof data.ledger_timestamp === 'string') {
+          const ledgerInfo: LedgerInfo = {
+            chainId: data.chain_id,
+            ledgerVersion: data.ledger_version,
+            ledgerTimestamp: data.ledger_timestamp,
+          }
+          setLedgerInfo(ledgerInfo);
+        }
+      }
+    };
+
+    return () => {
+      eventSource?.close();
+    }
+  }, [state.network_value]);
 
   return (
     <Paper sx={{p: 2}}>
@@ -69,13 +97,7 @@ export default function RenderLedgerInfo() {
           <Title>Ledger Info</Title>
         </Grid>
         <Grid item>
-          <SafeRequestComponent
-            request={(network: string) => getLedgerInfo(network)}
-            args={[state.network_value]}
-            refresh_interval_ms={1000}
-          >
-            <RenderLedgerInfoInner/>
-          </SafeRequestComponent>
+          <RenderLedgerInfoInner data={ledgerInfo}/>
         </Grid>
       </Grid>
     </Paper>
