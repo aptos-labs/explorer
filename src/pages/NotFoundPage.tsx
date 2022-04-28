@@ -32,8 +32,9 @@ export default function NotFoundPage() {
               404{bull}Pa{bull}ge{bull}Not{bull}Fou{bull}nd
             </Typography>
             <Typography variant="body2">
-              Maybe the page you are looking for has been removed, or you typed in the wrong URL.
-              <br/>
+              Maybe the page you are looking for has been removed, or you typed
+              in the wrong URL.
+              <br />
               You don't have to go home, but you can't stay here!
             </Typography>
           </CardContent>

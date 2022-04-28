@@ -3,7 +3,7 @@ import React from "react";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import MuiAppBar from "@mui/material/AppBar";
-import { styled } from "@mui/material/styles";
+import {styled} from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import LogoWhite from "../../assets/aptos_icon_transparent_wht2.png";
 import HeaderSearch from "./Search";
@@ -12,21 +12,19 @@ import NetworkSelect from "./NetworkSelect";
 import Link from "@mui/material/Link";
 import * as RRD from "react-router-dom";
 
-const HeaderAppBar = styled(MuiAppBar)(
-  ({theme}) => ({
-    zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: "rgb(0,0,0,0.3)",
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  }));
+const HeaderAppBar = styled(MuiAppBar)(({theme}) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  backgroundColor: "rgb(0,0,0,0.3)",
+  transition: theme.transitions.create(["width", "margin"], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+}));
 
 export default function Header() {
   return (
     <HeaderAppBar position="absolute">
       <Container maxWidth="lg">
-
         <Toolbar disableGutters>
           <Box
             component="img"
@@ -44,18 +42,13 @@ export default function Header() {
             noWrap
             sx={{flexGrow: 1}}
           >
-            <Link component={RRD.Link}
-                  to="/"
-                  color="inherit"
-                  underline="none"
-            >
+            <Link component={RRD.Link} to="/" color="inherit" underline="none">
               Aptos Explorer
             </Link>
           </Typography>
-          <HeaderSearch/>
-          <NetworkSelect/>
+          <HeaderSearch />
+          <NetworkSelect />
         </Toolbar>
-
       </Container>
     </HeaderAppBar>
   );

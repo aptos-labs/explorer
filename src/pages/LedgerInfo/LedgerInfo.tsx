@@ -11,17 +11,20 @@ import Title from "../../components/Title";
 import Divider from "@mui/material/Divider";
 import {useGlobalState} from "../../GlobalState";
 
-
-function RenderLedgerInfoInner({data}: { data?: LedgerInfo }) {
-  if (!data)
-    return null;
+function RenderLedgerInfoInner({data}: {data?: LedgerInfo}) {
+  if (!data) return null;
 
   const moment = parseTimestamp(data.ledgerTimestamp);
   const timestamp_display = timestampDisplay(moment);
   return (
     <Grid container spacing={2} direction="row">
       <CardContent sx={{flex: "1 0 auto", p: 3}}>
-        <Typography variant="subtitle1" color="text.secondary" component="div" textAlign="center">
+        <Typography
+          variant="subtitle1"
+          color="text.secondary"
+          component="div"
+          textAlign="center"
+        >
           Chain ID
         </Typography>
         <Typography component="div" variant="h5" textAlign="center">
@@ -29,10 +32,15 @@ function RenderLedgerInfoInner({data}: { data?: LedgerInfo }) {
         </Typography>
       </CardContent>
 
-      <Divider orientation="vertical" flexItem/>
+      <Divider orientation="vertical" flexItem />
 
       <CardContent sx={{flex: "1 0 auto", p: 3}}>
-        <Typography variant="subtitle1" color="text.secondary" component="div" textAlign="center">
+        <Typography
+          variant="subtitle1"
+          color="text.secondary"
+          component="div"
+          textAlign="center"
+        >
           Latest Version Number
         </Typography>
         <Typography component="div" variant="h5" textAlign="center">
@@ -40,24 +48,32 @@ function RenderLedgerInfoInner({data}: { data?: LedgerInfo }) {
         </Typography>
       </CardContent>
 
-      <Divider orientation="vertical" flexItem/>
+      <Divider orientation="vertical" flexItem />
 
       <CardContent sx={{flex: "1 0 auto", p: 3}}>
-        <Typography variant="subtitle1" color="text.secondary" component="div" textAlign="center">
+        <Typography
+          variant="subtitle1"
+          color="text.secondary"
+          component="div"
+          textAlign="center"
+        >
           Latest Version Time
         </Typography>
         <Typography component="div" variant="h5" textAlign="center">
           {timestamp_display.local_formatted}
         </Typography>
-        <Typography variant="subtitle2" color="text.secondary" component="div" textAlign="center">
+        <Typography
+          variant="subtitle2"
+          color="text.secondary"
+          component="div"
+          textAlign="center"
+        >
           {timestamp_display.formatted_time_delta}
         </Typography>
       </CardContent>
-
     </Grid>
   );
 }
-
 
 export default function RenderLedgerInfo() {
   const [state, _] = useGlobalState();
@@ -74,7 +90,7 @@ export default function RenderLedgerInfo() {
             args={[state.network_value]}
             refresh_interval_ms={1000}
           >
-            <RenderLedgerInfoInner/>
+            <RenderLedgerInfoInner />
           </SafeRequestComponent>
         </Grid>
       </Grid>
