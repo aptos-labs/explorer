@@ -73,17 +73,22 @@ function RenderTransactionRows({data}: {data: Array<OnChainTransaction>}) {
   );
 }
 
-type PageSetter = React.Dispatch<React.SetStateAction<number>>;
-type PageSetterProps = {setPage: PageSetter};
+function maxStart(maxVersion: number, limit: number) {
+  return 1 + maxVersion - limit;
+}
 
 function RenderPagination({
-  currentPage,
-  setPage,
-  numPages,
-}: {numPages: number} & CurrentPageProps & PageSetterProps) {
-  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-  };
+  start,
+  limit,
+  maxVersion,
+}: {
+  start: number;
+  limit: number;
+  maxVersion: number;
+}) {
+  const numPages = Math.ceil(maxVersion / limit);
+  const progress = 1 - (start + limit - 1) / maxVersion;
+  const currentPage = 1 + Math.floor(progress * numPages);
 
   return (
     <Pagination
@@ -94,27 +99,31 @@ function RenderPagination({
       page={currentPage}
       siblingCount={4}
       boundaryCount={0}
-      onChange={handleChange}
       shape="rounded"
-      renderItem={(item) => (
-        <PaginationItem
-          component={RRD.Link}
-          to={`/transactions?page=${item.page}`}
-          {...item}
-        />
-      )}
+      renderItem={(item) => {
+        const delta = (currentPage - item.page) * limit;
+        const newStart = Math.max(
+          0,
+          Math.min(maxStart(maxVersion, limit), start + delta),
+        );
+
+        return (
+          <PaginationItem
+            component={RRD.Link}
+            to={`/transactions?start=${newStart}`}
+            {...item}
+          />
+        );
+      }}
     />
   );
 }
 
-type CurrentPageProps = {
-  currentPage: number;
-};
-
 function RenderTransactionContent({data}: {data?: Array<OnChainTransaction>}) {
-  if (!data)
+  if (!data) {
     // TODO: error handling!
     return null;
+  }
 
   return (
     <Table size="small">
@@ -158,47 +167,28 @@ export function TransactionsPreview() {
   );
 }
 
-function getCurrentPage(): number | null {
-  let [searchParams, setSearchParams] = useSearchParams();
-  // The latest version is always page 1, i.e:
-  // maxVersion => page 1
-  // version 0 => page maxVersion
-  const rawPage = searchParams.get("page");
-  if (rawPage) {
-    const currentPage = parseInt(rawPage);
-    if (currentPage) return currentPage;
-  }
-
-  return null;
-}
-
 function TransactionsPageInner({data}: {data?: LedgerInfo}) {
-  if (!data)
+  if (!data) {
     // TODO: handle errors
     return <>No ledger info</>;
+  }
 
   const maxVersion = parseInt(data.ledgerVersion);
-  if (!maxVersion)
+  if (!maxVersion) {
     // TODO: handle errors
     return <>No maxVersion</>;
+  }
 
   const limit = MAIN_LIMIT;
-  const [state, _] = useGlobalState();
+  const [state, _setState] = useGlobalState();
+  const [searchParams, _setSearchParams] = useSearchParams();
 
-  const numPages = Math.ceil(maxVersion / limit);
-  const currentParamPage = getCurrentPage();
+  let start = maxStart(maxVersion, limit);
+  let startParam = searchParams.get("start");
+  if (startParam) {
+    start = parseInt(startParam);
+  }
 
-  const navigate = RRD.useNavigate();
-  React.useEffect(() => {
-    if (!currentParamPage) {
-      navigate(`/transactions?page=${numPages}`);
-    }
-  });
-
-  const currentPage = currentParamPage || numPages;
-  const start = (currentPage - 1) * limit;
-
-  const [page, setPage] = React.useState(currentPage);
   return (
     <>
       <Title>Transactions</Title>
@@ -207,15 +197,15 @@ function TransactionsPageInner({data}: {data?: LedgerInfo}) {
           request={(network: string) =>
             getTransactions({start, limit}, network)
           }
-          args={[state.network_value, page]}
+          args={[state.network_value]}
         >
           <RenderTransactionContent />
         </SafeRequestComponent>
         <RenderPagination
           {...{
-            currentPage,
-            setPage,
-            numPages,
+            start,
+            limit,
+            maxVersion,
           }}
         />
       </Stack>
