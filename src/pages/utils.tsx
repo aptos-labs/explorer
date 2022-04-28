@@ -9,9 +9,9 @@ export function renderDebug(data: any) {
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(data || null, null, 2)
           .replaceAll("\n", "<br/>")
-          .replaceAll(" ", "&nbsp;")
-      }}>
-    </Box>
+          .replaceAll(" ", "&nbsp;"),
+      }}
+    ></Box>
   );
 }
 
@@ -34,9 +34,9 @@ export function parseTimestamp(timestamp: string): moment.Moment {
 }
 
 export interface TimestampDisplay {
-  formatted: string,
-  local_formatted: string,
-  formatted_time_delta: string,
+  formatted: string;
+  local_formatted: string;
+  formatted_time_delta: string;
 }
 
 export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {

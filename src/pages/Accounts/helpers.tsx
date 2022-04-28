@@ -4,10 +4,10 @@ import React from "react";
 import {LinkBaseProps, LinkProps} from "@mui/material/Link/Link";
 
 export function AccountLink({
-                              address,
-                              hideAccount,
-                              ...props
-                            }: { address: string, hideAccount?: boolean } & LinkBaseProps & LinkProps) {
+  address,
+  hideAccount,
+  ...props
+}: {address: string; hideAccount?: boolean} & LinkBaseProps & LinkProps) {
   return (
     <Link
       key={address}
@@ -17,7 +17,8 @@ export function AccountLink({
       underline="none"
       {...props}
     >
-      {!hideAccount && "Account "}{address}
+      {!hideAccount && "Account "}
+      {address}
     </Link>
   );
 }

@@ -17,9 +17,9 @@ export function useQuery() {
 export function renderTimestamp(timestamp?: string) {
   if (!timestamp)
     return (
-      <Typography
-        variant="subtitle2"
-        align="center">-</Typography>
+      <Typography variant="subtitle2" align="center">
+        -
+      </Typography>
     );
 
   const moment = parseTimestamp(timestamp);
@@ -28,20 +28,16 @@ export function renderTimestamp(timestamp?: string) {
   return (
     <>
       {timestamp}
-      <Typography
-        variant="subtitle2">{timestamp_display.local_formatted} ({timestamp_display.formatted_time_delta})</Typography>
+      <Typography variant="subtitle2">
+        {timestamp_display.local_formatted} (
+        {timestamp_display.formatted_time_delta})
+      </Typography>
     </>
   );
 }
 
 export function renderGas(gas: string) {
-  return (
-    <NumberFormat
-      value={gas}
-      displayType="text"
-      thousandSeparator
-    />
-  );
+  return <NumberFormat value={gas} displayType="text" thousandSeparator />;
 }
 
 export function renderSuccess(success: boolean) {
@@ -78,7 +74,10 @@ export function renderTransactionType(transaction_type: string) {
   }
 }
 
-export function renderSection(children: React.ReactNode, title: React.ReactNode) {
+export function renderSection(
+  children: React.ReactNode,
+  title: React.ReactNode,
+) {
   return (
     <Paper sx={{p: 2, display: "flex", flexDirection: "column", mb: 3}}>
       <Title>{title}</Title>
@@ -87,13 +86,17 @@ export function renderSection(children: React.ReactNode, title: React.ReactNode)
   );
 }
 
-export function renderRow(key: React.ReactNode, value: React.ReactNode, i?: any) {
+export function renderRow(
+  key: React.ReactNode,
+  value: React.ReactNode,
+  i?: any,
+) {
   return (
     <Grid container key={i} sx={{overflowWrap: "break-word"}}>
       <Grid item xs={2}>
         {key}
       </Grid>
-      <Grid item xs={1}/>
+      <Grid item xs={1} />
       <Grid item xs={8}>
         {value}
       </Grid>

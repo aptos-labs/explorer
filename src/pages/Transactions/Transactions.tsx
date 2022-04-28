@@ -6,21 +6,27 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Title from "../../components/Title";
-import { SafeRequestComponent } from "../../components/RequestComponent";
+import {SafeRequestComponent} from "../../components/RequestComponent";
 import {
   LedgerInfo,
-  OnChainTransaction, UserTransaction,
+  OnChainTransaction,
+  UserTransaction,
 } from "../../api_client/";
-import { getLedgerInfo, getTransactions } from "../../api";
-import { useGlobalState } from "../../GlobalState";
-import { renderGas, renderSuccess, renderTimestamp, renderTransactionType } from "./helpers";
+import {getLedgerInfo, getTransactions} from "../../api";
+import {useGlobalState} from "../../GlobalState";
+import {
+  renderGas,
+  renderSuccess,
+  renderTimestamp,
+  renderTransactionType,
+} from "./helpers";
 import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
+import {useSearchParams} from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
-import { Pagination, PaginationItem, Stack } from "@mui/material";
-import { ErrorBoundary } from "@sentry/react";
+import {Pagination, PaginationItem, Stack} from "@mui/material";
+import {ErrorBoundary} from "@sentry/react";
 
 const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;
@@ -36,43 +42,45 @@ function renderTimestampTransaction(transaction: OnChainTransaction) {
   );
 }
 
-function RenderTransactionRows({data}: { data: Array<OnChainTransaction> }) {
+function RenderTransactionRows({data}: {data: Array<OnChainTransaction>}) {
   return (
     <TableBody>
-      {
-        data.map((transaction) => (
-          <TableRow key={transaction.accumulatorRootHash}>
-            <TableCell><ErrorBoundary>{renderTransactionType(transaction.type)}</ErrorBoundary></TableCell>
-            <TableCell>
-              <RRD.Link to={`/txn/${transaction.version}`}>{transaction.version}</RRD.Link>
-            </TableCell>
-            <TableCell><ErrorBoundary>{renderGas(transaction.gasUsed)}</ErrorBoundary></TableCell>
-            <TableCell>
-              {renderSuccess(transaction.success)}
-              <Box
-                component={"span"}
-                sx={{display: "block"}}
-              >
-                {transaction.vmStatus}
-              </Box>
-            </TableCell>
-            <TableCell>{renderTimestampTransaction(transaction)}</TableCell>
-          </TableRow>
-        ))
-      }
+      {data.map((transaction) => (
+        <TableRow key={transaction.accumulatorRootHash}>
+          <TableCell>
+            <ErrorBoundary>
+              {renderTransactionType(transaction.type)}
+            </ErrorBoundary>
+          </TableCell>
+          <TableCell>
+            <RRD.Link to={`/txn/${transaction.version}`}>
+              {transaction.version}
+            </RRD.Link>
+          </TableCell>
+          <TableCell>
+            <ErrorBoundary>{renderGas(transaction.gasUsed)}</ErrorBoundary>
+          </TableCell>
+          <TableCell>
+            {renderSuccess(transaction.success)}
+            <Box component={"span"} sx={{display: "block"}}>
+              {transaction.vmStatus}
+            </Box>
+          </TableCell>
+          <TableCell>{renderTimestampTransaction(transaction)}</TableCell>
+        </TableRow>
+      ))}
     </TableBody>
   );
 }
 
 type PageSetter = React.Dispatch<React.SetStateAction<number>>;
-type PageSetterProps = { setPage: PageSetter }
+type PageSetterProps = {setPage: PageSetter};
 
 function RenderPagination({
-                            currentPage,
-                            setPage,
-                            numPages
-                          }: { numPages: number } & CurrentPageProps & PageSetterProps) {
-
+  currentPage,
+  setPage,
+  numPages,
+}: {numPages: number} & CurrentPageProps & PageSetterProps) {
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
   };
@@ -101,11 +109,9 @@ function RenderPagination({
 
 type CurrentPageProps = {
   currentPage: number;
-}
+};
 
-function RenderTransactionContent({
-                                    data,
-                                  }: { data?: Array<OnChainTransaction> }) {
+function RenderTransactionContent({data}: {data?: Array<OnChainTransaction>}) {
   if (!data)
     // TODO: error handling!
     return null;
@@ -121,7 +127,7 @@ function RenderTransactionContent({
           <TableCell>Time</TableCell>
         </TableRow>
       </TableHead>
-      <RenderTransactionRows data={data}/>
+      <RenderTransactionRows data={data} />
     </Table>
   );
 }
@@ -137,7 +143,7 @@ export function TransactionsPreview() {
           request={(network: string) => getTransactions({limit}, network)}
           args={[state.network_value]}
         >
-          <RenderTransactionContent/>
+          <RenderTransactionContent />
         </SafeRequestComponent>
         <Link
           component={RRD.Link}
@@ -160,22 +166,21 @@ function getCurrentPage(): number | null {
   const rawPage = searchParams.get("page");
   if (rawPage) {
     const currentPage = parseInt(rawPage);
-    if (currentPage)
-      return currentPage;
+    if (currentPage) return currentPage;
   }
 
   return null;
 }
 
-function TransactionsPageInner({data}: { data?: LedgerInfo }) {
+function TransactionsPageInner({data}: {data?: LedgerInfo}) {
   if (!data)
     // TODO: handle errors
-    return (<>No ledger info</>);
+    return <>No ledger info</>;
 
   const maxVersion = parseInt(data.ledgerVersion);
   if (!maxVersion)
     // TODO: handle errors
-    return (<>No maxVersion</>);
+    return <>No maxVersion</>;
 
   const limit = MAIN_LIMIT;
   const [state, _] = useGlobalState();
@@ -194,20 +199,25 @@ function TransactionsPageInner({data}: { data?: LedgerInfo }) {
   const start = (currentPage - 1) * limit;
 
   const [page, setPage] = React.useState(currentPage);
-  return (<>
+  return (
+    <>
       <Title>Transactions</Title>
       <Stack spacing={3}>
         <SafeRequestComponent
-          request={(network: string) => getTransactions({start, limit}, network)}
+          request={(network: string) =>
+            getTransactions({start, limit}, network)
+          }
           args={[state.network_value, page]}
         >
-          <RenderTransactionContent/>
+          <RenderTransactionContent />
         </SafeRequestComponent>
-        <RenderPagination {...{
-          currentPage,
-          setPage,
-          numPages
-        }} />
+        <RenderPagination
+          {...{
+            currentPage,
+            setPage,
+            numPages,
+          }}
+        />
       </Stack>
     </>
   );
@@ -225,12 +235,10 @@ export function TransactionsPage() {
             args={[state.network_value]}
             refresh_interval_ms={10000}
           >
-            <TransactionsPageInner/>
+            <TransactionsPageInner />
           </SafeRequestComponent>
         </Paper>
-
       </Grid>
     </Grid>
-  )
-    ;
+  );
 }

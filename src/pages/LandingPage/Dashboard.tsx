@@ -8,11 +8,11 @@ export default function Dashboard() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <LedgerInfo/>
+        <LedgerInfo />
       </Grid>
       <Grid item xs={12}>
         <Paper sx={{p: 2, display: "flex", flexDirection: "column"}}>
-          <TransactionsPreview/>
+          <TransactionsPreview />
         </Paper>
       </Grid>
     </Grid>

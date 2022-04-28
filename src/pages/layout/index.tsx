@@ -1,5 +1,5 @@
 import React from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import {createTheme, ThemeProvider} from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -7,9 +7,8 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Header from "./Header";
 import Footer from "./Footer";
-import { GlobalStateProvider } from "../../GlobalState";
+import {GlobalStateProvider} from "../../GlobalState";
 import BackgroundImage from "../../assets/hero_v3-min.9c96f35d.jpg";
-
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -37,22 +36,17 @@ export default function ExplorerLayout({children}: LayoutProps) {
           }}
         >
           <Container maxWidth="lg" sx={{mt: 4, mb: 4, flexGrow: 4}}>
-            <CssBaseline/>
+            <CssBaseline />
 
-            <Header/>
+            <Header />
 
-            <Toolbar/>
+            <Toolbar />
 
-            <Grid container>
-              {children}
-            </Grid>
-
+            <Grid container>{children}</Grid>
           </Container>
 
-          <Footer/>
-
+          <Footer />
         </Box>
-
       </GlobalStateProvider>
     </ThemeProvider>
   );

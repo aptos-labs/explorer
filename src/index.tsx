@@ -25,8 +25,8 @@ Sentry.init({
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <ExplorerRoutes/>
+      <ExplorerRoutes />
     </BrowserRouter>
   </React.StrictMode>,
-  document.getElementById("root")
+  document.getElementById("root"),
 );
