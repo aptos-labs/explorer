@@ -39,7 +39,7 @@ export default function NetworkSelect() {
           onChange={handleChange}
           onClose={() => {
             setTimeout(() => {
-              (document.activeElement as HTMLElement).blur();
+              (document.activeElement as HTMLElement)?.blur();
             }, 0);
           }}
           variant="outlined"
