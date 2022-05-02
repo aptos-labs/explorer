@@ -30,21 +30,13 @@ export default function ExplorerLayout({ children }: LayoutProps) {
         >
           <Container maxWidth="xl" sx={{ mt: 4, mb: 4, flexGrow: 4 }}>
             <CssBaseline />
-
             <Header />
-
             <HeaderSearch />
-
-            {/* <Toolbar/> */}
-
             <Grid container>
               {children}
             </Grid>
-
           </Container>
-
           <Footer />
-
         </Box>
       </GlobalStateProvider>
     </ProvideColorMode>

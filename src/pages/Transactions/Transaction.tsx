@@ -33,7 +33,7 @@ function renderBlockMetadataTransaction(transaction: BlockMetadataTransaction) {
   return (<>
     {RenderHeader(
       <Stack direction="column"
-        spacing={2.25}
+        spacing={2}
         divider={<Divider variant="dotted" orientation="horizontal" sx={{ mb: 0 }} />}
       >
         {renderRow("Type:", renderTransactionType(transaction.type))}
@@ -71,7 +71,7 @@ function RenderEvents(events: Array<Event>) {
   return renderSection(
     <>
       <Stack direction="column"
-        spacing={2.25}
+        spacing={2}
         divider={<Divider variant="dotted" orientation="horizontal" />}
       >
         {events && events.map((event, i) => RenderEvent(event, i))}
@@ -103,7 +103,7 @@ function RenderWriteSetChanges(changes: Array<WriteSetChange>) {
   return renderSection(
     <>
       <Stack direction="column"
-        spacing={2.25}
+        spacing={2}
         divider={<Divider variant="dotted" orientation="horizontal" />}
       >
         {changes &&
@@ -161,7 +161,7 @@ function RenderWriteSet(writeset: WriteSet) {
     <>
       <Title sx={{ pt: 2 }}>WriteSet</Title>
       <Stack direction="column"
-        spacing={2.25}
+        spacing={2}
         divider={<Divider variant="dotted" orientation="horizontal" />}
       >
         {renderRow("Type:", writeset.type)}
@@ -175,7 +175,7 @@ function RenderPayload(payload: WriteSetPayload) {
   return renderSection(
     <>
       <Stack direction="column"
-        spacing={2.25}
+        spacing={2}
       >
         {renderRow("Type", payload.type)}
         {RenderWriteSet(payload.writeSet)}
@@ -189,7 +189,7 @@ function renderGenesisTransaction(transaction: GenesisTransaction) {
   return (<>
     {RenderHeader(
       <Stack direction="column"
-        spacing={2.25}
+        spacing={2}
         divider={<Divider variant="dotted" orientation="horizontal" />}
       >
         {renderRow("Type:", renderTransactionType(transaction.type))}
@@ -212,7 +212,7 @@ function renderUserTransaction(transaction: UserTransaction) {
   return (<>
     {RenderHeader(
       <Stack direction="column"
-        spacing={2.25}
+        spacing={2}
         divider={<Divider variant="dotted" orientation="horizontal" sx={{ mb: 0 }} />}
       >
         {renderRow("Type:", renderTransactionType(transaction.type))}
@@ -237,7 +237,7 @@ function renderUserTransaction(transaction: UserTransaction) {
     {renderSection(
       <>
         <Stack direction="column"
-          spacing={2.25}
+          spacing={2}
         >
           <Divider variant="dotted" orientation="horizontal" />
           {renderDebug(transaction.payload)}
@@ -252,7 +252,7 @@ function renderPendingTransaction(transaction: PendingTransaction) {
   return (<>
     {RenderHeader(
       <Stack direction="column"
-        spacing={2.25}
+        spacing={2}
         divider={<Divider variant="dotted" orientation="horizontal" sx={{ mb: 0 }} />}
       >
         {renderRow("Type:", renderTransactionType(transaction.type))}
@@ -268,7 +268,7 @@ function renderPendingTransaction(transaction: PendingTransaction) {
     {renderSection(
       <>
         <Stack direction="column"
-          spacing={2.25}
+          spacing={2}
         >
           <Divider variant="dotted" orientation="horizontal" />
           {renderDebug(transaction.payload)}
@@ -338,7 +338,7 @@ function RenderTransaction({ data, error }: { data?: OnChainTransaction, error?:
         <>
           {RenderHeader(
             <Stack direction="column"
-              spacing={2.25}
+              spacing={2}
               divider={<Divider variant="dotted" orientation="horizontal" sx={{ mb: 0 }} />}
             >
               {renderRow("", (<div style={{ color: "red", fontWeight: "bold" }}>
