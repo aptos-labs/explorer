@@ -52,7 +52,6 @@ function RenderLedgerInfoInner({ data }: { data?: LedgerInfo }) {
             {timestamp_display.local_formatted}
           </Typography>
           <Typography variant="subtitle2" color="text.primary" fontSize="1.25rem" component="div" textAlign="left">
-            {/* {timestamp_display.formatted_time_delta} */}
           </Typography>
         </Paper>
       </Grid>
@@ -68,9 +67,6 @@ export default function RenderLedgerInfo() {
   return (
 
     <Grid container spacing={0} direction="column">
-      {/* <Grid item>
-          <Title sx={{ fontSize: 'h3.fontSize' }}>Ledger Info</Title>
-        </Grid> */}
       <Grid item>
         <SafeRequestComponent
           request={(network: string) => getLedgerInfo(network)}

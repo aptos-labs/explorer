@@ -54,7 +54,6 @@ function RenderTransactionRows({ data }: { data: Array<OnChainTransaction> }) {
                 component={"span"}
                 sx={{ display: "inline-block" }}
               >
-                {/* {transaction.vmStatus} */}
               </Box>
             </TableCell>
             <TableCell sx={{ textAlign: 'left' }}>{renderTimestampTransaction(transaction)}</TableCell>
@@ -158,8 +157,6 @@ export function TransactionsPreview() {
           <Button
             component={RRD.Link}
             to="/transactions"
-            // color="primary"
-            // size="large"
             variant="cta"
             sx={{ marginLeft: 'auto', mt: 6 }}
           >

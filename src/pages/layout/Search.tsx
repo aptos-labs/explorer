@@ -42,9 +42,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   padding: "0",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 4, 1, 1),
-    // vertical padding + font size from searchIcon
-    // paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    // transition: theme.transitions.create("width"),
     transition: "none",
     width: "100%",
     fontWeight: theme.typography.fontWeightLight,
@@ -67,7 +64,7 @@ function SearchTransactionInner({ data, error }: { data?: OnChainTransaction, er
       color="inherit"
       underline="none"
       sx={{
-        padding: "8px", display: "block", borderRadius: "0.45em", width: "100%", opacity: "0.8", "&:hover": { background: teal['A400'], color: grey[900] },
+        padding: "8px", display: "block", width: "100%", opacity: "0.8", "&:hover": { background: teal['A400'], color: grey[900] },
       }}
     >
       Transaction {data.version}
