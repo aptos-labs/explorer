@@ -1,7 +1,7 @@
 import React from "react";
 import Title from "../../components/Title";
-import {useParams} from "react-router-dom";
-import {SafeRequestComponent} from "../../components/RequestComponent";
+import { useParams } from "react-router-dom";
+import { SafeRequestComponent } from "../../components/RequestComponent";
 import {
   BlockMetadataTransaction,
   GenesisTransaction,
@@ -19,57 +19,41 @@ import {
   WriteModule,
   WriteResource,
 } from "../../api_client/";
-import {getTransaction} from "../../api";
-import {useGlobalState} from "../../GlobalState";
-import {Alert, Stack} from "@mui/material";
+import { getTransaction } from "../../api";
+import { useGlobalState } from "../../GlobalState";
+import { Alert, Stack } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import {renderDebug} from "../utils";
-import {ResponseError, ResponseErrorType} from "../../api/client";
+import { renderDebug } from "../utils";
+import { ResponseError, ResponseErrorType } from "../../api/client";
 import Divider from "@mui/material/Divider";
-import {
-  renderGas,
-  renderSection,
-  renderSuccess,
-  renderTimestamp,
-  renderTransactionType,
-  renderRow,
-} from "./helpers";
-import {AccountLink} from "../Accounts/helpers";
+import { renderGas, renderSection, renderSuccess, renderTimestamp, renderTransactionType, renderRow } from "./helpers";
+import { AccountLink } from "../Accounts/helpers";
 
 function renderBlockMetadataTransaction(transaction: BlockMetadataTransaction) {
-  return (
-    <>
-      {RenderHeader(
-        <Stack
-          direction="column"
-          spacing={2}
-          divider={<Divider orientation="horizontal" />}
-        >
-          {renderRow("Type:", renderTransactionType(transaction.type))}
-          {renderRow("ID:", transaction.id)}
-          {renderRow("Version:", transaction.version)}
-          {renderRow("Hash:", transaction.hash)}
-          {renderRow("Round:", transaction.round)}
-          {renderRow("Success:", renderSuccess(transaction.success))}
-          {renderRow("Proposer:", transaction.proposer)}
-          {renderRow("State Root Hash:", transaction.stateRootHash)}
-          {renderRow("Event Root Hash:", transaction.eventRootHash)}
-          {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
-          {renderRow("VM Status:", transaction.vmStatus)}
-          {renderRow(
-            "Accumulator Root Hash:",
-            transaction.accumulatorRootHash,
-            false,
-          )}
-          {renderRow("Timestamp:", renderTimestamp(transaction.timestamp))}
-          {renderRow(
-            "Previous Block Votes:",
-            renderDebug(transaction.previousBlockVotes),
-          )}
-        </Stack>,
-      )}
-    </>
-  );
+  return (<>
+    {RenderHeader(
+      <Stack direction="column"
+        spacing={2}
+        divider={<Divider variant="dotted" orientation="horizontal" sx={{ mb: 0 }} />}
+      >
+        {renderRow("Type:", renderTransactionType(transaction.type))}
+        {renderRow("ID:", transaction.id)}
+        {renderRow("Version:", transaction.version)}
+        {renderRow("Hash:", transaction.hash)}
+        {renderRow("Round:", transaction.round)}
+        {renderRow("Status:", renderSuccess(transaction.success))}
+        {renderRow("Proposer:", transaction.proposer)}
+        {renderRow("State Root Hash:", transaction.stateRootHash)}
+        {renderRow("Event Root Hash:", transaction.eventRootHash)}
+        {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
+        {renderRow("VM Status:", transaction.vmStatus)}
+        {renderRow("Accumulator Root Hash:", transaction.accumulatorRootHash, false)}
+        {renderRow("Timestamp:", renderTimestamp(transaction.timestamp))}
+        {renderRow("Previous Block Votes:", renderDebug(transaction.previousBlockVotes))}
+
+      </Stack>
+    )}
+  </>);
 }
 
 function RenderEvent(event: Event, i: number) {
@@ -86,10 +70,9 @@ function RenderEvent(event: Event, i: number) {
 function RenderEvents(events: Array<Event>) {
   return renderSection(
     <>
-      <Stack
-        direction="column"
+      <Stack direction="column"
         spacing={2}
-        divider={<Divider orientation="horizontal" />}
+        divider={<Divider variant="dotted" orientation="horizontal" />}
       >
         {events && events.map((event, i) => RenderEvent(event, i))}
       </Stack>
@@ -119,10 +102,9 @@ function RenderWriteSetChangeSpecific(change: WriteSetChange) {
 function RenderWriteSetChanges(changes: Array<WriteSetChange>) {
   return renderSection(
     <>
-      <Stack
-        direction="column"
+      <Stack direction="column"
         spacing={2}
-        divider={<Divider orientation="horizontal" />}
+        divider={<Divider variant="dotted" orientation="horizontal" />}
       >
         {changes &&
           changes.map((change, i) => {
@@ -177,11 +159,10 @@ function RenderWriteSet(writeset: WriteSet) {
 
   return (
     <>
-      <Title sx={{pt: 2}}>WriteSet</Title>
-      <Stack
-        direction="column"
+      <Title sx={{ pt: 2 }}>WriteSet</Title>
+      <Stack direction="column"
         spacing={2}
-        divider={<Divider orientation="horizontal" />}
+        divider={<Divider variant="dotted" orientation="horizontal" />}
       >
         {renderRow("Type:", writeset.type)}
         {inner}
@@ -193,7 +174,9 @@ function RenderWriteSet(writeset: WriteSet) {
 function RenderPayload(payload: WriteSetPayload) {
   return renderSection(
     <>
-      <Stack direction="column" spacing={2}>
+      <Stack direction="column"
+        spacing={2}
+      >
         {renderRow("Type", payload.type)}
         {RenderWriteSet(payload.writeSet)}
       </Stack>
@@ -203,148 +186,107 @@ function RenderPayload(payload: WriteSetPayload) {
 }
 
 function renderGenesisTransaction(transaction: GenesisTransaction) {
-  return (
-    <>
-      {RenderHeader(
-        <Stack
-          direction="column"
-          spacing={2}
-          divider={<Divider orientation="horizontal" />}
-        >
-          {renderRow("Type:", renderTransactionType(transaction.type))}
-          {renderRow("Version:", transaction.version)}
-          {renderRow("Hash:", transaction.hash)}
-          {renderRow("Success:", renderSuccess(transaction.success))}
-          {renderRow("State Root Hash:", transaction.stateRootHash)}
-          {renderRow("Event Root Hash:", transaction.eventRootHash)}
-          {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
-          {renderRow("VM Status:", transaction.vmStatus)}
-          {renderRow(
-            "Accumulator Root Hash:",
-            transaction.accumulatorRootHash,
-            false,
-          )}
-        </Stack>,
-      )}
-      {RenderEvents(transaction.events)}
-      {RenderPayload(transaction.payload)}
-    </>
-  );
+  return (<>
+    {RenderHeader(
+      <Stack direction="column"
+        spacing={2}
+        divider={<Divider variant="dotted" orientation="horizontal" />}
+      >
+        {renderRow("Type:", renderTransactionType(transaction.type))}
+        {renderRow("Version:", transaction.version)}
+        {renderRow("Hash:", transaction.hash)}
+        {renderRow("Status:", renderSuccess(transaction.success))}
+        {renderRow("State Root Hash:", transaction.stateRootHash)}
+        {renderRow("Event Root Hash:", transaction.eventRootHash)}
+        {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
+        {renderRow("VM Status:", transaction.vmStatus)}
+        {renderRow("Accumulator Root Hash:", transaction.accumulatorRootHash, false)}
+      </Stack>
+    )}
+    {RenderEvents(transaction.events)}
+    {RenderPayload(transaction.payload)}
+  </>);
 }
 
 function renderUserTransaction(transaction: UserTransaction) {
-  return (
-    <>
-      {RenderHeader(
-        <Stack
-          direction="column"
+  return (<>
+    {RenderHeader(
+      <Stack direction="column"
+        spacing={2}
+        divider={<Divider variant="dotted" orientation="horizontal" sx={{ mb: 0 }} />}
+      >
+        {renderRow("Type:", renderTransactionType(transaction.type))}
+        {renderRow("Sender:", <AccountLink hideAccount address={transaction.sender} />)}
+        {renderRow("Sequence Number:", transaction.sequenceNumber)}
+        {renderRow("Expiration Timestamp:", renderTimestamp(transaction.expirationTimestampSecs))}
+        {renderRow("Version:", transaction.version)}
+        {renderRow("Hash:", transaction.hash)}
+        {renderRow("Status:", renderSuccess(transaction.success))}
+        {renderRow("State Root Hash:", transaction.stateRootHash)}
+        {renderRow("Event Root Hash:", transaction.eventRootHash)}
+        {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
+        {renderRow("Max Gas:", renderGas(transaction.maxGasAmount))}
+        {renderRow("Gas Unit Price:", renderGas(transaction.gasUnitPrice))}
+        {renderRow("Gas Currency:", transaction.gasCurrencyCode)}
+        {renderRow("VM Status:", transaction.vmStatus)}
+        {renderRow("Signature:", renderDebug(transaction.signature))}
+        {renderRow("Accumulator Root Hash:", transaction.accumulatorRootHash, false)}
+        {renderRow("Timestamp:", renderTimestamp(transaction.timestamp))}
+      </Stack>)}
+    {RenderEvents(transaction.events)}
+    {renderSection(
+      <>
+        <Stack direction="column"
           spacing={2}
-          divider={<Divider orientation="horizontal" />}
         >
-          {renderRow("Type:", renderTransactionType(transaction.type))}
-          {renderRow(
-            "Sender:",
-            <AccountLink
-              hideAccount
-              address={transaction.sender}
-              color="auto"
-            />,
-          )}
-          {renderRow("Sequence Number:", transaction.sequenceNumber)}
-          {renderRow(
-            "Expiration Timestamp",
-            renderTimestamp(transaction.expirationTimestampSecs),
-          )}
-          {renderRow("Version:", transaction.version)}
-          {renderRow("Hash:", transaction.hash)}
-          {renderRow("Success:", renderSuccess(transaction.success))}
-          {renderRow("State Root Hash:", transaction.stateRootHash)}
-          {renderRow("Event Root Hash:", transaction.eventRootHash)}
-          {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
-          {renderRow("Max Gas:", renderGas(transaction.maxGasAmount))}
-          {renderRow("Gas Unit Price:", renderGas(transaction.gasUnitPrice))}
-          {renderRow("Gas Currency:", transaction.gasCurrencyCode)}
-          {renderRow("VM Status:", transaction.vmStatus)}
-          {renderRow("Signature:", renderDebug(transaction.signature))}
-          {renderRow(
-            "Accumulator Root Hash:",
-            transaction.accumulatorRootHash,
-            false,
-          )}
-          {renderRow("Timestamp:", renderTimestamp(transaction.timestamp))}
-        </Stack>,
-      )}
-      {RenderEvents(transaction.events)}
-      {renderSection(
-        <>
-          <Stack direction="column" spacing={2}>
-            <Divider orientation="horizontal" />
-            {renderDebug(transaction.payload)}
-          </Stack>
-        </>,
-        "Payload",
-      )}
-    </>
-  );
+          <Divider variant="dotted" orientation="horizontal" />
+          {renderDebug(transaction.payload)}
+        </Stack>
+      </>
+      , "Payload"
+    )}
+  </>);
 }
 
 function renderPendingTransaction(transaction: PendingTransaction) {
-  return (
-    <>
-      {RenderHeader(
-        <Stack
-          direction="column"
+  return (<>
+    {RenderHeader(
+      <Stack direction="column"
+        spacing={2}
+        divider={<Divider variant="dotted" orientation="horizontal" sx={{ mb: 0 }} />}
+      >
+        {renderRow("Type:", renderTransactionType(transaction.type))}
+        {renderRow("Sender:", <AccountLink hideAccount address={transaction.sender} color="auto" />)}
+        {renderRow("Sequence Number:", transaction.sequenceNumber)}
+        {renderRow("Expiration Timestamp:", renderTimestamp(transaction.expirationTimestampSecs))}
+        {renderRow("Hash:", transaction.hash)}
+        {renderRow("Max Gas:", renderGas(transaction.maxGasAmount))}
+        {renderRow("Gas Unit Price:", renderGas(transaction.gasUnitPrice))}
+        {renderRow("Gas Currency:", transaction.gasCurrencyCode)}
+        {renderRow("Signature:", renderDebug(transaction.signature))}
+      </Stack>)}
+    {renderSection(
+      <>
+        <Stack direction="column"
           spacing={2}
-          divider={<Divider orientation="horizontal" />}
         >
-          {renderRow("Type:", renderTransactionType(transaction.type))}
-          {renderRow(
-            "Sender:",
-            <AccountLink
-              hideAccount
-              address={transaction.sender}
-              color="auto"
-            />,
-          )}
-          {renderRow("Sequence Number:", transaction.sequenceNumber)}
-          {renderRow(
-            "Expiration Timestamp",
-            renderTimestamp(transaction.expirationTimestampSecs),
-          )}
-          {renderRow("Hash:", transaction.hash)}
-          {renderRow("Max Gas:", renderGas(transaction.maxGasAmount))}
-          {renderRow("Gas Unit Price:", renderGas(transaction.gasUnitPrice))}
-          {renderRow("Gas Currency:", transaction.gasCurrencyCode)}
-          {renderRow("Signature:", renderDebug(transaction.signature))}
-        </Stack>,
-      )}
-      {renderSection(
-        <>
-          <Stack direction="column" spacing={2}>
-            <Divider orientation="horizontal" />
-            {renderDebug(transaction.payload)}
-          </Stack>
-        </>,
-        "Payload",
-      )}
-    </>
-  );
+          <Divider variant="dotted" orientation="horizontal" />
+          {renderDebug(transaction.payload)}
+        </Stack>
+      </>
+      , "Payload"
+    )}
+  </>);
 }
 
 function RenderHeader(children: React.ReactNode) {
-  let {txnHashOrVersion} = useParams();
+  let { txnHashOrVersion } = useParams();
 
   return renderSection(children, `Transaction ${txnHashOrVersion}`);
 }
 
-function RenderTransaction({
-  data,
-  error,
-}: {
-  data?: OnChainTransaction;
-  error?: ResponseError;
-}) {
-  let {txnHashOrVersion} = useParams();
+function RenderTransaction({ data, error }: { data?: OnChainTransaction, error?: ResponseError }) {
+  let { txnHashOrVersion } = useParams();
 
   if (error)
     if (error.type == ResponseErrorType.NOT_FOUND)
@@ -357,8 +299,7 @@ function RenderTransaction({
     else if (error.type == ResponseErrorType.UNHANDLED)
       return RenderHeader(
         <Alert severity="error">
-          Unknown error fetching transaction with version or hash{" "}
-          {txnHashOrVersion}:<br />
+          Unknown error fetching transaction with version or hash {txnHashOrVersion}:<br />
           {error.message}
           <br />
           Try again later
@@ -368,9 +309,7 @@ function RenderTransaction({
   if (!data)
     return RenderHeader(
       <Alert severity="error">
-        Got an empty response fetching transaction with version or hash{" "}
-        {txnHashOrVersion}
-        <br />
+        Got an empty response fetching transaction with version or hash {txnHashOrVersion}<br />
         Try again later
       </Alert>,
     );
@@ -398,17 +337,13 @@ function RenderTransaction({
       result = (
         <>
           {RenderHeader(
-            <Stack
-              direction="column"
+            <Stack direction="column"
               spacing={2}
-              divider={<Divider orientation="horizontal" />}
+              divider={<Divider variant="dotted" orientation="horizontal" sx={{ mb: 0 }} />}
             >
-              {renderRow(
-                "",
-                <div style={{color: "red", fontWeight: "bold"}}>
-                  Unknown transaction type: "{transaction.type}"
-                </div>,
-              )}
+              {renderRow("", (<div style={{ color: "red", fontWeight: "bold" }}>
+                Unknown transaction type: "{transaction.type}"
+              </div>))}
               {renderRow("Data:", renderDebug(transaction))}
             </Stack>,
           )}
@@ -426,18 +361,13 @@ function RenderTransaction({
 
 export default function Transaction() {
   const [state, _] = useGlobalState();
-  let {txnHashOrVersion} = useParams();
+  let { txnHashOrVersion } = useParams();
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <SafeRequestComponent
-          request={(network: string) =>
-            getTransaction(
-              {txnHashOrVersion: txnHashOrVersion as string},
-              network,
-            )
-          }
+          request={(network: string) => getTransaction({ txnHashOrVersion: txnHashOrVersion as string }, network)}
           args={[state.network_value]}
         >
           <RenderTransaction />

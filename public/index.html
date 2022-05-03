@@ -5,6 +5,9 @@
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Nework." />
+    <meta property="og:title" content="Aptos Explorer" />
+    <meta property="og:description" content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Nework." />
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -20,10 +23,18 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Aptos Explorer</title>
-    <!-- Fonts to support Material Design -->
+    <!-- 
+      Custom Fonts from Adobe Typekit. Please enter license key within the
+      REACT_APP_ADOBE_FONTS .env variable. 
+
+      LFT Etica Mono - Light, Book, Regular
+      Apparat SemiCond Light - Light
+
+      TODO: purchase font license(s) and integrate directly via @font-face
+    -->
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      href="https://use.typekit.net/%REACT_APP_ADOBE_FONTS%.css"
     />
   </head>
   <body>
