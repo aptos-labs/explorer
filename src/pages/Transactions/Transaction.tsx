@@ -44,9 +44,7 @@ function renderBlockMetadataTransaction(transaction: BlockMetadataTransaction) {
         <Stack
           direction="column"
           spacing={2}
-          divider={
-            <Divider variant="dotted" orientation="horizontal" sx={{mb: 0}} />
-          }
+          divider={<Divider variant="dotted" orientation="horizontal" sx={{mb: 0}} />}
         >
           {renderRow("Type:", renderTransactionType(transaction.type))}
           {renderRow("ID:", transaction.id)}
@@ -54,6 +52,7 @@ function renderBlockMetadataTransaction(transaction: BlockMetadataTransaction) {
           {renderRow("Hash:", transaction.hash)}
           {renderRow("Round:", transaction.round)}
           {renderRow("Status:", renderSuccess(transaction.success))}
+          {renderRow("Success:", renderSuccess(transaction.success))}
           {renderRow("Proposer:", transaction.proposer)}
           {renderRow("State Root Hash:", transaction.stateRootHash)}
           {renderRow("Event Root Hash:", transaction.eventRootHash)}

@@ -69,6 +69,12 @@ export interface BlockMetadataTransaction {
    * @type {string}
    * @memberof BlockMetadataTransaction
    */
+  changes: Array<any>
+   /**
+   * Changes that occurred on a transaction
+   * @type {any}
+   * @memberof BlockMetadataTransaction
+   */
   proposer: string;
   /**
    * Timestamp in microseconds, e.g. ledger / block creation timestamp.
@@ -157,6 +163,7 @@ export function BlockMetadataTransactionFromJSONTyped(
     id: json["id"],
     round: json["round"],
     previousBlockVotes: json["previous_block_votes"],
+    changes: json["changes"],
     proposer: json["proposer"],
     timestamp: json["timestamp"],
     version: json["version"],
@@ -184,6 +191,7 @@ export function BlockMetadataTransactionToJSON(
     id: value.id,
     round: value.round,
     previous_block_votes: value.previousBlockVotes,
+    changes: value.changes,
     proposer: value.proposer,
     timestamp: value.timestamp,
     version: value.version,
