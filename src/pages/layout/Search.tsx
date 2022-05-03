@@ -3,9 +3,13 @@ import {getTransaction} from "../../api";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import {styled, alpha} from "@mui/material/styles";
-import {SafeRequestComponent} from "../../components/RequestComponent";
+import {useQuery, UseQueryResult} from "react-query";
 import {useGlobalState} from "../../GlobalState";
-import {GetTransactionRequest, OnChainTransaction} from "../../api_client";
+import {
+  GetTransactionRequest,
+  Transaction,
+  OnChainTransaction,
+} from "../../api_client";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 import Link from "@mui/material/Link";
 import * as RRD from "react-router-dom";
@@ -54,16 +58,16 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
   },
 }));
 
-function SearchTransactionInner({
-  data,
-  error,
-}: {
-  data?: OnChainTransaction;
-  error?: ResponseError;
-}) {
-  if (!data || error)
-    // TODO: handle errors
+function SearchTransactionInner({data, isError}: UseQueryResult<Transaction>) {
+  if (!data || isError) {
     return null;
+  }
+
+  if (!("version" in data)) {
+    // TODO: pending transactions?
+    return null;
+  }
+
   return (
     <Link component={RRD.Link}
       to={`/txn/${data.version}`}
@@ -210,14 +214,12 @@ function searchResults(searchText: string) {
 function SearchTransaction({txnHashOrVersion}: GetTransactionRequest) {
   const [state, _] = useGlobalState();
 
-  return (
-    <SafeRequestComponent
-      request={(network: string) => getTransaction({txnHashOrVersion}, network)}
-      args={[state.network_value]}
-    >
-      <SearchTransactionInner />
-    </SafeRequestComponent>
+  const result = useQuery(
+    ["transaction", {txnHashOrVersion}, state.network_value],
+    () => getTransaction({txnHashOrVersion}, state.network_value),
   );
+
+  return <SearchTransactionInner {...result} />;
 }
 
 export default function HeaderSearch() {

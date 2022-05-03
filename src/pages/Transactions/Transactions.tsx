@@ -2,12 +2,13 @@ import React from "react";
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
+import {CircularProgress} from "@mui/material";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import {useQuery, UseQueryResult} from "react-query";
 import Title from "../../components/Title";
 import Button from "@mui/material/Button";
-import {SafeRequestComponent} from "../../components/RequestComponent";
 import {
   LedgerInfo,
   OnChainTransaction,
@@ -34,7 +35,7 @@ const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;
 
 function renderTimestampTransaction(transaction: OnChainTransaction) {
-  if (transaction.type == "genesis_transaction") {
+  if (transaction.type === "genesis_transaction") {
     return null;
   }
   return (
@@ -44,12 +45,16 @@ function renderTimestampTransaction(transaction: OnChainTransaction) {
   );
 }
 
-function RenderTransactionRows({data}: {data: Array<OnChainTransaction>}) {
+function RenderTransactionRows({
+  transactions,
+}: {
+  transactions: Array<OnChainTransaction>;
+}) {
   const theme = useTheme();
 
   return (
     <TableBody>
-      {data.map((transaction) => (
+      {transactions.map((transaction) => (
         <TableRow key={transaction.accumulatorRootHash} hover>
           <TableCell sx={{textAlign: "left"}}>
             {renderSuccess(transaction.success)}
@@ -129,7 +134,9 @@ function RenderPagination({
   );
 }
 
-function RenderTransactionContent({data}: {data?: Array<OnChainTransaction>}) {
+function RenderTransactionContent({
+  data,
+}: UseQueryResult<Array<OnChainTransaction>>) {
   if (!data) {
     // TODO: error handling!
     return null;
@@ -176,7 +183,7 @@ function RenderTransactionContent({data}: {data?: Array<OnChainTransaction>}) {
           </TableCell>
         </TableRow>
       </TableHead>
-      <RenderTransactionRows data={data} />
+      <RenderTransactionRows transactions={data} />
     </Table>
   );
 }
@@ -184,17 +191,16 @@ function RenderTransactionContent({data}: {data?: Array<OnChainTransaction>}) {
 export function TransactionsPreview() {
   const [state, _] = useGlobalState();
   const limit = PREVIEW_LIMIT;
+  const result = useQuery(["transactions", {limit}, state.network_value], () =>
+    getTransactions({limit}, state.network_value),
+  );
+
   return (
     <>
       <Stack spacing={2}>
         <Title>Latest Transactions</Title>
         <Box sx={{width: "auto", overflowX: "auto"}}>
-          <SafeRequestComponent
-            request={(network: string) => getTransactions({limit}, network)}
-            args={[state.network_value]}
-          >
-            <RenderTransactionContent />
-          </SafeRequestComponent>
+          <RenderTransactionContent {...result} />
         </Box>
 
         <Box sx={{display: "flex", justifyContent: "center"}}>
@@ -212,7 +218,7 @@ export function TransactionsPreview() {
   );
 }
 
-function TransactionsPageInner({data}: {data?: LedgerInfo}) {
+function TransactionsPageInner({data}: UseQueryResult<LedgerInfo>) {
   if (!data) {
     // TODO: handle errors
     return <>No ledger info</>;
@@ -234,19 +240,18 @@ function TransactionsPageInner({data}: {data?: LedgerInfo}) {
     start = parseInt(startParam);
   }
 
+  const result = useQuery(
+    ["transactions", {start, limit}, state.network_value],
+    () => getTransactions({start, limit}, state.network_value),
+    {keepPreviousData: true},
+  );
+
   return (
     <>
       <Stack spacing={2}>
         <Title>All Transactions</Title>
         <Box sx={{width: "auto", overflowX: "auto"}}>
-          <SafeRequestComponent
-            request={(network: string) =>
-              getTransactions({start, limit}, network)
-            }
-            args={[state.network_value]}
-          >
-            <RenderTransactionContent />
-          </SafeRequestComponent>
+          <RenderTransactionContent {...result} />
         </Box>
 
         <Box sx={{display: "flex", justifyContent: "center"}}>
@@ -266,16 +271,18 @@ function TransactionsPageInner({data}: {data?: LedgerInfo}) {
 export function TransactionsPage() {
   const [state, _] = useGlobalState();
 
+  const result = useQuery(
+    ["ledgerInfo", state.network_value],
+    () => getLedgerInfo(state.network_value),
+    {
+      refetchInterval: 10000,
+    },
+  );
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <SafeRequestComponent
-          request={(network: string) => getLedgerInfo(network)}
-          args={[state.network_value]}
-          refresh_interval_ms={10000}
-        >
-          <TransactionsPageInner />
-        </SafeRequestComponent>
+        <TransactionsPageInner {...result} />
       </Grid>
     </Grid>
   );
