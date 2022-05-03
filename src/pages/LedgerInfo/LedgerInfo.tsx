@@ -53,13 +53,6 @@ function RenderLedgerInfoInner({data}: UseQueryResult<LedgerInfo>) {
           <Typography component="div" variant="h3" textAlign="left">
             {timestamp_display.local_formatted}
           </Typography>
-          <Typography
-            variant="subtitle2"
-            color="text.primary"
-            fontSize="1.25rem"
-            component="div"
-            textAlign="left"
-          ></Typography>
         </Paper>
       </Grid>
     </Grid>
