@@ -10,20 +10,14 @@ import Button from '@mui/material/Button';
 import { SafeRequestComponent } from "../../components/RequestComponent";
 import {
   LedgerInfo,
-  OnChainTransaction,
-  UserTransaction,
+  OnChainTransaction, UserTransaction,
 } from "../../api_client/";
-import {getLedgerInfo, getTransactions} from "../../api";
-import {useGlobalState} from "../../GlobalState";
-import {
-  renderGas,
-  renderSuccess,
-  renderTimestamp,
-  renderTransactionType,
-} from "./helpers";
+import { getLedgerInfo, getTransactions } from "../../api";
+import { useGlobalState } from "../../GlobalState";
+import { renderGas, renderSuccess, renderTimestamp, renderTransactionType } from "./helpers";
 import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
-import {useSearchParams} from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import { Pagination, PaginationItem, Stack } from "@mui/material";
 import { ErrorBoundary } from "@sentry/react";
@@ -75,15 +69,18 @@ function RenderTransactionRows({ data }: { data: Array<OnChainTransaction> }) {
   );
 }
 
-function maxStart(maxVersion: number, limit: number) {
-  return 1 + maxVersion - limit;
-}
+type PageSetter = React.Dispatch<React.SetStateAction<number>>;
+type PageSetterProps = { setPage: PageSetter }
 
 function RenderPagination({
   currentPage,
   setPage,
   numPages
 }: { numPages: number } & CurrentPageProps & PageSetterProps) {
+
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
 
   return (
     <Pagination
@@ -95,6 +92,7 @@ function RenderPagination({
       page={currentPage}
       siblingCount={4}
       boundaryCount={0}
+      onChange={handleChange}
       shape="rounded"
       renderItem={(item) => (
         <PaginationItem
@@ -118,7 +116,6 @@ function RenderTransactionContent({
   if (!data)
     // TODO: error handling!
     return null;
-  }
 
   const theme = useTheme();
   const tableCellBackgroundColor = theme.palette.background.paper;
@@ -173,10 +170,16 @@ export function TransactionsPreview() {
   );
 }
 
-function TransactionsPageInner({data}: {data?: LedgerInfo}) {
-  if (!data) {
-    // TODO: handle errors
-    return <>No ledger info</>;
+function getCurrentPage(): number | null {
+  let [searchParams, setSearchParams] = useSearchParams();
+  // The latest version is always page 1, i.e:
+  // maxVersion => page 1
+  // version 0 => page maxVersion
+  const rawPage = searchParams.get("page");
+  if (rawPage) {
+    const currentPage = parseInt(rawPage);
+    if (currentPage)
+      return currentPage;
   }
 
   return null;
@@ -188,20 +191,15 @@ function TransactionsPageInner({ data }: { data?: LedgerInfo }) {
     return (<>No ledger info</>);
 
   const maxVersion = parseInt(data.ledgerVersion);
-  if (!maxVersion) {
+  if (!maxVersion)
     // TODO: handle errors
-    return <>No maxVersion</>;
-  }
+    return (<>No maxVersion</>);
 
   const limit = MAIN_LIMIT;
-  const [state, _setState] = useGlobalState();
-  const [searchParams, _setSearchParams] = useSearchParams();
+  const [state, _] = useGlobalState();
 
-  let start = maxStart(maxVersion, limit);
-  let startParam = searchParams.get("start");
-  if (startParam) {
-    start = parseInt(startParam);
-  }
+  const numPages = Math.ceil(maxVersion / limit);
+  const currentParamPage = getCurrentPage();
 
   const navigate = RRD.useNavigate();
   React.useEffect(() => {
@@ -258,5 +256,6 @@ export function TransactionsPage() {
 
       </Grid>
     </Grid>
-  );
+  )
+    ;
 }
