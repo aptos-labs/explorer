@@ -21,6 +21,7 @@
     "react-dom": "latest",
     "react-ga4": "^1.4.1",
     "react-number-format": "^4.9.1",
+    "react-query": "^3.38.0",
     "react-router-dom": "^6.2.1",
     "react-scripts": "latest",
     "recharts": "^2.1.9",

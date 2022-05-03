@@ -6,6 +6,7 @@ import {
   TransactionsApi,
   OnChainTransaction,
   GetTransactionsRequest,
+  Transaction,
   BlockMetadataTransaction,
   GenesisTransaction,
   PendingTransaction,
@@ -19,65 +20,57 @@ import {
 } from "../api_client/";
 
 import {Err, Ok, Result} from "ts-results";
-import {configureClient, ResponseError, toResult} from "./client";
-
-export type GetTransactionType =
-  | BlockMetadataTransaction
-  | GenesisTransaction
-  | PendingTransaction
-  | UserTransaction;
+import {configureClient, ResponseError, withResponseError} from "./client";
 
 export async function getTransactions(
-  requestParameters: GetTransactionsRequest = {},
-  node_url?: string,
-): Promise<Result<Array<OnChainTransaction>, ResponseError>> {
-  const result = await toResult(
+  requestParameters: GetTransactionsRequest,
+  node_url: string,
+): Promise<Array<OnChainTransaction>> {
+  const transactions = await withResponseError(
     configureClient(TransactionsApi, node_url).getTransactions(
       requestParameters,
     ),
   );
 
   // Sort in descending order
-  if (result.ok && result.val) {
-    result.val.sort((a, b) =>
-      parseInt(a.version) < parseInt(b.version) ? 1 : -1,
-    );
-  }
+  transactions.sort((a, b) =>
+    parseInt(a.version) < parseInt(b.version) ? 1 : -1,
+  );
 
-  return result;
+  return transactions;
 }
 
 export function getTransaction(
   requestParameters: GetTransactionRequest,
-  node_url?: string,
-): Promise<Result<GetTransactionType, ResponseError>> {
-  return toResult(
+  node_url: string,
+): Promise<Transaction> {
+  return withResponseError(
     configureClient(TransactionsApi, node_url).getTransaction(
       requestParameters,
     ),
   );
 }
 
-export function getLedgerInfo(
-  node_url?: string,
-): Promise<Result<LedgerInfo, ResponseError>> {
-  return toResult(configureClient(GeneralApi, node_url).getLedgerInfo());
+export function getLedgerInfo(node_url: string): Promise<LedgerInfo> {
+  return withResponseError(
+    configureClient(GeneralApi, node_url).getLedgerInfo(),
+  );
 }
 
 export function getAccount(
   requestParameters: GetAccountRequest,
-  node_url?: string,
-): Promise<Result<Account, ResponseError>> {
-  return toResult(
+  node_url: string,
+): Promise<Account> {
+  return withResponseError(
     configureClient(AccountsApi, node_url).getAccount(requestParameters),
   );
 }
 
 export function getAccountResources(
   requestParameters: GetAccountResourcesRequest,
-  node_url?: string,
-): Promise<Result<Array<AccountResource>, ResponseError>> {
-  return toResult(
+  node_url: string,
+): Promise<Array<AccountResource>> {
+  return withResponseError(
     configureClient(AccountsApi, node_url).getAccountResources(
       requestParameters,
     ),
@@ -86,9 +79,9 @@ export function getAccountResources(
 
 export function getAccountModules(
   requestParameters: GetAccountModulesRequest,
-  node_url?: string,
-): Promise<Result<Array<MoveModule>, ResponseError>> {
-  return toResult(
+  node_url: string,
+): Promise<Array<MoveModule>> {
+  return withResponseError(
     configureClient(AccountsApi, node_url).getAccountModules(requestParameters),
   );
 }
