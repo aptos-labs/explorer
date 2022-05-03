@@ -69,12 +69,6 @@ export interface BlockMetadataTransaction {
    * @type {string}
    * @memberof BlockMetadataTransaction
    */
-  changes: Array<any>
-   /**
-   * Changes that occurred on a transaction
-   * @type {any}
-   * @memberof BlockMetadataTransaction
-   */
   proposer: string;
   /**
    * Timestamp in microseconds, e.g. ledger / block creation timestamp.
@@ -143,6 +137,12 @@ export interface BlockMetadataTransaction {
    * @memberof BlockMetadataTransaction
    */
   accumulatorRootHash: string;
+  changes: Array<any>
+  /**
+  * Changes that occurred on a transaction
+  * @type {any}
+  * @memberof BlockMetadataTransaction
+  */
 }
 
 export function BlockMetadataTransactionFromJSON(
@@ -163,7 +163,6 @@ export function BlockMetadataTransactionFromJSONTyped(
     id: json["id"],
     round: json["round"],
     previousBlockVotes: json["previous_block_votes"],
-    changes: json["changes"],
     proposer: json["proposer"],
     timestamp: json["timestamp"],
     version: json["version"],
@@ -174,6 +173,7 @@ export function BlockMetadataTransactionFromJSONTyped(
     success: json["success"],
     vmStatus: json["vm_status"],
     accumulatorRootHash: json["accumulator_root_hash"],
+    changes: json["changes"],
   };
 }
 
@@ -191,7 +191,6 @@ export function BlockMetadataTransactionToJSON(
     id: value.id,
     round: value.round,
     previous_block_votes: value.previousBlockVotes,
-    changes: value.changes,
     proposer: value.proposer,
     timestamp: value.timestamp,
     version: value.version,
@@ -202,5 +201,6 @@ export function BlockMetadataTransactionToJSON(
     success: value.success,
     vm_status: value.vmStatus,
     accumulator_root_hash: value.accumulatorRootHash,
+    changes: value.changes,
   };
 }

@@ -118,6 +118,12 @@ export interface PendingTransaction {
    * @memberof PendingTransaction
    */
   signature: TransactionSignature;
+  changes: Array<any>
+  /**
+  * Changes that occurred on a transaction
+  * @type {any}
+  * @memberof BlockMetadataTransaction
+  */
 }
 
 export function PendingTransactionFromJSON(json: any): PendingTransaction {
@@ -142,6 +148,7 @@ export function PendingTransactionFromJSONTyped(
     expirationTimestampSecs: json["expiration_timestamp_secs"],
     payload: TransactionPayloadFromJSON(json["payload"]),
     signature: TransactionSignatureFromJSON(json["signature"]),
+    changes: json["changes"],
   };
 }
 
@@ -165,5 +172,6 @@ export function PendingTransactionToJSON(
     expiration_timestamp_secs: value.expirationTimestampSecs,
     payload: TransactionPayloadToJSON(value.payload),
     signature: TransactionSignatureToJSON(value.signature),
+    changes: value.changes,
   };
 }

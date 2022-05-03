@@ -189,6 +189,12 @@ export interface UserTransaction {
    * @memberof UserTransaction
    */
   accumulatorRootHash: string;
+  changes: Array<any>
+  /**
+  * Changes that occurred on a transaction
+  * @type {any}
+  * @memberof BlockMetadataTransaction
+  */
 }
 
 export function UserTransactionFromJSON(json: any): UserTransaction {
@@ -222,6 +228,7 @@ export function UserTransactionFromJSONTyped(
     success: json["success"],
     vmStatus: json["vm_status"],
     accumulatorRootHash: json["accumulator_root_hash"],
+    changes: json["changes"]
   };
 }
 
@@ -252,5 +259,6 @@ export function UserTransactionToJSON(value?: UserTransaction | null): any {
     success: value.success,
     vm_status: value.vmStatus,
     accumulator_root_hash: value.accumulatorRootHash,
+    changes: value.changes
   };
 }
