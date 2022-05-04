@@ -52,7 +52,6 @@ function renderBlockMetadataTransaction(transaction: BlockMetadataTransaction) {
           {renderRow("Hash:", transaction.hash)}
           {renderRow("Round:", transaction.round)}
           {renderRow("Status:", renderSuccess(transaction.success))}
-          {renderRow("Success:", renderSuccess(transaction.success))}
           {renderRow("Proposer:", transaction.proposer)}
           {renderRow("State Root Hash:", transaction.stateRootHash)}
           {renderRow("Event Root Hash:", transaction.eventRootHash)}
@@ -212,36 +211,11 @@ function RenderChanges(transaction: BlockMetadataTransaction | GenesisTransactio
         <Stack spacing={6} divider={<Divider orientation="horizontal" />} >
           {(transaction.changes.map((change, index) => (
             <Stack key={index} spacing={1} divider={<Divider variant="dotted" orientation="horizontal" />} >
-              {
-                renderRow(
-                  "Index:",
-                  index + 1
-                )
-              }
-              {
-                renderRow(
-                  "Type:",
-                  renderDebug(change.type)
-                )
-              }
-              {
-                renderRow(
-                  "Address:",
-                  renderDebug(change.address)
-                )
-              }
-              {
-                renderRow(
-                  "State Key Hash:",
-                  renderDebug(change.state_key_hash)
-                )
-              }
-              {
-                renderRow(
-                  "Data:",
-                  renderDebug(change.data)
-                )
-              }
+              {renderRow("Index:", index)}
+              {renderRow("Type:", renderDebug(change.type))}
+              {renderRow("Address:", renderDebug(change.address))}
+              {renderRow("State Key Hash:", renderDebug(change.state_key_hash))}
+              {renderRow("Data:", renderDebug(change.data))}
             </Stack>
         )))
         }
