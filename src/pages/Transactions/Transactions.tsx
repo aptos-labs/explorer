@@ -120,13 +120,15 @@ function RenderPagination({
           0,
           Math.min(maxStart(maxVersion, limit), start + delta),
         );
+        const rel = ({next: "next", previous: "prev"} as any)[item.type];
 
         return (
           <PaginationItem
             component={RRD.Link}
             to={`/transactions?start=${newStart}`}
-            {...item}
             sx={{mb: 1}}
+            rel={rel}
+            {...item}
           />
         );
       }}
