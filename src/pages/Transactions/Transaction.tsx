@@ -212,9 +212,9 @@ function RenderChanges(transaction: BlockMetadataTransaction | GenesisTransactio
           {(transaction.changes.map((change, index) => (
             <Stack key={index} spacing={1} divider={<Divider variant="dotted" orientation="horizontal" />} >
               {renderRow("Index:", index)}
-              {renderRow("Type:", renderDebug(change.type))}
-              {renderRow("Address:", renderDebug(change.address))}
-              {renderRow("State Key Hash:", renderDebug(change.state_key_hash))}
+              {renderRow("Type:", change.type)}
+              {renderRow("Address:", change.address)}
+              {renderRow("State Key Hash:", change.state_key_hash)}
               {renderRow("Data:", renderDebug(change.data))}
             </Stack>
         )))
