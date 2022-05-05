@@ -7,8 +7,8 @@
     "@emotion/styled": "latest",
     "@mui/icons-material": "^5.4.2",
     "@mui/material": "latest",
-    "@sentry/react": "^6.18.2",
-    "@sentry/tracing": "^6.18.2",
+    "@sentry/react": "^6.19.7",
+    "@sentry/tracing": "^6.19.7",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/lodash": "^4.14.179",
     "@types/react": "latest",
@@ -32,7 +32,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "fmt": "prettier --config .prettierrc.json 'src/**/*.ts'"
   },
   "browserslist": {
     "production": [
