@@ -2,18 +2,12 @@ import React from "react";
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import {CircularProgress} from "@mui/material";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import {useQuery, UseQueryResult} from "react-query";
 import Title from "../../components/Title";
 import Button from "@mui/material/Button";
-import {
-  LedgerInfo,
-  OnChainTransaction,
-  UserTransaction,
-} from "../../api_client/";
 import {getLedgerInfo, getTransactions} from "../../api";
 import {useGlobalState} from "../../GlobalState";
 import {
@@ -30,17 +24,19 @@ import {Pagination, PaginationItem, Stack} from "@mui/material";
 import {ErrorBoundary} from "@sentry/react";
 import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material";
+import { Types } from "aptos";
+
 
 const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;
 
-export function renderTimestampTransaction(transaction: OnChainTransaction) {
+function renderTimestampTransaction(transaction: Types.OnChainTransaction) {
   if (transaction.type === "genesis_transaction") {
     return null;
   }
   return (
     <ErrorBoundary>
-      {renderTimestamp((transaction as UserTransaction).timestamp)}
+      {renderTimestamp((transaction as Types.UserTransaction).timestamp)}
     </ErrorBoundary>
   );
 }
@@ -48,14 +44,14 @@ export function renderTimestampTransaction(transaction: OnChainTransaction) {
 function RenderTransactionRows({
   transactions,
 }: {
-  transactions: Array<OnChainTransaction>;
+  transactions: Array<Types.OnChainTransaction>;
 }) {
   const theme = useTheme();
 
   return (
     <TableBody>
       {transactions.map((transaction) => (
-        <TableRow key={transaction.accumulatorRootHash} hover>
+        <TableRow key={transaction.accumulator_root_hash} hover>
           <TableCell sx={{textAlign: "left"}}>
             {renderSuccess(transaction.success)}
             <Box component={"span"} sx={{display: "inline-block"}}></Box>
@@ -78,7 +74,7 @@ function RenderTransactionRows({
             </Link>
           </TableCell>
           <TableCell sx={{textAlign: "right"}}>
-            <ErrorBoundary>{renderGas(transaction.gasUsed)}</ErrorBoundary>
+            <ErrorBoundary>{renderGas(transaction.gas_used)}</ErrorBoundary>
           </TableCell>
         </TableRow>
       ))}
@@ -138,7 +134,7 @@ function RenderPagination({
 
 function RenderTransactionContent({
   data,
-}: UseQueryResult<Array<OnChainTransaction>>) {
+}: UseQueryResult<Array<Types.OnChainTransaction>>) {
   if (!data) {
     // TODO: error handling!
     return null;
@@ -220,13 +216,13 @@ export function TransactionsPreview() {
   );
 }
 
-function TransactionsPageInner({data}: UseQueryResult<LedgerInfo>) {
+function TransactionsPageInner({data}: UseQueryResult<Types.LedgerInfo>) {
   if (!data) {
     // TODO: handle errors
     return <>No ledger info</>;
   }
 
-  const maxVersion = parseInt(data.ledgerVersion);
+  const maxVersion = parseInt(data.ledger_version);
   if (!maxVersion) {
     // TODO: handle errors
     return <>No maxVersion</>;

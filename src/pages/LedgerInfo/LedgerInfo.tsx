@@ -1,6 +1,5 @@
 import React from "react";
 import {useQuery, UseQueryResult} from "react-query";
-import {LedgerInfo} from "../../api_client";
 import {getLedgerInfo} from "../../api";
 import {parseTimestamp, renderDebug, timestampDisplay} from "../utils";
 import {CardContent} from "@mui/material";
@@ -10,11 +9,12 @@ import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
 import {useGlobalState} from "../../GlobalState";
 import {useTheme} from "@mui/material";
+import { Types } from "aptos";
 
-function RenderLedgerInfoInner({data}: UseQueryResult<LedgerInfo>) {
+function RenderLedgerInfoInner({data}: UseQueryResult<Types.LedgerInfo>) {
   if (!data) return null;
 
-  const moment = parseTimestamp(data.ledgerTimestamp);
+  const moment = parseTimestamp(data.ledger_timestamp);
   const timestamp_display = timestampDisplay(moment);
   const theme = useTheme();
   return (
@@ -27,7 +27,7 @@ function RenderLedgerInfoInner({data}: UseQueryResult<LedgerInfo>) {
             sx={{margin: "1em 0 -0.5em"}}
           />
           <Typography component="div" variant="h3" textAlign="left">
-            {data.chainId}
+            {data.chain_id}
           </Typography>
         </Paper>
       </Grid>
@@ -39,7 +39,7 @@ function RenderLedgerInfoInner({data}: UseQueryResult<LedgerInfo>) {
             sx={{margin: "1em 0 -0.5em"}}
           />
           <Typography component="div" variant="h3" textAlign="left">
-            {data.ledgerVersion}
+            {data.ledger_version}
           </Typography>
         </Paper>
       </Grid>

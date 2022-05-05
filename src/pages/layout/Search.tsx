@@ -5,11 +5,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import {styled, alpha} from "@mui/material/styles";
 import {useQuery, UseQueryResult} from "react-query";
 import {useGlobalState} from "../../GlobalState";
-import {
-  GetTransactionRequest,
-  Transaction,
-  OnChainTransaction,
-} from "../../api_client";
+import { Types } from "aptos";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 import Link from "@mui/material/Link";
 import * as RRD from "react-router-dom";
@@ -20,6 +16,7 @@ import { AccountLink } from "../Accounts/helpers";
 import Paper from "@mui/material/Paper";
 import { teal, grey } from '@mui/material/colors';
 import { useTheme } from '@mui/material';
+import { GetTransactionRequest } from "../../api_client";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
@@ -58,7 +55,7 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
   },
 }));
 
-function SearchTransactionInner({data, isError}: UseQueryResult<Transaction>) {
+function SearchTransactionInner({data, isError}: UseQueryResult<Types.Transaction>) {
   if (!data || isError) {
     return null;
   }

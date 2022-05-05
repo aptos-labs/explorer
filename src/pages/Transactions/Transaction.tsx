@@ -2,24 +2,6 @@ import React from "react";
 import Title from "../../components/Title";
 import {useParams} from "react-router-dom";
 import {useQuery, UseQueryResult} from "react-query";
-import {
-  BlockMetadataTransaction,
-  GenesisTransaction,
-  OnChainTransaction,
-  UserTransaction,
-  PendingTransaction,
-  Transaction as TransactionType,
-  Event,
-  WriteSetPayload,
-  WriteSet,
-  DirectWriteSet,
-  ScriptWriteSet,
-  WriteSetChange,
-  DeleteModule,
-  DeleteResource,
-  WriteModule,
-  WriteResource,
-} from "../../api_client/";
 import {getTransaction} from "../../api";
 import {useGlobalState} from "../../GlobalState";
 import {Alert, Stack} from "@mui/material";
@@ -36,8 +18,9 @@ import {
   renderRow,
 } from "./helpers";
 import {AccountLink} from "../Accounts/helpers";
+import { Types } from "aptos";
 
-function renderBlockMetadataTransaction(transaction: BlockMetadataTransaction) {
+function renderBlockMetadataTransaction(transaction: Types.BlockMetadataTransaction) {
   return (
     <>
       {RenderHeader(
@@ -53,19 +36,19 @@ function renderBlockMetadataTransaction(transaction: BlockMetadataTransaction) {
           {renderRow("Round:", transaction.round)}
           {renderRow("Status:", renderSuccess(transaction.success))}
           {renderRow("Proposer:", transaction.proposer)}
-          {renderRow("State Root Hash:", transaction.stateRootHash)}
-          {renderRow("Event Root Hash:", transaction.eventRootHash)}
-          {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
-          {renderRow("VM Status:", transaction.vmStatus)}
+          {renderRow("State Root Hash:", transaction.state_root_hash)}
+          {renderRow("Event Root Hash:", transaction.event_root_hash)}
+          {renderRow("Gas Used:", renderGas(transaction.gas_used))}
+          {renderRow("VM Status:", transaction.vm_status)}
           {renderRow(
             "Accumulator Root Hash:",
-            transaction.accumulatorRootHash,
+            transaction.accumulator_root_hash,
             false,
           )}
           {renderRow("Timestamp:", renderTimestamp(transaction.timestamp))}
           {renderRow(
             "Previous Block Votes:",
-            renderDebug(transaction.previousBlockVotes),
+            renderDebug(transaction.previous_block_votes),
           )}
         </Stack>,
       )}
@@ -74,10 +57,10 @@ function renderBlockMetadataTransaction(transaction: BlockMetadataTransaction) {
   );
 }
 
-function RenderEvent(event: Event, i: number) {
+function RenderEvent(event: Types.Event, i: number) {
   return (
     <Grid container key={i}>
-      {renderRow("Sequence Number:", event.sequenceNumber)}
+      {renderRow("Sequence Number:", event.sequence_number)}
       {renderRow("Type:", event.type)}
       {renderRow("Key:", event.key)}
       {renderRow("Data:", renderDebug(event.data))}
@@ -85,7 +68,7 @@ function RenderEvent(event: Event, i: number) {
   );
 }
 
-function RenderEvents(events: Array<Event>) {
+function RenderEvents(events: Array<Types.Event>) {
   return renderSection(
     <>
       <Stack
@@ -100,25 +83,25 @@ function RenderEvents(events: Array<Event>) {
   );
 }
 
-function RenderWriteSetChangeSpecific(change: WriteSetChange) {
+function RenderWriteSetChangeSpecific(change: Types.WriteSetChange) {
   switch (change.type) {
     case "delete_module":
-      return renderRow("Module:", renderDebug((change as DeleteModule).module));
+      return renderRow("Module:", renderDebug((change as Types.DeleteModule).module));
     case "delete_resource":
       return renderRow(
         "Resource:",
-        renderDebug((change as DeleteResource).resource),
+        renderDebug((change as Types.DeleteResource).resource),
       );
     case "write_module":
-      return renderRow("Data:", renderDebug((change as WriteModule).data));
+      return renderRow("Data:", renderDebug((change as Types.WriteModule).data));
     case "write_resource":
-      return renderRow("Data:", renderDebug((change as WriteResource).data));
+      return renderRow("Data:", renderDebug((change as Types.WriteResource).data));
     default:
       throw `UnknownWriteSet:${change.type}`;
   }
 }
 
-function RenderWriteSetChanges(changes: Array<WriteSetChange>) {
+function RenderWriteSetChanges(changes: Array<Types.WriteSetChange>) {
   return renderSection(
     <>
       <Stack
@@ -143,7 +126,7 @@ function RenderWriteSetChanges(changes: Array<WriteSetChange>) {
 }
 
 function RenderDirectWriteSet(
-  writeset: DirectWriteSet,
+  writeset: Types.DirectWriteSet,
   render_events: boolean = false,
 ) {
   return (
@@ -154,24 +137,24 @@ function RenderDirectWriteSet(
   );
 }
 
-function RenderScriptWriteSet(writeset: ScriptWriteSet) {
+function RenderScriptWriteSet(writeset: Types.ScriptWriteSet) {
   return (
     <Grid container>
       {renderRow("Type:", writeset.type)}
-      {renderRow("Execute As:", writeset.executeAs)}
+      {renderRow("Execute As:", writeset.execute_as)}
       {renderRow("Script:", renderDebug(writeset.script))}
     </Grid>
   );
 }
 
-function RenderWriteSet(writeset: WriteSet) {
+function RenderWriteSet(writeset: Types.WriteSet) {
   let inner = null;
   switch (writeset.type) {
     case "direct_write_set":
-      inner = RenderDirectWriteSet(writeset as DirectWriteSet);
+      inner = RenderDirectWriteSet(writeset as Types.DirectWriteSet);
       break;
     case "script_write_set":
-      inner = RenderScriptWriteSet(writeset as ScriptWriteSet);
+      inner = RenderScriptWriteSet(writeset as Types.ScriptWriteSet);
       break;
     default:
       throw `Unknown:${writeset.type}`;
@@ -192,19 +175,19 @@ function RenderWriteSet(writeset: WriteSet) {
   );
 }
 
-function RenderPayload(payload: WriteSetPayload) {
+function RenderPayload(payload: Types.WriteSetPayload) {
   return renderSection(
     <>
       <Stack direction="column" spacing={2}>
         {renderRow("Type", payload.type)}
-        {RenderWriteSet(payload.writeSet)}
+        {RenderWriteSet(payload.write_set)}
       </Stack>
     </>,
     "Payload",
   );
 }
 
-function RenderChanges(transaction: BlockMetadataTransaction | GenesisTransaction | UserTransaction | PendingTransaction): any {
+function RenderChanges(transaction: Types.BlockMetadataTransaction | Types.GenesisTransaction | Types.UserTransaction | PendingTransaction): any {
   return renderSection(
     <>
       {
@@ -227,7 +210,7 @@ function RenderChanges(transaction: BlockMetadataTransaction | GenesisTransactio
 
      
 
-function renderGenesisTransaction(transaction: GenesisTransaction) {
+function renderGenesisTransaction(transaction: Types.GenesisTransaction) {
   return (<>
     {RenderHeader(
       <Stack direction="column"
@@ -238,11 +221,11 @@ function renderGenesisTransaction(transaction: GenesisTransaction) {
         {renderRow("Version:", transaction.version)}
         {renderRow("Hash:", transaction.hash)}
         {renderRow("Status:", renderSuccess(transaction.success))}
-        {renderRow("State Root Hash:", transaction.stateRootHash)}
-        {renderRow("Event Root Hash:", transaction.eventRootHash)}
-        {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
-        {renderRow("VM Status:", transaction.vmStatus)}
-        {renderRow("Accumulator Root Hash:", transaction.accumulatorRootHash, false)}
+        {renderRow("State Root Hash:", transaction.state_root_hash)}
+        {renderRow("Event Root Hash:", transaction.event_root_hash)}
+        {renderRow("Gas Used:", renderGas(transaction.gas_used))}
+        {renderRow("VM Status:", transaction.vm_status)}
+        {renderRow("Accumulator Root Hash:", transaction.accumulator_root_hash, false)}
       </Stack>
     )}
     {RenderEvents(transaction.events)}
@@ -251,7 +234,7 @@ function renderGenesisTransaction(transaction: GenesisTransaction) {
   </>);
 }
 
-function renderUserTransaction(transaction: UserTransaction) {
+function renderUserTransaction(transaction: Types.UserTransaction) {
   return (
     <>
       {RenderHeader(
@@ -267,25 +250,25 @@ function renderUserTransaction(transaction: UserTransaction) {
             "Sender:",
             <AccountLink hideAccount address={transaction.sender} />,
           )}
-          {renderRow("Sequence Number:", transaction.sequenceNumber)}
+          {renderRow("Sequence Number:", transaction.sequence_number)}
           {renderRow(
             "Expiration Timestamp:",
-            renderTimestamp(transaction.expirationTimestampSecs),
+            renderTimestamp(transaction.expiration_timestamp_secs),
           )}
           {renderRow("Version:", transaction.version)}
           {renderRow("Hash:", transaction.hash)}
           {renderRow("Status:", renderSuccess(transaction.success))}
-          {renderRow("State Root Hash:", transaction.stateRootHash)}
-          {renderRow("Event Root Hash:", transaction.eventRootHash)}
-          {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
-          {renderRow("Max Gas:", renderGas(transaction.maxGasAmount))}
-          {renderRow("Gas Unit Price:", renderGas(transaction.gasUnitPrice))}
-          {renderRow("Gas Currency:", transaction.gasCurrencyCode)}
-          {renderRow("VM Status:", transaction.vmStatus)}
+          {renderRow("State Root Hash:", transaction.state_root_hash)}
+          {renderRow("Event Root Hash:", transaction.event_root_hash)}
+          {renderRow("Gas Used:", renderGas(transaction.gas_used))}
+          {renderRow("Max Gas:", renderGas(transaction.max_gas_amount))}
+          {renderRow("Gas Unit Price:", renderGas(transaction.gas_unit_price))}
+          {renderRow("Gas Currency:", transaction.gas_currency_code)}
+          {renderRow("VM Status:", transaction.vm_status)}
           {renderRow("Signature:", renderDebug(transaction.signature))}
           {renderRow(
             "Accumulator Root Hash:",
-            transaction.accumulatorRootHash,
+            transaction.accumulator_root_hash,
             false,
           )}
           {renderRow("Timestamp:", renderTimestamp(transaction.timestamp))}
@@ -306,7 +289,7 @@ function renderUserTransaction(transaction: UserTransaction) {
   );
 }
 
-function renderPendingTransaction(transaction: PendingTransaction) {
+function renderPendingTransaction(transaction: Types.PendingTransaction) {
   return (
     <>
       {RenderHeader(
@@ -326,15 +309,15 @@ function renderPendingTransaction(transaction: PendingTransaction) {
               color="auto"
             />,
           )}
-          {renderRow("Sequence Number:", transaction.sequenceNumber)}
+          {renderRow("Sequence Number:", transaction.sequence_number)}
           {renderRow(
             "Expiration Timestamp:",
-            renderTimestamp(transaction.expirationTimestampSecs),
+            renderTimestamp(transaction.expiration_timestamp_secs),
           )}
           {renderRow("Hash:", transaction.hash)}
-          {renderRow("Max Gas:", renderGas(transaction.maxGasAmount))}
-          {renderRow("Gas Unit Price:", renderGas(transaction.gasUnitPrice))}
-          {renderRow("Gas Currency:", transaction.gasCurrencyCode)}
+          {renderRow("Max Gas:", renderGas(transaction.max_gas_amount))}
+          {renderRow("Gas Unit Price:", renderGas(transaction.gas_unit_price))}
+          {renderRow("Gas Currency:", transaction.gas_currency_code)}
           {renderRow("Signature:", renderDebug(transaction.signature))}
         </Stack>,
       )}
@@ -362,7 +345,7 @@ function RenderTransaction({
   data,
   error,
   txnHashOrVersion,
-}: UseQueryResult<TransactionType, ResponseError> & {
+}: UseQueryResult<Types.Transaction, ResponseError> & {
   txnHashOrVersion: string;
 }) {
   if (isLoading) {
@@ -406,17 +389,17 @@ function RenderTransaction({
   switch (transaction.type) {
     case "block_metadata_transaction":
       result = renderBlockMetadataTransaction(
-        transaction as BlockMetadataTransaction,
+        transaction as Types.BlockMetadataTransaction,
       );
       break;
     case "genesis_transaction":
-      result = renderGenesisTransaction(transaction as GenesisTransaction);
+      result = renderGenesisTransaction(transaction as Types.GenesisTransaction);
       break;
     case "user_transaction":
-      result = renderUserTransaction(transaction as UserTransaction);
+      result = renderUserTransaction(transaction as Types.UserTransaction);
       break;
     case "pending_transaction":
-      result = renderPendingTransaction(transaction as PendingTransaction);
+      result = renderPendingTransaction(transaction as Types.PendingTransaction);
       break;
     default:
       result = (
@@ -457,7 +440,7 @@ export default function Transaction() {
     return null;
   }
 
-  const result = useQuery<TransactionType, ResponseError>(
+  const result = useQuery<Types.Transaction, ResponseError>(
     ["transaction", {txnHashOrVersion}, state.network_value],
     () => getTransaction({txnHashOrVersion}, state.network_value),
   );

@@ -1,4 +1,3 @@
-import { Account, AccountResource, MoveModule, OnChainTransaction } from "../../api_client";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 import {useParams} from "react-router-dom";
 import {useQuery, UseQueryResult} from "react-query";
@@ -22,6 +21,7 @@ import TableBody from "@mui/material/TableBody";
 import { ErrorBoundary } from "@sentry/react";
 import Link from "@mui/material/Link";
 import * as RRD from "react-router-dom";
+import { Types } from "aptos";
 
 function RenderHeader(children: React.ReactNode, title?: string) {
   let {address} = useParams();
@@ -62,7 +62,7 @@ function RenderAccount({
   isLoading,
   data,
   error,
-}: UseQueryResult<Account, ResponseError>) {
+}: UseQueryResult<Types.Account, ResponseError>) {
   const {address} = useParams();
   const theme = useTheme();
 
@@ -86,8 +86,8 @@ function RenderAccount({
         )}
         {data && (
           <>
-            {renderRow("Sequence Number:", data.sequenceNumber)}
-            {renderRow("Authentication Key:", data.authenticationKey)}
+            {renderRow("Sequence Number:", data.sequence_number)}
+            {renderRow("Authentication Key:", data.authentication_key)}
           </>
         )}
       </Stack>
@@ -116,7 +116,7 @@ function RenderAccountResources({
   isLoading,
   data,
   error,
-}: UseQueryResult<Array<AccountResource>, ResponseError>) {
+}: UseQueryResult<Array<Types.AccountResource>, ResponseError>) {
   let {address} = useParams();
   const title = "Account Resources";
 
@@ -161,7 +161,7 @@ function RenderAccountModules({
   isLoading,
   data,
   error,
-}: UseQueryResult<Array<MoveModule>, ResponseError>) {
+}: UseQueryResult<Array<Types.MoveModule>, ResponseError>) {
   const {address} = useParams();
   const title = "Account Modules";
 
@@ -206,7 +206,7 @@ function RenderAccountTransactions({
   isLoading,
   data,
   error,
-}: UseQueryResult<Array<OnChainTransaction>, ResponseError>) {
+}: UseQueryResult<Array<Types.OnChainTransaction>, ResponseError>) {
   const {address} = useParams();
   const title = "Account Transactions";
 
@@ -273,7 +273,7 @@ function RenderAccountTransactions({
         </TableHead>
         <TableBody>
           {data.map((transaction) => (
-            <TableRow key={transaction.accumulatorRootHash} hover>
+            <TableRow key={transaction.accumulator_root_hash} hover>
               <TableCell sx={{ textAlign: "left" }}>
                 {renderSuccess(transaction.success)}
                 <Box component={"span"} sx={{ display: "inline-block" }}></Box>
@@ -296,7 +296,7 @@ function RenderAccountTransactions({
                 </ErrorBoundary>
               </TableCell>
               <TableCell sx={{ textAlign: "right" }}>
-                <ErrorBoundary>{renderGas(transaction.gasUsed)}</ErrorBoundary>
+                <ErrorBoundary>{renderGas(transaction.gas_used)}</ErrorBoundary>
               </TableCell>
             </TableRow>
           ))}
@@ -325,17 +325,17 @@ export default function AccountPage() {
     return null;
   }
 
-  const accountResult = useQuery<Account, ResponseError>(
+  const accountResult = useQuery<Types.Account, ResponseError>(
     ["account", {address}, state.network_value],
     () => getAccount({address}, state.network_value),
   );
   const accountResourcesResult = useQuery<
-    Array<AccountResource>,
+    Array<Types.AccountResource>,
     ResponseError
   >(["accountResources", {address}, state.network_value], () =>
     getAccountResources({address}, state.network_value),
   );
-  const accountModulesResult = useQuery<Array<MoveModule>, ResponseError>(
+  const accountModulesResult = useQuery<Array<Types.MoveModule>, ResponseError>(
     ["accountModules", {address}, state.network_value],
     () => getAccountModules({address}, state.network_value),
   );
