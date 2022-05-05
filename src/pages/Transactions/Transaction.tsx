@@ -44,9 +44,7 @@ function renderBlockMetadataTransaction(transaction: BlockMetadataTransaction) {
         <Stack
           direction="column"
           spacing={2}
-          divider={
-            <Divider variant="dotted" orientation="horizontal" sx={{mb: 0}} />
-          }
+          divider={<Divider variant="dotted" orientation="horizontal" sx={{mb: 0}} />}
         >
           {renderRow("Type:", renderTransactionType(transaction.type))}
           {renderRow("ID:", transaction.id)}
@@ -71,6 +69,7 @@ function renderBlockMetadataTransaction(transaction: BlockMetadataTransaction) {
           )}
         </Stack>,
       )}
+      {RenderChanges(transaction)}
     </>
   );
 }
@@ -205,34 +204,51 @@ function RenderPayload(payload: WriteSetPayload) {
   );
 }
 
-function renderGenesisTransaction(transaction: GenesisTransaction) {
-  return (
+function RenderChanges(transaction: BlockMetadataTransaction | GenesisTransaction | UserTransaction | PendingTransaction): any {
+  return renderSection(
     <>
-      {RenderHeader(
-        <Stack
-          direction="column"
-          spacing={2}
-          divider={<Divider variant="dotted" orientation="horizontal" />}
-        >
-          {renderRow("Type:", renderTransactionType(transaction.type))}
-          {renderRow("Version:", transaction.version)}
-          {renderRow("Hash:", transaction.hash)}
-          {renderRow("Status:", renderSuccess(transaction.success))}
-          {renderRow("State Root Hash:", transaction.stateRootHash)}
-          {renderRow("Event Root Hash:", transaction.eventRootHash)}
-          {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
-          {renderRow("VM Status:", transaction.vmStatus)}
-          {renderRow(
-            "Accumulator Root Hash:",
-            transaction.accumulatorRootHash,
-            false,
-          )}
-        </Stack>,
-      )}
-      {RenderEvents(transaction.events)}
-      {RenderPayload(transaction.payload)}
-    </>
-  );
+      {
+        <Stack spacing={6} divider={<Divider orientation="horizontal" />} >
+          {(transaction.changes.map((change, index) => (
+            <Stack key={index} spacing={1} divider={<Divider variant="dotted" orientation="horizontal" />} >
+              {renderRow("Index:", index)}
+              {renderRow("Type:", change.type)}
+              {renderRow("Address:", change.address)}
+              {renderRow("State Key Hash:", change.state_key_hash)}
+              {renderRow("Data:", renderDebug(change.data))}
+            </Stack>
+        )))
+        }
+      </Stack>
+      }
+    </>,
+    "Changes"
+  )}
+
+     
+
+function renderGenesisTransaction(transaction: GenesisTransaction) {
+  return (<>
+    {RenderHeader(
+      <Stack direction="column"
+        spacing={2}
+        divider={<Divider variant="dotted" orientation="horizontal" />}
+      >
+        {renderRow("Type:", renderTransactionType(transaction.type))}
+        {renderRow("Version:", transaction.version)}
+        {renderRow("Hash:", transaction.hash)}
+        {renderRow("Status:", renderSuccess(transaction.success))}
+        {renderRow("State Root Hash:", transaction.stateRootHash)}
+        {renderRow("Event Root Hash:", transaction.eventRootHash)}
+        {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
+        {renderRow("VM Status:", transaction.vmStatus)}
+        {renderRow("Accumulator Root Hash:", transaction.accumulatorRootHash, false)}
+      </Stack>
+    )}
+    {RenderEvents(transaction.events)}
+    {RenderPayload(transaction.payload)}
+    {RenderChanges(transaction)}
+  </>);
 }
 
 function renderUserTransaction(transaction: UserTransaction) {
@@ -285,6 +301,7 @@ function renderUserTransaction(transaction: UserTransaction) {
         </>,
         "Payload",
       )}
+      {RenderChanges(transaction)}
     </>
   );
 }
@@ -330,6 +347,7 @@ function renderPendingTransaction(transaction: PendingTransaction) {
         </>,
         "Payload",
       )}
+      {RenderChanges(transaction)}
     </>
   );
 }
