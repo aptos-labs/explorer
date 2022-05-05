@@ -16,7 +16,7 @@ import {
   GeneralApi,
   Account,
   AccountResource,
-  MoveModule,
+  MoveModule, GetAccountTransactionsRequest,
 } from "../api_client/";
 
 import {Err, Ok, Result} from "ts-results";
@@ -31,6 +31,17 @@ export async function getTransactions(
       requestParameters,
     ),
   );
+
+  // Sort in descending order
+  transactions.sort((a, b) =>
+    parseInt(a.version) < parseInt(b.version) ? 1 : -1,
+  );
+
+  return transactions;
+}
+
+export async function getAccountTransactions(requestParameters: GetAccountTransactionsRequest, node_url?: string): Promise<Array<OnChainTransaction>> {
+  const transactions = await withResponseError(configureClient(TransactionsApi, node_url).getAccountTransactions(requestParameters));
 
   // Sort in descending order
   transactions.sort((a, b) =>

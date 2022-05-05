@@ -34,7 +34,7 @@ import {useTheme} from "@mui/material";
 const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;
 
-function renderTimestampTransaction(transaction: OnChainTransaction) {
+export function renderTimestampTransaction(transaction: OnChainTransaction) {
   if (transaction.type === "genesis_transaction") {
     return null;
   }
