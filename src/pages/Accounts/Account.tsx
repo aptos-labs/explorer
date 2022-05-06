@@ -5,7 +5,7 @@ import {Alert, Stack} from "@mui/material";
 import React from "react";
 import {useGlobalState} from "../../GlobalState";
 import Grid from "@mui/material/Grid";
-import { getAccount, getAccountModules, getAccountResources, getAccountTransactions } from "../../api";
+import { getAccount, getAccountModules, getAccountResources, getTransactions } from "../../api";
 import { renderGas, renderRow, renderSection, renderSuccess, renderTransactionType } from "../Transactions/helpers";
 import Divider from "@mui/material/Divider";
 import {renderDebug} from "../utils";
@@ -327,21 +327,21 @@ export default function AccountPage() {
 
   const accountResult = useQuery<Types.Account, ResponseError>(
     ["account", {address}, state.network_value],
-    () => getAccount({address}, state.network_value),
+    () => getAccount(address, state.network_value),
   );
   const accountResourcesResult = useQuery<
     Array<Types.AccountResource>,
     ResponseError
   >(["accountResources", {address}, state.network_value], () =>
-    getAccountResources({address}, state.network_value),
+    getAccountResources(state.network_value, address),
   );
   const accountModulesResult = useQuery<Array<Types.MoveModule>, ResponseError>(
     ["accountModules", {address}, state.network_value],
-    () => getAccountModules({address}, state.network_value),
+    () => getAccountModules(state.network_value, address),
   );
-  const accountTransactionsResult = useQuery<Array<OnChainTransaction>, ResponseError>(
+  const accountTransactionsResult = useQuery<Array<Types.OnChainTransaction>, ResponseError>(
     ["accountTransactions", {address}, state.network_value],
-    () => getAccountTransactions({address}, state.network_value),
+    () => getTransactions(state.network_value),
   );
 
   return (

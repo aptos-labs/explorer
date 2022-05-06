@@ -1,7 +1,6 @@
 import fetch from "isomorphic-fetch";
 import {Configuration, BaseAPI} from "../api_client/";
 import {defaultNetwork} from "../constants";
-import {Err, Ok, Result} from "ts-results";
 
 export enum ResponseErrorType {
   NOT_FOUND = "Not found",

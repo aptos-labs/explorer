@@ -1,49 +1,16 @@
-import {
-  AccountsApi,
-  GetAccountRequest,
-  GetAccountResourcesRequest,
-  GetAccountModulesRequest,
-  TransactionsApi,
-  OnChainTransaction,
-  GetTransactionsRequest,
-  Transaction,
-  BlockMetadataTransaction,
-  GenesisTransaction,
-  PendingTransaction,
-  UserTransaction,
-  GetTransactionRequest,
-  LedgerInfo,
-  GeneralApi,
-  Account,
-  AccountResource,
-  MoveModule, GetAccountTransactionsRequest,
-} from "../api_client/";
 
-import { AptosClient, AptosAccount, FaucetClient, Types } from "aptos";
-
-import {Err, Ok, Result} from "ts-results";
-import {configureClient, ResponseError, withResponseError} from "./client";
+import { AptosClient, Types, MaybeHexString } from "aptos";
+import { withResponseError} from "./client";
 
 export async function getTransactions(
-  requestParameters: GetTransactionsRequest,
   node_url: string,
-): Promise<Array<OnChainTransaction>> {
+  query?: {start?: number | undefined; limit?: number | undefined},
+): Promise<Array<Types.OnChainTransaction>> {
   const transactions = await withResponseError(
-    configureClient(TransactionsApi, node_url).getTransactions(
-      requestParameters,
+    new AptosClient(node_url).getTransactions(
+      query,
     ),
   );
-
-  // Sort in descending order
-  transactions.sort((a, b) =>
-    parseInt(a.version) < parseInt(b.version) ? 1 : -1,
-  );
-
-  return transactions;
-}
-
-export async function getAccountTransactions(requestParameters: GetAccountTransactionsRequest, node_url?: string): Promise<Array<OnChainTransaction>> {
-  const transactions = await withResponseError(configureClient(TransactionsApi, node_url).getAccountTransactions(requestParameters));
 
   // Sort in descending order
   transactions.sort((a, b) =>
@@ -54,47 +21,49 @@ export async function getAccountTransactions(requestParameters: GetAccountTransa
 }
 
 export function getTransaction(
-  requestParameters: GetTransactionRequest,
+  requestParameters: string,
   node_url: string,
-): Promise<Transaction> {
+): Promise<Types.Transaction> {
   return withResponseError(
-    configureClient(TransactionsApi, node_url).getTransaction(
+    new AptosClient(node_url).getTransaction(
       requestParameters,
     ),
   );
 }
 
-export function getLedgerInfo(node_url: string): Promise<LedgerInfo> {
+export function getLedgerInfo(node_url: string): Promise<Types.LedgerInfo> {
   return withResponseError(
-    configureClient(GeneralApi, node_url).getLedgerInfo(),
+    new AptosClient(node_url).getLedgerInfo(),
   );
 }
 
 export function getAccount(
-  requestParameters: GetAccountRequest,
+  account_address: string,
   node_url: string,
-): Promise<Account> {
+): Promise<Types.Account> {
   return withResponseError(
-    configureClient(AccountsApi, node_url).getAccount(requestParameters),
+    new AptosClient(node_url).getAccount(account_address),
   );
 }
 
 export function getAccountResources(
-  requestParameters: GetAccountResourcesRequest,
   node_url: string,
-): Promise<Array<AccountResource>> {
+  account_address: MaybeHexString,
+  query?: { version?: string | undefined; }
+): Promise<Array<Types.AccountResource>> {
   return withResponseError(
-    configureClient(AccountsApi, node_url).getAccountResources(
-      requestParameters,
+    new AptosClient(node_url).getAccountResources(
+      account_address, query
     ),
   );
 }
 
 export function getAccountModules(
-  requestParameters: GetAccountModulesRequest,
   node_url: string,
-): Promise<Array<MoveModule>> {
+  account_address: MaybeHexString,
+  query?: { version?: string | undefined; }
+): Promise<Array<Types.MoveModule>> {
   return withResponseError(
-    configureClient(AccountsApi, node_url).getAccountModules(requestParameters),
+    new AptosClient(node_url).getAccountModules(account_address, query),
   );
 }

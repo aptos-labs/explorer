@@ -2597,10 +2597,10 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-aptos@^0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/aptos/-/aptos-0.0.18.tgz#bf62a9b828a2942282d0818b5126af544418fe19"
-  integrity sha512-5gd+4mgr/ed7dWIJZGzdysPEfYvGA3ZuDRzv6Sz2CISPzgE4T5F3SYEpz+b8MVIaJZe4tQcTi/YHBhs/A7n1wA==
+aptos@0.0.20:
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/aptos/-/aptos-0.0.20.tgz#51ac6adcb702d808a79b3f1db65bca8c0a854ffc"
+  integrity sha512-f0nBkYiZvfsngctZtXXVjrbtVljRtAC1EXF0BgNew8troMTI014nEoNCTcu9aWEeST2/qCVsD8XbWJHjt8oKnQ==
   dependencies:
     axios "^0.26.1"
     buffer "^6.0.3"

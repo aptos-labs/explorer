@@ -2,21 +2,18 @@ import React from "react";
 import {getTransaction} from "../../api";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import {styled, alpha} from "@mui/material/styles";
+import {styled} from "@mui/material/styles";
 import {useQuery, UseQueryResult} from "react-query";
 import {useGlobalState} from "../../GlobalState";
 import { Types } from "aptos";
-import {ResponseError, ResponseErrorType} from "../../api/client";
 import Link from "@mui/material/Link";
 import * as RRD from "react-router-dom";
 import {throttle} from "lodash";
-import {Autocomplete, Stack, TextField} from "@mui/material";
-import Divider from "@mui/material/Divider";
+import {Autocomplete} from "@mui/material";
 import { AccountLink } from "../Accounts/helpers";
 import Paper from "@mui/material/Paper";
 import { teal, grey } from '@mui/material/colors';
 import { useTheme } from '@mui/material';
-import { GetTransactionRequest } from "../../api_client";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
@@ -198,7 +195,7 @@ function searchResults(searchText: string) {
   const results = [
     <SearchTransaction
       key={`st-${searchText}`}
-      txnHashOrVersion={searchText}
+      txn={searchText}
     />,
   ];
   // if it's hex, and is <= (64 + 2 for 0x) char long
@@ -208,12 +205,12 @@ function searchResults(searchText: string) {
   return results;
 }
 
-function SearchTransaction({txnHashOrVersion}: GetTransactionRequest) {
+function SearchTransaction(txn: string) {
   const [state, _] = useGlobalState();
 
   const result = useQuery(
-    ["transaction", {txnHashOrVersion}, state.network_value],
-    () => getTransaction({txnHashOrVersion}, state.network_value),
+    ["transaction", txn, state.network_value],
+    () => getTransaction(txn, state.network_value),
   );
 
   return <SearchTransactionInner {...result} />;

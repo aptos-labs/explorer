@@ -442,7 +442,7 @@ export default function Transaction() {
 
   const result = useQuery<Types.Transaction, ResponseError>(
     ["transaction", {txnHashOrVersion}, state.network_value],
-    () => getTransaction({txnHashOrVersion}, state.network_value),
+    () => getTransaction(txnHashOrVersion, state.network_value),
   );
 
   return (

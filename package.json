@@ -13,7 +13,7 @@
     "@types/lodash": "^4.14.179",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "aptos": "^0.0.18",
+    "aptos": "0.0.20",
     "isomorphic-fetch": "^3.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
