@@ -192,7 +192,7 @@ export function TransactionsPreview() {
   const client = new AptosClient(state.network_value)
   const limit = PREVIEW_LIMIT;
   const result = useQuery(["transactions", {limit}, state.network_value], () =>
-  client.getTransaction(`${limit}`),
+  client.getTransactions(limit),
   );
 
   return (
@@ -243,7 +243,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.LedgerInfo>) {
 
   const result = useQuery(
     ["transactions", {start, limit}, state.network_value],
-    () => client.getTransaction(`${limit}`),
+    () => client.getTransactions(limit),
     {keepPreviousData: true},
   );
 

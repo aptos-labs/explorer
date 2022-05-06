@@ -205,7 +205,7 @@ function searchResults(searchText: string) {
   return results;
 }
 
-function SearchTransaction(txn: string) {
+function SearchTransaction({ txn }: { txn: string }) {
   const [state, _] = useGlobalState();
 
   const result = useQuery(
