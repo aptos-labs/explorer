@@ -19,7 +19,7 @@ import {
   MoveModule, GetAccountTransactionsRequest,
 } from "../api_client/";
 
-import { AptosClient, AptosAccount, FaucetClient, Types, sadwad } from "aptos";
+import { AptosClient, AptosAccount, FaucetClient, Types } from "aptos";
 
 import {Err, Ok, Result} from "ts-results";
 import {configureClient, ResponseError, withResponseError} from "./client";

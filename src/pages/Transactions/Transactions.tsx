@@ -30,7 +30,7 @@ import { Types } from "aptos";
 const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;
 
-function renderTimestampTransaction(transaction: Types.OnChainTransaction) {
+export function renderTimestampTransaction(transaction: Types.OnChainTransaction) {
   if (transaction.type === "genesis_transaction") {
     return null;
   }
