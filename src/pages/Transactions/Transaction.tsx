@@ -187,12 +187,12 @@ function RenderPayload(payload: Types.WriteSetPayload) {
   );
 }
 
-function RenderChanges(transaction: Types.BlockMetadataTransaction | Types.GenesisTransaction | Types.UserTransaction | PendingTransaction): any {
+function RenderChanges(transaction: Types.BlockMetadataTransaction | Types.GenesisTransaction | Types.UserTransaction | Types.PendingTransaction): any {
   return renderSection(
     <>
       {
         <Stack spacing={6} divider={<Divider orientation="horizontal" />} >
-          {(transaction.changes.map((change, index) => (
+          {(transaction.changes.map((change: any, index: number) => (
             <Stack key={index} spacing={1} divider={<Divider variant="dotted" orientation="horizontal" />} >
               {renderRow("Index:", index)}
               {renderRow("Type:", change.type)}

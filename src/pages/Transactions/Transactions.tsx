@@ -8,7 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import {useQuery, UseQueryResult} from "react-query";
 import Title from "../../components/Title";
 import Button from "@mui/material/Button";
-import {getLedgerInfo, getTransactions} from "../../api";
+import {getLedgerInfo} from "../../api";
 import {useGlobalState} from "../../GlobalState";
 import {
   renderGas,
@@ -24,7 +24,7 @@ import {Pagination, PaginationItem, Stack} from "@mui/material";
 import {ErrorBoundary} from "@sentry/react";
 import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material";
-import { Types } from "aptos";
+import { AptosClient, Types } from "aptos";
 
 
 const PREVIEW_LIMIT = 10;
@@ -186,11 +186,13 @@ function RenderTransactionContent({
   );
 }
 
+
 export function TransactionsPreview() {
   const [state, _] = useGlobalState();
+  const client = new AptosClient(state.network_value)
   const limit = PREVIEW_LIMIT;
   const result = useQuery(["transactions", {limit}, state.network_value], () =>
-    getTransactions({limit}, state.network_value),
+  client.getTransaction(`${limit}`),
   );
 
   return (
@@ -221,7 +223,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.LedgerInfo>) {
     // TODO: handle errors
     return <>No ledger info</>;
   }
-
+  
   const maxVersion = parseInt(data.ledger_version);
   if (!maxVersion) {
     // TODO: handle errors
@@ -237,10 +239,11 @@ function TransactionsPageInner({data}: UseQueryResult<Types.LedgerInfo>) {
   if (startParam) {
     start = parseInt(startParam);
   }
+  const client = new AptosClient(state.network_value)
 
   const result = useQuery(
     ["transactions", {start, limit}, state.network_value],
-    () => getTransactions({start, limit}, state.network_value),
+    () => client.getTransaction(`${limit}`),
     {keepPreviousData: true},
   );
 
@@ -268,6 +271,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.LedgerInfo>) {
 
 export function TransactionsPage() {
   const [state, _] = useGlobalState();
+  const client = new AptosClient(state.network_value)
 
   const result = useQuery(
     ["ledgerInfo", state.network_value],
