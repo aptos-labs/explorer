@@ -16,12 +16,6 @@ import {
 } from "../../api_client/";
 import {getLedgerInfo, getTransactions} from "../../api";
 import {useGlobalState} from "../../GlobalState";
-import {
-  renderGas,
-  renderSuccess,
-  renderTimestamp,
-  renderTransactionType,
-} from "./helpers";
 import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
 import {useSearchParams} from "react-router-dom";
@@ -30,61 +24,10 @@ import {Pagination, PaginationItem, Stack} from "@mui/material";
 import {ErrorBoundary} from "@sentry/react";
 import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material";
+import {TransactionsTable} from "../../components/TransactionsTable";
 
 const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;
-
-export function renderTimestampTransaction(transaction: OnChainTransaction) {
-  if (transaction.type === "genesis_transaction") {
-    return null;
-  }
-  return (
-    <ErrorBoundary>
-      {renderTimestamp((transaction as UserTransaction).timestamp)}
-    </ErrorBoundary>
-  );
-}
-
-function RenderTransactionRows({
-  transactions,
-}: {
-  transactions: Array<OnChainTransaction>;
-}) {
-  const theme = useTheme();
-
-  return (
-    <TableBody>
-      {transactions.map((transaction) => (
-        <TableRow key={transaction.accumulatorRootHash} hover>
-          <TableCell sx={{textAlign: "left"}}>
-            {renderSuccess(transaction.success)}
-            <Box component={"span"} sx={{display: "inline-block"}}></Box>
-          </TableCell>
-          <TableCell sx={{textAlign: "left"}}>
-            {renderTimestampTransaction(transaction)}
-          </TableCell>
-          <TableCell>
-            <ErrorBoundary>
-              {renderTransactionType(transaction.type)}
-            </ErrorBoundary>
-          </TableCell>
-          <TableCell sx={{textAlign: "right"}}>
-            <Link
-              component={RRD.Link}
-              to={`/txn/${transaction.version}`}
-              color="primary"
-            >
-              {transaction.version}
-            </Link>
-          </TableCell>
-          <TableCell sx={{textAlign: "right"}}>
-            <ErrorBoundary>{renderGas(transaction.gasUsed)}</ErrorBoundary>
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  );
-}
 
 function maxStart(maxVersion: number, limit: number) {
   return 1 + maxVersion - limit;
@@ -144,50 +87,7 @@ function RenderTransactionContent({
     return null;
   }
 
-  const theme = useTheme();
-  const tableCellBackgroundColor = theme.palette.background.paper;
-
-  return (
-    <Table size="small">
-      <TableHead>
-        <TableRow>
-          <TableCell
-            sx={{
-              textAlign: "left",
-              width: "2%",
-              background: `${tableCellBackgroundColor}`,
-              borderRadius: "8px 0 0 8px",
-            }}
-          ></TableCell>
-          <TableCell
-            sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
-          >
-            <Typography variant="subtitle1">Timestamp ↓</Typography>
-          </TableCell>
-          <TableCell
-            sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
-          >
-            <Typography variant="subtitle1">Type ↓</Typography>
-          </TableCell>
-          <TableCell
-            sx={{textAlign: "right", background: `${tableCellBackgroundColor}`}}
-          >
-            <Typography variant="subtitle1">Version ↓</Typography>
-          </TableCell>
-          <TableCell
-            sx={{
-              textAlign: "right",
-              background: `${tableCellBackgroundColor}`,
-              borderRadius: "0 8px 8px 0",
-            }}
-          >
-            <Typography variant="subtitle1">Gas Used ↓</Typography>
-          </TableCell>
-        </TableRow>
-      </TableHead>
-      <RenderTransactionRows transactions={data} />
-    </Table>
-  );
+  return <TransactionsTable transactions={data} />;
 }
 
 export function TransactionsPreview() {

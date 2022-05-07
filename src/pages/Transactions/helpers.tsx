@@ -1,21 +1,16 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
-import { parseTimestamp, timestampDisplay } from "../utils";
+import {parseTimestamp, timestampDisplay} from "../utils";
 import NumberFormat from "react-number-format";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
-import { useLocation } from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import Title from "../../components/Title";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 
-import { useTheme } from '@mui/material';
-
-export function useQuery() {
-  const { search } = useLocation();
-  return React.useMemo(() => new URLSearchParams(search), [search]);
-}
+import {useTheme} from "@mui/material";
 
 export function renderTimestamp(timestamp?: string) {
   if (!timestamp)
@@ -28,11 +23,7 @@ export function renderTimestamp(timestamp?: string) {
   const moment = parseTimestamp(timestamp);
   const timestamp_display = timestampDisplay(moment);
 
-  return (
-    <>
-      {timestamp_display.local_formatted}
-    </>
-  );
+  return <>{timestamp_display.local_formatted}</>;
 }
 
 export function renderGas(gas: string) {
@@ -40,7 +31,6 @@ export function renderGas(gas: string) {
 }
 
 export function renderSuccess(success: boolean) {
-
   if (success)
     return (
       <CheckCircleOutlinedIcon
@@ -79,29 +69,33 @@ export function renderSection(
   title: React.ReactNode,
 ) {
   return (
-
-    <Stack direction="column"
-      spacing={4} sx={{ mb: 6 }}
-    >
+    <Stack direction="column" spacing={4} sx={{mb: 6}}>
       <Title>{title}</Title>
       {children}
     </Stack>
-
   );
 }
 
-export function renderRow(key: React.ReactNode, value: React.ReactNode, i?: any) {
+export function renderRow(
+  key: React.ReactNode,
+  value: React.ReactNode,
+  i?: any,
+) {
   const theme = useTheme();
   return (
     <Box>
-      <Grid container direction={{ xs: "column", md: "row" }} rowSpacing={1} columnSpacing={4} key={i}>
+      <Grid
+        container
+        direction={{xs: "column", md: "row"}}
+        rowSpacing={1}
+        columnSpacing={4}
+        key={i}
+      >
         <Grid item md={3}>
           <Typography variant="subtitle1">{key}</Typography>
         </Grid>
-        <Grid item md={9} sx={{ width: 1, overflowWrap: "break-word" }}>
-          <Box>
-            {value}
-          </Box>
+        <Grid item md={9} sx={{width: 1, overflowWrap: "break-word"}}>
+          <Box>{value}</Box>
         </Grid>
       </Grid>
     </Box>
