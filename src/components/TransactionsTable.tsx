@@ -137,7 +137,7 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
         <TableCell
           sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
         >
-          <Typography variant="subtitle1">Timestamp ↓</Typography>
+          <Typography variant="subtitle1">Timestamp</Typography>
         </TableCell>
       );
     case "type":
@@ -145,7 +145,7 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
         <TableCell
           sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
         >
-          <Typography variant="subtitle1">Type ↓</Typography>
+          <Typography variant="subtitle1">Type</Typography>
         </TableCell>
       );
     case "version":
