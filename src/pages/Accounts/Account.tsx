@@ -1,4 +1,9 @@
-import { Account, AccountResource, MoveModule, OnChainTransaction } from "../../api_client";
+import {
+  Account,
+  AccountResource,
+  MoveModule,
+  OnChainTransaction,
+} from "../../api_client";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 import {useParams} from "react-router-dom";
 import {useQuery, UseQueryResult} from "react-query";
@@ -6,22 +11,27 @@ import {Alert, Stack} from "@mui/material";
 import React from "react";
 import {useGlobalState} from "../../GlobalState";
 import Grid from "@mui/material/Grid";
-import { getAccount, getAccountModules, getAccountResources, getAccountTransactions } from "../../api";
-import { renderGas, renderRow, renderSection, renderSuccess, renderTransactionType } from "../Transactions/helpers";
+import {
+  getAccount,
+  getAccountModules,
+  getAccountResources,
+  getAccountTransactions,
+} from "../../api";
+import {renderRow, renderSection} from "../Transactions/helpers";
 import Divider from "@mui/material/Divider";
 import {renderDebug} from "../utils";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
-import { renderTimestampTransaction } from "../Transactions/Transactions";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Typography from "@mui/material/Typography";
 import TableBody from "@mui/material/TableBody";
-import { ErrorBoundary } from "@sentry/react";
+import {ErrorBoundary} from "@sentry/react";
 import Link from "@mui/material/Link";
 import * as RRD from "react-router-dom";
+import {TransactionsTable} from "../../components/TransactionsTable";
 
 function RenderHeader(children: React.ReactNode, title?: string) {
   let {address} = useParams();
@@ -220,6 +230,7 @@ function RenderAccountTransactions({
 
   if (!data) {
     return RenderHeader(
+      // prettier-ignore
       <Alert severity="error">
         Got an empty response fetching Account Transactions with address {address}
         <br />
@@ -231,77 +242,14 @@ function RenderAccountTransactions({
   const theme = useTheme();
   const tableCellBackgroundColor = theme.palette.background.paper;
 
-  const content = (data.length === 0) ?
-    (<span>None</span>) :
-    (
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell
-              sx={{
-                textAlign: "left",
-                width: "2%",
-                background: `${tableCellBackgroundColor}`,
-                borderRadius: "8px 0 0 8px",
-              }}
-            ></TableCell>
-            <TableCell
-              sx={{ textAlign: "left", background: `${tableCellBackgroundColor}` }}
-            >
-              <Typography variant="subtitle1">Timestamp</Typography>
-            </TableCell>
-            <TableCell
-              sx={{ textAlign: "left", background: `${tableCellBackgroundColor}` }}
-            >
-              <Typography variant="subtitle1">Version</Typography>
-            </TableCell>
-            <TableCell
-              sx={{ textAlign: "left", background: `${tableCellBackgroundColor}` }}
-            >
-              <Typography variant="subtitle1">Hash</Typography>
-            </TableCell>
-            <TableCell
-              sx={{
-                textAlign: "right",
-                background: `${tableCellBackgroundColor}`,
-                borderRadius: "0 8px 8px 0",
-              }}
-            >
-              <Typography variant="subtitle1">Gas Used</Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.map((transaction) => (
-            <TableRow key={transaction.accumulatorRootHash} hover>
-              <TableCell sx={{ textAlign: "left" }}>
-                {renderSuccess(transaction.success)}
-                <Box component={"span"} sx={{ display: "inline-block" }}></Box>
-              </TableCell>
-              <TableCell sx={{ textAlign: "left" }}>
-                {renderTimestampTransaction(transaction)}
-              </TableCell>
-              <TableCell sx={{ textAlign: "left" }}>
-                <Link
-                  component={RRD.Link}
-                  to={`/txn/${transaction.version}`}
-                  color="primary"
-                >
-                  {transaction.version}
-                </Link>
-              </TableCell>
-              <TableCell>
-                <ErrorBoundary>
-                  {transaction.hash}
-                </ErrorBoundary>
-              </TableCell>
-              <TableCell sx={{ textAlign: "right" }}>
-                <ErrorBoundary>{renderGas(transaction.gasUsed)}</ErrorBoundary>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+  const content =
+    data.length === 0 ? (
+      <span>None</span>
+    ) : (
+      <TransactionsTable
+        transactions={data}
+        columns={["status", "timestamp", "version", "hash", "gas"]}
+      />
     );
 
   return renderSection(
@@ -315,7 +263,6 @@ function RenderAccountTransactions({
     "Account Transactions",
   );
 }
-
 
 export default function AccountPage() {
   const [state, _] = useGlobalState();
@@ -339,9 +286,11 @@ export default function AccountPage() {
     ["accountModules", {address}, state.network_value],
     () => getAccountModules({address}, state.network_value),
   );
-  const accountTransactionsResult = useQuery<Array<OnChainTransaction>, ResponseError>(
-    ["accountTransactions", {address}, state.network_value],
-    () => getAccountTransactions({address}, state.network_value),
+  const accountTransactionsResult = useQuery<
+    Array<OnChainTransaction>,
+    ResponseError
+  >(["accountTransactions", {address}, state.network_value], () =>
+    getAccountTransactions({address}, state.network_value),
   );
 
   return (
