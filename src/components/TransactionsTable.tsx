@@ -10,7 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
-import {Transaction} from "../api_client";
+import {OnChainTransaction} from "../api_client";
 import {parseTimestamp, timestampDisplay} from "../pages/utils";
 import {
   renderGas,
@@ -22,14 +22,15 @@ import {
 import {assertNever} from "../utils";
 
 type TransactionCellProps = {
-  transaction: Transaction;
+  transaction: OnChainTransaction;
 };
 
 function TransactionStatusCell({transaction}: TransactionCellProps) {
-  const icon =
-    "success" in transaction ? renderSuccess(transaction.success) : null;
-
-  return <TableCell sx={{textAlign: "left"}}>{icon}</TableCell>;
+  return (
+    <TableCell sx={{textAlign: "left"}}>
+      {renderSuccess(transaction.success)}
+    </TableCell>
+  );
 }
 
 function TransactionTimestampCell({transaction}: TransactionCellProps) {
@@ -37,6 +38,7 @@ function TransactionTimestampCell({transaction}: TransactionCellProps) {
     "timestamp" in transaction ? (
       renderTimestamp(transaction.timestamp)
     ) : (
+      // Genesis transaction
       <Typography variant="subtitle2" align="center">
         -
       </Typography>
@@ -50,10 +52,6 @@ function TransactionTypeCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionVersionCell({transaction}: TransactionCellProps) {
-  if (!("version" in transaction)) {
-    return null;
-  }
-
   return (
     <TableCell sx={{textAlign: "right"}}>
       <Link
@@ -68,10 +66,6 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionGasCell({transaction}: TransactionCellProps) {
-  if (!("gasUsed" in transaction)) {
-    return null;
-  }
-
   return (
     <TableCell sx={{textAlign: "right"}}>
       {renderGas(transaction.gasUsed)}
@@ -103,7 +97,7 @@ const DEFAULT_COLUMNS: TransactionColumn[] = [
 ];
 
 type TransactionRowProps = {
-  transaction: Transaction;
+  transaction: OnChainTransaction;
   columns: TransactionColumn[];
 };
 
@@ -126,68 +120,69 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
   const theme = useTheme();
   const tableCellBackgroundColor = theme.palette.background.paper;
 
-  if (column === "status") {
-    return (
-      <TableCell
-        sx={{
-          textAlign: "left",
-          width: "2%",
-          background: `${tableCellBackgroundColor}`,
-          borderRadius: "8px 0 0 8px",
-        }}
-      ></TableCell>
-    );
-  } else if (column === "timestamp") {
-    return (
-      <TableCell
-        sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
-      >
-        <Typography variant="subtitle1">Timestamp ↓</Typography>
-      </TableCell>
-    );
-  } else if (column === "type") {
-    return (
-      <TableCell
-        sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
-      >
-        <Typography variant="subtitle1">Type ↓</Typography>
-      </TableCell>
-    );
-  } else if (column === "version") {
-    return (
-      <TableCell
-        sx={{textAlign: "right", background: `${tableCellBackgroundColor}`}}
-      >
-        <Typography variant="subtitle1">Version ↓</Typography>
-      </TableCell>
-    );
-  } else if (column === "gas") {
-    return (
-      <TableCell
-        sx={{
-          textAlign: "right",
-          background: `${tableCellBackgroundColor}`,
-          borderRadius: "0 8px 8px 0",
-        }}
-      >
-        <Typography variant="subtitle1">Gas Used</Typography>
-      </TableCell>
-    );
-  } else if (column === "hash") {
-    return (
-      <TableCell
-        sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
-      >
-        <Typography variant="subtitle1">Hash</Typography>
-      </TableCell>
-    );
-  } else {
-    return assertNever(column);
+  switch (column) {
+    case "status":
+      return (
+        <TableCell
+          sx={{
+            textAlign: "left",
+            width: "2%",
+            background: `${tableCellBackgroundColor}`,
+            borderRadius: "8px 0 0 8px",
+          }}
+        ></TableCell>
+      );
+    case "timestamp":
+      return (
+        <TableCell
+          sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
+        >
+          <Typography variant="subtitle1">Timestamp ↓</Typography>
+        </TableCell>
+      );
+    case "type":
+      return (
+        <TableCell
+          sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
+        >
+          <Typography variant="subtitle1">Type ↓</Typography>
+        </TableCell>
+      );
+    case "version":
+      return (
+        <TableCell
+          sx={{textAlign: "right", background: `${tableCellBackgroundColor}`}}
+        >
+          <Typography variant="subtitle1">Version ↓</Typography>
+        </TableCell>
+      );
+    case "gas":
+      return (
+        <TableCell
+          sx={{
+            textAlign: "right",
+            background: `${tableCellBackgroundColor}`,
+            borderRadius: "0 8px 8px 0",
+          }}
+        >
+          <Typography variant="subtitle1">Gas Used</Typography>
+        </TableCell>
+      );
+    case "hash":
+      return (
+        <TableCell
+          sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
+        >
+          <Typography variant="subtitle1">Hash</Typography>
+        </TableCell>
+      );
+    default:
+      return assertNever(column);
   }
 }
 
 type Props = {
-  transactions: Transaction[];
+  transactions: OnChainTransaction[];
   columns?: TransactionColumn[];
 };
 
