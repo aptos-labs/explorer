@@ -230,9 +230,9 @@ function RenderAccountTransactions({
 
   if (!data) {
     return RenderHeader(
+      // prettier-ignore
       <Alert severity="error">
-        Got an empty response fetching Account Transactions with address{" "}
-        {address}
+        Got an empty response fetching Account Transactions with address {address}
         <br />
         Try again later
       </Alert>,
