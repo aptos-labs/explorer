@@ -24,7 +24,7 @@ const StyledFooter = styled(Box)(
   }));
 
 const socialLinks = [
-  { title: "Git", url: "https://github.com/aptoslabs", icon: GitLogo },
+  { title: "Git", url: "https://github.com/aptos-labs", icon: GitLogo },
   { title: "Discord", url: "https://discord.gg/zTDYBEud7U", icon: DiscordLogo },
   { title: "Twitter", url: "https://twitter.com/aptoslabs/", icon: TwitterLogo },
   { title: "Medium", url: "https://aptoslabs.medium.com/", icon: MediumLogo },
