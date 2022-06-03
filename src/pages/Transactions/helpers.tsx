@@ -59,6 +59,8 @@ export function renderTransactionType(transaction_type: string) {
       return "UserTransaction";
     case "pending_transaction":
       return "PendingTransaction";
+    case "state_checkpoint_transaction":
+      return "StateCheckpointTransaction";
     default:
       throw `Unknown renderTransactionType:${transaction_type}`;
   }

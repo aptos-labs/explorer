@@ -225,8 +225,6 @@ function RenderChanges(transaction: BlockMetadataTransaction | GenesisTransactio
     "Changes"
   )}
 
-     
-
 function renderGenesisTransaction(transaction: GenesisTransaction) {
   return (<>
     {RenderHeader(
@@ -352,6 +350,37 @@ function renderPendingTransaction(transaction: PendingTransaction) {
   );
 }
 
+// Why is this not typed? Because we need to move the explorer to actually using the typescript API
+function renderStateCheckpointTransaction(transaction: any) {
+  return (
+    <>
+      {RenderHeader(
+        <Stack
+          direction="column"
+          spacing={2}
+          divider={<Divider variant="dotted" orientation="horizontal" sx={{mb: 0}} />}
+        >
+          {renderRow("Type:", renderTransactionType(transaction.type))}
+          {renderRow("Version:", transaction.version)}
+          {renderRow("Hash:", transaction.hash)}
+          {renderRow("Status:", renderSuccess(transaction.success))}
+          {renderRow("Proposer:", transaction.proposer)}
+          {renderRow("State Root Hash:", transaction.stateRootHash)}
+          {renderRow("Event Root Hash:", transaction.eventRootHash)}
+          {renderRow("Gas Used:", renderGas(transaction.gasUsed))}
+          {renderRow("VM Status:", transaction.vmStatus)}
+          {renderRow(
+            "Accumulator Root Hash:",
+            transaction.accumulatorRootHash,
+            false,
+          )}
+          {renderRow("Timestamp:", renderTimestamp(transaction.timestamp))}
+        </Stack>,
+      )}
+    </>
+  );
+}
+
 function RenderHeader(children: React.ReactNode) {
   const {txnHashOrVersion} = useParams();
   return renderSection(children, `Transaction ${txnHashOrVersion}`);
@@ -417,6 +446,9 @@ function RenderTransaction({
       break;
     case "pending_transaction":
       result = renderPendingTransaction(transaction as PendingTransaction);
+      break;
+    case "state_checkpoint_transaction":
+      result = renderStateCheckpointTransaction(transaction as any);
       break;
     default:
       result = (
