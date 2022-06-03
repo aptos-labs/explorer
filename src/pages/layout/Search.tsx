@@ -5,21 +5,17 @@ import SearchIcon from "@mui/icons-material/Search";
 import {styled, alpha} from "@mui/material/styles";
 import {useQuery, UseQueryResult} from "react-query";
 import {useGlobalState} from "../../GlobalState";
-import {
-  GetTransactionRequest,
-  Transaction,
-  OnChainTransaction,
-} from "../../api_client";
+import {Types} from "aptos";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 import Link from "@mui/material/Link";
 import * as RRD from "react-router-dom";
 import {throttle} from "lodash";
 import {Autocomplete, Stack, TextField} from "@mui/material";
 import Divider from "@mui/material/Divider";
-import { AccountLink } from "../Accounts/helpers";
+import {AccountLink} from "../Accounts/helpers";
 import Paper from "@mui/material/Paper";
-import { teal, grey } from '@mui/material/colors';
-import { useTheme } from '@mui/material';
+import {teal, grey} from "@mui/material/colors";
+import {useTheme} from "@mui/material";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
@@ -37,7 +33,7 @@ const SearchIconWrapper = styled("div")(({theme}) => ({
   justifyContent: "center",
   opacity: "0.5",
   right: "0",
-  top: "0"
+  top: "0",
 }));
 
 const StyledInputBase = styled(InputBase)(({theme}) => ({
@@ -54,11 +50,14 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
     },
     [theme.breakpoints.up("md")]: {
       fontSize: "1.2rem",
-    }
+    },
   },
 }));
 
-function SearchTransactionInner({data, isError}: UseQueryResult<Transaction>) {
+function SearchTransactionInner({
+  data,
+  isError,
+}: UseQueryResult<Types.Transaction>) {
   if (!data || isError) {
     return null;
   }
@@ -69,12 +68,17 @@ function SearchTransactionInner({data, isError}: UseQueryResult<Transaction>) {
   }
 
   return (
-    <Link component={RRD.Link}
+    <Link
+      component={RRD.Link}
       to={`/txn/${data.version}`}
       color="inherit"
       underline="none"
       sx={{
-        padding: "8px", display: "block", width: "100%", opacity: "0.8", "&:hover": { background: teal['A400'], color: grey[900] },
+        padding: "8px",
+        display: "block",
+        width: "100%",
+        opacity: "0.8",
+        "&:hover": {background: teal["A400"], color: grey[900]},
       }}
     >
       Transaction {data.version}
@@ -126,20 +130,21 @@ function AutocompleteSearch() {
   return (
     <Autocomplete
       fullWidth
-      PaperComponent={({ children }) => (
-        <Paper sx={{
-          borderTop: "1px dotted grey",
-          p: 1,
-          transform: 'translateY(-8px)',
-          borderRadius: "0 0 8px 8px",
-          boxShadow: "0 50px 50px -12px rgba(0, 0, 0, 0.75)"
-        }}>
+      PaperComponent={({children}) => (
+        <Paper
+          sx={{
+            borderTop: "1px dotted grey",
+            p: 1,
+            transform: "translateY(-8px)",
+            borderRadius: "0 0 8px 8px",
+            boxShadow: "0 50px 50px -12px rgba(0, 0, 0, 0.75)",
+          }}
+        >
           {children}
         </Paper>
       )}
-
       open={open}
-      sx={{ flexGrow: 1 }}
+      sx={{flexGrow: 1}}
       forcePopupIcon={false}
       selectOnFocus={true}
       noOptionsText="No Results"
@@ -148,15 +153,19 @@ function AutocompleteSearch() {
       options={options}
       inputValue={inputValue}
       onChange={(event, newValue) => null}
-      onInputChange={(event: any, newInputValue: React.SetStateAction<string>, reason) => {
+      onInputChange={(
+        event: any,
+        newInputValue: React.SetStateAction<string>,
+        reason,
+      ) => {
         if (newInputValue.length === 0) {
           if (open) setOpen(false);
         } else {
           if (!open) setOpen(true);
         }
-        if (event && event.type === 'blur') {
-          setInputValue('');
-        } else if (reason !== 'reset') {
+        if (event && event.type === "blur") {
+          setInputValue("");
+        } else if (reason !== "reset") {
           setInputValue(newInputValue);
         }
       }}
@@ -166,12 +175,14 @@ function AutocompleteSearch() {
         params.InputProps.className = "";
         return (
           <Search>
-            <Paper sx={{ mt: { xs: 8, md: 14 }, mb: { xs: 4, md: 8 } }} >
+            <Paper sx={{mt: {xs: 8, md: 14}, mb: {xs: 4, md: 8}}}>
               <SearchIconWrapper>
-                <SearchIcon sx={{ width: "2rem", height: "2rem" }} />
+                <SearchIcon sx={{width: "2rem", height: "2rem"}} />
               </SearchIconWrapper>
-              <StyledInputBase sx={{ p: 2 }} ref={params.InputProps.ref}
-                inputProps={{ "aria-label": "search", ...params.inputProps }}
+              <StyledInputBase
+                sx={{p: 2}}
+                ref={params.InputProps.ref}
+                inputProps={{"aria-label": "search", ...params.inputProps}}
                 placeholder="Search by Transaction Hash, Version, Account Address…"
               />
             </Paper>
@@ -180,13 +191,7 @@ function AutocompleteSearch() {
       }}
       renderOption={(props, option) => {
         if (!option) return null;
-        return (
-          <li {...props}>
-
-            {option}
-
-          </li>
-        );
+        return <li {...props}>{option}</li>;
       }}
     />
   );
@@ -211,7 +216,7 @@ function searchResults(searchText: string) {
   return results;
 }
 
-function SearchTransaction({txnHashOrVersion}: GetTransactionRequest) {
+function SearchTransaction({txnHashOrVersion}: {txnHashOrVersion: string}) {
   const [state, _] = useGlobalState();
 
   const result = useQuery(

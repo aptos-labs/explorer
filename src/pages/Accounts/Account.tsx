@@ -1,9 +1,4 @@
-import {
-  Account,
-  AccountResource,
-  MoveModule,
-  OnChainTransaction,
-} from "../../api_client";
+import {Types} from "aptos";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 import {useParams} from "react-router-dom";
 import {useQuery, UseQueryResult} from "react-query";
@@ -72,7 +67,7 @@ function RenderAccount({
   isLoading,
   data,
   error,
-}: UseQueryResult<Account, ResponseError>) {
+}: UseQueryResult<Types.Account, ResponseError>) {
   const {address} = useParams();
   const theme = useTheme();
 
@@ -96,8 +91,8 @@ function RenderAccount({
         )}
         {data && (
           <>
-            {renderRow("Sequence Number:", data.sequenceNumber)}
-            {renderRow("Authentication Key:", data.authenticationKey)}
+            {renderRow("Sequence Number:", data.sequence_number)}
+            {renderRow("Authentication Key:", data.authentication_key)}
           </>
         )}
       </Stack>
@@ -126,7 +121,7 @@ function RenderAccountResources({
   isLoading,
   data,
   error,
-}: UseQueryResult<Array<AccountResource>, ResponseError>) {
+}: UseQueryResult<Array<Types.AccountResource>, ResponseError>) {
   let {address} = useParams();
   const title = "Account Resources";
 
@@ -171,7 +166,7 @@ function RenderAccountModules({
   isLoading,
   data,
   error,
-}: UseQueryResult<Array<MoveModule>, ResponseError>) {
+}: UseQueryResult<Array<Types.MoveModule>, ResponseError>) {
   const {address} = useParams();
   const title = "Account Modules";
 
@@ -216,7 +211,7 @@ function RenderAccountTransactions({
   isLoading,
   data,
   error,
-}: UseQueryResult<Array<OnChainTransaction>, ResponseError>) {
+}: UseQueryResult<Array<Types.OnChainTransaction>, ResponseError>) {
   const {address} = useParams();
   const title = "Account Transactions";
 
@@ -272,22 +267,22 @@ export default function AccountPage() {
     return null;
   }
 
-  const accountResult = useQuery<Account, ResponseError>(
+  const accountResult = useQuery<Types.Account, ResponseError>(
     ["account", {address}, state.network_value],
     () => getAccount({address}, state.network_value),
   );
   const accountResourcesResult = useQuery<
-    Array<AccountResource>,
+    Array<Types.AccountResource>,
     ResponseError
   >(["accountResources", {address}, state.network_value], () =>
     getAccountResources({address}, state.network_value),
   );
-  const accountModulesResult = useQuery<Array<MoveModule>, ResponseError>(
+  const accountModulesResult = useQuery<Array<Types.MoveModule>, ResponseError>(
     ["accountModules", {address}, state.network_value],
     () => getAccountModules({address}, state.network_value),
   );
   const accountTransactionsResult = useQuery<
-    Array<OnChainTransaction>,
+    Array<Types.OnChainTransaction>,
     ResponseError
   >(["accountTransactions", {address}, state.network_value], () =>
     getAccountTransactions({address}, state.network_value),
