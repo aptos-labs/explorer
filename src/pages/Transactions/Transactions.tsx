@@ -9,11 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import {useQuery, UseQueryResult} from "react-query";
 import Title from "../../components/Title";
 import Button from "@mui/material/Button";
-import {
-  LedgerInfo,
-  OnChainTransaction,
-  UserTransaction,
-} from "../../api_client/";
+import {Types} from "aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
 import {useGlobalState} from "../../GlobalState";
 import Box from "@mui/material/Box";
@@ -81,7 +77,7 @@ function RenderPagination({
 
 function RenderTransactionContent({
   data,
-}: UseQueryResult<Array<OnChainTransaction>>) {
+}: UseQueryResult<Array<Types.OnChainTransaction>>) {
   if (!data) {
     // TODO: error handling!
     return null;
@@ -120,13 +116,13 @@ export function TransactionsPreview() {
   );
 }
 
-function TransactionsPageInner({data}: UseQueryResult<LedgerInfo>) {
+function TransactionsPageInner({data}: UseQueryResult<Types.LedgerInfo>) {
   if (!data) {
     // TODO: handle errors
     return <>No ledger info</>;
   }
 
-  const maxVersion = parseInt(data.ledgerVersion);
+  const maxVersion = parseInt(data.ledger_version);
   if (!maxVersion) {
     // TODO: handle errors
     return <>No maxVersion</>;

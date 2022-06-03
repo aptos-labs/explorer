@@ -10,7 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
-import {OnChainTransaction} from "../api_client";
+import {Types} from "aptos";
 import {parseTimestamp, timestampDisplay} from "../pages/utils";
 import {
   renderGas,
@@ -22,7 +22,7 @@ import {
 import {assertNever} from "../utils";
 
 type TransactionCellProps = {
-  transaction: OnChainTransaction;
+  transaction: Types.OnChainTransaction;
 };
 
 function TransactionStatusCell({transaction}: TransactionCellProps) {
@@ -68,7 +68,7 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
 function TransactionGasCell({transaction}: TransactionCellProps) {
   return (
     <TableCell sx={{textAlign: "right"}}>
-      {renderGas(transaction.gasUsed)}
+      {renderGas(transaction.gas_used)}
     </TableCell>
   );
 }
@@ -97,7 +97,7 @@ const DEFAULT_COLUMNS: TransactionColumn[] = [
 ];
 
 type TransactionRowProps = {
-  transaction: OnChainTransaction;
+  transaction: Types.OnChainTransaction;
   columns: TransactionColumn[];
 };
 
@@ -182,7 +182,7 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
 }
 
 type Props = {
-  transactions: OnChainTransaction[];
+  transactions: Types.OnChainTransaction[];
   columns?: TransactionColumn[];
 };
 
