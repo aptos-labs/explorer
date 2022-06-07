@@ -109,6 +109,12 @@ function RenderWriteSetChangeSpecific(change: Types.WriteSetChange) {
         "Data:",
         renderDebug((change as Types.WriteResource).data),
       );
+    case "write_table_item":
+      const { handle, key, value } = (change as Types.WriteTableItem);
+      return renderRow(
+        "Data:",
+        renderDebug({ handle, key, value }),
+      );
     default:
       throw `UnknownWriteSet:${change.type}`;
   }
