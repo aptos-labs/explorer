@@ -1,11 +1,4 @@
 import React from "react";
-import Link from "@mui/material/Link";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import {CircularProgress} from "@mui/material";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
 import {useQuery, UseQueryResult} from "react-query";
 import Title from "../../components/Title";
 import Button from "@mui/material/Button";
@@ -17,9 +10,6 @@ import * as RRD from "react-router-dom";
 import {useSearchParams} from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import {Pagination, PaginationItem, Stack} from "@mui/material";
-import {ErrorBoundary} from "@sentry/react";
-import Typography from "@mui/material/Typography";
-import {useTheme} from "@mui/material";
 import {TransactionsTable} from "../../components/TransactionsTable";
 
 const PREVIEW_LIMIT = 10;

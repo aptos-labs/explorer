@@ -1,21 +1,36 @@
-import React from "react";
-import { FormControl, InputLabel, Select, SelectChangeEvent } from "@mui/material";
+import React, { useEffect } from "react";
+import { FormControl, Select, SelectChangeEvent } from "@mui/material";
 import { networks } from "../../constants";
 import { useGlobalState } from "../../GlobalState";
 import { useTheme } from "@mui/material/styles";
 import MenuItem from '@mui/material/MenuItem';
-import { grey, teal } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import Box from "@mui/material/Box";
+import { useSearchParams } from "react-router-dom";
 
 export default function NetworkSelect() {
   const [state, dispatch] = useGlobalState();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  function maybeSetNetwork(network_name: string | null) {
+    if (!network_name || state.network_name === network_name)
+      return;
+    const network_value = networks[network_name];
+    if (network_value) {
+      setSearchParams({ network: network_name });
+      dispatch({ network_name, network_value });
+    }
+  }
 
   const handleChange = (event: SelectChangeEvent) => {
-    const network_name: string = event.target.value as string;
-    const network_value = networks[network_name];
-    dispatch({ network_name, network_value });
+    maybeSetNetwork(event.target.value as string);
   };
+
+  useEffect(() => {
+    maybeSetNetwork(searchParams.get("network"));
+  });
+
 
   function DropdownIcon(props: SvgIconProps) {
     return (

@@ -1,7 +1,3 @@
-import fetch from "isomorphic-fetch";
-import {defaultNetwork} from "../constants";
-import {Err, Ok, Result} from "ts-results";
-
 export enum ResponseErrorType {
   NOT_FOUND = "Not found",
   UNHANDLED = "Unhandled",

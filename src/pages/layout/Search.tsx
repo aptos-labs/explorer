@@ -2,20 +2,17 @@ import React from "react";
 import {getTransaction} from "../../api";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import {styled, alpha} from "@mui/material/styles";
+import {styled} from "@mui/material/styles";
 import {useQuery, UseQueryResult} from "react-query";
 import {useGlobalState} from "../../GlobalState";
 import {Types} from "aptos";
-import {ResponseError, ResponseErrorType} from "../../api/client";
 import Link from "@mui/material/Link";
 import * as RRD from "react-router-dom";
 import {throttle} from "lodash";
-import {Autocomplete, Stack, TextField} from "@mui/material";
-import Divider from "@mui/material/Divider";
+import {Autocomplete} from "@mui/material";
 import {AccountLink} from "../Accounts/helpers";
 import Paper from "@mui/material/Paper";
 import {teal, grey} from "@mui/material/colors";
-import {useTheme} from "@mui/material";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
@@ -124,8 +121,6 @@ function AutocompleteSearch() {
 
   // hide autocomplete dropdown until text has been entered
   const [open, setOpen] = React.useState(false);
-
-  const theme = useTheme();
 
   return (
     <Autocomplete

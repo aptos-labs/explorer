@@ -4,7 +4,9 @@ export const devnetUrl =
 export const networks: Record<string, string> = {
   local: "http://localhost:8080",
   devnet: devnetUrl,
+  "nft-nyc": "https://fullnode.nft-nyc.aptoslabs.com/",
 };
+
 // Remove trailing slashes
 for (let key of Object.keys(networks)) {
   if (networks[key].endsWith("/")) {

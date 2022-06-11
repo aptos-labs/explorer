@@ -1,7 +1,6 @@
 import * as React from "react";
 import {useTheme} from "@mui/material";
 import * as RRD from "react-router-dom";
-import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -11,10 +10,8 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
 import {Types} from "aptos";
-import {parseTimestamp, timestampDisplay} from "../pages/utils";
 import {
   renderGas,
-  renderSection,
   renderSuccess,
   renderTimestamp,
   renderTransactionType,
@@ -200,10 +197,10 @@ export function TransactionsTable({
         </TableRow>
       </TableHead>
       <TableBody>
-        {transactions.map((transaction) => {
+        {transactions.map((transaction, i) => {
           return (
             <TransactionRow
-              key={transaction.hash}
+              key={`${i}-${transaction.hash}`}
               transaction={transaction}
               columns={columns}
             />
