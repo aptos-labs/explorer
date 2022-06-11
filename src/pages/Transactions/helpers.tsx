@@ -4,13 +4,10 @@ import {parseTimestamp, timestampDisplay} from "../utils";
 import NumberFormat from "react-number-format";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
-import {useLocation} from "react-router-dom";
 import Title from "../../components/Title";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-
-import {useTheme} from "@mui/material";
 
 export function renderTimestamp(timestamp?: string) {
   if (!timestamp)
@@ -83,7 +80,7 @@ export function renderRow(
   value: React.ReactNode,
   i?: any,
 ) {
-  const theme = useTheme();
+
   return (
     <Box>
       <Grid

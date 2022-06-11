@@ -10,7 +10,6 @@ import DiscordLogo from "../../assets/discord.svg";
 import TwitterLogo from "../../assets/twitter.svg";
 import MediumLogo from "../../assets/medium.svg";
 import LinkedInLogo from "../../assets/linkedin.svg";
-import AptosLogo from "../../assets/aptos_word.svg";
 import Box from "@mui/material/Box";
 
 import { ReactComponent as LogoIcon } from '../../assets/svg/aptos_logo_icon.svg';

@@ -1,6 +1,5 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import {TransactionsPreview} from "../Transactions/Transactions";
 import LedgerInfo from "../LedgerInfo/LedgerInfo";
 

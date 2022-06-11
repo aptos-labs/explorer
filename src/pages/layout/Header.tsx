@@ -11,7 +11,7 @@ import { ReactComponent as LogoFull } from '../../assets/svg/aptos_logo_full.svg
 import { ReactComponent as IconLight } from '../../assets/svg/icon_light.svg';
 import { ReactComponent as IconDark } from '../../assets/svg/icon_dark.svg';
 import Button from '@mui/material/Button';
-import { grey, teal } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 
 export default function Header() {
 

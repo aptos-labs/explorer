@@ -1,1 +1,1 @@
-export { useColorMode, ProvideColorMode } from './ProvideColorMode'
+export {useColorMode, ProvideColorMode} from "./ProvideColorMode";

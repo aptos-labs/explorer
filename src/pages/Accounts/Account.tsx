@@ -17,15 +17,6 @@ import Divider from "@mui/material/Divider";
 import {renderDebug} from "../utils";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import Typography from "@mui/material/Typography";
-import TableBody from "@mui/material/TableBody";
-import {ErrorBoundary} from "@sentry/react";
-import Link from "@mui/material/Link";
-import * as RRD from "react-router-dom";
 import {TransactionsTable} from "../../components/TransactionsTable";
 
 function RenderHeader(children: React.ReactNode, title?: string) {
@@ -234,8 +225,6 @@ function RenderAccountTransactions({
       title,
     );
   }
-  const theme = useTheme();
-  const tableCellBackgroundColor = theme.palette.background.paper;
 
   const content =
     data.length === 0 ? (
