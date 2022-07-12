@@ -2,7 +2,7 @@ import React from "react";
 import {networks, defaultNetworkName} from "./constants";
 
 const selected_network =
-  localStorage.getItem("selected_network") || defaultNetworkName;
+  (localStorage.getItem("selected_network") || defaultNetworkName).toLowerCase();
 
 export type GlobalState = {
   network_name: string;
@@ -16,7 +16,7 @@ const defaultGlobalState: GlobalState = {
 
 function reducer(state: GlobalState, newValue: GlobalState): GlobalState {
   if (newValue.network_name)
-    localStorage.setItem("selected_network", newValue.network_name);
+    localStorage.setItem("selected_network", newValue.network_name.toLowerCase());
   return {...state, ...newValue};
 }
 
