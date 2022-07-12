@@ -4,7 +4,7 @@ export const devnetUrl =
 export const networks: Record<string, string> = {
   local: "http://localhost:8080",
   devnet: devnetUrl,
-  "AIT2": "https://ait2.aptosdev.com/",
+  ait2: "https://ait2.aptosdev.com/",
 };
 
 // Remove trailing slashes
