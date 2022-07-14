@@ -6,6 +6,7 @@ import ExplorerLayout from "./pages/layout";
 import TransactionPage from "./pages/Transactions/Transaction";
 import AccountPage from "./pages/Accounts/Account";
 import {TransactionsPage} from "./pages/Transactions/Transactions";
+import {GovernancePage} from "./pages/Governance/Proposals";
 
 export default function ExplorerRoutes() {
   return (
@@ -13,6 +14,7 @@ export default function ExplorerRoutes() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/transactions" element={<TransactionsPage />} />
+        <Route path="/governance" element={<GovernancePage />} />
         <Route path="/txn">
           <Route path=":txnHashOrVersion" element={<TransactionPage />} />
         </Route>
