@@ -7,33 +7,18 @@ import MenuItem from '@mui/material/MenuItem';
 import { grey } from '@mui/material/colors';
 import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 import Box from "@mui/material/Box";
-import { createSearchParams, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export default function NetworkSelect() {
   const [state, dispatch] = useGlobalState();
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const location = useLocation();
 
   function maybeSetNetwork(network_name: string | null) {
     if (!network_name || state.network_name === network_name)
       return;
     const network_value = networks[network_name];
     if (network_value) {
-
-      if(network_name === 'governance'){
-        // redirect to /governance
-        navigate('/proposals');
-      }else{
-        const path = location.pathname === '/proposals' ? '/' :  location.pathname
-        setSearchParams({ network: network_name })
-        navigate({
-          pathname: path,
-          search: `?${createSearchParams({
-            network: network_name
-          })}`
-      });
-      }
+      setSearchParams({ network: network_name });
       dispatch({ network_name, network_value });
     }
   }
