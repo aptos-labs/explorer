@@ -35,7 +35,7 @@ export default function ExplorerLayout({ children }: LayoutProps) {
             <CssBaseline />
             <Header />
             {/* dont show the search box if on the governance page */}
-            {location.pathname !== '/governance' && <HeaderSearch />}
+            {location.pathname !== '/proposals' && <HeaderSearch />}
             <Grid container>
               {children}
             </Grid>

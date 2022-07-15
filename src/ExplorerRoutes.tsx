@@ -14,7 +14,7 @@ export default function ExplorerRoutes() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/transactions" element={<TransactionsPage />} />
-        <Route path="/governance" element={<GovernancePage />} />
+        <Route path="/proposals" element={<GovernancePage />} />
         <Route path="/txn">
           <Route path=":txnHashOrVersion" element={<TransactionPage />} />
         </Route>

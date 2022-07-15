@@ -23,9 +23,9 @@ export default function NetworkSelect() {
 
       if(network_name === 'governance'){
         // redirect to /governance
-        navigate('/governance');
+        navigate('/proposals');
       }else{
-        const path = location.pathname === '/governance' ? '/' :  location.pathname
+        const path = location.pathname === '/proposals' ? '/' :  location.pathname
         navigate({
           pathname: path,
           search: `?${createSearchParams({
