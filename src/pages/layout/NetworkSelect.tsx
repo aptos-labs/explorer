@@ -26,6 +26,7 @@ export default function NetworkSelect() {
         navigate('/proposals');
       }else{
         const path = location.pathname === '/proposals' ? '/' :  location.pathname
+        setSearchParams({ network: network_name })
         navigate({
           pathname: path,
           search: `?${createSearchParams({
