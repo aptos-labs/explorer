@@ -5,7 +5,7 @@ export const networks: Record<string, string> = {
   local: "http://localhost:8080",
   devnet: devnetUrl,
   ait2: "https://ait2.aptosdev.com/",
-  governance: "https://ait2.aptosdev.com/", // TODO - use the proposals url
+  //governance: "https://ait2.aptosdev.com/", // TODO - use the proposals url
 };
 
 // Remove trailing slashes
