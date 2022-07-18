@@ -3,13 +3,25 @@ export const getAptosWallet = () => {
 }
 
 export const isWalletConnected = async () => {
-  return window.aptos && await window.aptos.isConnected();
+  try {
+    return window.aptos && await window.aptos.isConnected();
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export const connectToWallet = async () => {
-  return await window.aptos.connect();
+  try {
+    return await window.aptos.connect();
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export const getAccountAddress = async () => {
-  return await window.aptos.account();
+  try {
+    return await window.aptos.account();
+  } catch (error) {
+    console.log(error)
+  }
 }
