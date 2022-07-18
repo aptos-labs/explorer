@@ -1,9 +1,5 @@
 export const getAptosWallet = () => {
-  if ('aptos' in window) {
-    return window.aptos;
-  } else {
-    return false;
-  }
+  return 'aptos' in window;
 }
 
 export const isWalletConnected = async () => {
