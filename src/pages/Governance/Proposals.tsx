@@ -1,13 +1,16 @@
+import { Grid } from "@mui/material";
 import React from "react";
-import { useQuery } from "react-query";
 import { useGlobalState } from "../../GlobalState";
+import { Header } from "./Header";
 
 export function GovernancePage() {
-    const [state, _] = useGlobalState();
+  const [state, _] = useGlobalState();
 
-    // TODO - FETCH ALL PROPOSALS
+  // TODO - FETCH ALL PROPOSALS
 
-    return (
-        <div>Proposals</div>
-    );
+  return (
+    <Grid item xs={12} sx={{ mt: 12 }}>
+      <Header />
+    </Grid>
+  );
 }
