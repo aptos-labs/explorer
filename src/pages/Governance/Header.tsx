@@ -1,6 +1,6 @@
-import { Box, Grid, Link, Tooltip, Typography } from "@mui/material"
+import * as RRD from "react-router-dom";
+import { Box, Button, Grid, Link, Tooltip, Typography } from "@mui/material"
 import React, { useEffect } from "react"
-import PrimaryButton from "../../components/PrimaryButton"
 import { getAptosWallet, isWalletConnected, connectToWallet, getAccountAddress } from '../../api/wallet'
 
 export const Header = () => {
@@ -27,10 +27,15 @@ export const Header = () => {
   return (
     <Box component="div" sx={{ p: 2, border: '1px solid gray', flexGrow: 1 }}>
       <Grid container sx={{ p: 2 }} alignItems="center" spacing={4}>
-        <Grid item xs={12} sm={12} md={8}>
-          <Typography variant="h5" sx={{ mb: 2 }}>
-            Aptos Governance
-          </Typography>
+        <Grid item xs={12} sm={12} md={8} sx={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+          {walletIsConnected ?
+            <Typography variant="h5" noWrap sx={{ mb: 2 }}>Hello <Link
+              component={RRD.Link}
+              to={`/account/${accountAddress}`}
+              color="primary"
+            >{accountAddress}</Link>
+            </Typography> :
+            <Typography variant="h5" sx={{ mb: 2 }}>Aptos Governance</Typography>}
           <Typography>
             Some instructions Some instructions Some instructions Some instructions Some instructions
           </Typography>
@@ -39,12 +44,11 @@ export const Header = () => {
           {!wallet &&
             <Tooltip title={<Link href="https://aptos.dev/guides/building-wallet-extension" target="_blank">Please install the Aptos wallet</Link>}>
               <span>
-                <PrimaryButton disabled={true}>Connect Wallet</PrimaryButton>
+                <Button variant="cta" disabled>Connect Wallet</Button>
               </span>
             </Tooltip>
           }
-          {wallet && !walletIsConnected && <PrimaryButton onClick={onConnectWalletClick}>Connect Wallet</PrimaryButton>}
-          {walletIsConnected && <PrimaryButton disabled sx={{ overflow: "hidden", textOverflow: "ellipsis", width: '13rem' }}><Typography noWrap>{accountAddress}</Typography></PrimaryButton>}
+          {wallet && !walletIsConnected && <Button variant="cta" onClick={onConnectWalletClick}>Connect Wallet</Button>}
         </Grid>
       </Grid>
     </Box>
