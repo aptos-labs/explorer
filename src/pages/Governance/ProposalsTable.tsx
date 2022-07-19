@@ -7,6 +7,7 @@ import {
     renderTimestamp,
 } from "../../pages/Transactions/helpers";
 import { assertNever } from "../../utils";
+import { proposalsData } from "./dummyData";
 
 const TITLE_WIDTH = 400;
 const HASH_WIDTH = 300;
@@ -14,62 +15,6 @@ const HASH_WIDTH = 300;
 type ProposalCellProps = {
     proposal: any;
 };
-
-const TITLE_PLACEHOLDER_1 = "This Is A Title -- Lorem ipsum dolor sit amet";
-const TITLE_PLACEHOLDER_2 = "This Is A Title";
-const DESCRIPTION_PLACEHOLDER = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-
-// TODO: create type Proposal
-const DUMMY_DATA = [
-    {
-        "id": "0x8c335ddb559b8197efef37e1ea0435184fe4ee8ab622177a417294768215a383",
-        "title": TITLE_PLACEHOLDER_1,
-        "description": DESCRIPTION_PLACEHOLDER,
-        "proposer": "0x46161f670671f424cdc7e5c395ce29f78ad36c028346cb5f32a26462226b6c45",
-        "status": "Voting In Progress",
-        "timestamp": "1652425697444570"
-    },
-    {
-        "id": "0x8c335ddb559b8197efef37e1ea0435184fe4ee8ab622177a417294768215a384",
-        "title": TITLE_PLACEHOLDER_2,
-        "description": DESCRIPTION_PLACEHOLDER,
-        "proposer": "0x46161f670671f424cdc7e5c395ce29f78ad36c028346cb5f32a26462226b6c45",
-        "status": "Voting In Progress",
-        "timestamp": "1657925697446570"
-    },
-    {
-        "id": "0x8c335ddb559b8197efef37e1ea0435184fe4ee8ab622177a417294768215a385",
-        "title": TITLE_PLACEHOLDER_1,
-        "description": DESCRIPTION_PLACEHOLDER,
-        "proposer": "0x46161f670671f424cdc7e5c395ce29f78ad36c028346cb5f32a26462226b6c45",
-        "status": "Voting Complete",
-        "timestamp": "1652925697244570"
-    },
-    {
-        "id": "0x8c335ddb559b8197efef37e1ea0435184fe4ee8ab622177a417294768215a386",
-        "title": TITLE_PLACEHOLDER_2,
-        "description": DESCRIPTION_PLACEHOLDER,
-        "proposer": "0x46161f670671f424cdc7e5c395ce29f78ad36c028346cb5f32a26462226b6c45",
-        "status": "Executed",
-        "timestamp": "1657325637444570"
-    },
-    {
-        "id": "0x8c335ddb559b8197efef37e1ea0435184fe4ee8ab622177a417294768215a387",
-        "title": TITLE_PLACEHOLDER_1,
-        "description": DESCRIPTION_PLACEHOLDER,
-        "proposer": "0x46161f670671f424cdc7e5c395ce29f78ad36c028346cb5f32a26462226b6c45",
-        "status": "Executed",
-        "timestamp": "1652925697244570"
-    },
-    {
-        "id": "0x8c335ddb559b8197efef37e1ea0435184fe4ee8ab622177a417294768215a388",
-        "title": TITLE_PLACEHOLDER_1,
-        "description": DESCRIPTION_PLACEHOLDER,
-        "proposer": "0x46161f670671f424cdc7e5c395ce29f78ad36c028346cb5f32a26462226b6c45",
-        "status": "Executed",
-        "timestamp": "1657325637444570"
-    },
-];
 
 // TODO: add type
 function ProposalsPage({
@@ -97,7 +42,7 @@ function TitleCell({ proposal }: ProposalCellProps) {
         <TableCell sx={{ textAlign: "left" }}>
             <Link
                 component={RRD.Link}
-                to={`/txn/${proposal.id}`}
+                to={`/txn/${proposal.proposal_id}`}
                 color="primary"
             >
                 <Box
@@ -108,7 +53,7 @@ function TitleCell({ proposal }: ProposalCellProps) {
                         textOverflow: "ellipsis",
                     }}
                 >
-                    {proposal.title}
+                    {proposal.execution_content.title}
                 </Box>
             </Link>
         </TableCell >
@@ -118,7 +63,7 @@ function TitleCell({ proposal }: ProposalCellProps) {
 function StatusCell({ proposal }: ProposalCellProps) {
     return (
         <TableCell sx={{ textAlign: "left" }}>
-            {proposal.status}
+            {proposal.proposal_state}
         </TableCell>
     );
 }
@@ -143,8 +88,8 @@ function ProposerCell({ proposal }: ProposalCellProps) {
 // TODO: make renderTimestamp a general helper and move it out of Transactions folder
 function TimestampCell({ proposal }: ProposalCellProps) {
     const timestamp =
-        "timestamp" in proposal ? (
-            renderTimestamp(proposal.timestamp)
+        "creation_time_secs" in proposal ? (
+            renderTimestamp(proposal.creation_time_secs)
         ) : (
             <Typography variant="subtitle2" align="center">
                 -
@@ -248,7 +193,7 @@ type Props = {
 
 // TODO: generalize Table component for transactions and proposals
 export function ProposalsTable({
-    proposals = DUMMY_DATA,
+    proposals = proposalsData,
     columns = DEFAULT_COLUMNS,
 }: Props) {
     if (!proposals) {
@@ -268,7 +213,7 @@ export function ProposalsTable({
             {proposals.map((proposal: any, i: any) => {
                 return (
                     <ProposalRow
-                        key={`${i}-${proposal.id}`}
+                        key={`${i}-${proposal.proposal_id}`}
                         proposal={proposal}
                         columns={columns}
                     />
