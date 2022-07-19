@@ -1,14 +1,15 @@
-import {PaletteMode} from "@mui/material";
-import {ThemeOptions} from "@mui/material/styles";
-import {grey, teal} from "@mui/material/colors";
-import shadows, {Shadows} from "@mui/material/styles/shadows";
+import { PaletteMode } from "@mui/material";
+import { ThemeOptions } from "@mui/material/styles";
+import { grey, teal } from "@mui/material/colors";
+import shadows, { Shadows } from "@mui/material/styles/shadows";
 import "@mui/material/styles/createPalette";
-import {alpha} from "@mui/material";
+import { alpha } from "@mui/material";
 
 // Button variant - CTA stacked
 declare module "@mui/material/Button" {
   interface ButtonPropsVariantOverrides {
     cta: true;
+    primary: true;
   }
 }
 
@@ -78,47 +79,47 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     mode,
     ...(mode === "light"
       ? {
-          // light mode palette values
-          primary: {
-            main: teal["A700"],
-          },
+        // light mode palette values
+        primary: {
+          main: teal["A700"],
+        },
 
-          typography: {
-            allVariants: {
-              color: grey[900],
-            },
+        typography: {
+          allVariants: {
+            color: grey[900],
           },
+        },
 
-          success: {
-            main: teal["A700"],
-          },
+        success: {
+          main: teal["A700"],
+        },
 
-          background: {
-            default: "#FFFFFF",
-            paper: grey[100],
-          },
-        }
+        background: {
+          default: "#FFFFFF",
+          paper: grey[100],
+        },
+      }
       : {
-          // dark mode palette values
-          primary: {
-            main: primaryColor,
-          },
+        // dark mode palette values
+        primary: {
+          main: primaryColor,
+        },
 
-          typography: {
-            allVariants: {
-              color: grey[200],
-            },
+        typography: {
+          allVariants: {
+            color: grey[200],
           },
+        },
 
-          success: {
-            main: primaryColor,
-          },
+        success: {
+          main: primaryColor,
+        },
 
-          background: {
-            default: "#151515",
-            paper: "#222222",
-          },
-        }),
+        background: {
+          default: "#151515",
+          paper: "#222222",
+        },
+      }),
   },
 
   components: {
@@ -217,14 +218,14 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     MuiDivider: {
       variants: [
         {
-          props: {variant: "dotted"},
+          props: { variant: "dotted" },
           style: {
             borderStyle: "dotted",
             borderWidth: "0 0 2px",
           },
         },
         {
-          props: {variant: "bump"},
+          props: { variant: "bump" },
           style: {
             transform: "translateY(-20px)",
             border: `0`,
@@ -264,7 +265,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           },
         },
         {
-          props: {variant: "bumpDark"},
+          props: { variant: "bumpDark" },
           style: {
             transform: "translateY(-20px)",
             border: `0`,
@@ -304,7 +305,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           },
         },
         {
-          props: {variant: "bumpRight"},
+          props: { variant: "bumpRight" },
           style: {
             marginTop: "-20px",
             border: `0`,
@@ -343,7 +344,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           },
         },
         {
-          props: {variant: "bumpRightDark"},
+          props: { variant: "bumpRightDark" },
           style: {
             transform: "translateY(-20px)",
             border: `0`,
@@ -446,9 +447,17 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
         disableFocusRipple: true,
         disableRipple: true,
       },
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            opacity: 0.5,
+            color: "black"
+          }
+        }
+      },
       variants: [
         {
-          props: {variant: "cta"},
+          props: { variant: "cta" },
           style: {
             fontSize: "1.1rem",
             padding: "12px 34px",
@@ -484,9 +493,8 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
                 primaryColor,
                 0.35,
               )}`,
-              borderRadius: `${buttonRadiusOffset * 2}px 12px ${
-                buttonRadiusOffset * 2
-              }px 12px`,
+              borderRadius: `${buttonRadiusOffset * 2}px 12px ${buttonRadiusOffset * 2
+                }px 12px`,
               transform: `translateX(-${buttonRadiusOffset}px) translateY(0px)`,
               width: `calc(100% + ${buttonRadiusOffset}px)`,
               height: `calc(100% + ${buttonRadiusOffset}px)`,
@@ -498,9 +506,8 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
                 primaryColor,
                 0.35,
               )}`,
-              borderRadius: `${buttonRadiusOffset * 2}px 12px ${
-                buttonRadiusOffset * 2
-              }px 12px`,
+              borderRadius: `${buttonRadiusOffset * 2}px 12px ${buttonRadiusOffset * 2
+                }px 12px`,
               transform: `translateX(0px) translateY(-${buttonRadiusOffset}px)`,
               width: `calc(100% + ${buttonRadiusOffset}px)`,
               height: `calc(100% + ${buttonRadiusOffset}px)`,
@@ -526,6 +533,19 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
             },
           },
         },
+        {
+          props: { variant: "primary" },
+          style: {
+            backgroundColor: alpha(primaryColor, 1),
+            color: "black",
+            fontSize: "1.1rem",
+            padding: "12px 34px",
+            "&:hover": {
+              backgroundColor: alpha(primaryColor, 1),
+              opacity: "0.5",
+            }
+          }
+        }
       ],
     },
   },
