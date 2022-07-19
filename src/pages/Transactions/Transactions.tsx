@@ -44,7 +44,7 @@ function RenderPagination({
       boundaryCount={0}
       shape="rounded"
       renderItem={(item) => {
-        const delta = (currentPage - item.page) * limit;
+        const delta = (currentPage - (item.page ? item.page : 0)) * limit;
         const newStart = Math.max(
           0,
           Math.min(maxStart(maxVersion, limit), start + delta),
