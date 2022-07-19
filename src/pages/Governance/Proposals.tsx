@@ -1,6 +1,7 @@
 import React from "react";
-import { useQuery } from "react-query";
 import { useGlobalState } from "../../GlobalState";
+import { ProposalsTable } from "./ProposalsTable";
+import { Grid } from "@mui/material";
 
 export function GovernancePage() {
     const [state, _] = useGlobalState();
@@ -8,6 +9,10 @@ export function GovernancePage() {
     // TODO - FETCH ALL PROPOSALS
 
     return (
-        <div>Proposals</div>
+        <Grid container spacing={3}>
+            <Grid item xs={12} sx={{ mt: 12 }}>
+                <ProposalsTable />
+            </Grid>
+        </Grid>
     );
 }
