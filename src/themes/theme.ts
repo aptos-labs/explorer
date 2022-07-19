@@ -9,6 +9,7 @@ import { alpha } from "@mui/material";
 declare module "@mui/material/Button" {
   interface ButtonPropsVariantOverrides {
     cta: true;
+    primary: true;
   }
 }
 
@@ -532,6 +533,19 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
             },
           },
         },
+        {
+          props: { variant: "primary" },
+          style: {
+            backgroundColor: alpha(primaryColor, 1),
+            color: "black",
+            fontSize: "1.1rem",
+            padding: "12px 34px",
+            "&:hover": {
+              backgroundColor: alpha(primaryColor, 1),
+              opacity: "0.5",
+            }
+          }
+        }
       ],
     },
   },

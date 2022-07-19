@@ -14,11 +14,11 @@ export const WalletButton = ({ wallet, walletIsConnected, onConnectWalletClick }
       {!wallet &&
         <Tooltip title={<Link href="https://aptos.dev/guides/building-wallet-extension" target="_blank">Please install the Aptos wallet</Link>}>
           <span>
-            <Button variant="cta" disabled>Connect Wallet</Button>
+            <Button variant="primary" disabled>Connect Wallet</Button>
           </span>
         </Tooltip>
       }
-      {wallet && !walletIsConnected && <Button variant="cta" onClick={onConnectWalletClick}>Connect Wallet</Button>}
+      {wallet && !walletIsConnected && <Button variant="primary" onClick={onConnectWalletClick}>Connect Wallet</Button>}
     </>
   )
 }
