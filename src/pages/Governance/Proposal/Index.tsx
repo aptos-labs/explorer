@@ -1,8 +1,8 @@
 import { Grid } from "@mui/material";
 import React from "react";
-import { ProposalHeader } from "./ProposalHeader";
-import { ProposalCard } from "./ProposalCard";
-import { ProposalContent } from "./ProposalContent";
+import { ProposalHeader } from "./Header";
+import { ProposalCard } from "./Card";
+import { ProposalContent } from "./Content";
 
 export const ProposalPage = () => {
   return (
