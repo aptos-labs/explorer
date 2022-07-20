@@ -1,9 +1,9 @@
 import React, { useEffect } from "react"
 import { Box, Grid } from "@mui/material"
 
-import { getAptosWallet, isWalletConnected, connectToWallet, getAccountAddress } from '../../api/wallet'
+import { getAptosWallet, isWalletConnected, connectToWallet, getAccountAddress } from '../../../api/wallet'
 import { HeaderText } from "./HeaderText";
-import { WalletButton } from "../../components/WalletButton";
+import { WalletButton } from "../../../components/WalletButton";
 
 export const Header = () => {
 

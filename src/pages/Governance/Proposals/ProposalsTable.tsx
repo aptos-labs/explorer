@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as RRD from "react-router-dom";
 import { useTheme } from "@mui/material";
-import Title from "../../components/Title";
+import Title from "../../../components/Title";
 import { Link, Stack, Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import {
     renderTimestamp,
-} from "../../pages/Transactions/helpers";
-import { assertNever } from "../../utils";
-import { proposalsData } from "./dummyData";
+} from "../../../pages/Transactions/helpers";
+import { assertNever } from "../../../utils";
+import { proposalsData } from "../dummyData";
 
 const TITLE_WIDTH = 400;
 const HASH_WIDTH = 300;
