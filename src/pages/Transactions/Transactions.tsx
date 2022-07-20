@@ -11,6 +11,7 @@ import {useSearchParams} from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import {Pagination, PaginationItem, Stack} from "@mui/material";
 import {TransactionsTable} from "../../components/TransactionsTable";
+import HeaderSearch from "../layout/Search";
 
 const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;
@@ -169,6 +170,9 @@ export function TransactionsPage() {
 
   return (
     <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <HeaderSearch />
+      </Grid>
       <Grid item xs={12}>
         <TransactionsPageInner {...result} />
       </Grid>

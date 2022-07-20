@@ -19,6 +19,7 @@ import {
   renderRow,
 } from "./helpers";
 import {AccountLink} from "../Accounts/helpers";
+import HeaderSearch from "../layout/Search";
 
 function renderBlockMetadataTransaction(
   transaction: Types.BlockMetadataTransaction,
@@ -518,6 +519,9 @@ export default function Transaction() {
 
   return (
     <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <HeaderSearch />
+      </Grid>
       <Grid item xs={12}>
         <RenderTransaction {...result} txnHashOrVersion={txnHashOrVersion} />
       </Grid>

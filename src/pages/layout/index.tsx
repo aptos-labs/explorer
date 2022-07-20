@@ -34,9 +34,6 @@ export default function ExplorerLayout({ children }: LayoutProps) {
           <Container maxWidth="xl" sx={{ mt: 4, mb: 4, flexGrow: 4 }}>
             <CssBaseline />
             <Header />
-            {/* dont show the search box if on the governance page, 
-            TODO - include the HeaderSearch only on transaction pages */}
-            {location.pathname !== '/proposals' && <HeaderSearch />}
             <Grid container>
               {children}
             </Grid>
