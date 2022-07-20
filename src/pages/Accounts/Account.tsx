@@ -18,6 +18,7 @@ import {renderDebug} from "../utils";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
 import {TransactionsTable} from "../../components/TransactionsTable";
+import HeaderSearch from "../layout/Search";
 
 function RenderHeader(children: React.ReactNode, title?: string) {
   let {address} = useParams();
@@ -279,6 +280,9 @@ export default function AccountPage() {
 
   return (
     <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <HeaderSearch />
+      </Grid>
       <Grid item xs={12}>
         <RenderAccount {...accountResult} />
         <RenderAccountResources {...accountResourcesResult} />
