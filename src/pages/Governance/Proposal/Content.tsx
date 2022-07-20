@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, Divider } from "@mui/material";
+import { Stack, Divider, Link } from "@mui/material";
 import {
     renderRow,
     renderSection,
@@ -44,7 +44,9 @@ export function ProposalContent({
                 {
                     renderRow(
                         "Code Location:",
-                        proposalData.execution_content.code_location,
+                        <Link color="primary" href={proposalData.execution_content.code_location} target="blank">
+                            {proposalData.execution_content.code_location}
+                        </Link>
                     )
                 }
             </Stack >

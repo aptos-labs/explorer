@@ -9,6 +9,8 @@ const TITLE_PLACEHOLDER_4 = "Hi! This Is A Title";
 const DESCRIPTION_PLACEHOLDER =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
+const CODE_LOCATION_PLACEHOLDER = "https://aptoslabs.com/";
+
 enum ProposalState {
   PROPOSAL_STATE_SUCCEEDED = "Succeeded",
   PROPOSAL_STATE_FAILED = "Failed",
@@ -24,7 +26,7 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1659925697446570",
     execution_content: {
-      code_location: "www.code.com/locations/12345",
+      code_location: CODE_LOCATION_PLACEHOLDER,
       title: TITLE_PLACEHOLDER_1,
       description: DESCRIPTION_PLACEHOLDER,
     },
@@ -45,7 +47,7 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1659965697446570",
     execution_content: {
-      code_location: "www.code.com/locations/12345",
+      code_location: CODE_LOCATION_PLACEHOLDER,
       title: TITLE_PLACEHOLDER_2,
       description: DESCRIPTION_PLACEHOLDER,
     },
@@ -66,7 +68,7 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1657995697446570",
     execution_content: {
-      code_location: "www.code.com/locations/12345",
+      code_location: CODE_LOCATION_PLACEHOLDER,
       title: TITLE_PLACEHOLDER_3,
       description: DESCRIPTION_PLACEHOLDER,
     },
@@ -87,7 +89,7 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1657935698446570",
     execution_content: {
-      code_location: "www.code.com/locations/12345",
+      code_location: CODE_LOCATION_PLACEHOLDER,
       title: TITLE_PLACEHOLDER_4,
       description: DESCRIPTION_PLACEHOLDER,
     },
