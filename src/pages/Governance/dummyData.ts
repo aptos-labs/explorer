@@ -1,3 +1,5 @@
+import {ProposalType} from "./Types";
+
 const TITLE_PLACEHOLDER_1 = "Title -- Lorem ipsum dolor sit amet";
 const TITLE_PLACEHOLDER_2 = "This Is A Title";
 const TITLE_PLACEHOLDER_3 =
@@ -15,7 +17,7 @@ enum ProposalState {
 
 const EXPIRATION_SECS = "1660950116000"; // Aug 19 2022
 
-export const proposalsData = [
+export const proposalsData: ProposalType[] = [
   {
     proposal_id: "615737775483094",
     proposer:
