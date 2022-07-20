@@ -2,7 +2,7 @@ import React from "react";
 import { Grid } from "@mui/material";
 
 import { Header } from "./Header";
-import { ProposalsTable } from "./ProposalsTable";
+import { ProposalsTable } from "./Table";
 
 export function GovernancePage() {
 
