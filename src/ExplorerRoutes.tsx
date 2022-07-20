@@ -7,7 +7,7 @@ import TransactionPage from "./pages/Transactions/Transaction";
 import AccountPage from "./pages/Accounts/Account";
 import { TransactionsPage } from "./pages/Transactions/Transactions";
 import { GovernancePage } from "./pages/Governance/Proposals";
-import { ProposalPage } from "./pages/Governance/Proposal";
+import { ProposalPage } from "./pages/Governance/Proposal/Proposal";
 
 export default function ExplorerRoutes() {
   return (
