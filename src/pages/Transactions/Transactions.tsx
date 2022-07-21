@@ -12,6 +12,8 @@ import Grid from "@mui/material/Grid";
 import {Pagination, PaginationItem, Stack} from "@mui/material";
 import {TransactionsTable} from "../../components/TransactionsTable";
 import HeaderSearch from "../layout/Search";
+import Typography from '@mui/material/Typography';
+import DividerHero from '../../components/Divider';
 
 const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;
@@ -86,8 +88,9 @@ export function TransactionsPreview() {
 
   return (
     <>
+
       <Stack spacing={2}>
-        <Title>Latest Transactions</Title>
+
         <Box sx={{width: "auto", overflowX: "auto"}}>
           <RenderTransactionContent {...result} />
         </Box>
@@ -96,10 +99,10 @@ export function TransactionsPreview() {
           <Button
             component={RRD.Link}
             to="/transactions"
-            variant="cta"
-            sx={{marginLeft: "auto", mt: 6}}
+            variant="primary"
+            sx={{ margin: "0 auto", mt: 6 }}
           >
-            See more Transactions
+            View all Transactions
           </Button>
         </Box>
       </Stack>
@@ -138,7 +141,9 @@ function TransactionsPageInner({data}: UseQueryResult<Types.LedgerInfo>) {
   return (
     <>
       <Stack spacing={2}>
-        <Title>All Transactions</Title>
+        <Typography variant="h4" component="h2">
+          All Transactions
+        </Typography>
         <Box sx={{width: "auto", overflowX: "auto"}}>
           <RenderTransactionContent {...result} />
         </Box>
@@ -171,9 +176,14 @@ export function TransactionsPage() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
+        <Typography color="primary" variant="subtitle2" component="span" sx={{ mb: 2 }}>
+          Network
+        </Typography>
+        <Typography variant="h1" component="h1" gutterBottom>
+          Aptos Explorer
+        </Typography>
+        <DividerHero />
         <HeaderSearch />
-      </Grid>
-      <Grid item xs={12}>
         <TransactionsPageInner {...result} />
       </Grid>
     </Grid>

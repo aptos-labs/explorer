@@ -59,29 +59,27 @@ export default function NetworkSelect() {
           autoWidth
           IconComponent={DropdownIcon}
           sx={{
-            fontWeight: "400",
-            minWidth: 110,
+            borderRadius: 1,
+            fontWeight: '400',
+            fontSize: '1rem',
+            minWidth: 80,
             ml: 1,
-            color: "#ffffff",
-            alignItems: "center",
+            color: 'inherit',
+            alignItems: 'center',
             "& .MuiSvgIcon-root": {
               color: "inherit",
             },
             "&& fieldset": {
-              border: `1px solid ${
-                theme.palette.mode === "dark" ? grey[500] : grey[100]
-              }`,
+              border: `1px solid ${theme.palette.lineShade.main}`
             },
             "&:hover": {
-              backgroundColor: grey[900],
+              backgroundColor: `${theme.palette.mode === 'dark' ? grey[900] : grey[100]}`,
               "&& fieldset": {
-                border: `1px solid ${
-                  theme.palette.mode === "dark" ? grey[100] : grey[100]
-                }`,
-              },
+                border: `1px solid ${theme.palette.mode === 'dark' ? grey[600] : grey[500]}`
+              }
             },
             "&.Mui-focused": {
-              backgroundColor: grey[900],
+              backgroundColor: `${theme.palette.mode === 'dark' ? grey[900] : grey[100]}`,
             },
           }}
           // dropdown container overrides
@@ -90,8 +88,8 @@ export default function NetworkSelect() {
             PaperProps: {
               sx: {
                 minWidth: 240,
-                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
-                marginTop: "8px",
+                boxShadow: '0 25px 50px -12px rgba(23,23,23,0.25)',
+                marginTop: '8px',
                 "& .MuiMenuItem-root.Mui-selected": {
                   backgroundColor: `${
                     theme.palette.mode === "dark" ? grey[800] : grey[200]
@@ -99,8 +97,9 @@ export default function NetworkSelect() {
                   pointerEvents: "none",
                 },
                 "& .MuiMenuItem-root:hover": {
-                  backgroundColor: `${theme.palette.primary.main}`,
-                  color: grey[900],
+                  // backgroundColor: `${theme.palette.neutralShade}`,
+                  backgroundColor: "transparent",
+                  color: `${theme.palette.primary.main}`,
                 },
               },
             },

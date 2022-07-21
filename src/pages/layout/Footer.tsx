@@ -3,55 +3,38 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import {styled} from "@mui/material/styles";
 
-import GitLogo from "../../assets/git.svg";
-import DiscordLogo from "../../assets/discord.svg";
-import TwitterLogo from "../../assets/twitter.svg";
-import MediumLogo from "../../assets/medium.svg";
-import LinkedInLogo from "../../assets/linkedin.svg";
+import { ReactComponent as GithubLogo } from "../../assets/github.svg";
+import { ReactComponent as DiscordLogo } from "../../assets/discord.svg";
+import { ReactComponent as TwitterLogo } from "../../assets/twitter.svg";
+import { ReactComponent as MediumLogo } from "../../assets/medium.svg";
+import { ReactComponent as LinkedInLogo } from "../../assets/linkedin.svg";
 import Box from "@mui/material/Box";
+import { useTheme } from '@mui/material';
+import { grey } from "@mui/material/colors";
+import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
 
-import {ReactComponent as LogoIcon} from "../../assets/svg/aptos_logo_icon.svg";
-
-const StyledFooter = styled(Box)(({theme}) => ({
-  maxWidth: "100% !important",
-  backgroundColor: "black",
-  marginTop: "3em",
-  color: "white !important",
-}));
+import { ReactComponent as LogoFull } from '../../assets/svg/aptos_logo_full.svg';
 
 const socialLinks = [
-  {title: "Git", url: "https://github.com/aptos-labs", icon: GitLogo},
-  {title: "Discord", url: "https://discord.gg/zTDYBEud7U", icon: DiscordLogo},
-  {title: "Twitter", url: "https://twitter.com/aptoslabs/", icon: TwitterLogo},
-  {title: "Medium", url: "https://aptoslabs.medium.com/", icon: MediumLogo},
-  {
-    title: "LinkedIn",
-    url: "https://www.linkedin.com/company/aptoslabs/",
-    icon: LinkedInLogo,
-  },
+  { title: "Git", url: "https://github.com/aptos-labs", icon: GithubLogo },
+  { title: "Discord", url: "https://discord.gg/zTDYBEud7U", icon: DiscordLogo },
+  { title: "Twitter", url: "https://twitter.com/aptoslabs/", icon: TwitterLogo },
+  { title: "Medium", url: "https://aptoslabs.medium.com/", icon: MediumLogo },
+  { title: "LinkedIn", url: "https://www.linkedin.com/company/aptoslabs/", icon: LinkedInLogo },
 ];
 
 export default function Footer() {
+
+  const theme = useTheme();
+
   return (
-    <StyledFooter maxWidth="xl">
-      <Container maxWidth="xl" sx={{paddingTop: "3em", paddingBottom: "3em"}}>
-        <Grid
-          container
-          spacing={{xs: 4, md: 1}}
-          alignContent="center"
-          alignItems="center"
-          direction={{xs: "column", md: "row"}}
-        >
-          <Grid item xs="auto" sx={{mr: 2}} container justifyContent="start">
-            <Link
-              color="inherit"
-              href="https://aptoslabs.com/"
-              target="blank"
-              sx={{color: "white"}}
-            >
-              <LogoIcon />
+    <Box sx={{ background: theme.palette.mode === 'dark' ? "rgba(23,23,23,1)" : grey[50], color: theme.palette.mode === 'dark' ? grey[100] : "rgba(23,23,23,1)", mt:8}}>
+      <Container maxWidth="xl" sx={{ paddingTop: "2rem", paddingBottom: "2rem" }}>
+        <Grid container spacing={{xs:4, md:1}} alignContent="center" alignItems="center" direction={{xs: "column", md: "row"}}>
+          <Grid item xs="auto" sx={{ mr: 2 }} container justifyContent="start">
+            <Link color="inherit" href="https://aptoslabs.com/" target="_blank" sx={{  width: "8rem" }}>
+              <LogoFull />
             </Link>
           </Grid>
           <Grid item xs="auto" container justifyContent="start">
@@ -64,60 +47,36 @@ export default function Footer() {
                 Matonee Inc. (dba Aptos Labs)
               </Box>
               <br />
-              <Link
-                color="inherit"
-                href="mailto:info@aptoslabs.com"
-                target="blank"
-                sx={{color: "white"}}
-              >
+              <Link color="inherit" href="mailto:info@aptoslabs.com" target="_blank">
                 info@aptoslabs.com
               </Link>
-              <Box component="span" sx={{px: 1, display: "inline-block"}}>
-                or
-              </Box>
-              <Link
-                color="inherit"
-                href="mailto:press@aptoslabs.com"
-                target="blank"
-                sx={{color: "white"}}
-              >
+              <Box component="span" sx={{ px:1, display:"inline-block" }}>or</Box>
+              <Link color="inherit" href="mailto:press@aptoslabs.com" target="_blank">
                 press@aptoslabs.com
               </Link>
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs="auto"
-            sx={{marginLeft: {xs: "0", md: "auto"}}}
-            container
-            justifyContent="end"
-          >
-            <Grid
-              container
-              justifyContent={{xs: "center", md: "end"}}
-              spacing={2}
-              direction="row"
-            >
+          <Grid item xs="auto" sx={{ marginLeft:{ xs: "0", md: "auto" } }} container justifyContent="end">
+            <Grid container justifyContent={{xs:"center", md:"end"}} spacing={3} direction="row">
               {socialLinks.map((link) => (
                 <Grid item key={link.title}>
-                  <a
+                  <Link 
+                    color="inherit"
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     title={link.title}
+                    width="26px"
+                    sx={{display:'block'}}
                   >
-                    <img
-                      src={link.icon}
-                      alt={`${link.title} Icon`}
-                      style={{height: "26px", width: "26px"}}
-                    />
-                  </a>
+                    <SvgIcon component={link.icon} inheritViewBox />
+                  </Link>
                 </Grid>
               ))}
             </Grid>
           </Grid>
         </Grid>
       </Container>
-    </StyledFooter>
+    </Box>
   );
 }

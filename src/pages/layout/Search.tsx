@@ -1,8 +1,7 @@
 import React from "react";
 import {getTransaction} from "../../api";
-import InputBase from "@mui/material/InputBase";
-import SearchIcon from "@mui/icons-material/Search";
-import {styled} from "@mui/material/styles";
+import TextField from "@mui/material/TextField";
+import SearchIcon from "@mui/icons-material/SearchRounded";
 import {useQuery, UseQueryResult} from "react-query";
 import {useGlobalState} from "../../GlobalState";
 import {Types} from "aptos";
@@ -13,43 +12,12 @@ import {Autocomplete} from "@mui/material";
 import {AccountLink} from "../Accounts/helpers";
 import Paper from "@mui/material/Paper";
 import {teal, grey} from "@mui/material/colors";
+import { useTheme } from "@mui/material/styles";
+import InputAdornment from '@mui/material/InputAdornment';
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
-const Search = styled("div")(({theme}) => ({
-  position: "relative",
-}));
 
-const SearchIconWrapper = styled("div")(({theme}) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  opacity: "0.5",
-  right: "0",
-  top: "0",
-}));
-
-const StyledInputBase = styled(InputBase)(({theme}) => ({
-  color: "inherit",
-  width: "100%",
-  padding: "0",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 4, 1, 1),
-    transition: "none",
-    width: "100%",
-    fontWeight: theme.typography.fontWeightLight,
-    [theme.breakpoints.up("sm")]: {
-      fontSize: "1rem",
-    },
-    [theme.breakpoints.up("md")]: {
-      fontSize: "1.2rem",
-    },
-  },
-}));
 
 function SearchTransactionInner({
   data,
@@ -63,7 +31,7 @@ function SearchTransactionInner({
     // TODO: pending transactions?
     return null;
   }
-
+  const theme = useTheme();
   return (
     <Link
       component={RRD.Link}
@@ -75,7 +43,7 @@ function SearchTransactionInner({
         display: "block",
         width: "100%",
         opacity: "0.8",
-        "&:hover": {background: teal["A400"], color: grey[900]},
+        "&:hover": { backgroundColor: `${theme.palette.mode === 'dark' ? grey[800] : grey[200]}!important`},
       }}
     >
       Transaction {data.version}
@@ -122,24 +90,27 @@ function AutocompleteSearch() {
   // hide autocomplete dropdown until text has been entered
   const [open, setOpen] = React.useState(false);
 
+  const theme = useTheme();
+
   return (
     <Autocomplete
       fullWidth
       PaperComponent={({children}) => (
         <Paper
           sx={{
-            borderTop: "1px dotted grey",
+            borderTop: "0",
             p: 1,
-            transform: "translateY(-8px)",
-            borderRadius: "0 0 8px 8px",
-            boxShadow: "0 50px 50px -12px rgba(0, 0, 0, 0.75)",
+            transform: "translateY(8px)",
+            borderRadius: "8px",
+            boxShadow: '10px 25px 50px -12px rgba(23,23,23,0.25)', zIndex: '200',position: 'relative',
+            mx:0.5,
           }}
         >
           {children}
         </Paper>
       )}
       open={open}
-      sx={{flexGrow: 1}}
+      sx={{ flexGrow: 1, }}
       forcePopupIcon={false}
       selectOnFocus={true}
       noOptionsText="No Results"
@@ -166,22 +137,28 @@ function AutocompleteSearch() {
       }}
       onClose={() => setOpen(false)}
       renderInput={(params) => {
-        params.fullWidth = true;
-        params.InputProps.className = "";
+        
         return (
-          <Search>
-            <Paper sx={{mt: {xs: 8, md: 14}, mb: {xs: 4, md: 8}}}>
-              <SearchIconWrapper>
-                <SearchIcon sx={{width: "2rem", height: "2rem"}} />
-              </SearchIconWrapper>
-              <StyledInputBase
-                sx={{p: 2}}
-                ref={params.InputProps.ref}
-                inputProps={{"aria-label": "search", ...params.inputProps}}
-                placeholder="Search by Transaction Hash, Version, Account Address…"
-              />
-            </Paper>
-          </Search>
+          <TextField
+            sx={{ mb:8 }}
+            {...params}
+            InputProps={{
+              sx: {
+                fontSize: '1.25rem',
+                lineHeight: '1.25rem',
+              },
+              "aria-label": "search", 
+              ...params.InputProps,
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="large" color="secondary" sx={{ ml:0.5 }} />
+                </InputAdornment>
+              ),
+            }}
+            placeholder="Search by Transaction Hash, Version, Account Address…"
+            fullWidth
+          />
+
         );
       }}
       renderOption={(props, option) => {
