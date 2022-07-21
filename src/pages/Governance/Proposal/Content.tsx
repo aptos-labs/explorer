@@ -44,7 +44,7 @@ export function ProposalContent({
                 {
                     renderRow(
                         "Code Location:",
-                        <Link color="primary" href={proposalData.execution_content.code_location} target="blank">
+                        <Link color="primary" href={proposalData.execution_content.code_location} target="_blank">
                             {proposalData.execution_content.code_location}
                         </Link>
                     )
