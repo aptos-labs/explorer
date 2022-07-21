@@ -9,6 +9,7 @@ import Footer from "./Footer";
 import { GlobalStateProvider } from "../../GlobalState";
 import { ProvideColorMode } from '../../context';
 import { useLocation } from "react-router-dom";
+import { WalletProvider } from "../../context/wallet";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ export default function ExplorerLayout({ children }: LayoutProps) {
   return (
     <ProvideColorMode>
       <GlobalStateProvider>
+        <WalletProvider>
         <Box
           component="main"
           sx={{
@@ -40,6 +42,7 @@ export default function ExplorerLayout({ children }: LayoutProps) {
           </Container>
           <Footer />
         </Box>
+        </WalletProvider>
       </GlobalStateProvider>
     </ProvideColorMode>
   );
