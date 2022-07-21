@@ -5,7 +5,7 @@ export function useWallet(){
 
   const [install, setInstall] = React.useState<any>(null)
   const [isConnected, setIsConnected] = React.useState<boolean>(false)
-  const [accountAddress, setAccountAddres] = React.useState<string | null>(null)
+  const [accountAddress, setAccountAddress] = React.useState<string | null>(null)
 
   useEffect(() => {
     setInstall(getAptosWallet())
@@ -14,7 +14,7 @@ export function useWallet(){
 
   useEffect(() => {
     if (isConnected) {
-      getAccountAddress().then((data) => setAccountAddres(data.address));
+      getAccountAddress().then((data) => setAccountAddress(data.address));
     }
   }, [isConnected])
 

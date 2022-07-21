@@ -14,7 +14,7 @@ export const useWalletContext = () => {
   const context = useContext(walletContext) as walletContext
 
   if (!context) {
-    throw new Error('useColorMode must be used within a ColorModeContext')
+    throw new Error('useWalletContext must be used within a walletContext')
   }
   return context
 }

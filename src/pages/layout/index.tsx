@@ -17,8 +17,6 @@ interface LayoutProps {
 
 export default function ExplorerLayout({ children }: LayoutProps) {
 
-  const location = useLocation();
-
   return (
     <ProvideColorMode>
       <GlobalStateProvider>
