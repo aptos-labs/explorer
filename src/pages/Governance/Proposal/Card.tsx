@@ -1,17 +1,17 @@
 import React, { useEffect } from "react"
-import { Box, Divider, Grid, Typography } from "@mui/material"
+import { Box, Button, Divider, Grid, Typography } from "@mui/material"
 
 import {proposalsData} from '../dummyData'
 import {WalletButton} from "../../../components/WalletButton"
 import { connectToWallet, getAptosWallet, isWalletConnected } from "../../../api/wallet"
 import { useGlobalState } from "../../../GlobalState"
+import { VoteButtons } from "./VoteButtons"
 
 export function ProposalCard () {
 
     const proposal = proposalsData[0]
 
     const globalState = useGlobalState();
-    console.log(globalState)
 
     const totalVotes = proposal.yes_votes + proposal.no_votes;
     const votedForPercent = ((proposal.yes_votes*100) / totalVotes).toFixed(0);
@@ -36,7 +36,7 @@ export function ProposalCard () {
 
       <Box component="div" sx={{ p: 2, flexGrow: 1, backgroundColor: "#151515" }} borderRadius={1} border="1px solid gray">
         <Grid container sx={{ p: 2 }} alignItems="center" spacing={4}>
-          <Grid item xs={12} sm={12} md={9} sx={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+          <Grid item xs={12} sm={12} md={ walletIsConnected ? 6 : 9} sx={{ overflow: "hidden", textOverflow: "ellipsis" }}>
             <Typography>
                 Results
             </Typography>
@@ -48,13 +48,18 @@ export function ProposalCard () {
                 Against: {votedAgainstrPercent}%
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={12} md={3} textAlign={{ sm: "left", md: "right" }}>
+            {walletIsConnected ? 
+            <Grid item xs={12} sm={12} md={6} textAlign={{ xs: "left", sm: "right" }}>
+                <VoteButtons/>
+            </Grid>
+            :
+            <Grid item xs={12} sm={12} md={3} textAlign={{ xs: "left", sm: "right" }}>
             <WalletButton
               onConnectWalletClick={onConnectWalletClick}
               walletIsConnected={walletIsConnected}
-              wallet={wallet}
-            />
-          </Grid>
+              wallet={wallet}/>
+              </Grid>
+            }
         </Grid>
       </Box>
     </Box>
