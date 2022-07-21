@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as RRD from "react-router-dom";
 import { useTheme } from "@mui/material";
-import Title from "../../components/Title";
+import Title from "../../../components/Title";
 import { Link, Stack, Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import {
     renderTimestamp,
-} from "../../pages/Transactions/helpers";
-import { assertNever } from "../../utils";
-import { proposalsData } from "./dummyData";
+} from "../../Transactions/helpers";
+import { assertNever } from "../../../utils";
+import { proposalsData } from "../dummyData";
 
 const TITLE_WIDTH = 400;
 const HASH_WIDTH = 300;
@@ -15,27 +15,6 @@ const HASH_WIDTH = 300;
 type ProposalCellProps = {
     proposal: any;
 };
-
-// TODO: add type
-function ProposalsPage({
-    data,
-}: any) {
-    if (!data) {
-        // TODO: handle errors
-        return <>No proposal info</>;
-    }
-
-    return (
-        <>
-            <Stack spacing={1}>
-                <Title>Proposals</Title>
-                <Box sx={{ width: "auto", overflowX: "auto" }}>
-                    <ProposalsTable proposals={data} />
-                </Box>
-            </Stack>
-        </>
-    );
-}
 
 function TitleCell({ proposal }: ProposalCellProps) {
     return (

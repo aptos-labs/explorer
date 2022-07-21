@@ -1,17 +1,16 @@
 import React, { useEffect } from "react"
-import { Box, Button, Divider, Grid, Typography } from "@mui/material"
+import { Box, Divider, Grid, Typography } from "@mui/material"
 
-import {proposalsData} from '../dummyData'
 import {WalletButton} from "../../../components/WalletButton"
 import { connectToWallet, getAptosWallet, isWalletConnected } from "../../../api/wallet"
-import { useGlobalState } from "../../../GlobalState"
 import { VoteButtons } from "./VoteButtons"
+import { ProposalType } from "../Types"
 
-export function ProposalCard () {
+type ProposalCardProps = {
+    proposal: ProposalType;
+};
 
-    const proposal = proposalsData[0]
-
-    const globalState = useGlobalState();
+export function ProposalCard ({proposal} : ProposalCardProps) {
 
     const totalVotes = proposal.yes_votes + proposal.no_votes;
     const votedForPercent = ((proposal.yes_votes*100) / totalVotes).toFixed(0);
