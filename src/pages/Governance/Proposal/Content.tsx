@@ -1,5 +1,5 @@
-import React from "react";
-import { Stack, Divider, Link } from "@mui/material";
+import React,{ useEffect, useState }  from "react";
+import { Stack, Divider } from "@mui/material";
 import {
     renderRow,
     renderSection,
@@ -21,6 +21,25 @@ export function ProposalContent({
         return null;
     }
 
+    const [metadata, setMetadata] = useState<any>(null);
+
+    useEffect(() => {
+        const {metadata_location} = proposalData.execution_content;
+    
+        const fetchMetadata = async () => {
+          try {
+            const response = await fetch(metadata_location);
+            const json = await response.json();
+            setMetadata(json);
+          } catch (error) {
+            // TODO: error handling
+            console.log("error", error);
+          }
+        };
+    
+        fetchMetadata();
+    }, []);
+
     return (
         RenderContent(
             <Stack
@@ -30,25 +49,18 @@ export function ProposalContent({
                     < Divider variant="dotted" orientation="horizontal" sx={{ mb: 0 }} />
                 }
             >
-                {
-                    renderRow(
+                {renderRow(
                         "Proposal Hash:",
                         proposalData.execution_hash,
                     )}
-                {
-                    renderRow(
+                {renderRow(
+                        "Proposal Script",
+                        metadata?.execution_script,
+                    )}
+                {renderRow(
                         "Description:",
-                        proposalData.execution_content.description,
-                    )
-                }
-                {
-                    renderRow(
-                        "Code Location:",
-                        <Link color="primary" href={proposalData.execution_content.code_location} target="_blank">
-                            {proposalData.execution_content.code_location}
-                        </Link>
-                    )
-                }
+                        metadata?.description,
+                    )}
             </Stack >
         )
     );

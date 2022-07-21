@@ -3,9 +3,9 @@ export type ProposalType = {
   proposer: string;
   creation_time_secs: string;
   execution_content: {
-    code_location: string;
     title: string;
-    description: string;
+    metadata_location: string;
+    metadata_hash: string;
   };
   execution_hash: string;
   min_vote_threshold: number;

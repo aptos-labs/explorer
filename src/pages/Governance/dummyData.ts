@@ -1,15 +1,8 @@
 import {ProposalType} from "./Types";
 
-const TITLE_PLACEHOLDER_1 = "Title -- Lorem ipsum dolor sit amet";
-const TITLE_PLACEHOLDER_2 = "This Is A Title";
-const TITLE_PLACEHOLDER_3 =
-  "Long Title: Lorem ipsum dolor sit amet consectetur adipiscing elit";
-const TITLE_PLACEHOLDER_4 = "Hi! This Is A Title";
-
-const DESCRIPTION_PLACEHOLDER =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-
-const CODE_LOCATION_PLACEHOLDER = "https://aptoslabs.com/";
+const TITLE_PLACEHOLDER = "Title -- Lorem ipsum dolor sit amet";
+const METADATA_LOCATION_PLACEHOLDER =
+  "https://mocki.io/v1/32403c87-d5d2-4136-80fd-d639a5d3d7dd";
 
 enum ProposalState {
   PROPOSAL_STATE_SUCCEEDED = "Succeeded",
@@ -26,9 +19,10 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1659925697446570",
     execution_content: {
-      code_location: CODE_LOCATION_PLACEHOLDER,
-      title: TITLE_PLACEHOLDER_1,
-      description: DESCRIPTION_PLACEHOLDER,
+      title: TITLE_PLACEHOLDER,
+      metadata_location: METADATA_LOCATION_PLACEHOLDER,
+      metadata_hash:
+        "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f675",
     },
     execution_hash:
       "0x21bd7a43e576297d3f71badd7ee740ccd2ef8a13cf6660075ae2de0994b1f333",
@@ -47,9 +41,10 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1659965697446570",
     execution_content: {
-      code_location: CODE_LOCATION_PLACEHOLDER,
-      title: TITLE_PLACEHOLDER_2,
-      description: DESCRIPTION_PLACEHOLDER,
+      title: TITLE_PLACEHOLDER,
+      metadata_location: METADATA_LOCATION_PLACEHOLDER,
+      metadata_hash:
+        "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f675",
     },
     execution_hash:
       "0x21bd7a43e576297d3f71badd7ee740ccd2ef8a13cf6660075ae2de0994b1f333",
@@ -68,9 +63,10 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1657995697446570",
     execution_content: {
-      code_location: CODE_LOCATION_PLACEHOLDER,
-      title: TITLE_PLACEHOLDER_3,
-      description: DESCRIPTION_PLACEHOLDER,
+      title: TITLE_PLACEHOLDER,
+      metadata_location: METADATA_LOCATION_PLACEHOLDER,
+      metadata_hash:
+        "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f675",
     },
     execution_hash:
       "0x21bd7a43e576297d3f71badd7ee740ccd2ef8a13cf6660075ae2de0994b1f333",
@@ -89,9 +85,10 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1657935698446570",
     execution_content: {
-      code_location: CODE_LOCATION_PLACEHOLDER,
-      title: TITLE_PLACEHOLDER_4,
-      description: DESCRIPTION_PLACEHOLDER,
+      title: TITLE_PLACEHOLDER,
+      metadata_location: METADATA_LOCATION_PLACEHOLDER,
+      metadata_hash:
+        "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f675",
     },
     execution_hash:
       "0x21bd7a43e576297d3f71badd7ee740ccd2ef8a13cf6660075ae2de0994b1f333",
