@@ -3,7 +3,7 @@ import { connectToWallet, getAccountAddress, getAptosWallet, isWalletConnected }
 
 export function useWallet(){
 
-  const [aptosWallet, setAptosWallet] = React.useState<any>(null)
+  const [aptosWallet, setAptosWallet] = React.useState<boolean>(false)
   const [isConnected, setIsConnected] = React.useState<boolean>(false)
   const [accountAddress, setAccountAddress] = React.useState<string | null>(null)
 
