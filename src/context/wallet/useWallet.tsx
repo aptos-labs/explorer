@@ -1,5 +1,10 @@
-import React, { useEffect } from "react"
-import { connectToWallet, getAccountAddress, getAptosWallet, isWalletConnected } from "../../api/wallet"
+import React, {useEffect} from "react";
+import {
+  connectToWallet,
+  getAccountAddress,
+  getAptosWallet,
+  isWalletConnected,
+} from "../../api/wallet";
 
 export function useWallet(){
 
@@ -16,11 +21,11 @@ export function useWallet(){
     if (isConnected) {
       getAccountAddress().then(setAccountAddress);
     }
-  }, [isConnected])
+  }, [isConnected]);
 
   const connect = async () => {
-    connectToWallet().then(setIsConnected)
-  }
+    connectToWallet().then(setIsConnected);
+  };
 
   return {aptosWallet, isConnected, accountAddress, connect}
 }

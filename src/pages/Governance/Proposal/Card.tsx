@@ -1,28 +1,35 @@
-import React, { useEffect } from "react"
-import { Box, Divider, Grid, Typography } from "@mui/material"
+import React from "react";
+import {Box, Divider, Grid, Typography} from "@mui/material";
 
 import {WalletButton} from "../../../components/WalletButton"
-import { connectToWallet, getAptosWallet, isWalletConnected } from "../../../api/wallet"
 import { VoteButtons } from "./VoteButtons"
 import { ProposalType } from "../Types"
-import { useWallet } from "../../../context"
+import { useWalletContext } from "../../../context/wallet/context";
 
 type ProposalCardProps = {
-    proposal: ProposalType;
+  proposal: ProposalType;
 };
 
-export function ProposalCard ({proposal} : ProposalCardProps) {
+export function ProposalCard({proposal}: ProposalCardProps) {
+  const totalVotes = proposal.yes_votes + proposal.no_votes;
+  const votedForPercent = ((proposal.yes_votes * 100) / totalVotes).toFixed(0);
+  const votedAgainstrPercent = ((proposal.no_votes * 100) / totalVotes).toFixed(
+    0,
+  );
+  
+  const {isConnected} = useWalletContext();
 
-    const totalVotes = proposal.yes_votes + proposal.no_votes;
-    const votedForPercent = ((proposal.yes_votes*100) / totalVotes).toFixed(0);
-    const votedAgainstrPercent = ((proposal.no_votes*100) / totalVotes).toFixed(0);
-
-    const {isConnected} = useWallet();
-
-    return (
+  return (
     <Box position="relative">
-      <Box component="div" sx={{ top: "0.5rem", left: "-0.5rem", zIndex: "-10" }} height="100%" width="100%" position="absolute" borderRadius={1} border="1px solid gray">
-      </Box>
+      <Box
+        component="div"
+        sx={{top: "0.5rem", left: "-0.5rem", zIndex: "-10"}}
+        height="100%"
+        width="100%"
+        position="absolute"
+        borderRadius={1}
+        border="1px solid gray"
+      ></Box>
 
       <Box component="div" sx={{ p: 2, flexGrow: 1, backgroundColor: "#151515" }} borderRadius={1} border="1px solid gray">
         <Grid container sx={{ p: 2 }} alignItems="center" spacing={4}>
@@ -31,12 +38,8 @@ export function ProposalCard ({proposal} : ProposalCardProps) {
                 Results
             </Typography>
             <Divider variant="fullWidth" orientation="horizontal" />
-            <Typography mt={2}>
-                For: {votedForPercent}%
-            </Typography>
-            <Typography>
-                Against: {votedAgainstrPercent}%
-            </Typography>
+            <Typography mt={2}>For: {votedForPercent}%</Typography>
+            <Typography>Against: {votedAgainstrPercent}%</Typography>
           </Grid>
             {isConnected ? 
             <Grid item xs={12} sm={12} md={6} textAlign={{ xs: "left", sm: "right" }}>
@@ -50,5 +53,5 @@ export function ProposalCard ({proposal} : ProposalCardProps) {
         </Grid>
       </Box>
     </Box>
-    )
+  );
 }

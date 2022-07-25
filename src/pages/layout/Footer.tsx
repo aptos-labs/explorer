@@ -12,49 +12,92 @@ import MediumLogo from "../../assets/medium.svg";
 import LinkedInLogo from "../../assets/linkedin.svg";
 import Box from "@mui/material/Box";
 
-import { ReactComponent as LogoIcon } from '../../assets/svg/aptos_logo_icon.svg';
+import {ReactComponent as LogoIcon} from "../../assets/svg/aptos_logo_icon.svg";
 
-const StyledFooter = styled(Box)(
-  ({ theme }) => ({
-    maxWidth: "100% !important",
-    backgroundColor: "black",
-    marginTop: "3em",
-    color: "white !important",
-  }));
+const StyledFooter = styled(Box)(({theme}) => ({
+  maxWidth: "100% !important",
+  backgroundColor: "black",
+  marginTop: "3em",
+  color: "white !important",
+}));
 
 const socialLinks = [
-  { title: "Git", url: "https://github.com/aptos-labs", icon: GitLogo },
-  { title: "Discord", url: "https://discord.gg/zTDYBEud7U", icon: DiscordLogo },
-  { title: "Twitter", url: "https://twitter.com/aptoslabs/", icon: TwitterLogo },
-  { title: "Medium", url: "https://aptoslabs.medium.com/", icon: MediumLogo },
-  { title: "LinkedIn", url: "https://www.linkedin.com/company/aptoslabs/", icon: LinkedInLogo },
+  {title: "Git", url: "https://github.com/aptos-labs", icon: GitLogo},
+  {title: "Discord", url: "https://discord.gg/zTDYBEud7U", icon: DiscordLogo},
+  {title: "Twitter", url: "https://twitter.com/aptoslabs/", icon: TwitterLogo},
+  {title: "Medium", url: "https://aptoslabs.medium.com/", icon: MediumLogo},
+  {
+    title: "LinkedIn",
+    url: "https://www.linkedin.com/company/aptoslabs/",
+    icon: LinkedInLogo,
+  },
 ];
 
 export default function Footer() {
   return (
     <StyledFooter maxWidth="xl">
-      <Container maxWidth="xl" sx={{ paddingTop: "3em", paddingBottom: "3em" }}>
-        <Grid container spacing={{xs:4, md:1}} alignContent="center" alignItems="center" direction={{xs: "column", md: "row"}}>
-          <Grid item xs="auto" sx={{ mr: 2 }} container justifyContent="start">
-            <Link color="inherit" href="https://aptoslabs.com/" target="blank" sx={{ color: "white" }}>
+      <Container maxWidth="xl" sx={{paddingTop: "3em", paddingBottom: "3em"}}>
+        <Grid
+          container
+          spacing={{xs: 4, md: 1}}
+          alignContent="center"
+          alignItems="center"
+          direction={{xs: "column", md: "row"}}
+        >
+          <Grid item xs="auto" sx={{mr: 2}} container justifyContent="start">
+            <Link
+              color="inherit"
+              href="https://aptoslabs.com/"
+              target="blank"
+              sx={{color: "white"}}
+            >
               <LogoIcon />
             </Link>
           </Grid>
           <Grid item xs="auto" container justifyContent="start">
-            <Typography sx={{ textAlign: { xs: "center", md: "left" }}} fontSize="0.8rem">
-              © {new Date().getFullYear()} <Box component="span" sx={{ whiteSpace: "nowrap" }}>Matonee Inc. (dba Aptos Labs)</Box>
+            <Typography
+              sx={{textAlign: {xs: "center", md: "left"}}}
+              fontSize="0.8rem"
+            >
+              © {new Date().getFullYear()}{" "}
+              <Box component="span" sx={{whiteSpace: "nowrap"}}>
+                Matonee Inc. (dba Aptos Labs)
+              </Box>
               <br />
-              <Link color="inherit" href="mailto:info@aptoslabs.com" target="blank" sx={{ color: "white", }}>
+              <Link
+                color="inherit"
+                href="mailto:info@aptoslabs.com"
+                target="blank"
+                sx={{color: "white"}}
+              >
                 info@aptoslabs.com
               </Link>
-              <Box component="span" sx={{ px:1, display:"inline-block" }}>or</Box>
-              <Link color="inherit" href="mailto:press@aptoslabs.com" target="blank" sx={{ color: "white" }}>
+              <Box component="span" sx={{px: 1, display: "inline-block"}}>
+                or
+              </Box>
+              <Link
+                color="inherit"
+                href="mailto:press@aptoslabs.com"
+                target="blank"
+                sx={{color: "white"}}
+              >
                 press@aptoslabs.com
               </Link>
             </Typography>
           </Grid>
-          <Grid item xs="auto" sx={{ marginLeft:{ xs: "0", md: "auto" } }} container justifyContent="end">
-            <Grid container justifyContent={{xs:"center", md:"end"}} spacing={2} direction="row">
+          <Grid
+            item
+            xs="auto"
+            sx={{marginLeft: {xs: "0", md: "auto"}}}
+            container
+            justifyContent="end"
+          >
+            <Grid
+              container
+              justifyContent={{xs: "center", md: "end"}}
+              spacing={2}
+              direction="row"
+            >
               {socialLinks.map((link) => (
                 <Grid item key={link.title}>
                   <a
@@ -63,8 +106,11 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     title={link.title}
                   >
-                    <img src={link.icon} alt={`${link.title} Icon`}
-                      style={{ height: "26px", width: "26px" }} />
+                    <img
+                      src={link.icon}
+                      alt={`${link.title} Icon`}
+                      style={{height: "26px", width: "26px"}}
+                    />
                   </a>
                 </Grid>
               ))}

@@ -1,19 +1,25 @@
-import React, { useEffect } from "react"
-import { Box, Grid } from "@mui/material"
+import React, {useEffect} from "react";
+import {Box, Grid} from "@mui/material";
 
-import { getAptosWallet, isWalletConnected, connectToWallet, getAccountAddress } from '../../../api/wallet'
 import { HeaderText } from "./HeaderText";
 import { WalletButton } from "../../../components/WalletButton";
-import { useWallet } from "../../../context";
+import { useWalletContext } from "../../../context/wallet/context";
 
 export const Header = () => {
 
-  const {isConnected, accountAddress} = useWallet();
+  const {isConnected, accountAddress} = useWalletContext();
 
   return (
     <Box position="relative">
-      <Box component="div" sx={{ top: "0.5rem", left: "-0.5rem", zIndex: "-10" }} height="100%" width="100%" position="absolute" borderRadius={1} border="1px solid gray">
-      </Box>
+      <Box
+        component="div"
+        sx={{top: "0.5rem", left: "-0.5rem", zIndex: "-10"}}
+        height="100%"
+        width="100%"
+        position="absolute"
+        borderRadius={1}
+        border="1px solid gray"
+      ></Box>
 
       <Box component="div" sx={{ p: 2, flexGrow: 1, backgroundColor: "#151515" }} borderRadius={1} border="1px solid gray">
         <Grid container sx={{ p: 2 }} alignItems="center" spacing={4}>
@@ -26,5 +32,5 @@ export const Header = () => {
         </Grid>
       </Box>
     </Box>
-  )
-}
+  );
+};
