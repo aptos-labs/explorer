@@ -14,7 +14,7 @@ export default function Dashboard() {
         <LedgerInfo />
       </Grid>
       <Grid item xs={12}>
-          <TransactionsPreview/>
+        <TransactionsPreview />
       </Grid>
     </Grid>
   );

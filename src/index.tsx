@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "react-query";
+import {BrowserRouter} from "react-router-dom";
+import {QueryClient, QueryClientProvider} from "react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
 
 import * as Sentry from "@sentry/react";
-import { BrowserTracing } from "@sentry/tracing";
+import {BrowserTracing} from "@sentry/tracing";
 
 import ReactGA from "react-ga4";
 
@@ -25,13 +25,15 @@ Sentry.init({
 
 // inform the compiler of the existence of the window.aptos API
 declare global {
-  interface Window { aptos: any; }
+  interface Window {
+    aptos: any;
+  }
 }
 
 const queryClient = new QueryClient();
 
 // delay rendering the application until the window.onload event has fired when integrating with the window.aptos API
-window.addEventListener('load', () => {
+window.addEventListener("load", () => {
   ReactDOM.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>

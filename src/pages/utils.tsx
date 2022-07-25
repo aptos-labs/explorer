@@ -1,13 +1,13 @@
 import React from "react";
 import moment from "moment";
 import Box from "@mui/material/Box";
-import { useTheme } from '@mui/material';
+import {useTheme} from "@mui/material";
 
 export function renderDebug(data: any) {
   const theme = useTheme();
   return (
     <Box
-      sx={{ overflow: "auto", fontWeight: theme.typography.fontWeightRegular,}}
+      sx={{overflow: "auto", fontWeight: theme.typography.fontWeightRegular}}
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(data || null, null, 2)
           .replaceAll("\n", "<br/>")
@@ -49,18 +49,18 @@ export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
   };
 }
 
-export function getTimeRemaining (endtime: number) {
-    const total = endtime - Date.now();
-    const seconds = Math.floor( (total/1000) % 60 );
-    const minutes = Math.floor( (total/1000/60) % 60 );
-    const hours = Math.floor( (total/(1000*60*60)) % 24 );
-    const days = Math.floor( total/(1000*60*60*24) );
-  
-    return {
-      total,
-      days,
-      hours,
-      minutes,
-      seconds
-    };
-  }
+export function getTimeRemaining(endtime: number) {
+  const total = endtime - Date.now();
+  const seconds = Math.floor((total / 1000) % 60);
+  const minutes = Math.floor((total / 1000 / 60) % 60);
+  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+  const days = Math.floor(total / (1000 * 60 * 60 * 24));
+
+  return {
+    total,
+    days,
+    hours,
+    minutes,
+    seconds,
+  };
+}
