@@ -1,10 +1,10 @@
 import React from "react";
 import {Box, Divider, Grid, Typography} from "@mui/material";
 
-import {WalletButton} from "../../../components/WalletButton"
-import { VoteButtons } from "./VoteButtons"
-import { ProposalType } from "../Types"
-import { useWalletContext } from "../../../context/wallet/context";
+import {WalletButton} from "../../../components/WalletButton";
+import {VoteButtons} from "./VoteButtons";
+import {ProposalType} from "../Types";
+import {useWalletContext} from "../../../context/wallet/context";
 
 type ProposalCardProps = {
   proposal: ProposalType;
@@ -16,7 +16,7 @@ export function ProposalCard({proposal}: ProposalCardProps) {
   const votedAgainstrPercent = ((proposal.no_votes * 100) / totalVotes).toFixed(
     0,
   );
-  
+
   const {isConnected} = useWalletContext();
 
   return (
@@ -31,25 +31,46 @@ export function ProposalCard({proposal}: ProposalCardProps) {
         border="1px solid gray"
       ></Box>
 
-      <Box component="div" sx={{ p: 2, flexGrow: 1, backgroundColor: "#151515" }} borderRadius={1} border="1px solid gray">
-        <Grid container sx={{ p: 2 }} alignItems="center" spacing={4}>
-          <Grid item xs={12} sm={12} md={ isConnected ? 6 : 9} sx={{ overflow: "hidden", textOverflow: "ellipsis" }}>
-            <Typography>
-                Results
-            </Typography>
+      <Box
+        component="div"
+        sx={{p: 2, flexGrow: 1, backgroundColor: "#151515"}}
+        borderRadius={1}
+        border="1px solid gray"
+      >
+        <Grid container sx={{p: 2}} alignItems="center" spacing={4}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={isConnected ? 6 : 9}
+            sx={{overflow: "hidden", textOverflow: "ellipsis"}}
+          >
+            <Typography>Results</Typography>
             <Divider variant="fullWidth" orientation="horizontal" />
             <Typography mt={2}>For: {votedForPercent}%</Typography>
             <Typography>Against: {votedAgainstrPercent}%</Typography>
           </Grid>
-            {isConnected ? 
-            <Grid item xs={12} sm={12} md={6} textAlign={{ xs: "left", sm: "right" }}>
-                <VoteButtons/>
+          {isConnected ? (
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={6}
+              textAlign={{xs: "left", sm: "right"}}
+            >
+              <VoteButtons />
             </Grid>
-            :
-            <Grid item xs={12} sm={12} md={3} textAlign={{ xs: "left", sm: "right" }}>
-              <WalletButton/>
+          ) : (
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={3}
+              textAlign={{xs: "left", sm: "right"}}
+            >
+              <WalletButton />
             </Grid>
-            }
+          )}
         </Grid>
       </Box>
     </Box>

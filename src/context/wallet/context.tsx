@@ -1,9 +1,9 @@
 import {createContext, useContext} from "react";
 
 export interface walletContext {
-  aptosWallet: boolean; 
-  isConnected: boolean; 
-  accountAddress: string | null; 
+  aptosWallet: boolean;
+  isConnected: boolean;
+  accountAddress: string | null;
   connect: () => Promise<void>;
 }
 
