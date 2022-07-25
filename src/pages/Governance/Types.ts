@@ -3,9 +3,9 @@ export type ProposalType = {
   proposer: string;
   creation_time_secs: string;
   execution_content: {
-    code_location: string;
     title: string;
-    description: string;
+    metadata_location: string;
+    metadata_hash: string;
   };
   execution_hash: string;
   min_vote_threshold: number;
@@ -16,4 +16,9 @@ export type ProposalType = {
   is_resolved: boolean;
   is_voting_closed: boolean;
   proposal_state: string;
+};
+
+export type ProposalMetadata = {
+  execution_script: string;
+  description: string;
 };
