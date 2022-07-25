@@ -542,6 +542,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
             color: "black",
             fontSize: "1.1rem",
             padding: "12px 34px",
+            minWidth: "8rem",
             "&:hover": {
               backgroundColor: alpha(primaryColor, 1),
               opacity: "0.5",
