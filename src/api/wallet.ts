@@ -18,10 +18,12 @@ export const connectToWallet = async () => {
   }
 };
 
-export const getAccountAddress = async () => {
+export const getAccountAddress: () => Promise<string | null> = async () => {
   try {
-    return await window.aptos.account();
+    const data = await window.aptos.account();
+    if ('address' in data) return data.address;
   } catch (error) {
     console.log(error);
   }
+  return null;
 };
