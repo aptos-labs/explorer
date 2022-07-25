@@ -16,15 +16,35 @@ import {
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
 import {proposalsData} from "../dummyData";
+import {ProposalType, ProposalMetadata} from "../Types";
+import {useEffect, useState} from "react";
 
 const TITLE_WIDTH = 400;
 const HASH_WIDTH = 300;
 
 type ProposalCellProps = {
-  proposal: any;
+  proposal: ProposalType;
 };
 
 function TitleCell({proposal}: ProposalCellProps) {
+  const [metadata, setMetadata] = useState<ProposalMetadata>();
+  const {metadata_location} = proposal.execution_content;
+
+  useEffect(() => {
+    const fetchMetadata = async () => {
+      try {
+        const response = await fetch(metadata_location);
+        const json = await response.json();
+        setMetadata(json);
+      } catch (error) {
+        // TODO: error handling
+        console.log("error", error);
+      }
+    };
+
+    fetchMetadata();
+  }, [metadata_location]);
+
   return (
     <TableCell sx={{textAlign: "left"}}>
       <Link
@@ -40,7 +60,7 @@ function TitleCell({proposal}: ProposalCellProps) {
             textOverflow: "ellipsis",
           }}
         >
-          {proposal.execution_content.title}
+          {metadata?.title}
         </Box>
       </Link>
     </TableCell>
@@ -101,7 +121,7 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
 ];
 
 type ProposalRowProps = {
-  proposal: any;
+  proposal: ProposalType;
   columns: ProposalColumn[];
 };
 
@@ -172,7 +192,7 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
 }
 
 type Props = {
-  proposals?: any;
+  proposals?: ProposalType[];
   columns?: ProposalColumn[];
 };
 
