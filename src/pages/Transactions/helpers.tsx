@@ -80,7 +80,6 @@ export function renderRow(
   value: React.ReactNode,
   i?: any,
 ) {
-
   return (
     <Box>
       <Grid

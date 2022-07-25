@@ -7,20 +7,18 @@ import {
 import { ProposalType, ProposalMetadata } from "../Types";
 
 function RenderContent(children: React.ReactNode) {
-    return renderSection(children, null);
+  return renderSection(children, null);
 }
 
 type Props = {
-    proposalData: ProposalType;
+  proposalData: ProposalType;
 };
 
-export function ProposalContent({
-    proposalData,
-}: Props) {
-    if (!proposalData) {
-        return null;
-    }
-
+export function ProposalContent({proposalData}: Props) {
+  if (!proposalData) {
+    return null;
+  }
+  
     const [metadata, setMetadata] = useState<ProposalMetadata>();
     const {metadata_location} = proposalData.execution_content;
 

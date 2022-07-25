@@ -1,13 +1,13 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import LandingPage from "./pages/LandingPage/Dashboard";
 import NotFoundPage from "./pages/NotFoundPage";
 import ExplorerLayout from "./pages/layout";
 import TransactionPage from "./pages/Transactions/Transaction";
 import AccountPage from "./pages/Accounts/Account";
-import { TransactionsPage } from "./pages/Transactions/Transactions";
-import { GovernancePage } from "./pages/Governance/Proposals/Index";
-import { ProposalPage } from "./pages/Governance/Proposal/Index";
+import {TransactionsPage} from "./pages/Transactions/Transactions";
+import {GovernancePage} from "./pages/Governance/Proposals/Index";
+import {ProposalPage} from "./pages/Governance/Proposal/Index";
 
 export default function ExplorerRoutes() {
   return (

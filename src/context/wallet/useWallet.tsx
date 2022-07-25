@@ -1,26 +1,32 @@
-import React, { useEffect } from "react"
-import { connectToWallet, getAccountAddress, getAptosWallet, isWalletConnected } from "../../api/wallet"
+import React, {useEffect} from "react";
+import {
+  connectToWallet,
+  getAccountAddress,
+  getAptosWallet,
+  isWalletConnected,
+} from "../../api/wallet";
 
-export function useWallet(){
-
-  const [install, setInstall] = React.useState<any>(null)
-  const [isConnected, setIsConnected] = React.useState<boolean>(false)
-  const [accountAddress, setAccountAddress] = React.useState<string | null>(null)
+export function useWallet() {
+  const [isInstalled, setAptosWallet] = React.useState<boolean>(false);
+  const [isConnected, setIsConnected] = React.useState<boolean>(false);
+  const [accountAddress, setAccountAddress] = React.useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
-    setInstall(getAptosWallet())
-    isWalletConnected().then(setIsConnected)
-  }, [])
+    setAptosWallet(getAptosWallet());
+    isWalletConnected().then(setIsConnected);
+  }, []);
 
   useEffect(() => {
     if (isConnected) {
-      getAccountAddress().then((data) => setAccountAddress(data.address));
+      getAccountAddress().then(setAccountAddress);
     }
-  }, [isConnected])
+  }, [isConnected]);
 
   const connect = async () => {
-    connectToWallet().then(setIsConnected)
-  }
+    connectToWallet().then(setIsConnected);
+  };
 
-  return {install, isConnected, accountAddress, connect}
+  return {isInstalled, isConnected, accountAddress, connect};
 }
