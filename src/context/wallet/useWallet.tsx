@@ -14,7 +14,7 @@ export function useWallet(){
 
   useEffect(() => {
     if (isConnected) {
-      getAccountAddress().then((data) => setAccountAddress(data.address));
+      getAccountAddress().then(setAccountAddress);
     }
   }, [isConnected])
 
