@@ -21,4 +21,5 @@ export type ProposalType = {
 export type ProposalMetadata = {
   execution_script: string;
   description: string;
+  title: string;
 };
