@@ -1,33 +1,16 @@
 import {Grid} from "@mui/material";
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {ProposalHeader} from "./Header";
 import {ProposalCard} from "./Card";
 import {ProposalContent} from "./Content";
 import {proposalsData} from "../dummyData";
-import {ProposalMetadata} from "../Types";
+import useProvideProposalMetadata from "../ProvideProposalMetadata";
 
 export const ProposalPage = () => {
   // TODO: add error handling
 
   const proposalData = proposalsData[0];
-
-  const [metadata, setMetadata] = useState<ProposalMetadata>();
-  const {metadata_location} = proposalData.execution_content;
-
-  useEffect(() => {
-    const fetchMetadata = async () => {
-      try {
-        const response = await fetch(metadata_location);
-        const json = await response.json();
-        setMetadata(json);
-      } catch (error) {
-        // TODO: error handling
-        console.log("error", error);
-      }
-    };
-
-    fetchMetadata();
-  }, [metadata_location]);
+  const metadata = useProvideProposalMetadata(proposalData);
 
   return (
     <Grid container marginTop={{md: 12, xs: 6}}>

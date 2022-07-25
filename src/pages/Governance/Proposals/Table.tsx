@@ -16,8 +16,8 @@ import {
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
 import {proposalsData} from "../dummyData";
-import {ProposalType, ProposalMetadata} from "../Types";
-import {useEffect, useState} from "react";
+import {ProposalType} from "../Types";
+import useProvideProposalMetadata from "../ProvideProposalMetadata";
 
 const TITLE_WIDTH = 400;
 const HASH_WIDTH = 300;
@@ -27,23 +27,7 @@ type ProposalCellProps = {
 };
 
 function TitleCell({proposal}: ProposalCellProps) {
-  const [metadata, setMetadata] = useState<ProposalMetadata>();
-  const {metadata_location} = proposal.execution_content;
-
-  useEffect(() => {
-    const fetchMetadata = async () => {
-      try {
-        const response = await fetch(metadata_location);
-        const json = await response.json();
-        setMetadata(json);
-      } catch (error) {
-        // TODO: error handling
-        console.log("error", error);
-      }
-    };
-
-    fetchMetadata();
-  }, [metadata_location]);
+  const metadata = useProvideProposalMetadata(proposal);
 
   return (
     <TableCell sx={{textAlign: "left"}}>

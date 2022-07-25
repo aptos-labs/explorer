@@ -5,6 +5,8 @@ import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
 import {ProposalType, ProposalMetadata} from "../Types";
 
+const TITLE_UNAVILABLE = "Title Unavilable";
+
 type Props = {
   proposal: ProposalType;
   metadata?: ProposalMetadata;
@@ -17,7 +19,7 @@ export const ProposalHeader = ({proposal, metadata}: Props) => {
     <Grid container>
       <Grid item xs={12}>
         <Typography variant="h5" sx={{mb: 2}}>
-          {metadata?.title}
+          {metadata !== undefined ? metadata?.title : TITLE_UNAVILABLE}
         </Typography>
       </Grid>
 
