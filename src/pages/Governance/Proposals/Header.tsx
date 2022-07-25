@@ -1,37 +1,12 @@
 import React, {useEffect} from "react";
 import {Box, Grid} from "@mui/material";
 
-import {
-  getAptosWallet,
-  isWalletConnected,
-  connectToWallet,
-  getAccountAddress,
-} from "../../../api/wallet";
 import {HeaderText} from "./HeaderText";
 import {WalletButton} from "../../../components/WalletButton";
+import {useWalletContext} from "../../../context/wallet/context";
 
 export const Header = () => {
-  const [wallet, setWallet] = React.useState<any>(null);
-  const [walletIsConnected, setWalletIsConnected] =
-    React.useState<boolean>(false);
-  const [accountAddress, setAccountAddress] = React.useState<string | null>(
-    null,
-  );
-
-  useEffect(() => {
-    setWallet(getAptosWallet());
-    isWalletConnected().then(setWalletIsConnected);
-  }, []);
-
-  useEffect(() => {
-    if (walletIsConnected) {
-      getAccountAddress().then(setAccountAddress);
-    }
-  }, [walletIsConnected]);
-
-  const onConnectWalletClick = async () => {
-    connectToWallet().then(setWalletIsConnected);
-  };
+  const {isConnected, accountAddress} = useWalletContext();
 
   return (
     <Box position="relative">
@@ -60,7 +35,7 @@ export const Header = () => {
             sx={{overflow: "hidden", textOverflow: "ellipsis"}}
           >
             <HeaderText
-              walletIsConnected={walletIsConnected}
+              walletIsConnected={isConnected}
               accountAddress={accountAddress}
             />
           </Grid>
@@ -71,11 +46,7 @@ export const Header = () => {
             md={4}
             textAlign={{sm: "left", md: "right"}}
           >
-            <WalletButton
-              onConnectWalletClick={onConnectWalletClick}
-              walletIsConnected={walletIsConnected}
-              wallet={wallet}
-            />
+            <WalletButton />
           </Grid>
         </Grid>
       </Box>

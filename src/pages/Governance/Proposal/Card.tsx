@@ -1,14 +1,10 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Box, Divider, Grid, Typography} from "@mui/material";
 
 import {WalletButton} from "../../../components/WalletButton";
-import {
-  connectToWallet,
-  getAptosWallet,
-  isWalletConnected,
-} from "../../../api/wallet";
 import {VoteButtons} from "./VoteButtons";
 import {ProposalType} from "../Types";
+import {useWalletContext} from "../../../context/wallet/context";
 
 type ProposalCardProps = {
   proposal: ProposalType;
@@ -21,18 +17,7 @@ export function ProposalCard({proposal}: ProposalCardProps) {
     0,
   );
 
-  const [wallet, setWallet] = React.useState<any>(null);
-  const [walletIsConnected, setWalletIsConnected] =
-    React.useState<boolean>(false);
-
-  useEffect(() => {
-    setWallet(getAptosWallet());
-    isWalletConnected().then(setWalletIsConnected);
-  }, []);
-
-  const onConnectWalletClick = async () => {
-    connectToWallet().then(setWalletIsConnected);
-  };
+  const {isConnected} = useWalletContext();
 
   return (
     <Box position="relative">
@@ -57,7 +42,7 @@ export function ProposalCard({proposal}: ProposalCardProps) {
             item
             xs={12}
             sm={12}
-            md={walletIsConnected ? 6 : 9}
+            md={isConnected ? 6 : 9}
             sx={{overflow: "hidden", textOverflow: "ellipsis"}}
           >
             <Typography>Results</Typography>
@@ -65,7 +50,7 @@ export function ProposalCard({proposal}: ProposalCardProps) {
             <Typography mt={2}>For: {votedForPercent}%</Typography>
             <Typography>Against: {votedAgainstrPercent}%</Typography>
           </Grid>
-          {walletIsConnected ? (
+          {isConnected ? (
             <Grid
               item
               xs={12}
@@ -83,11 +68,7 @@ export function ProposalCard({proposal}: ProposalCardProps) {
               md={3}
               textAlign={{xs: "left", sm: "right"}}
             >
-              <WalletButton
-                onConnectWalletClick={onConnectWalletClick}
-                walletIsConnected={walletIsConnected}
-                wallet={wallet}
-              />
+              <WalletButton />
             </Grid>
           )}
         </Grid>

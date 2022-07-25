@@ -4,11 +4,9 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Header from "./Header";
-import HeaderSearch from "./Search";
 import Footer from "./Footer";
 import {GlobalStateProvider} from "../../GlobalState";
 import {ProvideColorMode} from "../../context";
-import {useLocation} from "react-router-dom";
 import {WalletProvider} from "../../context/wallet";
 
 interface LayoutProps {

@@ -8,7 +8,7 @@ export function GovernancePage() {
   // TODO - FETCH ALL PROPOSALS
 
   return (
-    <Grid xs={12} marginTop={{md: 12, xs: 6}}>
+    <Grid item xs={12} marginTop={{md: 12, xs: 6}}>
       <Grid item sx={{mb: 8}}>
         <Header />
       </Grid>

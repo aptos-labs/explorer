@@ -1,21 +1,14 @@
 import React from "react";
 
 import {Button, Link, Tooltip} from "@mui/material";
+import {useWalletContext} from "../context/wallet/context";
 
-type WalletButtonProps = {
-  wallet: any;
-  walletIsConnected: boolean;
-  onConnectWalletClick: () => Promise<void>;
-};
+export const WalletButton = (): JSX.Element => {
+  const {isInstalled, isConnected, connect} = useWalletContext();
 
-export const WalletButton = ({
-  wallet,
-  walletIsConnected,
-  onConnectWalletClick,
-}: WalletButtonProps): JSX.Element => {
   return (
     <>
-      {!wallet && (
+      {!isInstalled && (
         <Tooltip
           title={
             <Link
@@ -33,8 +26,8 @@ export const WalletButton = ({
           </span>
         </Tooltip>
       )}
-      {wallet && !walletIsConnected && (
-        <Button variant="primary" onClick={onConnectWalletClick}>
+      {isInstalled && !isConnected && (
+        <Button variant="primary" onClick={connect}>
           Connect Wallet
         </Button>
       )}
