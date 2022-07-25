@@ -4,11 +4,11 @@ import {Button, Link, Tooltip} from "@mui/material";
 import {useWalletContext} from "../context/wallet/context";
 
 export const WalletButton = (): JSX.Element => {
-  const {aptosWallet, isConnected, connect} = useWalletContext();
+  const {isInstalled, isConnected, connect} = useWalletContext();
 
   return (
     <>
-      {!aptosWallet && (
+      {!isInstalled && (
         <Tooltip
           title={
             <Link
@@ -26,7 +26,7 @@ export const WalletButton = (): JSX.Element => {
           </span>
         </Tooltip>
       )}
-      {aptosWallet && !isConnected && (
+      {isInstalled && !isConnected && (
         <Button variant="primary" onClick={connect}>
           Connect Wallet
         </Button>

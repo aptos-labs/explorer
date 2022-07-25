@@ -7,7 +7,7 @@ import {
 } from "../../api/wallet";
 
 export function useWallet() {
-  const [aptosWallet, setAptosWallet] = React.useState<boolean>(false);
+  const [isInstalled, setAptosWallet] = React.useState<boolean>(false);
   const [isConnected, setIsConnected] = React.useState<boolean>(false);
   const [accountAddress, setAccountAddress] = React.useState<string | null>(
     null,
@@ -28,5 +28,5 @@ export function useWallet() {
     connectToWallet().then(setIsConnected);
   };
 
-  return {aptosWallet, isConnected, accountAddress, connect};
+  return {isInstalled, isConnected, accountAddress, connect};
 }
