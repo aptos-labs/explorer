@@ -26,7 +26,10 @@ const defaultGlobalState: GlobalState = {
 
 function reducer(state: GlobalState, newValue: GlobalState): GlobalState {
   if (newValue.network_name)
-    localStorage.setItem("selected_network", newValue.network_name.toLowerCase());
+    localStorage.setItem(
+      "selected_network",
+      newValue.network_name.toLowerCase(),
+    );
   return {...state, ...newValue};
 }
 

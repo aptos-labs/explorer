@@ -1,19 +1,22 @@
 import * as RRD from "react-router-dom";
-import React from "react"
+import React from "react";
 
-import { Link, Typography } from "@mui/material"
+import {Link, Typography} from "@mui/material";
 
 type HeaderTextProps = {
-  walletIsConnected: boolean,
-  accountAddress: string | null
-}
+  walletIsConnected: boolean;
+  accountAddress: string | null;
+};
 
-export const HeaderText = ({ walletIsConnected, accountAddress }: HeaderTextProps) => {
+export const HeaderText = ({
+  walletIsConnected,
+  accountAddress,
+}: HeaderTextProps) => {
   return (
     <>
-      {walletIsConnected ?
-        <Typography variant="h5" noWrap sx={{ mb: 2 }}>
-          Hello {''}
+      {walletIsConnected ? (
+        <Typography variant="h5" noWrap sx={{mb: 2}}>
+          Hello {""}
           <Link
             component={RRD.Link}
             to={`/account/${accountAddress}`}
@@ -22,11 +25,15 @@ export const HeaderText = ({ walletIsConnected, accountAddress }: HeaderTextProp
             {accountAddress}
           </Link>
         </Typography>
-        :
-        <Typography variant="h5" sx={{ mb: 2 }}>Aptos Governance</Typography>}
+      ) : (
+        <Typography variant="h5" sx={{mb: 2}}>
+          Aptos Governance
+        </Typography>
+      )}
       <Typography>
-        Some instructions Some instructions Some instructions Some instructions Some instructions
+        Some instructions Some instructions Some instructions Some instructions
+        Some instructions
       </Typography>
     </>
-  )
-}
+  );
+};

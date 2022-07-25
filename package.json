@@ -32,7 +32,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "fmt": "prettier --config .prettierrc.json 'src/**/*.ts'"
+    "fmt": "prettier --config .prettierrc.json 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}'"
   },
   "browserslist": {
     "production": [
