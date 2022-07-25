@@ -5,6 +5,7 @@ import {WalletButton} from "../../../components/WalletButton"
 import { connectToWallet, getAptosWallet, isWalletConnected } from "../../../api/wallet"
 import { VoteButtons } from "./VoteButtons"
 import { ProposalType } from "../Types"
+import { useWallet } from "../../../context"
 
 type ProposalCardProps = {
     proposal: ProposalType;
@@ -16,17 +17,7 @@ export function ProposalCard ({proposal} : ProposalCardProps) {
     const votedForPercent = ((proposal.yes_votes*100) / totalVotes).toFixed(0);
     const votedAgainstrPercent = ((proposal.no_votes*100) / totalVotes).toFixed(0);
 
-    const [wallet, setWallet] = React.useState<any>(null)
-    const [walletIsConnected, setWalletIsConnected] = React.useState<boolean>(false)
-  
-    useEffect(() => {
-      setWallet(getAptosWallet())
-      isWalletConnected().then(setWalletIsConnected)
-    }, [])
-  
-    const onConnectWalletClick = async () => {
-      connectToWallet().then(setWalletIsConnected)
-    }
+    const {isConnected} = useWallet();
 
     return (
     <Box position="relative">
@@ -35,7 +26,7 @@ export function ProposalCard ({proposal} : ProposalCardProps) {
 
       <Box component="div" sx={{ p: 2, flexGrow: 1, backgroundColor: "#151515" }} borderRadius={1} border="1px solid gray">
         <Grid container sx={{ p: 2 }} alignItems="center" spacing={4}>
-          <Grid item xs={12} sm={12} md={ walletIsConnected ? 6 : 9} sx={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+          <Grid item xs={12} sm={12} md={ isConnected ? 6 : 9} sx={{ overflow: "hidden", textOverflow: "ellipsis" }}>
             <Typography>
                 Results
             </Typography>
@@ -47,17 +38,14 @@ export function ProposalCard ({proposal} : ProposalCardProps) {
                 Against: {votedAgainstrPercent}%
             </Typography>
           </Grid>
-            {walletIsConnected ? 
+            {isConnected ? 
             <Grid item xs={12} sm={12} md={6} textAlign={{ xs: "left", sm: "right" }}>
                 <VoteButtons/>
             </Grid>
             :
             <Grid item xs={12} sm={12} md={3} textAlign={{ xs: "left", sm: "right" }}>
-            <WalletButton
-              onConnectWalletClick={onConnectWalletClick}
-              walletIsConnected={walletIsConnected}
-              wallet={wallet}/>
-              </Grid>
+              <WalletButton/>
+            </Grid>
             }
         </Grid>
       </Box>

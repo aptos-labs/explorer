@@ -1,24 +1,22 @@
 import React from "react"
 
 import { Button, Link, Tooltip } from "@mui/material"
+import { useWallet } from "../context";
 
-type WalletButtonProps = {
-  wallet: any,
-  walletIsConnected: boolean,
-  onConnectWalletClick: () => Promise<void>
-}
+export const WalletButton = (): JSX.Element => {
 
-export const WalletButton = ({ wallet, walletIsConnected, onConnectWalletClick }: WalletButtonProps): JSX.Element => {
+  const {install, isConnected, connect} = useWallet();
+
   return (
     <>
-      {!wallet &&
+      {!install &&
         <Tooltip title={<Link href="https://aptos.dev/guides/building-wallet-extension" target="_blank">Please install the Aptos wallet</Link>}>
           <span>
             <Button variant="primary" disabled>Connect Wallet</Button>
           </span>
         </Tooltip>
       }
-      {wallet && !walletIsConnected && <Button variant="primary" onClick={onConnectWalletClick}>Connect Wallet</Button>}
+      {install && !isConnected && <Button variant="primary" onClick={connect}>Connect Wallet</Button>}
     </>
   )
 }

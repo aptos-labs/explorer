@@ -4,27 +4,11 @@ import { Box, Grid } from "@mui/material"
 import { getAptosWallet, isWalletConnected, connectToWallet, getAccountAddress } from '../../../api/wallet'
 import { HeaderText } from "./HeaderText";
 import { WalletButton } from "../../../components/WalletButton";
+import { useWallet } from "../../../context";
 
 export const Header = () => {
 
-  const [wallet, setWallet] = React.useState<any>(null)
-  const [walletIsConnected, setWalletIsConnected] = React.useState<boolean>(false)
-  const [accountAddress, setAccountAddres] = React.useState<string | null>(null)
-
-  useEffect(() => {
-    setWallet(getAptosWallet())
-    isWalletConnected().then(setWalletIsConnected)
-  }, [])
-
-  useEffect(() => {
-    if (walletIsConnected) {
-      getAccountAddress().then((data) => setAccountAddres(data.address));
-    }
-  }, [walletIsConnected])
-
-  const onConnectWalletClick = async () => {
-    connectToWallet().then(setWalletIsConnected)
-  }
+  const {isConnected, accountAddress} = useWallet();
 
   return (
     <Box position="relative">
@@ -34,14 +18,10 @@ export const Header = () => {
       <Box component="div" sx={{ p: 2, flexGrow: 1, backgroundColor: "#151515" }} borderRadius={1} border="1px solid gray">
         <Grid container sx={{ p: 2 }} alignItems="center" spacing={4}>
           <Grid item xs={12} sm={12} md={8} sx={{ overflow: "hidden", textOverflow: "ellipsis" }}>
-            <HeaderText walletIsConnected={walletIsConnected} accountAddress={accountAddress} />
+            <HeaderText walletIsConnected={isConnected} accountAddress={accountAddress} />
           </Grid>
           <Grid item xs={12} sm={12} md={4} textAlign={{ sm: "left", md: "right" }}>
-            <WalletButton
-              onConnectWalletClick={onConnectWalletClick}
-              walletIsConnected={walletIsConnected}
-              wallet={wallet}
-            />
+            <WalletButton/>
           </Grid>
         </Grid>
       </Box>
