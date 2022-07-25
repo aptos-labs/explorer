@@ -16,15 +16,19 @@ import {
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
 import {proposalsData} from "../dummyData";
+import {ProposalType} from "../Types";
+import useProvideProposalMetadata from "../ProvideProposalMetadata";
 
 const TITLE_WIDTH = 400;
 const HASH_WIDTH = 300;
 
 type ProposalCellProps = {
-  proposal: any;
+  proposal: ProposalType;
 };
 
 function TitleCell({proposal}: ProposalCellProps) {
+  const metadata = useProvideProposalMetadata(proposal);
+
   return (
     <TableCell sx={{textAlign: "left"}}>
       <Link
@@ -40,7 +44,7 @@ function TitleCell({proposal}: ProposalCellProps) {
             textOverflow: "ellipsis",
           }}
         >
-          {proposal.execution_content.title}
+          {metadata?.title}
         </Box>
       </Link>
     </TableCell>
@@ -101,7 +105,7 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
 ];
 
 type ProposalRowProps = {
-  proposal: any;
+  proposal: ProposalType;
   columns: ProposalColumn[];
 };
 
@@ -172,7 +176,7 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
 }
 
 type Props = {
-  proposals?: any;
+  proposals?: ProposalType[];
   columns?: ProposalColumn[];
 };
 

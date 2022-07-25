@@ -1,6 +1,5 @@
 import {ProposalType} from "./Types";
 
-const TITLE_PLACEHOLDER = "Title -- Lorem ipsum dolor sit amet";
 const METADATA_LOCATION_PLACEHOLDER =
   "https://mocki.io/v1/32403c87-d5d2-4136-80fd-d639a5d3d7dd";
 
@@ -19,7 +18,6 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1659925697446570",
     execution_content: {
-      title: TITLE_PLACEHOLDER,
       metadata_location: METADATA_LOCATION_PLACEHOLDER,
       metadata_hash:
         "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f675",
@@ -41,7 +39,6 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1659965697446570",
     execution_content: {
-      title: TITLE_PLACEHOLDER,
       metadata_location: METADATA_LOCATION_PLACEHOLDER,
       metadata_hash:
         "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f675",
@@ -63,7 +60,6 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1657995697446570",
     execution_content: {
-      title: TITLE_PLACEHOLDER,
       metadata_location: METADATA_LOCATION_PLACEHOLDER,
       metadata_hash:
         "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f675",
@@ -85,7 +81,6 @@ export const proposalsData: ProposalType[] = [
       "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f673",
     creation_time_secs: "1657935698446570",
     execution_content: {
-      title: TITLE_PLACEHOLDER,
       metadata_location: METADATA_LOCATION_PLACEHOLDER,
       metadata_hash:
         "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f675",

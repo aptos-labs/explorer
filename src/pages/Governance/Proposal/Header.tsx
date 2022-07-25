@@ -1,20 +1,25 @@
 import React from "react";
 import {Grid, Typography} from "@mui/material";
 
-import {proposalsData} from "../dummyData";
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
+import {ProposalType, ProposalMetadata} from "../Types";
 
-export const ProposalHeader = () => {
-  const proposal = proposalsData[0];
+const TITLE_UNAVILABLE = "Title Unavilable";
 
+type Props = {
+  proposal: ProposalType;
+  metadata?: ProposalMetadata;
+};
+
+export const ProposalHeader = ({proposal, metadata}: Props) => {
   const remainingTime = getTimeRemaining(parseInt(proposal.expiration_secs));
 
   return (
     <Grid container>
       <Grid item xs={12}>
         <Typography variant="h5" sx={{mb: 2}}>
-          {proposal.execution_content.title}
+          {metadata !== undefined ? metadata?.title : TITLE_UNAVILABLE}
         </Typography>
       </Grid>
 

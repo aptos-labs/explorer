@@ -3,7 +3,6 @@ export type ProposalType = {
   proposer: string;
   creation_time_secs: string;
   execution_content: {
-    title: string;
     metadata_location: string;
     metadata_hash: string;
   };
@@ -21,4 +20,5 @@ export type ProposalType = {
 export type ProposalMetadata = {
   execution_script: string;
   description: string;
+  title: string;
 };
