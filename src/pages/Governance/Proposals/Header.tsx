@@ -9,7 +9,7 @@ export const Header = () => {
 
   const [wallet, setWallet] = React.useState<any>(null)
   const [walletIsConnected, setWalletIsConnected] = React.useState<boolean>(false)
-  const [accountAddress, setAccountAddres] = React.useState<string | null>(null)
+  const [accountAddress, setAccountAddress] = React.useState<string | null>(null)
 
   useEffect(() => {
     setWallet(getAptosWallet())
@@ -18,7 +18,7 @@ export const Header = () => {
 
   useEffect(() => {
     if (walletIsConnected) {
-      getAccountAddress().then((data) => setAccountAddres(data.address));
+      getAccountAddress().then(setAccountAddress);
     }
   }, [walletIsConnected])
 
