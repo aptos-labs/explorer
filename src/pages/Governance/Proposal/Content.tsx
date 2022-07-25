@@ -4,7 +4,7 @@ import {
     renderRow,
     renderSection,
 } from "../../../pages/Transactions/helpers";
-import { ProposalType } from "../Types";
+import { ProposalType, ProposalMetadata } from "../Types";
 
 function RenderContent(children: React.ReactNode) {
     return renderSection(children, null);
@@ -21,11 +21,10 @@ export function ProposalContent({
         return null;
     }
 
-    const [metadata, setMetadata] = useState<any>(null);
+    const [metadata, setMetadata] = useState<ProposalMetadata>();
+    const {metadata_location} = proposalData.execution_content;
 
     useEffect(() => {
-        const {metadata_location} = proposalData.execution_content;
-    
         const fetchMetadata = async () => {
           try {
             const response = await fetch(metadata_location);
@@ -38,7 +37,7 @@ export function ProposalContent({
         };
     
         fetchMetadata();
-    }, []);
+    }, [metadata_location]);
 
     return (
         RenderContent(

@@ -17,3 +17,8 @@ export type ProposalType = {
   is_voting_closed: boolean;
   proposal_state: string;
 };
+
+export type ProposalMetadata = {
+  execution_script: string;
+  description: string;
+};
