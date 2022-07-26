@@ -5,7 +5,7 @@ import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
 import {ProposalType, ProposalMetadata} from "../Types";
 
-const TITLE_UNAVILABLE = "Title Unavilable";
+const TITLE_UNAVILABLE = "Title Unavailable";
 
 type Props = {
   proposal: ProposalType;
