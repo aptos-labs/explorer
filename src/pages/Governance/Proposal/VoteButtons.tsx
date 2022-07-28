@@ -47,8 +47,8 @@ async function vote(proposalId: string, shouldPass: boolean) {
   const client = new AptosClient(NODE_URL);
 
   const address = HexString.ensure(TEST_ACCOUNT_ADDRESS);
-  const pkey = HexString.ensure(TEST_ACCOUNT_SECRET_KEY);
-  const account = new AptosAccount(pkey.toUint8Array(), address);
+  const secretKey = HexString.ensure(TEST_ACCOUNT_SECRET_KEY);
+  const account = new AptosAccount(secretKey.toUint8Array(), address);
 
   await submitVote(account, client, proposalId, shouldPass);
 }

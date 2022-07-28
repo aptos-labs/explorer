@@ -13,7 +13,7 @@ const TEST_ACCOUNT_SECRET_KEY =
   "0x894e620e2e96748118f448388ac4877bb3799be5233426e869a97e2ffcd91381";
 
 /* OPTIONAL: Please replace the following with your own test data */
-const TEST_EXCUTION_HASH =
+const TEST_EXECUTION_HASH =
   "0x21bd7a43e576297d3f71badd7ee740ccd2ef8a13cf6660075ae2de0994b1f433";
 const TEST_METADATA_LOCATION =
   "https://mocki.io/v1/32403c87-d5d2-4136-80fd-d639a5d3d7dd";
@@ -37,7 +37,7 @@ async function createProposal(
     type_arguments: [],
     arguments: [
       account.address().hex(),
-      TEST_EXCUTION_HASH,
+      TEST_EXECUTION_HASH,
       metadata_location,
       metadata_hash,
     ],
