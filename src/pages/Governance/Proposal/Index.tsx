@@ -28,7 +28,7 @@ function getProposalData(
   proposalId: string | undefined,
   tableHandle: string,
   networkValue: string,
-): Proposal {
+): Proposal | null {
   const data: Types.TableItemRequest = {
     key_type: "u64",
     value_type:
@@ -41,7 +41,11 @@ function getProposalData(
     () => getTableItem(tableHandle, data, networkValue),
   );
 
-  return tableItem.data?.data;
+  if (tableItem.data?.status !== 200) {
+    return null;
+  } else {
+    return tableItem.data?.data;
+  }
 }
 
 export const ProposalPage = () => {
@@ -58,7 +62,11 @@ export const ProposalPage = () => {
   const metadata = useProvideMetadata(proposal);
 
   if (proposal == null) {
-    return null;
+    return (
+      <Grid container marginTop={{md: 12, xs: 6}}>
+        PROPOSAL NOT FOUND
+      </Grid>
+    );
   }
 
   return (

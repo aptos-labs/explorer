@@ -7,7 +7,7 @@ const emptyMetadata: ProposalMetadata = {
   title: "N/A",
 };
 
-const useProvideMetadata = (proposal: Proposal): ProposalMetadata => {
+const useProvideMetadata = (proposal: Proposal | null): ProposalMetadata => {
   const [metadata, setMetadata] = useState<ProposalMetadata>(emptyMetadata);
 
   useEffect(() => {
