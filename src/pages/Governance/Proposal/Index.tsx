@@ -61,8 +61,6 @@ export const ProposalPage = () => {
     return null;
   }
 
-  console.log(proposal);
-
   return (
     <Grid container marginTop={{md: 12, xs: 6}}>
       <Grid xs={12} item>
