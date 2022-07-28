@@ -6,18 +6,48 @@ import {VoteButtons} from "./VoteButtons";
 import {Proposal} from "../Types";
 import {useWalletContext} from "../../../context/wallet/context";
 
+const EMPTY_VOTE = "N/A";
+
 type ProposalCardProps = {
   proposal: Proposal;
 };
 
-export function ProposalCard({proposal}: ProposalCardProps) {
-  const totalVotes = proposal.yes_votes + proposal.no_votes;
-  const votedForPercent = ((proposal.yes_votes * 100) / totalVotes).toFixed(0);
-  const votedAgainstrPercent = ((proposal.no_votes * 100) / totalVotes).toFixed(
-    0,
-  );
+type VotePercentage = {
+  yes: string;
+  no: string;
+};
 
+function getVotePercentage(
+  yesVotesStr: string,
+  noVotesStr: string,
+): VotePercentage {
+  const yesVotes: number = parseInt(yesVotesStr);
+  const noVotes: number = parseInt(noVotesStr);
+
+  if (yesVotes === 0 && noVotes === 0) {
+    return {
+      yes: EMPTY_VOTE,
+      no: EMPTY_VOTE,
+    };
+  }
+
+  const totalVotes = yesVotes + noVotes;
+  const yesVotePercentage = ((yesVotes * 100) / totalVotes).toFixed(0);
+  const noVotePercentage = ((noVotes * 100) / totalVotes).toFixed(0);
+
+  return {
+    yes: `${yesVotePercentage}%`,
+    no: `${noVotePercentage}%`,
+  };
+}
+
+export function ProposalCard({proposal}: ProposalCardProps) {
   const {isConnected} = useWalletContext();
+
+  const votePercentage = getVotePercentage(
+    proposal.yes_votes,
+    proposal.no_votes,
+  );
 
   return (
     <Box position="relative">
@@ -47,8 +77,8 @@ export function ProposalCard({proposal}: ProposalCardProps) {
           >
             <Typography>Results</Typography>
             <Divider variant="fullWidth" orientation="horizontal" />
-            <Typography mt={2}>For: {votedForPercent}%</Typography>
-            <Typography>Against: {votedAgainstrPercent}%</Typography>
+            <Typography mt={2}>For: {votePercentage.yes}</Typography>
+            <Typography>Against: {votePercentage.no}</Typography>
           </Grid>
           {isConnected ? (
             <Grid
