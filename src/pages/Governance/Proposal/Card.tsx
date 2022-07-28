@@ -3,11 +3,11 @@ import {Box, Divider, Grid, Typography} from "@mui/material";
 
 import {WalletButton} from "../../../components/WalletButton";
 import {VoteButtons} from "./VoteButtons";
-import {ProposalType} from "../Types";
+import {Proposal} from "../Types";
 import {useWalletContext} from "../../../context/wallet/context";
 
 type ProposalCardProps = {
-  proposal: ProposalType;
+  proposal: Proposal;
 };
 
 export function ProposalCard({proposal}: ProposalCardProps) {

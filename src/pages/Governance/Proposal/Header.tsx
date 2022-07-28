@@ -3,13 +3,14 @@ import {Grid, Typography} from "@mui/material";
 
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
-import {ProposalType, ProposalMetadata} from "../Types";
+import {Proposal, ProposalMetadata} from "../Types";
 
 const TITLE_UNAVAILABLE = "Title Unavailable";
+const STATUS_PLACEHOLDER = "Status To Be Implemented";
 
 type Props = {
-  proposal: ProposalType;
-  metadata?: ProposalMetadata;
+  proposal: Proposal;
+  metadata: ProposalMetadata;
 };
 
 export const ProposalHeader = ({proposal, metadata}: Props) => {
@@ -26,7 +27,8 @@ export const ProposalHeader = ({proposal, metadata}: Props) => {
       <Grid item xs={12} sm={6}>
         <Grid item sm={6} mb={2}>
           <Typography color="primary" component="span">
-            {proposal.proposal_state} {""}
+            {/* TODO: query with move func get_proposal_state */}
+            {STATUS_PLACEHOLDER} {""}
           </Typography>
         </Grid>
         <Grid item sm={6} mb={2}>
