@@ -1,15 +1,15 @@
 import React from "react";
 import {Stack, Divider} from "@mui/material";
 import {renderRow, renderSection} from "../../../pages/Transactions/helpers";
-import {ProposalType, ProposalMetadata} from "../Types";
+import {Proposal, ProposalMetadata} from "../Types";
 
 function RenderContent(children: React.ReactNode) {
   return renderSection(children, null);
 }
 
 type Props = {
-  proposal: ProposalType;
-  metadata?: ProposalMetadata;
+  proposal: Proposal;
+  metadata: ProposalMetadata;
 };
 
 export function ProposalContent({proposal, metadata}: Props) {
