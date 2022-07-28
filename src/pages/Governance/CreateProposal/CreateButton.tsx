@@ -1,5 +1,5 @@
-import {Button, Grid} from "@mui/material";
-import React from "react";
+import {Button, Grid, Typography} from "@mui/material";
+import React, {useState} from "react";
 import {AptosClient, AptosAccount, FaucetClient, HexString, Types} from "aptos";
 
 /* REQUIRED: Please replace the following with your own local network urls */
@@ -20,7 +20,10 @@ const TEST_METADATA_LOCATION =
 const TEST_METADATA_HASH =
   "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f675";
 
-async function createProposal(account: AptosAccount, client: AptosClient) {
+async function createProposal(
+  account: AptosAccount,
+  client: AptosClient,
+): Promise<string> {
   const metadata_location = HexString.fromUint8Array(
     new TextEncoder().encode(TEST_METADATA_LOCATION),
   ).hex();
@@ -40,7 +43,8 @@ async function createProposal(account: AptosAccount, client: AptosClient) {
     ],
   };
   const transactionRes = await doTransaction(account, client, payload);
-  console.log("proposal", transactionRes.hash);
+
+  return transactionRes.hash;
 }
 
 async function doTransaction(
@@ -83,19 +87,34 @@ export function CreateButton() {
     const account = new AptosAccount(secretKey.toUint8Array(), address);
     await faucetClient.fundAccount(account.address(), 5000);
 
-    await createProposal(account, client);
+    const proposalHash = await createProposal(account, client);
+    setProposalHash(proposalHash);
   };
 
+  const [proposalHash, setProposalHash] = useState<string>();
+
   return (
-    <Grid
-      container
-      direction="row"
-      justifyContent={{xs: "center", sm: "flex"}}
-      alignItems="center"
-    >
-      <Button variant="primary" sx={{mr: 2}} onClick={onCreateProposalClick}>
-        Create a Test Proposal
-      </Button>
-    </Grid>
+    <>
+      <Grid
+        container
+        direction="row"
+        justifyContent={{xs: "center", sm: "flex"}}
+        alignItems="center"
+      >
+        <Button variant="primary" sx={{mr: 2}} onClick={onCreateProposalClick}>
+          Create a Test Proposal
+        </Button>
+      </Grid>
+      {proposalHash == null ? null : (
+        <Grid
+          container
+          direction="row"
+          justifyContent={{xs: "center", sm: "flex"}}
+          alignItems="center"
+        >
+          <Typography mt={6}>New Proposal: {proposalHash}</Typography>
+        </Grid>
+      )}
+    </>
   );
 }

@@ -10,6 +10,7 @@ const EMPTY_VOTE = "N/A";
 
 type ProposalCardProps = {
   proposal: Proposal;
+  proposalId: string;
 };
 
 type VotePercentage = {
@@ -41,7 +42,7 @@ function getVotePercentage(
   };
 }
 
-export function ProposalCard({proposal}: ProposalCardProps) {
+export function ProposalCard({proposal, proposalId}: ProposalCardProps) {
   const {isConnected} = useWalletContext();
 
   const votePercentage = getVotePercentage(
@@ -88,7 +89,7 @@ export function ProposalCard({proposal}: ProposalCardProps) {
               md={6}
               textAlign={{xs: "left", sm: "right"}}
             >
-              <VoteButtons />
+              <VoteButtons proposalId={proposalId} />
             </Grid>
           ) : (
             <Grid

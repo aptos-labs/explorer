@@ -63,7 +63,7 @@ export const ProposalPage = () => {
 
   const metadata = useProvideMetadata(proposal);
 
-  if (proposal == null) {
+  if (proposal == null || proposalId == null) {
     return (
       <Grid container marginTop={{md: 12, xs: 6}}>
         PROPOSAL NOT FOUND
@@ -77,7 +77,7 @@ export const ProposalPage = () => {
         <ProposalHeader proposal={proposal} metadata={metadata} />
       </Grid>
       <Grid xs={12} item sx={{mb: 6}}>
-        <ProposalCard proposal={proposal} />
+        <ProposalCard proposal={proposal} proposalId={proposalId} />
       </Grid>
       <Grid item sx={{mb: 6}}>
         <ProposalContent proposal={proposal} metadata={metadata} />
