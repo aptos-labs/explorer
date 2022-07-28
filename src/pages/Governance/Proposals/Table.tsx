@@ -15,9 +15,13 @@ import {
 } from "@mui/material";
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
-import {proposalsData} from "../dummyData";
-import {ProposalType} from "../Types";
+import {ProposalsResponseType, ProposalType} from "../Types";
 import useProvideProposalMetadata from "../ProvideProposalMetadata";
+import { useQuery } from "react-query";
+import { Types } from "aptos";
+import { ResponseError } from "../../../api/client";
+import { getTableItem } from "../../../api";
+import { useGlobalState } from "../../../GlobalState";
 
 const TITLE_WIDTH = 400;
 const HASH_WIDTH = 300;
@@ -27,6 +31,7 @@ type ProposalCellProps = {
 };
 
 function TitleCell({proposal}: ProposalCellProps) {
+  if(!proposal) return null;
   const metadata = useProvideProposalMetadata(proposal);
 
   return (
@@ -53,7 +58,7 @@ function TitleCell({proposal}: ProposalCellProps) {
 
 function StatusCell({proposal}: ProposalCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>{proposal.proposal_state}</TableCell>
+    <TableCell sx={{textAlign: "left"}}>{proposal.is_resolved}</TableCell>
   );
 }
 
@@ -105,16 +110,38 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
 ];
 
 type ProposalRowProps = {
-  proposal: ProposalType;
   columns: ProposalColumn[];
+  proposal_id: number;
+  handle:string
 };
 
-function ProposalRow({proposal, columns}: ProposalRowProps) {
+function ProposalRow({proposal_id,handle, columns}: ProposalRowProps) {
+
+  const [state, _setState] = useGlobalState();
+  const votingTableItemRequest = {
+    key_type: "u64",
+    value_type: "0x1::voting::Proposal<0x1::governance_proposal::GovernanceProposal>",
+    key: proposal_id + ""
+  }
+  const tableItem = useQuery<
+    Array<any>,
+    ResponseError
+  >(["tableItem", handle, votingTableItemRequest, state.network_value], () =>
+  getTableItem(handle, votingTableItemRequest, state.network_value)
+  );
+
+  if(!tableItem.data) return null;
+
+  const tableItemData = tableItem.data as unknown as ProposalsResponseType
+  const proposalData = tableItemData.data
+  proposalData.proposal_id = proposal_id + "";
+  console.log("proposalData",proposalData)
+
   return (
     <TableRow hover>
       {columns.map((column) => {
         const Cell = ProposalCells[column];
-        return <Cell key={column} proposal={proposal} />;
+        return <Cell key={column} proposal={proposalData} />;
       })}
     </TableRow>
   );
@@ -178,16 +205,28 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
 type Props = {
   proposals?: ProposalType[];
   columns?: ProposalColumn[];
+  next_proposal_id: string;
+  handle:string
 };
 
 // TODO: generalize Table component for transactions and proposals
 export function ProposalsTable({
-  proposals = proposalsData,
+  next_proposal_id,
+  handle,
   columns = DEFAULT_COLUMNS,
 }: Props) {
-  if (!proposals) {
-    // TODO: handle errors
-    return <>No proposal info</>;
+
+  const proposalRows = [];
+
+  const counter = parseInt(next_proposal_id);
+  for (var i = 0; i < counter; i++) {
+    proposalRows.push(
+    <ProposalRow
+      key={i}
+      proposal_id={i}
+      handle={handle}
+      columns={columns}
+      />);
   }
 
   const tableComponent = (
@@ -200,15 +239,7 @@ export function ProposalsTable({
         </TableRow>
       </TableHead>
       <TableBody>
-        {proposals.map((proposal: any, i: any) => {
-          return (
-            <ProposalRow
-              key={`${i}-${proposal.proposal_id}`}
-              proposal={proposal}
-              columns={columns}
-            />
-          );
-        })}
+        {proposalRows}
       </TableBody>
     </Table>
   );

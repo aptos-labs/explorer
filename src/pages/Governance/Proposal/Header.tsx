@@ -26,7 +26,7 @@ export const ProposalHeader = ({proposal, metadata}: Props) => {
       <Grid item xs={12} sm={6}>
         <Grid item sm={6} mb={2}>
           <Typography color="primary" component="span">
-            {proposal.proposal_state} {""}
+            {proposal.is_resolved} {""}
           </Typography>
         </Grid>
         <Grid item sm={6} mb={2}>

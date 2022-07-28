@@ -3,8 +3,12 @@ export type ProposalType = {
   proposer: string;
   creation_time_secs: string;
   execution_content: {
-    metadata_location: string;
-    metadata_hash: string;
+    vec: [
+      {
+        metadata_location: string;
+        metadata_hash: string;
+      }
+    ]
   };
   execution_hash: string;
   min_vote_threshold: number;
@@ -13,8 +17,9 @@ export type ProposalType = {
   yes_votes: number;
   no_votes: number;
   is_resolved: boolean;
-  is_voting_closed: boolean;
-  proposal_state: string;
+  // TODO - need to add to api response
+  //is_voting_closed: boolean;
+  //proposal_state: string;
 };
 
 export type ProposalMetadata = {
@@ -22,3 +27,7 @@ export type ProposalMetadata = {
   description: string;
   title: string;
 };
+
+export type ProposalsResponseType = {
+  data : ProposalType
+}
