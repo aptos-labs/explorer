@@ -3,13 +3,13 @@ import {Grid, Typography} from "@mui/material";
 
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
-import {ProposalType, ProposalMetadata} from "../Types";
+import {Proposal, ProposalMetadata} from "../Types";
 
 const TITLE_UNAVAILABLE = "Title Unavailable";
 
 type Props = {
-  proposal: ProposalType;
-  metadata?: ProposalMetadata;
+  proposal: Proposal;
+  metadata: ProposalMetadata;
 };
 
 export const ProposalHeader = ({proposal, metadata}: Props) => {

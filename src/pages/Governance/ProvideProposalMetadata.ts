@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
-import {ProposalType, ProposalMetadata} from "./Types";
+import {Proposal, ProposalMetadata} from "./Types";
 
 const useProvideProposalMetadata = (
-  proposal: ProposalType,
+  proposal: Proposal,
 ): ProposalMetadata | undefined => {
   
   const [metadata, setMetadata] = useState<ProposalMetadata>();

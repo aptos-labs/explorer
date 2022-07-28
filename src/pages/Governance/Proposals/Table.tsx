@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
-import {ProposalsResponseType, ProposalType} from "../Types";
+import {ProposalsResponseType, Proposal} from "../Types";
 import useProvideProposalMetadata from "../ProvideProposalMetadata";
 import { useQuery } from "react-query";
 import { Types } from "aptos";
@@ -27,7 +27,7 @@ const TITLE_WIDTH = 400;
 const HASH_WIDTH = 300;
 
 type ProposalCellProps = {
-  proposal: ProposalType;
+  proposal: Proposal;
 };
 
 function TitleCell({proposal}: ProposalCellProps) {
@@ -135,7 +135,6 @@ function ProposalRow({proposal_id,handle, columns}: ProposalRowProps) {
   const tableItemData = tableItem.data as unknown as ProposalsResponseType
   const proposalData = tableItemData.data
   proposalData.proposal_id = proposal_id + "";
-  console.log("proposalData",proposalData)
 
   return (
     <TableRow hover>
@@ -203,7 +202,7 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
 }
 
 type Props = {
-  proposals?: ProposalType[];
+  proposals?: Proposal[];
   columns?: ProposalColumn[];
   next_proposal_id: string;
   handle:string
