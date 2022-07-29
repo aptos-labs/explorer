@@ -183,20 +183,20 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
 type ProposalsTableProps = {
   proposals?: Proposal[];
   columns?: ProposalColumn[];
-  next_proposal_id: string;
+  nextProposalId: string;
   handle: string;
 };
 
 // TODO: generalize Table component for transactions and proposals
 export function ProposalsTable({
-  next_proposal_id,
+  nextProposalId,
   handle,
   columns = DEFAULT_COLUMNS,
 }: ProposalsTableProps) {
   const proposalRows = [];
-  // we need to iterate from (0...next_proposal_id)
+  // we need to iterate from (0...nextProposalId)
   // to make api call for each proposal
-  const counter = parseInt(next_proposal_id);
+  const counter = parseInt(nextProposalId);
   for (var proposal_id = 0; proposal_id < counter; proposal_id++) {
     proposalRows.push(
       <ProposalRow

@@ -13,7 +13,7 @@ export function GovernancePage() {
     return <>No Data</>;
   }
 
-  const {next_proposal_id, handle} = data;
+  const {next_proposal_id: nextProposalId, handle} = data;
 
   return (
     <Grid item xs={12} marginTop={{md: 12, xs: 6}}>
@@ -21,7 +21,7 @@ export function GovernancePage() {
         <Header />
       </Grid>
       <Grid>
-        <ProposalsTable next_proposal_id={next_proposal_id} handle={handle} />
+        <ProposalsTable nextProposalId={nextProposalId} handle={handle} />
       </Grid>
     </Grid>
   );
