@@ -1,17 +1,16 @@
-import React, { useEffect } from "react";
+import React, {useEffect} from "react";
 import {Grid} from "@mui/material";
 
 import {Header} from "./Header";
 import {ProposalsTable} from "./Table";
-import { useGetProposalsTableData } from "../hooks/useGetProposalsTableData";
+import {useGetProposalsTableData} from "../hooks/useGetProposalsTableData";
 
 export function GovernancePage() {
+  const data = useGetProposalsTableData();
 
-  const data = useGetProposalsTableData()
-
-  if(!data){
+  if (!data) {
     // TODO: handle errors
-    return <>No Data</>
+    return <>No Data</>;
   }
 
   const {next_proposal_id, handle} = data;
@@ -22,10 +21,7 @@ export function GovernancePage() {
         <Header />
       </Grid>
       <Grid>
-        <ProposalsTable 
-          next_proposal_id={next_proposal_id} 
-          handle={handle}
-        />
+        <ProposalsTable next_proposal_id={next_proposal_id} handle={handle} />
       </Grid>
     </Grid>
   );

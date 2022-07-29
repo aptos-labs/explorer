@@ -13,7 +13,6 @@ type Props = {
 };
 
 export function ProposalContent({proposal}: Props) {
-
   const metadata = useProvideProposalMetadata(proposal);
 
   return RenderContent(

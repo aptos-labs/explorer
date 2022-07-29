@@ -16,7 +16,7 @@ import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
 import {Proposal} from "../Types";
 import useProvideProposalMetadata from "../ProvideProposalMetadata";
-import { useGetProposal } from "../hooks/useGetProposal";
+import {useGetProposal} from "../hooks/useGetProposal";
 
 const TITLE_WIDTH = 400;
 const HASH_WIDTH = 300;
@@ -26,7 +26,7 @@ type ProposalCellProps = {
 };
 
 function TitleCell({proposal}: ProposalCellProps) {
-  if(!proposal) return null;
+  if (!proposal) return null;
   const metadata = useProvideProposalMetadata(proposal);
 
   return (
@@ -46,9 +46,7 @@ function TitleCell({proposal}: ProposalCellProps) {
 }
 
 function StatusCell({proposal}: ProposalCellProps) {
-  return (
-    <TableCell sx={{textAlign: "left"}}>{proposal.is_resolved}</TableCell>
-  );
+  return <TableCell sx={{textAlign: "left"}}>{proposal.is_resolved}</TableCell>;
 }
 
 function ProposerCell({proposal}: ProposalCellProps) {
@@ -101,18 +99,18 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
 type ProposalRowProps = {
   columns: ProposalColumn[];
   proposal_id: string;
-  handle:string
+  handle: string;
 };
 
-function ProposalRow({proposal_id,handle, columns}: ProposalRowProps) {
-  const proposalData = useGetProposal(handle,proposal_id)
+function ProposalRow({proposal_id, handle, columns}: ProposalRowProps) {
+  const proposalData = useGetProposal(handle, proposal_id);
   const navigate = RRD.useNavigate();
 
   const onTableRowClick = () => {
-      navigate(`${handle}/${proposal_id}`)
-  }
+    navigate(`${handle}/${proposal_id}`);
+  };
 
-  if(!proposalData){
+  if (!proposalData) {
     // returns null as we dont need to generate a TableRow if there is no proposal data
     return null;
   }
@@ -186,7 +184,7 @@ type Props = {
   proposals?: Proposal[];
   columns?: ProposalColumn[];
   next_proposal_id: string;
-  handle:string
+  handle: string;
 };
 
 // TODO: generalize Table component for transactions and proposals
@@ -195,19 +193,20 @@ export function ProposalsTable({
   handle,
   columns = DEFAULT_COLUMNS,
 }: Props) {
-
   const proposalRows = [];
 
   // we need to iterate from (0...next_proposal_id - 1)
   // to make api call for each proposal
   const counter = parseInt(next_proposal_id);
   for (var proposal_id = 0; proposal_id < counter; proposal_id++) {
-    proposalRows.push(<ProposalRow
-      key={proposal_id}
-      proposal_id={proposal_id+""} // cast into string as future uses expects proposal_id as a string type
-      handle={handle}
-      columns={columns}
-      />);
+    proposalRows.push(
+      <ProposalRow
+        key={proposal_id}
+        proposal_id={proposal_id + ""} // cast into string as future uses expects proposal_id as a string type
+        handle={handle}
+        columns={columns}
+      />,
+    );
   }
 
   const tableComponent = (
@@ -219,9 +218,7 @@ export function ProposalsTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
-        {proposalRows}
-      </TableBody>
+      <TableBody>{proposalRows}</TableBody>
     </Table>
   );
 

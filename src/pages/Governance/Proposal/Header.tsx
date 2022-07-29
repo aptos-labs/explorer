@@ -13,7 +13,6 @@ type Props = {
 };
 
 export const ProposalHeader = ({proposal}: Props) => {
-  
   const metadata = useProvideProposalMetadata(proposal);
   const remainingTime = getTimeRemaining(parseInt(proposal.expiration_secs));
 

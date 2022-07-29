@@ -1,5 +1,5 @@
 import {AptosClient, Types} from "aptos";
-import { TableItemRequest } from "aptos/dist/api/data-contracts";
+import {TableItemRequest} from "aptos/dist/api/data-contracts";
 import {withResponseError} from "./client";
 
 export async function getTransactions(
@@ -79,7 +79,7 @@ export function getAccountModules(
 }
 
 export function getTableItem(
-  tableHandle: string, 
+  tableHandle: string,
   data: TableItemRequest,
   nodeUrl: string,
 ): Promise<any> {

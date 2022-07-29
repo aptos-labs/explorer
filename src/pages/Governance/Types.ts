@@ -30,5 +30,5 @@ export type ProposalMetadata = {
 };
 
 export type ProposalsResponseType = {
-  data : Proposal
-}
+  data: Proposal;
+};

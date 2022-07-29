@@ -4,8 +4,8 @@ import {ProposalHeader} from "./Header";
 import {ProposalCard} from "./Card";
 import {ProposalContent} from "./Content";
 import {useParams} from "react-router-dom";
-import { useGetProposal } from "../hooks/useGetProposal";
-import { EmptyProposal } from "./EmptyProposal";
+import {useGetProposal} from "../hooks/useGetProposal";
+import {EmptyProposal} from "./EmptyProposal";
 
 export type ProposalPageURLParams = {
   id: string;
@@ -15,8 +15,8 @@ export type ProposalPageURLParams = {
 export const ProposalPage = () => {
   // useParams type signature is string | undefined - to go around it we cast the return value
   const {id: proposalId, handle} = useParams() as ProposalPageURLParams;
-  const proposal = useGetProposal(handle, proposalId)
-  
+  const proposal = useGetProposal(handle, proposalId);
+
   if (!proposal) {
     return <EmptyProposal />;
   }

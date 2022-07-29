@@ -4,9 +4,8 @@ import {Proposal, ProposalMetadata} from "./Types";
 const useProvideProposalMetadata = (
   proposal: Proposal,
 ): ProposalMetadata | undefined => {
-  
   const [metadata, setMetadata] = useState<ProposalMetadata>();
-  const { metadata_location } = proposal.execution_content.vec[0];
+  const {metadata_location} = proposal.execution_content.vec[0];
 
   useEffect(() => {
     const fetchMetadata = async () => {
