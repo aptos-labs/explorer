@@ -20,7 +20,7 @@ export const ProposalHeader = ({proposal}: Props) => {
     <Grid container>
       <Grid item xs={12}>
         <Typography variant="h5" sx={{mb: 2}}>
-          {metadata !== undefined ? metadata?.title : TITLE_UNAVAILABLE}
+          {metadata ? metadata.title : TITLE_UNAVAILABLE}
         </Typography>
       </Grid>
 

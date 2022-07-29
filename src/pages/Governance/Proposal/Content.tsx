@@ -24,8 +24,8 @@ export function ProposalContent({proposal}: Props) {
       }
     >
       {renderRow("Proposal Hash:", proposal.execution_hash)}
-      {metadata && renderRow("Proposal Script", metadata?.execution_script)}
-      {metadata && renderRow("Description:", metadata?.description)}
+      {metadata && renderRow("Proposal Script", metadata.execution_script)}
+      {metadata && renderRow("Description:", metadata.description)}
     </Stack>,
   );
 }

@@ -180,7 +180,7 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
   }
 }
 
-type Props = {
+type ProposalsTableProps = {
   proposals?: Proposal[];
   columns?: ProposalColumn[];
   next_proposal_id: string;
@@ -192,10 +192,10 @@ export function ProposalsTable({
   next_proposal_id,
   handle,
   columns = DEFAULT_COLUMNS,
-}: Props) {
-  const proposalRows = [];
+}: ProposalsTableProps) {
 
-  // we need to iterate from (0...next_proposal_id - 1)
+  const proposalRows = [];
+  // we need to iterate from (0...next_proposal_id)
   // to make api call for each proposal
   const counter = parseInt(next_proposal_id);
   for (var proposal_id = 0; proposal_id < counter; proposal_id++) {
