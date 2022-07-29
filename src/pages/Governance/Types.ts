@@ -18,7 +18,7 @@ export type Proposal = {
   yes_votes: string;
   no_votes: string;
   is_resolved: boolean;
-  // TODO - calculate both on the client
+  // TODO - fetch or calculate both on the client
   // is_voting_closed: boolean;
   // proposal_state: string;
 };
@@ -27,8 +27,4 @@ export type ProposalMetadata = {
   execution_script: string;
   description: string;
   title: string;
-};
-
-export type ProposalsResponseType = {
-  data: Proposal;
 };

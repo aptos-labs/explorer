@@ -8,11 +8,11 @@ function RenderContent(children: React.ReactNode) {
   return renderSection(children, null);
 }
 
-type Props = {
+type ProposalContentProps = {
   proposal: Proposal;
 };
 
-export function ProposalContent({proposal}: Props) {
+export function ProposalContent({proposal}: ProposalContentProps) {
   const metadata = useProvideProposalMetadata(proposal);
 
   return RenderContent(

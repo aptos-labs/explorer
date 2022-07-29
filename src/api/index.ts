@@ -79,10 +79,10 @@ export function getAccountModules(
 }
 
 export function getTableItem(
-  tableHandle: string,
-  data: TableItemRequest,
+  requestParameters: {tableHandle: string; data: TableItemRequest},
   nodeUrl: string,
 ): Promise<any> {
   const client = new AptosClient(nodeUrl);
+  const {tableHandle, data} = requestParameters;
   return withResponseError(client.getTableItem(tableHandle, data));
 }

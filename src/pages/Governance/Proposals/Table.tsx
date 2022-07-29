@@ -193,7 +193,6 @@ export function ProposalsTable({
   handle,
   columns = DEFAULT_COLUMNS,
 }: ProposalsTableProps) {
-
   const proposalRows = [];
   // we need to iterate from (0...next_proposal_id)
   // to make api call for each proposal
@@ -202,7 +201,7 @@ export function ProposalsTable({
     proposalRows.push(
       <ProposalRow
         key={proposal_id}
-        proposal_id={proposal_id + ""} // cast into string as future uses expects proposal_id as a string type
+        proposal_id={proposal_id + ""} // cast into a string as future uses expects proposal_id as a string type
         handle={handle}
         columns={columns}
       />,
