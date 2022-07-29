@@ -3,16 +3,18 @@ import {Grid, Typography} from "@mui/material";
 
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
-import {Proposal, ProposalMetadata} from "../Types";
+import {Proposal} from "../Types";
+import useProvideProposalMetadata from "../ProvideProposalMetadata";
 
 const TITLE_UNAVAILABLE = "Title Unavailable";
 
 type Props = {
   proposal: Proposal;
-  metadata: ProposalMetadata;
 };
 
-export const ProposalHeader = ({proposal, metadata}: Props) => {
+export const ProposalHeader = ({proposal}: Props) => {
+  
+  const metadata = useProvideProposalMetadata(proposal);
   const remainingTime = getTimeRemaining(parseInt(proposal.expiration_secs));
 
   return (
@@ -26,7 +28,8 @@ export const ProposalHeader = ({proposal, metadata}: Props) => {
       <Grid item xs={12} sm={6}>
         <Grid item sm={6} mb={2}>
           <Typography color="primary" component="span">
-            {proposal.is_resolved} {""}
+            {/* TODO - calculate/fetch proposal status */}
+            Proposal Status
           </Typography>
         </Grid>
         <Grid item sm={6} mb={2}>

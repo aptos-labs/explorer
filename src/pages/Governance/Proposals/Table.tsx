@@ -3,7 +3,6 @@ import * as RRD from "react-router-dom";
 import {useTheme} from "@mui/material";
 import Title from "../../../components/Title";
 import {
-  Link,
   Stack,
   Box,
   Table,
@@ -15,13 +14,9 @@ import {
 } from "@mui/material";
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
-import {ProposalsResponseType, Proposal} from "../Types";
+import {Proposal} from "../Types";
 import useProvideProposalMetadata from "../ProvideProposalMetadata";
-import { useQuery } from "react-query";
-import { Types } from "aptos";
-import { ResponseError } from "../../../api/client";
-import { getTableItem } from "../../../api";
-import { useGlobalState } from "../../../GlobalState";
+import { useGetProposal } from "../hooks/useGetProposal";
 
 const TITLE_WIDTH = 400;
 const HASH_WIDTH = 300;
@@ -36,22 +31,16 @@ function TitleCell({proposal}: ProposalCellProps) {
 
   return (
     <TableCell sx={{textAlign: "left"}}>
-      <Link
-        component={RRD.Link}
-        to={`/txn/${proposal.proposal_id}`}
-        color="primary"
+      <Box
+        component="div"
+        sx={{
+          width: TITLE_WIDTH,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
       >
-        <Box
-          component="div"
-          sx={{
-            width: TITLE_WIDTH,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {metadata?.title}
-        </Box>
-      </Link>
+        {metadata?.title}
+      </Box>
     </TableCell>
   );
 }
@@ -111,33 +100,25 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
 
 type ProposalRowProps = {
   columns: ProposalColumn[];
-  proposal_id: number;
+  proposal_id: string;
   handle:string
 };
 
 function ProposalRow({proposal_id,handle, columns}: ProposalRowProps) {
+  const proposalData = useGetProposal(handle,proposal_id)
+  const navigate = RRD.useNavigate();
 
-  const [state, _setState] = useGlobalState();
-  const votingTableItemRequest = {
-    key_type: "u64",
-    value_type: "0x1::voting::Proposal<0x1::governance_proposal::GovernanceProposal>",
-    key: proposal_id + ""
+  const onTableRowClick = () => {
+      navigate(`${handle}/${proposal_id}`)
   }
-  const tableItem = useQuery<
-    Array<any>,
-    ResponseError
-  >(["tableItem", handle, votingTableItemRequest, state.network_value], () =>
-  getTableItem(handle, votingTableItemRequest, state.network_value)
-  );
 
-  if(!tableItem.data) return null;
-
-  const tableItemData = tableItem.data as unknown as ProposalsResponseType
-  const proposalData = tableItemData.data
-  proposalData.proposal_id = proposal_id + "";
+  if(!proposalData){
+    // returns null as we dont need to generate a TableRow if there is no proposal data
+    return null;
+  }
 
   return (
-    <TableRow hover>
+    <TableRow hover onClick={onTableRowClick}>
       {columns.map((column) => {
         const Cell = ProposalCells[column];
         return <Cell key={column} proposal={proposalData} />;
@@ -217,12 +198,13 @@ export function ProposalsTable({
 
   const proposalRows = [];
 
+  // we need to iterate from (0...next_proposal_id - 1)
+  // to make api call for each proposal
   const counter = parseInt(next_proposal_id);
-  for (var i = 0; i < counter; i++) {
-    proposalRows.push(
-    <ProposalRow
-      key={i}
-      proposal_id={i}
+  for (var proposal_id = 0; proposal_id < counter; proposal_id++) {
+    proposalRows.push(<ProposalRow
+      key={proposal_id}
+      proposal_id={proposal_id+""} // cast into string as future uses expects proposal_id as a string type
       handle={handle}
       columns={columns}
       />);
