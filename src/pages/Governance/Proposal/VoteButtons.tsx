@@ -1,11 +1,10 @@
 import {Button, Grid, Tooltip} from "@mui/material";
 import React from "react";
-import {AptosClient, AptosAccount, FaucetClient, HexString, Types} from "aptos";
+import {AptosClient, AptosAccount, HexString, Types} from "aptos";
+import {useGlobalState} from "../../../GlobalState";
+import {doTransaction} from "../../utils";
 
-/* REQUIRED: Please replace the following with your own local network urls */
-const NODE_URL = "http://127.0.0.1:8080";
-
-/* REQUIRED: Please replace the following with your own test account information */
+// TODO: replace the following hard code data with account info from the wallet connected
 const TEST_ACCOUNT_ADDRESS =
   "c1bc62cb0e142a8fcfdcd01ce2a9f5b01355fba73290768f62069fa6902e1585";
 const TEST_ACCOUNT_SECRET_KEY =
@@ -25,26 +24,14 @@ async function submitVote(
   };
 
   const transactionRes = await doTransaction(account, client, payload);
-  console.log("vote", transactionRes);
 }
 
-async function doTransaction(
-  account: AptosAccount,
-  client: AptosClient,
-  payload: any,
+async function vote(
+  networkValue: string,
+  proposalId: string,
+  shouldPass: boolean,
 ) {
-  const txnRequest = await client.generateTransaction(
-    account.address(),
-    payload,
-  );
-  const signedTxn = await client.signTransaction(account, txnRequest);
-  const transactionRes = await client.submitTransaction(signedTxn);
-  await client.waitForTransaction(transactionRes.hash);
-  return transactionRes;
-}
-
-async function vote(proposalId: string, shouldPass: boolean) {
-  const client = new AptosClient(NODE_URL);
+  const client = new AptosClient(networkValue);
 
   const address = HexString.ensure(TEST_ACCOUNT_ADDRESS);
   const secretKey = HexString.ensure(TEST_ACCOUNT_SECRET_KEY);
@@ -58,6 +45,8 @@ type Props = {
 };
 
 export function VoteButtons({proposalId}: Props) {
+  const [state, _] = useGlobalState();
+
   const voted = false; // TODO - fetch real data
 
   const isEligibleToVote = (): boolean => {
@@ -65,11 +54,11 @@ export function VoteButtons({proposalId}: Props) {
   };
 
   const onForVoteClick = () => {
-    vote(proposalId, true);
+    vote(state.network_value, proposalId, true);
   };
 
   const onAgainstVoteClick = () => {
-    vote(proposalId, false);
+    vote(state.network_value, proposalId, false);
   };
 
   if (voted) {

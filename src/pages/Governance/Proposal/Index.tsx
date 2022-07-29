@@ -10,6 +10,7 @@ import {useGlobalState} from "../../../GlobalState";
 import {ResponseError} from "../../../api/client";
 import {useParams} from "react-router-dom";
 import {Proposal} from "../Types";
+import {EmptyProposal} from "./EmptyProposal";
 
 // TODO: reuse table handle query from the proposal table
 const TABLE_HANDLE = "66250964772389598023276627514581198483";
@@ -55,6 +56,10 @@ export const ProposalPage = () => {
   const [state, _] = useGlobalState();
   const {id: proposalId} = useParams<string>();
 
+  if (proposalId == null) {
+    return <EmptyProposal />;
+  }
+
   const proposal = getProposalData(
     proposalId,
     TABLE_HANDLE,
@@ -63,12 +68,8 @@ export const ProposalPage = () => {
 
   const metadata = useProvideMetadata(proposal);
 
-  if (proposal == null || proposalId == null) {
-    return (
-      <Grid container marginTop={{md: 12, xs: 6}}>
-        PROPOSAL NOT FOUND
-      </Grid>
-    );
+  if (proposal == null) {
+    return <EmptyProposal />;
   }
 
   return (
