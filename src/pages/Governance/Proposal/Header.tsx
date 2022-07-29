@@ -8,11 +8,11 @@ import useProvideProposalMetadata from "../ProvideProposalMetadata";
 
 const TITLE_UNAVAILABLE = "Title Unavailable";
 
-type Props = {
+type ProposalHeaderProps = {
   proposal: Proposal;
 };
 
-export const ProposalHeader = ({proposal}: Props) => {
+export const ProposalHeader = ({proposal}: ProposalHeaderProps) => {
   const metadata = useProvideProposalMetadata(proposal);
   const remainingTime = getTimeRemaining(parseInt(proposal.expiration_secs));
 
