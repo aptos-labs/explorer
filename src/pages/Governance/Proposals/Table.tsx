@@ -3,7 +3,6 @@ import * as RRD from "react-router-dom";
 import {useTheme} from "@mui/material";
 import Title from "../../../components/Title";
 import {
-  Link,
   Stack,
   Box,
   Table,
@@ -15,46 +14,39 @@ import {
 } from "@mui/material";
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
-import {proposalsData} from "../dummyData";
-import {ProposalType} from "../Types";
+import {Proposal} from "../Types";
 import useProvideProposalMetadata from "../ProvideProposalMetadata";
+import {useGetProposal} from "../hooks/useGetProposal";
 
 const TITLE_WIDTH = 400;
 const HASH_WIDTH = 300;
 
 type ProposalCellProps = {
-  proposal: ProposalType;
+  proposal: Proposal;
 };
 
 function TitleCell({proposal}: ProposalCellProps) {
+  if (!proposal) return null;
   const metadata = useProvideProposalMetadata(proposal);
 
   return (
     <TableCell sx={{textAlign: "left"}}>
-      <Link
-        component={RRD.Link}
-        to={`/txn/${proposal.proposal_id}`}
-        color="primary"
+      <Box
+        component="div"
+        sx={{
+          width: TITLE_WIDTH,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
       >
-        <Box
-          component="div"
-          sx={{
-            width: TITLE_WIDTH,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {metadata?.title}
-        </Box>
-      </Link>
+        {metadata?.title}
+      </Box>
     </TableCell>
   );
 }
 
 function StatusCell({proposal}: ProposalCellProps) {
-  return (
-    <TableCell sx={{textAlign: "left"}}>{proposal.proposal_state}</TableCell>
-  );
+  return <TableCell sx={{textAlign: "left"}}>{proposal.is_resolved}</TableCell>;
 }
 
 function ProposerCell({proposal}: ProposalCellProps) {
@@ -105,16 +97,29 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
 ];
 
 type ProposalRowProps = {
-  proposal: ProposalType;
   columns: ProposalColumn[];
+  proposal_id: string;
+  handle: string;
 };
 
-function ProposalRow({proposal, columns}: ProposalRowProps) {
+function ProposalRow({proposal_id, handle, columns}: ProposalRowProps) {
+  const proposalData = useGetProposal(handle, proposal_id);
+  const navigate = RRD.useNavigate();
+
+  const onTableRowClick = () => {
+    navigate(`${handle}/${proposal_id}`);
+  };
+
+  if (!proposalData) {
+    // returns null as we dont need to generate a TableRow if there is no proposal data
+    return null;
+  }
+
   return (
-    <TableRow hover>
+    <TableRow hover onClick={onTableRowClick}>
       {columns.map((column) => {
         const Cell = ProposalCells[column];
-        return <Cell key={column} proposal={proposal} />;
+        return <Cell key={column} proposal={proposalData} />;
       })}
     </TableRow>
   );
@@ -175,19 +180,32 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
   }
 }
 
-type Props = {
-  proposals?: ProposalType[];
+type ProposalsTableProps = {
+  proposals?: Proposal[];
   columns?: ProposalColumn[];
+  nextProposalId: string;
+  handle: string;
 };
 
 // TODO: generalize Table component for transactions and proposals
 export function ProposalsTable({
-  proposals = proposalsData,
+  nextProposalId,
+  handle,
   columns = DEFAULT_COLUMNS,
-}: Props) {
-  if (!proposals) {
-    // TODO: handle errors
-    return <>No proposal info</>;
+}: ProposalsTableProps) {
+  const proposalRows = [];
+  // we need to iterate from (0...nextProposalId)
+  // to make api call for each proposal
+  const counter = parseInt(nextProposalId);
+  for (var proposal_id = 0; proposal_id < counter; proposal_id++) {
+    proposalRows.push(
+      <ProposalRow
+        key={proposal_id}
+        proposal_id={proposal_id + ""} // cast into a string as future uses expects proposal_id as a string type
+        handle={handle}
+        columns={columns}
+      />,
+    );
   }
 
   const tableComponent = (
@@ -199,17 +217,7 @@ export function ProposalsTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
-        {proposals.map((proposal: any, i: any) => {
-          return (
-            <ProposalRow
-              key={`${i}-${proposal.proposal_id}`}
-              proposal={proposal}
-              columns={columns}
-            />
-          );
-        })}
-      </TableBody>
+      <TableBody>{proposalRows}</TableBody>
     </Table>
   );
 
