@@ -100,7 +100,7 @@ export function Create() {
           Create a Test Proposal
         </Button>
       </Grid>
-      {proposalHash == null ? null : (
+      {proposalHash && (
         <Grid
           container
           direction="row"

@@ -10,12 +10,16 @@ const TEST_ACCOUNT_ADDRESS =
 const TEST_ACCOUNT_SECRET_KEY =
   "0x894e620e2e96748118f448388ac4877bb3799be5233426e869a97e2ffcd91381";
 
-async function submitVote(
-  account: AptosAccount,
-  client: AptosClient,
+async function vote(
+  networkValue: string,
   proposalId: string,
   shouldPass: boolean,
 ) {
+  const client = new AptosClient(networkValue);
+  const address = HexString.ensure(TEST_ACCOUNT_ADDRESS);
+  const secretKey = HexString.ensure(TEST_ACCOUNT_SECRET_KEY);
+  const account = new AptosAccount(secretKey.toUint8Array(), address);
+
   const payload: Types.TransactionPayload = {
     type: "script_function_payload",
     function: "0x1::aptos_governance::vote",
@@ -23,21 +27,7 @@ async function submitVote(
     arguments: [account.address().hex(), proposalId, shouldPass],
   };
 
-  const transactionRes = await doTransaction(account, client, payload);
-}
-
-async function vote(
-  networkValue: string,
-  proposalId: string,
-  shouldPass: boolean,
-) {
-  const client = new AptosClient(networkValue);
-
-  const address = HexString.ensure(TEST_ACCOUNT_ADDRESS);
-  const secretKey = HexString.ensure(TEST_ACCOUNT_SECRET_KEY);
-  const account = new AptosAccount(secretKey.toUint8Array(), address);
-
-  await submitVote(account, client, proposalId, shouldPass);
+  await doTransaction(account, client, payload);
 }
 
 type Props = {
@@ -53,12 +43,16 @@ export function VoteButtons({proposalId}: Props) {
     return true; // TODO - check if eligible to vote
   };
 
+  const onVote = (shouldPass: boolean) => {
+    vote(state.network_value, proposalId, shouldPass);
+  };
+
   const onForVoteClick = () => {
-    vote(state.network_value, proposalId, true);
+    onVote(true);
   };
 
   const onAgainstVoteClick = () => {
-    vote(state.network_value, proposalId, false);
+    onVote(false);
   };
 
   if (voted) {

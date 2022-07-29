@@ -18,12 +18,9 @@ type VotePercentage = {
   no: string;
 };
 
-function getVotePercentage(
-  yesVotesStr: string,
-  noVotesStr: string,
-): VotePercentage {
-  const yesVotes: number = parseInt(yesVotesStr);
-  const noVotes: number = parseInt(noVotesStr);
+function getVotePercentage(proposal: Proposal): VotePercentage {
+  const yesVotes: number = parseInt(proposal.yes_votes);
+  const noVotes: number = parseInt(proposal.no_votes);
 
   if (yesVotes === 0 && noVotes === 0) {
     return {
@@ -45,10 +42,7 @@ function getVotePercentage(
 export function ProposalCard({proposal, proposalId}: ProposalCardProps) {
   const {isConnected} = useWalletContext();
 
-  const votePercentage = getVotePercentage(
-    proposal.yes_votes,
-    proposal.no_votes,
-  );
+  const votePercentage = getVotePercentage(proposal);
 
   return (
     <Box position="relative">
