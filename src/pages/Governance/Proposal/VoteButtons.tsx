@@ -1,21 +1,22 @@
 import {Button, Grid, Tooltip} from "@mui/material";
 import React from "react";
+import useSubmitVote from "../SubmitVote";
 
-export function VoteButtons() {
+type Props = {
+  proposalId: string;
+};
+
+export function VoteButtons({proposalId}: Props) {
+  const [submitVote] = useSubmitVote(proposalId);
+
   const voted = false; // TODO - fetch real data
 
   const isEligibleToVote = (): boolean => {
     return true; // TODO - check if eligible to vote
   };
 
-  const onForVoteClick = () => {
-    // TODO - implement for vote
-    console.log("onForVoteClick");
-  };
-
-  const onAgainstVoteClick = () => {
-    // TODO - implement against vote
-    console.log("onAgainstVoteClick");
+  const onVote = (shouldPass: boolean) => {
+    submitVote(shouldPass);
   };
 
   if (voted) {
@@ -33,10 +34,10 @@ export function VoteButtons() {
       justifyContent={{xs: "center", sm: "flex-end"}}
       alignItems="center"
     >
-      <Button variant="primary" sx={{mr: 2}} onClick={onForVoteClick}>
+      <Button variant="primary" sx={{mr: 2}} onClick={() => onVote(true)}>
         For
       </Button>
-      <Button variant="primary" onClick={onAgainstVoteClick}>
+      <Button variant="primary" onClick={() => onVote(false)}>
         Against
       </Button>
     </Grid>

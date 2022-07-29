@@ -34,8 +34,8 @@ export type Proposal = {
   early_resolution_vote_threshold: {
     vec: Array<any>;
   };
-  yes_votes: number;
-  no_votes: number;
+  yes_votes: string;
+  no_votes: string;
   is_resolved: boolean;
   // is_voting_closed: boolean;
   proposal_state: string;
