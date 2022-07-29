@@ -1,11 +1,11 @@
 import {useEffect, useState} from "react";
-import {ProposalType, ProposalMetadata} from "./Types";
+import {Proposal, ProposalMetadata} from "./Types";
 
 const useProvideProposalMetadata = (
-  proposal: ProposalType,
+  proposal: Proposal,
 ): ProposalMetadata | undefined => {
   const [metadata, setMetadata] = useState<ProposalMetadata>();
-  const {metadata_location} = proposal.execution_content;
+  const {metadata_location} = proposal.execution_content.vec[0];
 
   useEffect(() => {
     const fetchMetadata = async () => {

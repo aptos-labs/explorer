@@ -3,32 +3,32 @@ import {Grid, Typography} from "@mui/material";
 
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
-import {Proposal, ProposalMetadata} from "../Types";
+import {Proposal} from "../Types";
+import useProvideProposalMetadata from "../ProvideProposalMetadata";
 
 const TITLE_UNAVAILABLE = "Title Unavailable";
-const STATUS_PLACEHOLDER = "Status To Be Implemented";
 
-type Props = {
+type ProposalHeaderProps = {
   proposal: Proposal;
-  metadata: ProposalMetadata;
 };
 
-export const ProposalHeader = ({proposal, metadata}: Props) => {
+export const ProposalHeader = ({proposal}: ProposalHeaderProps) => {
+  const metadata = useProvideProposalMetadata(proposal);
   const remainingTime = getTimeRemaining(parseInt(proposal.expiration_secs));
 
   return (
     <Grid container>
       <Grid item xs={12}>
         <Typography variant="h5" sx={{mb: 2}}>
-          {metadata !== undefined ? metadata?.title : TITLE_UNAVAILABLE}
+          {metadata ? metadata.title : TITLE_UNAVAILABLE}
         </Typography>
       </Grid>
 
       <Grid item xs={12} sm={6}>
         <Grid item sm={6} mb={2}>
           <Typography color="primary" component="span">
-            {/* TODO: query with move func get_proposal_state */}
-            {STATUS_PLACEHOLDER} {""}
+            {/* TODO - calculate/fetch proposal status */}
+            Proposal Status
           </Typography>
         </Grid>
         <Grid item sm={6} mb={2}>
