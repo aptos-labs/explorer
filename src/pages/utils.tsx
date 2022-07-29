@@ -2,6 +2,7 @@ import React from "react";
 import moment from "moment";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
+import {AptosClient, AptosAccount, HexString} from "aptos";
 
 export function renderDebug(data: any) {
   const theme = useTheme();
@@ -63,4 +64,23 @@ export function getTimeRemaining(endtime: number) {
     minutes,
     seconds,
   };
+}
+
+export function getHexString(str: string): string {
+  return HexString.fromUint8Array(new TextEncoder().encode(str)).hex();
+}
+
+export async function doTransaction(
+  account: AptosAccount,
+  client: AptosClient,
+  payload: any,
+) {
+  const txnRequest = await client.generateTransaction(
+    account.address(),
+    payload,
+  );
+  const signedTxn = await client.signTransaction(account, txnRequest);
+  const transactionRes = await client.submitTransaction(signedTxn);
+  await client.waitForTransaction(transactionRes.hash);
+  return transactionRes;
 }

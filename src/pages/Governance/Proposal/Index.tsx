@@ -5,6 +5,7 @@ import {ProposalCard} from "./Card";
 import {ProposalContent} from "./Content";
 import {useParams} from "react-router-dom";
 import { useGetProposal } from "../hooks/useGetProposal";
+import { EmptyProposal } from "./EmptyProposal";
 
 export type ProposalPageURLParams = {
   id: string;
@@ -17,11 +18,7 @@ export const ProposalPage = () => {
   const proposal = useGetProposal(handle, proposalId)
   
   if (!proposal) {
-    return (
-      <Grid container marginTop={{md: 12, xs: 6}}>
-        PROPOSAL NOT FOUND
-      </Grid>
-    );
+    return <EmptyProposal />;
   }
 
   return (
@@ -30,7 +27,7 @@ export const ProposalPage = () => {
         <ProposalHeader proposal={proposal} />
       </Grid>
       <Grid xs={12} item sx={{mb: 6}}>
-        <ProposalCard proposal={proposal} />
+        <ProposalCard proposal={proposal} proposalId={proposalId} />
       </Grid>
       <Grid item sx={{mb: 6}}>
         <ProposalContent proposal={proposal} />
