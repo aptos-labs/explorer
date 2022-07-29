@@ -12,7 +12,7 @@ interface votingForumData {
 }
 
 type useGetProposalsTableData = {
-  next_proposal_id: string;
+  nextProposalId: string;
   handle: string;
 };
 
@@ -40,8 +40,8 @@ export function useGetProposalsTableData(): useGetProposalsTableData | null {
   const votingForumData: votingForumData = votingForum[0]
     .data as votingForumData;
 
-  const next_proposal_id = votingForumData.next_proposal_id;
+  const nextProposalId = votingForumData.next_proposal_id;
   const handle = votingForumData.proposals.handle;
 
-  return {next_proposal_id, handle};
+  return {nextProposalId, handle};
 }

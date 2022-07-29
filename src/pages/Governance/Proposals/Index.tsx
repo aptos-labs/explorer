@@ -13,7 +13,7 @@ export function GovernancePage() {
     return <>No Data</>;
   }
 
-  const {next_proposal_id: nextProposalId, handle} = data;
+  const {nextProposalId, handle} = data;
 
   return (
     <Grid item xs={12} marginTop={{md: 12, xs: 6}}>
