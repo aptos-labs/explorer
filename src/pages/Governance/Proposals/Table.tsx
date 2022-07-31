@@ -25,7 +25,6 @@ type ProposalCellProps = {
 };
 
 function TitleCell({proposal}: ProposalCellProps) {
-
   return (
     <TableCell sx={{textAlign: "left"}}>
       <Box

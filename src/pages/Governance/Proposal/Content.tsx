@@ -12,7 +12,6 @@ type ProposalContentProps = {
 };
 
 export function ProposalContent({proposal}: ProposalContentProps) {
-
   return RenderContent(
     <Stack
       direction="column"

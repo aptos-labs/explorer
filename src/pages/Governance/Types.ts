@@ -18,7 +18,7 @@ export type Proposal = {
   yes_votes: string;
   no_votes: string;
   is_resolved: boolean;
-  metadata: ProposalMetadata
+  metadata: ProposalMetadata;
   // TODO - fetch or calculate both on the client
   // is_voting_closed: boolean;
   // proposal_state: string;
