@@ -5,8 +5,6 @@ import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
 import {Proposal} from "../Types";
 
-const TITLE_UNAVAILABLE = "Title Unavailable";
-
 type ProposalHeaderProps = {
   proposal: Proposal;
 };

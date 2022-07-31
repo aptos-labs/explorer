@@ -3,9 +3,9 @@ import {sha3_256} from "js-sha3";
 
 import {getTableItem} from "../../../api";
 import {GlobalState, useGlobalState} from "../../../GlobalState";
-import {Proposal} from "../Types";
+import {Proposal, ProposalMetadata} from "../Types";
 
-const fetchProposal = async (
+const fetchTableItem = async (
   proposal_id: string,
   handle: string,
   state: GlobalState,
@@ -17,7 +17,6 @@ const fetchProposal = async (
     key: proposal_id,
   };
 
-  // fetch table item
   const tableItemData = await getTableItem(
     {tableHandle: handle, data: votingTableItemRequest},
     state.network_value,
@@ -27,6 +26,12 @@ const fetchProposal = async (
 
   const proposalData = tableItemData.data;
 
+  return proposalData;
+};
+
+const fetchMetadata = async (
+  proposalData: Proposal,
+): Promise<ProposalMetadata | null> => {
   // fetch proposal metadata from metadata_location propoerty
   const {metadata_location} = proposalData.execution_content.vec[0];
   const response = await fetch(metadata_location);
@@ -38,11 +43,28 @@ const fetchProposal = async (
   //validate metadata
   const {metadata_hash} = proposalData.execution_content.vec[0];
   const hash = sha3_256(JSON.stringify(metadata));
-
   //if(metadata_hash !== hash) return null;
+
+  return metadata;
+};
+
+const fetchProposal = async (
+  proposal_id: string,
+  handle: string,
+  state: GlobalState,
+): Promise<Proposal | null> => {
+  // fetch proposal table item
+  const proposalData = await fetchTableItem(proposal_id, handle, state);
+  if (!proposalData) return null;
+
+  // fetch proposal metadata
+  const metadata = await fetchMetadata(proposalData);
+  // if bad metadata response or metadata hash is different
+  if (!metadata) return null;
 
   proposalData.proposal_id = proposal_id;
   proposalData.metadata = metadata;
+
   return proposalData;
 };
 
