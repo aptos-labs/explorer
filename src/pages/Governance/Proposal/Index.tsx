@@ -15,7 +15,7 @@ export type ProposalPageURLParams = {
 export const ProposalPage = () => {
   // useParams type signature is string | undefined - to go around it we cast the return value
   const {id: proposalId, handle} = useParams() as ProposalPageURLParams;
-  const proposal = useGetProposal(handle, proposalId);
+  const  proposal = useGetProposal(handle, proposalId);
 
   if (!proposal) {
     return <EmptyProposal />;

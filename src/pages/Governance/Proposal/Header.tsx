@@ -4,7 +4,6 @@ import {Grid, Typography} from "@mui/material";
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
 import {Proposal} from "../Types";
-import useProvideProposalMetadata from "../ProvideProposalMetadata";
 
 const TITLE_UNAVAILABLE = "Title Unavailable";
 
@@ -13,14 +12,13 @@ type ProposalHeaderProps = {
 };
 
 export const ProposalHeader = ({proposal}: ProposalHeaderProps) => {
-  const metadata = useProvideProposalMetadata(proposal);
   const remainingTime = getTimeRemaining(parseInt(proposal.expiration_secs));
 
   return (
     <Grid container>
       <Grid item xs={12}>
         <Typography variant="h5" sx={{mb: 2}}>
-          {metadata ? metadata.title : TITLE_UNAVAILABLE}
+          {proposal.metadata.title}
         </Typography>
       </Grid>
 
