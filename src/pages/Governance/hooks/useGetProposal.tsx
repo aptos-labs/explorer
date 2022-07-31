@@ -30,6 +30,9 @@ const fetchProposal = async (
   // fetch proposal metadata from metadata_location propoerty
   const {metadata_location} = proposalData.execution_content.vec[0];
   const response = await fetch(metadata_location);
+  // validate response status
+  if (response.status !== 200) return null;
+
   const metadata = await response.json();
 
   //validate metadata
