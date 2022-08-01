@@ -42,7 +42,7 @@ function TitleCell({proposal}: ProposalCellProps) {
 }
 
 function StatusCell({proposal}: ProposalCellProps) {
-  return <TableCell sx={{textAlign: "left"}}>{proposal.is_resolved}</TableCell>;
+  return <TableCell sx={{textAlign: "left"}}>{proposal.proposal_state}</TableCell>;
 }
 
 function ProposerCell({proposal}: ProposalCellProps) {
