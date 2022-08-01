@@ -4,7 +4,7 @@ export const devnetUrl =
 export const networks: Record<string, string> = {
   local: "http://localhost:8080",
   devnet: devnetUrl,
-  ait2: "https://ait2.aptosdev.com/",
+  test: "https://rosetta.aptosdev.com/",
   //governance: "https://ait2.aptosdev.com/", // TODO - use the proposals url
 };
 
