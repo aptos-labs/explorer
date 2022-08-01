@@ -64,6 +64,7 @@ export function StakePage() {
               value={stakingEndTime}
               onChange={onStakingEndTimeChange}
               renderInput={(params) => <TextField {...params} />}
+              minTime={new Date()}
             />
           </LocalizationProvider>
         </FormControl>
