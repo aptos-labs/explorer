@@ -15,7 +15,6 @@ import {
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
 import {Proposal} from "../Types";
-import useProvideProposalMetadata from "../ProvideProposalMetadata";
 import {useGetProposal} from "../hooks/useGetProposal";
 
 const TITLE_WIDTH = 400;
@@ -26,9 +25,6 @@ type ProposalCellProps = {
 };
 
 function TitleCell({proposal}: ProposalCellProps) {
-  if (!proposal) return null;
-  const metadata = useProvideProposalMetadata(proposal);
-
   return (
     <TableCell sx={{textAlign: "left"}}>
       <Box
@@ -39,7 +35,7 @@ function TitleCell({proposal}: ProposalCellProps) {
           textOverflow: "ellipsis",
         }}
       >
-        {metadata?.title}
+        {proposal.metadata.title}
       </Box>
     </TableCell>
   );

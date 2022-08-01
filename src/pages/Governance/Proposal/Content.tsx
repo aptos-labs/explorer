@@ -2,7 +2,6 @@ import React from "react";
 import {Stack, Divider} from "@mui/material";
 import {renderRow, renderSection} from "../../../pages/Transactions/helpers";
 import {Proposal} from "../Types";
-import useProvideProposalMetadata from "../ProvideProposalMetadata";
 
 function RenderContent(children: React.ReactNode) {
   return renderSection(children, null);
@@ -13,8 +12,6 @@ type ProposalContentProps = {
 };
 
 export function ProposalContent({proposal}: ProposalContentProps) {
-  const metadata = useProvideProposalMetadata(proposal);
-
   return RenderContent(
     <Stack
       direction="column"
@@ -24,8 +21,8 @@ export function ProposalContent({proposal}: ProposalContentProps) {
       }
     >
       {renderRow("Proposal Hash:", proposal.execution_hash)}
-      {metadata && renderRow("Proposal Script", metadata.execution_script)}
-      {metadata && renderRow("Description:", metadata.description)}
+      {renderRow("Proposal Script", proposal.metadata.execution_script)}
+      {renderRow("Description:", proposal.metadata.description)}
     </Stack>,
   );
 }
