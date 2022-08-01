@@ -14,7 +14,7 @@ type ProposalHeaderProps = {
 
 export const ProposalHeader = ({proposal}: ProposalHeaderProps) => {
   const metadata = useProvideProposalMetadata(proposal);
-  const remainingTime = getTimeRemaining(parseInt(proposal.expiration_secs));
+  const remainingTime = getTimeRemaining(proposal.expiration_secs);
 
   return (
     <Grid container>
