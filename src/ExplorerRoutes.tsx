@@ -9,6 +9,7 @@ import {TransactionsPage} from "./pages/Transactions/Transactions";
 import {GovernancePage} from "./pages/Governance/Proposals/Index";
 import {ProposalPage} from "./pages/Governance/Proposal/Index";
 import {CreateProposalPage} from "./pages/Governance/CreateProposal/Index";
+import {StakePage} from "./pages/Governance/Stake/Index";
 
 export default function ExplorerRoutes() {
   return (
@@ -25,6 +26,7 @@ export default function ExplorerRoutes() {
         <Route path="/account">
           <Route path=":address" element={<AccountPage />} />
         </Route>
+        <Route path="/stake" element={<StakePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </ExplorerLayout>
