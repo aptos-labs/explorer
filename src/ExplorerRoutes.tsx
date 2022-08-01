@@ -20,13 +20,13 @@ export default function ExplorerRoutes() {
         <Route path="/proposals" element={<GovernancePage />} />
         <Route path="/proposals/:handle/:id" element={<ProposalPage />} />
         <Route path="/proposals/create" element={<CreateProposalPage />} />
+        <Route path="/proposals/stake" element={<StakePage />} />
         <Route path="/txn">
           <Route path=":txnHashOrVersion" element={<TransactionPage />} />
         </Route>
         <Route path="/account">
           <Route path=":address" element={<AccountPage />} />
         </Route>
-        <Route path="/stake" element={<StakePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </ExplorerLayout>
