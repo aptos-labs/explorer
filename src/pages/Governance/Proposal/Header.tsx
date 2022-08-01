@@ -24,7 +24,7 @@ export const ProposalHeader = ({proposal}: ProposalHeaderProps) => {
         <Grid item sm={6} mb={2}>
           <Typography color="primary" component="span">
             {/* TODO - calculate/fetch proposal status */}
-            Proposal Status
+            {proposal.proposal_state}
           </Typography>
         </Grid>
         <Grid item sm={6} mb={2}>
