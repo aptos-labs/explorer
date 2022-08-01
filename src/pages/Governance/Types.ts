@@ -20,8 +20,8 @@ export type Proposal = {
   is_resolved: boolean;
   metadata: ProposalMetadata;
   // TODO - fetch or calculate both on the client
-  // is_voting_closed: boolean;
-  // proposal_state: string;
+  is_voting_closed: boolean;
+  proposal_state: string;
 };
 
 export type ProposalMetadata = {

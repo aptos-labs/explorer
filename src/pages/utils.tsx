@@ -18,7 +18,7 @@ export function renderDebug(data: any) {
   );
 }
 
-function ensureMillisecondTimestamp(timestamp: string): number {
+export function ensureMillisecondTimestamp(timestamp: string): number {
   /*
   Could be: 1646458457
         or: 1646440953658538
