@@ -8,7 +8,8 @@ enum PROPOSAL_STATE {
   PROPOSAL_STATE_FAILED = "FAILED"
 }
 
-// replicate on-chain logic https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/voting.move#L272
+// replicate on-chain logic is_voting_closed()  
+// https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/voting.move
 export function isVotingClosed(proposal: Proposal): boolean{
   let expirationSecs = ensureMillisecondTimestamp(proposal.expiration_secs);
   return canBeResolvedEarly(proposal) || expirationSecs - Date.now() < 0;
@@ -26,7 +27,8 @@ function canBeResolvedEarly(proposal: Proposal): boolean{
   return false;
 }
 
-// replicate on-chain logic https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/voting.move#L294
+// replicate on-chain logic get_proposal_state()
+// https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/voting.move
 export function getProposalState(proposal: Proposal): PROPOSAL_STATE{
 
   if(isVotingClosed(proposal)){
