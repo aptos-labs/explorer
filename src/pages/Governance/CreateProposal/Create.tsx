@@ -6,7 +6,7 @@ import {useGlobalState} from "../../../GlobalState";
 import {doTransaction} from "../../utils";
 
 /* REQUIRED: Please replace the following with your own local network urls */
-const FAUCET_URL = "http://127.0.0.1:8081";
+const FAUCET_URL = "http://127.0.0.1:8000";
 
 /* OPTIONAL: Please replace the following with your own test data */
 const TEST_EXECUTION_HASH =
@@ -14,7 +14,7 @@ const TEST_EXECUTION_HASH =
 const TEST_METADATA_LOCATION =
   "https://mocki.io/v1/32403c87-d5d2-4136-80fd-d639a5d3d7dd";
 const TEST_METADATA_HASH =
-  "0x21ebf969b6f70c011dc607dab7ef5fc7447e9529061ec06ef83ce2afe4e5f675";
+  "a92df408861016f8245114a8477d2112b2d90c22184e1e71d667d3f10038db5d";
 
 async function createProposal(
   account: AptosAccount,
