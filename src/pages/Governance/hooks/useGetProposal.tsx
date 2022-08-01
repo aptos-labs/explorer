@@ -38,14 +38,15 @@ const fetchMetadata = async (
   // validate response status
   if (response.status !== 200) return null;
 
-  const metadata = await response.json();
-
-  // TODO - verify what exactly is being hashed on chain to know what needs to be hashed here for comparison
+  const metadataText = await response.text();
+  
   //validate metadata
   const {metadata_hash} = proposalData.execution_content.vec[0];
-  const hash = sha3_256(JSON.stringify(metadata));
-  //if(metadata_hash !== hash) return null;
-
+  const hash = sha3_256(metadataText);
+  if(metadata_hash !== hash) return null;
+  
+  const metadata = JSON.parse(metadataText)
+  
   return metadata;
 };
 
