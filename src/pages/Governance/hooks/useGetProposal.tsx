@@ -39,14 +39,14 @@ const fetchMetadata = async (
   if (response.status !== 200) return null;
 
   const metadataText = await response.text();
-  
+
   //validate metadata
   const {metadata_hash} = proposalData.execution_content.vec[0];
   const hash = sha3_256(metadataText);
-  if(metadata_hash !== hash) return null;
-  
-  const metadata = JSON.parse(metadataText)
-  
+  if (metadata_hash !== hash) return null;
+
+  const metadata = JSON.parse(metadataText);
+
   return metadata;
 };
 
