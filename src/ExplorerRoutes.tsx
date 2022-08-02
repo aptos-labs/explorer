@@ -9,6 +9,7 @@ import {TransactionsPage} from "./pages/Transactions/Transactions";
 import {GovernancePage} from "./pages/Governance/Proposals/Index";
 import {ProposalPage} from "./pages/Governance/Proposal/Index";
 import {CreateProposalPage} from "./pages/Governance/CreateProposal/Index";
+import {StakePage} from "./pages/Governance/Stake/Index";
 
 export default function ExplorerRoutes() {
   return (
@@ -19,6 +20,7 @@ export default function ExplorerRoutes() {
         <Route path="/proposals" element={<GovernancePage />} />
         <Route path="/proposals/:handle/:id" element={<ProposalPage />} />
         <Route path="/proposals/create" element={<CreateProposalPage />} />
+        <Route path="/proposals/stake" element={<StakePage />} />
         <Route path="/txn">
           <Route path=":txnHashOrVersion" element={<TransactionPage />} />
         </Route>
