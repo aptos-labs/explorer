@@ -1,16 +1,14 @@
 import React from "react";
 import {Typography, Stack} from "@mui/material";
 
-interface ContentRowProps {
+type ContentRowProps = {
   title: React.ReactNode;
   text: React.ReactNode;
-  i?: any;
-}
+};
 
-export default function ContentRow({title, text, i}: ContentRowProps) {
-  console.log(text);
+export default function ContentRow({title, text}: ContentRowProps) {
   return (
-    <Stack direction="column" key={i} spacing={2}>
+    <Stack direction="column" spacing={2}>
       <Typography noWrap variant="subtitle1">
         {title}
       </Typography>
