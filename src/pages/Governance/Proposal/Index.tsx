@@ -22,15 +22,21 @@ export const ProposalPage = () => {
   }
 
   return (
-    <Grid container marginTop={{md: 12, xs: 6}}>
-      <Grid xs={12} item>
+    <Grid container marginY={{md: 12, xs: 6}} marginX={{md: 4, xs: 0}}>
+      <Grid item md={12} xs={12} sx={{mb: 6}}>
         <ProposalHeader proposal={proposal} />
       </Grid>
-      <Grid xs={12} item sx={{mb: 6}}>
-        <ProposalCard proposal={proposal} proposalId={proposalId} />
-      </Grid>
-      <Grid item sx={{mb: 6}}>
+      <Grid
+        item
+        md={8}
+        xs={12}
+        paddingRight={{md: 6, xs: 0}}
+        marginBottom={{md: 0, xs: 6}}
+      >
         <ProposalContent proposal={proposal} />
+      </Grid>
+      <Grid item md={4} xs={12}>
+        <ProposalCard proposal={proposal} proposalId={proposalId} />
       </Grid>
     </Grid>
   );

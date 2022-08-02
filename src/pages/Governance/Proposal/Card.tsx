@@ -67,7 +67,7 @@ export function ProposalCard({proposal, proposalId}: ProposalCardProps) {
             item
             xs={12}
             sm={12}
-            md={isConnected ? 6 : 9}
+            md={6}
             sx={{overflow: "hidden", textOverflow: "ellipsis"}}
           >
             <Typography>Results</Typography>

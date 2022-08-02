@@ -1,28 +1,27 @@
 import React from "react";
 import {Stack, Divider} from "@mui/material";
-import {renderRow, renderSection} from "../../../pages/Transactions/helpers";
 import {Proposal} from "../Types";
-
-function RenderContent(children: React.ReactNode) {
-  return renderSection(children, null);
-}
+import ContentRow from "./ContentRow";
 
 type ProposalContentProps = {
   proposal: Proposal;
 };
 
 export function ProposalContent({proposal}: ProposalContentProps) {
-  return RenderContent(
+  return (
     <Stack
       direction="column"
-      spacing={2}
+      spacing={4}
       divider={
         <Divider variant="dotted" orientation="horizontal" sx={{mb: 0}} />
       }
     >
-      {renderRow("Proposal Hash:", proposal.execution_hash)}
-      {renderRow("Proposal Script", proposal.metadata.execution_script)}
-      {renderRow("Description:", proposal.metadata.description)}
-    </Stack>,
+      <ContentRow title="Proposal Hash" text={proposal.execution_hash} />
+      <ContentRow
+        title="Proposal Script"
+        text={proposal.metadata.execution_script}
+      />
+      <ContentRow title="Description" text={proposal.metadata.description} />
+    </Stack>
   );
 }
