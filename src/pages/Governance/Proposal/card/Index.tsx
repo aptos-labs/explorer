@@ -8,10 +8,9 @@ import ResultsSection from "./ResultsSection";
 
 type ProposalCardProps = {
   proposal: Proposal;
-  proposalId: string;
 };
 
-export function ProposalCard({proposal, proposalId}: ProposalCardProps) {
+export function ProposalCard({proposal}: ProposalCardProps) {
   return (
     <Card>
       <Stack
@@ -23,7 +22,7 @@ export function ProposalCard({proposal, proposalId}: ProposalCardProps) {
           />
         }
       >
-        <CastVoteSection proposalId={proposalId} />
+        <CastVoteSection proposalId={proposal.proposal_id} />
         <ResultsSection proposal={proposal} />
       </Stack>
     </Card>

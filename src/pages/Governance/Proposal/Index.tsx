@@ -1,7 +1,7 @@
 import {Grid} from "@mui/material";
 import React from "react";
 import {ProposalHeader} from "./Header";
-import {ProposalCard} from "./card/Card";
+import {ProposalCard} from "./card/Index";
 import {ProposalContent} from "./Content";
 import {useParams} from "react-router-dom";
 import {useGetProposal} from "../hooks/useGetProposal";
@@ -36,7 +36,7 @@ export const ProposalPage = () => {
         <ProposalContent proposal={proposal} />
       </Grid>
       <Grid item md={4} xs={12}>
-        <ProposalCard proposal={proposal} proposalId={proposalId} />
+        <ProposalCard proposal={proposal} />
       </Grid>
     </Grid>
   );

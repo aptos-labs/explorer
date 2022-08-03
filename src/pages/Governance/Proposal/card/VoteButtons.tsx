@@ -22,7 +22,7 @@ export default function VoteButtons({proposalId}: Props) {
   };
 
   const onVote = (shouldPass: boolean) => {
-    submitVote(shouldPass);
+    submitVote(shouldPass, accountAddr);
   };
 
   return (
