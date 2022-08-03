@@ -4,7 +4,9 @@ import {
   getAccountAddress,
   getAptosWallet,
   isWalletConnected,
+  signAndSubmitTransaction,
 } from "../../api/wallet";
+import {Types} from "aptos";
 
 export function useWallet() {
   const [isInstalled, setAptosWallet] = React.useState<boolean>(false);
@@ -28,5 +30,9 @@ export function useWallet() {
     connectToWallet().then(setIsConnected);
   };
 
-  return {isInstalled, isConnected, accountAddress, connect};
+  const processTransaction = async (transactionPayload: Types.TransactionPayload) => {
+    signAndSubmitTransaction(transactionPayload);
+  }
+
+  return {isInstalled, isConnected, accountAddress, connect, processTransaction};
 }

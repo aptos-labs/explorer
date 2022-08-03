@@ -1,3 +1,5 @@
+import {Types} from "aptos";
+
 export const getAptosWallet = () => {
   return "aptos" in window;
 };
@@ -27,3 +29,12 @@ export const getAccountAddress: () => Promise<string | null> = async () => {
   }
   return null;
 };
+
+export const signAndSubmitTransaction = async (transactionPayload: Types.TransactionPayload) => {
+  try {
+    const aa = await window.aptos.signAndSubmitTransaction(transactionPayload);
+    console.log(aa);
+  } catch(error) {
+    console.log(error);
+  }
+}
