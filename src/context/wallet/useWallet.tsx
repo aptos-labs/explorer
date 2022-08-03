@@ -25,7 +25,7 @@ export function useWallet() {
         setAccountAddress(account.address);
       } else {
         setAccountAddress(null);
-        setIsConnected(true);
+        setIsConnected(false);
       }
     });
   });
