@@ -1,5 +1,5 @@
 import React from "react";
-import {Stack, Typography, Link} from "@mui/material";
+import {Stack, Typography, Link, Button} from "@mui/material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import {useWalletContext} from "../../../../context/wallet/context";
 
@@ -11,7 +11,7 @@ export default function ConnectWalletInfo() {
   }
 
   return (
-    <Stack height={213} justifyContent="center" alignItems="center">
+    <Stack height={213} justifyContent="center" alignItems="center" spacing={1}>
       <ErrorOutlineOutlinedIcon color="primary" fontSize="large" />
       <Typography marginTop={1}>To vote on a proposal</Typography>
       {!isInstalled && (
@@ -23,7 +23,9 @@ export default function ConnectWalletInfo() {
         </Link>
       )}
       {isInstalled && !isConnected && (
-        <Link onClick={connect}>Connect your wallet</Link>
+        <Link component={Button} onClick={connect}>
+          Connect your wallet
+        </Link>
       )}
     </Stack>
   );
