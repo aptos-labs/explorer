@@ -16,10 +16,10 @@ export default function Card({children}: CardProps) {
         position="absolute"
         borderRadius={1}
         border="1px solid gray"
-      ></Box>
+      />
       <Box
         component="div"
-        sx={{p: 2, flexGrow: 1, backgroundColor: "#151515"}}
+        sx={{p: 3, flexGrow: 1, backgroundColor: "#1B1F1E"}}
         borderRadius={1}
         border="1px solid gray"
       >
