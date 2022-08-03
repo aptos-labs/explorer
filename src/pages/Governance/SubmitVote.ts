@@ -11,7 +11,9 @@ const TEST_ACCOUNT_SECRET_KEY =
 const useSubmitVote = (proposalId: string) => {
   const [state, _] = useGlobalState();
 
-  function submitVote(shouldPass: boolean) {
+  function submitVote(shouldPass: boolean, ownerAccountAddr: string) {
+    // TODO: submit vote with ownerAccountAddr
+
     const client = new AptosClient(state.network_value);
     const address = HexString.ensure(TEST_ACCOUNT_ADDRESS);
     const secretKey = HexString.ensure(TEST_ACCOUNT_SECRET_KEY);
