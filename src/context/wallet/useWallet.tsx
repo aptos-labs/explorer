@@ -19,7 +19,7 @@ export function useWallet() {
   }, []);
 
   useEffect(() => {
-    window.aptos.on('accountChanged', (account: any) => {
+    window.aptos && window.aptos.on('accountChanged', (account: any) => {
       if (account.address) {
         setIsConnected(true);
         setAccountAddress(account.address);
