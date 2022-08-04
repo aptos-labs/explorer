@@ -30,11 +30,12 @@ export const getAccountAddress: () => Promise<string | null> = async () => {
   return null;
 };
 
-export const signAndSubmitTransaction = async (transactionPayload: Types.TransactionPayload) => {
+export const signAndSubmitTransaction = async (
+  transactionPayload: Types.TransactionPayload,
+) => {
   try {
-    const aa = await window.aptos.signAndSubmitTransaction(transactionPayload);
-    console.log(aa);
-  } catch(error) {
+    await window.aptos.signAndSubmitTransaction(transactionPayload);
+  } catch (error) {
     console.log(error);
   }
-}
+};

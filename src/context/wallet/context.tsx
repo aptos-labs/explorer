@@ -6,7 +6,9 @@ export interface walletContext {
   isConnected: boolean;
   accountAddress: string | null;
   connect: () => Promise<void>;
-  processTransaction: (transactionPayload: Types.TransactionPayload) => Promise<void>;
+  processTransaction: (
+    transactionPayload: Types.TransactionPayload,
+  ) => Promise<void>;
 }
 
 export const walletContext = createContext<walletContext | null>(null);
