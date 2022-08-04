@@ -7,7 +7,16 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import {useNavigate} from "react-router-dom";
+import Popover from "@mui/material/Popover";
+import {IconButton} from "@mui/material";
+import {grey} from "../themes/colors/aptosColorPalette";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+
+import Button from "@mui/material/Button";
 
 import {Types} from "aptos";
 import {
@@ -41,7 +50,7 @@ function TransactionTimestampCell({transaction}: TransactionCellProps) {
       </Typography>
     );
 
-  return <TableCell sx={{textAlign: "left"}}>{timestamp}</TableCell>;
+  return <TableCell sx={{textAlign: "right"}}>{timestamp}</TableCell>;
 }
 
 function TransactionTypeCell({transaction}: TransactionCellProps) {
@@ -50,11 +59,12 @@ function TransactionTypeCell({transaction}: TransactionCellProps) {
 
 function TransactionVersionCell({transaction}: TransactionCellProps) {
   return (
-    <TableCell sx={{textAlign: "right"}}>
+    <TableCell sx={{textAlign: "left"}}>
       <Link
         component={RRD.Link}
         to={`/txn/${transaction.version}`}
         color="primary"
+        underline="none"
       >
         {transaction.version}
       </Link>
@@ -70,27 +80,166 @@ function TransactionGasCell({transaction}: TransactionCellProps) {
   );
 }
 
+function truncateMiddle(
+  str: any,
+  frontLen: number,
+  backLen: number,
+  truncateStr: any,
+) {
+  if (str === null) {
+    return "";
+  }
+  var strLen = str.length;
+  // Setting default values
+  frontLen = ~~frontLen; // will cast to integer
+  backLen = ~~backLen;
+  truncateStr = truncateStr || "…";
+  if (
+    (frontLen === 0 && backLen === 0) ||
+    frontLen >= strLen ||
+    backLen >= strLen ||
+    frontLen + backLen >= strLen
+  ) {
+    return str;
+  } else if (backLen === 0) {
+    return str.slice(0, frontLen) + truncateStr;
+  } else {
+    return str.slice(0, frontLen) + truncateStr + str.slice(strLen - backLen);
+  }
+}
+
 function TransactionHashCell({transaction}: TransactionCellProps) {
-  return <TableCell>{transaction.hash}</TableCell>;
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null,
+  );
+
+  const hashExpand = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const hashCollapse = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+  const theme = useTheme();
+
+  return (
+    <TableCell>
+      <Box>
+        <Button
+          sx={{
+            textTransform: "none",
+            backgroundColor: `${
+              theme.palette.mode === "dark" ? grey[700] : grey[100]
+            }`,
+            display: "flex",
+            borderRadius: 1,
+            color: "inherit",
+            padding: "0.15rem 0.5rem 0.15rem 1rem",
+            "&:hover": {
+              backgroundColor: `${
+                theme.palette.mode === "dark" ? grey[700] : grey[100]
+              }`,
+            },
+          }}
+          aria-describedby={id}
+          onClick={hashExpand}
+          variant="contained"
+          endIcon={<ChevronRightRoundedIcon sx={{opacity: "0.75", m: 0}} />}
+        >
+          {truncateMiddle(transaction.hash, 4, 4, "…")}
+        </Button>
+
+        <Popover
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          sx={{
+            overflow: "scroll",
+            ".MuiPaper-root": {boxShadow: "none"},
+            "&.MuiModal-root .MuiBackdrop-root": {
+              transition: "none!important",
+              backgroundColor: `${
+                theme.palette.mode === "dark"
+                  ? "rgba(18,22,21,0.5)"
+                  : "rgba(255,255,255,0.5)"
+              }`,
+            },
+          }}
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={hashCollapse}
+          anchorOrigin={{
+            vertical: "center",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "center",
+            horizontal: "left",
+          }}
+        >
+          <Typography
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: `${
+                theme.palette.mode === "dark" ? grey[700] : grey[100]
+              }`,
+              px: 2,
+              py: "0.15rem",
+              fontSize: "14px",
+              overflow: "scroll",
+              scrollbarWidth: "none",
+              "&::-webkit-scrollbar": {
+                display: "none",
+              },
+            }}
+          >
+            {transaction.hash}
+            <IconButton
+              aria-label="collapse hash"
+              onClick={hashCollapse}
+              sx={{
+                ml: 1,
+                mr: 0,
+                p: 0,
+                "&.MuiButtonBase-root:hover": {
+                  bgcolor: "transparent",
+                },
+              }}
+            >
+              <ChevronLeftRoundedIcon sx={{opacity: "0.5"}} />
+            </IconButton>
+          </Typography>
+        </Popover>
+      </Box>
+    </TableCell>
+  );
 }
 
 const TransactionCells = Object.freeze({
-  status: TransactionStatusCell,
-  timestamp: TransactionTimestampCell,
-  type: TransactionTypeCell,
   version: TransactionVersionCell,
-  gas: TransactionGasCell,
+  type: TransactionTypeCell,
   hash: TransactionHashCell,
+  status: TransactionStatusCell,
+  gas: TransactionGasCell,
+  timestamp: TransactionTimestampCell,
 });
 
 type TransactionColumn = keyof typeof TransactionCells;
 
 const DEFAULT_COLUMNS: TransactionColumn[] = [
-  "status",
-  "timestamp",
-  "type",
   "version",
+  "type",
+  "hash",
+  "status",
   "gas",
+  "timestamp",
 ];
 
 type TransactionRowProps = {
@@ -99,8 +248,36 @@ type TransactionRowProps = {
 };
 
 function TransactionRow({transaction, columns}: TransactionRowProps) {
+  const navigate = useNavigate();
+
+  const rowClick = (event: React.MouseEvent<unknown>) => {
+    navigate(`/txn/${transaction.version}`);
+  };
+
+  const theme = useTheme();
+
   return (
-    <TableRow hover>
+    <TableRow
+      onClick={(event) => rowClick(event)}
+      sx={{
+        cursor: "pointer",
+        userSelect: "none",
+        backgroundColor: `${
+          theme.palette.mode === "dark" ? grey[800] : grey[50]
+        }`,
+        "&:hover:not(:active)": {
+          filter: `${
+            theme.palette.mode === "dark"
+              ? "brightness(0.9)"
+              : "brightness(0.99)"
+          }`,
+        },
+        "&:active": {
+          background: theme.palette.neutralShade.main,
+          transform: "translate(0,0.1rem)",
+        },
+      }}
+    >
       {columns.map((column) => {
         const Cell = TransactionCells[column];
         return <Cell key={column} transaction={transaction} />;
@@ -115,42 +292,57 @@ type TransactionHeaderCellProps = {
 
 function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
   const theme = useTheme();
-  const tableCellBackgroundColor = theme.palette.background.paper;
+  const tableCellBackgroundColor = "transparent";
+  const tableCellTextColor = theme.palette.text.secondary;
 
   switch (column) {
-    case "status":
+    case "version":
       return (
         <TableCell
           sx={{
             textAlign: "left",
-            width: "2%",
             background: `${tableCellBackgroundColor}`,
-            borderRadius: "8px 0 0 8px",
+            color: `${tableCellTextColor}`,
           }}
-        ></TableCell>
-      );
-    case "timestamp":
-      return (
-        <TableCell
-          sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
         >
-          <Typography variant="subtitle1">Timestamp</Typography>
+          <Typography variant="subtitle1">Version</Typography>
         </TableCell>
       );
     case "type":
       return (
         <TableCell
-          sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
+          sx={{
+            textAlign: "left",
+            background: `${tableCellBackgroundColor}`,
+            color: `${tableCellTextColor}`,
+          }}
         >
           <Typography variant="subtitle1">Type</Typography>
         </TableCell>
       );
-    case "version":
+    case "hash":
       return (
         <TableCell
-          sx={{textAlign: "right", background: `${tableCellBackgroundColor}`}}
+          sx={{
+            textAlign: "left",
+            background: `${tableCellBackgroundColor}`,
+            color: `${tableCellTextColor}`,
+          }}
         >
-          <Typography variant="subtitle1">Version ↓</Typography>
+          <Typography variant="subtitle1">Hash</Typography>
+        </TableCell>
+      );
+    case "status":
+      return (
+        <TableCell
+          sx={{
+            textAlign: "left",
+            background: `${tableCellBackgroundColor}`,
+            color: `${tableCellTextColor}`,
+            borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
+          }}
+        >
+          <Typography variant="subtitle1">Status</Typography>
         </TableCell>
       );
     case "gas":
@@ -159,18 +351,23 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
           sx={{
             textAlign: "right",
             background: `${tableCellBackgroundColor}`,
-            borderRadius: "0 8px 8px 0",
+            color: `${tableCellTextColor}`,
+            borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
           }}
         >
-          <Typography variant="subtitle1">Gas Used</Typography>
+          <Typography variant="subtitle1">Gas</Typography>
         </TableCell>
       );
-    case "hash":
+    case "timestamp":
       return (
         <TableCell
-          sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
+          sx={{
+            textAlign: "right",
+            background: `${tableCellBackgroundColor}`,
+            color: `${tableCellTextColor}`,
+          }}
         >
-          <Typography variant="subtitle1">Hash</Typography>
+          <Typography variant="subtitle1">Timestamp</Typography>
         </TableCell>
       );
     default:
@@ -188,7 +385,7 @@ export function TransactionsTable({
   columns = DEFAULT_COLUMNS,
 }: Props) {
   return (
-    <Table size="small">
+    <Table>
       <TableHead>
         <TableRow>
           {columns.map((column) => (

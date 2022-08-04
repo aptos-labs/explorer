@@ -1,12 +1,6 @@
 import React from "react";
 import {ensureMillisecondTimestamp} from "../utils";
-import {Proposal} from "./Types";
-
-enum PROPOSAL_STATE {
-  PROPOSAL_STATE_SUCCEEDED = "SUCCEEDED",
-  PROPOSAL_STATE_PENDING = "PENDING",
-  PROPOSAL_STATE_FAILED = "FAILED",
-}
+import {Proposal, ProposalState} from "./Types";
 
 // replicate on-chain logic is_voting_closed()
 // https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/voting.move
@@ -32,20 +26,21 @@ function canBeResolvedEarly(proposal: Proposal): boolean {
   return false;
 }
 
+/* TODO - calculate/fetch proposal status */
 // replicate on-chain logic get_proposal_state()
 // https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/voting.move
-export function getProposalState(proposal: Proposal): PROPOSAL_STATE {
+export function getProposalState(proposal: Proposal): ProposalState {
   if (isVotingClosed(proposal)) {
     let yesVotes = parseInt(proposal.yes_votes);
     let noVotes = parseInt(proposal.no_votes);
     let minVoteThreshold = proposal.min_vote_threshold;
 
     if (yesVotes > noVotes && yesVotes + noVotes >= minVoteThreshold) {
-      return PROPOSAL_STATE.PROPOSAL_STATE_SUCCEEDED;
+      return ProposalState.SUCCEEDED;
     } else {
-      return PROPOSAL_STATE.PROPOSAL_STATE_FAILED;
+      return ProposalState.FAILED;
     }
   } else {
-    return PROPOSAL_STATE.PROPOSAL_STATE_PENDING;
+    return ProposalState.PENDING;
   }
 }

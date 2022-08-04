@@ -4,10 +4,10 @@ import {networks} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import {useTheme} from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
-import {grey} from "@mui/material/colors";
 import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
 import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
+import {grey} from "../../themes/colors/aptosColorPalette";
 
 export default function NetworkSelect() {
   const [state, dispatch] = useGlobalState();
@@ -59,29 +59,15 @@ export default function NetworkSelect() {
           autoWidth
           IconComponent={DropdownIcon}
           sx={{
+            borderRadius: 1,
             fontWeight: "400",
-            minWidth: 110,
+            fontSize: "1rem",
+            minWidth: 80,
             ml: 1,
-            color: "#ffffff",
+            color: "inherit",
             alignItems: "center",
             "& .MuiSvgIcon-root": {
-              color: "inherit",
-            },
-            "&& fieldset": {
-              border: `1px solid ${
-                theme.palette.mode === "dark" ? grey[500] : grey[100]
-              }`,
-            },
-            "&:hover": {
-              backgroundColor: grey[900],
-              "&& fieldset": {
-                border: `1px solid ${
-                  theme.palette.mode === "dark" ? grey[100] : grey[100]
-                }`,
-              },
-            },
-            "&.Mui-focused": {
-              backgroundColor: grey[900],
+              color: theme.palette.text.secondary,
             },
           }}
           // dropdown container overrides
@@ -90,17 +76,17 @@ export default function NetworkSelect() {
             PaperProps: {
               sx: {
                 minWidth: 240,
-                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
-                marginTop: "8px",
+                boxShadow: "0 25px 50px -12px rgba(18,22,21,0.25)",
+                marginTop: 0.5,
                 "& .MuiMenuItem-root.Mui-selected": {
                   backgroundColor: `${
-                    theme.palette.mode === "dark" ? grey[800] : grey[200]
+                    theme.palette.mode === "dark" ? grey[700] : grey[200]
                   }!important`,
                   pointerEvents: "none",
                 },
                 "& .MuiMenuItem-root:hover": {
-                  backgroundColor: `${theme.palette.primary.main}`,
-                  color: grey[900],
+                  backgroundColor: "transparent",
+                  color: `${theme.palette.primary.main}`,
                 },
               },
             },

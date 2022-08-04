@@ -21,7 +21,7 @@ export type Proposal = {
   metadata: ProposalMetadata;
   // TODO - fetch or calculate both on the client
   is_voting_closed: boolean;
-  proposal_state: string;
+  proposal_state: ProposalState;
 };
 
 export type ProposalMetadata = {
@@ -29,3 +29,9 @@ export type ProposalMetadata = {
   description: string;
   title: string;
 };
+
+export enum ProposalState {
+  SUCCEEDED = "Succeeded",
+  PENDING = "Pending",
+  FAILED = "Failed",
+}

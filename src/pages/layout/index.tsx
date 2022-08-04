@@ -16,6 +16,7 @@ interface LayoutProps {
 export default function ExplorerLayout({children}: LayoutProps) {
   return (
     <ProvideColorMode>
+      <CssBaseline />
       <GlobalStateProvider>
         <WalletProvider>
           <Box
@@ -28,10 +29,9 @@ export default function ExplorerLayout({children}: LayoutProps) {
               flexDirection: "column",
             }}
           >
-            <Container maxWidth="xl" sx={{mt: 4, mb: 4, flexGrow: 4}}>
-              <CssBaseline />
-              <Header />
-              <Grid container>{children}</Grid>
+            <Header />
+            <Container maxWidth="xl" sx={{flexGrow: 4, paddingTop: "2rem"}}>
+              {children}
             </Container>
             <Footer />
           </Box>
