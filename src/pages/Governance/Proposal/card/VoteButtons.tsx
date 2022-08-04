@@ -46,12 +46,6 @@ export default function VoteButtons({proposalId}: Props) {
     resetVoteSucceeded();
   };
 
-  const action = (
-    <Button variant="outlined" size="large" onClick={onRefreshPage}>
-      REFRESH
-    </Button>
-  );
-
   const successAlertComponent = (
     <Alert
       variant="filled"
