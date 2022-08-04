@@ -52,7 +52,6 @@ export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
 
 export function getTimeRemaining(endtime: string) {
   const total = ensureMillisecondTimestamp(endtime) - Date.now();
-  const seconds = Math.floor((total / 1000) % 60);
   const minutes = Math.floor((total / 1000 / 60) % 60);
   const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
   const days = Math.floor(total / (1000 * 60 * 60 * 24));
@@ -62,7 +61,6 @@ export function getTimeRemaining(endtime: string) {
     days,
     hours,
     minutes,
-    seconds,
   };
 }
 
