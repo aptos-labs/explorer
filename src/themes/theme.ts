@@ -1,14 +1,13 @@
 import {PaletteMode} from "@mui/material";
 import {ThemeOptions} from "@mui/material/styles";
-import {grey, teal} from "@mui/material/colors";
-import shadows, {Shadows} from "@mui/material/styles/shadows";
 import "@mui/material/styles/createPalette";
 import {alpha} from "@mui/material";
+import {grey, teal} from "./colors/aptosColorPalette";
 
-// Button variant - CTA stacked
+// Button variants
 declare module "@mui/material/Button" {
   interface ButtonPropsVariantOverrides {
-    cta: true;
+    nav: true;
     primary: true;
   }
 }
@@ -20,40 +19,50 @@ declare module "@mui/material/Divider" {
   }
 }
 
+declare module "@mui/material/styles" {
+  interface TypographyVariants {
+    stats: React.CSSProperties;
+  }
+  // allow configuration using `createTheme`
+  interface TypographyVariantsOptions {
+    stats?: React.CSSProperties;
+  }
+}
+
+declare module "@mui/material/styles/createPalette" {
+  interface Palette {
+    lineShade: {
+      main: string;
+    };
+    neutralShade: {
+      main: string;
+      lighter: string;
+      darker: string;
+    };
+  }
+}
+
+// Divider variant - big stats
+declare module "@mui/material/Typography" {
+  interface TypographyPropsVariantOverrides {
+    stats: true;
+  }
+}
+
 // Divider variant - bump
 declare module "@mui/material/Divider" {
   interface DividerPropsVariantOverrides {
     bump: true;
-  }
-}
-
-// Divider variant - bump (dark mode)
-declare module "@mui/material/Divider" {
-  interface DividerPropsVariantOverrides {
     bumpDark: true;
-  }
-}
-
-// Divider variant - bump (right side)
-declare module "@mui/material/Divider" {
-  interface DividerPropsVariantOverrides {
     bumpRight: true;
-  }
-}
-
-// Divider variant - bump (right side dark mode)
-declare module "@mui/material/Divider" {
-  interface DividerPropsVariantOverrides {
     bumpRightDark: true;
   }
 }
 
-const buttonRadiusOffset = 3;
-const primaryColor = teal["A400"];
-const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
-  // disable shadows system-wide by default
-  shadows: shadows.map(() => "none") as Shadows,
+const primaryColor = teal[400];
+const primaryColorToned = teal[600];
 
+const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   shape: {
     borderRadius: 8,
   },
@@ -61,15 +70,44 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   typography: {
     fontFamily: `lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
     fontWeightLight: 200,
-    fontWeightRegular: 300,
-    fontWeightBold: 400,
+    fontWeightRegular: 400,
+    fontWeightBold: 500,
     h1: {
-      fontFamily: `apparat-semicond-light,Geneva,Tahoma,Verdana,sans-serif`,
-      fontWeight: 100,
+      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontWeight: "300",
+    },
+    h2: {
+      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontWeight: "300",
+    },
+    h3: {
+      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontWeight: "300",
+    },
+    h4: {
+      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontWeight: "300",
+    },
+    h5: {
+      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontWeight: "300",
+    },
+    h6: {
+      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontWeight: "300",
+    },
+    stats: {
+      fontFamily: `lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
+      fontWeight: "400",
     },
     subtitle1: {
       fontWeight: 400,
-      fontSize: "1.3rem",
+      textTransform: "uppercase",
+      lineHeight: "1.25",
+    },
+    subtitle2: {
+      fontWeight: 400,
+      fontSize: "1rem",
       textTransform: "uppercase",
       lineHeight: "1.25",
     },
@@ -81,22 +119,34 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       ? {
           // light mode palette values
           primary: {
-            main: teal["A700"],
+            main: primaryColorToned,
           },
 
-          typography: {
-            allVariants: {
-              color: grey[900],
-            },
+          secondary: {
+            main: grey[700],
           },
 
           success: {
-            main: teal["A700"],
+            main: primaryColorToned,
           },
 
           background: {
-            default: "#FFFFFF",
+            default: "#ffffff",
             paper: grey[100],
+          },
+
+          text: {
+            primary: grey[900],
+            secondary: grey[500],
+          },
+
+          lineShade: {
+            main: grey[200],
+          },
+
+          neutralShade: {
+            main: grey[50],
+            darker: grey[100],
           },
         }
       : {
@@ -105,10 +155,8 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
             main: primaryColor,
           },
 
-          typography: {
-            allVariants: {
-              color: grey[200],
-            },
+          secondary: {
+            main: grey[300],
           },
 
           success: {
@@ -116,52 +164,43 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           },
 
           background: {
-            default: "#151515",
-            paper: "#222222",
+            default: grey[900],
+            paper: grey[800],
+          },
+
+          text: {
+            primary: grey[50],
+            secondary: grey[200],
+          },
+
+          lineShade: {
+            main: grey[700],
+          },
+
+          neutralShade: {
+            main: grey[800],
+            lighter: grey[700],
           },
         }),
   },
 
   components: {
+    // Typography overrides
+    MuiTypography: {
+      styleOverrides: {
+        subtitle2: {
+          display: "block",
+        },
+      },
+    },
     // Autocomplete overrides
     MuiAutocomplete: {
       styleOverrides: {
-        listbox: {
-          padding: "0",
-        },
-        option: {
-          background: "none",
-          padding: "0!important",
-          borderRadius: "8px",
-          "&:empty": {
-            display: "none!important",
-          },
-          "&::hover": {
-            background: "none",
+        root: ({theme}) => ({
+          listbox: {
             padding: "0",
           },
-
-          '&[aria-selected="true"]': {
-            backgroundColor: "grey",
-            padding: "0",
-          },
-          '&[aria-selected="true"].Mui-focused': {
-            backgroundColor: "grey",
-            padding: "0",
-          },
-          "&.Mui-selected": {
-            backgroundColor: "grey",
-            padding: "0",
-          },
-          "&.Mui-selected.Mui-focused": {
-            backgroundColor: "grey",
-            padding: "0",
-          },
-          "&.Mui-focused": {
-            backgroundColor: "transparent",
-            padding: "0",
-          },
-        },
+        }),
       },
     },
 
@@ -177,11 +216,88 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     // Paper overrides
     MuiPaper: {
       styleOverrides: {
-        root: {
+        root: ({theme}) => ({
           backgroundImage: "none",
-          borderRadius: 8,
+          borderRadius: theme.shape.borderRadius,
           transition: "none !important",
+          boxShadow: "none",
+        }),
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        paper: {
+          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
         },
+      },
+    },
+
+    MuiInput: {
+      styleOverrides: {
+        root: ({theme}) => ({
+          borderRadius: 2,
+        }),
+      },
+    },
+
+    MuiFilledInput: {
+      styleOverrides: {
+        root: ({theme}) => ({
+          borderRadius: `${theme.shape.borderRadius}px`,
+          backgroundColor: `${
+            theme.palette.mode === "dark" ? grey[700] : grey[100]
+          }`,
+          transition: "none",
+          "&.Mui-focused": {
+            filter: `${
+              theme.palette.mode === "dark"
+                ? "brightness(1.1)"
+                : "brightness(0.98)"
+            }`,
+            boxShadow: `0 0 0 3px ${alpha(primaryColor, 0.5)}`,
+          },
+          "&:hover": {
+            backgroundColor: `${
+              theme.palette.mode === "dark" ? grey[800] : grey[50]
+            }`,
+            filter: `${
+              theme.palette.mode === "dark"
+                ? "brightness(1.1)"
+                : "brightness(0.99)"
+            }`,
+          },
+        }),
+      },
+    },
+
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: ({theme}) => ({
+          backgroundColor: `${
+            theme.palette.mode === "dark" ? grey[800] : grey[50]
+          }`,
+          "&.Mui-focused": {
+            boxShadow: `0 0 0 2px ${alpha(
+              theme.palette.mode === "dark" ? primaryColor : primaryColorToned,
+              0.35,
+            )}`,
+          },
+          "&:hover": {
+            backgroundColor: theme.palette.neutralShade.main,
+          },
+          ".MuiOutlinedInput-notchedOutline": {
+            borderColor: theme.palette.lineShade.main,
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline":
+            {
+              borderColor: `${alpha(
+                theme.palette.mode === "dark"
+                  ? primaryColor
+                  : primaryColorToned,
+                0.35,
+              )}`,
+            },
+        }),
       },
     },
 
@@ -190,7 +306,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       styleOverrides: {
         select: {
           borderRadius: "8px",
-          textTransform: "uppercase",
+          textTransform: "capitalize",
         },
         outlined: {
           backgroundColor: "transparent",
@@ -207,10 +323,10 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     },
     MuiMenuItem: {
       styleOverrides: {
-        root: {
-          textTransform: "uppercase",
-          borderRadius: 8,
-        },
+        root: ({theme}) => ({
+          borderRadius: theme.shape.borderRadius,
+          textTransform: "capitalize",
+        }),
       },
     },
 
@@ -242,7 +358,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
               display: "block",
               width: "100%",
               height: "1px",
-              background: `${teal["A700"]}`,
+              background: `${primaryColorToned}`,
               maskClip: "content-box",
               maskImage: `-webkit-linear-gradient(black, black),
             url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="6" viewBox="0 0 14 6"><rect fill="black" x="0" y="0" width="13" height="6"></rect></svg>')`,
@@ -256,9 +372,9 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
               height: "6px",
               backgroundSize: "100%",
               backgroundRepeat: "none",
-              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${teal[
-                "A700"
-              ].substring(1)}" stroke-miterlimit="10"/></svg>')`,
+              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColorToned.substring(
+                1,
+              )}" stroke-miterlimit="10"/></svg>')`,
               transform: `translateX(calc(-1 * 20%))`,
               left: "20%",
             },
@@ -375,9 +491,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
               height: "6px",
               backgroundSize: "100%",
               backgroundRepeat: "none",
-              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColor.substring(
-                1,
-              )}" stroke-miterlimit="10"/></svg>')`,
+              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColor}" stroke-miterlimit="10"/></svg>')`,
               transform: `translateX(calc(-1 * 78%))`,
               left: "78%",
             },
@@ -390,7 +504,8 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     MuiTable: {
       styleOverrides: {
         root: {
-          borderCollapse: "collapse",
+          borderCollapse: "separate",
+          borderSpacing: "0px 0.5rem",
         },
       },
     },
@@ -400,6 +515,8 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       styleOverrides: {
         root: {
           borderBottomWidth: "0",
+          background: "transparent",
+          borderSpacing: "0px",
         },
       },
     },
@@ -412,8 +529,16 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           "&::before": {
             content: '""',
             display: "block",
-            height: "1em",
+            height: 10,
           },
+        },
+      },
+    },
+
+    MuiTableRow: {
+      styleOverrides: {
+        head: {
+          background: "transparent",
         },
       },
     },
@@ -423,15 +548,22 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       styleOverrides: {
         head: {
           border: "0",
+          background: "transparent",
+          paddingBottom: "0",
         },
-        root: {
-          fontSize: "1.05rem",
-          // fontWeight: '400',
-          padding: "1rem 2rem 1rem 0.5rem",
+        root: ({theme}) => ({
+          padding: "0.75rem 1.5rem 0.75rem 1.5rem",
           whiteSpace: "nowrap",
-          borderStyle: "dotted",
-          borderWidth: "0 0 2px",
-        },
+          borderStyle: "solid",
+          borderWidth: "0 0 0 0",
+          borderColor: grey[700],
+          "&:first-of-type": {
+            borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
+          },
+          "&:last-of-type": {
+            borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
+          },
+        }),
       },
     },
 
@@ -449,6 +581,11 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       },
       styleOverrides: {
         root: {
+          transition: "none !important",
+          fontWeight: "400",
+          "&:hover": {
+            filter: "brightness(0.98)",
+          },
           "&.Mui-disabled": {
             opacity: 0.5,
             color: "black",
@@ -456,85 +593,6 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
         },
       },
       variants: [
-        {
-          props: {variant: "cta"},
-          style: {
-            fontSize: "1.1rem",
-            padding: "12px 34px",
-            border: `0`,
-            borderRadius: "2px 12px",
-            color: "black",
-            width: "auto",
-            margin: "auto",
-            transform: "translateY(6px)",
-            backgroundColor: alpha(primaryColor, 1),
-            position: "relative",
-            zIndex: "1",
-            lineHeight: "2",
-            transitionProperty: "all",
-            transitionDuration: "0.25s",
-            transitionTimingFunction: "cubic-bezier(.4,0,.2,1)",
-
-            "&::before, &::after": {
-              content: '""',
-              position: "absolute",
-              backgroundColor: alpha(primaryColor, 0.65),
-              width: "100%",
-              height: "100%",
-              transitionProperty: "all",
-              transitionDuration: "0.35s",
-              transitionTimingFunction: "cubic-bezier(.4,0,.2,1)",
-              left: "0",
-              top: "0",
-            },
-            "&::before": {
-              zIndex: "-1",
-              boxShadow: `-${buttonRadiusOffset}px ${buttonRadiusOffset}px 0px 0px ${alpha(
-                primaryColor,
-                0.35,
-              )}`,
-              borderRadius: `${buttonRadiusOffset * 2}px 12px ${
-                buttonRadiusOffset * 2
-              }px 12px`,
-              transform: `translateX(-${buttonRadiusOffset}px) translateY(0px)`,
-              width: `calc(100% + ${buttonRadiusOffset}px)`,
-              height: `calc(100% + ${buttonRadiusOffset}px)`,
-              //opacity:'0'
-            },
-            "&::after": {
-              zIndex: "-2",
-              boxShadow: `${buttonRadiusOffset}px -${buttonRadiusOffset}px 0px 0px ${alpha(
-                primaryColor,
-                0.35,
-              )}`,
-              borderRadius: `${buttonRadiusOffset * 2}px 12px ${
-                buttonRadiusOffset * 2
-              }px 12px`,
-              transform: `translateX(0px) translateY(-${buttonRadiusOffset}px)`,
-              width: `calc(100% + ${buttonRadiusOffset}px)`,
-              height: `calc(100% + ${buttonRadiusOffset}px)`,
-              //opacity: '0'
-            },
-            "&:hover": {
-              backgroundColor: alpha(primaryColor, 1),
-              opacity: "0.95",
-              transform: "translateY(4px)",
-              borderRadius: "12px",
-              "&::before": {
-                transform: `translateX(${buttonRadiusOffset}px) translateY(0)`,
-                borderRadius: "12px",
-                width: `calc(100% - ${buttonRadiusOffset}px)`,
-                height: `calc(100% - ${buttonRadiusOffset}px)`,
-              },
-              "&::after": {
-                transform: `translateX(0px) translateY(${buttonRadiusOffset}px)`,
-                borderRadius: "12px",
-                width: `calc(100% - ${buttonRadiusOffset}px)`,
-                height: `calc(100% - ${buttonRadiusOffset}px)`,
-              },
-            },
-          },
-        },
         {
           props: {variant: "primary"},
           style: {
@@ -545,8 +603,21 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
             minWidth: "8rem",
             "&:hover": {
               backgroundColor: alpha(primaryColor, 1),
-              opacity: "0.5",
             },
+          },
+        },
+        {
+          props: {variant: "nav"},
+          style: {
+            textTransform: "capitalize",
+            color: grey[300],
+            fontSize: "1rem",
+            fontWeight: "normal",
+            "&:hover": {
+              background: "transparent",
+              opacity: "0.8",
+            },
+            "&.active": {},
           },
         },
       ],

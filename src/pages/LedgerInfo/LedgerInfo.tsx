@@ -4,11 +4,11 @@ import {Types} from "aptos";
 import {getLedgerInfo} from "../../api";
 import {parseTimestamp, timestampDisplay} from "../utils";
 import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
 import {useGlobalState} from "../../GlobalState";
 import {useTheme} from "@mui/material";
+import CardOutline from "../../components/CardOutline";
 
 function RenderLedgerInfoInner({data}: UseQueryResult<Types.LedgerInfo>) {
   if (!data) return null;
@@ -17,42 +17,68 @@ function RenderLedgerInfoInner({data}: UseQueryResult<Types.LedgerInfo>) {
   const timestamp_display = timestampDisplay(moment);
   const theme = useTheme();
   return (
-    <Grid container spacing={4} direction="row">
+    <Grid
+      container
+      spacing={4}
+      direction="row"
+      sx={{alignContent: "flex-start", mb: 6}}
+    >
       <Grid item xs={12} md={6} lg={2}>
-        <Paper sx={{p: 3, height: "100%"}}>
-          <Typography variant="subtitle1">Chain ID</Typography>
+        <CardOutline>
+          <Typography variant="subtitle1" color="text.secondary">
+            Chain ID
+          </Typography>
           <Divider
             variant={theme.palette.mode === "dark" ? "bumpDark" : "bump"}
             sx={{margin: "1em 0 -0.5em"}}
           />
-          <Typography component="div" variant="h3" textAlign="left">
+          <Typography
+            component="div"
+            variant="h4"
+            textAlign="left"
+            sx={{fontFamily: "lft-etica-mono", fontWeight: "400"}}
+          >
             {data.chain_id}
           </Typography>
-        </Paper>
+        </CardOutline>
       </Grid>
       <Grid item xs={12} md={6} lg={4}>
-        <Paper sx={{p: 3, height: "100%"}}>
-          <Typography variant="subtitle1">Latest Version ID</Typography>
+        <CardOutline>
+          <Typography variant="subtitle1" color="text.secondary">
+            Latest Version ID
+          </Typography>
           <Divider
             variant={theme.palette.mode === "dark" ? "bumpDark" : "bump"}
             sx={{margin: "1em 0 -0.5em"}}
           />
-          <Typography component="div" variant="h3" textAlign="left">
+          <Typography
+            component="div"
+            variant="h4"
+            textAlign="left"
+            sx={{fontFamily: "lft-etica-mono", fontWeight: "400"}}
+          >
             {data.ledger_version}
           </Typography>
-        </Paper>
+        </CardOutline>
       </Grid>
       <Grid item xs={12} lg={6}>
-        <Paper sx={{p: 3, height: "100%"}}>
-          <Typography variant="subtitle1">Latest Version Time</Typography>
+        <CardOutline>
+          <Typography variant="subtitle1" color="text.secondary">
+            Latest Version Time
+          </Typography>
           <Divider
             variant={theme.palette.mode === "dark" ? "bumpDark" : "bump"}
             sx={{margin: "1em 0 -0.5em"}}
           />
-          <Typography component="div" variant="h3" textAlign="left">
+          <Typography
+            component="div"
+            variant="h4"
+            textAlign="left"
+            sx={{fontFamily: "lft-etica-mono", fontWeight: "400"}}
+          >
             {timestamp_display.local_formatted}
           </Typography>
-        </Paper>
+        </CardOutline>
       </Grid>
     </Grid>
   );
@@ -69,11 +95,5 @@ export default function RenderLedgerInfo() {
     },
   );
 
-  return (
-    <Grid container spacing={0} direction="column">
-      <Grid item>
-        <RenderLedgerInfoInner {...result} />
-      </Grid>
-    </Grid>
-  );
+  return <RenderLedgerInfoInner {...result} />;
 }

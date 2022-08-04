@@ -1,21 +1,23 @@
 import React from "react";
-import Grid from "@mui/material/Grid";
 import {TransactionsPreview} from "../Transactions/Transactions";
 import LedgerInfo from "../LedgerInfo/LedgerInfo";
+import Typography from "@mui/material/Typography";
+import DividerHero from "../../components/Divider";
+import HeadingSub from "../../components/HeadingSub";
 import HeaderSearch from "../layout/Search";
+import Box from "@mui/material/Box";
 
 export default function Dashboard() {
   return (
-    <Grid container spacing={8}>
-      <Grid item xs={12}>
-        <HeaderSearch />
-      </Grid>
-      <Grid item xs={12}>
-        <LedgerInfo />
-      </Grid>
-      <Grid item xs={12}>
-        <TransactionsPreview />
-      </Grid>
-    </Grid>
+    <Box>
+      <HeadingSub>Network</HeadingSub>
+      <Typography variant="h1" component="h1" gutterBottom>
+        Aptos Explorer
+      </Typography>
+      <DividerHero />
+      <LedgerInfo />
+      <HeaderSearch />
+      <TransactionsPreview />
+    </Box>
   );
 }

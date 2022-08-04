@@ -18,6 +18,8 @@ import {renderDebug} from "../utils";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
 import {TransactionsTable} from "../../components/TransactionsTable";
+import DividerHero from "../../components/Divider";
+import Typography from "@mui/material/Typography";
 import HeaderSearch from "../layout/Search";
 
 function RenderHeader(children: React.ReactNode, title?: string) {
@@ -281,9 +283,19 @@ export default function AccountPage() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
+        <Typography
+          color="primary"
+          variant="subtitle2"
+          component="span"
+          sx={{mb: 2}}
+        >
+          Network
+        </Typography>
+        <Typography variant="h1" component="h1" gutterBottom>
+          Aptos Explorer
+        </Typography>
+        <DividerHero />
         <HeaderSearch />
-      </Grid>
-      <Grid item xs={12}>
         <RenderAccount {...accountResult} />
         <RenderAccountResources {...accountResourcesResult} />
         <RenderAccountModules {...accountModulesResult} />

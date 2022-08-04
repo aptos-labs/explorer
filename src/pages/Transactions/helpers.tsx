@@ -8,6 +8,11 @@ import Title from "../../components/Title";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
+import StartRoundedIcon from "@mui/icons-material/StartRounded";
+import OutlinedFlagIcon from "@mui/icons-material/OutlinedFlag";
+import SubtitlesOutlinedIcon from "@mui/icons-material/SubtitlesOutlined";
+import MultipleStopRoundedIcon from "@mui/icons-material/MultipleStopRounded";
+import UpdateRoundedIcon from "@mui/icons-material/UpdateRounded";
 
 export function renderTimestamp(timestamp?: string) {
   if (!timestamp)
@@ -30,34 +35,65 @@ export function renderGas(gas: string) {
 export function renderSuccess(success: boolean) {
   if (success)
     return (
-      <CheckCircleOutlinedIcon
-        fontSize="medium"
-        color="success"
-        titleAccess="Executed successfully"
-      />
+      <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+        <CheckCircleOutlinedIcon
+          fontSize="small"
+          color="success"
+          titleAccess="Executed successfully"
+        />
+        Success
+      </Box>
     );
 
   return (
-    <ErrorOutlineOutlinedIcon
-      fontSize="medium"
-      color="error"
-      titleAccess="Failed to Execute"
-    />
+    <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+      <ErrorOutlineOutlinedIcon
+        fontSize="small"
+        color="error"
+        titleAccess="Failed to Execute"
+      />
+      Fail
+    </Box>
   );
 }
 
 export function renderTransactionType(transaction_type: string) {
   switch (transaction_type) {
     case "block_metadata_transaction":
-      return "BlockMetadata";
+      return (
+        <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+          <SubtitlesOutlinedIcon fontSize="small" color="primary" />
+          <Typography fontSize="inherit">BlockMetadata</Typography>
+        </Box>
+      );
     case "genesis_transaction":
-      return "GenesisTransaction";
+      return (
+        <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+          <StartRoundedIcon fontSize="small" color="primary" />
+          <Typography fontSize="inherit">GenesisTransaction</Typography>
+        </Box>
+      );
     case "user_transaction":
-      return "UserTransaction";
+      return (
+        <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+          <MultipleStopRoundedIcon fontSize="small" color="primary" />
+          <Typography fontSize="inherit">UserTransaction</Typography>
+        </Box>
+      );
     case "pending_transaction":
-      return "PendingTransaction";
+      return (
+        <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+          <UpdateRoundedIcon fontSize="small" color="primary" />
+          <Typography fontSize="inherit">PendingTransaction</Typography>
+        </Box>
+      );
     case "state_checkpoint_transaction":
-      return "StateCheckpointTransaction";
+      return (
+        <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+          <OutlinedFlagIcon fontSize="small" color="primary" />
+          <Typography fontSize="inherit">StateCheckpoint</Typography>
+        </Box>
+      );
     default:
       throw `Unknown renderTransactionType:${transaction_type}`;
   }
@@ -90,7 +126,7 @@ export function renderRow(
         key={i}
       >
         <Grid item md={3}>
-          <Typography variant="subtitle1">{key}</Typography>
+          <Typography variant="h6">{key}</Typography>
         </Grid>
         <Grid item md={9} sx={{width: 1, overflowWrap: "break-word"}}>
           <Box>{value}</Box>

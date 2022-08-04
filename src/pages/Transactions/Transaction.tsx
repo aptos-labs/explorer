@@ -19,7 +19,11 @@ import {
   renderRow,
 } from "./helpers";
 import {AccountLink} from "../Accounts/helpers";
+import DividerHero from "../../components/Divider";
+import Typography from "@mui/material/Typography";
+import HeadingSub from "../../components/HeadingSub";
 import HeaderSearch from "../layout/Search";
+import GoBack from "../../components/GoBack";
 
 function renderBlockMetadataTransaction(
   transaction: Types.BlockMetadataTransaction,
@@ -517,9 +521,13 @@ export default function Transaction() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
+        <HeadingSub>Network</HeadingSub>
+        <Typography variant="h1" component="h1" gutterBottom>
+          Aptos Explorer
+        </Typography>
+        <DividerHero />
         <HeaderSearch />
-      </Grid>
-      <Grid item xs={12}>
+        <GoBack />
         <RenderTransaction {...result} txnHashOrVersion={txnHashOrVersion} />
       </Grid>
     </Grid>

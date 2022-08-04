@@ -26,8 +26,8 @@ export const HeaderText = ({
           </Link>
         </Typography>
       ) : (
-        <Typography variant="h5" sx={{mb: 2}}>
-          Aptos Governance
+        <Typography variant="h4" sx={{mb: 2}}>
+          Proposal Submission
         </Typography>
       )}
       <Typography>

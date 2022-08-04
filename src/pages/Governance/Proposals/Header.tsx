@@ -7,7 +7,6 @@ type HeaderProps = {
 };
 
 export const Header = ({onVoteProposalButtonClick}: HeaderProps) => {
-
   return (
     <Grid container mb={10}>
       <Grid item xs={12}>
