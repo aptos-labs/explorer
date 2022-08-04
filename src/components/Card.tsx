@@ -25,7 +25,7 @@ export default function Card({children}: CardProps) {
           flexGrow: 1,
           backgroundColor:
             theme.palette.mode === "dark" ? "#1B1F1E" : "#f5f5f5",
-        }} // {theme.palette.mode === "dark" ? "bumpDark" : "bump"}
+        }}
         borderRadius={1}
         border="1px solid gray"
       >
