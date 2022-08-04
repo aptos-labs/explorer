@@ -10,6 +10,10 @@ export function GovernancePage() {
   const data = useGetProposalsTableData();
   const ProposalsTableRef = useRef<null | HTMLDivElement>(null);
 
+  const scrollTableIntoView = () => {
+    ProposalsTableRef.current?.scrollIntoView({behavior: "smooth"});
+  }
+
   if (!data) {
     // TODO: handle errors
     return <>No Data</>;
@@ -19,9 +23,9 @@ export function GovernancePage() {
 
   return (
     <Grid item xs={12} marginTop={{md: 12, xs: 6}}>
-      <Header ProposalsTableRef={ProposalsTableRef} />
+      <Header scrollTableIntoView={scrollTableIntoView} />
       <Hidden smDown>
-        <Instructions ProposalsTableRef={ProposalsTableRef} />
+        <Instructions scrollTableIntoView={scrollTableIntoView} />
       </Hidden>
       <ProposalsTable
         nextProposalId={nextProposalId}

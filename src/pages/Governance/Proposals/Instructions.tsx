@@ -12,7 +12,7 @@ import Card from "../../../components/Card";
 import {useWalletContext} from "../../../context/wallet/context";
 
 type InstructionsProps = {
-  ProposalsTableRef: React.MutableRefObject<HTMLDivElement | null>;
+  scrollTableIntoView: () => void;
 };
 
 type CardBoxProps = {
@@ -21,12 +21,12 @@ type CardBoxProps = {
   content: string;
 };
 
-export function Instructions({ProposalsTableRef}: InstructionsProps) {
+export function Instructions({scrollTableIntoView}: InstructionsProps) {
   const theme = useTheme();
   const {isInstalled, isConnected, connect} = useWalletContext();
 
   const onVoteProposalClick = () => {
-    ProposalsTableRef?.current?.scrollIntoView({behavior: "smooth"});
+    scrollTableIntoView()
   };
 
   const CardBox = ({children, title, content}: CardBoxProps) => {

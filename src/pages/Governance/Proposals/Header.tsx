@@ -3,12 +3,12 @@ import {Button, Grid, Typography} from "@mui/material";
 import {Box} from "@mui/system";
 
 type HeaderProps = {
-  ProposalsTableRef: React.MutableRefObject<HTMLDivElement | null>;
+  scrollTableIntoView: () => void;
 };
 
-export const Header = ({ProposalsTableRef}: HeaderProps) => {
+export const Header = ({scrollTableIntoView}: HeaderProps) => {
   const onVoteProposalClick = () => {
-    ProposalsTableRef?.current?.scrollIntoView({behavior: "smooth"});
+    scrollTableIntoView()
   };
 
   return (
