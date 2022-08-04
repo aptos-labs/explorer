@@ -1,21 +1,26 @@
-export const getAptosWallet = () => {
+export const getAptosWallet = (): boolean => {
   return "aptos" in window;
 };
 
-export const isWalletConnected = async () => {
+export const isWalletConnected = async (): Promise<boolean> => {
   try {
-    return window.aptos && (await window.aptos.isConnected());
+    if (window.aptos && (await window.aptos.isConnected())) {
+      return true;
+    }
   } catch (error) {
     console.log(error);
   }
+  return false;
 };
 
-export const connectToWallet = async () => {
+export const connectToWallet = async (): Promise<boolean> => {
   try {
-    return await window.aptos.connect();
+    const result = await window.aptos.connect();
+    if ("address" in result) return true;
   } catch (error) {
     console.log(error);
   }
+  return false;
 };
 
 export const getAccountAddress: () => Promise<string | null> = async () => {

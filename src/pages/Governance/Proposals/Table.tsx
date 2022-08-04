@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as RRD from "react-router-dom";
-import {useTheme} from "@mui/material";
+import {Grid, useTheme} from "@mui/material";
 import Title from "../../../components/Title";
 import {
   Stack,
@@ -183,6 +183,7 @@ type ProposalsTableProps = {
   columns?: ProposalColumn[];
   nextProposalId: string;
   handle: string;
+  ProposalsTableRef: React.MutableRefObject<HTMLDivElement | null>;
 };
 
 // TODO: generalize Table component for transactions and proposals
@@ -190,6 +191,7 @@ export function ProposalsTable({
   nextProposalId,
   handle,
   columns = DEFAULT_COLUMNS,
+  ProposalsTableRef,
 }: ProposalsTableProps) {
   const proposalRows = [];
   // we need to iterate from (0...nextProposalId)
@@ -220,11 +222,11 @@ export function ProposalsTable({
   );
 
   return (
-    <>
+    <Grid ref={ProposalsTableRef}>
       <Stack spacing={1}>
         <Title>Proposals</Title>
         <Box sx={{width: "auto", overflowX: "auto"}}>{tableComponent}</Box>
       </Stack>
-    </>
+    </Grid>
   );
 }

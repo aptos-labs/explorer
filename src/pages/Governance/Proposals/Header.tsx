@@ -1,55 +1,51 @@
-import React, {useEffect} from "react";
-import {Box, Grid} from "@mui/material";
+import React from "react";
+import {Button, Grid, Typography} from "@mui/material";
+import {Box} from "@mui/system";
 
-import {HeaderText} from "./HeaderText";
-import {WalletButton} from "../../../components/WalletButton";
-import {useWalletContext} from "../../../context/wallet/context";
+type HeaderProps = {
+  scrollTableIntoView: () => void;
+};
 
-export const Header = () => {
-  const {isConnected, accountAddress} = useWalletContext();
+export const Header = ({scrollTableIntoView}: HeaderProps) => {
+  const onVoteProposalClick = () => {
+    scrollTableIntoView()
+  };
 
   return (
-    <Box position="relative">
-      <Box
-        component="div"
-        sx={{top: "0.5rem", left: "-0.5rem", zIndex: "-10"}}
-        height="100%"
-        width="100%"
-        position="absolute"
-        borderRadius={1}
-        border="1px solid gray"
-      ></Box>
-
-      <Box
-        component="div"
-        sx={{p: 2, flexGrow: 1, backgroundColor: "#151515"}}
-        borderRadius={1}
-        border="1px solid gray"
-      >
-        <Grid container sx={{p: 2}} alignItems="center" spacing={4}>
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={8}
-            sx={{overflow: "hidden", textOverflow: "ellipsis"}}
-          >
-            <HeaderText
-              walletIsConnected={isConnected}
-              accountAddress={accountAddress}
-            />
+    <Grid container mb={10}>
+      <Grid item xs={12}>
+        <Grid
+          container
+          spacing={{xs: 6, sm: 12}}
+          justifyContent="space-around"
+          flexDirection="row"
+        >
+          <Grid item xs={12} sm={5}>
+            <Typography variant="h6">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            </Typography>
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={12}
-            md={4}
-            textAlign={{sm: "left", md: "right"}}
-          >
-            <WalletButton />
+          <Grid item xs={12} sm={5}>
+            <Typography variant="subtitle2" mb={4}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Turpis
+              tincidunt id aliquet risus. Non quam lacus suspendisse faucibus
+              interdum posuere lorem ipsum. Amet tellus cras adipiscing enim eu
+              turpis. Arcu cursus euismod quis viverra nibh cras pulvinar.
+            </Typography>
+            <Box justifyContent="center">
+              <Button
+                variant="primary"
+                onClick={onVoteProposalClick}
+                sx={{width: "300px"}}
+              >
+                view proposals
+              </Button>
+            </Box>
           </Grid>
         </Grid>
-      </Box>
-    </Box>
+      </Grid>
+    </Grid>
   );
 };
