@@ -13,7 +13,7 @@ export const Header = ({onVoteProposalButtonClick}: HeaderProps) => {
         <Grid
           container
           spacing={{xs: 6, sm: 12}}
-          justifyContent="space-around"
+          justifyContent="space-between"
           flexDirection="row"
         >
           <Grid item xs={12} sm={5}>
