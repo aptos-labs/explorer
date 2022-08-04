@@ -80,7 +80,7 @@ function TransactionGasCell({transaction}: TransactionCellProps) {
   );
 }
 
-function truncateMiddle(
+export function truncateMiddle(
   str: any,
   frontLen: number,
   backLen: number,

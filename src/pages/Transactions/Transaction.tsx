@@ -19,7 +19,7 @@ import {
   renderRow,
 } from "./helpers";
 import {AccountLink} from "../Accounts/helpers";
-import DividerHero from "../../components/Divider";
+import DividerHero from "../../components/DividerHero";
 import Typography from "@mui/material/Typography";
 import HeadingSub from "../../components/HeadingSub";
 import HeaderSearch from "../layout/Search";
