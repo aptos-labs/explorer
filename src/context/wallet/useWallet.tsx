@@ -12,6 +12,7 @@ export function useWallet() {
   const [accountAddress, setAccountAddress] = React.useState<string | null>(
     null,
   );
+  const [isUpdatedVersion, setIsUpdatedVersion] = React.useState<boolean>(false)
 
   useEffect(() => {
     setAptosWallet(getAptosWallet());
@@ -19,16 +20,22 @@ export function useWallet() {
   }, []);
 
   useEffect(() => {
-    window.aptos && window.aptos.on('accountChanged', (account: any) => {
-      if (account.address) {
-        setIsConnected(true);
-        setAccountAddress(account.address);
-      } else {
-        setAccountAddress(null);
-        setIsConnected(false);
-      }
-    });
-  });
+    // add this check to support older wallet versions
+    if(window.aptos && window.aptos.on instanceof Function){
+      setIsUpdatedVersion(true)
+      window.aptos.on('accountChanged', (account: any) => {
+        if (account.address) {
+          setIsConnected(true);
+          setAccountAddress(account.address);
+        } else {
+          setAccountAddress(null);
+          setIsConnected(false);
+        }
+      });
+    }else{
+      setIsUpdatedVersion(false)
+    }
+  },[]);
 
   useEffect(() => {
     if (isConnected) {
@@ -40,5 +47,5 @@ export function useWallet() {
     connectToWallet().then(setIsConnected);
   };
 
-  return {isInstalled, isConnected, accountAddress, connect};
+  return {isInstalled, isConnected, accountAddress, isUpdatedVersion, connect};
 }
