@@ -30,8 +30,8 @@ export function useWallet() {
 
   const processTransaction = async (
     transactionPayload: Types.TransactionPayload,
-  ) => {
-    signAndSubmitTransaction(transactionPayload);
+  ): Promise<boolean> => {
+    return signAndSubmitTransaction(transactionPayload);
   };
 
   return {

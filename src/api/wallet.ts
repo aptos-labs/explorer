@@ -32,10 +32,16 @@ export const getAccountAddress: () => Promise<string | null> = async () => {
 
 export const signAndSubmitTransaction = async (
   transactionPayload: Types.TransactionPayload,
-) => {
+): Promise<boolean> => {
   try {
-    await window.aptos.signAndSubmitTransaction(transactionPayload);
+    const response = await window.aptos.signAndSubmitTransaction(
+      transactionPayload,
+    );
+    if ("hash" in response) {
+      return true;
+    }
   } catch (error) {
     console.log(error);
   }
+  return false;
 };

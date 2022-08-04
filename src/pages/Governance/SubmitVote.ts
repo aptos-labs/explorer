@@ -1,11 +1,13 @@
 import {Types} from "aptos";
+import {useState} from "react";
 import {useWalletContext} from "../../context/wallet/context";
 
-// TODO: refresh page / show new result after voting
+// TODO: confirmation modal
 const useSubmitVote = (proposalId: string) => {
+  const [voteSucceeded, setVoteSucceeded] = useState<boolean | null>(null);
   const {processTransaction} = useWalletContext();
 
-  function submitVote(shouldPass: boolean, ownerAccountAddr: string) {
+  async function submitVote(shouldPass: boolean, ownerAccountAddr: string) {
     const payload: Types.TransactionPayload = {
       type: "script_function_payload",
       function: "0x1::aptos_governance::vote",
@@ -13,10 +15,14 @@ const useSubmitVote = (proposalId: string) => {
       arguments: [ownerAccountAddr, proposalId, shouldPass],
     };
 
-    processTransaction(payload);
+    await processTransaction(payload).then(setVoteSucceeded);
   }
 
-  return [submitVote];
+  function resetVoteSucceeded() {
+    setVoteSucceeded(null);
+  }
+
+  return {submitVote, voteSucceeded, resetVoteSucceeded};
 };
 
 export default useSubmitVote;

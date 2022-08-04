@@ -8,7 +8,7 @@ export interface walletContext {
   connect: () => Promise<void>;
   processTransaction: (
     transactionPayload: Types.TransactionPayload,
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 }
 
 export const walletContext = createContext<walletContext | null>(null);
