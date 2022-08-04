@@ -12,7 +12,7 @@ import Card from "../../../components/Card";
 import {useWalletContext} from "../../../context/wallet/context";
 
 type InstructionsProps = {
-  onVoteProposalButtonClick: () => void;
+  onVoteProposalButtonClick?: () => void;
 };
 
 type CardBoxProps = {

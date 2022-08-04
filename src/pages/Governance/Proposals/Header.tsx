@@ -3,7 +3,7 @@ import {Button, Grid, Typography} from "@mui/material";
 import {Box} from "@mui/system";
 
 type HeaderProps = {
-  onVoteProposalButtonClick: () => void;
+  onVoteProposalButtonClick?: () => void;
 };
 
 export const Header = ({onVoteProposalButtonClick}: HeaderProps) => {
