@@ -11,6 +11,7 @@ import {
 import {DateTimePicker} from "@mui/x-date-pickers/DateTimePicker";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import { Header } from "../Header";
 
 export function StakePage() {
   const [stakingEndTime, setStakingEndTime] = useState<Date | null>(new Date());
@@ -42,7 +43,9 @@ export function StakePage() {
   };
 
   return (
-    <Grid container spacing={2} marginTop={{md: 12, xs: 6}}>
+    <Grid>
+    <Header/>
+    <Grid container spacing={2}>
       <Grid item xs={6} md={6}>
         <FormControl fullWidth>
           <InputLabel htmlFor="outlined-adornment-amount">
@@ -94,6 +97,7 @@ export function StakePage() {
           </Button>
         </FormControl>
       </Grid>
+    </Grid>
     </Grid>
   );
 }
