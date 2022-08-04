@@ -3,13 +3,10 @@ import {Button, Grid, Typography} from "@mui/material";
 import {Box} from "@mui/system";
 
 type HeaderProps = {
-  scrollTableIntoView: () => void;
+  onVoteProposalButtonClick: () => void;
 };
 
-export const Header = ({scrollTableIntoView}: HeaderProps) => {
-  const onVoteProposalClick = () => {
-    scrollTableIntoView()
-  };
+export const Header = ({onVoteProposalButtonClick}: HeaderProps) => {
 
   return (
     <Grid container mb={10}>
@@ -37,7 +34,7 @@ export const Header = ({scrollTableIntoView}: HeaderProps) => {
             <Box justifyContent="center">
               <Button
                 variant="primary"
-                onClick={onVoteProposalClick}
+                onClick={onVoteProposalButtonClick}
                 sx={{width: "300px"}}
               >
                 view proposals

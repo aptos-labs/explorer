@@ -12,7 +12,7 @@ import Card from "../../../components/Card";
 import {useWalletContext} from "../../../context/wallet/context";
 
 type InstructionsProps = {
-  scrollTableIntoView: () => void;
+  onVoteProposalButtonClick: () => void;
 };
 
 type CardBoxProps = {
@@ -21,13 +21,9 @@ type CardBoxProps = {
   content: string;
 };
 
-export function Instructions({scrollTableIntoView}: InstructionsProps) {
+export function Instructions({onVoteProposalButtonClick}: InstructionsProps) {
   const theme = useTheme();
   const {isInstalled, isConnected, connect} = useWalletContext();
-
-  const onVoteProposalClick = () => {
-    scrollTableIntoView()
-  };
 
   const CardBox = ({children, title, content}: CardBoxProps) => {
     return (
@@ -99,7 +95,7 @@ export function Instructions({scrollTableIntoView}: InstructionsProps) {
             >
               <Button
                 variant="primary"
-                onClick={onVoteProposalClick}
+                onClick={onVoteProposalButtonClick}
                 disabled={!isConnected}
               >
                 Vote on a Proposal
