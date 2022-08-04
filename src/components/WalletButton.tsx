@@ -5,7 +5,7 @@ import {useWalletContext} from "../context/wallet/context";
 import AddCardIcon from '@mui/icons-material/AddCard';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import ErrorIcon from '@mui/icons-material/Error';
-import { truncateMiddle } from "./TransactionsTable";
+import { truncateMiddle } from "../pages/utils";
 
 type WalletButtonWrapperProps = {
   children: React.ReactNode;
