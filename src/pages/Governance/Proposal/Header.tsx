@@ -18,6 +18,7 @@ function TitleComponent({proposal}: {proposal: Proposal}) {
 }
 
 // TODO: add status icon
+// TODO: make the color/icon logic generic and reuse for proposals table
 function StatusComponent({proposal}: {proposal: Proposal}) {
   let color;
   switch (proposal.proposal_state) {
@@ -122,7 +123,7 @@ type ProposalHeaderProps = {
 
 export const ProposalHeader = ({proposal}: ProposalHeaderProps) => {
   const theme = useTheme();
-  const isOnMobile = useMediaQuery(theme.breakpoints.up("md"));
+  const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <Grid container>
@@ -133,13 +134,10 @@ export const ProposalHeader = ({proposal}: ProposalHeaderProps) => {
         </Stack>
       </Grid>
       <Grid item md={4} xs={12}>
-        <TimeRemainingComponent proposal={proposal} isOnMobile={!isOnMobile} />
+        <TimeRemainingComponent proposal={proposal} isOnMobile={isOnMobile} />
       </Grid>
       <Grid item md={12} xs={12}>
-        <ProposerAndTimeComponent
-          proposal={proposal}
-          isOnMobile={!isOnMobile}
-        />
+        <ProposerAndTimeComponent proposal={proposal} isOnMobile={isOnMobile} />
       </Grid>
     </Grid>
   );
