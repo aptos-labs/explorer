@@ -11,7 +11,7 @@ import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 const SECONDARY_TEXT_COLOR = "#A3A3A3";
-const HASH_WIDTH = 300;
+const HASH_WIDTH = 200;
 
 function TitleComponent({proposal}: {proposal: Proposal}) {
   return <Typography variant="h5">{proposal.metadata.title}</Typography>;
@@ -39,10 +39,20 @@ function StatusComponent({proposal}: {proposal: Proposal}) {
   );
 }
 
-function TimeRemainingComponent({proposal}: {proposal: Proposal}) {
+function TimeRemainingComponent({
+  proposal,
+  isOnMobile,
+}: {
+  proposal: Proposal;
+  isOnMobile: boolean;
+}) {
   const remainingTime = getTimeRemaining(proposal.expiration_secs);
   return (
-    <Stack direction="column" alignItems="flex-end" marginY={1}>
+    <Stack
+      direction="column"
+      alignItems={isOnMobile ? "flex-start" : "flex-end"}
+      marginY={1}
+    >
       <Typography variant="subtitle2">TIME REMAINING</Typography>
       <Typography color={primaryColor} variant="h4">
         {`${remainingTime.days}d ${remainingTime.hours}h ${remainingTime.minutes}m`}
@@ -95,7 +105,7 @@ function ProposerAndTimeComponent({
       <Divider variant="dotted" orientation="horizontal" sx={{mt: 1, mb: 1}} />
       <Stack
         direction={isOnMobile ? "column" : "row"}
-        spacing={2}
+        spacing={isOnMobile ? 0.5 : 2}
         justifyContent={isOnMobile ? "flex-start" : "space-between"}
       >
         {proposerComponent}
@@ -123,7 +133,7 @@ export const ProposalHeader = ({proposal}: ProposalHeaderProps) => {
         </Stack>
       </Grid>
       <Grid item md={4} xs={12}>
-        <TimeRemainingComponent proposal={proposal} />
+        <TimeRemainingComponent proposal={proposal} isOnMobile={!isOnMobile} />
       </Grid>
       <Grid item md={12} xs={12}>
         <ProposerAndTimeComponent
