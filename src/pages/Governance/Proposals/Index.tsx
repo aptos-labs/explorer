@@ -23,9 +23,9 @@ export function GovernancePage() {
 
   return (
     <Grid item xs={12} marginTop={{md: 12, xs: 6}}>
-      <Header scrollTableIntoView={scrollTableIntoView} />
+      <Header onVoteProposalButtonClick={scrollTableIntoView} />
       <Hidden smDown>
-        <Instructions scrollTableIntoView={scrollTableIntoView} />
+        <Instructions onVoteProposalButtonClick={scrollTableIntoView} />
       </Hidden>
       <ProposalsTable
         nextProposalId={nextProposalId}
