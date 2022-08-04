@@ -19,8 +19,9 @@ import {
   renderRow,
 } from "./helpers";
 import {AccountLink} from "../Accounts/helpers";
-import DividerHero from '../../components/Divider';
+import DividerHero from "../../components/Divider";
 import Typography from "@mui/material/Typography";
+import HeadingSub from "../../components/HeadingSub";
 import HeaderSearch from "../layout/Search";
 import GoBack from "../../components/GoBack";
 
@@ -520,17 +521,14 @@ export default function Transaction() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography color="primary" variant="subtitle2" component="span" sx={{ mb: 2 }}>
-          Network
-        </Typography>
+        <HeadingSub>Network</HeadingSub>
         <Typography variant="h1" component="h1" gutterBottom>
           Aptos Explorer
         </Typography>
         <DividerHero />
         <HeaderSearch />
-        <GoBack /> 
+        <GoBack />
         <RenderTransaction {...result} txnHashOrVersion={txnHashOrVersion} />
-       
       </Grid>
     </Grid>
   );

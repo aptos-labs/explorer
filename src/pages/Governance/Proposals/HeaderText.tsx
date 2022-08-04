@@ -26,7 +26,9 @@ export const HeaderText = ({
           </Link>
         </Typography>
       ) : (
-        <Typography variant="h4" sx={{ mb: 2 }}>Proposal Submission</Typography>
+        <Typography variant="h4" sx={{mb: 2}}>
+          Proposal Submission
+        </Typography>
       )}
       <Typography>
         Some instructions Some instructions Some instructions Some instructions

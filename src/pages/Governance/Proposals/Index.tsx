@@ -12,7 +12,7 @@ export function GovernancePage() {
 
   const scrollTableIntoView = () => {
     ProposalsTableRef.current?.scrollIntoView({behavior: "smooth"});
-  }
+  };
 
   if (!data) {
     // TODO: handle errors

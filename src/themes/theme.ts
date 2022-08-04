@@ -1,9 +1,8 @@
 import {PaletteMode} from "@mui/material";
 import {ThemeOptions} from "@mui/material/styles";
-import {grey, teal} from "@mui/material/colors";
 import "@mui/material/styles/createPalette";
 import {alpha} from "@mui/material";
-import {Palette} from "@mui/icons-material";
+import {grey, teal} from "./colors/aptosColorPalette";
 
 // Button variants
 declare module "@mui/material/Button" {
@@ -32,11 +31,13 @@ declare module "@mui/material/styles" {
 
 declare module "@mui/material/styles/createPalette" {
   interface Palette {
-    neutralShade: {main: string};
     lineShade: {
       main: string;
-      increased: string;
-      reduced: string;
+    };
+    neutralShade: {
+      main: string;
+      lighter: string;
+      darker: string;
     };
   }
 }
@@ -52,31 +53,15 @@ declare module "@mui/material/Typography" {
 declare module "@mui/material/Divider" {
   interface DividerPropsVariantOverrides {
     bump: true;
-  }
-}
-
-// Divider variant - bump (dark mode)
-declare module "@mui/material/Divider" {
-  interface DividerPropsVariantOverrides {
     bumpDark: true;
-  }
-}
-
-// Divider variant - bump (right side)
-declare module "@mui/material/Divider" {
-  interface DividerPropsVariantOverrides {
     bumpRight: true;
-  }
-}
-
-// Divider variant - bump (right side dark mode)
-declare module "@mui/material/Divider" {
-  interface DividerPropsVariantOverrides {
     bumpRightDark: true;
   }
 }
 
-const primaryColor = teal["A400"];
+const primaryColor = teal[400];
+const primaryColorToned = teal[600];
+
 const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   shape: {
     borderRadius: 8,
@@ -85,8 +70,8 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   typography: {
     fontFamily: `lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
     fontWeightLight: 200,
-    fontWeightRegular: 300,
-    fontWeightBold: 400,
+    fontWeightRegular: 400,
+    fontWeightBold: 500,
     h1: {
       fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
       fontWeight: "300",
@@ -113,7 +98,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     },
     stats: {
       fontFamily: `lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
-      fontWeight: "normal",
+      fontWeight: "400",
     },
     subtitle1: {
       fontWeight: 400,
@@ -134,7 +119,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       ? {
           // light mode palette values
           primary: {
-            main: teal["A700"],
+            main: primaryColorToned,
           },
 
           secondary: {
@@ -142,27 +127,26 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           },
 
           success: {
-            main: teal["A700"],
+            main: primaryColorToned,
           },
 
           background: {
-            default: grey[50],
-            paper: "#fdfdfd",
+            default: "#ffffff",
+            paper: grey[100],
           },
 
           text: {
             primary: grey[900],
-            secondary: grey[600],
+            secondary: grey[500],
           },
 
           lineShade: {
-            main: grey[400],
-            increased: grey[500],
-            reduced: grey[300],
+            main: grey[200],
           },
 
           neutralShade: {
-            main: "#fdfdfd",
+            main: grey[50],
+            darker: grey[100],
           },
         }
       : {
@@ -180,23 +164,22 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           },
 
           background: {
-            default: "rgb(23,23,23)",
-            paper: grey[900],
+            default: grey[900],
+            paper: grey[800],
           },
 
           text: {
-            primary: grey[200],
-            secondary: grey[500],
+            primary: grey[50],
+            secondary: grey[200],
           },
 
           lineShade: {
-            main: grey[600],
-            increased: grey[500],
-            reduced: "#333333",
+            main: grey[700],
           },
 
           neutralShade: {
-            main: "#1C1C1C",
+            main: grey[800],
+            lighter: grey[700],
           },
         }),
   },
@@ -213,41 +196,11 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     // Autocomplete overrides
     MuiAutocomplete: {
       styleOverrides: {
-        listbox: {
-          padding: "0",
-        },
-        option: {
-          background: "none",
-          padding: "0!important",
-          borderRadius: "8px",
-          "&:empty": {
-            display: "none!important",
-          },
-          "&::hover": {
-            background: "none",
+        root: ({theme}) => ({
+          listbox: {
             padding: "0",
           },
-          '&[aria-selected="true"]': {
-            backgroundColor: "grey",
-            padding: "0",
-          },
-          '&[aria-selected="true"].Mui-focused': {
-            backgroundColor: "grey",
-            padding: "0",
-          },
-          "&.Mui-selected": {
-            backgroundColor: "grey",
-            padding: "0",
-          },
-          "&.Mui-selected.Mui-focused": {
-            backgroundColor: "grey",
-            padding: "0",
-          },
-          "&.Mui-focused": {
-            backgroundColor: "transparent",
-            padding: "0",
-          },
-        },
+        }),
       },
     },
 
@@ -263,12 +216,12 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     // Paper overrides
     MuiPaper: {
       styleOverrides: {
-        root: {
+        root: ({theme}) => ({
           backgroundImage: "none",
-          borderRadius: 8,
+          borderRadius: theme.shape.borderRadius,
           transition: "none !important",
           boxShadow: "none",
-        },
+        }),
       },
     },
     MuiPopover: {
@@ -279,19 +232,70 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       },
     },
 
+    MuiInput: {
+      styleOverrides: {
+        root: ({theme}) => ({
+          borderRadius: 2,
+        }),
+      },
+    },
+
+    MuiFilledInput: {
+      styleOverrides: {
+        root: ({theme}) => ({
+          borderRadius: `${theme.shape.borderRadius}px`,
+          backgroundColor: `${
+            theme.palette.mode === "dark" ? grey[700] : grey[100]
+          }`,
+          transition: "none",
+          "&.Mui-focused": {
+            filter: `${
+              theme.palette.mode === "dark"
+                ? "brightness(1.1)"
+                : "brightness(0.98)"
+            }`,
+            boxShadow: `0 0 0 3px ${alpha(primaryColor, 0.5)}`,
+          },
+          "&:hover": {
+            backgroundColor: `${
+              theme.palette.mode === "dark" ? grey[800] : grey[50]
+            }`,
+            filter: `${
+              theme.palette.mode === "dark"
+                ? "brightness(1.1)"
+                : "brightness(0.99)"
+            }`,
+          },
+        }),
+      },
+    },
+
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({theme}) => ({
-          //boxShadow: "0px 4px 8px 0px rgb(0 0 0 / 5%)!important",
-          border: "0!important",
-          backgroundColor: theme.palette.background.paper,
+          backgroundColor: `${
+            theme.palette.mode === "dark" ? grey[800] : grey[50]
+          }`,
+          "&.Mui-focused": {
+            boxShadow: `0 0 0 2px ${alpha(
+              theme.palette.mode === "dark" ? primaryColor : primaryColorToned,
+              0.35,
+            )}`,
+          },
+          "&:hover": {
+            backgroundColor: theme.palette.neutralShade.main,
+          },
           ".MuiOutlinedInput-notchedOutline": {
-            borderColor: theme.palette.lineShade.reduced,
+            borderColor: theme.palette.lineShade.main,
           },
           "&:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline":
             {
-              borderColor: theme.palette.lineShade.main,
-              boxShadow: "0px 4px 8px -3px rgb(0 0 0 / 10%)!important",
+              borderColor: `${alpha(
+                theme.palette.mode === "dark"
+                  ? primaryColor
+                  : primaryColorToned,
+                0.35,
+              )}`,
             },
         }),
       },
@@ -319,10 +323,10 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     },
     MuiMenuItem: {
       styleOverrides: {
-        root: {
+        root: ({theme}) => ({
+          borderRadius: theme.shape.borderRadius,
           textTransform: "capitalize",
-          borderRadius: 8,
-        },
+        }),
       },
     },
 
@@ -354,7 +358,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
               display: "block",
               width: "100%",
               height: "1px",
-              background: `${teal["A700"]}`,
+              background: `${primaryColorToned}`,
               maskClip: "content-box",
               maskImage: `-webkit-linear-gradient(black, black),
             url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="6" viewBox="0 0 14 6"><rect fill="black" x="0" y="0" width="13" height="6"></rect></svg>')`,
@@ -368,9 +372,9 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
               height: "6px",
               backgroundSize: "100%",
               backgroundRepeat: "none",
-              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${teal[
-                "A700"
-              ].substring(1)}" stroke-miterlimit="10"/></svg>')`,
+              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColorToned.substring(
+                1,
+              )}" stroke-miterlimit="10"/></svg>')`,
               transform: `translateX(calc(-1 * 20%))`,
               left: "20%",
             },
@@ -487,9 +491,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
               height: "6px",
               backgroundSize: "100%",
               backgroundRepeat: "none",
-              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColor.substring(
-                1,
-              )}" stroke-miterlimit="10"/></svg>')`,
+              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColor}" stroke-miterlimit="10"/></svg>')`,
               transform: `translateX(calc(-1 * 78%))`,
               left: "78%",
             },
@@ -549,18 +551,19 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           background: "transparent",
           paddingBottom: "0",
         },
-        root: {
-          padding: "1rem 2rem 1rem 1rem",
+        root: ({theme}) => ({
+          padding: "0.75rem 1.5rem 0.75rem 1.5rem",
           whiteSpace: "nowrap",
-          borderStyle: "dotted",
-          borderWidth: "0 0 0",
+          borderStyle: "solid",
+          borderWidth: "0 0 0 0",
+          borderColor: grey[700],
           "&:first-of-type": {
-            borderRadius: "8px 0 0 8px",
+            borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
           },
           "&:last-of-type": {
-            borderRadius: "0 8px 8px 0",
+            borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
           },
-        },
+        }),
       },
     },
 
@@ -580,9 +583,8 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
         root: {
           transition: "none !important",
           fontWeight: "400",
-          // boxShadow: "0px 4px 8px -3px rgb(0 0 0 / 10%)!important",
           "&:hover": {
-            filter: "brightness(0.95)",
+            filter: "brightness(0.98)",
           },
           "&.Mui-disabled": {
             opacity: 0.5,

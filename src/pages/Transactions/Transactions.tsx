@@ -1,6 +1,5 @@
 import React from "react";
 import {useQuery, UseQueryResult} from "react-query";
-import Title from "../../components/Title";
 import Button from "@mui/material/Button";
 import {Types} from "aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
@@ -11,9 +10,10 @@ import {useSearchParams} from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import {Pagination, PaginationItem, Stack} from "@mui/material";
 import {TransactionsTable} from "../../components/TransactionsTable";
+import HeadingSub from "../../components/HeadingSub";
 import HeaderSearch from "../layout/Search";
-import Typography from '@mui/material/Typography';
-import DividerHero from '../../components/Divider';
+import Typography from "@mui/material/Typography";
+import DividerHero from "../../components/Divider";
 
 const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;
@@ -88,9 +88,7 @@ export function TransactionsPreview() {
 
   return (
     <>
-
       <Stack spacing={2}>
-
         <Box sx={{width: "auto", overflowX: "auto"}}>
           <RenderTransactionContent {...result} />
         </Box>
@@ -100,7 +98,7 @@ export function TransactionsPreview() {
             component={RRD.Link}
             to="/transactions"
             variant="primary"
-            sx={{ margin: "0 auto", mt: 6 }}
+            sx={{margin: "0 auto", mt: 6}}
           >
             View all Transactions
           </Button>
@@ -142,7 +140,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.LedgerInfo>) {
     <>
       <Stack spacing={2}>
         <Typography variant="h4" component="h2">
-          All Transactions
+          Transactions
         </Typography>
         <Box sx={{width: "auto", overflowX: "auto"}}>
           <RenderTransactionContent {...result} />
@@ -176,9 +174,7 @@ export function TransactionsPage() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography color="primary" variant="subtitle2" component="span" sx={{ mb: 2 }}>
-          Network
-        </Typography>
+        <HeadingSub>Network</HeadingSub>
         <Typography variant="h1" component="h1" gutterBottom>
           Aptos Explorer
         </Typography>

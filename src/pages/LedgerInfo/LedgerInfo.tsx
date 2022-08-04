@@ -17,41 +17,65 @@ function RenderLedgerInfoInner({data}: UseQueryResult<Types.LedgerInfo>) {
   const timestamp_display = timestampDisplay(moment);
   const theme = useTheme();
   return (
-    
-    
-    <Grid container spacing={4} direction="row" sx={{ alignContent: "flex-start", mb: 8 }}>
+    <Grid
+      container
+      spacing={4}
+      direction="row"
+      sx={{alignContent: "flex-start", mb: 6}}
+    >
       <Grid item xs={12} md={6} lg={2}>
         <CardOutline>
-          <Typography variant="subtitle1">Chain ID</Typography>
+          <Typography variant="subtitle1" color="text.secondary">
+            Chain ID
+          </Typography>
           <Divider
             variant={theme.palette.mode === "dark" ? "bumpDark" : "bump"}
             sx={{margin: "1em 0 -0.5em"}}
           />
-          <Typography component="div" variant="h4" textAlign="left" sx={{ fontFamily: 'lft-etica-mono' }}>
+          <Typography
+            component="div"
+            variant="h4"
+            textAlign="left"
+            sx={{fontFamily: "lft-etica-mono", fontWeight: "400"}}
+          >
             {data.chain_id}
           </Typography>
-         </CardOutline>
+        </CardOutline>
       </Grid>
       <Grid item xs={12} md={6} lg={4}>
         <CardOutline>
-          <Typography variant="subtitle1">Latest Version ID</Typography>
+          <Typography variant="subtitle1" color="text.secondary">
+            Latest Version ID
+          </Typography>
           <Divider
             variant={theme.palette.mode === "dark" ? "bumpDark" : "bump"}
             sx={{margin: "1em 0 -0.5em"}}
           />
-          <Typography component="div" variant="h4" textAlign="left" sx={{ fontFamily: 'lft-etica-mono'}}>
+          <Typography
+            component="div"
+            variant="h4"
+            textAlign="left"
+            sx={{fontFamily: "lft-etica-mono", fontWeight: "400"}}
+          >
             {data.ledger_version}
           </Typography>
         </CardOutline>
       </Grid>
       <Grid item xs={12} lg={6}>
         <CardOutline>
-          <Typography variant="subtitle1">Latest Version Time</Typography>
+          <Typography variant="subtitle1" color="text.secondary">
+            Latest Version Time
+          </Typography>
           <Divider
             variant={theme.palette.mode === "dark" ? "bumpDark" : "bump"}
             sx={{margin: "1em 0 -0.5em"}}
           />
-          <Typography component="div" variant="h4" textAlign="left" sx={{ fontFamily: 'lft-etica-mono' }}>
+          <Typography
+            component="div"
+            variant="h4"
+            textAlign="left"
+            sx={{fontFamily: "lft-etica-mono", fontWeight: "400"}}
+          >
             {timestamp_display.local_formatted}
           </Typography>
         </CardOutline>
@@ -71,7 +95,5 @@ export default function RenderLedgerInfo() {
     },
   );
 
-  return (
-    <RenderLedgerInfoInner {...result} />
-  );
+  return <RenderLedgerInfoInner {...result} />;
 }

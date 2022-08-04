@@ -1,7 +1,6 @@
 import React from "react";
 import {getTransaction} from "../../api";
 import TextField from "@mui/material/TextField";
-import SearchIcon from "@mui/icons-material/SearchRounded";
 import {useQuery, UseQueryResult} from "react-query";
 import {useGlobalState} from "../../GlobalState";
 import {Types} from "aptos";
@@ -11,13 +10,20 @@ import {throttle} from "lodash";
 import {Autocomplete} from "@mui/material";
 import {AccountLink} from "../Accounts/helpers";
 import Paper from "@mui/material/Paper";
-import {teal, grey} from "@mui/material/colors";
-import { useTheme } from "@mui/material/styles";
-import InputAdornment from '@mui/material/InputAdornment';
+import {useTheme} from "@mui/material/styles";
+import InputAdornment from "@mui/material/InputAdornment";
+import FormControl, {useFormControl} from "@mui/material/FormControl";
+import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
-
+function HomeIcon(props: SvgIconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M9.83154 0.995764C6.7039 0.997101 3.76603 2.49605 1.92881 5.0276C0.0913839 7.55942 -0.423672 10.8178 0.543418 13.7926C1.51078 16.7678 3.84294 19.1001 6.81763 20.0667C9.79212 21.033 13.0494 20.5167 15.5798 18.6779L20.4465 23.5462C20.8338 23.9336 21.3986 24.0849 21.9278 23.9432C22.457 23.8012 22.8703 23.3879 23.0122 22.8584C23.1539 22.329 23.0026 21.7641 22.6153 21.3766L17.7486 16.5084C19.1701 14.5541 19.8165 12.1421 19.5634 9.73858C19.31 7.3351 18.175 5.11102 16.3774 3.49602C14.5801 1.88101 12.2477 0.990138 9.83189 0.995477L9.83154 0.995764ZM9.83154 17.4785C8.05296 17.4785 6.34733 16.7718 5.08969 15.5138C3.83206 14.2557 3.12561 12.5496 3.12561 10.7704C3.12561 8.99125 3.83206 7.28507 5.08969 6.02703C6.34733 4.76899 8.05296 4.06232 9.83154 4.06232C11.6101 4.06232 13.3157 4.76899 14.5734 6.02703C15.831 7.28507 16.5375 8.99125 16.5375 10.7704C16.5353 12.5487 15.8283 14.2539 14.571 15.5114C13.3139 16.7691 11.6094 17.4764 9.83154 17.4785V17.4785Z" />
+    </SvgIcon>
+  );
+}
 
 function SearchTransactionInner({
   data,
@@ -39,11 +45,14 @@ function SearchTransactionInner({
       color="inherit"
       underline="none"
       sx={{
-        padding: "8px",
+        padding: 0.5,
         display: "block",
         width: "100%",
-        opacity: "0.8",
-        "&:hover": { backgroundColor: `${theme.palette.mode === 'dark' ? grey[800] : grey[200]}!important`},
+        "&:hover": {
+          // TODO: match link styles with Account result utilizing theme.palette
+          backgroundColor: `${"transparent"}!important`,
+          opacity: "0.8",
+        },
       }}
     >
       Transaction {data.version}
@@ -94,25 +103,62 @@ function AutocompleteSearch() {
 
   return (
     <Autocomplete
-      fullWidth
       PaperComponent={({children}) => (
         <Paper
           sx={{
             borderTop: "0",
             p: 1,
-            transform: "translateY(8px)",
-            borderRadius: "8px",
-            boxShadow: '10px 25px 50px -12px rgba(23,23,23,0.25)', zIndex: '200',position: 'relative',
-            mx:0.5,
+            mx: 0.5,
+            transform: "translateY(2px)",
+            borderRadius: `0 0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px`,
+            boxShadow: "0px 8px 8px -3px rgba(0,0,0,0.2)",
+            zIndex: "200",
+            position: "relative",
+            "&.MuiPaper-root .MuiAutocomplete-listbox .MuiAutocomplete-option":
+              {
+                padding: 0,
+                minHeight: 0,
+              },
+            "&.MuiPaper-root .MuiAutocomplete-listbox .MuiAutocomplete-option.Mui-focused":
+              {
+                background: "transparent",
+              },
+            "&.MuiPaper-root .MuiAutocomplete-listbox .MuiAutocomplete-option .MuiLink-root":
+              {
+                padding: 1,
+                width: "100%",
+              },
           }}
         >
           {children}
         </Paper>
       )}
       open={open}
-      sx={{ flexGrow: 1, }}
+      sx={{
+        mb: {sm: 1, md: 2},
+        flexGrow: 1,
+        width: "100%",
+
+        "&.MuiAutocomplete-root .MuiFilledInput-root": {
+          py: 1.5,
+          px: 2,
+        },
+        "&.MuiAutocomplete-root .MuiFormHelperText-root": {
+          opacity: "0",
+          mt: 0.5,
+          mb: 0,
+          fontFamily: "apparat",
+          fontWeight: "light",
+        },
+        "&.Mui-focused .MuiFormHelperText-root": {
+          opacity: "0.6",
+        },
+      }}
       forcePopupIcon={false}
       selectOnFocus={true}
+      freeSolo
+      clearOnBlur
+      autoSelect={false}
       noOptionsText="No Results"
       getOptionLabel={(option) => ""}
       filterOptions={(x) => x.filter((x) => !!x)}
@@ -137,28 +183,31 @@ function AutocompleteSearch() {
       }}
       onClose={() => setOpen(false)}
       renderInput={(params) => {
-        
         return (
-          <TextField
-            sx={{ mb:8 }}
-            {...params}
-            InputProps={{
-              sx: {
-                fontSize: '1.25rem',
-                lineHeight: '1.25rem',
-              },
-              "aria-label": "search", 
-              ...params.InputProps,
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon fontSize="large" color="secondary" sx={{ ml:0.5 }} />
-                </InputAdornment>
-              ),
-            }}
-            placeholder="Search by Transaction Hash, Version, Account Address…"
-            fullWidth
-          />
-
+          <FormControl sx={{width: "100%"}}>
+            <TextField
+              {...params}
+              InputProps={{
+                sx: {
+                  fontSize: "1.1rem",
+                  lineHeight: "1.1rem",
+                },
+                "aria-label": "search",
+                ...params.InputProps,
+                startAdornment: (
+                  <InputAdornment
+                    position="start"
+                    sx={{ml: 0.5, marginTop: "0!important"}}
+                  >
+                    <HomeIcon fontSize="medium" color="secondary" />
+                  </InputAdornment>
+                ),
+              }}
+              placeholder="Search transactions"
+              helperText="Version ID, Hash or Account Address"
+              fullWidth
+            />
+          </FormControl>
         );
       }}
       renderOption={(props, option) => {
@@ -183,7 +232,20 @@ function searchResults(searchText: string) {
   ];
   // if it's hex, and is <= (64 + 2 for 0x) char long
   if (searchText.startsWith("0x") && searchText.length <= 66) {
-    results.push(<AccountLink key={`al-${searchText}`} address={searchText} />);
+    results.push(
+      <AccountLink
+        sx={{
+          color: "inherit",
+          "&:hover": {
+            // TODO: match link styles with Transaction result utilizing theme.palette
+            opacity: "0.8",
+          },
+          textDecoration: "none",
+        }}
+        key={`al-${searchText}`}
+        address={searchText}
+      />,
+    );
   }
   return results;
 }

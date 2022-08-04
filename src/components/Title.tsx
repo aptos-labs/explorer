@@ -10,13 +10,7 @@ interface TitleProps {
 
 export default function Title(props: TitleProps) {
   return (
-    <Typography
-      component="h2"
-      variant="h4"
-      
-      gutterBottom
-      sx={props.sx}
-    >
+    <Typography component="h2" variant="h4" gutterBottom sx={props.sx}>
       {props.children}
     </Typography>
   );
