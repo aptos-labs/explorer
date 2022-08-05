@@ -1,14 +1,10 @@
 import {createContext, useContext} from "react";
-import {Types} from "aptos";
 
 export interface walletContext {
   isInstalled: boolean;
   isConnected: boolean;
   accountAddress: string | null;
   connect: () => Promise<void>;
-  processTransaction: (
-    transactionPayload: Types.TransactionPayload,
-  ) => Promise<boolean>;
 }
 
 export const walletContext = createContext<walletContext | null>(null);

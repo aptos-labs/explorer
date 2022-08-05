@@ -7,7 +7,10 @@ import {
   IconButton,
 } from "@mui/material";
 import React, {useState} from "react";
-import useSubmitVote from "../../SubmitVote";
+import useSubmitVote, {
+  VoteResponseOnSuccess,
+  VoteResponseOnFailure,
+} from "../../hooks/useSubmitVote";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import {negativeColor, voteFor, voteAgainst} from "../../constants";
@@ -17,17 +20,13 @@ import CloseIcon from "@mui/icons-material/Close";
 // 1. check if voted
 // 2. check if eligible to vote
 
-// TODO: revisit the messages below
-const SUCCESS_MESSAGE = "Vote succeeded. Please refresh to see your vote.";
-const ERROR_MESSAGE = "Vote failed. Please try again.";
-
 type Props = {
   proposalId: string;
 };
 
 export default function VoteButtons({proposalId}: Props) {
   const [accountAddr, setAccountAddr] = useState<string>("");
-  const {submitVote, voteSucceeded, resetVoteSucceeded} =
+  const {submitVote, voteResponse, clearVoteResponse} =
     useSubmitVote(proposalId);
 
   const onAccountAddrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,45 +37,65 @@ export default function VoteButtons({proposalId}: Props) {
     submitVote(shouldPass, accountAddr);
   };
 
-  const onRefreshPage = () => {
+  const refreshPage = () => {
     window.location.reload();
   };
 
   const onCloseErrorAlert = () => {
-    resetVoteSucceeded();
+    clearVoteResponse();
   };
 
-  const successAlertComponent = (
-    <Alert
-      variant="filled"
-      severity="success"
-      action={
-        <Button variant="outlined" size="small" onClick={onRefreshPage}>
-          REFRESH
-        </Button>
-      }
+  const voteOnSuccessSnackbar = voteResponse !== null && (
+    <Snackbar
+      open={voteResponse.succeeded}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "center",
+      }}
     >
-      {SUCCESS_MESSAGE}
-    </Alert>
+      <Alert
+        variant="filled"
+        severity="success"
+        action={
+          <Button variant="outlined" size="small" onClick={refreshPage}>
+            REFRESH
+          </Button>
+        }
+      >
+        {`Vote succeeded with transaction ${
+          (voteResponse as VoteResponseOnSuccess).transactionHash
+        }. Please refresh to see your vote.`}
+      </Alert>
+    </Snackbar>
   );
 
-  const errorAlertComponent = (
-    <Alert
-      variant="filled"
-      severity="error"
-      action={
-        <IconButton
-          size="small"
-          aria-label="close"
-          color="inherit"
-          onClick={onCloseErrorAlert}
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      }
+  const voteOnFailureSnackbar = voteResponse !== null && (
+    <Snackbar
+      open={!voteResponse.succeeded}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "center",
+      }}
     >
-      {ERROR_MESSAGE}
-    </Alert>
+      <Alert
+        variant="filled"
+        severity="error"
+        action={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={onCloseErrorAlert}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+      >
+        {`Vote failed with error message "${
+          (voteResponse as VoteResponseOnFailure).message
+        }". Please try again.`}
+      </Alert>
+    </Snackbar>
   );
 
   return (
@@ -112,24 +131,8 @@ export default function VoteButtons({proposalId}: Props) {
           {voteAgainst}
         </Button>
       </Stack>
-      <Snackbar
-        open={voteSucceeded === true}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-      >
-        {successAlertComponent}
-      </Snackbar>
-      <Snackbar
-        open={voteSucceeded === false}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-      >
-        {errorAlertComponent}
-      </Snackbar>
+      {voteOnSuccessSnackbar}
+      {voteOnFailureSnackbar}
     </>
   );
 }

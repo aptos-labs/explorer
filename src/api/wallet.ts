@@ -1,5 +1,3 @@
-import {Types} from "aptos";
-
 export const getAptosWallet = () => {
   return "aptos" in window;
 };
@@ -28,20 +26,4 @@ export const getAccountAddress: () => Promise<string | null> = async () => {
     console.log(error);
   }
   return null;
-};
-
-export const signAndSubmitTransaction = async (
-  transactionPayload: Types.TransactionPayload,
-): Promise<boolean> => {
-  try {
-    const response = await window.aptos.signAndSubmitTransaction(
-      transactionPayload,
-    );
-    if ("hash" in response) {
-      return true;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-  return false;
 };
