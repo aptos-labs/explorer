@@ -13,6 +13,9 @@ export type VoteResponseOnFailure = {
   message: string;
 };
 
+// TODO:
+// 1. put this in a wallet api file
+// 2. use BCS transaction
 const processTransaction = async (
   transactionPayload: Types.TransactionPayload,
 ): Promise<VoteResponse> => {
