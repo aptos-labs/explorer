@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import React, {useEffect} from "react";
 import {
   connectToWallet,
   getAccountAddress,
@@ -7,9 +7,11 @@ import {
 } from "../../api/wallet";
 
 export function useWallet() {
-  const [isInstalled, setAptosWallet] = useState<boolean>(false);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [accountAddress, setAccountAddress] = useState<string | null>(null);
+  const [isInstalled, setAptosWallet] = React.useState<boolean>(false);
+  const [isConnected, setIsConnected] = React.useState<boolean>(false);
+  const [accountAddress, setAccountAddress] = React.useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     setAptosWallet(getAptosWallet());
@@ -26,10 +28,5 @@ export function useWallet() {
     connectToWallet().then(setIsConnected);
   };
 
-  return {
-    isInstalled,
-    isConnected,
-    accountAddress,
-    connect,
-  };
+  return {isInstalled, isConnected, accountAddress, connect};
 }
