@@ -26,7 +26,7 @@ import {
   renderTransactionType,
 } from "../pages/Transactions/helpers";
 import {assertNever} from "../utils";
-import { truncateMiddle } from "../pages/utils";
+import {truncateMiddle} from "../pages/utils";
 
 type TransactionCellProps = {
   transaction: Types.OnChainTransaction;

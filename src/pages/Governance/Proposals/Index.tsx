@@ -5,7 +5,7 @@ import {Header as ProposalsHeader} from "./Header";
 import {ProposalsTable} from "./Table";
 import {useGetProposalsTableData} from "../hooks/useGetProposalsTableData";
 import {Instructions} from "./Instructions";
-import { Header } from "../Header";
+import {Header} from "../Header";
 
 export function GovernancePage() {
   const data = useGetProposalsTableData();
@@ -24,7 +24,7 @@ export function GovernancePage() {
 
   return (
     <Grid item xs={12}>
-      <Header/>
+      <Header />
       <ProposalsHeader onVoteProposalButtonClick={scrollTableIntoView} />
       <Hidden smDown>
         <Instructions onVoteProposalButtonClick={scrollTableIntoView} />
