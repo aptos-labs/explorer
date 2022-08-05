@@ -18,7 +18,7 @@ import {renderDebug} from "../utils";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
 import {TransactionsTable} from "../../components/TransactionsTable";
-import DividerHero from "../../components/Divider";
+import DividerHero from "../../components/DividerHero";
 import Typography from "@mui/material/Typography";
 import HeaderSearch from "../layout/Search";
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
 
-export default function Divider() {
+export default function DividerHero() {
   const theme = useTheme();
 
   return (

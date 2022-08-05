@@ -13,7 +13,7 @@ import {TransactionsTable} from "../../components/TransactionsTable";
 import HeadingSub from "../../components/HeadingSub";
 import HeaderSearch from "../layout/Search";
 import Typography from "@mui/material/Typography";
-import DividerHero from "../../components/Divider";
+import DividerHero from "../../components/DividerHero";
 
 const PREVIEW_LIMIT = 10;
 const MAIN_LIMIT = 20;

@@ -3,6 +3,7 @@ import {
   connectToWallet,
   getAccountAddress,
   getAptosWallet,
+  isUpdatedVersion,
   isWalletConnected,
 } from "../../api/wallet";
 
@@ -15,7 +16,23 @@ export function useWallet() {
 
   useEffect(() => {
     setAptosWallet(getAptosWallet());
+  }, []);
+
+  useEffect(() => {
     isWalletConnected().then(setIsConnected);
+  }, [isInstalled, accountAddress]);
+
+  useEffect(() => {
+    // add this check to support older wallet versions
+    if (isUpdatedVersion()) {
+      window.aptos.on("accountChanged", (account: any) => {
+        if (account.address) {
+          setAccountAddress(account.address);
+        } else {
+          setAccountAddress(null);
+        }
+      });
+    }
   }, []);
 
   useEffect(() => {

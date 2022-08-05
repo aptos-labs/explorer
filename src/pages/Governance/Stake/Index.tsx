@@ -11,6 +11,7 @@ import {
 import {DateTimePicker} from "@mui/x-date-pickers/DateTimePicker";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import {Header} from "../Header";
 
 export function StakePage() {
   const [stakingEndTime, setStakingEndTime] = useState<Date | null>(new Date());
@@ -42,57 +43,62 @@ export function StakePage() {
   };
 
   return (
-    <Grid container spacing={2} marginTop={{md: 12, xs: 6}}>
-      <Grid item xs={6} md={6}>
-        <FormControl fullWidth>
-          <InputLabel htmlFor="outlined-adornment-amount">
-            Staking Amount
-          </InputLabel>
-          <OutlinedInput
-            label="Staking Amount"
-            value={stakingAmount}
-            onChange={onStakingAmountChange}
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-          />
-        </FormControl>
-      </Grid>
-      <Grid item xs={6} md={6}>
-        <FormControl fullWidth>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DateTimePicker
-              label="Staking End Time"
-              value={stakingEndTime}
-              onChange={onStakingEndTimeChange}
-              renderInput={(params) => <TextField {...params} />}
-              minTime={new Date()}
+    <Grid>
+      <Header />
+      <Grid container spacing={2}>
+        <Grid item xs={6} md={6}>
+          <FormControl fullWidth>
+            <InputLabel htmlFor="outlined-adornment-amount">
+              Staking Amount
+            </InputLabel>
+            <OutlinedInput
+              label="Staking Amount"
+              value={stakingAmount}
+              onChange={onStakingAmountChange}
+              startAdornment={
+                <InputAdornment position="start">$</InputAdornment>
+              }
             />
-          </LocalizationProvider>
-        </FormControl>
-      </Grid>
-      <Grid item xs={12} md={12}>
-        <TextField
-          fullWidth
-          label="Operator Address"
-          variant="outlined"
-          value={operatorAddr}
-          onChange={onOperatorAddrChange}
-        />
-      </Grid>
-      <Grid item xs={12} md={12}>
-        <TextField
-          fullWidth
-          label="Voter Address"
-          variant="outlined"
-          value={voterAddr}
-          onChange={onVoterAddrChange}
-        />
-      </Grid>
-      <Grid item xs={12} md={12}>
-        <FormControl fullWidth>
-          <Button variant="primary" onClick={onSubmitClick}>
-            Submit
-          </Button>
-        </FormControl>
+          </FormControl>
+        </Grid>
+        <Grid item xs={6} md={6}>
+          <FormControl fullWidth>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DateTimePicker
+                label="Staking End Time"
+                value={stakingEndTime}
+                onChange={onStakingEndTimeChange}
+                renderInput={(params) => <TextField {...params} />}
+                minTime={new Date()}
+              />
+            </LocalizationProvider>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <TextField
+            fullWidth
+            label="Operator Address"
+            variant="outlined"
+            value={operatorAddr}
+            onChange={onOperatorAddrChange}
+          />
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <TextField
+            fullWidth
+            label="Voter Address"
+            variant="outlined"
+            value={voterAddr}
+            onChange={onVoterAddrChange}
+          />
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <FormControl fullWidth>
+            <Button variant="primary" onClick={onSubmitClick}>
+              Submit
+            </Button>
+          </FormControl>
+        </Grid>
       </Grid>
     </Grid>
   );

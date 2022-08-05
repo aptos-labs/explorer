@@ -1,10 +1,11 @@
 import React, {useRef} from "react";
 import {Grid, Hidden} from "@mui/material";
 
-import {Header} from "./Header";
+import {Header as ProposalsHeader} from "./Header";
 import {ProposalsTable} from "./Table";
 import {useGetProposalsTableData} from "../hooks/useGetProposalsTableData";
 import {Instructions} from "./Instructions";
+import {Header} from "../Header";
 
 export function GovernancePage() {
   const data = useGetProposalsTableData();
@@ -22,8 +23,9 @@ export function GovernancePage() {
   const {nextProposalId, handle} = data;
 
   return (
-    <Grid item xs={12} marginTop={{md: 12, xs: 6}}>
-      <Header onVoteProposalButtonClick={scrollTableIntoView} />
+    <Grid item xs={12}>
+      <Header />
+      <ProposalsHeader onVoteProposalButtonClick={scrollTableIntoView} />
       <Hidden smDown>
         <Instructions onVoteProposalButtonClick={scrollTableIntoView} />
       </Hidden>

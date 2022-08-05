@@ -1,4 +1,4 @@
-import {Grid} from "@mui/material";
+import {Grid, Typography} from "@mui/material";
 import React from "react";
 import {ProposalHeader} from "./Header";
 import {ProposalCard} from "./card/Index";
@@ -6,6 +6,7 @@ import {ProposalContent} from "./Content";
 import {useParams} from "react-router-dom";
 import {useGetProposal} from "../hooks/useGetProposal";
 import {EmptyProposal} from "./EmptyProposal";
+import {Header} from "../Header";
 
 export type ProposalPageURLParams = {
   id: string;
@@ -22,7 +23,8 @@ export const ProposalPage = () => {
   }
 
   return (
-    <Grid container marginY={{md: 12, xs: 6}} marginX={{md: 4, xs: 0}}>
+    <Grid container>
+      <Header />
       <Grid item md={12} xs={12} sx={{mb: 6}}>
         <ProposalHeader proposal={proposal} />
       </Grid>
