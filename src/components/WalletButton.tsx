@@ -11,10 +11,10 @@ import {
   Typography,
 } from "@mui/material";
 import {useWalletContext} from "../context/wallet/context";
-import AddCardIcon from "@mui/icons-material/AddCard";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import ErrorIcon from "@mui/icons-material/Error";
-import {truncateMiddle} from "../pages/utils";
+import {truncateAddress} from "../pages/utils";
+import {isUpdatedVersion} from "../api/wallet";
 
 type WalletButtonWrapperProps = {
   children: React.ReactNode;
@@ -55,7 +55,7 @@ const OldWalletVersionWarning = (): JSX.Element => {
 };
 
 export const WalletButton = (): JSX.Element => {
-  const {isInstalled, isConnected, connect, accountAddress, isUpdatedVersion} =
+  const {isInstalled, isConnected, connect, accountAddress} =
     useWalletContext();
 
   if (!isInstalled) {
@@ -81,6 +81,8 @@ export const WalletButton = (): JSX.Element => {
     );
   }
 
+  const isWalletLatestVersion = isUpdatedVersion();
+
   return (
     <>
       {isInstalled && !isConnected && (
@@ -89,16 +91,16 @@ export const WalletButton = (): JSX.Element => {
           <Typography variant="body2" color="white" ml={2}>
             Connect Wallet
           </Typography>
-          {!isUpdatedVersion && <OldWalletVersionWarning />}
+          {!isWalletLatestVersion && <OldWalletVersionWarning />}
         </WalletButtonWrapper>
       )}
       {isInstalled && isConnected && (
         <WalletButtonWrapper>
           <CreditCardIcon />
           <Typography variant="body2" color="white" ml={2}>
-            {truncateMiddle(accountAddress, 4, 4, "…")}
+            {accountAddress && truncateAddress(accountAddress)}
           </Typography>
-          {!isUpdatedVersion && <OldWalletVersionWarning />}
+          {!isWalletLatestVersion && <OldWalletVersionWarning />}
         </WalletButtonWrapper>
       )}
     </>

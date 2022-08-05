@@ -26,7 +26,7 @@ import {
   renderTransactionType,
 } from "../pages/Transactions/helpers";
 import {assertNever} from "../utils";
-import {truncateMiddle} from "../pages/utils";
+import {truncateAddress} from "../pages/utils";
 
 type TransactionCellProps = {
   transaction: Types.OnChainTransaction;
@@ -124,7 +124,7 @@ function TransactionHashCell({transaction}: TransactionCellProps) {
           variant="contained"
           endIcon={<ChevronRightRoundedIcon sx={{opacity: "0.75", m: 0}} />}
         >
-          {truncateMiddle(transaction.hash, 4, 4, "…")}
+          {truncateAddress(transaction.hash)}
         </Button>
 
         <Popover

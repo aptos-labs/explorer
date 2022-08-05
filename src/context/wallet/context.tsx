@@ -4,7 +4,6 @@ export interface walletContext {
   isInstalled: boolean;
   isConnected: boolean;
   accountAddress: string | null;
-  isUpdatedVersion: boolean;
   connect: () => Promise<void>;
 }
 

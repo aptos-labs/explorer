@@ -32,3 +32,6 @@ export const getAccountAddress: () => Promise<string | null> = async () => {
   }
   return null;
 };
+
+export const isUpdatedVersion = (): boolean =>
+  window.aptos?.on instanceof Function;
