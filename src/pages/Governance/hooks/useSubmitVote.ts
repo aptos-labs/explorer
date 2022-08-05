@@ -25,7 +25,6 @@ const processTransaction = async (
     const response = await window.aptos.signAndSubmitTransaction(
       transactionPayload,
     );
-    console.log(response);
     if ("hash" in response) {
       return {
         succeeded: true,
