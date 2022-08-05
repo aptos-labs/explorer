@@ -17,6 +17,7 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import {negativeColor, voteFor, voteAgainst} from "../../constants";
 import CloseIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import ConfirmationModal from "./ConfirmationModal";
 
 // TODO:
 // 1. check if voted
@@ -147,6 +148,12 @@ export default function VoteButtons({proposalId}: Props) {
       </Stack>
       {voteOnSuccessSnackbar}
       {voteOnFailureSnackbar}
+      <ConfirmationModal
+        open={true}
+        shouldPass={true}
+        onConfirm={() => {}}
+        onClose={() => {}}
+      />
     </>
   );
 }
