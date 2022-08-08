@@ -20,7 +20,7 @@ export function useGetProposalsTableData(): useGetProposalsTableData | null {
   const [state, _setState] = useGlobalState();
 
   const accountResourcesResult = useQuery<
-    Array<Types.AccountResource>,
+    Array<Types.MoveResource>,
     ResponseError
   >(["accountResources", {address: "0x1"}, state.network_value], () =>
     getAccountResources({address: "0x1"}, state.network_value),
@@ -30,8 +30,8 @@ export function useGetProposalsTableData(): useGetProposalsTableData | null {
 
   const votingForum = accountResourcesResult.data.filter((resource, i) => {
     return (
-      resource.type ===
-      "0x1::voting::VotingForum<0x1::governance_proposal::GovernanceProposal>"
+      resource.type.name ===
+      "VotingForum"
     );
   });
 

@@ -22,7 +22,13 @@ async function createProposal(
 ): Promise<string> {
   const payload: Types.TransactionPayload = {
     type: "script_function_payload",
-    function: "0x1::aptos_governance::create_proposal",
+    function: {
+      module: {
+        address: "0x1",
+        name: "aptos_governance",
+      },
+      name: "create_proposal",
+    },
     type_arguments: [],
     arguments: [
       account.address().hex(),

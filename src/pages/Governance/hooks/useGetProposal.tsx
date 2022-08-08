@@ -23,9 +23,9 @@ const fetchTableItem = async (
     state.network_value,
   );
 
-  if (!tableItemData || tableItemData.status !== 200) return null;
+  if (!tableItemData) return null;
 
-  const proposalData = tableItemData.data;
+  const proposalData = tableItemData;
 
   return proposalData;
 };
@@ -58,6 +58,7 @@ const fetchProposal = async (
 ): Promise<Proposal | null> => {
   // fetch proposal table item
   const proposalData = await fetchTableItem(proposal_id, handle, state);
+
   if (!proposalData) return null;
 
   // fetch proposal metadata

@@ -10,7 +10,7 @@ import {useGlobalState} from "../../GlobalState";
 import {useTheme} from "@mui/material";
 import CardOutline from "../../components/CardOutline";
 
-function RenderLedgerInfoInner({data}: UseQueryResult<Types.LedgerInfo>) {
+function RenderLedgerInfoInner({data}: UseQueryResult<Types.IndexResponse>) {
   if (!data) return null;
 
   const moment = parseTimestamp(data.ledger_timestamp);

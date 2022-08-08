@@ -49,7 +49,7 @@ const useSubmitVote = (proposalId: string) => {
   async function submitVote(shouldPass: boolean, ownerAccountAddr: string) {
     const payload: Types.TransactionPayload = {
       type: "script_function_payload",
-      function: "0x1::aptos_governance::vote",
+      function:"0x1::aptos_governance::vote",
       type_arguments: [],
       arguments: [ownerAccountAddr, proposalId, shouldPass],
     };

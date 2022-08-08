@@ -1,10 +1,10 @@
 export const devnetUrl =
-  process.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
+  process.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/v1";
 
 export const networks: Record<string, string> = {
-  local: "http://localhost:8080",
+  local: "http://localhost:8080/v1",
   devnet: devnetUrl,
-  test: "https://rosetta.aptosdev.com/",
+  test: "https://rosetta.aptosdev.com/v1",
   //governance: "https://ait2.aptosdev.com/", // TODO - use the proposals url
 };
 
