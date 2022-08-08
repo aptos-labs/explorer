@@ -34,7 +34,7 @@ const CardBox = ({theme, children}: CardBoxProps) => {
   return (
     <Box
       sx={{
-        position: "absolute" as "absolute",
+        position: "absolute",
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
@@ -102,7 +102,7 @@ export default function ConfirmationModal({
       )}
       <Stack direction="column">
         <Stack direction="row">
-          <Typography variant="body1">{`You are voting`}</Typography>
+          <Typography variant="body1">You are voting</Typography>
           <Typography
             variant="body1"
             marginLeft={1}
@@ -111,7 +111,7 @@ export default function ConfirmationModal({
             {shouldPass ? voteFor : voteAgainst}
           </Typography>
         </Stack>
-        <Typography variant="body1">{`this proposal.`}</Typography>
+        <Typography variant="body1">this proposal.</Typography>
       </Stack>
     </Stack>
   );
