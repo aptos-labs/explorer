@@ -7,14 +7,21 @@ import {
   IconButton,
   Box,
 } from "@mui/material";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import useSubmitVote, {
   VoteResponseOnSuccess,
   VoteResponseOnFailure,
 } from "../../hooks/useSubmitVote";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-import {negativeColor, voteFor, voteAgainst} from "../../constants";
+import {
+  primaryColor,
+  negativeColor,
+  primaryColorOnHover,
+  negativeColorOnHover,
+  voteFor,
+  voteAgainst,
+} from "../../constants";
 import CloseIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ConfirmationModal from "./ConfirmationModal";
@@ -29,11 +36,38 @@ type Props = {
 
 export default function VoteButtons({proposalId}: Props) {
   const [accountAddr, setAccountAddr] = useState<string>("");
+  const [voteForModalIsOpen, setVoteForModalIsOpen] = useState<boolean>(false);
+  const [voteAgainstModalIsOpen, setVoteAgainstModalIsOpen] =
+    useState<boolean>(false);
+
   const {submitVote, voteResponse, clearVoteResponse} =
     useSubmitVote(proposalId);
 
+  useEffect(() => {
+    if (voteResponse !== null) {
+      closeVoteForModal();
+      closeVoteAgainstModal();
+    }
+  }, [voteResponse]);
+
   const onAccountAddrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAccountAddr(event.target.value);
+  };
+
+  const openVoteForModal = () => {
+    setVoteForModalIsOpen(true);
+  };
+
+  const closeVoteForModal = () => {
+    setVoteForModalIsOpen(false);
+  };
+
+  const openVoteAgainstModal = () => {
+    setVoteAgainstModalIsOpen(true);
+  };
+
+  const closeVoteAgainstModal = () => {
+    setVoteAgainstModalIsOpen(false);
   };
 
   const onVote = (shouldPass: boolean) => {
@@ -129,9 +163,15 @@ export default function VoteButtons({proposalId}: Props) {
           fullWidth
           size="large"
           variant="primary"
-          sx={{justifyContent: "start"}}
+          sx={{
+            justifyContent: "start",
+            backgroundColor: primaryColor,
+            "&:hover": {
+              backgroundColor: primaryColorOnHover,
+            },
+          }}
           startIcon={<CheckCircleOutlinedIcon />}
-          onClick={() => onVote(true)}
+          onClick={openVoteForModal}
         >
           {voteFor}
         </Button>
@@ -139,9 +179,15 @@ export default function VoteButtons({proposalId}: Props) {
           fullWidth
           size="large"
           variant="primary"
-          sx={{justifyContent: "start", backgroundColor: negativeColor}}
+          sx={{
+            justifyContent: "start",
+            backgroundColor: negativeColor,
+            "&:hover": {
+              backgroundColor: negativeColorOnHover,
+            },
+          }}
           startIcon={<CancelOutlinedIcon />}
-          onClick={() => onVote(false)}
+          onClick={openVoteAgainstModal}
         >
           {voteAgainst}
         </Button>
@@ -149,10 +195,16 @@ export default function VoteButtons({proposalId}: Props) {
       {voteOnSuccessSnackbar}
       {voteOnFailureSnackbar}
       <ConfirmationModal
-        open={true}
+        open={voteForModalIsOpen}
         shouldPass={true}
-        onConfirm={() => {}}
-        onClose={() => {}}
+        onConfirm={() => onVote(true)}
+        onClose={closeVoteForModal}
+      />
+      <ConfirmationModal
+        open={voteAgainstModalIsOpen}
+        shouldPass={false}
+        onConfirm={() => onVote(false)}
+        onClose={closeVoteAgainstModal}
       />
     </>
   );

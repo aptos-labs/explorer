@@ -11,17 +11,83 @@ import {
 import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {useTheme} from "@mui/material/styles";
 import {Theme} from "@mui/material/styles";
-import {primaryColor, negativeColor} from "../../constants";
+import {
+  voteFor,
+  voteAgainst,
+  primaryColor,
+  negativeColor,
+  primaryColorOnHover,
+  negativeColorOnHover,
+  primaryColorWithOpacity,
+  negativeColorWithOpacity,
+} from "../../constants";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
-type ContentTextProps = {
-  shouldPass: boolean;
+interface CardBoxProps {
+  theme: Theme;
+  children?: React.ReactNode;
+}
+
+const CardBox = ({theme, children}: CardBoxProps) => {
+  return (
+    <Box
+      sx={{
+        position: "absolute" as "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 350,
+        backgroundColor: `${
+          theme.palette.mode === "dark" ? grey[700] : grey[100]
+        }`,
+        p: 3,
+        borderRadius: 1,
+      }}
+    >
+      {children}
+    </Box>
+  );
 };
 
-const Content = ({shouldPass}: ContentTextProps) => {
-  return (
+type ConfirmationModalProps = {
+  open: boolean;
+  shouldPass: boolean;
+  onConfirm: () => void;
+  onClose: () => void;
+};
+
+export default function ConfirmationModal({
+  open,
+  shouldPass,
+  onConfirm,
+  onClose,
+}: ConfirmationModalProps) {
+  const theme = useTheme();
+
+  const titleComponent = (
+    <Stack
+      direction="row"
+      marginBottom={0.5}
+      alignItems="center"
+      justifyContent="space-between"
+    >
+      <Typography variant="subtitle1" marginLeft={1}>
+        Are you sure?
+      </Typography>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={onClose}
+      >
+        <CloseOutlinedIcon fontSize="small" />
+      </IconButton>
+    </Stack>
+  );
+
+  const contentComponent = (
     <Stack
       direction="row"
       marginX={2}
@@ -42,96 +108,66 @@ const Content = ({shouldPass}: ContentTextProps) => {
             marginLeft={1}
             color={shouldPass ? primaryColor : negativeColor}
           >
-            {shouldPass ? `FOR` : `Against`}
+            {shouldPass ? voteFor : voteAgainst}
           </Typography>
         </Stack>
         <Typography variant="body1">{`this proposal.`}</Typography>
       </Stack>
     </Stack>
   );
-};
 
-type CardBoxProps = {
-  shouldPass: boolean;
-  theme: Theme;
-  onClose: () => void;
-};
-
-const CardBox = ({shouldPass, theme, onClose}: CardBoxProps) => {
-  return (
-    <Box
-      sx={{
-        position: "absolute" as "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-        width: 350,
-        backgroundColor: `${
-          theme.palette.mode === "dark" ? grey[700] : grey[100]
-        }`,
-        p: 3,
-        borderRadius: 1,
-      }}
+  const buttonsComponent = (
+    <Stack
+      direction="row"
+      spacing={1.5}
+      alignItems="center"
+      justifyContent="space-evenly"
     >
-      <Stack
-        direction="row"
-        marginBottom={1}
-        alignItems="center"
-        justifyContent="space-between"
+      <Button
+        variant="outlined"
+        sx={{
+          width: 150,
+          color: shouldPass ? primaryColor : negativeColor,
+          borderColor: shouldPass ? primaryColor : negativeColor,
+          backgroundColor: "inherit",
+          "&:hover": {
+            borderColor: shouldPass ? primaryColor : negativeColor,
+            backgroundColor: shouldPass
+              ? primaryColorWithOpacity
+              : negativeColorWithOpacity,
+          },
+        }}
+        onClick={onClose}
       >
-        <Typography variant="subtitle1" marginLeft={1}>
-          Are you sure?
-        </Typography>
-        <IconButton
-          size="small"
-          aria-label="close"
-          color="inherit"
-          onClick={onClose}
-        >
-          <CloseOutlinedIcon fontSize="small" />
-        </IconButton>
-      </Stack>
-      <Divider />
-      <Content shouldPass={shouldPass} />
-      <Stack
-        direction="row"
-        spacing={1.5}
-        alignItems="center"
-        justifyContent="space-evenly"
+        CANCEL
+      </Button>
+      <Button
+        variant="contained"
+        sx={{
+          width: 150,
+          borderColor: shouldPass ? primaryColor : negativeColor,
+          backgroundColor: shouldPass ? primaryColor : negativeColor,
+          "&:hover": {
+            backgroundColor: shouldPass
+              ? primaryColorOnHover
+              : negativeColorOnHover,
+          },
+        }}
+        onClick={onConfirm}
       >
-        <Button variant="outlined" sx={{width: 150}}>
-          CANCEL
-        </Button>
-        <Button variant="contained" sx={{width: 150}}>
-          CONFIRM
-        </Button>
-      </Stack>
-    </Box>
+        CONFIRM
+      </Button>
+    </Stack>
   );
-};
-
-type ConfirmationModalProps = {
-  open: boolean;
-  shouldPass: boolean | null;
-  onConfirm: () => void;
-  onClose: () => void;
-};
-
-export default function ConfirmationModal({
-  open,
-  shouldPass,
-  onConfirm,
-  onClose,
-}: ConfirmationModalProps) {
-  if (shouldPass === null) {
-    return null;
-  }
-
-  const theme = useTheme();
 
   return (
     <Modal open={open} onClose={onClose}>
-      <CardBox shouldPass={false} theme={theme} onClose={onClose} />
+      <CardBox theme={theme}>
+        {titleComponent}
+        <Divider />
+        {contentComponent}
+        {buttonsComponent}
+      </CardBox>
     </Modal>
   );
 }
