@@ -51,7 +51,7 @@ const OldWalletVersionWarning = (): JSX.Element => {
       target="_blank"
     >
       You are using an old wallet version, please install the latest Aptos
-      Wallet extension for a better support
+      Wallet extension.
     </Link>
   );
   return (
