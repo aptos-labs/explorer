@@ -33,7 +33,7 @@ const fetchTableItem = async (
 const fetchMetadata = async (
   proposalData: Proposal,
 ): Promise<ProposalMetadata | null> => {
-  // fetch proposal metadata from metadata_location propoerty
+  // fetch proposal metadata from metadata_location property
   const {metadata_location} = proposalData.execution_content.vec[0];
   const response = await fetch(metadata_location);
   // validate response status
