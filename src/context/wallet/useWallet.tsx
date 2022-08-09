@@ -4,11 +4,13 @@ import {
   getAccountAddress,
   getAptosWallet,
   isUpdatedVersion,
+  isAccountCreated,
   isWalletConnected,
 } from "../../api/wallet";
 
 export function useWallet() {
   const [isInstalled, setAptosWallet] = React.useState<boolean>(false);
+  const [isAccountSet, setIsAccountSet] = React.useState<boolean>(false);
   const [isConnected, setIsConnected] = React.useState<boolean>(false);
   const [accountAddress, setAccountAddress] = React.useState<string | null>(
     null,
@@ -19,8 +21,9 @@ export function useWallet() {
   }, []);
 
   useEffect(() => {
+    isAccountCreated().then(setIsAccountSet);
     isWalletConnected().then(setIsConnected);
-  }, [isInstalled, accountAddress]);
+  }, [isInstalled, accountAddress, isAccountSet]);
 
   useEffect(() => {
     // add this check to support older wallet versions
@@ -30,6 +33,8 @@ export function useWallet() {
           setAccountAddress(account.address);
         } else {
           setAccountAddress(null);
+          // this means an account was created but is not connected yet
+          setIsAccountSet(true);
         }
       });
     }
@@ -45,5 +50,5 @@ export function useWallet() {
     connectToWallet().then(setIsConnected);
   };
 
-  return {isInstalled, isConnected, accountAddress, connect};
+  return {isInstalled, isAccountSet, isConnected, accountAddress, connect};
 }

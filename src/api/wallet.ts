@@ -19,6 +19,19 @@ export const isWalletConnected = async (): Promise<boolean> => {
   return false;
 };
 
+export const isAccountCreated = async (): Promise<boolean> => {
+  try {
+    if (window.aptos) {
+      const res = await window.aptos.isConnected();
+      // if there is an account we are getting a true/false response else we are getting an object type response
+      return typeof res === "boolean";
+    }
+  } catch (error: any) {
+    console.log(error);
+  }
+  return false;
+};
+
 export const connectToWallet = async (): Promise<boolean> => {
   try {
     const result = await window.aptos.connect();

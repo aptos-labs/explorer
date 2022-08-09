@@ -4,6 +4,7 @@ import {
   Divider,
   Grid,
   Link,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -23,9 +24,9 @@ type CardBoxProps = {
 
 export function Instructions({onVoteProposalButtonClick}: InstructionsProps) {
   const theme = useTheme();
-  const {isInstalled, isConnected, connect} = useWalletContext();
+  const {isInstalled, isConnected, isAccountSet, connect} = useWalletContext();
 
-  const CardBox = ({children, title, content}: CardBoxProps) => {
+  const CardBox = ({children, title, content}: CardBoxProps): JSX.Element => {
     return (
       <Box
         minHeight={400}
@@ -44,6 +45,35 @@ export function Instructions({onVoteProposalButtonClick}: InstructionsProps) {
         <Typography variant="body1">{content}</Typography>
         {children}
       </Box>
+    );
+  };
+
+  const ConnectWalletButton = (): JSX.Element => {
+    return (
+      <Button
+        variant="primary"
+        disabled={!isInstalled || isConnected}
+        onClick={connect}
+      >
+        Connect
+      </Button>
+    );
+  };
+
+  const CreateAnAccountButton = (): JSX.Element => {
+    return (
+      <Tooltip title="Use the Wallet extension to create an account">
+        <span>
+          <Button
+            fullWidth={true}
+            variant="primary"
+            sx={{cursor: "default"}}
+            disabled={!isInstalled}
+          >
+            create an account
+          </Button>
+        </span>
+      </Tooltip>
     );
   };
 
@@ -77,13 +107,11 @@ export function Instructions({onVoteProposalButtonClick}: InstructionsProps) {
               title="02/ Connect"
               content="Connect your Aptos wallet to enable voting"
             >
-              <Button
-                variant="primary"
-                disabled={!isInstalled || isConnected}
-                onClick={connect}
-              >
-                Connect
-              </Button>
+              {isAccountSet ? (
+                <ConnectWalletButton />
+              ) : (
+                <CreateAnAccountButton />
+              )}
             </CardBox>
           </Card>
         </Grid>
