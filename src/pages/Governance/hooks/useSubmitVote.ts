@@ -10,7 +10,7 @@ const useSubmitVote = () => {
     shouldPass: boolean,
     ownerAccountAddr: string,
   ) {
-    let serializer = new BCS.Serializer();
+    const serializer = new BCS.Serializer();
     serializer.serializeBool(shouldPass);
     const payload = new TxnBuilderTypes.TransactionPayloadScriptFunction(
       TxnBuilderTypes.ScriptFunction.natural(

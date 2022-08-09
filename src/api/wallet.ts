@@ -1,5 +1,8 @@
 import {TxnBuilderTypes} from "aptos";
-import {TransactionResponse} from "./hooks/useSubmitTransaction";
+import {
+  TransactionResponse,
+  TransactionResponseOnFailure,
+} from "./hooks/useSubmitTransaction";
 
 export const getAptosWallet = (): boolean => {
   return "aptos" in window;
@@ -42,7 +45,7 @@ export const isUpdatedVersion = (): boolean =>
 export const signAndSubmitTransaction = async (
   transactionPayload: TxnBuilderTypes.TransactionPayloadScriptFunction,
 ): Promise<TransactionResponse> => {
-  const responseOnFailure = {
+  const responseOnFailure: TransactionResponseOnFailure = {
     succeeded: false,
     message: "Unknown Error",
   };

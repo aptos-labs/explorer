@@ -7,12 +7,12 @@ export type TransactionResponse =
   | TransactionResponseOnFailure;
 
 export type TransactionResponseOnSuccess = {
-  succeeded: boolean;
+  succeeded: true;
   transactionHash: string;
 };
 
 export type TransactionResponseOnFailure = {
-  succeeded: boolean;
+  succeeded: false;
   message: string;
 };
 

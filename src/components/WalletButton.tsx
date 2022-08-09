@@ -15,6 +15,7 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import ErrorIcon from "@mui/icons-material/Error";
 import {truncateAddress} from "../pages/utils";
 import {isUpdatedVersion} from "../api/wallet";
+import {teal, grey} from "../themes/colors/aptosColorPalette";
 
 type WalletButtonWrapperProps = {
   children?: React.ReactNode;
@@ -34,15 +35,15 @@ const WalletButtonWrapper = ({
       variant="outlined"
       sx={{
         padding: "10px 25px",
-        backgroundColor: theme.palette.mode === "dark" ? "#1B1F1E" : "white",
-        color: theme.palette.mode === "dark" ? "#2ED8A7" : "#121615",
+        backgroundColor: theme.palette.mode === "dark" ? grey[800] : "white",
+        color: theme.palette.mode === "dark" ? teal[400] : grey[900],
       }}
       {...props}
     >
       {icon}
       <Typography
         variant="body2"
-        color={theme.palette.mode === "dark" ? "white" : "121615"}
+        color={theme.palette.mode === "dark" ? "white" : grey[900]}
         ml={2}
       >
         {text}
