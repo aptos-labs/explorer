@@ -6,9 +6,10 @@ import {
   voteFor,
   voteAgainst,
 } from "../../constants";
+import {useTheme} from "@mui/material/styles";
+import {grey} from "../../../../themes/colors/aptosColorPalette";
 
 const RADIUS = "0.7em";
-const BAR_BACKGROUND_COLOR = "#272727";
 
 type ResultBarProps = {
   shouldPass: boolean;
@@ -16,6 +17,8 @@ type ResultBarProps = {
 };
 
 export default function ResultBar({shouldPass, percentage}: ResultBarProps) {
+  const theme = useTheme();
+
   const barColor = shouldPass ? primaryColor : negativeColor;
 
   const percentageStr = `${percentage.toFixed(0)}%`;
@@ -46,7 +49,8 @@ export default function ResultBar({shouldPass, percentage}: ResultBarProps) {
           component="div"
           sx={{
             pt: RADIUS,
-            backgroundColor: BAR_BACKGROUND_COLOR,
+            backgroundColor:
+              theme.palette.mode === "dark" ? grey[800] : grey[200],
             borderTopLeftRadius: percentage === 0 ? RADIUS : "0",
             borderBottomLeftRadius: percentage === 0 ? RADIUS : "0",
             borderTopRightRadius: RADIUS,

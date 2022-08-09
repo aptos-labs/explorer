@@ -12,9 +12,9 @@ const FAUCET_URL = "http://127.0.0.1:8000";
 const TEST_EXECUTION_HASH =
   "0x21bd7a43e576297d3f71badd7ee740ccd2ef8a13cf6660075ae2de0994b1f433";
 const TEST_METADATA_LOCATION =
-  "https://mocki.io/v1/32403c87-d5d2-4136-80fd-d639a5d3d7dd";
+  "https://mocki.io/v1/5714369f-d2d6-4987-83a2-2f3f4c2b5d38";
 const TEST_METADATA_HASH =
-  "a92df408861016f8245114a8477d2112b2d90c22184e1e71d667d3f10038db5d";
+  "706b43a2a6f116099a079b2bf469a7add66190d26e324b275f174566d7e603ca";
 
 async function createProposal(
   account: AptosAccount,

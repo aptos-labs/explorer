@@ -25,9 +25,10 @@ export type Proposal = {
 };
 
 export type ProposalMetadata = {
-  execution_script: string;
-  description: string;
   title: string;
+  description: string;
+  source_code_url: string;
+  discussion_url: string;
 };
 
 export enum ProposalState {
