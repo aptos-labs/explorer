@@ -18,10 +18,16 @@ export function ProposalContent({proposal}: ProposalContentProps) {
     >
       <ContentRow title="Proposal Hash" text={proposal.execution_hash} />
       <ContentRow
-        title="Proposal Script"
-        text={proposal.metadata.execution_script}
+        title="Source Code"
+        text="LINK TO SOURCE CODE"
+        link={proposal.metadata.source_code_url}
       />
       <ContentRow title="Description" text={proposal.metadata.description} />
+      <ContentRow
+        title="Discussion"
+        text="LINK TO DISCUSSION"
+        link={proposal.metadata.discussion_url}
+      />
     </Stack>
   );
 }
