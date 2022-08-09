@@ -1,5 +1,5 @@
-import {TxnBuilderTypes, Types} from "aptos";
-import {VoteResponse} from "../pages/Governance/hooks/useSubmitVote";
+import {TxnBuilderTypes} from "aptos";
+import { TransactionResponse } from "./hooks/useSubmitTransaction";
 
 export const getAptosWallet = (): boolean => {
   return "aptos" in window;
@@ -41,7 +41,7 @@ export const isUpdatedVersion = (): boolean =>
 
 export const signAndSubmitTransaction = async (
   transactionPayload: TxnBuilderTypes.TransactionPayloadScriptFunction,
-): Promise<VoteResponse> => {
+): Promise<TransactionResponse> => {
   const responseOnFailure = {
     succeeded: false,
     message: "Unknown Error",

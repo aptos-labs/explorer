@@ -14,17 +14,15 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import {Header} from "../Header";
-import useSubmitStake, {
-  StakeResponseOnFailure,
-  StakeResponseOnSuccess,
-} from "../hooks/useSubmitStake";
+import useSubmitStake from "../hooks/useSubmitStake";
+import { TransactionResponseOnFailure, TransactionResponseOnSuccess } from "../../../api/hooks/useSubmitTransaction";
 
 export function StakePage() {
   const [stakingAmount, setStakingAmount] = useState<string>("");
   const [operatorAddr, setOperatorAddr] = useState<string>("");
   const [voterAddr, setVoterAddr] = useState<string>("");
 
-  const {submitStake, stakeResponse, clearStakeResponse} = useSubmitStake();
+  const {submitStake, transactionResponse, clearTransactionResponse} = useSubmitStake();
 
   const onStakingAmountChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -46,16 +44,16 @@ export function StakePage() {
   };
 
   const onCloseErrorAlert = () => {
-    clearStakeResponse();
+    clearTransactionResponse();
   };
 
   useEffect(() => {
-    if (stakeResponse?.succeeded) {
+    if (transactionResponse?.succeeded) {
       setStakingAmount("");
       setOperatorAddr("");
       setVoterAddr("");
     }
-  }, [stakeResponse]);
+  }, [transactionResponse]);
 
   const voteOnSuccessSnackbarAction = (
     <IconButton
@@ -68,9 +66,9 @@ export function StakePage() {
     </IconButton>
   );
 
-  const voteOnSuccessSnackbar = stakeResponse !== null && (
+  const voteOnSuccessSnackbar = transactionResponse !== null && (
     <Snackbar
-      open={stakeResponse.succeeded}
+      open={transactionResponse.succeeded}
       anchorOrigin={{
         vertical: "top",
         horizontal: "center",
@@ -82,7 +80,7 @@ export function StakePage() {
         action={voteOnSuccessSnackbarAction}
       >
         {`Stake succeeded with transaction ${
-          (stakeResponse as StakeResponseOnSuccess).transactionHash
+          (transactionResponse as TransactionResponseOnSuccess).transactionHash
         }.`}
       </Alert>
     </Snackbar>
@@ -99,9 +97,9 @@ export function StakePage() {
     </IconButton>
   );
 
-  const voteOnFailureSnackbar = stakeResponse !== null && (
+  const voteOnFailureSnackbar = transactionResponse !== null && (
     <Snackbar
-      open={!stakeResponse.succeeded}
+      open={!transactionResponse.succeeded}
       anchorOrigin={{
         vertical: "top",
         horizontal: "center",
@@ -113,7 +111,7 @@ export function StakePage() {
         action={voteOnFailureSnackbarAction}
       >
         {`Stake failed with error message "${
-          (stakeResponse as StakeResponseOnFailure).message
+          (transactionResponse as TransactionResponseOnFailure).message
         }". Please try again.`}
       </Alert>
     </Snackbar>

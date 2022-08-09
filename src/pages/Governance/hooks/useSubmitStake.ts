@@ -1,23 +1,9 @@
 import {BCS, TxnBuilderTypes} from "aptos";
-import {useState} from "react";
-import {signAndSubmitTransaction} from "../../../api/wallet";
-
-export type StakeResponse = StakeResponseOnSuccess | StakeResponseOnFailure;
-
-export type StakeResponseOnSuccess = {
-  succeeded: boolean;
-  transactionHash: string;
-};
-
-export type StakeResponseOnFailure = {
-  succeeded: boolean;
-  message: string;
-};
+import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
 
 const useSubmitStake = () => {
-  const [stakeResponse, setStakeResponse] = useState<StakeResponse | null>(
-    null,
-  );
+
+  const {submitTransaction, transactionResponse, clearTransactionResponse} = useSubmitTransaction();
 
   async function submitStake(
     stakingAmount: number,
@@ -37,14 +23,10 @@ const useSubmitStake = () => {
       ),
     );
 
-    await signAndSubmitTransaction(payload).then(setStakeResponse);
+    await submitTransaction(payload);
   }
 
-  function clearStakeResponse() {
-    setStakeResponse(null);
-  }
-
-  return {submitStake, stakeResponse, clearStakeResponse};
+  return {submitStake, transactionResponse, clearTransactionResponse};
 };
 
 export default useSubmitStake;

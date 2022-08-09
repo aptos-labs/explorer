@@ -7,7 +7,7 @@ import {Proposal, ProposalMetadata} from "../Types";
 import {getProposalState, isVotingClosed} from "../utils";
 
 const fetchTableItem = async (
-  proposal_id: number,
+  proposal_id: string,
   handle: string,
   state: GlobalState,
 ): Promise<Proposal | null> => {
@@ -57,7 +57,8 @@ const fetchProposal = async (
   state: GlobalState,
 ): Promise<Proposal | null> => {
   // fetch proposal table item
-  const proposalData = await fetchTableItem(proposal_id, handle, state);
+  const proposalId = proposal_id+""
+  const proposalData = await fetchTableItem(proposalId, handle, state);
   if (!proposalData) return null;
 
   // fetch proposal metadata

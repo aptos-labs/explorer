@@ -1,22 +1,10 @@
 import {BCS, TxnBuilderTypes} from "aptos";
 import {useState} from "react";
-import {signAndSubmitTransaction} from "../../../api/wallet";
+import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
 
-export type VoteResponse = VoteResponseOnSuccess | VoteResponseOnFailure;
-
-export type VoteResponseOnSuccess = {
-  succeeded: boolean;
-  transactionHash: string;
-};
-
-export type VoteResponseOnFailure = {
-  succeeded: boolean;
-  message: string;
-};
-
-// TODO: confirmation modal
 const useSubmitVote = (proposalId: number) => {
-  const [voteResponse, setVoteResponse] = useState<VoteResponse | null>(null);
+
+  const {submitTransaction, transactionResponse, clearTransactionResponse} = useSubmitTransaction();
 
   async function submitVote(shouldPass: boolean, ownerAccountAddr: string) {
     let serializer = new BCS.Serializer();
@@ -36,14 +24,10 @@ const useSubmitVote = (proposalId: number) => {
       ),
     );
 
-    await signAndSubmitTransaction(payload).then(setVoteResponse);
+    await submitTransaction(payload);
   }
 
-  function clearVoteResponse() {
-    setVoteResponse(null);
-  }
-
-  return {submitVote, voteResponse, clearVoteResponse};
+  return {submitVote, transactionResponse, clearTransactionResponse};
 };
 
 export default useSubmitVote;
