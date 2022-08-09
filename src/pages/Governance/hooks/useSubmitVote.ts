@@ -3,8 +3,8 @@ import {useState} from "react";
 import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
 
 const useSubmitVote = (proposalId: number) => {
-
-  const {submitTransaction, transactionResponse, clearTransactionResponse} = useSubmitTransaction();
+  const {submitTransaction, transactionResponse, clearTransactionResponse} =
+    useSubmitTransaction();
 
   async function submitVote(shouldPass: boolean, ownerAccountAddr: string) {
     let serializer = new BCS.Serializer();

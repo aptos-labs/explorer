@@ -2,7 +2,9 @@ import {TxnBuilderTypes} from "aptos";
 import {useState} from "react";
 import {signAndSubmitTransaction} from "../wallet";
 
-export type TransactionResponse = TransactionResponseOnSuccess | TransactionResponseOnFailure;
+export type TransactionResponse =
+  | TransactionResponseOnSuccess
+  | TransactionResponseOnFailure;
 
 export type TransactionResponseOnSuccess = {
   succeeded: boolean;
@@ -15,12 +17,11 @@ export type TransactionResponseOnFailure = {
 };
 
 const useSubmitTransaction = () => {
-  const [transactionResponse, setTransactionResponse] = useState<TransactionResponse | null>(
-    null,
-  );
+  const [transactionResponse, setTransactionResponse] =
+    useState<TransactionResponse | null>(null);
 
   async function submitTransaction(
-    payload: TxnBuilderTypes.TransactionPayloadScriptFunction
+    payload: TxnBuilderTypes.TransactionPayloadScriptFunction,
   ) {
     await signAndSubmitTransaction(payload).then(setTransactionResponse);
   }

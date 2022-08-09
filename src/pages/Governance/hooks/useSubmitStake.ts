@@ -2,8 +2,8 @@ import {BCS, TxnBuilderTypes} from "aptos";
 import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
 
 const useSubmitStake = () => {
-
-  const {submitTransaction, transactionResponse, clearTransactionResponse} = useSubmitTransaction();
+  const {submitTransaction, transactionResponse, clearTransactionResponse} =
+    useSubmitTransaction();
 
   async function submitStake(
     stakingAmount: number,

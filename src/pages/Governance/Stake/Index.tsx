@@ -15,14 +15,18 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import {Header} from "../Header";
 import useSubmitStake from "../hooks/useSubmitStake";
-import { TransactionResponseOnFailure, TransactionResponseOnSuccess } from "../../../api/hooks/useSubmitTransaction";
+import {
+  TransactionResponseOnFailure,
+  TransactionResponseOnSuccess,
+} from "../../../api/hooks/useSubmitTransaction";
 
 export function StakePage() {
   const [stakingAmount, setStakingAmount] = useState<string>("");
   const [operatorAddr, setOperatorAddr] = useState<string>("");
   const [voterAddr, setVoterAddr] = useState<string>("");
 
-  const {submitStake, transactionResponse, clearTransactionResponse} = useSubmitStake();
+  const {submitStake, transactionResponse, clearTransactionResponse} =
+    useSubmitStake();
 
   const onStakingAmountChange = (
     event: React.ChangeEvent<HTMLInputElement>,

@@ -22,7 +22,10 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ConfirmationModal from "./ConfirmationModal";
-import { TransactionResponseOnFailure, TransactionResponseOnSuccess } from "../../../../api/hooks/useSubmitTransaction";
+import {
+  TransactionResponseOnFailure,
+  TransactionResponseOnSuccess,
+} from "../../../../api/hooks/useSubmitTransaction";
 
 // TODO:
 // 1. check if voted

@@ -1,5 +1,5 @@
 import {TxnBuilderTypes} from "aptos";
-import { TransactionResponse } from "./hooks/useSubmitTransaction";
+import {TransactionResponse} from "./hooks/useSubmitTransaction";
 
 export const getAptosWallet = (): boolean => {
   return "aptos" in window;
