@@ -1,6 +1,5 @@
 import React from "react";
-import {Grid, Typography, Stack, Divider} from "@mui/material";
-
+import {Grid, Typography, Stack, Divider, Box} from "@mui/material";
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
 import {Proposal, ProposalState} from "../Types";
@@ -9,6 +8,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import {renderStatusIcon, isVotingClosed} from "../utils";
 
 const SECONDARY_TEXT_COLOR = "#A3A3A3";
 const HASH_WIDTH = 200;
@@ -34,9 +34,12 @@ function StatusComponent({proposal}: {proposal: Proposal}) {
   }
 
   return (
-    <Typography variant="subtitle1" color={color}>
-      {proposal.proposal_state}
-    </Typography>
+    <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+      {renderStatusIcon(proposal.proposal_state)}
+      <Typography variant="subtitle1" color={color}>
+        {proposal.proposal_state}
+      </Typography>
+    </Box>
   );
 }
 
@@ -47,6 +50,10 @@ function TimeRemainingComponent({
   proposal: Proposal;
   isOnMobile: boolean;
 }) {
+  if (isVotingClosed(proposal)) {
+    return null;
+  }
+
   const remainingTime = getTimeRemaining(proposal.expiration_secs);
   return (
     <Stack
