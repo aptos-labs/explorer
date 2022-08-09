@@ -7,7 +7,7 @@ import {Proposal, ProposalMetadata} from "../Types";
 import {getProposalState, isVotingClosed} from "../utils";
 
 const fetchTableItem = async (
-  proposal_id: string,
+  proposal_id: number,
   handle: string,
   state: GlobalState,
 ): Promise<Proposal | null> => {
@@ -52,7 +52,7 @@ const fetchMetadata = async (
 };
 
 const fetchProposal = async (
-  proposal_id: string,
+  proposal_id: number,
   handle: string,
   state: GlobalState,
 ): Promise<Proposal | null> => {
@@ -76,7 +76,7 @@ const fetchProposal = async (
 
 export function useGetProposal(
   handle: string,
-  proposal_id: string,
+  proposal_id: number,
 ): Proposal | undefined {
   const [state, _setState] = useGlobalState();
   const [proposal, setProposal] = useState<Proposal>();

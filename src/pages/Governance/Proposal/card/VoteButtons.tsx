@@ -31,7 +31,7 @@ import ConfirmationModal from "./ConfirmationModal";
 // 2. check if eligible to vote
 
 type Props = {
-  proposalId: string;
+  proposalId: number;
 };
 
 export default function VoteButtons({proposalId}: Props) {

@@ -5,7 +5,7 @@ import ConnectWalletInfo from "./ConnectWalletInfo";
 import VoteButtons from "./VoteButtons";
 
 type CastVoteSectionProps = {
-  proposalId: string;
+  proposalId: number;
 };
 
 export default function CastVoteSection({proposalId}: CastVoteSectionProps) {

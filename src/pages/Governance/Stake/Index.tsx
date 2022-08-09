@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
   Grid,
   TextField,
@@ -7,21 +7,24 @@ import {
   InputAdornment,
   FormControl,
   InputLabel,
+  Box,
+  Snackbar,
+  Alert,
+  IconButton,
 } from "@mui/material";
-import {DateTimePicker} from "@mui/x-date-pickers/DateTimePicker";
-import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import CloseIcon from "@mui/icons-material/Close";
 import {Header} from "../Header";
+import useSubmitStake, {
+  StakeResponseOnFailure,
+  StakeResponseOnSuccess,
+} from "../hooks/useSubmitStake";
 
 export function StakePage() {
-  const [stakingEndTime, setStakingEndTime] = useState<Date | null>(new Date());
   const [stakingAmount, setStakingAmount] = useState<string>("");
   const [operatorAddr, setOperatorAddr] = useState<string>("");
   const [voterAddr, setVoterAddr] = useState<string>("");
 
-  const onStakingEndTimeChange = (newStakingEndTime: Date | null) => {
-    setStakingEndTime(newStakingEndTime);
-  };
+  const {submitStake, stakeResponse, clearStakeResponse} = useSubmitStake();
 
   const onStakingAmountChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -38,68 +41,133 @@ export function StakePage() {
   };
 
   const onSubmitClick = async () => {
-    // TODO: to be implemented
-    console.log("Submit Staking");
+    if (!stakingAmount) return;
+    await submitStake(parseInt(stakingAmount), operatorAddr, voterAddr);
   };
 
+  const onCloseErrorAlert = () => {
+    clearStakeResponse();
+  };
+
+  useEffect(() => {
+    if (stakeResponse?.succeeded) {
+      setStakingAmount("");
+      setOperatorAddr("");
+      setVoterAddr("");
+    }
+  }, [stakeResponse]);
+
+  const voteOnSuccessSnackbarAction = (
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={onCloseErrorAlert}
+    >
+      <CloseIcon fontSize="small" />
+    </IconButton>
+  );
+
+  const voteOnSuccessSnackbar = stakeResponse !== null && (
+    <Snackbar
+      open={stakeResponse.succeeded}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "center",
+      }}
+    >
+      <Alert
+        variant="filled"
+        severity="success"
+        action={voteOnSuccessSnackbarAction}
+      >
+        {`Stake succeeded with transaction ${
+          (stakeResponse as StakeResponseOnSuccess).transactionHash
+        }.`}
+      </Alert>
+    </Snackbar>
+  );
+
+  const voteOnFailureSnackbarAction = (
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={onCloseErrorAlert}
+    >
+      <CloseIcon fontSize="small" />
+    </IconButton>
+  );
+
+  const voteOnFailureSnackbar = stakeResponse !== null && (
+    <Snackbar
+      open={!stakeResponse.succeeded}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "center",
+      }}
+    >
+      <Alert
+        variant="filled"
+        severity="error"
+        action={voteOnFailureSnackbarAction}
+      >
+        {`Stake failed with error message "${
+          (stakeResponse as StakeResponseOnFailure).message
+        }". Please try again.`}
+      </Alert>
+    </Snackbar>
+  );
+
   return (
-    <Grid>
-      <Header />
-      <Grid container spacing={2}>
-        <Grid item xs={6} md={6}>
-          <FormControl fullWidth>
-            <InputLabel htmlFor="outlined-adornment-amount">
-              Staking Amount
-            </InputLabel>
-            <OutlinedInput
-              label="Staking Amount"
-              value={stakingAmount}
-              onChange={onStakingAmountChange}
-              startAdornment={
-                <InputAdornment position="start">$</InputAdornment>
-              }
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <FormControl fullWidth>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateTimePicker
-                label="Staking End Time"
-                value={stakingEndTime}
-                onChange={onStakingEndTimeChange}
-                renderInput={(params) => <TextField {...params} />}
-                minTime={new Date()}
+    <>
+      {voteOnSuccessSnackbar}
+      {voteOnFailureSnackbar}
+      <Grid>
+        <Header />
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="outlined-adornment-amount">
+                Staking Amount
+              </InputLabel>
+              <OutlinedInput
+                label="Staking Amount"
+                value={stakingAmount}
+                onChange={onStakingAmountChange}
+                startAdornment={
+                  <InputAdornment position="start">$</InputAdornment>
+                }
               />
-            </LocalizationProvider>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <TextField
-            fullWidth
-            label="Operator Address"
-            variant="outlined"
-            value={operatorAddr}
-            onChange={onOperatorAddrChange}
-          />
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <TextField
-            fullWidth
-            label="Voter Address"
-            variant="outlined"
-            value={voterAddr}
-            onChange={onVoterAddrChange}
-          />
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <FormControl fullWidth>
-            <Button variant="primary" onClick={onSubmitClick}>
-              Submit
-            </Button>
-          </FormControl>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Operator Address"
+              variant="outlined"
+              value={operatorAddr}
+              onChange={onOperatorAddrChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Voter Address"
+              variant="outlined"
+              value={voterAddr}
+              onChange={onVoterAddrChange}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <Button variant="primary" onClick={onSubmitClick}>
+                Submit
+              </Button>
+            </FormControl>
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 }

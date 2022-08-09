@@ -96,7 +96,7 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
 
 type ProposalRowProps = {
   columns: ProposalColumn[];
-  proposal_id: string;
+  proposal_id: number;
   handle: string;
 };
 
@@ -201,7 +201,7 @@ export function ProposalsTable({
     proposalRows.push(
       <ProposalRow
         key={proposal_id}
-        proposal_id={proposal_id + ""} // cast into a string as future uses expects proposal_id as a string type
+        proposal_id={proposal_id} // cast into a string as future uses expects proposal_id as a string type
         handle={handle}
         columns={columns}
       />,
