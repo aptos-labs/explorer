@@ -32,7 +32,7 @@ import {
 // 2. check if eligible to vote
 
 type Props = {
-  proposalId: number;
+  proposalId: string;
 };
 
 export default function VoteButtons({proposalId}: Props) {
@@ -72,7 +72,7 @@ export default function VoteButtons({proposalId}: Props) {
   };
 
   const onVote = (shouldPass: boolean) => {
-    submitVote(proposalId, shouldPass, accountAddr);
+    submitVote(parseInt(proposalId), shouldPass, accountAddr);
   };
 
   const refreshPage = () => {

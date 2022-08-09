@@ -1,4 +1,4 @@
-import {Grid, Typography} from "@mui/material";
+import {Grid} from "@mui/material";
 import React from "react";
 import {ProposalHeader} from "./Header";
 import {ProposalCard} from "./card/Index";
@@ -9,14 +9,13 @@ import {EmptyProposal} from "./EmptyProposal";
 import {Header} from "../Header";
 
 export type ProposalPageURLParams = {
-  id: number;
+  id: string;
   handle: string;
 };
 
 export const ProposalPage = () => {
   // useParams type signature is string | undefined - to go around it we cast the return value
-  const {id: proposalId, handle} =
-    useParams() as unknown as ProposalPageURLParams;
+  const {id: proposalId, handle} = useParams() as ProposalPageURLParams;
   const proposal = useGetProposal(handle, proposalId);
 
   if (!proposal) {

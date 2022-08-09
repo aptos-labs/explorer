@@ -52,13 +52,12 @@ const fetchMetadata = async (
 };
 
 const fetchProposal = async (
-  proposal_id: number,
+  proposal_id: string,
   handle: string,
   state: GlobalState,
 ): Promise<Proposal | null> => {
   // fetch proposal table item
-  const proposalId = proposal_id + ""; // cast to string as fetchTableItem expects proposal_id as string
-  const proposalData = await fetchTableItem(proposalId, handle, state);
+  const proposalData = await fetchTableItem(proposal_id, handle, state);
   if (!proposalData) return null;
 
   // fetch proposal metadata
@@ -77,7 +76,7 @@ const fetchProposal = async (
 
 export function useGetProposal(
   handle: string,
-  proposal_id: number,
+  proposal_id: string,
 ): Proposal | undefined {
   const [state, _setState] = useGlobalState();
   const [proposal, setProposal] = useState<Proposal>();

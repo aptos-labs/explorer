@@ -1,6 +1,6 @@
 // TODO: Proposal Type should be generated like Types.BlockMetadataTransaction
 export type Proposal = {
-  proposal_id: number;
+  proposal_id: string;
   proposer: string;
   creation_time_secs: string;
   execution_content: {
