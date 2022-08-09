@@ -1,6 +1,5 @@
 import * as React from "react";
 import * as RRD from "react-router-dom";
-import {Grid, useTheme} from "@mui/material";
 import Title from "../../../components/Title";
 import {
   Stack,
@@ -11,14 +10,19 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Grid,
+  useTheme,
 } from "@mui/material";
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
 import {Proposal} from "../Types";
 import {useGetProposal} from "../hooks/useGetProposal";
+import GeneralTableRow from "../../../components/GeneralTableRow";
+import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
+import HashButton from "../../../components/HashButton";
+import {teal} from "../../../themes/colors/aptosColorPalette";
 
 const TITLE_WIDTH = 400;
-const HASH_WIDTH = 300;
 
 type ProposalCellProps = {
   proposal: Proposal;
@@ -31,6 +35,7 @@ function TitleCell({proposal}: ProposalCellProps) {
         component="div"
         sx={{
           width: TITLE_WIDTH,
+          color: teal[500],
           overflow: "hidden",
           textOverflow: "ellipsis",
         }}
@@ -50,16 +55,7 @@ function StatusCell({proposal}: ProposalCellProps) {
 function ProposerCell({proposal}: ProposalCellProps) {
   return (
     <TableCell sx={{textAlign: "left"}}>
-      <Box
-        component="div"
-        sx={{
-          width: HASH_WIDTH,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
-      >
-        {proposal.proposer}
-      </Box>
+      <HashButton hash={proposal.proposer} />
     </TableCell>
   );
 }
@@ -75,7 +71,7 @@ function TimestampCell({proposal}: ProposalCellProps) {
       </Typography>
     );
 
-  return <TableCell sx={{textAlign: "left"}}>{timestamp}</TableCell>;
+  return <TableCell sx={{textAlign: "right"}}>{timestamp}</TableCell>;
 }
 
 const ProposalCells = Object.freeze({
@@ -109,17 +105,17 @@ function ProposalRow({proposal_id, handle, columns}: ProposalRowProps) {
   };
 
   if (!proposalData) {
-    // returns null as we dont need to generate a TableRow if there is no proposal data
+    // returns null as we don't need to generate a TableRow if there is no proposal data
     return null;
   }
 
   return (
-    <TableRow hover onClick={onTableRowClick}>
+    <GeneralTableRow onClick={onTableRowClick}>
       {columns.map((column) => {
         const Cell = ProposalCells[column];
         return <Cell key={column} proposal={proposalData} />;
       })}
-    </TableRow>
+    </GeneralTableRow>
   );
 }
 
@@ -128,50 +124,16 @@ type ProposalHeaderCellProps = {
 };
 
 function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
-  const theme = useTheme();
-  const tableCellBackgroundColor = theme.palette.background.paper;
-
   switch (column) {
     case "title":
-      return (
-        <TableCell
-          sx={{
-            textAlign: "left",
-            width: "2%",
-            background: `${tableCellBackgroundColor}`,
-            borderRadius: "8px 0 0 8px",
-          }}
-        >
-          <Typography variant="subtitle1">Title</Typography>
-        </TableCell>
-      );
+      return <GeneralTableHeaderCell header="Title" />;
     case "status":
-      return (
-        <TableCell
-          sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
-        >
-          <Typography variant="subtitle1">Status</Typography>
-        </TableCell>
-      );
+      return <GeneralTableHeaderCell header="Status" />;
     case "proposer":
-      return (
-        <TableCell
-          sx={{textAlign: "left", background: `${tableCellBackgroundColor}`}}
-        >
-          <Typography variant="subtitle1">Proposer</Typography>
-        </TableCell>
-      );
+      return <GeneralTableHeaderCell header="Proposer" />;
     case "timestamp":
       return (
-        <TableCell
-          sx={{
-            textAlign: "left",
-            background: `${tableCellBackgroundColor}`,
-            borderRadius: "0 8px 8px 0",
-          }}
-        >
-          <Typography variant="subtitle1">Timestamp</Typography>
-        </TableCell>
+        <GeneralTableHeaderCell header="Timestamp" textAlignRight={true} />
       );
     default:
       return assertNever(column);
