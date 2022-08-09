@@ -49,16 +49,25 @@ export function getProposalState(proposal: Proposal): ProposalState {
   }
 }
 
+export function getStatusColor(proposalState: ProposalState) {
+  switch (proposalState) {
+    case ProposalState.SUCCEEDED:
+      return primaryColor;
+    case ProposalState.PENDING:
+      return warningColor;
+    case ProposalState.FAILED:
+      return negativeColor;
+  }
+}
+
 export function renderStatusIcon(proposalState: ProposalState) {
   switch (proposalState) {
     case ProposalState.SUCCEEDED:
       return (
         <CheckCircleOutlinedIcon
           fontSize="small"
-          // color={primaryColor}
-          // titleAccess="Executed successfully"
           sx={{
-            color: primaryColor,
+            color: getStatusColor(ProposalState.SUCCEEDED),
           }}
         />
       );
@@ -66,10 +75,8 @@ export function renderStatusIcon(proposalState: ProposalState) {
       return (
         <ErrorOutlineOutlinedIcon
           fontSize="small"
-          // color={negativeColor}
-          // titleAccess="Executed successfully"
           sx={{
-            color: negativeColor,
+            color: getStatusColor(ProposalState.FAILED),
           }}
         />
       );
@@ -77,10 +84,8 @@ export function renderStatusIcon(proposalState: ProposalState) {
       return (
         <PendingOutlinedIcon
           fontSize="small"
-          // color={warningColor}
-          // titleAccess="Executed successfully"
           sx={{
-            color: warningColor,
+            color: getStatusColor(ProposalState.PENDING),
           }}
         />
       );

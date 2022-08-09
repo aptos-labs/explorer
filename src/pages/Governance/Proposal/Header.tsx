@@ -8,7 +8,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {renderStatusIcon, isVotingClosed} from "../utils";
+import {getStatusColor, renderStatusIcon, isVotingClosed} from "../utils";
 
 const SECONDARY_TEXT_COLOR = "#A3A3A3";
 const HASH_WIDTH = 200;
@@ -17,26 +17,14 @@ function TitleComponent({proposal}: {proposal: Proposal}) {
   return <Typography variant="h5">{proposal.metadata.title}</Typography>;
 }
 
-// TODO: add status icon
-// TODO: make the color/icon logic generic and reuse for proposals table
 function StatusComponent({proposal}: {proposal: Proposal}) {
-  let color;
-  switch (proposal.proposal_state) {
-    case ProposalState.SUCCEEDED:
-      color = primaryColor;
-      break;
-    case ProposalState.PENDING:
-      color = warningColor;
-      break;
-    case ProposalState.FAILED:
-      color = negativeColor;
-      break;
-  }
-
   return (
     <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
       {renderStatusIcon(proposal.proposal_state)}
-      <Typography variant="subtitle1" color={color}>
+      <Typography
+        variant="subtitle1"
+        color={getStatusColor(proposal.proposal_state)}
+      >
         {proposal.proposal_state}
       </Typography>
     </Box>
@@ -50,6 +38,7 @@ function TimeRemainingComponent({
   proposal: Proposal;
   isOnMobile: boolean;
 }) {
+  // TODO: show close time if it's closed
   if (isVotingClosed(proposal)) {
     return null;
   }
