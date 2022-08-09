@@ -54,9 +54,10 @@ export function StakePage() {
     }
     // TODO - this will likely be very dependent per network
     // pull from on chain config 0x1::stake::ValidatorSetConfiguration
-    if (parseInt(stakingAmount) <= 0) return;
+    const stakingAmountNumber = parseInt(stakingAmount);
+    if (stakingAmountNumber <= 0) return;
 
-    await submitStake(parseInt(stakingAmount), operatorAddr, voterAddr);
+    await submitStake(stakingAmountNumber, operatorAddr, voterAddr);
   };
 
   const onCloseErrorAlert = () => {
