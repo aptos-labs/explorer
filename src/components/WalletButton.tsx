@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import {useWalletContext} from "../context/wallet/context";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
+import AddCardIcon from "@mui/icons-material/AddCard";
 import ErrorIcon from "@mui/icons-material/Error";
 import {truncateAddress} from "../pages/utils";
 import {isUpdatedVersion} from "../api/wallet";
@@ -73,7 +74,7 @@ const OldWalletVersionWarning = (): JSX.Element => {
 };
 
 export const WalletButton = (): JSX.Element => {
-  const {isInstalled, isConnected, connect, accountAddress} =
+  const {isInstalled, isConnected, isAccountSet, connect, accountAddress} =
     useWalletContext();
 
   if (!isInstalled) {
@@ -89,7 +90,7 @@ export const WalletButton = (): JSX.Element => {
         }
       >
         <span>
-          <WalletButtonWrapper disabled text="Connect Wallet" />
+          <WalletButtonWrapper disabled text="install Wallet" />
         </span>
       </Tooltip>
     );
@@ -99,7 +100,20 @@ export const WalletButton = (): JSX.Element => {
 
   return (
     <>
-      {isInstalled && !isConnected && (
+      {isInstalled && !isAccountSet && (
+        <Tooltip title="Use the Wallet extension to create an account">
+          <span>
+            <WalletButtonWrapper
+              text="create an account"
+              icon={<AddCardIcon />}
+              sx={{cursor: "default"}}
+            >
+              {!isWalletLatestVersion && <OldWalletVersionWarning />}
+            </WalletButtonWrapper>
+          </span>
+        </Tooltip>
+      )}
+      {isInstalled && isAccountSet && !isConnected && (
         <WalletButtonWrapper
           onClick={connect}
           text="Connect Wallet"

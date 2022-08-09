@@ -3,6 +3,7 @@ import {createContext, useContext} from "react";
 export interface walletContext {
   isInstalled: boolean;
   isConnected: boolean;
+  isAccountSet: boolean;
   accountAddress: string | null;
   connect: () => Promise<void>;
 }
