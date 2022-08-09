@@ -9,12 +9,19 @@ export function renderDebug(data: any) {
   return (
     <Box
       sx={{overflow: "auto", fontWeight: theme.typography.fontWeightRegular}}
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(data || null, null, 2)
-          .replaceAll("\n", "<br/>")
-          .replaceAll(" ", "&nbsp;"),
-      }}
-    ></Box>
+    >
+      <div>
+        <pre
+          style={{
+            fontFamily: theme.typography.fontFamily,
+            fontWeight: theme.typography.fontWeightRegular,
+            overflowWrap: "break-word",
+          }}
+        >
+          {JSON.stringify(data || null, null, 2)}
+        </pre>
+      </div>
+    </Box>
   );
 }
 
