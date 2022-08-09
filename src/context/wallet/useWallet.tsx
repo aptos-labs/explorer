@@ -48,7 +48,6 @@ export function useWallet() {
 
   const connect = async () => {
     connectToWallet().then(setIsConnected);
-    isAccountCreated().then(setIsAccountSet);
   };
 
   return {isInstalled, isAccountSet, isConnected, accountAddress, connect};
