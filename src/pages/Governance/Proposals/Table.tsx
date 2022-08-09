@@ -11,7 +11,6 @@ import {
   TableRow,
   Typography,
   Grid,
-  useTheme,
 } from "@mui/material";
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
@@ -21,6 +20,7 @@ import GeneralTableRow from "../../../components/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
 import HashButton from "../../../components/HashButton";
 import {teal} from "../../../themes/colors/aptosColorPalette";
+import {renderStatusIcon} from "../utils";
 
 const TITLE_WIDTH = 400;
 
@@ -48,7 +48,12 @@ function TitleCell({proposal}: ProposalCellProps) {
 
 function StatusCell({proposal}: ProposalCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>{proposal.proposal_state}</TableCell>
+    <TableCell sx={{textAlign: "left"}}>
+      <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+        {renderStatusIcon(proposal.proposal_state)}
+        {proposal.proposal_state}
+      </Box>
+    </TableCell>
   );
 }
 
