@@ -1,12 +1,15 @@
 import {BCS, TxnBuilderTypes} from "aptos";
-import {useState} from "react";
 import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
 
-const useSubmitVote = (proposalId: number) => {
+const useSubmitVote = () => {
   const {submitTransaction, transactionResponse, clearTransactionResponse} =
     useSubmitTransaction();
 
-  async function submitVote(shouldPass: boolean, ownerAccountAddr: string) {
+  async function submitVote(
+    proposalId: number,
+    shouldPass: boolean,
+    ownerAccountAddr: string,
+  ) {
     let serializer = new BCS.Serializer();
     serializer.serializeBool(shouldPass);
     const payload = new TxnBuilderTypes.TransactionPayloadScriptFunction(

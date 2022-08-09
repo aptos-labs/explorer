@@ -57,7 +57,7 @@ const fetchProposal = async (
   state: GlobalState,
 ): Promise<Proposal | null> => {
   // fetch proposal table item
-  const proposalId = proposal_id + "";
+  const proposalId = proposal_id + ""; // cast to string as fetchTableItem expects proposal_id as string
   const proposalData = await fetchTableItem(proposalId, handle, state);
   if (!proposalData) return null;
 

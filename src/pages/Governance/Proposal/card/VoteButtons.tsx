@@ -42,7 +42,7 @@ export default function VoteButtons({proposalId}: Props) {
     useState<boolean>(false);
 
   const {submitVote, transactionResponse, clearTransactionResponse} =
-    useSubmitVote(proposalId);
+    useSubmitVote();
 
   useEffect(() => {
     if (transactionResponse !== null) {
@@ -72,7 +72,7 @@ export default function VoteButtons({proposalId}: Props) {
   };
 
   const onVote = (shouldPass: boolean) => {
-    submitVote(shouldPass, accountAddr);
+    submitVote(proposalId, shouldPass, accountAddr);
   };
 
   const refreshPage = () => {
