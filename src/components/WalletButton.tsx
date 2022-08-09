@@ -15,6 +15,7 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import ErrorIcon from "@mui/icons-material/Error";
 import {truncateAddress} from "../pages/utils";
 import {isUpdatedVersion} from "../api/wallet";
+import {teal, grey} from "../themes/colors/aptosColorPalette";
 
 type WalletButtonWrapperProps = {
   children?: React.ReactNode;
@@ -32,11 +33,19 @@ const WalletButtonWrapper = ({
   return (
     <Button
       variant="outlined"
-      sx={{padding: "10px 25px", backgroundColor: theme.palette.mode === "dark" ? "#1B1F1E" : "white",color: theme.palette.mode === "dark" ? "#2ED8A7" : "#121615"}}
+      sx={{
+        padding: "10px 25px",
+        backgroundColor: theme.palette.mode === "dark" ? grey[800] : "white",
+        color: theme.palette.mode === "dark" ? teal[400] : grey[900],
+      }}
       {...props}
     >
       {icon}
-      <Typography variant="body2" color={theme.palette.mode === "dark" ? "white" : "121615"} ml={2}>
+      <Typography
+        variant="body2"
+        color={theme.palette.mode === "dark" ? "white" : grey[900]}
+        ml={2}
+      >
         {text}
       </Typography>
       {children}
@@ -80,7 +89,7 @@ export const WalletButton = (): JSX.Element => {
         }
       >
         <span>
-          <WalletButtonWrapper disabled text="Connect Wallet"/>
+          <WalletButtonWrapper disabled text="Connect Wallet" />
         </span>
       </Tooltip>
     );
@@ -91,12 +100,19 @@ export const WalletButton = (): JSX.Element => {
   return (
     <>
       {isInstalled && !isConnected && (
-        <WalletButtonWrapper onClick={connect} text="Connect Wallet" icon={<CreditCardIcon />}>
+        <WalletButtonWrapper
+          onClick={connect}
+          text="Connect Wallet"
+          icon={<CreditCardIcon />}
+        >
           {!isWalletLatestVersion && <OldWalletVersionWarning />}
         </WalletButtonWrapper>
       )}
       {isInstalled && isConnected && (
-        <WalletButtonWrapper text={accountAddress && truncateAddress(accountAddress)} icon={<CreditCardIcon />}>
+        <WalletButtonWrapper
+          text={accountAddress && truncateAddress(accountAddress)}
+          icon={<CreditCardIcon />}
+        >
           {!isWalletLatestVersion && <OldWalletVersionWarning />}
         </WalletButtonWrapper>
       )}

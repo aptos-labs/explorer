@@ -420,12 +420,8 @@ function RenderTransaction({
 
   if (error) {
     if (error.type == ResponseErrorType.NOT_FOUND) {
-      return RenderHeader(
-        <Alert severity="error">
-          {error}
-          Could not find a transaction with version or hash {txnHashOrVersion}
-        </Alert>,
-      );
+      const msg = `${error} Could not find a transaction with version or hash ${txnHashOrVersion}`;
+      return RenderHeader(<Alert severity="error">{msg}</Alert>);
     } else if (error.type == ResponseErrorType.UNHANDLED) {
       return RenderHeader(
         <Alert severity="error">

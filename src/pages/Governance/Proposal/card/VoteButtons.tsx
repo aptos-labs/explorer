@@ -8,10 +8,7 @@ import {
   Box,
 } from "@mui/material";
 import React, {useState, useEffect} from "react";
-import useSubmitVote, {
-  VoteResponseOnSuccess,
-  VoteResponseOnFailure,
-} from "../../hooks/useSubmitVote";
+import useSubmitVote from "../../hooks/useSubmitVote";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import {
@@ -25,6 +22,10 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ConfirmationModal from "./ConfirmationModal";
+import {
+  TransactionResponseOnFailure,
+  TransactionResponseOnSuccess,
+} from "../../../../api/hooks/useSubmitTransaction";
 
 // TODO:
 // 1. check if voted
@@ -40,15 +41,15 @@ export default function VoteButtons({proposalId}: Props) {
   const [voteAgainstModalIsOpen, setVoteAgainstModalIsOpen] =
     useState<boolean>(false);
 
-  const {submitVote, voteResponse, clearVoteResponse} =
-    useSubmitVote(proposalId);
+  const {submitVote, transactionResponse, clearTransactionResponse} =
+    useSubmitVote();
 
   useEffect(() => {
-    if (voteResponse !== null) {
+    if (transactionResponse !== null) {
       closeVoteForModal();
       closeVoteAgainstModal();
     }
-  }, [voteResponse]);
+  }, [transactionResponse]);
 
   const onAccountAddrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAccountAddr(event.target.value);
@@ -71,7 +72,7 @@ export default function VoteButtons({proposalId}: Props) {
   };
 
   const onVote = (shouldPass: boolean) => {
-    submitVote(shouldPass, accountAddr);
+    submitVote(parseInt(proposalId), shouldPass, accountAddr);
   };
 
   const refreshPage = () => {
@@ -79,7 +80,7 @@ export default function VoteButtons({proposalId}: Props) {
   };
 
   const onCloseErrorAlert = () => {
-    clearVoteResponse();
+    clearTransactionResponse();
   };
 
   const voteOnSuccessSnackbarAction = (
@@ -96,9 +97,9 @@ export default function VoteButtons({proposalId}: Props) {
     </Box>
   );
 
-  const voteOnSuccessSnackbar = voteResponse !== null && (
+  const voteOnSuccessSnackbar = transactionResponse !== null && (
     <Snackbar
-      open={voteResponse.succeeded}
+      open={transactionResponse.succeeded}
       anchorOrigin={{
         vertical: "top",
         horizontal: "center",
@@ -110,7 +111,7 @@ export default function VoteButtons({proposalId}: Props) {
         action={voteOnSuccessSnackbarAction}
       >
         {`Vote succeeded with transaction ${
-          (voteResponse as VoteResponseOnSuccess).transactionHash
+          (transactionResponse as TransactionResponseOnSuccess).transactionHash
         }. Please refresh to see your vote.`}
       </Alert>
     </Snackbar>
@@ -127,9 +128,9 @@ export default function VoteButtons({proposalId}: Props) {
     </IconButton>
   );
 
-  const voteOnFailureSnackbar = voteResponse !== null && (
+  const voteOnFailureSnackbar = transactionResponse !== null && (
     <Snackbar
-      open={!voteResponse.succeeded}
+      open={!transactionResponse.succeeded}
       anchorOrigin={{
         vertical: "top",
         horizontal: "center",
@@ -141,7 +142,7 @@ export default function VoteButtons({proposalId}: Props) {
         action={voteOnFailureSnackbarAction}
       >
         {`Vote failed with error message "${
-          (voteResponse as VoteResponseOnFailure).message
+          (transactionResponse as TransactionResponseOnFailure).message
         }". Please try again.`}
       </Alert>
     </Snackbar>
