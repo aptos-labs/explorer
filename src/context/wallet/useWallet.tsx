@@ -28,7 +28,7 @@ export function useWallet() {
   useEffect(() => {
     // add this check to support older wallet versions
     if (isUpdatedVersion()) {
-      window.aptos.on("accountChanged", (account: any) => {
+      window.aptos?.on?.("accountChanged", (account: any) => {
         if (account.address) {
           setAccountAddress(account.address);
         } else {
@@ -37,7 +37,7 @@ export function useWallet() {
           setIsAccountSet(true);
         }
       });
-      window.aptos.on("networkChanged", (newNetwork: string) => {
+      window.aptos?.on?.("networkChanged", (newNetwork: string) => {
         setWalletNetwork(walletNetworkMap[newNetwork]);
       });
     }
