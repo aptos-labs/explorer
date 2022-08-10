@@ -10,7 +10,7 @@ export const getAptosWallet = (): boolean => {
 
 export const isWalletConnected = async (): Promise<boolean> => {
   try {
-    if (window.aptos && (await window.aptos.isConnected())) {
+    if (await window.aptos?.isConnected?.()) {
       return true;
     }
   } catch (error) {
@@ -21,11 +21,9 @@ export const isWalletConnected = async (): Promise<boolean> => {
 
 export const isAccountCreated = async (): Promise<boolean> => {
   try {
-    if (window.aptos) {
-      const res = await window.aptos.isConnected();
-      // if there is an account we are getting a true/false response else we are getting an object type response
-      return typeof res === "boolean";
-    }
+    const res = await window.aptos?.isConnected?.();
+    // if there is an account we are getting a true/false response else we are getting an object type response
+    return typeof res === "boolean";
   } catch (error: any) {
     console.log(error);
   }
@@ -34,7 +32,7 @@ export const isAccountCreated = async (): Promise<boolean> => {
 
 export const connectToWallet = async (): Promise<boolean> => {
   try {
-    const result = await window.aptos.connect();
+    const result = await window.aptos?.connect?.();
     if ("address" in result) return true;
   } catch (error) {
     console.log(error);
@@ -44,7 +42,7 @@ export const connectToWallet = async (): Promise<boolean> => {
 
 export const getAccountAddress: () => Promise<string | null> = async () => {
   try {
-    const data = await window.aptos.account();
+    const data = await window.aptos?.account?.();
     if ("address" in data) return data.address;
   } catch (error) {
     console.log(error);
@@ -64,7 +62,7 @@ export const signAndSubmitTransaction = async (
   };
 
   try {
-    const response = await window.aptos.signAndSubmitTransaction(
+    const response = await window.aptos?.signAndSubmitTransaction?.(
       transactionPayload,
     );
     if ("hash" in response) {
