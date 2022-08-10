@@ -50,6 +50,15 @@ export const getAccountAddress: () => Promise<string | null> = async () => {
   return null;
 };
 
+export const getWalletNetwork: () => Promise<string> = async () => {
+  try {
+    return await window.aptos?.network?.();
+  } catch (error) {
+    console.log(error);
+  }
+  return "Devnet"; // default wallet network
+};
+
 export const isUpdatedVersion = (): boolean =>
   window.aptos?.on instanceof Function;
 

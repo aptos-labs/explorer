@@ -1,8 +1,10 @@
 import {useState, useEffect} from "react";
+import {getWalletNetworkFromNetworkMap} from '../../utils'
 import {
   connectToWallet,
   getAccountAddress,
   getAptosWallet,
+  getWalletNetwork,
   isUpdatedVersion,
   isAccountCreated,
   isWalletConnected,
@@ -14,7 +16,7 @@ export function useWallet() {
   const [isAccountSet, setIsAccountSet] = useState<boolean>(false);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [accountAddress, setAccountAddress] = useState<string | null>(null);
-  const [walletNetwork, setWalletNetwork] = useState<string>("Devnet");
+  const [walletNetwork, setWalletNetwork] = useState<string>("");
 
   useEffect(() => {
     setAptosWallet(getAptosWallet());
@@ -38,7 +40,7 @@ export function useWallet() {
         }
       });
       window.aptos?.on?.("networkChanged", (newNetwork: string) => {
-        setWalletNetwork(walletNetworkMap[newNetwork]);
+        setWalletNetwork(getWalletNetworkFromNetworkMap(newNetwork));
       });
     }
   }, []);
@@ -46,6 +48,7 @@ export function useWallet() {
   useEffect(() => {
     if (isConnected) {
       getAccountAddress().then(setAccountAddress);
+      getWalletNetwork().then((network) => setWalletNetwork(getWalletNetworkFromNetworkMap(network)))
     }
   }, [isConnected]);
 
