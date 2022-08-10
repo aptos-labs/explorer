@@ -4,16 +4,17 @@ import {
   Button,
   FormControl,
   InputLabel,
+  Box,
   Snackbar,
   Alert,
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import {Header} from "../Header";
+import {Header} from "../components/Header";
 import useSubmitStake from "../hooks/useSubmitStake";
 import {
-  TransactionResponseOnFailure,
-  TransactionResponseOnSuccess,
+  TransactionResponseOnError,
+  TransactionResponseOnSubmission,
 } from "../../../api/hooks/useSubmitTransaction";
 import useAddressInput from "../../../api/hooks/useAddressInput";
 import useAmountInput from "../../../api/hooks/useAmountInput";
@@ -58,7 +59,7 @@ export function StakePage() {
   };
 
   useEffect(() => {
-    if (transactionResponse?.succeeded) {
+    if (transactionResponse?.transactionSubmitted) {
       clearStakingAmount();
       clearOperatorAddr();
       clearVoterAddr();
@@ -78,7 +79,7 @@ export function StakePage() {
 
   const stakeOnSuccessSnackbar = transactionResponse !== null && (
     <Snackbar
-      open={transactionResponse.succeeded}
+      open={transactionResponse.transactionSubmitted}
       anchorOrigin={{
         vertical: "top",
         horizontal: "center",
@@ -90,7 +91,8 @@ export function StakePage() {
         action={stakeOnSuccessSnackbarAction}
       >
         {`Stake succeeded with transaction ${
-          (transactionResponse as TransactionResponseOnSuccess).transactionHash
+          (transactionResponse as TransactionResponseOnSubmission)
+            .transactionHash
         }.`}
       </Alert>
     </Snackbar>
@@ -109,7 +111,7 @@ export function StakePage() {
 
   const stakeOnFailureSnackbar = transactionResponse !== null && (
     <Snackbar
-      open={!transactionResponse.succeeded}
+      open={!transactionResponse.transactionSubmitted}
       anchorOrigin={{
         vertical: "top",
         horizontal: "center",
@@ -121,7 +123,7 @@ export function StakePage() {
         action={stakeOnFailureSnackbarAction}
       >
         {`Stake failed with error message "${
-          (transactionResponse as TransactionResponseOnFailure).message
+          (transactionResponse as TransactionResponseOnError).message
         }". Please try again.`}
       </Alert>
     </Snackbar>

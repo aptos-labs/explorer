@@ -63,6 +63,10 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
     setVoteForModalIsOpen(false);
   };
 
+  const openVoteAgainstModal = () => {
+    setVoteAgainstModalIsOpen(true);
+  };
+
   const closeVoteAgainstModal = () => {
     setVoteAgainstModalIsOpen(false);
   };
@@ -91,7 +95,7 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
             },
           }}
           startIcon={<CheckCircleOutlinedIcon />}
-          onClick={() => openModal(true)}
+          onClick={openVoteForModal}
         >
           {voteFor}
         </Button>
@@ -107,7 +111,7 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
             },
           }}
           startIcon={<CancelOutlinedIcon />}
-          onClick={() => openModal(false)}
+          onClick={openVoteAgainstModal}
         >
           {voteAgainst}
         </Button>
