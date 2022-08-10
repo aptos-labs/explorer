@@ -4,6 +4,7 @@ export interface walletContext {
   isInstalled: boolean;
   isConnected: boolean;
   isAccountSet: boolean;
+  walletNetwork: string;
   accountAddress: string | null;
   connect: () => Promise<void>;
 }

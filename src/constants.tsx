@@ -8,6 +8,12 @@ export const networks: Record<string, string> = {
   //governance: "https://ait2.aptosdev.com/", // TODO - use the proposals url
 };
 
+export const walletNetworkMap: Record<string,string> = {
+  Devnet:"devnet",
+  Localhost:"local",
+  Testnet:"test"
+}
+
 // Remove trailing slashes
 for (let key of Object.keys(networks)) {
   if (networks[key].endsWith("/")) {

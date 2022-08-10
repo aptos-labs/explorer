@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import {useState, useEffect} from "react";
 import {
   connectToWallet,
   getAccountAddress,
@@ -7,14 +7,16 @@ import {
   isAccountCreated,
   isWalletConnected,
 } from "../../api/wallet";
+import { walletNetworkMap } from "../../constants";
 
 export function useWallet() {
-  const [isInstalled, setAptosWallet] = React.useState<boolean>(false);
-  const [isAccountSet, setIsAccountSet] = React.useState<boolean>(false);
-  const [isConnected, setIsConnected] = React.useState<boolean>(false);
-  const [accountAddress, setAccountAddress] = React.useState<string | null>(
+  const [isInstalled, setAptosWallet] = useState<boolean>(false);
+  const [isAccountSet, setIsAccountSet] = useState<boolean>(false);
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [accountAddress, setAccountAddress] = useState<string | null>(
     null,
   );
+  const [walletNetwork, setWalletNetwork] = useState<string>("Devnet");
 
   useEffect(() => {
     setAptosWallet(getAptosWallet());
@@ -33,9 +35,12 @@ export function useWallet() {
           setAccountAddress(account.address);
         } else {
           setAccountAddress(null);
-          // this means an account was created but is not connected yet
+          // this means an account was created but wallet is not connected yet
           setIsAccountSet(true);
         }
+      });
+      window.aptos.on("networkChanged", (newNetwork: string) => {
+        setWalletNetwork(walletNetworkMap[newNetwork])
       });
     }
   }, []);
@@ -50,5 +55,5 @@ export function useWallet() {
     connectToWallet().then(setIsConnected);
   };
 
-  return {isInstalled, isAccountSet, isConnected, accountAddress, connect};
+  return {isInstalled, isAccountSet, isConnected, accountAddress, walletNetwork, connect};
 }
