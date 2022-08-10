@@ -7,15 +7,13 @@ import {
   isAccountCreated,
   isWalletConnected,
 } from "../../api/wallet";
-import { walletNetworkMap } from "../../constants";
+import {walletNetworkMap} from "../../constants";
 
 export function useWallet() {
   const [isInstalled, setAptosWallet] = useState<boolean>(false);
   const [isAccountSet, setIsAccountSet] = useState<boolean>(false);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [accountAddress, setAccountAddress] = useState<string | null>(
-    null,
-  );
+  const [accountAddress, setAccountAddress] = useState<string | null>(null);
   const [walletNetwork, setWalletNetwork] = useState<string>("Devnet");
 
   useEffect(() => {
@@ -40,7 +38,7 @@ export function useWallet() {
         }
       });
       window.aptos.on("networkChanged", (newNetwork: string) => {
-        setWalletNetwork(walletNetworkMap[newNetwork])
+        setWalletNetwork(walletNetworkMap[newNetwork]);
       });
     }
   }, []);
@@ -55,5 +53,12 @@ export function useWallet() {
     connectToWallet().then(setIsConnected);
   };
 
-  return {isInstalled, isAccountSet, isConnected, accountAddress, walletNetwork, connect};
+  return {
+    isInstalled,
+    isAccountSet,
+    isConnected,
+    accountAddress,
+    walletNetwork,
+    connect,
+  };
 }
