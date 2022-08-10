@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react";
-import {getWalletNetworkFromNetworkMap} from '../../utils'
+import {getWalletNetworkFromNetworkMap} from "../../utils";
 import {
   connectToWallet,
   getAccountAddress,
@@ -48,7 +48,9 @@ export function useWallet() {
   useEffect(() => {
     if (isConnected) {
       getAccountAddress().then(setAccountAddress);
-      getWalletNetwork().then((network) => setWalletNetwork(getWalletNetworkFromNetworkMap(network)))
+      getWalletNetwork().then((network) =>
+        setWalletNetwork(getWalletNetworkFromNetworkMap(network)),
+      );
     }
   }, [isConnected]);
 
