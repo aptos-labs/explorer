@@ -26,6 +26,7 @@ import {
   TransactionResponseOnFailure,
   TransactionResponseOnSuccess,
 } from "../../../../api/hooks/useSubmitTransaction";
+import {isValidAccountAddress} from "../../../utils";
 
 // TODO:
 // 1. check if voted
@@ -37,12 +38,17 @@ type Props = {
 
 export default function VoteButtons({proposalId}: Props) {
   const [accountAddr, setAccountAddr] = useState<string>("");
+  const [accountAddrIsValid, setAccountAddrIsValid] = useState<boolean>(true);
   const [voteForModalIsOpen, setVoteForModalIsOpen] = useState<boolean>(false);
   const [voteAgainstModalIsOpen, setVoteAgainstModalIsOpen] =
     useState<boolean>(false);
 
   const {submitVote, transactionResponse, clearTransactionResponse} =
     useSubmitVote();
+
+  useEffect(() => {
+    setAccountAddrIsValid(true);
+  }, [accountAddr]);
 
   useEffect(() => {
     if (transactionResponse !== null) {
@@ -55,16 +61,21 @@ export default function VoteButtons({proposalId}: Props) {
     setAccountAddr(event.target.value);
   };
 
-  const openVoteForModal = () => {
-    setVoteForModalIsOpen(true);
+  const openModal = (shouldPass: boolean) => {
+    const isValid = isValidAccountAddress(accountAddr);
+    setAccountAddrIsValid(isValid);
+
+    if (isValid) {
+      if (shouldPass) {
+        setVoteForModalIsOpen(true);
+      } else {
+        setVoteAgainstModalIsOpen(true);
+      }
+    }
   };
 
   const closeVoteForModal = () => {
     setVoteForModalIsOpen(false);
-  };
-
-  const openVoteAgainstModal = () => {
-    setVoteAgainstModalIsOpen(true);
   };
 
   const closeVoteAgainstModal = () => {
@@ -151,15 +162,29 @@ export default function VoteButtons({proposalId}: Props) {
   return (
     <>
       <Stack spacing={2}>
-        <TextField
-          fullWidth
-          label="Owner Account Address"
-          variant="filled"
-          size="small"
-          margin="normal"
-          value={accountAddr}
-          onChange={onAccountAddrChange}
-        />
+        {accountAddrIsValid ? (
+          <TextField
+            fullWidth
+            label="Owner Account Address"
+            variant="filled"
+            size="small"
+            margin="normal"
+            value={accountAddr}
+            onChange={onAccountAddrChange}
+          />
+        ) : (
+          <TextField
+            error
+            fullWidth
+            label="Owner Account Address"
+            variant="filled"
+            size="small"
+            margin="normal"
+            value={accountAddr}
+            onChange={onAccountAddrChange}
+            helperText="Incorrect address"
+          />
+        )}
         <Button
           fullWidth
           size="large"
@@ -172,7 +197,7 @@ export default function VoteButtons({proposalId}: Props) {
             },
           }}
           startIcon={<CheckCircleOutlinedIcon />}
-          onClick={openVoteForModal}
+          onClick={() => openModal(true)}
         >
           {voteFor}
         </Button>
@@ -188,7 +213,7 @@ export default function VoteButtons({proposalId}: Props) {
             },
           }}
           startIcon={<CancelOutlinedIcon />}
-          onClick={openVoteAgainstModal}
+          onClick={() => openModal(false)}
         >
           {voteAgainst}
         </Button>

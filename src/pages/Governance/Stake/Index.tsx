@@ -7,7 +7,6 @@ import {
   InputAdornment,
   FormControl,
   InputLabel,
-  Box,
   Snackbar,
   Alert,
   IconButton,
@@ -24,10 +23,20 @@ import {isValidAccountAddress} from "../../utils";
 export function StakePage() {
   const [stakingAmount, setStakingAmount] = useState<string>("");
   const [operatorAddr, setOperatorAddr] = useState<string>("");
+  const [operatorAddrIsValid, setOperatorAddrIsValid] = useState<boolean>(true);
   const [voterAddr, setVoterAddr] = useState<string>("");
+  const [voterAddrIsValid, setVoterAddrIsValid] = useState<boolean>(true);
 
   const {submitStake, transactionResponse, clearTransactionResponse} =
     useSubmitStake();
+
+  useEffect(() => {
+    setOperatorAddrIsValid(true);
+  }, [operatorAddr]);
+
+  useEffect(() => {
+    setVoterAddrIsValid(true);
+  }, [voterAddr]);
 
   const onStakingAmountChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -44,20 +53,20 @@ export function StakePage() {
   };
 
   const onSubmitClick = async () => {
-    // TODO - handle error
-    if (!stakingAmount || !operatorAddr || !voterAddr) return;
-    if (
-      !isValidAccountAddress(operatorAddr) ||
-      !isValidAccountAddress(voterAddr)
-    ) {
-      return;
-    }
     // TODO - this will likely be very dependent per network
     // pull from on chain config 0x1::stake::ValidatorSetConfiguration
     const stakingAmountNumber = parseInt(stakingAmount);
     if (stakingAmountNumber <= 0) return;
 
-    await submitStake(stakingAmountNumber, operatorAddr, voterAddr);
+    const isOperatorAddrValid = isValidAccountAddress(operatorAddr);
+    setOperatorAddrIsValid(isOperatorAddrValid);
+
+    const isVoterAddrValid = isValidAccountAddress(voterAddr);
+    setVoterAddrIsValid(isVoterAddrValid);
+
+    if (isOperatorAddrValid && isVoterAddrValid) {
+      await submitStake(parseInt(stakingAmount), operatorAddr, voterAddr);
+    }
   };
 
   const onCloseErrorAlert = () => {
@@ -157,22 +166,46 @@ export function StakePage() {
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Operator Address"
-              variant="outlined"
-              value={operatorAddr}
-              onChange={onOperatorAddrChange}
-            />
+            {operatorAddrIsValid ? (
+              <TextField
+                fullWidth
+                label="Operator Address"
+                variant="outlined"
+                value={operatorAddr}
+                onChange={onOperatorAddrChange}
+              />
+            ) : (
+              <TextField
+                error
+                fullWidth
+                label="Operator Address"
+                variant="outlined"
+                value={operatorAddr}
+                onChange={onOperatorAddrChange}
+                helperText="Incorrect address"
+              />
+            )}
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Voter Address"
-              variant="outlined"
-              value={voterAddr}
-              onChange={onVoterAddrChange}
-            />
+            {voterAddrIsValid ? (
+              <TextField
+                fullWidth
+                label="Voter Address"
+                variant="outlined"
+                value={voterAddr}
+                onChange={onVoterAddrChange}
+              />
+            ) : (
+              <TextField
+                error
+                fullWidth
+                label="Voter Address"
+                variant="outlined"
+                value={voterAddr}
+                onChange={onVoterAddrChange}
+                helperText="Incorrect address"
+              />
+            )}
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
