@@ -9,7 +9,7 @@ import {
 import useAddressInput from "../../../api/hooks/useAddressInput";
 import useAmountInput from "../../../api/hooks/useAmountInput";
 import {isValidAccountAddress} from "../../utils";
-import TransactionResponseSnackbar from "../components/TransactionResponseSnackbar";
+import TransactionResponseSnackbar from "../components/snackbar/TransactionResponseSnackbar";
 
 export function StakePage() {
   const {
