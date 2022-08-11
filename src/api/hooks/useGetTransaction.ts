@@ -6,13 +6,13 @@ import {useGlobalState} from "../../GlobalState";
 
 export function useGetTransaction(
   txnHashOrVersion: string,
-): Types.Transaction | undefined {
+) {
   const [state, _setState] = useGlobalState();
 
-  const result = useQuery<Types.Transaction, ResponseError>(
+  const {data} = useQuery<Types.Transaction, ResponseError>(
     ["transaction", {txnHashOrVersion}, state.network_value],
     () => getTransaction({txnHashOrVersion}, state.network_value),
   );
 
-  return result.data;
+  return {data};
 }

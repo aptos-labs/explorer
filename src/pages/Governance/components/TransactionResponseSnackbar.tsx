@@ -2,24 +2,33 @@ import {Snackbar, Alert, Box, Button, IconButton} from "@mui/material";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import {Types} from "aptos";
 import {
   TransactionResponse,
   TransactionResponseOnError,
   TransactionResponseOnSubmission,
 } from "../../../api/hooks/useSubmitTransaction";
 import {useGetTransaction} from "../../../api/hooks/useGetTransaction";
-import Transaction from "../../Transactions/Transaction";
 
-type SuccessSnackbarProps = {
-  transactionHash: string;
-};
+function CloseAction({onCloseSnackbar}: {onCloseSnackbar: () => void}) {
+  return (
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={onCloseSnackbar}
+    >
+      <CloseIcon fontSize="small" />
+    </IconButton>
+  );
+}
 
-function SuccessSnackbar({transactionHash}: SuccessSnackbarProps) {
+function RefreshAction() {
   const refreshPage = () => {
     window.location.reload();
   };
 
-  const voteOnSuccessSnackbarAction = (
+  return (
     <Box alignSelf="center" marginRight={1.5}>
       <Button
         variant="outlined"
@@ -32,7 +41,19 @@ function SuccessSnackbar({transactionHash}: SuccessSnackbarProps) {
       </Button>
     </Box>
   );
+}
 
+type SuccessSnackbarProps = {
+  transactionHash: string;
+  refreshOnSuccess?: boolean;
+  onCloseSnackbar: () => void;
+};
+
+function SuccessSnackbar({
+  transactionHash,
+  refreshOnSuccess,
+  onCloseSnackbar,
+}: SuccessSnackbarProps) {
   return (
     <Snackbar
       open={true}
@@ -44,9 +65,17 @@ function SuccessSnackbar({transactionHash}: SuccessSnackbarProps) {
       <Alert
         variant="filled"
         severity="success"
-        action={voteOnSuccessSnackbarAction}
+        action={
+          refreshOnSuccess ? (
+            <RefreshAction />
+          ) : (
+            <CloseAction onCloseSnackbar={onCloseSnackbar} />
+          )
+        }
       >
-        {`Succeeded with transaction ${transactionHash}. Please refresh to see your vote.`}
+        {refreshOnSuccess === true
+          ? `Succeeded with transaction ${transactionHash}. Please refresh to see the updated result.`
+          : `Succeeded with transaction ${transactionHash}.`}
       </Alert>
     </Snackbar>
   );
@@ -63,17 +92,6 @@ function FailureSnackbar({
   failureMessage,
   onCloseSnackbar,
 }: FailureSnackbarProps) {
-  const voteOnFailureSnackbarAction = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={onCloseSnackbar}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
-
   return (
     <Snackbar
       open={true}
@@ -85,10 +103,10 @@ function FailureSnackbar({
       <Alert
         variant="filled"
         severity="error"
-        action={voteOnFailureSnackbarAction}
+        action={<CloseAction onCloseSnackbar={onCloseSnackbar} />}
       >
         {"transactionHash" in failureMessage
-          ? `Failed with transaction "${failureMessage.transactionHash}". Please try again.`
+          ? `Failed with transaction ${failureMessage.transactionHash}. Please try again.`
           : `Failed with error message "${failureMessage.errorMessage}". Please try again.`}
       </Alert>
     </Snackbar>
@@ -98,25 +116,52 @@ function FailureSnackbar({
 type TransactionResponseSnackbarProps = {
   transactionResponse: TransactionResponse | null;
   onCloseSnackbar: () => void;
+  refreshOnSuccess?: boolean;
 };
 
 export default function TransactionResponseSnackbar({
   transactionResponse,
   onCloseSnackbar,
+  refreshOnSuccess,
 }: TransactionResponseSnackbarProps) {
   if (transactionResponse == null) {
     return null;
   }
 
-  // const transaction = useGetTransaction();
+  if (!transactionResponse.transactionSubmitted) {
+    return (
+      <FailureSnackbar
+        failureMessage={{
+          errorMessage: (transactionResponse as TransactionResponseOnError)
+            .message,
+        }}
+        onCloseSnackbar={onCloseSnackbar}
+      />
+    );
+  }
+
+  const transactionHash = (
+    transactionResponse as TransactionResponseOnSubmission
+  ).transactionHash;
+  const {data} = useGetTransaction(transactionHash);
+  const isTransactionSuccess =
+    (data as Types.UserTransaction)?.success === true;
 
   return (
     <>
-      <SuccessSnackbar transactionHash="" />
-      <FailureSnackbar
-        failureMessage={{transactionHash: ""}}
-        onCloseSnackbar={onCloseSnackbar}
-      />
+      {isTransactionSuccess && (
+        <SuccessSnackbar
+          transactionHash={transactionHash as string}
+          refreshOnSuccess={refreshOnSuccess}
+          onCloseSnackbar={onCloseSnackbar}
+        />
+      )}
+      {!isTransactionSuccess && (
+        <FailureSnackbar
+          failureMessage={{transactionHash}}
+          onCloseSnackbar={onCloseSnackbar}
+        />
+      )}
     </>
   );
 }
