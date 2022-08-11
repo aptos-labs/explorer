@@ -1,5 +1,6 @@
 import {TxnBuilderTypes} from "aptos";
-import {WalletNetworks} from "../constants";
+import {WalletNetworks} from "../context/wallet/context";
+
 import {
   TransactionResponse,
   TransactionResponseOnFailure,

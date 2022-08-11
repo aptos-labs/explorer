@@ -8,7 +8,7 @@ import {
   isAccountCreated,
   isWalletConnected,
 } from "../../api/wallet";
-import {WalletNetworks} from "../../constants";
+import { WalletNetworks } from "./context";
 
 export function useWallet() {
   const [isInstalled, setAptosWallet] = useState<boolean>(false);

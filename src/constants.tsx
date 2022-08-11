@@ -1,5 +1,3 @@
-import {assertNever} from "./utils";
-
 export const devnetUrl =
   process.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
 
@@ -9,29 +7,12 @@ export const networks = {
   test: "https://rosetta.aptosdev.com/",
 };
 
-export const walleExplorertNetworkMap = (
-  walletNetwork: WalletNetworks,
-): ExplorerNetworks => {
-  switch (walletNetwork) {
-    case "Devnet":
-      return "devnet";
-    case "Localhost":
-      return "local";
-    case "Testnet":
-      return "test";
-    default:
-      return assertNever(walletNetwork);
-  }
-};
-
-export type ExplorerNetworks = keyof typeof networks;
-
-export type WalletNetworks = "Devnet" | "Localhost" | "Testnet";
+export type NetworkName = keyof typeof networks;
 
 // Remove trailing slashes
-for (let value of Object.values(networks)) {
-  if (value.endsWith("/")) {
-    value = value.slice(0, -1);
+for (let key of Object.keys(networks)) {
+  if (networks[key as keyof typeof networks].endsWith("/")) {
+    networks[key as keyof typeof networks] = networks[key as keyof typeof networks].slice(0, -1);
   }
 }
 
