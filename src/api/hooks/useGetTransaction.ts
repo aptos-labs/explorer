@@ -4,15 +4,13 @@ import {getTransaction} from "../../api";
 import {ResponseError} from "../../api/client";
 import {useGlobalState} from "../../GlobalState";
 
-export function useGetTransaction(
-  txnHashOrVersion: string,
-) {
+export function useGetTransaction(txnHashOrVersion: string) {
   const [state, _setState] = useGlobalState();
 
-  const {data} = useQuery<Types.Transaction, ResponseError>(
+  const {data, status} = useQuery<Types.Transaction, ResponseError>(
     ["transaction", {txnHashOrVersion}, state.network_value],
     () => getTransaction({txnHashOrVersion}, state.network_value),
   );
 
-  return {data};
+  return {data, status};
 }

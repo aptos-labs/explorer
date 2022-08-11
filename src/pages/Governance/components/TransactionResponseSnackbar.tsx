@@ -1,8 +1,17 @@
-import {Snackbar, Alert, Box, Button, IconButton} from "@mui/material";
+import * as RRD from "react-router-dom";
 import React from "react";
+import {Types} from "aptos";
+import {
+  Snackbar,
+  Alert,
+  Box,
+  Button,
+  IconButton,
+  Typography,
+  Link,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import {Types} from "aptos";
 import {
   TransactionResponse,
   TransactionResponseOnError,
@@ -73,23 +82,31 @@ function SuccessSnackbar({
           )
         }
       >
-        {refreshOnSuccess === true
-          ? `Succeeded with transaction ${transactionHash}. Please refresh to see the updated result.`
-          : `Succeeded with transaction ${transactionHash}.`}
+        <Typography variant="inherit">
+          Succeeded with transaction {""}
+          <Link
+            component={RRD.Link}
+            to={`/txn/${transactionHash}`}
+            color="inherit"
+            target="_blank"
+          >
+            {transactionHash}
+          </Link>
+          {refreshOnSuccess === true &&
+            `. Please refresh to see the updated result.`}
+        </Typography>
       </Alert>
     </Snackbar>
   );
 }
 
-type FailureMessage = {transactionHash: string} | {errorMessage: string};
-
 type FailureSnackbarProps = {
-  failureMessage: FailureMessage;
+  transactionHash: string;
   onCloseSnackbar: () => void;
 };
 
 function FailureSnackbar({
-  failureMessage,
+  transactionHash,
   onCloseSnackbar,
 }: FailureSnackbarProps) {
   return (
@@ -105,9 +122,43 @@ function FailureSnackbar({
         severity="error"
         action={<CloseAction onCloseSnackbar={onCloseSnackbar} />}
       >
-        {"transactionHash" in failureMessage
-          ? `Failed with transaction ${failureMessage.transactionHash}. Please try again.`
-          : `Failed with error message "${failureMessage.errorMessage}". Please try again.`}
+        <Typography variant="inherit">
+          Failed with transaction {""}
+          <Link
+            component={RRD.Link}
+            to={`/txn/${transactionHash}`}
+            color="inherit"
+            target="_blank"
+          >
+            {transactionHash}
+          </Link>
+          {"."} Please try again.
+        </Typography>
+      </Alert>
+    </Snackbar>
+  );
+}
+
+type ErrorSnackbarProps = {
+  errorMessage: string;
+  onCloseSnackbar: () => void;
+};
+
+function ErrorSnackbar({errorMessage, onCloseSnackbar}: ErrorSnackbarProps) {
+  return (
+    <Snackbar
+      open={true}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "center",
+      }}
+    >
+      <Alert
+        variant="filled"
+        severity="error"
+        action={<CloseAction onCloseSnackbar={onCloseSnackbar} />}
+      >
+        {`Failed with error message "${errorMessage}". Please try again.`}
       </Alert>
     </Snackbar>
   );
@@ -130,11 +181,10 @@ export default function TransactionResponseSnackbar({
 
   if (!transactionResponse.transactionSubmitted) {
     return (
-      <FailureSnackbar
-        failureMessage={{
-          errorMessage: (transactionResponse as TransactionResponseOnError)
-            .message,
-        }}
+      <ErrorSnackbar
+        errorMessage={
+          (transactionResponse as TransactionResponseOnError).message
+        }
         onCloseSnackbar={onCloseSnackbar}
       />
     );
@@ -143,7 +193,12 @@ export default function TransactionResponseSnackbar({
   const transactionHash = (
     transactionResponse as TransactionResponseOnSubmission
   ).transactionHash;
-  const {data} = useGetTransaction(transactionHash);
+  const {data, status} = useGetTransaction(transactionHash);
+
+  if (status !== "success") {
+    return null;
+  }
+
   const isTransactionSuccess =
     (data as Types.UserTransaction)?.success === true;
 
@@ -158,7 +213,7 @@ export default function TransactionResponseSnackbar({
       )}
       {!isTransactionSuccess && (
         <FailureSnackbar
-          failureMessage={{transactionHash}}
+          transactionHash={transactionHash}
           onCloseSnackbar={onCloseSnackbar}
         />
       )}
