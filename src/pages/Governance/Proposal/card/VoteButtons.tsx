@@ -1,12 +1,4 @@
-import {
-  Button,
-  Stack,
-  TextField,
-  Snackbar,
-  Alert,
-  IconButton,
-  Box,
-} from "@mui/material";
+import {Button, Stack, Snackbar, Alert, IconButton, Box} from "@mui/material";
 import React, {useState, useEffect} from "react";
 import useSubmitVote from "../../hooks/useSubmitVote";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
@@ -26,20 +18,26 @@ import {
   TransactionResponseOnFailure,
   TransactionResponseOnSuccess,
 } from "../../../../api/hooks/useSubmitTransaction";
+import useAddressInput from "../../../../api/hooks/useAddressInput";
 
 // TODO:
 // 1. check if voted
 // 2. check if eligible to vote
 
-type Props = {
+type VoteButtonsProps = {
   proposalId: string;
 };
 
-export default function VoteButtons({proposalId}: Props) {
-  const [accountAddr, setAccountAddr] = useState<string>("");
+export default function VoteButtons({proposalId}: VoteButtonsProps) {
   const [voteForModalIsOpen, setVoteForModalIsOpen] = useState<boolean>(false);
   const [voteAgainstModalIsOpen, setVoteAgainstModalIsOpen] =
     useState<boolean>(false);
+
+  const {
+    addr: accountAddr,
+    renderAddressTextField,
+    validateAddressInput,
+  } = useAddressInput();
 
   const {submitVote, transactionResponse, clearTransactionResponse} =
     useSubmitVote();
@@ -51,20 +49,19 @@ export default function VoteButtons({proposalId}: Props) {
     }
   }, [transactionResponse]);
 
-  const onAccountAddrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAccountAddr(event.target.value);
-  };
-
-  const openVoteForModal = () => {
-    setVoteForModalIsOpen(true);
+  const openModal = (shouldPass: boolean) => {
+    const isValid = validateAddressInput();
+    if (isValid) {
+      if (shouldPass) {
+        setVoteForModalIsOpen(true);
+      } else {
+        setVoteAgainstModalIsOpen(true);
+      }
+    }
   };
 
   const closeVoteForModal = () => {
     setVoteForModalIsOpen(false);
-  };
-
-  const openVoteAgainstModal = () => {
-    setVoteAgainstModalIsOpen(true);
   };
 
   const closeVoteAgainstModal = () => {
@@ -151,15 +148,7 @@ export default function VoteButtons({proposalId}: Props) {
   return (
     <>
       <Stack spacing={2}>
-        <TextField
-          fullWidth
-          label="Owner Account Address"
-          variant="filled"
-          size="small"
-          margin="normal"
-          value={accountAddr}
-          onChange={onAccountAddrChange}
-        />
+        {renderAddressTextField("Owner Account Address")}
         <Button
           fullWidth
           size="large"
@@ -172,7 +161,7 @@ export default function VoteButtons({proposalId}: Props) {
             },
           }}
           startIcon={<CheckCircleOutlinedIcon />}
-          onClick={openVoteForModal}
+          onClick={() => openModal(true)}
         >
           {voteFor}
         </Button>
@@ -188,7 +177,7 @@ export default function VoteButtons({proposalId}: Props) {
             },
           }}
           startIcon={<CancelOutlinedIcon />}
-          onClick={openVoteAgainstModal}
+          onClick={() => openModal(false)}
         >
           {voteAgainst}
         </Button>
