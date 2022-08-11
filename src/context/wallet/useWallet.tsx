@@ -47,9 +47,7 @@ export function useWallet() {
   useEffect(() => {
     if (isConnected) {
       getAccountAddress().then(setAccountAddress);
-      getWalletNetwork().then((network) =>
-        setWalletNetwork(network),
-      );
+      getWalletNetwork().then((network) => setWalletNetwork(network));
     }
   }, [isConnected]);
 

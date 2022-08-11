@@ -24,14 +24,14 @@ export default function NetworkSelect() {
 
   const handleChange = (event: SelectChangeEvent) => {
     const selectedNetwork = event.target.value as string;
-    if(!selectedNetwork) return;
+    if (!selectedNetwork) return;
     const network_name = selectedNetwork.toLowerCase() as ExplorerNetworks;
     maybeSetNetwork(network_name);
   };
 
   useEffect(() => {
     const selectedNetwork = searchParams.get("network");
-    if(!selectedNetwork) return;
+    if (!selectedNetwork) return;
     const network_name = selectedNetwork.toLowerCase() as ExplorerNetworks;
     maybeSetNetwork(network_name);
   });

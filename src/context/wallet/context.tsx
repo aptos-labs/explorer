@@ -1,5 +1,5 @@
 import {createContext, useContext} from "react";
-import { WalletNetworks } from "../../constants";
+import {WalletNetworks} from "../../constants";
 
 export interface walletContext {
   isInstalled: boolean;

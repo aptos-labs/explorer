@@ -1,4 +1,4 @@
-import { assertNever } from "./utils";
+import {assertNever} from "./utils";
 
 export const devnetUrl =
   process.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
@@ -9,8 +9,10 @@ export const networks = {
   test: "https://rosetta.aptosdev.com/",
 };
 
-export const walleExplorertNetworkMap = (walletNetwork: WalletNetworks):ExplorerNetworks => {
-  switch(walletNetwork){
+export const walleExplorertNetworkMap = (
+  walletNetwork: WalletNetworks,
+): ExplorerNetworks => {
+  switch (walletNetwork) {
     case "Devnet":
       return "devnet";
     case "Localhost":
@@ -20,14 +22,14 @@ export const walleExplorertNetworkMap = (walletNetwork: WalletNetworks):Explorer
     default:
       return assertNever(walletNetwork);
   }
-}
+};
 
 export type ExplorerNetworks = keyof typeof networks;
 
 export type WalletNetworks = "Devnet" | "Localhost" | "Testnet";
 
 // Remove trailing slashes
-for (let value of Object.values(networks)) {  
+for (let value of Object.values(networks)) {
   if (value.endsWith("/")) {
     value = value.slice(0, -1);
   }
