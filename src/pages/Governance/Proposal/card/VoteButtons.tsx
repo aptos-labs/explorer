@@ -1,12 +1,4 @@
-import {
-  Button,
-  Stack,
-  TextField,
-  Snackbar,
-  Alert,
-  IconButton,
-  Box,
-} from "@mui/material";
+import {Button, Stack, Snackbar, Alert, IconButton, Box} from "@mui/material";
 import React, {useState, useEffect} from "react";
 import useSubmitVote from "../../hooks/useSubmitVote";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
@@ -26,29 +18,29 @@ import {
   TransactionResponseOnFailure,
   TransactionResponseOnSuccess,
 } from "../../../../api/hooks/useSubmitTransaction";
-import {isValidAccountAddress} from "../../../utils";
+import useAddressInput from "../../../../api/hooks/useAddressInput";
 
 // TODO:
 // 1. check if voted
 // 2. check if eligible to vote
 
-type Props = {
+type VoteButtonsProps = {
   proposalId: string;
 };
 
-export default function VoteButtons({proposalId}: Props) {
-  const [accountAddr, setAccountAddr] = useState<string>("");
-  const [accountAddrIsValid, setAccountAddrIsValid] = useState<boolean>(true);
+export default function VoteButtons({proposalId}: VoteButtonsProps) {
   const [voteForModalIsOpen, setVoteForModalIsOpen] = useState<boolean>(false);
   const [voteAgainstModalIsOpen, setVoteAgainstModalIsOpen] =
     useState<boolean>(false);
 
+  const {
+    addr: accountAddr,
+    renderAddressTextField,
+    validateAddressInput,
+  } = useAddressInput();
+
   const {submitVote, transactionResponse, clearTransactionResponse} =
     useSubmitVote();
-
-  useEffect(() => {
-    setAccountAddrIsValid(true);
-  }, [accountAddr]);
 
   useEffect(() => {
     if (transactionResponse !== null) {
@@ -57,14 +49,8 @@ export default function VoteButtons({proposalId}: Props) {
     }
   }, [transactionResponse]);
 
-  const onAccountAddrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAccountAddr(event.target.value);
-  };
-
   const openModal = (shouldPass: boolean) => {
-    const isValid = isValidAccountAddress(accountAddr);
-    setAccountAddrIsValid(isValid);
-
+    const isValid = validateAddressInput();
     if (isValid) {
       if (shouldPass) {
         setVoteForModalIsOpen(true);
@@ -162,29 +148,7 @@ export default function VoteButtons({proposalId}: Props) {
   return (
     <>
       <Stack spacing={2}>
-        {accountAddrIsValid ? (
-          <TextField
-            fullWidth
-            label="Owner Account Address"
-            variant="filled"
-            size="small"
-            margin="normal"
-            value={accountAddr}
-            onChange={onAccountAddrChange}
-          />
-        ) : (
-          <TextField
-            error
-            fullWidth
-            label="Owner Account Address"
-            variant="filled"
-            size="small"
-            margin="normal"
-            value={accountAddr}
-            onChange={onAccountAddrChange}
-            helperText="Incorrect address"
-          />
-        )}
+        {renderAddressTextField("Owner Account Address")}
         <Button
           fullWidth
           size="large"

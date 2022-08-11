@@ -1,12 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {
   Grid,
-  TextField,
   Button,
-  OutlinedInput,
-  InputAdornment,
   FormControl,
-  InputLabel,
   Snackbar,
   Alert,
   IconButton,
@@ -18,53 +14,40 @@ import {
   TransactionResponseOnFailure,
   TransactionResponseOnSuccess,
 } from "../../../api/hooks/useSubmitTransaction";
-import {isValidAccountAddress} from "../../utils";
+import useAddressInput from "../../../api/hooks/useAddressInput";
+import useAmountInput from "../../../api/hooks/useAmountInput";
 
 export function StakePage() {
-  const [stakingAmount, setStakingAmount] = useState<string>("");
-  const [operatorAddr, setOperatorAddr] = useState<string>("");
-  const [operatorAddrIsValid, setOperatorAddrIsValid] = useState<boolean>(true);
-  const [voterAddr, setVoterAddr] = useState<string>("");
-  const [voterAddrIsValid, setVoterAddrIsValid] = useState<boolean>(true);
+  const {
+    amount: stakingAmount,
+    clearAmount: clearStakingAmount,
+    renderAmountTextField: renderStakingAmountTextField,
+    validateAmountInput: validateStakingAmountInput,
+  } = useAmountInput();
+
+  const {
+    addr: operatorAddr,
+    clearAddr: clearOperatorAddr,
+    renderAddressTextField: renderOperatorAddressTextField,
+    validateAddressInput: validateOperatorAddressInput,
+  } = useAddressInput();
+
+  const {
+    addr: voterAddr,
+    clearAddr: clearVoterAddr,
+    renderAddressTextField: renderVoterAddressTextField,
+    validateAddressInput: validateVoterAddressInput,
+  } = useAddressInput();
 
   const {submitStake, transactionResponse, clearTransactionResponse} =
     useSubmitStake();
 
-  useEffect(() => {
-    setOperatorAddrIsValid(true);
-  }, [operatorAddr]);
-
-  useEffect(() => {
-    setVoterAddrIsValid(true);
-  }, [voterAddr]);
-
-  const onStakingAmountChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setStakingAmount(event.target.value.replace(/[^0-9]/g, ""));
-  };
-
-  const onOperatorAddrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOperatorAddr(event.target.value);
-  };
-
-  const onVoterAddrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setVoterAddr(event.target.value);
-  };
-
   const onSubmitClick = async () => {
-    // TODO - this will likely be very dependent per network
-    // pull from on chain config 0x1::stake::ValidatorSetConfiguration
-    const stakingAmountNumber = parseInt(stakingAmount);
-    if (stakingAmountNumber <= 0) return;
+    const isStakingAmountValid = validateStakingAmountInput();
+    const isOperatorAddrValid = validateOperatorAddressInput();
+    const isVoterAddrValid = validateVoterAddressInput();
 
-    const isOperatorAddrValid = isValidAccountAddress(operatorAddr);
-    setOperatorAddrIsValid(isOperatorAddrValid);
-
-    const isVoterAddrValid = isValidAccountAddress(voterAddr);
-    setVoterAddrIsValid(isVoterAddrValid);
-
-    if (isOperatorAddrValid && isVoterAddrValid) {
+    if (isStakingAmountValid && isOperatorAddrValid && isVoterAddrValid) {
       await submitStake(parseInt(stakingAmount), operatorAddr, voterAddr);
     }
   };
@@ -75,9 +58,9 @@ export function StakePage() {
 
   useEffect(() => {
     if (transactionResponse?.succeeded) {
-      setStakingAmount("");
-      setOperatorAddr("");
-      setVoterAddr("");
+      clearStakingAmount();
+      clearOperatorAddr();
+      clearVoterAddr();
     }
   }, [transactionResponse]);
 
@@ -151,61 +134,13 @@ export function StakePage() {
         <Header />
         <Grid container spacing={4}>
           <Grid item xs={12}>
-            <FormControl fullWidth>
-              <InputLabel htmlFor="outlined-adornment-amount">
-                Staking Amount
-              </InputLabel>
-              <OutlinedInput
-                label="Staking Amount"
-                value={stakingAmount}
-                onChange={onStakingAmountChange}
-                startAdornment={
-                  <InputAdornment position="start">$</InputAdornment>
-                }
-              />
-            </FormControl>
+            {renderStakingAmountTextField("Staking Amount")}
           </Grid>
           <Grid item xs={12}>
-            {operatorAddrIsValid ? (
-              <TextField
-                fullWidth
-                label="Operator Address"
-                variant="outlined"
-                value={operatorAddr}
-                onChange={onOperatorAddrChange}
-              />
-            ) : (
-              <TextField
-                error
-                fullWidth
-                label="Operator Address"
-                variant="outlined"
-                value={operatorAddr}
-                onChange={onOperatorAddrChange}
-                helperText="Incorrect address"
-              />
-            )}
+            {renderOperatorAddressTextField("Operator Address")}
           </Grid>
           <Grid item xs={12}>
-            {voterAddrIsValid ? (
-              <TextField
-                fullWidth
-                label="Voter Address"
-                variant="outlined"
-                value={voterAddr}
-                onChange={onVoterAddrChange}
-              />
-            ) : (
-              <TextField
-                error
-                fullWidth
-                label="Voter Address"
-                variant="outlined"
-                value={voterAddr}
-                onChange={onVoterAddrChange}
-                helperText="Incorrect address"
-              />
-            )}
+            {renderVoterAddressTextField("Voter Address")}
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
