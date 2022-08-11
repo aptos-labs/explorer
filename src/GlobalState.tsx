@@ -1,21 +1,21 @@
 import React from "react";
-import {networks, defaultNetworkName} from "./constants";
+import {networks, defaultNetworkName, NetworkName} from "./constants";
 
 const selected_network = safeGetSelectedNetworkName();
 
-function safeGetSelectedNetworkName(): string {
+function safeGetSelectedNetworkName(): NetworkName {
   let selected_network = localStorage.getItem("selected_network");
   if (selected_network) {
     selected_network = selected_network.toLowerCase();
     if (selected_network in networks) {
-      return selected_network;
+      return selected_network as NetworkName;
     }
   }
-  return defaultNetworkName.toLowerCase();
+  return defaultNetworkName;
 }
 
 export type GlobalState = {
-  network_name: string;
+  network_name: NetworkName;
   network_value: string;
 };
 

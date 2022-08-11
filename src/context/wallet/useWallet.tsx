@@ -1,20 +1,21 @@
-import React, {useEffect} from "react";
+import {useState, useEffect} from "react";
 import {
   connectToWallet,
   getAccountAddress,
   getAptosWallet,
+  getWalletNetwork,
   isUpdatedVersion,
   isAccountCreated,
   isWalletConnected,
 } from "../../api/wallet";
+import {WalletNetworks} from "./context";
 
 export function useWallet() {
-  const [isInstalled, setAptosWallet] = React.useState<boolean>(false);
-  const [isAccountSet, setIsAccountSet] = React.useState<boolean>(false);
-  const [isConnected, setIsConnected] = React.useState<boolean>(false);
-  const [accountAddress, setAccountAddress] = React.useState<string | null>(
-    null,
-  );
+  const [isInstalled, setAptosWallet] = useState<boolean>(false);
+  const [isAccountSet, setIsAccountSet] = useState<boolean>(false);
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [accountAddress, setAccountAddress] = useState<string | null>(null);
+  const [walletNetwork, setWalletNetwork] = useState<WalletNetworks>("Devnet");
 
   useEffect(() => {
     setAptosWallet(getAptosWallet());
@@ -28,14 +29,17 @@ export function useWallet() {
   useEffect(() => {
     // add this check to support older wallet versions
     if (isUpdatedVersion()) {
-      window.aptos.on("accountChanged", (account: any) => {
+      window.aptos?.on?.("accountChanged", (account: any) => {
         if (account.address) {
           setAccountAddress(account.address);
         } else {
           setAccountAddress(null);
-          // this means an account was created but is not connected yet
+          // this means an account was created but wallet is not connected yet
           setIsAccountSet(true);
         }
+      });
+      window.aptos?.on?.("networkChanged", (newNetwork: WalletNetworks) => {
+        setWalletNetwork(newNetwork);
       });
     }
   }, []);
@@ -43,6 +47,7 @@ export function useWallet() {
   useEffect(() => {
     if (isConnected) {
       getAccountAddress().then(setAccountAddress);
+      getWalletNetwork().then((network) => setWalletNetwork(network));
     }
   }, [isConnected]);
 
@@ -50,5 +55,12 @@ export function useWallet() {
     connectToWallet().then(setIsConnected);
   };
 
-  return {isInstalled, isAccountSet, isConnected, accountAddress, connect};
+  return {
+    isInstalled,
+    isAccountSet,
+    isConnected,
+    accountAddress,
+    walletNetwork,
+    connect,
+  };
 }
