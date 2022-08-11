@@ -1,10 +1,11 @@
 import {createContext, useContext} from "react";
+import { WalletNetworks } from "../../constants";
 
 export interface walletContext {
   isInstalled: boolean;
   isConnected: boolean;
   isAccountSet: boolean;
-  walletNetwork: string;
+  walletNetwork: WalletNetworks;
   accountAddress: string | null;
   connect: () => Promise<void>;
 }

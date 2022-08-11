@@ -1,5 +1,6 @@
 import {TxnBuilderTypes} from "aptos";
 import {useState} from "react";
+import {walleExplorertNetworkMap} from "../../constants";
 import {useWalletContext} from "../../context/wallet/context";
 import {useGlobalState} from "../../GlobalState";
 import {signAndSubmitTransaction} from "../wallet";
@@ -28,7 +29,7 @@ const useSubmitTransaction = () => {
     payload: TxnBuilderTypes.TransactionPayloadScriptFunction,
   ) {
     // if dApp network !== wallet network => return error
-    if (walletNetwork !== state.network_name) {
+    if (walleExplorertNetworkMap(walletNetwork) !== state.network_name) {
       setTransactionResponse({
         succeeded: false,
         message:

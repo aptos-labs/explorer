@@ -1,4 +1,5 @@
 import {TxnBuilderTypes} from "aptos";
+import {WalletNetworks} from "../constants";
 import {
   TransactionResponse,
   TransactionResponseOnFailure,
@@ -50,7 +51,7 @@ export const getAccountAddress: () => Promise<string | null> = async () => {
   return null;
 };
 
-export const getWalletNetwork: () => Promise<string> = async () => {
+export const getWalletNetwork: () => Promise<WalletNetworks> = async () => {
   try {
     return await window.aptos?.network?.();
   } catch (error) {

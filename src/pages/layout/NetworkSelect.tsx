@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {FormControl, Select, SelectChangeEvent} from "@mui/material";
-import {networks} from "../../constants";
+import {ExplorerNetworks, networks} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import {useTheme} from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
@@ -13,7 +13,7 @@ export default function NetworkSelect() {
   const [state, dispatch] = useGlobalState();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  function maybeSetNetwork(network_name: string | null) {
+  function maybeSetNetwork(network_name: ExplorerNetworks | null) {
     if (!network_name || state.network_name === network_name) return;
     const network_value = networks[network_name];
     if (network_value) {
@@ -23,13 +23,17 @@ export default function NetworkSelect() {
   }
 
   const handleChange = (event: SelectChangeEvent) => {
-    const network_name = event.target.value as string;
-    maybeSetNetwork(network_name && network_name.toLowerCase());
+    const selectedNetwork = event.target.value as string;
+    if(!selectedNetwork) return;
+    const network_name = selectedNetwork.toLowerCase() as ExplorerNetworks;
+    maybeSetNetwork(network_name);
   };
 
   useEffect(() => {
-    const network_name = searchParams.get("network");
-    maybeSetNetwork(network_name && network_name.toLowerCase());
+    const selectedNetwork = searchParams.get("network");
+    if(!selectedNetwork) return;
+    const network_name = selectedNetwork.toLowerCase() as ExplorerNetworks;
+    maybeSetNetwork(network_name);
   });
 
   function DropdownIcon(props: SvgIconProps) {
