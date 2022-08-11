@@ -2,11 +2,7 @@ import React from "react";
 import {Types} from "aptos";
 import {IconButton} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import {
-  TransactionResponse,
-  TransactionResponseOnError,
-  TransactionResponseOnSubmission,
-} from "../../../../api/hooks/useSubmitTransaction";
+import {TransactionResponse} from "../../../../api/hooks/useSubmitTransaction";
 import {useGetTransaction} from "../../../../api/hooks/useGetTransaction";
 import SuccessSnackbar from "./SuccessSnackbar";
 import FailureSnackbar from "./FailureSnackbar";
@@ -43,17 +39,13 @@ export default function TransactionResponseSnackbar({
   if (!transactionResponse.transactionSubmitted) {
     return (
       <ErrorSnackbar
-        errorMessage={
-          (transactionResponse as TransactionResponseOnError).message
-        }
+        errorMessage={transactionResponse.message}
         onCloseSnackbar={onCloseSnackbar}
       />
     );
   }
 
-  const transactionHash = (
-    transactionResponse as TransactionResponseOnSubmission
-  ).transactionHash;
+  const transactionHash = transactionResponse.transactionHash;
   const {data, status} = useGetTransaction(transactionHash);
 
   if (status !== "success") {
@@ -61,13 +53,13 @@ export default function TransactionResponseSnackbar({
   }
 
   const isTransactionSuccess =
-    (data as Types.UserTransaction)?.success === true;
+    data && "success" in data && data.success === true;
 
   return (
     <>
       {isTransactionSuccess && (
         <SuccessSnackbar
-          transactionHash={transactionHash as string}
+          transactionHash={transactionHash}
           refreshOnSuccess={refreshOnSuccess}
           onCloseSnackbar={onCloseSnackbar}
         />

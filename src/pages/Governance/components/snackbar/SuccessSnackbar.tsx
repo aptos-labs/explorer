@@ -5,6 +5,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import {CloseAction} from "./TransactionResponseSnackbar";
 
 function RefreshAction() {
+  // TODO: update the vote results section without refreshing the page
   const refreshPage = () => {
     window.location.reload();
   };
