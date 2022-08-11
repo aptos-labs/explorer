@@ -10,15 +10,14 @@ export const networks = {
 export type NetworkName = keyof typeof networks;
 
 // Remove trailing slashes
-for (let key of Object.keys(networks)) {
-  if (networks[key as keyof typeof networks].endsWith("/")) {
-    networks[key as keyof typeof networks] = networks[
-      key as keyof typeof networks
-    ].slice(0, -1);
+for (const key of Object.keys(networks)) {
+  const networkName = key as NetworkName;
+  if (networks[networkName].endsWith("/")) {
+    networks[networkName] = networks[networkName].slice(0, -1);
   }
 }
 
-export const defaultNetworkName = "devnet" as const;
+export const defaultNetworkName: NetworkName = "devnet" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;

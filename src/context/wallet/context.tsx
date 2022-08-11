@@ -24,7 +24,7 @@ export const useWalletContext = () => {
 
 export type WalletNetworks = "Devnet" | "Localhost" | "Testnet";
 
-export const walletExplorertNetworkMap = (
+export const walletExplorerNetworkMap = (
   walletNetwork: WalletNetworks,
 ): NetworkName => {
   switch (walletNetwork) {
