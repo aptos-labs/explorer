@@ -1,6 +1,6 @@
 import {createContext, useContext} from "react";
 import {NetworkName} from "../../constants";
-import { assertNever } from "../../utils";
+import {assertNever} from "../../utils";
 
 export interface walletContext {
   isInstalled: boolean;

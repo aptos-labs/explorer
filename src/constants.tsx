@@ -12,7 +12,9 @@ export type NetworkName = keyof typeof networks;
 // Remove trailing slashes
 for (let key of Object.keys(networks)) {
   if (networks[key as keyof typeof networks].endsWith("/")) {
-    networks[key as keyof typeof networks] = networks[key as keyof typeof networks].slice(0, -1);
+    networks[key as keyof typeof networks] = networks[
+      key as keyof typeof networks
+    ].slice(0, -1);
   }
 }
 
