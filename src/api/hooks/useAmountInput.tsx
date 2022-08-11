@@ -24,7 +24,7 @@ const useAmountInput = () => {
     setAmount("");
   }
 
-  function renderAmountTextField(label: string) {
+  function renderAmountTextField(label: string): JSX.Element {
     return (
       <AmountTextField
         label={label}

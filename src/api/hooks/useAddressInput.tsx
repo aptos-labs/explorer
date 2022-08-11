@@ -18,7 +18,7 @@ const useAddressInput = () => {
     setAddr("");
   }
 
-  function renderAddressTextField(label: string) {
+  function renderAddressTextField(label: string): JSX.Element {
     return (
       <AddressTextField
         label={label}

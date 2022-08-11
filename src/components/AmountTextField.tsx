@@ -19,7 +19,7 @@ export default function AmountTextField({
   amount,
   amountIsValid,
   onAmountChange,
-}: AmountTextFieldProps) {
+}: AmountTextFieldProps): JSX.Element {
   return amountIsValid ? (
     <FormControl fullWidth>
       <InputLabel htmlFor="outlined-adornment-amount">{label}</InputLabel>

@@ -13,7 +13,7 @@ export default function AddressTextField({
   addr,
   addrIsValid,
   onAddrChange,
-}: AddressTextFieldProps) {
+}: AddressTextFieldProps): JSX.Element {
   return addrIsValid ? (
     <TextField
       fullWidth
