@@ -1,4 +1,4 @@
-import {Button, Stack, Snackbar, Alert, IconButton, Box} from "@mui/material";
+import {Button, Stack} from "@mui/material";
 import React, {useState, useEffect} from "react";
 import useSubmitVote from "../../hooks/useSubmitVote";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
@@ -11,9 +11,8 @@ import {
   voteFor,
   voteAgainst,
 } from "../../constants";
-import CloseIcon from "@mui/icons-material/Close";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import ConfirmationModal from "./ConfirmationModal";
+import TransactionResponseSnackbar from "../../components/snackbar/TransactionResponseSnackbar";
 import {
   TransactionResponseOnFailure,
   TransactionResponseOnSuccess,
@@ -72,78 +71,9 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
     submitVote(parseInt(proposalId), shouldPass, accountAddr);
   };
 
-  const refreshPage = () => {
-    window.location.reload();
-  };
-
-  const onCloseErrorAlert = () => {
+  const onCloseSnackbar = () => {
     clearTransactionResponse();
   };
-
-  const voteOnSuccessSnackbarAction = (
-    <Box alignSelf="center" marginRight={1.5}>
-      <Button
-        variant="outlined"
-        color="inherit"
-        size="large"
-        onClick={refreshPage}
-        endIcon={<RefreshIcon />}
-      >
-        Refresh
-      </Button>
-    </Box>
-  );
-
-  const voteOnSuccessSnackbar = transactionResponse !== null && (
-    <Snackbar
-      open={transactionResponse.succeeded}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "center",
-      }}
-    >
-      <Alert
-        variant="filled"
-        severity="success"
-        action={voteOnSuccessSnackbarAction}
-      >
-        {`Vote succeeded with transaction ${
-          (transactionResponse as TransactionResponseOnSuccess).transactionHash
-        }. Please refresh to see your vote.`}
-      </Alert>
-    </Snackbar>
-  );
-
-  const voteOnFailureSnackbarAction = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={onCloseErrorAlert}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
-
-  const voteOnFailureSnackbar = transactionResponse !== null && (
-    <Snackbar
-      open={!transactionResponse.succeeded}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "center",
-      }}
-    >
-      <Alert
-        variant="filled"
-        severity="error"
-        action={voteOnFailureSnackbarAction}
-      >
-        {`Vote failed with error message "${
-          (transactionResponse as TransactionResponseOnFailure).message
-        }". Please try again.`}
-      </Alert>
-    </Snackbar>
-  );
 
   return (
     <>
@@ -182,8 +112,11 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
           {voteAgainst}
         </Button>
       </Stack>
-      {voteOnSuccessSnackbar}
-      {voteOnFailureSnackbar}
+      <TransactionResponseSnackbar
+        transactionResponse={transactionResponse}
+        onCloseSnackbar={onCloseSnackbar}
+        refreshOnSuccess={true}
+      />
       <ConfirmationModal
         open={voteForModalIsOpen}
         shouldPass={true}
