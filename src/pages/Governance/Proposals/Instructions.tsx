@@ -28,23 +28,31 @@ export function Instructions({onVoteProposalButtonClick}: InstructionsProps) {
 
   const CardBox = ({children, title, content}: CardBoxProps): JSX.Element => {
     return (
-      <Box
-        minHeight={400}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-evenly",
-        }}
-      >
-        <Typography variant="h6" sx={{color: "#1de9b6"}}>
-          {title}
-        </Typography>
-        <Divider
-          variant={theme.palette.mode === "dark" ? "bumpDark" : "bump"}
-        />
-        <Typography variant="body1">{content}</Typography>
-        {children}
-      </Box>
+      <Card>
+        <Box
+          minHeight={280}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            margin: 1,
+          }}
+        >
+          <Box>
+            <Typography variant="h6" sx={{color: "#1de9b6"}}>
+              {title}
+            </Typography>
+            <Divider
+              variant={theme.palette.mode === "dark" ? "bumpDark" : "bump"}
+              sx={{mt: 2}}
+            />
+          </Box>
+          <Typography variant="body1" marginBottom={2}>
+            {content}
+          </Typography>
+          {children}
+        </Box>
+      </Card>
     );
   };
 
@@ -70,7 +78,7 @@ export function Instructions({onVoteProposalButtonClick}: InstructionsProps) {
             sx={{cursor: "default"}}
             disabled={!isInstalled}
           >
-            create an account
+            Create an Account
           </Button>
         </span>
       </Tooltip>
@@ -79,57 +87,47 @@ export function Instructions({onVoteProposalButtonClick}: InstructionsProps) {
 
   return (
     <Grid mb={12}>
-      <Typography variant="h4" marginBottom={1} textAlign="center">
+      <Typography variant="h4" marginBottom={4} textAlign="center">
         Let's Get Started
       </Typography>
-      <Grid container marginTop={4} spacing={6} justifyContent="center">
-        <Grid item sm={3}>
-          <Card>
-            <CardBox
-              title="01/ Install"
-              content="Download and Install the Aptos Wallet on Chrome"
+      <Grid container spacing={6} justifyContent="center">
+        <Grid item sm={4} lg={3}>
+          <CardBox
+            title="01/ Install"
+            content="Download and Install Petra (Aptos Wallet) on Chrome"
+          >
+            <Button
+              component={Link}
+              href="https://aptos.dev/guides/building-wallet-extension"
+              target="_blank"
+              variant="primary"
+              disabled={isInstalled}
             >
-              <Button
-                component={Link}
-                href="https://aptos.dev/guides/building-wallet-extension"
-                target="_blank"
-                variant="primary"
-                disabled={isInstalled}
-              >
-                Install Wallet
-              </Button>
-            </CardBox>
-          </Card>
+              Install Wallet
+            </Button>
+          </CardBox>
         </Grid>
-        <Grid item sm={3}>
-          <Card>
-            <CardBox
-              title="02/ Connect"
-              content="Connect your Aptos wallet to enable voting"
-            >
-              {isAccountSet ? (
-                <ConnectWalletButton />
-              ) : (
-                <CreateAnAccountButton />
-              )}
-            </CardBox>
-          </Card>
+        <Grid item sm={4} lg={3}>
+          <CardBox
+            title="02/ Connect"
+            content="Connect your wallet to begin voting"
+          >
+            {isAccountSet ? <ConnectWalletButton /> : <CreateAnAccountButton />}
+          </CardBox>
         </Grid>
-        <Grid item sm={3}>
-          <Card>
-            <CardBox
-              title="03/ Vote"
-              content="Vote on a Proposal dolor sit amet, consectetur commodo."
+        <Grid item sm={4} lg={3}>
+          <CardBox
+            title="03/ Vote"
+            content="Vote on a Proposal. You can vote on multiple proposals."
+          >
+            <Button
+              variant="primary"
+              onClick={onVoteProposalButtonClick}
+              disabled={!isConnected}
             >
-              <Button
-                variant="primary"
-                onClick={onVoteProposalButtonClick}
-                disabled={!isConnected}
-              >
-                Vote on a Proposal
-              </Button>
-            </CardBox>
-          </Card>
+              Vote On Proposals
+            </Button>
+          </CardBox>
         </Grid>
       </Grid>
     </Grid>
