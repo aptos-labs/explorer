@@ -91,7 +91,7 @@ export function StakePage() {
           <Grid item xs={12}>
             <FormControl fullWidth>
               {submitDisabled ? (
-                <Tooltip title="Please connect you wallet" arrow>
+                <Tooltip title="Please connect your wallet" arrow>
                   {submitButton}
                 </Tooltip>
               ) : (
