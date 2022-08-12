@@ -1,21 +1,10 @@
 import React, {useEffect} from "react";
-import {
-  Grid,
-  Button,
-  FormControl,
-  Snackbar,
-  Alert,
-  IconButton,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import {Header} from "../Header";
+import {Grid, Button, FormControl} from "@mui/material";
+import {Header} from "../components/Header";
 import useSubmitStake from "../hooks/useSubmitStake";
-import {
-  TransactionResponseOnFailure,
-  TransactionResponseOnSuccess,
-} from "../../../api/hooks/useSubmitTransaction";
 import useAddressInput from "../../../api/hooks/useAddressInput";
 import useAmountInput from "../../../api/hooks/useAmountInput";
+import TransactionResponseSnackbar from "../components/snackbar/TransactionResponseSnackbar";
 
 export function StakePage() {
   const {
@@ -52,84 +41,24 @@ export function StakePage() {
     }
   };
 
-  const onCloseErrorAlert = () => {
+  const onCloseSnackbar = () => {
     clearTransactionResponse();
   };
 
   useEffect(() => {
-    if (transactionResponse?.succeeded) {
+    if (transactionResponse?.transactionSubmitted) {
       clearStakingAmount();
       clearOperatorAddr();
       clearVoterAddr();
     }
   }, [transactionResponse]);
 
-  const stakeOnSuccessSnackbarAction = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={onCloseErrorAlert}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
-
-  const stakeOnSuccessSnackbar = transactionResponse !== null && (
-    <Snackbar
-      open={transactionResponse.succeeded}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "center",
-      }}
-    >
-      <Alert
-        variant="filled"
-        severity="success"
-        action={stakeOnSuccessSnackbarAction}
-      >
-        {`Stake succeeded with transaction ${
-          (transactionResponse as TransactionResponseOnSuccess).transactionHash
-        }.`}
-      </Alert>
-    </Snackbar>
-  );
-
-  const stakeOnFailureSnackbarAction = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={onCloseErrorAlert}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
-
-  const stakeOnFailureSnackbar = transactionResponse !== null && (
-    <Snackbar
-      open={!transactionResponse.succeeded}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "center",
-      }}
-    >
-      <Alert
-        variant="filled"
-        severity="error"
-        action={stakeOnFailureSnackbarAction}
-      >
-        {`Stake failed with error message "${
-          (transactionResponse as TransactionResponseOnFailure).message
-        }". Please try again.`}
-      </Alert>
-    </Snackbar>
-  );
-
   return (
     <>
-      {stakeOnSuccessSnackbar}
-      {stakeOnFailureSnackbar}
+      <TransactionResponseSnackbar
+        transactionResponse={transactionResponse}
+        onCloseSnackbar={onCloseSnackbar}
+      />
       <Grid>
         <Header />
         <Grid container spacing={4}>

@@ -6,7 +6,7 @@ import {ProposalContent} from "./Content";
 import {useParams} from "react-router-dom";
 import {useGetProposal} from "../hooks/useGetProposal";
 import {EmptyProposal} from "./EmptyProposal";
-import {Header} from "../Header";
+import {Header} from "../components/Header";
 
 export type ProposalPageURLParams = {
   id: string;

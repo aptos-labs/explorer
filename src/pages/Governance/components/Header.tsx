@@ -1,8 +1,8 @@
 import {Grid, Typography} from "@mui/material";
 import React from "react";
-import DividerHero from "../../components/DividerHero";
-import HeadingSub from "../../components/HeadingSub";
-import {WalletButton} from "../../components/WalletButton";
+import DividerHero from "../../../components/DividerHero";
+import HeadingSub from "../../../components/HeadingSub";
+import {WalletButton} from "../../../components/WalletButton";
 
 export function Header() {
   return (
