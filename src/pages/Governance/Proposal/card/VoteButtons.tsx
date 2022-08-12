@@ -13,10 +13,6 @@ import {
 } from "../../constants";
 import ConfirmationModal from "./ConfirmationModal";
 import TransactionResponseSnackbar from "../../components/snackbar/TransactionResponseSnackbar";
-import {
-  TransactionResponseOnFailure,
-  TransactionResponseOnSuccess,
-} from "../../../../api/hooks/useSubmitTransaction";
 import useAddressInput from "../../../../api/hooks/useAddressInput";
 
 // TODO:
@@ -63,10 +59,6 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
     setVoteForModalIsOpen(false);
   };
 
-  const openVoteAgainstModal = () => {
-    setVoteAgainstModalIsOpen(true);
-  };
-
   const closeVoteAgainstModal = () => {
     setVoteAgainstModalIsOpen(false);
   };
@@ -95,7 +87,7 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
             },
           }}
           startIcon={<CheckCircleOutlinedIcon />}
-          onClick={openVoteForModal}
+          onClick={() => openModal(true)}
         >
           {voteFor}
         </Button>
@@ -111,7 +103,7 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
             },
           }}
           startIcon={<CancelOutlinedIcon />}
-          onClick={openVoteAgainstModal}
+          onClick={() => openModal(false)}
         >
           {voteAgainst}
         </Button>

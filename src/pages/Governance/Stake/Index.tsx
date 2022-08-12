@@ -1,14 +1,9 @@
 import React, {useEffect} from "react";
-import {Grid, Button, FormControl, InputLabel} from "@mui/material";
+import {Grid, Button, FormControl} from "@mui/material";
 import {Header} from "../components/Header";
 import useSubmitStake from "../hooks/useSubmitStake";
-import {
-  TransactionResponseOnError,
-  TransactionResponseOnSubmission,
-} from "../../../api/hooks/useSubmitTransaction";
 import useAddressInput from "../../../api/hooks/useAddressInput";
 import useAmountInput from "../../../api/hooks/useAmountInput";
-import {isValidAccountAddress} from "../../utils";
 import TransactionResponseSnackbar from "../components/snackbar/TransactionResponseSnackbar";
 
 export function StakePage() {

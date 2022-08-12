@@ -27,7 +27,7 @@ export type TransactionResponseOnError = {
 const useSubmitTransaction = () => {
   const [transactionResponse, setTransactionResponse] =
     useState<TransactionResponse | null>(null);
-    const [state, _] = useGlobalState();
+  const [state, _] = useGlobalState();
   const {walletNetwork} = useWalletContext();
   const client = new AptosClient(state.network_value);
 
