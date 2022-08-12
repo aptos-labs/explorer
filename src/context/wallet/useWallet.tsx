@@ -19,12 +19,12 @@ export function useWallet() {
 
   useEffect(() => {
     setAptosWallet(getAptosWallet());
-    getWalletNetwork().then(setWalletNetwork);
   }, []);
 
   useEffect(() => {
     isAccountCreated().then(setIsAccountSet);
     isWalletConnected().then(setIsConnected);
+    getWalletNetwork().then(setWalletNetwork);
   }, [isInstalled, accountAddress, isAccountSet]);
 
   useEffect(() => {
