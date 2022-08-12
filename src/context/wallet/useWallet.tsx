@@ -19,6 +19,7 @@ export function useWallet() {
 
   useEffect(() => {
     setAptosWallet(getAptosWallet());
+    getWalletNetwork().then(setWalletNetwork);
   }, []);
 
   useEffect(() => {
@@ -47,7 +48,6 @@ export function useWallet() {
   useEffect(() => {
     if (isConnected) {
       getAccountAddress().then(setAccountAddress);
-      getWalletNetwork().then((network) => setWalletNetwork(network));
     }
   }, [isConnected]);
 
