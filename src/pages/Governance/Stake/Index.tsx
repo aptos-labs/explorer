@@ -1,12 +1,15 @@
 import React, {useEffect} from "react";
-import {Grid, Button, FormControl} from "@mui/material";
+import {Grid, Button, FormControl, Tooltip} from "@mui/material";
 import {Header} from "../components/Header";
+import {useWalletContext} from "../../../context/wallet/context";
 import useSubmitStake from "../hooks/useSubmitStake";
 import useAddressInput from "../../../api/hooks/useAddressInput";
 import useAmountInput from "../../../api/hooks/useAmountInput";
 import TransactionResponseSnackbar from "../components/snackbar/TransactionResponseSnackbar";
 
 export function StakePage() {
+  const {isConnected: isWalletConnected} = useWalletContext();
+
   const {
     amount: stakingAmount,
     clearAmount: clearStakingAmount,
@@ -53,6 +56,20 @@ export function StakePage() {
     }
   }, [transactionResponse]);
 
+  const submitDisabled = !isWalletConnected;
+  const submitButton = (
+    <span>
+      <Button
+        fullWidth
+        variant="primary"
+        disabled={submitDisabled}
+        onClick={onSubmitClick}
+      >
+        Submit
+      </Button>
+    </span>
+  );
+
   return (
     <>
       <TransactionResponseSnackbar
@@ -73,9 +90,13 @@ export function StakePage() {
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
-              <Button variant="primary" onClick={onSubmitClick}>
-                Submit
-              </Button>
+              {submitDisabled ? (
+                <Tooltip title="Please connect you wallet" arrow>
+                  {submitButton}
+                </Tooltip>
+              ) : (
+                submitButton
+              )}
             </FormControl>
           </Grid>
         </Grid>
