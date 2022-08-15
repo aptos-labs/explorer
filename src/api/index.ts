@@ -60,16 +60,16 @@ export function getTransaction(
   if (isHex(txnHashOrVersion as string)) {
     return getTransactionByHash(txnHashOrVersion as string, nodeUrl);
   } else {
-    return getTransactionByVersion(BigInt(txnHashOrVersion), nodeUrl);
+    return getTransactionByVersion(txnHashOrVersion as number, nodeUrl);
   }
 }
 
 function getTransactionByVersion(
-  version: bigint,
+  version: number,
   nodeUrl: string,
 ): Promise<Types.Transaction> {
   const client = new AptosClient(nodeUrl);
-  return withResponseError(client.getTransactionByVersion(version));
+  return withResponseError(client.getTransactionByVersion(BigInt(version)));
 }
 
 function getTransactionByHash(
@@ -95,21 +95,33 @@ export function getAccount(
 }
 
 export function getAccountResources(
-  requestParameters: {address: string; ledgerVersion?: BigInt},
+  requestParameters: {address: string; ledgerVersion?: number},
   nodeUrl: string,
 ): Promise<Types.MoveResource[]> {
   const client = new AptosClient(nodeUrl);
-  const {address, ...rest} = requestParameters;
-  return withResponseError(client.getAccountResources(address, rest));
+  const {address, ledgerVersion} = requestParameters;
+  let ledgerVersionBig;
+  if (ledgerVersion) {
+    ledgerVersionBig = BigInt(ledgerVersion);
+  }
+  return withResponseError(
+    client.getAccountResources(address, {ledgerVersion: ledgerVersionBig}),
+  );
 }
 
 export function getAccountModules(
-  requestParameters: {address: string; ledgerVersion?: BigInt},
+  requestParameters: {address: string; ledgerVersion?: number},
   nodeUrl: string,
 ): Promise<Types.MoveModuleBytecode[]> {
   const client = new AptosClient(nodeUrl);
-  const {address, ...rest} = requestParameters;
-  return withResponseError(client.getAccountModules(address, rest));
+  const {address, ledgerVersion} = requestParameters;
+  let ledgerVersionBig;
+  if (ledgerVersion) {
+    ledgerVersionBig = BigInt(ledgerVersion);
+  }
+  return withResponseError(
+    client.getAccountModules(address, {ledgerVersion: ledgerVersionBig}),
+  );
 }
 
 export function getTableItem(
