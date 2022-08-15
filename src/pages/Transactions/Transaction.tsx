@@ -233,7 +233,9 @@ function RenderChanges(transaction: Types.Transaction): React.ReactNode {
   );
 }
 
-function renderGenesisTransaction(transaction: Types.Transaction_GenesisTransaction) {
+function renderGenesisTransaction(
+  transaction: Types.Transaction_GenesisTransaction,
+) {
   return (
     <>
       {RenderHeader(
@@ -319,7 +321,9 @@ function renderUserTransaction(transaction: Types.Transaction_UserTransaction) {
   );
 }
 
-function renderPendingTransaction(transaction: Types.Transaction_PendingTransaction) {
+function renderPendingTransaction(
+  transaction: Types.Transaction_PendingTransaction,
+) {
   return (
     <>
       {RenderHeader(
@@ -460,7 +464,9 @@ function RenderTransaction({
       );
       break;
     case "user_transaction":
-      result = renderUserTransaction(transaction as Types.Transaction_UserTransaction);
+      result = renderUserTransaction(
+        transaction as Types.Transaction_UserTransaction,
+      );
       break;
     case "pending_transaction":
       result = renderPendingTransaction(

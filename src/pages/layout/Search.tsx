@@ -14,7 +14,7 @@ import {useTheme} from "@mui/material/styles";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormControl, {useFormControl} from "@mui/material/FormControl";
 import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
-import { isHex } from "../utils";
+import {isHex} from "../utils";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 

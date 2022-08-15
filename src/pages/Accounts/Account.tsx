@@ -269,9 +269,11 @@ export default function AccountPage() {
   >(["accountResources", {address}, state.network_value], () =>
     getAccountResources({address}, state.network_value),
   );
-  const accountModulesResult = useQuery<Array<Types.MoveModuleBytecode>, ResponseError>(
-    ["accountModules", {address}, state.network_value],
-    () => getAccountModules({address}, state.network_value),
+  const accountModulesResult = useQuery<
+    Array<Types.MoveModuleBytecode>,
+    ResponseError
+  >(["accountModules", {address}, state.network_value], () =>
+    getAccountModules({address}, state.network_value),
   );
   const accountTransactionsResult = useQuery<
     Array<Types.Transaction>,
