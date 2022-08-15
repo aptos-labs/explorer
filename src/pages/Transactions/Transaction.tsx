@@ -245,7 +245,7 @@ function renderGenesisTransaction(
           spacing={2}
           divider={<Divider variant="dotted" orientation="horizontal" />}
         >
-          {renderRow("Type:", transaction.type)}
+          {renderRow("Type:", renderTransactionType(transaction.type))}
           {renderRow("Version:", transaction.version)}
           {renderRow("Hash:", transaction.hash)}
           {renderRow("Status:", renderSuccess(transaction.success))}

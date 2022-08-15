@@ -28,13 +28,17 @@ export async function getTransactions(
 }
 
 export async function getAccountTransactions(
-  requestParameters: {address: string; start?: bigint; limit?: number},
+  requestParameters: {address: string; start?: number; limit?: number},
   nodeUrl: string,
 ): Promise<Types.Transaction[]> {
   const client = new AptosClient(nodeUrl);
-  const {address, ...rest} = requestParameters;
+  const {address, start, limit} = requestParameters;
+  let bigStart;
+  if (start && 0 <= start && start <= Number.MAX_SAFE_INTEGER) {
+    bigStart = BigInt(start);
+  }
   const transactions = await withResponseError(
-    client.getAccountTransactions(address, rest),
+    client.getAccountTransactions(address, {start: bigStart, limit}),
   );
 
   // Sort in descending order
@@ -49,14 +53,14 @@ export async function getAccountTransactions(
 }
 
 export function getTransaction(
-  requestParameters: {txnHashOrVersion: string | bigint},
+  requestParameters: {txnHashOrVersion: string | number},
   nodeUrl: string,
 ): Promise<Types.Transaction> {
   const {txnHashOrVersion} = requestParameters;
   if (isHex(txnHashOrVersion as string)) {
     return getTransactionByHash(txnHashOrVersion as string, nodeUrl);
   } else {
-    return getTransactionByVersion(txnHashOrVersion as bigint, nodeUrl);
+    return getTransactionByVersion(BigInt(txnHashOrVersion), nodeUrl);
   }
 }
 

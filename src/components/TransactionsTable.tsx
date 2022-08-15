@@ -57,7 +57,7 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
     <TableCell sx={{textAlign: "left"}}>
       <Link
         component={RRD.Link}
-        to={`/txn/${(transaction as any).version}`}
+        to={`/txn/${"version" in transaction && transaction.version}`}
         color="primary"
         underline="none"
       >
@@ -112,7 +112,7 @@ function TransactionRow({transaction, columns}: TransactionRowProps) {
   const navigate = useNavigate();
 
   const rowClick = () => {
-    navigate(`/txn/${(transaction as any).version}`);
+    navigate(`/txn/${"version" in transaction && transaction.version}`);
   };
 
   return (
