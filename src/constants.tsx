@@ -5,6 +5,7 @@ export const networks = {
   local: "http://localhost:8080",
   devnet: devnetUrl,
   test: "https://rosetta.aptosdev.com/",
+  test2: "https://sherryx.aptosdev.com/"
 };
 
 export type NetworkName = keyof typeof networks;
