@@ -213,7 +213,7 @@ function RenderChanges(transaction: Types.Transaction): React.ReactNode {
     <>
       {
         <Stack spacing={6} divider={<Divider orientation="horizontal" />}>
-          {(transaction as any).changes.map((change: any, index: any) => (
+          {"changes" in transaction && transaction.changes.map((change, index) => (
             <Stack
               key={index}
               spacing={1}
@@ -244,7 +244,7 @@ function renderGenesisTransaction(
           spacing={2}
           divider={<Divider variant="dotted" orientation="horizontal" />}
         >
-          {renderRow("Type:", renderTransactionType((transaction as any).type))}
+          {renderRow("Type:", transaction.type)}
           {renderRow("Version:", transaction.version)}
           {renderRow("Hash:", transaction.hash)}
           {renderRow("Status:", renderSuccess(transaction.success))}
@@ -295,7 +295,6 @@ function renderUserTransaction(transaction: Types.Transaction_UserTransaction) {
           {renderRow("Gas Used:", renderGas(transaction.gas_used))}
           {renderRow("Max Gas:", renderGas(transaction.max_gas_amount))}
           {renderRow("Gas Unit Price:", renderGas(transaction.gas_unit_price))}
-          {renderRow("Gas Currency:", (transaction as any).gas_currency_code)}
           {renderRow("VM Status:", transaction.vm_status)}
           {renderRow("Signature:", renderDebug(transaction.signature))}
           {renderRow(
@@ -351,7 +350,6 @@ function renderPendingTransaction(
           {renderRow("Hash:", transaction.hash)}
           {renderRow("Max Gas:", renderGas(transaction.max_gas_amount))}
           {renderRow("Gas Unit Price:", renderGas(transaction.gas_unit_price))}
-          {renderRow("Gas Currency:", (transaction as any).gas_currency_code)}
           {renderRow("Signature:", renderDebug(transaction.signature))}
         </Stack>,
       )}
@@ -386,8 +384,6 @@ function renderStateCheckpointTransaction(
           {renderRow("Version:", transaction.version)}
           {renderRow("Hash:", transaction.hash)}
           {renderRow("Status:", renderSuccess(transaction.success))}
-          {/* {"proposer" in transaction &&
-            renderRow("Proposer:", transaction.proposer)} */}
           {renderRow("State Root Hash:", transaction.state_root_hash)}
           {renderRow("Event Root Hash:", transaction.event_root_hash)}
           {renderRow("Gas Used:", renderGas(transaction.gas_used))}
@@ -474,7 +470,7 @@ function RenderTransaction({
       );
       break;
     case "state_checkpoint_transaction":
-      result = renderStateCheckpointTransaction(transaction as any);
+      result = renderStateCheckpointTransaction(transaction as Types.Transaction_StateCheckpointTransaction);
       break;
     default:
       result = (
