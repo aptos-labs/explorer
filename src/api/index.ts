@@ -3,17 +3,25 @@ import {isHex} from "../pages/utils";
 import {withResponseError} from "./client";
 
 export async function getTransactions(
-  requestParameters: {start?: bigint; limit?: number},
+  requestParameters: {start?: number; limit?: number},
   nodeUrl: string,
 ): Promise<Types.Transaction[]> {
   const client = new AptosClient(nodeUrl);
+  const {start, limit} = requestParameters;
+  let bigStart;
+  if (start && 0 <= start && start <= Number.MAX_SAFE_INTEGER) {
+    bigStart = BigInt(start);
+  }
   const transactions = await withResponseError(
-    client.getTransactions(requestParameters),
+    client.getTransactions({start: bigStart, limit}),
   );
 
   // Sort in descending order
   transactions.sort((a, b) =>
-    parseInt((a as any).version) < parseInt((b as any).version) ? 1 : -1,
+    ("version" in a && parseInt(a.version)) <
+    ("version" in b && parseInt(b.version))
+      ? 1
+      : -1,
   );
 
   return transactions;
@@ -31,7 +39,10 @@ export async function getAccountTransactions(
 
   // Sort in descending order
   transactions.sort((a, b) =>
-    parseInt((a as any).version) < parseInt((b as any).version) ? 1 : -1,
+    ("version" in a && parseInt(a.version)) <
+    ("version" in b && parseInt(b.version))
+      ? 1
+      : -1,
   );
 
   return transactions;
