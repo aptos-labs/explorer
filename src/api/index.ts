@@ -1,5 +1,6 @@
 import {AptosClient, Types} from "aptos";
 import {isHex} from "../pages/utils";
+import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
 
 export async function getTransactions(
@@ -9,7 +10,7 @@ export async function getTransactions(
   const client = new AptosClient(nodeUrl);
   const {start, limit} = requestParameters;
   let bigStart;
-  if (start && 0 <= start && start <= Number.MAX_SAFE_INTEGER) {
+  if (start) {
     bigStart = BigInt(start);
   }
   const transactions = await withResponseError(
@@ -17,12 +18,7 @@ export async function getTransactions(
   );
 
   // Sort in descending order
-  transactions.sort((a, b) =>
-    ("version" in a && parseInt(a.version)) <
-    ("version" in b && parseInt(b.version))
-      ? 1
-      : -1,
-  );
+  transactions.sort(sortTransactions);
 
   return transactions;
 }
@@ -34,7 +30,7 @@ export async function getAccountTransactions(
   const client = new AptosClient(nodeUrl);
   const {address, start, limit} = requestParameters;
   let bigStart;
-  if (start && 0 <= start && start <= Number.MAX_SAFE_INTEGER) {
+  if (start) {
     bigStart = BigInt(start);
   }
   const transactions = await withResponseError(
@@ -42,12 +38,7 @@ export async function getAccountTransactions(
   );
 
   // Sort in descending order
-  transactions.sort((a, b) =>
-    ("version" in a && parseInt(a.version)) <
-    ("version" in b && parseInt(b.version))
-      ? 1
-      : -1,
-  );
+  transactions.sort(sortTransactions);
 
   return transactions;
 }

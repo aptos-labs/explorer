@@ -367,7 +367,6 @@ function renderPendingTransaction(
   );
 }
 
-// TODO: Update type to StateCheckpointTransaction when it's added to the SDK.
 function renderStateCheckpointTransaction(
   transaction: Types.Transaction_StateCheckpointTransaction,
 ) {
