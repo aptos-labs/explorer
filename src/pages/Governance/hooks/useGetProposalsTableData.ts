@@ -20,7 +20,7 @@ export function useGetProposalsTableData(): useGetProposalsTableData | null {
   const [state, _setState] = useGlobalState();
 
   const accountResourcesResult = useQuery<
-    Array<Types.AccountResource>,
+    Array<Types.MoveResource>,
     ResponseError
   >(["accountResources", {address: "0x1"}, state.network_value], () =>
     getAccountResources({address: "0x1"}, state.network_value),

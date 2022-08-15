@@ -1,10 +1,11 @@
 import {AptosClient, Types} from "aptos";
+import {isHex} from "../pages/utils";
 import {withResponseError} from "./client";
 
 export async function getTransactions(
-  requestParameters: {start?: number; limit?: number},
+  requestParameters: {start?: bigint; limit?: number},
   nodeUrl: string,
-): Promise<Types.OnChainTransaction[]> {
+): Promise<Types.Transaction[]> {
   const client = new AptosClient(nodeUrl);
   const transactions = await withResponseError(
     client.getTransactions(requestParameters),
@@ -12,16 +13,16 @@ export async function getTransactions(
 
   // Sort in descending order
   transactions.sort((a, b) =>
-    parseInt(a.version) < parseInt(b.version) ? 1 : -1,
+    parseInt((a as any).version) < parseInt((b as any).version) ? 1 : -1,
   );
 
   return transactions;
 }
 
 export async function getAccountTransactions(
-  requestParameters: {address: string; start?: number; limit?: number},
+  requestParameters: {address: string; start?: bigint; limit?: number},
   nodeUrl: string,
-): Promise<Types.OnChainTransaction[]> {
+): Promise<Types.Transaction[]> {
   const client = new AptosClient(nodeUrl);
   const {address, ...rest} = requestParameters;
   const transactions = await withResponseError(
@@ -30,7 +31,7 @@ export async function getAccountTransactions(
 
   // Sort in descending order
   transactions.sort((a, b) =>
-    parseInt(a.version) < parseInt(b.version) ? 1 : -1,
+    parseInt((a as any).version) < parseInt((b as any).version) ? 1 : -1,
   );
 
   return transactions;
@@ -40,12 +41,31 @@ export function getTransaction(
   requestParameters: {txnHashOrVersion: string},
   nodeUrl: string,
 ): Promise<Types.Transaction> {
-  const client = new AptosClient(nodeUrl);
   const {txnHashOrVersion} = requestParameters;
-  return withResponseError(client.getTransaction(txnHashOrVersion));
+  if (isHex(txnHashOrVersion)) {
+    return getTransactionByHash(txnHashOrVersion, nodeUrl);
+  } else {
+    return getTransactionByVersion(BigInt(txnHashOrVersion), nodeUrl);
+  }
 }
 
-export function getLedgerInfo(nodeUrl: string): Promise<Types.LedgerInfo> {
+function getTransactionByVersion(
+  version: bigint,
+  nodeUrl: string,
+): Promise<Types.Transaction> {
+  const client = new AptosClient(nodeUrl);
+  return withResponseError(client.getTransactionByVersion(version));
+}
+
+function getTransactionByHash(
+  hash: string,
+  nodeUrl: string,
+): Promise<Types.Transaction> {
+  const client = new AptosClient(nodeUrl);
+  return withResponseError(client.getTransactionByHash(hash));
+}
+
+export function getLedgerInfo(nodeUrl: string): Promise<Types.IndexResponse> {
   const client = new AptosClient(nodeUrl);
   return withResponseError(client.getLedgerInfo());
 }
@@ -53,25 +73,25 @@ export function getLedgerInfo(nodeUrl: string): Promise<Types.LedgerInfo> {
 export function getAccount(
   requestParameters: {address: string},
   nodeUrl: string,
-): Promise<Types.Account> {
+): Promise<Types.AccountData> {
   const client = new AptosClient(nodeUrl);
   const {address} = requestParameters;
   return withResponseError(client.getAccount(address));
 }
 
 export function getAccountResources(
-  requestParameters: {address: string; version?: Types.LedgerVersion},
+  requestParameters: {address: string; ledgerVersion?: BigInt},
   nodeUrl: string,
-): Promise<Types.AccountResource[]> {
+): Promise<Types.MoveResource[]> {
   const client = new AptosClient(nodeUrl);
   const {address, ...rest} = requestParameters;
   return withResponseError(client.getAccountResources(address, rest));
 }
 
 export function getAccountModules(
-  requestParameters: {address: string; version?: Types.LedgerVersion},
+  requestParameters: {address: string; ledgerVersion?: BigInt},
   nodeUrl: string,
-): Promise<Types.MoveModule[]> {
+): Promise<Types.MoveModuleBytecode[]> {
   const client = new AptosClient(nodeUrl);
   const {address, ...rest} = requestParameters;
   return withResponseError(client.getAccountModules(address, rest));
