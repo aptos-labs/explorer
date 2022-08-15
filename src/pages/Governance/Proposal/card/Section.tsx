@@ -9,7 +9,7 @@ type SectionProps = {
 export default function Section({title, children}: SectionProps) {
   return (
     <Box>
-      <Typography variant="h5" marginBottom={1}>
+      <Typography variant="h5" marginBottom={1.5}>
         {title}
       </Typography>
       {children}

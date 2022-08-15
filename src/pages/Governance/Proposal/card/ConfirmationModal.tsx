@@ -162,12 +162,14 @@ export default function ConfirmationModal({
 
   return (
     <Modal open={open} onClose={onClose}>
-      <CardBox theme={theme}>
-        {titleComponent}
-        <Divider />
-        {contentComponent}
-        {buttonsComponent}
-      </CardBox>
+      <>
+        <CardBox theme={theme}>
+          {titleComponent}
+          <Divider />
+          {contentComponent}
+          {buttonsComponent}
+        </CardBox>
+      </>
     </Modal>
   );
 }

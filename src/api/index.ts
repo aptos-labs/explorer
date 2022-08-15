@@ -1,5 +1,5 @@
 import {AptosClient, Types} from "aptos";
-import { isHex } from "../pages/utils";
+import {isHex} from "../pages/utils";
 import {withResponseError} from "./client";
 
 export async function getTransactions(
@@ -12,9 +12,9 @@ export async function getTransactions(
   );
 
   // Sort in descending order
-  // transactions.sort((a, b) =>
-  //   parseInt(a.hash) < parseInt(b.version) ? 1 : -1,
-  // );
+  transactions.sort((a, b) =>
+    parseInt((a as any).version) < parseInt((b as any).version) ? 1 : -1,
+  );
 
   return transactions;
 }
@@ -30,9 +30,9 @@ export async function getAccountTransactions(
   );
 
   // Sort in descending order
-  // transactions.sort((a, b) =>
-  //   parseInt(a.version) < parseInt(b.version) ? 1 : -1,
-  // );
+  transactions.sort((a, b) =>
+    parseInt((a as any).version) < parseInt((b as any).version) ? 1 : -1,
+  );
 
   return transactions;
 }
@@ -42,10 +42,10 @@ export function getTransaction(
   nodeUrl: string,
 ): Promise<Types.Transaction> {
   const {txnHashOrVersion} = requestParameters;
-  if(isHex(txnHashOrVersion)){
-    return getTransactionByHash(txnHashOrVersion, nodeUrl)
-  }else{
-    return getTransactionByVersion(BigInt(txnHashOrVersion), nodeUrl)
+  if (isHex(txnHashOrVersion)) {
+    return getTransactionByHash(txnHashOrVersion, nodeUrl);
+  } else {
+    return getTransactionByVersion(BigInt(txnHashOrVersion), nodeUrl);
   }
 }
 

@@ -28,17 +28,15 @@ export function useGetProposalsTableData(): useGetProposalsTableData | null {
 
   if (!accountResourcesResult.data) return null;
 
-  const votingForum = accountResourcesResult.data.filter((resource, i) => {
-    return (
-      resource.type.name ===
-      "VotingForum"
-    );
-  });
+  const votingForum = accountResourcesResult.data.find(
+    (resource) =>
+      resource.type ===
+      "0x1::voting::VotingForum<0x1::governance_proposal::GovernanceProposal>",
+  );
 
-  if (!votingForum[0].data) return null;
+  if (!votingForum || !votingForum.data) return null;
 
-  const votingForumData: votingForumData = votingForum[0]
-    .data as votingForumData;
+  const votingForumData: votingForumData = votingForum.data as votingForumData;
 
   const nextProposalId = votingForumData.next_proposal_id;
   const handle = votingForumData.proposals.handle;

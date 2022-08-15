@@ -1,105 +1,106 @@
-import React, {useState} from "react";
-import {
-  Grid,
-  TextField,
-  Button,
-  OutlinedInput,
-  InputAdornment,
-  FormControl,
-  InputLabel,
-} from "@mui/material";
-import {DateTimePicker} from "@mui/x-date-pickers/DateTimePicker";
-import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
-import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
-import {Header} from "../Header";
+import React, {useEffect} from "react";
+import {Grid, Button, FormControl, Tooltip} from "@mui/material";
+import {Header} from "../components/Header";
+import {useWalletContext} from "../../../context/wallet/context";
+import useSubmitStake from "../hooks/useSubmitStake";
+import useAddressInput from "../../../api/hooks/useAddressInput";
+import useAmountInput from "../../../api/hooks/useAmountInput";
+import TransactionResponseSnackbar from "../components/snackbar/TransactionResponseSnackbar";
 
 export function StakePage() {
-  const [stakingEndTime, setStakingEndTime] = useState<Date | null>(new Date());
-  const [stakingAmount, setStakingAmount] = useState<string>("");
-  const [operatorAddr, setOperatorAddr] = useState<string>("");
-  const [voterAddr, setVoterAddr] = useState<string>("");
+  const {isConnected: isWalletConnected} = useWalletContext();
 
-  const onStakingEndTimeChange = (newStakingEndTime: Date | null) => {
-    setStakingEndTime(newStakingEndTime);
-  };
+  const {
+    amount: stakingAmount,
+    clearAmount: clearStakingAmount,
+    renderAmountTextField: renderStakingAmountTextField,
+    validateAmountInput: validateStakingAmountInput,
+  } = useAmountInput();
 
-  const onStakingAmountChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setStakingAmount(event.target.value);
-  };
+  const {
+    addr: operatorAddr,
+    clearAddr: clearOperatorAddr,
+    renderAddressTextField: renderOperatorAddressTextField,
+    validateAddressInput: validateOperatorAddressInput,
+  } = useAddressInput();
 
-  const onOperatorAddrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOperatorAddr(event.target.value);
-  };
+  const {
+    addr: voterAddr,
+    clearAddr: clearVoterAddr,
+    renderAddressTextField: renderVoterAddressTextField,
+    validateAddressInput: validateVoterAddressInput,
+  } = useAddressInput();
 
-  const onVoterAddrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setVoterAddr(event.target.value);
-  };
+  const {submitStake, transactionResponse, clearTransactionResponse} =
+    useSubmitStake();
 
   const onSubmitClick = async () => {
-    // TODO: to be implemented
-    console.log("Submit Staking");
+    const isStakingAmountValid = validateStakingAmountInput();
+    const isOperatorAddrValid = validateOperatorAddressInput();
+    const isVoterAddrValid = validateVoterAddressInput();
+
+    if (isStakingAmountValid && isOperatorAddrValid && isVoterAddrValid) {
+      await submitStake(parseInt(stakingAmount), operatorAddr, voterAddr);
+    }
   };
 
+  const onCloseSnackbar = () => {
+    clearTransactionResponse();
+  };
+
+  useEffect(() => {
+    if (transactionResponse?.transactionSubmitted) {
+      clearStakingAmount();
+      clearOperatorAddr();
+      clearVoterAddr();
+    }
+  }, [transactionResponse]);
+
+  const submitDisabled = !isWalletConnected;
+  const submitButton = (
+    <span>
+      <Button
+        fullWidth
+        variant="primary"
+        disabled={submitDisabled}
+        onClick={onSubmitClick}
+      >
+        Submit
+      </Button>
+    </span>
+  );
+
   return (
-    <Grid>
-      <Header />
-      <Grid container spacing={2}>
-        <Grid item xs={6} md={6}>
-          <FormControl fullWidth>
-            <InputLabel htmlFor="outlined-adornment-amount">
-              Staking Amount
-            </InputLabel>
-            <OutlinedInput
-              label="Staking Amount"
-              value={stakingAmount}
-              onChange={onStakingAmountChange}
-              startAdornment={
-                <InputAdornment position="start">$</InputAdornment>
-              }
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={6} md={6}>
-          <FormControl fullWidth>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateTimePicker
-                label="Staking End Time"
-                value={stakingEndTime}
-                onChange={onStakingEndTimeChange}
-                renderInput={(params) => <TextField {...params} />}
-                minTime={new Date()}
-              />
-            </LocalizationProvider>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <TextField
-            fullWidth
-            label="Operator Address"
-            variant="outlined"
-            value={operatorAddr}
-            onChange={onOperatorAddrChange}
-          />
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <TextField
-            fullWidth
-            label="Voter Address"
-            variant="outlined"
-            value={voterAddr}
-            onChange={onVoterAddrChange}
-          />
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <FormControl fullWidth>
-            <Button variant="primary" onClick={onSubmitClick}>
-              Submit
-            </Button>
-          </FormControl>
+    <>
+      <TransactionResponseSnackbar
+        transactionResponse={transactionResponse}
+        onCloseSnackbar={onCloseSnackbar}
+      />
+      <Grid>
+        <Header />
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            {renderStakingAmountTextField("Staking Amount")}
+          </Grid>
+          <Grid item xs={12}>
+            {renderOperatorAddressTextField("Operator Address")}
+          </Grid>
+          <Grid item xs={12}>
+            {renderVoterAddressTextField("Voter Address")}
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              {submitDisabled ? (
+                <Tooltip title="Please connect your wallet" arrow>
+                  {submitButton}
+                </Tooltip>
+              ) : (
+                submitButton
+              )}
+            </FormControl>
+          </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 }

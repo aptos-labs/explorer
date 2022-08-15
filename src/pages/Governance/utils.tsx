@@ -1,6 +1,10 @@
 import React from "react";
 import {ensureMillisecondTimestamp} from "../utils";
 import {Proposal, ProposalState} from "./Types";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
+import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
+import {primaryColor, negativeColor, warningColor} from "./constants";
 
 // replicate on-chain logic is_voting_closed()
 // https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/voting.move
@@ -42,5 +46,48 @@ export function getProposalState(proposal: Proposal): ProposalState {
     }
   } else {
     return ProposalState.PENDING;
+  }
+}
+
+export function getStatusColor(proposalState: ProposalState) {
+  switch (proposalState) {
+    case ProposalState.SUCCEEDED:
+      return primaryColor;
+    case ProposalState.PENDING:
+      return warningColor;
+    case ProposalState.FAILED:
+      return negativeColor;
+  }
+}
+
+export function renderStatusIcon(proposalState: ProposalState) {
+  switch (proposalState) {
+    case ProposalState.SUCCEEDED:
+      return (
+        <CheckCircleOutlinedIcon
+          fontSize="small"
+          sx={{
+            color: getStatusColor(ProposalState.SUCCEEDED),
+          }}
+        />
+      );
+    case ProposalState.FAILED:
+      return (
+        <ErrorOutlineOutlinedIcon
+          fontSize="small"
+          sx={{
+            color: getStatusColor(ProposalState.FAILED),
+          }}
+        />
+      );
+    case ProposalState.PENDING:
+      return (
+        <PendingOutlinedIcon
+          fontSize="small"
+          sx={{
+            color: getStatusColor(ProposalState.PENDING),
+          }}
+        />
+      );
   }
 }

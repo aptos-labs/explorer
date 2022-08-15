@@ -16,19 +16,17 @@ export const Header = ({onVoteProposalButtonClick}: HeaderProps) => {
           justifyContent="space-between"
           flexDirection="row"
         >
-          <Grid item xs={12} sm={5}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="h6">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Welcome to Aptos Governance. Here you can view and vote on the
+              proposals.
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={5}>
-            <Typography variant="subtitle2" mb={4}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Turpis
-              tincidunt id aliquet risus. Non quam lacus suspendisse faucibus
-              interdum posuere lorem ipsum. Amet tellus cras adipiscing enim eu
-              turpis. Arcu cursus euismod quis viverra nibh cras pulvinar.
+          <Grid item xs={12} sm={6}>
+            <Typography variant="body1" mb={4}>
+              To view proposals, click the View Proposals below. To vote on a
+              proposal, install Petra (Aptos Wallet), connect to the wallet and
+              begin voting on any proposal. You can vote on multiple proposals.
             </Typography>
             <Box justifyContent="center">
               <Button
@@ -36,7 +34,7 @@ export const Header = ({onVoteProposalButtonClick}: HeaderProps) => {
                 onClick={onVoteProposalButtonClick}
                 sx={{width: "300px"}}
               >
-                view proposals
+                View Proposals
               </Button>
             </Box>
           </Grid>

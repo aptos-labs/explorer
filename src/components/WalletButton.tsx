@@ -1,7 +1,6 @@
 import React from "react";
 
 import {
-  Box,
   Button,
   ButtonBaseProps,
   ButtonProps,
@@ -9,27 +8,47 @@ import {
   Stack,
   Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 import {useWalletContext} from "../context/wallet/context";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
+import AddCardIcon from "@mui/icons-material/AddCard";
 import ErrorIcon from "@mui/icons-material/Error";
 import {truncateAddress} from "../pages/utils";
 import {isUpdatedVersion} from "../api/wallet";
+import {teal, grey} from "../themes/colors/aptosColorPalette";
 
 type WalletButtonWrapperProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  icon?: JSX.Element;
+  text: string | null;
 };
 
 const WalletButtonWrapper = ({
   children,
+  text,
+  icon,
   ...props
 }: WalletButtonWrapperProps & ButtonBaseProps & ButtonProps): JSX.Element => {
+  const theme = useTheme();
   return (
     <Button
       variant="outlined"
-      sx={{padding: "10px 25px", backgroundColor: "#1B1F1E"}}
+      sx={{
+        padding: "10px 25px",
+        backgroundColor: theme.palette.mode === "dark" ? grey[800] : "white",
+        color: theme.palette.mode === "dark" ? teal[400] : grey[900],
+      }}
       {...props}
     >
+      {icon}
+      <Typography
+        variant="body2"
+        color={theme.palette.mode === "dark" ? "white" : grey[900]}
+        ml={2}
+      >
+        {text}
+      </Typography>
       {children}
     </Button>
   );
@@ -42,7 +61,7 @@ const OldWalletVersionWarning = (): JSX.Element => {
       target="_blank"
     >
       You are using an old wallet version, please install the latest Aptos
-      Wallet extension for better support
+      Wallet extension.
     </Link>
   );
   return (
@@ -55,7 +74,7 @@ const OldWalletVersionWarning = (): JSX.Element => {
 };
 
 export const WalletButton = (): JSX.Element => {
-  const {isInstalled, isConnected, connect, accountAddress} =
+  const {isInstalled, isConnected, isAccountSet, connect, accountAddress} =
     useWalletContext();
 
   if (!isInstalled) {
@@ -71,11 +90,7 @@ export const WalletButton = (): JSX.Element => {
         }
       >
         <span>
-          <WalletButtonWrapper disabled>
-            <Typography variant="body2" color="white">
-              Connect Wallet
-            </Typography>
-          </WalletButtonWrapper>
+          <WalletButtonWrapper disabled text="install Wallet" />
         </span>
       </Tooltip>
     );
@@ -85,21 +100,33 @@ export const WalletButton = (): JSX.Element => {
 
   return (
     <>
-      {isInstalled && !isConnected && (
-        <WalletButtonWrapper onClick={connect}>
-          <CreditCardIcon />
-          <Typography variant="body2" color="white" ml={2}>
-            Connect Wallet
-          </Typography>
+      {isInstalled && !isAccountSet && (
+        <Tooltip title="Use the Wallet extension to create an account">
+          <span>
+            <WalletButtonWrapper
+              text="create an account"
+              icon={<AddCardIcon />}
+              sx={{cursor: "default"}}
+            >
+              {!isWalletLatestVersion && <OldWalletVersionWarning />}
+            </WalletButtonWrapper>
+          </span>
+        </Tooltip>
+      )}
+      {isInstalled && isAccountSet && !isConnected && (
+        <WalletButtonWrapper
+          onClick={connect}
+          text="Connect Wallet"
+          icon={<CreditCardIcon />}
+        >
           {!isWalletLatestVersion && <OldWalletVersionWarning />}
         </WalletButtonWrapper>
       )}
       {isInstalled && isConnected && (
-        <WalletButtonWrapper>
-          <CreditCardIcon />
-          <Typography variant="body2" color="white" ml={2}>
-            {accountAddress && truncateAddress(accountAddress)}
-          </Typography>
+        <WalletButtonWrapper
+          text={accountAddress && truncateAddress(accountAddress)}
+          icon={<CreditCardIcon />}
+        >
           {!isWalletLatestVersion && <OldWalletVersionWarning />}
         </WalletButtonWrapper>
       )}

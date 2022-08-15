@@ -132,7 +132,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
 
   const result = useQuery(
     ["transactions", {start, limit}, state.network_value],
-    () => getTransactions({start:BigInt(start), limit}, state.network_value),
+    () => getTransactions({start: BigInt(start), limit}, state.network_value),
     {keepPreviousData: true},
   );
 

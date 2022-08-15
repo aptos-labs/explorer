@@ -213,7 +213,7 @@ function RenderChanges(transaction: Types.Transaction): React.ReactNode {
     <>
       {
         <Stack spacing={6} divider={<Divider orientation="horizontal" />}>
-          {(transaction as any).changes.map((change:any, index:any) => (
+          {(transaction as any).changes.map((change: any, index: any) => (
             <Stack
               key={index}
               spacing={1}
@@ -233,7 +233,9 @@ function RenderChanges(transaction: Types.Transaction): React.ReactNode {
   );
 }
 
-function renderGenesisTransaction(transaction: Types.Transaction_GenesisTransaction) {
+function renderGenesisTransaction(
+  transaction: Types.Transaction_GenesisTransaction,
+) {
   return (
     <>
       {RenderHeader(
@@ -319,7 +321,9 @@ function renderUserTransaction(transaction: Types.Transaction_UserTransaction) {
   );
 }
 
-function renderPendingTransaction(transaction: Types.Transaction_PendingTransaction) {
+function renderPendingTransaction(
+  transaction: Types.Transaction_PendingTransaction,
+) {
   return (
     <>
       {RenderHeader(
@@ -420,13 +424,8 @@ function RenderTransaction({
 
   if (error) {
     if (error.type == ResponseErrorType.NOT_FOUND) {
-      const msg = `${error}
-      Could not find a transaction with version or hash ${txnHashOrVersion}`
-      return RenderHeader(
-        <Alert severity="error">
-          {msg}
-        </Alert>,
-      );
+      const msg = `${error} Could not find a transaction with version or hash ${txnHashOrVersion}`;
+      return RenderHeader(<Alert severity="error">{msg}</Alert>);
     } else if (error.type == ResponseErrorType.UNHANDLED) {
       return RenderHeader(
         <Alert severity="error">
@@ -465,7 +464,9 @@ function RenderTransaction({
       );
       break;
     case "user_transaction":
-      result = renderUserTransaction(transaction as Types.Transaction_UserTransaction);
+      result = renderUserTransaction(
+        transaction as Types.Transaction_UserTransaction,
+      );
       break;
     case "pending_transaction":
       result = renderPendingTransaction(

@@ -1,4 +1,4 @@
-import {Grid, Typography} from "@mui/material";
+import {Grid} from "@mui/material";
 import React from "react";
 import {ProposalHeader} from "./Header";
 import {ProposalCard} from "./card/Index";
@@ -6,7 +6,7 @@ import {ProposalContent} from "./Content";
 import {useParams} from "react-router-dom";
 import {useGetProposal} from "../hooks/useGetProposal";
 import {EmptyProposal} from "./EmptyProposal";
-import {Header} from "../Header";
+import {Header} from "../components/Header";
 
 export type ProposalPageURLParams = {
   id: string;

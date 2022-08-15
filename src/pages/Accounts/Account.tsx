@@ -147,7 +147,7 @@ function RenderAccountResources({
       {data.length === 0 && <span>None</span>}
       {data.map((resource, i) => (
         <Stack direction="column" key={i} spacing={3}>
-          {renderRow("Type:", resource.type.address)}
+          {renderRow("Type:", resource.type)}
           {renderRow("Data:", renderDebug(resource.data))}
         </Stack>
       ))}
@@ -269,9 +269,11 @@ export default function AccountPage() {
   >(["accountResources", {address}, state.network_value], () =>
     getAccountResources({address}, state.network_value),
   );
-  const accountModulesResult = useQuery<Array<Types.MoveModuleBytecode>, ResponseError>(
-    ["accountModules", {address}, state.network_value],
-    () => getAccountModules({address}, state.network_value),
+  const accountModulesResult = useQuery<
+    Array<Types.MoveModuleBytecode>,
+    ResponseError
+  >(["accountModules", {address}, state.network_value], () =>
+    getAccountModules({address}, state.network_value),
   );
   const accountTransactionsResult = useQuery<
     Array<Types.Transaction>,

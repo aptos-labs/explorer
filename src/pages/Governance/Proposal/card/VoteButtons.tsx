@@ -1,17 +1,6 @@
-import {
-  Button,
-  Stack,
-  TextField,
-  Snackbar,
-  Alert,
-  IconButton,
-  Box,
-} from "@mui/material";
+import {Button, Stack} from "@mui/material";
 import React, {useState, useEffect} from "react";
-import useSubmitVote, {
-  VoteResponseOnSuccess,
-  VoteResponseOnFailure,
-} from "../../hooks/useSubmitVote";
+import useSubmitVote from "../../hooks/useSubmitVote";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import {
@@ -22,48 +11,52 @@ import {
   voteFor,
   voteAgainst,
 } from "../../constants";
-import CloseIcon from "@mui/icons-material/Close";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import ConfirmationModal from "./ConfirmationModal";
+import TransactionResponseSnackbar from "../../components/snackbar/TransactionResponseSnackbar";
+import useAddressInput from "../../../../api/hooks/useAddressInput";
 
 // TODO:
 // 1. check if voted
 // 2. check if eligible to vote
 
-type Props = {
+type VoteButtonsProps = {
   proposalId: string;
 };
 
-export default function VoteButtons({proposalId}: Props) {
-  const [accountAddr, setAccountAddr] = useState<string>("");
+export default function VoteButtons({proposalId}: VoteButtonsProps) {
   const [voteForModalIsOpen, setVoteForModalIsOpen] = useState<boolean>(false);
   const [voteAgainstModalIsOpen, setVoteAgainstModalIsOpen] =
     useState<boolean>(false);
 
-  const {submitVote, voteResponse, clearVoteResponse} =
-    useSubmitVote(proposalId);
+  const {
+    addr: accountAddr,
+    renderAddressTextField,
+    validateAddressInput,
+  } = useAddressInput();
+
+  const {submitVote, transactionResponse, clearTransactionResponse} =
+    useSubmitVote();
 
   useEffect(() => {
-    if (voteResponse !== null) {
+    if (transactionResponse !== null) {
       closeVoteForModal();
       closeVoteAgainstModal();
     }
-  }, [voteResponse]);
+  }, [transactionResponse]);
 
-  const onAccountAddrChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAccountAddr(event.target.value);
-  };
-
-  const openVoteForModal = () => {
-    setVoteForModalIsOpen(true);
+  const openModal = (shouldPass: boolean) => {
+    const isValid = validateAddressInput();
+    if (isValid) {
+      if (shouldPass) {
+        setVoteForModalIsOpen(true);
+      } else {
+        setVoteAgainstModalIsOpen(true);
+      }
+    }
   };
 
   const closeVoteForModal = () => {
     setVoteForModalIsOpen(false);
-  };
-
-  const openVoteAgainstModal = () => {
-    setVoteAgainstModalIsOpen(true);
   };
 
   const closeVoteAgainstModal = () => {
@@ -71,94 +64,17 @@ export default function VoteButtons({proposalId}: Props) {
   };
 
   const onVote = (shouldPass: boolean) => {
-    submitVote(shouldPass, accountAddr);
+    submitVote(parseInt(proposalId), shouldPass, accountAddr);
   };
 
-  const refreshPage = () => {
-    window.location.reload();
+  const onCloseSnackbar = () => {
+    clearTransactionResponse();
   };
-
-  const onCloseErrorAlert = () => {
-    clearVoteResponse();
-  };
-
-  const voteOnSuccessSnackbarAction = (
-    <Box alignSelf="center" marginRight={1.5}>
-      <Button
-        variant="outlined"
-        color="inherit"
-        size="large"
-        onClick={refreshPage}
-        endIcon={<RefreshIcon />}
-      >
-        Refresh
-      </Button>
-    </Box>
-  );
-
-  const voteOnSuccessSnackbar = voteResponse !== null && (
-    <Snackbar
-      open={voteResponse.succeeded}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "center",
-      }}
-    >
-      <Alert
-        variant="filled"
-        severity="success"
-        action={voteOnSuccessSnackbarAction}
-      >
-        {`Vote succeeded with transaction ${
-          (voteResponse as VoteResponseOnSuccess).transactionHash
-        }. Please refresh to see your vote.`}
-      </Alert>
-    </Snackbar>
-  );
-
-  const voteOnFailureSnackbarAction = (
-    <IconButton
-      size="small"
-      aria-label="close"
-      color="inherit"
-      onClick={onCloseErrorAlert}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  );
-
-  const voteOnFailureSnackbar = voteResponse !== null && (
-    <Snackbar
-      open={!voteResponse.succeeded}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "center",
-      }}
-    >
-      <Alert
-        variant="filled"
-        severity="error"
-        action={voteOnFailureSnackbarAction}
-      >
-        {`Vote failed with error message "${
-          (voteResponse as VoteResponseOnFailure).message
-        }". Please try again.`}
-      </Alert>
-    </Snackbar>
-  );
 
   return (
     <>
       <Stack spacing={2}>
-        <TextField
-          fullWidth
-          label="Owner Account Address"
-          variant="filled"
-          size="small"
-          margin="normal"
-          value={accountAddr}
-          onChange={onAccountAddrChange}
-        />
+        {renderAddressTextField("Owner Account Address")}
         <Button
           fullWidth
           size="large"
@@ -171,7 +87,7 @@ export default function VoteButtons({proposalId}: Props) {
             },
           }}
           startIcon={<CheckCircleOutlinedIcon />}
-          onClick={openVoteForModal}
+          onClick={() => openModal(true)}
         >
           {voteFor}
         </Button>
@@ -187,13 +103,16 @@ export default function VoteButtons({proposalId}: Props) {
             },
           }}
           startIcon={<CancelOutlinedIcon />}
-          onClick={openVoteAgainstModal}
+          onClick={() => openModal(false)}
         >
           {voteAgainst}
         </Button>
       </Stack>
-      {voteOnSuccessSnackbar}
-      {voteOnFailureSnackbar}
+      <TransactionResponseSnackbar
+        transactionResponse={transactionResponse}
+        onCloseSnackbar={onCloseSnackbar}
+        refreshOnSuccess={true}
+      />
       <ConfirmationModal
         open={voteForModalIsOpen}
         shouldPass={true}

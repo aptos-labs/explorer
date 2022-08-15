@@ -9,12 +9,19 @@ export function renderDebug(data: any) {
   return (
     <Box
       sx={{overflow: "auto", fontWeight: theme.typography.fontWeightRegular}}
-      dangerouslySetInnerHTML={{
-        __html: JSON.stringify(data || null, null, 2)
-          .replaceAll("\n", "<br/>")
-          .replaceAll(" ", "&nbsp;"),
-      }}
-    ></Box>
+    >
+      <div>
+        <pre
+          style={{
+            fontFamily: theme.typography.fontFamily,
+            fontWeight: theme.typography.fontWeightRegular,
+            overflowWrap: "break-word",
+          }}
+        >
+          {JSON.stringify(data || null, null, 2)}
+        </pre>
+      </div>
+    </Box>
   );
 }
 
@@ -120,7 +127,13 @@ export function truncateAddress(accountAddress: string) {
   return truncateMiddle(accountAddress, 4, 4, "…");
 }
 
-export function isHex (text: string) {
+export function isHex(text: string) {
   // if it's hex, and is <= (64 + 2 for 0x) char long
-  return text.startsWith("0x") && text.length <= 66
+  return text.startsWith("0x") && text.length <= 66;
+}
+export function isValidAccountAddress(accountAddr: string): boolean {
+  // account address is 0x{64 hex characters}
+  // with multiple options - 0X, 0x001, 0x1, 0x01
+  // can start with that and see if any fails to parsing
+  return /^(0[xX])?[a-fA-F0-9]{1,64}$/.test(accountAddr);
 }
