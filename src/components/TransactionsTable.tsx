@@ -61,7 +61,7 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
         color="primary"
         underline="none"
       >
-        {"success" in transaction && renderSuccess(transaction.success)}
+        {"version" in transaction && transaction.version}
       </Link>
     </TableCell>
   );

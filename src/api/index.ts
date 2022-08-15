@@ -38,14 +38,14 @@ export async function getAccountTransactions(
 }
 
 export function getTransaction(
-  requestParameters: {txnHashOrVersion: string},
+  requestParameters: {txnHashOrVersion: string | bigint},
   nodeUrl: string,
 ): Promise<Types.Transaction> {
   const {txnHashOrVersion} = requestParameters;
-  if (isHex(txnHashOrVersion)) {
-    return getTransactionByHash(txnHashOrVersion, nodeUrl);
+  if (isHex(txnHashOrVersion as string)) {
+    return getTransactionByHash(txnHashOrVersion as string, nodeUrl);
   } else {
-    return getTransactionByVersion(BigInt(txnHashOrVersion), nodeUrl);
+    return getTransactionByVersion(txnHashOrVersion as bigint, nodeUrl);
   }
 }
 
