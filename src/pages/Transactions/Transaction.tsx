@@ -213,19 +213,21 @@ function RenderChanges(transaction: Types.Transaction): React.ReactNode {
     <>
       {
         <Stack spacing={6} divider={<Divider orientation="horizontal" />}>
-          {"changes" in transaction && transaction.changes.map((change, index) => (
-            <Stack
-              key={index}
-              spacing={1}
-              divider={<Divider variant="dotted" orientation="horizontal" />}
-            >
-              {renderRow("Index:", index)}
-              {renderRow("Type:", change.type)}
-              {"address" in change && renderRow("Address:", change.address)}
-              {renderRow("State Key Hash:", change.state_key_hash)}
-              {"data" in change && renderRow("Data:", renderDebug(change.data))}
-            </Stack>
-          ))}
+          {"changes" in transaction &&
+            transaction.changes.map((change, index) => (
+              <Stack
+                key={index}
+                spacing={1}
+                divider={<Divider variant="dotted" orientation="horizontal" />}
+              >
+                {renderRow("Index:", index)}
+                {renderRow("Type:", change.type)}
+                {"address" in change && renderRow("Address:", change.address)}
+                {renderRow("State Key Hash:", change.state_key_hash)}
+                {"data" in change &&
+                  renderRow("Data:", renderDebug(change.data))}
+              </Stack>
+            ))}
         </Stack>
       }
     </>,
@@ -470,7 +472,9 @@ function RenderTransaction({
       );
       break;
     case "state_checkpoint_transaction":
-      result = renderStateCheckpointTransaction(transaction as Types.Transaction_StateCheckpointTransaction);
+      result = renderStateCheckpointTransaction(
+        transaction as Types.Transaction_StateCheckpointTransaction,
+      );
       break;
     default:
       result = (
