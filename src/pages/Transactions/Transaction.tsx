@@ -161,7 +161,6 @@ function RenderDirectWriteSet(
 function RenderScriptWriteSet(writeset: Types.ScriptWriteSet) {
   return (
     <Grid container>
-      {renderRow("Type:", (writeset as any).type)}
       {renderRow("Execute As:", writeset.execute_as)}
       {renderRow("Script:", renderDebug(writeset.script))}
     </Grid>

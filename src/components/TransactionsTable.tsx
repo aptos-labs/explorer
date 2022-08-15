@@ -29,7 +29,7 @@ type TransactionCellProps = {
 function TransactionStatusCell({transaction}: TransactionCellProps) {
   return (
     <TableCell sx={{textAlign: "left"}}>
-      {renderSuccess((transaction as any).success)}
+      {"success" in transaction && renderSuccess(transaction.success)}
     </TableCell>
   );
 }
@@ -61,7 +61,7 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
         color="primary"
         underline="none"
       >
-        {(transaction as any).version}
+        {"success" in transaction && renderSuccess(transaction.success)}
       </Link>
     </TableCell>
   );
@@ -70,7 +70,7 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
 function TransactionGasCell({transaction}: TransactionCellProps) {
   return (
     <TableCell sx={{textAlign: "right"}}>
-      {renderGas((transaction as any).gas_used)}
+      {"gas_used" in transaction && renderGas(transaction.gas_used)}
     </TableCell>
   );
 }
