@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Grid, Button, FormControl, Tooltip} from "@mui/material";
 import {Header} from "../components/Header";
 import {useWalletContext} from "../../../context/wallet/context";
@@ -6,9 +6,11 @@ import useSubmitStake from "../hooks/useSubmitStake";
 import useAddressInput from "../../../api/hooks/useAddressInput";
 import useAmountInput from "../../../api/hooks/useAmountInput";
 import TransactionResponseSnackbar from "../components/snackbar/TransactionResponseSnackbar";
+import LoadingModal from "../components/LoadingModal";
 
 export function StakePage() {
   const {isConnected: isWalletConnected} = useWalletContext();
+  const [loadingModalIsOpen, setLoadingModalIsOpen] = useState<boolean>(false);
 
   const {
     amount: stakingAmount,
@@ -40,6 +42,7 @@ export function StakePage() {
     const isVoterAddrValid = validateVoterAddressInput();
 
     if (isStakingAmountValid && isOperatorAddrValid && isVoterAddrValid) {
+      setLoadingModalIsOpen(true);
       await submitStake(parseInt(stakingAmount), operatorAddr, voterAddr);
     }
   };
@@ -54,6 +57,7 @@ export function StakePage() {
       clearOperatorAddr();
       clearVoterAddr();
     }
+    setLoadingModalIsOpen(false);
   }, [transactionResponse]);
 
   const submitDisabled = !isWalletConnected;
@@ -76,6 +80,7 @@ export function StakePage() {
         transactionResponse={transactionResponse}
         onCloseSnackbar={onCloseSnackbar}
       />
+      <LoadingModal open={loadingModalIsOpen} />
       <Grid>
         <Header />
         <Grid container spacing={4}>
