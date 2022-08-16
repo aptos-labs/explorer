@@ -41,8 +41,7 @@ export default function FailureSnackbar({
           Failed{" "}
           {data && "vm_status" in data && data.vm_status
             ? `with ${data.vm_status}`
-            : ""}
-          .
+            : "."}
         </Typography>
       </Alert>
     </Snackbar>
