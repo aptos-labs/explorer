@@ -37,9 +37,9 @@ export default function FailureSnackbar({
             target="_blank"
           >
             {transactionHash}
-          </Link>
-          {"."} Failed{" "}
-          {data && "vm_status" in data && data?.vm_status
+          </Link>{" "}
+          Failed{" "}
+          {data && "vm_status" in data && data.vm_status
             ? `with ${data.vm_status}`
             : ""}
           .
