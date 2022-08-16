@@ -68,6 +68,7 @@ export default function TransactionResponseSnackbar({
         <FailureSnackbar
           transactionHash={transactionHash}
           onCloseSnackbar={onCloseSnackbar}
+          data={data}
         />
       )}
     </>

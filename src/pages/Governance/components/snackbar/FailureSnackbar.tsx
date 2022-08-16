@@ -2,15 +2,18 @@ import * as RRD from "react-router-dom";
 import React from "react";
 import {Snackbar, Alert, Typography, Link} from "@mui/material";
 import {CloseAction} from "./TransactionResponseSnackbar";
+import {Types} from "aptos";
 
 type FailureSnackbarProps = {
   transactionHash: string;
   onCloseSnackbar: () => void;
+  data: Types.Transaction | undefined;
 };
 
 export default function FailureSnackbar({
   transactionHash,
   onCloseSnackbar,
+  data,
 }: FailureSnackbarProps) {
   return (
     <Snackbar
@@ -26,7 +29,7 @@ export default function FailureSnackbar({
         action={<CloseAction onCloseSnackbar={onCloseSnackbar} />}
       >
         <Typography variant="inherit">
-          Failed with transaction {""}
+          Transaction {""}
           <Link
             component={RRD.Link}
             to={`/txn/${transactionHash}`}
@@ -35,7 +38,11 @@ export default function FailureSnackbar({
           >
             {transactionHash}
           </Link>
-          {"."} Please try again.
+          {"."} Failed{" "}
+          {data && "vm_status" in data && data?.vm_status
+            ? `with ${data.vm_status}`
+            : ""}
+          .
         </Typography>
       </Alert>
     </Snackbar>
