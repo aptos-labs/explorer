@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
-import AmountTextField from "../../components/AmountTextField";
-import {useGetAccountResources} from "./useGetAccountResources";
+import AmountTextField from "../../../../components/AmountTextField";
+import {useGetAccountResources} from "../../../../api/hooks/useGetAccountResources";
 
 interface StakingConfigData {
   minimum_stake: string;
@@ -32,8 +32,8 @@ const useAmountInput = () => {
     if (!stakingConfig) return;
     const {maximum_stake, minimum_stake} =
       stakingConfig.data as StakingConfigData;
-    setMinimumAmount(minimum_stake ? parseInt(minimum_stake) : 0);
-    setMaximumAmount(maximum_stake ? parseInt(maximum_stake) : 0);
+    setMinimumAmount(parseInt(minimum_stake));
+    setMaximumAmount(parseInt(maximum_stake));
   }, [stakingConfig]);
 
   useEffect(() => {

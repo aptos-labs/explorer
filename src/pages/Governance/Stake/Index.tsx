@@ -4,7 +4,7 @@ import {Header} from "../components/Header";
 import {useWalletContext} from "../../../context/wallet/context";
 import useSubmitStake from "../hooks/useSubmitStake";
 import useAddressInput from "../../../api/hooks/useAddressInput";
-import useAmountInput from "../../../api/hooks/useAmountInput";
+import useAmountInput from "./hooks/useAmountInput";
 import TransactionResponseSnackbar from "../components/snackbar/TransactionResponseSnackbar";
 import LoadingModal from "../components/LoadingModal";
 
