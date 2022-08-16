@@ -5,16 +5,16 @@ import {CloseAction} from "./TransactionResponseSnackbar";
 import {Types} from "aptos";
 
 type FailureSnackbarProps = {
-  transactionHash: string;
   onCloseSnackbar: () => void;
-  data: Types.Transaction | undefined;
+  data: Types.Transaction;
 };
 
 export default function FailureSnackbar({
-  transactionHash,
   onCloseSnackbar,
   data,
 }: FailureSnackbarProps) {
+  const {hash} = data;
+
   return (
     <Snackbar
       open={true}
@@ -32,15 +32,15 @@ export default function FailureSnackbar({
           Transaction {""}
           <Link
             component={RRD.Link}
-            to={`/txn/${transactionHash}`}
+            to={`/txn/${hash}`}
             color="inherit"
             target="_blank"
           >
-            {transactionHash}
+            {hash}
           </Link>{" "}
-          Failed{" "}
-          {data && "vm_status" in data && data.vm_status
-            ? `with ${data.vm_status}`
+          failed{" "}
+          {"vm_status" in data && data.vm_status
+            ? `with "${data.vm_status}"`
             : "."}
         </Typography>
       </Alert>
