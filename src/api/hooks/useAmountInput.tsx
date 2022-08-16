@@ -1,16 +1,40 @@
 import React, {useState, useEffect} from "react";
 import AmountTextField from "../../components/AmountTextField";
+import {useGetAccountResources} from "./useGetAccountResources";
 
-// TODO - this will likely be very dependent per network
-// pull from on chain config 0x1::stake::ValidatorSetConfiguration
-function isValidAmount(amount: string): boolean {
+interface StakingConfigData {
+  minimum_stake: string;
+  maximum_stake: string;
+}
+
+function isValidAmount(
+  amount: string,
+  minimumAmount: number,
+  maximumAmount: number,
+): boolean {
   const amountNum = parseInt(amount);
-  return amountNum > 0;
+  return amountNum <= maximumAmount && amountNum >= minimumAmount;
 }
 
 const useAmountInput = () => {
   const [amount, setAmount] = useState<string>("");
   const [amountIsValid, setAmountIsValid] = useState<boolean>(true);
+  const [minimumAmount, setMinimumAmount] = useState<number>(0);
+  const [maximumAmount, setMaximumAmount] = useState<number>(0);
+
+  const accountResourcesResult = useGetAccountResources("0x1");
+
+  const stakingConfig = accountResourcesResult.data?.find(
+    (resource) => resource.type === "0x1::staking_config::StakingConfig",
+  );
+
+  useEffect(() => {
+    if (!stakingConfig) return;
+    const {maximum_stake, minimum_stake} =
+      stakingConfig.data as StakingConfigData;
+    setMinimumAmount(minimum_stake ? parseInt(minimum_stake) : 0);
+    setMaximumAmount(maximum_stake ? parseInt(maximum_stake) : 0);
+  }, [stakingConfig]);
 
   useEffect(() => {
     setAmountIsValid(true);
@@ -30,13 +54,14 @@ const useAmountInput = () => {
         label={label}
         amount={amount}
         amountIsValid={amountIsValid}
+        errorMessage={`Amount should be between ${minimumAmount} and ${maximumAmount}`}
         onAmountChange={onAmountChange}
       />
     );
   }
 
   function validateAmountInput(): boolean {
-    const isValid = isValidAmount(amount);
+    const isValid = isValidAmount(amount, minimumAmount, maximumAmount);
     setAmountIsValid(isValid);
     return isValid;
   }
