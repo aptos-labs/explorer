@@ -1,8 +1,4 @@
-import {Types} from "aptos";
-import {useQuery} from "react-query";
-import {getAccountResources} from "../../../api";
-import {ResponseError} from "../../../api/client";
-import {useGlobalState} from "../../../GlobalState";
+import {useGetAccountResources} from "../../../api/hooks/useGetAccountResources";
 
 interface votingForumData {
   next_proposal_id: string;
@@ -17,14 +13,7 @@ type useGetProposalsTableData = {
 };
 
 export function useGetProposalsTableData(): useGetProposalsTableData | null {
-  const [state, _setState] = useGlobalState();
-
-  const accountResourcesResult = useQuery<
-    Array<Types.MoveResource>,
-    ResponseError
-  >(["accountResources", {address: "0x1"}, state.network_value], () =>
-    getAccountResources({address: "0x1"}, state.network_value),
-  );
+  const accountResourcesResult = useGetAccountResources("0x1");
 
   if (!accountResourcesResult.data) return null;
 

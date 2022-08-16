@@ -6,12 +6,7 @@ import {Alert, Stack} from "@mui/material";
 import React from "react";
 import {useGlobalState} from "../../GlobalState";
 import Grid from "@mui/material/Grid";
-import {
-  getAccount,
-  getAccountModules,
-  getAccountResources,
-  getAccountTransactions,
-} from "../../api";
+import {getAccount, getAccountModules, getAccountTransactions} from "../../api";
 import {renderRow, renderSection} from "../Transactions/helpers";
 import Divider from "@mui/material/Divider";
 import {renderDebug} from "../utils";
@@ -21,6 +16,7 @@ import {TransactionsTable} from "../../components/TransactionsTable";
 import DividerHero from "../../components/DividerHero";
 import Typography from "@mui/material/Typography";
 import HeaderSearch from "../layout/Search";
+import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 
 function RenderHeader(children: React.ReactNode, title?: string) {
   let {address} = useParams();
@@ -263,12 +259,7 @@ export default function AccountPage() {
     ["account", {address}, state.network_value],
     () => getAccount({address}, state.network_value),
   );
-  const accountResourcesResult = useQuery<
-    Array<Types.MoveResource>,
-    ResponseError
-  >(["accountResources", {address}, state.network_value], () =>
-    getAccountResources({address}, state.network_value),
-  );
+  const accountResourcesResult = useGetAccountResources(address);
   const accountModulesResult = useQuery<
     Array<Types.MoveModuleBytecode>,
     ResponseError
