@@ -28,7 +28,6 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
   const [voteForModalIsOpen, setVoteForModalIsOpen] = useState<boolean>(false);
   const [voteAgainstModalIsOpen, setVoteAgainstModalIsOpen] =
     useState<boolean>(false);
-  const [loadingModalIsOpen, setLoadingModalIsOpen] = useState<boolean>(false);
 
   const {
     addr: accountAddr,
@@ -36,14 +35,12 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
     validateAddressInput,
   } = useAddressInput();
 
-  const {submitVote, transactionResponse, clearTransactionResponse} =
-    useSubmitVote();
-
-  useEffect(() => {
-    if (transactionResponse !== null) {
-      setLoadingModalIsOpen(false);
-    }
-  }, [transactionResponse]);
+  const {
+    submitVote,
+    transactionInProcess,
+    transactionResponse,
+    clearTransactionResponse,
+  } = useSubmitVote();
 
   const openModal = (shouldPass: boolean) => {
     const isValid = validateAddressInput();
@@ -66,7 +63,6 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
 
   const onVote = (shouldPass: boolean) => {
     submitVote(parseInt(proposalId), shouldPass, accountAddr);
-    setLoadingModalIsOpen(true);
     closeVoteForModal();
     closeVoteAgainstModal();
   };
@@ -129,7 +125,7 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
         onConfirm={() => onVote(false)}
         onClose={closeVoteAgainstModal}
       />
-      <LoadingModal open={loadingModalIsOpen} />
+      <LoadingModal open={transactionInProcess} />
     </>
   );
 }

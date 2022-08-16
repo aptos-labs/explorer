@@ -2,8 +2,12 @@ import {BCS, TxnBuilderTypes} from "aptos";
 import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
 
 const useSubmitVote = () => {
-  const {submitTransaction, transactionResponse, clearTransactionResponse} =
-    useSubmitTransaction();
+  const {
+    submitTransaction,
+    transactionInProcess,
+    transactionResponse,
+    clearTransactionResponse,
+  } = useSubmitTransaction();
 
   async function submitVote(
     proposalId: number,
@@ -30,7 +34,12 @@ const useSubmitVote = () => {
     await submitTransaction(payload);
   }
 
-  return {submitVote, transactionResponse, clearTransactionResponse};
+  return {
+    submitVote,
+    transactionInProcess,
+    transactionResponse,
+    clearTransactionResponse,
+  };
 };
 
 export default useSubmitVote;

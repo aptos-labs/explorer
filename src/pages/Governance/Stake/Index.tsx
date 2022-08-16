@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {Grid, Button, FormControl, Tooltip} from "@mui/material";
 import {Header} from "../components/Header";
 import {useWalletContext} from "../../../context/wallet/context";
@@ -10,7 +10,6 @@ import LoadingModal from "../components/LoadingModal";
 
 export function StakePage() {
   const {isConnected: isWalletConnected} = useWalletContext();
-  const [loadingModalIsOpen, setLoadingModalIsOpen] = useState<boolean>(false);
 
   const {
     amount: stakingAmount,
@@ -33,8 +32,12 @@ export function StakePage() {
     validateAddressInput: validateVoterAddressInput,
   } = useAddressInput();
 
-  const {submitStake, transactionResponse, clearTransactionResponse} =
-    useSubmitStake();
+  const {
+    submitStake,
+    transactionInProcess,
+    transactionResponse,
+    clearTransactionResponse,
+  } = useSubmitStake();
 
   const onSubmitClick = async () => {
     const isStakingAmountValid = validateStakingAmountInput();
@@ -42,7 +45,6 @@ export function StakePage() {
     const isVoterAddrValid = validateVoterAddressInput();
 
     if (isStakingAmountValid && isOperatorAddrValid && isVoterAddrValid) {
-      setLoadingModalIsOpen(true);
       await submitStake(parseInt(stakingAmount), operatorAddr, voterAddr);
     }
   };
@@ -57,7 +59,6 @@ export function StakePage() {
       clearOperatorAddr();
       clearVoterAddr();
     }
-    setLoadingModalIsOpen(false);
   }, [transactionResponse]);
 
   const submitDisabled = !isWalletConnected;
@@ -80,7 +81,7 @@ export function StakePage() {
         transactionResponse={transactionResponse}
         onCloseSnackbar={onCloseSnackbar}
       />
-      <LoadingModal open={loadingModalIsOpen} />
+      <LoadingModal open={transactionInProcess} />
       <Grid>
         <Header />
         <Grid container spacing={4}>
