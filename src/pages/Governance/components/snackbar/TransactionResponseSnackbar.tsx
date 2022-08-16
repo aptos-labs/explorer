@@ -52,6 +52,8 @@ export default function TransactionResponseSnackbar({
     return null;
   }
 
+  if (!data) return null;
+
   const isTransactionSuccess =
     data && "success" in data && data.success === true;
 
@@ -65,10 +67,7 @@ export default function TransactionResponseSnackbar({
         />
       )}
       {!isTransactionSuccess && (
-        <FailureSnackbar
-          transactionHash={transactionHash}
-          onCloseSnackbar={onCloseSnackbar}
-        />
+        <FailureSnackbar onCloseSnackbar={onCloseSnackbar} data={data} />
       )}
     </>
   );
