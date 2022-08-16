@@ -20,7 +20,7 @@ export function useGetProposalsTableData(): useGetProposalsTableData | null {
   const [state, _setState] = useGlobalState();
 
   const accountResourcesResult = useQuery<
-    Array<Types.AccountResource>,
+    Array<Types.MoveResource>,
     ResponseError
   >(["accountResources", {address: "0x1"}, state.network_value], () =>
     getAccountResources({address: "0x1"}, state.network_value),
@@ -28,17 +28,15 @@ export function useGetProposalsTableData(): useGetProposalsTableData | null {
 
   if (!accountResourcesResult.data) return null;
 
-  const votingForum = accountResourcesResult.data.filter((resource, i) => {
-    return (
+  const votingForum = accountResourcesResult.data.find(
+    (resource) =>
       resource.type ===
-      "0x1::voting::VotingForum<0x1::governance_proposal::GovernanceProposal>"
-    );
-  });
+      "0x1::voting::VotingForum<0x1::governance_proposal::GovernanceProposal>",
+  );
 
-  if (!votingForum[0].data) return null;
+  if (!votingForum || !votingForum.data) return null;
 
-  const votingForumData: votingForumData = votingForum[0]
-    .data as votingForumData;
+  const votingForumData: votingForumData = votingForum.data as votingForumData;
 
   const nextProposalId = votingForumData.next_proposal_id;
   const handle = votingForumData.proposals.handle;

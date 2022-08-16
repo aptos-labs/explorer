@@ -18,14 +18,12 @@ const fetchTableItem = async (
     key: proposal_id,
   };
 
-  const tableItemData = await getTableItem(
+  const proposalData = await getTableItem(
     {tableHandle: handle, data: votingTableItemRequest},
     state.network_value,
   );
 
-  if (!tableItemData || tableItemData.status !== 200) return null;
-
-  const proposalData = tableItemData.data;
+  if (!proposalData) return null;
 
   return proposalData;
 };

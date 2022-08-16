@@ -61,7 +61,7 @@ function RenderAccount({
   isLoading,
   data,
   error,
-}: UseQueryResult<Types.Account, ResponseError>) {
+}: UseQueryResult<Types.AccountData, ResponseError>) {
   const {address} = useParams();
   const theme = useTheme();
 
@@ -115,7 +115,7 @@ function RenderAccountResources({
   isLoading,
   data,
   error,
-}: UseQueryResult<Array<Types.AccountResource>, ResponseError>) {
+}: UseQueryResult<Array<Types.MoveResource>, ResponseError>) {
   let {address} = useParams();
   const title = "Account Resources";
 
@@ -160,7 +160,7 @@ function RenderAccountModules({
   isLoading,
   data,
   error,
-}: UseQueryResult<Array<Types.MoveModule>, ResponseError>) {
+}: UseQueryResult<Array<Types.MoveModuleBytecode>, ResponseError>) {
   const {address} = useParams();
   const title = "Account Modules";
 
@@ -205,7 +205,7 @@ function RenderAccountTransactions({
   isLoading,
   data,
   error,
-}: UseQueryResult<Array<Types.OnChainTransaction>, ResponseError>) {
+}: UseQueryResult<Array<Types.Transaction>, ResponseError>) {
   const {address} = useParams();
   const title = "Account Transactions";
 
@@ -259,22 +259,24 @@ export default function AccountPage() {
     return null;
   }
 
-  const accountResult = useQuery<Types.Account, ResponseError>(
+  const accountResult = useQuery<Types.AccountData, ResponseError>(
     ["account", {address}, state.network_value],
     () => getAccount({address}, state.network_value),
   );
   const accountResourcesResult = useQuery<
-    Array<Types.AccountResource>,
+    Array<Types.MoveResource>,
     ResponseError
   >(["accountResources", {address}, state.network_value], () =>
     getAccountResources({address}, state.network_value),
   );
-  const accountModulesResult = useQuery<Array<Types.MoveModule>, ResponseError>(
-    ["accountModules", {address}, state.network_value],
-    () => getAccountModules({address}, state.network_value),
+  const accountModulesResult = useQuery<
+    Array<Types.MoveModuleBytecode>,
+    ResponseError
+  >(["accountModules", {address}, state.network_value], () =>
+    getAccountModules({address}, state.network_value),
   );
   const accountTransactionsResult = useQuery<
-    Array<Types.OnChainTransaction>,
+    Array<Types.Transaction>,
     ResponseError
   >(["accountTransactions", {address}, state.network_value], () =>
     getAccountTransactions({address}, state.network_value),

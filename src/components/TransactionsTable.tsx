@@ -23,13 +23,13 @@ import {
 import {assertNever} from "../utils";
 
 type TransactionCellProps = {
-  transaction: Types.OnChainTransaction;
+  transaction: Types.Transaction;
 };
 
 function TransactionStatusCell({transaction}: TransactionCellProps) {
   return (
     <TableCell sx={{textAlign: "left"}}>
-      {renderSuccess(transaction.success)}
+      {"success" in transaction && renderSuccess(transaction.success)}
     </TableCell>
   );
 }
@@ -57,11 +57,11 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
     <TableCell sx={{textAlign: "left"}}>
       <Link
         component={RRD.Link}
-        to={`/txn/${transaction.version}`}
+        to={`/txn/${"version" in transaction && transaction.version}`}
         color="primary"
         underline="none"
       >
-        {transaction.version}
+        {"version" in transaction && transaction.version}
       </Link>
     </TableCell>
   );
@@ -70,7 +70,7 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
 function TransactionGasCell({transaction}: TransactionCellProps) {
   return (
     <TableCell sx={{textAlign: "right"}}>
-      {renderGas(transaction.gas_used)}
+      {"gas_used" in transaction && renderGas(transaction.gas_used)}
     </TableCell>
   );
 }
@@ -104,7 +104,7 @@ const DEFAULT_COLUMNS: TransactionColumn[] = [
 ];
 
 type TransactionRowProps = {
-  transaction: Types.OnChainTransaction;
+  transaction: Types.Transaction;
   columns: TransactionColumn[];
 };
 
@@ -112,7 +112,7 @@ function TransactionRow({transaction, columns}: TransactionRowProps) {
   const navigate = useNavigate();
 
   const rowClick = () => {
-    navigate(`/txn/${transaction.version}`);
+    navigate(`/txn/${"version" in transaction && transaction.version}`);
   };
 
   return (
@@ -168,7 +168,7 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
 }
 
 type Props = {
-  transactions: Types.OnChainTransaction[];
+  transactions: Types.Transaction[];
   columns?: TransactionColumn[];
 };
 

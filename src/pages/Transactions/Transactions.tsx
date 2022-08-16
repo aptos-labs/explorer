@@ -70,7 +70,7 @@ function RenderPagination({
 
 function RenderTransactionContent({
   data,
-}: UseQueryResult<Array<Types.OnChainTransaction>>) {
+}: UseQueryResult<Array<Types.Transaction>>) {
   if (!data) {
     // TODO: error handling!
     return null;
@@ -108,7 +108,7 @@ export function TransactionsPreview() {
   );
 }
 
-function TransactionsPageInner({data}: UseQueryResult<Types.LedgerInfo>) {
+function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
   if (!data) {
     // TODO: handle errors
     return <>No ledger info</>;
