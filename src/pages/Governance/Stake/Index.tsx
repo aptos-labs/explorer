@@ -6,6 +6,7 @@ import useSubmitStake from "../hooks/useSubmitStake";
 import useAddressInput from "../../../api/hooks/useAddressInput";
 import useAmountInput from "../../../api/hooks/useAmountInput";
 import TransactionResponseSnackbar from "../components/snackbar/TransactionResponseSnackbar";
+import LoadingModal from "../components/LoadingModal";
 
 export function StakePage() {
   const {isConnected: isWalletConnected} = useWalletContext();
@@ -31,8 +32,12 @@ export function StakePage() {
     validateAddressInput: validateVoterAddressInput,
   } = useAddressInput();
 
-  const {submitStake, transactionResponse, clearTransactionResponse} =
-    useSubmitStake();
+  const {
+    submitStake,
+    transactionInProcess,
+    transactionResponse,
+    clearTransactionResponse,
+  } = useSubmitStake();
 
   const onSubmitClick = async () => {
     const isStakingAmountValid = validateStakingAmountInput();
@@ -76,6 +81,7 @@ export function StakePage() {
         transactionResponse={transactionResponse}
         onCloseSnackbar={onCloseSnackbar}
       />
+      <LoadingModal open={transactionInProcess} />
       <Grid>
         <Header />
         <Grid container spacing={4}>

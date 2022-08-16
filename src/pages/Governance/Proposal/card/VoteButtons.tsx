@@ -14,6 +14,7 @@ import {
 import ConfirmationModal from "./ConfirmationModal";
 import TransactionResponseSnackbar from "../../components/snackbar/TransactionResponseSnackbar";
 import useAddressInput from "../../../../api/hooks/useAddressInput";
+import LoadingModal from "../../components/LoadingModal";
 
 // TODO:
 // 1. check if voted
@@ -34,15 +35,12 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
     validateAddressInput,
   } = useAddressInput();
 
-  const {submitVote, transactionResponse, clearTransactionResponse} =
-    useSubmitVote();
-
-  useEffect(() => {
-    if (transactionResponse !== null) {
-      closeVoteForModal();
-      closeVoteAgainstModal();
-    }
-  }, [transactionResponse]);
+  const {
+    submitVote,
+    transactionInProcess,
+    transactionResponse,
+    clearTransactionResponse,
+  } = useSubmitVote();
 
   const openModal = (shouldPass: boolean) => {
     const isValid = validateAddressInput();
@@ -65,6 +63,8 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
 
   const onVote = (shouldPass: boolean) => {
     submitVote(parseInt(proposalId), shouldPass, accountAddr);
+    closeVoteForModal();
+    closeVoteAgainstModal();
   };
 
   const onCloseSnackbar = () => {
@@ -125,6 +125,7 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
         onConfirm={() => onVote(false)}
         onClose={closeVoteAgainstModal}
       />
+      <LoadingModal open={transactionInProcess} />
     </>
   );
 }

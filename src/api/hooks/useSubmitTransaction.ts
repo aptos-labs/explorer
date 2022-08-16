@@ -1,5 +1,5 @@
 import {TxnBuilderTypes, AptosClient} from "aptos";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 import {
   useWalletContext,
@@ -27,9 +27,17 @@ export type TransactionResponseOnError = {
 const useSubmitTransaction = () => {
   const [transactionResponse, setTransactionResponse] =
     useState<TransactionResponse | null>(null);
+  const [transactionInProcess, setTransactionInProcess] =
+    useState<boolean>(false);
   const [state, _] = useGlobalState();
   const {walletNetwork} = useWalletContext();
   const client = new AptosClient(state.network_value);
+
+  useEffect(() => {
+    if (transactionResponse !== null) {
+      setTransactionInProcess(false);
+    }
+  }, [transactionResponse]);
 
   async function submitTransaction(
     payload: TxnBuilderTypes.TransactionPayloadScriptFunction,
@@ -43,6 +51,8 @@ const useSubmitTransaction = () => {
       });
       return;
     }
+
+    setTransactionInProcess(true);
     await signAndSubmitTransaction(payload, client).then(
       setTransactionResponse,
     );
@@ -52,7 +62,12 @@ const useSubmitTransaction = () => {
     setTransactionResponse(null);
   }
 
-  return {submitTransaction, transactionResponse, clearTransactionResponse};
+  return {
+    submitTransaction,
+    transactionInProcess,
+    transactionResponse,
+    clearTransactionResponse,
+  };
 };
 
 export default useSubmitTransaction;
