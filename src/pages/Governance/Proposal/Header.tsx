@@ -2,16 +2,16 @@ import React from "react";
 import {Grid, Typography, Stack, Divider, Box} from "@mui/material";
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
-import {Proposal, ProposalState} from "../Types";
-import {primaryColor, negativeColor, warningColor} from "../constants";
+import {Proposal} from "../Types";
+import {primaryColor} from "../constants";
 import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {getStatusColor, renderStatusIcon, isVotingClosed} from "../utils";
+import HashButton from "../../../components/HashButton";
 
 const SECONDARY_TEXT_COLOR = "#A3A3A3";
-const HASH_WIDTH = 200;
 
 function TitleComponent({proposal}: {proposal: Proposal}) {
   return <Typography variant="h5">{proposal.metadata.title}</Typography>;
@@ -66,27 +66,19 @@ function ProposerAndTimeComponent({
   isOnMobile: boolean;
 }) {
   const proposerComponent = (
-    <Stack direction="row" spacing={1} alignItems="flex-end">
-      <PersonIcon fontSize="small" sx={{color: SECONDARY_TEXT_COLOR}} />
-      <Typography variant="body2" color={SECONDARY_TEXT_COLOR}>
-        SUBMITTED BY:
-      </Typography>
-      <Typography
-        variant="body2"
-        color={SECONDARY_TEXT_COLOR}
-        sx={{
-          width: HASH_WIDTH,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
-      >
-        {proposal.proposer}
-      </Typography>
+    <Stack direction="row" spacing={1}>
+      <Stack direction="row" spacing={1} alignSelf="center">
+        <PersonIcon fontSize="small" sx={{color: SECONDARY_TEXT_COLOR}} />
+        <Typography variant="body2" color={SECONDARY_TEXT_COLOR}>
+          SUBMITTED BY:
+        </Typography>
+      </Stack>
+      <HashButton hash={proposal.proposer} />
     </Stack>
   );
 
   const timeComponent = (
-    <Stack direction="row" spacing={1} alignItems="flex-end">
+    <Stack direction="row" spacing={1} alignItems="center">
       <AccessTimeIcon fontSize="small" sx={{color: SECONDARY_TEXT_COLOR}} />
       <Typography variant="body2" color={SECONDARY_TEXT_COLOR}>
         SUBMITTED ON:
