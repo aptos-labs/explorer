@@ -21,7 +21,8 @@ export type Proposal = {
   metadata: ProposalMetadata;
   // TODO - fetch or calculate both on the client
   is_voting_closed: boolean;
-  proposal_state: ProposalState;
+  proposal_state: ProposalVotingState;
+  proposal_executin_state: ProposalVotingState;
 };
 
 export type ProposalMetadata = {
@@ -31,8 +32,14 @@ export type ProposalMetadata = {
   discussion_url: string;
 };
 
-export enum ProposalState {
-  SUCCEEDED = "Succeeded",
+export enum ProposalVotingState {
+  PASSED = "Passed",
   PENDING = "Pending",
   FAILED = "Failed",
+  REJECTED = "Rejected",
+}
+
+export enum ProposalExecutionState {
+  WAITING_TO_BE_EXECUTED = "Waiting to be executed",
+  EXECUTED = "Executed",
 }

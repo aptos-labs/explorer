@@ -1,9 +1,10 @@
 import React from "react";
 import {ensureMillisecondTimestamp} from "../utils";
-import {Proposal, ProposalState} from "./Types";
+import {Proposal, ProposalVotingState} from "./Types";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {primaryColor, negativeColor, warningColor} from "./constants";
 
 // replicate on-chain logic is_voting_closed()
@@ -30,62 +31,74 @@ function canBeResolvedEarly(proposal: Proposal): boolean {
   return false;
 }
 
-/* TODO - calculate/fetch proposal status */
 // replicate on-chain logic get_proposal_state()
 // https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/voting.move
-export function getProposalState(proposal: Proposal): ProposalState {
+export function getProposalState(proposal: Proposal): ProposalVotingState {
   if (isVotingClosed(proposal)) {
     let yesVotes = parseInt(proposal.yes_votes);
     let noVotes = parseInt(proposal.no_votes);
     let minVoteThreshold = proposal.min_vote_threshold;
 
-    if (yesVotes > noVotes && yesVotes + noVotes >= minVoteThreshold) {
-      return ProposalState.SUCCEEDED;
+    if (yesVotes <= noVotes && yesVotes + noVotes >= minVoteThreshold) {
+      return ProposalVotingState.REJECTED; // more "no" votes
+    } else if (yesVotes > noVotes && yesVotes + noVotes >= minVoteThreshold) {
+      return ProposalVotingState.PASSED; // more "yes" votes
     } else {
-      return ProposalState.FAILED;
+      return ProposalVotingState.FAILED; // not enough votes
     }
   } else {
-    return ProposalState.PENDING;
+    return ProposalVotingState.PENDING;
   }
 }
 
-export function getStatusColor(proposalState: ProposalState) {
+export function getVotingStatusColor(proposalState: ProposalVotingState) {
   switch (proposalState) {
-    case ProposalState.SUCCEEDED:
+    case ProposalVotingState.PASSED:
       return primaryColor;
-    case ProposalState.PENDING:
+    case ProposalVotingState.PENDING:
       return warningColor;
-    case ProposalState.FAILED:
+    case ProposalVotingState.FAILED:
+      return negativeColor;
+    case ProposalVotingState.REJECTED:
       return negativeColor;
   }
 }
 
-export function renderStatusIcon(proposalState: ProposalState) {
+export function renderStatusIcon(proposalState: ProposalVotingState) {
   switch (proposalState) {
-    case ProposalState.SUCCEEDED:
+    case ProposalVotingState.PASSED:
       return (
         <CheckCircleOutlinedIcon
           fontSize="small"
           sx={{
-            color: getStatusColor(ProposalState.SUCCEEDED),
+            color: getVotingStatusColor(ProposalVotingState.PASSED),
           }}
         />
       );
-    case ProposalState.FAILED:
+    case ProposalVotingState.FAILED:
       return (
         <ErrorOutlineOutlinedIcon
           fontSize="small"
           sx={{
-            color: getStatusColor(ProposalState.FAILED),
+            color: getVotingStatusColor(ProposalVotingState.FAILED),
           }}
         />
       );
-    case ProposalState.PENDING:
+    case ProposalVotingState.REJECTED:
+      return (
+        <HighlightOffIcon
+          fontSize="small"
+          sx={{
+            color: getVotingStatusColor(ProposalVotingState.REJECTED),
+          }}
+        />
+      );
+    case ProposalVotingState.PENDING:
       return (
         <PendingOutlinedIcon
           fontSize="small"
           sx={{
-            color: getStatusColor(ProposalState.PENDING),
+            color: getVotingStatusColor(ProposalVotingState.PENDING),
           }}
         />
       );

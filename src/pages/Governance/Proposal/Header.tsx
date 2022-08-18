@@ -2,32 +2,76 @@ import React from "react";
 import {Grid, Typography, Stack, Divider, Box} from "@mui/material";
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
-import {Proposal} from "../Types";
-import {primaryColor} from "../constants";
+import {Proposal, ProposalExecutionState, ProposalVotingState} from "../Types";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import {primaryColor, warningColor} from "../constants";
 import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {getStatusColor, renderStatusIcon, isVotingClosed} from "../utils";
+import {getVotingStatusColor, renderStatusIcon, isVotingClosed} from "../utils";
 import HashButton from "../../../components/HashButton";
 
 const SECONDARY_TEXT_COLOR = "#A3A3A3";
 
-function TitleComponent({proposal}: {proposal: Proposal}) {
+function TitleComponent({proposal}: {proposal: Proposal}): JSX.Element {
   return <Typography variant="h5">{proposal.metadata.title}</Typography>;
 }
 
-function StatusComponent({proposal}: {proposal: Proposal}) {
+function StatusComponent({proposal}: {proposal: Proposal}): JSX.Element {
   return (
-    <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-      {renderStatusIcon(proposal.proposal_state)}
-      <Typography
-        variant="subtitle1"
-        color={getStatusColor(proposal.proposal_state)}
-      >
-        {proposal.proposal_state}
-      </Typography>
+    <Box sx={{display: "flex", alignItems: "center", gap: 3}}>
+      <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+        {renderStatusIcon(proposal.proposal_state)}
+        <Typography
+          variant="subtitle1"
+          color={getVotingStatusColor(proposal.proposal_state)}
+        >
+          {proposal.proposal_state}
+        </Typography>
+      </Box>
+      {proposal.proposal_state === ProposalVotingState.PASSED && (
+        <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+          <ExecutionStatusComponent proposal={proposal} />
+        </Box>
+      )}
     </Box>
+  );
+}
+
+function ExecutionStatusComponent({
+  proposal,
+}: {
+  proposal: Proposal;
+}): JSX.Element {
+  if (proposal.is_resolved) {
+    return (
+      <>
+        <CheckCircleOutlinedIcon
+          fontSize="small"
+          sx={{
+            color: primaryColor,
+          }}
+        />
+        <Typography variant="subtitle1" color={primaryColor}>
+          {ProposalExecutionState.EXECUTED}
+        </Typography>
+      </>
+    );
+  }
+  return (
+    <>
+      <RadioButtonUncheckedIcon
+        fontSize="small"
+        sx={{
+          color: warningColor,
+        }}
+      />
+      <Typography variant="subtitle1" color={warningColor}>
+        {ProposalExecutionState.WAITING_TO_BE_EXECUTED}
+      </Typography>
+    </>
   );
 }
 
