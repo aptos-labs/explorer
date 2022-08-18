@@ -3,19 +3,19 @@ import {Grid, Typography, Stack, Divider, Box} from "@mui/material";
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
 import {Proposal, ProposalExecutionState, ProposalVotingState} from "../Types";
-import {primaryColor, warningColor} from "../constants";
+import {primaryColor} from "../constants";
 import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   getVotingStatusColor,
-  renderVotingStatusIcon,
   getExecutionStatusColor,
-  renderExecutionStatusIcon,
   isVotingClosed,
 } from "../utils";
 import HashButton from "../../../components/HashButton";
+import VotingStatusIcon from "../components/VotingStatusIcon";
+import ExecutionStatusIcon from "../components/ExecutionStatusIcon";
 
 const SECONDARY_TEXT_COLOR = "#A3A3A3";
 
@@ -27,7 +27,7 @@ function StatusComponent({proposal}: {proposal: Proposal}): JSX.Element {
   return (
     <Box sx={{display: "flex", alignItems: "center", gap: 3}}>
       <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-        {renderVotingStatusIcon(proposal.proposal_state)}
+        <VotingStatusIcon proposalState={proposal.proposal_state} />
         <Typography
           variant="subtitle1"
           color={getVotingStatusColor(proposal.proposal_state)}
@@ -51,7 +51,7 @@ function ExecutionStatusComponent({
 }): JSX.Element {
   return (
     <>
-      {renderExecutionStatusIcon(proposal.is_resolved)}
+      <ExecutionStatusIcon isResolved={proposal.is_resolved} />
       <Typography
         variant="subtitle1"
         color={getExecutionStatusColor(proposal.is_resolved)}

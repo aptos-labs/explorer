@@ -20,7 +20,8 @@ import GeneralTableRow from "../../../components/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
 import HashButton from "../../../components/HashButton";
 import {teal} from "../../../themes/colors/aptosColorPalette";
-import {renderVotingStatusIcon, renderExecutionStatusIcon} from "../utils";
+import VotingStatusIcon from "../components/VotingStatusIcon";
+import ExecutionStatusIcon from "../components/ExecutionStatusIcon";
 
 const MAX_TITLE_WIDTH = 400;
 const CELL_HEIGHT = 72;
@@ -51,12 +52,12 @@ function StatusCell({proposal}: ProposalCellProps) {
   return (
     <TableCell sx={{textAlign: "left"}} height={CELL_HEIGHT}>
       <Box sx={{display: "flex", alignItems: "center", gap: 0.7}}>
-        {renderVotingStatusIcon(proposal.proposal_state)}
+        <VotingStatusIcon proposalState={proposal.proposal_state} />
         {proposal.proposal_state}
       </Box>
       {proposal.proposal_state === ProposalVotingState.PASSED && (
         <Box sx={{display: "flex", alignItems: "center", gap: 0.7, mt: 1}}>
-          {renderExecutionStatusIcon(proposal.is_resolved)}
+          <ExecutionStatusIcon isResolved={proposal.is_resolved} />
           {proposal.is_resolved
             ? ProposalExecutionState.EXECUTED
             : ProposalExecutionState.WAITING_TO_BE_EXECUTED}
