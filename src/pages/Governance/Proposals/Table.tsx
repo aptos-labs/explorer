@@ -9,7 +9,6 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography,
   Grid,
 } from "@mui/material";
 import {renderTimestamp} from "../../Transactions/helpers";
@@ -19,9 +18,10 @@ import {useGetProposal} from "../hooks/useGetProposal";
 import GeneralTableRow from "../../../components/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
 import HashButton from "../../../components/HashButton";
-import {teal} from "../../../themes/colors/aptosColorPalette";
+import {teal, grey} from "../../../themes/colors/aptosColorPalette";
 import VotingStatusIcon from "../components/VotingStatusIcon";
 import ExecutionStatusIcon from "../components/ExecutionStatusIcon";
+import {isVotingClosed} from "../utils";
 
 const MAX_TITLE_WIDTH = 400;
 const CELL_HEIGHT = 72;
@@ -77,18 +77,15 @@ function ProposerCell({proposal}: ProposalCellProps) {
 
 // TODO: make renderTimestamp a general helper and move it out of Transactions folder
 function TimestampCell({proposal}: ProposalCellProps) {
-  const timestamp =
-    "creation_time_secs" in proposal ? (
-      renderTimestamp(proposal.creation_time_secs)
-    ) : (
-      <Typography variant="subtitle2" align="center">
-        -
-      </Typography>
-    );
-
   return (
-    <TableCell sx={{textAlign: "right"}} height={CELL_HEIGHT}>
-      {timestamp}
+    <TableCell
+      sx={{
+        textAlign: "right",
+        color: isVotingClosed(proposal) ? grey[500] : "inherit",
+      }}
+      height={CELL_HEIGHT}
+    >
+      {renderTimestamp(proposal.expiration_secs)}
     </TableCell>
   );
 }
@@ -152,7 +149,7 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
       return <GeneralTableHeaderCell header="Proposer" />;
     case "timestamp":
       return (
-        <GeneralTableHeaderCell header="Timestamp" textAlignRight={true} />
+        <GeneralTableHeaderCell header="Vote Before" textAlignRight={true} />
       );
     default:
       return assertNever(column);
