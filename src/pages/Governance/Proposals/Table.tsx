@@ -18,10 +18,9 @@ import {useGetProposal} from "../hooks/useGetProposal";
 import GeneralTableRow from "../../../components/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
 import HashButton from "../../../components/HashButton";
-import {teal, grey} from "../../../themes/colors/aptosColorPalette";
+import {teal} from "../../../themes/colors/aptosColorPalette";
 import VotingStatusIcon from "../components/VotingStatusIcon";
 import ExecutionStatusIcon from "../components/ExecutionStatusIcon";
-import {isVotingClosed} from "../utils";
 
 const MAX_TITLE_WIDTH = 400;
 const CELL_HEIGHT = 72;
@@ -76,12 +75,24 @@ function ProposerCell({proposal}: ProposalCellProps) {
 }
 
 // TODO: make renderTimestamp a general helper and move it out of Transactions folder
-function TimestampCell({proposal}: ProposalCellProps) {
+function StartDateCell({proposal}: ProposalCellProps) {
   return (
     <TableCell
       sx={{
         textAlign: "right",
-        color: isVotingClosed(proposal) ? grey[500] : "inherit",
+      }}
+      height={CELL_HEIGHT}
+    >
+      {renderTimestamp(proposal.creation_time_secs)}
+    </TableCell>
+  );
+}
+
+function EndDateCell({proposal}: ProposalCellProps) {
+  return (
+    <TableCell
+      sx={{
+        textAlign: "right",
       }}
       height={CELL_HEIGHT}
     >
@@ -94,7 +105,8 @@ const ProposalCells = Object.freeze({
   title: TitleCell,
   status: StatusCell,
   proposer: ProposerCell,
-  timestamp: TimestampCell,
+  startDate: StartDateCell,
+  endDate: EndDateCell,
 });
 
 type ProposalColumn = keyof typeof ProposalCells;
@@ -103,7 +115,8 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
   "title",
   "status",
   "proposer",
-  "timestamp",
+  "startDate",
+  "endDate",
 ];
 
 type ProposalRowProps = {
@@ -147,10 +160,12 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
       return <GeneralTableHeaderCell header="Status" />;
     case "proposer":
       return <GeneralTableHeaderCell header="Proposer" />;
-    case "timestamp":
+    case "startDate":
       return (
-        <GeneralTableHeaderCell header="Vote Before" textAlignRight={true} />
+        <GeneralTableHeaderCell header="Start Date" textAlignRight={true} />
       );
+    case "endDate":
+      return <GeneralTableHeaderCell header="End Date" textAlignRight={true} />;
     default:
       return assertNever(column);
   }

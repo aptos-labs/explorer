@@ -67,14 +67,12 @@ function ExecutionStatusComponent({
 function TimeRemainingComponent({
   proposal,
   isOnMobile,
-  isVotingClosed,
 }: {
   proposal: Proposal;
   isOnMobile: boolean;
-  isVotingClosed: boolean;
 }) {
   // TODO: show close time if it's closed
-  if (isVotingClosed) {
+  if (isVotingClosed(proposal)) {
     return null;
   }
 
@@ -96,11 +94,9 @@ function TimeRemainingComponent({
 function ProposerAndTimeComponent({
   proposal,
   isOnMobile,
-  isVotingClosed,
 }: {
   proposal: Proposal;
   isOnMobile: boolean;
-  isVotingClosed: boolean;
 }) {
   const proposerComponent = (
     <Stack direction="row" spacing={1}>
@@ -118,9 +114,11 @@ function ProposerAndTimeComponent({
     <Stack direction="row" spacing={1} alignItems="center">
       <AccessTimeIcon fontSize="small" sx={{color: SECONDARY_TEXT_COLOR}} />
       <Typography variant="body2" color={SECONDARY_TEXT_COLOR}>
-        {isVotingClosed ? "VOTING ENDED:" : "VOTE BEFORE:"}{" "}
+        VOTING PERIOD:
       </Typography>
       <Typography variant="body2" color={SECONDARY_TEXT_COLOR}>
+        {renderTimestamp(proposal.creation_time_secs)}
+        {" - "}
         {renderTimestamp(proposal.expiration_secs)}
       </Typography>
     </Stack>
@@ -149,7 +147,6 @@ type ProposalHeaderProps = {
 export const ProposalHeader = ({proposal}: ProposalHeaderProps) => {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
-  const votingClosed = isVotingClosed(proposal);
 
   return (
     <Grid container>
@@ -160,18 +157,10 @@ export const ProposalHeader = ({proposal}: ProposalHeaderProps) => {
         </Stack>
       </Grid>
       <Grid item md={4} xs={12}>
-        <TimeRemainingComponent
-          proposal={proposal}
-          isOnMobile={isOnMobile}
-          isVotingClosed={votingClosed}
-        />
+        <TimeRemainingComponent proposal={proposal} isOnMobile={isOnMobile} />
       </Grid>
       <Grid item md={12} xs={12}>
-        <ProposerAndTimeComponent
-          proposal={proposal}
-          isOnMobile={isOnMobile}
-          isVotingClosed={votingClosed}
-        />
+        <ProposerAndTimeComponent proposal={proposal} isOnMobile={isOnMobile} />
       </Grid>
     </Grid>
   );
