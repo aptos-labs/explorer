@@ -1,10 +1,11 @@
 import React from "react";
 import {ensureMillisecondTimestamp} from "../utils";
-import {Proposal, ProposalVotingState} from "./Types";
+import {Proposal, ProposalVotingState, ProposalExecutionState} from "./Types";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import {primaryColor, negativeColor, warningColor} from "./constants";
 import {assertNever} from "../../utils";
 
@@ -78,7 +79,7 @@ export function getVotingStatusColor(
   }
 }
 
-export function renderStatusIcon(
+export function renderVotingStatusIcon(
   proposalState: ProposalVotingState,
 ): JSX.Element {
   switch (proposalState) {
@@ -121,4 +122,26 @@ export function renderStatusIcon(
     default:
       return assertNever(proposalState);
   }
+}
+
+export function getExecutionStatusColor(isResolved: boolean): string {
+  return isResolved ? primaryColor : warningColor;
+}
+
+export function renderExecutionStatusIcon(isResolved: boolean): JSX.Element {
+  return isResolved ? (
+    <CheckCircleOutlinedIcon
+      fontSize="small"
+      sx={{
+        color: getExecutionStatusColor(isResolved),
+      }}
+    />
+  ) : (
+    <RadioButtonUncheckedIcon
+      fontSize="small"
+      sx={{
+        color: getExecutionStatusColor(isResolved),
+      }}
+    />
+  );
 }

@@ -14,15 +14,16 @@ import {
 } from "@mui/material";
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
-import {Proposal} from "../Types";
+import {Proposal, ProposalVotingState, ProposalExecutionState} from "../Types";
 import {useGetProposal} from "../hooks/useGetProposal";
 import GeneralTableRow from "../../../components/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
 import HashButton from "../../../components/HashButton";
 import {teal} from "../../../themes/colors/aptosColorPalette";
-import {renderStatusIcon} from "../utils";
+import {renderVotingStatusIcon, renderExecutionStatusIcon} from "../utils";
 
-const TITLE_WIDTH = 400;
+const MAX_TITLE_WIDTH = 400;
+const CELL_HEIGHT = 72;
 
 type ProposalCellProps = {
   proposal: Proposal;
@@ -30,11 +31,11 @@ type ProposalCellProps = {
 
 function TitleCell({proposal}: ProposalCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <TableCell sx={{textAlign: "left"}} height={CELL_HEIGHT}>
       <Box
         component="div"
         sx={{
-          width: TITLE_WIDTH,
+          maxWidth: MAX_TITLE_WIDTH,
           color: teal[500],
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -48,18 +49,26 @@ function TitleCell({proposal}: ProposalCellProps) {
 
 function StatusCell({proposal}: ProposalCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
-      <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-        {renderStatusIcon(proposal.proposal_state)}
+    <TableCell sx={{textAlign: "left"}} height={CELL_HEIGHT}>
+      <Box sx={{display: "flex", alignItems: "center", gap: 0.7}}>
+        {renderVotingStatusIcon(proposal.proposal_state)}
         {proposal.proposal_state}
       </Box>
+      {proposal.proposal_state === ProposalVotingState.PASSED && (
+        <Box sx={{display: "flex", alignItems: "center", gap: 0.7, mt: 1}}>
+          {renderExecutionStatusIcon(proposal.is_resolved)}
+          {proposal.is_resolved
+            ? ProposalExecutionState.EXECUTED
+            : ProposalExecutionState.WAITING_TO_BE_EXECUTED}
+        </Box>
+      )}
     </TableCell>
   );
 }
 
 function ProposerCell({proposal}: ProposalCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <TableCell sx={{textAlign: "left"}} height={CELL_HEIGHT}>
       <HashButton hash={proposal.proposer} />
     </TableCell>
   );
@@ -76,7 +85,11 @@ function TimestampCell({proposal}: ProposalCellProps) {
       </Typography>
     );
 
-  return <TableCell sx={{textAlign: "right"}}>{timestamp}</TableCell>;
+  return (
+    <TableCell sx={{textAlign: "right"}} height={CELL_HEIGHT}>
+      {timestamp}
+    </TableCell>
+  );
 }
 
 const ProposalCells = Object.freeze({
