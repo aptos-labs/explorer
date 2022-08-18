@@ -17,7 +17,7 @@ const useSubmitStake = () => {
     const payload = new TxnBuilderTypes.TransactionPayloadScriptFunction(
       TxnBuilderTypes.ScriptFunction.natural(
         "0x1::stake",
-        "initialize_owner_only",
+        "initialize_stake_owner",
         [],
         [
           BCS.bcsSerializeUint64(stakingAmount),
