@@ -6,7 +6,9 @@ import {
   Popover,
   IconButton,
   useTheme,
+  Link,
 } from "@mui/material";
+import * as RRD from "react-router-dom";
 import {grey} from "../themes/colors/aptosColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
@@ -107,7 +109,14 @@ export default function HashButton({hash}: HashButtonProps) {
             },
           }}
         >
-          {hash}
+          <Link
+            component={RRD.Link}
+            to={`/account/${hash}`}
+            target="_blank"
+            color="inherit"
+          >
+            {hash}
+          </Link>
           <IconButton
             aria-label="collapse hash"
             onClick={hashCollapse}
