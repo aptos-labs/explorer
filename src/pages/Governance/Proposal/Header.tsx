@@ -118,7 +118,7 @@ function ProposerAndTimeComponent({
     <Stack direction="row" spacing={1} alignItems="center">
       <AccessTimeIcon fontSize="small" sx={{color: SECONDARY_TEXT_COLOR}} />
       <Typography variant="body2" color={SECONDARY_TEXT_COLOR}>
-        {isVotingClosed ? "VOTE ENDED:" : "VOTE BEFORE:"}{" "}
+        {isVotingClosed ? "VOTING ENDED:" : "VOTE BEFORE:"}{" "}
       </Typography>
       <Typography variant="body2" color={SECONDARY_TEXT_COLOR}>
         {renderTimestamp(proposal.expiration_secs)}
