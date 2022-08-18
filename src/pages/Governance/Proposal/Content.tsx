@@ -7,7 +7,7 @@ type ProposalContentProps = {
   proposal: Proposal;
 };
 
-export function ProposalContent({proposal}: ProposalContentProps) {
+export function ProposalContent({proposal}: ProposalContentProps): JSX.Element {
   return (
     <Stack
       direction="column"

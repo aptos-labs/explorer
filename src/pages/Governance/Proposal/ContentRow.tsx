@@ -7,7 +7,11 @@ type ContentRowProps = {
   link?: string;
 };
 
-export default function ContentRow({title, text, link}: ContentRowProps) {
+export default function ContentRow({
+  title,
+  text,
+  link,
+}: ContentRowProps): JSX.Element {
   return (
     <Stack direction="column" spacing={2}>
       <Typography noWrap variant="h6">

@@ -6,6 +6,7 @@ import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {primaryColor, negativeColor, warningColor} from "./constants";
+import {assertNever} from "../../utils";
 
 // replicate on-chain logic is_voting_closed()
 // https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/voting.move
@@ -38,10 +39,11 @@ export function getProposalState(proposal: Proposal): ProposalVotingState {
     let yesVotes = parseInt(proposal.yes_votes);
     let noVotes = parseInt(proposal.no_votes);
     let minVoteThreshold = proposal.min_vote_threshold;
+    let enoughVotes = votesAboveThreshold(yesVotes, noVotes, minVoteThreshold);
 
-    if (yesVotes <= noVotes && yesVotes + noVotes >= minVoteThreshold) {
+    if (yesVotes <= noVotes && enoughVotes) {
       return ProposalVotingState.REJECTED; // more "no" votes
-    } else if (yesVotes > noVotes && yesVotes + noVotes >= minVoteThreshold) {
+    } else if (yesVotes > noVotes && enoughVotes) {
       return ProposalVotingState.PASSED; // more "yes" votes
     } else {
       return ProposalVotingState.FAILED; // not enough votes
@@ -51,7 +53,17 @@ export function getProposalState(proposal: Proposal): ProposalVotingState {
   }
 }
 
-export function getVotingStatusColor(proposalState: ProposalVotingState) {
+function votesAboveThreshold(
+  yesVotes: number,
+  noVotes: number,
+  minVoteThreshold: number,
+) {
+  return yesVotes + noVotes >= minVoteThreshold;
+}
+
+export function getVotingStatusColor(
+  proposalState: ProposalVotingState,
+): string {
   switch (proposalState) {
     case ProposalVotingState.PASSED:
       return primaryColor;
@@ -61,10 +73,14 @@ export function getVotingStatusColor(proposalState: ProposalVotingState) {
       return negativeColor;
     case ProposalVotingState.REJECTED:
       return negativeColor;
+    default:
+      return assertNever(proposalState);
   }
 }
 
-export function renderStatusIcon(proposalState: ProposalVotingState) {
+export function renderStatusIcon(
+  proposalState: ProposalVotingState,
+): JSX.Element {
   switch (proposalState) {
     case ProposalVotingState.PASSED:
       return (
@@ -102,5 +118,7 @@ export function renderStatusIcon(proposalState: ProposalVotingState) {
           }}
         />
       );
+    default:
+      return assertNever(proposalState);
   }
 }

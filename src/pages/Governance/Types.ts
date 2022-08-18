@@ -21,7 +21,6 @@ export type Proposal = {
   metadata: ProposalMetadata;
   is_voting_closed: boolean;
   proposal_state: ProposalVotingState;
-  proposal_executin_state: ProposalVotingState;
 };
 
 export type ProposalMetadata = {
