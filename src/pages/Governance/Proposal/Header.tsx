@@ -1,7 +1,7 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Grid, Typography, Stack, Divider, Box} from "@mui/material";
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
-import {getTimeRemaining} from "../../utils";
+import {getProposalTimeRemaining, ProposalTimeRemaining} from "../../utils";
 import {Proposal, ProposalExecutionState, ProposalVotingState} from "../Types";
 import {primaryColor} from "../constants";
 import PersonIcon from "@mui/icons-material/Person";
@@ -75,8 +75,20 @@ function TimeRemainingComponent({
   if (isVotingClosed(proposal)) {
     return null;
   }
+  const [remainingTime, setRemainingTime] = useState<ProposalTimeRemaining>(
+    getProposalTimeRemaining(proposal.expiration_secs),
+  );
 
-  const remainingTime = getTimeRemaining(proposal.expiration_secs);
+  useEffect(() => {
+    const intervalID = setInterval(() => {
+      setRemainingTime(getProposalTimeRemaining(proposal.expiration_secs));
+    }, 60000); // 1 minute interval
+    if (remainingTime.minutes === 0) {
+      clearInterval(intervalID);
+    }
+    return () => clearInterval(intervalID);
+  }, [remainingTime.minutes]);
+
   return (
     <Stack
       direction="column"
