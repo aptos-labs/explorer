@@ -1,10 +1,5 @@
-import React from "react";
 import {ensureMillisecondTimestamp} from "../utils";
 import {Proposal, ProposalVotingState} from "./Types";
-import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
-import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {primaryColor, negativeColor, warningColor} from "./constants";
 import {assertNever} from "../../utils";
 
@@ -78,47 +73,6 @@ export function getVotingStatusColor(
   }
 }
 
-export function renderStatusIcon(
-  proposalState: ProposalVotingState,
-): JSX.Element {
-  switch (proposalState) {
-    case ProposalVotingState.PASSED:
-      return (
-        <CheckCircleOutlinedIcon
-          fontSize="small"
-          sx={{
-            color: getVotingStatusColor(ProposalVotingState.PASSED),
-          }}
-        />
-      );
-    case ProposalVotingState.FAILED:
-      return (
-        <ErrorOutlineOutlinedIcon
-          fontSize="small"
-          sx={{
-            color: getVotingStatusColor(ProposalVotingState.FAILED),
-          }}
-        />
-      );
-    case ProposalVotingState.REJECTED:
-      return (
-        <HighlightOffIcon
-          fontSize="small"
-          sx={{
-            color: getVotingStatusColor(ProposalVotingState.REJECTED),
-          }}
-        />
-      );
-    case ProposalVotingState.PENDING:
-      return (
-        <PendingOutlinedIcon
-          fontSize="small"
-          sx={{
-            color: getVotingStatusColor(ProposalVotingState.PENDING),
-          }}
-        />
-      );
-    default:
-      return assertNever(proposalState);
-  }
+export function getExecutionStatusColor(isResolved: boolean): string {
+  return isResolved ? primaryColor : warningColor;
 }
