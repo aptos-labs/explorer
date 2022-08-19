@@ -115,7 +115,7 @@ function ProposerAndTimeComponent({
       <Stack direction="row" spacing={1} alignSelf="center">
         <PersonIcon fontSize="small" sx={{color: SECONDARY_TEXT_COLOR}} />
         <Typography variant="body2" color={SECONDARY_TEXT_COLOR}>
-          SUBMITTED BY:
+          PROPOSER:
         </Typography>
       </Stack>
       <HashButton hash={proposal.proposer} />
@@ -126,10 +126,12 @@ function ProposerAndTimeComponent({
     <Stack direction="row" spacing={1} alignItems="center">
       <AccessTimeIcon fontSize="small" sx={{color: SECONDARY_TEXT_COLOR}} />
       <Typography variant="body2" color={SECONDARY_TEXT_COLOR}>
-        SUBMITTED ON:
+        VOTING PERIOD:
       </Typography>
       <Typography variant="body2" color={SECONDARY_TEXT_COLOR}>
         {renderTimestamp(proposal.creation_time_secs)}
+        {" - "}
+        {renderTimestamp(proposal.expiration_secs)}
       </Typography>
     </Stack>
   );

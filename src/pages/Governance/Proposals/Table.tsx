@@ -9,7 +9,6 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography,
   Grid,
 } from "@mui/material";
 import {renderTimestamp} from "../../Transactions/helpers";
@@ -76,19 +75,28 @@ function ProposerCell({proposal}: ProposalCellProps) {
 }
 
 // TODO: make renderTimestamp a general helper and move it out of Transactions folder
-function TimestampCell({proposal}: ProposalCellProps) {
-  const timestamp =
-    "creation_time_secs" in proposal ? (
-      renderTimestamp(proposal.creation_time_secs)
-    ) : (
-      <Typography variant="subtitle2" align="center">
-        -
-      </Typography>
-    );
-
+function StartDateCell({proposal}: ProposalCellProps) {
   return (
-    <TableCell sx={{textAlign: "right"}} height={CELL_HEIGHT}>
-      {timestamp}
+    <TableCell
+      sx={{
+        textAlign: "right",
+      }}
+      height={CELL_HEIGHT}
+    >
+      {renderTimestamp(proposal.creation_time_secs)}
+    </TableCell>
+  );
+}
+
+function EndDateCell({proposal}: ProposalCellProps) {
+  return (
+    <TableCell
+      sx={{
+        textAlign: "right",
+      }}
+      height={CELL_HEIGHT}
+    >
+      {renderTimestamp(proposal.expiration_secs)}
     </TableCell>
   );
 }
@@ -97,7 +105,8 @@ const ProposalCells = Object.freeze({
   title: TitleCell,
   status: StatusCell,
   proposer: ProposerCell,
-  timestamp: TimestampCell,
+  startDate: StartDateCell,
+  endDate: EndDateCell,
 });
 
 type ProposalColumn = keyof typeof ProposalCells;
@@ -106,7 +115,8 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
   "title",
   "status",
   "proposer",
-  "timestamp",
+  "startDate",
+  "endDate",
 ];
 
 type ProposalRowProps = {
@@ -150,10 +160,12 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
       return <GeneralTableHeaderCell header="Status" />;
     case "proposer":
       return <GeneralTableHeaderCell header="Proposer" />;
-    case "timestamp":
+    case "startDate":
       return (
-        <GeneralTableHeaderCell header="Timestamp" textAlignRight={true} />
+        <GeneralTableHeaderCell header="Start Date" textAlignRight={true} />
       );
+    case "endDate":
+      return <GeneralTableHeaderCell header="End Date" textAlignRight={true} />;
     default:
       return assertNever(column);
   }
