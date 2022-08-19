@@ -73,7 +73,6 @@ function StartDateCell({proposal}: ProposalCellProps) {
       sx={{
         textAlign: "right",
       }}
-      height={CELL_HEIGHT}
     >
       {renderTimestamp(proposal.creation_time_secs)}
     </TableCell>

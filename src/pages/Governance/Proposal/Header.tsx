@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Grid, Typography, Stack, Divider, Box} from "@mui/material";
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
-import {getTimeRemaining} from "../../utils";
+import {getProposalTimeRemaining, ProposalTimeRemaining} from "../../utils";
 import {Proposal} from "../Types";
 import {primaryColor} from "../constants";
 import PersonIcon from "@mui/icons-material/Person";
