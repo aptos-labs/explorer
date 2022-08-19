@@ -60,14 +60,12 @@ const fetchProposal = async (
   const proposalData = await fetchTableItem(proposal_id, handle, state);
   if (!proposalData) return null;
 
-  console.log(proposalData);
-
   // fetch proposal metadata
   const proposal_metadata = await fetchProposalMetadata(proposalData);
   // if bad metadata response or metadata hash is different
   if (!proposal_metadata) return null;
 
-  proposalData.proposal_status = getProposalStatus(proposalData);
+  proposalData.status = getProposalStatus(proposalData);
   proposalData.is_voting_closed = isVotingClosed(proposalData);
 
   proposalData.proposal_id = proposal_id;

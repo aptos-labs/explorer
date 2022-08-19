@@ -66,14 +66,9 @@ export function getProposalStatus(proposal: Proposal): ProposalStatus {
     case ProposalVotingState.REJECTED:
       return ProposalStatus.REJECTED;
     case ProposalVotingState.PASSED:
-      if (proposal.is_resolved) {
-        return ProposalStatus.EXECUTED;
-      } else {
-        const executionFailed = false;
-        return executionFailed
-          ? ProposalStatus.EXECUTION_FAILED
-          : ProposalStatus.AWAITING_EXECUTION;
-      }
+      return proposal.is_resolved
+        ? ProposalStatus.EXECUTED
+        : ProposalStatus.AWAITING_EXECUTION;
     default:
       return assertNever(proposal.proposal_state);
   }
@@ -97,8 +92,6 @@ export function getStatusColor(status: ProposalStatus): string {
       return negativeColor;
     case ProposalStatus.AWAITING_EXECUTION:
       return warningColor;
-    case ProposalStatus.EXECUTION_FAILED:
-      return negativeColor;
     case ProposalStatus.EXECUTED:
       return primaryColor;
     default:

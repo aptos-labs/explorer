@@ -29,8 +29,8 @@ export type Proposal = {
   };
   proposal_metadata: ProposalMetadata;
   is_voting_closed: boolean;
-  proposal_state: ProposalVotingState;
-  proposal_status: ProposalStatus;
+  proposal_state: ProposalVotingState; // matches proposal_state on chain
+  status: ProposalStatus; // represents general proposal status
 };
 
 export type ProposalMetadata = {
@@ -42,10 +42,9 @@ export type ProposalMetadata = {
 
 export enum ProposalStatus {
   VOTING_IN_PROGRESS = "Voting In Progress",
-  FAILED = "Failed", // not enough votes 
+  FAILED = "Failed", // not enough votes
   REJECTED = "Rejected", // more no votes
   AWAITING_EXECUTION = "Awaiting Execution", // passed, waiting for execution
-  EXECUTION_FAILED = "Execution Failed", // passed, but execution failed
   EXECUTED = "Executed", // passed and executed, the final success
 }
 

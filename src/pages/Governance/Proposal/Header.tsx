@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Grid, Typography, Stack, Divider, Box} from "@mui/material";
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getTimeRemaining} from "../../utils";
-import {Proposal, ProposalStatus} from "../Types";
+import {Proposal} from "../Types";
 import {primaryColor} from "../constants";
 import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
@@ -11,6 +11,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {getStatusColor, isVotingClosed} from "../utils";
 import HashButton from "../../../components/HashButton";
 import StatusIcon from "../components/StatusIcon";
+import ProposalStatusTooltip from "../components/ProposalStatusTooltip";
 
 const SECONDARY_TEXT_COLOR = "#A3A3A3";
 
@@ -20,38 +21,16 @@ function TitleComponent({proposal}: {proposal: Proposal}): JSX.Element {
   );
 }
 
-function StatusBox(status: ProposalStatus) {
-  return (
-    <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-      <StatusIcon status={status} />
-      <Typography variant="subtitle1" color={getStatusColor(status)}>
-        {status}
-      </Typography>
-    </Box>
-  );
-}
-
 function StatusComponent({proposal}: {proposal: Proposal}): JSX.Element {
   return (
-    // <Stack spacing={1}>
-    //   {StatusBox(ProposalStatus.VOTING_IN_PROGRESS)}
-    //   {StatusBox(ProposalStatus.FAILED)}
-    //   {StatusBox(ProposalStatus.REJECTED)}
-    //   {StatusBox(ProposalStatus.AWAITING_EXECUTION)}
-    //   {StatusBox(ProposalStatus.EXECUTION_FAILED)}
-    //   {StatusBox(ProposalStatus.EXECUTED)}
-    // </Stack>
-    <Box sx={{display: "flex", alignItems: "center", gap: 3}}>
+    <ProposalStatusTooltip>
       <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-        <StatusIcon status={proposal.proposal_status} />
-        <Typography
-          variant="subtitle1"
-          color={getStatusColor(proposal.proposal_status)}
-        >
-          {proposal.proposal_status}
+        <StatusIcon status={proposal.status} />
+        <Typography variant="subtitle1" color={getStatusColor(proposal.status)}>
+          {proposal.status}
         </Typography>
       </Box>
-    </Box>
+    </ProposalStatusTooltip>
   );
 }
 

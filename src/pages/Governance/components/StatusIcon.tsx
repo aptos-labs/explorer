@@ -3,7 +3,6 @@ import {ProposalStatus} from "../Types";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import DataUsageOutlinedIcon from "@mui/icons-material/DataUsageOutlined";
 import NotInterestedOutlinedIcon from "@mui/icons-material/NotInterestedOutlined";
 import {getStatusColor} from "../utils";
@@ -26,7 +25,7 @@ export default function StatusIcon({status}: StatusIconProps): JSX.Element {
       );
     case ProposalStatus.FAILED:
       return (
-        <HighlightOffIcon
+        <ErrorOutlineOutlinedIcon
           fontSize="small"
           sx={{
             color: getStatusColor(status),
@@ -45,15 +44,6 @@ export default function StatusIcon({status}: StatusIconProps): JSX.Element {
     case ProposalStatus.AWAITING_EXECUTION:
       return (
         <DataUsageOutlinedIcon
-          fontSize="small"
-          sx={{
-            color: getStatusColor(status),
-          }}
-        />
-      );
-    case ProposalStatus.EXECUTION_FAILED:
-      return (
-        <ErrorOutlineOutlinedIcon
           fontSize="small"
           sx={{
             color: getStatusColor(status),

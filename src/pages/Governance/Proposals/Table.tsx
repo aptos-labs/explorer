@@ -20,6 +20,8 @@ import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
 import HashButton from "../../../components/HashButton";
 import {teal} from "../../../themes/colors/aptosColorPalette";
 import StatusIcon from "../components/StatusIcon";
+import ProposalStatusTooltip from "../components/ProposalStatusTooltip";
+import InfoIcon from "@mui/icons-material/Info";
 
 const MAX_TITLE_WIDTH = 400;
 
@@ -49,8 +51,8 @@ function StatusCell({proposal}: ProposalCellProps) {
   return (
     <TableCell sx={{textAlign: "left"}}>
       <Box sx={{display: "flex", alignItems: "center", gap: 0.7}}>
-        <StatusIcon status={proposal.proposal_status} />
-        {proposal.proposal_status}
+        <StatusIcon status={proposal.status} />
+        {proposal.status}
       </Box>
     </TableCell>
   );
@@ -146,7 +148,16 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
     case "title":
       return <GeneralTableHeaderCell header="Title" />;
     case "status":
-      return <GeneralTableHeaderCell header="Status" />;
+      return (
+        <GeneralTableHeaderCell
+          header="Status"
+          tooltip={
+            <ProposalStatusTooltip>
+              <InfoIcon fontSize="small" color="disabled" />
+            </ProposalStatusTooltip>
+          }
+        />
+      );
     case "proposer":
       return <GeneralTableHeaderCell header="Proposer" />;
     case "startDate":
