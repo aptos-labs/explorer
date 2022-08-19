@@ -41,7 +41,7 @@ function TitleCell({proposal}: ProposalCellProps) {
           textOverflow: "ellipsis",
         }}
       >
-        {proposal.metadata.title}
+        {proposal.proposal_metadata.title}
       </Box>
     </TableCell>
   );

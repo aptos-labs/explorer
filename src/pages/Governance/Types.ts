@@ -4,10 +4,7 @@ export type Proposal = {
   proposer: string;
   creation_time_secs: string;
   execution_content: {
-    vec: Array<{
-      metadata_location: string;
-      metadata_hash: string;
-    }>;
+    vec: [];
   };
   execution_hash: string;
   min_vote_threshold: number;
@@ -18,7 +15,19 @@ export type Proposal = {
   yes_votes: string;
   no_votes: string;
   is_resolved: boolean;
-  metadata: ProposalMetadata;
+  metadata: {
+    data: [
+      {
+        key: "metadata_hash";
+        value: string;
+      },
+      {
+        key: "metadata_location";
+        value: string;
+      },
+    ];
+  };
+  proposal_metadata: ProposalMetadata;
   is_voting_closed: boolean;
   proposal_state: ProposalVotingState;
 };

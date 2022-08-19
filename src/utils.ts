@@ -23,3 +23,17 @@ export function sortTransactions(
   const second = "version" in b ? parseInt(b.version) : Infinity;
   return first < second ? 1 : -1;
 }
+
+/*
+Converts a utf8 string encoded as hex back to string
+if hex starts with 0x - ignore this part and start from the 3rd char (at index 2).
+*/
+export function hex_to_ascii(hex: string): string {
+  var hexString = hex.toString();
+  var str = "";
+  let n = hex.startsWith("0x") ? 2 : 0;
+  for (n; n < hexString.length; n += 2) {
+    str += String.fromCharCode(parseInt(hexString.substring(n, n + 2), 16));
+  }
+  return str;
+}

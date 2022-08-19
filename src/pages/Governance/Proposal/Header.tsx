@@ -20,7 +20,9 @@ import ExecutionStatusIcon from "../components/ExecutionStatusIcon";
 const SECONDARY_TEXT_COLOR = "#A3A3A3";
 
 function TitleComponent({proposal}: {proposal: Proposal}): JSX.Element {
-  return <Typography variant="h5">{proposal.metadata.title}</Typography>;
+  return (
+    <Typography variant="h5">{proposal.proposal_metadata.title}</Typography>
+  );
 }
 
 function StatusComponent({proposal}: {proposal: Proposal}): JSX.Element {
