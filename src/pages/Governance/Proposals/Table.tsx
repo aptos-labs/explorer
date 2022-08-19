@@ -13,17 +13,15 @@ import {
 } from "@mui/material";
 import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
-import {Proposal, ProposalVotingState, ProposalExecutionState} from "../Types";
+import {Proposal} from "../Types";
 import {useGetProposal} from "../hooks/useGetProposal";
 import GeneralTableRow from "../../../components/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
 import HashButton from "../../../components/HashButton";
 import {teal} from "../../../themes/colors/aptosColorPalette";
-import VotingStatusIcon from "../components/VotingStatusIcon";
-import ExecutionStatusIcon from "../components/ExecutionStatusIcon";
+import StatusIcon from "../components/StatusIcon";
 
 const MAX_TITLE_WIDTH = 400;
-const CELL_HEIGHT = 72;
 
 type ProposalCellProps = {
   proposal: Proposal;
@@ -31,7 +29,7 @@ type ProposalCellProps = {
 
 function TitleCell({proposal}: ProposalCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}} height={CELL_HEIGHT}>
+    <TableCell sx={{textAlign: "left"}}>
       <Box
         component="div"
         sx={{
@@ -49,26 +47,18 @@ function TitleCell({proposal}: ProposalCellProps) {
 
 function StatusCell({proposal}: ProposalCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}} height={CELL_HEIGHT}>
+    <TableCell sx={{textAlign: "left"}}>
       <Box sx={{display: "flex", alignItems: "center", gap: 0.7}}>
-        <VotingStatusIcon proposalState={proposal.proposal_state} />
-        {proposal.proposal_state}
+        <StatusIcon status={proposal.proposal_status} />
+        {proposal.proposal_status}
       </Box>
-      {proposal.proposal_state === ProposalVotingState.PASSED && (
-        <Box sx={{display: "flex", alignItems: "center", gap: 0.7, mt: 1}}>
-          <ExecutionStatusIcon isResolved={proposal.is_resolved} />
-          {proposal.is_resolved
-            ? ProposalExecutionState.EXECUTED
-            : ProposalExecutionState.WAITING_TO_BE_EXECUTED}
-        </Box>
-      )}
     </TableCell>
   );
 }
 
 function ProposerCell({proposal}: ProposalCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}} height={CELL_HEIGHT}>
+    <TableCell sx={{textAlign: "left"}}>
       <HashButton hash={proposal.proposer} />
     </TableCell>
   );
@@ -94,7 +84,6 @@ function EndDateCell({proposal}: ProposalCellProps) {
       sx={{
         textAlign: "right",
       }}
-      height={CELL_HEIGHT}
     >
       {renderTimestamp(proposal.expiration_secs)}
     </TableCell>

@@ -1,6 +1,11 @@
 import {ensureMillisecondTimestamp} from "../utils";
-import {Proposal, ProposalVotingState} from "./Types";
-import {primaryColor, negativeColor, warningColor} from "./constants";
+import {Proposal, ProposalStatus, ProposalVotingState} from "./Types";
+import {
+  primaryColor,
+  negativeColor,
+  warningColor,
+  secondaryColor,
+} from "./constants";
 import {assertNever} from "../../utils";
 
 // replicate on-chain logic is_voting_closed()
@@ -29,7 +34,7 @@ function canBeResolvedEarly(proposal: Proposal): boolean {
 
 // replicate on-chain logic get_proposal_state()
 // https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/voting.move
-export function getProposalState(proposal: Proposal): ProposalVotingState {
+function getProposalVotingState(proposal: Proposal): ProposalVotingState {
   if (isVotingClosed(proposal)) {
     let yesVotes = parseInt(proposal.yes_votes);
     let noVotes = parseInt(proposal.no_votes);
@@ -48,6 +53,32 @@ export function getProposalState(proposal: Proposal): ProposalVotingState {
   }
 }
 
+export function getProposalStatus(proposal: Proposal): ProposalStatus {
+  if (!proposal.proposal_state) {
+    proposal.proposal_state = getProposalVotingState(proposal);
+  }
+
+  switch (proposal.proposal_state) {
+    case ProposalVotingState.PENDING:
+      return ProposalStatus.VOTING_IN_PROGRESS;
+    case ProposalVotingState.FAILED:
+      return ProposalStatus.FAILED;
+    case ProposalVotingState.REJECTED:
+      return ProposalStatus.REJECTED;
+    case ProposalVotingState.PASSED:
+      if (proposal.is_resolved) {
+        return ProposalStatus.EXECUTED;
+      } else {
+        const executionFailed = false;
+        return executionFailed
+          ? ProposalStatus.EXECUTION_FAILED
+          : ProposalStatus.AWAITING_EXECUTION;
+      }
+    default:
+      return assertNever(proposal.proposal_state);
+  }
+}
+
 function votesAboveThreshold(
   yesVotes: number,
   noVotes: number,
@@ -56,23 +87,21 @@ function votesAboveThreshold(
   return yesVotes + noVotes >= minVoteThreshold;
 }
 
-export function getVotingStatusColor(
-  proposalState: ProposalVotingState,
-): string {
-  switch (proposalState) {
-    case ProposalVotingState.PASSED:
-      return primaryColor;
-    case ProposalVotingState.PENDING:
+export function getStatusColor(status: ProposalStatus): string {
+  switch (status) {
+    case ProposalStatus.VOTING_IN_PROGRESS:
+      return secondaryColor;
+    case ProposalStatus.FAILED:
+      return negativeColor;
+    case ProposalStatus.REJECTED:
+      return negativeColor;
+    case ProposalStatus.AWAITING_EXECUTION:
       return warningColor;
-    case ProposalVotingState.FAILED:
+    case ProposalStatus.EXECUTION_FAILED:
       return negativeColor;
-    case ProposalVotingState.REJECTED:
-      return negativeColor;
+    case ProposalStatus.EXECUTED:
+      return primaryColor;
     default:
-      return assertNever(proposalState);
+      return assertNever(status);
   }
-}
-
-export function getExecutionStatusColor(isResolved: boolean): string {
-  return isResolved ? primaryColor : warningColor;
 }
