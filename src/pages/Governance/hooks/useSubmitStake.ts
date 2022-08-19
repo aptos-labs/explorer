@@ -14,8 +14,8 @@ const useSubmitStake = () => {
     operatorAddr: string,
     voterAddr: string,
   ) {
-    const payload = new TxnBuilderTypes.TransactionPayloadScriptFunction(
-      TxnBuilderTypes.ScriptFunction.natural(
+    const payload = new TxnBuilderTypes.TransactionPayloadEntryFunction(
+      TxnBuilderTypes.EntryFunction.natural(
         "0x1::stake",
         "initialize_stake_owner",
         [],

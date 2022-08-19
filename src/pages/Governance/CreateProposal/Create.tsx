@@ -21,7 +21,7 @@ async function createProposal(
   client: AptosClient,
 ): Promise<string> {
   const payload: Types.TransactionPayload = {
-    type: "script_function_payload",
+    type: "entry_function_payload",
     function: "0x1::aptos_governance::create_proposal",
     type_arguments: [],
     arguments: [

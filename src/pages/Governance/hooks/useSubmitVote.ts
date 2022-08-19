@@ -16,8 +16,8 @@ const useSubmitVote = () => {
   ) {
     const serializer = new BCS.Serializer();
     serializer.serializeBool(shouldPass);
-    const payload = new TxnBuilderTypes.TransactionPayloadScriptFunction(
-      TxnBuilderTypes.ScriptFunction.natural(
+    const payload = new TxnBuilderTypes.TransactionPayloadEntryFunction(
+      TxnBuilderTypes.EntryFunction.natural(
         "0x1::aptos_governance",
         "vote",
         [],

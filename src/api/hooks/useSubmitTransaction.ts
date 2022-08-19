@@ -40,7 +40,7 @@ const useSubmitTransaction = () => {
   }, [transactionResponse]);
 
   async function submitTransaction(
-    payload: TxnBuilderTypes.TransactionPayloadScriptFunction,
+    payload: TxnBuilderTypes.TransactionPayloadEntryFunction,
   ) {
     // if dApp network !== wallet network => return error
     if (walletExplorerNetworkMap(walletNetwork) !== state.network_name) {
