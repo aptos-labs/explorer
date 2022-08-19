@@ -28,7 +28,7 @@ export function sortTransactions(
 Converts a utf8 string encoded as hex back to string
 if hex starts with 0x - ignore this part and start from the 3rd char (at index 2).
 */
-export function hex_to_ascii(hex: string): string {
+export function hex_to_string(hex: string): string {
   var hexString = hex.toString();
   var str = "";
   let n = hex.startsWith("0x") ? 2 : 0;

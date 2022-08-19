@@ -5,7 +5,7 @@ import {getTableItem} from "../../../api";
 import {GlobalState, useGlobalState} from "../../../GlobalState";
 import {Proposal, ProposalMetadata} from "../Types";
 import {getProposalState, isVotingClosed} from "../utils";
-import {hex_to_ascii} from "../../../utils";
+import {hex_to_string} from "../../../utils";
 
 const fetchTableItem = async (
   proposal_id: string,
@@ -33,7 +33,7 @@ const fetchProposalMetadata = async (
   proposalData: Proposal,
 ): Promise<ProposalMetadata | null> => {
   // fetch proposal metadata from metadata_location property
-  const metadata_location = hex_to_ascii(proposalData.metadata.data[1].value);
+  const metadata_location = hex_to_string(proposalData.metadata.data[1].value);
   const response = await fetch(metadata_location);
   // validate response status
   if (response.status !== 200) return null;
@@ -44,7 +44,7 @@ const fetchProposalMetadata = async (
   const metadata_hash = proposalData.metadata.data[0].value;
 
   const hash = sha3_256(metadataText);
-  if (hex_to_ascii(metadata_hash) !== hash) return null;
+  if (hex_to_string(metadata_hash) !== hash) return null;
 
   const proposal_metadata = JSON.parse(metadataText);
 
