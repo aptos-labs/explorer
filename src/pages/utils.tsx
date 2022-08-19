@@ -57,14 +57,21 @@ export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
   };
 }
 
-export function getTimeRemaining(endtime: string) {
+export interface ProposalTimeRemaining {
+  days: number;
+  hours: number;
+  minutes: number;
+}
+
+export function getProposalTimeRemaining(
+  endtime: string,
+): ProposalTimeRemaining {
   const total = ensureMillisecondTimestamp(endtime) - Date.now();
   const minutes = Math.floor((total / 1000 / 60) % 60);
   const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
   const days = Math.floor(total / (1000 * 60 * 60 * 24));
 
   return {
-    total,
     days,
     hours,
     minutes,
