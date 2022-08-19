@@ -95,7 +95,7 @@ export default function Header() {
               <LogoIcon />
             </Link>
 
-            {/* <Nav /> */}
+            <Nav />
             <NetworkSelect />
             <Button
               onClick={toggleColorMode}
@@ -114,7 +114,7 @@ export default function Header() {
             >
               {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
             </Button>
-            {/* <NavMobile /> */}
+            <NavMobile />
           </Toolbar>
         </Container>
       </MuiAppBar>
