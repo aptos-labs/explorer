@@ -34,7 +34,7 @@ function canBeResolvedEarly(proposal: Proposal): boolean {
 
 // replicate on-chain logic get_proposal_state()
 // https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/voting.move
-function getProposalVotingState(proposal: Proposal): ProposalVotingState {
+function getProposalState(proposal: Proposal): ProposalVotingState {
   if (isVotingClosed(proposal)) {
     let yesVotes = parseInt(proposal.yes_votes);
     let noVotes = parseInt(proposal.no_votes);
@@ -55,7 +55,7 @@ function getProposalVotingState(proposal: Proposal): ProposalVotingState {
 
 export function getProposalStatus(proposal: Proposal): ProposalStatus {
   if (!proposal.proposal_state) {
-    proposal.proposal_state = getProposalVotingState(proposal);
+    proposal.proposal_state = getProposalState(proposal);
   }
 
   switch (proposal.proposal_state) {

@@ -38,7 +38,7 @@ export default function ProposalStatusTooltip({
       )}
       {StatusBox(
         ProposalStatus.AWAITING_EXECUTION,
-        "- Proposal is passed by by the majority of voters and waiting for execution.",
+        "- Proposal is passed by the majority of voters and waiting for execution.",
       )}
       {StatusBox(
         ProposalStatus.EXECUTED,
