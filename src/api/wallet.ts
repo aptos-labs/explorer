@@ -64,7 +64,7 @@ export const isUpdatedVersion = (): boolean =>
   window.aptos?.on instanceof Function;
 
 export const signAndSubmitTransaction = async (
-  transactionPayload: TxnBuilderTypes.TransactionPayloadScriptFunction,
+  transactionPayload: TxnBuilderTypes.TransactionPayloadEntryFunction,
   client: AptosClient,
 ): Promise<TransactionResponse> => {
   const responseOnError: TransactionResponseOnError = {

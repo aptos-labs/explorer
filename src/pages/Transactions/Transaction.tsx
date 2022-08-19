@@ -57,7 +57,7 @@ function renderBlockMetadataTransaction(
           {renderRow("Timestamp:", renderTimestamp(transaction.timestamp))}
           {renderRow(
             "Previous Block Votes:",
-            renderDebug(transaction.previous_block_votes),
+            renderDebug(transaction.previous_block_votes_bitvec),
           )}
         </Stack>,
       )}
