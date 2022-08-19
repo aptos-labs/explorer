@@ -4,8 +4,8 @@ import {sha3_256} from "js-sha3";
 import {getTableItem} from "../../../api";
 import {GlobalState, useGlobalState} from "../../../GlobalState";
 import {Proposal, ProposalMetadata} from "../Types";
-import {getProposalState, isVotingClosed} from "../utils";
 import {hex_to_string} from "../../../utils";
+import {getProposalStatus, isVotingClosed} from "../utils";
 
 const fetchTableItem = async (
   proposal_id: string,
@@ -65,7 +65,7 @@ const fetchProposal = async (
   // if bad metadata response or metadata hash is different
   if (!proposal_metadata) return null;
 
-  proposalData.proposal_state = getProposalState(proposalData);
+  proposalData.status = getProposalStatus(proposalData);
   proposalData.is_voting_closed = isVotingClosed(proposalData);
 
   proposalData.proposal_id = proposal_id;

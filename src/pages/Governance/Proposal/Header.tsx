@@ -2,20 +2,16 @@ import React, {useEffect, useState} from "react";
 import {Grid, Typography, Stack, Divider, Box} from "@mui/material";
 import {renderTimestamp} from "../../../pages/Transactions/helpers";
 import {getProposalTimeRemaining, ProposalTimeRemaining} from "../../utils";
-import {Proposal, ProposalExecutionState, ProposalVotingState} from "../Types";
+import {Proposal} from "../Types";
 import {primaryColor} from "../constants";
 import PersonIcon from "@mui/icons-material/Person";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {
-  getVotingStatusColor,
-  getExecutionStatusColor,
-  isVotingClosed,
-} from "../utils";
+import {getStatusColor, isVotingClosed} from "../utils";
 import HashButton from "../../../components/HashButton";
-import VotingStatusIcon from "../components/VotingStatusIcon";
-import ExecutionStatusIcon from "../components/ExecutionStatusIcon";
+import StatusIcon from "../components/StatusIcon";
+import ProposalStatusTooltip from "../components/ProposalStatusTooltip";
 
 const SECONDARY_TEXT_COLOR = "#A3A3A3";
 
@@ -27,42 +23,14 @@ function TitleComponent({proposal}: {proposal: Proposal}): JSX.Element {
 
 function StatusComponent({proposal}: {proposal: Proposal}): JSX.Element {
   return (
-    <Box sx={{display: "flex", alignItems: "center", gap: 3}}>
+    <ProposalStatusTooltip>
       <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-        <VotingStatusIcon proposalState={proposal.proposal_state} />
-        <Typography
-          variant="subtitle1"
-          color={getVotingStatusColor(proposal.proposal_state)}
-        >
-          {proposal.proposal_state}
+        <StatusIcon status={proposal.status} />
+        <Typography variant="subtitle1" color={getStatusColor(proposal.status)}>
+          {proposal.status}
         </Typography>
       </Box>
-      {proposal.proposal_state === ProposalVotingState.PASSED && (
-        <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-          <ExecutionStatusComponent proposal={proposal} />
-        </Box>
-      )}
-    </Box>
-  );
-}
-
-function ExecutionStatusComponent({
-  proposal,
-}: {
-  proposal: Proposal;
-}): JSX.Element {
-  return (
-    <>
-      <ExecutionStatusIcon isResolved={proposal.is_resolved} />
-      <Typography
-        variant="subtitle1"
-        color={getExecutionStatusColor(proposal.is_resolved)}
-      >
-        {proposal.is_resolved
-          ? ProposalExecutionState.EXECUTED
-          : ProposalExecutionState.WAITING_TO_BE_EXECUTED}
-      </Typography>
-    </>
+    </ProposalStatusTooltip>
   );
 }
 
