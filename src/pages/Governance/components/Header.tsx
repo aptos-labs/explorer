@@ -1,4 +1,4 @@
-import {Grid, Typography} from "@mui/material";
+import {Grid, Typography, Hidden} from "@mui/material";
 import React from "react";
 import DividerHero from "../../../components/DividerHero";
 import HeadingSub from "../../../components/HeadingSub";
@@ -14,9 +14,11 @@ export function Header() {
             Aptos Governance
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={6} textAlign={{sm: "right"}}>
-          <WalletButton />
-        </Grid>
+        <Hidden smDown>
+          <Grid item xs={12} sm={6} textAlign={{sm: "right"}}>
+            <WalletButton />
+          </Grid>
+        </Hidden>
       </Grid>
       <DividerHero />
     </>
