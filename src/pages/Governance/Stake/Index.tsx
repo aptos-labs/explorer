@@ -45,7 +45,7 @@ export function StakePage() {
     const isVoterAddrValid = validateVoterAddressInput();
 
     if (isStakingAmountValid && isOperatorAddrValid && isVoterAddrValid) {
-      await submitStake(parseInt(stakingAmount), operatorAddr, voterAddr);
+      await submitStake(stakingAmount, operatorAddr, voterAddr);
     }
   };
 

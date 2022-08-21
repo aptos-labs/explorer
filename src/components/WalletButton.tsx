@@ -76,6 +76,7 @@ const OldWalletVersionWarning = (): JSX.Element => {
 export const WalletButton = (): JSX.Element => {
   const {isInstalled, isConnected, isAccountSet, connect, accountAddress} =
     useWalletContext();
+  // console.log(isAccountSet)
 
   if (!isInstalled) {
     return (

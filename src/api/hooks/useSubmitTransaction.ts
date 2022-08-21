@@ -1,4 +1,4 @@
-import {TxnBuilderTypes, AptosClient} from "aptos";
+import {TxnBuilderTypes, AptosClient, Types} from "aptos";
 import {useEffect, useState} from "react";
 
 import {useWalletContext} from "../../context/wallet/context";
@@ -38,7 +38,7 @@ const useSubmitTransaction = () => {
   }, [transactionResponse]);
 
   async function submitTransaction(
-    payload: TxnBuilderTypes.TransactionPayloadEntryFunction,
+    payload: TxnBuilderTypes.TransactionPayload,
   ) {
     // if wallet network in dApp networks && dApp network !== wallet network => return error
     if (walletNetwork in networks && walletNetwork !== state.network_name) {
