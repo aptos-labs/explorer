@@ -71,11 +71,11 @@ export const signAndSubmitTransaction = async (
     transactionSubmitted: false,
     message: "Unknown Error",
   };
-  console.log("here");
   try {
     const response = await window.aptos?.signAndSubmitTransaction?.(
       transactionPayload,
     );
+    // transaction succeed
     if ("hash" in response) {
       await client.waitForTransaction(response["hash"]);
       return {
@@ -83,9 +83,9 @@ export const signAndSubmitTransaction = async (
         transactionHash: response["hash"],
       };
     }
+    // transaction failed
     return {...responseOnError, message: response.message};
   } catch (error: any) {
-    console.log(error);
     if (typeof error == "object" && "message" in error) {
       responseOnError.message = error.message;
     }
