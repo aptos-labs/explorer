@@ -1,12 +1,10 @@
 import {TxnBuilderTypes, AptosClient} from "aptos";
 import {useEffect, useState} from "react";
 
-import {
-  useWalletContext,
-  walletExplorerNetworkMap,
-} from "../../context/wallet/context";
+import {useWalletContext} from "../../context/wallet/context";
 import {signAndSubmitTransaction} from "../wallet";
 import {useGlobalState} from "../../GlobalState";
+import {networks} from "../../constants";
 
 export type TransactionResponse =
   | TransactionResponseOnSubmission
@@ -42,8 +40,8 @@ const useSubmitTransaction = () => {
   async function submitTransaction(
     payload: TxnBuilderTypes.TransactionPayloadEntryFunction,
   ) {
-    // if dApp network !== wallet network => return error
-    if (walletExplorerNetworkMap(walletNetwork) !== state.network_name) {
+    // if wallet network in dApp networks && dApp network !== wallet network => return error
+    if (walletNetwork in networks && walletNetwork !== state.network_name) {
       setTransactionResponse({
         transactionSubmitted: false,
         message:

@@ -26,12 +26,12 @@ export default function NetworkSelect() {
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const network_name = event.target.value;
-    maybeSetNetwork(network_name && network_name.toLowerCase());
+    maybeSetNetwork(network_name);
   };
 
   useEffect(() => {
     const network_name = searchParams.get("network");
-    maybeSetNetwork(network_name && network_name.toLowerCase());
+    maybeSetNetwork(network_name);
   });
 
   function DropdownIcon(props: SvgIconProps) {
