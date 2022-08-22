@@ -62,7 +62,7 @@ export default function VoteButtons({proposalId}: VoteButtonsProps) {
   };
 
   const onVote = (shouldPass: boolean) => {
-    submitVote(parseInt(proposalId), shouldPass, accountAddr);
+    submitVote(proposalId, shouldPass, accountAddr);
     closeVoteForModal();
     closeVoteAgainstModal();
   };
