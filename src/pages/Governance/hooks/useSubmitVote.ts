@@ -10,7 +10,7 @@ const useSubmitVote = () => {
   } = useSubmitTransaction();
 
   async function submitVote(
-    proposalId: number,
+    proposalId: string,
     shouldPass: boolean,
     ownerAccountAddr: string,
   ) {
@@ -18,7 +18,7 @@ const useSubmitVote = () => {
       type: "entry_function_payload",
       function: "0x1::aptos_governance::vote",
       type_arguments: [],
-      arguments: [ownerAccountAddr, proposalId + "", shouldPass],
+      arguments: [ownerAccountAddr, proposalId, shouldPass],
     };
 
     await submitTransaction(payload);
