@@ -3,9 +3,10 @@ export const devnetUrl =
 
 export const networks = {
   local: "http://localhost:8080",
-  devnet: devnetUrl,
-  test: "https://rosetta.aptosdev.com/",
-  ait3: "https://ait3.aptosdev.com/",
+  Devnet: devnetUrl,
+  Test: "https://rosetta.aptosdev.com/",
+  Ait3: "https://ait3.aptosdev.com/",
+  Sherry: "https://sherryx.aptosdev.com/",
 };
 
 export type NetworkName = keyof typeof networks;
@@ -18,7 +19,7 @@ for (const key of Object.keys(networks)) {
   }
 }
 
-export const defaultNetworkName: NetworkName = "devnet" as const;
+export const defaultNetworkName: NetworkName = "Devnet" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;

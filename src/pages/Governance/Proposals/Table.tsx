@@ -9,7 +9,6 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Typography,
   Grid,
 } from "@mui/material";
 import {renderTimestamp} from "../../Transactions/helpers";
@@ -20,9 +19,11 @@ import GeneralTableRow from "../../../components/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
 import HashButton from "../../../components/HashButton";
 import {teal} from "../../../themes/colors/aptosColorPalette";
-import {renderStatusIcon} from "../utils";
+import StatusIcon from "../components/StatusIcon";
+import ProposalStatusTooltip from "../components/ProposalStatusTooltip";
+import InfoIcon from "@mui/icons-material/Info";
 
-const TITLE_WIDTH = 400;
+const MAX_TITLE_WIDTH = 400;
 
 type ProposalCellProps = {
   proposal: Proposal;
@@ -34,13 +35,13 @@ function TitleCell({proposal}: ProposalCellProps) {
       <Box
         component="div"
         sx={{
-          width: TITLE_WIDTH,
+          maxWidth: MAX_TITLE_WIDTH,
           color: teal[500],
           overflow: "hidden",
           textOverflow: "ellipsis",
         }}
       >
-        {proposal.metadata.title}
+        {proposal.proposal_metadata.title}
       </Box>
     </TableCell>
   );
@@ -49,9 +50,9 @@ function TitleCell({proposal}: ProposalCellProps) {
 function StatusCell({proposal}: ProposalCellProps) {
   return (
     <TableCell sx={{textAlign: "left"}}>
-      <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-        {renderStatusIcon(proposal.proposal_state)}
-        {proposal.proposal_state}
+      <Box sx={{display: "flex", alignItems: "center", gap: 0.7}}>
+        <StatusIcon status={proposal.status} />
+        {proposal.status}
       </Box>
     </TableCell>
   );
@@ -66,24 +67,36 @@ function ProposerCell({proposal}: ProposalCellProps) {
 }
 
 // TODO: make renderTimestamp a general helper and move it out of Transactions folder
-function TimestampCell({proposal}: ProposalCellProps) {
-  const timestamp =
-    "creation_time_secs" in proposal ? (
-      renderTimestamp(proposal.creation_time_secs)
-    ) : (
-      <Typography variant="subtitle2" align="center">
-        -
-      </Typography>
-    );
+function StartDateCell({proposal}: ProposalCellProps) {
+  return (
+    <TableCell
+      sx={{
+        textAlign: "right",
+      }}
+    >
+      {renderTimestamp(proposal.creation_time_secs)}
+    </TableCell>
+  );
+}
 
-  return <TableCell sx={{textAlign: "right"}}>{timestamp}</TableCell>;
+function EndDateCell({proposal}: ProposalCellProps) {
+  return (
+    <TableCell
+      sx={{
+        textAlign: "right",
+      }}
+    >
+      {renderTimestamp(proposal.expiration_secs)}
+    </TableCell>
+  );
 }
 
 const ProposalCells = Object.freeze({
   title: TitleCell,
   status: StatusCell,
   proposer: ProposerCell,
-  timestamp: TimestampCell,
+  startDate: StartDateCell,
+  endDate: EndDateCell,
 });
 
 type ProposalColumn = keyof typeof ProposalCells;
@@ -92,7 +105,8 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
   "title",
   "status",
   "proposer",
-  "timestamp",
+  "startDate",
+  "endDate",
 ];
 
 type ProposalRowProps = {
@@ -133,13 +147,24 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
     case "title":
       return <GeneralTableHeaderCell header="Title" />;
     case "status":
-      return <GeneralTableHeaderCell header="Status" />;
+      return (
+        <GeneralTableHeaderCell
+          header="Status"
+          tooltip={
+            <ProposalStatusTooltip>
+              <InfoIcon fontSize="small" color="disabled" />
+            </ProposalStatusTooltip>
+          }
+        />
+      );
     case "proposer":
       return <GeneralTableHeaderCell header="Proposer" />;
-    case "timestamp":
+    case "startDate":
       return (
-        <GeneralTableHeaderCell header="Timestamp" textAlignRight={true} />
+        <GeneralTableHeaderCell header="Start Date" textAlignRight={true} />
       );
+    case "endDate":
+      return <GeneralTableHeaderCell header="End Date" textAlignRight={true} />;
     default:
       return assertNever(column);
   }

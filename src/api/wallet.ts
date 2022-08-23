@@ -1,9 +1,8 @@
-import {TxnBuilderTypes} from "aptos";
+import {TxnBuilderTypes, AptosClient, Types} from "aptos";
 import {WalletNetworks} from "../context/wallet/context";
-
 import {
   TransactionResponse,
-  TransactionResponseOnFailure,
+  TransactionResponseOnError,
 } from "./hooks/useSubmitTransaction";
 
 export const getAptosWallet = (): boolean => {
@@ -65,27 +64,31 @@ export const isUpdatedVersion = (): boolean =>
   window.aptos?.on instanceof Function;
 
 export const signAndSubmitTransaction = async (
-  transactionPayload: TxnBuilderTypes.TransactionPayloadScriptFunction,
+  transactionPayload: Types.TransactionPayload,
+  client: AptosClient,
 ): Promise<TransactionResponse> => {
-  const responseOnFailure: TransactionResponseOnFailure = {
-    succeeded: false,
+  const responseOnError: TransactionResponseOnError = {
+    transactionSubmitted: false,
     message: "Unknown Error",
   };
-
   try {
     const response = await window.aptos?.signAndSubmitTransaction?.(
       transactionPayload,
     );
+    // transaction succeed
     if ("hash" in response) {
+      await client.waitForTransaction(response["hash"]);
       return {
-        succeeded: true,
+        transactionSubmitted: true,
         transactionHash: response["hash"],
       };
     }
+    // transaction failed
+    return {...responseOnError, message: response.message};
   } catch (error: any) {
     if (typeof error == "object" && "message" in error) {
-      responseOnFailure.message = error.message;
+      responseOnError.message = error.message;
     }
   }
-  return responseOnFailure;
+  return responseOnError;
 };

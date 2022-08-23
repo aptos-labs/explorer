@@ -4,10 +4,7 @@ export type Proposal = {
   proposer: string;
   creation_time_secs: string;
   execution_content: {
-    vec: Array<{
-      metadata_location: string;
-      metadata_hash: string;
-    }>;
+    vec: [];
   };
   execution_hash: string;
   min_vote_threshold: number;
@@ -18,10 +15,22 @@ export type Proposal = {
   yes_votes: string;
   no_votes: string;
   is_resolved: boolean;
-  metadata: ProposalMetadata;
-  // TODO - fetch or calculate both on the client
+  metadata: {
+    data: [
+      {
+        key: "metadata_hash";
+        value: string;
+      },
+      {
+        key: "metadata_location";
+        value: string;
+      },
+    ];
+  };
+  proposal_metadata: ProposalMetadata;
   is_voting_closed: boolean;
-  proposal_state: ProposalState;
+  proposal_state: ProposalVotingState; // matches proposal_state on chain
+  status: ProposalStatus; // represents general proposal status
 };
 
 export type ProposalMetadata = {
@@ -31,8 +40,17 @@ export type ProposalMetadata = {
   discussion_url: string;
 };
 
-export enum ProposalState {
-  SUCCEEDED = "Succeeded",
+export enum ProposalStatus {
+  VOTING_IN_PROGRESS = "Voting In Progress",
+  FAILED = "Failed", // not enough votes
+  REJECTED = "Rejected", // more no votes
+  AWAITING_EXECUTION = "Awaiting Execution", // passed, waiting for execution
+  EXECUTED = "Executed", // passed and executed, the final success
+}
+
+export enum ProposalVotingState {
+  PASSED = "Passed",
   PENDING = "Pending",
   FAILED = "Failed",
+  REJECTED = "Rejected",
 }

@@ -1,6 +1,4 @@
 import {createContext, useContext} from "react";
-import {NetworkName} from "../../constants";
-import {assertNever} from "../../utils";
 
 export interface walletContext {
   isInstalled: boolean;
@@ -22,19 +20,4 @@ export const useWalletContext = () => {
   return context;
 };
 
-export type WalletNetworks = "Devnet" | "Localhost" | "Testnet";
-
-export const walletExplorerNetworkMap = (
-  walletNetwork: WalletNetworks,
-): NetworkName => {
-  switch (walletNetwork) {
-    case "Devnet":
-      return "devnet";
-    case "Localhost":
-      return "local";
-    case "Testnet":
-      return "test";
-    default:
-      return assertNever(walletNetwork);
-  }
-};
+export type WalletNetworks = "Devnet" | "Testnet";

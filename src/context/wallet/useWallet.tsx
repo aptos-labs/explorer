@@ -24,6 +24,7 @@ export function useWallet() {
   useEffect(() => {
     isAccountCreated().then(setIsAccountSet);
     isWalletConnected().then(setIsConnected);
+    getWalletNetwork().then(setWalletNetwork);
   }, [isInstalled, accountAddress, isAccountSet]);
 
   useEffect(() => {
@@ -47,7 +48,6 @@ export function useWallet() {
   useEffect(() => {
     if (isConnected) {
       getAccountAddress().then(setAccountAddress);
-      getWalletNetwork().then((network) => setWalletNetwork(network));
     }
   }, [isConnected]);
 

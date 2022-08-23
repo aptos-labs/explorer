@@ -1,4 +1,4 @@
-import {teal} from "../../themes/colors/aptosColorPalette";
+import {teal, grey} from "../../themes/colors/aptosColorPalette";
 
 // TODO: add red and yellow with opacity to aptosColorPalette
 
@@ -12,6 +12,8 @@ export const negativeColorOnHover: string = "#dd6767";
 export const negativeColorWithOpacity: string = "rgba(249,115,115,0.1)";
 // yellow
 export const warningColor: string = "#D8BF45"; // yellow
+// grey
+export const secondaryColor: string = grey[400]; // grey
 
 export const voteFor: string = "FOR";
 export const voteAgainst: string = "AGAINST";

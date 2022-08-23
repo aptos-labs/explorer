@@ -26,7 +26,7 @@ import HeaderSearch from "../layout/Search";
 import GoBack from "../../components/GoBack";
 
 function renderBlockMetadataTransaction(
-  transaction: Types.BlockMetadataTransaction,
+  transaction: Types.Transaction_BlockMetadataTransaction,
 ) {
   return (
     <>
@@ -57,7 +57,7 @@ function renderBlockMetadataTransaction(
           {renderRow("Timestamp:", renderTimestamp(transaction.timestamp))}
           {renderRow(
             "Previous Block Votes:",
-            renderDebug(transaction.previous_block_votes),
+            renderDebug(transaction.previous_block_votes_bitvec),
           )}
         </Stack>,
       )}
@@ -161,7 +161,6 @@ function RenderDirectWriteSet(
 function RenderScriptWriteSet(writeset: Types.ScriptWriteSet) {
   return (
     <Grid container>
-      {renderRow("Type:", writeset.type)}
       {renderRow("Execute As:", writeset.execute_as)}
       {renderRow("Script:", renderDebug(writeset.script))}
     </Grid>
@@ -200,7 +199,7 @@ function RenderPayload(payload: Types.WriteSetPayload) {
   return renderSection(
     <>
       <Stack direction="column" spacing={2}>
-        {renderRow("Type", payload.type)}
+        {renderRow("Type", payload.write_set.type)}
         {RenderWriteSet(payload.write_set)}
       </Stack>
     </>,
@@ -208,24 +207,26 @@ function RenderPayload(payload: Types.WriteSetPayload) {
   );
 }
 
-function RenderChanges(transaction: Types.OnChainTransaction): React.ReactNode {
+function RenderChanges(transaction: Types.Transaction): React.ReactNode {
   return renderSection(
     <>
       {
         <Stack spacing={6} divider={<Divider orientation="horizontal" />}>
-          {transaction.changes.map((change, index) => (
-            <Stack
-              key={index}
-              spacing={1}
-              divider={<Divider variant="dotted" orientation="horizontal" />}
-            >
-              {renderRow("Index:", index)}
-              {renderRow("Type:", change.type)}
-              {"address" in change && renderRow("Address:", change.address)}
-              {renderRow("State Key Hash:", change.state_key_hash)}
-              {"data" in change && renderRow("Data:", renderDebug(change.data))}
-            </Stack>
-          ))}
+          {"changes" in transaction &&
+            transaction.changes.map((change, index) => (
+              <Stack
+                key={index}
+                spacing={1}
+                divider={<Divider variant="dotted" orientation="horizontal" />}
+              >
+                {renderRow("Index:", index)}
+                {renderRow("Type:", change.type)}
+                {"address" in change && renderRow("Address:", change.address)}
+                {renderRow("State Key Hash:", change.state_key_hash)}
+                {"data" in change &&
+                  renderRow("Data:", renderDebug(change.data))}
+              </Stack>
+            ))}
         </Stack>
       }
     </>,
@@ -233,7 +234,9 @@ function RenderChanges(transaction: Types.OnChainTransaction): React.ReactNode {
   );
 }
 
-function renderGenesisTransaction(transaction: Types.GenesisTransaction) {
+function renderGenesisTransaction(
+  transaction: Types.Transaction_GenesisTransaction,
+) {
   return (
     <>
       {RenderHeader(
@@ -264,7 +267,7 @@ function renderGenesisTransaction(transaction: Types.GenesisTransaction) {
   );
 }
 
-function renderUserTransaction(transaction: Types.UserTransaction) {
+function renderUserTransaction(transaction: Types.Transaction_UserTransaction) {
   return (
     <>
       {RenderHeader(
@@ -293,7 +296,6 @@ function renderUserTransaction(transaction: Types.UserTransaction) {
           {renderRow("Gas Used:", renderGas(transaction.gas_used))}
           {renderRow("Max Gas:", renderGas(transaction.max_gas_amount))}
           {renderRow("Gas Unit Price:", renderGas(transaction.gas_unit_price))}
-          {renderRow("Gas Currency:", transaction.gas_currency_code)}
           {renderRow("VM Status:", transaction.vm_status)}
           {renderRow("Signature:", renderDebug(transaction.signature))}
           {renderRow(
@@ -319,7 +321,9 @@ function renderUserTransaction(transaction: Types.UserTransaction) {
   );
 }
 
-function renderPendingTransaction(transaction: Types.PendingTransaction) {
+function renderPendingTransaction(
+  transaction: Types.Transaction_PendingTransaction,
+) {
   return (
     <>
       {RenderHeader(
@@ -347,7 +351,6 @@ function renderPendingTransaction(transaction: Types.PendingTransaction) {
           {renderRow("Hash:", transaction.hash)}
           {renderRow("Max Gas:", renderGas(transaction.max_gas_amount))}
           {renderRow("Gas Unit Price:", renderGas(transaction.gas_unit_price))}
-          {renderRow("Gas Currency:", transaction.gas_currency_code)}
           {renderRow("Signature:", renderDebug(transaction.signature))}
         </Stack>,
       )}
@@ -364,9 +367,8 @@ function renderPendingTransaction(transaction: Types.PendingTransaction) {
   );
 }
 
-// TODO: Update type to StateCheckpointTransaction when it's added to the SDK.
 function renderStateCheckpointTransaction(
-  transaction: Types.OnChainTransaction,
+  transaction: Types.Transaction_StateCheckpointTransaction,
 ) {
   return (
     <>
@@ -382,8 +384,6 @@ function renderStateCheckpointTransaction(
           {renderRow("Version:", transaction.version)}
           {renderRow("Hash:", transaction.hash)}
           {renderRow("Status:", renderSuccess(transaction.success))}
-          {"proposer" in transaction &&
-            renderRow("Proposer:", transaction.proposer)}
           {renderRow("State Root Hash:", transaction.state_root_hash)}
           {renderRow("Event Root Hash:", transaction.event_root_hash)}
           {renderRow("Gas Used:", renderGas(transaction.gas_used))}
@@ -451,24 +451,28 @@ function RenderTransaction({
   switch (transaction.type) {
     case "block_metadata_transaction":
       result = renderBlockMetadataTransaction(
-        transaction as Types.BlockMetadataTransaction,
+        transaction as Types.Transaction_BlockMetadataTransaction,
       );
       break;
     case "genesis_transaction":
       result = renderGenesisTransaction(
-        transaction as Types.GenesisTransaction,
+        transaction as Types.Transaction_GenesisTransaction,
       );
       break;
     case "user_transaction":
-      result = renderUserTransaction(transaction as Types.UserTransaction);
+      result = renderUserTransaction(
+        transaction as Types.Transaction_UserTransaction,
+      );
       break;
     case "pending_transaction":
       result = renderPendingTransaction(
-        transaction as Types.PendingTransaction,
+        transaction as Types.Transaction_PendingTransaction,
       );
       break;
     case "state_checkpoint_transaction":
-      result = renderStateCheckpointTransaction(transaction as any);
+      result = renderStateCheckpointTransaction(
+        transaction as Types.Transaction_StateCheckpointTransaction,
+      );
       break;
     default:
       result = (

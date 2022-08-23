@@ -1,32 +1,35 @@
-import {BCS, TxnBuilderTypes} from "aptos";
+import {Types} from "aptos";
 import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
 
 const useSubmitStake = () => {
-  const {submitTransaction, transactionResponse, clearTransactionResponse} =
-    useSubmitTransaction();
+  const {
+    submitTransaction,
+    transactionInProcess,
+    transactionResponse,
+    clearTransactionResponse,
+  } = useSubmitTransaction();
 
   async function submitStake(
-    stakingAmount: number,
+    stakingAmount: string,
     operatorAddr: string,
     voterAddr: string,
   ) {
-    const payload = new TxnBuilderTypes.TransactionPayloadScriptFunction(
-      TxnBuilderTypes.ScriptFunction.natural(
-        "0x1::stake",
-        "initialize_owner_only",
-        [],
-        [
-          BCS.bcsSerializeUint64(stakingAmount),
-          BCS.bcsToBytes(TxnBuilderTypes.AccountAddress.fromHex(operatorAddr)),
-          BCS.bcsToBytes(TxnBuilderTypes.AccountAddress.fromHex(voterAddr)),
-        ],
-      ),
-    );
+    const payload: Types.TransactionPayload = {
+      type: "entry_function_payload",
+      function: "0x1::stake::initialize_stake_owner",
+      type_arguments: [],
+      arguments: [stakingAmount, operatorAddr, voterAddr],
+    };
 
     await submitTransaction(payload);
   }
 
-  return {submitStake, transactionResponse, clearTransactionResponse};
+  return {
+    submitStake,
+    transactionInProcess,
+    transactionResponse,
+    clearTransactionResponse,
+  };
 };
 
 export default useSubmitStake;

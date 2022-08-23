@@ -11,6 +11,7 @@ interface AmountTextFieldProps {
   label: string;
   amount: string;
   amountIsValid: boolean;
+  errorMessage: string;
   onAmountChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -18,6 +19,7 @@ export default function AmountTextField({
   label,
   amount,
   amountIsValid,
+  errorMessage,
   onAmountChange,
 }: AmountTextFieldProps): JSX.Element {
   return amountIsValid ? (
@@ -44,7 +46,7 @@ export default function AmountTextField({
         onChange={onAmountChange}
         startAdornment={<InputAdornment position="start">$</InputAdornment>}
       />
-      <FormHelperText error>Incorrect amount</FormHelperText>
+      <FormHelperText error>{errorMessage}</FormHelperText>
     </FormControl>
   );
 }

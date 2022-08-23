@@ -57,14 +57,21 @@ export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
   };
 }
 
-export function getTimeRemaining(endtime: string) {
+export interface ProposalTimeRemaining {
+  days: number;
+  hours: number;
+  minutes: number;
+}
+
+export function getProposalTimeRemaining(
+  endtime: string,
+): ProposalTimeRemaining {
   const total = ensureMillisecondTimestamp(endtime) - Date.now();
   const minutes = Math.floor((total / 1000 / 60) % 60);
   const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
   const days = Math.floor(total / (1000 * 60 * 60 * 24));
 
   return {
-    total,
     days,
     hours,
     minutes,
@@ -132,4 +139,8 @@ export function isValidAccountAddress(accountAddr: string): boolean {
   // with multiple options - 0X, 0x001, 0x1, 0x01
   // can start with that and see if any fails to parsing
   return /^(0[xX])?[a-fA-F0-9]{1,64}$/.test(accountAddr);
+}
+export function isHex(text: string) {
+  // if it's hex, and is <= (64 + 2 for 0x) char long
+  return text.startsWith("0x") && text.length <= 66;
 }

@@ -5,7 +5,7 @@ import {Header as ProposalsHeader} from "./Header";
 import {ProposalsTable} from "./Table";
 import {useGetProposalsTableData} from "../hooks/useGetProposalsTableData";
 import {Instructions} from "./Instructions";
-import {Header} from "../Header";
+import {Header} from "../components/Header";
 
 export function GovernancePage() {
   const data = useGetProposalsTableData();

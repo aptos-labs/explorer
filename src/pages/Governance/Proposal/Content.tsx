@@ -7,7 +7,7 @@ type ProposalContentProps = {
   proposal: Proposal;
 };
 
-export function ProposalContent({proposal}: ProposalContentProps) {
+export function ProposalContent({proposal}: ProposalContentProps): JSX.Element {
   return (
     <Stack
       direction="column"
@@ -20,13 +20,16 @@ export function ProposalContent({proposal}: ProposalContentProps) {
       <ContentRow
         title="Source Code"
         text="LINK TO SOURCE CODE"
-        link={proposal.metadata.source_code_url}
+        link={proposal.proposal_metadata.source_code_url}
       />
-      <ContentRow title="Description" text={proposal.metadata.description} />
+      <ContentRow
+        title="Description"
+        text={proposal.proposal_metadata.description}
+      />
       <ContentRow
         title="Discussion"
         text="LINK TO DISCUSSION"
-        link={proposal.metadata.discussion_url}
+        link={proposal.proposal_metadata.discussion_url}
       />
     </Stack>
   );

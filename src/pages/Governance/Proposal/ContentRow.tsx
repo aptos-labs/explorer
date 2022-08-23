@@ -1,5 +1,5 @@
 import React from "react";
-import {Typography, Stack, Link} from "@mui/material";
+import {Typography, Stack, Link, Box} from "@mui/material";
 
 type ContentRowProps = {
   title: React.ReactNode;
@@ -7,16 +7,22 @@ type ContentRowProps = {
   link?: string;
 };
 
-export default function ContentRow({title, text, link}: ContentRowProps) {
+export default function ContentRow({
+  title,
+  text,
+  link,
+}: ContentRowProps): JSX.Element {
   return (
     <Stack direction="column" spacing={2}>
       <Typography noWrap variant="h6">
         {title}
       </Typography>
       {link ? (
-        <Link href={link} color="primary" target="_blank">
-          {text}
-        </Link>
+        <Box>
+          <Link href={link} color="primary" target="_blank">
+            {text}
+          </Link>
+        </Box>
       ) : (
         <Typography style={{wordWrap: "break-word"}}>{text}</Typography>
       )}

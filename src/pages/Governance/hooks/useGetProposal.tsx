@@ -4,7 +4,8 @@ import {sha3_256} from "js-sha3";
 import {getTableItem} from "../../../api";
 import {GlobalState, useGlobalState} from "../../../GlobalState";
 import {Proposal, ProposalMetadata} from "../Types";
-import {getProposalState, isVotingClosed} from "../utils";
+import {hex_to_string} from "../../../utils";
+import {getProposalStatus, isVotingClosed} from "../utils";
 
 const fetchTableItem = async (
   proposal_id: string,
@@ -18,23 +19,21 @@ const fetchTableItem = async (
     key: proposal_id,
   };
 
-  const tableItemData = await getTableItem(
+  const proposalData = await getTableItem(
     {tableHandle: handle, data: votingTableItemRequest},
     state.network_value,
   );
 
-  if (!tableItemData || tableItemData.status !== 200) return null;
-
-  const proposalData = tableItemData.data;
+  if (!proposalData) return null;
 
   return proposalData;
 };
 
-const fetchMetadata = async (
+const fetchProposalMetadata = async (
   proposalData: Proposal,
 ): Promise<ProposalMetadata | null> => {
   // fetch proposal metadata from metadata_location property
-  const {metadata_location} = proposalData.execution_content.vec[0];
+  const metadata_location = hex_to_string(proposalData.metadata.data[1].value);
   const response = await fetch(metadata_location);
   // validate response status
   if (response.status !== 200) return null;
@@ -42,13 +41,14 @@ const fetchMetadata = async (
   const metadataText = await response.text();
 
   //validate metadata
-  const {metadata_hash} = proposalData.execution_content.vec[0];
+  const metadata_hash = proposalData.metadata.data[0].value;
+
   const hash = sha3_256(metadataText);
-  if (metadata_hash !== hash) return null;
+  if (hex_to_string(metadata_hash) !== hash) return null;
 
-  const metadata = JSON.parse(metadataText);
+  const proposal_metadata = JSON.parse(metadataText);
 
-  return metadata;
+  return proposal_metadata;
 };
 
 const fetchProposal = async (
@@ -61,15 +61,15 @@ const fetchProposal = async (
   if (!proposalData) return null;
 
   // fetch proposal metadata
-  const metadata = await fetchMetadata(proposalData);
+  const proposal_metadata = await fetchProposalMetadata(proposalData);
   // if bad metadata response or metadata hash is different
-  if (!metadata) return null;
+  if (!proposal_metadata) return null;
 
-  proposalData.proposal_state = getProposalState(proposalData);
+  proposalData.status = getProposalStatus(proposalData);
   proposalData.is_voting_closed = isVotingClosed(proposalData);
 
   proposalData.proposal_id = proposal_id;
-  proposalData.metadata = metadata;
+  proposalData.proposal_metadata = proposal_metadata;
 
   return proposalData;
 };

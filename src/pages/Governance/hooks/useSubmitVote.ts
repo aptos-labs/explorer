@@ -1,36 +1,35 @@
-import {BCS, TxnBuilderTypes} from "aptos";
+import {Types} from "aptos";
 import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
 
 const useSubmitVote = () => {
-  const {submitTransaction, transactionResponse, clearTransactionResponse} =
-    useSubmitTransaction();
+  const {
+    submitTransaction,
+    transactionInProcess,
+    transactionResponse,
+    clearTransactionResponse,
+  } = useSubmitTransaction();
 
   async function submitVote(
-    proposalId: number,
+    proposalId: string,
     shouldPass: boolean,
     ownerAccountAddr: string,
   ) {
-    const serializer = new BCS.Serializer();
-    serializer.serializeBool(shouldPass);
-    const payload = new TxnBuilderTypes.TransactionPayloadScriptFunction(
-      TxnBuilderTypes.ScriptFunction.natural(
-        "0x1::aptos_governance",
-        "vote",
-        [],
-        [
-          BCS.bcsToBytes(
-            TxnBuilderTypes.AccountAddress.fromHex(ownerAccountAddr),
-          ),
-          BCS.bcsSerializeUint64(proposalId),
-          serializer.getBytes(),
-        ],
-      ),
-    );
+    const payload: Types.TransactionPayload = {
+      type: "entry_function_payload",
+      function: "0x1::aptos_governance::vote",
+      type_arguments: [],
+      arguments: [ownerAccountAddr, proposalId, shouldPass],
+    };
 
     await submitTransaction(payload);
   }
 
-  return {submitVote, transactionResponse, clearTransactionResponse};
+  return {
+    submitVote,
+    transactionInProcess,
+    transactionResponse,
+    clearTransactionResponse,
+  };
 };
 
 export default useSubmitVote;

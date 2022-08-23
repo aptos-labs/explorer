@@ -6,7 +6,8 @@ import {ProposalContent} from "./Content";
 import {useParams} from "react-router-dom";
 import {useGetProposal} from "../hooks/useGetProposal";
 import {EmptyProposal} from "./EmptyProposal";
-import {Header} from "../Header";
+import {Header} from "../components/Header";
+import GoBack from "../../../components/GoBack";
 
 export type ProposalPageURLParams = {
   id: string;
@@ -25,6 +26,7 @@ export const ProposalPage = () => {
   return (
     <Grid container>
       <Header />
+      <GoBack />
       <Grid item md={12} xs={12} sx={{mb: 6}}>
         <ProposalHeader proposal={proposal} />
       </Grid>
