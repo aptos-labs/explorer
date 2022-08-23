@@ -9,7 +9,10 @@ type EditContentProps = {
   isWalletConnected: boolean;
   accountAddress: string | null;
 };
-export function EditContent({isWalletConnected, accountAddress}: EditContentProps) {
+export function EditContent({
+  isWalletConnected,
+  accountAddress,
+}: EditContentProps) {
   const {
     accountResource: stakePool,
     isLoading,
