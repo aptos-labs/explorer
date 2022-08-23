@@ -63,6 +63,9 @@ export default function NavMobile() {
         anchorEl={menuAnchorEl}
         open={menuOpen}
         onClose={handleMenuClose}
+        aria-controls={governanceMenuOpen ? "nav-mobile-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={governanceMenuOpen ? "true" : undefined}
         MenuListProps={{
           "aria-labelledby": "nav-mobile-button",
           sx: {
