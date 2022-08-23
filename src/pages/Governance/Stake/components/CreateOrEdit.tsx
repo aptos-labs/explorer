@@ -5,14 +5,14 @@ import LoadingModal from "../../components/LoadingModal";
 import {Create} from "../Create";
 import {Edit} from "../Edit";
 
-type EditContentProps = {
+type CreateOrEditProps = {
   isWalletConnected: boolean;
   accountAddress: string | null;
 };
-export function EditContent({
+export function CreateOrEdit({
   isWalletConnected,
   accountAddress,
-}: EditContentProps) {
+}: CreateOrEditProps) {
   const {
     accountResource: stakePool,
     isLoading,

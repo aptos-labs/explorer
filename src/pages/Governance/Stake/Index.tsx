@@ -2,7 +2,7 @@ import React from "react";
 
 import {useWalletContext} from "../../../context/wallet/context";
 import {Header} from "../components/Header";
-import {EditContent} from "./components/EditContent";
+import {CreateOrEdit} from "./components/CreateOrEdit";
 
 export function Staking() {
   const {isConnected, accountAddress} = useWalletContext();
@@ -10,7 +10,7 @@ export function Staking() {
   return (
     <>
       <Header />
-      <EditContent
+      <CreateOrEdit
         isWalletConnected={isConnected}
         accountAddress={accountAddress}
       />
