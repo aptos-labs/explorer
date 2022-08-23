@@ -5,11 +5,11 @@ import LoadingModal from "../../components/LoadingModal";
 import {Create} from "../Create";
 import {Edit} from "../Edit";
 
-type EditContent = {
+type EditContentProps = {
   isWalletConnected: boolean;
   accountAddress: string | null;
 };
-export function EditContent({isWalletConnected, accountAddress}: EditContent) {
+export function EditContent({isWalletConnected, accountAddress}: EditContentProps) {
   const {
     accountResource: stakePool,
     isLoading,
