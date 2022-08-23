@@ -70,7 +70,7 @@ export default function Nav() {
           Proposals
         </MenuItem>
         <MenuItem onClick={() => handleCloseAndNavigate("/proposals/stake")}>
-          Staking
+          Stake
         </MenuItem>
       </Menu>
     </Box>

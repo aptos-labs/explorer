@@ -96,7 +96,7 @@ export default function NavMobile() {
             <MenuItem
               onClick={() => handleCloseAndNavigate("/proposals/stake")}
             >
-              Staking
+              Stake
             </MenuItem>
           </Box>
         )}
