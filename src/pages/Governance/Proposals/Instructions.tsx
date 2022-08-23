@@ -11,6 +11,7 @@ import {
 import React from "react";
 import Card from "../../../components/Card";
 import {useWalletContext} from "../../../context/wallet/context";
+import {installWalletUrl} from "../../../constants";
 
 type InstructionsProps = {
   onVoteProposalButtonClick?: () => void;
@@ -98,7 +99,7 @@ export function Instructions({onVoteProposalButtonClick}: InstructionsProps) {
           >
             <Button
               component={Link}
-              href="https://aptos.dev/guides/building-wallet-extension"
+              href={installWalletUrl}
               target="_blank"
               variant="primary"
               disabled={isInstalled}

@@ -17,6 +17,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 import {truncateAddress} from "../pages/utils";
 import {isUpdatedVersion} from "../api/wallet";
 import {teal, grey} from "../themes/colors/aptosColorPalette";
+import {installWalletUrl} from "../constants";
 
 type WalletButtonWrapperProps = {
   children?: React.ReactNode;
@@ -81,10 +82,7 @@ export const WalletButton = (): JSX.Element => {
     return (
       <Tooltip
         title={
-          <Link
-            href="https://aptos.dev/guides/building-wallet-extension"
-            target="_blank"
-          >
+          <Link href={installWalletUrl} target="_blank">
             Please install the Aptos wallet
           </Link>
         }
