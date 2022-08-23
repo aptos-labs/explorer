@@ -6,63 +6,51 @@ import {
   Tooltip,
   Stack,
   Typography,
-  useMediaQuery,
   useTheme,
+  useMediaQuery,
 } from "@mui/material";
-import {Header} from "../components/Header";
-import {useWalletContext} from "../../../context/wallet/context";
-import TransactionResponseSnackbar from "../components/snackbar/TransactionResponseSnackbar";
-import LoadingModal from "../components/LoadingModal";
-import {useGetAccountResource} from "../../../api/hooks/useGetAccountResource";
-import useAddressInput from "../../../api/hooks/useAddressInput";
-import useSubmitChangeOperatorStake from "../hooks/useSubmitChangeOperatorStake";
-import HashButton from "../../../components/HashButton";
+import TransactionResponseSnackbar from "../../components/snackbar/TransactionResponseSnackbar";
+import LoadingModal from "../../components/LoadingModal";
+import useAddressInput from "../../../../api/hooks/useAddressInput";
+import useSubmitChangeVoterStake from "../../hooks/useSubmitChangeVoterStake";
+import HashButton from "../../../../components/HashButton";
 
-interface StakingConfigData {
-  operator_address: string;
-}
+type EditVoterProps = {
+  isWalletConnected: boolean;
+  delegated_voter: string;
+};
 
-export function EditOperator() {
-  const {isConnected: isWalletConnected, accountAddress} = useWalletContext();
+export function EditVoter({
+  isWalletConnected,
+  delegated_voter,
+}: EditVoterProps) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
-  const stakePool = useGetAccountResource(
-    accountAddress || "0x1",
-    "0x1::stake::StakePool",
-  );
 
   const {
-    addr: operatorAddr,
-    clearAddr: clearOperatorAddr,
-    renderAddressTextField: renderOperatorAddressTextField,
-    validateAddressInput: validateOperatorAddressInput,
+    addr: voterAddr,
+    clearAddr: clearVoterAddr,
+    renderAddressTextField: renderVoterAddressTextField,
+    validateAddressInput: validateVoterAddressInput,
   } = useAddressInput();
 
   const {
-    changeOperatorStake,
+    changeVoterStake,
     transactionInProcess,
     transactionResponse,
     clearTransactionResponse,
-  } = useSubmitChangeOperatorStake();
+  } = useSubmitChangeVoterStake();
 
   useEffect(() => {
     if (transactionResponse?.transactionSubmitted) {
-      clearOperatorAddr();
+      clearVoterAddr();
     }
   }, [transactionResponse]);
 
-  if (!accountAddress) {
-    return <div>No account addres</div>;
-  }
-
-  if (!stakePool) {
-    return <div>No stakePool</div>;
-  }
-
   const onSubmitClick = async () => {
-    const isOperatorAddrValid = validateOperatorAddressInput();
+    const isOperatorAddrValid = validateVoterAddressInput();
     if (isOperatorAddrValid) {
-      await changeOperatorStake(operatorAddr);
+      await changeVoterStake(voterAddr);
     }
   };
 
@@ -70,7 +58,6 @@ export function EditOperator() {
     clearTransactionResponse();
   };
 
-  const {operator_address} = stakePool.data as StakingConfigData;
   const submitDisabled = !isWalletConnected;
   const submitButton = (
     <span>
@@ -80,7 +67,7 @@ export function EditOperator() {
         disabled={submitDisabled}
         onClick={onSubmitClick}
       >
-        Submit
+        Change Voter
       </Button>
     </span>
   );
@@ -93,7 +80,6 @@ export function EditOperator() {
       />
       <LoadingModal open={transactionInProcess} />
       <Grid>
-        <Header />
         <Grid container spacing={4}>
           <Grid item xs={12}>
             <Stack
@@ -102,13 +88,13 @@ export function EditOperator() {
               alignItems={isOnMobile ? "flex-start" : "center"}
             >
               <Typography variant="subtitle1">
-                Current Operator Address:
+                Current Voter Address:
               </Typography>
-              <HashButton hash={operator_address} />
+              <HashButton hash={delegated_voter} />
             </Stack>
           </Grid>
           <Grid item xs={12}>
-            {renderOperatorAddressTextField("New Operator Address")}
+            {renderVoterAddressTextField("New Voter Address")}
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>

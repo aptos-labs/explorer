@@ -1,6 +1,5 @@
 import React, {useEffect} from "react";
 import {Grid, Button, FormControl, Tooltip} from "@mui/material";
-import {Header} from "../components/Header";
 import {useWalletContext} from "../../../context/wallet/context";
 import useSubmitStake from "../hooks/useSubmitStake";
 import useAddressInput from "../../../api/hooks/useAddressInput";
@@ -83,7 +82,6 @@ export function Create() {
       />
       <LoadingModal open={transactionInProcess} />
       <Grid>
-        <Header />
         <Grid container spacing={4}>
           <Grid item xs={12}>
             {renderStakingAmountTextField("Staking Amount")}
