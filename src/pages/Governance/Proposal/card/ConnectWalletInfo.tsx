@@ -2,6 +2,7 @@ import React from "react";
 import {Stack, Typography, Link, Button} from "@mui/material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import {useWalletContext} from "../../../../context/wallet/context";
+import {installWalletUrl} from "../../../../constants";
 
 export default function ConnectWalletInfo() {
   const {isInstalled, isConnected, connect} = useWalletContext();
@@ -15,10 +16,7 @@ export default function ConnectWalletInfo() {
       <ErrorOutlineOutlinedIcon color="primary" fontSize="large" />
       <Typography marginTop={1}>To vote on a proposal</Typography>
       {!isInstalled && (
-        <Link
-          href="https://aptos.dev/guides/building-wallet-extension"
-          target="_blank"
-        >
+        <Link href={installWalletUrl} target="_blank">
           Install your wallet
         </Link>
       )}

@@ -25,3 +25,6 @@ if (!(defaultNetworkName in networks)) {
 }
 
 export const defaultNetwork = networks[defaultNetworkName];
+
+export const installWalletUrl =
+  "https://chrome.google.com/webstore/detail/petra-aptos-wallet/ejjladinnckdgjemekebdpeokbikhfci";
