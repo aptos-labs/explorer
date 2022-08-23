@@ -17,12 +17,12 @@ import HashButton from "../../../../components/HashButton";
 
 type EditOperatorProps = {
   isWalletConnected: boolean;
-  operator_address: string;
+  operatorAddress: string;
 };
 
 export function EditOperator({
   isWalletConnected,
-  operator_address,
+  operatorAddress,
 }: EditOperatorProps) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
@@ -90,7 +90,7 @@ export function EditOperator({
               <Typography variant="subtitle1">
                 Current Operator Address:
               </Typography>
-              <HashButton hash={operator_address} />
+              <HashButton hash={operatorAddress} />
             </Stack>
           </Grid>
           <Grid item xs={12}>

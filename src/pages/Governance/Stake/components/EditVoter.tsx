@@ -17,13 +17,10 @@ import HashButton from "../../../../components/HashButton";
 
 type EditVoterProps = {
   isWalletConnected: boolean;
-  delegated_voter: string;
+  delegatedVoter: string;
 };
 
-export function EditVoter({
-  isWalletConnected,
-  delegated_voter,
-}: EditVoterProps) {
+export function EditVoter({isWalletConnected, delegatedVoter}: EditVoterProps) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
@@ -90,7 +87,7 @@ export function EditVoter({
               <Typography variant="subtitle1">
                 Current Voter Address:
               </Typography>
-              <HashButton hash={delegated_voter} />
+              <HashButton hash={delegatedVoter} />
             </Stack>
           </Grid>
           <Grid item xs={12}>

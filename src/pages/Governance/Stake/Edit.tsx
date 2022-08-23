@@ -28,13 +28,13 @@ export function Edit({stakePool, isWalletConnected}: EditProps) {
         >
           <Grid item xs={12} sm={6}>
             <EditOperator
-              operator_address={operator_address}
+              operatorAddress={operator_address}
               isWalletConnected={isWalletConnected}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <EditVoter
-              delegated_voter={delegated_voter}
+              delegatedVoter={delegated_voter}
               isWalletConnected={isWalletConnected}
             />
           </Grid>
