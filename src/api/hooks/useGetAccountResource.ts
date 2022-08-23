@@ -7,6 +7,7 @@ import {useGlobalState} from "../../GlobalState";
 type useGetAccountResourceResponse = {
   accountResource: Types.MoveResource | undefined;
   isLoading: boolean;
+  isError: boolean;
 };
 
 export function useGetAccountResource(
@@ -23,11 +24,11 @@ export function useGetAccountResource(
     {refetchOnWindowFocus: false},
   );
 
-  const {isLoading} = accountResourcesResult;
+  const {isLoading, isError} = accountResourcesResult;
 
   const accountResource = accountResourcesResult.data?.find(
     (r) => r.type === resource,
   );
 
-  return {accountResource, isLoading};
+  return {accountResource, isLoading, isError};
 }
