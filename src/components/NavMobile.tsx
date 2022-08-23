@@ -9,6 +9,8 @@ import {grey} from "../themes/colors/aptosColorPalette";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 export default function NavMobile() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -80,7 +82,17 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
           Transactions
         </MenuItem>
-        <MenuItem onClick={handleGovernanceClick}>Governance</MenuItem>
+        <MenuItem
+          onClick={handleGovernanceClick}
+          sx={{display: "flex", justifyContent: "space-between"}}
+        >
+          Governance{" "}
+          {governanceMenuOpen ? (
+            <KeyboardArrowUpIcon />
+          ) : (
+            <KeyboardArrowDownIcon />
+          )}
+        </MenuItem>
         {governanceMenuOpen && (
           <Box
             sx={{
@@ -94,9 +106,9 @@ export default function NavMobile() {
               Proposals
             </MenuItem>
             <MenuItem
-              onClick={() => handleCloseAndNavigate("/proposals/stake")}
+              onClick={() => handleCloseAndNavigate("/proposals/staking")}
             >
-              Stake
+              Staking
             </MenuItem>
           </Box>
         )}
