@@ -9,7 +9,7 @@ import {TransactionsPage} from "./pages/Transactions/Transactions";
 import {GovernancePage} from "./pages/Governance/Proposals/Index";
 import {ProposalPage} from "./pages/Governance/Proposal/Index";
 import {CreateProposalPage} from "./pages/Governance/CreateProposal/Index";
-import {StakePage} from "./pages/Governance/Stake/Index";
+import {Create, EditOperator, EditVoter} from "./pages/Governance/Stake/Index";
 
 export default function ExplorerRoutes() {
   return (
@@ -20,7 +20,12 @@ export default function ExplorerRoutes() {
         <Route path="/proposals" element={<GovernancePage />} />
         <Route path="/proposals/:handle/:id" element={<ProposalPage />} />
         <Route path="/proposals/create" element={<CreateProposalPage />} />
-        <Route path="/proposals/staking" element={<StakePage />} />
+        <Route path="/proposals/staking" element={<Create />} />
+        <Route
+          path="/proposals/stake/edit/operator"
+          element={<EditOperator />}
+        />
+        <Route path="/proposals/stake/edit/voter" element={<EditVoter />} />
         <Route path="/txn">
           <Route path=":txnHashOrVersion" element={<TransactionPage />} />
         </Route>
