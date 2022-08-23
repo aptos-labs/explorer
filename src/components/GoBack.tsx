@@ -3,34 +3,46 @@ import {useNavigate} from "react-router-dom";
 import Button from "@mui/material/Button";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 
-export default function GoBack() {
+function BackButton(handleClick: () => void) {
+  return (
+    <>
+      <Button
+        color="primary"
+        variant="text"
+        onClick={handleClick}
+        sx={{
+          mb: 4,
+          p: 0,
+          "&:hover": {
+            background: "transparent",
+          },
+        }}
+        startIcon={<ArrowBackRoundedIcon />}
+      >
+        Back
+      </Button>
+    </>
+  );
+}
+
+type GoBackProps = {
+  to?: string;
+};
+
+export default function GoBack({to}: GoBackProps) {
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate(-1);
-  };
-
   if (window.history.state && window.history.state.idx > 0) {
-    return (
-      <>
-        <Button
-          color="primary"
-          variant="text"
-          onClick={handleClick}
-          sx={{
-            mb: 4,
-            p: 0,
-            "&:hover": {
-              background: "transparent",
-            },
-          }}
-          startIcon={<ArrowBackRoundedIcon />}
-        >
-          Back
-        </Button>
-      </>
-    );
+    return BackButton(() => {
+      navigate(-1);
+    });
   } else {
-    return null;
+    if (to != null) {
+      return BackButton(() => {
+        navigate(to);
+      });
+    } else {
+      return null;
+    }
   }
 }

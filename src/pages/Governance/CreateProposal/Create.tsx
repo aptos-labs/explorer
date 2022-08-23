@@ -6,7 +6,7 @@ import {useGlobalState} from "../../../GlobalState";
 import {doTransaction} from "../../utils";
 
 /* REQUIRED: Please replace the following with your own local network urls */
-const FAUCET_URL = "http://127.0.0.1:8000";
+const FAUCET_URL = "http://127.0.0.1:80";
 
 /* OPTIONAL: Please replace the following with your own test data */
 const TEST_EXECUTION_HASH =
