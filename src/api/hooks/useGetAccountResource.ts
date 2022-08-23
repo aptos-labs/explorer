@@ -9,7 +9,6 @@ export function useGetAccountResource(
   resource: string,
 ): Types.MoveResource | undefined {
   const [state, _setState] = useGlobalState();
-  if (!address) return;
   const accountResourcesResult = useQuery<
     Array<Types.MoveResource>,
     ResponseError
