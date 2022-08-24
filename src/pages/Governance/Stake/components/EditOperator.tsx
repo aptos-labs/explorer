@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
   Grid,
   Button,
@@ -23,9 +23,11 @@ type EditOperatorProps = {
 export function EditOperator({
   isWalletConnected,
   operatorAddress,
-}: EditOperatorProps) {
+}: EditOperatorProps): JSX.Element {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
+  const [currOperatorAddress, setCurrOperatorAddress] =
+    useState<string>(operatorAddress);
 
   const {
     addr: operatorAddr,
@@ -43,6 +45,7 @@ export function EditOperator({
 
   useEffect(() => {
     if (transactionResponse?.transactionSubmitted) {
+      setCurrOperatorAddress(operatorAddr);
       clearOperatorAddr();
     }
   }, [transactionResponse]);
@@ -90,7 +93,7 @@ export function EditOperator({
               <Typography variant="subtitle1">
                 Current Operator Address:
               </Typography>
-              <HashButton hash={operatorAddress} />
+              <HashButton hash={currOperatorAddress} />
             </Stack>
           </Grid>
           <Grid item xs={12}>

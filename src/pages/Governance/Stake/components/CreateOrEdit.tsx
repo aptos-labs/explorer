@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 
 import {useGetAccountResource} from "../../../../api/hooks/useGetAccountResource";
 import LoadingModal from "../../components/LoadingModal";
@@ -12,25 +12,32 @@ type CreateOrEditProps = {
 export function CreateOrEdit({
   isWalletConnected,
   accountAddress,
-}: CreateOrEditProps) {
+}: CreateOrEditProps): JSX.Element {
+  const [hasStakePool, setHasStakePool] = useState<boolean>(false);
+
   const {
     accountResource: stakePool,
     isLoading,
     isError,
+    refetch,
   } = useGetAccountResource(accountAddress || "0x1", "0x1::stake::StakePool");
+
+  useEffect(() => {
+    setHasStakePool(!!stakePool);
+  }, [stakePool]);
+
+  const onCreateStackingPoolSuccess = () => {
+    setHasStakePool(true);
+    refetch();
+  };
 
   if (isLoading) return <LoadingModal open={isLoading} />;
 
   // handle errors
   if (isError) return <div>Error</div>;
 
-  return (
-    <>
-      {stakePool ? (
-        <Edit stakePool={stakePool} isWalletConnected={isWalletConnected} />
-      ) : (
-        <Create />
-      )}
-    </>
-  );
+  if (stakePool && hasStakePool)
+    return <Edit stakePool={stakePool} isWalletConnected={isWalletConnected} />;
+
+  return <Create onCreateStackingPoolSuccess={onCreateStackingPoolSuccess} />;
 }

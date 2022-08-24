@@ -7,7 +7,13 @@ import useAmountInput from "./hooks/useAmountInput";
 import TransactionResponseSnackbar from "../components/snackbar/TransactionResponseSnackbar";
 import LoadingModal from "../components/LoadingModal";
 
-export function Create() {
+type CreateProps = {
+  onCreateStackingPoolSuccess: () => void;
+};
+
+export function Create({
+  onCreateStackingPoolSuccess,
+}: CreateProps): JSX.Element {
   const {isConnected: isWalletConnected} = useWalletContext();
 
   const {
@@ -57,6 +63,7 @@ export function Create() {
       clearStakingAmount();
       clearOperatorAddr();
       clearVoterAddr();
+      onCreateStackingPoolSuccess();
     }
   }, [transactionResponse]);
 

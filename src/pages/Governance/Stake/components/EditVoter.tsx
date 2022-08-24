@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
   Grid,
   Button,
@@ -20,9 +20,14 @@ type EditVoterProps = {
   delegatedVoter: string;
 };
 
-export function EditVoter({isWalletConnected, delegatedVoter}: EditVoterProps) {
+export function EditVoter({
+  isWalletConnected,
+  delegatedVoter,
+}: EditVoterProps): JSX.Element {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
+  const [currVoterAddress, setCurrVoterAddress] =
+    useState<string>(delegatedVoter);
 
   const {
     addr: voterAddr,
@@ -40,6 +45,7 @@ export function EditVoter({isWalletConnected, delegatedVoter}: EditVoterProps) {
 
   useEffect(() => {
     if (transactionResponse?.transactionSubmitted) {
+      setCurrVoterAddress(voterAddr);
       clearVoterAddr();
     }
   }, [transactionResponse]);
@@ -87,7 +93,7 @@ export function EditVoter({isWalletConnected, delegatedVoter}: EditVoterProps) {
               <Typography variant="subtitle1">
                 Current Voter Address:
               </Typography>
-              <HashButton hash={delegatedVoter} />
+              <HashButton hash={currVoterAddress} />
             </Stack>
           </Grid>
           <Grid item xs={12}>
