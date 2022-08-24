@@ -67,11 +67,11 @@ function ProposerCell({proposal}: ProposalCellProps) {
 }
 
 // TODO: make renderTimestamp a general helper and move it out of Transactions folder
-function StartDateCell({proposal}: ProposalCellProps) {
+function VotingStartDateCell({proposal}: ProposalCellProps) {
   return (
     <TableCell
       sx={{
-        textAlign: "right",
+        textAlign: "left",
       }}
     >
       {renderTimestamp(proposal.creation_time_secs)}
@@ -79,14 +79,26 @@ function StartDateCell({proposal}: ProposalCellProps) {
   );
 }
 
-function EndDateCell({proposal}: ProposalCellProps) {
+function VotingEndDateCell({proposal}: ProposalCellProps) {
+  return (
+    <TableCell
+      sx={{
+        textAlign: "left",
+      }}
+    >
+      {renderTimestamp(proposal.expiration_secs)}
+    </TableCell>
+  );
+}
+
+function ExecutionDateCell({proposal}: ProposalCellProps) {
   return (
     <TableCell
       sx={{
         textAlign: "right",
       }}
     >
-      {renderTimestamp(proposal.expiration_secs)}
+      {renderTimestamp(proposal.resolution_time_secs)}
     </TableCell>
   );
 }
@@ -95,8 +107,9 @@ const ProposalCells = Object.freeze({
   title: TitleCell,
   status: StatusCell,
   proposer: ProposerCell,
-  startDate: StartDateCell,
-  endDate: EndDateCell,
+  votingStartDate: VotingStartDateCell,
+  votingEndDate: VotingEndDateCell,
+  executionDate: ExecutionDateCell,
 });
 
 type ProposalColumn = keyof typeof ProposalCells;
@@ -105,8 +118,9 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
   "title",
   "status",
   "proposer",
-  "startDate",
-  "endDate",
+  "votingStartDate",
+  "votingEndDate",
+  "executionDate",
 ];
 
 type ProposalRowProps = {
@@ -159,12 +173,14 @@ function ProposalHeaderCell({column}: ProposalHeaderCellProps) {
       );
     case "proposer":
       return <GeneralTableHeaderCell header="Proposer" />;
-    case "startDate":
+    case "votingStartDate":
+      return <GeneralTableHeaderCell header="Voting Start Date" />;
+    case "votingEndDate":
+      return <GeneralTableHeaderCell header="Voting End Date" />;
+    case "executionDate":
       return (
-        <GeneralTableHeaderCell header="Start Date" textAlignRight={true} />
+        <GeneralTableHeaderCell header="Execution Date" textAlignRight={true} />
       );
-    case "endDate":
-      return <GeneralTableHeaderCell header="End Date" textAlignRight={true} />;
     default:
       return assertNever(column);
   }

@@ -23,14 +23,40 @@ function TitleComponent({proposal}: {proposal: Proposal}): JSX.Element {
 
 function StatusComponent({proposal}: {proposal: Proposal}): JSX.Element {
   return (
-    <ProposalStatusTooltip>
-      <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-        <StatusIcon status={proposal.status} />
-        <Typography variant="subtitle1" color={getStatusColor(proposal.status)}>
-          {proposal.status}
-        </Typography>
-      </Box>
-    </ProposalStatusTooltip>
+    <Stack direction="row" spacing={2}>
+      <ProposalStatusTooltip>
+        <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+          <StatusIcon status={proposal.status} />
+          <Typography
+            variant="subtitle1"
+            color={getStatusColor(proposal.status)}
+          >
+            {proposal.status}
+          </Typography>
+        </Box>
+      </ProposalStatusTooltip>
+      {ExecutionTimeComponent(proposal)}
+    </Stack>
+  );
+}
+
+function ExecutionTimeComponent(proposal: Proposal) {
+  // TODO: remove proposal.resolution_time_secs null check after AIT3,
+  // as we shouldn't have null resolution_time_secs by then
+  if (!(proposal.is_resolved && proposal.resolution_time_secs)) {
+    return null;
+  }
+
+  return (
+    <Stack direction="row" sx={{color: SECONDARY_TEXT_COLOR}}>
+      <AccessTimeIcon fontSize="small" sx={{mr: 1}} />
+      {/* <Typography variant="body2" mr={1}>
+        EXECUTED ON:
+      </Typography> */}
+      <Typography variant="body2">
+        {renderTimestamp(proposal.resolution_time_secs)}
+      </Typography>
+    </Stack>
   );
 }
 
@@ -41,7 +67,6 @@ function TimeRemainingComponent({
   proposal: Proposal;
   isOnMobile: boolean;
 }) {
-  // TODO: show close time if it's closed
   if (isVotingClosed(proposal)) {
     return null;
   }
