@@ -30,8 +30,16 @@ export default function ResultsSection({proposal}: ResultsSectionProps) {
   return (
     <Section title="Results">
       <Stack spacing={1}>
-        <ResultBar shouldPass={true} percentage={votePercentage.yes} />
-        <ResultBar shouldPass={false} percentage={votePercentage.no} />
+        <ResultBar
+          shouldPass={true}
+          votes={proposal.yes_votes}
+          percentage={votePercentage.yes}
+        />
+        <ResultBar
+          shouldPass={false}
+          votes={proposal.no_votes}
+          percentage={votePercentage.no}
+        />
       </Stack>
     </Section>
   );
