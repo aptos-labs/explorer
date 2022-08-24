@@ -26,7 +26,7 @@ export const ProposalPage = () => {
   return (
     <Grid container>
       <Header />
-      <GoBack />
+      <GoBack to={"/proposals"} />
       <Grid item md={12} xs={12} sx={{mb: 6}}>
         <ProposalHeader proposal={proposal} />
       </Grid>
