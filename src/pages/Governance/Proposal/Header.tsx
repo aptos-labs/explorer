@@ -43,16 +43,13 @@ function StatusComponent({proposal}: {proposal: Proposal}): JSX.Element {
 function ExecutionTimeComponent(proposal: Proposal) {
   // TODO: remove proposal.resolution_time_secs null check after AIT3,
   // as we shouldn't have null resolution_time_secs by then
-  if (!(proposal.is_resolved && proposal.resolution_time_secs)) {
+  if (!proposal.is_resolved || !proposal.resolution_time_secs) {
     return null;
   }
 
   return (
     <Stack direction="row" sx={{color: SECONDARY_TEXT_COLOR}}>
       <AccessTimeIcon fontSize="small" sx={{mr: 1}} />
-      {/* <Typography variant="body2" mr={1}>
-        EXECUTED ON:
-      </Typography> */}
       <Typography variant="body2">
         {renderTimestamp(proposal.resolution_time_secs)}
       </Typography>
