@@ -29,7 +29,7 @@ type GoBackProps = {
   to?: string;
 };
 
-export default function GoBack({to}: GoBackProps) {
+export default function GoBack({to}: GoBackProps): JSX.Element | null {
   const navigate = useNavigate();
 
   if (window.history.state && window.history.state.idx > 0) {
