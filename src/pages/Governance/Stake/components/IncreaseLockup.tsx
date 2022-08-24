@@ -1,5 +1,5 @@
 import React from "react";
-import {Grid, Button, FormControl, Tooltip} from "@mui/material";
+import {Grid, Button, FormControl, Tooltip, Typography} from "@mui/material";
 import TransactionResponseSnackbar from "../../components/snackbar/TransactionResponseSnackbar";
 import LoadingModal from "../../components/LoadingModal";
 import useSubmitIncreaseLock from "../../hooks/useSubmitIncreaseLock";
@@ -46,10 +46,12 @@ export function IncreaseLockup({
       />
       <LoadingModal open={transactionInProcess} />
       <Grid>
-        <Grid container spacing={4}>
+        <Grid container spacing={4} alignItems="center">
           <></>
           <Grid item xs={12} sm={8}>
-            Locked until: {renderTimestamp(lockedUntilSec)}
+            <Typography variant="subtitle1">
+              locked until: {renderTimestamp(lockedUntilSec)}
+            </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>
             <FormControl fullWidth>

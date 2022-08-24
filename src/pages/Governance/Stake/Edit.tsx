@@ -1,5 +1,5 @@
 import React from "react";
-import {Grid} from "@mui/material";
+import {Divider, Grid} from "@mui/material";
 import {Types} from "aptos";
 import {EditOperator} from "./components/EditOperator";
 import {EditVoter} from "./components/EditVoter";
@@ -29,8 +29,8 @@ export function Edit({stakePool, isWalletConnected}: EditProps) {
             isWalletConnected={isWalletConnected}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
-          <hr />
+        <Grid item xs={12}>
+          <Divider variant="dotted" orientation="horizontal" />
         </Grid>
         <Grid item xs={12} sm={12}>
           <EditVoter
@@ -38,8 +38,8 @@ export function Edit({stakePool, isWalletConnected}: EditProps) {
             isWalletConnected={isWalletConnected}
           />
         </Grid>
-        <Grid item xs={12} sm={12}>
-          <hr />
+        <Grid item xs={12}>
+          <Divider variant="dotted" orientation="horizontal" />
         </Grid>
         <Grid item xs={12} sm={12}>
           <IncreaseLockup
