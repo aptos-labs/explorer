@@ -64,7 +64,7 @@ export function useAccountHasVoted(proposalId: string): boolean {
 
     fetchTableItem(pool_address, proposalId, handle, state)
       .then(setHadVoted)
-      .catch(() => setHadVoted(false)); // fetchTableItem returns a 404 error if the item is not in the tableKey
+      .catch(() => setHadVoted(false)); // fetchTableItem returns a 404 error if the item is not in the table
   }, [votingRecordResource, ownerCapabilityResource]);
 
   return hasVoted;
