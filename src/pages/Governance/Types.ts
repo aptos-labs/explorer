@@ -15,6 +15,7 @@ export type Proposal = {
   yes_votes: string;
   no_votes: string;
   is_resolved: boolean;
+  resolution_time_secs: string;
   metadata: {
     data: [
       {
