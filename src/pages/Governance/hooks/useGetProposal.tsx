@@ -71,10 +71,6 @@ const fetchProposal = async (
   proposalData.proposal_id = proposal_id;
   proposalData.proposal_metadata = proposal_metadata;
 
-  if (proposalData.proposal_id === "2") {
-    proposalData.resolution_time_secs = "1661356735000";
-  }
-
   return proposalData;
 };
 
