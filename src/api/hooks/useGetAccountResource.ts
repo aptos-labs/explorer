@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {useQuery} from "react-query";
+import {useQuery, UseQueryResult} from "react-query";
 import {getAccountResources} from "..";
 import {ResponseError} from "../client";
 import {useGlobalState} from "../../GlobalState";
@@ -8,6 +8,7 @@ type useGetAccountResourceResponse = {
   accountResource: Types.MoveResource | undefined;
   isLoading: boolean;
   isError: boolean;
+  refetch: () => Promise<UseQueryResult>;
 };
 
 export function useGetAccountResource(
@@ -19,16 +20,16 @@ export function useGetAccountResource(
     Array<Types.MoveResource>,
     ResponseError
   >(
-    ["accountResources", {address}, state.network_value],
+    ["accountResource", {address}, state.network_value],
     () => getAccountResources({address}, state.network_value),
     {refetchOnWindowFocus: false},
   );
 
-  const {isLoading, isError} = accountResourcesResult;
+  const {isLoading, isError, refetch} = accountResourcesResult;
 
   const accountResource = accountResourcesResult.data?.find(
     (r) => r.type === resource,
   );
 
-  return {accountResource, isLoading, isError};
+  return {accountResource, isLoading, isError, refetch};
 }
