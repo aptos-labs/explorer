@@ -26,7 +26,8 @@ export function EditVoter({
 }: EditVoterProps): JSX.Element {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
-  const [voterAddress, setVoterAddress] = useState<string>(delegatedVoter);
+  const [currVoterAddress, setCurrVoterAddress] =
+    useState<string>(delegatedVoter);
 
   const {
     addr: voterAddr,
@@ -44,7 +45,7 @@ export function EditVoter({
 
   useEffect(() => {
     if (transactionResponse?.transactionSubmitted) {
-      setVoterAddress(voterAddr);
+      setCurrVoterAddress(voterAddr);
       clearVoterAddr();
     }
   }, [transactionResponse]);
@@ -92,7 +93,7 @@ export function EditVoter({
               <Typography variant="subtitle1">
                 Current Voter Address:
               </Typography>
-              <HashButton hash={voterAddress} />
+              <HashButton hash={currVoterAddress} />
             </Stack>
           </Grid>
           <Grid item xs={12}>

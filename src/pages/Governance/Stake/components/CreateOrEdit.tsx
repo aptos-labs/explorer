@@ -26,7 +26,7 @@ export function CreateOrEdit({
     setHasStakePool(!!stakePool);
   }, [stakePool]);
 
-  const onCreateStackingPool = () => {
+  const onCreateStackingPoolSuccess = () => {
     setHasStakePool(true);
     refetch();
   };
@@ -39,5 +39,5 @@ export function CreateOrEdit({
   if (stakePool && hasStakePool)
     return <Edit stakePool={stakePool} isWalletConnected={isWalletConnected} />;
 
-  return <Create onCreateStackingPool={onCreateStackingPool} />;
+  return <Create onCreateStackingPoolSuccess={onCreateStackingPoolSuccess} />;
 }
