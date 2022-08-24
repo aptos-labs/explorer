@@ -96,10 +96,10 @@ export function EditVoter({
               <HashButton hash={currVoterAddress} />
             </Stack>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={8}>
             {renderVoterAddressTextField("New Voter Address")}
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth>
               {submitDisabled ? (
                 <Tooltip title="Please connect your wallet" arrow>

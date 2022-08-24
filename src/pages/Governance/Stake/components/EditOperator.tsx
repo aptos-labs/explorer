@@ -96,10 +96,10 @@ export function EditOperator({
               <HashButton hash={currOperatorAddress} />
             </Stack>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={8}>
             {renderOperatorAddressTextField("New Operator Address")}
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <FormControl fullWidth>
               {submitDisabled ? (
                 <Tooltip title="Please connect your wallet" arrow>
