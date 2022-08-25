@@ -3,20 +3,28 @@ import {Stack, Box, Typography, Tooltip, Theme} from "@mui/material";
 import {secondaryColor} from "../../constants";
 import {useTheme} from "@mui/material/styles";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
+import {useGetCoinSupplyLimit} from "../../hooks/useGetCoinSupplyLimit";
+import {Proposal} from "../../Types";
 
 const RADIUS = "0.7em";
 const BAR_COLOR = secondaryColor;
 const ANCHOR_WIDTH_PERCENTAGE = 1;
 
+function getTotalVotes(proposal: Proposal): number {
+  const yesVotes: number = parseInt(proposal.yes_votes);
+  const noVotes: number = parseInt(proposal.no_votes);
+  return yesVotes + noVotes;
+}
+
 function getFormattedVotesStr(votes: number): string {
   return votes.toLocaleString("en-US");
 }
 
-function TooltipContent({
-  currentVotes,
-  minVotes,
-  totalSupply,
-}: ParticipationBarProps): JSX.Element {
+function TooltipContent(
+  currentVotes: number,
+  minVotes: number,
+  totalSupply: number,
+): JSX.Element {
   const currentPercentage = ((currentVotes / totalSupply) * 100).toFixed(0);
   const minPercentage = ((minVotes / totalSupply) * 100).toFixed(0);
   const enoughParticipation = currentVotes > minVotes;
@@ -48,16 +56,19 @@ function MinVoteAnchor({theme}: {theme: Theme}): JSX.Element {
 }
 
 type ParticipationBarProps = {
-  currentVotes: number;
-  minVotes: number;
-  totalSupply: number;
+  proposal: Proposal;
 };
 
-export default function ParticipationBar({
-  currentVotes,
-  minVotes,
-  totalSupply,
-}: ParticipationBarProps) {
+export default function ParticipationBar({proposal}: ParticipationBarProps) {
+  const supplyLimit = useGetCoinSupplyLimit();
+  if (!supplyLimit) {
+    return null;
+  }
+
+  const totalSupply = parseInt(supplyLimit);
+  const currentVotes = getTotalVotes(proposal);
+  const minVotes = proposal.min_vote_threshold;
+
   const theme = useTheme();
   const backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[200];
 
@@ -125,7 +136,7 @@ export default function ParticipationBar({
 
   return (
     <Tooltip
-      title={TooltipContent({currentVotes, minVotes, totalSupply})}
+      title={TooltipContent(currentVotes, minVotes, totalSupply)}
       placement="left"
     >
       <Stack>
