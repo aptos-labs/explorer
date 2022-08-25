@@ -11,13 +11,12 @@ import GoBack from "../../../components/GoBack";
 
 export type ProposalPageURLParams = {
   id: string;
-  handle: string;
 };
 
 export const ProposalPage = () => {
   // useParams type signature is string | undefined - to go around it we cast the return value
-  const {id: proposalId, handle} = useParams() as ProposalPageURLParams;
-  const proposal = useGetProposal(handle, proposalId);
+  const {id: proposalId} = useParams() as ProposalPageURLParams;
+  const proposal = useGetProposal(proposalId);
 
   if (!proposal) {
     return <EmptyProposal />;

@@ -8,19 +8,19 @@ import {Instructions} from "./Instructions";
 import {Header} from "../components/Header";
 
 export function GovernancePage() {
-  const data = useGetProposalsTableData();
+  const proposalTableData = useGetProposalsTableData();
   const ProposalsTableRef = useRef<null | HTMLDivElement>(null);
 
   const scrollTableIntoView = () => {
     ProposalsTableRef.current?.scrollIntoView({behavior: "smooth"});
   };
 
-  if (!data) {
+  if (!proposalTableData) {
     // TODO: handle errors
     return <>No Data</>;
   }
 
-  const {nextProposalId, handle} = data;
+  const {nextProposalId} = proposalTableData;
 
   return (
     <Grid item xs={12}>
@@ -31,7 +31,6 @@ export function GovernancePage() {
       </Hidden>
       <ProposalsTable
         nextProposalId={nextProposalId}
-        handle={handle}
         ProposalsTableRef={ProposalsTableRef}
       />
     </Grid>

@@ -126,15 +126,14 @@ const DEFAULT_COLUMNS: ProposalColumn[] = [
 type ProposalRowProps = {
   columns: ProposalColumn[];
   proposal_id: string;
-  handle: string;
 };
 
-function ProposalRow({proposal_id, handle, columns}: ProposalRowProps) {
-  const proposalData = useGetProposal(handle, proposal_id);
+function ProposalRow({proposal_id, columns}: ProposalRowProps) {
+  const proposalData = useGetProposal(proposal_id);
   const navigate = RRD.useNavigate();
 
   const onTableRowClick = () => {
-    navigate(`${handle}/${proposal_id}`);
+    navigate(`${proposal_id}`);
   };
 
   if (!proposalData) {
@@ -190,14 +189,12 @@ type ProposalsTableProps = {
   proposals?: Proposal[];
   columns?: ProposalColumn[];
   nextProposalId: string;
-  handle: string;
   ProposalsTableRef: React.MutableRefObject<HTMLDivElement | null>;
 };
 
 // TODO: generalize Table component for transactions and proposals
 export function ProposalsTable({
   nextProposalId,
-  handle,
   columns = DEFAULT_COLUMNS,
   ProposalsTableRef,
 }: ProposalsTableProps) {
@@ -210,7 +207,6 @@ export function ProposalsTable({
       <ProposalRow
         key={proposal_id}
         proposal_id={proposal_id + ""} // cast into a string as future uses expects proposal_id as a string type
-        handle={handle}
         columns={columns}
       />,
     );

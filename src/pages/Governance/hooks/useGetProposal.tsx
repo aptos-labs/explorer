@@ -6,6 +6,7 @@ import {GlobalState, useGlobalState} from "../../../GlobalState";
 import {Proposal, ProposalMetadata} from "../Types";
 import {hex_to_string} from "../../../utils";
 import {getProposalStatus, isVotingClosed} from "../utils";
+import {useGetProposalsTableData} from "../hooks/useGetProposalsTableData";
 
 const fetchTableItem = async (
   proposal_id: string,
@@ -74,18 +75,20 @@ const fetchProposal = async (
   return proposalData;
 };
 
-export function useGetProposal(
-  handle: string,
-  proposal_id: string,
-): Proposal | undefined {
+export function useGetProposal(proposal_id: string): Proposal | undefined {
   const [state, _setState] = useGlobalState();
   const [proposal, setProposal] = useState<Proposal>();
+  const proposalTableData = useGetProposalsTableData();
+
+  const handle = proposalTableData?.handle ?? undefined;
 
   useEffect(() => {
-    fetchProposal(proposal_id, handle, state).then((data) => {
-      data && setProposal(data);
-    });
-  }, []);
+    if (handle !== undefined) {
+      fetchProposal(proposal_id, handle, state).then((data) => {
+        data && setProposal(data);
+      });
+    }
+  }, [handle]);
 
   return proposal;
 }
