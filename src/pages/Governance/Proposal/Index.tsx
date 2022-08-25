@@ -8,8 +8,6 @@ import {useGetProposal} from "../hooks/useGetProposal";
 import {EmptyProposal} from "./EmptyProposal";
 import {Header} from "../components/Header";
 import GoBack from "../../../components/GoBack";
-import {useAccountHasVoted} from "./hooks/useAccountHasVoted";
-import {HasVotedCard} from "./HasVotedCard";
 
 export type ProposalPageURLParams = {
   id: string;
@@ -20,7 +18,6 @@ export const ProposalPage = () => {
   // useParams type signature is string | undefined - to go around it we cast the return value
   const {id: proposalId, handle} = useParams() as ProposalPageURLParams;
   const proposal = useGetProposal(handle, proposalId);
-  const accountHasVoted = useAccountHasVoted(proposalId);
 
   if (!proposal) {
     return <EmptyProposal />;
@@ -43,7 +40,6 @@ export const ProposalPage = () => {
         <ProposalContent proposal={proposal} />
       </Grid>
       <Grid item md={4} xs={12}>
-        {accountHasVoted && <HasVotedCard />}
         <ProposalCard proposal={proposal} />
       </Grid>
     </Grid>
