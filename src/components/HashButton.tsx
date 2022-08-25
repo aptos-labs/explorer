@@ -13,12 +13,51 @@ import {grey} from "../themes/colors/aptosColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import {truncateAddress} from "../pages/utils";
+import {assertNever} from "../utils";
+
+export enum HashType {
+  ACCOUNT = "account",
+  TRANSACTION = "transaction",
+  OTHERS = "others",
+}
+
+function HashLink(hash: string, type: HashType): JSX.Element {
+  switch (type) {
+    case HashType.ACCOUNT:
+      return (
+        <Link
+          component={RRD.Link}
+          to={`/account/${hash}`}
+          target="_blank"
+          color="inherit"
+        >
+          {hash}
+        </Link>
+      );
+    case HashType.TRANSACTION:
+      return (
+        <Link
+          component={RRD.Link}
+          to={`/txn/${hash}`}
+          target="_blank"
+          color="inherit"
+        >
+          {hash}
+        </Link>
+      );
+    case HashType.OTHERS:
+      return <>{hash}</>;
+    default:
+      return assertNever(type);
+  }
+}
 
 interface HashButtonProps {
   hash: string;
+  type: HashType;
 }
 
-export default function HashButton({hash}: HashButtonProps) {
+export default function HashButton({hash, type}: HashButtonProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
@@ -109,14 +148,7 @@ export default function HashButton({hash}: HashButtonProps) {
             },
           }}
         >
-          <Link
-            component={RRD.Link}
-            to={`/account/${hash}`}
-            target="_blank"
-            color="inherit"
-          >
-            {hash}
-          </Link>
+          {HashLink(hash, type)}
           <IconButton
             aria-label="collapse hash"
             onClick={hashCollapse}

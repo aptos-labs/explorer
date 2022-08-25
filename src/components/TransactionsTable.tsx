@@ -11,7 +11,7 @@ import Typography from "@mui/material/Typography";
 import {useNavigate} from "react-router-dom";
 import GeneralTableRow from "../components/GeneralTableRow";
 import GeneralTableHeaderCell from "../components/GeneralTableHeaderCell";
-import HashButton from "./HashButton";
+import HashButton, {HashType} from "./HashButton";
 
 import {Types} from "aptos";
 import {
@@ -78,7 +78,7 @@ function TransactionGasCell({transaction}: TransactionCellProps) {
 function TransactionHashCell({transaction}: TransactionCellProps) {
   return (
     <TableCell>
-      <HashButton hash={transaction.hash} />
+      <HashButton hash={transaction.hash} type={HashType.TRANSACTION} />
     </TableCell>
   );
 }

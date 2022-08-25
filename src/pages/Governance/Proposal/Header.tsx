@@ -9,7 +9,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import {useTheme} from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {getStatusColor, isVotingClosed} from "../utils";
-import HashButton from "../../../components/HashButton";
+import HashButton, {HashType} from "../../../components/HashButton";
 import StatusIcon from "../components/StatusIcon";
 import ProposalStatusTooltip from "../components/ProposalStatusTooltip";
 
@@ -110,7 +110,7 @@ function ProposerAndTimeComponent({
           PROPOSER:
         </Typography>
       </Stack>
-      <HashButton hash={proposal.proposer} />
+      <HashButton hash={proposal.proposer} type={HashType.ACCOUNT} />
     </Stack>
   );
 

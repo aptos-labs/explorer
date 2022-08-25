@@ -13,7 +13,7 @@ import TransactionResponseSnackbar from "../../components/snackbar/TransactionRe
 import LoadingModal from "../../components/LoadingModal";
 import useAddressInput from "../../../../api/hooks/useAddressInput";
 import useSubmitChangeOperatorStake from "../../hooks/useSubmitChangeOperatorStake";
-import HashButton from "../../../../components/HashButton";
+import HashButton, {HashType} from "../../../../components/HashButton";
 
 type EditOperatorProps = {
   isWalletConnected: boolean;
@@ -93,7 +93,7 @@ export function EditOperator({
               <Typography variant="subtitle1">
                 Current Operator Address:
               </Typography>
-              <HashButton hash={currOperatorAddress} />
+              <HashButton hash={currOperatorAddress} type={HashType.ACCOUNT} />
             </Stack>
           </Grid>
           <Grid item xs={12} sm={8}>
