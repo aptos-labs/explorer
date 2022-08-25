@@ -15,7 +15,7 @@ import MultipleStopRoundedIcon from "@mui/icons-material/MultipleStopRounded";
 import UpdateRoundedIcon from "@mui/icons-material/UpdateRounded";
 
 export function renderTimestamp(timestamp?: string) {
-  if (!timestamp)
+  if (!timestamp || timestamp === "0")
     return (
       <Typography variant="subtitle2" align="center">
         -
