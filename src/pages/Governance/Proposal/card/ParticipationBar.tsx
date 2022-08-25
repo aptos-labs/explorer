@@ -27,7 +27,7 @@ function TooltipContent(
 ): JSX.Element {
   const currentPercentage = ((currentVotes / totalSupply) * 100).toFixed(0);
   const minPercentage = ((minVotes / totalSupply) * 100).toFixed(0);
-  const enoughParticipation = currentVotes > minVotes;
+  const enoughParticipation = currentVotes >= minVotes;
 
   return (
     <Stack direction="column">
@@ -63,7 +63,7 @@ export default function ParticipationBar({proposal}: ParticipationBarProps) {
   const theme = useTheme();
 
   const supplyLimit = useGetCoinSupplyLimit();
-  if (!supplyLimit) {
+  if (supplyLimit === null) {
     return null;
   }
 
@@ -72,7 +72,7 @@ export default function ParticipationBar({proposal}: ParticipationBarProps) {
   const minVotes = proposal.min_vote_threshold;
 
   const currentPercentage = (currentVotes / totalSupply) * 100;
-  const enoughParticipation = currentVotes > minVotes;
+  const enoughParticipation = currentVotes >= minVotes;
   const part1Percentage = enoughParticipation
     ? (minVotes / totalSupply) * 100 - ANCHOR_WIDTH_PERCENTAGE / 2
     : (currentVotes / totalSupply) * 100;

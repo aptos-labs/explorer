@@ -34,10 +34,10 @@ export function useGetCoinSupplyLimit(): string | null {
       resource.type === "0x1::coin::CoinInfo<0x1::aptos_coin::AptosCoin>",
   );
 
-  if (!coinInfo || !coinInfo.data) return null;
+  if (coinInfo === undefined || coinInfo.data === undefined) return null;
 
   const coinInfoData: CoinInfo = coinInfo.data as CoinInfo;
   const supplyLimit = coinInfoData?.supply?.vec[0]?.aggregator?.vec[0]?.limit;
 
-  return supplyLimit;
+  return supplyLimit === undefined ? null : supplyLimit;
 }
