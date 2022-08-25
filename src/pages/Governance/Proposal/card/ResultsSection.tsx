@@ -3,6 +3,7 @@ import {Stack} from "@mui/material";
 import {Proposal} from "../../Types";
 import Section from "./Section";
 import ResultBar from "./ResultBar";
+import ParticipationBar from "./ParticipationBar";
 
 type VotePercentage = {
   yes: number;
@@ -40,6 +41,7 @@ export default function ResultsSection({proposal}: ResultsSectionProps) {
           votes={proposal.no_votes}
           percentage={votePercentage.no}
         />
+        <ParticipationBar proposal={proposal} />
       </Stack>
     </Section>
   );

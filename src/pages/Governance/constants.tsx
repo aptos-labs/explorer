@@ -13,7 +13,7 @@ export const negativeColorWithOpacity: string = "rgba(249,115,115,0.1)";
 // yellow
 export const warningColor: string = "#D8BF45"; // yellow
 // grey
-export const secondaryColor: string = grey[400]; // grey
+export const secondaryColor: string = grey[450]; // grey
 
 export const voteFor: string = "FOR";
 export const voteAgainst: string = "AGAINST";
