@@ -60,6 +60,8 @@ type ParticipationBarProps = {
 };
 
 export default function ParticipationBar({proposal}: ParticipationBarProps) {
+  const theme = useTheme();
+
   const supplyLimit = useGetCoinSupplyLimit();
   if (!supplyLimit) {
     return null;
@@ -69,12 +71,7 @@ export default function ParticipationBar({proposal}: ParticipationBarProps) {
   const currentVotes = getTotalVotes(proposal);
   const minVotes = proposal.min_vote_threshold;
 
-  const theme = useTheme();
-  const backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[200];
-
-  const percentage = (currentVotes / totalSupply) * 100;
-  const percentageStr = `${percentage.toFixed(0)}%`;
-
+  const currentPercentage = (currentVotes / totalSupply) * 100;
   const enoughParticipation = currentVotes > minVotes;
   const part1Percentage = enoughParticipation
     ? (minVotes / totalSupply) * 100 - ANCHOR_WIDTH_PERCENTAGE / 2
@@ -88,6 +85,8 @@ export default function ParticipationBar({proposal}: ParticipationBarProps) {
     ? ((totalSupply - currentVotes) / totalSupply) * 100
     : ((totalSupply - minVotes) / totalSupply) * 100 -
       ANCHOR_WIDTH_PERCENTAGE / 2;
+
+  const backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[200];
 
   const part1 = (
     <Box
@@ -112,8 +111,8 @@ export default function ParticipationBar({proposal}: ParticipationBarProps) {
         backgroundColor: enoughParticipation ? BAR_COLOR : backgroundColor,
         borderTopLeftRadius: part1Percentage == 0 ? RADIUS : "0",
         borderBottomLeftRadius: part1Percentage == 0 ? RADIUS : "0",
-        borderTopRightRadius: percentage === 100 ? RADIUS : "0",
-        borderBottomRightRadius: percentage === 100 ? RADIUS : "0",
+        borderTopRightRadius: currentPercentage === 100 ? RADIUS : "0",
+        borderBottomRightRadius: currentPercentage === 100 ? RADIUS : "0",
       }}
       width={`${part2Percentage}%`}
     />
@@ -125,8 +124,8 @@ export default function ParticipationBar({proposal}: ParticipationBarProps) {
       sx={{
         pt: RADIUS,
         backgroundColor: backgroundColor,
-        borderTopLeftRadius: percentage === 0 ? RADIUS : "0",
-        borderBottomLeftRadius: percentage === 0 ? RADIUS : "0",
+        borderTopLeftRadius: currentPercentage === 0 ? RADIUS : "0",
+        borderBottomLeftRadius: currentPercentage === 0 ? RADIUS : "0",
         borderTopRightRadius: RADIUS,
         borderBottomRightRadius: RADIUS,
       }}
@@ -144,7 +143,9 @@ export default function ParticipationBar({proposal}: ParticipationBarProps) {
           <Typography variant="subtitle2" color={BAR_COLOR}>
             Participation
           </Typography>
-          <Typography variant="subtitle2">{percentageStr}</Typography>
+          <Typography variant="subtitle2">
+            {`${currentPercentage.toFixed(0)}%`}
+          </Typography>
         </Stack>
         <Stack direction="row">
           {part1}

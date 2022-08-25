@@ -36,8 +36,6 @@ export function useGetCoinSupplyLimit(): string | null {
 
   if (!coinInfo || !coinInfo.data) return null;
 
-  console.log(coinInfo.data);
-
   const coinInfoData: CoinInfo = coinInfo.data as CoinInfo;
   const supplyLimit = coinInfoData.supply.vec[0].aggregator.vec[0].limit;
 
