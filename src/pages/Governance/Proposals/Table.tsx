@@ -17,7 +17,7 @@ import {Proposal} from "../Types";
 import {useGetProposal} from "../hooks/useGetProposal";
 import GeneralTableRow from "../../../components/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
-import HashButton from "../../../components/HashButton";
+import HashButton, {HashType} from "../../../components/HashButton";
 import {teal} from "../../../themes/colors/aptosColorPalette";
 import StatusIcon from "../components/StatusIcon";
 import ProposalStatusTooltip from "../components/ProposalStatusTooltip";
@@ -61,7 +61,7 @@ function StatusCell({proposal}: ProposalCellProps) {
 function ProposerCell({proposal}: ProposalCellProps) {
   return (
     <TableCell sx={{textAlign: "left"}}>
-      <HashButton hash={proposal.proposer} />
+      <HashButton hash={proposal.proposer} type={HashType.ACCOUNT} />
     </TableCell>
   );
 }

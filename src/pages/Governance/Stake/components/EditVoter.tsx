@@ -13,7 +13,7 @@ import TransactionResponseSnackbar from "../../components/snackbar/TransactionRe
 import LoadingModal from "../../components/LoadingModal";
 import useAddressInput from "../../../../api/hooks/useAddressInput";
 import useSubmitChangeVoterStake from "../../hooks/useSubmitChangeVoterStake";
-import HashButton from "../../../../components/HashButton";
+import HashButton, {HashType} from "../../../../components/HashButton";
 
 type EditVoterProps = {
   isWalletConnected: boolean;
@@ -93,7 +93,7 @@ export function EditVoter({
               <Typography variant="subtitle1">
                 Current Voter Address:
               </Typography>
-              <HashButton hash={currVoterAddress} />
+              <HashButton hash={currVoterAddress} type={HashType.ACCOUNT} />
             </Stack>
           </Grid>
           <Grid item xs={12} sm={8}>
