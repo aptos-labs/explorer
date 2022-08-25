@@ -21,24 +21,27 @@ export enum HashType {
   OTHERS = "others",
 }
 
+function getHashLinkStr(hash: string, type: HashType): string {
+  switch (type) {
+    case HashType.ACCOUNT:
+      return `/account/${hash}`;
+    case HashType.TRANSACTION:
+      return `/txn/${hash}`;
+    case HashType.OTHERS:
+      return "";
+    default:
+      return assertNever(type);
+  }
+}
+
 function HashLink(hash: string, type: HashType): JSX.Element {
   switch (type) {
     case HashType.ACCOUNT:
-      return (
-        <Link
-          component={RRD.Link}
-          to={`/account/${hash}`}
-          target="_blank"
-          color="inherit"
-        >
-          {hash}
-        </Link>
-      );
     case HashType.TRANSACTION:
       return (
         <Link
           component={RRD.Link}
-          to={`/txn/${hash}`}
+          to={getHashLinkStr(hash, type)}
           target="_blank"
           color="inherit"
         >
