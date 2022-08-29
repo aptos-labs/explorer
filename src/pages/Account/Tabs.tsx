@@ -20,14 +20,8 @@ type TabPanelProps = {
 };
 
 function TabPanel({value, address}: TabPanelProps): JSX.Element {
-  switch (value) {
-    case "transactions":
-      return <TransactionTab address={address} />;
-    case "rawData":
-      return <RawDataTab address={address} />;
-    default:
-      return assertNever(value);
-  }
+  const TabComponent = TabComponents[value];
+  return <TabComponent address={address} />;
 }
 
 type AccountTabsProps = {
