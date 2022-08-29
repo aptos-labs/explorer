@@ -14,6 +14,35 @@ type TabValue = keyof typeof TabComponents;
 
 const TAB_VALUES: TabValue[] = ["transactions", "rawData"];
 
+type TabLabelProps = {
+  value: TabValue;
+};
+
+function TabLabel({value, ...rest}: TabLabelProps) {
+  switch (value) {
+    case "transactions":
+      return (
+        <Tab
+          label="Account Transactions"
+          value="transactions"
+          sx={{fontSize: "large"}}
+          {...rest}
+        />
+      );
+    case "rawData":
+      return (
+        <Tab
+          label="Raw Data"
+          value="rawData"
+          sx={{fontSize: "large"}}
+          {...rest}
+        />
+      );
+    default:
+      return assertNever(value);
+  }
+}
+
 type TabPanelProps = {
   value: TabValue;
   address: string;
@@ -26,9 +55,13 @@ function TabPanel({value, address}: TabPanelProps): JSX.Element {
 
 type AccountTabsProps = {
   address: string;
+  tabValues?: TabValue[];
 };
 
-export default function AccountTabs({address}: AccountTabsProps): JSX.Element {
+export default function AccountTabs({
+  address,
+  tabValues = TAB_VALUES,
+}: AccountTabsProps): JSX.Element {
   const [value, setValue] = useState<TabValue>(TAB_VALUES[0]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
@@ -44,16 +77,9 @@ export default function AccountTabs({address}: AccountTabsProps): JSX.Element {
           onChange={handleChange}
           aria-label="account page tabs"
         >
-          <Tab
-            label="Account Transactions"
-            value={TAB_VALUES[0]}
-            sx={{fontSize: "large"}}
-          />
-          <Tab
-            label="Raw Data"
-            value={TAB_VALUES[1]}
-            sx={{fontSize: "large"}}
-          />
+          {tabValues.map((value) => (
+            <TabLabel key={value} value={value} />
+          ))}
         </Tabs>
       </Box>
       <Box sx={{marginY: 3}}>
