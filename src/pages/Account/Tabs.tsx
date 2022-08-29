@@ -62,7 +62,7 @@ export default function AccountTabs({
   address,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
-  const [value, setValue] = useState<TabValue>(TAB_VALUES[0]);
+  const [value, setValue] = useState<TabValue>(tabValues[0]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
     setValue(newValue);
