@@ -1,4 +1,4 @@
-import {ResponseErrorType} from "../../../api/client";
+import {ResponseErrorType, ResponseError} from "../../../api/client";
 import {Stack} from "@mui/material";
 import React from "react";
 import {renderSection} from "../../Transactions/helpers";
@@ -8,6 +8,28 @@ import Typography from "@mui/material/Typography";
 import {useGetAccountResources} from "../../../api/hooks/useGetAccountResources";
 import Error from "../Error";
 import Row from "./Row";
+import {Types} from "aptos";
+
+function Content({
+  data,
+}: {
+  data: Types.MoveResource[] | undefined;
+}): JSX.Element {
+  if (!data || data.length === 0) {
+    return <>None</>;
+  } else {
+    return (
+      <>
+        {data.map((resource, i) => (
+          <Stack direction="column" key={i} spacing={3}>
+            <Row title={"Type:"} value={resource.type} />
+            <Row title={"Data:"} value={renderDebug(resource.data)} />
+          </Stack>
+        ))}
+      </>
+    );
+  }
+}
 
 type AccountResourcesSectionProps = {
   address: string;
@@ -39,17 +61,7 @@ export default function AccountResourcesSection({
       spacing={2}
       divider={<Divider variant="dotted" orientation="horizontal" />}
     >
-      {(!data ||
-        data.length === 0 ||
-        (error && error.type !== ResponseErrorType.NOT_FOUND)) && <>None</>}
-      {data &&
-        data.length > 0 &&
-        data.map((resource, i) => (
-          <Stack direction="column" key={i} spacing={3}>
-            <Row title={"Type:"} value={resource.type} />
-            <Row title={"Data:"} value={renderDebug(resource.data)} />
-          </Stack>
-        ))}
+      <Content data={data} />
     </Stack>,
     titleComponent,
   );

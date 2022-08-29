@@ -12,6 +12,27 @@ import Typography from "@mui/material/Typography";
 import Error from "../Error";
 import Row from "./Row";
 
+function Content({
+  data,
+}: {
+  data: Types.MoveModuleBytecode[] | undefined;
+}): JSX.Element {
+  if (!data || data.length === 0) {
+    return <>None</>;
+  } else {
+    return (
+      <>
+        {data.map((module, i) => (
+          <Stack direction="column" key={i} spacing={3}>
+            <Row title={"Bytecode:"} value={module.bytecode} />
+            <Row title={"ABI:"} value={renderDebug(module.abi)} />
+          </Stack>
+        ))}
+      </>
+    );
+  }
+}
+
 type AccountModulesSectionProps = {
   address: string;
 };
@@ -47,17 +68,7 @@ export default function AccountModulesSection({
       spacing={2}
       divider={<Divider variant="dotted" orientation="horizontal" />}
     >
-      {(!data ||
-        data.length === 0 ||
-        (error && error.type !== ResponseErrorType.NOT_FOUND)) && <>None</>}
-      {data &&
-        data.length > 0 &&
-        data.map((module, i) => (
-          <Stack direction="column" key={i} spacing={3}>
-            <Row title={"Bytecode:"} value={module.bytecode} />
-            <Row title={"ABI:"} value={renderDebug(module.abi)} />
-          </Stack>
-        ))}
+      <Content data={data} />
     </Stack>,
     titleComponent,
   );

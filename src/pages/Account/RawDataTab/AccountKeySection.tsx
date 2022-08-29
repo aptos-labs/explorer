@@ -11,6 +11,19 @@ import Typography from "@mui/material/Typography";
 import Error from "../Error";
 import Row from "./Row";
 
+function Content({data}: {data: Types.AccountData | undefined}): JSX.Element {
+  if (!data) {
+    return <>None</>;
+  } else {
+    return (
+      <>
+        <Row title={"Sequence Number:"} value={data.sequence_number} />
+        <Row title={"Authentication Key:"} value={data.authentication_key} />
+      </>
+    );
+  }
+}
+
 type AccountKeySectionProps = {
   address: string;
 };
@@ -42,15 +55,7 @@ export default function AccountKeySection({address}: AccountKeySectionProps) {
       spacing={2}
       divider={<Divider variant="dotted" orientation="horizontal" />}
     >
-      {(!data || (error && error.type !== ResponseErrorType.NOT_FOUND)) && (
-        <>None</>
-      )}
-      {data && (
-        <>
-          <Row title={"Sequence Number:"} value={data.sequence_number} />
-          <Row title={"Authentication Key:"} value={data.authentication_key} />
-        </>
-      )}
+      <Content data={data} />
     </Stack>,
     titleComponent,
   );

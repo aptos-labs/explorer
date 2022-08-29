@@ -1,35 +1,33 @@
 import * as React from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
+import {useState} from "react";
+import {Tabs, Tab, Box} from "@mui/material";
 import RawDataTab from "./RawDataTab/Index";
 import TransactionTab from "./TransactionsTab/Index";
+import {assertNever} from "../../utils";
 
-function tabProps(index: number) {
-  return {
-    "aria-controls": `tabpanel-${index}`,
-  };
-}
+const TabComponents = Object.freeze({
+  transactions: TransactionTab,
+  rawData: RawDataTab,
+});
+
+type TabValue = keyof typeof TabComponents;
+
+const TAB_VALUES: TabValue[] = ["transactions", "rawData"];
 
 type TabPanelProps = {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
+  value: TabValue;
+  address: string;
 };
 
-function TabPanel(props: TabPanelProps): JSX.Element {
-  const {children, value, index} = props;
-
-  return (
-    <div hidden={value !== index} id={`tabpanel-${index}`}>
-      {value === index && (
-        <Box sx={{p: 3}}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
+function TabPanel({value, address}: TabPanelProps): JSX.Element {
+  switch (value) {
+    case "transactions":
+      return <TransactionTab address={address} />;
+    case "rawData":
+      return <RawDataTab address={address} />;
+    default:
+      return assertNever(value);
+  }
 }
 
 type AccountTabsProps = {
@@ -37,10 +35,10 @@ type AccountTabsProps = {
 };
 
 export default function AccountTabs({address}: AccountTabsProps): JSX.Element {
-  const [tabIdx, setTabIdx] = React.useState(0);
+  const [value, setValue] = useState<TabValue>(TAB_VALUES[0]);
 
-  const handleChange = (event: React.SyntheticEvent, newIdx: number) => {
-    setTabIdx(newIdx);
+  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+    setValue(newValue);
   };
 
   // TODO: use LinkTab for better navigation
@@ -48,24 +46,25 @@ export default function AccountTabs({address}: AccountTabsProps): JSX.Element {
     <Box sx={{width: "100%"}}>
       <Box sx={{borderBottom: 1, borderColor: "divider"}}>
         <Tabs
-          value={tabIdx}
+          value={value}
           onChange={handleChange}
-          aria-label="basic tabs example"
+          aria-label="account page tabs"
         >
           <Tab
             label="Account Transactions"
+            value={TAB_VALUES[0]}
             sx={{fontSize: "large"}}
-            {...tabProps(0)}
           />
-          <Tab label="Raw Data" sx={{fontSize: "large"}} {...tabProps(1)} />
+          <Tab
+            label="Raw Data"
+            value={TAB_VALUES[1]}
+            sx={{fontSize: "large"}}
+          />
         </Tabs>
       </Box>
-      <TabPanel value={tabIdx} index={0}>
-        <TransactionTab address={address} />
-      </TabPanel>
-      <TabPanel value={tabIdx} index={1}>
-        <RawDataTab address={address} />
-      </TabPanel>
+      <Box sx={{marginY: 3}}>
+        <TabPanel value={value} address={address} />
+      </Box>
     </Box>
   );
 }

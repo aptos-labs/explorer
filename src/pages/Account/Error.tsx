@@ -9,14 +9,14 @@ type ErrorProps = {
 };
 
 export default function Error({error, address}: ErrorProps) {
-  if (error.type == ResponseErrorType.NOT_FOUND)
+  if (error.type == ResponseErrorType.NOT_FOUND) {
     return (
       <Alert severity="error">
         {error.message}
         Could not find an Account with address {address}
       </Alert>
     );
-  else
+  } else {
     return (
       <Alert severity="error">
         Unknown error ({error.type}) fetching an Account with address {address}:
@@ -26,4 +26,5 @@ export default function Error({error, address}: ErrorProps) {
         Try again later
       </Alert>
     );
+  }
 }
