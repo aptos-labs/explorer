@@ -8,7 +8,7 @@ import {useQuery} from "react-query";
 import {ResponseError} from "../../api/client";
 import {getTransaction} from "../../api";
 import Error from "./Error";
-import TransactionTitle from "./Title/Index";
+import TransactionTitle from "./Title";
 import TransactionTabs from "./Tabs";
 
 export default function TransactionPage() {
