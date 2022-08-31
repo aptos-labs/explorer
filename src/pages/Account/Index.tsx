@@ -3,7 +3,7 @@ import {Stack, Grid} from "@mui/material";
 import React from "react";
 import IndividualPageHeader from "../../components/IndividualPageHeader";
 import AccountTabs from "./Tabs";
-import AccountTitle from "./Title/Index";
+import AccountTitle from "./Title";
 import AccountInfo from "./AccountInfo/Index";
 
 export default function AccountPage() {

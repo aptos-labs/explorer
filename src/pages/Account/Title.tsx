@@ -1,6 +1,6 @@
 import {Stack, Typography} from "@mui/material";
 import React from "react";
-import AddressButton from "./AddressButton";
+import HashButtonCopyable from "../../components/HashButtonCopyable";
 
 type AccountTitleProps = {
   address: string;
@@ -12,7 +12,7 @@ export default function AccountTitle({address}: AccountTitleProps) {
       <Typography variant="h4" color="primary">
         Account:
       </Typography>
-      <AddressButton address={address} />
+      <HashButtonCopyable hash={address} />
     </Stack>
   );
 }
