@@ -3,7 +3,7 @@ import Link from "@mui/material/Link";
 import React from "react";
 import {LinkBaseProps, LinkProps} from "@mui/material/Link/Link";
 
-export function AccountLink({
+export default function AccountLink({
   address,
   hideAccount,
   ...props

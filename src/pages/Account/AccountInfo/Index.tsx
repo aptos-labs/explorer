@@ -18,9 +18,10 @@ export default function AccountInfo({address}: AccountInfoProps) {
           <Grid item md={6} xs={12}>
             <Balance address={address} />
           </Grid>
-          <Grid item md={6} xs={12}>
+          {/* TODO: show TokenBalance when development is done */}
+          {/* <Grid item md={6} xs={12}>
             <TokenBalance address={address} />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Card>
     </Box>
