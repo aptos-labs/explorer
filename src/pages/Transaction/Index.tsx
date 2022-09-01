@@ -10,6 +10,7 @@ import {getTransaction} from "../../api";
 import Error from "./Error";
 import TransactionTitle from "./Title";
 import TransactionTabs from "./Tabs";
+import GoBack from "../../components/GoBack";
 
 export default function TransactionPage() {
   const [state, _] = useGlobalState();
@@ -46,6 +47,7 @@ export default function TransactionPage() {
   return (
     <Grid container spacing={1}>
       <IndividualPageHeader />
+      <GoBack />
       <Grid item xs={12}>
         <Stack direction="column" spacing={4} marginTop={2}>
           <TransactionTitle transaction={data} />

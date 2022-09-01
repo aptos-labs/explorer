@@ -98,13 +98,15 @@ export default function TransactionTabs({
           value={value}
           onChange={handleChange}
           aria-label="account page tabs"
+          variant="scrollable"
+          scrollButtons="auto"
         >
           {tabValues.map((value, i) => (
             <Tab
               key={i}
               label={getTabLabel(value)}
               value={value}
-              sx={{fontSize: "large"}}
+              sx={{fontSize: {xs: "medium", md: "large"}}}
             />
           ))}
         </Tabs>

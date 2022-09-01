@@ -10,11 +10,18 @@ type TransactionTitleProps = {
 
 export default function TransactionTitle({transaction}: TransactionTitleProps) {
   return (
-    <Stack direction="row" alignItems="center" spacing={2} marginX={2}>
-      <Typography variant="h4" color="primary">
-        Transaction:
-      </Typography>
-      <HashButtonCopyable hash={transaction.hash} />
+    <Stack
+      direction={{xs: "column", md: "row"}}
+      alignItems={{xs: "flex-start", md: "center"}}
+      spacing={2}
+      marginX={2}
+    >
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <Typography variant="h4" color="primary">
+          Transaction:
+        </Typography>
+        <HashButtonCopyable hash={transaction.hash} />
+      </Stack>
       {renderTransactionType(transaction.type)}
     </Stack>
   );
