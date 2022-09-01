@@ -5,6 +5,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ExplorerLayout from "./pages/layout";
 import TransactionPage from "./pages/Transaction/Index";
 import AccountPage from "./pages/Account/Index";
+import {NodeCheckerPage} from "./pages/NodeChecker/Index";
 import {TransactionsPage} from "./pages/Transactions/Transactions";
 import {GovernancePage} from "./pages/Governance/Proposals/Index";
 import {ProposalPage} from "./pages/Governance/Proposal/Index";
@@ -16,6 +17,7 @@ export default function ExplorerRoutes() {
     <ExplorerLayout>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/node_checker" element={<NodeCheckerPage />} />
         <Route path="/transactions" element={<TransactionsPage />} />
         <Route path="/proposals" element={<GovernancePage />} />
         <Route path="/proposals/:id" element={<ProposalPage />} />
