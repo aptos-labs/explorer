@@ -62,12 +62,11 @@ type ParticipationBarProps = {
 export default function ParticipationBar({proposal}: ParticipationBarProps) {
   const theme = useTheme();
 
-  const supplyLimit = useGetCoinSupplyLimit();
-  if (supplyLimit === null) {
+  const totalSupply = useGetCoinSupplyLimit();
+  if (totalSupply === null) {
     return null;
   }
 
-  const totalSupply = parseInt(supplyLimit);
   const currentVotes = getTotalVotes(proposal);
   const minVotes = proposal.min_vote_threshold;
 
