@@ -5,6 +5,8 @@ import RawDataTab from "./RawDataTab/Index";
 import TransactionTab from "./TransactionsTab/Index";
 import {assertNever} from "../../utils";
 
+const TAB_VALUES: TabValue[] = ["transactions", "rawData"];
+
 const TabComponents = Object.freeze({
   transactions: TransactionTab,
   rawData: RawDataTab,
@@ -12,32 +14,12 @@ const TabComponents = Object.freeze({
 
 type TabValue = keyof typeof TabComponents;
 
-const TAB_VALUES: TabValue[] = ["transactions", "rawData"];
-
-type TabLabelProps = {
-  value: TabValue;
-};
-
-function TabLabel({value, ...rest}: TabLabelProps) {
+function getTabLabel(value: TabValue): string {
   switch (value) {
     case "transactions":
-      return (
-        <Tab
-          label="Account Transactions"
-          value="transactions"
-          sx={{fontSize: "large"}}
-          {...rest}
-        />
-      );
+      return "Account Transactions";
     case "rawData":
-      return (
-        <Tab
-          label="Raw Data"
-          value="rawData"
-          sx={{fontSize: "large"}}
-          {...rest}
-        />
-      );
+      return "Raw Data";
     default:
       return assertNever(value);
   }
@@ -58,6 +40,7 @@ type AccountTabsProps = {
   tabValues?: TabValue[];
 };
 
+// TODO: create reusable Tabs for all pages
 export default function AccountTabs({
   address,
   tabValues = TAB_VALUES,
@@ -76,9 +59,16 @@ export default function AccountTabs({
           value={value}
           onChange={handleChange}
           aria-label="account page tabs"
+          variant="scrollable"
+          scrollButtons="auto"
         >
-          {tabValues.map((value) => (
-            <TabLabel key={value} value={value} />
+          {tabValues.map((value, i) => (
+            <Tab
+              key={i}
+              label={getTabLabel(value)}
+              value={value}
+              sx={{fontSize: {xs: "medium", md: "large"}}}
+            />
           ))}
         </Tabs>
       </Box>

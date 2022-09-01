@@ -42,7 +42,6 @@ function HashLink(hash: string, type: HashType): JSX.Element {
         <Link
           component={RRD.Link}
           to={getHashLinkStr(hash, type)}
-          target="_blank"
           color="inherit"
         >
           {hash}
