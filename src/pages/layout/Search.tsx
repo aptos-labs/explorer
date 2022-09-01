@@ -8,7 +8,7 @@ import Link from "@mui/material/Link";
 import * as RRD from "react-router-dom";
 import {throttle} from "lodash";
 import {Autocomplete} from "@mui/material";
-import {AccountLink} from "../Accounts/helpers";
+import AccountLink from "../../components/AccountLink";
 import Paper from "@mui/material/Paper";
 import {useTheme} from "@mui/material/styles";
 import InputAdornment from "@mui/material/InputAdornment";
