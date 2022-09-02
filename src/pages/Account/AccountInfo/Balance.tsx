@@ -2,14 +2,40 @@ import React from "react";
 import {Typography} from "@mui/material";
 import {useGetAccountResources} from "../../../api/hooks/useGetAccountResources";
 
+const APTOS_DECIMALS = 8;
+
 interface CoinStore {
   coin: {
     value: string;
   };
 }
 
-function getFormattedBalanceStr(balance: string): string {
-  return parseInt(balance).toLocaleString("en-US");
+export function getFormattedBalanceStr(balance: string, decimals?: number): string {
+  // If it's zero, just return it
+  if (balance == "0") {
+    return balance;
+  }
+
+  const len = balance.length;
+  decimals = decimals || APTOS_DECIMALS;
+
+  // If length is less than decimals, pad with 0s to decimals length and return
+  if (len <= decimals) {
+    return "0." + "0".repeat(decimals - len) + balance;
+  }
+
+  // Otherwise, insert decimal point at len - decimals
+  const left_side = BigInt(balance.slice(0, len - decimals)).toLocaleString("en-US");
+  let right_side =balance.slice(len - decimals);
+  if(BigInt(right_side) == BigInt(0)) {
+    return left_side;
+  }
+  // remove trailing 0s
+  while(right_side.endsWith("0")) {
+    right_side = right_side.slice(0, -1);
+  }
+
+  return left_side + "." + right_side;
 }
 
 type BalanceProps = {
