@@ -128,7 +128,7 @@ export function NodeCheckerPage() {
   let publicKeyInput = null;
   if (publicKeyRequired) {
     publicKeyInput = (
-      <Grid item xs={12}>
+      <Grid item md={12}>
         {renderPublicKeyTextField("Public Key")}
       </Grid>
     );
@@ -169,16 +169,16 @@ export function NodeCheckerPage() {
           Node Health Checker
         </Typography>
         <Grid container spacing={4}>
-          <Grid item xs={5}>
+          <Grid item md={5} xs={12}>
             {renderUrlTextField("Node URL")}
           </Grid>
-          <Grid item xs={1.5}>
+          <Grid item md={1.5} xs={12}>
             {renderApiPortTextField("API Port")}
           </Grid>
-          <Grid item xs={1.5}>
+          <Grid item md={1.5} xs={12}>
             {renderNoisePortTextField("Noise Port")}
           </Grid>
-          <Grid item xs={4}>
+          <Grid item md={4} xs={12}>
             <ConfigurationSelect
               baselineConfiguration={baselineConfiguration}
               updateBaselineConfiguration={updateBaselineConfigurationWrapper}
@@ -189,8 +189,8 @@ export function NodeCheckerPage() {
           <Grid item xs={12}>
             {checkNodeButton}
           </Grid>
-          {evaluationDisplay}
         </Grid>
+        {evaluationDisplay}
       </Grid>
     </Grid>
   );
