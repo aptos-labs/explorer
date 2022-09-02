@@ -17,9 +17,7 @@ export default function TransactionTitle({transaction}: TransactionTitleProps) {
       marginX={2}
     >
       <Stack direction="row" alignItems="center" spacing={2}>
-        <Typography variant="h4" color="primary">
-          Transaction:
-        </Typography>
+        <Typography variant="h4">Transaction:</Typography>
         <HashButtonCopyable hash={transaction.hash} />
       </Stack>
       {renderTransactionType(transaction.type)}
