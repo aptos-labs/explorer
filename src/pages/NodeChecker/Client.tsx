@@ -28,32 +28,50 @@ export async function checkNode({
   nodeUrl,
   baselineConfigurationName,
   apiPort,
+  noisePort,
+  publicKey,
 }: {
   nhcUrl: string;
   nodeUrl: string;
   baselineConfigurationName?: string | undefined;
   apiPort?: number | undefined;
+  noisePort?: number | undefined;
+  publicKey?: string | undefined;
 }): Promise<EvaluationSummary> {
   const client = getClient(nhcUrl);
   return client.default.getCheckNode({
     nodeUrl,
-    apiPort,
     baselineConfigurationName,
+    apiPort,
+    noisePort,
+    publicKey,
   });
 }
 
-// Return map of pretty name to key.
-export async function getConfigurationKeys({
+export interface MinimalConfiguration {
+  name: string;
+  prettyName: string;
+  evaluators: string[];
+}
+
+// Return map of key to a minimal description of the configuration.
+export async function getConfigurations({
   nhcUrl,
 }: {
   nhcUrl: string;
-}): Promise<Map<string, string>> {
+}): Promise<Map<string, MinimalConfiguration>> {
   const client = getClient(nhcUrl);
-  let keys = await client.default.getGetConfigurationKeys();
-  keys.sort((a, b) => b.key.localeCompare(a.key));
-  return new Map<string, string>(
-    keys.map((key) => {
-      return [key.pretty_name, key.key];
-    }),
+  let configurations = await client.default.getGetConfigurations();
+  configurations.sort((a, b) =>
+    b.configuration_name.localeCompare(a.configuration_name),
   );
+  let out = new Map<string, MinimalConfiguration>();
+  for (const configuration of configurations) {
+    out.set(configuration.configuration_name, {
+      name: configuration.configuration_name,
+      prettyName: configuration.configuration_name_pretty,
+      evaluators: configuration.evaluators,
+    });
+  }
+  return out;
 }

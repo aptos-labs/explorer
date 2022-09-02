@@ -39,11 +39,11 @@ export default function EvaluationDisplay({
     return (
       <Card>
         <Box
-          minHeight={300}
+          minHeight={320}
           sx={{
             display: "flex",
             flexDirection: "column",
-            margin: 2,
+            margin: 3,
           }}
         >
           <Box>
@@ -55,7 +55,13 @@ export default function EvaluationDisplay({
               sx={{mt: 2}}
             />
           </Box>
-          <Typography variant="body1" marginBottom={2}>
+          <Typography
+            variant="body1"
+            marginBottom={2}
+            sx={{
+              wordWrap: "break-word",
+            }}
+          >
             {content}
           </Typography>
           {linkButton}
@@ -78,7 +84,7 @@ export default function EvaluationDisplay({
   });
 
   return (
-    <Box marginX={10}>
+    <Box marginX={6}>
       <Divider />
       <Grid mb={12}>
         <Typography

@@ -12,8 +12,8 @@ function isValidPort(port: string): boolean {
   return portNumber >= 1 && portNumber <= 65535;
 }
 
-const usePortInput = () => {
-  const [port, setPort] = useState<string>("");
+const usePortInput = (initialValue: string) => {
+  const [port, setPort] = useState<string>(initialValue);
   const [portIsValid, setPortIsValid] = useState<boolean>(true);
 
   useEffect(() => {

@@ -5,47 +5,57 @@ import MenuItem from "@mui/material/MenuItem";
 import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
 import Box from "@mui/material/Box";
 import {grey} from "../../themes/colors/aptosColorPalette";
-import {determineNhcUrl, getConfigurationKeys} from "./Client";
+import {
+  determineNhcUrl,
+  getConfigurations,
+  MinimalConfiguration,
+} from "./Client";
 import {useGlobalState} from "../../GlobalState";
 
 interface ConfigurationSelectProps {
-  baselineConfigurationKey: string | undefined;
-  updateBaselineConfigurationKey: (key: string | undefined) => void;
-  updateErrorMessage: (key: string | undefined) => void;
+  baselineConfiguration: MinimalConfiguration | undefined;
+  updateBaselineConfiguration: (
+    configuration: MinimalConfiguration | undefined,
+  ) => void;
+  updateErrorMessage: (message: string | undefined) => void;
 }
 
 export default function ConfigurationSelect({
-  baselineConfigurationKey,
-  updateBaselineConfigurationKey,
+  baselineConfiguration,
+  updateBaselineConfiguration,
   updateErrorMessage,
 }: ConfigurationSelectProps) {
   const [state, _dispatch] = useGlobalState();
 
-  const [validConfigurationKeys, updateValidConfigurationKeys] = useState<
-    Map<string, string> | undefined
+  const [validConfigurations, updateValidConfigurations] = useState<
+    Map<string, MinimalConfiguration> | undefined
   >(undefined);
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const configurationKey = event.target.value;
-    updateBaselineConfigurationKey(configurationKey);
+    updateBaselineConfiguration(validConfigurations!.get(configurationKey));
   };
 
+  // This triggers whenever the selected network changes.
   useEffect(() => {
-    // Set the valid configuration keys.
-    // This can change if the network selector changes.
+    // Clear the values to begin with.
+    updateBaselineConfiguration(undefined);
+    updateValidConfigurations(undefined);
+
+    // Set the valid configurations.
     const nhcUrl = determineNhcUrl(state);
-    getConfigurationKeys({nhcUrl: nhcUrl})
-      .then((configurationKeys) => {
-        updateValidConfigurationKeys(configurationKeys);
-        updateBaselineConfigurationKey(configurationKeys.values().next().value);
+    getConfigurations({nhcUrl: nhcUrl})
+      .then((configurations) => {
+        updateValidConfigurations(configurations);
+        updateBaselineConfiguration(configurations.values().next().value);
         updateErrorMessage(undefined);
       })
       .catch((_error) => {
         updateErrorMessage(
           `Failed to connect to Node Health Checker at ${nhcUrl}`,
         );
-        updateValidConfigurationKeys(undefined);
-        updateBaselineConfigurationKey(undefined);
+        updateBaselineConfiguration(undefined);
+        updateValidConfigurations(undefined);
       });
   }, [state.network_name]);
 
@@ -60,11 +70,11 @@ export default function ConfigurationSelect({
   const theme = useTheme();
 
   let menuItems = null;
-  if (validConfigurationKeys !== undefined) {
-    menuItems = Array.from(validConfigurationKeys).map(
-      ([configurationNamePretty, configurationKey]) => (
-        <MenuItem key={configurationKey} value={configurationKey}>
-          {configurationNamePretty}
+  if (validConfigurations !== undefined) {
+    menuItems = Array.from(validConfigurations).map(
+      ([configurationName, configuration]) => (
+        <MenuItem key={configurationName} value={configurationName}>
+          {configuration.prettyName}
         </MenuItem>
       ),
     );
@@ -76,7 +86,7 @@ export default function ConfigurationSelect({
         <Select
           id="configuration-select"
           inputProps={{"aria-label": "Select Baseline Configuration"}}
-          value={baselineConfigurationKey ? baselineConfigurationKey : ""}
+          value={baselineConfiguration?.name ?? ""}
           onChange={handleChange}
           onClose={() => {
             setTimeout(() => {
