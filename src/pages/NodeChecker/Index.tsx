@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {Button, Grid, Typography} from "@mui/material";
 import HeadingSub from "../../components/HeadingSub";
-import {EvaluationSummary} from "aptos-node-checker-client";
+import {ApiError, EvaluationSummary} from "aptos-node-checker-client";
 import useUrlInput from "./hooks/useUrlInput";
 import usePortInput from "./hooks/usePortInput";
 import EvaluationDisplay from "./EvaluationDisplay";
-import {checkNode, determineNhcUrl} from "./Client";
+import {checkNode, determineNhcUrl, MinimalConfiguration} from "./Client";
 import ConfigurationSelect from "./ConfigurationSelect";
 import {useGlobalState} from "../../GlobalState";
 import ErrorSnackbar from "./ErrorSnackbar";
+import useAddressInput from "../../api/hooks/useAddressInput";
 
 export function NodeCheckerPage() {
   const [state, _dispatch] = useGlobalState();
@@ -17,39 +18,80 @@ export function NodeCheckerPage() {
   const [evaluationSummary, updateEvaluationSummary] = useState<
     EvaluationSummary | undefined
   >(undefined);
-  const [baselineConfigurationKey, updateBaselineConfigurationKey] = useState<
-    string | undefined
+  const [baselineConfiguration, updateBaselineConfiguration] = useState<
+    MinimalConfiguration | undefined
   >(undefined);
   const [errorMessage, updateErrorMessage] = useState<string | undefined>(
     undefined,
   );
+  const [publicKeyRequired, setPublicKeyRequired] = useState<boolean>(true);
 
+  // URL text input field.
   const {
     url,
     clearUrl: _clearUrl,
     renderUrlTextField,
     validateUrlInput,
   } = useUrlInput();
+
+  // API port text input field.
   const {
     port: apiPort,
     clearPort: _clearApiPort,
     renderPortTextField: renderApiPortTextField,
     validatePortInput: validateApiPortInput,
-  } = usePortInput();
+  } = usePortInput("8080");
+
+  // Noise port text input field.
+  const {
+    port: noisePort,
+    clearPort: _clearNoisePort,
+    renderPortTextField: renderNoisePortTextField,
+    validatePortInput: validateNoisePortInput,
+  } = usePortInput("6180");
+
+  // Public key text input field.
+  const {
+    addr: publicKey,
+    clearAddr: _clearPublicKey,
+    renderAddressTextField: renderPublicKeyTextField,
+    validateAddressInput: validatePublicKeyAddressInput,
+  } = useAddressInput();
 
   const nhcUrl = determineNhcUrl(state);
+
+  // Check whether all the input fields are valid.
+  const inputIsValid = () => {
+    const urlIsValid = validateUrlInput();
+    const apiPortIsValid = validateApiPortInput();
+    const noisePortIsValid = validateNoisePortInput();
+    const publicKeyIsValid = publicKeyRequired
+      ? validatePublicKeyAddressInput()
+      : true;
+    return (
+      urlIsValid &&
+      apiPortIsValid &&
+      noisePortIsValid &&
+      publicKeyIsValid &&
+      baselineConfiguration !== undefined
+    );
+  };
+
+  // Wrapper around updateBaselineConfiguration that also handles whether
+  // the public key field is required.
+  const updateBaselineConfigurationWrapper = (
+    configuration: MinimalConfiguration | undefined,
+  ) => {
+    updateBaselineConfiguration(configuration);
+    const evaluators = configuration?.evaluators ?? [];
+    setPublicKeyRequired(evaluators.includes("noise_handshake"));
+  };
 
   const onCheckNodeButtonClick = async () => {
     if (checking) {
       return;
     }
-    const urlIsValid = validateUrlInput();
-    const apiPortIsValid = validateApiPortInput();
-    if (
-      !urlIsValid ||
-      !apiPortIsValid ||
-      baselineConfigurationKey === undefined
-    ) {
+    if (!inputIsValid()) {
       return;
     }
     updateChecking(true);
@@ -57,24 +99,43 @@ export function NodeCheckerPage() {
       const evaluationSummary = await checkNode({
         nhcUrl: nhcUrl,
         nodeUrl: url,
-        baselineConfigurationName: baselineConfigurationKey,
-        // TODO: Somehow make apiPort a number to begin with.
+        baselineConfigurationName: baselineConfiguration!.name,
+        // TODO: Somehow make these port values numbers to begin with.
         apiPort: parseInt(apiPort),
+        noisePort: parseInt(noisePort),
+        publicKey: publicKey == "" ? undefined : publicKey,
       });
       updateEvaluationSummary(evaluationSummary);
       updateErrorMessage(undefined);
     } catch (e) {
-      updateErrorMessage(`Failed to check node: ${e}`);
+      let msg = `Failed to check node: ${e}`;
+      if (e instanceof ApiError) {
+        msg += `: ${e.body}`;
+      }
+      updateErrorMessage(msg);
     }
     updateChecking(false);
   };
 
+  // Clear the results if the user changes the network.
   useEffect(() => {
-    // Clear the results if the user changes the network.
     updateEvaluationSummary(undefined);
     updateErrorMessage(undefined);
   }, [state.network_name]);
 
+  // Conditionally build an input field for the public key if the selected
+  // baseline configuration has an evaluator that requires it.
+  let publicKeyInput = null;
+  if (publicKeyRequired) {
+    publicKeyInput = (
+      <Grid item xs={12}>
+        {renderPublicKeyTextField("Public Key")}
+      </Grid>
+    );
+  }
+
+  // Build the check node button, which could be disabled if we're actively
+  // waiting for a response from the server.
   const checkNodeButton = (
     <span>
       <Button
@@ -88,6 +149,7 @@ export function NodeCheckerPage() {
     </span>
   );
 
+  // Build a display of the evaluation summary if one has been received.
   let evaluationDisplay = null;
   if (evaluationSummary !== undefined) {
     evaluationDisplay = (
@@ -107,19 +169,23 @@ export function NodeCheckerPage() {
           Node Health Checker
         </Typography>
         <Grid container spacing={4}>
-          <Grid item xs={6}>
+          <Grid item xs={5}>
             {renderUrlTextField("Node URL")}
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={1.5}>
             {renderApiPortTextField("API Port")}
+          </Grid>
+          <Grid item xs={1.5}>
+            {renderNoisePortTextField("Noise Port")}
           </Grid>
           <Grid item xs={4}>
             <ConfigurationSelect
-              baselineConfigurationKey={baselineConfigurationKey}
-              updateBaselineConfigurationKey={updateBaselineConfigurationKey}
+              baselineConfiguration={baselineConfiguration}
+              updateBaselineConfiguration={updateBaselineConfigurationWrapper}
               updateErrorMessage={updateErrorMessage}
             />
           </Grid>
+          {publicKeyInput}
           <Grid item xs={12}>
             {checkNodeButton}
           </Grid>

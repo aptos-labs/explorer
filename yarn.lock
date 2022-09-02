@@ -2737,10 +2737,10 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-aptos-node-checker-client@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/aptos-node-checker-client/-/aptos-node-checker-client-0.0.1.tgz#a0c0a6c81280bc15be1ef65e0f6d2a8004722029"
-  integrity sha512-SCdT1AlbyYHSPx9X8RmSNpcchYhHOYiJSf2x3pFPe0GOIcaAG5jRGz+p5usEjCfcTLYnUP5Vh/atkIoSx6Cw4Q==
+aptos-node-checker-client@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/aptos-node-checker-client/-/aptos-node-checker-client-0.0.2.tgz#2984a7b3bd908fc7c5ba3ff085639a8a1efdb891"
+  integrity sha512-W1Fd6ybB69OW4v3vDmDdmzO7HknYTjmZeHAlt/dlzmnZGKKu9zd3dfx0vt/aSY1f5WTkjMI3hOqYVFAgR6SQYg==
   dependencies:
     axios "^0.27.2"
 
