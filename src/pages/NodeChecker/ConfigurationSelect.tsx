@@ -100,8 +100,7 @@ export default function ConfigurationSelect({
             borderRadius: 1,
             fontWeight: "400",
             fontSize: "1rem",
-            minWidth: 200,
-            ml: 1,
+            minWidth: 240,
             color: "inherit",
             alignItems: "center",
             "& .MuiSvgIcon-root": {

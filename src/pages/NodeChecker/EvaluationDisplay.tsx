@@ -73,7 +73,7 @@ export default function EvaluationDisplay({
   // Get grid components for each element in the evaluation summary results.
   const results = evaluationSummary.evaluation_results.map((result, index) => {
     return (
-      <Grid item sm={4} lg={4} key={index}>
+      <Grid item xs={12} md={6} lg={4} key={index}>
         <CardBox
           title={`${result.score}: ${result.headline}`}
           content={result.explanation}
@@ -85,8 +85,7 @@ export default function EvaluationDisplay({
 
   return (
     <Box marginX={6}>
-      <Divider />
-      <Grid mb={12}>
+      <Grid md={12}>
         <Typography
           variant="h4"
           marginTop={5}
@@ -95,7 +94,7 @@ export default function EvaluationDisplay({
         >
           {evaluationSummary.summary_explanation}
         </Typography>
-        <Grid container spacing={6} justifyContent="center">
+        <Grid container spacing={4} justifyContent="center">
           {results}
         </Grid>
       </Grid>
