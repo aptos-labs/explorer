@@ -25,17 +25,17 @@ export function getFormattedBalanceStr(balance: string, decimals?: number): stri
   }
 
   // Otherwise, insert decimal point at len - decimals
-  const left_side = BigInt(balance.slice(0, len - decimals)).toLocaleString("en-US");
-  let right_side =balance.slice(len - decimals);
-  if(BigInt(right_side) == BigInt(0)) {
-    return left_side;
+  const leftSide = BigInt(balance.slice(0, len - decimals)).toLocaleString("en-US");
+  let rightSide = balance.slice(len - decimals);
+  if (BigInt(rightSide) == BigInt(0)) {
+    return leftSide;
   }
   // remove trailing 0s
-  while(right_side.endsWith("0")) {
-    right_side = right_side.slice(0, -1);
+  while (rightSide.endsWith("0")) {
+    rightSide = rightSide.slice(0, -1);
   }
 
-  return left_side + "." + right_side;
+  return leftSide + "." + rightSide;
 }
 
 type BalanceProps = {
