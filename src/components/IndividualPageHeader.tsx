@@ -1,7 +1,7 @@
 import React from "react";
 import {Grid, Typography} from "@mui/material";
 import DividerHero from "./DividerHero";
-import HeaderSearch from "../pages/layout/Search";
+import HeaderSearch from "../pages/layout/Search/Index";
 
 export default function IndividualPageHeader() {
   return (

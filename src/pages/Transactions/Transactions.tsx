@@ -11,7 +11,7 @@ import Grid from "@mui/material/Grid";
 import {Pagination, PaginationItem, Stack} from "@mui/material";
 import {TransactionsTable} from "../../components/TransactionsTable";
 import HeadingSub from "../../components/HeadingSub";
-import HeaderSearch from "../layout/Search";
+import HeaderSearch from "../layout/Search/Index";
 import Typography from "@mui/material/Typography";
 import DividerHero from "../../components/DividerHero";
 

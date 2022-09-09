@@ -10,7 +10,10 @@ interface CoinStore {
   };
 }
 
-export function getFormattedBalanceStr(balance: string, decimals?: number): string {
+export function getFormattedBalanceStr(
+  balance: string,
+  decimals?: number,
+): string {
   // If it's zero, just return it
   if (balance == "0") {
     return balance;
@@ -25,7 +28,9 @@ export function getFormattedBalanceStr(balance: string, decimals?: number): stri
   }
 
   // Otherwise, insert decimal point at len - decimals
-  const leftSide = BigInt(balance.slice(0, len - decimals)).toLocaleString("en-US");
+  const leftSide = BigInt(balance.slice(0, len - decimals)).toLocaleString(
+    "en-US",
+  );
   let rightSide = balance.slice(len - decimals);
   if (BigInt(rightSide) == BigInt(0)) {
     return leftSide;
