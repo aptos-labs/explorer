@@ -83,8 +83,6 @@ export default function HeaderSearch() {
       }
     }
 
-    console.log(reason);
-
     if (event && event.type === "blur") {
       setInputValue("");
     } else if (reason !== "reset") {
