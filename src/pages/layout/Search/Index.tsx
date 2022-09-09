@@ -74,10 +74,17 @@ export default function HeaderSearch() {
     reason: AutocompleteInputChangeReason,
   ) => {
     if (newInputValue.length === 0) {
-      if (open) setOpen(false);
+      if (open) {
+        setOpen(false);
+      }
     } else {
-      if (!open) setOpen(true);
+      if (!open) {
+        setOpen(true);
+      }
     }
+
+    console.log(reason);
+
     if (event && event.type === "blur") {
       setInputValue("");
     } else if (reason !== "reset") {

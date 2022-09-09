@@ -8,8 +8,6 @@ type PaperComponentProps = {
 export default function ResultPaper({children}: PaperComponentProps) {
   const theme = useTheme();
 
-  console.log(children);
-
   return (
     <Paper
       sx={{
