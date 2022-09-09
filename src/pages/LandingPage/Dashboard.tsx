@@ -4,7 +4,7 @@ import LedgerInfo from "../LedgerInfo/LedgerInfo";
 import Typography from "@mui/material/Typography";
 import DividerHero from "../../components/DividerHero";
 import HeadingSub from "../../components/HeadingSub";
-import HeaderSearch from "../layout/Search";
+import HeaderSearch from "../layout/Search/Index";
 import Box from "@mui/material/Box";
 
 export default function Dashboard() {
