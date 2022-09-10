@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {FormControl, Select, SelectChangeEvent} from "@mui/material";
-import {NetworkName, networks} from "../../constants";
+import {defaultFeatureName, NetworkName, networks} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import {useTheme} from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
@@ -16,11 +16,18 @@ export default function NetworkSelect() {
   function maybeSetNetwork(networkNameString: string | null) {
     if (!networkNameString || state.network_name === networkNameString) return;
     if (!(networkNameString in networks)) return;
+    const feature_name = state.feature_name;
     const network_name = networkNameString as NetworkName;
     const network_value = networks[network_name];
     if (network_value) {
-      setSearchParams({network: network_name});
-      dispatch({network_name, network_value});
+      // only show the "feature" param in the url when it's not "prod"
+      // we don't want the users to know the existence of the "feature" param
+      if (feature_name !== defaultFeatureName) {
+        setSearchParams({network: network_name, feature: feature_name});
+      } else {
+        setSearchParams({network: network_name});
+      }
+      dispatch({network_name, network_value, feature_name});
     }
   }
 
