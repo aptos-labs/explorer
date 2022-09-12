@@ -16,6 +16,7 @@ import Nav from "../../components/Nav";
 import NavMobile from "../../components/NavMobile";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
+import FeatureBar from "./FeatureBar";
 
 export default function Header() {
   const scrollTop = () => {
@@ -71,6 +72,7 @@ export default function Header() {
             }),
         }}
       >
+        <FeatureBar />
         <Container maxWidth={false}>
           <Toolbar
             sx={{
