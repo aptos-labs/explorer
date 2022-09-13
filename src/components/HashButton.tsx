@@ -84,7 +84,7 @@ export default function HashButton({hash, type}: HashButtonProps) {
         sx={{
           textTransform: "none",
           backgroundColor: `${
-            theme.palette.mode === "dark" ? grey[700] : grey[100]
+            theme.palette.mode === "dark" ? grey[600] : grey[200]
           }`,
           display: "flex",
           borderRadius: 1,
@@ -92,7 +92,7 @@ export default function HashButton({hash, type}: HashButtonProps) {
           padding: "0.15rem 0.5rem 0.15rem 1rem",
           "&:hover": {
             backgroundColor: `${
-              theme.palette.mode === "dark" ? grey[700] : grey[100]
+              theme.palette.mode === "dark" ? grey[500] : grey[300]
             }`,
           },
         }}
@@ -138,7 +138,7 @@ export default function HashButton({hash, type}: HashButtonProps) {
             display: "flex",
             alignItems: "center",
             backgroundColor: `${
-              theme.palette.mode === "dark" ? grey[700] : grey[100]
+              theme.palette.mode === "dark" ? grey[600] : grey[200]
             }`,
             px: 2,
             py: "0.15rem",
