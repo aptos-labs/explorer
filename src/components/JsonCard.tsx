@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Box, useTheme} from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import EmptyValue from "../pages/Transaction/Tabs/Components/EmptyValue";
 
 const TEXT_COLOR_LIGHT = "#0EA5E9";
 const TEXT_COLOR_DARK = "#83CCED";
@@ -11,9 +12,13 @@ type JsonCardProps = {
   data: any;
 };
 
-export default function JsonCard({data}: JsonCardProps) {
+export default function JsonCard({data}: JsonCardProps): JSX.Element {
   const theme = useTheme();
   const [expanded, setExpanded] = useState<boolean>(false);
+
+  if (!data) {
+    return <EmptyValue />;
+  }
 
   const toggleCard = () => {
     setExpanded(!expanded);
@@ -50,7 +55,7 @@ export default function JsonCard({data}: JsonCardProps) {
             overflowWrap: "break-word",
           }}
         >
-          {JSON.stringify(data || null, null, 2)}
+          {JSON.stringify(data, null, 2)}
         </pre>
       </Box>
       <Box
