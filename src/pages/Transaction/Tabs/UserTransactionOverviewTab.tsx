@@ -13,6 +13,7 @@ import ContentBox from "./Components/ContentBox";
 import ContentRow from "./Components/ContentRow";
 import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import JsonCard from "../../../components/JsonCard";
 
 type UserTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -71,7 +72,7 @@ export default function UserTransactionOverviewTab({
       <ContentBox>
         <ContentRow
           title={"Signature:"}
-          value={renderDebug(transactionData.signature)}
+          value={<JsonCard data={transactionData.signature} />}
         />
         <ContentRow
           title={"Accumulator Root Hash:"}

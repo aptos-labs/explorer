@@ -1,6 +1,7 @@
 import React from "react";
 import {Grid, Box, Typography} from "@mui/material";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
+import EmptyValue from "./EmptyValue";
 
 type ContentRowProps = {
   title: string;
@@ -23,8 +24,8 @@ export default function ContentRow({title, value, i}: ContentRowProps) {
             {title}
           </Typography>
         </Grid>
-        <Grid item md={9} sx={{width: 1, overflowWrap: "break-word"}}>
-          <Box sx={{fontSize: 15}}>{value}</Box>
+        <Grid item md={9} width={{xs: 1, md: 0.75}} sx={{fontSize: 13.5}}>
+          {value ? <Box>{value}</Box> : <EmptyValue />}
         </Grid>
       </Grid>
     </Box>
