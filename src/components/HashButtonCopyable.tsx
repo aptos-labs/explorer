@@ -32,7 +32,7 @@ export default function HashButtonCopyable({hash}: HashButtonCopyableProps) {
       sx={{
         textTransform: "none",
         backgroundColor: `${
-          theme.palette.mode === "dark" ? grey[700] : grey[100]
+          theme.palette.mode === "dark" ? grey[600] : grey[200]
         }`,
         display: "flex",
         borderRadius: 1,
@@ -40,7 +40,7 @@ export default function HashButtonCopyable({hash}: HashButtonCopyableProps) {
         padding: "0.15rem 0.5rem 0.15rem 1rem",
         "&:hover": {
           backgroundColor: `${
-            theme.palette.mode === "dark" ? grey[600] : grey[200]
+            theme.palette.mode === "dark" ? grey[500] : grey[300]
           }`,
         },
       }}
