@@ -13,7 +13,8 @@ export default function StyledTab({
   ...props
 }: StyledTabProps): JSX.Element {
   const theme = useTheme();
-  const backgroundColor = theme.palette.mode === "dark" ? grey[700] : grey[100];
+  // TODO: unify colors for the new transaction page
+  const backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[50];
 
   return (
     <Tab
