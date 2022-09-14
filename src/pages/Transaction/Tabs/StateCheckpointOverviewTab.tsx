@@ -26,31 +26,31 @@ export default function StateCheckpointOverviewTab({
   return inDev ? (
     <Box marginBottom={3}>
       <ContentBox>
-        <ContentRow title={"Version:"} value={transactionData.version} />
+        <ContentRow title="Version:" value={transactionData.version} />
         <ContentRow
-          title={"Status:"}
+          title="Status:"
           value={<TransactionStatus success={transactionData.success} />}
         />
         <ContentRow
-          title={"State Root Hash:"}
+          title="State Root Hash:"
           value={transactionData.state_root_hash}
         />
         <ContentRow
-          title={"Event Root Hash:"}
+          title="Event Root Hash:"
           value={transactionData.event_root_hash}
         />
         <ContentRow
-          title={"Gas Used:"}
+          title="Gas Used:"
           value={renderGas(transactionData.gas_used)}
         />
-        <ContentRow title={"VM Status:"} value={transactionData.vm_status} />
+        <ContentRow title="VM Status:" value={transactionData.vm_status} />
         <ContentRow
-          title={"Accumulator Root Hash:"}
+          title="Accumulator Root Hash:"
           value={transactionData.accumulator_root_hash}
         />
         {"timestamp" in transactionData && (
           <ContentRow
-            title={"Timestamp:"}
+            title="Timestamp:"
             value={renderTimestamp(transactionData.timestamp)}
           />
         )}

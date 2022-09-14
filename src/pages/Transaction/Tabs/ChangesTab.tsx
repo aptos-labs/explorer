@@ -58,16 +58,13 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
           expanded={expandedList[i]}
           toggleExpanded={() => toggleExpandedAt(i)}
         >
-          <ContentRow title={"Type:"} value={change.type} />
+          <ContentRow title="Type:" value={change.type} />
           {"address" in change && (
-            <ContentRow title={"Address:"} value={change.address} />
+            <ContentRow title="Address:" value={change.address} />
           )}
-          <ContentRow title={"State Key Hash:"} value={change.state_key_hash} />
+          <ContentRow title="State Key Hash:" value={change.state_key_hash} />
           {"data" in change && (
-            <ContentRow
-              title={"Data:"}
-              value={<JsonCard data={change.data} />}
-            />
+            <ContentRow title="Data:" value={<JsonCard data={change.data} />} />
           )}
         </CollapsibleCard>
       ))}

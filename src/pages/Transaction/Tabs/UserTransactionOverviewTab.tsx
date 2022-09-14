@@ -29,56 +29,56 @@ export default function UserTransactionOverviewTab({
     <Box marginBottom={3}>
       <ContentBox>
         <ContentRow
-          title={"Sender:"}
+          title="Sender:"
           value={
             <HashButton hash={transactionData.sender} type={HashType.ACCOUNT} />
           }
         />
         <ContentRow
-          title={"Sequence Number:"}
+          title="Sequence Number:"
           value={transactionData.sequence_number}
         />
         <ContentRow
-          title={"Expiration Timestamp:"}
+          title="Expiration Timestamp:"
           value={renderTimestamp(transactionData.expiration_timestamp_secs)}
         />
         <ContentRow title={"Version:"} value={transactionData.version} />
         <ContentRow
-          title={"Status:"}
+          title="Status:"
           value={<TransactionStatus success={transactionData.success} />}
         />
         <ContentRow
-          title={"State Root Hash:"}
+          title="State Root Hash:"
           value={transactionData.state_root_hash}
         />
         <ContentRow
-          title={"Event Root Hash:"}
+          title="Event Root Hash:"
           value={transactionData.event_root_hash}
         />
         <ContentRow
-          title={"Gas Used:"}
+          title="Gas Used:"
           value={renderGas(transactionData.gas_used)}
         />
         <ContentRow
-          title={"Max Gas:"}
+          title="Max Gas:"
           value={renderGas(transactionData.max_gas_amount)}
         />
         <ContentRow
-          title={"Gas Unit Price:"}
+          title="Gas Unit Price:"
           value={renderGas(transactionData.gas_unit_price)}
         />
-        <ContentRow title={"VM Status:"} value={transactionData.vm_status} />
+        <ContentRow title="VM Status:" value={transactionData.vm_status} />
       </ContentBox>
       <ContentBox>
         <ContentRow
-          title={"Signature:"}
+          title="Signature:"
           value={<JsonCard data={transactionData.signature} />}
         />
         <ContentRow
-          title={"Accumulator Root Hash:"}
+          title="Accumulator Root Hash:"
           value={transactionData.accumulator_root_hash}
         />
-        <ContentRow title={"Timestamp:"} value={transactionData.timestamp} />
+        <ContentRow title="Timestamp:" value={transactionData.timestamp} />
       </ContentBox>
     </Box>
   ) : (

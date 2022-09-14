@@ -27,15 +27,15 @@ export default function BlockMetadataOverviewTab({
   return inDev ? (
     <Box marginBottom={3}>
       <ContentBox>
-        <ContentRow title={"ID:"} value={transactionData.id} />
-        <ContentRow title={"Version:"} value={transactionData.version} />
-        <ContentRow title={"Round:"} value={transactionData.round} />
+        <ContentRow title="ID:" value={transactionData.id} />
+        <ContentRow title="Version:" value={transactionData.version} />
+        <ContentRow title="Round:" value={transactionData.round} />
         <ContentRow
-          title={"Status:"}
+          title="Status:"
           value={<TransactionStatus success={transactionData.success} />}
         />
         <ContentRow
-          title={"Proposer:"}
+          title="Proposer:"
           value={
             <HashButton
               hash={transactionData.proposer}
@@ -44,24 +44,24 @@ export default function BlockMetadataOverviewTab({
           }
         />
         <ContentRow
-          title={"State Root Hash:"}
+          title="State Root Hash:"
           value={transactionData.state_root_hash}
         />
         <ContentRow
-          title={"Event Root Hash:"}
+          title="Event Root Hash:"
           value={transactionData.event_root_hash}
         />
         <ContentRow
-          title={"Gas Used:"}
+          title="Gas Used:"
           value={renderGas(transactionData.gas_used)}
         />
-        <ContentRow title={"VM Status:"} value={transactionData.vm_status} />
+        <ContentRow title="VM Status:" value={transactionData.vm_status} />
         <ContentRow
-          title={"Accumulator Root Hash:"}
+          title="Accumulator Root Hash:"
           value={transactionData.accumulator_root_hash}
         />
         <ContentRow
-          title={"Timestamp:"}
+          title="Timestamp:"
           value={renderTimestamp(transactionData.timestamp)}
         />
       </ContentBox>

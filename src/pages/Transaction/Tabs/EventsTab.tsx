@@ -52,9 +52,9 @@ export default function EventsTab({transaction}: EventsTabProps) {
           expanded={expandedList[i]}
           toggleExpanded={() => toggleExpandedAt(i)}
         >
-          <ContentRow title={"Type:"} value={event.type} />
-          <ContentRow title={"Key:"} value={event.key} />
-          <ContentRow title={"Data:"} value={<JsonCard data={event.data} />} />
+          <ContentRow title="Type:" value={event.type} />
+          <ContentRow title="Key:" value={event.key} />
+          <ContentRow title="Data:" value={<JsonCard data={event.data} />} />
         </CollapsibleCard>
       ))}
     </CollapsibleCards>

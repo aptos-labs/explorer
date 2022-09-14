@@ -9,7 +9,7 @@ type UnknownTabProps = {
 
 export default function UnknownTab({transaction}: UnknownTabProps) {
   return (
-    <Box marginX={2} marginTop={5}>
+    <Box marginTop={3}>
       <Stack direction="column" spacing={3}>
         <Alert severity="error">{`Unknown transaction type: "${transaction.type}"`}</Alert>
         {renderDebug(transaction)}

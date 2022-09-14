@@ -23,29 +23,29 @@ export default function PendingTransactionOverviewTab({
     <Box marginBottom={3}>
       <ContentBox>
         <ContentRow
-          title={"Sender:"}
+          title="Sender:"
           value={
             <HashButton hash={transactionData.sender} type={HashType.ACCOUNT} />
           }
         />
         <ContentRow
-          title={"Sequence Number:"}
+          title="Sequence Number:"
           value={transactionData.sequence_number}
         />
         <ContentRow
-          title={"Expiration Timestamp:"}
+          title="Expiration Timestamp:"
           value={renderTimestamp(transactionData.expiration_timestamp_secs)}
         />
         <ContentRow
-          title={"Max Gas:"}
+          title="Max Gas:"
           value={renderGas(transactionData.max_gas_amount)}
         />
         <ContentRow
-          title={"Gas Unit Price:"}
+          title="Gas Unit Price:"
           value={renderGas(transactionData.gas_unit_price)}
         />
         <ContentRow
-          title={"Signature:"}
+          title="Signature:"
           value={renderDebug(transactionData.signature)}
         />
       </ContentBox>
