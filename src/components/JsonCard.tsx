@@ -20,7 +20,8 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
     return <EmptyValue />;
   }
 
-  const jsonLineCount = JSON.stringify(data, null, 2).split("\n").length;
+  const jsonData = JSON.stringify(data, null, 2);
+  const jsonLineCount = jsonData.split("\n").length;
   const expandable = jsonLineCount >= 5;
 
   const toggleCard = () => {
@@ -61,7 +62,7 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
             overflowWrap: "break-word",
           }}
         >
-          {JSON.stringify(data, null, 2)}
+          {jsonData}
         </pre>
       </Box>
       {expandable && (

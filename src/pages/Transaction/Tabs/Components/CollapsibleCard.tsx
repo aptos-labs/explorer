@@ -18,6 +18,7 @@ export default function CollapsibleCard({
   titleValue,
   children,
   toggleExpanded,
+  ...props
 }: CollapsibleCardProps) {
   const theme = useTheme();
   // TODO: unify colors for the new transaction page
@@ -27,7 +28,7 @@ export default function CollapsibleCard({
     theme.palette.mode === "dark" ? grey[800] : grey[50];
 
   return (
-    <Box>
+    <Box {...props}>
       <Box
         paddingX={2}
         paddingY={1}
