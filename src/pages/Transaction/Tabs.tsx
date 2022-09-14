@@ -137,7 +137,7 @@ export default function TransactionTabs({
           ))}
         </StyledTabs>
       </Box>
-      <Box sx={{marginY: 3}}>
+      <Box>
         <TabPanel value={value} transaction={transaction} />
       </Box>
     </Box>

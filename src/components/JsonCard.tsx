@@ -20,6 +20,9 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
     return <EmptyValue />;
   }
 
+  const jsonLineCount = JSON.stringify(data, null, 2).split("\n").length;
+  const expandable = jsonLineCount >= 5;
+
   const toggleCard = () => {
     setExpanded(!expanded);
   };
@@ -32,11 +35,14 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
           theme.palette.mode === "dark" ? TEXT_COLOR_DARK : TEXT_COLOR_LIGHT,
         backgroundColor: BACKGROUND_COLOR,
         "&:hover": {
-          boxShadow: "1px 1px 3px 3px rgba(0, 0, 0, 0.05)",
+          boxShadow: expandable ? "1px 1px 3px 3px rgba(0, 0, 0, 0.05)" : "",
         },
       }}
       paddingX={1.5}
       paddingTop={1.5}
+      paddingBottom={expandable ? 0 : 1.5}
+      marginBottom="5px"
+      marginRight="5px"
       borderRadius={1}
     >
       <Box
@@ -44,7 +50,7 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
           overflowX: "auto",
           overflowY: expanded ? "auto" : "hidden",
         }}
-        maxHeight={expanded ? "" : 60}
+        maxHeight={expandable && !expanded ? 60 : ""}
       >
         <pre
           style={{
@@ -58,18 +64,20 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
           {JSON.stringify(data, null, 2)}
         </pre>
       </Box>
-      <Box
-        sx={{
-          marginTop: expanded ? 0 : 1,
-          textAlign: "center",
-        }}
-      >
-        {expanded ? (
-          <KeyboardArrowUpIcon color="inherit" fontSize="small" />
-        ) : (
-          <KeyboardArrowDownIcon color="inherit" fontSize="small" />
-        )}
-      </Box>
+      {expandable && (
+        <Box
+          sx={{
+            marginTop: expanded ? 0 : 1,
+            textAlign: "center",
+          }}
+        >
+          {expanded ? (
+            <KeyboardArrowUpIcon color="inherit" fontSize="small" />
+          ) : (
+            <KeyboardArrowDownIcon color="inherit" fontSize="small" />
+          )}
+        </Box>
+      )}
     </Box>
   );
 }
