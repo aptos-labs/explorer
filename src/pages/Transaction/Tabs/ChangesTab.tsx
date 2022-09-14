@@ -4,6 +4,12 @@ import {Stack, Box} from "@mui/material";
 import {renderDebug} from "../../utils";
 import Divider from "@mui/material/Divider";
 import Row from "./Components/Row";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import CollapsibleCards from "./Components/CollapsibleCards";
+import useExpandedList from "../hooks/useExpandedList";
+import ContentRow from "./Components/ContentRow";
+import CollapsibleCard from "./Components/CollapsibleCard";
+import JsonCard from "../../../components/JsonCard";
 
 function Change({change, i}: {change: Types.WriteSetChange; i: number}) {
   return (
@@ -27,13 +33,46 @@ type ChangesTabProps = {
 };
 
 export default function ChangesTab({transaction}: ChangesTabProps) {
+  const inDev = useGetInDevMode();
+
   if (!("changes" in transaction)) {
     return <>None</>;
   }
 
   const changes: Types.WriteSetChange[] = transaction.changes;
 
-  return (
+  const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
+    useExpandedList(changes.length);
+
+  return inDev ? (
+    <CollapsibleCards
+      expandedList={expandedList}
+      expandAll={expandAll}
+      collapseAll={collapseAll}
+    >
+      {changes.map((change, i) => (
+        <CollapsibleCard
+          key={i}
+          titleKey="Index:"
+          titleValue={i.toString()}
+          expanded={expandedList[i]}
+          toggleExpanded={() => toggleExpandedAt(i)}
+        >
+          <ContentRow title={"Type:"} value={change.type} />
+          {"address" in change && (
+            <ContentRow title={"Address:"} value={change.address} />
+          )}
+          <ContentRow title={"State Key Hash:"} value={change.state_key_hash} />
+          {"data" in change && (
+            <ContentRow
+              title={"Data:"}
+              value={<JsonCard data={change.data} />}
+            />
+          )}
+        </CollapsibleCard>
+      ))}
+    </CollapsibleCards>
+  ) : (
     <Box marginX={2} marginTop={5}>
       <Stack
         direction="column"
