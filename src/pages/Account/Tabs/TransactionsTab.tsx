@@ -4,11 +4,11 @@ import {TransactionsTable} from "../../../components/TransactionsTable";
 import Error from "../Error";
 import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
 
-type TransactionTabProps = {
+type TransactionsTabProps = {
   address: string;
 };
 
-export default function TransactionTab({address}: TransactionTabProps) {
+export default function TransactionsTab({address}: TransactionsTabProps) {
   const {isLoading, data, error} = useGetAccountTransactions(address);
 
   if (isLoading) {

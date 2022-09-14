@@ -6,7 +6,7 @@ import Divider from "@mui/material/Divider";
 import Row from "./Components/Row";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
-import useExpandedList from "../hooks/useExpandedList";
+import useExpandedList from "../../../components/hooks/useExpandedList";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";

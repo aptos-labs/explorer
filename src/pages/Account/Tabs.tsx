@@ -1,15 +1,24 @@
 import * as React from "react";
 import {useState} from "react";
 import {Tabs, Tab, Box} from "@mui/material";
-import RawDataTab from "./RawDataTab/Index";
-import TransactionTab from "./TransactionsTab/Index";
+import TransactionsTab from "./Tabs/TransactionsTab";
+import OverviewTab from "./Tabs/OverviewTab";
+import ResourcesTab from "./Tabs/ResourcesTab";
+import ModulesTab from "./Tabs/ModulesTab";
 import {assertNever} from "../../utils";
 
-const TAB_VALUES: TabValue[] = ["transactions", "rawData"];
+const TAB_VALUES: TabValue[] = [
+  "transactions",
+  "overview",
+  "resources",
+  "modules",
+];
 
 const TabComponents = Object.freeze({
-  transactions: TransactionTab,
-  rawData: RawDataTab,
+  transactions: TransactionsTab,
+  overview: OverviewTab,
+  resources: ResourcesTab,
+  modules: ModulesTab,
 });
 
 type TabValue = keyof typeof TabComponents;
@@ -17,9 +26,13 @@ type TabValue = keyof typeof TabComponents;
 function getTabLabel(value: TabValue): string {
   switch (value) {
     case "transactions":
-      return "Account Transactions";
-    case "rawData":
-      return "Raw Data";
+      return "Transactions";
+    case "overview":
+      return "Overview";
+    case "resources":
+      return "Resources";
+    case "modules":
+      return "Modules";
     default:
       return assertNever(value);
   }
