@@ -1,9 +1,15 @@
-import * as React from "react";
+import React from "react";
 import {Types} from "aptos";
 import {Stack, Box} from "@mui/material";
 import {renderDebug} from "../../utils";
 import Divider from "@mui/material/Divider";
 import Row from "./Components/Row";
+import CollapsibleCard from "./Components/CollapsibleCard";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import ContentRow from "./Components/ContentRow";
+import JsonCard from "../../../components/JsonCard";
+import CollapsibleCards from "./Components/CollapsibleCards";
+import useExpandedList from "../hooks/useExpandedList";
 
 function Event({event}: {event: Types.Event}) {
   return (
@@ -21,13 +27,38 @@ type EventsTabProps = {
 };
 
 export default function EventsTab({transaction}: EventsTabProps) {
+  const inDev = useGetInDevMode();
+
   if (!("events" in transaction)) {
     return <>None</>;
   }
 
   const events: Types.Event[] = transaction.events;
 
-  return (
+  const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
+    useExpandedList(events.length);
+
+  return inDev ? (
+    <CollapsibleCards
+      expandedList={expandedList}
+      expandAll={expandAll}
+      collapseAll={collapseAll}
+    >
+      {events.map((event, i) => (
+        <CollapsibleCard
+          key={i}
+          titleKey="Sequence Number:"
+          titleValue={event.sequence_number}
+          expanded={expandedList[i]}
+          toggleExpanded={async () => toggleExpandedAt(i)}
+        >
+          <ContentRow title={"Type:"} value={event.type} />
+          <ContentRow title={"Key:"} value={event.key} />
+          <ContentRow title={"Data:"} value={<JsonCard data={event.data} />} />
+        </CollapsibleCard>
+      ))}
+    </CollapsibleCards>
+  ) : (
     <Box marginX={2} marginTop={5}>
       <Stack
         direction="column"
