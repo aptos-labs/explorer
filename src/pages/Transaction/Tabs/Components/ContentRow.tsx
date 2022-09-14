@@ -24,7 +24,15 @@ export default function ContentRow({title, value, i}: ContentRowProps) {
             {title}
           </Typography>
         </Grid>
-        <Grid item md={9} width={{xs: 1, md: 0.75}} sx={{fontSize: 13.5}}>
+        <Grid
+          item
+          md={9}
+          width={{xs: 1, md: 0.75}}
+          sx={{
+            fontSize: 13.5,
+            overflow: "auto",
+          }}
+        >
           {value ? <Box>{value}</Box> : <EmptyValue />}
         </Grid>
       </Grid>
