@@ -1,14 +1,11 @@
-import {ResponseErrorType, ResponseError} from "../../../api/client";
+import {Types} from "aptos";
 import {Stack} from "@mui/material";
 import React from "react";
-import {renderSection} from "../../Transactions/helpers";
 import Divider from "@mui/material/Divider";
-import {renderDebug} from "../../utils";
-import Typography from "@mui/material/Typography";
-import {useGetAccountResources} from "../../../api/hooks/useGetAccountResources";
 import Error from "../Error";
-import Row from "./Row";
-import {Types} from "aptos";
+import Row from "../Row";
+import {renderDebug} from "../../utils";
+import {useGetAccountResources} from "../../../api/hooks/useGetAccountResources";
 
 function Content({
   data,
@@ -31,38 +28,29 @@ function Content({
   }
 }
 
-type AccountResourcesSectionProps = {
+type ResourcesTabProps = {
   address: string;
 };
 
-export default function AccountResourcesSection({
-  address,
-}: AccountResourcesSectionProps) {
+export default function ResourcesTab({address}: ResourcesTabProps) {
   const {isLoading, data, error} = useGetAccountResources(address);
 
   if (isLoading) {
     return null;
   }
 
-  const titleComponent = (
-    <Typography variant="h5">Account Resources</Typography>
-  );
-
-  if (error && error.type !== ResponseErrorType.NOT_FOUND) {
-    return renderSection(
-      <Error address={address} error={error} />,
-      titleComponent,
-    );
+  if (error) {
+    return <Error address={address} error={error} />;
   }
 
-  return renderSection(
+  return (
     <Stack
+      marginX={2}
       direction="column"
       spacing={2}
       divider={<Divider variant="dotted" orientation="horizontal" />}
     >
       <Content data={data} />
-    </Stack>,
-    titleComponent,
+    </Stack>
   );
 }

@@ -1,16 +1,14 @@
 import {Types} from "aptos";
-import {ResponseError, ResponseErrorType} from "../../../api/client";
-import {useQuery} from "react-query";
 import {Stack} from "@mui/material";
 import React from "react";
-import {useGlobalState} from "../../../GlobalState";
-import {getAccountModules} from "../../../api";
-import {renderSection} from "../../Transactions/helpers";
 import Divider from "@mui/material/Divider";
-import {renderDebug} from "../../utils";
-import Typography from "@mui/material/Typography";
 import Error from "../Error";
-import Row from "./Row";
+import Row from "../Row";
+import {renderDebug} from "../../utils";
+import {useGlobalState} from "../../../GlobalState";
+import {ResponseError} from "../../../api/client";
+import {useQuery} from "react-query";
+import {getAccountModules} from "../../../api";
 
 function Content({
   data,
@@ -33,13 +31,11 @@ function Content({
   }
 }
 
-type AccountModulesSectionProps = {
+type ModulesTabProps = {
   address: string;
 };
 
-export default function AccountModulesSection({
-  address,
-}: AccountModulesSectionProps) {
+export default function ModulesTab({address}: ModulesTabProps) {
   const [state, _] = useGlobalState();
 
   const {isLoading, data, error} = useQuery<
@@ -53,23 +49,18 @@ export default function AccountModulesSection({
     return null;
   }
 
-  const titleComponent = <Typography variant="h5">Account Modules</Typography>;
-
-  if (error && error.type !== ResponseErrorType.NOT_FOUND) {
-    return renderSection(
-      <Error address={address} error={error} />,
-      titleComponent,
-    );
+  if (error) {
+    return <Error address={address} error={error} />;
   }
 
-  return renderSection(
+  return (
     <Stack
+      marginX={2}
       direction="column"
       spacing={2}
       divider={<Divider variant="dotted" orientation="horizontal" />}
     >
       <Content data={data} />
-    </Stack>,
-    titleComponent,
+    </Stack>
   );
 }

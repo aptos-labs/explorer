@@ -9,7 +9,7 @@ import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
-import useExpandedList from "../hooks/useExpandedList";
+import useExpandedList from "../../../components/hooks/useExpandedList";
 
 function Event({event}: {event: Types.Event}) {
   return (

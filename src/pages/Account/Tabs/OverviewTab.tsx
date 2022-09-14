@@ -1,15 +1,13 @@
 import {Types} from "aptos";
-import {ResponseError, ResponseErrorType} from "../../../api/client";
+import {ResponseError} from "../../../api/client";
 import {useQuery} from "react-query";
 import {Stack} from "@mui/material";
 import React from "react";
 import {useGlobalState} from "../../../GlobalState";
 import {getAccount} from "../../../api";
-import {renderSection} from "../../Transactions/helpers";
 import Divider from "@mui/material/Divider";
-import Typography from "@mui/material/Typography";
 import Error from "../Error";
-import Row from "./Row";
+import Row from "../Row";
 
 function Content({data}: {data: Types.AccountData | undefined}): JSX.Element {
   if (!data) {
@@ -24,11 +22,11 @@ function Content({data}: {data: Types.AccountData | undefined}): JSX.Element {
   }
 }
 
-type AccountKeySectionProps = {
+type OverviewTabProps = {
   address: string;
 };
 
-export default function AccountKeySection({address}: AccountKeySectionProps) {
+export default function OverviewTab({address}: OverviewTabProps) {
   const [state, _] = useGlobalState();
 
   const {isLoading, data, error} = useQuery<Types.AccountData, ResponseError>(
@@ -40,23 +38,18 @@ export default function AccountKeySection({address}: AccountKeySectionProps) {
     return null;
   }
 
-  const titleComponent = <Typography variant="h5">Account</Typography>;
-
-  if (error && error.type !== ResponseErrorType.NOT_FOUND) {
-    return renderSection(
-      <Error address={address} error={error} />,
-      titleComponent,
-    );
+  if (error) {
+    return <Error address={address} error={error} />;
   }
 
-  return renderSection(
+  return (
     <Stack
+      marginX={2}
       direction="column"
       spacing={2}
       divider={<Divider variant="dotted" orientation="horizontal" />}
     >
       <Content data={data} />
-    </Stack>,
-    titleComponent,
+    </Stack>
   );
 }
