@@ -9,7 +9,7 @@ type CollapsibleCardProps = {
   titleValue: string;
   children: React.ReactNode;
   expanded: boolean;
-  toggleExpanded: () => {};
+  toggleExpanded: () => void;
 };
 
 export default function CollapsibleCard({

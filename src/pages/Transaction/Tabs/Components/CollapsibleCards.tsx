@@ -36,7 +36,7 @@ function ExpandAllCollapseAllButtons({
       direction="row"
       justifyContent="flex-end"
       spacing={1}
-      marginBottom={1}
+      marginY={0.5}
       height={16}
     >
       <Button

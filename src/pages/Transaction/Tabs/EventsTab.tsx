@@ -50,11 +50,11 @@ export default function EventsTab({transaction}: EventsTabProps) {
           titleKey="Sequence Number:"
           titleValue={event.sequence_number}
           expanded={expandedList[i]}
-          toggleExpanded={async () => toggleExpandedAt(i)}
+          toggleExpanded={() => toggleExpandedAt(i)}
         >
-          <ContentRow title={"Type:"} value={event.type} />
-          <ContentRow title={"Key:"} value={event.key} />
-          <ContentRow title={"Data:"} value={<JsonCard data={event.data} />} />
+          <ContentRow title="Type:" value={event.type} />
+          <ContentRow title="Key:" value={event.key} />
+          <ContentRow title="Data:" value={<JsonCard data={event.data} />} />
         </CollapsibleCard>
       ))}
     </CollapsibleCards>
