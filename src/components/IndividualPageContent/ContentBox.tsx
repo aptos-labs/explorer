@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Box, Stack, useTheme} from "@mui/material";
-import {grey} from "../../../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/aptosColorPalette";
 
 interface ContentBoxProps {
   children: React.ReactNode;

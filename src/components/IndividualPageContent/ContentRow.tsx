@@ -1,6 +1,6 @@
 import React from "react";
 import {Grid, Box, Typography} from "@mui/material";
-import {grey} from "../../../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/aptosColorPalette";
 import EmptyValue from "./EmptyValue";
 
 type ContentRowProps = {

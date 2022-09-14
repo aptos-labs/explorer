@@ -5,11 +5,11 @@ import {renderDebug} from "../../utils";
 import Divider from "@mui/material/Divider";
 import Row from "./Components/Row";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
-import CollapsibleCards from "./Components/CollapsibleCards";
+import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import useExpandedList from "../hooks/useExpandedList";
-import ContentRow from "./Components/ContentRow";
-import CollapsibleCard from "./Components/CollapsibleCard";
-import JsonCard from "../../../components/JsonCard";
+import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
+import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 
 function Change({change, i}: {change: Types.WriteSetChange; i: number}) {
   return (
