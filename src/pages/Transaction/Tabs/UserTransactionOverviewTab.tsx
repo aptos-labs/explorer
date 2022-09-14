@@ -9,11 +9,11 @@ import {
 } from "../../Transactions/helpers";
 import Row from "./Components/Row";
 import HashButton, {HashType} from "../../../components/HashButton";
-import ContentBox from "./Components/ContentBox";
-import ContentRow from "./Components/ContentRow";
+import ContentBox from "../../../components/IndividualPageContent/ContentBox";
+import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
-import JsonCard from "../../../components/JsonCard";
+import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 
 type UserTransactionOverviewTabProps = {
   transaction: Types.Transaction;

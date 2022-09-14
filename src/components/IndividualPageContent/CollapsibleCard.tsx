@@ -2,7 +2,7 @@ import React from "react";
 import {Stack, Typography, useTheme, Box, Grid} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import {grey} from "../../../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/aptosColorPalette";
 
 type CollapsibleCardProps = {
   titleKey: string;

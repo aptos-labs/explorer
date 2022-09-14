@@ -4,11 +4,11 @@ import {Stack, Box} from "@mui/material";
 import {renderDebug} from "../../utils";
 import Divider from "@mui/material/Divider";
 import Row from "./Components/Row";
-import CollapsibleCard from "./Components/CollapsibleCard";
+import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
-import ContentRow from "./Components/ContentRow";
-import JsonCard from "../../../components/JsonCard";
-import CollapsibleCards from "./Components/CollapsibleCards";
+import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import JsonCard from "../../../components/IndividualPageContent/JsonCard";
+import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import useExpandedList from "../hooks/useExpandedList";
 
 function Event({event}: {event: Types.Event}) {

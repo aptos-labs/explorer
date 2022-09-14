@@ -5,8 +5,8 @@ import {renderGas, renderTimestamp} from "../../Transactions/helpers";
 import Row from "./Components/Row";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {renderDebug} from "../../utils";
-import ContentBox from "./Components/ContentBox";
-import ContentRow from "./Components/ContentRow";
+import ContentBox from "../../../components/IndividualPageContent/ContentBox";
+import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
 type PendingTransactionOverviewTabProps = {

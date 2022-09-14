@@ -7,8 +7,8 @@ import {
   renderTimestamp,
 } from "../../Transactions/helpers";
 import Row from "./Components/Row";
-import ContentRow from "./Components/ContentRow";
-import ContentBox from "./Components/ContentBox";
+import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
