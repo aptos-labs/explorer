@@ -12,6 +12,85 @@ function getNotAllCollapse(expandedList: boolean[]): boolean {
   return expandedList.find((expanded) => expanded === true) !== undefined;
 }
 
+type ExpandAllCollapseAllButtonsProps = {
+  expandedList: boolean[];
+  expandAll: () => void;
+  collapseAll: () => void;
+};
+
+function ExpandAllCollapseAllButtons({
+  expandedList,
+  expandAll,
+  collapseAll,
+}: ExpandAllCollapseAllButtonsProps) {
+  const theme = useTheme();
+
+  const heavyTextColor = grey[450];
+  const lightTextColor = theme.palette.mode === "dark" ? grey[500] : grey[400];
+
+  const enableExpandAllButton = getNotAllExpanded(expandedList);
+  const enableCollapseAllButton = getNotAllCollapse(expandedList);
+
+  return (
+    <Stack
+      direction="row"
+      justifyContent="flex-end"
+      spacing={1}
+      marginBottom={1}
+      height={16}
+    >
+      <Button
+        variant="text"
+        disabled={!enableExpandAllButton}
+        onClick={expandAll}
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          color: enableExpandAllButton ? heavyTextColor : lightTextColor,
+          padding: 0,
+          "&:hover": {
+            background: "transparent",
+          },
+          "&:disabled": {
+            color: enableExpandAllButton ? heavyTextColor : lightTextColor,
+          },
+        }}
+      >
+        Expand All
+      </Button>
+      <Typography
+        variant="subtitle1"
+        sx={{
+          fontSize: 11,
+          fontWeight: 600,
+          color: heavyTextColor,
+        }}
+      >
+        |
+      </Typography>
+      <Button
+        variant="text"
+        disabled={!enableCollapseAllButton}
+        onClick={collapseAll}
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          color: enableCollapseAllButton ? heavyTextColor : lightTextColor,
+          padding: 0,
+          "&:hover": {
+            background: "transparent",
+          },
+          "&:disabled": {
+            color: enableCollapseAllButton ? heavyTextColor : lightTextColor,
+          },
+        }}
+      >
+        Collapse All
+      </Button>
+    </Stack>
+  );
+}
+
 type CollapsibleCardsProps = {
   expandedList: boolean[];
   expandAll: () => void;
@@ -25,71 +104,18 @@ export default function CollapsibleCards({
   collapseAll,
   children,
 }: CollapsibleCardsProps) {
-  const theme = useTheme();
-
-  const heavyTextColor = grey[450];
-  const lightTextColor = theme.palette.mode === "dark" ? grey[600] : grey[300];
-
-  const enableExpandAllButton = getNotAllExpanded(expandedList);
-  const enableCollapseAllButton = getNotAllCollapse(expandedList);
+  const hideButtons = expandedList.length <= 1;
 
   return (
     <Box>
-      <Stack
-        direction="row"
-        justifyContent="flex-end"
-        spacing={1}
-        marginBottom={1}
-      >
-        <Button
-          variant="text"
-          disabled={!enableExpandAllButton}
-          onClick={expandAll}
-          sx={{
-            fontSize: 12,
-            fontWeight: 600,
-            color: enableExpandAllButton ? heavyTextColor : lightTextColor,
-            padding: 0,
-            "&:hover": {
-              background: "transparent",
-            },
-            "&:disabled": {
-              color: enableExpandAllButton ? heavyTextColor : lightTextColor,
-            },
-          }}
-        >
-          Expand All
-        </Button>
-        <Typography
-          sx={{
-            fontSize: 12,
-            fontWeight: 600,
-            color: heavyTextColor,
-          }}
-        >
-          |
-        </Typography>
-        <Button
-          variant="text"
-          disabled={!enableCollapseAllButton}
-          onClick={collapseAll}
-          sx={{
-            fontSize: 12,
-            fontWeight: 600,
-            color: enableCollapseAllButton ? heavyTextColor : lightTextColor,
-            padding: 0,
-            "&:hover": {
-              background: "transparent",
-            },
-            "&:disabled": {
-              color: enableCollapseAllButton ? heavyTextColor : lightTextColor,
-            },
-          }}
-        >
-          Collapse All
-        </Button>
-      </Stack>
-      <Stack direction="column" spacing={1}>
+      {!hideButtons && (
+        <ExpandAllCollapseAllButtons
+          expandedList={expandedList}
+          expandAll={expandAll}
+          collapseAll={collapseAll}
+        />
+      )}
+      <Stack direction="column" spacing={1} marginTop={hideButtons ? 3 : 0}>
         {children}
       </Stack>
     </Box>

@@ -2,7 +2,7 @@ import {useState} from "react";
 
 const useExpandedList = (count: number) => {
   const [expandedList, setExpandedList] = useState<boolean[]>(
-    new Array(count).fill(false),
+    new Array(count).fill(true),
   );
 
   const toggleExpandedAt = (i: number) => {
