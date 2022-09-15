@@ -9,6 +9,13 @@ import {useGlobalState} from "../../../GlobalState";
 import {ResponseError} from "../../../api/client";
 import {useQuery} from "react-query";
 import {getAccountModules} from "../../../api";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
+import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
+import useExpandedList from "../../../components/hooks/useExpandedList";
+import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 
 function Content({
   data,
@@ -35,7 +42,47 @@ type ModulesTabProps = {
   address: string;
 };
 
+function ModulesContent({
+  data,
+}: {
+  data: Types.MoveModuleBytecode[] | undefined;
+}): JSX.Element {
+  if (!data || data.length === 0) {
+    return <EmptyTabContent />;
+  }
+
+  const modules: Types.MoveModuleBytecode[] = data;
+
+  const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
+    useExpandedList(modules.length);
+
+  return (
+    <CollapsibleCards
+      expandedList={expandedList}
+      expandAll={expandAll}
+      collapseAll={collapseAll}
+    >
+      {modules.map((module, i) => (
+        <CollapsibleCard
+          key={i}
+          titleKey="Index:"
+          titleValue={i.toString()}
+          expanded={expandedList[i]}
+          toggleExpanded={() => toggleExpandedAt(i)}
+        >
+          <ContentRow
+            title="Bytecode:"
+            value={<JsonCard data={module.bytecode} />}
+          />
+          <ContentRow title="ABI:" value={<JsonCard data={module.abi} />} />
+        </CollapsibleCard>
+      ))}
+    </CollapsibleCards>
+  );
+}
+
 export default function ModulesTab({address}: ModulesTabProps) {
+  const inDev = useGetInDevMode();
   const [state, _] = useGlobalState();
 
   const {isLoading, data, error} = useQuery<
@@ -53,7 +100,9 @@ export default function ModulesTab({address}: ModulesTabProps) {
     return <Error address={address} error={error} />;
   }
 
-  return (
+  return inDev ? (
+    <ModulesContent data={data} />
+  ) : (
     <Stack
       marginX={2}
       direction="column"

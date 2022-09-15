@@ -6,6 +6,12 @@ import Error from "../Error";
 import Row from "../Row";
 import {renderDebug} from "../../utils";
 import {useGetAccountResources} from "../../../api/hooks/useGetAccountResources";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import useExpandedList from "../../../components/hooks/useExpandedList";
+import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
+import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
+import JsonCard from "../../../components/IndividualPageContent/JsonCard";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
 function Content({
   data,
@@ -28,11 +34,47 @@ function Content({
   }
 }
 
+function ResourcesContent({
+  data,
+}: {
+  data: Types.MoveResource[] | undefined;
+}): JSX.Element {
+  if (!data || data.length === 0) {
+    return <EmptyTabContent />;
+  }
+
+  const resources: Types.MoveResource[] = data;
+
+  const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
+    useExpandedList(resources.length);
+
+  return (
+    <CollapsibleCards
+      expandedList={expandedList}
+      expandAll={expandAll}
+      collapseAll={collapseAll}
+    >
+      {resources.map((resource, i) => (
+        <CollapsibleCard
+          key={i}
+          titleKey="Type:"
+          titleValue={resource.type}
+          expanded={expandedList[i]}
+          toggleExpanded={() => toggleExpandedAt(i)}
+        >
+          <JsonCard data={resource.data} />
+        </CollapsibleCard>
+      ))}
+    </CollapsibleCards>
+  );
+}
+
 type ResourcesTabProps = {
   address: string;
 };
 
 export default function ResourcesTab({address}: ResourcesTabProps) {
+  const inDev = useGetInDevMode();
   const {isLoading, data, error} = useGetAccountResources(address);
 
   if (isLoading) {
@@ -43,7 +85,9 @@ export default function ResourcesTab({address}: ResourcesTabProps) {
     return <Error address={address} error={error} />;
   }
 
-  return (
+  return inDev ? (
+    <ResourcesContent data={data} />
+  ) : (
     <Stack
       marginX={2}
       direction="column"
