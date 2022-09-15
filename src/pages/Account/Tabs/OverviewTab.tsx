@@ -1,13 +1,17 @@
 import {Types} from "aptos";
 import {ResponseError} from "../../../api/client";
 import {useQuery} from "react-query";
-import {Stack} from "@mui/material";
+import {Box, Stack} from "@mui/material";
 import React from "react";
 import {useGlobalState} from "../../../GlobalState";
 import {getAccount} from "../../../api";
 import Divider from "@mui/material/Divider";
 import Error from "../Error";
 import Row from "../Row";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import ContentBox from "../../../components/IndividualPageContent/ContentBox";
+import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 
 function Content({data}: {data: Types.AccountData | undefined}): JSX.Element {
   if (!data) {
@@ -22,11 +26,34 @@ function Content({data}: {data: Types.AccountData | undefined}): JSX.Element {
   }
 }
 
+function OverviewContent({
+  data,
+}: {
+  data: Types.AccountData | undefined;
+}): JSX.Element {
+  if (!data) {
+    return <EmptyTabContent />;
+  } else {
+    return (
+      <Box marginBottom={3}>
+        <ContentBox>
+          <ContentRow title={"Sequence Number:"} value={data.sequence_number} />
+          <ContentRow
+            title={"Authentication Key:"}
+            value={data.authentication_key}
+          />
+        </ContentBox>
+      </Box>
+    );
+  }
+}
+
 type OverviewTabProps = {
   address: string;
 };
 
 export default function OverviewTab({address}: OverviewTabProps) {
+  const inDev = useGetInDevMode();
   const [state, _] = useGlobalState();
 
   const {isLoading, data, error} = useQuery<Types.AccountData, ResponseError>(
@@ -42,7 +69,9 @@ export default function OverviewTab({address}: OverviewTabProps) {
     return <Error address={address} error={error} />;
   }
 
-  return (
+  return inDev ? (
+    <OverviewContent data={data} />
+  ) : (
     <Stack
       marginX={2}
       direction="column"
