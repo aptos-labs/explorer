@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Box, useTheme} from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import EmptyValue from "./EmptyValue";
+import EmptyValue from "./ContentValue/EmptyValue";
 
 const TEXT_COLOR_LIGHT = "#0EA5E9";
 const TEXT_COLOR_DARK = "#83CCED";

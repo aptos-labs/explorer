@@ -12,6 +12,8 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
+import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 
 type StateCheckpointOverviewTabProps = {
   transaction: Types.Transaction;
@@ -40,13 +42,13 @@ export default function StateCheckpointOverviewTab({
         {"timestamp" in transactionData && (
           <ContentRow
             title="Timestamp:"
-            value={transactionData.timestamp}
+            value={<TimestampValue timestamp={transactionData.timestamp} />}
             tooltip={getLearnMoreTooltip("timestamp")}
           />
         )}
         <ContentRow
           title="Gas Used:"
-          value={renderGas(transactionData.gas_used)}
+          value={<GasValue gas={transactionData.gas_used} />}
           tooltip={getLearnMoreTooltip("gas_used")}
         />
         <ContentRow

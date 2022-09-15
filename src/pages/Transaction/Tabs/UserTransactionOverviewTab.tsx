@@ -15,7 +15,8 @@ import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import {getLearnMoreTooltip} from "../helpers";
-import TimestampValue from "../../../components/IndividualPageContent/TimestampValue";
+import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 
 type UserTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -68,17 +69,17 @@ export default function UserTransactionOverviewTab({
         />
         <ContentRow
           title="Gas Used:"
-          value={renderGas(transactionData.gas_used)}
+          value={<GasValue gas={transactionData.gas_used} />}
           tooltip={getLearnMoreTooltip("gas_used")}
         />
         <ContentRow
           title="Max Gas:"
-          value={renderGas(transactionData.max_gas_amount)}
+          value={<GasValue gas={transactionData.max_gas_amount} />}
           tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
           title="Gas Unit Price:"
-          value={renderGas(transactionData.gas_unit_price)}
+          value={<GasValue gas={transactionData.gas_unit_price} />}
           tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
         <ContentRow

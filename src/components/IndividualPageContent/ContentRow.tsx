@@ -1,7 +1,7 @@
 import React from "react";
 import {Grid, Box, Typography, Stack} from "@mui/material";
 import {grey} from "../../themes/colors/aptosColorPalette";
-import EmptyValue from "./EmptyValue";
+import EmptyValue from "./ContentValue/EmptyValue";
 
 type ContentRowProps = {
   title: string;

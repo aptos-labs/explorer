@@ -1,9 +1,9 @@
 import React, {useState} from "react";
-import {parseTimestamp, timestampDisplay} from "../../pages/utils";
+import {parseTimestamp, timestampDisplay} from "../../../pages/utils";
 import EmptyValue from "./EmptyValue";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {IconButton, Stack, Tooltip, Typography, useTheme} from "@mui/material";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey} from "../../../themes/colors/aptosColorPalette";
 
 const TOOLTIP_TIME = 2000; // 2s
 
