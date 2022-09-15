@@ -11,6 +11,7 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {getLearnMoreTooltip} from "../helpers";
 
 type StateCheckpointOverviewTabProps = {
   transaction: Types.Transaction;
@@ -26,34 +27,50 @@ export default function StateCheckpointOverviewTab({
   return inDev ? (
     <Box marginBottom={3}>
       <ContentBox>
-        <ContentRow title="Version:" value={transactionData.version} />
         <ContentRow
           title="Status:"
           value={<TransactionStatus success={transactionData.success} />}
+          tooltip={getLearnMoreTooltip("status")}
         />
         <ContentRow
-          title="State Root Hash:"
-          value={transactionData.state_root_hash}
-        />
-        <ContentRow
-          title="Event Root Hash:"
-          value={transactionData.event_root_hash}
-        />
-        <ContentRow
-          title="Gas Used:"
-          value={renderGas(transactionData.gas_used)}
-        />
-        <ContentRow title="VM Status:" value={transactionData.vm_status} />
-        <ContentRow
-          title="Accumulator Root Hash:"
-          value={transactionData.accumulator_root_hash}
+          title={"Version:"}
+          value={transactionData.version}
+          tooltip={getLearnMoreTooltip("version")}
         />
         {"timestamp" in transactionData && (
           <ContentRow
             title="Timestamp:"
-            value={renderTimestamp(transactionData.timestamp)}
+            value={transactionData.timestamp}
+            tooltip={getLearnMoreTooltip("timestamp")}
           />
         )}
+        <ContentRow
+          title="Gas Used:"
+          value={renderGas(transactionData.gas_used)}
+          tooltip={getLearnMoreTooltip("gas_used")}
+        />
+        <ContentRow
+          title="VM Status:"
+          value={transactionData.vm_status}
+          tooltip={getLearnMoreTooltip("vm_status")}
+        />
+      </ContentBox>
+      <ContentBox>
+        <ContentRow
+          title="State Root Hash:"
+          value={transactionData.state_root_hash}
+          tooltip={getLearnMoreTooltip("state_root_hash")}
+        />
+        <ContentRow
+          title="Event Root Hash:"
+          value={transactionData.event_root_hash}
+          tooltip={getLearnMoreTooltip("event_root_hash")}
+        />
+        <ContentRow
+          title="Accumulator Root Hash:"
+          value={transactionData.accumulator_root_hash}
+          tooltip={getLearnMoreTooltip("accumulator_root_hash")}
+        />
       </ContentBox>
     </Box>
   ) : (

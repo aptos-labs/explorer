@@ -8,6 +8,8 @@ import {renderDebug} from "../../utils";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {getLearnMoreTooltip} from "../helpers";
+import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 
 type PendingTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -27,26 +29,32 @@ export default function PendingTransactionOverviewTab({
           value={
             <HashButton hash={transactionData.sender} type={HashType.ACCOUNT} />
           }
+          tooltip={getLearnMoreTooltip("sender")}
         />
         <ContentRow
           title="Sequence Number:"
           value={transactionData.sequence_number}
+          tooltip={getLearnMoreTooltip("sequence_number")}
         />
         <ContentRow
           title="Expiration Timestamp:"
           value={renderTimestamp(transactionData.expiration_timestamp_secs)}
+          tooltip={getLearnMoreTooltip("expiration_timestamp_secs")}
         />
         <ContentRow
           title="Max Gas:"
           value={renderGas(transactionData.max_gas_amount)}
+          tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
           title="Gas Unit Price:"
           value={renderGas(transactionData.gas_unit_price)}
+          tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
         <ContentRow
           title="Signature:"
-          value={renderDebug(transactionData.signature)}
+          value={<JsonCard data={transactionData.signature} />}
+          tooltip={getLearnMoreTooltip("signature")}
         />
       </ContentBox>
     </Box>
