@@ -2,8 +2,9 @@ import React, {useState} from "react";
 import {parseTimestamp, timestampDisplay} from "../../../pages/utils";
 import EmptyValue from "./EmptyValue";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import {IconButton, Stack, Tooltip, Typography, useTheme} from "@mui/material";
+import {IconButton, Stack, Typography, useTheme} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
+import StyledTooltip from "../../StyledTooltip";
 
 const TOOLTIP_TIME = 2000; // 2s
 
@@ -40,7 +41,7 @@ export default function TimestampValue({timestamp}: TimestampValueProps) {
       <Typography fontSize="inherit">
         {timestamp_display.local_formatted}
       </Typography>
-      <Tooltip
+      <StyledTooltip
         title="Timestamp copied"
         placement="right"
         open={tooltipOpen}
@@ -51,7 +52,7 @@ export default function TimestampValue({timestamp}: TimestampValueProps) {
         <IconButton onClick={copyTimestamp} sx={{padding: 0.6}}>
           <ContentCopyIcon sx={{color: color, fontSize: 15}} />
         </IconButton>
-      </Tooltip>
+      </StyledTooltip>
     </Stack>
   );
 }

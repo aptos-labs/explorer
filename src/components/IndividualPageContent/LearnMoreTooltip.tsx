@@ -1,8 +1,9 @@
 import React from "react";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import {Box, Link, Typography, Tooltip, useTheme} from "@mui/material";
+import {Box, Link, Typography, useTheme} from "@mui/material";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {Stack} from "@mui/system";
+import StyledTooltip from "../StyledTooltip";
 
 function TooltipBox({children}: {children?: React.ReactNode}) {
   return <Box sx={{width: 25}}>{children}</Box>;
@@ -25,7 +26,7 @@ export function LearnMoreTooltip({
 
   return (
     <TooltipBox>
-      <Tooltip
+      <StyledTooltip
         title={
           <Stack alignItems="flex-end">
             {linkToText ? (
@@ -47,7 +48,7 @@ export function LearnMoreTooltip({
         arrow
       >
         <HelpOutlineOutlinedIcon fontSize="inherit" htmlColor={color} />
-      </Tooltip>
+      </StyledTooltip>
     </TooltipBox>
   );
 }
