@@ -12,6 +12,9 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {getLearnMoreTooltip} from "../helpers";
+import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 
 type BlockMetadataOverviewTabProps = {
   transaction: Types.Transaction;
@@ -26,13 +29,11 @@ export default function BlockMetadataOverviewTab({
 
   return inDev ? (
     <Box marginBottom={3}>
-      <ContentBox>
-        <ContentRow title="ID:" value={transactionData.id} />
-        <ContentRow title="Version:" value={transactionData.version} />
-        <ContentRow title="Round:" value={transactionData.round} />
+      <ContentBox paddingLeft={1.5}>
         <ContentRow
           title="Status:"
           value={<TransactionStatus success={transactionData.success} />}
+          tooltip={getLearnMoreTooltip("status")}
         />
         <ContentRow
           title="Proposer:"
@@ -42,27 +43,55 @@ export default function BlockMetadataOverviewTab({
               type={HashType.ACCOUNT}
             />
           }
+          tooltip={getLearnMoreTooltip("Proposer")}
         />
+        <ContentRow
+          title="ID:"
+          value={transactionData.id}
+          tooltip={getLearnMoreTooltip("id")}
+        />
+        <ContentRow
+          title={"Version:"}
+          value={transactionData.version}
+          tooltip={getLearnMoreTooltip("version")}
+        />
+
+        <ContentRow
+          title="Round:"
+          value={transactionData.round}
+          tooltip={getLearnMoreTooltip("round")}
+        />
+        <ContentRow
+          title="Timestamp:"
+          value={<TimestampValue timestamp={transactionData.timestamp} />}
+          tooltip={getLearnMoreTooltip("timestamp")}
+        />
+        <ContentRow
+          title="Gas Used:"
+          value={<GasValue gas={transactionData.gas_used} />}
+          tooltip={getLearnMoreTooltip("gas_used")}
+        />
+        <ContentRow
+          title="VM Status:"
+          value={transactionData.vm_status}
+          tooltip={getLearnMoreTooltip("vm_status")}
+        />
+      </ContentBox>
+      <ContentBox>
         <ContentRow
           title="State Root Hash:"
           value={transactionData.state_root_hash}
+          tooltip={getLearnMoreTooltip("state_root_hash")}
         />
         <ContentRow
           title="Event Root Hash:"
           value={transactionData.event_root_hash}
+          tooltip={getLearnMoreTooltip("event_root_hash")}
         />
-        <ContentRow
-          title="Gas Used:"
-          value={renderGas(transactionData.gas_used)}
-        />
-        <ContentRow title="VM Status:" value={transactionData.vm_status} />
         <ContentRow
           title="Accumulator Root Hash:"
           value={transactionData.accumulator_root_hash}
-        />
-        <ContentRow
-          title="Timestamp:"
-          value={renderTimestamp(transactionData.timestamp)}
+          tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
       </ContentBox>
     </Box>

@@ -14,6 +14,9 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
+import {getLearnMoreTooltip} from "../helpers";
+import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 
 type UserTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -27,58 +30,85 @@ export default function UserTransactionOverviewTab({
 
   return inDev ? (
     <Box marginBottom={3}>
-      <ContentBox>
+      <ContentBox paddingLeft={1.5}>
+        <ContentRow
+          title="Status:"
+          value={<TransactionStatus success={transactionData.success} />}
+          tooltip={getLearnMoreTooltip("status")}
+        />
         <ContentRow
           title="Sender:"
           value={
             <HashButton hash={transactionData.sender} type={HashType.ACCOUNT} />
           }
+          tooltip={getLearnMoreTooltip("sender")}
+        />
+        <ContentRow
+          title={"Version:"}
+          value={transactionData.version}
+          tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
           title="Sequence Number:"
           value={transactionData.sequence_number}
+          tooltip={getLearnMoreTooltip("sequence_number")}
         />
         <ContentRow
           title="Expiration Timestamp:"
-          value={renderTimestamp(transactionData.expiration_timestamp_secs)}
-        />
-        <ContentRow title={"Version:"} value={transactionData.version} />
-        <ContentRow
-          title="Status:"
-          value={<TransactionStatus success={transactionData.success} />}
-        />
-        <ContentRow
-          title="State Root Hash:"
-          value={transactionData.state_root_hash}
+          value={
+            <TimestampValue
+              timestamp={transactionData.expiration_timestamp_secs}
+            />
+          }
+          tooltip={getLearnMoreTooltip("expiration_timestamp_secs")}
         />
         <ContentRow
-          title="Event Root Hash:"
-          value={transactionData.event_root_hash}
+          title="Timestamp:"
+          value={<TimestampValue timestamp={transactionData.timestamp} />}
+          tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow
           title="Gas Used:"
-          value={renderGas(transactionData.gas_used)}
+          value={<GasValue gas={transactionData.gas_used} />}
+          tooltip={getLearnMoreTooltip("gas_used")}
         />
         <ContentRow
           title="Max Gas:"
-          value={renderGas(transactionData.max_gas_amount)}
+          value={<GasValue gas={transactionData.max_gas_amount} />}
+          tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
           title="Gas Unit Price:"
-          value={renderGas(transactionData.gas_unit_price)}
+          value={<GasValue gas={transactionData.gas_unit_price} />}
+          tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
-        <ContentRow title="VM Status:" value={transactionData.vm_status} />
+        <ContentRow
+          title="VM Status:"
+          value={transactionData.vm_status}
+          tooltip={getLearnMoreTooltip("vm_status")}
+        />
       </ContentBox>
       <ContentBox>
         <ContentRow
           title="Signature:"
           value={<JsonCard data={transactionData.signature} />}
+          tooltip={getLearnMoreTooltip("signature")}
+        />
+        <ContentRow
+          title="State Root Hash:"
+          value={transactionData.state_root_hash}
+          tooltip={getLearnMoreTooltip("state_root_hash")}
+        />
+        <ContentRow
+          title="Event Root Hash:"
+          value={transactionData.event_root_hash}
+          tooltip={getLearnMoreTooltip("event_root_hash")}
         />
         <ContentRow
           title="Accumulator Root Hash:"
           value={transactionData.accumulator_root_hash}
+          tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
-        <ContentRow title="Timestamp:" value={transactionData.timestamp} />
       </ContentBox>
     </Box>
   ) : (

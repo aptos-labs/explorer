@@ -7,6 +7,8 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {getLearnMoreTooltip} from "../helpers";
+import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 
 type GenesisTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -21,27 +23,43 @@ export default function GenesisTransactionOverviewTab({
   return inDev ? (
     <Box marginBottom={3}>
       <ContentBox>
-        <ContentRow title="Version:" value={transactionData.version} />
         <ContentRow
           title="Status:"
           value={<TransactionStatus success={transactionData.success} />}
+          tooltip={getLearnMoreTooltip("status")}
         />
+        <ContentRow
+          title={"Version:"}
+          value={transactionData.version}
+          tooltip={getLearnMoreTooltip("version")}
+        />
+
+        <ContentRow
+          title="Gas Used:"
+          value={<GasValue gas={transactionData.gas_used} />}
+          tooltip={getLearnMoreTooltip("gas_used")}
+        />
+        <ContentRow
+          title="VM Status:"
+          value={transactionData.vm_status}
+          tooltip={getLearnMoreTooltip("vm_status")}
+        />
+      </ContentBox>
+      <ContentBox>
         <ContentRow
           title="State Root Hash:"
           value={transactionData.state_root_hash}
+          tooltip={getLearnMoreTooltip("state_root_hash")}
         />
         <ContentRow
           title="Event Root Hash:"
           value={transactionData.event_root_hash}
+          tooltip={getLearnMoreTooltip("event_root_hash")}
         />
-        <ContentRow
-          title="Gas Used:"
-          value={renderGas(transactionData.gas_used)}
-        />
-        <ContentRow title="VM Status:" value={transactionData.vm_status} />
         <ContentRow
           title="Accumulator Root Hash:"
           value={transactionData.accumulator_root_hash}
+          tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
       </ContentBox>
     </Box>

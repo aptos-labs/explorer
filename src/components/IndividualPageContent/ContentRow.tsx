@@ -1,15 +1,21 @@
 import React from "react";
-import {Grid, Box, Typography} from "@mui/material";
+import {Grid, Box, Typography, Stack} from "@mui/material";
 import {grey} from "../../themes/colors/aptosColorPalette";
-import EmptyValue from "./EmptyValue";
+import EmptyValue from "./ContentValue/EmptyValue";
 
 type ContentRowProps = {
   title: string;
   value: React.ReactNode;
+  tooltip?: React.ReactNode;
   i?: any;
 };
 
-export default function ContentRow({title, value, i}: ContentRowProps) {
+export default function ContentRow({
+  title,
+  value,
+  tooltip,
+  i,
+}: ContentRowProps) {
   return (
     <Box>
       <Grid
@@ -17,12 +23,16 @@ export default function ContentRow({title, value, i}: ContentRowProps) {
         direction={{xs: "column", md: "row"}}
         rowSpacing={1}
         columnSpacing={4}
+        alignItems="center"
         key={i}
       >
         <Grid item md={3}>
-          <Typography variant="body2" color={grey[450]}>
-            {title}
-          </Typography>
+          <Stack direction="row">
+            {tooltip}
+            <Typography variant="body2" color={grey[450]}>
+              {title}
+            </Typography>
+          </Stack>
         </Grid>
         <Grid
           item
