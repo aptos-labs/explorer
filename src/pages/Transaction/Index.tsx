@@ -47,6 +47,8 @@ export default function TransactionPage() {
     );
   }
 
+  console.log(data);
+
   return (
     <Grid container>
       {inDev ? <HeaderSearch /> : <IndividualPageHeader />}
