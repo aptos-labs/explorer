@@ -5,8 +5,11 @@ import IndividualPageHeader from "../../components/IndividualPageHeader";
 import AccountTabs from "./Tabs";
 import AccountTitle from "./Title";
 import AccountInfo from "./AccountInfo/Index";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import HeaderSearch from "../layout/Search/Index";
 
 export default function AccountPage() {
+  const inDev = useGetInDevMode();
   const {address} = useParams();
 
   if (typeof address !== "string") {
@@ -15,7 +18,7 @@ export default function AccountPage() {
 
   return (
     <Grid container spacing={1}>
-      <IndividualPageHeader />
+      {inDev ? <HeaderSearch /> : <IndividualPageHeader />}
       <Grid item xs={12}>
         <Stack direction="column" spacing={4} marginTop={2}>
           <AccountTitle address={address} />

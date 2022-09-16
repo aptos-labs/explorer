@@ -11,8 +11,11 @@ import Error from "./Error";
 import TransactionTitle from "./Title";
 import TransactionTabs from "./Tabs";
 import GoBack from "../../components/GoBack";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import HeaderSearch from "../layout/Search/Index";
 
 export default function TransactionPage() {
+  const inDev = useGetInDevMode();
   const [state, _] = useGlobalState();
   const {txnHashOrVersion} = useParams();
 
@@ -45,8 +48,8 @@ export default function TransactionPage() {
   }
 
   return (
-    <Grid container spacing={1}>
-      <IndividualPageHeader />
+    <Grid container>
+      {inDev ? <HeaderSearch /> : <IndividualPageHeader />}
       <GoBack />
       <Grid item xs={12}>
         <Stack direction="column" spacing={4} marginTop={2}>

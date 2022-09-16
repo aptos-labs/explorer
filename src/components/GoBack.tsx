@@ -11,7 +11,7 @@ function BackButton(handleClick: () => void) {
         variant="text"
         onClick={handleClick}
         sx={{
-          mb: 4,
+          mb: 2,
           p: 0,
           "&:hover": {
             background: "transparent",
