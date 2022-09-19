@@ -26,7 +26,7 @@ function Content({data}: {data: Types.AccountData | undefined}): JSX.Element {
   }
 }
 
-function OverviewContent({
+function InfoContent({
   data,
 }: {
   data: Types.AccountData | undefined;
@@ -48,11 +48,11 @@ function OverviewContent({
   }
 }
 
-type OverviewTabProps = {
+type InfoTabProps = {
   address: string;
 };
 
-export default function OverviewTab({address}: OverviewTabProps) {
+export default function InfoTab({address}: InfoTabProps) {
   const inDev = useGetInDevMode();
   const [state, _] = useGlobalState();
 
@@ -70,7 +70,7 @@ export default function OverviewTab({address}: OverviewTabProps) {
   }
 
   return inDev ? (
-    <OverviewContent data={data} />
+    <InfoContent data={data} />
   ) : (
     <Stack
       marginX={2}
