@@ -2,28 +2,23 @@ import * as React from "react";
 import {useState} from "react";
 import {Tabs, Tab, Box} from "@mui/material";
 import TransactionsTab from "./Tabs/TransactionsTab";
-import OverviewTab from "./Tabs/OverviewTab";
+import InfoTab from "./Tabs/InfoTab";
 import ResourcesTab from "./Tabs/ResourcesTab";
 import ModulesTab from "./Tabs/ModulesTab";
 import {assertNever} from "../../utils";
 import WysiwygIcon from "@mui/icons-material/Wysiwyg";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import ExtensionIcon from "@mui/icons-material/Extension";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 
-const TAB_VALUES: TabValue[] = [
-  "transactions",
-  "overview",
-  "resources",
-  "modules",
-];
+const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
 const TabComponents = Object.freeze({
   transactions: TransactionsTab,
-  overview: OverviewTab,
+  info: InfoTab,
   resources: ResourcesTab,
   modules: ModulesTab,
 });
@@ -34,12 +29,12 @@ function getTabLabel(value: TabValue): string {
   switch (value) {
     case "transactions":
       return "Transactions";
-    case "overview":
-      return "Overview";
     case "resources":
       return "Resources";
     case "modules":
       return "Modules";
+    case "info":
+      return "Info";
     default:
       return assertNever(value);
   }
@@ -49,12 +44,12 @@ function getTabIcon(value: TabValue): JSX.Element {
   switch (value) {
     case "transactions":
       return <WysiwygIcon fontSize="small" />;
-    case "overview":
-      return <BarChartOutlinedIcon fontSize="small" />;
     case "resources":
       return <DynamicFeedIcon fontSize="small" />;
     case "modules":
       return <ExtensionIcon fontSize="small" />;
+    case "info":
+      return <DescriptionOutlinedIcon fontSize="small" />;
     default:
       return assertNever(value);
   }
