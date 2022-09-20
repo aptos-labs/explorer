@@ -38,12 +38,14 @@ declare global {
 
 const queryClient = new QueryClient();
 
+// TODO: config graphql based on network
+// right now only testnet graphql is available
 const graphqlClient = new ApolloClient({
   link: new HttpLink({
-    uri: "https://profound-koala-32.hasura.app/v1/graphql",
+    uri: process.env.REACT_APP_INDEXER_GRAPHQL_TESTNET,
     headers: {
       "x-hasura-admin-secret":
-        "qGxSwGGtXDFExIFbdoPIregFBjbmbUc3qjwV87z70cGsaGiyXQzNu2ivrDfcRRSn",
+        process.env.REACT_APP_INDEXER_GRAPHQL_SECRET_TESTNET,
     },
   }),
   cache: new InMemoryCache(),
