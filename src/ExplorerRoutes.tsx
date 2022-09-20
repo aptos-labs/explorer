@@ -12,6 +12,7 @@ import {ProposalPage} from "./pages/Governance/Proposal/Index";
 import {CreateProposalPage} from "./pages/Governance/CreateProposal/Index";
 import {Staking} from "./pages/Governance/Stake/Index";
 import BlockPage from "./pages/Block/Index";
+import TokenPage from "./pages/Token/Index";
 
 export default function ExplorerRoutes() {
   return (
@@ -32,6 +33,9 @@ export default function ExplorerRoutes() {
         </Route>
         <Route path="/block">
           <Route path=":height" element={<BlockPage />} />
+        </Route>
+        <Route path="/token">
+          <Route path=":param" element={<TokenPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

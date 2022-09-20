@@ -3,6 +3,12 @@ import ReactDOM from "react-dom";
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+} from "@apollo/client";
 
 import * as Sentry from "@sentry/react";
 import {BrowserTracing} from "@sentry/tracing";
@@ -32,15 +38,28 @@ declare global {
 
 const queryClient = new QueryClient();
 
+const graphqlClient = new ApolloClient({
+  link: new HttpLink({
+    uri: "https://profound-koala-32.hasura.app/v1/graphql",
+    headers: {
+      "x-hasura-admin-secret":
+        "qGxSwGGtXDFExIFbdoPIregFBjbmbUc3qjwV87z70cGsaGiyXQzNu2ivrDfcRRSn",
+    },
+  }),
+  cache: new InMemoryCache(),
+});
+
 // delay rendering the application until the window.onload event has fired when integrating with the window.aptos API
 window.addEventListener("load", () => {
   ReactDOM.render(
     <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <ExplorerRoutes />
-        </BrowserRouter>
-      </QueryClientProvider>
+      <ApolloProvider client={graphqlClient}>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <ExplorerRoutes />
+          </BrowserRouter>
+        </QueryClientProvider>
+      </ApolloProvider>
     </React.StrictMode>,
     document.getElementById("root"),
   );
