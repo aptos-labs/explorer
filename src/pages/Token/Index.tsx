@@ -12,23 +12,7 @@ const TOKEN_QUERY = gql`
       name
       collection_name
       creator_address
-      supply
-      transaction_version
-      uri_mutable
       description_mutable
-      default_properties
-      metadata_uri
-      collection_name_hash
-      inserted_at
-      largest_property_version
-      maximum
-      maximum_mutable
-      name_hash
-      payee_address
-      properties_mutable
-      royalty_mutable
-      royalty_points_denominator
-      royalty_points_numerator
     }
   }
 `;
