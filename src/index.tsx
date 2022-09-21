@@ -3,6 +3,12 @@ import ReactDOM from "react-dom";
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+} from "@apollo/client";
 
 import * as Sentry from "@sentry/react";
 import {BrowserTracing} from "@sentry/tracing";
@@ -32,15 +38,31 @@ declare global {
 
 const queryClient = new QueryClient();
 
+// TODO: config graphql based on network
+// right now only testnet graphql is available
+const graphqlClient = new ApolloClient({
+  link: new HttpLink({
+    uri: process.env.REACT_APP_INDEXER_GRAPHQL_TESTNET,
+    headers: {
+      "x-hasura-admin-secret":
+        process.env.REACT_APP_INDEXER_GRAPHQL_SECRET_TESTNET,
+      "x-hasura-role": "anonymous",
+    },
+  }),
+  cache: new InMemoryCache(),
+});
+
 // delay rendering the application until the window.onload event has fired when integrating with the window.aptos API
 window.addEventListener("load", () => {
   ReactDOM.render(
     <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <ExplorerRoutes />
-        </BrowserRouter>
-      </QueryClientProvider>
+      <ApolloProvider client={graphqlClient}>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <ExplorerRoutes />
+          </BrowserRouter>
+        </QueryClientProvider>
+      </ApolloProvider>
     </React.StrictMode>,
     document.getElementById("root"),
   );
