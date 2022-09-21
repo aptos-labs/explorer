@@ -11,7 +11,7 @@ export default function TotalStake() {
       data={
         totalStake
           ? getFormattedBalanceStr(totalStake.toString(), undefined, 3)
-          : "N/A"
+          : "-"
       }
       label="Total Active Stake"
     />

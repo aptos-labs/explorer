@@ -11,7 +11,7 @@ export default function TotalSupply() {
       data={
         totalSupply
           ? getFormattedBalanceStr(totalSupply.toString(), undefined, 3)
-          : "N/A"
+          : "-"
       }
       label="Total Circulating Supply"
     />

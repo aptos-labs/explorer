@@ -12,8 +12,12 @@ export default function MetricCard({data, label}: MetricCardProps) {
   return (
     <Card>
       <Stack alignItems="flex-end" spacing={2.5} marginTop={2}>
-        <Typography sx={{fontSize: 17, fontWeight: 700}}>{data}</Typography>
-        <Typography sx={{color: grey[450], fontSize: 13}}>{label}</Typography>
+        <Typography fontSize={17} fontWeight={700}>
+          {data}
+        </Typography>
+        <Typography fontSize={13} color={grey[450]}>
+          {label}
+        </Typography>
       </Stack>
     </Card>
   );

@@ -1,11 +1,8 @@
-import {useGetAccountResources} from "./useGetAccountResources";
 import {GlobalState, useGlobalState} from "../../GlobalState";
 import {getTableItem} from "..";
 import {TableItemRequest} from "aptos/dist/generated";
 import {useEffect, useState} from "react";
-import {UseQueryResult} from "react-query";
-import {Types} from "aptos";
-import {ResponseError} from "../client";
+import {useGetAccountResource} from "./useGetAccountResource";
 
 interface CoinInfo {
   decimals: number;
@@ -32,20 +29,10 @@ interface AggregatorData {
 }
 
 async function fetchTotalSupply(
-  data: Types.MoveResource[],
+  data: CoinInfo,
   state: GlobalState,
 ): Promise<number | null> {
-  const coinInfo = data.find(
-    (resource) =>
-      resource.type === "0x1::coin::CoinInfo<0x1::aptos_coin::AptosCoin>",
-  );
-
-  if (coinInfo === undefined || coinInfo.data === undefined) {
-    return null;
-  }
-
-  const coinInfoData: CoinInfo = coinInfo.data as CoinInfo;
-  const aggregatorData = coinInfoData?.supply?.vec[0]?.aggregator?.vec[0];
+  const aggregatorData = data?.supply?.vec[0]?.aggregator?.vec[0];
 
   if (aggregatorData === undefined) {
     return null;
@@ -74,15 +61,18 @@ async function fetchTotalSupply(
 export function useGetCoinSupplyLimit(): number | null {
   const [state, _] = useGlobalState();
   const [totalSupply, setTotalSupply] = useState<number | null>(null);
-  const accountResourcesResult = useGetAccountResources("0x1");
+  const {accountResource: coinInfo} = useGetAccountResource(
+    "0x1",
+    "0x1::coin::CoinInfo<0x1::aptos_coin::AptosCoin>",
+  );
 
   useEffect(() => {
-    if (accountResourcesResult.data !== undefined) {
-      fetchTotalSupply(accountResourcesResult.data, state).then((data) => {
+    if (coinInfo?.data !== undefined) {
+      fetchTotalSupply(coinInfo?.data as CoinInfo, state).then((data) => {
         data && setTotalSupply(data);
       });
     }
-  }, [accountResourcesResult.data, state]);
+  }, [coinInfo?.data, state]);
 
   return totalSupply;
 }
