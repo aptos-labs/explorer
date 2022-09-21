@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.6.9",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@mui/icons-material": "^5.4.2",
@@ -16,6 +17,7 @@
     "aptos": "^1.3.7",
     "aptos-node-checker-client": "0.0.2",
     "date-fns": "^2.29.1",
+    "graphql": "^16.6.0",
     "js-sha3": "^0.8.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
