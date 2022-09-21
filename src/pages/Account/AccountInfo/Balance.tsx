@@ -13,6 +13,7 @@ interface CoinStore {
 export function getFormattedBalanceStr(
   balance: string,
   decimals?: number,
+  toFix?: number,
 ): string {
   // If it's zero, just return it
   if (balance == "0") {
@@ -38,6 +39,15 @@ export function getFormattedBalanceStr(
   // remove trailing 0s
   while (rightSide.endsWith("0")) {
     rightSide = rightSide.slice(0, -1);
+  }
+
+  if (toFix && rightSide.length > toFix) {
+    rightSide = rightSide.slice(0, toFix - rightSide.length);
+
+    // remove trailing 0s again
+    while (rightSide.endsWith("0")) {
+      rightSide = rightSide.slice(0, -1);
+    }
   }
 
   return leftSide + "." + rightSide;

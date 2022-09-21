@@ -1,8 +1,8 @@
-import {useGetAccountResources} from "../../../api/hooks/useGetAccountResources";
-import {GlobalState, useGlobalState} from "../../../GlobalState";
-import {getTableItem} from "../../../api";
+import {GlobalState, useGlobalState} from "../../GlobalState";
+import {getTableItem} from "..";
 import {TableItemRequest} from "aptos/dist/generated";
 import {useEffect, useState} from "react";
+import {useGetAccountResource} from "./useGetAccountResource";
 
 interface CoinInfo {
   decimals: number;
@@ -29,9 +29,15 @@ interface AggregatorData {
 }
 
 async function fetchTotalSupply(
-  aggregatorData: AggregatorData,
+  data: CoinInfo,
   state: GlobalState,
 ): Promise<number | null> {
+  const aggregatorData = data?.supply?.vec[0]?.aggregator?.vec[0];
+
+  if (aggregatorData === undefined) {
+    return null;
+  }
+
   const tableItemRequest = {
     key_type: "address",
     value_type: "u128",
@@ -55,35 +61,18 @@ async function fetchTotalSupply(
 export function useGetCoinSupplyLimit(): number | null {
   const [state, _] = useGlobalState();
   const [totalSupply, setTotalSupply] = useState<number | null>(null);
-  const accountResourcesResult = useGetAccountResources("0x1");
-
-  if (!accountResourcesResult.data) {
-    return null;
-  }
-
-  const coinInfo = accountResourcesResult.data.find(
-    (resource) =>
-      resource.type === "0x1::coin::CoinInfo<0x1::aptos_coin::AptosCoin>",
+  const {accountResource: coinInfo} = useGetAccountResource(
+    "0x1",
+    "0x1::coin::CoinInfo<0x1::aptos_coin::AptosCoin>",
   );
 
-  if (coinInfo === undefined || coinInfo.data === undefined) {
-    return null;
-  }
-
-  const coinInfoData: CoinInfo = coinInfo.data as CoinInfo;
-  const aggregatorData = coinInfoData?.supply?.vec[0]?.aggregator?.vec[0];
-
-  if (aggregatorData === undefined) {
-    return null;
-  }
-
   useEffect(() => {
-    if (aggregatorData !== undefined) {
-      fetchTotalSupply(aggregatorData, state).then((data) => {
+    if (coinInfo?.data !== undefined) {
+      fetchTotalSupply(coinInfo?.data as CoinInfo, state).then((data) => {
         data && setTotalSupply(data);
       });
     }
-  }, [aggregatorData]);
+  }, [coinInfo?.data, state]);
 
   return totalSupply;
 }

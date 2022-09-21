@@ -3,7 +3,7 @@ import {Stack, Box, Typography, Tooltip, Theme} from "@mui/material";
 import {secondaryColor} from "../../constants";
 import {useTheme} from "@mui/material/styles";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
-import {useGetCoinSupplyLimit} from "../../hooks/useGetCoinSupplyLimit";
+import {useGetCoinSupplyLimit} from "../../../../api/hooks/useGetCoinSupplyLimit";
 import {Proposal} from "../../Types";
 
 const RADIUS = "0.7em";

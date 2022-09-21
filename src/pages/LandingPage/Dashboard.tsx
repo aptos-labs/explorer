@@ -6,9 +6,23 @@ import DividerHero from "../../components/DividerHero";
 import HeadingSub from "../../components/HeadingSub";
 import HeaderSearch from "../layout/Search/Index";
 import Box from "@mui/material/Box";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import NetworkInfo from "./NetworkInfo/Index";
 
 export default function Dashboard() {
-  return (
+  const inDev = useGetInDevMode();
+
+  return inDev ? (
+    <Box>
+      <HeadingSub>Network</HeadingSub>
+      <Typography variant="h3" component="h3" marginBottom={4}>
+        Aptos Explorer
+      </Typography>
+      <NetworkInfo />
+      <HeaderSearch />
+      <TransactionsPreview />
+    </Box>
+  ) : (
     <Box>
       <HeadingSub>Network</HeadingSub>
       <Typography variant="h1" component="h1" gutterBottom>
