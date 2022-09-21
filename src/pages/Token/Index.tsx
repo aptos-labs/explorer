@@ -7,8 +7,8 @@ import TokenTitle from "./Title";
 import TokenTabs from "./Tabs";
 
 const TOKEN_QUERY = gql`
-  {
-    token_datas(where: {name_hash: {}, name: {_eq: "Aptos Zero: 7"}}) {
+  query TokenData($token_id: String) {
+    token_datas(where: {token_data_id_hash: {_eq: $token_id}}) {
       name
       collection_name
       creator_address
@@ -24,7 +24,11 @@ export default function TokenPage() {
     return null;
   }
 
-  const {loading, error, data} = useQuery(TOKEN_QUERY);
+  const {loading, error, data} = useQuery(TOKEN_QUERY, {
+    variables: {
+      token_id: param,
+    },
+  });
 
   if (loading || error || !data) {
     // TODO: error handling

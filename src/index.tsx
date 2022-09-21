@@ -46,6 +46,7 @@ const graphqlClient = new ApolloClient({
     headers: {
       "x-hasura-admin-secret":
         process.env.REACT_APP_INDEXER_GRAPHQL_SECRET_TESTNET,
+      "x-hasura-role": "anonymous",
     },
   }),
   cache: new InMemoryCache(),
