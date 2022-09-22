@@ -1,10 +1,11 @@
 import {useParams} from "react-router-dom";
-import {Stack, Grid} from "@mui/material";
+import {Stack, Grid, Alert} from "@mui/material";
 import React from "react";
 import HeaderSearch from "../layout/Search/Index";
-import {BLOCK_DUMMY_DATA} from "./data";
 import BlockTitle from "./Title";
 import BlockTabs from "./Tabs";
+import {useGetBlockByHeight} from "../../api/hooks/useGetBlock";
+import Error from "./Error";
 
 export default function BlockPage() {
   const {height} = useParams();
@@ -13,7 +14,25 @@ export default function BlockPage() {
     return null;
   }
 
-  const data = BLOCK_DUMMY_DATA;
+  const {data, isLoading, error} = useGetBlockByHeight(height);
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (error) {
+    return <Error error={error} height={height} />;
+  }
+
+  if (!data) {
+    return (
+      <Alert severity="error">
+        Got an empty response fetching block with height {height}
+        <br />
+        Try again later
+      </Alert>
+    );
+  }
 
   return (
     <Grid container spacing={1}>
