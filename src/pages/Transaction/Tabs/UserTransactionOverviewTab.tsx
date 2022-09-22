@@ -95,9 +95,9 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("signature")}
         />
         <ContentRow
-          title="State Change Hash:"
-          value={transactionData.state_change_hash}
-          tooltip={getLearnMoreTooltip("state_change_hash")}
+          title="State Root Hash:"
+          value={transactionData.state_root_hash}
+          tooltip={getLearnMoreTooltip("state_root_hash")}
         />
         <ContentRow
           title="Event Root Hash:"
@@ -131,8 +131,8 @@ export default function UserTransactionOverviewTab({
         <Row title={"Version:"} value={transactionData.version} />
         <Row title={"Status:"} value={renderSuccess(transactionData.success)} />
         <Row
-          title={"State Change Hash:"}
-          value={transactionData.state_change_hash}
+          title={"State Root Hash:"}
+          value={transactionData.state_root_hash}
         />
         <Row
           title={"Event Root Hash:"}

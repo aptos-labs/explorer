@@ -123,19 +123,3 @@ export function getTableItem(
   const {tableHandle, data} = requestParameters;
   return withResponseError(client.getTableItem(tableHandle, data));
 }
-
-export function getBlockByHeight(
-  height: number,
-  nodeUrl: string,
-): Promise<Types.Block> {
-  const client = new AptosClient(nodeUrl);
-  return withResponseError(client.getBlockByHeight(height, true));
-}
-
-export function getBlockByVersion(
-  version: number,
-  nodeUrl: string,
-): Promise<Types.Block> {
-  const client = new AptosClient(nodeUrl);
-  return withResponseError(client.getBlockByVersion(version, true));
-}
