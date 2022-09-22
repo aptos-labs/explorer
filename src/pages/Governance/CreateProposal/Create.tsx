@@ -53,7 +53,9 @@ export function Create() {
   };
 
   const onCreateProposalClick = async () => {
-    const client = new AptosClient(state.network_value);
+    const client = new AptosClient(state.network_value, {
+      WITH_CREDENTIALS: false,
+    });
     const faucetClient = new FaucetClient(
       state.network_value,
       FAUCET_URL,

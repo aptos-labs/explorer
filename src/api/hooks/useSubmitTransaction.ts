@@ -29,7 +29,9 @@ const useSubmitTransaction = () => {
     useState<boolean>(false);
   const [state, _] = useGlobalState();
   const {walletNetwork} = useWalletContext();
-  const client = new AptosClient(state.network_value);
+  const client = new AptosClient(state.network_value, {
+    WITH_CREDENTIALS: false,
+  });
 
   useEffect(() => {
     if (transactionResponse !== null) {
