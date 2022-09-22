@@ -1,4 +1,4 @@
-import {TxnBuilderTypes, AptosClient, Types} from "aptos";
+import {AptosClient, Types} from "aptos";
 import {WalletNetworks} from "../context/wallet/context";
 import {
   TransactionResponse,

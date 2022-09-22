@@ -1,6 +1,5 @@
 import {AptosClient, Types} from "aptos";
 import {isHex} from "../pages/utils";
-import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
 
 /**
@@ -13,46 +12,6 @@ import {withResponseError} from "./client";
  * we apply this walk-around to make WITH_CREDENTIALS false when creating AptosClients.
  */
 const config = {WITH_CREDENTIALS: false};
-
-export async function getTransactions(
-  requestParameters: {start?: number; limit?: number},
-  nodeUrl: string,
-): Promise<Types.Transaction[]> {
-  const client = new AptosClient(nodeUrl, config);
-  const {start, limit} = requestParameters;
-  let bigStart;
-  if (start) {
-    bigStart = BigInt(start);
-  }
-  const transactions = await withResponseError(
-    client.getTransactions({start: bigStart, limit}),
-  );
-
-  // Sort in descending order
-  transactions.sort(sortTransactions);
-
-  return transactions;
-}
-
-export async function getAccountTransactions(
-  requestParameters: {address: string; start?: number; limit?: number},
-  nodeUrl: string,
-): Promise<Types.Transaction[]> {
-  const client = new AptosClient(nodeUrl, config);
-  const {address, start, limit} = requestParameters;
-  let bigStart;
-  if (start) {
-    bigStart = BigInt(start);
-  }
-  const transactions = await withResponseError(
-    client.getAccountTransactions(address, {start: bigStart, limit}),
-  );
-
-  // Sort in descending order
-  transactions.sort(sortTransactions);
-
-  return transactions;
-}
 
 export function getTransaction(
   requestParameters: {txnHashOrVersion: string | number},
@@ -80,11 +39,6 @@ function getTransactionByHash(
 ): Promise<Types.Transaction> {
   const client = new AptosClient(nodeUrl, config);
   return withResponseError(client.getTransactionByHash(hash));
-}
-
-export function getLedgerInfo(nodeUrl: string): Promise<Types.IndexResponse> {
-  const client = new AptosClient(nodeUrl, config);
-  return withResponseError(client.getLedgerInfo());
 }
 
 export function getAccount(
@@ -133,20 +87,4 @@ export function getTableItem(
   const client = new AptosClient(nodeUrl, config);
   const {tableHandle, data} = requestParameters;
   return withResponseError(client.getTableItem(tableHandle, data));
-}
-
-export function getBlockByHeight(
-  height: number,
-  nodeUrl: string,
-): Promise<Types.Block> {
-  const client = new AptosClient(nodeUrl, config);
-  return withResponseError(client.getBlockByHeight(height, true));
-}
-
-export function getBlockByVersion(
-  version: number,
-  nodeUrl: string,
-): Promise<Types.Block> {
-  const client = new AptosClient(nodeUrl, config);
-  return withResponseError(client.getBlockByVersion(version, true));
 }
