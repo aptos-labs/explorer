@@ -79,9 +79,9 @@ export default function BlockMetadataOverviewTab({
       </ContentBox>
       <ContentBox>
         <ContentRow
-          title="State Root Hash:"
-          value={transactionData.state_root_hash}
-          tooltip={getLearnMoreTooltip("state_root_hash")}
+          title="State Change Hash:"
+          value={transactionData.state_change_hash}
+          tooltip={getLearnMoreTooltip("state_change_hash")}
         />
         <ContentRow
           title="Event Root Hash:"
@@ -112,8 +112,8 @@ export default function BlockMetadataOverviewTab({
           }
         />
         <Row
-          title={"State Root Hash:"}
-          value={transactionData.state_root_hash}
+          title={"State Change Hash:"}
+          value={transactionData.state_change_hash}
         />
         <Row
           title={"Event Root Hash:"}
