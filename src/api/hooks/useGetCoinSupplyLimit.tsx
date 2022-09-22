@@ -1,6 +1,6 @@
 import {GlobalState, useGlobalState} from "../../GlobalState";
 import {getTableItem} from "..";
-import {TableItemRequest} from "aptos/dist/generated";
+import {Types} from "aptos";
 import {useEffect, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
 
@@ -42,7 +42,7 @@ async function fetchTotalSupply(
     key_type: "address",
     value_type: "u128",
     key: aggregatorData.key,
-  } as TableItemRequest;
+  } as Types.TableItemRequest;
 
   const supplyLimit = await getTableItem(
     {

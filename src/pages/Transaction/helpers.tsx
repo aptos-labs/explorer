@@ -78,13 +78,8 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
       );
     case "signature":
       return <LearnMoreTooltipPlaceholder />;
-    case "state_root_hash":
-      return (
-        <LearnMoreTooltip
-          text="State root hash is a Merkle hash over all keys and values the state of the Aptos blockchain at a given version."
-          link="https://aptos.dev/reference/glossary/#state-root-hash"
-        />
-      );
+    case "state_change_hash":
+      return <LearnMoreTooltipPlaceholder />;
     case "event_root_hash":
       return (
         <LearnMoreTooltip
