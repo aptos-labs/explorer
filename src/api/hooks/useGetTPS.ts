@@ -6,7 +6,7 @@ import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
 
 export function useGetTPS() {
   const [state, _] = useGlobalState();
-  const [blockHeight, setBlockHeight] = useState<string | null>(null);
+  const [blockHeight, setBlockHeight] = useState<number | null>(null);
   const {tps} = useGetTPSByBlockHeight(blockHeight);
 
   const {data: ledgerData} = useQuery(
@@ -18,7 +18,7 @@ export function useGetTPS() {
 
   useEffect(() => {
     if (currentBlockHeight !== undefined) {
-      setBlockHeight(currentBlockHeight);
+      setBlockHeight(parseInt(currentBlockHeight));
     }
   }, [currentBlockHeight, state]);
 
