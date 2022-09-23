@@ -1,13 +1,13 @@
 import React from "react";
+import {useGetTPS} from "../../../api/hooks/useGetTPS";
 import MetricCard from "./MetricCard";
 
 export default function TPS() {
-  // TODO: get real data
-  const tps = 10000;
+  const {tps} = useGetTPS();
 
   return (
     <MetricCard
-      data={tps.toLocaleString("en-US")}
+      data={tps ? tps.toLocaleString("en-US") : "-"}
       label="TPS (transactions per sec)"
     />
   );

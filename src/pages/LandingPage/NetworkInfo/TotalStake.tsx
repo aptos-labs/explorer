@@ -1,16 +1,16 @@
 import React from "react";
+import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import {getFormattedBalanceStr} from "../../Account/AccountInfo/Balance";
 import MetricCard from "./MetricCard";
 
 export default function TotalStake() {
-  // TODO: get real data
-  const totalStake = 1000000000000000;
+  const {totalVotingPower} = useGetValidatorSet();
 
   return (
     <MetricCard
       data={
-        totalStake
-          ? getFormattedBalanceStr(totalStake.toString(), undefined, 3)
+        totalVotingPower
+          ? getFormattedBalanceStr(totalVotingPower.toString(), undefined, 3)
           : "-"
       }
       label="Total Active Stake"

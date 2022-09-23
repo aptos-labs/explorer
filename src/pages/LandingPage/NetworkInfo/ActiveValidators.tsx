@@ -1,13 +1,17 @@
 import React from "react";
+import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import MetricCard from "./MetricCard";
 
 export default function ActiveValidators() {
-  // TODO: get real data
-  const activeValidators = 700;
+  const {numberOfActiveValidators} = useGetValidatorSet();
 
   return (
     <MetricCard
-      data={activeValidators.toLocaleString("en-US")}
+      data={
+        numberOfActiveValidators
+          ? numberOfActiveValidators.toLocaleString("en-US")
+          : "-"
+      }
       label="Active Validators"
     />
   );
