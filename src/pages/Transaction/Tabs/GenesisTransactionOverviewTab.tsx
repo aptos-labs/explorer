@@ -35,7 +35,7 @@ export default function GenesisTransactionOverviewTab({
         />
 
         <ContentRow
-          title="Gas Used:"
+          title="Gas Units:"
           value={<GasValue gas={transactionData.gas_used} />}
           tooltip={getLearnMoreTooltip("gas_used")}
         />
@@ -76,7 +76,7 @@ export default function GenesisTransactionOverviewTab({
           title={"Event Root Hash:"}
           value={transactionData.event_root_hash}
         />
-        <Row title={"Gas Used:"} value={renderGas(transactionData.gas_used)} />
+        <Row title={"Gas Units:"} value={renderGas(transactionData.gas_used)} />
         <Row title={"VM Status:"} value={transactionData.vm_status} />
         <Row
           title={"Accumulator Root Hash:"}

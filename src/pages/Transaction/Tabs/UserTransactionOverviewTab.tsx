@@ -17,6 +17,7 @@ import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
+import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 
 type UserTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -68,19 +69,25 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow
-          title="Gas Used:"
+          title="Gas Units:"
           value={<GasValue gas={transactionData.gas_used} />}
           tooltip={getLearnMoreTooltip("gas_used")}
         />
         <ContentRow
-          title="Max Gas:"
-          value={<GasValue gas={transactionData.max_gas_amount} />}
-          tooltip={getLearnMoreTooltip("max_gas_amount")}
+          title="Gas Unit Price:"
+          value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
+          tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
         <ContentRow
-          title="Gas Unit Price:"
-          value={<GasValue gas={transactionData.gas_unit_price} />}
-          tooltip={getLearnMoreTooltip("gas_unit_price")}
+          title="Gas Spent:"
+          value={<APTCurrencyValue
+            amount={(BigInt(transactionData.gas_unit_price) * BigInt(transactionData.gas_used)).toString()} />}
+          tooltip={getLearnMoreTooltip("gas_spent")}
+        />
+        <ContentRow
+          title="Max Gas:"
+          value={<APTCurrencyValue amount={transactionData.max_gas_amount} />}
+          tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
           title="VM Status:"
@@ -138,14 +145,19 @@ export default function UserTransactionOverviewTab({
           title={"Event Root Hash:"}
           value={transactionData.event_root_hash}
         />
-        <Row title={"Gas Used:"} value={renderGas(transactionData.gas_used)} />
-        <Row
-          title={"Max Gas:"}
-          value={renderGas(transactionData.max_gas_amount)}
-        />
+        <Row title={"Gas Units:"} value={renderGas(transactionData.gas_used)} />
         <Row
           title={"Gas Unit Price:"}
-          value={renderGas(transactionData.gas_unit_price)}
+          value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
+        />
+        <Row
+          title={"Gas Spent:"}
+          value={<APTCurrencyValue
+            amount={(BigInt(transactionData.gas_unit_price) * BigInt(transactionData.gas_used)).toString()} />}
+        />
+        <Row
+          title={"Max Gas:"}
+          value={<APTCurrencyValue amount={transactionData.max_gas_amount} />}
         />
         <Row title={"VM Status:"} value={transactionData.vm_status} />
         <Row
