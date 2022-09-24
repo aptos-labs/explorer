@@ -24,7 +24,7 @@ export function getFormattedBalanceStr(
 
   // If length is less than decimals, pad with 0s to decimals length and return
   if (len <= decimals) {
-   return trimRight("0." + "0".repeat(decimals - len) + balance);
+   return "0." + (trimRight("0".repeat(decimals - len) + balance) || '0');
   }
 
   // Otherwise, insert decimal point at len - decimals
