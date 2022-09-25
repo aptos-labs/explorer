@@ -18,7 +18,6 @@ import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 
-
 type UserTransactionOverviewTabProps = {
   transaction: Types.Transaction;
 };
@@ -85,8 +84,14 @@ export default function UserTransactionOverviewTab({
         />
         <ContentRow
           title="Gas Fee:"
-          value={<APTCurrencyValue
-            amount={(BigInt(transactionData.gas_unit_price) * BigInt(transactionData.gas_used)).toString()} />}
+          value={
+            <APTCurrencyValue
+              amount={(
+                BigInt(transactionData.gas_unit_price) *
+                BigInt(transactionData.gas_used)
+              ).toString()}
+            />
+          }
           tooltip={getLearnMoreTooltip("gas_spent")}
         />
         <ContentRow
@@ -156,8 +161,14 @@ export default function UserTransactionOverviewTab({
         />
         <Row
           title={"Gas Fee:"}
-          value={<APTCurrencyValue
-            amount={(BigInt(transactionData.gas_unit_price) * BigInt(transactionData.gas_used)).toString()} />}
+          value={
+            <APTCurrencyValue
+              amount={(
+                BigInt(transactionData.gas_unit_price) *
+                BigInt(transactionData.gas_used)
+              ).toString()}
+            />
+          }
         />
 
         <Row title={"VM Status:"} value={transactionData.vm_status} />

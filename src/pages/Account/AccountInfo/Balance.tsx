@@ -22,7 +22,7 @@ export default function Balance({address}: BalanceProps) {
 
   const coinStore = data.find(
     (resource) =>
-      resource.type === "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>"
+      resource.type === "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>",
   );
 
   if (!coinStore) {

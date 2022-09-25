@@ -9,7 +9,6 @@ import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
 
-
 type GenesisTransactionOverviewTabProps = {
   transaction: Types.Transaction;
 };

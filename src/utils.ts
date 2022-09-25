@@ -17,7 +17,7 @@ We can consider the version to be Infinity for this case.
 */
 export function sortTransactions(
   a: Types.Transaction,
-  b: Types.Transaction
+  b: Types.Transaction,
 ): number {
   const first = "version" in a ? parseInt(a.version) : Infinity;
   const second = "version" in b ? parseInt(b.version) : Infinity;

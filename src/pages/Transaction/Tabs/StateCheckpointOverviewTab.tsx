@@ -14,7 +14,6 @@ import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 
-
 type StateCheckpointOverviewTabProps = {
   transaction: Types.Transaction;
 };

@@ -19,7 +19,10 @@ ReactGA.initialize(process.env.GA_TRACKING_ID || "G-8XH7V50XK7");
 
 // TODO: redirect to the new explorer domain on the domain host
 if (window.location.origin.includes("explorer.devnet.aptos.dev")) {
-  const new_location = window.location.href.replace("explorer.devnet.aptos.dev", "explorer.aptoslabs.com")
+  const new_location = window.location.href.replace(
+    "explorer.devnet.aptos.dev",
+    "explorer.aptoslabs.com",
+  );
   window.location.replace(new_location);
 }
 

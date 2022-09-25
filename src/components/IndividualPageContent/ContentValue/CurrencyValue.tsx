@@ -2,7 +2,7 @@ import React from "react";
 
 const APTOS_DECIMALS = 8;
 
-function trimRight(rightSide: string){
+function trimRight(rightSide: string) {
   while (rightSide.endsWith("0")) {
     rightSide = rightSide.slice(0, -1);
   }
@@ -12,7 +12,7 @@ function trimRight(rightSide: string){
 export function getFormattedBalanceStr(
   balance: string,
   decimals?: number,
-  fixedDecimalPlaces?: number
+  fixedDecimalPlaces?: number,
 ): string {
   // If it's zero, just return it
   if (balance == "0") {
@@ -24,12 +24,12 @@ export function getFormattedBalanceStr(
 
   // If length is less than decimals, pad with 0s to decimals length and return
   if (len <= decimals) {
-   return "0." + (trimRight("0".repeat(decimals - len) + balance) || '0');
+    return "0." + (trimRight("0".repeat(decimals - len) + balance) || "0");
   }
 
   // Otherwise, insert decimal point at len - decimals
   const leftSide = BigInt(balance.slice(0, len - decimals)).toLocaleString(
-    "en-US"
+    "en-US",
   );
   let rightSide = balance.slice(len - decimals);
   if (BigInt(rightSide) == BigInt(0)) {
@@ -53,11 +53,30 @@ type CurrencyValueProps = {
   currencyCode?: string | React.ReactNode;
 };
 
-export default function CurrencyValue({amount, decimals, fixedDecimalPlaces, currencyCode}: CurrencyValueProps) {
+export default function CurrencyValue({
+  amount,
+  decimals,
+  fixedDecimalPlaces,
+  currencyCode,
+}: CurrencyValueProps) {
   let number = getFormattedBalanceStr(amount, decimals, fixedDecimalPlaces);
-  return <div>{number}{currencyCode ? [" ", currencyCode] : null}</div>;
+  return (
+    <div>
+      {number}
+      {currencyCode ? [" ", currencyCode] : null}
+    </div>
+  );
 }
 
-export function APTCurrencyValue({amount, decimals, fixedDecimalPlaces}: CurrencyValueProps) {
-  return <CurrencyValue {...{amount, decimals, fixedDecimalPlaces}} currencyCode="APT" />;
+export function APTCurrencyValue({
+  amount,
+  decimals,
+  fixedDecimalPlaces,
+}: CurrencyValueProps) {
+  return (
+    <CurrencyValue
+      {...{amount, decimals, fixedDecimalPlaces}}
+      currencyCode="APT"
+    />
+  );
 }

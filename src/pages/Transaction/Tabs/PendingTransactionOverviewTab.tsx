@@ -13,7 +13,6 @@ import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 
-
 type PendingTransactionOverviewTabProps = {
   transaction: Types.Transaction;
 };

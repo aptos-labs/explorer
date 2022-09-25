@@ -6,7 +6,10 @@ type GasValueProps = {
 };
 
 export default function GasValue({gas}: GasValueProps) {
-  return <span>
-    <NumberFormat value={gas} displayType="text" thousandSeparator /> Gas Units
-  </span>;
+  return (
+    <span>
+      <NumberFormat value={gas} displayType="text" thousandSeparator /> Gas
+      Units
+    </span>
+  );
 }

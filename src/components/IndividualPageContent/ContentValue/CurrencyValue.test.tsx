@@ -1,5 +1,5 @@
 import {expect, it} from "@jest/globals";
-import { getFormattedBalanceStr } from "./CurrencyValue";
+import {getFormattedBalanceStr} from "./CurrencyValue";
 
 it("formats balances correctly", () => {
   expect(getFormattedBalanceStr("0")).toEqual("0");
