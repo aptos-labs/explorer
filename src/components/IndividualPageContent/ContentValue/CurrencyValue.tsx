@@ -60,12 +60,15 @@ export default function CurrencyValue({
   currencyCode,
 }: CurrencyValueProps) {
   let number = getFormattedBalanceStr(amount, decimals, fixedDecimalPlaces);
-  return (
-    <div>
-      {number}
-      {currencyCode ? [" ", currencyCode] : null}
-    </div>
-  );
+  if (currencyCode) {
+    return (
+      <span>
+        {number} {currencyCode}
+      </span>
+    );
+  } else {
+    return <span>{number}</span>;
+  }
 }
 
 export function APTCurrencyValue({
