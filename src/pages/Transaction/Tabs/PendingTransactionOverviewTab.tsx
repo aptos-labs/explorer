@@ -11,8 +11,8 @@ import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
-import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+
 
 type PendingTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -49,8 +49,8 @@ export default function PendingTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("expiration_timestamp_secs")}
         />
         <ContentRow
-          title="Max Gas:"
-          value={<GasValue gas={transactionData.max_gas_amount} />}
+          title="Max Gas Limit:"
+          value={renderGas(transactionData.max_gas_amount)}
           tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
@@ -83,7 +83,7 @@ export default function PendingTransactionOverviewTab({
           value={renderTimestamp(transactionData.expiration_timestamp_secs)}
         />
         <Row
-          title={"Max Gas:"}
+          title={"Max Gas Limit:"}
           value={renderGas(transactionData.max_gas_amount)}
         />
         <Row

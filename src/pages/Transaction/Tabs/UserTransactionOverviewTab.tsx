@@ -16,8 +16,8 @@ import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
-import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+
 
 type UserTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -69,13 +69,13 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow
-          title="Gas Units:"
-          value={<GasValue gas={transactionData.gas_used} />}
+          title="Gas Used:"
+          value={renderGas(transactionData.gas_used)}
           tooltip={getLearnMoreTooltip("gas_used")}
         />
         <ContentRow
-          title="Max Gas:"
-          value={<GasValue gas={transactionData.max_gas_amount} />}
+          title="Max Gas Limit:"
+          value={renderGas(transactionData.max_gas_amount)}
           tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
@@ -145,10 +145,10 @@ export default function UserTransactionOverviewTab({
           title={"Event Root Hash:"}
           value={transactionData.event_root_hash}
         />
-        <Row title={"Gas Units:"} value={renderGas(transactionData.gas_used)} />
+        <Row title={"Gas Used:"} value={renderGas(transactionData.gas_used)} />
         <Row
-          title={"Max Gas:"}
-          value={<GasValue gas={transactionData.max_gas_amount} />}
+          title={"Max Gas Limit:"}
+          value={renderGas(transactionData.max_gas_amount)}
         />
         <Row
           title={"Gas Unit Price:"}

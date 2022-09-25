@@ -14,7 +14,7 @@ import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
-import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
+
 
 type BlockMetadataOverviewTabProps = {
   transaction: Types.Transaction;
@@ -55,7 +55,6 @@ export default function BlockMetadataOverviewTab({
           value={transactionData.version}
           tooltip={getLearnMoreTooltip("version")}
         />
-
         <ContentRow
           title="Round:"
           value={transactionData.round}
@@ -67,8 +66,8 @@ export default function BlockMetadataOverviewTab({
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow
-          title="Gas Units:"
-          value={<GasValue gas={transactionData.gas_used} />}
+          title="Gas Used:"
+          value={renderGas(transactionData.gas_used)}
           tooltip={getLearnMoreTooltip("gas_used")}
         />
         <ContentRow
@@ -119,7 +118,7 @@ export default function BlockMetadataOverviewTab({
           title={"Event Root Hash:"}
           value={transactionData.event_root_hash}
         />
-        <Row title={"Gas Units:"} value={renderGas(transactionData.gas_used)} />
+        <Row title={"Gas Used:"} value={renderGas(transactionData.gas_used)} />
         <Row title={"VM Status:"} value={transactionData.vm_status} />
         <Row
           title={"Accumulator Root Hash:"}
