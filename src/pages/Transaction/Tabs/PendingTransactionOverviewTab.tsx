@@ -12,6 +12,7 @@ import {getLearnMoreTooltip} from "../helpers";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
+import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 
 type PendingTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -54,7 +55,7 @@ export default function PendingTransactionOverviewTab({
         />
         <ContentRow
           title="Gas Unit Price:"
-          value={<GasValue gas={transactionData.gas_unit_price} />}
+          value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
           tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
         <ContentRow

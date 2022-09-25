@@ -74,20 +74,20 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("gas_used")}
         />
         <ContentRow
+          title="Max Gas:"
+          value={<GasValue gas={transactionData.max_gas_amount} />}
+          tooltip={getLearnMoreTooltip("max_gas_amount")}
+        />
+        <ContentRow
           title="Gas Unit Price:"
           value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
           tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
         <ContentRow
-          title="Gas Spent:"
+          title="Gas Fee:"
           value={<APTCurrencyValue
             amount={(BigInt(transactionData.gas_unit_price) * BigInt(transactionData.gas_used)).toString()} />}
           tooltip={getLearnMoreTooltip("gas_spent")}
-        />
-        <ContentRow
-          title="Max Gas:"
-          value={<APTCurrencyValue amount={transactionData.max_gas_amount} />}
-          tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
           title="VM Status:"
@@ -147,18 +147,19 @@ export default function UserTransactionOverviewTab({
         />
         <Row title={"Gas Units:"} value={renderGas(transactionData.gas_used)} />
         <Row
+          title={"Max Gas:"}
+          value={<GasValue gas={transactionData.max_gas_amount} />}
+        />
+        <Row
           title={"Gas Unit Price:"}
           value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
         />
         <Row
-          title={"Gas Spent:"}
+          title={"Gas Fee:"}
           value={<APTCurrencyValue
             amount={(BigInt(transactionData.gas_unit_price) * BigInt(transactionData.gas_used)).toString()} />}
         />
-        <Row
-          title={"Max Gas:"}
-          value={<APTCurrencyValue amount={transactionData.max_gas_amount} />}
-        />
+
         <Row title={"VM Status:"} value={transactionData.vm_status} />
         <Row
           title={"Signature:"}
