@@ -1,9 +1,9 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import {parseTimestamp, timestampDisplay} from "../utils";
-import NumberFormat from "react-number-format";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
+import GasValue from "../../components/IndividualPageContent/ContentValue/GasValue";
 import Title from "../../components/Title";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -29,7 +29,7 @@ export function renderTimestamp(timestamp?: string) {
 }
 
 export function renderGas(gas: string) {
-  return <NumberFormat value={gas} displayType="text" thousandSeparator />;
+  return <GasValue gas={gas} />;
 }
 
 export function renderSuccess(success: boolean) {

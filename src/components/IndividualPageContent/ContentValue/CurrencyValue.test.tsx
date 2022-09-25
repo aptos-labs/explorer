@@ -1,10 +1,12 @@
 import {expect, it} from "@jest/globals";
-
-import {getFormattedBalanceStr} from "./Balance";
+import {getFormattedBalanceStr} from "./CurrencyValue";
 
 it("formats balances correctly", () => {
   expect(getFormattedBalanceStr("0")).toEqual("0");
   expect(getFormattedBalanceStr("1")).toEqual("0.00000001");
+  expect(getFormattedBalanceStr("100")).toEqual("0.000001");
+  expect(getFormattedBalanceStr("10000")).toEqual("0.0001");
+  expect(getFormattedBalanceStr("10000000")).toEqual("0.1");
   expect(getFormattedBalanceStr("100000000")).toEqual("1");
   expect(getFormattedBalanceStr("110000000")).toEqual("1.1");
   expect(getFormattedBalanceStr("110100000")).toEqual("1.101");

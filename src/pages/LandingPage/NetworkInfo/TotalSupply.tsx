@@ -1,6 +1,6 @@
 import React from "react";
 import {useGetCoinSupplyLimit} from "../../../api/hooks/useGetCoinSupplyLimit";
-import {getFormattedBalanceStr} from "../../Account/AccountInfo/Balance";
+import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import MetricCard from "./MetricCard";
 
 export default function TotalSupply() {

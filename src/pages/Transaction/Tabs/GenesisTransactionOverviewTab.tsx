@@ -8,7 +8,6 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import TransactionStatus from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
-import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 
 type GenesisTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -36,7 +35,7 @@ export default function GenesisTransactionOverviewTab({
 
         <ContentRow
           title="Gas Used:"
-          value={<GasValue gas={transactionData.gas_used} />}
+          value={renderGas(transactionData.gas_used)}
           tooltip={getLearnMoreTooltip("gas_used")}
         />
         <ContentRow
