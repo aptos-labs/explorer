@@ -42,7 +42,7 @@ export default function BlockMetadataOverviewTab({
               type={HashType.ACCOUNT}
             />
           }
-          tooltip={getLearnMoreTooltip("Proposer")}
+          tooltip={getLearnMoreTooltip("proposer")}
         />
         <ContentRow
           title="ID:"

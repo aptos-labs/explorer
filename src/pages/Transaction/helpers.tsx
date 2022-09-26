@@ -95,6 +95,8 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
           link="https://aptos.dev/reference/glossary/#merkle-accumulator"
         />
       );
+    case "block_height":
+      return <LearnMoreTooltipPlaceholder />;
     default:
       return <LearnMoreTooltipPlaceholder />;
   }
