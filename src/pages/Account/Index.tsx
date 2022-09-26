@@ -2,11 +2,19 @@ import {useParams} from "react-router-dom";
 import {Stack, Grid} from "@mui/material";
 import React from "react";
 import IndividualPageHeader from "../../components/IndividualPageHeader";
-import AccountTabs from "./Tabs";
+import AccountTabs, {TabValue} from "./Tabs";
 import AccountTitle from "./Title";
 import AccountInfo from "./AccountInfo/Index";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import HeaderSearch from "../layout/Search/Index";
+
+const TAB_VALUES_IN_DEV: TabValue[] = [
+  "transactions",
+  "tokens",
+  "resources",
+  "modules",
+  "info",
+];
 
 export default function AccountPage() {
   const inDev = useGetInDevMode();
@@ -23,7 +31,10 @@ export default function AccountPage() {
         <Stack direction="column" spacing={4} marginTop={2}>
           <AccountTitle address={address} />
           <AccountInfo address={address} />
-          <AccountTabs address={address} />
+          <AccountTabs
+            address={address}
+            tabValues={inDev ? TAB_VALUES_IN_DEV : undefined}
+          />
         </Stack>
       </Grid>
     </Grid>
