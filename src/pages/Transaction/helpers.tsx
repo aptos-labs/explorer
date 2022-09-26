@@ -33,6 +33,8 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
           link="https://aptos.dev/reference/glossary/#sequence-number"
         />
       );
+    case "epoch":
+      return <LearnMoreTooltipPlaceholder />;
     case "round":
       return (
         <LearnMoreTooltip

@@ -55,6 +55,11 @@ export default function BlockMetadataOverviewTab({
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
+          title="Epoch:"
+          value={transactionData.epoch}
+          tooltip={getLearnMoreTooltip("epoch")}
+        />
+        <ContentRow
           title="Round:"
           value={transactionData.round}
           tooltip={getLearnMoreTooltip("round")}
