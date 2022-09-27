@@ -26,3 +26,6 @@ export const teal = {
   800: "#005c4b",
   900: "#002e26",
 };
+
+export const aptosColor = "#02858D";
+export const aptosColorOpacity = "rgba(2,133,141,0.2)";

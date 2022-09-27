@@ -1,14 +1,34 @@
 import React from "react";
-import {Paper} from "@mui/material";
+import {Box, BoxProps, useTheme} from "@mui/material";
+import {grey} from "../../../themes/colors/aptosColorPalette";
 
-type CardProps = {
+interface CardProps extends BoxProps {
+  effectColor?: string;
   children: React.ReactNode;
-};
+}
 
-export default function Card({children, ...props}: CardProps) {
+export default function Card({
+  effectColor: customizedEffectColor,
+  children,
+  ...props
+}: CardProps) {
+  const theme = useTheme();
+  const effectColor =
+    customizedEffectColor ??
+    (theme.palette.mode === "dark" ? grey[800] : grey[100]);
+
   return (
-    <Paper elevation={3} sx={{height: 120, padding: 2}} {...props}>
+    <Box
+      sx={{
+        padding: 2,
+        border: 1,
+        borderRadius: 1,
+        borderColor: effectColor,
+        boxShadow: `0px 0px 5px 1px ${effectColor}`,
+      }}
+      {...props}
+    >
       {children}
-    </Paper>
+    </Box>
   );
 }
