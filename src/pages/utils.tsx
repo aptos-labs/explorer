@@ -97,7 +97,7 @@ export async function doTransaction(
   return transactionRes;
 }
 
-function truncateMiddle(
+function truncate(
   str: string,
   frontLen: number,
   backLen: number,
@@ -131,7 +131,11 @@ function truncateMiddle(
 }
 
 export function truncateAddress(accountAddress: string) {
-  return truncateMiddle(accountAddress, 4, 4, "…");
+  return truncate(accountAddress, 6, 4, "…");
+}
+
+export function truncateAddressMiddle(accountAddress: string) {
+  return truncate(accountAddress, 20, 20, "…");
 }
 
 export function isValidAccountAddress(accountAddr: string): boolean {

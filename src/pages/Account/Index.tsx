@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {Stack, Grid} from "@mui/material";
+import {Grid} from "@mui/material";
 import React from "react";
 import IndividualPageHeader from "../../components/IndividualPageHeader";
 import AccountTabs, {TabValue} from "./Tabs";
@@ -7,6 +7,7 @@ import AccountTitle from "./Title";
 import AccountInfo from "./AccountInfo/Index";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import HeaderSearch from "../layout/Search/Index";
+import BalanceCard from "./BalanceCard";
 
 const TAB_VALUES_IN_DEV: TabValue[] = [
   "transactions",
@@ -26,16 +27,33 @@ export default function AccountPage() {
 
   return (
     <Grid container spacing={1}>
-      {inDev ? <HeaderSearch /> : <IndividualPageHeader />}
-      <Grid item xs={12}>
-        <Stack direction="column" spacing={4} marginTop={2}>
-          <AccountTitle address={address} />
-          <AccountInfo address={address} />
-          <AccountTabs
-            address={address}
-            tabValues={inDev ? TAB_VALUES_IN_DEV : undefined}
-          />
-        </Stack>
+      <Grid item xs={12} md={12} lg={12}>
+        {inDev ? <HeaderSearch /> : <IndividualPageHeader />}
+      </Grid>
+      {inDev ? (
+        <>
+          <Grid item xs={12} md={8} lg={9} alignSelf="center">
+            <AccountTitle address={address} />
+          </Grid>
+          <Grid item xs={12} md={4} lg={3} marginTop={{md: 0, xs: 1}}>
+            <BalanceCard address={address} />
+          </Grid>
+        </>
+      ) : (
+        <>
+          <Grid item xs={12} md={12} lg={12}>
+            <AccountTitle address={address} />
+          </Grid>
+          <Grid item xs={12} md={12} lg={12} marginTop={2}>
+            <AccountInfo address={address} />
+          </Grid>
+        </>
+      )}
+      <Grid item xs={12} md={12} lg={12} marginTop={4}>
+        <AccountTabs
+          address={address}
+          tabValues={inDev ? TAB_VALUES_IN_DEV : undefined}
+        />
       </Grid>
     </Grid>
   );

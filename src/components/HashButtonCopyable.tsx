@@ -1,9 +1,9 @@
 import React, {useState} from "react";
-import {Box, Button, Tooltip, useTheme} from "@mui/material";
+import {Box, Button, Tooltip, Typography, useTheme} from "@mui/material";
 import {grey} from "../themes/colors/aptosColorPalette";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {truncateAddress} from "../pages/utils";
+import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 
 const TOOLTIP_TIME = 2000; // 2s
 
@@ -14,6 +14,7 @@ interface HashButtonCopyableProps {
 export default function HashButtonCopyable({hash}: HashButtonCopyableProps) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
+  const isOnSmallerScreen = !useMediaQuery(theme.breakpoints.up("lg"));
 
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
@@ -44,7 +45,7 @@ export default function HashButtonCopyable({hash}: HashButtonCopyableProps) {
           }`,
         },
       }}
-      size="large"
+      size="small"
       onClick={copyAddress}
       variant="contained"
       endIcon={
@@ -54,7 +55,13 @@ export default function HashButtonCopyable({hash}: HashButtonCopyableProps) {
         />
       }
     >
-      {isOnMobile ? truncateAddress(hash) : hash}
+      <Typography variant="body2">
+        {isOnMobile
+          ? truncateAddress(hash)
+          : isOnSmallerScreen
+          ? truncateAddressMiddle(hash)
+          : hash}
+      </Typography>
     </Button>
   );
 
