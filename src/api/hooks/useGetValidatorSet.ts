@@ -7,7 +7,7 @@ interface ValidatorSetData {
   total_voting_power: string;
 }
 
-interface Validator {
+export interface Validator {
   addr: string;
   config: {
     consensus_pubkey: string;
@@ -15,6 +15,7 @@ interface Validator {
     network_addresses: string;
     validator_index: string;
   };
+  voting_power: string;
 }
 
 export function useGetValidatorSet() {
@@ -23,6 +24,7 @@ export function useGetValidatorSet() {
   const [numberOfActiveValidators, setNumberOfActiveValidators] = useState<
     number | null
   >(null);
+  const [activeValidators, setActiveValidators] = useState<Validator[]>([]);
 
   const {accountResource: validatorSet} = useGetAccountResource(
     "0x1",
@@ -34,8 +36,9 @@ export function useGetValidatorSet() {
       const data = validatorSet.data as ValidatorSetData;
       setTotalVotingPower(data.total_voting_power);
       setNumberOfActiveValidators(data.active_validators.length);
+      setActiveValidators(data.active_validators);
     }
   }, [validatorSet?.data, state]);
 
-  return {totalVotingPower, numberOfActiveValidators};
+  return {totalVotingPower, numberOfActiveValidators, activeValidators};
 }
