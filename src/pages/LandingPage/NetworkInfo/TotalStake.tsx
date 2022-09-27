@@ -13,7 +13,8 @@ export default function TotalStake() {
           ? getFormattedBalanceStr(totalVotingPower.toString(), undefined, 3)
           : "-"
       }
-      label="Total Active Stake"
+      label="Actively Staked"
+      tooltipText="Actively Staked refers to the amount of APT tokens currently held in staking accounts."
     />
   );
 }

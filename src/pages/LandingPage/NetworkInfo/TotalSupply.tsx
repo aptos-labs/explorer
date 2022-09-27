@@ -14,6 +14,7 @@ export default function TotalSupply() {
           : "-"
       }
       label="Total Circulating Supply"
+      tooltipText="Total Circulating Supply refers to the amount of APT tokens flowing through the Aptos network."
     />
   );
 }

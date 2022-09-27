@@ -4,7 +4,9 @@ import {TokensTable} from "../Components/TokensTable";
 
 const TOKENS_QUERY = gql`
   query TokensData($owner_address: String) {
-    current_token_ownerships(where: {owner_address: {_eq: $owner_address}}) {
+    current_token_ownerships(
+      where: {owner_address: {_eq: $owner_address}, amount: {_gt: "0"}}
+    ) {
       token_data_id_hash
       name
       collection_name

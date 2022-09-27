@@ -4,6 +4,7 @@ import TotalSupply from "./TotalSupply";
 import TotalStake from "./TotalStake";
 import TPS from "./TPS";
 import ActiveValidators from "./ActiveValidators";
+import TotalTransactions from "./TotalTransactions";
 
 export default function NetworkInfo() {
   return (
@@ -13,6 +14,9 @@ export default function NetworkInfo() {
       direction="row"
       sx={{alignContent: "flex-start", mb: 6}}
     >
+      <Grid item xs={12} md={12} lg={12}>
+        <TotalTransactions />
+      </Grid>
       <Grid item xs={12} md={6} lg={3}>
         <TotalSupply />
       </Grid>
