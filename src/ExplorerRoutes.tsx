@@ -10,6 +10,7 @@ import {TransactionsPage} from "./pages/Transactions/Transactions";
 import {GovernancePage} from "./pages/Governance/Proposals/Index";
 import {ProposalPage} from "./pages/Governance/Proposal/Index";
 import {CreateProposalPage} from "./pages/Governance/CreateProposal/Index";
+import {ValidatorsPage} from "./pages/Validators/Index";
 import {Staking} from "./pages/Governance/Stake/Index";
 import BlockPage from "./pages/Block/Index";
 import TokenPage from "./pages/Token/Index";
@@ -25,6 +26,7 @@ export default function ExplorerRoutes() {
         <Route path="/proposals/:id" element={<ProposalPage />} />
         <Route path="/proposals/create" element={<CreateProposalPage />} />
         <Route path="/proposals/staking" element={<Staking />} />
+        <Route path="/validators" element={<ValidatorsPage />} />
         <Route path="/txn">
           <Route path=":txnHashOrVersion" element={<TransactionPage />} />
         </Route>
