@@ -7,6 +7,15 @@ import TimestampValue from "../../../components/IndividualPageContent/ContentVal
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 import HashButton, {HashType} from "../../../components/HashButton";
 
+function isBlockMetadataTransaction(
+  txn: Types.Transaction,
+): txn is Types.Transaction_BlockMetadataTransaction {
+  return (
+    (txn as Types.Transaction_BlockMetadataTransaction).type ===
+    "block_metadata_transaction"
+  );
+}
+
 function VersionValue({data}: {data: Types.Block}) {
   const {first_version, last_version} = data;
   return (
@@ -41,6 +50,11 @@ function BlockMetadataRows({
         tooltip={getLearnMoreTooltip("proposer")}
       />
       <ContentRow
+        title="Epoch:"
+        value={txn.epoch}
+        tooltip={getLearnMoreTooltip("epoch")}
+      />
+      <ContentRow
         title="Round:"
         value={txn.round}
         tooltip={getLearnMoreTooltip("round")}
@@ -56,9 +70,7 @@ type OverviewTabProps = {
 export default function OverviewTab({data}: OverviewTabProps) {
   const blockTxn: Types.Transaction | undefined = (
     data.transactions ?? []
-  ).find((txn) => {
-    return txn.type === "block_metadata_transaction";
-  });
+  ).find(isBlockMetadataTransaction);
 
   return (
     <Box marginBottom={3}>
