@@ -24,7 +24,7 @@ function NavButton({
       title={title}
       sx={{
         color: "inherit",
-        fontSize: {sm: ".875rem", md: "1rem"},
+        fontSize: "1rem",
       }}
     >
       {label}
@@ -55,10 +55,10 @@ export default function Nav() {
   return (
     <Box
       sx={{
-        display: {xs: "none", sm: "flex"},
+        display: {xs: "none", md: "flex"},
         alignItems: "center",
-        gap: {sm: 2, md: 4, lg: 8},
-        marginRight: {sm: "1rem", md: "2rem", lg: "3.5rem"},
+        gap: {md: 3, lg: 8},
+        marginRight: {md: "2rem", lg: "3.5rem"},
       }}
     >
       <NavButton
@@ -85,7 +85,7 @@ export default function Nav() {
             title="Aptos Governance"
             sx={{
               color: "inherit",
-              fontSize: {sm: ".875rem", md: "1rem"},
+              fontSize: "1rem",
             }}
           >
             Governance
