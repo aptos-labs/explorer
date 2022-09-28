@@ -11,8 +11,10 @@ import {useTheme} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import {useGetInDevMode} from "../api/hooks/useGetInDevMode";
 
 export default function NavMobile() {
+  const inDev = useGetInDevMode();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [governanceMenuOpen, setGovernanceMenuOpen] = useState<boolean>(false);
   const theme = useTheme();
@@ -61,58 +63,93 @@ export default function NavMobile() {
       >
         {menuOpen ? <CloseIcon /> : <HamburgerIcon />}
       </Button>
-      <Menu
-        anchorEl={menuAnchorEl}
-        open={menuOpen}
-        onClose={handleMenuClose}
-        MenuListProps={{
-          "aria-labelledby": "nav-mobile-button",
-          sx: {
-            minWidth: 240,
-            padding: "1rem",
-          },
-        }}
-        sx={{
-          marginTop: "1rem",
-          boxShadow: 0,
-          minWidth: "400px",
-          maxWidth: "none",
-        }}
-      >
-        <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
-          Transactions
-        </MenuItem>
-        <MenuItem
-          onClick={handleGovernanceClick}
-          sx={{display: "flex", justifyContent: "space-between"}}
+      {inDev ? (
+        <Menu
+          anchorEl={menuAnchorEl}
+          open={menuOpen}
+          onClose={handleMenuClose}
+          MenuListProps={{
+            "aria-labelledby": "nav-mobile-button",
+            sx: {
+              minWidth: 240,
+              padding: "1rem",
+            },
+          }}
+          sx={{
+            marginTop: "1rem",
+            boxShadow: 0,
+            minWidth: "400px",
+            maxWidth: "none",
+          }}
         >
-          Governance{" "}
-          {governanceMenuOpen ? (
-            <KeyboardArrowUpIcon />
-          ) : (
-            <KeyboardArrowDownIcon />
-          )}
-        </MenuItem>
-        {governanceMenuOpen && (
-          <Box
-            sx={{
-              paddingLeft: "1.5rem",
-            }}
-            aria-controls={governanceMenuOpen ? "nav-mobile-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={governanceMenuOpen ? "true" : undefined}
+          <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
+            Transactions
+          </MenuItem>
+
+          <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
+            Blocks
+          </MenuItem>
+          <MenuItem onClick={() => handleCloseAndNavigate("/Validators")}>
+            Validators
+          </MenuItem>
+          <MenuItem onClick={() => handleCloseAndNavigate("/tokens")}>
+            Tokens
+          </MenuItem>
+        </Menu>
+      ) : (
+        <Menu
+          anchorEl={menuAnchorEl}
+          open={menuOpen}
+          onClose={handleMenuClose}
+          MenuListProps={{
+            "aria-labelledby": "nav-mobile-button",
+            sx: {
+              minWidth: 240,
+              padding: "1rem",
+            },
+          }}
+          sx={{
+            marginTop: "1rem",
+            boxShadow: 0,
+            minWidth: "400px",
+            maxWidth: "none",
+          }}
+        >
+          <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
+            Transactions
+          </MenuItem>
+          <MenuItem
+            onClick={handleGovernanceClick}
+            sx={{display: "flex", justifyContent: "space-between"}}
           >
-            <MenuItem onClick={() => handleCloseAndNavigate("/proposals")}>
-              Proposals
-            </MenuItem>
-            <MenuItem
-              onClick={() => handleCloseAndNavigate("/proposals/staking")}
+            Governance{" "}
+            {governanceMenuOpen ? (
+              <KeyboardArrowUpIcon />
+            ) : (
+              <KeyboardArrowDownIcon />
+            )}
+          </MenuItem>
+          {governanceMenuOpen && (
+            <Box
+              sx={{
+                paddingLeft: "1.5rem",
+              }}
+              aria-controls={governanceMenuOpen ? "nav-mobile-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={governanceMenuOpen ? "true" : undefined}
             >
-              Staking
-            </MenuItem>
-          </Box>
-        )}
-      </Menu>
+              <MenuItem onClick={() => handleCloseAndNavigate("/proposals")}>
+                Proposals
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleCloseAndNavigate("/proposals/staking")}
+              >
+                Staking
+              </MenuItem>
+            </Box>
+          )}
+        </Menu>
+      )}
     </Box>
   );
 }
