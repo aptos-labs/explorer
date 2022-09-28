@@ -1,10 +1,9 @@
 import * as React from "react";
 import {Types} from "aptos";
 import {Stack, Box} from "@mui/material";
-import {renderGas, renderTimestamp} from "../../Transactions/helpers";
 import Row from "./Components/Row";
 import HashButton, {HashType} from "../../../components/HashButton";
-import {renderDebug} from "../../utils";
+import {getFormattedTimestamp, renderDebug} from "../../utils";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
@@ -12,6 +11,7 @@ import {getLearnMoreTooltip} from "../helpers";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 
 type PendingTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -49,7 +49,7 @@ export default function PendingTransactionOverviewTab({
         />
         <ContentRow
           title="Max Gas Limit:"
-          value={renderGas(transactionData.max_gas_amount)}
+          value={<GasValue gas={transactionData.max_gas_amount} />}
           tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
@@ -79,15 +79,17 @@ export default function PendingTransactionOverviewTab({
         />
         <Row
           title={"Expiration Timestamp:"}
-          value={renderTimestamp(transactionData.expiration_timestamp_secs)}
+          value={getFormattedTimestamp(
+            transactionData.expiration_timestamp_secs,
+          )}
         />
         <Row
           title={"Max Gas Limit:"}
-          value={renderGas(transactionData.max_gas_amount)}
+          value={<GasValue gas={transactionData.max_gas_amount} />}
         />
         <Row
           title={"Gas Unit Price:"}
-          value={renderGas(transactionData.gas_unit_price)}
+          value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
         />
         <Row
           title={"Signature:"}

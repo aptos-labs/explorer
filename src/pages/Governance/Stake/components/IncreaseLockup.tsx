@@ -3,7 +3,7 @@ import {Grid, Button, FormControl, Tooltip, Typography} from "@mui/material";
 import TransactionResponseSnackbar from "../../components/snackbar/TransactionResponseSnackbar";
 import LoadingModal from "../../components/LoadingModal";
 import useSubmitIncreaseLock from "../../hooks/useSubmitIncreaseLock";
-import {renderTimestamp} from "../../../Transactions/helpers";
+import {getFormattedTimestamp} from "../../../utils";
 
 type IncreaseLockupProps = {
   isWalletConnected: boolean;
@@ -50,7 +50,7 @@ export function IncreaseLockup({
           <></>
           <Grid item xs={12} sm={8}>
             <Typography variant="subtitle1">
-              locked until: {renderTimestamp(lockedUntilSec)}
+              locked until: {getFormattedTimestamp(lockedUntilSec)}
             </Typography>
           </Grid>
           <Grid item xs={12} sm={4}>

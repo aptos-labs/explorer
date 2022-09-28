@@ -1,6 +1,6 @@
 import React from "react";
 import {Alert} from "@mui/material";
-import {TransactionsTable} from "../../../components/TransactionsTable";
+import TransactionsTable from "../../Transactions/TransactionsTable";
 import Error from "../Error";
 import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
 

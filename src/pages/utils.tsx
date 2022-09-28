@@ -148,3 +148,12 @@ export function isHex(text: string) {
   // if it's hex, and is <= (64 + 2 for 0x) char long
   return text.startsWith("0x") && text.length <= 66;
 }
+
+export function getFormattedTimestamp(timestamp?: string): string {
+  if (!timestamp || timestamp === "0") return "-";
+
+  const moment = parseTimestamp(timestamp);
+  const timestamp_display = timestampDisplay(moment);
+
+  return timestamp_display.local_formatted;
+}

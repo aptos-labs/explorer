@@ -1,7 +1,9 @@
 import React from "react";
-import {Stack, Typography} from "@mui/material";
+import {Box, Stack, Typography} from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 
 // TODO: unify the colors
 const SUCCESS_COLOR = "#00BFA5";
@@ -9,11 +11,11 @@ const SUCCESS_BACKGROUND_COLOR = "rgba(0,191,165,0.1)";
 const ERROR_COLOR = "#F97373";
 const ERROR_BACKGROUND_COLOR = "rgba(249,115,115,0.1)";
 
-type TransactionStatusProps = {
+type Props = {
   success: boolean;
 };
 
-export default function TransactionStatus({success}: TransactionStatusProps) {
+export function TransactionStatus({success}: Props) {
   return success ? (
     <Stack
       direction="row"
@@ -58,5 +60,27 @@ export default function TransactionStatus({success}: TransactionStatusProps) {
         Fail
       </Typography>
     </Stack>
+  );
+}
+
+export function TableTransactionStatus({success}: Props) {
+  return success ? (
+    <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+      <CheckCircleOutlinedIcon
+        fontSize="small"
+        color="success"
+        titleAccess="Executed successfully"
+      />
+      Success
+    </Box>
+  ) : (
+    <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+      <ErrorOutlineOutlinedIcon
+        fontSize="small"
+        color="error"
+        titleAccess="Failed to Execute"
+      />
+      Fail
+    </Box>
   );
 }

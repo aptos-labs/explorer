@@ -1,7 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {Grid, Typography, Stack, Divider, Box} from "@mui/material";
-import {renderTimestamp} from "../../../pages/Transactions/helpers";
-import {getProposalTimeRemaining, ProposalTimeRemaining} from "../../utils";
+import {
+  getFormattedTimestamp,
+  getProposalTimeRemaining,
+  ProposalTimeRemaining,
+} from "../../utils";
 import {Proposal} from "../Types";
 import {primaryColor} from "../constants";
 import PersonIcon from "@mui/icons-material/Person";
@@ -51,7 +54,7 @@ function ExecutionTimeComponent(proposal: Proposal) {
     <Stack direction="row" sx={{color: SECONDARY_TEXT_COLOR}}>
       <AccessTimeIcon fontSize="small" sx={{mr: 1}} />
       <Typography variant="body2">
-        {renderTimestamp(proposal.resolution_time_secs)}
+        {getFormattedTimestamp(proposal.resolution_time_secs)}
       </Typography>
     </Stack>
   );
@@ -121,9 +124,9 @@ function ProposerAndTimeComponent({
         VOTING PERIOD:
       </Typography>
       <Typography variant="body2" color={SECONDARY_TEXT_COLOR}>
-        {renderTimestamp(proposal.creation_time_secs)}
+        {getFormattedTimestamp(proposal.creation_time_secs)}
         {" - "}
-        {renderTimestamp(proposal.expiration_secs)}
+        {getFormattedTimestamp(proposal.expiration_secs)}
       </Typography>
     </Stack>
   );

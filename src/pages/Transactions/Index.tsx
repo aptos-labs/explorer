@@ -1,6 +1,5 @@
 import React from "react";
 import {useQuery, UseQueryResult} from "react-query";
-import Button from "@mui/material/Button";
 import {Types} from "aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
 import {useGlobalState} from "../../GlobalState";
@@ -9,14 +8,13 @@ import * as RRD from "react-router-dom";
 import {useSearchParams} from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import {Pagination, PaginationItem, Stack} from "@mui/material";
-import {TransactionsTable} from "../../components/TransactionsTable";
+import TransactionsTable from "./TransactionsTable";
 import HeadingSub from "../../components/HeadingSub";
 import HeaderSearch from "../layout/Search/Index";
 import Typography from "@mui/material/Typography";
 import DividerHero from "../../components/DividerHero";
 
-const PREVIEW_LIMIT = 10;
-const MAIN_LIMIT = 20;
+const LIMIT = 20;
 
 function maxStart(maxVersion: number, limit: number) {
   return 1 + maxVersion - limit;
@@ -68,44 +66,13 @@ function RenderPagination({
   );
 }
 
-function RenderTransactionContent({
-  data,
-}: UseQueryResult<Array<Types.Transaction>>) {
+function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
   if (!data) {
     // TODO: error handling!
     return null;
   }
 
   return <TransactionsTable transactions={data} />;
-}
-
-export function TransactionsPreview() {
-  const [state, _] = useGlobalState();
-  const limit = PREVIEW_LIMIT;
-  const result = useQuery(["transactions", {limit}, state.network_value], () =>
-    getTransactions({limit}, state.network_value),
-  );
-
-  return (
-    <>
-      <Stack spacing={2}>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
-          <RenderTransactionContent {...result} />
-        </Box>
-
-        <Box sx={{display: "flex", justifyContent: "center"}}>
-          <Button
-            component={RRD.Link}
-            to="/transactions"
-            variant="primary"
-            sx={{margin: "0 auto", mt: 6}}
-          >
-            View all Transactions
-          </Button>
-        </Box>
-      </Stack>
-    </>
-  );
 }
 
 function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
@@ -120,7 +87,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
     return <>No maxVersion</>;
   }
 
-  const limit = MAIN_LIMIT;
+  const limit = LIMIT;
   const [state, _setState] = useGlobalState();
   const [searchParams, _setSearchParams] = useSearchParams();
 
@@ -143,7 +110,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
           Transactions
         </Typography>
         <Box sx={{width: "auto", overflowX: "auto"}}>
-          <RenderTransactionContent {...result} />
+          <TransactionContent {...result} />
         </Box>
 
         <Box sx={{display: "flex", justifyContent: "center"}}>
@@ -160,7 +127,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
   );
 }
 
-export function TransactionsPage() {
+export default function TransactionsPage() {
   const [state, _] = useGlobalState();
 
   const result = useQuery(

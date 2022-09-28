@@ -11,7 +11,6 @@ import {
   TableRow,
   Grid,
 } from "@mui/material";
-import {renderTimestamp} from "../../Transactions/helpers";
 import {assertNever} from "../../../utils";
 import {Proposal} from "../Types";
 import {useGetProposal} from "../hooks/useGetProposal";
@@ -22,6 +21,7 @@ import {teal} from "../../../themes/colors/aptosColorPalette";
 import StatusIcon from "../components/StatusIcon";
 import ProposalStatusTooltip from "../components/ProposalStatusTooltip";
 import InfoIcon from "@mui/icons-material/Info";
+import {getFormattedTimestamp} from "../../utils";
 
 const MAX_TITLE_WIDTH = 400;
 
@@ -74,7 +74,7 @@ function VotingStartDateCell({proposal}: ProposalCellProps) {
         textAlign: "left",
       }}
     >
-      {renderTimestamp(proposal.creation_time_secs)}
+      {getFormattedTimestamp(proposal.creation_time_secs)}
     </TableCell>
   );
 }
@@ -86,7 +86,7 @@ function VotingEndDateCell({proposal}: ProposalCellProps) {
         textAlign: "left",
       }}
     >
-      {renderTimestamp(proposal.expiration_secs)}
+      {getFormattedTimestamp(proposal.expiration_secs)}
     </TableCell>
   );
 }
@@ -98,7 +98,7 @@ function ExecutionDateCell({proposal}: ProposalCellProps) {
         textAlign: "right",
       }}
     >
-      {renderTimestamp(proposal.resolution_time_secs)}
+      {getFormattedTimestamp(proposal.resolution_time_secs)}
     </TableCell>
   );
 }
