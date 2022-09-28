@@ -1,6 +1,6 @@
 import React from "react";
 import {Types} from "aptos";
-import {TransactionsTable} from "../../../components/TransactionsTable";
+import TransactionsTable from "../../Transactions/TransactionsTable";
 
 type TransactionsTabProps = {
   data: Types.Block;

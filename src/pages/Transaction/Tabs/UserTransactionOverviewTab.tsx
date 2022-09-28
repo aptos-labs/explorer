@@ -1,22 +1,21 @@
 import * as React from "react";
 import {Types} from "aptos";
 import {Stack, Box} from "@mui/material";
-import {renderDebug} from "../../utils";
-import {
-  renderGas,
-  renderSuccess,
-  renderTimestamp,
-} from "../../Transactions/helpers";
+import {getFormattedTimestamp, renderDebug} from "../../utils";
 import Row from "./Components/Row";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import TransactionStatus from "../../../components/TransactionStatus";
+import {
+  TableTransactionStatus,
+  TransactionStatus,
+} from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 
 type UserTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -69,12 +68,12 @@ export default function UserTransactionOverviewTab({
         />
         <ContentRow
           title="Gas Used:"
-          value={renderGas(transactionData.gas_used)}
+          value={<GasValue gas={transactionData.gas_used} />}
           tooltip={getLearnMoreTooltip("gas_used")}
         />
         <ContentRow
           title="Max Gas Limit:"
-          value={renderGas(transactionData.max_gas_amount)}
+          value={<GasValue gas={transactionData.max_gas_amount} />}
           tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
@@ -138,10 +137,15 @@ export default function UserTransactionOverviewTab({
         />
         <Row
           title={"Expiration Timestamp:"}
-          value={renderTimestamp(transactionData.expiration_timestamp_secs)}
+          value={getFormattedTimestamp(
+            transactionData.expiration_timestamp_secs,
+          )}
         />
         <Row title={"Version:"} value={transactionData.version} />
-        <Row title={"Status:"} value={renderSuccess(transactionData.success)} />
+        <Row
+          title={"Status:"}
+          value={<TableTransactionStatus success={transactionData.success} />}
+        />
         <Row
           title={"State Change Hash:"}
           value={transactionData.state_change_hash}
@@ -150,10 +154,13 @@ export default function UserTransactionOverviewTab({
           title={"Event Root Hash:"}
           value={transactionData.event_root_hash}
         />
-        <Row title={"Gas Used:"} value={renderGas(transactionData.gas_used)} />
+        <Row
+          title={"Gas Used:"}
+          value={<GasValue gas={transactionData.gas_used} />}
+        />
         <Row
           title={"Max Gas Limit:"}
-          value={renderGas(transactionData.max_gas_amount)}
+          value={<GasValue gas={transactionData.max_gas_amount} />}
         />
         <Row
           title={"Gas Unit Price:"}

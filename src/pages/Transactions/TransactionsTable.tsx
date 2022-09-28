@@ -9,18 +9,16 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import {useNavigate} from "react-router-dom";
-import GeneralTableRow from "../components/GeneralTableRow";
-import GeneralTableHeaderCell from "../components/GeneralTableHeaderCell";
-import HashButton, {HashType} from "./HashButton";
+import GeneralTableRow from "../../components/GeneralTableRow";
+import GeneralTableHeaderCell from "../../components/GeneralTableHeaderCell";
+import HashButton, {HashType} from "../../components/HashButton";
 
 import {Types} from "aptos";
-import {
-  renderGas,
-  renderSuccess,
-  renderTimestamp,
-  renderTransactionType,
-} from "../pages/Transactions/helpers";
-import {assertNever} from "../utils";
+import {assertNever} from "../../utils";
+import GasValue from "../../components/IndividualPageContent/ContentValue/GasValue";
+import {TableTransactionType} from "../../components/TransactionType";
+import {TableTransactionStatus} from "../../components/TransactionStatus";
+import {getFormattedTimestamp} from "../utils";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -29,7 +27,9 @@ type TransactionCellProps = {
 function TransactionStatusCell({transaction}: TransactionCellProps) {
   return (
     <TableCell sx={{textAlign: "left"}}>
-      {"success" in transaction && renderSuccess(transaction.success)}
+      {"success" in transaction && (
+        <TableTransactionStatus success={transaction.success} />
+      )}
     </TableCell>
   );
 }
@@ -37,7 +37,7 @@ function TransactionStatusCell({transaction}: TransactionCellProps) {
 function TransactionTimestampCell({transaction}: TransactionCellProps) {
   const timestamp =
     "timestamp" in transaction ? (
-      renderTimestamp(transaction.timestamp)
+      getFormattedTimestamp(transaction.timestamp)
     ) : (
       // Genesis transaction
       <Typography variant="subtitle2" align="center">
@@ -49,7 +49,9 @@ function TransactionTimestampCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionTypeCell({transaction}: TransactionCellProps) {
-  return <TableCell>{renderTransactionType(transaction.type)}</TableCell>;
+  return (
+    <TableCell>{<TableTransactionType type={transaction.type} />}</TableCell>
+  );
 }
 
 function TransactionVersionCell({transaction}: TransactionCellProps) {
@@ -70,7 +72,7 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
 function TransactionGasCell({transaction}: TransactionCellProps) {
   return (
     <TableCell sx={{textAlign: "right"}}>
-      {"gas_used" in transaction && renderGas(transaction.gas_used)}
+      {"gas_used" in transaction && <GasValue gas={transaction.gas_used} />}
     </TableCell>
   );
 }
@@ -172,7 +174,7 @@ type Props = {
   columns?: TransactionColumn[];
 };
 
-export function TransactionsTable({
+export default function TransactionsTable({
   transactions,
   columns = DEFAULT_COLUMNS,
 }: Props) {

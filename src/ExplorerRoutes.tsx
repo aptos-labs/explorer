@@ -6,7 +6,7 @@ import ExplorerLayout from "./pages/layout";
 import TransactionPage from "./pages/Transaction/Index";
 import AccountPage from "./pages/Account/Index";
 import {NodeCheckerPage} from "./pages/NodeChecker/Index";
-import {TransactionsPage} from "./pages/Transactions/Transactions";
+import TransactionsPage from "./pages/Transactions/Index";
 import {GovernancePage} from "./pages/Governance/Proposals/Index";
 import {ProposalPage} from "./pages/Governance/Proposal/Index";
 import {CreateProposalPage} from "./pages/Governance/CreateProposal/Index";
@@ -14,7 +14,7 @@ import {ValidatorsPage} from "./pages/Validators/Index";
 import {Staking} from "./pages/Governance/Stake/Index";
 import BlockPage from "./pages/Block/Index";
 import TokenPage from "./pages/Token/Index";
-import {BlocksPage} from "./pages/Blocks/Index";
+import BlocksPage from "./pages/Blocks/Index";
 
 export default function ExplorerRoutes() {
   return (

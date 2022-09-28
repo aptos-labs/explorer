@@ -1,5 +1,5 @@
 import React from "react";
-import {TransactionsTable} from "../../../components/TransactionsTable";
+import TransactionsTable from "../../Transactions/TransactionsTable";
 
 type TransactionsTabProps = {
   // TODO: add graphql data typing

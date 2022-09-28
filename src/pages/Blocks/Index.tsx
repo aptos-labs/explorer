@@ -6,7 +6,7 @@ import LoadingModal from "../Governance/components/LoadingModal";
 
 const BLOCKS_COUNT = 30;
 
-export function BlocksPage() {
+export default function BlocksPage() {
   const {recentBlocks, isLoading} = useGetMostRecentBlocks(BLOCKS_COUNT);
 
   return (

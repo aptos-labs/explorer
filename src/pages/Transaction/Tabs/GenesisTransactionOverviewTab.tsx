@@ -1,13 +1,16 @@
 import * as React from "react";
 import {Types} from "aptos";
 import {Stack, Box} from "@mui/material";
-import {renderGas, renderSuccess} from "../../Transactions/helpers";
 import Row from "./Components/Row";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
-import TransactionStatus from "../../../components/TransactionStatus";
+import {
+  TableTransactionStatus,
+  TransactionStatus,
+} from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
+import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 
 type GenesisTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -32,10 +35,9 @@ export default function GenesisTransactionOverviewTab({
           value={transactionData.version}
           tooltip={getLearnMoreTooltip("version")}
         />
-
         <ContentRow
           title="Gas Used:"
-          value={renderGas(transactionData.gas_used)}
+          value={<GasValue gas={transactionData.gas_used} />}
           tooltip={getLearnMoreTooltip("gas_used")}
         />
         <ContentRow
@@ -66,7 +68,10 @@ export default function GenesisTransactionOverviewTab({
     <Box marginX={2} marginTop={5}>
       <Stack direction="column" spacing={3}>
         <Row title={"Version:"} value={transactionData.version} />
-        <Row title={"Status:"} value={renderSuccess(transactionData.success)} />
+        <Row
+          title={"Status:"}
+          value={<TableTransactionStatus success={transactionData.success} />}
+        />
         <Row
           title={"State Change Hash:"}
           value={transactionData.state_change_hash}
@@ -75,7 +80,10 @@ export default function GenesisTransactionOverviewTab({
           title={"Event Root Hash:"}
           value={transactionData.event_root_hash}
         />
-        <Row title={"Gas Used:"} value={renderGas(transactionData.gas_used)} />
+        <Row
+          title={"Gas Used:"}
+          value={<GasValue gas={transactionData.gas_used} />}
+        />
         <Row title={"VM Status:"} value={transactionData.vm_status} />
         <Row
           title={"Accumulator Root Hash:"}

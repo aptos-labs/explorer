@@ -1,5 +1,4 @@
 import React from "react";
-import {TransactionsPreview} from "../Transactions/Transactions";
 import LedgerInfo from "../LedgerInfo/LedgerInfo";
 import Typography from "@mui/material/Typography";
 import DividerHero from "../../components/DividerHero";
@@ -8,6 +7,7 @@ import HeaderSearch from "../layout/Search/Index";
 import Box from "@mui/material/Box";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import NetworkInfo from "./NetworkInfo/Index";
+import TransactionsPreview from "./TransactionsPreview";
 
 export default function Dashboard() {
   const inDev = useGetInDevMode();

@@ -2,9 +2,8 @@ import {Stack, Typography, useTheme, useMediaQuery} from "@mui/material";
 import React from "react";
 import {Types} from "aptos";
 import HashButtonCopyable from "../../components/HashButtonCopyable";
-import TransactionType from "../../components/TransactionType";
+import {TransactionType} from "../../components/TransactionType";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import {renderTransactionType} from "../Transactions/helpers";
 
 type TransactionTitleProps = {
   transaction: Types.Transaction;
@@ -52,7 +51,7 @@ export default function TransactionTitle({transaction}: TransactionTitleProps) {
         <Typography variant="h5">Transaction:</Typography>
         <HashButtonCopyable hash={transaction.hash} />
       </Stack>
-      {renderTransactionType(transaction.type)}
+      <TransactionType type={transaction.type} />
     </Stack>
   );
 }
