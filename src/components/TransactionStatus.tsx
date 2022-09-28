@@ -11,11 +11,11 @@ const SUCCESS_BACKGROUND_COLOR = "rgba(0,191,165,0.1)";
 const ERROR_COLOR = "#F97373";
 const ERROR_BACKGROUND_COLOR = "rgba(249,115,115,0.1)";
 
-type Props = {
+type TransactionStatusProps = {
   success: boolean;
 };
 
-export function TransactionStatus({success}: Props) {
+export function TransactionStatus({success}: TransactionStatusProps) {
   return success ? (
     <Stack
       direction="row"
@@ -63,7 +63,7 @@ export function TransactionStatus({success}: Props) {
   );
 }
 
-export function TableTransactionStatus({success}: Props) {
+export function TableTransactionStatus({success}: TransactionStatusProps) {
   return success ? (
     <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
       <CheckCircleOutlinedIcon

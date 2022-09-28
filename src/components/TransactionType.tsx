@@ -7,17 +7,7 @@ import MultipleStopRoundedIcon from "@mui/icons-material/MultipleStopRounded";
 import UpdateRoundedIcon from "@mui/icons-material/UpdateRounded";
 import {grey} from "../themes/colors/aptosColorPalette";
 
-type Color =
-  | "inherit"
-  | "disabled"
-  | "action"
-  | "primary"
-  | "secondary"
-  | "error"
-  | "info"
-  | "success"
-  | "warning"
-  | undefined;
+type Color = "inherit" | "primary" | undefined;
 
 function getTypeLabel(type: string): string {
   switch (type) {
@@ -53,20 +43,20 @@ function getTypeIcon(type: string, color?: Color) {
   }
 }
 
-type Props = {
+type TransactionTypeProps = {
   type: string;
 };
 
-export function TransactionType({type}: Props) {
+export function TransactionType({type}: TransactionTypeProps) {
   return (
     <Box sx={{display: "flex", alignItems: "center", gap: 1, color: grey[450]}}>
-      {getTypeIcon(type)}
+      {getTypeIcon(type, "inherit")}
       <Typography variant="body2">{getTypeLabel(type)}</Typography>
     </Box>
   );
 }
 
-export function TableTransactionType({type}: Props) {
+export function TableTransactionType({type}: TransactionTypeProps) {
   return (
     <Box sx={{display: "flex", alignItems: "center", gap: 1.5}}>
       {getTypeIcon(type, "primary")}
