@@ -150,3 +150,17 @@ export function getBlockByVersion(
   const client = new AptosClient(nodeUrl, config);
   return withResponseError(client.getBlockByVersion(version, true));
 }
+
+export async function getRecentBlocks(
+  currentBlockHeight: number,
+  count: number,
+  nodeUrl: string,
+): Promise<Types.Block[]> {
+  const client = new AptosClient(nodeUrl, config);
+  const blocks = [];
+  for (let i = 0; i < count; i++) {
+    const block = await client.getBlockByHeight(currentBlockHeight - i, false);
+    blocks.push(block);
+  }
+  return blocks;
+}

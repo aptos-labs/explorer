@@ -14,6 +14,7 @@ import {ValidatorsPage} from "./pages/Validators/Index";
 import {Staking} from "./pages/Governance/Stake/Index";
 import BlockPage from "./pages/Block/Index";
 import TokenPage from "./pages/Token/Index";
+import {BlocksPage} from "./pages/Blocks/Index";
 
 export default function ExplorerRoutes() {
   return (
@@ -33,6 +34,7 @@ export default function ExplorerRoutes() {
         <Route path="/account">
           <Route path=":address" element={<AccountPage />} />
         </Route>
+        <Route path="/blocks" element={<BlocksPage />} />
         <Route path="/block">
           <Route path=":height" element={<BlockPage />} />
         </Route>
