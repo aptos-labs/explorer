@@ -12,7 +12,15 @@ const TOKEN_QUERY = gql`
       name
       collection_name
       creator_address
-      description_mutable
+      default_properties
+      largest_property_version
+      maximum
+      metadata_uri
+      payee_address
+      royalty_points_denominator
+      royalty_points_numerator
+      supply
+      transaction_version
     }
   }
 `;

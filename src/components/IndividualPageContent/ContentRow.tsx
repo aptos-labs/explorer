@@ -20,13 +20,12 @@ export default function ContentRow({
     <Box>
       <Grid
         container
-        direction={{xs: "column", md: "row"}}
         rowSpacing={1}
         columnSpacing={4}
         alignItems="center"
         key={i}
       >
-        <Grid item md={3}>
+        <Grid item xs={12} md={3}>
           <Stack direction="row">
             {tooltip}
             <Typography variant="body2" color={grey[450]}>
@@ -34,16 +33,15 @@ export default function ContentRow({
             </Typography>
           </Stack>
         </Grid>
-        <Grid
-          item
-          md={9}
-          width={{xs: 1, md: 0.75}}
-          sx={{
-            fontSize: 13.5,
-            overflow: "auto",
-          }}
-        >
-          {value ? <Box>{value}</Box> : <EmptyValue />}
+        <Grid item xs={12} md={9}>
+          <Box
+            sx={{
+              fontSize: 13.5,
+              overflow: "auto",
+            }}
+          >
+            {value ? <Box>{value}</Box> : <EmptyValue />}
+          </Box>
         </Grid>
       </Grid>
     </Box>
