@@ -1,13 +1,12 @@
 import {useParams} from "react-router-dom";
 import {Grid} from "@mui/material";
 import React from "react";
-import IndividualPageHeader from "../../components/IndividualPageHeader";
 import AccountTabs, {TabValue} from "./Tabs";
 import AccountTitle from "./Title";
 import AccountInfo from "./AccountInfo/Index";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import HeaderSearch from "../layout/Search/Index";
 import BalanceCard from "./BalanceCard";
+import PageHeader from "../../components/PageHeader";
 
 const TAB_VALUES_IN_DEV: TabValue[] = [
   "transactions",
@@ -28,7 +27,7 @@ export default function AccountPage() {
   return (
     <Grid container spacing={1}>
       <Grid item xs={12} md={12} lg={12}>
-        {inDev ? <HeaderSearch /> : <IndividualPageHeader />}
+        <PageHeader />
       </Grid>
       {inDev ? (
         <>

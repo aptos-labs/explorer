@@ -9,10 +9,9 @@ import {useSearchParams} from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import {Pagination, PaginationItem, Stack} from "@mui/material";
 import TransactionsTable from "./TransactionsTable";
-import HeadingSub from "../../components/HeadingSub";
-import HeaderSearch from "../layout/Search/Index";
 import Typography from "@mui/material/Typography";
-import DividerHero from "../../components/DividerHero";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import PageHeader from "../../components/PageHeader";
 
 const LIMIT = 20;
 
@@ -106,9 +105,6 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
   return (
     <>
       <Stack spacing={2}>
-        <Typography variant="h4" component="h2">
-          Transactions
-        </Typography>
         <Box sx={{width: "auto", overflowX: "auto"}}>
           <TransactionContent {...result} />
         </Box>
@@ -128,6 +124,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
 }
 
 export default function TransactionsPage() {
+  const inDev = useGetInDevMode();
   const [state, _] = useGlobalState();
 
   const result = useQuery(
@@ -141,12 +138,10 @@ export default function TransactionsPage() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <HeadingSub>Network</HeadingSub>
-        <Typography variant="h1" component="h1" gutterBottom>
-          Aptos Explorer
+        <PageHeader />
+        <Typography variant="h5" marginBottom={2}>
+          Transactions
         </Typography>
-        <DividerHero />
-        <HeaderSearch />
         <TransactionsPageInner {...result} />
       </Grid>
     </Grid>

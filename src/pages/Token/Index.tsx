@@ -2,9 +2,9 @@ import {useParams} from "react-router-dom";
 import {gql, useQuery} from "@apollo/client";
 import {Stack, Grid} from "@mui/material";
 import React from "react";
-import HeaderSearch from "../layout/Search/Index";
 import TokenTitle from "./Title";
 import TokenTabs from "./Tabs";
+import PageHeader from "../../components/PageHeader";
 
 const TOKEN_QUERY = gql`
   query TokenData($token_id: String) {
@@ -51,7 +51,7 @@ export default function TokenPage() {
 
   return (
     <Grid container spacing={1}>
-      <HeaderSearch />
+      <PageHeader />
       <Grid item xs={12}>
         <Stack direction="column" spacing={4} marginTop={2}>
           <TokenTitle name={token?.name} />
