@@ -1,5 +1,5 @@
 import React from "react";
-import LedgerInfo from "../LedgerInfo/LedgerInfo";
+import LedgerInfo from "./LedgerInfo";
 import Typography from "@mui/material/Typography";
 import DividerHero from "../../components/DividerHero";
 import HeadingSub from "../../components/HeadingSub";
@@ -9,7 +9,7 @@ import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import NetworkInfo from "./NetworkInfo/Index";
 import TransactionsPreview from "./TransactionsPreview";
 
-export default function Dashboard() {
+export default function LandingPage() {
   const inDev = useGetInDevMode();
 
   return inDev ? (

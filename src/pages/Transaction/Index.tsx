@@ -1,6 +1,5 @@
 import React from "react";
 import {Stack, Grid, Alert} from "@mui/material";
-import IndividualPageHeader from "../../components/IndividualPageHeader";
 import {Types} from "aptos";
 import {useGlobalState} from "../../GlobalState";
 import {useParams} from "react-router-dom";
@@ -11,11 +10,9 @@ import Error from "./Error";
 import TransactionTitle from "./Title";
 import TransactionTabs from "./Tabs";
 import GoBack from "../../components/GoBack";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import HeaderSearch from "../layout/Search/Index";
+import PageHeader from "../../components/PageHeader";
 
 export default function TransactionPage() {
-  const inDev = useGetInDevMode();
   const [state, _] = useGlobalState();
   const {txnHashOrVersion} = useParams();
 
@@ -49,8 +46,7 @@ export default function TransactionPage() {
 
   return (
     <Grid container>
-      {inDev ? <HeaderSearch /> : <IndividualPageHeader />}
-      <GoBack />
+      <PageHeader />
       <Grid item xs={12}>
         <Stack direction="column" spacing={4} marginTop={2}>
           <TransactionTitle transaction={data} />
