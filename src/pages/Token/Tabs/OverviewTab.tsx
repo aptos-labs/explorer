@@ -48,14 +48,6 @@ export default function OverviewTab({data}: OverviewTabProps) {
             <HashButton hash={data?.creator_address} type={HashType.ACCOUNT} />
           }
         />
-        <ContentRow
-          title={"Transaction Version:"}
-          value={
-            <Link href={`/txn/${data?.transaction_version}`}>
-              {data?.transaction_version}
-            </Link>
-          }
-        />
         <ContentRow title={"Royalty:"} value={getRoyalty(data)} />
         <ContentRow
           title={"Metadata:"}
