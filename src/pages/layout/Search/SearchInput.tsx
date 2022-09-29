@@ -24,7 +24,7 @@ export default function SearchInput({...params}) {
           ),
         }}
         placeholder="Search transactions"
-        helperText="Version ID, Hash or Account Address"
+        helperText="Account Address / Txn Version & Hash / Block Height & Version"
         fullWidth
       />
     </FormControl>

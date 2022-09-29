@@ -6,6 +6,8 @@ import SearchAccount from "./SearchAccount";
 import SearchInput from "./SearchInput";
 import ResultPaper from "./ResultPaper";
 import SearchResultNotFound from "./SearchResultNotFound";
+import SearchBlockByHeight from "./SearchBlockByHeight";
+import SearchBlockByVersion from "./SearchBlockByVersion";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
@@ -22,6 +24,8 @@ function getSearchResults(searchText: string): OptionType {
   const results = [
     <SearchTransaction txnHashOrVersion={searchText} />,
     <SearchAccount address={searchText} />,
+    <SearchBlockByHeight height={searchText} />,
+    <SearchBlockByVersion version={searchText} />,
   ];
 
   if (results.length === 0) {
