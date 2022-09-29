@@ -68,13 +68,12 @@ export default function Nav() {
       />
       {inDev && (
         <>
-          <NavButton to="/blocks" title="View All Blocks" label="Blocks" />
+          <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
           <NavButton
             to="/Validators"
             title="View All Validators"
             label="Validators"
           />
-          <NavButton to="/tokens" title="View Top Tokens" label="Tokens" />
         </>
       )}
       {!inDev && (

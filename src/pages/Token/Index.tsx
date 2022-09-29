@@ -8,11 +8,18 @@ import TokenTabs from "./Tabs";
 
 const TOKEN_QUERY = gql`
   query TokenData($token_id: String) {
-    token_datas(where: {token_data_id_hash: {_eq: $token_id}}) {
+    current_token_datas(where: {token_data_id_hash: {_eq: $token_id}}) {
       name
       collection_name
       creator_address
-      description_mutable
+      default_properties
+      largest_property_version
+      maximum
+      metadata_uri
+      payee_address
+      royalty_points_denominator
+      royalty_points_numerator
+      supply
     }
   }
 `;
@@ -36,7 +43,7 @@ export default function TokenPage() {
   }
 
   // TODO: add graphql data typing
-  const tokenDatas = data?.token_datas ?? [];
+  const tokenDatas = data?.current_token_datas ?? [];
   if (tokenDatas.length === 0) {
     return null;
   }
