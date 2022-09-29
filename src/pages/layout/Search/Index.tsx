@@ -8,12 +8,13 @@ import ResultPaper from "./ResultPaper";
 import SearchResultNotFound from "./SearchResultNotFound";
 import SearchBlockByHeight from "./SearchBlockByHeight";
 import SearchBlockByVersion from "./SearchBlockByVersion";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
 type OptionType = React.ReactNode[];
 
-function getSearchResults(searchText: string): OptionType {
+function getSearchResults(searchText: string, inDev: boolean): OptionType {
   searchText = searchText.trim();
 
   if (!HEX_REGEXP.test(searchText)) {
@@ -24,9 +25,14 @@ function getSearchResults(searchText: string): OptionType {
   const results = [
     <SearchTransaction txnHashOrVersion={searchText} />,
     <SearchAccount address={searchText} />,
-    <SearchBlockByHeight height={searchText} />,
-    <SearchBlockByVersion version={searchText} />,
   ];
+
+  if (inDev) {
+    results.push(
+      <SearchBlockByHeight height={searchText} />,
+      <SearchBlockByVersion version={searchText} />,
+    );
+  }
 
   if (results.length === 0) {
     return [<SearchResultNotFound />];
@@ -36,6 +42,7 @@ function getSearchResults(searchText: string): OptionType {
 }
 
 export default function HeaderSearch() {
+  const inDev = useGetInDevMode();
   const [inputValue, setInputValue] = useState<string>("");
   const [options, setOptions] = useState<OptionType>([]);
 
@@ -43,7 +50,7 @@ export default function HeaderSearch() {
     () =>
       throttle(
         (searchText: string, callback: (results: OptionType) => void) => {
-          callback(getSearchResults(searchText));
+          callback(getSearchResults(searchText, inDev));
         },
         200,
       ),
