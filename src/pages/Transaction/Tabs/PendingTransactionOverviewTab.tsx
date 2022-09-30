@@ -48,14 +48,14 @@ export default function PendingTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("expiration_timestamp_secs")}
         />
         <ContentRow
-          title="Max Gas Limit:"
-          value={<GasValue gas={transactionData.max_gas_amount} />}
-          tooltip={getLearnMoreTooltip("max_gas_amount")}
-        />
-        <ContentRow
           title="Gas Unit Price:"
           value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
           tooltip={getLearnMoreTooltip("gas_unit_price")}
+        />
+        <ContentRow
+          title="Max Gas Limit:"
+          value={<GasValue gas={transactionData.max_gas_amount} />}
+          tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
           title="Signature:"

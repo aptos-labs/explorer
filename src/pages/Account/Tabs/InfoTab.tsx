@@ -12,6 +12,7 @@ import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {getLearnMoreTooltip} from "../../Transaction/helpers";
 
 function Content({data}: {data: Types.AccountData | undefined}): JSX.Element {
   if (!data) {
@@ -37,10 +38,15 @@ function InfoContent({
     return (
       <Box marginBottom={3}>
         <ContentBox>
-          <ContentRow title={"Sequence Number:"} value={data.sequence_number} />
+          <ContentRow
+            title={"Sequence Number:"}
+            value={data.sequence_number}
+            tooltip={getLearnMoreTooltip("sequence_number")}
+          />
           <ContentRow
             title={"Authentication Key:"}
             value={data.authentication_key}
+            tooltip={getLearnMoreTooltip("authentication_key")}
           />
         </ContentBox>
       </Box>

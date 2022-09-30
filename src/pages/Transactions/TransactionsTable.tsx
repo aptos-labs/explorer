@@ -19,6 +19,8 @@ import GasValue from "../../components/IndividualPageContent/ContentValue/GasVal
 import {TableTransactionType} from "../../components/TransactionType";
 import {TableTransactionStatus} from "../../components/TransactionStatus";
 import {getFormattedTimestamp} from "../utils";
+import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -70,7 +72,18 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionGasCell({transaction}: TransactionCellProps) {
-  return (
+  const inDev = useGetInDevMode();
+
+  return inDev ? (
+    <TableCell sx={{textAlign: "right"}}>
+      {"gas_used" in transaction && "gas_unit_price" in transaction ? (
+        <GasFeeValue
+          gasUsed={transaction.gas_used}
+          gasUnitPrice={transaction.gas_unit_price}
+        />
+      ) : null}
+    </TableCell>
+  ) : (
     <TableCell sx={{textAlign: "right"}}>
       {"gas_used" in transaction && <GasValue gas={transaction.gas_used} />}
     </TableCell>
