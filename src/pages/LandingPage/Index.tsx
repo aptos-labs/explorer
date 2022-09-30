@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import NetworkInfo from "./NetworkInfo/Index";
 import TransactionsPreview from "./TransactionsPreview";
+import UserTransactionsPreview from "./UserTransactionsPreview";
 
 export default function LandingPage() {
   const inDev = useGetInDevMode();
@@ -20,7 +21,7 @@ export default function LandingPage() {
       </Typography>
       <NetworkInfo />
       <HeaderSearch />
-      <TransactionsPreview />
+      <UserTransactionsPreview />
     </Box>
   ) : (
     <Box>
