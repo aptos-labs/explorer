@@ -6,40 +6,25 @@ import {
 
 export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
   switch (txnField) {
-    case "status":
-      return <LearnMoreTooltipPlaceholder />;
-    case "sender":
+    case "accumulator_root_hash":
       return (
         <LearnMoreTooltip
-          text="Sender is the address of the originator account for a transaction."
-          link="https://aptos.dev/reference/glossary/#sender"
+          text="An accumulator root hash is the root hash of a Merkle accumulator."
+          link="https://aptos.dev/reference/glossary/#merkle-accumulator"
         />
       );
-    case "proposer":
+    case "authentication_key":
       return <LearnMoreTooltipPlaceholder />;
-    case "id":
+    case "block_height":
       return <LearnMoreTooltipPlaceholder />;
-    case "version":
-      return (
-        <LearnMoreTooltip
-          text="A version is also called “height” in blockchain literature."
-          link="https://aptos.dev/reference/glossary/#version"
-        />
-      );
-    case "sequence_number":
-      return (
-        <LearnMoreTooltip
-          text="The sequence number for an account indicates the number of transactions that have been submitted and committed on chain from that account."
-          link="https://aptos.dev/reference/glossary/#sequence-number"
-        />
-      );
     case "epoch":
       return <LearnMoreTooltipPlaceholder />;
-    case "round":
+    case "event_root_hash":
       return (
         <LearnMoreTooltip
-          text="A round consists of achieving consensus on a block of transactions and their execution results."
-          link="https://aptos.dev/reference/glossary/#round"
+          text="Learn more about Event"
+          link="https://aptos.dev/reference/glossary/#event"
+          linkToText
         />
       );
     case "expiration_timestamp_secs":
@@ -49,11 +34,19 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
           link="https://aptos.dev/reference/glossary/#expiration-time"
         />
       );
-    case "timestamp":
+    case "gas_fee":
       return (
-        <LearnMoreTooltip text="Timestamp is the machine timestamp of when the block is committed." />
+        <LearnMoreTooltip
+          text="Learn more about Gas Price"
+          link="https://aptos.dev/reference/glossary/#gas-price"
+          linkToText
+        />
       );
+    case "gas_unit_price":
+      return <LearnMoreTooltipPlaceholder />;
     case "gas_used":
+      return <LearnMoreTooltipPlaceholder />;
+    case "id":
       return <LearnMoreTooltipPlaceholder />;
     case "max_gas_amount":
       return (
@@ -62,12 +55,44 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
           link="https://aptos.dev/reference/glossary/#maximum-gas-amount"
         />
       );
-    case "gas_unit_price":
+    case "proposer":
+      return <LearnMoreTooltipPlaceholder />;
+    case "round":
       return (
         <LearnMoreTooltip
-          text="Learn more about Gas Price"
-          link="https://aptos.dev/reference/glossary/#gas-price"
-          linkToText
+          text="A round consists of achieving consensus on a block of transactions and their execution results."
+          link="https://aptos.dev/reference/glossary/#round"
+        />
+      );
+    case "sender":
+      return (
+        <LearnMoreTooltip
+          text="Sender is the address of the originator account for a transaction."
+          link="https://aptos.dev/reference/glossary/#sender"
+        />
+      );
+    case "sequence_number":
+      return (
+        <LearnMoreTooltip
+          text="The sequence number for an account indicates the number of transactions that have been submitted and committed on chain from that account."
+          link="https://aptos.dev/reference/glossary/#sequence-number"
+        />
+      );
+    case "signature":
+      return <LearnMoreTooltipPlaceholder />;
+    case "state_change_hash":
+      return <LearnMoreTooltipPlaceholder />;
+    case "status":
+      return <LearnMoreTooltipPlaceholder />;
+    case "timestamp":
+      return (
+        <LearnMoreTooltip text="Timestamp is the machine timestamp of when the block is committed." />
+      );
+    case "version":
+      return (
+        <LearnMoreTooltip
+          text="A version is also called “height” in blockchain literature."
+          link="https://aptos.dev/reference/glossary/#version"
         />
       );
     case "vm_status":
@@ -78,27 +103,6 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
           linkToText
         />
       );
-    case "signature":
-      return <LearnMoreTooltipPlaceholder />;
-    case "state_change_hash":
-      return <LearnMoreTooltipPlaceholder />;
-    case "event_root_hash":
-      return (
-        <LearnMoreTooltip
-          text="Learn more about Event"
-          link="https://aptos.dev/reference/glossary/#event"
-          linkToText
-        />
-      );
-    case "accumulator_root_hash":
-      return (
-        <LearnMoreTooltip
-          text="An accumulator root hash is the root hash of a Merkle accumulator."
-          link="https://aptos.dev/reference/glossary/#merkle-accumulator"
-        />
-      );
-    case "block_height":
-      return <LearnMoreTooltipPlaceholder />;
     default:
       return <LearnMoreTooltipPlaceholder />;
   }

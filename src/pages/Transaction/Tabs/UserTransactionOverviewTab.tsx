@@ -16,6 +16,7 @@ import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
+import GasFeeValue from "../../../components/IndividualPageContent/ContentValue/GasFeeValue";
 
 type UserTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -67,14 +68,15 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow
-          title="Gas Used:"
-          value={<GasValue gas={transactionData.gas_used} />}
-          tooltip={getLearnMoreTooltip("gas_used")}
-        />
-        <ContentRow
-          title="Max Gas Limit:"
-          value={<GasValue gas={transactionData.max_gas_amount} />}
-          tooltip={getLearnMoreTooltip("max_gas_amount")}
+          title="Gas Fee:"
+          value={
+            <GasFeeValue
+              gasUsed={transactionData.gas_used}
+              gasUnitPrice={transactionData.gas_unit_price}
+              showGasUsed
+            />
+          }
+          tooltip={getLearnMoreTooltip("gas_fee")}
         />
         <ContentRow
           title="Gas Unit Price:"
@@ -82,16 +84,9 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
         <ContentRow
-          title="Gas Fee:"
-          value={
-            <APTCurrencyValue
-              amount={(
-                BigInt(transactionData.gas_unit_price) *
-                BigInt(transactionData.gas_used)
-              ).toString()}
-            />
-          }
-          tooltip={getLearnMoreTooltip("gas_spent")}
+          title="Max Gas Limit:"
+          value={<GasValue gas={transactionData.max_gas_amount} />}
+          tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
           title="VM Status:"

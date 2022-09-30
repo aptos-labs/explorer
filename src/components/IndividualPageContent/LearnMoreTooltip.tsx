@@ -1,5 +1,5 @@
 import React from "react";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {Box, Link, Typography, useTheme} from "@mui/material";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {Stack} from "@mui/system";
@@ -47,7 +47,7 @@ export function LearnMoreTooltip({
         }
         arrow
       >
-        <HelpOutlineOutlinedIcon fontSize="inherit" htmlColor={color} />
+        <InfoOutlinedIcon fontSize="inherit" htmlColor={color} />
       </StyledTooltip>
     </TooltipBox>
   );

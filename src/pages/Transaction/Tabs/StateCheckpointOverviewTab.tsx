@@ -46,11 +46,6 @@ export default function StateCheckpointOverviewTab({
           />
         )}
         <ContentRow
-          title="Gas Used:"
-          value={<GasValue gas={transactionData.gas_used} />}
-          tooltip={getLearnMoreTooltip("gas_used")}
-        />
-        <ContentRow
           title="VM Status:"
           value={transactionData.vm_status}
           tooltip={getLearnMoreTooltip("vm_status")}
