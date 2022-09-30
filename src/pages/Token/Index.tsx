@@ -9,6 +9,7 @@ import PageHeader from "../../components/PageHeader";
 const TOKEN_QUERY = gql`
   query TokenData($token_id: String) {
     current_token_datas(where: {token_data_id_hash: {_eq: $token_id}}) {
+      token_data_id_hash
       name
       collection_name
       creator_address

@@ -2,18 +2,18 @@ import * as React from "react";
 import {useState} from "react";
 import {Box} from "@mui/material";
 import OverviewTab from "./Tabs/OverviewTab";
-import TransactionsTab from "./Tabs/TransactionTab";
+import ActivitiesTab from "./Tabs/ActivitiesTab";
 import {assertNever} from "../../utils";
 import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 
-const TAB_VALUES: TabValue[] = ["overview", "transactions"];
+const TAB_VALUES: TabValue[] = ["overview", "activities"];
 
 const TabComponents = Object.freeze({
   overview: OverviewTab,
-  transactions: TransactionsTab,
+  activities: ActivitiesTab,
 });
 
 type TabValue = keyof typeof TabComponents;
@@ -22,8 +22,8 @@ function getTabLabel(value: TabValue): string {
   switch (value) {
     case "overview":
       return "Overview";
-    case "transactions":
-      return "Transactions";
+    case "activities":
+      return "Activities";
     default:
       return assertNever(value);
   }
@@ -33,7 +33,7 @@ function getTabIcon(value: TabValue): JSX.Element {
   switch (value) {
     case "overview":
       return <BarChartOutlinedIcon fontSize="small" />;
-    case "transactions":
+    case "activities":
       return <WysiwygIcon fontSize="small" />;
     default:
       return assertNever(value);
