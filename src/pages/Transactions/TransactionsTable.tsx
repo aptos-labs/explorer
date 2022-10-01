@@ -21,6 +21,7 @@ import {TableTransactionStatus} from "../../components/TransactionStatus";
 import {getFormattedTimestamp} from "../utils";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -140,6 +141,33 @@ function TransactionRow({transaction, columns}: TransactionRowProps) {
   );
 }
 
+type UserTransactionRowProps = {
+  version: number;
+  columns: TransactionColumn[];
+};
+
+function UserTransactionRow({version, columns}: UserTransactionRowProps) {
+  const navigate = useNavigate();
+  const {data: transaction} = useGetTransaction(version.toString());
+
+  if (!transaction) {
+    return null;
+  }
+
+  const rowClick = () => {
+    navigate(`/txn/${version}`);
+  };
+
+  return (
+    <GeneralTableRow onClick={rowClick}>
+      {columns.map((column) => {
+        const Cell = TransactionCells[column];
+        return <Cell key={column} transaction={transaction} />;
+      })}
+    </GeneralTableRow>
+  );
+}
+
 type TransactionHeaderCellProps = {
   column: TransactionColumn;
 };
@@ -182,7 +210,7 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
   }
 }
 
-type Props = {
+type TransactionsTableProps = {
   transactions: Types.Transaction[];
   columns?: TransactionColumn[];
 };
@@ -190,7 +218,7 @@ type Props = {
 export default function TransactionsTable({
   transactions,
   columns = DEFAULT_COLUMNS,
-}: Props) {
+}: TransactionsTableProps) {
   return (
     <Table>
       <TableHead>
@@ -206,6 +234,39 @@ export default function TransactionsTable({
             <TransactionRow
               key={`${i}-${transaction.hash}`}
               transaction={transaction}
+              columns={columns}
+            />
+          );
+        })}
+      </TableBody>
+    </Table>
+  );
+}
+
+type UserTransactionsTableProps = {
+  versions: number[];
+  columns?: TransactionColumn[];
+};
+
+export function UserTransactionsTable({
+  versions,
+  columns = DEFAULT_COLUMNS,
+}: UserTransactionsTableProps) {
+  return (
+    <Table>
+      <TableHead>
+        <TableRow>
+          {columns.map((column) => (
+            <TransactionHeaderCell key={column} column={column} />
+          ))}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {versions.map((version, i) => {
+          return (
+            <UserTransactionRow
+              key={`${i}-${version}`}
+              version={version}
               columns={columns}
             />
           );
