@@ -33,7 +33,7 @@ export default function useGetUserTransactionVersions(
     return [];
   }
 
-  const versions: number[] = (data?.user_transactions ?? []).map(
+  const versions: number[] = data.user_transactions.map(
     (txn: {version: number}) => {
       return txn.version;
     },
