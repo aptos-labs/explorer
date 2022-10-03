@@ -52,10 +52,7 @@ async function fetchTotalSupply(
     state.network_value,
   );
 
-  // TODO: remove network check after AIT3
-  return state.network_name === "ait3"
-    ? parseInt(supplyLimit) - (Math.pow(2, 64) - 1)
-    : parseInt(supplyLimit);
+  return parseInt(supplyLimit);
 }
 
 export function useGetCoinSupplyLimit(): number | null {
