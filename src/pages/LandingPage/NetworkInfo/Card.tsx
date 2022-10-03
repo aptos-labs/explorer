@@ -20,11 +20,9 @@ export default function Card({
   return (
     <Box
       sx={{
+        background: theme.palette.mode === "dark" ? grey[800] : grey[100],
         padding: 2,
-        border: 1,
         borderRadius: 1,
-        borderColor: effectColor,
-        boxShadow: `0px 0px 5px 1px ${effectColor}`,
       }}
       {...props}
     >

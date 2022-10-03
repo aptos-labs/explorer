@@ -30,7 +30,7 @@ export default function UserTransactionOverviewTab({
 
   return inDev ? (
     <Box marginBottom={3}>
-      <ContentBox paddingLeft={1.5}>
+      <ContentBox padding={4}>
         <ContentRow
           title="Status:"
           value={<TransactionStatus success={transactionData.success} />}

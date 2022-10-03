@@ -2,7 +2,7 @@ import {PaletteMode} from "@mui/material";
 import {ThemeOptions} from "@mui/material/styles";
 import "@mui/material/styles/createPalette";
 import {alpha} from "@mui/material";
-import {grey, teal} from "./colors/aptosColorPalette";
+import {grey, primary} from "./colors/aptosColorPalette";
 
 // Button variants
 declare module "@mui/material/Button" {
@@ -59,14 +59,15 @@ declare module "@mui/material/Divider" {
   }
 }
 
-const primaryColor = teal[400];
-const primaryColorToned = teal[600];
+const primaryColor = primary["400"];
+const primaryColorToned = primary["600"];
 
 const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   shape: {
-    borderRadius: 8,
+    borderRadius: 12,
   },
-  // default font config
+  //
+
   typography: {
     fontFamily: `lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
     fontWeightLight: 200,
@@ -74,27 +75,27 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     fontWeightBold: 500,
     h1: {
       fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
-      fontWeight: "300",
+      fontWeight: "600",
     },
     h2: {
       fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
-      fontWeight: "300",
+      fontWeight: "600",
     },
     h3: {
       fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
-      fontWeight: "300",
+      fontWeight: "600",
     },
     h4: {
       fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
-      fontWeight: "300",
+      fontWeight: "600",
     },
     h5: {
       fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
-      fontWeight: "300",
+      fontWeight: "600",
     },
     h6: {
       fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
-      fontWeight: "300",
+      fontWeight: "600",
     },
     stats: {
       fontFamily: `lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
@@ -108,7 +109,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     subtitle2: {
       fontWeight: 400,
       fontSize: "1rem",
-      textTransform: "uppercase",
+      textTransform: "capitalize",
       lineHeight: "1.25",
     },
   },
@@ -273,17 +274,11 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({theme}) => ({
-          backgroundColor: `${
-            theme.palette.mode === "dark" ? grey[800] : grey[50]
-          }`,
           "&.Mui-focused": {
             boxShadow: `0 0 0 2px ${alpha(
               theme.palette.mode === "dark" ? primaryColor : primaryColorToned,
               0.35,
             )}`,
-          },
-          "&:hover": {
-            backgroundColor: theme.palette.neutralShade.main,
           },
           ".MuiOutlinedInput-notchedOutline": {
             borderColor: theme.palette.lineShade.main,
@@ -595,8 +590,9 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       variants: [
         {
           props: {variant: "primary"},
-          style: {
-            backgroundColor: alpha(primaryColor, 1),
+          style: ({theme}) => ({
+            backgroundColor:
+              theme.palette.mode === "dark" ? primaryColor : primary["500"],
             color: "black",
             fontSize: "1.1rem",
             padding: "12px 34px",
@@ -604,7 +600,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
             "&:hover": {
               backgroundColor: alpha(primaryColor, 1),
             },
-          },
+          }),
         },
         {
           props: {variant: "nav"},

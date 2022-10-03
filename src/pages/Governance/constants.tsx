@@ -1,10 +1,10 @@
-import {teal, grey} from "../../themes/colors/aptosColorPalette";
+import {primary, grey} from "../../themes/colors/aptosColorPalette";
 
 // TODO: add red and yellow with opacity to aptosColorPalette
 
-// teal
-export const primaryColor: string = teal[500]; // rgb(0,208,161)
-export const primaryColorOnHover: string = teal[600];
+// primary
+export const primaryColor: string = primary[500]; // rgb(0,208,161)
+export const primaryColorOnHover: string = primary[600];
 export const primaryColorWithOpacity: string = "rgba(0,208,161,0.1)";
 // red
 export const negativeColor: string = "#F97373"; // rgb(249,115,115)

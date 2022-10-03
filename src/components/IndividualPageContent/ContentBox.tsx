@@ -16,17 +16,15 @@ export default function ContentBox({
 
   return (
     <Box
-      paddingLeft={4}
-      paddingRight={4}
-      paddingY={4}
+      padding={4}
       marginTop={3}
       sx={{
         backgroundColor: backgroundColor,
-        borderRadius: "15px",
+        borderRadius: `${theme.shape.borderRadius}px`,
       }}
       {...props}
     >
-      <Stack direction="column" spacing={3}>
+      <Stack direction="column" spacing={4}>
         {children}
       </Stack>
     </Box>

@@ -30,8 +30,8 @@ export default function CollapsibleCard({
   return (
     <Box {...props}>
       <Box
-        paddingX={2}
-        paddingY={1}
+        paddingX={4}
+        paddingY={2}
         sx={{
           color: grey[450],
           backgroundColor: titleBackgroundColor,
@@ -72,7 +72,7 @@ export default function CollapsibleCard({
       </Box>
       {expanded && (
         <Box
-          padding={2}
+          padding={4}
           sx={{
             backgroundColor: contentBackgroundColor,
             borderRadius: "0px 0px 10px 10px",

@@ -139,7 +139,7 @@ export default function TransactionsPage() {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <PageHeader />
-        <Typography variant="h5" marginBottom={2}>
+        <Typography variant="h3" marginBottom={2}>
           Transactions
         </Typography>
         <TransactionsPageInner {...result} />

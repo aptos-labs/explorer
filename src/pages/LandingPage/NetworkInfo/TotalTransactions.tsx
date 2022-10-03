@@ -16,12 +16,11 @@ export default function TotalTransactions() {
 
   return (
     <Stack direction="column">
-      <Typography variant="body2" sx={{color: aptosColor}} alignSelf="flex-end">
+      <Typography variant="body2" alignSelf="flex-end">
         {`TOTAL TRANSACTIONS: ${
           ledgerVersion ? parseInt(ledgerVersion).toLocaleString("en-US") : "-"
         }`}
       </Typography>
-      <Divider sx={{mt: 0.5}} />
     </Stack>
   );
 }
