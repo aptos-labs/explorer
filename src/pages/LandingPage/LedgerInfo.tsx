@@ -91,7 +91,7 @@ export default function RenderLedgerInfo() {
     ["ledgerInfo", state.network_value],
     () => getLedgerInfo(state.network_value),
     {
-      refetchInterval: 1000,
+      refetchInterval: 10000,
     },
   );
 
