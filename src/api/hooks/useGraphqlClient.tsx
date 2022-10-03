@@ -20,8 +20,6 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
       return true;
     case "premainnet":
       return false;
-    case "ait3":
-      return false;
     default:
       return false;
   }
@@ -37,8 +35,6 @@ function getGraphqlURI(networkName: NetworkName): string | undefined {
       return process.env.REACT_APP_INDEXER_GRAPHQL_TESTNET;
     case "premainnet":
       return undefined;
-    case "ait3":
-      return undefined;
     default:
       return undefined;
   }
@@ -53,8 +49,6 @@ function getGraphqlSecret(networkName: NetworkName): string | undefined {
     case "testnet":
       return process.env.REACT_APP_INDEXER_GRAPHQL_SECRET_TESTNET;
     case "premainnet":
-      return undefined;
-    case "ait3":
       return undefined;
     default:
       return undefined;
