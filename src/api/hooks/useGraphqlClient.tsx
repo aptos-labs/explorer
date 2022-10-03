@@ -7,10 +7,10 @@ import {
   NormalizedCacheObject,
 } from "@apollo/client";
 import {useEffect, useState} from "react";
-import {defaultNetworkName, NetworkName} from "../../constants";
+import {NetworkName} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 
-function getIsGraphqlClientSupportFor(networkName: NetworkName): boolean {
+function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   switch (networkName) {
     case "local":
       return false;
@@ -76,22 +76,17 @@ function getGraphqlClient(
   });
 }
 
-export function useGraphqlClient() {
+export function useGetGraphqlClient() {
   const [state, _] = useGlobalState();
-  const [isGraphqlClientSupported, setIsGraphqlClientSupported] =
-    useState<boolean>(false);
   const [graphqlClient, setGraphqlClient] = useState<
     ApolloClient<NormalizedCacheObject>
-  >(getGraphqlClient(defaultNetworkName));
+  >(getGraphqlClient(state.network_name));
 
   useEffect(() => {
-    setIsGraphqlClientSupported(
-      getIsGraphqlClientSupportFor(state.network_name),
-    );
     setGraphqlClient(getGraphqlClient(state.network_name));
-  }, []);
+  }, [state.network_name]);
 
-  return {graphqlClient, isGraphqlClientSupported};
+  return graphqlClient;
 }
 
 type GraphqlClientProviderProps = {
@@ -99,7 +94,21 @@ type GraphqlClientProviderProps = {
 };
 
 export function GraphqlClientProvider({children}: GraphqlClientProviderProps) {
-  const {graphqlClient} = useGraphqlClient();
+  const graphqlClient = useGetGraphqlClient();
 
   return <ApolloProvider client={graphqlClient}>{children}</ApolloProvider>;
+}
+
+export function useGetIsGraphqlClientSupported(): boolean {
+  const [state, _] = useGlobalState();
+  const [isGraphqlClientSupported, setIsGraphqlClientSupported] =
+    useState<boolean>(getIsGraphqlClientSupportedFor(state.network_name));
+
+  useEffect(() => {
+    setIsGraphqlClientSupported(
+      getIsGraphqlClientSupportedFor(state.network_name),
+    );
+  }, [state.network_name]);
+
+  return isGraphqlClientSupported;
 }

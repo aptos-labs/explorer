@@ -9,9 +9,11 @@ import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import NetworkInfo from "./NetworkInfo/Index";
 import TransactionsPreview from "./TransactionsPreview";
 import UserTransactionsPreview from "./UserTransactionsPreview";
+import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 
 export default function LandingPage() {
   const inDev = useGetInDevMode();
+  const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
 
   return inDev ? (
     <Box>
@@ -21,7 +23,11 @@ export default function LandingPage() {
       </Typography>
       <NetworkInfo />
       <HeaderSearch />
-      <UserTransactionsPreview />
+      {isGraphqlClientSupported ? (
+        <UserTransactionsPreview />
+      ) : (
+        <TransactionsPreview />
+      )}
     </Box>
   ) : (
     <Box>
