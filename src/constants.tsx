@@ -9,7 +9,6 @@ export const networks = {
   Devnet: devnetUrl,
   testnet: "https://testnet.aptoslabs.com",
   premainnet: "https://premainnet.aptosdev.com/",
-  ait3: "https://ait3.aptosdev.com/",
 };
 
 export type NetworkName = keyof typeof networks;
