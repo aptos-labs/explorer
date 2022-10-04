@@ -8,8 +8,8 @@ type AccountTitleProps = {
 
 export default function AccountTitle({address}: AccountTitleProps) {
   return (
-    <Stack direction="row" alignItems="center" spacing={2} marginX={1}>
-      <Typography variant="h5">Account:</Typography>
+    <Stack direction="column" spacing={2} marginX={1}>
+      <Typography variant="h3">Account</Typography>
       <HashButtonCopyable hash={address} />
     </Stack>
   );

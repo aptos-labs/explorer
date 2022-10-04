@@ -8,7 +8,7 @@ type BlockTitleProps = {
 export default function TokenTitle({name}: BlockTitleProps) {
   return (
     <Stack direction="row" alignItems="center" spacing={2} marginX={1}>
-      <Typography variant="h5">{name}</Typography>
+      <Typography variant="h3">Token</Typography>
     </Stack>
   );
 }

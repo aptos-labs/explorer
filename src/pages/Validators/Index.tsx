@@ -9,7 +9,7 @@ export function ValidatorsPage() {
   return (
     <Box>
       <PageHeader />
-      <Typography variant="h5" marginBottom={2}>
+      <Typography variant="h3" marginBottom={2}>
         Validators
       </Typography>
       <ValidatorsTable validators={activeValidators} />

@@ -10,7 +10,6 @@ import Grid from "@mui/material/Grid";
 import {Pagination, PaginationItem, Stack} from "@mui/material";
 import TransactionsTable from "./TransactionsTable";
 import Typography from "@mui/material/Typography";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import PageHeader from "../../components/PageHeader";
 
 const LIMIT = 20;
@@ -124,7 +123,6 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
 }
 
 export default function TransactionsPage() {
-  const inDev = useGetInDevMode();
   const [state, _] = useGlobalState();
 
   const result = useQuery(

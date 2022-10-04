@@ -24,7 +24,7 @@ export default function TransactionTitle({transaction}: TransactionTitleProps) {
     >
       {isOnMobile ? (
         <>
-          <Stack direction="column" alignItems="center" spacing={2}>
+          <Stack direction="column" spacing={2}>
             <Typography variant="h3">Transaction</Typography>
             <HashButtonCopyable hash={transaction.hash} />
           </Stack>
