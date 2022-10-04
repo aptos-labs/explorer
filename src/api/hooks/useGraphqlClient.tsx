@@ -30,26 +30,11 @@ function getGraphqlURI(networkName: NetworkName): string | undefined {
     case "local":
       return undefined;
     case "Devnet":
-      return undefined;
+      return process.env.REACT_APP_INDEXER_GRAPHQL_DEVNET;
     case "testnet":
       return process.env.REACT_APP_INDEXER_GRAPHQL_TESTNET;
     case "premainnet":
-      return undefined;
-    default:
-      return undefined;
-  }
-}
-
-function getGraphqlSecret(networkName: NetworkName): string | undefined {
-  switch (networkName) {
-    case "local":
-      return undefined;
-    case "Devnet":
-      return undefined;
-    case "testnet":
-      return process.env.REACT_APP_INDEXER_GRAPHQL_SECRET_TESTNET;
-    case "premainnet":
-      return undefined;
+      return process.env.REACT_APP_INDEXER_GRAPHQL_PREMAINNET;
     default:
       return undefined;
   }
@@ -61,10 +46,6 @@ function getGraphqlClient(
   return new ApolloClient({
     link: new HttpLink({
       uri: getGraphqlURI(networkName),
-      headers: {
-        "x-hasura-admin-secret": getGraphqlSecret(networkName),
-        "x-hasura-role": "anonymous",
-      },
     }),
     cache: new InMemoryCache(),
   });
