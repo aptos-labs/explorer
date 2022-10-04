@@ -10,7 +10,7 @@ export default function TotalTransactions() {
   const {data: ledgerData} = useQuery(
     ["ledgerInfo", state.network_value],
     () => getLedgerInfo(state.network_value),
-    {refetchInterval: 1000},
+    {refetchInterval: 10000},
   );
   const ledgerVersion = ledgerData?.ledger_version;
 
