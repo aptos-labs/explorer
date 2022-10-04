@@ -11,18 +11,8 @@ import {NetworkName} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 
 function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
-  switch (networkName) {
-    case "local":
-      return false;
-    case "Devnet":
-      return false;
-    case "testnet":
-      return true;
-    case "premainnet":
-      return false;
-    default:
-      return false;
-  }
+  const graphqlUri = getGraphqlURI(networkName);
+  return typeof graphqlUri === "string";
 }
 
 function getGraphqlURI(networkName: NetworkName): string | undefined {

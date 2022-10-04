@@ -38,7 +38,7 @@ export default function AccountPage() {
           <Grid item xs={12} md={8} lg={9} alignSelf="center">
             <AccountTitle address={address} />
           </Grid>
-          <Grid item xs={12} md={4} lg={3} marginTop={{md: 0, xs: 1}}>
+          <Grid item xs={12} md={4} lg={3} marginTop={{md: 0, xs: 2}}>
             <BalanceCard address={address} />
           </Grid>
         </>

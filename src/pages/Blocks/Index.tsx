@@ -15,7 +15,7 @@ export default function BlocksPage() {
       <LoadingModal open={isLoading} />
       <Box>
         <HeaderSearch />
-        <Typography variant="h5" marginBottom={2}>
+        <Typography variant="h3" marginBottom={2}>
           Latest Blocks
         </Typography>
         <BlocksTable blocks={recentBlocks} />
