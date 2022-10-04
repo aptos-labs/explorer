@@ -13,18 +13,18 @@ export const grey = {
   900: "#121615",
 };
 
-// Teal (Accent Color) Palette
-export const teal = {
-  50: "#eafff7",
-  100: "#cbffeb",
-  200: "#9cfedc",
-  300: "#5df8cc",
-  400: "#2ed8a7",
-  500: "#00d0a1",
-  600: "#00a380",
-  700: "#008068",
-  800: "#005c4b",
-  900: "#002e26",
+// Primary Palette
+export const primary = {
+  50: "#edfffe",
+  100: "#c2ffff",
+  200: "#84feff",
+  300: "#3ffdff",
+  400: "#06f7f7",
+  500: "#00dadc",
+  600: "#00adb2",
+  700: "#00878d",
+  800: "#00686f",
+  900: "#06565b",
 };
 
 export const aptosColor = "#02858D";

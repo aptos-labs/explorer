@@ -16,7 +16,7 @@ import AddCardIcon from "@mui/icons-material/AddCard";
 import ErrorIcon from "@mui/icons-material/Error";
 import {truncateAddress} from "../pages/utils";
 import {isUpdatedVersion} from "../api/wallet";
-import {teal, grey} from "../themes/colors/aptosColorPalette";
+import {primary, grey} from "../themes/colors/aptosColorPalette";
 import {installWalletUrl} from "../constants";
 
 type WalletButtonWrapperProps = {
@@ -38,7 +38,7 @@ const WalletButtonWrapper = ({
       sx={{
         padding: "10px 25px",
         backgroundColor: theme.palette.mode === "dark" ? grey[800] : "white",
-        color: theme.palette.mode === "dark" ? teal[400] : grey[900],
+        color: theme.palette.mode === "dark" ? primary[400] : grey[900],
       }}
       {...props}
     >

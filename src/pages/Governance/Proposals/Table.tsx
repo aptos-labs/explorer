@@ -17,7 +17,7 @@ import {useGetProposal} from "../hooks/useGetProposal";
 import GeneralTableRow from "../../../components/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../../components/HashButton";
-import {teal} from "../../../themes/colors/aptosColorPalette";
+import {primary} from "../../../themes/colors/aptosColorPalette";
 import StatusIcon from "../components/StatusIcon";
 import ProposalStatusTooltip from "../components/ProposalStatusTooltip";
 import InfoIcon from "@mui/icons-material/Info";
@@ -36,7 +36,7 @@ function TitleCell({proposal}: ProposalCellProps) {
         component="div"
         sx={{
           maxWidth: MAX_TITLE_WIDTH,
-          color: teal[500],
+          color: primary[500],
           overflow: "hidden",
           textOverflow: "ellipsis",
         }}

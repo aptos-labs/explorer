@@ -16,7 +16,7 @@ export default function TransactionTitle({transaction}: TransactionTitleProps) {
 
   return inDev ? (
     <Stack
-      direction={{xs: "column", md: "row"}}
+      direction={{xs: "column"}}
       alignItems="flex-start"
       spacing={2}
       marginX={1}
@@ -24,15 +24,15 @@ export default function TransactionTitle({transaction}: TransactionTitleProps) {
     >
       {isOnMobile ? (
         <>
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <Typography variant="h5">Transaction:</Typography>
+          <Stack direction="column" alignItems="center" spacing={2}>
+            <Typography variant="h3">Transaction</Typography>
             <HashButtonCopyable hash={transaction.hash} />
           </Stack>
           <TransactionType type={transaction.type} />
         </>
       ) : (
         <>
-          <Typography variant="h5">Transaction:</Typography>
+          <Typography variant="h3">Transaction</Typography>
           <Stack direction="column" alignItems="start" spacing={1}>
             <HashButtonCopyable hash={transaction.hash} />
             <TransactionType type={transaction.type} />

@@ -22,7 +22,7 @@ export default function MetricCard({
   return (
     <Card effectColor={aptosColorOpacity}>
       <Stack alignItems="flex-end" spacing={2.5} marginTop={2}>
-        <Typography fontSize={17} fontWeight={700}>
+        <Typography fontSize={20} fontWeight={400}>
           {data}
         </Typography>
         <Stack direction="row" spacing={1} alignItems="center">
