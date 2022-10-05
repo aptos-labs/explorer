@@ -18,6 +18,58 @@ import {APTCurrencyValue} from "../../../components/IndividualPageContent/Conten
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import GasFeeValue from "../../../components/IndividualPageContent/ContentValue/GasFeeValue";
 
+function UserTransferRows({transaction}: {transaction: Types.Transaction}) {
+  if (!("payload" in transaction)) {
+    return null;
+  }
+
+  if (transaction.payload.type !== "entry_function_payload") {
+    return null;
+  }
+
+  // there are two scenarios that this transaction is an APT coin transfer:
+  // 1. coins are transferred from account1 to account2:
+  //    payload function is "0x1::coin::transfer" and the first item in type_arguments is "0x1::aptos_coin::AptosCoin"
+  // 2. coins are transferred from account1 to account2, and account2 is created upon transaction:
+  //    payload function is "0x1::aptos_account::transfer"
+  // In both scenarios, the first item in arguments is the receiver's address, and the second item is the amount.
+
+  const payload =
+    transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
+  const typeArgument =
+    payload.type_arguments.length > 0 ? payload.type_arguments[0] : undefined;
+  const isAptCoinTransfer =
+    payload.function === "0x1::coin::transfer" &&
+    typeArgument === "0x1::aptos_coin::AptosCoin";
+  const isAptCoinInitialTransfer =
+    payload.function === "0x1::aptos_account::transfer";
+
+  if (!isAptCoinTransfer && !isAptCoinInitialTransfer) {
+    return null;
+  }
+
+  if (payload.arguments.length < 2) {
+    return null;
+  }
+
+  return (
+    <>
+      <ContentRow
+        title="Receiver:"
+        value={
+          <HashButton hash={payload.arguments[0]} type={HashType.ACCOUNT} />
+        }
+        tooltip={getLearnMoreTooltip("receiver")}
+      />
+      <ContentRow
+        title="Amount:"
+        value={<APTCurrencyValue amount={payload.arguments[1]} />}
+        tooltip={getLearnMoreTooltip("amount")}
+      />
+    </>
+  );
+}
+
 type UserTransactionOverviewTabProps = {
   transaction: Types.Transaction;
 };
@@ -43,6 +95,7 @@ export default function UserTransactionOverviewTab({
           }
           tooltip={getLearnMoreTooltip("sender")}
         />
+        <UserTransferRows transaction={transactionData} />
         <ContentRow
           title={"Version:"}
           value={transactionData.version}
