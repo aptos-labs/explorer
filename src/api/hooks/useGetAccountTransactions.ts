@@ -13,7 +13,7 @@ export function useGetAccountTransactions(
     Array<Types.Transaction>,
     ResponseError
   >(["accountTransactions", {address}, state.network_value], () =>
-    getAccountTransactions({address}, state.network_value),
+    getAccountTransactions({address, limit:1000}, state.network_value),
   );
 
   return accountTransactionsResult;
