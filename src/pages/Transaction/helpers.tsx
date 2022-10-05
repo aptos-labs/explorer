@@ -13,6 +13,8 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
           link="https://aptos.dev/reference/glossary/#merkle-accumulator"
         />
       );
+    case "amount":
+      return <LearnMoreTooltipPlaceholder />;
     case "authentication_key":
       return <LearnMoreTooltipPlaceholder />;
     case "block_height":
@@ -57,6 +59,8 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
       );
     case "proposer":
       return <LearnMoreTooltipPlaceholder />;
+    case "receiver":
+      return <LearnMoreTooltipPlaceholder />;
     case "round":
       return (
         <LearnMoreTooltip
@@ -71,8 +75,6 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
           link="https://aptos.dev/reference/glossary/#sender"
         />
       );
-    case "receiver":
-      return <LearnMoreTooltipPlaceholder />;
     case "sequence_number":
       return (
         <LearnMoreTooltip

@@ -57,7 +57,7 @@ function UserTransferRows({transaction}: {transaction: Types.Transaction}) {
       <ContentRow
         title="Amount:"
         value={<APTCurrencyValue amount={payload.arguments[1]} />}
-        tooltip={getLearnMoreTooltip("gas_unit_price")}
+        tooltip={getLearnMoreTooltip("amount")}
       />
     </>
   );
