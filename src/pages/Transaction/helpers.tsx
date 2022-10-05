@@ -71,6 +71,8 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
           link="https://aptos.dev/reference/glossary/#sender"
         />
       );
+    case "receiver":
+      return <LearnMoreTooltipPlaceholder />;
     case "sequence_number":
       return (
         <LearnMoreTooltip
