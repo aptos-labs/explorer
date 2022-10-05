@@ -16,6 +16,16 @@ import CollapsibleCard from "../../../components/IndividualPageContent/Collapsib
 import useExpandedList from "../../../components/hooks/useExpandedList";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
+const copyToClipboard = (content: any) => {
+  const el = document.createElement('textarea');
+  el.value = content;
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+};
 
 function Content({
   data,
@@ -30,7 +40,12 @@ function Content({
         {data.map((module, i) => (
           <Stack direction="column" key={i} spacing={3}>
             <Row title={"Bytecode:"} value={module.bytecode} />
-            <Row title={"ABI:"} value={renderDebug(module.abi)} />
+            <div onClick={()=>copyToClipboard(JSON.stringify(module.abi))}>
+              ABI<ContentCopyIcon
+                fontSize="small"
+              />:
+            </div>
+            <Row title="" value={renderDebug(module.abi)} />
           </Stack>
         ))}
       </>
