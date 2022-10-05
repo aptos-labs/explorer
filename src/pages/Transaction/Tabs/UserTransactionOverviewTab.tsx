@@ -27,6 +27,13 @@ function UserTransferRows({transaction}: {transaction: Types.Transaction}) {
     return null;
   }
 
+  // there are two scenarios that this transaction is an APT coin transfer:
+  // 1. coins are transferred from account1 to account2:
+  //    payload function is "0x1::coin::transfer" and the first item in type_arguments is "0x1::aptos_coin::AptosCoin"
+  // 2. coins are transferred from account1 to account2, and account2 is created upon transaction:
+  //    payload function is "0x1::aptos_account::transfer"
+  // In both scenarios, the first item in arguments is the receiver's address, and the second item is the amount.
+
   const payload =
     transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
   const typeArgument =
