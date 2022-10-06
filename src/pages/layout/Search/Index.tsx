@@ -12,7 +12,6 @@ import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {getAccount, getTransaction} from "../../../api";
 import {useGlobalState} from "../../../GlobalState";
 import {useNavigate} from "react-router-dom";
-import {resolve} from "@sentry/utils";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
@@ -182,11 +181,15 @@ export default function HeaderSearch() {
       onInputChange={handleInputChange}
       onClose={() => setOpen(false)}
       renderInput={(params) => {
-        return <SearchInput {...params} onSubmitSearch={handleSubmitSearch} />;
+        return <SearchInput {...params} />;
       }}
       renderOption={(props, option) => {
         if (!option) return null;
         return <li {...props}>{option}</li>;
+      }}
+      onSubmit={(event) => {
+        handleSubmitSearch();
+        event.preventDefault();
       }}
     />
   );

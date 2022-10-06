@@ -1,28 +1,10 @@
 import React from "react";
-import {
-  FormControl,
-  InputAdornment,
-  TextField,
-  StandardTextFieldProps,
-} from "@mui/material";
+import {InputAdornment, TextField} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-interface SearchInputProps extends StandardTextFieldProps {
-  onSubmitSearch: () => void;
-}
-
-export default function SearchInput({
-  onSubmitSearch,
-  ...params
-}: SearchInputProps) {
+export default function SearchInput({...params}) {
   return (
-    <form
-      onSubmit={(event) => {
-        onSubmitSearch();
-        event.preventDefault();
-      }}
-      style={{width: "100%"}}
-    >
+    <form style={{width: "100%"}}>
       <TextField
         {...params}
         InputProps={{
