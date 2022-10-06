@@ -1,10 +1,10 @@
 import React from "react";
-import {FormControl, InputAdornment, TextField} from "@mui/material";
+import {InputAdornment, TextField} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 export default function SearchInput({...params}) {
   return (
-    <FormControl sx={{width: "100%"}}>
+    <form style={{width: "100%"}}>
       <TextField
         {...params}
         InputProps={{
@@ -23,10 +23,10 @@ export default function SearchInput({...params}) {
             </InputAdornment>
           ),
         }}
-        placeholder="Search transactions"
-        helperText="Account Address / Txn Version & Hash / Block Height & Version"
+        placeholder="Search Explorer"
+        helperText="Account Address / Txn Hash or Version / Block Height or Version"
         fullWidth
       />
-    </FormControl>
+    </form>
   );
 }

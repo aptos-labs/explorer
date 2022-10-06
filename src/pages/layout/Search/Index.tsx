@@ -9,6 +9,9 @@ import SearchResultNotFound from "./SearchResultNotFound";
 import SearchBlockByHeight from "./SearchBlockByHeight";
 import SearchBlockByVersion from "./SearchBlockByVersion";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {getAccount, getTransaction} from "../../../api";
+import {useGlobalState} from "../../../GlobalState";
+import {useNavigate} from "react-router-dom";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
@@ -23,8 +26,8 @@ function getSearchResults(searchText: string, inDev: boolean): OptionType {
   }
 
   const results = [
-    <SearchTransaction txnHashOrVersion={searchText} />,
     <SearchAccount address={searchText} />,
+    <SearchTransaction txnHashOrVersion={searchText} />,
   ];
 
   if (inDev) {
@@ -43,6 +46,8 @@ function getSearchResults(searchText: string, inDev: boolean): OptionType {
 
 export default function HeaderSearch() {
   const inDev = useGetInDevMode();
+  const navigate = useNavigate();
+  const [state, _] = useGlobalState();
   const [inputValue, setInputValue] = useState<string>("");
   const [options, setOptions] = useState<OptionType>([]);
 
@@ -101,6 +106,45 @@ export default function HeaderSearch() {
     }
   };
 
+  const handleSubmitSearch = async () => {
+    const accountPromise = getAccount(
+      {address: inputValue},
+      state.network_value,
+    )
+      .then(() => {
+        return true;
+      })
+      .catch(() => {
+        // Do nothing. It's expected that not all search input is a valid account
+      });
+
+    const transactionPromise = getTransaction(
+      {txnHashOrVersion: inputValue},
+      state.network_value,
+    )
+      .then(() => {
+        return true;
+      })
+      .catch(() => {
+        // Do nothing. It's expected that not all search input is a valid account
+      });
+
+    const [isAccount, isTxn] = await Promise.all([
+      accountPromise,
+      transactionPromise,
+    ]);
+
+    if (isAccount) {
+      navigate(`/account/${inputValue}`);
+      return;
+    }
+
+    if (isTxn) {
+      navigate(`/txn/${inputValue}`);
+      return;
+    }
+  };
+
   return (
     <Autocomplete
       PaperComponent={({children}) => <ResultPaper>{children}</ResultPaper>}
@@ -142,6 +186,10 @@ export default function HeaderSearch() {
       renderOption={(props, option) => {
         if (!option) return null;
         return <li {...props}>{option}</li>;
+      }}
+      onSubmit={(event) => {
+        handleSubmitSearch();
+        event.preventDefault();
       }}
     />
   );
