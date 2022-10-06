@@ -1,8 +1,20 @@
 import React from "react";
-import {FormControl, InputAdornment, TextField} from "@mui/material";
+import {
+  FormControl,
+  InputAdornment,
+  TextField,
+  StandardTextFieldProps,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-export default function SearchInput({...params}) {
+interface SearchInputProps extends StandardTextFieldProps {
+  onEnterPress: () => void;
+}
+
+export default function SearchInput({
+  onEnterPress,
+  ...params
+}: SearchInputProps) {
   return (
     <FormControl sx={{width: "100%"}}>
       <TextField
@@ -23,9 +35,14 @@ export default function SearchInput({...params}) {
             </InputAdornment>
           ),
         }}
-        placeholder="Search transactions"
-        helperText="Account Address / Txn Version & Hash / Block Height & Version"
+        placeholder="Search Explorer"
+        helperText="Account Address / Txn Hash or Version / Block Height or Version"
         fullWidth
+        onKeyPress={(event) => {
+          if (event.key === "Enter") {
+            onEnterPress();
+          }
+        }}
       />
     </FormControl>
   );

@@ -9,6 +9,9 @@ import SearchResultNotFound from "./SearchResultNotFound";
 import SearchBlockByHeight from "./SearchBlockByHeight";
 import SearchBlockByVersion from "./SearchBlockByVersion";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {getAccount, getTransaction} from "../../../api";
+import {useGlobalState} from "../../../GlobalState";
+import {useNavigate} from "react-router-dom";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
@@ -23,8 +26,8 @@ function getSearchResults(searchText: string, inDev: boolean): OptionType {
   }
 
   const results = [
-    <SearchTransaction txnHashOrVersion={searchText} />,
     <SearchAccount address={searchText} />,
+    <SearchTransaction txnHashOrVersion={searchText} />,
   ];
 
   if (inDev) {
@@ -43,6 +46,8 @@ function getSearchResults(searchText: string, inDev: boolean): OptionType {
 
 export default function HeaderSearch() {
   const inDev = useGetInDevMode();
+  const navigate = useNavigate();
+  const [state, _] = useGlobalState();
   const [inputValue, setInputValue] = useState<string>("");
   const [options, setOptions] = useState<OptionType>([]);
 
@@ -101,6 +106,24 @@ export default function HeaderSearch() {
     }
   };
 
+  const handleEnterPress = async () => {
+    try {
+      await getAccount({address: inputValue}, state.network_value);
+      navigate(`/account/${inputValue}`);
+      return;
+    } catch {
+      // Do nothing. It's expected that not all search input is a valid account
+    }
+
+    try {
+      await getTransaction({txnHashOrVersion: inputValue}, state.network_value);
+      navigate(`/txn/${inputValue}`);
+      return;
+    } catch {
+      // Do nothing. It's expected that not all search input is a valid transaction
+    }
+  };
+
   return (
     <Autocomplete
       PaperComponent={({children}) => <ResultPaper>{children}</ResultPaper>}
@@ -137,7 +160,7 @@ export default function HeaderSearch() {
       onInputChange={handleInputChange}
       onClose={() => setOpen(false)}
       renderInput={(params) => {
-        return <SearchInput {...params} />;
+        return <SearchInput {...params} onEnterPress={handleEnterPress} />;
       }}
       renderOption={(props, option) => {
         if (!option) return null;
