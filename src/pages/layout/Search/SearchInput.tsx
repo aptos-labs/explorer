@@ -8,15 +8,21 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 
 interface SearchInputProps extends StandardTextFieldProps {
-  onEnterPress: () => void;
+  onSubmitSearch: () => void;
 }
 
 export default function SearchInput({
-  onEnterPress,
+  onSubmitSearch,
   ...params
 }: SearchInputProps) {
   return (
-    <FormControl sx={{width: "100%"}}>
+    <form
+      onSubmit={(event) => {
+        onSubmitSearch();
+        event.preventDefault();
+      }}
+      style={{width: "100%"}}
+    >
       <TextField
         {...params}
         InputProps={{
@@ -38,12 +44,7 @@ export default function SearchInput({
         placeholder="Search Explorer"
         helperText="Account Address / Txn Hash or Version / Block Height or Version"
         fullWidth
-        onKeyPress={(event) => {
-          if (event.key === "Enter") {
-            onEnterPress();
-          }
-        }}
       />
-    </FormControl>
+    </form>
   );
 }

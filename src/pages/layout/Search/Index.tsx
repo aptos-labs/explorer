@@ -12,6 +12,7 @@ import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {getAccount, getTransaction} from "../../../api";
 import {useGlobalState} from "../../../GlobalState";
 import {useNavigate} from "react-router-dom";
+import {resolve} from "@sentry/utils";
 
 const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
 
@@ -106,21 +107,42 @@ export default function HeaderSearch() {
     }
   };
 
-  const handleEnterPress = async () => {
-    try {
-      await getAccount({address: inputValue}, state.network_value);
+  const handleSubmitSearch = async () => {
+    const accountPromise = getAccount(
+      {address: inputValue},
+      state.network_value,
+    )
+      .then(() => {
+        return true;
+      })
+      .catch(() => {
+        // Do nothing. It's expected that not all search input is a valid account
+      });
+
+    const transactionPromise = getTransaction(
+      {txnHashOrVersion: inputValue},
+      state.network_value,
+    )
+      .then(() => {
+        return true;
+      })
+      .catch(() => {
+        // Do nothing. It's expected that not all search input is a valid account
+      });
+
+    const [isAccount, isTxn] = await Promise.all([
+      accountPromise,
+      transactionPromise,
+    ]);
+
+    if (isAccount) {
       navigate(`/account/${inputValue}`);
       return;
-    } catch {
-      // Do nothing. It's expected that not all search input is a valid account
     }
 
-    try {
-      await getTransaction({txnHashOrVersion: inputValue}, state.network_value);
+    if (isTxn) {
       navigate(`/txn/${inputValue}`);
       return;
-    } catch {
-      // Do nothing. It's expected that not all search input is a valid transaction
     }
   };
 
@@ -160,7 +182,7 @@ export default function HeaderSearch() {
       onInputChange={handleInputChange}
       onClose={() => setOpen(false)}
       renderInput={(params) => {
-        return <SearchInput {...params} onEnterPress={handleEnterPress} />;
+        return <SearchInput {...params} onSubmitSearch={handleSubmitSearch} />;
       }}
       renderOption={(props, option) => {
         if (!option) return null;
