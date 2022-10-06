@@ -64,6 +64,32 @@ export function TransactionStatus({success}: TransactionStatusProps) {
 }
 
 export function TableTransactionStatus({success}: TransactionStatusProps) {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        marginLeft: 2,
+      }}
+    >
+      {success ? (
+        <CheckCircleOutlinedIcon
+          fontSize="small"
+          color="success"
+          titleAccess="Executed successfully"
+        />
+      ) : (
+        <ErrorOutlineOutlinedIcon
+          fontSize="small"
+          color="error"
+          titleAccess="Failed to Execute"
+        />
+      )}
+    </Box>
+  );
+}
+
+export function OldTransactionStatus({success}: TransactionStatusProps) {
   return success ? (
     <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
       <CheckCircleOutlinedIcon

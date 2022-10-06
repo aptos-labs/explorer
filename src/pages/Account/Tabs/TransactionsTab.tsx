@@ -29,10 +29,5 @@ export default function TransactionsTab({address}: TransactionsTabProps) {
     );
   }
 
-  return (
-    <TransactionsTable
-      transactions={data}
-      columns={["status", "timestamp", "version", "hash", "gas"]}
-    />
-  );
+  return <TransactionsTable transactions={data} />;
 }

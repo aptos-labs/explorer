@@ -7,10 +7,5 @@ type TransactionsTabProps = {
 };
 
 export default function TransactionsTab({data}: TransactionsTabProps) {
-  return (
-    <TransactionsTable
-      transactions={data.transactions ?? []}
-      columns={["type", "status", "timestamp", "version", "hash", "gas"]}
-    />
-  );
+  return <TransactionsTable transactions={data.transactions ?? []} />;
 }

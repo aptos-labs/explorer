@@ -6,7 +6,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {
-  TableTransactionStatus,
+  OldTransactionStatus,
   TransactionStatus,
 } from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
@@ -101,7 +101,7 @@ export default function BlockMetadataOverviewTab({
         <Row title={"Round:"} value={transactionData.round} />
         <Row
           title={"Status:"}
-          value={<TableTransactionStatus success={transactionData.success} />}
+          value={<OldTransactionStatus success={transactionData.success} />}
         />
         <Row
           title={"Proposer:"}
