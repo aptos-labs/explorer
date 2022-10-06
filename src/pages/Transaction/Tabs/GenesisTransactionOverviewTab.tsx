@@ -5,7 +5,7 @@ import Row from "./Components/Row";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import {
-  TableTransactionStatus,
+  OldTransactionStatus,
   TransactionStatus,
 } from "../../../components/TransactionStatus";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
@@ -65,7 +65,7 @@ export default function GenesisTransactionOverviewTab({
         <Row title={"Version:"} value={transactionData.version} />
         <Row
           title={"Status:"}
-          value={<TableTransactionStatus success={transactionData.success} />}
+          value={<OldTransactionStatus success={transactionData.success} />}
         />
         <Row
           title={"State Change Hash:"}

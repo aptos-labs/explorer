@@ -112,9 +112,9 @@ type TransactionColumn = keyof typeof TransactionCells;
 
 const DEFAULT_COLUMNS: TransactionColumn[] = [
   "version",
+  "status",
   "type",
   "hash",
-  "status",
   "gas",
   "timestamp",
 ];
