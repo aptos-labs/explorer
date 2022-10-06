@@ -57,7 +57,7 @@ export const getWalletNetwork: () => Promise<WalletNetworks> = async () => {
   } catch (error) {
     console.log(error);
   }
-  return "Devnet"; // default wallet network
+  return "devnet"; // default wallet network
 };
 
 export const isUpdatedVersion = (): boolean =>

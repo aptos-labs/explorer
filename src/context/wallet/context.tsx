@@ -20,4 +20,4 @@ export const useWalletContext = () => {
   return context;
 };
 
-export type WalletNetworks = "Devnet" | "Testnet";
+export type WalletNetworks = "devnet" | "testnet";

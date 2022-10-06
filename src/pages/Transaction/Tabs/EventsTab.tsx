@@ -16,7 +16,6 @@ function Event({event}: {event: Types.Event}) {
     <Stack direction="column" spacing={1}>
       <Row title={"Sequence Number:"} value={event.sequence_number} />
       <Row title={"Type:"} value={event.type} />
-      <Row title={"Key:"} value={event.key} />
       <Row title={"Data:"} value={renderDebug(event.data)} />
     </Stack>
   );
@@ -53,7 +52,6 @@ export default function EventsTab({transaction}: EventsTabProps) {
           toggleExpanded={() => toggleExpandedAt(i)}
         >
           <ContentRow title="Type:" value={event.type} />
-          <ContentRow title="Key:" value={event.key} />
           <ContentRow title="Data:" value={<JsonCard data={event.data} />} />
         </CollapsibleCard>
       ))}

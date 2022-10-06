@@ -3,7 +3,7 @@ import BlocksTable from "./Table";
 import {useGetMostRecentBlocks} from "../../api/hooks/useGetMostRecentBlocks";
 import {Box, Typography} from "@mui/material";
 import LoadingModal from "../Governance/components/LoadingModal";
-import HeaderSearch from "../layout/Search/Index";
+import PageHeader from "../../components/PageHeader";
 
 const BLOCKS_COUNT = 30;
 
@@ -14,7 +14,7 @@ export default function BlocksPage() {
     <>
       <LoadingModal open={isLoading} />
       <Box>
-        <HeaderSearch />
+        <PageHeader />
         <Typography variant="h3" marginBottom={2}>
           Latest Blocks
         </Typography>
