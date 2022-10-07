@@ -6,7 +6,7 @@ export const devnetUrl =
 
 export const networks = {
   local: "http://localhost:8080",
-  Devnet: devnetUrl,
+  devnet: devnetUrl,
   testnet: "https://testnet.aptoslabs.com",
   premainnet: "https://premainnet.aptosdev.com/",
 };

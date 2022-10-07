@@ -19,7 +19,7 @@ function getGraphqlURI(networkName: NetworkName): string | undefined {
   switch (networkName) {
     case "local":
       return undefined;
-    case "Devnet":
+    case "devnet":
       return process.env.REACT_APP_INDEXER_GRAPHQL_DEVNET;
     case "testnet":
       return process.env.REACT_APP_INDEXER_GRAPHQL_TESTNET;

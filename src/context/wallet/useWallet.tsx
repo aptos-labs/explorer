@@ -15,7 +15,7 @@ export function useWallet() {
   const [isAccountSet, setIsAccountSet] = useState<boolean>(false);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [accountAddress, setAccountAddress] = useState<string | null>(null);
-  const [walletNetwork, setWalletNetwork] = useState<WalletNetworks>("Devnet");
+  const [walletNetwork, setWalletNetwork] = useState<WalletNetworks>("devnet");
 
   useEffect(() => {
     setAptosWallet(getAptosWallet());

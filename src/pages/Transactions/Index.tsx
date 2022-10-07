@@ -134,14 +134,12 @@ export default function TransactionsPage() {
   );
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <PageHeader />
-        <Typography variant="h3" marginBottom={2}>
-          Transactions
-        </Typography>
-        <TransactionsPageInner {...result} />
-      </Grid>
-    </Grid>
+    <Box>
+      <PageHeader />
+      <Typography variant="h3" marginBottom={2}>
+        Transactions
+      </Typography>
+      <TransactionsPageInner {...result} />
+    </Box>
   );
 }
