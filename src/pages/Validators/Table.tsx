@@ -149,7 +149,7 @@ export function ValidatorsTable({
 }: ValidatorsTableProps) {
   const validatorsInOrder = validators.sort(
     (validator1, validator2) =>
-      parseInt(validator1.voting_power) - parseInt(validator2.voting_power),
+      parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
   );
 
   return (
