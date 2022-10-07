@@ -11,6 +11,7 @@ import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import useExpandedList from "../../../components/hooks/useExpandedList";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import HashButton, {HashType} from "../../../components/HashButton";
 
 function Event({event}: {event: Types.Event}) {
   return (
@@ -47,11 +48,25 @@ export default function EventsTab({transaction}: EventsTabProps) {
       {events.map((event, i) => (
         <CollapsibleCard
           key={i}
-          titleKey="Sequence Number:"
-          titleValue={event.sequence_number}
+          titleKey="Index:"
+          titleValue={i.toString()}
           expanded={expandedList[i]}
           toggleExpanded={() => toggleExpandedAt(i)}
         >
+          <ContentRow
+            title="Account Address:"
+            value={
+              <HashButton
+                hash={event.guid.account_address}
+                type={HashType.ACCOUNT}
+              />
+            }
+          />
+          <ContentRow
+            title="Creation Number:"
+            value={event.guid.creation_number}
+          />
+          <ContentRow title="Sequence Number:" value={event.sequence_number} />
           <ContentRow title="Type:" value={event.type} />
           <ContentRow title="Data:" value={<JsonCard data={event.data} />} />
         </CollapsibleCard>
