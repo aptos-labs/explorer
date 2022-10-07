@@ -10,6 +10,7 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import useExpandedList from "../../../components/hooks/useExpandedList";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 
 function Event({event}: {event: Types.Event}) {
   return (
@@ -29,7 +30,7 @@ export default function EventsTab({transaction}: EventsTabProps) {
   const inDev = useGetInDevMode();
 
   if (!("events" in transaction)) {
-    return <>None</>;
+    return <EmptyTabContent />;
   }
 
   const events: Types.Event[] = transaction.events;

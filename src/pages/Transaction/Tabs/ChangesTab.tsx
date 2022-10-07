@@ -10,6 +10,7 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 
 function Change({change, i}: {change: Types.WriteSetChange; i: number}) {
   return (
@@ -36,7 +37,7 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
   const inDev = useGetInDevMode();
 
   if (!("changes" in transaction)) {
-    return <>None</>;
+    return <EmptyTabContent />;
   }
 
   const changes: Types.WriteSetChange[] = transaction.changes;

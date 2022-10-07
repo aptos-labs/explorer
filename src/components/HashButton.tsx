@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Box,
+  BoxProps,
   Button,
   Typography,
   Popover,
@@ -54,12 +55,12 @@ function HashLink(hash: string, type: HashType): JSX.Element {
   }
 }
 
-interface HashButtonProps {
+interface HashButtonProps extends BoxProps {
   hash: string;
   type: HashType;
 }
 
-export default function HashButton({hash, type}: HashButtonProps) {
+export default function HashButton({hash, type, ...props}: HashButtonProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
@@ -79,7 +80,7 @@ export default function HashButton({hash, type}: HashButtonProps) {
   const theme = useTheme();
 
   return (
-    <Box>
+    <Box {...props}>
       <Button
         sx={{
           textTransform: "none",

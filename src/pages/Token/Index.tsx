@@ -5,6 +5,7 @@ import React from "react";
 import TokenTitle from "./Title";
 import TokenTabs from "./Tabs";
 import PageHeader from "../../components/PageHeader";
+import EmptyTabContent from "../../components/IndividualPageContent/EmptyTabContent";
 
 const TOKEN_QUERY = gql`
   query TokenData($token_id: String) {
@@ -46,7 +47,7 @@ export default function TokenPage() {
   // TODO: add graphql data typing
   const tokenDatas = data?.current_token_datas ?? [];
   if (tokenDatas.length === 0) {
-    return null;
+    return <EmptyTabContent />;
   }
   const token = tokenDatas[0];
 

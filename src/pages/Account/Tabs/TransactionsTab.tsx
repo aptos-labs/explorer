@@ -1,8 +1,8 @@
 import React from "react";
-import {Alert} from "@mui/material";
 import TransactionsTable from "../../Transactions/TransactionsTable";
 import Error from "../Error";
 import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 
 type TransactionsTabProps = {
   address: string;
@@ -19,14 +19,8 @@ export default function TransactionsTab({address}: TransactionsTabProps) {
     return <Error address={address} error={error} />;
   }
 
-  if (!data) {
-    return (
-      <Alert severity="error">
-        {`Got an empty response fetching Account Transactions with address ${address}.`}
-        <br />
-        Try again later.
-      </Alert>
-    );
+  if (!data || data.length === 0) {
+    return <EmptyTabContent />;
   }
 
   return <TransactionsTable transactions={data} />;

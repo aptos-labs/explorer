@@ -17,18 +17,21 @@ function NavButton({
   label: string;
 }) {
   return (
-    <Button
-      variant="nav"
-      component={NavLink}
-      to={to}
-      title={title}
-      sx={{
-        color: "inherit",
-        fontSize: "1rem",
-      }}
-    >
-      {label}
-    </Button>
+    <NavLink to={to} style={{textDecoration: "none", color: "inherit"}}>
+      {({isActive}) => (
+        <Button
+          variant="nav"
+          title={title}
+          style={{
+            color: "inherit",
+            fontSize: "1rem",
+            fontWeight: isActive ? 700 : undefined,
+          }}
+        >
+          {label}
+        </Button>
+      )}
+    </NavLink>
   );
 }
 
