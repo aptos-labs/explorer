@@ -41,7 +41,7 @@ export async function getAccountTransactions(
   const client = new AptosClient(nodeUrl, config);
   const {address, start, limit} = requestParameters;
   let bigStart;
-  if (start) {
+  if (start !== undefined) {
     bigStart = BigInt(start);
   }
   const transactions = await withResponseError(

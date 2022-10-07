@@ -48,16 +48,22 @@ function TransactionsPaginationTable({
       : TXN_PER_PAGE;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bf9963f (account transactions pagination)
   const {isLoading, data, error} = useGetAccountTransactions(
     address,
     start,
     limit,
   );
+<<<<<<< HEAD
 =======
   const {isLoading, data, error} = hasMoreThanOnePage
     ? useGetAccountTransactions(address, start, limit)
     : useGetAccountTransactions(address);
 >>>>>>> e1249cd (pagination)
+=======
+>>>>>>> bf9963f (account transactions pagination)
 
   if (error) {
     return <Error address={address} error={error} />;
