@@ -2,14 +2,19 @@ import React from "react";
 import {useGetTPS} from "../../../api/hooks/useGetTPS";
 import MetricCard from "./MetricCard";
 
+function getFormattedTPS(tps: number) {
+  const tpsWithDecimal = parseFloat(tps.toFixed(2));
+  return tpsWithDecimal.toLocaleString("en-US");
+}
+
 export default function TPS() {
   const {tps} = useGetTPS();
 
   return (
     <MetricCard
-      data={tps ? tps.toLocaleString("en-US") : "-"}
+      data={tps ? getFormattedTPS(tps) : "-"}
       label="Transactions per second (TPS)"
-      tooltipText="Transactions per second (TPS) is the rate of verified transactions over the previous second, on a rolling basis."
+      tooltipText="Rate of verified transactions over the previous second, on a rolling basis."
     />
   );
 }

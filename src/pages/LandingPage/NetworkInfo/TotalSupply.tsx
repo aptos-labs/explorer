@@ -10,11 +10,11 @@ export default function TotalSupply() {
     <MetricCard
       data={
         totalSupply
-          ? getFormattedBalanceStr(totalSupply.toString(), undefined, 3)
+          ? getFormattedBalanceStr(totalSupply.toString(), undefined, 2)
           : "-"
       }
       label="Total Circulating Supply"
-      tooltipText="Total Circulating Supply refers to the amount of APT tokens flowing through the Aptos network."
+      tooltipText="Amount of APT tokens flowing through the Aptos network."
     />
   );
 }
