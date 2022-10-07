@@ -57,9 +57,10 @@ function HashLink(hash: string, type: HashType): JSX.Element {
 interface HashButtonProps {
   hash: string;
   type: HashType;
+  alignRight?: boolean;
 }
 
-export default function HashButton({hash, type}: HashButtonProps) {
+export default function HashButton({hash, type, alignRight}: HashButtonProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
@@ -79,7 +80,11 @@ export default function HashButton({hash, type}: HashButtonProps) {
   const theme = useTheme();
 
   return (
-    <Box>
+    <Box
+      sx={
+        alignRight ? {display: "flex", justifyContent: "flex-end"} : undefined
+      }
+    >
       <Button
         sx={{
           textTransform: "none",

@@ -33,7 +33,7 @@ function ValidatorAddrCell({validator}: ValidatorCellProps) {
 
 function VotingPowerCell({validator}: ValidatorCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <TableCell sx={{textAlign: "right"}}>
       {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 3)}
     </TableCell>
   );
@@ -41,10 +41,11 @@ function VotingPowerCell({validator}: ValidatorCellProps) {
 
 function ConsensusPKCell({validator}: ValidatorCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <TableCell>
       <HashButton
         hash={validator.config.consensus_pubkey}
         type={HashType.OTHERS}
+        alignRight
       />
     </TableCell>
   );
@@ -52,10 +53,11 @@ function ConsensusPKCell({validator}: ValidatorCellProps) {
 
 function FullnodeAddrCell({validator}: ValidatorCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <TableCell>
       <HashButton
         hash={validator.config.fullnode_addresses}
         type={HashType.OTHERS}
+        alignRight
       />
     </TableCell>
   );
@@ -63,10 +65,11 @@ function FullnodeAddrCell({validator}: ValidatorCellProps) {
 
 function NetworkAddrCell({validator}: ValidatorCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <TableCell>
       <HashButton
         hash={validator.config.network_addresses}
         type={HashType.OTHERS}
+        alignRight
       />
     </TableCell>
   );
@@ -119,13 +122,17 @@ function ValidatorHeaderCell({column}: ValidatorHeaderCellProps) {
     case "addr":
       return <GeneralTableHeaderCell header="Address" />;
     case "votingPower":
-      return <GeneralTableHeaderCell header="Voting Power" />;
+      return <GeneralTableHeaderCell header="Voting Power" textAlignRight />;
     case "consensusPK":
-      return <GeneralTableHeaderCell header="Consensus Pubkey" />;
+      return (
+        <GeneralTableHeaderCell header="Consensus Pubkey" textAlignRight />
+      );
     case "fullnodeAddr":
-      return <GeneralTableHeaderCell header="Fullnode Address" />;
+      return (
+        <GeneralTableHeaderCell header="Fullnode Address" textAlignRight />
+      );
     case "networkAddr":
-      return <GeneralTableHeaderCell header="Network Address" />;
+      return <GeneralTableHeaderCell header="Network Address" textAlignRight />;
     default:
       return assertNever(column);
   }
@@ -140,6 +147,11 @@ export function ValidatorsTable({
   validators,
   columns = DEFAULT_COLUMNS,
 }: ValidatorsTableProps) {
+  const validatorsInOrder = validators.sort(
+    (validator1, validator2) =>
+      parseInt(validator1.voting_power) - parseInt(validator2.voting_power),
+  );
+
   return (
     <Table>
       <TableHead>
@@ -150,7 +162,7 @@ export function ValidatorsTable({
         </TableRow>
       </TableHead>
       <TableBody>
-        {validators.map((validator: any, i: number) => {
+        {validatorsInOrder.map((validator: any, i: number) => {
           return (
             <ValidatorRow key={i} validator={validator} columns={columns} />
           );
