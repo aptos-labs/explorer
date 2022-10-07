@@ -1,6 +1,7 @@
 import React from "react";
 import {
   Box,
+  BoxProps,
   Button,
   Typography,
   Popover,
@@ -54,13 +55,12 @@ function HashLink(hash: string, type: HashType): JSX.Element {
   }
 }
 
-interface HashButtonProps {
+interface HashButtonProps extends BoxProps {
   hash: string;
   type: HashType;
-  alignRight?: boolean;
 }
 
-export default function HashButton({hash, type, alignRight}: HashButtonProps) {
+export default function HashButton({hash, type, ...props}: HashButtonProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null,
   );
@@ -80,11 +80,7 @@ export default function HashButton({hash, type, alignRight}: HashButtonProps) {
   const theme = useTheme();
 
   return (
-    <Box
-      sx={
-        alignRight ? {display: "flex", justifyContent: "flex-end"} : undefined
-      }
-    >
+    <Box {...props}>
       <Button
         sx={{
           textTransform: "none",

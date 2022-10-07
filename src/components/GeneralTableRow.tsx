@@ -3,17 +3,14 @@ import {TableRow, useTheme} from "@mui/material";
 import {grey} from "../themes/colors/aptosColorPalette";
 
 interface TableRowProps {
-  children?: React.ReactNode;
-  onClick: () => void;
-  clickDisabled?: boolean;
+  children: React.ReactNode;
+  onClick?: () => void;
 }
 
-export default function GeneralTableRow({
-  children,
-  onClick,
-  clickDisabled,
-}: TableRowProps) {
+export default function GeneralTableRow({children, onClick}: TableRowProps) {
   const theme = useTheme();
+  const clickDisabled = !onClick;
+
   return (
     <TableRow
       onClick={onClick}

@@ -45,7 +45,7 @@ function ConsensusPKCell({validator}: ValidatorCellProps) {
       <HashButton
         hash={validator.config.consensus_pubkey}
         type={HashType.OTHERS}
-        alignRight
+        sx={{display: "flex", justifyContent: "flex-end"}}
       />
     </TableCell>
   );
@@ -57,7 +57,7 @@ function FullnodeAddrCell({validator}: ValidatorCellProps) {
       <HashButton
         hash={validator.config.fullnode_addresses}
         type={HashType.OTHERS}
-        alignRight
+        sx={{display: "flex", justifyContent: "flex-end"}}
       />
     </TableCell>
   );
@@ -69,7 +69,7 @@ function NetworkAddrCell({validator}: ValidatorCellProps) {
       <HashButton
         hash={validator.config.network_addresses}
         type={HashType.OTHERS}
-        alignRight
+        sx={{display: "flex", justifyContent: "flex-end"}}
       />
     </TableCell>
   );
@@ -102,7 +102,7 @@ type ValidatorRowProps = {
 
 function ValidatorRow({validator, columns}: ValidatorRowProps) {
   return (
-    <GeneralTableRow onClick={() => {}} clickDisabled>
+    <GeneralTableRow>
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
         return <Cell key={column} validator={validator} />;
@@ -147,7 +147,8 @@ export function ValidatorsTable({
   validators,
   columns = DEFAULT_COLUMNS,
 }: ValidatorsTableProps) {
-  const validatorsInOrder = validators.sort(
+  const validatorsCopy: Validator[] = JSON.parse(JSON.stringify(validators));
+  const validatorsInOrder = validatorsCopy.sort(
     (validator1, validator2) =>
       parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
   );

@@ -16,22 +16,22 @@ function NavButton({
   title: string;
   label: string;
 }) {
-  const isSelected = window.location.pathname === to;
-
   return (
-    <Button
-      variant="nav"
-      component={NavLink}
-      to={to}
-      title={title}
-      sx={{
-        color: "inherit",
-        fontSize: "1rem",
-        fontWeight: isSelected ? 700 : undefined,
-      }}
-    >
-      {label}
-    </Button>
+    <NavLink to={to} style={{textDecoration: "none", color: "inherit"}}>
+      {({isActive}) => (
+        <Button
+          variant="nav"
+          title={title}
+          style={{
+            color: "inherit",
+            fontSize: "1rem",
+            fontWeight: isActive ? 700 : undefined,
+          }}
+        >
+          {label}
+        </Button>
+      )}
+    </NavLink>
   );
 }
 
