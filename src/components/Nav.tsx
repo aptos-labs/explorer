@@ -16,6 +16,8 @@ function NavButton({
   title: string;
   label: string;
 }) {
+  const isSelected = window.location.pathname === to;
+
   return (
     <Button
       variant="nav"
@@ -25,6 +27,7 @@ function NavButton({
       sx={{
         color: "inherit",
         fontSize: "1rem",
+        fontWeight: isSelected ? 700 : undefined,
       }}
     >
       {label}

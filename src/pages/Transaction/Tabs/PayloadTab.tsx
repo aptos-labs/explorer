@@ -5,6 +5,7 @@ import {renderDebug} from "../../utils";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 
 type PayloadTabProps = {
   transaction: Types.Transaction;
@@ -15,7 +16,7 @@ export default function PayloadTab({transaction}: PayloadTabProps) {
   const [expanded, setExpanded] = useState<boolean>(true);
 
   if (!("payload" in transaction)) {
-    return <>None</>;
+    return <EmptyTabContent />;
   }
 
   const toggleExpanded = () => {

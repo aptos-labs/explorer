@@ -7,6 +7,8 @@ import EmptyValue from "./ContentValue/EmptyValue";
 const TEXT_COLOR_LIGHT = "#0EA5E9";
 const TEXT_COLOR_DARK = "#83CCED";
 const BACKGROUND_COLOR = "rgba(14,165,233,0.1)";
+const CARD_HEIGHT = 60;
+const EXPANDED_CARD_HEIGHT = 500;
 
 type JsonCardProps = {
   data: any;
@@ -28,9 +30,15 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
     setExpanded(!expanded);
   };
 
+  const expandCard = () => {
+    if (!expanded) {
+      setExpanded(true);
+    }
+  };
+
   return (
     <Box
-      onClick={toggleCard}
+      onClick={expandCard}
       sx={{
         color:
           theme.palette.mode === "dark" ? TEXT_COLOR_DARK : TEXT_COLOR_LIGHT,
@@ -51,7 +59,7 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
           overflowX: "auto",
           overflowY: expanded ? "auto" : "hidden",
         }}
-        maxHeight={expandable && !expanded ? 60 : ""}
+        maxHeight={expandable && !expanded ? CARD_HEIGHT : EXPANDED_CARD_HEIGHT}
       >
         <pre
           style={{
@@ -71,6 +79,7 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
             marginTop: expanded ? 0 : 1,
             textAlign: "center",
           }}
+          onClick={toggleCard}
         >
           {expanded ? (
             <KeyboardArrowUpIcon color="inherit" fontSize="small" />

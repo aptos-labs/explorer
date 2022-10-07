@@ -1,6 +1,7 @@
 import React from "react";
 import {gql, useQuery} from "@apollo/client";
 import {ActivitiesTable} from "../Component/ActivitiesTable";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 
 const TOKEN_ACTIVITIES_QUERY = gql`
   query TokenActivities($token_id: String) {
@@ -32,10 +33,15 @@ export default function ActivitiesTab({
     },
   });
 
-  if (loading || error || !data) {
+  if (loading || error) {
     // TODO: error handling
     return null;
   }
 
-  return <ActivitiesTable activities={data?.token_activities ?? []} />;
+  const activities = data?.token_activities ?? [];
+  if (activities.length === 0) {
+    return <EmptyTabContent />;
+  }
+
+  return <ActivitiesTable activities={activities} />;
 }

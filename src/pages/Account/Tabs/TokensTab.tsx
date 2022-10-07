@@ -1,6 +1,7 @@
 import React from "react";
 import {gql, useQuery} from "@apollo/client";
 import {TokensTable} from "../Components/TokensTable";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 
 const TOKENS_QUERY = gql`
   query TokensData($owner_address: String) {
@@ -27,13 +28,17 @@ export default function TokenTabs({address}: TokenTabsProps) {
     },
   });
 
-  if (loading || error || !data) {
+  if (loading || error) {
     // TODO: error handling
     return null;
   }
 
   // TODO: add graphql data typing
   const tokens = data?.current_token_ownerships ?? [];
+
+  if (tokens.length === 0) {
+    return <EmptyTabContent />;
+  }
 
   return <TokensTable tokens={tokens} />;
 }
