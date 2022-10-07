@@ -20,14 +20,6 @@ if (window.location.origin.includes("explorer.devnet.aptos.dev")) {
   window.location.replace(new_location);
 }
 
-if (window.location.origin.includes("explorer.aptoslabs.com/proposals")) {
-  const new_location = window.location.href.replace(
-    "explorer.aptoslabs.com/proposals",
-    "governance.aptosfoundation.org",
-  );
-  window.location.replace(new_location);
-}
-
 Sentry.init({
   dsn: "https://531160c88f78483491d129c02be9f774@o1162451.ingest.sentry.io/6249755",
   integrations: [new BrowserTracing()],
