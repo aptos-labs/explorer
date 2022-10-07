@@ -27,6 +27,14 @@ type TransactionCellProps = {
   transaction: Types.Transaction;
 };
 
+function SequenceNumberCell({transaction}: TransactionCellProps) {
+  return (
+    <TableCell sx={{textAlign: "left"}}>
+      {"sequence_number" in transaction && transaction.sequence_number}
+    </TableCell>
+  );
+}
+
 function TransactionStatusCell({transaction}: TransactionCellProps) {
   return (
     <TableCell sx={{textAlign: "left"}}>
@@ -100,6 +108,7 @@ function TransactionHashCell({transaction}: TransactionCellProps) {
 }
 
 const TransactionCells = Object.freeze({
+  sequenceNum: SequenceNumberCell,
   version: TransactionVersionCell,
   type: TransactionTypeCell,
   hash: TransactionHashCell,
@@ -176,6 +185,8 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
   const theme = useTheme();
 
   switch (column) {
+    case "sequenceNum":
+      return <GeneralTableHeaderCell header="#" />;
     case "version":
       return <GeneralTableHeaderCell header="Version" />;
     case "type":
