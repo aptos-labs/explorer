@@ -5,30 +5,39 @@ import {grey} from "../themes/colors/aptosColorPalette";
 interface TableRowProps {
   children?: React.ReactNode;
   onClick: () => void;
+  clickDisabled?: boolean;
 }
 
-export default function GeneralTableRow({children, onClick}: TableRowProps) {
+export default function GeneralTableRow({
+  children,
+  onClick,
+  clickDisabled,
+}: TableRowProps) {
   const theme = useTheme();
   return (
     <TableRow
       onClick={onClick}
       sx={{
-        cursor: "pointer",
+        cursor: clickDisabled ? undefined : "pointer",
         userSelect: "none",
         backgroundColor: `${
           theme.palette.mode === "dark" ? grey[800] : grey[50]
         }`,
-        "&:hover:not(:active)": {
-          filter: `${
-            theme.palette.mode === "dark"
-              ? "brightness(0.9)"
-              : "brightness(0.99)"
-          }`,
-        },
-        "&:active": {
-          background: theme.palette.neutralShade.main,
-          transform: "translate(0,0.1rem)",
-        },
+        "&:hover:not(:active)": clickDisabled
+          ? undefined
+          : {
+              filter: `${
+                theme.palette.mode === "dark"
+                  ? "brightness(0.9)"
+                  : "brightness(0.99)"
+              }`,
+            },
+        "&:active": clickDisabled
+          ? undefined
+          : {
+              background: theme.palette.neutralShade.main,
+              transform: "translate(0,0.1rem)",
+            },
       }}
     >
       {children}

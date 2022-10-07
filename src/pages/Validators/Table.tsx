@@ -99,7 +99,7 @@ type ValidatorRowProps = {
 
 function ValidatorRow({validator, columns}: ValidatorRowProps) {
   return (
-    <GeneralTableRow onClick={() => {}}>
+    <GeneralTableRow onClick={() => {}} clickDisabled>
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
         return <Cell key={column} validator={validator} />;
