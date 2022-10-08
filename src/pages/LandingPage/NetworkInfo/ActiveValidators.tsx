@@ -13,7 +13,7 @@ export default function ActiveValidators() {
           : "-"
       }
       label="Active Validators"
-      tooltipText="Active Validators refers to the number of validators in the current epoch."
+      tooltipText="Number of validators in the validator set in the current epoch."
     />
   );
 }

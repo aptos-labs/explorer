@@ -10,11 +10,11 @@ export default function TotalStake() {
     <MetricCard
       data={
         totalVotingPower
-          ? getFormattedBalanceStr(totalVotingPower.toString(), undefined, 3)
+          ? getFormattedBalanceStr(totalVotingPower.toString(), undefined, 2)
           : "-"
       }
       label="Actively Staked"
-      tooltipText="Actively Staked refers to the amount of APT tokens currently held in staking accounts."
+      tooltipText="Amount of APT tokens currently held in staking pools."
     />
   );
 }
