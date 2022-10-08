@@ -72,6 +72,7 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
           onClick={expandCard}
           sx={{
             overflow: expanded ? "auto" : "hidden",
+            width: "100%",
           }}
           maxHeight={
             expandable && !expanded ? CARD_HEIGHT : EXPANDED_CARD_HEIGHT
