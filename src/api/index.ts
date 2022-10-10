@@ -137,18 +137,20 @@ export function getTableItem(
 
 export function getBlockByHeight(
   height: number,
+  withTransactions: boolean,
   nodeUrl: string,
 ): Promise<Types.Block> {
   const client = new AptosClient(nodeUrl, config);
-  return withResponseError(client.getBlockByHeight(height, true));
+  return withResponseError(client.getBlockByHeight(height, withTransactions));
 }
 
 export function getBlockByVersion(
   version: number,
+  withTransactions: boolean,
   nodeUrl: string,
 ): Promise<Types.Block> {
   const client = new AptosClient(nodeUrl, config);
-  return withResponseError(client.getBlockByVersion(version, true));
+  return withResponseError(client.getBlockByVersion(version, withTransactions));
 }
 
 export async function getRecentBlocks(

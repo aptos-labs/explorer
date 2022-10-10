@@ -18,12 +18,16 @@ function calculateTps(startBlock: Types.Block, endBlock: Types.Block): number {
   return (endTransactionVersion - startTransactionVersion) / durationInSec;
 }
 
-export function useGetTPSByBlockHeight(currentBlockHeight: number | null) {
+export function useGetTPSByBlockHeight(currentBlockHeight: number | undefined) {
   const blockHeight = currentBlockHeight ?? TPS_FREQUENCY;
+
   const [tps, setTps] = useState<number | null>(null);
 
-  const {data: startBlock} = useGetBlockByHeight(blockHeight - TPS_FREQUENCY);
-  const {data: endBlock} = useGetBlockByHeight(blockHeight);
+  const {data: startBlock} = useGetBlockByHeight(
+    blockHeight - TPS_FREQUENCY,
+    false,
+  );
+  const {data: endBlock} = useGetBlockByHeight(blockHeight, false);
 
   useEffect(() => {
     if (startBlock !== undefined && endBlock !== undefined) {
