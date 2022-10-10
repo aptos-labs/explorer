@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {Stack} from "@mui/material";
+import {Box, Stack} from "@mui/material";
 import React from "react";
 import Divider from "@mui/material/Divider";
 import Error from "../Error";
@@ -80,14 +80,18 @@ function ModulesContent({
       {modules.map((module, i) => (
         <CollapsibleCard
           key={i}
-          titleKey="Index:"
-          titleValue={i.toString()}
+          titleKey="Name:"
+          titleValue={module.abi?.name ?? ""}
           expanded={expandedList[i]}
           toggleExpanded={() => toggleExpandedAt(i)}
         >
           <ContentRow
             title="Bytecode:"
-            value={<JsonCard data={module.bytecode} />}
+            value={
+              <Box style={{wordWrap: "break-word", maxHeight: 60}}>
+                {module.bytecode}
+              </Box>
+            }
           />
           <ContentRow title="ABI:" value={<JsonCard data={module.abi} />} />
         </CollapsibleCard>
