@@ -11,6 +11,7 @@ const TOKENS_QUERY = gql`
       token_data_id_hash
       name
       collection_name
+      table_type
       property_version
       amount
     }

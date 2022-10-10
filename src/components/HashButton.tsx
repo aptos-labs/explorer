@@ -96,6 +96,7 @@ export default function HashButton({hash, type, ...props}: HashButtonProps) {
               theme.palette.mode === "dark" ? grey[500] : grey[300]
             }`,
           },
+          minWidth: 141,
         }}
         aria-describedby={id}
         onClick={hashExpand}

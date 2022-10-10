@@ -1,9 +1,54 @@
-import {Box, Link} from "@mui/material";
+import {useParams} from "react-router-dom";
+import {gql, useQuery} from "@apollo/client";
+import {Box, Link, Stack} from "@mui/material";
 import React, {useState} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
+
+const OWNER_QUERY = gql`
+  query OwnersData($token_id: String, $property_version: numeric) {
+    current_token_ownerships(
+      where: {
+        token_data_id_hash: {_eq: $token_id}
+        property_version: {_eq: $property_version}
+      }
+    ) {
+      owner_address
+    }
+  }
+`;
+
+function OwnersRow() {
+  const {tokenId, propertyVersion} = useParams();
+
+  if (propertyVersion === undefined) {
+    return null;
+  }
+
+  const {data: ownersData} = useQuery(OWNER_QUERY, {
+    variables: {
+      token_id: tokenId,
+      property_version: parseInt(propertyVersion),
+    },
+  });
+
+  const owners = ownersData?.current_token_ownerships ?? [];
+
+  return (
+    <ContentRow
+      title={"Owner(s):"}
+      value={
+        <Stack direction="row" spacing={1}>
+          {owners.map((owner: {owner_address: string}) => (
+            <HashButton hash={owner?.owner_address} type={HashType.ACCOUNT} />
+          ))}
+        </Stack>
+      }
+    />
+  );
+}
 
 function getRoyalty(
   data: any, // TODO: add graphql data typing
@@ -35,12 +80,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
     <Box marginBottom={3}>
       <ContentBox>
         <ContentRow title={"Token Name:"} value={data?.name} />
-        <ContentRow
-          title={"Owner:"}
-          value={
-            <HashButton hash={data?.payee_address} type={HashType.ACCOUNT} />
-          }
-        />
+        <OwnersRow />
         <ContentRow title={"Collection Name:"} value={data?.collection_name} />
         <ContentRow
           title={"Creator:"}
@@ -49,6 +89,12 @@ export default function OverviewTab({data}: OverviewTabProps) {
           }
         />
         <ContentRow title={"Royalty:"} value={getRoyalty(data)} />
+        <ContentRow
+          title={"Royalty Payee:"}
+          value={
+            <HashButton hash={data?.payee_address} type={HashType.ACCOUNT} />
+          }
+        />
         <ContentRow
           title={"Metadata:"}
           value={
