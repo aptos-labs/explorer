@@ -18,7 +18,7 @@ export default function HeaderSearch() {
   const options = useGetSearchResults(inputValue);
 
   useEffect(() => {
-    if (options.length > 1) {
+    if (options.length > 0) {
       setSelectedOption(options[0]);
     }
   }, [options]);
