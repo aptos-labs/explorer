@@ -1,5 +1,5 @@
 import {AptosClient, Types} from "aptos";
-import {isHex} from "../pages/utils";
+import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
 
@@ -59,10 +59,14 @@ export function getTransaction(
   nodeUrl: string,
 ): Promise<Types.Transaction> {
   const {txnHashOrVersion} = requestParameters;
-  if (isHex(txnHashOrVersion as string)) {
-    return getTransactionByHash(txnHashOrVersion as string, nodeUrl);
+  if (typeof txnHashOrVersion === "number" || isNumeric(txnHashOrVersion)) {
+    const version =
+      typeof txnHashOrVersion === "number"
+        ? txnHashOrVersion
+        : parseInt(txnHashOrVersion);
+    return getTransactionByVersion(version, nodeUrl);
   } else {
-    return getTransactionByVersion(txnHashOrVersion as number, nodeUrl);
+    return getTransactionByHash(txnHashOrVersion as string, nodeUrl);
   }
 }
 

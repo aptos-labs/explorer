@@ -144,9 +144,18 @@ export function isValidAccountAddress(accountAddr: string): boolean {
   // can start with that and see if any fails to parsing
   return /^(0[xX])?[a-fA-F0-9]{1,64}$/.test(accountAddr);
 }
+
+export function isValidTxnHashOrVersion(txnHashOrVersion: string): boolean {
+  return isHex(txnHashOrVersion) || isNumeric(txnHashOrVersion);
+}
+
 export function isHex(text: string) {
   // if it's hex, and is <= (64 + 2 for 0x) char long
   return text.startsWith("0x") && text.length <= 66;
+}
+
+export function isNumeric(text: string) {
+  return /^-?\d+$/.test(text);
 }
 
 export function getFormattedTimestamp(timestamp?: string): string {

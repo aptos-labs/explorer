@@ -1,88 +1,16 @@
-import React, {useState, useEffect, useMemo} from "react";
-import {throttle} from "lodash";
+import React, {useState} from "react";
 import {Autocomplete, AutocompleteInputChangeReason} from "@mui/material";
-import SearchTransaction from "./SearchTransaction";
-import SearchAccount from "./SearchAccount";
 import SearchInput from "./SearchInput";
-import ResultPaper from "./ResultPaper";
-import SearchResultNotFound from "./SearchResultNotFound";
-import SearchBlockByHeight from "./SearchBlockByHeight";
-import SearchBlockByVersion from "./SearchBlockByVersion";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
-import {getAccount, getTransaction} from "../../../api";
-import {useGlobalState} from "../../../GlobalState";
 import {useNavigate} from "react-router-dom";
-
-const HEX_REGEXP = /^(0x)?[0-9a-fA-F]+$/;
-
-type OptionType = React.ReactNode[];
-
-function getSearchResults(searchText: string, inDev: boolean): OptionType {
-  searchText = searchText.trim();
-
-  if (!HEX_REGEXP.test(searchText)) {
-    // if it's not hexadecimal characters, no results
-    return [<SearchResultNotFound />];
-  }
-
-  const results = [
-    <SearchAccount address={searchText} />,
-    <SearchTransaction txnHashOrVersion={searchText} />,
-  ];
-
-  if (inDev) {
-    results.push(
-      <SearchBlockByHeight height={searchText} />,
-      <SearchBlockByVersion version={searchText} />,
-    );
-  }
-
-  if (results.length === 0) {
-    return [<SearchResultNotFound />];
-  } else {
-    return results;
-  }
-}
+import useGetSearchResults from "../../../api/hooks/useGetSearchResults";
+import ResultLink from "./ResultLink";
 
 export default function HeaderSearch() {
-  const inDev = useGetInDevMode();
   const navigate = useNavigate();
-  const [state, _] = useGlobalState();
   const [inputValue, setInputValue] = useState<string>("");
-  const [options, setOptions] = useState<OptionType>([]);
-
-  const fetch = useMemo(
-    () =>
-      throttle(
-        (searchText: string, callback: (results: OptionType) => void) => {
-          callback(getSearchResults(searchText, inDev));
-        },
-        200,
-      ),
-    [],
-  );
-
-  useEffect(() => {
-    let active = true;
-
-    if (inputValue === "") {
-      setOptions([]);
-      return;
-    }
-
-    fetch(inputValue, (results: OptionType) => {
-      if (active) {
-        setOptions(results);
-      }
-    });
-
-    return () => {
-      active = false;
-    };
-  }, [inputValue, fetch]);
-
-  // hide autocomplete dropdown until text has been entered
   const [open, setOpen] = useState(false);
+
+  const options = useGetSearchResults(inputValue);
 
   const handleInputChange = (
     event: any,
@@ -107,47 +35,13 @@ export default function HeaderSearch() {
   };
 
   const handleSubmitSearch = async () => {
-    const accountPromise = getAccount(
-      {address: inputValue},
-      state.network_value,
-    )
-      .then(() => {
-        return true;
-      })
-      .catch(() => {
-        // Do nothing. It's expected that not all search input is a valid account
-      });
-
-    const transactionPromise = getTransaction(
-      {txnHashOrVersion: inputValue},
-      state.network_value,
-    )
-      .then(() => {
-        return true;
-      })
-      .catch(() => {
-        // Do nothing. It's expected that not all search input is a valid account
-      });
-
-    const [isAccount, isTxn] = await Promise.all([
-      accountPromise,
-      transactionPromise,
-    ]);
-
-    if (isAccount) {
-      navigate(`/account/${inputValue}`);
-      return;
-    }
-
-    if (isTxn) {
-      navigate(`/txn/${inputValue}`);
-      return;
+    if (options.length > 0 && options[0].to !== null) {
+      navigate(options[0].to);
     }
   };
 
   return (
     <Autocomplete
-      PaperComponent={({children}) => <ResultPaper>{children}</ResultPaper>}
       open={open}
       sx={{
         mb: {sm: 1, md: 2},
@@ -173,7 +67,6 @@ export default function HeaderSearch() {
       freeSolo
       clearOnBlur
       autoSelect={false}
-      noOptionsText="No Results"
       getOptionLabel={(option) => ""}
       filterOptions={(x) => x.filter((x) => !!x)}
       options={options}
@@ -184,8 +77,11 @@ export default function HeaderSearch() {
         return <SearchInput {...params} />;
       }}
       renderOption={(props, option) => {
-        if (!option) return null;
-        return <li {...props}>{option}</li>;
+        return (
+          <li {...props} key={props.id}>
+            <ResultLink to={option.to} text={option.label} />
+          </li>
+        );
       }}
       onSubmit={(event) => {
         handleSubmitSearch();
