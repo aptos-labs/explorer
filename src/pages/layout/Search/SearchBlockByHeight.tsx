@@ -9,7 +9,9 @@ type SearchBlockByHeightProps = {
 export default function SearchBlockByHeight({
   height,
 }: SearchBlockByHeightProps) {
-  const {isLoading, isError, data} = useGetBlockByHeight(parseInt(height));
+  const {isLoading, isError, data} = useGetBlockByHeight({
+    height: parseInt(height),
+  });
 
   if (isLoading || isError || !data) {
     return null;
