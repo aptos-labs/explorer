@@ -44,6 +44,10 @@ export default function FeatureBar() {
     const feature_name = searchParams.get("feature");
     if (feature_name) {
       maybeSetFeature(feature_name);
+    } else {
+      // the "feature" param being null means that it's in mainnet production mode (gtm)
+      // so set feature to "gtm"
+      maybeSetFeature(defaultFeatureName);
     }
   });
 
