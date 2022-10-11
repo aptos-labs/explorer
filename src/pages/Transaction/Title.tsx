@@ -3,18 +3,18 @@ import React from "react";
 import {Types} from "aptos";
 import HashButtonCopyable from "../../components/HashButtonCopyable";
 import {TransactionType} from "../../components/TransactionType";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../api/hooks/useGetInDevMode";
 
 type TransactionTitleProps = {
   transaction: Types.Transaction;
 };
 
 export default function TransactionTitle({transaction}: TransactionTitleProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
-  return inDev ? (
+  return inGtm ? (
     <Stack
       direction={{xs: "column"}}
       alignItems="flex-start"

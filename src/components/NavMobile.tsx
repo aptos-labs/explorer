@@ -11,10 +11,10 @@ import {useTheme} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import {useGetInDevMode} from "../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../api/hooks/useGetInDevMode";
 
 export default function NavMobile() {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [governanceMenuOpen, setGovernanceMenuOpen] = useState<boolean>(false);
   const theme = useTheme();
@@ -63,7 +63,7 @@ export default function NavMobile() {
       >
         {menuOpen ? <CloseIcon /> : <HamburgerIcon />}
       </Button>
-      {inDev ? (
+      {inGtm ? (
         <Menu
           anchorEl={menuAnchorEl}
           open={menuOpen}

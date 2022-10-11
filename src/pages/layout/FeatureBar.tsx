@@ -36,7 +36,7 @@ export default function FeatureBar() {
     }
   }
 
-  const goToProd = () => {
+  const goToDefaultMode = () => {
     maybeSetFeature(defaultFeatureName);
   };
 
@@ -61,9 +61,9 @@ export default function FeatureBar() {
           component="button"
           variant="body2"
           color="inherit"
-          onClick={goToProd}
+          onClick={goToDefaultMode}
         >
-          Go To Prod
+          {`Go To ${defaultFeatureName} Mode`}
         </Link>
       </Stack>
     </Box>

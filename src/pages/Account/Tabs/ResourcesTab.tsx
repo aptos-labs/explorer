@@ -11,7 +11,7 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 
 function Content({
   data,
@@ -74,7 +74,7 @@ type ResourcesTabProps = {
 };
 
 export default function ResourcesTab({address}: ResourcesTabProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const {isLoading, data, error} = useGetAccountResources(address);
 
   if (isLoading) {
@@ -85,7 +85,7 @@ export default function ResourcesTab({address}: ResourcesTabProps) {
     return <Error address={address} error={error} />;
   }
 
-  return inDev ? (
+  return inGtm ? (
     <ResourcesContent data={data} />
   ) : (
     <Stack

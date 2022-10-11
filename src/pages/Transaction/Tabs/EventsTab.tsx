@@ -5,7 +5,7 @@ import {renderDebug} from "../../utils";
 import Divider from "@mui/material/Divider";
 import Row from "./Components/Row";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
@@ -28,7 +28,7 @@ type EventsTabProps = {
 };
 
 export default function EventsTab({transaction}: EventsTabProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
 
   if (!("events" in transaction)) {
     return <EmptyTabContent />;
@@ -39,7 +39,7 @@ export default function EventsTab({transaction}: EventsTabProps) {
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(events.length);
 
-  return inDev ? (
+  return inGtm ? (
     <CollapsibleCards
       expandedList={expandedList}
       expandAll={expandAll}

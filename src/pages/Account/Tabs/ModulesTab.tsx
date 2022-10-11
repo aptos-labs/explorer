@@ -9,7 +9,7 @@ import {useGlobalState} from "../../../GlobalState";
 import {ResponseError} from "../../../api/client";
 import {useQuery} from "react-query";
 import {getAccountModules} from "../../../api";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
@@ -100,7 +100,7 @@ function ModulesContent({
 }
 
 export default function ModulesTab({address}: ModulesTabProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const [state, _] = useGlobalState();
 
   const {isLoading, data, error} = useQuery<
@@ -118,7 +118,7 @@ export default function ModulesTab({address}: ModulesTabProps) {
     return <Error address={address} error={error} />;
   }
 
-  return inDev ? (
+  return inGtm ? (
     <ModulesContent data={data} />
   ) : (
     <Stack

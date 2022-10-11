@@ -10,7 +10,7 @@ import {
   OldTransactionStatus,
   TransactionStatus,
 } from "../../../components/TransactionStatus";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
@@ -77,10 +77,10 @@ type UserTransactionOverviewTabProps = {
 export default function UserTransactionOverviewTab({
   transaction,
 }: UserTransactionOverviewTabProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const transactionData = transaction as Types.Transaction_UserTransaction;
 
-  return inDev ? (
+  return inGtm ? (
     <Box marginBottom={3}>
       <ContentBox padding={4}>
         <ContentRow

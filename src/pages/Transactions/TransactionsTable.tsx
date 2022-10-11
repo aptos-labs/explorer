@@ -20,7 +20,7 @@ import {TableTransactionType} from "../../components/TransactionType";
 import {TableTransactionStatus} from "../../components/TransactionStatus";
 import {getFormattedTimestamp} from "../utils";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../api/hooks/useGetInDevMode";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 
 type TransactionCellProps = {
@@ -81,9 +81,9 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionGasCell({transaction}: TransactionCellProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
 
-  return inDev ? (
+  return inGtm ? (
     <TableCell sx={{textAlign: "right"}}>
       {"gas_used" in transaction && "gas_unit_price" in transaction ? (
         <GasFeeValue

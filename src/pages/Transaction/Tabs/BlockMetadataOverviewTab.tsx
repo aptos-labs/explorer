@@ -9,7 +9,7 @@ import {
   OldTransactionStatus,
   TransactionStatus,
 } from "../../../components/TransactionStatus";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
@@ -22,11 +22,11 @@ type BlockMetadataOverviewTabProps = {
 export default function BlockMetadataOverviewTab({
   transaction,
 }: BlockMetadataOverviewTabProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const transactionData =
     transaction as Types.Transaction_BlockMetadataTransaction;
 
-  return inDev ? (
+  return inGtm ? (
     <Box marginBottom={3}>
       <ContentBox paddingLeft={1.5}>
         <ContentRow

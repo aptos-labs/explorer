@@ -8,7 +8,7 @@ import {
   OldTransactionStatus,
   TransactionStatus,
 } from "../../../components/TransactionStatus";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
@@ -21,11 +21,11 @@ type StateCheckpointOverviewTabProps = {
 export default function StateCheckpointOverviewTab({
   transaction,
 }: StateCheckpointOverviewTabProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const transactionData =
     transaction as Types.Transaction_StateCheckpointTransaction;
 
-  return inDev ? (
+  return inGtm ? (
     <Box marginBottom={3}>
       <ContentBox>
         <ContentRow

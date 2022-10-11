@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import {Menu, MenuItem} from "@mui/material";
 import Fade from "@mui/material/Fade";
-import {useGetInDevMode} from "../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../api/hooks/useGetInDevMode";
 
 function NavButton({
   to,
@@ -36,7 +36,7 @@ function NavButton({
 }
 
 export default function Nav() {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const [governanceMenuEl, setGovernanceMenuEl] = useState<null | HTMLElement>(
     null,
   );
@@ -69,7 +69,7 @@ export default function Nav() {
         title="View All Transactions"
         label="Transactions"
       />
-      {inDev && (
+      {inGtm && (
         <>
           <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
           <NavButton
@@ -79,7 +79,7 @@ export default function Nav() {
           />
         </>
       )}
-      {!inDev && (
+      {!inGtm && (
         <>
           <Button
             variant="nav"

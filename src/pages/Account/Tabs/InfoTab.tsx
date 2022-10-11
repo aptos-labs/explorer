@@ -8,7 +8,7 @@ import {getAccount} from "../../../api";
 import Divider from "@mui/material/Divider";
 import Error from "../Error";
 import Row from "../Row";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
@@ -59,7 +59,7 @@ type InfoTabProps = {
 };
 
 export default function InfoTab({address}: InfoTabProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const [state, _] = useGlobalState();
 
   const {isLoading, data, error} = useQuery<Types.AccountData, ResponseError>(
@@ -75,7 +75,7 @@ export default function InfoTab({address}: InfoTabProps) {
     return <Error address={address} error={error} />;
   }
 
-  return inDev ? (
+  return inGtm ? (
     <InfoContent data={data} />
   ) : (
     <Stack

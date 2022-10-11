@@ -1,16 +1,16 @@
 import {Grid, Typography} from "@mui/material";
 import * as React from "react";
-import {useGetInDevMode} from "../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../api/hooks/useGetInDevMode";
 import HeaderSearch from "../pages/layout/Search/Index";
 import DividerHero from "./DividerHero";
 import GoBack from "./GoBack";
 
 export default function PageHeader() {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   return (
     <>
-      {inDev ? <GoBack /> : null}
-      {inDev ? (
+      {inGtm ? <GoBack /> : null}
+      {inGtm ? (
         <HeaderSearch />
       ) : (
         <Grid item xs={12}>
