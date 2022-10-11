@@ -5,11 +5,17 @@ import * as RRD from "react-router-dom";
 import {Stack} from "@mui/material";
 import {UserTransactionsTable} from "../Transactions/TransactionsTable";
 import useGetUserTransactionVersions from "../../api/hooks/useGetUserTransactionVersions";
+import TransactionsPreview from "./TransactionsPreview";
 
 const PREVIEW_TRANSACTIONS_COUNT = 10;
 
 export default function UserTransactionsPreview() {
   const versions = useGetUserTransactionVersions(PREVIEW_TRANSACTIONS_COUNT);
+
+  // TODO: remove the fallback below when indexer is stable
+  if (versions.length === 0) {
+    return <TransactionsPreview />;
+  }
 
   return (
     <>

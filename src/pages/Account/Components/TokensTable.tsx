@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useTheme} from "@mui/material";
+import {Box} from "@mui/material";
 import * as RRD from "react-router-dom";
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
@@ -21,13 +21,19 @@ function TokenNameCell({token}: TokenCellProps) {
     <TableCell sx={{textAlign: "left"}}>
       <Link
         component={RRD.Link}
-        to={`/token/${
-          "token_data_id_hash" in token && token.token_data_id_hash
-        }`}
+        to={`/token/${token?.token_data_id_hash}/${token?.property_version}`}
         color="primary"
         underline="none"
       >
-        {token?.name}
+        <Box
+          sx={{
+            maxWidth: {xs: 150, md: 250, lg: 400},
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {token?.name}
+        </Box>
       </Link>
     </TableCell>
   );
@@ -36,7 +42,31 @@ function TokenNameCell({token}: TokenCellProps) {
 // TODO: link to collection page
 function CollectionNameCell({token}: TokenCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>{token?.collection_name}</TableCell>
+    <TableCell
+      sx={{
+        textAlign: "left",
+        maxWidth: {xs: 150, md: 250, lg: 400},
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }}
+    >
+      {token?.collection_name}
+    </TableCell>
+  );
+}
+
+function StoreCell({token}: TokenCellProps) {
+  return (
+    <TableCell
+      sx={{
+        textAlign: "left",
+        maxWidth: {xs: 150, md: 250, lg: 400},
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }}
+    >
+      {token?.table_type}
+    </TableCell>
   );
 }
 
@@ -53,6 +83,7 @@ function AmountCell({token}: TokenCellProps) {
 const TokenCells = Object.freeze({
   name: TokenNameCell,
   collectionName: CollectionNameCell,
+  store: StoreCell,
   propertyVersion: PropertyVersionCell,
   amount: AmountCell,
 });
@@ -62,6 +93,7 @@ type Column = keyof typeof TokenCells;
 const DEFAULT_COLUMNS: Column[] = [
   "name",
   "collectionName",
+  "store",
   "propertyVersion",
   "amount",
 ];
@@ -75,9 +107,7 @@ function TokenRow({token, columns}: TokenRowProps) {
   const navigate = useNavigate();
 
   const rowClick = () => {
-    navigate(
-      `/token/${"token_data_id_hash" in token && token.token_data_id_hash}`,
-    );
+    navigate(`/token/${token?.token_data_id_hash}/${token?.property_version}`);
   };
 
   return (
@@ -95,20 +125,15 @@ type TokenHeaderCellProps = {
 };
 
 function TokenHeaderCell({column}: TokenHeaderCellProps) {
-  const theme = useTheme();
-
   switch (column) {
     case "name":
       return <GeneralTableHeaderCell header="Name" />;
     case "collectionName":
       return <GeneralTableHeaderCell header="Collection" />;
+    case "store":
+      return <GeneralTableHeaderCell header="Store" />;
     case "propertyVersion":
-      return (
-        <GeneralTableHeaderCell
-          header="Property Version"
-          textAlignRight={true}
-        />
-      );
+      return <GeneralTableHeaderCell header="Version" textAlignRight={true} />;
     case "amount":
       return <GeneralTableHeaderCell header="Amount" textAlignRight={true} />;
     default:

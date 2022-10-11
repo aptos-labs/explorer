@@ -39,7 +39,8 @@ export default function ExplorerRoutes() {
           <Route path=":height" element={<BlockPage />} />
         </Route>
         <Route path="/token">
-          <Route path=":param" element={<TokenPage />} />
+          <Route path=":tokenId" element={<TokenPage />} />
+          <Route path=":tokenId/:propertyVersion" element={<TokenPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

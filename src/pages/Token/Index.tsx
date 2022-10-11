@@ -27,15 +27,11 @@ const TOKEN_QUERY = gql`
 `;
 
 export default function TokenPage() {
-  const {param} = useParams();
-
-  if (typeof param !== "string") {
-    return null;
-  }
+  const {tokenId} = useParams();
 
   const {loading, error, data} = useQuery(TOKEN_QUERY, {
     variables: {
-      token_id: param,
+      token_id: tokenId,
     },
   });
 
