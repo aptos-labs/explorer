@@ -1,16 +1,27 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Autocomplete, AutocompleteInputChangeReason} from "@mui/material";
 import SearchInput from "./SearchInput";
 import {useNavigate} from "react-router-dom";
-import useGetSearchResults from "../../../api/hooks/useGetSearchResults";
+import useGetSearchResults, {
+  NotFoundResult,
+  SearchResult,
+} from "../../../api/hooks/useGetSearchResults";
 import ResultLink from "./ResultLink";
 
 export default function HeaderSearch() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState<string>("");
   const [open, setOpen] = useState(false);
+  const [selectedOption, setSelectedOption] =
+    useState<SearchResult>(NotFoundResult);
 
   const options = useGetSearchResults(inputValue);
+
+  useEffect(() => {
+    if (options.length > 1) {
+      setSelectedOption(options[0]);
+    }
+  }, [options]);
 
   const handleInputChange = (
     event: any,
@@ -35,8 +46,8 @@ export default function HeaderSearch() {
   };
 
   const handleSubmitSearch = async () => {
-    if (options.length > 0 && options[0].to !== null) {
-      navigate(options[0].to);
+    if (selectedOption.to !== null) {
+      navigate(selectedOption.to);
     }
   };
 
@@ -62,6 +73,8 @@ export default function HeaderSearch() {
           opacity: "0.6",
         },
       }}
+      autoHighlight
+      handleHomeEndKeys
       forcePopupIcon={false}
       selectOnFocus={true}
       freeSolo
@@ -83,9 +96,17 @@ export default function HeaderSearch() {
           </li>
         );
       }}
-      onSubmit={(event) => {
-        handleSubmitSearch();
-        event.preventDefault();
+      onHighlightChange={(event, option) => {
+        if (option !== null) {
+          const optionCopy = Object.assign({}, option);
+          setSelectedOption(optionCopy);
+        }
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          handleSubmitSearch();
+          event.preventDefault();
+        }
       }}
     />
   );
