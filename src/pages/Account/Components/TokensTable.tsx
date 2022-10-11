@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useTheme} from "@mui/material";
+import {Box} from "@mui/material";
 import * as RRD from "react-router-dom";
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
@@ -25,7 +25,15 @@ function TokenNameCell({token}: TokenCellProps) {
         color="primary"
         underline="none"
       >
-        {token?.name}
+        <Box
+          sx={{
+            maxWidth: {xs: 150, md: 250, lg: 400},
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {token?.name}
+        </Box>
       </Link>
     </TableCell>
   );
@@ -34,12 +42,32 @@ function TokenNameCell({token}: TokenCellProps) {
 // TODO: link to collection page
 function CollectionNameCell({token}: TokenCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>{token?.collection_name}</TableCell>
+    <TableCell
+      sx={{
+        textAlign: "left",
+        maxWidth: {xs: 150, md: 250, lg: 400},
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }}
+    >
+      {token?.collection_name}
+    </TableCell>
   );
 }
 
 function StoreCell({token}: TokenCellProps) {
-  return <TableCell sx={{textAlign: "left"}}>{token?.table_type}</TableCell>;
+  return (
+    <TableCell
+      sx={{
+        textAlign: "left",
+        maxWidth: {xs: 150, md: 250, lg: 400},
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }}
+    >
+      {token?.table_type}
+    </TableCell>
+  );
 }
 
 function PropertyVersionCell({token}: TokenCellProps) {
@@ -97,8 +125,6 @@ type TokenHeaderCellProps = {
 };
 
 function TokenHeaderCell({column}: TokenHeaderCellProps) {
-  const theme = useTheme();
-
   switch (column) {
     case "name":
       return <GeneralTableHeaderCell header="Name" />;
@@ -107,12 +133,7 @@ function TokenHeaderCell({column}: TokenHeaderCellProps) {
     case "store":
       return <GeneralTableHeaderCell header="Store" />;
     case "propertyVersion":
-      return (
-        <GeneralTableHeaderCell
-          header="Property Version"
-          textAlignRight={true}
-        />
-      );
+      return <GeneralTableHeaderCell header="Version" textAlignRight={true} />;
     case "amount":
       return <GeneralTableHeaderCell header="Amount" textAlignRight={true} />;
     default:
