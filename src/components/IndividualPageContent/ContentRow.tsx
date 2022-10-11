@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Typography, Stack} from "@mui/material";
+import {Box} from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import EmptyValue from "./ContentValue/EmptyValue";
@@ -27,17 +27,18 @@ export default function ContentRow({
         key={i}
       >
         <Grid xs={12} sm={3}>
-          <Box>
-            <Typography variant="body2" color={grey[450]}>
-              {title}
-              <Box
-                component="span"
-                sx={{display: "inline", whiteSpace: "nowrap"}}
-              >
-                &nbsp;
-                <Box sx={{display: "inline-block"}}>{tooltip}</Box>
-              </Box>
-            </Typography>
+          <Box sx={{fontSize: "0.875rem", color: grey[450]}}>
+            {title}
+            <Box
+              component="span"
+              sx={{
+                display: "inline",
+                whiteSpace: "nowrap",
+              }}
+            >
+              &nbsp;
+              <Box sx={{display: "inline-block"}}>{tooltip}</Box>
+            </Box>
           </Box>
         </Grid>
         <Grid

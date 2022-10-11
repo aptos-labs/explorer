@@ -6,7 +6,7 @@ import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
 
 export function useGetTPS() {
   const [state, _] = useGlobalState();
-  const [blockHeight, setBlockHeight] = useState<number | null>(null);
+  const [blockHeight, setBlockHeight] = useState<number | undefined>();
   const {tps} = useGetTPSByBlockHeight(blockHeight);
 
   const {data: ledgerData} = useQuery(

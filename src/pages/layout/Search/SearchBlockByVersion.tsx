@@ -9,7 +9,9 @@ type SearchBlockByVersionProps = {
 export default function SearchBlockByVersion({
   version,
 }: SearchBlockByVersionProps) {
-  const {isLoading, isError, data} = useGetBlockByVersion(parseInt(version));
+  const {isLoading, isError, data} = useGetBlockByVersion({
+    version: parseInt(version),
+  });
 
   if (isLoading || isError || !data) {
     return null;

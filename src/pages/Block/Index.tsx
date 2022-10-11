@@ -14,7 +14,9 @@ export default function BlockPage() {
     return null;
   }
 
-  const {data, isLoading, error} = useGetBlockByHeight(parseInt(height));
+  const {data, isLoading, error} = useGetBlockByHeight({
+    height: parseInt(height),
+  });
 
   if (isLoading) {
     return null;
