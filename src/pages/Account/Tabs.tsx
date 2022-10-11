@@ -11,7 +11,7 @@ import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalance
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import ExtensionIcon from "@mui/icons-material/Extension";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../api/hooks/useGetInDevMode";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import TokensTab from "./Tabs/TokensTab";
@@ -82,7 +82,7 @@ export default function AccountTabs({
   address,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const [value, setValue] = useState<TabValue>(tabValues[0]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
@@ -90,7 +90,7 @@ export default function AccountTabs({
   };
 
   // TODO: use LinkTab for better navigation
-  return inDev ? (
+  return inGtm ? (
     <Box sx={{width: "100%"}}>
       <Box>
         <StyledTabs value={value} onChange={handleChange}>

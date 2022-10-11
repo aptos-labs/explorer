@@ -8,7 +8,7 @@ import {
   OldTransactionStatus,
   TransactionStatus,
 } from "../../../components/TransactionStatus";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 
@@ -19,10 +19,10 @@ type GenesisTransactionOverviewTabProps = {
 export default function GenesisTransactionOverviewTab({
   transaction,
 }: GenesisTransactionOverviewTabProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const transactionData = transaction as Types.Transaction_GenesisTransaction;
 
-  return inDev ? (
+  return inGtm ? (
     <Box marginBottom={3}>
       <ContentBox>
         <ContentRow

@@ -19,7 +19,7 @@ import CallMergeOutlinedIcon from "@mui/icons-material/CallMergeOutlined";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../api/hooks/useGetInDevMode";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -113,7 +113,7 @@ export default function TransactionTabs({
   transaction,
   tabValues = getTabValues(transaction),
 }: TransactionTabsProps): JSX.Element {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const [value, setValue] = useState<TabValue>(tabValues[0]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
@@ -121,7 +121,7 @@ export default function TransactionTabs({
   };
 
   // TODO: use LinkTab for better navigation
-  return inDev ? (
+  return inGtm ? (
     <Box sx={{width: "100%"}}>
       <Box>
         <StyledTabs value={value} onChange={handleChange}>

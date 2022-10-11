@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Types} from "aptos";
 import {Box, Typography} from "@mui/material";
 import {renderDebug} from "../../utils";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
@@ -12,7 +12,7 @@ type PayloadTabProps = {
 };
 
 export default function PayloadTab({transaction}: PayloadTabProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const [expanded, setExpanded] = useState<boolean>(true);
 
   if (!("payload" in transaction)) {
@@ -23,7 +23,7 @@ export default function PayloadTab({transaction}: PayloadTabProps) {
     setExpanded(!expanded);
   };
 
-  return inDev ? (
+  return inGtm ? (
     <Box marginTop={3}>
       <CollapsibleCard
         key={0}

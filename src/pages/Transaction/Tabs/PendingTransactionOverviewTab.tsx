@@ -6,7 +6,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import {getFormattedTimestamp, renderDebug} from "../../utils";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
@@ -20,10 +20,10 @@ type PendingTransactionOverviewTabProps = {
 export default function PendingTransactionOverviewTab({
   transaction,
 }: PendingTransactionOverviewTabProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const transactionData = transaction as Types.Transaction_PendingTransaction;
 
-  return inDev ? (
+  return inGtm ? (
     <Box marginBottom={3}>
       <ContentBox>
         <ContentRow

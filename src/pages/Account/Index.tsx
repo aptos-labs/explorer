@@ -4,7 +4,7 @@ import React from "react";
 import AccountTabs, {TabValue} from "./Tabs";
 import AccountTitle from "./Title";
 import AccountInfo from "./AccountInfo/Index";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../api/hooks/useGetInDevMode";
 import BalanceCard from "./BalanceCard";
 import PageHeader from "../../components/PageHeader";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
@@ -20,7 +20,7 @@ const TAB_VALUES_FULL: TabValue[] = [
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
 export default function AccountPage() {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
   const {address} = useParams();
 
@@ -33,7 +33,7 @@ export default function AccountPage() {
       <Grid item xs={12} md={12} lg={12}>
         <PageHeader />
       </Grid>
-      {inDev ? (
+      {inGtm ? (
         <>
           <Grid item xs={12} md={8} lg={9} alignSelf="center">
             <AccountTitle address={address} />
@@ -56,7 +56,7 @@ export default function AccountPage() {
         <AccountTabs
           address={address}
           tabValues={
-            inDev && isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES
+            inGtm && isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES
           }
         />
       </Grid>

@@ -4,7 +4,7 @@ import {Stack, Box} from "@mui/material";
 import {renderDebug} from "../../utils";
 import Divider from "@mui/material/Divider";
 import Row from "./Components/Row";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import useExpandedList from "../../../components/hooks/useExpandedList";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
@@ -34,7 +34,7 @@ type ChangesTabProps = {
 };
 
 export default function ChangesTab({transaction}: ChangesTabProps) {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
 
   if (!("changes" in transaction)) {
     return <EmptyTabContent />;
@@ -45,7 +45,7 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(changes.length);
 
-  return inDev ? (
+  return inGtm ? (
     <CollapsibleCards
       expandedList={expandedList}
       expandAll={expandAll}

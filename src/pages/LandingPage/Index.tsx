@@ -5,17 +5,17 @@ import DividerHero from "../../components/DividerHero";
 import HeadingSub from "../../components/HeadingSub";
 import HeaderSearch from "../layout/Search/Index";
 import Box from "@mui/material/Box";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGetInGtmMode} from "../../api/hooks/useGetInDevMode";
 import NetworkInfo from "./NetworkInfo/Index";
 import TransactionsPreview from "./TransactionsPreview";
 import UserTransactionsPreview from "./UserTransactionsPreview";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 
 export default function LandingPage() {
-  const inDev = useGetInDevMode();
+  const inGtm = useGetInGtmMode();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
 
-  return inDev ? (
+  return inGtm ? (
     <Box>
       <HeadingSub>Network</HeadingSub>
       <Typography variant="h3" component="h3" marginBottom={4}>

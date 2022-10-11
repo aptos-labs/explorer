@@ -34,6 +34,7 @@ export const defaultNetwork = networks[defaultNetworkName];
  */
 export const features = {
   prod: "Production Mode",
+  gtm: "Mainnet Production Mode",
   dev: "Development Mode",
 };
 
@@ -47,7 +48,7 @@ for (const key of Object.keys(features)) {
   }
 }
 
-export const defaultFeatureName: FeatureName = "prod" as const;
+export const defaultFeatureName: FeatureName = "gtm" as const;
 
 if (!(defaultFeatureName in features)) {
   throw `defaultFeatureName '${defaultFeatureName}' not in Features!`;
