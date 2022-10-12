@@ -115,7 +115,7 @@ export default function NetworkSelect() {
               width="100%"
               color={grey[450]}
             >
-              <Typography variant="body2">Select Network</Typography>
+              <Typography variant="body2">Network</Typography>
               <Typography variant="body2">Chain ID</Typography>
             </Stack>
           </MenuItem>
