@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {Box, Button, Stack, Typography} from "@mui/material";
 import PageHeader from "../../components/PageHeader";
@@ -9,9 +9,17 @@ export default function TransactionsPage() {
   const [userTxnOnly, setUserTxnOnly] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  console.log(searchParams.get("start"));
-  console.log(searchParams.get("feature"));
-  console.log(searchParams.get("network"));
+  useEffect(() => {
+    if (userTxnOnly) {
+      searchParams.set("type", "user");
+      searchParams.delete("start");
+      setSearchParams(searchParams);
+    } else {
+      searchParams.set("type", "all");
+      searchParams.delete("page");
+      setSearchParams(searchParams);
+    }
+  }, [userTxnOnly]);
 
   const toggleUserTxnOnly = () => {
     setUserTxnOnly(!userTxnOnly);

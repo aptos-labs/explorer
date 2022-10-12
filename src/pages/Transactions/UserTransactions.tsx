@@ -1,48 +1,62 @@
 import React from "react";
-import {useQuery, UseQueryResult} from "react-query";
-import Button from "@mui/material/Button";
-import {Types} from "aptos";
-import {getTransactions} from "../../api";
-import {useGlobalState} from "../../GlobalState";
 import Box from "@mui/material/Box";
-import * as RRD from "react-router-dom";
-import {Stack} from "@mui/material";
-import TransactionsTable from "../Transactions/TransactionsTable";
+import {useSearchParams} from "react-router-dom";
+import {Pagination, Stack} from "@mui/material";
+import {UserTransactionsTable} from "../Transactions/TransactionsTable";
+import useGetUserTransactionVersions from "../../api/hooks/useGetUserTransactionVersions";
 
 const LIMIT = 20;
+const NUM_PAGES = 100;
 
-function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
-  if (!data) {
-    // TODO: error handling!
-    return null;
-  }
+function RenderPagination({
+  currentPage,
+  numPages,
+}: {
+  currentPage: number;
+  numPages: number;
+}) {
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  return <TransactionsTable transactions={data} />;
+  const handleChange = (
+    event: React.ChangeEvent<unknown>,
+    newPageNum: number,
+  ) => {
+    searchParams.set("page", newPageNum.toString());
+    setSearchParams(searchParams);
+  };
+
+  return (
+    <Pagination
+      sx={{mt: 3}}
+      count={numPages}
+      variant="outlined"
+      showFirstButton
+      showLastButton
+      page={currentPage}
+      siblingCount={4}
+      boundaryCount={0}
+      shape="rounded"
+      onChange={handleChange}
+    />
+  );
 }
 
 export default function UserTransactions() {
-  const [state, _] = useGlobalState();
-  const limit = LIMIT;
-  const result = useQuery(["transactions", {limit}, state.network_value], () =>
-    getTransactions({limit}, state.network_value),
-  );
+  const [searchParams, _setSearchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get("page") ?? "1");
+  const offset = (currentPage - 1) * LIMIT;
+
+  const startVersion = useGetUserTransactionVersions(1)[0];
+  const versions = useGetUserTransactionVersions(LIMIT, startVersion, offset);
 
   return (
     <>
       <Stack spacing={2}>
         <Box sx={{width: "auto", overflowX: "auto"}}>
-          <TransactionContent {...result} />
+          <UserTransactionsTable versions={versions} />
         </Box>
-
         <Box sx={{display: "flex", justifyContent: "center"}}>
-          <Button
-            component={RRD.Link}
-            to="/transactions"
-            variant="primary"
-            sx={{margin: "0 auto", mt: 6}}
-          >
-            View all Transactions
-          </Button>
+          <RenderPagination currentPage={currentPage} numPages={NUM_PAGES} />
         </Box>
       </Stack>
     </>
