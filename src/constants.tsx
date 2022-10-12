@@ -5,11 +5,11 @@ export const devnetUrl =
   process.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
 
 export const networks = {
-  local: "http://localhost:8080",
-  devnet: devnetUrl,
+  test: "https://fullnode.mainnet.aptoslabs.com/",
   testnet: "https://testnet.aptoslabs.com",
   premainnet: "https://premainnet.aptosdev.com/",
-  test: "https://fullnode.mainnet.aptoslabs.com/",
+  devnet: devnetUrl,
+  local: "http://localhost:8080",
 };
 
 export type NetworkName = keyof typeof networks;

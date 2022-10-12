@@ -17,7 +17,6 @@ export default function LandingPage() {
 
   return inGtm ? (
     <Box>
-      <HeadingSub>Network</HeadingSub>
       <Typography variant="h3" component="h3" marginBottom={4}>
         Aptos Explorer
       </Typography>
