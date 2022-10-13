@@ -80,6 +80,13 @@ export function getLedgerInfo(nodeUrl: string): Promise<Types.IndexResponse> {
   return withResponseError(client.getLedgerInfo());
 }
 
+export function getLedgerInfoWithoutResponseError(
+  nodeUrl: string,
+): Promise<Types.IndexResponse> {
+  const client = new AptosClient(nodeUrl);
+  return client.getLedgerInfo();
+}
+
 export function getAccount(
   requestParameters: {address: string},
   nodeUrl: string,

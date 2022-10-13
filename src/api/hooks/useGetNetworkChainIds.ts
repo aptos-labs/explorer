@@ -1,6 +1,6 @@
 import {NetworkName, networks} from "../../constants";
 import {useQuery} from "react-query";
-import {getLedgerInfo} from "..";
+import {getLedgerInfoWithoutResponseError} from "..";
 
 const TTL = 3600000; // 1 hour
 
@@ -44,7 +44,10 @@ export default function useGetNetworkChainIds() {
 
       const {data} = useQuery(
         ["ledgerInfo", networks[networkName as NetworkName]],
-        () => getLedgerInfo(networks[networkName as NetworkName]),
+        () =>
+          getLedgerInfoWithoutResponseError(
+            networks[networkName as NetworkName],
+          ),
       );
       const chainId: string | null = data?.chain_id
         ? data?.chain_id.toString()
