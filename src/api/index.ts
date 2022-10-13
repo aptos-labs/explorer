@@ -3,22 +3,11 @@ import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
 
-/**
- * AptosClient 1.3.8+ added a feature to fix the sticky session problem.
- * Client requests might be routed to different fullnodes by load balancer, so the data read by clients might be inconsistent.
- * Load balancer uses cookie for sticky session. Therefore clients need to carry cookie.
- *
- * Unfortunately, this new feature would cause CORS issue for testnet and local networks.
- * While waiting for the testnet nodes upgrading to the latest software,
- * we apply this walk-around to make WITH_CREDENTIALS false when creating AptosClients.
- */
-const config = {WITH_CREDENTIALS: false};
-
 export async function getTransactions(
   requestParameters: {start?: number; limit?: number},
   nodeUrl: string,
 ): Promise<Types.Transaction[]> {
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   const {start, limit} = requestParameters;
   let bigStart;
   if (start !== undefined) {
@@ -38,7 +27,7 @@ export async function getAccountTransactions(
   requestParameters: {address: string; start?: number; limit?: number},
   nodeUrl: string,
 ): Promise<Types.Transaction[]> {
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   const {address, start, limit} = requestParameters;
   let bigStart;
   if (start !== undefined) {
@@ -74,7 +63,7 @@ function getTransactionByVersion(
   version: number,
   nodeUrl: string,
 ): Promise<Types.Transaction> {
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   return withResponseError(client.getTransactionByVersion(BigInt(version)));
 }
 
@@ -82,12 +71,12 @@ function getTransactionByHash(
   hash: string,
   nodeUrl: string,
 ): Promise<Types.Transaction> {
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   return withResponseError(client.getTransactionByHash(hash));
 }
 
 export function getLedgerInfo(nodeUrl: string): Promise<Types.IndexResponse> {
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   return withResponseError(client.getLedgerInfo());
 }
 
@@ -95,7 +84,7 @@ export function getAccount(
   requestParameters: {address: string},
   nodeUrl: string,
 ): Promise<Types.AccountData> {
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   const {address} = requestParameters;
   return withResponseError(client.getAccount(address));
 }
@@ -104,7 +93,7 @@ export function getAccountResources(
   requestParameters: {address: string; ledgerVersion?: number},
   nodeUrl: string,
 ): Promise<Types.MoveResource[]> {
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   const {address, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
@@ -119,7 +108,7 @@ export function getAccountModules(
   requestParameters: {address: string; ledgerVersion?: number},
   nodeUrl: string,
 ): Promise<Types.MoveModuleBytecode[]> {
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   const {address, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
@@ -134,7 +123,7 @@ export function getTableItem(
   requestParameters: {tableHandle: string; data: Types.TableItemRequest},
   nodeUrl: string,
 ): Promise<any> {
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   const {tableHandle, data} = requestParameters;
   return withResponseError(client.getTableItem(tableHandle, data));
 }
@@ -144,7 +133,7 @@ export function getBlockByHeight(
   nodeUrl: string,
 ): Promise<Types.Block> {
   const {height, withTransactions} = requestParameters;
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   return withResponseError(client.getBlockByHeight(height, withTransactions));
 }
 
@@ -153,7 +142,7 @@ export function getBlockByVersion(
   nodeUrl: string,
 ): Promise<Types.Block> {
   const {version, withTransactions} = requestParameters;
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   return withResponseError(client.getBlockByVersion(version, withTransactions));
 }
 
@@ -162,7 +151,7 @@ export async function getRecentBlocks(
   count: number,
   nodeUrl: string,
 ): Promise<Types.Block[]> {
-  const client = new AptosClient(nodeUrl, config);
+  const client = new AptosClient(nodeUrl);
   const blocks = [];
   for (let i = 0; i < count; i++) {
     const block = await client.getBlockByHeight(currentBlockHeight - i, false);
