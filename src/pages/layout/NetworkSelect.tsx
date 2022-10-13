@@ -1,5 +1,10 @@
 import React, {useEffect} from "react";
-import {FormControl, Select, SelectChangeEvent} from "@mui/material";
+import {
+  FormControl,
+  Select,
+  SelectChangeEvent,
+  Typography,
+} from "@mui/material";
 import {defaultFeatureName, NetworkName, networks} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import {useTheme} from "@mui/material/styles";
@@ -8,10 +13,13 @@ import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
 import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
 import {grey} from "../../themes/colors/aptosColorPalette";
+import {Stack} from "@mui/system";
+import useGetNetworkChainIds from "../../api/hooks/useGetNetworkChainIds";
 
 export default function NetworkSelect() {
   const [state, dispatch] = useGlobalState();
   const [searchParams, setSearchParams] = useSearchParams();
+  const networkChainIds = useGetNetworkChainIds();
 
   function maybeSetNetwork(networkNameString: string | null) {
     if (!networkNameString || state.network_name === networkNameString) return;
@@ -59,6 +67,7 @@ export default function NetworkSelect() {
           inputProps={{"aria-label": "Select Network"}}
           value={state.network_name}
           onChange={handleChange}
+          renderValue={(value) => <Typography>{value}</Typography>}
           onClose={() => {
             setTimeout(() => {
               (document.activeElement as HTMLElement)?.blur();
@@ -93,22 +102,45 @@ export default function NetworkSelect() {
                   }!important`,
                   pointerEvents: "none",
                 },
-                "& .MuiMenuItem-root:hover": {
-                  backgroundColor: "transparent",
-                  color: `${theme.palette.primary.main}`,
-                },
               },
             },
           }}
         >
           <MenuItem disabled value="">
-            Select Network
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              spacing={3}
+              width="100%"
+              color={grey[450]}
+            >
+              <Typography variant="body2">Network</Typography>
+              <Typography variant="body2">Chain ID</Typography>
+            </Stack>
           </MenuItem>
-          {Object.keys(networks).map((network_name: string) => (
-            <MenuItem key={network_name} value={network_name}>
-              {network_name}
-            </MenuItem>
-          ))}
+          {Object.keys(networks).map(
+            (network_name: string) =>
+              networkChainIds[network_name] && (
+                <MenuItem key={network_name} value={network_name}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    spacing={3}
+                    width="100%"
+                  >
+                    <Typography>{network_name}</Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{color: theme.palette.text.disabled}}
+                    >
+                      {networkChainIds[network_name]}
+                    </Typography>
+                  </Stack>
+                </MenuItem>
+              ),
+          )}
         </Select>
       </FormControl>
     </Box>
