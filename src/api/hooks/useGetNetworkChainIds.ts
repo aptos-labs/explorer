@@ -2,6 +2,8 @@ import {NetworkName, networks} from "../../constants";
 import {useQuery} from "react-query";
 import {getLedgerInfo} from "..";
 
+const TTL = 3600000; // 1 hour
+
 function setWithExpiry(key: string, value: string, ttl: number) {
   const now = new Date();
 
@@ -49,11 +51,7 @@ export default function useGetNetworkChainIds() {
         : null;
 
       if (networkName !== "local" && chainId !== null) {
-        setWithExpiry(
-          `${networkName}ChainId`,
-          chainId,
-          3600000, // ttl is 1 hour
-        );
+        setWithExpiry(`${networkName}ChainId`, chainId, TTL);
       }
 
       return [networkName, chainId];
