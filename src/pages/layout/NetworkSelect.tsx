@@ -16,6 +16,10 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import {Stack} from "@mui/system";
 import useGetNetworkChainIds from "../../api/hooks/useGetNetworkChainIds";
 
+// TODO: remove this flag upon gtm
+// also reorder the networks
+const SHOW_CHAIN_ID = false;
+
 export default function NetworkSelect() {
   const [state, dispatch] = useGlobalState();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -116,7 +120,9 @@ export default function NetworkSelect() {
               color={grey[450]}
             >
               <Typography variant="body2">Network</Typography>
-              <Typography variant="body2">Chain ID</Typography>
+              {SHOW_CHAIN_ID && (
+                <Typography variant="body2">Chain ID</Typography>
+              )}
             </Stack>
           </MenuItem>
           {Object.keys(networks).map(
@@ -131,12 +137,14 @@ export default function NetworkSelect() {
                     width="100%"
                   >
                     <Typography>{network_name}</Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{color: theme.palette.text.disabled}}
-                    >
-                      {networkChainIds[network_name]}
-                    </Typography>
+                    {SHOW_CHAIN_ID && (
+                      <Typography
+                        variant="body2"
+                        sx={{color: theme.palette.text.disabled}}
+                      >
+                        {networkChainIds[network_name]}
+                      </Typography>
+                    )}
                   </Stack>
                 </MenuItem>
               ),

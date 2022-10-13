@@ -5,10 +5,10 @@ export const devnetUrl =
   process.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
 
 export const networks = {
-  test: "https://fullnode.mainnet.aptoslabs.com/",
   testnet: "https://testnet.aptoslabs.com",
   premainnet: "https://premainnet.aptosdev.com/",
   devnet: devnetUrl,
+  test: "https://fullnode.mainnet.aptoslabs.com/",
   local: "http://localhost:8080",
 };
 
