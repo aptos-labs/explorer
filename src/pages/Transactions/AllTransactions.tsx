@@ -85,7 +85,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
 
   let start = maxStart(maxVersion, limit);
   let startParam = searchParams.get("start");
-  if (startParam) {
+  if (startParam !== null) {
     start = parseInt(startParam);
   }
 

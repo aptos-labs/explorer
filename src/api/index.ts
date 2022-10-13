@@ -21,7 +21,7 @@ export async function getTransactions(
   const client = new AptosClient(nodeUrl, config);
   const {start, limit} = requestParameters;
   let bigStart;
-  if (start) {
+  if (start !== undefined) {
     bigStart = BigInt(start);
   }
   const transactions = await withResponseError(
@@ -107,7 +107,7 @@ export function getAccountResources(
   const client = new AptosClient(nodeUrl, config);
   const {address, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
-  if (ledgerVersion) {
+  if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
   }
   return withResponseError(
@@ -122,7 +122,7 @@ export function getAccountModules(
   const client = new AptosClient(nodeUrl, config);
   const {address, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
-  if (ledgerVersion) {
+  if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
   }
   return withResponseError(
