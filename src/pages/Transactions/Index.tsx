@@ -4,10 +4,12 @@ import {Box, Button, Stack, Typography} from "@mui/material";
 import PageHeader from "../../components/PageHeader";
 import AllTransactions from "./AllTransactions";
 import UserTransactions from "./UserTransactions";
+import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 
 export default function TransactionsPage() {
   const [userTxnOnly, setUserTxnOnly] = useState<boolean>(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
 
   useEffect(() => {
     if (userTxnOnly) {
@@ -32,9 +34,11 @@ export default function TransactionsPage() {
         <Typography variant="h3" marginBottom={2}>
           {userTxnOnly ? "User Transactions" : "All Transactions"}
         </Typography>
-        <Button onClick={toggleUserTxnOnly} variant="text">
-          {userTxnOnly ? `View All Transactions` : `View User Transactions`}
-        </Button>
+        {isGraphqlClientSupported && (
+          <Button onClick={toggleUserTxnOnly} variant="text">
+            {userTxnOnly ? `View All Transactions` : `View User Transactions`}
+          </Button>
+        )}
       </Stack>
       {userTxnOnly ? <UserTransactions /> : <AllTransactions />}
     </Box>

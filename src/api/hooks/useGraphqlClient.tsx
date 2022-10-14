@@ -17,14 +17,16 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
 
 function getGraphqlURI(networkName: NetworkName): string | undefined {
   switch (networkName) {
-    case "local":
-      return undefined;
-    case "devnet":
-      return process.env.REACT_APP_INDEXER_GRAPHQL_DEVNET;
     case "testnet":
       return process.env.REACT_APP_INDEXER_GRAPHQL_TESTNET;
     case "premainnet":
-      return process.env.REACT_APP_INDEXER_GRAPHQL_PREMAINNET;
+      return undefined;
+    case "devnet":
+      return process.env.REACT_APP_INDEXER_GRAPHQL_DEVNET;
+    case "test":
+      return process.env.REACT_APP_INDEXER_GRAPHQL_TEST;
+    case "local":
+      return undefined;
     default:
       return undefined;
   }
