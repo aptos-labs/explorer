@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   Box,
   BoxProps,
@@ -61,9 +61,8 @@ interface HashButtonProps extends BoxProps {
 }
 
 export default function HashButton({hash, type, ...props}: HashButtonProps) {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null,
-  );
+  const theme = useTheme();
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const hashExpand = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -77,7 +76,6 @@ export default function HashButton({hash, type, ...props}: HashButtonProps) {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  const theme = useTheme();
 
   return (
     <Box {...props}>

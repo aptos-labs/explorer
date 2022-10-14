@@ -39,14 +39,14 @@ function ResourcesContent({
 }: {
   data: Types.MoveResource[] | undefined;
 }): JSX.Element {
-  if (!data || data.length === 0) {
-    return <EmptyTabContent />;
-  }
-
-  const resources: Types.MoveResource[] = data;
+  const resources: Types.MoveResource[] = data ?? [];
 
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(resources.length);
+
+  if (resources.length === 0) {
+    return <EmptyTabContent />;
+  }
 
   return (
     <CollapsibleCards

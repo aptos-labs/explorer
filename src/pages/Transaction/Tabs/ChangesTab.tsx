@@ -36,11 +36,8 @@ type ChangesTabProps = {
 export default function ChangesTab({transaction}: ChangesTabProps) {
   const inGtm = useGetInGtmMode();
 
-  if (!("changes" in transaction)) {
-    return <EmptyTabContent />;
-  }
-
-  const changes: Types.WriteSetChange[] = transaction.changes;
+  const changes: Types.WriteSetChange[] =
+    "changes" in transaction ? transaction.changes : [];
 
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(changes.length);

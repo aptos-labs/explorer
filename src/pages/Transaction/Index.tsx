@@ -9,16 +9,12 @@ import {getTransaction} from "../../api";
 import Error from "./Error";
 import TransactionTitle from "./Title";
 import TransactionTabs from "./Tabs";
-import GoBack from "../../components/GoBack";
 import PageHeader from "../../components/PageHeader";
 
 export default function TransactionPage() {
   const [state, _] = useGlobalState();
-  const {txnHashOrVersion} = useParams();
-
-  if (typeof txnHashOrVersion !== "string") {
-    return null;
-  }
+  const {txnHashOrVersion: txnParam} = useParams();
+  const txnHashOrVersion = txnParam ?? "";
 
   const {isLoading, data, error} = useQuery<Types.Transaction, ResponseError>(
     ["transaction", {txnHashOrVersion}, state.network_value],

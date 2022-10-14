@@ -23,14 +23,10 @@ const OWNER_QUERY = gql`
 function OwnersRow() {
   const {tokenId, propertyVersion} = useParams();
 
-  if (propertyVersion === undefined) {
-    return null;
-  }
-
   const {data: ownersData} = useQuery(OWNER_QUERY, {
     variables: {
       token_id: tokenId,
-      property_version: parseInt(propertyVersion),
+      property_version: parseInt(propertyVersion ?? ""),
     },
   });
 

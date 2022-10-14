@@ -10,12 +10,8 @@ import PageHeader from "../../components/PageHeader";
 export default function BlockPage() {
   const {height} = useParams();
 
-  if (typeof height !== "string") {
-    return null;
-  }
-
   const {data, isLoading, error} = useGetBlockByHeight({
-    height: parseInt(height),
+    height: parseInt(height ?? ""),
   });
 
   if (isLoading) {
@@ -23,7 +19,7 @@ export default function BlockPage() {
   }
 
   if (error) {
-    return <Error error={error} height={height} />;
+    return <Error error={error} height={height ?? ""} />;
   }
 
   if (!data) {

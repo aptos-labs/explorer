@@ -20,7 +20,7 @@ export default function MetricCard({
   tooltipText,
 }: MetricCardProps) {
   return (
-    <Card effectColor={aptosColorOpacity}>
+    <Card>
       <Stack alignItems="flex-end" spacing={2.5} marginTop={2}>
         <Typography fontSize={20} fontWeight={400}>
           {data}
