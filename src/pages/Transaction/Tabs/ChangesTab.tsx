@@ -42,6 +42,10 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(changes.length);
 
+  if (changes.length === 0) {
+    return <EmptyTabContent />;
+  }
+
   return inGtm ? (
     <CollapsibleCards
       expandedList={expandedList}

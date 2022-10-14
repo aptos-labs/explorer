@@ -36,6 +36,10 @@ export default function EventsTab({transaction}: EventsTabProps) {
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(events.length);
 
+  if (events.length === 0) {
+    return <EmptyTabContent />;
+  }
+
   return inGtm ? (
     <CollapsibleCards
       expandedList={expandedList}
