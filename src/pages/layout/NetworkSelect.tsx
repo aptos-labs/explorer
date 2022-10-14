@@ -114,6 +114,7 @@ export default function NetworkSelect() {
               color={grey[450]}
             >
               <Typography variant="body2">Network</Typography>
+              <Typography variant="body2">Chain ID</Typography>
             </Stack>
           </MenuItem>
           {Object.keys(networks).map((network_name: string) => (
@@ -126,6 +127,12 @@ export default function NetworkSelect() {
                 width="100%"
               >
                 <Typography>{network_name}</Typography>
+                <Typography
+                  variant="body2"
+                  sx={{color: theme.palette.text.disabled}}
+                >
+                  {3}
+                </Typography>
               </Stack>
             </MenuItem>
           ))}
