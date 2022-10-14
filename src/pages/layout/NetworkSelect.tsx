@@ -14,16 +14,10 @@ import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {Stack} from "@mui/system";
-import useGetNetworkChainIds from "../../api/hooks/useGetNetworkChainIds";
-
-// TODO: remove this flag upon gtm
-// also reorder the networks
-const SHOW_CHAIN_ID = false;
 
 export default function NetworkSelect() {
   const [state, dispatch] = useGlobalState();
   const [searchParams, setSearchParams] = useSearchParams();
-  const networkChainIds = useGetNetworkChainIds();
 
   function maybeSetNetwork(networkNameString: string | null) {
     if (!networkNameString || state.network_name === networkNameString) return;
@@ -120,35 +114,21 @@ export default function NetworkSelect() {
               color={grey[450]}
             >
               <Typography variant="body2">Network</Typography>
-              {SHOW_CHAIN_ID && (
-                <Typography variant="body2">Chain ID</Typography>
-              )}
             </Stack>
           </MenuItem>
-          {Object.keys(networks).map(
-            (network_name: string) =>
-              networkChainIds[network_name] && (
-                <MenuItem key={network_name} value={network_name}>
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    spacing={3}
-                    width="100%"
-                  >
-                    <Typography>{network_name}</Typography>
-                    {SHOW_CHAIN_ID && (
-                      <Typography
-                        variant="body2"
-                        sx={{color: theme.palette.text.disabled}}
-                      >
-                        {networkChainIds[network_name]}
-                      </Typography>
-                    )}
-                  </Stack>
-                </MenuItem>
-              ),
-          )}
+          {Object.keys(networks).map((network_name: string) => (
+            <MenuItem key={network_name} value={network_name}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                spacing={3}
+                width="100%"
+              >
+                <Typography>{network_name}</Typography>
+              </Stack>
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     </Box>
