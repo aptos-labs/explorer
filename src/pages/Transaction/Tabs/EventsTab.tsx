@@ -30,14 +30,15 @@ type EventsTabProps = {
 export default function EventsTab({transaction}: EventsTabProps) {
   const inGtm = useGetInGtmMode();
 
-  if (!("events" in transaction)) {
-    return <EmptyTabContent />;
-  }
-
-  const events: Types.Event[] = transaction.events;
+  const events: Types.Event[] =
+    "events" in transaction ? transaction.events : [];
 
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(events.length);
+
+  if (events.length === 0) {
+    return <EmptyTabContent />;
+  }
 
   return inGtm ? (
     <CollapsibleCards

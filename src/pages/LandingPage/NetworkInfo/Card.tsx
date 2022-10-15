@@ -3,19 +3,11 @@ import {Box, BoxProps, useTheme} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 
 interface CardProps extends BoxProps {
-  effectColor?: string;
   children: React.ReactNode;
 }
 
-export default function Card({
-  effectColor: customizedEffectColor,
-  children,
-  ...props
-}: CardProps) {
+export default function Card({children, ...props}: CardProps) {
   const theme = useTheme();
-  const effectColor =
-    customizedEffectColor ??
-    (theme.palette.mode === "dark" ? grey[800] : grey[100]);
 
   return (
     <Box

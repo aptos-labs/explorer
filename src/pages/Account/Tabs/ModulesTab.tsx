@@ -61,14 +61,13 @@ function ModulesContent({
 }: {
   data: Types.MoveModuleBytecode[] | undefined;
 }): JSX.Element {
-  if (!data || data.length === 0) {
-    return <EmptyTabContent />;
-  }
-
-  const modules: Types.MoveModuleBytecode[] = data;
-
+  const modules: Types.MoveModuleBytecode[] = data ?? [];
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(modules.length);
+
+  if (modules.length === 0) {
+    return <EmptyTabContent />;
+  }
 
   return (
     <CollapsibleCards

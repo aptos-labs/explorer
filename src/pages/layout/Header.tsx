@@ -37,7 +37,7 @@ export default function Header() {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
 
-  const {ref, inView, entry} = useInView({
+  const {ref, inView} = useInView({
     rootMargin: "-40px 0px 0px 0px",
     threshold: 0,
   });

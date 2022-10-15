@@ -68,17 +68,7 @@ function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
 }
 
 function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
-  if (!data) {
-    // TODO: handle errors
-    return <>No ledger info</>;
-  }
-
-  const maxVersion = parseInt(data.ledger_version);
-  if (!maxVersion) {
-    // TODO: handle errors
-    return <>No maxVersion</>;
-  }
-
+  const maxVersion = parseInt(data?.ledger_version ?? "");
   const limit = LIMIT;
   const [state, _setState] = useGlobalState();
   const [searchParams, _setSearchParams] = useSearchParams();

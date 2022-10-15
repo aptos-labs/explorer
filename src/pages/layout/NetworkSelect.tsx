@@ -18,6 +18,7 @@ import {Stack} from "@mui/system";
 export default function NetworkSelect() {
   const [state, dispatch] = useGlobalState();
   const [searchParams, setSearchParams] = useSearchParams();
+  const theme = useTheme();
 
   function maybeSetNetwork(networkNameString: string | null) {
     if (!networkNameString || state.network_name === networkNameString) return;
@@ -54,8 +55,6 @@ export default function NetworkSelect() {
       </SvgIcon>
     );
   }
-
-  const theme = useTheme();
 
   return (
     <Box>
