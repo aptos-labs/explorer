@@ -2,7 +2,6 @@ import React from "react";
 import moment from "moment";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
-import {AptosClient, AptosAccount, HexString} from "aptos";
 
 export function renderDebug(data: any) {
   const theme = useTheme();
@@ -25,7 +24,7 @@ export function renderDebug(data: any) {
   );
 }
 
-export function ensureMillisecondTimestamp(timestamp: string): number {
+function ensureMillisecondTimestamp(timestamp: string): number {
   /*
   Could be: 1646458457
         or: 1646440953658538
@@ -55,46 +54,6 @@ export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
     local_formatted: timestamp.local().format("D MMM YYYY HH:mm:ss"),
     formatted_time_delta: timestamp.fromNow(),
   };
-}
-
-export interface ProposalTimeRemaining {
-  days: number;
-  hours: number;
-  minutes: number;
-}
-
-export function getProposalTimeRemaining(
-  endtime: string,
-): ProposalTimeRemaining {
-  const total = ensureMillisecondTimestamp(endtime) - Date.now();
-  const minutes = Math.floor((total / 1000 / 60) % 60);
-  const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-  const days = Math.floor(total / (1000 * 60 * 60 * 24));
-
-  return {
-    days,
-    hours,
-    minutes,
-  };
-}
-
-export function getHexString(str: string): string {
-  return HexString.fromUint8Array(new TextEncoder().encode(str)).hex();
-}
-
-export async function doTransaction(
-  account: AptosAccount,
-  client: AptosClient,
-  payload: any,
-) {
-  const txnRequest = await client.generateTransaction(
-    account.address(),
-    payload,
-  );
-  const signedTxn = await client.signTransaction(account, txnRequest);
-  const transactionRes = await client.submitTransaction(signedTxn);
-  await client.waitForTransaction(transactionRes.hash);
-  return transactionRes;
 }
 
 function truncate(
