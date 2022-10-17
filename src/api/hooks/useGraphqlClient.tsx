@@ -21,8 +21,6 @@ function getGraphqlURI(networkName: NetworkName): string | undefined {
       return process.env.REACT_APP_INDEXER_GRAPHQL_MAINNET;
     case "testnet":
       return process.env.REACT_APP_INDEXER_GRAPHQL_TESTNET;
-    case "premainnet":
-      return undefined;
     case "devnet":
       return process.env.REACT_APP_INDEXER_GRAPHQL_DEVNET;
     case "local":
