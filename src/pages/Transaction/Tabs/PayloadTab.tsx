@@ -1,8 +1,6 @@
 import React, {useState} from "react";
 import {Types} from "aptos";
-import {Box, Typography} from "@mui/material";
-import {renderDebug} from "../../utils";
-import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
+import {Box} from "@mui/material";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
@@ -12,7 +10,6 @@ type PayloadTabProps = {
 };
 
 export default function PayloadTab({transaction}: PayloadTabProps) {
-  const inGtm = useGetInGtmMode();
   const [expanded, setExpanded] = useState<boolean>(true);
 
   if (!("payload" in transaction)) {
@@ -23,7 +20,7 @@ export default function PayloadTab({transaction}: PayloadTabProps) {
     setExpanded(!expanded);
   };
 
-  return inGtm ? (
+  return (
     <Box marginTop={3}>
       <CollapsibleCard
         key={0}
@@ -34,14 +31,6 @@ export default function PayloadTab({transaction}: PayloadTabProps) {
       >
         <JsonCard data={transaction.payload} />
       </CollapsibleCard>
-    </Box>
-  ) : (
-    <Box marginX={2} marginTop={5}>
-      <Typography
-        variant="body1"
-        marginBottom={3}
-      >{`TYPE: ${transaction.payload.type}`}</Typography>
-      {renderDebug(transaction.payload)}
     </Box>
   );
 }

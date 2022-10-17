@@ -1,16 +1,10 @@
 import * as React from "react";
 import {Types} from "aptos";
-import {Stack, Box} from "@mui/material";
-import {getFormattedTimestamp, renderDebug} from "../../utils";
-import Row from "./Components/Row";
+import {Box} from "@mui/material";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import {
-  OldTransactionStatus,
-  TransactionStatus,
-} from "../../../components/TransactionStatus";
-import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
+import {TransactionStatus} from "../../../components/TransactionStatus";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
@@ -77,10 +71,9 @@ type UserTransactionOverviewTabProps = {
 export default function UserTransactionOverviewTab({
   transaction,
 }: UserTransactionOverviewTabProps) {
-  const inGtm = useGetInGtmMode();
   const transactionData = transaction as Types.Transaction_UserTransaction;
 
-  return inGtm ? (
+  return (
     <Box marginBottom={3}>
       <ContentBox padding={4}>
         <ContentRow
@@ -169,74 +162,6 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
       </ContentBox>
-    </Box>
-  ) : (
-    <Box marginX={2} marginTop={5}>
-      <Stack direction="column" spacing={3}>
-        <Row
-          title={"Sender:"}
-          value={
-            <HashButton hash={transactionData.sender} type={HashType.ACCOUNT} />
-          }
-        />
-        <Row
-          title={"Sequence Number:"}
-          value={transactionData.sequence_number}
-        />
-        <Row
-          title={"Expiration Timestamp:"}
-          value={getFormattedTimestamp(
-            transactionData.expiration_timestamp_secs,
-          )}
-        />
-        <Row title={"Version:"} value={transactionData.version} />
-        <Row
-          title={"Status:"}
-          value={<OldTransactionStatus success={transactionData.success} />}
-        />
-        <Row
-          title={"State Change Hash:"}
-          value={transactionData.state_change_hash}
-        />
-        <Row
-          title={"Event Root Hash:"}
-          value={transactionData.event_root_hash}
-        />
-        <Row
-          title={"Gas Used:"}
-          value={<GasValue gas={transactionData.gas_used} />}
-        />
-        <Row
-          title={"Max Gas Limit:"}
-          value={<GasValue gas={transactionData.max_gas_amount} />}
-        />
-        <Row
-          title={"Gas Unit Price:"}
-          value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
-        />
-        <Row
-          title={"Gas Fee:"}
-          value={
-            <APTCurrencyValue
-              amount={(
-                BigInt(transactionData.gas_unit_price) *
-                BigInt(transactionData.gas_used)
-              ).toString()}
-            />
-          }
-        />
-
-        <Row title={"VM Status:"} value={transactionData.vm_status} />
-        <Row
-          title={"Signature:"}
-          value={renderDebug(transactionData.signature)}
-        />
-        <Row
-          title={"Accumulator Root Hash:"}
-          value={transactionData.accumulator_root_hash}
-        />
-        <Row title={"Timestamp:"} value={transactionData.timestamp} />
-      </Stack>
     </Box>
   );
 }

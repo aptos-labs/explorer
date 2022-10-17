@@ -1,11 +1,7 @@
-import React, {useState} from "react";
-
-import {NavLink, useNavigate} from "react-router-dom";
+import React from "react";
+import {NavLink} from "react-router-dom";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import {Menu, MenuItem} from "@mui/material";
-import Fade from "@mui/material/Fade";
-import {useGetInGtmMode} from "../api/hooks/useGetInDevMode";
 
 function NavButton({
   to,
@@ -36,25 +32,6 @@ function NavButton({
 }
 
 export default function Nav() {
-  const inGtm = useGetInGtmMode();
-  const [governanceMenuEl, setGovernanceMenuEl] = useState<null | HTMLElement>(
-    null,
-  );
-  const navigate = useNavigate();
-  const open = Boolean(governanceMenuEl);
-
-  const handleGovernanceClick = (event: React.MouseEvent<HTMLElement>) => {
-    setGovernanceMenuEl(event.currentTarget);
-  };
-  const handleCloseAndNavigate = (to: string) => {
-    setGovernanceMenuEl(null);
-    navigate(to);
-  };
-
-  const handleClose = () => {
-    setGovernanceMenuEl(null);
-  };
-
   return (
     <Box
       sx={{
@@ -69,49 +46,12 @@ export default function Nav() {
         title="View All Transactions"
         label="Transactions"
       />
-      {inGtm && (
-        <>
-          <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
-          <NavButton
-            to="/Validators"
-            title="View All Validators"
-            label="Validators"
-          />
-        </>
-      )}
-      {!inGtm && (
-        <>
-          <Button
-            variant="nav"
-            onClick={handleGovernanceClick}
-            title="Aptos Governance"
-            sx={{
-              color: "inherit",
-              fontSize: "1rem",
-            }}
-          >
-            Governance
-          </Button>
-          <Menu
-            open={open}
-            onClose={handleClose}
-            anchorEl={governanceMenuEl}
-            TransitionComponent={Fade}
-            aria-controls={open ? "fade-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          >
-            <MenuItem onClick={() => handleCloseAndNavigate("/proposals")}>
-              Proposals
-            </MenuItem>
-            <MenuItem
-              onClick={() => handleCloseAndNavigate("/proposals/staking")}
-            >
-              Staking
-            </MenuItem>
-          </Menu>
-        </>
-      )}
+      <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
+      <NavButton
+        to="/Validators"
+        title="View All Validators"
+        label="Validators"
+      />
     </Box>
   );
 }

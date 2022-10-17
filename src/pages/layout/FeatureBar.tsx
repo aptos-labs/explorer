@@ -45,8 +45,8 @@ export default function FeatureBar() {
     if (feature_name) {
       maybeSetFeature(feature_name);
     } else {
-      // the "feature" param being null means that it's in mainnet production mode (gtm)
-      // so set feature to "gtm"
+      // the "feature" param being null means that it's in production mode
+      // so set feature to "prod"
       maybeSetFeature(defaultFeatureName);
     }
   });
