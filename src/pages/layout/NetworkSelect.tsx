@@ -29,49 +29,40 @@ function NetworkAndChainIdCached({
   const theme = useTheme();
 
   return (
-    <>
-      <Typography>{networkName}</Typography>
-      <Typography variant="body2" sx={{color: theme.palette.text.disabled}}>
-        {chainId}
-      </Typography>
-    </>
-  );
-}
-
-function NetworkAndChainId({networkName}: {networkName: string}) {
-  const theme = useTheme();
-  const chainId = useGetChainIdAndCache(networkName as NetworkName);
-
-  return chainId ? (
-    <>
-      <Typography>{networkName}</Typography>
-      <Typography variant="body2" sx={{color: theme.palette.text.disabled}}>
-        {chainId}
-      </Typography>
-    </>
-  ) : null;
-}
-
-function NetworkMenuItem({networkName}: {networkName: string}) {
-  const chainIdCached = useGetChainIdCached(networkName as NetworkName);
-
-  return (
     <Stack
       direction="row"
       alignItems="center"
       justifyContent="space-between"
       spacing={3}
       width="100%"
+      paddingY={0.75}
     >
-      {chainIdCached ? (
-        <NetworkAndChainIdCached
-          networkName={networkName}
-          chainId={chainIdCached}
-        />
-      ) : (
-        <NetworkAndChainId networkName={networkName} />
-      )}
+      <Typography>{networkName}</Typography>
+      <Typography variant="body2" sx={{color: theme.palette.text.disabled}}>
+        {chainId}
+      </Typography>
     </Stack>
+  );
+}
+
+function NetworkAndChainId({networkName}: {networkName: string}) {
+  const chainId = useGetChainIdAndCache(networkName as NetworkName);
+
+  return chainId ? (
+    <NetworkAndChainIdCached networkName={networkName} chainId={chainId} />
+  ) : null;
+}
+
+function NetworkMenuItem({networkName}: {networkName: string}) {
+  const chainIdCached = useGetChainIdCached(networkName as NetworkName);
+
+  return chainIdCached ? (
+    <NetworkAndChainIdCached
+      networkName={networkName}
+      chainId={chainIdCached}
+    />
+  ) : (
+    <NetworkAndChainId networkName={networkName} />
   );
 }
 
@@ -177,7 +168,7 @@ export default function NetworkSelect() {
             </Stack>
           </MenuItem>
           {Object.keys(networks).map((networkName: string) => (
-            <MenuItem key={networkName} value={networkName}>
+            <MenuItem key={networkName} value={networkName} sx={{paddingY: 0}}>
               <NetworkMenuItem networkName={networkName} />
             </MenuItem>
           ))}
