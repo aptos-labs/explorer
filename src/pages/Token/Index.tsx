@@ -4,7 +4,7 @@ import {Stack, Grid} from "@mui/material";
 import React from "react";
 import TokenTitle from "./Title";
 import TokenTabs from "./Tabs";
-import PageHeader from "../Layout/PageHeader";
+import PageHeader from "../layout/PageHeader";
 import EmptyTabContent from "../../components/IndividualPageContent/EmptyTabContent";
 
 const TOKEN_QUERY = gql`
