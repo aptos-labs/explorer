@@ -14,7 +14,7 @@ export default function TPS() {
     <MetricCard
       data={tps ? getFormattedTPS(tps) : "-"}
       label="Transactions per second (TPS)"
-      tooltipText="Rate of verified transactions over the previous second, on a rolling basis."
+      tooltipText="Rate of verified transactions."
     />
   );
 }

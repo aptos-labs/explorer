@@ -13,7 +13,7 @@ export default function TotalSupply() {
           ? getFormattedBalanceStr(totalSupply.toString(), undefined, 2)
           : "-"
       }
-      label="Total Circulating Supply"
+      label="Total Supply"
       tooltipText="Amount of APT tokens flowing through the Aptos network."
     />
   );
