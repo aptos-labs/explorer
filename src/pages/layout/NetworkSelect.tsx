@@ -14,6 +14,66 @@ import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {Stack} from "@mui/system";
+import {
+  useGetChainIdCached,
+  useGetChainIdAndCache,
+} from "../../api/hooks/useGetNetworkChainIds";
+
+function NetworkAndChainIdCached({
+  networkName,
+  chainId,
+}: {
+  networkName: string;
+  chainId: string | null;
+}) {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Typography>{networkName}</Typography>
+      <Typography variant="body2" sx={{color: theme.palette.text.disabled}}>
+        {chainId}
+      </Typography>
+    </>
+  );
+}
+
+function NetworkAndChainId({networkName}: {networkName: string}) {
+  const theme = useTheme();
+  const chainId = useGetChainIdAndCache(networkName as NetworkName);
+
+  return chainId ? (
+    <>
+      <Typography>{networkName}</Typography>
+      <Typography variant="body2" sx={{color: theme.palette.text.disabled}}>
+        {chainId}
+      </Typography>
+    </>
+  ) : null;
+}
+
+function NetworkMenuItem({networkName}: {networkName: string}) {
+  const chainIdCached = useGetChainIdCached(networkName as NetworkName);
+
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      spacing={3}
+      width="100%"
+    >
+      {chainIdCached ? (
+        <NetworkAndChainIdCached
+          networkName={networkName}
+          chainId={chainIdCached}
+        />
+      ) : (
+        <NetworkAndChainId networkName={networkName} />
+      )}
+    </Stack>
+  );
+}
 
 export default function NetworkSelect() {
   const [state, dispatch] = useGlobalState();
@@ -113,19 +173,12 @@ export default function NetworkSelect() {
               color={grey[450]}
             >
               <Typography variant="body2">Network</Typography>
+              <Typography variant="body2">Chain ID</Typography>
             </Stack>
           </MenuItem>
-          {Object.keys(networks).map((network_name: string) => (
-            <MenuItem key={network_name} value={network_name}>
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                spacing={3}
-                width="100%"
-              >
-                <Typography>{network_name}</Typography>
-              </Stack>
+          {Object.keys(networks).map((networkName: string) => (
+            <MenuItem key={networkName} value={networkName}>
+              <NetworkMenuItem networkName={networkName} />
             </MenuItem>
           ))}
         </Select>

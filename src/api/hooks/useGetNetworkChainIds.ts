@@ -33,33 +33,22 @@ function getWithExpiry(key: string) {
   return item.value;
 }
 
-export default function useGetNetworkChainIds() {
-  const networkChainIds = Object.fromEntries(
-    Object.entries(networks).map(([networkName, _networkValue]) => {
-      // save chain ids for networks other than local to `localStorage` to avoid refetching chain data
-      // as the chain ids for those networks won't be changed very often
-      if (networkName !== "local" && getWithExpiry(`${networkName}ChainId`)) {
-        return [networkName, getWithExpiry(`${networkName}ChainId`)];
-      }
+export function useGetChainIdCached(networkName: NetworkName): string | null {
+  return getWithExpiry(`${networkName}ChainId`);
+}
 
-      const {data} = useQuery(
-        ["ledgerInfo", networks[networkName as NetworkName]],
-        () =>
-          getLedgerInfoWithoutResponseError(
-            networks[networkName as NetworkName],
-          ),
-      );
-      const chainId: string | null = data?.chain_id
-        ? data?.chain_id.toString()
-        : null;
-
-      if (networkName !== "local" && chainId !== null) {
-        setWithExpiry(`${networkName}ChainId`, chainId, TTL);
-      }
-
-      return [networkName, chainId];
-    }),
+export function useGetChainIdAndCache(networkName: NetworkName): string | null {
+  const {data} = useQuery(["ledgerInfo", networks[networkName]], () =>
+    getLedgerInfoWithoutResponseError(networks[networkName]),
   );
 
-  return networkChainIds;
+  const chainId = data?.chain_id ? data?.chain_id.toString() : null;
+
+  // cache network chain ids (except local) to `localStorage` to avoid refetching chain data
+  // as the chain ids for those networks won't be changed very often
+  if (chainId !== null && networkName !== "local") {
+    setWithExpiry(`${networkName}ChainId`, chainId, TTL);
+  }
+
+  return chainId;
 }
