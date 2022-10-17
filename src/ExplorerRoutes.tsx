@@ -32,6 +32,7 @@ export default function ExplorerRoutes() {
           <Route path=":tokenId" element={<TokenPage />} />
           <Route path=":tokenId/:propertyVersion" element={<TokenPage />} />
         </Route>
+        <Route path="/proposals/*" element={<NotFoundPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </ExplorerLayout>
