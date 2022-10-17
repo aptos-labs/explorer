@@ -8,12 +8,9 @@ import Box from "@mui/material/Box";
 import {useGetInGtmMode} from "../../api/hooks/useGetInDevMode";
 import NetworkInfo from "./NetworkInfo/Index";
 import TransactionsPreview from "./TransactionsPreview";
-import UserTransactionsPreview from "./UserTransactionsPreview";
-import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 
 export default function LandingPage() {
   const inGtm = useGetInGtmMode();
-  const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
 
   return inGtm ? (
     <Box>
@@ -22,11 +19,7 @@ export default function LandingPage() {
       </Typography>
       <NetworkInfo />
       <HeaderSearch />
-      {isGraphqlClientSupported ? (
-        <UserTransactionsPreview />
-      ) : (
-        <TransactionsPreview />
-      )}
+      <TransactionsPreview />
     </Box>
   ) : (
     <Box>
