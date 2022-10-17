@@ -4,7 +4,7 @@ import React from "react";
 import AccountTabs, {TabValue} from "./Tabs";
 import AccountTitle from "./Title";
 import BalanceCard from "./BalanceCard";
-import PageHeader from "../layout/PageHeader";
+import PageHeader from "../Layout/PageHeader";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 
 const TAB_VALUES_FULL: TabValue[] = [

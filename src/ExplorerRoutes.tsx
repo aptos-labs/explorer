@@ -1,8 +1,8 @@
 import React from "react";
 import {Route, Routes} from "react-router-dom";
 import LandingPage from "./pages/LandingPage/Index";
-import NotFoundPage from "./pages/layout/NotFoundPage";
-import ExplorerLayout from "./pages/layout";
+import NotFoundPage from "./pages/Layout/NotFoundPage";
+import ExplorerLayout from "./pages/Layout";
 import TransactionPage from "./pages/Transaction/Index";
 import AccountPage from "./pages/Account/Index";
 import BlockPage from "./pages/Block/Index";

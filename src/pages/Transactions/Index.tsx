@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {Box, Button, Stack, Typography} from "@mui/material";
-import PageHeader from "../layout/PageHeader";
+import PageHeader from "../Layout/PageHeader";
 import AllTransactions from "./AllTransactions";
 import UserTransactions from "./UserTransactions";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";

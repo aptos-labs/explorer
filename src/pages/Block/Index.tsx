@@ -5,7 +5,7 @@ import BlockTitle from "./Title";
 import BlockTabs from "./Tabs";
 import {useGetBlockByHeight} from "../../api/hooks/useGetBlock";
 import Error from "./Error";
-import PageHeader from "../layout/PageHeader";
+import PageHeader from "../Layout/PageHeader";
 
 export default function BlockPage() {
   const {height} = useParams();

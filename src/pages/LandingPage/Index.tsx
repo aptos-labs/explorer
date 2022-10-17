@@ -1,6 +1,6 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
-import HeaderSearch from "../layout/Search/Index";
+import HeaderSearch from "../Layout/Search/Index";
 import Box from "@mui/material/Box";
 import NetworkInfo from "./NetworkInfo/Index";
 import TransactionsPreview from "./TransactionsPreview";

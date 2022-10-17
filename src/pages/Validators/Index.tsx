@@ -1,7 +1,7 @@
 import {Box, Typography} from "@mui/material";
 import * as React from "react";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
-import PageHeader from "../layout/PageHeader";
+import PageHeader from "../Layout/PageHeader";
 import {ValidatorsTable} from "./Table";
 
 export default function ValidatorsPage() {
