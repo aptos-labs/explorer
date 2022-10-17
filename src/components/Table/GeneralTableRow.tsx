@@ -1,6 +1,6 @@
 import React from "react";
 import {TableRow, useTheme} from "@mui/material";
-import {grey} from "../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/aptosColorPalette";
 
 interface TableRowProps {
   children: React.ReactNode;

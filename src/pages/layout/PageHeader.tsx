@@ -1,6 +1,6 @@
 import * as React from "react";
-import HeaderSearch from "../pages/layout/Search/Index";
-import GoBack from "./GoBack";
+import HeaderSearch from "./Search/Index";
+import GoBack from "../../components/GoBack";
 
 export default function PageHeader() {
   return (

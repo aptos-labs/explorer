@@ -54,9 +54,3 @@ if (!(defaultFeatureName in features)) {
 }
 
 export const defaultFeature = features[defaultFeatureName];
-
-/**
- * Wallet
- */
-export const installWalletUrl =
-  "https://chrome.google.com/webstore/detail/petra-aptos-wallet/ejjladinnckdgjemekebdpeokbikhfci";

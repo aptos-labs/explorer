@@ -7,8 +7,8 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import {useNavigate} from "react-router-dom";
-import GeneralTableRow from "../../../components/GeneralTableRow";
-import GeneralTableHeaderCell from "../../../components/GeneralTableHeaderCell";
+import GeneralTableRow from "../../../components/Table/GeneralTableRow";
+import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../utils";
 import HashButton, {HashType} from "../../../components/HashButton";
 

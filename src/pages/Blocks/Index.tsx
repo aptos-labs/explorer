@@ -2,8 +2,8 @@ import * as React from "react";
 import BlocksTable from "./Table";
 import {useGetMostRecentBlocks} from "../../api/hooks/useGetMostRecentBlocks";
 import {Box, Typography} from "@mui/material";
-import LoadingModal from "../Governance/components/LoadingModal";
-import PageHeader from "../../components/PageHeader";
+import PageHeader from "../Layout/PageHeader";
+import LoadingModal from "../../components/LoadingModal";
 
 const BLOCKS_COUNT = 30;
 

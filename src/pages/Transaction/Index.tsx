@@ -9,7 +9,7 @@ import {getTransaction} from "../../api";
 import Error from "./Error";
 import TransactionTitle from "./Title";
 import TransactionTabs from "./Tabs";
-import PageHeader from "../../components/PageHeader";
+import PageHeader from "../Layout/PageHeader";
 
 export default function TransactionPage() {
   const [state, _] = useGlobalState();
