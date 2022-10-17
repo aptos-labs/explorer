@@ -1,18 +1,11 @@
 import * as React from "react";
 import {Types} from "aptos";
-import {Stack, Box} from "@mui/material";
-import Row from "./Components/Row";
+import {Box} from "@mui/material";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
-import {
-  OldTransactionStatus,
-  TransactionStatus,
-} from "../../../components/TransactionStatus";
-import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
+import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
-import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
-import {getFormattedTimestamp} from "../../utils";
 
 type StateCheckpointOverviewTabProps = {
   transaction: Types.Transaction;
@@ -21,11 +14,10 @@ type StateCheckpointOverviewTabProps = {
 export default function StateCheckpointOverviewTab({
   transaction,
 }: StateCheckpointOverviewTabProps) {
-  const inGtm = useGetInGtmMode();
   const transactionData =
     transaction as Types.Transaction_StateCheckpointTransaction;
 
-  return inGtm ? (
+  return (
     <Box marginBottom={3}>
       <ContentBox>
         <ContentRow
@@ -68,39 +60,6 @@ export default function StateCheckpointOverviewTab({
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
       </ContentBox>
-    </Box>
-  ) : (
-    <Box marginX={2} marginTop={5}>
-      <Stack direction="column" spacing={3}>
-        <Row title={"Version:"} value={transactionData.version} />
-        <Row
-          title={"Status:"}
-          value={<OldTransactionStatus success={transactionData.success} />}
-        />
-        <Row
-          title={"State Change Hash:"}
-          value={transactionData.state_change_hash}
-        />
-        <Row
-          title={"Event Root Hash:"}
-          value={transactionData.event_root_hash}
-        />
-        <Row
-          title={"Gas Used:"}
-          value={<GasValue gas={transactionData.gas_used} />}
-        />
-        <Row title={"VM Status:"} value={transactionData.vm_status} />
-        <Row
-          title={"Accumulator Root Hash:"}
-          value={transactionData.accumulator_root_hash}
-        />
-        {"timestamp" in transactionData && (
-          <Row
-            title={"Timestamp:"}
-            value={getFormattedTimestamp(transactionData.timestamp)}
-          />
-        )}
-      </Stack>
     </Box>
   );
 }

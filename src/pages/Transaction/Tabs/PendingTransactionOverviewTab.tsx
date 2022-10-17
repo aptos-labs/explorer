@@ -1,12 +1,9 @@
 import * as React from "react";
 import {Types} from "aptos";
-import {Stack, Box} from "@mui/material";
-import Row from "./Components/Row";
+import {Box} from "@mui/material";
 import HashButton, {HashType} from "../../../components/HashButton";
-import {getFormattedTimestamp, renderDebug} from "../../utils";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import {getLearnMoreTooltip} from "../helpers";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
@@ -20,10 +17,9 @@ type PendingTransactionOverviewTabProps = {
 export default function PendingTransactionOverviewTab({
   transaction,
 }: PendingTransactionOverviewTabProps) {
-  const inGtm = useGetInGtmMode();
   const transactionData = transaction as Types.Transaction_PendingTransaction;
 
-  return inGtm ? (
+  return (
     <Box marginBottom={3}>
       <ContentBox>
         <ContentRow
@@ -63,39 +59,6 @@ export default function PendingTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("signature")}
         />
       </ContentBox>
-    </Box>
-  ) : (
-    <Box marginX={2} marginTop={5}>
-      <Stack direction="column" spacing={3}>
-        <Row
-          title={"Sender:"}
-          value={
-            <HashButton hash={transactionData.sender} type={HashType.ACCOUNT} />
-          }
-        />
-        <Row
-          title={"Sequence Number:"}
-          value={transactionData.sequence_number}
-        />
-        <Row
-          title={"Expiration Timestamp:"}
-          value={getFormattedTimestamp(
-            transactionData.expiration_timestamp_secs,
-          )}
-        />
-        <Row
-          title={"Max Gas Limit:"}
-          value={<GasValue gas={transactionData.max_gas_amount} />}
-        />
-        <Row
-          title={"Gas Unit Price:"}
-          value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
-        />
-        <Row
-          title={"Signature:"}
-          value={renderDebug(transactionData.signature)}
-        />
-      </Stack>
     </Box>
   );
 }

@@ -1,11 +1,6 @@
 import React from "react";
 import {Types} from "aptos";
-import {Stack, Box} from "@mui/material";
-import {renderDebug} from "../../utils";
-import Divider from "@mui/material/Divider";
-import Row from "./Components/Row";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
-import {useGetInGtmMode} from "../../../api/hooks/useGetInDevMode";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
@@ -13,23 +8,11 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import HashButton, {HashType} from "../../../components/HashButton";
 
-function Event({event}: {event: Types.Event}) {
-  return (
-    <Stack direction="column" spacing={1}>
-      <Row title={"Sequence Number:"} value={event.sequence_number} />
-      <Row title={"Type:"} value={event.type} />
-      <Row title={"Data:"} value={renderDebug(event.data)} />
-    </Stack>
-  );
-}
-
 type EventsTabProps = {
   transaction: Types.Transaction;
 };
 
 export default function EventsTab({transaction}: EventsTabProps) {
-  const inGtm = useGetInGtmMode();
-
   const events: Types.Event[] =
     "events" in transaction ? transaction.events : [];
 
@@ -40,7 +23,7 @@ export default function EventsTab({transaction}: EventsTabProps) {
     return <EmptyTabContent />;
   }
 
-  return inGtm ? (
+  return (
     <CollapsibleCards
       expandedList={expandedList}
       expandAll={expandAll}
@@ -73,17 +56,5 @@ export default function EventsTab({transaction}: EventsTabProps) {
         </CollapsibleCard>
       ))}
     </CollapsibleCards>
-  ) : (
-    <Box marginX={2} marginTop={5}>
-      <Stack
-        direction="column"
-        spacing={3}
-        divider={<Divider variant="dotted" orientation="horizontal" />}
-      >
-        {events.map((event, i) => (
-          <Event event={event} key={i} />
-        ))}
-      </Stack>
-    </Box>
   );
 }

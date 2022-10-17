@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useState} from "react";
-import {Tabs, Tab, Box} from "@mui/material";
+import {Box} from "@mui/material";
 import TransactionsTab from "./Tabs/TransactionsTab";
 import InfoTab from "./Tabs/InfoTab";
 import ResourcesTab from "./Tabs/ResourcesTab";
@@ -11,7 +11,6 @@ import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalance
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import ExtensionIcon from "@mui/icons-material/Extension";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import {useGetInGtmMode} from "../../api/hooks/useGetInDevMode";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import TokensTab from "./Tabs/TokensTab";
@@ -82,7 +81,6 @@ export default function AccountTabs({
   address,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
-  const inGtm = useGetInGtmMode();
   const [value, setValue] = useState<TabValue>(tabValues[0]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
@@ -90,7 +88,7 @@ export default function AccountTabs({
   };
 
   // TODO: use LinkTab for better navigation
-  return inGtm ? (
+  return (
     <Box sx={{width: "100%"}}>
       <Box>
         <StyledTabs value={value} onChange={handleChange}>
@@ -107,30 +105,6 @@ export default function AccountTabs({
         </StyledTabs>
       </Box>
       <Box>
-        <TabPanel value={value} address={address} />
-      </Box>
-    </Box>
-  ) : (
-    <Box sx={{width: "100%"}}>
-      <Box sx={{borderBottom: 1, borderColor: "divider"}}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="account page tabs"
-          variant="scrollable"
-          scrollButtons="auto"
-        >
-          {tabValues.map((value, i) => (
-            <Tab
-              key={i}
-              label={getTabLabel(value)}
-              value={value}
-              sx={{fontSize: {xs: "medium", md: "large"}}}
-            />
-          ))}
-        </Tabs>
-      </Box>
-      <Box sx={{marginY: 3}}>
         <TabPanel value={value} address={address} />
       </Box>
     </Box>

@@ -11,7 +11,6 @@ import {
   isValidAccountAddress,
   isValidTxnHashOrVersion,
 } from "../../pages/utils";
-import {useGetInGtmMode} from "./useGetInDevMode";
 
 export type SearchResult = {
   label: string;
@@ -24,7 +23,6 @@ export const NotFoundResult: SearchResult = {
 };
 
 export default function useGetSearchResults(input: string) {
-  const inGtm = useGetInGtmMode();
   const [results, setResults] = useState<SearchResult[]>([]);
   const [state, _setState] = useGlobalState();
 
@@ -109,7 +107,7 @@ export default function useGetSearchResults(input: string) {
       if (isValidTxnHashOrVer) {
         promises.push(txnPromise);
       }
-      if (inGtm && isValidBlockHeightOrVer) {
+      if (isValidBlockHeightOrVer) {
         promises.push(blockByHeightPromise);
         promises.push(blockByVersionPromise);
       }

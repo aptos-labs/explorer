@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useState} from "react";
-import {Tabs, Tab, Box} from "@mui/material";
+import {Box} from "@mui/material";
 import {Types} from "aptos";
 import {assertNever} from "../../utils";
 import StyledTabs from "../../components/StyledTabs";
@@ -19,7 +19,6 @@ import CallMergeOutlinedIcon from "@mui/icons-material/CallMergeOutlined";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import {useGetInGtmMode} from "../../api/hooks/useGetInDevMode";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -113,7 +112,6 @@ export default function TransactionTabs({
   transaction,
   tabValues = getTabValues(transaction),
 }: TransactionTabsProps): JSX.Element {
-  const inGtm = useGetInGtmMode();
   const [value, setValue] = useState<TabValue>(tabValues[0]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
@@ -121,7 +119,7 @@ export default function TransactionTabs({
   };
 
   // TODO: use LinkTab for better navigation
-  return inGtm ? (
+  return (
     <Box sx={{width: "100%"}}>
       <Box>
         <StyledTabs value={value} onChange={handleChange}>
@@ -138,30 +136,6 @@ export default function TransactionTabs({
         </StyledTabs>
       </Box>
       <Box>
-        <TabPanel value={value} transaction={transaction} />
-      </Box>
-    </Box>
-  ) : (
-    <Box sx={{width: "100%"}}>
-      <Box sx={{borderBottom: 1, borderColor: "divider"}}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="account page tabs"
-          variant="scrollable"
-          scrollButtons="auto"
-        >
-          {tabValues.map((value, i) => (
-            <Tab
-              key={i}
-              label={getTabLabel(value)}
-              value={value}
-              sx={{fontSize: {xs: "medium", md: "large"}}}
-            />
-          ))}
-        </Tabs>
-      </Box>
-      <Box sx={{marginY: 3}}>
         <TabPanel value={value} transaction={transaction} />
       </Box>
     </Box>

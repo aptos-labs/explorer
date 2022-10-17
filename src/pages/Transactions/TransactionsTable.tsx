@@ -15,12 +15,10 @@ import HashButton, {HashType} from "../../components/HashButton";
 
 import {Types} from "aptos";
 import {assertNever} from "../../utils";
-import GasValue from "../../components/IndividualPageContent/ContentValue/GasValue";
 import {TableTransactionType} from "../../components/TransactionType";
 import {TableTransactionStatus} from "../../components/TransactionStatus";
 import {getFormattedTimestamp} from "../utils";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
-import {useGetInGtmMode} from "../../api/hooks/useGetInDevMode";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 
 type TransactionCellProps = {
@@ -81,9 +79,7 @@ function TransactionVersionCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionGasCell({transaction}: TransactionCellProps) {
-  const inGtm = useGetInGtmMode();
-
-  return inGtm ? (
+  return (
     <TableCell sx={{textAlign: "right"}}>
       {"gas_used" in transaction && "gas_unit_price" in transaction ? (
         <GasFeeValue
@@ -91,10 +87,6 @@ function TransactionGasCell({transaction}: TransactionCellProps) {
           gasUnitPrice={transaction.gas_unit_price}
         />
       ) : null}
-    </TableCell>
-  ) : (
-    <TableCell sx={{textAlign: "right"}}>
-      {"gas_used" in transaction && <GasValue gas={transaction.gas_used} />}
     </TableCell>
   );
 }
