@@ -14,6 +14,7 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import TokensTab from "./Tabs/TokensTab";
+import {Types} from "aptos";
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
@@ -64,21 +65,24 @@ function getTabIcon(value: TabValue): JSX.Element {
 type TabPanelProps = {
   value: TabValue;
   address: string;
+  accountData: Types.AccountData | undefined;
 };
 
-function TabPanel({value, address}: TabPanelProps): JSX.Element {
+function TabPanel({value, address, accountData}: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
-  return <TabComponent address={address} />;
+  return <TabComponent address={address} accountData={accountData} />;
 }
 
 type AccountTabsProps = {
   address: string;
+  accountData: Types.AccountData | undefined;
   tabValues?: TabValue[];
 };
 
 // TODO: create reusable Tabs for all pages
 export default function AccountTabs({
   address,
+  accountData,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
   const [value, setValue] = useState<TabValue>(tabValues[0]);
@@ -105,7 +109,7 @@ export default function AccountTabs({
         </StyledTabs>
       </Box>
       <Box>
-        <TabPanel value={value} address={address} />
+        <TabPanel value={value} address={address} accountData={accountData} />
       </Box>
     </Box>
   );

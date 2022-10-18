@@ -2,6 +2,7 @@ import React from "react";
 import {gql, useQuery} from "@apollo/client";
 import {TokensTable} from "../Components/TokensTable";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {Types} from "aptos";
 
 const TOKENS_QUERY = gql`
   query TokensData($owner_address: String) {
@@ -20,6 +21,7 @@ const TOKENS_QUERY = gql`
 
 type TokenTabsProps = {
   address: string;
+  accountData: Types.AccountData | undefined;
 };
 
 export default function TokenTabs({address}: TokenTabsProps) {
