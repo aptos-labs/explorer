@@ -3,27 +3,6 @@ import moment from "moment";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
 
-export function renderDebug(data: any) {
-  const theme = useTheme();
-  return (
-    <Box
-      sx={{overflow: "auto", fontWeight: theme.typography.fontWeightRegular}}
-    >
-      <div>
-        <pre
-          style={{
-            fontFamily: theme.typography.fontFamily,
-            fontWeight: theme.typography.fontWeightRegular,
-            overflowWrap: "break-word",
-          }}
-        >
-          {JSON.stringify(data || null, null, 2)}
-        </pre>
-      </div>
-    </Box>
-  );
-}
-
 function ensureMillisecondTimestamp(timestamp: string): number {
   /*
   Could be: 1646458457
