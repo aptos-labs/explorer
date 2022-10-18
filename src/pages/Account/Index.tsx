@@ -6,6 +6,9 @@ import AccountTitle from "./Title";
 import BalanceCard from "./BalanceCard";
 import PageHeader from "../layout/PageHeader";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
+import {useGetAccount} from "../../api/hooks/useGetAccount";
+import LoadingModal from "../../components/LoadingModal";
+import Error from "./Error";
 
 const TAB_VALUES_FULL: TabValue[] = [
   "transactions",
@@ -19,14 +22,12 @@ const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
 export default function AccountPage() {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
-  const {address} = useParams();
-
-  if (typeof address !== "string") {
-    return null;
-  }
+  const address = useParams().address ?? "";
+  const {data, error, isLoading} = useGetAccount(address);
 
   return (
     <Grid container spacing={1}>
+      <LoadingModal open={isLoading} />
       <Grid item xs={12} md={12} lg={12}>
         <PageHeader />
       </Grid>
@@ -37,10 +38,15 @@ export default function AccountPage() {
         <BalanceCard address={address} />
       </Grid>
       <Grid item xs={12} md={12} lg={12} marginTop={4}>
-        <AccountTabs
-          address={address}
-          tabValues={isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES}
-        />
+        {error ? (
+          <Error address={address} error={error} />
+        ) : (
+          <AccountTabs
+            address={address}
+            accountData={data}
+            tabValues={isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES}
+          />
+        )}
       </Grid>
     </Grid>
   );

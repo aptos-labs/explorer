@@ -13,10 +13,6 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 
-type ModulesTabProps = {
-  address: string;
-};
-
 function ModulesContent({
   data,
 }: {
@@ -58,6 +54,11 @@ function ModulesContent({
     </CollapsibleCards>
   );
 }
+
+type ModulesTabProps = {
+  address: string;
+  accountData: Types.AccountData | undefined;
+};
 
 export default function ModulesTab({address}: ModulesTabProps) {
   const [state, _] = useGlobalState();

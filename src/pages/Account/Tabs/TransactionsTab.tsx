@@ -4,11 +4,7 @@ import TransactionsTable from "../../Transactions/TransactionsTable";
 import Error from "../Error";
 import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {useGlobalState} from "../../../GlobalState";
-import {ResponseError} from "../../../api/client";
-import {useQuery} from "react-query";
 import {Types} from "aptos";
-import {getAccount} from "../../../api";
 
 const TXN_PER_PAGE = 25;
 
@@ -105,23 +101,21 @@ function TransactionsPaginationTable({
 
 type TransactionsTabProps = {
   address: string;
+  accountData: Types.AccountData | undefined;
 };
 
-export default function TransactionsTab({address}: TransactionsTabProps) {
-  const [state, _] = useGlobalState();
-  const {data} = useQuery<Types.AccountData, ResponseError>(
-    ["account", {address}, state.network_value],
-    () => getAccount({address}, state.network_value),
-  );
-
-  if (!data) {
+export default function TransactionsTab({
+  address,
+  accountData,
+}: TransactionsTabProps) {
+  if (!accountData) {
     return <EmptyTabContent />;
   }
 
   return (
     <TransactionsPaginationTable
       address={address}
-      sequenceNum={parseInt(data.sequence_number)}
+      sequenceNum={parseInt(accountData.sequence_number)}
     />
   );
 }
