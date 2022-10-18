@@ -12,7 +12,7 @@ export default function Error({error, address}: ErrorProps) {
     return (
       <Alert severity="error">
         {error.message}
-        Account not found with address {address}.
+        Account not found: {address}
       </Alert>
     );
   } else {
