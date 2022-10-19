@@ -11,11 +11,24 @@ import ResultLink from "./ResultLink";
 export default function HeaderSearch() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState<string>("");
+  const [searchValue, setSearchValue] = useState<string>("");
   const [open, setOpen] = useState(false);
   const [selectedOption, setSelectedOption] =
     useState<SearchResult>(NotFoundResult);
 
-  const options = useGetSearchResults(inputValue);
+  const options = useGetSearchResults(searchValue);
+
+  // inputValue is the value in the text field
+  // searchValue is the value that we search
+  // searchValue is updated 0.5s after the inputValue is changed
+  // this is to wait for users to stop typing then execute searching
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchValue(inputValue);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [inputValue]);
 
   useEffect(() => {
     if (options.length > 0) {
