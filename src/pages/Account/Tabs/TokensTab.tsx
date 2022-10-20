@@ -25,9 +25,13 @@ type TokenTabsProps = {
 };
 
 export default function TokenTabs({address}: TokenTabsProps) {
+  // whenever talking to the indexer, the address needs to fill in leading 0s
+  // for example: 0x123 => 0x000...000123  (61 0s before 123)
+  const addr64Hash = "0x" + address.substring(2).padStart(64, "0");
+
   const {loading, error, data} = useQuery(TOKENS_QUERY, {
     variables: {
-      owner_address: address,
+      owner_address: addr64Hash,
     },
   });
 
