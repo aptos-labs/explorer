@@ -38,7 +38,7 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
       );
     case "function":
       return (
-        <LearnMoreTooltip text="Transaction function. You can also find it in Payload." />
+        <LearnMoreTooltip text="Move function executed in the transaction." />
       );
     case "gas_fee":
       return (
