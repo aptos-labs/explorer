@@ -64,6 +64,24 @@ function UserTransferRows({transaction}: {transaction: Types.Transaction}) {
   );
 }
 
+function TransactionFunctionRow({
+  transaction,
+}: {
+  transaction: Types.Transaction;
+}) {
+  if (!("payload" in transaction) || !("function" in transaction.payload)) {
+    return null;
+  }
+
+  return (
+    <ContentRow
+      title="Transaction Function:"
+      value={<JsonCard data={transaction.payload.function} />}
+      tooltip={getLearnMoreTooltip("function")}
+    />
+  );
+}
+
 type UserTransactionOverviewTabProps = {
   transaction: Types.Transaction;
 };
@@ -141,6 +159,7 @@ export default function UserTransactionOverviewTab({
         />
       </ContentBox>
       <ContentBox>
+        <TransactionFunctionRow transaction={transactionData} />
         <ContentRow
           title="Signature:"
           value={<JsonCard data={transactionData.signature} />}

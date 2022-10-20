@@ -29,6 +29,7 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
   const jsonData = JSON.stringify(data, null, 2);
   const jsonLineCount = jsonData.split("\n").length;
   const expandable = jsonLineCount >= 5;
+  const showCopyIcon = jsonLineCount >= 2;
 
   const toggleCard = () => {
     setExpanded(!expanded);
@@ -90,24 +91,26 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
             {jsonData}
           </pre>
         </Box>
-        <StyledTooltip
-          title="Data copied"
-          placement="right"
-          open={tooltipOpen}
-          disableFocusListener
-          disableHoverListener
-          disableTouchListener
-        >
-          <IconButton
-            onClick={copyCard}
-            sx={{
-              color: "inherit",
-              alignSelf: "flex-start",
-            }}
+        {showCopyIcon && (
+          <StyledTooltip
+            title="Data copied"
+            placement="right"
+            open={tooltipOpen}
+            disableFocusListener
+            disableHoverListener
+            disableTouchListener
           >
-            <ContentCopyIcon sx={{fontSize: 15}} />
-          </IconButton>
-        </StyledTooltip>
+            <IconButton
+              onClick={copyCard}
+              sx={{
+                color: "inherit",
+                alignSelf: "flex-start",
+              }}
+            >
+              <ContentCopyIcon sx={{fontSize: 15}} />
+            </IconButton>
+          </StyledTooltip>
+        )}
       </Stack>
       {expandable && (
         <Box
