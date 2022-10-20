@@ -41,7 +41,7 @@ function truncate(
   backLen: number,
   truncateStr: string,
 ) {
-  if (str === null) {
+  if (!str) {
     return "";
   }
 
