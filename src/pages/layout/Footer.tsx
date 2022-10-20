@@ -1,24 +1,25 @@
 import React from "react";
-import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
+import {Box, Container, Link, Stack, Typography, useTheme} from "@mui/material";
+
+import Grid from "@mui/material/Unstable_Grid2";
 
 import {ReactComponent as GithubLogo} from "../../assets/github.svg";
 import {ReactComponent as DiscordLogo} from "../../assets/discord.svg";
 import {ReactComponent as TwitterLogo} from "../../assets/twitter.svg";
 import {ReactComponent as MediumLogo} from "../../assets/medium.svg";
 import {ReactComponent as LinkedInLogo} from "../../assets/linkedin.svg";
-import Box from "@mui/material/Box";
-import {useTheme} from "@mui/material";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
 
-import {ReactComponent as LogoFull} from "../../assets/svg/aptos_logo_full.svg";
+import {ReactComponent as LogoFull} from "../../assets/svg/aptos_logo_icon.svg";
 
 const socialLinks = [
   {title: "Git", url: "https://github.com/aptos-labs", icon: GithubLogo},
-  {title: "Discord", url: "https://discord.gg/zTDYBEud7U", icon: DiscordLogo},
+  {
+    title: "Discord",
+    url: "https://discord.com/invite/aptoslabs",
+    icon: DiscordLogo,
+  },
   {title: "Twitter", url: "https://twitter.com/aptoslabs/", icon: TwitterLogo},
   {title: "Medium", url: "https://aptoslabs.medium.com/", icon: MediumLogo},
   {
@@ -47,47 +48,67 @@ export default function Footer() {
           alignItems="center"
           direction={{xs: "column", md: "row"}}
         >
-          <Grid item xs="auto" sx={{mr: 2}} container justifyContent="start">
+          <Grid xs="auto" container justifyContent="start">
             <Link
               color="inherit"
               href="https://aptoslabs.com/"
               target="_blank"
-              sx={{width: "8rem"}}
+              sx={{width: "3rem", mb: {xs: 2, md: 0}, mr: {md: 2}}}
             >
               <LogoFull />
             </Link>
           </Grid>
-          <Grid item xs="auto" container justifyContent="start">
+          <Grid
+            xs="auto"
+            container
+            direction={{xs: "column"}}
+            justifyContent="start"
+          >
             <Typography
-              sx={{textAlign: {xs: "center", md: "left"}}}
+              sx={{
+                textAlign: {
+                  xs: "center",
+                  md: "left",
+                  fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                },
+              }}
               fontSize="0.8rem"
             >
               © {new Date().getFullYear()}{" "}
               <Box component="span" sx={{whiteSpace: "nowrap"}}>
-                Matonee Inc. (dba Aptos Labs)
+                Aptos Labs
               </Box>
-              <br />
-              <Link
-                color="inherit"
-                href="mailto:info@aptoslabs.com"
-                target="_blank"
-              >
-                info@aptoslabs.com
-              </Link>
-              <Box component="span" sx={{px: 1, display: "inline-block"}}>
-                or
-              </Box>
-              <Link
-                color="inherit"
-                href="mailto:press@aptoslabs.com"
-                target="_blank"
-              >
-                press@aptoslabs.com
-              </Link>
             </Typography>
+            <Stack
+              direction="row"
+              spacing={1}
+              justifyContent={{xs: "center", md: "start"}}
+            >
+              <Link
+                color="inherit"
+                href="https://aptoslabs.com/privacy"
+                target="_blank"
+                sx={{
+                  fontSize: "0.8rem",
+                  fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                }}
+              >
+                Privacy
+              </Link>
+              <Link
+                color="inherit"
+                href="https://aptoslabs.com/terms"
+                target="_blank"
+                sx={{
+                  fontSize: "0.8rem",
+                  fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                }}
+              >
+                Terms
+              </Link>
+            </Stack>
           </Grid>
           <Grid
-            item
             xs="auto"
             sx={{marginLeft: {xs: "0", md: "auto"}}}
             container
@@ -100,7 +121,7 @@ export default function Footer() {
               direction="row"
             >
               {socialLinks.map((link) => (
-                <Grid item key={link.title}>
+                <Grid key={link.title}>
                   <Link
                     color="inherit"
                     href={link.url}
