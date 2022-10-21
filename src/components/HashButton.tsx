@@ -13,7 +13,7 @@ import * as RRD from "react-router-dom";
 import {grey} from "../themes/colors/aptosColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
-import {truncateAddress} from "../pages/utils";
+import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {assertNever} from "../utils";
 
 export enum HashType {
@@ -58,9 +58,15 @@ function HashLink(hash: string, type: HashType): JSX.Element {
 interface HashButtonProps extends BoxProps {
   hash: string;
   type: HashType;
+  size?: "small" | "large";
 }
 
-export default function HashButton({hash, type, ...props}: HashButtonProps) {
+export default function HashButton({
+  hash,
+  type,
+  size = "small",
+  ...props
+}: HashButtonProps) {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -101,7 +107,7 @@ export default function HashButton({hash, type, ...props}: HashButtonProps) {
         variant="contained"
         endIcon={<ChevronRightRoundedIcon sx={{opacity: "0.75", m: 0}} />}
       >
-        {truncateAddress(hash)}
+        {size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash)}
       </Button>
 
       <Popover
