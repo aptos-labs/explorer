@@ -12,6 +12,7 @@ import Error from "./Error";
 
 const TAB_VALUES_FULL: TabValue[] = [
   "transactions",
+  "coins",
   "tokens",
   "resources",
   "modules",

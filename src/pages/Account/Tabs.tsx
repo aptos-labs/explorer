@@ -7,6 +7,7 @@ import ResourcesTab from "./Tabs/ResourcesTab";
 import ModulesTab from "./Tabs/ModulesTab";
 import {assertNever} from "../../utils";
 import WysiwygIcon from "@mui/icons-material/Wysiwyg";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import ExtensionIcon from "@mui/icons-material/Extension";
@@ -14,12 +15,14 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import TokensTab from "./Tabs/TokensTab";
+import CoinsTab from "./Tabs/CoinsTab";
 import {Types} from "aptos";
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
 const TabComponents = Object.freeze({
   transactions: TransactionsTab,
+  coins: CoinsTab,
   tokens: TokensTab,
   resources: ResourcesTab,
   modules: ModulesTab,
@@ -32,6 +35,8 @@ function getTabLabel(value: TabValue): string {
   switch (value) {
     case "transactions":
       return "Transactions";
+    case "coins":
+      return "Coins";
     case "tokens":
       return "Tokens";
     case "resources":
@@ -49,6 +54,8 @@ function getTabIcon(value: TabValue): JSX.Element {
   switch (value) {
     case "transactions":
       return <WysiwygIcon fontSize="small" />;
+    case "coins":
+      return <MonetizationOnOutlinedIcon fontSize="small" />;
     case "tokens":
       return <AccountBalanceWalletOutlinedIcon fontSize="small" />;
     case "resources":
