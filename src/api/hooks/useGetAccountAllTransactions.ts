@@ -50,7 +50,7 @@ export function useGetAccountAllTransactionVersions(
   address: string,
   limit: number,
   offset?: number,
-): {loading: boolean; versions: number[]} {
+): number[] {
   // whenever talking to the indexer, the address needs to fill in leading 0s
   // for example: 0x123 => 0x000...000123  (61 0s before 123)
   const addr64Hash = "0x" + address.substring(2).padStart(64, "0");
@@ -60,7 +60,7 @@ export function useGetAccountAllTransactionVersions(
   });
 
   if (loading || error || !data) {
-    return {loading: loading, versions: []};
+    return [];
   }
 
   const versions: number[] = data.move_resources.map(
@@ -69,5 +69,5 @@ export function useGetAccountAllTransactionVersions(
     },
   );
 
-  return {loading, versions};
+  return versions;
 }

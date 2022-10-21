@@ -1,67 +1,77 @@
-import React, {useEffect} from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
-import {Pagination, PaginationItem, Stack} from "@mui/material";
+import {Pagination, Stack} from "@mui/material";
 import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
-import {useGetAccountAllTransactionVersions} from "../../../api/hooks/useGetAccountAllTransactions";
+import {
+  useGetAccountAllTransactionCount,
+  useGetAccountAllTransactionVersions,
+} from "../../../api/hooks/useGetAccountAllTransactions";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 
-const LIMIT = 5;
+const LIMIT = 20;
 
 function RenderPagination({
   currentPage,
   numPages,
-  disableNext,
 }: {
   currentPage: number;
   numPages: number;
-  disableNext: boolean;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const goToPage = (newPageNum: number) => {
-    searchParams.set("page", newPageNum.toString());
-    setSearchParams(searchParams);
-
-    const numPages = parseInt(searchParams.get("numPages") ?? "1");
-    if (newPageNum > numPages) {
-      searchParams.set("numPages", newPageNum.toString());
-      setSearchParams(searchParams);
-    }
-  };
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
     newPageNum: number,
   ) => {
-    goToPage(newPageNum);
-  };
-
-  const handleNextPage = () => {
-    goToPage(currentPage + 1);
+    searchParams.set("page", newPageNum.toString());
+    setSearchParams(searchParams);
   };
 
   return (
-    <Stack direction="row" alignItems="end">
-      <Pagination
-        sx={{mt: 3}}
-        count={numPages}
-        variant="outlined"
-        shape="rounded"
-        hideNextButton
-        page={currentPage}
-        siblingCount={4}
-        boundaryCount={0}
-        onChange={handleChange}
-      />
-      <Box onClick={disableNext ? () => {} : handleNextPage}>
-        <PaginationItem
-          variant="outlined"
-          shape="rounded"
-          type="next"
-          disabled={disableNext}
-        />
-      </Box>
-    </Stack>
+    <Pagination
+      sx={{mt: 3}}
+      count={numPages}
+      variant="outlined"
+      showFirstButton
+      showLastButton
+      page={currentPage}
+      siblingCount={4}
+      boundaryCount={0}
+      shape="rounded"
+      onChange={handleChange}
+    />
+  );
+}
+
+type AccountAllTransactionsWithPaginationProps = {
+  address: string;
+  numPages: number;
+};
+
+export function AccountAllTransactionsWithPagination({
+  address,
+  numPages,
+}: AccountAllTransactionsWithPaginationProps) {
+  const [searchParams, _setSearchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get("page") ?? "1");
+  const offset = (currentPage - 1) * LIMIT;
+
+  const versions = useGetAccountAllTransactionVersions(address, LIMIT, offset);
+
+  return (
+    <>
+      <Stack spacing={2}>
+        <Box sx={{width: "auto", overflowX: "auto"}}>
+          <UserTransactionsTable versions={versions} />
+        </Box>
+        {numPages > 1 && (
+          <Box sx={{display: "flex", justifyContent: "center"}}>
+            <RenderPagination currentPage={currentPage} numPages={numPages} />
+          </Box>
+        )}
+      </Stack>
+    </>
   );
 }
 
@@ -72,48 +82,18 @@ type AccountAllTransactionsProps = {
 export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") ?? "1");
-  const numPages = parseInt(searchParams.get("numPages") ?? "1");
-  const maxNumPages = parseInt(searchParams.get("maxNumPages") ?? "");
-  const offset = (currentPage - 1) * LIMIT;
+  const txnCount = useGetAccountAllTransactionCount(address);
 
-  const {loading, versions} = useGetAccountAllTransactionVersions(
-    address,
-    LIMIT,
-    offset,
-  );
+  if (txnCount === undefined) {
+    return <EmptyTabContent />;
+  }
 
-  useEffect(() => {
-    if (!loading && versions.length < LIMIT) {
-      if (versions.length === 0) {
-        searchParams.set("page", (currentPage - 1).toString());
-        searchParams.set("numPages", (currentPage - 1).toString());
-        searchParams.set("maxNumPages", (currentPage - 1).toString());
-        setSearchParams(searchParams);
-      } else {
-        searchParams.set("maxNumPages", currentPage.toString());
-        setSearchParams(searchParams);
-      }
-    }
-  }, [loading, versions.length]);
-
-  const disableNext = numPages === maxNumPages;
+  const numPages = Math.ceil(txnCount / LIMIT);
 
   return (
-    <>
-      <Stack spacing={2}>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
-          <UserTransactionsTable versions={versions} />
-        </Box>
-        <Box sx={{display: "flex", justifyContent: "center"}}>
-          <RenderPagination
-            currentPage={currentPage}
-            numPages={numPages}
-            disableNext={disableNext}
-          />
-        </Box>
-      </Stack>
-    </>
+    <AccountAllTransactionsWithPagination
+      address={address}
+      numPages={numPages}
+    />
   );
 }

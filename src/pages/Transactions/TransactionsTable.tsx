@@ -149,9 +149,9 @@ type UserTransactionRowProps = {
 
 function UserTransactionRow({version, columns}: UserTransactionRowProps) {
   const navigate = useNavigate();
-  const {data: transaction} = useGetTransaction(version.toString());
+  const {data: transaction, isError} = useGetTransaction(version.toString());
 
-  if (!transaction) {
+  if (!transaction || isError) {
     return null;
   }
 
