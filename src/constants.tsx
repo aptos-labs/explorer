@@ -5,7 +5,8 @@ export const devnetUrl =
   process.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
 
 export const networks = {
-  mainnet: "https://fullnode.mainnet.aptoslabs.com/",
+  // TODO: change this back to https://fullnode.mainnet.aptoslabs.com/
+  mainnet: "https://backup.cloud-b.mainnet.aptoslabs.com/",
   testnet: "https://testnet.aptoslabs.com",
   devnet: devnetUrl,
   local: "http://localhost:8080",
