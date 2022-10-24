@@ -23,6 +23,7 @@ export default function ExplorerRoutes() {
         </Route>
         <Route path="/account">
           <Route path=":address" element={<AccountPage />} />
+          <Route path=":address/:tab" element={<AccountPage />} />
         </Route>
         <Route path="/blocks" element={<BlocksPage />} />
         <Route path="/block">
