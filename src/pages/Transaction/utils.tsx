@@ -2,7 +2,7 @@ import {Types} from "aptos";
 
 export type BalanceChange = {
   address: string;
-  amount: number;
+  amount: bigint;
   amountAfter: string;
 };
 
@@ -16,7 +16,7 @@ export function getCoinBalanceChange(
     balanceMap: {
       [key: string]: {
         amountAfter: string;
-        amount: number;
+        amount: bigint;
       };
     },
     event: Types.Event,
@@ -28,10 +28,10 @@ export function getCoinBalanceChange(
       event.type === "0x1::coin::WithdrawEvent"
     ) {
       if (!balanceMap[addr]) {
-        balanceMap[addr] = {amount: 0, amountAfter: ""};
+        balanceMap[addr] = {amount: BigInt(0), amountAfter: ""};
       }
 
-      const amount = parseInt(event.data.amount);
+      const amount = BigInt(event.data.amount);
 
       if (event.type === "0x1::coin::DepositEvent") {
         balanceMap[addr].amount += amount;

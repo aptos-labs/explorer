@@ -14,9 +14,22 @@ import {
   negativeColor,
   primary,
 } from "../../../../themes/colors/aptosColorPalette";
+import {Types} from "aptos";
+
+function getIsSender(
+  address: string,
+  transaction: Types.UserTransaction,
+): boolean {
+  return transaction.sender === address;
+}
+
+function getGas(transaction: Types.UserTransaction): bigint {
+  return BigInt(transaction.gas_unit_price) * BigInt(transaction.gas_used);
+}
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
+  transaction: Types.UserTransaction;
 };
 
 function AddressCell({balanceChange}: BalanceChangeCellProps) {
@@ -27,9 +40,16 @@ function AddressCell({balanceChange}: BalanceChangeCellProps) {
   );
 }
 
-function AmountBeforeCell({balanceChange}: BalanceChangeCellProps) {
-  const amountBefore =
-    parseInt(balanceChange.amountAfter) - balanceChange.amount;
+function AmountBeforeCell({
+  balanceChange,
+  transaction,
+}: BalanceChangeCellProps) {
+  let amountBefore = BigInt(balanceChange.amountAfter) - balanceChange.amount;
+
+  const isSender = getIsSender(balanceChange.address, transaction);
+  if (isSender) {
+    amountBefore += getGas(transaction);
+  }
 
   return (
     <TableCell sx={{textAlign: "right"}}>
@@ -46,9 +66,30 @@ function AmountAfterCell({balanceChange}: BalanceChangeCellProps) {
   );
 }
 
+function GasCell({balanceChange, transaction}: BalanceChangeCellProps) {
+  const isSender = getIsSender(balanceChange.address, transaction);
+
+  if (!isSender) {
+    return <TableCell />;
+  }
+
+  return (
+    <TableCell
+      sx={{
+        textAlign: "right",
+        color: negativeColor,
+      }}
+    >
+      {"-"}
+      <APTCurrencyValue amount={getGas(transaction).toString()} />
+    </TableCell>
+  );
+}
+
 function AmountCell({balanceChange}: BalanceChangeCellProps) {
   const isNegative = balanceChange.amount < 0;
-  const amount = Math.abs(balanceChange.amount);
+  const amount =
+    balanceChange.amount < 0 ? -balanceChange.amount : balanceChange.amount;
 
   return (
     <TableCell
@@ -67,6 +108,7 @@ const BalanceChangeCells = Object.freeze({
   address: AddressCell,
   amountBefore: AmountBeforeCell,
   amountAfter: AmountAfterCell,
+  gas: GasCell,
   amount: AmountCell,
 });
 
@@ -75,21 +117,33 @@ type Column = keyof typeof BalanceChangeCells;
 const DEFAULT_COLUMNS: Column[] = [
   "address",
   "amountBefore",
-  "amountAfter",
+  "gas",
   "amount",
+  "amountAfter",
 ];
 
 type BalanceChangeRowProps = {
   balanceChange: BalanceChange;
+  transaction: Types.UserTransaction;
   columns: Column[];
 };
 
-function BalanceChangeRow({balanceChange, columns}: BalanceChangeRowProps) {
+function BalanceChangeRow({
+  balanceChange,
+  transaction,
+  columns,
+}: BalanceChangeRowProps) {
   return (
     <GeneralTableRow>
       {columns.map((column) => {
         const Cell = BalanceChangeCells[column];
-        return <Cell key={column} balanceChange={balanceChange} />;
+        return (
+          <Cell
+            key={column}
+            balanceChange={balanceChange}
+            transaction={transaction}
+          />
+        );
       })}
     </GeneralTableRow>
   );
@@ -111,6 +165,8 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
       return (
         <GeneralTableHeaderCell header="Balance After" textAlignRight={true} />
       );
+    case "gas":
+      return <GeneralTableHeaderCell header="Gas" textAlignRight={true} />;
     case "amount":
       return <GeneralTableHeaderCell header="Change" textAlignRight={true} />;
     default:
@@ -120,11 +176,13 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
 
 type CoinBalanceChangeTableProps = {
   balanceChanges: BalanceChange[];
+  transaction: Types.UserTransaction;
   columns?: Column[];
 };
 
 export function CoinBalanceChangeTable({
   balanceChanges,
+  transaction,
   columns = DEFAULT_COLUMNS,
 }: CoinBalanceChangeTableProps) {
   return (
@@ -142,6 +200,7 @@ export function CoinBalanceChangeTable({
             <BalanceChangeRow
               key={i}
               balanceChange={balanceChange}
+              transaction={transaction}
               columns={columns}
             />
           );

@@ -15,5 +15,10 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
     return <EmptyTabContent />;
   }
 
-  return <CoinBalanceChangeTable balanceChanges={balanceChanges} />;
+  return (
+    <CoinBalanceChangeTable
+      balanceChanges={balanceChanges}
+      transaction={transaction as Types.UserTransaction}
+    />
+  );
 }
