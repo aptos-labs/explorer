@@ -1,4 +1,5 @@
 import React from "react";
+import {grey} from "../../../themes/colors/aptosColorPalette";
 
 const APTOS_DECIMALS = 8;
 
@@ -62,9 +63,10 @@ export default function CurrencyValue({
   let number = getFormattedBalanceStr(amount, decimals, fixedDecimalPlaces);
   if (currencyCode) {
     return (
-      <span>
-        {number} {currencyCode}
-      </span>
+      <>
+        <span>{`${number} `}</span>
+        <span style={{color: grey[450]}}>{currencyCode}</span>
+      </>
     );
   } else {
     return <span>{number}</span>;
@@ -82,4 +84,12 @@ export function APTCurrencyValue({
       currencyCode="APT"
     />
   );
+}
+
+export function APTCurrencyValueNoSymbol({
+  amount,
+  decimals,
+  fixedDecimalPlaces,
+}: CurrencyValueProps) {
+  return <CurrencyValue {...{amount, decimals, fixedDecimalPlaces}} />;
 }

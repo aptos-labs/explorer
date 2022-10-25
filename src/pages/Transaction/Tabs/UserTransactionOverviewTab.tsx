@@ -12,13 +12,33 @@ import {APTCurrencyValue} from "../../../components/IndividualPageContent/Conten
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import GasFeeValue from "../../../components/IndividualPageContent/ContentValue/GasFeeValue";
 
-function UserTransferRows({transaction}: {transaction: Types.Transaction}) {
+export type UserTransferInfo = {
+  receiver: string;
+  amount: string;
+};
+
+export type UserInteractionInfo = {
+  counterParty: string;
+  amount: string;
+};
+
+// when the return type is UserTransferInfo,
+//    the transaction is a user transfer (account A send money to account B)
+// when the return type is UserInteractionInfo,
+//    the transaction is a user interaction (account A interact with smart contract account B)
+export function getUserTransferOrInteractionInfo(
+  transaction: Types.Transaction,
+): UserTransferInfo | UserInteractionInfo | undefined {
+  if (transaction.type !== "user_transaction") {
+    return undefined;
+  }
+
   if (!("payload" in transaction)) {
-    return null;
+    return undefined;
   }
 
   if (transaction.payload.type !== "entry_function_payload") {
-    return null;
+    return undefined;
   }
 
   // there are two scenarios that this transaction is an APT coin transfer:
@@ -38,26 +58,56 @@ function UserTransferRows({transaction}: {transaction: Types.Transaction}) {
   const isAptCoinInitialTransfer =
     payload.function === "0x1::aptos_account::transfer";
 
-  if (!isAptCoinTransfer && !isAptCoinInitialTransfer) {
-    return null;
+  if (
+    (isAptCoinTransfer || isAptCoinInitialTransfer) &&
+    payload.arguments.length === 2
+  ) {
+    return {
+      receiver: payload.arguments[0],
+      amount: payload.arguments[1],
+    };
   }
 
-  if (payload.arguments.length < 2) {
+  const smartContractAddr = payload.function.split("::")[0];
+
+  return {
+    counterParty: smartContractAddr,
+    amount: "0",
+  };
+}
+
+function UserTransferOrInteractionRows({
+  transaction,
+}: {
+  transaction: Types.Transaction;
+}) {
+  const info = getUserTransferOrInteractionInfo(transaction);
+
+  if (!info) {
     return null;
   }
 
   return (
     <>
-      <ContentRow
-        title="Receiver:"
-        value={
-          <HashButton hash={payload.arguments[0]} type={HashType.ACCOUNT} />
-        }
-        tooltip={getLearnMoreTooltip("receiver")}
-      />
+      {"receiver" in info && (
+        <ContentRow
+          title="Receiver:"
+          value={<HashButton hash={info.receiver} type={HashType.ACCOUNT} />}
+          tooltip={getLearnMoreTooltip("receiver")}
+        />
+      )}
+      {"counterParty" in info && (
+        <ContentRow
+          title="Interact with:"
+          value={
+            <HashButton hash={info.counterParty} type={HashType.ACCOUNT} />
+          }
+          tooltip={getLearnMoreTooltip("receiver")}
+        />
+      )}
       <ContentRow
         title="Amount:"
-        value={<APTCurrencyValue amount={payload.arguments[1]} />}
+        value={<APTCurrencyValue amount={info.amount} />}
         tooltip={getLearnMoreTooltip("amount")}
       />
     </>
@@ -106,7 +156,7 @@ export default function UserTransactionOverviewTab({
           }
           tooltip={getLearnMoreTooltip("sender")}
         />
-        <UserTransferRows transaction={transactionData} />
+        <UserTransferOrInteractionRows transaction={transactionData} />
         <ContentRow
           title={"Version:"}
           value={transactionData.version}

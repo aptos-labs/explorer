@@ -66,18 +66,7 @@ function TransactionsPaginationTable({
       {(!data || data.length === 0) && !isLoading ? (
         <EmptyTabContent />
       ) : (
-        <TransactionsTable
-          transactions={data ?? []}
-          columns={[
-            "sequenceNum",
-            "version",
-            "status",
-            "type",
-            "hash",
-            "gas",
-            "timestamp",
-          ]}
-        />
+        <TransactionsTable transactions={data ?? []} />
       )}
       {numOfPages > 1 && (
         <Box sx={{display: "flex", justifyContent: "center"}}>

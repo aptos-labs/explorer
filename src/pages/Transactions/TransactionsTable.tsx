@@ -1,10 +1,9 @@
 import * as React from "react";
-import {useTheme} from "@mui/material";
+import {Stack, useTheme} from "@mui/material";
 import * as RRD from "react-router-dom";
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
@@ -12,41 +11,68 @@ import {useNavigate} from "react-router-dom";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../components/HashButton";
-
 import {Types} from "aptos";
 import {assertNever} from "../../utils";
 import {TableTransactionType} from "../../components/TransactionType";
 import {TableTransactionStatus} from "../../components/TransactionStatus";
-import {getFormattedTimestamp} from "../utils";
+import {getTableFormattedTimestamp} from "../utils";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
+import TransactionTypeTooltip from "../../components/Table/TransactionTypeTooltip";
+import {
+  getUserTransferOrInteractionInfo,
+  UserTransferInfo,
+  UserInteractionInfo,
+} from "../Transaction/Tabs/UserTransactionOverviewTab";
+import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import GeneralTableBody from "../../components/Table/GeneralTableBody";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
+  transferOrInteractionInfo: UserTransferInfo | UserInteractionInfo | undefined;
 };
 
 function SequenceNumberCell({transaction}: TransactionCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <GeneralTableCell sx={{textAlign: "left"}}>
       {"sequence_number" in transaction && transaction.sequence_number}
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
-function TransactionStatusCell({transaction}: TransactionCellProps) {
+function TransactionVersionStatusCell({transaction}: TransactionCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
-      {"success" in transaction && (
-        <TableTransactionStatus success={transaction.success} />
-      )}
-    </TableCell>
+    <GeneralTableCell sx={{textAlign: "left"}}>
+      <Stack direction="row" spacing={0.5}>
+        <Link
+          component={RRD.Link}
+          to={`/txn/${"version" in transaction && transaction.version}`}
+          color="primary"
+          underline="none"
+        >
+          {"version" in transaction && transaction.version}
+        </Link>
+        {"success" in transaction && (
+          <TableTransactionStatus success={transaction.success} />
+        )}
+      </Stack>
+    </GeneralTableCell>
+  );
+}
+
+function TransactionTypeCell({transaction}: TransactionCellProps) {
+  return (
+    <GeneralTableCell>
+      {<TableTransactionType type={transaction.type} />}
+    </GeneralTableCell>
   );
 }
 
 function TransactionTimestampCell({transaction}: TransactionCellProps) {
   const timestamp =
     "timestamp" in transaction ? (
-      getFormattedTimestamp(transaction.timestamp)
+      getTableFormattedTimestamp(transaction.timestamp)
     ) : (
       // Genesis transaction
       <Typography variant="subtitle2" align="center">
@@ -54,70 +80,118 @@ function TransactionTimestampCell({transaction}: TransactionCellProps) {
       </Typography>
     );
 
-  return <TableCell sx={{textAlign: "right"}}>{timestamp}</TableCell>;
+  return <GeneralTableCell>{timestamp}</GeneralTableCell>;
 }
 
-function TransactionTypeCell({transaction}: TransactionCellProps) {
+function TransactionSenderCell({transaction}: TransactionCellProps) {
+  const sender =
+    transaction.type === "user_transaction"
+      ? (transaction as Types.UserTransaction).sender
+      : undefined;
+
   return (
-    <TableCell>{<TableTransactionType type={transaction.type} />}</TableCell>
+    <GeneralTableCell>
+      {sender && <HashButton hash={sender} type={HashType.ACCOUNT} />}
+    </GeneralTableCell>
   );
 }
 
-function TransactionVersionCell({transaction}: TransactionCellProps) {
+function TransactionReceiverOrCounterPartyCell({
+  transferOrInteractionInfo,
+}: TransactionCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
-      <Link
-        component={RRD.Link}
-        to={`/txn/${"version" in transaction && transaction.version}`}
-        color="primary"
-        underline="none"
-      >
-        {"version" in transaction && transaction.version}
-      </Link>
-    </TableCell>
+    <GeneralTableCell>
+      {transferOrInteractionInfo && "receiver" in transferOrInteractionInfo && (
+        <HashButton
+          hash={transferOrInteractionInfo.receiver}
+          type={HashType.ACCOUNT}
+        />
+      )}
+      {transferOrInteractionInfo &&
+        "counterParty" in transferOrInteractionInfo && (
+          <HashButton
+            hash={transferOrInteractionInfo.counterParty}
+            type={HashType.ACCOUNT}
+          />
+        )}
+    </GeneralTableCell>
+  );
+}
+
+function TransactionFunctionCell({transaction}: TransactionCellProps) {
+  if (!("payload" in transaction) || !("function" in transaction.payload)) {
+    return <GeneralTableCell />;
+  }
+
+  const functionFullStr = transaction.payload.function;
+  const functionStrStartIdx = functionFullStr.indexOf("::") + 2;
+  const functionStr = functionFullStr.substring(functionStrStartIdx);
+
+  return (
+    <GeneralTableCell
+      sx={{
+        maxWidth: 300,
+        overflow: "hidden",
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis",
+      }}
+    >
+      {functionStr}
+    </GeneralTableCell>
+  );
+}
+
+function TransactionAmountCell({
+  transferOrInteractionInfo,
+}: TransactionCellProps) {
+  return (
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      {transferOrInteractionInfo?.amount ? (
+        <APTCurrencyValue
+          amount={transferOrInteractionInfo.amount}
+          fixedDecimalPlaces={2}
+        />
+      ) : null}
+    </GeneralTableCell>
   );
 }
 
 function TransactionGasCell({transaction}: TransactionCellProps) {
   return (
-    <TableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       {"gas_used" in transaction && "gas_unit_price" in transaction ? (
         <GasFeeValue
           gasUsed={transaction.gas_used}
           gasUnitPrice={transaction.gas_unit_price}
         />
       ) : null}
-    </TableCell>
-  );
-}
-
-function TransactionHashCell({transaction}: TransactionCellProps) {
-  return (
-    <TableCell>
-      <HashButton hash={transaction.hash} type={HashType.TRANSACTION} />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 const TransactionCells = Object.freeze({
   sequenceNum: SequenceNumberCell,
-  version: TransactionVersionCell,
+  versionStatus: TransactionVersionStatusCell,
   type: TransactionTypeCell,
-  hash: TransactionHashCell,
-  status: TransactionStatusCell,
-  gas: TransactionGasCell,
   timestamp: TransactionTimestampCell,
+  sender: TransactionSenderCell,
+  receiverOrCounterParty: TransactionReceiverOrCounterPartyCell,
+  function: TransactionFunctionCell,
+  amount: TransactionAmountCell,
+  gas: TransactionGasCell,
 });
 
 type TransactionColumn = keyof typeof TransactionCells;
 
 const DEFAULT_COLUMNS: TransactionColumn[] = [
-  "version",
-  "status",
+  "versionStatus",
   "type",
-  "hash",
-  "gas",
   "timestamp",
+  "sender",
+  "receiverOrCounterParty",
+  "function",
+  "amount",
+  "gas",
 ];
 
 type TransactionRowProps = {
@@ -136,7 +210,15 @@ function TransactionRow({transaction, columns}: TransactionRowProps) {
     <GeneralTableRow onClick={rowClick}>
       {columns.map((column) => {
         const Cell = TransactionCells[column];
-        return <Cell key={column} transaction={transaction} />;
+        const transferOrInteractionInfo =
+          getUserTransferOrInteractionInfo(transaction);
+        return (
+          <Cell
+            key={column}
+            transaction={transaction}
+            transferOrInteractionInfo={transferOrInteractionInfo}
+          />
+        );
       })}
     </GeneralTableRow>
   );
@@ -163,7 +245,15 @@ function UserTransactionRow({version, columns}: UserTransactionRowProps) {
     <GeneralTableRow onClick={rowClick}>
       {columns.map((column) => {
         const Cell = TransactionCells[column];
-        return <Cell key={column} transaction={transaction} />;
+        const transferOrInteractionInfo =
+          getUserTransferOrInteractionInfo(transaction);
+        return (
+          <Cell
+            key={column}
+            transaction={transaction}
+            transferOrInteractionInfo={transferOrInteractionInfo}
+          />
+        );
       })}
     </GeneralTableRow>
   );
@@ -179,21 +269,26 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
   switch (column) {
     case "sequenceNum":
       return <GeneralTableHeaderCell header="#" />;
-    case "version":
+    case "versionStatus":
       return <GeneralTableHeaderCell header="Version" />;
     case "type":
-      return <GeneralTableHeaderCell header="Type" />;
-    case "hash":
-      return <GeneralTableHeaderCell header="Hash" />;
-    case "status":
       return (
         <GeneralTableHeaderCell
-          header="Status"
-          sx={{
-            borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
-          }}
+          header="Type"
+          tooltip={<TransactionTypeTooltip />}
+          sx={{textAlign: "center"}}
         />
       );
+    case "timestamp":
+      return <GeneralTableHeaderCell header="Timestamp" />;
+    case "sender":
+      return <GeneralTableHeaderCell header="Sender" />;
+    case "receiverOrCounterParty":
+      return <GeneralTableHeaderCell header="Receiver" />;
+    case "function":
+      return <GeneralTableHeaderCell header="Function" />;
+    case "amount":
+      return <GeneralTableHeaderCell header="Amount" textAlignRight />;
     case "gas":
       return (
         <GeneralTableHeaderCell
@@ -203,10 +298,6 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
             borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
           }}
         />
-      );
-    case "timestamp":
-      return (
-        <GeneralTableHeaderCell header="Timestamp" textAlignRight={true} />
       );
     default:
       return assertNever(column);
@@ -231,7 +322,7 @@ export default function TransactionsTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
+      <GeneralTableBody>
         {transactions.map((transaction, i) => {
           return (
             <TransactionRow
@@ -241,7 +332,7 @@ export default function TransactionsTable({
             />
           );
         })}
-      </TableBody>
+      </GeneralTableBody>
     </Table>
   );
 }
@@ -264,7 +355,7 @@ export function UserTransactionsTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
+      <GeneralTableBody>
         {versions.map((version, i) => {
           return (
             <UserTransactionRow
@@ -274,7 +365,7 @@ export function UserTransactionsTable({
             />
           );
         })}
-      </TableBody>
+      </GeneralTableBody>
     </Table>
   );
 }

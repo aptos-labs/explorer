@@ -1,7 +1,4 @@
-import React from "react";
 import moment from "moment";
-import Box from "@mui/material/Box";
-import {useTheme} from "@mui/material";
 
 function ensureMillisecondTimestamp(timestamp: string): number {
   /*
@@ -30,7 +27,7 @@ export interface TimestampDisplay {
 export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
   return {
     formatted: timestamp.format("MM/DD/YY HH:mm:ss [UTC]"),
-    local_formatted: timestamp.local().format("D MMM YYYY HH:mm:ss"),
+    local_formatted: timestamp.local().format("MM/DD/YYYY HH:mm:ss"),
     formatted_time_delta: timestamp.fromNow(),
   };
 }
@@ -103,4 +100,38 @@ export function getFormattedTimestamp(timestamp?: string): string {
   const timestamp_display = timestampDisplay(moment);
 
   return timestamp_display.local_formatted;
+}
+
+export function getTableFormattedTimestamp(timestamp?: string): string {
+  if (!timestamp || timestamp === "0") {
+    return "-";
+  }
+
+  const timestampMoment = parseTimestamp(timestamp);
+  const nowTimestamp = parseTimestamp(moment.now().toString());
+  const duration = moment.duration(nowTimestamp.diff(timestampMoment));
+
+  if (duration.asMinutes() < 1) {
+    return duration.asSeconds().toFixed(0) + "s ago";
+  } else if (duration.asHours() < 1) {
+    return duration.asMinutes().toFixed(0) + "m ago";
+  } else if (timestampMoment.year() == moment().year()) {
+    return timestampMoment.calendar(null, {
+      lastDay: "[yesterday] HH:mm",
+      sameDay: "[today] HH:mm",
+      nextDay: "[tomorrow] HH:mm",
+      lastWeek: "MM/D HH:mm",
+      nextWeek: "MM/D HH:mm",
+      sameElse: "MM/D HH:mm",
+    });
+  } else {
+    return timestampMoment.calendar(null, {
+      lastDay: "[yesterday] HH:mm",
+      sameDay: "[today] HH:mm",
+      nextDay: "[tomorrow] HH:mm",
+      lastWeek: "MM/D/YYYY HH:mm",
+      nextWeek: "MM/D/YYYY HH:mm",
+      sameElse: "MM/D/YYYY HH:mm",
+    });
+  }
 }
