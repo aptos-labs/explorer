@@ -75,6 +75,16 @@ function getTransactionByHash(
   return withResponseError(client.getTransactionByHash(hash));
 }
 
+// refactor this!
+export async function getAnsAccount(
+  name: string,
+  network: string,
+): Promise<string> {
+  const response = await fetch(`https://www.aptosnames.com/api/${network}/v1/address/${name}`);
+  const { address } = await response.json();
+  return address;
+}
+
 export function getLedgerInfo(nodeUrl: string): Promise<Types.IndexResponse> {
   const client = new AptosClient(nodeUrl);
   return withResponseError(client.getLedgerInfo());

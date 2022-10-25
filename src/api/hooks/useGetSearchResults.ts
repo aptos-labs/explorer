@@ -4,12 +4,14 @@ import {
   getBlockByHeight,
   getBlockByVersion,
   getTransaction,
+  getAnsAccount,
 } from "../../api";
 import {useGlobalState} from "../../GlobalState";
 import {
   isNumeric,
   isValidAccountAddress,
   isValidTxnHashOrVersion,
+  isValidDomainName,
 } from "../../pages/utils";
 
 export type SearchResult = {
@@ -38,6 +40,7 @@ export default function useGetSearchResults(input: string) {
       const isValidAccountAddr = isValidAccountAddress(searchText);
       const isValidTxnHashOrVer = isValidTxnHashOrVersion(searchText);
       const isValidBlockHeightOrVer = isNumeric(searchText);
+      const isValidDomain = isValidDomainName(searchText);
 
       const accountPromise = getAccount(
         {address: searchText},
@@ -99,17 +102,40 @@ export default function useGetSearchResults(input: string) {
           // Do nothing. It's expected that not all search input is a valid transaction
         });
 
+      const ansPromise = getAnsAccount(
+        searchText,
+        state.network_name,
+      )
+        .then((address): SearchResult => {
+          if (address) {
+            return {
+              label: `Account ${searchText} (${address})`,
+              to: `/account/${address}`,
+            }
+          } else {
+            return NotFoundResult;
+          }
+        })
+        .catch(() => {
+          return null;
+          // Do nothing. It's expected that not all search input is a valid account
+        });
+
       const promises = [];
 
-      if (isValidAccountAddr) {
-        promises.push(accountPromise);
-      }
-      if (isValidTxnHashOrVer) {
-        promises.push(txnPromise);
-      }
-      if (isValidBlockHeightOrVer) {
-        promises.push(blockByHeightPromise);
-        promises.push(blockByVersionPromise);
+      if (isValidDomain) {
+        promises.push(ansPromise);
+      } else {
+        if (isValidAccountAddr) {
+          promises.push(accountPromise);
+        }
+        if (isValidTxnHashOrVer) {
+          promises.push(txnPromise);
+        }
+        if (isValidBlockHeightOrVer) {
+          promises.push(blockByHeightPromise);
+          promises.push(blockByVersionPromise);
+        }
       }
 
       const resultsList = await Promise.all(promises);
