@@ -62,12 +62,7 @@ export default function CurrencyValue({
 }: CurrencyValueProps) {
   let number = getFormattedBalanceStr(amount, decimals, fixedDecimalPlaces);
   if (currencyCode) {
-    return (
-      <>
-        <span>{`${number} `}</span>
-        <span style={{color: grey[450]}}>{currencyCode}</span>
-      </>
-    );
+    return <>{`${number} ${currencyCode}`}</>;
   } else {
     return <span>{number}</span>;
   }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Stack, useTheme} from "@mui/material";
+import {Box, Stack, useTheme} from "@mui/material";
 import * as RRD from "react-router-dom";
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
@@ -27,6 +27,7 @@ import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentVa
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import {CodeLine} from "../../components/IndividualPageContent/JsonCard";
+import {grey} from "../../themes/colors/aptosColorPalette";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -143,6 +144,32 @@ function TransactionFunctionCell({transaction}: TransactionCellProps) {
   );
 }
 
+function TransactionAmountGasCell({
+  transaction,
+  transferOrInteractionInfo,
+}: TransactionCellProps) {
+  return (
+    <GeneralTableCell sx={{paddingY: 1}}>
+      <Stack sx={{textAlign: "right"}}>
+        <Box>
+          {transferOrInteractionInfo?.amount ? (
+            <APTCurrencyValue amount={transferOrInteractionInfo.amount} />
+          ) : null}
+        </Box>
+        <Box sx={{fontSize: 11, color: grey[450]}}>
+          <>Gas </>
+          {"gas_used" in transaction && "gas_unit_price" in transaction ? (
+            <GasFeeValue
+              gasUsed={transaction.gas_used}
+              gasUnitPrice={transaction.gas_unit_price}
+            />
+          ) : null}
+        </Box>
+      </Stack>
+    </GeneralTableCell>
+  );
+}
+
 function TransactionAmountCell({
   transferOrInteractionInfo,
 }: TransactionCellProps) {
@@ -179,8 +206,7 @@ const TransactionCells = Object.freeze({
   sender: TransactionSenderCell,
   receiverOrCounterParty: TransactionReceiverOrCounterPartyCell,
   function: TransactionFunctionCell,
-  amount: TransactionAmountCell,
-  gas: TransactionGasCell,
+  amountGas: TransactionAmountGasCell,
 });
 
 type TransactionColumn = keyof typeof TransactionCells;
@@ -192,8 +218,7 @@ const DEFAULT_COLUMNS: TransactionColumn[] = [
   "sender",
   "receiverOrCounterParty",
   "function",
-  "amount",
-  "gas",
+  "amountGas",
 ];
 
 type TransactionRowProps = {
@@ -286,21 +311,11 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
     case "sender":
       return <GeneralTableHeaderCell header="Sender" />;
     case "receiverOrCounterParty":
-      return <GeneralTableHeaderCell header="Receiver" />;
+      return <GeneralTableHeaderCell header="Interact with" />;
     case "function":
       return <GeneralTableHeaderCell header="Function" />;
-    case "amount":
+    case "amountGas":
       return <GeneralTableHeaderCell header="Amount" textAlignRight />;
-    case "gas":
-      return (
-        <GeneralTableHeaderCell
-          header="Gas"
-          textAlignRight={true}
-          sx={{
-            borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
-          }}
-        />
-      );
     default:
       return assertNever(column);
   }
