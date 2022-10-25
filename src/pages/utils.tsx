@@ -117,18 +117,18 @@ export function getTableFormattedTimestamp(timestamp?: string): string {
     return duration.asMinutes().toFixed(0) + "m ago";
   } else if (timestampMoment.year() == moment().year()) {
     return timestampMoment.calendar(null, {
-      lastDay: "[yesterday] HH:mm",
+      lastDay: "MM/D HH:mm",
       sameDay: "[today] HH:mm",
-      nextDay: "[tomorrow] HH:mm",
+      nextDay: "MM/D HH:mm",
       lastWeek: "MM/D HH:mm",
       nextWeek: "MM/D HH:mm",
       sameElse: "MM/D HH:mm",
     });
   } else {
     return timestampMoment.calendar(null, {
-      lastDay: "[yesterday] HH:mm",
+      lastDay: "MM/D/YYYY HH:mm",
       sameDay: "[today] HH:mm",
-      nextDay: "[tomorrow] HH:mm",
+      nextDay: "MM/D/YYYY HH:mm",
       lastWeek: "MM/D/YYYY HH:mm",
       nextWeek: "MM/D/YYYY HH:mm",
       sameElse: "MM/D/YYYY HH:mm",

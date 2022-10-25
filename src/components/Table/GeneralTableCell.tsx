@@ -16,7 +16,7 @@ export default function GeneralTableCell({
       sx={[
         {
           paddingY: 1.5,
-          paddingX: 2,
+          paddingX: 1.5,
         },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}

@@ -130,3 +130,31 @@ export default function JsonCard({data}: JsonCardProps): JSX.Element {
     </Box>
   );
 }
+
+type CodeLineProps = {
+  data: string;
+};
+
+export function CodeLine({data}: CodeLineProps): JSX.Element {
+  const theme = useTheme();
+
+  return (
+    <Box
+      sx={{
+        color:
+          theme.palette.mode === "dark" ? TEXT_COLOR_DARK : TEXT_COLOR_LIGHT,
+        backgroundColor: BACKGROUND_COLOR,
+        padding: "0.35rem 0.5rem 0.35rem 1rem",
+        overflow: "hidden",
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis",
+        fontFamily: theme.typography.fontFamily,
+        fontWeight: theme.typography.fontWeightRegular,
+        fontSize: 13,
+      }}
+      borderRadius={1}
+    >
+      {data}
+    </Box>
+  );
+}

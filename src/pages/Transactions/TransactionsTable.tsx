@@ -3,7 +3,6 @@ import {Stack, useTheme} from "@mui/material";
 import * as RRD from "react-router-dom";
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
@@ -27,6 +26,7 @@ import {
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
+import {CodeLine} from "../../components/IndividualPageContent/JsonCard";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -84,10 +84,12 @@ function TransactionTimestampCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionSenderCell({transaction}: TransactionCellProps) {
-  const sender =
-    transaction.type === "user_transaction"
-      ? (transaction as Types.UserTransaction).sender
-      : undefined;
+  let sender;
+  if (transaction.type === "user_transaction") {
+    sender = (transaction as Types.UserTransaction).sender;
+  } else if (transaction.type === "block_metadata_transaction") {
+    sender = (transaction as Types.BlockMetadataTransaction).proposer;
+  }
 
   return (
     <GeneralTableCell>
@@ -136,7 +138,7 @@ function TransactionFunctionCell({transaction}: TransactionCellProps) {
         textOverflow: "ellipsis",
       }}
     >
-      {functionStr}
+      <CodeLine data={functionStr} />
     </GeneralTableCell>
   );
 }

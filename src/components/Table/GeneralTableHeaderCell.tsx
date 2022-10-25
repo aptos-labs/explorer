@@ -24,8 +24,8 @@ export default function GeneralTableHeaderCell({
     <TableCell
       sx={[
         {
-          paddingLeft: 2,
-          paddingRight: tooltip ? 1 : 2,
+          paddingLeft: 1.5,
+          paddingRight: tooltip ? 0.5 : 1.5,
           textAlign: textAlignRight ? "right" : "left",
           background: `${tableCellBackgroundColor}`,
           color: `${tableCellTextColor}`,
