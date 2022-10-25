@@ -22,18 +22,33 @@ type BalanceChangeCellProps = {
 function AddressCell({balanceChange}: BalanceChangeCellProps) {
   return (
     <TableCell>
-      <HashButton
-        hash={balanceChange.address}
-        type={HashType.ACCOUNT}
-        size="large"
-      />
+      <HashButton hash={balanceChange.address} type={HashType.ACCOUNT} />
+    </TableCell>
+  );
+}
+
+function AmountBeforeCell({balanceChange}: BalanceChangeCellProps) {
+  const amountBefore =
+    parseInt(balanceChange.amountAfter) - balanceChange.amount;
+
+  return (
+    <TableCell sx={{textAlign: "right"}}>
+      <APTCurrencyValue amount={amountBefore.toString()} />
+    </TableCell>
+  );
+}
+
+function AmountAfterCell({balanceChange}: BalanceChangeCellProps) {
+  return (
+    <TableCell sx={{textAlign: "right"}}>
+      <APTCurrencyValue amount={balanceChange.amountAfter} />
     </TableCell>
   );
 }
 
 function AmountCell({balanceChange}: BalanceChangeCellProps) {
-  const isNegative = balanceChange.change < 0;
-  const amount = Math.abs(balanceChange.change);
+  const isNegative = balanceChange.amount < 0;
+  const amount = Math.abs(balanceChange.amount);
 
   return (
     <TableCell
@@ -50,12 +65,19 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
 
 const BalanceChangeCells = Object.freeze({
   address: AddressCell,
+  amountBefore: AmountBeforeCell,
+  amountAfter: AmountAfterCell,
   amount: AmountCell,
 });
 
 type Column = keyof typeof BalanceChangeCells;
 
-const DEFAULT_COLUMNS: Column[] = ["address", "amount"];
+const DEFAULT_COLUMNS: Column[] = [
+  "address",
+  "amountBefore",
+  "amountAfter",
+  "amount",
+];
 
 type BalanceChangeRowProps = {
   balanceChange: BalanceChange;
@@ -81,8 +103,16 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
   switch (column) {
     case "address":
       return <GeneralTableHeaderCell header="Account" />;
+    case "amountBefore":
+      return (
+        <GeneralTableHeaderCell header="Balance Before" textAlignRight={true} />
+      );
+    case "amountAfter":
+      return (
+        <GeneralTableHeaderCell header="Balance After" textAlignRight={true} />
+      );
     case "amount":
-      return <GeneralTableHeaderCell header="Amount" textAlignRight={true} />;
+      return <GeneralTableHeaderCell header="Change" textAlignRight={true} />;
     default:
       return assertNever(column);
   }

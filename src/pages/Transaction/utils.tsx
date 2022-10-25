@@ -2,7 +2,8 @@ import {Types} from "aptos";
 
 export type BalanceChange = {
   address: string;
-  change: number;
+  amount: number;
+  amountAfter: string;
 };
 
 export function getCoinBalanceChange(
@@ -12,7 +13,12 @@ export function getCoinBalanceChange(
     "events" in transaction ? transaction.events : [];
 
   const accountToBalance = events.reduce(function (
-    balanceMap: {[key: string]: number},
+    balanceMap: {
+      [key: string]: {
+        amountAfter: string;
+        amount: number;
+      };
+    },
     event: Types.Event,
   ) {
     const addr = event.guid.account_address;
@@ -22,27 +28,52 @@ export function getCoinBalanceChange(
       event.type === "0x1::coin::WithdrawEvent"
     ) {
       if (!balanceMap[addr]) {
-        balanceMap[addr] = 0;
+        balanceMap[addr] = {amount: 0, amountAfter: ""};
       }
 
       const amount = parseInt(event.data.amount);
 
       if (event.type === "0x1::coin::DepositEvent") {
-        balanceMap[addr] += amount;
+        balanceMap[addr].amount += amount;
       } else {
-        balanceMap[addr] -= amount;
+        balanceMap[addr].amount -= amount;
       }
     }
 
     return balanceMap;
-  },
-  {});
+  }, {});
+
+  const changes: Types.WriteSetChange[] =
+    "changes" in transaction ? transaction.changes : [];
+
+  Object.entries(accountToBalance).forEach(([key]) => {
+    changes.filter((change) => {
+      if ("address" in change && change.address === key) {
+        if (
+          "data" in change &&
+          "type" in change.data &&
+          change.data.type ===
+            "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>"
+        ) {
+          if ("data" in change.data) {
+            const data: {coin: {value: string}} = JSON.parse(
+              JSON.stringify(change.data.data),
+            );
+            accountToBalance[key].amountAfter = data.coin.value;
+          }
+
+          return change;
+        }
+      }
+    });
+  });
 
   const balanceList: BalanceChange[] = [];
   Object.entries(accountToBalance).forEach(([key, value]) => {
     balanceList.push({
       address: key,
-      change: value,
+      amount: value.amount,
+      amountAfter: value.amountAfter,
     });
   });
 
