@@ -1,6 +1,5 @@
 import * as React from "react";
 import {Types} from "aptos";
-import {useState} from "react";
 import {Box} from "@mui/material";
 import OverviewTab from "./Tabs/OverviewTab";
 import TransactionsTab from "./Tabs/TransactionsTab";
