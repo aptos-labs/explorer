@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import HeaderSearch from "../layout/Search/Index";
 import Box from "@mui/material/Box";
 import NetworkInfo from "./NetworkInfo/Index";
-import TransactionsPreview from "./TransactionsPreview";
+import UserTransactionsPreview from "./UserTransactionsPreview";
 
 export default function LandingPage() {
   return (
@@ -13,7 +13,7 @@ export default function LandingPage() {
       </Typography>
       <NetworkInfo />
       <HeaderSearch />
-      <TransactionsPreview />
+      <UserTransactionsPreview />
     </Box>
   );
 }

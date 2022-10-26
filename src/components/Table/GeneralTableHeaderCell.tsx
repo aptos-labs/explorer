@@ -24,6 +24,8 @@ export default function GeneralTableHeaderCell({
     <TableCell
       sx={[
         {
+          paddingLeft: 1.5,
+          paddingRight: tooltip ? 0.5 : 1.5,
           textAlign: textAlignRight ? "right" : "left",
           background: `${tableCellBackgroundColor}`,
           color: `${tableCellTextColor}`,
@@ -34,14 +36,19 @@ export default function GeneralTableHeaderCell({
       {tooltip ? (
         <Stack
           direction="row"
-          spacing={1}
+          spacing={0.2}
           justifyContent={textAlignRight ? "flex-end" : "flex-start"}
+          alignItems="center"
         >
-          <Typography variant="subtitle1">{header}</Typography>
+          <Typography variant="subtitle1" sx={{fontSize: 15}}>
+            {header}
+          </Typography>
           {tooltip}
         </Stack>
       ) : (
-        <Typography variant="subtitle1">{header}</Typography>
+        <Typography variant="subtitle1" sx={{fontSize: 15}}>
+          {header}
+        </Typography>
       )}
     </TableCell>
   );

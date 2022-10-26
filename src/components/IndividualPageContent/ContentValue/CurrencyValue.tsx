@@ -72,10 +72,16 @@ export default function CurrencyValue({
 }
 
 export function APTCurrencyValue({
-  amount,
+  amount: amountStr,
   decimals,
   fixedDecimalPlaces,
 }: CurrencyValueProps) {
+  // remove leading "-" when it's a negative number
+  let amount = amountStr;
+  if (amountStr.startsWith("-")) {
+    amount = amountStr.substring(1);
+  }
+
   return (
     <CurrencyValue
       {...{amount, decimals, fixedDecimalPlaces}}

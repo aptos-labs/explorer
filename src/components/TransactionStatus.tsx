@@ -2,8 +2,7 @@ import React from "react";
 import {Box, Stack, Typography} from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
-import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
+import PriorityHighOutlinedIcon from "@mui/icons-material/PriorityHighOutlined";
 
 // TODO: unify the colors
 const SUCCESS_COLOR = "#00BFA5";
@@ -64,49 +63,18 @@ export function TransactionStatus({success}: TransactionStatusProps) {
 }
 
 export function TableTransactionStatus({success}: TransactionStatusProps) {
-  return (
+  return success ? null : (
     <Box
       sx={{
         display: "flex",
         alignItems: "center",
-        marginLeft: 2,
       }}
     >
-      {success ? (
-        <CheckCircleOutlinedIcon
-          fontSize="small"
-          color="success"
-          titleAccess="Executed successfully"
-        />
-      ) : (
-        <ErrorOutlineOutlinedIcon
-          fontSize="small"
-          color="error"
-          titleAccess="Failed to Execute"
-        />
-      )}
-    </Box>
-  );
-}
-
-export function OldTransactionStatus({success}: TransactionStatusProps) {
-  return success ? (
-    <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-      <CheckCircleOutlinedIcon
-        fontSize="small"
-        color="success"
-        titleAccess="Executed successfully"
-      />
-      Success
-    </Box>
-  ) : (
-    <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
-      <ErrorOutlineOutlinedIcon
-        fontSize="small"
+      <PriorityHighOutlinedIcon
+        sx={{fontSize: "inherit"}}
         color="error"
         titleAccess="Failed to Execute"
       />
-      Fail
     </Box>
   );
 }

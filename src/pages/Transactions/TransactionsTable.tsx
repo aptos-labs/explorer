@@ -1,25 +1,37 @@
 import * as React from "react";
-import {useTheme} from "@mui/material";
+import {Box, Stack} from "@mui/material";
 import * as RRD from "react-router-dom";
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../components/HashButton";
-
 import {Types} from "aptos";
 import {assertNever} from "../../utils";
 import {TableTransactionType} from "../../components/TransactionType";
 import {TableTransactionStatus} from "../../components/TransactionStatus";
-import {getFormattedTimestamp} from "../utils";
+import {getTableFormattedTimestamp} from "../utils";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
+import TransactionTypeTooltip from "../../components/Table/TransactionTypeTooltip";
+import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import GeneralTableBody from "../../components/Table/GeneralTableBody";
+import {
+  grey,
+  negativeColor,
+  primary,
+} from "../../themes/colors/aptosColorPalette";
+import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
+import {
+  getCoinBalanceChangeForAccount,
+  getTransactionAmount,
+  getTransactionCounterparty,
+} from "../Transaction/utils";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -27,26 +39,44 @@ type TransactionCellProps = {
 
 function SequenceNumberCell({transaction}: TransactionCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <GeneralTableCell sx={{textAlign: "left"}}>
       {"sequence_number" in transaction && transaction.sequence_number}
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
-function TransactionStatusCell({transaction}: TransactionCellProps) {
+function TransactionVersionStatusCell({transaction}: TransactionCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
-      {"success" in transaction && (
-        <TableTransactionStatus success={transaction.success} />
-      )}
-    </TableCell>
+    <GeneralTableCell sx={{textAlign: "left"}}>
+      <Stack direction="row" spacing={0.5}>
+        <Link
+          component={RRD.Link}
+          to={`/txn/${"version" in transaction && transaction.version}`}
+          color="primary"
+          underline="none"
+        >
+          {"version" in transaction && transaction.version}
+        </Link>
+        {"success" in transaction && (
+          <TableTransactionStatus success={transaction.success} />
+        )}
+      </Stack>
+    </GeneralTableCell>
+  );
+}
+
+function TransactionTypeCell({transaction}: TransactionCellProps) {
+  return (
+    <GeneralTableCell>
+      {<TableTransactionType type={transaction.type} />}
+    </GeneralTableCell>
   );
 }
 
 function TransactionTimestampCell({transaction}: TransactionCellProps) {
   const timestamp =
     "timestamp" in transaction ? (
-      getFormattedTimestamp(transaction.timestamp)
+      getTableFormattedTimestamp(transaction.timestamp)
     ) : (
       // Genesis transaction
       <Typography variant="subtitle2" align="center">
@@ -54,70 +84,134 @@ function TransactionTimestampCell({transaction}: TransactionCellProps) {
       </Typography>
     );
 
-  return <TableCell sx={{textAlign: "right"}}>{timestamp}</TableCell>;
+  return <GeneralTableCell>{timestamp}</GeneralTableCell>;
 }
 
-function TransactionTypeCell({transaction}: TransactionCellProps) {
+function TransactionSenderCell({transaction}: TransactionCellProps) {
+  let sender;
+  if (transaction.type === "user_transaction") {
+    sender = (transaction as Types.UserTransaction).sender;
+  } else if (transaction.type === "block_metadata_transaction") {
+    sender = (transaction as Types.BlockMetadataTransaction).proposer;
+  }
+
   return (
-    <TableCell>{<TableTransactionType type={transaction.type} />}</TableCell>
+    <GeneralTableCell>
+      {sender && <HashButton hash={sender} type={HashType.ACCOUNT} />}
+    </GeneralTableCell>
   );
 }
 
-function TransactionVersionCell({transaction}: TransactionCellProps) {
+function TransactionReceiverOrCounterPartyCell({
+  transaction,
+}: TransactionCellProps) {
+  const counterparty = getTransactionCounterparty(transaction);
   return (
-    <TableCell sx={{textAlign: "left"}}>
-      <Link
-        component={RRD.Link}
-        to={`/txn/${"version" in transaction && transaction.version}`}
-        color="primary"
-        underline="none"
-      >
-        {"version" in transaction && transaction.version}
-      </Link>
-    </TableCell>
+    <GeneralTableCell>
+      {counterparty && (
+        <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
+      )}
+    </GeneralTableCell>
   );
 }
 
-function TransactionGasCell({transaction}: TransactionCellProps) {
+function TransactionFunctionCell({transaction}: TransactionCellProps) {
   return (
-    <TableCell sx={{textAlign: "right"}}>
-      {"gas_used" in transaction && "gas_unit_price" in transaction ? (
-        <GasFeeValue
-          gasUsed={transaction.gas_used}
-          gasUnitPrice={transaction.gas_unit_price}
-        />
-      ) : null}
-    </TableCell>
+    <GeneralTableCell
+      sx={{
+        overflow: "hidden",
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis",
+      }}
+    >
+      <TransactionFunction
+        transaction={transaction}
+        sx={{maxWidth: {xs: 200, md: 300, lg: 400}}}
+      />
+    </GeneralTableCell>
   );
 }
 
-function TransactionHashCell({transaction}: TransactionCellProps) {
+function TransactionAmount({transaction}: {transaction: Types.Transaction}) {
+  const {address} = useParams();
+  const isAccountTransactionTable = typeof address === "string";
+
+  if (isAccountTransactionTable) {
+    const amount = getCoinBalanceChangeForAccount(transaction, address);
+    if (amount !== undefined) {
+      let amountAbs = amount;
+      let color = undefined;
+      if (amount > 0) {
+        color = primary[600];
+      } else if (amount < 0) {
+        color = negativeColor;
+        amountAbs = -amount;
+      }
+
+      return (
+        <Box sx={{color: color}}>
+          {amount > 0 && <>+</>}
+          {amount < 0 && <>-</>}
+          <APTCurrencyValue amount={amountAbs.toString()} />
+        </Box>
+      );
+    }
+  } else {
+    const amount = getTransactionAmount(transaction);
+    if (amount !== undefined) {
+      return (
+        <Box>
+          <APTCurrencyValue amount={amount.toString()} />
+        </Box>
+      );
+    }
+  }
+
+  return null;
+}
+
+function TransactionAmountGasCell({transaction}: TransactionCellProps) {
   return (
-    <TableCell>
-      <HashButton hash={transaction.hash} type={HashType.TRANSACTION} />
-    </TableCell>
+    <GeneralTableCell sx={{paddingY: 1}}>
+      <Stack sx={{textAlign: "right"}}>
+        <TransactionAmount transaction={transaction} />
+        <Box sx={{fontSize: 11, color: grey[450]}}>
+          {"gas_used" in transaction && "gas_unit_price" in transaction ? (
+            <>
+              <>Gas </>
+              <GasFeeValue
+                gasUsed={transaction.gas_used}
+                gasUnitPrice={transaction.gas_unit_price}
+              />
+            </>
+          ) : null}
+        </Box>
+      </Stack>
+    </GeneralTableCell>
   );
 }
 
 const TransactionCells = Object.freeze({
   sequenceNum: SequenceNumberCell,
-  version: TransactionVersionCell,
+  versionStatus: TransactionVersionStatusCell,
   type: TransactionTypeCell,
-  hash: TransactionHashCell,
-  status: TransactionStatusCell,
-  gas: TransactionGasCell,
   timestamp: TransactionTimestampCell,
+  sender: TransactionSenderCell,
+  receiverOrCounterParty: TransactionReceiverOrCounterPartyCell,
+  function: TransactionFunctionCell,
+  amountGas: TransactionAmountGasCell,
 });
 
 type TransactionColumn = keyof typeof TransactionCells;
 
 const DEFAULT_COLUMNS: TransactionColumn[] = [
-  "version",
-  "status",
+  "versionStatus",
   "type",
-  "hash",
-  "gas",
   "timestamp",
+  "sender",
+  "receiverOrCounterParty",
+  "function",
+  "amountGas",
 ];
 
 type TransactionRowProps = {
@@ -174,40 +268,29 @@ type TransactionHeaderCellProps = {
 };
 
 function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
-  const theme = useTheme();
-
   switch (column) {
     case "sequenceNum":
       return <GeneralTableHeaderCell header="#" />;
-    case "version":
+    case "versionStatus":
       return <GeneralTableHeaderCell header="Version" />;
     case "type":
-      return <GeneralTableHeaderCell header="Type" />;
-    case "hash":
-      return <GeneralTableHeaderCell header="Hash" />;
-    case "status":
       return (
         <GeneralTableHeaderCell
-          header="Status"
-          sx={{
-            borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
-          }}
-        />
-      );
-    case "gas":
-      return (
-        <GeneralTableHeaderCell
-          header="Gas"
-          textAlignRight={true}
-          sx={{
-            borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
-          }}
+          header="Type"
+          tooltip={<TransactionTypeTooltip />}
+          sx={{textAlign: "center"}}
         />
       );
     case "timestamp":
-      return (
-        <GeneralTableHeaderCell header="Timestamp" textAlignRight={true} />
-      );
+      return <GeneralTableHeaderCell header="Timestamp" />;
+    case "sender":
+      return <GeneralTableHeaderCell header="Sender" />;
+    case "receiverOrCounterParty":
+      return <GeneralTableHeaderCell header="Send To" />;
+    case "function":
+      return <GeneralTableHeaderCell header="Function" />;
+    case "amountGas":
+      return <GeneralTableHeaderCell header="Amount" textAlignRight />;
     default:
       return assertNever(column);
   }
@@ -231,7 +314,7 @@ export default function TransactionsTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
+      <GeneralTableBody>
         {transactions.map((transaction, i) => {
           return (
             <TransactionRow
@@ -241,7 +324,7 @@ export default function TransactionsTable({
             />
           );
         })}
-      </TableBody>
+      </GeneralTableBody>
     </Table>
   );
 }
@@ -264,7 +347,7 @@ export function UserTransactionsTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
+      <GeneralTableBody>
         {versions.map((version, i) => {
           return (
             <UserTransactionRow
@@ -274,7 +357,7 @@ export function UserTransactionsTable({
             />
           );
         })}
-      </TableBody>
+      </GeneralTableBody>
     </Table>
   );
 }

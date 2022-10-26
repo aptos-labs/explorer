@@ -1,7 +1,4 @@
-import React from "react";
 import moment from "moment";
-import Box from "@mui/material/Box";
-import {useTheme} from "@mui/material";
 
 function ensureMillisecondTimestamp(timestamp: string): number {
   /*
@@ -24,13 +21,15 @@ export function parseTimestamp(timestamp: string): moment.Moment {
 export interface TimestampDisplay {
   formatted: string;
   local_formatted: string;
+  local_formatted_short: string;
   formatted_time_delta: string;
 }
 
 export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
   return {
     formatted: timestamp.format("MM/DD/YY HH:mm:ss [UTC]"),
-    local_formatted: timestamp.local().format("D MMM YYYY HH:mm:ss"),
+    local_formatted: timestamp.local().format("MM/DD/YYYY HH:mm:ss"),
+    local_formatted_short: timestamp.local().format("MM/DD/YY HH:mm"),
     formatted_time_delta: timestamp.fromNow(),
   };
 }
@@ -103,4 +102,13 @@ export function getFormattedTimestamp(timestamp?: string): string {
   const timestamp_display = timestampDisplay(moment);
 
   return timestamp_display.local_formatted;
+}
+
+export function getTableFormattedTimestamp(timestamp?: string): string {
+  if (!timestamp || timestamp === "0") return "-";
+
+  const moment = parseTimestamp(timestamp);
+  const timestamp_display = timestampDisplay(moment);
+
+  return timestamp_display.local_formatted_short;
 }

@@ -11,55 +11,40 @@ import TimestampValue from "../../../components/IndividualPageContent/ContentVal
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import GasFeeValue from "../../../components/IndividualPageContent/ContentValue/GasFeeValue";
+import {getTransactionAmount, getTransactionCounterparty} from "../utils";
+import TransactionFunction from "./Components/TransactionFunction";
 
-function UserTransferRows({transaction}: {transaction: Types.Transaction}) {
-  if (!("payload" in transaction)) {
-    return null;
-  }
+function UserTransferOrInteractionRows({
+  transaction,
+}: {
+  transaction: Types.Transaction;
+}) {
+  const counterparty = getTransactionCounterparty(transaction);
 
-  if (transaction.payload.type !== "entry_function_payload") {
-    return null;
-  }
-
-  // there are two scenarios that this transaction is an APT coin transfer:
-  // 1. coins are transferred from account1 to account2:
-  //    payload function is "0x1::coin::transfer" and the first item in type_arguments is "0x1::aptos_coin::AptosCoin"
-  // 2. coins are transferred from account1 to account2, and account2 is created upon transaction:
-  //    payload function is "0x1::aptos_account::transfer"
-  // In both scenarios, the first item in arguments is the receiver's address, and the second item is the amount.
-
-  const payload =
-    transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
-  const typeArgument =
-    payload.type_arguments.length > 0 ? payload.type_arguments[0] : undefined;
-  const isAptCoinTransfer =
-    payload.function === "0x1::coin::transfer" &&
-    typeArgument === "0x1::aptos_coin::AptosCoin";
-  const isAptCoinInitialTransfer =
-    payload.function === "0x1::aptos_account::transfer";
-
-  if (!isAptCoinTransfer && !isAptCoinInitialTransfer) {
-    return null;
-  }
-
-  if (payload.arguments.length < 2) {
+  if (!counterparty) {
     return null;
   }
 
   return (
     <>
-      <ContentRow
-        title="Receiver:"
-        value={
-          <HashButton hash={payload.arguments[0]} type={HashType.ACCOUNT} />
-        }
-        tooltip={getLearnMoreTooltip("receiver")}
-      />
-      <ContentRow
-        title="Amount:"
-        value={<APTCurrencyValue amount={payload.arguments[1]} />}
-        tooltip={getLearnMoreTooltip("amount")}
-      />
+      {counterparty.role === "receiver" && (
+        <ContentRow
+          title="Receiver:"
+          value={
+            <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
+          }
+          tooltip={getLearnMoreTooltip("receiver")}
+        />
+      )}
+      {counterparty.role === "smartContract" && (
+        <ContentRow
+          title="Smart Contract:"
+          value={
+            <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
+          }
+          tooltip={getLearnMoreTooltip("smartContract")}
+        />
+      )}
     </>
   );
 }
@@ -75,9 +60,25 @@ function TransactionFunctionRow({
 
   return (
     <ContentRow
-      title="Transaction Function:"
-      value={<JsonCard data={transaction.payload.function} />}
+      title="Function:"
+      value={<TransactionFunction transaction={transaction} />}
       tooltip={getLearnMoreTooltip("function")}
+    />
+  );
+}
+
+function TransactionAmountRow({transaction}: {transaction: Types.Transaction}) {
+  const amount = getTransactionAmount(transaction);
+
+  return (
+    <ContentRow
+      title="Amount:"
+      value={
+        amount !== undefined ? (
+          <APTCurrencyValue amount={amount.toString()} />
+        ) : null
+      }
+      tooltip={getLearnMoreTooltip("amount")}
     />
   );
 }
@@ -95,6 +96,11 @@ export default function UserTransactionOverviewTab({
     <Box marginBottom={3}>
       <ContentBox padding={4}>
         <ContentRow
+          title={"Version:"}
+          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          tooltip={getLearnMoreTooltip("version")}
+        />
+        <ContentRow
           title="Status:"
           value={<TransactionStatus success={transactionData.success} />}
           tooltip={getLearnMoreTooltip("status")}
@@ -106,12 +112,11 @@ export default function UserTransactionOverviewTab({
           }
           tooltip={getLearnMoreTooltip("sender")}
         />
-        <UserTransferRows transaction={transactionData} />
-        <ContentRow
-          title={"Version:"}
-          value={transactionData.version}
-          tooltip={getLearnMoreTooltip("version")}
-        />
+        <UserTransferOrInteractionRows transaction={transactionData} />
+        <TransactionFunctionRow transaction={transactionData} />
+        <TransactionAmountRow transaction={transactionData} />
+      </ContentBox>
+      <ContentBox>
         <ContentRow
           title="Sequence Number:"
           value={transactionData.sequence_number}
@@ -159,7 +164,6 @@ export default function UserTransactionOverviewTab({
         />
       </ContentBox>
       <ContentBox>
-        <TransactionFunctionRow transaction={transactionData} />
         <ContentRow
           title="Signature:"
           value={<JsonCard data={transactionData.signature} />}

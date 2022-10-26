@@ -21,9 +21,9 @@ export default function StateCheckpointOverviewTab({
     <Box marginBottom={3}>
       <ContentBox>
         <ContentRow
-          title="Status:"
-          value={<TransactionStatus success={transactionData.success} />}
-          tooltip={getLearnMoreTooltip("status")}
+          title={"Version:"}
+          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
           title={"Version:"}
