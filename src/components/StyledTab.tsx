@@ -22,7 +22,7 @@ export default function StyledTab({
         minHeight: 60,
         textTransform: "none",
         fontSize: {xs: "small", md: "medium"},
-        paddingX: 2,
+        paddingX: 3,
         color: grey[450],
         minWidth: {xs: 0, md: "200px"},
         "&.Mui-selected": {
