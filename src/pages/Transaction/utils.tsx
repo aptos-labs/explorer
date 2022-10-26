@@ -175,15 +175,22 @@ export function getTransactionAmount(
 
   const accountToBalance = getBalanceMap(transaction);
 
-  const txnAmount = Object.values(accountToBalance).reduce(
-    (totalAmount: bigint, value) => {
+  const [totalDepositAmount, totalWithdrawAmount] = Object.values(
+    accountToBalance,
+  ).reduce(
+    ([totalDepositAmount, totalWithdrawAmount]: bigint[], value) => {
       if (value.amount > 0) {
-        totalAmount += value.amount;
+        totalDepositAmount += value.amount;
       }
-      return totalAmount;
+      if (value.amount < 0) {
+        totalWithdrawAmount -= value.amount;
+      }
+      return [totalDepositAmount, totalWithdrawAmount];
     },
-    BigInt(0),
+    [BigInt(0), BigInt(0)],
   );
 
-  return txnAmount;
+  return totalDepositAmount > totalWithdrawAmount
+    ? totalDepositAmount
+    : totalWithdrawAmount;
 }
