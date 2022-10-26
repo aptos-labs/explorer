@@ -6,7 +6,7 @@ import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../components/HashButton";
@@ -18,20 +18,23 @@ import {getTableFormattedTimestamp} from "../utils";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 import TransactionTypeTooltip from "../../components/Table/TransactionTypeTooltip";
-import {
-  getUserTransferOrInteractionInfo,
-  UserTransferInfo,
-  UserInteractionInfo,
-} from "../Transaction/Tabs/UserTransactionOverviewTab";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
-import {CodeLine} from "../../components/IndividualPageContent/JsonCard";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {
+  grey,
+  negativeColor,
+  primary,
+} from "../../themes/colors/aptosColorPalette";
+import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
+import {
+  getCoinBalanceChangeForAccount,
+  getTransactionAmount,
+  getTransactionCounterparty,
+} from "../Transaction/utils";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
-  transferOrInteractionInfo: UserTransferInfo | UserInteractionInfo | undefined;
 };
 
 function SequenceNumberCell({transaction}: TransactionCellProps) {
@@ -100,100 +103,86 @@ function TransactionSenderCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionReceiverOrCounterPartyCell({
-  transferOrInteractionInfo,
+  transaction,
 }: TransactionCellProps) {
+  const counterparty = getTransactionCounterparty(transaction);
   return (
     <GeneralTableCell>
-      {transferOrInteractionInfo && "receiver" in transferOrInteractionInfo && (
-        <HashButton
-          hash={transferOrInteractionInfo.receiver}
-          type={HashType.ACCOUNT}
-        />
+      {counterparty && (
+        <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
       )}
-      {transferOrInteractionInfo &&
-        "counterParty" in transferOrInteractionInfo && (
-          <HashButton
-            hash={transferOrInteractionInfo.counterParty}
-            type={HashType.ACCOUNT}
-          />
-        )}
     </GeneralTableCell>
   );
 }
 
 function TransactionFunctionCell({transaction}: TransactionCellProps) {
-  if (!("payload" in transaction) || !("function" in transaction.payload)) {
-    return <GeneralTableCell />;
-  }
-
-  const functionFullStr = transaction.payload.function;
-  const functionStrStartIdx = functionFullStr.indexOf("::") + 2;
-  const functionStr = functionFullStr.substring(functionStrStartIdx);
-
   return (
     <GeneralTableCell
       sx={{
-        maxWidth: 300,
         overflow: "hidden",
         whiteSpace: "nowrap",
         textOverflow: "ellipsis",
       }}
     >
-      <CodeLine data={functionStr} />
+      <TransactionFunction
+        transaction={transaction}
+        sx={{maxWidth: {xs: 200, md: 300, lg: 400}}}
+      />
     </GeneralTableCell>
   );
 }
 
-function TransactionAmountGasCell({
-  transaction,
-  transferOrInteractionInfo,
-}: TransactionCellProps) {
+function TransactionAmount({transaction}: {transaction: Types.Transaction}) {
+  const {address} = useParams();
+  const isAccountTransactionTable = typeof address === "string";
+
+  if (isAccountTransactionTable) {
+    const amount = getCoinBalanceChangeForAccount(transaction, address);
+    if (amount !== undefined) {
+      let color = undefined;
+      if (amount > 0) {
+        color = primary[600];
+      } else if (amount < 0) {
+        color = negativeColor;
+      }
+      return (
+        <Box sx={{color: color}}>
+          {amount > 0 && <>+</>}
+          <APTCurrencyValue amount={amount.toString()} />
+        </Box>
+      );
+    }
+  } else {
+    const amount = getTransactionAmount(transaction);
+    if (amount !== undefined) {
+      return (
+        <Box>
+          <APTCurrencyValue amount={amount.toString()} />
+        </Box>
+      );
+    }
+  }
+
+  return null;
+}
+
+function TransactionAmountGasCell({transaction}: TransactionCellProps) {
   return (
     <GeneralTableCell sx={{paddingY: 1}}>
       <Stack sx={{textAlign: "right"}}>
-        <Box>
-          {transferOrInteractionInfo?.amount ? (
-            <APTCurrencyValue amount={transferOrInteractionInfo.amount} />
-          ) : null}
-        </Box>
+        <TransactionAmount transaction={transaction} />
         <Box sx={{fontSize: 11, color: grey[450]}}>
-          <>Gas </>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
-            <GasFeeValue
-              gasUsed={transaction.gas_used}
-              gasUnitPrice={transaction.gas_unit_price}
-            />
+            <>
+              <>Gas </>
+              <GasFeeValue
+                gasUsed={transaction.gas_used}
+                gasUnitPrice={transaction.gas_unit_price}
+              />
+            </>
           ) : null}
         </Box>
       </Stack>
-    </GeneralTableCell>
-  );
-}
-
-function TransactionAmountCell({
-  transferOrInteractionInfo,
-}: TransactionCellProps) {
-  return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
-      {transferOrInteractionInfo?.amount ? (
-        <APTCurrencyValue
-          amount={transferOrInteractionInfo.amount}
-          fixedDecimalPlaces={2}
-        />
-      ) : null}
-    </GeneralTableCell>
-  );
-}
-
-function TransactionGasCell({transaction}: TransactionCellProps) {
-  return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
-      {"gas_used" in transaction && "gas_unit_price" in transaction ? (
-        <GasFeeValue
-          gasUsed={transaction.gas_used}
-          gasUnitPrice={transaction.gas_unit_price}
-        />
-      ) : null}
     </GeneralTableCell>
   );
 }
@@ -237,15 +226,7 @@ function TransactionRow({transaction, columns}: TransactionRowProps) {
     <GeneralTableRow onClick={rowClick}>
       {columns.map((column) => {
         const Cell = TransactionCells[column];
-        const transferOrInteractionInfo =
-          getUserTransferOrInteractionInfo(transaction);
-        return (
-          <Cell
-            key={column}
-            transaction={transaction}
-            transferOrInteractionInfo={transferOrInteractionInfo}
-          />
-        );
+        return <Cell key={column} transaction={transaction} />;
       })}
     </GeneralTableRow>
   );
@@ -272,15 +253,7 @@ function UserTransactionRow({version, columns}: UserTransactionRowProps) {
     <GeneralTableRow onClick={rowClick}>
       {columns.map((column) => {
         const Cell = TransactionCells[column];
-        const transferOrInteractionInfo =
-          getUserTransferOrInteractionInfo(transaction);
-        return (
-          <Cell
-            key={column}
-            transaction={transaction}
-            transferOrInteractionInfo={transferOrInteractionInfo}
-          />
-        );
+        return <Cell key={column} transaction={transaction} />;
       })}
     </GeneralTableRow>
   );

@@ -22,6 +22,11 @@ export default function BlockMetadataOverviewTab({
     <Box marginBottom={3}>
       <ContentBox paddingLeft={1.5}>
         <ContentRow
+          title={"Version:"}
+          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          tooltip={getLearnMoreTooltip("version")}
+        />
+        <ContentRow
           title="Status:"
           value={<TransactionStatus success={transactionData.success} />}
           tooltip={getLearnMoreTooltip("status")}
@@ -40,11 +45,6 @@ export default function BlockMetadataOverviewTab({
           title="ID:"
           value={transactionData.id}
           tooltip={getLearnMoreTooltip("id")}
-        />
-        <ContentRow
-          title={"Version:"}
-          value={transactionData.version}
-          tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
           title="Epoch:"

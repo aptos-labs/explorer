@@ -19,14 +19,14 @@ export default function GenesisTransactionOverviewTab({
     <Box marginBottom={3}>
       <ContentBox>
         <ContentRow
+          title={"Version:"}
+          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          tooltip={getLearnMoreTooltip("version")}
+        />
+        <ContentRow
           title="Status:"
           value={<TransactionStatus success={transactionData.success} />}
           tooltip={getLearnMoreTooltip("status")}
-        />
-        <ContentRow
-          title={"Version:"}
-          value={transactionData.version}
-          tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
           title="VM Status:"
