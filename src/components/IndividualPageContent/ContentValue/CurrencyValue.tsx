@@ -27,6 +27,8 @@ export function getFormattedBalanceStr(
     return "0." + (trimRight("0".repeat(decimals - len) + balance) || "0");
   }
 
+  console.log(balance);
+
   // Otherwise, insert decimal point at len - decimals
   const leftSide = BigInt(balance.slice(0, len - decimals)).toLocaleString(
     "en-US",
@@ -72,10 +74,16 @@ export default function CurrencyValue({
 }
 
 export function APTCurrencyValue({
-  amount,
+  amount: amountStr,
   decimals,
   fixedDecimalPlaces,
 }: CurrencyValueProps) {
+  // remove leading "-" when it's a negative number
+  let amount = amountStr;
+  if (amountStr.startsWith("-")) {
+    amount = amountStr.substring(1);
+  }
+
   return (
     <CurrencyValue
       {...{amount, decimals, fixedDecimalPlaces}}

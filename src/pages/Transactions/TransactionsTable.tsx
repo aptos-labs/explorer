@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Box, Stack, useTheme} from "@mui/material";
+import {Box, Stack} from "@mui/material";
 import * as RRD from "react-router-dom";
 import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
@@ -139,16 +139,20 @@ function TransactionAmount({transaction}: {transaction: Types.Transaction}) {
   if (isAccountTransactionTable) {
     const amount = getCoinBalanceChangeForAccount(transaction, address);
     if (amount !== undefined) {
+      let amountAbs = amount;
       let color = undefined;
       if (amount > 0) {
         color = primary[600];
       } else if (amount < 0) {
         color = negativeColor;
+        amountAbs = -amount;
       }
+
       return (
         <Box sx={{color: color}}>
           {amount > 0 && <>+</>}
-          <APTCurrencyValue amount={amount.toString()} />
+          {amount < 0 && <>-</>}
+          <APTCurrencyValue amount={amountAbs.toString()} />
         </Box>
       );
     }
