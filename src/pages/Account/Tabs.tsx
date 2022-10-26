@@ -19,7 +19,6 @@ import {Types} from "aptos";
 import {useNavigate, useParams} from "react-router-dom";
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
-const DEFAULT_TAB_VALUE: TabValue = TAB_VALUES[0];
 
 const TabComponents = Object.freeze({
   transactions: TransactionsTab,
@@ -95,8 +94,7 @@ export default function AccountTabs({
 }: AccountTabsProps): JSX.Element {
   const {tab} = useParams();
   const navigate = useNavigate();
-
-  let tabValue = tab === undefined ? DEFAULT_TAB_VALUE : (tab as TabValue);
+  const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/account/${address}/${newValue}`);
@@ -105,13 +103,13 @@ export default function AccountTabs({
   return (
     <Box sx={{width: "100%"}}>
       <Box>
-        <StyledTabs value={tabValue} onChange={handleChange}>
-          {tabValues.map((tabValue, i) => (
+        <StyledTabs value={value} onChange={handleChange}>
+          {tabValues.map((value, i) => (
             <StyledTab
               key={i}
-              value={tabValue}
-              icon={getTabIcon(tabValue)}
-              label={getTabLabel(tabValue)}
+              value={value}
+              icon={getTabIcon(value)}
+              label={getTabLabel(value)}
               isFirst={i === 0}
               isLast={i === tabValues.length - 1}
             />
@@ -119,11 +117,7 @@ export default function AccountTabs({
         </StyledTabs>
       </Box>
       <Box>
-        <TabPanel
-          value={tabValue}
-          address={address}
-          accountData={accountData}
-        />
+        <TabPanel value={value} address={address} accountData={accountData} />
       </Box>
     </Box>
   );

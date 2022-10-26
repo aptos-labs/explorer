@@ -9,6 +9,7 @@ import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
+import {useNavigate, useParams} from "react-router-dom";
 
 const TAB_VALUES: TabValue[] = ["overview", "transactions"];
 
@@ -60,10 +61,12 @@ export default function BlockTabs({
   data,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
-  const [value, setValue] = useState<TabValue>(tabValues[0]);
+  const {height, tab} = useParams();
+  const navigate = useNavigate();
+  const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    setValue(newValue);
+    navigate(`/block/${height}/${newValue}`);
   };
 
   // TODO: use LinkTab for better navigation

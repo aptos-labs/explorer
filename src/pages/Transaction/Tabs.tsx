@@ -21,6 +21,7 @@ import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BalanceChangeTab from "./Tabs/BalanceChangeTab";
+import {useNavigate, useParams} from "react-router-dom";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -125,10 +126,13 @@ export default function TransactionTabs({
   transaction,
   tabValues = getTabValues(transaction),
 }: TransactionTabsProps): JSX.Element {
-  const [value, setValue] = useState<TabValue>(tabValues[0]);
+  const {tab, txnHashOrVersion} = useParams();
+  const navigate = useNavigate();
+  const value =
+    tab === undefined ? getTabValues(transaction)[0] : (tab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    setValue(newValue);
+    navigate(`/txn/${txnHashOrVersion}/${newValue}`);
   };
 
   // TODO: use LinkTab for better navigation
