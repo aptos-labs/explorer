@@ -76,7 +76,10 @@ export default function TransactionFunction({
 
   const functionFullStr = transaction.payload.function;
 
-  if (functionFullStr === "0x1::coin::transfer") {
+  if (
+    functionFullStr === "0x1::coin::transfer" ||
+    functionFullStr === "0x1::aptos_account::transfer"
+  ) {
     return <CoinTransferCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />;
   }
 

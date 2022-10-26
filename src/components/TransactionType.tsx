@@ -43,6 +43,7 @@ function getTypeIcon(type: string, color?: Color) {
   }
 }
 
+// TODO: create an enum for transaction type
 function getTypeTooltip(type: string): string {
   switch (type) {
     case "block_metadata_transaction":
