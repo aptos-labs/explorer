@@ -27,8 +27,6 @@ export function getFormattedBalanceStr(
     return "0." + (trimRight("0".repeat(decimals - len) + balance) || "0");
   }
 
-  console.log(balance);
-
   // Otherwise, insert decimal point at len - decimals
   const leftSide = BigInt(balance.slice(0, len - decimals)).toLocaleString(
     "en-US",
