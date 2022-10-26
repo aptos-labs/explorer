@@ -10,6 +10,7 @@ import BlockMetadataOverviewTab from "./Tabs/BlockMetadataOverviewTab";
 import StateCheckpointOverviewTab from "./Tabs/StateCheckpointOverviewTab";
 import PendingTransactionOverviewTab from "./Tabs/PendingTransactionOverviewTab";
 import GenesisTransactionOverviewTab from "./Tabs/GenesisTransactionOverviewTab";
+import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import EventsTab from "./Tabs/EventsTab";
 import PayloadTab from "./Tabs/PayloadTab";
 import ChangesTab from "./Tabs/ChangesTab";
@@ -19,11 +20,18 @@ import CallMergeOutlinedIcon from "@mui/icons-material/CallMergeOutlined";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import BalanceChangeTab from "./Tabs/BalanceChangeTab";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
     case "user_transaction":
-      return ["userTxnOverview", "events", "payload", "changes"];
+      return [
+        "userTxnOverview",
+        "balanceChange",
+        "events",
+        "payload",
+        "changes",
+      ];
     case "block_metadata_transaction":
       return ["blockMetadataOverview", "changes"];
     case "state_checkpoint_transaction":
@@ -43,6 +51,7 @@ const TabComponents = Object.freeze({
   stateCheckpointOverview: StateCheckpointOverviewTab,
   pendingTxnOverview: PendingTransactionOverviewTab,
   genesisTxnOverview: GenesisTransactionOverviewTab,
+  balanceChange: BalanceChangeTab,
   events: EventsTab,
   payload: PayloadTab,
   changes: ChangesTab,
@@ -59,6 +68,8 @@ function getTabLabel(value: TabValue): string {
     case "pendingTxnOverview":
     case "genesisTxnOverview":
       return "Overview";
+    case "balanceChange":
+      return "Balance Change";
     case "events":
       return "Events";
     case "payload":
@@ -80,6 +91,8 @@ function getTabIcon(value: TabValue): JSX.Element {
     case "pendingTxnOverview":
     case "genesisTxnOverview":
       return <BarChartOutlinedIcon fontSize="small" />;
+    case "balanceChange":
+      return <AccountBalanceWalletOutlinedIcon fontSize="small" />;
     case "events":
       return <CallMergeOutlinedIcon fontSize="small" />;
     case "payload":
