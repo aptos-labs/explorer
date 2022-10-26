@@ -2,7 +2,7 @@ import React from "react";
 import {Box, Stack, Typography} from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
-import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
+import PriorityHighOutlinedIcon from "@mui/icons-material/PriorityHighOutlined";
 
 // TODO: unify the colors
 const SUCCESS_COLOR = "#00BFA5";
@@ -70,7 +70,7 @@ export function TableTransactionStatus({success}: TransactionStatusProps) {
         alignItems: "center",
       }}
     >
-      <ErrorOutlineOutlinedIcon
+      <PriorityHighOutlinedIcon
         sx={{fontSize: "inherit"}}
         color="error"
         titleAccess="Failed to Execute"

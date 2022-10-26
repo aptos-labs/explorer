@@ -2,7 +2,7 @@ import React from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
-import {Stack} from "@mui/material";
+import {Stack, Typography} from "@mui/material";
 import {UserTransactionsTable} from "../Transactions/TransactionsTable";
 import useGetUserTransactionVersions from "../../api/hooks/useGetUserTransactionVersions";
 import TransactionsPreview from "./TransactionsPreview";
@@ -20,6 +20,7 @@ export default function UserTransactionsPreview() {
   return (
     <>
       <Stack spacing={2}>
+        <Typography variant="h5">User Transactions</Typography>
         <Box sx={{width: "auto", overflowX: "auto"}}>
           <UserTransactionsTable versions={versions} />
         </Box>
@@ -28,7 +29,7 @@ export default function UserTransactionsPreview() {
             component={RRD.Link}
             to="/transactions"
             variant="primary"
-            sx={{margin: "0 auto", mt: 6}}
+            sx={{margin: "0 auto", mt: 3}}
           >
             View all Transactions
           </Button>

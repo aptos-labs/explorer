@@ -7,7 +7,7 @@ import UserTransactions from "./UserTransactions";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 
 export default function TransactionsPage() {
-  const [userTxnOnly, setUserTxnOnly] = useState<boolean>(false);
+  const [userTxnOnly, setUserTxnOnly] = useState<boolean>(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
 

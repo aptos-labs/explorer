@@ -264,8 +264,6 @@ type TransactionHeaderCellProps = {
 };
 
 function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
-  const theme = useTheme();
-
   switch (column) {
     case "sequenceNum":
       return <GeneralTableHeaderCell header="#" />;
@@ -284,7 +282,7 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
     case "sender":
       return <GeneralTableHeaderCell header="Sender" />;
     case "receiverOrCounterParty":
-      return <GeneralTableHeaderCell header="Interact with" />;
+      return <GeneralTableHeaderCell header="Send To" />;
     case "function":
       return <GeneralTableHeaderCell header="Function" />;
     case "amountGas":

@@ -56,7 +56,7 @@ function TransactionFunctionRow({
 }) {
   return (
     <ContentRow
-      title="Transaction Function:"
+      title="Function:"
       value={<TransactionFunction transaction={transaction} />}
       tooltip={getLearnMoreTooltip("function")}
     />
