@@ -68,7 +68,6 @@ export default function BlockTabs({
     navigate(`/block/${height}/${newValue}`);
   };
 
-  // TODO: use LinkTab for better navigation
   return (
     <Box sx={{width: "100%"}}>
       <Box>

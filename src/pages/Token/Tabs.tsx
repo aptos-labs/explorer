@@ -67,7 +67,6 @@ export default function TokenTabs({
     navigate(`/token/${tokenId}/${propertyVersion}/${newValue}`);
   };
 
-  // TODO: use LinkTab for better navigation
   return (
     <Box sx={{width: "100%"}}>
       <Box>

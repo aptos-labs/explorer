@@ -134,7 +134,6 @@ export default function TransactionTabs({
     navigate(`/txn/${txnHashOrVersion}/${newValue}`);
   };
 
-  // TODO: use LinkTab for better navigation
   return (
     <Box sx={{width: "100%"}}>
       <Box>
