@@ -286,7 +286,7 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
     case "sender":
       return <GeneralTableHeaderCell header="Sender" />;
     case "receiverOrCounterParty":
-      return <GeneralTableHeaderCell header="Send To" />;
+      return <GeneralTableHeaderCell header="Sent To" />;
     case "function":
       return <GeneralTableHeaderCell header="Function" />;
     case "amountGas":
