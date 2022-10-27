@@ -5,6 +5,7 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
+import TransactionBlockRow from "./Components/TransactionBlockRow";
 
 type GenesisTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -28,6 +29,7 @@ export default function GenesisTransactionOverviewTab({
           value={<TransactionStatus success={transactionData.success} />}
           tooltip={getLearnMoreTooltip("status")}
         />
+        <TransactionBlockRow version={transactionData.version} />
         <ContentRow
           title="VM Status:"
           value={transactionData.vm_status}

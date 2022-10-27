@@ -6,6 +6,7 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+import TransactionBlockRow from "./Components/TransactionBlockRow";
 
 type StateCheckpointOverviewTabProps = {
   transaction: Types.Transaction;
@@ -26,10 +27,11 @@ export default function StateCheckpointOverviewTab({
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
-          title={"Version:"}
-          value={transactionData.version}
-          tooltip={getLearnMoreTooltip("version")}
+          title="Status:"
+          value={<TransactionStatus success={transactionData.success} />}
+          tooltip={getLearnMoreTooltip("status")}
         />
+        <TransactionBlockRow version={transactionData.version} />
         {"timestamp" in transactionData && (
           <ContentRow
             title="Timestamp:"

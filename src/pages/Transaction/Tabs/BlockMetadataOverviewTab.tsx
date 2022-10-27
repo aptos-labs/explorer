@@ -7,6 +7,7 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+import TransactionBlockRow from "./Components/TransactionBlockRow";
 
 type BlockMetadataOverviewTabProps = {
   transaction: Types.Transaction;
@@ -46,6 +47,9 @@ export default function BlockMetadataOverviewTab({
           value={transactionData.id}
           tooltip={getLearnMoreTooltip("id")}
         />
+      </ContentBox>
+      <ContentBox>
+        <TransactionBlockRow version={transactionData.version} />
         <ContentRow
           title="Epoch:"
           value={transactionData.epoch}

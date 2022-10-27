@@ -9,7 +9,6 @@ import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCel
 import {assertNever} from "../../utils";
 import HashButton, {HashType} from "../../components/HashButton";
 import {Types} from "aptos";
-import {useNavigate} from "react-router-dom";
 import {parseTimestamp} from "../utils";
 import moment from "moment";
 import {Link} from "@mui/material";
@@ -22,21 +21,6 @@ function getAgeInSeconds(block: Types.Block): string {
   return durationInSec;
 }
 
-function VersionValue({block}: {block: Types.Block}) {
-  const {first_version, last_version} = block;
-  return (
-    <>
-      <Link href={`/txn/${first_version}`} underline="none">
-        {first_version}
-      </Link>
-      {" - "}
-      <Link href={`/txn/${last_version}`} underline="none">
-        {last_version}
-      </Link>
-    </>
-  );
-}
-
 type BlockCellProps = {
   block: Types.Block;
 };
@@ -44,7 +28,11 @@ type BlockCellProps = {
 function BlockHeightCell({block}: BlockCellProps) {
   return (
     <TableCell sx={{textAlign: "left"}}>
-      <Link href={`/block/${block.block_height}`} underline="none">
+      <Link
+        href={`/block/${block.block_height}`}
+        target="_blank"
+        underline="none"
+      >
         {block.block_height}
       </Link>
     </TableCell>
@@ -70,7 +58,11 @@ function BlockHashCell({block}: BlockCellProps) {
 function FirstVersionCell({block}: BlockCellProps) {
   return (
     <TableCell sx={{textAlign: "right"}}>
-      <Link href={`/txn/${block.first_version}`} underline="none">
+      <Link
+        href={`/txn/${block.first_version}`}
+        target="_blank"
+        underline="none"
+      >
         {block.first_version}
       </Link>
     </TableCell>
@@ -80,7 +72,11 @@ function FirstVersionCell({block}: BlockCellProps) {
 function LastVersionCell({block}: BlockCellProps) {
   return (
     <TableCell sx={{textAlign: "right"}}>
-      <Link href={`/txn/${block.last_version}`} underline="none">
+      <Link
+        href={`/txn/${block.last_version}`}
+        target="_blank"
+        underline="none"
+      >
         {block.last_version}
       </Link>
     </TableCell>
@@ -111,9 +107,9 @@ type BlockRowProps = {
 };
 
 function BlockRow({block, columns}: BlockRowProps) {
-  const navigate = useNavigate();
+  // TODO: remove '_blank' once we have a blocks table with better performance
   const rowClick = () => {
-    navigate(`/block/${block.block_height}`);
+    window.open(`/block/${block.block_height}`, "_blank");
   };
 
   return (
