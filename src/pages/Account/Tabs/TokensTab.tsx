@@ -2,7 +2,10 @@ import React from "react";
 import {TokensTable} from "../Components/TokensTable";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {Types} from "aptos";
-import {useGetAccountTokens} from "../../../api/hooks/useGetAccountTokens";
+import {
+  useGetAccountTokens,
+  useGetAccountTokensCount,
+} from "../../../api/hooks/useGetAccountTokens";
 import {useSearchParams} from "react-router-dom";
 import {Box, Pagination, Stack} from "@mui/material";
 
@@ -78,7 +81,7 @@ type TokenTabsProps = {
 };
 
 export default function TokenTabs({address}: TokenTabsProps) {
-  const tokenCount = 100;
+  const tokenCount = useGetAccountTokensCount(address);
 
   if (tokenCount === undefined) {
     return <EmptyTabContent />;
