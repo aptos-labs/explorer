@@ -1,5 +1,4 @@
 import * as React from "react";
-import {useState} from "react";
 import {Box} from "@mui/material";
 import OverviewTab from "./Tabs/OverviewTab";
 import ActivitiesTab from "./Tabs/ActivitiesTab";
@@ -8,6 +7,7 @@ import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
+import {useNavigate, useParams} from "react-router-dom";
 
 const TAB_VALUES: TabValue[] = ["overview", "activities"];
 
@@ -59,13 +59,14 @@ export default function TokenTabs({
   data,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
-  const [value, setValue] = useState<TabValue>(tabValues[0]);
+  const {tab, propertyVersion, tokenId} = useParams();
+  const navigate = useNavigate();
+  const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    setValue(newValue);
+    navigate(`/token/${tokenId}/${propertyVersion}/${newValue}`);
   };
 
-  // TODO: use LinkTab for better navigation
   return (
     <Box sx={{width: "100%"}}>
       <Box>

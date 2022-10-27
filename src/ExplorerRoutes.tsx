@@ -20,17 +20,23 @@ export default function ExplorerRoutes() {
         <Route path="/validators" element={<ValidatorsPage />} />
         <Route path="/txn">
           <Route path=":txnHashOrVersion" element={<TransactionPage />} />
+          <Route path=":txnHashOrVersion/:tab" element={<TransactionPage />} />
         </Route>
         <Route path="/account">
           <Route path=":address" element={<AccountPage />} />
+          <Route path=":address/:tab" element={<AccountPage />} />
         </Route>
         <Route path="/blocks" element={<BlocksPage />} />
         <Route path="/block">
           <Route path=":height" element={<BlockPage />} />
+          <Route path=":height/:tab" element={<BlockPage />} />
         </Route>
         <Route path="/token">
-          <Route path=":tokenId" element={<TokenPage />} />
           <Route path=":tokenId/:propertyVersion" element={<TokenPage />} />
+          <Route
+            path=":tokenId/:propertyVersion/:tab"
+            element={<TokenPage />}
+          />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

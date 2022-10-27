@@ -1,5 +1,4 @@
 import * as React from "react";
-import {useState} from "react";
 import {Box} from "@mui/material";
 import TransactionsTab from "./Tabs/TransactionsTab";
 import InfoTab from "./Tabs/InfoTab";
@@ -17,6 +16,7 @@ import StyledTab from "../../components/StyledTab";
 import TokensTab from "./Tabs/TokensTab";
 import CoinsTab from "./Tabs/CoinsTab";
 import {Types} from "aptos";
+import {useNavigate, useParams} from "react-router-dom";
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
@@ -92,13 +92,14 @@ export default function AccountTabs({
   accountData,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
-  const [value, setValue] = useState<TabValue>(tabValues[0]);
+  const {tab} = useParams();
+  const navigate = useNavigate();
+  const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    setValue(newValue);
+    navigate(`/account/${address}/${newValue}`);
   };
 
-  // TODO: use LinkTab for better navigation
   return (
     <Box sx={{width: "100%"}}>
       <Box>
