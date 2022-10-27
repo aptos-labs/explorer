@@ -13,6 +13,7 @@ import GasValue from "../../../components/IndividualPageContent/ContentValue/Gas
 import GasFeeValue from "../../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import {getTransactionAmount, getTransactionCounterparty} from "../utils";
 import TransactionFunction from "./Components/TransactionFunction";
+import TransactionBlockRow from "./Components/TransactionBlockRow";
 
 function UserTransferOrInteractionRows({
   transaction,
@@ -117,6 +118,7 @@ export default function UserTransactionOverviewTab({
         <TransactionAmountRow transaction={transactionData} />
       </ContentBox>
       <ContentBox>
+        <TransactionBlockRow version={transactionData.version} />
         <ContentRow
           title="Sequence Number:"
           value={transactionData.sequence_number}
