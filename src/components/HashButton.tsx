@@ -15,6 +15,7 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {assertNever} from "../utils";
+import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 
 export enum HashType {
   ACCOUNT = "account",
@@ -67,6 +68,54 @@ export default function HashButton({
   size = "small",
   ...props
 }: HashButtonProps) {
+  if (type === HashType.ACCOUNT) {
+    return (
+      <AccountHashButtonInner hash={hash} type={type} size={size} {...props} />
+    );
+  } else {
+    return <HashButtonInner hash={hash} type={type} size={size} {...props} />;
+  }
+}
+
+interface AccountHashButtonInnerProps extends BoxProps {
+  hash: string;
+  type: HashType;
+  size?: "small" | "large";
+}
+
+function AccountHashButtonInner({
+  hash,
+  type,
+  size = "small",
+  ...props
+}: AccountHashButtonInnerProps) {
+  const name = useGetNameFromAddress(hash);
+
+  return (
+    <HashButtonInner
+      label={name}
+      hash={hash}
+      type={type}
+      size={size}
+      {...props}
+    />
+  );
+}
+
+interface HashButtonInnerProps extends BoxProps {
+  label?: string;
+  hash: string;
+  type: HashType;
+  size?: "small" | "large";
+}
+
+function HashButtonInner({
+  label,
+  hash,
+  type,
+  size = "small",
+  ...props
+}: HashButtonInnerProps) {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -82,6 +131,9 @@ export default function HashButton({
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
+
+  const truncateHash =
+    size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
 
   return (
     <Box {...props}>
@@ -107,7 +159,7 @@ export default function HashButton({
         variant="contained"
         endIcon={<ChevronRightRoundedIcon sx={{opacity: "0.75", m: 0}} />}
       >
-        {size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash)}
+        {label ? label : truncateHash}
       </Button>
 
       <Popover
