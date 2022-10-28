@@ -1,23 +1,79 @@
 import React from "react";
-import {gql, useQuery} from "@apollo/client";
 import {TokensTable} from "../Components/TokensTable";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {Types} from "aptos";
+import {
+  useGetAccountTokens,
+  useGetAccountTokensCount,
+} from "../../../api/hooks/useGetAccountTokens";
+import {useSearchParams} from "react-router-dom";
+import {Box, Pagination, Stack} from "@mui/material";
 
-const TOKENS_QUERY = gql`
-  query TokensData($owner_address: String) {
-    current_token_ownerships(
-      where: {owner_address: {_eq: $owner_address}, amount: {_gt: "0"}}
-    ) {
-      token_data_id_hash
-      name
-      collection_name
-      table_type
-      property_version
-      amount
-    }
-  }
-`;
+const LIMIT = 20;
+
+function RenderPagination({
+  currentPage,
+  numPages,
+}: {
+  currentPage: number;
+  numPages: number;
+}) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleChange = (
+    event: React.ChangeEvent<unknown>,
+    newPageNum: number,
+  ) => {
+    searchParams.set("page", newPageNum.toString());
+    setSearchParams(searchParams);
+  };
+
+  return (
+    <Pagination
+      sx={{mt: 3}}
+      count={numPages}
+      variant="outlined"
+      showFirstButton
+      showLastButton
+      page={currentPage}
+      siblingCount={4}
+      boundaryCount={0}
+      shape="rounded"
+      onChange={handleChange}
+    />
+  );
+}
+
+type AccountTokensWithPaginationProps = {
+  address: string;
+  numPages: number;
+};
+
+export function AccountTokensWithPagination({
+  address,
+  numPages,
+}: AccountTokensWithPaginationProps) {
+  const [searchParams, _setSearchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get("page") ?? "1");
+  const offset = (currentPage - 1) * LIMIT;
+
+  const tokens = useGetAccountTokens(address, LIMIT, offset);
+
+  return (
+    <>
+      <Stack spacing={2}>
+        <Box sx={{width: "auto", overflowX: "auto"}}>
+          <TokensTable tokens={tokens} />
+        </Box>
+        {numPages > 1 && (
+          <Box sx={{display: "flex", justifyContent: "center"}}>
+            <RenderPagination currentPage={currentPage} numPages={numPages} />
+          </Box>
+        )}
+      </Stack>
+    </>
+  );
+}
 
 type TokenTabsProps = {
   address: string;
@@ -25,27 +81,13 @@ type TokenTabsProps = {
 };
 
 export default function TokenTabs({address}: TokenTabsProps) {
-  // whenever talking to the indexer, the address needs to fill in leading 0s
-  // for example: 0x123 => 0x000...000123  (61 0s before 123)
-  const addr64Hash = "0x" + address.substring(2).padStart(64, "0");
+  const tokenCount = useGetAccountTokensCount(address);
 
-  const {loading, error, data} = useQuery(TOKENS_QUERY, {
-    variables: {
-      owner_address: addr64Hash,
-    },
-  });
-
-  if (loading || error) {
-    // TODO: error handling
-    return null;
-  }
-
-  // TODO: add graphql data typing
-  const tokens = data?.current_token_ownerships ?? [];
-
-  if (tokens.length === 0) {
+  if (tokenCount === undefined) {
     return <EmptyTabContent />;
   }
 
-  return <TokensTable tokens={tokens} />;
+  const numPages = Math.ceil(tokenCount / LIMIT);
+
+  return <AccountTokensWithPagination address={address} numPages={numPages} />;
 }

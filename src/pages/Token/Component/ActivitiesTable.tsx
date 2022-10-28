@@ -6,7 +6,6 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import {useNavigate} from "react-router-dom";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../utils";
@@ -99,18 +98,8 @@ type ActivityRowProps = {
 };
 
 function ActivityRow({activity, columns}: ActivityRowProps) {
-  const navigate = useNavigate();
-
-  const rowClick = () => {
-    navigate(
-      `/activity/${
-        "activity_data_id_hash" in activity && activity.activity_data_id_hash
-      }`,
-    );
-  };
-
   return (
-    <GeneralTableRow onClick={rowClick}>
+    <GeneralTableRow>
       {columns.map((column) => {
         const Cell = ActivityCells[column];
         return <Cell key={column} activity={activity} />;
