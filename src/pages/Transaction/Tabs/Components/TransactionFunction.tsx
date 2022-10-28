@@ -6,6 +6,7 @@ import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOu
 const TEXT_COLOR_LIGHT = "#0EA5E9";
 const TEXT_COLOR_DARK = "#83CCED";
 const BACKGROUND_COLOR = "rgba(14,165,233,0.1)";
+const BLOCK_MODULE_NAME = "candy_machine_v2";
 
 function CodeLineBox({
   children,
@@ -84,7 +85,11 @@ export default function TransactionFunction({
   }
 
   const functionStrStartIdx = functionFullStr.indexOf("::") + 2;
-  const functionStr = functionFullStr.substring(functionStrStartIdx);
+  let functionStr = functionFullStr.substring(functionStrStartIdx);
+
+  if (functionStr.startsWith(BLOCK_MODULE_NAME)) {
+    functionStr = functionStr.substring(BLOCK_MODULE_NAME.length + 2);
+  }
 
   return (
     <CodeLine data={functionStr} sx={[...(Array.isArray(sx) ? sx : [sx])]} />
