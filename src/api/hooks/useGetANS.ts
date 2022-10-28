@@ -3,19 +3,16 @@ import {NetworkName} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 
 function getFetchNameUrl(network: NetworkName, address: string) {
-  switch (network) {
-    case "mainnet":
-      return `https://www.aptosnames.com/api/mainnet/v1/name/${address}`;
-    case "testnet":
-      return `https://www.aptosnames.com/api/testnet/v1/name/${address}`;
-    default:
-      return undefined;
+  if (network !== "testnet" && network !== "mainnet") {
+    return undefined;
   }
+
+  return `https://www.aptosnames.com/api/${network}/v1/name/${address}`;
 }
 
 export function useGetNameFromAddress(address: string) {
   const [state, _] = useGlobalState();
-  const [name, setName] = useState<string>();
+  const [name, setName] = useState<string | undefined>();
   const url = getFetchNameUrl(state.network_name, address);
 
   useEffect(() => {
@@ -26,7 +23,9 @@ export function useGetNameFromAddress(address: string) {
         setName(name);
       };
 
-      fetchData();
+      fetchData().catch((error) => {
+        console.error("ERROR!", error, typeof error);
+      });
     }
   }, [address, state]);
 
@@ -34,19 +33,16 @@ export function useGetNameFromAddress(address: string) {
 }
 
 function getFetchAddressUrl(network: NetworkName, name: string) {
-  switch (network) {
-    case "mainnet":
-      return `https://www.aptosnames.com/api/mainnet/v1/address/${name}`;
-    case "testnet":
-      return `https://www.aptosnames.com/api/testnet/v1/address/${name}`;
-    default:
-      return undefined;
+  if (network !== "testnet" && network !== "mainnet") {
+    return undefined;
   }
+
+  return `https://www.aptosnames.com/api/${network}/v1/address/${name}`;
 }
 
 export function useGetAddressFromName(name: string) {
   const [state, _] = useGlobalState();
-  const [address, setAddress] = useState<string>();
+  const [address, setAddress] = useState<string | undefined>();
   const url = getFetchAddressUrl(state.network_name, name);
 
   useEffect(() => {
