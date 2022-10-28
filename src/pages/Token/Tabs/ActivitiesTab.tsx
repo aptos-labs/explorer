@@ -1,23 +1,78 @@
 import React from "react";
-import {gql, useQuery} from "@apollo/client";
 import {ActivitiesTable} from "../Component/ActivitiesTable";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {
+  useGetTokensActivities,
+  useGetTokensActivitiesCount,
+} from "../../../api/hooks/useGetTokenActivities";
+import {useSearchParams} from "react-router-dom";
+import {Box, Pagination, Stack} from "@mui/material";
 
-const TOKEN_ACTIVITIES_QUERY = gql`
-  query TokenActivities($token_id: String) {
-    token_activities(
-      where: {token_data_id_hash: {_eq: $token_id}}
-      order_by: {transaction_version: desc}
-    ) {
-      transaction_version
-      from_address
-      property_version
-      to_address
-      token_amount
-      transfer_type
-    }
-  }
-`;
+const LIMIT = 20;
+
+function RenderPagination({
+  currentPage,
+  numPages,
+}: {
+  currentPage: number;
+  numPages: number;
+}) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleChange = (
+    event: React.ChangeEvent<unknown>,
+    newPageNum: number,
+  ) => {
+    searchParams.set("page", newPageNum.toString());
+    setSearchParams(searchParams);
+  };
+
+  return (
+    <Pagination
+      sx={{mt: 3}}
+      count={numPages}
+      variant="outlined"
+      showFirstButton
+      showLastButton
+      page={currentPage}
+      siblingCount={4}
+      boundaryCount={0}
+      shape="rounded"
+      onChange={handleChange}
+    />
+  );
+}
+
+type TokenActivitiesWithPaginationProps = {
+  tokenDataIdHash: string;
+  numPages: number;
+};
+
+export function TokenActivitiesWithPagination({
+  tokenDataIdHash,
+  numPages,
+}: TokenActivitiesWithPaginationProps) {
+  const [searchParams, _setSearchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get("page") ?? "1");
+  const offset = (currentPage - 1) * LIMIT;
+
+  const activities = useGetTokensActivities(tokenDataIdHash, LIMIT, offset);
+
+  return (
+    <>
+      <Stack spacing={2}>
+        <Box sx={{width: "auto", overflowX: "auto"}}>
+          <ActivitiesTable activities={activities} />
+        </Box>
+        {numPages > 1 && (
+          <Box sx={{display: "flex", justifyContent: "center"}}>
+            <RenderPagination currentPage={currentPage} numPages={numPages} />
+          </Box>
+        )}
+      </Stack>
+    </>
+  );
+}
 
 type ActivitiesTabProps = {
   // TODO: add graphql data typing
@@ -27,21 +82,20 @@ type ActivitiesTabProps = {
 export default function ActivitiesTab({
   data: activitiesData,
 }: ActivitiesTabProps) {
-  const {loading, error, data} = useQuery(TOKEN_ACTIVITIES_QUERY, {
-    variables: {
-      token_id: activitiesData?.token_data_id_hash,
-    },
-  });
+  const activitiesCount = useGetTokensActivitiesCount(
+    activitiesData?.token_data_id_hash,
+  );
 
-  if (loading || error) {
-    // TODO: error handling
-    return null;
-  }
-
-  const activities = data?.token_activities ?? [];
-  if (activities.length === 0) {
+  if (activitiesCount === undefined || !activitiesData?.token_data_id_hash) {
     return <EmptyTabContent />;
   }
 
-  return <ActivitiesTable activities={activities} />;
+  const numPages = Math.ceil(activitiesCount / LIMIT);
+
+  return (
+    <TokenActivitiesWithPagination
+      tokenDataIdHash={activitiesData?.token_data_id_hash}
+      numPages={numPages}
+    />
+  );
 }
