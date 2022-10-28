@@ -1,5 +1,13 @@
 import React, {useState} from "react";
-import {Box, Button, Stack, Tooltip, Typography, useTheme} from "@mui/material";
+import {
+  Box,
+  Button,
+  Link,
+  Stack,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import {grey} from "../themes/colors/aptosColorPalette";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -121,7 +129,13 @@ function Name({address}: {address: string}) {
           padding: "0.15rem 1rem 0.15rem 1rem",
         }}
       >
-        <Typography variant="body2">{name}</Typography>
+        <Link
+          href={`https://www.aptosnames.com/name/${name}`}
+          target="_blank"
+          underline="none"
+        >
+          {name}
+        </Link>
       </Stack>
     </Box>
   );
