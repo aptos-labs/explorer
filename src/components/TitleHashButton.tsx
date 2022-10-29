@@ -1,17 +1,42 @@
 import React, {useState} from "react";
-import {Box, Button, Tooltip, Typography, useTheme} from "@mui/material";
+import {
+  Box,
+  Button,
+  Link,
+  Stack,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import {grey} from "../themes/colors/aptosColorPalette";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
+import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 
+const BUTTON_HEIGHT = 34;
 const TOOLTIP_TIME = 2000; // 2s
 
-interface HashButtonCopyableProps {
-  hash: string;
+export enum HashType {
+  ACCOUNT = "account",
+  TRANSACTION = "transaction",
+  NAME = "name",
 }
 
-export default function HashButtonCopyable({hash}: HashButtonCopyableProps) {
+interface TitleHashButtonProps {
+  hash: string;
+  type: HashType;
+}
+
+export default function TitleHashButton({hash, type}: TitleHashButtonProps) {
+  if (type !== HashType.NAME) {
+    return <HashButton hash={hash} />;
+  } else {
+    return <Name address={hash} />;
+  }
+}
+
+function HashButton({hash}: {hash: string}) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const isOnSmallerScreen = !useMediaQuery(theme.breakpoints.up("lg"));
@@ -31,6 +56,7 @@ export default function HashButtonCopyable({hash}: HashButtonCopyableProps) {
   const buttonComponent = (
     <Button
       sx={{
+        height: BUTTON_HEIGHT,
         textTransform: "none",
         backgroundColor: `${
           theme.palette.mode === "dark" ? grey[600] : grey[200]
@@ -77,6 +103,40 @@ export default function HashButtonCopyable({hash}: HashButtonCopyableProps) {
       >
         {buttonComponent}
       </Tooltip>
+    </Box>
+  );
+}
+
+function Name({address}: {address: string}) {
+  const theme = useTheme();
+  const name = useGetNameFromAddress(address);
+
+  if (!name) {
+    return null;
+  }
+
+  return (
+    <Box>
+      <Stack
+        justifyContent="center"
+        sx={{
+          height: BUTTON_HEIGHT,
+          backgroundColor: `${
+            theme.palette.mode === "dark" ? grey[600] : grey[200]
+          }`,
+          borderRadius: 1,
+          color: "inherit",
+          padding: "0.15rem 1rem 0.15rem 1rem",
+        }}
+      >
+        <Link
+          href={`https://www.aptosnames.com/name/${name}`}
+          target="_blank"
+          underline="none"
+        >
+          {name}
+        </Link>
+      </Stack>
     </Box>
   );
 }
