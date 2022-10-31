@@ -1,15 +1,13 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
+import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
 import {Validator} from "../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import GeneralTableBody from "../../components/Table/GeneralTableBody";
+import GeneralTableCell from "../../components/Table/GeneralTableCell";
 
 type ValidatorCellProps = {
   validator: Validator;
@@ -17,61 +15,61 @@ type ValidatorCellProps = {
 
 function ValidatorIndexCell({validator}: ValidatorCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <GeneralTableCell sx={{textAlign: "left"}}>
       {validator.config.validator_index}
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function ValidatorAddrCell({validator}: ValidatorCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <GeneralTableCell sx={{textAlign: "left"}}>
       <HashButton hash={validator.addr} type={HashType.ACCOUNT} />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function VotingPowerCell({validator}: ValidatorCellProps) {
   return (
-    <TableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 3)}
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function ConsensusPKCell({validator}: ValidatorCellProps) {
   return (
-    <TableCell>
+    <GeneralTableCell>
       <HashButton
         hash={validator.config.consensus_pubkey}
         type={HashType.OTHERS}
         sx={{display: "flex", justifyContent: "flex-end"}}
       />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function FullnodeAddrCell({validator}: ValidatorCellProps) {
   return (
-    <TableCell>
+    <GeneralTableCell>
       <HashButton
         hash={validator.config.fullnode_addresses}
         type={HashType.OTHERS}
         sx={{display: "flex", justifyContent: "flex-end"}}
       />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function NetworkAddrCell({validator}: ValidatorCellProps) {
   return (
-    <TableCell>
+    <GeneralTableCell>
       <HashButton
         hash={validator.config.network_addresses}
         type={HashType.OTHERS}
         sx={{display: "flex", justifyContent: "flex-end"}}
       />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
@@ -162,13 +160,13 @@ export function ValidatorsTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
+      <GeneralTableBody>
         {validatorsInOrder.map((validator: any, i: number) => {
           return (
             <ValidatorRow key={i} validator={validator} columns={columns} />
           );
         })}
-      </TableBody>
+      </GeneralTableBody>
     </Table>
   );
 }

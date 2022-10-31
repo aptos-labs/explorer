@@ -1,15 +1,12 @@
 import * as React from "react";
 import * as RRD from "react-router-dom";
-import Link from "@mui/material/Link";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
+import {Link, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../utils";
 import HashButton, {HashType} from "../../../components/HashButton";
+import GeneralTableBody from "../../../components/Table/GeneralTableBody";
+import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 
 type ActivityCellProps = {
   activity: any; // TODO: add graphql data typing
@@ -17,7 +14,7 @@ type ActivityCellProps = {
 
 function TransactionVersionCell({activity}: ActivityCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <GeneralTableCell sx={{textAlign: "left"}}>
       <Link
         component={RRD.Link}
         to={`/txn/${
@@ -28,47 +25,51 @@ function TransactionVersionCell({activity}: ActivityCellProps) {
       >
         {activity?.transaction_version}
       </Link>
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function TransferTypeCell({activity}: ActivityCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>{activity?.transfer_type}</TableCell>
+    <GeneralTableCell sx={{textAlign: "left"}}>
+      {activity?.transfer_type}
+    </GeneralTableCell>
   );
 }
 
 function FromCell({activity}: ActivityCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <GeneralTableCell sx={{textAlign: "left"}}>
       {activity?.from_address === null ? null : (
         <HashButton hash={activity?.from_address} type={HashType.ACCOUNT} />
       )}
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function ToCell({activity}: ActivityCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <GeneralTableCell sx={{textAlign: "left"}}>
       {activity?.to_address === null ? null : (
         <HashButton hash={activity?.to_address} type={HashType.ACCOUNT} />
       )}
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function PropertyVersionCell({activity}: ActivityCellProps) {
   return (
-    <TableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       {activity?.property_version}
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function AmountCell({activity}: ActivityCellProps) {
   return (
-    <TableCell sx={{textAlign: "right"}}>{activity?.token_amount}</TableCell>
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      {activity?.token_amount}
+    </GeneralTableCell>
   );
 }
 
@@ -154,11 +155,11 @@ export function ActivitiesTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
+      <GeneralTableBody>
         {activities.map((activity: any, i: number) => {
           return <ActivityRow key={i} activity={activity} columns={columns} />;
         })}
-      </TableBody>
+      </GeneralTableBody>
     </Table>
   );
 }

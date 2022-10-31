@@ -1,9 +1,5 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
+import {Link, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -11,7 +7,8 @@ import HashButton, {HashType} from "../../components/HashButton";
 import {Types} from "aptos";
 import {parseTimestamp} from "../utils";
 import moment from "moment";
-import {Link} from "@mui/material";
+import GeneralTableBody from "../../components/Table/GeneralTableBody";
+import GeneralTableCell from "../../components/Table/GeneralTableCell";
 
 function getAgeInSeconds(block: Types.Block): string {
   const blockTimestamp = parseTimestamp(block.block_timestamp);
@@ -27,7 +24,7 @@ type BlockCellProps = {
 
 function BlockHeightCell({block}: BlockCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <GeneralTableCell sx={{textAlign: "left"}}>
       <Link
         href={`/block/${block.block_height}`}
         target="_blank"
@@ -35,29 +32,29 @@ function BlockHeightCell({block}: BlockCellProps) {
       >
         {block.block_height}
       </Link>
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function BlockAgeCell({block}: BlockCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>{`${getAgeInSeconds(
-      block,
-    )}s ago`}</TableCell>
+    <GeneralTableCell sx={{textAlign: "left"}}>
+      {`${getAgeInSeconds(block)}s ago`}
+    </GeneralTableCell>
   );
 }
 
 function BlockHashCell({block}: BlockCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <GeneralTableCell sx={{textAlign: "left"}}>
       <HashButton hash={block.block_hash} type={HashType.OTHERS} />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function FirstVersionCell({block}: BlockCellProps) {
   return (
-    <TableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       <Link
         href={`/txn/${block.first_version}`}
         target="_blank"
@@ -65,13 +62,13 @@ function FirstVersionCell({block}: BlockCellProps) {
       >
         {block.first_version}
       </Link>
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function LastVersionCell({block}: BlockCellProps) {
   return (
-    <TableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       <Link
         href={`/txn/${block.last_version}`}
         target="_blank"
@@ -79,7 +76,7 @@ function LastVersionCell({block}: BlockCellProps) {
       >
         {block.last_version}
       </Link>
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
@@ -161,11 +158,11 @@ export default function BlocksTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
+      <GeneralTableBody>
         {blocks.map((block: any, i: number) => {
           return <BlockRow key={i} block={block} columns={columns} />;
         })}
-      </TableBody>
+      </GeneralTableBody>
     </Table>
   );
 }

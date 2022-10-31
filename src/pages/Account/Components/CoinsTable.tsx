@@ -1,14 +1,12 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
+import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../utils";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {grey} from "../../../themes/colors/aptosColorPalette";
+import GeneralTableBody from "../../../components/Table/GeneralTableBody";
+import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 
 type CoinCellProps = {
   coin: any; // TODO: add graphql data typing
@@ -16,7 +14,7 @@ type CoinCellProps = {
 
 function CoinNameCell({coin}: CoinCellProps) {
   return (
-    <TableCell
+    <GeneralTableCell
       sx={{
         textAlign: "left",
         maxWidth: 300,
@@ -25,7 +23,7 @@ function CoinNameCell({coin}: CoinCellProps) {
       }}
     >
       {coin?.coin_info?.name}
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
@@ -34,25 +32,25 @@ function AmountCell({coin}: CoinCellProps) {
   const decimals = coin?.coin_info?.decimals;
 
   if (!amount || !decimals) {
-    return <TableCell>-</TableCell>;
+    return <GeneralTableCell>-</GeneralTableCell>;
   }
 
   const formattedAmount = parseFloat(amount) / Math.pow(10, decimals);
   return (
-    <TableCell>
+    <GeneralTableCell>
       <span>{formattedAmount}</span>
       <span style={{marginLeft: 8, color: grey[450]}}>
         {coin?.coin_info?.symbol}
       </span>
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function CoinTypeCell({coin}: CoinCellProps) {
   return (
-    <TableCell sx={{width: 450}}>
+    <GeneralTableCell sx={{width: 450}}>
       <HashButton hash={coin?.coin_type} type={HashType.OTHERS} size="large" />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
@@ -117,11 +115,11 @@ export function CoinsTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
+      <GeneralTableBody>
         {coins.map((coin: any, i: number) => {
           return <CoinRow key={i} coin={coin} columns={columns} />;
         })}
-      </TableBody>
+      </GeneralTableBody>
     </Table>
   );
 }

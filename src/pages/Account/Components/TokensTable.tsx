@@ -1,16 +1,13 @@
 import * as React from "react";
 import {Box} from "@mui/material";
 import * as RRD from "react-router-dom";
-import Link from "@mui/material/Link";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
+import {Link, Table, TableHead, TableRow} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../utils";
+import GeneralTableBody from "../../../components/Table/GeneralTableBody";
+import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 
 type TokenCellProps = {
   token: any; // TODO: add graphql data typing
@@ -18,7 +15,7 @@ type TokenCellProps = {
 
 function TokenNameCell({token}: TokenCellProps) {
   return (
-    <TableCell sx={{textAlign: "left"}}>
+    <GeneralTableCell sx={{textAlign: "left"}}>
       <Link
         component={RRD.Link}
         to={`/token/${token?.token_data_id_hash}/${token?.property_version}`}
@@ -35,14 +32,14 @@ function TokenNameCell({token}: TokenCellProps) {
           {token?.name}
         </Box>
       </Link>
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 // TODO: link to collection page
 function CollectionNameCell({token}: TokenCellProps) {
   return (
-    <TableCell
+    <GeneralTableCell
       sx={{
         textAlign: "left",
         maxWidth: {xs: 150, md: 250, lg: 400},
@@ -51,13 +48,13 @@ function CollectionNameCell({token}: TokenCellProps) {
       }}
     >
       {token?.collection_name}
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function StoreCell({token}: TokenCellProps) {
   return (
-    <TableCell
+    <GeneralTableCell
       sx={{
         textAlign: "left",
         maxWidth: {xs: 150, md: 250, lg: 400},
@@ -66,18 +63,24 @@ function StoreCell({token}: TokenCellProps) {
       }}
     >
       {token?.table_type}
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function PropertyVersionCell({token}: TokenCellProps) {
   return (
-    <TableCell sx={{textAlign: "right"}}>{token?.property_version}</TableCell>
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      {token?.property_version}
+    </GeneralTableCell>
   );
 }
 
 function AmountCell({token}: TokenCellProps) {
-  return <TableCell sx={{textAlign: "right"}}>{token?.amount}</TableCell>;
+  return (
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      {token?.amount}
+    </GeneralTableCell>
+  );
 }
 
 const TokenCells = Object.freeze({
@@ -159,11 +162,11 @@ export function TokensTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
+      <GeneralTableBody>
         {tokens.map((token: any, i: number) => {
           return <TokenRow key={i} token={token} columns={columns} />;
         })}
-      </TableBody>
+      </GeneralTableBody>
     </Table>
   );
 }
