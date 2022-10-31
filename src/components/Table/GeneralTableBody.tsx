@@ -6,7 +6,6 @@ interface GeneralTableBodyProps extends TableBodyProps {
   sx?: SxProps<Theme>;
 }
 
-// TODO: use GeneralTableBody for all tables
 export default function GeneralTableBody({
   children,
   sx,

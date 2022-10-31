@@ -1,9 +1,5 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
+import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../../utils";
@@ -15,6 +11,8 @@ import {
   primary,
 } from "../../../../themes/colors/aptosColorPalette";
 import {Types} from "aptos";
+import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
+import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
 
 function getIsSender(
   address: string,
@@ -34,9 +32,9 @@ type BalanceChangeCellProps = {
 
 function AddressCell({balanceChange}: BalanceChangeCellProps) {
   return (
-    <TableCell>
+    <GeneralTableCell>
       <HashButton hash={balanceChange.address} type={HashType.ACCOUNT} />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
@@ -52,17 +50,17 @@ function AmountBeforeCell({
   }
 
   return (
-    <TableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       <APTCurrencyValue amount={amountBefore.toString()} />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
 function AmountAfterCell({balanceChange}: BalanceChangeCellProps) {
   return (
-    <TableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       <APTCurrencyValue amount={balanceChange.amountAfter} />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
@@ -70,11 +68,11 @@ function GasCell({balanceChange, transaction}: BalanceChangeCellProps) {
   const isSender = getIsSender(balanceChange.address, transaction);
 
   if (!isSender) {
-    return <TableCell />;
+    return <GeneralTableCell />;
   }
 
   return (
-    <TableCell
+    <GeneralTableCell
       sx={{
         textAlign: "right",
         color: negativeColor,
@@ -82,7 +80,7 @@ function GasCell({balanceChange, transaction}: BalanceChangeCellProps) {
     >
       {"-"}
       <APTCurrencyValue amount={getGas(transaction).toString()} />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
@@ -92,7 +90,7 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
     balanceChange.amount < 0 ? -balanceChange.amount : balanceChange.amount;
 
   return (
-    <TableCell
+    <GeneralTableCell
       sx={{
         textAlign: "right",
         color: isNegative ? negativeColor : primary[600],
@@ -100,7 +98,7 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
     >
       {isNegative ? "-" : "+"}
       <APTCurrencyValue amount={amount.toString()} />
-    </TableCell>
+    </GeneralTableCell>
   );
 }
 
@@ -194,7 +192,7 @@ export function CoinBalanceChangeTable({
           ))}
         </TableRow>
       </TableHead>
-      <TableBody>
+      <GeneralTableBody>
         {balanceChanges.map((balanceChange: any, i: number) => {
           return (
             <BalanceChangeRow
@@ -205,7 +203,7 @@ export function CoinBalanceChangeTable({
             />
           );
         })}
-      </TableBody>
+      </GeneralTableBody>
     </Table>
   );
 }
