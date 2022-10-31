@@ -11,6 +11,7 @@ import {
   isValidAccountAddress,
   isValidTxnHashOrVersion,
 } from "../../pages/utils";
+import {getAddressFromName} from "./useGetANS";
 
 export type SearchResult = {
   label: string;
@@ -38,6 +39,22 @@ export default function useGetSearchResults(input: string) {
       const isValidAccountAddr = isValidAccountAddress(searchText);
       const isValidTxnHashOrVer = isValidTxnHashOrVersion(searchText);
       const isValidBlockHeightOrVer = isNumeric(searchText);
+
+      const namePromise = getAddressFromName(searchText, state.network_name)
+        .then((address): SearchResult | null => {
+          if (address) {
+            return {
+              label: `Account ${address}`,
+              to: `/account/${address}`,
+            };
+          } else {
+            return null;
+          }
+        })
+        .catch(() => {
+          return null;
+          // Do nothing. It's expected that not all search input is a valid transaction
+        });
 
       const accountPromise = getAccount(
         {address: searchText},
@@ -101,6 +118,7 @@ export default function useGetSearchResults(input: string) {
 
       const promises = [];
 
+      promises.push(namePromise);
       if (isValidAccountAddr) {
         promises.push(accountPromise);
       }
