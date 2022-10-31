@@ -24,7 +24,7 @@ export default function SearchInput({...params}) {
           ),
         }}
         placeholder="Search Explorer"
-        helperText="Account Address / Txn Hash or Version / Block Height or Version"
+        helperText="Account Name or Address / Txn Hash or Version / Block Height or Version"
         fullWidth
       />
     </form>

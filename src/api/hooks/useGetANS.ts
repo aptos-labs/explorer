@@ -59,3 +59,30 @@ export function useGetAddressFromName(name: string) {
 
   return address;
 }
+
+export async function getAddressFromName(
+  name: string,
+  network: NetworkName,
+): Promise<string | undefined> {
+  const addressUrl = getFetchAddressUrl(network, name);
+  if (addressUrl === undefined) {
+    return undefined;
+  }
+
+  try {
+    const addressResponse = await fetch(addressUrl);
+    const {address} = await addressResponse.json();
+
+    const primaryNameUrl = getFetchNameUrl(network, address);
+    const primaryNameResponse = await fetch(primaryNameUrl ?? "");
+    const {name: primaryName} = await primaryNameResponse.json();
+
+    if (primaryName === name) {
+      return address;
+    } else {
+      return undefined;
+    }
+  } catch {
+    return undefined;
+  }
+}
