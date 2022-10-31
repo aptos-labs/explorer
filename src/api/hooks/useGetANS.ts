@@ -69,16 +69,20 @@ export async function getAddressFromName(
     return undefined;
   }
 
-  const addressResponse = await fetch(addressUrl);
-  const {address} = await addressResponse.json();
+  try {
+    const addressResponse = await fetch(addressUrl);
+    const {address} = await addressResponse.json();
 
-  const primaryNameUrl = getFetchNameUrl(network, address);
-  const primaryNameResponse = await fetch(primaryNameUrl ?? "");
-  const {name: primaryName} = await primaryNameResponse.json();
+    const primaryNameUrl = getFetchNameUrl(network, address);
+    const primaryNameResponse = await fetch(primaryNameUrl ?? "");
+    const {name: primaryName} = await primaryNameResponse.json();
 
-  if (primaryName === name) {
-    return address;
-  } else {
+    if (primaryName === name) {
+      return address;
+    } else {
+      return undefined;
+    }
+  } catch {
     return undefined;
   }
 }
