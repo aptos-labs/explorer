@@ -1,5 +1,5 @@
 import React from "react";
-import {Typography, Stack} from "@mui/material";
+import {Typography, Stack, useTheme} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import Card from "./Card";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -14,8 +14,10 @@ function Data({children}: {children: React.ReactNode}) {
 }
 
 function SubLabel({children}: {children: React.ReactNode}) {
+  const theme = useTheme();
+  const color = theme.palette.mode === "dark" ? grey[400] : grey[500];
   return (
-    <Typography fontSize={10} color={grey[450]}>
+    <Typography fontSize={10} color={color}>
       {children}
     </Typography>
   );
