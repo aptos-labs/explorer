@@ -1,5 +1,5 @@
 import React from "react";
-import {Typography, Stack, useTheme} from "@mui/material";
+import {Typography, Stack} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import Card from "./Card";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -14,11 +14,8 @@ function Data({children}: {children: React.ReactNode}) {
 }
 
 function SubLabel({children}: {children: React.ReactNode}) {
-  const theme = useTheme();
-  const color = theme.palette.mode === "dark" ? grey[500] : grey[400];
-
   return (
-    <Typography fontSize={10} color={color}>
+    <Typography fontSize={10} color={grey[450]}>
       {children}
     </Typography>
   );
@@ -35,12 +32,10 @@ function MetricCardComponent({
 }) {
   return (
     <Card height={120}>
-      <Stack alignItems="flex-end" spacing={2.5}>
+      <Stack spacing={2}>
         <Stack direction="row" spacing={1} alignItems="center">
-          <Typography fontSize={12} color={grey[450]}>
-            {label}
-          </Typography>
-          <StyledTooltip title={tooltip} placement="bottom-end">
+          <Typography fontSize={12}>{label}</Typography>
+          <StyledTooltip title={tooltip} placement="top">
             <InfoOutlinedIcon sx={{fontSize: 15, color: grey[450]}} />
           </StyledTooltip>
         </Stack>
@@ -84,11 +79,11 @@ export function DoubleMetricCard({
   return (
     <MetricCardComponent label={cardLabel} tooltip={tooltip}>
       <Stack direction="row" width="100%">
-        <Stack width="50%" alignItems="flex-end">
+        <Stack width="50%">
           <Data>{data1}</Data>
           <SubLabel>{label1}</SubLabel>
         </Stack>
-        <Stack width="50%" alignItems="flex-end">
+        <Stack width="50%">
           <Data>{data2}</Data>
           <SubLabel>{label2}</SubLabel>
         </Stack>
