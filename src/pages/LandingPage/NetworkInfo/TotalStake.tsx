@@ -10,7 +10,7 @@ export default function TotalStake() {
     <MetricCard
       data={
         totalVotingPower
-          ? getFormattedBalanceStr(totalVotingPower.toString(), undefined, 2)
+          ? getFormattedBalanceStr(totalVotingPower.toString(), undefined, 0)
           : "-"
       }
       label="Actively Staked"

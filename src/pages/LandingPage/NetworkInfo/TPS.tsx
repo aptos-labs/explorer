@@ -3,7 +3,7 @@ import {useGetTPS} from "../../../api/hooks/useGetTPS";
 import MetricCard from "./MetricCard";
 
 function getFormattedTPS(tps: number) {
-  const tpsWithDecimal = parseFloat(tps.toFixed(2));
+  const tpsWithDecimal = parseFloat(tps.toFixed(0));
   return tpsWithDecimal.toLocaleString("en-US");
 }
 
@@ -13,7 +13,7 @@ export default function TPS() {
   return (
     <MetricCard
       data={tps ? getFormattedTPS(tps) : "-"}
-      label="Transactions per second (TPS)"
+      label="Transactions per second"
       tooltipText="Rate of verified transactions."
     />
   );

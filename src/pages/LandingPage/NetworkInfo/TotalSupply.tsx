@@ -10,7 +10,7 @@ export default function TotalSupply() {
     <MetricCard
       data={
         totalSupply
-          ? getFormattedBalanceStr(totalSupply.toString(), undefined, 2)
+          ? getFormattedBalanceStr(totalSupply.toString(), undefined, 0)
           : "-"
       }
       label="Total Supply"

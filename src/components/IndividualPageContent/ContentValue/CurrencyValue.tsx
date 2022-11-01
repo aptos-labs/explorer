@@ -38,9 +38,15 @@ export function getFormattedBalanceStr(
 
   // remove trailing 0s
   rightSide = trimRight(rightSide);
-
-  if (fixedDecimalPlaces && rightSide.length > fixedDecimalPlaces) {
+  if (
+    fixedDecimalPlaces !== undefined &&
+    rightSide.length > fixedDecimalPlaces
+  ) {
     rightSide = rightSide.slice(0, fixedDecimalPlaces - rightSide.length);
+  }
+
+  if (rightSide.length === 0) {
+    return leftSide;
   }
 
   return leftSide + "." + trimRight(rightSide);
