@@ -88,6 +88,8 @@ function TransactionTimestampCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionSenderCell({transaction}: TransactionCellProps) {
+  const {address: currentAccountAddress} = useParams();
+
   let sender;
   if (transaction.type === "user_transaction") {
     sender = (transaction as Types.UserTransaction).sender;
@@ -97,7 +99,16 @@ function TransactionSenderCell({transaction}: TransactionCellProps) {
 
   return (
     <GeneralTableCell>
-      {sender && <HashButton hash={sender} type={HashType.ACCOUNT} />}
+      {sender && (
+        <HashButton
+          hash={sender}
+          type={
+            sender === currentAccountAddress
+              ? HashType.THIS_ACCOUNT
+              : HashType.ACCOUNT
+          }
+        />
+      )}
     </GeneralTableCell>
   );
 }
@@ -105,11 +116,20 @@ function TransactionSenderCell({transaction}: TransactionCellProps) {
 function TransactionReceiverOrCounterPartyCell({
   transaction,
 }: TransactionCellProps) {
+  const {address: currentAccountAddress} = useParams();
+
   const counterparty = getTransactionCounterparty(transaction);
   return (
     <GeneralTableCell>
       {counterparty && (
-        <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
+        <HashButton
+          hash={counterparty.address}
+          type={
+            counterparty.address === currentAccountAddress
+              ? HashType.THIS_ACCOUNT
+              : HashType.ACCOUNT
+          }
+        />
       )}
     </GeneralTableCell>
   );

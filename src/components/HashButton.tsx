@@ -13,12 +13,14 @@ import * as RRD from "react-router-dom";
 import {grey} from "../themes/colors/aptosColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import PersonIcon from "@mui/icons-material/Person";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {assertNever} from "../utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 
 export enum HashType {
   ACCOUNT = "account",
+  THIS_ACCOUNT = "this_account",
   TRANSACTION = "transaction",
   OTHERS = "others",
 }
@@ -26,6 +28,7 @@ export enum HashType {
 function getHashLinkStr(hash: string, type: HashType): string {
   switch (type) {
     case HashType.ACCOUNT:
+    case HashType.THIS_ACCOUNT:
       return `/account/${hash}`;
     case HashType.TRANSACTION:
       return `/txn/${hash}`;
@@ -39,6 +42,7 @@ function getHashLinkStr(hash: string, type: HashType): string {
 function HashLink(hash: string, type: HashType): JSX.Element {
   switch (type) {
     case HashType.ACCOUNT:
+    case HashType.THIS_ACCOUNT:
     case HashType.TRANSACTION:
       return (
         <Link
@@ -72,6 +76,16 @@ export default function HashButton({
     return (
       <AccountHashButtonInner hash={hash} type={type} size={size} {...props} />
     );
+  } else if (type === HashType.THIS_ACCOUNT) {
+    return (
+      <HashButtonInner
+        label={<PersonIcon fontSize="small" />}
+        hash={hash}
+        type={type}
+        size={size}
+        {...props}
+      />
+    );
   } else {
     return <HashButtonInner hash={hash} type={type} size={size} {...props} />;
   }
@@ -103,7 +117,7 @@ function AccountHashButtonInner({
 }
 
 interface HashButtonInnerProps extends BoxProps {
-  label?: string;
+  label?: React.ReactNode;
   hash: string;
   type: HashType;
   size?: "small" | "large";
@@ -135,10 +149,13 @@ function HashButtonInner({
   const truncateHash =
     size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
 
+  const expandable = type !== HashType.THIS_ACCOUNT;
+
   return (
     <Box {...props}>
       <Button
         sx={{
+          height: 30,
           textTransform: "none",
           backgroundColor: `${
             theme.palette.mode === "dark" ? grey[600] : grey[200]
@@ -146,18 +163,24 @@ function HashButtonInner({
           display: "flex",
           borderRadius: 1,
           color: "inherit",
-          padding: "0.15rem 0.5rem 0.15rem 1rem",
+          padding: expandable
+            ? "0.15rem 0.5rem 0.15rem 1rem"
+            : "0.15rem 1rem 0.15rem 1rem",
           "&:hover": {
-            backgroundColor: `${
-              theme.palette.mode === "dark" ? grey[500] : grey[300]
-            }`,
+            backgroundColor: expandable
+              ? `${theme.palette.mode === "dark" ? grey[500] : grey[300]}`
+              : `${theme.palette.mode === "dark" ? grey[600] : grey[200]}`,
           },
           minWidth: 141,
         }}
         aria-describedby={id}
-        onClick={hashExpand}
+        onClick={expandable ? hashExpand : () => {}}
         variant="contained"
-        endIcon={<ChevronRightRoundedIcon sx={{opacity: "0.75", m: 0}} />}
+        endIcon={
+          expandable ? (
+            <ChevronRightRoundedIcon sx={{opacity: "0.75", m: 0}} />
+          ) : null
+        }
       >
         {label ? label : truncateHash}
       </Button>
