@@ -14,7 +14,7 @@ export default function TotalStake() {
           : "-"
       }
       label="Actively Staked"
-      tooltipText="Amount of APT tokens currently held in staking pools."
+      tooltip="Amount of APT tokens currently held in staking pools."
     />
   );
 }

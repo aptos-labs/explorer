@@ -14,7 +14,7 @@ export default function TotalSupply() {
           : "-"
       }
       label="Total Supply"
-      tooltipText="Amount of APT tokens flowing through the Aptos network."
+      tooltip="Amount of APT tokens flowing through the Aptos network."
     />
   );
 }

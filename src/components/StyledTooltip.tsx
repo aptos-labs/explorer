@@ -12,7 +12,11 @@ export default function StyledTooltip({
 }: StyledTooltipProps) {
   return (
     <Tooltip
-      title={<Box sx={{fontSize: 13, fontFamily: "sans-serif"}}>{title}</Box>}
+      title={
+        <Box sx={{fontSize: 13, fontFamily: "sans-serif", padding: 0.5}}>
+          {title}
+        </Box>
+      }
       {...props}
     >
       {children}

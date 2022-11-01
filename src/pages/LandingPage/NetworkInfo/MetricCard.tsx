@@ -1,18 +1,37 @@
 import React from "react";
-import {Typography, Stack} from "@mui/material";
+import {Typography, Stack, useTheme} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import Card from "./Card";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import StyledTooltip from "../../../components/StyledTooltip";
 
+function Data({children}: {children: React.ReactNode}) {
+  return (
+    <Typography fontSize={20} fontWeight={400}>
+      {children}
+    </Typography>
+  );
+}
+
+function SubLabel({children}: {children: React.ReactNode}) {
+  const theme = useTheme();
+  const color = theme.palette.mode === "dark" ? grey[500] : grey[400];
+
+  return (
+    <Typography fontSize={10} color={color}>
+      {children}
+    </Typography>
+  );
+}
+
 function MetricCardComponent({
   children,
   label,
-  tooltipText,
+  tooltip,
 }: {
   children: React.ReactNode;
   label: string;
-  tooltipText: string;
+  tooltip: NonNullable<React.ReactNode>;
 }) {
   return (
     <Card height={120}>
@@ -21,7 +40,7 @@ function MetricCardComponent({
           <Typography fontSize={12} color={grey[450]}>
             {label}
           </Typography>
-          <StyledTooltip title={tooltipText} placement="bottom-end">
+          <StyledTooltip title={tooltip} placement="bottom-end">
             <InfoOutlinedIcon sx={{fontSize: 15, color: grey[450]}} />
           </StyledTooltip>
         </Stack>
@@ -34,19 +53,46 @@ function MetricCardComponent({
 type MetricCardProps = {
   data: string;
   label: string;
-  tooltipText: string;
+  tooltip: NonNullable<React.ReactNode>;
 };
 
-export default function MetricCard({
-  data,
-  label,
-  tooltipText,
-}: MetricCardProps) {
+export default function MetricCard({data, label, tooltip}: MetricCardProps) {
   return (
-    <MetricCardComponent label={label} tooltipText={tooltipText}>
-      <Typography fontSize={20} fontWeight={400}>
-        {data}
-      </Typography>
+    <MetricCardComponent label={label} tooltip={tooltip}>
+      <Data>{data}</Data>
+    </MetricCardComponent>
+  );
+}
+
+type DoubleMetricCardProps = {
+  data1: string;
+  data2: string;
+  label1: string;
+  label2: string;
+  cardLabel: string;
+  tooltip: NonNullable<React.ReactNode>;
+};
+
+export function DoubleMetricCard({
+  data1,
+  data2,
+  label1,
+  label2,
+  cardLabel,
+  tooltip,
+}: DoubleMetricCardProps) {
+  return (
+    <MetricCardComponent label={cardLabel} tooltip={tooltip}>
+      <Stack direction="row" width="100%">
+        <Stack width="50%" alignItems="flex-end">
+          <Data>{data1}</Data>
+          <SubLabel>{label1}</SubLabel>
+        </Stack>
+        <Stack width="50%" alignItems="flex-end">
+          <Data>{data2}</Data>
+          <SubLabel>{label2}</SubLabel>
+        </Stack>
+      </Stack>
     </MetricCardComponent>
   );
 }
