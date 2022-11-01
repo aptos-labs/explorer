@@ -58,6 +58,26 @@ export function getTransactionCounterparty(
   }
 }
 
+type ChangeData = {
+  coin: {value: string};
+  deposit_events: {
+    guid: {
+      id: {
+        addr: string;
+        creation_num: string;
+      };
+    };
+  };
+  withdraw_events: {
+    guid: {
+      id: {
+        addr: string;
+        creation_num: string;
+      };
+    };
+  };
+};
+
 export type TransactionAmount = {
   amountInvolved: bigint;
   balanceChanges: BalanceChange[];
@@ -89,16 +109,20 @@ function getBalanceMap(transaction: Types.Transaction) {
         event.type === "0x1::coin::DepositEvent" ||
         event.type === "0x1::coin::WithdrawEvent"
       ) {
-        if (!balanceMap[addr]) {
-          balanceMap[addr] = {amount: BigInt(0), amountAfter: ""};
-        }
+        // deposit and withdraw events could be other coins
+        // here we only care about APT events
+        if (isAptEvent(event, transaction)) {
+          if (!balanceMap[addr]) {
+            balanceMap[addr] = {amount: BigInt(0), amountAfter: ""};
+          }
 
-        const amount = BigInt(event.data.amount);
+          const amount = BigInt(event.data.amount);
 
-        if (event.type === "0x1::coin::DepositEvent") {
-          balanceMap[addr].amount += amount;
-        } else {
-          balanceMap[addr].amount -= amount;
+          if (event.type === "0x1::coin::DepositEvent") {
+            balanceMap[addr].amount += amount;
+          } else {
+            balanceMap[addr].amount -= amount;
+          }
         }
       }
 
@@ -110,7 +134,48 @@ function getBalanceMap(transaction: Types.Transaction) {
   return accountToBalance;
 }
 
-export function getCoinBalanceChange(
+function getAptChangeData(
+  change: Types.WriteSetChange,
+): ChangeData | undefined {
+  if (
+    "address" in change &&
+    "data" in change &&
+    "type" in change.data &&
+    change.data.type === "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>" &&
+    "data" in change.data
+  ) {
+    return JSON.parse(JSON.stringify(change.data.data)) as ChangeData;
+  } else {
+    return undefined;
+  }
+}
+
+function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
+  const changes: Types.WriteSetChange[] =
+    "changes" in transaction ? transaction.changes : [];
+
+  const aptEventChange = changes.filter((change) => {
+    if ("address" in change && change.address === event.guid.account_address) {
+      const data = getAptChangeData(change);
+      if (data !== undefined) {
+        const eventCreationNum = event.guid.creation_number;
+        let changeCreationNum;
+        if (event.type === "0x1::coin::DepositEvent") {
+          changeCreationNum = data.deposit_events.guid.id.creation_num;
+        } else if (event.type === "0x1::coin::WithdrawEvent") {
+          changeCreationNum = data.withdraw_events.guid.id.creation_num;
+        }
+        if (eventCreationNum === changeCreationNum) {
+          return change;
+        }
+      }
+    }
+  });
+
+  return aptEventChange.length > 0;
+}
+
+export function getCoinBalanceChanges(
   transaction: Types.Transaction,
 ): BalanceChange[] {
   const accountToBalance = getBalanceMap(transaction);
@@ -121,19 +186,9 @@ export function getCoinBalanceChange(
   Object.entries(accountToBalance).forEach(([key]) => {
     changes.filter((change) => {
       if ("address" in change && change.address === key) {
-        if (
-          "data" in change &&
-          "type" in change.data &&
-          change.data.type ===
-            "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>"
-        ) {
-          if ("data" in change.data) {
-            const data: {coin: {value: string}} = JSON.parse(
-              JSON.stringify(change.data.data),
-            );
-            accountToBalance[key].amountAfter = data.coin.value;
-          }
-
+        const data = getAptChangeData(change);
+        if (data !== undefined) {
+          accountToBalance[key].amountAfter = data.coin.value;
           return change;
         }
       }
