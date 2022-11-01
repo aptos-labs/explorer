@@ -52,7 +52,10 @@ export default function EventsTab({transaction}: EventsTabProps) {
           />
           <ContentRow title="Sequence Number:" value={event.sequence_number} />
           <ContentRow title="Type:" value={event.type} />
-          <ContentRow title="Data:" value={<JsonCard data={event.data} />} />
+          <ContentRow
+            title="Data:"
+            value={<JsonCard data={event.data} expandedByDefault />}
+          />
         </CollapsibleCard>
       ))}
     </CollapsibleCards>

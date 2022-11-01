@@ -42,7 +42,10 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
           )}
           <ContentRow title="State Key Hash:" value={change.state_key_hash} />
           {"data" in change && (
-            <ContentRow title="Data:" value={<JsonCard data={change.data} />} />
+            <ContentRow
+              title="Data:"
+              value={<JsonCard data={change.data} expandedByDefault />}
+            />
           )}
         </CollapsibleCard>
       ))}

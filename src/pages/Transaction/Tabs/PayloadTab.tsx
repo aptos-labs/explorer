@@ -29,7 +29,7 @@ export default function PayloadTab({transaction}: PayloadTabProps) {
         expanded={expanded}
         toggleExpanded={toggleExpanded}
       >
-        <JsonCard data={transaction.payload} />
+        <JsonCard data={transaction.payload} expandedByDefault />
       </CollapsibleCard>
     </Box>
   );
