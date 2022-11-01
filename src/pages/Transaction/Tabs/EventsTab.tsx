@@ -23,6 +23,8 @@ export default function EventsTab({transaction}: EventsTabProps) {
     return <EmptyTabContent />;
   }
 
+  // console.log(events);
+
   return (
     <CollapsibleCards
       expandedList={expandedList}
