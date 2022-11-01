@@ -15,11 +15,15 @@ const TOOLTIP_TIME = 2000; // 2s
 
 type JsonCardProps = {
   data: any;
+  expandedByDefault?: boolean;
 };
 
-export default function JsonCard({data}: JsonCardProps): JSX.Element {
+export default function JsonCard({
+  data,
+  expandedByDefault,
+}: JsonCardProps): JSX.Element {
   const theme = useTheme();
-  const [expanded, setExpanded] = useState<boolean>(false);
+  const [expanded, setExpanded] = useState<boolean>(expandedByDefault === true);
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
   if (!data) {

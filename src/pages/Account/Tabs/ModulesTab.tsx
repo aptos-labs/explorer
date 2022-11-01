@@ -48,7 +48,10 @@ function ModulesContent({
               </Box>
             }
           />
-          <ContentRow title="ABI:" value={<JsonCard data={module.abi} />} />
+          <ContentRow
+            title="ABI:"
+            value={<JsonCard data={module.abi} expandedByDefault />}
+          />
         </CollapsibleCard>
       ))}
     </CollapsibleCards>

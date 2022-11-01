@@ -36,7 +36,7 @@ function ResourcesContent({
           expanded={expandedList[i]}
           toggleExpanded={() => toggleExpandedAt(i)}
         >
-          <JsonCard data={resource.data} />
+          <JsonCard data={resource.data} expandedByDefault />
         </CollapsibleCard>
       ))}
     </CollapsibleCards>
