@@ -17,7 +17,7 @@ export default function TPS() {
       data1={tps ? getFormattedTPS(tps) : "-"}
       data2={peakTps ? getFormattedTPS(peakTps) : "-"}
       label1="REAL-TIME"
-      label2="PEAK LAST 7D"
+      label2="PEAK LAST 7 DAYS"
       cardLabel="TPS"
       tooltip={
         <Stack spacing={1}>
