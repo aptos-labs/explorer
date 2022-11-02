@@ -40,7 +40,7 @@ export default function TPS() {
             <Box sx={{fontWeight: 700}}>Peak Last 30 Days</Box>
             <Box>
               Highest rate of transactions per second over the past 30 days,
-              sustained for 15 blocks.
+              averaged over 15 blocks.
             </Box>
           </Box>
         </Stack>
