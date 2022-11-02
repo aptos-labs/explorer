@@ -17,7 +17,7 @@ export default function TPS() {
       data1={tps ? getFormattedTPS(tps) : "-"}
       data2={peakTps ? getFormattedTPS(peakTps) : "-"}
       label1="REAL-TIME"
-      label2="PEAK LAST 7 DAYS"
+      label2="PEAK LAST 30 DAYS"
       cardLabel="TPS"
       tooltip={
         <Stack spacing={1}>
@@ -26,10 +26,10 @@ export default function TPS() {
             <Box>Current rate of transactions per second on the network.</Box>
           </Box>
           <Box>
-            <Box sx={{fontWeight: 700}}>Peak Last 7 Days</Box>
+            <Box sx={{fontWeight: 700}}>Peak Last 30 Days</Box>
             <Box>
-              Highest rate of transactions per second over the past 7 days,
-              sustained for 5 seconds.
+              Highest rate of transactions per second over the past 30 days,
+              sustained for 15 blocks.
             </Box>
           </Box>
         </Stack>

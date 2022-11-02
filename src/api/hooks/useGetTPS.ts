@@ -36,8 +36,8 @@ export function useGetPeakTPS() {
     if (state.network_name === "mainnet") {
       const fetchData = async () => {
         const response = await fetch(PEAK_TPS_URL);
-        const data: {max_tps_5_secs: number}[] = await response.json();
-        const peakTps = data[0].max_tps_5_secs;
+        const data: {max_tps_15_blocks: number}[] = await response.json();
+        const peakTps = data[0].max_tps_15_blocks;
         setPeakTps(peakTps);
       };
 
