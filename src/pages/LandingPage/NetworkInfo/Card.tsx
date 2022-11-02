@@ -13,7 +13,7 @@ export default function Card({children, ...props}: CardProps) {
     <Box
       sx={{
         background: theme.palette.mode === "dark" ? grey[800] : grey[100],
-        padding: 2,
+        padding: 2.5,
         borderRadius: 1,
       }}
       {...props}
