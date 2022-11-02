@@ -44,6 +44,8 @@ export function useGetPeakTPS() {
       fetchData().catch((error) => {
         console.error("ERROR!", error, typeof error);
       });
+    } else {
+      setPeakTps(undefined);
     }
   }, [state]);
 
