@@ -1,18 +1,26 @@
 import {Box, Typography} from "@mui/material";
 import * as React from "react";
-import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGlobalState} from "../../GlobalState";
 import PageHeader from "../layout/PageHeader";
-import {ValidatorsTable} from "./Table";
+import {ValidatorsTable as OldValidatorsTable} from "./Table";
+import {ValidatorsTable} from "./ValidatorsTable";
 
 export default function ValidatorsPage() {
-  const {activeValidators} = useGetValidatorSet();
+  const inDevMode = useGetInDevMode();
+  const [state, _] = useGlobalState();
+
   return (
     <Box>
       <PageHeader />
       <Typography variant="h3" marginBottom={2}>
         Validators
       </Typography>
-      <ValidatorsTable validators={activeValidators} />
+      {inDevMode && state.network_name === "mainnet" ? (
+        <ValidatorsTable />
+      ) : (
+        <OldValidatorsTable />
+      )}
     </Box>
   );
 }
