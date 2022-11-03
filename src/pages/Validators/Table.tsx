@@ -3,7 +3,10 @@ import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
-import {Validator} from "../../api/hooks/useGetValidatorSet";
+import {
+  useGetValidatorSet,
+  Validator,
+} from "../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
@@ -137,15 +140,17 @@ function ValidatorHeaderCell({column}: ValidatorHeaderCellProps) {
 }
 
 type ValidatorsTableProps = {
-  validators: Validator[];
   columns?: Column[];
 };
 
 export function ValidatorsTable({
-  validators,
   columns = DEFAULT_COLUMNS,
 }: ValidatorsTableProps) {
-  const validatorsCopy: Validator[] = JSON.parse(JSON.stringify(validators));
+  const {activeValidators} = useGetValidatorSet();
+
+  const validatorsCopy: Validator[] = JSON.parse(
+    JSON.stringify(activeValidators),
+  );
   const validatorsInOrder = validatorsCopy.sort(
     (validator1, validator2) =>
       parseInt(validator2.voting_power) - parseInt(validator1.voting_power),

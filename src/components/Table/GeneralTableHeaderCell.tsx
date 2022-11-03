@@ -1,13 +1,24 @@
 import React from "react";
-import {Typography, TableCell, useTheme, Stack} from "@mui/material";
+import {
+  Typography,
+  TableCell,
+  useTheme,
+  Stack,
+  TableSortLabel,
+} from "@mui/material";
 import {SxProps} from "@mui/system";
 import {Theme} from "@mui/material/styles";
+import SouthIcon from "@mui/icons-material/South";
+import {primary} from "../../themes/colors/aptosColorPalette";
 
 interface GeneralTableHeaderCellProps {
   header: React.ReactNode;
   textAlignRight?: boolean;
   sx?: SxProps<Theme>;
   tooltip?: React.ReactNode;
+  sortable?: boolean;
+  direction?: "desc" | "asc";
+  selectAndSetDirection?: (dir: "desc" | "asc") => void;
 }
 
 export default function GeneralTableHeaderCell({
@@ -15,17 +26,67 @@ export default function GeneralTableHeaderCell({
   textAlignRight,
   sx = [],
   tooltip,
+  sortable,
+  direction,
+  selectAndSetDirection,
 }: GeneralTableHeaderCellProps) {
   const theme = useTheme();
   const tableCellBackgroundColor = "transparent";
   const tableCellTextColor = theme.palette.text.secondary;
 
+  const toggleDirection = () => {
+    if (selectAndSetDirection === undefined) {
+      return;
+    }
+    selectAndSetDirection(direction === "desc" ? "asc" : "desc");
+  };
+
+  const headerTextComponent = (
+    <Typography variant="subtitle1" sx={{fontSize: 15, lineHeight: "inherit"}}>
+      {header}
+    </Typography>
+  );
+
+  const headerSortLabel = sortable ? (
+    <TableSortLabel
+      active={direction !== undefined}
+      direction={direction === undefined ? "desc" : direction}
+      onClick={toggleDirection}
+      IconComponent={SouthIcon}
+      sx={{
+        "&.MuiTableSortLabel-root .MuiTableSortLabel-icon": {
+          marginLeft: 1,
+          marginRight: 0,
+          color: primary[600],
+        },
+      }}
+    >
+      {headerTextComponent}
+    </TableSortLabel>
+  ) : (
+    headerTextComponent
+  );
+
+  const headerContent = tooltip ? (
+    <Stack
+      direction="row"
+      spacing={0.2}
+      justifyContent={textAlignRight ? "flex-end" : "flex-start"}
+      alignItems="center"
+    >
+      {tooltip}
+      {headerSortLabel}
+    </Stack>
+  ) : (
+    headerSortLabel
+  );
+
   return (
     <TableCell
       sx={[
         {
-          paddingLeft: 1.5,
-          paddingRight: tooltip ? 0.5 : 1.5,
+          paddingLeft: tooltip ? 0.5 : 1.5,
+          paddingRight: 1.5,
           textAlign: textAlignRight ? "right" : "left",
           background: `${tableCellBackgroundColor}`,
           color: `${tableCellTextColor}`,
@@ -33,23 +94,7 @@ export default function GeneralTableHeaderCell({
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
     >
-      {tooltip ? (
-        <Stack
-          direction="row"
-          spacing={0.2}
-          justifyContent={textAlignRight ? "flex-end" : "flex-start"}
-          alignItems="center"
-        >
-          <Typography variant="subtitle1" sx={{fontSize: 15}}>
-            {header}
-          </Typography>
-          {tooltip}
-        </Stack>
-      ) : (
-        <Typography variant="subtitle1" sx={{fontSize: 15}}>
-          {header}
-        </Typography>
-      )}
+      {headerContent}
     </TableCell>
   );
 }
