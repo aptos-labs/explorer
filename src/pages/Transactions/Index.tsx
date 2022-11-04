@@ -5,11 +5,17 @@ import PageHeader from "../layout/PageHeader";
 import AllTransactions from "./AllTransactions";
 import UserTransactions from "./UserTransactions";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
+import {useGlobalState} from "../../GlobalState";
 
 export default function TransactionsPage() {
+  const [state, _] = useGlobalState();
   const [userTxnOnly, setUserTxnOnly] = useState<boolean>(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
+
+  useEffect(() => {
+    setUserTxnOnly(isGraphqlClientSupported);
+  }, [isGraphqlClientSupported, state.network_name]);
 
   useEffect(() => {
     if (userTxnOnly) {
