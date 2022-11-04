@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Table, TableHead, TableRow} from "@mui/material";
+import {Box, Stack, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -11,6 +11,8 @@ import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
+import RewardsPerformanceIcon from "./Components/RewardsPerformanceIcon";
 
 function getSortedValidators(
   validators: MainnetValidator[],
@@ -34,11 +36,6 @@ function getValidatorsOrderedBy(
       return validatorsCopy.sort(
         (validator1, validator2) =>
           parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
-      );
-    case "liveness":
-      return validatorsCopy.sort(
-        (validator1, validator2) =>
-          (validator2.liveness ?? 0) - (validator1.liveness ?? 0),
       );
     case "rewardsPerf":
       return validatorsCopy.sort(
@@ -68,6 +65,7 @@ type SortableHeaderCellProps = {
   direction?: "desc" | "asc";
   setDirection?: (dir: "desc" | "asc") => void;
   setSortColumn: (col: Column) => void;
+  tooltip?: React.ReactNode;
 };
 
 function SortableHeaderCell({
@@ -76,6 +74,7 @@ function SortableHeaderCell({
   direction,
   setDirection,
   setSortColumn,
+  tooltip,
 }: SortableHeaderCellProps) {
   return (
     <GeneralTableHeaderCell
@@ -89,6 +88,7 @@ function SortableHeaderCell({
           setDirection(dir);
         }
       }}
+      tooltip={tooltip}
     />
   );
 }
@@ -119,16 +119,6 @@ function ValidatorHeaderCell({
           setSortColumn={setSortColumn}
         />
       );
-    case "liveness":
-      return (
-        <SortableHeaderCell
-          header="Liveness"
-          column={column}
-          direction={direction}
-          setDirection={setDirection}
-          setSortColumn={setSortColumn}
-        />
-      );
     case "rewardsPerf":
       return (
         <SortableHeaderCell
@@ -137,6 +127,7 @@ function ValidatorHeaderCell({
           direction={direction}
           setDirection={setDirection}
           setSortColumn={setSortColumn}
+          tooltip={<RewardsPerformanceTooltip />}
         />
       );
     case "lastEpochPerf":
@@ -184,22 +175,20 @@ function VotingPowerCell({validator}: ValidatorCellProps) {
   );
 }
 
-function LivenessCell({validator}: ValidatorCellProps) {
-  return (
-    <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
-      {validator.liveness === undefined
-        ? null
-        : `${validator.liveness.toFixed(2)} %`}
-    </GeneralTableCell>
-  );
-}
-
 function RewardsPerformanceCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
-      {validator.rewards_growth === undefined
-        ? null
-        : `${validator.rewards_growth.toFixed(2)} %`}
+      {validator.rewards_growth === undefined ? null : (
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={1}
+          justifyContent="flex-end"
+        >
+          <RewardsPerformanceIcon rewardsGrowth={validator.rewards_growth} />
+          <Box>{`${validator.rewards_growth.toFixed(2)} %`}</Box>
+        </Stack>
+      )}
     </GeneralTableCell>
   );
 }
@@ -223,7 +212,6 @@ function GovernanceVotesCell({validator}: ValidatorCellProps) {
 const ValidatorCells = Object.freeze({
   addr: ValidatorAddrCell,
   votingPower: VotingPowerCell,
-  liveness: LivenessCell,
   rewardsPerf: RewardsPerformanceCell,
   lastEpochPerf: LastEpochPerformanceCell,
   governanceVotes: GovernanceVotesCell,
@@ -234,7 +222,6 @@ type Column = keyof typeof ValidatorCells;
 const DEFAULT_COLUMNS: Column[] = [
   "addr",
   "votingPower",
-  "liveness",
   "rewardsPerf",
   "lastEpochPerf",
   "governanceVotes",

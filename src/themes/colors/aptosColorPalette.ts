@@ -27,8 +27,6 @@ export const primary = {
   900: "#06565b",
 };
 
-export const aptosColor = "#02858D";
-export const aptosColorOpacity = "rgba(2,133,141,0.2)";
-
-export const negativeColor: string = "#F97373"; // rgb(249,115,115)
-export const negativeColorOpacity: string = "rgba(249,115,115,0.1)";
+export const aptosColor = primary[600];
+export const negativeColor: string = "#F97373";
+export const warningColor: string = "#f1c232";

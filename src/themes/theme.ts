@@ -2,7 +2,12 @@ import {PaletteMode} from "@mui/material";
 import {ThemeOptions} from "@mui/material/styles";
 import "@mui/material/styles/createPalette";
 import {alpha} from "@mui/material";
-import {grey, primary} from "./colors/aptosColorPalette";
+import {
+  grey,
+  negativeColor,
+  primary,
+  warningColor,
+} from "./colors/aptosColorPalette";
 
 // Button variants
 declare module "@mui/material/Button" {
@@ -131,6 +136,14 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
             main: primaryColorToned,
           },
 
+          error: {
+            main: negativeColor,
+          },
+
+          warning: {
+            main: warningColor,
+          },
+
           background: {
             default: "#ffffff",
             paper: grey[100],
@@ -162,6 +175,14 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
 
           success: {
             main: primaryColor,
+          },
+
+          error: {
+            main: negativeColor,
+          },
+
+          warning: {
+            main: warningColor,
           },
 
           background: {
