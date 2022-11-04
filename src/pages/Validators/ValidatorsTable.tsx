@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Table, TableHead, TableRow} from "@mui/material";
+import {Box, Stack, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -11,6 +11,10 @@ import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import LivenessTooltip from "./Components/LivenessTooltip";
+import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
+import LivenessIcon from "./Components/LivenessIcon";
+import RewardsPerformanceIcon from "./Components/RewardsPerformanceIcon";
 
 function getSortedValidators(
   validators: MainnetValidator[],
@@ -68,6 +72,7 @@ type SortableHeaderCellProps = {
   direction?: "desc" | "asc";
   setDirection?: (dir: "desc" | "asc") => void;
   setSortColumn: (col: Column) => void;
+  tooltip?: React.ReactNode;
 };
 
 function SortableHeaderCell({
@@ -76,6 +81,7 @@ function SortableHeaderCell({
   direction,
   setDirection,
   setSortColumn,
+  tooltip,
 }: SortableHeaderCellProps) {
   return (
     <GeneralTableHeaderCell
@@ -89,6 +95,7 @@ function SortableHeaderCell({
           setDirection(dir);
         }
       }}
+      tooltip={tooltip}
     />
   );
 }
@@ -127,6 +134,7 @@ function ValidatorHeaderCell({
           direction={direction}
           setDirection={setDirection}
           setSortColumn={setSortColumn}
+          tooltip={<LivenessTooltip />}
         />
       );
     case "rewardsPerf":
@@ -137,6 +145,7 @@ function ValidatorHeaderCell({
           direction={direction}
           setDirection={setDirection}
           setSortColumn={setSortColumn}
+          tooltip={<RewardsPerformanceTooltip />}
         />
       );
     case "lastEpochPerf":
@@ -187,9 +196,12 @@ function VotingPowerCell({validator}: ValidatorCellProps) {
 function LivenessCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
-      {validator.liveness === undefined
-        ? null
-        : `${validator.liveness.toFixed(2)} %`}
+      {validator.liveness === undefined ? null : (
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <LivenessIcon isLive={validator.liveness == 100} />
+          <Box>{`${validator.liveness.toFixed(2)} %`}</Box>
+        </Stack>
+      )}
     </GeneralTableCell>
   );
 }
@@ -197,9 +209,12 @@ function LivenessCell({validator}: ValidatorCellProps) {
 function RewardsPerformanceCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
-      {validator.rewards_growth === undefined
-        ? null
-        : `${validator.rewards_growth.toFixed(2)} %`}
+      {validator.rewards_growth === undefined ? null : (
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <RewardsPerformanceIcon rewardsGrowth={validator.rewards_growth} />
+          <Box>{`${validator.rewards_growth.toFixed(2)} %`}</Box>
+        </Stack>
+      )}
     </GeneralTableCell>
   );
 }

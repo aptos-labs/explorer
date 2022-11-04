@@ -17,14 +17,14 @@ import {TableTransactionStatus} from "../../components/TransactionStatus";
 import {getTableFormattedTimestamp} from "../utils";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
-import TransactionTypeTooltip from "../../components/Table/TransactionTypeTooltip";
+import TransactionTypeTooltip from "./Components/TransactionTypeTooltip";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import {
   grey,
   negativeColor,
-  primary,
+  aptosColor,
 } from "../../themes/colors/aptosColorPalette";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
 import {
@@ -142,7 +142,7 @@ function TransactionAmount({transaction}: {transaction: Types.Transaction}) {
       let amountAbs = amount;
       let color = undefined;
       if (amount > 0) {
-        color = primary[600];
+        color = aptosColor;
       } else if (amount < 0) {
         color = negativeColor;
         amountAbs = -amount;

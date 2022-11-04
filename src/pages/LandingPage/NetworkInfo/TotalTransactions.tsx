@@ -2,8 +2,7 @@ import React from "react";
 import {useQuery} from "react-query";
 import {useGlobalState} from "../../../GlobalState";
 import {getLedgerInfo} from "../../../api";
-import {Stack, Divider, Typography} from "@mui/material";
-import {aptosColor} from "../../../themes/colors/aptosColorPalette";
+import {Stack, Typography} from "@mui/material";
 
 export default function TotalTransactions() {
   const [state, _] = useGlobalState();

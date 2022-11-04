@@ -7,9 +7,13 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import {IconButton, Stack, useTheme} from "@mui/material";
 import {grey} from "../../themes/colors/aptosColorPalette";
-import {TooltipTransactionType} from "../TransactionType";
 
-export default function TransactionTypeTooltip() {
+type TableTooltipProps = {
+  children: React.ReactNode;
+  title: React.ReactNode;
+};
+
+export default function TableTooltip({children, title}: TableTooltipProps) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
@@ -46,9 +50,7 @@ export default function TransactionTypeTooltip() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography variant="h6" marginLeft={4.3}>
-                Transaction Types
-              </Typography>
+              <Typography variant="h6">{title}</Typography>
               <IconButton onClick={handleClose} sx={{padding: 0.5}}>
                 <CloseOutlinedIcon color="secondary" />
               </IconButton>
@@ -63,11 +65,7 @@ export default function TransactionTypeTooltip() {
               paddingBottom: 3,
             }}
           >
-            <Stack spacing={2}>
-              <TooltipTransactionType type="user_transaction" />
-              <TooltipTransactionType type="block_metadata_transaction" />
-              <TooltipTransactionType type="state_checkpoint_transaction" />
-            </Stack>
+            {children}
           </Box>
         </Box>
       </Modal>
