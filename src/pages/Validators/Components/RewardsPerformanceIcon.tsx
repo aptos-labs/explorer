@@ -1,5 +1,8 @@
 import * as React from "react";
-import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
+import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
+
+const THRESHOLD_1 = 80;
+const THRESHOLD_2 = 75;
 
 type RewardsPerformanceIconProps = {
   rewardsGrowth: number;
@@ -8,11 +11,11 @@ type RewardsPerformanceIconProps = {
 export default function RewardsPerformanceIcon({
   rewardsGrowth,
 }: RewardsPerformanceIconProps) {
-  if (rewardsGrowth >= 80) {
-    return <CircleRoundedIcon fontSize="small" color="success" />;
-  } else if (rewardsGrowth >= 75 && rewardsGrowth < 80) {
-    return <CircleRoundedIcon fontSize="small" color="warning" />;
+  if (rewardsGrowth >= THRESHOLD_1) {
+    return <CircleOutlinedIcon fontSize="small" color="success" />;
+  } else if (rewardsGrowth >= THRESHOLD_2 && rewardsGrowth < THRESHOLD_1) {
+    return <CircleOutlinedIcon fontSize="small" color="warning" />;
   } else {
-    return <CircleRoundedIcon fontSize="small" color="error" />;
+    return <CircleOutlinedIcon fontSize="small" color="error" />;
   }
 }
