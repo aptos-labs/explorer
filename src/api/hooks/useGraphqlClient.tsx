@@ -12,7 +12,7 @@ import {useGlobalState} from "../../GlobalState";
 
 function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   const graphqlUri = getGraphqlURI(networkName);
-  return typeof graphqlUri === "string";
+  return typeof graphqlUri === "string" && graphqlUri.length > 0;
 }
 
 function getGraphqlURI(networkName: NetworkName): string | undefined {
