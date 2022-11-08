@@ -4,6 +4,7 @@ import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useGlobalState} from "../../GlobalState";
 import PageHeader from "../layout/PageHeader";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
+import ValidatorsMap from "./ValidatorsMap";
 import {ValidatorsTable} from "./ValidatorsTable";
 
 export default function ValidatorsPage() {
@@ -17,7 +18,10 @@ export default function ValidatorsPage() {
         Validators
       </Typography>
       {inDevMode && state.network_name === "mainnet" ? (
-        <ValidatorsTable />
+        <>
+          <ValidatorsMap />
+          <ValidatorsTable />
+        </>
       ) : (
         <OldValidatorsTable />
       )}
