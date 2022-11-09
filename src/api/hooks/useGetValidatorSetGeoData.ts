@@ -1,5 +1,5 @@
 import {useGlobalState} from "../../GlobalState";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 
 const MAINNET_VALIDATORS_GEO_DATA_URL =
   "https://aptos-analytics-data-mainnet.s3.amazonaws.com/validator_location_stats.json";
@@ -26,7 +26,9 @@ function useGetGeoData() {
         setGeoDatas(data);
       };
 
-      fetchData();
+      fetchData().catch((error) => {
+        console.error("ERROR!", error, typeof error);
+      });
     } else {
       setGeoDatas([]);
     }
@@ -66,7 +68,7 @@ export function useGetValidatorSetGeoData() {
       cityCount: 0,
     });
 
-  useEffect(() => {
+  useMemo(() => {
     const groups: ValidatorGeoGroup[] = geoDatas.reduce(
       (groups: ValidatorGeoGroup[], geoData: GeoData) => {
         const country = geoData.country;

@@ -1,5 +1,5 @@
 import {useGlobalState} from "../../GlobalState";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
 
 const MAINNET_VALIDATORS_DATA_URL =
@@ -93,7 +93,7 @@ export function useGetMainnetValidators() {
   const {validatorStatusSet} = useGetMainnetValidatorStatusSet();
   const [validators, setValidators] = useState<MainnetValidator[]>([]);
 
-  useEffect(() => {
+  useMemo(() => {
     if (
       validatorStatusSet.length === activeValidators.length &&
       validatorStatusSet.length > 0
