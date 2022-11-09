@@ -4,16 +4,15 @@ import Tooltip, {TooltipProps, tooltipClasses} from "@mui/material/Tooltip";
 import {ComposableMap, Geographies, Geography, Marker} from "react-simple-maps";
 import {
   City,
-  useGetValidatorSetGeoData,
   ValidatorGeoGroup,
 } from "../../../api/hooks/useGetValidatorSetGeoData";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 
-const WIDTH = 800;
-const HEIGHT = 450;
 const GEO_URL =
   "https://raw.githubusercontent.com/deldersveld/topojson/master/world-continents.json";
-const CIRCLE_COLOR = "#22D3EE";
+
+const MARKER_COLOR = "#22D3EE";
+const MIN_NODE_COUNT_SHOWN_IN_MARKER = 5;
 
 function getCircleRadius(currentGroupSize: number) {
   return Math.pow(currentGroupSize, 1 / 4) * 4;
@@ -38,10 +37,15 @@ function MapMarker({group}: {group: ValidatorGeoGroup}) {
     <LightTooltip
       title={
         <Box margin={1}>
-          <Typography
-            variant="body2"
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            spacing={4}
             marginBottom={1}
-          >{`${country} (${nodes.length})`}</Typography>
+          >
+            <Typography variant="body2">{country}</Typography>
+            <Typography variant="body2">{nodes.length}</Typography>
+          </Stack>
           {cities.map((city: City) => (
             <Stack
               key={city.name}
@@ -62,20 +66,20 @@ function MapMarker({group}: {group: ValidatorGeoGroup}) {
         <g>
           <circle
             fill="rgba(0,0,0,0)"
-            stroke={CIRCLE_COLOR}
+            stroke={MARKER_COLOR}
             strokeWidth={0.6}
             strokeOpacity={0.4}
             r={radius + 2}
           />
           <circle
             fill="rgba(0,0,0,0)"
-            stroke={CIRCLE_COLOR}
+            stroke={MARKER_COLOR}
             strokeWidth={0.6}
             strokeOpacity={0.8}
             r={radius + 0.9}
           />
-          <circle fill={CIRCLE_COLOR} r={radius} />
-          {nodes.length > 4 && (
+          <circle fill={MARKER_COLOR} r={radius} />
+          {nodes.length >= MIN_NODE_COUNT_SHOWN_IN_MARKER && (
             <text
               textAnchor="middle"
               fill={grey[900]}
@@ -91,16 +95,23 @@ function MapMarker({group}: {group: ValidatorGeoGroup}) {
   );
 }
 
-export default function Map() {
+type MapProps = {
+  validatorGeoGroups: ValidatorGeoGroup[];
+};
+
+export default function Map({validatorGeoGroups}: MapProps) {
   const theme = useTheme();
-  const {validatorGeoGroups} = useGetValidatorSetGeoData();
 
   return (
-    <Box width={WIDTH} height={HEIGHT} style={{overflow: "hidden"}}>
+    <Box
+      width={{xs: "100%", sm: "100%", md: 800, lg: 1000}}
+      height={{xs: 250, sm: 420, md: 450, lg: 550}}
+      style={{overflow: "hidden"}}
+    >
       <ComposableMap
         projectionConfig={{
-          rotate: [0, 15, 0],
-          center: [0, -5],
+          rotate: [0, 10, 0],
+          center: [0, 0],
           scale: 130,
         }}
         projection="geoMercator"

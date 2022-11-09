@@ -1,24 +1,38 @@
 import React from "react";
-import {Stack, Box, Typography, useTheme} from "@mui/material";
+import {Stack, useMediaQuery, useTheme} from "@mui/material";
 import Map from "./Components/Map";
 import {grey} from "../../themes/colors/aptosColorPalette";
+import MapMetrics from "./Components/MapMetrics";
+import {useGetValidatorSetGeoData} from "../../api/hooks/useGetValidatorSetGeoData";
 
 export default function ValidatorsMap() {
   const theme = useTheme();
+  const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
+  const backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[50];
 
-  return (
+  const {validatorGeoMetric, validatorGeoGroups} = useGetValidatorSetGeoData();
+
+  return isOnMobile ? (
     <Stack
-      direction={{xs: "column", md: "row"}}
+      direction="column"
       justifyContent="space-between"
       marginY={4}
-      sx={{
-        backgroundColor: theme.palette.mode === "dark" ? grey[800] : grey[50],
-      }}
+      sx={{backgroundColor: backgroundColor}}
+      overflow="hidden"
     >
-      <Box>
-        <Typography variant="body2">Title</Typography>
-      </Box>
-      <Map />
+      <Map validatorGeoGroups={validatorGeoGroups} />
+      <MapMetrics validatorGeoMetric={validatorGeoMetric} isOnMobile />
+    </Stack>
+  ) : (
+    <Stack
+      direction="row"
+      justifyContent="space-between"
+      marginY={4}
+      sx={{backgroundColor: backgroundColor}}
+      overflow="hidden"
+    >
+      <MapMetrics validatorGeoMetric={validatorGeoMetric} />
+      <Map validatorGeoGroups={validatorGeoGroups} />
     </Stack>
   );
 }

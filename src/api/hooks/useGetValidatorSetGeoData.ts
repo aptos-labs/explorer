@@ -35,6 +35,12 @@ function useGetGeoData() {
   return {geoDatas};
 }
 
+export type ValidatorGeoMetric = {
+  nodeCount: number;
+  countryCount: number;
+  cityCount: number;
+};
+
 export type City = {
   name: string;
   count: number;
@@ -53,6 +59,12 @@ export function useGetValidatorSetGeoData() {
   const [validatorGeoGroups, setValidatorGeoGroups] = useState<
     ValidatorGeoGroup[]
   >([]);
+  const [validatorGeoMetric, setValidatorGeoMetric] =
+    useState<ValidatorGeoMetric>({
+      nodeCount: 0,
+      countryCount: 0,
+      cityCount: 0,
+    });
 
   useEffect(() => {
     const groups: ValidatorGeoGroup[] = geoDatas.reduce(
@@ -79,6 +91,8 @@ export function useGetValidatorSetGeoData() {
       },
       [],
     );
+
+    let totalCityCount = 0;
 
     groups.map((group: ValidatorGeoGroup) => {
       const count = group.nodes.length;
@@ -108,10 +122,17 @@ export function useGetValidatorSetGeoData() {
         }
       });
       cities.sort((city1: City, city2: City) => city2.count - city1.count);
+
+      totalCityCount += cities.length;
     });
 
     setValidatorGeoGroups(groups);
+    setValidatorGeoMetric({
+      nodeCount: geoDatas.length,
+      countryCount: groups.length,
+      cityCount: totalCityCount,
+    });
   }, [geoDatas]);
 
-  return {validatorGeoGroups};
+  return {validatorGeoGroups, validatorGeoMetric};
 }
