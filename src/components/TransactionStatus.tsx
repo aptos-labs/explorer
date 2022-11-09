@@ -15,7 +15,7 @@ type TransactionStatusProps = {
 };
 
 export function TransactionStatus({success}: TransactionStatusProps) {
-  return !success ? (
+  return success ? (
     <Stack
       direction="row"
       spacing={1}
