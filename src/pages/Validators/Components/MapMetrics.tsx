@@ -12,9 +12,10 @@ export default function MapMetrics({
   validatorGeoMetric,
   isOnMobile,
 }: MapMetricsProps) {
-  const fontSizeTitle = {xs: 20, md: 25};
+  const fontSizeTitle = {xs: 17, md: 25};
   const fontSizeSubtitle = {xs: 15, md: 17};
-  const fontSizeBody = {xs: 12, md: 14};
+  const fontSizeBody1 = {xs: 12, md: 17};
+  const fontSizeBody2 = {xs: 12, md: 14};
   const lineSpacing = {xs: 0.2, md: 0.5};
 
   const nodeCountsSection = (
@@ -23,11 +24,11 @@ export default function MapMetrics({
         {`${validatorGeoMetric.nodeCount} Nodes`}
       </Typography>
       <Typography
-        sx={{fontSize: fontSizeSubtitle}}
+        sx={{fontSize: fontSizeBody1}}
         color={grey[450]}
       >{`${validatorGeoMetric.countryCount} Countries`}</Typography>
       <Typography
-        sx={{fontSize: fontSizeSubtitle}}
+        sx={{fontSize: fontSizeBody1}}
         color={grey[450]}
       >{`${validatorGeoMetric.cityCount} Cities`}</Typography>
     </Stack>
@@ -38,15 +39,15 @@ export default function MapMetrics({
     <Stack spacing={2}>
       <Stack spacing={lineSpacing}>
         <Typography sx={{fontSize: fontSizeSubtitle}}>Epoch 321</Typography>
-        <Typography sx={{fontSize: fontSizeBody}} color={grey[450]}>
+        <Typography sx={{fontSize: fontSizeBody2}} color={grey[450]}>
           16 minutes remaining
         </Typography>
       </Stack>
       <Stack spacing={lineSpacing}>
-        <Typography sx={{fontSize: fontSizeBody}} color={grey[450]}>
+        <Typography sx={{fontSize: fontSizeBody2}} color={grey[450]}>
           Current leader
         </Typography>
-        <Typography sx={{fontSize: fontSizeBody}} color="#D946EF">
+        <Typography sx={{fontSize: fontSizeBody2}} color="#D946EF">
           0xe8fa...8788
         </Typography>
       </Stack>
@@ -58,9 +59,9 @@ export default function MapMetrics({
     <Stack spacing={lineSpacing}>
       <Stack direction="row" spacing={0.7} alignItems="center">
         <Typography sx={{fontSize: fontSizeSubtitle}}>829,615,127</Typography>
-        <Typography sx={{fontSize: fontSizeBody}}>Staked</Typography>
+        <Typography sx={{fontSize: fontSizeBody2}}>Staked</Typography>
       </Stack>
-      <Typography sx={{fontSize: fontSizeBody}} color={grey[450]}>
+      <Typography sx={{fontSize: fontSizeBody2}} color={grey[450]}>
         7% rewards per year
       </Typography>
     </Stack>
@@ -70,9 +71,9 @@ export default function MapMetrics({
     <Grid
       container
       direction="row"
-      marginX={2}
+      marginX={{xs: 2, sm: 4}}
       marginTop={0.5}
-      marginBottom={2}
+      marginBottom={3}
     >
       <Grid item xs={6} sm={4}>
         {nodeCountsSection}
