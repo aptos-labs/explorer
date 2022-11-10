@@ -2,6 +2,16 @@ import React from "react";
 import {Grid, Stack, Typography} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import {ValidatorGeoMetric} from "../../../api/hooks/useGetValidatorSetGeoData";
+import MetricSection from "./MetricSection";
+import Subtitle from "./Text/Subtitle";
+import Body from "./Text/Body";
+import {
+  fontSizeBodySmall,
+  fontSizeSubtitle,
+  fontSizeTitle,
+  fontSizeTitleSmall,
+} from "../constants";
+import Epoch from "./Epoch";
 
 type MapMetricsProps = {
   validatorGeoMetric: ValidatorGeoMetric;
@@ -12,59 +22,31 @@ export default function MapMetrics({
   validatorGeoMetric,
   isOnMobile,
 }: MapMetricsProps) {
-  const fontSizeTitle = {xs: 17, md: 25};
-  const fontSizeSubtitle = {xs: 15, md: 17};
-  const fontSizeBody1 = {xs: 12, md: 17};
-  const fontSizeBody2 = {xs: 12, md: 14};
-  const lineSpacing = {xs: 0.2, md: 0.5};
-
   const nodeCountsSection = (
-    <Stack spacing={lineSpacing}>
-      <Typography sx={{fontSize: fontSizeTitle}}>
+    <MetricSection>
+      <Typography sx={{fontSize: {xs: fontSizeTitleSmall, md: fontSizeTitle}}}>
         {`${validatorGeoMetric.nodeCount} Nodes`}
       </Typography>
       <Typography
-        sx={{fontSize: fontSizeBody1}}
+        sx={{fontSize: {xs: fontSizeBodySmall, md: fontSizeSubtitle}}}
         color={grey[450]}
       >{`${validatorGeoMetric.countryCount} Countries`}</Typography>
       <Typography
-        sx={{fontSize: fontSizeBody1}}
+        sx={{fontSize: {xs: fontSizeBodySmall, md: fontSizeSubtitle}}}
         color={grey[450]}
       >{`${validatorGeoMetric.cityCount} Cities`}</Typography>
-    </Stack>
-  );
-
-  // TODO: add real data
-  const epochSection = (
-    <Stack spacing={2}>
-      <Stack spacing={lineSpacing}>
-        <Typography sx={{fontSize: fontSizeSubtitle}}>Epoch 321</Typography>
-        <Typography sx={{fontSize: fontSizeBody2}} color={grey[450]}>
-          16 minutes remaining
-        </Typography>
-      </Stack>
-      <Stack spacing={lineSpacing}>
-        <Typography sx={{fontSize: fontSizeBody2}} color={grey[450]}>
-          Current leader
-        </Typography>
-        <Typography sx={{fontSize: fontSizeBody2}} color="#D946EF">
-          0xe8fa...8788
-        </Typography>
-      </Stack>
-    </Stack>
+    </MetricSection>
   );
 
   // TODO: add real data
   const stakeSection = (
-    <Stack spacing={lineSpacing}>
+    <MetricSection>
       <Stack direction="row" spacing={0.7} alignItems="center">
-        <Typography sx={{fontSize: fontSizeSubtitle}}>829,615,127</Typography>
-        <Typography sx={{fontSize: fontSizeBody2}}>Staked</Typography>
+        <Subtitle>829,615,127</Subtitle>
+        <Body color="inherit">Staked</Body>
       </Stack>
-      <Typography sx={{fontSize: fontSizeBody2}} color={grey[450]}>
-        7% rewards per year
-      </Typography>
-    </Stack>
+      <Body>7% rewards per year</Body>
+    </MetricSection>
   );
 
   return isOnMobile ? (
@@ -79,16 +61,16 @@ export default function MapMetrics({
         {nodeCountsSection}
       </Grid>
       <Grid item xs={6} sm={4}>
-        {epochSection}
+        <Epoch />
       </Grid>
-      <Grid item xs={6} sm={4}>
+      <Grid item xs={6} sm={4} marginTop={{xs: 2, sm: 0}}>
         {stakeSection}
       </Grid>
     </Grid>
   ) : (
     <Stack marginY={4} marginLeft={4} spacing={4} justifyContent="center">
       {nodeCountsSection}
-      {epochSection}
+      <Epoch />
       {stakeSection}
     </Stack>
   );
