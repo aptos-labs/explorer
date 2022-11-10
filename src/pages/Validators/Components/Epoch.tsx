@@ -7,9 +7,14 @@ import moment from "moment";
 import {parseTimestamp} from "../../utils";
 import {Typography, Stack, useTheme} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
+import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
 
 const BAR_COLOR = "#818CF8";
 const BAR_BACKGROUND_COLOR = "rgb(129, 140, 248, 0.4)";
+
+const EPOCH_TOOLTIP_TEXT =
+  "An epoch in the Aptos blockchain is defined as a duration of time, in seconds, during which a number of blocks are voted on by the validators. The Aptos mainnet epoch is set as 7200 seconds (two hours)";
+const EPOCH_LEARN_MORE_LINK = "https://aptos.dev/concepts/staking#epoch";
 
 function EpochIntervalBar({percentage}: {percentage: number}) {
   const theme = useTheme();
@@ -81,13 +86,23 @@ export default function Epoch() {
     };
 
     refresh();
-    setInterval(refresh, 60 * 1000); // refresh every minute
+    const refreshInterval = setInterval(refresh, 60 * 1000); // refresh every minute
+
+    if (timeRemainingInMin !== undefined && parseInt(timeRemainingInMin) <= 0) {
+      clearInterval(refreshInterval);
+    }
   }, [curEpoch, lastEpochTime, epochInterval]);
 
   return (
     <MetricSection>
-      <Subtitle>{`Epoch ${curEpoch}`}</Subtitle>
-      <Body>{`${timeRemainingInMin} minutes remaining`}</Body>
+      <Stack direction="row" spacing={1} alignItems="center">
+        <Subtitle>{`Epoch ${curEpoch}`}</Subtitle>
+        <StyledLearnMoreTooltip
+          text={EPOCH_TOOLTIP_TEXT}
+          link={EPOCH_LEARN_MORE_LINK}
+        />
+      </Stack>
+      <Body>{`${timeRemainingInMin} Minutes Remaining`}</Body>
       <EpochIntervalBar percentage={percentageCompleted} />
     </MetricSection>
   );
