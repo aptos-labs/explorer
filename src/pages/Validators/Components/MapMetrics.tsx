@@ -3,15 +3,14 @@ import {Grid, Stack, Typography} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import {ValidatorGeoMetric} from "../../../api/hooks/useGetValidatorSetGeoData";
 import MetricSection from "./MetricSection";
-import Subtitle from "./Text/Subtitle";
-import Body from "./Text/Body";
 import {
   fontSizeBodySmall,
   fontSizeSubtitle,
   fontSizeTitle,
   fontSizeTitleSmall,
 } from "../constants";
-import Epoch from "./Epoch";
+import EpochSection from "./Epoch";
+import StakingSection from "./Staking";
 
 type MapMetricsProps = {
   validatorGeoMetric: ValidatorGeoMetric;
@@ -38,17 +37,6 @@ export default function MapMetrics({
     </MetricSection>
   );
 
-  // TODO: add real data
-  const stakeSection = (
-    <MetricSection>
-      <Stack direction="row" spacing={0.7} alignItems="center">
-        <Subtitle>829,615,127</Subtitle>
-        <Body color="inherit">Staked</Body>
-      </Stack>
-      <Body>7% rewards per year</Body>
-    </MetricSection>
-  );
-
   return isOnMobile ? (
     <Grid
       container
@@ -61,17 +49,17 @@ export default function MapMetrics({
         {nodeCountsSection}
       </Grid>
       <Grid item xs={6} sm={4}>
-        <Epoch />
+        <EpochSection />
       </Grid>
       <Grid item xs={6} sm={4} marginTop={{xs: 2, sm: 0}}>
-        {stakeSection}
+        <StakingSection />
       </Grid>
     </Grid>
   ) : (
     <Stack marginY={4} marginLeft={4} spacing={4} justifyContent="center">
       {nodeCountsSection}
-      <Epoch />
-      {stakeSection}
+      <EpochSection />
+      <StakingSection />
     </Stack>
   );
 }
