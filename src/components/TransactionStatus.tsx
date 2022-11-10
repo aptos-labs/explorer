@@ -19,12 +19,12 @@ export function TransactionStatus({success}: TransactionStatusProps) {
     <Stack
       direction="row"
       spacing={1}
-      padding={0.7}
+      paddingY={0.7}
       alignItems="center"
       justifyContent="center"
       sx={{
         backgroundColor: SUCCESS_BACKGROUND_COLOR,
-        width: 100,
+        width: 114,
       }}
       borderRadius={1}
     >
@@ -41,12 +41,12 @@ export function TransactionStatus({success}: TransactionStatusProps) {
     <Stack
       direction="row"
       spacing={1}
-      padding={0.7}
+      paddingY={0.7}
       alignItems="center"
       justifyContent="center"
       sx={{
         backgroundColor: ERROR_BACKGROUND_COLOR,
-        width: 80,
+        width: 90,
       }}
       borderRadius={1}
     >

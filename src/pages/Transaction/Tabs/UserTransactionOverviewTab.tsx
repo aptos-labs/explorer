@@ -55,10 +55,6 @@ function TransactionFunctionRow({
 }: {
   transaction: Types.Transaction;
 }) {
-  if (!("payload" in transaction) || !("function" in transaction.payload)) {
-    return null;
-  }
-
   return (
     <ContentRow
       title="Function:"
