@@ -72,7 +72,7 @@ export function StyledLearnMoreTooltip({
         </Stack>
       }
     >
-      <InfoOutlinedIcon fontSize="inherit" htmlColor={grey[450]} />
+      <InfoOutlinedIcon htmlColor={grey[450]} sx={{fontSize: 15}} />
     </StyledTooltip>
   );
 }
