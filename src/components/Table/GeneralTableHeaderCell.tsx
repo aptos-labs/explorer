@@ -55,10 +55,11 @@ export default function GeneralTableHeaderCell({
       IconComponent={SouthIcon}
       sx={{
         "&.MuiTableSortLabel-root .MuiTableSortLabel-icon": {
-          marginLeft: 1,
-          marginRight: 0,
+          marginLeft: 0,
+          marginRight: 0.5,
           color: aptosColor,
         },
+        flexDirection: "row-reverse",
       }}
     >
       {headerTextComponent}
@@ -74,8 +75,8 @@ export default function GeneralTableHeaderCell({
       justifyContent={textAlignRight ? "flex-end" : "flex-start"}
       alignItems="center"
     >
-      {tooltip}
       {headerSortLabel}
+      {tooltip}
     </Stack>
   ) : (
     headerSortLabel

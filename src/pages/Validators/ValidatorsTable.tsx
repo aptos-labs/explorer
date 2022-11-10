@@ -169,7 +169,7 @@ function ValidatorAddrCell({validator}: ValidatorCellProps) {
 
 function VotingPowerCell({validator}: ValidatorCellProps) {
   return (
-    <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 0)}
     </GeneralTableCell>
   );
@@ -195,7 +195,7 @@ function RewardsPerformanceCell({validator}: ValidatorCellProps) {
 
 function LastEpochPerformanceCell({validator}: ValidatorCellProps) {
   return (
-    <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       {validator.last_epoch_performance}
     </GeneralTableCell>
   );
@@ -203,7 +203,7 @@ function LastEpochPerformanceCell({validator}: ValidatorCellProps) {
 
 function GovernanceVotesCell({validator}: ValidatorCellProps) {
   return (
-    <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       {validator.governance_voting_record}
     </GeneralTableCell>
   );

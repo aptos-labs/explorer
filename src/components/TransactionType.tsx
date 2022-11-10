@@ -76,7 +76,7 @@ export function TransactionType({type}: TransactionTypeProps) {
 
 export function TableTransactionType({type}: TransactionTypeProps) {
   return (
-    <Box sx={{display: "flex", alignItems: "center", marginLeft: 2}}>
+    <Box sx={{display: "flex", alignItems: "center"}}>
       {getTypeIcon(type, "inherit")}
     </Box>
   );
