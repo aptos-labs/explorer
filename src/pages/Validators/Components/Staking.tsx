@@ -18,13 +18,13 @@ export default function Staking() {
 
   return (
     <MetricSection>
-      <Stack direction="row" spacing={0.7} alignItems="center">
+      <Stack direction="row" spacing={1} alignItems="center">
         <Subtitle>
           {totalVotingPower
-            ? getFormattedBalanceStr(totalVotingPower.toString(), undefined, 0)
+            ? getFormattedBalanceStr(totalVotingPower, undefined, 0)
             : "-"}
         </Subtitle>
-        <Body color="inherit">Staked</Body>
+        <Body color="inherit">APT Staked</Body>
       </Stack>
       <Stack direction="row" spacing={1} alignItems="center">
         <Body>{`${rewardsRateYearly}% APY Reward`}</Body>{" "}

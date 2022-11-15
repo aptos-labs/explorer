@@ -11,8 +11,6 @@ import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
-import RewardsPerformanceIcon from "./Components/RewardsPerformanceIcon";
 
 function getSortedValidators(
   validators: MainnetValidator[],
@@ -48,11 +46,11 @@ function getValidatorsOrderedBy(
           parseInt(validator2.last_epoch_performance ?? "") -
           parseInt(validator1.last_epoch_performance ?? ""),
       );
-    case "governanceVotes":
-      return validatorsCopy.sort(
-        (validator1, validator2) =>
-          parseInt(validator2.governance_voting_record ?? "") -
-          parseInt(validator1.governance_voting_record ?? ""),
+    case "location":
+      return validatorsCopy.sort((validator1, validator2) =>
+        (validator1.geo_data?.city ?? "zz").localeCompare(
+          validator2.geo_data?.city ?? "zz",
+        ),
       );
     default:
       return validatorsCopy;
@@ -100,6 +98,7 @@ type ValidatorHeaderCellProps = {
   setSortColumn: (col: Column) => void;
 };
 
+// TODO: add tooltip for rewardsPerf
 function ValidatorHeaderCell({
   column,
   direction,
@@ -108,7 +107,7 @@ function ValidatorHeaderCell({
 }: ValidatorHeaderCellProps) {
   switch (column) {
     case "addr":
-      return <GeneralTableHeaderCell header="Staking Pool Address" />;
+      return <GeneralTableHeaderCell header="Owner Address" />;
     case "votingPower":
       return (
         <SortableHeaderCell
@@ -127,7 +126,6 @@ function ValidatorHeaderCell({
           direction={direction}
           setDirection={setDirection}
           setSortColumn={setSortColumn}
-          tooltip={<RewardsPerformanceTooltip />}
         />
       );
     case "lastEpochPerf":
@@ -140,10 +138,10 @@ function ValidatorHeaderCell({
           setSortColumn={setSortColumn}
         />
       );
-    case "governanceVotes":
+    case "location":
       return (
         <SortableHeaderCell
-          header="Governance Votes"
+          header="Location"
           column={column}
           direction={direction}
           setDirection={setDirection}
@@ -185,7 +183,6 @@ function RewardsPerformanceCell({validator}: ValidatorCellProps) {
           spacing={1}
           justifyContent="flex-end"
         >
-          <RewardsPerformanceIcon rewardsGrowth={validator.rewards_growth} />
           <Box>{`${validator.rewards_growth.toFixed(2)} %`}</Box>
         </Stack>
       )}
@@ -201,10 +198,12 @@ function LastEpochPerformanceCell({validator}: ValidatorCellProps) {
   );
 }
 
-function GovernanceVotesCell({validator}: ValidatorCellProps) {
+function LocationCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {validator.governance_voting_record}
+      {validator.geo_data?.city && validator.geo_data?.country
+        ? `${validator.geo_data?.city}, ${validator.geo_data?.country}`
+        : "-"}
     </GeneralTableCell>
   );
 }
@@ -214,7 +213,7 @@ const ValidatorCells = Object.freeze({
   votingPower: VotingPowerCell,
   rewardsPerf: RewardsPerformanceCell,
   lastEpochPerf: LastEpochPerformanceCell,
-  governanceVotes: GovernanceVotesCell,
+  location: LocationCell,
 });
 
 type Column = keyof typeof ValidatorCells;
@@ -224,7 +223,7 @@ const DEFAULT_COLUMNS: Column[] = [
   "votingPower",
   "rewardsPerf",
   "lastEpochPerf",
-  "governanceVotes",
+  "location",
 ];
 
 type ValidatorRowProps = {

@@ -14,7 +14,7 @@ export interface GeoData {
   epoch: number;
 }
 
-function useGetGeoData() {
+export function useGetGeoData() {
   const [state, _] = useGlobalState();
   const [geoDatas, setGeoDatas] = useState<GeoData[]>([]);
 

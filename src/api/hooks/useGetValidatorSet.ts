@@ -1,6 +1,11 @@
 import {useGlobalState} from "../../GlobalState";
 import {useEffect, useMemo, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
+import {
+  GeoData,
+  useGetGeoData,
+  useGetValidatorSetGeoData,
+} from "./useGetValidatorSetGeoData";
 
 const MAINNET_VALIDATORS_DATA_URL =
   "https://aptos-analytics-data-mainnet.s3.amazonaws.com/liveness.json";
@@ -86,11 +91,13 @@ export interface MainnetValidator {
   last_epoch_performance: string | undefined;
   liveness: number | undefined;
   rewards_growth: number | undefined;
+  geo_data: GeoData | undefined;
 }
 
 export function useGetMainnetValidators() {
   const {activeValidators} = useGetValidatorSet();
   const {validatorStatusSet} = useGetMainnetValidatorStatusSet();
+  const {geoDatas} = useGetGeoData();
   const [validators, setValidators] = useState<MainnetValidator[]>([]);
 
   useMemo(() => {
@@ -112,6 +119,9 @@ export function useGetMainnetValidators() {
             last_epoch_performance: validatorStatus?.last_epoch_performance,
             liveness: validatorStatus?.liveness,
             rewards_growth: validatorStatus?.rewards_growth,
+            geo_data: geoDatas.find(
+              (geoData) => `0x${geoData.peer_id}` === activeValidator.addr,
+            ),
           };
         },
       );
