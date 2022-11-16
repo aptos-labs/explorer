@@ -84,15 +84,19 @@ type StakePoolData = {
   operator_address: string;
 };
 
-function useGetValidatorToOperator() {
+export function useGetValidatorToOperator() {
   const [state, _] = useGlobalState();
   const {activeValidators} = useGetValidatorSet();
+  const [validatorToOperator, setValidatorToOperator] = useState<{
+    [name: string]: string;
+  } | null>(null);
 
   // save the validator to operator map to local storage
   // to avoid hitting rate limiting
   // as the query is very expensive
   useEffect(() => {
-    if (!localStorage.getItem("validatorToOperator")) {
+    const validatorToOperatorStr = localStorage.getItem("validatorToOperator");
+    if (!validatorToOperatorStr) {
       const fetchStakePool = async (
         validatorAddr: string,
         validatorToOperatorMap: {[name: string]: string},
@@ -120,13 +124,15 @@ function useGetValidatorToOperator() {
             "validatorToOperator",
             validatorToOperatorMapStr,
           );
+          setValidatorToOperator(validatorToOperatorMap);
         }
       });
+    } else {
+      setValidatorToOperator(JSON.parse(validatorToOperatorStr));
     }
   }, [activeValidators]);
 
-  const validatorToOperatorStr = localStorage.getItem("validatorToOperator");
-  return validatorToOperatorStr ? JSON.parse(validatorToOperatorStr) : null;
+  return validatorToOperator;
 }
 
 export interface MainnetValidator {
@@ -137,7 +143,6 @@ export interface MainnetValidator {
   last_epoch_performance: string | undefined;
   liveness: number | undefined;
   rewards_growth: number | undefined;
-  operator_addr: string | undefined;
   geo_data: GeoData | undefined;
 }
 
@@ -145,7 +150,6 @@ export function useGetMainnetValidators() {
   const {activeValidators} = useGetValidatorSet();
   const {validatorStatusSet} = useGetMainnetValidatorStatusSet();
   const {geoDatas} = useGetGeoData();
-  const validatorToOperator = useGetValidatorToOperator();
   const [validators, setValidators] = useState<MainnetValidator[]>([]);
 
   useMemo(() => {
@@ -168,9 +172,6 @@ export function useGetMainnetValidators() {
             last_epoch_performance: validatorStatus?.last_epoch_performance,
             liveness: validatorStatus?.liveness,
             rewards_growth: validatorStatus?.rewards_growth,
-            operator_addr: validatorToOperator
-              ? validatorToOperator[activeValidator.addr]
-              : undefined,
             geo_data: geoDatas.find(
               (geoData) => `0x${geoData.peer_id}` === activeValidator.addr,
             ),
@@ -180,14 +181,6 @@ export function useGetMainnetValidators() {
       setValidators(validators);
     }
   }, [activeValidators, validatorStatusSet, geoDatas]);
-
-  useEffect(() => {
-    if (validatorToOperator) {
-      validators.map((validator: MainnetValidator) => {
-        validator.operator_addr = validatorToOperator[validator.address];
-      });
-    }
-  }, [validators, validatorToOperator]);
 
   return {validators};
 }

@@ -6,6 +6,7 @@ import {assertNever} from "../../utils";
 import {
   MainnetValidator,
   useGetMainnetValidators,
+  useGetValidatorToOperator,
 } from "../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
@@ -160,6 +161,7 @@ function ValidatorHeaderCell({
 
 type ValidatorCellProps = {
   validator: MainnetValidator;
+  validatorToOperator: {[name: string]: string} | null;
 };
 
 function ValidatorAddrCell({validator}: ValidatorCellProps) {
@@ -170,11 +172,18 @@ function ValidatorAddrCell({validator}: ValidatorCellProps) {
   );
 }
 
-function OperatorAddrCell({validator}: ValidatorCellProps) {
+function OperatorAddrCell({
+  validator,
+  validatorToOperator,
+}: ValidatorCellProps) {
+  const operatorAddr = validatorToOperator
+    ? validatorToOperator[validator.address]
+    : null;
+
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      {validator.operator_addr && (
-        <HashButton hash={validator.operator_addr} type={HashType.ACCOUNT} />
+      {operatorAddr && (
+        <HashButton hash={operatorAddr} type={HashType.ACCOUNT} />
       )}
     </GeneralTableCell>
   );
@@ -245,15 +254,26 @@ const DEFAULT_COLUMNS: Column[] = [
 
 type ValidatorRowProps = {
   validator: MainnetValidator;
+  validatorToOperator: {[name: string]: string} | null;
   columns: Column[];
 };
 
-function ValidatorRow({validator, columns}: ValidatorRowProps) {
+function ValidatorRow({
+  validator,
+  validatorToOperator,
+  columns,
+}: ValidatorRowProps) {
   return (
     <GeneralTableRow>
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
-        return <Cell key={column} validator={validator} />;
+        return (
+          <Cell
+            key={column}
+            validator={validator}
+            validatorToOperator={validatorToOperator}
+          />
+        );
       })}
     </GeneralTableRow>
   );
@@ -267,6 +287,7 @@ export function ValidatorsTable({
   columns = DEFAULT_COLUMNS,
 }: ValidatorsTableProps) {
   const {validators} = useGetMainnetValidators();
+  const validatorToOperator = useGetValidatorToOperator();
   const [sortColumn, setSortColumn] = useState<Column>("votingPower");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
 
@@ -294,7 +315,12 @@ export function ValidatorsTable({
       <GeneralTableBody>
         {sortedValidators.map((validator: any, i: number) => {
           return (
-            <ValidatorRow key={i} validator={validator} columns={columns} />
+            <ValidatorRow
+              key={i}
+              validator={validator}
+              validatorToOperator={validatorToOperator}
+              columns={columns}
+            />
           );
         })}
       </GeneralTableBody>
