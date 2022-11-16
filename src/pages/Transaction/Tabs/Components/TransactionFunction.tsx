@@ -9,7 +9,7 @@ const TEXT_COLOR_DARK = "#83CCED";
 const BACKGROUND_COLOR = "rgba(14,165,233,0.1)";
 const BLOCK_MODULE_NAME = "candy_machine_v2";
 
-function CodeLineBox({
+export function CodeLineBox({
   children,
   sx,
 }: {
