@@ -6,13 +6,14 @@ import {assertNever} from "../../utils";
 import {
   MainnetValidator,
   useGetMainnetValidators,
+  useGetValidatorToOperator,
 } from "../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
-import RewardsPerformanceIcon from "./Components/RewardsPerformanceIcon";
+import LastEpochPerformanceTooltip from "./Components/LastEpochPerformanceTooltip";
 
 function getSortedValidators(
   validators: MainnetValidator[],
@@ -48,11 +49,11 @@ function getValidatorsOrderedBy(
           parseInt(validator2.last_epoch_performance ?? "") -
           parseInt(validator1.last_epoch_performance ?? ""),
       );
-    case "governanceVotes":
-      return validatorsCopy.sort(
-        (validator1, validator2) =>
-          parseInt(validator2.governance_voting_record ?? "") -
-          parseInt(validator1.governance_voting_record ?? ""),
+    case "location":
+      return validatorsCopy.sort((validator1, validator2) =>
+        (validator1.geo_data?.city ?? "zz").localeCompare(
+          validator2.geo_data?.city ?? "zz",
+        ),
       );
     default:
       return validatorsCopy;
@@ -108,7 +109,9 @@ function ValidatorHeaderCell({
 }: ValidatorHeaderCellProps) {
   switch (column) {
     case "addr":
-      return <GeneralTableHeaderCell header="Staking Pool Address" />;
+      return <GeneralTableHeaderCell header="Owner Address" />;
+    case "operatorAddr":
+      return <GeneralTableHeaderCell header="Operator Address" />;
     case "votingPower":
       return (
         <SortableHeaderCell
@@ -138,12 +141,13 @@ function ValidatorHeaderCell({
           direction={direction}
           setDirection={setDirection}
           setSortColumn={setSortColumn}
+          tooltip={<LastEpochPerformanceTooltip />}
         />
       );
-    case "governanceVotes":
+    case "location":
       return (
         <SortableHeaderCell
-          header="Governance Votes"
+          header="Location"
           column={column}
           direction={direction}
           setDirection={setDirection}
@@ -157,12 +161,30 @@ function ValidatorHeaderCell({
 
 type ValidatorCellProps = {
   validator: MainnetValidator;
+  validatorToOperator: {[name: string]: string} | null;
 };
 
 function ValidatorAddrCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
       <HashButton hash={validator.address} type={HashType.ACCOUNT} />
+    </GeneralTableCell>
+  );
+}
+
+function OperatorAddrCell({
+  validator,
+  validatorToOperator,
+}: ValidatorCellProps) {
+  const operatorAddr = validatorToOperator
+    ? validatorToOperator[validator.address]
+    : null;
+
+  return (
+    <GeneralTableCell sx={{textAlign: "left"}}>
+      {operatorAddr && (
+        <HashButton hash={operatorAddr} type={HashType.ACCOUNT} />
+      )}
     </GeneralTableCell>
   );
 }
@@ -185,7 +207,6 @@ function RewardsPerformanceCell({validator}: ValidatorCellProps) {
           spacing={1}
           justifyContent="flex-end"
         >
-          <RewardsPerformanceIcon rewardsGrowth={validator.rewards_growth} />
           <Box>{`${validator.rewards_growth.toFixed(2)} %`}</Box>
         </Stack>
       )}
@@ -195,49 +216,64 @@ function RewardsPerformanceCell({validator}: ValidatorCellProps) {
 
 function LastEpochPerformanceCell({validator}: ValidatorCellProps) {
   return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
       {validator.last_epoch_performance}
     </GeneralTableCell>
   );
 }
 
-function GovernanceVotesCell({validator}: ValidatorCellProps) {
+function LocationCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {validator.governance_voting_record}
+      {validator.geo_data?.city && validator.geo_data?.country
+        ? `${validator.geo_data?.city}, ${validator.geo_data?.country}`
+        : "-"}
     </GeneralTableCell>
   );
 }
 
 const ValidatorCells = Object.freeze({
   addr: ValidatorAddrCell,
+  operatorAddr: OperatorAddrCell,
   votingPower: VotingPowerCell,
   rewardsPerf: RewardsPerformanceCell,
   lastEpochPerf: LastEpochPerformanceCell,
-  governanceVotes: GovernanceVotesCell,
+  location: LocationCell,
 });
 
 type Column = keyof typeof ValidatorCells;
 
 const DEFAULT_COLUMNS: Column[] = [
   "addr",
+  "operatorAddr",
   "votingPower",
   "rewardsPerf",
   "lastEpochPerf",
-  "governanceVotes",
+  "location",
 ];
 
 type ValidatorRowProps = {
   validator: MainnetValidator;
+  validatorToOperator: {[name: string]: string} | null;
   columns: Column[];
 };
 
-function ValidatorRow({validator, columns}: ValidatorRowProps) {
+function ValidatorRow({
+  validator,
+  validatorToOperator,
+  columns,
+}: ValidatorRowProps) {
   return (
     <GeneralTableRow>
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
-        return <Cell key={column} validator={validator} />;
+        return (
+          <Cell
+            key={column}
+            validator={validator}
+            validatorToOperator={validatorToOperator}
+          />
+        );
       })}
     </GeneralTableRow>
   );
@@ -251,6 +287,7 @@ export function ValidatorsTable({
   columns = DEFAULT_COLUMNS,
 }: ValidatorsTableProps) {
   const {validators} = useGetMainnetValidators();
+  const validatorToOperator = useGetValidatorToOperator();
   const [sortColumn, setSortColumn] = useState<Column>("votingPower");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
 
@@ -278,7 +315,12 @@ export function ValidatorsTable({
       <GeneralTableBody>
         {sortedValidators.map((validator: any, i: number) => {
           return (
-            <ValidatorRow key={i} validator={validator} columns={columns} />
+            <ValidatorRow
+              key={i}
+              validator={validator}
+              validatorToOperator={validatorToOperator}
+              columns={columns}
+            />
           );
         })}
       </GeneralTableBody>

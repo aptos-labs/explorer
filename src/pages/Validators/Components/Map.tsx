@@ -103,34 +103,29 @@ export default function Map({validatorGeoGroups}: MapProps) {
   const theme = useTheme();
 
   return (
-    <Box
-      width={{xs: "100%", sm: "100%", md: 800, lg: 1000}}
-      height={{xs: 250, sm: 420, md: 450, lg: 550}}
-      style={{overflow: "hidden"}}
+    <ComposableMap
+      projectionConfig={{
+        rotate: [0, 10, 0],
+        center: [0, 30],
+        scale: 130,
+      }}
+      projection="geoMercator"
+      height={450}
     >
-      <ComposableMap
-        projectionConfig={{
-          rotate: [0, 10, 0],
-          center: [0, 0],
-          scale: 130,
-        }}
-        projection="geoMercator"
-      >
-        <Geographies geography={GEO_URL}>
-          {({geographies}) =>
-            geographies.map((geo) => (
-              <Geography
-                key={geo.rsmKey}
-                geography={geo}
-                fill={theme.palette.mode === "dark" ? grey[600] : grey[200]}
-              />
-            ))
-          }
-        </Geographies>
-        {validatorGeoGroups.map((group, idx) => (
-          <MapMarker key={`${group.country}-${idx}`} group={group} />
-        ))}
-      </ComposableMap>
-    </Box>
+      <Geographies geography={GEO_URL}>
+        {({geographies}) =>
+          geographies.map((geo) => (
+            <Geography
+              key={geo.rsmKey}
+              geography={geo}
+              fill={theme.palette.mode === "dark" ? grey[600] : grey[200]}
+            />
+          ))
+        }
+      </Geographies>
+      {validatorGeoGroups.map((group, idx) => (
+        <MapMarker key={`${group.country}-${idx}`} group={group} />
+      ))}
+    </ComposableMap>
   );
 }

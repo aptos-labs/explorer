@@ -41,22 +41,29 @@ export default function MapMetrics({
     <Grid
       container
       direction="row"
-      marginX={{xs: 2, sm: 4}}
+      marginX={2}
       marginTop={0.5}
-      marginBottom={3}
+      marginBottom={4}
+      spacing={2}
     >
-      <Grid item xs={6} sm={4}>
+      <Grid item xs={12} sm={6}>
         {nodeCountsSection}
       </Grid>
-      <Grid item xs={6} sm={4}>
+      <Grid item xs={12} sm={6}>
         <EpochSection />
       </Grid>
-      <Grid item xs={6} sm={4} marginTop={{xs: 2, sm: 0}}>
+      <Grid item xs={12} sm={6}>
         <StakingSection />
       </Grid>
     </Grid>
   ) : (
-    <Stack marginY={4} marginLeft={4} spacing={4} justifyContent="center">
+    <Stack
+      marginY={4}
+      marginLeft={4}
+      spacing={4}
+      justifyContent="center"
+      minWidth={232}
+    >
       {nodeCountsSection}
       <EpochSection />
       <StakingSection />
