@@ -151,7 +151,8 @@ export function useGetMainnetValidators() {
   useMemo(() => {
     if (
       validatorStatusSet.length === activeValidators.length &&
-      validatorStatusSet.length > 0
+      validatorStatusSet.length > 0 &&
+      geoDatas.length > 0
     ) {
       const validators = activeValidators.map(
         (activeValidator: Validator): MainnetValidator => {
@@ -178,7 +179,7 @@ export function useGetMainnetValidators() {
       );
       setValidators(validators);
     }
-  }, [activeValidators, validatorStatusSet]);
+  }, [activeValidators, validatorStatusSet, geoDatas]);
 
   return {validators};
 }
