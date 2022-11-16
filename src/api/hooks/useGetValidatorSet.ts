@@ -181,5 +181,13 @@ export function useGetMainnetValidators() {
     }
   }, [activeValidators, validatorStatusSet, geoDatas]);
 
+  useEffect(() => {
+    if (validatorToOperator) {
+      validators.map((validator: MainnetValidator) => {
+        validator.operator_addr = validatorToOperator[validator.address];
+      });
+    }
+  }, [validators, validatorToOperator]);
+
   return {validators};
 }
