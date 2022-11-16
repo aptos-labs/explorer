@@ -11,6 +11,8 @@ import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
+import LastEpochPerformanceTooltip from "./Components/LastEpochPerformanceTooltip";
 
 function getSortedValidators(
   validators: MainnetValidator[],
@@ -98,7 +100,6 @@ type ValidatorHeaderCellProps = {
   setSortColumn: (col: Column) => void;
 };
 
-// TODO: add tooltip for rewardsPerf
 function ValidatorHeaderCell({
   column,
   direction,
@@ -128,6 +129,7 @@ function ValidatorHeaderCell({
           direction={direction}
           setDirection={setDirection}
           setSortColumn={setSortColumn}
+          tooltip={<RewardsPerformanceTooltip />}
         />
       );
     case "lastEpochPerf":
@@ -138,6 +140,7 @@ function ValidatorHeaderCell({
           direction={direction}
           setDirection={setDirection}
           setSortColumn={setSortColumn}
+          tooltip={<LastEpochPerformanceTooltip />}
         />
       );
     case "location":
@@ -204,7 +207,7 @@ function RewardsPerformanceCell({validator}: ValidatorCellProps) {
 
 function LastEpochPerformanceCell({validator}: ValidatorCellProps) {
   return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
       {validator.last_epoch_performance}
     </GeneralTableCell>
   );
