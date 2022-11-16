@@ -108,6 +108,8 @@ function ValidatorHeaderCell({
   switch (column) {
     case "addr":
       return <GeneralTableHeaderCell header="Owner Address" />;
+    case "operatorAddr":
+      return <GeneralTableHeaderCell header="Operator Address" />;
     case "votingPower":
       return (
         <SortableHeaderCell
@@ -165,6 +167,16 @@ function ValidatorAddrCell({validator}: ValidatorCellProps) {
   );
 }
 
+function OperatorAddrCell({validator}: ValidatorCellProps) {
+  return (
+    <GeneralTableCell sx={{textAlign: "left"}}>
+      {validator.operator_addr && (
+        <HashButton hash={validator.operator_addr} type={HashType.ACCOUNT} />
+      )}
+    </GeneralTableCell>
+  );
+}
+
 function VotingPowerCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
@@ -210,6 +222,7 @@ function LocationCell({validator}: ValidatorCellProps) {
 
 const ValidatorCells = Object.freeze({
   addr: ValidatorAddrCell,
+  operatorAddr: OperatorAddrCell,
   votingPower: VotingPowerCell,
   rewardsPerf: RewardsPerformanceCell,
   lastEpochPerf: LastEpochPerformanceCell,
@@ -220,6 +233,7 @@ type Column = keyof typeof ValidatorCells;
 
 const DEFAULT_COLUMNS: Column[] = [
   "addr",
+  "operatorAddr",
   "votingPower",
   "rewardsPerf",
   "lastEpochPerf",

@@ -1,11 +1,8 @@
 import {useGlobalState} from "../../GlobalState";
 import {useEffect, useMemo, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
-import {
-  GeoData,
-  useGetGeoData,
-  useGetValidatorSetGeoData,
-} from "./useGetValidatorSetGeoData";
+import {GeoData, useGetGeoData} from "./useGetValidatorSetGeoData";
+import {getAccountResource} from "../../api/index";
 
 const MAINNET_VALIDATORS_DATA_URL =
   "https://aptos-analytics-data-mainnet.s3.amazonaws.com/liveness.json";
@@ -83,6 +80,55 @@ function useGetMainnetValidatorStatusSet() {
   return {validatorStatusSet};
 }
 
+type StakePoolData = {
+  operator_address: string;
+};
+
+function useGetValidatorToOperator() {
+  const [state, _] = useGlobalState();
+  const {activeValidators} = useGetValidatorSet();
+
+  // save the validator to operator map to local storage
+  // to avoid hitting rate limiting
+  // as the query is very expensive
+  useEffect(() => {
+    if (!localStorage.getItem("validatorToOperator")) {
+      const fetchStakePool = async (
+        validatorAddr: string,
+        validatorToOperatorMap: {[name: string]: string},
+      ) => {
+        const stakePoolResource = await getAccountResource(
+          {address: validatorAddr, resourceType: "0x1::stake::StakePool"},
+          state.network_value,
+        );
+
+        const operatorAddr = (stakePoolResource.data as StakePoolData)
+          .operator_address;
+        validatorToOperatorMap[validatorAddr] = operatorAddr;
+      };
+
+      const validatorToOperatorMap = {};
+      const promises = activeValidators.map((validator) =>
+        fetchStakePool(validator.addr, validatorToOperatorMap),
+      );
+      Promise.all(promises).then(() => {
+        const validatorToOperatorMapStr = JSON.stringify(
+          validatorToOperatorMap,
+        );
+        if (validatorToOperatorMapStr !== "{}") {
+          localStorage.setItem(
+            "validatorToOperator",
+            validatorToOperatorMapStr,
+          );
+        }
+      });
+    }
+  }, [activeValidators]);
+
+  const validatorToOperatorStr = localStorage.getItem("validatorToOperator");
+  return validatorToOperatorStr ? JSON.parse(validatorToOperatorStr) : null;
+}
+
 export interface MainnetValidator {
   address: string;
   voting_power: string;
@@ -91,6 +137,7 @@ export interface MainnetValidator {
   last_epoch_performance: string | undefined;
   liveness: number | undefined;
   rewards_growth: number | undefined;
+  operator_addr: string | undefined;
   geo_data: GeoData | undefined;
 }
 
@@ -98,6 +145,7 @@ export function useGetMainnetValidators() {
   const {activeValidators} = useGetValidatorSet();
   const {validatorStatusSet} = useGetMainnetValidatorStatusSet();
   const {geoDatas} = useGetGeoData();
+  const validatorToOperator = useGetValidatorToOperator();
   const [validators, setValidators] = useState<MainnetValidator[]>([]);
 
   useMemo(() => {
@@ -119,6 +167,9 @@ export function useGetMainnetValidators() {
             last_epoch_performance: validatorStatus?.last_epoch_performance,
             liveness: validatorStatus?.liveness,
             rewards_growth: validatorStatus?.rewards_growth,
+            operator_addr: validatorToOperator
+              ? validatorToOperator[activeValidator.addr]
+              : undefined,
             geo_data: geoDatas.find(
               (geoData) => `0x${geoData.peer_id}` === activeValidator.addr,
             ),
