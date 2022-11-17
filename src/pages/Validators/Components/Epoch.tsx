@@ -19,7 +19,7 @@ const EPOCH_LEARN_MORE_LINK = "https://aptos.dev/concepts/staking#epoch";
 function EpochIntervalBar({percentage}: {percentage: number}) {
   const theme = useTheme();
   return (
-    <Stack direction="row" width={172} height={16}>
+    <Stack direction="row" width={182} height={16}>
       <Stack
         width={`${percentage}%`}
         sx={{
@@ -32,9 +32,9 @@ function EpochIntervalBar({percentage}: {percentage: number}) {
         {percentage >= 50 && (
           <Typography
             color={grey[50]}
-            sx={{fontSize: 8.5, fontWeight: 600}}
+            sx={{fontSize: 10, fontWeight: 600}}
             marginX={0.5}
-          >{`${percentage}% passed`}</Typography>
+          >{`${percentage}% complete`}</Typography>
         )}
       </Stack>
       <Stack
@@ -49,9 +49,9 @@ function EpochIntervalBar({percentage}: {percentage: number}) {
         {percentage < 50 && (
           <Typography
             color={theme.palette.mode === "dark" ? grey[50] : grey[500]}
-            sx={{fontSize: 8.5, fontWeight: 600}}
+            sx={{fontSize: 10, fontWeight: 600}}
             marginX={0.5}
-          >{`${100 - percentage}% remaining`}</Typography>
+          >{`${percentage}% complete`}</Typography>
         )}
       </Stack>
     </Stack>
@@ -60,7 +60,7 @@ function EpochIntervalBar({percentage}: {percentage: number}) {
 
 export default function Epoch() {
   const [timeRemainingInMin, setTimeRemainingInMin] = useState<string>();
-  const [percentageCompleted, setPercentageCompleted] = useState<number>(0);
+  const [percentageComplete, setPercentageComplete] = useState<number>(0);
   const {curEpoch, lastEpochTime, epochInterval} = useGetEpochTime();
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function Epoch() {
           (timePassedInMin * 100) /
           epochIntervalInMin
         ).toFixed(0);
-        setPercentageCompleted(parseInt(percentage));
+        setPercentageComplete(parseInt(percentage));
       }
     };
 
@@ -103,7 +103,7 @@ export default function Epoch() {
         />
       </Stack>
       <Body>{`${timeRemainingInMin} Minutes Remaining`}</Body>
-      <EpochIntervalBar percentage={percentageCompleted} />
+      <EpochIntervalBar percentage={percentageComplete} />
     </MetricSection>
   );
 }
