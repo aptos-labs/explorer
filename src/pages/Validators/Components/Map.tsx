@@ -120,6 +120,17 @@ export default function Map({validatorGeoGroups}: MapProps) {
                 key={geo.rsmKey}
                 geography={geo}
                 fill={theme.palette.mode === "dark" ? grey[600] : grey[200]}
+                style={{
+                  default: {
+                    outline: "0",
+                  },
+                  hover: {
+                    outline: "0",
+                  },
+                  pressed: {
+                    outline: "0",
+                  },
+                }}
               />
             ))
           }
