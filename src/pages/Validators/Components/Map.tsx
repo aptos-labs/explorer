@@ -103,29 +103,31 @@ export default function Map({validatorGeoGroups}: MapProps) {
   const theme = useTheme();
 
   return (
-    <ComposableMap
-      projectionConfig={{
-        rotate: [0, 10, 0],
-        center: [0, 30],
-        scale: 130,
-      }}
-      projection="geoMercator"
-      height={450}
-    >
-      <Geographies geography={GEO_URL}>
-        {({geographies}) =>
-          geographies.map((geo) => (
-            <Geography
-              key={geo.rsmKey}
-              geography={geo}
-              fill={theme.palette.mode === "dark" ? grey[600] : grey[200]}
-            />
-          ))
-        }
-      </Geographies>
-      {validatorGeoGroups.map((group, idx) => (
-        <MapMarker key={`${group.country}-${idx}`} group={group} />
-      ))}
-    </ComposableMap>
+    <Box width="100%" height="100%">
+      <ComposableMap
+        projectionConfig={{
+          rotate: [0, 10, 0],
+          center: [0, 30],
+          scale: 130,
+        }}
+        projection="geoMercator"
+        height={450}
+      >
+        <Geographies geography={GEO_URL}>
+          {({geographies}) =>
+            geographies.map((geo) => (
+              <Geography
+                key={geo.rsmKey}
+                geography={geo}
+                fill={theme.palette.mode === "dark" ? grey[600] : grey[200]}
+              />
+            ))
+          }
+        </Geographies>
+        {validatorGeoGroups.map((group, idx) => (
+          <MapMarker key={`${group.country}-${idx}`} group={group} />
+        ))}
+      </ComposableMap>
+    </Box>
   );
 }
