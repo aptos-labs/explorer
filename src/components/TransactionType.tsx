@@ -6,6 +6,7 @@ import SubtitlesOutlinedIcon from "@mui/icons-material/SubtitlesOutlined";
 import MultipleStopRoundedIcon from "@mui/icons-material/MultipleStopRounded";
 import UpdateRoundedIcon from "@mui/icons-material/UpdateRounded";
 import {grey} from "../themes/colors/aptosColorPalette";
+import TooltipTypography from "./TooltipTypography";
 
 type Color = "inherit" | "primary" | undefined;
 
@@ -87,10 +88,12 @@ export function TooltipTransactionType({type}: TransactionTypeProps) {
     <Box sx={{display: "flex", alignItems: "flex-start", gap: 2}}>
       {getTypeIcon(type, "inherit")}
       <Stack spacing={0.5}>
-        <Typography variant="subtitle2" fontWeight={600}>
+        <TooltipTypography variant="subtitle2" fontWeight={600}>
           {getTypeLabel(type)}
-        </Typography>
-        <Typography variant="body2">{getTypeTooltip(type)}</Typography>
+        </TooltipTypography>
+        <TooltipTypography variant="body2">
+          {getTypeTooltip(type)}
+        </TooltipTypography>
       </Stack>
     </Box>
   );

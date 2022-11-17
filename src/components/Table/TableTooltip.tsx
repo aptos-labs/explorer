@@ -1,12 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import {useState} from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import {IconButton, Stack, useTheme} from "@mui/material";
 import {grey} from "../../themes/colors/aptosColorPalette";
+import TooltipTypography from "../TooltipTypography";
 
 type TableTooltipProps = {
   children: React.ReactNode;
@@ -50,7 +50,7 @@ export default function TableTooltip({children, title}: TableTooltipProps) {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography variant="h6">{title}</Typography>
+              <TooltipTypography variant="h6">{title}</TooltipTypography>
               <IconButton onClick={handleClose} sx={{padding: 0.5}}>
                 <CloseOutlinedIcon color="secondary" />
               </IconButton>
