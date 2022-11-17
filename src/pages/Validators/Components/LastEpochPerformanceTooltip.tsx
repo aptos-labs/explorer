@@ -8,9 +8,10 @@ export default function LastEpochPerformanceTooltip() {
     <TableTooltip title="Last Epoch Performance">
       <Stack spacing={2}>
         <Typography variant="body2">
-          This column shows the performance of a validator in last epoch.
+          The Last Epoch Performance column shows the performance of a validator
+          in the most recent epoch.
         </Typography>
-        <Typography variant="body2">It is calculated as</Typography>
+        <Typography variant="body2">It is calculated as:</Typography>
         <CodeLineBox
           sx={{
             whiteSpace: "normal",
@@ -24,8 +25,7 @@ export default function LastEpochPerformanceTooltip() {
           opportunities)
         </CodeLineBox>
         <Typography variant="body2">
-          This metric gives you an early indicator if the performance is slowly
-          reducing.
+          This metric gives you an early indicator if performance is degrading.
         </Typography>
       </Stack>
     </TableTooltip>

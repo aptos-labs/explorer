@@ -8,11 +8,12 @@ export default function RewardsPerformanceTooltip() {
     <TableTooltip title="Rewards Performance">
       <Stack spacing={2}>
         <Typography variant="body2">
-          This column shows the rewards performance of a validator.
+          The Rewards Performance column shows the rewards percent of a
+          validator based upon proposal success.
         </Typography>
         <Typography variant="body2">
           It is calculated as a % of reward earned by the validator out of the
-          maximum reward earning opportunity i.e.,
+          maximum reward earning opportunity:
         </Typography>
         <CodeLineBox
           sx={{
@@ -27,8 +28,8 @@ export default function RewardsPerformanceTooltip() {
           across the epochs)
         </CodeLineBox>
         <Typography variant="body2">
-          This is a cumulative metric across all the epochs. A validator can
-          improve their performance by improving their proposal success rate.
+          This is a cumulative metric across all epochs. Validators can improve
+          their performance by improving their proposal success rate.
         </Typography>
       </Stack>
     </TableTooltip>
