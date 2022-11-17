@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Stack, Typography} from "@mui/material";
 import TableTooltip from "../../../components/Table/TableTooltip";
-import {CodeLineBox} from "../../Transaction/Tabs/Components/TransactionFunction";
+import {CodeLineBox} from "../../../components/CodeLineBox";
 
 export default function LastEpochPerformanceTooltip() {
   return (
@@ -15,7 +15,7 @@ export default function LastEpochPerformanceTooltip() {
           sx={{
             whiteSpace: "normal",
             wordWrap: "break-word",
-            fontSize: "inherit",
+            fontSize: 13,
             padding: "0.3rem 0.5rem 0.3rem 0.5rem",
             width: "100%",
           }}
