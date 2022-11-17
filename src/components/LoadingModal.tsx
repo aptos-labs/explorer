@@ -13,6 +13,7 @@ export default function LoadingModal({open}: LoadingModalProps) {
           position: "absolute",
           top: "50%",
           left: "50%",
+          outline: "0",
         }}
       >
         <CircularProgress />
