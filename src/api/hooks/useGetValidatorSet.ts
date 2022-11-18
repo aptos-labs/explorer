@@ -3,6 +3,12 @@ import {useEffect, useMemo, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
 import {GeoData, useGetGeoData} from "./useGetValidatorSetGeoData";
 import {getAccountResource} from "../../api/index";
+import {
+  getLocalStorageWithExpiry,
+  setLocalStorageWithExpiry,
+} from "../../utils";
+
+const TTL = 3600000; // 1 hour
 
 const MAINNET_VALIDATORS_DATA_URL =
   "https://aptos-analytics-data-mainnet.s3.amazonaws.com/liveness.json";
@@ -95,7 +101,9 @@ export function useGetValidatorToOperator() {
   // to avoid hitting rate limiting
   // as the query is very expensive
   useEffect(() => {
-    const validatorToOperatorStr = localStorage.getItem("validatorToOperator");
+    const validatorToOperatorStr = getLocalStorageWithExpiry(
+      "validatorToOperatorWithExpiry",
+    );
     if (!validatorToOperatorStr) {
       const fetchStakePool = async (
         validatorAddr: string,
@@ -120,9 +128,10 @@ export function useGetValidatorToOperator() {
           validatorToOperatorMap,
         );
         if (validatorToOperatorMapStr !== "{}") {
-          localStorage.setItem(
-            "validatorToOperator",
+          setLocalStorageWithExpiry(
+            "validatorToOperatorWithExpiry",
             validatorToOperatorMapStr,
+            TTL,
           );
           setValidatorToOperator(validatorToOperatorMap);
         }
