@@ -15,25 +15,26 @@ export default function FeatureBar() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   function maybeSetFeature(featureNameString: string | null) {
-    if (!featureNameString || state.feature_name === featureNameString) {
-      return;
-    }
-    if (!(featureNameString in features)) {
-      return;
-    }
-    const feature_name = featureNameString as FeatureName;
+    if (state.feature_name === featureNameString) return;
+
+    if (featureNameString && !(featureNameString in features)) return;
+
+    if (!featureNameString && state.feature_name) return;
+
+    const feature_name = featureNameString
+      ? (featureNameString as FeatureName)
+      : defaultFeatureName;
     const network_name = state.network_name;
     const network_value = state.network_value;
-    if (feature_name) {
-      // only show the "feature" param in the url when it's not "prod"
-      // we don't want the users to know the existence of the "feature" param
-      if (feature_name !== defaultFeatureName) {
-        setSearchParams({network: network_name, feature: feature_name});
-      } else {
-        setSearchParams({network: network_name});
-      }
-      dispatch({network_name, network_value, feature_name});
+
+    if (feature_name === defaultFeatureName) {
+      searchParams.delete("feature");
+    } else {
+      searchParams.set("feature", feature_name);
     }
+
+    setSearchParams(searchParams);
+    dispatch({network_name, network_value, feature_name});
   }
 
   const goToDefaultMode = () => {
@@ -42,14 +43,8 @@ export default function FeatureBar() {
 
   useEffect(() => {
     const feature_name = searchParams.get("feature");
-    if (feature_name) {
-      maybeSetFeature(feature_name);
-    } else {
-      // the "feature" param being null means that it's in production mode
-      // so set feature to "prod"
-      maybeSetFeature(defaultFeatureName);
-    }
-  });
+    maybeSetFeature(feature_name);
+  }, [searchParams]);
 
   if (state.feature_name === defaultFeatureName) {
     return null;
