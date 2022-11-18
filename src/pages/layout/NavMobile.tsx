@@ -77,7 +77,7 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
           Blocks
         </MenuItem>
-        <MenuItem onClick={() => handleCloseAndNavigate("/Validators")}>
+        <MenuItem onClick={() => handleCloseAndNavigate("/validators")}>
           Validators
         </MenuItem>
       </Menu>
