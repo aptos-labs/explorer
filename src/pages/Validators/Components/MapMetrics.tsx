@@ -11,6 +11,7 @@ import {
 } from "../constants";
 import EpochSection from "./Epoch";
 import StakingSection from "./Staking";
+import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 
 type MapMetricsProps = {
   validatorGeoMetric: ValidatorGeoMetric;
@@ -21,10 +22,11 @@ export default function MapMetrics({
   validatorGeoMetric,
   isOnMobile,
 }: MapMetricsProps) {
+  const {numberOfActiveValidators} = useGetValidatorSet();
   const nodeCountsSection = (
     <MetricSection>
       <Typography sx={{fontSize: {xs: fontSizeTitleSmall, md: fontSizeTitle}}}>
-        {`${validatorGeoMetric.nodeCount} Nodes`}
+        {`${numberOfActiveValidators} Nodes`}
       </Typography>
       <Typography
         sx={{fontSize: {xs: fontSizeBodySmall, md: fontSizeSubtitle}}}

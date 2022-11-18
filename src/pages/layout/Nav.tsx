@@ -48,7 +48,7 @@ export default function Nav() {
       />
       <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
       <NavButton
-        to="/Validators"
+        to="/validators"
         title="View All Validators"
         label="Validators"
       />
