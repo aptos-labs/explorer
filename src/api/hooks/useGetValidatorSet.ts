@@ -9,6 +9,7 @@ import {
 } from "../../utils";
 
 const TTL = 3600000; // 1 hour
+const LOCAL_STORAGE_KEY = "validatorToOperatorWithExpiry";
 
 const MAINNET_VALIDATORS_DATA_URL =
   "https://aptos-analytics-data-mainnet.s3.amazonaws.com/liveness.json";
@@ -101,9 +102,7 @@ export function useGetValidatorToOperator() {
   // to avoid hitting rate limiting
   // as the query is very expensive
   useEffect(() => {
-    const validatorToOperatorStr = getLocalStorageWithExpiry(
-      "validatorToOperatorWithExpiry",
-    );
+    const validatorToOperatorStr = getLocalStorageWithExpiry(LOCAL_STORAGE_KEY);
     if (!validatorToOperatorStr) {
       const fetchStakePool = async (
         validatorAddr: string,
@@ -129,7 +128,7 @@ export function useGetValidatorToOperator() {
         );
         if (validatorToOperatorMapStr !== "{}") {
           setLocalStorageWithExpiry(
-            "validatorToOperatorWithExpiry",
+            LOCAL_STORAGE_KEY,
             validatorToOperatorMapStr,
             TTL,
           );
