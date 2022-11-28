@@ -37,3 +37,38 @@ export function hex_to_string(hex: string): string {
   }
   return str;
 }
+
+/* set localStorage with Expiry */
+export function setLocalStorageWithExpiry(
+  key: string,
+  value: string,
+  ttl: number,
+) {
+  const now = new Date();
+
+  const item = {
+    value: value,
+    expiry: now.getTime() + ttl,
+  };
+
+  localStorage.setItem(key, JSON.stringify(item));
+}
+
+/* get localStorage with Expiry */
+export function getLocalStorageWithExpiry(key: string) {
+  const itemStr = localStorage.getItem(key);
+
+  if (!itemStr) {
+    return null;
+  }
+
+  const item = JSON.parse(itemStr);
+  const now = new Date();
+
+  if (now.getTime() > item.expiry) {
+    localStorage.removeItem(key);
+    return null;
+  }
+
+  return item.value;
+}
