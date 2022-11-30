@@ -16,17 +16,17 @@ export type AnalyticsData = {
 
 export type DailyActiveUserData = {
   daily_active_user_count: number;
-  day: string;
+  date: string;
 };
 
 export type DailyAvgGasData = {
   avg_gas_unit_price: string;
-  day: string;
+  date: string;
 };
 
 export type DailyContractData = {
   daily_contract_deployed: number;
-  day: string;
+  date: string;
 };
 
 export type DailyPeakTPSData = {
@@ -36,12 +36,12 @@ export type DailyPeakTPSData = {
 
 export type DailyNewAccountData = {
   new_account_count: number;
-  day: string;
+  date: string;
 };
 
 export type DailyUserTxnData = {
   num_user_transactions: number;
-  day: string;
+  date: string;
 };
 
 export function useGetAnalyticsData() {

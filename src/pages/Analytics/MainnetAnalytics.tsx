@@ -1,12 +1,15 @@
-import {Box, Typography} from "@mui/material";
+import {Grid} from "@mui/material";
 import * as React from "react";
 import {useGetAnalyticsData} from "../../api/hooks/useGetAnalyticsData";
+import {ChartRangeDays} from "./Components/ChartRangeDaysSelect";
 import DailyActiveUserChart from "./DailyActiveUserChart";
 
-export default function MainnetAnalytics() {
-  const data = useGetAnalyticsData();
+type MainnetAnalyticsProps = {
+  days: ChartRangeDays;
+};
 
-  console.log(data);
+export default function MainnetAnalytics({days}: MainnetAnalyticsProps) {
+  const data = useGetAnalyticsData();
 
   if (!data) {
     // TODO: apply better error message
@@ -14,8 +17,13 @@ export default function MainnetAnalytics() {
   }
 
   return (
-    <Box>
-      <DailyActiveUserChart data={data?.daily_active_users} />
-    </Box>
+    <Grid container spacing={3}>
+      <Grid item xs={12} md={6} lg={4}>
+        <DailyActiveUserChart data={data?.daily_active_users} days={days} />
+      </Grid>
+      <Grid item xs={12} md={6} lg={4}>
+        <DailyActiveUserChart data={data?.daily_active_users} days={days} />
+      </Grid>
+    </Grid>
   );
 }
