@@ -4,37 +4,28 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
-import {Line} from "react-chartjs-2";
+import {Bar} from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
 );
 
-type LineChartProps = {
+type BarChartProps = {
   labels: string[];
   dataset: number[];
-  tooltipsLabelFunc?: (context: any) => string;
-  yAxisLabelFunc?: (context: any) => string;
 };
 
-export default function LineChart({
-  labels,
-  dataset,
-  tooltipsLabelFunc,
-  yAxisLabelFunc,
-}: LineChartProps) {
+export default function BarChart({labels, dataset}: BarChartProps) {
   const options = {
     fill: false,
     responsive: true,
@@ -54,16 +45,6 @@ export default function LineChart({
           pointStyle: "circle",
           rotation: 0,
         },
-        callbacks: {
-          label: tooltipsLabelFunc,
-        },
-      },
-    },
-    scales: {
-      y: {
-        ticks: {
-          callback: yAxisLabelFunc,
-        },
       },
     },
   };
@@ -74,16 +55,14 @@ export default function LineChart({
       {
         label: "",
         data: dataset,
-        borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
-        tension: 0.4,
       },
     ],
   };
 
   return (
     <Box>
-      <Line options={options} data={data} />
+      <Bar options={options} data={data} />
     </Box>
   );
 }

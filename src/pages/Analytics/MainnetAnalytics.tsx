@@ -2,7 +2,8 @@ import {Grid} from "@mui/material";
 import * as React from "react";
 import {useGetAnalyticsData} from "../../api/hooks/useGetAnalyticsData";
 import {ChartRangeDays} from "./Components/ChartRangeDaysSelect";
-import DailyActiveUserChart from "./DailyActiveUserChart";
+import DailyActiveUserChart from "./Charts/DailyActiveUserChart";
+import DailyAvgGasUnitPriceChart from "./Charts/DailyAvgGasUnitPriceChart";
 
 type MainnetAnalyticsProps = {
   days: ChartRangeDays;
@@ -22,7 +23,10 @@ export default function MainnetAnalytics({days}: MainnetAnalyticsProps) {
         <DailyActiveUserChart data={data?.daily_active_users} days={days} />
       </Grid>
       <Grid item xs={12} md={6} lg={4}>
-        <DailyActiveUserChart data={data?.daily_active_users} days={days} />
+        <DailyAvgGasUnitPriceChart
+          data={data?.daily_average_gas_unit_price}
+          days={days}
+        />
       </Grid>
     </Grid>
   );

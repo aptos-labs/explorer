@@ -22,7 +22,6 @@ export default function ChartRangeDaysSelect({
 
   return (
     <Select
-      id="chart-range-days-select"
       value={days.toString()}
       onChange={handleChange}
       size="small"

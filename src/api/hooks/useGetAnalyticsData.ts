@@ -14,6 +14,14 @@ export type AnalyticsData = {
   daily_user_transactions: DailyUserTxnData[];
 };
 
+export type DailyAnalyticsData =
+  | DailyActiveUserData
+  | DailyAvgGasData
+  | DailyContractData
+  | DailyPeakTPSData
+  | DailyNewAccountData
+  | DailyUserTxnData;
+
 export type DailyActiveUserData = {
   daily_active_user_count: number;
   date: string;
@@ -49,13 +57,13 @@ export function useGetAnalyticsData() {
   const [data, setData] = useState<AnalyticsData>();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(DATA_URL);
-      const data = await response.json();
-      setData(data);
-    };
-
     if (state.network_name === defaultNetworkName) {
+      const fetchData = async () => {
+        const response = await fetch(DATA_URL);
+        const data = await response.json();
+        setData(data);
+      };
+
       fetchData().catch((error) => {
         console.error("ERROR!", error, typeof error);
       });

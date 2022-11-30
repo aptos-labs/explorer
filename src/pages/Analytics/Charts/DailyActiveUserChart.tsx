@@ -1,10 +1,16 @@
 import {Stack, Typography} from "@mui/material";
 import * as React from "react";
-import {DailyActiveUserData} from "../../api/hooks/useGetAnalyticsData";
-import LineChart from "./Components/LineChart";
-import {getDataset, getLabels} from "./utils";
-import Card from "../LandingPage/NetworkInfo/Card";
-import {ChartRangeDays} from "./Components/ChartRangeDaysSelect";
+import {DailyActiveUserData} from "../../../api/hooks/useGetAnalyticsData";
+import BarChart from "../Components/BarChart";
+import {getLabels} from "../utils";
+import Card from "../../LandingPage/NetworkInfo/Card";
+import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
+
+function getDataset(data: DailyActiveUserData[], days: number): number[] {
+  return data
+    .slice(-days)
+    .map((dailyData) => dailyData.daily_active_user_count);
+}
 
 type DailyActiveUserChartProps = {
   data: DailyActiveUserData[];
@@ -25,7 +31,7 @@ export default function DailyActiveUserChart({
           Daily Active Users
         </Typography>
       </Stack>
-      <LineChart labels={labels} dataset={dataset} />
+      <BarChart labels={labels} dataset={dataset} />
     </Card>
   );
 }
