@@ -9,9 +9,9 @@ import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/
 
 export function getDataset(data: DailyAvgGasData[], days: number): number[] {
   return data.slice(-days).map((dailyData) => {
-    const price_integer = dailyData.avg_gas_unit_price.split(".")[0];
-    const aa = getFormattedBalanceStr(price_integer, 8);
-    return Number(aa);
+    const priceInteger = dailyData.avg_gas_unit_price.split(".")[0];
+    const priceInAPT = getFormattedBalanceStr(priceInteger, 8);
+    return Number(priceInAPT);
   });
 }
 
