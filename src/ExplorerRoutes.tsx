@@ -10,6 +10,7 @@ import TokenPage from "./pages/Token/Index";
 import TransactionsPage from "./pages/Transactions/Index";
 import BlocksPage from "./pages/Blocks/Index";
 import ValidatorsPage from "./pages/Validators/Index";
+import AnalyticsPage from "./pages/Analytics/Index";
 
 export default function ExplorerRoutes() {
   return (
@@ -38,6 +39,7 @@ export default function ExplorerRoutes() {
             element={<TokenPage />}
           />
         </Route>
+        <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </ExplorerLayout>
