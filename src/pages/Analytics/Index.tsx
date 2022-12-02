@@ -18,7 +18,7 @@ export default function AnalyticsPage() {
 
   const titleComponent = (
     <Typography variant="h3" marginBottom={2}>
-      Analytics
+      Network Analytics
     </Typography>
   );
 

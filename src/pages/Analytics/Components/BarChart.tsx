@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import {Bar} from "react-chartjs-2";
+import {numberFormatter} from "../utils";
 
 ChartJS.register(
   CategoryScale,
@@ -44,6 +45,22 @@ export default function BarChart({labels, dataset}: BarChartProps) {
         labelPointStyle: {
           pointStyle: "circle",
           rotation: 0,
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        ticks: {
+          callback: (value: any) => numberFormatter(value, 0),
+          count: 4,
+        },
+        grid: {
+          display: false,
         },
       },
     },

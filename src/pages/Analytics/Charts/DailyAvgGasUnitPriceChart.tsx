@@ -1,4 +1,3 @@
-import {Stack, Typography} from "@mui/material";
 import * as React from "react";
 import {DailyAvgGasData} from "../../../api/hooks/useGetAnalyticsData";
 import LineChart from "../Components/LineChart";
@@ -6,13 +5,12 @@ import {getLabels} from "../utils";
 import Card from "../../LandingPage/NetworkInfo/Card";
 import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import ChartTitle from "../Components/ChartTitle";
 
 export function getDataset(data: DailyAvgGasData[], days: number): number[] {
-  return data.slice(-days).map((dailyData) => {
-    const priceInteger = dailyData.avg_gas_unit_price.split(".")[0];
-    const priceInAPT = getFormattedBalanceStr(priceInteger, 8);
-    return Number(priceInAPT);
-  });
+  return data
+    .slice(-days)
+    .map((dailyData) => Number(dailyData.avg_gas_unit_price));
 }
 
 type DailyAvgGasUnitPriceChartProps = {
@@ -29,16 +27,19 @@ export default function DailyAvgGasUnitPriceChart({
 
   return (
     <Card>
-      <Stack alignItems="center" marginBottom={1}>
-        <Typography variant="body2" fontWeight={600}>
-          Daily Average Gas Unit Price
-        </Typography>
-      </Stack>
+      <ChartTitle
+        label="Daily Average Gas Unit Price"
+        tooltip="Daily Average Gas Unit Price"
+      />
       <LineChart
         labels={labels}
         dataset={dataset}
-        tooltipsLabelFunc={(context: any) => `${context.parsed.y} APT`}
-        yAxisLabelFunc={(value: any) => `${value} APT`}
+        fill
+        tooltipsLabelFunc={(context: any) => {
+          const priceInteger = Math.round(context.parsed.y).toString();
+          const priceInAPT = getFormattedBalanceStr(priceInteger, 8);
+          return `${priceInAPT} APT`;
+        }}
       />
     </Card>
   );

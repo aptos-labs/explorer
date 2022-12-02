@@ -1,10 +1,10 @@
-import {Stack, Typography} from "@mui/material";
 import * as React from "react";
 import {DailyActiveUserData} from "../../../api/hooks/useGetAnalyticsData";
 import BarChart from "../Components/BarChart";
 import {getLabels} from "../utils";
 import Card from "../../LandingPage/NetworkInfo/Card";
 import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
+import ChartTitle from "../Components/ChartTitle";
 
 function getDataset(data: DailyActiveUserData[], days: number): number[] {
   return data
@@ -26,11 +26,7 @@ export default function DailyActiveUserChart({
 
   return (
     <Card>
-      <Stack alignItems="center" marginBottom={1}>
-        <Typography variant="body2" fontWeight={600}>
-          Daily Active Users
-        </Typography>
-      </Stack>
+      <ChartTitle label="Daily Active Users" tooltip="Daily Active Users" />
       <BarChart labels={labels} dataset={dataset} />
     </Card>
   );
