@@ -1,7 +1,7 @@
 import React from "react";
 import {Typography, Stack, useTheme} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
-import Card from "./Card";
+import {CardWithStyle} from "../../../components/Card";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import StyledTooltip from "../../../components/StyledTooltip";
 
@@ -33,7 +33,7 @@ function MetricCardComponent({
   tooltip: NonNullable<React.ReactNode>;
 }) {
   return (
-    <Card height={120}>
+    <CardWithStyle height={120}>
       <Stack spacing={2}>
         <Stack direction="row" spacing={1} alignItems="center">
           <Typography fontSize={12}>{label}</Typography>
@@ -43,7 +43,7 @@ function MetricCardComponent({
         </Stack>
         {children}
       </Stack>
-    </Card>
+    </CardWithStyle>
   );
 }
 

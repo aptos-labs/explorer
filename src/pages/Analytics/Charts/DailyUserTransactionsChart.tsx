@@ -2,9 +2,9 @@ import * as React from "react";
 import {DailyUserTxnData} from "../../../api/hooks/useGetAnalyticsData";
 import BarChart from "../Components/BarChart";
 import {getLabels} from "../utils";
-import Card from "../../LandingPage/NetworkInfo/Card";
 import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
+import {CardOutline} from "../../../components/Card";
 
 function getDataset(data: DailyUserTxnData[], days: number): number[] {
   return data.slice(-days).map((dailyData) => dailyData.num_user_transactions);
@@ -23,12 +23,12 @@ export default function DailyUserTransactionsChart({
   const dataset = getDataset(data, days);
 
   return (
-    <Card>
+    <CardOutline>
       <ChartTitle
         label="Daily User Transactions"
         tooltip="Daily User Transactions"
       />
       <BarChart labels={labels} dataset={dataset} />
-    </Card>
+    </CardOutline>
   );
 }

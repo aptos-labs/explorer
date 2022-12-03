@@ -1,19 +1,22 @@
+import React, {useState} from "react";
 import {Grid} from "@mui/material";
-import * as React from "react";
 import {useGetAnalyticsData} from "../../api/hooks/useGetAnalyticsData";
-import {ChartRangeDays} from "./Components/ChartRangeDaysSelect";
+import ChartRangeDaysSelect, {
+  ChartRangeDays,
+} from "./Components/ChartRangeDaysSelect";
 import DailyActiveUserChart from "./Charts/DailyActiveUserChart";
 import DailyAvgGasUnitPriceChart from "./Charts/DailyAvgGasUnitPriceChart";
 import DailyDeployedContractsChart from "./Charts/DailyDeployedContractsChart";
 import DailyPeakTPSChart from "./Charts/DailyPeakTPSChart";
 import DailyNewAccountsCreatedChart from "./Charts/DailyNewAccountsCreatedChart";
 import DailyUserTransactionsChart from "./Charts/DailyUserTransactionsChart";
+import NetworkInfo from "./NetworkInfo/NetworkInfo";
 
-type MainnetAnalyticsProps = {
-  days: ChartRangeDays;
-};
+export default function MainnetAnalytics() {
+  const [days, setDays] = useState<ChartRangeDays>(
+    ChartRangeDays.DEFAULT_RANGE,
+  );
 
-export default function MainnetAnalytics({days}: MainnetAnalyticsProps) {
   const data = useGetAnalyticsData();
 
   if (!data) {
@@ -22,7 +25,13 @@ export default function MainnetAnalytics({days}: MainnetAnalyticsProps) {
   }
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} marginTop={3}>
+      <Grid item xs={12} md={12} lg={12} marginBottom={2}>
+        <NetworkInfo isOnAnalyticsPage />
+      </Grid>
+      <Grid item xs={12} md={12} lg={12}>
+        <ChartRangeDaysSelect days={days} setDays={setDays} />
+      </Grid>
       <Grid item xs={12} md={6} lg={4}>
         <DailyActiveUserChart data={data.daily_active_users} days={days} />
       </Grid>

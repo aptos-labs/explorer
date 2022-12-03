@@ -2,9 +2,9 @@ import * as React from "react";
 import {DailyContractData} from "../../../api/hooks/useGetAnalyticsData";
 import BarChart from "../Components/BarChart";
 import {getLabels} from "../utils";
-import Card from "../../LandingPage/NetworkInfo/Card";
 import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
+import {CardOutline} from "../../../components/Card";
 
 function getDataset(data: DailyContractData[], days: number): number[] {
   return data
@@ -25,12 +25,12 @@ export default function DailyDeployedContractsChart({
   const dataset = getDataset(data, days);
 
   return (
-    <Card>
+    <CardOutline>
       <ChartTitle
         label="Daily Deployed Contracts"
         tooltip="Daily Deployed Contracts"
       />
       <BarChart labels={labels} dataset={dataset} />
-    </Card>
+    </CardOutline>
   );
 }

@@ -13,6 +13,7 @@ import {
 } from "chart.js";
 import {Line} from "react-chartjs-2";
 import {numberFormatter} from "../utils";
+import {BACKGROUND_COLOR, COLOR} from "../constants";
 
 ChartJS.register(
   CategoryScale,
@@ -82,8 +83,8 @@ export default function LineChart({
         label: "",
         fill: fill,
         data: dataset,
-        borderColor: "rgb(53, 162, 235)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        borderColor: COLOR,
+        backgroundColor: BACKGROUND_COLOR,
         tension: 0.4,
       },
     ],

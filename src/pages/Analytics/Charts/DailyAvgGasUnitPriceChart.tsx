@@ -2,10 +2,10 @@ import * as React from "react";
 import {DailyAvgGasData} from "../../../api/hooks/useGetAnalyticsData";
 import LineChart from "../Components/LineChart";
 import {getLabels} from "../utils";
-import Card from "../../LandingPage/NetworkInfo/Card";
 import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import ChartTitle from "../Components/ChartTitle";
+import {CardOutline} from "../../../components/Card";
 
 export function getDataset(data: DailyAvgGasData[], days: number): number[] {
   return data
@@ -26,7 +26,7 @@ export default function DailyAvgGasUnitPriceChart({
   const dataset = getDataset(data, days);
 
   return (
-    <Card>
+    <CardOutline>
       <ChartTitle
         label="Daily Average Gas Unit Price"
         tooltip="Daily Average Gas Unit Price"
@@ -41,6 +41,6 @@ export default function DailyAvgGasUnitPriceChart({
           return `${priceInAPT} APT`;
         }}
       />
-    </Card>
+    </CardOutline>
   );
 }

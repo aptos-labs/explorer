@@ -11,6 +11,7 @@ import {
 } from "chart.js";
 import {Bar} from "react-chartjs-2";
 import {numberFormatter} from "../utils";
+import {BACKGROUND_COLOR} from "../constants";
 
 ChartJS.register(
   CategoryScale,
@@ -72,7 +73,7 @@ export default function BarChart({labels, dataset}: BarChartProps) {
       {
         label: "",
         data: dataset,
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        backgroundColor: BACKGROUND_COLOR,
       },
     ],
   };
