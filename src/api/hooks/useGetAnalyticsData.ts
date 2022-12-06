@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {defaultNetworkName} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 
-const DATA_URL =
+export const ANALYTICS_DATA_URL =
   "https://aptos-analytics-data-mainnet.s3.amazonaws.com/chain_stats_v2.json";
 
 export type AnalyticsData = {
@@ -12,6 +12,9 @@ export type AnalyticsData = {
   daily_max_tps_15_blocks: DailyPeakTPSData[];
   daily_new_accounts_created: DailyNewAccountData[];
   daily_user_transactions: DailyUserTxnData[];
+  max_tps_15_blocks_in_past_30_days: {
+    max_tps_15_blocks_in_past_30_days: number;
+  }[];
 };
 
 export type DailyAnalyticsData =
@@ -59,7 +62,7 @@ export function useGetAnalyticsData() {
   useEffect(() => {
     if (state.network_name === defaultNetworkName) {
       const fetchData = async () => {
-        const response = await fetch(DATA_URL);
+        const response = await fetch(ANALYTICS_DATA_URL);
         const data = await response.json();
         setData(data);
       };
