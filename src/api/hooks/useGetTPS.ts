@@ -3,9 +3,7 @@ import {useEffect, useState} from "react";
 import {useQuery} from "react-query";
 import {getLedgerInfo} from "..";
 import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
-
-const PEAK_TPS_URL =
-  "https://aptos-analytics-data-mainnet.s3.amazonaws.com/chain_stats.json";
+import {AnalyticsData, ANALYTICS_DATA_URL} from "./useGetAnalyticsData";
 
 export function useGetTPS() {
   const [state, _] = useGlobalState();
@@ -35,9 +33,11 @@ export function useGetPeakTPS() {
   useEffect(() => {
     if (state.network_name === "mainnet") {
       const fetchData = async () => {
-        const response = await fetch(PEAK_TPS_URL);
-        const data: {max_tps_15_blocks: number}[] = await response.json();
-        const peakTps = data[0].max_tps_15_blocks;
+        const response = await fetch(ANALYTICS_DATA_URL);
+        const data: AnalyticsData = await response.json();
+        const peakTps =
+          data.max_tps_15_blocks_in_past_30_days[0]
+            .max_tps_15_blocks_in_past_30_days;
         setPeakTps(peakTps);
       };
 
