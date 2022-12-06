@@ -8,9 +8,12 @@ import {
   LineElement,
   Title,
   Tooltip,
+  Filler,
   Legend,
 } from "chart.js";
 import {Line} from "react-chartjs-2";
+import {numberFormatter} from "../utils";
+import {BACKGROUND_COLOR, COLOR} from "../constants";
 
 ChartJS.register(
   CategoryScale,
@@ -19,24 +22,24 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
+  Filler,
   Legend,
 );
 
 type LineChartProps = {
   labels: string[];
   dataset: number[];
+  fill?: boolean;
   tooltipsLabelFunc?: (context: any) => string;
-  yAxisLabelFunc?: (context: any) => string;
 };
 
 export default function LineChart({
   labels,
   dataset,
+  fill,
   tooltipsLabelFunc,
-  yAxisLabelFunc,
 }: LineChartProps) {
   const options = {
-    fill: false,
     responsive: true,
     interaction: {
       intersect: false,
@@ -50,19 +53,24 @@ export default function LineChart({
       },
       tooltip: {
         usePointStyle: true,
-        labelPointStyle: {
-          pointStyle: "circle",
-          rotation: 0,
-        },
         callbacks: {
           label: tooltipsLabelFunc,
         },
       },
     },
     scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+      },
       y: {
         ticks: {
-          callback: yAxisLabelFunc,
+          callback: (value: any) => numberFormatter(value, 0),
+          count: 4,
+        },
+        grid: {
+          display: false,
         },
       },
     },
@@ -73,9 +81,10 @@ export default function LineChart({
     datasets: [
       {
         label: "",
+        fill: fill,
         data: dataset,
-        borderColor: "rgb(53, 162, 235)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        borderColor: COLOR,
+        backgroundColor: BACKGROUND_COLOR,
         tension: 0.4,
       },
     ],
