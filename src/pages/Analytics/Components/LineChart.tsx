@@ -63,11 +63,17 @@ export default function LineChart({
         grid: {
           display: false,
         },
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 4,
+          maxRotation: 0,
+        },
       },
       y: {
         ticks: {
           callback: (value: any) => numberFormatter(value, 0),
-          count: 4,
+          autoSkip: true,
+          maxTicksLimit: 3,
         },
         grid: {
           display: false,
