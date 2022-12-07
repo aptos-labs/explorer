@@ -26,7 +26,7 @@ export default function DailyNewAccountsCreatedChart({
     <CardOutline>
       <ChartTitle
         label="New Accounts Created"
-        tooltip="Daily New Accounts Created"
+        tooltip="Daily instances of distinct addresses getting coin balance for the first time."
       />
       <BarChart labels={labels} dataset={dataset} />
     </CardOutline>
