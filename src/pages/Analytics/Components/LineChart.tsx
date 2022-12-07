@@ -80,6 +80,15 @@ export default function LineChart({
         },
       },
     },
+    elements: {
+      point: {
+        pointStyle: "circle",
+        radius: 0.1,
+        borderWidth: 7,
+        hoverRadius: 0.1,
+        hoverBorderWidth: 9,
+      },
+    },
   };
 
   const data = {

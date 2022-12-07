@@ -26,7 +26,7 @@ export default function DailyActiveUserChart({
 
   return (
     <CardOutline>
-      <ChartTitle label="Daily Active Users" tooltip="Daily Active Users" />
+      <ChartTitle label="Active Users" tooltip="Daily Active Users" />
       <BarChart labels={labels} dataset={dataset} />
     </CardOutline>
   );

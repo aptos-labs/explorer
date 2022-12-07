@@ -24,7 +24,7 @@ export default function DailyPeakTPSChart({
 
   return (
     <CardOutline>
-      <ChartTitle label="Daily Peak TPS" tooltip="Daily Peak TPS" />
+      <ChartTitle label="Peak TPS" tooltip="Daily Peak TPS" />
       <LineChart labels={labels} dataset={dataset} />
     </CardOutline>
   );

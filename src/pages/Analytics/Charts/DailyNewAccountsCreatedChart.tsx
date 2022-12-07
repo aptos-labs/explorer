@@ -25,7 +25,7 @@ export default function DailyNewAccountsCreatedChart({
   return (
     <CardOutline>
       <ChartTitle
-        label="Daily New Accounts Created"
+        label="New Accounts Created"
         tooltip="Daily New Accounts Created"
       />
       <BarChart labels={labels} dataset={dataset} />
