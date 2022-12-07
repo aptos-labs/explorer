@@ -25,8 +25,8 @@ export default function DailyUserTransactionsChart({
   return (
     <CardOutline>
       <ChartTitle
-        label="Daily User Transactions"
-        tooltip="Daily User Transactions"
+        label="User Transactions"
+        tooltip="Daily transaction count of user transactions."
       />
       <BarChart labels={labels} dataset={dataset} />
     </CardOutline>

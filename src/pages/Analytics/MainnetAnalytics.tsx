@@ -27,7 +27,7 @@ export default function MainnetAnalytics() {
   return (
     <Grid container spacing={3} marginTop={3}>
       <Grid item xs={12} md={12} lg={12} marginBottom={2}>
-        <NetworkInfo isOnAnalyticsPage />
+        <NetworkInfo />
       </Grid>
       <Grid item xs={12} md={12} lg={12}>
         <ChartRangeDaysSelect days={days} setDays={setDays} />

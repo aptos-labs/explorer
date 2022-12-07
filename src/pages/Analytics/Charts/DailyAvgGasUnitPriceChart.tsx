@@ -28,8 +28,8 @@ export default function DailyAvgGasUnitPriceChart({
   return (
     <CardOutline>
       <ChartTitle
-        label="Daily Average Gas Unit Price"
-        tooltip="Daily Average Gas Unit Price"
+        label="Average Gas Unit Price"
+        tooltip="Daily average gas unit price on user transactions."
       />
       <LineChart
         labels={labels}

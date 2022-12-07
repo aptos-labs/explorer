@@ -2,6 +2,8 @@ import React from "react";
 import {NavLink} from "react-router-dom";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 
 function NavButton({
   to,
@@ -32,6 +34,9 @@ function NavButton({
 }
 
 export default function Nav() {
+  const inDev = useGetInDevMode();
+  const inMainnet = useGetInMainnet();
+
   return (
     <Box
       sx={{
@@ -46,12 +51,19 @@ export default function Nav() {
         title="View All Transactions"
         label="Transactions"
       />
-      <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
+      {inDev && inMainnet && (
+        <NavButton
+          to="/analytics"
+          title="View Network Analytics"
+          label="Analytics"
+        />
+      )}
       <NavButton
         to="/validators"
         title="View All Validators"
         label="Validators"
       />
+      <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
     </Box>
   );
 }

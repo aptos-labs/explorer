@@ -27,8 +27,8 @@ export default function DailyDeployedContractsChart({
   return (
     <CardOutline>
       <ChartTitle
-        label="Daily Deployed Contracts"
-        tooltip="Daily Deployed Contracts"
+        label="Deployed Contracts"
+        tooltip="Daily count of move modules."
       />
       <BarChart labels={labels} dataset={dataset} />
     </CardOutline>
