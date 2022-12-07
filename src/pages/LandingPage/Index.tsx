@@ -11,7 +11,7 @@ export default function LandingPage() {
       <Typography variant="h3" component="h3" marginBottom={4}>
         Aptos Explorer
       </Typography>
-      <NetworkInfo />
+      <NetworkInfo isOnHomePage />
       <HeaderSearch />
       <UserTransactionsPreview />
     </Box>
