@@ -8,6 +8,8 @@ export const ANALYTICS_DATA_URL =
 export type AnalyticsData = {
   daily_active_users: DailyActiveUserData[];
   daily_average_gas_unit_price: DailyAvgGasData[];
+  daily_gas_from_user_transactions: DailyGasCostData[];
+  daily_contract_deployers: DailyContractDeployerData[];
   daily_deployed_contracts: DailyContractData[];
   daily_max_tps_15_blocks: DailyPeakTPSData[];
   daily_new_accounts_created: DailyNewAccountData[];
@@ -20,6 +22,8 @@ export type AnalyticsData = {
 export type DailyAnalyticsData =
   | DailyActiveUserData
   | DailyAvgGasData
+  | DailyGasCostData
+  | DailyContractDeployerData
   | DailyContractData
   | DailyPeakTPSData
   | DailyNewAccountData
@@ -32,6 +36,16 @@ export type DailyActiveUserData = {
 
 export type DailyAvgGasData = {
   avg_gas_unit_price: string;
+  date: string;
+};
+
+export type DailyGasCostData = {
+  gas_cost: string;
+  date: string;
+};
+
+export type DailyContractDeployerData = {
+  distinct_deployers: number;
   date: string;
 };
 

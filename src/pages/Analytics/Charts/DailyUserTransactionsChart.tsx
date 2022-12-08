@@ -1,10 +1,10 @@
 import * as React from "react";
 import {DailyUserTxnData} from "../../../api/hooks/useGetAnalyticsData";
-import BarChart from "../Components/BarChart";
 import {getLabels} from "../utils";
 import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
 import {CardOutline} from "../../../components/Card";
+import LineChart from "../Components/LineChart";
 
 function getDataset(data: DailyUserTxnData[], days: number): number[] {
   return data.slice(-days).map((dailyData) => dailyData.num_user_transactions);
@@ -28,7 +28,7 @@ export default function DailyUserTransactionsChart({
         label="User Transactions"
         tooltip="Daily transaction count of user transactions."
       />
-      <BarChart labels={labels} dataset={dataset} />
+      <LineChart labels={labels} dataset={dataset} />
     </CardOutline>
   );
 }
