@@ -27,7 +27,7 @@ export default function DailyActiveUserChart({
   return (
     <CardOutline>
       <ChartTitle
-        label="Active Accounts"
+        label="Daily Active Accounts"
         tooltip="Daily count of distinct addresses with move resource."
       />
       <BarChart labels={labels} dataset={dataset} />
