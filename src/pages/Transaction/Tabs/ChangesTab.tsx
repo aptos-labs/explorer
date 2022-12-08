@@ -6,6 +6,7 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import HashButton, {HashType} from "../../../components/HashButton";
 
 type ChangesTabProps = {
   transaction: Types.Transaction;
@@ -38,14 +39,26 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
         >
           <ContentRow title="Type:" value={change.type} />
           {"address" in change && (
-            <ContentRow title="Address:" value={change.address} />
+            <ContentRow
+              title="Address:"
+              value={
+                <HashButton hash={change.address} type={HashType.ACCOUNT} />
+              }
+            />
           )}
           <ContentRow title="State Key Hash:" value={change.state_key_hash} />
-          {"data" in change && (
+          {"data" in change && change.data && (
             <ContentRow
               title="Data:"
               value={<JsonCard data={change.data} expandedByDefault />}
             />
+          )}
+          {"handle" in change && (
+            <ContentRow title="Handle:" value={change.handle} />
+          )}
+          {"key" in change && <ContentRow title="Key:" value={change.key} />}
+          {"value" in change && (
+            <ContentRow title="Value:" value={change.value} />
           )}
         </CollapsibleCard>
       ))}
