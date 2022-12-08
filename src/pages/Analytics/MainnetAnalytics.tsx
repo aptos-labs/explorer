@@ -11,6 +11,8 @@ import DailyPeakTPSChart from "./Charts/DailyPeakTPSChart";
 import DailyNewAccountsCreatedChart from "./Charts/DailyNewAccountsCreatedChart";
 import DailyUserTransactionsChart from "./Charts/DailyUserTransactionsChart";
 import NetworkInfo from "./NetworkInfo/NetworkInfo";
+import DailyGasConsumptionChart from "./Charts/DailyGasConsumptionChart";
+import DailyContractDeployersChart from "./Charts/DailyContractDeployersChart";
 
 export default function MainnetAnalytics() {
   const [days, setDays] = useState<ChartRangeDays>(
@@ -32,31 +34,43 @@ export default function MainnetAnalytics() {
       <Grid item xs={12} md={12} lg={12}>
         <ChartRangeDaysSelect days={days} setDays={setDays} />
       </Grid>
-      <Grid item xs={12} md={6} lg={4}>
-        <DailyActiveUserChart data={data.daily_active_users} days={days} />
-      </Grid>
-      <Grid item xs={12} md={6} lg={4}>
+      <Grid item xs={12} md={6} lg={3}>
         <DailyUserTransactionsChart
           data={data.daily_user_transactions}
           days={days}
         />
       </Grid>
-      <Grid item xs={12} md={6} lg={4}>
+      <Grid item xs={12} md={6} lg={3}>
         <DailyPeakTPSChart data={data.daily_max_tps_15_blocks} days={days} />
       </Grid>
-      <Grid item xs={12} md={6} lg={4}>
+      <Grid item xs={12} md={6} lg={3}>
+        <DailyActiveUserChart data={data.daily_active_users} days={days} />
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
         <DailyNewAccountsCreatedChart
           data={data.daily_new_accounts_created}
           days={days}
         />
       </Grid>
-      <Grid item xs={12} md={6} lg={4}>
+      <Grid item xs={12} md={6} lg={3}>
         <DailyDeployedContractsChart
           data={data.daily_deployed_contracts}
           days={days}
         />
       </Grid>
-      <Grid item xs={12} md={6} lg={4}>
+      <Grid item xs={12} md={6} lg={3}>
+        <DailyContractDeployersChart
+          data={data.daily_contract_deployers}
+          days={days}
+        />
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
+        <DailyGasConsumptionChart
+          data={data.daily_gas_from_user_transactions}
+          days={days}
+        />
+      </Grid>
+      <Grid item xs={12} md={6} lg={3}>
         <DailyAvgGasUnitPriceChart
           data={data.daily_average_gas_unit_price}
           days={days}
