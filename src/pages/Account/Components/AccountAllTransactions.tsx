@@ -9,7 +9,7 @@ import {
 } from "../../../api/hooks/useGetAccountAllTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 
-const LIMIT = 20;
+const LIMIT = 25;
 
 function RenderPagination({
   currentPage,
