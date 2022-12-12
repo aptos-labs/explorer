@@ -40,31 +40,13 @@ function getFetchAddressUrl(network: NetworkName, name: string) {
   return `https://www.aptosnames.com/api/${network}/v1/address/${name}`;
 }
 
-export function useGetAddressFromName(name: string) {
-  const [state, _] = useGlobalState();
-  const [address, setAddress] = useState<string | undefined>();
-  const url = getFetchAddressUrl(state.network_name, name);
-
-  useEffect(() => {
-    if (url !== undefined) {
-      const fetchData = async () => {
-        const response = await fetch(url);
-        const {address} = await response.json();
-        setAddress(address);
-      };
-
-      fetchData();
-    }
-  }, [name, state]);
-
-  return address;
-}
-
 export async function getAddressFromName(
   name: string,
   network: NetworkName,
 ): Promise<string | undefined> {
-  const addressUrl = getFetchAddressUrl(network, name);
+  const searchableName = name.endsWith(".apt") ? name.slice(0, -4) : name;
+  const addressUrl = getFetchAddressUrl(network, searchableName);
+
   if (addressUrl === undefined) {
     return undefined;
   }
@@ -77,7 +59,7 @@ export async function getAddressFromName(
     const primaryNameResponse = await fetch(primaryNameUrl ?? "");
     const {name: primaryName} = await primaryNameResponse.json();
 
-    if (primaryName === name) {
+    if (primaryName === searchableName) {
       return address;
     } else {
       return undefined;
