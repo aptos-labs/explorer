@@ -45,7 +45,7 @@ export default function useGetSearchResults(input: string) {
         .then((address): SearchResult | null => {
           if (address) {
             return {
-              label: `Account ${truncateAddress(address)} ${
+              label: `Account ${truncateAddress(address)} | ${
                 searchText.endsWith(".apt") ? searchText : `${searchText}.apt`
               }`,
               to: `/account/${address}`,
