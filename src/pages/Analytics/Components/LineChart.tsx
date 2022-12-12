@@ -13,7 +13,7 @@ import {
 } from "chart.js";
 import {Line} from "react-chartjs-2";
 import {numberFormatter} from "../utils";
-import {BACKGROUND_COLOR, COLOR} from "../constants";
+import {BACKGROUND_COLOR, COLOR, HIGHLIGHT_COLOR} from "../constants";
 
 ChartJS.register(
   CategoryScale,
@@ -83,10 +83,10 @@ export default function LineChart({
     elements: {
       point: {
         pointStyle: "circle",
-        radius: 0.1,
-        borderWidth: 7,
-        hoverRadius: 0.1,
-        hoverBorderWidth: 9,
+        pointBackgroundColor: HIGHLIGHT_COLOR,
+        borderWidth: 0,
+        radius: 3,
+        hoverRadius: 4,
       },
     },
   };
