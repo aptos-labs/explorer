@@ -9,7 +9,6 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 
 export default function NavMobile() {
@@ -17,7 +16,6 @@ export default function NavMobile() {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const inDev = useGetInDevMode();
   const inMainnet = useGetInMainnet();
 
   const menuOpen = Boolean(menuAnchorEl);
@@ -78,7 +76,7 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
           Transactions
         </MenuItem>
-        {inDev && inMainnet && (
+        {inMainnet && (
           <MenuItem onClick={() => handleCloseAndNavigate("/analytics")}>
             Analytics
           </MenuItem>
