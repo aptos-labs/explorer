@@ -6,7 +6,6 @@ import TPS from "./TPS";
 import ActiveValidators from "./ActiveValidators";
 import TotalTransactions from "./TotalTransactions";
 import {Link} from "@mui/material";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 
 type CardStyle = "default" | "outline";
@@ -20,10 +19,9 @@ function LinkableContainer({
   linkToAnalyticsPage: boolean;
   children: React.ReactNode;
 }) {
-  const inDev = useGetInDevMode();
   const inMainnet = useGetInMainnet();
 
-  return inDev && inMainnet && linkToAnalyticsPage ? (
+  return inMainnet && linkToAnalyticsPage ? (
     <Link href="/analytics" underline="none" color="inherit" variant="inherit">
       {children}
     </Link>
