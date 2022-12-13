@@ -31,6 +31,7 @@ export default function BarChart({labels, dataset}: BarChartProps) {
   const options = {
     fill: false,
     responsive: true,
+    maintainAspectRatio: false,
     interaction: {
       intersect: false,
     },
