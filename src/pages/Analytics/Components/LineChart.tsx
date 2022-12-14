@@ -41,6 +41,7 @@ export default function LineChart({
 }: LineChartProps) {
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     interaction: {
       intersect: false,
     },
