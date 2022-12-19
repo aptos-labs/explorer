@@ -109,7 +109,7 @@ function ValidatorHeaderCell({
 }: ValidatorHeaderCellProps) {
   switch (column) {
     case "addr":
-      return <GeneralTableHeaderCell header="Owner Address" />;
+      return <GeneralTableHeaderCell header="Staking Pool Address" />;
     case "operatorAddr":
       return <GeneralTableHeaderCell header="Operator Address" />;
     case "votingPower":
