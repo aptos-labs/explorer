@@ -9,7 +9,7 @@ import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
-import JsonTreeCard from "../../../components/IndividualPageContent/JsonTreeCard";
+import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
 type PendingTransactionOverviewTabProps = {
@@ -61,7 +61,7 @@ export default function PendingTransactionOverviewTab({
           title="Signature:"
           value={
             inDev ? (
-              <JsonTreeCard
+              <JsonViewCard
                 data={transactionData.signature}
                 collapsedByDefault
               />

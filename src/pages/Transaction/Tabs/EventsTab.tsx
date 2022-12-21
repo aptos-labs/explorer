@@ -8,7 +8,7 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
-import JsonTreeCard from "../../../components/IndividualPageContent/JsonTreeCard";
+import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 
 type EventsTabProps = {
   transaction: Types.Transaction;
@@ -60,7 +60,7 @@ export default function EventsTab({transaction}: EventsTabProps) {
             title="Data:"
             value={
               inDev ? (
-                <JsonTreeCard data={event.data} />
+                <JsonViewCard data={event.data} />
               ) : (
                 <JsonCard data={event.data} expandedByDefault />
               )

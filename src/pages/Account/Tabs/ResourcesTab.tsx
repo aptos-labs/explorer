@@ -7,7 +7,7 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
-import JsonTreeCard from "../../../components/IndividualPageContent/JsonTreeCard";
+import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
 function ResourcesContent({
@@ -41,7 +41,7 @@ function ResourcesContent({
           toggleExpanded={() => toggleExpandedAt(i)}
         >
           {inDev ? (
-            <JsonTreeCard data={resource.data} />
+            <JsonViewCard data={resource.data} />
           ) : (
             <JsonCard data={resource.data} expandedByDefault />
           )}

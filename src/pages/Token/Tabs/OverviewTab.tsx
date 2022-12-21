@@ -7,7 +7,7 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
-import JsonTreeCard from "../../../components/IndividualPageContent/JsonTreeCard";
+import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 
 const OWNER_QUERY = gql`
   query OwnersData($token_id: String, $property_version: numeric) {
@@ -126,7 +126,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
           title={"Default Properties:"}
           value={
             inDev ? (
-              <JsonTreeCard
+              <JsonViewCard
                 data={data?.default_properties}
                 collapsedByDefault
               />

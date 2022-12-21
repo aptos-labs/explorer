@@ -13,7 +13,7 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
-import JsonTreeCard from "../../../components/IndividualPageContent/JsonTreeCard";
+import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 
 function ModulesContent({
   data,
@@ -56,7 +56,7 @@ function ModulesContent({
             title="ABI:"
             value={
               inDev ? (
-                <JsonTreeCard data={module.abi} />
+                <JsonViewCard data={module.abi} />
               ) : (
                 <JsonCard data={module.abi} expandedByDefault />
               )

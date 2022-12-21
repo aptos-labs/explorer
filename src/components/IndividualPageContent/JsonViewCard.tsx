@@ -12,7 +12,7 @@ const TRANSPARENT = "rgba(0,0,0,0)";
 const GROUP_ARRAYS_AFTER_LENGTH = 100;
 const COLLAPSE_STRINGS_AFTER_LENGTH = 80;
 
-function useJsonTreeCardTheme() {
+function useJsonViewCardTheme() {
   const theme = useTheme();
   const textColor =
     theme.palette.mode === "dark" ? TEXT_COLOR_DARK : TEXT_COLOR_LIGHT;
@@ -39,15 +39,15 @@ function useJsonTreeCardTheme() {
   };
 }
 
-type JsonTreeCardProps = {
+type JsonViewCardProps = {
   data: any;
   collapsedByDefault?: boolean;
 };
 
-export default function JsonTreeCard({
+export default function JsonViewCard({
   data,
   collapsedByDefault,
-}: JsonTreeCardProps) {
+}: JsonViewCardProps) {
   const theme = useTheme();
 
   if (!data) {
@@ -65,7 +65,7 @@ export default function JsonTreeCard({
     >
       <ReactJson
         src={data}
-        theme={useJsonTreeCardTheme()}
+        theme={useJsonViewCardTheme()}
         name={null}
         collapseStringsAfterLength={COLLAPSE_STRINGS_AFTER_LENGTH}
         displayObjectSize={false}
