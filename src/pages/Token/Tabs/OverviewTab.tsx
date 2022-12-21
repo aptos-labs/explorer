@@ -6,6 +6,8 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import JsonTreeCard from "../../../components/IndividualPageContent/JsonTreeCard";
 
 const OWNER_QUERY = gql`
   query OwnersData($token_id: String, $property_version: numeric) {
@@ -70,6 +72,8 @@ type OverviewTabProps = {
 
 // TODO: add more contents
 export default function OverviewTab({data}: OverviewTabProps) {
+  const inDev = useGetInDevMode();
+
   const [metadataIsImage, setMetadataIsImage] = useState<boolean>(true);
 
   return (
@@ -120,7 +124,16 @@ export default function OverviewTab({data}: OverviewTabProps) {
         <ContentRow title={"Maximum:"} value={data?.maximum} />
         <ContentRow
           title={"Default Properties:"}
-          value={<JsonCard data={data?.default_properties} />}
+          value={
+            inDev ? (
+              <JsonTreeCard
+                data={data?.default_properties}
+                collapsedByDefault
+              />
+            ) : (
+              <JsonCard data={data?.default_properties} />
+            )
+          }
         />
       </ContentBox>
     </Box>

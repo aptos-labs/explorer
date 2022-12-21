@@ -7,12 +7,16 @@ import CollapsibleCard from "../../../components/IndividualPageContent/Collapsib
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import HashButton, {HashType} from "../../../components/HashButton";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import JsonTreeCard from "../../../components/IndividualPageContent/JsonTreeCard";
 
 type ChangesTabProps = {
   transaction: Types.Transaction;
 };
 
 export default function ChangesTab({transaction}: ChangesTabProps) {
+  const inDev = useGetInDevMode();
+
   const changes: Types.WriteSetChange[] =
     "changes" in transaction ? transaction.changes : [];
 
@@ -50,7 +54,13 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
           {"data" in change && change.data && (
             <ContentRow
               title="Data:"
-              value={<JsonCard data={change.data} expandedByDefault />}
+              value={
+                inDev ? (
+                  <JsonTreeCard data={change.data} />
+                ) : (
+                  <JsonCard data={change.data} expandedByDefault />
+                )
+              }
             />
           )}
           {"handle" in change && (

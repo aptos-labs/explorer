@@ -4,12 +4,16 @@ import {Box} from "@mui/material";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import JsonTreeCard from "../../../components/IndividualPageContent/JsonTreeCard";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
 type PayloadTabProps = {
   transaction: Types.Transaction;
 };
 
 export default function PayloadTab({transaction}: PayloadTabProps) {
+  const inDev = useGetInDevMode();
+
   const [expanded, setExpanded] = useState<boolean>(true);
 
   if (!("payload" in transaction)) {
@@ -29,7 +33,11 @@ export default function PayloadTab({transaction}: PayloadTabProps) {
         expanded={expanded}
         toggleExpanded={toggleExpanded}
       >
-        <JsonCard data={transaction.payload} expandedByDefault />
+        {inDev ? (
+          <JsonTreeCard data={transaction.payload} />
+        ) : (
+          <JsonCard data={transaction.payload} expandedByDefault />
+        )}
       </CollapsibleCard>
     </Box>
   );

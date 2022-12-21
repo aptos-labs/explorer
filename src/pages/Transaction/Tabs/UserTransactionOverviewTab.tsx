@@ -14,6 +14,8 @@ import GasFeeValue from "../../../components/IndividualPageContent/ContentValue/
 import {getTransactionAmount, getTransactionCounterparty} from "../utils";
 import TransactionFunction from "./Components/TransactionFunction";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
+import JsonTreeCard from "../../../components/IndividualPageContent/JsonTreeCard";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
 function UserTransferOrInteractionRows({
   transaction,
@@ -87,6 +89,8 @@ type UserTransactionOverviewTabProps = {
 export default function UserTransactionOverviewTab({
   transaction,
 }: UserTransactionOverviewTabProps) {
+  const inDev = useGetInDevMode();
+
   const transactionData = transaction as Types.Transaction_UserTransaction;
 
   return (
@@ -164,7 +168,16 @@ export default function UserTransactionOverviewTab({
       <ContentBox>
         <ContentRow
           title="Signature:"
-          value={<JsonCard data={transactionData.signature} />}
+          value={
+            inDev ? (
+              <JsonTreeCard
+                data={transactionData.signature}
+                collapsedByDefault
+              />
+            ) : (
+              <JsonCard data={transactionData.signature} />
+            )
+          }
           tooltip={getLearnMoreTooltip("signature")}
         />
         <ContentRow

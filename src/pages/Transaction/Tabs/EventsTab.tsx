@@ -7,12 +7,16 @@ import CollapsibleCards from "../../../components/IndividualPageContent/Collapsi
 import useExpandedList from "../../../components/hooks/useExpandedList";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import HashButton, {HashType} from "../../../components/HashButton";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import JsonTreeCard from "../../../components/IndividualPageContent/JsonTreeCard";
 
 type EventsTabProps = {
   transaction: Types.Transaction;
 };
 
 export default function EventsTab({transaction}: EventsTabProps) {
+  const inDev = useGetInDevMode();
+
   const events: Types.Event[] =
     "events" in transaction ? transaction.events : [];
 
@@ -54,7 +58,13 @@ export default function EventsTab({transaction}: EventsTabProps) {
           <ContentRow title="Type:" value={event.type} />
           <ContentRow
             title="Data:"
-            value={<JsonCard data={event.data} expandedByDefault />}
+            value={
+              inDev ? (
+                <JsonTreeCard data={event.data} />
+              ) : (
+                <JsonCard data={event.data} expandedByDefault />
+              )
+            }
           />
         </CollapsibleCard>
       ))}

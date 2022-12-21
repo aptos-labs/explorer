@@ -9,6 +9,9 @@ const SECONDARY_TEXT_COLOR = "rgba(14,165,233,0.3)";
 const BACKGROUND_COLOR = "rgba(14,165,233,0.1)";
 const TRANSPARENT = "rgba(0,0,0,0)";
 
+const GROUP_ARRAYS_AFTER_LENGTH = 100;
+const COLLAPSE_STRINGS_AFTER_LENGTH = 80;
+
 function useJsonTreeCardTheme() {
   const theme = useTheme();
   const textColor =
@@ -38,9 +41,13 @@ function useJsonTreeCardTheme() {
 
 type JsonTreeCardProps = {
   data: any;
+  collapsedByDefault?: boolean;
 };
 
-export default function JsonTreeCard({data}: JsonTreeCardProps) {
+export default function JsonTreeCard({
+  data,
+  collapsedByDefault,
+}: JsonTreeCardProps) {
   const theme = useTheme();
 
   if (!data) {
@@ -51,6 +58,7 @@ export default function JsonTreeCard({data}: JsonTreeCardProps) {
     <Box
       sx={{
         backgroundColor: BACKGROUND_COLOR,
+        overflow: "auto",
       }}
       padding={2}
       borderRadius={1}
@@ -59,16 +67,17 @@ export default function JsonTreeCard({data}: JsonTreeCardProps) {
         src={data}
         theme={useJsonTreeCardTheme()}
         name={null}
-        collapseStringsAfterLength={100}
+        collapseStringsAfterLength={COLLAPSE_STRINGS_AFTER_LENGTH}
         displayObjectSize={false}
         displayDataTypes={false}
         quotesOnKeys={false}
-        groupArraysAfterLength={100}
+        groupArraysAfterLength={GROUP_ARRAYS_AFTER_LENGTH}
         style={{
           fontFamily: theme.typography.fontFamily,
           fontWeight: theme.typography.fontWeightRegular,
           fontSize: theme.typography.fontSize,
         }}
+        collapsed={collapsedByDefault}
       />
     </Box>
   );
