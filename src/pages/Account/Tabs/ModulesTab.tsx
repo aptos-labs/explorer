@@ -12,12 +12,16 @@ import CollapsibleCard from "../../../components/IndividualPageContent/Collapsib
 import useExpandedList from "../../../components/hooks/useExpandedList";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonCard from "../../../components/IndividualPageContent/JsonCard";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 
 function ModulesContent({
   data,
 }: {
   data: Types.MoveModuleBytecode[] | undefined;
 }): JSX.Element {
+  const inDev = useGetInDevMode();
+
   const modules: Types.MoveModuleBytecode[] = data ?? [];
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(modules.length);
@@ -50,7 +54,13 @@ function ModulesContent({
           />
           <ContentRow
             title="ABI:"
-            value={<JsonCard data={module.abi} expandedByDefault />}
+            value={
+              inDev ? (
+                <JsonViewCard data={module.abi} />
+              ) : (
+                <JsonCard data={module.abi} expandedByDefault />
+              )
+            }
           />
         </CollapsibleCard>
       ))}

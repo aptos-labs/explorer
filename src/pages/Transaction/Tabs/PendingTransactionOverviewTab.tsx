@@ -9,6 +9,8 @@ import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
+import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
 type PendingTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -17,6 +19,8 @@ type PendingTransactionOverviewTabProps = {
 export default function PendingTransactionOverviewTab({
   transaction,
 }: PendingTransactionOverviewTabProps) {
+  const inDev = useGetInDevMode();
+
   const transactionData = transaction as Types.Transaction_PendingTransaction;
 
   return (
@@ -55,7 +59,16 @@ export default function PendingTransactionOverviewTab({
         />
         <ContentRow
           title="Signature:"
-          value={<JsonCard data={transactionData.signature} />}
+          value={
+            inDev ? (
+              <JsonViewCard
+                data={transactionData.signature}
+                collapsedByDefault
+              />
+            ) : (
+              <JsonCard data={transactionData.signature} />
+            )
+          }
           tooltip={getLearnMoreTooltip("signature")}
         />
       </ContentBox>
