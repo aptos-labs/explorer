@@ -7,11 +7,9 @@ import {useGetSupply} from "../../../api/hooks/useGetSupply";
 import {useGetCoinSupplyLimit} from "../../../api/hooks/useGetCoinSupplyLimit";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
-const TOTAL_SUPPLY_TOOLTIP =
-  "Amount of APT tokens flowing through the Aptos network.";
-// TODO: Update circulating supply tooltip.
+const TOTAL_SUPPLY_TOOLTIP = "Amount of APT tokens in the Aptos network.";
 const CIRCULATING_SUPPLY_TOOLTIP =
-  "Amount of APT tokens flowing through the Aptos network.";
+  "Amount of APT tokens circulating in the market and in the general public’s hands.";
 
 function getFormattedSupplyStr(supply: number | undefined): string {
   if (supply === undefined) {
