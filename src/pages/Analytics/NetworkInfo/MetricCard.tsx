@@ -7,7 +7,7 @@ import StyledTooltip from "../../../components/StyledTooltip";
 
 function Data({children}: {children: React.ReactNode}) {
   return (
-    <Typography fontSize={19} fontWeight={400}>
+    <Typography fontSize={16} fontWeight={500}>
       {children}
     </Typography>
   );
