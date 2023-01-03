@@ -7,9 +7,10 @@ import {useGetSupply} from "../../../api/hooks/useGetSupply";
 import {useGetCoinSupplyLimit} from "../../../api/hooks/useGetCoinSupplyLimit";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
-const TOTAL_SUPPLY_TOOLTIP = "Amount of APT tokens in the Aptos network.";
+const TOTAL_SUPPLY_TOOLTIP =
+  "The current total number of APT tokens in the Aptos network.";
 const CIRCULATING_SUPPLY_TOOLTIP =
-  "Amount of APT tokens circulating in the market and in the general public’s hands.";
+  "The current number of APT tokens circulating in the market and unrestricted by the Aptos token supply schedule.";
 
 function getFormattedSupplyStr(supply: number | undefined): string {
   if (supply === undefined) {
