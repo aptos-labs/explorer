@@ -75,12 +75,8 @@ export default function Supply() {
     useState<boolean>(true);
 
   useEffect(() => {
-    if (state.network_name === "mainnet") {
-      setShowCirculatingSupply(true);
-    } else {
-      setShowCirculatingSupply(false);
-    }
-  }, [state]);
+    setShowCirculatingSupply(state.network_name === "mainnet");
+  }, [state.network_name]);
 
   return inDev && showCirculatingSupply ? (
     <TotalAndCirculatingSupply />

@@ -29,7 +29,7 @@ export function useGetSupply() {
     } else {
       setData(undefined);
     }
-  }, [state]);
+  }, [state.network_name]);
 
   return data;
 }
