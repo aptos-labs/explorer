@@ -11,6 +11,7 @@ const TRANSPARENT = "rgba(0,0,0,0)";
 
 const GROUP_ARRAYS_AFTER_LENGTH = 100;
 const COLLAPSE_STRINGS_AFTER_LENGTH = 80;
+const MAX_CARD_HEIGHT = 500;
 
 function useJsonViewCardTheme() {
   const theme = useTheme();
@@ -59,6 +60,7 @@ export default function JsonViewCard({
       sx={{
         backgroundColor: BACKGROUND_COLOR,
         overflow: "auto",
+        maxHeight: MAX_CARD_HEIGHT,
       }}
       padding={2}
       borderRadius={1}
