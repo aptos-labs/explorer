@@ -5,7 +5,6 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {TransactionStatus} from "../../../components/TransactionStatus";
-import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
@@ -15,7 +14,6 @@ import {getTransactionAmount, getTransactionCounterparty} from "../utils";
 import TransactionFunction from "./Components/TransactionFunction";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
 function UserTransferOrInteractionRows({
   transaction,
@@ -89,8 +87,6 @@ type UserTransactionOverviewTabProps = {
 export default function UserTransactionOverviewTab({
   transaction,
 }: UserTransactionOverviewTabProps) {
-  const inDev = useGetInDevMode();
-
   const transactionData = transaction as Types.Transaction_UserTransaction;
 
   return (
@@ -169,14 +165,7 @@ export default function UserTransactionOverviewTab({
         <ContentRow
           title="Signature:"
           value={
-            inDev ? (
-              <JsonViewCard
-                data={transactionData.signature}
-                collapsedByDefault
-              />
-            ) : (
-              <JsonCard data={transactionData.signature} />
-            )
+            <JsonViewCard data={transactionData.signature} collapsedByDefault />
           }
           tooltip={getLearnMoreTooltip("signature")}
         />

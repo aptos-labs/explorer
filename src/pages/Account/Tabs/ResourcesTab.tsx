@@ -6,17 +6,13 @@ import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabC
 import useExpandedList from "../../../components/hooks/useExpandedList";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
-import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
 function ResourcesContent({
   data,
 }: {
   data: Types.MoveResource[] | undefined;
 }): JSX.Element {
-  const inDev = useGetInDevMode();
-
   const resources: Types.MoveResource[] = data ?? [];
 
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
@@ -40,11 +36,7 @@ function ResourcesContent({
           expanded={expandedList[i]}
           toggleExpanded={() => toggleExpandedAt(i)}
         >
-          {inDev ? (
-            <JsonViewCard data={resource.data} />
-          ) : (
-            <JsonCard data={resource.data} expandedByDefault />
-          )}
+          <JsonViewCard data={resource.data} />
         </CollapsibleCard>
       ))}
     </CollapsibleCards>
