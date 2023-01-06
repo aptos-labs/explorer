@@ -2,7 +2,7 @@ import React from "react";
 import MetricSection from "./MetricSection";
 import Subtitle from "./Text/Subtitle";
 import Body from "./Text/Body";
-import {Stack} from "@mui/material";
+import {Skeleton, Stack} from "@mui/material";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {useGetStakingRewardsRate} from "../../../api/hooks/useGetStakingRewardsRate";
@@ -12,11 +12,15 @@ const REWARDS_TOOLTIP_TEXT =
   "Represents the Annual Percentage Yield (APY) that accrue as compound interest on staked APT. Rewards are paid out by the network after each Epoch.";
 const REWARDS_LEARN_MORE_LINK = "https://aptos.dev/concepts/staking#rewards";
 
-export default function Staking() {
+type StakingProps = {
+  isSkeletonLoading: boolean;
+};
+
+export default function Staking({isSkeletonLoading}: StakingProps) {
   const {totalVotingPower} = useGetValidatorSet();
   const {rewardsRateYearly} = useGetStakingRewardsRate();
 
-  return (
+  return !isSkeletonLoading ? (
     <MetricSection>
       <Stack direction="row" spacing={1} alignItems="center">
         <Subtitle>
@@ -32,6 +36,15 @@ export default function Staking() {
           text={REWARDS_TOOLTIP_TEXT}
           link={REWARDS_LEARN_MORE_LINK}
         />
+      </Stack>
+    </MetricSection>
+  ) : (
+    <MetricSection>
+      <Stack direction="row" spacing={1} alignItems="center">
+        <Skeleton width={190} />
+      </Stack>
+      <Stack direction="row" spacing={1} alignItems="center">
+        <Skeleton width={150} />
       </Stack>
     </MetricSection>
   );

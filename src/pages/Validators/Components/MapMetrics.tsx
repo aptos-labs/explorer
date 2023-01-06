@@ -1,44 +1,21 @@
 import React from "react";
-import {Grid, Stack, Typography} from "@mui/material";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {Grid, Stack} from "@mui/material";
 import {ValidatorGeoMetric} from "../../../api/hooks/useGetValidatorSetGeoData";
-import MetricSection from "./MetricSection";
-import {
-  fontSizeBodySmall,
-  fontSizeSubtitle,
-  fontSizeTitle,
-  fontSizeTitleSmall,
-} from "../constants";
 import EpochSection from "./Epoch";
 import StakingSection from "./Staking";
-import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
+import NodeCountsSection from "./NodeCounts";
 
 type MapMetricsProps = {
   validatorGeoMetric: ValidatorGeoMetric;
   isOnMobile?: boolean;
+  isSkeletonLoading: boolean;
 };
 
 export default function MapMetrics({
   validatorGeoMetric,
   isOnMobile,
+  isSkeletonLoading,
 }: MapMetricsProps) {
-  const {numberOfActiveValidators} = useGetValidatorSet();
-  const nodeCountsSection = (
-    <MetricSection>
-      <Typography sx={{fontSize: {xs: fontSizeTitleSmall, md: fontSizeTitle}}}>
-        {`${numberOfActiveValidators} Nodes`}
-      </Typography>
-      <Typography
-        sx={{fontSize: {xs: fontSizeBodySmall, md: fontSizeSubtitle}}}
-        color={grey[450]}
-      >{`${validatorGeoMetric.countryCount} Countries`}</Typography>
-      <Typography
-        sx={{fontSize: {xs: fontSizeBodySmall, md: fontSizeSubtitle}}}
-        color={grey[450]}
-      >{`${validatorGeoMetric.cityCount} Cities`}</Typography>
-    </MetricSection>
-  );
-
   return isOnMobile ? (
     <Grid
       container
@@ -49,13 +26,16 @@ export default function MapMetrics({
       spacing={2}
     >
       <Grid item xs={12} sm={6}>
-        {nodeCountsSection}
+        <NodeCountsSection
+          validatorGeoMetric={validatorGeoMetric}
+          isSkeletonLoading={isSkeletonLoading}
+        />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <EpochSection />
+        <EpochSection isSkeletonLoading={isSkeletonLoading} />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <StakingSection />
+        <StakingSection isSkeletonLoading={isSkeletonLoading} />
       </Grid>
     </Grid>
   ) : (
@@ -66,9 +46,12 @@ export default function MapMetrics({
       justifyContent="center"
       minWidth={232}
     >
-      {nodeCountsSection}
-      <EpochSection />
-      <StakingSection />
+      <NodeCountsSection
+        validatorGeoMetric={validatorGeoMetric}
+        isSkeletonLoading={isSkeletonLoading}
+      />
+      <EpochSection isSkeletonLoading={isSkeletonLoading} />
+      <StakingSection isSkeletonLoading={isSkeletonLoading} />
     </Stack>
   );
 }
