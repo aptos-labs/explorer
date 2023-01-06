@@ -10,6 +10,7 @@ import TokenPage from "./pages/Token/Index";
 import TransactionsPage from "./pages/Transactions/Index";
 import BlocksPage from "./pages/Blocks/Index";
 import ValidatorsPage from "./pages/Validators/Index";
+import ValidatorPage from "./pages/Validator/Index";
 import AnalyticsPage from "./pages/Analytics/Index";
 
 export default function ExplorerRoutes() {
@@ -19,6 +20,9 @@ export default function ExplorerRoutes() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/transactions" element={<TransactionsPage />} />
         <Route path="/validators" element={<ValidatorsPage />} />
+        <Route path="/validator">
+          <Route path="/validator" element={<ValidatorPage />} />
+        </Route>
         <Route path="/txn">
           <Route path=":txnHashOrVersion" element={<TransactionPage />} />
           <Route path=":txnHashOrVersion/:tab" element={<TransactionPage />} />
