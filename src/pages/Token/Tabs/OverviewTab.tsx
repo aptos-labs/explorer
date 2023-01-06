@@ -5,8 +5,6 @@ import React, {useState} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import JsonCard from "../../../components/IndividualPageContent/JsonCard";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 
 const OWNER_QUERY = gql`
@@ -72,8 +70,6 @@ type OverviewTabProps = {
 
 // TODO: add more contents
 export default function OverviewTab({data}: OverviewTabProps) {
-  const inDev = useGetInDevMode();
-
   const [metadataIsImage, setMetadataIsImage] = useState<boolean>(true);
 
   return (
@@ -125,14 +121,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
         <ContentRow
           title={"Default Properties:"}
           value={
-            inDev ? (
-              <JsonViewCard
-                data={data?.default_properties}
-                collapsedByDefault
-              />
-            ) : (
-              <JsonCard data={data?.default_properties} />
-            )
+            <JsonViewCard data={data?.default_properties} collapsedByDefault />
           }
         />
       </ContentBox>

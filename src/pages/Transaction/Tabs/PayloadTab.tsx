@@ -2,18 +2,14 @@ import React, {useState} from "react";
 import {Types} from "aptos";
 import {Box} from "@mui/material";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
-import JsonCard from "../../../components/IndividualPageContent/JsonCard";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 
 type PayloadTabProps = {
   transaction: Types.Transaction;
 };
 
 export default function PayloadTab({transaction}: PayloadTabProps) {
-  const inDev = useGetInDevMode();
-
   const [expanded, setExpanded] = useState<boolean>(true);
 
   if (!("payload" in transaction)) {
@@ -33,11 +29,7 @@ export default function PayloadTab({transaction}: PayloadTabProps) {
         expanded={expanded}
         toggleExpanded={toggleExpanded}
       >
-        {inDev ? (
-          <JsonViewCard data={transaction.payload} />
-        ) : (
-          <JsonCard data={transaction.payload} expandedByDefault />
-        )}
+        <JsonViewCard data={transaction.payload} />
       </CollapsibleCard>
     </Box>
   );
