@@ -6,7 +6,7 @@ export const devnetUrl =
 
 export const networks = {
   mainnet: "https://fullnode.mainnet.aptoslabs.com/",
-  testnet: "https://testnet.aptoslabs.com",
+  testnet: "https://fullnode.testnet.aptoslabs.com",
   devnet: devnetUrl,
   local: "http://localhost:8080",
 };
