@@ -15,9 +15,7 @@ import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "./Components/LastEpochPerformanceTooltip";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import ValidatorPage from "../Validator/Index";
 import {useNavigate} from "react-router-dom";
-import {Type} from "typescript";
 import {Types} from "aptos";
 
 function getSortedValidators(
