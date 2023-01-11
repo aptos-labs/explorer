@@ -18,10 +18,14 @@ export default function ValidatorsPage() {
       {state.network_name === "mainnet" ? (
         <>
           <ValidatorsMap />
-          <ValidatorsTable />
+          <Box sx={{width: "auto", overflowX: "auto"}}>
+            <ValidatorsTable />
+          </Box>
         </>
       ) : (
-        <OldValidatorsTable />
+        <Box sx={{width: "auto", overflowX: "auto"}}>
+          <OldValidatorsTable />
+        </Box>
       )}
     </Box>
   );
