@@ -14,6 +14,11 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "./Components/LastEpochPerformanceTooltip";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import ValidatorPage from "../Validator/Index";
+import {useNavigate} from "react-router-dom";
+import {Type} from "typescript";
+import {Types} from "aptos";
 
 function getSortedValidators(
   validators: MainnetValidator[],
@@ -243,7 +248,7 @@ const ValidatorCells = Object.freeze({
 
 type Column = keyof typeof ValidatorCells;
 
-const DEFAULT_COLUMNS: Column[] = [
+export const DEFAULT_VALIDATORS_COLUMNS: Column[] = [
   "addr",
   "operatorAddr",
   "votingPower",
@@ -256,15 +261,17 @@ type ValidatorRowProps = {
   validator: MainnetValidator;
   validatorToOperator: {[name: string]: string} | null;
   columns: Column[];
+  onClick?: () => void;
 };
 
-function ValidatorRow({
+export function ValidatorRow({
   validator,
   validatorToOperator,
   columns,
+  onClick,
 }: ValidatorRowProps) {
   return (
-    <GeneralTableRow>
+    <GeneralTableRow onClick={onClick}>
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
         return (
@@ -284,18 +291,24 @@ type ValidatorsTableProps = {
 };
 
 export function ValidatorsTable({
-  columns = DEFAULT_COLUMNS,
+  columns = DEFAULT_VALIDATORS_COLUMNS,
 }: ValidatorsTableProps) {
   const {validators} = useGetMainnetValidators();
   const validatorToOperator = useGetValidatorToOperator();
   const [sortColumn, setSortColumn] = useState<Column>("votingPower");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
+  const inDev = useGetInDevMode();
+  const navigate = useNavigate();
 
   const sortedValidators = getSortedValidators(
     validators,
     sortColumn,
     sortDirection,
   );
+
+  const rowClick = (address: Types.Address) => {
+    navigate(`/validator/${address}`);
+  };
 
   return (
     <Table>
@@ -320,6 +333,7 @@ export function ValidatorsTable({
               validator={validator}
               validatorToOperator={validatorToOperator}
               columns={columns}
+              onClick={inDev ? () => rowClick(validator.address) : () => null}
             />
           );
         })}
