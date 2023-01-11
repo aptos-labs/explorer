@@ -9,8 +9,8 @@ import BlockPage from "./pages/Block/Index";
 import TokenPage from "./pages/Token/Index";
 import TransactionsPage from "./pages/Transactions/Index";
 import BlocksPage from "./pages/Blocks/Index";
-import ValidatorsPage from "./pages/Validators";
-import ValidatorPage from "./pages/Validator/Index";
+import ValidatorsPage from "./pages/Validators/Index";
+import ValidatorPage from "./pages/Validator";
 import AnalyticsPage from "./pages/Analytics/Index";
 
 export default function ExplorerRoutes() {
