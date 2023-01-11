@@ -248,7 +248,7 @@ const ValidatorCells = Object.freeze({
 
 type Column = keyof typeof ValidatorCells;
 
-export const DEFAULT_VALIDATORS_COLUMNS: Column[] = [
+const DEFAULT_COLUMNS: Column[] = [
   "addr",
   "operatorAddr",
   "votingPower",
@@ -264,7 +264,7 @@ type ValidatorRowProps = {
   onClick?: () => void;
 };
 
-export function ValidatorRow({
+function ValidatorRow({
   validator,
   validatorToOperator,
   columns,
@@ -291,7 +291,7 @@ type ValidatorsTableProps = {
 };
 
 export function ValidatorsTable({
-  columns = DEFAULT_VALIDATORS_COLUMNS,
+  columns = DEFAULT_COLUMNS,
 }: ValidatorsTableProps) {
   const {validators} = useGetMainnetValidators();
   const validatorToOperator = useGetValidatorToOperator();
