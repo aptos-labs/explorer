@@ -3,6 +3,13 @@ import ReactDOM from "react-dom";
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
+import {AptosWalletAdapterProvider} from "@aptos-labs/wallet-adapter-react";
+import {PetraWallet} from "petra-plugin-wallet-adapter";
+import {PontemWallet} from "@pontem/wallet-adapter-plugin";
+import {MartianWallet} from "@martianwallet/aptos-wallet-adapter";
+import {RiseWallet} from "@rise-wallet/wallet-adapter";
+import {SpikaWallet} from "@spika/aptos-plugin";
+import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
 
 import * as Sentry from "@sentry/react";
 import {BrowserTracing} from "@sentry/tracing";
@@ -41,14 +48,25 @@ declare global {
 
 const queryClient = new QueryClient();
 
+const wallets = [
+  new PetraWallet(),
+  new PontemWallet(),
+  new MartianWallet(),
+  new FewchaWallet(),
+  new RiseWallet(),
+  new SpikaWallet(),
+];
+
 // delay rendering the application until the window.onload event has fired when integrating with the window.aptos API
 window.addEventListener("load", () => {
   ReactDOM.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <ExplorerRoutes />
-        </BrowserRouter>
+        <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
+          <BrowserRouter>
+            <ExplorerRoutes />
+          </BrowserRouter>
+        </AptosWalletAdapterProvider>
       </QueryClientProvider>
     </React.StrictMode>,
     document.getElementById("root"),
