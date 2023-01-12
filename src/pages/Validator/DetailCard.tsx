@@ -47,30 +47,28 @@ export default function ValidatorDetailCard({address}: ValidatorDetailProps) {
     }
   }, [lockedUntilSecs, operatorAddr, rewardGrowth]);
 
-  return (
+  return isSkeletonLoading ? (
+    validatorDetailCardSkeleton()
+  ) : (
     <Box display="flex">
-      {isSkeletonLoading ? (
-        <Skeleton variant="text"></Skeleton>
-      ) : (
-        <ContentBox padding={4}>
-          <ContentRow
-            title={"Operator"}
-            value={
-              operatorAddr ? (
-                <HashButton hash={operatorAddr} type={HashType.ACCOUNT} />
-              ) : null
-            }
-          />
-          <ContentRow title="Number of delegator" value={null} />
-          <ContentRow title="Compound rewards" value={null} />
-          <ContentRow title="Operator commission" value={null} />
-          <ContentRow
-            title="Next unlock in"
-            value={prettifyTimestamp(Number(lockedUntilSecs))}
-          />
-        </ContentBox>
-      )}
-      <ContentBox padding={4}>
+      <ContentBox padding={4} width="50%">
+        <ContentRow
+          title={"Operator"}
+          value={
+            operatorAddr ? (
+              <HashButton hash={operatorAddr} type={HashType.ACCOUNT} />
+            ) : null
+          }
+        />
+        <ContentRow title="Number of delegator" value={null} />
+        <ContentRow title="Compound rewards" value={null} />
+        <ContentRow title="Operator commission" value={null} />
+        <ContentRow
+          title="Next unlock in"
+          value={prettifyTimestamp(Number(lockedUntilSecs))}
+        />
+      </ContentBox>
+      <ContentBox padding={4} width="50%">
         <ContentRow title={"Node started"} value={null} />
         <ContentRow
           title="Rewards Performance"
@@ -84,6 +82,25 @@ export default function ValidatorDetailCard({address}: ValidatorDetailProps) {
         />
         <ContentRow title="Last epoch deposit total" value={null} />
         <ContentRow title="Last epoch withdraw total" value={null} />
+      </ContentBox>
+    </Box>
+  );
+}
+
+function validatorDetailCardSkeleton() {
+  return (
+    <Box display="flex">
+      <ContentBox padding={4} width="50%">
+        <Skeleton></Skeleton>
+        <Skeleton></Skeleton>
+        <Skeleton></Skeleton>
+        <Skeleton></Skeleton>
+      </ContentBox>
+      <ContentBox padding={4} width="50%">
+        <Skeleton></Skeleton>
+        <Skeleton></Skeleton>
+        <Skeleton></Skeleton>
+        <Skeleton></Skeleton>
       </ContentBox>
     </Box>
   );

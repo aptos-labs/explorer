@@ -12,17 +12,22 @@ import BlocksPage from "./pages/Blocks/Index";
 import ValidatorsPage from "./pages/Validators/Index";
 import ValidatorPage from "./pages/Validator";
 import AnalyticsPage from "./pages/Analytics/Index";
+import {useGetInDevMode} from "./api/hooks/useGetInDevMode";
 
 export default function ExplorerRoutes() {
+  const inDev = useGetInDevMode();
+
   return (
     <ExplorerLayout>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/transactions" element={<TransactionsPage />} />
         <Route path="/validators" element={<ValidatorsPage />} />
-        <Route path="/validator">
-          <Route path=":address" element={<ValidatorPage />} />
-        </Route>
+        {inDev ? (
+          <Route path="/validator">
+            <Route path=":address" element={<ValidatorPage />} />
+          </Route>
+        ) : null}
         <Route path="/txn">
           <Route path=":txnHashOrVersion" element={<TransactionPage />} />
           <Route path=":txnHashOrVersion/:tab" element={<TransactionPage />} />

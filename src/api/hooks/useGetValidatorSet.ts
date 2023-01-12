@@ -159,7 +159,6 @@ export function useGetMainnetValidators() {
   const {validatorStatusSet} = useGetMainnetValidatorStatusSet();
   const {geoDatas} = useGetGeoData();
   const [validators, setValidators] = useState<MainnetValidator[]>([]);
-  console.log(activeValidators);
   useMemo(() => {
     if (
       validatorStatusSet.length === activeValidators.length &&
