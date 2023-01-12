@@ -161,11 +161,7 @@ export function useGetMainnetValidators() {
   const [validators, setValidators] = useState<MainnetValidator[]>([]);
 
   useMemo(() => {
-    if (
-      validatorStatusSet.length === activeValidators.length &&
-      validatorStatusSet.length > 0 &&
-      geoDatas.length > 0
-    ) {
+    if (validatorStatusSet.length > 0 && geoDatas.length > 0) {
       const validators = activeValidators.map(
         (activeValidator: Validator): MainnetValidator => {
           const validatorStatus = validatorStatusSet.find(
