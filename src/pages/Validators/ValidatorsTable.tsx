@@ -14,6 +14,9 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "./Components/LastEpochPerformanceTooltip";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useNavigate} from "react-router-dom";
+import {Types} from "aptos";
 
 function getSortedValidators(
   validators: MainnetValidator[],
@@ -263,8 +266,17 @@ function ValidatorRow({
   validatorToOperator,
   columns,
 }: ValidatorRowProps) {
+  const inDev = useGetInDevMode();
+  const navigate = useNavigate();
+
+  const rowClick = (address: Types.Address) => {
+    navigate(`/validator/${address}`);
+  };
+
   return (
-    <GeneralTableRow>
+    <GeneralTableRow
+      onClick={inDev ? () => rowClick(validator.address) : () => null}
+    >
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
         return (
