@@ -6,7 +6,6 @@ import ContentRow from "../../components/IndividualPageContent/ContentRow";
 import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
-import {prettifyTimestamp} from "../utils";
 import {Types} from "aptos";
 import {
   useGetMainnetValidators,
@@ -14,6 +13,7 @@ import {
 } from "../../api/hooks/useGetValidatorSet";
 import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 import {useEffect, useState} from "react";
+import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 
 type ValidatorDetailProps = {
   address: Types.Address;
@@ -65,7 +65,7 @@ export default function ValidatorDetailCard({address}: ValidatorDetailProps) {
         <ContentRow title="Operator commission" value={null} />
         <ContentRow
           title="Next unlock in"
-          value={prettifyTimestamp(Number(lockedUntilSecs))}
+          value={<TimestampValue timestamp={lockedUntilSecs?.toString()!} />}
         />
       </ContentBox>
       <ContentBox padding={4} width="50%">
