@@ -17,6 +17,8 @@ import NavMobile from "./NavMobile";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
+import ConnectWallet from "./ConnectWallet";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 
 export default function Header() {
   const scrollTop = () => {
@@ -42,6 +44,8 @@ export default function Header() {
     threshold: 0,
   });
 
+  const inDev = useGetInDevMode();
+
   return (
     <>
       <Box
@@ -63,7 +67,7 @@ export default function Header() {
           ...(!inView &&
             isDark && {
               background: "rgba(18,22,21, 0.85)",
-              borderBottom: `1px solid ${theme.palette.lineShade.main}`,
+              borderBottom: `1px solid ${theme.palette.common}`,
             }),
           ...(!inView &&
             !isDark && {
@@ -117,6 +121,7 @@ export default function Header() {
               {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
             </Button>
             <NavMobile />
+            {inDev ? <ConnectWallet /> : null}
           </Toolbar>
         </Container>
       </MuiAppBar>
