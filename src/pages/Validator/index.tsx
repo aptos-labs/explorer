@@ -4,9 +4,22 @@ import {useParams} from "react-router-dom";
 import PageHeader from "../layout/PageHeader";
 import ValidatorTitle from "./Title";
 import ValidatorDetailCard from "./DetailCard";
+import ValidatorStakingBar from "./StakingBar";
+import {useGetMainnetValidators} from "../../api/hooks/useGetValidatorSet";
+import EmptyValue from "../../components/IndividualPageContent/ContentValue/EmptyValue";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
+  // make sure that addresses will always start with "0x"
+  const addressHex = address.startsWith("0x") ? address : "0x" + address;
+  const {validators} = useGetMainnetValidators();
+  const validator = validators.find(
+    (validator) => validator.address === addressHex,
+  );
+
+  if (!validator) {
+    return <EmptyValue />;
+  }
 
   return (
     <Grid spacing={1}>
@@ -14,7 +27,8 @@ export default function ValidatorPage() {
         <PageHeader />
       </Grid>
       <ValidatorTitle address={address} />
-      <ValidatorDetailCard address={address} />
+      <ValidatorStakingBar validator={validator} />
+      <ValidatorDetailCard validator={validator} addressHex={addressHex} />
     </Grid>
   );
 }
