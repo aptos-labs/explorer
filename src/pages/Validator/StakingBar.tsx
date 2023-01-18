@@ -1,14 +1,12 @@
 import {Button, Divider, ListItem, ListItemText} from "@mui/material";
 import React from "react";
-import {
-  MainnetValidator,
-  useGetValidatorSet,
-} from "../../api/hooks/useGetValidatorSet";
+import {MainnetValidatorData} from "../../api/hooks/useGetMainnetValidators";
+import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 
 type ValidatorStakingBarProps = {
-  validator: MainnetValidator;
+  validator: MainnetValidatorData;
 };
 
 export default function StakingBar({validator}: ValidatorStakingBarProps) {
