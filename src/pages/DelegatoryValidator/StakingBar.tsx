@@ -6,7 +6,7 @@ import {
 } from "../../api/hooks/useGetValidatorSet";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import Staking from "./Staking";
+import StakeDialog from "./StakeDialog";
 
 type ValidatorStakingBarProps = {
   validator: MainnetValidator;
@@ -22,12 +22,12 @@ export default function StakingBar({validator}: ValidatorStakingBarProps) {
   const percentOfNetwork =
     parseInt(validator.voting_power) / parseInt(totalVotingPower!);
 
-  const [open, setOpen] = useState<boolean>(false);
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const handleClickOpen = () => {
-    setOpen(true);
+    setDialogOpen(true);
   };
   const handleClose = () => {
-    setOpen(false);
+    setDialogOpen(false);
   };
 
   return (
@@ -59,7 +59,7 @@ export default function StakingBar({validator}: ValidatorStakingBarProps) {
         <Divider orientation="vertical" flexItem variant="fullWidth"></Divider>
         <Button onClick={handleClickOpen}>Stake</Button>
       </ListItem>
-      <Staking handleDialogClose={handleClose} isDialogOpen={open} />
+      <StakeDialog handleDialogClose={handleClose} isDialogOpen={dialogOpen} />
     </ContentBox>
   );
 }

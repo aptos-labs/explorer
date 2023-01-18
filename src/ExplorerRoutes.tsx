@@ -10,7 +10,7 @@ import TokenPage from "./pages/Token/Index";
 import TransactionsPage from "./pages/Transactions/Index";
 import BlocksPage from "./pages/Blocks/Index";
 import ValidatorsPage from "./pages/Validators/Index";
-import ValidatorPage from "./pages/Validator";
+import ValidatorPage from "./pages/DelegatoryValidator";
 import AnalyticsPage from "./pages/Analytics/Index";
 import {useGetInDevMode} from "./api/hooks/useGetInDevMode";
 

@@ -12,15 +12,15 @@ import React from "react";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../components/IndividualPageContent/ContentRow";
 
-type StakingFlowProps = {
+type StakeDialogProps = {
   handleDialogClose: () => void;
   isDialogOpen: boolean;
 };
 
-export default function Staking({
+export default function StakeDialog({
   handleDialogClose,
   isDialogOpen,
-}: StakingFlowProps) {
+}: StakeDialogProps) {
   return (
     <Dialog open={isDialogOpen} onClose={handleDialogClose} fullWidth={true}>
       <DialogTitle>Stake into the pool</DialogTitle>
