@@ -17,6 +17,7 @@ type ValidatorDetailProps = {
 };
 
 export default function ValidatorDetailCard({address}: ValidatorDetailProps) {
+  // TODO: handle the address in a better way
   // make sure that addresses will always start with "0x"
   const addressHex = address.startsWith("0x") ? address : "0x" + address;
   const {validators} = useGetMainnetValidators();
