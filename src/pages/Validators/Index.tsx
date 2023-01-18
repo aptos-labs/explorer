@@ -1,5 +1,7 @@
-import {Box, Typography} from "@mui/material";
+import {Box, Tab, Tabs, Typography} from "@mui/material";
 import * as React from "react";
+import {useState} from "react";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useGlobalState} from "../../GlobalState";
 import PageHeader from "../layout/PageHeader";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
@@ -8,6 +10,15 @@ import {ValidatorsTable} from "./ValidatorsTable";
 
 export default function ValidatorsPage() {
   const [state, _] = useGlobalState();
+  const [onDelegatory, setOnDelegatory] = useState<boolean>(false);
+  const inDev = useGetInDevMode();
+
+  const handleTabChange = (
+    _event: React.SyntheticEvent,
+    onDelegatory: boolean,
+  ) => {
+    setOnDelegatory(onDelegatory);
+  };
 
   return (
     <Box>
@@ -18,14 +29,33 @@ export default function ValidatorsPage() {
       {state.network_name === "mainnet" ? (
         <>
           <ValidatorsMap />
+          {inDev && ( 
+           <Tabs value={onDelegatory} onChange={handleTabChange}>
+              <Tab label="All Nodes" value={false} />
+              <Tab label="Delegation Nodes" value={true} />
+            </Tabs>
+          )
+            <Tabs value={onDelegatory} onChange={handleTabChange}>
+              <Tab label="All Nodes" value={false} />
+              <Tab label="Delegation Nodes" value={true} />
+            </Tabs>
+          ) : null}
           <Box sx={{width: "auto", overflowX: "auto"}}>
-            <ValidatorsTable />
+            <ValidatorsTable onDelegatory={onDelegatory} />
           </Box>
         </>
       ) : (
-        <Box sx={{width: "auto", overflowX: "auto"}}>
-          <OldValidatorsTable />
-        </Box>
+        <>
+          {inDev ? (
+            <Tabs value={onDelegatory} onChange={handleTabChange}>
+              <Tab label="All Nodes" value={false} />
+              <Tab label="Delegation Nodes" value={true} />
+            </Tabs>
+          ) : null}
+          <Box sx={{width: "auto", overflowX: "auto"}}>
+            <OldValidatorsTable onDelegatory={onDelegatory} />
+          </Box>
+        </>
       )}
     </Box>
   );

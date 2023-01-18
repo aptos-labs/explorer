@@ -156,6 +156,12 @@ function ValidatorHeaderCell({
           setSortColumn={setSortColumn}
         />
       );
+    case "delegator":
+      return <GeneralTableHeaderCell header="Delegators" />;
+    case "commission":
+      return <GeneralTableHeaderCell header="Commission" />;
+    case "myDeposit":
+      return <GeneralTableHeaderCell header="My Deposit" />;
     default:
       return assertNever(column);
   }
@@ -224,6 +230,18 @@ function LocationCell({validator}: ValidatorCellProps) {
   );
 }
 
+export function CommissionCell() {
+  return <GeneralTableCell>N/A</GeneralTableCell>;
+}
+
+export function DelegatorCell() {
+  return <GeneralTableCell>N/A</GeneralTableCell>;
+}
+
+export function MyDepositCell() {
+  return <GeneralTableCell>N/A</GeneralTableCell>;
+}
+
 const ValidatorCells = Object.freeze({
   addr: ValidatorAddrCell,
   operatorAddr: OperatorAddrCell,
@@ -231,6 +249,9 @@ const ValidatorCells = Object.freeze({
   rewardsPerf: RewardsPerformanceCell,
   lastEpochPerf: LastEpochPerformanceCell,
   location: LocationCell,
+  commission: CommissionCell,
+  delegator: DelegatorCell,
+  myDeposit: MyDepositCell,
 });
 
 type Column = keyof typeof ValidatorCells;
@@ -242,6 +263,15 @@ const DEFAULT_COLUMNS: Column[] = [
   "rewardsPerf",
   "lastEpochPerf",
   "location",
+];
+
+const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
+  "operatorAddr",
+  "commission",
+  "rewardsPerf",
+  "delegator",
+  "votingPower",
+  "myDeposit",
 ];
 
 type ValidatorRowProps = {
@@ -259,7 +289,7 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
 
   return (
     <GeneralTableRow
-      onClick={inDev ? () => rowClick(validator.owner_address) : () => null}
+      onClick={inDev ? () => rowClick(validator.owner_address) : undefined}
     >
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
@@ -270,17 +300,15 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
 }
 
 type ValidatorsTableProps = {
-  columns?: Column[];
+  onDelegatory: boolean;
 };
 
-export function ValidatorsTable({
-  columns = DEFAULT_COLUMNS,
-}: ValidatorsTableProps) {
+export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
   const {validators} = useGetMainnetValidators();
 
   const [sortColumn, setSortColumn] = useState<Column>("votingPower");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
-
+  const columns = onDelegatory ? DELEGATORY_VALIDATOR_COLUMNS : DEFAULT_COLUMNS;
   const sortedValidators = getSortedValidators(
     validators,
     sortColumn,
