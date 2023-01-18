@@ -11,6 +11,10 @@ import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import {CommissionCell, DelegatorCell, MyDepositCell} from "./ValidatorsTable";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useNavigate} from "react-router-dom";
+import {Types} from "aptos";
 
 type ValidatorCellProps = {
   validator: Validator;
@@ -83,6 +87,9 @@ const ValidatorCells = Object.freeze({
   consensusPK: ConsensusPKCell,
   fullnodeAddr: FullnodeAddrCell,
   networkAddr: NetworkAddrCell,
+  delegator: DelegatorCell,
+  myDeposit: MyDepositCell,
+  commission: CommissionCell,
 });
 
 type Column = keyof typeof ValidatorCells;
@@ -96,14 +103,32 @@ const DEFAULT_COLUMNS: Column[] = [
   "networkAddr",
 ];
 
+const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
+  "idx",
+  "addr",
+  "votingPower",
+  "commission",
+  "delegator",
+  "myDeposit",
+];
+
 type ValidatorRowProps = {
   validator: Validator;
   columns: Column[];
 };
 
 function ValidatorRow({validator, columns}: ValidatorRowProps) {
+  const inDev = useGetInDevMode();
+  const navigate = useNavigate();
+
+  const rowClick = (address: Types.Address) => {
+    navigate(`/validator/${address}`);
+  };
+
   return (
-    <GeneralTableRow>
+    <GeneralTableRow
+      onClick={inDev ? () => rowClick(validator.addr) : undefined}
+    >
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
         return <Cell key={column} validator={validator} />;
@@ -134,18 +159,22 @@ function ValidatorHeaderCell({column}: ValidatorHeaderCellProps) {
       );
     case "networkAddr":
       return <GeneralTableHeaderCell header="Network Address" textAlignRight />;
+    case "delegator":
+      return <GeneralTableHeaderCell header="Delegators" textAlignRight />;
+    case "commission":
+      return <GeneralTableHeaderCell header="Commission" textAlignRight />;
+    case "myDeposit":
+      return <GeneralTableHeaderCell header="My Deposit" textAlignRight />;
     default:
       return assertNever(column);
   }
 }
 
 type ValidatorsTableProps = {
-  columns?: Column[];
+  onDelegatory: boolean;
 };
 
-export function ValidatorsTable({
-  columns = DEFAULT_COLUMNS,
-}: ValidatorsTableProps) {
+export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
   const {activeValidators} = useGetValidatorSet();
 
   const validatorsCopy: Validator[] = JSON.parse(
@@ -155,6 +184,7 @@ export function ValidatorsTable({
     (validator1, validator2) =>
       parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
   );
+  const columns = onDelegatory ? DELEGATORY_VALIDATOR_COLUMNS : DEFAULT_COLUMNS;
 
   return (
     <Table>
