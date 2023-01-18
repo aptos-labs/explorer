@@ -3,13 +3,7 @@ import {Box, Stack, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
-import {
-  MainnetValidator,
-  useGetMainnetValidators,
-  useGetValidatorToOperator,
-} from "../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../components/HashButton";
-import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
@@ -17,13 +11,17 @@ import LastEpochPerformanceTooltip from "./Components/LastEpochPerformanceToolti
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
+import {
+  MainnetValidatorData,
+  useGetMainnetValidators,
+} from "../../api/hooks/useGetMainnetValidators";
 
 function getSortedValidators(
-  validators: MainnetValidator[],
+  validators: MainnetValidatorData[],
   column: Column,
   direction: "desc" | "asc",
 ) {
-  const validatorsCopy: MainnetValidator[] = JSON.parse(
+  const validatorsCopy: MainnetValidatorData[] = JSON.parse(
     JSON.stringify(validators),
   );
   const orderedValidators = getValidatorsOrderedBy(validatorsCopy, column);
@@ -32,7 +30,7 @@ function getSortedValidators(
 }
 
 function getValidatorsOrderedBy(
-  validatorsCopy: MainnetValidator[],
+  validatorsCopy: MainnetValidatorData[],
   column: Column,
 ) {
   switch (column) {
@@ -54,8 +52,8 @@ function getValidatorsOrderedBy(
       );
     case "location":
       return validatorsCopy.sort((validator1, validator2) =>
-        (validator1.geo_data?.city ?? "zz").localeCompare(
-          validator2.geo_data?.city ?? "zz",
+        (validator1.location_stats?.city ?? "zz").localeCompare(
+          validator2.location_stats?.city ?? "zz",
         ),
       );
     default:
@@ -163,31 +161,21 @@ function ValidatorHeaderCell({
 }
 
 type ValidatorCellProps = {
-  validator: MainnetValidator;
-  validatorToOperator: {[name: string]: string} | null;
+  validator: MainnetValidatorData;
 };
 
 function ValidatorAddrCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <HashButton hash={validator.address} type={HashType.ACCOUNT} />
+      <HashButton hash={validator.owner_address} type={HashType.ACCOUNT} />
     </GeneralTableCell>
   );
 }
 
-function OperatorAddrCell({
-  validator,
-  validatorToOperator,
-}: ValidatorCellProps) {
-  const operatorAddr = validatorToOperator
-    ? validatorToOperator[validator.address]
-    : null;
-
+function OperatorAddrCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      {operatorAddr && (
-        <HashButton hash={operatorAddr} type={HashType.ACCOUNT} />
-      )}
+      <HashButton hash={validator.operator_address} type={HashType.ACCOUNT} />
     </GeneralTableCell>
   );
 }
@@ -195,7 +183,8 @@ function OperatorAddrCell({
 function VotingPowerCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 0)}
+      -
+      {/* {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 0)} */}
     </GeneralTableCell>
   );
 }
@@ -228,8 +217,8 @@ function LastEpochPerformanceCell({validator}: ValidatorCellProps) {
 function LocationCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {validator.geo_data?.city && validator.geo_data?.country
-        ? `${validator.geo_data?.city}, ${validator.geo_data?.country}`
+      {validator.location_stats?.city && validator.location_stats?.country
+        ? `${validator.location_stats?.city}, ${validator.location_stats?.country}`
         : "-"}
     </GeneralTableCell>
   );
@@ -256,16 +245,11 @@ const DEFAULT_COLUMNS: Column[] = [
 ];
 
 type ValidatorRowProps = {
-  validator: MainnetValidator;
-  validatorToOperator: {[name: string]: string} | null;
+  validator: MainnetValidatorData;
   columns: Column[];
 };
 
-function ValidatorRow({
-  validator,
-  validatorToOperator,
-  columns,
-}: ValidatorRowProps) {
+function ValidatorRow({validator, columns}: ValidatorRowProps) {
   const inDev = useGetInDevMode();
   const navigate = useNavigate();
 
@@ -275,17 +259,11 @@ function ValidatorRow({
 
   return (
     <GeneralTableRow
-      onClick={inDev ? () => rowClick(validator.address) : () => null}
+      onClick={inDev ? () => rowClick(validator.owner_address) : () => null}
     >
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
-        return (
-          <Cell
-            key={column}
-            validator={validator}
-            validatorToOperator={validatorToOperator}
-          />
-        );
+        return <Cell key={column} validator={validator} />;
       })}
     </GeneralTableRow>
   );
@@ -299,8 +277,8 @@ export function ValidatorsTable({
   columns = DEFAULT_COLUMNS,
 }: ValidatorsTableProps) {
   const {validators} = useGetMainnetValidators();
-  const validatorToOperator = useGetValidatorToOperator();
-  const [sortColumn, setSortColumn] = useState<Column>("votingPower");
+
+  const [sortColumn, setSortColumn] = useState<Column>("addr");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
 
   const sortedValidators = getSortedValidators(
@@ -327,12 +305,7 @@ export function ValidatorsTable({
       <GeneralTableBody>
         {sortedValidators.map((validator: any, i: number) => {
           return (
-            <ValidatorRow
-              key={i}
-              validator={validator}
-              validatorToOperator={validatorToOperator}
-              columns={columns}
-            />
+            <ValidatorRow key={i} validator={validator} columns={columns} />
           );
         })}
       </GeneralTableBody>

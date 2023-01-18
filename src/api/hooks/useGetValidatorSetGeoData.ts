@@ -1,41 +1,9 @@
-import {useGlobalState} from "../../GlobalState";
-import {useEffect, useMemo, useState} from "react";
-
-const MAINNET_VALIDATORS_GEO_DATA_URL =
-  "https://aptos-analytics-data-mainnet.s3.amazonaws.com/validator_location_stats.json";
-
-export interface GeoData {
-  peer_id: string;
-  latitude: number;
-  longitude: number;
-  city: string;
-  country: string;
-  region: string;
-  epoch: number;
-}
-
-export function useGetGeoData() {
-  const [state, _] = useGlobalState();
-  const [geoDatas, setGeoDatas] = useState<GeoData[]>([]);
-
-  useEffect(() => {
-    if (state.network_name === "mainnet") {
-      const fetchData = async () => {
-        const response = await fetch(MAINNET_VALIDATORS_GEO_DATA_URL);
-        const data = await response.json();
-        setGeoDatas(data);
-      };
-
-      fetchData().catch((error) => {
-        console.error("ERROR!", error, typeof error);
-      });
-    } else {
-      setGeoDatas([]);
-    }
-  }, [state]);
-
-  return {geoDatas};
-}
+import {useMemo, useState} from "react";
+import {
+  GeoData,
+  MainnetValidatorData,
+  useGetMainnetValidators,
+} from "./useGetMainnetValidators";
 
 export type ValidatorGeoMetric = {
   nodeCount: number;
@@ -57,7 +25,7 @@ export interface ValidatorGeoGroup {
 }
 
 export function useGetValidatorSetGeoData() {
-  const {geoDatas} = useGetGeoData();
+  const {validators} = useGetMainnetValidators();
   const [validatorGeoGroups, setValidatorGeoGroups] = useState<
     ValidatorGeoGroup[]
   >([]);
@@ -69,8 +37,9 @@ export function useGetValidatorSetGeoData() {
     });
 
   useMemo(() => {
-    const groups: ValidatorGeoGroup[] = geoDatas.reduce(
-      (groups: ValidatorGeoGroup[], geoData: GeoData) => {
+    const groups: ValidatorGeoGroup[] = validators.reduce(
+      (groups: ValidatorGeoGroup[], validatorData: MainnetValidatorData) => {
+        const geoData = validatorData.location_stats;
         const country = geoData.country;
         if (!country) {
           return groups;
@@ -130,11 +99,11 @@ export function useGetValidatorSetGeoData() {
 
     setValidatorGeoGroups(groups);
     setValidatorGeoMetric({
-      nodeCount: geoDatas.length,
+      nodeCount: validators.length,
       countryCount: groups.length,
       cityCount: totalCityCount,
     });
-  }, [geoDatas]);
+  }, [validators]);
 
   return {validatorGeoGroups, validatorGeoMetric};
 }
