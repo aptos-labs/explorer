@@ -12,15 +12,15 @@ import React from "react";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../components/IndividualPageContent/ContentRow";
 
-type UnstakingFlowProps = {
+type isDialogOpen = {
   handleDialogClose: () => void;
   isDialogOpen: boolean;
 };
 
-export default function Unstaking({
+export default function UnstakeDialog({
   handleDialogClose,
   isDialogOpen,
-}: UnstakingFlowProps) {
+}: isDialogOpen) {
   return (
     <Dialog open={isDialogOpen} onClose={handleDialogClose} fullWidth={true}>
       <DialogTitle>Unstake funds</DialogTitle>
