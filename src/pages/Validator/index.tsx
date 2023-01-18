@@ -6,19 +6,18 @@ import ValidatorTitle from "./Title";
 import ValidatorDetailCard from "./DetailCard";
 import ValidatorStakingBar from "./StakingBar";
 import {useGetMainnetValidators} from "../../api/hooks/useGetValidatorSet";
-import EmptyValue from "../../components/IndividualPageContent/ContentValue/EmptyValue";
+import {HexString} from "aptos";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
-  // make sure that addresses will always start with "0x"
-  const addressHex = address.startsWith("0x") ? address : "0x" + address;
+  const addressHex = new HexString(address);
   const {validators} = useGetMainnetValidators();
   const validator = validators.find(
-    (validator) => validator.address === addressHex,
+    (validator) => validator.address === addressHex.hex(),
   );
 
   if (!validator) {
-    return <EmptyValue />;
+    return null;
   }
 
   return (
@@ -28,7 +27,10 @@ export default function ValidatorPage() {
       </Grid>
       <ValidatorTitle address={address} />
       <ValidatorStakingBar validator={validator} />
-      <ValidatorDetailCard validator={validator} addressHex={addressHex} />
+      <ValidatorDetailCard
+        validator={validator}
+        addressHex={addressHex.hex()}
+      />
     </Grid>
   );
 }
