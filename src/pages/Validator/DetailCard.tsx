@@ -6,9 +6,8 @@ import ContentRow from "../../components/IndividualPageContent/ContentRow";
 import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
-import {Types} from "aptos";
 import {
-  useGetMainnetValidators,
+  MainnetValidator,
   useGetValidatorToOperator,
 } from "../../api/hooks/useGetValidatorSet";
 import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
@@ -16,21 +15,19 @@ import {useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 
 type ValidatorDetailProps = {
-  address: Types.Address;
+  validator: MainnetValidator;
+  addressHex: string;
 };
 
-export default function ValidatorDetailCard({address}: ValidatorDetailProps) {
-  // make sure that addresses will always start with "0x"
-  const addressHex = address.startsWith("0x") ? address : "0x" + address;
-  const {validators} = useGetMainnetValidators();
-  const {isLoading, accountResource} = useGetAccountResource(
+export default function ValidatorDetailCard({
+  validator,
+  addressHex,
+}: ValidatorDetailProps) {
+  const {accountResource} = useGetAccountResource(
     addressHex,
     "0x1::stake::StakePool",
   );
   const validatorToOperator = useGetValidatorToOperator();
-  const validator = validators.find(
-    (validator) => validator.address === addressHex,
-  );
   const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
 
   const lockedUntilSecs = accountResource
