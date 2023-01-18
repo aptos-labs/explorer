@@ -15,6 +15,7 @@ import {
   MainnetValidatorData,
   useGetMainnetValidators,
 } from "../../api/hooks/useGetMainnetValidators";
+import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 
 function getSortedValidators(
   validators: MainnetValidatorData[],
@@ -183,8 +184,7 @@ function OperatorAddrCell({validator}: ValidatorCellProps) {
 function VotingPowerCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      -
-      {/* {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 0)} */}
+      {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 0)}
     </GeneralTableCell>
   );
 }
@@ -278,7 +278,7 @@ export function ValidatorsTable({
 }: ValidatorsTableProps) {
   const {validators} = useGetMainnetValidators();
 
-  const [sortColumn, setSortColumn] = useState<Column>("addr");
+  const [sortColumn, setSortColumn] = useState<Column>("votingPower");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
 
   const sortedValidators = getSortedValidators(

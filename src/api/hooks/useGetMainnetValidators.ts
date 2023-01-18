@@ -1,5 +1,6 @@
 import {useGlobalState} from "../../GlobalState";
 import {useEffect, useState} from "react";
+import {useGetValidatorSet} from "./useGetValidatorSet";
 
 const MAINNET_VALIDATORS_DATA_URL =
   "https://aptos-analytics-data-mainnet.s3.amazonaws.com/validator_stats_v1.json";
@@ -26,25 +27,50 @@ export interface GeoData {
   epoch: number;
 }
 
-export function useGetMainnetValidators() {
+function useGetMainnetValidatorsRawData() {
   const [state, _] = useGlobalState();
-  const [validators, setValidators] = useState<MainnetValidatorData[]>([]);
+  const [validatorsRawData, setValidatorsRawData] = useState<
+    MainnetValidatorData[]
+  >([]);
 
   useEffect(() => {
     if (state.network_name === "mainnet") {
       const fetchData = async () => {
         const response = await fetch(MAINNET_VALIDATORS_DATA_URL);
         const data = await response.json();
-        setValidators(data);
+        setValidatorsRawData(data);
       };
 
       fetchData().catch((error) => {
         console.error("ERROR!", error, typeof error);
       });
     } else {
-      setValidators([]);
+      setValidatorsRawData([]);
     }
   }, [state]);
+
+  return {validatorsRawData};
+}
+
+export function useGetMainnetValidators() {
+  const {activeValidators} = useGetValidatorSet();
+  const {validatorsRawData} = useGetMainnetValidatorsRawData();
+  const [validators, setValidators] = useState<MainnetValidatorData[]>([]);
+
+  useEffect(() => {
+    if (activeValidators.length > 0 && validatorsRawData.length > 0) {
+      const validatorsCopy = JSON.parse(JSON.stringify(validatorsRawData));
+
+      validatorsCopy.forEach((validator: MainnetValidatorData) => {
+        const activeValidator = activeValidators.find(
+          (activeValidator) => activeValidator.addr === validator.owner_address,
+        );
+        validator.voting_power = activeValidator?.voting_power ?? "0";
+      });
+
+      setValidators(validatorsCopy);
+    }
+  }, [activeValidators, validatorsRawData]);
 
   return {validators};
 }

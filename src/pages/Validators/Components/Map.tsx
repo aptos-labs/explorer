@@ -5,7 +5,7 @@ import {ComposableMap, Geographies, Geography, Marker} from "react-simple-maps";
 import {
   City,
   ValidatorGeoGroup,
-} from "../../../api/hooks/useGetValidatorSetGeoData";
+} from "../../../api/hooks/useGetMainnetValidatorsGeoData";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 
 const GEO_URL =
