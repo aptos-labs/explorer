@@ -6,35 +6,36 @@ import ContentRow from "../../components/IndividualPageContent/ContentRow";
 import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
-import {Types} from "aptos";
+import {
+  MainnetValidator,
+  useGetValidatorToOperator,
+} from "../../api/hooks/useGetValidatorSet";
 import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 import {useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
-import {useGetMainnetValidators} from "../../api/hooks/useGetMainnetValidators";
 
 type ValidatorDetailProps = {
-  address: Types.Address;
+  validator: MainnetValidator;
+  addressHex: string;
 };
 
-export default function ValidatorDetailCard({address}: ValidatorDetailProps) {
-  // TODO: handle the address in a better way
-  // make sure that addresses will always start with "0x"
-  const addressHex = address.startsWith("0x") ? address : "0x" + address;
-  const {validators} = useGetMainnetValidators();
+export default function ValidatorDetailCard({
+  validator,
+  addressHex,
+}: ValidatorDetailProps) {
   const {accountResource} = useGetAccountResource(
     addressHex,
     "0x1::stake::StakePool",
   );
-
-  const validator = validators.find(
-    (validator) => validator.owner_address === addressHex,
-  );
+  const validatorToOperator = useGetValidatorToOperator();
   const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
 
   const lockedUntilSecs = accountResource
     ? BigInt((accountResource.data as any).locked_until_secs)
     : null;
-  const operatorAddr = validator?.operator_address;
+  const operatorAddr = validatorToOperator
+    ? validatorToOperator[addressHex]
+    : null;
   const rewardGrowth = validator?.rewards_growth;
 
   useEffect(() => {

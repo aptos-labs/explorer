@@ -5,8 +5,8 @@ import PageHeader from "../layout/PageHeader";
 import ValidatorTitle from "./Title";
 import ValidatorDetailCard from "./DetailCard";
 import ValidatorStakingBar from "./StakingBar";
-import {HexString} from "aptos";
 import {useGetMainnetValidators} from "../../api/hooks/useGetMainnetValidators";
+import {HexString} from "aptos";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
@@ -27,7 +27,10 @@ export default function ValidatorPage() {
       </Grid>
       <ValidatorTitle address={address} />
       <ValidatorStakingBar validator={validator} />
-      <ValidatorDetailCard address={addressHex.hex()} />
+      <ValidatorDetailCard
+        validator={validator}
+        addressHex={addressHex.hex()}
+      />
     </Grid>
   );
 }
