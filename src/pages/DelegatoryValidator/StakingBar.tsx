@@ -1,9 +1,10 @@
 import {Button, Divider, ListItem, ListItemText} from "@mui/material";
-import React from "react";
+import React, {useState} from "react";
 import {MainnetValidatorData} from "../../api/hooks/useGetMainnetValidators";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import StakeDialog from "./StakeDialog";
 
 type ValidatorStakingBarProps = {
   validator: MainnetValidatorData;
@@ -18,6 +19,14 @@ export default function StakingBar({validator}: ValidatorStakingBarProps) {
   );
   const percentOfNetwork =
     parseInt(validator.voting_power) / parseInt(totalVotingPower!);
+
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const handleClickOpen = () => {
+    setDialogOpen(true);
+  };
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
 
   return (
     <ContentBox padding={4}>
@@ -46,8 +55,9 @@ export default function StakingBar({validator}: ValidatorStakingBarProps) {
           <ListItemText primary="? APT" secondary="Rewards generated" />
         </ListItem>
         <Divider orientation="vertical" flexItem variant="fullWidth"></Divider>
-        <Button>Stake</Button>
+        <Button onClick={handleClickOpen}>Stake</Button>
       </ListItem>
+      <StakeDialog handleDialogClose={handleClose} isDialogOpen={dialogOpen} />
     </ContentBox>
   );
 }
