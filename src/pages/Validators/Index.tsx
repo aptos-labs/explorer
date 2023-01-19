@@ -1,4 +1,4 @@
-import {Box, Tab, Tabs, Typography} from "@mui/material";
+import {Box, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import * as React from "react";
 import {useState} from "react";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
@@ -14,7 +14,7 @@ export default function ValidatorsPage() {
   const inDev = useGetInDevMode();
 
   const handleTabChange = (
-    _event: React.SyntheticEvent,
+    _event: React.MouseEvent<HTMLElement>,
     onDelegatory: boolean,
   ) => {
     setOnDelegatory(onDelegatory);
@@ -30,10 +30,17 @@ export default function ValidatorsPage() {
         <>
           <ValidatorsMap />
           {inDev && (
-            <Tabs value={onDelegatory} onChange={handleTabChange}>
-              <Tab label="All Nodes" value={false} />
-              <Tab label="Delegation Nodes" value={true} />
-            </Tabs>
+            <ToggleButtonGroup
+              sx={{width: 1 / 3, height: 50}}
+              fullWidth={true}
+              size="large"
+              value={onDelegatory}
+              onChange={handleTabChange}
+              exclusive={true}
+            >
+              <ToggleButton value={false}>All Nodes</ToggleButton>
+              <ToggleButton value={true}>Delegation Nodes</ToggleButton>
+            </ToggleButtonGroup>
           )}
           <Box sx={{width: "auto", overflowX: "auto"}}>
             <ValidatorsTable onDelegatory={onDelegatory} />
@@ -41,12 +48,19 @@ export default function ValidatorsPage() {
         </>
       ) : (
         <>
-          {inDev ? (
-            <Tabs value={onDelegatory} onChange={handleTabChange}>
-              <Tab label="All Nodes" value={false} />
-              <Tab label="Delegation Nodes" value={true} />
-            </Tabs>
-          ) : null}
+          {inDev && (
+            <ToggleButtonGroup
+              sx={{width: 1 / 3, height: 50}}
+              fullWidth={true}
+              size="large"
+              exclusive={true}
+              value={onDelegatory}
+              onChange={handleTabChange}
+            >
+              <ToggleButton value={false}>All Nodes</ToggleButton>
+              <ToggleButton value={true}>Delegation Nodes</ToggleButton>
+            </ToggleButtonGroup>
+          )}
           <Box sx={{width: "auto", overflowX: "auto"}}>
             <OldValidatorsTable onDelegatory={onDelegatory} />
           </Box>
