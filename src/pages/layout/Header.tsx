@@ -17,7 +17,7 @@ import NavMobile from "./NavMobile";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
-import ConnectWallet from "./ConnectWallet";
+import WalletConnector from "../../components/WalletConnector";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 
 export default function Header() {
@@ -121,7 +121,11 @@ export default function Header() {
               {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
             </Button>
             <NavMobile />
-            {inDev ? <ConnectWallet /> : null}
+            {inDev && (
+              <Box sx={{marginLeft: "1rem"}}>
+                <WalletConnector />
+              </Box>
+            )}
           </Toolbar>
         </Container>
       </MuiAppBar>
