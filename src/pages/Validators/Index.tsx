@@ -29,17 +29,12 @@ export default function ValidatorsPage() {
       {state.network_name === "mainnet" ? (
         <>
           <ValidatorsMap />
-          {inDev && ( 
-           <Tabs value={onDelegatory} onChange={handleTabChange}>
-              <Tab label="All Nodes" value={false} />
-              <Tab label="Delegation Nodes" value={true} />
-            </Tabs>
-          )
+          {inDev && (
             <Tabs value={onDelegatory} onChange={handleTabChange}>
               <Tab label="All Nodes" value={false} />
               <Tab label="Delegation Nodes" value={true} />
             </Tabs>
-          ) : null}
+          )}
           <Box sx={{width: "auto", overflowX: "auto"}}>
             <ValidatorsTable onDelegatory={onDelegatory} />
           </Box>
