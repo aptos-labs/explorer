@@ -57,18 +57,15 @@ const wallets = [
   new SpikaWallet(),
 ];
 
-// delay rendering the application until the window.onload event has fired when integrating with the window.aptos API
-window.addEventListener("load", () => {
-  ReactDOM.render(
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
-          <BrowserRouter>
-            <ExplorerRoutes />
-          </BrowserRouter>
-        </AptosWalletAdapterProvider>
-      </QueryClientProvider>
-    </React.StrictMode>,
-    document.getElementById("root"),
-  );
-});
+ReactDOM.render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
+        <BrowserRouter>
+          <ExplorerRoutes />
+        </BrowserRouter>
+      </AptosWalletAdapterProvider>
+    </QueryClientProvider>
+  </React.StrictMode>,
+  document.getElementById("root"),
+);
