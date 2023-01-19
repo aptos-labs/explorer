@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.6.9",
-    "@aptos-labs/wallet-adapter-ant-design": "^0.1.0",
     "@aptos-labs/wallet-adapter-react": "^0.2.2",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",

@@ -121,7 +121,11 @@ export default function Header() {
               {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
             </Button>
             <NavMobile />
-            <Box sx={{marginLeft: "1rem"}}>{inDev && <WalletConnector />}</Box>
+            {inDev && (
+              <Box sx={{marginLeft: "1rem"}}>
+                <WalletConnector />
+              </Box>
+            )}
           </Toolbar>
         </Container>
       </MuiAppBar>
