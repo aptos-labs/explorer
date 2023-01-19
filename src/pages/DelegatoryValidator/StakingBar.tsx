@@ -1,5 +1,5 @@
 import {Button, Divider, ListItem, ListItemText} from "@mui/material";
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {MainnetValidatorData} from "../../api/hooks/useGetMainnetValidators";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
