@@ -31,15 +31,28 @@ export default function ValidatorsPage() {
           <ValidatorsMap />
           {inDev && (
             <ToggleButtonGroup
-              sx={{width: 1 / 3, height: 50}}
+              sx={{
+                width: "100%",
+                "@media screen and (min-width: 40em)": {
+                  width: "40%",
+                },
+              }}
               fullWidth={true}
               size="large"
               value={onDelegatory}
               onChange={handleTabChange}
               exclusive={true}
             >
-              <ToggleButton value={false}>All Nodes</ToggleButton>
-              <ToggleButton value={true}>Delegation Nodes</ToggleButton>
+              <ToggleButton value={false}>
+                <Typography sx={{textTransform: "capitalize"}}>
+                  All Nodes
+                </Typography>
+              </ToggleButton>
+              <ToggleButton value={true}>
+                <Typography sx={{textTransform: "capitalize"}}>
+                  Delegation Nodes
+                </Typography>
+              </ToggleButton>
             </ToggleButtonGroup>
           )}
           <Box sx={{width: "auto", overflowX: "auto"}}>
@@ -50,15 +63,28 @@ export default function ValidatorsPage() {
         <>
           {inDev && (
             <ToggleButtonGroup
-              sx={{width: 1 / 3, height: 50}}
+              sx={{
+                width: "100%",
+                "@media screen and (min-width: 40em)": {
+                  width: "40%",
+                },
+              }}
               fullWidth={true}
               size="large"
               exclusive={true}
               value={onDelegatory}
               onChange={handleTabChange}
             >
-              <ToggleButton value={false}>All Nodes</ToggleButton>
-              <ToggleButton value={true}>Delegation Nodes</ToggleButton>
+              <ToggleButton value={false}>
+                <Typography sx={{textTransform: "capitalize"}}>
+                  All Nodes
+                </Typography>
+              </ToggleButton>
+              <ToggleButton value={true}>
+                <Typography sx={{textTransform: "capitalize"}}>
+                  Delegation Nodes
+                </Typography>
+              </ToggleButton>
             </ToggleButtonGroup>
           )}
           <Box sx={{width: "auto", overflowX: "auto"}}>
