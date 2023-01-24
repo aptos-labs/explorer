@@ -1,10 +1,17 @@
-import {Button, Divider, ListItem, ListItemText} from "@mui/material";
-import React, {useState} from "react";
+import {
+  Button,
+  Divider,
+  ListItem,
+  ListItemText,
+  Typography,
+} from "@mui/material";
+import React, {useMemo, useState} from "react";
 import {MainnetValidatorData} from "../../api/hooks/useGetMainnetValidators";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import StakeDialog from "./StakeDialog";
+import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 
 type ValidatorStakingBarProps = {
   validator: MainnetValidatorData;
@@ -17,9 +24,8 @@ export default function StakingBar({validator}: ValidatorStakingBarProps) {
     undefined,
     0,
   );
-  const percentOfNetwork =
-    parseInt(validator.voting_power) / parseInt(totalVotingPower!);
 
+  const [networkPercentage, setNetworkPercentage] = useState<string>();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const handleClickOpen = () => {
     setDialogOpen(true);
@@ -28,34 +34,52 @@ export default function StakingBar({validator}: ValidatorStakingBarProps) {
     setDialogOpen(false);
   };
 
+  useMemo(() => {
+    setNetworkPercentage(
+      (
+        (parseInt(validator.voting_power) / parseInt(totalVotingPower!)) *
+        100
+      ).toFixed(2),
+    );
+  }, [totalVotingPower]);
+
   return (
-    <ContentBox padding={4}>
+    <ContentBox>
       <ListItem>
-        <ListItem>
+        <ListItem
+          sx={{
+            "@media screen and (min-width: 30em)": {
+              width: "30%",
+            },
+          }}
+        >
           <ListItemText
-            primary={`${votingPower} APT`}
-            secondary="Staked total"
+            primary={
+              <Typography
+                sx={{fontWeight: 600}}
+              >{`${votingPower} APT`}</Typography>
+            }
+            secondary="Delegated Stake Amount"
+          />
+          <ListItemText
+            primary={
+              <Typography sx={{fontWeight: 600}}>
+                {networkPercentage}%
+              </Typography>
+            }
+            secondary="Of Network"
           />
         </ListItem>
-        <ListItem>
-          <ListItemText
-            primary={`${(percentOfNetwork * 100).toFixed(2)} %`}
-            secondary="of network"
-          />
-        </ListItem>
         <Divider orientation="vertical" flexItem variant="fullWidth"></Divider>
-        <ListItem>
-          <ListItemText primary="? APT" secondary="Ready for withdraw" />
-        </ListItem>
-        <Divider orientation="vertical" flexItem variant="fullWidth"></Divider>
-        <ListItem>
-          <ListItemText primary="? APT" secondary="Locked in pools" />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary="? APT" secondary="Rewards generated" />
-        </ListItem>
-        <Divider orientation="vertical" flexItem variant="fullWidth"></Divider>
-        <Button onClick={handleClickOpen}>Stake</Button>
+        <ListItemText
+          sx={{paddingLeft: 5}}
+          primary={<Typography sx={{fontWeight: 600}}>? APT</Typography>}
+          secondary="Rewards Earned So Far"
+        />
+        <Button variant="primary" onClick={handleClickOpen}>
+          <ArrowCircleUpIcon sx={{marginRight: 1}} />
+          <Typography>Stake</Typography>
+        </Button>
       </ListItem>
       <StakeDialog handleDialogClose={handleClose} isDialogOpen={dialogOpen} />
     </ContentBox>

@@ -7,6 +7,8 @@ import ValidatorDetailCard from "./DetailCard";
 import ValidatorStakingBar from "./StakingBar";
 import {HexString} from "aptos";
 import {useGetMainnetValidators} from "../../api/hooks/useGetMainnetValidators";
+import MyDepositsSection from "./MyDepositsSection";
+import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
@@ -14,6 +16,10 @@ export default function ValidatorPage() {
   const {validators} = useGetMainnetValidators();
   const validator = validators.find(
     (validator) => validator.owner_address === addressHex.hex(),
+  );
+  const {accountResource} = useGetAccountResource(
+    addressHex.hex(),
+    "0x1::stake::StakePool",
   );
 
   if (!validator) {
@@ -25,9 +31,17 @@ export default function ValidatorPage() {
       <Grid item xs={12} md={12} lg={12}>
         <PageHeader />
       </Grid>
-      <ValidatorTitle address={address} />
+      <Grid paddingBottom={4}>
+        <ValidatorTitle address={address} />
+      </Grid>
       <ValidatorStakingBar validator={validator} />
-      <ValidatorDetailCard address={addressHex.hex()} />
+      <ValidatorDetailCard
+        address={address}
+        accountResource={accountResource}
+      />
+      <Grid paddingTop={4}>
+        <MyDepositsSection accountResource={accountResource} />
+      </Grid>
     </Grid>
   );
 }

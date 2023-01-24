@@ -6,28 +6,25 @@ import ContentRow from "../../components/IndividualPageContent/ContentRow";
 import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
-import {Types} from "aptos";
-import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
+import {HexString, Types} from "aptos";
 import {useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {useGetMainnetValidators} from "../../api/hooks/useGetMainnetValidators";
 
 type ValidatorDetailProps = {
   address: Types.Address;
+  accountResource?: Types.MoveResource | undefined;
 };
 
-export default function ValidatorDetailCard({address}: ValidatorDetailProps) {
-  // TODO: handle the address in a better way
-  // make sure that addresses will always start with "0x"
-  const addressHex = address.startsWith("0x") ? address : "0x" + address;
+export default function ValidatorDetailCard({
+  address,
+  accountResource,
+}: ValidatorDetailProps) {
+  const addressHex = new HexString(address);
   const {validators} = useGetMainnetValidators();
-  const {accountResource} = useGetAccountResource(
-    addressHex,
-    "0x1::stake::StakePool",
-  );
 
   const validator = validators.find(
-    (validator) => validator.owner_address === addressHex,
+    (validator) => validator.owner_address === addressHex.hex(),
   );
   const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
 
@@ -36,48 +33,65 @@ export default function ValidatorDetailCard({address}: ValidatorDetailProps) {
     : null;
   const operatorAddr = validator?.operator_address;
   const rewardGrowth = validator?.rewards_growth;
+  const stakePoolAddress = validator?.owner_address;
+  const sx = {justifyContent: "space-between", display: "flex"};
 
   useEffect(() => {
-    if (lockedUntilSecs && operatorAddr && rewardGrowth) {
+    if (lockedUntilSecs && operatorAddr && rewardGrowth && stakePoolAddress) {
       setIsSkeletonLoading(false);
     }
-  }, [lockedUntilSecs, operatorAddr, rewardGrowth]);
+  }, [lockedUntilSecs, operatorAddr, rewardGrowth, stakePoolAddress]);
 
   return isSkeletonLoading ? (
     validatorDetailCardSkeleton()
   ) : (
     <Box display="flex">
-      <ContentBox padding={4} width="50%">
+      <ContentBox padding={4} width="50%" marginRight={3}>
         <ContentRow
           title={"Operator"}
           value={
-            operatorAddr ? (
+            operatorAddr && (
               <HashButton hash={operatorAddr} type={HashType.ACCOUNT} />
-            ) : null
+            )
           }
+          sx={sx}
         />
-        <ContentRow title="Number of delegator" value={null} />
-        <ContentRow title="Compound rewards" value={null} />
-        <ContentRow title="Operator commission" value={null} />
         <ContentRow
-          title="Next unlock in"
-          value={<TimestampValue timestamp={lockedUntilSecs?.toString()!} />}
+          container={false}
+          title="Number of Delegators"
+          value={null}
+          sx={sx}
         />
+        <ContentRow title="Compound Rewards" value={null} sx={sx} />
+        <ContentRow title="Operator Commission" value={null} sx={sx} />
       </ContentBox>
       <ContentBox padding={4} width="50%">
-        <ContentRow title={"Node started"} value={null} />
         <ContentRow
+          sx={sx}
+          title={"Stake Pool Address"}
+          value={
+            stakePoolAddress && (
+              <HashButton hash={stakePoolAddress} type={HashType.ACCOUNT} />
+            )
+          }
+        />
+        <ContentRow
+          sx={sx}
           title="Rewards Performance"
           value={rewardGrowth ? `${rewardGrowth.toFixed(2)} %` : null}
           tooltip={<RewardsPerformanceTooltip />}
         />
         <ContentRow
-          title="Last epoch performance"
+          sx={sx}
+          title="Last Epoch Performance"
           value={validator ? validator.last_epoch_performance : null}
           tooltip={<LastEpochPerformanceTooltip />}
         />
-        <ContentRow title="Last epoch deposit total" value={null} />
-        <ContentRow title="Last epoch withdraw total" value={null} />
+        <ContentRow
+          sx={sx}
+          title="Next Unlock"
+          value={<TimestampValue timestamp={lockedUntilSecs?.toString()!} />}
+        />
       </ContentBox>
     </Box>
   );
