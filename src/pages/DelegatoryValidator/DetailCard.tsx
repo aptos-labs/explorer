@@ -48,6 +48,7 @@ export default function ValidatorDetailCard({
     <Box display="flex">
       <ContentBox padding={4} width="50%" marginRight={3}>
         <ContentRow
+          container={false}
           title={"Operator"}
           value={
             operatorAddr && (
@@ -62,11 +63,22 @@ export default function ValidatorDetailCard({
           value={null}
           sx={sx}
         />
-        <ContentRow title="Compound Rewards" value={null} sx={sx} />
-        <ContentRow title="Operator Commission" value={null} sx={sx} />
+        <ContentRow
+          container={false}
+          title="Compound Rewards"
+          value={null}
+          sx={sx}
+        />
+        <ContentRow
+          container={false}
+          title="Operator Commission"
+          value={null}
+          sx={sx}
+        />
       </ContentBox>
       <ContentBox padding={4} width="50%">
         <ContentRow
+          container={false}
           sx={sx}
           title={"Stake Pool Address"}
           value={
@@ -76,18 +88,21 @@ export default function ValidatorDetailCard({
           }
         />
         <ContentRow
+          container={false}
           sx={sx}
           title="Rewards Performance"
           value={rewardGrowth ? `${rewardGrowth.toFixed(2)} %` : null}
           tooltip={<RewardsPerformanceTooltip />}
         />
         <ContentRow
+          container={false}
           sx={sx}
           title="Last Epoch Performance"
           value={validator ? validator.last_epoch_performance : null}
           tooltip={<LastEpochPerformanceTooltip />}
         />
         <ContentRow
+          container={false}
           sx={sx}
           title="Next Unlock"
           value={<TimestampValue timestamp={lockedUntilSecs?.toString()!} />}

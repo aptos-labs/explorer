@@ -18,7 +18,7 @@ export default function ContentRow({
   value,
   tooltip,
   i,
-  container,
+  container = true,
   sx,
 }: ContentRowProps) {
   return (

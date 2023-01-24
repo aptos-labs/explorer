@@ -34,7 +34,10 @@ export default function ValidatorPage() {
       <Grid paddingBottom={4}>
         <ValidatorTitle address={address} />
       </Grid>
-      <ValidatorStakingBar validator={validator} />
+      <ValidatorStakingBar
+        validator={validator}
+        accountResource={accountResource}
+      />
       <ValidatorDetailCard
         address={address}
         accountResource={accountResource}

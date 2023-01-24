@@ -12,12 +12,17 @@ import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import StakeDialog from "./StakeDialog";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
+import {Types} from "aptos";
 
 type ValidatorStakingBarProps = {
   validator: MainnetValidatorData;
+  accountResource?: Types.MoveResource | undefined;
 };
 
-export default function StakingBar({validator}: ValidatorStakingBarProps) {
+export default function StakingBar({
+  validator,
+  accountResource,
+}: ValidatorStakingBarProps) {
   const {totalVotingPower} = useGetValidatorSet();
   const votingPower = getFormattedBalanceStr(
     validator.voting_power.toString(),
@@ -81,7 +86,11 @@ export default function StakingBar({validator}: ValidatorStakingBarProps) {
           <Typography>Stake</Typography>
         </Button>
       </ListItem>
-      <StakeDialog handleDialogClose={handleClose} isDialogOpen={dialogOpen} />
+      <StakeDialog
+        handleDialogClose={handleClose}
+        isDialogOpen={dialogOpen}
+        accountResource={accountResource}
+      />
     </ContentBox>
   );
 }
