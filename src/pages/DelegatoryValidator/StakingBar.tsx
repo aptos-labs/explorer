@@ -5,7 +5,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import {MainnetValidatorData} from "../../api/hooks/useGetMainnetValidators";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
@@ -24,9 +24,8 @@ export default function StakingBar({validator}: ValidatorStakingBarProps) {
     undefined,
     0,
   );
-  const percentOfNetwork =
-    parseInt(validator.voting_power) / parseInt(totalVotingPower!);
 
+  const [networkPercentage, setNetworkPercentage] = useState<string>();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const handleClickOpen = () => {
     setDialogOpen(true);
@@ -34,6 +33,15 @@ export default function StakingBar({validator}: ValidatorStakingBarProps) {
   const handleClose = () => {
     setDialogOpen(false);
   };
+
+  useMemo(() => {
+    setNetworkPercentage(
+      (
+        (parseInt(validator.voting_power) / parseInt(totalVotingPower!)) *
+        100
+      ).toFixed(2),
+    );
+  }, [totalVotingPower]);
 
   return (
     <ContentBox>
@@ -56,7 +64,7 @@ export default function StakingBar({validator}: ValidatorStakingBarProps) {
           <ListItemText
             primary={
               <Typography sx={{fontWeight: 600}}>
-                {(percentOfNetwork * 100).toFixed(2)}%
+                {networkPercentage}%
               </Typography>
             }
             secondary="Of Network"
