@@ -1,5 +1,5 @@
 import React from "react";
-import {Box} from "@mui/material";
+import {Box, SxProps, Theme} from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import EmptyValue from "./ContentValue/EmptyValue";
@@ -9,6 +9,8 @@ type ContentRowProps = {
   value: React.ReactNode;
   tooltip?: React.ReactNode;
   i?: any;
+  container?: boolean;
+  sx?: SxProps<Theme>;
 };
 
 export default function ContentRow({
@@ -16,15 +18,18 @@ export default function ContentRow({
   value,
   tooltip,
   i,
+  container,
+  sx,
 }: ContentRowProps) {
   return (
     <Box>
       <Grid
-        container
+        container={container && true}
         rowSpacing={0.5}
         columnSpacing={4}
         alignItems="start"
         key={i}
+        sx={sx}
       >
         <Grid xs={12} sm={3}>
           <Box sx={{fontSize: "0.875rem", color: grey[450]}}>
