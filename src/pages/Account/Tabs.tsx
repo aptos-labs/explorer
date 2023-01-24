@@ -16,7 +16,8 @@ import StyledTab from "../../components/StyledTab";
 import TokensTab from "./Tabs/TokensTab";
 import CoinsTab from "./Tabs/CoinsTab";
 import {Types} from "aptos";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {useNavigateWithParams} from "../../api/hooks/useNavigateWithParams";
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
@@ -93,11 +94,11 @@ export default function AccountTabs({
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
   const {tab} = useParams();
-  const navigate = useNavigate();
+  const navigateWithParams = useNavigateWithParams();
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/account/${address}/${newValue}`);
+    navigateWithParams(`/account/${address}/${newValue}`);
   };
 
   return (

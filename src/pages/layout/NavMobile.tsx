@@ -8,13 +8,13 @@ import {ReactComponent as CloseIcon} from "../../assets/svg/icon_close.svg";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import Box from "@mui/material/Box";
 import {useTheme} from "@mui/material";
-import {useNavigate} from "react-router-dom";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
+import {useNavigateWithParams} from "../../api/hooks/useNavigateWithParams";
 
 export default function NavMobile() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
-  const navigate = useNavigate();
+  const navigateWithParams = useNavigateWithParams();
 
   const inMainnet = useGetInMainnet();
 
@@ -29,7 +29,7 @@ export default function NavMobile() {
 
   const handleCloseAndNavigate = (to: string) => {
     setMenuAnchorEl(null);
-    navigate(to);
+    navigateWithParams(to);
   };
 
   return (

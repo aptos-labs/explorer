@@ -20,7 +20,8 @@ import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BalanceChangeTab from "./Tabs/BalanceChangeTab";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {useNavigateWithParams} from "../../api/hooks/useNavigateWithParams";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -126,12 +127,12 @@ export default function TransactionTabs({
   tabValues = getTabValues(transaction),
 }: TransactionTabsProps): JSX.Element {
   const {tab, txnHashOrVersion} = useParams();
-  const navigate = useNavigate();
+  const navigateWithParams = useNavigateWithParams();
   const value =
     tab === undefined ? getTabValues(transaction)[0] : (tab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/txn/${txnHashOrVersion}/${newValue}`);
+    navigateWithParams(`/txn/${txnHashOrVersion}/${newValue}`);
   };
 
   return (

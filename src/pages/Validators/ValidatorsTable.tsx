@@ -9,13 +9,13 @@ import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "./Components/LastEpochPerformanceTooltip";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
 import {
   MainnetValidatorData,
   useGetMainnetValidators,
 } from "../../api/hooks/useGetMainnetValidators";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {useNavigateWithParams} from "../../api/hooks/useNavigateWithParams";
 
 function getSortedValidators(
   validators: MainnetValidatorData[],
@@ -281,10 +281,10 @@ type ValidatorRowProps = {
 
 function ValidatorRow({validator, columns}: ValidatorRowProps) {
   const inDev = useGetInDevMode();
-  const navigate = useNavigate();
+  const navigateWithParams = useNavigateWithParams();
 
   const rowClick = (address: Types.Address) => {
-    navigate(`/validator/${address}`);
+    navigateWithParams(`/validator/${address}`);
   };
 
   return (

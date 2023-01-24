@@ -13,8 +13,8 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import {CommissionCell, DelegatorCell, MyDepositCell} from "./ValidatorsTable";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
+import {useNavigateWithParams} from "../../api/hooks/useNavigateWithParams";
 
 type ValidatorCellProps = {
   validator: Validator;
@@ -119,10 +119,10 @@ type ValidatorRowProps = {
 
 function ValidatorRow({validator, columns}: ValidatorRowProps) {
   const inDev = useGetInDevMode();
-  const navigate = useNavigate();
+  const navigateWithParams = useNavigateWithParams();
 
   const rowClick = (address: Types.Address) => {
-    navigate(`/validator/${address}`);
+    navigateWithParams(`/validator/${address}`);
   };
 
   return (

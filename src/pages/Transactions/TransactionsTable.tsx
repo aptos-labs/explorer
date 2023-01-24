@@ -6,7 +6,7 @@ import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../components/HashButton";
@@ -32,6 +32,7 @@ import {
   getTransactionAmount,
   getTransactionCounterparty,
 } from "../Transaction/utils";
+import {useNavigateWithParams} from "../../api/hooks/useNavigateWithParams";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -220,10 +221,12 @@ type TransactionRowProps = {
 };
 
 function TransactionRow({transaction, columns}: TransactionRowProps) {
-  const navigate = useNavigate();
+  const navigateWithParams = useNavigateWithParams();
 
   const rowClick = () => {
-    navigate(`/txn/${"version" in transaction && transaction.version}`);
+    navigateWithParams(
+      `/txn/${"version" in transaction && transaction.version}`,
+    );
   };
 
   return (
@@ -242,7 +245,7 @@ type UserTransactionRowProps = {
 };
 
 function UserTransactionRow({version, columns}: UserTransactionRowProps) {
-  const navigate = useNavigate();
+  const navigateWithParams = useNavigateWithParams();
   const {data: transaction, isError} = useGetTransaction(version.toString());
 
   if (!transaction || isError) {
@@ -250,7 +253,7 @@ function UserTransactionRow({version, columns}: UserTransactionRowProps) {
   }
 
   const rowClick = () => {
-    navigate(`/txn/${version}`);
+    navigateWithParams(`/txn/${version}`);
   };
 
   return (

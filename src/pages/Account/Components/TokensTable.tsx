@@ -2,12 +2,12 @@ import * as React from "react";
 import {Box} from "@mui/material";
 import * as RRD from "react-router-dom";
 import {Link, Table, TableHead, TableRow} from "@mui/material";
-import {useNavigate} from "react-router-dom";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../utils";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+import {useNavigateWithParams} from "../../../api/hooks/useNavigateWithParams";
 
 type TokenCellProps = {
   token: any; // TODO: add graphql data typing
@@ -107,10 +107,12 @@ type TokenRowProps = {
 };
 
 function TokenRow({token, columns}: TokenRowProps) {
-  const navigate = useNavigate();
+  const navigateWithParams = useNavigateWithParams();
 
   const rowClick = () => {
-    navigate(`/token/${token?.token_data_id_hash}/${token?.property_version}`);
+    navigateWithParams(
+      `/token/${token?.token_data_id_hash}/${token?.property_version}`,
+    );
   };
 
   return (

@@ -7,7 +7,8 @@ import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {useNavigateWithParams} from "../../api/hooks/useNavigateWithParams";
 
 const TAB_VALUES: TabValue[] = ["overview", "activities"];
 
@@ -60,11 +61,11 @@ export default function TokenTabs({
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
   const {tab, propertyVersion, tokenId} = useParams();
-  const navigate = useNavigate();
+  const navigateWithParams = useNavigateWithParams();
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/token/${tokenId}/${propertyVersion}/${newValue}`);
+    navigateWithParams(`/token/${tokenId}/${propertyVersion}/${newValue}`);
   };
 
   return (

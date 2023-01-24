@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {Autocomplete, AutocompleteInputChangeReason} from "@mui/material";
 import SearchInput from "./SearchInput";
-import {useNavigate} from "react-router-dom";
 import useGetSearchResults, {
   NotFoundResult,
   SearchResult,
 } from "../../../api/hooks/useGetSearchResults";
 import ResultLink from "./ResultLink";
+import {useNavigateWithParams} from "../../../api/hooks/useNavigateWithParams";
 
 export default function HeaderSearch() {
-  const navigate = useNavigate();
+  const navigateWithParams = useNavigateWithParams();
   const [inputValue, setInputValue] = useState<string>("");
   const [searchValue, setSearchValue] = useState<string>("");
   const [open, setOpen] = useState(false);
@@ -60,7 +60,7 @@ export default function HeaderSearch() {
 
   const handleSubmitSearch = async () => {
     if (selectedOption.to !== null) {
-      navigate(selectedOption.to);
+      navigateWithParams(selectedOption.to);
     }
   };
 

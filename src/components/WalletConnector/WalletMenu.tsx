@@ -7,8 +7,8 @@ import {
   Tooltip,
 } from "@mui/material";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
+import {useNavigateWithParams} from "../../api/hooks/useNavigateWithParams";
 
 type WalletMenuProps = {
   popoverAnchor: HTMLButtonElement | null;
@@ -20,12 +20,12 @@ export default function WalletMenu({
   handlePopoverClose,
 }: WalletMenuProps): JSX.Element {
   const {account, disconnect} = useWallet();
-  const navigate = useNavigate();
+  const navigateWithParams = useNavigateWithParams();
   const popoverOpen = Boolean(popoverAnchor);
   const id = popoverOpen ? "wallet-popover" : undefined;
 
   const onAccountOptionClicked = () => {
-    navigate(`/account/${account?.address}`);
+    navigateWithParams(`/account/${account?.address}`);
     handlePopoverClose();
   };
 
