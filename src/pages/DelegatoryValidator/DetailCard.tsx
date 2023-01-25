@@ -54,20 +54,13 @@ export default function ValidatorDetailCard({
               <HashButton hash={operatorAddr} type={HashType.ACCOUNT} />
             )
           }
-          sx={sx}
         />
-        <ContentRow
-          container={false}
-          title="Number of Delegators"
-          value={null}
-          sx={sx}
-        />
-        <ContentRow title="Compound Rewards" value={null} sx={sx} />
-        <ContentRow title="Operator Commission" value={null} sx={sx} />
+        <ContentRow title="Number of Delegators" value={null} />
+        <ContentRow title="Compound Rewards" value={null} />
+        <ContentRow title="Operator Commission" value={null} />
       </ContentBox>
       <ContentBox padding={4} width="50%">
         <ContentRow
-          sx={sx}
           title={"Stake Pool Address"}
           value={
             stakePoolAddress && (
@@ -76,19 +69,16 @@ export default function ValidatorDetailCard({
           }
         />
         <ContentRow
-          sx={sx}
           title="Rewards Performance"
           value={rewardGrowth ? `${rewardGrowth.toFixed(2)} %` : null}
           tooltip={<RewardsPerformanceTooltip />}
         />
         <ContentRow
-          sx={sx}
           title="Last Epoch Performance"
           value={validator ? validator.last_epoch_performance : null}
           tooltip={<LastEpochPerformanceTooltip />}
         />
         <ContentRow
-          sx={sx}
           title="Next Unlock"
           value={<TimestampValue timestamp={lockedUntilSecs?.toString()!} />}
         />
