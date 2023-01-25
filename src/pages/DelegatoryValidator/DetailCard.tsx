@@ -34,7 +34,6 @@ export default function ValidatorDetailCard({
   const operatorAddr = validator?.operator_address;
   const rewardGrowth = validator?.rewards_growth;
   const stakePoolAddress = validator?.owner_address;
-  const sx = {justifyContent: "space-between", display: "flex"};
 
   useEffect(() => {
     if (lockedUntilSecs && operatorAddr && rewardGrowth && stakePoolAddress) {
