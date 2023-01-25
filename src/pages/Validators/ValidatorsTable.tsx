@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Box, Stack, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
@@ -36,6 +36,7 @@ function getValidatorsOrderedBy(
 ) {
   switch (column) {
     case "votingPower":
+    case "delegatedStakeAmount":
       return validatorsCopy.sort(
         (validator1, validator2) =>
           parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
@@ -124,6 +125,16 @@ function ValidatorHeaderCell({
           setSortColumn={setSortColumn}
         />
       );
+    case "delegatedStakeAmount":
+      return (
+        <SortableHeaderCell
+          header="Delegated Stake Amount"
+          column={column}
+          direction={direction}
+          setDirection={setDirection}
+          setSortColumn={setSortColumn}
+        />
+      );
     case "rewardsPerf":
       return (
         <SortableHeaderCell
@@ -158,10 +169,10 @@ function ValidatorHeaderCell({
       );
     case "delegator":
       return <GeneralTableHeaderCell header="Delegators" />;
+    case "rewardsEarned":
+      return <GeneralTableHeaderCell header="Rewards Earned" />;
     case "commission":
       return <GeneralTableHeaderCell header="Commission" />;
-    case "myDeposit":
-      return <GeneralTableHeaderCell header="My Deposit" />;
     default:
       return assertNever(column);
   }
@@ -197,7 +208,7 @@ function VotingPowerCell({validator}: ValidatorCellProps) {
 
 function RewardsPerformanceCell({validator}: ValidatorCellProps) {
   return (
-    <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
+    <GeneralTableCell sx={{textAlign: "left", paddingRight: 5}}>
       {validator.rewards_growth === undefined ? null : (
         <Stack
           direction="row"
@@ -231,15 +242,27 @@ function LocationCell({validator}: ValidatorCellProps) {
 }
 
 export function CommissionCell() {
-  return <GeneralTableCell>N/A</GeneralTableCell>;
+  return <GeneralTableCell sx={{paddingLeft: 5}}>N/A</GeneralTableCell>;
 }
 
-export function DelegatorCell() {
-  return <GeneralTableCell>N/A</GeneralTableCell>;
+function DelegatorCell() {
+  return (
+    <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
+      N/A
+    </GeneralTableCell>
+  );
 }
 
-export function MyDepositCell() {
-  return <GeneralTableCell>N/A</GeneralTableCell>;
+export function RewardsEarnedCell() {
+  return <GeneralTableCell sx={{paddingLeft: 10}}>N/A</GeneralTableCell>;
+}
+
+export function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
+  return (
+    <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
+      {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 0)}
+    </GeneralTableCell>
+  );
 }
 
 const ValidatorCells = Object.freeze({
@@ -251,7 +274,8 @@ const ValidatorCells = Object.freeze({
   location: LocationCell,
   commission: CommissionCell,
   delegator: DelegatorCell,
-  myDeposit: MyDepositCell,
+  rewardsEarned: RewardsEarnedCell,
+  delegatedStakeAmount: DelegatedStakeAmountCell,
 });
 
 type Column = keyof typeof ValidatorCells;
@@ -267,11 +291,11 @@ const DEFAULT_COLUMNS: Column[] = [
 
 const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
   "operatorAddr",
-  "commission",
   "rewardsPerf",
+  "commission",
   "delegator",
-  "votingPower",
-  "myDeposit",
+  "rewardsEarned",
+  "delegatedStakeAmount",
 ];
 
 type ValidatorRowProps = {
@@ -305,8 +329,10 @@ type ValidatorsTableProps = {
 
 export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
   const {validators} = useGetMainnetValidators();
-
   const [sortColumn, setSortColumn] = useState<Column>("votingPower");
+  useEffect(() => {
+    setSortColumn(onDelegatory ? "delegatedStakeAmount" : "votingPower");
+  });
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
   const columns = onDelegatory ? DELEGATORY_VALIDATOR_COLUMNS : DEFAULT_COLUMNS;
   const sortedValidators = getSortedValidators(

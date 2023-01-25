@@ -1,7 +1,9 @@
-import {Box, Tab, Tabs, Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import * as React from "react";
 import {useState} from "react";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import StyledTab from "../../components/StyledTab";
+import StyledTabs from "../../components/StyledTabs";
 import {useGlobalState} from "../../GlobalState";
 import PageHeader from "../layout/PageHeader";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
@@ -20,38 +22,54 @@ export default function ValidatorsPage() {
     setOnDelegatory(onDelegatory);
   };
 
+  const validatorsTable =
+    state.network_name === "mainnet" ? (
+      <ValidatorsTable onDelegatory={onDelegatory} />
+    ) : (
+      <OldValidatorsTable onDelegatory={onDelegatory} />
+    );
+
+  const validatorsTabs = (
+    <StyledTabs
+      sx={{
+        width: "100%",
+        "@media screen and (min-width: 40em)": {
+          width: "40%",
+        },
+      }}
+      value={onDelegatory}
+      onChange={handleTabChange}
+    >
+      <StyledTab
+        value={false}
+        label={
+          <Typography sx={{textTransform: "capitalize"}}>All Nodes</Typography>
+        }
+        isFirst={true}
+        isLast={false}
+      />
+      <StyledTab
+        value={true}
+        label={
+          <Typography sx={{textTransform: "capitalize"}}>
+            Delegation Nodes
+          </Typography>
+        }
+        isFirst={false}
+        isLast={true}
+      />
+    </StyledTabs>
+  );
+
   return (
     <Box>
       <PageHeader />
       <Typography variant="h3" marginBottom={2}>
         Validators
       </Typography>
-      {state.network_name === "mainnet" ? (
-        <>
-          <ValidatorsMap />
-          {inDev && (
-            <Tabs value={onDelegatory} onChange={handleTabChange}>
-              <Tab label="All Nodes" value={false} />
-              <Tab label="Delegation Nodes" value={true} />
-            </Tabs>
-          )}
-          <Box sx={{width: "auto", overflowX: "auto"}}>
-            <ValidatorsTable onDelegatory={onDelegatory} />
-          </Box>
-        </>
-      ) : (
-        <>
-          {inDev ? (
-            <Tabs value={onDelegatory} onChange={handleTabChange}>
-              <Tab label="All Nodes" value={false} />
-              <Tab label="Delegation Nodes" value={true} />
-            </Tabs>
-          ) : null}
-          <Box sx={{width: "auto", overflowX: "auto"}}>
-            <OldValidatorsTable onDelegatory={onDelegatory} />
-          </Box>
-        </>
-      )}
+      {state.network_name === "mainnet" && <ValidatorsMap />}
+      {inDev && validatorsTabs}
+      <Box sx={{width: "auto", overflowX: "auto"}}>{validatorsTable}</Box>
     </Box>
   );
 }

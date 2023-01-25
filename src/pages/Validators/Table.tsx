@@ -11,7 +11,7 @@ import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import {CommissionCell, DelegatorCell, MyDepositCell} from "./ValidatorsTable";
+import {CommissionCell} from "./ValidatorsTable";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
@@ -80,6 +80,22 @@ function NetworkAddrCell({validator}: ValidatorCellProps) {
   );
 }
 
+function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
+  return (
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 0)}
+    </GeneralTableCell>
+  );
+}
+
+function DelegatorCell() {
+  return (
+    <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
+      N/A
+    </GeneralTableCell>
+  );
+}
+
 const ValidatorCells = Object.freeze({
   idx: ValidatorIndexCell,
   addr: ValidatorAddrCell,
@@ -88,8 +104,8 @@ const ValidatorCells = Object.freeze({
   fullnodeAddr: FullnodeAddrCell,
   networkAddr: NetworkAddrCell,
   delegator: DelegatorCell,
-  myDeposit: MyDepositCell,
   commission: CommissionCell,
+  delegatedStakeAmount: DelegatedStakeAmountCell,
 });
 
 type Column = keyof typeof ValidatorCells;
@@ -106,10 +122,9 @@ const DEFAULT_COLUMNS: Column[] = [
 const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
   "idx",
   "addr",
-  "votingPower",
   "commission",
   "delegator",
-  "myDeposit",
+  "delegatedStakeAmount",
 ];
 
 type ValidatorRowProps = {
@@ -162,9 +177,14 @@ function ValidatorHeaderCell({column}: ValidatorHeaderCellProps) {
     case "delegator":
       return <GeneralTableHeaderCell header="Delegators" textAlignRight />;
     case "commission":
-      return <GeneralTableHeaderCell header="Commission" textAlignRight />;
-    case "myDeposit":
-      return <GeneralTableHeaderCell header="My Deposit" textAlignRight />;
+      return <GeneralTableHeaderCell header="Commission" />;
+    case "delegatedStakeAmount":
+      return (
+        <GeneralTableHeaderCell
+          header="Delegated Stake Amount"
+          textAlignRight
+        />
+      );
     default:
       return assertNever(column);
   }
