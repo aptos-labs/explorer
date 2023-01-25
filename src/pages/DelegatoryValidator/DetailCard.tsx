@@ -1,8 +1,8 @@
-import {Box, Skeleton} from "@mui/material";
+import {Box, Skeleton, Stack} from "@mui/material";
 import * as React from "react";
 import HashButton from "../../components/HashButton";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
-import ContentRow from "../../components/IndividualPageContent/ContentRow";
+import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
 import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
@@ -41,12 +41,13 @@ export default function ValidatorDetailCard({
     }
   }, [lockedUntilSecs, operatorAddr, rewardGrowth, stakePoolAddress]);
 
+  // TODO: revisit layout for mobile
   return isSkeletonLoading ? (
     validatorDetailCardSkeleton()
   ) : (
-    <Box display="flex">
-      <ContentBox padding={4} width="50%" marginRight={3}>
-        <ContentRow
+    <Stack direction="row" spacing={4}>
+      <ContentBox width="50%" marginTop={0}>
+        <ContentRowSpaceBetween
           title={"Operator"}
           value={
             operatorAddr && (
@@ -54,12 +55,12 @@ export default function ValidatorDetailCard({
             )
           }
         />
-        <ContentRow title="Number of Delegators" value={null} />
-        <ContentRow title="Compound Rewards" value={null} />
-        <ContentRow title="Operator Commission" value={null} />
+        <ContentRowSpaceBetween title="Number of Delegators" value={null} />
+        <ContentRowSpaceBetween title="Compound Rewards" value={null} />
+        <ContentRowSpaceBetween title="Operator Commission" value={null} />
       </ContentBox>
-      <ContentBox padding={4} width="50%">
-        <ContentRow
+      <ContentBox width="50%" marginTop={0}>
+        <ContentRowSpaceBetween
           title={"Stake Pool Address"}
           value={
             stakePoolAddress && (
@@ -67,25 +68,26 @@ export default function ValidatorDetailCard({
             )
           }
         />
-        <ContentRow
+        <ContentRowSpaceBetween
           title="Rewards Performance"
           value={rewardGrowth ? `${rewardGrowth.toFixed(2)} %` : null}
           tooltip={<RewardsPerformanceTooltip />}
         />
-        <ContentRow
+        <ContentRowSpaceBetween
           title="Last Epoch Performance"
           value={validator ? validator.last_epoch_performance : null}
           tooltip={<LastEpochPerformanceTooltip />}
         />
-        <ContentRow
+        <ContentRowSpaceBetween
           title="Next Unlock"
           value={<TimestampValue timestamp={lockedUntilSecs?.toString()!} />}
         />
       </ContentBox>
-    </Box>
+    </Stack>
   );
 }
 
+// TODO: revisit skeleton for mobile
 function validatorDetailCardSkeleton() {
   return (
     <Box display="flex">

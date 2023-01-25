@@ -1,4 +1,4 @@
-import {Grid} from "@mui/material";
+import {Grid, Stack} from "@mui/material";
 import * as React from "react";
 import {useParams} from "react-router-dom";
 import PageHeader from "../layout/PageHeader";
@@ -27,20 +27,18 @@ export default function ValidatorPage() {
   }
 
   return (
-    <Grid spacing={1}>
-      <Grid item xs={12} md={12} lg={12}>
-        <PageHeader />
-      </Grid>
-      <Grid paddingBottom={4}>
-        <ValidatorTitle address={address} />
-      </Grid>
-      <ValidatorStakingBar validator={validator} />
-      <ValidatorDetailCard
-        address={address}
-        accountResource={accountResource}
-      />
-      <Grid paddingTop={4}>
-        <MyDepositsSection accountResource={accountResource} />
+    <Grid container spacing={1}>
+      <PageHeader />
+      <Grid item xs={12}>
+        <Stack direction="column" spacing={4} marginTop={2}>
+          <ValidatorTitle address={address} />
+          <ValidatorStakingBar validator={validator} />
+          <ValidatorDetailCard
+            address={address}
+            accountResource={accountResource}
+          />
+          <MyDepositsSection accountResource={accountResource} />
+        </Stack>
       </Grid>
     </Grid>
   );
