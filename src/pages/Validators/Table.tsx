@@ -11,7 +11,7 @@ import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import {CommissionCell, MyDepositCell} from "./ValidatorsTable";
+import {CommissionCell} from "./ValidatorsTable";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
@@ -104,7 +104,6 @@ const ValidatorCells = Object.freeze({
   fullnodeAddr: FullnodeAddrCell,
   networkAddr: NetworkAddrCell,
   delegator: DelegatorCell,
-  myDeposit: MyDepositCell,
   commission: CommissionCell,
   delegatedStakeAmount: DelegatedStakeAmountCell,
 });
@@ -126,7 +125,6 @@ const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
   "commission",
   "delegator",
   "delegatedStakeAmount",
-  "myDeposit",
 ];
 
 type ValidatorRowProps = {
@@ -180,8 +178,6 @@ function ValidatorHeaderCell({column}: ValidatorHeaderCellProps) {
       return <GeneralTableHeaderCell header="Delegators" textAlignRight />;
     case "commission":
       return <GeneralTableHeaderCell header="Commission" />;
-    case "myDeposit":
-      return <GeneralTableHeaderCell header="My Deposit" textAlignRight />;
     case "delegatedStakeAmount":
       return (
         <GeneralTableHeaderCell

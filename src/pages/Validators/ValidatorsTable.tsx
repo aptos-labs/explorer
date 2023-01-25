@@ -173,10 +173,6 @@ function ValidatorHeaderCell({
       return <GeneralTableHeaderCell header="Rewards Earned" />;
     case "commission":
       return <GeneralTableHeaderCell header="Commission" />;
-    case "myDeposit":
-      return (
-        <GeneralTableHeaderCell header="My Deposit" sx={{textAlign: "right"}} />
-      );
     default:
       return assertNever(column);
   }
@@ -257,10 +253,6 @@ function DelegatorCell() {
   );
 }
 
-export function MyDepositCell() {
-  return <GeneralTableCell sx={{textAlign: "right"}}>N/A</GeneralTableCell>;
-}
-
 export function RewardsEarnedCell() {
   return <GeneralTableCell sx={{paddingLeft: 10}}>N/A</GeneralTableCell>;
 }
@@ -282,7 +274,6 @@ const ValidatorCells = Object.freeze({
   location: LocationCell,
   commission: CommissionCell,
   delegator: DelegatorCell,
-  myDeposit: MyDepositCell,
   rewardsEarned: RewardsEarnedCell,
   delegatedStakeAmount: DelegatedStakeAmountCell,
 });
@@ -305,7 +296,6 @@ const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
   "delegator",
   "rewardsEarned",
   "delegatedStakeAmount",
-  "myDeposit",
 ];
 
 type ValidatorRowProps = {
