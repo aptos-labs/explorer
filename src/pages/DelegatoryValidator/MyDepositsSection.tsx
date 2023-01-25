@@ -96,8 +96,11 @@ export default function MyDepositsSection({
       <Table>
         <TableHead>
           <TableRow>
-            {DEFAULT_COLUMNS.map((columnName) => (
-              <GeneralTableHeaderCell header={MyDepositsHeader[columnName]} />
+            {DEFAULT_COLUMNS.map((columnName, idx) => (
+              <GeneralTableHeaderCell
+                header={MyDepositsHeader[columnName]}
+                key={idx}
+              />
             ))}
           </TableRow>
         </TableHead>
