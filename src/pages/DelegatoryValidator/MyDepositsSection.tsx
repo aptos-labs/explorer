@@ -13,6 +13,7 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
+import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 
 type MyDepositsSectionProps = {
   accountResource?: Types.MoveResource | undefined;
@@ -100,6 +101,7 @@ export default function MyDepositsSection({
               <GeneralTableHeaderCell
                 header={MyDepositsHeader[columnName]}
                 key={idx}
+                tooltip={columnName === "status" && <MyDepositsStatusTooltip />}
               />
             ))}
           </TableRow>
