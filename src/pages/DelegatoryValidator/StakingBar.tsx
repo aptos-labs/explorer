@@ -14,12 +14,17 @@ import {getFormattedBalanceStr} from "../../components/IndividualPageContent/Con
 import StakeDialog from "./StakeDialog";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import {grey} from "../../themes/colors/aptosColorPalette";
+import {Types} from "aptos";
 
 type ValidatorStakingBarProps = {
   validator: MainnetValidatorData;
+  accountResource?: Types.MoveResource | undefined;
 };
 
-export default function StakingBar({validator}: ValidatorStakingBarProps) {
+export default function StakingBar({
+  validator,
+  accountResource,
+}: ValidatorStakingBarProps) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
@@ -107,7 +112,11 @@ export default function StakingBar({validator}: ValidatorStakingBarProps) {
           {stakeButton}
         </Stack>
       )}
-      <StakeDialog handleDialogClose={handleClose} isDialogOpen={dialogOpen} />
+      <StakeDialog
+        handleDialogClose={handleClose}
+        isDialogOpen={dialogOpen}
+        accountResource={accountResource}
+      />
     </ContentBox>
   );
 }
