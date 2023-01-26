@@ -14,6 +14,7 @@ import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
+import {getLockedUtilSecs} from "./utils";
 
 type MyDepositsSectionProps = {
   accountResource?: Types.MoveResource | undefined;
@@ -58,9 +59,7 @@ function StatusCell({}: MyDepositsSectionProps) {
 }
 
 function UnlockDateCell({accountResource}: MyDepositsSectionProps) {
-  const lockedUntilSecs = accountResource
-    ? BigInt((accountResource.data as any).locked_until_secs)
-    : null;
+  const lockedUntilSecs = getLockedUtilSecs(accountResource);
   return (
     <GeneralTableCell>
       <TimestampValue timestamp={lockedUntilSecs?.toString()!} />

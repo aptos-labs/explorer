@@ -10,6 +10,7 @@ import {HexString, Types} from "aptos";
 import {useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {useGetMainnetValidators} from "../../api/hooks/useGetMainnetValidators";
+import {getLockedUtilSecs} from "./utils";
 
 type ValidatorDetailProps = {
   address: Types.Address;
@@ -28,9 +29,7 @@ export default function ValidatorDetailCard({
   );
   const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
 
-  const lockedUntilSecs = accountResource
-    ? BigInt((accountResource.data as any).locked_until_secs)
-    : null;
+  const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const operatorAddr = validator?.operator_address;
   const rewardGrowth = validator?.rewards_growth;
   const stakePoolAddress = validator?.owner_address;
