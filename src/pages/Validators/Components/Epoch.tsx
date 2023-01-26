@@ -9,8 +9,8 @@ import {Typography, Stack, useTheme, Skeleton} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
 
-const BAR_COLOR = "#818CF8";
-const BAR_BACKGROUND_COLOR = "rgb(129, 140, 248, 0.4)";
+export const BAR_COLOR = "#818CF8";
+export const BAR_BACKGROUND_COLOR = "rgb(129, 140, 248, 0.4)";
 
 const EPOCH_TOOLTIP_TEXT =
   "An epoch in the Aptos blockchain is defined as a duration of time, in seconds, during which a number of blocks are voted on by the validators. The Aptos mainnet epoch is set as 7200 seconds (two hours).";

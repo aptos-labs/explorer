@@ -23,6 +23,7 @@ export interface TimestampDisplay {
   local_formatted: string;
   local_formatted_short: string;
   formatted_time_delta: string;
+  formatted_time_duration: string;
 }
 
 export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
@@ -31,6 +32,7 @@ export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
     local_formatted: timestamp.local().format("MM/DD/YYYY HH:mm:ss"),
     local_formatted_short: timestamp.local().format("MM/DD/YY HH:mm"),
     formatted_time_delta: timestamp.fromNow(),
+    formatted_time_duration: timestamp.local().format("DD[d] HH[h] mm[m]"),
   };
 }
 
