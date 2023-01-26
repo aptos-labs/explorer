@@ -32,7 +32,10 @@ export default function ValidatorPage() {
       <Grid item xs={12}>
         <Stack direction="column" spacing={4} marginTop={2}>
           <ValidatorTitle address={address} />
-          <ValidatorStakingBar validator={validator} />
+          <ValidatorStakingBar
+            validator={validator}
+            accountResource={accountResource}
+          />
           <ValidatorDetailCard
             address={address}
             accountResource={accountResource}
