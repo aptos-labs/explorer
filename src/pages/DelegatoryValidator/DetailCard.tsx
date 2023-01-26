@@ -8,8 +8,8 @@ import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerforman
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
 import {HexString, Types} from "aptos";
 import {useEffect, useState} from "react";
-import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {useGetMainnetValidators} from "../../api/hooks/useGetMainnetValidators";
+import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
 import {getLockedUtilSecs} from "./utils";
 
 type ValidatorDetailProps = {
@@ -79,7 +79,9 @@ export default function ValidatorDetailCard({
         />
         <ContentRowSpaceBetween
           title="Next Unlock"
-          value={<TimestampValue timestamp={lockedUntilSecs?.toString()!} />}
+          value={
+            <TimeDurationIntervalBar timestamp={Number(lockedUntilSecs)} />
+          }
         />
       </ContentBox>
     </Stack>

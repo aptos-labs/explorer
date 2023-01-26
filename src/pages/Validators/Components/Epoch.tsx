@@ -5,12 +5,9 @@ import Subtitle from "./Text/Subtitle";
 import Body from "./Text/Body";
 import moment from "moment";
 import {parseTimestamp} from "../../utils";
-import {Typography, Stack, useTheme, Skeleton} from "@mui/material";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {Stack, Skeleton} from "@mui/material";
 import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
-
-const BAR_COLOR = "#818CF8";
-const BAR_BACKGROUND_COLOR = "rgb(129, 140, 248, 0.4)";
+import IntervalBar from "../../../components/IntervalBar";
 
 const EPOCH_TOOLTIP_TEXT =
   "An epoch in the Aptos blockchain is defined as a duration of time, in seconds, during which a number of blocks are voted on by the validators. The Aptos mainnet epoch is set as 7200 seconds (two hours).";
@@ -19,48 +16,6 @@ const EPOCH_LEARN_MORE_LINK = "https://aptos.dev/concepts/staking#epoch";
 type EpochProps = {
   isSkeletonLoading: boolean;
 };
-
-function EpochIntervalBar({percentage}: {percentage: number}) {
-  const theme = useTheme();
-  return (
-    <Stack direction="row" width={182} height={16}>
-      <Stack
-        width={`${percentage}%`}
-        sx={{
-          backgroundColor: BAR_COLOR,
-          borderRadius:
-            percentage < 100 ? "4px 0px 0px 4px" : "4px 4px 4px 4px",
-        }}
-        justifyContent="center"
-      >
-        {percentage >= 50 && (
-          <Typography
-            color={grey[50]}
-            sx={{fontSize: 10, fontWeight: 600}}
-            marginX={0.5}
-          >{`${percentage}% complete`}</Typography>
-        )}
-      </Stack>
-      <Stack
-        width={`${100 - percentage}%`}
-        sx={{
-          backgroundColor: BAR_BACKGROUND_COLOR,
-          borderRadius: percentage > 0 ? "0px 4px 4px 0px" : "4px 4px 4px 4px",
-        }}
-        alignItems="flex-end"
-        justifyContent="center"
-      >
-        {percentage < 50 && (
-          <Typography
-            color={theme.palette.mode === "dark" ? grey[50] : grey[500]}
-            sx={{fontSize: 10, fontWeight: 600}}
-            marginX={0.5}
-          >{`${percentage}% complete`}</Typography>
-        )}
-      </Stack>
-    </Stack>
-  );
-}
 
 export default function Epoch({isSkeletonLoading}: EpochProps) {
   const [timeRemainingInMin, setTimeRemainingInMin] = useState<string>();
@@ -106,7 +61,10 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
         />
       </Stack>
       <Body>{`${timeRemainingInMin} Minutes Remaining`}</Body>
-      <EpochIntervalBar percentage={percentageComplete} />
+      <IntervalBar
+        percentage={percentageComplete}
+        content={`${percentageComplete}% complete`}
+      />
     </MetricSection>
   ) : (
     <MetricSection>
