@@ -8,9 +8,10 @@ import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/
 import {useGetStakingRewardsRate} from "../../../api/hooks/useGetStakingRewardsRate";
 import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
 
-const REWARDS_TOOLTIP_TEXT =
+export const REWARDS_TOOLTIP_TEXT =
   "Represents the Annual Percentage Yield (APY) that accrue as compound interest on staked APT. Rewards are paid out by the network after each Epoch.";
-const REWARDS_LEARN_MORE_LINK = "https://aptos.dev/concepts/staking#rewards";
+export const REWARDS_LEARN_MORE_LINK =
+  "https://aptos.dev/concepts/staking#rewards";
 
 type StakingProps = {
   isSkeletonLoading: boolean;

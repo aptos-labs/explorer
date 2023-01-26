@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Table, TableHead, TableRow} from "@mui/material";
+import {Box, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -8,13 +8,18 @@ import {
   Validator,
 } from "../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../components/HashButton";
-import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {
+  APTCurrencyValue,
+  getFormattedBalanceStr,
+} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import {CommissionCell} from "./ValidatorsTable";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
+import {useGetStakingInfo} from "../../api/hooks/useGetStakingInfo";
+import {grey} from "../../themes/colors/aptosColorPalette";
 
 type ValidatorCellProps = {
   validator: Validator;
@@ -81,9 +86,19 @@ function NetworkAddrCell({validator}: ValidatorCellProps) {
 }
 
 function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
+  const {networkPercentage, delegatedStakeAmount} = useGetStakingInfo({
+    validator,
+  });
+
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 0)}
+      <Box>
+        <APTCurrencyValue
+          amount={delegatedStakeAmount}
+          fixedDecimalPlaces={0}
+        />
+      </Box>
+      <Box sx={{fontSize: 11, color: grey[450]}}>{networkPercentage}%</Box>
     </GeneralTableCell>
   );
 }
@@ -194,6 +209,7 @@ type ValidatorsTableProps = {
   onDelegatory: boolean;
 };
 
+// TODO(jill): clean up this file to move delegation specific logics out
 export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
   const {activeValidators} = useGetValidatorSet();
 

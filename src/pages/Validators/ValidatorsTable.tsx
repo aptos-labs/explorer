@@ -15,7 +15,12 @@ import {
   MainnetValidatorData,
   useGetMainnetValidators,
 } from "../../api/hooks/useGetMainnetValidators";
-import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {
+  APTCurrencyValue,
+  getFormattedBalanceStr,
+} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {grey} from "../../themes/colors/aptosColorPalette";
+import {useGetStakingInfo} from "../../api/hooks/useGetStakingInfo";
 
 function getSortedValidators(
   validators: MainnetValidatorData[],
@@ -258,9 +263,19 @@ export function RewardsEarnedCell() {
 }
 
 export function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
+  const {delegatedStakeAmount, networkPercentage} = useGetStakingInfo({
+    validator,
+  });
+
   return (
-    <GeneralTableCell sx={{textAlign: "right", paddingRight: 5}}>
-      {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 0)}
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      <Box>
+        <APTCurrencyValue
+          amount={delegatedStakeAmount}
+          fixedDecimalPlaces={0}
+        />
+      </Box>
+      <Box sx={{fontSize: 11, color: grey[450]}}>{networkPercentage}%</Box>
     </GeneralTableCell>
   );
 }
@@ -291,10 +306,10 @@ const DEFAULT_COLUMNS: Column[] = [
 
 const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
   "operatorAddr",
-  "rewardsPerf",
   "commission",
   "delegator",
   "rewardsEarned",
+  "rewardsPerf",
   "delegatedStakeAmount",
 ];
 
