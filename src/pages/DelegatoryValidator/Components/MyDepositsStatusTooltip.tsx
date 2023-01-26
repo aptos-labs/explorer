@@ -34,6 +34,7 @@ import {
   WITHDRAW_READY_TEXT_COLOR_LIGHT,
 } from "../constants";
 
+// TODO(jill): refactor step icon color scheme to override the default
 export default function MyDepositsStatusTooltip() {
   const theme = useTheme();
   const steps = [
