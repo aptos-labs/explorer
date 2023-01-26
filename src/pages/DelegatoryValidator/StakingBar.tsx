@@ -42,9 +42,12 @@ export default function StakingBar({
 
   const stakeAmount = (
     <Stack direction="column" spacing={0.5}>
-      <Typography
-        sx={{fontWeight: 600}}
-      >{`${delegatedStakeAmount} APT`}</Typography>
+      <Typography sx={{fontWeight: 600}}>
+        <APTCurrencyValue
+          amount={delegatedStakeAmount}
+          fixedDecimalPlaces={0}
+        />
+      </Typography>
       <Typography variant="body2" color={grey[450]}>
         Delegated Stake Amount
       </Typography>
