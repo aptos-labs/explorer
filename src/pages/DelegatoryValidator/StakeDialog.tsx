@@ -26,6 +26,7 @@ type StakeDialogProps = {
   accountResource?: Types.MoveResource | undefined;
 };
 
+// TODO(jill): consolidate dialog to one base component
 export default function StakeDialog({
   handleDialogClose,
   isDialogOpen,
@@ -52,7 +53,7 @@ export default function StakeDialog({
           position: "absolute",
           right: 12,
           top: 12,
-          color: (theme) => theme.palette.grey[500],
+          color: grey[450],
         }}
       >
         <CloseIcon />
