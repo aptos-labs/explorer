@@ -16,7 +16,7 @@ import {parseTimestamp, timestampDisplay} from "../utils";
 import {getLockedUtilSecs} from "./utils";
 import StyledDialog from "../../components/StyledDialog";
 
-type isDialogOpen = {
+type UnstakeDialogProps = {
   handleDialogClose: () => void;
   isDialogOpen: boolean;
   accountResource?: Types.MoveResource | undefined;
@@ -26,7 +26,7 @@ export default function UnstakeDialog({
   handleDialogClose,
   isDialogOpen,
   accountResource,
-}: isDialogOpen) {
+}: UnstakeDialogProps) {
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const moment = parseTimestamp(Number(lockedUntilSecs).toString());
   const timestamp_display = timestampDisplay(moment);

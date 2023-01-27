@@ -1,4 +1,4 @@
-import {Box, Skeleton, Stack} from "@mui/material";
+import {Box, Skeleton, Stack, useMediaQuery, useTheme} from "@mui/material";
 import * as React from "react";
 import HashButton from "../../components/HashButton";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
@@ -30,6 +30,8 @@ export default function ValidatorDetailCard({
   const addressHex = new HexString(address);
   const {validators} = useGetMainnetValidators();
   const {rewardsRateYearly} = useGetStakingRewardsRate();
+  const theme = useTheme();
+  const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
   const validator = validators.find(
     (validator) => validator.owner_address === addressHex.hex(),
@@ -51,8 +53,8 @@ export default function ValidatorDetailCard({
   return isSkeletonLoading ? (
     validatorDetailCardSkeleton()
   ) : (
-    <Stack direction="row" spacing={4}>
-      <ContentBox width="50%" marginTop={0}>
+    <Stack direction={isOnMobile ? "column" : "row"} spacing={4}>
+      <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <ContentRowSpaceBetween
           title={"Operator"}
           value={
@@ -74,7 +76,7 @@ export default function ValidatorDetailCard({
         />
         <ContentRowSpaceBetween title="Operator Commission" value={null} />
       </ContentBox>
-      <ContentBox width="50%" marginTop={0}>
+      <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <ContentRowSpaceBetween
           title={"Stake Pool Address"}
           value={

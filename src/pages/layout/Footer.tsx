@@ -9,7 +9,7 @@ import {ReactComponent as TwitterLogo} from "../../assets/twitter.svg";
 import {ReactComponent as MediumLogo} from "../../assets/medium.svg";
 import {ReactComponent as LinkedInLogo} from "../../assets/linkedin.svg";
 import {grey} from "../../themes/colors/aptosColorPalette";
-import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
+import SvgIcon from "@mui/material/SvgIcon";
 
 import {ReactComponent as LogoFull} from "../../assets/svg/aptos_logo_icon.svg";
 
