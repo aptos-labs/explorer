@@ -98,7 +98,6 @@ export default function StakingBar({
           </Stack>
           <Stack direction="row" justifyContent="space-between">
             {rewardsEarned}
-            {stakeButton}
           </Stack>
         </Stack>
       ) : (
