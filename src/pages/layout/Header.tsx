@@ -6,7 +6,7 @@ import NetworkSelect from "./NetworkSelect";
 import Link from "@mui/material/Link";
 import * as RRD from "react-router-dom";
 import {useColorMode} from "../../context";
-import {useTheme} from "@mui/material";
+import {useMediaQuery, useTheme} from "@mui/material";
 import {ReactComponent as LogoIcon} from "../../assets/svg/aptos_logo_icon.svg";
 import {ReactComponent as IconLight} from "../../assets/svg/icon_light.svg";
 import {ReactComponent as IconDark} from "../../assets/svg/icon_dark.svg";
@@ -45,6 +45,7 @@ export default function Header() {
   });
 
   const inDev = useGetInDevMode();
+  const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <>
@@ -121,7 +122,7 @@ export default function Header() {
               {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
             </Button>
             <NavMobile />
-            {inDev && (
+            {inDev && !isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector />
               </Box>

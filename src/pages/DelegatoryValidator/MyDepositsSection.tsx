@@ -5,6 +5,8 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {Types} from "aptos";
 import React from "react";
@@ -44,6 +46,13 @@ const DEFAULT_COLUMNS: Column[] = [
   "unlockDate",
   "rewardEarned",
   "actions",
+];
+
+const DEFAULT_COLUMNS_MOBILE: Column[] = [
+  "amount",
+  "status",
+  "unlockDate",
+  "rewardEarned",
 ];
 
 function AmountCell({}: MyDepositsSectionProps) {
@@ -88,6 +97,10 @@ function ActionsCell({}: MyDepositsSectionProps) {
 export default function MyDepositsSection({
   accountResource,
 }: MyDepositsSectionProps) {
+  const theme = useTheme();
+  const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
+  const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
+
   return (
     <Stack>
       <Typography variant="h5" marginX={1}>
@@ -96,7 +109,7 @@ export default function MyDepositsSection({
       <Table>
         <TableHead>
           <TableRow>
-            {DEFAULT_COLUMNS.map((columnName, idx) => (
+            {columns.map((columnName, idx) => (
               <GeneralTableHeaderCell
                 header={MyDepositsHeader[columnName]}
                 key={idx}
@@ -107,7 +120,7 @@ export default function MyDepositsSection({
         </TableHead>
         <GeneralTableBody>
           <GeneralTableRow>
-            {DEFAULT_COLUMNS.map((deposit) => {
+            {columns.map((deposit) => {
               const Cell = MyDepositsCells[deposit];
               return <Cell key={deposit} accountResource={accountResource} />;
             })}
