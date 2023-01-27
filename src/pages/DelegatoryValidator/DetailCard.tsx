@@ -11,6 +11,12 @@ import {useEffect, useState} from "react";
 import {useGetMainnetValidators} from "../../api/hooks/useGetMainnetValidators";
 import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
 import {getLockedUtilSecs} from "./utils";
+import {useGetStakingRewardsRate} from "../../api/hooks/useGetStakingRewardsRate";
+import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
+import {
+  REWARDS_LEARN_MORE_LINK,
+  REWARDS_TOOLTIP_TEXT,
+} from "../Validators/Components/Staking";
 
 type ValidatorDetailProps = {
   address: Types.Address;
@@ -23,6 +29,7 @@ export default function ValidatorDetailCard({
 }: ValidatorDetailProps) {
   const addressHex = new HexString(address);
   const {validators} = useGetMainnetValidators();
+  const {rewardsRateYearly} = useGetStakingRewardsRate();
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
@@ -57,7 +64,16 @@ export default function ValidatorDetailCard({
           }
         />
         <ContentRowSpaceBetween title="Number of Delegators" value={null} />
-        <ContentRowSpaceBetween title="Compound Rewards" value={null} />
+        <ContentRowSpaceBetween
+          title="Compound Rewards"
+          value={`${rewardsRateYearly}% APY`}
+          tooltip={
+            <StyledLearnMoreTooltip
+              text={REWARDS_TOOLTIP_TEXT}
+              link={REWARDS_LEARN_MORE_LINK}
+            />
+          }
+        />
         <ContentRowSpaceBetween title="Operator Commission" value={null} />
       </ContentBox>
       <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>

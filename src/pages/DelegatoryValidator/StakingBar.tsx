@@ -6,15 +6,15 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, {useMemo, useState} from "react";
+import React, {useState} from "react";
 import {MainnetValidatorData} from "../../api/hooks/useGetMainnetValidators";
-import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
-import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import StakeDialog from "./StakeDialog";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {Types} from "aptos";
+import {useGetStakingInfo} from "../../api/hooks/useGetStakingInfo";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import WalletConnectionDialog from "./WalletConnectionDialog";
 
@@ -28,17 +28,13 @@ export default function StakingBar({
   accountResource,
 }: ValidatorStakingBarProps) {
   const theme = useTheme();
+  const {delegatedStakeAmount, networkPercentage} = useGetStakingInfo({
+    validator,
+  });
+
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const {connected} = useWallet();
 
-  const {totalVotingPower} = useGetValidatorSet();
-  const votingPower = getFormattedBalanceStr(
-    validator.voting_power.toString(),
-    undefined,
-    0,
-  );
-
-  const [networkPercentage, setNetworkPercentage] = useState<string>();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const handleClickOpen = () => {
     setDialogOpen(true);
@@ -47,18 +43,14 @@ export default function StakingBar({
     setDialogOpen(false);
   };
 
-  useMemo(() => {
-    setNetworkPercentage(
-      (
-        (parseInt(validator.voting_power) / parseInt(totalVotingPower!)) *
-        100
-      ).toFixed(2),
-    );
-  }, [totalVotingPower]);
-
-  const delegatedStakeAmount = (
+  const stakeAmount = (
     <Stack direction="column" spacing={0.5}>
-      <Typography sx={{fontWeight: 600}}>{`${votingPower} APT`}</Typography>
+      <Typography sx={{fontWeight: 600}}>
+        <APTCurrencyValue
+          amount={delegatedStakeAmount}
+          fixedDecimalPlaces={0}
+        />
+      </Typography>
       <Typography variant="body2" color={grey[450]}>
         Delegated Stake Amount
       </Typography>
@@ -76,7 +68,9 @@ export default function StakingBar({
 
   const rewardsEarned = (
     <Stack direction="column" spacing={0.5}>
-      <Typography sx={{fontWeight: 600}}>? APT</Typography>
+      <Typography sx={{fontWeight: 600}}>
+        <APTCurrencyValue amount={""} />
+      </Typography>
       <Typography variant="body2" color={grey[450]}>
         Rewards Earned So Far
       </Typography>
@@ -90,13 +84,12 @@ export default function StakingBar({
     </Button>
   );
 
-  // TODO: revisit mobile layout
   return (
     <ContentBox>
       {isOnMobile ? (
         <Stack direction="column" spacing={4}>
           <Stack direction="row" spacing={4} justifyContent="space-between">
-            {delegatedStakeAmount}
+            {stakeAmount}
             {delegatedStakePercentage}
           </Stack>
           <Stack direction="row" justifyContent="space-between">
@@ -106,7 +99,7 @@ export default function StakingBar({
       ) : (
         <Stack direction="row" spacing={4} justifyContent="space-between">
           <Stack direction="row" spacing={4}>
-            {delegatedStakeAmount}
+            {stakeAmount}
             {delegatedStakePercentage}
             <Divider orientation="vertical" flexItem variant="fullWidth" />
             {rewardsEarned}

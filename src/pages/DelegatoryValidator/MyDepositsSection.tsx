@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import {Types} from "aptos";
 import React from "react";
+import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
@@ -58,7 +59,7 @@ const DEFAULT_COLUMNS_MOBILE: Column[] = [
 function AmountCell({}: MyDepositsSectionProps) {
   return (
     <GeneralTableCell>
-      <Typography>? APT</Typography>
+      <APTCurrencyValue amount={""} />
     </GeneralTableCell>
   );
 }
@@ -79,15 +80,15 @@ function UnlockDateCell({accountResource}: MyDepositsSectionProps) {
 function RewardEarnedCell({}: MyDepositsSectionProps) {
   return (
     <GeneralTableCell>
-      <Typography>? APT</Typography>
+      <APTCurrencyValue amount={""} />
     </GeneralTableCell>
   );
 }
 
 function ActionsCell({}: MyDepositsSectionProps) {
   return (
-    <GeneralTableCell>
-      <Button variant="contained">
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      <Button variant="primary" size="small">
         <Typography>UNSTAKE</Typography>
       </Button>
     </GeneralTableCell>
@@ -111,6 +112,10 @@ export default function MyDepositsSection({
           <TableRow>
             {columns.map((columnName, idx) => (
               <GeneralTableHeaderCell
+                sx={{
+                  textAlign:
+                    idx === DEFAULT_COLUMNS.length - 1 ? "right" : null,
+                }}
                 header={MyDepositsHeader[columnName]}
                 key={idx}
                 tooltip={columnName === "status" && <MyDepositsStatusTooltip />}

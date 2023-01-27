@@ -6,7 +6,6 @@ import MapMetrics from "./Components/MapMetrics";
 import {useGetValidatorSetGeoData} from "../../api/hooks/useGetMainnetValidatorsGeoData";
 import {useGetEpochTime} from "../../api/hooks/useGetEpochTime";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
-import {useGetStakingRewardsRate} from "../../api/hooks/useGetStakingRewardsRate";
 import {SkeletonTheme} from "react-loading-skeleton";
 
 export default function ValidatorsMap() {
@@ -19,19 +18,13 @@ export default function ValidatorsMap() {
   const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
   const {curEpoch} = useGetEpochTime();
   const {totalVotingPower} = useGetValidatorSet();
-  const {rewardsRateYearly} = useGetStakingRewardsRate();
   const {numberOfActiveValidators} = useGetValidatorSet();
 
   useEffect(() => {
-    if (
-      curEpoch &&
-      totalVotingPower &&
-      rewardsRateYearly &&
-      numberOfActiveValidators
-    ) {
+    if (curEpoch && totalVotingPower && numberOfActiveValidators) {
       setIsSkeletonLoading(false);
     }
-  }, [curEpoch, totalVotingPower, rewardsRateYearly, numberOfActiveValidators]);
+  }, [curEpoch, totalVotingPower, numberOfActiveValidators]);
 
   return (
     <SkeletonTheme baseColor={isDarkTheme ? grey[500] : undefined}>

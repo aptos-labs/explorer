@@ -5,9 +5,6 @@ import {
   DialogTitle,
   FormHelperText,
   InputAdornment,
-  List,
-  ListItem,
-  ListItemText,
   OutlinedInput,
   Stack,
   Typography,
@@ -18,6 +15,14 @@ import TimestampValue from "../../components/IndividualPageContent/ContentValue/
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {getLockedUtilSecs} from "./utils";
 import StyledDialog from "../../components/StyledDialog";
+import {useGetStakingRewardsRate} from "../../api/hooks/useGetStakingRewardsRate";
+import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
+import {
+  REWARDS_LEARN_MORE_LINK,
+  REWARDS_TOOLTIP_TEXT,
+} from "../Validators/Components/Staking";
+import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
 
 type StakeDialogProps = {
   handleDialogClose: () => void;
@@ -30,6 +35,8 @@ export default function StakeDialog({
   isDialogOpen,
   accountResource,
 }: StakeDialogProps) {
+  const {rewardsRateYearly} = useGetStakingRewardsRate();
+
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const [stakedAmount, setStakedAmount] = useState<string>();
   const [stakedAmountError, setStakedAmountError] = useState<boolean>(false);
@@ -59,22 +66,28 @@ export default function StakeDialog({
             endAdornment={<InputAdornment position="end">APT</InputAdornment>}
           />
           {stakedAmountError && <FormHelperText error>Error</FormHelperText>}
-          <List dense>
-            <ListItem>
-              <ListItemText primary="Operator Commission" />
-              <Typography>N/A</Typography>
-            </ListItem>
-            <ListItem>
-              <ListItemText primary="Compound Rewards" />
-              <Typography>N/A</Typography>
-            </ListItem>
-            <ListItem>
-              <ListItemText primary="Next Unlock In" />
-              <Typography>
-                {<TimestampValue timestamp={lockedUntilSecs?.toString()!} />}
-              </Typography>
-            </ListItem>
-          </List>
+          <ContentBox>
+            <ContentRowSpaceBetween
+              title={"Operator Commission"}
+              value={"N/A"}
+            />
+            <ContentRowSpaceBetween
+              title={"Compound Rewards"}
+              value={`${rewardsRateYearly}% APY`}
+              tooltip={
+                <StyledLearnMoreTooltip
+                  text={REWARDS_TOOLTIP_TEXT}
+                  link={REWARDS_LEARN_MORE_LINK}
+                />
+              }
+            />
+            <ContentRowSpaceBetween
+              title={"Next Unlock In"}
+              value={
+                <TimestampValue timestamp={lockedUntilSecs?.toString()!} />
+              }
+            />
+          </ContentBox>
         </Stack>
       </DialogContent>
       <DialogActions>
