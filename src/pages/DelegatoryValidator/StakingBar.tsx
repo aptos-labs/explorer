@@ -15,6 +15,8 @@ import StakeDialog from "./StakeDialog";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {Types} from "aptos";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import WalletConnectionDialog from "./WalletConnectionDialog";
 
 type ValidatorStakingBarProps = {
   validator: MainnetValidatorData;
@@ -27,6 +29,7 @@ export default function StakingBar({
 }: ValidatorStakingBarProps) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
+  const {connected} = useWallet();
 
   const {totalVotingPower} = useGetValidatorSet();
   const votingPower = getFormattedBalanceStr(
@@ -111,11 +114,18 @@ export default function StakingBar({
           {stakeButton}
         </Stack>
       )}
-      <StakeDialog
-        handleDialogClose={handleClose}
-        isDialogOpen={dialogOpen}
-        accountResource={accountResource}
-      />
+      {connected ? (
+        <StakeDialog
+          handleDialogClose={handleClose}
+          isDialogOpen={dialogOpen}
+          accountResource={accountResource}
+        />
+      ) : (
+        <WalletConnectionDialog
+          handleDialogClose={handleClose}
+          isDialogOpen={dialogOpen}
+        />
+      )}
     </ContentBox>
   );
 }
