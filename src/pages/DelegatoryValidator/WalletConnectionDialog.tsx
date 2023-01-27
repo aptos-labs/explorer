@@ -1,8 +1,15 @@
-import {DialogTitle, Typography, DialogActions, Button} from "@mui/material";
+import {
+  DialogTitle,
+  Typography,
+  DialogActions,
+  Button,
+  Box,
+} from "@mui/material";
 import React, {useState} from "react";
 import StyledDialog from "../../components/StyledDialog";
 import WalletsModal from "../../components/WalletConnector/WalletModel";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
+import {ReactComponent as ConnectWalletModalIcon} from "../../assets/forum_icon.svg";
 
 type WalletConnectionDialogProps = {
   handleDialogClose: () => void;
@@ -19,6 +26,9 @@ export default function WalletConnectionDialog({
 
   return (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
+      <Box sx={{display: "flex", justifyContent: "center", marginY: 2}}>
+        <ConnectWalletModalIcon />
+      </Box>
       <DialogTitle>
         <Typography variant="h5" textAlign="center">
           Please connect your wallet
