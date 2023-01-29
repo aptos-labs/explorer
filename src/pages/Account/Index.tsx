@@ -26,6 +26,7 @@ export default function AccountPage() {
   const address = useParams().address ?? "";
   const {data, error, isLoading} = useGetAccount(address);
 
+  // TODO: [BE] instead of passing down address as props, use context
   // make sure that addresses will always start with "0X"
   const addressHex = address.startsWith("0x") ? address : "0x" + address;
 

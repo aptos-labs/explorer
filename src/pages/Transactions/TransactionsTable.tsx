@@ -35,6 +35,7 @@ import {
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
+  address?: string;
 };
 
 function SequenceNumberCell({transaction}: TransactionCellProps) {
@@ -132,8 +133,13 @@ function TransactionFunctionCell({transaction}: TransactionCellProps) {
   );
 }
 
-function TransactionAmount({transaction}: {transaction: Types.Transaction}) {
-  const {address} = useParams();
+function TransactionAmount({
+  transaction,
+  address,
+}: {
+  transaction: Types.Transaction;
+  address?: string;
+}) {
   const isAccountTransactionTable = typeof address === "string";
 
   if (isAccountTransactionTable) {
@@ -170,11 +176,14 @@ function TransactionAmount({transaction}: {transaction: Types.Transaction}) {
   return null;
 }
 
-function TransactionAmountGasCell({transaction}: TransactionCellProps) {
+function TransactionAmountGasCell({
+  transaction,
+  address,
+}: TransactionCellProps) {
   return (
     <GeneralTableCell sx={{paddingY: 1}}>
       <Stack sx={{textAlign: "right"}}>
-        <TransactionAmount transaction={transaction} />
+        <TransactionAmount transaction={transaction} address={address} />
         <Box sx={{fontSize: 11, color: grey[450]}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
             <>
@@ -239,9 +248,14 @@ function TransactionRow({transaction, columns}: TransactionRowProps) {
 type UserTransactionRowProps = {
   version: number;
   columns: TransactionColumn[];
+  address?: string;
 };
 
-function UserTransactionRow({version, columns}: UserTransactionRowProps) {
+function UserTransactionRow({
+  version,
+  columns,
+  address,
+}: UserTransactionRowProps) {
   const navigate = useNavigate();
   const {data: transaction, isError} = useGetTransaction(version.toString());
 
@@ -257,7 +271,9 @@ function UserTransactionRow({version, columns}: UserTransactionRowProps) {
     <GeneralTableRow onClick={rowClick}>
       {columns.map((column) => {
         const Cell = TransactionCells[column];
-        return <Cell key={column} transaction={transaction} />;
+        return (
+          <Cell key={column} transaction={transaction} address={address} />
+        );
       })}
     </GeneralTableRow>
   );
@@ -299,6 +315,7 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
 type TransactionsTableProps = {
   transactions: Types.Transaction[];
   columns?: TransactionColumn[];
+  address?: string;
 };
 
 export default function TransactionsTable({
@@ -332,11 +349,13 @@ export default function TransactionsTable({
 type UserTransactionsTableProps = {
   versions: number[];
   columns?: TransactionColumn[];
+  address?: string;
 };
 
 export function UserTransactionsTable({
   versions,
   columns = DEFAULT_COLUMNS,
+  address,
 }: UserTransactionsTableProps) {
   return (
     <Table>
@@ -354,6 +373,7 @@ export function UserTransactionsTable({
               key={`${i}-${version}`}
               version={version}
               columns={columns}
+              address={address}
             />
           );
         })}
