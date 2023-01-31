@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Box, Stack, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
@@ -323,7 +323,10 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
   const navigate = useNavigate();
 
   const rowClick = (address: Types.Address) => {
-    navigate(`/validator/${address}`);
+    // TODO(jill) find long term to persist the url params
+    navigate(
+      inDev ? `/validator/${address}?feature=dev` : `/validator/${address}`,
+    );
   };
 
   return (

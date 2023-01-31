@@ -29,10 +29,8 @@ export default function WalletConnectionDialog({
       <Box sx={{display: "flex", justifyContent: "center", marginY: 2}}>
         <ConnectWalletModalIcon />
       </Box>
-      <DialogTitle>
-        <Typography variant="h5" textAlign="center">
-          Please connect your wallet
-        </Typography>
+      <DialogTitle textAlign="center">
+        <div>Please connect your wallet</div>
         <Typography variant="caption" textAlign="center">
           You need to connect your wallet to be able to stake
         </Typography>

@@ -6,8 +6,12 @@ import {parseTimestamp, timestampDisplay} from "../../utils";
 export default function TimeDurationIntervalBar({
   timestamp,
 }: {
-  timestamp: number;
+  timestamp?: number;
 }) {
+  if (!timestamp) {
+    return null;
+  }
+
   // the beginning of the unlock cycle
   const startTime = parseTimestamp(timestamp.toString()).subtract(30, "days");
 

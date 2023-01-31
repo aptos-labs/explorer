@@ -44,10 +44,8 @@ export default function UnstakeDialog({
 
   return (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
-      <DialogTitle>
-        <Typography variant="h5" textAlign="center">
-          Unstake funds
-        </Typography>
+      <DialogTitle variant="h5" textAlign="center">
+        Unstake funds
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
