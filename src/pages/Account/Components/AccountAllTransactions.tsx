@@ -63,7 +63,7 @@ export function AccountAllTransactionsWithPagination({
     <>
       <Stack spacing={2}>
         <Box sx={{width: "auto", overflowX: "auto"}}>
-          <UserTransactionsTable versions={versions} />
+          <UserTransactionsTable versions={versions} address={address} />
         </Box>
         {numPages > 1 && (
           <Box sx={{display: "flex", justifyContent: "center"}}>

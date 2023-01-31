@@ -14,7 +14,7 @@ export interface MainnetValidatorData {
   last_epoch_performance: string;
   liveness: number;
   rewards_growth: number;
-  location_stats: GeoData;
+  location_stats?: GeoData;
 }
 
 export interface GeoData {

@@ -40,7 +40,7 @@ export function useGetValidatorSetGeoData() {
     const groups: ValidatorGeoGroup[] = validators.reduce(
       (groups: ValidatorGeoGroup[], validatorData: MainnetValidatorData) => {
         const geoData = validatorData.location_stats;
-        const country = geoData ? geoData.country : null;
+        const country = geoData?.country;
         if (!country) {
           return groups;
         }
