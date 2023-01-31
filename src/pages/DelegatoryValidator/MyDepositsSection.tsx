@@ -17,11 +17,10 @@ import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
+import StakingStatusIcon, {
+  STAKING_STATUS_STEPS,
+} from "./Components/StakingStatusIcon";
 import {getLockedUtilSecs} from "./utils";
-
-type MyDepositsSectionProps = {
-  accountResource?: Types.MoveResource | undefined;
-};
 
 const MyDepositsCells = Object.freeze({
   amount: AmountCell,
@@ -65,7 +64,7 @@ function AmountCell({}: MyDepositsSectionProps) {
 }
 
 function StatusCell({}: MyDepositsSectionProps) {
-  return <GeneralTableCell>Staked</GeneralTableCell>;
+  return <StakingStatusIcon />;
 }
 
 function UnlockDateCell({accountResource}: MyDepositsSectionProps) {
@@ -95,6 +94,10 @@ function ActionsCell({}: MyDepositsSectionProps) {
   );
 }
 
+type MyDepositsSectionProps = {
+  accountResource?: Types.MoveResource | undefined;
+};
+
 export default function MyDepositsSection({
   accountResource,
 }: MyDepositsSectionProps) {
@@ -118,7 +121,11 @@ export default function MyDepositsSection({
                 }}
                 header={MyDepositsHeader[columnName]}
                 key={idx}
-                tooltip={columnName === "status" && <MyDepositsStatusTooltip />}
+                tooltip={
+                  columnName === "status" && (
+                    <MyDepositsStatusTooltip steps={STAKING_STATUS_STEPS} />
+                  )
+                }
               />
             ))}
           </TableRow>
