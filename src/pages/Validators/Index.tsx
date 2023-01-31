@@ -30,16 +30,7 @@ export default function ValidatorsPage() {
     );
 
   const validatorsTabs = (
-    <StyledTabs
-      sx={{
-        width: "100%",
-        "@media screen and (min-width: 40em)": {
-          width: "40%",
-        },
-      }}
-      value={onDelegatory}
-      onChange={handleTabChange}
-    >
+    <StyledTabs value={onDelegatory} onChange={handleTabChange}>
       <StyledTab
         value={false}
         label={

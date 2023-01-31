@@ -70,6 +70,9 @@ function StatusCell({}: MyDepositsSectionProps) {
 
 function UnlockDateCell({accountResource}: MyDepositsSectionProps) {
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
+  if (!lockedUntilSecs) {
+    return null;
+  }
   return (
     <GeneralTableCell>
       <TimestampValue timestamp={lockedUntilSecs?.toString()!} />

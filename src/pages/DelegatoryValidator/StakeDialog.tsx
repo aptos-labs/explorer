@@ -30,6 +30,7 @@ type StakeDialogProps = {
   accountResource?: Types.MoveResource | undefined;
 };
 
+// TODO(jill): pre-check whether wallet has enough APT to stake
 export default function StakeDialog({
   handleDialogClose,
   isDialogOpen,
@@ -38,7 +39,7 @@ export default function StakeDialog({
   const {rewardsRateYearly} = useGetStakingRewardsRate();
 
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
-  const [stakedAmount, setStakedAmount] = useState<string>();
+  const [stakedAmount, setStakedAmount] = useState<string>("");
   const [stakedAmountError, setStakedAmountError] = useState<boolean>(false);
   const handleStakedAmountChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -50,10 +51,8 @@ export default function StakeDialog({
 
   return (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
-      <DialogTitle>
-        <Typography variant="h5" textAlign="center">
-          Stake Into The Pool
-        </Typography>
+      <DialogTitle variant="h5" textAlign="center">
+        Stake Into The Pool
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>

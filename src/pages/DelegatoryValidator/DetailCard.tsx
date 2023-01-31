@@ -1,4 +1,4 @@
-import {Box, Skeleton, Stack, useMediaQuery, useTheme} from "@mui/material";
+import {Skeleton, Stack, useMediaQuery, useTheme} from "@mui/material";
 import * as React from "react";
 import HashButton from "../../components/HashButton";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
@@ -48,10 +48,9 @@ export default function ValidatorDetailCard({
       setIsSkeletonLoading(false);
     }
   }, [lockedUntilSecs, operatorAddr, rewardGrowth, stakePoolAddress]);
-
-  // TODO: revisit layout for mobile
+  
   return isSkeletonLoading ? (
-    validatorDetailCardSkeleton()
+    validatorDetailCardSkeleton({isOnMobile})
   ) : (
     <Stack direction={isOnMobile ? "column" : "row"} spacing={4}>
       <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
@@ -106,22 +105,21 @@ export default function ValidatorDetailCard({
   );
 }
 
-// TODO: revisit skeleton for mobile
-function validatorDetailCardSkeleton() {
+function validatorDetailCardSkeleton({isOnMobile}: {isOnMobile: boolean}) {
   return (
-    <Box display="flex">
-      <ContentBox padding={4} width="50%">
+    <Stack direction={isOnMobile ? "column" : "row"} spacing={4}>
+      <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
       </ContentBox>
-      <ContentBox padding={4} width="50%">
+      <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
       </ContentBox>
-    </Box>
+    </Stack>
   );
 }
