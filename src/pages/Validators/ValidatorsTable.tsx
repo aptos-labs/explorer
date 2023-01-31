@@ -9,7 +9,7 @@ import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "./Components/LastEpochPerformanceTooltip";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
 import {
   MainnetValidatorData,
@@ -321,16 +321,11 @@ type ValidatorRowProps = {
 function ValidatorRow({validator, columns}: ValidatorRowProps) {
   const inDev = useGetInDevMode();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
 
   const rowClick = (address: Types.Address) => {
     // TODO(jill) find long term to persist the url params
-    const isUsingDev = searchParams.get("feature");
-
     navigate(
-      isUsingDev
-        ? `/validator/${address}?feature=dev`
-        : `/validator/${address}`,
+      inDev ? `/validator/${address}?feature=dev` : `/validator/${address}`,
     );
   };
 

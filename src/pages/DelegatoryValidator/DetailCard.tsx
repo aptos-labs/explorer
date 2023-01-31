@@ -48,7 +48,7 @@ export default function ValidatorDetailCard({
       setIsSkeletonLoading(false);
     }
   }, [lockedUntilSecs, operatorAddr, rewardGrowth, stakePoolAddress]);
-  
+
   return isSkeletonLoading ? (
     validatorDetailCardSkeleton({isOnMobile})
   ) : (
