@@ -346,7 +346,7 @@ export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
   const {validators} = useGetMainnetValidators();
   const [sortColumn, setSortColumn] = useState<Column>("votingPower");
   useEffect(() => {
-    setSortColumn(onDelegatory ? "delegatedStakeAmount" : "votingPower");
+    setSortColumn(onDelegatory ? "delegatedStakeAmount" : sortColumn);
   });
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
   const columns = onDelegatory ? DELEGATORY_VALIDATOR_COLUMNS : DEFAULT_COLUMNS;
