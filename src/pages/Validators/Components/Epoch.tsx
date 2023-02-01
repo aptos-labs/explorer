@@ -34,6 +34,9 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
           .asMinutes();
 
         const timeRemaining = (epochIntervalInMin - timePassedInMin).toFixed(0);
+        if (epochIntervalInMin <= timePassedInMin) {
+          window.location.reload();
+        }
         setTimeRemainingInMin(timeRemaining);
 
         const percentage = (
@@ -46,7 +49,6 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
 
     refresh();
     const refreshInterval = setInterval(refresh, 60 * 1000); // refresh every minute
-
     if (timeRemainingInMin !== undefined && parseInt(timeRemainingInMin) <= 0) {
       clearInterval(refreshInterval);
     }
