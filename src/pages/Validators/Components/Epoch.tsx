@@ -49,6 +49,7 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
 
     refresh();
     const refreshInterval = setInterval(refresh, 60 * 1000); // refresh every minute
+
     if (timeRemainingInMin !== undefined && parseInt(timeRemainingInMin) <= 0) {
       clearInterval(refreshInterval);
     }
