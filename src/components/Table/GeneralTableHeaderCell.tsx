@@ -19,6 +19,7 @@ interface GeneralTableHeaderCellProps {
   sortable?: boolean;
   direction?: "desc" | "asc";
   selectAndSetDirection?: (dir: "desc" | "asc") => void;
+  isTableTooltip?: boolean;
 }
 
 export default function GeneralTableHeaderCell({
@@ -29,6 +30,7 @@ export default function GeneralTableHeaderCell({
   sortable,
   direction,
   selectAndSetDirection,
+  isTableTooltip = true,
 }: GeneralTableHeaderCellProps) {
   const theme = useTheme();
   const tableCellBackgroundColor = "transparent";
@@ -71,7 +73,7 @@ export default function GeneralTableHeaderCell({
   const headerContent = tooltip ? (
     <Stack
       direction="row"
-      spacing={0.2}
+      spacing={isTableTooltip ? 0.2 : 1}
       justifyContent={textAlignRight ? "flex-end" : "flex-start"}
       alignItems="center"
     >
