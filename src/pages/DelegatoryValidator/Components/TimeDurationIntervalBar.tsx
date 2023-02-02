@@ -3,6 +3,8 @@ import React, {useEffect, useState} from "react";
 import IntervalBar from "../../../components/IntervalBar";
 import {parseTimestamp, timestampDisplay} from "../../utils";
 
+const REFRESH_IN_MS = 60000;
+
 export default function TimeDurationIntervalBar({
   timestamp,
 }: {
@@ -22,7 +24,7 @@ export default function TimeDurationIntervalBar({
   const unlockTime = parseTimestamp(timestamp.toString());
 
   useEffect(() => {
-    const refresh = () => {
+    const interval = setInterval(() => {
       // the remaining time of the unlock cycle
       const now = moment();
       const remainingTime = moment.duration(
@@ -42,16 +44,16 @@ export default function TimeDurationIntervalBar({
           (unlockTime.valueOf() - startTime.valueOf())) *
         100;
       setPercentageComplete(percentage);
-    };
-
-    refresh();
-    setInterval(refresh, 60 * 1000); // refresh every minute
+    }, REFRESH_IN_MS);
 
     const remainingTimeInMS = remainingTime?.asMilliseconds();
 
     if (remainingTimeInMS !== undefined && remainingTimeInMS <= 0) {
       window.location.reload();
     }
+
+    // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+    return () => clearInterval(interval);
   }, [remainingTime, percentageComplete]);
 
   const remainingTimeDisplay = timestampDisplay(
