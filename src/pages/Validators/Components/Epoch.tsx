@@ -34,6 +34,9 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
           .asMinutes();
 
         const timeRemaining = (epochIntervalInMin - timePassedInMin).toFixed(0);
+        if (epochIntervalInMin <= timePassedInMin) {
+          window.location.reload();
+        }
         setTimeRemainingInMin(timeRemaining);
 
         const percentage = (
