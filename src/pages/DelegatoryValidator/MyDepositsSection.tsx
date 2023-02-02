@@ -1,3 +1,4 @@
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {
   Button,
   Stack,
@@ -9,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {Types} from "aptos";
-import React from "react";
+import React, {useState} from "react";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
@@ -20,7 +21,9 @@ import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
   STAKING_STATUS_STEPS,
 } from "./Components/StakingStatusIcon";
+import UnstakeDialog from "./UnstakeDialog";
 import {getLockedUtilSecs} from "./utils";
+import WalletConnectionDialog from "./WalletConnectionDialog";
 
 const MyDepositsCells = Object.freeze({
   amount: AmountCell,
@@ -55,7 +58,12 @@ const DEFAULT_COLUMNS_MOBILE: Column[] = [
   "rewardEarned",
 ];
 
-function AmountCell({}: MyDepositsSectionProps) {
+type MyDepositsSectionCellProps = {
+  handleClickOpen: () => void;
+  accountResource?: Types.MoveResource | undefined;
+};
+
+function AmountCell({}: MyDepositsSectionCellProps) {
   return (
     <GeneralTableCell>
       <APTCurrencyValue amount={""} />
@@ -63,11 +71,11 @@ function AmountCell({}: MyDepositsSectionProps) {
   );
 }
 
-function StatusCell({}: MyDepositsSectionProps) {
+function StatusCell({}: MyDepositsSectionCellProps) {
   return <StakingStatusIcon />;
 }
 
-function UnlockDateCell({accountResource}: MyDepositsSectionProps) {
+function UnlockDateCell({accountResource}: MyDepositsSectionCellProps) {
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
   if (!lockedUntilSecs) {
     return null;
@@ -79,7 +87,7 @@ function UnlockDateCell({accountResource}: MyDepositsSectionProps) {
   );
 }
 
-function RewardEarnedCell({}: MyDepositsSectionProps) {
+function RewardEarnedCell({}: MyDepositsSectionCellProps) {
   return (
     <GeneralTableCell>
       <APTCurrencyValue amount={""} />
@@ -87,10 +95,10 @@ function RewardEarnedCell({}: MyDepositsSectionProps) {
   );
 }
 
-function ActionsCell({}: MyDepositsSectionProps) {
+function ActionsCell({handleClickOpen}: MyDepositsSectionCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Button variant="primary" size="small">
+      <Button variant="primary" size="small" onClick={handleClickOpen}>
         <Typography>UNSTAKE</Typography>
       </Button>
     </GeneralTableCell>
@@ -107,6 +115,15 @@ export default function MyDepositsSection({
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
+  const {connected} = useWallet();
+
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const handleClickOpen = () => {
+    setDialogOpen(true);
+  };
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
 
   return (
     <Stack>
@@ -137,11 +154,29 @@ export default function MyDepositsSection({
           <GeneralTableRow>
             {columns.map((deposit) => {
               const Cell = MyDepositsCells[deposit];
-              return <Cell key={deposit} accountResource={accountResource} />;
+              return (
+                <Cell
+                  key={deposit}
+                  accountResource={accountResource}
+                  handleClickOpen={handleClickOpen}
+                />
+              );
             })}
           </GeneralTableRow>
         </GeneralTableBody>
       </Table>
+      {connected ? (
+        <UnstakeDialog
+          handleDialogClose={handleClose}
+          isDialogOpen={dialogOpen}
+          accountResource={accountResource}
+        />
+      ) : (
+        <WalletConnectionDialog
+          handleDialogClose={handleClose}
+          isDialogOpen={dialogOpen}
+        />
+      )}
     </Stack>
   );
 }
