@@ -44,17 +44,17 @@ export default function TimeDurationIntervalBar({
           (unlockTime.valueOf() - startTime.valueOf())) *
         100;
       setPercentageComplete(percentage);
+
+      const remainingTimeInMS = remainingTime?.asMilliseconds();
+
+      if (remainingTimeInMS !== undefined && remainingTimeInMS <= 0) {
+        window.location.reload();
+      }
     }, REFRESH_IN_MS);
-
-    const remainingTimeInMS = remainingTime?.asMilliseconds();
-
-    if (remainingTimeInMS !== undefined && remainingTimeInMS <= 0) {
-      window.location.reload();
-    }
 
     // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
     return () => clearInterval(interval);
-  }, [remainingTime, percentageComplete]);
+  }, []);
 
   const remainingTimeDisplay = timestampDisplay(
     moment(remainingTime?.asMilliseconds()),
