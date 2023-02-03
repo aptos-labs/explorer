@@ -24,7 +24,7 @@ export default function TimeDurationIntervalBar({
   const unlockTime = parseTimestamp(timestamp.toString());
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const refresh = () => {
       // the remaining time of the unlock cycle
       const now = moment();
       const remainingTime = moment.duration(
@@ -44,13 +44,24 @@ export default function TimeDurationIntervalBar({
           (unlockTime.valueOf() - startTime.valueOf())) *
         100;
       setPercentageComplete(percentage);
+    };
 
-      const remainingTimeInMS = remainingTime?.asMilliseconds();
+    refresh();
+    const interval = setInterval(refresh, REFRESH_IN_MS);
 
-      if (remainingTimeInMS !== undefined && remainingTimeInMS <= 0) {
-        window.location.reload();
-      }
-    }, REFRESH_IN_MS);
+    const remainingTimeInMS = remainingTime?.asMilliseconds();
+
+    if (remainingTimeInMS !== undefined && remainingTimeInMS <= 0) {
+      // if staking cycle finishes after 30 days, reset remaining time
+      // with the new lock util secs
+      setRemainingTime(
+        moment.duration(
+          unlockTime.valueOf() - moment().valueOf(),
+          "milliseconds",
+        ),
+      );
+      clearInterval(interval);
+    }
 
     // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
     return () => clearInterval(interval);
