@@ -1,5 +1,5 @@
 import {useMemo, useState} from "react";
-import {MainnetValidatorData} from "./useGetMainnetValidators";
+import {ValidatorData} from "./useGetValidators";
 import {useGetValidatorSet, Validator} from "./useGetValidatorSet";
 
 type useGetStakingInfoResponse = {
@@ -8,7 +8,7 @@ type useGetStakingInfoResponse = {
 };
 
 type useGetStakingInfoProps = {
-  validator: MainnetValidatorData | Validator;
+  validator: ValidatorData | Validator;
 };
 export function useGetStakingInfo({
   validator,

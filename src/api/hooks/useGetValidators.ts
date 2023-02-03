@@ -1,11 +1,15 @@
 import {useGlobalState} from "../../GlobalState";
 import {useEffect, useState} from "react";
 import {useGetValidatorSet} from "./useGetValidatorSet";
+import {Network, NetworkName} from "../../constants";
 
 const MAINNET_VALIDATORS_DATA_URL =
   "https://aptos-analytics-data-mainnet.s3.amazonaws.com/validator_stats_v1.json";
 
-export interface MainnetValidatorData {
+const TESTNET_VALIDATORS_DATA_URL =
+  "https://aptos-analytics-data-testnet.s3.amazonaws.com/validator_stats_v1.json";
+
+export interface ValidatorData {
   owner_address: string;
   operator_address: string;
   voting_power: string;
@@ -27,16 +31,23 @@ export interface GeoData {
   epoch: number;
 }
 
-function useGetMainnetValidatorsRawData() {
+function useGetValidatorsRawData(network: NetworkName) {
   const [state, _] = useGlobalState();
-  const [validatorsRawData, setValidatorsRawData] = useState<
-    MainnetValidatorData[]
-  >([]);
+  const [validatorsRawData, setValidatorsRawData] = useState<ValidatorData[]>(
+    [],
+  );
 
   useEffect(() => {
-    if (state.network_name === "mainnet") {
+    if (
+      state.network_name === Network.MAINNET ||
+      state.network_name === Network.TESTNET
+    ) {
       const fetchData = async () => {
-        const response = await fetch(MAINNET_VALIDATORS_DATA_URL);
+        const response = await fetch(
+          network === Network.MAINNET
+            ? MAINNET_VALIDATORS_DATA_URL
+            : TESTNET_VALIDATORS_DATA_URL,
+        );
         const data = await response.json();
         setValidatorsRawData(data);
       };
@@ -52,16 +63,19 @@ function useGetMainnetValidatorsRawData() {
   return {validatorsRawData};
 }
 
-export function useGetMainnetValidators() {
+export function useGetValidators(network?: NetworkName) {
   const {activeValidators} = useGetValidatorSet();
-  const {validatorsRawData} = useGetMainnetValidatorsRawData();
-  const [validators, setValidators] = useState<MainnetValidatorData[]>([]);
+  const {validatorsRawData} = useGetValidatorsRawData(
+    network ?? Network.MAINNET,
+  );
+
+  const [validators, setValidators] = useState<ValidatorData[]>([]);
 
   useEffect(() => {
     if (activeValidators.length > 0 && validatorsRawData.length > 0) {
       const validatorsCopy = JSON.parse(JSON.stringify(validatorsRawData));
 
-      validatorsCopy.forEach((validator: MainnetValidatorData) => {
+      validatorsCopy.forEach((validator: ValidatorData) => {
         const activeValidator = activeValidators.find(
           (activeValidator) => activeValidator.addr === validator.owner_address,
         );

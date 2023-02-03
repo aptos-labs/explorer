@@ -4,6 +4,7 @@ import {useState} from "react";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import StyledTab from "../../components/StyledTab";
 import StyledTabs from "../../components/StyledTabs";
+import {Network} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import PageHeader from "../layout/PageHeader";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
@@ -23,7 +24,8 @@ export default function ValidatorsPage() {
   };
 
   const validatorsTable =
-    state.network_name === "mainnet" ? (
+    state.network_name === Network.MAINNET ||
+    state.network_name === Network.TESTNET ? (
       <ValidatorsTable onDelegatory={onDelegatory} />
     ) : (
       <OldValidatorsTable onDelegatory={onDelegatory} />
