@@ -60,20 +60,36 @@ interface HashButtonProps extends BoxProps {
   hash: string;
   type: HashType;
   size?: "small" | "large";
+  shouldTruncate?: boolean;
 }
 
 export default function HashButton({
   hash,
   type,
   size = "small",
+  shouldTruncate = true,
   ...props
 }: HashButtonProps) {
   if (type === HashType.ACCOUNT) {
     return (
-      <AccountHashButtonInner hash={hash} type={type} size={size} {...props} />
+      <AccountHashButtonInner
+        hash={hash}
+        type={type}
+        size={size}
+        shouldTruncate={shouldTruncate}
+        {...props}
+      />
     );
   } else {
-    return <HashButtonInner hash={hash} type={type} size={size} {...props} />;
+    return (
+      <HashButtonInner
+        hash={hash}
+        type={type}
+        size={size}
+        shouldTruncate={shouldTruncate}
+        {...props}
+      />
+    );
   }
 }
 
@@ -81,12 +97,14 @@ interface AccountHashButtonInnerProps extends BoxProps {
   hash: string;
   type: HashType;
   size?: "small" | "large";
+  shouldTruncate?: boolean;
 }
 
 function AccountHashButtonInner({
   hash,
   type,
   size = "small",
+  shouldTruncate = true,
   ...props
 }: AccountHashButtonInnerProps) {
   const name = useGetNameFromAddress(hash);
@@ -97,6 +115,7 @@ function AccountHashButtonInner({
       hash={hash}
       type={type}
       size={size}
+      shouldTruncate={shouldTruncate}
       {...props}
     />
   );
@@ -107,6 +126,7 @@ interface HashButtonInnerProps extends BoxProps {
   hash: string;
   type: HashType;
   size?: "small" | "large";
+  shouldTruncate?: boolean;
 }
 
 function HashButtonInner({
@@ -114,6 +134,7 @@ function HashButtonInner({
   hash,
   type,
   size = "small",
+  shouldTruncate = true,
   ...props
 }: HashButtonInnerProps) {
   const theme = useTheme();
@@ -132,8 +153,12 @@ function HashButtonInner({
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const truncateHash =
-    size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
+  // detect key event search to not truncate the hash so that search is easier
+  const truncateHash = !shouldTruncate
+    ? hash
+    : size === "large"
+    ? truncateAddressMiddle(hash)
+    : truncateAddress(hash);
 
   return (
     <Box {...props}>

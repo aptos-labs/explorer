@@ -23,6 +23,7 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import {useGetStakingInfo} from "../../api/hooks/useGetStakingInfo";
 import {useGlobalState} from "../../GlobalState";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
+import KeyboardEventHandler from "react-keyboard-event-handler";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -224,9 +225,18 @@ type ValidatorCellProps = {
 };
 
 function ValidatorAddrCell({validator}: ValidatorCellProps) {
+  const [shouldTruncateHash, setShouldTruncateHash] = useState<boolean>(true);
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <HashButton hash={validator.owner_address} type={HashType.ACCOUNT} />
+      <KeyboardEventHandler
+        handleKeys={["cmd+f", "ctrl+f"]}
+        onKeyEvent={() => setShouldTruncateHash(false)}
+      />
+      <HashButton
+        hash={validator.owner_address}
+        type={HashType.ACCOUNT}
+        shouldTruncate={shouldTruncateHash}
+      />
     </GeneralTableCell>
   );
 }

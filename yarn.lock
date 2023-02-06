@@ -2568,6 +2568,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-keyboard-event-handler@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@types/react-keyboard-event-handler/-/react-keyboard-event-handler-1.5.2.tgz#3708d0bd78b786cab56068e0b1386e4dde11d6eb"
+  integrity sha512-lo3MNHTolj3XPmNUdYXU8ml3uqqcButJESQepafk47IWVlJMVaFmExS0GtgttBihuD010ej4eqpQpzHs8YJjlQ==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-simple-maps@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@types/react-simple-maps/-/react-simple-maps-3.0.0.tgz#b69a02bb53445fc9fb15840348c7101fe5f42de4"
@@ -8521,6 +8528,11 @@ react-json-view@^1.21.3:
     react-base16-styling "^0.6.0"
     react-lifecycles-compat "^3.0.4"
     react-textarea-autosize "^8.3.2"
+
+react-keyboard-event-handler@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/react-keyboard-event-handler/-/react-keyboard-event-handler-1.5.4.tgz#bd0ccafbf62a96f605ddac78828f22efc54181f0"
+  integrity sha512-MSOxU/sQ5q9XWNHhXAJxzh4xVLZjKORGNC2Pzvx3qUo24TQeztGB0tq8oSArwX6vfKSIVijiw8wBmkN5pJOB4w==
 
 react-lifecycles-compat@^3.0.4:
   version "3.0.4"
