@@ -21,8 +21,8 @@ import {
 } from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useGetStakingInfo} from "../../api/hooks/useGetStakingInfo";
-import {Network} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
+import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -77,6 +77,7 @@ type SortableHeaderCellProps = {
   setDirection?: (dir: "desc" | "asc") => void;
   setSortColumn: (col: Column) => void;
   tooltip?: React.ReactNode;
+  isTableTooltip?: boolean;
 };
 
 function SortableHeaderCell({
@@ -86,6 +87,7 @@ function SortableHeaderCell({
   setDirection,
   setSortColumn,
   tooltip,
+  isTableTooltip,
 }: SortableHeaderCellProps) {
   return (
     <GeneralTableHeaderCell
@@ -100,6 +102,7 @@ function SortableHeaderCell({
         }
       }}
       tooltip={tooltip}
+      isTableTooltip={isTableTooltip}
     />
   );
 }
@@ -140,6 +143,10 @@ function ValidatorHeaderCell({
           direction={direction}
           setDirection={setDirection}
           setSortColumn={setSortColumn}
+          tooltip={
+            <StyledLearnMoreTooltip text="The total amount of delegated stake in this stake pool" />
+          }
+          isTableTooltip={false}
         />
       );
     case "rewardsPerf":
@@ -175,11 +182,38 @@ function ValidatorHeaderCell({
         />
       );
     case "delegator":
-      return <GeneralTableHeaderCell header="Delegators" />;
+      return (
+        <GeneralTableHeaderCell
+          header="Delegators"
+          tooltip={
+            <StyledLearnMoreTooltip
+              text="Number of owner accounts who have delegated stake to this stake pool
+        Compound rewards"
+            />
+          }
+          isTableTooltip={false}
+        />
+      );
     case "rewardsEarned":
-      return <GeneralTableHeaderCell header="Rewards Earned" />;
+      return (
+        <GeneralTableHeaderCell
+          header="Rewards Earned"
+          tooltip={
+            <StyledLearnMoreTooltip text="Amount of rewards earned by this stake pool to date" />
+          }
+          isTableTooltip={false}
+        />
+      );
     case "commission":
-      return <GeneralTableHeaderCell header="Commission" />;
+      return (
+        <GeneralTableHeaderCell
+          header="Commission"
+          tooltip={
+            <StyledLearnMoreTooltip text="% of staking reward paid out to operator as commission" />
+          }
+          isTableTooltip={false}
+        />
+      );
     default:
       return assertNever(column);
   }

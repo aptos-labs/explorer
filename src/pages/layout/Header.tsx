@@ -17,8 +17,11 @@ import NavMobile from "./NavMobile";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
-import WalletConnector from "../../components/WalletConnector";
+import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGlobalState} from "../../GlobalState";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useNavigate} from "react-router-dom";
 
 export default function Header() {
   const scrollTop = () => {
@@ -46,6 +49,9 @@ export default function Header() {
 
   const inDev = useGetInDevMode();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
+  const [state] = useGlobalState();
+  const {account} = useWallet();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -124,7 +130,12 @@ export default function Header() {
             <NavMobile />
             {inDev && !isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
-                <WalletConnector />
+                <WalletConnector
+                  networkSupport={state.network_name}
+                  handleNavigate={() =>
+                    navigate(`/account/${account?.address}`)
+                  }
+                />
               </Box>
             )}
           </Toolbar>

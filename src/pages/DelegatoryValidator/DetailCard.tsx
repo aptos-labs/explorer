@@ -62,7 +62,13 @@ export default function ValidatorDetailCard({
             )
           }
         />
-        <ContentRowSpaceBetween title="Number of Delegators" value={null} />
+        <ContentRowSpaceBetween
+          title="Number of Delegators"
+          value={null}
+          tooltip={
+            <StyledLearnMoreTooltip text="Number of owner accounts who have delegated stake to this stake pool" />
+          }
+        />
         <ContentRowSpaceBetween
           title="Compound Rewards"
           value={`${rewardsRateYearly}% APY`}
@@ -73,7 +79,13 @@ export default function ValidatorDetailCard({
             />
           }
         />
-        <ContentRowSpaceBetween title="Operator Commission" value={null} />
+        <ContentRowSpaceBetween
+          title="Operator Commission"
+          value={null}
+          tooltip={
+            <StyledLearnMoreTooltip text="% of staking reward paid out to operator as commission" />
+          }
+        />
       </ContentBox>
       <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <ContentRowSpaceBetween
@@ -98,6 +110,9 @@ export default function ValidatorDetailCard({
           title="Next Unlock"
           value={
             <TimeDurationIntervalBar timestamp={Number(lockedUntilSecs)} />
+          }
+          tooltip={
+            <StyledLearnMoreTooltip text="When tokens will be available for removal from the stake pool" />
           }
         />
       </ContentBox>
