@@ -14,8 +14,8 @@ export function getFormattedBalanceStr(
   decimals?: number,
   fixedDecimalPlaces?: number,
 ): string {
-  // If it's zero, just return it
-  if (balance == "0") {
+  // If balance is zero or decimals is 0, just return it
+  if (balance == "0" || (decimals !== undefined && decimals === 0)) {
     return balance;
   }
 
