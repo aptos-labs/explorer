@@ -2,14 +2,14 @@ import {
   DialogTitle,
   Typography,
   DialogActions,
-  Button,
+  Stack,
   Box,
 } from "@mui/material";
-import React, {useState} from "react";
+import React from "react";
 import StyledDialog from "../../components/StyledDialog";
-import WalletsModal from "../../components/WalletConnector/WalletModel";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import {ReactComponent as ConnectWalletModalIcon} from "../../assets/forum_icon.svg";
+import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
+import {useGlobalState} from "../../GlobalState";
 
 type WalletConnectionDialogProps = {
   handleDialogClose: () => void;
@@ -20,9 +20,7 @@ export default function WalletConnectionDialog({
   handleDialogClose,
   isDialogOpen,
 }: WalletConnectionDialogProps) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const handleModalOpen = () => setModalOpen(true);
-  const handleClose = () => setModalOpen(false);
+  const [state] = useGlobalState();
 
   return (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
@@ -36,11 +34,9 @@ export default function WalletConnectionDialog({
         </Typography>
       </DialogTitle>
       <DialogActions>
-        <Button onClick={handleModalOpen} variant="primary" fullWidth>
-          <AccountBalanceWalletOutlinedIcon sx={{marginRight: 1}} />
-          Connect Wallet
-        </Button>
-        <WalletsModal handleClose={handleClose} modalOpen={modalOpen} />
+        <Stack sx={{width: "100%"}}>
+          <WalletConnector networkSupport={state.network_name} />
+        </Stack>
       </DialogActions>
     </StyledDialog>
   );
