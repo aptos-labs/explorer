@@ -1,9 +1,5 @@
 import {useMemo, useState} from "react";
-import {
-  GeoData,
-  MainnetValidatorData,
-  useGetMainnetValidators,
-} from "./useGetMainnetValidators";
+import {GeoData, ValidatorData, useGetValidators} from "./useGetValidators";
 
 export type ValidatorGeoMetric = {
   nodeCount: number;
@@ -25,7 +21,7 @@ export interface ValidatorGeoGroup {
 }
 
 export function useGetValidatorSetGeoData() {
-  const {validators} = useGetMainnetValidators();
+  const {validators} = useGetValidators();
   const [validatorGeoGroups, setValidatorGeoGroups] = useState<
     ValidatorGeoGroup[]
   >([]);
@@ -38,7 +34,7 @@ export function useGetValidatorSetGeoData() {
 
   useMemo(() => {
     const groups: ValidatorGeoGroup[] = validators.reduce(
-      (groups: ValidatorGeoGroup[], validatorData: MainnetValidatorData) => {
+      (groups: ValidatorGeoGroup[], validatorData: ValidatorData) => {
         const geoData = validatorData.location_stats;
         const country = geoData?.country;
         if (!country) {

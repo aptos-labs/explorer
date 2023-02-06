@@ -8,7 +8,7 @@ import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerforman
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
 import {HexString, Types} from "aptos";
 import {useEffect, useState} from "react";
-import {useGetMainnetValidators} from "../../api/hooks/useGetMainnetValidators";
+import {useGetValidators} from "../../api/hooks/useGetValidators";
 import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
 import {getLockedUtilSecs} from "./utils";
 import {useGetStakingRewardsRate} from "../../api/hooks/useGetStakingRewardsRate";
@@ -28,7 +28,7 @@ export default function ValidatorDetailCard({
   accountResource,
 }: ValidatorDetailProps) {
   const addressHex = new HexString(address);
-  const {validators} = useGetMainnetValidators();
+  const {validators} = useGetValidators();
   const {rewardsRateYearly} = useGetStakingRewardsRate();
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));

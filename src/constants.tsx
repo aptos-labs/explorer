@@ -13,6 +13,13 @@ export const networks = {
 
 export type NetworkName = keyof typeof networks;
 
+export enum Network {
+  MAINNET = "mainnet",
+  TESTNET = "testnet",
+  DEVNET = "devnet",
+  LOCAL = "local",
+}
+
 // Remove trailing slashes
 for (const key of Object.keys(networks)) {
   const networkName = key as NetworkName;

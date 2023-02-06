@@ -6,14 +6,14 @@ import ValidatorTitle from "./Title";
 import ValidatorDetailCard from "./DetailCard";
 import ValidatorStakingBar from "./StakingBar";
 import {HexString} from "aptos";
-import {useGetMainnetValidators} from "../../api/hooks/useGetMainnetValidators";
+import {useGetValidators} from "../../api/hooks/useGetValidators";
 import MyDepositsSection from "./MyDepositsSection";
 import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
   const addressHex = new HexString(address);
-  const {validators} = useGetMainnetValidators();
+  const {validators} = useGetValidators();
   const validator = validators.find(
     (validator) => validator.owner_address === addressHex.hex(),
   );

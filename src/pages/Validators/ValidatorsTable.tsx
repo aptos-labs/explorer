@@ -12,23 +12,24 @@ import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
 import {
-  MainnetValidatorData,
-  useGetMainnetValidators,
-} from "../../api/hooks/useGetMainnetValidators";
+  ValidatorData,
+  useGetValidators,
+} from "../../api/hooks/useGetValidators";
 import {
   APTCurrencyValue,
   getFormattedBalanceStr,
 } from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useGetStakingInfo} from "../../api/hooks/useGetStakingInfo";
+import {useGlobalState} from "../../GlobalState";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 
 function getSortedValidators(
-  validators: MainnetValidatorData[],
+  validators: ValidatorData[],
   column: Column,
   direction: "desc" | "asc",
 ) {
-  const validatorsCopy: MainnetValidatorData[] = JSON.parse(
+  const validatorsCopy: ValidatorData[] = JSON.parse(
     JSON.stringify(validators),
   );
   const orderedValidators = getValidatorsOrderedBy(validatorsCopy, column);
@@ -37,7 +38,7 @@ function getSortedValidators(
 }
 
 function getValidatorsOrderedBy(
-  validatorsCopy: MainnetValidatorData[],
+  validatorsCopy: ValidatorData[],
   column: Column,
 ) {
   switch (column) {
@@ -219,7 +220,7 @@ function ValidatorHeaderCell({
 }
 
 type ValidatorCellProps = {
-  validator: MainnetValidatorData;
+  validator: ValidatorData;
 };
 
 function ValidatorAddrCell({validator}: ValidatorCellProps) {
@@ -349,7 +350,7 @@ const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
 ];
 
 type ValidatorRowProps = {
-  validator: MainnetValidatorData;
+  validator: ValidatorData;
   columns: Column[];
 };
 
@@ -381,7 +382,9 @@ type ValidatorsTableProps = {
 };
 
 export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
-  const {validators} = useGetMainnetValidators();
+  const [state, _] = useGlobalState();
+  const {validators} = useGetValidators(state.network_name);
+
   const [sortColumn, setSortColumn] = useState<Column>(
     onDelegatory ? "delegatedStakeAmount" : "votingPower",
   );

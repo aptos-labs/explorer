@@ -7,7 +7,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React, {useState} from "react";
-import {MainnetValidatorData} from "../../api/hooks/useGetMainnetValidators";
+import {ValidatorData} from "../../api/hooks/useGetValidators";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import StakeDialog from "./StakeDialog";
@@ -20,7 +20,7 @@ import WalletConnectionDialog from "./WalletConnectionDialog";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 
 type ValidatorStakingBarProps = {
-  validator: MainnetValidatorData;
+  validator: ValidatorData;
   accountResource?: Types.MoveResource | undefined;
 };
 
