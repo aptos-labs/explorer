@@ -56,15 +56,7 @@ export default function ExplorerLayout({children}: LayoutProps) {
                       theme.palette.mode === "dark" ? "#1E40AF" : "#1D4ED8",
                     borderRadius: 0,
                   }}
-                  icon={
-                    <Stack color="#ffffff">
-                      <link
-                        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-                        rel="stylesheet"
-                      />
-                      <span className="material-symbols-outlined">info</span>
-                    </Stack>
-                  }
+                  icon={false}
                   action={
                     <Stack direction="row" spacing={3} color={primary[400]}>
                       <Link href={""} color={primary[400]}>
