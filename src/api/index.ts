@@ -1,4 +1,5 @@
 import {AptosClient, Types} from "aptos";
+import {DELEGATION_POOL_ADDRESS} from "../constants";
 import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
@@ -186,4 +187,21 @@ export async function getRecentBlocks(
     blocks.push(block);
   }
   return blocks;
+}
+
+export async function getStake(
+  nodeUrl: string,
+  delegatorAddress: Types.Address,
+): Promise<Types.MoveValue[]> {
+  const client = new AptosClient(nodeUrl);
+  const payload: Types.ViewRequest = {
+    function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::get_stake`,
+    type_arguments: [],
+    arguments: [
+      // TODO(jill): pool address needs to be passed in as param
+      "0x5df905f817adf39293c596e83512ab8a9dc5a19980e11bd4ce44b6e749d33a0d",
+      delegatorAddress,
+    ],
+  };
+  return await client.view(payload);
 }
