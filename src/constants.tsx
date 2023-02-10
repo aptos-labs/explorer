@@ -61,3 +61,11 @@ if (!(defaultFeatureName in features)) {
 }
 
 export const defaultFeature = features[defaultFeatureName];
+
+/**
+ * Delegation Service
+ */
+
+// TODO(jill): update this function name once in mainnet
+export const DELEGATION_POOL_ADDRESS =
+  "0x1310dc820487f24755e6e06747f6582118597a48868e2a98260fa8c3ee945cbd";
