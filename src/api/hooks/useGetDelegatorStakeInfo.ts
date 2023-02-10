@@ -9,15 +9,12 @@ export function useGetDelegatorStakeInfo(delegatorAddress: Types.Address) {
   const [stake, setStake] = useState<Types.MoveValue[]>([]);
 
   useEffect(() => {
-    if (stake !== undefined) {
-      const fetchData = async () => {
-        const stakes = await getStake(state.network_value, delegatorAddress);
-        setStake(stakes);
-        setIsLoading(false);
-      };
-      fetchData();
-    }
-  }, [stake, state]);
+    const fetchData = async () => {
+      setStake(await getStake(state.network_value, delegatorAddress));
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [state]);
 
   return {stake, isLoading};
 }
