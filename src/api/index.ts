@@ -187,3 +187,21 @@ export async function getRecentBlocks(
   }
   return blocks;
 }
+
+// TODO(jill): update this function name once in mainnet
+export async function getStake(
+  nodeUrl: string,
+  delegatorAddress: Types.Address,
+): Promise<Types.MoveValue[]> {
+  const client = new AptosClient(nodeUrl);
+  const payload: Types.ViewRequest = {
+    function:
+      "0x1310dc820487f24755e6e06747f6582118597a48868e2a98260fa8c3ee945cbd::delegation_pool::get_stake",
+    type_arguments: [],
+    arguments: [
+      "0x5df905f817adf39293c596e83512ab8a9dc5a19980e11bd4ce44b6e749d33a0d",
+      delegatorAddress,
+    ],
+  };
+  return await client.view(payload);
+}
