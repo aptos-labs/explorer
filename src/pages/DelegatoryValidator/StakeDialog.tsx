@@ -26,6 +26,7 @@ import useAmountInput from "./hooks/useAmountInput";
 import LoadingModal from "../../components/LoadingModal";
 import TransactionResponseSnackbar from "../../components/snakebar/TransactionResponseSnackbar";
 import TransactionSucceededDialog from "./TransactionSucceededDialog";
+import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 
 type StakeDialogProps = {
   handleDialogClose: () => void;
@@ -41,6 +42,8 @@ export default function StakeDialog({
   validator,
 }: StakeDialogProps) {
   const {rewardsRateYearly} = useGetStakingRewardsRate();
+  const {commission} = useGetDelegationNodeInfo();
+
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const {
     submitStake,
@@ -108,7 +111,7 @@ export default function StakeDialog({
           <ContentBox>
             <ContentRowSpaceBetween
               title={"Operator Commission"}
-              value={"N/A"}
+              value={commission && `${commission}%`}
             />
             <ContentRowSpaceBetween
               title={"Compound Rewards"}
