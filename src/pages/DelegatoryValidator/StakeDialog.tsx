@@ -27,6 +27,7 @@ import {DELEGATION_POOL_ADDRESS, OCTA} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
+import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 
 type StakeDialogProps = {
   handleDialogClose: () => void;
@@ -54,6 +55,7 @@ export default function StakeDialog({
   const {rewardsRateYearly} = useGetStakingRewardsRate();
   const {signAndSubmitTransaction} = useWallet();
   const [state] = useGlobalState();
+  const {commission} = useGetDelegationNodeInfo();
 
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const [stakedAmountError, setStakedAmountError] = useState<boolean>(false);
@@ -107,7 +109,7 @@ export default function StakeDialog({
           <ContentBox>
             <ContentRowSpaceBetween
               title={"Operator Commission"}
-              value={"N/A"}
+              value={commission && `${commission}%`}
             />
             <ContentRowSpaceBetween
               title={"Compound Rewards"}

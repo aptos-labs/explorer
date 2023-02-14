@@ -14,15 +14,16 @@ import {
 } from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import {CommissionCell} from "./ValidatorsTable";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
 import {useGetStakingInfo} from "../../api/hooks/useGetStakingInfo";
 import {grey} from "../../themes/colors/aptosColorPalette";
+import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 
 type ValidatorCellProps = {
   validator: Validator;
+  commission?: number;
 };
 
 function ValidatorIndexCell({validator}: ValidatorCellProps) {
@@ -111,6 +112,14 @@ function DelegatorCell() {
   );
 }
 
+function CommissionCell({commission}: ValidatorCellProps) {
+  return (
+    <GeneralTableCell sx={{paddingLeft: 5}}>
+      {commission && `${commission}%`}
+    </GeneralTableCell>
+  );
+}
+
 const ValidatorCells = Object.freeze({
   idx: ValidatorIndexCell,
   addr: ValidatorAddrCell,
@@ -145,9 +154,10 @@ const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
 type ValidatorRowProps = {
   validator: Validator;
   columns: Column[];
+  commission?: number;
 };
 
-function ValidatorRow({validator, columns}: ValidatorRowProps) {
+function ValidatorRow({validator, columns, commission}: ValidatorRowProps) {
   const inDev = useGetInDevMode();
   const navigate = useNavigate();
 
@@ -161,7 +171,9 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
     >
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
-        return <Cell key={column} validator={validator} />;
+        return (
+          <Cell key={column} validator={validator} commission={commission} />
+        );
       })}
     </GeneralTableRow>
   );
@@ -209,9 +221,9 @@ type ValidatorsTableProps = {
   onDelegatory: boolean;
 };
 
-// TODO(jill): clean up this file to move delegation specific logics out
 export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
   const {activeValidators} = useGetValidatorSet();
+  const {commission} = useGetDelegationNodeInfo();
 
   const validatorsCopy: Validator[] = JSON.parse(
     JSON.stringify(activeValidators),
@@ -234,7 +246,12 @@ export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
       <GeneralTableBody>
         {validatorsInOrder.map((validator: any, i: number) => {
           return (
-            <ValidatorRow key={i} validator={validator} columns={columns} />
+            <ValidatorRow
+              key={i}
+              validator={validator}
+              columns={columns}
+              commission={commission}
+            />
           );
         })}
       </GeneralTableBody>
