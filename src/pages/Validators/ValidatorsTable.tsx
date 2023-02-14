@@ -23,6 +23,7 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import {useGetStakingInfo} from "../../api/hooks/useGetStakingInfo";
 import {useGlobalState} from "../../GlobalState";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
+import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -221,6 +222,7 @@ function ValidatorHeaderCell({
 
 type ValidatorCellProps = {
   validator: ValidatorData;
+  commission?: number;
 };
 
 function ValidatorAddrCell({validator}: ValidatorCellProps) {
@@ -282,8 +284,12 @@ function LocationCell({validator}: ValidatorCellProps) {
   );
 }
 
-export function CommissionCell() {
-  return <GeneralTableCell sx={{paddingLeft: 5}}>N/A</GeneralTableCell>;
+function CommissionCell({commission}: ValidatorCellProps) {
+  return (
+    <GeneralTableCell sx={{paddingLeft: 5}}>
+      {commission && `${commission}%`}
+    </GeneralTableCell>
+  );
 }
 
 function DelegatorCell() {
@@ -352,9 +358,10 @@ const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
 type ValidatorRowProps = {
   validator: ValidatorData;
   columns: Column[];
+  commission?: number;
 };
 
-function ValidatorRow({validator, columns}: ValidatorRowProps) {
+function ValidatorRow({validator, columns, commission}: ValidatorRowProps) {
   const inDev = useGetInDevMode();
   const navigate = useNavigate();
 
@@ -371,7 +378,9 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
     >
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
-        return <Cell key={column} validator={validator} />;
+        return (
+          <Cell key={column} validator={validator} commission={commission} />
+        );
       })}
     </GeneralTableRow>
   );
@@ -384,6 +393,7 @@ type ValidatorsTableProps = {
 export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
   const [state, _] = useGlobalState();
   const {validators} = useGetValidators(state.network_name);
+  const {commission} = useGetDelegationNodeInfo();
 
   const [sortColumn, setSortColumn] = useState<Column>(
     onDelegatory ? "delegatedStakeAmount" : "votingPower",
@@ -414,7 +424,12 @@ export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
       <GeneralTableBody>
         {sortedValidators.map((validator: any, i: number) => {
           return (
-            <ValidatorRow key={i} validator={validator} columns={columns} />
+            <ValidatorRow
+              key={i}
+              validator={validator}
+              columns={columns}
+              commission={commission}
+            />
           );
         })}
       </GeneralTableBody>
