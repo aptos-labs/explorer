@@ -8,7 +8,7 @@ export function useGetDelegationNodeInfo() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [commission, setCommission] = useState<Types.MoveValue>();
   const client = new AptosClient(state.network_value);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       setCommission(await getValidatorCommission(client));
