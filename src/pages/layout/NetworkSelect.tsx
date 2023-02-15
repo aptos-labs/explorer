@@ -5,7 +5,12 @@ import {
   SelectChangeEvent,
   Typography,
 } from "@mui/material";
-import {defaultFeatureName, NetworkName, networks} from "../../constants";
+import {
+  defaultFeatureName,
+  defaultNetworkName,
+  NetworkName,
+  networks,
+} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import {useTheme} from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
@@ -18,6 +23,7 @@ import {
   useGetChainIdCached,
   useGetChainIdAndCache,
 } from "../../api/hooks/useGetNetworkChainIds";
+import {AptosClient} from "aptos";
 
 function NetworkAndChainIdCached({
   networkName,
@@ -77,6 +83,7 @@ export default function NetworkSelect() {
     const feature_name = state.feature_name;
     const network_name = networkNameString as NetworkName;
     const network_value = networks[network_name];
+    const aptos_client = new AptosClient(network_name);
     if (network_value) {
       // only show the "feature" param in the url when it's not "prod"
       // we don't want the users to know the existence of the "feature" param
@@ -85,7 +92,7 @@ export default function NetworkSelect() {
       } else {
         setSearchParams({network: network_name});
       }
-      dispatch({network_name, network_value, feature_name});
+      dispatch({network_name, network_value, feature_name, aptos_client});
     }
   }
 

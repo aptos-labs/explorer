@@ -24,6 +24,7 @@ export default function FeatureBar() {
     const feature_name = featureNameString as FeatureName;
     const network_name = state.network_name;
     const network_value = state.network_value;
+    const aptos_client = state.aptos_client;
     if (feature_name) {
       // only show the "feature" param in the url when it's not "prod"
       // we don't want the users to know the existence of the "feature" param
@@ -32,7 +33,12 @@ export default function FeatureBar() {
       } else {
         setSearchParams({network: network_name});
       }
-      dispatch({network_name, network_value, feature_name});
+      dispatch({
+        network_name,
+        network_value,
+        feature_name,
+        aptos_client,
+      });
     }
   }
 

@@ -29,18 +29,18 @@ export default function StakingBar({
   accountResource,
 }: ValidatorStakingBarProps) {
   const theme = useTheme();
+  const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
+  const {connected} = useWallet();
   const {delegatedStakeAmount, networkPercentage} = useGetStakingInfo({
     validator,
   });
 
-  const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
-  const {connected} = useWallet();
-
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+
   const handleClickOpen = () => {
     setDialogOpen(true);
   };
-  const handleClose = () => {
+  const handleDialogClose = () => {
     setDialogOpen(false);
   };
 
@@ -91,41 +91,50 @@ export default function StakingBar({
     </Button>
   );
 
+  const stakingBarOnMobile = (
+    <Stack direction="column" spacing={4}>
+      <Stack direction="row" spacing={4} justifyContent="space-between">
+        {stakeAmount}
+        {delegatedStakePercentage}
+      </Stack>
+      <Stack direction="row" justifyContent="space-between">
+        {rewardsEarned}
+      </Stack>
+    </Stack>
+  );
+
+  const stakingBarOnWeb = (
+    <Stack direction="row" spacing={4} justifyContent="space-between">
+      <Stack direction="row" spacing={4}>
+        {stakeAmount}
+        {delegatedStakePercentage}
+        <Divider orientation="vertical" flexItem variant="fullWidth" />
+        {rewardsEarned}
+      </Stack>
+      {stakeButton}
+    </Stack>
+  );
+
+  const stakeDialog = (
+    <StakeDialog
+      handleDialogClose={handleDialogClose}
+      isDialogOpen={dialogOpen}
+      accountResource={accountResource}
+      validator={validator}
+    />
+  );
+
+  const walletConnectionDialog = (
+    <WalletConnectionDialog
+      handleDialogClose={handleDialogClose}
+      isDialogOpen={dialogOpen}
+    />
+  );
+
   return (
     <ContentBox>
-      {isOnMobile ? (
-        <Stack direction="column" spacing={4}>
-          <Stack direction="row" spacing={4} justifyContent="space-between">
-            {stakeAmount}
-            {delegatedStakePercentage}
-          </Stack>
-          <Stack direction="row" justifyContent="space-between">
-            {rewardsEarned}
-          </Stack>
-        </Stack>
-      ) : (
-        <Stack direction="row" spacing={4} justifyContent="space-between">
-          <Stack direction="row" spacing={4}>
-            {stakeAmount}
-            {delegatedStakePercentage}
-            <Divider orientation="vertical" flexItem variant="fullWidth" />
-            {rewardsEarned}
-          </Stack>
-          {stakeButton}
-        </Stack>
-      )}
-      {connected ? (
-        <StakeDialog
-          handleDialogClose={handleClose}
-          isDialogOpen={dialogOpen}
-          accountResource={accountResource}
-        />
-      ) : (
-        <WalletConnectionDialog
-          handleDialogClose={handleClose}
-          isDialogOpen={dialogOpen}
-        />
-      )}
+      {isOnMobile ? stakingBarOnMobile : stakingBarOnWeb}
+      {connected ? stakeDialog : walletConnectionDialog}
     </ContentBox>
   );
 }

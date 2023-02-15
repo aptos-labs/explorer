@@ -64,9 +64,10 @@ function useGetValidatorsRawData(network: NetworkName) {
 }
 
 export function useGetValidators(network?: NetworkName) {
+  const [state] = useGlobalState();
   const {activeValidators} = useGetValidatorSet();
   const {validatorsRawData} = useGetValidatorsRawData(
-    network ?? Network.MAINNET,
+    network ?? state.network_name,
   );
 
   const [validators, setValidators] = useState<ValidatorData[]>([]);
