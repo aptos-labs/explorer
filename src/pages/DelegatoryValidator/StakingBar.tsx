@@ -18,8 +18,6 @@ import {useGetStakingInfo} from "../../api/hooks/useGetStakingInfo";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import WalletConnectionDialog from "./WalletConnectionDialog";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
-import TransactionSucceededDialog from "./TransactionSucceededDialog";
-import LoadingModal from "../../components/LoadingModal";
 
 type ValidatorStakingBarProps = {
   validator: ValidatorData;
@@ -38,18 +36,9 @@ export default function StakingBar({
   });
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [transactionHash, setTransactionHash] = useState<string>("");
-  const [transactionInProcess, setTransactionInProcess] =
-    useState<boolean>(false);
 
   const handleClickOpen = () => {
     setDialogOpen(true);
-  };
-  const [transactionSucceeded, setTransactionSucceeded] =
-    useState<boolean>(false);
-  const [stakedAmount, setStakedAmount] = useState<string>("");
-  const handTransactionSucceededDialogClose = () => {
-    setTransactionSucceeded(false);
   };
   const handleDialogClose = () => {
     setDialogOpen(false);
@@ -126,48 +115,26 @@ export default function StakingBar({
     </Stack>
   );
 
-  const transactionSucceededDialog = (
-    <TransactionSucceededDialog
-      isDialogOpen={transactionSucceeded}
-      handleDialogClose={handTransactionSucceededDialogClose}
-      stakedAmount={stakedAmount}
-      transactionHash={transactionHash}
-    />
-  );
-
   const stakeDialog = (
     <StakeDialog
       handleDialogClose={handleDialogClose}
       isDialogOpen={dialogOpen}
       accountResource={accountResource}
       validator={validator}
-      setTransactionHash={setTransactionHash}
-      setStakedAmount={setStakedAmount}
-      stakedAmount={stakedAmount}
-      setTransactionSucceeded={setTransactionSucceeded}
-      setTransactionInProcess={setTransactionInProcess}
+    />
+  );
+
+  const walletConnectionDialog = (
+    <WalletConnectionDialog
+      handleDialogClose={handleDialogClose}
+      isDialogOpen={dialogOpen}
     />
   );
 
   return (
     <ContentBox>
       {isOnMobile ? stakingBarOnMobile : stakingBarOnWeb}
-      {connected ? (
-        <>
-          {transactionSucceeded ? (
-            transactionSucceededDialog
-          ) : transactionInProcess ? (
-            <LoadingModal open={transactionInProcess} />
-          ) : (
-            stakeDialog
-          )}
-        </>
-      ) : (
-        <WalletConnectionDialog
-          handleDialogClose={handleDialogClose}
-          isDialogOpen={dialogOpen}
-        />
-      )}
+      {connected ? stakeDialog : walletConnectionDialog}
     </ContentBox>
   );
 }

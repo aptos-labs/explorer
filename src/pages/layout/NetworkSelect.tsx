@@ -23,6 +23,7 @@ import {
   useGetChainIdCached,
   useGetChainIdAndCache,
 } from "../../api/hooks/useGetNetworkChainIds";
+import {AptosClient} from "aptos";
 
 function NetworkAndChainIdCached({
   networkName,
@@ -82,7 +83,7 @@ export default function NetworkSelect() {
     const feature_name = state.feature_name;
     const network_name = networkNameString as NetworkName;
     const network_value = networks[network_name];
-    const aptos_client = state.aptos_client;
+    const aptos_client = new AptosClient(network_name);
     if (network_value) {
       // only show the "feature" param in the url when it's not "prod"
       // we don't want the users to know the existence of the "feature" param
