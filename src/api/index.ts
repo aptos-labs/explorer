@@ -207,9 +207,8 @@ export async function getStake(
 }
 
 export async function getValidatorCommission(
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.MoveValue> {
-  const client = new AptosClient(nodeUrl);
   const payload: Types.ViewRequest = {
     function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::operator_commission_percentage`,
     type_arguments: [],
