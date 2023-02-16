@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {AptosClient, Types} from "aptos";
 import {useState, useEffect} from "react";
 import {getStake} from "..";
 import {useGlobalState} from "../../GlobalState";
@@ -6,15 +6,16 @@ import {useGlobalState} from "../../GlobalState";
 export function useGetDelegatorStakeInfo(delegatorAddress: Types.Address) {
   const [state, _] = useGlobalState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [stake, setStake] = useState<Types.MoveValue[]>([]);
+  const [stakes, setStakes] = useState<Types.MoveValue[]>([]);
+  const client = new AptosClient(state.network_value);
 
   useEffect(() => {
     const fetchData = async () => {
-      setStake(await getStake(state.network_value, delegatorAddress));
+      setStakes(await getStake(client, delegatorAddress));
       setIsLoading(false);
     };
     fetchData();
-  }, [state]);
+  }, [state.network_value]);
 
-  return {stake, isLoading};
+  return {stakes, isLoading};
 }

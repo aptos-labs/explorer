@@ -190,10 +190,9 @@ export async function getRecentBlocks(
 }
 
 export async function getStake(
-  nodeUrl: string,
+  client: AptosClient,
   delegatorAddress: Types.Address,
 ): Promise<Types.MoveValue[]> {
-  const client = new AptosClient(nodeUrl);
   const payload: Types.ViewRequest = {
     function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::get_stake`,
     type_arguments: [],

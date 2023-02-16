@@ -9,11 +9,13 @@ import {HexString} from "aptos";
 import {useGetValidators} from "../../api/hooks/useGetValidators";
 import MyDepositsSection from "./MyDepositsSection";
 import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
   const addressHex = new HexString(address);
   const {validators} = useGetValidators();
+  const {connected} = useWallet();
   const validator = validators.find(
     (validator) => validator.owner_address === addressHex.hex(),
   );
@@ -40,7 +42,7 @@ export default function ValidatorPage() {
             address={address}
             accountResource={accountResource}
           />
-          <MyDepositsSection accountResource={accountResource} />
+          {connected && <MyDepositsSection accountResource={accountResource} />}
         </Stack>
       </Grid>
     </Grid>

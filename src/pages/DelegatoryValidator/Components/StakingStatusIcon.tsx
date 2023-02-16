@@ -88,11 +88,14 @@ export const STAKING_STATUS_STEPS: StakingStatusStepInterface[] = [
   },
 ];
 
-export default function StakingStatusIcon() {
+type StakingStatusIconProps = {
+  status: number;
+};
+
+export default function StakingStatusIcon({status}: StakingStatusIconProps) {
   const theme = useTheme();
 
-  // TODO(jill): temp workaround since we don't have status data yet
-  const step = STAKING_STATUS_STEPS[0];
+  const step = STAKING_STATUS_STEPS[status];
   return (
     <GeneralTableCell>
       <Chip
