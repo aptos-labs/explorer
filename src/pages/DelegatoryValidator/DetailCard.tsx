@@ -17,6 +17,7 @@ import {
   REWARDS_LEARN_MORE_LINK,
   REWARDS_TOOLTIP_TEXT,
 } from "../Validators/Components/Staking";
+import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 
 type ValidatorDetailProps = {
   address: Types.Address;
@@ -30,6 +31,7 @@ export default function ValidatorDetailCard({
   const addressHex = new HexString(address);
   const {validators} = useGetValidators();
   const {rewardsRateYearly} = useGetStakingRewardsRate();
+  const {commission} = useGetDelegationNodeInfo();
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
@@ -81,7 +83,7 @@ export default function ValidatorDetailCard({
         />
         <ContentRowSpaceBetween
           title="Operator Commission"
-          value={null}
+          value={commission && `${commission}%`}
           tooltip={
             <StyledLearnMoreTooltip text="% of staking reward paid out to operator as commission" />
           }
