@@ -39,10 +39,15 @@ export default function ValidatorPage() {
             accountResource={accountResource}
           />
           <ValidatorDetailCard
-            address={address}
+            validator={validator}
             accountResource={accountResource}
           />
-          {connected && <MyDepositsSection accountResource={accountResource} />}
+          {connected && (
+            <MyDepositsSection
+              accountResource={accountResource}
+              validator={validator}
+            />
+          )}
         </Stack>
       </Grid>
     </Grid>

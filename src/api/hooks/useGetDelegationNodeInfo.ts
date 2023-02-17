@@ -1,25 +1,47 @@
 import {AptosClient, Types} from "aptos";
-import {useState, useEffect} from "react";
+import {useState, useMemo} from "react";
 import {getValidatorCommission} from "..";
 import {useGlobalState} from "../../GlobalState";
+import {ValidatorData} from "./useGetValidators";
+import {useGetValidatorSet, Validator} from "./useGetValidatorSet";
 
-export function useGetDelegationNodeInfo() {
+type useGetDelegationNodeInfoResponse = {
+  delegatedStakeAmount: string;
+  networkPercentage?: string;
+  commission: number | undefined;
+};
+
+type useGetDelegationNodeInfoProps = {
+  validatorAddress: Types.Address;
+  validator: ValidatorData | Validator;
+};
+
+export function useGetDelegationNodeInfo({
+  validatorAddress,
+  validator,
+}: useGetDelegationNodeInfoProps): useGetDelegationNodeInfoResponse {
   const [state, _] = useGlobalState();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [commission, setCommission] = useState<Types.MoveValue>();
   const client = new AptosClient(state.network_value);
+  const {totalVotingPower} = useGetValidatorSet();
+  const [networkPercentage, setNetworkPercentage] = useState<string>();
 
-  useEffect(() => {
+  useMemo(() => {
     const fetchData = async () => {
-      setCommission(await getValidatorCommission(client));
-      setIsLoading(false);
+      setCommission(await getValidatorCommission(client, validatorAddress));
     };
     fetchData();
-  }, [state.network_value]);
+    setNetworkPercentage(
+      (
+        (parseInt(validator.voting_power) / parseInt(totalVotingPower!)) *
+        100
+      ).toFixed(2),
+    );
+  }, [state.network_value, totalVotingPower]);
 
   return {
-    // commission rate: 22.85% is represented as 2285
-    commission: commission ? Number(commission) / 100 : undefined,
-    isLoading,
+    commission: commission ? Number(commission) / 100 : undefined, // commission rate: 22.85% is represented as 2285
+    networkPercentage,
+    delegatedStakeAmount: validator.voting_power,
   };
 }

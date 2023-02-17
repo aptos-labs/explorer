@@ -1,6 +1,7 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {
   Button,
+  Skeleton,
   Stack,
   Table,
   TableHead,
@@ -10,8 +11,10 @@ import {
   useTheme,
 } from "@mui/material";
 import {Types} from "aptos";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
+import {ValidatorData} from "../../api/hooks/useGetValidators";
+import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
@@ -20,9 +23,10 @@ import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCel
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
+  StakingStatus,
   STAKING_STATUS_STEPS,
 } from "./Components/StakingStatusIcon";
-import UnstakeDialog from "./UnstakeDialog";
+import StakeOperationDialog from "./StakeOperationDialog";
 import {getLockedUtilSecs} from "./utils";
 import WalletConnectionDialog from "./WalletConnectionDialog";
 
@@ -63,7 +67,7 @@ type MyDepositsSectionCellProps = {
   handleClickOpen: () => void;
   accountResource?: Types.MoveResource | undefined;
   stake: Types.MoveValue;
-  status: number;
+  status: StakingStatus;
 };
 
 function AmountCell({stake}: MyDepositsSectionCellProps) {
@@ -98,11 +102,26 @@ function RewardEarnedCell({}: MyDepositsSectionCellProps) {
   );
 }
 
-function ActionsCell({handleClickOpen}: MyDepositsSectionCellProps) {
+function ActionsCell({handleClickOpen, status}: MyDepositsSectionCellProps) {
+  function getButtonTextFromStatus() {
+    switch (status) {
+      case StakingStatus.STAKED:
+        return "UNSTAKE";
+      case StakingStatus.WITHDRAW_PENDING:
+        return "RESTAKE";
+      case StakingStatus.WITHDRAW_READY:
+        return "WITHDRAW";
+    }
+  }
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Button variant="primary" size="small" onClick={handleClickOpen}>
-        <Typography>UNSTAKE</Typography>
+      <Button
+        variant="primary"
+        size="small"
+        onClick={handleClickOpen}
+        sx={{maxWidth: "10%"}}
+      >
+        <Typography>{getButtonTextFromStatus()}</Typography>
       </Button>
     </GeneralTableCell>
   );
@@ -110,50 +129,98 @@ function ActionsCell({handleClickOpen}: MyDepositsSectionCellProps) {
 
 type MyDepositsSectionProps = {
   accountResource?: Types.MoveResource | undefined;
+  validator: ValidatorData;
 };
 
 type MyDepositRowProps = {
   stake: Types.MoveValue;
-  status: number;
+  status: StakingStatus;
 };
 
 export default function MyDepositsSection({
   accountResource,
+  validator,
 }: MyDepositsSectionProps) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
   const {connected, account} = useWallet();
-  const {stakes} = useGetDelegatorStakeInfo(account?.address!);
+  const {stakes} = useGetDelegatorStakeInfo(
+    account?.address!,
+    validator.owner_address,
+  );
 
-  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const handleClickOpen = () => {
-    setDialogOpen(true);
-  };
-  const handleClose = () => {
-    setDialogOpen(false);
-  };
+  // sc get_stake returns (active, inactive, pending_inactive), which translates to
+  // (staked, withdraw_ready, withdraw_pending)
+  // we need to switch the position of second and third index so that the order's sorted as steps
+  const stakesInfo = [stakes[0], stakes[2], stakes[1]];
+
+  const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (stakes && account) {
+      setIsSkeletonLoading(false);
+    }
+  }, [stakes, account]);
 
   function MyDepositRow({stake, status}: MyDepositRowProps) {
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    const handleClose = () => {
+      setDialogOpen(false);
+    };
+    const handleClickOpen = () => {
+      setDialogOpen(true);
+    };
+
+    function getStakeOperationFromStakingStatus() {
+      switch (status) {
+        case StakingStatus.STAKED:
+          return StakeOperation.UNLOCK;
+        case StakingStatus.WITHDRAW_PENDING:
+          return StakeOperation.REACTIVATE;
+        case StakingStatus.WITHDRAW_READY:
+          return StakeOperation.WITHDRAW;
+      }
+    }
+
     return (
-      <GeneralTableRow>
-        {columns.map((deposit) => {
-          const Cell = MyDepositsCells[deposit];
-          return (
-            <Cell
-              key={deposit}
-              accountResource={accountResource}
-              handleClickOpen={handleClickOpen}
-              stake={stake}
-              status={status}
-            />
-          );
-        })}
-      </GeneralTableRow>
+      <>
+        <GeneralTableRow>
+          {columns.map((deposit) => {
+            const Cell = MyDepositsCells[deposit];
+            return (
+              <Cell
+                key={deposit}
+                accountResource={accountResource}
+                handleClickOpen={handleClickOpen}
+                stake={stake}
+                status={status}
+              />
+            );
+          })}
+        </GeneralTableRow>
+        {connected ? (
+          <StakeOperationDialog
+            handleDialogClose={handleClose}
+            isDialogOpen={dialogOpen}
+            accountResource={accountResource}
+            validator={validator}
+            stake={stake}
+            stakeOperation={getStakeOperationFromStakingStatus()}
+          />
+        ) : (
+          <WalletConnectionDialog
+            handleDialogClose={handleClose}
+            isDialogOpen={dialogOpen}
+          />
+        )}
+      </>
     );
   }
 
-  return (
+  return isSkeletonLoading ? (
+    <MyDepositSectionSkeleton />
+  ) : (
     <Stack>
       <Typography variant="h5" marginX={1}>
         My Deposits
@@ -179,26 +246,26 @@ export default function MyDepositsSection({
           </TableRow>
         </TableHead>
         <GeneralTableBody>
-          {stakes.map(
+          {stakesInfo.map(
             (stake, idx) =>
               Number(stake) !== 0 && (
-                <MyDepositRow key={idx} stake={stake} status={idx} />
+                <MyDepositRow key={idx} stake={Number(stake)} status={idx} />
               ),
           )}
         </GeneralTableBody>
       </Table>
-      {connected ? (
-        <UnstakeDialog
-          handleDialogClose={handleClose}
-          isDialogOpen={dialogOpen}
-          accountResource={accountResource}
-        />
-      ) : (
-        <WalletConnectionDialog
-          handleDialogClose={handleClose}
-          isDialogOpen={dialogOpen}
-        />
-      )}
+    </Stack>
+  );
+}
+
+function MyDepositSectionSkeleton() {
+  return (
+    <Stack>
+      <Typography>
+        <Skeleton></Skeleton>
+      </Typography>
+      <Skeleton></Skeleton>
+      <Skeleton></Skeleton>
     </Stack>
   );
 }

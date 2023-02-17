@@ -12,7 +12,6 @@ import TimestampValue from "../../components/IndividualPageContent/ContentValue/
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {getLockedUtilSecs} from "./utils";
 import StyledDialog from "../../components/StyledDialog";
-import {useGetStakingRewardsRate} from "../../api/hooks/useGetStakingRewardsRate";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import {
   REWARDS_LEARN_MORE_LINK,
@@ -21,55 +20,81 @@ import {
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
-import useSubmitStake from "../../api/hooks/useSubmitStake";
 import useAmountInput from "./hooks/useAmountInput";
 import LoadingModal from "../../components/LoadingModal";
 import TransactionResponseSnackbar from "../../components/snakebar/TransactionResponseSnackbar";
 import TransactionSucceededDialog from "./TransactionSucceededDialog";
-import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
+import useSubmitStakeOperation, {
+  StakeOperation,
+} from "../../api/hooks/useSubmitStakeOperation";
+import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {MIN_ADD_STAKE_AMOUNT, OCTA} from "../../constants";
 
-type StakeDialogProps = {
+type StakeOperationDialogProps = {
   handleDialogClose: () => void;
   isDialogOpen: boolean;
   accountResource?: Types.MoveResource | undefined;
   validator: ValidatorData;
+  stake?: Types.MoveValue;
+  stakeOperation: StakeOperation;
+  rewardsRateYearly?: string | undefined;
+  commission?: number | undefined;
 };
 
-export default function StakeDialog({
+export default function StakeOperationDialog({
   handleDialogClose,
   isDialogOpen,
   accountResource,
   validator,
-}: StakeDialogProps) {
-  const {rewardsRateYearly} = useGetStakingRewardsRate();
-  const {commission} = useGetDelegationNodeInfo();
-
+  stake,
+  stakeOperation,
+  rewardsRateYearly,
+  commission,
+}: StakeOperationDialogProps) {
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
+  const percentageSelection = [0.1, 0.25, 0.5, 1]; // 0.1 === 10%
+
   const {
-    submitStake,
+    submitStakeOperation,
     transactionInProcess,
     transactionResponse,
     clearTransactionResponse,
-  } = useSubmitStake();
+  } = useSubmitStakeOperation();
   const {
-    amount: stakeAmount,
-    clearAmount: clearStakingAmount,
-    renderAmountTextField: renderStakingAmountTextField,
-    validateAmountInput: validateStakingAmountInput,
-  } = useAmountInput();
+    amount,
+    setAmount,
+    clearAmount,
+    renderAmountTextField,
+    validateAmountInput,
+  } = useAmountInput(stakeOperation);
 
   const [transactionHash, setTransactionHash] = useState<string>("");
-  const [stakedAmount, setStakedAmount] = useState<string>("");
+  const [enteredAmount, setEnteredAmount] = useState<string>("");
   const [
     isTransactionSucceededDialogOpen,
     setIsTransactionSucceededDialogOpen,
   ] = useState<boolean>(false);
 
   const onSubmitClick = async () => {
-    const isStakingAmountValid = validateStakingAmountInput();
+    function getMinMax() {
+      switch (stakeOperation) {
+        case StakeOperation.STAKE:
+          return [MIN_ADD_STAKE_AMOUNT];
+        case StakeOperation.UNLOCK:
+        case StakeOperation.REACTIVATE:
+        case StakeOperation.WITHDRAW:
+          return [0, Number(stake) / OCTA];
+      }
+    }
 
-    if (isStakingAmountValid) {
-      await submitStake(validator.owner_address, Number(stakeAmount));
+    const isAmountValid = validateAmountInput(...getMinMax());
+
+    if (isAmountValid) {
+      await submitStakeOperation(
+        validator.owner_address,
+        Number(amount),
+        stakeOperation,
+      );
     }
   };
 
@@ -84,8 +109,8 @@ export default function StakeDialog({
   useEffect(() => {
     if (transactionResponse?.transactionSubmitted) {
       setTransactionHash(transactionResponse?.transactionHash);
-      setStakedAmount(stakeAmount);
-      clearStakingAmount();
+      setEnteredAmount(amount);
+      clearAmount();
       handleDialogClose();
       setIsTransactionSucceededDialogOpen(true);
     }
@@ -95,8 +120,9 @@ export default function StakeDialog({
     <TransactionSucceededDialog
       isDialogOpen={isTransactionSucceededDialogOpen}
       handleDialogClose={onCloseTransactionSucceededDialog}
-      stakedAmount={stakedAmount}
+      amount={enteredAmount}
       transactionHash={transactionHash}
+      stakeOperation={stakeOperation}
     />
   );
 
@@ -107,7 +133,7 @@ export default function StakeDialog({
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
-          {renderStakingAmountTextField()}
+          {renderAmountTextField()}
           <ContentBox>
             <ContentRowSpaceBetween
               title={"Operator Commission"}
@@ -137,7 +163,7 @@ export default function StakeDialog({
           onClick={onSubmitClick}
           variant="primary"
           fullWidth
-          disabled={stakeAmount === ""}
+          disabled={amount === ""}
           sx={{marginX: 2}}
         >
           Deposit
@@ -145,12 +171,83 @@ export default function StakeDialog({
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
         <Typography variant="caption" color={grey[450]}>
-          Be aware that you will be able to see your funds in the pool after 1
-          epoch (~2 hours) due to the delay time
+          Please do your own research. Aptos Labs is not responsible for the
+          performance of the validator nodes displayed here, or the security of
+          your funds
         </Typography>
       </DialogContent>
     </StyledDialog>
   );
+
+  const UnlockOrWithdrawOrReactivateDialog = (
+    <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
+      <DialogTitle variant="h5" textAlign="center">
+        {stakeOperation === StakeOperation.UNLOCK
+          ? "Unstake Funds"
+          : stakeOperation === StakeOperation.REACTIVATE
+          ? "Restake Funds"
+          : "Withdraw Your Funds"}
+      </DialogTitle>
+      <DialogContent>
+        <Stack direction="column" spacing={2}>
+          {renderAmountTextField()}
+          <Stack direction="row" spacing={1}>
+            {percentageSelection.map((percentage, idx) => {
+              return (
+                <Button
+                  key={idx}
+                  variant="outlined"
+                  onClick={() =>
+                    setAmount(
+                      (
+                        Number(
+                          getFormattedBalanceStr(Number(stake).toString()),
+                        ) * percentage
+                      ).toString(),
+                    )
+                  }
+                >
+                  {percentage === 1 ? "MAX" : `${percentage * 100}%`}
+                </Button>
+              );
+            })}
+          </Stack>
+        </Stack>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={onSubmitClick}
+          variant="primary"
+          fullWidth
+          disabled={amount === ""}
+          sx={{marginX: 2}}
+        >
+          {stakeOperation === StakeOperation.UNLOCK
+            ? "UNSTAKE"
+            : stakeOperation === StakeOperation.REACTIVATE
+            ? "RESTAKE"
+            : "WITHDRAW"}
+        </Button>
+      </DialogActions>
+      <DialogContent sx={{textAlign: "center"}}>
+        <Typography variant="caption" color={grey[450]}>
+          Please do your own research. Aptos Labs is not responsible for the
+          security of your funds
+        </Typography>
+      </DialogContent>
+    </StyledDialog>
+  );
+
+  function selectDialog() {
+    switch (stakeOperation) {
+      case StakeOperation.STAKE:
+        return stakeDialog;
+      case StakeOperation.REACTIVATE:
+      case StakeOperation.UNLOCK:
+      case StakeOperation.WITHDRAW:
+        return UnlockOrWithdrawOrReactivateDialog;
+    }
+  }
 
   return (
     <>
@@ -161,7 +258,7 @@ export default function StakeDialog({
       <LoadingModal open={transactionInProcess} />
       {isTransactionSucceededDialogOpen
         ? transactionSucceededDialog
-        : stakeDialog}
+        : selectDialog()}
     </>
   );
 }

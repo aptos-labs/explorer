@@ -25,14 +25,13 @@ import PendingIcon from "@mui/icons-material/Pending";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 
-enum StakingStatusStep {
-  "staked",
-  "withdrawPending",
-  "withdrawReady",
+export enum StakingStatus {
+  "STAKED",
+  "WITHDRAW_PENDING",
+  "WITHDRAW_READY",
 }
-type Steps = keyof typeof StakingStatusStep;
 
-export interface StakingStatusStepInterface {
+export interface StakingStatusInterface {
   label: string;
   description: string;
   icon: JSX.Element;
@@ -46,7 +45,7 @@ export interface StakingStatusStepInterface {
   };
 }
 
-export const STAKING_STATUS_STEPS: StakingStatusStepInterface[] = [
+export const STAKING_STATUS_STEPS: StakingStatusInterface[] = [
   {
     label: STAKED_LABEL,
     description: STAKED_DESCRIPTION,
