@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import {Types} from "aptos";
 import React, {useState} from "react";
+import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
@@ -61,18 +62,20 @@ const DEFAULT_COLUMNS_MOBILE: Column[] = [
 type MyDepositsSectionCellProps = {
   handleClickOpen: () => void;
   accountResource?: Types.MoveResource | undefined;
+  stake: Types.MoveValue;
+  status: number;
 };
 
-function AmountCell({}: MyDepositsSectionCellProps) {
+function AmountCell({stake}: MyDepositsSectionCellProps) {
   return (
     <GeneralTableCell>
-      <APTCurrencyValue amount={""} />
+      <APTCurrencyValue amount={stake.toString()} />
     </GeneralTableCell>
   );
 }
 
-function StatusCell({}: MyDepositsSectionCellProps) {
-  return <StakingStatusIcon />;
+function StatusCell({status}: MyDepositsSectionCellProps) {
+  return <StakingStatusIcon status={status} />;
 }
 
 function UnlockDateCell({accountResource}: MyDepositsSectionCellProps) {
@@ -109,13 +112,19 @@ type MyDepositsSectionProps = {
   accountResource?: Types.MoveResource | undefined;
 };
 
+type MyDepositRowProps = {
+  stake: Types.MoveValue;
+  status: number;
+};
+
 export default function MyDepositsSection({
   accountResource,
 }: MyDepositsSectionProps) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
-  const {connected} = useWallet();
+  const {connected, account} = useWallet();
+  const {stakes} = useGetDelegatorStakeInfo(account?.address!);
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const handleClickOpen = () => {
@@ -124,6 +133,25 @@ export default function MyDepositsSection({
   const handleClose = () => {
     setDialogOpen(false);
   };
+
+  function MyDepositRow({stake, status}: MyDepositRowProps) {
+    return (
+      <GeneralTableRow>
+        {columns.map((deposit) => {
+          const Cell = MyDepositsCells[deposit];
+          return (
+            <Cell
+              key={deposit}
+              accountResource={accountResource}
+              handleClickOpen={handleClickOpen}
+              stake={stake}
+              status={status}
+            />
+          );
+        })}
+      </GeneralTableRow>
+    );
+  }
 
   return (
     <Stack>
@@ -151,18 +179,12 @@ export default function MyDepositsSection({
           </TableRow>
         </TableHead>
         <GeneralTableBody>
-          <GeneralTableRow>
-            {columns.map((deposit) => {
-              const Cell = MyDepositsCells[deposit];
-              return (
-                <Cell
-                  key={deposit}
-                  accountResource={accountResource}
-                  handleClickOpen={handleClickOpen}
-                />
-              );
-            })}
-          </GeneralTableRow>
+          {stakes.map(
+            (stake, idx) =>
+              Number(stake) !== 0 && (
+                <MyDepositRow key={idx} stake={stake} status={idx} />
+              ),
+          )}
         </GeneralTableBody>
       </Table>
       {connected ? (
