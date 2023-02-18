@@ -61,7 +61,7 @@ export default function ValidatorsPage() {
         Validators
       </Typography>
       {state.network_name === "mainnet" && <ValidatorsMap />}
-      {inDev && validatorsTabs}
+      {inDev && state.network_name === Network.TESTNET && validatorsTabs}
       <Box sx={{width: "auto", overflowX: "auto"}}>{validatorsTable}</Box>
     </Box>
   );

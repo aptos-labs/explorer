@@ -6,9 +6,9 @@ import ContentRowSpaceBetween from "../../components/IndividualPageContent/Conte
 import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
-import {HexString, Types} from "aptos";
+import {Types} from "aptos";
 import {useEffect, useState} from "react";
-import {useGetValidators} from "../../api/hooks/useGetValidators";
+import {ValidatorData} from "../../api/hooks/useGetValidators";
 import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
 import {getLockedUtilSecs} from "./utils";
 import {useGetStakingRewardsRate} from "../../api/hooks/useGetStakingRewardsRate";
@@ -20,24 +20,22 @@ import {
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 
 type ValidatorDetailProps = {
-  address: Types.Address;
+  validator: ValidatorData;
   accountResource?: Types.MoveResource | undefined;
 };
 
 export default function ValidatorDetailCard({
-  address,
+  validator,
   accountResource,
 }: ValidatorDetailProps) {
-  const addressHex = new HexString(address);
-  const {validators} = useGetValidators();
   const {rewardsRateYearly} = useGetStakingRewardsRate();
-  const {commission} = useGetDelegationNodeInfo();
+  const {commission} = useGetDelegationNodeInfo({
+    validatorAddress: validator.owner_address,
+    validator,
+  });
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
-  const validator = validators.find(
-    (validator) => validator.owner_address === addressHex.hex(),
-  );
   const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
 
   const lockedUntilSecs = getLockedUtilSecs(accountResource);

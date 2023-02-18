@@ -10,10 +10,10 @@ import {
 import React from "react";
 import TableTooltip from "../../../components/Table/TableTooltip";
 import TooltipTypography from "../../../components/TooltipTypography";
-import {StakingStatusStepInterface} from "./StakingStatusIcon";
+import {StakingStatusInterface} from "./StakingStatusIcon";
 
 type MyDepositsSectionProps = {
-  steps: StakingStatusStepInterface[];
+  steps: StakingStatusInterface[];
 };
 
 // TODO(jill): refactor step icon color scheme to override the default

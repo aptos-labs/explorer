@@ -192,29 +192,24 @@ export async function getRecentBlocks(
 export async function getStake(
   client: AptosClient,
   delegatorAddress: Types.Address,
+  validatorAddress: Types.Address,
 ): Promise<Types.MoveValue[]> {
   const payload: Types.ViewRequest = {
     function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::get_stake`,
     type_arguments: [],
-    arguments: [
-      // TODO(jill): pool address needs to be passed in as param
-      "0x5df905f817adf39293c596e83512ab8a9dc5a19980e11bd4ce44b6e749d33a0d",
-      delegatorAddress,
-    ],
+    arguments: [validatorAddress, delegatorAddress],
   };
   return await client.view(payload);
 }
 
 export async function getValidatorCommission(
   client: AptosClient,
+  validatorAddress: Types.Address,
 ): Promise<Types.MoveValue> {
   const payload: Types.ViewRequest = {
     function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::operator_commission_percentage`,
     type_arguments: [],
-    arguments: [
-      // TODO(jill): pool address needs to be passed in as param
-      "0x5df905f817adf39293c596e83512ab8a9dc5a19980e11bd4ce44b6e749d33a0d",
-    ],
+    arguments: [validatorAddress],
   };
   return await client.view(payload);
 }

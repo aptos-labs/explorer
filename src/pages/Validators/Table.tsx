@@ -17,13 +17,12 @@ import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
-import {useGetStakingInfo} from "../../api/hooks/useGetStakingInfo";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
+import {WHILTELISTED_TESTNET_DELEGATION_NODES} from "../../constants";
 
 type ValidatorCellProps = {
   validator: Validator;
-  commission?: number;
 };
 
 function ValidatorIndexCell({validator}: ValidatorCellProps) {
@@ -87,7 +86,8 @@ function NetworkAddrCell({validator}: ValidatorCellProps) {
 }
 
 function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
-  const {networkPercentage, delegatedStakeAmount} = useGetStakingInfo({
+  const {delegatedStakeAmount, networkPercentage} = useGetDelegationNodeInfo({
+    validatorAddress: validator.addr,
     validator,
   });
 
@@ -112,7 +112,11 @@ function DelegatorCell() {
   );
 }
 
-function CommissionCell({commission}: ValidatorCellProps) {
+function CommissionCell({validator}: ValidatorCellProps) {
+  const {commission} = useGetDelegationNodeInfo({
+    validatorAddress: validator.addr,
+    validator,
+  });
   return (
     <GeneralTableCell sx={{paddingLeft: 5}}>
       {commission && `${commission}%`}
@@ -154,10 +158,9 @@ const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
 type ValidatorRowProps = {
   validator: Validator;
   columns: Column[];
-  commission?: number;
 };
 
-function ValidatorRow({validator, columns, commission}: ValidatorRowProps) {
+function ValidatorRow({validator, columns}: ValidatorRowProps) {
   const inDev = useGetInDevMode();
   const navigate = useNavigate();
 
@@ -171,9 +174,7 @@ function ValidatorRow({validator, columns, commission}: ValidatorRowProps) {
     >
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
-        return (
-          <Cell key={column} validator={validator} commission={commission} />
-        );
+        return <Cell key={column} validator={validator} />;
       })}
     </GeneralTableRow>
   );
@@ -223,12 +224,17 @@ type ValidatorsTableProps = {
 
 export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
   const {activeValidators} = useGetValidatorSet();
-  const {commission} = useGetDelegationNodeInfo();
 
   const validatorsCopy: Validator[] = JSON.parse(
     JSON.stringify(activeValidators),
   );
-  const validatorsInOrder = validatorsCopy.sort(
+  const whitelistedTestnetDelegationValidators: Validator[] =
+    validatorsCopy.filter((validator) =>
+      WHILTELISTED_TESTNET_DELEGATION_NODES.includes(validator.addr),
+    );
+  const validatorsInOrder = (
+    onDelegatory ? whitelistedTestnetDelegationValidators : validatorsCopy
+  ).sort(
     (validator1, validator2) =>
       parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
   );
@@ -246,12 +252,7 @@ export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
       <GeneralTableBody>
         {validatorsInOrder.map((validator: any, i: number) => {
           return (
-            <ValidatorRow
-              key={i}
-              validator={validator}
-              columns={columns}
-              commission={commission}
-            />
+            <ValidatorRow key={i} validator={validator} columns={columns} />
           );
         })}
       </GeneralTableBody>

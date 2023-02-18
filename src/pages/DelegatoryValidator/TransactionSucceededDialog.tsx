@@ -15,19 +15,22 @@ import StyledDialog from "../../components/StyledDialog";
 import {useNavigate} from "react-router-dom";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {grey} from "../../themes/colors/aptosColorPalette";
+import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 
 type TransactionSucceededDialogProps = {
   handleDialogClose: () => void;
   isDialogOpen: boolean;
-  stakedAmount: string;
+  amount: string; // could be staked, unlocked, reactivated or withdrawn amonut
   transactionHash: string;
+  stakeOperation: StakeOperation;
 };
 
 export default function TransactionSucceededDialog({
   handleDialogClose,
   isDialogOpen,
-  stakedAmount,
+  amount,
   transactionHash,
+  stakeOperation,
 }: TransactionSucceededDialogProps) {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -42,19 +45,45 @@ export default function TransactionSucceededDialog({
     }, 2000);
   };
 
-  return (
-    <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
-      <DialogTitle variant="h5" textAlign="center">
-        <Stack spacing={2}>
-          <div>Congratulations!</div>
+  function getDialogSubtext() {
+    switch (stakeOperation) {
+      case StakeOperation.UNLOCK:
+        return (
+          <Box>
+            <Typography variant="body2" sx={{fontSize: 12}}>
+              {`You’ve successfully unlocked ${amount} APT`}
+            </Typography>
+          </Box>
+        );
+      case StakeOperation.WITHDRAW:
+        return (
+          <Box>
+            <Typography variant="body2" sx={{fontSize: 12}}>
+              {`You’ve successfully withdrawn ${amount} APT`}
+            </Typography>
+          </Box>
+        );
+      case StakeOperation.REACTIVATE:
+      case StakeOperation.STAKE:
+        return (
           <Box>
             <Typography variant="body2" sx={{fontSize: 12}}>
               Transaction is in progress.
             </Typography>
             <Typography variant="body2" sx={{fontSize: 12}}>
-              {`Soon you will see your deposit of ${stakedAmount} APT in the staking pool.`}
+              {`Soon you will see your deposit of ${amount} APT in the staking pool.`}
             </Typography>
           </Box>
+        );
+    }
+  }
+
+  return (
+    <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
+      <DialogTitle variant="h5" textAlign="center">
+        <Stack spacing={2}>
+          <div>Congratulations!</div>
+          {getDialogSubtext()}
         </Stack>
       </DialogTitle>
       <DialogContent>
