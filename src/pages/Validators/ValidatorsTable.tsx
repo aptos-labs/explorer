@@ -392,6 +392,7 @@ type ValidatorsTableProps = {
   onDelegatory: boolean;
 };
 
+// TODO(jill): separate delegation table out of all nodes validators table
 export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
   const [state, _] = useGlobalState();
   const {validators} = useGetValidators(state.network_name);

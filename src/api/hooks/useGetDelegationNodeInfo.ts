@@ -5,13 +5,13 @@ import {useGlobalState} from "../../GlobalState";
 import {ValidatorData} from "./useGetValidators";
 import {useGetValidatorSet, Validator} from "./useGetValidatorSet";
 
-type useGetDelegationNodeInfoResponse = {
+type DelegationNodeInfoResponse = {
   delegatedStakeAmount: string;
   networkPercentage?: string;
   commission: number | undefined;
 };
 
-type useGetDelegationNodeInfoProps = {
+type DelegationNodeInfoProps = {
   validatorAddress: Types.Address;
   validator: ValidatorData | Validator;
 };
@@ -19,7 +19,7 @@ type useGetDelegationNodeInfoProps = {
 export function useGetDelegationNodeInfo({
   validatorAddress,
   validator,
-}: useGetDelegationNodeInfoProps): useGetDelegationNodeInfoResponse {
+}: DelegationNodeInfoProps): DelegationNodeInfoResponse {
   const [state, _] = useGlobalState();
   const [commission, setCommission] = useState<Types.MoveValue>();
   const client = new AptosClient(state.network_value);
