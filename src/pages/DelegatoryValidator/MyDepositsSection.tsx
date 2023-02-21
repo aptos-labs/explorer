@@ -306,6 +306,7 @@ export default function MyDepositsSection({
         <GeneralTableBody>
           {stakesInfo.map(
             (stake, idx) =>
+              stake &&
               Number(stake) !== 0 && (
                 <MyDepositRow key={idx} stake={Number(stake)} status={idx} />
               ),

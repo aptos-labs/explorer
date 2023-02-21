@@ -32,7 +32,7 @@ export default function ValidatorPage() {
   const [
     isMyDepositsSectionSkeletonLoading,
     setIsMyDepositsSectionSkeletonLoading,
-  ] = useState<boolean>(true);
+  ] = useState<boolean>(connected);
   const [isStakingBarSkeletonLoading, setIsStakingBarSkeletonLoading] =
     useState<boolean>(true);
   const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
