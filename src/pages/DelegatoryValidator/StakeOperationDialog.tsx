@@ -104,6 +104,7 @@ export default function StakeOperationDialog({
 
   const onCloseTransactionSucceededDialog = () => {
     setIsTransactionSucceededDialogOpen(false);
+    window.location.reload();
   };
 
   useEffect(() => {
