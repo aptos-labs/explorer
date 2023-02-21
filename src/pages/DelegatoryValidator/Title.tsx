@@ -1,19 +1,34 @@
-import {Stack, Typography} from "@mui/material";
+import {Stack, Typography, Skeleton} from "@mui/material";
 import React from "react";
 import {Types} from "aptos";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 
 type ValidatorTitleProps = {
   address: Types.Address;
+  isSkeletonLoading: boolean;
 };
 
-export default function ValidatorTitle({address}: ValidatorTitleProps) {
-  return (
+export default function ValidatorTitle({
+  address,
+  isSkeletonLoading,
+}: ValidatorTitleProps) {
+  return isSkeletonLoading ? (
+    ValidatorTitleSkeleton()
+  ) : (
     <Stack direction="column" spacing={4} marginX={1}>
       <Typography variant="h3">Validator</Typography>
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.ACCOUNT} />
       </Stack>
+    </Stack>
+  );
+}
+
+function ValidatorTitleSkeleton() {
+  return (
+    <Stack>
+      <Skeleton height={60}></Skeleton>
+      <Skeleton height={40}></Skeleton>
     </Stack>
   );
 }

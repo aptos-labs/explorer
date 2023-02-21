@@ -22,11 +22,15 @@ import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo
 type ValidatorDetailProps = {
   validator: ValidatorData;
   accountResource?: Types.MoveResource | undefined;
+  setIsDetailedCardSkeletonLoading: (arg: boolean) => void;
+  isSkeletonLoading: boolean;
 };
 
 export default function ValidatorDetailCard({
   validator,
   accountResource,
+  setIsDetailedCardSkeletonLoading,
+  isSkeletonLoading,
 }: ValidatorDetailProps) {
   const {rewardsRateYearly} = useGetStakingRewardsRate();
   const {commission} = useGetDelegationNodeInfo({
@@ -36,8 +40,6 @@ export default function ValidatorDetailCard({
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
-  const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
-
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const operatorAddr = validator?.operator_address;
   const rewardGrowth = validator?.rewards_growth;
@@ -45,7 +47,7 @@ export default function ValidatorDetailCard({
 
   useEffect(() => {
     if (lockedUntilSecs && operatorAddr && rewardGrowth && stakePoolAddress) {
-      setIsSkeletonLoading(false);
+      setIsDetailedCardSkeletonLoading(false);
     }
   }, [lockedUntilSecs, operatorAddr, rewardGrowth, stakePoolAddress]);
 

@@ -1,12 +1,13 @@
 import {
   Button,
   Divider,
+  Skeleton,
   Stack,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
@@ -24,11 +25,15 @@ import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo
 type ValidatorStakingBarProps = {
   validator: ValidatorData;
   accountResource?: Types.MoveResource | undefined;
+  setIsStakingBarSkeletonLoading: (arg: boolean) => void;
+  isSkeletonLoading: boolean;
 };
 
 export default function StakingBar({
   validator,
   accountResource,
+  setIsStakingBarSkeletonLoading,
+  isSkeletonLoading,
 }: ValidatorStakingBarProps) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
@@ -48,6 +53,17 @@ export default function StakingBar({
   const handleDialogClose = () => {
     setDialogOpen(false);
   };
+
+  useEffect(() => {
+    if (
+      rewardsRateYearly &&
+      delegatedStakeAmount &&
+      networkPercentage &&
+      commission
+    ) {
+      setIsStakingBarSkeletonLoading(false);
+    }
+  }, [rewardsRateYearly, delegatedStakeAmount, networkPercentage, commission]);
 
   const stakeAmount = (
     <Stack direction="column" spacing={0.5}>
@@ -139,10 +155,20 @@ export default function StakingBar({
     />
   );
 
-  return (
+  return isSkeletonLoading ? (
+    StakingBarSkeleton()
+  ) : (
     <ContentBox>
       {isOnMobile ? stakingBarOnMobile : stakingBarOnWeb}
       {connected ? stakeDialog : walletConnectionDialog}
+    </ContentBox>
+  );
+}
+
+function StakingBarSkeleton() {
+  return (
+    <ContentBox>
+      <Skeleton height={70}></Skeleton>
     </ContentBox>
   );
 }
