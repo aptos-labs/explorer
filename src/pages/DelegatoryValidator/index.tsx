@@ -26,6 +26,7 @@ export default function ValidatorPage() {
     "0x1::stake::StakePool",
   );
 
+  // TODO(jill): find a better way to render skeleton, prob in hooks?
   const [isDetailCardSkeletonLoading, setIsDetailedCardSkeletonLoading] =
     useState<boolean>(true);
   const [
