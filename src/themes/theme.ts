@@ -65,7 +65,7 @@ declare module "@mui/material/Divider" {
 }
 
 const primaryColor = primary["400"];
-const primaryColorToned = primary["600"];
+const primaryColorToned = primary["500"];
 
 const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   shape: {
