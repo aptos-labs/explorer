@@ -29,7 +29,11 @@ import StakingStatusIcon, {
   STAKING_STATUS_STEPS,
 } from "./Components/StakingStatusIcon";
 import StakeOperationDialog from "./StakeOperationDialog";
-import {getLockedUtilSecs} from "./utils";
+import {
+  getLockedUtilSecs,
+  getStakeOperationPrincipals,
+  StakePrincipals,
+} from "./utils";
 import WalletConnectionDialog from "./WalletConnectionDialog";
 
 const MyDepositsCells = Object.freeze({
@@ -106,6 +110,7 @@ type MyDepositsSectionCellProps = {
   accountResource?: Types.MoveResource | undefined;
   stake: Types.MoveValue;
   status: StakingStatus;
+  stakePrincipals: StakePrincipals | undefined;
 };
 
 function AmountCell({stake}: MyDepositsSectionCellProps) {
@@ -132,10 +137,32 @@ function UnlockDateCell({accountResource}: MyDepositsSectionCellProps) {
   );
 }
 
-function RewardEarnedCell({}: MyDepositsSectionCellProps) {
+function RewardEarnedCell({
+  stake,
+  status,
+  stakePrincipals,
+}: MyDepositsSectionCellProps) {
+  const principalsAmount =
+    status === StakingStatus.STAKED
+      ? stakePrincipals?.activePrincipals
+      : status === StakingStatus.WITHDRAW_PENDING
+      ? stakePrincipals?.pendingInactivePrincipals
+      : undefined;
+
+  const rewardsEarned = principalsAmount
+    ? Number(stake) - principalsAmount
+    : undefined;
+
   return (
     <GeneralTableCell>
-      <APTCurrencyValue amount={""} />
+      {status === StakingStatus.WITHDRAW_READY ||
+      rewardsEarned === undefined ? (
+        "N/A"
+      ) : (
+        <APTCurrencyValue
+          amount={rewardsEarned ? rewardsEarned.toString() : ""}
+        />
+      )}
     </GeneralTableCell>
   );
 }
@@ -191,6 +218,8 @@ export default function MyDepositsSection({
     account?.address!,
     validator.owner_address,
   );
+  const {stakePrincipals, isLoading: isStakeActivityLoading} =
+    getStakeOperationPrincipals(account?.address!, validator.owner_address);
 
   // sc get_stake returns (active, inactive, pending_inactive), which translates to
   // (staked, withdraw_ready, withdraw_pending)
@@ -198,10 +227,10 @@ export default function MyDepositsSection({
   const stakesInfo = [stakes[0], stakes[2], stakes[1]];
 
   useEffect(() => {
-    if (stakes && account) {
+    if (stakes && account && !isStakeActivityLoading) {
       setIsMyDepositsSectionSkeletonLoading(false);
     }
-  }, [stakes, account]);
+  }, [stakes, account, isStakeActivityLoading]);
 
   function MyDepositRow({stake, status}: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -235,6 +264,7 @@ export default function MyDepositsSection({
                 handleClickOpen={handleClickOpen}
                 stake={stake}
                 status={status}
+                stakePrincipals={stakePrincipals}
               />
             );
           })}
