@@ -29,6 +29,8 @@ import useSubmitStakeOperation, {
 } from "../../api/hooks/useSubmitStakeOperation";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {MIN_ADD_STAKE_AMOUNT, OCTA} from "../../constants";
+import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
@@ -52,6 +54,8 @@ export default function StakeOperationDialog({
   commission,
 }: StakeOperationDialogProps) {
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
+  const {account} = useWallet();
+  const balance = useGetAccountAPTBalance(account?.address!);
   const percentageSelection = [0.1, 0.25, 0.5, 1]; // 0.1 === 10%
 
   const {
@@ -134,7 +138,7 @@ export default function StakeOperationDialog({
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
-          {renderAmountTextField()}
+          {renderAmountTextField(balance)}
           <ContentBox>
             <ContentRowSpaceBetween
               title={"Operator Commission"}

@@ -1,17 +1,19 @@
+import {Stack} from "@mui/material";
 import {
   FormControl,
-  InputLabel,
   OutlinedInput,
   InputAdornment,
   FormHelperText,
 } from "@mui/material";
 import React from "react";
+import {APTCurrencyValue} from "./IndividualPageContent/ContentValue/CurrencyValue";
 
 interface AmountTextFieldProps {
   amount: string;
   amountIsValid: boolean;
   errorMessage: string;
   onAmountChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  balance?: string | null;
 }
 
 export default function AmountTextField({
@@ -19,10 +21,18 @@ export default function AmountTextField({
   amountIsValid,
   errorMessage,
   onAmountChange,
+  balance,
 }: AmountTextFieldProps): JSX.Element {
   return amountIsValid ? (
     <FormControl fullWidth>
-      <FormHelperText sx={{fontSize: "1rem"}}>Enter Amount</FormHelperText>
+      <Stack direction="row" justifyContent="space-between">
+        <FormHelperText sx={{fontSize: "1rem"}}>Enter Amount</FormHelperText>
+        {balance && (
+          <FormHelperText sx={{fontSize: "1rem"}}>
+            Balance: {<APTCurrencyValue amount={balance} />}
+          </FormHelperText>
+        )}
+      </Stack>
       <OutlinedInput
         notched
         value={amount}
@@ -32,7 +42,14 @@ export default function AmountTextField({
     </FormControl>
   ) : (
     <FormControl fullWidth>
-      <FormHelperText sx={{fontSize: "1rem"}}>Enter Amount</FormHelperText>
+      <Stack direction="row" justifyContent="space-between">
+        <FormHelperText sx={{fontSize: "1rem"}}>Enter Amount</FormHelperText>
+        {balance && (
+          <FormHelperText sx={{fontSize: "1rem"}}>
+            Balance: {<APTCurrencyValue amount={balance} />}
+          </FormHelperText>
+        )}
+      </Stack>
       <OutlinedInput
         error
         notched
