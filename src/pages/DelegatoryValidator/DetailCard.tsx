@@ -7,7 +7,6 @@ import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
 import {Types} from "aptos";
-import {useEffect, useState} from "react";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
 import {getLockedUtilSecs} from "./utils";
@@ -22,14 +21,12 @@ import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo
 type ValidatorDetailProps = {
   validator: ValidatorData;
   accountResource?: Types.MoveResource | undefined;
-  setIsDetailedCardSkeletonLoading: (arg: boolean) => void;
   isSkeletonLoading: boolean;
 };
 
 export default function ValidatorDetailCard({
   validator,
   accountResource,
-  setIsDetailedCardSkeletonLoading,
   isSkeletonLoading,
 }: ValidatorDetailProps) {
   const {rewardsRateYearly} = useGetStakingRewardsRate();
@@ -44,12 +41,6 @@ export default function ValidatorDetailCard({
   const operatorAddr = validator?.operator_address;
   const rewardGrowth = validator?.rewards_growth;
   const stakePoolAddress = validator?.owner_address;
-
-  useEffect(() => {
-    if (lockedUntilSecs && operatorAddr && rewardGrowth && stakePoolAddress) {
-      setIsDetailedCardSkeletonLoading(false);
-    }
-  }, [lockedUntilSecs, operatorAddr, rewardGrowth, stakePoolAddress]);
 
   return isSkeletonLoading ? (
     validatorDetailCardSkeleton({isOnMobile})

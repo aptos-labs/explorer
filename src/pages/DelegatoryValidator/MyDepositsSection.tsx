@@ -227,10 +227,10 @@ export default function MyDepositsSection({
   const stakesInfo = [stakes[0], stakes[2], stakes[1]];
 
   useEffect(() => {
-    if (stakes && account && !isStakeActivityLoading) {
+    if (!isStakeActivityLoading) {
       setIsMyDepositsSectionSkeletonLoading(false);
     }
-  }, [stakes, account, isStakeActivityLoading]);
+  }, [isStakeActivityLoading]);
 
   function MyDepositRow({stake, status}: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
