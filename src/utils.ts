@@ -1,4 +1,5 @@
-import {Types} from "aptos";
+import {HexString, Types} from "aptos";
+import pako from "pako";
 
 /**
  * Helper function for exhaustiveness checks.
@@ -76,4 +77,13 @@ export function getLocalStorageWithExpiry(key: string) {
 export async function fetchJsonResponse(url: string) {
   const response = await fetch(url);
   return await response.json();
+}
+
+/**
+ * Convert a module source code in gzipped hex string to plain text
+ * @param source module source code in gzipped hex string
+ * @returns original source code in plain text
+ */
+export function transformCode(source: string): string {
+  return pako.ungzip(new HexString(source).toUint8Array(), {to: "string"});
 }

@@ -148,6 +148,27 @@ export function getAccountModules(
   );
 }
 
+export function getAccountModule(
+  requestParameters: {
+    address: string;
+    moduleName: string;
+    ledgerVersion?: number;
+  },
+  nodeUrl: string,
+): Promise<Types.MoveModuleBytecode> {
+  const client = new AptosClient(nodeUrl);
+  const {address, moduleName, ledgerVersion} = requestParameters;
+  let ledgerVersionBig;
+  if (ledgerVersion !== undefined) {
+    ledgerVersionBig = BigInt(ledgerVersion);
+  }
+  return withResponseError(
+    client.getAccountModule(address, moduleName, {
+      ledgerVersion: ledgerVersionBig,
+    }),
+  );
+}
+
 export function getTableItem(
   requestParameters: {tableHandle: string; data: Types.TableItemRequest},
   nodeUrl: string,
