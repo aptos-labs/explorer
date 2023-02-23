@@ -270,7 +270,7 @@ function ActionsCell() {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
       <Button>
-        <MoreVertIcon />
+        <MoreVertIcon color="secondary" />
       </Button>
     </GeneralTableCell>
   );
@@ -298,11 +298,12 @@ function MyDepositCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "center"}}>
       {connected && Number(totalDeposit) !== 0 ? (
-        <Stack direction="row">
+        <Stack direction="row" spacing={0.5}>
           <CheckCircleIcon color="success" fontSize="small" />
           <CurrencyValue
             amount={Number(totalDeposit).toString()}
             currencyCode="APT"
+            fixedDecimalPlaces={0}
           />
         </Stack>
       ) : (
