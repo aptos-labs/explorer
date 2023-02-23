@@ -91,7 +91,7 @@ export default function StakeOperationDialog({
     if (isAmountValid) {
       await submitStakeOperation(
         validator.owner_address,
-        Number(Number(amount).toFixed(8)),
+        Number((Number(amount) * OCTA).toFixed(0)),
         stakeOperation,
       );
     }
