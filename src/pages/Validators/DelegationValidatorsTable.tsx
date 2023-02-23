@@ -216,10 +216,14 @@ function CommissionCell({validator}: ValidatorCellProps) {
   );
 }
 
-function DelegatorCell() {
+function DelegatorCell({validator}: ValidatorCellProps) {
+  const {delegatorBalance} = useGetDelegationNodeInfo({
+    validatorAddress: validator.owner_address,
+    validator,
+  });
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
-      N/A
+      {delegatorBalance}
     </GeneralTableCell>
   );
 }

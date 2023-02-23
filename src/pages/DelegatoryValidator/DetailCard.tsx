@@ -33,7 +33,7 @@ export default function ValidatorDetailCard({
   isSkeletonLoading,
 }: ValidatorDetailProps) {
   const {rewardsRateYearly} = useGetStakingRewardsRate();
-  const {commission} = useGetDelegationNodeInfo({
+  const {commission, delegatorBalance} = useGetDelegationNodeInfo({
     validatorAddress: validator.owner_address,
     validator,
   });
@@ -66,7 +66,7 @@ export default function ValidatorDetailCard({
         />
         <ContentRowSpaceBetween
           title="Number of Delegators"
-          value={null}
+          value={delegatorBalance}
           tooltip={
             <StyledLearnMoreTooltip text="Number of owner accounts who have delegated stake to this stake pool" />
           }
