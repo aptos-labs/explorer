@@ -21,7 +21,7 @@ export default function ValidatorPage() {
   const validator = validators.find(
     (validator) => validator.owner_address === addressHex.hex(),
   );
-  const {data: accountResource} = useGetAccountResource(
+  const {accountResource} = useGetAccountResource(
     addressHex.hex(),
     "0x1::stake::StakePool",
   );

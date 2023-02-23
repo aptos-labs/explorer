@@ -26,7 +26,7 @@ export function useGetValidatorSet() {
   >(null);
   const [activeValidators, setActiveValidators] = useState<Validator[]>([]);
 
-  const {data: validatorSet} = useGetAccountResource(
+  const {accountResource: validatorSet} = useGetAccountResource(
     "0x1",
     "0x1::stake::ValidatorSet",
   );
