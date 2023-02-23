@@ -17,12 +17,12 @@ export function useGetEpochTime() {
   const [lastEpochTime, setLastEpochTime] = useState<string>();
   const [epochInterval, setEpochInterval] = useState<string>();
 
-  const {accountResource: configuration} = useGetAccountResource(
+  const {data: configuration} = useGetAccountResource(
     "0x1",
     "0x1::reconfiguration::Configuration",
   );
 
-  const {accountResource: blockResource} = useGetAccountResource(
+  const {data: blockResource} = useGetAccountResource(
     "0x1",
     "0x1::block::BlockResource",
   );
