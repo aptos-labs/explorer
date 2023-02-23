@@ -1,6 +1,6 @@
 import {Box, Typography} from "@mui/material";
 import * as React from "react";
-import {useState} from "react";
+import {useParams, useNavigate} from "react-router-dom";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import StyledTab from "../../components/StyledTab";
 import StyledTabs from "../../components/StyledTabs";
@@ -12,16 +12,31 @@ import {ValidatorsTable as OldValidatorsTable} from "./Table";
 import ValidatorsMap from "./ValidatorsMap";
 import {ValidatorsTable} from "./ValidatorsTable";
 
+enum VALIDATORS_TAB_VALUE {
+  ALL_NODES = "all_nodes",
+  DELEGATION_NODES = "delegation_nodes",
+}
+
+const VALIDATORS_TAB_VALUES: VALIDATORS_TAB_VALUE[] = [
+  VALIDATORS_TAB_VALUE.ALL_NODES,
+  VALIDATORS_TAB_VALUE.DELEGATION_NODES,
+];
+
 export default function ValidatorsPage() {
   const [state, _] = useGlobalState();
-  const [onDelegatory, setOnDelegatory] = useState<boolean>(false);
   const inDev = useGetInDevMode();
+  const {tab} = useParams();
+  const navigate = useNavigate();
+  const value =
+    tab === undefined
+      ? VALIDATORS_TAB_VALUES[0]
+      : (tab as VALIDATORS_TAB_VALUE);
 
-  const handleTabChange = (
+  const handleChange = (
     _event: React.SyntheticEvent,
-    onDelegatory: boolean,
+    newValue: VALIDATORS_TAB_VALUE,
   ) => {
-    setOnDelegatory(onDelegatory);
+    navigate(`/validators/${newValue}`);
   };
 
   function getValidatorsTable() {
@@ -29,20 +44,24 @@ export default function ValidatorsPage() {
       case Network.MAINNET:
         return <ValidatorsTable />;
       case Network.TESTNET:
-        return onDelegatory ? (
+        return tab === VALIDATORS_TAB_VALUE.DELEGATION_NODES ? (
           <DelegationValidatorsTable />
         ) : (
           <ValidatorsTable />
         );
       case Network.DEVNET:
-        return <OldValidatorsTable onDelegatory={onDelegatory} />;
+        return (
+          <OldValidatorsTable
+            onDelegatory={tab === VALIDATORS_TAB_VALUE.DELEGATION_NODES}
+          />
+        );
     }
   }
 
   const validatorsTabs = (
-    <StyledTabs value={onDelegatory} onChange={handleTabChange}>
+    <StyledTabs value={value} onChange={handleChange}>
       <StyledTab
-        value={false}
+        value={VALIDATORS_TAB_VALUE.ALL_NODES}
         label={
           <Typography sx={{textTransform: "capitalize"}}>All Nodes</Typography>
         }
@@ -50,7 +69,7 @@ export default function ValidatorsPage() {
         isLast={false}
       />
       <StyledTab
-        value={true}
+        value={VALIDATORS_TAB_VALUE.DELEGATION_NODES}
         label={
           <Typography sx={{textTransform: "capitalize"}}>
             Delegation Nodes
