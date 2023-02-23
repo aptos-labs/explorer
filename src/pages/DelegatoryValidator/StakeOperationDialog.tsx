@@ -103,6 +103,7 @@ export default function StakeOperationDialog({
 
   const onCloseTransactionSucceededDialog = () => {
     setIsTransactionSucceededDialogOpen(false);
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -170,9 +171,11 @@ export default function StakeOperationDialog({
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
         <Typography variant="caption" color={grey[450]}>
-          Please do your own research. Aptos Labs is not responsible for the
-          performance of the validator nodes displayed here, or the security of
-          your funds
+          <div>
+            Please do your own research. Aptos Labs is not responsible for the
+            performance of the validator nodes displayed here, or the security
+            of your funds
+          </div>
         </Typography>
       </DialogContent>
     </StyledDialog>
@@ -224,8 +227,10 @@ export default function StakeOperationDialog({
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
         <Typography variant="caption" color={grey[450]}>
-          Please do your own research. Aptos Labs is not responsible for the
-          security of your funds
+          <div>
+            Please do your own research. Aptos Labs is not responsible for the
+            security of your funds
+          </div>
         </Typography>
       </DialogContent>
     </StyledDialog>

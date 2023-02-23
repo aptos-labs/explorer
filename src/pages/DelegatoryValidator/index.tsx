@@ -10,6 +10,8 @@ import {useGetValidators} from "../../api/hooks/useGetValidators";
 import MyDepositsSection from "./MyDepositsSection";
 import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useEffect, useState} from "react";
+import {SkeletonTheme} from "react-loading-skeleton";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
@@ -24,32 +26,72 @@ export default function ValidatorPage() {
     "0x1::stake::StakePool",
   );
 
+  // TODO(jill): find a better way to render skeleton, prob in hooks?
+  const [isDetailCardSkeletonLoading, setIsDetailedCardSkeletonLoading] =
+    useState<boolean>(true);
+  const [
+    isMyDepositsSectionSkeletonLoading,
+    setIsMyDepositsSectionSkeletonLoading,
+  ] = useState<boolean>(connected);
+  const [isStakingBarSkeletonLoading, setIsStakingBarSkeletonLoading] =
+    useState<boolean>(true);
+  const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (
+      !isDetailCardSkeletonLoading &&
+      !isMyDepositsSectionSkeletonLoading &&
+      !isStakingBarSkeletonLoading
+    ) {
+      setIsSkeletonLoading(false);
+    }
+  }, [
+    isDetailCardSkeletonLoading,
+    isMyDepositsSectionSkeletonLoading,
+    isStakingBarSkeletonLoading,
+  ]);
+
   if (!validator) {
     return null;
   }
 
   return (
-    <Grid container spacing={1}>
-      <PageHeader />
-      <Grid item xs={12}>
-        <Stack direction="column" spacing={4} marginTop={2}>
-          <ValidatorTitle address={address} />
-          <ValidatorStakingBar
-            validator={validator}
-            accountResource={accountResource}
-          />
-          <ValidatorDetailCard
-            validator={validator}
-            accountResource={accountResource}
-          />
-          {connected && (
-            <MyDepositsSection
-              accountResource={accountResource}
-              validator={validator}
+    <SkeletonTheme>
+      <Grid container spacing={1}>
+        <PageHeader />
+        <Grid item xs={12}>
+          <Stack direction="column" spacing={4} marginTop={2}>
+            <ValidatorTitle
+              address={address}
+              isSkeletonLoading={isSkeletonLoading}
             />
-          )}
-        </Stack>
+            <ValidatorStakingBar
+              validator={validator}
+              accountResource={accountResource}
+              setIsStakingBarSkeletonLoading={setIsStakingBarSkeletonLoading}
+              isSkeletonLoading={isSkeletonLoading}
+            />
+            <ValidatorDetailCard
+              validator={validator}
+              accountResource={accountResource}
+              setIsDetailedCardSkeletonLoading={
+                setIsDetailedCardSkeletonLoading
+              }
+              isSkeletonLoading={isSkeletonLoading}
+            />
+            {connected && (
+              <MyDepositsSection
+                accountResource={accountResource}
+                validator={validator}
+                setIsMyDepositsSectionSkeletonLoading={
+                  setIsMyDepositsSectionSkeletonLoading
+                }
+                isSkeletonLoading={isSkeletonLoading}
+              />
+            )}
+          </Stack>
+        </Grid>
       </Grid>
-    </Grid>
+    </SkeletonTheme>
   );
 }
