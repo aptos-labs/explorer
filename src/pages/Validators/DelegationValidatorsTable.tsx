@@ -224,8 +224,12 @@ function DelegatorCell() {
   );
 }
 
-function RewardsEarnedCell() {
-  return <GeneralTableCell sx={{paddingLeft: 10}}>N/A</GeneralTableCell>;
+function RewardsEarnedCell({validator}: ValidatorCellProps) {
+  return (
+    <GeneralTableCell sx={{paddingLeft: 10}}>
+      {validator.apt_rewards_distributed}
+    </GeneralTableCell>
+  );
 }
 
 function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
