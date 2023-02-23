@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {DELEGATION_POOL_ADDRESS, OCTA} from "../../constants";
+import {DELEGATION_POOL_ADDRESS} from "../../constants";
 import useSubmitTransaction from "./useSubmitTransaction";
 
 // enum name => delegation pool smart contract view function name
@@ -27,7 +27,7 @@ const useSubmitStakeOperation = () => {
       type: "entry_function_payload",
       function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::${stakeOperation}`,
       type_arguments: [],
-      arguments: [owner_address, amount * OCTA], // staking operation uses OCTA as amount basis
+      arguments: [owner_address, amount], // staking operation uses OCTA as amount basis
     };
 
     await submitTransaction(payload);
