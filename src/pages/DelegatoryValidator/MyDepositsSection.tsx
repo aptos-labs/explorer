@@ -17,17 +17,23 @@ import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
+import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
+import {assertNever} from "../../utils";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
   StakingStatus,
   STAKING_STATUS_STEPS,
 } from "./Components/StakingStatusIcon";
 import StakeOperationDialog from "./StakeOperationDialog";
-import {getLockedUtilSecs} from "./utils";
+import {
+  getLockedUtilSecs,
+  getStakeOperationPrincipals,
+  StakePrincipals,
+} from "./utils";
 import WalletConnectionDialog from "./WalletConnectionDialog";
 
 const MyDepositsCells = Object.freeze({
@@ -40,13 +46,49 @@ const MyDepositsCells = Object.freeze({
 
 type Column = keyof typeof MyDepositsCells;
 
-const MyDepositsHeader: {[key in Column]: string} = Object.freeze({
-  amount: "Amount",
-  status: "Status",
-  unlockDate: "Unlock Date",
-  rewardEarned: "Reward Earned",
-  actions: "Actions",
-});
+function MyDepositsSectionHeaderCell({column}: {column: Column}) {
+  switch (column) {
+    case "amount":
+      return (
+        <GeneralTableHeaderCell
+          header="AMOUNT"
+          tooltip={
+            <StyledLearnMoreTooltip text="Estimated current total amount including principals and rewards earned" />
+          }
+        />
+      );
+    case "status":
+      return (
+        <GeneralTableHeaderCell
+          header="STATUS"
+          tooltip={<MyDepositsStatusTooltip steps={STAKING_STATUS_STEPS} />}
+        />
+      );
+    case "unlockDate":
+      return (
+        <GeneralTableHeaderCell
+          header="UNLOCK DATE"
+          tooltip={
+            <StyledLearnMoreTooltip text="When tokens will be available for removal from the stake pool" />
+          }
+        />
+      );
+    case "rewardEarned":
+      return (
+        <GeneralTableHeaderCell
+          header="REWARD EARNED"
+          tooltip={
+            <StyledLearnMoreTooltip text="Estimated rewards earned in the current staking status" />
+          }
+        />
+      );
+    case "actions":
+      // TODO(jill): add a good tooltip on actions delegators can take
+      return <GeneralTableHeaderCell textAlignRight={true} header="ACTIONS" />;
+    default:
+      return assertNever(column);
+  }
+}
 
 const DEFAULT_COLUMNS: Column[] = [
   "amount",
@@ -68,6 +110,7 @@ type MyDepositsSectionCellProps = {
   accountResource?: Types.MoveResource | undefined;
   stake: Types.MoveValue;
   status: StakingStatus;
+  stakePrincipals: StakePrincipals | undefined;
 };
 
 function AmountCell({stake}: MyDepositsSectionCellProps) {
@@ -94,10 +137,32 @@ function UnlockDateCell({accountResource}: MyDepositsSectionCellProps) {
   );
 }
 
-function RewardEarnedCell({}: MyDepositsSectionCellProps) {
+function RewardEarnedCell({
+  stake,
+  status,
+  stakePrincipals,
+}: MyDepositsSectionCellProps) {
+  const principalsAmount =
+    status === StakingStatus.STAKED
+      ? stakePrincipals?.activePrincipals
+      : status === StakingStatus.WITHDRAW_PENDING
+      ? stakePrincipals?.pendingInactivePrincipals
+      : undefined;
+
+  const rewardsEarned = principalsAmount
+    ? Number(stake) - principalsAmount
+    : undefined;
+
   return (
     <GeneralTableCell>
-      <APTCurrencyValue amount={""} />
+      {status === StakingStatus.WITHDRAW_READY ||
+      rewardsEarned === undefined ? (
+        "N/A"
+      ) : (
+        <APTCurrencyValue
+          amount={rewardsEarned ? rewardsEarned.toString() : ""}
+        />
+      )}
     </GeneralTableCell>
   );
 }
@@ -119,7 +184,7 @@ function ActionsCell({handleClickOpen, status}: MyDepositsSectionCellProps) {
         variant="primary"
         size="small"
         onClick={handleClickOpen}
-        sx={{maxWidth: "10%"}}
+        sx={{maxWidth: "10%", paddingY: 1}}
       >
         <Typography>{getButtonTextFromStatus()}</Typography>
       </Button>
@@ -130,6 +195,8 @@ function ActionsCell({handleClickOpen, status}: MyDepositsSectionCellProps) {
 type MyDepositsSectionProps = {
   accountResource?: Types.MoveResource | undefined;
   validator: ValidatorData;
+  setIsMyDepositsSectionSkeletonLoading: (arg: boolean) => void;
+  isSkeletonLoading: boolean;
 };
 
 type MyDepositRowProps = {
@@ -140,6 +207,8 @@ type MyDepositRowProps = {
 export default function MyDepositsSection({
   accountResource,
   validator,
+  setIsMyDepositsSectionSkeletonLoading,
+  isSkeletonLoading,
 }: MyDepositsSectionProps) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
@@ -149,19 +218,19 @@ export default function MyDepositsSection({
     account?.address!,
     validator.owner_address,
   );
+  const {stakePrincipals, isLoading: isStakeActivityLoading} =
+    getStakeOperationPrincipals(account?.address!, validator.owner_address);
 
   // sc get_stake returns (active, inactive, pending_inactive), which translates to
   // (staked, withdraw_ready, withdraw_pending)
   // we need to switch the position of second and third index so that the order's sorted as steps
   const stakesInfo = [stakes[0], stakes[2], stakes[1]];
 
-  const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
-
   useEffect(() => {
-    if (stakes && account) {
-      setIsSkeletonLoading(false);
+    if (stakes && account && !isStakeActivityLoading) {
+      setIsMyDepositsSectionSkeletonLoading(false);
     }
-  }, [stakes, account]);
+  }, [stakes, account, isStakeActivityLoading]);
 
   function MyDepositRow({stake, status}: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -195,6 +264,7 @@ export default function MyDepositsSection({
                 handleClickOpen={handleClickOpen}
                 stake={stake}
                 status={status}
+                stakePrincipals={stakePrincipals}
               />
             );
           })}
@@ -229,25 +299,14 @@ export default function MyDepositsSection({
         <TableHead>
           <TableRow>
             {columns.map((columnName, idx) => (
-              <GeneralTableHeaderCell
-                sx={{
-                  textAlign:
-                    idx === DEFAULT_COLUMNS.length - 1 ? "right" : null,
-                }}
-                header={MyDepositsHeader[columnName]}
-                key={idx}
-                tooltip={
-                  columnName === "status" && (
-                    <MyDepositsStatusTooltip steps={STAKING_STATUS_STEPS} />
-                  )
-                }
-              />
+              <MyDepositsSectionHeaderCell column={columnName} key={idx} />
             ))}
           </TableRow>
         </TableHead>
         <GeneralTableBody>
           {stakesInfo.map(
             (stake, idx) =>
+              stake &&
               Number(stake) !== 0 && (
                 <MyDepositRow key={idx} stake={Number(stake)} status={idx} />
               ),
@@ -260,12 +319,10 @@ export default function MyDepositsSection({
 
 function MyDepositSectionSkeleton() {
   return (
-    <Stack>
-      <Typography>
-        <Skeleton></Skeleton>
-      </Typography>
-      <Skeleton></Skeleton>
-      <Skeleton></Skeleton>
+    <Stack spacing={1}>
+      <Skeleton height={50}></Skeleton>
+      <Skeleton height={30}></Skeleton>
+      <Skeleton height={30}></Skeleton>
     </Stack>
   );
 }

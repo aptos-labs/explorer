@@ -378,7 +378,12 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
 
   return (
     <GeneralTableRow
-      onClick={inDev ? () => rowClick(validator.owner_address) : undefined}
+      onClick={
+        inDev &&
+        WHILTELISTED_TESTNET_DELEGATION_NODES.includes(validator.owner_address)
+          ? () => rowClick(validator.owner_address)
+          : undefined
+      }
     >
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
