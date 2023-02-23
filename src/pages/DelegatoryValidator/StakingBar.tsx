@@ -38,7 +38,7 @@ export default function StakingBar({
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const {connected} = useWallet();
-  const {delegatedStakeAmount, networkPercentage, commission, isLoading} =
+  const {delegatedStakeAmount, networkPercentage, commission, isQueryLoading} =
     useGetDelegationNodeInfo({
       validatorAddress: validator.owner_address,
       validator,
@@ -55,10 +55,10 @@ export default function StakingBar({
   };
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isQueryLoading) {
       setIsStakingBarSkeletonLoading(false);
     }
-  }, [isLoading]);
+  }, [isQueryLoading]);
 
   const stakeAmount = (
     <Stack direction="column" spacing={0.5}>

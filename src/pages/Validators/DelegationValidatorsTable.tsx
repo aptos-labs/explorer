@@ -238,7 +238,7 @@ function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
     <GeneralTableCell sx={{textAlign: "right"}}>
       <Box>
         <APTCurrencyValue
-          amount={delegatedStakeAmount}
+          amount={delegatedStakeAmount ?? ""}
           fixedDecimalPlaces={0}
         />
       </Box>

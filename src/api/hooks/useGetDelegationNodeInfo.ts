@@ -3,7 +3,7 @@ import {useState, useMemo} from "react";
 import {getValidatorCommission} from "..";
 import {DELEGATION_POOL_ADDRESS} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
-import {useGetAccountResources} from "./useGetAccountResources";
+import {useGetAccountResource} from "./useGetAccountResource";
 import {ValidatorData} from "./useGetValidators";
 import {useGetValidatorSet, Validator} from "./useGetValidatorSet";
 
@@ -17,7 +17,7 @@ type DelegationNodeInfoResponse = {
   delegatedStakeAmount: string | undefined;
   networkPercentage?: string;
   commission: number | undefined;
-  isLoading: boolean;
+  isQueryLoading: boolean;
 };
 
 type DelegationNodeInfoProps = {
@@ -31,12 +31,15 @@ export function useGetDelegationNodeInfo({
 }: DelegationNodeInfoProps): DelegationNodeInfoResponse {
   const [state, _] = useGlobalState();
   const {totalVotingPower} = useGetValidatorSet();
-  const {data, isLoading} = useGetAccountResources(validatorAddress);
+  const {accountResource: delegationPool, isLoading} = useGetAccountResource(
+    validatorAddress,
+    `${DELEGATION_POOL_ADDRESS}::delegation_pool::DelegationPool`,
+  );
   const client = new AptosClient(state.network_value);
   const [commission, setCommission] = useState<Types.MoveValue>();
-  const [delegatedStakeAmount, setDelegatedStakeAmount] =
-    useState<Types.MoveValue>();
+  const [delegatedStakeAmount, setDelegatedStakeAmount] = useState<string>();
   const [networkPercentage, setNetworkPercentage] = useState<string>();
+  const [isQueryLoading, setIsQueryLoading] = useState<boolean>(true);
 
   useMemo(() => {
     if (!isLoading) {
@@ -51,25 +54,17 @@ export function useGetDelegationNodeInfo({
         ).toFixed(2),
       );
 
-      const delegationPool = data?.find(
-        (resource) =>
-          resource.type ===
-          `${DELEGATION_POOL_ADDRESS}::delegation_pool::DelegationPool`,
+      setDelegatedStakeAmount(
+        (delegationPool?.data as DelegationPool)?.active_shares?.total_coins,
       );
-
-      const delegationPoolData: DelegationPool | undefined =
-        delegationPool?.data as DelegationPool;
-
-      setDelegatedStakeAmount(delegationPoolData?.active_shares?.total_coins);
+      setIsQueryLoading(false);
     }
-  }, [state.network_value, totalVotingPower, isLoading, data]);
+  }, [state.network_value, totalVotingPower, isLoading, delegationPool]);
 
   return {
     commission: commission ? Number(commission) / 100 : undefined, // commission rate: 22.85% is represented as 2285
     networkPercentage,
-    delegatedStakeAmount: delegatedStakeAmount
-      ? Number(delegatedStakeAmount).toString()
-      : undefined,
-    isLoading,
+    delegatedStakeAmount,
+    isQueryLoading,
   };
 }
