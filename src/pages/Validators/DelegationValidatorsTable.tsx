@@ -293,7 +293,7 @@ function MyDepositCell({validator}: ValidatorCellProps) {
         0,
       ),
     );
-  }, [stakes]);
+  }, [stakes, account, connected]);
 
   return (
     <GeneralTableCell sx={{textAlign: "center"}}>
