@@ -10,7 +10,7 @@ export function useGetAccountResource(
 ): UseQueryResult<Types.MoveResource, ResponseError> {
   const [state, _setState] = useGlobalState();
   const accountResourceResult = useQuery<Types.MoveResource, ResponseError>(
-    ["accountResource", {address}, state.network_value],
+    ["accountResource", {address, resource}, state.network_value],
     () =>
       getAccountResource(
         {address, resourceType: resource},
