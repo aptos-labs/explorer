@@ -1,6 +1,5 @@
 import {
   Chip,
-  Stack,
   Step,
   StepContent,
   StepLabel,
@@ -11,6 +10,8 @@ import React from "react";
 import TableTooltip from "../../../components/Table/TableTooltip";
 import TooltipTypography from "../../../components/TooltipTypography";
 import {StakingStatusInterface} from "./StakingStatusIcon";
+import {SvgIcon} from "@mui/material";
+import {grey} from "../../../themes/colors/aptosColorPalette";
 
 type MyDepositsSectionProps = {
   steps: StakingStatusInterface[];
@@ -24,11 +25,16 @@ export default function MyDepositsStatusTooltip({
 
   return (
     <TableTooltip title="Deposit Status">
-      <Stack>
-        <Stepper orientation="vertical">
-          {steps.map((step) => (
-            <Step key={step.label} active={true}>
-              <StepLabel>
+      <Stepper orientation="vertical">
+        {steps.map((step) => {
+          return (
+            <Step key={step.label} active={false} expanded={true}>
+              <StepLabel
+                icon={<SvgIcon component={step.stepLabelIcon} inheritViewBox />}
+                sx={{
+                  color: theme.palette.mode === "dark" ? grey[200] : grey[800],
+                }}
+              >
                 <Chip
                   icon={step.icon}
                   label={step.label}
@@ -42,9 +48,9 @@ export default function MyDepositsStatusTooltip({
                 <TooltipTypography>{step.description}</TooltipTypography>
               </StepContent>
             </Step>
-          ))}
-        </Stepper>
-      </Stack>
+          );
+        })}
+      </Stepper>
     </TableTooltip>
   );
 }

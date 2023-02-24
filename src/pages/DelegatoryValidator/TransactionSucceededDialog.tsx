@@ -96,6 +96,7 @@ export default function TransactionSucceededDialog({
             paddingLeft: "inherit",
             marginX: 1,
             borderRadius: 1,
+            paddingY: 2,
           }}
         >
           <Grid item xs zeroMinWidth>

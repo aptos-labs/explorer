@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
-import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import {grey} from "../../themes/colors/aptosColorPalette";
@@ -106,7 +106,7 @@ export default function StakingBar({
   );
 
   const stakeButton = (
-    <Button variant="primary" onClick={handleClickOpen}>
+    <Button variant="primary" onClick={handleClickOpen} sx={{maxWidth: "5%"}}>
       <ArrowCircleUpIcon sx={{marginRight: 1}} />
       <Typography>Stake</Typography>
     </Button>
@@ -158,17 +158,17 @@ export default function StakingBar({
   return isSkeletonLoading ? (
     StakingBarSkeleton()
   ) : (
-    <ContentBox>
+    <ContentBoxSpaceBetween>
       {isOnMobile ? stakingBarOnMobile : stakingBarOnWeb}
       {connected ? stakeDialog : walletConnectionDialog}
-    </ContentBox>
+    </ContentBoxSpaceBetween>
   );
 }
 
 function StakingBarSkeleton() {
   return (
-    <ContentBox>
+    <ContentBoxSpaceBetween>
       <Skeleton height={70}></Skeleton>
-    </ContentBox>
+    </ContentBoxSpaceBetween>
   );
 }

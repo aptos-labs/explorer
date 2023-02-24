@@ -184,7 +184,7 @@ function ActionsCell({handleClickOpen, status}: MyDepositsSectionCellProps) {
         onClick={handleClickOpen}
         sx={{maxWidth: "10%", paddingY: 1}}
       >
-        <Typography>{getButtonTextFromStatus()}</Typography>
+        {getButtonTextFromStatus()}
       </Button>
     </GeneralTableCell>
   );
