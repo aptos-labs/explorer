@@ -19,7 +19,9 @@ export default function ExplorerRoutes() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/transactions" element={<TransactionsPage />} />
-        <Route path="/validators" element={<ValidatorsPage />} />
+        <Route path="/validators" element={<ValidatorsPage />}>
+          <Route path=":tab" element={<ValidatorsPage />} />
+        </Route>
         <Route path="/validator">
           <Route path=":address" element={<ValidatorPage />} />
         </Route>
