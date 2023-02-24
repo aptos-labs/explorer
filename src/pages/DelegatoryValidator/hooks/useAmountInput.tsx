@@ -37,7 +37,7 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
     setAmount("");
   }
 
-  function renderAmountTextField(): JSX.Element {
+  function renderAmountTextField(balance?: string | null): JSX.Element {
     function getErrorMessage() {
       switch (stakeOperation) {
         case StakeOperation.STAKE:
@@ -55,6 +55,7 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
         amountIsValid={amountIsValid}
         errorMessage={getErrorMessage()}
         onAmountChange={onAmountChange}
+        balance={balance}
       />
     );
   }
