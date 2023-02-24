@@ -9,7 +9,7 @@ export const STAKED_BACKGROUND_COLOR_LIGHT = "rgba(14, 165, 233, 0.1)";
 export const STAKED_BACKGROUND_COLOR_DARK = "rgba(125, 211, 252, 0.1)";
 export const STAKED_LABEL = "Staked";
 export const STAKED_DESCRIPTION = `You are getting rewards for the staked deposit, but not able to
-withdraw it until the lock period. But you can initiate this process with an
+withdraw it until the lock period ends. But you can initiate this process with an
 unstake option.`;
 
 // step 2 WITHDRAW PENDING

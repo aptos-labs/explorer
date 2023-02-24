@@ -35,6 +35,7 @@
     "prettier": "^2.6.2",
     "react": "latest",
     "react-chartjs-2": "^5.0.1",
+    "react-countdown": "^2.3.5",
     "react-dom": "latest",
     "react-ga4": "^1.4.1",
     "react-intersection-observer": "^9.4.0",

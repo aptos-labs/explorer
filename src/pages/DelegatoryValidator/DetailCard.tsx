@@ -1,7 +1,7 @@
 import {Skeleton, Stack, useMediaQuery, useTheme} from "@mui/material";
 import * as React from "react";
 import HashButton from "../../components/HashButton";
-import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
 import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
@@ -46,7 +46,7 @@ export default function ValidatorDetailCard({
     validatorDetailCardSkeleton({isOnMobile})
   ) : (
     <Stack direction={isOnMobile ? "column" : "row"} spacing={4}>
-      <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
+      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <ContentRowSpaceBetween
           title={"Operator"}
           value={
@@ -79,8 +79,8 @@ export default function ValidatorDetailCard({
             <StyledLearnMoreTooltip text="% of staking reward paid out to operator as commission" />
           }
         />
-      </ContentBox>
-      <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
+      </ContentBoxSpaceBetween>
+      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <ContentRowSpaceBetween
           title={"Stake Pool Address"}
           value={
@@ -108,7 +108,7 @@ export default function ValidatorDetailCard({
             <StyledLearnMoreTooltip text="When tokens will be available for removal from the stake pool" />
           }
         />
-      </ContentBox>
+      </ContentBoxSpaceBetween>
     </Stack>
   );
 }
@@ -116,18 +116,18 @@ export default function ValidatorDetailCard({
 function validatorDetailCardSkeleton({isOnMobile}: {isOnMobile: boolean}) {
   return (
     <Stack direction={isOnMobile ? "column" : "row"} spacing={4}>
-      <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
+      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
-      </ContentBox>
-      <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
+      </ContentBoxSpaceBetween>
+      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
-      </ContentBox>
+      </ContentBoxSpaceBetween>
     </Stack>
   );
 }
