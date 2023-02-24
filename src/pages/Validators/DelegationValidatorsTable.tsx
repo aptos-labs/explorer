@@ -5,7 +5,6 @@ import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCel
 import {assertNever} from "../../utils";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
@@ -23,7 +22,6 @@ import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo
 import {Network, WHILTELISTED_TESTNET_DELEGATION_NODES} from "../../constants";
 import {
   OperatorAddrCell,
-  RewardsPerformanceCell,
   ValidatorAddrCell,
   ValidatorCellProps,
 } from "./ValidatorsTable";
@@ -53,15 +51,10 @@ function getValidatorsOrderedBy(
   column: Column,
 ) {
   switch (column) {
-    case "delegatedStakeAmount":
+    case "delegatedAmount":
       return validatorsCopy.sort(
         (validator1, validator2) =>
           parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
-      );
-    case "rewardsPerf":
-      return validatorsCopy.sort(
-        (validator1, validator2) =>
-          (validator2.rewards_growth ?? 0) - (validator1.rewards_growth ?? 0),
       );
     default:
       return validatorsCopy;
@@ -76,6 +69,7 @@ type SortableHeaderCellProps = {
   setSortColumn: (col: Column) => void;
   tooltip?: React.ReactNode;
   isTableTooltip?: boolean;
+  textAlignRight?: boolean;
 };
 
 function SortableHeaderCell({
@@ -86,11 +80,12 @@ function SortableHeaderCell({
   setSortColumn,
   tooltip,
   isTableTooltip,
+  textAlignRight,
 }: SortableHeaderCellProps) {
   return (
     <GeneralTableHeaderCell
       header={header}
-      textAlignRight
+      textAlignRight={textAlignRight}
       sortable
       direction={direction}
       selectAndSetDirection={(dir) => {
@@ -123,10 +118,10 @@ function ValidatorHeaderCell({
       return <GeneralTableHeaderCell header="Staking Pool Address" />;
     case "operatorAddr":
       return <GeneralTableHeaderCell header="Operator Address" />;
-    case "delegatedStakeAmount":
+    case "delegatedAmount":
       return (
         <SortableHeaderCell
-          header="Delegated Stake Amount"
+          header="Delegated Amount"
           column={column}
           direction={direction}
           setDirection={setDirection}
@@ -135,17 +130,7 @@ function ValidatorHeaderCell({
             <StyledLearnMoreTooltip text="The total amount of delegated stake in this stake pool" />
           }
           isTableTooltip={false}
-        />
-      );
-    case "rewardsPerf":
-      return (
-        <SortableHeaderCell
-          header="Rewards Perf"
-          column={column}
-          direction={direction}
-          setDirection={setDirection}
-          setSortColumn={setSortColumn}
-          tooltip={<RewardsPerformanceTooltip />}
+          textAlignRight={false}
         />
       );
     case "delegator":
@@ -182,7 +167,13 @@ function ValidatorHeaderCell({
         />
       );
     case "actions":
-      return <GeneralTableHeaderCell header="Actions" isTableTooltip={false} />;
+      return (
+        <GeneralTableHeaderCell
+          header="Actions"
+          isTableTooltip={false}
+          sx={{textAlign: "right"}}
+        />
+      );
     case "myDeposit":
       return (
         <GeneralTableHeaderCell header="My Deposit" isTableTooltip={false} />
@@ -195,11 +186,10 @@ function ValidatorHeaderCell({
 const DelegationValidatorCells = Object.freeze({
   addr: ValidatorAddrCell,
   operatorAddr: OperatorAddrCell,
-  rewardsPerf: RewardsPerformanceCell,
   commission: CommissionCell,
   delegator: DelegatorCell,
   rewardsEarned: RewardsEarnedCell,
-  delegatedStakeAmount: DelegatedStakeAmountCell,
+  delegatedAmount: DelegatedAmountCell,
   myDeposit: MyDepositCell,
   actions: ActionsCell,
 });
@@ -209,11 +199,10 @@ type Column = keyof typeof DelegationValidatorCells;
 const DEFAULT_COLUMNS: Column[] = [
   "addr",
   "operatorAddr",
+  "delegatedAmount",
   "commission",
   "delegator",
   "rewardsEarned",
-  "rewardsPerf",
-  "delegatedStakeAmount",
   "myDeposit",
   "actions",
 ];
@@ -229,7 +218,7 @@ function CommissionCell({validator}: ValidatorCellProps) {
     validator,
   });
   return (
-    <GeneralTableCell sx={{paddingLeft: 5}}>
+    <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
       {commission && `${commission}%`}
     </GeneralTableCell>
   );
@@ -246,20 +235,23 @@ function DelegatorCell({validator}: ValidatorCellProps) {
 
 function RewardsEarnedCell({validator}: ValidatorCellProps) {
   return (
-    <GeneralTableCell sx={{paddingLeft: 10}}>
-      {validator.apt_rewards_distributed}
+    <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
+      <APTCurrencyValue
+        amount={Number(validator.apt_rewards_distributed).toFixed(2)}
+        decimals={0}
+      />
     </GeneralTableCell>
   );
 }
 
-function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
+function DelegatedAmountCell({validator}: ValidatorCellProps) {
   const {delegatedStakeAmount, networkPercentage} = useGetDelegationNodeInfo({
     validatorAddress: validator.owner_address,
     validator,
   });
 
   return (
-    <GeneralTableCell sx={{textAlign: "center"}}>
+    <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
       <Box>
         <APTCurrencyValue
           amount={delegatedStakeAmount ?? ""}
@@ -301,7 +293,7 @@ function MyDepositCell({validator}: ValidatorCellProps) {
   }, [stakes, account, connected]);
 
   return (
-    <GeneralTableCell sx={{textAlign: "center"}}>
+    <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
       {connected && Number(totalDeposit) !== 0 ? (
         <Stack direction="row" spacing={1.5}>
           <CheckCircleIcon color="success" fontSize="small" />
@@ -345,7 +337,7 @@ export function DelegationValidatorsTable() {
   const [state, _] = useGlobalState();
   const {validators} = useGetValidators(state.network_name);
 
-  const [sortColumn, setSortColumn] = useState<Column>("delegatedStakeAmount");
+  const [sortColumn, setSortColumn] = useState<Column>("delegatedAmount");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
   const whitelistedTestnetDelegationValidators: ValidatorData[] =
     validators.filter((validator) =>

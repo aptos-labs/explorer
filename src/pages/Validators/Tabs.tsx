@@ -12,8 +12,8 @@ import {useGlobalState} from "../../GlobalState";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 
 enum VALIDATORS_TAB_VALUE {
-  ALL_NODES = "all_nodes",
-  DELEGATION_NODES = "delegation_nodes",
+  ALL_NODES = "all",
+  DELEGATION_NODES = "delegation",
 }
 const VALIDATORS_TAB_VALUES: VALIDATORS_TAB_VALUE[] = [
   VALIDATORS_TAB_VALUE.ALL_NODES,
