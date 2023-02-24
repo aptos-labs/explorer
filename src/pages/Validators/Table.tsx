@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Box, Table, TableHead, TableRow} from "@mui/material";
+import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -8,18 +8,9 @@ import {
   Validator,
 } from "../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../components/HashButton";
-import {
-  APTCurrencyValue,
-  getFormattedBalanceStr,
-} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import {useNavigate} from "react-router-dom";
-import {Types} from "aptos";
-import {grey} from "../../themes/colors/aptosColorPalette";
-import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
-import {WHILTELISTED_TESTNET_DELEGATION_NODES} from "../../constants";
 
 type ValidatorCellProps = {
   validator: Validator;
@@ -85,45 +76,6 @@ function NetworkAddrCell({validator}: ValidatorCellProps) {
   );
 }
 
-function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
-  const {delegatedStakeAmount, networkPercentage} = useGetDelegationNodeInfo({
-    validatorAddress: validator.addr,
-    validator,
-  });
-
-  return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
-      <Box>
-        <APTCurrencyValue
-          amount={delegatedStakeAmount}
-          fixedDecimalPlaces={0}
-        />
-      </Box>
-      <Box sx={{fontSize: 11, color: grey[450]}}>{networkPercentage}%</Box>
-    </GeneralTableCell>
-  );
-}
-
-function DelegatorCell() {
-  return (
-    <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
-      N/A
-    </GeneralTableCell>
-  );
-}
-
-function CommissionCell({validator}: ValidatorCellProps) {
-  const {commission} = useGetDelegationNodeInfo({
-    validatorAddress: validator.addr,
-    validator,
-  });
-  return (
-    <GeneralTableCell sx={{paddingLeft: 5}}>
-      {commission && `${commission}%`}
-    </GeneralTableCell>
-  );
-}
-
 const ValidatorCells = Object.freeze({
   idx: ValidatorIndexCell,
   addr: ValidatorAddrCell,
@@ -131,9 +83,6 @@ const ValidatorCells = Object.freeze({
   consensusPK: ConsensusPKCell,
   fullnodeAddr: FullnodeAddrCell,
   networkAddr: NetworkAddrCell,
-  delegator: DelegatorCell,
-  commission: CommissionCell,
-  delegatedStakeAmount: DelegatedStakeAmountCell,
 });
 
 type Column = keyof typeof ValidatorCells;
@@ -147,31 +96,14 @@ const DEFAULT_COLUMNS: Column[] = [
   "networkAddr",
 ];
 
-const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
-  "idx",
-  "addr",
-  "commission",
-  "delegator",
-  "delegatedStakeAmount",
-];
-
 type ValidatorRowProps = {
   validator: Validator;
   columns: Column[];
 };
 
 function ValidatorRow({validator, columns}: ValidatorRowProps) {
-  const inDev = useGetInDevMode();
-  const navigate = useNavigate();
-
-  const rowClick = (address: Types.Address) => {
-    navigate(`/validator/${address}`);
-  };
-
   return (
-    <GeneralTableRow
-      onClick={inDev ? () => rowClick(validator.addr) : undefined}
-    >
+    <GeneralTableRow>
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
         return <Cell key={column} validator={validator} />;
@@ -202,49 +134,28 @@ function ValidatorHeaderCell({column}: ValidatorHeaderCellProps) {
       );
     case "networkAddr":
       return <GeneralTableHeaderCell header="Network Address" textAlignRight />;
-    case "delegator":
-      return <GeneralTableHeaderCell header="Delegators" textAlignRight />;
-    case "commission":
-      return <GeneralTableHeaderCell header="Commission" />;
-    case "delegatedStakeAmount":
-      return (
-        <GeneralTableHeaderCell
-          header="Delegated Stake Amount"
-          textAlignRight
-        />
-      );
     default:
       return assertNever(column);
   }
 }
 
-type ValidatorsTableProps = {
-  onDelegatory: boolean;
-};
-
-export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
+export function ValidatorsTable() {
   const {activeValidators} = useGetValidatorSet();
 
   const validatorsCopy: Validator[] = JSON.parse(
     JSON.stringify(activeValidators),
   );
-  const whitelistedTestnetDelegationValidators: Validator[] =
-    validatorsCopy.filter((validator) =>
-      WHILTELISTED_TESTNET_DELEGATION_NODES.includes(validator.addr),
-    );
-  const validatorsInOrder = (
-    onDelegatory ? whitelistedTestnetDelegationValidators : validatorsCopy
-  ).sort(
+
+  const validatorsInOrder = validatorsCopy.sort(
     (validator1, validator2) =>
       parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
   );
-  const columns = onDelegatory ? DELEGATORY_VALIDATOR_COLUMNS : DEFAULT_COLUMNS;
 
   return (
     <Table>
       <TableHead>
         <TableRow>
-          {columns.map((column) => (
+          {DEFAULT_COLUMNS.map((column) => (
             <ValidatorHeaderCell key={column} column={column} />
           ))}
         </TableRow>
@@ -252,7 +163,11 @@ export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
       <GeneralTableBody>
         {validatorsInOrder.map((validator: any, i: number) => {
           return (
-            <ValidatorRow key={i} validator={validator} columns={columns} />
+            <ValidatorRow
+              key={i}
+              validator={validator}
+              columns={DEFAULT_COLUMNS}
+            />
           );
         })}
       </GeneralTableBody>
