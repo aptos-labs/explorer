@@ -10,46 +10,27 @@ import {useGetValidators} from "../../api/hooks/useGetValidators";
 import MyDepositsSection from "./MyDepositsSection";
 import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useEffect, useState} from "react";
 import {SkeletonTheme} from "react-loading-skeleton";
+import {useGetValidatorPageSkeletonLoading} from "../../api/hooks/useGetValidatorPageSkeletonLoading";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
   const addressHex = new HexString(address);
   const {validators} = useGetValidators();
   const {connected} = useWallet();
-  const validator = validators.find(
-    (validator) => validator.owner_address === addressHex.hex(),
-  );
   const {data: accountResource} = useGetAccountResource(
     addressHex.hex(),
     "0x1::stake::StakePool",
   );
-
-  // TODO(jill): find a better way to render skeleton, prob in hooks?
-  const [isDetailCardSkeletonLoading, setIsDetailedCardSkeletonLoading] =
-    useState<boolean>(true);
-  const [
-    isMyDepositsSectionSkeletonLoading,
+  const {
     setIsMyDepositsSectionSkeletonLoading,
-  ] = useState<boolean>(connected);
-  const [isStakingBarSkeletonLoading, setIsStakingBarSkeletonLoading] =
-    useState<boolean>(true);
-  const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
+    setIsStakingBarSkeletonLoading,
+    isSkeletonLoading,
+  } = useGetValidatorPageSkeletonLoading();
 
-  useEffect(() => {
-    if (
-      !isDetailCardSkeletonLoading &&
-      !isMyDepositsSectionSkeletonLoading &&
-      !isStakingBarSkeletonLoading
-    ) {
-      setIsSkeletonLoading(false);
-    }
-  }, [
-    isDetailCardSkeletonLoading,
-    isMyDepositsSectionSkeletonLoading,
-    isStakingBarSkeletonLoading,
-  ]);
+  const validator = validators.find(
+    (validator) => validator.owner_address === addressHex.hex(),
+  );
 
   if (!validator) {
     return null;
@@ -74,9 +55,6 @@ export default function ValidatorPage() {
             <ValidatorDetailCard
               validator={validator}
               accountResource={accountResource}
-              setIsDetailedCardSkeletonLoading={
-                setIsDetailedCardSkeletonLoading
-              }
               isSkeletonLoading={isSkeletonLoading}
             />
             {connected && (
