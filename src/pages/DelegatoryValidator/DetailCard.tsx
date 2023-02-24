@@ -7,7 +7,7 @@ import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
 import {Types} from "aptos";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
 import {getLockedUtilSecs} from "./utils";
@@ -18,6 +18,7 @@ import {
   REWARDS_TOOLTIP_TEXT,
 } from "../Validators/Components/Staking";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
+import {useGetNumberOfDelegators} from "../../api/hooks/useGetNumberOfDelegators";
 
 type ValidatorDetailProps = {
   validator: ValidatorData;
@@ -33,10 +34,11 @@ export default function ValidatorDetailCard({
   isSkeletonLoading,
 }: ValidatorDetailProps) {
   const {rewardsRateYearly} = useGetStakingRewardsRate();
-  const {commission, delegatorBalance} = useGetDelegationNodeInfo({
+  const {commission} = useGetDelegationNodeInfo({
     validatorAddress: validator.owner_address,
     validator,
   });
+  const {delegatorBalance} = useGetNumberOfDelegators(validator.owner_address);
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 

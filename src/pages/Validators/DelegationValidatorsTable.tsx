@@ -25,6 +25,7 @@ import {
   ValidatorAddrCell,
   ValidatorCellProps,
 } from "./ValidatorsTable";
+import {useGetNumberOfDelegators} from "../../api/hooks/useGetNumberOfDelegators";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -217,10 +218,7 @@ function CommissionCell({validator}: ValidatorCellProps) {
 }
 
 function DelegatorCell({validator}: ValidatorCellProps) {
-  const {delegatorBalance} = useGetDelegationNodeInfo({
-    validatorAddress: validator.owner_address,
-    validator,
-  });
+  const {delegatorBalance} = useGetNumberOfDelegators(validator.owner_address);
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
       {delegatorBalance}
