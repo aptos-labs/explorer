@@ -19,6 +19,7 @@ export interface ValidatorData {
   liveness: number;
   rewards_growth: number;
   location_stats?: GeoData;
+  apt_rewards_distributed: number;
 }
 
 export interface GeoData {

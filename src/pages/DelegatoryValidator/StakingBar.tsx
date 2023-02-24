@@ -94,7 +94,9 @@ export default function StakingBar({
   const rewardsEarned = (
     <Stack direction="column" spacing={0.5}>
       <Typography sx={{fontWeight: 600}}>
-        <APTCurrencyValue amount={""} />
+        <APTCurrencyValue
+          amount={validator.apt_rewards_distributed.toString()}
+        />
       </Typography>
       <Stack direction="row" alignItems="center" spacing={0.5}>
         <Typography variant="body2" color={grey[450]}>
