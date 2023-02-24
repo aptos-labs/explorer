@@ -149,9 +149,10 @@ function RewardEarnedCell({
       ? stakePrincipals?.pendingInactivePrincipals
       : undefined;
 
-  const rewardsEarned = principalsAmount
-    ? Number(stake) - principalsAmount
-    : undefined;
+  const rewardsEarned =
+    principalsAmount && Number(stake) > principalsAmount
+      ? Number(stake) - principalsAmount
+      : undefined;
 
   return (
     <GeneralTableCell>
