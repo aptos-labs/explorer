@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Box, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
@@ -13,7 +13,9 @@ import {
   ValidatorData,
   useGetValidators,
 } from "../../api/hooks/useGetValidators";
-import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import CurrencyValue, {
+  APTCurrencyValue,
+} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useGlobalState} from "../../GlobalState";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
@@ -25,6 +27,12 @@ import {
   ValidatorAddrCell,
   ValidatorCellProps,
 } from "./ValidatorsTable";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {Button} from "@mui/material";
+import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import {Stack} from "@mui/material";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -172,6 +180,12 @@ function ValidatorHeaderCell({
           isTableTooltip={false}
         />
       );
+    case "actions":
+      return <GeneralTableHeaderCell header="Actions" isTableTooltip={false} />;
+    case "myDeposit":
+      return (
+        <GeneralTableHeaderCell header="My Deposit" isTableTooltip={false} />
+      );
     default:
       return assertNever(column);
   }
@@ -185,6 +199,8 @@ const DelegationValidatorCells = Object.freeze({
   delegator: DelegatorCell,
   rewardsEarned: RewardsEarnedCell,
   delegatedStakeAmount: DelegatedStakeAmountCell,
+  myDeposit: MyDepositCell,
+  actions: ActionsCell,
 });
 
 type Column = keyof typeof DelegationValidatorCells;
@@ -197,6 +213,8 @@ const DEFAULT_COLUMNS: Column[] = [
   "rewardsEarned",
   "rewardsPerf",
   "delegatedStakeAmount",
+  "myDeposit",
+  "actions",
 ];
 
 type ValidatorRowProps = {
@@ -239,7 +257,7 @@ function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
   });
 
   return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{textAlign: "center"}}>
       <Box>
         <APTCurrencyValue
           amount={delegatedStakeAmount ?? ""}
@@ -247,6 +265,53 @@ function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
         />
       </Box>
       <Box sx={{fontSize: 11, color: grey[450]}}>{networkPercentage}%</Box>
+    </GeneralTableCell>
+  );
+}
+
+function ActionsCell() {
+  return (
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      <Button>
+        <MoreVertIcon color="secondary" />
+      </Button>
+    </GeneralTableCell>
+  );
+}
+
+function MyDepositCell({validator}: ValidatorCellProps) {
+  const [totalDeposit, setTotalDeposit] = useState<Types.MoveValue>();
+  const {connected, account} = useWallet();
+  const {stakes} = useGetDelegatorStakeInfo(
+    account?.address!,
+    validator.owner_address,
+  );
+
+  useEffect(() => {
+    setTotalDeposit(
+      stakes.reduce(
+        (prev, current) =>
+          (current =
+            Number(current) + (prev && Number(prev) !== 0 ? Number(prev) : 0)),
+        0,
+      ),
+    );
+  }, [stakes, account, connected]);
+
+  return (
+    <GeneralTableCell sx={{textAlign: "center"}}>
+      {connected && Number(totalDeposit) !== 0 ? (
+        <Stack direction="row" spacing={1.5}>
+          <CheckCircleIcon color="success" fontSize="small" />
+          <CurrencyValue
+            amount={Number(totalDeposit).toString()}
+            currencyCode="APT"
+            fixedDecimalPlaces={0}
+          />
+        </Stack>
+      ) : (
+        "N/A"
+      )}
     </GeneralTableCell>
   );
 }
