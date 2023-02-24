@@ -33,7 +33,6 @@ import {Button} from "@mui/material";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
-import {CollectionsBookmarkOutlined} from "@mui/icons-material";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -298,7 +297,7 @@ function MyDepositCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "center"}}>
       {connected && Number(totalDeposit) !== 0 ? (
-        <Stack direction="row" spacing={0.5}>
+        <Stack direction="row" spacing={1.5}>
           <CheckCircleIcon color="success" fontSize="small" />
           <CurrencyValue
             amount={Number(totalDeposit).toString()}
