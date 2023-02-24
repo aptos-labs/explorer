@@ -31,7 +31,7 @@ export function useGetDelegationNodeInfo({
 }: DelegationNodeInfoProps): DelegationNodeInfoResponse {
   const [state, _] = useGlobalState();
   const {totalVotingPower} = useGetValidatorSet();
-  const {accountResource: delegationPool, isLoading} = useGetAccountResource(
+  const {data: delegationPool, isLoading} = useGetAccountResource(
     validatorAddress,
     `${DELEGATION_POOL_ADDRESS}::delegation_pool::DelegationPool`,
   );
