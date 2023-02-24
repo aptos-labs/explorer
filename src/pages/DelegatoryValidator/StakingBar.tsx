@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
-import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import {grey} from "../../themes/colors/aptosColorPalette";
@@ -38,7 +38,7 @@ export default function StakingBar({
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const {connected} = useWallet();
-  const {delegatedStakeAmount, networkPercentage, commission} =
+  const {delegatedStakeAmount, networkPercentage, commission, isQueryLoading} =
     useGetDelegationNodeInfo({
       validatorAddress: validator.owner_address,
       validator,
@@ -55,21 +55,16 @@ export default function StakingBar({
   };
 
   useEffect(() => {
-    if (
-      rewardsRateYearly &&
-      delegatedStakeAmount &&
-      networkPercentage &&
-      commission
-    ) {
+    if (!isQueryLoading) {
       setIsStakingBarSkeletonLoading(false);
     }
-  }, [rewardsRateYearly, delegatedStakeAmount, networkPercentage, commission]);
+  }, [isQueryLoading]);
 
   const stakeAmount = (
     <Stack direction="column" spacing={0.5}>
       <Typography sx={{fontWeight: 600}}>
         <APTCurrencyValue
-          amount={delegatedStakeAmount}
+          amount={delegatedStakeAmount ?? ""}
           fixedDecimalPlaces={0}
         />
       </Typography>
@@ -94,7 +89,9 @@ export default function StakingBar({
   const rewardsEarned = (
     <Stack direction="column" spacing={0.5}>
       <Typography sx={{fontWeight: 600}}>
-        <APTCurrencyValue amount={""} />
+        <APTCurrencyValue
+          amount={validator.apt_rewards_distributed.toString()}
+        />
       </Typography>
       <Stack direction="row" alignItems="center" spacing={0.5}>
         <Typography variant="body2" color={grey[450]}>
@@ -106,7 +103,7 @@ export default function StakingBar({
   );
 
   const stakeButton = (
-    <Button variant="primary" onClick={handleClickOpen}>
+    <Button variant="primary" onClick={handleClickOpen} sx={{maxWidth: "5%"}}>
       <ArrowCircleUpIcon sx={{marginRight: 1}} />
       <Typography>Stake</Typography>
     </Button>
@@ -158,17 +155,17 @@ export default function StakingBar({
   return isSkeletonLoading ? (
     StakingBarSkeleton()
   ) : (
-    <ContentBox>
+    <ContentBoxSpaceBetween>
       {isOnMobile ? stakingBarOnMobile : stakingBarOnWeb}
       {connected ? stakeDialog : walletConnectionDialog}
-    </ContentBox>
+    </ContentBoxSpaceBetween>
   );
 }
 
 function StakingBarSkeleton() {
   return (
-    <ContentBox>
+    <ContentBoxSpaceBetween>
       <Skeleton height={70}></Skeleton>
-    </ContentBox>
+    </ContentBoxSpaceBetween>
   );
 }

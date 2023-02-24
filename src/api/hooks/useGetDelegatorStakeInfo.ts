@@ -16,7 +16,7 @@ export function useGetDelegatorStakeInfo(
       setStakes(await getStake(client, delegatorAddress, validatorAddress));
     };
     fetchData();
-  }, [state.network_value]);
+  }, [state.network_value, delegatorAddress, validatorAddress]);
 
   return {stakes};
 }

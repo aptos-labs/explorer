@@ -14,7 +14,7 @@ function useGetStakingConfig() {
   const [rewardsRateDenominator, setRewardsRateDenominator] =
     useState<string>();
 
-  const {accountResource: configuration} = useGetAccountResource(
+  const {data: configuration} = useGetAccountResource(
     "0x1",
     "0x1::staking_config::StakingConfig",
   );
