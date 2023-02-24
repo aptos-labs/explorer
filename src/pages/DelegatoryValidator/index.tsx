@@ -21,7 +21,7 @@ export default function ValidatorPage() {
   const validator = validators.find(
     (validator) => validator.owner_address === addressHex.hex(),
   );
-  const {accountResource} = useGetAccountResource(
+  const {data: accountResource} = useGetAccountResource(
     addressHex.hex(),
     "0x1::stake::StakePool",
   );
@@ -57,10 +57,10 @@ export default function ValidatorPage() {
 
   return (
     <SkeletonTheme>
-      <Grid container spacing={1}>
+      <Grid container>
         <PageHeader />
         <Grid item xs={12}>
-          <Stack direction="column" spacing={4} marginTop={2}>
+          <Stack direction="column" spacing={4}>
             <ValidatorTitle
               address={address}
               isSkeletonLoading={isSkeletonLoading}

@@ -159,9 +159,7 @@ function RewardEarnedCell({
       rewardsEarned === undefined ? (
         "N/A"
       ) : (
-        <APTCurrencyValue
-          amount={rewardsEarned ? rewardsEarned.toString() : ""}
-        />
+        <APTCurrencyValue amount={rewardsEarned.toString()} />
       )}
     </GeneralTableCell>
   );
@@ -186,7 +184,7 @@ function ActionsCell({handleClickOpen, status}: MyDepositsSectionCellProps) {
         onClick={handleClickOpen}
         sx={{maxWidth: "10%", paddingY: 1}}
       >
-        <Typography>{getButtonTextFromStatus()}</Typography>
+        {getButtonTextFromStatus()}
       </Button>
     </GeneralTableCell>
   );
@@ -288,9 +286,13 @@ export default function MyDepositsSection({
     );
   }
 
+  const hasStakes = stakesInfo.some(
+    (stake: Types.MoveValue) => stake && Number(stake) !== 0,
+  );
+
   return isSkeletonLoading ? (
     <MyDepositSectionSkeleton />
-  ) : (
+  ) : hasStakes ? (
     <Stack>
       <Typography variant="h5" marginX={1}>
         My Deposits
@@ -314,7 +316,7 @@ export default function MyDepositsSection({
         </GeneralTableBody>
       </Table>
     </Stack>
-  );
+  ) : null;
 }
 
 function MyDepositSectionSkeleton() {

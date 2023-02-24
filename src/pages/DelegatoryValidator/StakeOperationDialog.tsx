@@ -17,7 +17,7 @@ import {
   REWARDS_LEARN_MORE_LINK,
   REWARDS_TOOLTIP_TEXT,
 } from "../Validators/Components/Staking";
-import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import useAmountInput from "./hooks/useAmountInput";
@@ -27,7 +27,6 @@ import TransactionSucceededDialog from "./TransactionSucceededDialog";
 import useSubmitStakeOperation, {
   StakeOperation,
 } from "../../api/hooks/useSubmitStakeOperation";
-import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {MIN_ADD_STAKE_AMOUNT, OCTA} from "../../constants";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
@@ -96,7 +95,7 @@ export default function StakeOperationDialog({
     if (isAmountValid) {
       await submitStakeOperation(
         validator.owner_address,
-        Number(amount),
+        Number((Number(amount) * OCTA).toFixed(0)),
         stakeOperation,
       );
     }
@@ -139,7 +138,7 @@ export default function StakeOperationDialog({
       <DialogContent>
         <Stack direction="column" spacing={2}>
           {renderAmountTextField(balance)}
-          <ContentBox>
+          <ContentBoxSpaceBetween>
             <ContentRowSpaceBetween
               title={"Operator Commission"}
               value={commission && `${commission}%`}
@@ -160,7 +159,7 @@ export default function StakeOperationDialog({
                 <TimestampValue timestamp={lockedUntilSecs?.toString()!} />
               }
             />
-          </ContentBox>
+          </ContentBoxSpaceBetween>
         </Stack>
       </DialogContent>
       <DialogActions>
@@ -205,13 +204,7 @@ export default function StakeOperationDialog({
                   key={idx}
                   variant="outlined"
                   onClick={() =>
-                    setAmount(
-                      (
-                        Number(
-                          getFormattedBalanceStr(Number(stake).toString()),
-                        ) * percentage
-                      ).toString(),
-                    )
+                    setAmount(((Number(stake) * percentage) / OCTA).toString())
                   }
                 >
                   {percentage === 1 ? "MAX" : `${percentage * 100}%`}

@@ -7,6 +7,7 @@ import StyledTabs from "../../components/StyledTabs";
 import {Network} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import PageHeader from "../layout/PageHeader";
+import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
 import ValidatorsMap from "./ValidatorsMap";
 import {ValidatorsTable} from "./ValidatorsTable";
@@ -23,13 +24,20 @@ export default function ValidatorsPage() {
     setOnDelegatory(onDelegatory);
   };
 
-  const validatorsTable =
-    state.network_name === Network.MAINNET ||
-    state.network_name === Network.TESTNET ? (
-      <ValidatorsTable onDelegatory={onDelegatory} />
-    ) : (
-      <OldValidatorsTable onDelegatory={onDelegatory} />
-    );
+  function getValidatorsTable() {
+    switch (state.network_name) {
+      case Network.MAINNET:
+        return <ValidatorsTable />;
+      case Network.TESTNET:
+        return onDelegatory ? (
+          <DelegationValidatorsTable />
+        ) : (
+          <ValidatorsTable />
+        );
+      case Network.DEVNET:
+        return <OldValidatorsTable onDelegatory={onDelegatory} />;
+    }
+  }
 
   const validatorsTabs = (
     <StyledTabs value={onDelegatory} onChange={handleTabChange}>
@@ -62,7 +70,7 @@ export default function ValidatorsPage() {
       </Typography>
       {state.network_name === "mainnet" && <ValidatorsMap />}
       {inDev && state.network_name === Network.TESTNET && validatorsTabs}
-      <Box sx={{width: "auto", overflowX: "auto"}}>{validatorsTable}</Box>
+      <Box sx={{width: "auto", overflowX: "auto"}}>{getValidatorsTable()}</Box>
     </Box>
   );
 }
