@@ -5,12 +5,7 @@ import {
   SelectChangeEvent,
   Typography,
 } from "@mui/material";
-import {
-  defaultFeatureName,
-  defaultNetworkName,
-  NetworkName,
-  networks,
-} from "../../constants";
+import {defaultFeatureName, NetworkName, networks} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import {useTheme} from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";

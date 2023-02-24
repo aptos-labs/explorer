@@ -17,7 +17,7 @@ import {
   REWARDS_LEARN_MORE_LINK,
   REWARDS_TOOLTIP_TEXT,
 } from "../Validators/Components/Staking";
-import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import useAmountInput from "./hooks/useAmountInput";
@@ -134,7 +134,7 @@ export default function StakeOperationDialog({
       <DialogContent>
         <Stack direction="column" spacing={2}>
           {renderAmountTextField()}
-          <ContentBox>
+          <ContentBoxSpaceBetween>
             <ContentRowSpaceBetween
               title={"Operator Commission"}
               value={commission && `${commission}%`}
@@ -155,7 +155,7 @@ export default function StakeOperationDialog({
                 <TimestampValue timestamp={lockedUntilSecs?.toString()!} />
               }
             />
-          </ContentBox>
+          </ContentBoxSpaceBetween>
         </Stack>
       </DialogContent>
       <DialogActions>

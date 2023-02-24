@@ -24,6 +24,9 @@ import LockIcon from "@mui/icons-material/Lock";
 import PendingIcon from "@mui/icons-material/Pending";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+import {ReactComponent as Counter1Logo} from "../../../assets/svg/stepper_counter_1.svg";
+import {ReactComponent as Counter2Logo} from "../../../assets/svg/stepper_counter_2.svg";
+import {ReactComponent as Counter3Logo} from "../../../assets/svg/stepper_counter_3.svg";
 
 export enum StakingStatus {
   "STAKED",
@@ -35,6 +38,7 @@ export interface StakingStatusInterface {
   label: string;
   description: string;
   icon: JSX.Element;
+  stepLabelIcon: React.FunctionComponent;
   sxLight: {
     color: string;
     backgroundColor: string;
@@ -50,6 +54,7 @@ export const STAKING_STATUS_STEPS: StakingStatusInterface[] = [
     label: STAKED_LABEL,
     description: STAKED_DESCRIPTION,
     icon: <LockIcon />,
+    stepLabelIcon: Counter1Logo,
     sxLight: {
       color: STAKED_TEXT_COLOR_LIGHT,
       backgroundColor: STAKED_BACKGROUND_COLOR_LIGHT,
@@ -63,6 +68,7 @@ export const STAKING_STATUS_STEPS: StakingStatusInterface[] = [
     label: WITHDRAW_PENDING_LABEL,
     description: WITHDRAW_PENDING_DESCRIPTION,
     icon: <PendingIcon />,
+    stepLabelIcon: Counter2Logo,
     sxLight: {
       color: WITHDRAW_PENDING_TEXT_COLOR_LIGHT,
       backgroundColor: WITHDRAW_PENDING_BACKGROUND_COLOR_LIGHT,
@@ -76,6 +82,7 @@ export const STAKING_STATUS_STEPS: StakingStatusInterface[] = [
     label: WITHDRAW_READY_LABEL,
     description: WITHDRAW_READY_DESCRIPTION,
     icon: <CheckCircleIcon />,
+    stepLabelIcon: Counter3Logo,
     sxLight: {
       color: WITHDRAW_READY_TEXT_COLOR_LIGHT,
       backgroundColor: WITHDRAW_READY_BACKGROUND_COLOR_LIGHT,
