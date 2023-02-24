@@ -42,11 +42,11 @@ export default function useGetSearchResults(input: string) {
       const isValidBlockHeightOrVer = isNumeric(searchText);
 
       const namePromise = getAddressFromName(searchText, state.network_name)
-        .then((address): SearchResult | null => {
+        .then(({address, primaryName}): SearchResult | null => {
           if (address) {
             return {
-              label: `Account ${truncateAddress(address)} | ${
-                searchText.endsWith(".apt") ? searchText : `${searchText}.apt`
+              label: `Account ${truncateAddress(address)}${
+                primaryName ? ` | ${primaryName}` : ``
               }`,
               to: `/account/${address}`,
             };
