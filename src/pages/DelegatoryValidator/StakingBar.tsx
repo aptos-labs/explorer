@@ -90,7 +90,8 @@ export default function StakingBar({
     <Stack direction="column" spacing={0.5}>
       <Typography sx={{fontWeight: 600}}>
         <APTCurrencyValue
-          amount={validator.apt_rewards_distributed.toString()}
+          amount={Number(validator.apt_rewards_distributed).toFixed(2)}
+          decimals={0}
         />
       </Typography>
       <Stack direction="row" alignItems="center" spacing={0.5}>
