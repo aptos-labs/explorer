@@ -27,6 +27,7 @@ import {
   ValidatorAddrCell,
   ValidatorCellProps,
 } from "./ValidatorsTable";
+import {useGetNumberOfDelegators} from "../../api/hooks/useGetNumberOfDelegators";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Button} from "@mui/material";
@@ -234,10 +235,11 @@ function CommissionCell({validator}: ValidatorCellProps) {
   );
 }
 
-function DelegatorCell() {
+function DelegatorCell({validator}: ValidatorCellProps) {
+  const {delegatorBalance} = useGetNumberOfDelegators(validator.owner_address);
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
-      N/A
+      {delegatorBalance}
     </GeneralTableCell>
   );
 }

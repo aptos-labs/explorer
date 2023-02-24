@@ -17,6 +17,7 @@ import {
   REWARDS_TOOLTIP_TEXT,
 } from "../Validators/Components/Staking";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
+import {useGetNumberOfDelegators} from "../../api/hooks/useGetNumberOfDelegators";
 
 type ValidatorDetailProps = {
   validator: ValidatorData;
@@ -34,6 +35,7 @@ export default function ValidatorDetailCard({
     validatorAddress: validator.owner_address,
     validator,
   });
+  const {delegatorBalance} = useGetNumberOfDelegators(validator.owner_address);
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
@@ -57,7 +59,7 @@ export default function ValidatorDetailCard({
         />
         <ContentRowSpaceBetween
           title="Number of Delegators"
-          value={null}
+          value={delegatorBalance}
           tooltip={
             <StyledLearnMoreTooltip text="Number of owner accounts who have delegated stake to this stake pool" />
           }
