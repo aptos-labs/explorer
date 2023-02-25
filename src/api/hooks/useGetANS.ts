@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {NetworkName} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
+import {fetchJsonResponse} from "../../utils";
 
 function getFetchNameUrl(
   network: NetworkName,
@@ -24,16 +25,14 @@ export function useGetNameFromAddress(address: string) {
     const primaryNameUrl = getFetchNameUrl(state.network_name, address, true);
     if (primaryNameUrl !== undefined) {
       const fetchData = async () => {
-        const primaryNameResponse = await fetch(primaryNameUrl);
-        const {name: primaryName} = await primaryNameResponse.json();
+        const {name: primaryName} = await fetchJsonResponse(primaryNameUrl);
 
         if (primaryName) {
           setName(primaryName);
         } else {
           const nameUrl =
             getFetchNameUrl(state.network_name, address, false) ?? "";
-          const nameResponse = await fetch(nameUrl);
-          const {name} = await nameResponse.json();
+          const {name} = await fetchJsonResponse(nameUrl);
           setName(name);
         }
       };
@@ -68,8 +67,7 @@ export async function getAddressFromName(
   }
 
   try {
-    const addressResponse = await fetch(addressUrl);
-    const {address} = await addressResponse.json();
+    const {address} = await fetchJsonResponse(addressUrl);
 
     const primaryNameUrl = getFetchNameUrl(network, address, true);
     const primaryNameResponse = await fetch(primaryNameUrl ?? "");
