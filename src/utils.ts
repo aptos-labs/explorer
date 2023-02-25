@@ -72,3 +72,8 @@ export function getLocalStorageWithExpiry(key: string) {
 
   return item.value;
 }
+
+export async function fetchJsonResponse(url: string) {
+  const response = await fetch(url);
+  return await response.json();
+}

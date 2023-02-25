@@ -1,26 +1,40 @@
 import {useEffect, useState} from "react";
 import {NetworkName} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
+import {fetchJsonResponse} from "../../utils";
 
-function getFetchNameUrl(network: NetworkName, address: string) {
+function getFetchNameUrl(
+  network: NetworkName,
+  address: string,
+  isPrimary: boolean,
+) {
   if (network !== "testnet" && network !== "mainnet") {
     return undefined;
   }
 
-  return `https://www.aptosnames.com/api/${network}/v1/name/${address}`;
+  return isPrimary
+    ? `https://www.aptosnames.com/api/${network}/v1/primary-name/${address}`
+    : `https://www.aptosnames.com/api/${network}/v1/name/${address}`;
 }
 
 export function useGetNameFromAddress(address: string) {
   const [state, _] = useGlobalState();
   const [name, setName] = useState<string | undefined>();
-  const url = getFetchNameUrl(state.network_name, address);
 
   useEffect(() => {
-    if (url !== undefined) {
+    const primaryNameUrl = getFetchNameUrl(state.network_name, address, true);
+    if (primaryNameUrl !== undefined) {
       const fetchData = async () => {
-        const response = await fetch(url);
-        const {name} = await response.json();
-        setName(name);
+        const {name: primaryName} = await fetchJsonResponse(primaryNameUrl);
+
+        if (primaryName) {
+          setName(primaryName);
+        } else {
+          const nameUrl =
+            getFetchNameUrl(state.network_name, address, false) ?? "";
+          const {name} = await fetchJsonResponse(nameUrl);
+          setName(name);
+        }
       };
 
       fetchData().catch((error) => {
@@ -43,28 +57,24 @@ function getFetchAddressUrl(network: NetworkName, name: string) {
 export async function getAddressFromName(
   name: string,
   network: NetworkName,
-): Promise<string | undefined> {
+): Promise<{address: string | undefined; primaryName: string | undefined}> {
   const searchableName = name.endsWith(".apt") ? name.slice(0, -4) : name;
   const addressUrl = getFetchAddressUrl(network, searchableName);
 
+  const notFoundResult = {address: undefined, primaryName: undefined};
   if (addressUrl === undefined) {
-    return undefined;
+    return notFoundResult;
   }
 
   try {
-    const addressResponse = await fetch(addressUrl);
-    const {address} = await addressResponse.json();
+    const {address} = await fetchJsonResponse(addressUrl);
 
-    const primaryNameUrl = getFetchNameUrl(network, address);
+    const primaryNameUrl = getFetchNameUrl(network, address, true);
     const primaryNameResponse = await fetch(primaryNameUrl ?? "");
     const {name: primaryName} = await primaryNameResponse.json();
 
-    if (primaryName === searchableName) {
-      return address;
-    } else {
-      return undefined;
-    }
+    return {address: address, primaryName: primaryName};
   } catch {
-    return undefined;
+    return notFoundResult;
   }
 }
