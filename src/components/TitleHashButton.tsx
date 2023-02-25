@@ -134,7 +134,7 @@ function Name({address}: {address: string}) {
           target="_blank"
           underline="none"
         >
-          {name}
+          {`${name}.apt`}
         </Link>
       </Stack>
     </Box>

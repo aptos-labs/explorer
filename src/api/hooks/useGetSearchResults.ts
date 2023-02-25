@@ -46,7 +46,7 @@ export default function useGetSearchResults(input: string) {
           if (address) {
             return {
               label: `Account ${truncateAddress(address)}${
-                primaryName ? ` | ${primaryName}` : ``
+                primaryName ? ` | ${primaryName}.apt` : ``
               }`,
               to: `/account/${address}`,
             };
