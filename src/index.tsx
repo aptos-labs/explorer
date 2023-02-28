@@ -15,6 +15,19 @@ import * as Sentry from "@sentry/react";
 import {BrowserTracing} from "@sentry/tracing";
 
 import ReactGA from "react-ga4";
+import Analytics from "analytics";
+import googleTagManager from "@analytics/google-tag-manager";
+
+export const GTMAnalytics = Analytics({
+  app: "explorer",
+  plugins: [
+    googleTagManager({
+      containerId: "GTM-ND9VTF4",
+    }),
+  ],
+});
+
+console.log(googleTagManager);
 
 ReactGA.initialize(process.env.GA_TRACKING_ID || "G-8XH7V50XK7");
 
