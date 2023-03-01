@@ -27,8 +27,6 @@ export const GTMAnalytics = Analytics({
   ],
 });
 
-console.log(googleTagManager);
-
 ReactGA.initialize(process.env.GA_TRACKING_ID || "G-8XH7V50XK7");
 
 // TODO: redirect to the new explorer domain on the domain host
