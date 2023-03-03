@@ -28,7 +28,6 @@
     "date-fns": "^2.29.1",
     "fewcha-plugin-wallet-adapter": "^0.1.1",
     "graphql": "^16.6.0",
-    "highlight.js": "^11.7.0",
     "js-sha3": "^0.8.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
@@ -48,6 +47,7 @@
     "react-router-dom": "^6.2.1",
     "react-scripts": "latest",
     "react-simple-maps": "^3.0.0",
+    "react-syntax-highlighter": "^15.5.0",
     "recharts": "^2.1.9",
     "ts-results": "^3.3.0",
     "typescript": "latest"
@@ -72,6 +72,7 @@
     ]
   },
   "devDependencies": {
-    "@types/pako": "^2.0.0"
+    "@types/pako": "^2.0.0",
+    "@types/react-syntax-highlighter": "^15.5.6"
   }
 }

@@ -2,8 +2,11 @@ import {Types} from "aptos";
 import {Box, Grid, Stack, Typography, useTheme} from "@mui/material";
 import React from "react";
 import {orderBy} from "lodash";
-import "highlight.js/styles/github.css";
-import hljs from "highlight.js";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import {
+  solarizedLight,
+  solarizedDark,
+} from "react-syntax-highlighter/dist/esm/styles/hljs";
 import Error from "../Error";
 import {useGlobalState} from "../../../GlobalState";
 import {ResponseError} from "../../../api/client";
@@ -201,10 +204,6 @@ function ModuleNameOption({
 }
 
 function ModuleContent({address, moduleName, sourceCode}: ModuleContentProps) {
-  React.useEffect(() => {
-    hljs.highlightAll();
-  });
-
   return (
     <Stack direction="column" spacing={2} padding={"24px"}>
       <Typography fontSize={28} fontWeight={700}>
@@ -217,6 +216,8 @@ function ModuleContent({address, moduleName, sourceCode}: ModuleContentProps) {
 }
 
 function Code({sourceCode}: {sourceCode: string}) {
+  const theme = useTheme();
+  const codeString = transformCode(sourceCode);
   return (
     <Box>
       <Typography fontSize={24} fontWeight={700} marginY={"16px"}>
@@ -226,13 +227,17 @@ function Code({sourceCode}: {sourceCode: string}) {
         sx={{
           maxHeight: "500px",
           overflowY: "auto",
-          border: "1px solid",
           borderRadius: 1,
         }}
       >
-        <pre>
-          <code className="language-rust">{transformCode(sourceCode)}</code>
-        </pre>
+        <SyntaxHighlighter
+          language="rust"
+          style={
+            theme.palette.mode === "light" ? solarizedLight : solarizedDark
+          }
+        >
+          {codeString}
+        </SyntaxHighlighter>
       </Box>
     </Box>
   );
