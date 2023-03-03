@@ -5,6 +5,7 @@ import {
   getBlockByVersion,
   getTransaction,
 } from "../../api";
+import {GTMEvents} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import {
   isNumeric,
@@ -13,6 +14,7 @@ import {
   truncateAddress,
 } from "../../pages/utils";
 import {getAddressFromName} from "./useGetANS";
+import {sendToGTM} from "./useGoogleTagManager";
 
 export type SearchResult = {
   label: string;
@@ -29,6 +31,7 @@ export default function useGetSearchResults(input: string) {
   const [state, _setState] = useGlobalState();
 
   const searchText = input.trim();
+  let searchResultGTM: string;
 
   useEffect(() => {
     if (searchText === "") {
@@ -37,6 +40,10 @@ export default function useGetSearchResults(input: string) {
     }
 
     const fetchData = async () => {
+      const searchPerformanceStart = GTMEvents.SEARCH_STATS + " start";
+      const searchPerformanceEnd = GTMEvents.SEARCH_STATS + " end";
+      window.performance.mark(searchPerformanceStart);
+
       const isValidAccountAddr = isValidAccountAddress(searchText);
       const isValidTxnHashOrVer = isValidTxnHashOrVersion(searchText);
       const isValidBlockHeightOrVer = isNumeric(searchText);
@@ -138,6 +145,20 @@ export default function useGetSearchResults(input: string) {
         (result): result is SearchResult => !!result,
       );
 
+      window.performance.mark(searchPerformanceEnd);
+      sendToGTM({
+        dataLayer: {
+          event: GTMEvents.SEARCH_STATS,
+          network: state.network_name,
+          searchText: searchText,
+          searchResult: results.length === 0 ? "notFound" : "success",
+          duration: window.performance.measure(
+            GTMEvents.SEARCH_STATS,
+            searchPerformanceStart,
+            searchPerformanceEnd,
+          ).duration,
+        },
+      });
       if (results.length === 0) {
         results.push(NotFoundResult);
       }
