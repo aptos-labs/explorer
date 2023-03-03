@@ -171,14 +171,7 @@ function ViewCode({address}: {address: string}): JSX.Element {
 
   return (
     <Grid container spacing={2}>
-      <Grid
-        item
-        md={3}
-        sx={{
-          maxHeight: "500px",
-          overflowY: "auto",
-        }}
-      >
+      <Grid item md={3}>
         <ModuleSidebar
           moduleNames={modules.map((m) => m.name)}
           selectedModuleIndex={selectedModuleIndex}
@@ -206,14 +199,21 @@ function ModuleSidebar({
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Modules
       </Typography>
-      {moduleNames.map((moduleName, i) => (
-        <ModuleNameOption
-          key={i}
-          handleClick={() => setSelectedModuleIndex(i)}
-          selected={i === selectedModuleIndex}
-          name={moduleName}
-        />
-      ))}
+      <Box
+        sx={{
+          maxHeight: "500px",
+          overflowY: "auto",
+        }}
+      >
+        {moduleNames.map((moduleName, i) => (
+          <ModuleNameOption
+            key={i}
+            handleClick={() => setSelectedModuleIndex(i)}
+            selected={i === selectedModuleIndex}
+            name={moduleName}
+          />
+        ))}
+      </Box>
     </Box>
   );
 }
