@@ -16,7 +16,6 @@ import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
@@ -29,17 +28,12 @@ import StakingStatusIcon, {
   STAKING_STATUS_STEPS,
 } from "./Components/StakingStatusIcon";
 import StakeOperationDialog from "./StakeOperationDialog";
-import {
-  getLockedUtilSecs,
-  getStakeOperationPrincipals,
-  StakePrincipals,
-} from "./utils";
+import {getStakeOperationPrincipals, StakePrincipals} from "./utils";
 import WalletConnectionDialog from "./WalletConnectionDialog";
 
 const MyDepositsCells = Object.freeze({
   amount: AmountCell,
   status: StatusCell,
-  unlockDate: UnlockDateCell,
   rewardEarned: RewardEarnedCell,
   actions: ActionsCell,
 });
@@ -55,6 +49,7 @@ function MyDepositsSectionHeaderCell({column}: {column: Column}) {
           tooltip={
             <StyledLearnMoreTooltip text="Estimated current total amount including principals and rewards earned" />
           }
+          sx={{paddingLeft: 3}}
         />
       );
     case "status":
@@ -62,15 +57,7 @@ function MyDepositsSectionHeaderCell({column}: {column: Column}) {
         <GeneralTableHeaderCell
           header="STATUS"
           tooltip={<MyDepositsStatusTooltip steps={STAKING_STATUS_STEPS} />}
-        />
-      );
-    case "unlockDate":
-      return (
-        <GeneralTableHeaderCell
-          header="UNLOCK DATE"
-          tooltip={
-            <StyledLearnMoreTooltip text="When tokens will be available for removal from the stake pool" />
-          }
+          textAlignRight
         />
       );
     case "rewardEarned":
@@ -80,11 +67,18 @@ function MyDepositsSectionHeaderCell({column}: {column: Column}) {
           tooltip={
             <StyledLearnMoreTooltip text="Estimated rewards earned in the current staking status" />
           }
+          textAlignRight
         />
       );
     case "actions":
       // TODO(jill): add a good tooltip on actions delegators can take
-      return <GeneralTableHeaderCell textAlignRight={true} header="ACTIONS" />;
+      return (
+        <GeneralTableHeaderCell
+          textAlignRight={true}
+          header="ACTIONS"
+          sx={{paddingRight: 3}}
+        />
+      );
     default:
       return assertNever(column);
   }
@@ -93,17 +87,11 @@ function MyDepositsSectionHeaderCell({column}: {column: Column}) {
 const DEFAULT_COLUMNS: Column[] = [
   "amount",
   "status",
-  "unlockDate",
   "rewardEarned",
   "actions",
 ];
 
-const DEFAULT_COLUMNS_MOBILE: Column[] = [
-  "amount",
-  "status",
-  "unlockDate",
-  "rewardEarned",
-];
+const DEFAULT_COLUMNS_MOBILE: Column[] = ["amount", "status", "rewardEarned"];
 
 type MyDepositsSectionCellProps = {
   handleClickOpen: () => void;
@@ -115,7 +103,7 @@ type MyDepositsSectionCellProps = {
 
 function AmountCell({stake}: MyDepositsSectionCellProps) {
   return (
-    <GeneralTableCell>
+    <GeneralTableCell sx={{paddingLeft: 3}}>
       <APTCurrencyValue amount={stake.toString()} />
     </GeneralTableCell>
   );
@@ -123,18 +111,6 @@ function AmountCell({stake}: MyDepositsSectionCellProps) {
 
 function StatusCell({status}: MyDepositsSectionCellProps) {
   return <StakingStatusIcon status={status} />;
-}
-
-function UnlockDateCell({accountResource}: MyDepositsSectionCellProps) {
-  const lockedUntilSecs = getLockedUtilSecs(accountResource);
-  if (!lockedUntilSecs) {
-    return null;
-  }
-  return (
-    <GeneralTableCell>
-      <TimestampValue timestamp={lockedUntilSecs?.toString()!} />
-    </GeneralTableCell>
-  );
 }
 
 function RewardEarnedCell({
@@ -155,10 +131,10 @@ function RewardEarnedCell({
       : undefined;
 
   return (
-    <GeneralTableCell>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       {status === StakingStatus.WITHDRAW_READY ||
       rewardsEarned === undefined ? (
-        "N/A"
+        "In Progress"
       ) : (
         <APTCurrencyValue amount={rewardsEarned.toString()} />
       )}
@@ -178,14 +154,14 @@ function ActionsCell({handleClickOpen, status}: MyDepositsSectionCellProps) {
     }
   }
   return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
+    <GeneralTableCell sx={{textAlign: "right", paddingRight: 3}}>
       <Button
         variant="primary"
         size="small"
         onClick={handleClickOpen}
-        sx={{maxWidth: "10%", paddingY: 1}}
+        sx={{width: "30px", maxHeight: "40px"}}
       >
-        {getButtonTextFromStatus()}
+        <Typography>{getButtonTextFromStatus()}</Typography>
       </Button>
     </GeneralTableCell>
   );

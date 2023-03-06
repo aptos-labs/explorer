@@ -51,7 +51,9 @@ export default function TransactionSucceededDialog({
         return (
           <Box>
             <Typography variant="body2" sx={{fontSize: 12}}>
-              {`You’ve successfully unlocked ${amount} APT`}
+              {"You’ve successfully unlocked "}
+              <text style={{fontWeight: 600}}>{amount}</text>
+              {" APT"}
             </Typography>
           </Box>
         );
@@ -59,7 +61,9 @@ export default function TransactionSucceededDialog({
         return (
           <Box>
             <Typography variant="body2" sx={{fontSize: 12}}>
-              {`You’ve successfully withdrawn ${amount} APT`}
+              {"You’ve successfully withdrawn "}
+              <text style={{fontWeight: 600}}>{amount}</text>
+              {" APT"}
             </Typography>
           </Box>
         );
@@ -71,7 +75,9 @@ export default function TransactionSucceededDialog({
               Transaction is in progress.
             </Typography>
             <Typography variant="body2" sx={{fontSize: 12}}>
-              {`Soon you will see your deposit of ${amount} APT in the staking pool.`}
+              {"Soon you will see your deposit of "}
+              <text style={{fontWeight: 600}}>{amount}</text>
+              {" APT in the staking pool."}
             </Typography>
           </Box>
         );
@@ -123,7 +129,8 @@ export default function TransactionSucceededDialog({
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={() => navigate(`/txn/${transactionHash}`)}
+          href={`/txn/${transactionHash}`}
+          target="_blank"
           variant="primary"
           fullWidth
           sx={{marginX: 3}}

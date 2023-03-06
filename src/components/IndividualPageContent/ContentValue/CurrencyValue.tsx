@@ -45,7 +45,7 @@ export function getFormattedBalanceStr(
     rightSide = rightSide.slice(0, fixedDecimalPlaces - rightSide.length);
   }
 
-  if (rightSide.length === 0) {
+  if (rightSide.length === 0 || rightSide === "0") {
     return leftSide;
   }
 
