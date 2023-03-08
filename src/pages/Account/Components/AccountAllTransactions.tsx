@@ -8,6 +8,7 @@ import {
   useGetAccountAllTransactionVersions,
 } from "../../../api/hooks/useGetAccountAllTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {Statsig, useExperiment} from "statsig-react";
 
 const LIMIT = 25;
 
@@ -26,6 +27,12 @@ function RenderPagination({
   ) => {
     searchParams.set("page", newPageNum.toString());
     setSearchParams(searchParams);
+
+    // logging
+    Statsig.logEvent("go_to_new_page", newPageNum, {
+      current_page_num: currentPage.toString(),
+      new_page_num: newPageNum.toString(),
+    });
   };
 
   return (
@@ -47,17 +54,23 @@ function RenderPagination({
 type AccountAllTransactionsWithPaginationProps = {
   address: string;
   numPages: number;
+  countPerPage: number;
 };
 
 export function AccountAllTransactionsWithPagination({
   address,
   numPages,
+  countPerPage,
 }: AccountAllTransactionsWithPaginationProps) {
   const [searchParams, _setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") ?? "1");
-  const offset = (currentPage - 1) * LIMIT;
+  const offset = (currentPage - 1) * countPerPage;
 
-  const versions = useGetAccountAllTransactionVersions(address, LIMIT, offset);
+  const versions = useGetAccountAllTransactionVersions(
+    address,
+    countPerPage,
+    offset,
+  );
 
   return (
     <>
@@ -83,17 +96,23 @@ export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
   const txnCount = useGetAccountAllTransactionCount(address);
+  const {config: paginationExperience} = useExperiment(
+    "account_transactions_pagination",
+  );
 
   if (txnCount === undefined) {
     return <EmptyTabContent />;
   }
 
-  const numPages = Math.ceil(txnCount / LIMIT);
+  const countPerPage = paginationExperience.get("count_per_page", LIMIT);
+
+  const numPages = Math.ceil(txnCount / countPerPage);
 
   return (
     <AccountAllTransactionsWithPagination
       address={address}
       numPages={numPages}
+      countPerPage={countPerPage}
     />
   );
 }

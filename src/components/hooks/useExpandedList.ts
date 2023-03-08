@@ -1,9 +1,13 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 const useExpandedList = (count: number) => {
   const [expandedList, setExpandedList] = useState<boolean[]>(
     new Array(count).fill(true),
   );
+
+  useEffect(() => {
+    setExpandedList(new Array(count).fill(true));
+  }, [count]);
 
   const toggleExpandedAt = (i: number) => {
     const expandedListCopy = [...expandedList];

@@ -50,6 +50,7 @@
     "react-simple-maps": "^3.0.0",
     "react-syntax-highlighter": "^15.5.0",
     "recharts": "^2.4.3",
+    "statsig-react": "^1.23.1",
     "ts-results": "^3.3.0",
     "typescript": "latest"
   },
