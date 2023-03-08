@@ -252,28 +252,34 @@ function ModuleContent({address, moduleName, sourceCode}: ModuleContentProps) {
 
 function Code({sourceCode}: {sourceCode: string}) {
   const theme = useTheme();
-  const codeString = transformCode(sourceCode);
   return (
     <Box>
       <Typography fontSize={24} fontWeight={700} marginY={"16px"}>
         Code
       </Typography>
-      <Box
-        sx={{
-          maxHeight: "500px",
-          overflowY: "auto",
-          borderRadius: 1,
-        }}
-      >
-        <SyntaxHighlighter
-          language="rust"
-          style={
-            theme.palette.mode === "light" ? solarizedLight : solarizedDark
-          }
+      {sourceCode === "0x" ? (
+        <Box>
+          Unfortunately, the source code cannot be shown because the package
+          publisher has chosen not to make it available
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            maxHeight: "500px",
+            overflowY: "auto",
+            borderRadius: 1,
+          }}
         >
-          {codeString}
-        </SyntaxHighlighter>
-      </Box>
+          <SyntaxHighlighter
+            language="rust"
+            style={
+              theme.palette.mode === "light" ? solarizedLight : solarizedDark
+            }
+          >
+            {transformCode(sourceCode)}
+          </SyntaxHighlighter>
+        </Box>
+      )}
     </Box>
   );
 }
