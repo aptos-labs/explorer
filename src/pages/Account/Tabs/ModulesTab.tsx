@@ -8,10 +8,6 @@ import {
   solarizedDark,
 } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import Error from "../Error";
-import {useGlobalState} from "../../../GlobalState";
-import {ResponseError} from "../../../api/client";
-import {useQuery} from "react-query";
-import {getAccountModules, getAccountModule} from "../../../api";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
@@ -24,6 +20,8 @@ import {transformCode} from "../../../utils";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import StyledTabs from "../../../components/StyledTabs";
 import StyledTab from "../../../components/StyledTab";
+import {useGetAccountModules} from "../../../api/hooks/useGetAccountModules";
+import {useGetAccountModule} from "../../../api/hooks/useGetAccountModule";
 
 type PackageMetadata = {
   name: string;
@@ -55,15 +53,7 @@ interface ModuleContentProps {
 }
 
 function ModulesContent({address}: {address: string}) {
-  const [state, _] = useGlobalState();
-
-  const {isLoading, data, error} = useQuery<
-    Array<Types.MoveModuleBytecode>,
-    ResponseError
-  >(["accountModules", {address}, state.network_value], () =>
-    getAccountModules({address}, state.network_value),
-  );
-
+  const {data, isLoading, error} = useGetAccountModules(address);
   const modules: Types.MoveModuleBytecode[] = data ?? [];
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(modules.length);
@@ -289,16 +279,11 @@ function Code({sourceCode}: {sourceCode: string}) {
 }
 
 function ABI({address, moduleName}: {address: string; moduleName: string}) {
-  const [state, _] = useGlobalState();
-
   const {
-    isLoading,
     data: module,
+    isLoading,
     error,
-  } = useQuery<Types.MoveModuleBytecode, ResponseError>(
-    ["accountModule", {address, moduleName}, state.network_value],
-    () => getAccountModule({address, moduleName}, state.network_value),
-  );
+  } = useGetAccountModule(address, moduleName);
 
   if (isLoading) {
     return null;
