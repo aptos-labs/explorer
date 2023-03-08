@@ -17,7 +17,7 @@ import {BrowserTracing} from "@sentry/tracing";
 
 import ReactGA from "react-ga4";
 import {initGTM} from "./api/hooks/useGoogleTagManager";
-import {GTMEvents} from "./constants";
+import {GTMEvents} from "./dataConstants";
 
 initGTM({
   events: {

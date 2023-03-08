@@ -5,7 +5,7 @@ import {
   getBlockByVersion,
   getTransaction,
 } from "../../api";
-import {GTMEvents} from "../../constants";
+import {GTMEvents} from "../../dataConstants";
 import {useGlobalState} from "../../GlobalState";
 import {
   isNumeric,
@@ -31,7 +31,6 @@ export default function useGetSearchResults(input: string) {
   const [state, _setState] = useGlobalState();
 
   const searchText = input.trim();
-  let searchResultGTM: string;
 
   useEffect(() => {
     if (searchText === "") {

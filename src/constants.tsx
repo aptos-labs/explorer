@@ -76,12 +76,3 @@ export const WHILTELISTED_TESTNET_DELEGATION_NODES = [
   "0x5df905f817adf39293c596e83512ab8a9dc5a19980e11bd4ce44b6e749d33a0d",
   "0xa396d898018d6892b148789ed8a95e0bd6af05e0974cef3d5a1197ee2fa4519e",
 ];
-
-/**
- * Google Tag Manager Events
- */
-
-export enum GTMEvents {
-  WALLET_CONNECTION = "walletConnection",
-  SEARCH_STATS = "searchStats",
-}
