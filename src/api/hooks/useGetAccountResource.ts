@@ -9,7 +9,8 @@ export function useGetAccountResource(
   resource: string,
 ): UseQueryResult<Types.MoveResource, ResponseError> {
   const [state, _setState] = useGlobalState();
-  const accountResourceResult = useQuery<Types.MoveResource, ResponseError>(
+
+  return useQuery<Types.MoveResource, ResponseError>(
     ["accountResource", {address, resource}, state.network_value],
     () =>
       getAccountResource(
@@ -18,5 +19,4 @@ export function useGetAccountResource(
       ),
     {refetchOnWindowFocus: false},
   );
-  return accountResourceResult;
 }
