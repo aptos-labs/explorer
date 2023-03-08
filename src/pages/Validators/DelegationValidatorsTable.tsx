@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Box, Table, TableHead, TableRow} from "@mui/material";
+import {alpha, Box, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -15,7 +15,7 @@ import {
 import CurrencyValue, {
   APTCurrencyValue,
 } from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {aptosColor, grey, primary} from "../../themes/colors/aptosColorPalette";
 import {useGlobalState} from "../../GlobalState";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
@@ -26,7 +26,7 @@ import {
   ValidatorCellProps,
 } from "./ValidatorsTable";
 import {useGetNumberOfDelegators} from "../../api/hooks/useGetNumberOfDelegators";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Button} from "@mui/material";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
@@ -166,12 +166,12 @@ function ValidatorHeaderCell({
           isTableTooltip={false}
         />
       );
-    case "actions":
+    case "view":
       return (
         <GeneralTableHeaderCell
-          header="Actions"
+          header="View"
           isTableTooltip={false}
-          sx={{textAlign: "right"}}
+          sx={{paddingLeft: 3}}
         />
       );
     case "myDeposit":
@@ -191,12 +191,13 @@ const DelegationValidatorCells = Object.freeze({
   rewardsEarned: RewardsEarnedCell,
   delegatedAmount: DelegatedAmountCell,
   myDeposit: MyDepositCell,
-  actions: ActionsCell,
+  view: ViewCell,
 });
 
 type Column = keyof typeof DelegationValidatorCells;
 
 const DEFAULT_COLUMNS: Column[] = [
+  "view",
   "addr",
   "operatorAddr",
   "delegatedAmount",
@@ -204,7 +205,6 @@ const DEFAULT_COLUMNS: Column[] = [
   "delegator",
   "rewardsEarned",
   "myDeposit",
-  "actions",
 ];
 
 type ValidatorRowProps = {
@@ -263,11 +263,19 @@ function DelegatedAmountCell({validator}: ValidatorCellProps) {
   );
 }
 
-function ActionsCell() {
+function ViewCell() {
   return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
-      <Button>
-        <MoreVertIcon color="secondary" />
+    <GeneralTableCell>
+      <Button
+        sx={{
+          backgroundColor: aptosColor,
+          "&:hover": {
+            backgroundColor: alpha(primary["500"], 1),
+          },
+          width: "5px",
+        }}
+      >
+        <VisibilityOutlinedIcon sx={{color: "black"}} />
       </Button>
     </GeneralTableCell>
   );
@@ -296,7 +304,7 @@ function MyDepositCell({validator}: ValidatorCellProps) {
     <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
       {connected && Number(totalDeposit) !== 0 ? (
         <Stack direction="row" spacing={1.5}>
-          <CheckCircleIcon color="success" fontSize="small" />
+          <CheckCircleIcon sx={{color: aptosColor}} fontSize="small" />
           <CurrencyValue
             amount={Number(totalDeposit).toString()}
             currencyCode="APT"
@@ -315,10 +323,7 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
   const navigate = useNavigate();
 
   const rowClick = (address: Types.Address) => {
-    // TODO(jill) find long term to persist the url params
-    navigate(
-      inDev ? `/validator/${address}?feature=dev` : `/validator/${address}`,
-    );
+    navigate(`/validator/${address}`);
   };
 
   return (

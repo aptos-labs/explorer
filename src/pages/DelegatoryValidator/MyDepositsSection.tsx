@@ -132,8 +132,9 @@ function RewardEarnedCell({
 
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {status === StakingStatus.WITHDRAW_READY ||
-      rewardsEarned === undefined ? (
+      {status === StakingStatus.WITHDRAW_READY ? (
+        "N/A"
+      ) : rewardsEarned === undefined ? (
         "In Progress"
       ) : (
         <APTCurrencyValue amount={rewardsEarned.toString()} />
