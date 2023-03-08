@@ -103,7 +103,7 @@ export default function StakingStatusIcon({status}: StakingStatusIconProps) {
 
   const step = STAKING_STATUS_STEPS[status];
   return (
-    <GeneralTableCell>
+    <GeneralTableCell sx={{textAlign: "right"}}>
       <Chip
         icon={step.icon}
         label={step.label}

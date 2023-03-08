@@ -104,7 +104,11 @@ export default function StakingBar({
   );
 
   const stakeButton = (
-    <Button variant="primary" onClick={handleClickOpen} sx={{maxWidth: "5%"}}>
+    <Button
+      variant="primary"
+      onClick={handleClickOpen}
+      sx={{width: "10px", maxHeight: "40px"}}
+    >
       <ArrowCircleUpIcon sx={{marginRight: 1}} />
       <Typography>Stake</Typography>
     </Button>
