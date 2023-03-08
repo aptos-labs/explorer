@@ -1,6 +1,6 @@
 import {Types} from "aptos";
 import {Box, Grid, Stack, Typography, useTheme} from "@mui/material";
-import React from "react";
+import React, {useState} from "react";
 import {orderBy} from "lodash";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import {
@@ -22,6 +22,8 @@ import {useGetAccountResource} from "../../../api/hooks/useGetAccountResource";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {transformCode} from "../../../utils";
 import {grey} from "../../../themes/colors/aptosColorPalette";
+import StyledTabs from "../../../components/StyledTabs";
+import StyledTab from "../../../components/StyledTab";
 
 type PackageMetadata = {
   name: string;
@@ -30,6 +32,9 @@ type PackageMetadata = {
     source: string;
   }[];
 };
+
+const CONTRACT_ACTIONS = ["View code", "Write"] as const;
+type ContractAction = (typeof CONTRACT_ACTIONS)[number];
 
 interface ModuleSidebarProps {
   moduleNames: string[];
@@ -104,7 +109,47 @@ function ModulesContent({address}: {address: string}) {
   );
 }
 
-function ModulesContentReworked({address}: {address: string}): JSX.Element {
+function ModulesReworked({address}: {address: string}): JSX.Element {
+  const [action, setAction] = useState<ContractAction>("View code");
+  return (
+    <Box>
+      <ModulesActionTabs
+        options={CONTRACT_ACTIONS}
+        action={action}
+        setAction={setAction}
+      />
+      {action === "View code" && <ViewCode address={address} />}
+    </Box>
+  );
+}
+
+function ModulesActionTabs({
+  options,
+  action,
+  setAction,
+}: {
+  options: readonly ContractAction[];
+  action: ContractAction;
+  setAction: (action: ContractAction) => void;
+}) {
+  return (
+    <Box padding={2} marginY={4} borderRadius={1}>
+      <StyledTabs value={action} onChange={(e, v) => setAction(v)}>
+        {options.map((value, i) => (
+          <StyledTab
+            key={i}
+            value={value}
+            label={value}
+            isFirst={i === 0}
+            isLast={i === options.length - 1}
+          />
+        ))}
+      </StyledTabs>
+    </Box>
+  );
+}
+
+function ViewCode({address}: {address: string}): JSX.Element {
   const {data: registry} = useGetAccountResource(
     address,
     "0x1::code::PackageRegistry",
@@ -125,15 +170,8 @@ function ModulesContentReworked({address}: {address: string}): JSX.Element {
   }
 
   return (
-    <Grid container spacing={2} marginTop="24px">
-      <Grid
-        item
-        md={3}
-        sx={{
-          maxHeight: "500px",
-          overflowY: "auto",
-        }}
-      >
+    <Grid container spacing={2}>
+      <Grid item md={3}>
         <ModuleSidebar
           moduleNames={modules.map((m) => m.name)}
           selectedModuleIndex={selectedModuleIndex}
@@ -161,14 +199,21 @@ function ModuleSidebar({
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Modules
       </Typography>
-      {moduleNames.map((moduleName, i) => (
-        <ModuleNameOption
-          key={i}
-          handleClick={() => setSelectedModuleIndex(i)}
-          selected={i === selectedModuleIndex}
-          name={moduleName}
-        />
-      ))}
+      <Box
+        sx={{
+          maxHeight: "500px",
+          overflowY: "auto",
+        }}
+      >
+        {moduleNames.map((moduleName, i) => (
+          <ModuleNameOption
+            key={i}
+            handleClick={() => setSelectedModuleIndex(i)}
+            selected={i === selectedModuleIndex}
+            name={moduleName}
+          />
+        ))}
+      </Box>
     </Box>
   );
 }
@@ -285,7 +330,7 @@ type ModulesTabProps = {
 export default function ModulesTab({address}: ModulesTabProps) {
   const inDev = useGetInDevMode();
   return inDev ? (
-    <ModulesContentReworked address={address} />
+    <ModulesReworked address={address} />
   ) : (
     <ModulesContent address={address} />
   );

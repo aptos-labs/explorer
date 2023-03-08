@@ -10,11 +10,21 @@ import {MartianWallet} from "@martianwallet/aptos-wallet-adapter";
 import {RiseWallet} from "@rise-wallet/wallet-adapter";
 import {SpikaWallet} from "@spika/aptos-plugin";
 import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
+import {StatsigProvider} from "statsig-react";
 
 import * as Sentry from "@sentry/react";
 import {BrowserTracing} from "@sentry/tracing";
 
 import ReactGA from "react-ga4";
+import {initGTM} from "./api/hooks/useGoogleTagManager";
+import {GTMEvents} from "./dataConstants";
+
+initGTM({
+  events: {
+    walletConnection: GTMEvents.WALLET_CONNECTION,
+    searchStats: GTMEvents.SEARCH_STATS,
+  },
+});
 
 ReactGA.initialize(process.env.GA_TRACKING_ID || "G-8XH7V50XK7");
 
@@ -59,13 +69,22 @@ const wallets = [
 
 ReactDOM.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
-        <BrowserRouter>
-          <ExplorerRoutes />
-        </BrowserRouter>
-      </AptosWalletAdapterProvider>
-    </QueryClientProvider>
+    <StatsigProvider
+      sdkKey={process.env.REACT_APP_STATSIG_SDK_KEY || ""}
+      waitForInitialization={true}
+      options={{
+        environment: {tier: "production"},
+      }}
+      user={{}}
+    >
+      <QueryClientProvider client={queryClient}>
+        <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
+          <BrowserRouter>
+            <ExplorerRoutes />
+          </BrowserRouter>
+        </AptosWalletAdapterProvider>
+      </QueryClientProvider>
+    </StatsigProvider>
   </React.StrictMode>,
   document.getElementById("root"),
 );
