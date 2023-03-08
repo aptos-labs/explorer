@@ -16,6 +16,15 @@ import * as Sentry from "@sentry/react";
 import {BrowserTracing} from "@sentry/tracing";
 
 import ReactGA from "react-ga4";
+import {initGTM} from "./api/hooks/useGoogleTagManager";
+import {GTMEvents} from "./dataConstants";
+
+initGTM({
+  events: {
+    walletConnection: GTMEvents.WALLET_CONNECTION,
+    searchStats: GTMEvents.SEARCH_STATS,
+  },
+});
 
 ReactGA.initialize(process.env.GA_TRACKING_ID || "G-8XH7V50XK7");
 
