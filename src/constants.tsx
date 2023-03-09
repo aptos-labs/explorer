@@ -9,6 +9,7 @@ export const networks = {
   testnet: "https://fullnode.testnet.aptoslabs.com",
   devnet: devnetUrl,
   local: "http://localhost:8080",
+  previewnet: "http://34.97.25.24/v1",
 };
 
 export type NetworkName = keyof typeof networks;
@@ -18,6 +19,7 @@ export enum Network {
   TESTNET = "testnet",
   DEVNET = "devnet",
   LOCAL = "local",
+  PREVIEWNET = "previewnet",
 }
 
 // Remove trailing slashes
