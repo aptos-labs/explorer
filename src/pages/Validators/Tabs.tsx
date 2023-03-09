@@ -39,6 +39,7 @@ type TabPanelProps = {
 function TabPanel({value, networkName}: TabPanelProps): JSX.Element {
   switch (networkName) {
     case Network.MAINNET:
+    case Network.PREVIEWNET:
       return <ValidatorsTable />;
     case Network.TESTNET:
       return value === VALIDATORS_TAB_VALUE.DELEGATION_NODES ? (

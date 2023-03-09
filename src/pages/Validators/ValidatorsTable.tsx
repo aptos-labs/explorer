@@ -14,6 +14,7 @@ import {
 } from "../../api/hooks/useGetValidators";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {useGlobalState} from "../../GlobalState";
+import {Network} from "../../constants";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -245,6 +246,14 @@ const DEFAULT_COLUMNS: Column[] = [
   "location",
 ];
 
+const PREVIEWNET_COLUMNS: Column[] = [
+  "addr",
+  "operatorAddr",
+  "votingPower",
+  "rewardsPerf",
+  "lastEpochPerf",
+];
+
 type ValidatorRowProps = {
   validator: ValidatorData;
   columns: Column[];
@@ -273,11 +282,16 @@ export function ValidatorsTable() {
     sortDirection,
   );
 
+  const columns =
+    state.network_name === Network.PREVIEWNET
+      ? PREVIEWNET_COLUMNS
+      : DEFAULT_COLUMNS;
+
   return (
     <Table>
       <TableHead>
         <TableRow sx={{verticalAlign: "bottom"}}>
-          {DEFAULT_COLUMNS.map((column) => (
+          {columns.map((column) => (
             <ValidatorHeaderCell
               key={column}
               column={column}
@@ -291,11 +305,7 @@ export function ValidatorsTable() {
       <GeneralTableBody>
         {sortedValidators.map((validator: any, i: number) => {
           return (
-            <ValidatorRow
-              key={i}
-              validator={validator}
-              columns={DEFAULT_COLUMNS}
-            />
+            <ValidatorRow key={i} validator={validator} columns={columns} />
           );
         })}
       </GeneralTableBody>
