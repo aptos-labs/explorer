@@ -20,6 +20,7 @@ const DELEGATED_STAKING_ACTIVITY_QUERY = gql`
         delegator_address: {_eq: $delegatorAddress}
         pool_address: {_eq: $poolAddress}
       }
+      order_by: {transaction_version: desc}
     ) {
       amount
       delegator_address
