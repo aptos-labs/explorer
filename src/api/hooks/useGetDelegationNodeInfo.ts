@@ -33,7 +33,9 @@ export function useGetDelegationNodeInfo({
   const {totalVotingPower} = useGetValidatorSet();
   const {data: delegationPool, isLoading} = useGetAccountResource(
     validatorAddress,
-    `${DELEGATION_POOL_ADDRESS}::delegation_pool::DelegationPool`,
+    `${
+      process.env.DELEGATION_POOL_ADDRESS ?? DELEGATION_POOL_ADDRESS
+    }::delegation_pool::DelegationPool`,
   );
   const client = new AptosClient(state.network_value);
   const [commission, setCommission] = useState<Types.MoveValue>();

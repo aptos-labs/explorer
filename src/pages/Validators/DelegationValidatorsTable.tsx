@@ -344,10 +344,11 @@ export function DelegationValidatorsTable() {
 
   const [sortColumn, setSortColumn] = useState<Column>("delegatedAmount");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
+  const nodes = process.env.WHILTELISTED_TESTNET_DELEGATION_NODES
+    ? process.env.WHILTELISTED_TESTNET_DELEGATION_NODES.split(",")
+    : WHILTELISTED_TESTNET_DELEGATION_NODES;
   const whitelistedTestnetDelegationValidators: ValidatorData[] =
-    validators.filter((validator) =>
-      WHILTELISTED_TESTNET_DELEGATION_NODES.includes(validator.owner_address),
-    );
+    validators.filter((validator) => nodes.includes(validator.owner_address));
   const sortedValidators = getSortedValidators(
     state.network_name === Network.TESTNET
       ? whitelistedTestnetDelegationValidators
