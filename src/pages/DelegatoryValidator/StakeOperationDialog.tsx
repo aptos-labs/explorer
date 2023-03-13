@@ -29,6 +29,7 @@ import {MIN_ADD_STAKE_AMOUNT, OCTA} from "../../constants";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {DelegationStateContext} from "./context/DelegationContext";
+import {Types} from "aptos";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
@@ -47,13 +48,13 @@ export default function StakeOperationDialog({
   rewardsRateYearly,
   commission,
 }: StakeOperationDialogProps) {
-  const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const {accountResource, validator} = useContext(DelegationStateContext);
 
   if (!validator || !accountResource) {
     return null;
   }
 
+  const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const {account} = useWallet();
   const balance = useGetAccountAPTBalance(account?.address!);
   const percentageSelection = [0.1, 0.25, 0.5, 1]; // 0.1 === 10%
