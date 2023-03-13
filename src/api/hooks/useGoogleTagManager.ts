@@ -6,7 +6,7 @@ type GTMParams = {
 
 export const initGTM = ({events}: GTMParams) => {
   const tagManagerArgs = {
-    gtmId: process.env.GTM_ID || "GTM-ND9VTF4",
+    gtmId: process.env.REACT_APP_GTM_ID || "GTM-ND9VTF4",
     events,
   };
   TagManager.initialize(tagManagerArgs);
