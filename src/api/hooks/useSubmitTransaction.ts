@@ -65,9 +65,7 @@ const useSubmitTransaction = () => {
         // transaction failed
         return {...responseOnError, message: response.message};
       } catch (error: any) {
-        if (typeof error == "object" && "message" in error) {
-          responseOnError.message = error.message;
-        }
+        responseOnError.message = error;
       }
       return responseOnError;
     };
