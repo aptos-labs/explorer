@@ -6,8 +6,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, {useEffect, useState} from "react";
-import {Types} from "aptos";
+import React, {useContext, useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {getLockedUtilSecs} from "./utils";
@@ -19,7 +18,6 @@ import {
 } from "../Validators/Components/Staking";
 import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
-import {ValidatorData} from "../../api/hooks/useGetValidators";
 import useAmountInput from "./hooks/useAmountInput";
 import LoadingModal from "../../components/LoadingModal";
 import TransactionResponseSnackbar from "../../components/snakebar/TransactionResponseSnackbar";
@@ -30,12 +28,12 @@ import useSubmitStakeOperation, {
 import {MIN_ADD_STAKE_AMOUNT, OCTA} from "../../constants";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {DelegationStateContext} from "./context/DelegationContext";
+import {Types} from "aptos";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
   isDialogOpen: boolean;
-  accountResource?: Types.MoveResource | undefined;
-  validator: ValidatorData;
   stake?: Types.MoveValue;
   stakeOperation: StakeOperation;
   rewardsRateYearly?: string | undefined;
@@ -45,13 +43,17 @@ type StakeOperationDialogProps = {
 export default function StakeOperationDialog({
   handleDialogClose,
   isDialogOpen,
-  accountResource,
-  validator,
   stake,
   stakeOperation,
   rewardsRateYearly,
   commission,
 }: StakeOperationDialogProps) {
+  const {accountResource, validator} = useContext(DelegationStateContext);
+
+  if (!validator || !accountResource) {
+    return null;
+  }
+
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const {account} = useWallet();
   const balance = useGetAccountAPTBalance(account?.address!);

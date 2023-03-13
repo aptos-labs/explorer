@@ -11,9 +11,8 @@ import {
   useTheme,
 } from "@mui/material";
 import {Types} from "aptos";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
-import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
@@ -27,6 +26,7 @@ import StakingStatusIcon, {
   StakingStatus,
   STAKING_STATUS_STEPS,
 } from "./Components/StakingStatusIcon";
+import {DelegationStateContext} from "./context/DelegationContext";
 import StakeOperationDialog from "./StakeOperationDialog";
 import {getStakeOperationPrincipals, StakePrincipals} from "./utils";
 import WalletConnectionDialog from "./WalletConnectionDialog";
@@ -95,7 +95,6 @@ const DEFAULT_COLUMNS_MOBILE: Column[] = ["amount", "status", "rewardEarned"];
 
 type MyDepositsSectionCellProps = {
   handleClickOpen: () => void;
-  accountResource?: Types.MoveResource | undefined;
   stake: Types.MoveValue;
   status: StakingStatus;
   stakePrincipals: StakePrincipals | undefined;
@@ -169,8 +168,6 @@ function ActionsCell({handleClickOpen, status}: MyDepositsSectionCellProps) {
 }
 
 type MyDepositsSectionProps = {
-  accountResource?: Types.MoveResource | undefined;
-  validator: ValidatorData;
   setIsMyDepositsSectionSkeletonLoading: (arg: boolean) => void;
   isSkeletonLoading: boolean;
 };
@@ -181,11 +178,15 @@ type MyDepositRowProps = {
 };
 
 export default function MyDepositsSection({
-  accountResource,
-  validator,
   setIsMyDepositsSectionSkeletonLoading,
   isSkeletonLoading,
 }: MyDepositsSectionProps) {
+  const {accountResource, validator} = useContext(DelegationStateContext);
+
+  if (!validator || !accountResource) {
+    return null;
+  }
+
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
@@ -236,7 +237,6 @@ export default function MyDepositsSection({
             return (
               <Cell
                 key={deposit}
-                accountResource={accountResource}
                 handleClickOpen={handleClickOpen}
                 stake={stake}
                 status={status}
@@ -249,8 +249,6 @@ export default function MyDepositsSection({
           <StakeOperationDialog
             handleDialogClose={handleClose}
             isDialogOpen={dialogOpen}
-            accountResource={accountResource}
-            validator={validator}
             stake={stake}
             stakeOperation={getStakeOperationFromStakingStatus()}
           />

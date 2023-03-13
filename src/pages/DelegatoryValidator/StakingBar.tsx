@@ -7,13 +7,11 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, {useEffect, useState} from "react";
-import {ValidatorData} from "../../api/hooks/useGetValidators";
+import React, {useContext, useEffect, useState} from "react";
 import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import {grey} from "../../themes/colors/aptosColorPalette";
-import {Types} from "aptos";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import WalletConnectionDialog from "./WalletConnectionDialog";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
@@ -21,20 +19,23 @@ import StakeOperationDialog from "./StakeOperationDialog";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {useGetStakingRewardsRate} from "../../api/hooks/useGetStakingRewardsRate";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
+import {DelegationStateContext} from "./context/DelegationContext";
 
 type ValidatorStakingBarProps = {
-  validator: ValidatorData;
-  accountResource?: Types.MoveResource | undefined;
   setIsStakingBarSkeletonLoading: (arg: boolean) => void;
   isSkeletonLoading: boolean;
 };
 
 export default function StakingBar({
-  validator,
-  accountResource,
   setIsStakingBarSkeletonLoading,
   isSkeletonLoading,
 }: ValidatorStakingBarProps) {
+  const {accountResource, validator} = useContext(DelegationStateContext);
+
+  if (!validator || !accountResource) {
+    return null;
+  }
+
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const {connected} = useWallet();
@@ -142,8 +143,6 @@ export default function StakingBar({
     <StakeOperationDialog
       handleDialogClose={handleDialogClose}
       isDialogOpen={dialogOpen}
-      accountResource={accountResource}
-      validator={validator}
       stakeOperation={StakeOperation.STAKE}
       rewardsRateYearly={rewardsRateYearly}
       commission={commission}

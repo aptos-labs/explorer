@@ -12,6 +12,7 @@ import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {SkeletonTheme} from "react-loading-skeleton";
 import {useGetValidatorPageSkeletonLoading} from "../../api/hooks/useGetValidatorPageSkeletonLoading";
+import {DelegationStateContext} from "./context/DelegationContext";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
@@ -32,44 +33,38 @@ export default function ValidatorPage() {
     (validator) => validator.owner_address === addressHex.hex(),
   );
 
-  if (!validator) {
+  if (!validator || !accountResource) {
     return null;
   }
 
   return (
-    <SkeletonTheme>
-      <Grid container>
-        <PageHeader />
-        <Grid item xs={12}>
-          <Stack direction="column" spacing={4}>
-            <ValidatorTitle
-              address={address}
-              isSkeletonLoading={isSkeletonLoading}
-            />
-            <ValidatorStakingBar
-              validator={validator}
-              accountResource={accountResource}
-              setIsStakingBarSkeletonLoading={setIsStakingBarSkeletonLoading}
-              isSkeletonLoading={isSkeletonLoading}
-            />
-            <ValidatorDetailCard
-              validator={validator}
-              accountResource={accountResource}
-              isSkeletonLoading={isSkeletonLoading}
-            />
-            {connected && (
-              <MyDepositsSection
-                accountResource={accountResource}
-                validator={validator}
-                setIsMyDepositsSectionSkeletonLoading={
-                  setIsMyDepositsSectionSkeletonLoading
-                }
+    <DelegationStateContext.Provider value={{accountResource, validator}}>
+      <SkeletonTheme>
+        <Grid container>
+          <PageHeader />
+          <Grid item xs={12}>
+            <Stack direction="column" spacing={4}>
+              <ValidatorTitle
+                address={address}
                 isSkeletonLoading={isSkeletonLoading}
               />
-            )}
-          </Stack>
+              <ValidatorStakingBar
+                setIsStakingBarSkeletonLoading={setIsStakingBarSkeletonLoading}
+                isSkeletonLoading={isSkeletonLoading}
+              />
+              <ValidatorDetailCard isSkeletonLoading={isSkeletonLoading} />
+              {connected && (
+                <MyDepositsSection
+                  setIsMyDepositsSectionSkeletonLoading={
+                    setIsMyDepositsSectionSkeletonLoading
+                  }
+                  isSkeletonLoading={isSkeletonLoading}
+                />
+              )}
+            </Stack>
+          </Grid>
         </Grid>
-      </Grid>
-    </SkeletonTheme>
+      </SkeletonTheme>
+    </DelegationStateContext.Provider>
   );
 }

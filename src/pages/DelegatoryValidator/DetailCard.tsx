@@ -6,8 +6,6 @@ import ContentRowSpaceBetween from "../../components/IndividualPageContent/Conte
 import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
-import {Types} from "aptos";
-import {ValidatorData} from "../../api/hooks/useGetValidators";
 import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
 import {getLockedUtilSecs} from "./utils";
 import {useGetStakingRewardsRate} from "../../api/hooks/useGetStakingRewardsRate";
@@ -18,19 +16,23 @@ import {
 } from "../Validators/Components/Staking";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {useGetNumberOfDelegators} from "../../api/hooks/useGetNumberOfDelegators";
+import {DelegationStateContext} from "./context/DelegationContext";
+import {useContext} from "react";
 
 type ValidatorDetailProps = {
-  validator: ValidatorData;
-  accountResource?: Types.MoveResource | undefined;
   isSkeletonLoading: boolean;
 };
 
 export default function ValidatorDetailCard({
-  validator,
-  accountResource,
   isSkeletonLoading,
 }: ValidatorDetailProps) {
   const {rewardsRateYearly} = useGetStakingRewardsRate();
+  const {accountResource, validator} = useContext(DelegationStateContext);
+
+  if (!validator || !accountResource) {
+    return null;
+  }
+
   const {commission} = useGetDelegationNodeInfo({
     validatorAddress: validator.owner_address,
     validator,
