@@ -74,7 +74,6 @@ export const DELEGATION_POOL_ADDRESS =
   "0x1310dc820487f24755e6e06747f6582118597a48868e2a98260fa8c3ee945cbd";
 export const OCTA = 100000000;
 export const MIN_ADD_STAKE_AMOUNT = 1; // min stake amount is 1 APT
-// TODO(jill): move it to .env so that it can be easily configured without code change
 export const WHILTELISTED_TESTNET_DELEGATION_NODES = process.env
   .REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES
   ? process.env.REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES.split(",")
