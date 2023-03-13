@@ -216,9 +216,7 @@ export async function getStake(
   validatorAddress: Types.Address,
 ): Promise<Types.MoveValue[]> {
   const payload: Types.ViewRequest = {
-    function: `${
-      process.env.REACT_APP_DELEGATION_POOL_ADDRESS ?? DELEGATION_POOL_ADDRESS
-    }::delegation_pool::get_stake`,
+    function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::get_stake`,
     type_arguments: [],
     arguments: [validatorAddress, delegatorAddress],
   };
@@ -230,9 +228,7 @@ export async function getValidatorCommission(
   validatorAddress: Types.Address,
 ): Promise<Types.MoveValue> {
   const payload: Types.ViewRequest = {
-    function: `${
-      process.env.REACT_APP_DELEGATION_POOL_ADDRESS ?? DELEGATION_POOL_ADDRESS
-    }::delegation_pool::operator_commission_percentage`,
+    function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::operator_commission_percentage`,
     type_arguments: [],
     arguments: [validatorAddress],
   };

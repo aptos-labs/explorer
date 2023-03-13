@@ -25,9 +25,7 @@ const useSubmitStakeOperation = () => {
   ) {
     const payload: Types.TransactionPayload = {
       type: "entry_function_payload",
-      function: `${
-        process.env.REACT_APP_DELEGATION_POOL_ADDRESS ?? DELEGATION_POOL_ADDRESS
-      }::delegation_pool::${stakeOperation}`,
+      function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::${stakeOperation}`,
       type_arguments: [],
       arguments: [owner_address, amount], // staking operation uses OCTA as amount basis
     };
