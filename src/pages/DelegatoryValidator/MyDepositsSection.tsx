@@ -12,10 +12,13 @@ import {
 } from "@mui/material";
 import {Types} from "aptos";
 import React, {useContext, useEffect, useState} from "react";
+import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
+import StyledTooltip, {
+  StyledLearnMoreTooltip,
+} from "../../components/StyledTooltip";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
@@ -28,7 +31,11 @@ import StakingStatusIcon, {
 } from "./Components/StakingStatusIcon";
 import {DelegationStateContext} from "./context/DelegationContext";
 import StakeOperationDialog from "./StakeOperationDialog";
-import {getStakeOperationPrincipals, StakePrincipals} from "./utils";
+import {
+  getStakeOperationAPTRequirement,
+  getStakeOperationPrincipals,
+  StakePrincipals,
+} from "./utils";
 import WalletConnectionDialog from "./WalletConnectionDialog";
 
 const MyDepositsCells = Object.freeze({
@@ -98,6 +105,7 @@ type MyDepositsSectionCellProps = {
   stake: Types.MoveValue;
   status: StakingStatus;
   stakePrincipals: StakePrincipals | undefined;
+  stakes: Types.MoveValue[];
 };
 
 function AmountCell({stake}: MyDepositsSectionCellProps) {
@@ -142,7 +150,21 @@ function RewardEarnedCell({
   );
 }
 
-function ActionsCell({handleClickOpen, status}: MyDepositsSectionCellProps) {
+function ActionsCell({
+  handleClickOpen,
+  status,
+  stakes,
+}: MyDepositsSectionCellProps) {
+  const {account} = useWallet();
+  const balance = useGetAccountAPTBalance(account?.address!);
+  const requirement = getStakeOperationAPTRequirement(
+    stakes,
+    getStakeOperationFromStakingStatus(status),
+    Number(balance),
+  );
+  const buttonDisabled =
+    status !== StakingStatus.WITHDRAW_READY && requirement.disabled;
+
   function getButtonTextFromStatus() {
     switch (status) {
       case StakingStatus.STAKED:
@@ -155,14 +177,22 @@ function ActionsCell({handleClickOpen, status}: MyDepositsSectionCellProps) {
   }
   return (
     <GeneralTableCell sx={{textAlign: "right", paddingRight: 3}}>
-      <Button
-        variant="primary"
-        size="small"
-        onClick={handleClickOpen}
-        sx={{width: "30px", maxHeight: "40px"}}
+      <StyledTooltip
+        title={`You can't ${getButtonTextFromStatus().toLocaleLowerCase()} because minimum APT requirement is not met`}
+        disableHoverListener={!buttonDisabled}
       >
-        <Typography>{getButtonTextFromStatus()}</Typography>
-      </Button>
+        <span>
+          <Button
+            variant="primary"
+            size="small"
+            onClick={handleClickOpen}
+            sx={{width: "30px", maxHeight: "40px"}}
+            disabled={buttonDisabled}
+          >
+            <Typography>{getButtonTextFromStatus()}</Typography>
+          </Button>
+        </span>
+      </StyledTooltip>
     </GeneralTableCell>
   );
 }
@@ -218,17 +248,6 @@ export default function MyDepositsSection({
       setDialogOpen(true);
     };
 
-    function getStakeOperationFromStakingStatus() {
-      switch (status) {
-        case StakingStatus.STAKED:
-          return StakeOperation.UNLOCK;
-        case StakingStatus.WITHDRAW_PENDING:
-          return StakeOperation.REACTIVATE;
-        case StakingStatus.WITHDRAW_READY:
-          return StakeOperation.WITHDRAW;
-      }
-    }
-
     return (
       <>
         <GeneralTableRow>
@@ -241,6 +260,7 @@ export default function MyDepositsSection({
                 stake={stake}
                 status={status}
                 stakePrincipals={stakePrincipals}
+                stakes={stakes}
               />
             );
           })}
@@ -249,8 +269,7 @@ export default function MyDepositsSection({
           <StakeOperationDialog
             handleDialogClose={handleClose}
             isDialogOpen={dialogOpen}
-            stake={stake}
-            stakeOperation={getStakeOperationFromStakingStatus()}
+            stakeOperation={getStakeOperationFromStakingStatus(status)}
           />
         ) : (
           <WalletConnectionDialog
@@ -303,4 +322,15 @@ function MyDepositSectionSkeleton() {
       <Skeleton height={30}></Skeleton>
     </Stack>
   );
+}
+
+function getStakeOperationFromStakingStatus(status: StakingStatus) {
+  switch (status) {
+    case StakingStatus.STAKED:
+      return StakeOperation.UNLOCK;
+    case StakingStatus.WITHDRAW_PENDING:
+      return StakeOperation.REACTIVATE;
+    case StakingStatus.WITHDRAW_READY:
+      return StakeOperation.WITHDRAW;
+  }
 }

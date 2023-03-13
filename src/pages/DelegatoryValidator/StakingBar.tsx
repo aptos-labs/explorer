@@ -17,7 +17,6 @@ import WalletConnectionDialog from "./WalletConnectionDialog";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import StakeOperationDialog from "./StakeOperationDialog";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
-import {useGetStakingRewardsRate} from "../../api/hooks/useGetStakingRewardsRate";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {DelegationStateContext} from "./context/DelegationContext";
 
@@ -44,7 +43,6 @@ export default function StakingBar({
       validatorAddress: validator.owner_address,
       validator,
     });
-  const {rewardsRateYearly} = useGetStakingRewardsRate();
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
@@ -144,7 +142,6 @@ export default function StakingBar({
       handleDialogClose={handleDialogClose}
       isDialogOpen={dialogOpen}
       stakeOperation={StakeOperation.STAKE}
-      rewardsRateYearly={rewardsRateYearly}
       commission={commission}
     />
   );

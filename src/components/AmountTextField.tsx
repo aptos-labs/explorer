@@ -12,6 +12,7 @@ interface AmountTextFieldProps {
   amount: string;
   amountIsValid: boolean;
   errorMessage: string;
+  warnMessage: string | undefined;
   onAmountChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   balance?: string | null;
 }
@@ -20,6 +21,7 @@ export default function AmountTextField({
   amount,
   amountIsValid,
   errorMessage,
+  warnMessage,
   onAmountChange,
   balance,
 }: AmountTextFieldProps): JSX.Element {
@@ -39,6 +41,7 @@ export default function AmountTextField({
             : ""
         }
       />
+      {warnMessage && <FormHelperText>{warnMessage}</FormHelperText>}
     </FormControl>
   ) : (
     <FormControl fullWidth>
