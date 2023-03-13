@@ -133,7 +133,11 @@ export default function StakeOperationDialog({
   );
 
   const stakeDialog = (
-    <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
+    <StyledDialog
+      handleDialogClose={handleDialogClose}
+      open={isDialogOpen}
+      onClose={() => setAmount("")}
+    >
       <DialogTitle variant="h5" textAlign="center">
         Stake Into The Pool
       </DialogTitle>
@@ -188,7 +192,11 @@ export default function StakeOperationDialog({
   );
 
   const UnlockOrWithdrawOrReactivateDialog = (
-    <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
+    <StyledDialog
+      handleDialogClose={handleDialogClose}
+      open={isDialogOpen}
+      onClose={() => setAmount("")}
+    >
       <DialogTitle variant="h5" textAlign="center">
         {stakeOperation === StakeOperation.UNLOCK
           ? "Unstake Funds"
