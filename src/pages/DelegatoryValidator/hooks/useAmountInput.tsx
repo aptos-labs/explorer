@@ -33,7 +33,7 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
   }, [amount]);
 
   const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(event.target.value.replace(/[^0-9.]/g, ""));
+    setAmount(event.target.value.replace(/(?<=^[^.]*\.[^.]*)\.|[^0-9.]/g, ""));
   };
 
   function clearAmount() {
