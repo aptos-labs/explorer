@@ -9,7 +9,7 @@ import {
 import React, {useContext, useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {grey} from "../../themes/colors/aptosColorPalette";
-import {getLockedUtilSecs} from "./utils";
+import {getStakeOperationAPTRequirement} from "./utils";
 import StyledDialog from "../../components/StyledDialog";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import {
@@ -25,27 +25,23 @@ import TransactionSucceededDialog from "./TransactionSucceededDialog";
 import useSubmitStakeOperation, {
   StakeOperation,
 } from "../../api/hooks/useSubmitStakeOperation";
-import {MIN_ADD_STAKE_AMOUNT, OCTA} from "../../constants";
-import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
+import {OCTA} from "../../constants";
+import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
+import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {DelegationStateContext} from "./context/DelegationContext";
-import {Types} from "aptos";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
   isDialogOpen: boolean;
-  stake?: Types.MoveValue;
   stakeOperation: StakeOperation;
-  rewardsRateYearly?: string | undefined;
   commission?: number | undefined;
 };
 
 export default function StakeOperationDialog({
   handleDialogClose,
   isDialogOpen,
-  stake,
   stakeOperation,
-  rewardsRateYearly,
   commission,
 }: StakeOperationDialogProps) {
   const {accountResource, validator} = useContext(DelegationStateContext);
@@ -54,9 +50,15 @@ export default function StakeOperationDialog({
     return null;
   }
 
-  const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const {account} = useWallet();
-  const balance = useGetAccountAPTBalance(account?.address!);
+  const {stakes} = useGetDelegatorStakeInfo(
+    account?.address!,
+    validator.owner_address,
+  );
+  const {balance, lockedUntilSecs, rewardsRateYearly} = useGetDelegationState(
+    accountResource,
+    validator,
+  );
   const percentageSelection = [0.1, 0.25, 0.5, 1]; // 0.1 === 10%
 
   const {
@@ -80,19 +82,15 @@ export default function StakeOperationDialog({
     setIsTransactionSucceededDialogOpen,
   ] = useState<boolean>(false);
 
-  const onSubmitClick = async () => {
-    function getMinMax() {
-      switch (stakeOperation) {
-        case StakeOperation.STAKE:
-          return [MIN_ADD_STAKE_AMOUNT];
-        case StakeOperation.UNLOCK:
-        case StakeOperation.REACTIVATE:
-        case StakeOperation.WITHDRAW:
-          return [0, Number(stake) / OCTA];
-      }
-    }
+  const minMax = getStakeOperationAPTRequirement(
+    stakes,
+    stakeOperation,
+    Number(balance),
+  );
+  const {suggestedMax, min, max} = minMax;
 
-    const isAmountValid = validateAmountInput(...getMinMax());
+  const onSubmitClick = async () => {
+    const isAmountValid = validateAmountInput(min, max);
 
     if (isAmountValid) {
       await submitStakeOperation(
@@ -139,7 +137,25 @@ export default function StakeOperationDialog({
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
-          {renderAmountTextField(balance)}
+          {renderAmountTextField(minMax, stakes, balance)}
+          <Stack direction="row" spacing={1}>
+            {min ? (
+              <Button
+                variant="outlined"
+                onClick={() => setAmount(min.toString())}
+              >
+                MIN
+              </Button>
+            ) : null}
+            {max !== null && (
+              <Button
+                variant="outlined"
+                onClick={() => setAmount(max.toString())}
+              >
+                MAX
+              </Button>
+            )}
+          </Stack>
           <ContentBoxSpaceBetween>
             <ContentRowSpaceBetween
               title={"Operator Commission"}
@@ -187,18 +203,74 @@ export default function StakeOperationDialog({
     </StyledDialog>
   );
 
-  const UnlockOrWithdrawOrReactivateDialog = (
+  const UnlockOrReactivateDialog = (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
       <DialogTitle variant="h5" textAlign="center">
         {stakeOperation === StakeOperation.UNLOCK
           ? "Unstake Funds"
-          : stakeOperation === StakeOperation.REACTIVATE
-          ? "Restake Funds"
-          : "Withdraw Your Funds"}
+          : "Restake Funds"}
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
-          {renderAmountTextField()}
+          {renderAmountTextField(minMax, stakes)}
+          <Stack direction="row" spacing={1}>
+            {min ? (
+              <Button
+                variant="outlined"
+                onClick={() => setAmount(min.toString())}
+              >
+                MIN
+              </Button>
+            ) : null}
+            {suggestedMax !== null && (
+              <Button
+                variant="outlined"
+                onClick={() => setAmount(suggestedMax.toString())}
+              >
+                SUGGESTED MAX
+              </Button>
+            )}
+            {max !== null && (
+              <Button
+                variant="outlined"
+                onClick={() => setAmount(max.toString())}
+              >
+                MAX
+              </Button>
+            )}
+          </Stack>
+        </Stack>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={onSubmitClick}
+          variant="primary"
+          fullWidth
+          disabled={amount === ""}
+          sx={{marginX: 2}}
+        >
+          {stakeOperation === StakeOperation.UNLOCK ? "UNSTAKE" : "RESTAKE"}
+        </Button>
+      </DialogActions>
+      <DialogContent sx={{textAlign: "center"}}>
+        <Typography variant="caption" color={grey[450]}>
+          <div>
+            Please do your own research. Aptos Labs is not responsible for the
+            security of your funds
+          </div>
+        </Typography>
+      </DialogContent>
+    </StyledDialog>
+  );
+
+  const WithdrawDialog = (
+    <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
+      <DialogTitle variant="h5" textAlign="center">
+        Withdraw Your Funds
+      </DialogTitle>
+      <DialogContent>
+        <Stack direction="column" spacing={2}>
+          {renderAmountTextField(minMax, stakes)}
           <Stack direction="row" spacing={1}>
             {percentageSelection.map((percentage, idx) => {
               return (
@@ -206,7 +278,9 @@ export default function StakeOperationDialog({
                   key={idx}
                   variant="outlined"
                   onClick={() =>
-                    setAmount(((Number(stake) * percentage) / OCTA).toString())
+                    setAmount(
+                      ((Number(stakes[1]) * percentage) / OCTA).toString(),
+                    )
                   }
                 >
                   {percentage === 1 ? "MAX" : `${percentage * 100}%`}
@@ -224,11 +298,7 @@ export default function StakeOperationDialog({
           disabled={amount === ""}
           sx={{marginX: 2}}
         >
-          {stakeOperation === StakeOperation.UNLOCK
-            ? "UNSTAKE"
-            : stakeOperation === StakeOperation.REACTIVATE
-            ? "RESTAKE"
-            : "WITHDRAW"}
+          WITHDRAW
         </Button>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
@@ -248,8 +318,9 @@ export default function StakeOperationDialog({
         return stakeDialog;
       case StakeOperation.REACTIVATE:
       case StakeOperation.UNLOCK:
+        return UnlockOrReactivateDialog;
       case StakeOperation.WITHDRAW:
-        return UnlockOrWithdrawOrReactivateDialog;
+        return WithdrawDialog;
     }
   }
 
