@@ -22,7 +22,11 @@ export default function TableTooltip({children, title}: TableTooltipProps) {
 
   return (
     <>
-      <IconButton onClick={handleOpen} sx={{padding: 0.5}}>
+      <IconButton
+        aria-label="More Info"
+        onClick={handleOpen}
+        sx={{padding: 0.5}}
+      >
         <InfoOutlinedIcon sx={{fontSize: 15, color: "inherit"}} />
       </IconButton>
       <Modal open={open} onClose={handleClose}>

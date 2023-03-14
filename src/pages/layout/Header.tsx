@@ -108,6 +108,7 @@ export default function Header() {
             disableGutters
           >
             <Link
+              aria-label="Aptos Explorer"
               onClick={scrollTop}
               component={RRD.Link}
               to="/"
@@ -125,6 +126,7 @@ export default function Header() {
             <Nav />
             <NetworkSelect />
             <Button
+              aria-label="Toggle Dark / Light Mode"
               onClick={toggleColorMode}
               sx={{
                 width: "30px",

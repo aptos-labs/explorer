@@ -19,8 +19,8 @@
     "@spika/aptos-plugin": "^0.1.2",
     "@trustwallet/aptos-wallet-adapter": "^0.1.6",
     "@types/lodash": "^4.14.191",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
     "@types/react-simple-maps": "^3.0.0",
     "aptos": "^1.7.1",
     "aptos-node-checker-client": "0.0.2",
@@ -29,9 +29,9 @@
     "fewcha-plugin-wallet-adapter": "^0.1.1",
     "graphql": "^16.6.0",
     "js-sha3": "^0.8.0",
-    "lodash": "^4.17.21",
-    "pako": "^2.1.0",
+    "lodash-es": "^4.17.21",
     "moment": "^2.29.4",
+    "pako": "^2.1.0",
     "petra-plugin-wallet-adapter": "^0.1.3",
     "prettier": "^2.8.4",
     "react": "latest",
@@ -40,6 +40,7 @@
     "react-dom": "latest",
     "react-ga4": "^1.4.1",
     "react-gtm-module": "^2.0.11",
+    "react-helmet-async": "^1.3.0",
     "react-intersection-observer": "^9.4.3",
     "react-json-view": "^1.21.3",
     "react-loading-skeleton": "^3.1.1",
@@ -74,9 +75,10 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.7",
     "@types/pako": "^2.0.0",
-    "@types/react-syntax-highlighter": "^15.5.6",
     "@types/react-addons-perf": "^15.4.0",
-    "@types/react-gtm-module": "^2.0.1"
+    "@types/react-gtm-module": "^2.0.1",
+    "@types/react-syntax-highlighter": "^15.5.6"
   }
 }

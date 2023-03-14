@@ -50,6 +50,7 @@ export default function Footer() {
         >
           <Grid xs="auto" container justifyContent="start">
             <Link
+              aria-label="Aptos Labs"
               color="inherit"
               href="https://aptoslabs.com/"
               target="_blank"

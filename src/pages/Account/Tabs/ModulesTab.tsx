@@ -1,7 +1,7 @@
 import {Types} from "aptos";
 import {Box, Grid, Stack, Typography, useTheme} from "@mui/material";
 import React, {useState} from "react";
-import {orderBy} from "lodash";
+import {orderBy} from "lodash-es";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import {
   solarizedLight,

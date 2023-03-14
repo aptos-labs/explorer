@@ -27,10 +27,12 @@ declare module "@mui/material/Divider" {
 declare module "@mui/material/styles" {
   interface TypographyVariants {
     stats: React.CSSProperties;
+    tableHeading: React.CSSProperties;
   }
   // allow configuration using `createTheme`
   interface TypographyVariantsOptions {
     stats?: React.CSSProperties;
+    tableHeading?: React.CSSProperties;
   }
 }
 
@@ -51,6 +53,7 @@ declare module "@mui/material/styles/createPalette" {
 declare module "@mui/material/Typography" {
   interface TypographyPropsVariantOverrides {
     stats: true;
+    tableHeading: true;
   }
 }
 
@@ -116,6 +119,10 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       fontSize: "1rem",
       textTransform: "capitalize",
       lineHeight: "1.25",
+    },
+    tableHeading: {
+      fontFamily: `lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
+      fontWeight: "400",
     },
   },
 

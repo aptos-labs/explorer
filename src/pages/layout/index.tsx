@@ -1,9 +1,8 @@
-import React, {useState} from "react";
+import React, {lazy, useState} from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Header from "./Header";
-import Footer from "./Footer";
+
 import {GlobalStateProvider} from "../../GlobalState";
 import {ProvideColorMode} from "../../context";
 import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
@@ -21,6 +20,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {primary} from "../../themes/colors/aptosColorPalette";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+
+const Header = lazy(() => import("./Header"));
+
+const Footer = lazy(() => import("./Footer"));
 
 interface LayoutProps {
   children: React.ReactNode;
