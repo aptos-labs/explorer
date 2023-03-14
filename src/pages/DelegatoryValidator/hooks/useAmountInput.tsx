@@ -1,15 +1,18 @@
 import {useState, useEffect} from "react";
 import AmountTextField from "../../../components/AmountTextField";
 import React from "react";
-import {MIN_ADD_STAKE_AMOUNT} from "../../../constants";
 import {StakeOperation} from "../../../api/hooks/useSubmitStakeOperation";
+import {APTRequirement} from "../utils";
+import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "../constants";
+import {OCTA} from "../../../constants";
+import {Types} from "aptos";
 
 function isValidAmount(
   amount: string,
-  minimumAmount?: number,
-  maximumAmount?: number,
+  minimumAmount: number | null,
+  maximumAmount: number | null,
 ): boolean {
-  const amountNum = parseInt(amount);
+  const amountNum = parseFloat(amount);
   if (minimumAmount && maximumAmount) {
     return amountNum >= minimumAmount && amountNum <= maximumAmount;
   } else if (minimumAmount) {
@@ -37,16 +40,44 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
     setAmount("");
   }
 
-  function renderAmountTextField(balance?: string | null): JSX.Element {
+  function renderAmountTextField(
+    requirement: APTRequirement,
+    stakes: Types.MoveValue[],
+    balance?: string | null,
+  ): JSX.Element {
+    function getWarnMessage() {
+      switch (stakeOperation) {
+        case StakeOperation.UNLOCK:
+          const staked = Number(stakes[0]) / OCTA;
+          if (
+            amount &&
+            staked - Number(amount) < MINIMUM_APT_IN_POOL_FOR_EXPLORER
+          ) {
+            return `If you decide to unlock ${amount} APT, your total staked amount ${staked} APT will be unlocked.`;
+          }
+          break;
+        case StakeOperation.REACTIVATE:
+          const unlocked = Number(stakes[2]) / OCTA;
+          if (
+            amount &&
+            unlocked - Number(amount) < MINIMUM_APT_IN_POOL_FOR_EXPLORER
+          ) {
+            return `If you decide to restake ${amount} APT, your total unlocked amount ${unlocked} APT will be restaked.`;
+          }
+          break;
+      }
+    }
+
     function getErrorMessage() {
       switch (stakeOperation) {
         case StakeOperation.STAKE:
-          return `Minimum stake amount is ${MIN_ADD_STAKE_AMOUNT} APT`;
+          return `Minimum stake amount is ${requirement.min} APT and maximum stake amount is ${balance} APT`;
         case StakeOperation.UNLOCK:
-          return "Amount should be equal or less your staked amount";
+          return `Minimum unlock amount is ${requirement.min} APT and maximum unlock amount is ${requirement.max} APT`;
         case StakeOperation.REACTIVATE:
+          return `Minimum restake amount is ${requirement.min} APT and maximum restake amount is ${requirement.max} APT`;
         case StakeOperation.WITHDRAW:
-          return "Amount should be equal or less your unlocked amount";
+          return "Amount should be equal or less your successfully unlocked amount";
       }
     }
     return (
@@ -54,6 +85,7 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
         amount={amount}
         amountIsValid={amountIsValid}
         errorMessage={getErrorMessage()}
+        warnMessage={getWarnMessage()}
         onAmountChange={onAmountChange}
         balance={balance}
       />
@@ -61,8 +93,8 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
   }
 
   function validateAmountInput(
-    minAmount?: number,
-    maxAmount?: number,
+    minAmount: number | null,
+    maxAmount: number | null,
   ): boolean {
     const isValid = isValidAmount(amount, minAmount, maxAmount);
     setAmountIsValid(isValid);

@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import React, {useState} from "react";
 import StyledDialog from "../../components/StyledDialog";
-import {useNavigate} from "react-router-dom";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
@@ -32,7 +31,6 @@ export default function TransactionSucceededDialog({
   transactionHash,
   stakeOperation,
 }: TransactionSucceededDialogProps) {
-  const navigate = useNavigate();
   const theme = useTheme();
 
   const [copyTooltipOpen, setCopyTooltipOpen] = useState<boolean>(false);

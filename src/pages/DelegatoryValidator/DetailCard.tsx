@@ -7,15 +7,13 @@ import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
 import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
-import {getLockedUtilSecs} from "./utils";
-import {useGetStakingRewardsRate} from "../../api/hooks/useGetStakingRewardsRate";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import {
   REWARDS_LEARN_MORE_LINK,
   REWARDS_TOOLTIP_TEXT,
 } from "../Validators/Components/Staking";
+import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
-import {useGetNumberOfDelegators} from "../../api/hooks/useGetNumberOfDelegators";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {useContext} from "react";
 
@@ -26,22 +24,21 @@ type ValidatorDetailProps = {
 export default function ValidatorDetailCard({
   isSkeletonLoading,
 }: ValidatorDetailProps) {
-  const {rewardsRateYearly} = useGetStakingRewardsRate();
   const {accountResource, validator} = useContext(DelegationStateContext);
 
   if (!validator || !accountResource) {
     return null;
   }
 
+  const {delegatorBalance, lockedUntilSecs, rewardsRateYearly} =
+    useGetDelegationState(accountResource, validator);
   const {commission} = useGetDelegationNodeInfo({
     validatorAddress: validator.owner_address,
     validator,
   });
-  const {delegatorBalance} = useGetNumberOfDelegators(validator.owner_address);
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
-  const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const operatorAddr = validator?.operator_address;
   const rewardGrowth = validator?.rewards_growth;
   const stakePoolAddress = validator?.owner_address;

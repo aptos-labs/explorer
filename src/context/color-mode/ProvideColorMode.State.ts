@@ -1,5 +1,5 @@
-import {useMemo, useState} from "react";
-import {createTheme, responsiveFontSizes} from "@mui/material";
+import { useMemo, useState, useEffect, useLayoutEffect } from "react";
+import { createTheme, responsiveFontSizes } from "@mui/material";
 import getDesignTokens from "../../themes/theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -16,9 +16,27 @@ const useProvideColorMode = () => {
     ? "dark"
     : "light";
 
-  const [mode, setMode] = useState<Mode>(
-    (localStorage.getItem("color_scheme") as Mode) || prefersDarkMode,
-  );
+  const [mode, setMode] = useState<Mode>("light");
+
+  useLayoutEffect(() => {
+    const savedMode = localStorage.getItem("color_scheme") as Mode | null;
+    if (savedMode !== null) {
+      setMode(savedMode);
+    } else {
+      setMode(prefersDarkMode);
+    }
+  }, [prefersDarkMode]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) => {
+      setMode(e.matches ? "dark" : "light");
+    };
+    mediaQuery.addEventListener("change", handleChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
 
   const toggleColorMode = () => {
     setMode((prevMode) => {
@@ -34,7 +52,7 @@ const useProvideColorMode = () => {
 
   let theme = useMemo(
     () => responsiveFontSizes(createTheme(getDesignTokens(mode))),
-    [mode],
+    [mode]
   );
 
   theme = createTheme(theme, {
@@ -54,7 +72,7 @@ const useProvideColorMode = () => {
     },
   });
 
-  return {toggleColorMode, theme};
+  return { toggleColorMode, theme };
 };
 
 export default useProvideColorMode;
