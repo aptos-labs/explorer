@@ -7,34 +7,43 @@ export interface ColorModeContext {
   toggleColorMode: () => void;
 }
 
-type Mode = "light" | "dark";
+type Mode = "light" | "dark" | "system";
 
 const useProvideColorMode = () => {
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)", {
-    noSsr: true,
-  })
+  const systemColorScheme = useMediaQuery("(prefers-color-scheme: dark)")
     ? "dark"
     : "light";
 
-  const [mode, setMode] = useState<Mode>(
-    (localStorage.getItem("color_scheme") as Mode) || prefersDarkMode,
-  );
+  const [mode, setMode] = useState<Mode>(() => {
+    const storedMode = localStorage.getItem("color_scheme") as Mode;
+    return storedMode === "light" || storedMode === "dark"
+      ? storedMode
+      : "system";
+  });
 
   const toggleColorMode = () => {
     setMode((prevMode) => {
       if (prevMode === "light") {
         localStorage.setItem("color_scheme", "dark");
         return "dark";
-      } else {
+      } else if (prevMode === "dark") {
         localStorage.setItem("color_scheme", "light");
         return "light";
+      } else {
+        localStorage.removeItem("color_scheme");
+        return systemColorScheme;
       }
     });
   };
 
   let theme = useMemo(
-    () => responsiveFontSizes(createTheme(getDesignTokens(mode))),
-    [mode],
+    () =>
+      responsiveFontSizes(
+        createTheme(
+          getDesignTokens(mode === "system" ? systemColorScheme : mode),
+        ),
+      ),
+    [mode, systemColorScheme],
   );
 
   theme = createTheme(theme, {
