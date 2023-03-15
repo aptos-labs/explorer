@@ -7,6 +7,14 @@ import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "../constants";
 import {OCTA} from "../../../constants";
 import {Types} from "aptos";
 
+function sanitizeInput(input: string): string {
+  const digitsAndDecimals = /[0-9.]/g;
+  const multipleDecimals = /\.(?=.*\.)/g;
+
+  const sanitizedInput = input.match(digitsAndDecimals)?.join("");
+  return sanitizedInput?.replace(multipleDecimals, "") ?? "";
+}
+
 function isValidAmount(
   amount: string,
   minimumAmount: number | null,
@@ -33,7 +41,8 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
   }, [amount]);
 
   const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(event.target.value.replace(/(?<=^[^.]*\.[^.]*)\.|[^0-9.]/g, ""));
+    const sanitizedInput = sanitizeInput(event.target.value);
+    setAmount(sanitizedInput);
   };
 
   function clearAmount() {
