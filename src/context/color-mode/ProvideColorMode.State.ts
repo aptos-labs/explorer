@@ -1,5 +1,5 @@
-import { useMemo, useState, useEffect, useLayoutEffect } from "react";
-import { createTheme, responsiveFontSizes } from "@mui/material";
+import {useMemo, useState, useEffect, useLayoutEffect} from "react";
+import {createTheme, responsiveFontSizes} from "@mui/material";
 import getDesignTokens from "../../themes/theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -52,7 +52,7 @@ const useProvideColorMode = () => {
 
   let theme = useMemo(
     () => responsiveFontSizes(createTheme(getDesignTokens(mode))),
-    [mode]
+    [mode],
   );
 
   theme = createTheme(theme, {
@@ -72,7 +72,7 @@ const useProvideColorMode = () => {
     },
   });
 
-  return { toggleColorMode, theme };
+  return {toggleColorMode, theme};
 };
 
 export default useProvideColorMode;
