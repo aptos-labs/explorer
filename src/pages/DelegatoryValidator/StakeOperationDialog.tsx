@@ -134,7 +134,7 @@ export default function StakeOperationDialog({
     handleDialogClose();
     setAmount("");
   };
-  
+
   const stakeDialog = (
     <StyledDialog handleDialogClose={handleClose} open={isDialogOpen}>
       <DialogTitle variant="h5" textAlign="center">
