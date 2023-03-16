@@ -70,7 +70,10 @@ const wallets = [
 ReactDOM.render(
   <React.StrictMode>
     <StatsigProvider
-      sdkKey={process.env.REACT_APP_STATSIG_SDK_KEY || ""}
+      sdkKey={
+        process.env.REACT_APP_STATSIG_SDK_KEY ||
+        "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
+      }
       waitForInitialization={true}
       options={{
         environment: {tier: "production"},
