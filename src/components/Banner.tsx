@@ -88,7 +88,14 @@ export function Banner({children, handleClick, sx}: BannerProps) {
             >
               NEW
             </Typography>
-            <Typography color="#ffffff">{children}</Typography>
+            <Typography
+              color="#ffffff"
+              sx={{
+                fontFamily: "apparat-semicond,Geneva,Tahoma,Verdana,sans-serif",
+              }}
+            >
+              {children}
+            </Typography>
           </Stack>
         </Alert>
       </Box>
