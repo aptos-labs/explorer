@@ -308,7 +308,7 @@ function WriteContractSidebar({
                   key={fn.name}
                   onClick={() => handleClick(moduleName, fn.name)}
                   fontSize={12}
-                  fontWeight={400}
+                  fontWeight={selected ? 600 : 400}
                   marginBottom={"8px"}
                   padding={1}
                   borderRadius={1}
@@ -483,7 +483,7 @@ function ModuleNameOption({
       onClick={handleClick}
       sx={{
         fontSize: 12,
-        fontWeight: 500,
+        fontWeight: selected ? 600 : 400,
         padding: "8px",
         borderRadius: 1,
         bgcolor: !selected
