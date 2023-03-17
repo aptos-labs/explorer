@@ -284,6 +284,7 @@ function WriteContractSidebar({
     <Box
       sx={{padding: "24px"}}
       bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      borderRadius={1}
     >
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Select function
@@ -362,6 +363,7 @@ function WriteContractForm({
       <Stack
         spacing={4}
         bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+        borderRadius={1}
       >
         <Typography fontSize={14}>
           {fn.name}
@@ -443,6 +445,7 @@ function ModuleSidebar({
     <Box
       sx={{padding: "24px"}}
       bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      borderRadius={1}
     >
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Modules
@@ -504,6 +507,7 @@ function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
       spacing={2}
       padding={"24px"}
       bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      borderRadius={1}
     >
       <Typography fontSize={28} fontWeight={700}>
         {moduleName}
