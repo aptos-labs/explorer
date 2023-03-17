@@ -279,7 +279,10 @@ function WriteContractSidebar({
 }: WriteContractSidebarProps) {
   const theme = useTheme();
   return (
-    <Box sx={{padding: "24px"}}>
+    <Box
+      sx={{padding: "24px"}}
+      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+    >
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Select function
       </Typography>
@@ -338,6 +341,7 @@ function WriteContractForm({
   const {account, connected} = useWallet();
   const {handleSubmit, control} = useForm<WriteContractFormType>();
   const {submitTransaction} = useSubmitTransaction();
+  const theme = useTheme();
 
   const onSubmit: SubmitHandler<WriteContractFormType> = async (data) => {
     const payload: Types.TransactionPayload = {
@@ -353,7 +357,10 @@ function WriteContractForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={4}>
+      <Stack
+        spacing={4}
+        bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      >
         <Typography fontSize={14}>
           {fn.name}
           {fn.generic_type_params.length > 0 &&
@@ -429,8 +436,12 @@ function ModuleSidebar({
   selectedModuleIndex,
   setSelectedModuleIndex,
 }: ModuleSidebarProps) {
+  const theme = useTheme();
   return (
-    <Box sx={{padding: "24px"}}>
+    <Box
+      sx={{padding: "24px"}}
+      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+    >
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Modules
       </Typography>
@@ -484,8 +495,14 @@ function ModuleNameOption({
 }
 
 function ModuleContent({address, moduleName, sourceCode}: ModuleContentProps) {
+  const theme = useTheme();
   return (
-    <Stack direction="column" spacing={2} padding={"24px"}>
+    <Stack
+      direction="column"
+      spacing={2}
+      padding={"24px"}
+      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+    >
       <Typography fontSize={28} fontWeight={700}>
         {moduleName}
       </Typography>
