@@ -308,6 +308,7 @@ function WriteContractSidebar({
                   fontWeight={400}
                   marginBottom={"8px"}
                   padding={1}
+                  borderRadius={1}
                   sx={{
                     bgcolor: !selected
                       ? "transparent"
@@ -479,6 +480,7 @@ function ModuleNameOption({
         fontSize: 12,
         fontWeight: 500,
         padding: "8px",
+        borderRadius: 1,
         bgcolor: !selected
           ? "transparent"
           : theme.palette.mode === "dark"
