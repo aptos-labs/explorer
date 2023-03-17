@@ -2,6 +2,7 @@ import {Types} from "aptos";
 import {
   Box,
   Button,
+  Divider,
   Grid,
   Stack,
   TextField,
@@ -327,6 +328,7 @@ function WriteContractSidebar({
                 </Box>
               );
             })}
+          <Divider />
           </Box>
         ))}
       </Box>
@@ -514,7 +516,9 @@ function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
       <Typography fontSize={28} fontWeight={700}>
         {moduleName}
       </Typography>
+      <Divider />
       <Code bytecode={bytecode} />
+      <Divider />
       <ABI address={address} moduleName={moduleName} />
     </Stack>
   );
