@@ -291,7 +291,7 @@ function WriteContractSidebar({
       </Typography>
       <Box
         sx={{
-          maxHeight: "500px",
+          maxHeight: "100vh",
           overflowY: "auto",
         }}
       >
@@ -453,7 +453,7 @@ function ModuleSidebar({
       </Typography>
       <Box
         sx={{
-          maxHeight: "500px",
+          maxHeight: "100vh",
           overflowY: "auto",
         }}
       >
@@ -566,7 +566,7 @@ function Code({bytecode}: {bytecode: string}) {
       ) : (
         <Box
           sx={{
-            maxHeight: "500px",
+            maxHeight: "100vh",
             overflowY: "auto",
             borderRadius: 1,
           }}
