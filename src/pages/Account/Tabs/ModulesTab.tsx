@@ -520,6 +520,7 @@ function Code({sourceCode}: {sourceCode: string}) {
             style={
               theme.palette.mode === "light" ? solarizedLight : solarizedDark
             }
+            showLineNumbers
           >
             {transformCode(sourceCode)}
           </SyntaxHighlighter>
