@@ -18,11 +18,11 @@ import AptosBannerImage from "../assets/Banner.jpg";
 
 interface BannerProps {
   children: React.ReactNode;
-  handleClick: () => void;
+  action: React.ReactNode;
   sx?: SxProps<Theme>;
 }
 
-export function Banner({children, handleClick, sx}: BannerProps) {
+export function Banner({children, action, sx}: BannerProps) {
   const [bannerOpen, setBannerOpen] = useState<boolean>(true);
 
   return (
@@ -47,10 +47,7 @@ export function Banner({children, handleClick, sx}: BannerProps) {
               marginRight={2}
               sx={{verticalAlign: "center"}}
             >
-              <Button variant="text" onClick={handleClick}>
-                <Typography>LEARN MORE</Typography>
-                <ArrowForwardIosIcon sx={{marginLeft: 2}} fontSize="small" />
-              </Button>
+              {action}
               <Divider
                 orientation="vertical"
                 variant="middle"
