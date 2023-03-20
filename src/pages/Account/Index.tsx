@@ -9,6 +9,7 @@ import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 import {useGetAccount} from "../../api/hooks/useGetAccount";
 import LoadingModal from "../../components/LoadingModal";
 import Error from "./Error";
+import {AptosNamesBanner} from "./Components/AptosNamesBanner";
 
 const TAB_VALUES_FULL: TabValue[] = [
   "transactions",
@@ -41,6 +42,9 @@ export default function AccountPage() {
       </Grid>
       <Grid item xs={12} md={4} lg={3} marginTop={{md: 0, xs: 2}}>
         <BalanceCard address={addressHex} />
+      </Grid>
+      <Grid item xs={12} md={8} lg={12} marginTop={4} alignSelf="center">
+        <AptosNamesBanner />
       </Grid>
       <Grid item xs={12} md={12} lg={12} marginTop={4}>
         {error ? (
