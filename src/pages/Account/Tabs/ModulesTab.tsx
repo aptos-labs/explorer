@@ -614,6 +614,7 @@ function Code({bytecode}: {bytecode: string}) {
             style={
               theme.palette.mode === "light" ? solarizedLight : solarizedDark
             }
+            customStyle={{margin: 0}}
             showLineNumbers
           >
             {sourceCode}
