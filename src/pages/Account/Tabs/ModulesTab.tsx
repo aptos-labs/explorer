@@ -26,7 +26,7 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {useGetAccountResource} from "../../../api/hooks/useGetAccountResource";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
-import {transformCode} from "../../../utils";
+import {getBytecodeSizeInKB, transformCode} from "../../../utils";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import StyledTabs from "../../../components/StyledTabs";
 import StyledTab from "../../../components/StyledTab";
@@ -328,7 +328,7 @@ function WriteContractSidebar({
                 </Box>
               );
             })}
-          <Divider />
+            <Divider />
           </Box>
         ))}
       </Box>
@@ -513,14 +513,39 @@ function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
       bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
       borderRadius={1}
     >
-      <Typography fontSize={28} fontWeight={700}>
-        {moduleName}
-      </Typography>
+      <ModuleHeader address={address} moduleName={moduleName} />
       <Divider />
       <Code bytecode={bytecode} />
       <Divider />
       <ABI address={address} moduleName={moduleName} />
     </Stack>
+  );
+}
+
+function ModuleHeader({
+  address,
+  moduleName,
+}: {
+  address: string;
+  moduleName: string;
+}) {
+  const {data: module} = useGetAccountModule(address, moduleName);
+
+  return (
+    <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Typography fontSize={28} fontWeight={700}>
+        {moduleName}
+      </Typography>
+      <Box>
+        {module && (
+          <Typography fontSize={10}>
+            {module.abi?.exposed_functions?.filter((fn) => fn.is_entry)?.length}{" "}
+            entry functions | Bytecode: {getBytecodeSizeInKB(module.bytecode)}{" "}
+            KB
+          </Typography>
+        )}
+      </Box>
+    </Box>
   );
 }
 
