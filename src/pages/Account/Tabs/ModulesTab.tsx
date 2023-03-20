@@ -190,14 +190,14 @@ function ViewCode({address}: {address: string}): JSX.Element {
 
   return (
     <Grid container spacing={2}>
-      <Grid item md={3}>
+      <Grid item md={3} xs={12}>
         <ModuleSidebar
           moduleNames={modules.map((m) => m.name)}
           selectedModuleIndex={selectedModuleIndex}
           setSelectedModuleIndex={setSelectedModuleIndex}
         />
       </Grid>
-      <Grid item md={9}>
+      <Grid item md={9} xs={12}>
         <ModuleContent
           address={address}
           moduleName={modules[selectedModuleIndex].name}
@@ -252,7 +252,7 @@ function WriteContract({address}: {address: string}) {
 
   return (
     <Grid container spacing={2}>
-      <Grid item md={3}>
+      <Grid item md={3} xs={12}>
         <WriteContractSidebar
           selectedModuleName={selectedModuleName}
           selectedFnName={selectedFnName}
@@ -263,7 +263,7 @@ function WriteContract({address}: {address: string}) {
           }}
         />
       </Grid>
-      <Grid item md={9}>
+      <Grid item md={9} xs={12}>
         {!module || !fn ? (
           <EmptyTabContent message="Please selet a function" />
         ) : (
