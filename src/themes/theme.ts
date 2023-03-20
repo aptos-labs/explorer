@@ -246,6 +246,18 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
         }),
       },
     },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: () => ({
+          borderRadius: 0,
+          transition: `transform 500ms !important`,
+          boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+        }),
+        root: ({theme}) => ({
+          zIndex: theme.zIndex.drawer,
+        }),
+      },
+    },
     MuiPopover: {
       styleOverrides: {
         paper: {
