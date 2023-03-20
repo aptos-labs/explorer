@@ -2,6 +2,7 @@ import {Types} from "aptos";
 import {
   Box,
   Button,
+  Divider,
   Grid,
   Stack,
   TextField,
@@ -281,13 +282,17 @@ function WriteContractSidebar({
 }: WriteContractSidebarProps) {
   const theme = useTheme();
   return (
-    <Box sx={{padding: "24px"}}>
+    <Box
+      sx={{padding: "24px"}}
+      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      borderRadius={1}
+    >
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Select function
       </Typography>
       <Box
         sx={{
-          maxHeight: "500px",
+          maxHeight: "100vh",
           overflowY: "auto",
         }}
       >
@@ -304,9 +309,10 @@ function WriteContractSidebar({
                   key={fn.name}
                   onClick={() => handleClick(moduleName, fn.name)}
                   fontSize={12}
-                  fontWeight={400}
+                  fontWeight={selected ? 600 : 400}
                   marginBottom={"8px"}
                   padding={1}
+                  borderRadius={1}
                   sx={{
                     bgcolor: !selected
                       ? "transparent"
@@ -322,6 +328,7 @@ function WriteContractSidebar({
                 </Box>
               );
             })}
+          <Divider />
           </Box>
         ))}
       </Box>
@@ -340,6 +347,7 @@ function WriteContractForm({
   const {account, connected} = useWallet();
   const {handleSubmit, control} = useForm<WriteContractFormType>();
   const {submitTransaction} = useSubmitTransaction();
+  const theme = useTheme();
 
   const onSubmit: SubmitHandler<WriteContractFormType> = async (data) => {
     const payload: Types.TransactionPayload = {
@@ -355,7 +363,11 @@ function WriteContractForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={4}>
+      <Stack
+        spacing={4}
+        bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+        borderRadius={1}
+      >
         <Typography fontSize={14}>
           {fn.name}
           {fn.generic_type_params.length > 0 &&
@@ -431,14 +443,19 @@ function ModuleSidebar({
   selectedModuleIndex,
   setSelectedModuleIndex,
 }: ModuleSidebarProps) {
+  const theme = useTheme();
   return (
-    <Box sx={{padding: "24px"}}>
+    <Box
+      sx={{padding: "24px"}}
+      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      borderRadius={1}
+    >
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Modules
       </Typography>
       <Box
         sx={{
-          maxHeight: "500px",
+          maxHeight: "100vh",
           overflowY: "auto",
         }}
       >
@@ -468,8 +485,9 @@ function ModuleNameOption({
       onClick={handleClick}
       sx={{
         fontSize: 12,
-        fontWeight: 500,
+        fontWeight: selected ? 600 : 400,
         padding: "8px",
+        borderRadius: 1,
         bgcolor: !selected
           ? "transparent"
           : theme.palette.mode === "dark"
@@ -486,12 +504,21 @@ function ModuleNameOption({
 }
 
 function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
+  const theme = useTheme();
   return (
-    <Stack direction="column" spacing={2} padding={"24px"}>
+    <Stack
+      direction="column"
+      spacing={2}
+      padding={"24px"}
+      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      borderRadius={1}
+    >
       <Typography fontSize={28} fontWeight={700}>
         {moduleName}
       </Typography>
+      <Divider />
       <Code bytecode={bytecode} />
+      <Divider />
       <ABI address={address} moduleName={moduleName} />
     </Stack>
   );
@@ -543,7 +570,7 @@ function Code({bytecode}: {bytecode: string}) {
       ) : (
         <Box
           sx={{
-            maxHeight: "500px",
+            maxHeight: "100vh",
             overflowY: "auto",
             borderRadius: 1,
           }}
