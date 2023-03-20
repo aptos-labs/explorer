@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import SideDrawer from "../../components/SideDrawer";
+import {grey} from "../../themes/colors/aptosColorPalette";
 import {REWARDS_LEARN_MORE_LINK} from "./Components/Staking";
 
 type StakingDrawerProps = {
@@ -31,7 +32,7 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
             flexDirection: "column",
             alignItems: "flex-start",
             padding: 1,
-            color: theme.palette.mode === "dark" ? "#D4D4D4" : null,
+            color: theme.palette.mode === "dark" ? grey[300] : null,
           }}
         >
           <Typography variant="h5" paragraph>
@@ -68,7 +69,7 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
             flexDirection: "column",
             alignItems: "flex-start",
             padding: 1,
-            color: theme.palette.mode === "dark" ? "#D4D4D4" : null,
+            color: theme.palette.mode === "dark" ? grey[300] : null,
           }}
         >
           <Typography variant="h5" paragraph>
