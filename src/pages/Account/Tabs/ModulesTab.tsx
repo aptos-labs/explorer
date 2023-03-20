@@ -15,6 +15,7 @@ import {
   solarizedLight,
   solarizedDark,
 } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Error from "../Error";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
@@ -35,6 +36,7 @@ import {useGlobalState} from "../../../GlobalState";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
+import StyledTooltip from "../../../components/StyledTooltip";
 
 type PackageMetadata = {
   name: string;
@@ -67,7 +69,7 @@ interface ModuleNameOptionProps {
 interface ModuleContentProps {
   address: string;
   moduleName: string;
-  sourceCode: string;
+  bytecode: string;
 }
 
 interface WriteContractSidebarProps {
@@ -198,7 +200,7 @@ function ViewCode({address}: {address: string}): JSX.Element {
         <ModuleContent
           address={address}
           moduleName={modules[selectedModuleIndex].name}
-          sourceCode={modules[selectedModuleIndex].source}
+          bytecode={modules[selectedModuleIndex].source}
         />
       </Grid>
     </Grid>
@@ -483,26 +485,57 @@ function ModuleNameOption({
   );
 }
 
-function ModuleContent({address, moduleName, sourceCode}: ModuleContentProps) {
+function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
   return (
     <Stack direction="column" spacing={2} padding={"24px"}>
       <Typography fontSize={28} fontWeight={700}>
         {moduleName}
       </Typography>
-      <Code sourceCode={sourceCode} />
+      <Code bytecode={bytecode} />
       <ABI address={address} moduleName={moduleName} />
     </Stack>
   );
 }
 
-function Code({sourceCode}: {sourceCode: string}) {
+function Code({bytecode}: {bytecode: string}) {
+  const TOOLTIP_TIME = 2000; // 2s
+
+  const sourceCode = bytecode === "0x" ? undefined : transformCode(bytecode);
+
   const theme = useTheme();
+  const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
+
+  async function copyCode(event: React.MouseEvent<HTMLButtonElement>) {
+    if (!sourceCode) return;
+
+    await navigator.clipboard.writeText(sourceCode);
+    setTooltipOpen(true);
+    setTimeout(() => {
+      setTooltipOpen(false);
+    }, TOOLTIP_TIME);
+  }
+
   return (
     <Box>
-      <Typography fontSize={24} fontWeight={700} marginY={"16px"}>
-        Code
-      </Typography>
-      {sourceCode === "0x" ? (
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography fontSize={24} fontWeight={700} marginY={"16px"}>
+          Code
+        </Typography>
+        <StyledTooltip
+          title="Code copied"
+          placement="right"
+          open={tooltipOpen}
+          disableFocusListener
+          disableHoverListener
+          disableTouchListener
+        >
+          <Button variant="outlined" onClick={copyCode} disabled={!sourceCode}>
+            <ContentCopyIcon />{" "}
+            <Typography marginLeft={2}>copy code</Typography>
+          </Button>
+        </StyledTooltip>
+      </Box>
+      {!sourceCode ? (
         <Box>
           Unfortunately, the source code cannot be shown because the package
           publisher has chosen not to make it available
@@ -521,7 +554,7 @@ function Code({sourceCode}: {sourceCode: string}) {
               theme.palette.mode === "light" ? solarizedLight : solarizedDark
             }
           >
-            {transformCode(sourceCode)}
+            {sourceCode}
           </SyntaxHighlighter>
         </Box>
       )}
