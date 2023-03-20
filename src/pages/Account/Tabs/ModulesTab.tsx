@@ -553,6 +553,7 @@ function Code({bytecode}: {bytecode: string}) {
             style={
               theme.palette.mode === "light" ? solarizedLight : solarizedDark
             }
+            showLineNumbers
           >
             {sourceCode}
           </SyntaxHighlighter>
