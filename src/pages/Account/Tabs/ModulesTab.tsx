@@ -4,6 +4,7 @@ import {
   Button,
   Divider,
   Grid,
+  Modal,
   Stack,
   TextField,
   Typography,
@@ -38,6 +39,7 @@ import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
 import StyledTooltip from "../../../components/StyledTooltip";
+import {OpenInFull} from "@mui/icons-material";
 
 type PackageMetadata = {
   name: string;
@@ -573,19 +575,26 @@ function Code({bytecode}: {bytecode: string}) {
         <Typography fontSize={24} fontWeight={700} marginY={"16px"}>
           Code
         </Typography>
-        <StyledTooltip
-          title="Code copied"
-          placement="right"
-          open={tooltipOpen}
-          disableFocusListener
-          disableHoverListener
-          disableTouchListener
-        >
-          <Button variant="outlined" onClick={copyCode} disabled={!sourceCode}>
-            <ContentCopyIcon />{" "}
-            <Typography marginLeft={2}>copy code</Typography>
-          </Button>
-        </StyledTooltip>
+        <Stack direction="row" spacing={2}>
+          <StyledTooltip
+            title="Code copied"
+            placement="right"
+            open={tooltipOpen}
+            disableFocusListener
+            disableHoverListener
+            disableTouchListener
+          >
+            <Button
+              variant="outlined"
+              onClick={copyCode}
+              disabled={!sourceCode}
+            >
+              <ContentCopyIcon />{" "}
+              <Typography marginLeft={2}>copy code</Typography>
+            </Button>
+          </StyledTooltip>
+          <ExpandCode sourceCode={sourceCode} />
+        </Stack>
       </Box>
       {!sourceCode ? (
         <Box>
@@ -611,6 +620,55 @@ function Code({bytecode}: {bytecode: string}) {
           </SyntaxHighlighter>
         </Box>
       )}
+    </Box>
+  );
+}
+
+function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
+  const theme = useTheme();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <Box>
+      <Button
+        variant="outlined"
+        onClick={handleOpenModal}
+        disabled={!sourceCode}
+      >
+        <OpenInFull />
+      </Button>
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            maxHeight: "80%",
+            maxWidth: "80%",
+            overflowY: "auto",
+            borderRadius: 1,
+          }}
+        >
+          <SyntaxHighlighter
+            language="rust"
+            style={
+              theme.palette.mode === "light" ? solarizedLight : solarizedDark
+            }
+            showLineNumbers
+          >
+            {sourceCode!}
+          </SyntaxHighlighter>
+        </Box>
+      </Modal>
     </Box>
   );
 }
