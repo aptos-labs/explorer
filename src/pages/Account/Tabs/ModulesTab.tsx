@@ -3,11 +3,15 @@ import {
   Box,
   Button,
   Divider,
+  FormControl,
   Grid,
   Modal,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import React, {useState} from "react";
@@ -445,6 +449,8 @@ function ModuleSidebar({
   setSelectedModuleIndex,
 }: ModuleSidebarProps) {
   const theme = useTheme();
+  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
+
   return (
     <Box
       sx={{padding: "24px"}}
@@ -454,21 +460,36 @@ function ModuleSidebar({
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Modules
       </Typography>
-      <Box
-        sx={{
-          maxHeight: "100vh",
-          overflowY: "auto",
-        }}
-      >
-        {moduleNames.map((moduleName, i) => (
-          <ModuleNameOption
-            key={i}
-            handleClick={() => setSelectedModuleIndex(i)}
-            selected={i === selectedModuleIndex}
-            name={moduleName}
-          />
-        ))}
-      </Box>
+      {isWideScreen ? (
+        <Box
+          sx={{
+            maxHeight: "100vh",
+            overflowY: "auto",
+          }}
+        >
+          {moduleNames.map((moduleName, i) => (
+            <ModuleNameOption
+              key={i}
+              handleClick={() => setSelectedModuleIndex(i)}
+              selected={i === selectedModuleIndex}
+              name={moduleName}
+            />
+          ))}
+        </Box>
+      ) : (
+        <FormControl fullWidth>
+          <Select
+            value={selectedModuleIndex}
+            onChange={(e) => setSelectedModuleIndex(Number(e.target.value))}
+          >
+            {moduleNames.map((moduleName, i) => (
+              <MenuItem key={i} value={i}>
+                {moduleName}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
     </Box>
   );
 }
