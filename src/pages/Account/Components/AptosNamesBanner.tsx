@@ -20,8 +20,8 @@ export function AptosNamesBanner() {
   );
 
   return inDev ? (
-      <Banner action={action} sx={{marginBottom: 2}}>
-          Claim your ANS name today!
-      </Banner>
+    <Banner action={action} sx={{marginBottom: 2}}>
+      Claim your ANS name today!
+    </Banner>
   ) : null;
 }
