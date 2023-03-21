@@ -215,7 +215,6 @@ type ValidatorRowProps = {
 function CommissionCell({validator}: ValidatorCellProps) {
   const {commission} = useGetDelegationNodeInfo({
     validatorAddress: validator.owner_address,
-    validator,
   });
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
@@ -247,7 +246,6 @@ function RewardsEarnedCell({validator}: ValidatorCellProps) {
 function DelegatedAmountCell({validator}: ValidatorCellProps) {
   const {delegatedStakeAmount, networkPercentage} = useGetDelegationNodeInfo({
     validatorAddress: validator.owner_address,
-    validator,
   });
 
   return (
