@@ -44,6 +44,7 @@ export const defaultNetwork = networks[defaultNetworkName];
 export const features = {
   prod: "Production Mode",
   dev: "Development Mode",
+  earlydev: "Early Development Mode",
 };
 
 export type FeatureName = keyof typeof features;

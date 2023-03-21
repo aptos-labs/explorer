@@ -26,7 +26,6 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {useGetAccountResource} from "../../../api/hooks/useGetAccountResource";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {getBytecodeSizeInKB, transformCode} from "../../../utils";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import StyledTabs from "../../../components/StyledTabs";
@@ -709,10 +708,14 @@ type ModulesTabProps = {
 };
 
 export default function ModulesTab({address}: ModulesTabProps) {
-  const inDev = useGetInDevMode();
-  return inDev ? (
-    <ModulesReworked address={address} />
-  ) : (
-    <ModulesContent address={address} />
-  );
+  const [state, _] = useGlobalState();
+  if (state.feature_name === "earlydev")
+    return <ModulesReworked address={address} />;
+  if (state.feature_name === "dev")
+    return (
+      <Box marginTop={4}>
+        <ViewCode address={address} />
+      </Box>
+    );
+  return <ModulesContent address={address} />;
 }
