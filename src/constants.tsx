@@ -68,17 +68,4 @@ export const defaultFeature = features[defaultFeatureName];
 /**
  * Delegation Service
  */
-
-// TODO(jill): update this function name once in mainnet
-export const DELEGATION_POOL_ADDRESS =
-  process.env.REACT_APP_DELEGATION_POOL_ADDRESS ??
-  "0x1310dc820487f24755e6e06747f6582118597a48868e2a98260fa8c3ee945cbd";
 export const OCTA = 100000000;
-export const MIN_ADD_STAKE_AMOUNT = 1; // min stake amount is 1 APT
-export const WHILTELISTED_TESTNET_DELEGATION_NODES = process.env
-  .REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES
-  ? process.env.REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES.split(",")
-  : [
-      "0x5df905f817adf39293c596e83512ab8a9dc5a19980e11bd4ce44b6e749d33a0d",
-      "0xa396d898018d6892b148789ed8a95e0bd6af05e0974cef3d5a1197ee2fa4519e",
-    ];

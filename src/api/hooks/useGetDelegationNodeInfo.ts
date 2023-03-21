@@ -1,7 +1,6 @@
 import {AptosClient, Types} from "aptos";
 import {useState, useMemo} from "react";
 import {getValidatorCommission} from "..";
-import {DELEGATION_POOL_ADDRESS} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
 import {useGetAccountResource} from "./useGetAccountResource";
 import {ValidatorData} from "./useGetValidators";
@@ -15,7 +14,7 @@ interface DelegationPool {
 
 type DelegationNodeInfoResponse = {
   delegatedStakeAmount: string | undefined;
-  networkPercentage?: string;
+  networkPercentage: string | undefined;
   commission: number | undefined;
   isQueryLoading: boolean;
 };
@@ -33,7 +32,7 @@ export function useGetDelegationNodeInfo({
   const {totalVotingPower} = useGetValidatorSet();
   const {data: delegationPool, isLoading} = useGetAccountResource(
     validatorAddress,
-    `${DELEGATION_POOL_ADDRESS}::delegation_pool::DelegationPool`,
+    "0x1::delegation_pool::DelegationPool",
   );
   const client = new AptosClient(state.network_value);
   const [commission, setCommission] = useState<Types.MoveValue>();
