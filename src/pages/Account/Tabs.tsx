@@ -92,9 +92,14 @@ export default function AccountTabs({
   accountData,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
-  const {tab} = useParams();
+  const {modulesTab, tab} = useParams();
   const navigate = useNavigate();
-  const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
+  const value =
+    tab === undefined
+      ? modulesTab === undefined
+        ? TAB_VALUES[0]
+        : "modules"
+      : (tab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/account/${address}/${newValue}`);
