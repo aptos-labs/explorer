@@ -41,7 +41,6 @@ export default function StakingBar({
   const {delegatedStakeAmount, networkPercentage, commission, isQueryLoading} =
     useGetDelegationNodeInfo({
       validatorAddress: validator.owner_address,
-      validator,
     });
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
