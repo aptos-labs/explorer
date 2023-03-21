@@ -34,7 +34,6 @@ export default function ValidatorDetailCard({
     useGetDelegationState(accountResource, validator);
   const {commission} = useGetDelegationNodeInfo({
     validatorAddress: validator.owner_address,
-    validator,
   });
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
