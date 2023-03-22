@@ -134,6 +134,7 @@ export default function NetworkSelect() {
             ml: 1,
             color: "inherit",
             alignItems: "center",
+            textTransform: "capitalize",
             "& .MuiSvgIcon-root": {
               color: theme.palette.text.secondary,
             },
@@ -170,7 +171,11 @@ export default function NetworkSelect() {
             </Stack>
           </MenuItem>
           {Object.keys(networks).map((networkName: string) => (
-            <MenuItem key={networkName} value={networkName} sx={{paddingY: 0}}>
+            <MenuItem
+              key={networkName}
+              value={networkName}
+              sx={{paddingY: 0, textTransform: "capitalize"}}
+            >
               <NetworkMenuItem networkName={networkName} />
             </MenuItem>
           ))}

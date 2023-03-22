@@ -345,7 +345,6 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
   const {commission, delegatedStakeAmount, networkPercentage} =
     useGetDelegationNodeInfo({
       validatorAddress: validator.owner_address,
-      validator,
     });
 
   return (
