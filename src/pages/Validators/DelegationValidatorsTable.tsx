@@ -27,6 +27,7 @@ import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
 import {getDelegationPoolExist} from "../../api";
+import {WHILTELISTED_TESTNET_DELEGATION_NODES} from "../../constants";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -392,7 +393,7 @@ export function DelegationValidatorsTable() {
           client,
           validator.owner_address,
         );
-        if (delegationPoolExist.toString() === "true") {
+        if (delegationPoolExist[0]) {
           return validator;
         }
       });
@@ -403,8 +404,18 @@ export function DelegationValidatorsTable() {
         ) as ValidatorData[],
       );
     }
-    fetchData();
-  }, []);
+    if (WHILTELISTED_TESTNET_DELEGATION_NODES) {
+      setDelegationValidators(
+        validators.filter((validator) =>
+          WHILTELISTED_TESTNET_DELEGATION_NODES!.includes(
+            validator.owner_address,
+          ),
+        ),
+      );
+    } else {
+      fetchData();
+    }
+  }, [validators, state.network_value]);
 
   return (
     <Table>

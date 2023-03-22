@@ -225,7 +225,7 @@ export async function getStake(
 export async function getValidatorCommission(
   client: AptosClient,
   validatorAddress: Types.Address,
-): Promise<Types.MoveValue> {
+): Promise<Types.MoveValue[]> {
   const payload: Types.ViewRequest = {
     function: "0x1::delegation_pool::operator_commission_percentage",
     type_arguments: [],
@@ -237,7 +237,7 @@ export async function getValidatorCommission(
 export async function getDelegationPoolExist(
   client: AptosClient,
   validatorAddress: Types.Address,
-): Promise<Types.MoveValue> {
+): Promise<Types.MoveValue[]> {
   const payload: Types.ViewRequest = {
     function: "0x1::delegation_pool::delegation_pool_exists",
     type_arguments: [],

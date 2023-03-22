@@ -35,7 +35,7 @@ export function useGetDelegationNodeInfo({
     "0x1::delegation_pool::DelegationPool",
   );
   const client = new AptosClient(state.network_value);
-  const [commission, setCommission] = useState<Types.MoveValue>();
+  const [commission, setCommission] = useState<Types.MoveValue[]>();
   const [delegatedStakeAmount, setDelegatedStakeAmount] = useState<string>();
   const [networkPercentage, setNetworkPercentage] = useState<string>();
   const [isQueryLoading, setIsQueryLoading] = useState<boolean>(true);
@@ -61,7 +61,7 @@ export function useGetDelegationNodeInfo({
   }, [state.network_value, totalVotingPower, isLoading, delegationPool]);
 
   return {
-    commission: commission ? Number(commission) / 100 : undefined, // commission rate: 22.85% is represented as 2285
+    commission: commission ? Number(commission[0]) / 100 : undefined, // commission rate: 22.85% is represented as 2285
     networkPercentage,
     delegatedStakeAmount,
     isQueryLoading,
