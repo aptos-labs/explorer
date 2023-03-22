@@ -1,5 +1,4 @@
 import {AptosClient, Types} from "aptos";
-import {DELEGATION_POOL_ADDRESS} from "../constants";
 import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
@@ -216,21 +215,33 @@ export async function getStake(
   validatorAddress: Types.Address,
 ): Promise<Types.MoveValue[]> {
   const payload: Types.ViewRequest = {
-    function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::get_stake`,
+    function: "0x1::delegation_pool::get_stake",
     type_arguments: [],
     arguments: [validatorAddress, delegatorAddress],
   };
-  return await client.view(payload);
+  return withResponseError(client.view(payload));
 }
 
 export async function getValidatorCommission(
   client: AptosClient,
   validatorAddress: Types.Address,
-): Promise<Types.MoveValue> {
+): Promise<Types.MoveValue[]> {
   const payload: Types.ViewRequest = {
-    function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::operator_commission_percentage`,
+    function: "0x1::delegation_pool::operator_commission_percentage",
     type_arguments: [],
     arguments: [validatorAddress],
   };
-  return await client.view(payload);
+  return withResponseError(client.view(payload));
+}
+
+export async function getDelegationPoolExist(
+  client: AptosClient,
+  validatorAddress: Types.Address,
+): Promise<Types.MoveValue[]> {
+  const payload: Types.ViewRequest = {
+    function: "0x1::delegation_pool::delegation_pool_exists",
+    type_arguments: [],
+    arguments: [validatorAddress],
+  };
+  return withResponseError(client.view(payload));
 }
