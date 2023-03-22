@@ -30,8 +30,12 @@ export default function ExplorerRoutes() {
           <Route path=":txnHashOrVersion/:tab" element={<TransactionPage />} />
         </Route>
         <Route path="/account">
-          <Route path=":address" element={<AccountPage />} />
+          <Route
+            path=":address/modules/:modulesTab"
+            element={<AccountPage />}
+          />
           <Route path=":address/:tab" element={<AccountPage />} />
+          <Route path=":address" element={<AccountPage />} />
         </Route>
         <Route path="/blocks" element={<BlocksPage />} />
         <Route path="/block">
