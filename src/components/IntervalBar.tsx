@@ -36,7 +36,7 @@ export default function IntervalBar({
     seconds: number;
     completed: boolean;
   }) => {
-    if (completed) {
+    if (completed && intervalType === IntervalType.EPOCH) {
       window.location.reload();
     }
     switch (intervalType) {
