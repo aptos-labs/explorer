@@ -6,11 +6,12 @@
     "@apollo/client": "^3.7.9",
     "@aptos-labs/wallet-adapter-mui-design": "^0.1.1",
     "@aptos-labs/wallet-adapter-react": "^0.2.4",
+    "@aptos-labs/aptos-names-connector": "^0.0.1",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@martianwallet/aptos-wallet-adapter": "^0.0.2",
     "@mui/icons-material": "^5.11.11",
-    "@mui/material": "latest",
+    "@mui/material": "^5.11.13",
     "@mui/x-date-pickers": "^5.0.20",
     "@pontem/wallet-adapter-plugin": "^0.1.4",
     "@rise-wallet/wallet-adapter": "^0.1.2",
@@ -36,6 +37,7 @@
     "prettier": "^2.8.4",
     "react": "latest",
     "react-chartjs-2": "^5.2.0",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-countdown": "^2.3.5",
     "react-dom": "latest",
     "react-ga4": "^1.4.1",
@@ -53,7 +55,7 @@
     "recharts": "^2.4.3",
     "statsig-react": "^1.23.1",
     "ts-results": "^3.3.0",
-    "typescript": "latest"
+    "typescript": "^5.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

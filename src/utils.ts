@@ -87,3 +87,15 @@ export async function fetchJsonResponse(url: string) {
 export function transformCode(source: string): string {
   return pako.ungzip(new HexString(source).toUint8Array(), {to: "string"});
 }
+
+export function getBytecodeSizeInKB(bytecodeHex: string): number {
+  // Convert the hex string to a byte array
+  const textEncoder = new TextEncoder();
+  const byteArray = new Uint8Array(textEncoder.encode(bytecodeHex));
+
+  // Compute the size of the byte array in kilobytes (KB)
+  const sizeInKB = byteArray.length / 1024;
+
+  // Return the size in KB with two decimal places
+  return parseFloat(sizeInKB.toFixed(2));
+}

@@ -3,9 +3,7 @@ import {
   Alert,
   Stack,
   Typography,
-  Divider,
   IconButton,
-  Button,
   Box,
   SxProps,
   Theme,
@@ -14,36 +12,18 @@ import {
 } from "@mui/material";
 import React, {useState} from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import {grey} from "../themes/colors/aptosColorPalette";
 import AptosBannerImage from "../assets/Banner.jpg";
 
 interface BannerProps {
   children: React.ReactNode;
-  handleClick: () => void;
+  action?: React.ReactNode;
   sx?: SxProps<Theme>;
 }
 
-export function Banner({children, handleClick, sx}: BannerProps) {
+export function Banner({children, action, sx}: BannerProps) {
   const [bannerOpen, setBannerOpen] = useState<boolean>(true);
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
-
-  const learnMoreButton = (
-    <Button variant="text" onClick={handleClick} sx={{alignSelf: "flex-start"}}>
-      <Typography>LEARN MORE</Typography>
-      <ArrowForwardIosIcon sx={{marginLeft: 2}} fontSize="small" />
-    </Button>
-  );
-
-  const divider = (
-    <Divider
-      orientation="vertical"
-      variant="middle"
-      flexItem
-      sx={{color: grey[200]}}
-    />
-  );
 
   const closeIcon = (
     <IconButton
@@ -100,9 +80,10 @@ export function Banner({children, handleClick, sx}: BannerProps) {
               <Stack
                 direction="column"
                 spacing={1}
-                marginRight={2}
+                marginRight={1}
                 sx={{verticalAlign: "center"}}
               >
+                {action}
                 {closeIcon}
               </Stack>
             }
@@ -110,14 +91,13 @@ export function Banner({children, handleClick, sx}: BannerProps) {
             <Stack
               direction="column"
               spacing={1}
-              marginLeft={5}
+              marginLeft={2}
               sx={{
                 paddingTop: 0.5,
               }}
             >
               {icon}
               {text}
-              {learnMoreButton}
             </Stack>
           </Alert>
         ) : (
@@ -131,8 +111,7 @@ export function Banner({children, handleClick, sx}: BannerProps) {
                 marginRight={2}
                 sx={{verticalAlign: "center"}}
               >
-                {learnMoreButton}
-                {divider}
+                {action}
                 {closeIcon}
               </Stack>
             }
@@ -140,7 +119,7 @@ export function Banner({children, handleClick, sx}: BannerProps) {
             <Stack
               direction="row"
               spacing={1}
-              marginLeft={5}
+              marginLeft={2}
               sx={{
                 paddingTop: 0.5,
                 verticalAlign: "center",

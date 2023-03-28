@@ -163,7 +163,7 @@ function ValidatorHeaderCell({
   }
 }
 
-export type ValidatorCellProps = {
+type ValidatorCellProps = {
   validator: ValidatorData;
 };
 

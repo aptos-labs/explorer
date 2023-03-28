@@ -2,10 +2,16 @@ import {Types} from "aptos";
 import {
   Box,
   Button,
+  Divider,
+  FormControl,
   Grid,
+  Modal,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import React, {useState} from "react";
@@ -15,6 +21,7 @@ import {
   solarizedLight,
   solarizedDark,
 } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Error from "../Error";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
@@ -23,8 +30,7 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {useGetAccountResource} from "../../../api/hooks/useGetAccountResource";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
-import {transformCode} from "../../../utils";
+import {assertNever, getBytecodeSizeInKB, transformCode} from "../../../utils";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import StyledTabs from "../../../components/StyledTabs";
 import StyledTab from "../../../components/StyledTab";
@@ -35,6 +41,77 @@ import {useGlobalState} from "../../../GlobalState";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Controller, SubmitHandler, useForm} from "react-hook-form";
 import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
+import StyledTooltip from "../../../components/StyledTooltip";
+import {OpenInFull} from "@mui/icons-material";
+import {useNavigate, useParams} from "react-router-dom";
+
+const TabComponents = Object.freeze({
+  code: ViewCode,
+  write: WriteContract,
+});
+
+type TabValue = keyof typeof TabComponents;
+
+function getTabLabel(value: TabValue): string {
+  switch (value) {
+    case "code":
+      return "View Code";
+    case "write":
+      return "Write";
+    default:
+      return assertNever(value);
+  }
+}
+
+type TabPanelProps = {
+  value: TabValue;
+  address: string;
+};
+
+function TabPanel({value, address}: TabPanelProps): JSX.Element {
+  const TabComponent = TabComponents[value];
+  return <TabComponent address={address} />;
+}
+
+function ModulesTabs({address}: {address: string}): JSX.Element {
+  const theme = useTheme();
+  const tabValues = Object.keys(TabComponents) as TabValue[];
+  const {modulesTab} = useParams();
+  const navigate = useNavigate();
+  const value =
+    modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+    navigate(`/account/${address}/modules/${newValue}`);
+  };
+
+  return (
+    <Box sx={{width: "100%"}}>
+      <Box
+        padding={2}
+        marginY={4}
+        borderColor="red"
+        borderRadius={1}
+        bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      >
+        <StyledTabs value={value} onChange={handleChange}>
+          {tabValues.map((value, i) => (
+            <StyledTab
+              key={i}
+              value={value}
+              label={getTabLabel(value)}
+              isFirst={i === 0}
+              isLast={i === tabValues.length - 1}
+            />
+          ))}
+        </StyledTabs>
+      </Box>
+      <Box>
+        <TabPanel value={value} address={address} />
+      </Box>
+    </Box>
+  );
+}
 
 type PackageMetadata = {
   name: string;
@@ -67,7 +144,7 @@ interface ModuleNameOptionProps {
 interface ModuleContentProps {
   address: string;
   moduleName: string;
-  sourceCode: string;
+  bytecode: string;
 }
 
 interface WriteContractSidebarProps {
@@ -124,47 +201,6 @@ function ModulesContent({address}: {address: string}) {
   );
 }
 
-function ModulesReworked({address}: {address: string}): JSX.Element {
-  const [action, setAction] = useState<ContractAction>("View code");
-  return (
-    <Box>
-      <ModulesActionTabs
-        options={CONTRACT_ACTIONS}
-        action={action}
-        setAction={setAction}
-      />
-      {action === "View code" && <ViewCode address={address} />}
-      {action === "Write" && <WriteContract address={address} />}
-    </Box>
-  );
-}
-
-function ModulesActionTabs({
-  options,
-  action,
-  setAction,
-}: {
-  options: readonly ContractAction[];
-  action: ContractAction;
-  setAction: (action: ContractAction) => void;
-}) {
-  return (
-    <Box padding={2} marginY={4} borderRadius={1}>
-      <StyledTabs value={action} onChange={(e, v) => setAction(v)}>
-        {options.map((value, i) => (
-          <StyledTab
-            key={i}
-            value={value}
-            label={value}
-            isFirst={i === 0}
-            isLast={i === options.length - 1}
-          />
-        ))}
-      </StyledTabs>
-    </Box>
-  );
-}
-
 function ViewCode({address}: {address: string}): JSX.Element {
   const {data: registry} = useGetAccountResource(
     address,
@@ -187,18 +223,18 @@ function ViewCode({address}: {address: string}): JSX.Element {
 
   return (
     <Grid container spacing={2}>
-      <Grid item md={3}>
+      <Grid item md={3} xs={12}>
         <ModuleSidebar
           moduleNames={modules.map((m) => m.name)}
           selectedModuleIndex={selectedModuleIndex}
           setSelectedModuleIndex={setSelectedModuleIndex}
         />
       </Grid>
-      <Grid item md={9}>
+      <Grid item md={9} xs={12}>
         <ModuleContent
           address={address}
           moduleName={modules[selectedModuleIndex].name}
-          sourceCode={modules[selectedModuleIndex].source}
+          bytecode={modules[selectedModuleIndex].source}
         />
       </Grid>
     </Grid>
@@ -249,7 +285,7 @@ function WriteContract({address}: {address: string}) {
 
   return (
     <Grid container spacing={2}>
-      <Grid item md={3}>
+      <Grid item md={3} xs={12}>
         <WriteContractSidebar
           selectedModuleName={selectedModuleName}
           selectedFnName={selectedFnName}
@@ -260,7 +296,7 @@ function WriteContract({address}: {address: string}) {
           }}
         />
       </Grid>
-      <Grid item md={9}>
+      <Grid item md={9} xs={12}>
         {!module || !fn ? (
           <EmptyTabContent message="Please selet a function" />
         ) : (
@@ -279,13 +315,17 @@ function WriteContractSidebar({
 }: WriteContractSidebarProps) {
   const theme = useTheme();
   return (
-    <Box sx={{padding: "24px"}}>
+    <Box
+      sx={{padding: "24px"}}
+      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      borderRadius={1}
+    >
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Select function
       </Typography>
       <Box
         sx={{
-          maxHeight: "500px",
+          maxHeight: "100vh",
           overflowY: "auto",
         }}
       >
@@ -302,9 +342,10 @@ function WriteContractSidebar({
                   key={fn.name}
                   onClick={() => handleClick(moduleName, fn.name)}
                   fontSize={12}
-                  fontWeight={400}
+                  fontWeight={selected ? 600 : 400}
                   marginBottom={"8px"}
                   padding={1}
+                  borderRadius={1}
                   sx={{
                     bgcolor: !selected
                       ? "transparent"
@@ -320,6 +361,7 @@ function WriteContractSidebar({
                 </Box>
               );
             })}
+            <Divider />
           </Box>
         ))}
       </Box>
@@ -338,6 +380,7 @@ function WriteContractForm({
   const {account, connected} = useWallet();
   const {handleSubmit, control} = useForm<WriteContractFormType>();
   const {submitTransaction} = useSubmitTransaction();
+  const theme = useTheme();
 
   const onSubmit: SubmitHandler<WriteContractFormType> = async (data) => {
     const payload: Types.TransactionPayload = {
@@ -353,7 +396,11 @@ function WriteContractForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={4}>
+      <Stack
+        spacing={4}
+        bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+        borderRadius={1}
+      >
         <Typography fontSize={14}>
           {fn.name}
           {fn.generic_type_params.length > 0 &&
@@ -429,26 +476,48 @@ function ModuleSidebar({
   selectedModuleIndex,
   setSelectedModuleIndex,
 }: ModuleSidebarProps) {
+  const theme = useTheme();
+  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
+
   return (
-    <Box sx={{padding: "24px"}}>
+    <Box
+      sx={{padding: "24px"}}
+      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      borderRadius={1}
+    >
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Modules
       </Typography>
-      <Box
-        sx={{
-          maxHeight: "500px",
-          overflowY: "auto",
-        }}
-      >
-        {moduleNames.map((moduleName, i) => (
-          <ModuleNameOption
-            key={i}
-            handleClick={() => setSelectedModuleIndex(i)}
-            selected={i === selectedModuleIndex}
-            name={moduleName}
-          />
-        ))}
-      </Box>
+      {isWideScreen ? (
+        <Box
+          sx={{
+            maxHeight: "100vh",
+            overflowY: "auto",
+          }}
+        >
+          {moduleNames.map((moduleName, i) => (
+            <ModuleNameOption
+              key={i}
+              handleClick={() => setSelectedModuleIndex(i)}
+              selected={i === selectedModuleIndex}
+              name={moduleName}
+            />
+          ))}
+        </Box>
+      ) : (
+        <FormControl fullWidth>
+          <Select
+            value={selectedModuleIndex}
+            onChange={(e) => setSelectedModuleIndex(Number(e.target.value))}
+          >
+            {moduleNames.map((moduleName, i) => (
+              <MenuItem key={i} value={i}>
+                {moduleName}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
     </Box>
   );
 }
@@ -466,8 +535,9 @@ function ModuleNameOption({
       onClick={handleClick}
       sx={{
         fontSize: 12,
-        fontWeight: 500,
+        fontWeight: selected ? 600 : 400,
         padding: "8px",
+        borderRadius: 1,
         bgcolor: !selected
           ? "transparent"
           : theme.palette.mode === "dark"
@@ -483,26 +553,98 @@ function ModuleNameOption({
   );
 }
 
-function ModuleContent({address, moduleName, sourceCode}: ModuleContentProps) {
+function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
+  const theme = useTheme();
   return (
-    <Stack direction="column" spacing={2} padding={"24px"}>
-      <Typography fontSize={28} fontWeight={700}>
-        {moduleName}
-      </Typography>
-      <Code sourceCode={sourceCode} />
+    <Stack
+      direction="column"
+      spacing={2}
+      padding={"24px"}
+      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      borderRadius={1}
+    >
+      <ModuleHeader address={address} moduleName={moduleName} />
+      <Divider />
+      <Code bytecode={bytecode} />
+      <Divider />
       <ABI address={address} moduleName={moduleName} />
     </Stack>
   );
 }
 
-function Code({sourceCode}: {sourceCode: string}) {
+function ModuleHeader({
+  address,
+  moduleName,
+}: {
+  address: string;
+  moduleName: string;
+}) {
+  const {data: module} = useGetAccountModule(address, moduleName);
+
+  return (
+    <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Typography fontSize={28} fontWeight={700}>
+        {moduleName}
+      </Typography>
+      <Box>
+        {module && (
+          <Typography fontSize={10}>
+            {module.abi?.exposed_functions?.filter((fn) => fn.is_entry)?.length}{" "}
+            entry functions | Bytecode: {getBytecodeSizeInKB(module.bytecode)}{" "}
+            KB
+          </Typography>
+        )}
+      </Box>
+    </Box>
+  );
+}
+
+function Code({bytecode}: {bytecode: string}) {
+  const TOOLTIP_TIME = 2000; // 2s
+
+  const sourceCode = bytecode === "0x" ? undefined : transformCode(bytecode);
+
   const theme = useTheme();
+  const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
+
+  async function copyCode(event: React.MouseEvent<HTMLButtonElement>) {
+    if (!sourceCode) return;
+
+    await navigator.clipboard.writeText(sourceCode);
+    setTooltipOpen(true);
+    setTimeout(() => {
+      setTooltipOpen(false);
+    }, TOOLTIP_TIME);
+  }
+
   return (
     <Box>
-      <Typography fontSize={24} fontWeight={700} marginY={"16px"}>
-        Code
-      </Typography>
-      {sourceCode === "0x" ? (
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography fontSize={24} fontWeight={700} marginY={"16px"}>
+          Code
+        </Typography>
+        <Stack direction="row" spacing={2}>
+          <StyledTooltip
+            title="Code copied"
+            placement="right"
+            open={tooltipOpen}
+            disableFocusListener
+            disableHoverListener
+            disableTouchListener
+          >
+            <Button
+              variant="outlined"
+              onClick={copyCode}
+              disabled={!sourceCode}
+            >
+              <ContentCopyIcon />{" "}
+              <Typography marginLeft={2}>copy code</Typography>
+            </Button>
+          </StyledTooltip>
+          <ExpandCode sourceCode={sourceCode} />
+        </Stack>
+      </Box>
+      {!sourceCode ? (
         <Box>
           Unfortunately, the source code cannot be shown because the package
           publisher has chosen not to make it available
@@ -510,7 +652,7 @@ function Code({sourceCode}: {sourceCode: string}) {
       ) : (
         <Box
           sx={{
-            maxHeight: "500px",
+            maxHeight: "100vh",
             overflowY: "auto",
             borderRadius: 1,
           }}
@@ -520,11 +662,63 @@ function Code({sourceCode}: {sourceCode: string}) {
             style={
               theme.palette.mode === "light" ? solarizedLight : solarizedDark
             }
+            customStyle={{margin: 0}}
+            showLineNumbers
           >
-            {transformCode(sourceCode)}
+            {sourceCode}
           </SyntaxHighlighter>
         </Box>
       )}
+    </Box>
+  );
+}
+
+function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
+  const theme = useTheme();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <Box>
+      <Button
+        variant="outlined"
+        onClick={handleOpenModal}
+        disabled={!sourceCode}
+      >
+        <OpenInFull />
+      </Button>
+      <Modal open={isModalOpen} onClose={handleCloseModal}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            maxHeight: "80%",
+            maxWidth: "80%",
+            overflowY: "auto",
+            borderRadius: 1,
+          }}
+        >
+          <SyntaxHighlighter
+            language="rust"
+            style={
+              theme.palette.mode === "light" ? solarizedLight : solarizedDark
+            }
+            customStyle={{margin: 0}}
+            showLineNumbers
+          >
+            {sourceCode!}
+          </SyntaxHighlighter>
+        </Box>
+      </Modal>
     </Box>
   );
 }
@@ -560,14 +754,17 @@ function ABI({address, moduleName}: {address: string; moduleName: string}) {
 
 type ModulesTabProps = {
   address: string;
-  accountData: Types.AccountData | undefined;
 };
 
 export default function ModulesTab({address}: ModulesTabProps) {
-  const inDev = useGetInDevMode();
-  return inDev ? (
-    <ModulesReworked address={address} />
-  ) : (
-    <ModulesContent address={address} />
-  );
+  const [state, _] = useGlobalState();
+  if (state.feature_name === "earlydev")
+    return <ModulesTabs address={address} />;
+  if (state.feature_name === "dev")
+    return (
+      <Box marginTop={4}>
+        <ViewCode address={address} />
+      </Box>
+    );
+  return <ModulesContent address={address} />;
 }

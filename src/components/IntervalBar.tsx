@@ -36,6 +36,9 @@ export default function IntervalBar({
     seconds: number;
     completed: boolean;
   }) => {
+    if (timestamp < Date.now()) {
+      return <span>Validator's no longer active</span>;
+    }
     if (completed) {
       window.location.reload();
     }
