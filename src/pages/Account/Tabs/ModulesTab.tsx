@@ -668,7 +668,7 @@ function Code({bytecode}: {bytecode: string}) {
             style={
               theme.palette.mode === "light" ? solarizedLight : solarizedDark
             }
-            customStyle={{margin: 0}}
+            customStyle={{margin: 0, backgroundColor: "rgba(14,165,233,0.1)"}}
             showLineNumbers
           >
             {sourceCode}
@@ -724,7 +724,13 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
             style={
               theme.palette.mode === "light" ? solarizedLight : solarizedDark
             }
-            customStyle={{margin: 0}}
+            customStyle={{
+              margin: 0,
+              backgroundColor:
+                theme.palette.mode === "light"
+                  ? "rgb(227,236,243)"
+                  : "rgb(33,45,50)",
+            }}
             showLineNumbers
           >
             {sourceCode!}
