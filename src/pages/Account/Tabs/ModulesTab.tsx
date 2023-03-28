@@ -31,7 +31,12 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {useGetAccountResource} from "../../../api/hooks/useGetAccountResource";
 import {assertNever, getBytecodeSizeInKB, transformCode} from "../../../utils";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {
+  codeBlockColor,
+  codeBlockColorRgbDark,
+  codeBlockColorRgbLight,
+  grey,
+} from "../../../themes/colors/aptosColorPalette";
 import StyledTabs from "../../../components/StyledTabs";
 import StyledTab from "../../../components/StyledTab";
 import {useGetAccountModules} from "../../../api/hooks/useGetAccountModules";
@@ -665,10 +670,11 @@ function Code({bytecode}: {bytecode: string}) {
         >
           <SyntaxHighlighter
             language="rust"
+            key={theme.palette.mode}
             style={
               theme.palette.mode === "light" ? solarizedLight : solarizedDark
             }
-            customStyle={{margin: 0, backgroundColor: "rgba(14,165,233,0.1)"}}
+            customStyle={{margin: 0, backgroundColor: codeBlockColor}}
             showLineNumbers
           >
             {sourceCode}
@@ -721,6 +727,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
         >
           <SyntaxHighlighter
             language="rust"
+            key={theme.palette.mode}
             style={
               theme.palette.mode === "light" ? solarizedLight : solarizedDark
             }
@@ -728,8 +735,8 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
               margin: 0,
               backgroundColor:
                 theme.palette.mode === "light"
-                  ? "rgb(227,236,243)"
-                  : "rgb(33,45,50)",
+                  ? codeBlockColorRgbLight
+                  : codeBlockColorRgbDark,
             }}
             showLineNumbers
           >
