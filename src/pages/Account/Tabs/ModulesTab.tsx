@@ -636,9 +636,15 @@ function Code({bytecode}: {bytecode: string}) {
               variant="outlined"
               onClick={copyCode}
               disabled={!sourceCode}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                height: "2rem",
+                borderRadius: "0.5rem",
+              }}
             >
-              <ContentCopyIcon />{" "}
-              <Typography marginLeft={2}>copy code</Typography>
+              <ContentCopyIcon style={{height: "1.25rem", width: "1.25rem"}} />{" "}
+              <Typography marginLeft={1}>copy code</Typography>
             </Button>
           </StyledTooltip>
           <ExpandCode sourceCode={sourceCode} />
@@ -691,8 +697,14 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
         variant="outlined"
         onClick={handleOpenModal}
         disabled={!sourceCode}
+        sx={{
+          height: "2rem",
+          width: "2rem",
+          minWidth: "unset",
+          borderRadius: "0.5rem",
+        }}
       >
-        <OpenInFull />
+        <OpenInFull style={{height: "1.25rem", width: "1.25rem"}} />
       </Button>
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <Box
