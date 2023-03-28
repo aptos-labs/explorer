@@ -10,10 +10,12 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {Types} from "aptos";
+import {AptosClient, Types} from "aptos";
 import React, {useContext, useEffect, useState} from "react";
+import {getCanWithdrawPendingInactive} from "../../api";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
+import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import StyledTooltip, {
@@ -23,6 +25,7 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
+import {useGlobalState} from "../../GlobalState";
 import {assertNever} from "../../utils";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
@@ -106,6 +109,7 @@ type MyDepositsSectionCellProps = {
   status: StakingStatus;
   stakePrincipals: StakePrincipals | undefined;
   stakes: Types.MoveValue[];
+  validator: ValidatorData;
 };
 
 function AmountCell({stake}: MyDepositsSectionCellProps) {
@@ -154,6 +158,7 @@ function ActionsCell({
   handleClickOpen,
   status,
   stakes,
+  validator,
 }: MyDepositsSectionCellProps) {
   const {account} = useWallet();
   const balance = useGetAccountAPTBalance(account?.address!);
@@ -164,13 +169,28 @@ function ActionsCell({
   );
   const buttonDisabled =
     status !== StakingStatus.WITHDRAW_READY && requirement.disabled;
+  const [state, _] = useGlobalState();
+  const client = new AptosClient(state.network_value);
+  const [canWithdrawPendingInactive, setCanWithdrawPendingInactive] =
+    useState<Types.MoveValue>(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      const canWithdraw = await getCanWithdrawPendingInactive(
+        client,
+        validator.owner_address,
+      );
+      setCanWithdrawPendingInactive(canWithdraw[0]);
+    }
+    fetchData();
+  }, [validator.owner_address, state.network_value]);
 
   function getButtonTextFromStatus() {
     switch (status) {
       case StakingStatus.STAKED:
         return "UNSTAKE";
       case StakingStatus.WITHDRAW_PENDING:
-        return "RESTAKE";
+        return canWithdrawPendingInactive ? "WITHDRAW" : "RESTAKE";
       case StakingStatus.WITHDRAW_READY:
         return "WITHDRAW";
     }
@@ -261,6 +281,7 @@ export default function MyDepositsSection({
                 status={status}
                 stakePrincipals={stakePrincipals}
                 stakes={stakes}
+                validator={validator!}
               />
             );
           })}
