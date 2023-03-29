@@ -720,7 +720,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
             left: "50%",
             transform: "translate(-50%, -50%)",
             maxHeight: "80%",
-            maxWidth: "80%",
+            width: "80%",
             overflowY: "auto",
             borderRadius: 1,
           }}
