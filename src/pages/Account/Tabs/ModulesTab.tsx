@@ -551,7 +551,7 @@ function ModuleHeader({
 
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Typography fontSize={28} fontWeight={700}>
+      <Typography fontSize={24} fontWeight={700}>
         {moduleName}
       </Typography>
       <Box>
@@ -588,7 +588,7 @@ function Code({bytecode}: {bytecode: string}) {
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography fontSize={24} fontWeight={700} marginY={"16px"}>
+        <Typography fontSize={20} fontWeight={700} marginY={"16px"}>
           Code
         </Typography>
         <Stack direction="row" spacing={2}>
@@ -732,7 +732,7 @@ function ABI({address, moduleName}: {address: string; moduleName: string}) {
 
   return (
     <Box>
-      <Typography fontSize={24} fontWeight={700} marginY={"16px"}>
+      <Typography fontSize={20} fontWeight={700} marginY={"16px"}>
         ABI
       </Typography>
       <JsonViewCard data={module.abi} />
