@@ -24,10 +24,6 @@ import {
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Error from "../Error";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
-import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
-import useExpandedList from "../../../components/hooks/useExpandedList";
-import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {useGetAccountResource} from "../../../api/hooks/useGetAccountResource";
 import {assertNever, getBytecodeSizeInKB, transformCode} from "../../../utils";
@@ -132,7 +128,6 @@ type WriteContractFormType = {
 };
 
 const CONTRACT_ACTIONS = ["View code", "Write"] as const;
-type ContractAction = (typeof CONTRACT_ACTIONS)[number];
 
 interface ModuleSidebarProps {
   moduleNames: string[];
@@ -157,53 +152,6 @@ interface WriteContractSidebarProps {
   selectedFnName: string | undefined;
   moduleAndFnsGroup: Record<string, Types.MoveFunction[]>;
   handleClick: (moduleName: string, fnName: string) => void;
-}
-
-function ModulesContent({address}: {address: string}) {
-  const {data, isLoading, error} = useGetAccountModules(address);
-  const modules: Types.MoveModuleBytecode[] = data ?? [];
-  const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
-    useExpandedList(modules.length);
-
-  if (isLoading) {
-    return null;
-  }
-
-  if (error) {
-    return <Error address={address} error={error} />;
-  }
-
-  if (modules.length === 0) {
-    return <EmptyTabContent />;
-  }
-
-  return (
-    <CollapsibleCards
-      expandedList={expandedList}
-      expandAll={expandAll}
-      collapseAll={collapseAll}
-    >
-      {modules.map((module, i) => (
-        <CollapsibleCard
-          key={i}
-          titleKey="Name:"
-          titleValue={module.abi?.name ?? ""}
-          expanded={expandedList[i]}
-          toggleExpanded={() => toggleExpandedAt(i)}
-        >
-          <ContentRow
-            title="Bytecode:"
-            value={
-              <Box style={{wordWrap: "break-word", maxHeight: 60}}>
-                {module.bytecode}
-              </Box>
-            }
-          />
-          <ContentRow title="ABI:" value={<JsonViewCard data={module.abi} />} />
-        </CollapsibleCard>
-      ))}
-    </CollapsibleCards>
-  );
 }
 
 function ViewCode({address}: {address: string}): JSX.Element {
@@ -798,13 +746,10 @@ type ModulesTabProps = {
 
 export default function ModulesTab({address}: ModulesTabProps) {
   const [state, _] = useGlobalState();
-  if (state.feature_name === "earlydev")
-    return <ModulesTabs address={address} />;
-  if (state.feature_name === "dev")
-    return (
-      <Box marginTop={4}>
-        <ViewCode address={address} />
-      </Box>
-    );
-  return <ModulesContent address={address} />;
+  if (state.feature_name === "dev") return <ModulesTabs address={address} />;
+  return (
+    <Box marginTop={4}>
+      <ViewCode address={address} />
+    </Box>
+  );
 }
