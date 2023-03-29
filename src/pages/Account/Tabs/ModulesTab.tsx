@@ -516,7 +516,20 @@ function ModuleSidebar({
             onChange={(e) => setSelectedModuleIndex(Number(e.target.value))}
           >
             {moduleNames.map((moduleName, i) => (
-              <MenuItem key={i} value={i}>
+              <MenuItem
+                key={i}
+                value={i}
+                sx={
+                  theme.palette.mode === "dark" && i !== selectedModuleIndex
+                    ? {
+                        color: grey[400],
+                        ":hover": {
+                          color: grey[200],
+                        },
+                      }
+                    : {}
+                }
+              >
                 {moduleName}
               </MenuItem>
             ))}
@@ -548,8 +561,10 @@ function ModuleNameOption({
           : theme.palette.mode === "dark"
           ? grey[500]
           : grey[200],
+        ...(theme.palette.mode === "dark" && !selected && {color: grey[400]}),
         ":hover": {
           cursor: "pointer",
+          ...(theme.palette.mode === "dark" && !selected && {color: grey[200]}),
         },
       }}
     >
