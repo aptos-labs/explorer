@@ -50,7 +50,7 @@ export default function TransactionSucceededDialog({
           <Box>
             <Typography variant="body2" sx={{fontSize: 12}}>
               {"You’ve successfully unlocked "}
-              <text style={{fontWeight: 600}}>{amount}</text>
+              <span style={{fontWeight: 600}}>{amount}</span>
               {" APT"}
             </Typography>
           </Box>
@@ -60,7 +60,7 @@ export default function TransactionSucceededDialog({
           <Box>
             <Typography variant="body2" sx={{fontSize: 12}}>
               {"You’ve successfully withdrawn "}
-              <text style={{fontWeight: 600}}>{amount}</text>
+              <span style={{fontWeight: 600}}>{amount}</span>
               {" APT"}
             </Typography>
           </Box>
@@ -74,7 +74,7 @@ export default function TransactionSucceededDialog({
             </Typography>
             <Typography variant="body2" sx={{fontSize: 12}}>
               {"Soon you will see your deposit of "}
-              <text style={{fontWeight: 600}}>{amount}</text>
+              <span style={{fontWeight: 600}}>{amount}</span>
               {" APT in the staking pool."}
             </Typography>
           </Box>

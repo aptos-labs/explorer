@@ -1,4 +1,5 @@
 import {AptosClient, Types} from "aptos";
+import {OCTA} from "../constants";
 import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
@@ -256,6 +257,19 @@ export async function getCanWithdrawPendingInactive(
     function: "0x1::delegation_pool::can_withdraw_pending_inactive",
     type_arguments: [],
     arguments: [validatorAddress],
+  };
+  return withResponseError(client.view(payload));
+}
+
+export async function getAddStakeFee(
+  client: AptosClient,
+  validatorAddress: Types.Address,
+  amount: string,
+): Promise<Types.MoveValue[]> {
+  const payload: Types.ViewRequest = {
+    function: "0x1::delegation_pool::get_add_stake_fee",
+    type_arguments: [],
+    arguments: [validatorAddress, (Number(amount) * OCTA).toString()],
   };
   return withResponseError(client.view(payload));
 }

@@ -142,6 +142,7 @@ export default function StakingBar({
       isDialogOpen={dialogOpen}
       stakeOperation={StakeOperation.STAKE}
       commission={commission}
+      canWithdrawPendingInactive={false}
     />
   );
 
