@@ -6,7 +6,7 @@
     "@apollo/client": "^3.7.9",
     "@aptos-labs/wallet-adapter-mui-design": "^0.1.1",
     "@aptos-labs/wallet-adapter-react": "^0.2.4",
-    "@aptos-labs/aptos-names-connector": "^0.0.1",
+    "@aptos-labs/aptos-names-connector": "^0.0.2",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@martianwallet/aptos-wallet-adapter": "^0.0.2",
