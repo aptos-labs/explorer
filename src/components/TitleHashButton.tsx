@@ -114,6 +114,7 @@ function Name({address}: {address: string}) {
   if (!name) {
     return null;
   }
+  localStorage.setItem(address, name);
 
   return (
     <Box>

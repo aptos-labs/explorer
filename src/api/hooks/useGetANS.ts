@@ -22,6 +22,12 @@ export function useGetNameFromAddress(address: string) {
   const [name, setName] = useState<string | undefined>();
 
   useEffect(() => {
+    const cachedName = localStorage.getItem(address);
+    if (cachedName) {
+      setName(cachedName);
+      return;
+    }
+
     const primaryNameUrl = getFetchNameUrl(state.network_name, address, true);
     if (primaryNameUrl !== undefined) {
       const fetchData = async () => {
