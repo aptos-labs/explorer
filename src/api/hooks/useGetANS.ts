@@ -54,11 +54,18 @@ function getFetchAddressUrl(network: NetworkName, name: string) {
   return `https://www.aptosnames.com/api/${network}/v1/address/${name}`;
 }
 
+function truncateAptSuffix(name: string): string {
+  return name.replace(
+    /^[a-z\d][a-z\d-]{1,61}[a-z\d](\.apt|\.ap|\.a|\.?)$/,
+    "$1",
+  );
+}
+
 export async function getAddressFromName(
   name: string,
   network: NetworkName,
 ): Promise<{address: string | undefined; primaryName: string | undefined}> {
-  const searchableName = name.endsWith(".apt") ? name.slice(0, -4) : name;
+  const searchableName = truncateAptSuffix(name);
   const addressUrl = getFetchAddressUrl(network, searchableName);
 
   const notFoundResult = {address: undefined, primaryName: undefined};
