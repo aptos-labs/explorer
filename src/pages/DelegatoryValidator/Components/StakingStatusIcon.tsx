@@ -19,7 +19,7 @@ import {
   WITHDRAW_READY_LABEL,
   WITHDRAW_READY_TEXT_COLOR_DARK,
   WITHDRAW_READY_TEXT_COLOR_LIGHT,
-} from "./../constants";
+} from "../constants";
 import LockIcon from "@mui/icons-material/Lock";
 import PendingIcon from "@mui/icons-material/Pending";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";

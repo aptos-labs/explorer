@@ -1,12 +1,19 @@
 import React, {useEffect, useMemo, useState} from "react";
-import {alpha, Box, Table, TableHead, TableRow} from "@mui/material";
+import {
+  alpha,
+  Box,
+  Table,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import {useNavigate} from "react-router-dom";
-import {AptosClient, Types} from "aptos";
+import {Types} from "aptos";
 import {
   ValidatorData,
   useGetValidators,
@@ -26,8 +33,7 @@ import {Button} from "@mui/material";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
-import {getDelegationPoolExist} from "../../api";
-import {WHILTELISTED_TESTNET_DELEGATION_NODES} from "../../constants";
+import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -330,7 +336,9 @@ function MyDepositCell({validator}: ValidatorCellProps) {
           />
         </Stack>
       ) : (
-        "N/A"
+        <Stack textAlign="center">
+          <Typography>N/A</Typography>
+        </Stack>
       )}
     </GeneralTableCell>
   );
@@ -380,41 +388,48 @@ export function DelegationValidatorsTable() {
     sortColumn,
     sortDirection,
   );
-  const client = new AptosClient(state.network_value);
   const [delegationValidators, setDelegationValidators] = useState<
     ValidatorData[]
   >([]);
+  const {delegatedStakingPools, loading} =
+    useGetDelegatedStakingPoolList() ?? [];
 
   useEffect(() => {
-    async function fetchData() {
-      const promises = sortedValidators.map(async (validator) => {
-        const delegationPoolExist = await getDelegationPoolExist(
-          client,
-          validator.owner_address,
-        );
-        if (delegationPoolExist[0]) {
-          return validator;
-        }
-      });
-      const filteredValidators = await Promise.all(promises);
-      setDelegationValidators(
-        filteredValidators.filter(
-          (validator) => validator !== undefined,
-        ) as ValidatorData[],
-      );
+    if (!loading) {
+      // delegated staking pools that are in validators list, meaning that they are either active or once active now inactive
+      const validatorsInDelegatedStakingPools: ValidatorData[] =
+        sortedValidators.filter((validator) => {
+          return delegatedStakingPools.some(
+            (pool) => pool.staking_pool_address === validator.owner_address,
+          );
+        });
+
+      // delegated staking pools that are not in validators list, meaning that they were never active
+      const delegatedStakingPoolsNotInValidators: ValidatorData[] =
+        delegatedStakingPools
+          .filter((pool) => {
+            return !sortedValidators.some(
+              (validator) =>
+                validator.owner_address === pool.staking_pool_address,
+            );
+          })
+          .map((pool) => ({
+            owner_address: pool.staking_pool_address,
+            operator_address: pool.current_staking_pool.operator_address,
+            voting_power: "0",
+            governance_voting_record: "",
+            last_epoch: 0,
+            last_epoch_performance: "",
+            liveness: 0,
+            rewards_growth: 0,
+            apt_rewards_distributed: 0,
+          }));
+      setDelegationValidators([
+        ...validatorsInDelegatedStakingPools,
+        ...delegatedStakingPoolsNotInValidators,
+      ]);
     }
-    if (WHILTELISTED_TESTNET_DELEGATION_NODES) {
-      setDelegationValidators(
-        validators.filter((validator) =>
-          WHILTELISTED_TESTNET_DELEGATION_NODES!.includes(
-            validator.owner_address,
-          ),
-        ),
-      );
-    } else {
-      fetchData();
-    }
-  }, [validators, state.network_value]);
+  }, [validators, state.network_value, loading]);
 
   return (
     <Table>
