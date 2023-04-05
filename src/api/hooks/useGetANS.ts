@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {NetworkName} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
-import {fetchJsonResponse} from "../../utils";
+import {fetchJsonResponse, truncateAptSuffix} from "../../utils";
 
 function getFetchNameUrl(
   network: NetworkName,
@@ -52,13 +52,6 @@ function getFetchAddressUrl(network: NetworkName, name: string) {
   }
 
   return `https://www.aptosnames.com/api/${network}/v1/address/${name}`;
-}
-
-function truncateAptSuffix(name: string): string {
-  return name.replace(
-    /^[a-z\d][a-z\d-]{1,61}[a-z\d](\.apt|\.ap|\.a|\.?)$/,
-    "$1",
-  );
 }
 
 export async function getAddressFromName(
