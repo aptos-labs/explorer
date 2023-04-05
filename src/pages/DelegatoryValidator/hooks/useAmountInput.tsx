@@ -80,7 +80,9 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
     function getErrorMessage() {
       switch (stakeOperation) {
         case StakeOperation.STAKE:
-          return `Minimum stake amount is ${requirement.min} APT and maximum stake amount is ${balance} APT`;
+          return `Minimum stake amount is ${
+            requirement.min
+          } APT and maximum stake amount is ${Number(balance) / OCTA} APT`;
         case StakeOperation.UNLOCK:
           return `Minimum unlock amount is ${requirement.min} APT and maximum unlock amount is ${requirement.max} APT`;
         case StakeOperation.REACTIVATE:

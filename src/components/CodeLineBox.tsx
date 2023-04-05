@@ -1,9 +1,9 @@
 import React from "react";
 import {Box, SxProps, Theme, useTheme} from "@mui/material";
+import {codeBlockColor} from "../themes/colors/aptosColorPalette";
 
 const TEXT_COLOR_LIGHT = "#0EA5E9";
 const TEXT_COLOR_DARK = "#83CCED";
-const BACKGROUND_COLOR = "rgba(14,165,233,0.1)";
 
 export function CodeLineBox({
   children,
@@ -20,7 +20,7 @@ export function CodeLineBox({
           width: "max-content",
           color:
             theme.palette.mode === "dark" ? TEXT_COLOR_DARK : TEXT_COLOR_LIGHT,
-          backgroundColor: BACKGROUND_COLOR,
+          backgroundColor: codeBlockColor,
           padding: "0.35rem 1rem 0.35rem 1rem",
           overflow: "hidden",
           whiteSpace: "nowrap",
