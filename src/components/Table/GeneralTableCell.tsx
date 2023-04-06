@@ -10,6 +10,7 @@ interface GeneralTableCellProps extends TableCellProps {
 export default function GeneralTableCell({
   children,
   sx,
+  ...rest
 }: GeneralTableCellProps) {
   return (
     <TableCell
@@ -20,6 +21,7 @@ export default function GeneralTableCell({
         },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
+      {...rest}
     >
       {children}
     </TableCell>

@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import {ContentCopy, OpenInFull} from "@mui/icons-material";
 import {orderBy} from "lodash";
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import {
   solarizedLight,
@@ -34,6 +34,8 @@ import {
 import {getBytecodeSizeInKB, transformCode} from "../../../../utils";
 
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
+import {Link} from "../../../../components/router-link";
 
 type PackageMetadata = {
   name: string;
@@ -45,12 +47,13 @@ type PackageMetadata = {
 
 interface ModuleSidebarProps {
   moduleNames: string[];
-  selectedModuleIndex: number;
-  setSelectedModuleIndex: (index: number) => void;
+  selectedModuleName: string;
+  getLinkToModule(moduleName: string): string;
+  navigateToModule(moduleName: string): void;
 }
 
 interface ModuleNameOptionProps {
-  handleClick: () => void;
+  linkTo: string;
   selected: boolean;
   name: string;
 }
@@ -67,9 +70,6 @@ function ViewCode({address}: {address: string}): JSX.Element {
     "0x1::code::PackageRegistry",
   );
 
-  const [selectedModuleIndex, setSelectedModuleIndex] =
-    React.useState<number>(0);
-
   const packages: PackageMetadata[] =
     registry === undefined ? [] : (registry.data as any).packages;
   const modules = orderBy(
@@ -77,8 +77,27 @@ function ViewCode({address}: {address: string}): JSX.Element {
     "name",
   );
 
+  const navigate = useNavigate();
+
+  const selectedModuleName = useParams().selectedModuleName ?? "";
+  if (!selectedModuleName && modules.length > 0) {
+    navigate(`/account/${address}/modules/${modules[0].name}`, {replace: true});
+  }
+
   if (modules.length === 0) {
     return <EmptyTabContent />;
+  }
+
+  const selectedModule = modules.find(
+    (module) => module.name === selectedModuleName,
+  );
+
+  function getLinkToModule(moduleName: string) {
+    return `/account/${address}/modules/${moduleName}`;
+  }
+
+  function navigateToModule(moduleName: string) {
+    navigate(getLinkToModule(moduleName));
   }
 
   return (
@@ -86,16 +105,23 @@ function ViewCode({address}: {address: string}): JSX.Element {
       <Grid item md={3} xs={12}>
         <ModuleSidebar
           moduleNames={modules.map((m) => m.name)}
-          selectedModuleIndex={selectedModuleIndex}
-          setSelectedModuleIndex={setSelectedModuleIndex}
+          selectedModuleName={selectedModuleName}
+          getLinkToModule={getLinkToModule}
+          navigateToModule={navigateToModule}
         />
       </Grid>
       <Grid item md={9} xs={12}>
-        <ModuleContent
-          address={address}
-          moduleName={modules[selectedModuleIndex].name}
-          bytecode={modules[selectedModuleIndex].source}
-        />
+        {selectedModule === undefined ? (
+          <EmptyTabContent
+            message={`No module found with name: ${selectedModuleName}`}
+          />
+        ) : (
+          <ModuleContent
+            address={address}
+            moduleName={selectedModuleName}
+            bytecode={selectedModule.source}
+          />
+        )}
       </Grid>
     </Grid>
   );
@@ -103,8 +129,9 @@ function ViewCode({address}: {address: string}): JSX.Element {
 
 function ModuleSidebar({
   moduleNames,
-  selectedModuleIndex,
-  setSelectedModuleIndex,
+  selectedModuleName,
+  getLinkToModule,
+  navigateToModule,
 }: ModuleSidebarProps) {
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
@@ -127,9 +154,9 @@ function ModuleSidebar({
         >
           {moduleNames.map((moduleName, i) => (
             <ModuleNameOption
-              key={i}
-              handleClick={() => setSelectedModuleIndex(i)}
-              selected={i === selectedModuleIndex}
+              key={moduleName}
+              linkTo={getLinkToModule(moduleName)}
+              selected={moduleName === selectedModuleName}
               name={moduleName}
             />
           ))}
@@ -137,15 +164,16 @@ function ModuleSidebar({
       ) : (
         <FormControl fullWidth>
           <Select
-            value={selectedModuleIndex}
-            onChange={(e) => setSelectedModuleIndex(Number(e.target.value))}
+            value={selectedModuleName}
+            onChange={(e) => navigateToModule(e.target.value)}
           >
             {moduleNames.map((moduleName, i) => (
               <MenuItem
-                key={i}
-                value={i}
+                key={moduleName}
+                value={moduleName}
                 sx={
-                  theme.palette.mode === "dark" && i !== selectedModuleIndex
+                  theme.palette.mode === "dark" &&
+                  moduleName !== selectedModuleName
                     ? {
                         color: grey[400],
                         ":hover": {
@@ -165,36 +193,34 @@ function ModuleSidebar({
   );
 }
 
-function ModuleNameOption({
-  handleClick,
-  selected,
-  name,
-}: ModuleNameOptionProps) {
+function ModuleNameOption({selected, name, linkTo}: ModuleNameOptionProps) {
   const theme = useTheme();
 
   return (
-    <Box
-      key={name}
-      onClick={handleClick}
-      sx={{
-        fontSize: 12,
-        fontWeight: selected ? 600 : 400,
-        padding: "8px",
-        borderRadius: 1,
-        bgcolor: !selected
-          ? "transparent"
-          : theme.palette.mode === "dark"
-          ? grey[500]
-          : grey[200],
-        ...(theme.palette.mode === "dark" && !selected && {color: grey[400]}),
-        ":hover": {
-          cursor: "pointer",
-          ...(theme.palette.mode === "dark" && !selected && {color: grey[200]}),
-        },
-      }}
-    >
-      {name}
-    </Box>
+    <Link to={linkTo}>
+      <Box
+        key={name}
+        sx={{
+          fontSize: 12,
+          fontWeight: selected ? 600 : 400,
+          padding: "8px",
+          borderRadius: 1,
+          bgcolor: !selected
+            ? "transparent"
+            : theme.palette.mode === "dark"
+            ? grey[500]
+            : grey[200],
+          ...(theme.palette.mode === "dark" && !selected && {color: grey[400]}),
+          ":hover": {
+            cursor: "pointer",
+            ...(theme.palette.mode === "dark" &&
+              !selected && {color: grey[200]}),
+          },
+        }}
+      >
+        {name}
+      </Box>
+    </Link>
   );
 }
 
@@ -244,6 +270,26 @@ function ModuleHeader({
   );
 }
 
+function useStartingLineNumber(sourceCode?: string) {
+  const [searchParams] = useSearchParams();
+
+  if (!sourceCode) return 0;
+
+  const entryFunctionToHightlight = searchParams.get("entry_function");
+  if (entryFunctionToHightlight == null) return 0;
+
+  const lines = sourceCode.split("\n");
+  const lineNumber = lines.findIndex((line) =>
+    // TODO: improve line matching algorithm by using regex or something. Currently this will match falsely other entry functions that contain the entry function name in their name - e.g. `my_func_blue` will be matched when searching for `my_func`.
+    line.includes(`public entry fun ${entryFunctionToHightlight}`),
+  );
+  if (lineNumber !== -1) {
+    return lineNumber;
+  }
+
+  return 0;
+}
+
 function Code({bytecode}: {bytecode: string}) {
   const TOOLTIP_TIME = 2000; // 2s
 
@@ -261,6 +307,16 @@ function Code({bytecode}: {bytecode: string}) {
       setTooltipOpen(false);
     }, TOOLTIP_TIME);
   }
+
+  const startingLineNumber = useStartingLineNumber(sourceCode);
+  const codeBoxScrollRef = useRef<any>(null);
+  const LINE_HEIGHT_IN_PX = 24;
+  useEffect(() => {
+    if (codeBoxScrollRef.current) {
+      codeBoxScrollRef.current.scrollTop =
+        LINE_HEIGHT_IN_PX * startingLineNumber;
+    }
+  });
 
   return (
     <Box>
@@ -307,6 +363,7 @@ function Code({bytecode}: {bytecode: string}) {
             overflowY: "auto",
             borderRadius: 1,
           }}
+          ref={codeBoxScrollRef}
         >
           <SyntaxHighlighter
             language="rust"
@@ -337,6 +394,16 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
     setIsModalOpen(false);
   };
 
+  const startingLineNumber = useStartingLineNumber(sourceCode);
+  const codeBoxScrollRef = useRef<any>(null);
+  const LINE_HEIGHT_IN_PX = 24;
+  useEffect(() => {
+    if (codeBoxScrollRef.current) {
+      codeBoxScrollRef.current.scrollTop =
+        LINE_HEIGHT_IN_PX * startingLineNumber;
+    }
+  });
+
   return (
     <Box>
       <Button
@@ -364,6 +431,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
             overflowY: "auto",
             borderRadius: 1,
           }}
+          ref={codeBoxScrollRef}
         >
           <SyntaxHighlighter
             language="rust"

@@ -92,14 +92,16 @@ export default function AccountTabs({
   accountData,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
-  const {modulesTab, tab} = useParams();
+  const {tab, selectedModuleName, modulesTab} = useParams();
   const navigate = useNavigate();
-  const value =
-    tab === undefined
-      ? modulesTab === undefined
-        ? TAB_VALUES[0]
-        : "modules"
-      : (tab as TabValue);
+  let effectiveTab: TabValue;
+  if (selectedModuleName) {
+    effectiveTab = "modules" as TabValue;
+  } else if (tab !== undefined) {
+    effectiveTab = tab as TabValue;
+  } else {
+    effectiveTab = TAB_VALUES[0];
+  }
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/account/${address}/${newValue}`);
@@ -108,7 +110,7 @@ export default function AccountTabs({
   return (
     <Box sx={{width: "100%"}}>
       <Box>
-        <StyledTabs value={value} onChange={handleChange}>
+        <StyledTabs value={effectiveTab} onChange={handleChange}>
           {tabValues.map((value, i) => (
             <StyledTab
               key={i}
@@ -122,7 +124,11 @@ export default function AccountTabs({
         </StyledTabs>
       </Box>
       <Box>
-        <TabPanel value={value} address={address} accountData={accountData} />
+        <TabPanel
+          value={effectiveTab}
+          address={address}
+          accountData={accountData}
+        />
       </Box>
     </Box>
   );

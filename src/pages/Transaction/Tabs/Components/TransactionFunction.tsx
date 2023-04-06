@@ -4,8 +4,7 @@ import {Types} from "aptos";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
-
-const BLOCK_MODULE_NAME = "candy_machine_v2";
+import {Link} from "../../../../components/router-link";
 
 function CoinTransferCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
   return (
@@ -57,16 +56,15 @@ export default function TransactionFunction({
     return <CoinTransferCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />;
   }
 
-  const functionStrStartIdx = functionFullStr.indexOf("::") + 2;
-  let functionStr = functionFullStr.substring(functionStrStartIdx);
-
-  if (functionStr.startsWith(BLOCK_MODULE_NAME)) {
-    functionStr = functionStr.substring(BLOCK_MODULE_NAME.length + 2);
-  }
+  const [address, moduleName, functionName] = functionFullStr.split("::");
 
   return (
-    <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
-      {functionStr}
-    </CodeLineBox>
+    <Link
+      to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
+    >
+      <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+        {moduleName + "::" + functionName}
+      </CodeLineBox>
+    </Link>
   );
 }
