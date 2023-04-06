@@ -13,9 +13,11 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
+import {setLocalStorageWithExpiry} from "../utils";
 
 const BUTTON_HEIGHT = 34;
 const TOOLTIP_TIME = 2000; // 2s
+const TTL = 300000; // 5 minutes
 
 export enum HashType {
   ACCOUNT = "account",
@@ -114,7 +116,7 @@ function Name({address}: {address: string}) {
   if (!name) {
     return null;
   }
-  localStorage.setItem(address, name);
+  setLocalStorageWithExpiry(address, name, TTL);
 
   return (
     <Box>
