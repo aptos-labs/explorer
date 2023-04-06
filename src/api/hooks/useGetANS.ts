@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {NetworkName} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
-import {fetchJsonResponse} from "../../utils";
+import {fetchJsonResponse, truncateAptSuffix} from "../../utils";
 
 function getFetchNameUrl(
   network: NetworkName,
@@ -64,7 +64,7 @@ export async function getAddressFromName(
   name: string,
   network: NetworkName,
 ): Promise<{address: string | undefined; primaryName: string | undefined}> {
-  const searchableName = name.endsWith(".apt") ? name.slice(0, -4) : name;
+  const searchableName = truncateAptSuffix(name);
   const addressUrl = getFetchAddressUrl(network, searchableName);
 
   const notFoundResult = {address: undefined, primaryName: undefined};
