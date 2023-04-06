@@ -5,13 +5,16 @@ import {
   DialogTitle,
   Stack,
   Typography,
+  Box,
 } from "@mui/material";
 import React, {useContext, useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {getStakeOperationAPTRequirement} from "./utils";
 import StyledDialog from "../../components/StyledDialog";
-import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
+import StyledTooltip, {
+  StyledLearnMoreTooltip,
+} from "../../components/StyledTooltip";
 import {
   REWARDS_LEARN_MORE_LINK,
   REWARDS_TOOLTIP_TEXT,
@@ -27,8 +30,6 @@ import useSubmitStakeOperation, {
 } from "../../api/hooks/useSubmitStakeOperation";
 import {OCTA} from "../../constants";
 import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
-import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {AptosClient, Types} from "aptos";
 import {getAddStakeFee} from "../../api";
@@ -40,6 +41,7 @@ type StakeOperationDialogProps = {
   stakeOperation: StakeOperation;
   commission?: number | undefined;
   canWithdrawPendingInactive: Types.MoveValue;
+  stakes: Types.MoveValue[];
 };
 
 export default function StakeOperationDialog({
@@ -48,6 +50,7 @@ export default function StakeOperationDialog({
   stakeOperation,
   commission,
   canWithdrawPendingInactive,
+  stakes,
 }: StakeOperationDialogProps) {
   const {accountResource, validator} = useContext(DelegationStateContext);
 
@@ -55,11 +58,6 @@ export default function StakeOperationDialog({
     return null;
   }
 
-  const {account} = useWallet();
-  const {stakes} = useGetDelegatorStakeInfo(
-    account?.address!,
-    validator.owner_address,
-  );
   const {balance, lockedUntilSecs, rewardsRateYearly} = useGetDelegationState(
     accountResource,
     validator,
@@ -95,15 +93,11 @@ export default function StakeOperationDialog({
   const {suggestedMax, min, max} = minMax;
 
   const onSubmitClick = async () => {
-    const isAmountValid = validateAmountInput(min, max);
-
-    if (isAmountValid) {
-      await submitStakeOperation(
-        validator.owner_address,
-        Number((Number(amount) * OCTA).toFixed(0)),
-        stakeOperation,
-      );
-    }
+    await submitStakeOperation(
+      validator.owner_address,
+      Number((Number(amount) * OCTA).toFixed(0)),
+      stakeOperation,
+    );
   };
 
   const onCloseSnackbar = () => {
@@ -129,7 +123,9 @@ export default function StakeOperationDialog({
     <TransactionSucceededDialog
       isDialogOpen={isTransactionSucceededDialogOpen}
       handleDialogClose={onCloseTransactionSucceededDialog}
-      amount={enteredAmount}
+      amount={
+        max ? Math.min(Number(enteredAmount), max).toString() : enteredAmount
+      }
       transactionHash={transactionHash}
       stakeOperation={stakeOperation}
     />
@@ -158,6 +154,7 @@ export default function StakeOperationDialog({
     fetchData();
   }, [state.network_value, amount]);
 
+  const isAmountValid = validateAmountInput(min, max);
   const stakeDialog = (
     <StyledDialog handleDialogClose={handleClose} open={isDialogOpen}>
       <DialogTitle variant="h5" textAlign="center">
@@ -165,7 +162,7 @@ export default function StakeOperationDialog({
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
-          {renderAmountTextField(minMax, stakes, balance)}
+          {renderAmountTextField(stakes, balance)}
           <Stack direction="row" spacing={1}>
             {min ? (
               <Button
@@ -191,7 +188,7 @@ export default function StakeOperationDialog({
               tooltip={
                 <StyledLearnMoreTooltip
                   text={
-                    "Refundable stake, that will be deducted from the current staking amount, to be returned to delegator after the current epoch ends."
+                    "Refundable stake fee, that will be deducted from the current staking amount, to be returned to delegator after the current epoch ends."
                   }
                 />
               }
@@ -210,25 +207,37 @@ export default function StakeOperationDialog({
                 />
               }
             />
-            <ContentRowSpaceBetween
-              title={"Next Unlock In"}
-              value={
-                <TimestampValue timestamp={lockedUntilSecs?.toString()!} />
-              }
-            />
+            {Number(lockedUntilSecs) > Date.now() / 1000 && (
+              <ContentRowSpaceBetween
+                title={"Next Unlock In"}
+                value={
+                  <TimestampValue timestamp={lockedUntilSecs?.toString()!} />
+                }
+              />
+            )}
           </ContentBoxSpaceBetween>
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button
-          onClick={onSubmitClick}
-          variant="primary"
-          fullWidth
-          disabled={amount === ""}
-          sx={{marginX: 2}}
+        <StyledTooltip
+          title={`Minimum stake amount is ${min} APT and maximum stake amount is ${
+            Number(balance) / OCTA
+          } APT`}
+          disableHoverListener={isAmountValid}
+          placement="top"
         >
-          Deposit
-        </Button>
+          <Box width="100%" marginRight={"2rem"}>
+            <Button
+              onClick={onSubmitClick}
+              variant="primary"
+              fullWidth
+              disabled={!isAmountValid}
+              sx={{marginX: 2}}
+            >
+              Deposit
+            </Button>
+          </Box>
+        </StyledTooltip>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
         <Typography variant="caption" color={grey[450]}>
@@ -251,7 +260,7 @@ export default function StakeOperationDialog({
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
-          {renderAmountTextField(minMax, stakes)}
+          {renderAmountTextField(stakes)}
           <Stack direction="row" spacing={1}>
             {min ? (
               <Button
@@ -310,7 +319,7 @@ export default function StakeOperationDialog({
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
-          {renderAmountTextField(minMax, stakes)}
+          {renderAmountTextField(stakes)}
           <Stack direction="row" spacing={1}>
             {percentageSelection.map((percentage, idx) => {
               return (

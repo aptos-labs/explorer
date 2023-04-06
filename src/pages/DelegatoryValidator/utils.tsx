@@ -163,18 +163,17 @@ export function getStakeOperationAPTRequirement(
         min,
         suggestedMax,
         max,
-        disabled: min > max || max < MINIMUM_APT_IN_POOL,
+        disabled: min > max && max < MINIMUM_APT_IN_POOL,
       };
     }
     case StakeOperation.UNLOCK: {
       const min =
-        pending_inactive < MINIMUM_APT_IN_POOL_FOR_EXPLORER
-          ? MINIMUM_APT_IN_POOL_FOR_EXPLORER - pending_inactive
+        pending_inactive < MINIMUM_APT_IN_POOL
+          ? MINIMUM_APT_IN_POOL - pending_inactive
           : 0;
       const suggestedMax =
-        active > MINIMUM_APT_IN_POOL_FOR_EXPLORER &&
-        active - MINIMUM_APT_IN_POOL_FOR_EXPLORER > min
-          ? active - MINIMUM_APT_IN_POOL_FOR_EXPLORER
+        active > MINIMUM_APT_IN_POOL && active - MINIMUM_APT_IN_POOL > min
+          ? active - MINIMUM_APT_IN_POOL
           : null;
       const max = active;
       return {
@@ -186,13 +185,11 @@ export function getStakeOperationAPTRequirement(
     }
     case StakeOperation.REACTIVATE: {
       const min =
-        MINIMUM_APT_IN_POOL_FOR_EXPLORER > active
-          ? MINIMUM_APT_IN_POOL_FOR_EXPLORER - active
-          : 0;
+        MINIMUM_APT_IN_POOL > active ? MINIMUM_APT_IN_POOL - active : 0;
       const suggestedMax =
-        MINIMUM_APT_IN_POOL_FOR_EXPLORER < pending_inactive &&
-        pending_inactive - MINIMUM_APT_IN_POOL_FOR_EXPLORER > min
-          ? pending_inactive - MINIMUM_APT_IN_POOL_FOR_EXPLORER
+        MINIMUM_APT_IN_POOL < pending_inactive &&
+        pending_inactive - MINIMUM_APT_IN_POOL > min
+          ? pending_inactive - MINIMUM_APT_IN_POOL
           : null;
       const max = pending_inactive;
       return {

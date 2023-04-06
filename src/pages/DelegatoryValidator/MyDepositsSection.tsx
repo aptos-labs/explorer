@@ -308,6 +308,7 @@ export default function MyDepositsSection({
               canWithdrawPendingInactive,
             )}
             canWithdrawPendingInactive={canWithdrawPendingInactive}
+            stakes={stakes}
           />
         ) : (
           <WalletConnectionDialog

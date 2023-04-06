@@ -37,13 +37,14 @@ export default function ValidatorPage() {
   const {delegatedStakingPools, loading} =
     useGetDelegatedStakingPoolList() ?? [];
 
-  const [validator, setValidator] = useState<ValidatorData>();
+  const [delegationValidator, setDelegationValidator] =
+    useState<ValidatorData>();
+  const validator = validators.find(
+    (validator) => validator.owner_address === addressHex.hex(),
+  );
 
   useEffect(() => {
-    let validator = validators.find(
-      (validator) => validator.owner_address === addressHex.hex(),
-    );
-    if (!loading && !validator) {
+    if (!loading) {
       // If the validator is not in the list of validators, it means that the validator was never active.
       // In this case, we need to get the validator data from the delegated staking pools list and manually
       // populate required fields.
@@ -55,29 +56,34 @@ export default function ValidatorPage() {
           .map((pool) => ({
             owner_address: pool.staking_pool_address,
             operator_address: pool.current_staking_pool.operator_address,
-            voting_power: "0",
-            governance_voting_record: "",
-            last_epoch: 0,
-            last_epoch_performance: "",
-            liveness: 0,
-            rewards_growth: 0,
-            apt_rewards_distributed: 0,
+            voting_power: validator?.voting_power ?? "0",
+            governance_voting_record: validator?.governance_voting_record ?? "",
+            last_epoch: validator?.last_epoch ?? 0,
+            last_epoch_performance: validator?.last_epoch_performance ?? "",
+            liveness: validator?.liveness ?? 0,
+            rewards_growth: validator?.rewards_growth ?? 0,
+            apt_rewards_distributed: validator?.apt_rewards_distributed ?? 0,
           }));
 
-      setValidator(
+      setDelegationValidator(
         delegatedStakingPoolsNotInValidators.length > 0
           ? delegatedStakingPoolsNotInValidators[0]
           : undefined,
       );
     }
-  }, [delegatedStakingPools, loading, validators]);
+  }, [delegatedStakingPools, loading, validators, validator]);
 
-  if (!validator || !accountResource) {
+  if ((!validator && !delegationValidator) || !accountResource) {
     return null;
   }
 
   return (
-    <DelegationStateContext.Provider value={{accountResource, validator}}>
+    <DelegationStateContext.Provider
+      value={{
+        accountResource,
+        validator: validator ? validator : delegationValidator,
+      }}
+    >
       <SkeletonTheme>
         <Grid container>
           <PageHeader />
