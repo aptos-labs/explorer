@@ -75,7 +75,10 @@ const faqStakingData = [
         <br />
         Congratulations! You have successfully staked APT on Explorer! You can
         also stake APT directly to a validator node through the{" "}
-        <Link href="https://aptos.dev/nodes/validator-node/operator/staking-pool-operations">
+        <Link
+          href="https://aptos.dev/nodes/validator-node/operator/staking-pool-operations"
+          target="_blank"
+        >
           CLI
         </Link>
         .
@@ -169,7 +172,10 @@ const faqValidatorData = [
         on the network. The stake that they hold helps to prove that they are
         trusted to vote on transactions. You can read more about how the Aptos
         blockchain works{" "}
-        <Link href={"https://aptos.dev/guides/basics-life-of-txn#consensus"}>
+        <Link
+          href={"https://aptos.dev/guides/basics-life-of-txn#consensus"}
+          target="_blank"
+        >
           here
         </Link>
         .
