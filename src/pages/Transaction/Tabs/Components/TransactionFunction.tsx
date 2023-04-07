@@ -5,6 +5,7 @@ import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOu
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
 import {Link} from "../../../../components/router-link";
+import {codeBlockColorClickable} from "../../../../themes/colors/aptosColorPalette";
 
 function CoinTransferCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
   return (
@@ -62,7 +63,16 @@ export default function TransactionFunction({
     <Link
       to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
     >
-      <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+      <CodeLineBox
+        sx={[
+          ...(Array.isArray(sx) ? sx : [sx]),
+          {
+            "&:hover": {
+              backgroundColor: codeBlockColorClickable,
+            },
+          },
+        ]}
+      >
         {moduleName + "::" + functionName}
       </CodeLineBox>
     </Link>

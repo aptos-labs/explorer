@@ -108,5 +108,5 @@ export function getTableFormattedTimestamp(timestamp?: string): string {
   const moment = parseTimestamp(timestamp);
   const timestamp_display = timestampDisplay(moment);
 
-  return timestamp_display.local_formatted_short;
+  return timestamp_display.local_formatted;
 }
