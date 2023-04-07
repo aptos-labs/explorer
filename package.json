@@ -63,7 +63,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "fmt": "prettier --config .prettierrc.json 'src/**/*.{js,jsx,ts,tsx,json,css,scss,md}' -w"
+    "postinstall": "husky install"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --config .prettierrc.json -w"
+    ]
   },
   "browserslist": {
     "production": [
@@ -83,6 +88,8 @@
     "@types/react-addons-perf": "^15.4.0",
     "@types/react-gtm-module": "^2.0.1",
     "@types/react-syntax-highlighter": "^15.5.6",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.2.0",
     "prettier": "^2.8.5"
   }
 }
