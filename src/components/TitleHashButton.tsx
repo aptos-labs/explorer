@@ -17,7 +17,7 @@ import {setLocalStorageWithExpiry} from "../utils";
 
 const BUTTON_HEIGHT = 34;
 const TOOLTIP_TIME = 2000; // 2s
-const TTL = 300000; // 5 minutes
+const TTL = 60000; // 1 minute
 
 export enum HashType {
   ACCOUNT = "account",
