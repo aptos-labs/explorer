@@ -2,16 +2,16 @@
 
 ## How to use
 
-Clone the repo. Requires [yarn](https://classic.yarnpkg.com/en/docs/install)
+Clone the repo. Requires [pnpm](https://pnpm.io/installation)
 
 
 Install dependencies:
 ```sh
-yarn install
+pnpm install
 ```
 
 Run below to start the app:
 
 ```sh
-yarn start
+pnpm start
 ```
