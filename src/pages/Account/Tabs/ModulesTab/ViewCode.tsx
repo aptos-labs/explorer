@@ -270,6 +270,11 @@ function ModuleHeader({
   );
 }
 
+// inspired by https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+function escapeRegExp(regexpString: string) {
+  return regexpString.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function useStartingLineNumber(sourceCode?: string) {
   const [searchParams] = useSearchParams();
 
@@ -279,9 +284,13 @@ function useStartingLineNumber(sourceCode?: string) {
   if (entryFunctionToHightlight == null) return 0;
 
   const lines = sourceCode.split("\n");
+  const publicEntryFunRegexp = new RegExp(
+    `\\s*public\\s*entry\\s*fun\\s*${escapeRegExp(
+      entryFunctionToHightlight,
+    )}(<.*>)?\\s*\\(`,
+  );
   const lineNumber = lines.findIndex((line) =>
-    // TODO: improve line matching algorithm by using regex or something. Currently this will match falsely other entry functions that contain the entry function name in their name - e.g. `my_func_blue` will be matched when searching for `my_func`.
-    line.includes(`public entry fun ${entryFunctionToHightlight}`),
+    line.match(publicEntryFunRegexp),
   );
   if (lineNumber !== -1) {
     return lineNumber;

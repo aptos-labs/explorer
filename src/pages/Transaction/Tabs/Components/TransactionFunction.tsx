@@ -5,10 +5,11 @@ import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOu
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
 import {Link} from "../../../../components/router-link";
+import {codeBlockColorClickableOnHover} from "../../../../themes/colors/aptosColorPalette";
 
 function CoinTransferCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
   return (
-    <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+    <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
       <Stack direction="row" alignItems="center" spacing={1.5}>
         <CurrencyExchangeOutlinedIcon sx={{fontSize: 17, padding: 0}} />
         <Box>{`Coin Transfer`}</Box>
@@ -48,21 +49,35 @@ export default function TransactionFunction({
   }
 
   const functionFullStr = transaction.payload.function;
+  const [address, moduleName, functionName] = functionFullStr.split("::");
 
   if (
     functionFullStr === "0x1::coin::transfer" ||
     functionFullStr === "0x1::aptos_account::transfer"
   ) {
-    return <CoinTransferCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />;
+    return (
+      <Link
+        to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
+      >
+        <CoinTransferCodeLine
+          sx={[
+            ...(Array.isArray(sx) ? sx : [sx]),
+            {
+              "&:hover": {
+                backgroundColor: codeBlockColorClickableOnHover,
+              },
+            },
+          ]}
+        />
+      </Link>
+    );
   }
-
-  const [address, moduleName, functionName] = functionFullStr.split("::");
 
   return (
     <Link
       to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
     >
-      <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+      <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
         {moduleName + "::" + functionName}
       </CodeLineBox>
     </Link>

@@ -7,6 +7,7 @@ export function Link({to, children}: {to: string; children: React.ReactNode}) {
     <MuiLink
       component={RouterLink}
       to={to}
+      style={{textDecoration: "none", color: "inherit"}}
       onClick={(e) => {
         e.stopPropagation();
       }}
