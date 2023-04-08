@@ -1,11 +1,7 @@
 import {useEffect, useState} from "react";
 import {NetworkName} from "../../constants";
 import {useGlobalState} from "../../GlobalState";
-import {
-  fetchJsonResponse,
-  getLocalStorageWithExpiry,
-  truncateAptSuffix,
-} from "../../utils";
+import {fetchJsonResponse, truncateAptSuffix} from "../../utils";
 
 function getFetchNameUrl(
   network: NetworkName,
@@ -26,12 +22,6 @@ export function useGetNameFromAddress(address: string) {
   const [name, setName] = useState<string | undefined>();
 
   useEffect(() => {
-    const cachedName = getLocalStorageWithExpiry(address);
-    if (cachedName) {
-      setName(cachedName);
-      return;
-    }
-
     const primaryNameUrl = getFetchNameUrl(state.network_name, address, true);
     if (primaryNameUrl !== undefined) {
       const fetchData = async () => {
