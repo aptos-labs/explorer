@@ -4,8 +4,11 @@ import {useGlobalState} from "../../GlobalState";
 import {
   fetchJsonResponse,
   getLocalStorageWithExpiry,
+  setLocalStorageWithExpiry,
   truncateAptSuffix,
 } from "../../utils";
+
+const TTL = 60000; // 1 minute
 
 function getFetchNameUrl(
   network: NetworkName,
@@ -38,11 +41,13 @@ export function useGetNameFromAddress(address: string) {
         const {name: primaryName} = await fetchJsonResponse(primaryNameUrl);
 
         if (primaryName) {
+          setLocalStorageWithExpiry(address, primaryName, TTL);
           setName(primaryName);
         } else {
           const nameUrl =
             getFetchNameUrl(state.network_name, address, false) ?? "";
           const {name} = await fetchJsonResponse(nameUrl);
+          setLocalStorageWithExpiry(address, name, TTL);
           setName(name);
         }
       };
