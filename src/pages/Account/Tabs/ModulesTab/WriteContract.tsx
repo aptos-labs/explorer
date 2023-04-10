@@ -188,77 +188,81 @@ function WriteContractForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack
-        spacing={4}
-        bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      <Box
+        padding={3}
         borderRadius={1}
+        bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
       >
-        <Typography fontSize={14}>
-          {fn.name}
-          {fn.generic_type_params.length > 0 &&
-            "<" +
-              [...Array(fn.generic_type_params.length)].map((_, i) => `T${i}`) +
-              ">"}
-          ({fn.params.join(", ")})
-        </Typography>
         <Stack spacing={4}>
-          {[...Array(fn.generic_type_params.length)].map((_, i) => (
-            <Controller
-              key={i}
-              name={`typeArgs.${i}`}
-              control={control}
-              render={({field: {onChange, value}}) => (
-                <TextField
-                  onChange={onChange}
-                  value={value}
-                  label={`T${i}`}
-                  fullWidth
-                />
-              )}
-            />
-          ))}
-          {fn.params.map((param, i) => {
-            if (i === 0 && hasSigner) {
-              return (
-                <TextField
-                  key={i}
-                  fullWidth
-                  disabled
-                  value={account?.address ?? ""}
-                  label={"account: &signer"}
-                />
-              );
-            }
-            return (
+          <Typography fontSize={14} fontWeight={600}>
+            {fn.name}
+            {fn.generic_type_params.length > 0 &&
+              "<" +
+                [...Array(fn.generic_type_params.length)].map(
+                  (_, i) => `T${i}`,
+                ) +
+                ">"}
+            ({fn.params.join(", ")})
+          </Typography>
+          <Stack spacing={4}>
+            {[...Array(fn.generic_type_params.length)].map((_, i) => (
               <Controller
                 key={i}
-                name={`args.${hasSigner ? i - 1 : i}`}
+                name={`typeArgs.${i}`}
                 control={control}
                 render={({field: {onChange, value}}) => (
                   <TextField
                     onChange={onChange}
                     value={value}
-                    label={`arg${hasSigner ? i - 1 : i}: ${param}`}
+                    label={`T${i}`}
                     fullWidth
                   />
                 )}
               />
-            );
-          })}
+            ))}
+            {fn.params.map((param, i) => {
+              if (i === 0 && hasSigner) {
+                return (
+                  <TextField
+                    key={i}
+                    fullWidth
+                    disabled
+                    value={account?.address ?? ""}
+                    label={"account: &signer"}
+                  />
+                );
+              }
+              return (
+                <Controller
+                  key={i}
+                  name={`args.${hasSigner ? i - 1 : i}`}
+                  control={control}
+                  render={({field: {onChange, value}}) => (
+                    <TextField
+                      onChange={onChange}
+                      value={value}
+                      label={`arg${hasSigner ? i - 1 : i}: ${param}`}
+                      fullWidth
+                    />
+                  )}
+                />
+              );
+            })}
+          </Stack>
+          {connected ? (
+            <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
+              Write
+            </Button>
+          ) : (
+            <Box display="flex" flexDirection="row" alignItems="center">
+              <WalletConnector networkSupport={state.network_name} />
+              <Typography ml={2} fontSize={10}>
+                To write you need to connect wallet first
+              </Typography>
+            </Box>
+          )}
         </Stack>
-        {connected ? (
-          <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
-            Write
-          </Button>
-        ) : (
-          <Box display="flex" flexDirection="row" alignItems="center">
-            <WalletConnector networkSupport={state.network_name} />
-            <Typography ml={2}>
-              To write you need to connect wallet first
-            </Typography>
-          </Box>
-        )}
-      </Stack>
+      </Box>
     </form>
   );
 }
