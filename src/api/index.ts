@@ -1,5 +1,5 @@
 import {AptosClient, Types} from "aptos";
-import {DELEGATION_POOL_ADDRESS} from "../constants";
+import {OCTA} from "../constants";
 import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
@@ -216,21 +216,60 @@ export async function getStake(
   validatorAddress: Types.Address,
 ): Promise<Types.MoveValue[]> {
   const payload: Types.ViewRequest = {
-    function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::get_stake`,
+    function: "0x1::delegation_pool::get_stake",
     type_arguments: [],
     arguments: [validatorAddress, delegatorAddress],
   };
-  return await client.view(payload);
+  return withResponseError(client.view(payload));
 }
 
 export async function getValidatorCommission(
   client: AptosClient,
   validatorAddress: Types.Address,
-): Promise<Types.MoveValue> {
+): Promise<Types.MoveValue[]> {
   const payload: Types.ViewRequest = {
-    function: `${DELEGATION_POOL_ADDRESS}::delegation_pool::operator_commission_percentage`,
+    function: "0x1::delegation_pool::operator_commission_percentage",
     type_arguments: [],
     arguments: [validatorAddress],
   };
-  return await client.view(payload);
+  return withResponseError(client.view(payload));
+}
+
+export async function getDelegationPoolExist(
+  client: AptosClient,
+  validatorAddress: Types.Address,
+): Promise<Types.MoveValue[]> {
+  const payload: Types.ViewRequest = {
+    function: "0x1::delegation_pool::delegation_pool_exists",
+    type_arguments: [],
+    arguments: [validatorAddress],
+  };
+  return withResponseError(client.view(payload));
+}
+
+// Return whether `pending_inactive` stake can be directly withdrawn from the delegation pool,
+// for the edge case when the validator had gone inactive before its lockup expired.
+export async function getCanWithdrawPendingInactive(
+  client: AptosClient,
+  validatorAddress: Types.Address,
+): Promise<Types.MoveValue[]> {
+  const payload: Types.ViewRequest = {
+    function: "0x1::delegation_pool::can_withdraw_pending_inactive",
+    type_arguments: [],
+    arguments: [validatorAddress],
+  };
+  return withResponseError(client.view(payload));
+}
+
+export async function getAddStakeFee(
+  client: AptosClient,
+  validatorAddress: Types.Address,
+  amount: string,
+): Promise<Types.MoveValue[]> {
+  const payload: Types.ViewRequest = {
+    function: "0x1::delegation_pool::get_add_stake_fee",
+    type_arguments: [],
+    arguments: [validatorAddress, (Number(amount) * OCTA).toString()],
+  };
+  return withResponseError(client.view(payload));
 }

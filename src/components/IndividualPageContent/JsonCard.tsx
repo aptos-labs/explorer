@@ -5,10 +5,10 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import EmptyValue from "./ContentValue/EmptyValue";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import StyledTooltip from "../StyledTooltip";
+import {codeBlockColor} from "../../themes/colors/aptosColorPalette";
 
 const TEXT_COLOR_LIGHT = "#0EA5E9";
 const TEXT_COLOR_DARK = "#83CCED";
-const BACKGROUND_COLOR = "rgba(14,165,233,0.1)";
 const CARD_HEIGHT = 60;
 const EXPANDED_CARD_HEIGHT = 500;
 const TOOLTIP_TIME = 2000; // 2s
@@ -60,7 +60,7 @@ export default function JsonCard({
       sx={{
         color:
           theme.palette.mode === "dark" ? TEXT_COLOR_DARK : TEXT_COLOR_LIGHT,
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: codeBlockColor,
         "&:hover": {
           boxShadow: expandable ? "1px 1px 3px 3px rgba(0, 0, 0, 0.05)" : "",
         },

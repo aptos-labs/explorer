@@ -10,7 +10,7 @@ type ErrorProps = {
 export default function Error({error, address}: ErrorProps) {
   if (error.type == ResponseErrorType.NOT_FOUND) {
     return (
-      <Alert severity="error">
+      <Alert severity="error" sx={{overflowWrap: "break-word"}}>
         {error.message}
         Account not found: {address}
       </Alert>

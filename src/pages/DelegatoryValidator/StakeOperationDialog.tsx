@@ -30,12 +30,16 @@ import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {DelegationStateContext} from "./context/DelegationContext";
+import {AptosClient, Types} from "aptos";
+import {getAddStakeFee} from "../../api";
+import {useGlobalState} from "../../GlobalState";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
   isDialogOpen: boolean;
   stakeOperation: StakeOperation;
   commission?: number | undefined;
+  canWithdrawPendingInactive: Types.MoveValue;
 };
 
 export default function StakeOperationDialog({
@@ -43,6 +47,7 @@ export default function StakeOperationDialog({
   isDialogOpen,
   stakeOperation,
   commission,
+  canWithdrawPendingInactive,
 }: StakeOperationDialogProps) {
   const {accountResource, validator} = useContext(DelegationStateContext);
 
@@ -135,6 +140,24 @@ export default function StakeOperationDialog({
     setAmount("");
   };
 
+  const [state, _] = useGlobalState();
+  const client = new AptosClient(state.network_value);
+  const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (stakeOperation === StakeOperation.STAKE) {
+        const fee = await getAddStakeFee(
+          client,
+          validator!.owner_address,
+          Number(amount).toFixed(8),
+        );
+        setAddStakeFee(fee[0]);
+      }
+    }
+    fetchData();
+  }, [state.network_value, amount]);
+
   const stakeDialog = (
     <StyledDialog handleDialogClose={handleClose} open={isDialogOpen}>
       <DialogTitle variant="h5" textAlign="center">
@@ -162,6 +185,17 @@ export default function StakeOperationDialog({
             )}
           </Stack>
           <ContentBoxSpaceBetween>
+            <ContentRowSpaceBetween
+              title={"Staking Fee"}
+              value={Number(addStakeFee) / OCTA + " APT"}
+              tooltip={
+                <StyledLearnMoreTooltip
+                  text={
+                    "Refundable stake, that will be deducted from the current staking amount, to be returned to delegator after the current epoch ends."
+                  }
+                />
+              }
+            />
             <ContentRowSpaceBetween
               title={"Operator Commission"}
               value={commission && `${commission}%`}
@@ -268,6 +302,7 @@ export default function StakeOperationDialog({
     </StyledDialog>
   );
 
+  const withdrawStake = canWithdrawPendingInactive ? stakes[2] : stakes[1];
   const WithdrawDialog = (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
       <DialogTitle variant="h5" textAlign="center">
@@ -284,7 +319,7 @@ export default function StakeOperationDialog({
                   variant="outlined"
                   onClick={() =>
                     setAmount(
-                      ((Number(stakes[1]) * percentage) / OCTA).toString(),
+                      ((Number(withdrawStake) * percentage) / OCTA).toString(),
                     )
                   }
                 >

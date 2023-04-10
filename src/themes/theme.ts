@@ -334,7 +334,6 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       styleOverrides: {
         select: {
           borderRadius: "8px",
-          textTransform: "capitalize",
         },
         outlined: {
           backgroundColor: "transparent",
@@ -353,7 +352,6 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       styleOverrides: {
         root: ({theme}) => ({
           borderRadius: theme.shape.borderRadius,
-          textTransform: "capitalize",
         }),
       },
     },

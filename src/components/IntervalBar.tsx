@@ -1,7 +1,8 @@
 import {Stack, Typography, useTheme} from "@mui/material";
-import React from "react";
+import React, {useState} from "react";
 import {grey} from "../themes/colors/aptosColorPalette";
 import Countdown from "react-countdown";
+import StyledTooltip from "./StyledTooltip";
 
 const BAR_COLOR = "#818CF8";
 const BAR_BACKGROUND_COLOR = "rgb(129, 140, 248, 0.4)";
@@ -23,22 +24,22 @@ export default function IntervalBar({
   intervalType,
 }: IntervalBarProps) {
   const theme = useTheme();
+  const [displayTooltip, setDisplayTooltip] = useState<boolean>(false);
+  const handleCountdownComplete = () => {
+    setDisplayTooltip(true);
+  };
+
   const renderer = ({
     days,
     hours,
     minutes,
     seconds,
-    completed,
   }: {
     days: number;
     hours: number;
     minutes: number;
     seconds: number;
-    completed: boolean;
   }) => {
-    if (completed) {
-      window.location.reload();
-    }
     switch (intervalType) {
       case IntervalType.EPOCH:
         return (
@@ -55,7 +56,7 @@ export default function IntervalBar({
     }
   };
 
-  return (
+  const intervalBar = (
     <Stack direction="row" width={182} height={16}>
       <Stack
         width={`${percentage}%`}
@@ -72,7 +73,11 @@ export default function IntervalBar({
             sx={{fontSize: 10, fontWeight: 600}}
             marginX={0.5}
           >
-            <Countdown date={timestamp} renderer={renderer} />
+            <Countdown
+              date={timestamp}
+              renderer={renderer}
+              onComplete={handleCountdownComplete}
+            />
           </Typography>
         )}
       </Stack>
@@ -91,10 +96,25 @@ export default function IntervalBar({
             sx={{fontSize: 10, fontWeight: 600}}
             marginX={0.5}
           >
-            <Countdown date={timestamp} renderer={renderer} />
+            <Countdown
+              date={timestamp}
+              renderer={renderer}
+              onComplete={handleCountdownComplete}
+            />
           </Typography>
         )}
       </Stack>
     </Stack>
+  );
+
+  return displayTooltip ? (
+    <StyledTooltip
+      title="Please refresh the page to view the updated time remaining."
+      placement="right"
+    >
+      {intervalBar}
+    </StyledTooltip>
+  ) : (
+    <>{intervalBar}</>
   );
 }

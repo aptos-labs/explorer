@@ -10,8 +10,9 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {Types} from "aptos";
+import {AptosClient, Types} from "aptos";
 import React, {useContext, useEffect, useState} from "react";
+import {getCanWithdrawPendingInactive} from "../../api";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
@@ -23,6 +24,7 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
+import {useGlobalState} from "../../GlobalState";
 import {assertNever} from "../../utils";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
@@ -106,6 +108,7 @@ type MyDepositsSectionCellProps = {
   status: StakingStatus;
   stakePrincipals: StakePrincipals | undefined;
   stakes: Types.MoveValue[];
+  canWithdrawPendingInactive: Types.MoveValue;
 };
 
 function AmountCell({stake}: MyDepositsSectionCellProps) {
@@ -116,14 +119,26 @@ function AmountCell({stake}: MyDepositsSectionCellProps) {
   );
 }
 
-function StatusCell({status}: MyDepositsSectionCellProps) {
-  return <StakingStatusIcon status={status} />;
+function StatusCell({
+  status,
+  canWithdrawPendingInactive,
+}: MyDepositsSectionCellProps) {
+  return (
+    <StakingStatusIcon
+      status={
+        canWithdrawPendingInactive && status === StakingStatus.WITHDRAW_PENDING
+          ? StakingStatus.WITHDRAW_READY
+          : status
+      }
+    />
+  );
 }
 
 function RewardEarnedCell({
   stake,
   status,
   stakePrincipals,
+  canWithdrawPendingInactive,
 }: MyDepositsSectionCellProps) {
   const principalsAmount =
     status === StakingStatus.STAKED
@@ -139,7 +154,7 @@ function RewardEarnedCell({
 
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {status === StakingStatus.WITHDRAW_READY ? (
+      {status === StakingStatus.WITHDRAW_READY || canWithdrawPendingInactive ? (
         "N/A"
       ) : rewardsEarned === undefined ? (
         "In Progress"
@@ -154,14 +169,16 @@ function ActionsCell({
   handleClickOpen,
   status,
   stakes,
+  canWithdrawPendingInactive,
 }: MyDepositsSectionCellProps) {
   const {account} = useWallet();
   const balance = useGetAccountAPTBalance(account?.address!);
   const requirement = getStakeOperationAPTRequirement(
     stakes,
-    getStakeOperationFromStakingStatus(status),
+    getStakeOperationFromStakingStatus(status, canWithdrawPendingInactive),
     Number(balance),
   );
+
   const buttonDisabled =
     status !== StakingStatus.WITHDRAW_READY && requirement.disabled;
 
@@ -170,7 +187,7 @@ function ActionsCell({
       case StakingStatus.STAKED:
         return "UNSTAKE";
       case StakingStatus.WITHDRAW_PENDING:
-        return "RESTAKE";
+        return canWithdrawPendingInactive ? "WITHDRAW" : "RESTAKE";
       case StakingStatus.WITHDRAW_READY:
         return "WITHDRAW";
     }
@@ -239,6 +256,22 @@ export default function MyDepositsSection({
     }
   }, [isStakeActivityLoading]);
 
+  const [state, _] = useGlobalState();
+  const client = new AptosClient(state.network_value);
+  const [canWithdrawPendingInactive, setCanWithdrawPendingInactive] =
+    useState<Types.MoveValue>(false);
+
+  useEffect(() => {
+    async function fetchData() {
+      const canWithdraw = await getCanWithdrawPendingInactive(
+        client,
+        validator!.owner_address,
+      );
+      setCanWithdrawPendingInactive(canWithdraw[0]);
+    }
+    fetchData();
+  }, [validator.owner_address, state.network_value]);
+
   function MyDepositRow({stake, status}: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const handleClose = () => {
@@ -261,6 +294,7 @@ export default function MyDepositsSection({
                 status={status}
                 stakePrincipals={stakePrincipals}
                 stakes={stakes}
+                canWithdrawPendingInactive={canWithdrawPendingInactive}
               />
             );
           })}
@@ -269,7 +303,11 @@ export default function MyDepositsSection({
           <StakeOperationDialog
             handleDialogClose={handleClose}
             isDialogOpen={dialogOpen}
-            stakeOperation={getStakeOperationFromStakingStatus(status)}
+            stakeOperation={getStakeOperationFromStakingStatus(
+              status,
+              canWithdrawPendingInactive,
+            )}
+            canWithdrawPendingInactive={canWithdrawPendingInactive}
           />
         ) : (
           <WalletConnectionDialog
@@ -324,11 +362,17 @@ function MyDepositSectionSkeleton() {
   );
 }
 
-function getStakeOperationFromStakingStatus(status: StakingStatus) {
+function getStakeOperationFromStakingStatus(
+  status: StakingStatus,
+  canWithdrawPendingInactive: Types.MoveValue,
+) {
   switch (status) {
     case StakingStatus.STAKED:
       return StakeOperation.UNLOCK;
     case StakingStatus.WITHDRAW_PENDING:
+      if (canWithdrawPendingInactive) {
+        return StakeOperation.WITHDRAW;
+      }
       return StakeOperation.REACTIVATE;
     case StakingStatus.WITHDRAW_READY:
       return StakeOperation.WITHDRAW;

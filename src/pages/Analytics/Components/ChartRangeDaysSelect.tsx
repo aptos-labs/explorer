@@ -25,7 +25,7 @@ export default function ChartRangeDaysSelect({
       value={days.toString()}
       onChange={handleChange}
       size="small"
-      sx={{width: 180, fontSize: 15}}
+      sx={{width: 180, fontSize: 15, textTransform: "capitalize"}}
     >
       <MenuItem value={ChartRangeDays.DEFAULT_RANGE}>Last 7 Days</MenuItem>
       <MenuItem value={ChartRangeDays.FULL_RANGE}>Last 30 Days</MenuItem>
