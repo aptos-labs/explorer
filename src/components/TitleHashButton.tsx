@@ -109,7 +109,7 @@ function HashButton({hash}: {hash: string}) {
 
 function Name({address}: {address: string}) {
   const theme = useTheme();
-  const name = useGetNameFromAddress(address);
+  const name = useGetNameFromAddress(address, true);
 
   if (!name) {
     return null;
