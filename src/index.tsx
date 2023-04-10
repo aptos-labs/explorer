@@ -10,6 +10,7 @@ import {MartianWallet} from "@martianwallet/aptos-wallet-adapter";
 import {RiseWallet} from "@rise-wallet/wallet-adapter";
 import {SpikaWallet} from "@spika/aptos-plugin";
 import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
+import {MSafeWalletAdapter} from "msafe-plugin-wallet-adapter";
 import {StatsigProvider} from "statsig-react";
 
 import * as Sentry from "@sentry/react";
@@ -65,6 +66,7 @@ const wallets = [
   new FewchaWallet(),
   new RiseWallet(),
   new SpikaWallet(),
+  new MSafeWalletAdapter(),
 ];
 
 ReactDOM.render(
