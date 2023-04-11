@@ -50,7 +50,9 @@ export default function ValidatorsPage() {
       <Typography variant="h3" marginBottom={2}>
         Validators
       </Typography>
-      {currentViewCount && Number(currentViewCount) <= 5 ? (
+      {currentViewCount &&
+      viewCountCap &&
+      Number(currentViewCount) <= Number(viewCountCap) ? (
         <StakingBanner />
       ) : null}
       {state.network_name === "mainnet" && <ValidatorsMap />}
