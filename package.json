@@ -25,7 +25,7 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@types/react-simple-maps": "^3.0.0",
-    "aptos": "^1.8.2",
+    "aptos": "^1.7.1",
     "aptos-node-checker-client": "0.0.2",
     "chart.js": "^4.2.1",
     "date-fns": "^2.29.3",
