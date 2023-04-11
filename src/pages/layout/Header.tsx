@@ -19,10 +19,10 @@ import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useNavigate} from "react-router-dom";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
+import {useNavigate} from "../../routing";
 
 export default function Header() {
   const scrollTop = () => {

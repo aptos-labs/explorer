@@ -36,6 +36,7 @@
     "moment": "^2.29.4",
     "pako": "^2.1.0",
     "petra-plugin-wallet-adapter": "^0.1.3",
+    "query-string": "^8.1.0",
     "react": "latest",
     "react-chartjs-2": "^5.2.0",
     "react-copy-to-clipboard": "^5.1.0",

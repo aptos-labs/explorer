@@ -19,7 +19,7 @@ import {grey} from "@mui/material/colors";
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
-import {useGlobalState} from "../../../../GlobalState";
+import {useGlobalState} from "../../../../global-config/GlobalConfig";
 
 type WriteContractFormType = {
   typeArgs: string[];

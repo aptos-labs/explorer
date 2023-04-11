@@ -13,8 +13,8 @@ import {
   useGetValidators,
 } from "../../api/hooks/useGetValidators";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {useGlobalState} from "../../GlobalState";
 import {Network} from "../../constants";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 function getSortedValidators(
   validators: ValidatorData[],

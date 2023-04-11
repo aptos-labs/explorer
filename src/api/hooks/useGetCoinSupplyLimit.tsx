@@ -1,4 +1,4 @@
-import {GlobalState, useGlobalState} from "../../GlobalState";
+import {GlobalState, useGlobalState} from "../../global-config/GlobalConfig";
 import {getTableItem} from "..";
 import {Types} from "aptos";
 import {useEffect, useState} from "react";

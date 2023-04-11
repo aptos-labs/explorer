@@ -9,6 +9,7 @@ import {parseTimestamp} from "../utils";
 import moment from "moment";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import {useAugmentToWithGlobalSearchParams} from "../../routing";
 
 function getAgeInSeconds(block: Types.Block): string {
   const blockTimestamp = parseTimestamp(block.block_timestamp);
@@ -104,9 +105,11 @@ type BlockRowProps = {
 };
 
 function BlockRow({block, columns}: BlockRowProps) {
+  const augmentTo = useAugmentToWithGlobalSearchParams();
+
   // TODO: remove '_blank' once we have a blocks table with better performance
   const rowClick = () => {
-    window.open(`/block/${block.block_height}`, "_blank");
+    window.open(augmentTo(`/block/${block.block_height}`));
   };
 
   return (

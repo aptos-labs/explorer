@@ -9,7 +9,7 @@ import React from "react";
 import StyledDialog from "../../components/StyledDialog";
 import {ReactComponent as ConnectWalletModalIcon} from "../../assets/forum_icon.svg";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 type WalletConnectionDialogProps = {
   handleDialogClose: () => void;

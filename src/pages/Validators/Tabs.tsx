@@ -3,13 +3,14 @@ import {Box} from "@mui/material";
 import {assertNever} from "../../utils";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {ValidatorsTable} from "./ValidatorsTable";
 import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
 import {defaultFeatureName, Network, NetworkName} from "../../constants";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useNavigate} from "../../routing";
 
 enum VALIDATORS_TAB_VALUE {
   ALL_NODES = "all",

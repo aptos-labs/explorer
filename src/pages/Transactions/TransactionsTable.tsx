@@ -6,7 +6,6 @@ import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import {useNavigate} from "react-router-dom";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../components/HashButton";
@@ -32,6 +31,7 @@ import {
   getTransactionAmount,
   getTransactionCounterparty,
 } from "../Transaction/utils";
+import {useNavigate} from "../../routing";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;

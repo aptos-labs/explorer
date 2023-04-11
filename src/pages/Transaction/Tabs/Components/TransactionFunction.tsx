@@ -4,7 +4,7 @@ import {Types} from "aptos";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
-import {Link} from "../../../../components/router-link";
+import {AugmentedLink} from "../../../../routing";
 import {codeBlockColorClickable} from "../../../../themes/colors/aptosColorPalette";
 
 function CoinTransferCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
@@ -60,7 +60,7 @@ export default function TransactionFunction({
   const [address, moduleName, functionName] = functionFullStr.split("::");
 
   return (
-    <Link
+    <AugmentedLink
       to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
     >
       <CodeLineBox
@@ -75,6 +75,6 @@ export default function TransactionFunction({
       >
         {moduleName + "::" + functionName}
       </CodeLineBox>
-    </Link>
+    </AugmentedLink>
   );
 }
