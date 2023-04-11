@@ -14,11 +14,20 @@ import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import WalletConnectionDialog from "./WalletConnectionDialog";
-import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
+import StyledTooltip, {
+  StyledLearnMoreTooltip,
+} from "../../components/StyledTooltip";
 import StakeOperationDialog from "./StakeOperationDialog";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {DelegationStateContext} from "./context/DelegationContext";
+import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
+import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
+import {OCTA} from "../../constants";
+import {useGlobalState} from "../../GlobalState";
+import {AptosClient, Types} from "aptos";
+import {getAddStakeFee} from "../../api";
+import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 
 type ValidatorStakingBarProps = {
   setIsStakingBarSkeletonLoading: (arg: boolean) => void;
@@ -101,15 +110,53 @@ export default function StakingBar({
     </Stack>
   );
 
+  const {account} = useWallet();
+  const balance = useGetAccountAPTBalance(account?.address!);
+  const [state, _] = useGlobalState();
+  const client = new AptosClient(state.network_value);
+  const {stakes} = useGetDelegatorStakeInfo(
+    account?.address!,
+    validator.owner_address,
+  );
+  const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
+  // disable stake button when balance is less than minimum stake amount and add_stake fee computed from the minimum stake amount
+  // or when balance is less than add_stake fee if minimum stake amount is already met
+  const buttonDisabled =
+    account !== null &&
+    Number(balance) <=
+      (Number(stakes[0]) === 0
+        ? MINIMUM_APT_IN_POOL_FOR_EXPLORER * OCTA + Number(addStakeFee)
+        : Number(addStakeFee));
+
+  useEffect(() => {
+    async function fetchData() {
+      const fee = await getAddStakeFee(
+        client,
+        validator!.owner_address,
+        MINIMUM_APT_IN_POOL_FOR_EXPLORER.toString(),
+      );
+      setAddStakeFee(fee[0]);
+    }
+    fetchData();
+  }, [state.network_value, balance]);
+
   const stakeButton = (
-    <Button
-      variant="primary"
-      onClick={handleClickOpen}
-      sx={{width: "10px", maxHeight: "40px"}}
+    <StyledTooltip
+      title={`You can't stake because minimum 11 APT requirement is not met`}
+      disableHoverListener={!buttonDisabled}
     >
-      <ArrowCircleUpIcon sx={{marginRight: 1}} />
-      <Typography>Stake</Typography>
-    </Button>
+      <span>
+        <Button
+          variant="primary"
+          onClick={handleClickOpen}
+          sx={{width: "10px", maxHeight: "40px"}}
+          disabled={buttonDisabled}
+        >
+          <ArrowCircleUpIcon sx={{marginRight: 1}} />
+          <Typography>Stake</Typography>
+        </Button>
+      </span>
+    </StyledTooltip>
   );
 
   const stakingBarOnMobile = (
@@ -143,6 +190,7 @@ export default function StakingBar({
       stakeOperation={StakeOperation.STAKE}
       commission={commission}
       canWithdrawPendingInactive={false}
+      stakes={stakes}
     />
   );
 

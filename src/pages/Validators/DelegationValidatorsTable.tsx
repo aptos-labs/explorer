@@ -152,8 +152,12 @@ function ValidatorHeaderCell({
       );
     case "rewardsEarned":
       return (
-        <GeneralTableHeaderCell
+        <SortableHeaderCell
           header="Rewards Earned"
+          column={column}
+          direction={direction}
+          setDirection={setDirection}
+          setSortColumn={setSortColumn}
           tooltip={
             <StyledLearnMoreTooltip text="Amount of rewards earned by this stake pool to date" />
           }
@@ -381,7 +385,7 @@ export function DelegationValidatorsTable() {
   const columns = connected
     ? DEFAULT_COLUMNS
     : COLUMNS_WITHOUT_WALLET_CONNECTION;
-  const [sortColumn, setSortColumn] = useState<Column>("delegatedAmount");
+  const [sortColumn, setSortColumn] = useState<Column>("rewardsEarned");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
   const sortedValidators = getSortedValidators(
     validators,
