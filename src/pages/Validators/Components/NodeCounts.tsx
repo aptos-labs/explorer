@@ -1,7 +1,7 @@
 import {Skeleton, Typography} from "@mui/material";
 import React from "react";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
-import {ValidatorGeoMetric} from "../../../api/hooks/useGetMainnetValidatorsGeoData";
+import {ValidatorGeoMetric} from "../../../api/hooks/useGetValidatorsGeoData";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import {
   fontSizeBodySmall,

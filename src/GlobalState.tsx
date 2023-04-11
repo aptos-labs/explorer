@@ -1,3 +1,4 @@
+import {AptosClient} from "aptos";
 import React from "react";
 import {
   networks,
@@ -34,16 +35,20 @@ function safeGetSelectedFeatureName(): FeatureName {
   return defaultFeatureName;
 }
 
+const aptos_client = new AptosClient(networks[selected_network]);
+
 export type GlobalState = {
   network_name: NetworkName;
   network_value: string;
   feature_name: FeatureName;
+  aptos_client: AptosClient;
 };
 
 const defaultGlobalState: GlobalState = {
   network_name: selected_network,
   network_value: networks[selected_network],
   feature_name: selected_feature,
+  aptos_client: aptos_client,
 };
 
 function reducer(state: GlobalState, newValue: GlobalState): GlobalState {

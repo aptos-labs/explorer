@@ -1,12 +1,12 @@
 import {Box, useTheme} from "@mui/material";
 import React from "react";
 import ReactJson from "react-json-view";
+import {codeBlockColor} from "../../themes/colors/aptosColorPalette";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 const TEXT_COLOR_LIGHT = "#0EA5E9";
 const TEXT_COLOR_DARK = "#83CCED";
 const SECONDARY_TEXT_COLOR = "rgba(14,165,233,0.3)";
-const BACKGROUND_COLOR = "rgba(14,165,233,0.1)";
 const TRANSPARENT = "rgba(0,0,0,0)";
 
 const GROUP_ARRAYS_AFTER_LENGTH = 100;
@@ -58,7 +58,7 @@ export default function JsonViewCard({
   return (
     <Box
       sx={{
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: codeBlockColor,
         overflow: "auto",
         maxHeight: MAX_CARD_HEIGHT,
       }}

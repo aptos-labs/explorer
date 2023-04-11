@@ -30,3 +30,9 @@ export const primary = {
 export const aptosColor = primary[600];
 export const negativeColor: string = "#F97373";
 export const warningColor: string = "#f1c232";
+
+// code block colors
+export const codeBlockColor: string = "rgba(14,165,233,0.1)";
+// use rgb for codeblock in modal otherwise it will be transparent and not very visible
+export const codeBlockColorRgbLight: string = "#E3ECF3";
+export const codeBlockColorRgbDark: string = "#212D32";

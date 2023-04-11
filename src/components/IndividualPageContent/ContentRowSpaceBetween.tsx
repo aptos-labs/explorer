@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Stack} from "@mui/material";
+import {Box, Stack, Typography} from "@mui/material";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import EmptyValue from "./ContentValue/EmptyValue";
 
@@ -14,23 +14,15 @@ export default function ContentRowSpaceBetween({
   title,
   value,
   tooltip,
-  i,
 }: ContentRowSmallProps) {
   return (
     <Stack direction="row" justifyContent="space-between">
-      <Box sx={{fontSize: "0.875rem", color: grey[450]}}>
-        {title}
-        <Box
-          component="span"
-          sx={{
-            display: "inline",
-            whiteSpace: "nowrap",
-          }}
-        >
-          &nbsp;
-          <Box sx={{display: "inline-block"}}>{tooltip}</Box>
-        </Box>
-      </Box>
+      <Stack direction="row" alignItems="center" spacing={0.5}>
+        <Typography sx={{fontSize: "0.875rem", color: grey[450]}}>
+          {title}
+        </Typography>
+        {tooltip}
+      </Stack>
       <Box
         sx={{
           fontSize: "0.8rem",

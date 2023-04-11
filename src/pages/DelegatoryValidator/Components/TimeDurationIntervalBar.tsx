@@ -1,45 +1,46 @@
 import moment from "moment";
 import React from "react";
-import IntervalBar from "../../../components/IntervalBar";
-import {parseTimestamp, timestampDisplay} from "../../utils";
+import IntervalBar, {IntervalType} from "../../../components/IntervalBar";
+import {Network} from "../../../constants";
+import {useGlobalState} from "../../../GlobalState";
+import {parseTimestamp} from "../../utils";
 
 export default function TimeDurationIntervalBar({
   timestamp,
 }: {
-  timestamp: number;
+  timestamp?: number;
 }) {
+  const [state] = useGlobalState();
+
+  if (!timestamp) {
+    return null;
+  }
+
   // the beginning of the unlock cycle
-  const startTime = parseTimestamp(timestamp.toString()).subtract(30, "days");
+  const startTime =
+    state.network_name === Network.TESTNET
+      ? parseTimestamp(timestamp.toString()).subtract(2, "hours")
+      : parseTimestamp(timestamp.toString()).subtract(30, "days");
 
   // the end of the unlock cycle
   const unlockTime = parseTimestamp(timestamp.toString());
 
-  // the remaining time of the unlock cycle
-  const now = moment();
-  const remainingTime = moment.duration(
-    unlockTime.valueOf() - now.valueOf(),
-    "milliseconds",
-  );
-
   // the time already passed in the unlock cycle
   const alreadyPassedTime = moment.duration(
-    now.valueOf() - startTime.valueOf(),
+    moment().valueOf() - startTime.valueOf(),
     "milliseconds",
-  );
-
-  const remainingTimeDisplay = timestampDisplay(
-    moment(remainingTime.as("milliseconds")),
   );
 
   const percentage =
-    (alreadyPassedTime.as("milliseconds") /
+    (alreadyPassedTime.asMilliseconds() /
       (unlockTime.valueOf() - startTime.valueOf())) *
     100;
 
   return (
     <IntervalBar
       percentage={percentage}
-      content={remainingTimeDisplay.formatted_time_duration}
+      timestamp={timestamp * 1000}
+      intervalType={IntervalType.UNLOCK_COUNTDOWN}
     />
   );
 }

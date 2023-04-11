@@ -9,7 +9,7 @@ export const STAKED_BACKGROUND_COLOR_LIGHT = "rgba(14, 165, 233, 0.1)";
 export const STAKED_BACKGROUND_COLOR_DARK = "rgba(125, 211, 252, 0.1)";
 export const STAKED_LABEL = "Staked";
 export const STAKED_DESCRIPTION = `You are getting rewards for the staked deposit, but not able to
-withdraw it until the lock period. But you can initiate this process with an
+withdraw it until the lock period ends. But you can initiate this process with an
 unstake option.`;
 
 // step 2 WITHDRAW PENDING
@@ -34,3 +34,12 @@ export const WITHDRAW_READY_DESCRIPTION =
 // step icon color scheme
 export const STEP_ICON_DARK = "#818CF8";
 export const STEP_ICON_LIGHT = grey[300];
+
+/**
+ * In theory, minimum is 10 APT, but this 10 APT doesn't include the initial add_stake fee.
+ * Without confusing delegators with decimals, we set limit to be 11 for staking.
+ * For unlock and reactivate, we set it to 11 as well to mitigate the rounding error where
+ * 1.0000000 is rounded to 0.9999999
+ */
+export const MINIMUM_APT_IN_POOL_FOR_EXPLORER = 11;
+export const MINIMUM_APT_IN_POOL = 10;

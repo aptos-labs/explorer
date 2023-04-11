@@ -1,60 +1,52 @@
-import {Box, Skeleton, Stack, useMediaQuery, useTheme} from "@mui/material";
+import {Skeleton, Stack, useMediaQuery, useTheme} from "@mui/material";
 import * as React from "react";
 import HashButton from "../../components/HashButton";
-import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
 import {HashType} from "../../components/HashButton";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
-import {HexString, Types} from "aptos";
-import {useEffect, useState} from "react";
-import {useGetMainnetValidators} from "../../api/hooks/useGetMainnetValidators";
 import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
-import {getLockedUtilSecs} from "./utils";
-import {useGetStakingRewardsRate} from "../../api/hooks/useGetStakingRewardsRate";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import {
   REWARDS_LEARN_MORE_LINK,
   REWARDS_TOOLTIP_TEXT,
 } from "../Validators/Components/Staking";
+import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
+import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
+import {DelegationStateContext} from "./context/DelegationContext";
+import {useContext} from "react";
 
 type ValidatorDetailProps = {
-  address: Types.Address;
-  accountResource?: Types.MoveResource | undefined;
+  isSkeletonLoading: boolean;
 };
 
 export default function ValidatorDetailCard({
-  address,
-  accountResource,
+  isSkeletonLoading,
 }: ValidatorDetailProps) {
-  const addressHex = new HexString(address);
-  const {validators} = useGetMainnetValidators();
-  const {rewardsRateYearly} = useGetStakingRewardsRate();
+  const {accountResource, validator} = useContext(DelegationStateContext);
+
+  if (!validator || !accountResource) {
+    return null;
+  }
+
+  const {delegatorBalance, lockedUntilSecs, rewardsRateYearly} =
+    useGetDelegationState(accountResource, validator);
+  const {commission} = useGetDelegationNodeInfo({
+    validatorAddress: validator.owner_address,
+  });
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
-  const validator = validators.find(
-    (validator) => validator.owner_address === addressHex.hex(),
-  );
-  const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
-
-  const lockedUntilSecs = getLockedUtilSecs(accountResource);
   const operatorAddr = validator?.operator_address;
   const rewardGrowth = validator?.rewards_growth;
   const stakePoolAddress = validator?.owner_address;
 
-  useEffect(() => {
-    if (lockedUntilSecs && operatorAddr && rewardGrowth && stakePoolAddress) {
-      setIsSkeletonLoading(false);
-    }
-  }, [lockedUntilSecs, operatorAddr, rewardGrowth, stakePoolAddress]);
-
-  // TODO: revisit layout for mobile
   return isSkeletonLoading ? (
-    validatorDetailCardSkeleton()
+    validatorDetailCardSkeleton({isOnMobile})
   ) : (
     <Stack direction={isOnMobile ? "column" : "row"} spacing={4}>
-      <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
+      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <ContentRowSpaceBetween
           title={"Operator"}
           value={
@@ -63,7 +55,13 @@ export default function ValidatorDetailCard({
             )
           }
         />
-        <ContentRowSpaceBetween title="Number of Delegators" value={null} />
+        <ContentRowSpaceBetween
+          title="Number of Delegators"
+          value={delegatorBalance}
+          tooltip={
+            <StyledLearnMoreTooltip text="Number of owner accounts who have delegated stake to this stake pool" />
+          }
+        />
         <ContentRowSpaceBetween
           title="Compound Rewards"
           value={`${rewardsRateYearly}% APY`}
@@ -74,9 +72,15 @@ export default function ValidatorDetailCard({
             />
           }
         />
-        <ContentRowSpaceBetween title="Operator Commission" value={null} />
-      </ContentBox>
-      <ContentBox width={isOnMobile ? "100%" : "50%"} marginTop={0}>
+        <ContentRowSpaceBetween
+          title="Operator Commission"
+          value={commission && `${commission}%`}
+          tooltip={
+            <StyledLearnMoreTooltip text="% of staking reward paid out to operator as commission" />
+          }
+        />
+      </ContentBoxSpaceBetween>
+      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <ContentRowSpaceBetween
           title={"Stake Pool Address"}
           value={
@@ -100,28 +104,30 @@ export default function ValidatorDetailCard({
           value={
             <TimeDurationIntervalBar timestamp={Number(lockedUntilSecs)} />
           }
+          tooltip={
+            <StyledLearnMoreTooltip text="When tokens will be available for removal from the stake pool" />
+          }
         />
-      </ContentBox>
+      </ContentBoxSpaceBetween>
     </Stack>
   );
 }
 
-// TODO: revisit skeleton for mobile
-function validatorDetailCardSkeleton() {
+function validatorDetailCardSkeleton({isOnMobile}: {isOnMobile: boolean}) {
   return (
-    <Box display="flex">
-      <ContentBox padding={4} width="50%">
+    <Stack direction={isOnMobile ? "column" : "row"} spacing={4}>
+      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
-      </ContentBox>
-      <ContentBox padding={4} width="50%">
+      </ContentBoxSpaceBetween>
+      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
-      </ContentBox>
-    </Box>
+      </ContentBoxSpaceBetween>
+    </Stack>
   );
 }

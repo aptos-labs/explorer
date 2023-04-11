@@ -9,9 +9,18 @@ export const networks = {
   testnet: "https://fullnode.testnet.aptoslabs.com",
   devnet: devnetUrl,
   local: "http://localhost:8080",
+  previewnet: "https://fullnode-0.previewnet.gcp.aptosdev.com/v1",
 };
 
 export type NetworkName = keyof typeof networks;
+
+export enum Network {
+  MAINNET = "mainnet",
+  TESTNET = "testnet",
+  DEVNET = "devnet",
+  LOCAL = "local",
+  PREVIEWNET = "previewnet",
+}
 
 // Remove trailing slashes
 for (const key of Object.keys(networks)) {
@@ -35,6 +44,7 @@ export const defaultNetwork = networks[defaultNetworkName];
 export const features = {
   prod: "Production Mode",
   dev: "Development Mode",
+  earlydev: "Early Development Mode",
 };
 
 export type FeatureName = keyof typeof features;
@@ -54,3 +64,12 @@ if (!(defaultFeatureName in features)) {
 }
 
 export const defaultFeature = features[defaultFeatureName];
+
+/**
+ * Delegation Service
+ */
+export const OCTA = 100000000;
+export const WHILTELISTED_TESTNET_DELEGATION_NODES = process.env
+  .REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES
+  ? process.env.REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES.split(",")
+  : null;

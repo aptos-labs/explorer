@@ -18,6 +18,7 @@ import {
   useGetChainIdCached,
   useGetChainIdAndCache,
 } from "../../api/hooks/useGetNetworkChainIds";
+import {AptosClient} from "aptos";
 
 function NetworkAndChainIdCached({
   networkName,
@@ -77,6 +78,7 @@ export default function NetworkSelect() {
     const feature_name = state.feature_name;
     const network_name = networkNameString as NetworkName;
     const network_value = networks[network_name];
+    const aptos_client = new AptosClient(network_name);
     if (network_value) {
       // only show the "feature" param in the url when it's not "prod"
       // we don't want the users to know the existence of the "feature" param
@@ -85,7 +87,7 @@ export default function NetworkSelect() {
       } else {
         setSearchParams({network: network_name});
       }
-      dispatch({network_name, network_value, feature_name});
+      dispatch({network_name, network_value, feature_name, aptos_client});
     }
   }
 
@@ -132,6 +134,7 @@ export default function NetworkSelect() {
             ml: 1,
             color: "inherit",
             alignItems: "center",
+            textTransform: "capitalize",
             "& .MuiSvgIcon-root": {
               color: theme.palette.text.secondary,
             },
@@ -168,7 +171,11 @@ export default function NetworkSelect() {
             </Stack>
           </MenuItem>
           {Object.keys(networks).map((networkName: string) => (
-            <MenuItem key={networkName} value={networkName} sx={{paddingY: 0}}>
+            <MenuItem
+              key={networkName}
+              value={networkName}
+              sx={{paddingY: 0, textTransform: "capitalize"}}
+            >
               <NetworkMenuItem networkName={networkName} />
             </MenuItem>
           ))}

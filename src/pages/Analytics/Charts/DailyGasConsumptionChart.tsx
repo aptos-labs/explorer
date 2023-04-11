@@ -22,7 +22,6 @@ export default function DailyGasConsumptionChart({
 }: DailyGasConsumptionChartProps) {
   const labels = getLabels(data, days);
   const dataset = getDataset(data, days);
-
   return (
     <CardOutline>
       <ChartTitle
@@ -35,7 +34,7 @@ export default function DailyGasConsumptionChart({
         fill
         tooltipsLabelFunc={(context: any) => {
           const priceInteger = Math.round(context.parsed.y).toString();
-          const priceInAPT = getFormattedBalanceStr(priceInteger, 8);
+          const priceInAPT = getFormattedBalanceStr(priceInteger, 0);
           return `${priceInAPT} APT`;
         }}
       />

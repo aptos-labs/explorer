@@ -7,7 +7,7 @@ import moment from "moment";
 import {parseTimestamp} from "../../utils";
 import {Stack, Skeleton} from "@mui/material";
 import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
-import IntervalBar from "../../../components/IntervalBar";
+import IntervalBar, {IntervalType} from "../../../components/IntervalBar";
 
 const EPOCH_TOOLTIP_TEXT =
   "An epoch in the Aptos blockchain is defined as a duration of time, in seconds, during which a number of blocks are voted on by the validators. The Aptos mainnet epoch is set as 7200 seconds (two hours).";
@@ -18,37 +18,25 @@ type EpochProps = {
 };
 
 export default function Epoch({isSkeletonLoading}: EpochProps) {
-  const [timeRemainingInMin, setTimeRemainingInMin] = useState<string>();
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const [percentageComplete, setPercentageComplete] = useState<number>(0);
   const {curEpoch, lastEpochTime, epochInterval} = useGetEpochTime();
 
   useEffect(() => {
-    const refresh = () => {
-      if (lastEpochTime !== undefined && epochInterval !== undefined) {
-        const startTimestamp = parseTimestamp(lastEpochTime);
-        const nowTimestamp = parseTimestamp(moment.now().toString());
-        const timePassed = moment.duration(nowTimestamp.diff(startTimestamp));
-        const timePassedInMin = timePassed.asMinutes();
-        const epochIntervalInMin = moment
-          .duration(parseInt(epochInterval) / 1000, "milliseconds")
-          .asMinutes();
-
-        const timeRemaining = (epochIntervalInMin - timePassedInMin).toFixed(0);
-        setTimeRemainingInMin(timeRemaining);
-
-        const percentage = (
-          (timePassedInMin * 100) /
-          epochIntervalInMin
-        ).toFixed(0);
-        setPercentageComplete(parseInt(percentage));
-      }
-    };
-
-    refresh();
-    const refreshInterval = setInterval(refresh, 60 * 1000); // refresh every minute
-
-    if (timeRemainingInMin !== undefined && parseInt(timeRemainingInMin) <= 0) {
-      clearInterval(refreshInterval);
+    if (lastEpochTime !== undefined && epochInterval !== undefined) {
+      const epochIntervalSeconds = parseInt(epochInterval) / 1000;
+      const startTimestamp = parseTimestamp(lastEpochTime);
+      const nowTimestamp = parseTimestamp(moment.now().toString());
+      const timePassed = moment.duration(nowTimestamp.diff(startTimestamp));
+      const timeRemaining = epochIntervalSeconds - timePassed.asMilliseconds();
+      setTimeRemaining(timeRemaining);
+      setPercentageComplete(
+        parseInt(
+          ((timePassed.asMilliseconds() * 100) / epochIntervalSeconds).toFixed(
+            0,
+          ),
+        ),
+      );
     }
   }, [curEpoch, lastEpochTime, epochInterval]);
   return !isSkeletonLoading ? (
@@ -60,10 +48,11 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
           link={EPOCH_LEARN_MORE_LINK}
         />
       </Stack>
-      <Body>{`${timeRemainingInMin} Minutes Remaining`}</Body>
+      <Body>{`${percentageComplete}% complete`}</Body>
       <IntervalBar
         percentage={percentageComplete}
-        content={`${percentageComplete}% complete`}
+        timestamp={Date.now() + timeRemaining}
+        intervalType={IntervalType.EPOCH}
       />
     </MetricSection>
   ) : (

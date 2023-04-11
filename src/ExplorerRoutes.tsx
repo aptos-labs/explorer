@@ -19,7 +19,9 @@ export default function ExplorerRoutes() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/transactions" element={<TransactionsPage />} />
-        <Route path="/validators" element={<ValidatorsPage />} />
+        <Route path="/validators" element={<ValidatorsPage />}>
+          <Route path=":tab" element={<ValidatorsPage />} />
+        </Route>
         <Route path="/validator">
           <Route path=":address" element={<ValidatorPage />} />
         </Route>
@@ -28,8 +30,12 @@ export default function ExplorerRoutes() {
           <Route path=":txnHashOrVersion/:tab" element={<TransactionPage />} />
         </Route>
         <Route path="/account">
-          <Route path=":address" element={<AccountPage />} />
+          <Route
+            path=":address/modules/:modulesTab"
+            element={<AccountPage />}
+          />
           <Route path=":address/:tab" element={<AccountPage />} />
+          <Route path=":address" element={<AccountPage />} />
         </Route>
         <Route path="/blocks" element={<BlocksPage />} />
         <Route path="/block">

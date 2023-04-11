@@ -1,4 +1,5 @@
-import {Types} from "aptos";
+import {HexString, Types} from "aptos";
+import pako from "pako";
 
 /**
  * Helper function for exhaustiveness checks.
@@ -71,4 +72,38 @@ export function getLocalStorageWithExpiry(key: string) {
   }
 
   return item.value;
+}
+
+export async function fetchJsonResponse(url: string) {
+  const response = await fetch(url);
+  return await response.json();
+}
+
+/**
+ * Convert a module source code in gzipped hex string to plain text
+ * @param source module source code in gzipped hex string
+ * @returns original source code in plain text
+ */
+export function transformCode(source: string): string {
+  return pako.ungzip(new HexString(source).toUint8Array(), {to: "string"});
+}
+
+export function getBytecodeSizeInKB(bytecodeHex: string): number {
+  // Convert the hex string to a byte array
+  const textEncoder = new TextEncoder();
+  const byteArray = new Uint8Array(textEncoder.encode(bytecodeHex));
+
+  // Compute the size of the byte array in kilobytes (KB)
+  const sizeInKB = byteArray.length / 1024;
+
+  // Return the size in KB with two decimal places
+  return parseFloat(sizeInKB.toFixed(2));
+}
+
+// if ANS name is in the form of "name." or "name.a" or "name.ap" or "name.apt", remove the suffix
+export function truncateAptSuffix(name: string): string {
+  return name.replace(
+    /^([a-z\d][a-z\d-]{1,61}[a-z\d])(\.apt|\.ap|\.a|\.?)$/,
+    "$1",
+  );
 }

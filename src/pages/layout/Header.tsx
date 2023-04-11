@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
@@ -17,8 +17,12 @@ import NavMobile from "./NavMobile";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
-import WalletConnector from "../../components/WalletConnector";
+import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGlobalState} from "../../GlobalState";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useNavigate} from "react-router-dom";
+import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 
 export default function Header() {
   const scrollTop = () => {
@@ -46,6 +50,22 @@ export default function Header() {
 
   const inDev = useGetInDevMode();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
+  const [state] = useGlobalState();
+  const {account, wallet, network} = useWallet();
+  const navigate = useNavigate();
+  let walletAddressRef = useRef("");
+
+  if (account && walletAddressRef.current !== account.address) {
+    sendToGTM({
+      dataLayer: {
+        event: "walletConnection",
+        walletAddress: account.address,
+        walletName: wallet?.name,
+        network: network?.name,
+      },
+    });
+    walletAddressRef.current = account.address;
+  }
 
   return (
     <>
@@ -124,7 +144,12 @@ export default function Header() {
             <NavMobile />
             {inDev && !isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
-                <WalletConnector />
+                <WalletConnector
+                  networkSupport={state.network_name}
+                  handleNavigate={() =>
+                    navigate(`/account/${account?.address}`)
+                  }
+                />
               </Box>
             )}
           </Toolbar>

@@ -1,6 +1,6 @@
 import React from "react";
 import {Grid, Stack} from "@mui/material";
-import {ValidatorGeoMetric} from "../../../api/hooks/useGetMainnetValidatorsGeoData";
+import {ValidatorGeoMetric} from "../../../api/hooks/useGetValidatorsGeoData";
 import EpochSection from "./Epoch";
 import StakingSection from "./Staking";
 import NodeCountsSection from "./NodeCounts";

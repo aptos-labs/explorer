@@ -109,7 +109,7 @@ function HashButton({hash}: {hash: string}) {
 
 function Name({address}: {address: string}) {
   const theme = useTheme();
-  const name = useGetNameFromAddress(address);
+  const name = useGetNameFromAddress(address, true);
 
   if (!name) {
     return null;
@@ -134,7 +134,7 @@ function Name({address}: {address: string}) {
           target="_blank"
           underline="none"
         >
-          {name}
+          {`${name}.apt`}
         </Link>
       </Stack>
     </Box>

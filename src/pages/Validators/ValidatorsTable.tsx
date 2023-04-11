@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Box, Stack, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
@@ -8,26 +8,20 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
 import LastEpochPerformanceTooltip from "./Components/LastEpochPerformanceTooltip";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import {useNavigate} from "react-router-dom";
-import {Types} from "aptos";
 import {
-  MainnetValidatorData,
-  useGetMainnetValidators,
-} from "../../api/hooks/useGetMainnetValidators";
-import {
-  APTCurrencyValue,
-  getFormattedBalanceStr,
-} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {grey} from "../../themes/colors/aptosColorPalette";
-import {useGetStakingInfo} from "../../api/hooks/useGetStakingInfo";
+  ValidatorData,
+  useGetValidators,
+} from "../../api/hooks/useGetValidators";
+import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {useGlobalState} from "../../GlobalState";
+import {Network} from "../../constants";
 
 function getSortedValidators(
-  validators: MainnetValidatorData[],
+  validators: ValidatorData[],
   column: Column,
   direction: "desc" | "asc",
 ) {
-  const validatorsCopy: MainnetValidatorData[] = JSON.parse(
+  const validatorsCopy: ValidatorData[] = JSON.parse(
     JSON.stringify(validators),
   );
   const orderedValidators = getValidatorsOrderedBy(validatorsCopy, column);
@@ -36,12 +30,11 @@ function getSortedValidators(
 }
 
 function getValidatorsOrderedBy(
-  validatorsCopy: MainnetValidatorData[],
+  validatorsCopy: ValidatorData[],
   column: Column,
 ) {
   switch (column) {
     case "votingPower":
-    case "delegatedStakeAmount":
       return validatorsCopy.sort(
         (validator1, validator2) =>
           parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
@@ -75,6 +68,7 @@ type SortableHeaderCellProps = {
   setDirection?: (dir: "desc" | "asc") => void;
   setSortColumn: (col: Column) => void;
   tooltip?: React.ReactNode;
+  isTableTooltip?: boolean;
 };
 
 function SortableHeaderCell({
@@ -84,6 +78,7 @@ function SortableHeaderCell({
   setDirection,
   setSortColumn,
   tooltip,
+  isTableTooltip,
 }: SortableHeaderCellProps) {
   return (
     <GeneralTableHeaderCell
@@ -98,6 +93,7 @@ function SortableHeaderCell({
         }
       }}
       tooltip={tooltip}
+      isTableTooltip={isTableTooltip}
     />
   );
 }
@@ -124,16 +120,6 @@ function ValidatorHeaderCell({
       return (
         <SortableHeaderCell
           header="Voting Power"
-          column={column}
-          direction={direction}
-          setDirection={setDirection}
-          setSortColumn={setSortColumn}
-        />
-      );
-    case "delegatedStakeAmount":
-      return (
-        <SortableHeaderCell
-          header="Delegated Stake Amount"
           column={column}
           direction={direction}
           setDirection={setDirection}
@@ -172,22 +158,16 @@ function ValidatorHeaderCell({
           setSortColumn={setSortColumn}
         />
       );
-    case "delegator":
-      return <GeneralTableHeaderCell header="Delegators" />;
-    case "rewardsEarned":
-      return <GeneralTableHeaderCell header="Rewards Earned" />;
-    case "commission":
-      return <GeneralTableHeaderCell header="Commission" />;
     default:
       return assertNever(column);
   }
 }
 
 type ValidatorCellProps = {
-  validator: MainnetValidatorData;
+  validator: ValidatorData;
 };
 
-function ValidatorAddrCell({validator}: ValidatorCellProps) {
+export function ValidatorAddrCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
       <HashButton hash={validator.owner_address} type={HashType.ACCOUNT} />
@@ -195,7 +175,7 @@ function ValidatorAddrCell({validator}: ValidatorCellProps) {
   );
 }
 
-function OperatorAddrCell({validator}: ValidatorCellProps) {
+export function OperatorAddrCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
       <HashButton hash={validator.operator_address} type={HashType.ACCOUNT} />
@@ -211,7 +191,7 @@ function VotingPowerCell({validator}: ValidatorCellProps) {
   );
 }
 
-function RewardsPerformanceCell({validator}: ValidatorCellProps) {
+export function RewardsPerformanceCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left", paddingRight: 5}}>
       {validator.rewards_growth === undefined ? null : (
@@ -246,40 +226,6 @@ function LocationCell({validator}: ValidatorCellProps) {
   );
 }
 
-export function CommissionCell() {
-  return <GeneralTableCell sx={{paddingLeft: 5}}>N/A</GeneralTableCell>;
-}
-
-function DelegatorCell() {
-  return (
-    <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
-      N/A
-    </GeneralTableCell>
-  );
-}
-
-export function RewardsEarnedCell() {
-  return <GeneralTableCell sx={{paddingLeft: 10}}>N/A</GeneralTableCell>;
-}
-
-export function DelegatedStakeAmountCell({validator}: ValidatorCellProps) {
-  const {delegatedStakeAmount, networkPercentage} = useGetStakingInfo({
-    validator,
-  });
-
-  return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
-      <Box>
-        <APTCurrencyValue
-          amount={delegatedStakeAmount}
-          fixedDecimalPlaces={0}
-        />
-      </Box>
-      <Box sx={{fontSize: 11, color: grey[450]}}>{networkPercentage}%</Box>
-    </GeneralTableCell>
-  );
-}
-
 const ValidatorCells = Object.freeze({
   addr: ValidatorAddrCell,
   operatorAddr: OperatorAddrCell,
@@ -287,10 +233,6 @@ const ValidatorCells = Object.freeze({
   rewardsPerf: RewardsPerformanceCell,
   lastEpochPerf: LastEpochPerformanceCell,
   location: LocationCell,
-  commission: CommissionCell,
-  delegator: DelegatorCell,
-  rewardsEarned: RewardsEarnedCell,
-  delegatedStakeAmount: DelegatedStakeAmountCell,
 });
 
 type Column = keyof typeof ValidatorCells;
@@ -304,32 +246,22 @@ const DEFAULT_COLUMNS: Column[] = [
   "location",
 ];
 
-const DELEGATORY_VALIDATOR_COLUMNS: Column[] = [
+const PREVIEWNET_COLUMNS: Column[] = [
+  "addr",
   "operatorAddr",
-  "commission",
-  "delegator",
-  "rewardsEarned",
+  "votingPower",
   "rewardsPerf",
-  "delegatedStakeAmount",
+  "lastEpochPerf",
 ];
 
 type ValidatorRowProps = {
-  validator: MainnetValidatorData;
+  validator: ValidatorData;
   columns: Column[];
 };
 
 function ValidatorRow({validator, columns}: ValidatorRowProps) {
-  const inDev = useGetInDevMode();
-  const navigate = useNavigate();
-
-  const rowClick = (address: Types.Address) => {
-    navigate(`/validator/${address}`);
-  };
-
   return (
-    <GeneralTableRow
-      onClick={inDev ? () => rowClick(validator.owner_address) : undefined}
-    >
+    <GeneralTableRow>
       {columns.map((column) => {
         const Cell = ValidatorCells[column];
         return <Cell key={column} validator={validator} />;
@@ -338,23 +270,22 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
   );
 }
 
-type ValidatorsTableProps = {
-  onDelegatory: boolean;
-};
+export function ValidatorsTable() {
+  const [state, _] = useGlobalState();
+  const {validators} = useGetValidators(state.network_name);
 
-export function ValidatorsTable({onDelegatory}: ValidatorsTableProps) {
-  const {validators} = useGetMainnetValidators();
   const [sortColumn, setSortColumn] = useState<Column>("votingPower");
-  useEffect(() => {
-    setSortColumn(onDelegatory ? "delegatedStakeAmount" : sortColumn);
-  });
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
-  const columns = onDelegatory ? DELEGATORY_VALIDATOR_COLUMNS : DEFAULT_COLUMNS;
   const sortedValidators = getSortedValidators(
     validators,
     sortColumn,
     sortDirection,
   );
+
+  const columns =
+    state.network_name === Network.PREVIEWNET
+      ? PREVIEWNET_COLUMNS
+      : DEFAULT_COLUMNS;
 
   return (
     <Table>

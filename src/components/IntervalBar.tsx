@@ -1,18 +1,62 @@
 import {Stack, Typography, useTheme} from "@mui/material";
-import React from "react";
+import React, {useState} from "react";
 import {grey} from "../themes/colors/aptosColorPalette";
+import Countdown from "react-countdown";
+import StyledTooltip from "./StyledTooltip";
 
 const BAR_COLOR = "#818CF8";
 const BAR_BACKGROUND_COLOR = "rgb(129, 140, 248, 0.4)";
 
+export enum IntervalType {
+  EPOCH = "EPOCH",
+  UNLOCK_COUNTDOWN = "UNLOCK_COUNTDOWN",
+}
+
 type IntervalBarProps = {
   percentage: number;
-  content: string;
+  timestamp: number;
+  intervalType: IntervalType;
 };
 
-export default function IntervalBar({percentage, content}: IntervalBarProps) {
+export default function IntervalBar({
+  percentage,
+  timestamp,
+  intervalType,
+}: IntervalBarProps) {
   const theme = useTheme();
-  return (
+  const [displayTooltip, setDisplayTooltip] = useState<boolean>(false);
+  const handleCountdownComplete = () => {
+    setDisplayTooltip(true);
+  };
+
+  const renderer = ({
+    days,
+    hours,
+    minutes,
+    seconds,
+  }: {
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+  }) => {
+    switch (intervalType) {
+      case IntervalType.EPOCH:
+        return (
+          <span>
+            {hours}h {minutes}m {seconds}s
+          </span>
+        );
+      case IntervalType.UNLOCK_COUNTDOWN:
+        return (
+          <span>
+            {days}d {hours}h {minutes}m {seconds}s
+          </span>
+        );
+    }
+  };
+
+  const intervalBar = (
     <Stack direction="row" width={182} height={16}>
       <Stack
         width={`${percentage}%`}
@@ -29,7 +73,11 @@ export default function IntervalBar({percentage, content}: IntervalBarProps) {
             sx={{fontSize: 10, fontWeight: 600}}
             marginX={0.5}
           >
-            {content}
+            <Countdown
+              date={timestamp}
+              renderer={renderer}
+              onComplete={handleCountdownComplete}
+            />
           </Typography>
         )}
       </Stack>
@@ -48,10 +96,25 @@ export default function IntervalBar({percentage, content}: IntervalBarProps) {
             sx={{fontSize: 10, fontWeight: 600}}
             marginX={0.5}
           >
-            {content}
+            <Countdown
+              date={timestamp}
+              renderer={renderer}
+              onComplete={handleCountdownComplete}
+            />
           </Typography>
         )}
       </Stack>
     </Stack>
+  );
+
+  return displayTooltip ? (
+    <StyledTooltip
+      title="Please refresh the page to view the updated time remaining."
+      placement="right"
+    >
+      {intervalBar}
+    </StyledTooltip>
+  ) : (
+    <>{intervalBar}</>
   );
 }
