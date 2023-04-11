@@ -27,7 +27,7 @@ specifiers:
   '@types/react-gtm-module': ^2.0.1
   '@types/react-simple-maps': ^3.0.0
   '@types/react-syntax-highlighter': ^15.5.6
-  aptos: ^1.8.2
+  aptos: ^1.7.1
   aptos-node-checker-client: 0.0.2
   chart.js: ^4.2.1
   date-fns: ^2.29.3
@@ -86,7 +86,7 @@ dependencies:
   '@types/react': 18.0.34
   '@types/react-dom': 18.0.11
   '@types/react-simple-maps': 3.0.0
-  aptos: 1.8.2
+  aptos: 1.7.2
   aptos-node-checker-client: 0.0.2
   chart.js: 4.2.1
   date-fns: 2.29.3
@@ -197,7 +197,7 @@ packages:
       '@mui/icons-material': 5.11.11_qbumho7m7wohfgeu3xcuphz4l4
       '@mui/material': 5.11.16_sqkm7jcyhegewkbgxnpr247aui
       '@mui/styles': 5.11.16_aoxwbmlfj6hwnimj5m3kry62qm
-      aptos: 1.8.2
+      aptos: 1.7.2
       react: 18.2.0
       react-copy-to-clipboard: 5.1.0_react@18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -211,7 +211,7 @@ packages:
   /@aptos-labs/wallet-adapter-core/0.1.7:
     resolution: {integrity: sha512-g3HvX31kuFT5HqEe9Vh0ZgV1u0Otsfx54yeAwL7RO8CioBVBjYELhMsOYz0BOjecmAKhQ14G60VU8MqDyzYkIA==}
     dependencies:
-      aptos: 1.8.2
+      aptos: 1.7.2
       eventemitter3: 4.0.7
     transitivePeerDependencies:
       - debug
@@ -220,7 +220,7 @@ packages:
   /@aptos-labs/wallet-adapter-core/0.2.3:
     resolution: {integrity: sha512-QjUVRYSL05pxdjYo2bScxEZ8wi6ww4sf5mBW5w89F5mDfnDz2XEmZQYfQtV3bxoyqnNWPEjagTds4tKMXDhF1w==}
     dependencies:
-      aptos: 1.8.2
+      aptos: 1.7.2
       buffer: 6.0.3
       eventemitter3: 4.0.7
       tweetnacl: 1.0.3
@@ -231,7 +231,7 @@ packages:
   /@aptos-labs/wallet-adapter-core/1.0.1:
     resolution: {integrity: sha512-Ywi/m/1bIhFXY10ef3y7geYtWYiDWILwmwBMDQmq3dV94de7yJZtyE81wFB9jnYpbMkR7kKZAr/X9xKltJs2zQ==}
     dependencies:
-      aptos: 1.8.2
+      aptos: 1.7.2
       buffer: 6.0.3
       eventemitter3: 4.0.7
       tweetnacl: 1.0.3
@@ -248,7 +248,7 @@ packages:
       '@emotion/styled': 11.10.6_khgiysqzv5tamvgmw5bnwiu5gi
       '@mui/icons-material': 5.11.11_qbumho7m7wohfgeu3xcuphz4l4
       '@mui/material': 5.11.16_sqkm7jcyhegewkbgxnpr247aui
-      aptos: 1.8.2
+      aptos: 1.7.2
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-router-dom: 6.9.0_biqbaboplfbrettd7655fr4n2y
@@ -262,7 +262,7 @@ packages:
     resolution: {integrity: sha512-lQWTrLPCEOw9TeR1CGUoKT3OTP5tmF9x4t3Rl/k1az0hOb3etjlNt9qbe/k+GP0RujAHc7o4mISzyEjZHOPcZg==}
     dependencies:
       '@aptos-labs/wallet-adapter-core': 1.0.1
-      aptos: 1.8.2
+      aptos: 1.7.2
       react: 18.2.0
     transitivePeerDependencies:
       - debug
@@ -1963,7 +1963,7 @@ packages:
     resolution: {integrity: sha512-tBHQxe0ln6u1A6mJ/2q6ThUZ4p/bmRX8RznlNTAIZ8x/igDera47usCkDXnRX3NDDmFUURr2ktHIyfHE4Y0ydw==}
     dependencies:
       '@mysten/sui.js': 0.13.0
-      aptos: 1.8.2
+      aptos: 1.7.2
       buffer: 6.0.3
     transitivePeerDependencies:
       - bufferutil
@@ -2390,7 +2390,7 @@ packages:
     resolution: {integrity: sha512-hKM0zPfw63XRDqeIhaysoR5D9d+oF2oXmN/mkJPQ9oM714MYrx3AhmG1xIJKJe5t6JOrkI8r+wpPgYfTVy8uhg==}
     dependencies:
       '@aptos-labs/wallet-adapter-core': 0.1.7
-      aptos: 1.8.2
+      aptos: 1.7.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -2777,7 +2777,7 @@ packages:
     resolution: {integrity: sha512-AHbclQx2rorD0CBKdQQfF6ifWTQUBmRstnj6M/l0e5n8GmcstX8RJUGx8l8o8BBv5B87aFAmYTXgNZQOTyKE+Q==}
     dependencies:
       '@aptos-labs/wallet-adapter-core': 0.1.7
-      aptos: 1.8.2
+      aptos: 1.7.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -2795,7 +2795,7 @@ packages:
     resolution: {integrity: sha512-x32ocKBKQ6uBDhnRcChYzcSrjLxHfjLGuHn/A2vgks+qKl5sGAqMymmYNEtlV4y5z5mBdYMSDVBHnCHBmUolBQ==}
     dependencies:
       '@aptos-labs/wallet-adapter-core': 0.1.7
-      aptos: 1.8.2
+      aptos: 1.7.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -2998,7 +2998,7 @@ packages:
     resolution: {integrity: sha512-eL8bZMQkHotn2B3hMa/eNATsk3NrJQOqn2ZYf8XWt85IC+mzr9HU/RYIFKO9AYA6Kxpz3o6X6HkHCzEzkssJoQ==}
     dependencies:
       '@aptos-labs/wallet-adapter-core': 0.1.7
-      aptos: 1.8.2
+      aptos: 1.7.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -3130,7 +3130,7 @@ packages:
     resolution: {integrity: sha512-vlu5JuxqMpGMLanayNKQpTC87zn4NMRo3k96iVI+IdwEeyIgiJbbFq+XqUAezzQG/U88u4jv3vK2x7cbPnNFIw==}
     dependencies:
       '@aptos-labs/wallet-adapter-core': 0.1.7
-      aptos: 1.8.2
+      aptos: 1.7.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -3991,8 +3991,8 @@ packages:
       - debug
     dev: false
 
-  /aptos/1.8.2:
-    resolution: {integrity: sha512-DrJRqpo+Bh6xI8N/OM3k3Kq+ViINX7BkJ/x99rxjPAFGDrjb0MABdHwQ0sfuqyNFz3IyHdKjgauvb/5glLOqzw==}
+  /aptos/1.7.2:
+    resolution: {integrity: sha512-unM7bPbu3UGoVB/EhTvA+QDo8nqb6pDfqttsKwC7nYavQnl4t5dxCoFfIFcbijBtSOTfo4is5ldi4Uz4cY9ESA==}
     engines: {node: '>=11.0.0'}
     dependencies:
       '@noble/hashes': 1.1.3
@@ -6330,7 +6330,7 @@ packages:
     dependencies:
       '@aptos-labs/wallet-adapter-core': 0.1.7
       '@fewcha/web3': 0.1.37
-      aptos: 1.8.2
+      aptos: 1.7.2
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -8701,7 +8701,7 @@ packages:
     resolution: {integrity: sha512-N8xEClExInGpYoMO5IfMS34/MVz5BNCZAxwNh0nWamkuEJP48CI+D2BVIDbj0ESC7aINTq3zMSyCs7vxWrGa7Q==}
     dependencies:
       '@aptos-labs/wallet-adapter-core': 0.2.3
-      aptos: 1.8.2
+      aptos: 1.7.2
       msafe-wallet: 2.1.4
     transitivePeerDependencies:
       - debug
@@ -9137,7 +9137,7 @@ packages:
     resolution: {integrity: sha512-AiqcaF8U3rGQWJdfz2gVychCgM76iJKVFxLkew6NBiK8Om0QPCRO9XMWvcNU87jzSjX3Ze8bhiHiUkvtm5aDEw==}
     dependencies:
       '@aptos-labs/wallet-adapter-core': 0.1.7
-      aptos: 1.8.2
+      aptos: 1.7.2
     transitivePeerDependencies:
       - debug
     dev: false
