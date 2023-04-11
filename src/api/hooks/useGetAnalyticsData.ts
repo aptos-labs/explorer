@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {defaultNetworkName} from "../../constants";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export const ANALYTICS_DATA_URL =
   "https://aptos-analytics-data-mainnet.s3.amazonaws.com/chain_stats_v2.json";

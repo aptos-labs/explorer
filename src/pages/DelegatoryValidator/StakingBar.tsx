@@ -24,10 +24,10 @@ import {DelegationStateContext} from "./context/DelegationContext";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
 import {OCTA} from "../../constants";
-import {useGlobalState} from "../../GlobalState";
 import {AptosClient, Types} from "aptos";
 import {getAddStakeFee} from "../../api";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 type ValidatorStakingBarProps = {
   setIsStakingBarSkeletonLoading: (arg: boolean) => void;

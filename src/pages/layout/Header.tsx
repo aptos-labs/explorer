@@ -3,8 +3,6 @@ import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import NetworkSelect from "./NetworkSelect";
-import Link from "@mui/material/Link";
-import * as RRD from "react-router-dom";
 import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
 import {ReactComponent as LogoIcon} from "../../assets/svg/aptos_logo_icon.svg";
@@ -19,10 +17,10 @@ import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useNavigate} from "react-router-dom";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
+import {InternalLink, useNavigate} from "../../routing";
 
 export default function Header() {
   const scrollTop = () => {
@@ -107,9 +105,8 @@ export default function Header() {
             }}
             disableGutters
           >
-            <Link
+            <InternalLink
               onClick={scrollTop}
-              component={RRD.Link}
               to="/"
               color="inherit"
               underline="none"
@@ -120,7 +117,7 @@ export default function Header() {
               }}
             >
               <LogoIcon />
-            </Link>
+            </InternalLink>
 
             <Nav />
             <NetworkSelect />

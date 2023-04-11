@@ -2,7 +2,7 @@ import moment from "moment";
 import React from "react";
 import IntervalBar, {IntervalType} from "../../../components/IntervalBar";
 import {Network} from "../../../constants";
-import {useGlobalState} from "../../../GlobalState";
+import {useGlobalState} from "../../../global-config/GlobalConfig";
 import {parseTimestamp} from "../../utils";
 
 export default function TimeDurationIntervalBar({

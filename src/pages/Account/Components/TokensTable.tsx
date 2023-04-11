@@ -1,13 +1,12 @@
 import * as React from "react";
 import {Box} from "@mui/material";
-import * as RRD from "react-router-dom";
-import {Link, Table, TableHead, TableRow} from "@mui/material";
-import {useNavigate} from "react-router-dom";
+import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../utils";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+import {InternalLink, useNavigate} from "../../../routing";
 
 type TokenCellProps = {
   token: any; // TODO: add graphql data typing
@@ -16,11 +15,9 @@ type TokenCellProps = {
 function TokenNameCell({token}: TokenCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <Link
-        component={RRD.Link}
+      <InternalLink
         to={`/token/${token?.token_data_id_hash}/${token?.property_version}`}
-        color="primary"
-        underline="none"
+        // color="primary"
       >
         <Box
           sx={{
@@ -31,7 +28,7 @@ function TokenNameCell({token}: TokenCellProps) {
         >
           {token?.name}
         </Box>
-      </Link>
+      </InternalLink>
     </GeneralTableCell>
   );
 }

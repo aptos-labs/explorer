@@ -1,6 +1,6 @@
 import {Box} from "@mui/material";
 import React from "react";
-import {useGlobalState} from "../../../../GlobalState";
+import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import ModulesTabs from "./Tabs";
 import ViewCode from "./ViewCode";
 

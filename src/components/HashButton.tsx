@@ -9,13 +9,13 @@ import {
   useTheme,
   Link,
 } from "@mui/material";
-import * as RRD from "react-router-dom";
 import {grey} from "../themes/colors/aptosColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {assertNever} from "../utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
+import {InternalLink, useAugmentToWithGlobalSearchParams} from "../routing";
 
 export enum HashType {
   ACCOUNT = "account",
@@ -37,17 +37,18 @@ function getHashLinkStr(hash: string, type: HashType): string {
 }
 
 function HashLink(hash: string, type: HashType): JSX.Element {
+  const augmentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
+
   switch (type) {
     case HashType.ACCOUNT:
     case HashType.TRANSACTION:
       return (
-        <Link
-          component={RRD.Link}
-          to={getHashLinkStr(hash, type)}
+        <InternalLink
+          to={augmentToWithGlobalSearchParams(getHashLinkStr(hash, type))}
           color="inherit"
         >
           {hash}
-        </Link>
+        </InternalLink>
       );
     case HashType.OTHERS:
       return <>{hash}</>;

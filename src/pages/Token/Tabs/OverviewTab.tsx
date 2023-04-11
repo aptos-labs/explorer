@@ -6,6 +6,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {InternalLink} from "../../../routing";
 
 const OWNER_QUERY = gql`
   query OwnersData($token_id: String, $property_version: numeric) {
@@ -106,7 +107,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
                 />
               </a>
             ) : (
-              <Link href={data?.metadata_uri}>Link</Link>
+              <InternalLink to={data?.metadata_uri}>Link</InternalLink>
             )
           }
         />

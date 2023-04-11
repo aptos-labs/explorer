@@ -3,7 +3,7 @@ import * as React from "react";
 import {useEffect} from "react";
 import {Statsig, useConfig} from "statsig-react";
 import {STAKING_BANNER_CONFIG_NAME} from "../../dataConstants";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
 import {StakingBanner} from "./StakingBanner";
 import ValidatorsPageTabs from "./Tabs";

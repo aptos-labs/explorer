@@ -7,6 +7,7 @@ import {assertNever} from "../../../utils";
 import HashButton, {HashType} from "../../../components/HashButton";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+import {InternalLink} from "../../../routing";
 
 type ActivityCellProps = {
   activity: any; // TODO: add graphql data typing
@@ -15,8 +16,7 @@ type ActivityCellProps = {
 function TransactionVersionCell({activity}: ActivityCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <Link
-        component={RRD.Link}
+      <InternalLink
         to={`/txn/${
           "transaction_version" in activity && activity.transaction_version
         }`}
@@ -24,7 +24,7 @@ function TransactionVersionCell({activity}: ActivityCellProps) {
         underline="none"
       >
         {activity?.transaction_version}
-      </Link>
+      </InternalLink>
     </GeneralTableCell>
   );
 }

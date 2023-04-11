@@ -3,6 +3,7 @@ import * as React from "react";
 import {useGetBlockByVersion} from "../../../../api/hooks/useGetBlock";
 import ContentRow from "../../../../components/IndividualPageContent/ContentRow";
 import {getLearnMoreTooltip} from "../../helpers";
+import {InternalLink} from "../../../../routing";
 
 export default function TransactionBlockRow({version}: {version: string}) {
   const {data} = useGetBlockByVersion({version: parseInt(version)});
@@ -15,9 +16,9 @@ export default function TransactionBlockRow({version}: {version: string}) {
     <ContentRow
       title="Block:"
       value={
-        <Link href={`/block/${data.block_height}`} underline="none">
+        <InternalLink to={`/block/${data.block_height}`} underline="none">
           {data.block_height}
-        </Link>
+        </InternalLink>
       }
       tooltip={getLearnMoreTooltip("block_height")}
     />
