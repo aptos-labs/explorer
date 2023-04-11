@@ -4,12 +4,12 @@ import {Types} from "aptos";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
-
-const BLOCK_MODULE_NAME = "candy_machine_v2";
+import {Link} from "../../../../components/router-link";
+import {codeBlockColorClickableOnHover} from "../../../../themes/colors/aptosColorPalette";
 
 function CoinTransferCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
   return (
-    <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+    <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
       <Stack direction="row" alignItems="center" spacing={1.5}>
         <CurrencyExchangeOutlinedIcon sx={{fontSize: 17, padding: 0}} />
         <Box>{`Coin Transfer`}</Box>
@@ -49,24 +49,37 @@ export default function TransactionFunction({
   }
 
   const functionFullStr = transaction.payload.function;
+  const [address, moduleName, functionName] = functionFullStr.split("::");
 
   if (
     functionFullStr === "0x1::coin::transfer" ||
     functionFullStr === "0x1::aptos_account::transfer"
   ) {
-    return <CoinTransferCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />;
-  }
-
-  const functionStrStartIdx = functionFullStr.indexOf("::") + 2;
-  let functionStr = functionFullStr.substring(functionStrStartIdx);
-
-  if (functionStr.startsWith(BLOCK_MODULE_NAME)) {
-    functionStr = functionStr.substring(BLOCK_MODULE_NAME.length + 2);
+    return (
+      <Link
+        to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
+      >
+        <CoinTransferCodeLine
+          sx={[
+            ...(Array.isArray(sx) ? sx : [sx]),
+            {
+              "&:hover": {
+                backgroundColor: codeBlockColorClickableOnHover,
+              },
+            },
+          ]}
+        />
+      </Link>
+    );
   }
 
   return (
-    <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
-      {functionStr}
-    </CodeLineBox>
+    <Link
+      to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
+    >
+      <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+        {moduleName + "::" + functionName}
+      </CodeLineBox>
+    </Link>
   );
 }

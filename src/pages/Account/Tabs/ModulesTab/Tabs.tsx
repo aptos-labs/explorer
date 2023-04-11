@@ -39,13 +39,13 @@ function TabPanel({value, address}: TabPanelProps): JSX.Element {
 function ModulesTabs({address}: {address: string}): JSX.Element {
   const theme = useTheme();
   const tabValues = Object.keys(TabComponents) as TabValue[];
-  const {modulesTab} = useParams();
+  const {selectedModuleName, modulesTab} = useParams();
   const navigate = useNavigate();
   const value =
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/account/${address}/modules/${newValue}`);
+    navigate(`/account/${address}/modules/${selectedModuleName}/${newValue}`);
   };
 
   return (
