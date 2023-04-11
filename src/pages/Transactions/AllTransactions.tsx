@@ -2,7 +2,7 @@ import React from "react";
 import {useQuery, UseQueryResult} from "react-query";
 import {Types} from "aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
 import {Pagination, Stack} from "@mui/material";

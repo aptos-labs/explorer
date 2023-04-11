@@ -9,6 +9,7 @@ import {parseTimestamp} from "../utils";
 import moment from "moment";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import {InternalLink, useAugmentToWithGlobalSearchParams} from "../../routing";
 
 function getAgeInSeconds(block: Types.Block): string {
   const blockTimestamp = parseTimestamp(block.block_timestamp);
@@ -25,13 +26,13 @@ type BlockCellProps = {
 function BlockHeightCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <Link
-        href={`/block/${block.block_height}`}
+      <InternalLink
+        to={`/block/${block.block_height}`}
         target="_blank"
         underline="none"
       >
         {block.block_height}
-      </Link>
+      </InternalLink>
     </GeneralTableCell>
   );
 }
@@ -55,13 +56,13 @@ function BlockHashCell({block}: BlockCellProps) {
 function FirstVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Link
-        href={`/txn/${block.first_version}`}
+      <InternalLink
+        to={`/txn/${block.first_version}`}
         target="_blank"
         underline="none"
       >
         {block.first_version}
-      </Link>
+      </InternalLink>
     </GeneralTableCell>
   );
 }
@@ -69,13 +70,13 @@ function FirstVersionCell({block}: BlockCellProps) {
 function LastVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Link
-        href={`/txn/${block.last_version}`}
+      <InternalLink
+        to={`/txn/${block.last_version}`}
         target="_blank"
         underline="none"
       >
         {block.last_version}
-      </Link>
+      </InternalLink>
     </GeneralTableCell>
   );
 }
@@ -104,9 +105,11 @@ type BlockRowProps = {
 };
 
 function BlockRow({block, columns}: BlockRowProps) {
+  const augmentTo = useAugmentToWithGlobalSearchParams();
+
   // TODO: remove '_blank' once we have a blocks table with better performance
   const rowClick = () => {
-    window.open(`/block/${block.block_height}`, "_blank");
+    window.open(augmentTo(`/block/${block.block_height}`));
   };
 
   return (

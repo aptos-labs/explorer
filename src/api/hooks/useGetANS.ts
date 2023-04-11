@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {NetworkName} from "../../constants";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {
   fetchJsonResponse,
   getLocalStorageWithExpiry,

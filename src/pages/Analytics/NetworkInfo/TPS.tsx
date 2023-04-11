@@ -1,7 +1,7 @@
 import {Box, Stack} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {useGetPeakTPS, useGetTPS} from "../../../api/hooks/useGetTPS";
-import {useGlobalState} from "../../../GlobalState";
+import {useGlobalState} from "../../../global-config/GlobalConfig";
 import MetricCard, {DoubleMetricCard} from "./MetricCard";
 
 function getFormattedTPS(tps: number) {

@@ -1,7 +1,7 @@
 import {AptosClient, Types} from "aptos";
 import {useState, useEffect} from "react";
 import {getStake} from "..";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export function useGetDelegatorStakeInfo(
   delegatorAddress: Types.Address,

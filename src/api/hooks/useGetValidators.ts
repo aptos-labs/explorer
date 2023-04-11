@@ -1,4 +1,4 @@
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useGetValidatorSet} from "./useGetValidatorSet";
 import {Network, NetworkName} from "../../constants";

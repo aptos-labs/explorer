@@ -2,7 +2,7 @@ import {Types} from "aptos";
 import {useQuery, UseQueryResult} from "react-query";
 import {getAccountTransactions} from "..";
 import {ResponseError} from "../client";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export function useGetAccountTransactions(
   address: string,

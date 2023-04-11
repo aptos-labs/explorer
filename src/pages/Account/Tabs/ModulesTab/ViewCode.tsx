@@ -34,8 +34,12 @@ import {
 import {getBytecodeSizeInKB, transformCode} from "../../../../utils";
 
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
-import {useNavigate, useParams, useSearchParams} from "react-router-dom";
-import {Link} from "../../../../components/router-link";
+import {useParams, useSearchParams} from "react-router-dom";
+import {
+  InternalLink,
+  useAugmentToWithGlobalSearchParams,
+  useNavigate,
+} from "../../../../routing";
 
 type PackageMetadata = {
   name: string;
@@ -78,6 +82,7 @@ function ViewCode({address}: {address: string}): JSX.Element {
   );
 
   const navigate = useNavigate();
+  const augmentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
 
   const selectedModuleName = useParams().selectedModuleName ?? "";
   if (!selectedModuleName && modules.length > 0) {
@@ -197,7 +202,7 @@ function ModuleNameOption({selected, name, linkTo}: ModuleNameOptionProps) {
   const theme = useTheme();
 
   return (
-    <Link to={linkTo}>
+    <InternalLink to={linkTo}>
       <Box
         key={name}
         sx={{
@@ -220,7 +225,7 @@ function ModuleNameOption({selected, name, linkTo}: ModuleNameOptionProps) {
       >
         {name}
       </Box>
-    </Link>
+    </InternalLink>
   );
 }
 

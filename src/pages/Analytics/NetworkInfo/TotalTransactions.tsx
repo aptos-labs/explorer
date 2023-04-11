@@ -1,6 +1,6 @@
 import React from "react";
 import {useQuery} from "react-query";
-import {useGlobalState} from "../../../GlobalState";
+import {useGlobalState} from "../../../global-config/GlobalConfig";
 import {getLedgerInfo} from "../../../api";
 import {Stack, Typography} from "@mui/material";
 

@@ -4,7 +4,7 @@ import {Types} from "aptos";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
-import {Link} from "../../../../components/router-link";
+import {InternalLink} from "../../../../routing";
 import {codeBlockColorClickableOnHover} from "../../../../themes/colors/aptosColorPalette";
 
 function CoinTransferCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
@@ -56,7 +56,7 @@ export default function TransactionFunction({
     functionFullStr === "0x1::aptos_account::transfer"
   ) {
     return (
-      <Link
+      <InternalLink
         to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
       >
         <CoinTransferCodeLine
@@ -69,17 +69,17 @@ export default function TransactionFunction({
             },
           ]}
         />
-      </Link>
+      </InternalLink>
     );
   }
 
   return (
-    <Link
+    <InternalLink
       to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
     >
       <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
         {moduleName + "::" + functionName}
       </CodeLineBox>
-    </Link>
+    </InternalLink>
   );
 }
