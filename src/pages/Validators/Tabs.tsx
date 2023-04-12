@@ -72,7 +72,6 @@ export default function ValidatorsPageTabs(): JSX.Element {
     newValue: VALIDATORS_TAB_VALUE,
   ) => {
     navigate(`/validators/${newValue}`);
-    console.log(newValue);
     Statsig.logEvent("validators_tab_clicked", newValue, {
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",
