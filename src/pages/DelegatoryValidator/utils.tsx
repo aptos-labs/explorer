@@ -54,7 +54,6 @@ export type StakePrincipals = {
  *    Maintain a current pending_inactive_principal variable, start with 0
  *    Every time you see UnlockStakeEvent, add to pending_inactive_principal
  *    Every time you see ReactivateStakeEvent, subtract from pending_inactive_principal
- *    Every time you see WithdrawStakeEvent, subtract from pending_inactive_principal
  *    If at any point during the loop pending_inactive_principal < 0, reset to 0
  *
  * Step 3
@@ -100,9 +99,6 @@ export function getStakeOperationPrincipals(
           break;
         case "ReactivateStakeEvent":
           activePrincipals += amount;
-          pendingInactivePrincipals -= amount;
-          break;
-        case "WithdrawStakeEvent":
           pendingInactivePrincipals -= amount;
           break;
       }
