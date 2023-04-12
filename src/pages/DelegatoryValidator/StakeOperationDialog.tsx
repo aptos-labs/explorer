@@ -34,6 +34,8 @@ import {DelegationStateContext} from "./context/DelegationContext";
 import {AptosClient, Types} from "aptos";
 import {getAddStakeFee} from "../../api";
 import {useGlobalState} from "../../GlobalState";
+import {Statsig} from "statsig-react";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
@@ -63,6 +65,7 @@ export default function StakeOperationDialog({
     validator,
   );
   const percentageSelection = [0.1, 0.25, 0.5, 1]; // 0.1 === 10%
+  const {account, wallet} = useWallet();
 
   const {
     submitStakeOperation,
@@ -93,6 +96,12 @@ export default function StakeOperationDialog({
   const {suggestedMax, min, max} = minMax;
 
   const onSubmitClick = async () => {
+    Statsig.logEvent("submit_transaction_button_clicked", stakeOperation, {
+      validator_address: validator.owner_address,
+      wallet_address: account?.address ?? "",
+      wallet_name: wallet?.name ?? "",
+      amount: amount,
+    });
     await submitStakeOperation(
       validator.owner_address,
       Number((Number(amount) * OCTA).toFixed(0)),

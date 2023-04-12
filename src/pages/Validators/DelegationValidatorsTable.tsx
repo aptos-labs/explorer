@@ -34,6 +34,7 @@ import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
 import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
+import {Statsig} from "statsig-react";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -350,14 +351,22 @@ function MyDepositCell({validator}: ValidatorCellProps) {
 
 function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
   const navigate = useNavigate();
-  const rowClick = (address: Types.Address) => {
-    navigate(`/validator/${address}`);
-  };
+  const {account, wallet} = useWallet();
 
   const {commission, delegatedStakeAmount, networkPercentage} =
     useGetDelegationNodeInfo({
       validatorAddress: validator.owner_address,
     });
+  const rowClick = (address: Types.Address) => {
+    Statsig.logEvent("delegation_validators_row_clicked", address, {
+      commission: commission?.toString() ?? "",
+      delegated_stake_amount: delegatedStakeAmount ?? "",
+      network_percentage: networkPercentage ?? "",
+      wallet_address: account?.address ?? "",
+      wallet_name: wallet?.name ?? "",
+    });
+    navigate(`/validator/${address}`);
+  };
 
   return (
     <GeneralTableRow onClick={() => rowClick(validator.owner_address)}>

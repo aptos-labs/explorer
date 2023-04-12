@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useRef} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
@@ -23,6 +23,7 @@ import {useGlobalState} from "../../GlobalState";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useNavigate} from "react-router-dom";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
+import {Statsig} from "statsig-react";
 
 export default function Header() {
   const scrollTop = () => {
@@ -56,6 +57,10 @@ export default function Header() {
   let walletAddressRef = useRef("");
 
   if (account && walletAddressRef.current !== account.address) {
+    Statsig.logEvent("wallet_connected", account.address, {
+      wallet_name: wallet!.name,
+      network_type: state.network_name,
+    });
     sendToGTM({
       dataLayer: {
         event: "walletConnection",

@@ -78,7 +78,7 @@ ReactDOM.render(
       }
       waitForInitialization={true}
       options={{
-        environment: {tier: "production"},
+        environment: {tier: process.env.NODE_ENV},
       }}
       user={{}}
     >

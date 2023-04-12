@@ -1,3 +1,4 @@
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Box, Typography} from "@mui/material";
 import * as React from "react";
 import {useEffect} from "react";
@@ -11,6 +12,7 @@ import ValidatorsMap from "./ValidatorsMap";
 
 export default function ValidatorsPage() {
   const [state, _] = useGlobalState();
+  const {account, wallet} = useWallet();
   const {config} = useConfig(STAKING_BANNER_CONFIG_NAME);
   const viewCountCap = config.getValue("viewCount");
   // Get the user's stable ID
@@ -41,6 +43,16 @@ export default function ValidatorsPage() {
         );
         localStorage.setItem(lastVisitKey, String(currentTimestamp));
       }
+
+      Statsig.logEvent(
+        "staking_banner_viewed",
+        localStorage.getItem(viewCountKey),
+        {
+          wallet_address: account?.address ?? "",
+          wallet_name: wallet?.name ?? "",
+          timestamp: localStorage.getItem(lastVisitKey) ?? "",
+        },
+      );
     }
   }, []);
 

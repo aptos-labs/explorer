@@ -12,15 +12,22 @@ import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {Banner} from "../../components/Banner";
 import {StakingDrawer} from "./StakingDrawer";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import {Statsig} from "statsig-react";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 
 export function StakingBanner() {
   const inDev = useGetInDevMode();
   const [open, setOpen] = useState<boolean>(false);
+  const {account, wallet} = useWallet();
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
   const handleClick = () => {
     setOpen(!open);
+    Statsig.logEvent("staking_banner_learn_more_clicked", null, {
+      wallet_address: account?.address ?? "",
+      wallet_name: wallet?.name ?? "",
+    });
   };
 
   const learnMoreButton = (
