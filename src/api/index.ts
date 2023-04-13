@@ -273,3 +273,15 @@ export async function getAddStakeFee(
   };
   return withResponseError(client.view(payload));
 }
+
+export async function getValidatorState(
+  client: AptosClient,
+  validatorAddress: Types.Address,
+): Promise<Types.MoveValue[]> {
+  const payload: Types.ViewRequest = {
+    function: "0x1::stake::get_validator_state",
+    type_arguments: [],
+    arguments: [validatorAddress],
+  };
+  return withResponseError(client.view(payload));
+}

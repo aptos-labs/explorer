@@ -2,6 +2,7 @@ import {Stack, Typography, Skeleton} from "@mui/material";
 import React from "react";
 import {Types} from "aptos";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
+import ValidatorStatusIcon from "./Components/ValidatorStatusIcon";
 
 type ValidatorTitleProps = {
   address: Types.Address;
@@ -19,6 +20,7 @@ export default function ValidatorTitle({
       <Typography variant="h3">Validator</Typography>
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.ACCOUNT} />
+        <ValidatorStatusIcon address={address} />
       </Stack>
     </Stack>
   );

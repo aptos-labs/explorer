@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Box} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import {assertNever} from "../../utils";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
@@ -76,15 +76,39 @@ export default function ValidatorsPageTabs(): JSX.Element {
       {inDev && state.network_name === Network.TESTNET && (
         <Box>
           <StyledTabs value={value} onChange={handleChange}>
-            {VALIDATORS_TAB_VALUES.map((value, i) => (
-              <StyledTab
-                key={i}
-                value={value}
-                label={getTabLabel(value)}
-                isFirst={i === 0}
-                isLast={i === VALIDATORS_TAB_VALUES.length - 1}
-              />
-            ))}
+            {VALIDATORS_TAB_VALUES.map((value, i) =>
+              value === VALIDATORS_TAB_VALUE.DELEGATION_NODES ? (
+                <StyledTab
+                  icon={
+                    <Typography
+                      sx={{
+                        backgroundColor: "#8B5CF6",
+                        color: "#ffffff",
+                        borderRadius: 1,
+                        paddingX: 1,
+                        minWidth: "3.5rem",
+                        height: "1.5rem",
+                      }}
+                    >
+                      BETA
+                    </Typography>
+                  }
+                  key={i}
+                  value={value}
+                  label={getTabLabel(value)}
+                  isFirst={i === 0}
+                  isLast={i === VALIDATORS_TAB_VALUES.length - 1}
+                />
+              ) : (
+                <StyledTab
+                  key={i}
+                  value={value}
+                  label={getTabLabel(value)}
+                  isFirst={i === 0}
+                  isLast={i === VALIDATORS_TAB_VALUES.length - 1}
+                />
+              ),
+            )}
           </StyledTabs>
         </Box>
       )}
