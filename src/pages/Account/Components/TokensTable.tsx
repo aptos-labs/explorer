@@ -17,7 +17,7 @@ function TokenNameCell({token}: TokenCellProps) {
     <GeneralTableCell sx={{textAlign: "left"}}>
       <InternalLink
         to={`/token/${token?.token_data_id_hash}/${token?.property_version}`}
-        // color="primary"
+        color="primary"
       >
         <Box
           sx={{
