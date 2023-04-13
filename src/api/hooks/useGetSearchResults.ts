@@ -57,7 +57,7 @@ export default function useGetSearchResults(input: string) {
               label: `Account ${truncateAddress(address)}${
                 primaryName ? ` | ${primaryName}.apt` : ``
               }`,
-              to: augmentToWithGlobalSearchParams(`/account/${address}`),
+              to: `/account/${address}`,
             };
           } else {
             return null;

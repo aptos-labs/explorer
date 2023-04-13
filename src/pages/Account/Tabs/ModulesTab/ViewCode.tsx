@@ -35,11 +35,7 @@ import {getBytecodeSizeInKB, transformCode} from "../../../../utils";
 
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import {useParams, useSearchParams} from "react-router-dom";
-import {
-  InternalLink,
-  useAugmentToWithGlobalSearchParams,
-  useNavigate,
-} from "../../../../routing";
+import {InternalLink, useNavigate} from "../../../../routing";
 
 type PackageMetadata = {
   name: string;
@@ -82,7 +78,6 @@ function ViewCode({address}: {address: string}): JSX.Element {
   );
 
   const navigate = useNavigate();
-  const augmentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
 
   const selectedModuleName = useParams().selectedModuleName ?? "";
   if (!selectedModuleName && modules.length > 0) {
