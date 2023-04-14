@@ -8,6 +8,8 @@ import {
   IconButton,
   useTheme,
   Link,
+  Stack,
+  Tooltip,
 } from "@mui/material";
 import * as RRD from "react-router-dom";
 import {grey} from "../themes/colors/aptosColorPalette";
@@ -16,6 +18,8 @@ import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {assertNever} from "../utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import PixelPFPGenerator from "./PixelArtIcon";
 
 export enum HashType {
   ACCOUNT = "account",
@@ -87,18 +91,39 @@ function AccountHashButtonInner({
   hash,
   type,
   size = "small",
-  ...props
 }: AccountHashButtonInnerProps) {
   const name = useGetNameFromAddress(hash);
+  const truncateHash =
+    size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
+  const [copyTooltipOpen, setCopyTooltipOpen] = useState(false);
+  const theme = useTheme();
+  const copyAddress = async (_: React.MouseEvent<HTMLButtonElement>) => {
+    await navigator.clipboard.writeText(hash);
+    setCopyTooltipOpen(true);
+    setTimeout(() => {
+      setCopyTooltipOpen(false);
+    }, 2000);
+  };
 
   return (
-    <HashButtonInner
-      label={name}
-      hash={hash}
-      type={type}
-      size={size}
-      {...props}
-    />
+    <Stack direction="row" alignItems={"center"} spacing={1}>
+      <PixelPFPGenerator walletAddress={hash} />
+      <Typography>{name ?? truncateHash}</Typography>
+      <Tooltip title="Copied" open={copyTooltipOpen}>
+        <Button
+          sx={{
+            color: "inherit",
+            "&:hover": {
+              backgroundColor: `${
+                theme.palette.mode === "dark" ? grey[500] : grey[300]
+              }`,
+            },
+          }}
+          onClick={copyAddress}
+          endIcon={<ContentCopyIcon sx={{opacity: "0.75", mr: 1}} />}
+        />
+      </Tooltip>
+    </Stack>
   );
 }
 
