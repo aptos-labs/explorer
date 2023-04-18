@@ -7,15 +7,14 @@ import {
   Popover,
   IconButton,
   useTheme,
-  Link,
 } from "@mui/material";
-import * as RRD from "react-router-dom";
 import {grey} from "../themes/colors/aptosColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {assertNever} from "../utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
+import {InternalLink} from "../routing";
 
 export enum HashType {
   ACCOUNT = "account",
@@ -41,13 +40,9 @@ function HashLink(hash: string, type: HashType): JSX.Element {
     case HashType.ACCOUNT:
     case HashType.TRANSACTION:
       return (
-        <Link
-          component={RRD.Link}
-          to={getHashLinkStr(hash, type)}
-          color="inherit"
-        >
+        <InternalLink to={getHashLinkStr(hash, type)} color="inherit">
           {hash}
-        </Link>
+        </InternalLink>
       );
     case HashType.OTHERS:
       return <>{hash}</>;

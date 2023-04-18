@@ -3,7 +3,7 @@ import {useQuery, UseQueryResult} from "react-query";
 import Button from "@mui/material/Button";
 import {Types} from "aptos";
 import {getTransactions} from "../../api";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
 import {Stack} from "@mui/material";

@@ -12,6 +12,7 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import SvgIcon from "@mui/material/SvgIcon";
 
 import {ReactComponent as LogoFull} from "../../assets/svg/aptos_logo_icon.svg";
+import {InternalLink} from "../../routing";
 
 const socialLinks = [
   {title: "Git", url: "https://github.com/aptos-labs", icon: GithubLogo},

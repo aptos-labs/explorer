@@ -12,7 +12,6 @@ import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCel
 import {assertNever} from "../../utils";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
 import {
   ValidatorData,
@@ -22,7 +21,7 @@ import CurrencyValue, {
   APTCurrencyValue,
 } from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {aptosColor, grey, primary} from "../../themes/colors/aptosColorPalette";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {OperatorAddrCell, ValidatorAddrCell} from "./ValidatorsTable";
@@ -36,6 +35,7 @@ import {Stack} from "@mui/material";
 import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
 import {Statsig} from "statsig-react";
 import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
+import {useNavigate} from "../../routing";
 
 function getSortedValidators(
   validators: ValidatorData[],
