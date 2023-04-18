@@ -18,7 +18,8 @@ export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
       if (error.status === 404) {
         throw {type: ResponseErrorType.NOT_FOUND};
       }
-    } else if (error.message === ResponseErrorType.TOO_MANY_REQUESTS) {
+    }
+    if (error.message === ResponseErrorType.TOO_MANY_REQUESTS) {
       throw {
         type: ResponseErrorType.TOO_MANY_REQUESTS,
       };
