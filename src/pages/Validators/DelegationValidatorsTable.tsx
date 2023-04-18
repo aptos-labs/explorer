@@ -35,6 +35,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
 import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
 import {Statsig} from "statsig-react";
+import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -125,17 +126,12 @@ function ValidatorHeaderCell({
       return <GeneralTableHeaderCell header="Operator Address" />;
     case "delegatedAmount":
       return (
-        <SortableHeaderCell
+        <GeneralTableHeaderCell
           header="Delegated Amount"
-          column={column}
-          direction={direction}
-          setDirection={setDirection}
-          setSortColumn={setSortColumn}
           tooltip={
             <StyledLearnMoreTooltip text="The total amount of delegated stake in this stake pool" />
           }
           isTableTooltip={false}
-          textAlignRight={false}
         />
       );
     case "delegator":
@@ -188,6 +184,8 @@ function ValidatorHeaderCell({
       return (
         <GeneralTableHeaderCell header="My Deposit" isTableTooltip={false} />
       );
+    case "status":
+      return <GeneralTableHeaderCell header="Status" isTableTooltip={false} />;
     default:
       return assertNever(column);
   }
@@ -195,6 +193,7 @@ function ValidatorHeaderCell({
 
 const DelegationValidatorCells = Object.freeze({
   addr: ValidatorAddrCell,
+  status: StatusCell,
   operatorAddr: OperatorAddrCell,
   commission: CommissionCell,
   delegator: DelegatorCell,
@@ -209,6 +208,7 @@ type Column = keyof typeof DelegationValidatorCells;
 const DEFAULT_COLUMNS: Column[] = [
   "view",
   "addr",
+  "status",
   "operatorAddr",
   "delegatedAmount",
   "commission",
@@ -220,6 +220,7 @@ const DEFAULT_COLUMNS: Column[] = [
 const COLUMNS_WITHOUT_WALLET_CONNECTION: Column[] = [
   "view",
   "addr",
+  "status",
   "operatorAddr",
   "delegatedAmount",
   "commission",
@@ -241,6 +242,13 @@ type ValidatorCellProps = {
   connected: boolean;
 };
 
+function StatusCell({validator}: ValidatorCellProps) {
+  return (
+    <GeneralTableCell>
+      <ValidatorStatusIcon address={validator.owner_address} />
+    </GeneralTableCell>
+  );
+}
 function CommissionCell({commission}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
@@ -280,7 +288,7 @@ function DelegatedAmountCell({
   networkPercentage,
 }: ValidatorCellProps) {
   return (
-    <GeneralTableCell sx={{paddingRight: 15, textAlign: "right"}}>
+    <GeneralTableCell>
       <Box>
         <APTCurrencyValue
           amount={delegatedStakeAmount ?? ""}
