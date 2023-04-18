@@ -3,13 +3,16 @@ import {Box, Typography} from "@mui/material";
 import {assertNever} from "../../utils";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {ValidatorsTable} from "./ValidatorsTable";
 import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
 import {defaultFeatureName, Network, NetworkName} from "../../constants";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {Statsig} from "statsig-react";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useNavigate} from "../../routing";
 
 enum VALIDATORS_TAB_VALUE {
   ALL_NODES = "all",
@@ -59,6 +62,7 @@ export default function ValidatorsPageTabs(): JSX.Element {
   const inDev = useGetInDevMode();
   const {tab} = useParams();
   const navigate = useNavigate();
+  const {account, wallet} = useWallet();
   const value =
     tab === undefined || state.feature_name === defaultFeatureName
       ? VALIDATORS_TAB_VALUES[0]
@@ -69,6 +73,10 @@ export default function ValidatorsPageTabs(): JSX.Element {
     newValue: VALIDATORS_TAB_VALUE,
   ) => {
     navigate(`/validators/${newValue}`);
+    Statsig.logEvent("validators_tab_clicked", newValue, {
+      wallet_address: account?.address ?? "",
+      wallet_name: wallet?.name ?? "",
+    });
   };
 
   return (

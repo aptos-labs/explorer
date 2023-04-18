@@ -24,10 +24,11 @@ import {DelegationStateContext} from "./context/DelegationContext";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
 import {OCTA} from "../../constants";
-import {useGlobalState} from "../../GlobalState";
 import {AptosClient, Types} from "aptos";
 import {getAddStakeFee} from "../../api";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
+import {Statsig} from "statsig-react";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 type ValidatorStakingBarProps = {
   setIsStakingBarSkeletonLoading: (arg: boolean) => void;
@@ -46,7 +47,7 @@ export default function StakingBar({
 
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
-  const {connected} = useWallet();
+  const {connected, wallet, account} = useWallet();
   const {delegatedStakeAmount, networkPercentage, commission, isQueryLoading} =
     useGetDelegationNodeInfo({
       validatorAddress: validator.owner_address,
@@ -55,6 +56,13 @@ export default function StakingBar({
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   const handleClickOpen = () => {
+    Statsig.logEvent("stake_button_clicked", validator.owner_address, {
+      commission: commission?.toString() ?? "",
+      delegated_stake_amount: delegatedStakeAmount ?? "",
+      network_percentage: networkPercentage ?? "",
+      wallet_address: account?.address ?? "",
+      wallet_name: wallet?.name ?? "",
+    });
     setDialogOpen(true);
   };
   const handleDialogClose = () => {
@@ -110,7 +118,6 @@ export default function StakingBar({
     </Stack>
   );
 
-  const {account} = useWallet();
   const balance = useGetAccountAPTBalance(account?.address!);
   const [state, _] = useGlobalState();
   const client = new AptosClient(state.network_value);

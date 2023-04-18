@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import {AptosClient, Types} from "aptos";
 import React, {useContext, useEffect, useState} from "react";
+import {Statsig} from "statsig-react";
 import {getCanWithdrawPendingInactive} from "../../api";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
@@ -24,7 +25,7 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {assertNever} from "../../utils";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
@@ -237,7 +238,7 @@ export default function MyDepositsSection({
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
-  const {connected, account} = useWallet();
+  const {connected, account, wallet} = useWallet();
   const {stakes} = useGetDelegatorStakeInfo(
     account?.address!,
     validator.owner_address,
@@ -278,6 +279,16 @@ export default function MyDepositsSection({
       setDialogOpen(false);
     };
     const handleClickOpen = () => {
+      Statsig.logEvent(
+        getStakeOperationFromStakingStatus(status, canWithdrawPendingInactive) +
+          "_button_clicked",
+        validator?.owner_address,
+        {
+          wallet_address: account?.address ?? "",
+          wallet_name: wallet?.name ?? "",
+          amount: Number(stake).toString(),
+        },
+      );
       setDialogOpen(true);
     };
 

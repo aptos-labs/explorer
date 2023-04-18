@@ -3,6 +3,7 @@ import {NavLink} from "react-router-dom";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
+import {useAugmentToWithGlobalSearchParams} from "../../routing";
 
 function NavButton({
   to,
@@ -13,8 +14,13 @@ function NavButton({
   title: string;
   label: string;
 }) {
+  const augumentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
+
   return (
-    <NavLink to={to} style={{textDecoration: "none", color: "inherit"}}>
+    <NavLink
+      to={augumentToWithGlobalSearchParams(to)}
+      style={{textDecoration: "none", color: "inherit"}}
+    >
       {({isActive}) => (
         <Button
           variant="nav"

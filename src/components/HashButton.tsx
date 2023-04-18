@@ -7,19 +7,22 @@ import {
   Popover,
   IconButton,
   useTheme,
-  Link,
-  Stack,
   Tooltip,
+  Stack,
 } from "@mui/material";
-import * as RRD from "react-router-dom";
-import {grey} from "../themes/colors/aptosColorPalette";
+import {
+  codeBlockColor,
+  codeBlockColorClickableOnHover,
+  grey,
+} from "../themes/colors/aptosColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {assertNever} from "../utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import PixelPFPGenerator from "./PixelArtIcon";
+import IdenticonImg from "./IdenticonImg";
+import {InternalLink} from "../routing";
 
 export enum HashType {
   ACCOUNT = "account",
@@ -45,13 +48,9 @@ function HashLink(hash: string, type: HashType): JSX.Element {
     case HashType.ACCOUNT:
     case HashType.TRANSACTION:
       return (
-        <Link
-          component={RRD.Link}
-          to={getHashLinkStr(hash, type)}
-          color="inherit"
-        >
+        <InternalLink to={getHashLinkStr(hash, type)} color="inherit">
           {hash}
-        </Link>
+        </InternalLink>
       );
     case HashType.OTHERS:
       return <>{hash}</>;
@@ -97,7 +96,8 @@ function AccountHashButtonInner({
     size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
   const [copyTooltipOpen, setCopyTooltipOpen] = useState(false);
   const theme = useTheme();
-  const copyAddress = async (_: React.MouseEvent<HTMLButtonElement>) => {
+  const copyAddress = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     await navigator.clipboard.writeText(hash);
     setCopyTooltipOpen(true);
     setTimeout(() => {
@@ -106,24 +106,42 @@ function AccountHashButtonInner({
   };
 
   return (
-    <Stack direction="row" alignItems={"center"} spacing={1}>
-      <PixelPFPGenerator walletAddress={hash} />
-      <Typography>{name ?? truncateHash}</Typography>
-      <Tooltip title="Copied" open={copyTooltipOpen}>
-        <Button
+    <Tooltip title={hash}>
+      <Stack direction="row" alignItems={"center"} spacing={1}>
+        <IdenticonImg address={hash} />
+        <InternalLink
+          to={getHashLinkStr(hash, type)}
           sx={{
-            color: "inherit",
+            backgroundColor: codeBlockColor,
             "&:hover": {
-              backgroundColor: `${
-                theme.palette.mode === "dark" ? grey[500] : grey[300]
-              }`,
+              backgroundColor: codeBlockColorClickableOnHover,
             },
+            color: theme.palette.mode === "dark" ? "#83CCED" : "#0EA5E9",
+            padding: "0.35rem 1rem 0.35rem 1rem",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+            borderRadius: 50,
           }}
-          onClick={copyAddress}
-          endIcon={<ContentCopyIcon sx={{opacity: "0.75", mr: 1}} />}
-        />
-      </Tooltip>
-    </Stack>
+        >
+          {name ?? truncateHash}
+        </InternalLink>
+        <Tooltip title="Copied" open={copyTooltipOpen}>
+          <Button
+            sx={{
+              color: "inherit",
+              "&:hover": {
+                backgroundColor: `${
+                  theme.palette.mode === "dark" ? grey[500] : grey[300]
+                }`,
+              },
+            }}
+            onClick={copyAddress}
+            endIcon={<ContentCopyIcon sx={{opacity: "0.75", mr: 1}} />}
+          />
+        </Tooltip>
+      </Stack>
+    </Tooltip>
   );
 }
 
