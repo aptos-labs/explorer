@@ -15,6 +15,8 @@ import StyledDialog from "../../components/StyledDialog";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
+import {Statsig} from "statsig-react";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 
 type TransactionSucceededDialogProps = {
   handleDialogClose: () => void;
@@ -32,7 +34,7 @@ export default function TransactionSucceededDialog({
   stakeOperation,
 }: TransactionSucceededDialogProps) {
   const theme = useTheme();
-
+  const {account, wallet} = useWallet();
   const [copyTooltipOpen, setCopyTooltipOpen] = useState<boolean>(false);
 
   const copyAddress = async (_: React.MouseEvent<HTMLButtonElement>) => {
@@ -41,6 +43,14 @@ export default function TransactionSucceededDialog({
     setTimeout(() => {
       setCopyTooltipOpen(false);
     }, 2000);
+  };
+  const onViewTransactionClick = () => {
+    Statsig.logEvent("view_transaction_button_clicked", stakeOperation, {
+      transactionHash: transactionHash,
+      amount: amount,
+      wallet_address: account?.address ?? "",
+      wallet_name: wallet?.name ?? "",
+    });
   };
 
   function getDialogSubtext() {
@@ -128,6 +138,7 @@ export default function TransactionSucceededDialog({
       <DialogActions>
         <Button
           href={`/txn/${transactionHash}`}
+          onClick={onViewTransactionClick}
           target="_blank"
           variant="primary"
           fullWidth

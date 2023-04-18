@@ -10,6 +10,8 @@ import StyledDialog from "../../components/StyledDialog";
 import {ReactComponent as ConnectWalletModalIcon} from "../../assets/forum_icon.svg";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useGlobalState} from "../../GlobalState";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useNavigate} from "react-router-dom";
 
 type WalletConnectionDialogProps = {
   handleDialogClose: () => void;
@@ -21,6 +23,8 @@ export default function WalletConnectionDialog({
   isDialogOpen,
 }: WalletConnectionDialogProps) {
   const [state] = useGlobalState();
+  const navigate = useNavigate();
+  const {account} = useWallet();
 
   return (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
@@ -35,7 +39,10 @@ export default function WalletConnectionDialog({
       </DialogTitle>
       <DialogActions>
         <Stack sx={{width: "100%"}}>
-          <WalletConnector networkSupport={state.network_name} />
+          <WalletConnector
+            networkSupport={state.network_name}
+            handleNavigate={() => navigate(`/account/${account?.address}`)}
+          />
         </Stack>
       </DialogActions>
     </StyledDialog>
