@@ -18,13 +18,14 @@ import {useGetValidatorPageSkeletonLoading} from "../../api/hooks/useGetValidato
 import {DelegationStateContext} from "./context/DelegationContext";
 import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
 import {useEffect, useState} from "react";
+import Error from "../Account/Error";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
   const addressHex = new HexString(address);
   const {validators} = useGetValidators();
   const {connected} = useWallet();
-  const {data: accountResource} = useGetAccountResource(
+  const {data: accountResource, error} = useGetAccountResource(
     addressHex.hex(),
     "0x1::stake::StakePool",
   );
@@ -72,6 +73,10 @@ export default function ValidatorPage() {
       );
     }
   }, [delegatedStakingPools, loading, validators, validator]);
+
+  if (error) {
+    return <Error error={error} address={validator?.owner_address!} />;
+  }
 
   if ((!validator && !delegationValidator) || !accountResource) {
     return null;
