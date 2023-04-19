@@ -2,7 +2,7 @@ import {Types} from "aptos";
 import {useQuery} from "react-query";
 import {getAccount} from "..";
 import {ResponseError} from "../client";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export function useGetAccount(address: string) {
   const [state, _setState] = useGlobalState();

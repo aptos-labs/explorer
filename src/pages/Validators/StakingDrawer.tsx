@@ -11,6 +11,7 @@ import * as React from "react";
 import SideDrawer from "../../components/SideDrawer";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {REWARDS_LEARN_MORE_LINK} from "./Components/Staking";
+import {InternalLink} from "../../routing";
 
 type StakingDrawerProps = {
   open: boolean;
@@ -25,15 +26,16 @@ const faqStakingData = [
         total delegation pool is an aggregation of staked APT from various token
         owners, and collectively staked. Aptos is a proof-of-stake network,
         which means that tokens are staked to{" "}
-        <Link href={"#validators-section"}>validators</Link> in order to keep
-        the network healthy.
+        <InternalLink to={"#validators-section"}>validators</InternalLink> in
+        order to keep the network healthy.
         <br />
         <br />
         When you delegate stake, you own the tokens and earn{" "}
-        <Link href={"#rewards-section"}>rewards</Link> on top of the staked
-        amount. At no point does the validator have any access to your tokens as
-        they remain securely in your control. The delegation smart contract has
-        undergone security audit and thorough testing before launch.
+        <InternalLink to={"#rewards-section"}>rewards</InternalLink> on top of
+        the staked amount. At no point does the validator have any access to
+        your tokens as they remain securely in your control. The delegation
+        smart contract has undergone security audit and thorough testing before
+        launch.
       </React.Fragment>
     ),
   },

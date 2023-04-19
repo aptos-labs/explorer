@@ -7,7 +7,8 @@ import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {useNavigate} from "../../routing";
 
 const TAB_VALUES: TabValue[] = ["overview", "activities"];
 

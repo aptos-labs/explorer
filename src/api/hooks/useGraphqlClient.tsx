@@ -8,7 +8,7 @@ import {
 } from "@apollo/client";
 import {useEffect, useState} from "react";
 import {NetworkName} from "../../constants";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   const graphqlUri = getGraphqlURI(networkName);

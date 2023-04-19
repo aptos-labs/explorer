@@ -1,7 +1,7 @@
 import React from "react";
 import {Stack, Grid, Alert} from "@mui/material";
 import {Types} from "aptos";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useParams} from "react-router-dom";
 import {useQuery} from "react-query";
 import {ResponseError} from "../../api/client";

@@ -1,4 +1,4 @@
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useMemo, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
 import {useGetEpochTime} from "./useGetEpochTime";

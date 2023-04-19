@@ -1,24 +1,22 @@
-import React, {useEffect} from "react";
 import {
   FormControl,
   Select,
   SelectChangeEvent,
   Typography,
 } from "@mui/material";
-import {defaultFeatureName, NetworkName, networks} from "../../constants";
-import {useGlobalState} from "../../GlobalState";
-import {useTheme} from "@mui/material/styles";
+import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
-import Box from "@mui/material/Box";
-import {useSearchParams} from "react-router-dom";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material/styles";
 import {Stack} from "@mui/system";
+import React from "react";
 import {
-  useGetChainIdCached,
   useGetChainIdAndCache,
+  useGetChainIdCached,
 } from "../../api/hooks/useGetNetworkChainIds";
-import {AptosClient} from "aptos";
+import {NetworkName, networks} from "../../constants";
+import {useGlobalState} from "../../global-config/GlobalConfig";
+import {grey} from "../../themes/colors/aptosColorPalette";
 
 function NetworkAndChainIdCached({
   networkName,
@@ -68,38 +66,13 @@ function NetworkMenuItem({networkName}: {networkName: string}) {
 }
 
 export default function NetworkSelect() {
-  const [state, dispatch] = useGlobalState();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [state, {selectNetwork}] = useGlobalState();
   const theme = useTheme();
-
-  function maybeSetNetwork(networkNameString: string | null) {
-    if (!networkNameString || state.network_name === networkNameString) return;
-    if (!(networkNameString in networks)) return;
-    const feature_name = state.feature_name;
-    const network_name = networkNameString as NetworkName;
-    const network_value = networks[network_name];
-    const aptos_client = new AptosClient(network_name);
-    if (network_value) {
-      // only show the "feature" param in the url when it's not "prod"
-      // we don't want the users to know the existence of the "feature" param
-      if (feature_name !== defaultFeatureName) {
-        setSearchParams({network: network_name, feature: feature_name});
-      } else {
-        setSearchParams({network: network_name});
-      }
-      dispatch({network_name, network_value, feature_name, aptos_client});
-    }
-  }
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const network_name = event.target.value;
-    maybeSetNetwork(network_name);
+    selectNetwork(network_name as NetworkName);
   };
-
-  useEffect(() => {
-    const network_name = searchParams.get("network");
-    maybeSetNetwork(network_name);
-  });
 
   function DropdownIcon(props: SvgIconProps) {
     return (

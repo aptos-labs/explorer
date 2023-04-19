@@ -1,7 +1,7 @@
 import {AptosClient, Types} from "aptos";
 import {useState, useMemo} from "react";
 import {getValidatorCommission, getValidatorState} from "..";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useGetAccountResource} from "./useGetAccountResource";
 import {useGetValidatorSet} from "./useGetValidatorSet";
 

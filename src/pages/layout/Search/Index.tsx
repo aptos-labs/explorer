@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {Autocomplete, AutocompleteInputChangeReason} from "@mui/material";
 import SearchInput from "./SearchInput";
-import {useNavigate} from "react-router-dom";
 import useGetSearchResults, {
   NotFoundResult,
   SearchResult,
 } from "../../../api/hooks/useGetSearchResults";
 import ResultLink from "./ResultLink";
+import {useNavigate} from "../../../routing";
 
 export default function HeaderSearch() {
   const navigate = useNavigate();
