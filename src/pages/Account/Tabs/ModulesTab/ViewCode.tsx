@@ -35,7 +35,7 @@ import {getBytecodeSizeInKB, transformCode} from "../../../../utils";
 
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import {useParams, useSearchParams} from "react-router-dom";
-import {InternalLink, useNavigate} from "../../../../routing";
+import {Link, useNavigate} from "../../../../routing";
 
 type PackageMetadata = {
   name: string;
@@ -197,7 +197,7 @@ function ModuleNameOption({selected, name, linkTo}: ModuleNameOptionProps) {
   const theme = useTheme();
 
   return (
-    <InternalLink to={linkTo}>
+    <Link to={linkTo} underline="none" color={"inherit"}>
       <Box
         key={name}
         sx={{
@@ -220,7 +220,7 @@ function ModuleNameOption({selected, name, linkTo}: ModuleNameOptionProps) {
       >
         {name}
       </Box>
-    </InternalLink>
+    </Link>
   );
 }
 

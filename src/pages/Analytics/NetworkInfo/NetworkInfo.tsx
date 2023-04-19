@@ -6,7 +6,7 @@ import TPS from "./TPS";
 import ActiveValidators from "./ActiveValidators";
 import TotalTransactions from "./TotalTransactions";
 import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
-import {InternalLink} from "../../../routing";
+import {Link} from "../../../routing";
 
 type CardStyle = "default" | "outline";
 
@@ -22,14 +22,9 @@ function LinkableContainer({
   const inMainnet = useGetInMainnet();
 
   return inMainnet && linkToAnalyticsPage ? (
-    <InternalLink
-      to="/analytics"
-      underline="none"
-      color="inherit"
-      variant="inherit"
-    >
+    <Link to="/analytics" underline="none" color="inherit" variant="inherit">
       {children}
-    </InternalLink>
+    </Link>
   ) : (
     <>{children}</>
   );

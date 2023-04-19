@@ -1,7 +1,6 @@
 import {
   Button,
   Divider,
-  Link,
   List,
   ListItem,
   Typography,
@@ -11,7 +10,7 @@ import * as React from "react";
 import SideDrawer from "../../components/SideDrawer";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {REWARDS_LEARN_MORE_LINK} from "./Components/Staking";
-import {InternalLink} from "../../routing";
+import {Link} from "../../routing";
 
 type StakingDrawerProps = {
   open: boolean;
@@ -26,16 +25,15 @@ const faqStakingData = [
         total delegation pool is an aggregation of staked APT from various token
         owners, and collectively staked. Aptos is a proof-of-stake network,
         which means that tokens are staked to{" "}
-        <InternalLink to={"#validators-section"}>validators</InternalLink> in
-        order to keep the network healthy.
+        <Link to={"#validators-section"}>validators</Link> in order to keep the
+        network healthy.
         <br />
         <br />
         When you delegate stake, you own the tokens and earn{" "}
-        <InternalLink to={"#rewards-section"}>rewards</InternalLink> on top of
-        the staked amount. At no point does the validator have any access to
-        your tokens as they remain securely in your control. The delegation
-        smart contract has undergone security audit and thorough testing before
-        launch.
+        <Link to={"#rewards-section"}>rewards</Link> on top of the staked
+        amount. At no point does the validator have any access to your tokens as
+        they remain securely in your control. The delegation smart contract has
+        undergone security audit and thorough testing before launch.
       </React.Fragment>
     ),
   },
@@ -53,9 +51,9 @@ const faqStakingData = [
     answer: (
       <React.Fragment>
         "You can stake APT directly by going to the{" "}
-        <Link href={"/validators/delegation"}>Explorer</Link> page and
-        connecting your wallet. If you are using the Petra wallet, you should
-        see the following flow:
+        <Link to={"/validators/delegation"}>Explorer</Link> page and connecting
+        your wallet. If you are using the Petra wallet, you should see the
+        following flow:
         <br />
         <br />
         <ol style={{marginLeft: "1em"}}>
@@ -78,7 +76,7 @@ const faqStakingData = [
         Congratulations! You have successfully staked APT on Explorer! You can
         also stake APT directly to a validator node through the{" "}
         <Link
-          href="https://aptos.dev/nodes/validator-node/operator/staking-pool-operations"
+          to="https://aptos.dev/nodes/validator-node/operator/staking-pool-operations"
           target="_blank"
         >
           CLI
@@ -175,7 +173,7 @@ const faqValidatorData = [
         trusted to vote on transactions. You can read more about how the Aptos
         blockchain works{" "}
         <Link
-          href={"https://aptos.dev/guides/basics-life-of-txn#consensus"}
+          to={"https://aptos.dev/guides/basics-life-of-txn#consensus"}
           target="_blank"
         >
           here

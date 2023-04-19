@@ -5,7 +5,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
-import {InternalLink} from "../../../routing";
+import {Link} from "../../../routing";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 
 function isBlockMetadataTransaction(
@@ -21,13 +21,13 @@ function VersionValue({data}: {data: Types.Block}) {
   const {first_version, last_version} = data;
   return (
     <>
-      <InternalLink to={`/txn/${first_version}`} underline="none">
+      <Link to={`/txn/${first_version}`} underline="none">
         {first_version}
-      </InternalLink>
+      </Link>
       {" - "}
-      <InternalLink to={`/txn/${last_version}`} underline="none">
+      <Link to={`/txn/${last_version}`} underline="none">
         {last_version}
-      </InternalLink>
+      </Link>
     </>
   );
 }

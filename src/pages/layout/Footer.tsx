@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Container, Link, Stack, Typography, useTheme} from "@mui/material";
+import {Box, Container, Stack, Typography, useTheme} from "@mui/material";
 
 import Grid from "@mui/material/Unstable_Grid2";
 
@@ -12,7 +12,7 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import SvgIcon from "@mui/material/SvgIcon";
 
 import {ReactComponent as LogoFull} from "../../assets/svg/aptos_logo_icon.svg";
-import {InternalLink} from "../../routing";
+import {Link} from "../../routing";
 
 const socialLinks = [
   {title: "Git", url: "https://github.com/aptos-labs", icon: GithubLogo},
@@ -52,7 +52,7 @@ export default function Footer() {
           <Grid xs="auto" container justifyContent="start">
             <Link
               color="inherit"
-              href="https://aptoslabs.com/"
+              to="https://aptoslabs.com/"
               target="_blank"
               sx={{width: "3rem", mb: {xs: 2, md: 0}, mr: {md: 2}}}
             >
@@ -87,7 +87,7 @@ export default function Footer() {
             >
               <Link
                 color="inherit"
-                href="https://aptoslabs.com/privacy"
+                to="https://aptoslabs.com/privacy"
                 target="_blank"
                 sx={{
                   fontSize: "0.8rem",
@@ -98,7 +98,7 @@ export default function Footer() {
               </Link>
               <Link
                 color="inherit"
-                href="https://aptoslabs.com/terms"
+                to="https://aptoslabs.com/terms"
                 target="_blank"
                 sx={{
                   fontSize: "0.8rem",
@@ -125,7 +125,7 @@ export default function Footer() {
                 <Grid key={link.title}>
                   <Link
                     color="inherit"
-                    href={link.url}
+                    to={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     title={link.title}
