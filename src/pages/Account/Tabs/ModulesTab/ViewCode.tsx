@@ -329,10 +329,22 @@ function Code({bytecode}: {bytecode: string}) {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Stack
+        direction="row"
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        spacing={1}
+      >
         <Typography fontSize={20} fontWeight={700} marginY={"16px"}>
           Code
         </Typography>
+        {sourceCode && (
+          <Typography variant="body1" fontSize={12}>
+            The source code is plain text uploaded by the deployer, which can be
+            different from the actual bytecode.
+          </Typography>
+        )}
         <Stack direction="row" spacing={2}>
           <StyledTooltip
             title="Code copied"
@@ -354,12 +366,20 @@ function Code({bytecode}: {bytecode: string}) {
               }}
             >
               <ContentCopy style={{height: "1.25rem", width: "1.25rem"}} />{" "}
-              <Typography marginLeft={1}>copy code</Typography>
+              <Typography
+                marginLeft={1}
+                sx={{
+                  display: "inline",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                copy code
+              </Typography>
             </Button>
           </StyledTooltip>
           <ExpandCode sourceCode={sourceCode} />
         </Stack>
-      </Box>
+      </Stack>
       {!sourceCode ? (
         <Box>
           Unfortunately, the source code cannot be shown because the package
