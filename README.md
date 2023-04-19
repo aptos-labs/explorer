@@ -10,6 +10,11 @@ Install dependencies:
 pnpm install
 ```
 
+Build dependencies:
+```sh
+pnpm build
+```
+
 Run below to start the app:
 
 ```sh
