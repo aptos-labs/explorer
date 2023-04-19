@@ -1,7 +1,7 @@
 import {Types} from "aptos";
 import {useEffect, useState} from "react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export type TransactionResponse =
   | TransactionResponseOnSubmission

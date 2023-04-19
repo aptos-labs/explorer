@@ -1,12 +1,13 @@
 import {Box, useTheme} from "@mui/material";
 import React from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {assertNever} from "../../../../utils";
 import ViewCode from "./ViewCode";
 import WriteContract from "./WriteContract";
+import {useNavigate} from "../../../../routing";
 
 const TabComponents = Object.freeze({
   code: ViewCode,

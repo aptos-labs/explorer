@@ -16,7 +16,8 @@ import StyledTab from "../../components/StyledTab";
 import TokensTab from "./Tabs/TokensTab";
 import CoinsTab from "./Tabs/CoinsTab";
 import {Types} from "aptos";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {useNavigate} from "../../routing";
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 

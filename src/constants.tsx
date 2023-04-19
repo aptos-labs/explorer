@@ -14,6 +14,10 @@ export const networks = {
 
 export type NetworkName = keyof typeof networks;
 
+export function isValidNetworkName(value: string): value is NetworkName {
+  return value in networks;
+}
+
 export enum Network {
   MAINNET = "mainnet",
   TESTNET = "testnet",
@@ -48,6 +52,9 @@ export const features = {
 };
 
 export type FeatureName = keyof typeof features;
+export function isValidFeatureName(value: string): value is FeatureName {
+  return value in features;
+}
 
 // Remove trailing slashes
 for (const key of Object.keys(features)) {

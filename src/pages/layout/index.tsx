@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Header from "./Header";
 import Footer from "./Footer";
-import {GlobalStateProvider} from "../../GlobalState";
+import {GlobalStateProvider} from "../../global-config/GlobalConfig";
 import {ProvideColorMode} from "../../context";
 import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
 
