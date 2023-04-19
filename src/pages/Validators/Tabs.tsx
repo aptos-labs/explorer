@@ -9,6 +9,7 @@ import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
 import {defaultFeatureName, Network, NetworkName} from "../../constants";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {Statsig} from "statsig-react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useNavigate} from "../../routing";
@@ -40,6 +41,8 @@ type TabPanelProps = {
 
 function TabPanel({value, networkName}: TabPanelProps): JSX.Element {
   switch (networkName) {
+    case Network.PREVIEWNET:
+      return <ValidatorsTable />;
     case Network.MAINNET:
     case Network.TESTNET:
       return value === VALIDATORS_TAB_VALUE.DELEGATION_NODES ? (
@@ -47,8 +50,6 @@ function TabPanel({value, networkName}: TabPanelProps): JSX.Element {
       ) : (
         <ValidatorsTable />
       );
-    case Network.PREVIEWNET:
-      return <ValidatorsTable />;
     case Network.DEVNET:
       return <OldValidatorsTable />;
     default:
@@ -58,6 +59,7 @@ function TabPanel({value, networkName}: TabPanelProps): JSX.Element {
 
 export default function ValidatorsPageTabs(): JSX.Element {
   const [state, _] = useGlobalState();
+  const inDev = useGetInDevMode();
   const {tab} = useParams();
   const navigate = useNavigate();
   const {account, wallet} = useWallet();
@@ -79,43 +81,45 @@ export default function ValidatorsPageTabs(): JSX.Element {
 
   return (
     <Box sx={{width: "100%"}}>
-      <Box>
-        <StyledTabs value={value} onChange={handleChange}>
-          {VALIDATORS_TAB_VALUES.map((value, i) =>
-            value === VALIDATORS_TAB_VALUE.DELEGATION_NODES ? (
-              <StyledTab
-                icon={
-                  <Typography
-                    sx={{
-                      backgroundColor: "#8B5CF6",
-                      color: "#ffffff",
-                      borderRadius: 1,
-                      paddingX: 1,
-                      minWidth: "3.5rem",
-                      height: "1.5rem",
-                    }}
-                  >
-                    BETA
-                  </Typography>
-                }
-                key={i}
-                value={value}
-                label={getTabLabel(value)}
-                isFirst={i === 0}
-                isLast={i === VALIDATORS_TAB_VALUES.length - 1}
-              />
-            ) : (
-              <StyledTab
-                key={i}
-                value={value}
-                label={getTabLabel(value)}
-                isFirst={i === 0}
-                isLast={i === VALIDATORS_TAB_VALUES.length - 1}
-              />
-            ),
-          )}
-        </StyledTabs>
-      </Box>
+      {inDev && (
+        <Box>
+          <StyledTabs value={value} onChange={handleChange}>
+            {VALIDATORS_TAB_VALUES.map((value, i) =>
+              value === VALIDATORS_TAB_VALUE.DELEGATION_NODES ? (
+                <StyledTab
+                  icon={
+                    <Typography
+                      sx={{
+                        backgroundColor: "#8B5CF6",
+                        color: "#ffffff",
+                        borderRadius: 1,
+                        paddingX: 1,
+                        minWidth: "3.5rem",
+                        height: "1.5rem",
+                      }}
+                    >
+                      BETA
+                    </Typography>
+                  }
+                  key={i}
+                  value={value}
+                  label={getTabLabel(value)}
+                  isFirst={i === 0}
+                  isLast={i === VALIDATORS_TAB_VALUES.length - 1}
+                />
+              ) : (
+                <StyledTab
+                  key={i}
+                  value={value}
+                  label={getTabLabel(value)}
+                  isFirst={i === 0}
+                  isLast={i === VALIDATORS_TAB_VALUES.length - 1}
+                />
+              ),
+            )}
+          </StyledTabs>
+        </Box>
+      )}
       <Box sx={{width: "auto", overflowX: "auto"}}>
         <TabPanel value={value} networkName={state.network_name} />
       </Box>

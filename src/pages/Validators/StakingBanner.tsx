@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import {grey} from "@mui/material/colors";
 import React, {useState} from "react";
+import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {Banner} from "../../components/Banner";
 import {StakingDrawer} from "./StakingDrawer";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -15,6 +16,7 @@ import {Statsig} from "statsig-react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 
 export function StakingBanner() {
+  const inDev = useGetInDevMode();
   const [open, setOpen] = useState<boolean>(false);
   const {account, wallet} = useWallet();
   const theme = useTheme();
@@ -67,12 +69,12 @@ export function StakingBanner() {
     <>{text}</>
   );
 
-  return (
+  return inDev ? (
     <>
       <Banner sx={{marginBottom: 2}} action={action}>
         {children}
       </Banner>
       <StakingDrawer open={open} handleClick={handleClick} />
     </>
-  );
+  ) : null;
 }

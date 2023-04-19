@@ -19,7 +19,11 @@ export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
         throw {type: ResponseErrorType.NOT_FOUND};
       }
     }
-    if (error.message === ResponseErrorType.TOO_MANY_REQUESTS) {
+    if (
+      error.message
+        .toLowerCase()
+        .includes(ResponseErrorType.TOO_MANY_REQUESTS.toLowerCase())
+    ) {
       throw {
         type: ResponseErrorType.TOO_MANY_REQUESTS,
       };
