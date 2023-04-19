@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as RRD from "react-router-dom";
-import {Link, Table, TableHead, TableRow} from "@mui/material";
+import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../utils";
 import HashButton, {HashType} from "../../../components/HashButton";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
-import {InternalLink} from "../../../routing";
+import {Link} from "../../../routing";
 
 type ActivityCellProps = {
   activity: any; // TODO: add graphql data typing
@@ -16,7 +16,7 @@ type ActivityCellProps = {
 function TransactionVersionCell({activity}: ActivityCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <InternalLink
+      <Link
         to={`/txn/${
           "transaction_version" in activity && activity.transaction_version
         }`}
@@ -24,7 +24,7 @@ function TransactionVersionCell({activity}: ActivityCellProps) {
         underline="none"
       >
         {activity?.transaction_version}
-      </InternalLink>
+      </Link>
     </GeneralTableCell>
   );
 }

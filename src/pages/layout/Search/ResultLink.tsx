@@ -1,7 +1,7 @@
 import React from "react";
-import {Link, Typography} from "@mui/material";
+import {Typography} from "@mui/material";
 import * as RRD from "react-router-dom";
-import {InternalLink} from "../../../routing";
+import {Link} from "../../../routing";
 
 type ResultLinkProps = {
   to: string | null;
@@ -28,8 +28,8 @@ export default function ResultLink({to, text}: ResultLinkProps): JSX.Element {
   }
 
   return (
-    <InternalLink to={to} color="inherit" underline="none" sx={style}>
+    <Link to={to} color="inherit" underline="none" sx={style}>
       {text}
-    </InternalLink>
+    </Link>
   );
 }

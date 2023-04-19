@@ -1,7 +1,5 @@
 import * as React from "react";
 import {Box, Stack} from "@mui/material";
-import * as RRD from "react-router-dom";
-import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -31,7 +29,7 @@ import {
   getTransactionAmount,
   getTransactionCounterparty,
 } from "../Transaction/utils";
-import {InternalLink, useNavigate} from "../../routing";
+import {Link, useNavigate} from "../../routing";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -50,13 +48,13 @@ function TransactionVersionStatusCell({transaction}: TransactionCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
       <Stack direction="row" spacing={0.5}>
-        <InternalLink
+        <Link
           to={`/txn/${"version" in transaction && transaction.version}`}
           color="primary"
           underline="none"
         >
           {"version" in transaction && transaction.version}
-        </InternalLink>
+        </Link>
         {"success" in transaction && (
           <TableTransactionStatus success={transaction.success} />
         )}

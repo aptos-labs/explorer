@@ -21,7 +21,7 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import {Statsig} from "statsig-react";
-import {InternalLink, useNavigate} from "../../routing";
+import {Link, useNavigate} from "../../routing";
 
 export default function Header() {
   const scrollTop = () => {
@@ -110,7 +110,7 @@ export default function Header() {
             }}
             disableGutters
           >
-            <InternalLink
+            <Link
               onClick={scrollTop}
               to="/"
               color="inherit"
@@ -122,7 +122,7 @@ export default function Header() {
               }}
             >
               <LogoIcon />
-            </InternalLink>
+            </Link>
 
             <Nav />
             <NetworkSelect />
