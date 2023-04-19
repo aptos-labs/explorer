@@ -244,7 +244,7 @@ type ValidatorCellProps = {
 
 function StatusCell({validator}: ValidatorCellProps) {
   return (
-    <GeneralTableCell>
+    <GeneralTableCell sx={{paddingRight: 5}}>
       <ValidatorStatusIcon address={validator.owner_address} />
     </GeneralTableCell>
   );
@@ -260,7 +260,7 @@ function CommissionCell({commission}: ValidatorCellProps) {
 function DelegatorCell({validator}: ValidatorCellProps) {
   const {delegatorBalance} = useGetNumberOfDelegators(validator.owner_address);
   return (
-    <GeneralTableCell sx={{paddingRight: 15, textAlign: "right"}}>
+    <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
       {delegatorBalance}
     </GeneralTableCell>
   );
@@ -272,7 +272,7 @@ function RewardsEarnedCell({validator, connected}: ValidatorCellProps) {
       sx={
         connected
           ? {paddingRight: 10, textAlign: "right"}
-          : {textAlign: "right"}
+          : {paddingRight: 5, textAlign: "right"}
       }
     >
       <APTCurrencyValue
@@ -288,7 +288,7 @@ function DelegatedAmountCell({
   networkPercentage,
 }: ValidatorCellProps) {
   return (
-    <GeneralTableCell>
+    <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
       <Box>
         <APTCurrencyValue
           amount={delegatedStakeAmount ?? ""}

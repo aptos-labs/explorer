@@ -41,9 +41,9 @@ type TabPanelProps = {
 
 function TabPanel({value, networkName}: TabPanelProps): JSX.Element {
   switch (networkName) {
-    case Network.MAINNET:
     case Network.PREVIEWNET:
       return <ValidatorsTable />;
+    case Network.MAINNET:
     case Network.TESTNET:
       return value === VALIDATORS_TAB_VALUE.DELEGATION_NODES ? (
         <DelegationValidatorsTable />
@@ -81,7 +81,7 @@ export default function ValidatorsPageTabs(): JSX.Element {
 
   return (
     <Box sx={{width: "100%"}}>
-      {inDev && state.network_name === Network.TESTNET && (
+      {inDev && (
         <Box>
           <StyledTabs value={value} onChange={handleChange}>
             {VALIDATORS_TAB_VALUES.map((value, i) =>
