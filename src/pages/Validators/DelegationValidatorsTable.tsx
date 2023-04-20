@@ -173,13 +173,7 @@ function ValidatorHeaderCell({
         />
       );
     case "view":
-      return (
-        <GeneralTableHeaderCell
-          header="View"
-          isTableTooltip={false}
-          sx={{paddingLeft: 3}}
-        />
-      );
+      return <GeneralTableHeaderCell header="View" isTableTooltip={false} />;
     case "myDeposit":
       return (
         <GeneralTableHeaderCell header="My Deposit" isTableTooltip={false} />
@@ -303,17 +297,20 @@ function DelegatedAmountCell({
 function ViewCell() {
   return (
     <GeneralTableCell>
-      <Button
+      <VisibilityOutlinedIcon
+        fontSize="small"
         sx={{
+          color: "black",
           backgroundColor: aptosColor,
           "&:hover": {
             backgroundColor: alpha(primary["500"], 1),
           },
-          width: "5px",
+          borderRadius: 0.75,
+          width: "2rem",
+          height: "2rem",
+          padding: "0.5rem",
         }}
-      >
-        <VisibilityOutlinedIcon sx={{color: "black"}} />
-      </Button>
+      />
     </GeneralTableCell>
   );
 }

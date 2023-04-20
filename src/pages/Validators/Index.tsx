@@ -14,7 +14,7 @@ export default function ValidatorsPage() {
   const [state, _] = useGlobalState();
   const {account, wallet} = useWallet();
   const {config} = useConfig(STAKING_BANNER_CONFIG_NAME);
-  const viewCountCap = config.getValue("viewCount");
+  const viewCountCap = config.getValue("view_count");
   // Get the user's stable ID
   const stableID = Statsig.getStableID();
 
