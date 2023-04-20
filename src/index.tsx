@@ -86,6 +86,9 @@ const wallets = [
   }),
 ];
 
+// window.addEventListener("load", () => {}) is the temporary fix for the wallet reconnection issue on explorer
+// chat thread for context: https://aptos-org.slack.com/archives/C04EXV6UTR7/p1681964698670039?thread_ts=1681962123.674429&cid=C04EXV6UTR7
+// GP-221
 window.addEventListener("load", () => {
   ReactDOM.render(
     <React.StrictMode>
