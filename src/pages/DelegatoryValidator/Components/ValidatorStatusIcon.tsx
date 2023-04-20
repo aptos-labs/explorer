@@ -23,7 +23,7 @@ export default function ValidatorStatusIcon({
             label={"Pending Active"}
             color={"warning"}
             icon={<PendingIcon />}
-            sx={{color: "#14B8A6", backgroundColor: "rgba(20, 184, 166, 0.1)"}}
+            sx={{color: "#44c6ee", backgroundColor: "rgba(68, 198, 238, 0.1)"}}
           />
         );
       case 2:
