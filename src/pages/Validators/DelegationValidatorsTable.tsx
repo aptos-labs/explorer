@@ -236,12 +236,13 @@ type ValidatorCellProps = {
   networkPercentage?: string;
   commission: number | undefined;
   connected: boolean;
+  validatorStatus: Types.MoveValue[] | undefined;
 };
 
-function StatusCell({validator}: ValidatorCellProps) {
+function StatusCell({validatorStatus}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{paddingRight: 5}}>
-      <ValidatorStatusIcon address={validator.owner_address} />
+      <ValidatorStatusIcon validatorStatus={validatorStatus} />
     </GeneralTableCell>
   );
 }
@@ -365,10 +366,15 @@ function ValidatorRow({
   const navigate = useNavigate();
   const {account, wallet} = useWallet();
 
-  const {commission, delegatedStakeAmount, networkPercentage, error} =
-    useGetDelegationNodeInfo({
-      validatorAddress: validator.owner_address,
-    });
+  const {
+    commission,
+    delegatedStakeAmount,
+    networkPercentage,
+    validatorStatus,
+    error,
+  } = useGetDelegationNodeInfo({
+    validatorAddress: validator.owner_address,
+  });
   const rowClick = (address: Types.Address) => {
     Statsig.logEvent("delegation_validators_row_clicked", address, {
       commission: commission?.toString() ?? "",
@@ -376,6 +382,7 @@ function ValidatorRow({
       network_percentage: networkPercentage ?? "",
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",
+      validator_status: validatorStatus ? validatorStatus[0].toString() : "",
     });
     navigate(`/validator/${address}`);
   };
@@ -396,6 +403,7 @@ function ValidatorRow({
             delegatedStakeAmount={delegatedStakeAmount}
             networkPercentage={networkPercentage}
             connected={connected}
+            validatorStatus={validatorStatus}
           />
         );
       })}
