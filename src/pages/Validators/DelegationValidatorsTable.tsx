@@ -28,7 +28,6 @@ import {OperatorAddrCell, ValidatorAddrCell} from "./ValidatorsTable";
 import {useGetNumberOfDelegators} from "../../api/hooks/useGetNumberOfDelegators";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {Button} from "@mui/material";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
@@ -36,6 +35,8 @@ import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedSta
 import {Statsig} from "statsig-react";
 import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
 import {useNavigate} from "../../routing";
+import {ResponseError} from "../../api/client";
+import Error from "../Account/Error";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -226,6 +227,7 @@ type ValidatorRowProps = {
   validator: ValidatorData;
   columns: Column[];
   connected: boolean;
+  setError: (error: ResponseError) => void;
 };
 
 type ValidatorCellProps = {
@@ -354,11 +356,16 @@ function MyDepositCell({validator}: ValidatorCellProps) {
   );
 }
 
-function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
+function ValidatorRow({
+  validator,
+  columns,
+  connected,
+  setError,
+}: ValidatorRowProps) {
   const navigate = useNavigate();
   const {account, wallet} = useWallet();
 
-  const {commission, delegatedStakeAmount, networkPercentage} =
+  const {commission, delegatedStakeAmount, networkPercentage, error} =
     useGetDelegationNodeInfo({
       validatorAddress: validator.owner_address,
     });
@@ -372,6 +379,10 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
     });
     navigate(`/validator/${address}`);
   };
+
+  if (error) {
+    setError(error);
+  }
 
   return (
     <GeneralTableRow onClick={() => rowClick(validator.owner_address)}>
@@ -411,6 +422,7 @@ export function DelegationValidatorsTable() {
   >([]);
   const {delegatedStakingPools, loading} =
     useGetDelegatedStakingPoolList() ?? [];
+  const [error, setError] = useState<ResponseError | null>();
 
   useEffect(() => {
     if (!loading) {
@@ -449,6 +461,9 @@ export function DelegationValidatorsTable() {
     }
   }, [validators, state.network_value, loading]);
 
+  if (error) {
+    return <Error error={error} />;
+  }
   return (
     <Table>
       <TableHead>
@@ -473,6 +488,7 @@ export function DelegationValidatorsTable() {
               validator={validator}
               columns={columns}
               connected={connected}
+              setError={setError}
             />
           );
         })}

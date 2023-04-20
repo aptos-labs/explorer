@@ -4,7 +4,7 @@ import {Alert} from "@mui/material";
 
 type ErrorProps = {
   error: ResponseError;
-  address: string;
+  address?: string;
 };
 
 export default function Error({error, address}: ErrorProps) {
@@ -17,16 +17,24 @@ export default function Error({error, address}: ErrorProps) {
         </Alert>
       );
     case ResponseErrorType.UNHANDLED:
-      return (
-        <Alert severity="error">
-          Unknown error ({error.type}) fetching an Account with address{" "}
-          {address}:
-          <br />
-          {error.message}
-          <br />
-          Try again later
-        </Alert>
-      );
+      if (address) {
+        return (
+          <Alert severity="error">
+            Unknown error ({error.type}) fetching an Account with address{" "}
+            {address}:
+            <br />
+            {error.message}
+            <br />
+            Try again later
+          </Alert>
+        );
+      } else {
+        return (
+          <Alert severity="error">
+            To many requests. Please try again 5 minutes later.
+          </Alert>
+        );
+      }
     case ResponseErrorType.TOO_MANY_REQUESTS:
       return (
         <Alert severity="error">
