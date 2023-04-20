@@ -56,11 +56,13 @@ function getValidatorsOrderedBy(
   column: Column,
 ) {
   switch (column) {
-    case "delegatedAmount":
-      return validatorsCopy.sort(
-        (validator1, validator2) =>
-          parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
-      );
+    case "rewardsEarned":
+      return validatorsCopy.sort((validator1, validator2) => {
+        return (
+          validator2.apt_rewards_distributed -
+          validator1.apt_rewards_distributed
+        );
+      });
     default:
       return validatorsCopy;
   }
@@ -420,23 +422,23 @@ export function DelegationValidatorsTable() {
     : COLUMNS_WITHOUT_WALLET_CONNECTION;
   const [sortColumn, setSortColumn] = useState<Column>("rewardsEarned");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
-  const sortedValidators = getSortedValidators(
-    validators,
-    sortColumn,
-    sortDirection,
-  );
   const [delegationValidators, setDelegationValidators] = useState<
     ValidatorData[]
   >([]);
   const {delegatedStakingPools, loading} =
     useGetDelegatedStakingPoolList() ?? [];
   const [error, setError] = useState<ResponseError | null>();
+  const sortedValidators = getSortedValidators(
+    delegationValidators,
+    sortColumn,
+    sortDirection,
+  );
 
   useEffect(() => {
     if (!loading) {
       // delegated staking pools that are in validators list, meaning that they are either active or once active now inactive
       const validatorsInDelegatedStakingPools: ValidatorData[] =
-        sortedValidators.filter((validator) => {
+        validators.filter((validator) => {
           return delegatedStakingPools.some(
             (pool) => pool.staking_pool_address === validator.owner_address,
           );
@@ -446,7 +448,7 @@ export function DelegationValidatorsTable() {
       const delegatedStakingPoolsNotInValidators: ValidatorData[] =
         delegatedStakingPools
           .filter((pool) => {
-            return !sortedValidators.some(
+            return !validators.some(
               (validator) =>
                 validator.owner_address === pool.staking_pool_address,
             );
@@ -489,7 +491,7 @@ export function DelegationValidatorsTable() {
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {delegationValidators.map((validator: any, i: number) => {
+        {sortedValidators.map((validator: any, i: number) => {
           return (
             <ValidatorRow
               key={i}
