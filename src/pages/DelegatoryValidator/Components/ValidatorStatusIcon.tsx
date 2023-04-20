@@ -3,6 +3,8 @@ import React from "react";
 import {useGetDelegationNodeInfo} from "../../../api/hooks/useGetDelegationNodeInfo";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DangerousIcon from "@mui/icons-material/Dangerous";
+import PendingIcon from "@mui/icons-material/Pending";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 export default function ValidatorStatusIcon({
   address,
@@ -13,31 +15,52 @@ export default function ValidatorStatusIcon({
     validatorAddress: address,
   });
 
-  const status = validatorStatus
-    ? // const VALIDATOR_STATUS_INACTIVE: u64 = 4;
-      Number(validatorStatus[0]) === 4
-      ? "Inactive "
-      : "Active"
-    : "N/A";
-  const statusIcon =
-    status === "Active" ? (
-      <Chip
-        label={status}
-        color={"primary"}
-        icon={<CheckCircleIcon />}
-        sx={{color: "#14B8A6", backgroundColor: "rgba(20, 184, 166, 0.1)"}}
-      />
-    ) : (
-      <Chip
-        label={status}
-        color={"warning"}
-        icon={<DangerousIcon />}
-        sx={{
-          color: "rgba(234, 179, 8, 1)",
-          backgroundColor: "rgba(234, 179, 8, 0.1)",
-        }}
-      />
-    );
+  const getStatusIcon = () => {
+    switch (Number(validatorStatus![0])) {
+      case 1:
+        return (
+          <Chip
+            label={"Pending Active"}
+            color={"warning"}
+            icon={<PendingIcon />}
+            sx={{color: "#44c6ee", backgroundColor: "rgba(68, 198, 238, 0.1)"}}
+          />
+        );
+      case 2:
+        return (
+          <Chip
+            label={"Active"}
+            color={"primary"}
+            icon={<CheckCircleIcon />}
+            sx={{color: "#14B8A6", backgroundColor: "rgba(20, 184, 166, 0.1)"}}
+          />
+        );
+      case 3:
+        return (
+          <Chip
+            label={"Pending Inactive"}
+            color={"warning"}
+            icon={<MoreHorizIcon />}
+            sx={{
+              color: "rgba(252, 211, 77, 1)",
+              backgroundColor: "rgba(252, 211, 77, 0.1)",
+            }}
+          />
+        );
+      default:
+        return (
+          <Chip
+            label={"Inactive"}
+            color={"error"}
+            icon={<DangerousIcon />}
+            sx={{
+              color: "rgb(249, 115, 115, 1)",
+              backgroundColor: "rgb(249, 115, 115, 0.1)",
+            }}
+          />
+        );
+    }
+  };
 
-  return validatorStatus ? statusIcon : <></>;
+  return validatorStatus ? getStatusIcon() : <></>;
 }

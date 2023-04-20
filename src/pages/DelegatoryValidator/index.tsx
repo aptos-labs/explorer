@@ -75,7 +75,7 @@ export default function ValidatorPage() {
   }, [delegatedStakingPools, loading, validators, validator]);
 
   if (error) {
-    return <Error error={error} address={validator?.owner_address!} />;
+    return <Error error={error} />;
   }
 
   if ((!validator && !delegationValidator) || !accountResource) {

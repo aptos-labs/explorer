@@ -2,6 +2,7 @@ import {AptosClient, Types} from "aptos";
 import {useState, useMemo} from "react";
 import {getValidatorCommission, getValidatorState} from "..";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {ResponseError} from "../client";
 import {useGetAccountResource} from "./useGetAccountResource";
 import {useGetValidatorSet} from "./useGetValidatorSet";
 
@@ -17,6 +18,7 @@ type DelegationNodeInfoResponse = {
   commission: number | undefined;
   isQueryLoading: boolean;
   validatorStatus: Types.MoveValue[] | undefined;
+  error: ResponseError | null;
 };
 
 type DelegationNodeInfoProps = {
@@ -28,7 +30,11 @@ export function useGetDelegationNodeInfo({
 }: DelegationNodeInfoProps): DelegationNodeInfoResponse {
   const [state, _] = useGlobalState();
   const {totalVotingPower} = useGetValidatorSet();
-  const {data: delegationPool, isLoading} = useGetAccountResource(
+  const {
+    data: delegationPool,
+    isLoading,
+    error,
+  } = useGetAccountResource(
     validatorAddress,
     "0x1::delegation_pool::DelegationPool",
   );
@@ -65,5 +71,6 @@ export function useGetDelegationNodeInfo({
     delegatedStakeAmount,
     isQueryLoading,
     validatorStatus,
+    error,
   };
 }
