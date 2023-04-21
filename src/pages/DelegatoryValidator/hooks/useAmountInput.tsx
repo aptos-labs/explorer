@@ -53,23 +53,60 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
 
       switch (stakeOperation) {
         case StakeOperation.UNLOCK:
+          /**
+           * if active pool has less than 10 apt after txn, unlock all
+           * if pending_inactive pool has less than 10 apt after txn
+           * if active pool has enough stake, unlock 10 apt to meet minimum requirement
+           * else unlock all
+           */
           if (
             amount &&
-            (stakedAmount - Number(amount) < MINIMUM_APT_IN_POOL ||
-              unlockedAmount + Number(amount) < MINIMUM_APT_IN_POOL) &&
+            stakedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== stakedAmount.toString()
           ) {
             return `If you unlock ${amount} APT, your total staked amount ${stakedAmount} APT will be unlocked.`;
+          } else if (
+            amount &&
+            unlockedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
+            amount !== stakedAmount.toString()
+          ) {
+            if (stakedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
+              return `If you unlock ${amount} APT, ${MINIMUM_APT_IN_POOL} APT will be unlocked.`;
+            } else {
+              return `If you unlock ${amount} APT, your total staked amount ${stakedAmount} APT will be unlocked.`;
+            }
           }
           break;
         case StakeOperation.REACTIVATE:
+          /**
+           * if pending_inactive pool has less than 10 apt after txn, reactivate all
+           * if active pool has less than 10 apt after txn, reactivate 10 apt to meet minimum requirement
+           * if pending_inactive pool has enough stake, ractivate 10 apt to meet minimum requirement
+           * else reactivate all
+           */
           if (
             amount &&
-            (unlockedAmount - Number(amount) < MINIMUM_APT_IN_POOL ||
-              stakedAmount + Number(amount) < MINIMUM_APT_IN_POOL) &&
+            unlockedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
+            stakedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== unlockedAmount.toString()
           ) {
             return `If you restake ${amount} APT, your total unlocked amount ${unlockedAmount} APT will be restaked.`;
+          } else if (
+            amount &&
+            unlockedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
+            amount !== unlockedAmount.toString()
+          ) {
+            return `If you restake ${amount} APT, your total unlocked amount ${unlockedAmount} APT will be restaked.`;
+          } else if (
+            amount &&
+            stakedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
+            amount !== unlockedAmount.toString()
+          ) {
+            if (unlockedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
+              return `If you restake ${amount} APT, ${MINIMUM_APT_IN_POOL} APT will be restaked.`;
+            } else {
+              return `If you restake ${amount} APT, your total unlocked amount ${unlockedAmount} APT will be restaked.`;
+            }
           }
           break;
         case StakeOperation.STAKE:

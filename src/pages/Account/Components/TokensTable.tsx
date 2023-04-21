@@ -6,7 +6,7 @@ import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeader
 import {assertNever} from "../../../utils";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
-import {InternalLink, useNavigate} from "../../../routing";
+import {Link, useNavigate} from "../../../routing";
 
 type TokenCellProps = {
   token: any; // TODO: add graphql data typing
@@ -15,7 +15,7 @@ type TokenCellProps = {
 function TokenNameCell({token}: TokenCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <InternalLink
+      <Link
         to={`/token/${token?.token_data_id_hash}/${token?.property_version}`}
         color="primary"
       >
@@ -28,7 +28,7 @@ function TokenNameCell({token}: TokenCellProps) {
         >
           {token?.name}
         </Box>
-      </InternalLink>
+      </Link>
     </GeneralTableCell>
   );
 }

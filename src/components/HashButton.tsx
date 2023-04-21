@@ -22,7 +22,7 @@ import {assertNever} from "../utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IdenticonImg from "./IdenticonImg";
-import {InternalLink} from "../routing";
+import {Link} from "../routing";
 
 export enum HashType {
   ACCOUNT = "account",
@@ -48,9 +48,9 @@ function HashLink(hash: string, type: HashType): JSX.Element {
     case HashType.ACCOUNT:
     case HashType.TRANSACTION:
       return (
-        <InternalLink to={getHashLinkStr(hash, type)} color="inherit">
+        <Link to={getHashLinkStr(hash, type)} color="inherit">
           {hash}
-        </InternalLink>
+        </Link>
       );
     case HashType.OTHERS:
       return <>{hash}</>;
@@ -109,7 +109,7 @@ function AccountHashButtonInner({
     <Tooltip title={hash}>
       <Stack direction="row" alignItems={"center"} spacing={1}>
         <IdenticonImg address={hash} />
-        <InternalLink
+        <Link
           to={getHashLinkStr(hash, type)}
           sx={{
             backgroundColor: codeBlockColor,
@@ -125,7 +125,7 @@ function AccountHashButtonInner({
           }}
         >
           {name ?? truncateHash}
-        </InternalLink>
+        </Link>
         <Tooltip title="Copied" open={copyTooltipOpen}>
           <Button
             sx={{

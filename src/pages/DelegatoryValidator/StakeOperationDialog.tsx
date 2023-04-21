@@ -36,6 +36,7 @@ import {getAddStakeFee} from "../../api";
 import {Statsig} from "statsig-react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {MINIMUM_APT_IN_POOL} from "./constants";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
@@ -128,13 +129,74 @@ export default function StakeOperationDialog({
     }
   }, [transactionResponse]);
 
+  const getAmount = () => {
+    const stakedAmount = Number(stakes[0]) / OCTA;
+    const withdrawAmount = Number(stakes[1]) / OCTA;
+    const unlockedAmount = Number(stakes[2]) / OCTA;
+
+    switch (stakeOperation) {
+      case StakeOperation.STAKE:
+        return Number(enteredAmount);
+      case StakeOperation.UNLOCK:
+        /**
+         * if active pool has less than 10 apt after txn, unlock all
+         * if pending_inactive pool has less than 10 apt after txn
+         * if active pool has enough stake, unlock 10 apt to meet minimum requirement
+         * else unlock all
+         */
+        if (
+          enteredAmount &&
+          stakedAmount - Number(enteredAmount) < MINIMUM_APT_IN_POOL &&
+          enteredAmount !== stakedAmount.toString()
+        ) {
+          return stakedAmount;
+        } else if (
+          enteredAmount &&
+          unlockedAmount + Number(enteredAmount) < MINIMUM_APT_IN_POOL &&
+          enteredAmount !== stakedAmount.toString()
+        ) {
+          if (stakedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
+            return MINIMUM_APT_IN_POOL;
+          } else {
+            return stakedAmount;
+          }
+        }
+        return Math.min(Number(enteredAmount), stakedAmount);
+      case StakeOperation.REACTIVATE:
+        /**
+         * if pending_inactive pool has less than 10 apt after txn, reactivate all
+         * if active pool has less than 10 apt after txn, reactivate 10 apt to meet minimum requirement
+         * if pending_inactive pool has enough stake, ractivate 10 apt to meet minimum requirement
+         * else reactivate all
+         */
+        if (
+          enteredAmount &&
+          unlockedAmount - Number(enteredAmount) < MINIMUM_APT_IN_POOL &&
+          enteredAmount !== unlockedAmount.toString()
+        ) {
+          return unlockedAmount;
+        } else if (
+          enteredAmount &&
+          stakedAmount + Number(enteredAmount) < MINIMUM_APT_IN_POOL &&
+          enteredAmount !== unlockedAmount.toString()
+        ) {
+          if (unlockedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
+            return MINIMUM_APT_IN_POOL;
+          } else {
+            return unlockedAmount;
+          }
+        }
+        return Math.min(Number(enteredAmount), unlockedAmount);
+      case StakeOperation.WITHDRAW:
+        return Math.min(Number(enteredAmount), withdrawAmount);
+    }
+  };
+
   const transactionSucceededDialog = (
     <TransactionSucceededDialog
       isDialogOpen={isTransactionSucceededDialogOpen}
       handleDialogClose={onCloseTransactionSucceededDialog}
-      amount={
-        max ? Math.min(Number(enteredAmount), max).toString() : enteredAmount
-      }
+      amount={getAmount().toString()}
       transactionHash={transactionHash}
       stakeOperation={stakeOperation}
     />
@@ -320,7 +382,9 @@ export default function StakeOperationDialog({
     </StyledDialog>
   );
 
-  const withdrawStake = canWithdrawPendingInactive ? stakes[2] : stakes[1];
+  const withdrawStake = canWithdrawPendingInactive
+    ? Math.max(Number(stakes[2]), Number(stakes[1]))
+    : stakes[1];
   const WithdrawDialog = (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
       <DialogTitle variant="h5" textAlign="center">

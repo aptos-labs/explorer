@@ -3,15 +3,23 @@ import ReactDOM from "react-dom";
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
-import {AptosWalletAdapterProvider} from "@aptos-labs/wallet-adapter-react";
+import {
+  AptosWalletAdapterProvider,
+  NetworkName,
+} from "@aptos-labs/wallet-adapter-react";
 import {PetraWallet} from "petra-plugin-wallet-adapter";
 import {PontemWallet} from "@pontem/wallet-adapter-plugin";
 import {MartianWallet} from "@martianwallet/aptos-wallet-adapter";
 import {RiseWallet} from "@rise-wallet/wallet-adapter";
-import {SpikaWallet} from "@spika/aptos-plugin";
 import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
 import {MSafeWalletAdapter} from "msafe-plugin-wallet-adapter";
 import {StatsigProvider} from "statsig-react";
+import {BloctoWallet} from "@blocto/aptos-wallet-adapter-plugin";
+import {NightlyWallet} from "@nightlylabs/aptos-wallet-adapter-plugin";
+import {OpenBlockWallet} from "@openblockhq/aptos-wallet-adapter";
+import {TokenPocketWallet} from "@tp-lab/aptos-wallet-adapter";
+import {TrustWallet} from "@trustwallet/aptos-wallet-adapter";
+import {WelldoneWallet} from "@welldone-studio/aptos-wallet-adapter";
 
 import * as Sentry from "@sentry/react";
 import {BrowserTracing} from "@sentry/tracing";
@@ -65,31 +73,45 @@ const wallets = [
   new MartianWallet(),
   new FewchaWallet(),
   new RiseWallet(),
-  new SpikaWallet(),
   new MSafeWalletAdapter(),
+  new NightlyWallet(),
+  new OpenBlockWallet(),
+  new TokenPocketWallet(),
+  new TrustWallet(),
+  new WelldoneWallet(),
+  // Blocto supports Testnet/Mainnet for now.
+  new BloctoWallet({
+    network: NetworkName.Testnet,
+    bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
+  }),
 ];
 
-ReactDOM.render(
-  <React.StrictMode>
-    <StatsigProvider
-      sdkKey={
-        process.env.REACT_APP_STATSIG_SDK_KEY ||
-        "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
-      }
-      waitForInitialization={true}
-      options={{
-        environment: {tier: process.env.NODE_ENV},
-      }}
-      user={{}}
-    >
-      <QueryClientProvider client={queryClient}>
-        <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
-          <BrowserRouter>
-            <ExplorerRoutes />
-          </BrowserRouter>
-        </AptosWalletAdapterProvider>
-      </QueryClientProvider>
-    </StatsigProvider>
-  </React.StrictMode>,
-  document.getElementById("root"),
-);
+// window.addEventListener("load", () => {}) is the temporary fix for the wallet reconnection issue on explorer
+// chat thread for context: https://aptos-org.slack.com/archives/C04EXV6UTR7/p1681964698670039?thread_ts=1681962123.674429&cid=C04EXV6UTR7
+// GP-221
+window.addEventListener("load", () => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <StatsigProvider
+        sdkKey={
+          process.env.REACT_APP_STATSIG_SDK_KEY ||
+          "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
+        }
+        waitForInitialization={true}
+        options={{
+          environment: {tier: process.env.NODE_ENV},
+        }}
+        user={{}}
+      >
+        <QueryClientProvider client={queryClient}>
+          <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
+            <BrowserRouter>
+              <ExplorerRoutes />
+            </BrowserRouter>
+          </AptosWalletAdapterProvider>
+        </QueryClientProvider>
+      </StatsigProvider>
+    </React.StrictMode>,
+    document.getElementById("root"),
+  );
+});

@@ -1,12 +1,12 @@
 import {useParams} from "react-router-dom";
 import {gql, useQuery} from "@apollo/client";
-import {Box, Link, Stack} from "@mui/material";
+import {Box, Stack} from "@mui/material";
 import React, {useState} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
-import {InternalLink} from "../../../routing";
+import {Link} from "../../../routing";
 
 const OWNER_QUERY = gql`
   query OwnersData($token_id: String, $property_version: numeric) {
@@ -107,7 +107,9 @@ export default function OverviewTab({data}: OverviewTabProps) {
                 />
               </a>
             ) : (
-              <InternalLink to={data?.metadata_uri}>Link</InternalLink>
+              <Link to={data?.metadata_uri} target="_blank">
+                {data?.metadata_uri}
+              </Link>
             )
           }
         />
