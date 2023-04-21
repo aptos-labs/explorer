@@ -67,6 +67,9 @@ function useGetValidatorsRawData(network: NetworkName) {
             return {
               ...validatorData,
               owner_address: standardizeAddress(validatorData.owner_address),
+              operator_address: standardizeAddress(
+                validatorData.operator_address,
+              ),
             };
           }),
         );
