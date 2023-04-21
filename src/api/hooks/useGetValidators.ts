@@ -2,6 +2,7 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useGetValidatorSet} from "./useGetValidatorSet";
 import {Network, NetworkName} from "../../constants";
+import {standardizeAddress} from "../../utils";
 
 const MAINNET_VALIDATORS_DATA_URL =
   "https://aptos-analytics-data-mainnet.s3.amazonaws.com/validator_stats_v1.json";
@@ -60,8 +61,15 @@ function useGetValidatorsRawData(network: NetworkName) {
     ) {
       const fetchData = async () => {
         const response = await fetch(getDataUrl());
-        const data = await response.json();
-        setValidatorsRawData(data);
+        const rawData: ValidatorData[] = await response.json();
+        setValidatorsRawData(
+          rawData.map((validatorData) => {
+            return {
+              ...validatorData,
+              owner_address: standardizeAddress(validatorData.owner_address),
+            };
+          }),
+        );
       };
 
       fetchData().catch((error) => {
