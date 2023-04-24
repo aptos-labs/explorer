@@ -6,12 +6,13 @@ import StyledTabs from "../../../../components/StyledTabs";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {assertNever} from "../../../../utils";
 import ViewCode from "./ViewCode";
-import WriteContract from "./WriteContract";
+import Contract from "./Contract";
 import {useNavigate} from "../../../../routing";
 
 const TabComponents = Object.freeze({
   code: ViewCode,
   write: WriteContract,
+  read: ReadContract,
 });
 
 type TabValue = keyof typeof TabComponents;
@@ -22,6 +23,8 @@ function getTabLabel(value: TabValue): string {
       return "View Code";
     case "write":
       return "Write";
+    case "read":
+      return "Read";
     default:
       return assertNever(value);
   }
@@ -31,6 +34,14 @@ type TabPanelProps = {
   value: TabValue;
   address: string;
 };
+
+function WriteContract({address}: {address: string}) {
+  return <Contract address={address} isRead={false} />;
+}
+
+function ReadContract({address}: {address: string}) {
+  return <Contract address={address} isRead />;
+}
 
 function TabPanel({value, address}: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
