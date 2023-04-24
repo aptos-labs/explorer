@@ -46,7 +46,7 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/account/${address}/modules/${selectedModuleName}/${newValue}`);
+    navigate(`/account/${address}/modules/${newValue}/${selectedModuleName}`);
   };
 
   return (

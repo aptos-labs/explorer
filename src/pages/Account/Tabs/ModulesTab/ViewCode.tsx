@@ -81,7 +81,9 @@ function ViewCode({address}: {address: string}): JSX.Element {
 
   const selectedModuleName = useParams().selectedModuleName ?? "";
   if (!selectedModuleName && modules.length > 0) {
-    navigate(`/account/${address}/modules/${modules[0].name}`, {replace: true});
+    navigate(`/account/${address}/modules/code/${modules[0].name}`, {
+      replace: true,
+    });
   }
 
   if (modules.length === 0) {
@@ -93,7 +95,7 @@ function ViewCode({address}: {address: string}): JSX.Element {
   );
 
   function getLinkToModule(moduleName: string) {
-    return `/account/${address}/modules/${moduleName}`;
+    return `/account/${address}/modules/code/${moduleName}`;
   }
 
   function navigateToModule(moduleName: string) {
