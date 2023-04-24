@@ -93,10 +93,10 @@ export default function AccountTabs({
   accountData,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
-  const {tab, selectedModuleName, modulesTab} = useParams();
+  const {tab, modulesTab} = useParams();
   const navigate = useNavigate();
   let effectiveTab: TabValue;
-  if (selectedModuleName) {
+  if (modulesTab) {
     effectiveTab = "modules" as TabValue;
   } else if (tab !== undefined) {
     effectiveTab = tab as TabValue;
