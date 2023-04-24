@@ -228,7 +228,6 @@ function ReadContractForm({
       type_arguments: data.typeArgs,
       arguments: data.args,
     };
-    console.log(JSON.stringify(viewRequest, null, 2));
     const result = await view(viewRequest, state.network_value);
     setResult(result);
   };
