@@ -57,7 +57,7 @@ export default function TransactionFunction({
   ) {
     return (
       <Link
-        to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
+        to={`/account/${address}/modules/code/${moduleName}?entry_function=${functionName}`}
         underline="none"
       >
         <CoinTransferCodeLine
@@ -76,7 +76,7 @@ export default function TransactionFunction({
 
   return (
     <Link
-      to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
+      to={`/account/${address}/modules/code/${moduleName}?entry_function=${functionName}`}
       underline="none"
     >
       <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
