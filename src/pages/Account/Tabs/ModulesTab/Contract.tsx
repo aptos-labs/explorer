@@ -15,12 +15,12 @@ import {
   Button,
   useTheme,
 } from "@mui/material";
-import {grey} from "@mui/material/colors";
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
+import {grey} from "../../../../themes/colors/aptosColorPalette";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -129,7 +129,7 @@ function ContractSidebar({
         }}
       >
         {Object.entries(moduleAndFnsGroup).map(([moduleName, fns]) => (
-          <Box key={moduleName} marginY={3}>
+          <Box key={moduleName} marginBottom={3}>
             <Typography fontSize={14} fontWeight={500} marginBottom={"8px"}>
               {moduleName}
             </Typography>
@@ -146,14 +146,19 @@ function ContractSidebar({
                   padding={1}
                   borderRadius={1}
                   sx={{
+                    ...(theme.palette.mode === "dark" && !selected
+                      ? {
+                          color: grey[400],
+                          ":hover": {
+                            color: grey[200],
+                          },
+                        }
+                      : {}),
                     bgcolor: !selected
                       ? "transparent"
                       : theme.palette.mode === "dark"
                       ? grey[500]
                       : grey[200],
-                    ":hover": {
-                      cursor: "pointer",
-                    },
                   }}
                 >
                   {fn.name}
