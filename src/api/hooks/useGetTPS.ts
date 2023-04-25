@@ -1,6 +1,6 @@
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {getLedgerInfo} from "..";
 import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
 import {AnalyticsData, ANALYTICS_DATA_URL} from "./useGetAnalyticsData";

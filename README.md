@@ -11,6 +11,7 @@ pnpm install
 ```
 
 Build dependencies:
+
 ```sh
 pnpm build
 ```

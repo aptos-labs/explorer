@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {getAccount} from "..";
 import {ResponseError} from "../client";
 import {useGlobalState} from "../../global-config/GlobalConfig";
