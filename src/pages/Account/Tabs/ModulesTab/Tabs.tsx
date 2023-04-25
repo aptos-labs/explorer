@@ -6,12 +6,13 @@ import StyledTabs from "../../../../components/StyledTabs";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {assertNever} from "../../../../utils";
 import ViewCode from "./ViewCode";
-import WriteContract from "./WriteContract";
+import Contract from "./Contract";
 import {useNavigate} from "../../../../routing";
 
 const TabComponents = Object.freeze({
   code: ViewCode,
-  write: WriteContract,
+  run: RunContract,
+  view: ReadContract,
 });
 
 type TabValue = keyof typeof TabComponents;
@@ -19,9 +20,11 @@ type TabValue = keyof typeof TabComponents;
 function getTabLabel(value: TabValue): string {
   switch (value) {
     case "code":
-      return "View Code";
-    case "write":
-      return "Write";
+      return "Code";
+    case "run":
+      return "Run";
+    case "view":
+      return "View";
     default:
       return assertNever(value);
   }
@@ -31,6 +34,14 @@ type TabPanelProps = {
   value: TabValue;
   address: string;
 };
+
+function RunContract({address}: {address: string}) {
+  return <Contract address={address} isRead={false} />;
+}
+
+function ReadContract({address}: {address: string}) {
+  return <Contract address={address} isRead />;
+}
 
 function TabPanel({value, address}: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
@@ -46,7 +57,7 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/account/${address}/modules/${selectedModuleName}/${newValue}`);
+    navigate(`/account/${address}/modules/${newValue}/${selectedModuleName}`);
   };
 
   return (
