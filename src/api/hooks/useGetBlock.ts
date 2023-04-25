@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {getBlockByHeight, getBlockByVersion} from "../../api";
 import {ResponseError} from "../../api/client";
 import {useGlobalState} from "../../global-config/GlobalConfig";
