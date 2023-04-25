@@ -11,8 +11,8 @@ import {useNavigate} from "../../../../routing";
 
 const TabComponents = Object.freeze({
   code: ViewCode,
-  write: WriteContract,
-  read: ReadContract,
+  run: RunContract,
+  view: ReadContract,
 });
 
 type TabValue = keyof typeof TabComponents;
@@ -20,11 +20,11 @@ type TabValue = keyof typeof TabComponents;
 function getTabLabel(value: TabValue): string {
   switch (value) {
     case "code":
-      return "View Code";
-    case "write":
-      return "Write";
-    case "read":
-      return "Read";
+      return "Code";
+    case "run":
+      return "Run";
+    case "view":
+      return "View";
     default:
       return assertNever(value);
   }
@@ -35,7 +35,7 @@ type TabPanelProps = {
   address: string;
 };
 
-function WriteContract({address}: {address: string}) {
+function RunContract({address}: {address: string}) {
   return <Contract address={address} isRead={false} />;
 }
 

@@ -99,7 +99,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
         ) : isRead ? (
           <ReadContractForm module={module} fn={fn} />
         ) : (
-          <WriteContractForm module={module} fn={fn} />
+          <RunContractForm module={module} fn={fn} />
         )}
       </Grid>
     </Grid>
@@ -168,7 +168,7 @@ function ContractSidebar({
   );
 }
 
-function WriteContractForm({
+function RunContractForm({
   module,
   fn,
 }: {
