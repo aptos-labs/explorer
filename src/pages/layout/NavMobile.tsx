@@ -7,17 +7,20 @@ import {ReactComponent as HamburgerIcon} from "../../assets/svg/icon_hamburger.s
 import {ReactComponent as CloseIcon} from "../../assets/svg/icon_close.svg";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import Box from "@mui/material/Box";
-import {useTheme} from "@mui/material";
+import {Divider, useTheme} from "@mui/material";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import {useNavigate} from "../../routing";
+import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
+import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 
 export default function NavMobile() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const navigate = useNavigate();
-
+  const [state] = useGlobalState();
   const inMainnet = useGetInMainnet();
-
+  const {account} = useWallet();
   const menuOpen = Boolean(menuAnchorEl);
 
   const handleIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -87,6 +90,11 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
           Blocks
         </MenuItem>
+        <Divider />
+        <WalletConnector
+          networkSupport={state.network_name}
+          handleNavigate={() => navigate(`/account/${account?.address}`)}
+        />
       </Menu>
     </Box>
   );
