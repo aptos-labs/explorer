@@ -46,7 +46,7 @@ type PackageMetadata = {
 };
 
 interface ModuleSidebarProps {
-  moduleNames: string[];
+  sortedPackages: PackageMetadata[];
   selectedModuleName: string;
   getLinkToModule(moduleName: string): string;
   navigateToModule(moduleName: string): void;
@@ -70,29 +70,34 @@ function ViewCode({address}: {address: string}): JSX.Element {
     "0x1::code::PackageRegistry",
   );
 
-  const packages: PackageMetadata[] =
-    registry === undefined ? [] : (registry.data as any).packages;
-  const modules = orderBy(
-    packages.flatMap((p) => p.modules),
-    "name",
-  );
+  const registryData = registry?.data as any;
+  const sortedPackages: PackageMetadata[] =
+    registryData?.packages?.map((pkg: any) => {
+      const sortedModules = orderBy(pkg.modules, "name");
+      return {name: pkg.name, modules: sortedModules};
+    }) || [];
 
   const navigate = useNavigate();
 
   const selectedModuleName = useParams().selectedModuleName ?? "";
-  if (!selectedModuleName && modules.length > 0) {
-    navigate(`/account/${address}/modules/code/${modules[0].name}`, {
-      replace: true,
-    });
-  }
+  useEffect(() => {
+    if (!selectedModuleName && sortedPackages.length > 0) {
+      navigate(
+        `/account/${address}/modules/code/${sortedPackages[0].modules[0].name}`,
+        {
+          replace: true,
+        },
+      );
+    }
+  }, []);
 
-  if (modules.length === 0) {
+  if (sortedPackages.length === 0) {
     return <EmptyTabContent />;
   }
 
-  const selectedModule = modules.find(
-    (module) => module.name === selectedModuleName,
-  );
+  const selectedModule = sortedPackages.flatMap((pkg) =>
+    pkg.modules.filter((module) => module.name === selectedModuleName),
+  )[0];
 
   function getLinkToModule(moduleName: string) {
     return `/account/${address}/modules/code/${moduleName}`;
@@ -106,7 +111,7 @@ function ViewCode({address}: {address: string}): JSX.Element {
     <Grid container spacing={2}>
       <Grid item md={3} xs={12}>
         <ModuleSidebar
-          moduleNames={modules.map((m) => m.name)}
+          sortedPackages={sortedPackages}
           selectedModuleName={selectedModuleName}
           getLinkToModule={getLinkToModule}
           navigateToModule={navigateToModule}
@@ -130,7 +135,7 @@ function ViewCode({address}: {address: string}): JSX.Element {
 }
 
 function ModuleSidebar({
-  moduleNames,
+  sortedPackages,
   selectedModuleName,
   getLinkToModule,
   navigateToModule,
@@ -140,57 +145,59 @@ function ModuleSidebar({
 
   return (
     <Box
-      sx={{padding: "24px"}}
+      sx={{padding: "24px", maxHeight: "100vh", overflowY: "auto"}}
       bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
       borderRadius={1}
     >
-      <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
-        Modules
-      </Typography>
-      {isWideScreen ? (
-        <Box
-          sx={{
-            maxHeight: "100vh",
-            overflowY: "auto",
-          }}
-        >
-          {moduleNames.map((moduleName, i) => (
-            <ModuleNameOption
-              key={moduleName}
-              linkTo={getLinkToModule(moduleName)}
-              selected={moduleName === selectedModuleName}
-              name={moduleName}
-            />
-          ))}
-        </Box>
-      ) : (
-        <FormControl fullWidth>
-          <Select
-            value={selectedModuleName}
-            onChange={(e) => navigateToModule(e.target.value)}
-          >
-            {moduleNames.map((moduleName, i) => (
-              <MenuItem
-                key={moduleName}
-                value={moduleName}
-                sx={
-                  theme.palette.mode === "dark" &&
-                  moduleName !== selectedModuleName
-                    ? {
-                        color: grey[400],
-                        ":hover": {
-                          color: grey[200],
-                        },
+      {sortedPackages.map((pkg) => {
+        return (
+          <>
+            <Typography fontSize={16} fontWeight={500} marginY={"12px"}>
+              {pkg.name}
+            </Typography>
+            {isWideScreen ? (
+              <Box>
+                {pkg.modules.map((module) => (
+                  <ModuleNameOption
+                    key={module.name}
+                    linkTo={getLinkToModule(module.name)}
+                    selected={module.name === selectedModuleName}
+                    name={module.name}
+                  />
+                ))}
+                <Divider />
+              </Box>
+            ) : (
+              <FormControl fullWidth>
+                <Select
+                  value={selectedModuleName}
+                  onChange={(e) => navigateToModule(e.target.value)}
+                >
+                  {pkg.modules.map((module, i) => (
+                    <MenuItem
+                      key={module.name + i}
+                      value={module.name}
+                      sx={
+                        theme.palette.mode === "dark" &&
+                        module.name !== selectedModuleName
+                          ? {
+                              color: grey[400],
+                              ":hover": {
+                                color: grey[200],
+                              },
+                            }
+                          : {}
                       }
-                    : {}
-                }
-              >
-                {moduleName}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      )}
+                    >
+                      {module.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          </>
+        );
+      })}
     </Box>
   );
 }
