@@ -5,10 +5,10 @@ import {Network, NetworkName} from "../../constants";
 import {standardizeAddress} from "../../utils";
 
 const MAINNET_VALIDATORS_DATA_URL =
-  "https://aptos-analytics-data-mainnet.s3.amazonaws.com/validator_stats_v1.json";
+  "https://storage.googleapis.com/aptos-mainnet/explorer/validator_stats_v2.json";
 
 const TESTNET_VALIDATORS_DATA_URL =
-  "https://aptos-analytics-data-testnet.s3.amazonaws.com/validator_stats_v1.json";
+  "https://storage.googleapis.com/aptos-testnet/explorer/validator_stats_v2.json";
 
 const PREVIEWNET_VALIDATORS_DATA_URL =
   "https://aptos-analytics-data-previewnet.s3.amazonaws.com/validator_stats_v1.json";
