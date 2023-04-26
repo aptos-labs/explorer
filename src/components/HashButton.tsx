@@ -7,13 +7,22 @@ import {
   Popover,
   IconButton,
   useTheme,
+  Tooltip,
+  Stack,
 } from "@mui/material";
-import {grey} from "../themes/colors/aptosColorPalette";
+import {
+  codeBlockColor,
+  codeBlockColorClickableOnHover,
+  grey,
+  primary,
+} from "../themes/colors/aptosColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {assertNever} from "../utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import IdenticonImg from "./IdenticonImg";
 import {Link} from "../routing";
 
 export enum HashType {
@@ -82,18 +91,69 @@ function AccountHashButtonInner({
   hash,
   type,
   size = "small",
-  ...props
 }: AccountHashButtonInnerProps) {
   const name = useGetNameFromAddress(hash);
+  const truncateHash =
+    size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
+  const [copyTooltipOpen, setCopyTooltipOpen] = useState(false);
+  const theme = useTheme();
+  const copyAddress = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await navigator.clipboard.writeText(hash);
+    setCopyTooltipOpen(true);
+    setTimeout(() => {
+      setCopyTooltipOpen(false);
+    }, 2000);
+  };
 
   return (
-    <HashButtonInner
-      label={name}
-      hash={hash}
-      type={type}
-      size={size}
-      {...props}
-    />
+    <Stack direction="row" alignItems={"center"} spacing={1}>
+      <IdenticonImg address={hash} />
+      <Link
+        to={getHashLinkStr(hash, type)}
+        sx={{
+          backgroundColor: codeBlockColor,
+          "&:hover": {
+            backgroundColor: codeBlockColorClickableOnHover,
+          },
+          color: theme.palette.mode === "dark" ? "#83CCED" : "#0EA5E9",
+          padding: "0.15rem 0.35rem 0.15rem 1rem",
+          overflow: "hidden",
+          whiteSpace: "nowrap",
+          textOverflow: "ellipsis",
+          borderRadius: 50,
+          textDecoration: "none",
+        }}
+      >
+        <Tooltip title={hash} enterDelay={500} enterNextDelay={500}>
+          <text>{name ?? truncateHash}</text>
+        </Tooltip>
+        <Tooltip title="Copied" open={copyTooltipOpen}>
+          <Button
+            sx={{
+              color: "inherit",
+              "&:hover": {
+                backgroundColor: `${
+                  theme.palette.mode === "dark" ? primary[700] : primary[100]
+                }`,
+                color: `${
+                  theme.palette.mode === "dark" ? primary[100] : primary[600]
+                }`,
+              },
+              padding: "0.25rem 0.5rem 0.25rem 0.5rem",
+              margin: "0 0 0 0.2rem",
+              minWidth: "unset", // remove minimum width
+              borderRadius: 50,
+            }}
+            onClick={copyAddress}
+            endIcon={
+              <ContentCopyIcon sx={{opacity: "0.75", mr: 1}} fontSize="small" />
+            }
+            size="small"
+          />
+        </Tooltip>
+      </Link>
+    </Stack>
   );
 }
 

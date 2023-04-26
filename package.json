@@ -9,6 +9,7 @@
     "@aptos-labs/wallet-adapter-mui-design": "^0.3.1",
     "@aptos-labs/wallet-adapter-react": "^1.0.4",
     "@blocto/aptos-wallet-adapter-plugin": "^0.1.4",
+    "@download/blockies": "^1.0.3",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@martianwallet/aptos-wallet-adapter": "^0.0.2",
