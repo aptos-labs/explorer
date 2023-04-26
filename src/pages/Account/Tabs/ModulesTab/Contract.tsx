@@ -128,46 +128,49 @@ function ContractSidebar({
           overflowY: "auto",
         }}
       >
-        {Object.entries(moduleAndFnsGroup).map(([moduleName, fns]) => (
-          <Box key={moduleName} marginBottom={3}>
-            <Typography fontSize={14} fontWeight={500} marginBottom={"8px"}>
-              {moduleName}
-            </Typography>
-            {fns.map((fn) => {
-              const selected =
-                moduleName === selectedModuleName && fn.name === selectedFnName;
-              return (
-                <Box
-                  key={fn.name}
-                  onClick={() => handleClick(moduleName, fn.name)}
-                  fontSize={12}
-                  fontWeight={selected ? 600 : 400}
-                  marginBottom={"8px"}
-                  padding={1}
-                  borderRadius={1}
-                  sx={{
-                    ...(theme.palette.mode === "dark" && !selected
-                      ? {
-                          color: grey[400],
-                          ":hover": {
-                            color: grey[200],
-                          },
-                        }
-                      : {}),
-                    bgcolor: !selected
-                      ? "transparent"
-                      : theme.palette.mode === "dark"
-                      ? grey[500]
-                      : grey[200],
-                  }}
-                >
-                  {fn.name}
-                </Box>
-              );
-            })}
-            <Divider />
-          </Box>
-        ))}
+        {Object.entries(moduleAndFnsGroup)
+          .sort((a, b) => a[0].localeCompare(b[0]))
+          .map(([moduleName, fns]) => (
+            <Box key={moduleName} marginBottom={3}>
+              <Typography fontSize={14} fontWeight={500} marginBottom={"8px"}>
+                {moduleName}
+              </Typography>
+              {fns.map((fn) => {
+                const selected =
+                  moduleName === selectedModuleName &&
+                  fn.name === selectedFnName;
+                return (
+                  <Box
+                    key={fn.name}
+                    onClick={() => handleClick(moduleName, fn.name)}
+                    fontSize={12}
+                    fontWeight={selected ? 600 : 400}
+                    marginBottom={"8px"}
+                    padding={1}
+                    borderRadius={1}
+                    sx={{
+                      ...(theme.palette.mode === "dark" && !selected
+                        ? {
+                            color: grey[400],
+                            ":hover": {
+                              color: grey[200],
+                            },
+                          }
+                        : {}),
+                      bgcolor: !selected
+                        ? "transparent"
+                        : theme.palette.mode === "dark"
+                        ? grey[500]
+                        : grey[200],
+                    }}
+                  >
+                    {fn.name}
+                  </Box>
+                );
+              })}
+              <Divider />
+            </Box>
+          ))}
       </Box>
     </Box>
   );
