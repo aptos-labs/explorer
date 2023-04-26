@@ -18,11 +18,11 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
 function getGraphqlURI(networkName: NetworkName): string | undefined {
   switch (networkName) {
     case "mainnet":
-      return process.env.REACT_APP_INDEXER_GRAPHQL_MAINNET;
+      return "https://indexer.mainnet.aptoslabs.com/v1/graphql";
     case "testnet":
-      return process.env.REACT_APP_INDEXER_GRAPHQL_TESTNET;
+      return "https://indexer-testnet.staging.gcp.aptosdev.com/v1/graphql";
     case "devnet":
-      return process.env.REACT_APP_INDEXER_GRAPHQL_DEVNET;
+      return "https://indexer-devnet.staging.gcp.aptosdev.com/v1/graphql";
     case "local":
       return undefined;
     default:

@@ -4,7 +4,7 @@ import {Types} from "aptos";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
-import {InternalLink} from "../../../../routing";
+import {Link} from "../../../../routing";
 import {codeBlockColorClickableOnHover} from "../../../../themes/colors/aptosColorPalette";
 
 function CoinTransferCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
@@ -56,8 +56,9 @@ export default function TransactionFunction({
     functionFullStr === "0x1::aptos_account::transfer"
   ) {
     return (
-      <InternalLink
-        to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
+      <Link
+        to={`/account/${address}/modules/code/${moduleName}?entry_function=${functionName}`}
+        underline="none"
       >
         <CoinTransferCodeLine
           sx={[
@@ -69,17 +70,18 @@ export default function TransactionFunction({
             },
           ]}
         />
-      </InternalLink>
+      </Link>
     );
   }
 
   return (
-    <InternalLink
-      to={`/account/${address}/modules/${moduleName}?entry_function=${functionName}`}
+    <Link
+      to={`/account/${address}/modules/code/${moduleName}?entry_function=${functionName}`}
+      underline="none"
     >
       <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
         {moduleName + "::" + functionName}
       </CodeLineBox>
-    </InternalLink>
+    </Link>
   );
 }

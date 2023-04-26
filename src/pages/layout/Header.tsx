@@ -16,12 +16,11 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import {Statsig} from "statsig-react";
-import {InternalLink, useNavigate} from "../../routing";
+import {Link, useNavigate} from "../../routing";
 
 export default function Header() {
   const scrollTop = () => {
@@ -47,7 +46,6 @@ export default function Header() {
     threshold: 0,
   });
 
-  const inDev = useGetInDevMode();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const [state] = useGlobalState();
   const {account, wallet, network} = useWallet();
@@ -110,7 +108,7 @@ export default function Header() {
             }}
             disableGutters
           >
-            <InternalLink
+            <Link
               onClick={scrollTop}
               to="/"
               color="inherit"
@@ -122,7 +120,7 @@ export default function Header() {
               }}
             >
               <LogoIcon />
-            </InternalLink>
+            </Link>
 
             <Nav />
             <NetworkSelect />
@@ -144,7 +142,7 @@ export default function Header() {
               {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
             </Button>
             <NavMobile />
-            {inDev && !isOnMobile && (
+            {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector
                   networkSupport={state.network_name}

@@ -107,3 +107,27 @@ export function truncateAptSuffix(name: string): string {
     "$1",
   );
 }
+
+/**
+ * Standardizes an address to the format "0x" followed by 64 lowercase hexadecimal digits.
+ */
+export const standardizeAddress = (address: string): string => {
+  // Convert the address to lowercase
+  address = address.toLowerCase();
+  // If the address has more than 66 characters, it's already invalid
+  if (address.length > 66) {
+    return address;
+  }
+  // Remove the "0x" prefix if present
+  const addressWithoutPrefix = address.startsWith("0x")
+    ? address.slice(2)
+    : address;
+  // If the address has more than 64 characters after removing the prefix, it's already invalid
+  if (addressWithoutPrefix.length > 64) {
+    return address;
+  }
+  // Pad the address with leading zeros if necessary to ensure it has exactly 64 characters (excluding the "0x" prefix)
+  const addressWithPadding = addressWithoutPrefix.padStart(64, "0");
+  // Return the standardized address with the "0x" prefix
+  return "0x" + addressWithPadding;
+};

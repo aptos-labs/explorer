@@ -8,7 +8,7 @@ export const STAKED_TEXT_COLOR_DARK = "rgba(125, 211, 252, 1)";
 export const STAKED_BACKGROUND_COLOR_LIGHT = "rgba(14, 165, 233, 0.1)";
 export const STAKED_BACKGROUND_COLOR_DARK = "rgba(125, 211, 252, 0.1)";
 export const STAKED_LABEL = "Staked";
-export const STAKED_DESCRIPTION = `You are getting rewards for the staked deposit, but not able to
+export const STAKED_DESCRIPTION = `You are getting rewards for the staked deposit, not able to
 withdraw it until the lock period ends. But you can initiate this process with an
 unstake option.`;
 
@@ -20,7 +20,7 @@ export const WITHDRAW_PENDING_BACKGROUND_COLOR_LIGHT =
 export const WITHDRAW_PENDING_BACKGROUND_COLOR_DARK = "rgba(252, 211, 77, 0.1)";
 export const WITHDRAW_PENDING_LABEL = "Withdraw pending";
 export const WITHDRAW_PENDING_DESCRIPTION =
-  "If you decided to unstake your deposit, it will be locked till the end of the lock period.";
+  "If you decided to unstake your deposit, it will be locked till the end of the lock period. Your deposit is still earning rewards.";
 
 // step 3 WITHDRAW READY
 export const WITHDRAW_READY_TEXT_COLOR_LIGHT = "rgba(15, 118, 110, 1)";

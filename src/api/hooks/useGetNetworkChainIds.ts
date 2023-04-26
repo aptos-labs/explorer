@@ -1,5 +1,5 @@
 import {NetworkName, networks} from "../../constants";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {getLedgerInfoWithoutResponseError} from "..";
 import {
   getLocalStorageWithExpiry,

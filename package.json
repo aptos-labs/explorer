@@ -6,8 +6,8 @@
   "dependencies": {
     "@apollo/client": "^3.7.9",
     "@aptos-labs/aptos-names-connector": "^0.0.2",
-    "@aptos-labs/wallet-adapter-mui-design": "^0.3.0",
-    "@aptos-labs/wallet-adapter-react": "^1.0.3",
+    "@aptos-labs/wallet-adapter-mui-design": "^0.3.1",
+    "@aptos-labs/wallet-adapter-react": "^1.0.4",
     "@blocto/aptos-wallet-adapter-plugin": "^0.1.4",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
@@ -23,6 +23,7 @@
     "@sentry/react": "^6.19.7",
     "@sentry/tracing": "^6.19.7",
     "@solana/web3.js": "^1.75.0",
+    "@tanstack/react-query": "^4.29.5",
     "@tp-lab/aptos-wallet-adapter": "^1.0.1",
     "@trustwallet/aptos-wallet-adapter": "^0.1.6",
     "@types/lodash": "^4.14.191",
@@ -54,7 +55,6 @@
     "react-json-view": "^1.21.3",
     "react-loading-skeleton": "^3.1.1",
     "react-number-format": "^4.9.4",
-    "react-query": "^3.39.3",
     "react-router-dom": "^6.10.0",
     "react-scripts": "latest",
     "react-simple-maps": "^3.0.0",
@@ -67,6 +67,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "fmt": "prettier --write '**/*.(js|jsx|ts|tsx|json|css|scss|md)'",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "postinstall": "husky install"

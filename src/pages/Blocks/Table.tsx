@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Link, Table, TableHead, TableRow} from "@mui/material";
+import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -9,7 +9,7 @@ import {parseTimestamp} from "../utils";
 import moment from "moment";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import {InternalLink, useAugmentToWithGlobalSearchParams} from "../../routing";
+import {Link, useAugmentToWithGlobalSearchParams} from "../../routing";
 
 function getAgeInSeconds(block: Types.Block): string {
   const blockTimestamp = parseTimestamp(block.block_timestamp);
@@ -26,13 +26,13 @@ type BlockCellProps = {
 function BlockHeightCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <InternalLink
+      <Link
         to={`/block/${block.block_height}`}
         target="_blank"
         underline="none"
       >
         {block.block_height}
-      </InternalLink>
+      </Link>
     </GeneralTableCell>
   );
 }
@@ -56,13 +56,9 @@ function BlockHashCell({block}: BlockCellProps) {
 function FirstVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <InternalLink
-        to={`/txn/${block.first_version}`}
-        target="_blank"
-        underline="none"
-      >
+      <Link to={`/txn/${block.first_version}`} target="_blank" underline="none">
         {block.first_version}
-      </InternalLink>
+      </Link>
     </GeneralTableCell>
   );
 }
@@ -70,13 +66,9 @@ function FirstVersionCell({block}: BlockCellProps) {
 function LastVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <InternalLink
-        to={`/txn/${block.last_version}`}
-        target="_blank"
-        underline="none"
-      >
+      <Link to={`/txn/${block.last_version}`} target="_blank" underline="none">
         {block.last_version}
-      </InternalLink>
+      </Link>
     </GeneralTableCell>
   );
 }
