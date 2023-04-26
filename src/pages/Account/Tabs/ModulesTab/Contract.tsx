@@ -189,8 +189,7 @@ function RunContractForm({
       type: "entry_function_payload",
       function: `${module.address}::${module.name}::${fn.name}`,
       type_arguments: data.typeArgs,
-      // drop signer argument (that is null)
-      arguments: data.args.slice(1),
+      arguments: data.args,
     };
     await submitTransaction(payload);
   };
@@ -264,6 +263,7 @@ function ContractForm({
   onSubmit: SubmitHandler<ContractFormType>;
   result: ReactNode;
 }) {
+  const {account} = useWallet();
   const {handleSubmit, control} = useForm<ContractFormType>();
   const theme = useTheme();
 
@@ -301,14 +301,25 @@ function ContractForm({
                 )}
               />
             ))}
-            {fn.params.map((param, i) => {
+            {fn.is_entry &&
+              (account ? (
+                <TextField
+                  key="args-signer"
+                  value={account.address}
+                  label="signer"
+                  disabled
+                  fullWidth
+                />
+              ) : (
+                <TextField label="signer" disabled fullWidth />
+              ))}
+            {fn.params.slice(fn.is_entry ? 1 : 0).map((param, i) => {
               return (
                 <Controller
-                  key={i}
+                  key={`args-${i}`}
                   name={`args.${i}`}
                   control={control}
                   render={({field: {onChange, value}}) => (
-                    // TODO: treat signer differently
                     <TextField
                       onChange={onChange}
                       value={value}
