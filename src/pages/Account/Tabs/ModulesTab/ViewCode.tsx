@@ -89,15 +89,15 @@ function ViewCode({address}: {address: string}): JSX.Element {
         },
       );
     }
-  }, []);
+  }, [selectedModuleName, sortedPackages]);
 
   if (sortedPackages.length === 0) {
     return <EmptyTabContent />;
   }
 
-  const selectedModule = sortedPackages.flatMap((pkg) =>
-    pkg.modules.filter((module) => module.name === selectedModuleName),
-  )[0];
+  const selectedModule = sortedPackages
+    .flatMap((pkg) => pkg.modules)
+    .find((module) => module.name === selectedModuleName);
 
   function getLinkToModule(moduleName: string) {
     return `/account/${address}/modules/code/${moduleName}`;
