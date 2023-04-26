@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {BrowserRouter} from "react-router-dom";
-import {QueryClient, QueryClientProvider} from "react-query";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
 import {
   AptosWalletAdapterProvider,
@@ -86,32 +86,27 @@ const wallets = [
   }),
 ];
 
-// window.addEventListener("load", () => {}) is the temporary fix for the wallet reconnection issue on explorer
-// chat thread for context: https://aptos-org.slack.com/archives/C04EXV6UTR7/p1681964698670039?thread_ts=1681962123.674429&cid=C04EXV6UTR7
-// GP-221
-window.addEventListener("load", () => {
-  ReactDOM.render(
-    <React.StrictMode>
-      <StatsigProvider
-        sdkKey={
-          process.env.REACT_APP_STATSIG_SDK_KEY ||
-          "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
-        }
-        waitForInitialization={true}
-        options={{
-          environment: {tier: process.env.NODE_ENV},
-        }}
-        user={{}}
-      >
-        <QueryClientProvider client={queryClient}>
-          <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
-            <BrowserRouter>
-              <ExplorerRoutes />
-            </BrowserRouter>
-          </AptosWalletAdapterProvider>
-        </QueryClientProvider>
-      </StatsigProvider>
-    </React.StrictMode>,
-    document.getElementById("root"),
-  );
-});
+ReactDOM.render(
+  <React.StrictMode>
+    <StatsigProvider
+      sdkKey={
+        process.env.REACT_APP_STATSIG_SDK_KEY ||
+        "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
+      }
+      waitForInitialization={true}
+      options={{
+        environment: {tier: process.env.NODE_ENV},
+      }}
+      user={{}}
+    >
+      <QueryClientProvider client={queryClient}>
+        <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
+          <BrowserRouter>
+            <ExplorerRoutes />
+          </BrowserRouter>
+        </AptosWalletAdapterProvider>
+      </QueryClientProvider>
+    </StatsigProvider>
+  </React.StrictMode>,
+  document.getElementById("root"),
+);

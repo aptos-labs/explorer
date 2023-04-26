@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {useState} from "react";
+import {ReactNode, useState} from "react";
 import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
@@ -15,25 +15,26 @@ import {
   Button,
   useTheme,
 } from "@mui/material";
-import {grey} from "@mui/material/colors";
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
+import {view} from "../../../../api";
+import {grey} from "../../../../themes/colors/aptosColorPalette";
 
-type WriteContractFormType = {
+type ContractFormType = {
   typeArgs: string[];
   args: string[];
 };
 
-interface WriteContractSidebarProps {
+interface ContractSidebarProps {
   selectedModuleName: string | undefined;
   selectedFnName: string | undefined;
   moduleAndFnsGroup: Record<string, Types.MoveFunction[]>;
   handleClick: (moduleName: string, fnName: string) => void;
 }
 
-function WriteContract({address}: {address: string}) {
+function Contract({address, isRead}: {address: string; isRead: boolean}) {
   const {data, isLoading, error} = useGetAccountModules(address);
   const [selectedModuleName, setSelectedModuleName] = useState<string>();
   const [selectedFnName, setSelectedFnName] = useState<string>();
@@ -56,7 +57,11 @@ function WriteContract({address}: {address: string}) {
       return acc;
     }
 
-    const fns = module.abi.exposed_functions.filter((fn) => fn.is_entry);
+    const fns = module.abi.exposed_functions.filter((fn) =>
+      isRead
+        ? fn.is_view
+        : fn.is_entry && fn.params.length > 0 && fn.params[0] === "&signer",
+    );
     if (fns.length === 0) {
       return acc;
     }
@@ -78,7 +83,7 @@ function WriteContract({address}: {address: string}) {
   return (
     <Grid container spacing={2}>
       <Grid item md={3} xs={12}>
-        <WriteContractSidebar
+        <ContractSidebar
           selectedModuleName={selectedModuleName}
           selectedFnName={selectedFnName}
           moduleAndFnsGroup={moduleAndFnsGroup}
@@ -90,21 +95,23 @@ function WriteContract({address}: {address: string}) {
       </Grid>
       <Grid item md={9} xs={12}>
         {!module || !fn ? (
-          <EmptyTabContent message="Please selet a function" />
+          <EmptyTabContent message="Please select a function" />
+        ) : isRead ? (
+          <ReadContractForm module={module} fn={fn} />
         ) : (
-          <WriteContractForm module={module} fn={fn} />
+          <RunContractForm module={module} fn={fn} />
         )}
       </Grid>
     </Grid>
   );
 }
 
-function WriteContractSidebar({
+function ContractSidebar({
   selectedModuleName,
   selectedFnName,
   moduleAndFnsGroup,
   handleClick,
-}: WriteContractSidebarProps) {
+}: ContractSidebarProps) {
   const theme = useTheme();
   return (
     <Box
@@ -121,47 +128,55 @@ function WriteContractSidebar({
           overflowY: "auto",
         }}
       >
-        {Object.entries(moduleAndFnsGroup).map(([moduleName, fns]) => (
-          <Box key={moduleName} marginY={3}>
-            <Typography fontSize={14} fontWeight={500} marginBottom={"8px"}>
-              {moduleName}
-            </Typography>
-            {fns.map((fn) => {
-              const selected =
-                moduleName === selectedModuleName && fn.name === selectedFnName;
-              return (
-                <Box
-                  key={fn.name}
-                  onClick={() => handleClick(moduleName, fn.name)}
-                  fontSize={12}
-                  fontWeight={selected ? 600 : 400}
-                  marginBottom={"8px"}
-                  padding={1}
-                  borderRadius={1}
-                  sx={{
-                    bgcolor: !selected
-                      ? "transparent"
-                      : theme.palette.mode === "dark"
-                      ? grey[500]
-                      : grey[200],
-                    ":hover": {
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  {fn.name}
-                </Box>
-              );
-            })}
-            <Divider />
-          </Box>
-        ))}
+        {Object.entries(moduleAndFnsGroup)
+          .sort((a, b) => a[0].localeCompare(b[0]))
+          .map(([moduleName, fns]) => (
+            <Box key={moduleName} marginBottom={3}>
+              <Typography fontSize={14} fontWeight={500} marginBottom={"8px"}>
+                {moduleName}
+              </Typography>
+              {fns.map((fn) => {
+                const selected =
+                  moduleName === selectedModuleName &&
+                  fn.name === selectedFnName;
+                return (
+                  <Box
+                    key={fn.name}
+                    onClick={() => handleClick(moduleName, fn.name)}
+                    fontSize={12}
+                    fontWeight={selected ? 600 : 400}
+                    marginBottom={"8px"}
+                    padding={1}
+                    borderRadius={1}
+                    sx={{
+                      ...(theme.palette.mode === "dark" && !selected
+                        ? {
+                            color: grey[400],
+                            ":hover": {
+                              color: grey[200],
+                            },
+                          }
+                        : {}),
+                      bgcolor: !selected
+                        ? "transparent"
+                        : theme.palette.mode === "dark"
+                        ? grey[500]
+                        : grey[200],
+                    }}
+                  >
+                    {fn.name}
+                  </Box>
+                );
+              })}
+              <Divider />
+            </Box>
+          ))}
       </Box>
     </Box>
   );
 }
 
-function WriteContractForm({
+function RunContractForm({
   module,
   fn,
 }: {
@@ -169,12 +184,10 @@ function WriteContractForm({
   fn: Types.MoveFunction;
 }) {
   const [state] = useGlobalState();
-  const {account, connected} = useWallet();
-  const {handleSubmit, control} = useForm<WriteContractFormType>();
+  const {connected} = useWallet();
   const {submitTransaction} = useSubmitTransaction();
-  const theme = useTheme();
 
-  const onSubmit: SubmitHandler<WriteContractFormType> = async (data) => {
+  const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     const payload: Types.TransactionPayload = {
       type: "entry_function_payload",
       function: `${module.address}::${module.name}::${fn.name}`,
@@ -184,7 +197,78 @@ function WriteContractForm({
     await submitTransaction(payload);
   };
 
-  const hasSigner = fn.params.length > 0 && fn.params[0] === "&signer";
+  return (
+    <ContractForm
+      fn={fn}
+      onSubmit={onSubmit}
+      result={
+        connected ? (
+          <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
+            Write
+          </Button>
+        ) : (
+          <Box display="flex" flexDirection="row" alignItems="center">
+            <WalletConnector networkSupport={state.network_name} />
+            <Typography ml={2} fontSize={10}>
+              To write you need to connect wallet first
+            </Typography>
+          </Box>
+        )
+      }
+    />
+  );
+}
+
+function ReadContractForm({
+  module,
+  fn,
+}: {
+  module: Types.MoveModule;
+  fn: Types.MoveFunction;
+}) {
+  const [state] = useGlobalState();
+  const [result, setResult] = useState<Types.MoveValue[]>([]);
+
+  const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
+    const viewRequest: Types.ViewRequest = {
+      function: `${module.address}::${module.name}::${fn.name}`,
+      type_arguments: data.typeArgs,
+      arguments: data.args,
+    };
+    const result = await view(viewRequest, state.network_value);
+    setResult(result);
+  };
+
+  return (
+    <ContractForm
+      fn={fn}
+      onSubmit={onSubmit}
+      result={
+        <Box display="flex" flexDirection="row" alignItems="center">
+          <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
+            Query
+          </Button>
+          <Typography ml={2} fontSize={10}>
+            {JSON.stringify(result, null, 2)}
+          </Typography>
+        </Box>
+      }
+    />
+  );
+}
+
+function ContractForm({
+  fn,
+  onSubmit,
+  result,
+}: {
+  fn: Types.MoveFunction;
+  onSubmit: SubmitHandler<ContractFormType>;
+  result: ReactNode;
+}) {
+  const {account} = useWallet();
+  const {handleSubmit, control} = useForm<ContractFormType>();
+  const theme = useTheme();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -220,28 +304,29 @@ function WriteContractForm({
                 )}
               />
             ))}
-            {fn.params.map((param, i) => {
-              if (i === 0 && hasSigner) {
-                return (
-                  <TextField
-                    key={i}
-                    fullWidth
-                    disabled
-                    value={account?.address ?? ""}
-                    label={"account: &signer"}
-                  />
-                );
-              }
+            {fn.is_entry &&
+              (account ? (
+                <TextField
+                  key="args-signer"
+                  value={account.address}
+                  label="signer"
+                  disabled
+                  fullWidth
+                />
+              ) : (
+                <TextField label="signer" disabled fullWidth />
+              ))}
+            {fn.params.slice(fn.is_entry ? 1 : 0).map((param, i) => {
               return (
                 <Controller
-                  key={i}
-                  name={`args.${hasSigner ? i - 1 : i}`}
+                  key={`args-${i}`}
+                  name={`args.${i}`}
                   control={control}
                   render={({field: {onChange, value}}) => (
                     <TextField
                       onChange={onChange}
                       value={value}
-                      label={`arg${hasSigner ? i - 1 : i}: ${param}`}
+                      label={`arg${i}: ${param}`}
                       fullWidth
                     />
                   )}
@@ -249,22 +334,11 @@ function WriteContractForm({
               );
             })}
           </Stack>
-          {connected ? (
-            <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
-              Write
-            </Button>
-          ) : (
-            <Box display="flex" flexDirection="row" alignItems="center">
-              <WalletConnector networkSupport={state.network_name} />
-              <Typography ml={2} fontSize={10}>
-                To write you need to connect wallet first
-              </Typography>
-            </Box>
-          )}
+          {result}
         </Stack>
       </Box>
     </form>
   );
 }
 
-export default WriteContract;
+export default Contract;

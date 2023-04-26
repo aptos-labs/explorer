@@ -1,5 +1,5 @@
 import React from "react";
-import {useQuery, UseQueryResult} from "react-query";
+import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {Types} from "aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
 import {useGlobalState} from "../../global-config/GlobalConfig";

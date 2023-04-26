@@ -169,6 +169,14 @@ export function getAccountModule(
   );
 }
 
+export function view(
+  request: Types.ViewRequest,
+  nodeUrl: string,
+): Promise<Types.MoveValue[]> {
+  const client = new AptosClient(nodeUrl);
+  return withResponseError(client.view(request));
+}
+
 export function getTableItem(
   requestParameters: {tableHandle: string; data: Types.TableItemRequest},
   nodeUrl: string,
