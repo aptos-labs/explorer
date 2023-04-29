@@ -7,13 +7,29 @@ import {CodeLineBox} from "../../../../components/CodeLineBox";
 import {Link} from "../../../../routing";
 import {codeBlockColorClickableOnHover} from "../../../../themes/colors/aptosColorPalette";
 
-function CoinTransferCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
+function CoinTransferCodeLine({
+  sx,
+  address,
+  functionName,
+  moduleName,
+}: {
+  sx?: SxProps<Theme>;
+  address: string;
+  moduleName: string;
+  functionName: string;
+}): JSX.Element {
   return (
     <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
-      <Stack direction="row" alignItems="center" spacing={1.5}>
-        <CurrencyExchangeOutlinedIcon sx={{fontSize: 17, padding: 0}} />
-        <Box>{`Coin Transfer`}</Box>
-      </Stack>
+      <Link
+        to={`/account/${address}/modules/code/${moduleName}?entry_function=${functionName}`}
+        underline="none"
+        style={{color: "inherit"}}
+      >
+        <Stack direction="row" alignItems="center" spacing={1.5}>
+          <CurrencyExchangeOutlinedIcon sx={{fontSize: 17, padding: 0}} />
+          <Box>{`Coin Transfer`}</Box>
+        </Stack>
+      </Link>
     </CodeLineBox>
   );
 }
@@ -56,21 +72,19 @@ export default function TransactionFunction({
     functionFullStr === "0x1::aptos_account::transfer"
   ) {
     return (
-      <Link
-        to={`/account/${address}/modules/code/${moduleName}?entry_function=${functionName}`}
-        underline="none"
-      >
-        <CoinTransferCodeLine
-          sx={[
-            ...(Array.isArray(sx) ? sx : [sx]),
-            {
-              "&:hover": {
-                backgroundColor: codeBlockColorClickableOnHover,
-              },
+      <CoinTransferCodeLine
+        address={address}
+        moduleName={moduleName}
+        functionName={functionName}
+        sx={[
+          ...(Array.isArray(sx) ? sx : [sx]),
+          {
+            "&:hover": {
+              backgroundColor: codeBlockColorClickableOnHover,
             },
-          ]}
-        />
-      </Link>
+          },
+        ]}
+      />
     );
   }
 
