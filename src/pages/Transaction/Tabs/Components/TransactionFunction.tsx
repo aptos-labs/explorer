@@ -75,13 +75,14 @@ export default function TransactionFunction({
   }
 
   return (
-    <Link
-      to={`/account/${address}/modules/code/${moduleName}?entry_function=${functionName}`}
-      underline="none"
-    >
-      <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+    <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+      <Link
+        to={`/account/${address}/modules/code/${moduleName}?entry_function=${functionName}`}
+        underline="none"
+        style={{color: "inherit"}}
+      >
         {moduleName + "::" + functionName}
-      </CodeLineBox>
-    </Link>
+      </Link>
+    </CodeLineBox>
   );
 }
