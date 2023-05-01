@@ -3,17 +3,14 @@ import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
 
 const NUMBER_OF_DELEGATORS_QUERY = gql`
   query numberOfDelegatorsQuery($poolAddress: String) {
-    current_delegator_balances_aggregate(
+    num_active_delegator_per_pool(
       where: {
-        pool_type: {_eq: "active_shares"}
         pool_address: {_eq: $poolAddress}
-        amount: {_gt: "0"}
+        num_active_delegator: {_gt: "0"}
       }
-      distinct_on: delegator_address
+      distinct_on: pool_address
     ) {
-      aggregate {
-        count
-      }
+      num_active_delegator
     }
   }
 `;
@@ -31,7 +28,9 @@ export function useGetNumberOfDelegators(poolAddress: Types.Address) {
 
   return {
     delegatorBalance:
-      data?.current_delegator_balances_aggregate?.aggregate?.count,
+      data?.num_active_delegator_per_pool?.length > 0
+        ? data?.num_active_delegator_per_pool[0].num_active_delegator
+        : 0,
     loading,
     error,
   };
