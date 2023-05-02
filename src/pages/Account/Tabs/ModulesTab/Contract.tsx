@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {ReactNode, useState} from "react";
+import {ReactNode, useEffect, useState} from "react";
 import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
@@ -228,6 +228,14 @@ function ReadContractForm({
 }) {
   const [state] = useGlobalState();
   const [result, setResult] = useState<Types.MoveValue[]>([]);
+  const [errMsg, setErrMsg] = useState<string>();
+
+  // TODO: ideally we won't need this useEffect workaround
+  // should understand why the change of fn doesn't trigger re-render of the component
+  useEffect(() => {
+    setResult([]);
+    setErrMsg(undefined);
+  }, [fn]);
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     const viewRequest: Types.ViewRequest = {
@@ -235,8 +243,12 @@ function ReadContractForm({
       type_arguments: data.typeArgs,
       arguments: data.args,
     };
-    const result = await view(viewRequest, state.network_value);
-    setResult(result);
+    try {
+      const result = await view(viewRequest, state.network_value);
+      setResult(result);
+    } catch (e: any) {
+      setErrMsg(e.message ?? String(e));
+    }
   };
 
   return (
@@ -248,8 +260,13 @@ function ReadContractForm({
           <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
             Query
           </Button>
-          <Typography ml={2} fontSize={10}>
-            {JSON.stringify(result, null, 2)}
+          <Typography
+            ml={2}
+            fontSize={10}
+            whiteSpace="nowrap"
+            sx={{overflowX: "auto"}}
+          >
+            {errMsg ?? JSON.stringify(result, null, 2)}
           </Typography>
         </Box>
       }
@@ -267,7 +284,13 @@ function ContractForm({
   result: ReactNode;
 }) {
   const {account} = useWallet();
-  const {handleSubmit, control} = useForm<ContractFormType>();
+  const {handleSubmit, control} = useForm<ContractFormType>({
+    mode: "all",
+    defaultValues: {
+      typeArgs: [],
+      args: [],
+    },
+  });
   const theme = useTheme();
 
   return (
