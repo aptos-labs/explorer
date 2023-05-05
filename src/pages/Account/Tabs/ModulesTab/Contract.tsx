@@ -3,6 +3,7 @@ import {ReactNode, useEffect, useState} from "react";
 import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
+import SidebarItem from "../../Components/SidebarItem";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {
@@ -17,6 +18,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
+import {useParams} from "react-router-dom";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
@@ -31,13 +33,13 @@ interface ContractSidebarProps {
   selectedModuleName: string | undefined;
   selectedFnName: string | undefined;
   moduleAndFnsGroup: Record<string, Types.MoveFunction[]>;
-  handleClick: (moduleName: string, fnName: string) => void;
+  getLinkToFn(moduleName: string, fnName: string): string;
 }
 
 function Contract({address, isRead}: {address: string; isRead: boolean}) {
   const {data, isLoading, error} = useGetAccountModules(address);
-  const [selectedModuleName, setSelectedModuleName] = useState<string>();
-  const [selectedFnName, setSelectedFnName] = useState<string>();
+  const selectedModuleName = useParams().selectedModuleName ?? "";
+  const selectedFnName = useParams().selectedFnName ?? "";
 
   if (isLoading) {
     return null;
@@ -80,6 +82,15 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
       )
     : undefined;
 
+  function getLinkToFn(moduleName: string, fnName: string) {
+    // This string implicitly depends on the fact that
+    // the `isRead` value is determined by the
+    // pathname `view` and `run`.
+    return `/account/${address}/modules/${
+      isRead ? "view" : "run"
+    }/${moduleName}/${fnName}`;
+  }
+
   return (
     <Grid container spacing={2}>
       <Grid item md={3} xs={12}>
@@ -87,10 +98,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
           selectedModuleName={selectedModuleName}
           selectedFnName={selectedFnName}
           moduleAndFnsGroup={moduleAndFnsGroup}
-          handleClick={(moduleName: string, fnName: string) => {
-            setSelectedModuleName(moduleName);
-            setSelectedFnName(fnName);
-          }}
+          getLinkToFn={getLinkToFn}
         />
       </Grid>
       <Grid item md={9} xs={12}>
@@ -110,7 +118,7 @@ function ContractSidebar({
   selectedModuleName,
   selectedFnName,
   moduleAndFnsGroup,
-  handleClick,
+  getLinkToFn,
 }: ContractSidebarProps) {
   const theme = useTheme();
   return (
@@ -140,32 +148,12 @@ function ContractSidebar({
                   moduleName === selectedModuleName &&
                   fn.name === selectedFnName;
                 return (
-                  <Box
+                  <SidebarItem
                     key={fn.name}
-                    onClick={() => handleClick(moduleName, fn.name)}
-                    fontSize={12}
-                    fontWeight={selected ? 600 : 400}
-                    marginBottom={"8px"}
-                    padding={1}
-                    borderRadius={1}
-                    sx={{
-                      ...(theme.palette.mode === "dark" && !selected
-                        ? {
-                            color: grey[400],
-                            ":hover": {
-                              color: grey[200],
-                            },
-                          }
-                        : {}),
-                      bgcolor: !selected
-                        ? "transparent"
-                        : theme.palette.mode === "dark"
-                        ? grey[500]
-                        : grey[200],
-                    }}
-                  >
-                    {fn.name}
-                  </Box>
+                    linkTo={getLinkToFn(moduleName, fn.name)}
+                    selected={selected}
+                    name={fn.name}
+                  />
                 );
               })}
               <Divider />

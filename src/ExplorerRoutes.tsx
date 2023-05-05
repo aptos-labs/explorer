@@ -34,6 +34,10 @@ export default function ExplorerRoutes() {
             path=":address/modules/:modulesTab/:selectedModuleName"
             element={<AccountPage />}
           />
+          <Route
+            path=":address/modules/:modulesTab/:selectedModuleName/:selectedFnName"
+            element={<AccountPage />}
+          />
           <Route path=":address/:tab" element={<AccountPage />} />
           <Route path=":address" element={<AccountPage />} />
         </Route>
