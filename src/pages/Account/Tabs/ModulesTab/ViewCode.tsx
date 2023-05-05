@@ -27,6 +27,7 @@ import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyT
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../../components/StyledTooltip";
+import SidebarItem from "../../Components/SidebarItem";
 import {
   codeBlockColor,
   codeBlockColorRgbDark,
@@ -37,7 +38,7 @@ import {getBytecodeSizeInKB, transformCode} from "../../../../utils";
 
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import {useParams, useSearchParams} from "react-router-dom";
-import {Link, useNavigate} from "../../../../routing";
+import {useNavigate} from "../../../../routing";
 
 type PackageMetadata = {
   name: string;
@@ -52,12 +53,6 @@ interface ModuleSidebarProps {
   selectedModuleName: string;
   getLinkToModule(moduleName: string): string;
   navigateToModule(moduleName: string): void;
-}
-
-interface ModuleNameOptionProps {
-  linkTo: string;
-  selected: boolean;
-  name: string;
 }
 
 interface ModuleContentProps {
@@ -160,7 +155,7 @@ function ModuleSidebar({
             {isWideScreen ? (
               <Box>
                 {pkg.modules.map((module) => (
-                  <ModuleNameOption
+                  <SidebarItem
                     key={module.name}
                     linkTo={getLinkToModule(module.name)}
                     selected={module.name === selectedModuleName}
@@ -201,37 +196,6 @@ function ModuleSidebar({
         );
       })}
     </Box>
-  );
-}
-
-function ModuleNameOption({selected, name, linkTo}: ModuleNameOptionProps) {
-  const theme = useTheme();
-
-  return (
-    <Link to={linkTo} underline="none" color={"inherit"}>
-      <Box
-        key={name}
-        sx={{
-          fontSize: 12,
-          fontWeight: selected ? 600 : 400,
-          padding: "8px",
-          borderRadius: 1,
-          bgcolor: !selected
-            ? "transparent"
-            : theme.palette.mode === "dark"
-            ? grey[500]
-            : grey[200],
-          ...(theme.palette.mode === "dark" && !selected && {color: grey[400]}),
-          ":hover": {
-            cursor: "pointer",
-            ...(theme.palette.mode === "dark" &&
-              !selected && {color: grey[200]}),
-          },
-        }}
-      >
-        {name}
-      </Box>
-    </Link>
   );
 }
 
