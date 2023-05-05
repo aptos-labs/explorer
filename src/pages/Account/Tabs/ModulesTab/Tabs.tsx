@@ -51,7 +51,7 @@ function TabPanel({value, address}: TabPanelProps): JSX.Element {
 function ModulesTabs({address}: {address: string}): JSX.Element {
   const theme = useTheme();
   const tabValues = Object.keys(TabComponents) as TabValue[];
-  const {selectedFnName, selectedModuleName, modulesTab} = useParams();
+  const {selectedModuleName, modulesTab} = useParams();
   const navigate = useNavigate();
   const value =
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
