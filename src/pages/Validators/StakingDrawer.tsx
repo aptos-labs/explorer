@@ -50,7 +50,7 @@ const faqStakingData = [
     question: "How can I stake APT?",
     answer: (
       <React.Fragment>
-        "You can stake APT directly by going to the{" "}
+        You can stake APT directly by going to the{" "}
         <Link to={"/validators/delegation"}>Explorer</Link> page and connecting
         your wallet. If you are using the Petra wallet, you should see the
         following flow:
@@ -256,7 +256,13 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                   <Typography variant="h6" paragraph>
                     {question}
                   </Typography>
-                  <Typography variant="body2" paragraph>
+                  <Typography
+                    variant="body2"
+                    paragraph
+                    sx={{
+                      fontFamily: "apparat,Geneva,Tahoma,Verdana,sans-serif",
+                    }}
+                  >
                     {answer}
                   </Typography>
                   <Divider flexItem sx={{marginY: 1}} />
