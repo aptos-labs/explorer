@@ -45,8 +45,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const {data, isLoading, error} = useGetAccountModules(address);
-  const selectedModuleName = useParams().selectedModuleName ?? "";
-  const selectedFnName = useParams().selectedFnName ?? "";
+  const {selectedModuleName, selectedFnName} = useParams();
 
   if (!isRead && !isWideScreen) {
     return (
