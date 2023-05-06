@@ -80,6 +80,9 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
       )
     : undefined;
 
+  // Use this key to force re-mount the Form component when the fn changes,
+  // so that the state of the form is reset.
+  const contractFormKey = module?.name + ":" + fn?.name;
   return (
     <Grid container spacing={2}>
       <Grid item md={3} xs={12}>
@@ -97,9 +100,9 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
         {!module || !fn ? (
           <EmptyTabContent message="Please select a function" />
         ) : isRead ? (
-          <ReadContractForm module={module} fn={fn} />
+          <ReadContractForm module={module} fn={fn} key={contractFormKey} />
         ) : (
-          <RunContractForm module={module} fn={fn} />
+          <RunContractForm module={module} fn={fn} key={contractFormKey} />
         )}
       </Grid>
     </Grid>
@@ -229,13 +232,6 @@ function ReadContractForm({
   const [state] = useGlobalState();
   const [result, setResult] = useState<Types.MoveValue[]>([]);
   const [errMsg, setErrMsg] = useState<string>();
-
-  // TODO: ideally we won't need this useEffect workaround
-  // should understand why the change of fn doesn't trigger re-render of the component
-  useEffect(() => {
-    setResult([]);
-    setErrMsg(undefined);
-  }, [fn]);
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     const viewRequest: Types.ViewRequest = {
