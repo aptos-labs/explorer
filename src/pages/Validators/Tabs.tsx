@@ -63,7 +63,7 @@ export default function ValidatorsPageTabs(): JSX.Element {
   const {account, wallet} = useWallet();
   const value =
     tab === undefined
-      ? VALIDATORS_TAB_VALUE.DELEGATION_NODES
+      ? VALIDATORS_TAB_VALUE.ALL_NODES
       : (tab as VALIDATORS_TAB_VALUE);
 
   const handleChange = (
