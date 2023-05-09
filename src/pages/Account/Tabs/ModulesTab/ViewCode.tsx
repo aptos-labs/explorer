@@ -24,7 +24,9 @@ import Error from "../../Error";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {useGetAccountResource} from "../../../../api/hooks/useGetAccountResource";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import StyledTooltip from "../../../../components/StyledTooltip";
+import StyledTooltip, {
+  StyledLearnMoreTooltip,
+} from "../../../../components/StyledTooltip";
 import {
   codeBlockColor,
   codeBlockColorRgbDark,
@@ -151,8 +153,8 @@ function ModuleSidebar({
     >
       {sortedPackages.map((pkg) => {
         return (
-          <>
-            <Typography fontSize={16} fontWeight={500} marginY={"12px"}>
+          <Box marginBottom={3}>
+            <Typography fontSize={14} fontWeight={600} marginY={"12px"}>
               {pkg.name}
             </Typography>
             {isWideScreen ? (
@@ -165,7 +167,7 @@ function ModuleSidebar({
                     name={module.name}
                   />
                 ))}
-                <Divider />
+                <Divider sx={{marginTop: "24px"}} />
               </Box>
             ) : (
               <FormControl fullWidth>
@@ -195,7 +197,7 @@ function ModuleSidebar({
                 </Select>
               </FormControl>
             )}
-          </>
+          </Box>
         );
       })}
     </Box>
@@ -262,7 +264,12 @@ function ModuleHeader({
   const {data: module} = useGetAccountModule(address, moduleName);
 
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="center">
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      flexWrap={"wrap"}
+    >
       <Typography fontSize={24} fontWeight={700}>
         {moduleName}
       </Typography>
@@ -345,15 +352,17 @@ function Code({bytecode}: {bytecode: string}) {
         alignItems="center"
         spacing={1}
       >
-        <Typography fontSize={20} fontWeight={700} marginY={"16px"}>
-          Code
-        </Typography>
-        {sourceCode && (
-          <Typography variant="body1" fontSize={12}>
-            The source code is plain text uploaded by the deployer, which can be
-            different from the actual bytecode.
+        <Stack
+          direction="row"
+          spacing={1}
+          marginY={"16px"}
+          alignItems={"center"}
+        >
+          <Typography fontSize={20} fontWeight={700}>
+            Code
           </Typography>
-        )}
+          <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. We can not not verify it." />
+        </Stack>
         <Stack direction="row" spacing={2}>
           <StyledTooltip
             title="Code copied"
@@ -389,6 +398,18 @@ function Code({bytecode}: {bytecode: string}) {
           <ExpandCode sourceCode={sourceCode} />
         </Stack>
       </Stack>
+      {sourceCode && (
+        <Typography
+          variant="body1"
+          fontSize={14}
+          fontWeight={400}
+          marginBottom={"16px"}
+          color={theme.palette.mode === "dark" ? grey[400] : grey[600]}
+        >
+          The source code is plain text uploaded by the deployer, which can be
+          different from the actual bytecode.
+        </Typography>
+      )}
       {!sourceCode ? (
         <Box>
           Unfortunately, the source code cannot be shown because the package
@@ -398,8 +419,9 @@ function Code({bytecode}: {bytecode: string}) {
         <Box
           sx={{
             maxHeight: "100vh",
-            overflowY: "auto",
+            overflow: "auto",
             borderRadius: 1,
+            backgroundColor: codeBlockColor,
           }}
           ref={codeBoxScrollRef}
         >
@@ -409,7 +431,7 @@ function Code({bytecode}: {bytecode: string}) {
             style={
               theme.palette.mode === "light" ? solarizedLight : solarizedDark
             }
-            customStyle={{margin: 0, backgroundColor: codeBlockColor}}
+            customStyle={{margin: 0, backgroundColor: "unset"}}
             showLineNumbers
           >
             {sourceCode}

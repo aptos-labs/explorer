@@ -14,6 +14,10 @@ import {
   TextField,
   Button,
   useTheme,
+  useMediaQuery,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
@@ -35,9 +39,41 @@ interface ContractSidebarProps {
 }
 
 function Contract({address, isRead}: {address: string; isRead: boolean}) {
+  const theme = useTheme();
+  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const {data, isLoading, error} = useGetAccountModules(address);
   const [selectedModuleName, setSelectedModuleName] = useState<string>();
   const [selectedFnName, setSelectedFnName] = useState<string>();
+
+  if (!isRead && !isWideScreen) {
+    return (
+      <Grid item xs={12}>
+        <Box
+          padding={3}
+          bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+          borderRadius={1}
+        >
+          <Typography
+            fontSize={16}
+            fontWeight={500}
+            marginBottom={"16px"}
+            color={theme.palette.mode === "dark" ? grey[300] : grey[600]}
+          >
+            Unfortunately, we are not supporting write method on mobile at the
+            moment.
+          </Typography>
+
+          <Typography
+            fontSize={12}
+            fontWeight={500}
+            color={theme.palette.mode === "dark" ? grey[400] : grey[500]}
+          >
+            Please, use a laptop or a desktop computer.
+          </Typography>
+        </Box>
+      </Grid>
+    );
+  }
 
   if (isLoading) {
     return null;
@@ -95,7 +131,13 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
       </Grid>
       <Grid item md={9} xs={12}>
         {!module || !fn ? (
-          <EmptyTabContent message="Please select a function" />
+          <Box
+            padding={4}
+            bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+            borderRadius={1}
+          >
+            <Typography>Please select a function</Typography>
+          </Box>
         ) : isRead ? (
           <ReadContractForm module={module} fn={fn} />
         ) : (
@@ -113,62 +155,93 @@ function ContractSidebar({
   handleClick,
 }: ContractSidebarProps) {
   const theme = useTheme();
+  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
+
   return (
     <Box
-      sx={{padding: "24px"}}
+      sx={{padding: "24px", maxHeight: "100vh", overflowY: "auto"}}
       bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
       borderRadius={1}
     >
       <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
         Select function
       </Typography>
-      <Box
-        sx={{
-          maxHeight: "100vh",
-          overflowY: "auto",
-        }}
-      >
+      <Box>
         {Object.entries(moduleAndFnsGroup)
           .sort((a, b) => a[0].localeCompare(b[0]))
           .map(([moduleName, fns]) => (
             <Box key={moduleName} marginBottom={3}>
-              <Typography fontSize={14} fontWeight={500} marginBottom={"8px"}>
+              <Typography fontSize={14} fontWeight={600} marginBottom={"8px"}>
                 {moduleName}
               </Typography>
-              {fns.map((fn) => {
-                const selected =
-                  moduleName === selectedModuleName &&
-                  fn.name === selectedFnName;
-                return (
-                  <Box
-                    key={fn.name}
-                    onClick={() => handleClick(moduleName, fn.name)}
-                    fontSize={12}
-                    fontWeight={selected ? 600 : 400}
-                    marginBottom={"8px"}
-                    padding={1}
-                    borderRadius={1}
-                    sx={{
-                      ...(theme.palette.mode === "dark" && !selected
-                        ? {
-                            color: grey[400],
-                            ":hover": {
-                              color: grey[200],
-                            },
-                          }
-                        : {}),
-                      bgcolor: !selected
-                        ? "transparent"
-                        : theme.palette.mode === "dark"
-                        ? grey[500]
-                        : grey[200],
-                    }}
+              {isWideScreen ? (
+                <Box>
+                  {fns.map((fn) => {
+                    const selected =
+                      moduleName === selectedModuleName &&
+                      fn.name === selectedFnName;
+                    return (
+                      <Box
+                        key={fn.name}
+                        onClick={() => handleClick(moduleName, fn.name)}
+                        fontSize={12}
+                        fontWeight={selected ? 600 : 400}
+                        padding={"8px"}
+                        borderRadius={1}
+                        sx={{
+                          ...(theme.palette.mode === "dark" && !selected
+                            ? {
+                                color: grey[400],
+                                ":hover": {
+                                  color: grey[200],
+                                },
+                              }
+                            : {}),
+                          bgcolor: !selected
+                            ? "transparent"
+                            : theme.palette.mode === "dark"
+                            ? grey[500]
+                            : grey[200],
+                        }}
+                      >
+                        {fn.name}
+                      </Box>
+                    );
+                  })}
+                  <Divider sx={{marginTop: "24px"}} />
+                </Box>
+              ) : (
+                <FormControl fullWidth>
+                  <Select
+                    value={selectedModuleName}
+                    onChange={(e) => handleClick(moduleName, e.target.value)}
                   >
-                    {fn.name}
-                  </Box>
-                );
-              })}
-              <Divider />
+                    {fns.map((fn) => {
+                      const selected =
+                        moduleName === selectedModuleName &&
+                        fn.name === selectedFnName;
+                      return (
+                        <MenuItem
+                          key={fn.name}
+                          value={fn.name}
+                          sx={
+                            theme.palette.mode === "dark" && selected
+                              ? {
+                                  color: grey[400],
+                                  ":hover": {
+                                    color: grey[200],
+                                  },
+                                }
+                              : {}
+                          }
+                        >
+                          {fn.name}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              )}
             </Box>
           ))}
       </Box>

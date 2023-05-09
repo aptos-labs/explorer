@@ -61,7 +61,30 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
   };
 
   return (
-    <Box sx={{width: "100%"}}>
+    <Box
+      sx={{
+        width: "100%",
+        "& *::-webkit-scrollbar": {
+          width: "8px",
+          height: "8px",
+        },
+        "& *::-webkit-scrollbar-track": {
+          // boxShadow: "inset 0 0 5px grey",
+          // borderRadius: "10px",
+        },
+        "& *::-webkit-scrollbar-thumb": {
+          background: theme.palette.mode === "dark" ? grey[500] : grey[200],
+          borderRadius: "10px",
+          padding: "2px",
+        },
+        "& *::-webkit-scrollbar-thumb:hover": {
+          background: theme.palette.mode === "dark" ? grey[400] : grey[300],
+        },
+        "& *::-webkit-scrollbar-corner": {
+          opacity: 0,
+        },
+      }}
+    >
       <Box
         padding={2}
         marginY={4}
@@ -72,6 +95,7 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
         <StyledTabs value={value} onChange={handleChange}>
           {tabValues.map((value, i) => (
             <StyledTab
+              secondary
               key={i}
               value={value}
               label={getTabLabel(value)}
