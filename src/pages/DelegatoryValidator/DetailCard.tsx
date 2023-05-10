@@ -64,7 +64,7 @@ export default function ValidatorDetailCard({
         />
         <ContentRowSpaceBetween
           title="Compound Rewards"
-          value={`${rewardsRateYearly}% APY`}
+          value={`${rewardsRateYearly}% APR`}
           tooltip={
             <StyledLearnMoreTooltip
               text={REWARDS_TOOLTIP_TEXT}
