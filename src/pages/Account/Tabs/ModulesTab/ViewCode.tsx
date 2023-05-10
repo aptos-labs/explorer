@@ -34,7 +34,11 @@ import {
   codeBlockColorRgbLight,
   grey,
 } from "../../../../themes/colors/aptosColorPalette";
-import {getBytecodeSizeInKB, transformCode} from "../../../../utils";
+import {
+  getBytecodeSizeInKB,
+  getPublicFunctionLineNumber,
+  transformCode,
+} from "../../../../utils";
 
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import {useParams, useSearchParams} from "react-router-dom";
@@ -250,33 +254,13 @@ function ModuleHeader({
   );
 }
 
-// inspired by https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
-function escapeRegExp(regexpString: string) {
-  return regexpString.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
 function useStartingLineNumber(sourceCode?: string) {
-  const [searchParams] = useSearchParams();
-
   if (!sourceCode) return 0;
 
-  const entryFunctionToHightlight = searchParams.get("entry_function");
-  if (entryFunctionToHightlight == null) return 0;
+  const functionToHighlight = useParams().selectedFnName;
+  if (!functionToHighlight) return 0;
 
-  const lines = sourceCode.split("\n");
-  const publicEntryFunRegexp = new RegExp(
-    `\\s*public\\s*entry\\s*fun\\s*${escapeRegExp(
-      entryFunctionToHightlight,
-    )}(<.*>)?\\s*\\(`,
-  );
-  const lineNumber = lines.findIndex((line) =>
-    line.match(publicEntryFunRegexp),
-  );
-  if (lineNumber !== -1) {
-    return lineNumber;
-  }
-
-  return 0;
+  return getPublicFunctionLineNumber(sourceCode, functionToHighlight);
 }
 
 function Code({bytecode}: {bytecode: string}) {
