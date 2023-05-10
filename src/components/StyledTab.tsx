@@ -5,16 +5,23 @@ import {grey} from "../themes/colors/aptosColorPalette";
 interface StyledTabProps extends TabProps {
   isFirst: boolean;
   isLast: boolean;
+  secondary?: boolean; // some page has multiple levels of tabs, the style would be different.
 }
 
 export default function StyledTab({
   isFirst,
   isLast,
+  secondary,
   ...props
 }: StyledTabProps): JSX.Element {
   const theme = useTheme();
   // TODO: unify colors for the new transaction page
-  const backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[50];
+  let backgroundColor;
+  if (!secondary) {
+    backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[50];
+  } else {
+    backgroundColor = theme.palette.mode === "dark" ? grey[700] : grey[200];
+  }
 
   return (
     <Tab
