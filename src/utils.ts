@@ -131,3 +131,32 @@ export const standardizeAddress = (address: string): string => {
   // Return the standardized address with the "0x" prefix
   return "0x" + addressWithPadding;
 };
+
+// inspired by https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+function escapeRegExp(regexpString: string) {
+  return regexpString.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Get the line number of a public function in a source code.
+// The line number is zero-based.
+// Return 0 if the function is not found.
+export function getPublicFunctionLineNumber(
+  sourceCode: string,
+  functionName: string,
+) {
+  const lines = sourceCode.split("\n");
+  const publicEntryFunRegexp = new RegExp(
+    `\\s*public\\s*(entry\\s*)?fun\\s*${escapeRegExp(
+      functionName,
+    )}\\s*(?:<|\\()`,
+  );
+
+  const lineNumber = lines.findIndex((line) =>
+    line.match(publicEntryFunRegexp),
+  );
+  if (lineNumber !== -1) {
+    return lineNumber;
+  }
+
+  return 0;
+}

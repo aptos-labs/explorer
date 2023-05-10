@@ -21,7 +21,7 @@ function CoinTransferCodeLine({
   return (
     <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
       <Link
-        to={`/account/${address}/modules/code/${moduleName}?entry_function=${functionName}`}
+        to={`/account/${address}/modules/code/${moduleName}/${functionName}`}
         underline="none"
         style={{color: "inherit"}}
       >
@@ -91,7 +91,7 @@ export default function TransactionFunction({
   return (
     <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
       <Link
-        to={`/account/${address}/modules/code/${moduleName}?entry_function=${functionName}`}
+        to={`/account/${address}/modules/code/${moduleName}/${functionName}`}
         underline="none"
         style={{color: "inherit"}}
       >
