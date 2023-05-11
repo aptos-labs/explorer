@@ -3,16 +3,21 @@ import {
   TextField,
   Box,
   Divider,
-  FormControl,
   Grid,
-  MenuItem,
-  Select,
+  Modal,
   Stack,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, {useEffect} from "react";
+import {ContentCopy, OpenInFull} from "@mui/icons-material";
+import {orderBy} from "lodash";
+import React, {useEffect, useMemo, useRef, useState} from "react";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import {
+  solarizedLight,
+  solarizedDark,
+} from "react-syntax-highlighter/dist/esm/styles/hljs";
 import Error from "../../Error";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {
@@ -109,6 +114,13 @@ function ModuleSidebar({
 }: ModuleSidebarProps) {
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const flattedModules = useMemo(
+    () =>
+      sortedPackages.flatMap((pkg) =>
+        pkg.modules.map((module) => ({...module, pkg: pkg.name})),
+      ),
+    [sortedPackages],
+  );
 
   return (
     <Box
@@ -123,32 +135,37 @@ function ModuleSidebar({
               <Typography fontSize={14} fontWeight={600} marginY={"12px"}>
                 {pkg.name}
               </Typography>
-                <Box>
-                  {pkg.modules.map((module) => (
-                    <SidebarItem
-                      key={module.name}
-                      linkTo={getLinkToModule(module.name)}
-                      selected={module.name === selectedModuleName}
-                      name={module.name}
-                    />
-                  ))}
-                  <Divider sx={{marginTop: "24px"}} />
-                </Box>
+              <Box>
+                {pkg.modules.map((module) => (
+                  <SidebarItem
+                    key={module.name}
+                    linkTo={getLinkToModule(module.name)}
+                    selected={module.name === selectedModuleName}
+                    name={module.name}
+                  />
+                ))}
+                <Divider sx={{marginTop: "24px"}} />
+              </Box>
             </Box>
           );
         })
       ) : (
         <Autocomplete
           fullWidth
-          options={sortedPackages.flatMap((pkg) =>
-            pkg.modules.map((module) => ({...module, pkg: pkg.name})),
-          )}
+          options={flattedModules}
           groupBy={(option) => option.pkg}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
-            <TextField {...params} label="Select a function" />
+            <TextField {...params} label="Select a module" />
           )}
           onChange={(_, module) => module && navigateToModule(module?.name)}
+          value={
+            selectedModuleName
+              ? flattedModules.find(
+                  (module) => module.name === selectedModuleName,
+                )
+              : null
+          }
         />
       )}
     </Box>
