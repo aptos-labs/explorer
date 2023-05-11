@@ -27,12 +27,9 @@ import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
-import { useNavigate } from "../../../../routing";
-import {Code} from "../../Components/CodeSnippet";
-import {
-  PackageMetadata,
-  useGetAccountPackages,
-} from "../../../../api/hooks/useGetAccountResource";
+import {useNavigate} from "../../../../routing";
+import { Code } from "../../Components/CodeSnippet";
+import { PackageMetadata, useGetAccountPackages } from "../../../../api/hooks/useGetAccountResource";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -184,7 +181,7 @@ function ContractSidebar({
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
-  
+
   return (
     <Box
       sx={{padding: "24px", maxHeight: "100vh", overflowY: "auto"}}
@@ -220,7 +217,9 @@ function ContractSidebar({
                 <FormControl fullWidth>
                   <Select
                     value={selectedModuleName}
-                    onChange={(e) => navigate(getLinkToFn(moduleName,  e.target.value))}
+                    onChange={(e) =>
+                      navigate(getLinkToFn(moduleName, e.target.value))
+                    }
                   >
                     {fns.map((fn) => {
                       const selected =
