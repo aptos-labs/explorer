@@ -20,6 +20,7 @@ import {useParams} from "react-router-dom";
 import {Statsig} from "statsig-react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 function useStartingLineNumber(sourceCode?: string) {
   if (!sourceCode) return 0;
@@ -33,17 +34,11 @@ function useStartingLineNumber(sourceCode?: string) {
 function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   const theme = useTheme();
   const {selectedModuleName} = useParams();
-  const {account} = useWallet();
-  const [state] = useGlobalState();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const logEvent = useLogEventWithBasic();
 
   const handleOpenModal = () => {
-    Statsig.logEvent("expand_button_clicked", selectedModuleName, {
-      stable_id: Statsig.getStableID(),
-      wallet_address: account?.address ?? "",
-      network_type: state.network_name,
-    });
-
+    logEvent("expand_button_clicked", selectedModuleName);
     setIsModalOpen(true);
   };
 
@@ -115,8 +110,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
 
 export function Code({bytecode}: {bytecode: string}) {
   const {selectedModuleName} = useParams();
-  const {account} = useWallet();
-  const [state] = useGlobalState();
+  const logEvent = useLogEventWithBasic();
 
   const TOOLTIP_TIME = 2000; // 2s
 
@@ -177,15 +171,7 @@ export function Code({bytecode}: {bytecode: string}) {
             <Button
               variant="outlined"
               onClick={(source) => {
-                Statsig.logEvent(
-                  "copy_code_button_clicked",
-                  selectedModuleName,
-                  {
-                    stable_id: Statsig.getStableID(),
-                    wallet_address: account?.address ?? "",
-                    network_type: state.network_name,
-                  },
-                );
+                logEvent("copy_code_button_clicked", selectedModuleName);
                 copyCode(source);
               }}
               disabled={!sourceCode}

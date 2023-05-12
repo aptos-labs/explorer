@@ -27,6 +27,7 @@ import {Code} from "../../Components/CodeSnippet";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Statsig} from "statsig-react";
+import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 
 interface ModuleSidebarProps {
   sortedPackages: PackageMetadata[];
@@ -111,6 +112,7 @@ function ModuleSidebar({
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const {account} = useWallet();
   const [state] = useGlobalState();
+  const logEvent = useLogEventWithBasic();
   const flattedModules = useMemo(
     () =>
       sortedPackages.flatMap((pkg) =>
@@ -142,11 +144,6 @@ function ModuleSidebar({
                     loggingInfo={{
                       eventName: "modules_clicked",
                       value: module.name,
-                      metadata: {
-                        stable_id: Statsig.getStableID(),
-                        wallet_address: account?.address ?? "",
-                        network_type: state.network_name,
-                      },
                     }}
                   />
                 ))}
@@ -165,12 +162,7 @@ function ModuleSidebar({
             <TextField {...params} label="Select a module" />
           )}
           onChange={(_, module) => {
-            module &&
-              Statsig.logEvent("modules_clicked", module.name, {
-                stable_id: Statsig.getStableID(),
-                wallet_address: account?.address ?? "",
-                network_type: state.network_name,
-              });
+            module && logEvent("modules_clicked", module.name);
             module && navigateToModule(module?.name);
           }}
           value={
