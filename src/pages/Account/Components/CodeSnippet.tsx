@@ -16,7 +16,10 @@ import {
   codeBlockColorRgbLight,
   grey,
 } from "../../../themes/colors/aptosColorPalette";
-import {useParams, useSearchParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {Statsig} from "statsig-react";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useGlobalState} from "../../../global-config/GlobalConfig";
 
 function useStartingLineNumber(sourceCode?: string) {
   if (!sourceCode) return 0;
@@ -29,9 +32,18 @@ function useStartingLineNumber(sourceCode?: string) {
 
 function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   const theme = useTheme();
+  const {selectedModuleName} = useParams();
+  const {account} = useWallet();
+  const [state] = useGlobalState();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
+    Statsig.logEvent("expand_button_clicked", selectedModuleName, {
+      stable_id: Statsig.getStableID(),
+      wallet_address: account?.address ?? "",
+      network_type: state.network_name,
+    });
+
     setIsModalOpen(true);
   };
 
@@ -102,6 +114,10 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
 }
 
 export function Code({bytecode}: {bytecode: string}) {
+  const {selectedModuleName} = useParams();
+  const {account} = useWallet();
+  const [state] = useGlobalState();
+
   const TOOLTIP_TIME = 2000; // 2s
 
   const sourceCode = bytecode === "0x" ? undefined : transformCode(bytecode);
@@ -149,40 +165,53 @@ export function Code({bytecode}: {bytecode: string}) {
           </Typography>
           <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. We can not not verify it." />
         </Stack>
-        <Stack direction="row" spacing={2}>
-          <StyledTooltip
-            title="Code copied"
-            placement="right"
-            open={tooltipOpen}
-            disableFocusListener
-            disableHoverListener
-            disableTouchListener
-          >
-            <Button
-              variant="outlined"
-              onClick={copyCode}
-              disabled={!sourceCode}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                height: "2rem",
-                borderRadius: "0.5rem",
-              }}
+        {sourceCode && (
+          <Stack direction="row" spacing={2}>
+            <StyledTooltip
+              title="Code copied"
+              placement="right"
+              open={tooltipOpen}
+              disableFocusListener
+              disableHoverListener
+              disableTouchListener
             >
-              <ContentCopy style={{height: "1.25rem", width: "1.25rem"}} />{" "}
-              <Typography
-                marginLeft={1}
+              <Button
+                variant="outlined"
+                onClick={(source) => {
+                  Statsig.logEvent(
+                    "copy_code_button_clicked",
+                    selectedModuleName,
+                    {
+                      stable_id: Statsig.getStableID(),
+                      wallet_address: account?.address ?? "",
+                      network_type: state.network_name,
+                    },
+                  );
+                  copyCode(source);
+                }}
+                disabled={!sourceCode}
                 sx={{
-                  display: "inline",
-                  whiteSpace: "nowrap",
+                  display: "flex",
+                  alignItems: "center",
+                  height: "2rem",
+                  borderRadius: "0.5rem",
                 }}
               >
-                copy code
-              </Typography>
-            </Button>
-          </StyledTooltip>
-          <ExpandCode sourceCode={sourceCode} />
-        </Stack>
+                <ContentCopy style={{height: "1.25rem", width: "1.25rem"}} />{" "}
+                <Typography
+                  marginLeft={1}
+                  sx={{
+                    display: "inline",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  copy code
+                </Typography>
+              </Button>
+            </StyledTooltip>
+            <ExpandCode sourceCode={sourceCode} />
+          </Stack>
+        )}
       </Stack>
       {sourceCode && (
         <Typography

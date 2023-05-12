@@ -17,6 +17,8 @@ import {
   useTheme,
   useMediaQuery,
   Autocomplete,
+  LinearProgress,
+  Alert,
 } from "@mui/material";
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
@@ -26,8 +28,12 @@ import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {useNavigate} from "../../../../routing";
-import { Code } from "../../Components/CodeSnippet";
-import { PackageMetadata, useGetAccountPackages } from "../../../../api/hooks/useGetAccountResource";
+import {Code} from "../../Components/CodeSnippet";
+import {
+  PackageMetadata,
+  useGetAccountPackages,
+} from "../../../../api/hooks/useGetAccountResource";
+import {Statsig} from "statsig-react";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -177,6 +183,8 @@ function ContractSidebar({
   getLinkToFn,
 }: ContractSidebarProps) {
   const theme = useTheme();
+  const {account} = useWallet();
+  const [state] = useGlobalState();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
   const flattedFns = useMemo(
@@ -226,6 +234,15 @@ function ContractSidebar({
                           linkTo={getLinkToFn(moduleName, fn.name)}
                           selected={selected}
                           name={fn.name}
+                          loggingInfo={{
+                            eventName: "function_name_clicked",
+                            value: fn.name,
+                            metadata: {
+                              stable_id: Statsig.getStableID(),
+                              wallet_address: account?.address ?? "",
+                              network_type: state.network_name,
+                            },
+                          }}
                         />
                       );
                     })}
@@ -244,9 +261,15 @@ function ContractSidebar({
           renderInput={(params) => (
             <TextField {...params} label="Select a function" />
           )}
-          onChange={(_, fn) =>
-            fn && navigate(getLinkToFn(fn.moduleName, fn.fnName))
-          }
+          onChange={(_, fn) => {
+            fn &&
+              Statsig.logEvent("function_name_clicked", fn.fnName, {
+                stable_id: Statsig.getStableID(),
+                wallet_address: account?.address ?? "",
+                network_type: state.network_name,
+              });
+            fn && navigate(getLinkToFn(fn.moduleName, fn.fnName));
+          }}
           value={
             selectedModuleName && selectedFnName
               ? flattedFns.find(
@@ -270,10 +293,16 @@ function RunContractForm({
   fn: Types.MoveFunction;
 }) {
   const [state] = useGlobalState();
-  const {connected} = useWallet();
-  const {submitTransaction} = useSubmitTransaction();
+  const {connected, account} = useWallet();
+  const {submitTransaction, transactionResponse, transactionInProcess} =
+    useSubmitTransaction();
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
+    Statsig.logEvent("write_button_clicked", fn.name, {
+      stable_id: Statsig.getStableID(),
+      wallet_address: account?.address ?? "",
+      network_type: state.network_name,
+    });
     const payload: Types.TransactionPayload = {
       type: "entry_function_payload",
       function: `${module.address}::${module.name}::${fn.name}`,
@@ -281,6 +310,14 @@ function RunContractForm({
       arguments: data.args,
     };
     await submitTransaction(payload);
+    if (transactionResponse?.transactionSubmitted) {
+      Statsig.logEvent("function_interacted", fn.name, {
+        stable_id: Statsig.getStableID(),
+        wallet_address: account?.address ?? "",
+        network_type: state.network_name,
+        txn_status: transactionResponse.success ? "success" : "failed",
+      });
+    }
   };
 
   return (
@@ -289,9 +326,36 @@ function RunContractForm({
       onSubmit={onSubmit}
       result={
         connected ? (
-          <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
-            Write
-          </Button>
+          <Box>
+            <Button
+              type="submit"
+              disabled={transactionInProcess}
+              variant="contained"
+              sx={{maxWidth: "8rem"}}
+            >
+              Write
+            </Button>
+            {transactionInProcess ? (
+              <LinearProgress sx={{marginTop: "16px"}} />
+            ) : (
+              transactionResponse && (
+                <Alert
+                  severity={
+                    transactionResponse?.transactionSubmitted
+                      ? "success"
+                      : "error"
+                  }
+                  sx={{
+                    overflowX: "auto",
+                    marginTop: "16px",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {JSON.stringify(transactionResponse, null, 2)}
+                </Alert>
+              )
+            )}
+          </Box>
         ) : (
           <Box display="flex" flexDirection="row" alignItems="center">
             <WalletConnector networkSupport={state.network_name} />
@@ -313,21 +377,44 @@ function ReadContractForm({
   fn: Types.MoveFunction;
 }) {
   const [state] = useGlobalState();
-  const [result, setResult] = useState<Types.MoveValue[]>([]);
+  const {account} = useWallet();
+  const [result, setResult] = useState<Types.MoveValue[]>();
   const [errMsg, setErrMsg] = useState<string>();
+  const [inProcess, setInProcess] = useState(false);
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
+    Statsig.logEvent("read_button_clicked", fn.name, {
+      stable_id: Statsig.getStableID(),
+      wallet_address: account?.address ?? "",
+      network_type: state.network_name,
+    });
     const viewRequest: Types.ViewRequest = {
       function: `${module.address}::${module.name}::${fn.name}`,
       type_arguments: data.typeArgs,
       arguments: data.args,
     };
+    setInProcess(true);
     try {
       const result = await view(viewRequest, state.network_value);
       setResult(result);
+      setErrMsg(undefined);
+      Statsig.logEvent("function_interacted", fn.name, {
+        stable_id: Statsig.getStableID(),
+        wallet_address: account?.address ?? "",
+        network_type: state.network_name,
+        txn_status: "success",
+      });
     } catch (e: any) {
       setErrMsg(e.message ?? String(e));
+      setResult(undefined);
+      Statsig.logEvent("function_interacted", fn.name, {
+        stable_id: Statsig.getStableID(),
+        wallet_address: account?.address ?? "",
+        network_type: state.network_name,
+        txn_status: "failed",
+      });
     }
+    setInProcess(false);
   };
 
   return (
@@ -335,18 +422,31 @@ function ReadContractForm({
       fn={fn}
       onSubmit={onSubmit}
       result={
-        <Box display="flex" flexDirection="row" alignItems="center">
-          <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
+        <Box>
+          <Button
+            type="submit"
+            disabled={inProcess}
+            variant="contained"
+            sx={{maxWidth: "8rem"}}
+          >
             Query
           </Button>
-          <Typography
-            ml={2}
-            fontSize={10}
-            whiteSpace="nowrap"
-            sx={{overflowX: "auto"}}
-          >
-            {errMsg ?? JSON.stringify(result, null, 2)}
-          </Typography>
+          {inProcess ? (
+            <LinearProgress sx={{marginTop: "16px"}} />
+          ) : (
+            (errMsg || result) && (
+              <Alert
+                severity={errMsg ? "error" : "success"}
+                sx={{
+                  overflowX: "auto",
+                  marginTop: "16px",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {errMsg ?? JSON.stringify(result, null, 2)}
+              </Alert>
+            )
+          )}
         </Box>
       }
     />
@@ -399,7 +499,7 @@ function ContractForm({
                 render={({field: {onChange, value}}) => (
                   <TextField
                     onChange={onChange}
-                    value={value}
+                    value={value ?? ""}
                     label={`T${i}`}
                     fullWidth
                   />
@@ -427,7 +527,7 @@ function ContractForm({
                   render={({field: {onChange, value}}) => (
                     <TextField
                       onChange={onChange}
-                      value={value}
+                      value={value ?? ""}
                       label={`arg${i}: ${param}`}
                       fullWidth
                     />

@@ -2,11 +2,17 @@ import React from "react";
 import {Box, useTheme} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import {Link} from "../../../routing";
+import {Statsig} from "statsig-react";
 
 interface SidebarItemProps {
   linkTo: string;
   selected: boolean;
   name: string;
+  loggingInfo?: {
+    eventName: string;
+    value: string;
+    metadata: Record<string, string>;
+  };
 }
 
 // The item on the sidebar
@@ -14,12 +20,21 @@ export default function SidebarItem({
   selected,
   name,
   linkTo,
+  loggingInfo,
 }: SidebarItemProps) {
   const theme = useTheme();
 
   return (
     <Link to={linkTo} underline="none" color={"inherit"}>
       <Box
+        onClick={() => {
+          loggingInfo &&
+            Statsig.logEvent(
+              loggingInfo.eventName,
+              loggingInfo.value,
+              loggingInfo.metadata,
+            );
+        }}
         sx={{
           fontSize: 12,
           fontWeight: selected ? 600 : 400,
