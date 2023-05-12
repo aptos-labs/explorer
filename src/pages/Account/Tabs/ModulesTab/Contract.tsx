@@ -17,6 +17,8 @@ import {
   useTheme,
   useMediaQuery,
   Autocomplete,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
@@ -26,8 +28,11 @@ import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {useNavigate} from "../../../../routing";
-import { Code } from "../../Components/CodeSnippet";
-import { PackageMetadata, useGetAccountPackages } from "../../../../api/hooks/useGetAccountResource";
+import {Code} from "../../Components/CodeSnippet";
+import {
+  PackageMetadata,
+  useGetAccountPackages,
+} from "../../../../api/hooks/useGetAccountResource";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -271,7 +276,8 @@ function RunContractForm({
 }) {
   const [state] = useGlobalState();
   const {connected} = useWallet();
-  const {submitTransaction} = useSubmitTransaction();
+  const {submitTransaction, transactionResponse, transactionInProcess} =
+    useSubmitTransaction();
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     const payload: Types.TransactionPayload = {
@@ -289,9 +295,36 @@ function RunContractForm({
       onSubmit={onSubmit}
       result={
         connected ? (
-          <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
-            Write
-          </Button>
+          <Box>
+            <Button
+              type="submit"
+              disabled={transactionInProcess}
+              variant="contained"
+              sx={{width: "8rem", height: "3rem"}}
+            >
+              {transactionInProcess ? (
+                <CircularProgress size={30}></CircularProgress>
+              ) : (
+                "Write"
+              )}
+            </Button>
+            {!transactionInProcess && transactionResponse && (
+              <Alert
+                severity={
+                  transactionResponse?.transactionSubmitted
+                    ? "success"
+                    : "error"
+                }
+                sx={{
+                  overflowX: "auto",
+                  marginTop: "16px",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {JSON.stringify(transactionResponse, null, 2)}
+              </Alert>
+            )}
+          </Box>
         ) : (
           <Box display="flex" flexDirection="row" alignItems="center">
             <WalletConnector networkSupport={state.network_name} />
@@ -313,8 +346,9 @@ function ReadContractForm({
   fn: Types.MoveFunction;
 }) {
   const [state] = useGlobalState();
-  const [result, setResult] = useState<Types.MoveValue[]>([]);
+  const [result, setResult] = useState<Types.MoveValue[]>();
   const [errMsg, setErrMsg] = useState<string>();
+  const [inProcess, setInProcess] = useState(false);
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     const viewRequest: Types.ViewRequest = {
@@ -322,12 +356,16 @@ function ReadContractForm({
       type_arguments: data.typeArgs,
       arguments: data.args,
     };
+    setInProcess(true);
     try {
       const result = await view(viewRequest, state.network_value);
       setResult(result);
+      setErrMsg(undefined);
     } catch (e: any) {
       setErrMsg(e.message ?? String(e));
+      setResult(undefined);
     }
+    setInProcess(false);
   };
 
   return (
@@ -335,18 +373,31 @@ function ReadContractForm({
       fn={fn}
       onSubmit={onSubmit}
       result={
-        <Box display="flex" flexDirection="row" alignItems="center">
-          <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
-            Query
-          </Button>
-          <Typography
-            ml={2}
-            fontSize={10}
-            whiteSpace="nowrap"
-            sx={{overflowX: "auto"}}
+        <Box>
+          <Button
+            type="submit"
+            disabled={inProcess}
+            variant="contained"
+            sx={{width: "8rem", height: "3rem"}}
           >
-            {errMsg ?? JSON.stringify(result, null, 2)}
-          </Typography>
+            {inProcess ? (
+              <CircularProgress size={30}></CircularProgress>
+            ) : (
+              "Query"
+            )}
+          </Button>
+          {!inProcess && (errMsg || result) && (
+            <Alert
+              severity={errMsg ? "error" : "success"}
+              sx={{
+                overflowX: "auto",
+                marginTop: "16px",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {errMsg ?? JSON.stringify(result, null, 2)}
+            </Alert>
+          )}
         </Box>
       }
     />
@@ -399,7 +450,7 @@ function ContractForm({
                 render={({field: {onChange, value}}) => (
                   <TextField
                     onChange={onChange}
-                    value={value}
+                    value={value ?? ""}
                     label={`T${i}`}
                     fullWidth
                   />
@@ -427,7 +478,7 @@ function ContractForm({
                   render={({field: {onChange, value}}) => (
                     <TextField
                       onChange={onChange}
-                      value={value}
+                      value={value ?? ""}
                       label={`arg${i}: ${param}`}
                       fullWidth
                     />
