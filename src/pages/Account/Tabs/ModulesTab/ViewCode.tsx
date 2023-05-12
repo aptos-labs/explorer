@@ -4,20 +4,12 @@ import {
   Box,
   Divider,
   Grid,
-  Modal,
   Stack,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {ContentCopy, OpenInFull} from "@mui/icons-material";
-import {orderBy} from "lodash";
-import React, {useEffect, useMemo, useRef, useState} from "react";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import {
-  solarizedLight,
-  solarizedDark,
-} from "react-syntax-highlighter/dist/esm/styles/hljs";
+import React, {useEffect, useMemo} from "react";
 import Error from "../../Error";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {
@@ -31,7 +23,7 @@ import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewC
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";
-import { Code } from "../../Components/CodeSnippet";
+import {Code} from "../../Components/CodeSnippet";
 
 interface ModuleSidebarProps {
   sortedPackages: PackageMetadata[];
