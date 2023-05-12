@@ -1,5 +1,5 @@
 import {Box, useTheme} from "@mui/material";
-import React from "react";
+import React, {useEffect} from "react";
 import {useParams} from "react-router-dom";
 import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
@@ -8,6 +8,9 @@ import {assertNever} from "../../../../utils";
 import ViewCode from "./ViewCode";
 import Contract from "./Contract";
 import {useNavigate} from "../../../../routing";
+import {Statsig} from "statsig-react";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useGlobalState} from "../../../../global-config/GlobalConfig";
 
 const TabComponents = Object.freeze({
   code: ViewCode,
@@ -50,6 +53,8 @@ function TabPanel({value, address}: TabPanelProps): JSX.Element {
 
 function ModulesTabs({address}: {address: string}): JSX.Element {
   const theme = useTheme();
+  const {account} = useWallet();
+  const [state] = useGlobalState();
   const tabValues = Object.keys(TabComponents) as TabValue[];
   const {selectedFnName, selectedModuleName, modulesTab} = useParams();
   const navigate = useNavigate();
@@ -57,11 +62,51 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+    let eventName = "";
+    switch (newValue) {
+      case "code":
+        // no event needed
+        break;
+      case "run":
+        eventName = "write_tab_clicked";
+        break;
+      case "view":
+        eventName = "read_tab_clicked";
+        break;
+    }
+    eventName &&
+      Statsig.logEvent(eventName, null, {
+        stable_id: Statsig.getStableID(),
+        wallet_address: account?.address ?? "",
+        network_type: state.network_name,
+      });
+
     navigate(
       `/account/${address}/modules/${newValue}/${selectedModuleName}` +
         (selectedFnName ? `/${selectedFnName}` : ``),
     );
   };
+
+  useEffect(() => {
+    let eventName = "";
+    switch (value) {
+      case "code":
+        eventName = "modules_tab_viewed";
+        break;
+      case "run":
+        eventName = "write_tab_viewed";
+        break;
+      case "view":
+        eventName = "read_tab_viewed";
+        break;
+    }
+    eventName &&
+      Statsig.logEvent(eventName, null, {
+        stable_id: Statsig.getStableID(),
+        wallet_address: account?.address ?? "",
+        network_type: state.network_name,
+      });
+  }, [value]);
 
   return (
     <Box

@@ -24,6 +24,9 @@ import {useParams} from "react-router-dom";
 import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";
 import {Code} from "../../Components/CodeSnippet";
+import {useGlobalState} from "../../../../global-config/GlobalConfig";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {Statsig} from "statsig-react";
 
 interface ModuleSidebarProps {
   sortedPackages: PackageMetadata[];
@@ -106,6 +109,8 @@ function ModuleSidebar({
 }: ModuleSidebarProps) {
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const {account} = useWallet();
+  const [state] = useGlobalState();
   const flattedModules = useMemo(
     () =>
       sortedPackages.flatMap((pkg) =>
@@ -134,6 +139,15 @@ function ModuleSidebar({
                     linkTo={getLinkToModule(module.name)}
                     selected={module.name === selectedModuleName}
                     name={module.name}
+                    loggingInfo={{
+                      eventName: "modules_clicked",
+                      value: module.name,
+                      metadata: {
+                        stable_id: Statsig.getStableID(),
+                        wallet_address: account?.address ?? "",
+                        network_type: state.network_name,
+                      },
+                    }}
                   />
                 ))}
                 <Divider sx={{marginTop: "24px"}} />
@@ -150,7 +164,15 @@ function ModuleSidebar({
           renderInput={(params) => (
             <TextField {...params} label="Select a module" />
           )}
-          onChange={(_, module) => module && navigateToModule(module?.name)}
+          onChange={(_, module) => {
+            module &&
+              Statsig.logEvent("modules_clicked", module.name, {
+                stable_id: Statsig.getStableID(),
+                wallet_address: account?.address ?? "",
+                network_type: state.network_name,
+              });
+            module && navigateToModule(module?.name);
+          }}
           value={
             selectedModuleName
               ? flattedModules.find(

@@ -16,7 +16,10 @@ import {
   codeBlockColorRgbLight,
   grey,
 } from "../../../themes/colors/aptosColorPalette";
-import {useParams, useSearchParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {Statsig} from "statsig-react";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useGlobalState} from "../../../global-config/GlobalConfig";
 
 function useStartingLineNumber(sourceCode?: string) {
   if (!sourceCode) return 0;
@@ -29,9 +32,18 @@ function useStartingLineNumber(sourceCode?: string) {
 
 function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   const theme = useTheme();
+  const {selectedModuleName} = useParams();
+  const {account} = useWallet();
+  const [state] = useGlobalState();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpenModal = () => {
+    Statsig.logEvent("expand_button_clicked", selectedModuleName, {
+      stable_id: Statsig.getStableID(),
+      wallet_address: account?.address ?? "",
+      network_type: state.network_name,
+    });
+
     setIsModalOpen(true);
   };
 
@@ -102,6 +114,10 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
 }
 
 export function Code({bytecode}: {bytecode: string}) {
+  const {selectedModuleName} = useParams();
+  const {account} = useWallet();
+  const [state] = useGlobalState();
+
   const TOOLTIP_TIME = 2000; // 2s
 
   const sourceCode = bytecode === "0x" ? undefined : transformCode(bytecode);
@@ -160,7 +176,18 @@ export function Code({bytecode}: {bytecode: string}) {
           >
             <Button
               variant="outlined"
-              onClick={copyCode}
+              onClick={(source) => {
+                Statsig.logEvent(
+                  "copy_code_button_clicked",
+                  selectedModuleName,
+                  {
+                    stable_id: Statsig.getStableID(),
+                    wallet_address: account?.address ?? "",
+                    network_type: state.network_name,
+                  },
+                );
+                copyCode(source);
+              }}
               disabled={!sourceCode}
               sx={{
                 display: "flex",
