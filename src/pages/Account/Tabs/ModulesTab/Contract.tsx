@@ -346,11 +346,7 @@ function RunContractForm({
                     ? "success"
                     : "error"
                 }
-                sx={{
-                  overflowX: "auto",
-                  marginTop: "16px",
-                  whiteSpace: "nowrap",
-                }}
+                sx={{marginTop: "16px"}}
               >
                 {JSON.stringify(transactionResponse, null, 2)}
               </Alert>
@@ -438,11 +434,7 @@ function ReadContractForm({
           {!inProcess && (errMsg || result) && (
             <Alert
               severity={errMsg ? "error" : "success"}
-              sx={{
-                overflowX: "auto",
-                marginTop: "16px",
-                whiteSpace: "nowrap",
-              }}
+              sx={{marginTop: "16px"}}
             >
               {errMsg ?? JSON.stringify(result, null, 2)}
             </Alert>
