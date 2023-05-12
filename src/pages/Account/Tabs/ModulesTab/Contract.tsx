@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {ReactNode, useState} from "react";
+import {ReactNode, useMemo, useState} from "react";
 import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
@@ -16,9 +16,7 @@ import {
   Button,
   useTheme,
   useMediaQuery,
-  FormControl,
-  Select,
-  MenuItem,
+  Autocomplete,
 } from "@mui/material";
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
@@ -27,12 +25,9 @@ import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
-import { useNavigate } from "../../../../routing";
-import {Code} from "../../Components/CodeSnippet";
-import {
-  PackageMetadata,
-  useGetAccountPackages,
-} from "../../../../api/hooks/useGetAccountResource";
+import {useNavigate} from "../../../../routing";
+import { Code } from "../../Components/CodeSnippet";
+import { PackageMetadata, useGetAccountPackages } from "../../../../api/hooks/useGetAccountResource";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -184,73 +179,85 @@ function ContractSidebar({
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
-  
+  const flattedFns = useMemo(
+    () =>
+      Object.entries(moduleAndFnsGroup).flatMap(([moduleName, fns]) =>
+        fns
+          .map((fn) => ({
+            moduleName,
+            fnName: fn.name,
+          }))
+          .sort((a, b) => a.fnName[0].localeCompare(b.fnName[0])),
+      ),
+    [moduleAndFnsGroup],
+  );
+
   return (
     <Box
       sx={{padding: "24px", maxHeight: "100vh", overflowY: "auto"}}
       bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
       borderRadius={1}
     >
-      <Box>
-        {Object.entries(moduleAndFnsGroup)
-          .sort((a, b) => a[0].localeCompare(b[0]))
-          .map(([moduleName, fns]) => (
-            <Box key={moduleName} marginBottom={3}>
-              <Typography fontSize={14} fontWeight={600} marginBottom={"8px"}>
-                {moduleName}
-              </Typography>
-              {isWideScreen ? (
-                <Box>
-                  {fns.map((fn) => {
-                    const selected =
-                      moduleName === selectedModuleName &&
-                      fn.name === selectedFnName;
-                    return (
-                      <SidebarItem
-                        key={fn.name}
-                        linkTo={getLinkToFn(moduleName, fn.name)}
-                        selected={selected}
-                        name={fn.name}
-                      />
-                    );
-                  })}
-                  <Divider sx={{marginTop: "24px"}} />
-                </Box>
-              ) : (
-                <FormControl fullWidth>
-                  <Select
-                    value={selectedModuleName}
-                    onChange={(e) => navigate(getLinkToFn(moduleName,  e.target.value))}
+      {isWideScreen ? (
+        <>
+          <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
+            Select function
+          </Typography>
+          <Box>
+            {Object.entries(moduleAndFnsGroup)
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .map(([moduleName, fns]) => (
+                <Box key={moduleName} marginBottom={3}>
+                  <Typography
+                    fontSize={14}
+                    fontWeight={600}
+                    marginBottom={"8px"}
                   >
+                    {moduleName}
+                  </Typography>
+                  <Box>
                     {fns.map((fn) => {
                       const selected =
                         moduleName === selectedModuleName &&
                         fn.name === selectedFnName;
                       return (
-                        <MenuItem
+                        <SidebarItem
                           key={fn.name}
-                          value={fn.name}
-                          sx={
-                            theme.palette.mode === "dark" && selected
-                              ? {
-                                  color: grey[400],
-                                  ":hover": {
-                                    color: grey[200],
-                                  },
-                                }
-                              : {}
-                          }
-                        >
-                          {fn.name}
-                        </MenuItem>
+                          linkTo={getLinkToFn(moduleName, fn.name)}
+                          selected={selected}
+                          name={fn.name}
+                        />
                       );
                     })}
-                  </Select>
-                </FormControl>
-              )}
-            </Box>
-          ))}
-      </Box>
+                    <Divider sx={{marginTop: "24px"}} />
+                  </Box>
+                </Box>
+              ))}
+          </Box>
+        </>
+      ) : (
+        <Autocomplete
+          fullWidth
+          options={flattedFns}
+          groupBy={(option) => option.moduleName}
+          getOptionLabel={(option) => option.fnName}
+          renderInput={(params) => (
+            <TextField {...params} label="Select a function" />
+          )}
+          onChange={(_, fn) =>
+            fn && navigate(getLinkToFn(fn.moduleName, fn.fnName))
+          }
+          value={
+            selectedModuleName && selectedFnName
+              ? flattedFns.find(
+                  (fn) =>
+                    fn.moduleName === selectedModuleName &&
+                    fn.fnName === selectedFnName,
+                )
+              : null
+          }
+        />
+      )}
     </Box>
   );
 }

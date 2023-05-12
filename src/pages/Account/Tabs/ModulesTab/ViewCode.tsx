@@ -1,16 +1,15 @@
 import {
+  Autocomplete,
+  TextField,
   Box,
   Divider,
-  FormControl,
   Grid,
-  MenuItem,
-  Select,
   Stack,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, {useEffect} from "react";
+import React, {useEffect, useMemo} from "react";
 import Error from "../../Error";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {
@@ -22,9 +21,9 @@ import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {getBytecodeSizeInKB} from "../../../../utils";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import {useParams} from "react-router-dom";
-import {Link, useNavigate} from "../../../../routing";
-import {Code} from "../../Components/CodeSnippet";
+import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";
+import {Code} from "../../Components/CodeSnippet";
 
 interface ModuleSidebarProps {
   sortedPackages: PackageMetadata[];
@@ -107,6 +106,13 @@ function ModuleSidebar({
 }: ModuleSidebarProps) {
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
+  const flattedModules = useMemo(
+    () =>
+      sortedPackages.flatMap((pkg) =>
+        pkg.modules.map((module) => ({...module, pkg: pkg.name})),
+      ),
+    [sortedPackages],
+  );
 
   return (
     <Box
@@ -114,13 +120,13 @@ function ModuleSidebar({
       bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
       borderRadius={1}
     >
-      {sortedPackages.map((pkg) => {
-        return (
-          <Box marginBottom={3} key={pkg.name}>
-            <Typography fontSize={14} fontWeight={600} marginY={"12px"}>
-              {pkg.name}
-            </Typography>
-            {isWideScreen ? (
+      {isWideScreen ? (
+        sortedPackages.map((pkg) => {
+          return (
+            <Box marginBottom={3} key={pkg.name}>
+              <Typography fontSize={14} fontWeight={600} marginY={"12px"}>
+                {pkg.name}
+              </Typography>
               <Box>
                 {pkg.modules.map((module) => (
                   <SidebarItem
@@ -132,37 +138,28 @@ function ModuleSidebar({
                 ))}
                 <Divider sx={{marginTop: "24px"}} />
               </Box>
-            ) : (
-              <FormControl fullWidth>
-                <Select
-                  value={selectedModuleName}
-                  onChange={(e) => navigateToModule(e.target.value)}
-                >
-                  {pkg.modules.map((module, i) => (
-                    <MenuItem
-                      key={module.name + i}
-                      value={module.name}
-                      sx={
-                        theme.palette.mode === "dark" &&
-                        module.name !== selectedModuleName
-                          ? {
-                              color: grey[400],
-                              ":hover": {
-                                color: grey[200],
-                              },
-                            }
-                          : {}
-                      }
-                    >
-                      {module.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-          </Box>
-        );
-      })}
+            </Box>
+          );
+        })
+      ) : (
+        <Autocomplete
+          fullWidth
+          options={flattedModules}
+          groupBy={(option) => option.pkg}
+          getOptionLabel={(option) => option.name}
+          renderInput={(params) => (
+            <TextField {...params} label="Select a module" />
+          )}
+          onChange={(_, module) => module && navigateToModule(module?.name)}
+          value={
+            selectedModuleName
+              ? flattedModules.find(
+                  (module) => module.name === selectedModuleName,
+                )
+              : null
+          }
+        />
+      )}
     </Box>
   );
 }
