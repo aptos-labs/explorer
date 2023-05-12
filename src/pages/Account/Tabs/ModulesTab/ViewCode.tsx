@@ -24,9 +24,6 @@ import {useParams} from "react-router-dom";
 import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";
 import {Code} from "../../Components/CodeSnippet";
-import {useGlobalState} from "../../../../global-config/GlobalConfig";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {Statsig} from "statsig-react";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 
 interface ModuleSidebarProps {
@@ -110,8 +107,6 @@ function ModuleSidebar({
 }: ModuleSidebarProps) {
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
-  const {account} = useWallet();
-  const [state] = useGlobalState();
   const logEvent = useLogEventWithBasic();
   const flattedModules = useMemo(
     () =>

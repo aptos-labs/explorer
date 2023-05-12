@@ -33,7 +33,6 @@ import {
   PackageMetadata,
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
-import {Statsig} from "statsig-react";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 
 type ContractFormType = {

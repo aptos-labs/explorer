@@ -2,7 +2,6 @@ import React from "react";
 import {Box, useTheme} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import {Link} from "../../../routing";
-import {Statsig} from "statsig-react";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 interface SidebarItemProps {

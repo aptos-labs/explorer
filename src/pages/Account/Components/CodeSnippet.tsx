@@ -17,9 +17,6 @@ import {
   grey,
 } from "../../../themes/colors/aptosColorPalette";
 import {useParams} from "react-router-dom";
-import {Statsig} from "statsig-react";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 function useStartingLineNumber(sourceCode?: string) {
