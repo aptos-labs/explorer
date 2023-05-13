@@ -394,6 +394,8 @@ function ReadContractForm({
 }) {
   const [state] = useGlobalState();
   const [result, setResult] = useState<Types.MoveValue[]>();
+  const theme = useTheme();
+  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [errMsg, setErrMsg] = useState<string>();
   const [inProcess, setInProcess] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
@@ -458,13 +460,13 @@ function ReadContractForm({
             <>
               <Divider sx={{margin: "24px 0"}} />
               <Stack
-                direction="row"
+                direction={isWideScreen ? "row" : "column"}
                 gap={2}
                 mt={2}
                 justifyContent="space-between"
               >
                 <Stack>
-                  <Typography fontSize={12} fontWeight={400}>
+                  <Typography fontSize={12} fontWeight={400} ml={1}>
                     {errMsg ? "Error: " + errMsg : resultString}
                   </Typography>
                 </Stack>
@@ -482,6 +484,7 @@ function ReadContractForm({
                       sx={{
                         height: "2rem",
                         minWidth: "unset",
+                        width: "fit-content",
                       }}
                       onClick={copyValue}
                     >
