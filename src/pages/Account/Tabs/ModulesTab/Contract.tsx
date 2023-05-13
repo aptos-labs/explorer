@@ -23,9 +23,7 @@ import {
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
 import {useParams} from "react-router-dom";
-import useSubmitTransaction, {
-  TransactionResponseOnSubmission,
-} from "../../../../api/hooks/useSubmitTransaction";
+import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
@@ -321,7 +319,7 @@ function RunContractForm({
                 <Stack
                   direction="row"
                   gap={2}
-                  pt={2}
+                  pt={3}
                   justifyContent="space-between"
                 >
                   <Stack>
