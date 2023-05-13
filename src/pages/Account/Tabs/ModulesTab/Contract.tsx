@@ -23,7 +23,9 @@ import {
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
 import {useParams} from "react-router-dom";
-import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
+import useSubmitTransaction, {
+  TransactionResponseOnSubmission,
+} from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
@@ -33,6 +35,8 @@ import {
   PackageMetadata,
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
+import {ContentCopy} from "@mui/icons-material";
+import StyledTooltip from "../../../../components/StyledTooltip";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -165,7 +169,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
 
           {module && fn && selectedModule && (
             <>
-              <Divider sx={{margin: "16px 0"}} />
+              <Divider sx={{margin: "24px 0"}} />
               <Code bytecode={selectedModule?.source} />
             </>
           )}
@@ -276,6 +280,7 @@ function RunContractForm({
 }) {
   const [state] = useGlobalState();
   const {connected} = useWallet();
+  const navigate = useNavigate();
   const {submitTransaction, transactionResponse, transactionInProcess} =
     useSubmitTransaction();
 
@@ -289,6 +294,9 @@ function RunContractForm({
     await submitTransaction(payload);
   };
 
+  const isFunctionSuccess = !!(
+    transactionResponse?.transactionSubmitted && transactionResponse?.success
+  );
   return (
     <ContractForm
       fn={fn}
@@ -309,16 +317,60 @@ function RunContractForm({
               )}
             </Button>
             {!transactionInProcess && transactionResponse && (
-              <Alert
-                severity={
-                  transactionResponse?.transactionSubmitted
-                    ? "success"
-                    : "error"
-                }
-                sx={{marginTop: "16px"}}
-              >
-                {JSON.stringify(transactionResponse, null, 2)}
-              </Alert>
+              <ExecutionResult success={isFunctionSuccess}>
+                <Stack
+                  direction="row"
+                  gap={2}
+                  pt={2}
+                  justifyContent="space-between"
+                >
+                  <Stack>
+                    {!isFunctionSuccess && (
+                      <>
+                        <Typography fontSize={12} fontWeight={600} mb={1}>
+                          Error:
+                        </Typography>
+                        <Typography fontSize={12} fontWeight={400}>
+                          {transactionResponse.message
+                            ? transactionResponse.message
+                            : "Unknown"}
+                        </Typography>
+                      </>
+                    )}
+                    {transactionResponse.transactionSubmitted &&
+                      transactionResponse.transactionHash && (
+                        <>
+                          <Typography fontSize={12} fontWeight={600} mb={1}>
+                            Transaction:
+                          </Typography>
+                          <Typography fontSize={12} fontWeight={400}>
+                            {transactionResponse.transactionHash}
+                          </Typography>
+                        </>
+                      )}
+                  </Stack>
+
+                  {transactionResponse.transactionSubmitted &&
+                    transactionResponse.transactionHash && (
+                      <Button
+                        variant="outlined"
+                        onClick={() =>
+                          navigate(
+                            `/txn/${transactionResponse.transactionHash}`,
+                          )
+                        }
+                        sx={{
+                          height: "2rem",
+                          minWidth: "unset",
+                          borderRadius: "0.5rem",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        View Transaction
+                      </Button>
+                    )}
+                </Stack>
+              </ExecutionResult>
             )}
           </Box>
         ) : (
@@ -334,6 +386,7 @@ function RunContractForm({
   );
 }
 
+const TOOLTIP_TIME = 2000; // 2s
 function ReadContractForm({
   module,
   fn,
@@ -345,6 +398,16 @@ function ReadContractForm({
   const [result, setResult] = useState<Types.MoveValue[]>();
   const [errMsg, setErrMsg] = useState<string>();
   const [inProcess, setInProcess] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
+
+  const resultString = JSON.stringify(result, null, 2);
+  async function copyValue() {
+    await navigator.clipboard.writeText(resultString);
+    setTooltipOpen(true);
+    setTimeout(() => {
+      setTooltipOpen(false);
+    }, TOOLTIP_TIME);
+  }
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     const viewRequest: Types.ViewRequest = {
@@ -358,7 +421,14 @@ function ReadContractForm({
       setResult(result);
       setErrMsg(undefined);
     } catch (e: any) {
-      setErrMsg(e.message ?? String(e));
+      let error = e.message ?? String(e);
+
+      const prefix = "Error:";
+      if (error.startsWith(prefix)) {
+        error = error.substring(prefix.length).trim();
+      }
+
+      setErrMsg(error);
       setResult(undefined);
     }
     setInProcess(false);
@@ -382,17 +452,89 @@ function ReadContractForm({
               "Query"
             )}
           </Button>
+
           {!inProcess && (errMsg || result) && (
-            <Alert
-              severity={errMsg ? "error" : "success"}
-              sx={{marginTop: "16px"}}
-            >
-              {errMsg ?? JSON.stringify(result, null, 2)}
-            </Alert>
+            <>
+              <Divider sx={{margin: "24px 0"}} />
+              <Stack
+                direction="row"
+                gap={2}
+                mt={2}
+                justifyContent="space-between"
+              >
+                <Stack>
+                  <Typography fontSize={12} fontWeight={400}>
+                    {errMsg
+                      ? "Error: " + errMsg
+                      : JSON.stringify(result, null, 2)}
+                  </Typography>
+                </Stack>
+
+                {!errMsg && (
+                  <StyledTooltip
+                    title="Value copied"
+                    placement="right"
+                    open={tooltipOpen}
+                    disableFocusListener
+                    disableHoverListener
+                    disableTouchListener
+                  >
+                    <Button
+                      sx={{
+                        height: "2rem",
+                        minWidth: "unset",
+                      }}
+                      onClick={copyValue}
+                    >
+                      <ContentCopy
+                        style={{height: "1.25rem", width: "1.25rem"}}
+                      />
+                      <Typography
+                        marginLeft={1}
+                        fontSize={12}
+                        sx={{
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Copy value
+                      </Typography>
+                    </Button>
+                  </StyledTooltip>
+                )}
+              </Stack>
+            </>
           )}
         </Box>
       }
     />
+  );
+}
+
+function ExecutionResult({
+  success,
+  children,
+}: {
+  success: boolean;
+  children: React.ReactNode;
+}) {
+  const theme = useTheme();
+  return (
+    <Box
+      padding={3}
+      borderRadius={1}
+      bgcolor={theme.palette.mode === "dark" ? grey[700] : grey[200]}
+      mt={4}
+    >
+      <Alert
+        severity={success ? "success" : "error"}
+        sx={{width: "fit-content", padding: "0rem 1rem"}}
+      >
+        <Typography fontSize={12}>
+          {success ? "Function successfully executed" : "Function failed"}
+        </Typography>
+      </Alert>
+      <Box>{children}</Box>
+    </Box>
   );
 }
 
@@ -413,15 +555,10 @@ function ContractForm({
       args: [],
     },
   });
-  const theme = useTheme();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box
-        padding={3}
-        borderRadius={1}
-        bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
-      >
+      <Box>
         <Stack spacing={4}>
           <Typography fontSize={14} fontWeight={600}>
             {fn.name}

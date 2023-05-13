@@ -13,7 +13,7 @@ export type TransactionResponseOnSubmission = {
   transactionSubmitted: true;
   transactionHash: string;
   success: boolean; // indicates if the transaction submitted but failed or not
-  errorMessage?: string; // error message if the transaction failed
+  message?: string; // error message if the transaction failed
 };
 
 export type TransactionResponseOnError = {
@@ -77,7 +77,7 @@ const useSubmitTransaction = () => {
           return {
             transactionSubmitted: true,
             transactionHash: response ? response.hash : "",
-            errorMessage: error.message,
+            message: error.message,
             success: false,
           };
         }
