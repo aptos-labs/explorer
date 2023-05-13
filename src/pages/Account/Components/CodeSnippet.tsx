@@ -179,7 +179,7 @@ export function Code({bytecode}: {bytecode: string}) {
                 borderRadius: "0.5rem",
               }}
             >
-              <ContentCopy style={{height: "1.25rem", width: "1.25rem"}} />{" "}
+              <ContentCopy style={{height: "1.25rem", width: "1.25rem"}} />
               <Typography
                 marginLeft={1}
                 sx={{
