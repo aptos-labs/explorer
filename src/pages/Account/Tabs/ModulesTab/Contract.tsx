@@ -418,6 +418,10 @@ function ReadContractForm({
       ?.map((r) => (typeof r === "string" ? r : JSON.stringify(r, null, 2)))
       .join("\n") ?? "";
   async function copyValue() {
+    logEvent("copy_value_button_clicked", fn.name, {
+      value: resultString,
+      txn_status: "success",
+    });
     await navigator.clipboard.writeText(resultString);
     setTooltipOpen(true);
     setTimeout(() => {
