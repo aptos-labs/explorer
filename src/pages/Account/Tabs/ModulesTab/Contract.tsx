@@ -466,7 +466,13 @@ function ReadContractForm({
                   <Typography fontSize={12} fontWeight={400}>
                     {errMsg
                       ? "Error: " + errMsg
-                      : JSON.stringify(result, null, 2)}
+                      : result
+                          ?.map((r) =>
+                            typeof r === "string"
+                              ? r
+                              : JSON.stringify(r, null, 2),
+                          )
+                          .join("\n")}
                   </Typography>
                 </Stack>
 
@@ -486,9 +492,7 @@ function ReadContractForm({
                       }}
                       onClick={copyValue}
                     >
-                      <ContentCopy
-                        style={{height: "1.25rem", width: "1.25rem"}}
-                      />
+                      <ContentCopy style={{height: "1rem", width: "1.25rem"}} />
                       <Typography
                         marginLeft={1}
                         fontSize={12}
