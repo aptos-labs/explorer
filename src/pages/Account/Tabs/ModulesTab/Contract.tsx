@@ -400,7 +400,10 @@ function ReadContractForm({
   const [inProcess, setInProcess] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
-  const resultString = JSON.stringify(result, null, 2);
+  const resultString =
+    result
+      ?.map((r) => (typeof r === "string" ? r : JSON.stringify(r, null, 2)))
+      .join("\n") ?? "";
   async function copyValue() {
     await navigator.clipboard.writeText(resultString);
     setTooltipOpen(true);
@@ -464,15 +467,7 @@ function ReadContractForm({
               >
                 <Stack>
                   <Typography fontSize={12} fontWeight={400}>
-                    {errMsg
-                      ? "Error: " + errMsg
-                      : result
-                          ?.map((r) =>
-                            typeof r === "string"
-                              ? r
-                              : JSON.stringify(r, null, 2),
-                          )
-                          .join("\n")}
+                    {errMsg ? "Error: " + errMsg : resultString}
                   </Typography>
                 </Stack>
 
