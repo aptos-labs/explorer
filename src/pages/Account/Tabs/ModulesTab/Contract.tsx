@@ -72,7 +72,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
             marginBottom={"16px"}
             color={theme.palette.mode === "dark" ? grey[300] : grey[600]}
           >
-            Unfortunately, we are not supporting write method on mobile at the
+            Unfortunately, we are not supporting run method on mobile at the
             moment.
           </Typography>
 
@@ -311,7 +311,7 @@ function RunContractForm({
               {transactionInProcess ? (
                 <CircularProgress size={30}></CircularProgress>
               ) : (
-                "Write"
+                "Run"
               )}
             </Button>
             {!transactionInProcess && transactionResponse && (
@@ -375,7 +375,7 @@ function RunContractForm({
           <Box display="flex" flexDirection="row" alignItems="center">
             <WalletConnector networkSupport={state.network_name} />
             <Typography ml={2} fontSize={10}>
-              To write you need to connect wallet first
+              To run you need to connect wallet first
             </Typography>
           </Box>
         )
@@ -452,7 +452,7 @@ function ReadContractForm({
             {inProcess ? (
               <CircularProgress size={30}></CircularProgress>
             ) : (
-              "Query"
+              "View"
             )}
           </Button>
 
