@@ -353,8 +353,9 @@ function RunContractForm({
                       <Button
                         variant="outlined"
                         onClick={() =>
-                          navigate(
+                          window.open(
                             `/txn/${transactionResponse.transactionHash}`,
+                            "_blank",
                           )
                         }
                         sx={{
