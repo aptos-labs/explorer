@@ -489,7 +489,7 @@ function ReadContractForm({
                 justifyContent="space-between"
               >
                 <Stack>
-                  <Typography fontSize={12} fontWeight={400} ml={1}>
+                  <Typography fontSize={12} fontWeight={400} pl={1} pt="6px">
                     {errMsg ? "Error: " + errMsg : resultString}
                   </Typography>
                 </Stack>
