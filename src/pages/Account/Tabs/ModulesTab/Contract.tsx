@@ -33,7 +33,9 @@ import {
   PackageMetadata,
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
-import {Statsig} from "statsig-react";
+import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
+import {ContentCopy} from "@mui/icons-material";
+import StyledTooltip from "../../../../components/StyledTooltip";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -71,8 +73,8 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
             marginBottom={"16px"}
             color={theme.palette.mode === "dark" ? grey[300] : grey[600]}
           >
-            Unfortunately, we are not supporting write method on mobile at the
-            moment.
+            Unfortunately, we are not supporting <b>Run</b> entry functions on
+            mobile at the moment.
           </Typography>
 
           <Typography
@@ -166,7 +168,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
 
           {module && fn && selectedModule && (
             <>
-              <Divider sx={{margin: "16px 0"}} />
+              <Divider sx={{margin: "24px 0"}} />
               <Code bytecode={selectedModule?.source} />
             </>
           )}
@@ -183,10 +185,9 @@ function ContractSidebar({
   getLinkToFn,
 }: ContractSidebarProps) {
   const theme = useTheme();
-  const {account} = useWallet();
-  const [state] = useGlobalState();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
+  const logEvent = useLogEventWithBasic();
   const flattedFns = useMemo(
     () =>
       Object.entries(moduleAndFnsGroup).flatMap(([moduleName, fns]) =>
@@ -237,11 +238,6 @@ function ContractSidebar({
                           loggingInfo={{
                             eventName: "function_name_clicked",
                             value: fn.name,
-                            metadata: {
-                              stable_id: Statsig.getStableID(),
-                              wallet_address: account?.address ?? "",
-                              network_type: state.network_name,
-                            },
                           }}
                         />
                       );
@@ -262,12 +258,7 @@ function ContractSidebar({
             <TextField {...params} label="Select a function" />
           )}
           onChange={(_, fn) => {
-            fn &&
-              Statsig.logEvent("function_name_clicked", fn.fnName, {
-                stable_id: Statsig.getStableID(),
-                wallet_address: account?.address ?? "",
-                network_type: state.network_name,
-              });
+            fn && logEvent("function_name_clicked", fn.fnName);
             fn && navigate(getLinkToFn(fn.moduleName, fn.fnName));
           }}
           value={
@@ -293,16 +284,14 @@ function RunContractForm({
   fn: Types.MoveFunction;
 }) {
   const [state] = useGlobalState();
-  const {connected, account} = useWallet();
+  const {connected} = useWallet();
+  const logEvent = useLogEventWithBasic();
+  const navigate = useNavigate();
   const {submitTransaction, transactionResponse, transactionInProcess} =
     useSubmitTransaction();
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
-    Statsig.logEvent("write_button_clicked", fn.name, {
-      stable_id: Statsig.getStableID(),
-      wallet_address: account?.address ?? "",
-      network_type: state.network_name,
-    });
+    logEvent("write_button_clicked", fn.name);
     const payload: Types.TransactionPayload = {
       type: "entry_function_payload",
       function: `${module.address}::${module.name}::${fn.name}`,
@@ -311,15 +300,15 @@ function RunContractForm({
     };
     await submitTransaction(payload);
     if (transactionResponse?.transactionSubmitted) {
-      Statsig.logEvent("function_interacted", fn.name, {
-        stable_id: Statsig.getStableID(),
-        wallet_address: account?.address ?? "",
-        network_type: state.network_name,
+      logEvent("function_interacted", fn.name, {
         txn_status: transactionResponse.success ? "success" : "failed",
       });
     }
   };
 
+  const isFunctionSuccess = !!(
+    transactionResponse?.transactionSubmitted && transactionResponse?.success
+  );
   return (
     <ContractForm
       fn={fn}
@@ -336,31 +325,72 @@ function RunContractForm({
               {transactionInProcess ? (
                 <CircularProgress size={30}></CircularProgress>
               ) : (
-                "Write"
+                "Run"
               )}
             </Button>
             {!transactionInProcess && transactionResponse && (
-              <Alert
-                severity={
-                  transactionResponse?.transactionSubmitted
-                    ? "success"
-                    : "error"
-                }
-                sx={{
-                  overflowX: "auto",
-                  marginTop: "16px",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {JSON.stringify(transactionResponse, null, 2)}
-              </Alert>
+              <ExecutionResult success={isFunctionSuccess}>
+                <Stack
+                  direction="row"
+                  gap={2}
+                  pt={3}
+                  justifyContent="space-between"
+                >
+                  <Stack>
+                    {!isFunctionSuccess && (
+                      <>
+                        <Typography fontSize={12} fontWeight={600} mb={1}>
+                          Error:
+                        </Typography>
+                        <Typography fontSize={12} fontWeight={400}>
+                          {transactionResponse.message
+                            ? transactionResponse.message
+                            : "Unknown"}
+                        </Typography>
+                      </>
+                    )}
+                    {transactionResponse.transactionSubmitted &&
+                      transactionResponse.transactionHash && (
+                        <>
+                          <Typography fontSize={12} fontWeight={600} mb={1}>
+                            Transaction:
+                          </Typography>
+                          <Typography fontSize={12} fontWeight={400}>
+                            {transactionResponse.transactionHash}
+                          </Typography>
+                        </>
+                      )}
+                  </Stack>
+
+                  {transactionResponse.transactionSubmitted &&
+                    transactionResponse.transactionHash && (
+                      <Button
+                        variant="outlined"
+                        onClick={() =>
+                          window.open(
+                            `/txn/${transactionResponse.transactionHash}`,
+                            "_blank",
+                          )
+                        }
+                        sx={{
+                          height: "2rem",
+                          minWidth: "unset",
+                          borderRadius: "0.5rem",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        View Transaction
+                      </Button>
+                    )}
+                </Stack>
+              </ExecutionResult>
             )}
           </Box>
         ) : (
           <Box display="flex" flexDirection="row" alignItems="center">
             <WalletConnector networkSupport={state.network_name} />
             <Typography ml={2} fontSize={10}>
-              To write you need to connect wallet first
+              To run you need to connect wallet first
             </Typography>
           </Box>
         )
@@ -369,6 +399,7 @@ function RunContractForm({
   );
 }
 
+const TOOLTIP_TIME = 2000; // 2s
 function ReadContractForm({
   module,
   fn,
@@ -377,17 +408,32 @@ function ReadContractForm({
   fn: Types.MoveFunction;
 }) {
   const [state] = useGlobalState();
-  const {account} = useWallet();
   const [result, setResult] = useState<Types.MoveValue[]>();
+  const theme = useTheme();
+  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [errMsg, setErrMsg] = useState<string>();
   const [inProcess, setInProcess] = useState(false);
+  const logEvent = useLogEventWithBasic();
+  const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
+
+  const resultString =
+    result
+      ?.map((r) => (typeof r === "string" ? r : JSON.stringify(r, null, 2)))
+      .join("\n") ?? "";
+  async function copyValue() {
+    logEvent("copy_value_button_clicked", fn.name, {
+      value: resultString,
+      txn_status: "success",
+    });
+    await navigator.clipboard.writeText(resultString);
+    setTooltipOpen(true);
+    setTimeout(() => {
+      setTooltipOpen(false);
+    }, TOOLTIP_TIME);
+  }
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
-    Statsig.logEvent("read_button_clicked", fn.name, {
-      stable_id: Statsig.getStableID(),
-      wallet_address: account?.address ?? "",
-      network_type: state.network_name,
-    });
+    logEvent("read_button_clicked", fn.name);
     const viewRequest: Types.ViewRequest = {
       function: `${module.address}::${module.name}::${fn.name}`,
       type_arguments: data.typeArgs,
@@ -398,21 +444,18 @@ function ReadContractForm({
       const result = await view(viewRequest, state.network_value);
       setResult(result);
       setErrMsg(undefined);
-      Statsig.logEvent("function_interacted", fn.name, {
-        stable_id: Statsig.getStableID(),
-        wallet_address: account?.address ?? "",
-        network_type: state.network_name,
-        txn_status: "success",
-      });
+      logEvent("function_interacted", fn.name, {txn_status: "success"});
     } catch (e: any) {
-      setErrMsg(e.message ?? String(e));
+      let error = e.message ?? String(e);
+
+      const prefix = "Error:";
+      if (error.startsWith(prefix)) {
+        error = error.substring(prefix.length).trim();
+      }
+
+      setErrMsg(error);
       setResult(undefined);
-      Statsig.logEvent("function_interacted", fn.name, {
-        stable_id: Statsig.getStableID(),
-        wallet_address: account?.address ?? "",
-        network_type: state.network_name,
-        txn_status: "failed",
-      });
+      logEvent("function_interacted", fn.name, {txn_status: "failed"});
     }
     setInProcess(false);
   };
@@ -432,24 +475,89 @@ function ReadContractForm({
             {inProcess ? (
               <CircularProgress size={30}></CircularProgress>
             ) : (
-              "Query"
+              "View"
             )}
           </Button>
+
           {!inProcess && (errMsg || result) && (
-            <Alert
-              severity={errMsg ? "error" : "success"}
-              sx={{
-                overflowX: "auto",
-                marginTop: "16px",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {errMsg ?? JSON.stringify(result, null, 2)}
-            </Alert>
+            <>
+              <Divider sx={{margin: "24px 0"}} />
+              <Stack
+                direction={isWideScreen ? "row" : "column"}
+                gap={2}
+                mt={2}
+                justifyContent="space-between"
+              >
+                <Stack>
+                  <Typography fontSize={12} fontWeight={400} ml={1}>
+                    {errMsg ? "Error: " + errMsg : resultString}
+                  </Typography>
+                </Stack>
+
+                {!errMsg && (
+                  <StyledTooltip
+                    title="Value copied"
+                    placement="right"
+                    open={tooltipOpen}
+                    disableFocusListener
+                    disableHoverListener
+                    disableTouchListener
+                  >
+                    <Button
+                      sx={{
+                        height: "2rem",
+                        minWidth: "unset",
+                        width: "fit-content",
+                      }}
+                      onClick={copyValue}
+                    >
+                      <ContentCopy style={{height: "1rem", width: "1.25rem"}} />
+                      <Typography
+                        marginLeft={1}
+                        fontSize={12}
+                        sx={{
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Copy value
+                      </Typography>
+                    </Button>
+                  </StyledTooltip>
+                )}
+              </Stack>
+            </>
           )}
         </Box>
       }
     />
+  );
+}
+
+function ExecutionResult({
+  success,
+  children,
+}: {
+  success: boolean;
+  children: React.ReactNode;
+}) {
+  const theme = useTheme();
+  return (
+    <Box
+      padding={3}
+      borderRadius={1}
+      bgcolor={theme.palette.mode === "dark" ? grey[700] : grey[200]}
+      mt={4}
+    >
+      <Alert
+        severity={success ? "success" : "error"}
+        sx={{width: "fit-content", padding: "0rem 1rem"}}
+      >
+        <Typography fontSize={12}>
+          {success ? "Function successfully executed" : "Function failed"}
+        </Typography>
+      </Alert>
+      <Box>{children}</Box>
+    </Box>
   );
 }
 
@@ -470,15 +578,10 @@ function ContractForm({
       args: [],
     },
   });
-  const theme = useTheme();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box
-        padding={3}
-        borderRadius={1}
-        bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
-      >
+      <Box>
         <Stack spacing={4}>
           <Typography fontSize={14} fontWeight={600}>
             {fn.name}
