@@ -21,7 +21,12 @@ import {
   CircularProgress,
 } from "@mui/material";
 import React from "react";
-import {useForm, SubmitHandler, Controller} from "react-hook-form";
+import {
+  useForm,
+  SubmitHandler,
+  Controller,
+  SubmitErrorHandler,
+} from "react-hook-form";
 import {useParams} from "react-router-dom";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
@@ -286,12 +291,13 @@ function RunContractForm({
   const [state] = useGlobalState();
   const {connected} = useWallet();
   const logEvent = useLogEventWithBasic();
-  const navigate = useNavigate();
+  const [validationErrorMsg, setValidationErrorMsg] = useState<string>();
   const {submitTransaction, transactionResponse, transactionInProcess} =
     useSubmitTransaction();
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("write_button_clicked", fn.name);
+    setValidationErrorMsg(undefined);
     const payload: Types.TransactionPayload = {
       type: "entry_function_payload",
       function: `${module.address}::${module.name}::${fn.name}`,
@@ -307,12 +313,18 @@ function RunContractForm({
   };
 
   const isFunctionSuccess = !!(
-    transactionResponse?.transactionSubmitted && transactionResponse?.success
+    // make sure it's a boolean
+    (
+      !validationErrorMsg && // pass the validation
+      transactionResponse?.transactionSubmitted && // submitted the transaction
+      transactionResponse?.success
+    ) // the transaction run successfully
   );
   return (
     <ContractForm
       fn={fn}
       onSubmit={onSubmit}
+      onError={() => setValidationErrorMsg("Input arguments cannot be empty.")}
       result={
         connected ? (
           <Box>
@@ -328,63 +340,72 @@ function RunContractForm({
                 "Run"
               )}
             </Button>
-            {!transactionInProcess && transactionResponse && (
-              <ExecutionResult success={isFunctionSuccess}>
-                <Stack
-                  direction="row"
-                  gap={2}
-                  pt={3}
-                  justifyContent="space-between"
-                >
-                  <Stack>
-                    {!isFunctionSuccess && (
-                      <>
-                        <Typography fontSize={12} fontWeight={600} mb={1}>
-                          Error:
-                        </Typography>
-                        <Typography fontSize={12} fontWeight={400}>
-                          {transactionResponse.message
-                            ? transactionResponse.message
-                            : "Unknown"}
-                        </Typography>
-                      </>
-                    )}
-                    {transactionResponse.transactionSubmitted &&
-                      transactionResponse.transactionHash && (
+
+            {/* Has some execution result to display */}
+            {!transactionInProcess &&
+              (transactionResponse || validationErrorMsg) && (
+                <ExecutionResult success={isFunctionSuccess}>
+                  <Stack
+                    direction="row"
+                    gap={2}
+                    pt={3}
+                    justifyContent="space-between"
+                  >
+                    <Stack>
+                      {/* It's failed, display an error */}
+                      {!isFunctionSuccess && (
                         <>
                           <Typography fontSize={12} fontWeight={600} mb={1}>
-                            Transaction:
+                            Error:
                           </Typography>
                           <Typography fontSize={12} fontWeight={400}>
-                            {transactionResponse.transactionHash}
+                            {validationErrorMsg
+                              ? validationErrorMsg
+                              : transactionResponse?.message
+                              ? transactionResponse.message
+                              : "Unknown"}
                           </Typography>
                         </>
                       )}
-                  </Stack>
 
-                  {transactionResponse.transactionSubmitted &&
-                    transactionResponse.transactionHash && (
-                      <Button
-                        variant="outlined"
-                        onClick={() =>
-                          window.open(
-                            `/txn/${transactionResponse.transactionHash}`,
-                            "_blank",
-                          )
-                        }
-                        sx={{
-                          height: "2rem",
-                          minWidth: "unset",
-                          borderRadius: "0.5rem",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        View Transaction
-                      </Button>
-                    )}
-                </Stack>
-              </ExecutionResult>
-            )}
+                      {/* Has a transaction, display the hash */}
+                      {transactionResponse?.transactionSubmitted &&
+                        transactionResponse.transactionHash && (
+                          <>
+                            <Typography fontSize={12} fontWeight={600} mb={1}>
+                              Transaction:
+                            </Typography>
+                            <Typography fontSize={12} fontWeight={400}>
+                              {transactionResponse.transactionHash}
+                            </Typography>
+                          </>
+                        )}
+                    </Stack>
+
+                    {/* Has a transaction, display the button to view the transaction */}
+                    {transactionResponse?.transactionSubmitted &&
+                      transactionResponse.transactionHash && (
+                        <Button
+                          variant="outlined"
+                          onClick={() =>
+                            window.open(
+                              `/txn/${transactionResponse.transactionHash}`,
+                              "_blank",
+                            )
+                          }
+                          sx={{
+                            height: "2rem",
+                            minWidth: "unset",
+                            borderRadius: "0.5rem",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          View Transaction
+                        </Button>
+                      )}
+                  </Stack>
+                </ExecutionResult>
+              )}
           </Box>
         ) : (
           <Box display="flex" flexDirection="row" alignItems="center">
@@ -460,10 +481,16 @@ function ReadContractForm({
     setInProcess(false);
   };
 
+  const onError: SubmitErrorHandler<ContractFormType> = (error) => {
+    setErrMsg("Input arguments cannot be empty.");
+    setResult(undefined);
+  };
+
   return (
     <ContractForm
       fn={fn}
       onSubmit={onSubmit}
+      onError={onError}
       result={
         <Box>
           <Button
@@ -564,10 +591,12 @@ function ExecutionResult({
 function ContractForm({
   fn,
   onSubmit,
+  onError,
   result,
 }: {
   fn: Types.MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
+  onError: SubmitErrorHandler<ContractFormType>;
   result: ReactNode;
 }) {
   const {account} = useWallet();
@@ -578,9 +607,8 @@ function ContractForm({
       args: [],
     },
   });
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit, onError)}>
       <Box>
         <Stack spacing={4}>
           <Typography fontSize={14} fontWeight={600}>
@@ -599,6 +627,7 @@ function ContractForm({
                 key={i}
                 name={`typeArgs.${i}`}
                 control={control}
+                rules={{required: true}}
                 render={({field: {onChange, value}}) => (
                   <TextField
                     onChange={onChange}
@@ -627,6 +656,7 @@ function ContractForm({
                   key={`args-${i}`}
                   name={`args.${i}`}
                   control={control}
+                  rules={{required: true}}
                   render={({field: {onChange, value}}) => (
                     <TextField
                       onChange={onChange}
