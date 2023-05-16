@@ -73,7 +73,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
             marginBottom={"16px"}
             color={theme.palette.mode === "dark" ? grey[300] : grey[600]}
           >
-            Unfortunately, we are not supporting write method on mobile at the
+            Unfortunately, we are not supporting run method on mobile at the
             moment.
           </Typography>
 
@@ -325,7 +325,7 @@ function RunContractForm({
               {transactionInProcess ? (
                 <CircularProgress size={30}></CircularProgress>
               ) : (
-                "Write"
+                "Run"
               )}
             </Button>
             {!transactionInProcess && transactionResponse && (
@@ -367,8 +367,9 @@ function RunContractForm({
                       <Button
                         variant="outlined"
                         onClick={() =>
-                          navigate(
+                          window.open(
                             `/txn/${transactionResponse.transactionHash}`,
+                            "_blank",
                           )
                         }
                         sx={{
@@ -389,7 +390,7 @@ function RunContractForm({
           <Box display="flex" flexDirection="row" alignItems="center">
             <WalletConnector networkSupport={state.network_name} />
             <Typography ml={2} fontSize={10}>
-              To write you need to connect wallet first
+              To run you need to connect wallet first
             </Typography>
           </Box>
         )
@@ -408,6 +409,8 @@ function ReadContractForm({
 }) {
   const [state] = useGlobalState();
   const [result, setResult] = useState<Types.MoveValue[]>();
+  const theme = useTheme();
+  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [errMsg, setErrMsg] = useState<string>();
   const [inProcess, setInProcess] = useState(false);
   const logEvent = useLogEventWithBasic();
@@ -472,7 +475,7 @@ function ReadContractForm({
             {inProcess ? (
               <CircularProgress size={30}></CircularProgress>
             ) : (
-              "Query"
+              "View"
             )}
           </Button>
 
@@ -480,13 +483,13 @@ function ReadContractForm({
             <>
               <Divider sx={{margin: "24px 0"}} />
               <Stack
-                direction="row"
+                direction={isWideScreen ? "row" : "column"}
                 gap={2}
                 mt={2}
                 justifyContent="space-between"
               >
                 <Stack>
-                  <Typography fontSize={12} fontWeight={400}>
+                  <Typography fontSize={12} fontWeight={400} ml={1}>
                     {errMsg ? "Error: " + errMsg : resultString}
                   </Typography>
                 </Stack>
@@ -504,6 +507,7 @@ function ReadContractForm({
                       sx={{
                         height: "2rem",
                         minWidth: "unset",
+                        width: "fit-content",
                       }}
                       onClick={copyValue}
                     >
