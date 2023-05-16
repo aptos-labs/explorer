@@ -72,7 +72,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
             marginBottom={"16px"}
             color={theme.palette.mode === "dark" ? grey[300] : grey[600]}
           >
-            Unfortunately, we are not supporting run method on mobile at the
+            Unfortunately, we are not supporting <b>Run</b> entry functions on mobile at the
             moment.
           </Typography>
 
