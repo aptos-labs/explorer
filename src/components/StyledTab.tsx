@@ -42,6 +42,7 @@ export default function StyledTab({
         borderBottomRightRadius: isLast ? "15px 15px" : "",
         border: 1,
         borderColor: backgroundColor,
+        flexGrow: {xs: 1, md: 0},
       }}
       iconPosition="start"
       disableRipple
