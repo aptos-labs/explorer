@@ -33,6 +33,7 @@ import {
   PackageMetadata,
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
+import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
 
@@ -72,8 +73,8 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
             marginBottom={"16px"}
             color={theme.palette.mode === "dark" ? grey[300] : grey[600]}
           >
-            Unfortunately, we are not supporting <b>Run</b> entry functions on mobile at the
-            moment.
+            Unfortunately, we are not supporting <b>Run</b> entry functions on
+            mobile at the moment.
           </Typography>
 
           <Typography
@@ -186,6 +187,7 @@ function ContractSidebar({
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
+  const logEvent = useLogEventWithBasic();
   const flattedFns = useMemo(
     () =>
       Object.entries(moduleAndFnsGroup).flatMap(([moduleName, fns]) =>
@@ -233,6 +235,10 @@ function ContractSidebar({
                           linkTo={getLinkToFn(moduleName, fn.name)}
                           selected={selected}
                           name={fn.name}
+                          loggingInfo={{
+                            eventName: "function_name_clicked",
+                            value: fn.name,
+                          }}
                         />
                       );
                     })}
@@ -251,9 +257,10 @@ function ContractSidebar({
           renderInput={(params) => (
             <TextField {...params} label="Select a function" />
           )}
-          onChange={(_, fn) =>
-            fn && navigate(getLinkToFn(fn.moduleName, fn.fnName))
-          }
+          onChange={(_, fn) => {
+            fn && logEvent("function_name_clicked", fn.fnName);
+            fn && navigate(getLinkToFn(fn.moduleName, fn.fnName));
+          }}
           value={
             selectedModuleName && selectedFnName
               ? flattedFns.find(
@@ -278,11 +285,13 @@ function RunContractForm({
 }) {
   const [state] = useGlobalState();
   const {connected} = useWallet();
+  const logEvent = useLogEventWithBasic();
   const navigate = useNavigate();
   const {submitTransaction, transactionResponse, transactionInProcess} =
     useSubmitTransaction();
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
+    logEvent("write_button_clicked", fn.name);
     const payload: Types.TransactionPayload = {
       type: "entry_function_payload",
       function: `${module.address}::${module.name}::${fn.name}`,
@@ -290,6 +299,11 @@ function RunContractForm({
       arguments: data.args,
     };
     await submitTransaction(payload);
+    if (transactionResponse?.transactionSubmitted) {
+      logEvent("function_interacted", fn.name, {
+        txn_status: transactionResponse.success ? "success" : "failed",
+      });
+    }
   };
 
   const isFunctionSuccess = !!(
@@ -399,6 +413,7 @@ function ReadContractForm({
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [errMsg, setErrMsg] = useState<string>();
   const [inProcess, setInProcess] = useState(false);
+  const logEvent = useLogEventWithBasic();
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
   const resultString =
@@ -406,6 +421,10 @@ function ReadContractForm({
       ?.map((r) => (typeof r === "string" ? r : JSON.stringify(r, null, 2)))
       .join("\n") ?? "";
   async function copyValue() {
+    logEvent("copy_value_button_clicked", fn.name, {
+      value: resultString,
+      txn_status: "success",
+    });
     await navigator.clipboard.writeText(resultString);
     setTooltipOpen(true);
     setTimeout(() => {
@@ -414,6 +433,7 @@ function ReadContractForm({
   }
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
+    logEvent("read_button_clicked", fn.name);
     const viewRequest: Types.ViewRequest = {
       function: `${module.address}::${module.name}::${fn.name}`,
       type_arguments: data.typeArgs,
@@ -424,6 +444,7 @@ function ReadContractForm({
       const result = await view(viewRequest, state.network_value);
       setResult(result);
       setErrMsg(undefined);
+      logEvent("function_interacted", fn.name, {txn_status: "success"});
     } catch (e: any) {
       let error = e.message ?? String(e);
 
@@ -434,6 +455,7 @@ function ReadContractForm({
 
       setErrMsg(error);
       setResult(undefined);
+      logEvent("function_interacted", fn.name, {txn_status: "failed"});
     }
     setInProcess(false);
   };

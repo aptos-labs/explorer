@@ -16,7 +16,8 @@ import {
   codeBlockColorRgbLight,
   grey,
 } from "../../../themes/colors/aptosColorPalette";
-import {useParams, useSearchParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 function useStartingLineNumber(sourceCode?: string) {
   if (!sourceCode) return 0;
@@ -29,9 +30,12 @@ function useStartingLineNumber(sourceCode?: string) {
 
 function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   const theme = useTheme();
+  const {selectedModuleName} = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const logEvent = useLogEventWithBasic();
 
   const handleOpenModal = () => {
+    logEvent("expand_button_clicked", selectedModuleName);
     setIsModalOpen(true);
   };
 
@@ -102,6 +106,9 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
 }
 
 export function Code({bytecode}: {bytecode: string}) {
+  const {selectedModuleName} = useParams();
+  const logEvent = useLogEventWithBasic();
+
   const TOOLTIP_TIME = 2000; // 2s
 
   const sourceCode = bytecode === "0x" ? undefined : transformCode(bytecode);
@@ -160,7 +167,10 @@ export function Code({bytecode}: {bytecode: string}) {
           >
             <Button
               variant="outlined"
-              onClick={copyCode}
+              onClick={(source) => {
+                logEvent("copy_code_button_clicked", selectedModuleName);
+                copyCode(source);
+              }}
               disabled={!sourceCode}
               sx={{
                 display: "flex",

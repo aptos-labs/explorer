@@ -1,5 +1,5 @@
 import {Box, useTheme} from "@mui/material";
-import React from "react";
+import React, {useEffect} from "react";
 import {useParams} from "react-router-dom";
 import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
@@ -8,6 +8,7 @@ import {assertNever} from "../../../../utils";
 import ViewCode from "./ViewCode";
 import Contract from "./Contract";
 import {useNavigate} from "../../../../routing";
+import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 
 const TabComponents = Object.freeze({
   code: ViewCode,
@@ -53,15 +54,46 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
   const tabValues = Object.keys(TabComponents) as TabValue[];
   const {selectedFnName, selectedModuleName, modulesTab} = useParams();
   const navigate = useNavigate();
+  const logEvent = useLogEventWithBasic();
   const value =
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+    let eventName = "";
+    switch (newValue) {
+      case "code":
+        // no event needed
+        break;
+      case "run":
+        eventName = "write_tab_clicked";
+        break;
+      case "view":
+        eventName = "read_tab_clicked";
+        break;
+    }
+    eventName && logEvent(eventName);
+
     navigate(
       `/account/${address}/modules/${newValue}/${selectedModuleName}` +
         (selectedFnName ? `/${selectedFnName}` : ``),
     );
   };
+
+  useEffect(() => {
+    let eventName = "";
+    switch (value) {
+      case "code":
+        eventName = "modules_tab_viewed";
+        break;
+      case "run":
+        eventName = "write_tab_viewed";
+        break;
+      case "view":
+        eventName = "read_tab_viewed";
+        break;
+    }
+    eventName && logEvent(eventName);
+  }, [value]);
 
   return (
     <Box
