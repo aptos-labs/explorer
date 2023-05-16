@@ -76,7 +76,7 @@ const faqStakingData = [
         Congratulations! You have successfully staked APT on Explorer! You can
         also stake APT directly to a validator node through the{" "}
         <Link
-          to="https://aptos.dev/nodes/validator-node/operator/staking-pool-operations"
+          to="https://aptos.dev/nodes/validator-node/operator/delegation-pool-operations/#perform-delegation-pool-operations"
           target="_blank"
         >
           CLI
