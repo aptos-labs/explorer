@@ -8,9 +8,7 @@ import {assertNever} from "../../../../utils";
 import ViewCode from "./ViewCode";
 import Contract from "./Contract";
 import {useNavigate} from "../../../../routing";
-import {Statsig} from "statsig-react";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useGlobalState} from "../../../../global-config/GlobalConfig";
+import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 
 const TabComponents = Object.freeze({
   code: ViewCode,
@@ -53,11 +51,10 @@ function TabPanel({value, address}: TabPanelProps): JSX.Element {
 
 function ModulesTabs({address}: {address: string}): JSX.Element {
   const theme = useTheme();
-  const {account} = useWallet();
-  const [state] = useGlobalState();
   const tabValues = Object.keys(TabComponents) as TabValue[];
   const {selectedFnName, selectedModuleName, modulesTab} = useParams();
   const navigate = useNavigate();
+  const logEvent = useLogEventWithBasic();
   const value =
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
@@ -74,12 +71,7 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
         eventName = "read_tab_clicked";
         break;
     }
-    eventName &&
-      Statsig.logEvent(eventName, null, {
-        stable_id: Statsig.getStableID(),
-        wallet_address: account?.address ?? "",
-        network_type: state.network_name,
-      });
+    eventName && logEvent(eventName);
 
     navigate(
       `/account/${address}/modules/${newValue}/${selectedModuleName}` +
@@ -100,12 +92,7 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
         eventName = "read_tab_viewed";
         break;
     }
-    eventName &&
-      Statsig.logEvent(eventName, null, {
-        stable_id: Statsig.getStableID(),
-        wallet_address: account?.address ?? "",
-        network_type: state.network_name,
-      });
+    eventName && logEvent(eventName);
   }, [value]);
 
   return (

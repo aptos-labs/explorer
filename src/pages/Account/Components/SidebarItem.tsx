@@ -2,7 +2,7 @@ import React from "react";
 import {Box, useTheme} from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import {Link} from "../../../routing";
-import {Statsig} from "statsig-react";
+import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 interface SidebarItemProps {
   linkTo: string;
@@ -11,7 +11,7 @@ interface SidebarItemProps {
   loggingInfo?: {
     eventName: string;
     value: string;
-    metadata: Record<string, string>;
+    metadata?: Record<string, string>;
   };
 }
 
@@ -23,13 +23,14 @@ export default function SidebarItem({
   loggingInfo,
 }: SidebarItemProps) {
   const theme = useTheme();
+  const logEvent = useLogEventWithBasic();
 
   return (
     <Link to={linkTo} underline="none" color={"inherit"}>
       <Box
         onClick={() => {
           loggingInfo &&
-            Statsig.logEvent(
+            logEvent(
               loggingInfo.eventName,
               loggingInfo.value,
               loggingInfo.metadata,
