@@ -156,43 +156,45 @@ export function Code({bytecode}: {bytecode: string}) {
           </Typography>
           <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. We can not not verify it." />
         </Stack>
-        <Stack direction="row" spacing={2}>
-          <StyledTooltip
-            title="Code copied"
-            placement="right"
-            open={tooltipOpen}
-            disableFocusListener
-            disableHoverListener
-            disableTouchListener
-          >
-            <Button
-              variant="outlined"
-              onClick={(source) => {
-                logEvent("copy_code_button_clicked", selectedModuleName);
-                copyCode(source);
-              }}
-              disabled={!sourceCode}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                height: "2rem",
-                borderRadius: "0.5rem",
-              }}
+        {sourceCode && (
+          <Stack direction="row" spacing={2}>
+            <StyledTooltip
+              title="Code copied"
+              placement="right"
+              open={tooltipOpen}
+              disableFocusListener
+              disableHoverListener
+              disableTouchListener
             >
-              <ContentCopy style={{height: "1.25rem", width: "1.25rem"}} />
-              <Typography
-                marginLeft={1}
+              <Button
+                variant="outlined"
+                onClick={(source) => {
+                  logEvent("copy_code_button_clicked", selectedModuleName);
+                  copyCode(source);
+                }}
+                disabled={!sourceCode}
                 sx={{
-                  display: "inline",
-                  whiteSpace: "nowrap",
+                  display: "flex",
+                  alignItems: "center",
+                  height: "2rem",
+                  borderRadius: "0.5rem",
                 }}
               >
-                copy code
-              </Typography>
-            </Button>
-          </StyledTooltip>
-          <ExpandCode sourceCode={sourceCode} />
-        </Stack>
+                <ContentCopy style={{height: "1.25rem", width: "1.25rem"}} />
+                <Typography
+                  marginLeft={1}
+                  sx={{
+                    display: "inline",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  copy code
+                </Typography>
+              </Button>
+            </StyledTooltip>
+            <ExpandCode sourceCode={sourceCode} />
+          </Stack>
+        )}
       </Stack>
       {sourceCode && (
         <Typography
