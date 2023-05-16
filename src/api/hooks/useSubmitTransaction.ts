@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {FailedTransactionError, Types} from "aptos";
 import {useEffect, useState} from "react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
@@ -12,6 +12,8 @@ export type TransactionResponse =
 export type TransactionResponseOnSubmission = {
   transactionSubmitted: true;
   transactionHash: string;
+  success: boolean; // indicates if the transaction submitted but failed or not
+  message?: string; // error message if the transaction failed
 };
 
 export type TransactionResponseOnError = {
@@ -52,19 +54,33 @@ const useSubmitTransaction = () => {
         transactionSubmitted: false,
         message: "Unknown Error",
       };
+
+      let response;
       try {
-        const response = await signAndSubmitTransaction(transactionPayload);
-        // transaction succeed
+        response = await signAndSubmitTransaction(transactionPayload);
+
+        // transaction submit succeed
         if ("hash" in response) {
-          await state.aptos_client.waitForTransaction(response["hash"]);
+          await state.aptos_client.waitForTransaction(response["hash"], {
+            checkSuccess: true,
+          });
           return {
             transactionSubmitted: true,
             transactionHash: response["hash"],
+            success: true,
           };
         }
         // transaction failed
         return {...responseOnError, message: response.message};
       } catch (error: any) {
+        if (error instanceof FailedTransactionError) {
+          return {
+            transactionSubmitted: true,
+            transactionHash: response ? response.hash : "",
+            message: error.message,
+            success: false,
+          };
+        }
         responseOnError.message = error;
       }
       return responseOnError;

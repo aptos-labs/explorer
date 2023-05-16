@@ -17,6 +17,8 @@ import {
   useTheme,
   useMediaQuery,
   Autocomplete,
+  Alert,
+  CircularProgress,
 } from "@mui/material";
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
@@ -26,8 +28,13 @@ import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {useNavigate} from "../../../../routing";
-import { Code } from "../../Components/CodeSnippet";
-import { PackageMetadata, useGetAccountPackages } from "../../../../api/hooks/useGetAccountResource";
+import {Code} from "../../Components/CodeSnippet";
+import {
+  PackageMetadata,
+  useGetAccountPackages,
+} from "../../../../api/hooks/useGetAccountResource";
+import {ContentCopy} from "@mui/icons-material";
+import StyledTooltip from "../../../../components/StyledTooltip";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -65,7 +72,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
             marginBottom={"16px"}
             color={theme.palette.mode === "dark" ? grey[300] : grey[600]}
           >
-            Unfortunately, we are not supporting write method on mobile at the
+            Unfortunately, we are not supporting <b>Run</b> entry functions on mobile at the
             moment.
           </Typography>
 
@@ -160,7 +167,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
 
           {module && fn && selectedModule && (
             <>
-              <Divider sx={{margin: "16px 0"}} />
+              <Divider sx={{margin: "24px 0"}} />
               <Code bytecode={selectedModule?.source} />
             </>
           )}
@@ -271,7 +278,9 @@ function RunContractForm({
 }) {
   const [state] = useGlobalState();
   const {connected} = useWallet();
-  const {submitTransaction} = useSubmitTransaction();
+  const navigate = useNavigate();
+  const {submitTransaction, transactionResponse, transactionInProcess} =
+    useSubmitTransaction();
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     const payload: Types.TransactionPayload = {
@@ -283,20 +292,91 @@ function RunContractForm({
     await submitTransaction(payload);
   };
 
+  const isFunctionSuccess = !!(
+    transactionResponse?.transactionSubmitted && transactionResponse?.success
+  );
   return (
     <ContractForm
       fn={fn}
       onSubmit={onSubmit}
       result={
         connected ? (
-          <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
-            Write
-          </Button>
+          <Box>
+            <Button
+              type="submit"
+              disabled={transactionInProcess}
+              variant="contained"
+              sx={{width: "8rem", height: "3rem"}}
+            >
+              {transactionInProcess ? (
+                <CircularProgress size={30}></CircularProgress>
+              ) : (
+                "Run"
+              )}
+            </Button>
+            {!transactionInProcess && transactionResponse && (
+              <ExecutionResult success={isFunctionSuccess}>
+                <Stack
+                  direction="row"
+                  gap={2}
+                  pt={3}
+                  justifyContent="space-between"
+                >
+                  <Stack>
+                    {!isFunctionSuccess && (
+                      <>
+                        <Typography fontSize={12} fontWeight={600} mb={1}>
+                          Error:
+                        </Typography>
+                        <Typography fontSize={12} fontWeight={400}>
+                          {transactionResponse.message
+                            ? transactionResponse.message
+                            : "Unknown"}
+                        </Typography>
+                      </>
+                    )}
+                    {transactionResponse.transactionSubmitted &&
+                      transactionResponse.transactionHash && (
+                        <>
+                          <Typography fontSize={12} fontWeight={600} mb={1}>
+                            Transaction:
+                          </Typography>
+                          <Typography fontSize={12} fontWeight={400}>
+                            {transactionResponse.transactionHash}
+                          </Typography>
+                        </>
+                      )}
+                  </Stack>
+
+                  {transactionResponse.transactionSubmitted &&
+                    transactionResponse.transactionHash && (
+                      <Button
+                        variant="outlined"
+                        onClick={() =>
+                          window.open(
+                            `/txn/${transactionResponse.transactionHash}`,
+                            "_blank",
+                          )
+                        }
+                        sx={{
+                          height: "2rem",
+                          minWidth: "unset",
+                          borderRadius: "0.5rem",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        View Transaction
+                      </Button>
+                    )}
+                </Stack>
+              </ExecutionResult>
+            )}
+          </Box>
         ) : (
           <Box display="flex" flexDirection="row" alignItems="center">
             <WalletConnector networkSupport={state.network_name} />
             <Typography ml={2} fontSize={10}>
-              To write you need to connect wallet first
+              To run you need to connect wallet first
             </Typography>
           </Box>
         )
@@ -305,6 +385,7 @@ function RunContractForm({
   );
 }
 
+const TOOLTIP_TIME = 2000; // 2s
 function ReadContractForm({
   module,
   fn,
@@ -313,8 +394,24 @@ function ReadContractForm({
   fn: Types.MoveFunction;
 }) {
   const [state] = useGlobalState();
-  const [result, setResult] = useState<Types.MoveValue[]>([]);
+  const [result, setResult] = useState<Types.MoveValue[]>();
+  const theme = useTheme();
+  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [errMsg, setErrMsg] = useState<string>();
+  const [inProcess, setInProcess] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
+
+  const resultString =
+    result
+      ?.map((r) => (typeof r === "string" ? r : JSON.stringify(r, null, 2)))
+      .join("\n") ?? "";
+  async function copyValue() {
+    await navigator.clipboard.writeText(resultString);
+    setTooltipOpen(true);
+    setTimeout(() => {
+      setTooltipOpen(false);
+    }, TOOLTIP_TIME);
+  }
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     const viewRequest: Types.ViewRequest = {
@@ -322,12 +419,23 @@ function ReadContractForm({
       type_arguments: data.typeArgs,
       arguments: data.args,
     };
+    setInProcess(true);
     try {
       const result = await view(viewRequest, state.network_value);
       setResult(result);
+      setErrMsg(undefined);
     } catch (e: any) {
-      setErrMsg(e.message ?? String(e));
+      let error = e.message ?? String(e);
+
+      const prefix = "Error:";
+      if (error.startsWith(prefix)) {
+        error = error.substring(prefix.length).trim();
+      }
+
+      setErrMsg(error);
+      setResult(undefined);
     }
+    setInProcess(false);
   };
 
   return (
@@ -335,21 +443,99 @@ function ReadContractForm({
       fn={fn}
       onSubmit={onSubmit}
       result={
-        <Box display="flex" flexDirection="row" alignItems="center">
-          <Button type="submit" variant="contained" sx={{maxWidth: "8rem"}}>
-            Query
-          </Button>
-          <Typography
-            ml={2}
-            fontSize={10}
-            whiteSpace="nowrap"
-            sx={{overflowX: "auto"}}
+        <Box>
+          <Button
+            type="submit"
+            disabled={inProcess}
+            variant="contained"
+            sx={{width: "8rem", height: "3rem"}}
           >
-            {errMsg ?? JSON.stringify(result, null, 2)}
-          </Typography>
+            {inProcess ? (
+              <CircularProgress size={30}></CircularProgress>
+            ) : (
+              "View"
+            )}
+          </Button>
+
+          {!inProcess && (errMsg || result) && (
+            <>
+              <Divider sx={{margin: "24px 0"}} />
+              <Stack
+                direction={isWideScreen ? "row" : "column"}
+                gap={2}
+                mt={2}
+                justifyContent="space-between"
+              >
+                <Stack>
+                  <Typography fontSize={12} fontWeight={400} ml={1}>
+                    {errMsg ? "Error: " + errMsg : resultString}
+                  </Typography>
+                </Stack>
+
+                {!errMsg && (
+                  <StyledTooltip
+                    title="Value copied"
+                    placement="right"
+                    open={tooltipOpen}
+                    disableFocusListener
+                    disableHoverListener
+                    disableTouchListener
+                  >
+                    <Button
+                      sx={{
+                        height: "2rem",
+                        minWidth: "unset",
+                        width: "fit-content",
+                      }}
+                      onClick={copyValue}
+                    >
+                      <ContentCopy style={{height: "1rem", width: "1.25rem"}} />
+                      <Typography
+                        marginLeft={1}
+                        fontSize={12}
+                        sx={{
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Copy value
+                      </Typography>
+                    </Button>
+                  </StyledTooltip>
+                )}
+              </Stack>
+            </>
+          )}
         </Box>
       }
     />
+  );
+}
+
+function ExecutionResult({
+  success,
+  children,
+}: {
+  success: boolean;
+  children: React.ReactNode;
+}) {
+  const theme = useTheme();
+  return (
+    <Box
+      padding={3}
+      borderRadius={1}
+      bgcolor={theme.palette.mode === "dark" ? grey[700] : grey[200]}
+      mt={4}
+    >
+      <Alert
+        severity={success ? "success" : "error"}
+        sx={{width: "fit-content", padding: "0rem 1rem"}}
+      >
+        <Typography fontSize={12}>
+          {success ? "Function successfully executed" : "Function failed"}
+        </Typography>
+      </Alert>
+      <Box>{children}</Box>
+    </Box>
   );
 }
 
@@ -370,15 +556,10 @@ function ContractForm({
       args: [],
     },
   });
-  const theme = useTheme();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Box
-        padding={3}
-        borderRadius={1}
-        bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
-      >
+      <Box>
         <Stack spacing={4}>
           <Typography fontSize={14} fontWeight={600}>
             {fn.name}
@@ -399,7 +580,7 @@ function ContractForm({
                 render={({field: {onChange, value}}) => (
                   <TextField
                     onChange={onChange}
-                    value={value}
+                    value={value ?? ""}
                     label={`T${i}`}
                     fullWidth
                   />
@@ -427,7 +608,7 @@ function ContractForm({
                   render={({field: {onChange, value}}) => (
                     <TextField
                       onChange={onChange}
-                      value={value}
+                      value={value ?? ""}
                       label={`arg${i}: ${param}`}
                       fullWidth
                     />
