@@ -307,11 +307,7 @@ function RunContractForm({
   };
 
   const isFunctionSuccess = !!(
-    // make sure it's a boolean
-    (
-      transactionResponse?.transactionSubmitted && // submitted the transaction
-      transactionResponse?.success
-    ) // the transaction run successfully
+    transactionResponse?.transactionSubmitted && transactionResponse?.success
   );
   return (
     <ContractForm
@@ -366,7 +362,7 @@ function RunContractForm({
                     )}
 
                     {/* Has a transaction, display the hash */}
-                    {transactionResponse?.transactionSubmitted &&
+                    {transactionResponse.transactionSubmitted &&
                       transactionResponse.transactionHash && (
                         <>
                           <Typography fontSize={12} fontWeight={600} mb={1}>
@@ -380,7 +376,7 @@ function RunContractForm({
                   </Stack>
 
                   {/* Has a transaction, display the button to view the transaction */}
-                  {transactionResponse?.transactionSubmitted &&
+                  {transactionResponse.transactionSubmitted &&
                     transactionResponse.transactionHash && (
                       <Button
                         variant="outlined"
@@ -479,7 +475,6 @@ function ReadContractForm({
     setInProcess(false);
   };
 
-  const buttonDisabled = inProcess || !formValid;
   return (
     <ContractForm
       fn={fn}
@@ -494,7 +489,7 @@ function ReadContractForm({
             <span>
               <Button
                 type="submit"
-                disabled={buttonDisabled}
+                disabled={inProcess || !formValid}
                 variant="contained"
                 sx={{width: "8rem", height: "3rem"}}
               >
