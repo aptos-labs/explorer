@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {ReactNode, useMemo, useState} from "react";
+import {ReactNode, useEffect, useMemo, useState} from "react";
 import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
@@ -286,7 +286,7 @@ function RunContractForm({
   const [state] = useGlobalState();
   const {connected} = useWallet();
   const logEvent = useLogEventWithBasic();
-  const navigate = useNavigate();
+  const [formValid, setFormValid] = useState(false);
   const {submitTransaction, transactionResponse, transactionInProcess} =
     useSubmitTransaction();
 
@@ -313,21 +313,32 @@ function RunContractForm({
     <ContractForm
       fn={fn}
       onSubmit={onSubmit}
+      setFormValid={setFormValid}
       result={
         connected ? (
           <Box>
-            <Button
-              type="submit"
-              disabled={transactionInProcess}
-              variant="contained"
-              sx={{width: "8rem", height: "3rem"}}
+            <StyledTooltip
+              title="Input arguments cannot be empty."
+              placement="right"
+              disableHoverListener={formValid}
             >
-              {transactionInProcess ? (
-                <CircularProgress size={30}></CircularProgress>
-              ) : (
-                "Run"
-              )}
-            </Button>
+              <span>
+                <Button
+                  type="submit"
+                  disabled={transactionInProcess || !formValid}
+                  variant="contained"
+                  sx={{width: "8rem", height: "3rem"}}
+                >
+                  {transactionInProcess ? (
+                    <CircularProgress size={30}></CircularProgress>
+                  ) : (
+                    "Run"
+                  )}
+                </Button>
+              </span>
+            </StyledTooltip>
+
+            {/* Has some execution result to display */}
             {!transactionInProcess && transactionResponse && (
               <ExecutionResult success={isFunctionSuccess}>
                 <Stack
@@ -337,6 +348,7 @@ function RunContractForm({
                   justifyContent="space-between"
                 >
                   <Stack>
+                    {/* It's failed, display an error */}
                     {!isFunctionSuccess && (
                       <>
                         <Typography fontSize={12} fontWeight={600} mb={1}>
@@ -349,6 +361,8 @@ function RunContractForm({
                         </Typography>
                       </>
                     )}
+
+                    {/* Has a transaction, display the hash */}
                     {transactionResponse.transactionSubmitted &&
                       transactionResponse.transactionHash && (
                         <>
@@ -362,6 +376,7 @@ function RunContractForm({
                       )}
                   </Stack>
 
+                  {/* Has a transaction, display the button to view the transaction */}
                   {transactionResponse.transactionSubmitted &&
                     transactionResponse.transactionHash && (
                       <Button
@@ -413,6 +428,7 @@ function ReadContractForm({
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [errMsg, setErrMsg] = useState<string>();
   const [inProcess, setInProcess] = useState(false);
+  const [formValid, setFormValid] = useState(false);
   const logEvent = useLogEventWithBasic();
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
@@ -464,21 +480,29 @@ function ReadContractForm({
     <ContractForm
       fn={fn}
       onSubmit={onSubmit}
+      setFormValid={setFormValid}
       result={
         <Box>
-          <Button
-            type="submit"
-            disabled={inProcess}
-            variant="contained"
-            sx={{width: "8rem", height: "3rem"}}
+          <StyledTooltip
+            title="Input arguments cannot be empty."
+            disableHoverListener={formValid}
+            placement="right"
           >
-            {inProcess ? (
-              <CircularProgress size={30}></CircularProgress>
-            ) : (
-              "View"
-            )}
-          </Button>
-
+            <span>
+              <Button
+                type="submit"
+                disabled={inProcess || !formValid}
+                variant="contained"
+                sx={{width: "8rem", height: "3rem"}}
+              >
+                {inProcess ? (
+                  <CircularProgress size={30}></CircularProgress>
+                ) : (
+                  "View"
+                )}
+              </Button>
+            </span>
+          </StyledTooltip>
           {!inProcess && (errMsg || result) && (
             <>
               <Divider sx={{margin: "24px 0"}} />
@@ -564,20 +588,30 @@ function ExecutionResult({
 function ContractForm({
   fn,
   onSubmit,
+  setFormValid,
   result,
 }: {
   fn: Types.MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
+  setFormValid: (valid: boolean) => void;
   result: ReactNode;
 }) {
   const {account} = useWallet();
-  const {handleSubmit, control} = useForm<ContractFormType>({
+  const {
+    handleSubmit,
+    control,
+    formState: {isValid},
+  } = useForm<ContractFormType>({
     mode: "all",
     defaultValues: {
       typeArgs: [],
       args: [],
     },
   });
+
+  useEffect(() => {
+    setFormValid(isValid);
+  }, [isValid]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -599,6 +633,7 @@ function ContractForm({
                 key={i}
                 name={`typeArgs.${i}`}
                 control={control}
+                rules={{required: true}}
                 render={({field: {onChange, value}}) => (
                   <TextField
                     onChange={onChange}
@@ -627,6 +662,7 @@ function ContractForm({
                   key={`args-${i}`}
                   name={`args.${i}`}
                   control={control}
+                  rules={{required: true}}
                   render={({field: {onChange, value}}) => (
                     <TextField
                       onChange={onChange}
