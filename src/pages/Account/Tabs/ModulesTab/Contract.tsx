@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {ReactNode, useMemo, useState} from "react";
+import {ReactNode, useEffect, useMemo, useState} from "react";
 import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
@@ -21,12 +21,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import React from "react";
-import {
-  useForm,
-  SubmitHandler,
-  Controller,
-  SubmitErrorHandler,
-} from "react-hook-form";
+import {useForm, SubmitHandler, Controller} from "react-hook-form";
 import {useParams} from "react-router-dom";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
@@ -291,13 +286,12 @@ function RunContractForm({
   const [state] = useGlobalState();
   const {connected} = useWallet();
   const logEvent = useLogEventWithBasic();
-  const [validationErrorMsg, setValidationErrorMsg] = useState<string>();
+  const [formValid, setFormValid] = useState(false);
   const {submitTransaction, transactionResponse, transactionInProcess} =
     useSubmitTransaction();
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("write_button_clicked", fn.name);
-    setValidationErrorMsg(undefined);
     const payload: Types.TransactionPayload = {
       type: "entry_function_payload",
       function: `${module.address}::${module.name}::${fn.name}`,
@@ -315,7 +309,6 @@ function RunContractForm({
   const isFunctionSuccess = !!(
     // make sure it's a boolean
     (
-      !validationErrorMsg && // pass the validation
       transactionResponse?.transactionSubmitted && // submitted the transaction
       transactionResponse?.success
     ) // the transaction run successfully
@@ -324,88 +317,92 @@ function RunContractForm({
     <ContractForm
       fn={fn}
       onSubmit={onSubmit}
-      onError={() => setValidationErrorMsg("Input arguments cannot be empty.")}
+      setFormValid={setFormValid}
       result={
         connected ? (
           <Box>
-            <Button
-              type="submit"
-              disabled={transactionInProcess}
-              variant="contained"
-              sx={{width: "8rem", height: "3rem"}}
+            <StyledTooltip
+              title="Input arguments cannot be empty."
+              disableHoverListener={formValid}
             >
-              {transactionInProcess ? (
-                <CircularProgress size={30}></CircularProgress>
-              ) : (
-                "Run"
-              )}
-            </Button>
+              <span>
+                <Button
+                  type="submit"
+                  disabled={transactionInProcess || !formValid}
+                  variant="contained"
+                  sx={{width: "8rem", height: "3rem"}}
+                >
+                  {transactionInProcess ? (
+                    <CircularProgress size={30}></CircularProgress>
+                  ) : (
+                    "Run"
+                  )}
+                </Button>
+              </span>
+            </StyledTooltip>
 
             {/* Has some execution result to display */}
-            {!transactionInProcess &&
-              (transactionResponse || validationErrorMsg) && (
-                <ExecutionResult success={isFunctionSuccess}>
-                  <Stack
-                    direction="row"
-                    gap={2}
-                    pt={3}
-                    justifyContent="space-between"
-                  >
-                    <Stack>
-                      {/* It's failed, display an error */}
-                      {!isFunctionSuccess && (
+            {!transactionInProcess && transactionResponse && (
+              <ExecutionResult success={isFunctionSuccess}>
+                <Stack
+                  direction="row"
+                  gap={2}
+                  pt={3}
+                  justifyContent="space-between"
+                >
+                  <Stack>
+                    {/* It's failed, display an error */}
+                    {!isFunctionSuccess && (
+                      <>
+                        <Typography fontSize={12} fontWeight={600} mb={1}>
+                          Error:
+                        </Typography>
+                        <Typography fontSize={12} fontWeight={400}>
+                          {transactionResponse?.message
+                            ? transactionResponse.message
+                            : "Unknown"}
+                        </Typography>
+                      </>
+                    )}
+
+                    {/* Has a transaction, display the hash */}
+                    {transactionResponse?.transactionSubmitted &&
+                      transactionResponse.transactionHash && (
                         <>
                           <Typography fontSize={12} fontWeight={600} mb={1}>
-                            Error:
+                            Transaction:
                           </Typography>
                           <Typography fontSize={12} fontWeight={400}>
-                            {validationErrorMsg
-                              ? validationErrorMsg
-                              : transactionResponse?.message
-                              ? transactionResponse.message
-                              : "Unknown"}
+                            {transactionResponse.transactionHash}
                           </Typography>
                         </>
                       )}
-
-                      {/* Has a transaction, display the hash */}
-                      {transactionResponse?.transactionSubmitted &&
-                        transactionResponse.transactionHash && (
-                          <>
-                            <Typography fontSize={12} fontWeight={600} mb={1}>
-                              Transaction:
-                            </Typography>
-                            <Typography fontSize={12} fontWeight={400}>
-                              {transactionResponse.transactionHash}
-                            </Typography>
-                          </>
-                        )}
-                    </Stack>
-
-                    {/* Has a transaction, display the button to view the transaction */}
-                    {transactionResponse?.transactionSubmitted &&
-                      transactionResponse.transactionHash && (
-                        <Button
-                          variant="outlined"
-                          onClick={() =>
-                            window.open(
-                              `/txn/${transactionResponse.transactionHash}`,
-                              "_blank",
-                            )
-                          }
-                          sx={{
-                            height: "2rem",
-                            minWidth: "unset",
-                            borderRadius: "0.5rem",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          View Transaction
-                        </Button>
-                      )}
                   </Stack>
-                </ExecutionResult>
-              )}
+
+                  {/* Has a transaction, display the button to view the transaction */}
+                  {transactionResponse?.transactionSubmitted &&
+                    transactionResponse.transactionHash && (
+                      <Button
+                        variant="outlined"
+                        onClick={() =>
+                          window.open(
+                            `/txn/${transactionResponse.transactionHash}`,
+                            "_blank",
+                          )
+                        }
+                        sx={{
+                          height: "2rem",
+                          minWidth: "unset",
+                          borderRadius: "0.5rem",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        View Transaction
+                      </Button>
+                    )}
+                </Stack>
+              </ExecutionResult>
+            )}
           </Box>
         ) : (
           <Box display="flex" flexDirection="row" alignItems="center">
@@ -434,6 +431,7 @@ function ReadContractForm({
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [errMsg, setErrMsg] = useState<string>();
   const [inProcess, setInProcess] = useState(false);
+  const [formValid, setFormValid] = useState(false);
   const logEvent = useLogEventWithBasic();
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
@@ -481,31 +479,33 @@ function ReadContractForm({
     setInProcess(false);
   };
 
-  const onError: SubmitErrorHandler<ContractFormType> = (error) => {
-    setErrMsg("Input arguments cannot be empty.");
-    setResult(undefined);
-  };
-
+  const buttonDisabled = inProcess || !formValid;
   return (
     <ContractForm
       fn={fn}
       onSubmit={onSubmit}
-      onError={onError}
+      setFormValid={setFormValid}
       result={
         <Box>
-          <Button
-            type="submit"
-            disabled={inProcess}
-            variant="contained"
-            sx={{width: "8rem", height: "3rem"}}
+          <StyledTooltip
+            title="Input arguments cannot be empty."
+            disableHoverListener={formValid}
           >
-            {inProcess ? (
-              <CircularProgress size={30}></CircularProgress>
-            ) : (
-              "View"
-            )}
-          </Button>
-
+            <span>
+              <Button
+                type="submit"
+                disabled={buttonDisabled}
+                variant="contained"
+                sx={{width: "8rem", height: "3rem"}}
+              >
+                {inProcess ? (
+                  <CircularProgress size={30}></CircularProgress>
+                ) : (
+                  "View"
+                )}
+              </Button>
+            </span>
+          </StyledTooltip>
           {!inProcess && (errMsg || result) && (
             <>
               <Divider sx={{margin: "24px 0"}} />
@@ -591,24 +591,33 @@ function ExecutionResult({
 function ContractForm({
   fn,
   onSubmit,
-  onError,
+  setFormValid,
   result,
 }: {
   fn: Types.MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
-  onError: SubmitErrorHandler<ContractFormType>;
+  setFormValid: (valid: boolean) => void;
   result: ReactNode;
 }) {
   const {account} = useWallet();
-  const {handleSubmit, control} = useForm<ContractFormType>({
+  const {
+    handleSubmit,
+    control,
+    formState: {isValid},
+  } = useForm<ContractFormType>({
     mode: "all",
     defaultValues: {
       typeArgs: [],
       args: [],
     },
   });
+
+  useEffect(() => {
+    setFormValid(isValid);
+  }, [isValid]);
+
   return (
-    <form onSubmit={handleSubmit(onSubmit, onError)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Box>
         <Stack spacing={4}>
           <Typography fontSize={14} fontWeight={600}>
