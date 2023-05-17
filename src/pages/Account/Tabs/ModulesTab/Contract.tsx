@@ -319,6 +319,7 @@ function RunContractForm({
           <Box>
             <StyledTooltip
               title="Input arguments cannot be empty."
+              placement="right"
               disableHoverListener={formValid}
             >
               <span>
@@ -485,6 +486,7 @@ function ReadContractForm({
           <StyledTooltip
             title="Input arguments cannot be empty."
             disableHoverListener={formValid}
+            placement="right"
           >
             <span>
               <Button
