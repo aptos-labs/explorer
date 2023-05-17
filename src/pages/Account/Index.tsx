@@ -10,6 +10,8 @@ import {useGetAccount} from "../../api/hooks/useGetAccount";
 import LoadingModal from "../../components/LoadingModal";
 import Error from "./Error";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
+import {useGlobalState} from "../../global-config/GlobalConfig";
+import {Network} from "aptos";
 
 const TAB_VALUES_FULL: TabValue[] = [
   "transactions",
@@ -26,6 +28,7 @@ export default function AccountPage() {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
   const address = useParams().address ?? "";
   const {data, error, isLoading} = useGetAccount(address);
+  const [state] = useGlobalState();
 
   // TODO: [BE] instead of passing down address as props, use context
   // make sure that addresses will always start with "0X"
@@ -44,7 +47,7 @@ export default function AccountPage() {
         <BalanceCard address={addressHex} />
       </Grid>
       <Grid item xs={12} md={8} lg={12} marginTop={4} alignSelf="center">
-        <AptosNamesBanner />
+        {state.network_name === Network.MAINNET && <AptosNamesBanner />}
       </Grid>
       <Grid item xs={12} md={12} lg={12} marginTop={4}>
         {error ? (
