@@ -354,7 +354,7 @@ function RunContractForm({
                           Error:
                         </Typography>
                         <Typography fontSize={12} fontWeight={400}>
-                          {transactionResponse?.message
+                          {transactionResponse.message
                             ? transactionResponse.message
                             : "Unknown"}
                         </Typography>
