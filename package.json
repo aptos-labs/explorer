@@ -12,7 +12,7 @@
     "@download/blockies": "^1.0.3",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
-    "@martianwallet/aptos-wallet-adapter": "^0.0.2",
+    "@martianwallet/aptos-wallet-adapter": "^0.0.4",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.13",
     "@mui/system": "^5.11.13",
