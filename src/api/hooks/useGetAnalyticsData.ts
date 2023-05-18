@@ -3,7 +3,7 @@ import {defaultNetworkName} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export const ANALYTICS_DATA_URL =
-  "https://storage.googleapis.com/aptos-mainnet/explorer/chain_stats_v2.json";
+  "https://storage.googleapis.com/aptos-mainnet/explorer/chain_stats_v2.json?cache-version=0";
 
 export type AnalyticsData = {
   daily_active_users: DailyActiveUserData[];
