@@ -2,7 +2,7 @@
   "name": "aptos-explorer",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@7.10.0",
+  "packageManager": "pnpm@7.32.4",
   "dependencies": {
     "@apollo/client": "^3.7.9",
     "@aptos-labs/aptos-names-connector": "^0.0.2",
