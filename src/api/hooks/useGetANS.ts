@@ -73,7 +73,7 @@ async function genANSName(
       if (shouldCache) {
         setLocalStorageWithExpiry(address, name, TTL);
       }
-      return name || null;
+      return name ?? null;
     }
   } catch (error) {
     console.error(
