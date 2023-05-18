@@ -49,7 +49,7 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-countdown": "^2.3.5",
     "react-dom": "latest",
-    "react-ga4": "^1.4.1",
+    "react-ga4": "^2.0.0",
     "react-gtm-module": "^2.0.11",
     "react-hook-form": "^7.43.5",
     "react-intersection-observer": "^9.4.3",
