@@ -28,14 +28,15 @@ function getFetchNameUrl(
 export function useGetNameFromAddress(address: string, shouldCache = false) {
   const [state, _] = useGlobalState();
 
-  const cachedName = getLocalStorageWithExpiry(address);
-  if (cachedName) {
-    return cachedName;
-  }
-
   const queryResult = useQuery<string | null, ResponseError>({
     queryKey: ["ANSName", address, shouldCache, state.network_name],
-    queryFn: () => genANSName(address, shouldCache, state.network_name),
+    queryFn: () => {
+      const cachedName = getLocalStorageWithExpiry(address);
+      if (cachedName) {
+        return cachedName;
+      }
+      return genANSName(address, shouldCache, state.network_name);
+    },
   });
 
   return queryResult.data ?? undefined;
