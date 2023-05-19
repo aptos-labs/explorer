@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "packageManager": "pnpm@7.32.5",
+  "type": "module",
   "dependencies": {
     "@apollo/client": "^3.7.9",
     "@aptos-labs/aptos-names-connector": "^0.0.2",
@@ -31,6 +32,8 @@
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@types/react-simple-maps": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.6",
+    "@typescript-eslint/parser": "^5.59.6",
     "@welldone-studio/aptos-wallet-adapter": "^0.1.2",
     "aptos": "^1.8.3",
     "aptos-node-checker-client": "0.0.5",
@@ -57,7 +60,6 @@
     "react-loading-skeleton": "^3.1.1",
     "react-number-format": "^4.9.4",
     "react-router-dom": "^6.10.0",
-    "react-scripts": "latest",
     "react-simple-maps": "^3.0.0",
     "react-syntax-highlighter": "^15.5.0",
     "recharts": "^2.4.3",
@@ -66,16 +68,18 @@
     "typescript": "^5.0.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "vite --port 3000",
+    "build": "tsc --noEmit && vite build",
+    "serve": "vite preview",
+    "lint": "tsc --noEmit && eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "fmt": "prettier --write '**/*.(js|jsx|ts|tsx|json|css|scss|md)'",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "test": "vitest",
     "postinstall": "husky install"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --config .prettierrc.json -w"
+      "prettier --config .prettierrc.json -w",
+      "eslint --fix"
     ]
   },
   "browserslist": {
@@ -96,8 +100,15 @@
     "@types/react-addons-perf": "^15.4.0",
     "@types/react-gtm-module": "^2.0.1",
     "@types/react-syntax-highlighter": "^15.5.6",
+    "@vitejs/plugin-react": "^4.0.0",
+    "eslint": "^8.41.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.1",
     "husky": "^8.0.0",
     "lint-staged": "^13.2.0",
-    "prettier": "^2.8.5"
+    "prettier": "^2.8.5",
+    "vite": "^4.3.8",
+    "vite-plugin-svgr": "^3.2.0",
+    "vitest": "^0.31.1"
   }
 }

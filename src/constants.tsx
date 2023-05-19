@@ -2,7 +2,7 @@
  * Network
  */
 export const devnetUrl =
-  process.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
+  import.meta.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
 
 export const networks = {
   mainnet: "https://fullnode.mainnet.aptoslabs.com/",
@@ -76,7 +76,7 @@ export const defaultFeature = features[defaultFeatureName];
  * Delegation Service
  */
 export const OCTA = 100000000;
-export const WHILTELISTED_TESTNET_DELEGATION_NODES = process.env
+export const WHILTELISTED_TESTNET_DELEGATION_NODES = import.meta.env
   .REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES
-  ? process.env.REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES.split(",")
+  ? import.meta.env.REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES.split(",")
   : null;
