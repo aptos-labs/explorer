@@ -35,7 +35,7 @@ specifiers:
   '@types/react-syntax-highlighter': ^15.5.6
   '@welldone-studio/aptos-wallet-adapter': ^0.1.2
   aptos: ^1.8.3
-  aptos-node-checker-client: 0.0.2
+  aptos-node-checker-client: 0.0.5
   chart.js: ^4.2.1
   date-fns: ^2.29.3
   fewcha-plugin-wallet-adapter: ^0.1.1
@@ -100,7 +100,7 @@ dependencies:
   '@types/react-simple-maps': 3.0.0
   '@welldone-studio/aptos-wallet-adapter': 0.1.2
   aptos: 1.8.3
-  aptos-node-checker-client: 0.0.2
+  aptos-node-checker-client: 0.0.5
   chart.js: 4.2.1
   date-fns: 2.29.3
   fewcha-plugin-wallet-adapter: 0.1.2
@@ -4587,11 +4587,12 @@ packages:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  /aptos-node-checker-client/0.0.2:
-    resolution: {integrity: sha512-W1Fd6ybB69OW4v3vDmDdmzO7HknYTjmZeHAlt/dlzmnZGKKu9zd3dfx0vt/aSY1f5WTkjMI3hOqYVFAgR6SQYg==}
+  /aptos-node-checker-client/0.0.5:
+    resolution: {integrity: sha512-+8rdtC+cCpxCa3le8lgtQO9EPTOEtTMIoVSXKNj8PL3vmiu0ZTGybSFh+QBk1KzNtDkmsvjCmLXeH9e0lCYB9A==}
     engines: {node: '>=11.0.0'}
     dependencies:
       axios: 0.27.2
+      form-data: 4.0.0
     transitivePeerDependencies:
       - debug
     dev: false
