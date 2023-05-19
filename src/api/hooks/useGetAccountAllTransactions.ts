@@ -24,7 +24,7 @@ export function useGetAccountAllTransactionCount(
     ACCOUNT_TRANSACTIONS_COUNT_QUERY,
     {variables: {address: addr64Hash}},
   );
-  console.log(error);
+
   if (loading || error || !data) {
     return undefined;
   }
