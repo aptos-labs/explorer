@@ -126,7 +126,7 @@ function AccountHashButtonInner({
         }}
       >
         <Tooltip title={hash} enterDelay={500} enterNextDelay={500}>
-          <span>{name ?? truncateHash}</span>
+          <text>{name ?? truncateHash}</text>
         </Tooltip>
         <Tooltip title="Copied" open={copyTooltipOpen}>
           <Button

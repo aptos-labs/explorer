@@ -1,4 +1,4 @@
-import {useQuery} from "@tanstack/react-query";
+import {useEffect, useState} from "react";
 import {NetworkName} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {
@@ -7,7 +7,6 @@ import {
   setLocalStorageWithExpiry,
   truncateAptSuffix,
 } from "../../utils";
-import {ResponseError} from "../client";
 
 const TTL = 60000; // 1 minute
 
@@ -27,63 +26,43 @@ function getFetchNameUrl(
 
 export function useGetNameFromAddress(address: string, shouldCache = false) {
   const [state, _] = useGlobalState();
+  const [name, setName] = useState<string | undefined>();
 
-  const cachedName = getLocalStorageWithExpiry(address);
-  if (cachedName) {
-    return cachedName;
-  }
-
-  const queryResult = useQuery<string | null, ResponseError>({
-    queryKey: ["ANSName", address, shouldCache, state.network_name],
-    queryFn: () => genANSName(address, shouldCache, state.network_name),
-  });
-
-  return queryResult.data ?? undefined;
-}
-
-// this function will return null if ans name not found to prevent useQuery complaining about undefined return
-// source for full context: https://tanstack.com/query/v4/docs/react/guides/migrating-to-react-query-4#undefined-is-an-illegal-cache-value-for-successful-queries
-async function genANSName(
-  address: string,
-  shouldCache: boolean,
-  networkName: NetworkName,
-): Promise<string | null> {
-  const primaryNameUrl = getFetchNameUrl(networkName, address, true);
-
-  if (!primaryNameUrl) {
-    return null;
-  }
-
-  try {
-    const {name: primaryName} = await fetchJsonResponse(primaryNameUrl);
-
-    if (primaryName) {
-      if (shouldCache) {
-        setLocalStorageWithExpiry(address, primaryName, TTL);
-      }
-      return primaryName;
-    } else {
-      const nameUrl = getFetchNameUrl(networkName, address, false);
-
-      if (!nameUrl) {
-        return null;
-      }
-
-      const {name} = await fetchJsonResponse(nameUrl);
-      if (shouldCache) {
-        setLocalStorageWithExpiry(address, name, TTL);
-      }
-      return name ?? null;
+  useEffect(() => {
+    const cachedName = getLocalStorageWithExpiry(address);
+    if (cachedName) {
+      setName(cachedName);
+      return;
     }
-  } catch (error) {
-    console.error(
-      `ERROR! Couldn't find ANS name for ${address} on ${networkName}`,
-      error,
-      typeof error,
-    );
-  }
 
-  return null;
+    const primaryNameUrl = getFetchNameUrl(state.network_name, address, true);
+    if (primaryNameUrl !== undefined) {
+      const fetchData = async () => {
+        const {name: primaryName} = await fetchJsonResponse(primaryNameUrl);
+
+        if (primaryName) {
+          if (shouldCache) {
+            setLocalStorageWithExpiry(address, primaryName, TTL);
+          }
+          setName(primaryName);
+        } else {
+          const nameUrl =
+            getFetchNameUrl(state.network_name, address, false) ?? "";
+          const {name} = await fetchJsonResponse(nameUrl);
+          if (shouldCache) {
+            setLocalStorageWithExpiry(address, name, TTL);
+          }
+          setName(name);
+        }
+      };
+
+      fetchData().catch((error) => {
+        console.error("ERROR!", error, typeof error);
+      });
+    }
+  }, [address, state]);
+
+  return name;
 }
 
 function getFetchAddressUrl(network: NetworkName, name: string) {
