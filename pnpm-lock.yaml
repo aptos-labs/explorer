@@ -10,7 +10,7 @@ specifiers:
   '@emotion/react': latest
   '@emotion/styled': latest
   '@jest/globals': ^29.5.0
-  '@martianwallet/aptos-wallet-adapter': ^0.0.2
+  '@martianwallet/aptos-wallet-adapter': ^0.0.4
   '@mui/icons-material': ^5.11.11
   '@mui/material': ^5.11.13
   '@mui/system': ^5.11.13
@@ -79,7 +79,7 @@ dependencies:
   '@download/blockies': 1.0.3
   '@emotion/react': 11.11.0_s3k22s5ab4eu26xuel7hiaraxy
   '@emotion/styled': 11.11.0_gwsnvbfty4jua3m4tf74x4grui
-  '@martianwallet/aptos-wallet-adapter': 0.0.2
+  '@martianwallet/aptos-wallet-adapter': 0.0.4
   '@mui/icons-material': 5.11.11_dilpwwtgewyuvklk2vzkay2t4i
   '@mui/material': 5.11.16_iv5go3rgyvd4fx7f3hepohh5uu
   '@mui/system': 5.11.16_g3lmlmb3gt6d6nncybdkqwqdge
@@ -2786,10 +2786,10 @@ packages:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: false
 
-  /@martianwallet/aptos-wallet-adapter/0.0.2:
-    resolution: {integrity: sha512-hKM0zPfw63XRDqeIhaysoR5D9d+oF2oXmN/mkJPQ9oM714MYrx3AhmG1xIJKJe5t6JOrkI8r+wpPgYfTVy8uhg==}
+  /@martianwallet/aptos-wallet-adapter/0.0.4:
+    resolution: {integrity: sha512-B7z+Ff87L0cs4IMTF9+LCXGAWwQecihwN0QVI6NtJLWjV85A9MdlBC6oXiIC5J0ob3mtAMX2iOb2z2Xp37lxww==}
     dependencies:
-      '@aptos-labs/wallet-adapter-core': 0.1.7
+      '@aptos-labs/wallet-adapter-core': 2.1.0
       aptos: 1.8.3
     transitivePeerDependencies:
       - debug
