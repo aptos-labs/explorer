@@ -26,9 +26,9 @@ export function getTransactionCounterparty(
 
   // there are two scenarios that this transaction is an APT coin transfer:
   // 1. coins are transferred from account1 to account2:
-  //    payload function is "0x1::coin::transfer" and the first item in type_arguments is "0x1::aptos_coin::AptosCoin"
+  //    payload function is "0x1::coin::transfer" or "0x1::aptos_account::transfer_coins" and the first item in type_arguments is "0x1::aptos_coin::AptosCoin"
   // 2. coins are transferred from account1 to account2, and account2 is created upon transaction:
-  //    payload function is "0x1::aptos_account::transfer"
+  //    payload function is "0x1::aptos_account::transfer" or "0x1::aptos_account::transfer_coins"
   // In both scenarios, the first item in arguments is the receiver's address, and the second item is the amount.
 
   const payload =
@@ -36,10 +36,12 @@ export function getTransactionCounterparty(
   const typeArgument =
     payload.type_arguments.length > 0 ? payload.type_arguments[0] : undefined;
   const isAptCoinTransfer =
-    payload.function === "0x1::coin::transfer" &&
+    (payload.function === "0x1::coin::transfer" ||
+      payload.function === "0x1::aptos_account::transfer_coins") &&
     typeArgument === "0x1::aptos_coin::AptosCoin";
   const isAptCoinInitialTransfer =
-    payload.function === "0x1::aptos_account::transfer";
+    payload.function === "0x1::aptos_account::transfer" ||
+    payload.function === "0x1::aptos_account::transfer_coins";
 
   if (
     (isAptCoinTransfer || isAptCoinInitialTransfer) &&
