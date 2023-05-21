@@ -36,6 +36,7 @@ import {
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
+import {BCS, HexString, TxnBuilderTypes} from "aptos";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -296,7 +297,12 @@ function RunContractForm({
       type: "entry_function_payload",
       function: `${module.address}::${module.name}::${fn.name}`,
       type_arguments: data.typeArgs,
-      arguments: data.args,
+      arguments: data.args.map((arg, i) => {
+        // use i+1 because the first argument is the signer
+        if (fn.params[i + 1].includes("vector")) {
+          return arg.trim().slice(1, -1).split(",");
+        } else return arg;
+      }),
     };
     await submitTransaction(payload);
     if (transactionResponse?.transactionSubmitted) {
@@ -453,7 +459,48 @@ function ReadContractForm({
     const viewRequest: Types.ViewRequest = {
       function: `${module.address}::${module.name}::${fn.name}`,
       type_arguments: data.typeArgs,
-      arguments: data.args,
+      arguments: data.args.map((arg, i) => {
+        // TODO: catch the parse exception
+
+        if (fn.params[i].includes("vector")) {
+          // encode the vector
+          const rawVector = arg.trim().slice(1, -1).split(",");
+          const regex = /vector<([^>]+)>/;
+          const match = fn.params[i].match(regex);
+          if (match) {
+            let bcsVector: any[] = [];
+            // encode the element in vector
+            bcsVector = rawVector.map((v) => {
+              switch (match[1]) {
+                case "address": {
+                  return TxnBuilderTypes.AccountAddress.fromHex(v.trim());
+                }
+                case "u8": {
+                  return new TxnBuilderTypes.TransactionArgumentU8(
+                    parseInt(v.trim()),
+                  );
+                }
+                case "u32": {
+                  return new TxnBuilderTypes.TransactionArgumentU32(
+                    parseInt(v.trim()),
+                  );
+                }
+                case "u64": {
+                  return new TxnBuilderTypes.TransactionArgumentU64(
+                    BigInt(v.trim()),
+                  );
+                }
+                // TODO: add other types
+              }
+            });
+
+            const serializer = new BCS.Serializer();
+            BCS.serializeVector(bcsVector, serializer);
+            return (HexString.fromUint8Array(serializer.getBytes()) as any)
+              .hexString;
+          } else return arg;
+        } else return arg;
+      }),
     };
     setInProcess(true);
     try {
