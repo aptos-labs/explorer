@@ -1,5 +1,5 @@
-import {expect, it} from "@jest/globals";
-import {getPublicFunctionLineNumber, truncateAptSuffix} from "../utils";
+import {expect, it} from "vitest";
+import {getPublicFunctionLineNumber, truncateAptSuffix} from "./utils";
 it("truncate apt suffix from ANS name correctly", () => {
   expect(truncateAptSuffix("name.")).toEqual("name");
   expect(truncateAptSuffix("name.a")).toEqual("name");
