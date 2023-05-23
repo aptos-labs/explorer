@@ -456,52 +456,70 @@ function ReadContractForm({
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("read_button_clicked", fn.name);
-    const viewRequest: Types.ViewRequest = {
-      function: `${module.address}::${module.name}::${fn.name}`,
-      type_arguments: data.typeArgs,
-      arguments: data.args.map((arg, i) => {
-        // TODO: catch the parse exception
+    let viewRequest: Types.ViewRequest;
+    try {
+      viewRequest = {
+        function: `${module.address}::${module.name}::${fn.name}`,
+        type_arguments: data.typeArgs,
+        arguments: data.args.map((arg, i) => {
+          if (fn.params[i].includes("vector")) {
+            // encode the vector
+            const rawVector = arg.trim().slice(1, -1).split(",");
+            const regex = /vector<([^>]+)>/;
+            const match = fn.params[i].match(regex);
+            if (match) {
+              let bcsVector: any[] = [];
+              // encode the element in vector
+              bcsVector = rawVector.map((v) => {
+                switch (match[1]) {
+                  case "address": {
+                    return TxnBuilderTypes.AccountAddress.fromHex(v.trim());
+                  }
+                  case "u8": {
+                    return new TxnBuilderTypes.TransactionArgumentU8(
+                      parseInt(v.trim()),
+                    );
+                  }
+                  case "u32": {
+                    return new TxnBuilderTypes.TransactionArgumentU32(
+                      parseInt(v.trim()),
+                    );
+                  }
+                  case "u64": {
+                    return new TxnBuilderTypes.TransactionArgumentU64(
+                      BigInt(v.trim()),
+                    );
+                  }
+                  case "u128": {
+                    return new TxnBuilderTypes.TransactionArgumentU128(
+                      BigInt(v.trim()),
+                    );
+                  }
+                  case "u256": {
+                    return new TxnBuilderTypes.TransactionArgumentU256(
+                      BigInt(v.trim()),
+                    );
+                  }
+                  case "bool": {
+                    return new TxnBuilderTypes.TransactionArgumentBool(
+                      v.trim() === "true",
+                    );
+                  }
+                }
+              });
 
-        if (fn.params[i].includes("vector")) {
-          // encode the vector
-          const rawVector = arg.trim().slice(1, -1).split(",");
-          const regex = /vector<([^>]+)>/;
-          const match = fn.params[i].match(regex);
-          if (match) {
-            let bcsVector: any[] = [];
-            // encode the element in vector
-            bcsVector = rawVector.map((v) => {
-              switch (match[1]) {
-                case "address": {
-                  return TxnBuilderTypes.AccountAddress.fromHex(v.trim());
-                }
-                case "u8": {
-                  return new TxnBuilderTypes.TransactionArgumentU8(
-                    parseInt(v.trim()),
-                  );
-                }
-                case "u32": {
-                  return new TxnBuilderTypes.TransactionArgumentU32(
-                    parseInt(v.trim()),
-                  );
-                }
-                case "u64": {
-                  return new TxnBuilderTypes.TransactionArgumentU64(
-                    BigInt(v.trim()),
-                  );
-                }
-                // TODO: add other types
-              }
-            });
-
-            const serializer = new BCS.Serializer();
-            BCS.serializeVector(bcsVector, serializer);
-            return (HexString.fromUint8Array(serializer.getBytes()) as any)
-              .hexString;
+              const serializer = new BCS.Serializer();
+              BCS.serializeVector(bcsVector, serializer);
+              return (HexString.fromUint8Array(serializer.getBytes()) as any)
+                .hexString;
+            } else return arg;
           } else return arg;
-        } else return arg;
-      }),
-    };
+        }),
+      };
+    } catch (e: any) {
+      setErrMsg("Parse arguments failed: " + e?.message);
+      return;
+    }
     setInProcess(true);
     try {
       const result = await view(viewRequest, state.network_value);
