@@ -1,4 +1,4 @@
-import {HexString, Types} from "aptos";
+import {HexString, TxnBuilderTypes, Types} from "aptos";
 import pako from "pako";
 
 /**
@@ -159,4 +159,55 @@ export function getPublicFunctionLineNumber(
   }
 
   return 0;
+}
+
+// Deserialize "[1,2,3]" or "1,2,3" to ["1", "2", "3"]
+export function deserializeVector(vectorString: string): string[] {
+  let result = vectorString.trim();
+  if (result[0] === "[" && result[result.length - 1] === "]") {
+    result = result.slice(1, -1);
+  }
+  return result.split(",");
+}
+
+export function encodeToBCS(
+  type: string,
+  value: string,
+): TxnBuilderTypes.TransactionArgument {
+  switch (type) {
+    case "address": {
+      return TxnBuilderTypes.AccountAddress.fromHex(value.trim());
+    }
+    case "u8": {
+      return new TxnBuilderTypes.TransactionArgumentU8(parseInt(value.trim()));
+    }
+    case "u16": {
+      return new TxnBuilderTypes.TransactionArgumentU16(parseInt(value.trim()));
+    }
+    case "u32": {
+      return new TxnBuilderTypes.TransactionArgumentU32(parseInt(value.trim()));
+    }
+    case "u64": {
+      return new TxnBuilderTypes.TransactionArgumentU64(BigInt(value.trim()));
+    }
+    case "u128": {
+      return new TxnBuilderTypes.TransactionArgumentU128(BigInt(value.trim()));
+    }
+    case "u256": {
+      return new TxnBuilderTypes.TransactionArgumentU256(BigInt(value.trim()));
+    }
+    case "bool": {
+      let result = true;
+      if (value.trim() === "true") {
+        result = true;
+      } else if (value.trim() === "false") {
+        result = false;
+      } else {
+        throw new Error(`Unsupported bool value: ${value}`);
+      }
+      return new TxnBuilderTypes.TransactionArgumentBool(result);
+    }
+    default:
+      throw new Error(`Unsupported type: ${type}`);
+  }
 }
