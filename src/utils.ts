@@ -1,4 +1,4 @@
-import {HexString, TxnBuilderTypes, Types} from "aptos";
+import {BCS, HexString, TxnBuilderTypes, Types} from "aptos";
 import pako from "pako";
 
 /**
@@ -207,7 +207,39 @@ export function encodeToBCS(
       }
       return new TxnBuilderTypes.TransactionArgumentBool(result);
     }
+    // Only vector<u8> supported, because no other vectors provided by TxnBuilderTypes
+    case "vector<u8>": {
+      return new TxnBuilderTypes.TransactionArgumentU8Vector(
+        new Uint8Array(
+          value
+            .trim()
+            .slice(1, -1)
+            .split(",")
+            .map((x) => parseInt(x.trim())),
+        ),
+      );
+    }
     default:
       throw new Error(`Unsupported type: ${type}`);
+  }
+}
+
+export function encodeVectorForViewRequest(type: string, value: string) {
+  const rawVector = deserializeVector(value);
+  const regex = /vector<([^]+)>/;
+  const match = type.match(regex);
+  if (match) {
+    let bcsVector: any[] = [];
+    // encode the element in vector
+    bcsVector = rawVector.map((v) => {
+      return encodeToBCS(match[1], v);
+    });
+
+    const serializer = new BCS.Serializer();
+    BCS.serializeVector(bcsVector, serializer);
+    return (HexString.fromUint8Array(serializer.getBytes().subarray(1)) as any)
+      .hexString;
+  } else {
+    throw new Error(`Unsupported type: ${type}`);
   }
 }

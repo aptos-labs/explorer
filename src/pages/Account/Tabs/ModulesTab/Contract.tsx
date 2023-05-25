@@ -37,7 +37,11 @@ import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
 import {BCS, HexString, TxnBuilderTypes} from "aptos";
-import {deserializeVector, encodeToBCS} from "../../../../utils";
+import {
+  deserializeVector,
+  encodeToBCS,
+  encodeVectorForViewRequest,
+} from "../../../../utils";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -465,24 +469,7 @@ function ReadContractForm({
         type_arguments: data.typeArgs,
         arguments: data.args.map((arg, i) => {
           if (fn.params[i].includes("vector")) {
-            const rawVector = deserializeVector(arg);
-            const regex = /vector<([^>]+)>/;
-            const match = fn.params[i].match(regex);
-            if (match) {
-              let bcsVector: any[] = [];
-              // encode the element in vector
-              bcsVector = rawVector.map((v) => {
-                return encodeToBCS(match[1], v);
-              });
-
-              const serializer = new BCS.Serializer();
-              BCS.serializeVector(bcsVector, serializer);
-              return (
-                HexString.fromUint8Array(
-                  serializer.getBytes().subarray(1),
-                ) as any
-              ).hexString;
-            } else return arg;
+            return encodeVectorForViewRequest(fn.params[i], arg);
           } else return arg;
         }),
       };
