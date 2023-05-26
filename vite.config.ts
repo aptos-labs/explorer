@@ -10,13 +10,6 @@ export default defineConfig(() => {
     },
     // in addition to the default VITE_ prefix, also support REACT_APP_ prefixed environment variables for compatibility reasons with legacy create-react-app.
     envPrefix: ["VITE_", "REACT_APP_"],
-    plugins: [
-      react(),
-      svgr({
-        svgrOptions: {
-          icon: true,
-        },
-      }),
-    ],
+    plugins: [react(), svgr()],
   };
 });
