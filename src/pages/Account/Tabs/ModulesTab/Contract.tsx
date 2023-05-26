@@ -36,6 +36,12 @@ import {
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
+import {BCS, HexString, TxnBuilderTypes} from "aptos";
+import {
+  deserializeVector,
+  encodeToBCS,
+  encodeVectorForViewRequest,
+} from "../../../../utils";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -296,8 +302,14 @@ function RunContractForm({
       type: "entry_function_payload",
       function: `${module.address}::${module.name}::${fn.name}`,
       type_arguments: data.typeArgs,
-      arguments: data.args,
+      arguments: data.args.map((arg, i) => {
+        // use i+1 because the first argument is the signer
+        if (fn.params[i + 1].includes("vector")) {
+          return deserializeVector(arg);
+        } else return arg;
+      }),
     };
+
     await submitTransaction(payload);
     if (transactionResponse?.transactionSubmitted) {
       logEvent("function_interacted", fn.name, {
@@ -450,11 +462,21 @@ function ReadContractForm({
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("read_button_clicked", fn.name);
-    const viewRequest: Types.ViewRequest = {
-      function: `${module.address}::${module.name}::${fn.name}`,
-      type_arguments: data.typeArgs,
-      arguments: data.args,
-    };
+    let viewRequest: Types.ViewRequest;
+    try {
+      viewRequest = {
+        function: `${module.address}::${module.name}::${fn.name}`,
+        type_arguments: data.typeArgs,
+        arguments: data.args.map((arg, i) => {
+          if (fn.params[i].includes("vector")) {
+            return encodeVectorForViewRequest(fn.params[i], arg);
+          } else return arg;
+        }),
+      };
+    } catch (e: any) {
+      setErrMsg("Parse arguments failed: " + e?.message);
+      return;
+    }
     setInProcess(true);
     try {
       const result = await view(viewRequest, state.network_value);
