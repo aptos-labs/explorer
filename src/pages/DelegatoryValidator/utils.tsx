@@ -1,14 +1,12 @@
 import {Types} from "aptos";
-import {
-  DelegatedStakingActivity,
-  useGetDelegatedStakeOperationActivities,
-} from "../../api/hooks/useGetDelegatedStakeOperationActivities";
+import {DelegatedStakingActivity} from "../../api/hooks/useGetDelegatedStakeOperationActivities";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {OCTA} from "../../constants";
 import {
   MINIMUM_APT_IN_POOL_FOR_EXPLORER,
   MINIMUM_APT_IN_POOL,
 } from "./constants";
+import {ApolloError} from "@apollo/client";
 
 interface AccountResourceData {
   locked_until_secs: bigint;
@@ -60,26 +58,22 @@ export type StakePrincipals = {
  *    Active_rewards = active - Active_principal
  *    Pending_inactive_rewards = pending_inactive - Pending_inactive_principal
  */
-export function getStakeOperationPrincipals(
-  delegatorAddress: Types.Address,
-  poolAddress: Types.Address,
-): {stakePrincipals: StakePrincipals | undefined; isLoading: boolean} {
-  const result = useGetDelegatedStakeOperationActivities(
-    delegatorAddress,
-    poolAddress,
-  );
-
-  if (result.error) {
+export function getStakeOperationPrincipals(activities: {
+  activities: DelegatedStakingActivity[] | undefined;
+  loading: boolean;
+  error: ApolloError | undefined;
+}) {
+  if (activities.error) {
     return {stakePrincipals: undefined, isLoading: false};
-  } else if (result.loading || !result.activities) {
-    return {stakePrincipals: undefined, isLoading: result.loading};
+  } else if (activities.loading || !activities.activities) {
+    return {stakePrincipals: undefined, isLoading: activities.loading};
   }
 
   let activePrincipals = 0;
   let pendingInactivePrincipals = 0;
 
   const activitiesCopy: DelegatedStakingActivity[] = JSON.parse(
-    JSON.stringify(result.activities!),
+    JSON.stringify(activities.activities!),
   );
 
   activitiesCopy

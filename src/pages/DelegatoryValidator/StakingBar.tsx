@@ -7,7 +7,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
@@ -29,6 +29,7 @@ import {getAddStakeFee} from "../../api";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import {Statsig} from "statsig-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {ValidatorData} from "../../api/hooks/useGetValidators";
 
 type ValidatorStakingBarProps = {
   setIsStakingBarSkeletonLoading: (arg: boolean) => void;
@@ -45,6 +46,22 @@ export default function StakingBar({
     return null;
   }
 
+  return (
+    <StakingBarContent
+      setIsStakingBarSkeletonLoading={setIsStakingBarSkeletonLoading}
+      isSkeletonLoading={isSkeletonLoading}
+      validator={validator}
+    />
+  );
+}
+
+function StakingBarContent({
+  setIsStakingBarSkeletonLoading,
+  isSkeletonLoading,
+  validator,
+}: ValidatorStakingBarProps & {
+  validator: ValidatorData;
+}) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const {connected, wallet, account} = useWallet();
@@ -145,7 +162,7 @@ export default function StakingBar({
       setAddStakeFee(fee[0]);
     }
     fetchData();
-  }, [state.network_value, balance]);
+  }, [state.network_value, balance, setIsStakingBarSkeletonLoading]);
 
   const stakeButton = (
     <StyledTooltip

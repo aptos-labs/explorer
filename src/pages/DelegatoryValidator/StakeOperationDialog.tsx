@@ -7,7 +7,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import React, {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {getStakeOperationAPTRequirement} from "./utils";
@@ -37,6 +37,7 @@ import {Statsig} from "statsig-react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {MINIMUM_APT_IN_POOL} from "./constants";
+import {ValidatorData} from "../../api/hooks/useGetValidators";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
@@ -61,6 +62,33 @@ export default function StakeOperationDialog({
     return null;
   }
 
+  return (
+    <StakeOperationDialogContent
+      handleDialogClose={handleDialogClose}
+      isDialogOpen={isDialogOpen}
+      stakeOperation={stakeOperation}
+      canWithdrawPendingInactive={canWithdrawPendingInactive}
+      stakes={stakes}
+      commission={commission}
+      accountResource={accountResource}
+      validator={validator}
+    />
+  );
+}
+
+function StakeOperationDialogContent({
+  handleDialogClose,
+  isDialogOpen,
+  stakeOperation,
+  canWithdrawPendingInactive,
+  stakes,
+  commission,
+  accountResource,
+  validator,
+}: StakeOperationDialogProps & {
+  accountResource: Types.MoveResource;
+  validator: ValidatorData;
+}) {
   const {balance, lockedUntilSecs, rewardsRateYearly} = useGetDelegationState(
     accountResource,
     validator,
@@ -95,6 +123,28 @@ export default function StakeOperationDialog({
     Number(balance),
   );
   const {suggestedMax, min, max} = minMax;
+  const handleClose = () => {
+    handleDialogClose();
+    setAmount("");
+  };
+
+  const [state, _] = useGlobalState();
+  const client = new AptosClient(state.network_value);
+  const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (stakeOperation === StakeOperation.STAKE) {
+        const fee = await getAddStakeFee(
+          client,
+          validator!.owner_address,
+          Number(amount).toFixed(8),
+        );
+        setAddStakeFee(fee[0]);
+      }
+    }
+    fetchData();
+  }, [state.network_value, amount]);
 
   const onSubmitClick = async () => {
     Statsig.logEvent("submit_transaction_button_clicked", stakeOperation, {
@@ -201,29 +251,6 @@ export default function StakeOperationDialog({
       stakeOperation={stakeOperation}
     />
   );
-
-  const handleClose = () => {
-    handleDialogClose();
-    setAmount("");
-  };
-
-  const [state, _] = useGlobalState();
-  const client = new AptosClient(state.network_value);
-  const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
-
-  useEffect(() => {
-    async function fetchData() {
-      if (stakeOperation === StakeOperation.STAKE) {
-        const fee = await getAddStakeFee(
-          client,
-          validator!.owner_address,
-          Number(amount).toFixed(8),
-        );
-        setAddStakeFee(fee[0]);
-      }
-    }
-    fetchData();
-  }, [state.network_value, amount]);
 
   const isAmountValid = validateAmountInput(min, max);
   const stakeDialog = (

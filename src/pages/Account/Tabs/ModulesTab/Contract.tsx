@@ -36,12 +36,7 @@ import {
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
-import {BCS, HexString, TxnBuilderTypes} from "aptos";
-import {
-  deserializeVector,
-  encodeToBCS,
-  encodeVectorForViewRequest,
-} from "../../../../utils";
+import {deserializeVector, encodeVectorForViewRequest} from "../../../../utils";
 
 type ContractFormType = {
   typeArgs: string[];

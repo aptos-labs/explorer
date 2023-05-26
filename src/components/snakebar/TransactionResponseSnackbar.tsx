@@ -4,7 +4,6 @@ import {TransactionResponse} from "../../api/hooks/useSubmitTransaction";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 import FailureSnackbar from "./FailureSnackbar";
 import ErrorSnackbar from "./ErrorSnackbar";
-import React from "react";
 
 export function CloseAction({onCloseSnackbar}: {onCloseSnackbar: () => void}) {
   return (
@@ -42,7 +41,23 @@ export default function TransactionResponseSnackbar({
     );
   }
 
-  const transactionHash = transactionResponse.transactionHash;
+  return (
+    <TransactionStatusSnackbar
+      transactionHash={transactionResponse.transactionHash}
+      onCloseSnackbar={onCloseSnackbar}
+    />
+  );
+}
+
+interface TransactionStatusSnackbarProps {
+  transactionHash: string;
+  onCloseSnackbar: () => void;
+}
+
+function TransactionStatusSnackbar({
+  transactionHash,
+  onCloseSnackbar,
+}: TransactionStatusSnackbarProps) {
   const {data, status} = useGetTransaction(transactionHash);
 
   if (status !== "success") {
