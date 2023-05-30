@@ -1,4 +1,3 @@
-import React from "react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
@@ -6,7 +5,7 @@ import {Stack, Typography} from "@mui/material";
 import {UserTransactionsTable} from "../Transactions/TransactionsTable";
 import useGetUserTransactionVersions from "../../api/hooks/useGetUserTransactionVersions";
 import TransactionsPreview from "./TransactionsPreview";
-import {Link, useAugmentToWithGlobalSearchParams} from "../../routing";
+import {useAugmentToWithGlobalSearchParams} from "../../routing";
 
 const PREVIEW_TRANSACTIONS_COUNT = 10;
 

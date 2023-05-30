@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {AptosClient, Types} from "aptos";
-import React, {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {Statsig} from "statsig-react";
 import {getCanWithdrawPendingInactive} from "../../api";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
@@ -40,6 +40,8 @@ import {
   StakePrincipals,
 } from "./utils";
 import WalletConnectionDialog from "./WalletConnectionDialog";
+import {ValidatorData} from "../../api/hooks/useGetValidators";
+import {useGetDelegatedStakeOperationActivities} from "../../api/hooks/useGetDelegatedStakeOperationActivities";
 
 const MyDepositsCells = Object.freeze({
   amount: AmountCell,
@@ -235,6 +237,24 @@ export default function MyDepositsSection({
     return null;
   }
 
+  return (
+    <MyDepositSectionContent
+      setIsMyDepositsSectionSkeletonLoading={
+        setIsMyDepositsSectionSkeletonLoading
+      }
+      isSkeletonLoading={isSkeletonLoading}
+      validator={validator}
+    />
+  );
+}
+
+function MyDepositSectionContent({
+  setIsMyDepositsSectionSkeletonLoading,
+  isSkeletonLoading,
+  validator,
+}: MyDepositsSectionProps & {
+  validator: ValidatorData;
+}) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
@@ -243,8 +263,12 @@ export default function MyDepositsSection({
     account?.address!,
     validator.owner_address,
   );
+  const activities = useGetDelegatedStakeOperationActivities(
+    account?.address!,
+    validator.owner_address,
+  );
   const {stakePrincipals, isLoading: isStakeActivityLoading} =
-    getStakeOperationPrincipals(account?.address!, validator.owner_address);
+    getStakeOperationPrincipals(activities);
 
   // sc get_stake returns (active, inactive, pending_inactive), which translates to
   // (staked, withdraw_ready, withdraw_pending)

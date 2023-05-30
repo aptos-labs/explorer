@@ -47,7 +47,7 @@ const useSubmitTransaction = () => {
 
     setTransactionInProcess(true);
 
-    const useSignAndSubmitTransaction = async (
+    const signAndSubmitTransactionCall = async (
       transactionPayload: Types.TransactionPayload,
     ): Promise<TransactionResponse> => {
       const responseOnError: TransactionResponseOnError = {
@@ -86,7 +86,7 @@ const useSubmitTransaction = () => {
       return responseOnError;
     };
 
-    await useSignAndSubmitTransaction(payload).then(setTransactionResponse);
+    await signAndSubmitTransactionCall(payload).then(setTransactionResponse);
   }
 
   function clearTransactionResponse() {

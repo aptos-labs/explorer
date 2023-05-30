@@ -20,9 +20,9 @@ import {useParams} from "react-router-dom";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 function useStartingLineNumber(sourceCode?: string) {
-  if (!sourceCode) return 0;
-
   const functionToHighlight = useParams().selectedFnName;
+
+  if (!sourceCode) return 0;
   if (!functionToHighlight) return 0;
 
   return getPublicFunctionLineNumber(sourceCode, functionToHighlight);
