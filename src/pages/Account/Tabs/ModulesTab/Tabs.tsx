@@ -93,7 +93,7 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
         break;
     }
     eventName && logEvent(eventName);
-  }, [value]);
+  }, [value, logEvent]);
 
   return (
     <Box

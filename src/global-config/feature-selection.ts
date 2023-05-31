@@ -5,7 +5,7 @@ import {
   features,
   isValidFeatureName,
 } from "../constants";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
 export function getSelectedFeatureFromLocalStorage(): FeatureName {
   let selected_feature = localStorage.getItem("selected_feature");
@@ -29,32 +29,35 @@ export function useFeatureSelector() {
 
   const featureQueryParam = searchParams.get("feature");
 
+  const selectFeature = useCallback(
+    (feature_name: FeatureName) => {
+      if (!isValidFeatureName(feature_name)) return;
+      localStorage.setItem("selected_feature", feature_name);
+      // only show the "feature" param in the url when it's not "prod"
+      // we don't want the users to know the existence of the "feature" param
+      if (feature_name === defaultFeatureName) {
+        setSearchParams((prev) => {
+          const newParams = new URLSearchParams(prev);
+          newParams.delete("feature");
+          return newParams;
+        });
+      } else {
+        setSearchParams((prev) => {
+          const newParams = new URLSearchParams(prev);
+          newParams.set("feature", feature_name);
+          return newParams;
+        });
+      }
+      setSelectedFeature(feature_name);
+    },
+    [setSearchParams],
+  );
+
   useEffect(() => {
     if (featureQueryParam) {
       selectFeature(featureQueryParam as FeatureName);
     }
-  }, [featureQueryParam]);
-
-  function selectFeature(feature_name: FeatureName) {
-    if (!isValidFeatureName(feature_name)) return;
-    localStorage.setItem("selected_feature", feature_name);
-    // only show the "feature" param in the url when it's not "prod"
-    // we don't want the users to know the existence of the "feature" param
-    if (feature_name === defaultFeatureName) {
-      setSearchParams((prev) => {
-        const newParams = new URLSearchParams(prev);
-        newParams.delete("feature");
-        return newParams;
-      });
-    } else {
-      setSearchParams((prev) => {
-        const newParams = new URLSearchParams(prev);
-        newParams.set("feature", feature_name);
-        return newParams;
-      });
-    }
-    setSelectedFeature(feature_name);
-  }
+  }, [featureQueryParam, selectFeature]);
 
   return [selectedFeature, selectFeature] as const;
 }

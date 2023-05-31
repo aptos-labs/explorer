@@ -4,7 +4,7 @@ import {
   isValidNetworkName,
   defaultNetworkName,
 } from "../constants";
-import {useEffect} from "react";
+import {useCallback, useEffect} from "react";
 
 const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "selected_network";
 
@@ -42,34 +42,30 @@ export function useNetworkSelector() {
 
   const selectedNetworkQueryParam = searchParams.get("network") ?? "";
 
-  function selectNetwork(
-    network: NetworkName,
-    {replace = false}: {replace?: boolean} = {},
-  ) {
-    if (!isValidNetworkName(network)) return;
-    setSearchParams(
-      (prev) => {
-        const newParams = new URLSearchParams(prev);
-        newParams.set("network", network);
-        return newParams;
-      },
-      {replace},
-    );
-    writeSelectedNetworkToLocalStorage(network);
-  }
-
-  // on init check for existence of network query param, if not present, check local storage for a previously selected network. Then set query param to the network defined in local storage.
-  useEffect(
-    () => {
-      const currentNetworkSearchParam = searchParams.get("network");
-      if (!isValidNetworkName(currentNetworkSearchParam ?? "")) {
-        selectNetwork(getUserSelectedNetworkFromLocalStorageWithDefault(), {
-          replace: true,
-        });
-      }
+  const selectNetwork = useCallback(
+    (network: NetworkName, {replace = false}: {replace?: boolean} = {}) => {
+      if (!isValidNetworkName(network)) return;
+      setSearchParams(
+        (prev) => {
+          const newParams = new URLSearchParams(prev);
+          newParams.set("network", network);
+          return newParams;
+        },
+        {replace},
+      );
+      writeSelectedNetworkToLocalStorage(network);
     },
-    [], // empty [] makes this effect only run once (on mount)
+    [setSearchParams],
   );
+
+  useEffect(() => {
+    const currentNetworkSearchParam = searchParams.get("network");
+    if (!isValidNetworkName(currentNetworkSearchParam ?? "")) {
+      selectNetwork(getUserSelectedNetworkFromLocalStorageWithDefault(), {
+        replace: true,
+      });
+    }
+  }, [selectNetwork, searchParams]);
 
   if (isValidNetworkName(selectedNetworkQueryParam)) {
     return [selectedNetworkQueryParam, selectNetwork] as const;

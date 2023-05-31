@@ -628,7 +628,7 @@ function ContractForm({
 
   useEffect(() => {
     setFormValid(isValid);
-  }, [isValid]);
+  }, [isValid, setFormValid]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

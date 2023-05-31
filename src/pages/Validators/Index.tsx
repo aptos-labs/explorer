@@ -1,6 +1,5 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Box, Typography} from "@mui/material";
-import * as React from "react";
 import {useEffect} from "react";
 import {Statsig, useConfig} from "statsig-react";
 import {STAKING_BANNER_CONFIG_NAME} from "../../dataConstants";
@@ -54,7 +53,15 @@ export default function ValidatorsPage() {
         },
       );
     }
-  }, []);
+  }, [
+    account?.address,
+    currentViewCount,
+    lastVisitKey,
+    lastVisitTimestamp,
+    viewCountCap,
+    viewCountKey,
+    wallet?.name,
+  ]);
 
   return (
     <Box>
