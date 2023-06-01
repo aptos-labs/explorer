@@ -53,15 +53,8 @@ export default function ValidatorsPage() {
         },
       );
     }
-  }, [
-    account?.address,
-    currentViewCount,
-    lastVisitKey,
-    lastVisitTimestamp,
-    viewCountCap,
-    viewCountKey,
-    wallet?.name,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box>

@@ -93,7 +93,8 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
         break;
     }
     eventName && logEvent(eventName);
-  }, [value, logEvent]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   return (
     <Box
