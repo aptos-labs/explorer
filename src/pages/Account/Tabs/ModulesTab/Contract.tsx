@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {HexString, Types} from "aptos";
 import {ReactNode, useEffect, useMemo, useState} from "react";
 import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
@@ -302,7 +302,7 @@ function RunContractForm({
         if (fn.params[i + 1].includes("vector")) {
           // when it's a vector, we support both hex and javascript array format
           return arg.trim().startsWith("0x")
-            ? arg.trim()
+            ? new HexString(arg).toUint8Array()
             : deserializeVector(arg);
         } else return arg;
       }),

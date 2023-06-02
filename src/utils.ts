@@ -170,75 +170,24 @@ export function deserializeVector(vectorString: string): string[] {
   return result.split(",");
 }
 
-export function encodeToBCS(
-  type: string,
-  value: string,
-): TxnBuilderTypes.TransactionArgument {
-  switch (type) {
-    case "address": {
-      return TxnBuilderTypes.AccountAddress.fromHex(value.trim());
-    }
-    case "u8": {
-      return new TxnBuilderTypes.TransactionArgumentU8(parseInt(value.trim()));
-    }
-    case "u16": {
-      return new TxnBuilderTypes.TransactionArgumentU16(parseInt(value.trim()));
-    }
-    case "u32": {
-      return new TxnBuilderTypes.TransactionArgumentU32(parseInt(value.trim()));
-    }
-    case "u64": {
-      return new TxnBuilderTypes.TransactionArgumentU64(BigInt(value.trim()));
-    }
-    case "u128": {
-      return new TxnBuilderTypes.TransactionArgumentU128(BigInt(value.trim()));
-    }
-    case "u256": {
-      return new TxnBuilderTypes.TransactionArgumentU256(BigInt(value.trim()));
-    }
-    case "bool": {
-      let result = true;
-      if (value.trim() === "true") {
-        result = true;
-      } else if (value.trim() === "false") {
-        result = false;
-      } else {
-        throw new Error(`Unsupported bool value: ${value}`);
-      }
-      return new TxnBuilderTypes.TransactionArgumentBool(result);
-    }
-    // Only vector<u8> supported, because no other vectors provided by TxnBuilderTypes
-    case "vector<u8>": {
-      return new TxnBuilderTypes.TransactionArgumentU8Vector(
-        new Uint8Array(
-          value
-            .trim()
-            .slice(1, -1)
-            .split(",")
-            .map((x) => parseInt(x.trim())),
-        ),
-      );
-    }
-    default:
-      throw new Error(`Unsupported type: ${type}`);
-  }
-}
-
 export function encodeVectorForViewRequest(type: string, value: string) {
   const rawVector = deserializeVector(value);
   const regex = /vector<([^]+)>/;
   const match = type.match(regex);
   if (match) {
-    let bcsVector: any[] = [];
-    // encode the element in vector
-    bcsVector = rawVector.map((v) => {
-      return encodeToBCS(match[1], v);
-    });
-
-    const serializer = new BCS.Serializer();
-    BCS.serializeVector(bcsVector, serializer);
-    return (HexString.fromUint8Array(serializer.getBytes().subarray(1)) as any)
-      .hexString;
+    if (match[1] === "u8") {
+      return (
+        HexString.fromUint8Array(
+          new Uint8Array(
+            rawVector.map((v) => {
+              return parseInt(v.trim());
+            }),
+          ),
+        ) as any
+      ).hexString;
+    } else {
+      return rawVector;
+    }
   } else {
     throw new Error(`Unsupported type: ${type}`);
   }
