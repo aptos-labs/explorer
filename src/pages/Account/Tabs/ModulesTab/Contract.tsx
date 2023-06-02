@@ -302,7 +302,9 @@ function RunContractForm({
         if (fn.params[i + 1].includes("vector")) {
           // when it's a vector, we support both hex and javascript array format
           return arg.trim().startsWith("0x")
-            ? new HexString(arg).toUint8Array()
+            ? Array.from(new HexString(arg).toUint8Array()).map((x) =>
+                x.toString(),
+              )
             : deserializeVector(arg);
         } else return arg;
       }),
