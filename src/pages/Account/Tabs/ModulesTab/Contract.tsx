@@ -300,7 +300,10 @@ function RunContractForm({
       arguments: data.args.map((arg, i) => {
         // use i+1 because the first argument is the signer
         if (fn.params[i + 1].includes("vector")) {
-          return deserializeVector(arg);
+          // when it's a vector, we support both hex and javascript array format
+          return arg.trim().startsWith("0x")
+            ? arg.trim()
+            : deserializeVector(arg);
         } else return arg;
       }),
     };
@@ -464,7 +467,10 @@ function ReadContractForm({
         type_arguments: data.typeArgs,
         arguments: data.args.map((arg, i) => {
           if (fn.params[i].includes("vector")) {
-            return encodeVectorForViewRequest(fn.params[i], arg);
+            // when it's a vector, we support both hex and javascript array format
+            return arg.trim().startsWith("0x")
+              ? arg.trim()
+              : encodeVectorForViewRequest(fn.params[i], arg);
           } else return arg;
         }),
       };
