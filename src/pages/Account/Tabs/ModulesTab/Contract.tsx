@@ -299,9 +299,10 @@ function RunContractForm({
       type_arguments: data.typeArgs,
       arguments: data.args.map((arg, i) => {
         // use i+1 because the first argument is the signer
-        if (fn.params[i + 1].includes("vector")) {
-          // when it's a vector, we support both hex and javascript array format
-          return arg.trim().startsWith("0x")
+        const type = fn.params[i + 1];
+        if (type.includes("vector")) {
+          // when it's a vector<u8>, we support both hex and javascript array format
+          return type === "vector<u8>" && arg.trim().startsWith("0x")
             ? Array.from(new HexString(arg).toUint8Array()).map((x) =>
                 x.toString(),
               )
