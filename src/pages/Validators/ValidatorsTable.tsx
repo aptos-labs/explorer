@@ -178,7 +178,11 @@ export function ValidatorAddrCell({validator}: ValidatorCellProps) {
 export function OperatorAddrCell({validator}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <HashButton hash={validator.operator_address} type={HashType.ACCOUNT} />
+      <HashButton
+        hash={validator.operator_address}
+        type={HashType.ACCOUNT}
+        isValidator
+      />
     </GeneralTableCell>
   );
 }

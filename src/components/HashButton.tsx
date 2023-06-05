@@ -64,17 +64,25 @@ interface HashButtonProps extends BoxProps {
   hash: string;
   type: HashType;
   size?: "small" | "large";
+  isValidator?: boolean;
 }
 
 export default function HashButton({
   hash,
   type,
   size = "small",
+  isValidator = false,
   ...props
 }: HashButtonProps) {
   if (type === HashType.ACCOUNT) {
     return (
-      <AccountHashButtonInner hash={hash} type={type} size={size} {...props} />
+      <AccountHashButtonInner
+        hash={hash}
+        type={type}
+        size={size}
+        isValidator={isValidator}
+        {...props}
+      />
     );
   } else {
     return <HashButtonInner hash={hash} type={type} size={size} {...props} />;
@@ -85,14 +93,16 @@ interface AccountHashButtonInnerProps extends BoxProps {
   hash: string;
   type: HashType;
   size?: "small" | "large";
+  isValidator: boolean;
 }
 
 function AccountHashButtonInner({
   hash,
   type,
   size = "small",
+  isValidator,
 }: AccountHashButtonInnerProps) {
-  const name = useGetNameFromAddress(hash);
+  const name = useGetNameFromAddress(hash, false, isValidator);
   const truncateHash =
     size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
   const [copyTooltipOpen, setCopyTooltipOpen] = useState(false);
