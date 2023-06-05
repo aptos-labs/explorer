@@ -161,6 +161,20 @@ export function getPublicFunctionLineNumber(
   return 0;
 }
 
+export function encodeInputArgsForViewRequest(type: string, value: string) {
+  if (type.includes("vector")) {
+    // when it's a vector, we support both hex and javascript array format
+    return value.trim().startsWith("0x")
+      ? value.trim()
+      : encodeVectorForViewRequest(type, value);
+  } else if (type === "bool") {
+    if (value !== "true" && value !== "false")
+      throw new Error(`Invalid bool value: ${value}`);
+
+    return value === "true" ? true : false;
+  } else return value;
+}
+
 // Deserialize "[1,2,3]" or "1,2,3" to ["1", "2", "3"]
 export function deserializeVector(vectorString: string): string[] {
   let result = vectorString.trim();
@@ -170,7 +184,7 @@ export function deserializeVector(vectorString: string): string[] {
   return result.split(",");
 }
 
-export function encodeVectorForViewRequest(type: string, value: string) {
+function encodeVectorForViewRequest(type: string, value: string) {
   const rawVector = deserializeVector(value);
   const regex = /vector<([^]+)>/;
   const match = type.match(regex);

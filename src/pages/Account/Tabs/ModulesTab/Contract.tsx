@@ -36,7 +36,10 @@ import {
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
-import {deserializeVector, encodeVectorForViewRequest} from "../../../../utils";
+import {
+  deserializeVector,
+  encodeInputArgsForViewRequest,
+} from "../../../../utils";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -469,12 +472,7 @@ function ReadContractForm({
         function: `${module.address}::${module.name}::${fn.name}`,
         type_arguments: data.typeArgs,
         arguments: data.args.map((arg, i) => {
-          if (fn.params[i].includes("vector")) {
-            // when it's a vector, we support both hex and javascript array format
-            return arg.trim().startsWith("0x")
-              ? arg.trim()
-              : encodeVectorForViewRequest(fn.params[i], arg);
-          } else return arg;
+          return encodeInputArgsForViewRequest(fn.params[i], arg);
         }),
       };
     } catch (e: any) {
