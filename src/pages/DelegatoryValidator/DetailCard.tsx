@@ -68,7 +68,11 @@ function ValidatorDetailCardContent({
           title={"Operator"}
           value={
             operatorAddr && (
-              <HashButton hash={operatorAddr} type={HashType.ACCOUNT} />
+              <HashButton
+                hash={operatorAddr}
+                type={HashType.ACCOUNT}
+                isValidator
+              />
             )
           }
         />

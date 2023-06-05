@@ -25,7 +25,11 @@ function getFetchNameUrl(
     : `https://www.aptosnames.com/api/${network}/v1/name/${address}`;
 }
 
-export function useGetNameFromAddress(address: string, shouldCache = false) {
+export function useGetNameFromAddress(
+  address: string,
+  shouldCache = false,
+  isValidator = false,
+) {
   const [state, _] = useGlobalState();
 
   const queryResult = useQuery<string | null, ResponseError>({
@@ -35,7 +39,7 @@ export function useGetNameFromAddress(address: string, shouldCache = false) {
       if (cachedName) {
         return cachedName;
       }
-      return genANSName(address, shouldCache, state.network_name);
+      return genANSName(address, shouldCache, state.network_name, isValidator);
     },
   });
 
@@ -48,6 +52,7 @@ async function genANSName(
   address: string,
   shouldCache: boolean,
   networkName: NetworkName,
+  isValidator: boolean,
 ): Promise<string | null> {
   const primaryNameUrl = getFetchNameUrl(networkName, address, true);
 
@@ -63,6 +68,8 @@ async function genANSName(
         setLocalStorageWithExpiry(address, primaryName, TTL);
       }
       return primaryName;
+    } else if (isValidator) {
+      return null;
     } else {
       const nameUrl = getFetchNameUrl(networkName, address, false);
 

@@ -23,7 +23,7 @@ export default function ValidatorTitle({
     <Stack direction="column" spacing={4} marginX={1}>
       <Typography variant="h3">Validator</Typography>
       <Stack direction="row" spacing={1}>
-        <TitleHashButton hash={address} type={HashType.ACCOUNT} />
+        <TitleHashButton hash={address} type={HashType.ACCOUNT} isValidator />
         <ValidatorStatusIcon validatorStatus={validatorStatus} />
       </Stack>
     </Stack>

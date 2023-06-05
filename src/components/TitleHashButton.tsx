@@ -26,13 +26,18 @@ export enum HashType {
 interface TitleHashButtonProps {
   hash: string;
   type: HashType;
+  isValidator?: boolean;
 }
 
-export default function TitleHashButton({hash, type}: TitleHashButtonProps) {
+export default function TitleHashButton({
+  hash,
+  type,
+  isValidator = false,
+}: TitleHashButtonProps) {
   if (type !== HashType.NAME) {
     return <HashButton hash={hash} />;
   } else {
-    return <Name address={hash} />;
+    return <Name address={hash} isValidator={isValidator} />;
   }
 }
 
@@ -43,7 +48,7 @@ function HashButton({hash}: {hash: string}) {
 
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
-  const copyAddress = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const copyAddress = async (_event: React.MouseEvent<HTMLButtonElement>) => {
     await navigator.clipboard.writeText(hash);
 
     setTooltipOpen(true);
@@ -107,9 +112,9 @@ function HashButton({hash}: {hash: string}) {
   );
 }
 
-function Name({address}: {address: string}) {
+function Name({address, isValidator}: {address: string; isValidator: boolean}) {
   const theme = useTheme();
-  const name = useGetNameFromAddress(address, true);
+  const name = useGetNameFromAddress(address, true, isValidator);
 
   if (!name) {
     return null;
