@@ -193,7 +193,10 @@ function encodeVectorForViewRequest(type: string, value: string) {
         HexString.fromUint8Array(
           new Uint8Array(
             rawVector.map((v) => {
-              return ensureNumber(v.trim());
+              const result = ensureNumber(v.trim());
+              if (result < 0 || result > 255)
+                throw new Error(`Invalid u8 value: ${result}`);
+              return result;
             }),
           ),
         ) as any
