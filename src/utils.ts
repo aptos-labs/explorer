@@ -1,6 +1,5 @@
 import {BCS, HexString, TxnBuilderTypes, Types} from "aptos";
 import pako from "pako";
-
 /**
  * Helper function for exhaustiveness checks.
  *
@@ -194,15 +193,71 @@ function encodeVectorForViewRequest(type: string, value: string) {
         HexString.fromUint8Array(
           new Uint8Array(
             rawVector.map((v) => {
-              return parseInt(v.trim());
+              return ensureNumber(v.trim());
             }),
           ),
         ) as any
       ).hexString;
+    } else if (["u16", "u32"].includes(match[1])) {
+      return rawVector.map((v) => ensureNumber(v.trim()));
+    } else if (["u64", "u128", "u256"].includes(match[1])) {
+      // For bigint, not need to convert, only validation
+      rawVector.forEach((v) => ensureBigInt(v.trim()));
+      return rawVector;
+    } else if (match[1] === "bool") {
+      return rawVector.map((v) => ensureBoolean(v.trim()));
     } else {
+      // 1. Address type no need to convert
+      // 2. Other complex types like Struct is not support yet. We just pass what user input.
       return rawVector;
     }
   } else {
     throw new Error(`Unsupported type: ${type}`);
+  }
+}
+
+function ensureNumber(val: number | string): number {
+  assertType(val, ["number", "string"]);
+  if (typeof val === "number") {
+    return val;
+  }
+
+  const res = Number.parseInt(val, 10);
+  if (Number.isNaN(res)) {
+    throw new Error("Invalid number string.");
+  }
+
+  return res;
+}
+
+export function ensureBigInt(val: number | bigint | string): bigint {
+  assertType(val, ["number", "bigint", "string"]);
+  return BigInt(val);
+}
+
+export function ensureBoolean(val: boolean | string): boolean {
+  assertType(val, ["boolean", "string"]);
+  if (typeof val === "boolean") {
+    return val;
+  }
+
+  if (val === "true") {
+    return true;
+  }
+  if (val === "false") {
+    return false;
+  }
+
+  throw new Error("Invalid boolean string.");
+}
+
+function assertType(val: any, types: string[] | string, message?: string) {
+  if (!types?.includes(typeof val)) {
+    throw new Error(
+      message ||
+        `Invalid arg: ${val} type should be ${
+          types instanceof Array ? types.join(" or ") : types
+        }`,
+    );
   }
 }
