@@ -1,6 +1,5 @@
 import {BCS, HexString, TxnBuilderTypes, Types} from "aptos";
 import pako from "pako";
-
 /**
  * Helper function for exhaustiveness checks.
  *
@@ -161,6 +160,20 @@ export function getPublicFunctionLineNumber(
   return 0;
 }
 
+export function encodeInputArgsForViewRequest(type: string, value: string) {
+  if (type.includes("vector")) {
+    // when it's a vector, we support both hex and javascript array format
+    return value.trim().startsWith("0x")
+      ? value.trim()
+      : encodeVectorForViewRequest(type, value);
+  } else if (type === "bool") {
+    if (value !== "true" && value !== "false")
+      throw new Error(`Invalid bool value: ${value}`);
+
+    return value === "true" ? true : false;
+  } else return value;
+}
+
 // Deserialize "[1,2,3]" or "1,2,3" to ["1", "2", "3"]
 export function deserializeVector(vectorString: string): string[] {
   let result = vectorString.trim();
@@ -170,76 +183,84 @@ export function deserializeVector(vectorString: string): string[] {
   return result.split(",");
 }
 
-export function encodeToBCS(
-  type: string,
-  value: string,
-): TxnBuilderTypes.TransactionArgument {
-  switch (type) {
-    case "address": {
-      return TxnBuilderTypes.AccountAddress.fromHex(value.trim());
-    }
-    case "u8": {
-      return new TxnBuilderTypes.TransactionArgumentU8(parseInt(value.trim()));
-    }
-    case "u16": {
-      return new TxnBuilderTypes.TransactionArgumentU16(parseInt(value.trim()));
-    }
-    case "u32": {
-      return new TxnBuilderTypes.TransactionArgumentU32(parseInt(value.trim()));
-    }
-    case "u64": {
-      return new TxnBuilderTypes.TransactionArgumentU64(BigInt(value.trim()));
-    }
-    case "u128": {
-      return new TxnBuilderTypes.TransactionArgumentU128(BigInt(value.trim()));
-    }
-    case "u256": {
-      return new TxnBuilderTypes.TransactionArgumentU256(BigInt(value.trim()));
-    }
-    case "bool": {
-      let result = true;
-      if (value.trim() === "true") {
-        result = true;
-      } else if (value.trim() === "false") {
-        result = false;
-      } else {
-        throw new Error(`Unsupported bool value: ${value}`);
-      }
-      return new TxnBuilderTypes.TransactionArgumentBool(result);
-    }
-    // Only vector<u8> supported, because no other vectors provided by TxnBuilderTypes
-    case "vector<u8>": {
-      return new TxnBuilderTypes.TransactionArgumentU8Vector(
-        new Uint8Array(
-          value
-            .trim()
-            .slice(1, -1)
-            .split(",")
-            .map((x) => parseInt(x.trim())),
-        ),
-      );
-    }
-    default:
-      throw new Error(`Unsupported type: ${type}`);
-  }
-}
-
-export function encodeVectorForViewRequest(type: string, value: string) {
+function encodeVectorForViewRequest(type: string, value: string) {
   const rawVector = deserializeVector(value);
   const regex = /vector<([^]+)>/;
   const match = type.match(regex);
   if (match) {
-    let bcsVector: any[] = [];
-    // encode the element in vector
-    bcsVector = rawVector.map((v) => {
-      return encodeToBCS(match[1], v);
-    });
-
-    const serializer = new BCS.Serializer();
-    BCS.serializeVector(bcsVector, serializer);
-    return (HexString.fromUint8Array(serializer.getBytes().subarray(1)) as any)
-      .hexString;
+    if (match[1] === "u8") {
+      return (
+        HexString.fromUint8Array(
+          new Uint8Array(
+            rawVector.map((v) => {
+              const result = ensureNumber(v.trim());
+              if (result < 0 || result > 255)
+                throw new Error(`Invalid u8 value: ${result}`);
+              return result;
+            }),
+          ),
+        ) as any
+      ).hexString;
+    } else if (["u16", "u32"].includes(match[1])) {
+      return rawVector.map((v) => ensureNumber(v.trim()));
+    } else if (["u64", "u128", "u256"].includes(match[1])) {
+      // For bigint, not need to convert, only validation
+      rawVector.forEach((v) => ensureBigInt(v.trim()));
+      return rawVector;
+    } else if (match[1] === "bool") {
+      return rawVector.map((v) => ensureBoolean(v.trim()));
+    } else {
+      // 1. Address type no need to convert
+      // 2. Other complex types like Struct is not support yet. We just pass what user input.
+      return rawVector;
+    }
   } else {
     throw new Error(`Unsupported type: ${type}`);
+  }
+}
+
+function ensureNumber(val: number | string): number {
+  assertType(val, ["number", "string"]);
+  if (typeof val === "number") {
+    return val;
+  }
+
+  const res = Number.parseInt(val, 10);
+  if (Number.isNaN(res)) {
+    throw new Error("Invalid number string.");
+  }
+
+  return res;
+}
+
+export function ensureBigInt(val: number | bigint | string): bigint {
+  assertType(val, ["number", "bigint", "string"]);
+  return BigInt(val);
+}
+
+export function ensureBoolean(val: boolean | string): boolean {
+  assertType(val, ["boolean", "string"]);
+  if (typeof val === "boolean") {
+    return val;
+  }
+
+  if (val === "true") {
+    return true;
+  }
+  if (val === "false") {
+    return false;
+  }
+
+  throw new Error("Invalid boolean string.");
+}
+
+function assertType(val: any, types: string[] | string, message?: string) {
+  if (!types?.includes(typeof val)) {
+    throw new Error(
+      message ||
+        `Invalid arg: ${val} type should be ${
+          types instanceof Array ? types.join(" or ") : types
+        }`,
+    );
   }
 }

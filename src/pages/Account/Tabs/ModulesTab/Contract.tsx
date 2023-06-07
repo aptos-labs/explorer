@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {HexString, Types} from "aptos";
 import {ReactNode, useEffect, useMemo, useState} from "react";
 import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
@@ -36,7 +36,10 @@ import {
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
-import {deserializeVector, encodeVectorForViewRequest} from "../../../../utils";
+import {
+  deserializeVector,
+  encodeInputArgsForViewRequest,
+} from "../../../../utils";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -299,8 +302,14 @@ function RunContractForm({
       type_arguments: data.typeArgs,
       arguments: data.args.map((arg, i) => {
         // use i+1 because the first argument is the signer
-        if (fn.params[i + 1].includes("vector")) {
-          return deserializeVector(arg);
+        const type = fn.params[i + 1];
+        if (type.includes("vector")) {
+          // when it's a vector<u8>, we support both hex and javascript array format
+          return type === "vector<u8>" && arg.trim().startsWith("0x")
+            ? Array.from(new HexString(arg).toUint8Array()).map((x) =>
+                x.toString(),
+              )
+            : deserializeVector(arg);
         } else return arg;
       }),
     };
@@ -463,9 +472,7 @@ function ReadContractForm({
         function: `${module.address}::${module.name}::${fn.name}`,
         type_arguments: data.typeArgs,
         arguments: data.args.map((arg, i) => {
-          if (fn.params[i].includes("vector")) {
-            return encodeVectorForViewRequest(fn.params[i], arg);
-          } else return arg;
+          return encodeInputArgsForViewRequest(fn.params[i], arg);
         }),
       };
     } catch (e: any) {
