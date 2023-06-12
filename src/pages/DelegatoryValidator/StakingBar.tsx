@@ -90,7 +90,7 @@ function StakingBarContent({
     if (!isQueryLoading) {
       setIsStakingBarSkeletonLoading(false);
     }
-  }, [isQueryLoading]);
+  }, [isQueryLoading, setIsStakingBarSkeletonLoading]);
 
   const stakeAmount = (
     <Stack direction="column" spacing={0.5}>
@@ -137,7 +137,6 @@ function StakingBarContent({
 
   const balance = useGetAccountAPTBalance(account?.address!);
   const [state, _] = useGlobalState();
-  const client = new AptosClient(state.network_value);
   const {stakes} = useGetDelegatorStakeInfo(
     account?.address!,
     validator.owner_address,
@@ -153,6 +152,7 @@ function StakingBarContent({
         : Number(addStakeFee));
 
   useEffect(() => {
+    const client = new AptosClient(state.network_value);
     async function fetchData() {
       const fee = await getAddStakeFee(
         client,
@@ -162,7 +162,7 @@ function StakingBarContent({
       setAddStakeFee(fee[0]);
     }
     fetchData();
-  }, [state.network_value, balance, setIsStakingBarSkeletonLoading]);
+  }, [state.network_value, balance, validator]);
 
   const stakeButton = (
     <StyledTooltip
