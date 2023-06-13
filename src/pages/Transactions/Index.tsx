@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {Box, Button, Stack, Typography} from "@mui/material";
 import PageHeader from "../layout/PageHeader";
@@ -27,7 +27,7 @@ export default function TransactionsPage() {
       searchParams.delete("page");
       setSearchParams(searchParams);
     }
-  }, [userTxnOnly]);
+  }, [userTxnOnly, searchParams, setSearchParams]);
 
   const toggleUserTxnOnly = () => {
     setUserTxnOnly(!userTxnOnly);

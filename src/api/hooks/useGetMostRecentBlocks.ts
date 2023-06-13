@@ -27,7 +27,7 @@ export function useGetMostRecentBlocks(count: number) {
       };
       fetchData();
     }
-  }, [currentBlockHeight, state]);
+  }, [currentBlockHeight, state, count]);
 
   return {recentBlocks, isLoading};
 }

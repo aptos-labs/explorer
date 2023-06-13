@@ -279,14 +279,14 @@ function MyDepositSectionContent({
     if (!isStakeActivityLoading) {
       setIsMyDepositsSectionSkeletonLoading(false);
     }
-  }, [isStakeActivityLoading]);
+  }, [isStakeActivityLoading, setIsMyDepositsSectionSkeletonLoading]);
 
   const [state, _] = useGlobalState();
-  const client = new AptosClient(state.network_value);
   const [canWithdrawPendingInactive, setCanWithdrawPendingInactive] =
     useState<Types.MoveValue>(false);
 
   useEffect(() => {
+    const client = new AptosClient(state.network_value);
     async function fetchData() {
       const canWithdraw = await getCanWithdrawPendingInactive(
         client,
@@ -295,7 +295,7 @@ function MyDepositSectionContent({
       setCanWithdrawPendingInactive(canWithdraw[0]);
     }
     fetchData();
-  }, [validator.owner_address, state.network_value]);
+  }, [validator.owner_address, state.network_value, validator]);
 
   function MyDepositRow({stake, status}: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);

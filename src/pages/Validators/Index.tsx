@@ -1,6 +1,5 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Box, Typography} from "@mui/material";
-import * as React from "react";
 import {useEffect} from "react";
 import {Statsig, useConfig} from "statsig-react";
 import {STAKING_BANNER_CONFIG_NAME} from "../../dataConstants";
@@ -54,6 +53,7 @@ export default function ValidatorsPage() {
         },
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

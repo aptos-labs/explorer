@@ -129,10 +129,10 @@ function StakeOperationDialogContent({
   };
 
   const [state, _] = useGlobalState();
-  const client = new AptosClient(state.network_value);
   const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
 
   useEffect(() => {
+    const client = new AptosClient(state.network_value);
     async function fetchData() {
       if (stakeOperation === StakeOperation.STAKE) {
         const fee = await getAddStakeFee(
@@ -144,7 +144,7 @@ function StakeOperationDialogContent({
       }
     }
     fetchData();
-  }, [state.network_value, amount]);
+  }, [state.network_value, amount, stakeOperation, validator]);
 
   const onSubmitClick = async () => {
     Statsig.logEvent("submit_transaction_button_clicked", stakeOperation, {
@@ -173,11 +173,15 @@ function StakeOperationDialogContent({
     if (transactionResponse?.transactionSubmitted) {
       setTransactionHash(transactionResponse?.transactionHash);
       setEnteredAmount(amount);
-      clearAmount();
       handleDialogClose();
       setIsTransactionSucceededDialogOpen(true);
     }
-  }, [transactionResponse]);
+  }, [
+    transactionResponse,
+    amount,
+    handleDialogClose,
+    setIsTransactionSucceededDialogOpen,
+  ]);
 
   const getAmount = () => {
     const stakedAmount = Number(stakes[0]) / OCTA;

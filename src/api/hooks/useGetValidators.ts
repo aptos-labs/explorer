@@ -42,23 +42,22 @@ function useGetValidatorsRawData(network: NetworkName) {
     [],
   );
 
-  const getDataUrl = () => {
-    switch (network) {
-      case Network.MAINNET:
-        return MAINNET_VALIDATORS_DATA_URL;
-      case Network.PREVIEWNET:
-        return PREVIEWNET_VALIDATORS_DATA_URL;
-      default:
-        return TESTNET_VALIDATORS_DATA_URL;
-    }
-  };
-
   useEffect(() => {
     if (
       state.network_name === Network.MAINNET ||
       state.network_name === Network.TESTNET ||
       state.network_name === Network.PREVIEWNET
     ) {
+      const getDataUrl = () => {
+        switch (state.network_name) {
+          case Network.MAINNET:
+            return MAINNET_VALIDATORS_DATA_URL;
+          case Network.PREVIEWNET:
+            return PREVIEWNET_VALIDATORS_DATA_URL;
+          default:
+            return TESTNET_VALIDATORS_DATA_URL;
+        }
+      };
       const fetchData = async () => {
         const response = await fetch(getDataUrl());
         const rawData: ValidatorData[] = await response.json();

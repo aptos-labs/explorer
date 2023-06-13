@@ -334,7 +334,7 @@ function MyDepositCell({validator}: ValidatorCellProps) {
         0,
       ),
     );
-  }, [stakes, account]);
+  }, [stakes]);
 
   return (
     <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
@@ -466,7 +466,7 @@ export function DelegationValidatorsTable() {
         ...delegatedStakingPoolsNotInValidators,
       ]);
     }
-  }, [validators, state.network_value, loading]);
+  }, [validators, state.network_value, loading, delegatedStakingPools]);
 
   if (error) {
     return <Error error={error} />;

@@ -15,7 +15,6 @@ import {
 } from "../../pages/utils";
 import {getAddressFromName} from "./useGetANS";
 import {sendToGTM} from "./useGoogleTagManager";
-import {useAugmentToWithGlobalSearchParams} from "../../routing";
 
 export type SearchResult = {
   label: string;
@@ -32,8 +31,6 @@ export default function useGetSearchResults(input: string) {
   const [state, _setState] = useGlobalState();
 
   const searchText = input.trim();
-
-  const augmentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
 
   useEffect(() => {
     if (searchText === "") {
@@ -143,15 +140,9 @@ export default function useGetSearchResults(input: string) {
       }
 
       const resultsList = await Promise.all(promises);
-      const results = resultsList
-        .filter((result): result is SearchResult => !!result)
-        .map((result) => ({
-          ...result,
-          to:
-            result.to !== null
-              ? augmentToWithGlobalSearchParams(result.to)
-              : null,
-        }));
+      const results = resultsList.filter(
+        (result): result is SearchResult => !!result,
+      );
 
       window.performance.mark(searchPerformanceEnd);
       sendToGTM({

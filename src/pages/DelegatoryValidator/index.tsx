@@ -1,5 +1,4 @@
 import {Grid, Stack} from "@mui/material";
-import * as React from "react";
 import {useParams} from "react-router-dom";
 import PageHeader from "../layout/PageHeader";
 import ValidatorTitle from "./Title";
@@ -17,12 +16,12 @@ import {SkeletonTheme} from "react-loading-skeleton";
 import {useGetValidatorPageSkeletonLoading} from "../../api/hooks/useGetValidatorPageSkeletonLoading";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import Error from "../Account/Error";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
-  const addressHex = new HexString(address);
+  const addressHex = useMemo(() => new HexString(address), [address]);
   const {validators} = useGetValidators();
   const {connected} = useWallet();
   const {data: accountResource, error} = useGetAccountResource(
@@ -72,7 +71,7 @@ export default function ValidatorPage() {
           : undefined,
       );
     }
-  }, [delegatedStakingPools, loading, validators, validator]);
+  }, [delegatedStakingPools, loading, validators, validator, addressHex]);
 
   if (error) {
     return <Error error={error} />;

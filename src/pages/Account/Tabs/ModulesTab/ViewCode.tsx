@@ -9,7 +9,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, {useEffect, useMemo} from "react";
+import {useEffect, useMemo} from "react";
 import Error from "../../Error";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {
@@ -54,7 +54,7 @@ function ViewCode({address}: {address: string}): JSX.Element {
         },
       );
     }
-  }, [selectedModuleName, sortedPackages]);
+  }, [selectedModuleName, sortedPackages, address, navigate]);
 
   if (sortedPackages.length === 0) {
     return <EmptyTabContent />;
