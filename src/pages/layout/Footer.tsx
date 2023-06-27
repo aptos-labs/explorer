@@ -11,7 +11,7 @@ import {ReactComponent as LinkedInLogo} from "../../assets/linkedin.svg";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import SvgIcon from "@mui/material/SvgIcon";
 
-import {ReactComponent as LogoFull} from "../../assets/svg/aptos_logo_icon.svg";
+import {ReactComponent as LogoFull} from "../../assets/svg/aptos_logo_labs.svg";
 import {Link} from "../../routing";
 
 const socialLinks = [
@@ -44,71 +44,74 @@ export default function Footer() {
       <Container maxWidth="xl" sx={{paddingTop: "2rem", paddingBottom: "2rem"}}>
         <Grid
           container
-          spacing={{xs: 4, md: 1}}
+          gap={4}
           alignContent="center"
           alignItems="center"
           direction={{xs: "column", md: "row"}}
         >
-          <Grid xs="auto" container justifyContent="start">
+          <Grid
+            xs="auto"
+            gap={1}
+            container
+            alignItems={{xs: "center", md: "start"}}
+            direction="column"
+          >
             <Link
               color="inherit"
               to="https://aptoslabs.com/"
               target="_blank"
-              sx={{width: "3rem", mb: {xs: 2, md: 0}, mr: {md: 2}}}
+              title="Aptos Labs"
+              sx={{width: "8rem", mr: {md: 2}}}
             >
               <LogoFull />
             </Link>
-          </Grid>
-          <Grid
-            xs="auto"
-            container
-            direction={{xs: "column"}}
-            justifyContent="start"
-          >
-            <Typography
-              sx={{
-                textAlign: {
-                  xs: "center",
-                  md: "left",
-                  fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
-                },
-              }}
-              fontSize="0.8rem"
-            >
-              © {new Date().getFullYear()}{" "}
-              <Box component="span" sx={{whiteSpace: "nowrap"}}>
-                Aptos Labs
-              </Box>
-            </Typography>
-            <Stack
-              direction="row"
-              spacing={1}
-              justifyContent={{xs: "center", md: "start"}}
-            >
-              <Link
-                color="inherit"
-                to="https://aptoslabs.com/privacy"
-                target="_blank"
+            <Grid direction="row" padding="0">
+              <Typography
                 sx={{
-                  fontSize: "0.8rem",
-                  fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                  textAlign: {
+                    xs: "center",
+                    md: "left",
+                    fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                  },
                 }}
+                fontSize="0.8rem"
               >
-                Privacy
-              </Link>
-              <Link
-                color="inherit"
-                to="https://aptoslabs.com/terms"
-                target="_blank"
-                sx={{
-                  fontSize: "0.8rem",
-                  fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
-                }}
+                © {new Date().getFullYear()}{" "}
+                <Box component="span" sx={{whiteSpace: "nowrap"}}>
+                  Aptos Labs
+                </Box>
+              </Typography>
+              <Stack
+                direction="row"
+                spacing={1}
+                justifyContent={{xs: "center", md: "start"}}
               >
-                Terms
-              </Link>
-            </Stack>
+                <Link
+                  color="inherit"
+                  to="https://aptoslabs.com/privacy"
+                  target="_blank"
+                  sx={{
+                    fontSize: "0.8rem",
+                    fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                  }}
+                >
+                  Privacy
+                </Link>
+                <Link
+                  color="inherit"
+                  to="https://aptoslabs.com/terms"
+                  target="_blank"
+                  sx={{
+                    fontSize: "0.8rem",
+                    fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                  }}
+                >
+                  Terms
+                </Link>
+              </Stack>
+            </Grid>
           </Grid>
+
           <Grid
             xs="auto"
             sx={{marginLeft: {xs: "0", md: "auto"}}}
