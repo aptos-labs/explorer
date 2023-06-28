@@ -112,9 +112,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
     }
 
     const fns = module.abi.exposed_functions.filter((fn) =>
-      isRead
-        ? fn.is_view
-        : fn.is_entry && fn.params.length > 0 && fn.params[0] === "&signer",
+      isRead ? fn.is_view : fn.is_entry,
     );
     if (fns.length === 0) {
       return acc;
@@ -294,6 +292,8 @@ function RunContractForm({
   const {submitTransaction, transactionResponse, transactionInProcess} =
     useSubmitTransaction();
 
+  const fnParams = removeSignerParam(fn);
+
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("write_button_clicked", fn.name);
     const payload: Types.TransactionPayload = {
@@ -301,8 +301,7 @@ function RunContractForm({
       function: `${module.address}::${module.name}::${fn.name}`,
       type_arguments: data.typeArgs,
       arguments: data.args.map((arg, i) => {
-        // use i+1 because the first argument is the signer
-        const type = fn.params[i + 1];
+        const type = fnParams[i];
         if (type.includes("vector")) {
           // when it's a vector<u8>, we support both hex and javascript array format
           return type === "vector<u8>" && arg.trim().startsWith("0x")
@@ -633,6 +632,9 @@ function ContractForm({
     },
   });
 
+  const fnParams = removeSignerParam(fn);
+  const hasSigner = fnParams.length !== fn.params.length;
+
   useEffect(() => {
     setFormValid(isValid);
   }, [isValid, setFormValid]);
@@ -668,7 +670,7 @@ function ContractForm({
                 )}
               />
             ))}
-            {fn.is_entry &&
+            {hasSigner &&
               (account ? (
                 <TextField
                   key="args-signer"
@@ -680,7 +682,7 @@ function ContractForm({
               ) : (
                 <TextField label="signer" disabled fullWidth />
               ))}
-            {fn.params.slice(fn.is_entry ? 1 : 0).map((param, i) => {
+            {fnParams.map((param, i) => {
               return (
                 <Controller
                   key={`args-${i}`}
@@ -704,6 +706,10 @@ function ContractForm({
       </Box>
     </form>
   );
+}
+
+function removeSignerParam(fn: Types.MoveFunction) {
+  return fn.params.filter((p) => p !== "signer" && p !== "&signer");
 }
 
 export default Contract;
