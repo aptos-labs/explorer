@@ -171,6 +171,8 @@ export function encodeInputArgsForViewRequest(type: string, value: string) {
       throw new Error(`Invalid bool value: ${value}`);
 
     return value === "true" ? true : false;
+  } else if (["u8", "u16", "u32"].includes(type)) {
+    return ensureNumber(value);
   } else return value;
 }
 
