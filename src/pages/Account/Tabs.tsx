@@ -108,9 +108,9 @@ export default function AccountTabs({
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
     if (isObject) {
-      navigate(`/object/${address}/${newValue}`);
+      navigate(`/object/${address}/${newValue}`, {replace: true});
     } else {
-      navigate(`/account/${address}/${newValue}`);
+      navigate(`/account/${address}/${newValue}`, {replace: true});
     }
   };
 

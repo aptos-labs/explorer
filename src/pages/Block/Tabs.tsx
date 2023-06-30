@@ -66,7 +66,7 @@ export default function BlockTabs({
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/block/${height}/${newValue}`);
+    navigate(`/block/${height}/${newValue}`, {replace: true});
   };
 
   return (

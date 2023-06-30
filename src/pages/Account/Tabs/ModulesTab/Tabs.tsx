@@ -76,6 +76,7 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
     navigate(
       `/account/${address}/modules/${newValue}/${selectedModuleName}` +
         (selectedFnName ? `/${selectedFnName}` : ``),
+      {replace: true},
     );
   };
 
