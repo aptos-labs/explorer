@@ -1,4 +1,3 @@
-import "@aptos-labs/aptos-names-connector/dist/index.css";
 import {Banner} from "../../../components/Banner";
 import {
   Button,
@@ -16,13 +15,13 @@ export function PlaygroundBanner() {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
-  const text = "Explore more fun stuff at Web3 Playground!";
+  const text = "Explore more fun stuff at Web3 Playground!"; // TODO(jill): update the copy
 
   const learnMoreButton = (
     <Button
-      href="https://aptos-playground.web.app"
+      href="https://playground.dev.gcp.aptosdev.com/?utm_source=explorer&utm_medium=banner" // TODO(jill): update to the production URL
       variant="text"
-      target="_blan"
+      target="_blank"
       sx={{alignSelf: "flex-start", transform: `translateX(-0.5rem)`}}
     >
       <Typography>LEARN MORE</Typography>
