@@ -77,7 +77,7 @@ export function AccountTokensWithPagination({
 
 type TokenTabsProps = {
   address: string;
-  accountData: Types.AccountData | undefined;
+  accountData: Types.AccountData | Types.MoveResource[] | undefined;
 };
 
 export default function TokenTabs({address}: TokenTabsProps) {

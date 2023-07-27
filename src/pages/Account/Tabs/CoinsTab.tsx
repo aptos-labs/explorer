@@ -24,7 +24,7 @@ const COINS_QUERY = gql`
 
 type TokenTabsProps = {
   address: string;
-  accountData: Types.AccountData | undefined;
+  accountData: Types.AccountData | Types.MoveResource[] | undefined;
 };
 
 export default function CoinsTab({address}: TokenTabsProps) {

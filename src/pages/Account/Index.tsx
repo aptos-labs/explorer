@@ -12,6 +12,7 @@ import Error from "./Error";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {Network} from "aptos";
+import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 
 const TAB_VALUES_FULL: TabValue[] = [
   "transactions",
@@ -24,15 +25,43 @@ const TAB_VALUES_FULL: TabValue[] = [
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
-export default function AccountPage() {
+const OBJECT_VALUES_FULL: TabValue[] = [
+  "transactions",
+  // TODO: Once indexer supports objects owning coins/tokens (v2?)- uncomment these
+  // "coins",
+  // "tokens",
+  "resources",
+];
+const OBJECT_TAB_VALUES: TabValue[] = ["transactions", "resources"];
+
+type AccountPageProps = {
+  isObject?: boolean;
+};
+
+export default function AccountPage({isObject = false}: AccountPageProps) {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
   const address = useParams().address ?? "";
-  const {data, error, isLoading} = useGetAccount(address);
+  let loadingFunction;
+  if (isObject) {
+    loadingFunction = useGetAccountResources;
+  } else {
+    loadingFunction = useGetAccount;
+  }
+  const {data, error, isLoading} = loadingFunction(address);
   const [state] = useGlobalState();
 
   // TODO: [BE] instead of passing down address as props, use context
   // make sure that addresses will always start with "0X"
   const addressHex = address.startsWith("0x") ? address : "0x" + address;
+
+  let tabValues;
+  if (isObject) {
+    tabValues = isGraphqlClientSupported
+      ? OBJECT_VALUES_FULL
+      : OBJECT_TAB_VALUES;
+  } else {
+    tabValues = isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
+  }
 
   return (
     <Grid container spacing={1}>
@@ -41,7 +70,7 @@ export default function AccountPage() {
         <PageHeader />
       </Grid>
       <Grid item xs={12} md={8} lg={9} alignSelf="center">
-        <AccountTitle address={addressHex} />
+        <AccountTitle address={addressHex} isObject={isObject} />
       </Grid>
       <Grid item xs={12} md={4} lg={3} marginTop={{md: 0, xs: 2}}>
         <BalanceCard address={addressHex} />
@@ -56,7 +85,8 @@ export default function AccountPage() {
           <AccountTabs
             address={addressHex}
             accountData={data}
-            tabValues={isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES}
+            tabValues={tabValues}
+            isObject={isObject}
           />
         )}
       </Grid>

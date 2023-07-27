@@ -73,7 +73,7 @@ function getTabIcon(value: TabValue): JSX.Element {
 type TabPanelProps = {
   value: TabValue;
   address: string;
-  accountData: Types.AccountData | undefined;
+  accountData: Types.AccountData | Types.MoveResource[] | undefined;
 };
 
 function TabPanel({value, address, accountData}: TabPanelProps): JSX.Element {
@@ -83,14 +83,16 @@ function TabPanel({value, address, accountData}: TabPanelProps): JSX.Element {
 
 type AccountTabsProps = {
   address: string;
-  accountData: Types.AccountData | undefined;
+  accountData: Types.AccountData | Types.MoveResource[] | undefined;
   tabValues?: TabValue[];
+  isObject?: boolean;
 };
 
 // TODO: create reusable Tabs for all pages
 export default function AccountTabs({
   address,
   accountData,
+  isObject = false,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
   const {tab, modulesTab} = useParams();
@@ -105,7 +107,11 @@ export default function AccountTabs({
   }
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/account/${address}/${newValue}`);
+    if (isObject) {
+      navigate(`/object/${address}/${newValue}`);
+    } else {
+      navigate(`/account/${address}/${newValue}`);
+    }
   };
 
   return (
