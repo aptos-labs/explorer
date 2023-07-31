@@ -82,11 +82,11 @@ type ActivitiesTabProps = {
 export default function ActivitiesTab({
   data: activitiesData,
 }: ActivitiesTabProps) {
-  const activitiesCount = useGetTokensActivitiesCount(
-    activitiesData?.token_data_id_hash,
-  );
+  // Currently the activities query uses a hash which has no 0x prefix
+  const tokenIdHash = activitiesData?.token_data_id?.substring(2);
+  const activitiesCount = useGetTokensActivitiesCount(tokenIdHash);
 
-  if (activitiesCount === undefined || !activitiesData?.token_data_id_hash) {
+  if (activitiesCount === undefined || !tokenIdHash) {
     return <EmptyTabContent />;
   }
 
@@ -94,7 +94,7 @@ export default function ActivitiesTab({
 
   return (
     <TokenActivitiesWithPagination
-      tokenDataIdHash={activitiesData?.token_data_id_hash}
+      tokenDataIdHash={tokenIdHash}
       numPages={numPages}
     />
   );
