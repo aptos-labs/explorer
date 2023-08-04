@@ -1,5 +1,4 @@
 import {useParams} from "react-router-dom";
-import {gql, useQuery} from "@apollo/client";
 import {Box, Stack} from "@mui/material";
 import React, {useState} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -7,34 +6,18 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {Link} from "../../../routing";
-
-const OWNER_QUERY = gql`
-  query OwnersData($token_id: String) {
-    current_token_ownerships_v2(
-      where: {amount: {_gt: 0}, token_data_id: {_eq: $token_id}}
-    ) {
-      owner_address
-    }
-  }
-`;
+import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
 
 function OwnersRow() {
-  const {tokenId, propertyVersion} = useParams();
-
-  const {data: ownersData} = useQuery(OWNER_QUERY, {
-    variables: {
-      token_id: tokenId,
-    },
-  });
-
-  const owners = ownersData?.current_token_ownerships_v2 ?? [];
+  const {tokenId} = useParams();
+  const {data: owners} = useGetTokenOwners(tokenId);
 
   return (
     <ContentRow
       title={"Owner(s):"}
       value={
         <Stack direction="row" spacing={1}>
-          {owners.map((owner: {owner_address: string}) => (
+          {(owners ?? []).map((owner: {owner_address: string}) => (
             <HashButton hash={owner?.owner_address} type={HashType.ACCOUNT} />
           ))}
         </Stack>
@@ -51,7 +34,6 @@ type OverviewTabProps = {
 // TODO: add more contents
 export default function OverviewTab({data}: OverviewTabProps) {
   const [metadataIsImage, setMetadataIsImage] = useState<boolean>(true);
-  console.log(data);
 
   return (
     <Box marginBottom={3}>

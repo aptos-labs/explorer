@@ -16,7 +16,9 @@ function TokenNameCell({token}: TokenCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
       <Link
-        to={`/token/${token?.current_token_data?.token_data_id}`}
+        to={`/token/${token?.current_token_data?.token_data_id}/${
+          token?.property_version_v1 ?? 0
+        }`}
         color="primary"
       >
         <Box
@@ -105,10 +107,13 @@ type TokenRowProps = {
 
 function TokenRow({token, columns}: TokenRowProps) {
   const navigate = useNavigate();
-  console.warn(token);
 
   const rowClick = () => {
-    navigate(`/token/${token?.current_token_data?.token_data_id}`);
+    navigate(
+      `/token/${token?.current_token_data?.token_data_id}/${
+        token?.property_version_v1 ?? 0
+      }`,
+    );
   };
 
   return (

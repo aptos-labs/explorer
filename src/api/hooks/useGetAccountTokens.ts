@@ -13,7 +13,7 @@ export function useGetAccountTokensCount(address: string) {
         address,
       );
       return (
-        response?.current_token_ownerships_aggregate?.aggregate?.count ?? 0
+        response?.current_token_ownerships_v2_aggregate?.aggregate?.count ?? 0
       );
     },
   );
@@ -36,6 +36,14 @@ export function useGetAccountTokens(
           limit,
           offset,
         },
+        orderBy: [
+          {
+            last_transaction_version: "desc",
+          },
+          {
+            token_data_id: "desc",
+          },
+        ],
       });
       return response?.current_token_ownerships_v2 ?? [];
     },
@@ -52,6 +60,65 @@ export function useGetTokenData(tokenDataId?: string) {
       }
       const response = await state.indexer_client?.getTokenData(tokenDataId);
       return response?.current_token_datas_v2 ?? [];
+    },
+  );
+}
+
+export function useGetTokenOwners(tokenDataId?: string) {
+  const [state] = useGlobalState();
+  return useQuery(
+    ["token_owners", {tokenDataId}, state.network_value],
+    async () => {
+      if (!tokenDataId) {
+        return [];
+      }
+      const response = await state.indexer_client?.getTokenOwnersData(
+        tokenDataId,
+        undefined,
+        {},
+      );
+      return response?.current_token_ownerships_v2 ?? [];
+    },
+  );
+}
+
+export function useGetTokenActivitiesCount(tokenDataId: string) {
+  const [state] = useGlobalState();
+  return useQuery(
+    ["token_activities_count", {tokenDataId}, state.network_value],
+    async () => {
+      const response = await state.indexer_client?.getTokenActivitiesCount(
+        tokenDataId,
+      );
+      return response?.token_activities_v2_aggregate?.aggregate?.count ?? 0;
+    },
+  );
+}
+
+export function useGetTokenActivities(
+  tokenDataId: string,
+  limit: number,
+  offset?: number,
+) {
+  const [state] = useGlobalState();
+  return useQuery(
+    ["token_activities", {tokenDataId, limit, offset}, state.network_value],
+    async () => {
+      const response = await state.indexer_client?.getTokenActivities(
+        tokenDataId,
+        {
+          options: {
+            limit,
+            offset,
+          },
+          orderBy: [
+            {
+              transaction_version: "desc",
+            },
+          ],
+        },
+      );
+      return response?.token_activities_v2 ?? [];
     },
   );
 }

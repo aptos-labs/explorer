@@ -12,14 +12,6 @@ export const networks = {
   previewnet: "https://fullnode-0.previewnet.gcp.aptosdev.com/v1",
 };
 
-export const indexerUris = {
-  mainnet: "https://indexer.mainnet.aptoslabs.com/v1/graphql",
-  testnet: "https://indexer-testnet.staging.gcp.aptosdev.com/v1/graphql",
-  devnet: "https://indexer-devnet.staging.gcp.aptosdev.com/v1/graphql",
-  local: undefined,
-  previewnet: undefined,
-};
-
 export type NetworkName = keyof typeof networks;
 
 export function isValidNetworkName(value: string): value is NetworkName {

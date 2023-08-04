@@ -96,7 +96,7 @@ dependencies:
     specifier: ^0.1.2
     version: 0.1.2
   aptos:
-    specifier: ^1.14.0
+    specifier: ^1.16.0
     version: 1.16.0
   aptos-node-checker-client:
     specifier: 0.0.5

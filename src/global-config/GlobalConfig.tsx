@@ -4,7 +4,6 @@ import {
   FeatureName,
   NetworkName,
   defaultNetworkName,
-  indexerUris,
   networks,
 } from "../constants";
 import {
@@ -12,6 +11,7 @@ import {
   useFeatureSelector,
 } from "./feature-selection";
 import {useNetworkSelector} from "./network-selection";
+import {getGraphqlURI} from "../api/hooks/useGraphqlClient";
 
 export type GlobalState = {
   /** actual state */
@@ -38,7 +38,7 @@ function deriveGlobalState({
   feature_name: FeatureName;
   network_name: NetworkName;
 }): GlobalState {
-  const indexerUri = indexerUris[network_name];
+  const indexerUri = getGraphqlURI(network_name);
   let indexerClient = undefined;
   if (indexerUri) {
     indexerClient = new IndexerClient(indexerUri);

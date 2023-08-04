@@ -15,7 +15,7 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   return typeof graphqlUri === "string" && graphqlUri.length > 0;
 }
 
-function getGraphqlURI(networkName: NetworkName): string | undefined {
+export function getGraphqlURI(networkName: NetworkName): string | undefined {
   switch (networkName) {
     case "mainnet":
       return "https://indexer.mainnet.aptoslabs.com/v1/graphql";
