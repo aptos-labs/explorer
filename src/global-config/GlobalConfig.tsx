@@ -1,4 +1,4 @@
-import {AptosClient} from "aptos";
+import {AptosClient, IndexerClient} from "aptos";
 import React, {useMemo} from "react";
 import {
   FeatureName,
@@ -11,6 +11,7 @@ import {
   useFeatureSelector,
 } from "./feature-selection";
 import {useNetworkSelector} from "./network-selection";
+import {getGraphqlURI} from "../api/hooks/useGraphqlClient";
 
 export type GlobalState = {
   /** actual state */
@@ -21,6 +22,8 @@ export type GlobalState = {
   readonly network_value: string;
   /** derived from network_value */
   readonly aptos_client: AptosClient;
+  /** derived from network_value */
+  readonly indexer_client?: IndexerClient;
 };
 
 type GlobalActions = {
@@ -35,11 +38,17 @@ function deriveGlobalState({
   feature_name: FeatureName;
   network_name: NetworkName;
 }): GlobalState {
+  const indexerUri = getGraphqlURI(network_name);
+  let indexerClient = undefined;
+  if (indexerUri) {
+    indexerClient = new IndexerClient(indexerUri);
+  }
   return {
     feature_name,
     network_name,
     network_value: networks[network_name],
     aptos_client: new AptosClient(networks[network_name]),
+    indexer_client: indexerClient,
   };
 }
 

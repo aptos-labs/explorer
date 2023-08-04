@@ -57,13 +57,12 @@ export function AccountTokensWithPagination({
   const currentPage = parseInt(searchParams.get("page") ?? "1");
   const offset = (currentPage - 1) * LIMIT;
 
-  const tokens = useGetAccountTokens(address, LIMIT, offset);
-
+  const {data: tokens} = useGetAccountTokens(address, LIMIT, offset);
   return (
     <>
       <Stack spacing={2}>
         <Box sx={{width: "auto", overflowX: "auto"}}>
-          <TokensTable tokens={tokens} />
+          <TokensTable tokens={tokens ?? []} />
         </Box>
         {numPages > 1 && (
           <Box sx={{display: "flex", justifyContent: "center"}}>
@@ -81,13 +80,12 @@ type TokenTabsProps = {
 };
 
 export default function TokenTabs({address}: TokenTabsProps) {
-  const tokenCount = useGetAccountTokensCount(address);
+  const {data: tokenCount} = useGetAccountTokensCount(address);
 
   if (tokenCount === undefined) {
     return <EmptyTabContent />;
   }
 
   const numPages = Math.ceil(tokenCount / LIMIT);
-
   return <AccountTokensWithPagination address={address} numPages={numPages} />;
 }

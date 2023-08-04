@@ -1,12 +1,12 @@
 import React from "react";
 import {ActivitiesTable} from "../Component/ActivitiesTable";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {
-  useGetTokensActivities,
-  useGetTokensActivitiesCount,
-} from "../../../api/hooks/useGetTokenActivities";
 import {useSearchParams} from "react-router-dom";
 import {Box, Pagination, Stack} from "@mui/material";
+import {
+  useGetTokenActivities,
+  useGetTokenActivitiesCount,
+} from "../../../api/hooks/useGetAccountTokens";
 
 const LIMIT = 20;
 
@@ -44,25 +44,25 @@ function RenderPagination({
 }
 
 type TokenActivitiesWithPaginationProps = {
-  tokenDataIdHash: string;
+  tokenId: string;
   numPages: number;
 };
 
 export function TokenActivitiesWithPagination({
-  tokenDataIdHash,
+  tokenId,
   numPages,
 }: TokenActivitiesWithPaginationProps) {
   const [searchParams, _setSearchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") ?? "1");
   const offset = (currentPage - 1) * LIMIT;
 
-  const activities = useGetTokensActivities(tokenDataIdHash, LIMIT, offset);
+  const {data: activities} = useGetTokenActivities(tokenId, LIMIT, offset);
 
   return (
     <>
       <Stack spacing={2}>
         <Box sx={{width: "auto", overflowX: "auto"}}>
-          <ActivitiesTable activities={activities} />
+          <ActivitiesTable activities={activities ?? []} />
         </Box>
         {numPages > 1 && (
           <Box sx={{display: "flex", justifyContent: "center"}}>
@@ -82,20 +82,16 @@ type ActivitiesTabProps = {
 export default function ActivitiesTab({
   data: activitiesData,
 }: ActivitiesTabProps) {
-  const activitiesCount = useGetTokensActivitiesCount(
-    activitiesData?.token_data_id_hash,
-  );
+  const tokenId = activitiesData?.token_data_id;
+  const {data: activitiesCount} = useGetTokenActivitiesCount(tokenId);
 
-  if (activitiesCount === undefined || !activitiesData?.token_data_id_hash) {
+  if (activitiesCount === undefined || !tokenId) {
     return <EmptyTabContent />;
   }
 
   const numPages = Math.ceil(activitiesCount / LIMIT);
 
   return (
-    <TokenActivitiesWithPagination
-      tokenDataIdHash={activitiesData?.token_data_id_hash}
-      numPages={numPages}
-    />
+    <TokenActivitiesWithPagination tokenId={tokenId} numPages={numPages} />
   );
 }

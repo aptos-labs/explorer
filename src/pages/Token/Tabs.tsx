@@ -60,7 +60,7 @@ export default function TokenTabs({
   data,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
-  const {tab, propertyVersion, tokenId} = useParams();
+  const {propertyVersion, tab, tokenId} = useParams();
   const navigate = useNavigate();
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 

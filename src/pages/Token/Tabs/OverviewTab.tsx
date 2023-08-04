@@ -1,5 +1,4 @@
 import {useParams} from "react-router-dom";
-import {gql, useQuery} from "@apollo/client";
 import {Box, Stack} from "@mui/material";
 import React, {useState} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -7,62 +6,24 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {Link} from "../../../routing";
-
-const OWNER_QUERY = gql`
-  query OwnersData($token_id: String, $property_version: numeric) {
-    current_token_ownerships(
-      where: {
-        amount: {_gt: 0}
-        token_data_id_hash: {_eq: $token_id}
-        property_version: {_eq: $property_version}
-      }
-    ) {
-      owner_address
-    }
-  }
-`;
+import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
 
 function OwnersRow() {
-  const {tokenId, propertyVersion} = useParams();
-
-  const {data: ownersData} = useQuery(OWNER_QUERY, {
-    variables: {
-      token_id: tokenId,
-      property_version: parseInt(propertyVersion ?? ""),
-    },
-  });
-
-  const owners = ownersData?.current_token_ownerships ?? [];
+  const {tokenId} = useParams();
+  const {data: owners} = useGetTokenOwners(tokenId);
 
   return (
     <ContentRow
       title={"Owner(s):"}
       value={
         <Stack direction="row" spacing={1}>
-          {owners.map((owner: {owner_address: string}) => (
+          {(owners ?? []).map((owner: {owner_address: string}) => (
             <HashButton hash={owner?.owner_address} type={HashType.ACCOUNT} />
           ))}
         </Stack>
       }
     />
   );
-}
-
-function getRoyalty(
-  data: any, // TODO: add graphql data typing
-): string | null {
-  if (!data?.royalty_points_numerator || !data?.royalty_points_denominator) {
-    return null;
-  }
-
-  const numerator = parseInt(data.royalty_points_numerator);
-  const denominator = parseInt(data.royalty_points_denominator);
-
-  if (denominator === 0) {
-    return null;
-  }
-
-  return `${((numerator * 100) / denominator).toFixed(0)}%`;
 }
 
 type OverviewTabProps = {
@@ -77,29 +38,28 @@ export default function OverviewTab({data}: OverviewTabProps) {
   return (
     <Box marginBottom={3}>
       <ContentBox>
-        <ContentRow title={"Token Name:"} value={data?.name} />
+        <ContentRow title={"Token Name:"} value={data?.token_name} />
         <OwnersRow />
-        <ContentRow title={"Collection Name:"} value={data?.collection_name} />
+        <ContentRow
+          title={"Collection Name:"}
+          value={data?.current_collection?.collection_name}
+        />
         <ContentRow
           title={"Creator:"}
           value={
-            <HashButton hash={data?.creator_address} type={HashType.ACCOUNT} />
-          }
-        />
-        <ContentRow title={"Royalty:"} value={getRoyalty(data)} />
-        <ContentRow
-          title={"Royalty Payee:"}
-          value={
-            <HashButton hash={data?.payee_address} type={HashType.ACCOUNT} />
+            <HashButton
+              hash={data?.current_collection?.creator_address}
+              type={HashType.ACCOUNT}
+            />
           }
         />
         <ContentRow
           title={"Metadata:"}
           value={
             metadataIsImage ? (
-              <a href={data?.metadata_uri}>
+              <a href={data?.token_uri}>
                 <img
-                  src={data?.metadata_uri}
+                  src={data?.token_uri}
                   width={150}
                   onError={() => {
                     setMetadataIsImage(false);
@@ -108,8 +68,8 @@ export default function OverviewTab({data}: OverviewTabProps) {
                 />
               </a>
             ) : (
-              <Link to={data?.metadata_uri} target="_blank">
-                {data?.metadata_uri}
+              <Link to={data?.token_uri} target="_blank">
+                {data?.token_uri}
               </Link>
             )
           }
@@ -118,14 +78,14 @@ export default function OverviewTab({data}: OverviewTabProps) {
       <ContentBox>
         <ContentRow
           title={"Largest Property Version:"}
-          value={data?.largest_property_version}
+          value={data?.largest_property_version_v1}
         />
         <ContentRow title={"Supply:"} value={data?.supply} />
         <ContentRow title={"Maximum:"} value={data?.maximum} />
         <ContentRow
-          title={"Default Properties:"}
+          title={"Token Properties:"}
           value={
-            <JsonViewCard data={data?.default_properties} collapsedByDefault />
+            <JsonViewCard data={data?.token_properties} collapsedByDefault />
           }
         />
       </ContentBox>

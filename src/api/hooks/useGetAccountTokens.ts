@@ -1,66 +1,124 @@
-import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
-
-const ACCOUNT_TOKENS_COUNT_QUERY = gql`
-  query AccountTokensCount($owner_address: String) {
-    current_token_ownerships_aggregate(
-      where: {owner_address: {_eq: $owner_address}, amount: {_gt: "0"}}
-    ) {
-      aggregate {
-        count
-      }
-    }
-  }
-`;
+import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useQuery} from "@tanstack/react-query";
 
 export function useGetAccountTokensCount(address: string) {
+  const [state] = useGlobalState();
   // whenever talking to the indexer, the address needs to fill in leading 0s
   // for example: 0x123 => 0x000...000123  (61 0s before 123)
   const addr64Hash = "0x" + address.substring(2).padStart(64, "0");
-
-  const {loading, error, data} = useGraphqlQuery(ACCOUNT_TOKENS_COUNT_QUERY, {
-    variables: {owner_address: addr64Hash},
-  });
-
-  if (loading || error || !data) {
-    return undefined;
-  }
-
-  return data?.current_token_ownerships_aggregate?.aggregate?.count;
+  return useQuery(
+    ["account_tokens_count", {addr64Hash}, state.network_value],
+    async () => {
+      const response = await state.indexer_client?.getAccountTokensCount(
+        address,
+      );
+      return (
+        response?.current_token_ownerships_v2_aggregate?.aggregate?.count ?? 0
+      );
+    },
+  );
 }
-
-const ACCOUNT_TOKENS_QUERY = gql`
-  query AccountTokensData($owner_address: String, $limit: Int, $offset: Int) {
-    current_token_ownerships(
-      where: {owner_address: {_eq: $owner_address}, amount: {_gt: "0"}}
-      limit: $limit
-      offset: $offset
-    ) {
-      token_data_id_hash
-      name
-      collection_name
-      table_type
-      property_version
-      amount
-    }
-  }
-`;
 
 export function useGetAccountTokens(
   address: string,
   limit: number,
   offset?: number,
 ) {
+  const [state] = useGlobalState();
   // whenever talking to the indexer, the address needs to fill in leading 0s
   // for example: 0x123 => 0x000...000123  (61 0s before 123)
   const addr64Hash = "0x" + address.substring(2).padStart(64, "0");
+  return useQuery(
+    ["account_tokens", {addr64Hash, limit, offset}, state.network_value],
+    async () => {
+      const response = await state.indexer_client?.getOwnedTokens(address, {
+        options: {
+          limit,
+          offset,
+        },
+        orderBy: [
+          {
+            last_transaction_version: "desc",
+          },
+          {
+            token_data_id: "desc",
+          },
+        ],
+      });
+      return response?.current_token_ownerships_v2 ?? [];
+    },
+  );
+}
 
-  const {loading, error, data} = useGraphqlQuery(ACCOUNT_TOKENS_QUERY, {
-    variables: {owner_address: addr64Hash, limit: limit, offset: offset},
-  });
+export function useGetTokenData(tokenDataId?: string) {
+  const [state] = useGlobalState();
+  return useQuery(
+    ["token_data", {tokenDataId}, state.network_value],
+    async () => {
+      if (!tokenDataId) {
+        return undefined;
+      }
+      const response = await state.indexer_client?.getTokenData(tokenDataId);
+      return response?.current_token_datas_v2 ?? [];
+    },
+  );
+}
 
-  if (loading || error || !data) {
-    return [];
-  }
+export function useGetTokenOwners(tokenDataId?: string) {
+  const [state] = useGlobalState();
+  return useQuery(
+    ["token_owners", {tokenDataId}, state.network_value],
+    async () => {
+      if (!tokenDataId) {
+        return [];
+      }
+      const response = await state.indexer_client?.getTokenOwnersData(
+        tokenDataId,
+        undefined,
+        {},
+      );
+      return response?.current_token_ownerships_v2 ?? [];
+    },
+  );
+}
 
-  return data?.current_token_ownerships ?? [];
+export function useGetTokenActivitiesCount(tokenDataId: string) {
+  const [state] = useGlobalState();
+  return useQuery(
+    ["token_activities_count", {tokenDataId}, state.network_value],
+    async () => {
+      const response = await state.indexer_client?.getTokenActivitiesCount(
+        tokenDataId,
+      );
+      return response?.token_activities_v2_aggregate?.aggregate?.count ?? 0;
+    },
+  );
+}
+
+export function useGetTokenActivities(
+  tokenDataId: string,
+  limit: number,
+  offset?: number,
+) {
+  const [state] = useGlobalState();
+  return useQuery(
+    ["token_activities", {tokenDataId, limit, offset}, state.network_value],
+    async () => {
+      const response = await state.indexer_client?.getTokenActivities(
+        tokenDataId,
+        {
+          options: {
+            limit,
+            offset,
+          },
+          orderBy: [
+            {
+              transaction_version: "desc",
+            },
+          ],
+        },
+      );
+      return response?.token_activities_v2 ?? [];
+    },
+  );
 }
