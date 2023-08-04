@@ -12,6 +12,7 @@ const OWNER_QUERY = gql`
   query OwnersData($token_id: String, $property_version: numeric) {
     current_token_ownerships(
       where: {
+        amount: {_gt: 0}
         token_data_id_hash: {_eq: $token_id}
         property_version: {_eq: $property_version}
       }
