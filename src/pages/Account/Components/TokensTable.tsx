@@ -7,6 +7,7 @@ import {assertNever} from "../../../utils";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {Link, useNavigate} from "../../../routing";
+import {Current_Token_Ownerships_V2} from "aptos";
 
 type TokenCellProps = {
   token: any; // TODO: add graphql data typing
@@ -101,7 +102,7 @@ const DEFAULT_COLUMNS: Column[] = [
 ];
 
 type TokenRowProps = {
-  token: any; // TODO: add graphql data typing
+  token: Current_Token_Ownerships_V2;
   columns: Column[];
 };
 
@@ -148,7 +149,7 @@ function TokenHeaderCell({column}: TokenHeaderCellProps) {
 }
 
 type TokensTableProps = {
-  tokens: any; // TODO: add graphql data typing
+  tokens: Current_Token_Ownerships_V2[];
   columns?: Column[];
 };
 

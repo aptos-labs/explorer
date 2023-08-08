@@ -98,7 +98,7 @@ const DEFAULT_COLUMNS: Column[] = [
 ];
 
 type ActivityRowProps = {
-  activity: any; // TODO: add graphql data typing
+  activity: Token_Activities_V2;
   columns: Column[];
 };
 
