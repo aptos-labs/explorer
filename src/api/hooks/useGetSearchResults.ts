@@ -16,6 +16,7 @@ import {
 } from "../../pages/utils";
 import {getAddressFromName} from "./useGetANS";
 import {sendToGTM} from "./useGoogleTagManager";
+import {objectCoreAddress} from "../../constants";
 
 export type SearchResult = {
   label: string;
@@ -90,11 +91,19 @@ export default function useGetSearchResults(input: string) {
           {address: searchText},
           state.network_value,
         )
-          .then((): SearchResult => {
-            return {
-              label: `Object ${searchText}`,
-              to: `/object/${searchText}`,
-            };
+          .then((resources): SearchResult | undefined => {
+            let hasObjectCore = false;
+            resources.forEach((resource) => {
+              if (resource.type === objectCoreAddress) {
+                hasObjectCore = true;
+              }
+            });
+            if (hasObjectCore) {
+              return {
+                label: `Object ${searchText}`,
+                to: `/object/${searchText}`,
+              };
+            }
           })
           .catch(() => {
             return null;

@@ -80,3 +80,8 @@ export const WHILTELISTED_TESTNET_DELEGATION_NODES = import.meta.env
   .REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES
   ? import.meta.env.REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES.split(",")
   : null;
+
+/**
+ * Core Address
+ */
+export const objectCoreAddress = "0x1::object::ObjectCore";
