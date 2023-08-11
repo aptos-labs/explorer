@@ -1,3 +1,8 @@
+import {
+  Current_Token_Datas,
+  Current_Token_Datas_V2,
+  Current_Token_Ownerships_V2,
+} from "aptos";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useQuery} from "@tanstack/react-query";
 
@@ -59,7 +64,7 @@ export function useGetTokenData(tokenDataId?: string) {
         return undefined;
       }
       const response = await state.indexer_client?.getTokenData(tokenDataId);
-      return response?.current_token_datas_v2 ?? [];
+      return response?.current_token_datas_v2;
     },
   );
 }

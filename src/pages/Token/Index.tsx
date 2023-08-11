@@ -1,5 +1,4 @@
 import {useParams} from "react-router-dom";
-import {gql, useQuery} from "@apollo/client";
 import {Stack, Grid} from "@mui/material";
 import React from "react";
 import TokenTitle from "./Title";

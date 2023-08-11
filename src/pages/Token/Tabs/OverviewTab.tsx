@@ -7,6 +7,7 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {Link} from "../../../routing";
 import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
+import {Current_Token_Datas_V2} from "aptos";
 
 function OwnersRow() {
   const {tokenId} = useParams();
@@ -27,8 +28,7 @@ function OwnersRow() {
 }
 
 type OverviewTabProps = {
-  // TODO: add graphql data typing
-  data: any;
+  data: Current_Token_Datas_V2;
 };
 
 // TODO: add more contents
@@ -48,7 +48,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
           title={"Creator:"}
           value={
             <HashButton
-              hash={data?.current_collection?.creator_address}
+              hash={data?.current_collection?.creator_address ?? ""}
               type={HashType.ACCOUNT}
             />
           }
@@ -80,8 +80,14 @@ export default function OverviewTab({data}: OverviewTabProps) {
           title={"Largest Property Version:"}
           value={data?.largest_property_version_v1}
         />
-        <ContentRow title={"Supply:"} value={data?.supply} />
-        <ContentRow title={"Maximum:"} value={data?.maximum} />
+        <ContentRow
+          title={"Supply:"}
+          value={data?.current_collection?.current_supply}
+        />
+        <ContentRow
+          title={"Maximum:"}
+          value={data?.current_collection?.max_supply}
+        />
         <ContentRow
           title={"Token Properties:"}
           value={

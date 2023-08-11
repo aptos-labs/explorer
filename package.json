@@ -35,7 +35,7 @@
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@welldone-studio/aptos-wallet-adapter": "^0.1.2",
-    "aptos": "^1.16.0",
+    "aptos": "^1.18.0",
     "aptos-node-checker-client": "0.0.5",
     "chart.js": "^4.2.1",
     "date-fns": "^2.29.3",
