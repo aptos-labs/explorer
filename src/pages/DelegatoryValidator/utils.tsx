@@ -7,6 +7,7 @@ import {
   MINIMUM_APT_IN_POOL,
 } from "./constants";
 import {ApolloError} from "@apollo/client";
+import {MoveValue} from "aptos/src/generated";
 
 interface AccountResourceData {
   locked_until_secs: bigint;
@@ -196,5 +197,28 @@ export function getStakeOperationAPTRequirement(
         max: null,
         disabled: false,
       };
+  }
+}
+
+export type ValidatorStatus =
+  | "Pending Active"
+  | "Active"
+  | "Pending Inactive"
+  | "Inactive";
+
+export function getValidatorStatus(
+  validatorStatus: MoveValue[],
+): ValidatorStatus | undefined {
+  switch (Number(validatorStatus[0])) {
+    case 1:
+      return "Pending Active";
+    case 2:
+      return "Active";
+    case 3:
+      return "Pending Inactive";
+    case 4:
+      return "Inactive";
+    default:
+      return undefined;
   }
 }

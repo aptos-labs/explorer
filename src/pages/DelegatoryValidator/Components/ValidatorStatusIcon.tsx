@@ -5,16 +5,17 @@ import DangerousIcon from "@mui/icons-material/Dangerous";
 import PendingIcon from "@mui/icons-material/Pending";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {Types} from "aptos";
+import {ValidatorStatus} from "../utils";
 
 export default function ValidatorStatusIcon({
   validatorStatus,
 }: {
-  validatorStatus: Types.MoveValue[] | undefined;
+  validatorStatus: ValidatorStatus | undefined;
 }): JSX.Element {
   const getStatusIcon = () => {
     if (validatorStatus) {
-      switch (Number(validatorStatus[0])) {
-        case 1:
+      switch (validatorStatus) {
+        case "Pending Active":
           return (
             <Chip
               label={"Pending Active"}
@@ -26,7 +27,7 @@ export default function ValidatorStatusIcon({
               }}
             />
           );
-        case 2:
+        case "Active":
           return (
             <Chip
               label={"Active"}
@@ -38,7 +39,7 @@ export default function ValidatorStatusIcon({
               }}
             />
           );
-        case 3:
+        case "Pending Inactive":
           return (
             <Chip
               label={"Pending Inactive"}
@@ -50,7 +51,7 @@ export default function ValidatorStatusIcon({
               }}
             />
           );
-        case 4:
+        case "Inactive":
           return (
             <Chip
               label={"Inactive"}
