@@ -110,3 +110,12 @@ export function getTableFormattedTimestamp(timestamp?: string): string {
 
   return timestamp_display.local_formatted;
 }
+
+export function isValidUrl(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
