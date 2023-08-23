@@ -37,6 +37,10 @@ import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStat
 import {useNavigate} from "../../routing";
 import {ResponseError} from "../../api/client";
 import Error from "../Account/Error";
+import {
+  ValidatorStatus,
+  getValidatorStatus,
+} from "../DelegatoryValidator/utils";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -235,7 +239,7 @@ type ValidatorCellProps = {
   networkPercentage?: string;
   commission: number | undefined;
   connected: boolean;
-  validatorStatus: Types.MoveValue[] | undefined;
+  validatorStatus: ValidatorStatus | undefined;
 };
 
 function StatusCell({validatorStatus}: ValidatorCellProps) {
@@ -390,6 +394,17 @@ function ValidatorRow({
     setError(error);
   }
 
+  // Hide delegators that are inactive and have no delegated stake
+  // TODO: Don't show inactive validators unless the users have a deposit
+  // Would require some querying restructing to be efficient.
+  if (
+    validatorStatus &&
+    getValidatorStatus(validatorStatus) === "Inactive" &&
+    delegatedStakeAmount === "0"
+  ) {
+    return null;
+  }
+
   return (
     <GeneralTableRow onClick={() => rowClick(validator.owner_address)}>
       {columns.map((column) => {
@@ -402,7 +417,9 @@ function ValidatorRow({
             delegatedStakeAmount={delegatedStakeAmount}
             networkPercentage={networkPercentage}
             connected={connected}
-            validatorStatus={validatorStatus}
+            validatorStatus={
+              validatorStatus ? getValidatorStatus(validatorStatus) : undefined
+            }
           />
         );
       })}

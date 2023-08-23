@@ -4,6 +4,7 @@ import {Types} from "aptos";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import ValidatorStatusIcon from "./Components/ValidatorStatusIcon";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
+import {getValidatorStatus} from "./utils";
 
 type ValidatorTitleProps = {
   address: Types.Address;
@@ -24,7 +25,11 @@ export default function ValidatorTitle({
       <Typography variant="h3">Validator</Typography>
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.ACCOUNT} isValidator />
-        <ValidatorStatusIcon validatorStatus={validatorStatus} />
+        <ValidatorStatusIcon
+          validatorStatus={
+            validatorStatus ? getValidatorStatus(validatorStatus) : undefined
+          }
+        />
       </Stack>
     </Stack>
   );
