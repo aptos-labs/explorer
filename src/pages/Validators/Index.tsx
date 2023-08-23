@@ -8,6 +8,7 @@ import PageHeader from "../layout/PageHeader";
 import {StakingBanner} from "./StakingBanner";
 import ValidatorsPageTabs from "./Tabs";
 import ValidatorsMap from "./ValidatorsMap";
+import {getStableID} from "../../utils";
 
 export default function ValidatorsPage() {
   const [state, _] = useGlobalState();
@@ -15,7 +16,7 @@ export default function ValidatorsPage() {
   const {config} = useConfig(STAKING_BANNER_CONFIG_NAME);
   const viewCountCap = config.getValue("view_count");
   // Get the user's stable ID
-  const stableID = Statsig.getStableID();
+  const stableID = getStableID();
 
   // Create a key for storing the view count and last visit timestamp in localStorage
   const viewCountKey = `${stableID}_view_count`;
