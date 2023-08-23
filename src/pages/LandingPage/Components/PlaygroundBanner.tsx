@@ -53,7 +53,8 @@ export function PlaygroundBanner() {
     <>{text}</>
   );
 
-  const visible = Statsig.checkGate("playground_banner");
+  // Currently we are hardcoding this to false because statsig waitforinit is causing heavy load times
+  const visible = false;
 
   return visible ? (
     <Banner action={action} sx={{marginBottom: 2}}>

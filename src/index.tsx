@@ -93,7 +93,7 @@ ReactDOM.render(
         import.meta.env.REACT_APP_STATSIG_SDK_KEY ||
         "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
       }
-      waitForInitialization={true}
+      waitForInitialization={false}
       options={{
         environment: {tier: import.meta.env.MODE},
       }}
