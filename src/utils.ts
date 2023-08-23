@@ -1,5 +1,6 @@
 import {BCS, HexString, TxnBuilderTypes, Types} from "aptos";
 import pako from "pako";
+import {Statsig} from "statsig-react";
 /**
  * Helper function for exhaustiveness checks.
  *
@@ -265,4 +266,9 @@ function assertType(val: any, types: string[] | string, message?: string) {
         }`,
     );
   }
+}
+
+// We should not be using statsig for logging like this, we will transition to google analytics
+export function getStableID(): string {
+  return Statsig.initializeCalled() ? Statsig.getStableID() : "not_initialized";
 }
