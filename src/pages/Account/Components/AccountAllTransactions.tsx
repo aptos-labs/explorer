@@ -8,9 +8,7 @@ import {
   useGetAccountAllTransactionVersions,
 } from "../../../api/hooks/useGetAccountAllTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Statsig, useExperiment} from "statsig-react";
-
-const LIMIT = 25;
+import {Statsig} from "statsig-react";
 
 function RenderPagination({
   currentPage,
@@ -96,16 +94,11 @@ export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
   const txnCount = useGetAccountAllTransactionCount(address);
-  const {config: paginationExperience} = useExperiment(
-    "account_transactions_pagination",
-  );
-
   if (txnCount === undefined) {
     return <EmptyTabContent />;
   }
 
-  const countPerPage = paginationExperience.get("count_per_page", LIMIT);
-
+  const countPerPage = 25;
   const numPages = Math.ceil(txnCount / countPerPage);
 
   return (
