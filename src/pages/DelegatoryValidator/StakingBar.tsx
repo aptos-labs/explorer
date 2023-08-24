@@ -30,6 +30,7 @@ import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo
 import {Statsig} from "statsig-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 type ValidatorStakingBarProps = {
   setIsStakingBarSkeletonLoading: (arg: boolean) => void;
@@ -63,6 +64,7 @@ function StakingBarContent({
   validator: ValidatorData;
 }) {
   const theme = useTheme();
+  const logEvent = useLogEventWithBasic();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const {connected, wallet, account} = useWallet();
   const {delegatedStakeAmount, networkPercentage, commission, isQueryLoading} =
@@ -73,7 +75,7 @@ function StakingBarContent({
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   const handleClickOpen = () => {
-    Statsig.logEvent("stake_button_clicked", validator.owner_address, {
+    logEvent("stake_button_clicked", validator.owner_address, {
       commission: commission?.toString() ?? "",
       delegated_stake_amount: delegatedStakeAmount ?? "",
       network_percentage: networkPercentage ?? "",

@@ -9,6 +9,7 @@ import {
 } from "../../../api/hooks/useGetAccountAllTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {Statsig} from "statsig-react";
+import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 function RenderPagination({
   currentPage,
@@ -18,6 +19,7 @@ function RenderPagination({
   numPages: number;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const logEvent = useLogEventWithBasic();
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
@@ -27,7 +29,7 @@ function RenderPagination({
     setSearchParams(searchParams);
 
     // logging
-    Statsig.logEvent("go_to_new_page", newPageNum, {
+    logEvent("go_to_new_page", newPageNum, {
       current_page_num: currentPage.toString(),
       new_page_num: newPageNum.toString(),
     });

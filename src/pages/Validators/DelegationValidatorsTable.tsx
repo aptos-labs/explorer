@@ -41,6 +41,7 @@ import {
   ValidatorStatus,
   getValidatorStatus,
 } from "../DelegatoryValidator/utils";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -368,6 +369,7 @@ function ValidatorRow({
 }: ValidatorRowProps) {
   const navigate = useNavigate();
   const {account, wallet} = useWallet();
+  const logEvent = useLogEventWithBasic();
 
   const {
     commission,
@@ -379,7 +381,7 @@ function ValidatorRow({
     validatorAddress: validator.owner_address,
   });
   const rowClick = (address: Types.Address) => {
-    Statsig.logEvent("delegation_validators_row_clicked", address, {
+    logEvent("delegation_validators_row_clicked", address, {
       commission: commission?.toString() ?? "",
       delegated_stake_amount: delegatedStakeAmount ?? "",
       network_percentage: networkPercentage ?? "",

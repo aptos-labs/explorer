@@ -42,6 +42,7 @@ import {
 import WalletConnectionDialog from "./WalletConnectionDialog";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useGetDelegatedStakeOperationActivities} from "../../api/hooks/useGetDelegatedStakeOperationActivities";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 const MyDepositsCells = Object.freeze({
   amount: AmountCell,
@@ -299,11 +300,12 @@ function MyDepositSectionContent({
 
   function MyDepositRow({stake, status}: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    const logEvent = useLogEventWithBasic();
     const handleClose = () => {
       setDialogOpen(false);
     };
     const handleClickOpen = () => {
-      Statsig.logEvent(
+      logEvent(
         getStakeOperationFromStakingStatus(status, canWithdrawPendingInactive) +
           "_button_clicked",
         validator?.owner_address,

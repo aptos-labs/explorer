@@ -9,12 +9,14 @@ import {StakingBanner} from "./StakingBanner";
 import ValidatorsPageTabs from "./Tabs";
 import ValidatorsMap from "./ValidatorsMap";
 import {getStableID} from "../../utils";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 export default function ValidatorsPage() {
   const [state, _] = useGlobalState();
   const {account, wallet} = useWallet();
   const {config} = useConfig(STAKING_BANNER_CONFIG_NAME);
   const viewCountCap = config.getValue("view_count");
+  const logEvent = useLogEventWithBasic();
   // Get the user's stable ID
   const stableID = getStableID();
 
@@ -44,15 +46,11 @@ export default function ValidatorsPage() {
         localStorage.setItem(lastVisitKey, String(currentTimestamp));
       }
 
-      Statsig.logEvent(
-        "staking_banner_viewed",
-        localStorage.getItem(viewCountKey),
-        {
-          wallet_address: account?.address ?? "",
-          wallet_name: wallet?.name ?? "",
-          timestamp: localStorage.getItem(lastVisitKey) ?? "",
-        },
-      );
+      logEvent("staking_banner_viewed", localStorage.getItem(viewCountKey), {
+        wallet_address: account?.address ?? "",
+        wallet_name: wallet?.name ?? "",
+        timestamp: localStorage.getItem(lastVisitKey) ?? "",
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
