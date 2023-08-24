@@ -688,7 +688,7 @@ function ContractForm({
                 <TextField label="signer" disabled fullWidth />
               ))}
             {fnParams.map((param, i) => {
-              // TODO: Need a nice way to differenciate between option and empty string
+              // TODO: Need a nice way to differentiate between option and empty string
               const isOption = param.startsWith("0x1::option::Option");
               return (
                 <Controller
