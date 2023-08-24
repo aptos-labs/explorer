@@ -38,6 +38,7 @@ import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {MINIMUM_APT_IN_POOL} from "./constants";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
@@ -130,6 +131,7 @@ function StakeOperationDialogContent({
 
   const [state, _] = useGlobalState();
   const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
+  const logEvent = useLogEventWithBasic();
 
   useEffect(() => {
     const client = new AptosClient(state.network_value);
@@ -147,7 +149,7 @@ function StakeOperationDialogContent({
   }, [state.network_value, amount, stakeOperation, validator]);
 
   const onSubmitClick = async () => {
-    Statsig.logEvent("submit_transaction_button_clicked", stakeOperation, {
+    logEvent("submit_transaction_button_clicked", stakeOperation, {
       validator_address: validator.owner_address,
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",

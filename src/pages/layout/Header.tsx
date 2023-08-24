@@ -21,6 +21,7 @@ import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import {Statsig} from "statsig-react";
 import {Link, useNavigate} from "../../routing";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 export default function Header() {
   const scrollTop = () => {
@@ -39,6 +40,7 @@ export default function Header() {
 
   const {toggleColorMode} = useColorMode();
   const theme = useTheme();
+  const logEvent = useLogEventWithBasic();
   const isDark = theme.palette.mode === "dark";
 
   const {ref, inView} = useInView({
@@ -53,7 +55,7 @@ export default function Header() {
   let walletAddressRef = useRef("");
 
   if (account && walletAddressRef.current !== account.address) {
-    Statsig.logEvent("wallet_connected", account.address, {
+    logEvent("wallet_connected", account.address, {
       wallet_name: wallet!.name,
       network_type: state.network_name,
     });

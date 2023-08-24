@@ -19,6 +19,9 @@ export const useLogEventWithBasic = () => {
       network_type: state.network_name,
       ...extraMetadata,
     };
-    Statsig.logEvent(eventName, value, metadata);
+
+    if (Statsig.initializeCalled()) {
+      Statsig.logEvent(eventName, value, metadata);
+    }
   };
 };

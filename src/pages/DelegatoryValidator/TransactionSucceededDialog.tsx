@@ -17,6 +17,7 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {Statsig} from "statsig-react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 type TransactionSucceededDialogProps = {
   handleDialogClose: () => void;
@@ -36,6 +37,7 @@ export default function TransactionSucceededDialog({
   const theme = useTheme();
   const {account, wallet} = useWallet();
   const [copyTooltipOpen, setCopyTooltipOpen] = useState<boolean>(false);
+  const logEvent = useLogEventWithBasic();
 
   const copyAddress = async (_: React.MouseEvent<HTMLButtonElement>) => {
     await navigator.clipboard.writeText(transactionHash);
@@ -45,7 +47,7 @@ export default function TransactionSucceededDialog({
     }, 2000);
   };
   const onViewTransactionClick = () => {
-    Statsig.logEvent("view_transaction_button_clicked", stakeOperation, {
+    logEvent("view_transaction_button_clicked", stakeOperation, {
       transactionHash: transactionHash,
       amount: amount,
       wallet_address: account?.address ?? "",
