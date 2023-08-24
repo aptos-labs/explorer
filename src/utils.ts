@@ -12,8 +12,8 @@ export function assertNever(x: never): never {
 }
 
 /*
-If the transaction doesn't have a version property, 
-that means it's a pending transaction (and thus it's expected version will be higher than any existing versions). 
+If the transaction doesn't have a version property,
+that means it's a pending transaction (and thus it's expected version will be higher than any existing versions).
 We can consider the version to be Infinity for this case.
 */
 export function sortTransactions(
@@ -174,6 +174,8 @@ export function encodeInputArgsForViewRequest(type: string, value: string) {
     return value === "true" ? true : false;
   } else if (["u8", "u16", "u32"].includes(type)) {
     return ensureNumber(value);
+  } else if (type.startsWith("0x1::option::Option")) {
+    return {vec: [...(value ? [value] : [])]};
   } else return value;
 }
 
