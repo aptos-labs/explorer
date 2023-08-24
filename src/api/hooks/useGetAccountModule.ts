@@ -8,7 +8,7 @@ export function useGetAccountModule(
   address: string,
   moduleName: string,
 ): UseQueryResult<Types.MoveModuleBytecode, ResponseError> {
-  const [state, _setState] = useGlobalState();
+  const [state] = useGlobalState();
 
   return useQuery<Types.MoveModuleBytecode, ResponseError>(
     ["accountModule", {address, moduleName}, state.network_value],

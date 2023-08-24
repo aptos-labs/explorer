@@ -7,7 +7,7 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 export function useGetAccountResources(
   address: string,
 ): UseQueryResult<Types.MoveResource[], ResponseError> {
-  const [state, _setState] = useGlobalState();
+  const [state] = useGlobalState();
 
   return useQuery<Array<Types.MoveResource>, ResponseError>(
     ["accountResources", {address}, state.network_value],

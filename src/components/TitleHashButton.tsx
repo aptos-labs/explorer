@@ -48,7 +48,7 @@ function HashButton({hash}: {hash: string}) {
 
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
-  const copyAddress = async (_event: React.MouseEvent<HTMLButtonElement>) => {
+  const copyAddress = async () => {
     await navigator.clipboard.writeText(hash);
 
     setTooltipOpen(true);

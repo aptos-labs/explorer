@@ -53,7 +53,7 @@ export function AccountTokensWithPagination({
   address,
   numPages,
 }: AccountTokensWithPaginationProps) {
-  const [searchParams, _setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") ?? "1");
   const offset = (currentPage - 1) * LIMIT;
 

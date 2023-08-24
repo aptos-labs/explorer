@@ -30,7 +30,7 @@ type DelegationNodeInfoProps = {
 export function useGetDelegationNodeInfo({
   validatorAddress,
 }: DelegationNodeInfoProps): DelegationNodeInfoResponse {
-  const [{aptos_client: client}, _] = useGlobalState();
+  const [{aptos_client: client}] = useGlobalState();
   const {totalVotingPower} = useGetValidatorSet();
 
   const {

@@ -9,7 +9,7 @@ interface ConfigurationData {
 }
 
 function useGetStakingConfig() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [rewardsRatePerEpoch, setRewardsRatePerEpoch] = useState<string>();
   const [rewardsRateDenominator, setRewardsRateDenominator] =
     useState<string>();

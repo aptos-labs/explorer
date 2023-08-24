@@ -30,7 +30,7 @@ export function useGetNameFromAddress(
   shouldCache = false,
   isValidator = false,
 ) {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const queryResult = useQuery<string | null, ResponseError>({
     queryKey: ["ANSName", address, shouldCache, state.network_name],
     queryFn: () => {

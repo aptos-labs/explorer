@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
 import {Stack} from "@mui/material";
 import TransactionsTable from "../Transactions/TransactionsTable";
-import {Link, useAugmentToWithGlobalSearchParams} from "../../routing";
+import {useAugmentToWithGlobalSearchParams} from "../../routing";
 
 const PREVIEW_LIMIT = 10;
 
@@ -22,7 +22,7 @@ function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
 }
 
 export default function TransactionsPreview() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const limit = PREVIEW_LIMIT;
   const result = useQuery(["transactions", {limit}, state.network_value], () =>
     getTransactions({limit}, state.network_value),

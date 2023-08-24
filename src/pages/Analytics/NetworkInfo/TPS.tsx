@@ -12,7 +12,7 @@ function getFormattedTPS(tps: number) {
 export default function TPS() {
   const {tps} = useGetTPS();
   const {peakTps} = useGetPeakTPS();
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [showPeakTps, setShowPeakTps] = useState<boolean>(true);
 
   useEffect(() => {

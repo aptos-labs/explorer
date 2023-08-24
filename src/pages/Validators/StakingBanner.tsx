@@ -11,7 +11,6 @@ import React, {useState} from "react";
 import {Banner} from "../../components/Banner";
 import {StakingDrawer} from "./StakingDrawer";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import {Statsig} from "statsig-react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 

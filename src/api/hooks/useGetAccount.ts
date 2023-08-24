@@ -5,7 +5,7 @@ import {ResponseError} from "../client";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export function useGetAccount(address: string) {
-  const [state, _setState] = useGlobalState();
+  const [state] = useGlobalState();
 
   const result = useQuery<Types.AccountData, ResponseError>(
     ["account", {address}, state.network_value],

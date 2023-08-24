@@ -52,7 +52,7 @@ export function TokenActivitiesWithPagination({
   tokenId,
   numPages,
 }: TokenActivitiesWithPaginationProps) {
-  const [searchParams, _setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") ?? "1");
   const offset = (currentPage - 1) * LIMIT;
 

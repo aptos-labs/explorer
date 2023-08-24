@@ -7,7 +7,7 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 export function useGetAccountModules(
   address: string,
 ): UseQueryResult<Types.MoveModuleBytecode[], ResponseError> {
-  const [state, _setState] = useGlobalState();
+  const [state] = useGlobalState();
 
   return useQuery<Array<Types.MoveModuleBytecode>, ResponseError>(
     ["accountModules", {address}, state.network_value],

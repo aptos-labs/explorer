@@ -1,7 +1,7 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Box, Typography} from "@mui/material";
 import {useEffect} from "react";
-import {Statsig, useConfig} from "statsig-react";
+import {useConfig} from "statsig-react";
 import {STAKING_BANNER_CONFIG_NAME} from "../../dataConstants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
@@ -12,7 +12,7 @@ import {getStableID} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 export default function ValidatorsPage() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const {account, wallet} = useWallet();
   const {config} = useConfig(STAKING_BANNER_CONFIG_NAME);
   const viewCountCap = config.getValue("view_count");

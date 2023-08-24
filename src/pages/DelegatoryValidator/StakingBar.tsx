@@ -27,7 +27,6 @@ import {OCTA} from "../../constants";
 import {AptosClient, Types} from "aptos";
 import {getAddStakeFee} from "../../api";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
-import {Statsig} from "statsig-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
@@ -138,7 +137,7 @@ function StakingBarContent({
   );
 
   const balance = useGetAccountAPTBalance(account?.address!);
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const {stakes} = useGetDelegatorStakeInfo(
     account?.address!,
     validator.owner_address,

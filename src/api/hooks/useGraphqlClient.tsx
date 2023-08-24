@@ -42,7 +42,7 @@ function getGraphqlClient(
 }
 
 export function useGetGraphqlClient() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [graphqlClient, setGraphqlClient] = useState<
     ApolloClient<NormalizedCacheObject>
   >(getGraphqlClient(state.network_name));
@@ -65,7 +65,7 @@ export function GraphqlClientProvider({children}: GraphqlClientProviderProps) {
 }
 
 export function useGetIsGraphqlClientSupported(): boolean {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [isGraphqlClientSupported, setIsGraphqlClientSupported] =
     useState<boolean>(getIsGraphqlClientSupportedFor(state.network_name));
 

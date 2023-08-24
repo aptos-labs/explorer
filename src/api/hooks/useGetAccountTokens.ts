@@ -1,8 +1,3 @@
-import {
-  Current_Token_Datas,
-  Current_Token_Datas_V2,
-  Current_Token_Ownerships_V2,
-} from "aptos";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useQuery} from "@tanstack/react-query";
 import {normalizeAddress} from "../../utils";

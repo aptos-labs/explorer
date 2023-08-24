@@ -9,7 +9,7 @@ export function useGetAccountTransactions(
   start?: number,
   limit?: number,
 ): UseQueryResult<Array<Types.Transaction>, ResponseError> {
-  const [state, _setState] = useGlobalState();
+  const [state] = useGlobalState();
 
   const accountTransactionsResult = useQuery<
     Array<Types.Transaction>,

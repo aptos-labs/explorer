@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import {Statsig} from "statsig-react";
 
 export function PlaygroundBanner() {
   const theme = useTheme();

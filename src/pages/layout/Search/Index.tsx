@@ -94,7 +94,7 @@ export default function HeaderSearch() {
       freeSolo
       clearOnBlur
       autoSelect={false}
-      getOptionLabel={(option) => ""}
+      getOptionLabel={() => ""}
       filterOptions={(x) => x.filter((x) => !!x)}
       options={options}
       inputValue={inputValue}

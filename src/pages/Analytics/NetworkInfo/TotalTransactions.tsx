@@ -5,7 +5,7 @@ import {getLedgerInfo} from "../../../api";
 import {Stack, Typography} from "@mui/material";
 
 export default function TotalTransactions() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const {data: ledgerData} = useQuery(
     ["ledgerInfo", state.network_value],
     () => getLedgerInfo(state.network_value),
