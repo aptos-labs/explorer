@@ -22,14 +22,14 @@ function CoinNameCell({coin}: CoinCellProps) {
         textOverflow: "ellipsis",
       }}
     >
-      {coin?.coin_info?.name}
+      {coin?.metadata?.name}
     </GeneralTableCell>
   );
 }
 
 function AmountCell({coin}: CoinCellProps) {
   const amount = coin?.amount;
-  const decimals = coin?.coin_info?.decimals;
+  const decimals = coin?.metadata?.decimals;
 
   if (!amount || !decimals) {
     return <GeneralTableCell>-</GeneralTableCell>;
@@ -40,7 +40,7 @@ function AmountCell({coin}: CoinCellProps) {
     <GeneralTableCell>
       <span>{formattedAmount}</span>
       <span style={{marginLeft: 8, color: grey[450]}}>
-        {coin?.coin_info?.symbol}
+        {coin?.metadata?.symbol}
       </span>
     </GeneralTableCell>
   );
@@ -49,7 +49,7 @@ function AmountCell({coin}: CoinCellProps) {
 function CoinTypeCell({coin}: CoinCellProps) {
   return (
     <GeneralTableCell sx={{width: 450}}>
-      <HashButton hash={coin?.coin_type} type={HashType.OTHERS} size="large" />
+      <HashButton hash={coin?.asset_type} type={HashType.OTHERS} size="large" />
     </GeneralTableCell>
   );
 }
