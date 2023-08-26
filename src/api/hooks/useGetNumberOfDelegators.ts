@@ -1,5 +1,6 @@
 import {Types} from "aptos";
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
+import {normalizeAddress} from "../../utils";
 
 const NUMBER_OF_DELEGATORS_QUERY = gql`
   query numberOfDelegatorsQuery($poolAddress: String) {
@@ -16,9 +17,7 @@ const NUMBER_OF_DELEGATORS_QUERY = gql`
 `;
 
 export function useGetNumberOfDelegators(poolAddress: Types.Address) {
-  // whenever talking to the indexer, the address needs to fill in leading 0s
-  // for example: 0x123 => 0x000...000123  (61 0s before 123)
-  const poolAddress64Hash = "0x" + poolAddress.substring(2).padStart(64, "0");
+  const poolAddress64Hash = normalizeAddress(poolAddress);
 
   const {loading, error, data} = useGraphqlQuery(NUMBER_OF_DELEGATORS_QUERY, {
     variables: {
