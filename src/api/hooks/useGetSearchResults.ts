@@ -30,7 +30,7 @@ export const NotFoundResult: SearchResult = {
 
 export default function useGetSearchResults(input: string) {
   const [results, setResults] = useState<SearchResult[]>([]);
-  const [state, _setState] = useGlobalState();
+  const [state] = useGlobalState();
 
   const searchText = input.trim();
 

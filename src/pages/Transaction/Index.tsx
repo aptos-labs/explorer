@@ -12,7 +12,7 @@ import TransactionTabs from "./Tabs";
 import PageHeader from "../layout/PageHeader";
 
 export default function TransactionPage() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const {txnHashOrVersion: txnParam} = useParams();
   const txnHashOrVersion = txnParam ?? "";
 

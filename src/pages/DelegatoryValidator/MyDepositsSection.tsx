@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import {AptosClient, Types} from "aptos";
 import {useContext, useEffect, useState} from "react";
-import {Statsig} from "statsig-react";
 import {getCanWithdrawPendingInactive} from "../../api";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
@@ -282,7 +281,7 @@ function MyDepositSectionContent({
     }
   }, [isStakeActivityLoading, setIsMyDepositsSectionSkeletonLoading]);
 
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [canWithdrawPendingInactive, setCanWithdrawPendingInactive] =
     useState<Types.MoveValue>(false);
 

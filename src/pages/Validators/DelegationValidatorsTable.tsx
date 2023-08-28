@@ -32,7 +32,6 @@ import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
 import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
-import {Statsig} from "statsig-react";
 import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
 import {useNavigate} from "../../routing";
 import {ResponseError} from "../../api/client";
@@ -430,8 +429,8 @@ function ValidatorRow({
 }
 
 export function DelegationValidatorsTable() {
-  const [state, _] = useGlobalState();
-  const {validators} = useGetValidators(state.network_name);
+  const [state] = useGlobalState();
+  const {validators} = useGetValidators();
   const {connected} = useWallet();
   const columns = connected
     ? DEFAULT_COLUMNS

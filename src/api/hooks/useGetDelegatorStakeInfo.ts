@@ -7,7 +7,7 @@ export function useGetDelegatorStakeInfo(
   delegatorAddress: Types.Address,
   validatorAddress: Types.Address,
 ) {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [stakes, setStakes] = useState<Types.MoveValue[]>([]);
 
   useEffect(() => {

@@ -33,7 +33,6 @@ import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {AptosClient, Types} from "aptos";
 import {getAddStakeFee} from "../../api";
-import {Statsig} from "statsig-react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {MINIMUM_APT_IN_POOL} from "./constants";
@@ -104,13 +103,8 @@ function StakeOperationDialogContent({
     transactionResponse,
     clearTransactionResponse,
   } = useSubmitStakeOperation();
-  const {
-    amount,
-    setAmount,
-    clearAmount,
-    renderAmountTextField,
-    validateAmountInput,
-  } = useAmountInput(stakeOperation);
+  const {amount, setAmount, renderAmountTextField, validateAmountInput} =
+    useAmountInput(stakeOperation);
 
   const [transactionHash, setTransactionHash] = useState<string>("");
   const [enteredAmount, setEnteredAmount] = useState<string>("");
@@ -130,7 +124,7 @@ function StakeOperationDialogContent({
     setAmount("");
   };
 
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
   const logEvent = useLogEventWithBasic();
 

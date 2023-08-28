@@ -8,7 +8,6 @@ import {
   useGetAccountAllTransactionVersions,
 } from "../../../api/hooks/useGetAccountAllTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Statsig} from "statsig-react";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 function RenderPagination({
@@ -62,7 +61,7 @@ export function AccountAllTransactionsWithPagination({
   numPages,
   countPerPage,
 }: AccountAllTransactionsWithPaginationProps) {
-  const [searchParams, _setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") ?? "1");
   const offset = (currentPage - 1) * countPerPage;
 

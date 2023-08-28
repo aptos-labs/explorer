@@ -5,7 +5,7 @@ type BlockTitleProps = {
   name: string;
 };
 
-export default function TokenTitle({name}: BlockTitleProps) {
+export default function TokenTitle({}: BlockTitleProps) {
   return (
     <Stack direction="row" alignItems="center" spacing={2} marginX={1}>
       <Typography variant="h3">Token</Typography>

@@ -46,7 +46,7 @@ function truncate(
     throw `${frontLen} and ${backLen} should be an Integer`;
   }
 
-  var strLen = str.length;
+  const strLen = str.length;
   // Setting default values
   frontLen = frontLen;
   backLen = backLen;

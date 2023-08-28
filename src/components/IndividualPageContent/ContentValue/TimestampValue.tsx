@@ -26,7 +26,7 @@ export default function TimestampValue({timestamp}: TimestampValueProps) {
   const moment = parseTimestamp(timestamp);
   const timestamp_display = timestampDisplay(moment);
 
-  const copyTimestamp = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const copyTimestamp = async () => {
     await navigator.clipboard.writeText(timestamp);
 
     setTooltipOpen(true);

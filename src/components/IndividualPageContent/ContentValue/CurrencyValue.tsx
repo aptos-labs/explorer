@@ -65,7 +65,7 @@ export default function CurrencyValue({
   fixedDecimalPlaces,
   currencyCode,
 }: CurrencyValueProps) {
-  let number = getFormattedBalanceStr(amount, decimals, fixedDecimalPlaces);
+  const number = getFormattedBalanceStr(amount, decimals, fixedDecimalPlaces);
   if (currencyCode) {
     return (
       <span>

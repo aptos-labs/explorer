@@ -4,7 +4,6 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import PendingIcon from "@mui/icons-material/Pending";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import {Types} from "aptos";
 import {ValidatorStatus} from "../utils";
 
 export default function ValidatorStatusIcon({

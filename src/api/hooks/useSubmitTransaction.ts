@@ -72,7 +72,7 @@ const useSubmitTransaction = () => {
         }
         // transaction failed
         return {...responseOnError, message: response.message};
-      } catch (error: any) {
+      } catch (error) {
         if (error instanceof FailedTransactionError) {
           return {
             transactionSubmitted: true,
@@ -80,8 +80,9 @@ const useSubmitTransaction = () => {
             message: error.message,
             success: false,
           };
+        } else if (error instanceof Error) {
+          return {...responseOnError, message: error.message};
         }
-        responseOnError.message = error;
       }
       return responseOnError;
     };

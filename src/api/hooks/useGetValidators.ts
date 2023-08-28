@@ -1,7 +1,7 @@
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useGetValidatorSet} from "./useGetValidatorSet";
-import {Network, NetworkName} from "../../constants";
+import {Network} from "../../constants";
 import {standardizeAddress} from "../../utils";
 
 const MAINNET_VALIDATORS_DATA_URL =
@@ -36,8 +36,8 @@ export interface GeoData {
   epoch: number;
 }
 
-function useGetValidatorsRawData(network: NetworkName) {
-  const [state, _] = useGlobalState();
+function useGetValidatorsRawData() {
+  const [state] = useGlobalState();
   const [validatorsRawData, setValidatorsRawData] = useState<ValidatorData[]>(
     [],
   );
@@ -85,12 +85,9 @@ function useGetValidatorsRawData(network: NetworkName) {
   return {validatorsRawData};
 }
 
-export function useGetValidators(network?: NetworkName) {
-  const [state] = useGlobalState();
+export function useGetValidators() {
   const {activeValidators} = useGetValidatorSet();
-  const {validatorsRawData} = useGetValidatorsRawData(
-    network ?? state.network_name,
-  );
+  const {validatorsRawData} = useGetValidatorsRawData();
 
   const [validators, setValidators] = useState<ValidatorData[]>([]);
 

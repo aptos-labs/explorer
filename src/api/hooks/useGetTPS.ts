@@ -6,7 +6,7 @@ import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
 import {AnalyticsData, ANALYTICS_DATA_URL} from "./useGetAnalyticsData";
 
 export function useGetTPS() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [blockHeight, setBlockHeight] = useState<number | undefined>();
   const {tps} = useGetTPSByBlockHeight(blockHeight);
 
@@ -27,7 +27,7 @@ export function useGetTPS() {
 }
 
 export function useGetPeakTPS() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [peakTps, setPeakTps] = useState<number>();
 
   useEffect(() => {

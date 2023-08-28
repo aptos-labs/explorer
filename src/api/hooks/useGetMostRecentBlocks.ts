@@ -5,7 +5,7 @@ import {getLedgerInfo, getRecentBlocks} from "..";
 import {Types} from "aptos";
 
 export function useGetMostRecentBlocks(count: number) {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [recentBlocks, setRecentBlocks] = useState<Types.Block[]>([]);
 

@@ -116,7 +116,7 @@ export function Code({bytecode}: {bytecode: string}) {
   const theme = useTheme();
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
-  async function copyCode(event: React.MouseEvent<HTMLButtonElement>) {
+  async function copyCode() {
     if (!sourceCode) return;
 
     await navigator.clipboard.writeText(sourceCode);
@@ -168,9 +168,9 @@ export function Code({bytecode}: {bytecode: string}) {
             >
               <Button
                 variant="outlined"
-                onClick={(source) => {
+                onClick={() => {
                   logEvent("copy_code_button_clicked", selectedModuleName);
-                  copyCode(source);
+                  copyCode();
                 }}
                 disabled={!sourceCode}
                 sx={{

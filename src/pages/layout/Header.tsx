@@ -19,7 +19,6 @@ import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
-import {Statsig} from "statsig-react";
 import {Link, useNavigate} from "../../routing";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
@@ -52,7 +51,7 @@ export default function Header() {
   const [state] = useGlobalState();
   const {account, wallet, network} = useWallet();
   const navigate = useNavigate();
-  let walletAddressRef = useRef("");
+  const walletAddressRef = useRef("");
 
   if (account && walletAddressRef.current !== account.address) {
     logEvent("wallet_connected", account.address, {

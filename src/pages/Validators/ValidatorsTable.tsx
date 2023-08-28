@@ -275,8 +275,8 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
 }
 
 export function ValidatorsTable() {
-  const [state, _] = useGlobalState();
-  const {validators} = useGetValidators(state.network_name);
+  const [state] = useGlobalState();
+  const {validators} = useGetValidators();
 
   const [sortColumn, setSortColumn] = useState<Column>("votingPower");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");

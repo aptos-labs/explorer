@@ -9,7 +9,6 @@ import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
 import {Network, NetworkName} from "../../constants";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {Statsig} from "statsig-react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useNavigate} from "../../routing";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
@@ -58,7 +57,7 @@ function TabPanel({value, networkName}: TabPanelProps): JSX.Element {
 }
 
 export default function ValidatorsPageTabs(): JSX.Element {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const {tab} = useParams();
   const navigate = useNavigate();
   const {account, wallet} = useWallet();

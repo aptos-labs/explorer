@@ -1,4 +1,4 @@
-import TagManager from "react-gtm-module";
+import TagManager, {DataLayerArgs} from "react-gtm-module";
 
 type GTMParams = {
   events: object;
@@ -12,6 +12,6 @@ export const initGTM = ({events}: GTMParams) => {
   TagManager.initialize(tagManagerArgs);
 };
 
-export const sendToGTM = (dataLayer: Object): void => {
+export const sendToGTM = (dataLayer: DataLayerArgs): void => {
   TagManager.dataLayer(dataLayer);
 };

@@ -15,7 +15,6 @@ import StyledDialog from "../../components/StyledDialog";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
-import {Statsig} from "statsig-react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
@@ -39,7 +38,7 @@ export default function TransactionSucceededDialog({
   const [copyTooltipOpen, setCopyTooltipOpen] = useState<boolean>(false);
   const logEvent = useLogEventWithBasic();
 
-  const copyAddress = async (_: React.MouseEvent<HTMLButtonElement>) => {
+  const copyAddress = async () => {
     await navigator.clipboard.writeText(transactionHash);
     setCopyTooltipOpen(true);
     setTimeout(() => {

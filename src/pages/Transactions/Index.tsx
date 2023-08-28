@@ -8,7 +8,7 @@ import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export default function TransactionsPage() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [userTxnOnly, setUserTxnOnly] = useState<boolean>(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();

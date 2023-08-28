@@ -70,7 +70,7 @@ export type DailyUserTxnData = {
 };
 
 export function useGetAnalyticsData() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [data, setData] = useState<AnalyticsData>();
 
   useEffect(() => {
