@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {Box, Stack} from "@mui/material";
+import {Box, Stack, Typography} from "@mui/material";
 import React, {useState} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -8,6 +8,7 @@ import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard
 import {Link} from "../../../routing";
 import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
 import {Current_Token_Datas_V2} from "aptos";
+import {isValidUrl} from "../../utils";
 
 function OwnersRow() {
   const {tokenId} = useParams();
@@ -67,10 +68,12 @@ export default function OverviewTab({data}: OverviewTabProps) {
                   loading="lazy"
                 />
               </a>
-            ) : (
+            ) : isValidUrl(data?.token_uri) ? (
               <Link to={data?.token_uri} target="_blank">
                 {data?.token_uri}
               </Link>
+            ) : (
+              <Typography fontSize="0.8rem">{data?.token_uri}</Typography>
             )
           }
         />
