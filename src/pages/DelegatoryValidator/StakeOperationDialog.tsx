@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import {useContext, useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey, negativeColor} from "../../themes/colors/aptosColorPalette";
 import {getStakeOperationAPTRequirement} from "./utils";
 import StyledDialog from "../../components/StyledDialog";
 import StyledTooltip, {
@@ -39,6 +39,7 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 import {MINIMUM_APT_IN_POOL} from "./constants";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import TooltipTypography from "../../components/TooltipTypography";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
@@ -321,6 +322,18 @@ function StakeOperationDialogContent({
             )}
           </ContentBoxSpaceBetween>
         </Stack>
+      </DialogContent>
+      <DialogContent sx={{textAlign: "center"}}>
+        {commission === 100 ? (
+          <TooltipTypography
+            textAlign="center"
+            variant="body2"
+            color={negativeColor}
+          >
+            The commission rate for this pool is 100%, you will not receive
+            rewards.
+          </TooltipTypography>
+        ) : null}
       </DialogContent>
       <DialogActions>
         <StyledTooltip
