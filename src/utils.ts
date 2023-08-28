@@ -272,3 +272,9 @@ function assertType(val: any, types: string[] | string, message?: string) {
 export function getStableID(): string {
   return Statsig.initializeCalled() ? Statsig.getStableID() : "not_initialized";
 }
+
+// address' coming back from the node trim leading zeroes
+// for example: 0x123 => 0x000...000123  (61 0s before 123)
+export function normalizeAddress(address: string): string {
+  return "0x" + address.substring(2).padStart(64, "0");
+}

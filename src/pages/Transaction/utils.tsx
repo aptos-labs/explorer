@@ -1,4 +1,5 @@
 import {Types} from "aptos";
+import {normalizeAddress} from "../../utils";
 
 export type TransactionCounterparty = {
   address: string;
@@ -105,7 +106,7 @@ function getBalanceMap(transaction: Types.Transaction) {
       },
       event: Types.Event,
     ) => {
-      const addr = event.guid.account_address;
+      const addr = normalizeAddress(event.guid.account_address);
 
       if (
         event.type === "0x1::coin::DepositEvent" ||
