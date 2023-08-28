@@ -7,14 +7,14 @@ import {normalizeAddress} from "../../../utils";
 
 const COINS_QUERY = gql`
   query CoinsData($owner_address: String, $limit: Int, $offset: Int) {
-    current_coin_balances(
+    current_fungible_asset_balances(
       where: {owner_address: {_eq: $owner_address}}
       limit: $limit
       offset: $offset
     ) {
       amount
-      coin_type
-      coin_info {
+      asset_type
+      metadata {
         name
         decimals
         symbol
@@ -43,7 +43,7 @@ export default function CoinsTab({address}: TokenTabsProps) {
   }
 
   // TODO: add graphql data typing
-  const coins = data?.current_coin_balances ?? [];
+  const coins = data?.current_fungible_asset_balances ?? [];
 
   if (coins.length === 0) {
     return <EmptyTabContent />;
