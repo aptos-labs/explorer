@@ -106,24 +106,27 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
     return <EmptyTabContent />;
   }
 
-  const moduleAndFnsGroup = modules.reduce((acc, module) => {
-    if (module.abi === undefined) {
-      return acc;
-    }
+  const moduleAndFnsGroup = modules.reduce(
+    (acc, module) => {
+      if (module.abi === undefined) {
+        return acc;
+      }
 
-    const fns = module.abi.exposed_functions.filter((fn) =>
-      isRead ? fn.is_view : fn.is_entry,
-    );
-    if (fns.length === 0) {
-      return acc;
-    }
+      const fns = module.abi.exposed_functions.filter((fn) =>
+        isRead ? fn.is_view : fn.is_entry,
+      );
+      if (fns.length === 0) {
+        return acc;
+      }
 
-    const moduleName = module.abi.name;
-    return {
-      ...acc,
-      [moduleName]: fns,
-    } as Record<string, Types.MoveFunction[]>;
-  }, {} as Record<string, Types.MoveFunction[]>);
+      const moduleName = module.abi.name;
+      return {
+        ...acc,
+        [moduleName]: fns,
+      } as Record<string, Types.MoveFunction[]>;
+    },
+    {} as Record<string, Types.MoveFunction[]>,
+  );
 
   const module = modules.find((m) => m.abi?.name === selectedModuleName)?.abi;
   const fn = selectedModuleName
@@ -309,6 +312,8 @@ function RunContractForm({
                 x.toString(),
               )
             : deserializeVector(arg);
+        } else if (type.startsWith("0x1::option::Option")) {
+          arg ? {vec: [arg]} : undefined;
         } else return arg;
       }),
     };
@@ -683,16 +688,18 @@ function ContractForm({
                 <TextField label="signer" disabled fullWidth />
               ))}
             {fnParams.map((param, i) => {
+              // TODO: Need a nice way to differentiate between option and empty string
+              const isOption = param.startsWith("0x1::option::Option");
               return (
                 <Controller
                   key={`args-${i}`}
                   name={`args.${i}`}
                   control={control}
-                  rules={{required: true}}
+                  rules={{required: !isOption}}
                   render={({field: {onChange, value}}) => (
                     <TextField
                       onChange={onChange}
-                      value={value ?? ""}
+                      value={isOption ? value : value ?? ""}
                       label={`arg${i}: ${param}`}
                       fullWidth
                     />
