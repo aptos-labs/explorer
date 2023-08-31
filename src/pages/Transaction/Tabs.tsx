@@ -34,7 +34,7 @@ function getTabValues(transaction: Types.Transaction): TabValue[] {
         "changes",
       ];
     case "block_metadata_transaction":
-      return ["blockMetadataOverview", "changes"];
+      return ["blockMetadataOverview", "events", "changes"];
     case "state_checkpoint_transaction":
       return ["stateCheckpointOverview"];
     case "pending_transaction":
