@@ -185,6 +185,10 @@ export function deserializeVector(vectorString: string): string[] {
   if (result[0] === "[" && result[result.length - 1] === "]") {
     result = result.slice(1, -1);
   }
+  // There's a tradeoff here between empty string, and empty array.  We're going with empty array.
+  if (result.length == 0) {
+    return [];
+  }
   return result.split(",");
 }
 
