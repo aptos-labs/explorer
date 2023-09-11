@@ -3,23 +3,7 @@ import ReactDOM from "react-dom";
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
-import {
-  AptosWalletAdapterProvider,
-  NetworkName,
-} from "@aptos-labs/wallet-adapter-react";
-import {PetraWallet} from "petra-plugin-wallet-adapter";
-import {PontemWallet} from "@pontem/wallet-adapter-plugin";
-import {MartianWallet} from "@martianwallet/aptos-wallet-adapter";
-import {RiseWallet} from "@rise-wallet/wallet-adapter";
-import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
-import {MSafeWalletAdapter} from "msafe-plugin-wallet-adapter";
 import {StatsigProvider} from "statsig-react";
-import {BloctoWallet} from "@blocto/aptos-wallet-adapter-plugin";
-import {NightlyWallet} from "@nightlylabs/aptos-wallet-adapter-plugin";
-import {OpenBlockWallet} from "@openblockhq/aptos-wallet-adapter";
-import {TokenPocketWallet} from "@tp-lab/aptos-wallet-adapter";
-import {TrustWallet} from "@trustwallet/aptos-wallet-adapter";
-import {WelldoneWallet} from "@welldone-studio/aptos-wallet-adapter";
 
 import * as Sentry from "@sentry/react";
 import {BrowserTracing} from "@sentry/tracing";
@@ -67,25 +51,6 @@ declare global {
 
 const queryClient = new QueryClient();
 
-const wallets = [
-  new PetraWallet(),
-  new PontemWallet(),
-  new MartianWallet(),
-  new FewchaWallet(),
-  new RiseWallet(),
-  new MSafeWalletAdapter(),
-  new NightlyWallet(),
-  new OpenBlockWallet(),
-  new TokenPocketWallet(),
-  new TrustWallet(),
-  new WelldoneWallet(),
-  // Blocto supports Testnet/Mainnet for now.
-  new BloctoWallet({
-    network: NetworkName.Testnet,
-    bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
-  }),
-];
-
 ReactDOM.render(
   <React.StrictMode>
     <StatsigProvider
@@ -100,11 +65,9 @@ ReactDOM.render(
       user={{}}
     >
       <QueryClientProvider client={queryClient}>
-        <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
-          <BrowserRouter>
-            <ExplorerRoutes />
-          </BrowserRouter>
-        </AptosWalletAdapterProvider>
+        <BrowserRouter>
+          <ExplorerRoutes />
+        </BrowserRouter>
       </QueryClientProvider>
     </StatsigProvider>
   </React.StrictMode>,
