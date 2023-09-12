@@ -20,11 +20,18 @@ function getSortedValidators(
   validators: ValidatorData[],
   column: Column,
   direction: "desc" | "asc",
+  filterZeroVotingPower = true,
 ) {
   const validatorsCopy: ValidatorData[] = JSON.parse(
     JSON.stringify(validators),
   );
-  const orderedValidators = getValidatorsOrderedBy(validatorsCopy, column);
+  let filteredValidators = validatorsCopy;
+  if (filterZeroVotingPower) {
+    filteredValidators = validatorsCopy.filter((validator) => {
+      return Number(validator.voting_power) !== 0;
+    });
+  }
+  const orderedValidators = getValidatorsOrderedBy(filteredValidators, column);
 
   return direction === "desc" ? orderedValidators : orderedValidators.reverse();
 }
