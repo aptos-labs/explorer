@@ -28,7 +28,7 @@ export default function MonthlyActiveUserChart({
         label="Monthly Active Accounts"
         tooltip="Daily count of distinct addresses with signed transactions over the last 28 days."
       />
-      <LineChart labels={labels} dataset={dataset} />
+      <LineChart labels={labels} dataset={dataset} decimals={1} />
     </CardOutline>
   );
 }
