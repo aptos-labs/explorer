@@ -51,118 +51,120 @@ export default function useGetSearchResults(input: string) {
 
       const promises = [];
 
-      const namePromise = getAddressFromName(searchText, state.network_name)
-        .then(({address, primaryName}): SearchResult | null => {
-          if (address) {
-            return {
-              label: `Account ${truncateAddress(address)}${
-                primaryName ? ` | ${primaryName}.apt` : ``
-              }`,
-              to: `/account/${address}`,
-            };
-          } else {
-            return null;
-          }
-        })
-        .catch(() => {
-          return null;
-          // Do nothing. It's expected that not all search input is a valid transaction
-        });
-      promises.push(namePromise);
-
-      if (isValidAccountAddr) {
-        // It's either an account OR an object: we query both at once to save time
-        const accountPromise = await getAccount(
-          {address: searchText},
-          state.network_value,
-        )
-          .then((): SearchResult => {
-            return {
-              label: `Account ${searchText}`,
-              to: `/account/${searchText}`,
-            };
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid account
-          });
-
-        const resourcePromise = await getAccountResources(
-          {address: searchText},
-          state.network_value,
-        )
-          .then((resources): SearchResult | undefined => {
-            let hasObjectCore = false;
-            resources.forEach((resource) => {
-              if (resource.type === objectCoreAddress) {
-                hasObjectCore = true;
-              }
-            });
-            if (hasObjectCore) {
+      if (searchText.endsWith(".apt")) {
+        const namePromise = getAddressFromName(searchText, state.network_name)
+          .then(({address, primaryName}): SearchResult | null => {
+            if (address) {
               return {
-                label: `Object ${searchText}`,
-                to: `/object/${searchText}`,
+                label: `Account ${truncateAddress(address)}${
+                  primaryName ? ` | ${primaryName}.apt` : ``
+                }`,
+                to: `/account/${address}`,
               };
+            } else {
+              return null;
             }
           })
           .catch(() => {
             return null;
-            // Do nothing. It's expected that not all search input is a valid account
-          });
-        promises.push(accountPromise);
-        promises.push(resourcePromise);
-      }
-
-      if (isValidTxnHashOrVer) {
-        const txnPromise = getTransaction(
-          {txnHashOrVersion: searchText},
-          state.network_value,
-        )
-          .then((): SearchResult => {
-            return {
-              label: `Transaction ${searchText}`,
-              to: `/txn/${searchText}`,
-            };
-          })
-          .catch(() => {
-            return null;
             // Do nothing. It's expected that not all search input is a valid transaction
           });
-        promises.push(txnPromise);
-      }
+        promises.push(namePromise);
+      } else {
+        if (isValidAccountAddr) {
+          // It's either an account OR an object: we query both at once to save time
+          const accountPromise = await getAccount(
+            {address: searchText},
+            state.network_value,
+          )
+            .then((): SearchResult => {
+              return {
+                label: `Account ${searchText}`,
+                to: `/account/${searchText}`,
+              };
+            })
+            .catch(() => {
+              return null;
+              // Do nothing. It's expected that not all search input is a valid account
+            });
 
-      if (isValidBlockHeightOrVer) {
-        const blockByHeightPromise = getBlockByHeight(
-          {height: parseInt(searchText), withTransactions: false},
-          state.network_value,
-        )
-          .then((): SearchResult => {
-            return {
-              label: `Block ${searchText}`,
-              to: `/block/${searchText}`,
-            };
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid transaction
-          });
+          const resourcePromise = await getAccountResources(
+            {address: searchText},
+            state.network_value,
+          )
+            .then((resources): SearchResult | undefined => {
+              let hasObjectCore = false;
+              resources.forEach((resource) => {
+                if (resource.type === objectCoreAddress) {
+                  hasObjectCore = true;
+                }
+              });
+              if (hasObjectCore) {
+                return {
+                  label: `Object ${searchText}`,
+                  to: `/object/${searchText}`,
+                };
+              }
+            })
+            .catch(() => {
+              return null;
+              // Do nothing. It's expected that not all search input is a valid account
+            });
+          promises.push(accountPromise);
+          promises.push(resourcePromise);
+        }
 
-        const blockByVersionPromise = getBlockByVersion(
-          {version: parseInt(searchText), withTransactions: false},
-          state.network_value,
-        )
-          .then((block): SearchResult => {
-            return {
-              label: `Block with Txn Version ${searchText}`,
-              to: `/block/${block.block_height}`,
-            };
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid transaction
-          });
-        promises.push(blockByHeightPromise);
-        promises.push(blockByVersionPromise);
+        if (isValidTxnHashOrVer) {
+          const txnPromise = getTransaction(
+            {txnHashOrVersion: searchText},
+            state.network_value,
+          )
+            .then((): SearchResult => {
+              return {
+                label: `Transaction ${searchText}`,
+                to: `/txn/${searchText}`,
+              };
+            })
+            .catch(() => {
+              return null;
+              // Do nothing. It's expected that not all search input is a valid transaction
+            });
+          promises.push(txnPromise);
+        }
+
+        if (isValidBlockHeightOrVer) {
+          const blockByHeightPromise = getBlockByHeight(
+            {height: parseInt(searchText), withTransactions: false},
+            state.network_value,
+          )
+            .then((): SearchResult => {
+              return {
+                label: `Block ${searchText}`,
+                to: `/block/${searchText}`,
+              };
+            })
+            .catch(() => {
+              return null;
+              // Do nothing. It's expected that not all search input is a valid transaction
+            });
+
+          const blockByVersionPromise = getBlockByVersion(
+            {version: parseInt(searchText), withTransactions: false},
+            state.network_value,
+          )
+            .then((block): SearchResult => {
+              return {
+                label: `Block with Txn Version ${searchText}`,
+                to: `/block/${block.block_height}`,
+              };
+            })
+            .catch(() => {
+              return null;
+              // Do nothing. It's expected that not all search input is a valid transaction
+            });
+          promises.push(blockByHeightPromise);
+          promises.push(blockByVersionPromise);
+        }
       }
 
       const resultsList = await Promise.all(promises);
