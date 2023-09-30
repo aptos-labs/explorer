@@ -24,11 +24,12 @@ import {TokenPocketWallet} from "@tp-lab/aptos-wallet-adapter";
 import {TrustWallet} from "@trustwallet/aptos-wallet-adapter";
 import {WelldoneWallet} from "@welldone-studio/aptos-wallet-adapter";
 import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
-import {MSafeWalletAdapter} from "msafe-plugin-wallet-adapter";
+import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
 import {PetraWallet} from "petra-plugin-wallet-adapter";
 import {IdentityConnectWallet} from "@identity-connect/wallet-adapter-plugin";
 
 const IdentityConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
+const MSafeWallet = new MSafeWalletAdapter();
 
 function walletsForNetwork(network: string) {
   const wallets: any[] = [
@@ -37,7 +38,7 @@ function walletsForNetwork(network: string) {
     new MartianWallet(),
     new FewchaWallet(),
     new RiseWallet(),
-    new MSafeWalletAdapter(),
+    MSafeWallet,
     new NightlyWallet(),
     new OpenBlockWallet(),
     new TokenPocketWallet(),
