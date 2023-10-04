@@ -8,9 +8,6 @@ import {
 } from "../../../api/hooks/useGetValidatorsGeoData";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 
-const GEO_URL =
-  "https://raw.githubusercontent.com/deldersveld/topojson/master/world-continents.json";
-
 const MARKER_COLOR = "#22D3EE";
 const MIN_NODE_COUNT_SHOWN_IN_MARKER = 5;
 
@@ -113,7 +110,7 @@ export default function Map({validatorGeoGroups}: MapProps) {
         projection="geoMercator"
         height={450}
       >
-        <Geographies geography={GEO_URL}>
+        <Geographies geography={"/world.json"}>
           {({geographies}) =>
             geographies.map((geo) => (
               <Geography
