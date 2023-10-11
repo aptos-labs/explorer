@@ -13,7 +13,7 @@
     "@download/blockies": "^1.0.3",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
-    "@identity-connect/wallet-adapter-plugin": "^0.0.15",
+    "@identity-connect/wallet-adapter-plugin": "^1.0.0",
     "@martianwallet/aptos-wallet-adapter": "^0.0.4",
     "@msafe/aptos-wallet-adapter": "^1.0.7",
     "@mui/icons-material": "^5.11.11",
