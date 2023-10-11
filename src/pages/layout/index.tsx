@@ -51,19 +51,19 @@ function walletsForNetwork(network: string) {
     }),
   ];
   if (network === NetworkName.Mainnet) {
-    wallets.push(
+    wallets.unshift(
       new IdentityConnectWallet(IdentityConnectId, {
         networkName: NetworkName.Mainnet,
       }),
     );
   } else if (network === NetworkName.Testnet) {
-    wallets.push(
+    wallets.unshift(
       new IdentityConnectWallet(IdentityConnectId, {
         networkName: NetworkName.Testnet,
       }),
     );
   } else if (network === NetworkName.Devnet) {
-    wallets.push(
+    wallets.unshift(
       new IdentityConnectWallet(IdentityConnectId, {
         networkName: NetworkName.Devnet,
       }),
