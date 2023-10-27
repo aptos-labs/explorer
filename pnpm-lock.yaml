@@ -120,8 +120,8 @@ dependencies:
     specifier: ^16.8.1
     version: 16.8.1
   js-sha3:
-    specifier: ^0.8.0
-    version: 0.8.0
+    specifier: ^0.9.0
+    version: 0.9.2
   lodash:
     specifier: ^4.17.21
     version: 4.17.21
@@ -4991,6 +4991,10 @@ packages:
 
   /js-sha3@0.8.0:
     resolution: {integrity: sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==}
+    dev: false
+
+  /js-sha3@0.9.2:
+    resolution: {integrity: sha512-8kgvwd03wNGQG1GRvl3yy1Yt40sICAcIMsDU2ZLgoL0Z6z9rkRmf9Vd+bi/gYSzgAqMUGl/jiDKu0J8AWFd+BQ==}
     dev: false
 
   /js-tokens@4.0.0:
