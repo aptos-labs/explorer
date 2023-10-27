@@ -38,7 +38,6 @@ export default function CoinsTab({address}: TokenTabsProps) {
   });
 
   if (loading || error) {
-    // TODO: error handling
     return null;
   }
 

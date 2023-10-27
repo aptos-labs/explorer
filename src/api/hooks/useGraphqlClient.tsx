@@ -15,7 +15,15 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   return typeof graphqlUri === "string" && graphqlUri.length > 0;
 }
 
-export function getGraphqlURI(networkName: NetworkName): string | undefined {
+export function getGraphqlURI(
+  networkName: NetworkName,
+  browserUri?: string,
+): string | undefined {
+  // todo(jill): change to permanent unified api
+  if (browserUri && browserUri.includes("txn_indexer")) {
+    return "http://localhost:4003";
+  }
+
   switch (networkName) {
     case "mainnet":
       return "https://indexer.mainnet.aptoslabs.com/v1/graphql";
@@ -32,34 +40,39 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
 
 function getGraphqlClient(
   networkName: NetworkName,
+  browserUri: string,
 ): ApolloClient<NormalizedCacheObject> {
   return new ApolloClient({
     link: new HttpLink({
-      uri: getGraphqlURI(networkName),
+      uri: getGraphqlURI(networkName, browserUri),
     }),
     cache: new InMemoryCache(),
   });
 }
 
-export function useGetGraphqlClient() {
+export function useGetGraphqlClient(browserUri: string) {
   const [state] = useGlobalState();
   const [graphqlClient, setGraphqlClient] = useState<
     ApolloClient<NormalizedCacheObject>
-  >(getGraphqlClient(state.network_name));
+  >(getGraphqlClient(state.network_name, browserUri));
 
   useEffect(() => {
-    setGraphqlClient(getGraphqlClient(state.network_name));
-  }, [state.network_name]);
+    setGraphqlClient(getGraphqlClient(state.network_name, browserUri));
+  }, [state.network_name, browserUri]);
 
   return graphqlClient;
 }
 
 type GraphqlClientProviderProps = {
   children: React.ReactNode;
+  browserUri: string;
 };
 
-export function GraphqlClientProvider({children}: GraphqlClientProviderProps) {
-  const graphqlClient = useGetGraphqlClient();
+export function GraphqlClientProvider({
+  browserUri,
+  children,
+}: GraphqlClientProviderProps) {
+  const graphqlClient = useGetGraphqlClient(browserUri);
 
   return <ApolloProvider client={graphqlClient}>{children}</ApolloProvider>;
 }

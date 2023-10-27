@@ -12,6 +12,7 @@ import BlocksPage from "./pages/Blocks/Index";
 import ValidatorsPage from "./pages/Validators/Index";
 import ValidatorPage from "./pages/DelegatoryValidator";
 import AnalyticsPage from "./pages/Analytics/Index";
+import TransactionIndexerPage from "./pages/TransactionIndexer/Index";
 
 export default function ExplorerRoutes() {
   return (
@@ -29,7 +30,16 @@ export default function ExplorerRoutes() {
           <Route path=":txnHashOrVersion" element={<TransactionPage />} />
           <Route path=":txnHashOrVersion/:tab" element={<TransactionPage />} />
         </Route>
-
+        <Route path="/txn_indexer">
+          <Route
+            path=":txnHashOrVersion"
+            element={<TransactionIndexerPage />}
+          />
+          <Route
+            path=":txnHashOrVersion/:tab"
+            element={<TransactionIndexerPage />}
+          />
+        </Route>
         <Route path="/account">
           <Route
             path=":address/modules/:modulesTab/:selectedModuleName"
