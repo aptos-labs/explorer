@@ -2,7 +2,7 @@
   "name": "aptos-explorer",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@8.7.0",
+  "packageManager": "pnpm@8.10.0",
   "type": "module",
   "dependencies": {
     "@apollo/client": "^3.7.9",
@@ -43,7 +43,7 @@
     "date-fns": "^2.29.3",
     "fewcha-plugin-wallet-adapter": "^0.1.1",
     "graphql": "^16.8.1",
-    "js-sha3": "^0.8.0",
+    "js-sha3": "^0.9.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "pako": "^2.1.0",
