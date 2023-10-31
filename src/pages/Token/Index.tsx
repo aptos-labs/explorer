@@ -1,6 +1,5 @@
 import {useParams} from "react-router-dom";
 import {Stack, Grid} from "@mui/material";
-import React from "react";
 import TokenTitle from "./Title";
 import TokenTabs from "./Tabs";
 import PageHeader from "../layout/PageHeader";

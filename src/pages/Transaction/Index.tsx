@@ -1,4 +1,3 @@
-import React from "react";
 import {Stack, Grid, Alert} from "@mui/material";
 import {Types} from "aptos";
 import {useGlobalState} from "../../global-config/GlobalConfig";
