@@ -15,7 +15,7 @@
     "@emotion/styled": "latest",
     "@identity-connect/wallet-adapter-plugin": "^1.0.2",
     "@martianwallet/aptos-wallet-adapter": "^0.0.4",
-    "@msafe/aptos-wallet-adapter": "^1.0.7",
+    "@msafe/aptos-wallet-adapter": "^1.0.14",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.13",
     "@mui/system": "^5.11.13",
