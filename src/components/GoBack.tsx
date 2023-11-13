@@ -24,10 +24,6 @@ function BackButton(handleClick: () => void) {
   );
 }
 
-type GoBackProps = {
-  to?: string;
-};
-
 export default function GoBack(): JSX.Element | null {
   const navigate = useNavigate();
 
