@@ -2,10 +2,12 @@ import React, {useRef} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
-import NetworkSelect from "./NetworkSelect";
+// import NetworkSelect from "./NetworkSelect";
 import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
-import {ReactComponent as LogoIcon} from "../../assets/svg/aptos_logo_icon.svg";
+// import {ReactComponent as LogoIcon} from "../../assets/svg/aptos_logo_icon.svg";
+import {ReactComponent as LogoIconW} from "../../assets/svg/logo_txt_w.svg";
+import {ReactComponent as LogoIconB} from "../../assets/svg/logo_txt_b.svg";
 import {ReactComponent as IconLight} from "../../assets/svg/icon_light.svg";
 import {ReactComponent as IconDark} from "../../assets/svg/icon_dark.svg";
 import Button from "@mui/material/Button";
@@ -120,11 +122,16 @@ export default function Header() {
                 marginRight: "auto",
               }}
             >
-              <LogoIcon />
+              {theme.palette.mode === "dark" ? (
+                <LogoIconW width={"221px"} height={"35px"} />
+              ) : (
+                <LogoIconB width={"221px"} height={"35px"} />
+              )}
+              {/*<LogoIcon />*/}
             </Link>
 
             <Nav />
-            <NetworkSelect />
+            {/*<NetworkSelect />*/}
             <Button
               onClick={toggleColorMode}
               sx={{

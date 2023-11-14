@@ -84,9 +84,9 @@ export default function NavMobile() {
             Analytics
           </MenuItem>
         )}
-        <MenuItem onClick={() => handleCloseAndNavigate("/validators")}>
+        {/*<MenuItem onClick={() => handleCloseAndNavigate("/validators")}>
           Validators
-        </MenuItem>
+        </MenuItem>*/}
         <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
           Blocks
         </MenuItem>
