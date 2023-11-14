@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Container, Stack, Typography, useTheme} from "@mui/material";
+import {Box, Container, Typography, useTheme} from "@mui/material";
 
 import Grid from "@mui/material/Unstable_Grid2";
 
@@ -8,24 +8,35 @@ import {ReactComponent as DiscordLogo} from "../../assets/discord.svg";
 import {ReactComponent as TwitterLogo} from "../../assets/twitter.svg";
 import {ReactComponent as MediumLogo} from "../../assets/medium.svg";
 import {ReactComponent as LinkedInLogo} from "../../assets/linkedin.svg";
+import {ReactComponent as MovementLogoBlack} from "../../assets/svg/logob.svg";
+import {ReactComponent as MovementLogoWhite} from "../../assets/svg/logow.svg";
+
 import {grey} from "../../themes/colors/aptosColorPalette";
 import SvgIcon from "@mui/material/SvgIcon";
 
-import {ReactComponent as LogoFull} from "../../assets/svg/aptos_logo_labs.svg";
+// import {ReactComponent as LogoFull} from "../../assets/svg/aptos_logo_labs.svg";
 import {Link} from "../../routing";
 
 const socialLinks = [
-  {title: "Git", url: "https://github.com/aptos-labs", icon: GithubLogo},
+  {title: "Git", url: "https://github.com/movemntdev", icon: GithubLogo},
   {
     title: "Discord",
-    url: "https://discord.com/invite/aptoslabs",
+    url: "http://discord.gg/movementlabsxyz",
     icon: DiscordLogo,
   },
-  {title: "Twitter", url: "https://twitter.com/aptoslabs/", icon: TwitterLogo},
-  {title: "Medium", url: "https://aptoslabs.medium.com/", icon: MediumLogo},
+  {
+    title: "Twitter",
+    url: "https://twitter.com/movementlabsxyz",
+    icon: TwitterLogo,
+  },
+  {
+    title: "Medium",
+    url: "https://medium.com/@movementlabsxyz",
+    icon: MediumLogo,
+  },
   {
     title: "LinkedIn",
-    url: "https://www.linkedin.com/company/aptoslabs/",
+    url: "https://www.linkedin.com/company/movementlabsxyz",
     icon: LinkedInLogo,
   },
 ];
@@ -58,12 +69,16 @@ export default function Footer() {
           >
             <Link
               color="inherit"
-              to="https://aptoslabs.com/"
+              to="https://movementlabs.xyz/"
               target="_blank"
-              title="Aptos Labs"
-              sx={{width: "8rem", mr: {md: 2}}}
+              title="Movement Labs"
+              sx={{mr: {md: 2}}}
             >
-              <LogoFull />
+              {theme.palette.mode !== "dark" ? (
+                <MovementLogoBlack width={50} height={50} />
+              ) : (
+                <MovementLogoWhite width={50} height={50} />
+              )}
             </Link>
             <Grid direction="row" padding="0">
               <Typography
@@ -81,7 +96,7 @@ export default function Footer() {
                   Movement Labs
                 </Box>
               </Typography>
-              <Stack
+              {/*<Stack
                 direction="row"
                 spacing={1}
                 justifyContent={{xs: "center", md: "start"}}
@@ -108,7 +123,7 @@ export default function Footer() {
                 >
                   Terms
                 </Link>
-              </Stack>
+                </Stack>*/}
             </Grid>
           </Grid>
 
