@@ -19,8 +19,8 @@ function useJsonViewCardTheme() {
     theme.palette.mode === "dark" ? TEXT_COLOR_DARK : TEXT_COLOR_LIGHT;
 
   return {
-    scheme: "aptos_explorer",
-    author: "aptos",
+    scheme: "movement_explorer",
+    author: "movement",
     base00: TRANSPARENT,
     base01: textColor,
     base02: SECONDARY_TEXT_COLOR, // line color

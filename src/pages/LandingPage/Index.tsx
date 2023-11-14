@@ -9,7 +9,7 @@ export default function LandingPage() {
   return (
     <Box>
       <Typography variant="h3" component="h3" marginBottom={4}>
-        Aptos Explorer
+        M1 Explorer
       </Typography>
       <PlaygroundBanner />
       <NetworkInfo isOnHomePage />

@@ -1,4 +1,4 @@
-# Aptos Explorer
+# Movement M1 Explorer
 
 ## How to use
 

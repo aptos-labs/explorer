@@ -78,7 +78,7 @@ export default function Footer() {
               >
                 © {new Date().getFullYear()}{" "}
                 <Box component="span" sx={{whiteSpace: "nowrap"}}>
-                  Aptos Labs
+                  Movement Labs
                 </Box>
               </Typography>
               <Stack
