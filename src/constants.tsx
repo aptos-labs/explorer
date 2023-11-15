@@ -19,6 +19,14 @@ export function isValidNetworkName(value: string): value is NetworkName {
   return value in networks;
 }
 
+export const defaultVerificationServiceUrl =
+  "https://verify.welldonestudio.io/aptos";
+
+export type VerificationStatus =
+  | "VERIFIED_SAME"
+  | "VERIFIED_DIFFERENT"
+  | "NOT_VERIFIED";
+
 export enum Network {
   MAINNET = "mainnet",
   TESTNET = "testnet",
