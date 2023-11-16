@@ -9,6 +9,7 @@ export const networks = {
   testnet: "https://fullnode.testnet.aptoslabs.com",
   devnet: devnetUrl,
   local: "https://seed-node1.movementlabs.xyz",
+  mvmt_m1: "https://seed-node1.movementlabs.xyz",
   previewnet: "https://fullnode-0.previewnet.gcp.aptosdev.com/v1",
   previewnet2: "https://fullnode.previewnet.aptoslabs.com/v1",
 };
@@ -24,6 +25,7 @@ export enum Network {
   TESTNET = "testnet",
   DEVNET = "devnet",
   LOCAL = "local",
+  MTMT_M1 = "mvmt_m1",
   PREVIEWNET = "previewnet",
   PREVIEWNET2 = "previewnet2",
 }
@@ -36,7 +38,7 @@ for (const key of Object.keys(networks)) {
   }
 }
 
-export const defaultNetworkName: NetworkName = "local" as const;
+export const defaultNetworkName: NetworkName = "mvmt_m1" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;
