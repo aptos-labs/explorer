@@ -68,7 +68,6 @@ export default function Footer() {
             direction="column"
           >
             <Link
-              color="inherit"
               to="https://movementlabs.xyz/"
               target="_blank"
               title="Movement Labs"
