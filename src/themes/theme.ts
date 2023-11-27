@@ -65,7 +65,7 @@ declare module "@mui/material/Divider" {
 }
 
 const primaryColor = primary["400"];
-const primaryColorToned = primary["600"];
+const primaryColorToned = primary["50"];
 
 const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   shape: {
@@ -74,36 +74,36 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   //
 
   typography: {
-    fontFamily: `lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
+    fontFamily: `space-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
     fontWeightLight: 200,
     fontWeightRegular: 400,
     fontWeightBold: 500,
     h1: {
-      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
       fontWeight: "600",
     },
     h2: {
-      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
       fontWeight: "600",
     },
     h3: {
-      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
       fontWeight: "600",
     },
     h4: {
-      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
       fontWeight: "600",
     },
     h5: {
-      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
       fontWeight: "600",
     },
     h6: {
-      fontFamily: `apparat-semicond,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
       fontWeight: "600",
     },
     stats: {
-      fontFamily: `lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
+      fontFamily: `space-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
       fontWeight: "400",
     },
     subtitle1: {
@@ -630,6 +630,17 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
             minWidth: "8rem",
             "&:hover": {
               backgroundColor: alpha(primaryColor, 1),
+            },
+          }),
+        },
+        {
+          props: {variant: "contained"},
+          style: ({theme}) => ({
+            backgroundColor:
+              theme.palette.mode === "dark" ? primaryColor : primary["500"],
+            color: "black",
+            "&:hover": {
+              backgroundColor: alpha(primaryColor, 0.9),
             },
           }),
         },

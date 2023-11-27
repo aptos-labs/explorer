@@ -5,8 +5,8 @@ import {
   codeBlockColorClickableOnHover,
 } from "../themes/colors/aptosColorPalette";
 
-const TEXT_COLOR_LIGHT = "#0EA5E9";
-const TEXT_COLOR_DARK = "#83CCED";
+const TEXT_COLOR_LIGHT = "#3a73fe";
+const TEXT_COLOR_DARK = "#3a73fe";
 
 export function CodeLineBox({
   children,

@@ -31,7 +31,7 @@ const socialLinks = [
   },
   {
     title: "Medium",
-    url: "https://medium.com/@movementlabsxyz",
+    url: "https://medium.com/movementlabsxyz",
     icon: MediumLogo,
   },
   {
@@ -85,7 +85,8 @@ export default function Footer() {
                   textAlign: {
                     xs: "center",
                     md: "left",
-                    fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                    fontFamily:
+                      "space-grotesk-variable, Geneva, Tahoma, Verdana, sans-serif",
                   },
                 }}
                 fontSize="0.8rem"
@@ -106,7 +107,7 @@ export default function Footer() {
                   target="_blank"
                   sx={{
                     fontSize: "0.8rem",
-                    fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                    fontFamily: "space-grotesk-variable, Geneva, Tahoma, Verdana, sans-serif",
                   }}
                 >
                   Privacy
@@ -117,7 +118,7 @@ export default function Footer() {
                   target="_blank"
                   sx={{
                     fontSize: "0.8rem",
-                    fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                    fontFamily: "space-grotesk-variable, Geneva, Tahoma, Verdana, sans-serif",
                   }}
                 >
                   Terms
