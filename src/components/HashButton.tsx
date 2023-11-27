@@ -147,7 +147,7 @@ function AccountHashButtonInner({
                   theme.palette.mode === "dark" ? primary[100] : primary[100]
                 }`,
                 color: `${
-                  theme.palette.mode === "dark" ? grey[100] : grey[600]
+                  theme.palette.mode === "dark" ? grey[100] : grey[100]
                 }`,
               },
               padding: "0.25rem 0.5rem 0.25rem 0.5rem",
