@@ -10,8 +10,8 @@ const IdenticonImg: React.FunctionComponent<IdenticonImgProps> = ({
 }) => {
   const iconCanvas = createIcon({
     seed: address,
-    size: 6,
-    scale: 5,
+    size: 4,
+    scale: 7,
   });
 
   // Convert canvas to data URL

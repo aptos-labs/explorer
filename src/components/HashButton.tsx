@@ -126,7 +126,7 @@ function AccountHashButtonInner({
           "&:hover": {
             backgroundColor: codeBlockColorClickableOnHover,
           },
-          color: theme.palette.mode === "dark" ? "#83CCED" : "#0EA5E9",
+          color: theme.palette.mode === "dark" ? "#3a73fe" : "#3a73fe",
           padding: "0.15rem 0.35rem 0.15rem 1rem",
           overflow: "hidden",
           whiteSpace: "nowrap",
@@ -144,10 +144,10 @@ function AccountHashButtonInner({
               color: "inherit",
               "&:hover": {
                 backgroundColor: `${
-                  theme.palette.mode === "dark" ? primary[700] : primary[100]
+                  theme.palette.mode === "dark" ? primary[100] : primary[100]
                 }`,
                 color: `${
-                  theme.palette.mode === "dark" ? primary[100] : primary[600]
+                  theme.palette.mode === "dark" ? grey[100] : grey[100]
                 }`,
               },
               padding: "0.25rem 0.5rem 0.25rem 0.5rem",

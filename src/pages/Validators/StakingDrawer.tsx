@@ -260,7 +260,8 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                     variant="body2"
                     paragraph
                     sx={{
-                      fontFamily: "apparat,Geneva,Tahoma,Verdana,sans-serif",
+                      fontFamily:
+                        "space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif",
                     }}
                   >
                     {answer}
