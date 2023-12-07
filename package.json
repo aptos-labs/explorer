@@ -66,7 +66,7 @@
     "recharts": "^2.4.3",
     "statsig-react": "^1.23.1",
     "ts-results": "^3.3.0",
-    "typescript": "^5.0.2"
+    "typescript": "^5.3.3"
   },
   "scripts": {
     "start": "vite --port 3000",
