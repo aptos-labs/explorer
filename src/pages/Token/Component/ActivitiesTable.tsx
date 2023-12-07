@@ -141,7 +141,11 @@ function ActivityHeaderCell({column}: ActivityHeaderCellProps) {
 }
 
 type ActivitiesTableProps = {
-  activities: Token_Activities_V2[]; // TODO: add graphql data typing
+  // TODO: This might need to be reworked, since the table type doesn't match the output
+  activities: Omit<
+    Token_Activities_V2,
+    "aptos_names_to" | "aptos_names_from"
+  >[]; // TODO: add graphql data typing
   columns?: Column[];
 };
 
