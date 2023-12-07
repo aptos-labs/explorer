@@ -2,13 +2,14 @@
  * Network
  */
 export const devnetUrl =
-  import.meta.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
+  import.meta.env.APTOS_DEVNET_URL ||
+  "https://fullnode.devnet.aptoslabs.com/v1";
 
 export const networks = {
-  mainnet: "https://fullnode.mainnet.aptoslabs.com/",
-  testnet: "https://fullnode.testnet.aptoslabs.com",
+  mainnet: "https://fullnode.mainnet.aptoslabs.com/v1",
+  testnet: "https://fullnode.testnet.aptoslabs.com/v1",
   devnet: devnetUrl,
-  local: "http://localhost:8080",
+  local: "http://127.0.0.1:8080/v1",
   previewnet: "https://fullnode-0.previewnet.gcp.aptosdev.com/v1",
   previewnet2: "https://fullnode.previewnet.aptoslabs.com/v1",
 };
