@@ -7,8 +7,10 @@
   "dependencies": {
     "@apollo/client": "^3.7.9",
     "@aptos-labs/aptos-names-connector": "^0.0.2",
-    "@aptos-labs/wallet-adapter-mui-design": "^1.0.7",
-    "@aptos-labs/wallet-adapter-react": "^1.4.0",
+    "@aptos-labs/ts-sdk": "^1.0.0",
+    "@aptos-labs/wallet-adapter-core": "^3.1.1",
+    "@aptos-labs/wallet-adapter-mui-design": "^2.0.0",
+    "@aptos-labs/wallet-adapter-react": "^2.1.1",
     "@blocto/aptos-wallet-adapter-plugin": "^0.2.5",
     "@download/blockies": "^1.0.3",
     "@emotion/react": "latest",

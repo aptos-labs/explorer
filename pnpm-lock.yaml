@@ -11,12 +11,18 @@ dependencies:
   '@aptos-labs/aptos-names-connector':
     specifier: ^0.0.2
     version: 0.0.2(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.42)(react-copy-to-clipboard@5.1.0)(react-dom@18.2.0)(react@18.2.0)
+  '@aptos-labs/ts-sdk':
+    specifier: ^1.0.0
+    version: 1.0.0
+  '@aptos-labs/wallet-adapter-core':
+    specifier: ^3.1.1
+    version: 3.1.1(@aptos-labs/ts-sdk@1.0.0)(aptos@1.20.0)
   '@aptos-labs/wallet-adapter-mui-design':
-    specifier: ^1.0.7
-    version: 1.0.7(@types/react@18.2.42)(aptos@1.20.0)(react-dom@18.2.0)(react-router-dom@6.10.0)(react@18.2.0)
+    specifier: ^2.0.0
+    version: 2.0.0(@aptos-labs/ts-sdk@1.0.0)(@types/react@18.2.42)(aptos@1.20.0)(react-dom@18.2.0)(react-router-dom@6.10.0)(react@18.2.0)
   '@aptos-labs/wallet-adapter-react':
-    specifier: ^1.4.0
-    version: 1.4.0(aptos@1.20.0)(react@18.2.0)
+    specifier: ^2.1.1
+    version: 2.1.1(@aptos-labs/ts-sdk@1.0.0)(aptos@1.20.0)(react@18.2.0)
   '@blocto/aptos-wallet-adapter-plugin':
     specifier: ^0.2.5
     version: 0.2.5
@@ -315,14 +321,15 @@ packages:
       - debug
     dev: false
 
-  /@aptos-labs/ts-sdk@0.0.3:
-    resolution: {integrity: sha512-1qVcKAMToLI+EOrw0kQvL9/yyXZ7iU4/NIpvFokIWK6DNe3ExSu+SebwFc0jAqyy/kvMWht8FBF2hnmW2G1pyA==}
+  /@aptos-labs/ts-sdk@1.0.0:
+    resolution: {integrity: sha512-WE7rBlQM+rEwBUmG4zOcTaLi47frs+gOb5ZuAdJB37wqNLwbo143tgAYq63bsvmb6x41i0bq+rL7rkvcBjvIpQ==}
     engines: {node: '>=11.0.0'}
     dependencies:
       '@aptos-labs/aptos-client': 0.0.2
       '@noble/curves': 1.2.0
-      '@noble/hashes': 1.1.3
-      '@scure/bip39': 1.1.0
+      '@noble/hashes': 1.3.2
+      '@scure/bip32': 1.3.2
+      '@scure/bip39': 1.2.1
       form-data: 4.0.0
       tweetnacl: 1.0.3
     transitivePeerDependencies:
@@ -382,28 +389,27 @@ packages:
       - debug
     dev: false
 
-  /@aptos-labs/wallet-adapter-core@2.6.0(aptos@1.20.0):
-    resolution: {integrity: sha512-GVnjnwzW/dnEW1ceHUB6vj9u37Hth38oIngc4ERdXf9cl9BlXut4e0bLHCUrbHGOtF7rx1NuDVwYH7GYsh6vSQ==}
+  /@aptos-labs/wallet-adapter-core@3.1.1(@aptos-labs/ts-sdk@1.0.0)(aptos@1.20.0):
+    resolution: {integrity: sha512-16IfsvqLnnFKWmhEDT9YbJDQYne3gG355iVdD4tMw6/SMOxBenlt0quy+WMCIiaAnInQvH87bYo48LYfeG4bfA==}
     peerDependencies:
-      aptos: ^1.19.0
+      '@aptos-labs/ts-sdk': ^1.0.0
+      aptos: ^1.20.0
     dependencies:
-      '@aptos-labs/ts-sdk': 0.0.3
+      '@aptos-labs/ts-sdk': 1.0.0
       aptos: 1.20.0
       buffer: 6.0.3
       eventemitter3: 4.0.7
       tweetnacl: 1.0.3
-    transitivePeerDependencies:
-      - debug
     dev: false
 
-  /@aptos-labs/wallet-adapter-mui-design@1.0.7(@types/react@18.2.42)(aptos@1.20.0)(react-dom@18.2.0)(react-router-dom@6.10.0)(react@18.2.0):
-    resolution: {integrity: sha512-Xtgq0GjutgxV/nKO+oqGKIANj/njPY7BfUazmMwz/Z2Fanl1RBV++pb8wxPUpL8ImIycc81HfEnAgxdvsotvAw==}
+  /@aptos-labs/wallet-adapter-mui-design@2.0.0(@aptos-labs/ts-sdk@1.0.0)(@types/react@18.2.42)(aptos@1.20.0)(react-dom@18.2.0)(react-router-dom@6.10.0)(react@18.2.0):
+    resolution: {integrity: sha512-+jqNF8rrwErQWh/eyk3wIe8Ul7stfbSao098o+O8jEKROlbbLY22XVYLb/7y9KLg360E2SIdVEeSGB+k1JzpfQ==}
     peerDependencies:
       react: ^18
       react-dom: ^18.2.0
       react-router-dom: ^6.8.0
     dependencies:
-      '@aptos-labs/wallet-adapter-react': 1.4.0(aptos@1.20.0)(react@18.2.0)
+      '@aptos-labs/wallet-adapter-react': 2.1.1(@aptos-labs/ts-sdk@1.0.0)(aptos@1.20.0)(react@18.2.0)
       '@babel/core': 7.21.8
       '@emotion/react': 11.11.1(@types/react@18.2.42)(react@18.2.0)
       '@emotion/styled': 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.42)(react@18.2.0)
@@ -413,22 +419,22 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-router-dom: 6.10.0(react-dom@18.2.0)(react@18.2.0)
     transitivePeerDependencies:
+      - '@aptos-labs/ts-sdk'
       - '@types/react'
       - aptos
-      - debug
       - supports-color
     dev: false
 
-  /@aptos-labs/wallet-adapter-react@1.4.0(aptos@1.20.0)(react@18.2.0):
-    resolution: {integrity: sha512-mEsVFgiDWKZZSHLqsS7MGmBP1+J+QHzg+Qdm4+av1Kj0eJoc3P8bXF+HwH0zmTt13iA8dgFQbsiAsTLY+oTIww==}
+  /@aptos-labs/wallet-adapter-react@2.1.1(@aptos-labs/ts-sdk@1.0.0)(aptos@1.20.0)(react@18.2.0):
+    resolution: {integrity: sha512-8nHGql/q5OsVuNE1AeSGnkWAph28rcHdiw7KrSW1LuuxAV07l/Wy7HxFqi4KDlTB2q6m66XOhHosMEq5yVocuA==}
     peerDependencies:
       react: ^18
     dependencies:
-      '@aptos-labs/wallet-adapter-core': 2.6.0(aptos@1.20.0)
+      '@aptos-labs/wallet-adapter-core': 3.1.1(@aptos-labs/ts-sdk@1.0.0)(aptos@1.20.0)
       react: 18.2.0
     transitivePeerDependencies:
+      - '@aptos-labs/ts-sdk'
       - aptos
-      - debug
     dev: false
 
   /@babel/code-frame@7.21.4:
@@ -2367,12 +2373,24 @@ packages:
     resolution: {integrity: sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==}
     dev: false
 
+  /@scure/base@1.1.3:
+    resolution: {integrity: sha512-/+SgoRjLq7Xlf0CWuLHq2LUZeL/w65kfzAPG5NH9pcmBhs+nunQTn4gvdwgMTIXnt9b2C/1SeL2XiysZEyIC9Q==}
+    dev: false
+
   /@scure/bip32@1.2.0:
     resolution: {integrity: sha512-O+vT/hBVk+ag2i6j2CDemwd1E1MtGt+7O1KzrPNsaNvSsiEK55MyPIxJIMI2PS8Ijj464B2VbQlpRoQXxw1uHg==}
     dependencies:
       '@noble/curves': 0.8.3
       '@noble/hashes': 1.3.2
       '@scure/base': 1.1.1
+    dev: false
+
+  /@scure/bip32@1.3.2:
+    resolution: {integrity: sha512-N1ZhksgwD3OBlwTv3R6KFEcPojl/W4ElJOeCZdi+vuI5QmTFwLq3OFf2zd2ROpKvxFdgZ6hUpb0dx9bVNEwYCA==}
+    dependencies:
+      '@noble/curves': 1.2.0
+      '@noble/hashes': 1.3.2
+      '@scure/base': 1.1.3
     dev: false
 
   /@scure/bip39@1.1.0:
@@ -2386,6 +2404,13 @@ packages:
     resolution: {integrity: sha512-t+wDck2rVkh65Hmv280fYdVdY25J9YeEUIgn2LG1WM6gxFkGzcksoDiUkWVpVp3Oex9xGC68JU2dSbUfwZ2jPg==}
     dependencies:
       '@noble/hashes': 1.2.0
+      '@scure/base': 1.1.1
+    dev: false
+
+  /@scure/bip39@1.2.1:
+    resolution: {integrity: sha512-Z3/Fsz1yr904dduJD0NpiyRHhRYHdcnyh73FZWiV+/qhWi83wNJ3NWolYqCEN+ZWsUz2TWwajJggcRE9r1zUYg==}
+    dependencies:
+      '@noble/hashes': 1.3.2
       '@scure/base': 1.1.1
     dev: false
 

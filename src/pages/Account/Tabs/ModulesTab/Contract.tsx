@@ -40,6 +40,7 @@ import {
   deserializeVector,
   encodeInputArgsForViewRequest,
 } from "../../../../utils";
+import {InputTransactionData} from "@aptos-labs/wallet-adapter-core";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -299,23 +300,24 @@ function RunContractForm({
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("write_button_clicked", fn.name);
-    const payload: Types.TransactionPayload = {
-      type: "entry_function_payload",
-      function: `${module.address}::${module.name}::${fn.name}`,
-      type_arguments: data.typeArgs,
-      arguments: data.args.map((arg, i) => {
-        const type = fnParams[i];
-        if (type.includes("vector")) {
-          // when it's a vector<u8>, we support both hex and javascript array format
-          return type === "vector<u8>" && arg.trim().startsWith("0x")
-            ? Array.from(new HexString(arg).toUint8Array()).map((x) =>
-                x.toString(),
-              )
-            : deserializeVector(arg);
-        } else if (type.startsWith("0x1::option::Option")) {
-          arg ? {vec: [arg]} : undefined;
-        } else return arg;
-      }),
+    const payload: InputTransactionData = {
+      data: {
+        function: `${module.address}::${module.name}::${fn.name}`,
+        typeArguments: data.typeArgs,
+        functionArguments: data.args.map((arg, i) => {
+          const type = fnParams[i];
+          if (type.includes("vector")) {
+            // when it's a vector<u8>, we support both hex and javascript array format
+            return type === "vector<u8>" && arg.trim().startsWith("0x")
+              ? Array.from(new HexString(arg).toUint8Array()).map((x) =>
+                  x.toString(),
+                )
+              : deserializeVector(arg);
+          } else if (type.startsWith("0x1::option::Option")) {
+            arg ? {vec: [arg]} : undefined;
+          } else return arg;
+        }),
+      },
     };
 
     await submitTransaction(payload);

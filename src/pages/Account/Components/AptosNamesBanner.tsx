@@ -6,6 +6,12 @@ import {Banner} from "../../../components/Banner";
 import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Stack, useMediaQuery, useTheme} from "@mui/material";
+import {Types} from "aptos";
+import {
+  EntryFunctionArgumentTypes,
+  InputGenerateTransactionPayloadData,
+  SimpleEntryFunctionArgumentTypes,
+} from "@aptos-labs/ts-sdk";
 
 export function AptosNamesBanner() {
   const inDev = useGetInDevMode();
@@ -17,7 +23,27 @@ export function AptosNamesBanner() {
   const ANSConnector = (
     <AptosNamesConnector
       buttonLabel="Claim your name"
-      onSignTransaction={submitTransaction}
+      onSignTransaction={(payload: Types.TransactionPayload) => {
+        // TODO: Aptos names connector needs to be updated to SDK v2
+        // Only functions that should come are entry function payloads
+        if (payload.type === "entry_function_payload") {
+          const typedPayload = payload as Types.EntryFunctionPayload;
+
+          const data: InputGenerateTransactionPayloadData = {
+            // TODO: This typing is too strict
+            function:
+              typedPayload.function as `${string}::${string}::${string}`,
+            functionArguments: typedPayload.arguments as (
+              | SimpleEntryFunctionArgumentTypes
+              | EntryFunctionArgumentTypes
+            )[],
+            typeArguments: typedPayload.type_arguments,
+          };
+          return submitTransaction({data});
+        } else {
+          throw new Error("Unsupported payload type");
+        }
+      }}
       isWalletConnected={connected}
       network="testnet"
     />

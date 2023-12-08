@@ -1,5 +1,6 @@
-import {FailedTransactionError, Types} from "aptos";
+import {FailedTransactionError} from "aptos";
 import {useEffect, useState} from "react";
+import {InputTransactionData} from "@aptos-labs/wallet-adapter-core";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
@@ -35,7 +36,7 @@ const useSubmitTransaction = () => {
     }
   }, [transactionResponse]);
 
-  async function submitTransaction(payload: Types.TransactionPayload) {
+  async function submitTransaction(payload: InputTransactionData) {
     if (network?.name.toLocaleLowerCase() !== state.network_name) {
       setTransactionResponse({
         transactionSubmitted: false,
@@ -48,7 +49,7 @@ const useSubmitTransaction = () => {
     setTransactionInProcess(true);
 
     const signAndSubmitTransactionCall = async (
-      transactionPayload: Types.TransactionPayload,
+      transactionPayload: InputTransactionData,
     ): Promise<TransactionResponse> => {
       const responseOnError: TransactionResponseOnError = {
         transactionSubmitted: false,
