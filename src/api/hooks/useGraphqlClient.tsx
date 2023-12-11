@@ -24,7 +24,7 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
     case "devnet":
       return "https://indexer-devnet.staging.gcp.aptosdev.com/v1/graphql";
     case "local":
-      return undefined;
+      return "http://127.0.0.1:8090/v1/graphql";
     default:
       return undefined;
   }
