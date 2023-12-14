@@ -27,6 +27,7 @@ import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
 import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
 import {PetraWallet} from "petra-plugin-wallet-adapter";
 import {IdentityConnectWallet} from "@identity-connect/wallet-adapter-plugin";
+import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
 
 const IdentityConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 const MSafeWallet = new MSafeWalletAdapter();
@@ -49,6 +50,7 @@ function walletsForNetwork(network: string) {
       network: NetworkName.Testnet,
       bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
     }),
+    new OKXWallet(),
   ];
   if (network === NetworkName.Mainnet) {
     wallets.unshift(
