@@ -30,6 +30,8 @@ import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
+import {calculateNetworkPercentage} from "./utils";
 
 type ValidatorStakingBarProps = {
   setIsStakingBarSkeletonLoading: (arg: boolean) => void;
@@ -66,17 +68,22 @@ function StakingBarContent({
   const logEvent = useLogEventWithBasic();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const {connected, wallet, account} = useWallet();
-  const {delegatedStakeAmount, networkPercentage, commission, isQueryLoading} =
-    useGetDelegationNodeInfo({
-      validatorAddress: validator.owner_address,
-    });
+  const {commission, isQueryLoading} = useGetDelegationNodeInfo({
+    validatorAddress: validator.owner_address,
+  });
+  const {totalVotingPower} = useGetValidatorSet();
+  const validatorVotingPower = validator.voting_power;
+  const networkPercentage = calculateNetworkPercentage(
+    validatorVotingPower,
+    totalVotingPower,
+  );
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   const handleClickOpen = () => {
     logEvent("stake_button_clicked", validator.owner_address, {
       commission: commission?.toString() ?? "",
-      delegated_stake_amount: delegatedStakeAmount ?? "",
+      delegated_stake_amount: validatorVotingPower ?? "",
       network_percentage: networkPercentage ?? "",
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",
@@ -97,7 +104,7 @@ function StakingBarContent({
     <Stack direction="column" spacing={0.5}>
       <Typography sx={{fontWeight: 600}}>
         <APTCurrencyValue
-          amount={delegatedStakeAmount ?? ""}
+          amount={validatorVotingPower ?? ""}
           fixedDecimalPlaces={0}
         />
       </Typography>
