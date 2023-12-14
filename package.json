@@ -21,6 +21,7 @@
     "@mui/system": "^5.11.13",
     "@mui/x-date-pickers": "^6.0.0",
     "@nightlylabs/aptos-wallet-adapter-plugin": "^0.2.12",
+    "@okwallet/aptos-wallet-adapter": "^0.0.4",
     "@openblockhq/aptos-wallet-adapter": "^0.1.5",
     "@pontem/wallet-adapter-plugin": "^0.2.0",
     "@rise-wallet/wallet-adapter": "^0.1.2",
