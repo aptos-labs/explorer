@@ -30,27 +30,26 @@ import {IdentityConnectWallet} from "@identity-connect/wallet-adapter-plugin";
 import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
 
 const IdentityConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
-const MSafeWallet = new MSafeWalletAdapter();
 
 function walletsForNetwork(network: string) {
   const wallets: any[] = [
     new PetraWallet(),
-    new PontemWallet(),
     new MartianWallet(),
+    new PontemWallet(),
     new FewchaWallet(),
-    new RiseWallet(),
-    MSafeWallet,
-    new NightlyWallet(),
-    new OpenBlockWallet(),
-    new TokenPocketWallet(),
-    new TrustWallet(),
-    new WelldoneWallet(),
     // Blocto supports Testnet/Mainnet for now.
     new BloctoWallet({
       network: NetworkName.Testnet,
       bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
     }),
     new OKXWallet(),
+    new RiseWallet(),
+    new MSafeWalletAdapter(),
+    new NightlyWallet(),
+    new OpenBlockWallet(),
+    new TokenPocketWallet(),
+    new TrustWallet(),
+    new WelldoneWallet(),
   ];
   if (network === NetworkName.Mainnet) {
     wallets.unshift(
