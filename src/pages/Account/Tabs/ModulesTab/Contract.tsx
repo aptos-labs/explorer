@@ -44,6 +44,7 @@ import {
 type ContractFormType = {
   typeArgs: string[];
   args: string[];
+  ledgerVersion?: string;
 };
 
 interface ContractSidebarProps {
@@ -334,6 +335,7 @@ function RunContractForm({
       fn={fn}
       onSubmit={onSubmit}
       setFormValid={setFormValid}
+      isView={false}
       result={
         connected ? (
           <Box>
@@ -485,7 +487,11 @@ function ReadContractForm({
     }
     setInProcess(true);
     try {
-      const result = await view(viewRequest, state.network_value);
+      const result = await view(
+        viewRequest,
+        state.network_value,
+        data.ledgerVersion,
+      );
       setResult(result);
       setErrMsg(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "success"});
@@ -509,6 +515,7 @@ function ReadContractForm({
       fn={fn}
       onSubmit={onSubmit}
       setFormValid={setFormValid}
+      isView={true}
       result={
         <Box>
           <StyledTooltip
@@ -618,11 +625,13 @@ function ContractForm({
   onSubmit,
   setFormValid,
   result,
+  isView,
 }: {
   fn: Types.MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
   setFormValid: (valid: boolean) => void;
   result: ReactNode;
+  isView: boolean;
 }) {
   const {account} = useWallet();
   const {
@@ -708,6 +717,24 @@ function ContractForm({
               );
             })}
           </Stack>
+          {isView && (
+            <Stack spacing={4}>
+              <Controller
+                key={"ledgerVersion"}
+                name={"ledgerVersion"}
+                control={control}
+                rules={{required: false}}
+                render={({field: {onChange, value}}) => (
+                  <TextField
+                    onChange={onChange}
+                    value={value}
+                    label={"ledgerVersion: defaults to current version"}
+                    fullWidth
+                  />
+                )}
+              />
+            </Stack>
+          )}
           {result}
         </Stack>
       </Box>
