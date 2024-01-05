@@ -482,7 +482,7 @@ function ReadContractForm({
         }),
       };
     } catch (e: any) {
-      setErrMsg("Parse arguments failed: " + e?.message);
+      setErrMsg("Parsing arguments failed: " + e?.message);
       return;
     }
     setInProcess(true);
@@ -496,7 +496,8 @@ function ReadContractForm({
       setErrMsg(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "success"});
     } catch (e: any) {
-      let error = e.message ?? String(e);
+      // Ensure error is a string
+      let error = e.message ?? JSON.stringify(e);
 
       const prefix = "Error:";
       if (error.startsWith(prefix)) {
