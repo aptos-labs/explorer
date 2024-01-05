@@ -56,43 +56,12 @@ interface ContractSidebarProps {
 
 function Contract({address, isRead}: {address: string; isRead: boolean}) {
   const theme = useTheme();
-  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const {data, isLoading, error} = useGetAccountModules(address);
   const {selectedModuleName, selectedFnName} = useParams();
   const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
   const selectedModule = sortedPackages
     .flatMap((pkg) => pkg.modules)
     .find((module) => module.name === selectedModuleName);
-
-  if (!isRead && !isWideScreen) {
-    return (
-      <Grid item xs={12}>
-        <Box
-          padding={3}
-          bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
-          borderRadius={1}
-        >
-          <Typography
-            fontSize={16}
-            fontWeight={500}
-            marginBottom={"16px"}
-            color={theme.palette.mode === "dark" ? grey[300] : grey[600]}
-          >
-            Unfortunately, we are not supporting <b>Run</b> entry functions on
-            mobile at the moment.
-          </Typography>
-
-          <Typography
-            fontSize={12}
-            fontWeight={500}
-            color={theme.palette.mode === "dark" ? grey[400] : grey[500]}
-          >
-            Please, use a laptop or a desktop computer.
-          </Typography>
-        </Box>
-      </Grid>
-    );
-  }
 
   if (isLoading) {
     return null;
@@ -482,7 +451,7 @@ function ReadContractForm({
         }),
       };
     } catch (e: any) {
-      setErrMsg("Parse arguments failed: " + e?.message);
+      setErrMsg("Parsing arguments failed: " + e?.message);
       return;
     }
     setInProcess(true);
@@ -496,7 +465,8 @@ function ReadContractForm({
       setErrMsg(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "success"});
     } catch (e: any) {
-      let error = e.message ?? String(e);
+      // Ensure error is a string
+      let error = e.message ?? JSON.stringify(e);
 
       const prefix = "Error:";
       if (error.startsWith(prefix)) {

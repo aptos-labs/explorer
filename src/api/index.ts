@@ -182,11 +182,7 @@ export function view(
     parsedVersion = undefined;
   }
 
-  if (ledgerVersion === null || ledgerVersion === "") {
-    return withResponseError(client.view(request, parsedVersion));
-  }
-
-  return withResponseError(client.view(request, ledgerVersion));
+  return client.view(request, parsedVersion);
 }
 
 export function getTableItem(
