@@ -172,9 +172,21 @@ export function getAccountModule(
 export function view(
   request: Types.ViewRequest,
   nodeUrl: string,
+  ledgerVersion?: string,
 ): Promise<Types.MoveValue[]> {
   const client = new AptosClient(nodeUrl);
-  return withResponseError(client.view(request));
+  let parsedVersion = ledgerVersion;
+
+  // Handle non-numbers, to default to the latest ledger version
+  if (typeof ledgerVersion === "string" && isNaN(parseInt(ledgerVersion, 10))) {
+    parsedVersion = undefined;
+  }
+
+  if (ledgerVersion === null || ledgerVersion === "") {
+    return withResponseError(client.view(request, parsedVersion));
+  }
+
+  return withResponseError(client.view(request, ledgerVersion));
 }
 
 export function getTableItem(
