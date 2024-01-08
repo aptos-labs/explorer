@@ -144,7 +144,7 @@ const faqRewardsData = [
   },
   {
     question: "Can the operator change their commission rate?",
-    answer: "No, the commission rate cannot be changed.",
+    answer: "Commission rates are now subject to change by the operator.",
   },
   {
     question: "How much can I expect to earn?",

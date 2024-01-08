@@ -35,7 +35,7 @@ export function AptosNamesBanner() {
   );
 
   return inDev ? (
-    <Banner action={action} sx={{marginBottom: 2}}>
+    <Banner pillText="NEW" action={action} sx={{marginBottom: 2}}>
       {children}
     </Banner>
   ) : null;

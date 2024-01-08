@@ -72,7 +72,7 @@ export function AptosLearnBanner() {
 
   return (
     <>
-      <Banner sx={{marginBottom: 2}} action={action}>
+      <Banner pillText="NEW" sx={{marginBottom: 2}} action={action}>
         {children}
       </Banner>
     </>
