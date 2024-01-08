@@ -110,8 +110,8 @@ export default function ValidatorPage() {
                   sx={{marginBottom: 2}}
                 >
                   The current commission rate is {commission}%. The commission
-                  rate will be updated to {nextCommission}% at the end of the
-                  current epoch.
+                  rate will be updated to {nextCommission}% at the current
+                  lockup period.
                 </Banner>
               )}
 
