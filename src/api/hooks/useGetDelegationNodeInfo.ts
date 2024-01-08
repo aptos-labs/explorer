@@ -38,7 +38,7 @@ export function useGetDelegationNodeInfo({
     useQuery<Types.MoveValue[], ResponseError, number>({
       queryKey: ["validatorCommission", client, validatorAddress],
       queryFn: () => getValidatorCommission(client, validatorAddress),
-      select: (commissionData: MoveValue[]) => Number(commissionData[0]) / 100, // commission rate: 22.85% is represented as 2285
+      select: (res: MoveValue[]) => Number(res ? res[0] : 0) / 100, // commission rate: 22.85% is represented as 2285
     }),
     useQuery<Types.MoveValue[], ResponseError>(
       ["validatorState", client, validatorAddress],
@@ -47,7 +47,7 @@ export function useGetDelegationNodeInfo({
     useQuery<Types.MoveValue[], ResponseError, number>({
       queryKey: ["validatorCommissionChange", client, validatorAddress],
       queryFn: () => getValidatorCommissionChange(client, validatorAddress),
-      select: (commissionData: MoveValue[]) => Number(commissionData[0]) / 100, // commission rate: 22.85% is represented as 2285
+      select: (res: MoveValue[]) => Number(res ? res[0] : 0) / 100, // commission rate: 22.85% is represented as 2285
     }),
   ]);
 
