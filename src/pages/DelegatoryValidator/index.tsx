@@ -46,7 +46,7 @@ export default function ValidatorPage() {
   );
 
   const {commission, nextCommission} = useGetDelegationNodeInfo({
-    validatorAddress: validator?.owner_address ?? "",
+    validatorAddress: delegationValidator?.owner_address ?? "",
   });
 
   useEffect(() => {
