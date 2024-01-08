@@ -144,7 +144,8 @@ const faqRewardsData = [
   },
   {
     question: "Can the operator change their commission rate?",
-    answer: "Commission rates are now subject to change by the operator.",
+    answer:
+      "Commission rates are now subject to change by the operator. Operators are required to make changes to their commission rates 7.5 days before the current lockup cycle ends.",
   },
   {
     question: "How much can I expect to earn?",
