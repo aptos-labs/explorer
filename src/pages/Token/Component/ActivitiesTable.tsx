@@ -7,10 +7,10 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {Link} from "../../../routing";
-import {Token_Activities_V2} from "aptos";
+import {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 
 type ActivityCellProps = {
-  activity: Token_Activities_V2;
+  activity: GetTokenActivityResponse[0];
 };
 
 function TransactionVersionCell({activity}: ActivityCellProps) {
@@ -141,7 +141,7 @@ function ActivityHeaderCell({column}: ActivityHeaderCellProps) {
 }
 
 type ActivitiesTableProps = {
-  activities: Token_Activities_V2[]; // TODO: add graphql data typing
+  activities: GetTokenActivityResponse; // TODO: add graphql data typing
   columns?: Column[];
 };
 
