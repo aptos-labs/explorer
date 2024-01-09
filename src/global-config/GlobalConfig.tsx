@@ -12,6 +12,7 @@ import {
 } from "./feature-selection";
 import {useNetworkSelector} from "./network-selection";
 import {getGraphqlURI} from "../api/hooks/useGraphqlClient";
+import {Aptos, AptosConfig, NetworkToNetworkName} from "@aptos-labs/ts-sdk";
 
 export type GlobalState = {
   /** actual state */
@@ -24,6 +25,8 @@ export type GlobalState = {
   readonly aptos_client: AptosClient;
   /** derived from network_value */
   readonly indexer_client?: IndexerClient;
+  /** derived from network_value */
+  readonly sdk_v2_client?: Aptos;
 };
 
 type GlobalActions = {
@@ -49,6 +52,9 @@ function deriveGlobalState({
     network_value: networks[network_name],
     aptos_client: new AptosClient(networks[network_name]),
     indexer_client: indexerClient,
+    sdk_v2_client: new Aptos(
+      new AptosConfig({network: NetworkToNetworkName[network_name]}),
+    ),
   };
 }
 
