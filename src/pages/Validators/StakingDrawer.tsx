@@ -145,7 +145,7 @@ const faqRewardsData = [
   {
     question: "Can the operator change their commission rate?",
     answer:
-      "Commission rates are now subjec tto change by the operator. The new rate takes effect at the end of the lockup cycle. This period allows stakers to assess the new commission rate. If stakers are not in favor of the upcoming change, they have the full 7.5-day window to unstake their assets before the new rate takes effect.",
+      "Commission rates are now subject to change by the operator. The new rate takes effect at the end of the lockup cycle. This period allows stakers to assess the new commission rate. If stakers are not in favor of the upcoming change, they have the full 7.5-day window to unstake their assets before the new rate takes effect.",
   },
   {
     question: "How much can I expect to earn?",
