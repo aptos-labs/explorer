@@ -10,6 +10,7 @@ import ValidatorsPageTabs from "./Tabs";
 import ValidatorsMap from "./ValidatorsMap";
 import {getStableID} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {CommissionChangeBanner} from "./CommissionChangeBanner";
 
 export default function ValidatorsPage() {
   const [state] = useGlobalState();
@@ -61,6 +62,7 @@ export default function ValidatorsPage() {
       <Typography variant="h3" marginBottom={2}>
         Validators
       </Typography>
+      <CommissionChangeBanner />
       {currentViewCount &&
       viewCountCap &&
       Number(currentViewCount) <= Number(viewCountCap) ? (
