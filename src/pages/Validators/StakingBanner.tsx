@@ -70,7 +70,7 @@ export function StakingBanner() {
 
   return (
     <>
-      <Banner sx={{marginBottom: 2}} action={action}>
+      <Banner pillText="NEW" sx={{marginBottom: 2}} action={action}>
         {children}
       </Banner>
       <StakingDrawer open={open} handleClick={handleClick} />
