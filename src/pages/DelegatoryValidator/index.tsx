@@ -20,6 +20,7 @@ import {useEffect, useMemo, useState} from "react";
 import Error from "../Account/Error";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {Banner} from "../../components/Banner";
+import {useGetDelegationNodeCommissionChange} from "../../api/hooks/useGetDelegationNodeCommissionChange";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
@@ -45,7 +46,10 @@ export default function ValidatorPage() {
     (validator) => validator.owner_address === addressHex.hex(),
   );
 
-  const {commission, nextCommission} = useGetDelegationNodeInfo({
+  const {commission} = useGetDelegationNodeInfo({
+    validatorAddress: delegationValidator?.owner_address ?? "",
+  });
+  const {nextCommission} = useGetDelegationNodeCommissionChange({
     validatorAddress: delegationValidator?.owner_address ?? "",
   });
 
