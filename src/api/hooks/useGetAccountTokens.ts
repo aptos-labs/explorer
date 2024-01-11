@@ -1,6 +1,7 @@
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useQuery} from "@tanstack/react-query";
 import {normalizeAddress} from "../../utils";
+import {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 
 export function useGetAccountTokensCount(address: string) {
   const [state] = useGlobalState();
@@ -101,21 +102,20 @@ export function useGetTokenActivities(
   return useQuery(
     ["token_activities", {tokenDataId, limit, offset}, state.network_value],
     async () => {
-      const response = await state.indexer_client?.getTokenActivities(
-        tokenDataId,
-        {
+      const response: GetTokenActivityResponse | undefined =
+        await state.sdk_v2_client?.getDigitalAssetActivity({
+          digitalAssetAddress: tokenDataId,
           options: {
             limit,
             offset,
+            orderBy: [
+              {
+                transaction_version: "desc",
+              },
+            ],
           },
-          orderBy: [
-            {
-              transaction_version: "desc",
-            },
-          ],
-        },
-      );
-      return response?.token_activities_v2 ?? [];
+        });
+      return response ?? [];
     },
   );
 }

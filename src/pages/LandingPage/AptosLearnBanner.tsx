@@ -9,12 +9,13 @@ import {
 import {grey} from "@mui/material/colors";
 import React, {useState} from "react";
 import {Banner} from "../../components/Banner";
-import {StakingDrawer} from "./StakingDrawer";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
-export function StakingBanner() {
+const APTOS_LEARN_URL = "https://learn.aptoslabs.com";
+
+export function AptosLearnBanner() {
   const [open, setOpen] = useState<boolean>(false);
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
@@ -23,10 +24,11 @@ export function StakingBanner() {
 
   const handleClick = () => {
     setOpen(!open);
-    logEvent("staking_banner_learn_more_clicked", null, {
+    logEvent("aptos_learn_banner_clicked", null, {
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",
     });
+    window.open(APTOS_LEARN_URL, "_blank");
   };
 
   const learnMoreButton = (
@@ -35,7 +37,7 @@ export function StakingBanner() {
       onClick={handleClick}
       sx={{alignSelf: "flex-start", transform: `translateX(-0.5rem)`}}
     >
-      <Typography>LEARN MORE</Typography>
+      <Typography>GO TO APTOS LEARN</Typography>
       <ArrowForwardIosIcon sx={{marginLeft: 2}} fontSize="small" />
     </Button>
   );
@@ -57,7 +59,7 @@ export function StakingBanner() {
   );
 
   const text =
-    "Aptos enables delegations and staking services. See Staking for more details.";
+    "Create your own decentralized app with the recently launched Aptos Learn website!";
 
   const children = isOnMobile ? (
     <Stack direction="column">
@@ -73,7 +75,6 @@ export function StakingBanner() {
       <Banner pillText="NEW" sx={{marginBottom: 2}} action={action}>
         {children}
       </Banner>
-      <StakingDrawer open={open} handleClick={handleClick} />
     </>
   );
 }

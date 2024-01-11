@@ -44,6 +44,7 @@ import {
 type ContractFormType = {
   typeArgs: string[];
   args: string[];
+  ledgerVersion?: string;
 };
 
 interface ContractSidebarProps {
@@ -55,43 +56,12 @@ interface ContractSidebarProps {
 
 function Contract({address, isRead}: {address: string; isRead: boolean}) {
   const theme = useTheme();
-  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const {data, isLoading, error} = useGetAccountModules(address);
   const {selectedModuleName, selectedFnName} = useParams();
   const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
   const selectedModule = sortedPackages
     .flatMap((pkg) => pkg.modules)
     .find((module) => module.name === selectedModuleName);
-
-  if (!isRead && !isWideScreen) {
-    return (
-      <Grid item xs={12}>
-        <Box
-          padding={3}
-          bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
-          borderRadius={1}
-        >
-          <Typography
-            fontSize={16}
-            fontWeight={500}
-            marginBottom={"16px"}
-            color={theme.palette.mode === "dark" ? grey[300] : grey[600]}
-          >
-            Unfortunately, we are not supporting <b>Run</b> entry functions on
-            mobile at the moment.
-          </Typography>
-
-          <Typography
-            fontSize={12}
-            fontWeight={500}
-            color={theme.palette.mode === "dark" ? grey[400] : grey[500]}
-          >
-            Please, use a laptop or a desktop computer.
-          </Typography>
-        </Box>
-      </Grid>
-    );
-  }
 
   if (isLoading) {
     return null;
@@ -334,6 +304,7 @@ function RunContractForm({
       fn={fn}
       onSubmit={onSubmit}
       setFormValid={setFormValid}
+      isView={false}
       result={
         connected ? (
           <Box>
@@ -480,17 +451,22 @@ function ReadContractForm({
         }),
       };
     } catch (e: any) {
-      setErrMsg("Parse arguments failed: " + e?.message);
+      setErrMsg("Parsing arguments failed: " + e?.message);
       return;
     }
     setInProcess(true);
     try {
-      const result = await view(viewRequest, state.network_value);
+      const result = await view(
+        viewRequest,
+        state.network_value,
+        data.ledgerVersion,
+      );
       setResult(result);
       setErrMsg(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "success"});
     } catch (e: any) {
-      let error = e.message ?? String(e);
+      // Ensure error is a string
+      let error = e.message ?? JSON.stringify(e);
 
       const prefix = "Error:";
       if (error.startsWith(prefix)) {
@@ -509,6 +485,7 @@ function ReadContractForm({
       fn={fn}
       onSubmit={onSubmit}
       setFormValid={setFormValid}
+      isView={true}
       result={
         <Box>
           <StyledTooltip
@@ -618,11 +595,13 @@ function ContractForm({
   onSubmit,
   setFormValid,
   result,
+  isView,
 }: {
   fn: Types.MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
   setFormValid: (valid: boolean) => void;
   result: ReactNode;
+  isView: boolean;
 }) {
   const {account} = useWallet();
   const {
@@ -708,6 +687,24 @@ function ContractForm({
               );
             })}
           </Stack>
+          {isView && (
+            <Stack spacing={4}>
+              <Controller
+                key={"ledgerVersion"}
+                name={"ledgerVersion"}
+                control={control}
+                rules={{required: false}}
+                render={({field: {onChange, value}}) => (
+                  <TextField
+                    onChange={onChange}
+                    value={value}
+                    label={"ledgerVersion: defaults to current version"}
+                    fullWidth
+                  />
+                )}
+              />
+            </Stack>
+          )}
           {result}
         </Stack>
       </Box>

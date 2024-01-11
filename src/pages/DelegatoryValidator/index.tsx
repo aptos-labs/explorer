@@ -18,6 +18,9 @@ import {DelegationStateContext} from "./context/DelegationContext";
 import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
 import {useEffect, useMemo, useState} from "react";
 import Error from "../Account/Error";
+import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
+import {Banner} from "../../components/Banner";
+import {useGetDelegationNodeCommissionChange} from "../../api/hooks/useGetDelegationNodeCommissionChange";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
@@ -42,6 +45,13 @@ export default function ValidatorPage() {
   const validator = validators.find(
     (validator) => validator.owner_address === addressHex.hex(),
   );
+
+  const {commission} = useGetDelegationNodeInfo({
+    validatorAddress: delegationValidator?.owner_address ?? "",
+  });
+  const {nextCommission} = useGetDelegationNodeCommissionChange({
+    validatorAddress: delegationValidator?.owner_address ?? "",
+  });
 
   useEffect(() => {
     if (!loading) {
@@ -97,6 +107,18 @@ export default function ValidatorPage() {
                 address={address}
                 isSkeletonLoading={isSkeletonLoading}
               />
+              {commission !== nextCommission && (
+                <Banner
+                  pillText="INFO"
+                  pillColor="warning"
+                  sx={{marginBottom: 2}}
+                >
+                  The current commission rate is {commission}%. The commission
+                  rate will be updated to {nextCommission}% at the current
+                  lockup period.
+                </Banner>
+              )}
+
               <ValidatorStakingBar
                 setIsStakingBarSkeletonLoading={setIsStakingBarSkeletonLoading}
                 isSkeletonLoading={isSkeletonLoading}
