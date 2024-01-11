@@ -4,6 +4,15 @@
   "private": true,
   "packageManager": "pnpm@8.10.0",
   "type": "module",
+  "pnpm": {
+    "overrides": {
+      "@aptos-labs/aptos-client": ">=0.1.0",
+      "axios": ">=1.6.2",
+      "follow-redirects": ">=1.15.4",
+      "semver": ">=6.3.1",
+      "d3-color": ">=3.1.0"
+    }
+  },
   "dependencies": {
     "@apollo/client": "^3.8.9",
     "@aptos-labs/aptos-names-connector": "^0.0.2",
