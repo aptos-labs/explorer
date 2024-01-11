@@ -231,8 +231,8 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                 index === 0
                   ? "staking-section"
                   : index === 1
-                  ? "rewards-section"
-                  : "validators-section"
+                    ? "rewards-section"
+                    : "validators-section"
               }
               sx={{
                 flexDirection: "column",

@@ -147,8 +147,8 @@ function RewardEarnedCell({
     status === StakingStatus.STAKED
       ? stakePrincipals?.activePrincipals
       : status === StakingStatus.WITHDRAW_PENDING
-      ? stakePrincipals?.pendingInactivePrincipals
-      : undefined;
+        ? stakePrincipals?.pendingInactivePrincipals
+        : undefined;
 
   const rewardsEarned =
     principalsAmount && Number(stake) > principalsAmount
