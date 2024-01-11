@@ -40,7 +40,15 @@ export default function VerificationServiceUrlInput({
             style={{height: "1.5em"}}
           />
           {verificationServerErr ? (
-            <div style={{color: "red"}}>{verificationServerErr}</div>
+            <div
+              style={{
+                color: "red",
+                overflow: "scroll",
+                overflowWrap: "break-word",
+              }}
+            >
+              {verificationServerErr}
+            </div>
           ) : null}
         </Stack>
       </Typography>

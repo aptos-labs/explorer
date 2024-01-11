@@ -1,12 +1,13 @@
 import {useCallback} from "react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {VerificationStatus} from "../../constants";
 
 export interface AptosVerificationResultDto {
   network: string;
   account: string;
   moduleName: string;
   errMsg?: string;
-  status?: "VERIFIED_SAME" | "VERIFIED_DIFFERENT" | "NOT_VERIFIED";
+  status?: VerificationStatus;
   onChainByteCode?: string;
   compiledByteCode?: string;
 }

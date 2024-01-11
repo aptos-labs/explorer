@@ -133,7 +133,7 @@ export function Code({bytecode}: {bytecode: string}) {
     CODE_DESCRIPTION_NOT_VERIFIED,
   );
   const [verificationStatus, setVerificationStatus] =
-    useState<VerificationStatus>("NOT_VERIFIED");
+    useState<VerificationStatus>(VerificationStatus.NOT_VERIFIED);
   const [verificationServerErr, setVerificationServerErr] =
     useState<string>("");
 
@@ -150,41 +150,46 @@ export function Code({bytecode}: {bytecode: string}) {
   const startingLineNumber = useStartingLineNumber(sourceCode);
   const codeBoxScrollRef = useRef<any>(null);
   const LINE_HEIGHT_IN_PX = 24;
-  useEffect(() => {
-    if (codeBoxScrollRef.current) {
-      codeBoxScrollRef.current.scrollTop =
-        LINE_HEIGHT_IN_PX * startingLineNumber;
-    }
+  useEffect(
+    () => {
+      if (codeBoxScrollRef.current) {
+        codeBoxScrollRef.current.scrollTop =
+          LINE_HEIGHT_IN_PX * startingLineNumber;
+      }
 
-    if (state.network_name && address && selectedModuleName) {
-      checkVerification({
-        network: state.network_name,
-        account: address,
-        moduleName: selectedModuleName,
-      })
-        .then((dto: AptosVerificationCheckDto) => {
-          if (dto.errMsg) {
-            setVerificationStatus("NOT_VERIFIED");
-            setVerificationServerErr(`${dto.errMsg}`);
-          }
-
-          if (!dto.status) {
-            setVerificationStatus("NOT_VERIFIED");
-            return;
-          }
-
-          setVerificationStatus(dto.status);
-          setCodeDescription(genCodeDescription(dto.status));
-          setVerificationServerErr("");
+      if (state.network_name && address && selectedModuleName) {
+        checkVerification({
+          network: state.network_name,
+          account: address,
+          moduleName: selectedModuleName,
         })
-        .catch((reason: Error) => {
-          console.error(reason);
-          setVerificationStatus("NOT_VERIFIED");
-          setCodeDescription(genCodeDescription("NOT_VERIFIED"));
-          setVerificationServerErr("Verification service is not working.");
-        });
-    }
-  }, [address, selectedModuleName, verificationServiceEndpoint]);
+          .then((dto: AptosVerificationCheckDto) => {
+            if (dto.errMsg) {
+              setVerificationStatus(VerificationStatus.NOT_VERIFIED);
+              setVerificationServerErr(`${dto.errMsg}`);
+            }
+
+            if (!dto.status) {
+              setVerificationStatus(VerificationStatus.NOT_VERIFIED);
+              return;
+            }
+            setVerificationStatus(dto.status);
+            setCodeDescription(genCodeDescription(dto.status));
+            setVerificationServerErr("");
+          })
+          .catch((reason: Error) => {
+            console.error(reason);
+            setVerificationStatus(VerificationStatus.NOT_VERIFIED);
+            setCodeDescription(
+              genCodeDescription(VerificationStatus.NOT_VERIFIED),
+            );
+            setVerificationServerErr("Verification service is not working.");
+          });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [address, selectedModuleName, verificationServiceEndpoint],
+  );
 
   return (
     <Box>
@@ -204,7 +209,9 @@ export function Code({bytecode}: {bytecode: string}) {
           <Typography fontSize={20} fontWeight={700}>
             Code
           </Typography>
-          <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. We can not not verify it." />
+          {verificationStatus === VerificationStatus.NOT_VERIFIED ? (
+            <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. Please click the 'Verify Source Code' button if you want to confirm that the provided source code matches the actual code on the blockchain." />
+          ) : null}
           <Stack>
             <Stack
               direction="row"

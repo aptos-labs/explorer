@@ -10,11 +10,11 @@ export const CODE_DESCRIPTION_VERIFIED_SAME =
   "The source code is same to the actual bytecode.";
 
 export function genCodeDescription(status: VerificationStatus) {
-  if (status === "VERIFIED_DIFFERENT") {
+  if (status === VerificationStatus.VERIFIED_DIFFERENT) {
     return CODE_DESCRIPTION_VERIFIED_DIFFERENT;
   }
 
-  if (status === "VERIFIED_SAME") {
+  if (status === VerificationStatus.VERIFIED_SAME) {
     return CODE_DESCRIPTION_VERIFIED_SAME;
   }
 

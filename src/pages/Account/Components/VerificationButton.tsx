@@ -41,12 +41,12 @@ export default function VerificationButton({
       .then((dto) => {
         setIsInProgress(false);
         if (dto.errMsg) {
-          setVerificationStatus("NOT_VERIFIED");
+          setVerificationStatus(VerificationStatus.NOT_VERIFIED);
           setVerificationServerErr(`${dto.errMsg}`);
         }
 
         if (!dto.status) {
-          setVerificationStatus("NOT_VERIFIED");
+          setVerificationStatus(VerificationStatus.NOT_VERIFIED);
           return;
         }
 
@@ -56,8 +56,8 @@ export default function VerificationButton({
       })
       .catch((reason: Error) => {
         console.error(reason);
-        setVerificationStatus("NOT_VERIFIED");
-        setCodeDescription(genCodeDescription("NOT_VERIFIED"));
+        setVerificationStatus(VerificationStatus.NOT_VERIFIED);
+        setCodeDescription(genCodeDescription(VerificationStatus.NOT_VERIFIED));
         setVerificationServerErr("Verification service is not working.");
       })
       .finally(() => {
@@ -65,28 +65,30 @@ export default function VerificationButton({
       });
   };
 
-  if (verificationStatus === "VERIFIED_DIFFERENT") {
+  if (verificationStatus === VerificationStatus.VERIFIED_DIFFERENT) {
     return (
       <Button
         type="submit"
         disabled={true}
         variant="contained"
-        sx={{width: "10rem", height: "3rem"}}
+        sx={{width: "16rem", height: "3rem"}}
+        style={{textTransform: "none"}}
       >
-        <span style={{color: "red"}}>No Match</span>
+        <span style={{color: "red"}}>Doesn't Match</span>
       </Button>
     );
   }
 
-  if (verificationStatus === "VERIFIED_SAME") {
+  if (verificationStatus === VerificationStatus.VERIFIED_SAME) {
     return (
       <Button
         type="submit"
         disabled={true}
         variant="contained"
-        sx={{width: "10rem", height: "3rem"}}
+        sx={{width: "16rem", height: "3rem"}}
+        style={{textTransform: "none"}}
       >
-        <span style={{color: "green"}}>Match</span>
+        <span style={{color: "green"}}>Matches</span>
       </Button>
     );
   }
@@ -96,13 +98,14 @@ export default function VerificationButton({
       type="submit"
       disabled={isInProgress}
       variant="contained"
-      sx={{width: "10rem", height: "3rem"}}
+      sx={{width: "16rem", height: "3rem"}}
       onClick={verifyClick}
+      style={{textTransform: "none"}}
     >
       {verificationStatus === undefined || isInProgress ? (
         <CircularProgress size={30}></CircularProgress>
       ) : (
-        "Verify"
+        "Verify Source Code"
       )}
     </Button>
   );
