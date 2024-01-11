@@ -9,9 +9,8 @@ export function useGetAccountTokensCount(address: string) {
   return useQuery(
     ["account_tokens_count", {addr64Hash}, state.network_value],
     async () => {
-      const response = await state.indexer_client?.getAccountTokensCount(
-        address,
-      );
+      const response =
+        await state.indexer_client?.getAccountTokensCount(address);
       return (
         response?.current_token_ownerships_v2_aggregate?.aggregate?.count ?? 0
       );
@@ -85,9 +84,8 @@ export function useGetTokenActivitiesCount(tokenDataId: string) {
   return useQuery(
     ["token_activities_count", {tokenDataId}, state.network_value],
     async () => {
-      const response = await state.indexer_client?.getTokenActivitiesCount(
-        tokenDataId,
-      );
+      const response =
+        await state.indexer_client?.getTokenActivitiesCount(tokenDataId);
       return response?.token_activities_v2_aggregate?.aggregate?.count ?? 0;
     },
   );
