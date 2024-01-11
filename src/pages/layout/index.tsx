@@ -31,25 +31,40 @@ import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
 
 const IdentityConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 
+// Statically initialize wallets that don't change for the network
+const fewchaWallet = new FewchaWallet();
+const martianWallet = new MartianWallet();
+const msafeWallet = new MSafeWalletAdapter();
+const nightlyWallet = new NightlyWallet();
+const okxWallet = new OKXWallet();
+const openBlockWallet = new OpenBlockWallet();
+const petraWallet = new PetraWallet();
+const pontemWallet = new PontemWallet();
+const riseWallet = new RiseWallet();
+const tokenPocketWallet = new TokenPocketWallet();
+const trustWallet = new TrustWallet();
+const welldoneWallet = new WelldoneWallet();
+
 function walletsForNetwork(network: string) {
+  // These are currently ordered by users on the site, and are subject to change
   const wallets: any[] = [
-    new PetraWallet(),
-    new MartianWallet(),
-    new PontemWallet(),
-    new FewchaWallet(),
+    petraWallet,
+    martianWallet,
+    pontemWallet,
+    fewchaWallet,
     // Blocto supports Testnet/Mainnet for now.
     new BloctoWallet({
       network: NetworkName.Testnet,
       bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
     }),
-    new OKXWallet(),
-    new RiseWallet(),
-    new MSafeWalletAdapter(),
-    new NightlyWallet(),
-    new OpenBlockWallet(),
-    new TokenPocketWallet(),
-    new TrustWallet(),
-    new WelldoneWallet(),
+    okxWallet,
+    riseWallet,
+    msafeWallet,
+    nightlyWallet,
+    openBlockWallet,
+    tokenPocketWallet,
+    trustWallet,
+    welldoneWallet,
   ];
   if (network === NetworkName.Mainnet) {
     wallets.unshift(
