@@ -6,7 +6,7 @@ settings:
 
 dependencies:
   '@apollo/client':
-    specifier: ^3.7.9
+    specifier: ^3.7.10
     version: 3.7.10(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@aptos-labs/aptos-names-connector':
     specifier: ^0.0.2
@@ -45,10 +45,10 @@ dependencies:
     specifier: ^5.11.11
     version: 5.11.11(@mui/material@5.11.16)(@types/react@18.2.47)(react@18.2.0)
   '@mui/material':
-    specifier: ^5.11.13
+    specifier: ^5.11.16
     version: 5.11.16(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@types/react@18.2.47)(react-dom@18.2.0)(react@18.2.0)
   '@mui/system':
-    specifier: ^5.11.13
+    specifier: ^5.11.16
     version: 5.11.16(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@types/react@18.2.47)(react@18.2.0)
   '@mui/x-date-pickers':
     specifier: ^6.0.0
@@ -69,10 +69,10 @@ dependencies:
     specifier: ^0.1.2
     version: 0.1.2
   '@sentry/react':
-    specifier: ^7.0.0
+    specifier: ^7.52.1
     version: 7.52.1(react@18.2.0)
   '@sentry/tracing':
-    specifier: ^7.0.0
+    specifier: ^7.52.1
     version: 7.52.1
   '@tanstack/react-query':
     specifier: ^4.29.5
@@ -105,7 +105,7 @@ dependencies:
     specifier: ^16.8.1
     version: 16.8.1
   js-sha3:
-    specifier: ^0.9.0
+    specifier: ^0.9.2
     version: 0.9.2
   lodash:
     specifier: ^4.17.21
@@ -135,13 +135,13 @@ dependencies:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
   react-ga4:
-    specifier: ^2.0.0
+    specifier: ^2.1.0
     version: 2.1.0
   react-gtm-module:
     specifier: ^2.0.11
     version: 2.0.11
   react-hook-form:
-    specifier: ^7.43.5
+    specifier: ^7.43.7
     version: 7.43.7(react@18.2.0)
   react-intersection-observer:
     specifier: ^9.4.3
@@ -150,10 +150,10 @@ dependencies:
     specifier: ^1.21.3
     version: 1.21.3(@types/react@18.2.47)(react-dom@18.2.0)(react@18.2.0)
   react-loading-skeleton:
-    specifier: ^3.1.1
+    specifier: ^3.2.0
     version: 3.2.0(react@18.2.0)
   react-number-format:
-    specifier: ^5.0.0
+    specifier: ^5.2.2
     version: 5.2.2(react-dom@18.2.0)(react@18.2.0)
   react-router-dom:
     specifier: ^6.10.0
@@ -165,10 +165,10 @@ dependencies:
     specifier: ^15.5.0
     version: 15.5.0(react@18.2.0)
   recharts:
-    specifier: ^2.4.3
+    specifier: ^2.5.0
     version: 2.5.0(prop-types@15.8.1)(react-dom@18.2.0)(react@18.2.0)
   statsig-react:
-    specifier: ^1.23.1
+    specifier: ^1.23.2
     version: 1.23.2(react@18.2.0)
 
 devDependencies:
@@ -218,7 +218,7 @@ devDependencies:
     specifier: ^0.4.1
     version: 0.4.1(eslint@8.41.0)
   husky:
-    specifier: ^8.0.0
+    specifier: ^8.0.3
     version: 8.0.3
   lint-staged:
     specifier: ^15.0.0
@@ -3528,7 +3528,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001468
+      caniuse-lite: 1.0.30001576
       electron-to-chromium: 1.4.334
       node-releases: 2.0.10
       update-browserslist-db: 1.0.10(browserslist@4.21.5)
@@ -3597,8 +3597,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /caniuse-lite@1.0.30001468:
-    resolution: {integrity: sha512-zgAo8D5kbOyUcRAgSmgyuvBkjrGk5CGYG5TYgFdpQv+ywcyEpo1LOWoG8YmoflGnh+V+UsNuKYedsoYs0hzV5A==}
+  /caniuse-lite@1.0.30001576:
+    resolution: {integrity: sha512-ff5BdakGe2P3SQsMsiqmt1Lc8221NR1VzHj5jXN5vBny9A6fpze94HiVV/n7XRosOlsShJcvMv5mdnpjOGCEgg==}
 
   /chai@4.3.7:
     resolution: {integrity: sha512-HLnAzZ2iupm25PlN0xFreAlBA5zaBSv3og0DdeGA4Ar6h6rJ3A0rolRUKJhSF2V10GZKDgWF/VmAEsNWjCRB+A==}
