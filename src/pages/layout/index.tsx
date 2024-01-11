@@ -49,6 +49,7 @@ function walletsForNetwork(network: string) {
   // These are currently ordered by users on the site, and are subject to change
   const wallets: any[] = [
     petraWallet,
+    okxWallet,
     martianWallet,
     pontemWallet,
     fewchaWallet,
@@ -57,7 +58,6 @@ function walletsForNetwork(network: string) {
       network: NetworkName.Testnet,
       bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
     }),
-    okxWallet,
     riseWallet,
     msafeWallet,
     nightlyWallet,
