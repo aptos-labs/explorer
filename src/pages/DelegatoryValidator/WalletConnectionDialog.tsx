@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import StyledDialog from "../../components/StyledDialog";
-import {ReactComponent as ConnectWalletModalIcon} from "../../assets/forum_icon.svg";
+import ConnectWalletModalIcon from "../../assets/forum_icon.svg?react";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useNavigate} from "react-router-dom";

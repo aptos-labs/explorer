@@ -90,8 +90,8 @@ function HashButton({hash}: {hash: string}) {
         {isOnMobile
           ? truncateAddress(hash)
           : isOnSmallerScreen
-          ? truncateAddressMiddle(hash)
-          : hash}
+            ? truncateAddressMiddle(hash)
+            : hash}
       </Typography>
     </Button>
   );
