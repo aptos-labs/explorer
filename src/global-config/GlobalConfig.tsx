@@ -53,14 +53,7 @@ function deriveGlobalState({
     aptos_client: new AptosClient(networks[network_name]),
     indexer_client: indexerClient,
     sdk_v2_client: new Aptos(
-      new AptosConfig({
-        network: NetworkToNetworkName[network_name],
-        clientConfig: {
-          HEADERS: {
-            "x-indexer-client": "aptos-explorer",
-          },
-        },
-      }),
+      new AptosConfig({network: NetworkToNetworkName[network_name]}),
     ),
   };
 }
