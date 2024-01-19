@@ -253,13 +253,13 @@ export async function getValidatorCommission(
 
 export async function getValidatorCommissionChange(
   client: AptosClient,
-  poolAddress: Types.Address,
+  validatorAddress: Types.Address,
 ): Promise<Types.MoveValue[]> {
   const payload: Types.ViewRequest = {
     function:
       "0x1::delegation_pool::operator_commission_percentage_next_lockup_cycle",
     type_arguments: [],
-    arguments: [poolAddress],
+    arguments: [validatorAddress],
   };
   return withResponseError(client.view(payload));
 }
