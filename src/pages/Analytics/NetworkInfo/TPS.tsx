@@ -5,6 +5,7 @@ import {useGlobalState} from "../../../global-config/GlobalConfig";
 import MetricCard, {DoubleMetricCard} from "./MetricCard";
 
 function getFormattedTPS(tps: number) {
+  tps = tps + 1; // to avoid reducing tps from `toFixed` api
   const tpsWithDecimal = parseFloat(tps.toFixed(0));
   return tpsWithDecimal.toLocaleString("en-US");
 }

@@ -5,10 +5,10 @@ import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import PriorityHighOutlinedIcon from "@mui/icons-material/PriorityHighOutlined";
 
 // TODO: unify the colors
-const SUCCESS_COLOR = "#00BFA5";
-const SUCCESS_BACKGROUND_COLOR = "rgba(0,191,165,0.1)";
-const ERROR_COLOR = "#F97373";
-const ERROR_BACKGROUND_COLOR = "rgba(249,115,115,0.1)";
+const SUCCESS_COLOR = "#64FF51";
+const SUCCESS_BACKGROUND_COLOR = "rgba(100,255,81,0.1)";
+const ERROR_COLOR = "#F95C41";
+const ERROR_BACKGROUND_COLOR = "rgba(249,92,65,0.1)";
 
 type TransactionStatusProps = {
   success: boolean;

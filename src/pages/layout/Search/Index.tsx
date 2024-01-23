@@ -80,7 +80,7 @@ export default function HeaderSearch() {
           opacity: "0",
           mt: 0.5,
           mb: 0,
-          fontFamily: "apparat",
+          fontFamily: "space-grotesk-variable",
           fontWeight: "light",
         },
         "&.Mui-focused .MuiFormHelperText-root": {

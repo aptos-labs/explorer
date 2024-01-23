@@ -36,7 +36,11 @@ const useSubmitTransaction = () => {
   }, [transactionResponse]);
 
   async function submitTransaction(payload: Types.TransactionPayload) {
-    if (network?.name.toLocaleLowerCase() !== state.network_name) {
+    // TODO: remove "name !== custom", when wallet integration is finished
+    if (
+      network?.name.toLocaleLowerCase() !== "custom" &&
+      network?.name.toLocaleLowerCase() !== state.network_name
+    ) {
       setTransactionResponse({
         transactionSubmitted: false,
         message:

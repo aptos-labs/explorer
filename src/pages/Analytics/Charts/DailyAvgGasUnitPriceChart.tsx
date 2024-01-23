@@ -38,7 +38,7 @@ export default function DailyAvgGasUnitPriceChart({
         tooltipsLabelFunc={(context: any) => {
           const priceInteger = Math.round(context.parsed.y).toString();
           const priceInAPT = getFormattedBalanceStr(priceInteger, 8);
-          return `${priceInAPT} APT`;
+          return `${priceInAPT} MVMT`;
         }}
       />
     </CardOutline>

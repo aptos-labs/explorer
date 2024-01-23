@@ -62,7 +62,7 @@ export function Banner({children, action, sx}: BannerProps) {
     <Typography
       color="#ffffff"
       sx={{
-        fontFamily: "apparat,Geneva,Tahoma,Verdana,sans-serif",
+        fontFamily: "space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif",
       }}
     >
       {children}

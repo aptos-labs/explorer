@@ -10,15 +10,15 @@ const IdenticonImg: React.FunctionComponent<IdenticonImgProps> = ({
 }) => {
   const iconCanvas = createIcon({
     seed: address,
-    size: 6,
-    scale: 5,
+    size: 4,
+    scale: 7,
   });
 
   // Convert canvas to data URL
   const iconDataURL = iconCanvas.toDataURL();
 
   // Return an img element with the data URL as the src
-  return <img src={iconDataURL} alt="Identicon" style={{borderRadius: 2}} />;
+  return <img src={iconDataURL} alt="Identicon" style={{borderRadius: 30}} />;
 };
 
 export default IdenticonImg;

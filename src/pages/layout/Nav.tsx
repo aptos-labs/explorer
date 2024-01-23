@@ -62,11 +62,11 @@ export default function Nav() {
           label="Analytics"
         />
       )}
-      <NavButton
+      {/*<NavButton
         to="/validators"
         title="View All Validators"
         label="Validators"
-      />
+      />*/}
       <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
     </Box>
   );

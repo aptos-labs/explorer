@@ -62,7 +62,7 @@ export function TokenActivitiesWithPagination({
     <>
       <Stack spacing={2}>
         <Box sx={{width: "auto", overflowX: "auto"}}>
-          <ActivitiesTable activities={activities ?? []} />
+          <ActivitiesTable activities={(activities ?? []) as unknown as any} />
         </Box>
         {numPages > 1 && (
           <Box sx={{display: "flex", justifyContent: "center"}}>
