@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-// const root = "https://explorer-mvmt-m2.web.app/?network=devnet"
-const root = "http://localhost:5173/"
+const root = "https://explorer.movementlabs.xyz/"
 const pageTitle = "Movement M1 Explorer"
 
 function health_log({
