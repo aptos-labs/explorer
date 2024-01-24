@@ -124,8 +124,8 @@ dependencies:
     specifier: ^2.1.0
     version: 2.1.0
   petra-plugin-wallet-adapter:
-    specifier: ^0.3.0
-    version: 0.3.0
+    specifier: ^0.4.0
+    version: 0.4.2(@aptos-labs/ts-sdk@1.4.0)(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0)
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -5644,13 +5644,16 @@ packages:
     resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}
     dev: true
 
-  /petra-plugin-wallet-adapter@0.3.0:
-    resolution: {integrity: sha512-snhhP/qKXLg4foKsDVvy0Jus3H7o46L75aDCXiiSAonty2CnZe1+4cpB8azc7khaMgig+xj9gZbZXKmKtB+HqA==}
+  /petra-plugin-wallet-adapter@0.4.2(@aptos-labs/ts-sdk@1.4.0)(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0):
+    resolution: {integrity: sha512-+5bGEWMh54Iso1+ZDN+YpeixjQntL5S473QNt0/4mc85TxnPdiYJFg5MIN1ZViXf7aeoS5dJsym84HIZ57YU+w==}
+    peerDependencies:
+      '@aptos-labs/ts-sdk': ^1.3.0
+      '@aptos-labs/wallet-adapter-core': ^3.5.0
+      aptos: ^1.21.0
     dependencies:
-      '@aptos-labs/wallet-adapter-core': 2.6.0(aptos@1.21.0)
+      '@aptos-labs/ts-sdk': 1.4.0
+      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.4.0)(aptos@1.21.0)
       aptos: 1.21.0
-    transitivePeerDependencies:
-      - debug
     dev: false
 
   /picocolors@1.0.0:
