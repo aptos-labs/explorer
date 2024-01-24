@@ -2,7 +2,7 @@
   "name": "aptos-explorer",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@8.14.1",
+  "packageManager": "pnpm@8.14.3",
   "type": "module",
   "pnpm": {
     "overrides": {
@@ -51,7 +51,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "pako": "^2.1.0",
-    "petra-plugin-wallet-adapter": "^0.3.0",
+    "petra-plugin-wallet-adapter": "^0.4.0",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-copy-to-clipboard": "^5.1.0",
