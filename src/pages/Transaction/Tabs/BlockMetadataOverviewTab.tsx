@@ -62,7 +62,12 @@ export default function BlockMetadataOverviewTab({
         />
         <ContentRow
           title="Timestamp:"
-          value={<TimestampValue timestamp={transactionData.timestamp} />}
+          value={
+            <TimestampValue
+              timestamp={transactionData.timestamp}
+              ensureMilliSeconds
+            />
+          }
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow
