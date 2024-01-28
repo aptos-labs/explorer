@@ -107,7 +107,7 @@ export default function ValidatorPage() {
                 address={address}
                 isSkeletonLoading={isSkeletonLoading}
               />
-              {commission !== nextCommission && (
+              {nextCommission && commission !== nextCommission && (
                 <Banner
                   pillText="INFO"
                   pillColor="warning"
