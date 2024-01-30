@@ -12,7 +12,7 @@ export const networks = {
   local: "http://127.0.0.1:8080/v1",
   previewnet: "https://fullnode-0.previewnet.gcp.aptosdev.com/v1",
   previewnet2: "https://fullnode.previewnet.aptoslabs.com/v1",
-  randomnet: "https://random.aptoslabs.com/v1",
+  randomnet: "https://fullnode.random.aptoslabs.com/v1",
 };
 
 export type NetworkName = keyof typeof networks;
