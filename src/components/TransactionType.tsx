@@ -22,6 +22,8 @@ function getTypeLabel(type: string): string {
       return "Pending Transaction";
     case "state_checkpoint_transaction":
       return "State Checkpoint";
+    case "validator_transaction":
+      return "Validator Transaction";
     default:
       throw `Unknown TransactionType:${type}`;
   }
@@ -39,6 +41,8 @@ function getTypeIcon(type: string, color?: Color) {
       return <UpdateRoundedIcon fontSize="small" color={color} />;
     case "state_checkpoint_transaction":
       return <OutlinedFlagIcon fontSize="small" color={color} />;
+    case "validator_transaction":
+      return <OutlinedFlagIcon fontSize="small" color={color} />; // TODO: change to validator icon
     default:
       throw `Unknown TransactionType:${type}`;
   }
@@ -57,6 +61,8 @@ function getTypeTooltip(type: string): string {
       return "";
     case "state_checkpoint_transaction":
       return "System-generated transactions that save the latest state of the Aptos blockchain.";
+    case "validator_transaction":
+      return "Validator proposed transactions.";
     default:
       throw `Unknown TransactionType:${type}`;
   }
