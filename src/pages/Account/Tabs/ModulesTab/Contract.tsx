@@ -274,7 +274,6 @@ function RunContractForm({
         const type = fnParams[i];
         if (type.includes("vector")) {
           // when it's a vector<u8>, we support both hex and javascript array format
-          console.log(type, arg);
           return type === "vector<u8>" && arg.trim().startsWith("0x")
             ? Array.from(new HexString(arg).toUint8Array()).map((x) =>
                 x.toString(),
