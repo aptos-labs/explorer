@@ -81,7 +81,15 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
       </Grid>
       <Grid item xs={12} md={12} lg={12} marginTop={4}>
         {error ? (
-          <Error address={address} error={error} />
+          <>
+            <AccountTabs
+              address={address}
+              accountData={data}
+              tabValues={tabValues}
+              isObject={isObject}
+            />
+            <Error address={address} error={error} />
+          </>
         ) : (
           <AccountTabs
             address={address}
