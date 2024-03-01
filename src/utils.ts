@@ -181,17 +181,17 @@ export function encodeInputArgsForViewRequest(type: string, value: string) {
 
 // Deserialize "[1,2,3]" or "1,2,3" to ["1", "2", "3"]
 // Also works nested [[1, 2], [3, 4]] to [["1", "2"], ["3", "4"]]
-// TODO: Need to type this recursively
-export function deserializeVector(vectorString: string): any {
+interface DeepArray<T> extends Array<T | DeepArray<T>> {}
+export function deserializeVector(vectorString: string): DeepArray<string> {
   const trimmed = vectorString.trim();
   let inside = "";
-  if (isArrayStr(trimmed)) {
+  if (startsAndEndsWithBrackets(trimmed)) {
     inside = trimmed.slice(1, -1);
   }
   // There's a tradeoff here between empty string, and empty array.  We're going with empty array.
   if (inside.length == 0) {
     return [];
-  } else if (isArrayStr(inside)) {
+  } else if (startsAndEndsWithBrackets(inside)) {
     const innerArrayStrs = [];
     let build = "";
     for (let i = 0; i < inside.length; i++) {
@@ -208,7 +208,7 @@ export function deserializeVector(vectorString: string): any {
   return inside.split(",");
 }
 
-function isArrayStr(str: string): boolean {
+function startsAndEndsWithBrackets(str: string): boolean {
   return str.startsWith("[") && str.endsWith("]");
 }
 

@@ -288,7 +288,6 @@ function RunContractForm({
         } else return arg;
       }),
     };
-    console.log(payload);
 
     await submitTransaction(payload);
     if (transactionResponse?.transactionSubmitted) {
