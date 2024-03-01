@@ -180,36 +180,16 @@ export function encodeInputArgsForViewRequest(type: string, value: string) {
 }
 
 // Deserialize "[1,2,3]" or "1,2,3" to ["1", "2", "3"]
-// Also works nested [[1, 2], [3, 4]] to [["1", "2"], ["3", "4"]]
-interface DeepArray<T> extends Array<T | DeepArray<T>> {}
-export function deserializeVector(vectorString: string): DeepArray<string> {
-  const trimmed = vectorString.trim();
-  let inside = "";
-  if (startsAndEndsWithBrackets(trimmed)) {
-    inside = trimmed.slice(1, -1);
+export function deserializeVector(vectorString: string): string[] {
+  let result = vectorString.trim();
+  if (result[0] === "[" && result[result.length - 1] === "]") {
+    result = result.slice(1, -1);
   }
   // There's a tradeoff here between empty string, and empty array.  We're going with empty array.
-  if (inside.length == 0) {
+  if (result.length == 0) {
     return [];
-  } else if (startsAndEndsWithBrackets(inside)) {
-    const innerArrayStrs = [];
-    let build = "";
-    for (let i = 0; i < inside.length; i++) {
-      if (inside[i] === "]") {
-        innerArrayStrs.push(build);
-        build = "";
-      } else {
-        build += inside[i];
-      }
-    }
-    return innerArrayStrs.map(deserializeVector);
   }
-
-  return inside.split(",");
-}
-
-function startsAndEndsWithBrackets(str: string): boolean {
-  return str.startsWith("[") && str.endsWith("]");
+  return result.split(",");
 }
 
 function encodeVectorForViewRequest(type: string, value: string) {
