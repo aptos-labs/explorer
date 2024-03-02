@@ -28,6 +28,7 @@ import {Link} from "../routing";
 export enum HashType {
   ACCOUNT = "account",
   TRANSACTION = "transaction",
+  OBJECT = "object",
   OTHERS = "others",
 }
 
@@ -37,6 +38,8 @@ function getHashLinkStr(hash: string, type: HashType): string {
       return `/account/${hash}`;
     case HashType.TRANSACTION:
       return `/txn/${hash}`;
+    case HashType.OBJECT:
+      return `/object/${hash}`;
     case HashType.OTHERS:
       return "";
     default:
@@ -48,6 +51,7 @@ function HashLink(hash: string, type: HashType): JSX.Element {
   switch (type) {
     case HashType.ACCOUNT:
     case HashType.TRANSACTION:
+    case HashType.OBJECT:
       return (
         <Link to={getHashLinkStr(hash, type)} color="inherit">
           {hash}
