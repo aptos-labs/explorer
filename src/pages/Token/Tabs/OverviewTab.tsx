@@ -1,6 +1,6 @@
 import {useParams} from "react-router-dom";
 import {Box, Stack, Typography} from "@mui/material";
-import React, {useState} from "react";
+import React, {Fragment, useState} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
@@ -79,6 +79,31 @@ export default function OverviewTab({data}: OverviewTabProps) {
         />
       </ContentBox>
       <ContentBox>
+        {data.token_standard == "v2" ? (
+          <Fragment>
+            <ContentRow
+              title={"Collection id:"}
+              value={
+                <HashButton
+                  hash={data?.current_collection?.collection_id ?? ""}
+                  type={HashType.OBJECT}
+                />
+              }
+            />
+
+            <ContentRow
+              title={"Token id:"}
+              value={
+                <HashButton
+                  hash={data?.token_data_id ?? ""}
+                  type={HashType.OBJECT}
+                />
+              }
+            />
+          </Fragment>
+        ) : (
+          <Fragment></Fragment>
+        )}
         <ContentRow
           title={"Largest Property Version:"}
           value={data?.largest_property_version_v1}

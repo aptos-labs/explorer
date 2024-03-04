@@ -13,7 +13,8 @@ export default function Error({error, address}: ErrorProps) {
       return (
         <Alert severity="error" sx={{overflowWrap: "break-word"}}>
           {error.message}
-          Account not found: {address}
+          Account not found: {address}. The account may still have tokens or
+          objects associated.
         </Alert>
       );
     case ResponseErrorType.UNHANDLED:
