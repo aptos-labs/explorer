@@ -13,9 +13,10 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
-const APTOS_LEARN_URL = "https://learn.aptoslabs.com";
+const GITHUB_DISCUSSION_URL =
+  "https://github.com/aptos-labs/aptos-developer-discussions/discussions";
 
-export function AptosLearnBanner() {
+export function GithubDiscussionsBanner() {
   const [open, setOpen] = useState<boolean>(false);
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
@@ -24,11 +25,11 @@ export function AptosLearnBanner() {
 
   const handleClick = () => {
     setOpen(!open);
-    logEvent("aptos_learn_banner_clicked", null, {
+    logEvent("github_discussions_banner_clicked", null, {
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",
     });
-    window.open(APTOS_LEARN_URL, "_blank");
+    window.open(GITHUB_DISCUSSION_URL, "_blank");
   };
 
   const learnMoreButton = (
@@ -37,7 +38,7 @@ export function AptosLearnBanner() {
       onClick={handleClick}
       sx={{alignSelf: "flex-start", transform: `translateX(-0.5rem)`}}
     >
-      <Typography>GO TO APTOS LEARN</Typography>
+      <Typography>GO TO DISCUSSIONS</Typography>
       <ArrowForwardIosIcon sx={{marginLeft: 2}} fontSize="small" />
     </Button>
   );
@@ -59,7 +60,7 @@ export function AptosLearnBanner() {
   );
 
   const text =
-    "Create your own decentralized app with the recently launched Aptos Learn website!";
+    "Ask your tech questions and hang out with the Aptos developer community in the new developer discussions!";
 
   const children = isOnMobile ? (
     <Stack direction="column">
@@ -71,10 +72,8 @@ export function AptosLearnBanner() {
   );
 
   return (
-    <>
-      <Banner pillText="NEW" sx={{marginBottom: 2}} action={action}>
-        {children}
-      </Banner>
-    </>
+    <Banner pillText="NEW" sx={{marginBottom: 2}} action={action}>
+      {children}
+    </Banner>
   );
 }
