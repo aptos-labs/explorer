@@ -1,10 +1,11 @@
 import {AptosClient, IndexerClient} from "aptos";
-import React, {useMemo} from "react";
+import React, {Dispatch, SetStateAction, useMemo, useState} from "react";
 import {
   FeatureName,
   NetworkName,
   defaultNetworkName,
   networks,
+  defaultVerificationServiceUrl,
 } from "../constants";
 import {
   getSelectedFeatureFromLocalStorage,
@@ -76,6 +77,12 @@ const initialGlobalState = deriveGlobalState({
 
 export const GlobalStateContext = React.createContext(initialGlobalState);
 export const GlobalActionsContext = React.createContext({} as GlobalActions);
+export const GlobalVerificationApiContext = React.createContext<string>(
+  defaultVerificationServiceUrl,
+);
+export const GlobalVerificationApiDispatchContext = React.createContext<
+  Dispatch<SetStateAction<string>>
+>(() => {});
 
 export const GlobalStateProvider = ({
   children,
@@ -84,6 +91,8 @@ export const GlobalStateProvider = ({
 }) => {
   const [selectedFeature, selectFeature] = useFeatureSelector();
   const [selectedNetwork, selectNetwork] = useNetworkSelector();
+  const [endpoint, setEndpoint] = useState(defaultVerificationServiceUrl);
+
   const globalState: GlobalState = useMemo(
     () =>
       deriveGlobalState({
@@ -104,7 +113,11 @@ export const GlobalStateProvider = ({
   return (
     <GlobalStateContext.Provider value={globalState}>
       <GlobalActionsContext.Provider value={globalActions}>
-        {children}
+        <GlobalVerificationApiContext.Provider value={endpoint}>
+          <GlobalVerificationApiDispatchContext.Provider value={setEndpoint}>
+            {children}
+          </GlobalVerificationApiDispatchContext.Provider>
+        </GlobalVerificationApiContext.Provider>
       </GlobalActionsContext.Provider>
     </GlobalStateContext.Provider>
   );
@@ -114,4 +127,6 @@ export const useGlobalState = () =>
   [
     React.useContext(GlobalStateContext),
     React.useContext(GlobalActionsContext),
+    React.useContext(GlobalVerificationApiContext),
+    React.useContext(GlobalVerificationApiDispatchContext),
   ] as const;

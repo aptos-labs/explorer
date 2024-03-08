@@ -18,6 +18,17 @@ import {
 } from "../../../themes/colors/aptosColorPalette";
 import {useParams} from "react-router-dom";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
+import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {VerificationStatus} from "../../../constants";
+import useVerificationChecker, {
+  AptosVerificationCheckDto,
+} from "../../../api/hooks/useVerificationCheck";
+import VerificationButton from "./VerificationButton";
+import VerificationServiceUrlInput from "./VerificationServiceUrlInput";
+import {
+  CODE_DESCRIPTION_NOT_VERIFIED,
+  genCodeDescription,
+} from "./codeDescription";
 
 function useStartingLineNumber(sourceCode?: string) {
   const functionToHighlight = useParams().selectedFnName;
@@ -106,7 +117,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
 }
 
 export function Code({bytecode}: {bytecode: string}) {
-  const {selectedModuleName} = useParams();
+  const {address, selectedModuleName} = useParams();
   const logEvent = useLogEventWithBasic();
 
   const TOOLTIP_TIME = 2000; // 2s
@@ -115,6 +126,16 @@ export function Code({bytecode}: {bytecode: string}) {
 
   const theme = useTheme();
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
+
+  const checkVerification = useVerificationChecker();
+  const [state, , verificationServiceEndpoint] = useGlobalState();
+  const [codeDescription, setCodeDescription] = useState<string>(
+    CODE_DESCRIPTION_NOT_VERIFIED,
+  );
+  const [verificationStatus, setVerificationStatus] =
+    useState<VerificationStatus>(VerificationStatus.NOT_VERIFIED);
+  const [verificationServerErr, setVerificationServerErr] =
+    useState<string>("");
 
   async function copyCode() {
     if (!sourceCode) return;
@@ -129,12 +150,46 @@ export function Code({bytecode}: {bytecode: string}) {
   const startingLineNumber = useStartingLineNumber(sourceCode);
   const codeBoxScrollRef = useRef<any>(null);
   const LINE_HEIGHT_IN_PX = 24;
-  useEffect(() => {
-    if (codeBoxScrollRef.current) {
-      codeBoxScrollRef.current.scrollTop =
-        LINE_HEIGHT_IN_PX * startingLineNumber;
-    }
-  });
+  useEffect(
+    () => {
+      if (codeBoxScrollRef.current) {
+        codeBoxScrollRef.current.scrollTop =
+          LINE_HEIGHT_IN_PX * startingLineNumber;
+      }
+
+      if (state.network_name && address && selectedModuleName) {
+        checkVerification({
+          network: state.network_name,
+          account: address,
+          moduleName: selectedModuleName,
+        })
+          .then((dto: AptosVerificationCheckDto) => {
+            if (dto.errMsg) {
+              setVerificationStatus(VerificationStatus.NOT_VERIFIED);
+              setVerificationServerErr(`${dto.errMsg}`);
+            }
+
+            if (!dto.status) {
+              setVerificationStatus(VerificationStatus.NOT_VERIFIED);
+              return;
+            }
+            setVerificationStatus(dto.status);
+            setCodeDescription(genCodeDescription(dto.status));
+            setVerificationServerErr("");
+          })
+          .catch((reason: Error) => {
+            console.error(reason);
+            setVerificationStatus(VerificationStatus.NOT_VERIFIED);
+            setCodeDescription(
+              genCodeDescription(VerificationStatus.NOT_VERIFIED),
+            );
+            setVerificationServerErr("Verification service is not working.");
+          });
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [address, selectedModuleName, verificationServiceEndpoint],
+  );
 
   return (
     <Box>
@@ -154,7 +209,30 @@ export function Code({bytecode}: {bytecode: string}) {
           <Typography fontSize={20} fontWeight={700}>
             Code
           </Typography>
-          <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. We can not not verify it." />
+          {verificationStatus === VerificationStatus.NOT_VERIFIED ? (
+            <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. Please click the 'Verify Source Code' button if you want to confirm that the provided source code matches the actual code on the blockchain." />
+          ) : null}
+          <Stack>
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems={"center"}
+              justifyContent="center"
+            >
+              <VerificationButton
+                network={state.network_name}
+                account={address}
+                moduleName={selectedModuleName}
+                verificationStatus={verificationStatus}
+                setVerificationServerErr={setVerificationServerErr}
+                setVerificationStatus={setVerificationStatus}
+                setCodeDescription={setCodeDescription}
+              />
+              <VerificationServiceUrlInput
+                verificationServerErr={verificationServerErr}
+              />
+            </Stack>
+          </Stack>
         </Stack>
         {sourceCode && (
           <Stack direction="row" spacing={2}>
@@ -204,8 +282,7 @@ export function Code({bytecode}: {bytecode: string}) {
           marginBottom={"16px"}
           color={theme.palette.mode === "dark" ? grey[400] : grey[600]}
         >
-          The source code is plain text uploaded by the deployer, which can be
-          different from the actual bytecode.
+          {codeDescription}
         </Typography>
       )}
       {!sourceCode ? (
