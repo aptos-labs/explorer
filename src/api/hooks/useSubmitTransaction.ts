@@ -36,7 +36,10 @@ const useSubmitTransaction = () => {
   }, [transactionResponse]);
 
   async function submitTransaction(payload: Types.TransactionPayload) {
-    if (network?.name.toLocaleLowerCase() !== state.network_name) {
+    if (
+      network?.name.toLocaleLowerCase() !==
+      (state.network_name === "local" ? "localhost" : state.network_name)
+    ) {
       setTransactionResponse({
         transactionSubmitted: false,
         message:
