@@ -26,18 +26,26 @@ const TAB_VALUES_FULL: TabValue[] = [
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
+// TODO: add ability for object information
 const OBJECT_VALUES_FULL: TabValue[] = [
   "transactions",
-  // TODO: Once indexer supports objects owning coins/tokens (v2?)- uncomment these
-  // "coins",
-  // "tokens",
+  "coins",
+  "tokens",
   "resources",
+  "modules",
 ];
-const OBJECT_TAB_VALUES: TabValue[] = ["transactions", "resources"];
+const OBJECT_TAB_VALUES: TabValue[] = ["transactions", "resources", "modules"];
 
 type AccountPageProps = {
   isObject?: boolean;
 };
+
+export function accountPagePath(isObject: boolean) {
+  if (isObject) {
+    return "object";
+  }
+  return "account";
+}
 
 export default function AccountPage({isObject = false}: AccountPageProps) {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();

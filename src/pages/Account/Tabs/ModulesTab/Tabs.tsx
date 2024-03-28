@@ -9,6 +9,7 @@ import ViewCode from "./ViewCode";
 import Contract from "./Contract";
 import {useNavigate} from "../../../../routing";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
+import {accountPagePath} from "../../Index";
 
 const TabComponents = Object.freeze({
   code: ViewCode,
@@ -34,22 +35,41 @@ function getTabLabel(value: TabValue): string {
 type TabPanelProps = {
   value: TabValue;
   address: string;
+  isObject: boolean;
 };
 
-function RunContract({address}: {address: string}) {
-  return <Contract address={address} isRead={false} />;
+function RunContract({
+  address,
+  isObject,
+}: {
+  address: string;
+  isObject: boolean;
+}) {
+  return <Contract address={address} isObject={isObject} isRead={false} />;
 }
 
-function ReadContract({address}: {address: string}) {
-  return <Contract address={address} isRead />;
+function ReadContract({
+  address,
+  isObject,
+}: {
+  address: string;
+  isObject: boolean;
+}) {
+  return <Contract address={address} isObject={isObject} isRead={true} />;
 }
 
-function TabPanel({value, address}: TabPanelProps): JSX.Element {
+function TabPanel({value, address, isObject}: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
-  return <TabComponent address={address} />;
+  return <TabComponent address={address} isObject={isObject} />;
 }
 
-function ModulesTabs({address}: {address: string}): JSX.Element {
+function ModulesTabs({
+  address,
+  isObject,
+}: {
+  address: string;
+  isObject: boolean;
+}): JSX.Element {
   const theme = useTheme();
   const tabValues = Object.keys(TabComponents) as TabValue[];
   const {selectedFnName, selectedModuleName, modulesTab} = useParams();
@@ -74,7 +94,7 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
     eventName && logEvent(eventName);
 
     navigate(
-      `/account/${address}/modules/${newValue}/${selectedModuleName}` +
+      `/${accountPagePath(isObject)}/${address}/modules/${newValue}/${selectedModuleName}` +
         (selectedFnName ? `/${selectedFnName}` : ``),
       {replace: true},
     );
@@ -143,7 +163,7 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
         </StyledTabs>
       </Box>
       <Box>
-        <TabPanel value={value} address={address} />
+        <TabPanel value={value} address={address} isObject={isObject} />
       </Box>
     </Box>
   );

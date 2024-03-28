@@ -45,6 +45,14 @@ export default function ExplorerRoutes() {
 
         <Route path="/object">
           <Route
+            path=":address/modules/:modulesTab/:selectedModuleName"
+            element={<AccountPage isObject={true} />}
+          />
+          <Route
+            path=":address/modules/:modulesTab/:selectedModuleName/:selectedFnName"
+            element={<AccountPage isObject={true} />}
+          />
+          <Route
             path=":address/:tab"
             element={<AccountPage isObject={true} />}
           />
