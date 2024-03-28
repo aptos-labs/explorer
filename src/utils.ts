@@ -85,7 +85,11 @@ export async function fetchJsonResponse(url: string) {
  * @returns original source code in plain text
  */
 export function transformCode(source: string): string {
-  return pako.ungzip(new HexString(source).toUint8Array(), {to: "string"});
+  try {
+    return pako.ungzip(new HexString(source).toUint8Array(), {to: "string"});
+  } catch {
+    return "";
+  }
 }
 
 export function getBytecodeSizeInKB(bytecodeHex: string): number {
