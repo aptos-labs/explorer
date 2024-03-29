@@ -53,7 +53,11 @@ function ViewCode({
 
   const selectedModuleName = useParams().selectedModuleName ?? "";
   useEffect(() => {
-    if (!selectedModuleName && sortedPackages.length > 0) {
+    if (
+      !selectedModuleName &&
+      sortedPackages.length > 0 &&
+      sortedPackages[0].modules.length > 0
+    ) {
       navigate(
         `/${accountPagePath(isObject)}/${address}/modules/code/${sortedPackages[0].modules[0].name}`,
         {
