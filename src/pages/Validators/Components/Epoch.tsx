@@ -31,7 +31,6 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
 
       // Once randomness is enabled, epoch will be 2h + DKG time (<30s).
       // No need to reflect this period in explorer.
-      // const timeRemaining = Math.max(0, epochIntervalSeconds - timePassed.asMilliseconds());
       const timeRemaining = Math.max(
         0,
         epochIntervalSeconds - timePassed.asMilliseconds(),
