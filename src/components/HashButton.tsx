@@ -78,7 +78,7 @@ export default function HashButton({
   isValidator = false,
   ...props
 }: HashButtonProps) {
-  if (type === HashType.ACCOUNT) {
+  if (type === HashType.ACCOUNT || type === HashType.OBJECT) {
     return (
       <AccountHashButtonInner
         hash={hash}
