@@ -9,7 +9,7 @@ export default function LandingPage() {
   return (
     <Box>
       <Typography variant="h3" component="h3" marginBottom={4}>
-        M1 Explorer
+        m1 explorer
       </Typography>
       <PlaygroundBanner />
       <NetworkInfo isOnHomePage />

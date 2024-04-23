@@ -67,43 +67,45 @@ declare module "@mui/material/Divider" {
 const primaryColor = primary["400"];
 const primaryColorToned = primary["50"];
 
+const headerFont = `Cosmo, space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`;
+const bodyFont = `TWKEverett, space-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`;
+
 const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   shape: {
     borderRadius: 12,
   },
-  //
 
   typography: {
-    fontFamily: `space-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
+    fontFamily: bodyFont,
     fontWeightLight: 200,
     fontWeightRegular: 400,
     fontWeightBold: 500,
     h1: {
-      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: headerFont,
       fontWeight: "600",
     },
     h2: {
-      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: headerFont,
       fontWeight: "600",
     },
     h3: {
-      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: headerFont,
       fontWeight: "600",
     },
     h4: {
-      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: headerFont,
       fontWeight: "600",
     },
     h5: {
-      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: headerFont,
       fontWeight: "600",
     },
     h6: {
-      fontFamily: `space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`,
+      fontFamily: headerFont,
       fontWeight: "600",
     },
     stats: {
-      fontFamily: `space-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
+      fontFamily: bodyFont,
       fontWeight: "400",
     },
     subtitle1: {
@@ -207,6 +209,30 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   },
 
   components: {
+    MuiCssBaseline: {
+      styleOverrides: `
+      @font-face {
+        font-family: 'TWKEverettMono';
+        font-style: normal;
+        font-weight: 400;
+        src: url('/fonts/TWKEverettMono-Regular.otf') format('opentype');
+      }
+
+      @font-face {
+        font-family: 'TWKEverett';
+        font-style: normal;
+        font-weight: 400;
+        src: url('/fonts/TWKEverett-Regular.otf') format('opentype');
+      }
+
+      @font-face {
+        font-family: 'Cosmo';
+        font-style: normal;
+        font-weight: 400;
+        src: url('/fonts/Cosmo-Regular.otf') format('opentype');
+      }
+      `,
+    },
     // Typography overrides
     MuiTypography: {
       styleOverrides: {
