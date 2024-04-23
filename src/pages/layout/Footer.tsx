@@ -18,7 +18,7 @@ import SvgIcon from "@mui/material/SvgIcon";
 import {Link} from "../../routing";
 
 const socialLinks = [
-  {title: "Git", url: "https://github.com/movemntdev", icon: GithubLogo},
+  {title: "Git", url: "https://github.com/movementlabsxyz", icon: GithubLogo},
   {
     title: "Discord",
     url: "http://discord.gg/movementlabsxyz",
