@@ -18,7 +18,7 @@ const mapEventToTransactionAction = (event: Types.Event) => {
     event.type === "0x4::collection::MintEvent" ||
     event.type === "0x4::collection::Mint"
   ) {
-    const {index: _index, token} = event.data;
+    const {token} = event.data;
     return (
       <li>
         Mint Token <AddressLink address={token} type="token" />
@@ -28,7 +28,7 @@ const mapEventToTransactionAction = (event: Types.Event) => {
     event.type === "0x4::collection::BurnEvent" ||
     event.type === "0x4::collection::Burn"
   ) {
-    const {index: _index, token} = event.data;
+    const {token} = event.data;
     return (
       <li>
         Burn Token <AddressLink address={token} type="token" />
