@@ -99,13 +99,8 @@ type BlockRowProps = {
 function BlockRow({block, columns}: BlockRowProps) {
   const augmentTo = useAugmentToWithGlobalSearchParams();
 
-  // TODO: remove '_blank' once we have a blocks table with better performance
-  const rowClick = () => {
-    window.open(augmentTo(`/block/${block.block_height}`));
-  };
-
   return (
-    <GeneralTableRow onClick={rowClick}>
+    <GeneralTableRow to={augmentTo(`/block/${block.block_height}`)}>
       {columns.map((column) => {
         const Cell = BlockCells[column];
         return <Cell key={column} block={block} />;
