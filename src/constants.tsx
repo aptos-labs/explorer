@@ -87,3 +87,5 @@ export const WHILTELISTED_TESTNET_DELEGATION_NODES = import.meta.env
  * Core Address
  */
 export const objectCoreAddress = "0x1::object::ObjectCore";
+export const tokenV2Address = "0x4::token::Token";
+export const collectionV2Address = "0x4::collection::Collection";
