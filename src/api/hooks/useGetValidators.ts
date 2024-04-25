@@ -10,8 +10,8 @@ const MAINNET_VALIDATORS_DATA_URL =
 const TESTNET_VALIDATORS_DATA_URL =
   "https://storage.googleapis.com/aptos-testnet/explorer/validator_stats_v2.json?cache-version=0";
 
-const PREVIEWNET_VALIDATORS_DATA_URL =
-  "https://aptos-analytics-data-previewnet.s3.amazonaws.com/validator_stats_v1.json";
+// const PREVIEWNET_VALIDATORS_DATA_URL =
+//   "https://aptos-analytics-data-previewnet.s3.amazonaws.com/validator_stats_v1.json";
 
 export interface ValidatorData {
   owner_address: string;
@@ -45,15 +45,15 @@ function useGetValidatorsRawData() {
   useEffect(() => {
     if (
       state.network_name === Network.MAINNET ||
-      state.network_name === Network.TESTNET ||
-      state.network_name === Network.PREVIEWNET
+      state.network_name === Network.TESTNET
+      // state.network_name === Network.PREVIEWNET
     ) {
       const getDataUrl = () => {
         switch (state.network_name) {
           case Network.MAINNET:
             return MAINNET_VALIDATORS_DATA_URL;
-          case Network.PREVIEWNET:
-            return PREVIEWNET_VALIDATORS_DATA_URL;
+          // case Network.PREVIEWNET:
+          // return PREVIEWNET_VALIDATORS_DATA_URL;
           default:
             return TESTNET_VALIDATORS_DATA_URL;
         }

@@ -13,8 +13,8 @@ import {
   useGetValidators,
 } from "../../api/hooks/useGetValidators";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {Network} from "../../constants";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+// import {Network} from "../../constants";
+// import {useGlobalState} from "../../global-config/GlobalConfig";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -257,13 +257,13 @@ const DEFAULT_COLUMNS: Column[] = [
   "location",
 ];
 
-const PREVIEWNET_COLUMNS: Column[] = [
-  "addr",
-  "operatorAddr",
-  "votingPower",
-  "rewardsPerf",
-  "lastEpochPerf",
-];
+// const PREVIEWNET_COLUMNS: Column[] = [
+//   "addr",
+//   "operatorAddr",
+//   "votingPower",
+//   "rewardsPerf",
+//   "lastEpochPerf",
+// ];
 
 type ValidatorRowProps = {
   validator: ValidatorData;
@@ -282,7 +282,7 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
 }
 
 export function ValidatorsTable() {
-  const [state] = useGlobalState();
+  // const [state] = useGlobalState();
   const {validators} = useGetValidators();
 
   const [sortColumn, setSortColumn] = useState<Column>("votingPower");
@@ -293,10 +293,7 @@ export function ValidatorsTable() {
     sortDirection,
   );
 
-  const columns =
-    state.network_name === Network.PREVIEWNET
-      ? PREVIEWNET_COLUMNS
-      : DEFAULT_COLUMNS;
+  const columns = DEFAULT_COLUMNS;
 
   return (
     <Table>
