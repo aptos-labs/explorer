@@ -82,6 +82,7 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
       }
     }
   }, [
+    address,
     isObject,
     accountIsLoading,
     objectIsLoading,
