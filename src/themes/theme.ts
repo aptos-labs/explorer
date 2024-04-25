@@ -67,8 +67,8 @@ declare module "@mui/material/Divider" {
 const primaryColor = primary["400"];
 const primaryColorToned = primary["50"];
 
-const headerFont = `TWKEverettMono, space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`;
-const bodyFont = `TWKEverett, space-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`;
+const headerFont = `TWKEverett, space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`;
+const bodyFont = `Inter, space-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`;
 
 const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   shape: {
@@ -230,6 +230,13 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
         font-style: normal;
         font-weight: 400;
         src: url('/fonts/Cosmo-Regular.otf') format('opentype');
+      }
+
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        src: url('/fonts/Inter.ttf') format('truetype');
       }
       `,
     },
