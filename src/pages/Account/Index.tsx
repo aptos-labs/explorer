@@ -81,15 +81,7 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
         navigate(`/object/${address}`, {replace: true});
       }
     }
-  }, [
-    address,
-    isObject,
-    accountIsLoading,
-    objectIsLoading,
-    accountData,
-    objectData,
-    navigate,
-  ]);
+  }, [address, isObject, isLoading, accountData, objectData, navigate]);
 
   const [state] = useGlobalState();
 
