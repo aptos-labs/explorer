@@ -20,7 +20,7 @@ export default function ContentBox({
       marginTop={3}
       sx={{
         backgroundColor: backgroundColor,
-        borderRadius: `${theme.shape.borderRadius}px`,
+        borderRadius: `0px`,
       }}
       {...props}
     >

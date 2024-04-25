@@ -64,7 +64,7 @@ export default function JsonViewCard({
         maxHeight: MAX_CARD_HEIGHT,
       }}
       padding={2}
-      borderRadius={1}
+      borderRadius={0}
     >
       <ReactJson
         src={data}

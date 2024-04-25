@@ -25,7 +25,7 @@ export function Card({children, ...props}: CardProps) {
       sx={{
         background: theme.palette.mode === "dark" ? grey[800] : grey[100],
         padding: 2.5,
-        borderRadius: 1,
+        borderRadius: 0,
       }}
       {...props}
     >
@@ -41,7 +41,7 @@ export function CardOutline({children, ...props}: CardProps) {
     <Box
       sx={{
         padding: 2.5,
-        borderRadius: 1,
+        borderRadius: 0,
         boxShadow:
           theme.palette.mode === "dark"
             ? "0px 0px 5px 2px rgba(256, 256, 256, 0.15)"

@@ -47,7 +47,7 @@ export function Banner({children, action, sx}: BannerProps) {
       sx={{
         backgroundColor: "#8B5CF6",
         color: "#ffffff",
-        borderRadius: 1,
+        borderRadius: 0,
         paddingX: 1,
         width: "3rem",
         minWidth: "3rem",
@@ -74,7 +74,7 @@ export function Banner({children, action, sx}: BannerProps) {
       <Box sx={[...(Array.isArray(sx) ? sx : [sx])]}>
         {isOnMobile ? (
           <Alert
-            sx={{backgroundImage: `url(${AptosBannerImage})`, borderRadius: 1}}
+            sx={{backgroundImage: `url(${AptosBannerImage})`, borderRadius: 0}}
             icon={false}
             action={
               <Stack
@@ -102,7 +102,7 @@ export function Banner({children, action, sx}: BannerProps) {
           </Alert>
         ) : (
           <Alert
-            sx={{backgroundImage: `url(${AptosBannerImage})`, borderRadius: 1}}
+            sx={{backgroundImage: `url(${AptosBannerImage})`, borderRadius: 0}}
             icon={false}
             action={
               <Stack

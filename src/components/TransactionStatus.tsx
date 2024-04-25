@@ -26,7 +26,7 @@ export function TransactionStatus({success}: TransactionStatusProps) {
         backgroundColor: SUCCESS_BACKGROUND_COLOR,
         width: 114,
       }}
-      borderRadius={1}
+      borderRadius={0}
     >
       <CheckCircleIcon
         fontSize="small"
@@ -48,7 +48,7 @@ export function TransactionStatus({success}: TransactionStatusProps) {
         backgroundColor: ERROR_BACKGROUND_COLOR,
         width: 90,
       }}
-      borderRadius={1}
+      borderRadius={0}
     >
       <ErrorOutlinedIcon
         fontSize="small"

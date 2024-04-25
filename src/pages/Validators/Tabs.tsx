@@ -90,7 +90,7 @@ export default function ValidatorsPageTabs(): JSX.Element {
                     sx={{
                       backgroundColor: "#8B5CF6",
                       color: "#ffffff",
-                      borderRadius: 1,
+                      borderRadius: 0,
                       paddingX: 1,
                       minWidth: "3.5rem",
                       height: "1.5rem",

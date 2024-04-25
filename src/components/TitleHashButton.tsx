@@ -67,7 +67,7 @@ function HashButton({hash}: {hash: string}) {
           theme.palette.mode === "dark" ? grey[600] : grey[200]
         }`,
         display: "flex",
-        borderRadius: 1,
+        borderRadius: 0,
         color: "inherit",
         padding: "0.15rem 0.5rem 0.15rem 1rem",
         "&:hover": {
@@ -129,7 +129,7 @@ function Name({address, isValidator}: {address: string; isValidator: boolean}) {
           backgroundColor: `${
             theme.palette.mode === "dark" ? grey[600] : grey[200]
           }`,
-          borderRadius: 1,
+          borderRadius: 0,
           color: "inherit",
           padding: "0.15rem 1rem 0.15rem 1rem",
         }}

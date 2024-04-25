@@ -311,7 +311,7 @@ function ViewCell() {
           "&:hover": {
             backgroundColor: alpha(primary["500"], 1),
           },
-          borderRadius: 0.75,
+          borderRadius: 0,
           width: "2rem",
           height: "2rem",
           padding: "0.5rem",

@@ -39,7 +39,7 @@ export default function TableTooltip({children, title}: TableTooltipProps) {
           <Box
             sx={{
               bgcolor: theme.palette.mode === "dark" ? grey[600] : grey[200],
-              borderRadius: "10px 10px 0 0",
+              borderRadius: 0,
               paddingX: 3,
               paddingTop: 2,
               paddingBottom: 2,
@@ -59,7 +59,7 @@ export default function TableTooltip({children, title}: TableTooltipProps) {
           <Box
             sx={{
               bgcolor: "background.paper",
-              borderRadius: "0 0 10px 10px",
+              borderRadius: 0,
               paddingX: 3,
               paddingTop: 2,
               paddingBottom: 3,

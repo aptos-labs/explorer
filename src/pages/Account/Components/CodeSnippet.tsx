@@ -63,7 +63,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
           height: "2rem",
           width: "2rem",
           minWidth: "unset",
-          borderRadius: "0.5rem",
+          borderRadius: 0,
         }}
       >
         <OpenInFull style={{height: "1.25rem", width: "1.25rem"}} />
@@ -78,7 +78,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
             maxHeight: "80%",
             width: "80%",
             overflowY: "auto",
-            borderRadius: 1,
+            borderRadius: 0,
           }}
           ref={codeBoxScrollRef}
         >
@@ -177,7 +177,7 @@ export function Code({bytecode}: {bytecode: string}) {
                   display: "flex",
                   alignItems: "center",
                   height: "2rem",
-                  borderRadius: "0.5rem",
+                  borderRadius: "0rem",
                 }}
               >
                 <ContentCopy style={{height: "1.25rem", width: "1.25rem"}} />
@@ -218,7 +218,7 @@ export function Code({bytecode}: {bytecode: string}) {
           sx={{
             maxHeight: "100vh",
             overflow: "auto",
-            borderRadius: 1,
+            borderRadius: 0,
             backgroundColor: codeBlockColor,
           }}
           ref={codeBoxScrollRef}

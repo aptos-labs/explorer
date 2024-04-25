@@ -46,7 +46,7 @@ export function CodeLineBox({
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       borderColor={codeBlockColor}
-      borderRadius={50}
+      borderRadius={0}
     >
       {children}
     </Box>

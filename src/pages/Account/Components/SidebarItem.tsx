@@ -40,7 +40,7 @@ export default function SidebarItem({
           fontSize: 12,
           fontWeight: selected ? 600 : 400,
           padding: "8px",
-          borderRadius: 1,
+          borderRadius: 0,
           bgcolor: !selected
             ? "transparent"
             : theme.palette.mode === "dark"

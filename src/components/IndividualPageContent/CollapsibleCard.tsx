@@ -35,7 +35,7 @@ export default function CollapsibleCard({
         sx={{
           color: grey[450],
           backgroundColor: titleBackgroundColor,
-          borderRadius: expanded ? "10px 10px 0px 0px" : "10px 10px 10px 10px",
+          borderRadius: expanded ? "0px 0px 0px 0px" : "0px 0px 0px 0px",
         }}
         onClick={toggleExpanded}
       >
@@ -75,7 +75,7 @@ export default function CollapsibleCard({
           padding={4}
           sx={{
             backgroundColor: contentBackgroundColor,
-            borderRadius: "0px 0px 10px 10px",
+            borderRadius: "0px 0px 0px 0px",
           }}
         >
           <Stack direction="column" spacing={2}>

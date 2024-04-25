@@ -70,7 +70,7 @@ export default function JsonCard({
       paddingBottom={expandable ? 0 : 1.5}
       marginBottom="5px"
       marginRight="5px"
-      borderRadius={1}
+      borderRadius={0}
     >
       <Stack direction="row" justifyContent="space-between">
         <Box

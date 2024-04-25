@@ -18,7 +18,7 @@ export default function ContentBoxSpaceBetween({
       padding={3}
       sx={{
         backgroundColor: backgroundColor,
-        borderRadius: `${theme.shape.borderRadius}px`,
+        borderRadius: `0px`,
       }}
       {...props}
     >

@@ -111,7 +111,7 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
         },
         "& *::-webkit-scrollbar-thumb": {
           background: theme.palette.mode === "dark" ? grey[500] : grey[200],
-          borderRadius: "10px",
+          borderRadius: "0px",
           padding: "2px",
         },
         "& *::-webkit-scrollbar-thumb:hover": {
@@ -126,7 +126,7 @@ function ModulesTabs({address}: {address: string}): JSX.Element {
         padding={2}
         marginY={4}
         borderColor="red"
-        borderRadius={1}
+        borderRadius={0}
         bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
       >
         <StyledTabs value={value} onChange={handleChange}>

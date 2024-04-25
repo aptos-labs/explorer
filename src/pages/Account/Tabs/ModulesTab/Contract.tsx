@@ -69,7 +69,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
         <Box
           padding={3}
           bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
-          borderRadius={1}
+          borderRadius={0}
         >
           <Typography
             fontSize={16}
@@ -161,7 +161,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
         <Box
           padding={4}
           bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
-          borderRadius={1}
+          borderRadius={0}
         >
           {!module || !fn ? (
             <Typography>Please select a function</Typography>
@@ -210,7 +210,7 @@ function ContractSidebar({
     <Box
       sx={{padding: "24px", maxHeight: "100vh", overflowY: "auto"}}
       bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
-      borderRadius={1}
+      borderRadius={0}
     >
       {isWideScreen ? (
         <>
@@ -410,7 +410,7 @@ function RunContractForm({
                         sx={{
                           height: "2rem",
                           minWidth: "unset",
-                          borderRadius: "0.5rem",
+                          borderRadius: "0rem",
                           whiteSpace: "nowrap",
                         }}
                       >
@@ -596,7 +596,7 @@ function ExecutionResult({
   return (
     <Box
       padding={3}
-      borderRadius={1}
+      borderRadius={0}
       bgcolor={theme.palette.mode === "dark" ? grey[700] : grey[200]}
       mt={4}
     >

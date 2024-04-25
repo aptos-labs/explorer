@@ -67,12 +67,12 @@ declare module "@mui/material/Divider" {
 const primaryColor = primary["400"];
 const primaryColorToned = primary["50"];
 
-const headerFont = `Cosmo, space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`;
+const headerFont = `TWKEverettMono, space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`;
 const bodyFont = `TWKEverett, space-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`;
 
 const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   shape: {
-    borderRadius: 12,
+    borderRadius: 0,
   },
 
   typography: {
@@ -295,7 +295,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     MuiInput: {
       styleOverrides: {
         root: () => ({
-          borderRadius: 2,
+          borderRadius: 0,
         }),
       },
     },
@@ -303,7 +303,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     MuiFilledInput: {
       styleOverrides: {
         root: ({theme}) => ({
-          borderRadius: `${theme.shape.borderRadius}px`,
+          borderRadius: `0px`,
           backgroundColor: `${
             theme.palette.mode === "dark" ? grey[700] : grey[100]
           }`,
@@ -359,7 +359,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     MuiSelect: {
       styleOverrides: {
         select: {
-          borderRadius: "8px",
+          borderRadius: "0px",
         },
         outlined: {
           backgroundColor: "transparent",
@@ -603,17 +603,17 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           background: "transparent",
           paddingBottom: "0",
         },
-        root: ({theme}) => ({
+        root: ({}) => ({
           padding: "0.75rem 1.5rem 0.75rem 1.5rem",
           whiteSpace: "nowrap",
           borderStyle: "solid",
           borderWidth: "0 0 0 0",
           borderColor: grey[700],
           "&:first-of-type": {
-            borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
+            borderRadius: `0px 0 0 0px`,
           },
           "&:last-of-type": {
-            borderRadius: `0 ${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0`,
+            borderRadius: `0 0px 0px 0`,
           },
         }),
       },

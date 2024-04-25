@@ -100,7 +100,7 @@ export default function NetworkSelect() {
           autoWidth
           IconComponent={DropdownIcon}
           sx={{
-            borderRadius: 1,
+            borderRadius: 0,
             fontWeight: "400",
             fontSize: "1rem",
             minWidth: 80,

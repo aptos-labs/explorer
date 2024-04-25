@@ -22,7 +22,7 @@ const LightTooltip = styled(({className, ...props}: TooltipProps) => (
     backgroundColor: theme.palette.mode === "dark" ? grey[800] : grey[50],
     color: theme.palette.mode === "dark" ? grey[50] : grey[800],
     boxShadow: "1px 1px 3px 3px rgba(0, 0, 0, 0.05)",
-    borderRadius: 4,
+    borderRadius: 0,
   },
 }));
 

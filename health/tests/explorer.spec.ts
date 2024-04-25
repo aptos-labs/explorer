@@ -51,7 +51,7 @@ test('clicks connect', async ({ page }) => {
 
   // Click the get started link.
   await page.getByText('CONNECT WALLET').click();
-  const res = await page.waitForSelector('text=mvmt_m1 only', {
+  const res = await page.waitForSelector('text=movement only', {
     timeout : 1000
   });
 

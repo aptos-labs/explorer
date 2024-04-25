@@ -120,7 +120,7 @@ function ModuleSidebar({
     <Box
       sx={{padding: "24px", maxHeight: "100vh", overflowY: "auto"}}
       bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
-      borderRadius={1}
+      borderRadius={0}
     >
       {isWideScreen ? (
         sortedPackages.map((pkg) => {
@@ -181,7 +181,7 @@ function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
       spacing={2}
       padding={"24px"}
       bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
-      borderRadius={1}
+      borderRadius={0}
     >
       <ModuleHeader address={address} moduleName={moduleName} />
       <Divider />

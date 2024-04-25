@@ -110,7 +110,7 @@ export default function TransactionSucceededDialog({
             }`,
             paddingLeft: "inherit",
             marginX: 1,
-            borderRadius: 1,
+            borderRadius: 0,
             paddingY: 2,
           }}
         >
