@@ -1,6 +1,6 @@
 import {useParams} from "react-router-dom";
 import {Grid} from "@mui/material";
-import React from "react";
+import React, {useEffect} from "react";
 import AccountTabs, {TabValue} from "./Tabs";
 import AccountTitle from "./Title";
 import BalanceCard from "./BalanceCard";
@@ -14,6 +14,7 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 import {Network} from "aptos";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
+import {useNavigate} from "../../routing";
 
 const TAB_VALUES_FULL: TabValue[] = [
   "transactions",
@@ -48,19 +49,39 @@ export function accountPagePath(isObject: boolean) {
 }
 
 export default function AccountPage({isObject = false}: AccountPageProps) {
+  const navigate = useNavigate();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
   const maybeAddress = useParams().address;
   const address =
     maybeAddress !== undefined
       ? AccountAddress.from(maybeAddress).toStringLong()
       : "";
-  let loadingFunction;
-  if (isObject) {
-    loadingFunction = useGetAccountResources;
-  } else {
-    loadingFunction = useGetAccount;
-  }
-  const {data, error, isLoading} = loadingFunction(address);
+  const {
+    data: objectData,
+    error: objectError,
+    isLoading: objectIsLoading,
+  } = useGetAccountResources(address, {retry: false});
+  const {
+    data: accountData,
+    error: accountError,
+    isLoading: accountIsLoading,
+  } = useGetAccount(address, {retry: false});
+
+  const isLoading = objectIsLoading || accountIsLoading;
+  const data = isObject ? objectData : accountData;
+  const error = isObject ? objectError : accountError;
+
+  useEffect(() => {
+    // If we are on the account page, we might be loading an object. This
+    // handler will redirect to the object page if no account exists but an
+    // object does.
+    if (!isObject && !isLoading) {
+      if (objectData && !accountData) {
+        navigate(`/object/${address}`, {replace: true});
+      }
+    }
+  }, [address, isObject, isLoading, accountData, objectData, navigate]);
+
   const [state] = useGlobalState();
 
   let tabValues;
