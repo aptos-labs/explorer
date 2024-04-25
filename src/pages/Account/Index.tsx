@@ -77,9 +77,8 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
     // object does.
     if (isObject) return;
     if (!isLoading) {
-      console.log("HERE");
       if (objectData && !accountData) {
-        navigate(`/object/${address}`);
+        navigate(`/object/${address}`, {replace: true});
       }
     }
   }, [
