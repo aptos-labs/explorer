@@ -75,8 +75,9 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
     // If we are on the account page, we might be loading an object. This
     // handler will redirect to the object page if no account exists but an
     // object does.
-    if (!isObject) return;
-    if (!accountIsLoading && !objectIsLoading) {
+    if (isObject) return;
+    if (!isLoading) {
+      console.log("HERE");
       if (objectData && !accountData) {
         navigate(`/object/${address}`);
       }
