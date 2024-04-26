@@ -10,7 +10,7 @@ export const networks = {
   testnet: "https://aptos.devnet.m1.movementlabs.xyz",
   devnet: devnetUrl,
   local: "https://aptos.devnet.m1.movementlabs.xyz",
-  movement: "https://aptos.devnet.m1.movementlabs.xyz",
+  mvmt_m1: "https://aptos.devnet.m1.movementlabs.xyz",
 };
 
 export type NetworkName = keyof typeof networks;
@@ -24,7 +24,7 @@ export enum Network {
   TESTNET = "testnet",
   DEVNET = "devnet",
   LOCAL = "local",
-  MOVEMENT = "movement",
+  MOVEMENT = "mvmt_m1",
   PREVIEWNET = "previewnet",
   PREVIEWNET2 = "previewnet2",
 }
@@ -37,7 +37,7 @@ for (const key of Object.keys(networks)) {
   }
 }
 
-export const defaultNetworkName: NetworkName = "movement" as const;
+export const defaultNetworkName: NetworkName = "mvmt_m1" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;

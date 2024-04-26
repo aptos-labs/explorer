@@ -16,7 +16,7 @@ function getFetchNameUrl(
   address: string,
   isPrimary: boolean,
 ) {
-  if (network !== "movement" && network !== "mainnet") {
+  if (network !== "mvmt_m1" && network !== "mainnet") {
     return undefined;
   }
 
