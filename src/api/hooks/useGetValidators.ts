@@ -1,14 +1,14 @@
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useGetValidatorSet} from "./useGetValidatorSet";
-import {Network} from "../../constants";
-import {standardizeAddress} from "../../utils";
+// import {Network} from "../../constants";
+// import {standardizeAddress} from "../../utils";
 
-const MAINNET_VALIDATORS_DATA_URL =
-  "https://storage.googleapis.com/aptos-mainnet/explorer/validator_stats_v2.json?cache-version=0";
+// const MAINNET_VALIDATORS_DATA_URL =
+//   "https://storage.googleapis.com/aptos-mainnet/explorer/validator_stats_v2.json?cache-version=0";
 
-const TESTNET_VALIDATORS_DATA_URL =
-  "https://storage.googleapis.com/aptos-testnet/explorer/validator_stats_v2.json?cache-version=0";
+// const TESTNET_VALIDATORS_DATA_URL =
+//   "https://storage.googleapis.com/aptos-testnet/explorer/validator_stats_v2.json?cache-version=0";
 
 // const PREVIEWNET_VALIDATORS_DATA_URL =
 //   "https://aptos-analytics-data-previewnet.s3.amazonaws.com/validator_stats_v1.json";
@@ -43,43 +43,43 @@ function useGetValidatorsRawData() {
   );
 
   useEffect(() => {
-    if (
-      state.network_name === Network.MAINNET ||
-      state.network_name === Network.TESTNET
-      // state.network_name === Network.PREVIEWNET
-    ) {
-      const getDataUrl = () => {
-        switch (state.network_name) {
-          case Network.MAINNET:
-            return MAINNET_VALIDATORS_DATA_URL;
-          // case Network.PREVIEWNET:
-          // return PREVIEWNET_VALIDATORS_DATA_URL;
-          default:
-            return TESTNET_VALIDATORS_DATA_URL;
-        }
-      };
-      const fetchData = async () => {
-        const response = await fetch(getDataUrl());
-        const rawData: ValidatorData[] = await response.json();
-        setValidatorsRawData(
-          rawData.map((validatorData) => {
-            return {
-              ...validatorData,
-              owner_address: standardizeAddress(validatorData.owner_address),
-              operator_address: standardizeAddress(
-                validatorData.operator_address,
-              ),
-            };
-          }),
-        );
-      };
+    // if (
+    //   state.network_name === Network.MAINNET ||
+    //   state.network_name === Network.TESTNET
+    //   // state.network_name === Network.PREVIEWNET
+    // ) {
+    //   const getDataUrl = () => {
+    //     switch (state.network_name) {
+    //       case Network.MAINNET:
+    //         return MAINNET_VALIDATORS_DATA_URL;
+    //       // case Network.PREVIEWNET:
+    //       // return PREVIEWNET_VALIDATORS_DATA_URL;
+    //       default:
+    //         return TESTNET_VALIDATORS_DATA_URL;
+    //     }
+    //   };
+    //   const fetchData = async () => {
+    //     const response = await fetch(getDataUrl());
+    //     const rawData: ValidatorData[] = await response.json();
+    //     setValidatorsRawData(
+    //       rawData.map((validatorData) => {
+    //         return {
+    //           ...validatorData,
+    //           owner_address: standardizeAddress(validatorData.owner_address),
+    //           operator_address: standardizeAddress(
+    //             validatorData.operator_address,
+    //           ),
+    //         };
+    //       }),
+    //     );
+    //   };
 
-      fetchData().catch((error) => {
-        console.error("ERROR!", error, typeof error);
-      });
-    } else {
-      setValidatorsRawData([]);
-    }
+    //   fetchData().catch((error) => {
+    //     console.error("ERROR!", error, typeof error);
+    //   });
+    // } else {
+    setValidatorsRawData([]);
+    // }
   }, [state]);
 
   return {validatorsRawData};

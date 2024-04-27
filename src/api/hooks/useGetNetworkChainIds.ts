@@ -21,7 +21,7 @@ export function useGetChainIdAndCache(networkName: NetworkName): string | null {
 
   // cache network chain ids (except local) to `localStorage` to avoid refetching chain data
   // as the chain ids for those networks won't be changed very often
-  if (chainId !== null && networkName !== "local") {
+  if (chainId !== null && networkName !== "devnet") {
     setLocalStorageWithExpiry(`${networkName}ChainId`, chainId, TTL);
   }
 

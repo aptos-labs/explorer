@@ -9,9 +9,9 @@ import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 import {useGetAccount} from "../../api/hooks/useGetAccount";
 import LoadingModal from "../../components/LoadingModal";
 import Error from "./Error";
-import {AptosNamesBanner} from "./Components/AptosNamesBanner";
-import {useGlobalState} from "../../global-config/GlobalConfig";
-import {Network} from "aptos";
+// import { MoveNamesBanner } from "./Components/MoveNamesBanner";
+// import { useGlobalState } from "../../global-config/GlobalConfig";
+// import { Network } from "aptos";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 
 const TAB_VALUES_FULL: TabValue[] = [
@@ -48,7 +48,7 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
     loadingFunction = useGetAccount;
   }
   const {data, error, isLoading} = loadingFunction(address);
-  const [state] = useGlobalState();
+  // const [state] = useGlobalState();
 
   // TODO: [BE] instead of passing down address as props, use context
   // make sure that addresses will always start with "0X"
@@ -75,9 +75,9 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
       <Grid item xs={12} md={4} lg={3} marginTop={{md: 0, xs: 2}}>
         <BalanceCard address={addressHex} />
       </Grid>
-      <Grid item xs={12} md={8} lg={12} marginTop={4} alignSelf="center">
-        {state.network_name === Network.MAINNET && <AptosNamesBanner />}
-      </Grid>
+      {/* <Grid item xs={12} md={8} lg={12} marginTop={4} alignSelf="center">
+        {state.network_name === Network.MAINNET && <MoveNamesBanner />}
+      </Grid> */}
       <Grid item xs={12} md={12} lg={12} marginTop={4}>
         {error ? (
           <Error address={addressHex} error={error} />

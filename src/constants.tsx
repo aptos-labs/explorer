@@ -1,16 +1,9 @@
-/**
- * Network
- */
-export const devnetUrl =
-  import.meta.env.APTOS_DEVNET_URL ||
-  "https://aptos.devnet.m1.movementlabs.xyz";
-
 export const networks = {
   mainnet: "https://aptos.devnet.m1.movementlabs.xyz",
   testnet: "https://aptos.devnet.m1.movementlabs.xyz",
-  devnet: devnetUrl,
-  local: "https://aptos.devnet.m1.movementlabs.xyz",
-  mvmt_m1: "https://aptos.devnet.m1.movementlabs.xyz",
+  devnet: "https://aptos.devnet.m1.movementlabs.xyz",
+  // local: "https://aptos.devnet.m1.movementlabs.xyz",
+  m1_devnet: "https://aptos.devnet.m1.movementlabs.xyz",
 };
 
 export type NetworkName = keyof typeof networks;
@@ -23,10 +16,8 @@ export enum Network {
   MAINNET = "mainnet",
   TESTNET = "testnet",
   DEVNET = "devnet",
-  LOCAL = "local",
-  MOVEMENT = "mvmt_m1",
-  PREVIEWNET = "previewnet",
-  PREVIEWNET2 = "previewnet2",
+  // LOCAL = "local",
+  m1_devnet = "m1_devnet",
 }
 
 // Remove trailing slashes
@@ -37,7 +28,7 @@ for (const key of Object.keys(networks)) {
   }
 }
 
-export const defaultNetworkName: NetworkName = "mvmt_m1" as const;
+export const defaultNetworkName: NetworkName = "m1_devnet" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;

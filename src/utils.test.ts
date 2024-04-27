@@ -1,6 +1,6 @@
 import {expect, it} from "vitest";
 import {getPublicFunctionLineNumber, truncateAptSuffix} from "./utils";
-it("truncate apt suffix from ANS name correctly", () => {
+it("truncate apt suffix from MNS name correctly", () => {
   expect(truncateAptSuffix("name.")).toEqual("name");
   expect(truncateAptSuffix("name.a")).toEqual("name");
   expect(truncateAptSuffix("name.ap")).toEqual("name");

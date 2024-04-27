@@ -16,13 +16,13 @@ function getFetchNameUrl(
   address: string,
   isPrimary: boolean,
 ) {
-  if (network !== "mvmt_m1" && network !== "mainnet") {
-    return undefined;
-  }
+  // if (network !== "testnet" && network !== "mainnet") {
+  return undefined;
+  // }
 
   return isPrimary
-    ? `https://www.aptosnames.com/api/${network}/v1/primary-name/${address}`
-    : `https://www.aptosnames.com/api/${network}/v1/name/${address}`;
+    ? `https://move.movementlabs.xyz/api/${network}/primary-name/${address}`
+    : `https://move.movementlabs.xyz/${network}/name/${address}`;
 }
 
 export function useGetNameFromAddress(
@@ -32,13 +32,13 @@ export function useGetNameFromAddress(
 ) {
   const [state] = useGlobalState();
   const queryResult = useQuery<string | null, ResponseError>({
-    queryKey: ["ANSName", address, shouldCache, state.network_name],
+    queryKey: ["MNSName", address, shouldCache, state.network_name],
     queryFn: () => {
       const cachedName = getLocalStorageWithExpiry(address);
       if (cachedName) {
         return cachedName;
       }
-      return genANSName(address, shouldCache, state.network_name, isValidator);
+      return genMNSName(address, shouldCache, state.network_name, isValidator);
     },
   });
 
@@ -47,7 +47,7 @@ export function useGetNameFromAddress(
 
 // this function will return null if ans name not found to prevent useQuery complaining about undefined return
 // source for full context: https://tanstack.com/query/v4/docs/react/guides/migrating-to-react-query-4#undefined-is-an-illegal-cache-value-for-successful-queries
-async function genANSName(
+async function genMNSName(
   address: string,
   shouldCache: boolean,
   networkName: NetworkName,
@@ -84,7 +84,7 @@ async function genANSName(
     }
   } catch (error) {
     console.error(
-      `ERROR! Couldn't find ANS name for ${address} on ${networkName}`,
+      `ERROR! Couldn't find MNS name for ${address} on ${networkName}`,
       error,
       typeof error,
     );
@@ -94,11 +94,11 @@ async function genANSName(
 }
 
 function getFetchAddressUrl(network: NetworkName, name: string) {
-  if (network !== "testnet" && network !== "mainnet") {
-    return undefined;
-  }
+  // if (network !== "testnet" && network !== "mainnet") {
+  return undefined;
+  // }
 
-  return `https://www.aptosnames.com/api/${network}/v1/address/${name}`;
+  return `https://move.movementlabs.xyz/api/${network}/v1/address/${name}`;
 }
 
 export async function getAddressFromName(
