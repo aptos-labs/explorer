@@ -14,6 +14,7 @@ import {
   AptosWalletAdapterProvider,
   NetworkName,
 } from "@aptos-labs/wallet-adapter-react";
+import {BitgetWallet} from "@bitget-wallet/aptos-wallet-adapter";
 import {BloctoWallet} from "@blocto/aptos-wallet-adapter-plugin";
 import {MartianWallet} from "@martianwallet/aptos-wallet-adapter";
 import {NightlyWallet} from "@nightlylabs/aptos-wallet-adapter-plugin";
@@ -44,6 +45,7 @@ const riseWallet = new RiseWallet();
 const tokenPocketWallet = new TokenPocketWallet();
 const trustWallet = new TrustWallet();
 const welldoneWallet = new WelldoneWallet();
+const bitgetWallet = new BitgetWallet();
 
 function walletsForNetwork(network: string) {
   // These are currently ordered by users on the site, and are subject to change
@@ -52,6 +54,7 @@ function walletsForNetwork(network: string) {
     okxWallet,
     martianWallet,
     pontemWallet,
+    bitgetWallet,
     fewchaWallet,
     // Blocto supports Testnet/Mainnet for now.
     new BloctoWallet({
