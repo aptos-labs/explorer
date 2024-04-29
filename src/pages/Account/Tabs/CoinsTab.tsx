@@ -31,7 +31,17 @@ type TokenTabsProps = {
 export default function CoinsTab({address}: TokenTabsProps) {
   const addr64Hash = normalizeAddress(address);
 
-  const {loading, error, data} = useQuery(COINS_QUERY, {
+  const {loading, error, data} = useQuery<{
+    current_fungible_asset_balances: {
+      amount: number;
+      asset_type: string;
+      metadata: {
+        name: string;
+        decimals: number;
+        symbol: string;
+      };
+    }[];
+  }>(COINS_QUERY, {
     variables: {
       owner_address: addr64Hash,
     },
@@ -49,5 +59,15 @@ export default function CoinsTab({address}: TokenTabsProps) {
     return <EmptyTabContent />;
   }
 
-  return <CoinsTable coins={coins} />;
+  return (
+    <CoinsTable
+      coins={coins.map((coin) => ({
+        name: coin.metadata.name,
+        amount: coin.amount,
+        decimals: coin.metadata.decimals,
+        symbol: coin.metadata.symbol,
+        assetType: coin.asset_type,
+      }))}
+    />
+  );
 }
