@@ -27,6 +27,9 @@ dependencies:
   '@aptos-labs/wallet-adapter-react':
     specifier: ^1.4.0
     version: 1.4.0(aptos@1.21.0)(react@18.2.0)
+  '@bitget-wallet/aptos-wallet-adapter':
+    specifier: ^0.1.2
+    version: 0.1.2(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0)
   '@blocto/aptos-wallet-adapter-plugin':
     specifier: ^0.2.8
     version: 0.2.8
@@ -803,6 +806,16 @@ packages:
       '@babel/helper-string-parser': 7.23.4
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+
+  /@bitget-wallet/aptos-wallet-adapter@0.1.2(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0):
+    resolution: {integrity: sha512-6dImtKlwdk0zuYKQpeZ/nOVyyBXqTxVin9ZLgdyPXsnBcpy0PnyGgffsfsOVHxk93eOdiRjNxoiCs1b4a+1ssg==}
+    peerDependencies:
+      '@aptos-labs/wallet-adapter-core': 3.5.0
+      aptos: ^1.21.0
+    dependencies:
+      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.4.0)(aptos@1.21.0)
+      aptos: 1.21.0
+    dev: false
 
   /@blocto/aptos-wallet-adapter-plugin@0.2.8:
     resolution: {integrity: sha512-n8i5rARU6YuSF6ntLLOkkAcOXzcKawsCKQ7bF/AVg9Tc8lU2uMHEI1amsdHsopIJnMGwemKs2ISoygTXHedKvw==}
