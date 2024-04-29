@@ -52,7 +52,6 @@ export default function CoinsTab({address}: TokenTabsProps) {
     return null;
   }
 
-  // TODO: add graphql data typing
   const coins = data?.current_fungible_asset_balances ?? [];
 
   if (coins.length === 0) {
