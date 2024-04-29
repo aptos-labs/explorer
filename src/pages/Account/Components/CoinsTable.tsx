@@ -31,7 +31,7 @@ function AmountCell({coin}: CoinCellProps) {
   const amount = coin?.amount;
   const decimals = coin?.metadata?.decimals;
 
-  if (!amount || !decimals) {
+  if (amount == null || decimals == null) {
     return <GeneralTableCell>-</GeneralTableCell>;
   }
 
