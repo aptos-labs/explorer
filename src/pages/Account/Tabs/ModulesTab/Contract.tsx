@@ -36,10 +36,7 @@ import {
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
-import {
-  deserializeVector,
-  encodeInputArgsForViewRequest,
-} from "../../../../utils";
+import {encodeInputArgsForViewRequest} from "../../../../utils";
 import {accountPagePath} from "../../Index";
 
 type ContractFormType = {
@@ -293,7 +290,7 @@ function RunContractForm({
             ? Array.from(new HexString(arg).toUint8Array()).map((x) =>
                 x.toString(),
               )
-            : deserializeVector(arg);
+            : JSON.parse(arg);
         } else if (type.startsWith("0x1::option::Option")) {
           arg ? {vec: [arg]} : undefined;
         } else return arg;
