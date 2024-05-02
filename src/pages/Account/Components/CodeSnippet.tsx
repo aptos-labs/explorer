@@ -154,7 +154,7 @@ export function Code({bytecode}: {bytecode: string}) {
           <Typography fontSize={20} fontWeight={700}>
             Code
           </Typography>
-          <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. We can not not verify it." />
+          <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. We cannot verify it." />
         </Stack>
         {sourceCode && (
           <Stack direction="row" spacing={2}>

@@ -19,6 +19,7 @@
     "@aptos-labs/ts-sdk": "^1.4.0",
     "@aptos-labs/wallet-adapter-mui-design": "^1.0.7",
     "@aptos-labs/wallet-adapter-react": "^1.4.0",
+    "@bitget-wallet/aptos-wallet-adapter": "^0.1.2",
     "@blocto/aptos-wallet-adapter-plugin": "^0.2.8",
     "@download/blockies": "^1.0.3",
     "@emotion/react": "^11.11.3",
@@ -29,7 +30,7 @@
     "@mui/icons-material": "^5.15.4",
     "@mui/material": "^5.15.4",
     "@mui/system": "^5.15.4",
-    "@mui/x-date-pickers": "^6.19.0",
+    "@mui/x-date-pickers": "^7.0.0",
     "@nightlylabs/aptos-wallet-adapter-plugin": "^0.2.12",
     "@okwallet/aptos-wallet-adapter": "^0.0.7",
     "@openblockhq/aptos-wallet-adapter": "^0.1.5",
@@ -80,7 +81,7 @@
     "postinstall": "husky install"
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+    "*": [
       "prettier --config .prettierrc.json -w",
       "eslint --fix"
     ]
@@ -107,18 +108,18 @@
     "@types/react-gtm-module": "^2.0.3",
     "@types/react-simple-maps": "^3.0.4",
     "@types/react-syntax-highlighter": "^15.5.11",
-    "@typescript-eslint/eslint-plugin": "^6.18.1",
-    "@typescript-eslint/parser": "^6.18.1",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
     "@vitejs/plugin-react": "^4.2.1",
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "husky": "^8.0.3",
+    "husky": "^9.0.0",
     "lint-staged": "^15.2.0",
     "prettier": "^3.1.1",
     "ts-results": "^3.3.0",
     "typescript": "^5.3.3",
-    "vite": "^5.0.12",
+    "vite": "^5.0.13",
     "vite-plugin-svgr": "^4.2.0",
     "vitest": "^1.1.3"
   }

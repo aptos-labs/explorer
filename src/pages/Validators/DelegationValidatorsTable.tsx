@@ -33,7 +33,6 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
 import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
 import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
-import {useNavigate} from "../../routing";
 import {ResponseError} from "../../api/client";
 import Error from "../Account/Error";
 import {
@@ -368,7 +367,6 @@ function ValidatorRow({
   connected,
   setError,
 }: ValidatorRowProps) {
-  const navigate = useNavigate();
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
   const {totalVotingPower} = useGetValidatorSet();
@@ -390,7 +388,6 @@ function ValidatorRow({
       wallet_name: wallet?.name ?? "",
       validator_status: validatorStatus ? validatorStatus[0].toString() : "",
     });
-    navigate(`/validator/${address}`);
   };
 
   if (error) {
@@ -409,7 +406,10 @@ function ValidatorRow({
   }
 
   return (
-    <GeneralTableRow onClick={() => rowClick(validator.owner_address)}>
+    <GeneralTableRow
+      to={`/validator/${validator.owner_address}`}
+      onClick={() => rowClick(validator.owner_address)}
+    >
       {columns.map((column) => {
         const Cell = DelegationValidatorCells[column];
         return (

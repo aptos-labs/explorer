@@ -37,6 +37,7 @@ import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
 import {encodeInputArgsForViewRequest} from "../../../../utils";
+import {accountPagePath} from "../../Index";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -48,10 +49,19 @@ interface ContractSidebarProps {
   selectedModuleName: string | undefined;
   selectedFnName: string | undefined;
   moduleAndFnsGroup: Record<string, Types.MoveFunction[]>;
-  getLinkToFn(moduleName: string, fnName: string): string;
+  getLinkToFn(moduleName: string, fnName: string, isObject: boolean): string;
+  isObject: boolean;
 }
 
-function Contract({address, isRead}: {address: string; isRead: boolean}) {
+function Contract({
+  address,
+  isObject,
+  isRead,
+}: {
+  address: string;
+  isObject: boolean;
+  isRead: boolean;
+}) {
   const theme = useTheme();
   const {data, isLoading, error} = useGetAccountModules(address);
   const {selectedModuleName, selectedFnName} = useParams();
@@ -102,11 +112,11 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
       )
     : undefined;
 
-  function getLinkToFn(moduleName: string, fnName: string) {
+  function getLinkToFn(moduleName: string, fnName: string, isObject: boolean) {
     // This string implicitly depends on the fact that
     // the `isRead` value is determined by the
     // pathname `view` and `run`.
-    return `/account/${address}/modules/${
+    return `/${accountPagePath(isObject)}/${address}/modules/${
       isRead ? "view" : "run"
     }/${moduleName}/${fnName}`;
   }
@@ -122,6 +132,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
           selectedFnName={selectedFnName}
           moduleAndFnsGroup={moduleAndFnsGroup}
           getLinkToFn={getLinkToFn}
+          isObject={isObject}
         />
       </Grid>
       <Grid item md={9} xs={12}>
@@ -155,6 +166,7 @@ function ContractSidebar({
   selectedFnName,
   moduleAndFnsGroup,
   getLinkToFn,
+  isObject,
 }: ContractSidebarProps) {
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
@@ -204,7 +216,7 @@ function ContractSidebar({
                       return (
                         <SidebarItem
                           key={fn.name}
-                          linkTo={getLinkToFn(moduleName, fn.name)}
+                          linkTo={getLinkToFn(moduleName, fn.name, isObject)}
                           selected={selected}
                           name={fn.name}
                           loggingInfo={{
@@ -231,7 +243,7 @@ function ContractSidebar({
           )}
           onChange={(_, fn) => {
             fn && logEvent("function_name_clicked", fn.fnName);
-            fn && navigate(getLinkToFn(fn.moduleName, fn.fnName));
+            fn && navigate(getLinkToFn(fn.moduleName, fn.fnName, isObject));
           }}
           value={
             selectedModuleName && selectedFnName

@@ -2,12 +2,11 @@
  * Network
  */
 export const devnetUrl =
-  import.meta.env.APTOS_DEVNET_URL ||
-  "https://fullnode.devnet.aptoslabs.com/v1";
+  import.meta.env.APTOS_DEVNET_URL || "https://api.devnet.aptoslabs.com/v1";
 
 export const networks = {
-  mainnet: "https://fullnode.mainnet.aptoslabs.com/v1",
-  testnet: "https://fullnode.testnet.aptoslabs.com/v1",
+  mainnet: "https://api.mainnet.aptoslabs.com/v1",
+  testnet: "https://api.testnet.aptoslabs.com/v1",
   devnet: devnetUrl,
   local: "http://127.0.0.1:8080/v1",
   previewnet: "https://fullnode.previewnet.aptoslabs.com/v1",
@@ -88,3 +87,5 @@ export const WHILTELISTED_TESTNET_DELEGATION_NODES = import.meta.env
  * Core Address
  */
 export const objectCoreAddress = "0x1::object::ObjectCore";
+export const tokenV2Address = "0x4::token::Token";
+export const collectionV2Address = "0x4::collection::Collection";

@@ -25,6 +25,7 @@ import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";
 import {Code} from "../../Components/CodeSnippet";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
+import {accountPagePath} from "../../Index";
 
 interface ModuleSidebarProps {
   sortedPackages: PackageMetadata[];
@@ -39,22 +40,32 @@ interface ModuleContentProps {
   bytecode: string;
 }
 
-function ViewCode({address}: {address: string}): JSX.Element {
+function ViewCode({
+  address,
+  isObject,
+}: {
+  address: string;
+  isObject: boolean;
+}): JSX.Element {
   const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
 
   const navigate = useNavigate();
 
   const selectedModuleName = useParams().selectedModuleName ?? "";
   useEffect(() => {
-    if (!selectedModuleName && sortedPackages.length > 0) {
+    if (
+      !selectedModuleName &&
+      sortedPackages.length > 0 &&
+      sortedPackages[0].modules.length > 0
+    ) {
       navigate(
-        `/account/${address}/modules/code/${sortedPackages[0].modules[0].name}`,
+        `/${accountPagePath(isObject)}/${address}/modules/code/${sortedPackages[0].modules[0].name}`,
         {
           replace: true,
         },
       );
     }
-  }, [selectedModuleName, sortedPackages, address, navigate]);
+  }, [selectedModuleName, sortedPackages, address, navigate, isObject]);
 
   if (sortedPackages.length === 0) {
     return <EmptyTabContent />;
@@ -65,7 +76,7 @@ function ViewCode({address}: {address: string}): JSX.Element {
     .find((module) => module.name === selectedModuleName);
 
   function getLinkToModule(moduleName: string) {
-    return `/account/${address}/modules/code/${moduleName}`;
+    return `/${accountPagePath(isObject)}/${address}/modules/code/${moduleName}`;
   }
 
   function navigateToModule(moduleName: string) {

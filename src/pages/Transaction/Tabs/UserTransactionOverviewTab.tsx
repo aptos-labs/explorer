@@ -15,6 +15,7 @@ import TransactionFunction from "./Components/TransactionFunction";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {parseExpirationTimestamp} from "../../utils";
+import {TransactionActions} from "./Components/TransactionActions";
 
 function UserTransferOrInteractionRows({
   transaction,
@@ -194,6 +195,7 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
       </ContentBox>
+      <TransactionActions transaction={transaction} />
     </Box>
   );
 }
