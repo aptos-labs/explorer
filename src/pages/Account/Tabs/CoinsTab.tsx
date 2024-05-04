@@ -61,10 +61,10 @@ export default function CoinsTab({address}: TokenTabsProps) {
   return (
     <CoinsTable
       coins={coins.map((coin) => ({
-        name: coin.metadata.name,
+        name: coin.metadata?.name,
         amount: coin.amount,
-        decimals: coin.metadata.decimals,
-        symbol: coin.metadata.symbol,
+        decimals: coin.metadata?.decimals,
+        symbol: coin.metadata?.symbol,
         assetType: coin.asset_type,
       }))}
     />
