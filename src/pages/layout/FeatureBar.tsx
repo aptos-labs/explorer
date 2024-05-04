@@ -1,8 +1,7 @@
-import React, {useEffect} from "react";
 import {Box, Link, Stack, Typography} from "@mui/material";
-import {useSearchParams} from "react-router-dom";
-import {useGlobalState} from "../../GlobalState";
-import {features, FeatureName, defaultFeatureName} from "../../constants";
+import React from "react";
+import {defaultFeatureName, features} from "../../constants";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 const ALERT_COLOR: string = "#F97373"; // red
 
@@ -11,49 +10,9 @@ const ALERT_COLOR: string = "#F97373"; // red
  * This bar is used to indicate that it is now in development mode.
  */
 export default function FeatureBar() {
-  const [state, dispatch] = useGlobalState();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [globalState, {selectFeature}] = useGlobalState();
 
-  function maybeSetFeature(featureNameString: string | null) {
-    if (!featureNameString || state.feature_name === featureNameString) {
-      return;
-    }
-    if (!(featureNameString in features)) {
-      return;
-    }
-    const feature_name = featureNameString as FeatureName;
-    const network_name = state.network_name;
-    const network_value = state.network_value;
-    const aptos_client = state.aptos_client;
-    if (feature_name) {
-      // only show the "feature" param in the url when it's not "prod"
-      // we don't want the users to know the existence of the "feature" param
-      if (feature_name !== defaultFeatureName) {
-        setSearchParams({network: network_name, feature: feature_name});
-      } else {
-        setSearchParams({network: network_name});
-      }
-      dispatch({
-        network_name,
-        network_value,
-        feature_name,
-        aptos_client,
-      });
-    }
-  }
-
-  const goToDefaultMode = () => {
-    maybeSetFeature(defaultFeatureName);
-  };
-
-  useEffect(() => {
-    const feature_name = searchParams.get("feature");
-    if (feature_name) {
-      maybeSetFeature(feature_name);
-    }
-  });
-
-  if (state.feature_name === defaultFeatureName) {
+  if (globalState.feature_name === defaultFeatureName) {
     return null;
   }
 
@@ -61,13 +20,13 @@ export default function FeatureBar() {
     <Box sx={{backgroundColor: ALERT_COLOR}} padding={1}>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Typography>{`This is the ${
-          features[state.feature_name]
+          features[globalState.feature_name]
         }.`}</Typography>
         <Link
           component="button"
           variant="body2"
           color="inherit"
-          onClick={goToDefaultMode}
+          onClick={() => selectFeature(defaultFeatureName)}
         >
           {`Go To ${defaultFeatureName} Mode`}
         </Link>

@@ -1,4 +1,4 @@
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
 
@@ -12,7 +12,7 @@ interface BlockResourceData {
 }
 
 export function useGetEpochTime() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [curEpoch, setCurEpoch] = useState<string>();
   const [lastEpochTime, setLastEpochTime] = useState<string>();
   const [epochInterval, setEpochInterval] = useState<string>();

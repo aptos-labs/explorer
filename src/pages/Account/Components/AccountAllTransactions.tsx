@@ -8,9 +8,7 @@ import {
   useGetAccountAllTransactionVersions,
 } from "../../../api/hooks/useGetAccountAllTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Statsig, useExperiment} from "statsig-react";
-
-const LIMIT = 25;
+import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 function RenderPagination({
   currentPage,
@@ -20,6 +18,7 @@ function RenderPagination({
   numPages: number;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const logEvent = useLogEventWithBasic();
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
@@ -29,7 +28,7 @@ function RenderPagination({
     setSearchParams(searchParams);
 
     // logging
-    Statsig.logEvent("go_to_new_page", newPageNum, {
+    logEvent("go_to_new_page", newPageNum, {
       current_page_num: currentPage.toString(),
       new_page_num: newPageNum.toString(),
     });
@@ -62,7 +61,7 @@ export function AccountAllTransactionsWithPagination({
   numPages,
   countPerPage,
 }: AccountAllTransactionsWithPaginationProps) {
-  const [searchParams, _setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") ?? "1");
   const offset = (currentPage - 1) * countPerPage;
 
@@ -96,16 +95,11 @@ export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
   const txnCount = useGetAccountAllTransactionCount(address);
-  const {config: paginationExperience} = useExperiment(
-    "account_transactions_pagination",
-  );
-
   if (txnCount === undefined) {
     return <EmptyTabContent />;
   }
 
-  const countPerPage = paginationExperience.get("count_per_page", LIMIT);
-
+  const countPerPage = 25;
   const numPages = Math.ceil(txnCount / countPerPage);
 
   return (

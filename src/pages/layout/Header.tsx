@@ -1,15 +1,13 @@
-import React, {useEffect, useRef} from "react";
+import React, {useRef} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import NetworkSelect from "./NetworkSelect";
-import Link from "@mui/material/Link";
-import * as RRD from "react-router-dom";
 import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
-import {ReactComponent as LogoIcon} from "../../assets/svg/aptos_logo_icon.svg";
-import {ReactComponent as IconLight} from "../../assets/svg/icon_light.svg";
-import {ReactComponent as IconDark} from "../../assets/svg/icon_dark.svg";
+import LogoIcon from "../../assets/svg/aptos_logo_icon.svg?react";
+import IconLight from "../../assets/svg/icon_light.svg?react";
+import IconDark from "../../assets/svg/icon_dark.svg?react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Nav from "./Nav";
@@ -18,11 +16,11 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useNavigate} from "react-router-dom";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
+import {Link, useNavigate} from "../../routing";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 export default function Header() {
   const scrollTop = () => {
@@ -41,6 +39,7 @@ export default function Header() {
 
   const {toggleColorMode} = useColorMode();
   const theme = useTheme();
+  const logEvent = useLogEventWithBasic();
   const isDark = theme.palette.mode === "dark";
 
   const {ref, inView} = useInView({
@@ -48,14 +47,17 @@ export default function Header() {
     threshold: 0,
   });
 
-  const inDev = useGetInDevMode();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const [state] = useGlobalState();
   const {account, wallet, network} = useWallet();
   const navigate = useNavigate();
-  let walletAddressRef = useRef("");
+  const walletAddressRef = useRef("");
 
   if (account && walletAddressRef.current !== account.address) {
+    logEvent("wallet_connected", account.address, {
+      wallet_name: wallet!.name,
+      network_type: state.network_name,
+    });
     sendToGTM({
       dataLayer: {
         event: "walletConnection",
@@ -109,7 +111,6 @@ export default function Header() {
           >
             <Link
               onClick={scrollTop}
-              component={RRD.Link}
               to="/"
               color="inherit"
               underline="none"
@@ -142,7 +143,7 @@ export default function Header() {
               {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
             </Button>
             <NavMobile />
-            {inDev && !isOnMobile && (
+            {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector
                   networkSupport={state.network_name}

@@ -1,11 +1,11 @@
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {getLedgerInfo, getRecentBlocks} from "..";
 import {Types} from "aptos";
 
 export function useGetMostRecentBlocks(count: number) {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [recentBlocks, setRecentBlocks] = useState<Types.Block[]>([]);
 
@@ -27,7 +27,7 @@ export function useGetMostRecentBlocks(count: number) {
       };
       fetchData();
     }
-  }, [currentBlockHeight, state]);
+  }, [currentBlockHeight, state, count]);
 
   return {recentBlocks, isLoading};
 }

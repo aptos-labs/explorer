@@ -1,12 +1,9 @@
 import * as React from "react";
 import {Box, Stack} from "@mui/material";
-import * as RRD from "react-router-dom";
-import Link from "@mui/material/Link";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import {useNavigate, useParams} from "react-router-dom";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../components/HashButton";
@@ -32,6 +29,7 @@ import {
   getTransactionAmount,
   getTransactionCounterparty,
 } from "../Transaction/utils";
+import {Link} from "../../routing";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -51,7 +49,6 @@ function TransactionVersionStatusCell({transaction}: TransactionCellProps) {
     <GeneralTableCell sx={{textAlign: "left"}}>
       <Stack direction="row" spacing={0.5}>
         <Link
-          component={RRD.Link}
           to={`/txn/${"version" in transaction && transaction.version}`}
           color="primary"
           underline="none"
@@ -229,14 +226,10 @@ type TransactionRowProps = {
 };
 
 function TransactionRow({transaction, columns}: TransactionRowProps) {
-  const navigate = useNavigate();
-
-  const rowClick = () => {
-    navigate(`/txn/${"version" in transaction && transaction.version}`);
-  };
-
   return (
-    <GeneralTableRow onClick={rowClick}>
+    <GeneralTableRow
+      to={`/txn/${"version" in transaction && transaction.version}`}
+    >
       {columns.map((column) => {
         const Cell = TransactionCells[column];
         return <Cell key={column} transaction={transaction} />;
@@ -256,19 +249,14 @@ function UserTransactionRow({
   columns,
   address,
 }: UserTransactionRowProps) {
-  const navigate = useNavigate();
   const {data: transaction, isError} = useGetTransaction(version.toString());
 
   if (!transaction || isError) {
     return null;
   }
 
-  const rowClick = () => {
-    navigate(`/txn/${version}`);
-  };
-
   return (
-    <GeneralTableRow onClick={rowClick}>
+    <GeneralTableRow to={`/txn/${version}`}>
       {columns.map((column) => {
         const Cell = TransactionCells[column];
         return (

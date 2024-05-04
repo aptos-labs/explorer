@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {Box, Button, Stack, Typography} from "@mui/material";
 import PageHeader from "../layout/PageHeader";
 import AllTransactions from "./AllTransactions";
 import UserTransactions from "./UserTransactions";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export default function TransactionsPage() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [userTxnOnly, setUserTxnOnly] = useState<boolean>(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
@@ -27,7 +27,7 @@ export default function TransactionsPage() {
       searchParams.delete("page");
       setSearchParams(searchParams);
     }
-  }, [userTxnOnly]);
+  }, [userTxnOnly, searchParams, setSearchParams]);
 
   const toggleUserTxnOnly = () => {
     setUserTxnOnly(!userTxnOnly);

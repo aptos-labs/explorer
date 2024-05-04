@@ -21,7 +21,7 @@ export default function BlockMetadataOverviewTab({
 
   return (
     <Box marginBottom={3}>
-      <ContentBox paddingLeft={1.5}>
+      <ContentBox padding={4}>
         <ContentRow
           title={"Version:"}
           value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
@@ -62,7 +62,12 @@ export default function BlockMetadataOverviewTab({
         />
         <ContentRow
           title="Timestamp:"
-          value={<TimestampValue timestamp={transactionData.timestamp} />}
+          value={
+            <TimestampValue
+              timestamp={transactionData.timestamp}
+              ensureMilliSeconds
+            />
+          }
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow

@@ -45,7 +45,7 @@ export default function JsonCard({
     }
   };
 
-  const copyCard = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const copyCard = async () => {
     await navigator.clipboard.writeText(jsonData);
 
     setTooltipOpen(true);

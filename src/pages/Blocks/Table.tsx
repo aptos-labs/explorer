@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Link, Table, TableHead, TableRow} from "@mui/material";
+import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -9,6 +9,7 @@ import {parseTimestamp} from "../utils";
 import moment from "moment";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import {Link, useAugmentToWithGlobalSearchParams} from "../../routing";
 
 function getAgeInSeconds(block: Types.Block): string {
   const blockTimestamp = parseTimestamp(block.block_timestamp);
@@ -26,7 +27,7 @@ function BlockHeightCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
       <Link
-        href={`/block/${block.block_height}`}
+        to={`/block/${block.block_height}`}
         target="_blank"
         underline="none"
       >
@@ -55,11 +56,7 @@ function BlockHashCell({block}: BlockCellProps) {
 function FirstVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Link
-        href={`/txn/${block.first_version}`}
-        target="_blank"
-        underline="none"
-      >
+      <Link to={`/txn/${block.first_version}`} target="_blank" underline="none">
         {block.first_version}
       </Link>
     </GeneralTableCell>
@@ -69,11 +66,7 @@ function FirstVersionCell({block}: BlockCellProps) {
 function LastVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Link
-        href={`/txn/${block.last_version}`}
-        target="_blank"
-        underline="none"
-      >
+      <Link to={`/txn/${block.last_version}`} target="_blank" underline="none">
         {block.last_version}
       </Link>
     </GeneralTableCell>
@@ -104,13 +97,10 @@ type BlockRowProps = {
 };
 
 function BlockRow({block, columns}: BlockRowProps) {
-  // TODO: remove '_blank' once we have a blocks table with better performance
-  const rowClick = () => {
-    window.open(`/block/${block.block_height}`, "_blank");
-  };
+  const augmentTo = useAugmentToWithGlobalSearchParams();
 
   return (
-    <GeneralTableRow onClick={rowClick}>
+    <GeneralTableRow to={augmentTo(`/block/${block.block_height}`)}>
       {columns.map((column) => {
         const Cell = BlockCells[column];
         return <Cell key={column} block={block} />;

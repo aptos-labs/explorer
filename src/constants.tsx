@@ -2,17 +2,22 @@
  * Network
  */
 export const devnetUrl =
-  process.env.APTOS_DEVNET_URL || "https://fullnode.devnet.aptoslabs.com/";
+  import.meta.env.APTOS_DEVNET_URL || "https://api.devnet.aptoslabs.com/v1";
 
 export const networks = {
-  mainnet: "https://fullnode.mainnet.aptoslabs.com/",
-  testnet: "https://fullnode.testnet.aptoslabs.com",
+  mainnet: "https://api.mainnet.aptoslabs.com/v1",
+  testnet: "https://api.testnet.aptoslabs.com/v1",
   devnet: devnetUrl,
-  local: "http://localhost:8080",
-  previewnet: "https://fullnode-0.previewnet.gcp.aptosdev.com/v1",
+  local: "http://127.0.0.1:8080/v1",
+  previewnet: "https://fullnode.previewnet.aptoslabs.com/v1",
+  randomnet: "https://fullnode.random.aptoslabs.com/v1",
 };
 
 export type NetworkName = keyof typeof networks;
+
+export function isValidNetworkName(value: string): value is NetworkName {
+  return value in networks;
+}
 
 export enum Network {
   MAINNET = "mainnet",
@@ -20,6 +25,7 @@ export enum Network {
   DEVNET = "devnet",
   LOCAL = "local",
   PREVIEWNET = "previewnet",
+  RANDOMNET = "randomnet",
 }
 
 // Remove trailing slashes
@@ -48,6 +54,9 @@ export const features = {
 };
 
 export type FeatureName = keyof typeof features;
+export function isValidFeatureName(value: string): value is FeatureName {
+  return value in features;
+}
 
 // Remove trailing slashes
 for (const key of Object.keys(features)) {
@@ -69,7 +78,14 @@ export const defaultFeature = features[defaultFeatureName];
  * Delegation Service
  */
 export const OCTA = 100000000;
-export const WHILTELISTED_TESTNET_DELEGATION_NODES = process.env
+export const WHILTELISTED_TESTNET_DELEGATION_NODES = import.meta.env
   .REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES
-  ? process.env.REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES.split(",")
+  ? import.meta.env.REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES.split(",")
   : null;
+
+/**
+ * Core Address
+ */
+export const objectCoreAddress = "0x1::object::ObjectCore";
+export const tokenV2Address = "0x4::token::Token";
+export const collectionV2Address = "0x4::collection::Collection";

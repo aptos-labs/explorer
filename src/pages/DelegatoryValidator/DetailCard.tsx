@@ -1,5 +1,4 @@
 import {Skeleton, Stack, useMediaQuery, useTheme} from "@mui/material";
-import * as React from "react";
 import HashButton from "../../components/HashButton";
 import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
@@ -16,6 +15,8 @@ import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {useContext} from "react";
+import {Types} from "aptos";
+import {ValidatorData} from "../../api/hooks/useGetValidators";
 
 type ValidatorDetailProps = {
   isSkeletonLoading: boolean;
@@ -30,14 +31,30 @@ export default function ValidatorDetailCard({
     return null;
   }
 
-  const {delegatorBalance, lockedUntilSecs, rewardsRateYearly} =
-    useGetDelegationState(accountResource, validator);
-  const {commission} = useGetDelegationNodeInfo({
-    validatorAddress: validator.owner_address,
-  });
+  return (
+    <ValidatorDetailCardContent
+      isSkeletonLoading={isSkeletonLoading}
+      accountResource={accountResource}
+      validator={validator}
+    />
+  );
+}
+
+function ValidatorDetailCardContent({
+  isSkeletonLoading,
+  accountResource,
+  validator,
+}: ValidatorDetailProps & {
+  accountResource: Types.MoveResource;
+  validator: ValidatorData;
+}) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
-
+  const {commission} = useGetDelegationNodeInfo({
+    validatorAddress: validator?.owner_address,
+  });
+  const {delegatorBalance, lockedUntilSecs, rewardsRateYearly} =
+    useGetDelegationState(accountResource, validator);
   const operatorAddr = validator?.operator_address;
   const rewardGrowth = validator?.rewards_growth;
   const stakePoolAddress = validator?.owner_address;
@@ -51,7 +68,11 @@ export default function ValidatorDetailCard({
           title={"Operator"}
           value={
             operatorAddr && (
-              <HashButton hash={operatorAddr} type={HashType.ACCOUNT} />
+              <HashButton
+                hash={operatorAddr}
+                type={HashType.ACCOUNT}
+                isValidator
+              />
             )
           }
         />
@@ -64,7 +85,7 @@ export default function ValidatorDetailCard({
         />
         <ContentRowSpaceBetween
           title="Compound Rewards"
-          value={`${rewardsRateYearly}% APY`}
+          value={`${rewardsRateYearly}% APR`}
           tooltip={
             <StyledLearnMoreTooltip
               text={REWARDS_TOOLTIP_TEXT}

@@ -1,9 +1,8 @@
-import React from "react";
 import {Stack, Grid, Alert} from "@mui/material";
 import {Types} from "aptos";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useParams} from "react-router-dom";
-import {useQuery} from "react-query";
+import {useQuery} from "@tanstack/react-query";
 import {ResponseError} from "../../api/client";
 import {getTransaction} from "../../api";
 import Error from "./Error";
@@ -12,7 +11,7 @@ import TransactionTabs from "./Tabs";
 import PageHeader from "../layout/PageHeader";
 
 export default function TransactionPage() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const {txnHashOrVersion: txnParam} = useParams();
   const txnHashOrVersion = txnParam ?? "";
 

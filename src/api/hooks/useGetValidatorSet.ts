@@ -1,6 +1,7 @@
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
+import {standardizeAddress} from "../../utils";
 
 interface ValidatorSetData {
   active_validators: Validator[];
@@ -19,7 +20,7 @@ export interface Validator {
 }
 
 export function useGetValidatorSet() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [totalVotingPower, setTotalVotingPower] = useState<string | null>(null);
   const [numberOfActiveValidators, setNumberOfActiveValidators] = useState<
     number | null
@@ -36,7 +37,15 @@ export function useGetValidatorSet() {
       const data = validatorSet.data as ValidatorSetData;
       setTotalVotingPower(data.total_voting_power);
       setNumberOfActiveValidators(data.active_validators.length);
-      setActiveValidators(data.active_validators);
+      setActiveValidators(
+        data.active_validators.map((validator) => {
+          const processedAddr = standardizeAddress(validator.addr);
+          return {
+            ...validator,
+            addr: processedAddr,
+          };
+        }),
+      );
     }
   }, [validatorSet?.data, state]);
 

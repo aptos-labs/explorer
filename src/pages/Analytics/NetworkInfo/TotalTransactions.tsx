@@ -1,11 +1,11 @@
 import React from "react";
-import {useQuery} from "react-query";
-import {useGlobalState} from "../../../GlobalState";
+import {useQuery} from "@tanstack/react-query";
+import {useGlobalState} from "../../../global-config/GlobalConfig";
 import {getLedgerInfo} from "../../../api";
 import {Stack, Typography} from "@mui/material";
 
 export default function TotalTransactions() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const {data: ledgerData} = useQuery(
     ["ledgerInfo", state.network_value],
     () => getLedgerInfo(state.network_value),

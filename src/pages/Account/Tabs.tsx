@@ -16,7 +16,9 @@ import StyledTab from "../../components/StyledTab";
 import TokensTab from "./Tabs/TokensTab";
 import CoinsTab from "./Tabs/CoinsTab";
 import {Types} from "aptos";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {useNavigate} from "../../routing";
+import {accountPagePath} from "./Index";
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
@@ -72,43 +74,61 @@ function getTabIcon(value: TabValue): JSX.Element {
 type TabPanelProps = {
   value: TabValue;
   address: string;
-  accountData: Types.AccountData | undefined;
+  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  isObject: boolean;
 };
 
-function TabPanel({value, address, accountData}: TabPanelProps): JSX.Element {
+function TabPanel({
+  value,
+  address,
+  accountData,
+  isObject,
+}: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
-  return <TabComponent address={address} accountData={accountData} />;
+  return (
+    <TabComponent
+      address={address}
+      accountData={accountData}
+      isObject={isObject}
+    />
+  );
 }
 
 type AccountTabsProps = {
   address: string;
-  accountData: Types.AccountData | undefined;
+  accountData: Types.AccountData | Types.MoveResource[] | undefined;
   tabValues?: TabValue[];
+  isObject?: boolean;
 };
 
 // TODO: create reusable Tabs for all pages
 export default function AccountTabs({
   address,
   accountData,
+  isObject = false,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
-  const {modulesTab, tab} = useParams();
+  const {tab, modulesTab} = useParams();
   const navigate = useNavigate();
-  const value =
-    tab === undefined
-      ? modulesTab === undefined
-        ? TAB_VALUES[0]
-        : "modules"
-      : (tab as TabValue);
+  let effectiveTab: TabValue;
+  if (modulesTab) {
+    effectiveTab = "modules" as TabValue;
+  } else if (tab !== undefined) {
+    effectiveTab = tab as TabValue;
+  } else {
+    effectiveTab = TAB_VALUES[0];
+  }
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/account/${address}/${newValue}`);
+    navigate(`/${accountPagePath(isObject)}/${address}/${newValue}`, {
+      replace: true,
+    });
   };
 
   return (
     <Box sx={{width: "100%"}}>
       <Box>
-        <StyledTabs value={value} onChange={handleChange}>
+        <StyledTabs value={effectiveTab} onChange={handleChange}>
           {tabValues.map((value, i) => (
             <StyledTab
               key={i}
@@ -122,7 +142,12 @@ export default function AccountTabs({
         </StyledTabs>
       </Box>
       <Box>
-        <TabPanel value={value} address={address} accountData={accountData} />
+        <TabPanel
+          value={effectiveTab}
+          address={address}
+          accountData={accountData}
+          isObject={isObject}
+        />
       </Box>
     </Box>
   );

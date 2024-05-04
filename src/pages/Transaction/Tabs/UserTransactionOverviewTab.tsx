@@ -14,6 +14,8 @@ import {getTransactionAmount, getTransactionCounterparty} from "../utils";
 import TransactionFunction from "./Components/TransactionFunction";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {parseExpirationTimestamp} from "../../utils";
+import {TransactionActions} from "./Components/TransactionActions";
 
 function UserTransferOrInteractionRows({
   transaction,
@@ -124,14 +126,22 @@ export default function UserTransactionOverviewTab({
           title="Expiration Timestamp:"
           value={
             <TimestampValue
-              timestamp={transactionData.expiration_timestamp_secs}
+              timestamp={parseExpirationTimestamp(
+                transactionData.expiration_timestamp_secs,
+              )}
+              ensureMilliSeconds={false}
             />
           }
           tooltip={getLearnMoreTooltip("expiration_timestamp_secs")}
         />
         <ContentRow
           title="Timestamp:"
-          value={<TimestampValue timestamp={transactionData.timestamp} />}
+          value={
+            <TimestampValue
+              timestamp={transactionData.timestamp}
+              ensureMilliSeconds
+            />
+          }
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow
@@ -185,6 +195,7 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
       </ContentBox>
+      <TransactionActions transaction={transaction} />
     </Box>
   );
 }

@@ -11,7 +11,7 @@ export function numberFormatter(num: number, digits: number) {
     {value: 1e18, symbol: "E"},
   ];
   const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-  var item = lookup
+  const item = lookup
     .slice()
     .reverse()
     .find(function (item) {
@@ -23,5 +23,5 @@ export function numberFormatter(num: number, digits: number) {
 }
 
 export function getLabels(data: DailyAnalyticsData[], days: number): string[] {
-  return data.slice(-days).map((dailyData) => dailyData.date.substring(5));
+  return data.slice(-days).map((dailyData) => dailyData.date?.substring(5));
 }

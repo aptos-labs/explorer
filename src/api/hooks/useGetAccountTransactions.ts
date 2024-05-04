@@ -1,15 +1,15 @@
 import {Types} from "aptos";
-import {useQuery, UseQueryResult} from "react-query";
+import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {getAccountTransactions} from "..";
 import {ResponseError} from "../client";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export function useGetAccountTransactions(
   address: string,
   start?: number,
   limit?: number,
 ): UseQueryResult<Array<Types.Transaction>, ResponseError> {
-  const [state, _setState] = useGlobalState();
+  const [state] = useGlobalState();
 
   const accountTransactionsResult = useQuery<
     Array<Types.Transaction>,

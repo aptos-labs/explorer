@@ -1,5 +1,5 @@
 import React from "react";
-import NumberFormat from "react-number-format";
+import {NumericFormat} from "react-number-format";
 
 type GasValueProps = {
   gas: string;
@@ -8,7 +8,7 @@ type GasValueProps = {
 export default function GasValue({gas}: GasValueProps) {
   return (
     <span>
-      <NumberFormat value={gas} displayType="text" thousandSeparator /> Gas
+      <NumericFormat value={gas} displayType="text" thousandSeparator /> Gas
       Units
     </span>
   );

@@ -35,7 +35,12 @@ export default function StateCheckpointOverviewTab({
         {"timestamp" in transactionData && (
           <ContentRow
             title="Timestamp:"
-            value={<TimestampValue timestamp={transactionData.timestamp} />}
+            value={
+              <TimestampValue
+                timestamp={transactionData.timestamp}
+                ensureMilliSeconds
+              />
+            }
             tooltip={getLearnMoreTooltip("timestamp")}
           />
         )}

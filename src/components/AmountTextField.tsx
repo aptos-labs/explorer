@@ -10,8 +10,6 @@ import {getFormattedBalanceStr} from "./IndividualPageContent/ContentValue/Curre
 
 interface AmountTextFieldProps {
   amount: string;
-  amountIsValid: boolean;
-  errorMessage: string;
   warnMessage: string | undefined;
   onAmountChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   balance?: string | null;
@@ -19,13 +17,11 @@ interface AmountTextFieldProps {
 
 export default function AmountTextField({
   amount,
-  amountIsValid,
-  errorMessage,
   warnMessage,
   onAmountChange,
   balance,
 }: AmountTextFieldProps): JSX.Element {
-  return amountIsValid ? (
+  return (
     <FormControl fullWidth>
       <Stack direction="row" justifyContent="space-between">
         <FormHelperText sx={{fontSize: "1rem"}}>Enter Amount</FormHelperText>
@@ -42,25 +38,6 @@ export default function AmountTextField({
         }
       />
       {warnMessage && <FormHelperText>{warnMessage}</FormHelperText>}
-    </FormControl>
-  ) : (
-    <FormControl fullWidth>
-      <Stack direction="row" justifyContent="space-between">
-        <FormHelperText sx={{fontSize: "1rem"}}>Enter Amount</FormHelperText>
-      </Stack>
-      <OutlinedInput
-        error
-        notched
-        value={amount}
-        onChange={onAmountChange}
-        endAdornment={<InputAdornment position="end">APT</InputAdornment>}
-        placeholder={
-          balance
-            ? `Your balance: ${getFormattedBalanceStr(balance, undefined, 1)}`
-            : ""
-        }
-      />
-      <FormHelperText error>{errorMessage}</FormHelperText>
     </FormControl>
   );
 }

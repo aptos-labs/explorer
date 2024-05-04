@@ -12,7 +12,6 @@ import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCel
 import {assertNever} from "../../utils";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import {useNavigate} from "react-router-dom";
 import {Types} from "aptos";
 import {
   ValidatorData,
@@ -22,18 +21,27 @@ import CurrencyValue, {
   APTCurrencyValue,
 } from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {aptosColor, grey, primary} from "../../themes/colors/aptosColorPalette";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {OperatorAddrCell, ValidatorAddrCell} from "./ValidatorsTable";
 import {useGetNumberOfDelegators} from "../../api/hooks/useGetNumberOfDelegators";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {Button} from "@mui/material";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
 import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
+import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
+import {ResponseError} from "../../api/client";
+import Error from "../Account/Error";
+import {
+  ValidatorStatus,
+  calculateNetworkPercentage,
+  getValidatorStatus,
+} from "../DelegatoryValidator/utils";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -53,11 +61,13 @@ function getValidatorsOrderedBy(
   column: Column,
 ) {
   switch (column) {
-    case "delegatedAmount":
-      return validatorsCopy.sort(
-        (validator1, validator2) =>
-          parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
-      );
+    case "rewardsEarned":
+      return validatorsCopy.sort((validator1, validator2) => {
+        return (
+          validator2.apt_rewards_distributed -
+          validator1.apt_rewards_distributed
+        );
+      });
     default:
       return validatorsCopy;
   }
@@ -124,17 +134,12 @@ function ValidatorHeaderCell({
       return <GeneralTableHeaderCell header="Operator Address" />;
     case "delegatedAmount":
       return (
-        <SortableHeaderCell
+        <GeneralTableHeaderCell
           header="Delegated Amount"
-          column={column}
-          direction={direction}
-          setDirection={setDirection}
-          setSortColumn={setSortColumn}
           tooltip={
             <StyledLearnMoreTooltip text="The total amount of delegated stake in this stake pool" />
           }
           isTableTooltip={false}
-          textAlignRight={false}
         />
       );
     case "delegator":
@@ -142,18 +147,19 @@ function ValidatorHeaderCell({
         <GeneralTableHeaderCell
           header="Delegators"
           tooltip={
-            <StyledLearnMoreTooltip
-              text="Number of owner accounts who have delegated stake to this stake pool
-        Compound rewards"
-            />
+            <StyledLearnMoreTooltip text="Number of owner accounts who have delegated stake to this stake pool" />
           }
           isTableTooltip={false}
         />
       );
     case "rewardsEarned":
       return (
-        <GeneralTableHeaderCell
+        <SortableHeaderCell
           header="Rewards Earned"
+          column={column}
+          direction={direction}
+          setDirection={setDirection}
+          setSortColumn={setSortColumn}
           tooltip={
             <StyledLearnMoreTooltip text="Amount of rewards earned by this stake pool to date" />
           }
@@ -172,17 +178,13 @@ function ValidatorHeaderCell({
         />
       );
     case "view":
-      return (
-        <GeneralTableHeaderCell
-          header="View"
-          isTableTooltip={false}
-          sx={{paddingLeft: 3}}
-        />
-      );
+      return <GeneralTableHeaderCell header="View" isTableTooltip={false} />;
     case "myDeposit":
       return (
         <GeneralTableHeaderCell header="My Deposit" isTableTooltip={false} />
       );
+    case "status":
+      return <GeneralTableHeaderCell header="Status" isTableTooltip={false} />;
     default:
       return assertNever(column);
   }
@@ -190,6 +192,7 @@ function ValidatorHeaderCell({
 
 const DelegationValidatorCells = Object.freeze({
   addr: ValidatorAddrCell,
+  status: StatusCell,
   operatorAddr: OperatorAddrCell,
   commission: CommissionCell,
   delegator: DelegatorCell,
@@ -204,6 +207,7 @@ type Column = keyof typeof DelegationValidatorCells;
 const DEFAULT_COLUMNS: Column[] = [
   "view",
   "addr",
+  "status",
   "operatorAddr",
   "delegatedAmount",
   "commission",
@@ -215,6 +219,7 @@ const DEFAULT_COLUMNS: Column[] = [
 const COLUMNS_WITHOUT_WALLET_CONNECTION: Column[] = [
   "view",
   "addr",
+  "status",
   "operatorAddr",
   "delegatedAmount",
   "commission",
@@ -226,6 +231,7 @@ type ValidatorRowProps = {
   validator: ValidatorData;
   columns: Column[];
   connected: boolean;
+  setError: (error: ResponseError) => void;
 };
 
 type ValidatorCellProps = {
@@ -234,8 +240,16 @@ type ValidatorCellProps = {
   networkPercentage?: string;
   commission: number | undefined;
   connected: boolean;
+  validatorStatus: ValidatorStatus | undefined;
 };
 
+function StatusCell({validatorStatus}: ValidatorCellProps) {
+  return (
+    <GeneralTableCell sx={{paddingRight: 5}}>
+      <ValidatorStatusIcon validatorStatus={validatorStatus} />
+    </GeneralTableCell>
+  );
+}
 function CommissionCell({commission}: ValidatorCellProps) {
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
@@ -247,7 +261,7 @@ function CommissionCell({commission}: ValidatorCellProps) {
 function DelegatorCell({validator}: ValidatorCellProps) {
   const {delegatorBalance} = useGetNumberOfDelegators(validator.owner_address);
   return (
-    <GeneralTableCell sx={{paddingRight: 15, textAlign: "right"}}>
+    <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
       {delegatorBalance}
     </GeneralTableCell>
   );
@@ -259,7 +273,7 @@ function RewardsEarnedCell({validator, connected}: ValidatorCellProps) {
       sx={
         connected
           ? {paddingRight: 10, textAlign: "right"}
-          : {textAlign: "right"}
+          : {paddingRight: 5, textAlign: "right"}
       }
     >
       <APTCurrencyValue
@@ -275,7 +289,7 @@ function DelegatedAmountCell({
   networkPercentage,
 }: ValidatorCellProps) {
   return (
-    <GeneralTableCell sx={{paddingRight: 15, textAlign: "right"}}>
+    <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
       <Box>
         <APTCurrencyValue
           amount={delegatedStakeAmount ?? ""}
@@ -290,17 +304,20 @@ function DelegatedAmountCell({
 function ViewCell() {
   return (
     <GeneralTableCell>
-      <Button
+      <VisibilityOutlinedIcon
+        fontSize="small"
         sx={{
+          color: "black",
           backgroundColor: aptosColor,
           "&:hover": {
             backgroundColor: alpha(primary["500"], 1),
           },
-          width: "5px",
+          borderRadius: 0.75,
+          width: "2rem",
+          height: "2rem",
+          padding: "0.5rem",
         }}
-      >
-        <VisibilityOutlinedIcon sx={{color: "black"}} />
-      </Button>
+      />
     </GeneralTableCell>
   );
 }
@@ -322,7 +339,7 @@ function MyDepositCell({validator}: ValidatorCellProps) {
         0,
       ),
     );
-  }, [stakes, account]);
+  }, [stakes]);
 
   return (
     <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
@@ -344,19 +361,55 @@ function MyDepositCell({validator}: ValidatorCellProps) {
   );
 }
 
-function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
-  const navigate = useNavigate();
+function ValidatorRow({
+  validator,
+  columns,
+  connected,
+  setError,
+}: ValidatorRowProps) {
+  const {account, wallet} = useWallet();
+  const logEvent = useLogEventWithBasic();
+  const {totalVotingPower} = useGetValidatorSet();
+  const {commission, validatorStatus, error} = useGetDelegationNodeInfo({
+    validatorAddress: validator.owner_address,
+  });
+  const validatorVotingPower = validator.voting_power;
+  const networkPercentage = calculateNetworkPercentage(
+    validatorVotingPower,
+    totalVotingPower,
+  );
+
   const rowClick = (address: Types.Address) => {
-    navigate(`/validator/${address}`);
+    logEvent("delegation_validators_row_clicked", address, {
+      commission: commission?.toString() ?? "",
+      delegated_stake_amount: validatorVotingPower ?? "",
+      network_percentage: networkPercentage ?? "",
+      wallet_address: account?.address ?? "",
+      wallet_name: wallet?.name ?? "",
+      validator_status: validatorStatus ? validatorStatus[0].toString() : "",
+    });
   };
 
-  const {commission, delegatedStakeAmount, networkPercentage} =
-    useGetDelegationNodeInfo({
-      validatorAddress: validator.owner_address,
-    });
+  if (error) {
+    setError(error);
+  }
+
+  // Hide delegators that are inactive and have no delegated stake
+  // TODO: Don't show inactive validators unless the users have a deposit
+  // Would require some querying restructing to be efficient.
+  if (
+    validatorStatus &&
+    getValidatorStatus(validatorStatus) === "Inactive" &&
+    validatorVotingPower === "0"
+  ) {
+    return null;
+  }
 
   return (
-    <GeneralTableRow onClick={() => rowClick(validator.owner_address)}>
+    <GeneralTableRow
+      to={`/validator/${validator.owner_address}`}
+      onClick={() => rowClick(validator.owner_address)}
+    >
       {columns.map((column) => {
         const Cell = DelegationValidatorCells[column];
         return (
@@ -364,9 +417,12 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
             key={column}
             validator={validator}
             commission={commission}
-            delegatedStakeAmount={delegatedStakeAmount}
+            delegatedStakeAmount={validatorVotingPower}
             networkPercentage={networkPercentage}
             connected={connected}
+            validatorStatus={
+              validatorStatus ? getValidatorStatus(validatorStatus) : undefined
+            }
           />
         );
       })}
@@ -375,30 +431,31 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
 }
 
 export function DelegationValidatorsTable() {
-  const [state, _] = useGlobalState();
-  const {validators} = useGetValidators(state.network_name);
+  const [state] = useGlobalState();
+  const {validators} = useGetValidators();
   const {connected} = useWallet();
   const columns = connected
     ? DEFAULT_COLUMNS
     : COLUMNS_WITHOUT_WALLET_CONNECTION;
-  const [sortColumn, setSortColumn] = useState<Column>("delegatedAmount");
+  const [sortColumn, setSortColumn] = useState<Column>("rewardsEarned");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
-  const sortedValidators = getSortedValidators(
-    validators,
-    sortColumn,
-    sortDirection,
-  );
   const [delegationValidators, setDelegationValidators] = useState<
     ValidatorData[]
   >([]);
   const {delegatedStakingPools, loading} =
     useGetDelegatedStakingPoolList() ?? [];
+  const [error, setError] = useState<ResponseError | null>();
+  const sortedValidators = getSortedValidators(
+    delegationValidators,
+    sortColumn,
+    sortDirection,
+  );
 
   useEffect(() => {
     if (!loading) {
       // delegated staking pools that are in validators list, meaning that they are either active or once active now inactive
       const validatorsInDelegatedStakingPools: ValidatorData[] =
-        sortedValidators.filter((validator) => {
+        validators.filter((validator) => {
           return delegatedStakingPools.some(
             (pool) => pool.staking_pool_address === validator.owner_address,
           );
@@ -408,7 +465,7 @@ export function DelegationValidatorsTable() {
       const delegatedStakingPoolsNotInValidators: ValidatorData[] =
         delegatedStakingPools
           .filter((pool) => {
-            return !sortedValidators.some(
+            return !validators.some(
               (validator) =>
                 validator.owner_address === pool.staking_pool_address,
             );
@@ -429,8 +486,11 @@ export function DelegationValidatorsTable() {
         ...delegatedStakingPoolsNotInValidators,
       ]);
     }
-  }, [validators, state.network_value, loading]);
+  }, [validators, state.network_value, loading, delegatedStakingPools]);
 
+  if (error) {
+    return <Error error={error} />;
+  }
   return (
     <Table>
       <TableHead>
@@ -448,13 +508,14 @@ export function DelegationValidatorsTable() {
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {delegationValidators.map((validator: any, i: number) => {
+        {sortedValidators.map((validator: any, i: number) => {
           return (
             <ValidatorRow
               key={i}
               validator={validator}
               columns={columns}
               connected={connected}
+              setError={setError}
             />
           );
         })}

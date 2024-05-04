@@ -9,10 +9,14 @@ import StyledTooltip from "../../StyledTooltip";
 const TOOLTIP_TIME = 2000; // 2s
 
 type TimestampValueProps = {
+  ensureMilliSeconds: boolean;
   timestamp: string;
 };
 
-export default function TimestampValue({timestamp}: TimestampValueProps) {
+export default function TimestampValue({
+  ensureMilliSeconds,
+  timestamp,
+}: TimestampValueProps) {
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
   // TODO: unify colors for the new transaction page
@@ -23,10 +27,10 @@ export default function TimestampValue({timestamp}: TimestampValueProps) {
     return <EmptyValue />;
   }
 
-  const moment = parseTimestamp(timestamp);
+  const moment = parseTimestamp(timestamp, ensureMilliSeconds);
   const timestamp_display = timestampDisplay(moment);
 
-  const copyTimestamp = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const copyTimestamp = async () => {
     await navigator.clipboard.writeText(timestamp);
 
     setTooltipOpen(true);

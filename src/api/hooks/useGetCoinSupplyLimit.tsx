@@ -1,4 +1,4 @@
-import {GlobalState, useGlobalState} from "../../GlobalState";
+import {GlobalState, useGlobalState} from "../../global-config/GlobalConfig";
 import {getTableItem} from "..";
 import {Types} from "aptos";
 import {useEffect, useState} from "react";
@@ -56,7 +56,7 @@ async function fetchTotalSupply(
 }
 
 export function useGetCoinSupplyLimit(): number | null {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [totalSupply, setTotalSupply] = useState<number | null>(null);
   const {data: coinInfo} = useGetAccountResource(
     "0x1",

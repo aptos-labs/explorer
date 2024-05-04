@@ -1,4 +1,4 @@
-import TagManager from "react-gtm-module";
+import TagManager, {DataLayerArgs} from "react-gtm-module";
 
 type GTMParams = {
   events: object;
@@ -6,12 +6,12 @@ type GTMParams = {
 
 export const initGTM = ({events}: GTMParams) => {
   const tagManagerArgs = {
-    gtmId: process.env.REACT_APP_GTM_ID || "GTM-ND9VTF4",
+    gtmId: import.meta.env.REACT_APP_GTM_ID || "GTM-ND9VTF4",
     events,
   };
   TagManager.initialize(tagManagerArgs);
 };
 
-export const sendToGTM = (dataLayer: Object): void => {
+export const sendToGTM = (dataLayer: DataLayerArgs): void => {
   TagManager.dataLayer(dataLayer);
 };

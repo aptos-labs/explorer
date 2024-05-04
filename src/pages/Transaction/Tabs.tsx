@@ -20,7 +20,8 @@ import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BalanceChangeTab from "./Tabs/BalanceChangeTab";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {useNavigate} from "../../routing";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -33,7 +34,7 @@ function getTabValues(transaction: Types.Transaction): TabValue[] {
         "changes",
       ];
     case "block_metadata_transaction":
-      return ["blockMetadataOverview", "changes"];
+      return ["blockMetadataOverview", "events", "changes"];
     case "state_checkpoint_transaction":
       return ["stateCheckpointOverview"];
     case "pending_transaction":
@@ -131,7 +132,7 @@ export default function TransactionTabs({
     tab === undefined ? getTabValues(transaction)[0] : (tab as TabValue);
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/txn/${txnHashOrVersion}/${newValue}`);
+    navigate(`/txn/${txnHashOrVersion}/${newValue}`, {replace: true});
   };
 
   return (

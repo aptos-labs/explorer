@@ -1,16 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import {BrowserRouter} from "react-router-dom";
-import {QueryClient, QueryClientProvider} from "react-query";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
-import {AptosWalletAdapterProvider} from "@aptos-labs/wallet-adapter-react";
-import {PetraWallet} from "petra-plugin-wallet-adapter";
-import {PontemWallet} from "@pontem/wallet-adapter-plugin";
-import {MartianWallet} from "@martianwallet/aptos-wallet-adapter";
-import {RiseWallet} from "@rise-wallet/wallet-adapter";
-import {SpikaWallet} from "@spika/aptos-plugin";
-import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
-import {MSafeWalletAdapter} from "msafe-plugin-wallet-adapter";
 import {StatsigProvider} from "statsig-react";
 
 import * as Sentry from "@sentry/react";
@@ -27,7 +19,7 @@ initGTM({
   },
 });
 
-ReactGA.initialize(process.env.GA_TRACKING_ID || "G-8XH7V50XK7");
+ReactGA.initialize(import.meta.env.GA_TRACKING_ID || "G-8XH7V50XK7");
 
 // TODO: redirect to the new explorer domain on the domain host
 if (window.location.origin.includes("explorer.devnet.aptos.dev")) {
@@ -41,8 +33,8 @@ if (window.location.origin.includes("explorer.devnet.aptos.dev")) {
 Sentry.init({
   dsn: "https://531160c88f78483491d129c02be9f774@o1162451.ingest.sentry.io/6249755",
   integrations: [new BrowserTracing()],
-  environment: process.env.NODE_ENV,
-  enabled: process.env.NODE_ENV == "production",
+  environment: import.meta.env.MODE,
+  enabled: import.meta.env.PROD,
 
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
@@ -59,35 +51,23 @@ declare global {
 
 const queryClient = new QueryClient();
 
-const wallets = [
-  new PetraWallet(),
-  new PontemWallet(),
-  new MartianWallet(),
-  new FewchaWallet(),
-  new RiseWallet(),
-  new SpikaWallet(),
-  new MSafeWalletAdapter(),
-];
-
 ReactDOM.render(
   <React.StrictMode>
     <StatsigProvider
       sdkKey={
-        process.env.REACT_APP_STATSIG_SDK_KEY ||
+        import.meta.env.REACT_APP_STATSIG_SDK_KEY ||
         "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
       }
-      waitForInitialization={true}
+      waitForInitialization={false}
       options={{
-        environment: {tier: "production"},
+        environment: {tier: import.meta.env.MODE},
       }}
       user={{}}
     >
       <QueryClientProvider client={queryClient}>
-        <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
-          <BrowserRouter>
-            <ExplorerRoutes />
-          </BrowserRouter>
-        </AptosWalletAdapterProvider>
+        <BrowserRouter>
+          <ExplorerRoutes />
+        </BrowserRouter>
       </QueryClientProvider>
     </StatsigProvider>
   </React.StrictMode>,

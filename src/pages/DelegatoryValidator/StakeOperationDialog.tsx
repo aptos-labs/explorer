@@ -5,13 +5,16 @@ import {
   DialogTitle,
   Stack,
   Typography,
+  Box,
 } from "@mui/material";
-import React, {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey, negativeColor} from "../../themes/colors/aptosColorPalette";
 import {getStakeOperationAPTRequirement} from "./utils";
 import StyledDialog from "../../components/StyledDialog";
-import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
+import StyledTooltip, {
+  StyledLearnMoreTooltip,
+} from "../../components/StyledTooltip";
 import {
   REWARDS_LEARN_MORE_LINK,
   REWARDS_TOOLTIP_TEXT,
@@ -27,12 +30,15 @@ import useSubmitStakeOperation, {
 } from "../../api/hooks/useSubmitStakeOperation";
 import {OCTA} from "../../constants";
 import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
-import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {AptosClient, Types} from "aptos";
 import {getAddStakeFee} from "../../api";
-import {useGlobalState} from "../../GlobalState";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useGlobalState} from "../../global-config/GlobalConfig";
+import {MINIMUM_APT_IN_POOL} from "./constants";
+import {ValidatorData} from "../../api/hooks/useGetValidators";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import TooltipTypography from "../../components/TooltipTypography";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
@@ -40,6 +46,7 @@ type StakeOperationDialogProps = {
   stakeOperation: StakeOperation;
   commission?: number | undefined;
   canWithdrawPendingInactive: Types.MoveValue;
+  stakes: Types.MoveValue[];
 };
 
 export default function StakeOperationDialog({
@@ -48,6 +55,7 @@ export default function StakeOperationDialog({
   stakeOperation,
   commission,
   canWithdrawPendingInactive,
+  stakes,
 }: StakeOperationDialogProps) {
   const {accountResource, validator} = useContext(DelegationStateContext);
 
@@ -55,16 +63,39 @@ export default function StakeOperationDialog({
     return null;
   }
 
-  const {account} = useWallet();
-  const {stakes} = useGetDelegatorStakeInfo(
-    account?.address!,
-    validator.owner_address,
+  return (
+    <StakeOperationDialogContent
+      handleDialogClose={handleDialogClose}
+      isDialogOpen={isDialogOpen}
+      stakeOperation={stakeOperation}
+      canWithdrawPendingInactive={canWithdrawPendingInactive}
+      stakes={stakes}
+      commission={commission}
+      accountResource={accountResource}
+      validator={validator}
+    />
   );
+}
+
+function StakeOperationDialogContent({
+  handleDialogClose,
+  isDialogOpen,
+  stakeOperation,
+  canWithdrawPendingInactive,
+  stakes,
+  commission,
+  accountResource,
+  validator,
+}: StakeOperationDialogProps & {
+  accountResource: Types.MoveResource;
+  validator: ValidatorData;
+}) {
   const {balance, lockedUntilSecs, rewardsRateYearly} = useGetDelegationState(
     accountResource,
     validator,
   );
   const percentageSelection = [0.1, 0.25, 0.5, 1]; // 0.1 === 10%
+  const {account, wallet} = useWallet();
 
   const {
     submitStakeOperation,
@@ -72,13 +103,8 @@ export default function StakeOperationDialog({
     transactionResponse,
     clearTransactionResponse,
   } = useSubmitStakeOperation();
-  const {
-    amount,
-    setAmount,
-    clearAmount,
-    renderAmountTextField,
-    validateAmountInput,
-  } = useAmountInput(stakeOperation);
+  const {amount, setAmount, renderAmountTextField, validateAmountInput} =
+    useAmountInput(stakeOperation);
 
   const [transactionHash, setTransactionHash] = useState<string>("");
   const [enteredAmount, setEnteredAmount] = useState<string>("");
@@ -93,17 +119,42 @@ export default function StakeOperationDialog({
     Number(balance),
   );
   const {suggestedMax, min, max} = minMax;
+  const handleClose = () => {
+    handleDialogClose();
+    setAmount("");
+  };
+
+  const [state] = useGlobalState();
+  const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
+  const logEvent = useLogEventWithBasic();
+
+  useEffect(() => {
+    const client = new AptosClient(state.network_value);
+    async function fetchData() {
+      if (stakeOperation === StakeOperation.STAKE) {
+        const fee = await getAddStakeFee(
+          client,
+          validator!.owner_address,
+          Number(amount).toFixed(8),
+        );
+        setAddStakeFee(fee[0]);
+      }
+    }
+    fetchData();
+  }, [state.network_value, amount, stakeOperation, validator]);
 
   const onSubmitClick = async () => {
-    const isAmountValid = validateAmountInput(min, max);
-
-    if (isAmountValid) {
-      await submitStakeOperation(
-        validator.owner_address,
-        Number((Number(amount) * OCTA).toFixed(0)),
-        stakeOperation,
-      );
-    }
+    logEvent("submit_transaction_button_clicked", stakeOperation, {
+      validator_address: validator.owner_address,
+      wallet_address: account?.address ?? "",
+      wallet_name: wallet?.name ?? "",
+      amount: amount,
+    });
+    await submitStakeOperation(
+      validator.owner_address,
+      Number((Number(amount) * OCTA).toFixed(0)),
+      stakeOperation,
+    );
   };
 
   const onCloseSnackbar = () => {
@@ -119,45 +170,90 @@ export default function StakeOperationDialog({
     if (transactionResponse?.transactionSubmitted) {
       setTransactionHash(transactionResponse?.transactionHash);
       setEnteredAmount(amount);
-      clearAmount();
       handleDialogClose();
       setIsTransactionSucceededDialogOpen(true);
     }
-  }, [transactionResponse]);
+  }, [
+    transactionResponse,
+    amount,
+    handleDialogClose,
+    setIsTransactionSucceededDialogOpen,
+  ]);
+
+  const getAmount = () => {
+    const stakedAmount = Number(stakes[0]) / OCTA;
+    const withdrawAmount = Number(stakes[1]) / OCTA;
+    const unlockedAmount = Number(stakes[2]) / OCTA;
+
+    switch (stakeOperation) {
+      case StakeOperation.STAKE:
+        return Number(enteredAmount);
+      case StakeOperation.UNLOCK:
+        /**
+         * if active pool has less than 10 apt after txn, unlock all
+         * if pending_inactive pool has less than 10 apt after txn
+         * if active pool has enough stake, unlock 10 apt to meet minimum requirement
+         * else unlock all
+         */
+        if (
+          enteredAmount &&
+          stakedAmount - Number(enteredAmount) < MINIMUM_APT_IN_POOL &&
+          enteredAmount !== stakedAmount.toString()
+        ) {
+          return stakedAmount;
+        } else if (
+          enteredAmount &&
+          unlockedAmount + Number(enteredAmount) < MINIMUM_APT_IN_POOL &&
+          enteredAmount !== stakedAmount.toString()
+        ) {
+          if (stakedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
+            return MINIMUM_APT_IN_POOL;
+          } else {
+            return stakedAmount;
+          }
+        }
+        return Math.min(Number(enteredAmount), stakedAmount);
+      case StakeOperation.REACTIVATE:
+        /**
+         * if pending_inactive pool has less than 10 apt after txn, reactivate all
+         * if active pool has less than 10 apt after txn, reactivate 10 apt to meet minimum requirement
+         * if pending_inactive pool has enough stake, ractivate 10 apt to meet minimum requirement
+         * else reactivate all
+         */
+        if (
+          enteredAmount &&
+          unlockedAmount - Number(enteredAmount) < MINIMUM_APT_IN_POOL &&
+          enteredAmount !== unlockedAmount.toString()
+        ) {
+          return unlockedAmount;
+        } else if (
+          enteredAmount &&
+          stakedAmount + Number(enteredAmount) < MINIMUM_APT_IN_POOL &&
+          enteredAmount !== unlockedAmount.toString()
+        ) {
+          if (unlockedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
+            return MINIMUM_APT_IN_POOL;
+          } else {
+            return unlockedAmount;
+          }
+        }
+        return Math.min(Number(enteredAmount), unlockedAmount);
+      case StakeOperation.WITHDRAW:
+        return Math.min(Number(enteredAmount), withdrawAmount);
+    }
+  };
 
   const transactionSucceededDialog = (
     <TransactionSucceededDialog
       isDialogOpen={isTransactionSucceededDialogOpen}
       handleDialogClose={onCloseTransactionSucceededDialog}
-      amount={enteredAmount}
+      amount={getAmount().toString()}
       transactionHash={transactionHash}
       stakeOperation={stakeOperation}
     />
   );
 
-  const handleClose = () => {
-    handleDialogClose();
-    setAmount("");
-  };
-
-  const [state, _] = useGlobalState();
-  const client = new AptosClient(state.network_value);
-  const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
-
-  useEffect(() => {
-    async function fetchData() {
-      if (stakeOperation === StakeOperation.STAKE) {
-        const fee = await getAddStakeFee(
-          client,
-          validator!.owner_address,
-          Number(amount).toFixed(8),
-        );
-        setAddStakeFee(fee[0]);
-      }
-    }
-    fetchData();
-  }, [state.network_value, amount]);
-
+  const isAmountValid = validateAmountInput(min, max);
   const stakeDialog = (
     <StyledDialog handleDialogClose={handleClose} open={isDialogOpen}>
       <DialogTitle variant="h5" textAlign="center">
@@ -165,7 +261,7 @@ export default function StakeOperationDialog({
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
-          {renderAmountTextField(minMax, stakes, balance)}
+          {renderAmountTextField(stakes, balance)}
           <Stack direction="row" spacing={1}>
             {min ? (
               <Button
@@ -191,7 +287,7 @@ export default function StakeOperationDialog({
               tooltip={
                 <StyledLearnMoreTooltip
                   text={
-                    "Refundable stake, that will be deducted from the current staking amount, to be returned to delegator after the current epoch ends."
+                    "Refundable stake fee, that will be deducted from the current staking amount, to be returned to delegator after the current epoch ends."
                   }
                 />
               }
@@ -202,7 +298,7 @@ export default function StakeOperationDialog({
             />
             <ContentRowSpaceBetween
               title={"Compound Rewards"}
-              value={`${rewardsRateYearly}% APY`}
+              value={`${rewardsRateYearly}% APR`}
               tooltip={
                 <StyledLearnMoreTooltip
                   text={REWARDS_TOOLTIP_TEXT}
@@ -210,25 +306,52 @@ export default function StakeOperationDialog({
                 />
               }
             />
-            <ContentRowSpaceBetween
-              title={"Next Unlock In"}
-              value={
-                <TimestampValue timestamp={lockedUntilSecs?.toString()!} />
-              }
-            />
+            {Number(lockedUntilSecs) > Date.now() / 1000 && (
+              <ContentRowSpaceBetween
+                title={"Next Unlock In"}
+                value={
+                  <TimestampValue
+                    timestamp={lockedUntilSecs?.toString()!}
+                    ensureMilliSeconds
+                  />
+                }
+              />
+            )}
           </ContentBoxSpaceBetween>
         </Stack>
       </DialogContent>
+      <DialogContent sx={{textAlign: "center"}}>
+        {commission === 100 ? (
+          <TooltipTypography
+            textAlign="center"
+            variant="body2"
+            color={negativeColor}
+          >
+            The commission rate for this pool is 100%, you will not receive
+            rewards.
+          </TooltipTypography>
+        ) : null}
+      </DialogContent>
       <DialogActions>
-        <Button
-          onClick={onSubmitClick}
-          variant="primary"
-          fullWidth
-          disabled={amount === ""}
-          sx={{marginX: 2}}
+        <StyledTooltip
+          title={`Minimum stake amount is ${min} APT and maximum stake amount is ${
+            Number(balance) / OCTA
+          } APT`}
+          disableHoverListener={isAmountValid}
+          placement="top"
         >
-          Deposit
-        </Button>
+          <Box width="100%" marginRight={"2rem"}>
+            <Button
+              onClick={onSubmitClick}
+              variant="primary"
+              fullWidth
+              disabled={!isAmountValid}
+              sx={{marginX: 2}}
+            >
+              Deposit
+            </Button>
+          </Box>
+        </StyledTooltip>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
         <Typography variant="caption" color={grey[450]}>
@@ -251,7 +374,7 @@ export default function StakeOperationDialog({
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
-          {renderAmountTextField(minMax, stakes)}
+          {renderAmountTextField(stakes)}
           <Stack direction="row" spacing={1}>
             {min ? (
               <Button
@@ -302,7 +425,9 @@ export default function StakeOperationDialog({
     </StyledDialog>
   );
 
-  const withdrawStake = canWithdrawPendingInactive ? stakes[2] : stakes[1];
+  const withdrawStake = canWithdrawPendingInactive
+    ? Math.max(Number(stakes[2]), Number(stakes[1]))
+    : stakes[1];
   const WithdrawDialog = (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
       <DialogTitle variant="h5" textAlign="center">
@@ -310,7 +435,7 @@ export default function StakeOperationDialog({
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
-          {renderAmountTextField(minMax, stakes)}
+          {renderAmountTextField(stakes)}
           <Stack direction="row" spacing={1}>
             {percentageSelection.map((percentage, idx) => {
               return (

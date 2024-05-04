@@ -1,11 +1,12 @@
+import {Box} from "@mui/material";
 import {Types} from "aptos";
-import {Box, Link} from "@mui/material";
 import React from "react";
+import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+import {Link} from "../../../routing";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
-import HashButton, {HashType} from "../../../components/HashButton";
 
 function isBlockMetadataTransaction(
   txn: Types.Transaction,
@@ -20,11 +21,11 @@ function VersionValue({data}: {data: Types.Block}) {
   const {first_version, last_version} = data;
   return (
     <>
-      <Link href={`/txn/${first_version}`} underline="none">
+      <Link to={`/txn/${first_version}`} underline="none">
         {first_version}
       </Link>
       {" - "}
-      <Link href={`/txn/${last_version}`} underline="none">
+      <Link to={`/txn/${last_version}`} underline="none">
         {last_version}
       </Link>
     </>
@@ -87,7 +88,12 @@ export default function OverviewTab({data}: OverviewTabProps) {
         />
         <ContentRow
           title={"Timestamp:"}
-          value={<TimestampValue timestamp={data.block_timestamp} />}
+          value={
+            <TimestampValue
+              timestamp={data.block_timestamp}
+              ensureMilliSeconds
+            />
+          }
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <BlockMetadataRows blockTxn={blockTxn} />

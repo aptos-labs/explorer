@@ -1,4 +1,4 @@
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useMemo, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
 import {useGetEpochTime} from "./useGetEpochTime";
@@ -9,7 +9,7 @@ interface ConfigurationData {
 }
 
 function useGetStakingConfig() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
   const [rewardsRatePerEpoch, setRewardsRatePerEpoch] = useState<string>();
   const [rewardsRateDenominator, setRewardsRateDenominator] =
     useState<string>();

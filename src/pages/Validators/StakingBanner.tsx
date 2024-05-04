@@ -8,19 +8,25 @@ import {
 } from "@mui/material";
 import {grey} from "@mui/material/colors";
 import React, {useState} from "react";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
 import {Banner} from "../../components/Banner";
 import {StakingDrawer} from "./StakingDrawer";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 export function StakingBanner() {
-  const inDev = useGetInDevMode();
   const [open, setOpen] = useState<boolean>(false);
+  const {account, wallet} = useWallet();
+  const logEvent = useLogEventWithBasic();
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
 
   const handleClick = () => {
     setOpen(!open);
+    logEvent("staking_banner_learn_more_clicked", null, {
+      wallet_address: account?.address ?? "",
+      wallet_name: wallet?.name ?? "",
+    });
   };
 
   const learnMoreButton = (
@@ -62,12 +68,12 @@ export function StakingBanner() {
     <>{text}</>
   );
 
-  return inDev ? (
+  return (
     <>
-      <Banner sx={{marginBottom: 2}} action={action}>
+      <Banner pillText="NEW" sx={{marginBottom: 2}} action={action}>
         {children}
       </Banner>
       <StakingDrawer open={open} handleClick={handleClick} />
     </>
-  ) : null;
+  );
 }

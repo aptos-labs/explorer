@@ -4,16 +4,32 @@ import {Types} from "aptos";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
+import {Link} from "../../../../routing";
+import {codeBlockColorClickableOnHover} from "../../../../themes/colors/aptosColorPalette";
 
-const BLOCK_MODULE_NAME = "candy_machine_v2";
-
-function CoinTransferCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
+function CoinTransferCodeLine({
+  sx,
+  address,
+  functionName,
+  moduleName,
+}: {
+  sx?: SxProps<Theme>;
+  address: string;
+  moduleName: string;
+  functionName: string;
+}): JSX.Element {
   return (
-    <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
-      <Stack direction="row" alignItems="center" spacing={1.5}>
-        <CurrencyExchangeOutlinedIcon sx={{fontSize: 17, padding: 0}} />
-        <Box>{`Coin Transfer`}</Box>
-      </Stack>
+    <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+      <Link
+        to={`/account/${address}/modules/code/${moduleName}/${functionName}`}
+        underline="none"
+        style={{color: "inherit"}}
+      >
+        <Stack direction="row" alignItems="center" spacing={1.5}>
+          <CurrencyExchangeOutlinedIcon sx={{fontSize: 17, padding: 0}} />
+          <Box>{`Coin Transfer`}</Box>
+        </Stack>
+      </Link>
     </CodeLineBox>
   );
 }
@@ -49,24 +65,38 @@ export default function TransactionFunction({
   }
 
   const functionFullStr = transaction.payload.function;
+  const [address, moduleName, functionName] = functionFullStr.split("::");
 
   if (
     functionFullStr === "0x1::coin::transfer" ||
     functionFullStr === "0x1::aptos_account::transfer"
   ) {
-    return <CoinTransferCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />;
-  }
-
-  const functionStrStartIdx = functionFullStr.indexOf("::") + 2;
-  let functionStr = functionFullStr.substring(functionStrStartIdx);
-
-  if (functionStr.startsWith(BLOCK_MODULE_NAME)) {
-    functionStr = functionStr.substring(BLOCK_MODULE_NAME.length + 2);
+    return (
+      <CoinTransferCodeLine
+        address={address}
+        moduleName={moduleName}
+        functionName={functionName}
+        sx={[
+          ...(Array.isArray(sx) ? sx : [sx]),
+          {
+            "&:hover": {
+              backgroundColor: codeBlockColorClickableOnHover,
+            },
+          },
+        ]}
+      />
+    );
   }
 
   return (
-    <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
-      {functionStr}
+    <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+      <Link
+        to={`/account/${address}/modules/code/${moduleName}/${functionName}`}
+        underline="none"
+        style={{color: "inherit"}}
+      >
+        {moduleName + "::" + functionName}
+      </Link>
     </CodeLineBox>
   );
 }

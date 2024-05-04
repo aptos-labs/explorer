@@ -1,21 +1,16 @@
-import {AptosClient, Types} from "aptos";
-import {useState, useMemo} from "react";
-import {getValidatorCommission} from "..";
-import {useGlobalState} from "../../GlobalState";
-import {useGetAccountResource} from "./useGetAccountResource";
-import {useGetValidatorSet} from "./useGetValidatorSet";
-
-interface DelegationPool {
-  active_shares: {
-    total_coins: string;
-  };
-}
+import {useQuery} from "@tanstack/react-query";
+import {Types} from "aptos";
+import {getValidatorCommission, getValidatorState} from "..";
+import {useGlobalState} from "../../global-config/GlobalConfig";
+import {ResponseError} from "../client";
+import {combineQueries} from "../query-utils";
+import {MoveValue} from "aptos/src/generated";
 
 type DelegationNodeInfoResponse = {
-  delegatedStakeAmount: string | undefined;
-  networkPercentage: string | undefined;
   commission: number | undefined;
   isQueryLoading: boolean;
+  validatorStatus: Types.MoveValue[] | undefined;
+  error: ResponseError | null;
 };
 
 type DelegationNodeInfoProps = {
@@ -25,41 +20,27 @@ type DelegationNodeInfoProps = {
 export function useGetDelegationNodeInfo({
   validatorAddress,
 }: DelegationNodeInfoProps): DelegationNodeInfoResponse {
-  const [state, _] = useGlobalState();
-  const {totalVotingPower} = useGetValidatorSet();
-  const {data: delegationPool, isLoading} = useGetAccountResource(
-    validatorAddress,
-    "0x1::delegation_pool::DelegationPool",
-  );
-  const client = new AptosClient(state.network_value);
-  const [commission, setCommission] = useState<Types.MoveValue[]>();
-  const [delegatedStakeAmount, setDelegatedStakeAmount] = useState<string>();
-  const [networkPercentage, setNetworkPercentage] = useState<string>();
-  const [isQueryLoading, setIsQueryLoading] = useState<boolean>(true);
+  const [{aptos_client: client}] = useGlobalState();
 
-  useMemo(() => {
-    if (!isLoading) {
-      const fetchData = async () => {
-        setCommission(await getValidatorCommission(client, validatorAddress));
-      };
-      fetchData();
-      const totalDelegatedStakeAmount = (delegationPool?.data as DelegationPool)
-        ?.active_shares?.total_coins;
-      setNetworkPercentage(
-        (
-          (parseInt(totalDelegatedStakeAmount) / parseInt(totalVotingPower!)) *
-          100
-        ).toFixed(2),
-      );
-      setDelegatedStakeAmount(totalDelegatedStakeAmount);
-      setIsQueryLoading(false);
-    }
-  }, [state.network_value, totalVotingPower, isLoading, delegationPool]);
+  const {
+    combinedQueryState,
+    queries: [validatorCommissionQuery, validatorStateQuery],
+  } = combineQueries([
+    useQuery<Types.MoveValue[], ResponseError, number>({
+      queryKey: ["validatorCommission", client, validatorAddress],
+      queryFn: () => getValidatorCommission(client, validatorAddress),
+      select: (res: MoveValue[]) => Number(res ? res[0] : 0) / 100, // commission rate: 22.85% is represented as 2285
+    }),
+    useQuery<Types.MoveValue[], ResponseError>(
+      ["validatorState", client, validatorAddress],
+      () => getValidatorState(client, validatorAddress),
+    ),
+  ]);
 
   return {
-    commission: commission ? Number(commission[0]) / 100 : undefined, // commission rate: 22.85% is represented as 2285
-    networkPercentage,
-    delegatedStakeAmount,
-    isQueryLoading,
+    isQueryLoading: combinedQueryState.isLoading,
+    error: combinedQueryState.error,
+    commission: validatorCommissionQuery.data,
+    validatorStatus: validatorStateQuery.data,
   };
 }

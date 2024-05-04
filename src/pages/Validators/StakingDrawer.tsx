@@ -1,7 +1,6 @@
 import {
   Button,
   Divider,
-  Link,
   List,
   ListItem,
   Typography,
@@ -11,6 +10,7 @@ import * as React from "react";
 import SideDrawer from "../../components/SideDrawer";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {REWARDS_LEARN_MORE_LINK} from "./Components/Staking";
+import {Link} from "../../routing";
 
 type StakingDrawerProps = {
   open: boolean;
@@ -25,12 +25,12 @@ const faqStakingData = [
         total delegation pool is an aggregation of staked APT from various token
         owners, and collectively staked. Aptos is a proof-of-stake network,
         which means that tokens are staked to{" "}
-        <Link href={"#validators-section"}>validators</Link> in order to keep
-        the network healthy.
+        <Link to={"#validators-section"}>validators</Link> in order to keep the
+        network healthy.
         <br />
         <br />
         When you delegate stake, you own the tokens and earn{" "}
-        <Link href={"#rewards-section"}>rewards</Link> on top of the staked
+        <Link to={"#rewards-section"}>rewards</Link> on top of the staked
         amount. At no point does the validator have any access to your tokens as
         they remain securely in your control. The delegation smart contract has
         undergone security audit and thorough testing before launch.
@@ -50,10 +50,10 @@ const faqStakingData = [
     question: "How can I stake APT?",
     answer: (
       <React.Fragment>
-        "You can stake APT directly by going to the{" "}
-        <Link href={"/validators/delegation"}>Explorer</Link> page and
-        connecting your wallet. If you are using the Petra wallet, you should
-        see the following flow:
+        You can stake APT directly by going to the{" "}
+        <Link to={"/validators/delegation"}>Explorer</Link> page and connecting
+        your wallet. If you are using the Petra wallet, you should see the
+        following flow:
         <br />
         <br />
         <ol style={{marginLeft: "1em"}}>
@@ -76,7 +76,7 @@ const faqStakingData = [
         Congratulations! You have successfully staked APT on Explorer! You can
         also stake APT directly to a validator node through the{" "}
         <Link
-          href="https://aptos.dev/nodes/validator-node/operator/staking-pool-operations"
+          to="https://aptos.dev/nodes/validator-node/operator/delegation-pool-operations/#perform-delegation-pool-operations"
           target="_blank"
         >
           CLI
@@ -144,7 +144,8 @@ const faqRewardsData = [
   },
   {
     question: "Can the operator change their commission rate?",
-    answer: "No, the commission rate cannot be changed.",
+    answer:
+      "Commission rates are now subject to change by the operator. The new rate takes effect at the end of the lockup cycle. This period allows stakers to assess the new commission rate. If stakers are not in favor of the upcoming change, they have the full 7.5-day window to unstake their assets before the new rate takes effect.",
   },
   {
     question: "How much can I expect to earn?",
@@ -173,7 +174,7 @@ const faqValidatorData = [
         trusted to vote on transactions. You can read more about how the Aptos
         blockchain works{" "}
         <Link
-          href={"https://aptos.dev/guides/basics-life-of-txn#consensus"}
+          to={"https://aptos.dev/guides/basics-life-of-txn#consensus"}
           target="_blank"
         >
           here
@@ -230,8 +231,8 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                 index === 0
                   ? "staking-section"
                   : index === 1
-                  ? "rewards-section"
-                  : "validators-section"
+                    ? "rewards-section"
+                    : "validators-section"
               }
               sx={{
                 flexDirection: "column",
@@ -256,7 +257,13 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                   <Typography variant="h6" paragraph>
                     {question}
                   </Typography>
-                  <Typography variant="body2" paragraph>
+                  <Typography
+                    variant="body2"
+                    paragraph
+                    sx={{
+                      fontFamily: "apparat,Geneva,Tahoma,Verdana,sans-serif",
+                    }}
+                  >
                     {answer}
                   </Typography>
                   <Divider flexItem sx={{marginY: 1}} />

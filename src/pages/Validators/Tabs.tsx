@@ -1,15 +1,17 @@
 import * as React from "react";
-import {Box} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import {assertNever} from "../../utils";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {ValidatorsTable} from "./ValidatorsTable";
 import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
-import {defaultFeatureName, Network, NetworkName} from "../../constants";
+import {Network, NetworkName} from "../../constants";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
-import {useGlobalState} from "../../GlobalState";
-import {useGetInDevMode} from "../../api/hooks/useGetInDevMode";
+import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useNavigate} from "../../routing";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 enum VALIDATORS_TAB_VALUE {
   ALL_NODES = "all",
@@ -38,9 +40,9 @@ type TabPanelProps = {
 
 function TabPanel({value, networkName}: TabPanelProps): JSX.Element {
   switch (networkName) {
-    case Network.MAINNET:
     case Network.PREVIEWNET:
       return <ValidatorsTable />;
+    case Network.MAINNET:
     case Network.TESTNET:
       return value === VALIDATORS_TAB_VALUE.DELEGATION_NODES ? (
         <DelegationValidatorsTable />
@@ -55,13 +57,14 @@ function TabPanel({value, networkName}: TabPanelProps): JSX.Element {
 }
 
 export default function ValidatorsPageTabs(): JSX.Element {
-  const [state, _] = useGlobalState();
-  const inDev = useGetInDevMode();
+  const [state] = useGlobalState();
   const {tab} = useParams();
   const navigate = useNavigate();
+  const {account, wallet} = useWallet();
+  const logEvent = useLogEventWithBasic();
   const value =
-    tab === undefined || state.feature_name === defaultFeatureName
-      ? VALIDATORS_TAB_VALUES[0]
+    tab === undefined
+      ? VALIDATORS_TAB_VALUE.ALL_NODES
       : (tab as VALIDATORS_TAB_VALUE);
 
   const handleChange = (
@@ -69,14 +72,40 @@ export default function ValidatorsPageTabs(): JSX.Element {
     newValue: VALIDATORS_TAB_VALUE,
   ) => {
     navigate(`/validators/${newValue}`);
+    logEvent("validators_tab_clicked", newValue, {
+      wallet_address: account?.address ?? "",
+      wallet_name: wallet?.name ?? "",
+    });
   };
 
   return (
     <Box sx={{width: "100%"}}>
-      {inDev && state.network_name === Network.TESTNET && (
-        <Box>
-          <StyledTabs value={value} onChange={handleChange}>
-            {VALIDATORS_TAB_VALUES.map((value, i) => (
+      <Box>
+        <StyledTabs value={value} onChange={handleChange}>
+          {VALIDATORS_TAB_VALUES.map((value, i) =>
+            value === VALIDATORS_TAB_VALUE.DELEGATION_NODES ? (
+              <StyledTab
+                icon={
+                  <Typography
+                    sx={{
+                      backgroundColor: "#8B5CF6",
+                      color: "#ffffff",
+                      borderRadius: 1,
+                      paddingX: 1,
+                      minWidth: "3.5rem",
+                      height: "1.5rem",
+                    }}
+                  >
+                    BETA
+                  </Typography>
+                }
+                key={i}
+                value={value}
+                label={getTabLabel(value)}
+                isFirst={i === 0}
+                isLast={i === VALIDATORS_TAB_VALUES.length - 1}
+              />
+            ) : (
               <StyledTab
                 key={i}
                 value={value}
@@ -84,10 +113,10 @@ export default function ValidatorsPageTabs(): JSX.Element {
                 isFirst={i === 0}
                 isLast={i === VALIDATORS_TAB_VALUES.length - 1}
               />
-            ))}
-          </StyledTabs>
-        </Box>
-      )}
+            ),
+          )}
+        </StyledTabs>
+      </Box>
       <Box sx={{width: "auto", overflowX: "auto"}}>
         <TabPanel value={value} networkName={state.network_name} />
       </Box>

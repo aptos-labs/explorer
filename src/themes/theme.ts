@@ -218,7 +218,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
     // Autocomplete overrides
     MuiAutocomplete: {
       styleOverrides: {
-        root: ({theme}) => ({
+        root: () => ({
           listbox: {
             padding: "0",
           },
@@ -268,7 +268,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
 
     MuiInput: {
       styleOverrides: {
-        root: ({theme}) => ({
+        root: () => ({
           borderRadius: 2,
         }),
       },
@@ -606,7 +606,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
         disableRipple: true,
       },
       styleOverrides: {
-        root: {
+        root: ({theme}) => ({
           transition: "none !important",
           fontWeight: "400",
           "&:hover": {
@@ -614,9 +614,9 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           },
           "&.Mui-disabled": {
             opacity: 0.5,
-            color: "black",
+            color: theme.palette.mode === "dark" ? grey[400] : "black",
           },
-        },
+        }),
       },
       variants: [
         {

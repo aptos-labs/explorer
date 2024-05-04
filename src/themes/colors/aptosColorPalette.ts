@@ -33,6 +33,7 @@ export const warningColor: string = "#f1c232";
 
 // code block colors
 export const codeBlockColor: string = "rgba(14,165,233,0.1)";
+export const codeBlockColorClickableOnHover: string = "rgba(14,165,233,0.2)";
 // use rgb for codeblock in modal otherwise it will be transparent and not very visible
 export const codeBlockColorRgbLight: string = "#E3ECF3";
 export const codeBlockColorRgbDark: string = "#212D32";

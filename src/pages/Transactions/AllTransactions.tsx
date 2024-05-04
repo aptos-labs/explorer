@@ -1,8 +1,8 @@
 import React from "react";
-import {useQuery, UseQueryResult} from "react-query";
+import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {Types} from "aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
 import {Pagination, Stack} from "@mui/material";
@@ -70,11 +70,11 @@ function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
 function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
   const maxVersion = parseInt(data?.ledger_version ?? "");
   const limit = LIMIT;
-  const [state, _setState] = useGlobalState();
-  const [searchParams, _setSearchParams] = useSearchParams();
+  const [state] = useGlobalState();
+  const [searchParams] = useSearchParams();
 
   let start = maxStart(maxVersion, limit);
-  let startParam = searchParams.get("start");
+  const startParam = searchParams.get("start");
   if (startParam !== null) {
     start = parseInt(startParam);
   }
@@ -107,7 +107,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
 }
 
 export default function AllTransactions() {
-  const [state, _] = useGlobalState();
+  const [state] = useGlobalState();
 
   const result = useQuery(
     ["ledgerInfo", state.network_value],

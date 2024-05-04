@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {AptosClient, Types} from "aptos";
-import React, {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {getCanWithdrawPendingInactive} from "../../api";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
@@ -24,7 +24,7 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import {useGlobalState} from "../../GlobalState";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 import {assertNever} from "../../utils";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
@@ -39,6 +39,9 @@ import {
   StakePrincipals,
 } from "./utils";
 import WalletConnectionDialog from "./WalletConnectionDialog";
+import {ValidatorData} from "../../api/hooks/useGetValidators";
+import {useGetDelegatedStakeOperationActivities} from "../../api/hooks/useGetDelegatedStakeOperationActivities";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 const MyDepositsCells = Object.freeze({
   amount: AmountCell,
@@ -144,8 +147,8 @@ function RewardEarnedCell({
     status === StakingStatus.STAKED
       ? stakePrincipals?.activePrincipals
       : status === StakingStatus.WITHDRAW_PENDING
-      ? stakePrincipals?.pendingInactivePrincipals
-      : undefined;
+        ? stakePrincipals?.pendingInactivePrincipals
+        : undefined;
 
   const rewardsEarned =
     principalsAmount && Number(stake) > principalsAmount
@@ -234,16 +237,38 @@ export default function MyDepositsSection({
     return null;
   }
 
+  return (
+    <MyDepositSectionContent
+      setIsMyDepositsSectionSkeletonLoading={
+        setIsMyDepositsSectionSkeletonLoading
+      }
+      isSkeletonLoading={isSkeletonLoading}
+      validator={validator}
+    />
+  );
+}
+
+function MyDepositSectionContent({
+  setIsMyDepositsSectionSkeletonLoading,
+  isSkeletonLoading,
+  validator,
+}: MyDepositsSectionProps & {
+  validator: ValidatorData;
+}) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
-  const {connected, account} = useWallet();
+  const {connected, account, wallet} = useWallet();
   const {stakes} = useGetDelegatorStakeInfo(
     account?.address!,
     validator.owner_address,
   );
+  const activities = useGetDelegatedStakeOperationActivities(
+    account?.address!,
+    validator.owner_address,
+  );
   const {stakePrincipals, isLoading: isStakeActivityLoading} =
-    getStakeOperationPrincipals(account?.address!, validator.owner_address);
+    getStakeOperationPrincipals(activities);
 
   // sc get_stake returns (active, inactive, pending_inactive), which translates to
   // (staked, withdraw_ready, withdraw_pending)
@@ -254,14 +279,14 @@ export default function MyDepositsSection({
     if (!isStakeActivityLoading) {
       setIsMyDepositsSectionSkeletonLoading(false);
     }
-  }, [isStakeActivityLoading]);
+  }, [isStakeActivityLoading, setIsMyDepositsSectionSkeletonLoading]);
 
-  const [state, _] = useGlobalState();
-  const client = new AptosClient(state.network_value);
+  const [state] = useGlobalState();
   const [canWithdrawPendingInactive, setCanWithdrawPendingInactive] =
     useState<Types.MoveValue>(false);
 
   useEffect(() => {
+    const client = new AptosClient(state.network_value);
     async function fetchData() {
       const canWithdraw = await getCanWithdrawPendingInactive(
         client,
@@ -270,14 +295,25 @@ export default function MyDepositsSection({
       setCanWithdrawPendingInactive(canWithdraw[0]);
     }
     fetchData();
-  }, [validator.owner_address, state.network_value]);
+  }, [validator.owner_address, state.network_value, validator]);
 
   function MyDepositRow({stake, status}: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+    const logEvent = useLogEventWithBasic();
     const handleClose = () => {
       setDialogOpen(false);
     };
     const handleClickOpen = () => {
+      logEvent(
+        getStakeOperationFromStakingStatus(status, canWithdrawPendingInactive) +
+          "_button_clicked",
+        validator?.owner_address,
+        {
+          wallet_address: account?.address ?? "",
+          wallet_name: wallet?.name ?? "",
+          amount: Number(stake).toString(),
+        },
+      );
       setDialogOpen(true);
     };
 
@@ -308,6 +344,7 @@ export default function MyDepositsSection({
               canWithdrawPendingInactive,
             )}
             canWithdrawPendingInactive={canWithdrawPendingInactive}
+            stakes={stakes}
           />
         ) : (
           <WalletConnectionDialog

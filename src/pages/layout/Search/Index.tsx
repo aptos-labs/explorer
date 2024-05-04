@@ -1,12 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {Autocomplete, AutocompleteInputChangeReason} from "@mui/material";
 import SearchInput from "./SearchInput";
-import {useNavigate} from "react-router-dom";
 import useGetSearchResults, {
   NotFoundResult,
   SearchResult,
 } from "../../../api/hooks/useGetSearchResults";
 import ResultLink from "./ResultLink";
+import {
+  useAugmentToWithGlobalSearchParams,
+  useNavigate,
+} from "../../../routing";
 
 export default function HeaderSearch() {
   const navigate = useNavigate();
@@ -15,8 +18,12 @@ export default function HeaderSearch() {
   const [open, setOpen] = useState(false);
   const [selectedOption, setSelectedOption] =
     useState<SearchResult>(NotFoundResult);
+  const augmentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
 
-  const options = useGetSearchResults(searchValue);
+  const options = useGetSearchResults(searchValue).map((result) => ({
+    ...result,
+    to: result.to !== null ? augmentToWithGlobalSearchParams(result.to) : null,
+  }));
 
   // inputValue is the value in the text field
   // searchValue is the value that we search
@@ -29,12 +36,6 @@ export default function HeaderSearch() {
 
     return () => clearTimeout(timer);
   }, [inputValue]);
-
-  useEffect(() => {
-    if (options.length > 0) {
-      setSelectedOption(options[0]);
-    }
-  }, [options]);
 
   const handleInputChange = (
     event: any,
@@ -93,7 +94,7 @@ export default function HeaderSearch() {
       freeSolo
       clearOnBlur
       autoSelect={false}
-      getOptionLabel={(option) => ""}
+      getOptionLabel={() => ""}
       filterOptions={(x) => x.filter((x) => !!x)}
       options={options}
       inputValue={inputValue}

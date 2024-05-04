@@ -3,10 +3,11 @@ import {Types} from "aptos";
 import AccountTransactions from "../Components/AccountTransactions";
 import {useGetIsGraphqlClientSupported} from "../../../api/hooks/useGraphqlClient";
 import AccountAllTransactions from "../Components/AccountAllTransactions";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 
 type TransactionsTabProps = {
   address: string;
-  accountData: Types.AccountData | undefined;
+  accountData: Types.AccountData | Types.MoveResource[] | undefined;
 };
 
 export default function TransactionsTab({
@@ -17,6 +18,14 @@ export default function TransactionsTab({
 
   // AccountTransactions: render transactions where the account is the sender
   // AccountAllTransactions: render all transactions where the account is involved
+  if (Array.isArray(accountData)) {
+    return isGraphqlClientSupported ? (
+      <AccountAllTransactions address={address} />
+    ) : (
+      <EmptyTabContent />
+    );
+  }
+
   return isGraphqlClientSupported ? (
     <AccountAllTransactions address={address} />
   ) : (

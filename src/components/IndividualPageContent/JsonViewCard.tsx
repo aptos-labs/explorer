@@ -50,6 +50,7 @@ export default function JsonViewCard({
   collapsedByDefault,
 }: JsonViewCardProps) {
   const theme = useTheme();
+  const jsonViewCardTheme = useJsonViewCardTheme();
 
   if (!data) {
     return <EmptyValue />;
@@ -67,7 +68,7 @@ export default function JsonViewCard({
     >
       <ReactJson
         src={data}
-        theme={useJsonViewCardTheme()}
+        theme={jsonViewCardTheme}
         name={null}
         collapseStringsAfterLength={COLLAPSE_STRINGS_AFTER_LENGTH}
         displayObjectSize={false}

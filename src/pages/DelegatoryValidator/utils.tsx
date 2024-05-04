@@ -1,14 +1,13 @@
 import {Types} from "aptos";
-import {
-  DelegatedStakingActivity,
-  useGetDelegatedStakeOperationActivities,
-} from "../../api/hooks/useGetDelegatedStakeOperationActivities";
+import {DelegatedStakingActivity} from "../../api/hooks/useGetDelegatedStakeOperationActivities";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {OCTA} from "../../constants";
 import {
   MINIMUM_APT_IN_POOL_FOR_EXPLORER,
   MINIMUM_APT_IN_POOL,
 } from "./constants";
+import {ApolloError} from "@apollo/client";
+import {MoveValue} from "aptos/src/generated";
 
 interface AccountResourceData {
   locked_until_secs: bigint;
@@ -54,33 +53,28 @@ export type StakePrincipals = {
  *    Maintain a current pending_inactive_principal variable, start with 0
  *    Every time you see UnlockStakeEvent, add to pending_inactive_principal
  *    Every time you see ReactivateStakeEvent, subtract from pending_inactive_principal
- *    Every time you see WithdrawStakeEvent, subtract from pending_inactive_principal
  *    If at any point during the loop pending_inactive_principal < 0, reset to 0
  *
  * Step 3
  *    Active_rewards = active - Active_principal
  *    Pending_inactive_rewards = pending_inactive - Pending_inactive_principal
  */
-export function getStakeOperationPrincipals(
-  delegatorAddress: Types.Address,
-  poolAddress: Types.Address,
-): {stakePrincipals: StakePrincipals | undefined; isLoading: boolean} {
-  const result = useGetDelegatedStakeOperationActivities(
-    delegatorAddress,
-    poolAddress,
-  );
-
-  if (result.error) {
+export function getStakeOperationPrincipals(activities: {
+  activities: DelegatedStakingActivity[] | undefined;
+  loading: boolean;
+  error: ApolloError | undefined;
+}) {
+  if (activities.error) {
     return {stakePrincipals: undefined, isLoading: false};
-  } else if (result.loading || !result.activities) {
-    return {stakePrincipals: undefined, isLoading: result.loading};
+  } else if (activities.loading || !activities.activities) {
+    return {stakePrincipals: undefined, isLoading: activities.loading};
   }
 
   let activePrincipals = 0;
   let pendingInactivePrincipals = 0;
 
   const activitiesCopy: DelegatedStakingActivity[] = JSON.parse(
-    JSON.stringify(result.activities!),
+    JSON.stringify(activities.activities!),
   );
 
   activitiesCopy
@@ -100,9 +94,6 @@ export function getStakeOperationPrincipals(
           break;
         case "ReactivateStakeEvent":
           activePrincipals += amount;
-          pendingInactivePrincipals -= amount;
-          break;
-        case "WithdrawStakeEvent":
           pendingInactivePrincipals -= amount;
           break;
       }
@@ -163,18 +154,17 @@ export function getStakeOperationAPTRequirement(
         min,
         suggestedMax,
         max,
-        disabled: min > max || max < MINIMUM_APT_IN_POOL,
+        disabled: min > max && max < MINIMUM_APT_IN_POOL,
       };
     }
     case StakeOperation.UNLOCK: {
       const min =
-        pending_inactive < MINIMUM_APT_IN_POOL_FOR_EXPLORER
-          ? MINIMUM_APT_IN_POOL_FOR_EXPLORER - pending_inactive
+        pending_inactive < MINIMUM_APT_IN_POOL
+          ? MINIMUM_APT_IN_POOL - pending_inactive
           : 0;
       const suggestedMax =
-        active > MINIMUM_APT_IN_POOL_FOR_EXPLORER &&
-        active - MINIMUM_APT_IN_POOL_FOR_EXPLORER > min
-          ? active - MINIMUM_APT_IN_POOL_FOR_EXPLORER
+        active > MINIMUM_APT_IN_POOL && active - MINIMUM_APT_IN_POOL > min
+          ? active - MINIMUM_APT_IN_POOL
           : null;
       const max = active;
       return {
@@ -186,13 +176,11 @@ export function getStakeOperationAPTRequirement(
     }
     case StakeOperation.REACTIVATE: {
       const min =
-        MINIMUM_APT_IN_POOL_FOR_EXPLORER > active
-          ? MINIMUM_APT_IN_POOL_FOR_EXPLORER - active
-          : 0;
+        MINIMUM_APT_IN_POOL > active ? MINIMUM_APT_IN_POOL - active : 0;
       const suggestedMax =
-        MINIMUM_APT_IN_POOL_FOR_EXPLORER < pending_inactive &&
-        pending_inactive - MINIMUM_APT_IN_POOL_FOR_EXPLORER > min
-          ? pending_inactive - MINIMUM_APT_IN_POOL_FOR_EXPLORER
+        MINIMUM_APT_IN_POOL < pending_inactive &&
+        pending_inactive - MINIMUM_APT_IN_POOL > min
+          ? pending_inactive - MINIMUM_APT_IN_POOL
           : null;
       const max = pending_inactive;
       return {
@@ -210,4 +198,37 @@ export function getStakeOperationAPTRequirement(
         disabled: false,
       };
   }
+}
+
+export type ValidatorStatus =
+  | "Pending Active"
+  | "Active"
+  | "Pending Inactive"
+  | "Inactive";
+
+export function getValidatorStatus(
+  validatorStatus: MoveValue[],
+): ValidatorStatus | undefined {
+  switch (Number(validatorStatus[0])) {
+    case 1:
+      return "Pending Active";
+    case 2:
+      return "Active";
+    case 3:
+      return "Pending Inactive";
+    case 4:
+      return "Inactive";
+    default:
+      return undefined;
+  }
+}
+
+export function calculateNetworkPercentage(
+  validatorVotingPower: string,
+  totalVotingPower: string | null,
+): string {
+  return (
+    (parseInt(validatorVotingPower!, 10) / parseInt(totalVotingPower!, 10)) *
+    100
+  ).toFixed(2);
 }
