@@ -9,8 +9,8 @@ export function useGetAccountModules(
 ): UseQueryResult<Types.MoveModuleBytecode[], ResponseError> {
   const [state] = useGlobalState();
 
-  return useQuery<Array<Types.MoveModuleBytecode>, ResponseError>(
-    ["accountModules", {address}, state.network_value],
-    () => getAccountModules({address}, state.network_value),
-  );
+  return useQuery<Array<Types.MoveModuleBytecode>, ResponseError>({
+    queryKey: ["accountModules", {address}, state.network_value],
+    queryFn: () => getAccountModules({address}, state.network_value),
+  });
 }

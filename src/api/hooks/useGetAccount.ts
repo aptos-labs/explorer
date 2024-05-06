@@ -10,11 +10,11 @@ export function useGetAccount(
 ) {
   const [state] = useGlobalState();
 
-  const result = useQuery<Types.AccountData, ResponseError>(
-    ["account", {address}, state.network_value],
-    () => getAccount({address}, state.network_value),
-    options,
-  );
+  const result = useQuery<Types.AccountData, ResponseError>({
+    queryKey: ["account", {address}, state.network_value],
+    queryFn: () => getAccount({address}, state.network_value),
+    retry: options?.retry ?? false,
+  });
 
   return result;
 }
