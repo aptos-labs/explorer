@@ -2,8 +2,9 @@ export const networks = {
   mainnet: "https://aptos.devnet.m1.movementlabs.xyz",
   testnet: "https://aptos.devnet.m1.movementlabs.xyz",
   devnet: "https://aptos.devnet.m1.movementlabs.xyz",
-  // local: "https://aptos.devnet.m1.movementlabs.xyz",
+  local: "https://aptos.devnet.m1.movementlabs.xyz",
   m1_devnet: "https://aptos.devnet.m1.movementlabs.xyz",
+  previewnet: "https://aptos.devnet.m1.movementlabs.xyz",
 };
 
 export type NetworkName = keyof typeof networks;
@@ -16,7 +17,7 @@ export enum Network {
   MAINNET = "mainnet",
   TESTNET = "testnet",
   DEVNET = "devnet",
-  // LOCAL = "local",
+  LOCAL = "local",
   m1_devnet = "m1_devnet",
 }
 

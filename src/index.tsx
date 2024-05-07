@@ -22,13 +22,13 @@ initGTM({
 ReactGA.initialize(import.meta.env.GA_TRACKING_ID || "G-8XH7V50XK7");
 
 // TODO: redirect to the new explorer domain on the domain host
-if (window.location.origin.includes("explorer.devnet.m1.movementlabs.xyz")) {
-  const new_location = window.location.href.replace(
-    "explorer.devnet.m1.movementlabs.xyz",
-    "explorer.devnet.m1.movementlabs.xyz",
-  );
-  window.location.replace(new_location);
-}
+// if (window.location.origin.includes("explorer.devnet.m1.movementlabs.xyz")) {
+//   const new_location = window.location.href.replace(
+//     "explorer.devnet.m1.movementlabs.xyz",
+//     "explorer.devnet.m1.movementlabs.xyz",
+//   );
+//   window.location.replace(new_location);
+// }
 
 Sentry.init({
   dsn: "https://531160c88f78483491d129c02be9f774@o1162451.ingest.sentry.io/6249755",
