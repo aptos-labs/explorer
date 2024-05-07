@@ -14,9 +14,15 @@ export function useGetAccountTransactions(
   const accountTransactionsResult = useQuery<
     Array<Types.Transaction>,
     ResponseError
-  >(["accountTransactions", {address, start, limit}, state.network_value], () =>
-    getAccountTransactions({address, start, limit}, state.network_value),
-  );
+  >({
+    queryKey: [
+      "accountTransactions",
+      {address, start, limit},
+      state.network_value,
+    ],
+    queryFn: () =>
+      getAccountTransactions({address, start, limit}, state.network_value),
+  });
 
   return accountTransactionsResult;
 }

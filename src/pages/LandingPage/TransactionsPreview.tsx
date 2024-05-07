@@ -24,9 +24,10 @@ function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
 export default function TransactionsPreview() {
   const [state] = useGlobalState();
   const limit = PREVIEW_LIMIT;
-  const result = useQuery(["transactions", {limit}, state.network_value], () =>
-    getTransactions({limit}, state.network_value),
-  );
+  const result = useQuery({
+    queryKey: ["transactions", {limit}, state.network_value],
+    queryFn: () => getTransactions({limit}, state.network_value),
+  });
   const augmentTo = useAugmentToWithGlobalSearchParams();
 
   return (

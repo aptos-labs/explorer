@@ -1,5 +1,9 @@
 import React from "react";
-import {useQuery, UseQueryResult} from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  UseQueryResult,
+} from "@tanstack/react-query";
 import {Types} from "aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
 import {useGlobalState} from "../../global-config/GlobalConfig";
@@ -79,11 +83,11 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
     start = parseInt(startParam);
   }
 
-  const result = useQuery(
-    ["transactions", {start, limit}, state.network_value],
-    () => getTransactions({start, limit}, state.network_value),
-    {keepPreviousData: true},
-  );
+  const result = useQuery({
+    queryKey: ["transactions", {start, limit}, state.network_value],
+    queryFn: () => getTransactions({start, limit}, state.network_value),
+    placeholderData: keepPreviousData,
+  });
 
   return (
     <>
@@ -109,13 +113,11 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
 export default function AllTransactions() {
   const [state] = useGlobalState();
 
-  const result = useQuery(
-    ["ledgerInfo", state.network_value],
-    () => getLedgerInfo(state.network_value),
-    {
-      refetchInterval: 10000,
-    },
-  );
+  const result = useQuery({
+    queryKey: ["ledgerInfo", state.network_value],
+    queryFn: () => getLedgerInfo(state.network_value),
+    refetchInterval: 10000,
+  });
 
   return <TransactionsPageInner {...result} />;
 }

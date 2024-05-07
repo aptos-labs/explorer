@@ -31,10 +31,10 @@ export function useGetDelegationNodeInfo({
       queryFn: () => getValidatorCommission(client, validatorAddress),
       select: (res: MoveValue[]) => Number(res ? res[0] : 0) / 100, // commission rate: 22.85% is represented as 2285
     }),
-    useQuery<Types.MoveValue[], ResponseError>(
-      ["validatorState", client, validatorAddress],
-      () => getValidatorState(client, validatorAddress),
-    ),
+    useQuery<Types.MoveValue[], ResponseError>({
+      queryKey: ["validatorState", client, validatorAddress],
+      queryFn: () => getValidatorState(client, validatorAddress),
+    }),
   ]);
 
   return {
