@@ -18,7 +18,7 @@
     "@aptos-connect/wallet-adapter-plugin": "^0.0.3",
     "@aptos-labs/aptos-names-connector": "^0.0.2",
     "@aptos-labs/ts-sdk": "1.10.0-zeta.2",
-    "@aptos-labs/wallet-adapter-mui-design": "^1.0.7",
+    "@aptos-labs/wallet-adapter-mui-design": "^2.0.0",
     "@aptos-labs/wallet-adapter-react": "^1.4.0",
     "@bitget-wallet/aptos-wallet-adapter": "^0.1.2",
     "@blocto/aptos-wallet-adapter-plugin": "^0.2.8",
