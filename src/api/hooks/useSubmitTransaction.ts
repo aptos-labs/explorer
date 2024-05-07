@@ -1,6 +1,9 @@
-import {FailedTransactionError, Types} from "aptos";
+import {FailedTransactionError} from "aptos";
 import {useEffect, useState} from "react";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {
+  useWallet,
+  InputTransactionData,
+} from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export type TransactionResponse =
@@ -35,7 +38,7 @@ const useSubmitTransaction = () => {
     }
   }, [transactionResponse]);
 
-  async function submitTransaction(payload: Types.TransactionPayload) {
+  async function submitTransaction(transaction: InputTransactionData) {
     if (
       network?.name.toLocaleLowerCase() !==
       (state.network_name === "local" ? "localhost" : state.network_name)
@@ -51,7 +54,7 @@ const useSubmitTransaction = () => {
     setTransactionInProcess(true);
 
     const signAndSubmitTransactionCall = async (
-      transactionPayload: Types.TransactionPayload,
+      transaction: InputTransactionData,
     ): Promise<TransactionResponse> => {
       const responseOnError: TransactionResponseOnError = {
         transactionSubmitted: false,
@@ -60,7 +63,7 @@ const useSubmitTransaction = () => {
 
       let response;
       try {
-        response = await signAndSubmitTransaction(transactionPayload);
+        response = await signAndSubmitTransaction(transaction);
 
         // transaction submit succeed
         if ("hash" in response) {
@@ -90,7 +93,9 @@ const useSubmitTransaction = () => {
       return responseOnError;
     };
 
-    await signAndSubmitTransactionCall(payload).then(setTransactionResponse);
+    await signAndSubmitTransactionCall(transaction).then(
+      setTransactionResponse,
+    );
   }
 
   function clearTransactionResponse() {

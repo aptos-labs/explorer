@@ -12,9 +12,9 @@ export function useGetAccountResources(
 ): UseQueryResult<Types.MoveResource[], ResponseError> {
   const [state] = useGlobalState();
 
-  return useQuery<Array<Types.MoveResource>, ResponseError>(
-    ["accountResources", {address}, state.network_value],
-    () => getAccountResources({address}, state.network_value),
-    options,
-  );
+  return useQuery<Array<Types.MoveResource>, ResponseError>({
+    queryKey: ["accountResources", {address}, state.network_value],
+    queryFn: () => getAccountResources({address}, state.network_value),
+    retry: options?.retry ?? false,
+  });
 }
