@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -28,8 +28,8 @@ dependencies:
     specifier: ^1.0.7
     version: 1.0.7(@types/react@18.2.48)(aptos@1.21.0)(react-dom@18.2.0)(react-router-dom@6.21.3)(react@18.2.0)
   '@aptos-labs/wallet-adapter-react':
-    specifier: ^1.4.0
-    version: 1.4.0(aptos@1.21.0)(react@18.2.0)
+    specifier: ^2.0.0
+    version: 2.3.5(@aptos-labs/ts-sdk@1.10.0-zeta.2)(aptos@1.21.0)(react@18.2.0)
   '@bitget-wallet/aptos-wallet-adapter':
     specifier: ^0.1.2
     version: 0.1.2(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0)
@@ -387,7 +387,7 @@ packages:
     engines: {node: '>=11.0.0'}
     dependencies:
       '@aptos-labs/aptos-client': 0.1.0
-      '@noble/curves': 1.3.0
+      '@noble/curves': 1.4.0
       '@noble/hashes': 1.1.3
       '@scure/bip39': 1.1.0
       form-data: 4.0.0
@@ -487,6 +487,22 @@ packages:
       - debug
     dev: false
 
+  /@aptos-labs/wallet-adapter-core@3.12.0(@aptos-labs/ts-sdk@1.10.0-zeta.2)(aptos@1.21.0):
+    resolution: {integrity: sha512-ck8z8Zqq9mjXLHWJwjyz/6yu0vcc9lDzSLQxAfQ+RjYQbN+V33Br/r99ZdWYLK628/iH9kOgOG2AAxUqph9Iqg==}
+    peerDependencies:
+      '@aptos-labs/ts-sdk': ^1.13.2
+      aptos: ^1.21.0
+    dependencies:
+      '@aptos-labs/ts-sdk': 1.10.0-zeta.2
+      '@aptos-labs/wallet-standard': 0.0.11
+      aptos: 1.21.0
+      buffer: 6.0.3
+      eventemitter3: 4.0.7
+      tweetnacl: 1.0.3
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /@aptos-labs/wallet-adapter-core@3.5.0(@aptos-labs/ts-sdk@1.10.0-zeta.2)(aptos@1.21.0):
     resolution: {integrity: sha512-aA2kND9ikLOVx8yMS804S/atLZqmPe+Ldw/v9yG5osTHm+samv9H1NBha0rRGvArndeBcN4dGl9C/nc/SXyNcQ==}
     peerDependencies:
@@ -531,6 +547,19 @@ packages:
       '@aptos-labs/wallet-adapter-core': 2.6.0(aptos@1.21.0)
       react: 18.2.0
     transitivePeerDependencies:
+      - aptos
+      - debug
+    dev: false
+
+  /@aptos-labs/wallet-adapter-react@2.3.5(@aptos-labs/ts-sdk@1.10.0-zeta.2)(aptos@1.21.0)(react@18.2.0):
+    resolution: {integrity: sha512-jAhSKqKVGz3p8gn+QhKlj38T/7XlC5HGzYbKkWHJGj4lsFtcnhUPUwMKoi4p4YX0XRYQeYzKn6peH6XB1xxqJg==}
+    peerDependencies:
+      react: ^18
+    dependencies:
+      '@aptos-labs/wallet-adapter-core': 3.12.0(@aptos-labs/ts-sdk@1.10.0-zeta.2)(aptos@1.21.0)
+      react: 18.2.0
+    transitivePeerDependencies:
+      - '@aptos-labs/ts-sdk'
       - aptos
       - debug
     dev: false
@@ -888,7 +917,7 @@ packages:
       '@aptos-labs/wallet-adapter-core': 3.5.0
       aptos: ^1.21.0
     dependencies:
-      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.4.0)(aptos@1.21.0)
+      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.10.0-zeta.2)(aptos@1.21.0)
       aptos: 1.21.0
     dev: false
 
@@ -1544,7 +1573,7 @@ packages:
   /@identity-connect/crypto@0.1.3:
     resolution: {integrity: sha512-/Xdkes3BzvU3CswIb3PeL9lDLT83BOKK5w3QYOlwerHz8sBCvYOUsiEppZ8HbvBhrG44cLTqAfHZLoeYrQDKiw==}
     dependencies:
-      '@noble/hashes': 1.3.3
+      '@noble/hashes': 1.4.0
       aptos: 1.21.0
       ed2curve: 0.3.0
       tweetnacl: 1.0.3
@@ -2205,10 +2234,10 @@ packages:
     engines: {node: '>=16'}
     dependencies:
       '@mysten/bcs': 0.3.0
-      '@noble/hashes': 1.3.3
+      '@noble/hashes': 1.4.0
       '@noble/secp256k1': 1.7.1
-      '@scure/bip32': 1.3.3
-      '@scure/bip39': 1.2.2
+      '@scure/bip32': 1.4.0
+      '@scure/bip39': 1.3.0
       bn.js: 5.2.1
       buffer: 6.0.3
       cross-fetch: 3.1.8
@@ -2228,10 +2257,10 @@ packages:
     engines: {node: '>=16'}
     dependencies:
       '@mysten/bcs': 0.7.1
-      '@noble/curves': 1.3.0
-      '@noble/hashes': 1.3.3
-      '@scure/bip32': 1.3.3
-      '@scure/bip39': 1.2.2
+      '@noble/curves': 1.4.0
+      '@noble/hashes': 1.4.0
+      '@scure/bip32': 1.4.0
+      '@scure/bip39': 1.3.0
       '@suchipi/femver': 1.0.0
       jayson: 4.1.0
       rpc-websockets: 7.9.0
@@ -2247,11 +2276,11 @@ packages:
     engines: {node: '>=16'}
     dependencies:
       '@mysten/bcs': 0.7.3
-      '@noble/curves': 1.3.0
-      '@noble/hashes': 1.3.3
+      '@noble/curves': 1.4.0
+      '@noble/hashes': 1.4.0
       '@open-rpc/client-js': 1.8.1
-      '@scure/bip32': 1.3.3
-      '@scure/bip39': 1.2.2
+      '@scure/bip32': 1.4.0
+      '@scure/bip39': 1.3.0
       '@suchipi/femver': 1.0.0
       events: 3.3.0
       superstruct: 1.0.3
@@ -2294,12 +2323,6 @@ packages:
     resolution: {integrity: sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==}
     dependencies:
       '@noble/hashes': 1.3.2
-    dev: false
-
-  /@noble/curves@1.3.0:
-    resolution: {integrity: sha512-t01iSXPuN+Eqzb4eBX0S5oubSqXbK/xXa1Ne18Hj8f9pStxztHCE2gfboSp/dZRLSqfuLpRK2nDXDK+W9puocA==}
-    dependencies:
-      '@noble/hashes': 1.3.3
     dev: false
 
   /@noble/curves@1.4.0:
@@ -2575,14 +2598,6 @@ packages:
     resolution: {integrity: sha512-osvveYtyzdEVbt3OfwwXFr4P2iVBL5u1Q3q4ONBfDY/UpOuXmOlbgwc1xECEboY8wIays8Yt6onaWMUdUbfl0A==}
     dependencies:
       '@noble/curves': 1.1.0
-      '@noble/hashes': 1.3.1
-      '@scure/base': 1.1.5
-    dev: false
-
-  /@scure/bip32@1.3.3:
-    resolution: {integrity: sha512-LJaN3HwRbfQK0X1xFSi0Q9amqOgzQnnDngIt+ZlsBC3Bm7/nE7K0kwshZHyaru79yIVRv/e1mQAjZyuZG6jOFQ==}
-    dependencies:
-      '@noble/curves': 1.3.0
       '@noble/hashes': 1.3.3
       '@scure/base': 1.1.5
     dev: false
@@ -2604,13 +2619,6 @@ packages:
 
   /@scure/bip39@1.2.1:
     resolution: {integrity: sha512-Z3/Fsz1yr904dduJD0NpiyRHhRYHdcnyh73FZWiV+/qhWi83wNJ3NWolYqCEN+ZWsUz2TWwajJggcRE9r1zUYg==}
-    dependencies:
-      '@noble/hashes': 1.3.3
-      '@scure/base': 1.1.5
-    dev: false
-
-  /@scure/bip39@1.2.2:
-    resolution: {integrity: sha512-HYf9TUXG80beW+hGAt3TRM8wU6pQoYur9iNypTROm42dorCGmLnFe3eWjz3gOq6G62H2WRh0FCzAR1PI+29zIA==}
     dependencies:
       '@noble/hashes': 1.3.3
       '@scure/base': 1.1.5
@@ -2744,8 +2752,8 @@ packages:
     resolution: {integrity: sha512-t9TTLtPQxtQB3SAf/5E8xPXfVDsC6WGOsgKY02l2cbe0HLymT7ynE8Hu48Lk5qynHCquj6nhISfEHcjMkYpu/A==}
     dependencies:
       '@babel/runtime': 7.23.8
-      '@noble/curves': 1.3.0
-      '@noble/hashes': 1.3.3
+      '@noble/curves': 1.4.0
+      '@noble/hashes': 1.4.0
       '@solana/buffer-layout': 4.0.1
       agentkeepalive: 4.5.0
       bigint-buffer: 1.1.5
