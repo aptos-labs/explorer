@@ -29,6 +29,8 @@ import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
 import {PetraWallet} from "petra-plugin-wallet-adapter";
 import {IdentityConnectWallet} from "@identity-connect/wallet-adapter-plugin";
 import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
+import {AptosConnectWalletPlugin} from "@aptos-connect/wallet-adapter-plugin";
+import {Network} from "aptos";
 
 const IdentityConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 
@@ -81,10 +83,20 @@ function walletsForNetwork(network: string) {
         networkName: NetworkName.Testnet,
       }),
     );
+    wallets.push(
+      new AptosConnectWalletPlugin({
+        network: Network.TESTNET,
+      }),
+    );
   } else if (network === NetworkName.Devnet) {
     wallets.unshift(
       new IdentityConnectWallet(IdentityConnectId, {
         networkName: NetworkName.Devnet,
+      }),
+    );
+    wallets.push(
+      new AptosConnectWalletPlugin({
+        network: Network.DEVNET,
       }),
     );
   }

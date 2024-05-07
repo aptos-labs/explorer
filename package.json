@@ -15,8 +15,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.9",
+    "@aptos-connect/wallet-adapter-plugin": "^0.0.3",
     "@aptos-labs/aptos-names-connector": "^0.0.2",
-    "@aptos-labs/ts-sdk": "^1.4.0",
+    "@aptos-labs/ts-sdk": "1.10.0-zeta.2",
     "@aptos-labs/wallet-adapter-mui-design": "^1.0.7",
     "@aptos-labs/wallet-adapter-react": "^1.4.0",
     "@bitget-wallet/aptos-wallet-adapter": "^0.1.2",
