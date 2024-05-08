@@ -17,19 +17,19 @@ dependencies:
     version: 3.8.10(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@aptos-connect/wallet-adapter-plugin':
     specifier: ^0.0.3
-    version: 0.0.3(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
+    version: 0.0.3(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
   '@aptos-labs/aptos-names-connector':
     specifier: ^0.0.2
     version: 0.0.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@types/react@18.2.48)(react-copy-to-clipboard@5.1.0)(react-dom@18.2.0)(react@18.2.0)
   '@aptos-labs/ts-sdk':
-    specifier: 1.10.0-zeta.2
-    version: 1.10.0-zeta.2
+    specifier: ^1.13.3
+    version: 1.13.3
   '@aptos-labs/wallet-adapter-mui-design':
-    specifier: ^1.0.7
-    version: 1.0.7(@types/react@18.2.48)(aptos@1.21.0)(react-dom@18.2.0)(react-router-dom@6.21.3)(react@18.2.0)
+    specifier: ^2.3.4
+    version: 2.3.4(@aptos-labs/ts-sdk@1.13.3)(@types/react@18.2.48)(aptos@1.21.0)(react-dom@18.2.0)(react-router-dom@6.21.3)(react@18.2.0)
   '@aptos-labs/wallet-adapter-react':
-    specifier: ^1.4.0
-    version: 1.4.0(aptos@1.21.0)(react@18.2.0)
+    specifier: ^2.3.5
+    version: 2.3.5(@aptos-labs/ts-sdk@1.13.3)(aptos@1.21.0)(react@18.2.0)
   '@bitget-wallet/aptos-wallet-adapter':
     specifier: ^0.1.2
     version: 0.1.2(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0)
@@ -66,9 +66,6 @@ dependencies:
   '@mui/x-date-pickers':
     specifier: ^7.0.0
     version: 7.1.1(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@mui/material@5.15.5)(@types/react@18.2.48)(date-fns@3.2.0)(moment@2.30.1)(react-dom@18.2.0)(react@18.2.0)
-  '@nightlylabs/aptos-wallet-adapter-plugin':
-    specifier: ^0.2.12
-    version: 0.2.12
   '@okwallet/aptos-wallet-adapter':
     specifier: ^0.0.7
     version: 0.0.7(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0)
@@ -131,7 +128,7 @@ dependencies:
     version: 2.1.0
   petra-plugin-wallet-adapter:
     specifier: ^0.4.0
-    version: 0.4.2(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0)
+    version: 0.4.2(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0)
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -272,6 +269,7 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.21
+    dev: true
 
   /@apollo/client@3.8.10(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-p/22RZ8ehHyvySnC20EHPPe0gdu8Xp6ZCiXOfdEe1ZORw5cUteD/TLc66tfKv8qu8NLIfbiWoa+6s70XnKvxqg==}
@@ -308,47 +306,52 @@ packages:
       zen-observable-ts: 1.2.5
     dev: false
 
-  /@aptos-connect/wallet-adapter-plugin@0.0.3(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
+  /@aptos-connect/wallet-adapter-plugin@0.0.3(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
     resolution: {integrity: sha512-uzPEXXIxTImyD0jDho/Lcz2sL79o32ZlH/V+CGVLVaPlEtwCCrCG6wzzVcj2dyAmnxc0K864qO0NL3M7MMT+kw==}
     peerDependencies:
       '@aptos-labs/ts-sdk': 1.10.0-zeta.3
       '@aptos-labs/wallet-standard': ^0.0.11
       aptos: ^1.21.0
     dependencies:
-      '@aptos-connect/wallet-api': 0.0.3(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
-      '@aptos-labs/ts-sdk': 1.10.0-zeta.2
-      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.10.0-zeta.2)(aptos@1.21.0)
+      '@aptos-connect/wallet-api': 0.0.3(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
+      '@aptos-labs/ts-sdk': 1.13.3
+      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.13.3)(aptos@1.21.0)
       '@aptos-labs/wallet-standard': 0.0.11
-      '@identity-connect/dapp-sdk': 0.5.3(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
+      '@identity-connect/dapp-sdk': 0.5.3(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
       aptos: 1.21.0
     transitivePeerDependencies:
       - debug
     dev: false
 
-  /@aptos-connect/wallet-api@0.0.3(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
+  /@aptos-connect/wallet-api@0.0.3(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
     resolution: {integrity: sha512-gfRIMNYznHzsuvLPKcUgnWqTnsyLht3F8cBdNcfc4YQ5q0QJptvvB67T1IyuN2by2B7UzrH4p+kvpeCbqqCnzA==}
     peerDependencies:
       '@aptos-labs/ts-sdk': 1.10.0-zeta.2
       '@aptos-labs/wallet-standard': ^0.0.12
       aptos: ^1.20.0
     dependencies:
-      '@aptos-labs/ts-sdk': 1.10.0-zeta.2
+      '@aptos-labs/ts-sdk': 1.13.3
       '@aptos-labs/wallet-standard': 0.0.11
       aptos: 1.21.0
     dev: false
 
-  /@aptos-connect/web-transport@0.0.3(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
+  /@aptos-connect/web-transport@0.0.3(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
     resolution: {integrity: sha512-l+MHBBtwFTw44a+vlayemxStc1OjIHL6M9LCrYYCw2FisspaWHeEJ+Wo6R8QamrgsItVUTkzo2/bdBRTYz3KUg==}
     peerDependencies:
       '@aptos-labs/ts-sdk': 1.10.0-zeta.2
       '@aptos-labs/wallet-standard': ^0.0.12
       aptos: ^1.20.0
     dependencies:
-      '@aptos-connect/wallet-api': 0.0.3(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
-      '@aptos-labs/ts-sdk': 1.10.0-zeta.2
+      '@aptos-connect/wallet-api': 0.0.3(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
+      '@aptos-labs/ts-sdk': 1.13.3
       '@aptos-labs/wallet-standard': 0.0.11
       aptos: 1.21.0
       uuid: 9.0.1
+    dev: false
+
+  /@aptos-labs/aptos-cli@0.1.2:
+    resolution: {integrity: sha512-MCi+9xPDG/Fx6c6b9ACqyQBYJLHqKJQKB8lay/1sUNJ2mNBB2OU1Lkmd5pmjUG1JbZ5cg2Fmgid5iMKdTnphhA==}
+    hasBin: true
     dev: false
 
   /@aptos-labs/aptos-client@0.1.0:
@@ -387,7 +390,7 @@ packages:
     engines: {node: '>=11.0.0'}
     dependencies:
       '@aptos-labs/aptos-client': 0.1.0
-      '@noble/curves': 1.3.0
+      '@noble/curves': 1.4.0
       '@noble/hashes': 1.1.3
       '@scure/bip39': 1.1.0
       form-data: 4.0.0
@@ -396,30 +399,11 @@ packages:
       - debug
     dev: false
 
-  /@aptos-labs/ts-sdk@1.10.0-zeta.2:
-    resolution: {integrity: sha512-mV/AJkaemzshrUxJmJoUhNN45tqhdx+TScgqLwYannrAVfYmLwDcxU3J3M/R+v7M+VmzuEorLE3ZSZzbBMKBpw==}
+  /@aptos-labs/ts-sdk@1.13.3:
+    resolution: {integrity: sha512-DVEPx11ySORsJ8q1CqcDZ7OIYuhGeHPqRBUCR9xfan/WxENqQKo8NyD+AfZJPlbcqmt76Ff8Zlp0twDk3nPbYw==}
     engines: {node: '>=11.0.0'}
     dependencies:
-      '@aptos-labs/aptos-client': 0.1.0
-      '@noble/curves': 1.4.0
-      '@noble/hashes': 1.4.0
-      '@scure/bip32': 1.4.0
-      '@scure/bip39': 1.3.0
-      base-64: 1.0.0
-      eventemitter3: 5.0.1
-      form-data: 4.0.0
-      jose: 5.2.4
-      jwt-decode: 4.0.0
-      poseidon-lite: 0.2.0
-      tweetnacl: 1.0.3
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
-  /@aptos-labs/ts-sdk@1.13.1:
-    resolution: {integrity: sha512-zyJDU5dO7pMoGv59nySSKQt1gjf2GtG7uYIpF+eiiiZPHtjKtZ5I/3IfbASXPm1o7Q5VP1Y8C4aC5QttjLBT2w==}
-    engines: {node: '>=11.0.0'}
-    dependencies:
+      '@aptos-labs/aptos-cli': 0.1.2
       '@aptos-labs/aptos-client': 0.1.0
       '@noble/curves': 1.4.0
       '@noble/hashes': 1.4.0
@@ -487,28 +471,43 @@ packages:
       - debug
     dev: false
 
-  /@aptos-labs/wallet-adapter-core@3.5.0(@aptos-labs/ts-sdk@1.10.0-zeta.2)(aptos@1.21.0):
+  /@aptos-labs/wallet-adapter-core@3.12.0(@aptos-labs/ts-sdk@1.13.3)(aptos@1.21.0):
+    resolution: {integrity: sha512-ck8z8Zqq9mjXLHWJwjyz/6yu0vcc9lDzSLQxAfQ+RjYQbN+V33Br/r99ZdWYLK628/iH9kOgOG2AAxUqph9Iqg==}
+    peerDependencies:
+      '@aptos-labs/ts-sdk': ^1.13.2
+      aptos: ^1.21.0
+    dependencies:
+      '@aptos-labs/ts-sdk': 1.13.3
+      '@aptos-labs/wallet-standard': 0.0.11
+      aptos: 1.21.0
+      buffer: 6.0.3
+      eventemitter3: 4.0.7
+      tweetnacl: 1.0.3
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
+  /@aptos-labs/wallet-adapter-core@3.5.0(@aptos-labs/ts-sdk@1.13.3)(aptos@1.21.0):
     resolution: {integrity: sha512-aA2kND9ikLOVx8yMS804S/atLZqmPe+Ldw/v9yG5osTHm+samv9H1NBha0rRGvArndeBcN4dGl9C/nc/SXyNcQ==}
     peerDependencies:
       '@aptos-labs/ts-sdk': ^1.3.0
       aptos: ^1.21.0
     dependencies:
-      '@aptos-labs/ts-sdk': 1.10.0-zeta.2
+      '@aptos-labs/ts-sdk': 1.13.3
       aptos: 1.21.0
       buffer: 6.0.3
       eventemitter3: 4.0.7
       tweetnacl: 1.0.3
     dev: false
 
-  /@aptos-labs/wallet-adapter-mui-design@1.0.7(@types/react@18.2.48)(aptos@1.21.0)(react-dom@18.2.0)(react-router-dom@6.21.3)(react@18.2.0):
-    resolution: {integrity: sha512-Xtgq0GjutgxV/nKO+oqGKIANj/njPY7BfUazmMwz/Z2Fanl1RBV++pb8wxPUpL8ImIycc81HfEnAgxdvsotvAw==}
+  /@aptos-labs/wallet-adapter-mui-design@2.3.4(@aptos-labs/ts-sdk@1.13.3)(@types/react@18.2.48)(aptos@1.21.0)(react-dom@18.2.0)(react-router-dom@6.21.3)(react@18.2.0):
+    resolution: {integrity: sha512-s5NSHaLmMUzeH6rg6tfoeEH54yEbQscn20xyWQqN5Gv07ZlNKiYWokYSebbjmKXw51DtIEJNYpY0tQ1wOyENgQ==}
     peerDependencies:
       react: ^18
       react-dom: ^18.2.0
       react-router-dom: ^6.8.0
     dependencies:
-      '@aptos-labs/wallet-adapter-react': 1.4.0(aptos@1.21.0)(react@18.2.0)
-      '@babel/core': 7.23.7
+      '@aptos-labs/wallet-adapter-react': 2.3.5(@aptos-labs/ts-sdk@1.13.3)(aptos@1.21.0)(react@18.2.0)
       '@emotion/react': 11.11.3(@types/react@18.2.48)(react@18.2.0)
       '@emotion/styled': 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.48)(react@18.2.0)
       '@mui/icons-material': 5.15.5(@mui/material@5.15.5)(@types/react@18.2.48)(react@18.2.0)
@@ -517,20 +516,21 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-router-dom: 6.21.3(react-dom@18.2.0)(react@18.2.0)
     transitivePeerDependencies:
+      - '@aptos-labs/ts-sdk'
       - '@types/react'
       - aptos
       - debug
-      - supports-color
     dev: false
 
-  /@aptos-labs/wallet-adapter-react@1.4.0(aptos@1.21.0)(react@18.2.0):
-    resolution: {integrity: sha512-mEsVFgiDWKZZSHLqsS7MGmBP1+J+QHzg+Qdm4+av1Kj0eJoc3P8bXF+HwH0zmTt13iA8dgFQbsiAsTLY+oTIww==}
+  /@aptos-labs/wallet-adapter-react@2.3.5(@aptos-labs/ts-sdk@1.13.3)(aptos@1.21.0)(react@18.2.0):
+    resolution: {integrity: sha512-jAhSKqKVGz3p8gn+QhKlj38T/7XlC5HGzYbKkWHJGj4lsFtcnhUPUwMKoi4p4YX0XRYQeYzKn6peH6XB1xxqJg==}
     peerDependencies:
       react: ^18
     dependencies:
-      '@aptos-labs/wallet-adapter-core': 2.6.0(aptos@1.21.0)
+      '@aptos-labs/wallet-adapter-core': 3.12.0(@aptos-labs/ts-sdk@1.13.3)(aptos@1.21.0)
       react: 18.2.0
     transitivePeerDependencies:
+      - '@aptos-labs/ts-sdk'
       - aptos
       - debug
     dev: false
@@ -538,7 +538,7 @@ packages:
   /@aptos-labs/wallet-standard@0.0.11:
     resolution: {integrity: sha512-8dygyPBby7TaMJjUSyeVP4R1WC9D/FPpX9gVMMLaqTKCXrSbkzhGDxcuwbMZ3ziEwRmx3zz+d6BIJbDhd0hm5g==}
     dependencies:
-      '@aptos-labs/ts-sdk': 1.13.1
+      '@aptos-labs/ts-sdk': 1.13.3
       '@wallet-standard/core': 1.0.3
     transitivePeerDependencies:
       - debug
@@ -554,6 +554,7 @@ packages:
   /@babel/compat-data@7.23.5:
     resolution: {integrity: sha512-uU27kfDRlhfKl+w1U6vp16IuvSLtjAxdArVXPa9BvLkrr7CYIsxH5adpHObeAGY/41+syctUWOZ140a2Rvkgjw==}
     engines: {node: '>=6.9.0'}
+    dev: true
 
   /@babel/core@7.23.7:
     resolution: {integrity: sha512-+UpDgowcmqe36d4NwqvKsyPMlOLNGMsfMmQ5WGCu+siCe3t3dfe9njrzGfdN4qq+bcNUt0+Vw6haRxBOycs4dw==}
@@ -576,6 +577,7 @@ packages:
       semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /@babel/generator@7.23.6:
     resolution: {integrity: sha512-qrSfCYxYQB5owCmGLbl8XRpX1ytXlpueOb0N0UmQwA073KZxejgQTzAmJezxvpwQD9uGtK2shHdi55QT+MbjIw==}
@@ -585,6 +587,7 @@ packages:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.21
       jsesc: 2.5.2
+    dev: true
 
   /@babel/helper-compilation-targets@7.23.6:
     resolution: {integrity: sha512-9JB548GZoQVmzrFgp8o7KxdgkTGm6xs9DW0o/Pim72UDjzr5ObUQ6ZzYPqA+g9OTS2bBQoctLJrky0RDCAWRgQ==}
@@ -595,10 +598,12 @@ packages:
       browserslist: 4.22.2
       lru-cache: 5.1.1
       semver: 7.5.4
+    dev: true
 
   /@babel/helper-environment-visitor@7.22.20:
     resolution: {integrity: sha512-zfedSIzFhat/gFhWfHtgWvlec0nqB9YEIVrpuwjruLlXfUSnA8cJB0miHKwqDnQ7d32aKo2xt88/xZptwxbfhA==}
     engines: {node: '>=6.9.0'}
+    dev: true
 
   /@babel/helper-function-name@7.23.0:
     resolution: {integrity: sha512-OErEqsrxjZTJciZ4Oo+eoZqeW9UIiOcuYKRJA4ZAgV9myA+pOXhhmpfNCKjEH/auVfEYVFJ6y1Tc4r0eIApqiw==}
@@ -606,12 +611,14 @@ packages:
     dependencies:
       '@babel/template': 7.22.15
       '@babel/types': 7.23.6
+    dev: true
 
   /@babel/helper-hoist-variables@7.22.5:
     resolution: {integrity: sha512-wGjk9QZVzvknA6yKIUURb8zY3grXCcOZt+/7Wcy8O2uctxhplmUPkOdlgoNhmdVee2c92JXbf1xpMtVNbfoxRw==}
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/types': 7.23.6
+    dev: true
 
   /@babel/helper-module-imports@7.22.15:
     resolution: {integrity: sha512-0pYVBnDKZO2fnSPCrgM/6WMc7eS20Fbok+0r88fp+YtWVLZrp4CkafFGIp+W0VKw4a22sgebPT99y+FDNMdP4w==}
@@ -631,6 +638,7 @@ packages:
       '@babel/helper-simple-access': 7.22.5
       '@babel/helper-split-export-declaration': 7.22.6
       '@babel/helper-validator-identifier': 7.22.20
+    dev: true
 
   /@babel/helper-plugin-utils@7.22.5:
     resolution: {integrity: sha512-uLls06UVKgFG9QD4OeFYLEGteMIAa5kpTPcFL28yuCIIzsf6ZyKZMllKVOCZFhiZ5ptnwX4mtKdWCBE/uT4amg==}
@@ -642,12 +650,14 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/types': 7.23.6
+    dev: true
 
   /@babel/helper-split-export-declaration@7.22.6:
     resolution: {integrity: sha512-AsUnxuLhRYsisFiaJwvp1QF+I3KjD5FOxut14q/GzovUe6orHLesW2C7d754kRm53h5gqrz6sFl6sxc4BVtE/g==}
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/types': 7.23.6
+    dev: true
 
   /@babel/helper-string-parser@7.23.4:
     resolution: {integrity: sha512-803gmbQdqwdf4olxrX4AJyFBV/RTr3rSmOj0rKwesmzlfhYNDEs+/iOcznzpNWlJlIlTJC2QfPFcHB6DlzdVLQ==}
@@ -660,6 +670,7 @@ packages:
   /@babel/helper-validator-option@7.23.5:
     resolution: {integrity: sha512-85ttAOMLsr53VgXkTbkx8oA6YTfT4q7/HzXSLEYmjcSTJPMPQtvq1BD79Byep5xMUYbGRzEpDsjUf3dyp54IKw==}
     engines: {node: '>=6.9.0'}
+    dev: true
 
   /@babel/helpers@7.23.8:
     resolution: {integrity: sha512-KDqYz4PiOWvDFrdHLPhKtCThtIcKVy6avWD2oG4GEvyQ+XDZwHD4YQd+H2vNMnq2rkdxsDkU82T+Vk8U/WXHRQ==}
@@ -670,6 +681,7 @@ packages:
       '@babel/types': 7.23.6
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /@babel/highlight@7.23.4:
     resolution: {integrity: sha512-acGdbYSfp2WheJoJm/EBBBLh/ID8KDc64ISZ9DYtBmC8/Q204PZJLHyzeB5qMzJ5trcOkybd78M4x2KWsUq++A==}
@@ -685,6 +697,7 @@ packages:
     hasBin: true
     dependencies:
       '@babel/types': 7.23.6
+    dev: true
 
   /@babel/plugin-syntax-async-generators@7.8.4(@babel/core@7.23.7):
     resolution: {integrity: sha512-tycmZxkGfZaxhMRbXlPXuVFpdWlXpir2W4AMhSJgRKzk/eDlIXOhb2LHWoLpDF7TEHylV5zNhykX6KAgHJmTNw==}
@@ -856,6 +869,7 @@ packages:
       '@babel/code-frame': 7.23.5
       '@babel/parser': 7.23.6
       '@babel/types': 7.23.6
+    dev: true
 
   /@babel/traverse@7.23.7:
     resolution: {integrity: sha512-tY3mM8rH9jM0YHFGyfC0/xf+SB5eKUu7HPj7/k3fpi9dAlsMc5YbQvDi0Sh2QTPXqMhyaAtzAr807TIyfQrmyg==}
@@ -873,6 +887,7 @@ packages:
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
+    dev: true
 
   /@babel/types@7.23.6:
     resolution: {integrity: sha512-+uarb83brBzPKN38NX1MkB6vb6+mwvR6amUulqAE7ccQw1pEl+bCia9TbdG1lsnFP7lZySvUn37CHyXQdfTwzg==}
@@ -888,7 +903,7 @@ packages:
       '@aptos-labs/wallet-adapter-core': 3.5.0
       aptos: ^1.21.0
     dependencies:
-      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.4.0)(aptos@1.21.0)
+      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.13.3)(aptos@1.21.0)
       aptos: 1.21.0
     dev: false
 
@@ -1544,7 +1559,7 @@ packages:
   /@identity-connect/crypto@0.1.3:
     resolution: {integrity: sha512-/Xdkes3BzvU3CswIb3PeL9lDLT83BOKK5w3QYOlwerHz8sBCvYOUsiEppZ8HbvBhrG44cLTqAfHZLoeYrQDKiw==}
     dependencies:
-      '@noble/hashes': 1.3.3
+      '@noble/hashes': 1.4.0
       aptos: 1.21.0
       ed2curve: 0.3.0
       tweetnacl: 1.0.3
@@ -1564,14 +1579,14 @@ packages:
       - debug
     dev: false
 
-  /@identity-connect/dapp-sdk@0.5.3(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
+  /@identity-connect/dapp-sdk@0.5.3(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
     resolution: {integrity: sha512-2SOXzKTq7KRrdg8bg2o3t1qkUepoP9Cq7buN2rlmhUuwI27C6ldZNSdIn88T9V/ssKGtg7Vxv7Ch+onQCRabJQ==}
     peerDependencies:
       '@aptos-labs/wallet-standard': ^0.0.11
       aptos: ^1.20.0
     dependencies:
-      '@aptos-connect/wallet-api': 0.0.3(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
-      '@aptos-connect/web-transport': 0.0.3(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
+      '@aptos-connect/wallet-api': 0.0.3(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
+      '@aptos-connect/web-transport': 0.0.3(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
       '@aptos-labs/wallet-standard': 0.0.11
       '@identity-connect/api': 0.4.1
       '@identity-connect/crypto': 0.1.3
@@ -1720,23 +1735,28 @@ packages:
       '@jridgewell/set-array': 1.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
       '@jridgewell/trace-mapping': 0.3.21
+    dev: true
 
   /@jridgewell/resolve-uri@3.1.1:
     resolution: {integrity: sha512-dSYZh7HhCDtCKm4QakX0xFpsRDqjjtZf/kjI/v3T3Nwt5r8/qz/M19F9ySyOqU94SXBmeG9ttTul+YnR4LOxFA==}
     engines: {node: '>=6.0.0'}
+    dev: true
 
   /@jridgewell/set-array@1.1.2:
     resolution: {integrity: sha512-xnkseuNADM0gt2bs+BvhO0p78Mk762YnZdsuzFV018NoG1Sj1SCQvpSqa7XUaTam5vAGasABV9qXASMKnFMwMw==}
     engines: {node: '>=6.0.0'}
+    dev: true
 
   /@jridgewell/sourcemap-codec@1.4.15:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
+    dev: true
 
   /@jridgewell/trace-mapping@0.3.21:
     resolution: {integrity: sha512-SRfKmRe1KvYnxjEMtxEr+J4HIeMX5YBg/qhRHpxEIGjhX1rshcHlnFUE9K0GazhVKWM7B+nARSkV8LuvJdJ5/g==}
     dependencies:
       '@jridgewell/resolve-uri': 3.1.1
       '@jridgewell/sourcemap-codec': 1.4.15
+    dev: true
 
   /@json-rpc-tools/provider@1.7.6:
     resolution: {integrity: sha512-z7D3xvJ33UfCGv77n40lbzOYjZKVM3k2+5cV7xS8G6SCvKTzMkhkUYuD/qzQUNT4cG/lv0e9mRToweEEVLVVmA==}
@@ -2205,10 +2225,10 @@ packages:
     engines: {node: '>=16'}
     dependencies:
       '@mysten/bcs': 0.3.0
-      '@noble/hashes': 1.3.3
+      '@noble/hashes': 1.4.0
       '@noble/secp256k1': 1.7.1
-      '@scure/bip32': 1.3.3
-      '@scure/bip39': 1.2.2
+      '@scure/bip32': 1.4.0
+      '@scure/bip39': 1.3.0
       bn.js: 5.2.1
       buffer: 6.0.3
       cross-fetch: 3.1.8
@@ -2228,10 +2248,10 @@ packages:
     engines: {node: '>=16'}
     dependencies:
       '@mysten/bcs': 0.7.1
-      '@noble/curves': 1.3.0
-      '@noble/hashes': 1.3.3
-      '@scure/bip32': 1.3.3
-      '@scure/bip39': 1.2.2
+      '@noble/curves': 1.4.0
+      '@noble/hashes': 1.4.0
+      '@scure/bip32': 1.4.0
+      '@scure/bip39': 1.3.0
       '@suchipi/femver': 1.0.0
       jayson: 4.1.0
       rpc-websockets: 7.9.0
@@ -2247,11 +2267,11 @@ packages:
     engines: {node: '>=16'}
     dependencies:
       '@mysten/bcs': 0.7.3
-      '@noble/curves': 1.3.0
-      '@noble/hashes': 1.3.3
+      '@noble/curves': 1.4.0
+      '@noble/hashes': 1.4.0
       '@open-rpc/client-js': 1.8.1
-      '@scure/bip32': 1.3.3
-      '@scure/bip39': 1.2.2
+      '@scure/bip32': 1.4.0
+      '@scure/bip39': 1.3.0
       '@suchipi/femver': 1.0.0
       events: 3.3.0
       superstruct: 1.0.3
@@ -2273,17 +2293,6 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@nightlylabs/aptos-wallet-adapter-plugin@0.2.12:
-    resolution: {integrity: sha512-caDmoy3Az060YXHSmRibDDyUDd4YHGj87px+coJx2RSA7MSA5ufXXts4yNGH756WB32yP68FDaU4IZggJrlgAA==}
-    dependencies:
-      '@aptos-labs/wallet-adapter-core': 0.2.3
-      aptos: 1.21.0
-      bs58: 5.0.0
-      js-sha3: 0.8.0
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
   /@noble/curves@1.1.0:
     resolution: {integrity: sha512-091oBExgENk/kGj3AZmtBDMpxQPDtxQABR2B9lb1JbVTs6ytdzZNwvhxQ4MWasRNEzlbEH8jCWFCwhF/Obj5AA==}
     dependencies:
@@ -2294,12 +2303,6 @@ packages:
     resolution: {integrity: sha512-oYclrNgRaM9SsBUBVbb8M6DTV7ZHRTKugureoYEncY5c65HOmRzvSiTE3y5CYaPYJA/GVkrhXEoF0M3Ya9PMnw==}
     dependencies:
       '@noble/hashes': 1.3.2
-    dev: false
-
-  /@noble/curves@1.3.0:
-    resolution: {integrity: sha512-t01iSXPuN+Eqzb4eBX0S5oubSqXbK/xXa1Ne18Hj8f9pStxztHCE2gfboSp/dZRLSqfuLpRK2nDXDK+W9puocA==}
-    dependencies:
-      '@noble/hashes': 1.3.3
     dev: false
 
   /@noble/curves@1.4.0:
@@ -2363,7 +2366,7 @@ packages:
       '@aptos-labs/wallet-adapter-core': 3.5.0
       aptos: ^1.21.0
     dependencies:
-      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.10.0-zeta.2)(aptos@1.21.0)
+      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.13.3)(aptos@1.21.0)
       aptos: 1.21.0
     dev: false
 
@@ -2575,16 +2578,8 @@ packages:
     resolution: {integrity: sha512-osvveYtyzdEVbt3OfwwXFr4P2iVBL5u1Q3q4ONBfDY/UpOuXmOlbgwc1xECEboY8wIays8Yt6onaWMUdUbfl0A==}
     dependencies:
       '@noble/curves': 1.1.0
-      '@noble/hashes': 1.3.1
-      '@scure/base': 1.1.5
-    dev: false
-
-  /@scure/bip32@1.3.3:
-    resolution: {integrity: sha512-LJaN3HwRbfQK0X1xFSi0Q9amqOgzQnnDngIt+ZlsBC3Bm7/nE7K0kwshZHyaru79yIVRv/e1mQAjZyuZG6jOFQ==}
-    dependencies:
-      '@noble/curves': 1.3.0
       '@noble/hashes': 1.3.3
-      '@scure/base': 1.1.5
+      '@scure/base': 1.1.6
     dev: false
 
   /@scure/bip32@1.4.0:
@@ -2599,18 +2594,11 @@ packages:
     resolution: {integrity: sha512-pwrPOS16VeTKg98dYXQyIjJEcWfz7/1YJIwxUEPFfQPtc86Ym/1sVgQ2RLoD43AazMk2l/unK4ITySSpW2+82w==}
     dependencies:
       '@noble/hashes': 1.1.3
-      '@scure/base': 1.1.5
+      '@scure/base': 1.1.6
     dev: false
 
   /@scure/bip39@1.2.1:
     resolution: {integrity: sha512-Z3/Fsz1yr904dduJD0NpiyRHhRYHdcnyh73FZWiV+/qhWi83wNJ3NWolYqCEN+ZWsUz2TWwajJggcRE9r1zUYg==}
-    dependencies:
-      '@noble/hashes': 1.3.3
-      '@scure/base': 1.1.5
-    dev: false
-
-  /@scure/bip39@1.2.2:
-    resolution: {integrity: sha512-HYf9TUXG80beW+hGAt3TRM8wU6pQoYur9iNypTROm42dorCGmLnFe3eWjz3gOq6G62H2WRh0FCzAR1PI+29zIA==}
     dependencies:
       '@noble/hashes': 1.3.3
       '@scure/base': 1.1.5
@@ -2744,8 +2732,8 @@ packages:
     resolution: {integrity: sha512-t9TTLtPQxtQB3SAf/5E8xPXfVDsC6WGOsgKY02l2cbe0HLymT7ynE8Hu48Lk5qynHCquj6nhISfEHcjMkYpu/A==}
     dependencies:
       '@babel/runtime': 7.23.8
-      '@noble/curves': 1.3.0
-      '@noble/hashes': 1.3.3
+      '@noble/curves': 1.4.0
+      '@noble/hashes': 1.4.0
       '@solana/buffer-layout': 4.0.1
       agentkeepalive: 4.5.0
       bigint-buffer: 1.1.5
@@ -3680,10 +3668,6 @@ packages:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
 
-  /base-64@1.0.0:
-    resolution: {integrity: sha512-kwDPIFCGx0NZHog36dj+tHiwP4QMzsZ3AgMViUBKI0+V5n4U0ufTCUMhnQ04diaRI8EX/QcPfql7zlhZ7j4zgg==}
-    dev: false
-
   /base-x@3.0.9:
     resolution: {integrity: sha512-H7JU6iBHTal1gp56aKoaa//YUxEaAOUiydvrV/pILqIHXTtqxSkATOnDA2u+jZ/61sD+L/412+7kzXRtWukhpQ==}
     dependencies:
@@ -3769,6 +3753,7 @@ packages:
       electron-to-chromium: 1.4.638
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.22.2)
+    dev: true
 
   /bs58@4.0.1:
     resolution: {integrity: sha512-Ok3Wdf5vOIlBrgCvTq96gBkJw+JUEzdBgyaza5HLtPm7yTHkjRy8+JzNyHF7BHa0bNWOQIp3m5YF0nnFcOIKLw==}
@@ -3842,6 +3827,7 @@ packages:
 
   /caniuse-lite@1.0.30001579:
     resolution: {integrity: sha512-u5AUVkixruKHJjw/pj9wISlcMpgFWzSrczLZbrqBSxukQixmg0SJ5sZTpvaFvxU0HoQKd4yoyAogyrAz9pzJnA==}
+    dev: true
 
   /chai@4.4.1:
     resolution: {integrity: sha512-13sOfMv2+DWduEU+/xbun3LScLoqN17nBeTLUsmDfKdoiC1fr0n9PU4guu4AhRcOVFk/sW8LyZWHuhWtQZiF+g==}
@@ -3986,6 +3972,7 @@ packages:
 
   /convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
+    dev: true
 
   /copy-to-clipboard@3.3.3:
     resolution: {integrity: sha512-2KV8NhB5JqC3ky0r9PMCAZKbUHSwtEo4CwCs0KXgruG43gX5PMqDEBbVU4OUzw2MuAWUfsuFmWvEKG5QRfSnJA==}
@@ -4196,6 +4183,7 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
+    dev: true
 
   /decimal.js-light@2.5.1:
     resolution: {integrity: sha512-qIMFpTMZmny+MMIitAB6D7iVPEorVw6YQRWkvarTkT4tBeSLLiHzcwj6q0MmYSFCiVpiqPJTJEYIrpcPzVEIvg==}
@@ -4292,6 +4280,7 @@ packages:
 
   /electron-to-chromium@1.4.638:
     resolution: {integrity: sha512-gpmbAG2LbfPKcDaL5m9IKutKjUx4ZRkvGNkgL/8nKqxkXsBVYykVULboWlqCrHsh3razucgDJDuKoWJmGPdItA==}
+    dev: true
 
   /elliptic@6.5.4:
     resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
@@ -4369,6 +4358,7 @@ packages:
   /escalade@3.1.1:
     resolution: {integrity: sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==}
     engines: {node: '>=6'}
+    dev: true
 
   /escape-string-regexp@1.0.5:
     resolution: {integrity: sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg==}
@@ -4776,6 +4766,7 @@ packages:
   /gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
+    dev: true
 
   /get-east-asian-width@1.2.0:
     resolution: {integrity: sha512-2nk+7SIVb14QrgXFHcm84tD4bKQz0RxPuMT8Ag5KPOq7J5fEmAg0UbXdTOSHqNuHSU28k55qnceesxXRZGzKWA==}
@@ -4831,6 +4822,7 @@ packages:
   /globals@11.12.0:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
     engines: {node: '>=4'}
+    dev: true
 
   /globals@13.24.0:
     resolution: {integrity: sha512-AhO5QUcj8llrbG09iWhPU2B204J1xnPeL8kQmVorSsy+Sjj1sk8gIyh6cUocGmH4L0UuhAJy+hJMRA4mgA4mFQ==}
@@ -5309,10 +5301,6 @@ packages:
       supports-color: 8.1.1
     dev: true
 
-  /jose@5.2.4:
-    resolution: {integrity: sha512-6ScbIk2WWCeXkmzF6bRPmEuaqy1m8SbsRFMa/FLrSCkGIhj8OLVG/IH+XHVmNMx/KUo8cVWEE6oKR4dJ+S0Rkg==}
-    dev: false
-
   /js-sha256@0.10.1:
     resolution: {integrity: sha512-5obBtsz9301ULlsgggLg542s/jqtddfOpV5KJc4hajc9JV8GeY2gZHSVpYBn4nWqAUTJ9v+xwtbJ1mIBgIH5Vw==}
     dev: false
@@ -5347,6 +5335,7 @@ packages:
     resolution: {integrity: sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==}
     engines: {node: '>=4'}
     hasBin: true
+    dev: true
 
   /json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
@@ -5377,6 +5366,7 @@ packages:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
     hasBin: true
+    dev: true
 
   /jsonc-parser@3.2.0:
     resolution: {integrity: sha512-gfFQZrcTc8CnKXp6Y4/CBT3fTc0OVuDofpre4aEeEpSBPV5X5v4+Vmx+8snU7RLPrNHPKSgLxGo9YuQzz20o+w==}
@@ -5447,11 +5437,6 @@ packages:
       csstype: 3.1.3
       is-in-browser: 1.1.3
       tiny-warning: 1.0.3
-    dev: false
-
-  /jwt-decode@4.0.0:
-    resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
-    engines: {node: '>=18'}
     dev: false
 
   /keyv@4.5.4:
@@ -5598,6 +5583,7 @@ packages:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
     dependencies:
       yallist: 3.1.1
+    dev: true
 
   /lru-cache@6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
@@ -5711,6 +5697,7 @@ packages:
 
   /ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
+    dev: true
 
   /ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
@@ -5757,6 +5744,7 @@ packages:
 
   /node-releases@2.0.14:
     resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
+    dev: true
 
   /normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -5931,20 +5919,21 @@ packages:
     resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}
     dev: true
 
-  /petra-plugin-wallet-adapter@0.4.2(@aptos-labs/ts-sdk@1.10.0-zeta.2)(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0):
+  /petra-plugin-wallet-adapter@0.4.2(@aptos-labs/ts-sdk@1.13.3)(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0):
     resolution: {integrity: sha512-+5bGEWMh54Iso1+ZDN+YpeixjQntL5S473QNt0/4mc85TxnPdiYJFg5MIN1ZViXf7aeoS5dJsym84HIZ57YU+w==}
     peerDependencies:
       '@aptos-labs/ts-sdk': ^1.3.0
       '@aptos-labs/wallet-adapter-core': ^3.5.0
       aptos: ^1.21.0
     dependencies:
-      '@aptos-labs/ts-sdk': 1.10.0-zeta.2
-      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.10.0-zeta.2)(aptos@1.21.0)
+      '@aptos-labs/ts-sdk': 1.13.3
+      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.13.3)(aptos@1.21.0)
       aptos: 1.21.0
     dev: false
 
   /picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
+    dev: true
 
   /picomatch@2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
@@ -5969,10 +5958,6 @@ packages:
       mlly: 1.5.0
       pathe: 1.1.2
     dev: true
-
-  /poseidon-lite@0.2.0:
-    resolution: {integrity: sha512-vivDZnGmz8W4G/GzVA72PXkfYStjilu83rjjUfpL4PueKcC8nfX6hCPh2XhoC5FBgC6y0TA3YuUeUo5YCcNoig==}
-    dev: false
 
   /postcss@8.4.33:
     resolution: {integrity: sha512-Kkpbhhdjw2qQs2O2DGX+8m5OVqEcbB9HRBvuYM9pgrjEFUg30A9LmXNlTAUj4S9kgtGyrMbTzVjH7E+s5Re2yg==}
@@ -6846,6 +6831,7 @@ packages:
       browserslist: 4.22.2
       escalade: 3.1.1
       picocolors: 1.0.0
+    dev: true
 
   /uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
@@ -7164,6 +7150,7 @@ packages:
 
   /yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
+    dev: true
 
   /yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
