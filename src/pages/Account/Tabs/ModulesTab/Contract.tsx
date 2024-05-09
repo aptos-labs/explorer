@@ -295,8 +295,6 @@ function RunContractForm({
                   x.toString(),
                 )
               : JSON.parse(arg);
-          } else if (type.startsWith("0x1::option::Option")) {
-            arg ? {vec: [arg]} : undefined;
           } else return arg;
         }),
       },
