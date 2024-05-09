@@ -73,6 +73,7 @@
   },
   "scripts": {
     "start": "vite --port 3000",
+    "dev": "vite --port 3000",
     "build": "tsc --noEmit && vite build",
     "serve": "vite preview",
     "lint": "tsc --noEmit && eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
