@@ -73,7 +73,10 @@ export default function HeaderSearch() {
 
     const promises = [];
 
-    if (searchText.endsWith(".apt")) {
+    const isAnsName =
+      searchText.endsWith(".apt") || searchText.endsWith(".petra");
+
+    if (isAnsName) {
       try {
         const name = await state.sdk_v2_client?.getName({
           name: searchText,
