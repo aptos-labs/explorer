@@ -14,7 +14,7 @@ export default function TotalStake() {
           : "-"
       }
       label="Actively Staked"
-      tooltip="Amount of MVMT tokens currently held in staking pools."
+      tooltip="Amount of MOVE tokens currently held in staking pools."
     />
   );
 }

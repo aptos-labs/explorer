@@ -30,7 +30,7 @@ export default function AmountTextField({
         notched
         value={amount}
         onChange={onAmountChange}
-        endAdornment={<InputAdornment position="end">MVMT</InputAdornment>}
+        endAdornment={<InputAdornment position="end">MOVE</InputAdornment>}
         placeholder={
           balance
             ? `Your balance: ${getFormattedBalanceStr(balance, undefined, 1)}`

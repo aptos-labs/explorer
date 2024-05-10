@@ -167,7 +167,7 @@ function StakingBarContent({
 
   const stakeButton = (
     <StyledTooltip
-      title={`You can't stake because minimum 11 MVMT requirement is not met`}
+      title={`You can't stake because minimum 11 MOVE requirement is not met`}
       disableHoverListener={!buttonDisabled}
     >
       <span>

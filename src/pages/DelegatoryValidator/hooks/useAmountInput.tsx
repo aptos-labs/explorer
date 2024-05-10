@@ -64,16 +64,16 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
             stakedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== stakedAmount.toString()
           ) {
-            return `If you unlock ${amount} MVMT, your total staked amount ${stakedAmount} MVMT will be unlocked.`;
+            return `If you unlock ${amount} MOVE, your total staked amount ${stakedAmount} MOVE will be unlocked.`;
           } else if (
             amount &&
             unlockedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== stakedAmount.toString()
           ) {
             if (stakedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
-              return `If you unlock ${amount} MVMT, ${MINIMUM_APT_IN_POOL} MVMT will be unlocked.`;
+              return `If you unlock ${amount} MOVE, ${MINIMUM_APT_IN_POOL} MOVE will be unlocked.`;
             } else {
-              return `If you unlock ${amount} MVMT, your total staked amount ${stakedAmount} MVMT will be unlocked.`;
+              return `If you unlock ${amount} MOVE, your total staked amount ${stakedAmount} MOVE will be unlocked.`;
             }
           }
           break;
@@ -90,28 +90,28 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
             stakedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== unlockedAmount.toString()
           ) {
-            return `If you restake ${amount} MVMT, your total unlocked amount ${unlockedAmount} MVMT will be restaked.`;
+            return `If you restake ${amount} MOVE, your total unlocked amount ${unlockedAmount} MOVE will be restaked.`;
           } else if (
             amount &&
             unlockedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== unlockedAmount.toString()
           ) {
-            return `If you restake ${amount} MVMT, your total unlocked amount ${unlockedAmount} MVMT will be restaked.`;
+            return `If you restake ${amount} MOVE, your total unlocked amount ${unlockedAmount} MOVE will be restaked.`;
           } else if (
             amount &&
             stakedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== unlockedAmount.toString()
           ) {
             if (unlockedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
-              return `If you restake ${amount} MVMT, ${MINIMUM_APT_IN_POOL} MVMT will be restaked.`;
+              return `If you restake ${amount} MOVE, ${MINIMUM_APT_IN_POOL} MOVE will be restaked.`;
             } else {
-              return `If you restake ${amount} MVMT, your total unlocked amount ${unlockedAmount} MVMT will be restaked.`;
+              return `If you restake ${amount} MOVE, your total unlocked amount ${unlockedAmount} MOVE will be restaked.`;
             }
           }
           break;
         case StakeOperation.STAKE:
           if (stakedAmount === 0) {
-            return "Minimum stake amount is 11 MVMT.";
+            return "Minimum stake amount is 11 MOVE.";
           }
       }
     }

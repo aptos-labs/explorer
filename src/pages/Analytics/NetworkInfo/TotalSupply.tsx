@@ -14,7 +14,7 @@ export default function TotalSupply() {
           : "-"
       }
       label="Total Supply"
-      tooltip="Amount of MVMT tokens flowing through the Movement M1 network."
+      tooltip="Amount of MOVE tokens flowing through the Movement M1 network."
     />
   );
 }

@@ -35,7 +35,7 @@ export default function DailyGasConsumptionChart({
         tooltipsLabelFunc={(context: any) => {
           const priceInteger = Math.round(context.parsed.y).toString();
           const priceInAPT = getFormattedBalanceStr(priceInteger, 0);
-          return `${priceInAPT} MVMT`;
+          return `${priceInAPT} MOVE`;
         }}
       />
     </CardOutline>
