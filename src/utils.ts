@@ -104,14 +104,6 @@ export function getBytecodeSizeInKB(bytecodeHex: string): number {
   return parseFloat(sizeInKB.toFixed(2));
 }
 
-// if ANS name is in the form of "name." or "name.a" or "name.ap" or "name.apt", remove the suffix
-export function truncateAptSuffix(name: string): string {
-  return name.replace(
-    /^([a-z\d][a-z\d-]{1,61}[a-z\d])(\.apt|\.ap|\.a|\.?)$/,
-    "$1",
-  );
-}
-
 /**
  * Standardizes an address to the format "0x" followed by 64 lowercase hexadecimal digits.
  */
