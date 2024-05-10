@@ -67,6 +67,9 @@ function walletsForNetwork(network: string) {
     tokenPocketWallet,
     trustWallet,
     welldoneWallet,
+    new AptosConnectWalletPlugin({
+      network: Network.TESTNET,
+    }),
   ];
   if (network === NetworkName.Mainnet) {
     wallets.unshift(
@@ -78,11 +81,6 @@ function walletsForNetwork(network: string) {
     wallets.unshift(
       new IdentityConnectWallet(IdentityConnectId, {
         networkName: NetworkName.Testnet,
-      }),
-    );
-    wallets.push(
-      new AptosConnectWalletPlugin({
-        network: Network.TESTNET,
       }),
     );
   } else if (network === NetworkName.Devnet) {
