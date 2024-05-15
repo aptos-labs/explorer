@@ -1,4 +1,4 @@
-import {HexString, Types} from "aptos";
+import {Types} from "aptos";
 import {ReactNode, useEffect, useMemo, useState} from "react";
 import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
@@ -41,6 +41,7 @@ import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
 import {encodeInputArgsForViewRequest} from "../../../../utils";
 import {accountPagePath} from "../../Index";
+import {parseTypeTag} from "@aptos-labs/ts-sdk";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -52,7 +53,9 @@ interface ContractSidebarProps {
   selectedModuleName: string | undefined;
   selectedFnName: string | undefined;
   moduleAndFnsGroup: Record<string, Types.MoveFunction[]>;
+
   getLinkToFn(moduleName: string, fnName: string, isObject: boolean): string;
+
   isObject: boolean;
 }
 
@@ -279,6 +282,58 @@ function RunContractForm({
 
   const fnParams = removeSignerParam(fn);
 
+  // TODO: We should use the SDKv2 for this
+  const convertArgument = (
+    arg: string | null | undefined,
+    type: string,
+  ): any => {
+    // TypeScript doesn't really protect us from nulls, this enforces it
+    if (typeof arg !== "string") {
+      arg = "";
+    }
+    arg = arg.trim();
+    const typeTag = parseTypeTag(type);
+    if (typeTag.isVector()) {
+      const innerTag = typeTag.value;
+      if (innerTag.isVector()) {
+        // This must be JSON, let's parse it
+        return JSON.parse(arg) as any[];
+      }
+
+      if (innerTag.isU8()) {
+        // U8 we take as an array or hex
+        if (arg.startsWith("0x")) {
+          // For hex, let the hex pass through
+          return arg;
+        }
+      }
+
+      if (arg.startsWith("[")) {
+        // This is supposed to be JSON if it has the bracket
+        return JSON.parse(arg) as any[];
+      } else {
+        // We handle array without brackets otherwise
+        return arg.split(",").map((arg) => {
+          return arg.trim();
+        });
+      }
+    } else if (typeTag.isStruct()) {
+      if (typeTag.isOption()) {
+        // This we need to handle if there is no value, we take "empty trimmed" as no value
+        if (arg === "") {
+          return undefined;
+        } else {
+          // Convert for the inner type if it isn't empty
+          arg = convertArgument(arg, typeTag.value.typeArgs[0].toString());
+          return arg;
+        }
+      }
+    }
+
+    // For all other cases return it straight
+    return arg;
+  };
+
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("write_button_clicked", fn.name);
 
@@ -288,16 +343,7 @@ function RunContractForm({
         typeArguments: data.typeArgs,
         functionArguments: data.args.map((arg, i) => {
           const type = fnParams[i];
-          if (type.includes("vector")) {
-            // when it's a vector<u8>, we support both hex and javascript array format
-            return type === "vector<u8>" && arg.trim().startsWith("0x")
-              ? Array.from(new HexString(arg).toUint8Array()).map((x) =>
-                  x.toString(),
-                )
-              : JSON.parse(arg);
-          } else if (type.startsWith("0x1::option::Option")) {
-            return arg !== "" ? {vec: [arg]} : undefined;
-          } else return arg;
+          return convertArgument(arg, type);
         }),
       },
     };
@@ -441,6 +487,7 @@ function ReadContractForm({
     result
       ?.map((r) => (typeof r === "string" ? r : JSON.stringify(r, null, 2)))
       .join("\n") ?? "";
+
   async function copyValue() {
     logEvent("copy_value_button_clicked", fn.name, {
       value: resultString,
@@ -720,6 +767,26 @@ function ContractForm({
             </Stack>
           )}
           {result}
+          /* TODO: Figure out a better way to show instructions, I tried, and it
+          wasn't pretty */
+          <Typography fontSize={14} fontWeight={600}>
+            How to use:
+          </Typography>
+          <Typography fontSize={14} fontWeight={600}>
+            Option arguments can be submitted with no value, which would be
+            Option::none
+          </Typography>
+          <Typography fontSize={14} fontWeight={600}>
+            Nested vectors must be provided in JSON
+          </Typography>
+          <Typography fontSize={14} fontWeight={600}>
+            Vector arguments can be provided in JSON or as a comma separated
+            list e.g. 0x1, 0x2 or ["0x1", "0x2"]
+          </Typography>
+          <Typography fontSize={14} fontWeight={600}>
+            Numbers and booleans must be inputted without quotes if providing
+            JSON
+          </Typography>
         </Stack>
       </Box>
     </form>
