@@ -767,8 +767,7 @@ function ContractForm({
             </Stack>
           )}
           {result}
-          /* TODO: Figure out a better way to show instructions, I tried, and it
-          wasn't pretty */
+          {/* TODO: Figure out a better way to show instructions, I tried, and it wasn't pretty */}
           <Typography fontSize={14} fontWeight={600}>
             How to use:
           </Typography>
