@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Suspense} from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -133,7 +133,7 @@ export default function ExplorerLayout({children}: LayoutProps) {
             >
               <Header />
               <Container maxWidth="xl" sx={{flexGrow: 4, paddingTop: "2rem"}}>
-                {children}
+                <Suspense>{children}</Suspense>
               </Container>
               <Footer />
             </Box>

@@ -1,17 +1,18 @@
-import React from "react";
+import React, {lazy} from "react";
 import {Route, Routes} from "react-router-dom";
-import LandingPage from "./pages/LandingPage/Index";
-import NotFoundPage from "./pages/layout/NotFoundPage";
 import ExplorerLayout from "./pages/layout";
-import TransactionPage from "./pages/Transaction/Index";
-import AccountPage from "./pages/Account/Index";
-import BlockPage from "./pages/Block/Index";
-import TokenPage from "./pages/Token/Index";
-import TransactionsPage from "./pages/Transactions/Index";
-import BlocksPage from "./pages/Blocks/Index";
-import ValidatorsPage from "./pages/Validators/Index";
-import ValidatorPage from "./pages/DelegatoryValidator";
-import AnalyticsPage from "./pages/Analytics/Index";
+
+const LandingPage = lazy(() => import("./pages/LandingPage/Index"));
+const NotFoundPage = lazy(() => import("./pages/layout/NotFoundPage"));
+const TransactionPage = lazy(() => import("./pages/Transaction/Index"));
+const AccountPage = lazy(() => import("./pages/Account/Index"));
+const BlockPage = lazy(() => import("./pages/Block/Index"));
+const TokenPage = lazy(() => import("./pages/Token/Index"));
+const TransactionsPage = lazy(() => import("./pages/Transactions/Index"));
+const BlocksPage = lazy(() => import("./pages/Blocks/Index"));
+const ValidatorsPage = lazy(() => import("./pages/Validators/Index"));
+const ValidatorPage = lazy(() => import("./pages/DelegatoryValidator"));
+const AnalyticsPage = lazy(() => import("./pages/Analytics/Index"));
 
 export default function ExplorerRoutes() {
   return (
