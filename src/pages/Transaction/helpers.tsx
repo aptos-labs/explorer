@@ -94,7 +94,7 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
       return <LearnMoreTooltipPlaceholder />;
     case "timestamp":
       return (
-        <LearnMoreTooltip text="Timestamp is the machine timestamp of when the block is committed." />
+        <LearnMoreTooltip text="Timestamp is the machine timestamp of when consensus is reached for block." />
       );
     case "version":
       return (
