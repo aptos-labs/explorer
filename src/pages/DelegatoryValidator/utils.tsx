@@ -222,3 +222,13 @@ export function getValidatorStatus(
       return undefined;
   }
 }
+
+export function calculateNetworkPercentage(
+  validatorVotingPower: string,
+  totalVotingPower: string | null,
+): string {
+  return (
+    (parseInt(validatorVotingPower!, 10) / parseInt(totalVotingPower!, 10)) *
+    100
+  ).toFixed(2);
+}

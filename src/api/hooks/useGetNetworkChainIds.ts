@@ -13,9 +13,10 @@ export function useGetChainIdCached(networkName: NetworkName): string | null {
 }
 
 export function useGetChainIdAndCache(networkName: NetworkName): string | null {
-  const {data} = useQuery(["ledgerInfo", networks[networkName]], () =>
-    getLedgerInfoWithoutResponseError(networks[networkName]),
-  );
+  const {data} = useQuery({
+    queryKey: ["ledgerInfo", networks[networkName]],
+    queryFn: () => getLedgerInfoWithoutResponseError(networks[networkName]),
+  });
 
   const chainId = data?.chain_id ? data?.chain_id.toString() : null;
 

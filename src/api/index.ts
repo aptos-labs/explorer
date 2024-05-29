@@ -172,9 +172,17 @@ export function getAccountModule(
 export function view(
   request: Types.ViewRequest,
   nodeUrl: string,
+  ledgerVersion?: string,
 ): Promise<Types.MoveValue[]> {
   const client = new AptosClient(nodeUrl);
-  return withResponseError(client.view(request));
+  let parsedVersion = ledgerVersion;
+
+  // Handle non-numbers, to default to the latest ledger version
+  if (typeof ledgerVersion === "string" && isNaN(parseInt(ledgerVersion, 10))) {
+    parsedVersion = undefined;
+  }
+
+  return client.view(request, parsedVersion);
 }
 
 export function getTableItem(
@@ -237,6 +245,19 @@ export async function getValidatorCommission(
 ): Promise<Types.MoveValue[]> {
   const payload: Types.ViewRequest = {
     function: "0x1::delegation_pool::operator_commission_percentage",
+    type_arguments: [],
+    arguments: [validatorAddress],
+  };
+  return withResponseError(client.view(payload));
+}
+
+export async function getValidatorCommissionChange(
+  client: AptosClient,
+  validatorAddress: Types.Address,
+): Promise<Types.MoveValue[]> {
+  const payload: Types.ViewRequest = {
+    function:
+      "0x1::delegation_pool::operator_commission_percentage_next_lockup_cycle",
     type_arguments: [],
     arguments: [validatorAddress],
   };

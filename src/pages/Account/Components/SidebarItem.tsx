@@ -44,8 +44,8 @@ export default function SidebarItem({
           bgcolor: !selected
             ? "transparent"
             : theme.palette.mode === "dark"
-            ? grey[500]
-            : grey[200],
+              ? grey[500]
+              : grey[200],
           ...(theme.palette.mode === "dark" && !selected && {color: grey[400]}),
           ":hover": {
             cursor: "pointer",

@@ -310,7 +310,10 @@ function StakeOperationDialogContent({
               <ContentRowSpaceBetween
                 title={"Next Unlock In"}
                 value={
-                  <TimestampValue timestamp={lockedUntilSecs?.toString()!} />
+                  <TimestampValue
+                    timestamp={lockedUntilSecs?.toString()!}
+                    ensureMilliSeconds
+                  />
                 }
               />
             )}

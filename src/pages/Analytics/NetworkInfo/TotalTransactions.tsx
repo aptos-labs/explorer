@@ -6,11 +6,11 @@ import {Stack, Typography} from "@mui/material";
 
 export default function TotalTransactions() {
   const [state] = useGlobalState();
-  const {data: ledgerData} = useQuery(
-    ["ledgerInfo", state.network_value],
-    () => getLedgerInfo(state.network_value),
-    {refetchInterval: 10000},
-  );
+  const {data: ledgerData} = useQuery({
+    queryKey: ["ledgerInfo", state.network_value],
+    queryFn: () => getLedgerInfo(state.network_value),
+    refetchInterval: 10000,
+  });
   const ledgerVersion = ledgerData?.ledger_version;
 
   return (

@@ -45,6 +45,14 @@ export default function ExplorerRoutes() {
 
         <Route path="/object">
           <Route
+            path=":address/modules/:modulesTab/:selectedModuleName"
+            element={<AccountPage isObject={true} />}
+          />
+          <Route
+            path=":address/modules/:modulesTab/:selectedModuleName/:selectedFnName"
+            element={<AccountPage isObject={true} />}
+          />
+          <Route
             path=":address/:tab"
             element={<AccountPage isObject={true} />}
           />
@@ -57,6 +65,7 @@ export default function ExplorerRoutes() {
           <Route path=":height/:tab" element={<BlockPage />} />
         </Route>
         <Route path="/token">
+          <Route path=":tokenId" element={<TokenPage />} />
           <Route path=":tokenId/:propertyVersion" element={<TokenPage />} />
           <Route
             path=":tokenId/:propertyVersion/:tab"

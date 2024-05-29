@@ -6,7 +6,7 @@ import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeader
 import {assertNever} from "../../../utils";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
-import {Link, useNavigate} from "../../../routing";
+import {Link} from "../../../routing";
 
 type TokenCellProps = {
   token: any; // TODO: add graphql data typing
@@ -106,18 +106,12 @@ type TokenRowProps = {
 };
 
 function TokenRow({token, columns}: TokenRowProps) {
-  const navigate = useNavigate();
-
-  const rowClick = () => {
-    navigate(
-      `/token/${token?.current_token_data?.token_data_id}/${
-        token?.property_version_v1 ?? 0
-      }`,
-    );
-  };
-
   return (
-    <GeneralTableRow onClick={rowClick}>
+    <GeneralTableRow
+      to={`/token/${token?.current_token_data?.token_data_id}/${
+        token?.property_version_v1 ?? 0
+      }`}
+    >
       {columns.map((column) => {
         const Cell = TokenCells[column];
         return <Cell key={column} token={token} />;

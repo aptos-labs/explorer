@@ -29,7 +29,7 @@ import {
   getTransactionAmount,
   getTransactionCounterparty,
 } from "../Transaction/utils";
-import {Link, useNavigate} from "../../routing";
+import {Link} from "../../routing";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -226,14 +226,10 @@ type TransactionRowProps = {
 };
 
 function TransactionRow({transaction, columns}: TransactionRowProps) {
-  const navigate = useNavigate();
-
-  const rowClick = () => {
-    navigate(`/txn/${"version" in transaction && transaction.version}`);
-  };
-
   return (
-    <GeneralTableRow onClick={rowClick}>
+    <GeneralTableRow
+      to={`/txn/${"version" in transaction && transaction.version}`}
+    >
       {columns.map((column) => {
         const Cell = TransactionCells[column];
         return <Cell key={column} transaction={transaction} />;
@@ -253,19 +249,14 @@ function UserTransactionRow({
   columns,
   address,
 }: UserTransactionRowProps) {
-  const navigate = useNavigate();
   const {data: transaction, isError} = useGetTransaction(version.toString());
 
   if (!transaction || isError) {
     return null;
   }
 
-  const rowClick = () => {
-    navigate(`/txn/${version}`);
-  };
-
   return (
-    <GeneralTableRow onClick={rowClick}>
+    <GeneralTableRow to={`/txn/${version}`}>
       {columns.map((column) => {
         const Cell = TransactionCells[column];
         return (

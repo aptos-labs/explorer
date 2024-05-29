@@ -1,21 +1,21 @@
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useQuery} from "@tanstack/react-query";
 import {normalizeAddress} from "../../utils";
+import {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 
 export function useGetAccountTokensCount(address: string) {
   const [state] = useGlobalState();
   const addr64Hash = normalizeAddress(address);
-  return useQuery(
-    ["account_tokens_count", {addr64Hash}, state.network_value],
-    async () => {
-      const response = await state.indexer_client?.getAccountTokensCount(
-        address,
-      );
+  return useQuery({
+    queryKey: ["account_tokens_count", {addr64Hash}, state.network_value],
+    queryFn: async () => {
+      const response =
+        await state.indexer_client?.getAccountTokensCount(address);
       return (
         response?.current_token_ownerships_v2_aggregate?.aggregate?.count ?? 0
       );
     },
-  );
+  });
 }
 
 export function useGetAccountTokens(
@@ -25,9 +25,13 @@ export function useGetAccountTokens(
 ) {
   const [state] = useGlobalState();
   const addr64Hash = normalizeAddress(address);
-  return useQuery(
-    ["account_tokens", {addr64Hash, limit, offset}, state.network_value],
-    async () => {
+  return useQuery({
+    queryKey: [
+      "account_tokens",
+      {addr64Hash, limit, offset},
+      state.network_value,
+    ],
+    queryFn: async () => {
       const response = await state.indexer_client?.getOwnedTokens(address, {
         options: {
           limit,
@@ -44,28 +48,28 @@ export function useGetAccountTokens(
       });
       return response?.current_token_ownerships_v2 ?? [];
     },
-  );
+  });
 }
 
 export function useGetTokenData(tokenDataId?: string) {
   const [state] = useGlobalState();
-  return useQuery(
-    ["token_data", {tokenDataId}, state.network_value],
-    async () => {
+  return useQuery({
+    queryKey: ["token_data", {tokenDataId}, state.network_value],
+    queryFn: async () => {
       if (!tokenDataId) {
         return undefined;
       }
       const response = await state.indexer_client?.getTokenData(tokenDataId);
       return response?.current_token_datas_v2;
     },
-  );
+  });
 }
 
 export function useGetTokenOwners(tokenDataId?: string) {
   const [state] = useGlobalState();
-  return useQuery(
-    ["token_owners", {tokenDataId}, state.network_value],
-    async () => {
+  return useQuery({
+    queryKey: ["token_owners", {tokenDataId}, state.network_value],
+    queryFn: async () => {
       if (!tokenDataId) {
         return [];
       }
@@ -76,20 +80,19 @@ export function useGetTokenOwners(tokenDataId?: string) {
       );
       return response?.current_token_ownerships_v2 ?? [];
     },
-  );
+  });
 }
 
 export function useGetTokenActivitiesCount(tokenDataId: string) {
   const [state] = useGlobalState();
-  return useQuery(
-    ["token_activities_count", {tokenDataId}, state.network_value],
-    async () => {
-      const response = await state.indexer_client?.getTokenActivitiesCount(
-        tokenDataId,
-      );
+  return useQuery({
+    queryKey: ["token_activities_count", {tokenDataId}, state.network_value],
+    queryFn: async () => {
+      const response =
+        await state.indexer_client?.getTokenActivitiesCount(tokenDataId);
       return response?.token_activities_v2_aggregate?.aggregate?.count ?? 0;
     },
-  );
+  });
 }
 
 export function useGetTokenActivities(
@@ -98,24 +101,27 @@ export function useGetTokenActivities(
   offset?: number,
 ) {
   const [state] = useGlobalState();
-  return useQuery(
-    ["token_activities", {tokenDataId, limit, offset}, state.network_value],
-    async () => {
-      const response = await state.indexer_client?.getTokenActivities(
-        tokenDataId,
-        {
+  return useQuery({
+    queryKey: [
+      "token_activities",
+      {tokenDataId, limit, offset},
+      state.network_value,
+    ],
+    queryFn: async () => {
+      const response: GetTokenActivityResponse | undefined =
+        await state.sdk_v2_client?.getDigitalAssetActivity({
+          digitalAssetAddress: tokenDataId,
           options: {
             limit,
             offset,
+            orderBy: [
+              {
+                transaction_version: "desc",
+              },
+            ],
           },
-          orderBy: [
-            {
-              transaction_version: "desc",
-            },
-          ],
-        },
-      );
-      return response?.token_activities_v2 ?? [];
+        });
+      return response ?? [];
     },
-  );
+  });
 }

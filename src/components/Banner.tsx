@@ -14,13 +14,39 @@ import React, {useState} from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import AptosBannerImage from "../assets/Banner.jpg";
 
+type PillColors =
+  | "primary"
+  | "secondary"
+  | "error"
+  | "info"
+  | "success"
+  | "warning"
+  | "inherit";
+const PillColors: Record<PillColors, string> = {
+  error: "#f44336",
+  info: "#2196f3",
+  primary: "#8B5CF6",
+  secondary: "#f50057",
+  success: "#4caf50",
+  warning: "#ff9800",
+  inherit: "inherit",
+};
+
 interface BannerProps {
   children: React.ReactNode;
   action?: React.ReactNode;
   sx?: SxProps<Theme>;
+  pillText?: string;
+  pillColor?: PillColors;
 }
 
-export function Banner({children, action, sx}: BannerProps) {
+export function Banner({
+  children,
+  action,
+  sx,
+  pillText,
+  pillColor = "primary",
+}: BannerProps) {
   const [bannerOpen, setBannerOpen] = useState<boolean>(true);
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
@@ -42,19 +68,20 @@ export function Banner({children, action, sx}: BannerProps) {
     </IconButton>
   );
 
-  const icon = (
+  const pill = Boolean(pillText) && (
     <Typography
       sx={{
-        backgroundColor: "#8B5CF6",
+        backgroundColor: PillColors[pillColor],
         color: "#ffffff",
         borderRadius: 0,
         paddingX: 1,
-        width: "3rem",
         minWidth: "3rem",
         height: "1.5rem",
+        flex: "0 0 auto",
+        textAlign: "center",
       }}
     >
-      NEW
+      {pillText}
     </Typography>
   );
 
@@ -96,7 +123,7 @@ export function Banner({children, action, sx}: BannerProps) {
                 paddingTop: 0.5,
               }}
             >
-              {icon}
+              {pill}
               {text}
             </Stack>
           </Alert>
@@ -125,7 +152,7 @@ export function Banner({children, action, sx}: BannerProps) {
                 verticalAlign: "center",
               }}
             >
-              {icon}
+              {pill}
               {text}
             </Stack>
           </Alert>
