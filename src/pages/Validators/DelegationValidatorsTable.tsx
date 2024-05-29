@@ -33,14 +33,15 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
 import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
 import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
-import {useNavigate} from "../../routing";
 import {ResponseError} from "../../api/client";
 import Error from "../Account/Error";
 import {
   ValidatorStatus,
+  calculateNetworkPercentage,
   getValidatorStatus,
 } from "../DelegatoryValidator/utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -366,29 +367,27 @@ function ValidatorRow({
   connected,
   setError,
 }: ValidatorRowProps) {
-  const navigate = useNavigate();
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
-
-  const {
-    commission,
-    delegatedStakeAmount,
-    networkPercentage,
-    validatorStatus,
-    error,
-  } = useGetDelegationNodeInfo({
+  const {totalVotingPower} = useGetValidatorSet();
+  const {commission, validatorStatus, error} = useGetDelegationNodeInfo({
     validatorAddress: validator.owner_address,
   });
+  const validatorVotingPower = validator.voting_power;
+  const networkPercentage = calculateNetworkPercentage(
+    validatorVotingPower,
+    totalVotingPower,
+  );
+
   const rowClick = (address: Types.Address) => {
     logEvent("delegation_validators_row_clicked", address, {
       commission: commission?.toString() ?? "",
-      delegated_stake_amount: delegatedStakeAmount ?? "",
+      delegated_stake_amount: validatorVotingPower ?? "",
       network_percentage: networkPercentage ?? "",
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",
       validator_status: validatorStatus ? validatorStatus[0].toString() : "",
     });
-    navigate(`/validator/${address}`);
   };
 
   if (error) {
@@ -401,13 +400,16 @@ function ValidatorRow({
   if (
     validatorStatus &&
     getValidatorStatus(validatorStatus) === "Inactive" &&
-    delegatedStakeAmount === "0"
+    validatorVotingPower === "0"
   ) {
     return null;
   }
 
   return (
-    <GeneralTableRow onClick={() => rowClick(validator.owner_address)}>
+    <GeneralTableRow
+      to={`/validator/${validator.owner_address}`}
+      onClick={() => rowClick(validator.owner_address)}
+    >
       {columns.map((column) => {
         const Cell = DelegationValidatorCells[column];
         return (
@@ -415,7 +417,7 @@ function ValidatorRow({
             key={column}
             validator={validator}
             commission={commission}
-            delegatedStakeAmount={delegatedStakeAmount}
+            delegatedStakeAmount={validatorVotingPower}
             networkPercentage={networkPercentage}
             connected={connected}
             validatorStatus={

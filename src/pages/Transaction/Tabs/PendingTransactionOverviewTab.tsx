@@ -9,6 +9,7 @@ import TimestampValue from "../../../components/IndividualPageContent/ContentVal
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {parseExpirationTimestamp} from "../../utils";
 
 type PendingTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -38,7 +39,10 @@ export default function PendingTransactionOverviewTab({
           title="Expiration Timestamp:"
           value={
             <TimestampValue
-              timestamp={transactionData.expiration_timestamp_secs}
+              timestamp={parseExpirationTimestamp(
+                transactionData.expiration_timestamp_secs,
+              )}
+              ensureMilliSeconds={false}
             />
           }
           tooltip={getLearnMoreTooltip("expiration_timestamp_secs")}

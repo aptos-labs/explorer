@@ -72,7 +72,7 @@ export type DailyUserTxnData = {
 };
 
 export type MonthlyActiveUserData = {
-  mau_signer_28: number;
+  mau_signer_30: number;
   date: string;
 };
 

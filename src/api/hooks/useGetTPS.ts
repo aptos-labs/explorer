@@ -10,11 +10,11 @@ export function useGetTPS() {
   const [blockHeight, setBlockHeight] = useState<number | undefined>();
   const {tps} = useGetTPSByBlockHeight(blockHeight);
 
-  const {data: ledgerData} = useQuery(
-    ["ledgerInfo", state.network_value],
-    () => getLedgerInfo(state.network_value),
-    {refetchInterval: 10000},
-  );
+  const {data: ledgerData} = useQuery({
+    queryKey: ["ledgerInfo", state.network_value],
+    queryFn: () => getLedgerInfo(state.network_value),
+    refetchInterval: 10000,
+  });
   const currentBlockHeight = ledgerData?.block_height;
 
   useEffect(() => {

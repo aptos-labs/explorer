@@ -7,6 +7,11 @@ import CollapsibleCard from "../../../components/IndividualPageContent/Collapsib
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import HashButton, {HashType} from "../../../components/HashButton";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {
+  collectionV2Address,
+  objectCoreAddress,
+  tokenV2Address,
+} from "../../../constants";
 
 type ChangesTabProps = {
   transaction: Types.Transaction;
@@ -42,7 +47,20 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
             <ContentRow
               title="Address:"
               value={
-                <HashButton hash={change.address} type={HashType.ACCOUNT} />
+                <HashButton
+                  hash={change.address}
+                  type={
+                    "data" in change &&
+                    "type" in change.data &&
+                    [
+                      objectCoreAddress,
+                      tokenV2Address,
+                      collectionV2Address,
+                    ].includes(change.data.type)
+                      ? HashType.OBJECT
+                      : HashType.ACCOUNT
+                  }
+                />
               }
             />
           )}

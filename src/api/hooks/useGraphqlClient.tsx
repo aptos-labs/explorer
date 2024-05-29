@@ -17,14 +17,16 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
 
 export function getGraphqlURI(networkName: NetworkName): string | undefined {
   switch (networkName) {
-    // case "mainnet":
-    //   return "https://indexer.mainnet.aptoslabs.com/v1/graphql";
-    // case "testnet":
-    //   return "https://indexer-testnet.staging.gcp.aptosdev.com/v1/graphql";
-    // case "devnet":
-    //   return "https://indexer-devnet.staging.gcp.aptosdev.com/v1/graphql";
-    // case "local":
-    //   return undefined;
+    case "mainnet":
+      return "https://api.mainnet.aptoslabs.com/v1/graphql";
+    case "testnet":
+      return "https://api-staging.testnet.aptoslabs.com/v1/graphql";
+    case "devnet":
+      return "https://api-staging.devnet.aptoslabs.com/v1/graphql";
+    case "local":
+      return "http://127.0.0.1:8090/v1/graphql";
+    case "randomnet":
+      return "https://indexer.random.aptoslabs.com/v1/graphql";
     default:
       return undefined;
   }

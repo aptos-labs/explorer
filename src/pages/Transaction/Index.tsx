@@ -15,10 +15,10 @@ export default function TransactionPage() {
   const {txnHashOrVersion: txnParam} = useParams();
   const txnHashOrVersion = txnParam ?? "";
 
-  const {isLoading, data, error} = useQuery<Types.Transaction, ResponseError>(
-    ["transaction", {txnHashOrVersion}, state.network_value],
-    () => getTransaction({txnHashOrVersion}, state.network_value),
-  );
+  const {isLoading, data, error} = useQuery<Types.Transaction, ResponseError>({
+    queryKey: ["transaction", {txnHashOrVersion}, state.network_value],
+    queryFn: () => getTransaction({txnHashOrVersion}, state.network_value),
+  });
 
   if (isLoading) {
     return null;

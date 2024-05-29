@@ -7,14 +7,16 @@ import {
   useTheme,
 } from "@mui/material";
 import {grey} from "@mui/material/colors";
-import React, {useState} from "react";
+import {useState} from "react";
 import {Banner} from "../../components/Banner";
-import {StakingDrawer} from "./StakingDrawer";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
-export function StakingBanner() {
+const GITHUB_DISCUSSION_URL =
+  "https://github.com/aptos-labs/aptos-developer-discussions/discussions";
+
+export function GithubDiscussionsBanner() {
   const [open, setOpen] = useState<boolean>(false);
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
@@ -23,10 +25,11 @@ export function StakingBanner() {
 
   const handleClick = () => {
     setOpen(!open);
-    logEvent("staking_banner_learn_more_clicked", null, {
+    logEvent("github_discussions_banner_clicked", null, {
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",
     });
+    window.open(GITHUB_DISCUSSION_URL, "_blank");
   };
 
   const learnMoreButton = (
@@ -35,7 +38,7 @@ export function StakingBanner() {
       onClick={handleClick}
       sx={{alignSelf: "flex-start", transform: `translateX(-0.5rem)`}}
     >
-      <Typography>LEARN MORE</Typography>
+      <Typography>GO TO DISCUSSIONS</Typography>
       <ArrowForwardIosIcon sx={{marginLeft: 2}} fontSize="small" />
     </Button>
   );
@@ -57,7 +60,7 @@ export function StakingBanner() {
   );
 
   const text =
-    "Movement M1 enables delegations and staking services. See Staking for more details.";
+    "Ask your tech questions and hang out with the Aptos developer community in the new developer discussions!";
 
   const children = isOnMobile ? (
     <Stack direction="column">
@@ -69,11 +72,8 @@ export function StakingBanner() {
   );
 
   return (
-    <>
-      <Banner pillText="NEW" sx={{marginBottom: 2}} action={action}>
-        {children}
-      </Banner>
-      <StakingDrawer open={open} handleClick={handleClick} />
-    </>
+    <Banner pillText="NEW" sx={{marginBottom: 2}} action={action}>
+      {children}
+    </Banner>
   );
 }
