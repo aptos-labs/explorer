@@ -7,7 +7,7 @@ import {CardOutline} from "../../../components/Card";
 import LineChart from "../Components/LineChart";
 
 function getDataset(data: MonthlyActiveUserData[], days: number): number[] {
-  return data.slice(-days).map((dailyData) => dailyData.mau_signer_28);
+  return data.slice(-days).map((dailyData) => dailyData.mau_signer_30);
 }
 
 type MonthlyActiveUserChartProps = {
@@ -26,7 +26,7 @@ export default function MonthlyActiveUserChart({
     <CardOutline>
       <ChartTitle
         label="Monthly Active Accounts"
-        tooltip="Daily count of distinct addresses with signed transactions over the last 28 days."
+        tooltip="Daily count of distinct addresses with signed transactions over the last 30 days."
       />
       <LineChart labels={labels} dataset={dataset} decimals={1} />
     </CardOutline>

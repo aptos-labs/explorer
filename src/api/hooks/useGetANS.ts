@@ -5,7 +5,6 @@ import {
   fetchJsonResponse,
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
-  truncateAptSuffix,
 } from "../../utils";
 import {ResponseError} from "../client";
 
@@ -91,37 +90,4 @@ async function genMNSName(
   }
 
   return null;
-}
-
-function getFetchAddressUrl(network: NetworkName, name: string) {
-  // if (network !== "testnet" && network !== "mainnet") {
-  return undefined;
-  // }
-
-  return `https://move.movementlabs.xyz/api/${network}/v1/address/${name}`;
-}
-
-export async function getAddressFromName(
-  name: string,
-  network: NetworkName,
-): Promise<{address: string | undefined; primaryName: string | undefined}> {
-  const searchableName = truncateAptSuffix(name);
-  const addressUrl = getFetchAddressUrl(network, searchableName);
-
-  const notFoundResult = {address: undefined, primaryName: undefined};
-  if (addressUrl === undefined) {
-    return notFoundResult;
-  }
-
-  try {
-    const {address} = await fetchJsonResponse(addressUrl);
-
-    const primaryNameUrl = getFetchNameUrl(network, address, true);
-    const primaryNameResponse = await fetch(primaryNameUrl ?? "");
-    const {name: primaryName} = await primaryNameResponse.json();
-
-    return {address: address, primaryName: primaryName};
-  } catch {
-    return notFoundResult;
-  }
 }

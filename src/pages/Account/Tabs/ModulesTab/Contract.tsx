@@ -1,11 +1,14 @@
-import {HexString, Types} from "aptos";
+import {Types} from "aptos";
 import {ReactNode, useEffect, useMemo, useState} from "react";
 import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import SidebarItem from "../../Components/SidebarItem";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {
+  useWallet,
+  InputTransactionData,
+} from "@aptos-labs/wallet-adapter-react";
 import {
   Grid,
   Box,
@@ -36,62 +39,42 @@ import {
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
-import {
-  deserializeVector,
-  encodeInputArgsForViewRequest,
-} from "../../../../utils";
+import {encodeInputArgsForViewRequest} from "../../../../utils";
+import {accountPagePath} from "../../Index";
+import {parseTypeTag} from "@aptos-labs/ts-sdk";
 
 type ContractFormType = {
   typeArgs: string[];
   args: string[];
+  ledgerVersion?: string;
 };
 
 interface ContractSidebarProps {
   selectedModuleName: string | undefined;
   selectedFnName: string | undefined;
   moduleAndFnsGroup: Record<string, Types.MoveFunction[]>;
-  getLinkToFn(moduleName: string, fnName: string): string;
+
+  getLinkToFn(moduleName: string, fnName: string, isObject: boolean): string;
+
+  isObject: boolean;
 }
 
-function Contract({address, isRead}: {address: string; isRead: boolean}) {
+function Contract({
+  address,
+  isObject,
+  isRead,
+}: {
+  address: string;
+  isObject: boolean;
+  isRead: boolean;
+}) {
   const theme = useTheme();
-  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const {data, isLoading, error} = useGetAccountModules(address);
   const {selectedModuleName, selectedFnName} = useParams();
   const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
   const selectedModule = sortedPackages
     .flatMap((pkg) => pkg.modules)
     .find((module) => module.name === selectedModuleName);
-
-  if (!isRead && !isWideScreen) {
-    return (
-      <Grid item xs={12}>
-        <Box
-          padding={3}
-          bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
-          borderRadius={0}
-        >
-          <Typography
-            fontSize={16}
-            fontWeight={500}
-            marginBottom={"16px"}
-            color={theme.palette.mode === "dark" ? grey[300] : grey[600]}
-          >
-            Unfortunately, we are not supporting <b>Run</b> entry functions on
-            mobile at the moment.
-          </Typography>
-
-          <Typography
-            fontSize={12}
-            fontWeight={500}
-            color={theme.palette.mode === "dark" ? grey[400] : grey[500]}
-          >
-            Please, use a laptop or a desktop computer.
-          </Typography>
-        </Box>
-      </Grid>
-    );
-  }
 
   if (isLoading) {
     return null;
@@ -135,11 +118,11 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
       )
     : undefined;
 
-  function getLinkToFn(moduleName: string, fnName: string) {
+  function getLinkToFn(moduleName: string, fnName: string, isObject: boolean) {
     // This string implicitly depends on the fact that
     // the `isRead` value is determined by the
     // pathname `view` and `run`.
-    return `/account/${address}/modules/${
+    return `/${accountPagePath(isObject)}/${address}/modules/${
       isRead ? "view" : "run"
     }/${moduleName}/${fnName}`;
   }
@@ -155,6 +138,7 @@ function Contract({address, isRead}: {address: string; isRead: boolean}) {
           selectedFnName={selectedFnName}
           moduleAndFnsGroup={moduleAndFnsGroup}
           getLinkToFn={getLinkToFn}
+          isObject={isObject}
         />
       </Grid>
       <Grid item md={9} xs={12}>
@@ -188,6 +172,7 @@ function ContractSidebar({
   selectedFnName,
   moduleAndFnsGroup,
   getLinkToFn,
+  isObject,
 }: ContractSidebarProps) {
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
@@ -237,7 +222,7 @@ function ContractSidebar({
                       return (
                         <SidebarItem
                           key={fn.name}
-                          linkTo={getLinkToFn(moduleName, fn.name)}
+                          linkTo={getLinkToFn(moduleName, fn.name, isObject)}
                           selected={selected}
                           name={fn.name}
                           loggingInfo={{
@@ -264,7 +249,7 @@ function ContractSidebar({
           )}
           onChange={(_, fn) => {
             fn && logEvent("function_name_clicked", fn.fnName);
-            fn && navigate(getLinkToFn(fn.moduleName, fn.fnName));
+            fn && navigate(getLinkToFn(fn.moduleName, fn.fnName, isObject));
           }}
           value={
             selectedModuleName && selectedFnName
@@ -297,25 +282,70 @@ function RunContractForm({
 
   const fnParams = removeSignerParam(fn);
 
+  // TODO: We should use the SDKv2 for this
+  const convertArgument = (
+    arg: string | null | undefined,
+    type: string,
+  ): any => {
+    // TypeScript doesn't really protect us from nulls, this enforces it
+    if (typeof arg !== "string") {
+      arg = "";
+    }
+    arg = arg.trim();
+    const typeTag = parseTypeTag(type);
+    if (typeTag.isVector()) {
+      const innerTag = typeTag.value;
+      if (innerTag.isVector()) {
+        // This must be JSON, let's parse it
+        return JSON.parse(arg) as any[];
+      }
+
+      if (innerTag.isU8()) {
+        // U8 we take as an array or hex
+        if (arg.startsWith("0x")) {
+          // For hex, let the hex pass through
+          return arg;
+        }
+      }
+
+      if (arg.startsWith("[")) {
+        // This is supposed to be JSON if it has the bracket
+        return JSON.parse(arg) as any[];
+      } else {
+        // We handle array without brackets otherwise
+        return arg.split(",").map((arg) => {
+          return arg.trim();
+        });
+      }
+    } else if (typeTag.isStruct()) {
+      if (typeTag.isOption()) {
+        // This we need to handle if there is no value, we take "empty trimmed" as no value
+        if (arg === "") {
+          return undefined;
+        } else {
+          // Convert for the inner type if it isn't empty
+          arg = convertArgument(arg, typeTag.value.typeArgs[0].toString());
+          return arg;
+        }
+      }
+    }
+
+    // For all other cases return it straight
+    return arg;
+  };
+
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("write_button_clicked", fn.name);
-    const payload: Types.TransactionPayload = {
-      type: "entry_function_payload",
-      function: `${module.address}::${module.name}::${fn.name}`,
-      type_arguments: data.typeArgs,
-      arguments: data.args.map((arg, i) => {
-        const type = fnParams[i];
-        if (type.includes("vector")) {
-          // when it's a vector<u8>, we support both hex and javascript array format
-          return type === "vector<u8>" && arg.trim().startsWith("0x")
-            ? Array.from(new HexString(arg).toUint8Array()).map((x) =>
-                x.toString(),
-              )
-            : deserializeVector(arg);
-        } else if (type.startsWith("0x1::option::Option")) {
-          arg ? {vec: [arg]} : undefined;
-        } else return arg;
-      }),
+
+    const payload: InputTransactionData = {
+      data: {
+        function: `${module.address}::${module.name}::${fn.name}`,
+        typeArguments: data.typeArgs,
+        functionArguments: data.args.map((arg, i) => {
+          const type = fnParams[i];
+          return convertArgument(arg, type);
+        }),
+      },
     };
 
     await submitTransaction(payload);
@@ -334,6 +364,7 @@ function RunContractForm({
       fn={fn}
       onSubmit={onSubmit}
       setFormValid={setFormValid}
+      isView={false}
       result={
         connected ? (
           <Box>
@@ -456,6 +487,7 @@ function ReadContractForm({
     result
       ?.map((r) => (typeof r === "string" ? r : JSON.stringify(r, null, 2)))
       .join("\n") ?? "";
+
   async function copyValue() {
     logEvent("copy_value_button_clicked", fn.name, {
       value: resultString,
@@ -480,17 +512,22 @@ function ReadContractForm({
         }),
       };
     } catch (e: any) {
-      setErrMsg("Parse arguments failed: " + e?.message);
+      setErrMsg("Parsing arguments failed: " + e?.message);
       return;
     }
     setInProcess(true);
     try {
-      const result = await view(viewRequest, state.network_value);
+      const result = await view(
+        viewRequest,
+        state.network_value,
+        data.ledgerVersion,
+      );
       setResult(result);
       setErrMsg(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "success"});
     } catch (e: any) {
-      let error = e.message ?? String(e);
+      // Ensure error is a string
+      let error = e.message ?? JSON.stringify(e);
 
       const prefix = "Error:";
       if (error.startsWith(prefix)) {
@@ -509,6 +546,7 @@ function ReadContractForm({
       fn={fn}
       onSubmit={onSubmit}
       setFormValid={setFormValid}
+      isView={true}
       result={
         <Box>
           <StyledTooltip
@@ -618,11 +656,13 @@ function ContractForm({
   onSubmit,
   setFormValid,
   result,
+  isView,
 }: {
   fn: Types.MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
   setFormValid: (valid: boolean) => void;
   result: ReactNode;
+  isView: boolean;
 }) {
   const {account} = useWallet();
   const {
@@ -708,7 +748,44 @@ function ContractForm({
               );
             })}
           </Stack>
+          {isView && (
+            <Stack spacing={4}>
+              <Controller
+                key={"ledgerVersion"}
+                name={"ledgerVersion"}
+                control={control}
+                rules={{required: false}}
+                render={({field: {onChange, value}}) => (
+                  <TextField
+                    onChange={onChange}
+                    value={value}
+                    label={"ledgerVersion: defaults to current version"}
+                    fullWidth
+                  />
+                )}
+              />
+            </Stack>
+          )}
           {result}
+          {/* TODO: Figure out a better way to show instructions, I tried, and it wasn't pretty */}
+          <Typography fontSize={14} fontWeight={600}>
+            How to use:
+          </Typography>
+          <Typography fontSize={14} fontWeight={600}>
+            Option arguments can be submitted with no value, which would be
+            Option::none
+          </Typography>
+          <Typography fontSize={14} fontWeight={600}>
+            Nested vectors must be provided in JSON
+          </Typography>
+          <Typography fontSize={14} fontWeight={600}>
+            Vector arguments can be provided in JSON or as a comma separated
+            list e.g. 0x1, 0x2 or ["0x1", "0x2"]
+          </Typography>
+          <Typography fontSize={14} fontWeight={600}>
+            Numbers and booleans must be inputted without quotes if providing
+            JSON
+          </Typography>
         </Stack>
       </Box>
     </form>

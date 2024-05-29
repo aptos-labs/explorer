@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {InputTransactionData} from "@aptos-labs/wallet-adapter-react";
 import useSubmitTransaction from "./useSubmitTransaction";
 
 // enum name => delegation pool smart contract view function name
@@ -22,11 +22,11 @@ const useSubmitStakeOperation = () => {
     amount: number,
     stakeOperation: StakeOperation,
   ) {
-    const payload: Types.TransactionPayload = {
-      type: "entry_function_payload",
-      function: `0x1::delegation_pool::${stakeOperation}`,
-      type_arguments: [],
-      arguments: [owner_address, amount], // staking operation uses OCTA as amount basis
+    const payload: InputTransactionData = {
+      data: {
+        function: `0x1::delegation_pool::${stakeOperation}`,
+        functionArguments: [owner_address, amount], // staking operation uses OCTA as amount basis
+      },
     };
 
     await submitTransaction(payload);

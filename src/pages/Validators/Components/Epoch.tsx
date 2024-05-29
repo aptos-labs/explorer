@@ -28,15 +28,23 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
       const startTimestamp = parseTimestamp(lastEpochTime);
       const nowTimestamp = parseTimestamp(moment.now().toString());
       const timePassed = moment.duration(nowTimestamp.diff(startTimestamp));
-      const timeRemaining = epochIntervalSeconds - timePassed.asMilliseconds();
-      setTimeRemaining(timeRemaining);
-      setPercentageComplete(
+
+      // Once randomness is enabled, epoch will be 2h + DKG time (<30s).
+      // No need to reflect this period in explorer.
+      const timeRemaining = Math.max(
+        0,
+        epochIntervalSeconds - timePassed.asMilliseconds(),
+      );
+      const percentComplete = Math.min(
+        100,
         parseInt(
           ((timePassed.asMilliseconds() * 100) / epochIntervalSeconds).toFixed(
             0,
           ),
         ),
       );
+      setTimeRemaining(timeRemaining);
+      setPercentageComplete(percentComplete);
     }
   }, [curEpoch, lastEpochTime, epochInterval]);
   return !isSkeletonLoading ? (

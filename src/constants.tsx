@@ -1,10 +1,17 @@
+/**
+ * Network
+ */
+export const devnetUrl =
+  import.meta.env.APTOS_DEVNET_URL ||
+  "https://aptos.devnet.m1.movementlabs.xyz";
+
 export const networks = {
-  mainnet: "https://aptos.devnet.m1.movementlabs.xyz",
-  testnet: "https://aptos.devnet.m1.movementlabs.xyz",
-  devnet: "https://aptos.devnet.m1.movementlabs.xyz",
-  local: "https://aptos.devnet.m1.movementlabs.xyz",
-  m1_devnet: "https://aptos.devnet.m1.movementlabs.xyz",
-  previewnet: "https://aptos.devnet.m1.movementlabs.xyz",
+  mainnet: "https://aptos.movementlabs.xyz",
+  testnet: "https://aptos.testnet.movementlabs.xyz",
+  devnet: devnetUrl,
+  local: "http://127.0.0.1:8080/v1",
+  previewnet: "https://aptos.testnet.movementlabs.xyz",
+  randomnet: "https://aptos.testnet.movementlabs.xyz",
 };
 
 export type NetworkName = keyof typeof networks;
@@ -18,7 +25,8 @@ export enum Network {
   TESTNET = "testnet",
   DEVNET = "devnet",
   LOCAL = "local",
-  m1_devnet = "m1_devnet",
+  PREVIEWNET = "previewnet",
+  RANDOMNET = "randomnet",
 }
 
 // Remove trailing slashes
@@ -29,7 +37,7 @@ for (const key of Object.keys(networks)) {
   }
 }
 
-export const defaultNetworkName: NetworkName = "m1_devnet" as const;
+export const defaultNetworkName: NetworkName = "local" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;
@@ -80,3 +88,5 @@ export const WHILTELISTED_TESTNET_DELEGATION_NODES = import.meta.env
  * Core Address
  */
 export const objectCoreAddress = "0x1::object::ObjectCore";
+export const tokenV2Address = "0x4::token::Token";
+export const collectionV2Address = "0x4::collection::Collection";

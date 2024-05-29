@@ -85,7 +85,11 @@ export async function fetchJsonResponse(url: string) {
  * @returns original source code in plain text
  */
 export function transformCode(source: string): string {
-  return pako.ungzip(new HexString(source).toUint8Array(), {to: "string"});
+  try {
+    return pako.ungzip(new HexString(source).toUint8Array(), {to: "string"});
+  } catch {
+    return "";
+  }
 }
 
 export function getBytecodeSizeInKB(bytecodeHex: string): number {
@@ -98,14 +102,6 @@ export function getBytecodeSizeInKB(bytecodeHex: string): number {
 
   // Return the size in KB with two decimal places
   return parseFloat(sizeInKB.toFixed(2));
-}
-
-// if MNS name is in the form of "name." or "name.a" or "name.ap" or "name.apt", remove the suffix
-export function truncateAptSuffix(name: string): string {
-  return name.replace(
-    /^([a-z\d][a-z\d-]{1,61}[a-z\d])(\.apt|\.ap|\.a|\.?)$/,
-    "$1",
-  );
 }
 
 /**
