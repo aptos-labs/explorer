@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Header from "./Header";
 import Footer from "./Footer";
+import {Fallback} from "./Fallback";
 import {
   GlobalStateProvider,
   useGlobalState,
@@ -132,8 +133,16 @@ export default function ExplorerLayout({children}: LayoutProps) {
               }}
             >
               <Header />
-              <Container maxWidth="xl" sx={{flexGrow: 4, paddingTop: "2rem"}}>
-                <Suspense>{children}</Suspense>
+              <Container
+                maxWidth="xl"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  flexGrow: 4,
+                  paddingTop: "2rem",
+                }}
+              >
+                <Suspense fallback={<Fallback />}>{children}</Suspense>
               </Container>
               <Footer />
             </Box>
