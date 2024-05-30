@@ -2,7 +2,8 @@
 -- our target block is b
 -- look 15 blocks in the future (a)
 -- look 1 block in the past (c)
--- take the difference in version and subtract out 2 metadata txn per block
+-- take the difference in version and subtract out 2 non-user txn per block
+-- non user txn: block metadata (every block) and state checkpoint (most blocks)
 
 WITH bmt AS (
   SELECT
