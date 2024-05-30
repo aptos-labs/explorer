@@ -18,15 +18,15 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
 export function getGraphqlURI(networkName: NetworkName): string | undefined {
   switch (networkName) {
     case "mainnet":
-      return "https://api.mainnet.aptoslabs.com/v1/graphql";
+      return "https://aptos.movementlabs.xyz/graphql";
     case "testnet":
-      return "https://api-staging.testnet.aptoslabs.com/v1/graphql";
+      return "https:/aptos.testnet.movementlabs.xyz/graphql";
     case "devnet":
-      return "https://api-staging.devnet.aptoslabs.com/v1/graphql";
+      return "https://aptos.devnet.m1.movementlabs.xyz/graphql";
     case "local":
-      return "http://127.0.0.1:8090/v1/graphql";
+      return "http://0.0.0.0:30731/graphql";
     case "randomnet":
-      return "https://indexer.random.aptoslabs.com/v1/graphql";
+      return "https://aptos.testnet.movementlabs.xyz/graphql";
     default:
       return undefined;
   }

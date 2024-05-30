@@ -9,7 +9,7 @@ export const networks = {
   mainnet: "https://aptos.movementlabs.xyz",
   testnet: "https://aptos.testnet.movementlabs.xyz",
   devnet: devnetUrl,
-  local: "http://127.0.0.1:8080/v1",
+  local: "http://localhost:30731",
   previewnet: "https://aptos.testnet.movementlabs.xyz",
   randomnet: "https://aptos.testnet.movementlabs.xyz",
 };
@@ -37,7 +37,7 @@ for (const key of Object.keys(networks)) {
   }
 }
 
-export const defaultNetworkName: NetworkName = "local" as const;
+export const defaultNetworkName: NetworkName = "testnet" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;
