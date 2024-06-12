@@ -74,19 +74,19 @@ function walletsForNetwork(network: string) {
   if (network === NetworkName.Mainnet) {
     wallets.unshift(
       new IdentityConnectWallet(IdentityConnectId, {
-        networkName: NetworkName.Mainnet,
+        networkName: Network.MAINNET,
       }),
     );
   } else if (network === NetworkName.Testnet) {
     wallets.unshift(
       new IdentityConnectWallet(IdentityConnectId, {
-        networkName: NetworkName.Testnet,
+        networkName: Network.TESTNET,
       }),
     );
   } else if (network === NetworkName.Devnet) {
     wallets.unshift(
       new IdentityConnectWallet(IdentityConnectId, {
-        networkName: NetworkName.Devnet,
+        networkName: Network.DEVNET,
       }),
     );
     wallets.push(
