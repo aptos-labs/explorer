@@ -30,6 +30,7 @@ import {IdentityConnectWallet} from "@identity-connect/wallet-adapter-plugin";
 import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
 import {AptosConnectWalletPlugin} from "@aptos-connect/wallet-adapter-plugin";
 import {Network} from "aptos";
+import {Aptos, AptosConfig} from "@aptos-labs/ts-sdk";
 
 const IdentityConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 
@@ -47,7 +48,10 @@ const trustWallet = new TrustWallet();
 const welldoneWallet = new WelldoneWallet();
 const bitgetWallet = new BitgetWallet();
 
-function walletsForNetwork(network: string) {
+function walletsForNetwork(
+  network: string,
+  aptosConnect: AptosConnectWalletPlugin,
+) {
   // These are currently ordered by users on the site, and are subject to change
   const wallets: any[] = [
     petraWallet,
@@ -67,10 +71,9 @@ function walletsForNetwork(network: string) {
     tokenPocketWallet,
     trustWallet,
     welldoneWallet,
-    new AptosConnectWalletPlugin({
-      network: Network.TESTNET,
-    }),
+    aptosConnect,
   ];
+
   if (network === NetworkName.Mainnet) {
     wallets.unshift(
       new IdentityConnectWallet(IdentityConnectId, {
@@ -89,22 +92,26 @@ function walletsForNetwork(network: string) {
         networkName: NetworkName.Devnet,
       }),
     );
-    wallets.push(
-      new AptosConnectWalletPlugin({
-        network: Network.DEVNET,
-      }),
-    );
   }
   return wallets;
 }
 
+const aptosConnect = new AptosConnectWalletPlugin({
+  network: Network.MAINNET,
+});
+
 function ExplorerWalletAdapterProvider({children}: LayoutProps) {
   const [state] = useGlobalState();
+  const wallets = React.useMemo(() => {
+    // TODO: This is a hack to get around network being cached
+    const config = new AptosConfig({network: state.network_name as Network});
+    const client = new Aptos(config);
+    (aptosConnect as any).aptosClient = client;
+    return walletsForNetwork(state.network_name, aptosConnect);
+  }, [state.network_name]);
+
   return (
-    <AptosWalletAdapterProvider
-      plugins={walletsForNetwork(state.network_name)}
-      autoConnect={true}
-    >
+    <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
       {children}
     </AptosWalletAdapterProvider>
   );
