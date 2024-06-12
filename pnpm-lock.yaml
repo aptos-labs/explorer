@@ -16,8 +16,8 @@ dependencies:
     specifier: ^3.8.9
     version: 3.8.10(graphql@16.8.1)(react-dom@18.2.0)(react@18.2.0)
   '@aptos-connect/wallet-adapter-plugin':
-    specifier: ^0.0.3
-    version: 0.0.3(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
+    specifier: ^0.0.12
+    version: 0.0.12(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0)
   '@aptos-labs/aptos-names-connector':
     specifier: ^0.0.2
     version: 0.0.2(@emotion/react@11.11.3)(@emotion/styled@11.11.0)(@types/react@18.2.48)(react-copy-to-clipboard@5.1.0)(react-dom@18.2.0)(react@18.2.0)
@@ -306,45 +306,46 @@ packages:
       zen-observable-ts: 1.2.5
     dev: false
 
-  /@aptos-connect/wallet-adapter-plugin@0.0.3(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
-    resolution: {integrity: sha512-uzPEXXIxTImyD0jDho/Lcz2sL79o32ZlH/V+CGVLVaPlEtwCCrCG6wzzVcj2dyAmnxc0K864qO0NL3M7MMT+kw==}
+  /@aptos-connect/wallet-adapter-plugin@0.0.12(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0):
+    resolution: {integrity: sha512-rIKrC3TETcBfpqawt5OSb1+fW1Z8j8D7IEx/OOW8v3lqPEEkjdFjObG0uoZUHboNVWKnwa5PBnIsiDmIV9OaFQ==}
     peerDependencies:
-      '@aptos-labs/ts-sdk': 1.10.0-zeta.3
-      '@aptos-labs/wallet-standard': ^0.0.11
+      '@aptos-labs/ts-sdk': 1.18.1
+      '@aptos-labs/wallet-standard': ^0.1.0
       aptos: ^1.21.0
     dependencies:
-      '@aptos-connect/wallet-api': 0.0.3(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
+      '@aptos-connect/wallet-api': 0.0.6(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0)
       '@aptos-labs/ts-sdk': 1.13.3-zeta.1
-      '@aptos-labs/wallet-adapter-core': 3.5.0(@aptos-labs/ts-sdk@1.13.3-zeta.1)(aptos@1.21.0)
-      '@aptos-labs/wallet-standard': 0.0.11
-      '@identity-connect/dapp-sdk': 0.5.3(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
+      '@aptos-labs/wallet-adapter-core': 3.12.0(@aptos-labs/ts-sdk@1.13.3-zeta.1)(aptos@1.21.0)
+      '@aptos-labs/wallet-standard': 0.1.0(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@wallet-standard/core@1.0.3)
+      '@identity-connect/crypto': 0.2.2(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0)
+      '@identity-connect/dapp-sdk': 0.6.2(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0)
       aptos: 1.21.0
     transitivePeerDependencies:
       - debug
     dev: false
 
-  /@aptos-connect/wallet-api@0.0.3(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
-    resolution: {integrity: sha512-gfRIMNYznHzsuvLPKcUgnWqTnsyLht3F8cBdNcfc4YQ5q0QJptvvB67T1IyuN2by2B7UzrH4p+kvpeCbqqCnzA==}
+  /@aptos-connect/wallet-api@0.0.6(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0):
+    resolution: {integrity: sha512-c0k7YouK9H6ml9O0PnXi53Uh3Yd+AJ6qB/qMofCRG/mdpgZkmRZ+vekijjViOBgJHwvXY+YLyFIqeaXBkjgegg==}
     peerDependencies:
-      '@aptos-labs/ts-sdk': 1.10.0-zeta.2
-      '@aptos-labs/wallet-standard': ^0.0.12
+      '@aptos-labs/ts-sdk': 1.18.1
+      '@aptos-labs/wallet-standard': ^0.1.0
       aptos: ^1.20.0
     dependencies:
       '@aptos-labs/ts-sdk': 1.13.3-zeta.1
-      '@aptos-labs/wallet-standard': 0.0.11
+      '@aptos-labs/wallet-standard': 0.1.0(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@wallet-standard/core@1.0.3)
       aptos: 1.21.0
     dev: false
 
-  /@aptos-connect/web-transport@0.0.3(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
-    resolution: {integrity: sha512-l+MHBBtwFTw44a+vlayemxStc1OjIHL6M9LCrYYCw2FisspaWHeEJ+Wo6R8QamrgsItVUTkzo2/bdBRTYz3KUg==}
+  /@aptos-connect/web-transport@0.0.5(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0):
+    resolution: {integrity: sha512-hfy7C6Y6fFWbH2gQqTj4afmr4uMTLM28cG+y1qJGYPVFalgTzQDnzp2ldMF42NjV8b1fGiUs/K+d+RUKZjNA8w==}
     peerDependencies:
-      '@aptos-labs/ts-sdk': 1.10.0-zeta.2
-      '@aptos-labs/wallet-standard': ^0.0.12
+      '@aptos-labs/ts-sdk': 1.18.1
+      '@aptos-labs/wallet-standard': ^0.1.0
       aptos: ^1.20.0
     dependencies:
-      '@aptos-connect/wallet-api': 0.0.3(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
+      '@aptos-connect/wallet-api': 0.0.6(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0)
       '@aptos-labs/ts-sdk': 1.13.3-zeta.1
-      '@aptos-labs/wallet-standard': 0.0.11
+      '@aptos-labs/wallet-standard': 0.1.0(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@wallet-standard/core@1.0.3)
       aptos: 1.21.0
       uuid: 9.0.1
     dev: false
@@ -562,6 +563,16 @@ packages:
       '@wallet-standard/core': 1.0.3
     transitivePeerDependencies:
       - debug
+    dev: false
+
+  /@aptos-labs/wallet-standard@0.1.0(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@wallet-standard/core@1.0.3):
+    resolution: {integrity: sha512-DC4cWuvgXKBVQC+seGQc/nwIZoggZmGOIoN8EtEKHBSBMijwVfgRjD6cXPx8xWaXANyr5d32BGnWvYfMyWk3Pg==}
+    peerDependencies:
+      '@aptos-labs/ts-sdk': ^1.17.0
+      '@wallet-standard/core': ^1.0.3
+    dependencies:
+      '@aptos-labs/ts-sdk': 1.13.3-zeta.1
+      '@wallet-standard/core': 1.0.3
     dev: false
 
   /@babel/code-frame@7.23.5:
@@ -1576,6 +1587,16 @@ packages:
       - debug
     dev: false
 
+  /@identity-connect/api@0.6.0(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0):
+    resolution: {integrity: sha512-Opgd4E7nrKlzvGeXFIzXOCku+7U/x2f310e2huB5kHMV7fuakvNHbTRTMcWWiS9mCCDP141bia3Au1hXIaV38g==}
+    dependencies:
+      '@identity-connect/crypto': 0.2.2(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0)
+    transitivePeerDependencies:
+      - '@aptos-labs/ts-sdk'
+      - '@aptos-labs/wallet-standard'
+      - aptos
+    dev: false
+
   /@identity-connect/crypto@0.1.3:
     resolution: {integrity: sha512-/Xdkes3BzvU3CswIb3PeL9lDLT83BOKK5w3QYOlwerHz8sBCvYOUsiEppZ8HbvBhrG44cLTqAfHZLoeYrQDKiw==}
     dependencies:
@@ -1585,6 +1606,21 @@ packages:
       tweetnacl: 1.0.3
     transitivePeerDependencies:
       - debug
+    dev: false
+
+  /@identity-connect/crypto@0.2.2(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0):
+    resolution: {integrity: sha512-xfwk7aZJzfv8SyVSrbL6avlS1rC1nkufcNmVpoGDAI+Dcf8pN2j0rHx4+RSDVxWaZf93B9QmZIAg24e8DYtRAQ==}
+    peerDependencies:
+      '@aptos-labs/ts-sdk': 1.18.1
+    dependencies:
+      '@aptos-connect/wallet-api': 0.0.6(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0)
+      '@aptos-labs/ts-sdk': 1.13.3-zeta.1
+      '@noble/hashes': 1.4.0
+      ed2curve: 0.3.0
+      tweetnacl: 1.0.3
+    transitivePeerDependencies:
+      - '@aptos-labs/wallet-standard'
+      - aptos
     dev: false
 
   /@identity-connect/dapp-sdk@0.4.3:
@@ -1599,23 +1635,23 @@ packages:
       - debug
     dev: false
 
-  /@identity-connect/dapp-sdk@0.5.3(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0):
-    resolution: {integrity: sha512-2SOXzKTq7KRrdg8bg2o3t1qkUepoP9Cq7buN2rlmhUuwI27C6ldZNSdIn88T9V/ssKGtg7Vxv7Ch+onQCRabJQ==}
+  /@identity-connect/dapp-sdk@0.6.2(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0):
+    resolution: {integrity: sha512-xa2F6Qtsne80A53H6nVCyH8Fa8Z8wwKg3o/o6DkBiVCgmKWQFMi9RiSvQs4IwbVIBIqN4zpEIxvvgegwTvOoMg==}
     peerDependencies:
-      '@aptos-labs/wallet-standard': ^0.0.11
-      aptos: ^1.20.0
+      '@aptos-labs/ts-sdk': 1.18.1
+      '@aptos-labs/wallet-standard': ^0.1.0
     dependencies:
-      '@aptos-connect/wallet-api': 0.0.3(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
-      '@aptos-connect/web-transport': 0.0.3(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.0.11)(aptos@1.21.0)
-      '@aptos-labs/wallet-standard': 0.0.11
-      '@identity-connect/api': 0.4.1
-      '@identity-connect/crypto': 0.1.3
-      '@identity-connect/wallet-api': 0.0.4
-      aptos: 1.21.0
+      '@aptos-connect/wallet-api': 0.0.6(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0)
+      '@aptos-connect/web-transport': 0.0.5(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0)
+      '@aptos-labs/ts-sdk': 1.13.3-zeta.1
+      '@aptos-labs/wallet-standard': 0.1.0(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@wallet-standard/core@1.0.3)
+      '@identity-connect/api': 0.6.0(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0)
+      '@identity-connect/crypto': 0.2.2(@aptos-labs/ts-sdk@1.13.3-zeta.1)(@aptos-labs/wallet-standard@0.1.0)(aptos@1.21.0)
+      '@identity-connect/wallet-api': 0.1.1(@aptos-labs/ts-sdk@1.13.3-zeta.1)(aptos@1.21.0)
       axios: 1.6.5
       uuid: 9.0.1
     transitivePeerDependencies:
-      - '@aptos-labs/ts-sdk'
+      - aptos
       - debug
     dev: false
 
@@ -1637,6 +1673,16 @@ packages:
       aptos: 1.21.0
     transitivePeerDependencies:
       - debug
+    dev: false
+
+  /@identity-connect/wallet-api@0.1.1(@aptos-labs/ts-sdk@1.13.3-zeta.1)(aptos@1.21.0):
+    resolution: {integrity: sha512-PGcJQrSnk6PLr/w5D1FKRP/Ip0DH8nvDuWe/5ZfStrGwKhG0L8yDZPbAmDfSOH2mUvVtafmayRYv/FOnqGtLLw==}
+    peerDependencies:
+      '@aptos-labs/ts-sdk': 1.18.1
+      aptos: ^1.20.0
+    dependencies:
+      '@aptos-labs/ts-sdk': 1.13.3-zeta.1
+      aptos: 1.21.0
     dev: false
 
   /@istanbuljs/load-nyc-config@1.1.0:
