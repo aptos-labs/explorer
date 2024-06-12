@@ -8,7 +8,8 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {ecmaVersion: "latest", sourceType: "module"},
-  // ignorePatterns: ["pnpm-lock.yaml"],
+  ignorePatterns: ["pnpm-lock.yaml"],
+  // files: ['*.ts', '*.tsx'],
   // plugins: ['react-refresh'],
   rules: {
     // 'react-refresh/only-export-components': 'warn',
