@@ -43,7 +43,7 @@ const useSubmitTransaction = () => {
       network?.name.toLocaleLowerCase() !==
         (state.network_name === "local" ? "localhost" : state.network_name) &&
       // TODO: This is a hack to get around network being cached
-      wallet?.name !== "Google (AptosConnect)"
+      wallet?.name !== "Continue with Google"
     ) {
       setTransactionResponse({
         transactionSubmitted: false,
