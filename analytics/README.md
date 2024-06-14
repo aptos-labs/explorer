@@ -1,6 +1,6 @@
 # Analytics
 
-The analytics and validators tab on explorer mainnet uses some external datasets stored as JSON.
+The [analytics](https://explorer.aptoslabs.com/analytics?network=mainnet) and [validators](https://explorer.aptoslabs.com/validators?network=mainnet) tab on explorer uses some external datasets stored as JSON.
 
 This folder will hold the logic for generating these JSON from [google public dataset](https://console.cloud.google.com/marketplace/product/bigquery-public-data/crypto-aptos-mainnet-us)
 
@@ -22,7 +22,7 @@ This folder will hold the logic for generating these JSON from [google public da
 
 ### Contracts/modules
 
-- [daily_deployed_contracts])(daily_deployed_contracts.sql)
+- [daily_deployed_contracts](daily_deployed_contracts.sql)
 - [daily_contract_deployers](daily_contract_deployers.sql)
 
 ### Active users
@@ -34,15 +34,15 @@ We define new accounts as addresses that received APT for the first time.
 
 If an address signs a transactions, they are considered an active user.
 
-- [daily_new_accounts_created])(daily_new_accounts_created.sql)
-- [daily_active_users])(daily_active_users.sql)
-- [mau_signers])(mau_signers.sql)
+- [daily_new_accounts_created](daily_new_accounts_created.sql)
+- [daily_active_users](daily_active_users.sql)
+- [mau_signers](mau_signers.sql)
 
 ## validator_stats_v2.json
 
 Approx logic in [validator_stats](validator_stats.sql).
-Truth is obtained by calling view function.
+True current state is obtained by calling view function.
 
-Using bq data, hard to filter on current state since only have data on change.
+Since bigquery data only has changes, would need to build current state for historical.
 
-location_stats uses IP (not recorded on chain)
+location_stats uses IP of validators to map to geo and is excluded (not recorded on chain)
