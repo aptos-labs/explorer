@@ -12,6 +12,7 @@ import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useNavigate} from "react-router-dom";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {sortPetraFirst} from "../../utils";
 
 type WalletConnectionDialogProps = {
   handleDialogClose: () => void;
@@ -42,6 +43,8 @@ export default function WalletConnectionDialog({
           <WalletConnector
             networkSupport={state.network_name}
             handleNavigate={() => navigate(`/account/${account?.address}`)}
+            sortDefaultWallets={sortPetraFirst}
+            sortMoreWallets={sortPetraFirst}
           />
         </Stack>
       </DialogActions>

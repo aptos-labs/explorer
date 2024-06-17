@@ -39,7 +39,7 @@ import {
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
-import {encodeInputArgsForViewRequest} from "../../../../utils";
+import {encodeInputArgsForViewRequest, sortPetraFirst} from "../../../../utils";
 import {accountPagePath} from "../../Index";
 import {parseTypeTag} from "@aptos-labs/ts-sdk";
 
@@ -454,7 +454,11 @@ function RunContractForm({
           </Box>
         ) : (
           <Box display="flex" flexDirection="row" alignItems="center">
-            <WalletConnector networkSupport={state.network_name} />
+            <WalletConnector
+              networkSupport={state.network_name}
+              sortDefaultWallets={sortPetraFirst}
+              sortMoreWallets={sortPetraFirst}
+            />
             <Typography ml={2} fontSize={10}>
               To run you need to connect wallet first
             </Typography>
