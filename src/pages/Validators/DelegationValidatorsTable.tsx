@@ -438,7 +438,7 @@ export function DelegationValidatorsTable() {
     ? DEFAULT_COLUMNS
     : COLUMNS_WITHOUT_WALLET_CONNECTION;
   const [sortColumn, setSortColumn] = useState<Column>("commission");
-  const [sortDirection, setSortDirection] = useState<"asc" | "asc">("desc");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [delegationValidators, setDelegationValidators] = useState<
     ValidatorData[]
   >([]);
