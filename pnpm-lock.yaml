@@ -22,11 +22,11 @@ dependencies:
     specifier: 1.19.0
     version: 1.19.0
   "@aptos-labs/wallet-adapter-mui-design":
-    specifier: ^2.6.0
-    version: 2.6.0(@aptos-labs/ts-sdk@1.19.0)(@types/react@18.2.48)(@wallet-standard/core@1.0.3)(aptos@1.21.0)(react-dom@18.2.0)(react-router-dom@6.21.3)(react@18.2.0)
+    specifier: ^2.7.0
+    version: 2.7.0(@aptos-labs/ts-sdk@1.19.0)(@types/react@18.2.48)(@wallet-standard/core@1.0.3)(aptos@1.21.0)(react-dom@18.2.0)(react-router-dom@6.21.3)(react@18.2.0)
   "@aptos-labs/wallet-adapter-react":
-    specifier: ^3.2.0
-    version: 3.2.0(@aptos-labs/ts-sdk@1.19.0)(@types/react@18.2.48)(@wallet-standard/core@1.0.3)(aptos@1.21.0)(react@18.2.0)
+    specifier: ^3.3.0
+    version: 3.3.0(@aptos-labs/ts-sdk@1.19.0)(@types/react@18.2.48)(@wallet-standard/core@1.0.3)(aptos@1.21.0)(react@18.2.0)
   "@bitget-wallet/aptos-wallet-adapter":
     specifier: ^0.1.2
     version: 0.1.2(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0)
@@ -552,10 +552,10 @@ packages:
       tweetnacl: 1.0.3
     dev: false
 
-  /@aptos-labs/wallet-adapter-core@4.6.0(@aptos-labs/ts-sdk@1.19.0)(@wallet-standard/core@1.0.3)(aptos@1.21.0):
+  /@aptos-labs/wallet-adapter-core@4.7.0(@aptos-labs/ts-sdk@1.19.0)(@wallet-standard/core@1.0.3)(aptos@1.21.0):
     resolution:
       {
-        integrity: sha512-UreWrGmTZijXx4XzYJDfGUGW3174CwaiC8Q5QlSY6rne9hZ07TeUu7gR3ctX2CoRuUHug+KSqt7T+Cy6Ga8ONQ==,
+        integrity: sha512-s42FGHmTXf2uawWNP1F0jtdT2q6jiGmVMa8DNChKSTjULqjI1kYZx2kUwdEsEAXJcwKbV96KoIvMf3fyJnycmQ==,
       }
     peerDependencies:
       "@aptos-labs/ts-sdk": ^1.18.1
@@ -574,17 +574,17 @@ packages:
       - debug
     dev: false
 
-  /@aptos-labs/wallet-adapter-mui-design@2.6.0(@aptos-labs/ts-sdk@1.19.0)(@types/react@18.2.48)(@wallet-standard/core@1.0.3)(aptos@1.21.0)(react-dom@18.2.0)(react-router-dom@6.21.3)(react@18.2.0):
+  /@aptos-labs/wallet-adapter-mui-design@2.7.0(@aptos-labs/ts-sdk@1.19.0)(@types/react@18.2.48)(@wallet-standard/core@1.0.3)(aptos@1.21.0)(react-dom@18.2.0)(react-router-dom@6.21.3)(react@18.2.0):
     resolution:
       {
-        integrity: sha512-RIfIiniSUqMYPHFUExmy99Mf07i6J/M9CeaeCihuJh52qRauxrS3PzW9abJOiYP6RG3SCmxaotGCitBE4HRePA==,
+        integrity: sha512-HUdiUqsHGhplEZBzRrcVjQc9O5MWrFtGMkrs0YR9/du6DrtGb1CQzfe9ussCjabWm/rOTcELwIwiSt8coZEVzw==,
       }
     peerDependencies:
       react: ^18
       react-dom: ^18
       react-router-dom: ^6.8.0
     dependencies:
-      "@aptos-labs/wallet-adapter-react": 3.2.0(@aptos-labs/ts-sdk@1.19.0)(@types/react@18.2.48)(@wallet-standard/core@1.0.3)(aptos@1.21.0)(react@18.2.0)
+      "@aptos-labs/wallet-adapter-react": 3.3.0(@aptos-labs/ts-sdk@1.19.0)(@types/react@18.2.48)(@wallet-standard/core@1.0.3)(aptos@1.21.0)(react@18.2.0)
       "@emotion/react": 11.11.3(@types/react@18.2.48)(react@18.2.0)
       "@emotion/styled": 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.48)(react@18.2.0)
       "@mui/icons-material": 5.15.5(@mui/material@5.15.5)(@types/react@18.2.48)(react@18.2.0)
@@ -600,15 +600,15 @@ packages:
       - debug
     dev: false
 
-  /@aptos-labs/wallet-adapter-react@3.2.0(@aptos-labs/ts-sdk@1.19.0)(@types/react@18.2.48)(@wallet-standard/core@1.0.3)(aptos@1.21.0)(react@18.2.0):
+  /@aptos-labs/wallet-adapter-react@3.3.0(@aptos-labs/ts-sdk@1.19.0)(@types/react@18.2.48)(@wallet-standard/core@1.0.3)(aptos@1.21.0)(react@18.2.0):
     resolution:
       {
-        integrity: sha512-31hENJYFszFL0xxS7Zr+F+XGNMUqIyqa4gASe+hKmceOAtP6VgwDNYmGE1Tsrmz2eDG7+U1ywg7yfke3O2f+KQ==,
+        integrity: sha512-pygOenklQFa+Ou6cz+KPob1uo03qLue07CUIijfqSPyIzJgI+b+jeif3K2e/QTvvcNN2n0RJ0yse1BOabH0GHQ==,
       }
     peerDependencies:
       react: ^18
     dependencies:
-      "@aptos-labs/wallet-adapter-core": 4.6.0(@aptos-labs/ts-sdk@1.19.0)(@wallet-standard/core@1.0.3)(aptos@1.21.0)
+      "@aptos-labs/wallet-adapter-core": 4.7.0(@aptos-labs/ts-sdk@1.19.0)(@wallet-standard/core@1.0.3)(aptos@1.21.0)
       "@radix-ui/react-slot": 1.0.2(@types/react@18.2.48)(react@18.2.0)
       react: 18.2.0
     transitivePeerDependencies:

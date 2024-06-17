@@ -21,6 +21,7 @@ import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import {Link, useNavigate} from "../../routing";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {sortPetraFirst} from "../../utils";
 
 export default function Header() {
   const scrollTop = () => {
@@ -150,6 +151,8 @@ export default function Header() {
                   handleNavigate={() =>
                     navigate(`/account/${account?.address}`)
                   }
+                  sortDefaultWallets={sortPetraFirst}
+                  sortMoreWallets={sortPetraFirst}
                 />
               </Box>
             )}

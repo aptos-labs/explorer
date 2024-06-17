@@ -13,6 +13,7 @@ import {useNavigate} from "../../routing";
 import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {sortPetraFirst} from "../../utils";
 
 export default function NavMobile() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -94,6 +95,8 @@ export default function NavMobile() {
         <WalletConnector
           networkSupport={state.network_name}
           handleNavigate={() => navigate(`/account/${account?.address}`)}
+          sortDefaultWallets={sortPetraFirst}
+          sortMoreWallets={sortPetraFirst}
         />
       </Menu>
     </Box>
