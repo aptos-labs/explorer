@@ -16,6 +16,34 @@ export const networks = {
 
 export type NetworkName = keyof typeof networks;
 
+type ApiKeys = {
+  [key in NetworkName]: string | undefined;
+};
+
+/**
+ * Public Client IDs (API keys) from API Gateway. For mainnet, these come from the prod
+ * API Gateway (developers.aptoslabs.com), for testnet and devnet these come from the
+ * staging API Gateway (staging.developers.aptoslabs.com).
+ *
+ * These keys are all generated using the petra@aptoslabs.com account. Learn more:
+ * https://www.notion.so/aptoslabs/API-Gateway-FAQ-for-product-owners-183b29ba6bed41f8922e6049d9d36486
+ *
+ * Some networks aren't configured to use API Gateway, e.g. randomnet. For that, set the
+ * value to `undefined`.
+ */
+const apiKeys: ApiKeys = {
+  mainnet: "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
+  testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
+  devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
+  local: undefined,
+  previewnet: undefined,
+  randomnet: undefined,
+};
+
+export function getApiKey(network_name: NetworkName): string | undefined {
+  return apiKeys[network_name];
+}
+
 export function isValidNetworkName(value: string): value is NetworkName {
   return value in networks;
 }

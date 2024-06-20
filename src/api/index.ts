@@ -6,9 +6,8 @@ import {withResponseError} from "./client";
 
 export async function getTransactions(
   requestParameters: {start?: number; limit?: number},
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.Transaction[]> {
-  const client = new AptosClient(nodeUrl);
   const {start, limit} = requestParameters;
   let bigStart;
   if (start !== undefined) {
@@ -26,9 +25,8 @@ export async function getTransactions(
 
 export async function getAccountTransactions(
   requestParameters: {address: string; start?: number; limit?: number},
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.Transaction[]> {
-  const client = new AptosClient(nodeUrl);
   const {address, start, limit} = requestParameters;
   let bigStart;
   if (start !== undefined) {
@@ -46,7 +44,7 @@ export async function getAccountTransactions(
 
 export function getTransaction(
   requestParameters: {txnHashOrVersion: string | number},
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.Transaction> {
   const {txnHashOrVersion} = requestParameters;
   if (typeof txnHashOrVersion === "number" || isNumeric(txnHashOrVersion)) {
@@ -54,54 +52,50 @@ export function getTransaction(
       typeof txnHashOrVersion === "number"
         ? txnHashOrVersion
         : parseInt(txnHashOrVersion);
-    return getTransactionByVersion(version, nodeUrl);
+    return getTransactionByVersion(version, client);
   } else {
-    return getTransactionByHash(txnHashOrVersion as string, nodeUrl);
+    return getTransactionByHash(txnHashOrVersion as string, client);
   }
 }
 
 function getTransactionByVersion(
   version: number,
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.Transaction> {
-  const client = new AptosClient(nodeUrl);
   return withResponseError(client.getTransactionByVersion(BigInt(version)));
 }
 
 function getTransactionByHash(
   hash: string,
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.Transaction> {
-  const client = new AptosClient(nodeUrl);
   return withResponseError(client.getTransactionByHash(hash));
 }
 
-export function getLedgerInfo(nodeUrl: string): Promise<Types.IndexResponse> {
-  const client = new AptosClient(nodeUrl);
+export function getLedgerInfo(
+  client: AptosClient,
+): Promise<Types.IndexResponse> {
   return withResponseError(client.getLedgerInfo());
 }
 
 export function getLedgerInfoWithoutResponseError(
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.IndexResponse> {
-  const client = new AptosClient(nodeUrl);
   return client.getLedgerInfo();
 }
 
 export function getAccount(
   requestParameters: {address: string},
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.AccountData> {
-  const client = new AptosClient(nodeUrl);
   const {address} = requestParameters;
   return withResponseError(client.getAccount(address));
 }
 
 export function getAccountResources(
   requestParameters: {address: string; ledgerVersion?: number},
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.MoveResource[]> {
-  const client = new AptosClient(nodeUrl);
   const {address, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
@@ -118,9 +112,8 @@ export function getAccountResource(
     resourceType: string;
     ledgerVersion?: number;
   },
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.MoveResource> {
-  const client = new AptosClient(nodeUrl);
   const {address, resourceType, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
@@ -135,9 +128,8 @@ export function getAccountResource(
 
 export function getAccountModules(
   requestParameters: {address: string; ledgerVersion?: number},
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.MoveModuleBytecode[]> {
-  const client = new AptosClient(nodeUrl);
   const {address, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
@@ -154,9 +146,8 @@ export function getAccountModule(
     moduleName: string;
     ledgerVersion?: number;
   },
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.MoveModuleBytecode> {
-  const client = new AptosClient(nodeUrl);
   const {address, moduleName, ledgerVersion} = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
@@ -171,10 +162,9 @@ export function getAccountModule(
 
 export function view(
   request: Types.ViewRequest,
-  nodeUrl: string,
+  client: AptosClient,
   ledgerVersion?: string,
 ): Promise<Types.MoveValue[]> {
-  const client = new AptosClient(nodeUrl);
   let parsedVersion = ledgerVersion;
 
   // Handle non-numbers, to default to the latest ledger version
@@ -187,37 +177,33 @@ export function view(
 
 export function getTableItem(
   requestParameters: {tableHandle: string; data: Types.TableItemRequest},
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<any> {
-  const client = new AptosClient(nodeUrl);
   const {tableHandle, data} = requestParameters;
   return withResponseError(client.getTableItem(tableHandle, data));
 }
 
 export function getBlockByHeight(
   requestParameters: {height: number; withTransactions: boolean},
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.Block> {
   const {height, withTransactions} = requestParameters;
-  const client = new AptosClient(nodeUrl);
   return withResponseError(client.getBlockByHeight(height, withTransactions));
 }
 
 export function getBlockByVersion(
   requestParameters: {version: number; withTransactions: boolean},
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.Block> {
   const {version, withTransactions} = requestParameters;
-  const client = new AptosClient(nodeUrl);
   return withResponseError(client.getBlockByVersion(version, withTransactions));
 }
 
 export async function getRecentBlocks(
   currentBlockHeight: number,
   count: number,
-  nodeUrl: string,
+  client: AptosClient,
 ): Promise<Types.Block[]> {
-  const client = new AptosClient(nodeUrl);
   const blocks = [];
   for (let i = 0; i < count; i++) {
     const block = await client.getBlockByHeight(currentBlockHeight - i, false);

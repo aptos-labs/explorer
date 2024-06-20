@@ -49,7 +49,7 @@ async function fetchTotalSupply(
       tableHandle: aggregatorData.handle,
       data: tableItemRequest,
     },
-    state.network_value,
+    state.aptos_client,
   );
 
   return parseInt(supplyLimit);

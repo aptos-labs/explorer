@@ -24,10 +24,7 @@ export function useGetAccountResource(
   return useQuery<Types.MoveResource, ResponseError>({
     queryKey: ["accountResource", {address, resource}, state.network_value],
     queryFn: () =>
-      getAccountResource(
-        {address, resourceType: resource},
-        state.network_value,
-      ),
+      getAccountResource({address, resourceType: resource}, state.aptos_client),
     refetchOnWindowFocus: false,
   });
 }

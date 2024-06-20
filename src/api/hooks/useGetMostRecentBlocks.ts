@@ -11,7 +11,7 @@ export function useGetMostRecentBlocks(count: number) {
 
   const {data: ledgerData} = useQuery({
     queryKey: ["ledgerInfo", state.network_value],
-    queryFn: () => getLedgerInfo(state.network_value),
+    queryFn: () => getLedgerInfo(state.aptos_client),
   });
   const currentBlockHeight = ledgerData?.block_height;
 
@@ -21,7 +21,7 @@ export function useGetMostRecentBlocks(count: number) {
         const blocks = await getRecentBlocks(
           parseInt(currentBlockHeight),
           count,
-          state.network_value,
+          state.aptos_client,
         );
         setRecentBlocks(blocks);
         setIsLoading(false);

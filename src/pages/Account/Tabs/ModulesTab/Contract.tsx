@@ -523,7 +523,7 @@ function ReadContractForm({
     try {
       const result = await view(
         viewRequest,
-        state.network_value,
+        state.aptos_client,
         data.ledgerVersion,
       );
       setResult(result);
