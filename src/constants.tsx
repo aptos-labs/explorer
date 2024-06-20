@@ -5,7 +5,7 @@ export const devnetUrl =
   import.meta.env.APTOS_DEVNET_URL ||
   "https://api-staging.devnet.aptoslabs.com/v1";
 
-export const networks = {
+export const networks: Record<string, string> = {
   mainnet: "https://api.mainnet.aptoslabs.com/v1",
   testnet: "https://api-staging.testnet.aptoslabs.com/v1",
   devnet: devnetUrl,

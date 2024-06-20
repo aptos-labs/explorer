@@ -79,8 +79,12 @@ export function getLedgerInfo(
 }
 
 export function getLedgerInfoWithoutResponseError(
-  client: AptosClient,
+  nodeUrl: string,
 ): Promise<Types.IndexResponse> {
+  // This is a special case where we don't use the pre-existing client. This means we
+  // do not attach an API key to the request, but it's okay for just this request to be
+  // sent anonymously.
+  const client = new AptosClient(nodeUrl);
   return client.getLedgerInfo();
 }
 
