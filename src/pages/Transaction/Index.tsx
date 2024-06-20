@@ -17,7 +17,7 @@ export default function TransactionPage() {
 
   const {isLoading, data, error} = useQuery<Types.Transaction, ResponseError>({
     queryKey: ["transaction", {txnHashOrVersion}, state.network_value],
-    queryFn: () => getTransaction({txnHashOrVersion}, state.network_value),
+    queryFn: () => getTransaction({txnHashOrVersion}, state.aptos_client),
   });
 
   if (isLoading) {

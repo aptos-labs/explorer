@@ -12,7 +12,7 @@ export function useGetAccount(
 
   const result = useQuery<Types.AccountData, ResponseError>({
     queryKey: ["account", {address}, state.network_value],
-    queryFn: () => getAccount({address}, state.network_value),
+    queryFn: () => getAccount({address}, state.aptos_client),
     retry: options?.retry ?? false,
   });
 

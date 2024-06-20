@@ -102,7 +102,7 @@ export default function HeaderSearch() {
         // It's either an account OR an object: we query both at once to save time
         const accountPromise = await getAccount(
           {address: searchText},
-          state.network_value,
+          state.aptos_client,
         )
           .then((): SearchResult => {
             return {
@@ -117,7 +117,7 @@ export default function HeaderSearch() {
 
         const resourcePromise = await getAccountResources(
           {address: searchText},
-          state.network_value,
+          state.aptos_client,
         )
           .then((resources): SearchResult | undefined => {
             let hasObjectCore = false;
@@ -144,7 +144,7 @@ export default function HeaderSearch() {
       if (isValidTxnHashOrVer) {
         const txnPromise = getTransaction(
           {txnHashOrVersion: searchText},
-          state.network_value,
+          state.aptos_client,
         )
           .then((): SearchResult => {
             return {
@@ -162,7 +162,7 @@ export default function HeaderSearch() {
       if (isValidBlockHeightOrVer) {
         const blockByHeightPromise = getBlockByHeight(
           {height: parseInt(searchText), withTransactions: false},
-          state.network_value,
+          state.aptos_client,
         )
           .then((): SearchResult => {
             return {
@@ -177,7 +177,7 @@ export default function HeaderSearch() {
 
         const blockByVersionPromise = getBlockByVersion(
           {version: parseInt(searchText), withTransactions: false},
-          state.network_value,
+          state.aptos_client,
         )
           .then((block): SearchResult => {
             return {
