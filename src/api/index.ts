@@ -219,10 +219,16 @@ export async function getRecentBlocks(
 ): Promise<Types.Block[]> {
   const client = new AptosClient(nodeUrl);
   const blocks = [];
-  for (let i = 0; i < count; i++) {
-    const block = await client.getBlockByHeight(currentBlockHeight - i, false);
-    blocks.push(block);
+  for (let i = 0; i < count + 1; i++) {
+    if (currentBlockHeight - i >= 0) {
+      const block = await client.getBlockByHeight(
+        currentBlockHeight - i,
+        false,
+      );
+      blocks.push(block);
+    }
   }
+  console.log("blocks", blocks);
   return blocks;
 }
 

@@ -9,6 +9,7 @@ import PageHeader from "../layout/PageHeader";
 
 export default function BlockPage() {
   const {height} = useParams();
+  console.log("height", height);
 
   const {data, isLoading, error} = useGetBlockByHeight({
     height: parseInt(height ?? ""),
