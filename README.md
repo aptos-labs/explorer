@@ -1,4 +1,4 @@
-# Movement M1 Explorer
+# Movement Explorer
 
 ## How to use
 

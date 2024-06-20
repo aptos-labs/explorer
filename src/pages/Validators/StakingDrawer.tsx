@@ -23,7 +23,7 @@ const faqStakingData = [
       <React.Fragment>
         As an MOVE holder, you can 'delegate' your MOVE to a delegation pool.
         The total delegation pool is an aggregation of staked MOVE from various
-        token owners, and collectively staked. Movement M1 is a proof-of-stake
+        token owners, and collectively staked. Movement is a proof-of-stake
         network, which means that tokens are staked to{" "}
         <Link to={"#validators-section"}>validators</Link> in order to keep the
         network healthy.
@@ -172,7 +172,7 @@ const faqValidatorData = [
         Validator nodes confirm transactions by proposing and executing blocks
         on the network. The stake that they hold helps to prove that they are
         trusted to vote on transactions. You can read more about how the
-        Movement M1 blockchain works{" "}
+        Movement blockchain works{" "}
         <Link
           to={"https://aptos.dev/guides/basics-life-of-txn#consensus"}
           target="_blank"

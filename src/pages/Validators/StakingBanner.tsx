@@ -57,7 +57,7 @@ export function StakingBanner() {
   );
 
   const text =
-    "Movement M1 enables delegations and staking services. See Staking for more details.";
+    "Movement enables delegations and staking services. See Staking for more details.";
 
   const children = isOnMobile ? (
     <Stack direction="column">

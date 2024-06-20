@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 const root = "https://explorer.movementlabs.xyz/"
-const pageTitle = "Movement M1 Explorer"
+const pageTitle = "Movement Explorer"
 
 function health_log({
   health_check,
@@ -28,7 +28,7 @@ test('exists', async ({ page }) => {
     status: successful ? "PASS" : "FAIL",
     reason: "page exists"
   })
-  await expect(page).toHaveTitle(/Movement M1 Explorer/);
+  await expect(page).toHaveTitle(/Movement Explorer/);
 });
 
 test('has title', async ({ page }) => {
@@ -42,7 +42,7 @@ test('has title', async ({ page }) => {
   })
 
   // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Movement M1 Explorer/);
+  await expect(page).toHaveTitle(/Movement Explorer/);
 
 });
 
