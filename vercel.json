@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/blocks/:path*",
+      "destination": "https://explorer.testnet.suzuka.movementlabs.xyz/blocks/:path*"
+    },
+    {
+      "source": "/txn/:path*",
+      "destination": "https://explorer.testnet.suzuka.movementlabs.xyz/txn/:path*"
+    },
+    {
+      "source": "/txn/:path*",
+      "destination": "https://explorer.testnet.suzuka.movementlabs.xyz/account/:path*"
+    }
+  ]
+}
