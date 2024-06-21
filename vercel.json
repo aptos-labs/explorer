@@ -2,15 +2,15 @@
   "rewrites": [
     {
       "source": "/blocks/:path*",
-      "destination": "https://explorer.testnet.suzuka.movementlabs.xyz/blocks/:path*"
+      "destination": "/blocks/:[path*].tsx"
     },
     {
       "source": "/txn/:path*",
-      "destination": "https://explorer.testnet.suzuka.movementlabs.xyz/txn/:path*"
+      "destination": "/txn/:[path*].tsx"
     },
     {
-      "source": "/txn/:path*",
-      "destination": "https://explorer.testnet.suzuka.movementlabs.xyz/account/:path*"
+      "source": "/account/:path*",
+      "destination": "/account/:[path*].tsx"
     }
   ]
 }
