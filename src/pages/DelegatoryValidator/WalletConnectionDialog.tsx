@@ -45,6 +45,7 @@ export default function WalletConnectionDialog({
             handleNavigate={() => navigate(`/account/${account?.address}`)}
             sortDefaultWallets={sortPetraFirst}
             sortMoreWallets={sortPetraFirst}
+            modalMaxWidth="sm"
           />
         </Stack>
       </DialogActions>

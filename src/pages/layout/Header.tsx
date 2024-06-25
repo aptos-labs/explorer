@@ -153,6 +153,7 @@ export default function Header() {
                   }
                   sortDefaultWallets={sortPetraFirst}
                   sortMoreWallets={sortPetraFirst}
+                  modalMaxWidth="sm"
                 />
               </Box>
             )}

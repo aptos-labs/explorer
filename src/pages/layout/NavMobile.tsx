@@ -97,6 +97,7 @@ export default function NavMobile() {
           handleNavigate={() => navigate(`/account/${account?.address}`)}
           sortDefaultWallets={sortPetraFirst}
           sortMoreWallets={sortPetraFirst}
+          modalMaxWidth="sm"
         />
       </Menu>
     </Box>
