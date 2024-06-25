@@ -5,6 +5,10 @@
       "destination": "/blocks/:[path*].tsx"
     },
     {
+      "source": "/block/:path*",
+      "destination": "/block/:[path*].tsx"
+    },
+    {
       "source": "/txn/:path*",
       "destination": "/txn/:[path*].tsx"
     },
