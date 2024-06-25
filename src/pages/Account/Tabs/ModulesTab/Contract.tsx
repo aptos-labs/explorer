@@ -458,6 +458,7 @@ function RunContractForm({
               networkSupport={state.network_name}
               sortDefaultWallets={sortPetraFirst}
               sortMoreWallets={sortPetraFirst}
+              modalMaxWidth="sm"
             />
             <Typography ml={2} fontSize={10}>
               To run you need to connect wallet first
