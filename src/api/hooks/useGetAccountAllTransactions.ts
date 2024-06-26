@@ -35,11 +35,10 @@ export function useGetAccountAllTransactionCount(
 
 const ACCOUNT_TRANSACTIONS_QUERY = gql`
   query AccountTransactionsData($address: String, $limit: Int, $offset: Int) {
-    address_version_from_move_resources(
-      where: {address: {_eq: $address}}
+    account_transactions(
+      where: {account_address: {_eq: $address}}
       order_by: {transaction_version: desc}
       limit: $limit
-      offset: $offset
     ) {
       transaction_version
     }
@@ -61,7 +60,7 @@ export function useGetAccountAllTransactionVersions(
     return [];
   }
 
-  const versions: number[] = data.address_version_from_move_resources.map(
+  const versions: number[] = data.account_transactions.map(
     (resource: {transaction_version: number}) => {
       return resource.transaction_version;
     },
