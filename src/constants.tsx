@@ -3,15 +3,20 @@
  */
 export const devnetUrl =
   import.meta.env.APTOS_DEVNET_URL ||
-  "https://aptos.devnet.m1.movementlabs.xyz";
+  "https://aptos.devnet.suzuka.movementlabs.xyz/v1";
+export const testnetUrl =
+  import.meta.env.TESTNET_URL ||
+  "https://aptos.testnet.suzka.movementlabs.xyz/v1";
+export const previewnetUrl =
+  import.meta.env.INOLA_URL ||
+  "https://aptos.testnet.imola.movementlabs.xyz/v1";
 
 export const networks = {
-  mainnet: "https://aptos.movementlabs.xyz",
-  testnet: "https://aptos.testnet.suzuka.movementlabs.xyz/v1/",
+  mainnet: testnetUrl,
+  testnet: testnetUrl,
   devnet: devnetUrl,
   local: "http://localhost:30731",
-  previewnet: "https://aptos.testnet.suzuka.movementlabs.xyz/v1/",
-  randomnet: "https://aptos.testnet.suzuka.movementlabs.xyz/v1/",
+  previewnet: previewnetUrl,
 };
 
 export type NetworkName = keyof typeof networks;
@@ -25,8 +30,7 @@ export enum Network {
   TESTNET = "testnet",
   DEVNET = "devnet",
   LOCAL = "local",
-  PREVIEWNET = "previewnet",
-  RANDOMNET = "randomnet",
+  PREVIEWNET = "mevm-devnet",
 }
 
 // Remove trailing slashes
