@@ -1,4 +1,4 @@
-# Movement Explorer
+# Movement's Explorer
 
 ## How to use
 
