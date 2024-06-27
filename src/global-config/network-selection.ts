@@ -47,7 +47,7 @@ export function useNetworkSelector() {
     network: NetworkName,
     {replace = false}: {replace?: boolean} = {},
   ) {
-    console.log(replace);
+    return replace;
     // if (!isValidNetworkName(network)) return;
     // setSearchParams(
     //   (prev) => {

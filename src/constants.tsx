@@ -8,8 +8,7 @@ export const testnetUrl =
   import.meta.env.TESTNET_URL ||
   "https://aptos.testnet.suzka.movementlabs.xyz/v1";
 export const previewnetUrl =
-  import.meta.env.INOLA_URL ||
-  "https://aptos.testnet.imola.movementlabs.xyz/v1";
+  import.meta.env.INOLA_URL || "https://aptos.devnet.imola.movementlabs.xyz/v1";
 
 export const networks = {
   mainnet: testnetUrl,
