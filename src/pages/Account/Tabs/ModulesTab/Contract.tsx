@@ -4,7 +4,7 @@ import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import SidebarItem from "../../Components/SidebarItem";
-import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
+import {WalletConnector} from "../../../../components/WalletConnector";
 import {
   useWallet,
   InputTransactionData,
@@ -39,7 +39,7 @@ import {
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
-import {encodeInputArgsForViewRequest} from "../../../../utils";
+import {encodeInputArgsForViewRequest, sortPetraFirst} from "../../../../utils";
 import {accountPagePath} from "../../Index";
 import {parseTypeTag} from "@aptos-labs/ts-sdk";
 
@@ -454,7 +454,12 @@ function RunContractForm({
           </Box>
         ) : (
           <Box display="flex" flexDirection="row" alignItems="center">
-            <WalletConnector networkSupport={state.network_name} />
+            <WalletConnector
+              networkSupport={state.network_name}
+              sortDefaultWallets={sortPetraFirst}
+              sortMoreWallets={sortPetraFirst}
+              modalMaxWidth="sm"
+            />
             <Typography ml={2} fontSize={10}>
               To run you need to connect wallet first
             </Typography>
@@ -519,7 +524,7 @@ function ReadContractForm({
     try {
       const result = await view(
         viewRequest,
-        state.network_value,
+        state.aptos_client,
         data.ledgerVersion,
       );
       setResult(result);

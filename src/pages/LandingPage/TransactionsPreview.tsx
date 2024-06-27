@@ -26,7 +26,7 @@ export default function TransactionsPreview() {
   const limit = PREVIEW_LIMIT;
   const result = useQuery({
     queryKey: ["transactions", {limit}, state.network_value],
-    queryFn: () => getTransactions({limit}, state.network_value),
+    queryFn: () => getTransactions({limit}, state.aptos_client),
   });
   const augmentTo = useAugmentToWithGlobalSearchParams();
 

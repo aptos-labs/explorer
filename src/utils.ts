@@ -1,3 +1,4 @@
+import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
 import {HexString, Types} from "aptos";
 import pako from "pako";
 import {Statsig} from "statsig-react";
@@ -279,4 +280,9 @@ export function getStableID(): string {
 // for example: 0x123 => 0x000...000123  (61 0s before 123)
 export function normalizeAddress(address: string): string {
   return "0x" + address.substring(2).padStart(64, "0");
+}
+
+/** A wallet sort function to ensure that Petra is always at the top of the wallet list. */
+export function sortPetraFirst(a: AnyAptosWallet) {
+  return a.name === "Petra" ? -1 : 1;
 }

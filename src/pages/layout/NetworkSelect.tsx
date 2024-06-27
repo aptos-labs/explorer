@@ -152,6 +152,13 @@ export default function NetworkSelect() {
               <NetworkMenuItem networkName={networkName} />
             </MenuItem>
           ))}
+          <MenuItem
+           key={"custom"}
+           value={"custom"}
+           sx={{paddingY: 0, textTransform: "capitalize"}}
+           >
+            Custom
+           </MenuItem>
         </Select>
       </FormControl>
     </Box>

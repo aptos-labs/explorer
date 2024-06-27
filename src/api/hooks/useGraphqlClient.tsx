@@ -5,10 +5,12 @@ import {
   ApolloProvider,
   HttpLink,
   NormalizedCacheObject,
+  ApolloLink,
 } from "@apollo/client";
 import {useEffect, useState} from "react";
-import {NetworkName} from "../../constants";
+import {NetworkName, getApiKey} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {getCustomParameters} from "../../global-config/GlobalConfig"
 
 function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   const graphqlUri = getGraphqlURI(networkName);
@@ -20,13 +22,16 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
     case "mainnet":
       return "https://aptos.movementlabs.xyz/graphql";
     case "testnet":
-      return "https:/aptos.testnet.movementlabs.xyz/graphql";
+      return "https:/aptos.testnet.suzuka.movementlabs.xyz/graphql";
     case "devnet":
-      return "https://aptos.devnet.m1.movementlabs.xyz/graphql";
+      return "https://aptos.devnet.suzuka.movementlabs.xyz/graphql";
     case "local":
       return "http://0.0.0.0:30731/graphql";
-    case "randomnet":
-      return "https://aptos.testnet.movementlabs.xyz/graphql";
+    case "mevmdevnet":
+      return "https://aptos.devnet.imola.movementlabs.xyz/graphql";
+    case "custom":
+      return getCustomParameters();
+
     default:
       return undefined;
   }
@@ -35,10 +40,24 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
 function getGraphqlClient(
   networkName: NetworkName,
 ): ApolloClient<NormalizedCacheObject> {
+  const apiKey = getApiKey(networkName);
+  // Middleware to attach the authorization token.
+  const authMiddleware = new ApolloLink((operation, forward) => {
+    operation.setContext(({headers = {}}) => ({
+      headers: {
+        ...headers,
+        ...(apiKey ? {authorization: `Bearer ${apiKey}`} : {}),
+      },
+    }));
+    return forward(operation);
+  });
+
+  const httpLink = new HttpLink({
+    uri: getGraphqlURI(networkName),
+  });
+
   return new ApolloClient({
-    link: new HttpLink({
-      uri: getGraphqlURI(networkName),
-    }),
+    link: ApolloLink.from([authMiddleware, httpLink]),
     cache: new InMemoryCache(),
   });
 }

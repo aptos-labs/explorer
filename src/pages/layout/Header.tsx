@@ -2,14 +2,19 @@ import React, {useRef} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
-// import NetworkSelect from "./NetworkSelect";
+import NetworkSelect from "./NetworkSelect";
 import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
-// import {ReactComponent as LogoIcon} from "../../assets/svg/aptos_logo_icon.svg";
+
+// @ts-expect-error logo
 import LogoIconW from "../../assets/svg/logo_txt_w.svg?react";
+// @ts-expect-error logo
 import LogoIconB from "../../assets/svg/logo_txt_b.svg?react";
+// @ts-expect-error logo
 import IconLight from "../../assets/svg/icon_light.svg?react";
+// @ts-expect-error logo
 import IconDark from "../../assets/svg/icon_dark.svg?react";
+
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Nav from "./Nav";
@@ -17,12 +22,14 @@ import NavMobile from "./NavMobile";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
-import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
+// import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
+import {WalletConnector} from "../../components/WalletConnector";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import {Link, useNavigate} from "../../routing";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {sortPetraFirst} from "../../utils";
 
 export default function Header() {
   const scrollTop = () => {
@@ -131,7 +138,7 @@ export default function Header() {
             </Link>
 
             <Nav />
-            {/*<NetworkSelect />*/}
+            <NetworkSelect />
             <Button
               onClick={toggleColorMode}
               sx={{
@@ -152,11 +159,15 @@ export default function Header() {
             <NavMobile />
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
+
                 <WalletConnector
                   networkSupport={state.network_name}
                   handleNavigate={() =>
                     navigate(`/account/${account?.address}`)
                   }
+                  sortDefaultWallets={sortPetraFirst}
+                  sortMoreWallets={sortPetraFirst}
+                  modalMaxWidth="sm"
                 />
               </Box>
             )}

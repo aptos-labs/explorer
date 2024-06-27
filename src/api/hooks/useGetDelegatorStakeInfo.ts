@@ -1,4 +1,4 @@
-import {AptosClient, Types} from "aptos";
+import {Types} from "aptos";
 import {useState, useEffect} from "react";
 import {getStake} from "..";
 import {useGlobalState} from "../../global-config/GlobalConfig";
@@ -11,12 +11,18 @@ export function useGetDelegatorStakeInfo(
   const [stakes, setStakes] = useState<Types.MoveValue[]>([]);
 
   useEffect(() => {
-    const client = new AptosClient(state.network_value);
     const fetchData = async () => {
-      setStakes(await getStake(client, delegatorAddress, validatorAddress));
+      setStakes(
+        await getStake(state.aptos_client, delegatorAddress, validatorAddress),
+      );
     };
     fetchData();
-  }, [state.network_value, delegatorAddress, validatorAddress]);
+  }, [
+    state.network_value,
+    state.aptos_client,
+    delegatorAddress,
+    validatorAddress,
+  ]);
 
   return {stakes};
 }

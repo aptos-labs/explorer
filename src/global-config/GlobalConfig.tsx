@@ -4,6 +4,7 @@ import {
   FeatureName,
   NetworkName,
   defaultNetworkName,
+  getApiKey,
   networks,
 } from "../constants";
 import {
@@ -46,9 +47,10 @@ function deriveGlobalState({
   network_name: NetworkName;
 }): GlobalState {
   const indexerUri = getGraphqlURI(network_name);
+  const apiKey = getApiKey(network_name);
   let indexerClient = undefined;
   if (indexerUri) {
-    indexerClient = new IndexerClient(indexerUri, {HEADERS});
+    indexerClient = new IndexerClient(indexerUri, {HEADERS, TOKEN: apiKey});
   }
   return {
     feature_name,
@@ -56,13 +58,17 @@ function deriveGlobalState({
     network_value: networks[network_name],
     aptos_client: new AptosClient(networks[network_name], {
       HEADERS,
+      TOKEN: apiKey,
     }),
     indexer_client: indexerClient,
     sdk_v2_client: new Aptos(
       new AptosConfig({
         network: NetworkToNetworkName[network_name],
+        fullnode: networks[network_name],
+        indexer: indexerUri,
         clientConfig: {
           HEADERS,
+          API_KEY: apiKey,
         },
       }),
     ),
@@ -115,3 +121,7 @@ export const useGlobalState = () =>
     React.useContext(GlobalStateContext),
     React.useContext(GlobalActionsContext),
   ] as const;
+
+  export const getCustomParameters = () => {
+
+  }

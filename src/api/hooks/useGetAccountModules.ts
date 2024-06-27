@@ -11,6 +11,6 @@ export function useGetAccountModules(
 
   return useQuery<Array<Types.MoveModuleBytecode>, ResponseError>({
     queryKey: ["accountModules", {address}, state.network_value],
-    queryFn: () => getAccountModules({address}, state.network_value),
+    queryFn: () => getAccountModules({address}, state.aptos_client),
   });
 }

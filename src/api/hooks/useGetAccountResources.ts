@@ -14,7 +14,7 @@ export function useGetAccountResources(
 
   return useQuery<Array<Types.MoveResource>, ResponseError>({
     queryKey: ["accountResources", {address}, state.network_value],
-    queryFn: () => getAccountResources({address}, state.network_value),
+    queryFn: () => getAccountResources({address}, state.aptos_client),
     retry: options?.retry ?? false,
   });
 }

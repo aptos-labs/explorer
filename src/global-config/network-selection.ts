@@ -16,17 +16,17 @@ function getUserSelectedNetworkFromLocalStorageWithDefault(): NetworkName {
   return network as NetworkName;
 }
 
-// function writeSelectedNetworkToLocalStorage(network: NetworkName) {
-//   const currentLocalStorageNetwork = localStorage.getItem(
-//     SELECTED_NETWORK_LOCAL_STORAGE_KEY,
-//   );
-//   if (network === defaultNetworkName && currentLocalStorageNetwork != null) {
-//     // if network selection is default network (i.e. mainnet) we remove the local storage entry
-//     localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
-//   } else if (currentLocalStorageNetwork !== network) {
-//     localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, network);
-//   }
-// }
+function writeSelectedNetworkToLocalStorage(network: NetworkName) {
+  const currentLocalStorageNetwork = localStorage.getItem(
+    SELECTED_NETWORK_LOCAL_STORAGE_KEY,
+  );
+  if (network === defaultNetworkName && currentLocalStorageNetwork != null) {
+    // if network selection is default network (i.e. mainnet) we remove the local storage entry
+    localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
+  } else if (currentLocalStorageNetwork !== network) {
+    localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, network);
+  }
+}
 
 // This is a custom hook that allows us to read and write the selectedNetwork.
 // Note that this hook implements essentially 3 things:
@@ -39,7 +39,6 @@ function getUserSelectedNetworkFromLocalStorageWithDefault(): NetworkName {
 // WARNING: don't use this hook directly in components, rather use: const [useGlobalState, {selectNetwork}] = useGlobalState();
 export function useNetworkSelector() {
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log(setSearchParams);
 
   const selectedNetworkQueryParam = searchParams.get("network") ?? "";
 
@@ -47,17 +46,16 @@ export function useNetworkSelector() {
     network: NetworkName,
     {replace = false}: {replace?: boolean} = {},
   ) {
-    return replace;
-    // if (!isValidNetworkName(network)) return;
-    // setSearchParams(
-    //   (prev) => {
-    //     const newParams = new URLSearchParams(prev);
-    //     newParams.set("network", network);
-    //     return newParams;
-    //   },
-    //   {replace},
-    // );
-    // writeSelectedNetworkToLocalStorage(network);
+    if (!isValidNetworkName(network)) return;
+    setSearchParams(
+      (prev) => {
+        const newParams = new URLSearchParams(prev);
+        newParams.set("network", network);
+        return newParams;
+      },
+      {replace},
+    );
+    writeSelectedNetworkToLocalStorage(network);
   }
 
   // on init check for existence of network query param, if not present, check local storage for a previously selected network. Then set query param to the network defined in local storage.

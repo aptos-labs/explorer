@@ -11,7 +11,7 @@ import LoadingModal from "../../components/LoadingModal";
 import Error from "./Error";
 // import { MoveNamesBanner } from "./Components/MoveNamesBanner";
 // import { useGlobalState } from "../../global-config/GlobalConfig";
-// import { Network } from "aptos";
+import { Network } from "aptos";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 import {useNavigate} from "../../routing";

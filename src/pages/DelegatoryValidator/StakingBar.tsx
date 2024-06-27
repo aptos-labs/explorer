@@ -24,7 +24,7 @@ import {DelegationStateContext} from "./context/DelegationContext";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
 import {OCTA} from "../../constants";
-import {AptosClient, Types} from "aptos";
+import {Types} from "aptos";
 import {getAddStakeFee} from "../../api";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import {useGlobalState} from "../../global-config/GlobalConfig";
@@ -160,17 +160,16 @@ function StakingBarContent({
         : Number(addStakeFee));
 
   useEffect(() => {
-    const client = new AptosClient(state.network_value);
     async function fetchData() {
       const fee = await getAddStakeFee(
-        client,
+        state.aptos_client,
         validator!.owner_address,
         MINIMUM_APT_IN_POOL_FOR_EXPLORER.toString(),
       );
       setAddStakeFee(fee[0]);
     }
     fetchData();
-  }, [state.network_value, balance, validator]);
+  }, [state.network_value, state.aptos_client, balance, validator]);
 
   const stakeButton = (
     <StyledTooltip
