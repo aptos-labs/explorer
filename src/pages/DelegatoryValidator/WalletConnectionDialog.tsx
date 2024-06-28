@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import StyledDialog from "../../components/StyledDialog";
+// @ts-expect-error logo
 import ConnectWalletModalIcon from "../../assets/forum_icon.svg?react";
 import {WalletConnector} from "../../components/WalletConnector";
 

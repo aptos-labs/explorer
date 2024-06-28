@@ -3,7 +3,9 @@ import React, {useState} from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+// @ts-expect-error logo
 import HamburgerIcon from "../../assets/svg/icon_hamburger.svg?react";
+// @ts-expect-error logo
 import CloseIcon from "../../assets/svg/icon_close.svg?react";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import Box from "@mui/material/Box";
