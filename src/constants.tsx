@@ -1,11 +1,8 @@
-import { getCustomParameters } from "./pages/layout/NetworkSelect";
-
 /**
  * Network
  */
 export const mainnetUrl =
-  import.meta.env.APTOS_DEVNET_URL ||
-  "https://green.aptos.devnet.suzuka.movementlabs.xyz/v1";
+  import.meta.env.APTOS_DEVNET_URL || "https://green.aptos.movementlabs.xyz/v1";
 export const devnetUrl =
   import.meta.env.APTOS_DEVNET_URL ||
   "https://green.aptos.devnet.suzuka.movementlabs.xyz/v1";
@@ -13,7 +10,8 @@ export const testnetUrl =
   import.meta.env.TESTNET_URL ||
   "https://green.aptos.testnet.suzuka.movementlabs.xyz/v1";
 export const mevmdevnetUrl =
-  import.meta.env.INOLA_URL || "https://green.aptos.devnet.imola.movementlabs.xyz/v1";
+  import.meta.env.INOLA_URL ||
+  "https://green.aptos.devnet.imola.movementlabs.xyz/v1";
 
 export const networks = {
   mainnet: mainnetUrl,
@@ -21,7 +19,7 @@ export const networks = {
   devnet: devnetUrl,
   local: "http://localhost:30731",
   mevmdevnet: mevmdevnetUrl,
-  custom: getCustomParameters().restUrl
+  custom: "",
 };
 
 export type NetworkName = keyof typeof networks;
@@ -47,7 +45,7 @@ const apiKeys: ApiKeys = {
   devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
   local: undefined,
   mevmdevnet: undefined,
-  custom: undefined
+  custom: undefined,
 };
 
 export function getApiKey(network_name: NetworkName): string | undefined {
@@ -64,7 +62,7 @@ export enum Network {
   DEVNET = "devnet",
   LOCAL = "local",
   PREVIEWNET = "mevm-devnet",
-  CUSTOM = "custom"
+  CUSTOM = "custom",
 }
 
 // Remove trailing slashes
