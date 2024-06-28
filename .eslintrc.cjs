@@ -8,11 +8,13 @@ module.exports = {
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {ecmaVersion: "latest", sourceType: "module"},
+  ignorePatterns: ["pnpm-lock.yaml"],
+  // files: ['*.ts', '*.tsx'],
   // plugins: ['react-refresh'],
   rules: {
     // 'react-refresh/only-export-components': 'warn',
     // TODO: Remove these exceptions once we have better guards
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-non-null-asserted-optional-chain': 'off'
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
   },
 };

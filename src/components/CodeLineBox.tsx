@@ -3,10 +3,11 @@ import {Box, SxProps, Theme, useTheme} from "@mui/material";
 import {
   codeBlockColor,
   codeBlockColorClickableOnHover,
+  primary
 } from "../themes/colors/aptosColorPalette";
 
-const TEXT_COLOR_LIGHT = "#3a73fe";
-const TEXT_COLOR_DARK = "#3a73fe";
+const TEXT_COLOR_LIGHT = primary[100];
+const TEXT_COLOR_DARK = primary[100];
 
 export function CodeLineBox({
   children,

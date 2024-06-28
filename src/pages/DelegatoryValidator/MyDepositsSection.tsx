@@ -10,7 +10,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {AptosClient, Types} from "aptos";
+import {Types} from "aptos";
 import {useContext, useEffect, useState} from "react";
 import {getCanWithdrawPendingInactive} from "../../api";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
@@ -286,16 +286,20 @@ function MyDepositSectionContent({
     useState<Types.MoveValue>(false);
 
   useEffect(() => {
-    const client = new AptosClient(state.network_value);
     async function fetchData() {
       const canWithdraw = await getCanWithdrawPendingInactive(
-        client,
+        state.aptos_client,
         validator!.owner_address,
       );
       setCanWithdrawPendingInactive(canWithdraw[0]);
     }
     fetchData();
-  }, [validator.owner_address, state.network_value, validator]);
+  }, [
+    validator.owner_address,
+    state.network_value,
+    state.aptos_client,
+    validator,
+  ]);
 
   function MyDepositRow({stake, status}: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);

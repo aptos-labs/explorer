@@ -18,6 +18,24 @@ import {NetworkName, networks} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {grey} from "../../themes/colors/aptosColorPalette";
 
+interface CustomParams {restUrl : string, graphqlUrl: string}
+
+export let customParameters : CustomParams = {restUrl: "", graphqlUrl: ""};
+
+export const setCustomParameters = (params: CustomParams) => {
+  customParameters = params;
+};
+
+export const getCustomParameters = () => {
+  const restUrl = customParameters.restUrl;
+  const graphqlUrl = customParameters.graphqlUrl;
+
+  return {
+    restUrl,
+    graphqlUrl
+  };
+};
+
 function NetworkAndChainIdCached({
   networkName,
   chainId,
@@ -65,13 +83,32 @@ function NetworkMenuItem({networkName}: {networkName: string}) {
   );
 }
 
+const verifyUrl = (url: string) => {
+  return url.startsWith("https://")
+}
+
 export default function NetworkSelect() {
   const [state, {selectNetwork}] = useGlobalState();
   const theme = useTheme();
+  const [restUrl, setRestUrl] = React.useState('');
+  const [graphqlUrl, setGraphqlUrl] = React.useState('');
 
   const handleChange = (event: SelectChangeEvent<string>) => {
-    const network_name = event.target.value;
-    selectNetwork(network_name as NetworkName);
+    if (event.target.value == 'custom'){
+      if (verifyUrl(customParameters.restUrl) && verifyUrl(customParameters.graphqlUrl)){
+        const network_name = event.target.value;
+        selectNetwork(network_name as NetworkName);
+      } 
+    } else {
+      const network_name = event.target.value;
+      selectNetwork(network_name as NetworkName);}
+  };
+
+  const handleSubmit = (e : any) => {
+    e.preventDefault();
+    if (verifyUrl(restUrl) && verifyUrl(graphqlUrl)){
+    setCustomParameters({ restUrl, graphqlUrl });
+  }
   };
 
   function DropdownIcon(props: SvgIconProps) {
@@ -152,6 +189,24 @@ export default function NetworkSelect() {
               <NetworkMenuItem networkName={networkName} />
             </MenuItem>
           ))}
+          {/* <MenuItem
+           key={"custom"}
+           value={"custom"}
+           sx={{paddingY: 0, textTransform: "capitalize"}}
+           >
+            Custom
+            {openCustom && <form onSubmit={handleSubmit}>
+              <div>
+                <label>REST</label>
+                <input type="text" value={restUrl} onChange={(e) => setRestUrl(e.target.value)} />
+              </div>
+              <div>
+                <label>GraphQL</label>
+                <input type="text" value={graphqlUrl} onChange={(e) => setGraphqlUrl(e.target.value)} />
+              </div>
+              <button type="submit">Submit</button>
+            </form>}
+           </MenuItem> */}
         </Select>
       </FormControl>
     </Box>

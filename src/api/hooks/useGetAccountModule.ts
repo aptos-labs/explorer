@@ -12,7 +12,7 @@ export function useGetAccountModule(
 
   return useQuery<Types.MoveModuleBytecode, ResponseError>({
     queryKey: ["accountModule", {address, moduleName}, state.network_value],
-    queryFn: () => getAccountModule({address, moduleName}, state.network_value),
+    queryFn: () => getAccountModule({address, moduleName}, state.aptos_client),
     refetchOnWindowFocus: false,
   });
 }
