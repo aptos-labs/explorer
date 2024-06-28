@@ -10,7 +10,8 @@ import {
 import {useEffect, useState} from "react";
 import {NetworkName, getApiKey} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {getCustomParameters} from "../../global-config/GlobalConfig"
+import {getCustomParameters} from "../../../src/pages/layout/NetworkSelect";
+
 
 function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   const graphqlUri = getGraphqlURI(networkName);
@@ -30,7 +31,7 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
     case "mevmdevnet":
       return "https://aptos.devnet.imola.movementlabs.xyz/graphql";
     case "custom":
-      return getCustomParameters();
+      return getCustomParameters().graphqlUrl
 
     default:
       return undefined;
