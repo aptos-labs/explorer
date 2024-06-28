@@ -82,17 +82,10 @@
     "postinstall": "husky install"
   },
   "lint-staged": {
-    "*": [
-      "prettier --config .prettierrc.json -w",
-      "eslint --fix"
-    ]
+    "*": ["prettier --config .prettierrc.json -w", "eslint --fix"]
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
@@ -112,6 +105,7 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "client": "link:@types/vite/client",
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
