@@ -40,40 +40,6 @@ function AddressCell({balanceChange}: BalanceChangeCellProps) {
   );
 }
 
-function AmountBeforeCell({
-  balanceChange,
-  transaction,
-}: BalanceChangeCellProps) {
-  let amountBefore = BigInt(balanceChange.amountAfter) - balanceChange.amount;
-
-  const isSender = getIsSender(balanceChange.address, transaction);
-  if (isSender) {
-    amountBefore += getGas(transaction);
-  }
-
-  return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
-      <CurrencyValue
-        amount={amountBefore.toString()}
-        decimals={balanceChange.asset.decimals}
-        currencyCode={balanceChange.asset.symbol}
-      />
-    </GeneralTableCell>
-  );
-}
-
-function AmountAfterCell({balanceChange}: BalanceChangeCellProps) {
-  return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
-      <CurrencyValue
-        amount={balanceChange.amountAfter}
-        decimals={balanceChange.asset.decimals}
-        currencyCode={balanceChange.asset.symbol}
-      />
-    </GeneralTableCell>
-  );
-}
-
 function GasCell({balanceChange, transaction}: BalanceChangeCellProps) {
   const isSender = getIsSender(balanceChange.address, transaction);
 
@@ -118,21 +84,13 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
 
 const BalanceChangeCells = Object.freeze({
   address: AddressCell,
-  amountBefore: AmountBeforeCell,
-  amountAfter: AmountAfterCell,
   gas: GasCell,
   amount: AmountCell,
 });
 
 type Column = keyof typeof BalanceChangeCells;
 
-const DEFAULT_COLUMNS: Column[] = [
-  "address",
-  "amountBefore",
-  "gas",
-  "amount",
-  "amountAfter",
-];
+const DEFAULT_COLUMNS: Column[] = ["address", "gas", "amount"];
 
 type BalanceChangeRowProps = {
   balanceChange: BalanceChange;
@@ -169,14 +127,6 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
   switch (column) {
     case "address":
       return <GeneralTableHeaderCell header="Account" />;
-    case "amountBefore":
-      return (
-        <GeneralTableHeaderCell header="Balance Before" textAlignRight={true} />
-      );
-    case "amountAfter":
-      return (
-        <GeneralTableHeaderCell header="Balance After" textAlignRight={true} />
-      );
     case "gas":
       return <GeneralTableHeaderCell header="Gas" textAlignRight={true} />;
     case "amount":
@@ -207,7 +157,7 @@ export function CoinBalanceChangeTable({
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {balanceChanges.map((balanceChange: any, i: number) => {
+        {balanceChanges.map((balanceChange, i) => {
           return (
             <BalanceChangeRow
               key={i}

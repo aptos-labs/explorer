@@ -85,7 +85,6 @@ type ChangeData = {
 export type BalanceChange = {
   address: string;
   amount: bigint;
-  amountAfter: string;
   asset: {
     decimals: number;
     symbol: string;
@@ -203,6 +202,7 @@ export function useTransactionBalanceChanges(txn_version: string) {
     gql`
       query TransactionQuery($txn_version: String) {
         fungible_asset_activities(
+          distinct_on: amount
           where: {transaction_version: {_eq: ${txn_version}}}
         ) {
           amount
@@ -229,8 +229,10 @@ export function useTransactionBalanceChanges(txn_version: string) {
   const balanceChanges: BalanceChange[] =
     data?.fungible_asset_activities.map((a) => ({
       address: a.owner_address,
-      amount: BigInt(a.amount),
-      amountAfter: a.amount.toString(),
+      amount:
+        a.type === "0x1::aptos_coin::GasFeeEvent"
+          ? BigInt(-a.amount)
+          : BigInt(a.amount),
       asset: {
         decimals: a.metadata.decimals,
         symbol: a.metadata.symbol,
