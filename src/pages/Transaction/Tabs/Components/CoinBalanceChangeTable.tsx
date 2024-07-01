@@ -5,7 +5,9 @@ import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHea
 import {assertNever} from "../../../../utils";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import {BalanceChange} from "../../utils";
-import {APTCurrencyValue} from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import CurrencyValue, {
+  APTCurrencyValue,
+} from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {
   negativeColor,
   primary,
@@ -34,32 +36,6 @@ function AddressCell({balanceChange}: BalanceChangeCellProps) {
   return (
     <GeneralTableCell>
       <HashButton hash={balanceChange.address} type={HashType.ACCOUNT} />
-    </GeneralTableCell>
-  );
-}
-
-function AmountBeforeCell({
-  balanceChange,
-  transaction,
-}: BalanceChangeCellProps) {
-  let amountBefore = BigInt(balanceChange.amountAfter) - balanceChange.amount;
-
-  const isSender = getIsSender(balanceChange.address, transaction);
-  if (isSender) {
-    amountBefore += getGas(transaction);
-  }
-
-  return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
-      <APTCurrencyValue amount={amountBefore.toString()} />
-    </GeneralTableCell>
-  );
-}
-
-function AmountAfterCell({balanceChange}: BalanceChangeCellProps) {
-  return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
-      <APTCurrencyValue amount={balanceChange.amountAfter} />
     </GeneralTableCell>
   );
 }
@@ -97,28 +73,24 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
       }}
     >
       {isNegative ? "-" : "+"}
-      <APTCurrencyValue amount={amount.toString()} />
+      <CurrencyValue
+        amount={amount.toString()}
+        currencyCode={balanceChange.asset.symbol}
+        decimals={balanceChange.asset.decimals}
+      />
     </GeneralTableCell>
   );
 }
 
 const BalanceChangeCells = Object.freeze({
   address: AddressCell,
-  amountBefore: AmountBeforeCell,
-  amountAfter: AmountAfterCell,
   gas: GasCell,
   amount: AmountCell,
 });
 
 type Column = keyof typeof BalanceChangeCells;
 
-const DEFAULT_COLUMNS: Column[] = [
-  "address",
-  "amountBefore",
-  "gas",
-  "amount",
-  "amountAfter",
-];
+const DEFAULT_COLUMNS: Column[] = ["address", "gas", "amount"];
 
 type BalanceChangeRowProps = {
   balanceChange: BalanceChange;
@@ -155,14 +127,6 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
   switch (column) {
     case "address":
       return <GeneralTableHeaderCell header="Account" />;
-    case "amountBefore":
-      return (
-        <GeneralTableHeaderCell header="Balance Before" textAlignRight={true} />
-      );
-    case "amountAfter":
-      return (
-        <GeneralTableHeaderCell header="Balance After" textAlignRight={true} />
-      );
     case "gas":
       return <GeneralTableHeaderCell header="Gas" textAlignRight={true} />;
     case "amount":
@@ -193,7 +157,7 @@ export function CoinBalanceChangeTable({
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {balanceChanges.map((balanceChange: any, i: number) => {
+        {balanceChanges.map((balanceChange, i) => {
           return (
             <BalanceChangeRow
               key={i}
