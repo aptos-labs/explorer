@@ -5,7 +5,9 @@ import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHea
 import {assertNever} from "../../../../utils";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import {BalanceChange} from "../../utils";
-import {APTCurrencyValue} from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import CurrencyValue, {
+  APTCurrencyValue,
+} from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {
   negativeColor,
   primary,
@@ -51,7 +53,11 @@ function AmountBeforeCell({
 
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <APTCurrencyValue amount={amountBefore.toString()} />
+      <CurrencyValue
+        amount={amountBefore.toString()}
+        decimals={balanceChange.asset.decimals}
+        currencyCode={balanceChange.asset.symbol}
+      />
     </GeneralTableCell>
   );
 }
@@ -59,7 +65,11 @@ function AmountBeforeCell({
 function AmountAfterCell({balanceChange}: BalanceChangeCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <APTCurrencyValue amount={balanceChange.amountAfter} />
+      <CurrencyValue
+        amount={balanceChange.amountAfter}
+        decimals={balanceChange.asset.decimals}
+        currencyCode={balanceChange.asset.symbol}
+      />
     </GeneralTableCell>
   );
 }
@@ -97,7 +107,11 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
       }}
     >
       {isNegative ? "-" : "+"}
-      <APTCurrencyValue amount={amount.toString()} />
+      <CurrencyValue
+        amount={amount.toString()}
+        currencyCode={balanceChange.asset.symbol}
+        decimals={balanceChange.asset.decimals}
+      />
     </GeneralTableCell>
   );
 }
