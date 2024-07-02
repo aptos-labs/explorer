@@ -12,7 +12,6 @@ import {NetworkName, getApiKey} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {getCustomParameters} from "../../../src/pages/layout/NetworkSelect";
 
-
 function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   const graphqlUri = getGraphqlURI(networkName);
   return typeof graphqlUri === "string" && graphqlUri.length > 0;
@@ -21,17 +20,29 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
 export function getGraphqlURI(networkName: NetworkName): string | undefined {
   switch (networkName) {
     case "mainnet":
-      return "https://aptos.movementlabs.xyz/graphql";
+      return (
+        import.meta.env.MAINNET_GRAPHQL ||
+        "https://aptos.movementlabs.xyz/graphql"
+      );
     case "testnet":
-      return "https:/aptos.testnet.suzuka.movementlabs.xyz/graphql";
+      return (
+        import.meta.env.TESTNET_GRAPHQL ||
+        "https:/aptos.testnet.suzuka.movementlabs.xyz/graphql"
+      );
     case "devnet":
-      return "https://aptos.devnet.suzuka.movementlabs.xyz/graphql";
+      return (
+        import.meta.env.DEVNET_GRAPHQL ||
+        "https://aptos.devnet.suzuka.movementlabs.xyz/graphql"
+      );
     case "local":
-      return "http://0.0.0.0:30731/graphql";
+      return import.meta.env.LOCAL_GRAPHQL || "http://0.0.0.0:30731/graphql";
     case "mevmdevnet":
-      return "https://aptos.devnet.imola.movementlabs.xyz/graphql";
+      return (
+        import.meta.env.INOLA_GRAPHQL ||
+        "https://aptos.devnet.imola.movementlabs.xyz/graphql"
+      );
     case "custom":
-      return getCustomParameters().graphqlUrl
+      return getCustomParameters().graphqlUrl;
 
     default:
       return undefined;
