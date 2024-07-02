@@ -11,9 +11,8 @@ import LoadingModal from "../../components/LoadingModal";
 import Error from "./Error";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {Network} from "aptos";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
-import {AccountAddress} from "@aptos-labs/ts-sdk";
+import {AccountAddress, Network} from "@aptos-labs/ts-sdk";
 import {useNavigate} from "../../routing";
 
 const TAB_VALUES_FULL: TabValue[] = [
@@ -106,7 +105,9 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
         <BalanceCard address={address} />
       </Grid>
       <Grid item xs={12} md={8} lg={12} marginTop={4} alignSelf="center">
-        {state.network_name === Network.MAINNET && <AptosNamesBanner />}
+        {state.network_name.toLowerCase() === Network.MAINNET && (
+          <AptosNamesBanner />
+        )}
       </Grid>
       <Grid item xs={12} md={12} lg={12} marginTop={4}>
         {error ? (

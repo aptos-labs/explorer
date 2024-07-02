@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -10,15 +9,21 @@ import {APTCurrencyValue} from "../../../components/IndividualPageContent/Conten
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {parseExpirationTimestamp} from "../../utils";
+import {
+  isPendingTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
 type PendingTransactionOverviewTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function PendingTransactionOverviewTab({
   transaction,
 }: PendingTransactionOverviewTabProps) {
-  const transactionData = transaction as Types.Transaction_PendingTransaction;
+  if (!isPendingTransactionResponse(transaction)) {
+    return <></>;
+  }
 
   return (
     <Box marginBottom={3}>
@@ -26,13 +31,13 @@ export default function PendingTransactionOverviewTab({
         <ContentRow
           title="Sender:"
           value={
-            <HashButton hash={transactionData.sender} type={HashType.ACCOUNT} />
+            <HashButton hash={transaction.sender} type={HashType.ACCOUNT} />
           }
           tooltip={getLearnMoreTooltip("sender")}
         />
         <ContentRow
           title="Sequence Number:"
-          value={transactionData.sequence_number}
+          value={transaction.sequence_number}
           tooltip={getLearnMoreTooltip("sequence_number")}
         />
         <ContentRow
@@ -40,7 +45,7 @@ export default function PendingTransactionOverviewTab({
           value={
             <TimestampValue
               timestamp={parseExpirationTimestamp(
-                transactionData.expiration_timestamp_secs,
+                transaction.expiration_timestamp_secs,
               )}
               ensureMilliSeconds={false}
             />
@@ -49,18 +54,18 @@ export default function PendingTransactionOverviewTab({
         />
         <ContentRow
           title="Gas Unit Price:"
-          value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
+          value={<APTCurrencyValue amount={transaction.gas_unit_price} />}
           tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
         <ContentRow
           title="Max Gas Limit:"
-          value={<GasValue gas={transactionData.max_gas_amount} />}
+          value={<GasValue gas={transaction.max_gas_amount} />}
           tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
           title="Signature:"
           value={
-            <JsonViewCard data={transactionData.signature} collapsedByDefault />
+            <JsonViewCard data={transaction.signature} collapsedByDefault />
           }
           tooltip={getLearnMoreTooltip("signature")}
         />

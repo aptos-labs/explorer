@@ -1,13 +1,12 @@
 import {Stack, Typography, Skeleton} from "@mui/material";
 import React from "react";
-import {Types} from "aptos";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import ValidatorStatusIcon from "./Components/ValidatorStatusIcon";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {getValidatorStatus} from "./utils";
 
 type ValidatorTitleProps = {
-  address: Types.Address;
+  address: string;
   isSkeletonLoading: boolean;
 };
 

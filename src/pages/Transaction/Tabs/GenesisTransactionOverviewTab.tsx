@@ -1,55 +1,60 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
+import {
+  isGenesisTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
 type GenesisTransactionOverviewTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function GenesisTransactionOverviewTab({
   transaction,
 }: GenesisTransactionOverviewTabProps) {
-  const transactionData = transaction as Types.Transaction_GenesisTransaction;
+  if (!isGenesisTransactionResponse(transaction)) {
+    return <></>;
+  }
 
   return (
     <Box marginBottom={3}>
       <ContentBox>
         <ContentRow
           title={"Version:"}
-          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          value={<Box sx={{fontWeight: 600}}>{transaction.version}</Box>}
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
           title="Status:"
-          value={<TransactionStatus success={transactionData.success} />}
+          value={<TransactionStatus success={transaction.success} />}
           tooltip={getLearnMoreTooltip("status")}
         />
-        <TransactionBlockRow version={transactionData.version} />
+        <TransactionBlockRow version={transaction.version} />
         <ContentRow
           title="VM Status:"
-          value={transactionData.vm_status}
+          value={transaction.vm_status}
           tooltip={getLearnMoreTooltip("vm_status")}
         />
       </ContentBox>
       <ContentBox>
         <ContentRow
           title="State Change Hash:"
-          value={transactionData.state_change_hash}
+          value={transaction.state_change_hash}
           tooltip={getLearnMoreTooltip("state_change_hash")}
         />
         <ContentRow
           title="Event Root Hash:"
-          value={transactionData.event_root_hash}
+          value={transaction.event_root_hash}
           tooltip={getLearnMoreTooltip("event_root_hash")}
         />
         <ContentRow
           title="Accumulator Root Hash:"
-          value={transactionData.accumulator_root_hash}
+          value={transaction.accumulator_root_hash}
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
       </ContentBox>

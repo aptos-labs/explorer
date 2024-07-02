@@ -1,9 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
-import {Types} from "aptos";
 import {getValidatorCommissionChange} from "..";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {ResponseError} from "../client";
-import {MoveValue} from "aptos/src/generated";
+import {MoveValue} from "@aptos-labs/ts-sdk";
 
 type DelegationNodeInfoResponse = {
   nextCommission: number | undefined;
@@ -12,15 +11,15 @@ type DelegationNodeInfoResponse = {
 };
 
 type DelegationNodeInfoProps = {
-  validatorAddress: Types.Address;
+  validatorAddress: string;
 };
 
 export function useGetDelegationNodeCommissionChange({
   validatorAddress,
 }: DelegationNodeInfoProps): DelegationNodeInfoResponse {
-  const [{aptos_client: client}] = useGlobalState();
+  const [{sdk_v2_client: client}] = useGlobalState();
 
-  const query = useQuery<Types.MoveValue[], ResponseError, number>({
+  const query = useQuery<MoveValue[], ResponseError, number>({
     queryKey: ["validatorCommissionChange", client, validatorAddress],
     queryFn: () => getValidatorCommissionChange(client, validatorAddress),
     select: (res: MoveValue[]) => Number(res ? res[0] : 0) / 100, // commission rate: 22.85% is represented as 2285

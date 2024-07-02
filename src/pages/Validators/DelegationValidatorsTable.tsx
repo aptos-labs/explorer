@@ -12,7 +12,6 @@ import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCel
 import {assertNever} from "../../utils";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import {Types} from "aptos";
 import {
   ValidatorData,
   useGetValidators,
@@ -42,6 +41,7 @@ import {
 } from "../DelegatoryValidator/utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
+import {MoveValue} from "@aptos-labs/ts-sdk";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -323,7 +323,7 @@ function ViewCell() {
 }
 
 function MyDepositCell({validator}: ValidatorCellProps) {
-  const [totalDeposit, setTotalDeposit] = useState<Types.MoveValue>();
+  const [totalDeposit, setTotalDeposit] = useState<MoveValue>();
   const {account} = useWallet();
   const {stakes} = useGetDelegatorStakeInfo(
     account?.address!,
@@ -379,14 +379,14 @@ function ValidatorRow({
     totalVotingPower,
   );
 
-  const rowClick = (address: Types.Address) => {
+  const rowClick = (address: string) => {
     logEvent("delegation_validators_row_clicked", address, {
       commission: commission?.toString() ?? "",
       delegated_stake_amount: validatorVotingPower ?? "",
       network_percentage: networkPercentage ?? "",
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",
-      validator_status: validatorStatus ? validatorStatus[0].toString() : "",
+      validator_status: validatorStatus ? validatorStatus.toString() : "",
     });
   };
 

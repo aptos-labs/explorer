@@ -6,22 +6,24 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {Link} from "../../../routing";
-import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
+import {useGetTokenOwner} from "../../../api/hooks/useGetAccountTokens";
 import {Current_Token_Datas_V2} from "aptos";
 import {isValidUrl} from "../../utils";
 
 function OwnersRow() {
   const {tokenId} = useParams();
-  const {data: owners} = useGetTokenOwners(tokenId);
+  const {data: owner} = useGetTokenOwner(tokenId);
 
   return (
     <ContentRow
       title={"Owner(s):"}
       value={
         <Stack direction="row" spacing={1}>
-          {(owners ?? []).map((owner: {owner_address: string}) => (
-            <HashButton hash={owner?.owner_address} type={HashType.ACCOUNT} />
-          ))}
+          {owner ? (
+            <HashButton hash={owner.owner_address} type={HashType.ACCOUNT} />
+          ) : (
+            <Typography>Unable to fetch owner</Typography>
+          )}
         </Stack>
       }
     />

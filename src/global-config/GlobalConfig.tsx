@@ -1,4 +1,3 @@
-import {AptosClient, IndexerClient} from "aptos";
 import React, {useMemo} from "react";
 import {
   FeatureName,
@@ -27,11 +26,7 @@ export type GlobalState = {
   /** derived from network_name - url to connect to network */
   readonly network_value: string;
   /** derived from network_value */
-  readonly aptos_client: AptosClient;
-  /** derived from network_value */
-  readonly indexer_client?: IndexerClient;
-  /** derived from network_value */
-  readonly sdk_v2_client?: Aptos;
+  readonly sdk_v2_client: Aptos;
 };
 
 type GlobalActions = {
@@ -48,19 +43,10 @@ function deriveGlobalState({
 }): GlobalState {
   const indexerUri = getGraphqlURI(network_name);
   const apiKey = getApiKey(network_name);
-  let indexerClient = undefined;
-  if (indexerUri) {
-    indexerClient = new IndexerClient(indexerUri, {HEADERS, TOKEN: apiKey});
-  }
   return {
     feature_name,
     network_name,
     network_value: networks[network_name],
-    aptos_client: new AptosClient(networks[network_name], {
-      HEADERS,
-      TOKEN: apiKey,
-    }),
-    indexer_client: indexerClient,
     sdk_v2_client: new Aptos(
       new AptosConfig({
         network: NetworkToNetworkName[network_name],

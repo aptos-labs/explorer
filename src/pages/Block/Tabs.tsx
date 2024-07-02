@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import OverviewTab from "./Tabs/OverviewTab";
 import TransactionsTab from "./Tabs/TransactionsTab";
@@ -10,6 +9,7 @@ import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
+import {Block} from "@aptos-labs/ts-sdk";
 
 const TAB_VALUES: TabValue[] = ["overview", "transactions"];
 
@@ -44,7 +44,7 @@ function getTabIcon(value: TabValue): JSX.Element {
 
 type TabPanelProps = {
   value: TabValue;
-  data: Types.Block;
+  data: Block;
 };
 
 function TabPanel({value, data}: TabPanelProps): JSX.Element {
@@ -53,7 +53,7 @@ function TabPanel({value, data}: TabPanelProps): JSX.Element {
 }
 
 type AccountTabsProps = {
-  data: Types.Block;
+  data: Block;
   tabValues?: TabValue[];
 };
 

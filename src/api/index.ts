@@ -1,4 +1,17 @@
-import {AptosClient, Types} from "aptos";
+import {
+  AccountAddress,
+  AccountData,
+  Aptos,
+  AptosConfig,
+  Block,
+  LedgerInfo,
+  MoveModuleBytecode,
+  MoveResource,
+  MoveValue,
+  TableItemRequest,
+  TransactionResponse,
+  ViewFunctionJsonPayload,
+} from "@aptos-labs/ts-sdk";
 import {OCTA} from "../constants";
 import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils";
@@ -6,15 +19,11 @@ import {withResponseError} from "./client";
 
 export async function getTransactions(
   requestParameters: {start?: number; limit?: number},
-  client: AptosClient,
-): Promise<Types.Transaction[]> {
+  client: Aptos,
+): Promise<TransactionResponse[]> {
   const {start, limit} = requestParameters;
-  let bigStart;
-  if (start !== undefined) {
-    bigStart = BigInt(start);
-  }
   const transactions = await withResponseError(
-    client.getTransactions({start: bigStart, limit}),
+    client.getTransactions({options: {offset: start, limit}}),
   );
 
   // Sort in descending order
@@ -24,16 +33,15 @@ export async function getTransactions(
 }
 
 export async function getAccountTransactions(
-  requestParameters: {address: string; start?: number; limit?: number},
-  client: AptosClient,
-): Promise<Types.Transaction[]> {
+  requestParameters: {address: AccountAddress; start?: number; limit?: number},
+  client: Aptos,
+): Promise<TransactionResponse[]> {
   const {address, start, limit} = requestParameters;
-  let bigStart;
-  if (start !== undefined) {
-    bigStart = BigInt(start);
-  }
   const transactions = await withResponseError(
-    client.getAccountTransactions(address, {start: bigStart, limit}),
+    client.getAccountTransactions({
+      accountAddress: address,
+      options: {offset: start, limit},
+    }),
   );
 
   // Sort in descending order
@@ -44,8 +52,8 @@ export async function getAccountTransactions(
 
 export function getTransaction(
   requestParameters: {txnHashOrVersion: string | number},
-  client: AptosClient,
-): Promise<Types.Transaction> {
+  client: Aptos,
+): Promise<TransactionResponse> {
   const {txnHashOrVersion} = requestParameters;
   if (typeof txnHashOrVersion === "number" || isNumeric(txnHashOrVersion)) {
     const version =
@@ -60,247 +68,270 @@ export function getTransaction(
 
 function getTransactionByVersion(
   version: number,
-  client: AptosClient,
-): Promise<Types.Transaction> {
-  return withResponseError(client.getTransactionByVersion(BigInt(version)));
+  client: Aptos,
+): Promise<TransactionResponse> {
+  return withResponseError(
+    client.getTransactionByVersion({ledgerVersion: version}),
+  );
 }
 
 function getTransactionByHash(
   hash: string,
-  client: AptosClient,
-): Promise<Types.Transaction> {
-  return withResponseError(client.getTransactionByHash(hash));
+  client: Aptos,
+): Promise<TransactionResponse> {
+  return withResponseError(
+    client.getTransactionByHash({transactionHash: hash}),
+  );
 }
 
-export function getLedgerInfo(
-  client: AptosClient,
-): Promise<Types.IndexResponse> {
+export function getLedgerInfo(client: Aptos): Promise<LedgerInfo> {
   return withResponseError(client.getLedgerInfo());
 }
 
 export function getLedgerInfoWithoutResponseError(
   nodeUrl: string,
-): Promise<Types.IndexResponse> {
+): Promise<LedgerInfo> {
   // This is a special case where we don't use the pre-existing client. This means we
   // do not attach an API key to the request, but it's okay for just this request to be
   // sent anonymously.
-  const client = new AptosClient(nodeUrl);
+  const client = new Aptos(new AptosConfig({fullnode: nodeUrl}));
   return client.getLedgerInfo();
 }
 
 export function getAccount(
-  requestParameters: {address: string},
-  client: AptosClient,
-): Promise<Types.AccountData> {
+  requestParameters: {address: AccountAddress},
+  client: Aptos,
+): Promise<AccountData> {
   const {address} = requestParameters;
-  return withResponseError(client.getAccount(address));
+  return withResponseError(client.getAccountInfo({accountAddress: address}));
 }
 
 export function getAccountResources(
-  requestParameters: {address: string; ledgerVersion?: number},
-  client: AptosClient,
-): Promise<Types.MoveResource[]> {
+  requestParameters: {address: AccountAddress; ledgerVersion?: number},
+  client: Aptos,
+): Promise<MoveResource[]> {
   const {address, ledgerVersion} = requestParameters;
-  let ledgerVersionBig;
-  if (ledgerVersion !== undefined) {
-    ledgerVersionBig = BigInt(ledgerVersion);
-  }
+
   return withResponseError(
-    client.getAccountResources(address, {ledgerVersion: ledgerVersionBig}),
+    client.getAccountResources({
+      accountAddress: address,
+      options: {ledgerVersion},
+    }),
   );
 }
 
 export function getAccountResource(
   requestParameters: {
-    address: string;
+    address: AccountAddress;
     resourceType: string;
     ledgerVersion?: number;
   },
-  client: AptosClient,
-): Promise<Types.MoveResource> {
+  client: Aptos,
+): Promise<MoveResource> {
   const {address, resourceType, ledgerVersion} = requestParameters;
-  let ledgerVersionBig;
-  if (ledgerVersion !== undefined) {
-    ledgerVersionBig = BigInt(ledgerVersion);
-  }
   return withResponseError(
-    client.getAccountResource(address, resourceType, {
-      ledgerVersion: ledgerVersionBig,
+    client.getAccountResource({
+      accountAddress: address,
+      resourceType: resourceType as "${string}::${string}::${string}", // TODO: This is super annoying
+      options: {ledgerVersion},
     }),
   );
 }
 
 export function getAccountModules(
-  requestParameters: {address: string; ledgerVersion?: number},
-  client: AptosClient,
-): Promise<Types.MoveModuleBytecode[]> {
+  requestParameters: {address: AccountAddress; ledgerVersion?: number},
+  client: Aptos,
+): Promise<MoveModuleBytecode[]> {
   const {address, ledgerVersion} = requestParameters;
-  let ledgerVersionBig;
-  if (ledgerVersion !== undefined) {
-    ledgerVersionBig = BigInt(ledgerVersion);
-  }
   return withResponseError(
-    client.getAccountModules(address, {ledgerVersion: ledgerVersionBig}),
+    client.getAccountModules({
+      accountAddress: address,
+      options: {ledgerVersion},
+    }),
   );
 }
 
 export function getAccountModule(
   requestParameters: {
-    address: string;
+    address: AccountAddress;
     moduleName: string;
     ledgerVersion?: number;
   },
-  client: AptosClient,
-): Promise<Types.MoveModuleBytecode> {
+  client: Aptos,
+): Promise<MoveModuleBytecode> {
   const {address, moduleName, ledgerVersion} = requestParameters;
-  let ledgerVersionBig;
-  if (ledgerVersion !== undefined) {
-    ledgerVersionBig = BigInt(ledgerVersion);
-  }
   return withResponseError(
-    client.getAccountModule(address, moduleName, {
-      ledgerVersion: ledgerVersionBig,
+    client.getAccountModule({
+      accountAddress: address,
+      moduleName,
+      options: {ledgerVersion},
     }),
   );
 }
 
 export function view(
-  request: Types.ViewRequest,
-  client: AptosClient,
+  request: ViewFunctionJsonPayload,
+  client: Aptos,
   ledgerVersion?: string,
-): Promise<Types.MoveValue[]> {
-  let parsedVersion = ledgerVersion;
+): Promise<MoveValue[]> {
+  let lookupVersion: number | undefined;
 
   // Handle non-numbers, to default to the latest ledger version
-  if (typeof ledgerVersion === "string" && isNaN(parseInt(ledgerVersion, 10))) {
-    parsedVersion = undefined;
+  if (typeof ledgerVersion === "string") {
+    const parsedVersion = parseInt(ledgerVersion, 10);
+
+    if (!isNaN(parsedVersion)) {
+      lookupVersion = parsedVersion;
+    }
   }
 
-  return client.view(request, parsedVersion);
+  return client.viewJson({
+    payload: request,
+    options: {ledgerVersion: lookupVersion},
+  });
 }
 
 export function getTableItem(
-  requestParameters: {tableHandle: string; data: Types.TableItemRequest},
-  client: AptosClient,
+  requestParameters: {tableHandle: string; data: TableItemRequest},
+  client: Aptos,
 ): Promise<any> {
   const {tableHandle, data} = requestParameters;
-  return withResponseError(client.getTableItem(tableHandle, data));
+  return withResponseError(client.getTableItem({handle: tableHandle, data}));
 }
 
 export function getBlockByHeight(
   requestParameters: {height: number; withTransactions: boolean},
-  client: AptosClient,
-): Promise<Types.Block> {
+  client: Aptos,
+): Promise<Block> {
   const {height, withTransactions} = requestParameters;
-  return withResponseError(client.getBlockByHeight(height, withTransactions));
+  return withResponseError(
+    client.getBlockByHeight({blockHeight: height, options: {withTransactions}}),
+  );
 }
 
 export function getBlockByVersion(
   requestParameters: {version: number; withTransactions: boolean},
-  client: AptosClient,
-): Promise<Types.Block> {
+  client: Aptos,
+): Promise<Block> {
   const {version, withTransactions} = requestParameters;
-  return withResponseError(client.getBlockByVersion(version, withTransactions));
+  return withResponseError(
+    client.getBlockByVersion({
+      ledgerVersion: version,
+      options: {withTransactions},
+    }),
+  );
 }
 
 export async function getRecentBlocks(
   currentBlockHeight: number,
   count: number,
-  client: AptosClient,
-): Promise<Types.Block[]> {
+  client: Aptos,
+): Promise<Block[]> {
   const blocks = [];
   for (let i = 0; i < count; i++) {
-    const block = await client.getBlockByHeight(currentBlockHeight - i, false);
+    const block = await getBlockByHeight(
+      {height: currentBlockHeight - i, withTransactions: false},
+      client,
+    );
     blocks.push(block);
   }
   return blocks;
 }
 
 export async function getStake(
-  client: AptosClient,
-  delegatorAddress: Types.Address,
-  validatorAddress: Types.Address,
-): Promise<Types.MoveValue[]> {
-  const payload: Types.ViewRequest = {
-    function: "0x1::delegation_pool::get_stake",
-    type_arguments: [],
-    arguments: [validatorAddress, delegatorAddress],
+  client: Aptos,
+  delegatorAddress: AccountAddress,
+  validatorAddress: AccountAddress,
+): Promise<MoveValue[]> {
+  const payload = {
+    function:
+      "0x1::delegation_pool::get_stake" as "${string}::${string}::${string}", // TODO: still annoying
+    typeArguments: [],
+    functionArguments: [
+      validatorAddress.toStringLong(),
+      delegatorAddress.toStringLong(),
+    ],
   };
-  return withResponseError(client.view(payload));
+  return view(payload, client);
 }
 
 export async function getValidatorCommission(
-  client: AptosClient,
-  validatorAddress: Types.Address,
-): Promise<Types.MoveValue[]> {
-  const payload: Types.ViewRequest = {
-    function: "0x1::delegation_pool::operator_commission_percentage",
-    type_arguments: [],
-    arguments: [validatorAddress],
+  client: Aptos,
+  validatorAddress: string,
+): Promise<MoveValue[]> {
+  const payload = {
+    function:
+      "0x1::delegation_pool::operator_commission_percentage" as "${string}::${string}::${string}",
+    typeArguments: [],
+    functionArguments: [validatorAddress.toString()],
   };
-  return withResponseError(client.view(payload));
+  return view(payload, client);
 }
 
 export async function getValidatorCommissionChange(
-  client: AptosClient,
-  validatorAddress: Types.Address,
-): Promise<Types.MoveValue[]> {
-  const payload: Types.ViewRequest = {
+  client: Aptos,
+  validatorAddress: string,
+): Promise<MoveValue[]> {
+  const payload = {
     function:
-      "0x1::delegation_pool::operator_commission_percentage_next_lockup_cycle",
-    type_arguments: [],
-    arguments: [validatorAddress],
+      "0x1::delegation_pool::operator_commission_percentage_next_lockup_cycle" as "${string}::${string}::${string}",
+    typeArguments: [],
+    functionArguments: [validatorAddress],
   };
-  return withResponseError(client.view(payload));
+  return view(payload, client);
 }
 
 export async function getDelegationPoolExist(
-  client: AptosClient,
-  validatorAddress: Types.Address,
-): Promise<Types.MoveValue[]> {
-  const payload: Types.ViewRequest = {
-    function: "0x1::delegation_pool::delegation_pool_exists",
-    type_arguments: [],
-    arguments: [validatorAddress],
+  client: Aptos,
+  validatorAddress: string,
+): Promise<MoveValue[]> {
+  const payload = {
+    function:
+      "0x1::delegation_pool::delegation_pool_exists" as "${string}::${string}::${string}",
+    typeArguments: [],
+    functionArguments: [validatorAddress],
   };
-  return withResponseError(client.view(payload));
+  return view(payload, client);
 }
 
 // Return whether `pending_inactive` stake can be directly withdrawn from the delegation pool,
 // for the edge case when the validator had gone inactive before its lockup expired.
 export async function getCanWithdrawPendingInactive(
-  client: AptosClient,
-  validatorAddress: Types.Address,
-): Promise<Types.MoveValue[]> {
-  const payload: Types.ViewRequest = {
-    function: "0x1::delegation_pool::can_withdraw_pending_inactive",
-    type_arguments: [],
-    arguments: [validatorAddress],
+  client: Aptos,
+  validatorAddress: string,
+): Promise<MoveValue[]> {
+  const payload = {
+    function:
+      "0x1::delegation_pool::can_withdraw_pending_inactive" as "${string}::${string}::${string}",
+    typeArguments: [],
+    functionArguments: [validatorAddress],
   };
-  return withResponseError(client.view(payload));
+  return view(payload, client);
 }
 
 export async function getAddStakeFee(
-  client: AptosClient,
-  validatorAddress: Types.Address,
+  client: Aptos,
+  validatorAddress: string,
   amount: string,
-): Promise<Types.MoveValue[]> {
-  const payload: Types.ViewRequest = {
-    function: "0x1::delegation_pool::get_add_stake_fee",
-    type_arguments: [],
-    arguments: [validatorAddress, (Number(amount) * OCTA).toString()],
+): Promise<MoveValue[]> {
+  const payload = {
+    function:
+      "0x1::delegation_pool::get_add_stake_fee" as "${string}::${string}::${string}",
+    typeArguments: [],
+    functionArguments: [validatorAddress, (Number(amount) * OCTA).toString()],
   };
-  return withResponseError(client.view(payload));
+  return view(payload, client);
 }
 
 export async function getValidatorState(
-  client: AptosClient,
-  validatorAddress: Types.Address,
-): Promise<Types.MoveValue[]> {
-  const payload: Types.ViewRequest = {
-    function: "0x1::stake::get_validator_state",
-    type_arguments: [],
-    arguments: [validatorAddress],
+  client: Aptos,
+  validatorAddress: string,
+): Promise<MoveValue[]> {
+  const payload = {
+    function:
+      "0x1::stake::get_validator_state" as "${string}::${string}::${string}",
+    typeArguments: [],
+    functionArguments: [validatorAddress],
   };
-  return withResponseError(client.view(payload));
+  return view(payload, client);
 }

@@ -1,5 +1,11 @@
-import {Types} from "aptos";
 import {normalizeAddress} from "../../utils";
+import {
+  Event,
+  EntryFunctionPayloadResponse,
+  isUserTransactionResponse,
+  TransactionResponse,
+  WriteSetChange,
+} from "@aptos-labs/ts-sdk";
 
 export type TransactionCounterparty = {
   address: string;
@@ -11,17 +17,17 @@ export type TransactionCounterparty = {
 // when the transaction counterparty is a "smartContract",
 //    the transaction is a user interaction (account A interact with smart contract account B)
 export function getTransactionCounterparty(
-  transaction: Types.Transaction,
+  transaction: TransactionResponse,
 ): TransactionCounterparty | undefined {
-  if (transaction.type !== "user_transaction") {
+  if (!isUserTransactionResponse(transaction)) {
     return undefined;
   }
 
-  if (!("payload" in transaction)) {
-    return undefined;
-  }
-
-  if (transaction.payload.type !== "entry_function_payload") {
+  // We only cover entry functions for now
+  if (
+    !("payload" in transaction) ||
+    transaction.payload.type !== "entry_function_payload"
+  ) {
     return undefined;
   }
 
@@ -31,9 +37,7 @@ export function getTransactionCounterparty(
   // 2. coins are transferred from account1 to account2, and account2 is created upon transaction:
   //    payload function is "0x1::aptos_account::transfer" or "0x1::aptos_account::transfer_coins"
   // In both scenarios, the first item in arguments is the receiver's address, and the second item is the amount.
-
-  const payload =
-    transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
+  const payload = transaction.payload as EntryFunctionPayloadResponse;
   const typeArgument =
     payload.type_arguments.length > 0 ? payload.type_arguments[0] : undefined;
   const isAptCoinTransfer =
@@ -92,9 +96,8 @@ export type BalanceChange = {
   amountAfter: string;
 };
 
-function getBalanceMap(transaction: Types.Transaction) {
-  const events: Types.Event[] =
-    "events" in transaction ? transaction.events : [];
+function getBalanceMap(transaction: TransactionResponse) {
+  const events: Event[] = "events" in transaction ? transaction.events : [];
 
   const accountToBalance = events.reduce(
     (
@@ -104,7 +107,7 @@ function getBalanceMap(transaction: Types.Transaction) {
           amount: bigint;
         };
       },
-      event: Types.Event,
+      event: Event,
     ) => {
       const addr = normalizeAddress(event.guid.account_address);
 
@@ -137,9 +140,7 @@ function getBalanceMap(transaction: Types.Transaction) {
   return accountToBalance;
 }
 
-function getAptChangeData(
-  change: Types.WriteSetChange,
-): ChangeData | undefined {
+function getAptChangeData(change: WriteSetChange): ChangeData | undefined {
   if (
     "address" in change &&
     "data" in change &&
@@ -153,8 +154,8 @@ function getAptChangeData(
   }
 }
 
-function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
-  const changes: Types.WriteSetChange[] =
+function isAptEvent(event: Event, transaction: TransactionResponse) {
+  const changes: WriteSetChange[] =
     "changes" in transaction ? transaction.changes : [];
 
   const aptEventChange = changes.filter((change) => {
@@ -179,11 +180,11 @@ function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
 }
 
 export function getCoinBalanceChanges(
-  transaction: Types.Transaction,
+  transaction: TransactionResponse,
 ): BalanceChange[] {
   const accountToBalance = getBalanceMap(transaction);
 
-  const changes: Types.WriteSetChange[] =
+  const changes: WriteSetChange[] =
     "changes" in transaction ? transaction.changes : [];
 
   Object.entries(accountToBalance).forEach(([key]) => {
@@ -211,7 +212,7 @@ export function getCoinBalanceChanges(
 }
 
 export function getCoinBalanceChangeForAccount(
-  transaction: Types.Transaction,
+  transaction: TransactionResponse,
   address: string,
 ): bigint {
   const accountToBalance = getBalanceMap(transaction);
@@ -225,7 +226,7 @@ export function getCoinBalanceChangeForAccount(
 }
 
 export function getTransactionAmount(
-  transaction: Types.Transaction,
+  transaction: TransactionResponse,
 ): bigint | undefined {
   if (transaction.type !== "user_transaction") {
     return undefined;

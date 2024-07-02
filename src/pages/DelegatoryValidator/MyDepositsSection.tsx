@@ -10,7 +10,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {Types} from "aptos";
 import {useContext, useEffect, useState} from "react";
 import {getCanWithdrawPendingInactive} from "../../api";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
@@ -42,6 +41,7 @@ import WalletConnectionDialog from "./WalletConnectionDialog";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useGetDelegatedStakeOperationActivities} from "../../api/hooks/useGetDelegatedStakeOperationActivities";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {MoveValue} from "@aptos-labs/ts-sdk";
 
 const MyDepositsCells = Object.freeze({
   amount: AmountCell,
@@ -107,14 +107,22 @@ const DEFAULT_COLUMNS_MOBILE: Column[] = ["amount", "status", "rewardEarned"];
 
 type MyDepositsSectionCellProps = {
   handleClickOpen: () => void;
-  stake: Types.MoveValue;
+  stake: MoveValue;
   status: StakingStatus;
   stakePrincipals: StakePrincipals | undefined;
-  stakes: Types.MoveValue[];
-  canWithdrawPendingInactive: Types.MoveValue;
+  stakes: MoveValue[];
+  canWithdrawPendingInactive: MoveValue;
 };
 
 function AmountCell({stake}: MyDepositsSectionCellProps) {
+  if (stake === undefined || stake === null) {
+    return (
+      <GeneralTableCell sx={{paddingLeft: 3}}>
+        <APTCurrencyValue amount={"0"} />
+      </GeneralTableCell>
+    );
+  }
+
   return (
     <GeneralTableCell sx={{paddingLeft: 3}}>
       <APTCurrencyValue amount={stake.toString()} />
@@ -195,6 +203,7 @@ function ActionsCell({
         return "WITHDRAW";
     }
   }
+
   return (
     <GeneralTableCell sx={{textAlign: "right", paddingRight: 3}}>
       <StyledTooltip
@@ -223,7 +232,7 @@ type MyDepositsSectionProps = {
 };
 
 type MyDepositRowProps = {
-  stake: Types.MoveValue;
+  stake: MoveValue;
   status: StakingStatus;
 };
 
@@ -260,7 +269,7 @@ function MyDepositSectionContent({
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
   const {connected, account, wallet} = useWallet();
   const {stakes} = useGetDelegatorStakeInfo(
-    account?.address!,
+    account?.address,
     validator.owner_address,
   );
   const activities = useGetDelegatedStakeOperationActivities(
@@ -283,21 +292,22 @@ function MyDepositSectionContent({
 
   const [state] = useGlobalState();
   const [canWithdrawPendingInactive, setCanWithdrawPendingInactive] =
-    useState<Types.MoveValue>(false);
+    useState<MoveValue>(false);
 
   useEffect(() => {
     async function fetchData() {
       const canWithdraw = await getCanWithdrawPendingInactive(
-        state.aptos_client,
+        state.sdk_v2_client,
         validator!.owner_address,
       );
       setCanWithdrawPendingInactive(canWithdraw[0]);
     }
+
     fetchData();
   }, [
     validator.owner_address,
     state.network_value,
-    state.aptos_client,
+    state.sdk_v2_client,
     validator,
   ]);
 
@@ -361,7 +371,7 @@ function MyDepositSectionContent({
   }
 
   const hasStakes = stakesInfo.some(
-    (stake: Types.MoveValue) => stake && Number(stake) !== 0,
+    (stake: MoveValue) => stake && Number(stake) !== 0,
   );
 
   return isSkeletonLoading ? (
@@ -405,7 +415,7 @@ function MyDepositSectionSkeleton() {
 
 function getStakeOperationFromStakingStatus(
   status: StakingStatus,
-  canWithdrawPendingInactive: Types.MoveValue,
+  canWithdrawPendingInactive: MoveValue,
 ) {
   switch (status) {
     case StakingStatus.STAKED:

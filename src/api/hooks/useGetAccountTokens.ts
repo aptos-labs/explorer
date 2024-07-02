@@ -9,11 +9,9 @@ export function useGetAccountTokensCount(address: string) {
   return useQuery({
     queryKey: ["account_tokens_count", {addr64Hash}, state.network_value],
     queryFn: async () => {
-      const response =
-        await state.indexer_client?.getAccountTokensCount(address);
-      return (
-        response?.current_token_ownerships_v2_aggregate?.aggregate?.count ?? 0
-      );
+      return await state.sdk_v2_client.getAccountTokensCount({
+        accountAddress: address,
+      });
     },
   });
 }
@@ -32,21 +30,21 @@ export function useGetAccountTokens(
       state.network_value,
     ],
     queryFn: async () => {
-      const response = await state.indexer_client?.getOwnedTokens(address, {
+      return await state.sdk_v2_client.getAccountOwnedTokens({
+        accountAddress: address,
         options: {
           limit,
           offset,
+          orderBy: [
+            {
+              last_transaction_version: "desc",
+            },
+            {
+              token_data_id: "desc",
+            },
+          ],
         },
-        orderBy: [
-          {
-            last_transaction_version: "desc",
-          },
-          {
-            token_data_id: "desc",
-          },
-        ],
       });
-      return response?.current_token_ownerships_v2 ?? [];
     },
   });
 }
@@ -59,26 +57,24 @@ export function useGetTokenData(tokenDataId?: string) {
       if (!tokenDataId) {
         return undefined;
       }
-      const response = await state.indexer_client?.getTokenData(tokenDataId);
-      return response?.current_token_datas_v2;
+      return await state.sdk_v2_client.getDigitalAssetData({
+        digitalAssetAddress: tokenDataId,
+      });
     },
   });
 }
 
-export function useGetTokenOwners(tokenDataId?: string) {
+export function useGetTokenOwner(tokenDataId?: string) {
   const [state] = useGlobalState();
   return useQuery({
     queryKey: ["token_owners", {tokenDataId}, state.network_value],
     queryFn: async () => {
       if (!tokenDataId) {
-        return [];
+        return undefined;
       }
-      const response = await state.indexer_client?.getTokenOwnersData(
-        tokenDataId,
-        undefined,
-        {},
-      );
-      return response?.current_token_ownerships_v2 ?? [];
+      return await state.sdk_v2_client.getCurrentDigitalAssetOwnership({
+        digitalAssetAddress: tokenDataId,
+      });
     },
   });
 }
@@ -88,9 +84,10 @@ export function useGetTokenActivitiesCount(tokenDataId: string) {
   return useQuery({
     queryKey: ["token_activities_count", {tokenDataId}, state.network_value],
     queryFn: async () => {
-      const response =
-        await state.indexer_client?.getTokenActivitiesCount(tokenDataId);
-      return response?.token_activities_v2_aggregate?.aggregate?.count ?? 0;
+      const response = await state.sdk_v2_client.getDigitalAssetActivity({
+        digitalAssetAddress: tokenDataId,
+      });
+      return response.length ?? 0;
     },
   });
 }

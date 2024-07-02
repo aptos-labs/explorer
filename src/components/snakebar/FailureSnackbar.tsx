@@ -1,12 +1,12 @@
 import {Snackbar, Alert, Typography} from "@mui/material";
 import {CloseAction} from "./TransactionResponseSnackbar";
-import {Types} from "aptos";
 import React from "react";
 import {Link} from "../../routing";
+import {TransactionResponse} from "@aptos-labs/ts-sdk";
 
 type FailureSnackbarProps = {
   onCloseSnackbar: () => void;
-  data: Types.Transaction;
+  data: TransactionResponse;
 };
 
 export default function FailureSnackbar({

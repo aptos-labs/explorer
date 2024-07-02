@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Types} from "aptos";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import useExpandedList from "../../../components/hooks/useExpandedList";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
@@ -12,13 +11,14 @@ import {
   objectCoreAddress,
   tokenV2Address,
 } from "../../../constants";
+import {TransactionResponse, WriteSetChange} from "@aptos-labs/ts-sdk";
 
 type ChangesTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function ChangesTab({transaction}: ChangesTabProps) {
-  const changes: Types.WriteSetChange[] =
+  const changes: WriteSetChange[] =
     "changes" in transaction ? transaction.changes : [];
 
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =

@@ -1,10 +1,10 @@
 import React from "react";
-import {Types} from "aptos";
 import TransactionsTable from "../../Transactions/TransactionsTable";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {Block} from "@aptos-labs/ts-sdk";
 
 type TransactionsTabProps = {
-  data: Types.Block;
+  data: Block;
 };
 
 export default function TransactionsTab({data}: TransactionsTabProps) {

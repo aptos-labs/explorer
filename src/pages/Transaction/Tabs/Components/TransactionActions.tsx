@@ -1,9 +1,8 @@
-import {Types} from "aptos";
 import ContentBox from "../../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../../components/IndividualPageContent/ContentRow";
 import {truncateAddress} from "../../../utils";
 import {Link} from "../../../../routing";
-import {AccountAddress} from "@aptos-labs/ts-sdk";
+import {AccountAddress, Event, TransactionResponse} from "@aptos-labs/ts-sdk";
 
 const AddressLink: React.FC<{
   address: string;
@@ -14,7 +13,7 @@ const AddressLink: React.FC<{
   </Link>
 );
 
-const mapEventToTransactionAction = (event: Types.Event) => {
+const mapEventToTransactionAction = (event: Event) => {
   if (
     event.type === "0x4::collection::MintEvent" ||
     event.type === "0x4::collection::Mint"
@@ -48,11 +47,10 @@ const mapEventToTransactionAction = (event: Types.Event) => {
   return null;
 };
 
-export const TransactionActions: React.FC<{transaction: Types.Transaction}> = ({
-  transaction,
-}) => {
-  const events: Types.Event[] =
-    "events" in transaction ? transaction.events : [];
+export const TransactionActions: React.FC<{
+  transaction: TransactionResponse;
+}> = ({transaction}) => {
+  const events: Event[] = "events" in transaction ? transaction.events : [];
   const listItems = events
     .map((event) => mapEventToTransactionAction(event))
     .filter((li) => li !== null);

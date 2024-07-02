@@ -1,6 +1,5 @@
 import * as React from "react";
 import {Box} from "@mui/material";
-import {Types} from "aptos";
 import {assertNever} from "../../utils";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
@@ -22,8 +21,9 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BalanceChangeTab from "./Tabs/BalanceChangeTab";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
+import {TransactionResponse} from "@aptos-labs/ts-sdk";
 
-function getTabValues(transaction: Types.Transaction): TabValue[] {
+function getTabValues(transaction: TransactionResponse): TabValue[] {
   switch (transaction.type) {
     case "user_transaction":
       return [
@@ -109,7 +109,7 @@ function getTabIcon(value: TabValue): JSX.Element {
 
 type TabPanelProps = {
   value: TabValue;
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 function TabPanel({value, transaction}: TabPanelProps): JSX.Element {
@@ -118,7 +118,7 @@ function TabPanel({value, transaction}: TabPanelProps): JSX.Element {
 }
 
 type TransactionTabsProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
   tabValues?: TabValue[];
 };
 

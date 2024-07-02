@@ -1,7 +1,8 @@
 import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
-import {HexString, Types} from "aptos";
+import {Hex, TransactionResponse} from "@aptos-labs/ts-sdk";
 import pako from "pako";
 import {Statsig} from "statsig-react";
+
 /**
  * Helper function for exhaustiveness checks.
  *
@@ -16,10 +17,11 @@ export function assertNever(x: never): never {
 If the transaction doesn't have a version property,
 that means it's a pending transaction (and thus it's expected version will be higher than any existing versions).
 We can consider the version to be Infinity for this case.
+TODO: This should be removed in favor of just having CommittedTransactionResponse
 */
 export function sortTransactions(
-  a: Types.Transaction,
-  b: Types.Transaction,
+  a: TransactionResponse,
+  b: TransactionResponse,
 ): number {
   const first = "version" in a ? parseInt(a.version) : Infinity;
   const second = "version" in b ? parseInt(b.version) : Infinity;
@@ -87,7 +89,7 @@ export async function fetchJsonResponse(url: string) {
  */
 export function transformCode(source: string): string {
   try {
-    return pako.ungzip(new HexString(source).toUint8Array(), {to: "string"});
+    return pako.ungzip(Hex.fromHexInput(source).toUint8Array(), {to: "string"});
   } catch {
     return "";
   }
@@ -195,18 +197,16 @@ function encodeVectorForViewRequest(type: string, value: string) {
   const match = type.match(regex);
   if (match) {
     if (match[1] === "u8") {
-      return (
-        HexString.fromUint8Array(
-          new Uint8Array(
-            rawVector.map((v) => {
-              const result = ensureNumber(v.trim());
-              if (result < 0 || result > 255)
-                throw new Error(`Invalid u8 value: ${result}`);
-              return result;
-            }),
-          ),
-        ) as any
-      ).hexString;
+      return Hex.fromHexInput(
+        new Uint8Array(
+          rawVector.map((v) => {
+            const result = ensureNumber(v.trim());
+            if (result < 0 || result > 255)
+              throw new Error(`Invalid u8 value: ${result}`);
+            return result;
+          }),
+        ),
+      ).toString();
     } else if (["u16", "u32"].includes(match[1])) {
       return rawVector.map((v) => ensureNumber(v.trim()));
     } else if (["u64", "u128", "u256"].includes(match[1])) {

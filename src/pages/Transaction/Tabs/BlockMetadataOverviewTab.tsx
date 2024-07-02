@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -8,63 +7,65 @@ import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
+import {
+  isBlockMetadataTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
 type BlockMetadataOverviewTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function BlockMetadataOverviewTab({
   transaction,
 }: BlockMetadataOverviewTabProps) {
-  const transactionData =
-    transaction as Types.Transaction_BlockMetadataTransaction;
+  if (!isBlockMetadataTransactionResponse(transaction)) {
+    return <></>;
+  }
 
   return (
     <Box marginBottom={3}>
       <ContentBox padding={4}>
         <ContentRow
           title={"Version:"}
-          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          value={<Box sx={{fontWeight: 600}}>{transaction.version}</Box>}
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
           title="Status:"
-          value={<TransactionStatus success={transactionData.success} />}
+          value={<TransactionStatus success={transaction.success} />}
           tooltip={getLearnMoreTooltip("status")}
         />
         <ContentRow
           title="Proposer:"
           value={
-            <HashButton
-              hash={transactionData.proposer}
-              type={HashType.ACCOUNT}
-            />
+            <HashButton hash={transaction.proposer} type={HashType.ACCOUNT} />
           }
           tooltip={getLearnMoreTooltip("proposer")}
         />
         <ContentRow
           title="ID:"
-          value={transactionData.id}
+          value={transaction.id}
           tooltip={getLearnMoreTooltip("id")}
         />
       </ContentBox>
       <ContentBox>
-        <TransactionBlockRow version={transactionData.version} />
+        <TransactionBlockRow version={transaction.version} />
         <ContentRow
           title="Epoch:"
-          value={transactionData.epoch}
+          value={transaction.epoch}
           tooltip={getLearnMoreTooltip("epoch")}
         />
         <ContentRow
           title="Round:"
-          value={transactionData.round}
+          value={transaction.round}
           tooltip={getLearnMoreTooltip("round")}
         />
         <ContentRow
           title="Timestamp:"
           value={
             <TimestampValue
-              timestamp={transactionData.timestamp}
+              timestamp={transaction.timestamp}
               ensureMilliSeconds
             />
           }
@@ -72,24 +73,24 @@ export default function BlockMetadataOverviewTab({
         />
         <ContentRow
           title="VM Status:"
-          value={transactionData.vm_status}
+          value={transaction.vm_status}
           tooltip={getLearnMoreTooltip("vm_status")}
         />
       </ContentBox>
       <ContentBox>
         <ContentRow
           title="State Change Hash:"
-          value={transactionData.state_change_hash}
+          value={transaction.state_change_hash}
           tooltip={getLearnMoreTooltip("state_change_hash")}
         />
         <ContentRow
           title="Event Root Hash:"
-          value={transactionData.event_root_hash}
+          value={transaction.event_root_hash}
           tooltip={getLearnMoreTooltip("event_root_hash")}
         />
         <ContentRow
           title="Accumulator Root Hash:"
-          value={transactionData.accumulator_root_hash}
+          value={transaction.accumulator_root_hash}
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
       </ContentBox>
