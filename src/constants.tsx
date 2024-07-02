@@ -2,7 +2,8 @@
  * Network
  */
 export const mainnetUrl =
-  import.meta.env.APTOS_DEVNET_URL || "https://green.aptos.movementlabs.xyz/v1";
+  import.meta.env.APTOS_MAINNET_URL ||
+  "https://green.aptos.movementlabs.xyz/v1";
 export const devnetUrl =
   import.meta.env.APTOS_DEVNET_URL ||
   "https://green.aptos.devnet.suzuka.movementlabs.xyz/v1";
