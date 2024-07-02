@@ -1,12 +1,12 @@
 import React, {useState} from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {TransactionResponse} from "@aptos-labs/ts-sdk";
 
 type PayloadTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function PayloadTab({transaction}: PayloadTabProps) {

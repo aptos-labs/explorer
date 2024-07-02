@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -16,11 +15,15 @@ import TransactionBlockRow from "./Components/TransactionBlockRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {parseExpirationTimestamp} from "../../utils";
 import {TransactionActions} from "./Components/TransactionActions";
+import {
+  isUserTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
 function UserTransferOrInteractionRows({
   transaction,
 }: {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 }) {
   const counterparty = getTransactionCounterparty(transaction);
 
@@ -55,7 +58,7 @@ function UserTransferOrInteractionRows({
 function TransactionFunctionRow({
   transaction,
 }: {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 }) {
   return (
     <ContentRow
@@ -66,7 +69,11 @@ function TransactionFunctionRow({
   );
 }
 
-function TransactionAmountRow({transaction}: {transaction: Types.Transaction}) {
+function TransactionAmountRow({
+  transaction,
+}: {
+  transaction: TransactionResponse;
+}) {
   const amount = getTransactionAmount(transaction);
 
   return (
@@ -83,43 +90,45 @@ function TransactionAmountRow({transaction}: {transaction: Types.Transaction}) {
 }
 
 type UserTransactionOverviewTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function UserTransactionOverviewTab({
   transaction,
 }: UserTransactionOverviewTabProps) {
-  const transactionData = transaction as Types.Transaction_UserTransaction;
+  if (!isUserTransactionResponse(transaction)) {
+    return <></>;
+  }
 
   return (
     <Box marginBottom={3}>
       <ContentBox padding={4}>
         <ContentRow
           title={"Version:"}
-          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          value={<Box sx={{fontWeight: 600}}>{transaction.version}</Box>}
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
           title="Status:"
-          value={<TransactionStatus success={transactionData.success} />}
+          value={<TransactionStatus success={transaction.success} />}
           tooltip={getLearnMoreTooltip("status")}
         />
         <ContentRow
           title="Sender:"
           value={
-            <HashButton hash={transactionData.sender} type={HashType.ACCOUNT} />
+            <HashButton hash={transaction.sender} type={HashType.ACCOUNT} />
           }
           tooltip={getLearnMoreTooltip("sender")}
         />
-        <UserTransferOrInteractionRows transaction={transactionData} />
-        <TransactionFunctionRow transaction={transactionData} />
-        <TransactionAmountRow transaction={transactionData} />
+        <UserTransferOrInteractionRows transaction={transaction} />
+        <TransactionFunctionRow transaction={transaction} />
+        <TransactionAmountRow transaction={transaction} />
       </ContentBox>
       <ContentBox>
-        <TransactionBlockRow version={transactionData.version} />
+        <TransactionBlockRow version={transaction.version} />
         <ContentRow
           title="Sequence Number:"
-          value={transactionData.sequence_number}
+          value={transaction.sequence_number}
           tooltip={getLearnMoreTooltip("sequence_number")}
         />
         <ContentRow
@@ -127,7 +136,7 @@ export default function UserTransactionOverviewTab({
           value={
             <TimestampValue
               timestamp={parseExpirationTimestamp(
-                transactionData.expiration_timestamp_secs,
+                transaction.expiration_timestamp_secs,
               )}
               ensureMilliSeconds={false}
             />
@@ -138,7 +147,7 @@ export default function UserTransactionOverviewTab({
           title="Timestamp:"
           value={
             <TimestampValue
-              timestamp={transactionData.timestamp}
+              timestamp={transaction.timestamp}
               ensureMilliSeconds
             />
           }
@@ -148,8 +157,8 @@ export default function UserTransactionOverviewTab({
           title="Gas Fee:"
           value={
             <GasFeeValue
-              gasUsed={transactionData.gas_used}
-              gasUnitPrice={transactionData.gas_unit_price}
+              gasUsed={transaction.gas_used}
+              gasUnitPrice={transaction.gas_unit_price}
               showGasUsed
             />
           }
@@ -157,17 +166,17 @@ export default function UserTransactionOverviewTab({
         />
         <ContentRow
           title="Gas Unit Price:"
-          value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
+          value={<APTCurrencyValue amount={transaction.gas_unit_price} />}
           tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
         <ContentRow
           title="Max Gas Limit:"
-          value={<GasValue gas={transactionData.max_gas_amount} />}
+          value={<GasValue gas={transaction.max_gas_amount} />}
           tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
           title="VM Status:"
-          value={transactionData.vm_status}
+          value={transaction.vm_status}
           tooltip={getLearnMoreTooltip("vm_status")}
         />
       </ContentBox>
@@ -175,23 +184,23 @@ export default function UserTransactionOverviewTab({
         <ContentRow
           title="Signature:"
           value={
-            <JsonViewCard data={transactionData.signature} collapsedByDefault />
+            <JsonViewCard data={transaction.signature} collapsedByDefault />
           }
           tooltip={getLearnMoreTooltip("signature")}
         />
         <ContentRow
           title="State Change Hash:"
-          value={transactionData.state_change_hash}
+          value={transaction.state_change_hash}
           tooltip={getLearnMoreTooltip("state_change_hash")}
         />
         <ContentRow
           title="Event Root Hash:"
-          value={transactionData.event_root_hash}
+          value={transaction.event_root_hash}
           tooltip={getLearnMoreTooltip("event_root_hash")}
         />
         <ContentRow
           title="Accumulator Root Hash:"
-          value={transactionData.accumulator_root_hash}
+          value={transaction.accumulator_root_hash}
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
       </ContentBox>

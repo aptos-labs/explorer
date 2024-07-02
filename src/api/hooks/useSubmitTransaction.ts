@@ -1,10 +1,10 @@
-import {FailedTransactionError} from "aptos";
 import {useEffect, useState} from "react";
 import {
   useWallet,
   InputTransactionData,
 } from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {FailedTransactionError} from "aptos";
 
 export type TransactionResponse =
   | TransactionResponseOnSubmission
@@ -69,8 +69,11 @@ const useSubmitTransaction = () => {
 
         // transaction submit succeed
         if ("hash" in response) {
-          await state.aptos_client.waitForTransaction(response["hash"], {
-            checkSuccess: true,
+          await state.sdk_v2_client.waitForTransaction({
+            transactionHash: response["hash"],
+            options: {
+              checkSuccess: true,
+            },
           });
           return {
             transactionSubmitted: true,
@@ -81,6 +84,7 @@ const useSubmitTransaction = () => {
         // transaction failed
         return {...responseOnError, message: response.message};
       } catch (error) {
+        // TODO: Need to check / replace the error format here
         if (error instanceof FailedTransactionError) {
           return {
             transactionSubmitted: true,

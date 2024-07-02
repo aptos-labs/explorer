@@ -1,11 +1,11 @@
 import {Stack, Typography} from "@mui/material";
 import React from "react";
-import {Types} from "aptos";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {TransactionType} from "../../components/TransactionType";
+import {TransactionResponse} from "@aptos-labs/ts-sdk";
 
 type TransactionTitleProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function TransactionTitle({transaction}: TransactionTitleProps) {

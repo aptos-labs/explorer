@@ -4,7 +4,6 @@ import PageHeader from "../layout/PageHeader";
 import ValidatorTitle from "./Title";
 import ValidatorDetailCard from "./DetailCard";
 import ValidatorStakingBar from "./StakingBar";
-import {HexString} from "aptos";
 import {
   useGetValidators,
   ValidatorData,
@@ -21,14 +20,15 @@ import Error from "../Account/Error";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {Banner} from "../../components/Banner";
 import {useGetDelegationNodeCommissionChange} from "../../api/hooks/useGetDelegationNodeCommissionChange";
+import {AccountAddress} from "@aptos-labs/ts-sdk";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
-  const addressHex = useMemo(() => new HexString(address), [address]);
+  const addressHex = useMemo(() => AccountAddress.from(address), [address]);
   const {validators} = useGetValidators();
   const {connected} = useWallet();
   const {data: accountResource, error} = useGetAccountResource(
-    addressHex.hex(),
+    addressHex.toString(),
     "0x1::stake::StakePool",
   );
   const {
@@ -43,7 +43,7 @@ export default function ValidatorPage() {
   const [delegationValidator, setDelegationValidator] =
     useState<ValidatorData>();
   const validator = validators.find(
-    (validator) => validator.owner_address === addressHex.hex(),
+    (validator) => AccountAddress.from(validator.owner_address) === addressHex,
   );
 
   const {commission} = useGetDelegationNodeInfo({
@@ -61,7 +61,9 @@ export default function ValidatorPage() {
       const delegatedStakingPoolsNotInValidators: ValidatorData[] =
         delegatedStakingPools
           .filter((pool) => {
-            return addressHex.hex() === pool.staking_pool_address;
+            return (
+              addressHex === AccountAddress.from(pool.staking_pool_address)
+            );
           })
           .map((pool) => ({
             owner_address: pool.staking_pool_address,

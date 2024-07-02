@@ -1,11 +1,11 @@
-import {Types} from "aptos";
 import React from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {getCoinBalanceChanges} from "../utils";
 import {CoinBalanceChangeTable} from "./Components/CoinBalanceChangeTable";
+import {TransactionResponse, UserTransactionResponse} from "@aptos-labs/ts-sdk";
 
 type BalanceChangeTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
@@ -18,7 +18,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
   return (
     <CoinBalanceChangeTable
       balanceChanges={balanceChanges}
-      transaction={transaction as Types.UserTransaction}
+      transaction={transaction as UserTransactionResponse} // TODO: This is not always true, but the shape should be good enough
     />
   );
 }

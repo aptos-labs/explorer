@@ -4,7 +4,7 @@ import TransactionsTable from "../../Transactions/TransactionsTable";
 import Error from "../Error";
 import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Types} from "aptos";
+import {AccountData} from "@aptos-labs/ts-sdk";
 
 const TXN_PER_PAGE = 25;
 
@@ -90,7 +90,7 @@ function TransactionsPaginationTable({
 
 type AccountTransactionsProps = {
   address: string;
-  accountData: Types.AccountData | undefined;
+  accountData: AccountData | undefined;
 };
 
 export default function AccountTransactions({

@@ -24,7 +24,6 @@ import {DelegationStateContext} from "./context/DelegationContext";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
 import {OCTA} from "../../constants";
-import {Types} from "aptos";
 import {getAddStakeFee} from "../../api";
 import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import {useGlobalState} from "../../global-config/GlobalConfig";
@@ -32,6 +31,7 @@ import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import {calculateNetworkPercentage} from "./utils";
+import {MoveValue} from "@aptos-labs/ts-sdk";
 
 type ValidatorStakingBarProps = {
   setIsStakingBarSkeletonLoading: (arg: boolean) => void;
@@ -149,7 +149,7 @@ function StakingBarContent({
     account?.address!,
     validator.owner_address,
   );
-  const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
+  const [addStakeFee, setAddStakeFee] = useState<MoveValue>(0);
   // disable stake button when balance is less than minimum stake amount and add_stake fee computed from the minimum stake amount
   // or when balance is less than add_stake fee if minimum stake amount is already met
   const buttonDisabled =
@@ -162,14 +162,15 @@ function StakingBarContent({
   useEffect(() => {
     async function fetchData() {
       const fee = await getAddStakeFee(
-        state.aptos_client,
+        state.sdk_v2_client,
         validator!.owner_address,
         MINIMUM_APT_IN_POOL_FOR_EXPLORER.toString(),
       );
       setAddStakeFee(fee[0]);
     }
+
     fetchData();
-  }, [state.network_value, state.aptos_client, balance, validator]);
+  }, [state.network_value, state.sdk_v2_client, balance, validator]);
 
   const stakeButton = (
     <StyledTooltip

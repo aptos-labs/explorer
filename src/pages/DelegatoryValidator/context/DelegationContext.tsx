@@ -1,9 +1,9 @@
-import {Types} from "aptos";
 import {createContext} from "react";
 import {ValidatorData} from "../../../api/hooks/useGetValidators";
+import {MoveResource} from "@aptos-labs/ts-sdk";
 
 type DelegationState = {
-  accountResource: Types.MoveResource | undefined;
+  accountResource: MoveResource | undefined;
   validator: ValidatorData | undefined;
 };
 

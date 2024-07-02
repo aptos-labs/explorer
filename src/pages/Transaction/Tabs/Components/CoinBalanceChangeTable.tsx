@@ -10,24 +10,24 @@ import {
   negativeColor,
   primary,
 } from "../../../../themes/colors/aptosColorPalette";
-import {Types} from "aptos";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
+import {UserTransactionResponse} from "@aptos-labs/ts-sdk";
 
 function getIsSender(
   address: string,
-  transaction: Types.UserTransaction,
+  transaction: UserTransactionResponse,
 ): boolean {
   return transaction.sender === address;
 }
 
-function getGas(transaction: Types.UserTransaction): bigint {
+function getGas(transaction: UserTransactionResponse): bigint {
   return BigInt(transaction.gas_unit_price) * BigInt(transaction.gas_used);
 }
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
-  transaction: Types.UserTransaction;
+  transaction: UserTransactionResponse;
 };
 
 function AddressCell({balanceChange}: BalanceChangeCellProps) {
@@ -122,7 +122,7 @@ const DEFAULT_COLUMNS: Column[] = [
 
 type BalanceChangeRowProps = {
   balanceChange: BalanceChange;
-  transaction: Types.UserTransaction;
+  transaction: UserTransactionResponse;
   columns: Column[];
 };
 
@@ -174,7 +174,7 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
 
 type CoinBalanceChangeTableProps = {
   balanceChanges: BalanceChange[];
-  transaction: Types.UserTransaction;
+  transaction: UserTransactionResponse;
   columns?: Column[];
 };
 

@@ -1,8 +1,8 @@
 import {GlobalState, useGlobalState} from "../../global-config/GlobalConfig";
 import {getTableItem} from "..";
-import {Types} from "aptos";
 import {useEffect, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
+import {TableItemRequest} from "@aptos-labs/ts-sdk";
 
 interface CoinInfo {
   decimals: number;
@@ -42,14 +42,14 @@ async function fetchTotalSupply(
     key_type: "address",
     value_type: "u128",
     key: aggregatorData.key,
-  } as Types.TableItemRequest;
+  } as TableItemRequest;
 
   const supplyLimit = await getTableItem(
     {
       tableHandle: aggregatorData.handle,
       data: tableItemRequest,
     },
-    state.aptos_client,
+    state.sdk_v2_client,
   );
 
   return parseInt(supplyLimit);

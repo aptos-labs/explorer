@@ -1,11 +1,11 @@
 import React from "react";
 import {Box, Stack, SxProps, Theme} from "@mui/material";
-import {Types} from "aptos";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
 import {Link} from "../../../../routing";
 import {codeBlockColorClickableOnHover} from "../../../../themes/colors/aptosColorPalette";
+import {TransactionResponse} from "@aptos-labs/ts-sdk";
 
 function CoinTransferCodeLine({
   sx,
@@ -49,7 +49,7 @@ export default function TransactionFunction({
   transaction,
   sx,
 }: {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
   sx?: SxProps<Theme>;
 }) {
   if (!("payload" in transaction)) {

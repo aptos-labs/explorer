@@ -1,16 +1,20 @@
-import {Types} from "aptos";
 import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {getAccountModules} from "..";
 import {ResponseError} from "../client";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {AccountAddress, MoveModuleBytecode} from "@aptos-labs/ts-sdk";
 
 export function useGetAccountModules(
   address: string,
-): UseQueryResult<Types.MoveModuleBytecode[], ResponseError> {
+): UseQueryResult<MoveModuleBytecode[], ResponseError> {
   const [state] = useGlobalState();
 
-  return useQuery<Array<Types.MoveModuleBytecode>, ResponseError>({
+  return useQuery<Array<MoveModuleBytecode>, ResponseError>({
     queryKey: ["accountModules", {address}, state.network_value],
-    queryFn: () => getAccountModules({address}, state.aptos_client),
+    queryFn: () =>
+      getAccountModules(
+        {address: AccountAddress.from(address)},
+        state.sdk_v2_client,
+      ),
   });
 }

@@ -1,10 +1,10 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Alert, Stack, Box} from "@mui/material";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {TransactionResponse} from "@aptos-labs/ts-sdk";
 
 type UnknownTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function UnknownTab({transaction}: UnknownTabProps) {

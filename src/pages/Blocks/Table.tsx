@@ -4,14 +4,14 @@ import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
 import HashButton, {HashType} from "../../components/HashButton";
-import {Types} from "aptos";
 import {parseTimestamp} from "../utils";
 import moment from "moment";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import {Link, useAugmentToWithGlobalSearchParams} from "../../routing";
+import {Block} from "@aptos-labs/ts-sdk";
 
-function getAgeInSeconds(block: Types.Block): string {
+function getAgeInSeconds(block: Block): string {
   const blockTimestamp = parseTimestamp(block.block_timestamp);
   const nowTimestamp = parseTimestamp(moment.now().toString());
   const duration = moment.duration(nowTimestamp.diff(blockTimestamp));
@@ -20,7 +20,7 @@ function getAgeInSeconds(block: Types.Block): string {
 }
 
 type BlockCellProps = {
-  block: Types.Block;
+  block: Block;
 };
 
 function BlockHeightCell({block}: BlockCellProps) {
@@ -92,7 +92,7 @@ const DEFAULT_COLUMNS: Column[] = [
 ];
 
 type BlockRowProps = {
-  block: Types.Block;
+  block: Block;
   columns: Column[];
 };
 
@@ -131,7 +131,7 @@ function BlockHeaderCell({column}: BlockHeaderCellProps) {
 }
 
 type BlocksTableProps = {
-  blocks: Types.Block[];
+  blocks: Block[];
   columns?: Column[];
 };
 

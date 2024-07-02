@@ -1,9 +1,9 @@
 import React from "react";
 import {gql, useQuery} from "@apollo/client";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Types} from "aptos";
 import {CoinsTable} from "../Components/CoinsTable";
 import {normalizeAddress} from "../../../utils";
+import {AccountData, MoveResource} from "@aptos-labs/ts-sdk";
 
 const COINS_QUERY = gql`
   query CoinsData($owner_address: String, $limit: Int, $offset: Int) {
@@ -25,7 +25,7 @@ const COINS_QUERY = gql`
 
 type TokenTabsProps = {
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: AccountData | MoveResource[] | undefined;
 };
 
 export default function CoinsTab({address}: TokenTabsProps) {

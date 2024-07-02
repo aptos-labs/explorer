@@ -1,14 +1,14 @@
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import React from "react";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
+import {AccountData, MoveResource} from "@aptos-labs/ts-sdk";
 
 type InfoTabProps = {
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: AccountData | MoveResource[] | undefined;
 };
 
 export default function InfoTab({accountData}: InfoTabProps) {

@@ -15,8 +15,8 @@ import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {useContext} from "react";
-import {Types} from "aptos";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
+import {MoveResource} from "@aptos-labs/ts-sdk";
 
 type ValidatorDetailProps = {
   isSkeletonLoading: boolean;
@@ -45,7 +45,7 @@ function ValidatorDetailCardContent({
   accountResource,
   validator,
 }: ValidatorDetailProps & {
-  accountResource: Types.MoveResource;
+  accountResource: MoveResource;
   validator: ValidatorData;
 }) {
   const theme = useTheme();

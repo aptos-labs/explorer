@@ -1,4 +1,3 @@
-import {Types} from "aptos";
 import {useGetAccountResources} from "./useGetAccountResources";
 
 interface CoinStore {
@@ -7,7 +6,7 @@ interface CoinStore {
   };
 }
 
-export function useGetAccountAPTBalance(address: Types.Address) {
+export function useGetAccountAPTBalance(address: string) {
   const {isLoading, data, error} = useGetAccountResources(address);
 
   if (isLoading || error || !data) {

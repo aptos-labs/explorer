@@ -7,7 +7,6 @@ import Typography from "@mui/material/Typography";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../components/HashButton";
-import {Types} from "aptos";
 import {assertNever} from "../../utils";
 import {TableTransactionType} from "../../components/TransactionType";
 import {TableTransactionStatus} from "../../components/TransactionStatus";
@@ -30,9 +29,14 @@ import {
   getTransactionCounterparty,
 } from "../Transaction/utils";
 import {Link} from "../../routing";
+import {
+  isBlockMetadataTransactionResponse,
+  isUserTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
 type TransactionCellProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
   address?: string;
 };
 
@@ -87,10 +91,10 @@ function TransactionTimestampCell({transaction}: TransactionCellProps) {
 
 function TransactionSenderCell({transaction}: TransactionCellProps) {
   let sender;
-  if (transaction.type === "user_transaction") {
-    sender = (transaction as Types.UserTransaction).sender;
-  } else if (transaction.type === "block_metadata_transaction") {
-    sender = (transaction as Types.BlockMetadataTransaction).proposer;
+  if (isUserTransactionResponse(transaction)) {
+    sender = transaction.sender;
+  } else if (isBlockMetadataTransactionResponse(transaction)) {
+    sender = transaction.proposer;
   }
 
   return (
@@ -134,7 +138,7 @@ function TransactionAmount({
   transaction,
   address,
 }: {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
   address?: string;
 }) {
   const isAccountTransactionTable = typeof address === "string";
@@ -184,7 +188,7 @@ function TransactionAmountGasCell({
         <Box sx={{fontSize: 11, color: grey[450]}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
             <>
-              <>Gas </>
+              <>Gas</>
               <GasFeeValue
                 gasUsed={transaction.gas_used}
                 gasUnitPrice={transaction.gas_unit_price}
@@ -221,7 +225,7 @@ const DEFAULT_COLUMNS: TransactionColumn[] = [
 ];
 
 type TransactionRowProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
   columns: TransactionColumn[];
 };
 
@@ -301,7 +305,7 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
 }
 
 type TransactionsTableProps = {
-  transactions: Types.Transaction[];
+  transactions: TransactionResponse[];
   columns?: TransactionColumn[];
   address?: string;
 };

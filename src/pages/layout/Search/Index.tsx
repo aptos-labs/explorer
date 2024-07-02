@@ -23,6 +23,7 @@ import {
   isNumeric,
   truncateAddress,
 } from "../../utils";
+import {AccountAddress} from "@aptos-labs/ts-sdk";
 
 export type SearchResult = {
   label: string;
@@ -99,11 +100,9 @@ export default function HeaderSearch() {
       } catch (e) {}
     } else {
       if (isValidAccountAddr) {
+        const address = AccountAddress.from(searchText);
         // It's either an account OR an object: we query both at once to save time
-        const accountPromise = await getAccount(
-          {address: searchText},
-          state.aptos_client,
-        )
+        const accountPromise = await getAccount({address}, state.sdk_v2_client)
           .then((): SearchResult => {
             return {
               label: `Account ${searchText}`,
@@ -116,8 +115,8 @@ export default function HeaderSearch() {
           });
 
         const resourcePromise = await getAccountResources(
-          {address: searchText},
-          state.aptos_client,
+          {address},
+          state.sdk_v2_client,
         )
           .then((resources): SearchResult | undefined => {
             let hasObjectCore = false;
@@ -144,7 +143,7 @@ export default function HeaderSearch() {
       if (isValidTxnHashOrVer) {
         const txnPromise = getTransaction(
           {txnHashOrVersion: searchText},
-          state.aptos_client,
+          state.sdk_v2_client,
         )
           .then((): SearchResult => {
             return {
@@ -162,7 +161,7 @@ export default function HeaderSearch() {
       if (isValidBlockHeightOrVer) {
         const blockByHeightPromise = getBlockByHeight(
           {height: parseInt(searchText), withTransactions: false},
-          state.aptos_client,
+          state.sdk_v2_client,
         )
           .then((): SearchResult => {
             return {
@@ -177,7 +176,7 @@ export default function HeaderSearch() {
 
         const blockByVersionPromise = getBlockByVersion(
           {version: parseInt(searchText), withTransactions: false},
-          state.aptos_client,
+          state.sdk_v2_client,
         )
           .then((block): SearchResult => {
             return {

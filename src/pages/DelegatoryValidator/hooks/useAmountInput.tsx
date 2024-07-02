@@ -4,7 +4,7 @@ import React from "react";
 import {StakeOperation} from "../../../api/hooks/useSubmitStakeOperation";
 import {MINIMUM_APT_IN_POOL} from "../constants";
 import {OCTA} from "../../../constants";
-import {Types} from "aptos";
+import {MoveValue} from "@aptos-labs/ts-sdk";
 
 function sanitizeInput(input: string): string {
   const digitsAndDecimals = /[0-9.]/g;
@@ -44,7 +44,7 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
   }
 
   function renderAmountTextField(
-    stakes: Types.MoveValue[],
+    stakes: MoveValue[],
     balance?: string | null,
   ): JSX.Element {
     function getWarnMessage() {

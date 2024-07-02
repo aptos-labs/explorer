@@ -1,18 +1,18 @@
-import {Types} from "aptos";
 import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {getAccountTransactions} from "..";
 import {ResponseError} from "../client";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {AccountAddress, TransactionResponse} from "@aptos-labs/ts-sdk";
 
 export function useGetAccountTransactions(
   address: string,
   start?: number,
   limit?: number,
-): UseQueryResult<Array<Types.Transaction>, ResponseError> {
+): UseQueryResult<Array<TransactionResponse>, ResponseError> {
   const [state] = useGlobalState();
 
   const accountTransactionsResult = useQuery<
-    Array<Types.Transaction>,
+    Array<TransactionResponse>,
     ResponseError
   >({
     queryKey: [
@@ -21,7 +21,10 @@ export function useGetAccountTransactions(
       state.network_value,
     ],
     queryFn: () =>
-      getAccountTransactions({address, start, limit}, state.aptos_client),
+      getAccountTransactions(
+        {address: AccountAddress.from(address), start, limit},
+        state.sdk_v2_client,
+      ),
   });
 
   return accountTransactionsResult;

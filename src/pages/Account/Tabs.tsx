@@ -15,10 +15,10 @@ import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import TokensTab from "./Tabs/TokensTab";
 import CoinsTab from "./Tabs/CoinsTab";
-import {Types} from "aptos";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
 import {accountPagePath} from "./Index";
+import {AccountData, MoveResource} from "@aptos-labs/ts-sdk";
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
@@ -74,7 +74,7 @@ function getTabIcon(value: TabValue): JSX.Element {
 type TabPanelProps = {
   value: TabValue;
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: AccountData | MoveResource[] | undefined;
   isObject: boolean;
 };
 
@@ -96,7 +96,7 @@ function TabPanel({
 
 type AccountTabsProps = {
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: AccountData | MoveResource[] | undefined;
   tabValues?: TabValue[];
   isObject?: boolean;
 };
