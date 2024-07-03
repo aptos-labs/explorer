@@ -16,5 +16,9 @@
       "source": "/account/:path*",
       "destination": "/account/:[path*].tsx"
     }
-  ]
+  ],
+  "trailingSlash": true,
+  "query": {
+    "network": ":network"
+  }
 }
