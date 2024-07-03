@@ -2,23 +2,23 @@
   "redirects": [
     {
       "source": "/blocks/:path*",
-      "destination": "/blocks/:[path*].tsx",
+      "destination": "/blocks/:path*",
       "permanent": false
     },
     {
       "source": "/block/:path*",
-      "destination": "/block/:[path*].tsx",
+      "destination": "/block/:path*",
       "permanent": false
     },
     {
       "source": "/txn/:path*",
-      "destination": "/txn/:[path*].tsx",
+      "destination": "/txn/:path*",
       "permanent": false
     },
     {
       "source": "/account/:path*",
-      "destination": "/account/:[path*].tsx",
-      "permanent": true
+      "destination": "/account/:path*",
+      "permanent": false
     }
   ]
 }
