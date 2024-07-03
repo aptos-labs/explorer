@@ -5,7 +5,10 @@ import Container from "@mui/material/Container";
 import Header from "./Header";
 import Footer from "./Footer";
 import {Fallback} from "./Fallback";
-import {GlobalStateProvider} from "../../global-config/GlobalConfig";
+import {
+  GlobalStateProvider,
+  useGlobalState,
+} from "../../global-config/GlobalConfig";
 import {ProvideColorMode} from "../../context";
 import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
 import {
@@ -25,6 +28,9 @@ import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
 import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
 import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
 import {useMemo} from "react";
+import {Network} from "aptos";
+
+const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 
 // Statically initialize wallets that don't change for the network
 const fewchaWallet = new FewchaWallet();
@@ -40,6 +46,7 @@ const welldoneWallet = new WelldoneWallet();
 const bitgetWallet = new BitgetWallet();
 
 function ExplorerWalletAdapterProvider({children}: LayoutProps) {
+  const [state] = useGlobalState();
   const wallets = useMemo(
     () => [
       okxWallet,
@@ -63,7 +70,15 @@ function ExplorerWalletAdapterProvider({children}: LayoutProps) {
   );
 
   return (
-    <AptosWalletAdapterProvider plugins={wallets} autoConnect={true}>
+    <AptosWalletAdapterProvider
+      key={state.network_name}
+      plugins={wallets}
+      autoConnect={true}
+      dappConfig={{
+        aptosConnectDappId: AptosConnectId,
+        network: state.network_name as Network,
+      }}
+    >
       {children}
     </AptosWalletAdapterProvider>
   );
