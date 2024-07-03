@@ -1,5 +1,6 @@
 import {Types} from "aptos";
 import {normalizeAddress} from "../../utils";
+import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
 
 export type TransactionCounterparty = {
   address: string;
@@ -81,15 +82,13 @@ type ChangeData = {
   };
 };
 
-export type TransactionAmount = {
-  amountInvolved: bigint;
-  balanceChanges: BalanceChange[];
-};
-
 export type BalanceChange = {
   address: string;
   amount: bigint;
-  amountAfter: string;
+  asset: {
+    decimals: number;
+    symbol: string;
+  };
 };
 
 function getBalanceMap(transaction: Types.Transaction) {
@@ -178,36 +177,73 @@ function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
   return aptEventChange.length > 0;
 }
 
-export function getCoinBalanceChanges(
-  transaction: Types.Transaction,
-): BalanceChange[] {
-  const accountToBalance = getBalanceMap(transaction);
+interface TransactionResponse {
+  fungible_asset_activities: Array<{
+    amount: number;
+    entry_function_id_str: string;
+    gas_fee_payer_address?: string;
+    is_frozen?: boolean;
+    asset_type: string;
+    event_index: number;
+    owner_address: string;
+    transaction_timestamp: string;
+    transaction_version: number;
+    type: string;
+    metadata: {
+      asset_type: string;
+      decimals: number;
+      symbol: string;
+    };
+  }>;
+}
 
-  const changes: Types.WriteSetChange[] =
-    "changes" in transaction ? transaction.changes : [];
-
-  Object.entries(accountToBalance).forEach(([key]) => {
-    changes.filter((change) => {
-      if ("address" in change && change.address === key) {
-        const data = getAptChangeData(change);
-        if (data !== undefined) {
-          accountToBalance[key].amountAfter = data.coin.value;
-          return change;
+export function useTransactionBalanceChanges(txn_version: string) {
+  const {loading, error, data} = useGraphqlQuery<TransactionResponse>(
+    gql`
+      query TransactionQuery($txn_version: String) {
+        fungible_asset_activities(
+          distinct_on: amount
+          where: {transaction_version: {_eq: ${txn_version}}}
+        ) {
+          amount
+          entry_function_id_str
+          gas_fee_payer_address
+          is_frozen
+          asset_type
+          event_index
+          owner_address
+          transaction_timestamp
+          transaction_version
+          type
+          metadata {
+            asset_type
+            decimals
+            symbol
+          }
         }
       }
-    });
-  });
+    `,
+    {variables: {txn_version}},
+  );
 
-  const balanceList: BalanceChange[] = [];
-  Object.entries(accountToBalance).forEach(([key, value]) => {
-    balanceList.push({
-      address: key,
-      amount: value.amount,
-      amountAfter: value.amountAfter,
-    });
-  });
+  const balanceChanges: BalanceChange[] =
+    data?.fungible_asset_activities.map((a) => ({
+      address: a.owner_address,
+      amount:
+        a.type === "0x1::aptos_coin::GasFeeEvent"
+          ? BigInt(-a.amount)
+          : BigInt(a.amount),
+      asset: {
+        decimals: a.metadata.decimals,
+        symbol: a.metadata.symbol,
+      },
+    })) ?? [];
 
-  return balanceList;
+  return {
+    isLoading: loading,
+    error,
+    data: balanceChanges,
+  };
 }
 
 export function getCoinBalanceChangeForAccount(
