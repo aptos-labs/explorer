@@ -2,23 +2,19 @@
   "rewrites": [
     {
       "source": "/blocks/:path*",
-      "destination": "/blocks/:[path*].tsx"
+      "destination": "/blocks/:path*.tsx"
     },
     {
       "source": "/block/:path*",
-      "destination": "/block/:[path*].tsx"
+      "destination": "/block/:path*.tsx"
     },
     {
       "source": "/txn/:path*",
-      "destination": "/txn/:[path*].tsx"
+      "destination": "/txn/:path*.tsx"
     },
     {
       "source": "/account/:path*",
-      "destination": "/account/:[path*].tsx"
+      "destination": "/account/:path*.tsx"
     }
-  ],
-  "trailingSlash": true,
-  "query": {
-    "network": ":network"
-  }
+  ]
 }
