@@ -7,9 +7,10 @@ import {assertNever} from "../../../utils";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {Link} from "../../../routing";
+import {TokenOwnership} from "../../../api/hooks/useGetAccountTokens";
 
 type TokenCellProps = {
-  token: any; // TODO: add graphql data typing
+  token: TokenOwnership;
 };
 
 function TokenNameCell({token}: TokenCellProps) {
@@ -82,11 +83,20 @@ function AmountCell({token}: TokenCellProps) {
   );
 }
 
+function TypeCell({token}: TokenCellProps) {
+  return (
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      {token?.token_standard}
+    </GeneralTableCell>
+  );
+}
+
 const TokenCells = Object.freeze({
   name: TokenNameCell,
   collectionName: CollectionNameCell,
   store: StoreCell,
   propertyVersion: PropertyVersionCell,
+  type: TypeCell,
   amount: AmountCell,
 });
 
@@ -97,6 +107,7 @@ const DEFAULT_COLUMNS: Column[] = [
   "collectionName",
   "store",
   "propertyVersion",
+  "type",
   "amount",
 ];
 
@@ -133,16 +144,18 @@ function TokenHeaderCell({column}: TokenHeaderCellProps) {
     case "store":
       return <GeneralTableHeaderCell header="Store" />;
     case "propertyVersion":
-      return <GeneralTableHeaderCell header="Version" textAlignRight={true} />;
+      return <GeneralTableHeaderCell header="Version" textAlignRight />;
+    case "type":
+      return <GeneralTableHeaderCell header="Type" textAlignRight />;
     case "amount":
-      return <GeneralTableHeaderCell header="Amount" textAlignRight={true} />;
+      return <GeneralTableHeaderCell header="Amount" textAlignRight />;
     default:
       return assertNever(column);
   }
 }
 
 type TokensTableProps = {
-  tokens: any; // TODO: add graphql data typing
+  tokens: TokenOwnership[];
   columns?: Column[];
 };
 
