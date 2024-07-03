@@ -3,22 +3,22 @@
     {
       "source": "/blocks/:path*",
       "destination": "/blocks/:path*",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/block/:path*",
       "destination": "/block/:path*",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/txn/:path*",
       "destination": "/txn/:path*",
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/account/:path*",
       "destination": "/account/:path*",
-      "permanent": false
+      "permanent": true
     }
   ]
 }
