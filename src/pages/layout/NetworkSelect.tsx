@@ -25,7 +25,7 @@ export let customParameters : CustomParams = {restUrl: "", graphqlUrl: ""};
 export const setCustomParameters = (params: CustomParams) => {
   customParameters = params;
 };
-
+//
 export const getCustomParameters = () => {
   const restUrl = customParameters.restUrl;
   const graphqlUrl = customParameters.graphqlUrl;
