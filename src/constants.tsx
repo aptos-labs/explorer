@@ -1,17 +1,21 @@
 /**
  * Network
  */
+
+const prefix = import.meta.env.REACT_APP_PREFIX || "";
+
 export const mainnetUrl =
-  import.meta.env.MAINNET_URL || "https://green.aptos.movementlabs.xyz/v1";
+  import.meta.env.MAINNET_URL || `https://${prefix}.aptos.movementlabs.xyz/v1`;
 export const devnetUrl =
   import.meta.env.DEVNET_URL ||
-  "https://green.aptos.devnet.suzuka.movementlabs.xyz/v1";
+  `https://${prefix}aptos.devnet.suzuka.movementlabs.xyz/v1`;
 export const testnetUrl =
   import.meta.env.TESTNET_URL ||
-  "https://green.aptos.testnet.suzuka.movementlabs.xyz/v1";
+  `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/v1`;
+
 export const mevmdevnetUrl =
   import.meta.env.INOLA_URL ||
-  "https://green.aptos.devnet.imola.movementlabs.xyz/v1";
+  `https://${prefix}aptos.devnet.imola.movementlabs.xyz/v1`;
 
 export const networks = {
   mainnet: mainnetUrl,
