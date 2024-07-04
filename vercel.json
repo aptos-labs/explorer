@@ -13,8 +13,8 @@
       "destination": "/txn/:path*.tsx"
     },
     {
-      "source": "/account/:path*",
-      "destination": "/account/:path*.tsx"
+      "source": "/account/:address?network=:network",
+      "destination:": "/account/:address.tsx?network=:network"
     }
   ]
 }
