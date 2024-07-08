@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
       - name: Install pnpm
         id: pnpm-install
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
       - name: Install Node.js
         id: node-install
         uses: actions/setup-node@v4
@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
       - name: Install pnpm
         id: pnpm-install
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
       - name: Install Node.js
         id: node-install
         uses: actions/setup-node@v4
