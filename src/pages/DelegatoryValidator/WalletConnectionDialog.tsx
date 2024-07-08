@@ -43,8 +43,8 @@ export default function WalletConnectionDialog({
           <WalletConnector
             networkSupport={state.network_name}
             handleNavigate={() => navigate(`/account/${account?.address}`)}
-            sortDefaultWallets={sortPetraFirst}
-            sortMoreWallets={sortPetraFirst}
+            sortAvailableWallets={sortPetraFirst}
+            sortInstallableWallets={sortPetraFirst}
             modalMaxWidth="sm"
           />
         </Stack>
