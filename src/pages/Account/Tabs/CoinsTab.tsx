@@ -18,6 +18,7 @@ const COINS_QUERY = gql`
         name
         decimals
         symbol
+        token_standard
       }
     }
   }
@@ -39,6 +40,7 @@ export default function CoinsTab({address}: TokenTabsProps) {
         name: string;
         decimals: number;
         symbol: string;
+        token_standard: string;
       };
     }[];
   }>(COINS_QUERY, {
@@ -68,6 +70,7 @@ export default function CoinsTab({address}: TokenTabsProps) {
           decimals: coin.metadata.decimals,
           symbol: coin.metadata.symbol,
           assetType: coin.asset_type,
+          assetVersion: coin.metadata.token_standard,
         }))}
     />
   );

@@ -61,6 +61,7 @@ export function CoinsTable({
     decimals: number;
     symbol: string;
     assetType: string;
+    assetVersion: string;
   }[];
 }) {
   return (
@@ -69,19 +70,27 @@ export function CoinsTable({
         <TableRow>
           <GeneralTableHeaderCell header="Name" />
           <GeneralTableHeaderCell header="Amount" />
+          <GeneralTableHeaderCell header="Type" />
           <GeneralTableHeaderCell header="Coin Type" />
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {coins.map(({name, amount, decimals, symbol, assetType}, i) => {
-          return (
-            <GeneralTableRow key={i}>
-              <CoinNameCell name={name} />
-              <AmountCell amount={amount} decimals={decimals} symbol={symbol} />
-              <CoinTypeCell assetType={assetType} />
-            </GeneralTableRow>
-          );
-        })}
+        {coins.map(
+          ({name, amount, decimals, symbol, assetType, assetVersion}, i) => {
+            return (
+              <GeneralTableRow key={i}>
+                <CoinNameCell name={name} />
+                <AmountCell
+                  amount={amount}
+                  decimals={decimals}
+                  symbol={symbol}
+                />
+                <CoinNameCell name={assetVersion} />
+                <CoinTypeCell assetType={assetType} />
+              </GeneralTableRow>
+            );
+          },
+        )}
       </GeneralTableBody>
     </Table>
   );

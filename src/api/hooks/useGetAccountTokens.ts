@@ -2,6 +2,7 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useQuery} from "@tanstack/react-query";
 import {normalizeAddress} from "../../utils";
 import {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
+import {IndexerClient} from "aptos";
 
 export function useGetAccountTokensCount(address: string) {
   const [state] = useGlobalState();
@@ -18,6 +19,10 @@ export function useGetAccountTokensCount(address: string) {
   });
 }
 
+export type TokenOwnership = Awaited<
+  ReturnType<IndexerClient["getOwnedTokens"]>
+>["current_token_ownerships_v2"][0];
+
 export function useGetAccountTokens(
   address: string,
   limit: number,
@@ -25,7 +30,7 @@ export function useGetAccountTokens(
 ) {
   const [state] = useGlobalState();
   const addr64Hash = normalizeAddress(address);
-  return useQuery({
+  return useQuery<TokenOwnership[]>({
     queryKey: [
       "account_tokens",
       {addr64Hash, limit, offset},
