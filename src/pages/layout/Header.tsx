@@ -151,8 +151,8 @@ export default function Header() {
                   handleNavigate={() =>
                     navigate(`/account/${account?.address}`)
                   }
-                  sortDefaultWallets={sortPetraFirst}
-                  sortMoreWallets={sortPetraFirst}
+                  sortAvailableWallets={sortPetraFirst}
+                  sortInstallableWallets={sortPetraFirst}
                   modalMaxWidth="sm"
                 />
               </Box>

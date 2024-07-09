@@ -456,8 +456,8 @@ function RunContractForm({
           <Box display="flex" flexDirection="row" alignItems="center">
             <WalletConnector
               networkSupport={state.network_name}
-              sortDefaultWallets={sortPetraFirst}
-              sortMoreWallets={sortPetraFirst}
+              sortAvailableWallets={sortPetraFirst}
+              sortInstallableWallets={sortPetraFirst}
               modalMaxWidth="sm"
             />
             <Typography ml={2} fontSize={10}>
