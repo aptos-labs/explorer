@@ -18,28 +18,29 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
 }
 
 export function getGraphqlURI(networkName: NetworkName): string | undefined {
+  const prefix = import.meta.env.REACT_APP_PREFIX || "";
   switch (networkName) {
     case "mainnet":
       return (
         import.meta.env.MAINNET_GRAPHQL ||
-        "https://aptos.movementlabs.xyz/graphql"
+        `https://${prefix}aptos.movementlabs.xyz/graphql`
       );
     case "testnet":
       return (
         import.meta.env.TESTNET_GRAPHQL ||
-        "https:/aptos.testnet.suzuka.movementlabs.xyz/graphql"
+        `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/graphql`
       );
     case "devnet":
       return (
         import.meta.env.DEVNET_GRAPHQL ||
-        "https://aptos.devnet.suzuka.movementlabs.xyz/graphql"
+        `https://${prefix}aptos.devnet.suzuka.movementlabs.xyz/graphql`
       );
     case "local":
       return import.meta.env.LOCAL_GRAPHQL || "http://0.0.0.0:30731/graphql";
     case "mevmdevnet":
       return (
-        import.meta.env.INOLA_GRAPHQL ||
-        "https://aptos.devnet.imola.movementlabs.xyz/graphql"
+        import.meta.env.IMOLA_GRAPHQL ||
+        `https://${prefix}aptos.devnet.imola.movementlabs.xyz/graphql`
       );
     case "custom":
       return getCustomParameters().graphqlUrl;

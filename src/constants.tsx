@@ -14,7 +14,7 @@ export const testnetUrl =
   `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/v1`;
 
 export const mevmdevnetUrl =
-  import.meta.env.INOLA_URL ||
+  import.meta.env.IMOLA_URL ||
   `https://${prefix}aptos.devnet.imola.movementlabs.xyz/v1`;
 
 export const networks = {
