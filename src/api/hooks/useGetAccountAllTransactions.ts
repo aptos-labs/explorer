@@ -39,6 +39,7 @@ const ACCOUNT_TRANSACTIONS_QUERY = gql`
       where: {account_address: {_eq: $address}}
       order_by: {transaction_version: desc}
       limit: $limit
+      offset: $offset
     ) {
       transaction_version
     }
