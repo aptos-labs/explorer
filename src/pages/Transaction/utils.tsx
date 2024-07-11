@@ -202,7 +202,6 @@ export function useTransactionBalanceChanges(txn_version: string) {
     gql`
       query TransactionQuery($txn_version: String) {
         fungible_asset_activities(
-          distinct_on: amount
           where: {transaction_version: {_eq: ${txn_version}}}
         ) {
           amount
@@ -230,7 +229,7 @@ export function useTransactionBalanceChanges(txn_version: string) {
     data?.fungible_asset_activities.map((a) => ({
       address: a.owner_address,
       amount:
-        a.type === "0x1::aptos_coin::GasFeeEvent"
+        a.type.includes("GasFeeEvent") || a.type.includes("Withdraw")
           ? BigInt(-a.amount)
           : BigInt(a.amount),
       asset: {
