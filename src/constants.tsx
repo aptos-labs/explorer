@@ -3,11 +3,11 @@
  */
 export const devnetUrl =
   import.meta.env.APTOS_DEVNET_URL ||
-  "https://api-staging.devnet.aptoslabs.com/v1";
+  "https://api.devnet.staging.aptoslabs.com/v1";
 
 export const networks: Record<string, string> = {
   mainnet: "https://api.mainnet.aptoslabs.com/v1",
-  testnet: "https://api-staging.testnet.aptoslabs.com/v1",
+  testnet: "https://api.testnet.staging.aptoslabs.com/v1",
   devnet: devnetUrl,
   local: "http://127.0.0.1:8080/v1",
   previewnet: "https://fullnode.previewnet.aptoslabs.com/v1",
