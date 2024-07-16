@@ -714,7 +714,7 @@ function ContractForm({
                   <TextField
                     onChange={onChange}
                     value={value ?? ""}
-                    label={`T${i}`}
+                    label={`Type arg${i}`}
                     fullWidth
                   />
                 )}

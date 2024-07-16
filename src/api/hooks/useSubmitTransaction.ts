@@ -39,19 +39,17 @@ const useSubmitTransaction = () => {
   }, [transactionResponse]);
 
   async function submitTransaction(transaction: InputTransactionData) {
-    // if (
-    //   network?.name.toLocaleLowerCase() !==
-    //     (state.network_name === "local" ? "localhost" : state.network_name) &&
-    //   // TODO: This is a hack to get around network being cached
-    //   wallet?.name !== "Google (AptosConnect)"
-    // ) {
-    //   setTransactionResponse({
-    //     transactionSubmitted: false,
-    //     message:
-    //       "Wallet and Explorer should use the same network to submit a transaction",
-    //   });
-    //   return;
-    // }
+    if (
+      network?.name.toLocaleLowerCase() !==
+        (state.network_name === "local" ? "localhost" : state.network_name)
+    ) {
+      setTransactionResponse({
+        transactionSubmitted: false,
+        message:
+          "Wallet and Explorer should use the same network to submit a transaction",
+      });
+      return;
+    }
 
     setTransactionInProcess(true);
 
