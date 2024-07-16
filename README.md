@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 # Movement's Explorer
+=======
+
+# Movement Explorer
+>>>>>>> green
 
 ## How to use
 
