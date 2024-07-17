@@ -30,7 +30,7 @@ const useSubmitTransaction = () => {
   const [transactionInProcess, setTransactionInProcess] =
     useState<boolean>(false);
   const [state] = useGlobalState();
-  const {signAndSubmitTransaction, network} = useWallet();
+  const {signAndSubmitTransaction, wallet, network} = useWallet();
 
   useEffect(() => {
     if (transactionResponse !== null) {
@@ -41,7 +41,7 @@ const useSubmitTransaction = () => {
   async function submitTransaction(transaction: InputTransactionData) {
     if (
       network?.name.toLocaleLowerCase() !==
-      (state.network_name === "local" ? "localhost" : state.network_name)
+        (state.network_name === "local" ? "localhost" : state.network_name)
     ) {
       setTransactionResponse({
         transactionSubmitted: false,

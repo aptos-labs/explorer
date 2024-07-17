@@ -5,7 +5,7 @@ import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import PriorityHighOutlinedIcon from "@mui/icons-material/PriorityHighOutlined";
 
 // TODO: unify the colors
-const SUCCESS_COLOR = "#64FF51";
+const SUCCESS_COLOR = "#29CF96";
 const SUCCESS_BACKGROUND_COLOR = "rgba(100,255,81,0.1)";
 const ERROR_COLOR = "#F95C41";
 const ERROR_BACKGROUND_COLOR = "rgba(249,92,65,0.1)";

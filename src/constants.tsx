@@ -1,20 +1,60 @@
 /**
  * Network
  */
+
+const prefix = import.meta.env.REACT_APP_PREFIX || "";
+
+export const mainnetUrl =
+  import.meta.env.MAINNET_URL || `https://${prefix}.aptos.movementlabs.xyz/v1`;
 export const devnetUrl =
-  import.meta.env.APTOS_DEVNET_URL ||
-  "https://aptos.devnet.m1.movementlabs.xyz";
+  import.meta.env.DEVNET_URL ||
+  `https://${prefix}aptos.devnet.suzuka.movementlabs.xyz/v1`;
+export const testnetUrl =
+  import.meta.env.TESTNET_URL ||
+  `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/v1`;
+
+export const mevmdevnetUrl =
+  import.meta.env.IMOLA_URL ||
+  `https://${prefix}aptos.devnet.imola.movementlabs.xyz/v1`;
 
 export const networks = {
-  mainnet: "https://aptos.movementlabs.xyz",
-  testnet: "https://aptos.testnet.movementlabs.xyz",
+  mainnet: mainnetUrl,
+  testnet: testnetUrl,
   devnet: devnetUrl,
-  local: "http://127.0.0.1:8080/v1",
-  previewnet: "https://aptos.testnet.movementlabs.xyz",
-  randomnet: "https://aptos.testnet.movementlabs.xyz",
+  local: "http://localhost:30731",
+  mevmdevnet: mevmdevnetUrl,
+  custom: "",
 };
 
 export type NetworkName = keyof typeof networks;
+
+type ApiKeys = {
+  [key in NetworkName]: string | undefined;
+};
+
+/**
+ * Public Client IDs (API keys) from API Gateway. For mainnet, these come from the prod
+ * API Gateway (developers.aptoslabs.com), for testnet and devnet these come from the
+ * staging API Gateway (staging.developers.aptoslabs.com).
+ *
+ * These keys are all generated using the petra@aptoslabs.com account. Learn more:
+ * https://www.notion.so/aptoslabs/API-Gateway-FAQ-for-product-owners-183b29ba6bed41f8922e6049d9d36486
+ *
+ * Some networks aren't configured to use API Gateway, e.g. randomnet. For that, set the
+ * value to `undefined`.
+ */
+const apiKeys: ApiKeys = {
+  mainnet: "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
+  testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
+  devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
+  local: undefined,
+  mevmdevnet: undefined,
+  custom: undefined,
+};
+
+export function getApiKey(network_name: NetworkName): string | undefined {
+  return apiKeys[network_name];
+}
 
 export function isValidNetworkName(value: string): value is NetworkName {
   return value in networks;
@@ -25,8 +65,8 @@ export enum Network {
   TESTNET = "testnet",
   DEVNET = "devnet",
   LOCAL = "local",
-  PREVIEWNET = "previewnet",
-  RANDOMNET = "randomnet",
+  PREVIEWNET = "mevm-devnet",
+  CUSTOM = "custom",
 }
 
 // Remove trailing slashes
@@ -37,7 +77,7 @@ for (const key of Object.keys(networks)) {
   }
 }
 
-export const defaultNetworkName: NetworkName = "local" as const;
+export const defaultNetworkName: NetworkName = "testnet" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;

@@ -24,8 +24,11 @@ import LockIcon from "@mui/icons-material/Lock";
 import PendingIcon from "@mui/icons-material/Pending";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+// @ts-expect-error logo
 import Counter1Logo from "../../../assets/svg/stepper_counter_1.svg?react";
+// @ts-expect-error logo
 import Counter2Logo from "../../../assets/svg/stepper_counter_2.svg?react";
+// @ts-expect-error logo
 import Counter3Logo from "../../../assets/svg/stepper_counter_3.svg?react";
 
 export enum StakingStatus {

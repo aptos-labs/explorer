@@ -26,12 +26,15 @@ function BackButton(handleClick: () => void) {
 
 export default function GoBack(): JSX.Element | null {
   const navigate = useNavigate();
-
+  console.log(window.history.state);
+  console.log(window.history.state.idx);
   if (window.history.state && window.history.state.idx > 0) {
     return BackButton(() => {
       navigate(-1);
     });
   } else {
-    return null;
+    return BackButton(() => {
+      navigate("/");
+    });
   }
 }

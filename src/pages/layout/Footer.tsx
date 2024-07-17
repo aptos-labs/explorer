@@ -2,15 +2,21 @@ import React from "react";
 import {Box, Container, Typography, useTheme} from "@mui/material";
 
 import Grid from "@mui/material/Unstable_Grid2";
-
+// @ts-expect-error logo
 import GithubLogo from "../../assets/github.svg?react";
+// @ts-expect-error logo
 import DiscordLogo from "../../assets/discord.svg?react";
+// @ts-expect-error logo
 import TwitterLogo from "../../assets/twitter.svg?react";
+// @ts-expect-error logo
 import MediumLogo from "../../assets/medium.svg?react";
+// @ts-expect-error logo
 import LinkedInLogo from "../../assets/linkedin.svg?react";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import SvgIcon from "@mui/material/SvgIcon";
+// @ts-expect-error logo
 import MovementLogoBlack from "../../assets/svg/logob.svg?react";
+// @ts-expect-error logo
 import MovementLogoWhite from "../../assets/svg/logow.svg?react";
 import {Link} from "../../routing";
 

@@ -5,10 +5,12 @@ import {
   ApolloProvider,
   HttpLink,
   NormalizedCacheObject,
+  ApolloLink,
 } from "@apollo/client";
 import {useEffect, useState} from "react";
-import {NetworkName} from "../../constants";
+import {NetworkName, getApiKey} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {getCustomParameters} from "../../../src/pages/layout/NetworkSelect";
 
 function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   const graphqlUri = getGraphqlURI(networkName);
@@ -16,17 +18,33 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
 }
 
 export function getGraphqlURI(networkName: NetworkName): string | undefined {
+  const prefix = import.meta.env.REACT_APP_PREFIX || "";
   switch (networkName) {
     case "mainnet":
-      return "https://api.mainnet.aptoslabs.com/v1/graphql";
+      return (
+        import.meta.env.MAINNET_GRAPHQL ||
+        `https://${prefix}aptos.movementlabs.xyz/graphql`
+      );
     case "testnet":
-      return "https://api-staging.testnet.aptoslabs.com/v1/graphql";
+      return (
+        import.meta.env.TESTNET_GRAPHQL ||
+        `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/graphql`
+      );
     case "devnet":
-      return "https://api-staging.devnet.aptoslabs.com/v1/graphql";
+      return (
+        import.meta.env.DEVNET_GRAPHQL ||
+        `https://${prefix}aptos.devnet.suzuka.movementlabs.xyz/graphql`
+      );
     case "local":
-      return "http://127.0.0.1:8090/v1/graphql";
-    case "randomnet":
-      return "https://indexer.random.aptoslabs.com/v1/graphql";
+      return import.meta.env.LOCAL_GRAPHQL || "http://0.0.0.0:30731/graphql";
+    case "mevmdevnet":
+      return (
+        import.meta.env.IMOLA_GRAPHQL ||
+        `https://${prefix}aptos.devnet.imola.movementlabs.xyz/graphql`
+      );
+    case "custom":
+      return getCustomParameters().graphqlUrl;
+
     default:
       return undefined;
   }
@@ -35,10 +53,24 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
 function getGraphqlClient(
   networkName: NetworkName,
 ): ApolloClient<NormalizedCacheObject> {
+  const apiKey = getApiKey(networkName);
+  // Middleware to attach the authorization token.
+  const authMiddleware = new ApolloLink((operation, forward) => {
+    operation.setContext(({headers = {}}) => ({
+      headers: {
+        ...headers,
+        ...(apiKey ? {authorization: `Bearer ${apiKey}`} : {}),
+      },
+    }));
+    return forward(operation);
+  });
+
+  const httpLink = new HttpLink({
+    uri: getGraphqlURI(networkName),
+  });
+
   return new ApolloClient({
-    link: new HttpLink({
-      uri: getGraphqlURI(networkName),
-    }),
+    link: ApolloLink.from([authMiddleware, httpLink]),
     cache: new InMemoryCache(),
   });
 }

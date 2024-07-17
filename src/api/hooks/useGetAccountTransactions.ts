@@ -21,7 +21,7 @@ export function useGetAccountTransactions(
       state.network_value,
     ],
     queryFn: () =>
-      getAccountTransactions({address, start, limit}, state.network_value),
+      getAccountTransactions({address, start, limit}, state.aptos_client),
   });
 
   return accountTransactionsResult;

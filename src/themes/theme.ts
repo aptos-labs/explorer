@@ -64,8 +64,8 @@ declare module "@mui/material/Divider" {
   }
 }
 
-const primaryColor = primary["400"];
-const primaryColorToned = primary["50"];
+const primaryColor = primary["500"];
+const primaryColorToned = "#000";
 
 const headerFont = `TWKEverett, space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif`;
 const bodyFont = `Inter, space-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`;

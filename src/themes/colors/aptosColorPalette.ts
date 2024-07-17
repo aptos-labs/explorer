@@ -16,24 +16,24 @@ export const grey = {
 // Primary Palette
 export const primary = {
   50: "#3465E2",
-  100: "#3a73fe",
-  200: "#84feff",
-  300: "#3ffdff",
-  400: "#FFD016",
-  500: "#FFD016",
-  600: "#FFD016",
+  100: "#C4B8A5",
+  200: "#FFFCF1",
+  300: "#EDEAE6",
+  400: "#FFFCF1",
+  500: "#FFDA34",
+  600: "#FFDA34",
   700: "#00878d",
   800: "#00686f",
   900: "#06565b",
 };
-
+// TODO: adjust colors
 export const aptosColor = primary[600];
-export const negativeColor: string = "#F97373";
-export const warningColor: string = "#f1c232";
+export const negativeColor: string = "#EA5330";
+export const warningColor: string = "#EA5330";
 
 // code block colors
-export const codeBlockColor: string = "rgba(58,115,254,0.1)";
-export const codeBlockColorClickableOnHover: string = "rgba(58,115,254,0.2)";
+export const codeBlockColor: string = "rgba(194,184,165,0.1)";
+export const codeBlockColorClickableOnHover: string = "rgba(194,184,165,0.2)";
 // use rgb for codeblock in modal otherwise it will be transparent and not very visible
-export const codeBlockColorRgbLight: string = "#E3ECF3";
-export const codeBlockColorRgbDark: string = "#212D32";
+export const codeBlockColorRgbLight: string = "#EDEAE6";
+export const codeBlockColorRgbDark: string = "#000000";

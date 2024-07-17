@@ -7,11 +7,14 @@ import {
 } from "@mui/material";
 import React from "react";
 import StyledDialog from "../../components/StyledDialog";
+// @ts-expect-error logo
 import ConnectWalletModalIcon from "../../assets/forum_icon.svg?react";
-import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
+import {WalletConnector} from "../../components/WalletConnector";
+
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useNavigate} from "react-router-dom";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {sortPetraFirst} from "../../utils";
 
 type WalletConnectionDialogProps = {
   handleDialogClose: () => void;
@@ -42,6 +45,9 @@ export default function WalletConnectionDialog({
           <WalletConnector
             networkSupport={state.network_name}
             handleNavigate={() => navigate(`/account/${account?.address}`)}
+            sortDefaultWallets={sortPetraFirst}
+            sortMoreWallets={sortPetraFirst}
+            modalMaxWidth="sm"
           />
         </Stack>
       </DialogActions>

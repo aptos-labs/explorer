@@ -1,6 +1,6 @@
-import {NetworkName, networks} from "../../constants";
-import {useQuery} from "@tanstack/react-query";
-import {getLedgerInfoWithoutResponseError} from "..";
+import { NetworkName, networks } from "../../constants";
+import { useQuery } from "@tanstack/react-query";
+import { getLedgerInfoWithoutResponseError } from "..";
 import {
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
@@ -13,7 +13,7 @@ export function useGetChainIdCached(networkName: NetworkName): string | null {
 }
 
 export function useGetChainIdAndCache(networkName: NetworkName): string | null {
-  const {data} = useQuery({
+  const { data } = useQuery({
     queryKey: ["ledgerInfo", networks[networkName]],
     queryFn: () => getLedgerInfoWithoutResponseError(networks[networkName]),
   });
@@ -22,7 +22,7 @@ export function useGetChainIdAndCache(networkName: NetworkName): string | null {
 
   // cache network chain ids (except local) to `localStorage` to avoid refetching chain data
   // as the chain ids for those networks won't be changed very often
-  if (chainId !== null && networkName !== "devnet") {
+  if (chainId !== null && networkName !== "local") {
     setLocalStorageWithExpiry(`${networkName}ChainId`, chainId, TTL);
   }
 
