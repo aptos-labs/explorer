@@ -226,17 +226,19 @@ export function useTransactionBalanceChanges(txn_version: string) {
   );
 
   const balanceChanges: BalanceChange[] =
-    data?.fungible_asset_activities.map((a) => ({
-      address: a.owner_address,
-      amount:
-        a.type.includes("GasFeeEvent") || a.type.includes("Withdraw")
-          ? BigInt(-a.amount)
-          : BigInt(a.amount),
-      asset: {
-        decimals: a.metadata.decimals,
-        symbol: a.metadata.symbol,
-      },
-    })) ?? [];
+    data?.fungible_asset_activities
+      .filter((a) => a.amount !== null)
+      .map((a) => ({
+        address: a.owner_address,
+        amount:
+          a.type.includes("GasFeeEvent") || a.type.includes("Withdraw")
+            ? BigInt(-a.amount)
+            : BigInt(a.amount),
+        asset: {
+          decimals: a.metadata.decimals,
+          symbol: a.metadata.symbol,
+        },
+      })) ?? [];
 
   return {
     isLoading: loading,
