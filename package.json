@@ -7,7 +7,7 @@
   "pnpm": {
     "overrides": {
       "@aptos-labs/aptos-client": ">=0.1.0",
-      "axios": ">=1.6.2",
+      "axios": ">=1.7.4",
       "follow-redirects": ">=1.15.4",
       "semver": ">=6.3.1",
       "d3-color": ">=3.1.0"
