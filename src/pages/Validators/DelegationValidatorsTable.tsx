@@ -43,6 +43,7 @@ import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import {useQuery} from "@tanstack/react-query";
 import {getValidatorCommisionAndState} from "../../api";
 import {MoveValue} from "aptos/src/generated";
+import {ResponseError} from "../../api/client";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -420,7 +421,7 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
 }
 
 export function DelegationValidatorsTable() {
-  const [{aptos_client: client}, state] = useGlobalState();
+  const [state] = useGlobalState();
   const {validators} = useGetValidators();
   const {connected} = useWallet();
   const columns = connected
@@ -439,12 +440,20 @@ export function DelegationValidatorsTable() {
     sortDirection,
   );
   const sortedValidatorAddrs = sortedValidators.map((v) => v.owner_address);
-  const {data: sortedValidatorsWithCommissionAndState, error} = useQuery({
-    queryKey: ["validatorCommisionAndState", client, ...sortedValidatorAddrs],
-    queryFn: () => getValidatorCommisionAndState(client, sortedValidatorAddrs),
-    select: (res: Array<[MoveValue, MoveValue]>[]) => {
+  const {data: sortedValidatorsWithCommissionAndState, error} = useQuery<
+    Types.MoveValue[],
+    ResponseError
+  >({
+    queryKey: [
+      "validatorCommisionAndState",
+      state.aptos_client,
+      ...sortedValidatorAddrs,
+    ],
+    queryFn: () =>
+      getValidatorCommisionAndState(state.aptos_client, sortedValidatorAddrs),
+    select: (res: MoveValue[]) => {
       /// First arg is always the return value
-      const ret = res[0];
+      const ret = res[0] as [MoveValue, MoveValue][];
       return sortedValidators.map((v, i) => {
         const commision = ret[i][0];
         const state = ret[i][1];
