@@ -304,3 +304,16 @@ export async function getValidatorState(
   };
   return withResponseError(client.view(payload));
 }
+
+export async function getValidatorCommisionAndState(
+  client: AptosClient,
+  validatorAddresses: Types.Address[],
+): Promise<Types.MoveValue[]> {
+  const payload: Types.ViewRequest = {
+    function:
+      "0x7a5c34e80f796fe58c336812f80e15a86a2086c75640270a11207b911d512aba::helpers::pool_address_info",
+    type_arguments: [],
+    arguments: [validatorAddresses],
+  };
+  return withResponseError(client.view(payload));
+}

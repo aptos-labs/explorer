@@ -7,7 +7,6 @@ import {
   MINIMUM_APT_IN_POOL,
 } from "./constants";
 import {ApolloError} from "@apollo/client";
-import {MoveValue} from "aptos/src/generated";
 
 interface AccountResourceData {
   locked_until_secs: bigint;
@@ -207,9 +206,9 @@ export type ValidatorStatus =
   | "Inactive";
 
 export function getValidatorStatus(
-  validatorStatus: MoveValue[],
+  validatorStatus: number,
 ): ValidatorStatus | undefined {
-  switch (Number(validatorStatus[0])) {
+  switch (validatorStatus) {
     case 1:
       return "Pending Active";
     case 2:
