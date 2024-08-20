@@ -23,7 +23,6 @@ import CurrencyValue, {
 import {aptosColor, grey, primary} from "../../themes/colors/aptosColorPalette";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
-import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {OperatorAddrCell, ValidatorAddrCell} from "./ValidatorsTable";
 import {useGetNumberOfDelegators} from "../../api/hooks/useGetNumberOfDelegators";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -33,7 +32,6 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
 import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
 import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
-import {ResponseError} from "../../api/client";
 import Error from "../Account/Error";
 import {
   ValidatorStatus,
@@ -42,6 +40,9 @@ import {
 } from "../DelegatoryValidator/utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
+import {useQuery} from "@tanstack/react-query";
+import {getValidatorCommisionAndState} from "../../api";
+import {MoveValue} from "aptos/src/generated";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -228,10 +229,12 @@ const COLUMNS_WITHOUT_WALLET_CONNECTION: Column[] = [
 ];
 
 type ValidatorRowProps = {
-  validator: ValidatorData;
+  validator: ValidatorData & {
+    commission: number;
+    status: number;
+  };
   columns: Column[];
   connected: boolean;
-  setError: (error: ResponseError) => void;
 };
 
 type ValidatorCellProps = {
@@ -361,23 +364,16 @@ function MyDepositCell({validator}: ValidatorCellProps) {
   );
 }
 
-function ValidatorRow({
-  validator,
-  columns,
-  connected,
-  setError,
-}: ValidatorRowProps) {
+function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
   const {totalVotingPower} = useGetValidatorSet();
-  const {commission, validatorStatus, error} = useGetDelegationNodeInfo({
-    validatorAddress: validator.owner_address,
-  });
   const validatorVotingPower = validator.voting_power;
   const networkPercentage = calculateNetworkPercentage(
     validatorVotingPower,
     totalVotingPower,
   );
+  const {commission, status} = validator;
 
   const rowClick = (address: Types.Address) => {
     logEvent("delegation_validators_row_clicked", address, {
@@ -386,20 +382,15 @@ function ValidatorRow({
       network_percentage: networkPercentage ?? "",
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",
-      validator_status: validatorStatus ? validatorStatus[0].toString() : "",
+      validator_status: status.toString(),
     });
   };
-
-  if (error) {
-    setError(error);
-  }
 
   // Hide delegators that are inactive and have no delegated stake
   // TODO: Don't show inactive validators unless the users have a deposit
   // Would require some querying restructing to be efficient.
   if (
-    validatorStatus &&
-    getValidatorStatus(validatorStatus) === "Inactive" &&
+    getValidatorStatus(status) === "Inactive" &&
     validatorVotingPower === "0"
   ) {
     return null;
@@ -420,9 +411,7 @@ function ValidatorRow({
             delegatedStakeAmount={validatorVotingPower}
             networkPercentage={networkPercentage}
             connected={connected}
-            validatorStatus={
-              validatorStatus ? getValidatorStatus(validatorStatus) : undefined
-            }
+            validatorStatus={getValidatorStatus(status)}
           />
         );
       })}
@@ -431,7 +420,7 @@ function ValidatorRow({
 }
 
 export function DelegationValidatorsTable() {
-  const [state] = useGlobalState();
+  const [{aptos_client: client}, state] = useGlobalState();
   const {validators} = useGetValidators();
   const {connected} = useWallet();
   const columns = connected
@@ -444,12 +433,29 @@ export function DelegationValidatorsTable() {
   >([]);
   const {delegatedStakingPools, loading} =
     useGetDelegatedStakingPoolList() ?? [];
-  const [error, setError] = useState<ResponseError | null>();
   const sortedValidators = getSortedValidators(
     delegationValidators,
     sortColumn,
     sortDirection,
   );
+  const sortedValidatorAddrs = sortedValidators.map((v) => v.owner_address);
+  const {data: sortedValidatorsWithCommissionAndState, error} = useQuery({
+    queryKey: ["validatorCommisionAndState", client, ...sortedValidatorAddrs],
+    queryFn: () => getValidatorCommisionAndState(client, sortedValidatorAddrs),
+    select: (res: Array<[MoveValue, MoveValue]>[]) => {
+      /// First arg is always the return value
+      const ret = res[0];
+      return sortedValidators.map((v, i) => {
+        const commision = ret[i][0];
+        const state = ret[i][1];
+        return {
+          ...v,
+          commission: Number(commision) / 100,
+          status: Number(state),
+        };
+      });
+    }, // commission rate: 22.85% is represented as 2285
+  });
 
   useEffect(() => {
     if (!loading) {
@@ -508,17 +514,18 @@ export function DelegationValidatorsTable() {
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {sortedValidators.map((validator: any, i: number) => {
-          return (
-            <ValidatorRow
-              key={i}
-              validator={validator}
-              columns={columns}
-              connected={connected}
-              setError={setError}
-            />
-          );
-        })}
+        {sortedValidatorsWithCommissionAndState?.map(
+          (validator: any, i: number) => {
+            return (
+              <ValidatorRow
+                key={i}
+                validator={validator}
+                columns={columns}
+                connected={connected}
+              />
+            );
+          },
+        )}
       </GeneralTableBody>
     </Table>
   );

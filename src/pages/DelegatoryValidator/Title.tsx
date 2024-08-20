@@ -27,7 +27,7 @@ export default function ValidatorTitle({
         <TitleHashButton hash={address} type={HashType.ACCOUNT} isValidator />
         <ValidatorStatusIcon
           validatorStatus={
-            validatorStatus ? getValidatorStatus(validatorStatus) : undefined
+            validatorStatus ? getValidatorStatus(validatorStatus[0]) : undefined
           }
         />
       </Stack>
