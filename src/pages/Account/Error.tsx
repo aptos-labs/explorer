@@ -32,14 +32,14 @@ export default function Error({error, address}: ErrorProps) {
       } else {
         return (
           <Alert severity="error">
-            To many requests. Please try again 5 minutes later.
+            Too many requests. Please try again 5 minutes later.
           </Alert>
         );
       }
     case ResponseErrorType.TOO_MANY_REQUESTS:
       return (
         <Alert severity="error">
-          To many requests. Please try again 5 minutes later.
+          Too many requests. Please try again 5 minutes later.
         </Alert>
       );
   }
