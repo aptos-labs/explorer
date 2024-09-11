@@ -73,8 +73,8 @@ export default function HeaderSearch() {
 
     const promises = [];
 
-    const isAnsName =
-      searchText.endsWith(".apt") || searchText.endsWith(".petra");
+    if (searchText.endsWith(".petra")) searchText = searchText.concat(".apt");
+    const isAnsName = searchText.endsWith(".apt");
 
     if (isAnsName) {
       try {
