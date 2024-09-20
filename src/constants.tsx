@@ -54,7 +54,6 @@ export enum Network {
   DEVNET = "devnet",
   LOCAL = "local",
   PREVIEWNET = "previewnet",
-  RANDOMNET = "randomnet",
 }
 
 // Remove trailing slashes
