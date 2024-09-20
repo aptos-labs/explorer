@@ -11,7 +11,6 @@ export const networks: Record<string, string> = {
   devnet: devnetUrl,
   local: "http://127.0.0.1:8080/v1",
   previewnet: "https://fullnode.previewnet.aptoslabs.com/v1",
-  randomnet: "https://fullnode.random.aptoslabs.com/v1",
 };
 
 export type NetworkName = keyof typeof networks;
@@ -37,7 +36,6 @@ const apiKeys: ApiKeys = {
   devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
   local: undefined,
   previewnet: undefined,
-  randomnet: undefined,
 };
 
 export function getApiKey(network_name: NetworkName): string | undefined {
