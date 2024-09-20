@@ -28,7 +28,7 @@ import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
 import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
 import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
 import {useMemo} from "react";
-import {Network} from "aptos";
+import {Network} from "@aptos-labs/ts-sdk";
 
 const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 
