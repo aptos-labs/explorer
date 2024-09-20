@@ -1,7 +1,8 @@
 import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
-import {HexString, Types} from "aptos";
+import {Types} from "aptos";
 import pako from "pako";
 import {Statsig} from "statsig-react";
+import {Hex} from "@aptos-labs/ts-sdk";
 /**
  * Helper function for exhaustiveness checks.
  *
@@ -87,7 +88,9 @@ export async function fetchJsonResponse(url: string) {
  */
 export function transformCode(source: string): string {
   try {
-    return pako.ungzip(new HexString(source).toUint8Array(), {to: "string"});
+    return pako.ungzip(Hex.fromHexString(source).toUint8Array(), {
+      to: "string",
+    });
   } catch {
     return "";
   }
@@ -196,7 +199,7 @@ function encodeVectorForViewRequest(type: string, value: string) {
   if (match) {
     if (match[1] === "u8") {
       return (
-        HexString.fromUint8Array(
+        new Hex(
           new Uint8Array(
             rawVector.map((v) => {
               const result = ensureNumber(v.trim());
