@@ -106,10 +106,6 @@ export const defaultFeature = features[defaultFeatureName];
  * Delegation Service
  */
 export const OCTA = 100000000;
-export const WHILTELISTED_TESTNET_DELEGATION_NODES = import.meta.env
-  .REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES
-  ? import.meta.env.REACT_APP_WHILTELISTED_TESTNET_DELEGATION_NODES.split(",")
-  : null;
 
 /**
  * Core Address
