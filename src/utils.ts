@@ -2,7 +2,7 @@ import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
 import {Types} from "aptos";
 import pako from "pako";
 import {Statsig} from "statsig-react";
-import {Hex} from "@aptos-labs/ts-sdk";
+import {AccountAddress, Hex} from "@aptos-labs/ts-sdk";
 /**
  * Helper function for exhaustiveness checks.
  *
@@ -98,8 +98,7 @@ export function transformCode(source: string): string {
 
 export function getBytecodeSizeInKB(bytecodeHex: string): number {
   // Convert the hex string to a byte array
-  const textEncoder = new TextEncoder();
-  const byteArray = new Uint8Array(textEncoder.encode(bytecodeHex));
+  const byteArray = Hex.fromHexString(bytecodeHex).toUint8Array();
 
   // Compute the size of the byte array in kilobytes (KB)
   const sizeInKB = byteArray.length / 1024;
@@ -112,24 +111,7 @@ export function getBytecodeSizeInKB(bytecodeHex: string): number {
  * Standardizes an address to the format "0x" followed by 64 lowercase hexadecimal digits.
  */
 export const standardizeAddress = (address: string): string => {
-  // Convert the address to lowercase
-  address = address.toLowerCase();
-  // If the address has more than 66 characters, it's already invalid
-  if (address.length > 66) {
-    return address;
-  }
-  // Remove the "0x" prefix if present
-  const addressWithoutPrefix = address.startsWith("0x")
-    ? address.slice(2)
-    : address;
-  // If the address has more than 64 characters after removing the prefix, it's already invalid
-  if (addressWithoutPrefix.length > 64) {
-    return address;
-  }
-  // Pad the address with leading zeros if necessary to ensure it has exactly 64 characters (excluding the "0x" prefix)
-  const addressWithPadding = addressWithoutPrefix.padStart(64, "0");
-  // Return the standardized address with the "0x" prefix
-  return "0x" + addressWithPadding;
+  return AccountAddress.from(address).toStringLong();
 };
 
 // inspired by https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
