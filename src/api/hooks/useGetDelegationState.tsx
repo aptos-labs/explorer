@@ -25,7 +25,7 @@ export function useGetDelegationState(
 
   return {
     lockedUntilSecs,
-    balance,
+    balance: balance.data ?? null,
     delegatorBalance,
     rewardsRateYearly,
   };

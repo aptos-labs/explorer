@@ -154,7 +154,7 @@ function StakingBarContent({
   // or when balance is less than add_stake fee if minimum stake amount is already met
   const buttonDisabled =
     account !== null &&
-    Number(balance) <=
+    Number(balance?.data ?? 0) <=
       (Number(stakes[0]) === 0
         ? MINIMUM_APT_IN_POOL_FOR_EXPLORER * OCTA + Number(addStakeFee)
         : Number(addStakeFee));

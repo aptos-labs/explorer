@@ -1,29 +1,15 @@
 import {Types} from "aptos";
-import {useGetAccountResources} from "./useGetAccountResources";
-
-interface CoinStore {
-  coin: {
-    value: string;
-  };
-}
+import {useQuery} from "@tanstack/react-query";
+import {ResponseError} from "../client";
+import {getBalance} from "../index";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export function useGetAccountAPTBalance(address: Types.Address) {
-  const {isLoading, data, error} = useGetAccountResources(address);
-
-  if (isLoading || error || !data) {
-    return null;
-  }
-
-  const coinStore = data.find(
-    (resource) =>
-      resource.type === "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>",
-  );
-
-  if (!coinStore) {
-    return null;
-  }
-
-  const coinStoreData: CoinStore = coinStore.data as CoinStore;
-
-  return coinStoreData?.coin?.value;
+  const [state] = useGlobalState();
+  // TODO: Convert all Types.Address to AccountAddress
+  return useQuery<string, ResponseError>({
+    queryKey: ["aptBalance", {address}, state.network_value],
+    queryFn: () => getBalance(state.sdk_v2_client!, address),
+    retry: false,
+  });
 }
