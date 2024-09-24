@@ -13,12 +13,13 @@ type BalanceCardProps = {
 
 export default function BalanceCard({address}: BalanceCardProps) {
   const balance = useGetAccountAPTBalance(address);
+  console.log("BalanceCard balance", balance);
 
-  return balance ? (
+  return balance.data ? (
     <Card height="auto">
       <Stack spacing={1.5} marginY={1}>
         <Typography fontSize={17} fontWeight={700}>
-          {`${getFormattedBalanceStr(balance)} APT`}
+          {`${getFormattedBalanceStr(balance.data)} APT`}
         </Typography>
         <Stack direction="row" spacing={1} alignItems="center">
           <Typography fontSize={12} color={grey[450]}>

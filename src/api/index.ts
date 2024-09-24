@@ -3,6 +3,14 @@ import {OCTA} from "../constants";
 import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
+import {
+  AccountAddressInput,
+  Aptos,
+  APTOS_COIN,
+  InputViewFunctionData,
+  TypeTagAddress,
+  TypeTagU64,
+} from "@aptos-labs/ts-sdk";
 
 export async function getTransactions(
   requestParameters: {start?: number; limit?: number},
@@ -214,6 +222,29 @@ export async function getRecentBlocks(
     blocks.push(block);
   }
   return blocks;
+}
+
+export async function getBalance(
+  client: Aptos,
+  address: AccountAddressInput,
+  coinType?: `0x${string}::${string}::${string}`,
+): Promise<string> {
+  const typeArguments = coinType ? [coinType] : [APTOS_COIN];
+
+  // TODO: Replace with native SDK call
+  const payload: InputViewFunctionData = {
+    function: "0x1::coin::balance",
+    typeArguments,
+    functionArguments: [address],
+    abi: {
+      parameters: [new TypeTagAddress()],
+      typeParameters: [{constraints: []}],
+      returnTypes: [new TypeTagU64()],
+    },
+  };
+  return withResponseError(
+    client.view<[string]>({payload}).then((res) => res[0]),
+  );
 }
 
 export async function getStake(
