@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
-import {StatsigProvider} from "statsig-react";
 
 import * as Sentry from "@sentry/react";
 import {BrowserTracing} from "@sentry/tracing";
@@ -31,7 +30,7 @@ ReactGA.initialize(import.meta.env.GA_TRACKING_ID || "G-VS7KJG61TM");
 // }
 
 Sentry.init({
-  dsn: "https://531160c88f78483491d129c02be9f774@o1162451.ingest.sentry.io/6249755",
+  dsn: "https://8f71927547f8ae9768d7f7baf1be7cde@o4508005503991808.ingest.us.sentry.io/4508005506547712",
   integrations: [new BrowserTracing()],
   environment: import.meta.env.MODE,
   enabled: import.meta.env.PROD,
@@ -53,23 +52,11 @@ const queryClient = new QueryClient();
 
 ReactDOM.render(
   <React.StrictMode>
-    <StatsigProvider
-      sdkKey={
-        import.meta.env.REACT_APP_STATSIG_SDK_KEY ||
-        "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
-      }
-      waitForInitialization={false}
-      options={{
-        environment: {tier: import.meta.env.MODE},
-      }}
-      user={{}}
-    >
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <ExplorerRoutes />
-        </BrowserRouter>
-      </QueryClientProvider>
-    </StatsigProvider>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <ExplorerRoutes />
+      </BrowserRouter>
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById("root"),
 );
