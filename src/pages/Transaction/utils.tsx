@@ -235,8 +235,8 @@ export function useTransactionBalanceChanges(txn_version: string) {
             ? BigInt(-a.amount)
             : BigInt(a.amount),
         asset: {
-          decimals: a.metadata.decimals,
-          symbol: a.metadata.symbol,
+          decimals: a.metadata?.decimals,
+          symbol: a.metadata?.symbol,
         },
       })) ?? [];
 
