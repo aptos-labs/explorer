@@ -35,7 +35,9 @@ type BalanceChangeCellProps = {
 function AddressCell({balanceChange}: BalanceChangeCellProps) {
   return (
     <GeneralTableCell>
-      <HashButton hash={balanceChange.address} type={HashType.ACCOUNT} />
+      {balanceChange.address ? (
+        <HashButton hash={balanceChange.address} type={HashType.ACCOUNT} />
+      ) : null}
     </GeneralTableCell>
   );
 }
