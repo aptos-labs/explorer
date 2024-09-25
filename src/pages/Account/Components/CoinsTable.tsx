@@ -77,6 +77,15 @@ export function CoinsTable({
       <GeneralTableBody>
         {coins.map(
           ({name, amount, decimals, symbol, assetType, assetVersion}, i) => {
+            let friendlyType = assetType;
+            switch (assetType) {
+              case "v1":
+                friendlyType = "Coin";
+                break;
+              case "v2":
+                friendlyType = "Fungible Asset";
+                break;
+            }
             return (
               <GeneralTableRow key={i}>
                 <CoinNameCell name={name} />
@@ -86,7 +95,7 @@ export function CoinsTable({
                   symbol={symbol}
                 />
                 <CoinNameCell name={assetVersion} />
-                <CoinTypeCell assetType={assetType} />
+                <CoinTypeCell assetType={friendlyType} />
               </GeneralTableRow>
             );
           },
