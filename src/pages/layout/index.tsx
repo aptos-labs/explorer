@@ -18,7 +18,6 @@ import {
 import {BitgetWallet} from "@bitget-wallet/aptos-wallet-adapter";
 import {BloctoWallet} from "@blocto/aptos-wallet-adapter-plugin";
 import {MartianWallet} from "@martianwallet/aptos-wallet-adapter";
-import {OpenBlockWallet} from "@openblockhq/aptos-wallet-adapter";
 import {PontemWallet} from "@pontem/wallet-adapter-plugin";
 import {RiseWallet} from "@rise-wallet/wallet-adapter";
 import {TokenPocketWallet} from "@tp-lab/aptos-wallet-adapter";
@@ -37,7 +36,6 @@ const fewchaWallet = new FewchaWallet();
 const martianWallet = new MartianWallet();
 const msafeWallet = new MSafeWalletAdapter();
 const okxWallet = new OKXWallet();
-const openBlockWallet = new OpenBlockWallet();
 const pontemWallet = new PontemWallet();
 const riseWallet = new RiseWallet();
 const tokenPocketWallet = new TokenPocketWallet();
@@ -61,7 +59,6 @@ function ExplorerWalletAdapterProvider({children}: LayoutProps) {
       }),
       riseWallet,
       msafeWallet,
-      openBlockWallet,
       tokenPocketWallet,
       trustWallet,
       welldoneWallet,
