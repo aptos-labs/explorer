@@ -20,6 +20,12 @@ export default function AnalyticsPage() {
       {state.network_name === defaultNetworkName ? (
         <>
           {titleComponent}
+          <p>
+            <i>
+              Please note that the data presented from the dashboard may not be
+              fully accurate as it reflects testnet conditions.
+            </i>
+          </p>
           <MainnetAnalytics />
         </>
       ) : (
