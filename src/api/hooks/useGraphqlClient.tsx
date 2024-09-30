@@ -28,7 +28,7 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
     case "testnet":
       return (
         import.meta.env.TESTNET_GRAPHQL ||
-        `https://${prefix}indexer.testnet.suzuka.movementlabs.xyz/v1/graphql`
+        `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/graphql`
       );
     case "devnet":
       return (
