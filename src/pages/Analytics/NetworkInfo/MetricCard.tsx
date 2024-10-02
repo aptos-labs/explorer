@@ -63,9 +63,9 @@ export default function MetricCard({data, label, tooltip}: MetricCardProps) {
 
 type DoubleMetricCardProps = {
   data1: string;
-  data2: string;
+  data2?: string;
   label1: string;
-  label2: string;
+  label2?: string;
   cardLabel: string;
   tooltip: NonNullable<React.ReactNode>;
 };
@@ -81,11 +81,11 @@ export function DoubleMetricCard({
   return (
     <MetricCardComponent label={cardLabel} tooltip={tooltip}>
       <Stack direction="row" width="100%">
-        <Stack width="50%">
+        <Stack width={data2 ? "50%" : "100%"}>
           <Data>{data1}</Data>
           <SubLabel>{label1}</SubLabel>
         </Stack>
-        <Stack width="50%">
+        <Stack width={data2 ? "50%" : "0%"}>
           <Data>{data2}</Data>
           <SubLabel>{label2}</SubLabel>
         </Stack>

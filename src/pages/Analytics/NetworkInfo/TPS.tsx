@@ -37,9 +37,9 @@ export default function TPS() {
             ? getFormattedTPS(peakTps)
             : "-"
       }
-      data2={isMainnet ? (peakTps ? getFormattedTPS(peakTps) : "-") : ""}
+      data2={isMainnet ? (peakTps ? getFormattedTPS(peakTps) : "-") : undefined}
       label1={isMainnet ? "REAL-TIME" : "PEAK LAST 30 DAYS"}
-      label2={isMainnet ? "PEAK LAST 30 DAYS" : ""}
+      label2={isMainnet ? "PEAK LAST 30 DAYS" : undefined}
       cardLabel="Max TPS"
       tooltip={
         isMainnet ? (
