@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import {useAugmentToWithGlobalSearchParams} from "../../routing";
+import {useGetInTestnet} from "../../api/hooks/useGetInTestnet";
 
 function NavButton({
   to,
@@ -40,6 +41,7 @@ function NavButton({
 
 export default function Nav() {
   const inMainnet = useGetInMainnet();
+  const inTestnet = useGetInTestnet();
 
   return (
     <Box
@@ -55,11 +57,13 @@ export default function Nav() {
         title="View All Transactions"
         label="Transactions"
       />
-      <NavButton
-        to="/analytics"
-        title="View Network Analytics"
-        label="Analytics"
-      />
+      {(inMainnet || inTestnet) && (
+        <NavButton
+          to="/analytics"
+          title="View Network Analytics"
+          label="Analytics"
+        />
+      )}
       {inMainnet && (
         <>
           <NavButton
