@@ -6,7 +6,7 @@ import {Stack, Typography} from "@mui/material";
 import MetricCard from "./MetricCard";
 
 export default function TotalTransactions(
-  props: {type: "card" | "inline" | null} = {type: "inline"},
+  props: {type?: "card" | "inline" | null} = {type: "inline"},
 ) {
   const [state] = useGlobalState();
   const {data: ledgerData} = useQuery({

@@ -18,6 +18,7 @@ export type AnalyticsData = {
   max_tps_15_blocks_in_past_30_days: {
     max_tps_15_blocks_in_past_30_days: number;
   }[];
+  cumulative_deployers: TotalDeployers[];
 };
 
 export type DailyAnalyticsData =
@@ -29,7 +30,8 @@ export type DailyAnalyticsData =
   | DailyPeakTPSData
   | DailyNewAccountData
   | DailyUserTxnData
-  | MonthlyActiveUserData;
+  | MonthlyActiveUserData
+  | TotalDeployers;
 
 export type DailyActiveUserData = {
   daily_active_user_count: number;
@@ -74,6 +76,11 @@ export type DailyUserTxnData = {
 export type MonthlyActiveUserData = {
   mau_signer_30: number;
   date: string;
+};
+
+export type TotalDeployers = {
+  cumulative_contract_deployers: number;
+  cumulative_contracts_deployed: number;
 };
 
 export function useGetAnalyticsData() {
