@@ -71,7 +71,7 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
         <Grid item xs={12} md={3} lg={2.4}>
           <LinkableContainer linkToAnalyticsPage={onHomePage}>
             <TotalNewAccountsCreated
-              data={data.cumulative_deployers[0].cumulative_contracts_deployed}
+              data={data.total_accounts[0].total_accounts}
             />
           </LinkableContainer>
         </Grid>

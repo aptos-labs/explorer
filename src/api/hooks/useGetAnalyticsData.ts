@@ -19,6 +19,7 @@ export type AnalyticsData = {
     max_tps_15_blocks_in_past_30_days: number;
   }[];
   cumulative_deployers: TotalDeployers[];
+  total_accounts: TotalAccounts[];
 };
 
 export type DailyAnalyticsData =
@@ -31,7 +32,8 @@ export type DailyAnalyticsData =
   | DailyNewAccountData
   | DailyUserTxnData
   | MonthlyActiveUserData
-  | TotalDeployers;
+  | TotalDeployers
+  | TotalAccounts;
 
 export type DailyActiveUserData = {
   daily_active_user_count: number;
@@ -81,6 +83,10 @@ export type MonthlyActiveUserData = {
 export type TotalDeployers = {
   cumulative_contract_deployers: number;
   cumulative_contracts_deployed: number;
+};
+
+export type TotalAccounts = {
+  total_accounts: number;
 };
 
 export function useGetAnalyticsData() {
