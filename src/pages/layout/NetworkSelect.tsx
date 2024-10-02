@@ -18,9 +18,12 @@ import {NetworkName, networks} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {grey} from "../../themes/colors/aptosColorPalette";
 
-interface CustomParams {restUrl : string, graphqlUrl: string}
+interface CustomParams {
+  restUrl: string;
+  graphqlUrl: string;
+}
 
-export let customParameters : CustomParams = {restUrl: "", graphqlUrl: ""};
+export let customParameters: CustomParams = {restUrl: "", graphqlUrl: ""};
 
 export const setCustomParameters = (params: CustomParams) => {
   customParameters = params;
@@ -32,7 +35,7 @@ export const getCustomParameters = () => {
 
   return {
     restUrl,
-    graphqlUrl
+    graphqlUrl,
   };
 };
 
@@ -54,7 +57,9 @@ function NetworkAndChainIdCached({
       width="100%"
       paddingY={0.75}
     >
-      <Typography>{networkName}</Typography>
+      <Typography>
+        {networkName === "testnet" ? "suzuka testnet" : networkName}
+      </Typography>
       <Typography variant="body2" sx={{color: theme.palette.text.disabled}}>
         {chainId}
       </Typography>
@@ -84,31 +89,38 @@ function NetworkMenuItem({networkName}: {networkName: string}) {
 }
 
 const verifyUrl = (url: string) => {
-  return url.startsWith("https://")
-}
+  return url.startsWith("https://");
+};
 
 export default function NetworkSelect() {
   const [state, {selectNetwork}] = useGlobalState();
   const theme = useTheme();
-  const [restUrl, setRestUrl] = React.useState('');
-  const [graphqlUrl, setGraphqlUrl] = React.useState('');
+  // eslint-disable-next-line
+  const [restUrl, setRestUrl] = React.useState("");
+  // eslint-disable-next-line
+  const [graphqlUrl, setGraphqlUrl] = React.useState("");
 
   const handleChange = (event: SelectChangeEvent<string>) => {
-    if (event.target.value == 'custom'){
-      if (verifyUrl(customParameters.restUrl) && verifyUrl(customParameters.graphqlUrl)){
+    if (event.target.value == "custom") {
+      if (
+        verifyUrl(customParameters.restUrl) &&
+        verifyUrl(customParameters.graphqlUrl)
+      ) {
         const network_name = event.target.value;
         selectNetwork(network_name as NetworkName);
-      } 
+      }
     } else {
       const network_name = event.target.value;
-      selectNetwork(network_name as NetworkName);}
+      selectNetwork(network_name as NetworkName);
+    }
   };
 
-  const handleSubmit = (e : any) => {
+  // eslint-disable-next-line
+  const handleSubmit = (e: any) => {
     e.preventDefault();
-    if (verifyUrl(restUrl) && verifyUrl(graphqlUrl)){
-    setCustomParameters({ restUrl, graphqlUrl });
-  }
+    if (verifyUrl(restUrl) && verifyUrl(graphqlUrl)) {
+      setCustomParameters({restUrl, graphqlUrl});
+    }
   };
 
   function DropdownIcon(props: SvgIconProps) {
@@ -127,7 +139,11 @@ export default function NetworkSelect() {
           inputProps={{"aria-label": "Select Network"}}
           value={state.network_name}
           onChange={handleChange}
-          renderValue={(value) => <Typography>{value}</Typography>}
+          renderValue={(value) => (
+            <Typography>
+              {value === "testnet" ? "suzuka testnet" : value}
+            </Typography>
+          )}
           onClose={() => {
             setTimeout(() => {
               (document.activeElement as HTMLElement)?.blur();
