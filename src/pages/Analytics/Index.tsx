@@ -25,7 +25,9 @@ export default function AnalyticsPage() {
       ) : (
         <>
           {titleComponent}
-          <Typography>Analytics are available for Mainnet only.</Typography>
+          <Typography>
+            Analytics are available for Testnet & Mainnet.
+          </Typography>
         </>
       )}
     </Box>

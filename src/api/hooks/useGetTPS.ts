@@ -31,7 +31,7 @@ export function useGetPeakTPS() {
   const [peakTps, setPeakTps] = useState<number>();
 
   useEffect(() => {
-    if (state.network_name === "mainnet") {
+    if (state.network_name === "mainnet" || state.network_name === "testnet") {
       const fetchData = async () => {
         const response = await fetch(ANALYTICS_DATA_URL);
         const data: AnalyticsData = await response.json();

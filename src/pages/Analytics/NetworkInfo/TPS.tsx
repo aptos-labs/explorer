@@ -5,7 +5,7 @@ import {useGlobalState} from "../../../global-config/GlobalConfig";
 import MetricCard, {DoubleMetricCard} from "./MetricCard";
 
 function getFormattedTPS(tps: number) {
-  tps = tps + 1; // to avoid reducing tps from `toFixed` api
+  //tps = tps + 1; // to avoid reducing tps from `toFixed` api
   const tpsWithDecimal = parseFloat(tps.toFixed(0));
   return tpsWithDecimal.toLocaleString("en-US");
 }
@@ -17,34 +17,56 @@ export default function TPS() {
   const [showPeakTps, setShowPeakTps] = useState<boolean>(true);
 
   useEffect(() => {
-    if (state.network_name === "mainnet") {
+    if (state.network_name === "mainnet" || state.network_name === "testnet") {
       setShowPeakTps(true);
     } else {
       setShowPeakTps(false);
     }
   }, [state]);
 
+  const isMainnet = state.network_name === "mainnet";
+
   return showPeakTps ? (
     <DoubleMetricCard
-      data1={tps ? getFormattedTPS(tps) : "-"}
-      data2={peakTps ? getFormattedTPS(peakTps) : "-"}
-      label1="REAL-TIME"
-      label2="PEAK LAST 30 DAYS"
-      cardLabel="TPS"
+      data1={
+        isMainnet
+          ? tps
+            ? getFormattedTPS(tps)
+            : "-"
+          : peakTps
+            ? getFormattedTPS(peakTps)
+            : "-"
+      }
+      data2={isMainnet ? (peakTps ? getFormattedTPS(peakTps) : "-") : undefined}
+      label1={isMainnet ? "REAL-TIME" : "PEAK LAST 30 DAYS"}
+      label2={isMainnet ? "PEAK LAST 30 DAYS" : undefined}
+      cardLabel="Max TPS"
       tooltip={
-        <Stack spacing={1}>
-          <Box>
-            <Box sx={{fontWeight: 700}}>Real-Time</Box>
-            <Box>Current rate of transactions per second on the network.</Box>
-          </Box>
-          <Box>
-            <Box sx={{fontWeight: 700}}>Peak Last 30 Days</Box>
+        isMainnet ? (
+          <Stack spacing={1}>
             <Box>
-              Highest rate of transactions per second over the past 30 days,
-              averaged over 15 blocks.
+              <Box sx={{fontWeight: 700}}>Real-Time</Box>
+              <Box>Current rate of transactions per second on the network.</Box>
             </Box>
-          </Box>
-        </Stack>
+            <Box>
+              <Box sx={{fontWeight: 700}}>Peak Last 30 Days</Box>
+              <Box>
+                Highest rate of transactions per second over the past 30 days,
+                averaged over 15 blocks.
+              </Box>
+            </Box>
+          </Stack>
+        ) : (
+          <Stack spacing={1}>
+            <Box>
+              <Box sx={{fontWeight: 700}}>Peak Last 30 Days</Box>
+              <Box>
+                Highest rate of transactions per second over the past 30 days,
+                averaged over 15 blocks.
+              </Box>
+            </Box>
+          </Stack>
+        )
       }
     />
   ) : (

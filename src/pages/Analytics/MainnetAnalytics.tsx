@@ -6,13 +6,10 @@ import ChartRangeDaysSelect, {
 } from "./Components/ChartRangeDaysSelect";
 import DailyActiveUserChart from "./Charts/DailyActiveUserChart";
 import DailyAvgGasUnitPriceChart from "./Charts/DailyAvgGasUnitPriceChart";
-import DailyDeployedContractsChart from "./Charts/DailyDeployedContractsChart";
 import DailyPeakTPSChart from "./Charts/DailyPeakTPSChart";
-import DailyNewAccountsCreatedChart from "./Charts/DailyNewAccountsCreatedChart";
 import DailyUserTransactionsChart from "./Charts/DailyUserTransactionsChart";
 import NetworkInfo from "./NetworkInfo/NetworkInfo";
 import DailyGasConsumptionChart from "./Charts/DailyGasConsumptionChart";
-import DailyContractDeployersChart from "./Charts/DailyContractDeployersChart";
 import MonthlyActiveUserChart from "./Charts/MonthlyActiveUserChart";
 
 export default function MainnetAnalytics() {
@@ -49,24 +46,6 @@ export default function MainnetAnalytics() {
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
         <DailyActiveUserChart data={data.daily_active_users} days={days} />
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <DailyNewAccountsCreatedChart
-          data={data.daily_new_accounts_created}
-          days={days}
-        />
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <DailyDeployedContractsChart
-          data={data.daily_deployed_contracts}
-          days={days}
-        />
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <DailyContractDeployersChart
-          data={data.daily_contract_deployers}
-          days={days}
-        />
       </Grid>
       <Grid item xs={12} md={6} lg={3}>
         <DailyGasConsumptionChart

@@ -3,7 +3,7 @@ import {defaultNetworkName} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export const ANALYTICS_DATA_URL =
-  "https://storage.googleapis.com/aptos-mainnet/explorer/chain_stats_v2.json?cache-version=0";
+  "https://storage.googleapis.com/explorer_stats/chain_stats_suzuka_v2.json";
 
 export type AnalyticsData = {
   daily_active_users: DailyActiveUserData[];
@@ -18,6 +18,8 @@ export type AnalyticsData = {
   max_tps_15_blocks_in_past_30_days: {
     max_tps_15_blocks_in_past_30_days: number;
   }[];
+  cumulative_deployers: TotalDeployers[];
+  total_accounts: TotalAccounts[];
 };
 
 export type DailyAnalyticsData =
@@ -74,6 +76,15 @@ export type DailyUserTxnData = {
 export type MonthlyActiveUserData = {
   mau_signer_30: number;
   date: string;
+};
+
+export type TotalDeployers = {
+  cumulative_contract_deployers: number;
+  cumulative_contracts_deployed: number;
+};
+
+export type TotalAccounts = {
+  total_accounts: number;
 };
 
 export function useGetAnalyticsData() {
