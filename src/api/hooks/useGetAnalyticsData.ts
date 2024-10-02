@@ -31,9 +31,7 @@ export type DailyAnalyticsData =
   | DailyPeakTPSData
   | DailyNewAccountData
   | DailyUserTxnData
-  | MonthlyActiveUserData
-  | TotalDeployers
-  | TotalAccounts;
+  | MonthlyActiveUserData;
 
 export type DailyActiveUserData = {
   daily_active_user_count: number;
