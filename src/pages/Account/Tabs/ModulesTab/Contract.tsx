@@ -91,7 +91,7 @@ function Contract({
 
   const moduleAndFnsGroup = modules.reduce(
     (acc, module) => {
-      if (module.abi === undefined) {
+      if (!module.abi) {
         return acc;
       }
 
@@ -292,7 +292,7 @@ function RunContractForm({
       arg = "";
     }
     arg = arg.trim();
-    const typeTag = parseTypeTag(type);
+    const typeTag = parseTypeTag(type, {allowGenerics: true});
     if (typeTag.isVector()) {
       const innerTag = typeTag.value;
       if (innerTag.isVector()) {
