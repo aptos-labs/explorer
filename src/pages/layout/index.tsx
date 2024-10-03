@@ -23,7 +23,6 @@ import {RiseWallet} from "@rise-wallet/wallet-adapter";
 import {TokenPocketWallet} from "@tp-lab/aptos-wallet-adapter";
 import {TrustWallet} from "@trustwallet/aptos-wallet-adapter";
 import {WelldoneWallet} from "@welldone-studio/aptos-wallet-adapter";
-import {FewchaWallet} from "fewcha-plugin-wallet-adapter";
 import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
 import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
 import {useMemo} from "react";
@@ -32,7 +31,6 @@ import {Network} from "@aptos-labs/ts-sdk";
 const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 
 // Statically initialize wallets that don't change for the network
-const fewchaWallet = new FewchaWallet();
 const martianWallet = new MartianWallet();
 const msafeWallet = new MSafeWalletAdapter();
 const okxWallet = new OKXWallet();
@@ -51,7 +49,6 @@ function ExplorerWalletAdapterProvider({children}: LayoutProps) {
       martianWallet,
       pontemWallet,
       bitgetWallet,
-      fewchaWallet,
       // Blocto supports Testnet/Mainnet for now.
       new BloctoWallet({
         network: NetworkName.Testnet,
