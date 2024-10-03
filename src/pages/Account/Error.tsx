@@ -17,6 +17,12 @@ export default function Error({error, address}: ErrorProps) {
           objects associated.
         </Alert>
       );
+    case ResponseErrorType.INVALID_INPUT:
+      return (
+        <Alert severity="error">
+          ({error.type}): {error.message}
+        </Alert>
+      );
     case ResponseErrorType.UNHANDLED:
       if (address) {
         return (
