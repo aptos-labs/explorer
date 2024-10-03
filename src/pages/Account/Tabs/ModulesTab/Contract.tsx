@@ -91,7 +91,7 @@ function Contract({
 
   const moduleAndFnsGroup = modules.reduce(
     (acc, module) => {
-      if (module.abi === undefined) {
+      if (!module.abi) {
         return acc;
       }
 
