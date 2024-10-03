@@ -63,7 +63,7 @@
     "react-simple-maps": "^3.0.0",
     "react-syntax-highlighter": "^15.5.0",
     "recharts": "^2.10.4",
-    "statsig-react": "^1.34.0"
+    "statsig-react": "^2.1.0"
   },
   "scripts": {
     "start": "vite --port 3000",
@@ -73,7 +73,7 @@
     "lint": "tsc --noEmit && eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "fmt": "prettier --write '**/*.(js|jsx|ts|tsx|json|css|scss|md)'",
     "test": "vitest",
-    "postinstall": "husky install"
+    "prepare": "husky"
   },
   "lint-staged": {
     "*": [
@@ -116,6 +116,6 @@
     "typescript": "^5.3.3",
     "vite": "^5.4.8",
     "vite-plugin-svgr": "^4.2.0",
-    "vitest": "^2.1.1"
+    "vitest": "^2.1.2"
   }
 }
