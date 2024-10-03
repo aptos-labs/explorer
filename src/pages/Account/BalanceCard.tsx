@@ -13,7 +13,6 @@ type BalanceCardProps = {
 
 export default function BalanceCard({address}: BalanceCardProps) {
   const balance = useGetAccountAPTBalance(address);
-  console.log("BalanceCard balance", balance);
 
   return balance.data ? (
     <Card height="auto">
