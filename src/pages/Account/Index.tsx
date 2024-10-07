@@ -16,6 +16,7 @@ import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 import {useNavigate} from "../../routing";
 import {ResponseError, ResponseErrorType} from "../../api/client";
+import {objectCoreResource} from "../../constants";
 
 const TAB_VALUES_FULL: TabValue[] = [
   "transactions",
@@ -77,6 +78,8 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
     isLoading: accountIsLoading,
   } = useGetAccount(address, {retry: false});
 
+  const isDeleted = !objectData?.find((r) => r.type === objectCoreResource);
+
   const isLoading = objectIsLoading || accountIsLoading;
   const data = isObject ? objectData : accountData;
   let error: ResponseError | null;
@@ -117,7 +120,11 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
         <PageHeader />
       </Grid>
       <Grid item xs={12} md={8} lg={9} alignSelf="center">
-        <AccountTitle address={address} isObject={isObject} />
+        <AccountTitle
+          address={address}
+          isObject={isObject}
+          isDeleted={isDeleted}
+        />
       </Grid>
       <Grid item xs={12} md={4} lg={3} marginTop={{md: 0, xs: 2}}>
         <BalanceCard address={address} />

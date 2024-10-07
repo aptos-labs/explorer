@@ -94,12 +94,12 @@ export function isValidAccountAddress(accountAddr: string): boolean {
 }
 
 export function isValidTxnHashOrVersion(txnHashOrVersion: string): boolean {
-  return isHex(txnHashOrVersion) || isNumeric(txnHashOrVersion);
+  return is32ByteHex(txnHashOrVersion) || isNumeric(txnHashOrVersion);
 }
 
-export function isHex(text: string) {
-  // if it's hex, and is <= (64 + 2 for 0x) char long
-  return text.startsWith("0x") && text.length <= 66;
+export function is32ByteHex(text: string) {
+  // If it's 32 byte hex, it must be 64 charcters with or without a 0x in front
+  return /^(0[xX])?[a-fA-F0-9]{64}$/.test(text);
 }
 
 export function isNumeric(text: string) {
