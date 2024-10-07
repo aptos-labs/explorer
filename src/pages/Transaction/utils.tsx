@@ -1,6 +1,7 @@
 import {Types} from "aptos";
 import {normalizeAddress} from "../../utils";
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
+import {TransactionTypeName} from "../../components/TransactionType";
 
 export type TransactionCounterparty = {
   address: string;
@@ -14,7 +15,7 @@ export type TransactionCounterparty = {
 export function getTransactionCounterparty(
   transaction: Types.Transaction,
 ): TransactionCounterparty | undefined {
-  if (transaction.type !== "user_transaction") {
+  if (transaction.type !== TransactionTypeName.User) {
     return undefined;
   }
 
@@ -264,7 +265,7 @@ export function getCoinBalanceChangeForAccount(
 export function getTransactionAmount(
   transaction: Types.Transaction,
 ): bigint | undefined {
-  if (transaction.type !== "user_transaction") {
+  if (transaction.type !== TransactionTypeName.User) {
     return undefined;
   }
 
