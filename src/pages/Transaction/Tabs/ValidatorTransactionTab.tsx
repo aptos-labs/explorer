@@ -1,7 +1,6 @@
 import * as React from "react";
 import {Types} from "aptos";
-import {Alert, Box} from "@mui/material";
-import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {Box} from "@mui/material";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {getLearnMoreTooltip} from "../helpers";
@@ -9,18 +8,18 @@ import {TransactionStatus} from "../../../components/TransactionStatus";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 
-type UnknownTabProps = {
+type ValidatorTabProps = {
   transaction: Types.Transaction;
 };
 
-export default function UnknownTab({transaction}: UnknownTabProps) {
-  const transactionData =
-    transaction as Types.Transaction_BlockMetadataTransaction;
+export default function ValidatorTransactionTab({
+  transaction,
+}: ValidatorTabProps) {
+  const transactionData = transaction as any; // TODO: We need to get off SDK v1
 
   return (
     <Box marginBottom={3}>
       <ContentBox padding={4}>
-        <Alert severity="warning">{`Unknown transaction type: "${transaction.type}"`}</Alert>
         <ContentRow
           title={"Version:"}
           value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
@@ -30,6 +29,11 @@ export default function UnknownTab({transaction}: UnknownTabProps) {
           title="Status:"
           value={<TransactionStatus success={transactionData.success} />}
           tooltip={getLearnMoreTooltip("status")}
+        />
+        <ContentRow
+          title="Validator Transaction Type:"
+          value={transactionData.validator_transaction_type}
+          tooltip={getLearnMoreTooltip("proposer")}
         />
       </ContentBox>
       <ContentBox>
@@ -65,10 +69,6 @@ export default function UnknownTab({transaction}: UnknownTabProps) {
           title="Accumulator Root Hash:"
           value={transactionData.accumulator_root_hash}
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
-        />
-        <ContentRow
-          title="Full Transaction:"
-          value={<JsonViewCard data={transaction} />}
         />
       </ContentBox>
     </Box>
