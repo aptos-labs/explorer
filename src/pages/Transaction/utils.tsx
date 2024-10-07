@@ -86,6 +86,7 @@ type ChangeData = {
 export type BalanceChange = {
   address: string;
   amount: bigint;
+  type: string;
   asset: {
     decimals: number;
     symbol: string;
@@ -230,11 +231,14 @@ export function useTransactionBalanceChanges(txn_version: string) {
     data?.fungible_asset_activities
       .filter((a) => a.amount !== null)
       .map((a) => ({
-        address: a.owner_address,
+        address: a.type.includes("GasFeeEvent")
+          ? a.gas_fee_payer_address ?? a.owner_address
+          : a.owner_address,
         amount:
           a.type.includes("GasFeeEvent") || a.type.includes("Withdraw")
             ? BigInt(-a.amount)
             : BigInt(a.amount),
+        type: a.type,
         asset: {
           decimals: a.metadata?.decimals,
           symbol: a.metadata?.symbol,
