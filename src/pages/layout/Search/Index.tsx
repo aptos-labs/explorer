@@ -201,7 +201,15 @@ export default function HeaderSearch() {
     }
 
     const resultsList = await Promise.all(promises);
+    const wasFound = resultsList.find(
+      (result) =>
+        result?.label?.startsWith("Account") ||
+        result?.label?.startsWith("Object"),
+    );
     const results = resultsList
+      .filter((result) =>
+        wasFound ? !result?.label?.startsWith("Deleted Object") : true,
+      )
       .filter((result): result is SearchResult => !!result)
       .map((result) => {
         if (result.to) {
