@@ -73,28 +73,24 @@ export default function HeaderSearch() {
 
     const promises = [];
 
-    const isAnsName =
-      searchText.endsWith(".apt") || searchText.endsWith(".petra");
+    if (searchText.endsWith(".petra")) searchText = searchText.concat(".apt");
+    const isAnsName = searchText.endsWith(".apt");
 
     if (isAnsName) {
       try {
         const name = await state.sdk_v2_client?.getName({
           name: searchText,
         });
-        const address = name?.registered_address;
-        const primaryName = await state.sdk_v2_client?.getPrimaryName({
-          address: name?.owner_address ?? "",
-        });
 
-        if (!primaryName || !name || !address) {
-          throw new Error("Primary name not found");
+        const address = name?.registered_address ?? name?.owner_address;
+
+        if (!name || !address) {
+          throw new Error("Name not found");
         }
 
         promises.push({
-          label: `Account ${truncateAddress(address)}${
-            primaryName ? ` | ${primaryName}.apt` : ``
-          }`,
-          to: `/account/${name.owner_address}`,
+          label: `Account ${truncateAddress(address)} ${searchText}`,
+          to: `/account/${address}`,
         });
       } catch (e) {}
     } else {
