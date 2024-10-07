@@ -151,9 +151,36 @@ export default function UserTransactionOverviewTab({
               gasUsed={transactionData.gas_used}
               gasUnitPrice={transactionData.gas_unit_price}
               showGasUsed
+              transactionData={transactionData}
             />
           }
           tooltip={getLearnMoreTooltip("gas_fee")}
+        />
+        <ContentRow
+          title="Storage Refund:"
+          value={
+            <GasFeeValue
+              gasUsed={transactionData.gas_used}
+              gasUnitPrice={transactionData.gas_unit_price}
+              showGasUsed
+              transactionData={transactionData}
+              storageRefund={true}
+            />
+          }
+          tooltip={getLearnMoreTooltip("storage_refund")}
+        />
+        <ContentRow
+          title="Net Gas Changes:"
+          value={
+            <GasFeeValue
+              gasUsed={transactionData.gas_used}
+              gasUnitPrice={transactionData.gas_unit_price}
+              showGasUsed
+              transactionData={transactionData}
+              netGasCost={true}
+            />
+          }
+          tooltip={getLearnMoreTooltip("net_gas_fee")}
         />
         <ContentRow
           title="Gas Unit Price:"

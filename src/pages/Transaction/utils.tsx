@@ -180,23 +180,26 @@ function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
 }
 
 interface TransactionResponse {
-  fungible_asset_activities: Array<{
-    amount: number;
-    entry_function_id_str: string;
-    gas_fee_payer_address?: string;
-    is_frozen?: boolean;
+  fungible_asset_activities: Array<FungibleAssetActivity>;
+}
+
+interface FungibleAssetActivity {
+  amount: number;
+  entry_function_id_str: string;
+  gas_fee_payer_address?: string;
+  is_frozen?: boolean;
+  asset_type: string;
+  event_index: number;
+  owner_address: string;
+  transaction_timestamp: string;
+  transaction_version: number;
+  type: string;
+  storage_refund_amount: number;
+  metadata: {
     asset_type: string;
-    event_index: number;
-    owner_address: string;
-    transaction_timestamp: string;
-    transaction_version: number;
-    type: string;
-    metadata: {
-      asset_type: string;
-      decimals: number;
-      symbol: string;
-    };
-  }>;
+    decimals: number;
+    symbol: string;
+  };
 }
 
 export function useTransactionBalanceChanges(txn_version: string) {
@@ -216,6 +219,7 @@ export function useTransactionBalanceChanges(txn_version: string) {
           transaction_timestamp
           transaction_version
           type
+          storage_refund_amount
           metadata {
             asset_type
             decimals
@@ -227,23 +231,67 @@ export function useTransactionBalanceChanges(txn_version: string) {
     {variables: {txn_version}},
   );
 
+  function convertAddress(a: FungibleAssetActivity) {
+    return a.type.includes("GasFeeEvent")
+      ? a.gas_fee_payer_address ?? a.owner_address
+      : a.owner_address;
+  }
+
+  function convertType(activity: FungibleAssetActivity) {
+    if (activity.type.includes("GasFee")) {
+      return "Gas Fee";
+    }
+    if (activity.type.includes("Withdraw")) {
+      return "Withdraw";
+    }
+    if (activity.type.includes("Deposit")) {
+      return "Deposit";
+    }
+    if (activity.type.includes("StorageRefund")) {
+      return "Storage Refund";
+    }
+
+    return "Unknown";
+  }
+
+  function convertAmount(activity: FungibleAssetActivity) {
+    if (activity.type.includes("GasFeeEvent")) {
+      return -BigInt(activity.amount);
+    }
+    if (activity.type.includes("Withdraw")) {
+      return BigInt(-activity.amount);
+    }
+    return BigInt(activity.amount);
+  }
+
   const balanceChanges: BalanceChange[] =
     data?.fungible_asset_activities
       .filter((a) => a.amount !== null)
       .map((a) => ({
-        address: a.type.includes("GasFeeEvent")
-          ? a.gas_fee_payer_address ?? a.owner_address
-          : a.owner_address,
-        amount:
-          a.type.includes("GasFeeEvent") || a.type.includes("Withdraw")
-            ? BigInt(-a.amount)
-            : BigInt(a.amount),
-        type: a.type,
+        address: convertAddress(a),
+        amount: convertAmount(a),
+        type: convertType(a),
         asset: {
           decimals: a.metadata?.decimals,
           symbol: a.metadata?.symbol,
         },
       })) ?? [];
+
+  // Find gas fee and add a storage refund event
+  const gasFeeEvent = data?.fungible_asset_activities.find((a) =>
+    a.type.includes("GasFeeEvent"),
+  );
+  if (gasFeeEvent) {
+    balanceChanges.push({
+      address: gasFeeEvent.gas_fee_payer_address ?? gasFeeEvent.owner_address,
+      amount: BigInt(gasFeeEvent.storage_refund_amount),
+      type: "Storage Refund",
+      asset: {
+        decimals: gasFeeEvent.metadata?.decimals,
+        symbol: gasFeeEvent.metadata?.symbol,
+      },
+    });
+  }
 
   return {
     isLoading: loading,
