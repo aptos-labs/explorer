@@ -5,9 +5,7 @@ import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHea
 import {assertNever} from "../../../../utils";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import {BalanceChange} from "../../utils";
-import CurrencyValue, {
-  APTCurrencyValue,
-} from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import CurrencyValue from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {
   negativeColor,
   primary,
@@ -15,17 +13,6 @@ import {
 import {Types} from "aptos";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
-
-function getIsSender(
-  address: string,
-  transaction: Types.UserTransaction,
-): boolean {
-  return transaction.sender === address;
-}
-
-function getGas(transaction: Types.UserTransaction): bigint {
-  return BigInt(transaction.gas_unit_price) * BigInt(transaction.gas_used);
-}
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
@@ -42,22 +29,14 @@ function AddressCell({balanceChange}: BalanceChangeCellProps) {
   );
 }
 
-function GasCell({balanceChange, transaction}: BalanceChangeCellProps) {
-  const isSender = getIsSender(balanceChange.address, transaction);
-
-  if (!isSender) {
-    return <GeneralTableCell />;
-  }
-
+function TypeCell({balanceChange}: BalanceChangeCellProps) {
   return (
     <GeneralTableCell
       sx={{
         textAlign: "right",
-        color: negativeColor,
       }}
     >
-      {"-"}
-      <APTCurrencyValue amount={getGas(transaction).toString()} />
+      {balanceChange.type}
     </GeneralTableCell>
   );
 }
@@ -86,13 +65,13 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
 
 const BalanceChangeCells = Object.freeze({
   address: AddressCell,
-  gas: GasCell,
+  type: TypeCell,
   amount: AmountCell,
 });
 
 type Column = keyof typeof BalanceChangeCells;
 
-const DEFAULT_COLUMNS: Column[] = ["address", "gas", "amount"];
+const DEFAULT_COLUMNS: Column[] = ["address", "type", "amount"];
 
 type BalanceChangeRowProps = {
   balanceChange: BalanceChange;
@@ -129,8 +108,8 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
   switch (column) {
     case "address":
       return <GeneralTableHeaderCell header="Account" />;
-    case "gas":
-      return <GeneralTableHeaderCell header="Gas" textAlignRight={true} />;
+    case "type":
+      return <GeneralTableHeaderCell header="Type" textAlignRight={true} />;
     case "amount":
       return <GeneralTableHeaderCell header="Change" textAlignRight={true} />;
     default:
