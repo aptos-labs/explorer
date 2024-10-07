@@ -15,6 +15,7 @@ import {Network} from "aptos";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 import {useNavigate} from "../../routing";
+import {ResponseError, ResponseErrorType} from "../../api/client";
 
 const TAB_VALUES_FULL: TabValue[] = [
   "transactions",
@@ -52,10 +53,19 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
   const navigate = useNavigate();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
   const maybeAddress = useParams().address;
-  const address =
-    maybeAddress !== undefined
-      ? AccountAddress.from(maybeAddress).toStringLong()
-      : "";
+  let address: string = "";
+  let addressError: ResponseError | null = null;
+  if (maybeAddress) {
+    try {
+      address = AccountAddress.from(maybeAddress).toStringLong();
+    } catch (e: any) {
+      addressError = {
+        type: ResponseErrorType.INVALID_INPUT,
+        message: `Invalid address '${maybeAddress}'`,
+      };
+    }
+  }
+
   const {
     data: objectData,
     error: objectError,
@@ -69,7 +79,14 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
 
   const isLoading = objectIsLoading || accountIsLoading;
   const data = isObject ? objectData : accountData;
-  const error = isObject ? objectError : accountError;
+  let error: ResponseError | null;
+  if (addressError) {
+    error = addressError;
+  } else if (isObject) {
+    error = objectError;
+  } else {
+    error = accountError ? accountError : objectError;
+  }
 
   useEffect(() => {
     // If we are on the account page, we might be loading an object. This
