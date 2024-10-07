@@ -14,15 +14,17 @@ import {
   getTransaction,
   getBlockByHeight,
   getBlockByVersion,
+  getAccountResource,
 } from "../../../api";
 import {sendToGTM} from "../../../api/hooks/useGoogleTagManager";
-import {objectCoreAddress} from "../../../constants";
+import {objectCoreResource} from "../../../constants";
 import {
   isValidAccountAddress,
   isValidTxnHashOrVersion,
   isNumeric,
   truncateAddress,
 } from "../../utils";
+import {AccountAddress} from "@aptos-labs/ts-sdk";
 
 export type SearchResult = {
   label: string;
@@ -95,11 +97,10 @@ export default function HeaderSearch() {
       } catch (e) {}
     } else {
       if (isValidAccountAddr) {
+        // Fix the address to be correct
+        const address = AccountAddress.from(searchText).toStringLong();
         // It's either an account OR an object: we query both at once to save time
-        const accountPromise = await getAccount(
-          {address: searchText},
-          state.aptos_client,
-        )
+        const accountPromise = await getAccount({address}, state.aptos_client)
           .then((): SearchResult => {
             return {
               label: `Account ${searchText}`,
@@ -111,30 +112,39 @@ export default function HeaderSearch() {
             // Do nothing. It's expected that not all search input is a valid account
           });
 
-        const resourcePromise = await getAccountResources(
-          {address: searchText},
+        const resourcePromise = await getAccountResource(
+          {address, resourceType: objectCoreResource},
           state.aptos_client,
-        )
-          .then((resources): SearchResult | undefined => {
-            let hasObjectCore = false;
-            resources.forEach((resource) => {
-              if (resource.type === objectCoreAddress) {
-                hasObjectCore = true;
-              }
-            });
-            if (hasObjectCore) {
-              return {
-                label: `Object ${searchText}`,
-                to: `/object/${searchText}`,
-              };
-            }
-          })
-          .catch(() => {
+        ).then(
+          () => {
+            return {
+              label: `Object ${searchText}`,
+              to: `/object/${searchText}`,
+            };
+          },
+          () => {
+            // It's not an object
             return null;
-            // Do nothing. It's expected that not all search input is a valid account
-          });
+          },
+        );
+        const anyResourcePromise = await getAccountResources(
+          {address},
+          state.aptos_client,
+        ).then(
+          () => {
+            return {
+              label: `Deleted Object ${searchText}`,
+              to: `/object/${searchText}`,
+            };
+          },
+          () => {
+            // It has no resources
+            return null;
+          },
+        );
         promises.push(accountPromise);
         promises.push(resourcePromise);
+        promises.push(anyResourcePromise);
       }
 
       if (isValidTxnHashOrVer) {

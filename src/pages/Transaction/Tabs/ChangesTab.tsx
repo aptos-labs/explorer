@@ -9,7 +9,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {
   collectionV2Address,
-  objectCoreAddress,
+  objectCoreResource,
   tokenV2Address,
 } from "../../../constants";
 
@@ -53,7 +53,7 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
                     "data" in change &&
                     "type" in change.data &&
                     [
-                      objectCoreAddress,
+                      objectCoreResource,
                       tokenV2Address,
                       collectionV2Address,
                     ].includes(change.data.type)
