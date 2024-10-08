@@ -217,48 +217,42 @@ export default function HeaderSearch() {
     }
 
     const resultsList = await Promise.all(promises);
-    const isAccount = resultsList.find((result) =>
-      result?.label?.startsWith("Account"),
+
+    const foundAccount = resultsList.find((r) =>
+      r?.label?.startsWith("Account"),
     );
-    const isObject = resultsList.find((result) =>
-      result?.label?.startsWith("Object"),
+    const foundObject = resultsList.find((r) => r?.label?.startsWith("Object"));
+    const foundDeletedObject = resultsList.find((r) =>
+      r?.label?.startsWith("Deleted Object"),
     );
-    const isPossiblyDeletedObject = resultsList.find((result) =>
-      result?.label?.startsWith("Deleted Object"),
-    );
-    const isPossiblyAddress = resultsList.find((result) =>
-      result?.label?.startsWith("Address"),
+    const foundPossibleAddress = resultsList.find((r) =>
+      r?.label?.startsWith("Address"),
     );
 
-    let filteredResults: any[] = [];
-    let result: any;
-    if (isAccount) {
-      const result = resultsList.find((result) =>
-        result?.label?.startsWith("Account"),
-      );
-      filteredResults = [result];
-    } else if (isObject) {
-      const result = resultsList.find((result) =>
-        result?.label?.startsWith("Object"),
-      );
-      filteredResults = [result];
-    } else if (isPossiblyDeletedObject) {
-      const result = resultsList.find((result) =>
-        result?.label?.startsWith("Deleted Object"),
-      );
-      filteredResults = [result];
-    } else if (isPossiblyAddress) {
-      const result = resultsList.find((result) =>
-        result?.label?.startsWith("Address"),
-      );
-      filteredResults = [result];
-    } else {
-      filteredResults = resultsList;
+    // Something besides any
+    let filteredResults: any[];
+
+    switch (true) {
+      case Boolean(foundAccount): {
+        filteredResults = [foundAccount];
+        break;
+      }
+      case Boolean(foundObject): {
+        filteredResults = [foundObject];
+        break;
+      }
+      case Boolean(foundDeletedObject): {
+        filteredResults = [foundDeletedObject];
+        break;
+      }
+      case Boolean(foundPossibleAddress): {
+        filteredResults = [foundPossibleAddress];
+        break;
+      }
+      default: {
+        filteredResults = resultsList;
+      }
     }
-    if (filteredResults === undefined || filteredResults === null) {
-      filteredResults = result ? [] : resultsList;
-    }
-    console.log(`FILTERED AGAIN: ${JSON.stringify(filteredResults)}`);
     const results = filteredResults
       .filter((result) => result !== null)
       .filter((result): result is SearchResult => !!result)
