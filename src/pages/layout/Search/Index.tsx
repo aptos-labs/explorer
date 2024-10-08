@@ -97,10 +97,11 @@ export default function HeaderSearch() {
       } catch (e) {}
     } else {
       if (isValidAccountAddr) {
+        // TODO: Add digital assets
         // Fix the address to be correct
         const address = AccountAddress.from(searchText).toStringLong();
         // It's either an account OR an object: we query both at once to save time
-        const accountPromise = await getAccount({address}, state.aptos_client)
+        const accountPromise = getAccount({address}, state.aptos_client)
           .then((): SearchResult => {
             return {
               label: `Account ${searchText}`,
@@ -112,7 +113,7 @@ export default function HeaderSearch() {
             // Do nothing. It's expected that not all search input is a valid account
           });
 
-        const resourcePromise = await getAccountResource(
+        const resourcePromise = getAccountResource(
           {address, resourceType: objectCoreResource},
           state.aptos_client,
         ).then(
@@ -127,7 +128,7 @@ export default function HeaderSearch() {
             return null;
           },
         );
-        const anyResourcePromise = await getAccountResources(
+        const anyResourcePromise = getAccountResources(
           {address},
           state.aptos_client,
         ).then(
@@ -142,9 +143,24 @@ export default function HeaderSearch() {
             return null;
           },
         );
+        const anyObjectsPromise = state.sdk_v2_client
+          ?.getAccountOwnedObjects({accountAddress: address})
+          .then(
+            () => {
+              return {
+                label: `Address ${searchText}`,
+                to: `/account/${searchText}`,
+              };
+            },
+            () => {
+              // It has no coins
+              return null;
+            },
+          );
         promises.push(accountPromise);
         promises.push(resourcePromise);
         promises.push(anyResourcePromise);
+        promises.push(anyObjectsPromise);
       }
 
       if (isValidTxnHashOrVer) {
@@ -201,15 +217,44 @@ export default function HeaderSearch() {
     }
 
     const resultsList = await Promise.all(promises);
-    const wasFound = resultsList.find(
-      (result) =>
-        result?.label?.startsWith("Account") ||
-        result?.label?.startsWith("Object"),
+
+    const foundAccount = resultsList.find((r) =>
+      r?.label?.startsWith("Account"),
     );
-    const results = resultsList
-      .filter((result) =>
-        wasFound ? !result?.label?.startsWith("Deleted Object") : true,
-      )
+    const foundObject = resultsList.find((r) => r?.label?.startsWith("Object"));
+    const foundDeletedObject = resultsList.find((r) =>
+      r?.label?.startsWith("Deleted Object"),
+    );
+    const foundPossibleAddress = resultsList.find((r) =>
+      r?.label?.startsWith("Address"),
+    );
+
+    // Something besides any
+    let filteredResults: any[];
+
+    switch (true) {
+      case Boolean(foundAccount): {
+        filteredResults = [foundAccount];
+        break;
+      }
+      case Boolean(foundObject): {
+        filteredResults = [foundObject];
+        break;
+      }
+      case Boolean(foundDeletedObject): {
+        filteredResults = [foundDeletedObject];
+        break;
+      }
+      case Boolean(foundPossibleAddress): {
+        filteredResults = [foundPossibleAddress];
+        break;
+      }
+      default: {
+        filteredResults = resultsList;
+      }
+    }
+    const results = filteredResults
+      .filter((result) => result !== null)
       .filter((result): result is SearchResult => !!result)
       .map((result) => {
         if (result.to) {
