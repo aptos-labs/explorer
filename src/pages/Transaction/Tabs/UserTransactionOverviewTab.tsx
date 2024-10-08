@@ -177,7 +177,7 @@ export default function UserTransactionOverviewTab({
               gasUnitPrice={transactionData.gas_unit_price}
               showGasUsed
               transactionData={transactionData}
-              netGasCost={true}
+              netGasCost
             />
           }
           tooltip={getLearnMoreTooltip("net_gas_fee")}
