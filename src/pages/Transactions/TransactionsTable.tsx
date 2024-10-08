@@ -191,6 +191,8 @@ function TransactionAmountGasCell({
               <GasFeeValue
                 gasUsed={transaction.gas_used}
                 gasUnitPrice={transaction.gas_unit_price}
+                transactionData={transaction}
+                netGasCost
               />
             </>
           ) : null}
