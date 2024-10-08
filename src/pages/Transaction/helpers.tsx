@@ -9,7 +9,7 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
     case "accumulator_root_hash":
       return (
         <LearnMoreTooltip
-          text="An accumulator root hash is the root hash of a Merkle accumulator."
+          text="An accumulator root hash is the root hash of a Merkle accumulator."
           link="https://aptos.dev/reference/glossary/#merkle-accumulator"
         />
       );
@@ -32,7 +32,7 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
     case "expiration_timestamp_secs":
       return (
         <LearnMoreTooltip
-          text="A transaction ceases to be valid after its expiration time."
+          text="A transaction ceases to be valid after its expiration time."
           link="https://aptos.dev/reference/glossary/#expiration-time"
         />
       );
@@ -57,7 +57,7 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
     case "max_gas_amount":
       return (
         <LearnMoreTooltip
-          text="The Maximum Gas Amount of a transaction is the maximum amount of gas the sender is ready to pay for the transaction."
+          text="The Maximum Gas Amount of a transaction is the maximum amount of gas the sender is ready to pay for the transaction."
           link="https://aptos.dev/reference/glossary/#maximum-gas-amount"
         />
       );
@@ -75,14 +75,14 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
     case "sender":
       return (
         <LearnMoreTooltip
-          text="Sender is the address of the originator account for a transaction."
+          text="Sender is the address of the originator account for a transaction."
           link="https://aptos.dev/reference/glossary/#sender"
         />
       );
     case "sequence_number":
       return (
         <LearnMoreTooltip
-          text="The sequence number for an account indicates the number of transactions that have been submitted and committed on chain from that account."
+          text="The sequence number for an account indicates the number of transactions that have been submitted and committed on chain from that account."
           link="https://aptos.dev/reference/glossary/#sequence-number"
         />
       );
@@ -99,7 +99,7 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
     case "version":
       return (
         <LearnMoreTooltip
-          text="A version is also called “height” in blockchain literature."
+          text="A version is also called “height” in blockchain literature."
           link="https://aptos.dev/reference/glossary/#version"
         />
       );
