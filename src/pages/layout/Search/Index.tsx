@@ -67,22 +67,24 @@ export default function HeaderSearch() {
   async function handleAnsName(
     searchText: string,
   ): Promise<SearchResult | null> {
-    try {
-      const name = await state.sdk_v2_client.getName({
+    return state.sdk_v2_client
+      .getName({
         name: searchText,
+      })
+      .then((ansName) => {
+        const address = ansName?.registered_address ?? ansName?.owner_address;
+
+        if (ansName && address) {
+          return {
+            label: `Account ${truncateAddress(address)} ${searchText}`,
+            to: `/account/${address}`,
+          };
+        }
+        return null;
+      })
+      .catch(() => {
+        return null;
       });
-
-      const address = name?.registered_address ?? name?.owner_address;
-
-      if (name && address) {
-        return {
-          label: `Account ${truncateAddress(address)} ${searchText}`,
-          to: `/account/${address}`,
-        };
-      }
-    } catch (e) {}
-
-    return null;
   }
 
   async function handleCoin(searchText: string): Promise<SearchResult | null> {
@@ -90,17 +92,16 @@ export default function HeaderSearch() {
     return getAccountResource(
       {address, resourceType: `0x1::coin::CoinInfo<${searchText}>`},
       state.aptos_client,
-    ).then(
-      () => {
+    )
+      .then(() => {
         return {
           label: `Coin ${searchText}`,
           to: `/coin/${searchText}`,
         };
-      },
-      () => {
+      })
+      .catch(() => {
         return null;
-      },
-    );
+      });
   }
 
   function handleBlockHeightOrVersion(
