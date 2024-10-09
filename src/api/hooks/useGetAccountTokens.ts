@@ -113,8 +113,8 @@ export function useGetTokenActivities(
       state.network_value,
     ],
     queryFn: async () => {
-      const response: GetTokenActivityResponse | undefined =
-        await state.sdk_v2_client?.getDigitalAssetActivity({
+      const response: GetTokenActivityResponse =
+        await state.sdk_v2_client.getDigitalAssetActivity({
           digitalAssetAddress: tokenDataId,
           options: {
             limit,
@@ -126,7 +126,7 @@ export function useGetTokenActivities(
             ],
           },
         });
-      return response ?? [];
+      return response;
     },
   });
 }
