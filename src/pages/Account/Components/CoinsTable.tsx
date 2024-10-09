@@ -44,10 +44,27 @@ function AmountCell({
   );
 }
 
-function CoinTypeCell({assetType}: {assetType: string}) {
+function CoinTypeCell({
+  assetVersion,
+  assetType,
+}: {
+  assetVersion: string;
+  assetType: string;
+}) {
+  function getType() {
+    switch (assetVersion) {
+      case "v1":
+        return HashType.COIN;
+      case "v2":
+        return HashType.FUNGIBLE_ASSET;
+      default:
+        return HashType.OTHERS;
+    }
+  }
+
   return (
     <GeneralTableCell sx={{width: 450}}>
-      <HashButton hash={assetType} type={HashType.OTHERS} size="large" />
+      <HashButton hash={assetType} type={getType()} size="large" />
     </GeneralTableCell>
   );
 }
@@ -77,8 +94,8 @@ export function CoinsTable({
       <GeneralTableBody>
         {coins.map(
           ({name, amount, decimals, symbol, assetType, assetVersion}, i) => {
-            let friendlyType = assetType;
-            switch (assetType) {
+            let friendlyType = assetVersion;
+            switch (assetVersion) {
               case "v1":
                 friendlyType = "Coin";
                 break;
@@ -94,8 +111,11 @@ export function CoinsTable({
                   decimals={decimals}
                   symbol={symbol}
                 />
-                <CoinNameCell name={assetVersion} />
-                <CoinTypeCell assetType={friendlyType} />
+                <CoinNameCell name={friendlyType} />
+                <CoinTypeCell
+                  assetVersion={assetVersion}
+                  assetType={assetType}
+                />
               </GeneralTableRow>
             );
           },

@@ -29,17 +29,23 @@ export enum HashType {
   ACCOUNT = "account",
   TRANSACTION = "transaction",
   OBJECT = "object",
+  COIN = "coin",
+  FUNGIBLE_ASSET = "fungible_asset",
   OTHERS = "others",
 }
 
-function getHashLinkStr(hash: string, type: HashType): string {
+function getHashLinkStr(input: string, type: HashType): string {
   switch (type) {
     case HashType.ACCOUNT:
-      return `/account/${hash}`;
+      return `/account/${input}`;
     case HashType.TRANSACTION:
-      return `/txn/${hash}`;
+      return `/txn/${input}`;
     case HashType.OBJECT:
-      return `/object/${hash}`;
+      return `/object/${input}`;
+    case HashType.COIN:
+      return `/coin/${input}`;
+    case HashType.FUNGIBLE_ASSET:
+      return `/object/${input}`; // TODO: Redirect to fungible asset page
     case HashType.OTHERS:
       return "";
     default:
@@ -52,6 +58,8 @@ function HashLink(hash: string, type: HashType): JSX.Element {
     case HashType.ACCOUNT:
     case HashType.TRANSACTION:
     case HashType.OBJECT:
+    case HashType.COIN:
+    case HashType.FUNGIBLE_ASSET:
       return (
         <Link to={getHashLinkStr(hash, type)} color="inherit">
           {hash}

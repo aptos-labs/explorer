@@ -23,6 +23,7 @@ import {
   isNumeric,
   truncateAddress,
   is32ByteHex,
+  isValidStruct,
 } from "../../utils";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 
@@ -233,9 +234,7 @@ export default function HeaderSearch() {
     const isValidAccountAddr = isValidAccountAddress(searchText);
     const isValidBlockHeightOrVer = isNumeric(searchText);
     const is32Hex = is32ByteHex(searchText);
-    const isStruct = searchText.match(
-      /^0x[a-fA-F0-9]{1,32}::[a-zA-Z0-9_]+::[a-zA-Z0-9]+$/,
-    );
+    const isStruct = isValidStruct(searchText);
     if (searchText.endsWith(".petra")) searchText = searchText.concat(".apt");
     const isAnsName = searchText.endsWith(".apt");
     const promises = [];

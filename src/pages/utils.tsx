@@ -118,8 +118,10 @@ export function isValidAccountAddress(accountAddr: string): boolean {
   );
 }
 
-export function isValidTxnHashOrVersion(txnHashOrVersion: string): boolean {
-  return is32ByteHex(txnHashOrVersion) || isNumeric(txnHashOrVersion);
+export function isValidStruct(maybeStruct: string): boolean {
+  return /^0x[0-9a-fA-F]{1,64}::[a-zA-Z0-9_]+::[a-zA-Z0-9_]+$/.test(
+    maybeStruct,
+  );
 }
 
 export function is32ByteHex(text: string) {
