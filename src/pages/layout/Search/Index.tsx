@@ -107,15 +107,16 @@ export default function HeaderSearch() {
   function handleBlockHeightOrVersion(
     searchText: string,
   ): Promise<SearchResult | null>[] {
+    const num = parseInt(searchText);
     const promises = [];
     const blockByHeightPromise = getBlockByHeight(
-      {height: parseInt(searchText), withTransactions: false},
+      {height: num, withTransactions: false},
       state.aptos_client,
     )
       .then((): SearchResult => {
         return {
-          label: `Block ${searchText}`,
-          to: `/block/${searchText}`,
+          label: `Block ${num}`,
+          to: `/block/${num}`,
         };
       })
       .catch(() => {
@@ -124,12 +125,12 @@ export default function HeaderSearch() {
       });
 
     const blockByVersionPromise = getBlockByVersion(
-      {version: parseInt(searchText), withTransactions: false},
+      {version: num, withTransactions: false},
       state.aptos_client,
     )
       .then((block): SearchResult => {
         return {
-          label: `Block with Txn Version ${searchText}`,
+          label: `Block with Txn Version ${num}`,
           to: `/block/${block.block_height}`,
         };
       })
@@ -137,6 +138,21 @@ export default function HeaderSearch() {
         return null;
         // Do nothing. It's expected that not all search input is a valid transaction
       });
+    const transactionByVersion = getTransaction(
+      {txnHashOrVersion: num},
+      state.aptos_client,
+    )
+      .then((): SearchResult => {
+        return {
+          label: `Transaction Version ${num}`,
+          to: `/txn/${num}`,
+        };
+      })
+      .catch(() => {
+        return null;
+        // Do nothing. It's expected that not all search input is a valid transaction
+      });
+    promises.push(transactionByVersion);
     promises.push(blockByHeightPromise);
     promises.push(blockByVersionPromise);
     return promises;
