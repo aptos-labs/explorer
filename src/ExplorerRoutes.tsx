@@ -2,6 +2,7 @@ import React, {lazy} from "react";
 import {Route, Routes} from "react-router-dom";
 import ExplorerLayout from "./pages/layout";
 
+const AssetPage = lazy(() => import("./pages/Asset/Index"));
 const CoinPage = lazy(() => import("./pages/Coin/Index"));
 const LandingPage = lazy(() => import("./pages/LandingPage/Index"));
 const NotFoundPage = lazy(() => import("./pages/layout/NotFoundPage"));
@@ -47,6 +48,10 @@ export default function ExplorerRoutes() {
           />
           <Route path=":address/:tab" element={<AccountPage />} />
           <Route path=":address" element={<AccountPage />} />
+        </Route>
+        <Route path="/asset">
+          <Route path=":address/:tab" element={<AssetPage />} />
+          <Route path=":address" element={<AssetPage />} />
         </Route>
 
         <Route path="/object">
