@@ -5,7 +5,7 @@
 const prefix = import.meta.env.REACT_APP_PREFIX || "";
 
 export const mainnetUrl =
-  import.meta.env.MAINNET_URL || `https://${prefix}.aptos.movementlabs.xyz/v1`;
+  import.meta.env.MAINNET_URL || `https://${prefix}aptos.movementlabs.xyz/v1`;
 export const devnetUrl =
   import.meta.env.DEVNET_URL ||
   `https://${prefix}aptos.devnet.suzuka.movementlabs.xyz/v1`;

@@ -52,7 +52,7 @@ function NetworkAndChainIdCached({
   const nameRewrite = (networkName: string) => {
     if (networkName === "testnet") {
       return "suzuka testnet";
-    } else if (networkName === "movementTestnet") {
+    } else if (networkName === "movement-testnet") {
       return "movement testnet";
     } else {
       return networkName;
