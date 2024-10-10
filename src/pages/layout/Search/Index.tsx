@@ -104,8 +104,8 @@ export default function HeaderSearch() {
         const accountPromise = getAccount({address}, state.aptos_client)
           .then((): SearchResult => {
             return {
-              label: `Account ${searchText}`,
-              to: `/account/${searchText}`,
+              label: `Account ${address}`,
+              to: `/account/${address}`,
             };
           })
           .catch(() => {
@@ -119,8 +119,8 @@ export default function HeaderSearch() {
         ).then(
           () => {
             return {
-              label: `Object ${searchText}`,
-              to: `/object/${searchText}`,
+              label: `Object ${address}`,
+              to: `/object/${address}`,
             };
           },
           () => {
@@ -134,8 +134,8 @@ export default function HeaderSearch() {
         ).then(
           () => {
             return {
-              label: `Deleted Object ${searchText}`,
-              to: `/object/${searchText}`,
+              label: `Deleted Object ${address}`,
+              to: `/object/${address}`,
             };
           },
           () => {
@@ -148,8 +148,8 @@ export default function HeaderSearch() {
           .then(
             () => {
               return {
-                label: `Address ${searchText}`,
-                to: `/account/${searchText}`,
+                label: `Address ${address}`,
+                to: `/account/${address}`,
               };
             },
             () => {
@@ -234,19 +234,19 @@ export default function HeaderSearch() {
 
     switch (true) {
       case Boolean(foundAccount): {
-        filteredResults = [foundAccount];
+        filteredResults = resultsList.filter(
+          (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
+        );
         break;
       }
       case Boolean(foundObject): {
-        filteredResults = [foundObject];
+        filteredResults = resultsList.filter(
+          (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
+        );
         break;
       }
       case Boolean(foundDeletedObject): {
-        filteredResults = [foundDeletedObject];
-        break;
-      }
-      case Boolean(foundPossibleAddress): {
-        filteredResults = [foundPossibleAddress];
+        filteredResults = resultsList.filter((r) => r !== foundPossibleAddress);
         break;
       }
       default: {
