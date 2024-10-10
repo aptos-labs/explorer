@@ -60,11 +60,15 @@ export default function TransactionFunction({
     return <ScriptCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />;
   }
 
-  if (!("function" in transaction.payload)) {
+  let functionFullStr: string;
+  if (transaction.payload.type === "multisig_payload") {
+    functionFullStr = (transaction.payload as any).transaction_payload.function; // TODO: Clean this up later with real types, it doesn't like my cast
+  } else if (!("function" in transaction.payload)) {
     return null;
+  } else {
+    functionFullStr = transaction.payload.function;
   }
 
-  const functionFullStr = transaction.payload.function;
   const [address, moduleName, functionName] = functionFullStr.split("::");
 
   if (
