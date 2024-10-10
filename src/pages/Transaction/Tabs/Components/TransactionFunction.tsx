@@ -62,6 +62,16 @@ export default function TransactionFunction({
 
   let functionFullStr: string;
   if (transaction.payload.type === "multisig_payload") {
+    if (
+      !(
+        "transaction_payload" in (transaction.payload as any) &&
+        !!(transaction.payload as any).transaction_payload &&
+        "function" in (transaction.payload as any).transaction_payload
+      )
+    ) {
+      // TODO: change this to something more useful for these multisig executions
+      return "Multisig Transaction";
+    }
     functionFullStr = (transaction.payload as any).transaction_payload.function; // TODO: Clean this up later with real types, it doesn't like my cast
   } else if (!("function" in transaction.payload)) {
     return null;
