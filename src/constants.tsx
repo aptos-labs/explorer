@@ -13,13 +13,19 @@ export const testnetUrl =
   import.meta.env.TESTNET_URL ||
   `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/v1`;
 
+export const movementTestnetUrl =
+  import.meta.env.MOVEMENT_TESTNET_URL ||
+  `https://${prefix}aptos.testnet.movementlabs.xyz/v1`;
+
 export const mevmdevnetUrl =
   import.meta.env.IMOLA_URL ||
   `https://${prefix}aptos.devnet.imola.movementlabs.xyz/v1`;
 
+// This is the constant mapped in the NetworkSelect.tsx file
 export const networks = {
   mainnet: mainnetUrl,
   testnet: testnetUrl,
+  movementTestnet: movementTestnetUrl,
   devnet: devnetUrl,
   local: "http://localhost:30731",
   mevmdevnet: mevmdevnetUrl,
@@ -45,6 +51,7 @@ type ApiKeys = {
  */
 const apiKeys: ApiKeys = {
   mainnet: "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
+  movementTestnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
   testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
   devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
   local: undefined,
@@ -62,6 +69,7 @@ export function isValidNetworkName(value: string): value is NetworkName {
 
 export enum Network {
   MAINNET = "mainnet",
+  MOVEMENT_TESTNET = "movement-testnet",
   TESTNET = "testnet",
   DEVNET = "devnet",
   LOCAL = "local",
