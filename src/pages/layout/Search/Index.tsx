@@ -20,9 +20,10 @@ import {sendToGTM} from "../../../api/hooks/useGoogleTagManager";
 import {objectCoreResource} from "../../../constants";
 import {
   isValidAccountAddress,
-  isValidTxnHashOrVersion,
   isNumeric,
   truncateAddress,
+  is32ByteHex,
+  isValidStruct,
 } from "../../utils";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 
@@ -63,6 +64,168 @@ export default function HeaderSearch() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue]);
 
+  async function handleAnsName(
+    searchText: string,
+  ): Promise<SearchResult | null> {
+    return state.sdk_v2_client
+      .getName({
+        name: searchText,
+      })
+      .then((ansName) => {
+        const address = ansName?.registered_address ?? ansName?.owner_address;
+
+        if (ansName && address) {
+          return {
+            label: `Account ${truncateAddress(address)} ${searchText}`,
+            to: `/account/${address}`,
+          };
+        }
+        return null;
+      })
+      .catch(() => {
+        return null;
+      });
+  }
+
+  async function handleCoin(searchText: string): Promise<SearchResult | null> {
+    const address = searchText.split("::")[0];
+    return getAccountResource(
+      {address, resourceType: `0x1::coin::CoinInfo<${searchText}>`},
+      state.aptos_client,
+    )
+      .then(() => {
+        return {
+          label: `Coin ${searchText}`,
+          to: `/coin/${searchText}`,
+        };
+      })
+      .catch(() => {
+        return null;
+      });
+  }
+
+  function handleBlockHeightOrVersion(
+    searchText: string,
+  ): Promise<SearchResult | null>[] {
+    const promises = [];
+    const blockByHeightPromise = getBlockByHeight(
+      {height: parseInt(searchText), withTransactions: false},
+      state.aptos_client,
+    )
+      .then((): SearchResult => {
+        return {
+          label: `Block ${searchText}`,
+          to: `/block/${searchText}`,
+        };
+      })
+      .catch(() => {
+        return null;
+        // Do nothing. It's expected that not all search input is a valid transaction
+      });
+
+    const blockByVersionPromise = getBlockByVersion(
+      {version: parseInt(searchText), withTransactions: false},
+      state.aptos_client,
+    )
+      .then((block): SearchResult => {
+        return {
+          label: `Block with Txn Version ${searchText}`,
+          to: `/block/${block.block_height}`,
+        };
+      })
+      .catch(() => {
+        return null;
+        // Do nothing. It's expected that not all search input is a valid transaction
+      });
+    promises.push(blockByHeightPromise);
+    promises.push(blockByVersionPromise);
+    return promises;
+  }
+
+  async function handleTransaction(
+    searchText: string,
+  ): Promise<SearchResult | null> {
+    return getTransaction({txnHashOrVersion: searchText}, state.aptos_client)
+      .then((): SearchResult => {
+        return {
+          label: `Transaction ${searchText}`,
+          to: `/txn/${searchText}`,
+        };
+      })
+      .catch(() => {
+        return null;
+        // Do nothing. It's expected that not all search input is a valid transaction
+      });
+  }
+
+  function handleAddress(searchText: string): Promise<SearchResult | null>[] {
+    // TODO: add digital assets, collections, fungible asset detection, etc.
+    const promises = [];
+    const address = AccountAddress.from(searchText).toStringLong();
+    // It's either an account OR an object: we query both at once to save time
+    const accountPromise = getAccount({address}, state.aptos_client)
+      .then((): SearchResult => {
+        return {
+          label: `Account ${address}`,
+          to: `/account/${address}`,
+        };
+      })
+      .catch(() => {
+        return null;
+        // Do nothing. It's expected that not all search input is a valid account
+      });
+
+    const resourcePromise = getAccountResource(
+      {address, resourceType: objectCoreResource},
+      state.aptos_client,
+    ).then(
+      () => {
+        return {
+          label: `Object ${address}`,
+          to: `/object/${address}`,
+        };
+      },
+      () => {
+        // It's not an object
+        return null;
+      },
+    );
+    const anyResourcePromise = getAccountResources(
+      {address},
+      state.aptos_client,
+    ).then(
+      () => {
+        return {
+          label: `Deleted Object ${address}`,
+          to: `/object/${address}`,
+        };
+      },
+      () => {
+        // It has no resources
+        return null;
+      },
+    );
+    const anyObjectsPromise = state.sdk_v2_client
+      .getAccountOwnedObjects({accountAddress: address})
+      .then(
+        () => {
+          return {
+            label: `Address ${address}`,
+            to: `/account/${address}`,
+          };
+        },
+        () => {
+          // It has no coins
+          return null;
+        },
+      );
+    promises.push(accountPromise);
+    promises.push(resourcePromise);
+    promises.push(anyResourcePromise);
+    promises.push(anyObjectsPromise);
+    return promises;
+  }
+
   const fetchData = async (searchText: string) => {
     setMode("loading");
     const searchPerformanceStart = GTMEvents.SEARCH_STATS + " start";
@@ -70,150 +233,27 @@ export default function HeaderSearch() {
     window.performance.mark(searchPerformanceStart);
 
     const isValidAccountAddr = isValidAccountAddress(searchText);
-    const isValidTxnHashOrVer = isValidTxnHashOrVersion(searchText);
     const isValidBlockHeightOrVer = isNumeric(searchText);
-
-    const promises = [];
-
+    const is32Hex = is32ByteHex(searchText);
+    const isStruct = isValidStruct(searchText);
     if (searchText.endsWith(".petra")) searchText = searchText.concat(".apt");
     const isAnsName = searchText.endsWith(".apt");
+    const promises = [];
 
     if (isAnsName) {
-      try {
-        const name = await state.sdk_v2_client?.getName({
-          name: searchText,
-        });
-
-        const address = name?.registered_address ?? name?.owner_address;
-
-        if (!name || !address) {
-          throw new Error("Name not found");
-        }
-
-        promises.push({
-          label: `Account ${truncateAddress(address)} ${searchText}`,
-          to: `/account/${address}`,
-        });
-      } catch (e) {}
-    } else {
-      if (isValidAccountAddr) {
-        // TODO: Add digital assets
-        // Fix the address to be correct
-        const address = AccountAddress.from(searchText).toStringLong();
-        // It's either an account OR an object: we query both at once to save time
-        const accountPromise = getAccount({address}, state.aptos_client)
-          .then((): SearchResult => {
-            return {
-              label: `Account ${address}`,
-              to: `/account/${address}`,
-            };
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid account
-          });
-
-        const resourcePromise = getAccountResource(
-          {address, resourceType: objectCoreResource},
-          state.aptos_client,
-        ).then(
-          () => {
-            return {
-              label: `Object ${address}`,
-              to: `/object/${address}`,
-            };
-          },
-          () => {
-            // It's not an object
-            return null;
-          },
-        );
-        const anyResourcePromise = getAccountResources(
-          {address},
-          state.aptos_client,
-        ).then(
-          () => {
-            return {
-              label: `Deleted Object ${address}`,
-              to: `/object/${address}`,
-            };
-          },
-          () => {
-            // It has no resources
-            return null;
-          },
-        );
-        const anyObjectsPromise = state.sdk_v2_client
-          ?.getAccountOwnedObjects({accountAddress: address})
-          .then(
-            () => {
-              return {
-                label: `Address ${address}`,
-                to: `/account/${address}`,
-              };
-            },
-            () => {
-              // It has no coins
-              return null;
-            },
-          );
-        promises.push(accountPromise);
-        promises.push(resourcePromise);
-        promises.push(anyResourcePromise);
-        promises.push(anyObjectsPromise);
-      }
-
-      if (isValidTxnHashOrVer) {
-        const txnPromise = getTransaction(
-          {txnHashOrVersion: searchText},
-          state.aptos_client,
-        )
-          .then((): SearchResult => {
-            return {
-              label: `Transaction ${searchText}`,
-              to: `/txn/${searchText}`,
-            };
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid transaction
-          });
-        promises.push(txnPromise);
-      }
-
-      if (isValidBlockHeightOrVer) {
-        const blockByHeightPromise = getBlockByHeight(
-          {height: parseInt(searchText), withTransactions: false},
-          state.aptos_client,
-        )
-          .then((): SearchResult => {
-            return {
-              label: `Block ${searchText}`,
-              to: `/block/${searchText}`,
-            };
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid transaction
-          });
-
-        const blockByVersionPromise = getBlockByVersion(
-          {version: parseInt(searchText), withTransactions: false},
-          state.aptos_client,
-        )
-          .then((block): SearchResult => {
-            return {
-              label: `Block with Txn Version ${searchText}`,
-              to: `/block/${block.block_height}`,
-            };
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid transaction
-          });
-        promises.push(blockByHeightPromise);
-        promises.push(blockByVersionPromise);
-      }
+      promises.push(handleAnsName(searchText));
+    } else if (isStruct) {
+      promises.push(handleCoin(searchText));
+    } else if (isValidBlockHeightOrVer) {
+      // These are block heights AND versions
+      promises.push(...handleBlockHeightOrVersion(searchText));
+    } else if (is32Hex) {
+      // These are transaction hashes AND addresses
+      promises.push(handleTransaction(searchText));
+      promises.push(...handleAddress(searchText));
+    } else if (isValidAccountAddr) {
+      // These are only addresses
+      promises.push(...handleAddress(searchText));
     }
 
     const resultsList = await Promise.all(promises);

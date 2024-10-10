@@ -31,7 +31,7 @@ export type GlobalState = {
   /** derived from network_value */
   readonly indexer_client?: IndexerClient;
   /** derived from network_value */
-  readonly sdk_v2_client?: Aptos;
+  readonly sdk_v2_client: Aptos;
 };
 
 type GlobalActions = {
