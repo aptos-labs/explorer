@@ -48,6 +48,17 @@ function NetworkAndChainIdCached({
 }) {
   const theme = useTheme();
 
+  // rewrite the network name for display
+  const nameRewrite = (networkName: string) => {
+    if (networkName === "testnet") {
+      return "suzuka testnet";
+    } else if (networkName === "movementTestnet") {
+      return "movement testnet";
+    } else {
+      return networkName;
+    }
+  };
+
   return (
     <Stack
       direction="row"
@@ -57,9 +68,7 @@ function NetworkAndChainIdCached({
       width="100%"
       paddingY={0.75}
     >
-      <Typography>
-        {networkName === "testnet" ? "suzuka testnet" : networkName}
-      </Typography>
+      <Typography>{nameRewrite(networkName)}</Typography>
       <Typography variant="body2" sx={{color: theme.palette.text.disabled}}>
         {chainId}
       </Typography>
