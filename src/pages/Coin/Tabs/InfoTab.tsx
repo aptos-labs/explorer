@@ -10,38 +10,22 @@ import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/
 type InfoTabProps = {
   struct: string;
   data: CoinData | undefined;
+  supply: bigint | null;
 };
 
-export default function InfoTab({struct, data}: InfoTabProps) {
+export default function InfoTab({struct, data, supply}: InfoTabProps) {
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
   }
 
   // TODO: add hook for image, and the panora symbol
 
-  function getSupply(): string {
-    if (!data) {
-      return "N/A";
-    }
-
-    if (data.data.supply.vec.length > 0) {
-      if (data.data.supply.vec[0].aggregator.vec.length > 0) {
-        // TODO: Lookup table for handle
-        return "N/A";
-      }
-      if (data.data.supply.vec[0].integer.vec.length > 0) {
-        return (
-          getFormattedBalanceStr(
-            data.data.supply.vec[0].integer.vec[0].value,
-            data.data.decimals,
-          ) +
-          " " +
-          data.data.symbol
-        );
-      }
-    }
-
-    return "N/A";
+  let formattedSupply: string | null = null;
+  if (supply !== undefined && supply !== null) {
+    formattedSupply =
+      getFormattedBalanceStr(supply.toString(), data.data.decimals) +
+      " " +
+      data.data.symbol;
   }
 
   return (
@@ -49,8 +33,8 @@ export default function InfoTab({struct, data}: InfoTabProps) {
       <ContentBox>
         <ContentRow title={"Name:"} value={data.data.name} />
         <ContentRow title={"Symbol:"} value={data.data.symbol} />
-        <ContentRow title={"Decimals:"} value={data.data.decimals} />
-        <ContentRow title={"Total supply:"} value={getSupply()} />
+        <ContentRow title={"Decimals:"} value={data.data.decimals.toString()} />
+        <ContentRow title={"Total supply:"} value={formattedSupply} />
         <ContentRow
           title={"Creator:"}
           value={

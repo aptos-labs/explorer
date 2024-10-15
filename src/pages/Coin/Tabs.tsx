@@ -46,17 +46,19 @@ type TabPanelProps = {
   value: TabValue;
   struct: string;
   data: CoinData | undefined;
+  supply: bigint | null;
 };
 
-function TabPanel({value, struct, data}: TabPanelProps): JSX.Element {
+function TabPanel({value, struct, data, supply}: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
-  return <TabComponent struct={struct} data={data} />;
+  return <TabComponent struct={struct} data={data} supply={supply} />;
 }
 
 type CoinTabsProps = {
   struct: string;
   data: CoinData | undefined;
   tabValues?: TabValue[];
+  supply: bigint | null;
 };
 
 // TODO: create reusable Tabs for all pages
@@ -64,6 +66,7 @@ export default function CoinTabs({
   struct,
   data,
   tabValues = TAB_VALUES,
+  supply,
 }: CoinTabsProps): JSX.Element {
   const {tab, modulesTab} = useParams();
   const navigate = useNavigate();
@@ -99,7 +102,12 @@ export default function CoinTabs({
         </StyledTabs>
       </Box>
       <Box>
-        <TabPanel value={effectiveTab} struct={struct} data={data} />
+        <TabPanel
+          value={effectiveTab}
+          struct={struct}
+          data={data}
+          supply={supply}
+        />
       </Box>
     </Box>
   );

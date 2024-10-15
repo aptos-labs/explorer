@@ -11,6 +11,7 @@ import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 import {isValidStruct} from "../utils";
 import CoinTitle from "./Title";
 import {CoinData} from "./Components/CoinData";
+import {useGetCoinSupplyLimit} from "../../api/hooks/useGetCoinSupplyLimit";
 
 const TAB_VALUES_FULL: TabValue[] = ["info"];
 
@@ -37,6 +38,7 @@ export default function CoinPage() {
     error: infoError,
     isLoading,
   } = useGetAccountResource(address, `0x1::coin::CoinInfo<${struct}>`);
+  const supply = useGetCoinSupplyLimit(struct);
 
   if (error === null) {
     error = infoError;
@@ -60,6 +62,7 @@ export default function CoinPage() {
               struct={struct}
               data={data as CoinData | undefined}
               tabValues={tabValues}
+              supply={supply}
             />
             <Error struct={struct} error={error} />
           </>
@@ -68,6 +71,7 @@ export default function CoinPage() {
             struct={struct}
             data={data as CoinData | undefined}
             tabValues={tabValues}
+            supply={supply}
           />
         )}
       </Grid>
