@@ -3,9 +3,7 @@ import {ContentCopy, OpenInFull} from "@mui/icons-material";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
 import {useEffect, useRef, useState} from "react";
-import StyledTooltip, {
-  StyledLearnMoreTooltip,
-} from "../../../components/StyledTooltip";
+import StyledTooltip from "../../../components/StyledTooltip";
 import {
   solarizedLight,
   solarizedDark,
@@ -14,7 +12,6 @@ import {
   codeBlockColor,
   codeBlockColorRgbDark,
   codeBlockColorRgbLight,
-  grey,
 } from "../../../themes/colors/aptosColorPalette";
 import {useParams} from "react-router-dom";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
@@ -105,13 +102,13 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   );
 }
 
-export function Code({bytecode}: {bytecode: string}) {
+export function MovePackageManifest({manifest}: {manifest: string}) {
   const {selectedModuleName} = useParams();
   const logEvent = useLogEventWithBasic();
 
   const TOOLTIP_TIME = 2000; // 2s
 
-  const sourceCode = bytecode === "0x" ? undefined : transformCode(bytecode);
+  const sourceCode = transformCode(manifest);
 
   const theme = useTheme();
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
@@ -152,9 +149,8 @@ export function Code({bytecode}: {bytecode: string}) {
           alignItems={"center"}
         >
           <Typography fontSize={20} fontWeight={700}>
-            Code
+            Package Manifest
           </Typography>
-          <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. We cannot verify it." />
         </Stack>
         {sourceCode && (
           <Stack direction="row" spacing={2}>
@@ -196,46 +192,27 @@ export function Code({bytecode}: {bytecode: string}) {
           </Stack>
         )}
       </Stack>
-      {sourceCode && (
-        <Typography
-          variant="body1"
-          fontSize={14}
-          fontWeight={400}
-          marginBottom={"16px"}
-          color={theme.palette.mode === "dark" ? grey[400] : grey[600]}
+      <Box
+        sx={{
+          maxHeight: "100vh",
+          overflow: "auto",
+          borderRadius: 1,
+          backgroundColor: codeBlockColor,
+        }}
+        ref={codeBoxScrollRef}
+      >
+        <SyntaxHighlighter
+          language="rust"
+          key={theme.palette.mode}
+          style={
+            theme.palette.mode === "light" ? solarizedLight : solarizedDark
+          }
+          customStyle={{margin: 0, backgroundColor: "unset"}}
+          showLineNumbers
         >
-          The source code is plain text uploaded by the deployer, which can be
-          different from the actual bytecode.
-        </Typography>
-      )}
-      {!sourceCode ? (
-        <Box>
-          Unfortunately, the source code cannot be shown because the package
-          publisher has chosen not to make it available
-        </Box>
-      ) : (
-        <Box
-          sx={{
-            maxHeight: "100vh",
-            overflow: "auto",
-            borderRadius: 1,
-            backgroundColor: codeBlockColor,
-          }}
-          ref={codeBoxScrollRef}
-        >
-          <SyntaxHighlighter
-            language="rust"
-            key={theme.palette.mode}
-            style={
-              theme.palette.mode === "light" ? solarizedLight : solarizedDark
-            }
-            customStyle={{margin: 0, backgroundColor: "unset"}}
-            showLineNumbers
-          >
-            {sourceCode}
-          </SyntaxHighlighter>
-        </Box>
-      )}
+          {sourceCode}
+        </SyntaxHighlighter>
+      </Box>
     </Box>
   );
 }
