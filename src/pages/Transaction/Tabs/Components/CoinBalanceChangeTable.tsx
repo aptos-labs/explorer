@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Table, TableHead, TableRow} from "@mui/material";
+import {Stack, Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../../utils";
@@ -13,6 +13,10 @@ import {
 import {Types} from "aptos";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
+import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
+import {WarningOutlined, DangerousOutlined} from "@mui/icons-material";
+import StyledTooltip from "../../../../components/StyledTooltip";
+import {LearnMoreTooltip} from "../../../../components/IndividualPageContent/LearnMoreTooltip";
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
@@ -37,6 +41,54 @@ function TypeCell({balanceChange}: BalanceChangeCellProps) {
       }}
     >
       {balanceChange.type}
+    </GeneralTableCell>
+  );
+}
+
+function VerifiedCell({balanceChange}: BalanceChangeCellProps) {
+  return (
+    <GeneralTableCell
+      sx={{
+        textAlign: "right",
+      }}
+    >
+      {balanceChange.known ? (
+        balanceChange?.isBanned ? (
+          <Stack direction="row" spacing={1} alignItems="center">
+            <StyledTooltip title="This asset has been banned on the Panora token list, please use with caution.">
+              <DangerousOutlined fontSize="small" />
+            </StyledTooltip>
+          </Stack>
+        ) : (
+          <Stack direction="row" spacing={1} alignItems="center">
+            <StyledTooltip title="This asset is on the Panora token list, it is recognized by the community.">
+              <VerifiedOutlined fontSize="small" />
+            </StyledTooltip>
+          </Stack>
+        )
+      ) : (
+        <Stack direction="row" spacing={1} alignItems="center">
+          <StyledTooltip title="This asset is not on the Panora token list, it may or may not be recognized by the community.">
+            <WarningOutlined fontSize="small" />
+          </StyledTooltip>
+        </Stack>
+      )}
+    </GeneralTableCell>
+  );
+}
+
+function TokenInfoCell({balanceChange}: BalanceChangeCellProps) {
+  return (
+    <GeneralTableCell sx={{}}>
+      <HashButton
+        hash={balanceChange.asset.id}
+        type={
+          balanceChange.asset.id.includes("::")
+            ? HashType.COIN
+            : HashType.FUNGIBLE_ASSET
+        }
+        img={balanceChange.logoUrl}
+      />
     </GeneralTableCell>
   );
 }
@@ -66,12 +118,20 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
 const BalanceChangeCells = Object.freeze({
   address: AddressCell,
   type: TypeCell,
+  tokenInfo: TokenInfoCell,
+  verified: VerifiedCell,
   amount: AmountCell,
 });
 
 type Column = keyof typeof BalanceChangeCells;
 
-const DEFAULT_COLUMNS: Column[] = ["address", "type", "amount"];
+const DEFAULT_COLUMNS: Column[] = [
+  "address",
+  "type",
+  "tokenInfo",
+  "verified",
+  "amount",
+];
 
 type BalanceChangeRowProps = {
   balanceChange: BalanceChange;
@@ -109,7 +169,25 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
     case "address":
       return <GeneralTableHeaderCell header="Account" />;
     case "type":
-      return <GeneralTableHeaderCell header="Type" textAlignRight={true} />;
+      return (
+        <GeneralTableHeaderCell header="Event Type" textAlignRight={true} />
+      );
+    case "tokenInfo":
+      return <GeneralTableHeaderCell header="Asset" />;
+    case "verified":
+      return (
+        <GeneralTableHeaderCell
+          header="Verified"
+          textAlignRight={true}
+          tooltip={
+            <LearnMoreTooltip
+              text="This uses the Panora token list to verify authenticity of known assets on-chain.  It does not guarantee anything else about the asset."
+              link="https://github.com/PanoraExchange/Aptos-Tokens"
+            />
+          }
+          isTableTooltip={true}
+        />
+      );
     case "amount":
       return <GeneralTableHeaderCell header="Change" textAlignRight={true} />;
     default:
