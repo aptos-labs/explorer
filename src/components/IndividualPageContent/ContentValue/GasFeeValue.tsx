@@ -42,16 +42,11 @@ export default function GasFeeValue({
     );
   }
 
-  const executionGasUnits = BigInt(feeStatement.data.execution_gas_units);
-  const ioGasUnits = BigInt(feeStatement.data.io_gas_units);
-  const ioAndExecutionGasUnits = executionGasUnits + ioGasUnits;
-  const ioAndExecutionGas = ioAndExecutionGasUnits * BigInt(gasUnitPrice);
-
-  const storageGasOctas = BigInt(feeStatement.data.storage_fee_octas);
+  const feeStatementGasUnits = BigInt(feeStatement.data.total_charge_gas_units);
+  const feeStatementGasUnitsCost = feeStatementGasUnits * BigInt(gasUnitPrice);
   const storageRefundOctas = BigInt(feeStatement.data.storage_fee_refund_octas);
 
-  const netGasWithRefund =
-    ioAndExecutionGas + storageGasOctas - storageRefundOctas;
+  const netGasWithRefund = feeStatementGasUnitsCost - storageRefundOctas;
 
   if (storageRefund) {
     return (
@@ -76,7 +71,7 @@ export default function GasFeeValue({
       {showGasUsed === true && (
         <span style={{color: grey[450]}}>
           {" ("}
-          <GasValue gas={netGasWithoutRefund.toString()} />
+          <GasValue gas={grossGasUnits.toString()} />
           {")"}
         </span>
       )}

@@ -16,6 +16,7 @@ import TransactionBlockRow from "./Components/TransactionBlockRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {parseExpirationTimestamp} from "../../utils";
 import {TransactionActions} from "./Components/TransactionActions";
+import {grey} from "../../../themes/colors/aptosColorPalette";
 
 function UserTransferOrInteractionRows({
   transaction,
@@ -184,7 +185,14 @@ export default function UserTransactionOverviewTab({
         />
         <ContentRow
           title="Gas Unit Price:"
-          value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
+          value={
+            <>
+              <APTCurrencyValue amount={transactionData.gas_unit_price} />{" "}
+              <span style={{color: grey[450]}}>
+                ({transactionData.gas_unit_price} Octas)
+              </span>
+            </>
+          }
           tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
         <ContentRow
