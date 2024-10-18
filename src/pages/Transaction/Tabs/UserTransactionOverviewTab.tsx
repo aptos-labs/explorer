@@ -92,6 +92,11 @@ export default function UserTransactionOverviewTab({
 }: UserTransactionOverviewTabProps) {
   const transactionData = transaction as Types.Transaction_UserTransaction;
 
+  // TODO: pass into gas fee value to reduce searches
+  const feeStatement = transactionData?.events?.find(
+    (e) => e.type === "0x1::transaction_fee::FeeStatement",
+  );
+
   return (
     <Box marginBottom={3}>
       <ContentBox padding={4}>
@@ -157,32 +162,36 @@ export default function UserTransactionOverviewTab({
           }
           tooltip={getLearnMoreTooltip("gas_fee")}
         />
-        <ContentRow
-          title="Storage Refund:"
-          value={
-            <GasFeeValue
-              gasUsed={transactionData.gas_used}
-              gasUnitPrice={transactionData.gas_unit_price}
-              showGasUsed
-              transactionData={transactionData}
-              storageRefund={true}
+        {(feeStatement?.data?.storage_fee_refund_octas ?? 0) > 0 ? (
+          <>
+            <ContentRow
+              title="Storage Refund:"
+              value={
+                <GasFeeValue
+                  gasUsed={transactionData.gas_used}
+                  gasUnitPrice={transactionData.gas_unit_price}
+                  showGasUsed
+                  transactionData={transactionData}
+                  storageRefund={true}
+                />
+              }
+              tooltip={getLearnMoreTooltip("storage_refund")}
             />
-          }
-          tooltip={getLearnMoreTooltip("storage_refund")}
-        />
-        <ContentRow
-          title="Net Gas Changes:"
-          value={
-            <GasFeeValue
-              gasUsed={transactionData.gas_used}
-              gasUnitPrice={transactionData.gas_unit_price}
-              showGasUsed
-              transactionData={transactionData}
-              netGasCost
+            <ContentRow
+              title="Net Gas Changes:"
+              value={
+                <GasFeeValue
+                  gasUsed={transactionData.gas_used}
+                  gasUnitPrice={transactionData.gas_unit_price}
+                  showGasUsed
+                  transactionData={transactionData}
+                  netGasCost
+                />
+              }
+              tooltip={getLearnMoreTooltip("net_gas_fee")}
             />
-          }
-          tooltip={getLearnMoreTooltip("net_gas_fee")}
-        />
+          </>
+        ) : null}
         <ContentRow
           title="Gas Unit Price:"
           value={
