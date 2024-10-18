@@ -90,7 +90,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
     transactionChangesResponse?.fungible_asset_activities.find((a) =>
       a.type.includes("GasFeeEvent"),
     );
-  if (gasFeeEvent) {
+  if (gasFeeEvent && (gasFeeEvent?.storage_refund_amount ?? 0) > 0) {
     balanceChanges.push({
       address: gasFeeEvent.gas_fee_payer_address ?? gasFeeEvent.owner_address,
       amount: BigInt(gasFeeEvent.storage_refund_amount),
