@@ -10,7 +10,6 @@ export const networks: Record<string, string> = {
   testnet: "https://api.testnet.staging.aptoslabs.com/v1",
   devnet: devnetUrl,
   local: "http://127.0.0.1:8080/v1",
-  previewnet: "https://fullnode.previewnet.aptoslabs.com/v1",
 };
 
 export type NetworkName = keyof typeof networks;
@@ -35,7 +34,6 @@ const apiKeys: ApiKeys = {
   testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
   devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
   local: undefined,
-  previewnet: undefined,
 };
 
 export function getApiKey(network_name: NetworkName): string | undefined {
@@ -51,7 +49,6 @@ export enum Network {
   TESTNET = "testnet",
   DEVNET = "devnet",
   LOCAL = "local",
-  PREVIEWNET = "previewnet",
 }
 
 // Remove trailing slashes
