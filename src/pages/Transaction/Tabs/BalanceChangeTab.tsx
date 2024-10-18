@@ -69,11 +69,12 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
           type: convertType(a),
           asset: {
             decimals: a.metadata?.decimals,
-            symbol: entry?.panoraSymbol
-              ? entry.panoraSymbol !== a.metadata.symbol
-                ? `${entry.panoraSymbol} (${a.metadata.symbol})`
-                : a.metadata.symbol
-              : a.metadata.symbol,
+            symbol:
+              (entry?.panoraSymbol
+                ? entry.panoraSymbol !== a?.metadata?.symbol
+                  ? `${entry.panoraSymbol} (${a.metadata?.symbol})`
+                  : a.metadata?.symbol
+                : a.metadata?.symbol) ?? "Unknown",
             type: a.type,
             id: entry?.tokenAddress ?? a.asset_type,
           },
