@@ -77,6 +77,7 @@ interface HashButtonProps extends BoxProps {
   type: HashType;
   size?: "small" | "large";
   isValidator?: boolean;
+  img?: string;
 }
 
 export default function HashButton({
@@ -84,6 +85,7 @@ export default function HashButton({
   type,
   size = "small",
   isValidator = false,
+  img,
   ...props
 }: HashButtonProps) {
   if (type === HashType.ACCOUNT || type === HashType.OBJECT) {
@@ -97,7 +99,15 @@ export default function HashButton({
       />
     );
   } else {
-    return <HashButtonInner hash={hash} type={type} size={size} {...props} />;
+    return (
+      <HashButtonInner
+        hash={hash}
+        type={type}
+        size={size}
+        img={img}
+        {...props}
+      />
+    );
   }
 }
 
@@ -184,6 +194,7 @@ interface HashButtonInnerProps extends BoxProps {
   hash: string;
   type: HashType;
   size?: "small" | "large";
+  img?: string;
 }
 
 function HashButtonInner({
@@ -191,6 +202,7 @@ function HashButtonInner({
   hash,
   type,
   size = "small",
+  img,
   ...props
 }: HashButtonInnerProps) {
   const theme = useTheme();
@@ -236,6 +248,7 @@ function HashButtonInner({
         variant="contained"
         endIcon={<ChevronRightRoundedIcon sx={{opacity: "0.75", m: 0}} />}
       >
+        {img ? <img src={img} height={20} width={20} /> : null}
         {label ? label : truncateHash}
       </Button>
 

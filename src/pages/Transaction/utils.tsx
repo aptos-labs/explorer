@@ -2,6 +2,7 @@ import {Types} from "aptos";
 import {normalizeAddress} from "../../utils";
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
 import {TransactionTypeName} from "../../components/TransactionType";
+import {AccountAddress} from "@aptos-labs/ts-sdk";
 
 export type TransactionCounterparty = {
   address: string;
@@ -90,7 +91,13 @@ export type BalanceChange = {
   asset: {
     decimals: number;
     symbol: string;
+    type: string;
+    id: string;
   };
+  known: boolean;
+  isBanned?: boolean;
+  logoUrl?: string;
+  isInPanoraTokenList?: boolean;
 };
 
 function getBalanceMap(transaction: Types.Transaction) {
@@ -159,7 +166,12 @@ function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
     "changes" in transaction ? transaction.changes : [];
 
   const aptEventChange = changes.filter((change) => {
-    if ("address" in change && change.address === event.guid.account_address) {
+    if (
+      "address" in change &&
+      AccountAddress.from(change.address).equals(
+        AccountAddress.from(event.guid.account_address),
+      )
+    ) {
       const data = getAptChangeData(change);
       if (data !== undefined) {
         const eventCreationNum = event.guid.creation_number;
@@ -183,7 +195,7 @@ interface TransactionResponse {
   fungible_asset_activities: Array<FungibleAssetActivity>;
 }
 
-interface FungibleAssetActivity {
+export interface FungibleAssetActivity {
   amount: number;
   entry_function_id_str: string;
   gas_fee_payer_address?: string;
@@ -231,72 +243,10 @@ export function useTransactionBalanceChanges(txn_version: string) {
     {variables: {txn_version}},
   );
 
-  function convertAddress(a: FungibleAssetActivity) {
-    return a.type.includes("GasFeeEvent")
-      ? a.gas_fee_payer_address ?? a.owner_address
-      : a.owner_address;
-  }
-
-  function convertType(activity: FungibleAssetActivity) {
-    if (activity.type.includes("GasFee")) {
-      return "Gas Fee";
-    }
-    if (activity.type.includes("Withdraw")) {
-      return "Withdraw";
-    }
-    if (activity.type.includes("Deposit")) {
-      return "Deposit";
-    }
-    if (activity.type.includes("StorageRefund")) {
-      return "Storage Refund";
-    }
-
-    return "Unknown";
-  }
-
-  function convertAmount(activity: FungibleAssetActivity) {
-    if (activity.type.includes("GasFeeEvent")) {
-      return -BigInt(activity.amount);
-    }
-    if (activity.type.includes("Withdraw")) {
-      return BigInt(-activity.amount);
-    }
-    return BigInt(activity.amount);
-  }
-
-  const balanceChanges: BalanceChange[] =
-    data?.fungible_asset_activities
-      .filter((a) => a.amount !== null)
-      .map((a) => ({
-        address: convertAddress(a),
-        amount: convertAmount(a),
-        type: convertType(a),
-        asset: {
-          decimals: a.metadata?.decimals,
-          symbol: a.metadata?.symbol,
-        },
-      })) ?? [];
-
-  // Find gas fee and add a storage refund event
-  const gasFeeEvent = data?.fungible_asset_activities.find((a) =>
-    a.type.includes("GasFeeEvent"),
-  );
-  if (gasFeeEvent) {
-    balanceChanges.push({
-      address: gasFeeEvent.gas_fee_payer_address ?? gasFeeEvent.owner_address,
-      amount: BigInt(gasFeeEvent.storage_refund_amount),
-      type: "Storage Refund",
-      asset: {
-        decimals: gasFeeEvent.metadata?.decimals,
-        symbol: gasFeeEvent.metadata?.symbol,
-      },
-    });
-  }
-
   return {
     isLoading: loading,
     error,
-    data: balanceChanges,
+    data,
   };
 }
 
