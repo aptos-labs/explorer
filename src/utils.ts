@@ -27,20 +27,6 @@ export function sortTransactions(
   return first < second ? 1 : -1;
 }
 
-/*
-Converts a utf8 string encoded as hex back to string
-if hex starts with 0x - ignore this part and start from the 3rd char (at index 2).
-*/
-export function hex_to_string(hex: string): string {
-  const hexString = hex.toString();
-  let str = "";
-  let n = hex.startsWith("0x") ? 2 : 0;
-  for (n; n < hexString.length; n += 2) {
-    str += String.fromCharCode(parseInt(hexString.substring(n, n + 2), 16));
-  }
-  return str;
-}
-
 /* set localStorage with Expiry */
 export function setLocalStorageWithExpiry(
   key: string,
@@ -153,7 +139,7 @@ export function encodeInputArgsForViewRequest(type: string, value: string) {
     if (value !== "true" && value !== "false")
       throw new Error(`Invalid bool value: ${value}`);
 
-    return value === "true" ? true : false;
+    return value === "true";
   } else if (["u8", "u16", "u32"].includes(type)) {
     return ensureNumber(value);
   } else if (type.startsWith("0x1::option::Option")) {
@@ -259,12 +245,6 @@ function assertType(val: any, types: string[] | string, message?: string) {
 // We should not be using statsig for logging like this, we will transition to google analytics
 export function getStableID(): string {
   return Statsig.initializeCalled() ? Statsig.getStableID() : "not_initialized";
-}
-
-// address' coming back from the node trim leading zeroes
-// for example: 0x123 => 0x000...000123  (61 0s before 123)
-export function normalizeAddress(address: string): string {
-  return "0x" + address.substring(2).padStart(64, "0");
 }
 
 /** A wallet sort function to ensure that Petra is always at the top of the wallet list. */

@@ -3,7 +3,7 @@ import {gql, useQuery} from "@apollo/client";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {Types} from "aptos";
 import {CoinsTable} from "../Components/CoinsTable";
-import {normalizeAddress} from "../../../utils";
+import {standardizeAddress} from "../../../utils";
 
 const COINS_QUERY = gql`
   query CoinsData($owner_address: String, $limit: Int, $offset: Int) {
@@ -30,7 +30,7 @@ type TokenTabsProps = {
 };
 
 export default function CoinsTab({address}: TokenTabsProps) {
-  const addr64Hash = normalizeAddress(address);
+  const addr64Hash = standardizeAddress(address);
 
   const {loading, error, data} = useQuery<{
     current_fungible_asset_balances: {

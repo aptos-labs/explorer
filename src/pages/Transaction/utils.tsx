@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {normalizeAddress} from "../../utils";
+import {standardizeAddress} from "../../utils";
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
 import {TransactionTypeName} from "../../components/TransactionType";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
@@ -114,7 +114,7 @@ function getBalanceMap(transaction: Types.Transaction) {
       },
       event: Types.Event,
     ) => {
-      const addr = normalizeAddress(event.guid.account_address);
+      const addr = standardizeAddress(event.guid.account_address);
 
       if (
         event.type === "0x1::coin::DepositEvent" ||
