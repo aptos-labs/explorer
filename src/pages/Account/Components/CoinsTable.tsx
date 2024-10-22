@@ -75,7 +75,7 @@ function CoinVerifiedCell({data}: {data: CoinDescriptionPlusAmount}) {
   return VerifiedCoinCell({
     data: {
       id: data.tokenAddress ?? data.faAddress ?? "Unknown",
-      known: data.isInPanoraTokenList,
+      known: data.chainId !== 0,
       isBanned: data.isBanned,
       isInPanoraTokenList: data.isInPanoraTokenList,
     },
