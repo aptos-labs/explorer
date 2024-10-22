@@ -2,8 +2,10 @@ import React from "react";
 import {gql, useQuery} from "@apollo/client";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {Types} from "aptos";
-import {CoinsTable} from "../Components/CoinsTable";
-import {normalizeAddress} from "../../../utils";
+import {CoinDescriptionPlusAmount, CoinsTable} from "../Components/CoinsTable";
+import {standardizeAddress} from "../../../utils";
+import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
+import {findCoinData} from "../../Transaction/Tabs/BalanceChangeTab";
 
 const COINS_QUERY = gql`
   query CoinsData($owner_address: String, $limit: Int, $offset: Int) {
@@ -30,7 +32,8 @@ type TokenTabsProps = {
 };
 
 export default function CoinsTab({address}: TokenTabsProps) {
-  const addr64Hash = normalizeAddress(address);
+  const addr64Hash = standardizeAddress(address);
+  const {data: coinData} = useGetCoinList();
 
   const {loading, error, data} = useQuery<{
     current_fungible_asset_balances: {
@@ -49,8 +52,12 @@ export default function CoinsTab({address}: TokenTabsProps) {
     },
   });
 
-  if (loading || error) {
-    // TODO: error handling
+  if (loading) {
+    return null;
+  }
+
+  if (error) {
+    console.error(error);
     return null;
   }
 
@@ -60,18 +67,51 @@ export default function CoinsTab({address}: TokenTabsProps) {
     return <EmptyTabContent />;
   }
 
-  return (
-    <CoinsTable
-      coins={coins
-        .filter((coin) => Boolean(coin.metadata))
-        .map((coin) => ({
-          name: coin.metadata.name,
-          amount: coin.amount,
-          decimals: coin.metadata.decimals,
-          symbol: coin.metadata.symbol,
-          assetType: coin.asset_type,
-          assetVersion: coin.metadata.token_standard,
-        }))}
-    />
-  );
+  function parse_coins(): CoinDescriptionPlusAmount[] {
+    if (!coins || coins.length <= 0) {
+      return [];
+    }
+    return coins
+      .filter((coin) => Boolean(coin.metadata))
+      .map((coin) => {
+        const foundCoin = findCoinData(coinData?.data ?? [], coin.asset_type);
+
+        if (!foundCoin) {
+          // Minimally, return the information we do know
+          return {
+            name: coin.metadata.name,
+            amount: coin.amount,
+            decimals: coin.metadata.decimals,
+            symbol: coin.metadata.symbol,
+            assetType: coin.asset_type,
+            assetVersion: coin.metadata.token_standard,
+            chainId: 0,
+            tokenAddress:
+              coin.metadata.token_standard === "v1" ? coin.asset_type : null,
+            faAddress:
+              coin.metadata.token_standard === "v2" ? coin.asset_type : null,
+            bridge: null,
+            panoraSymbol: null,
+            logoUrl: "",
+            websiteUrl: null,
+            category: "N/A",
+            isInPanoraTokenList: false,
+            isBanned: false,
+            panoraOrderIndex: 20000000,
+            coinGeckoId: null,
+            coinMarketCapId: null,
+            tokenStandard: coin.metadata.token_standard,
+          };
+        } else {
+          // Otherwise, use the stuff found in the lookup
+          return {
+            ...foundCoin,
+            amount: coin.amount,
+            tokenStandard: coin.metadata.token_standard,
+          };
+        }
+      });
+  }
+
+  return <CoinsTable coins={parse_coins()} />;
 }
