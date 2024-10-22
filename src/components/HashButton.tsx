@@ -158,7 +158,7 @@ function AccountHashButtonInner({
         }}
       >
         <Tooltip title={hash} enterDelay={500} enterNextDelay={500}>
-          <span>{name ? `${name}.apt` : truncateHash}</span>
+          <span>{name ?? truncateHash}</span>
         </Tooltip>
         <Tooltip title="Copied" open={copyTooltipOpen}>
           <Button
