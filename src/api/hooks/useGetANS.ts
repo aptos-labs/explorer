@@ -5,10 +5,19 @@ import {
   fetchJsonResponse,
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
+  standardizeAddress,
 } from "../../utils";
 import {ResponseError} from "../client";
 
 const TTL = 60000; // 1 minute
+
+// This is an override of ANS names, in case we want to display a verified name for an address
+// TODO: this probably belongs somewhere else... but, for now, it's here
+const knownAddresses: Record<string, string> = {
+  "0xa": "AptosCoin",
+  "0x000000000000000000000000000000000000000000000000000000000000000a":
+    "AptosCoin",
+};
 
 function getFetchNameUrl(
   network: NetworkName,
@@ -33,11 +42,24 @@ export function useGetNameFromAddress(
   const queryResult = useQuery<string | null, ResponseError>({
     queryKey: ["ANSName", address, shouldCache, state.network_name],
     queryFn: () => {
-      const cachedName = getLocalStorageWithExpiry(address);
+      const standardizedAddress = standardizeAddress(address);
+      const knownName = knownAddresses[standardizedAddress.toLowerCase()];
+      if (knownName) {
+        return knownName;
+      }
+
+      // Change cache key specifically to invalidate all previous cached keys
+      const cachedName = getLocalStorageWithExpiry(`${address}:name`);
       if (cachedName) {
         return cachedName;
       }
-      return genANSName(address, shouldCache, state.network_name, isValidator);
+      // Ensure there's always .apt at the end
+      return genANSName(
+        address,
+        shouldCache,
+        state.network_name,
+        isValidator,
+      ).then((name) => (name ? `${name}.apt` : null));
     },
   });
 

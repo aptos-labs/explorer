@@ -13,6 +13,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
+import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 
 const BUTTON_HEIGHT = 34;
 const TOOLTIP_TIME = 2000; // 2s
@@ -120,6 +121,7 @@ function Name({address, isValidator}: {address: string; isValidator: boolean}) {
   if (!name) {
     return null;
   }
+  const isAns = name.endsWith(".apt") || name.endsWith(".petra");
 
   return (
     <Box>
@@ -135,13 +137,22 @@ function Name({address, isValidator}: {address: string; isValidator: boolean}) {
           padding: "0.15rem 1rem 0.15rem 1rem",
         }}
       >
-        <Link
-          href={`https://www.aptosnames.com/name/${name}`}
-          target="_blank"
-          underline="none"
-        >
-          {`${name}.apt`}
-        </Link>
+        {isAns ? (
+          <Link
+            href={`https://www.aptosnames.com/name/${name}`}
+            target="_blank"
+            underline="none"
+          >
+            {name}
+          </Link>
+        ) : (
+          <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
+            <span>{name}</span>
+            <Tooltip title={"This is a verified address label."}>
+              <VerifiedOutlined fontSize="small" sx={{position: "relative", top: 2}} />
+            </Tooltip>
+          </Typography>
+        )}
       </Stack>
     </Box>
   );
