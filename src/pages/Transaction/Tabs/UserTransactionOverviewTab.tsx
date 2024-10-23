@@ -96,6 +96,21 @@ export default function UserTransactionOverviewTab({
   const feeStatement = transactionData?.events?.find(
     (e) => e.type === "0x1::transaction_fee::FeeStatement",
   );
+  let feePayer: string | undefined;
+  if (
+    transactionData?.signature &&
+    "fee_payer_address" in transactionData.signature
+  ) {
+    feePayer = transactionData.signature.fee_payer_address;
+  }
+
+  let secondarySigners: string[] | undefined;
+  if (
+    transactionData?.signature &&
+    "secondary_signer_addresses" in transactionData.signature
+  ) {
+    secondarySigners = transactionData.signature.secondary_signer_addresses;
+  }
 
   return (
     <Box marginBottom={3}>
@@ -117,6 +132,22 @@ export default function UserTransactionOverviewTab({
           }
           tooltip={getLearnMoreTooltip("sender")}
         />
+        {feePayer && (
+          <ContentRow
+            title="Fee Payer:"
+            value={<HashButton hash={feePayer} type={HashType.ACCOUNT} />}
+            tooltip={getLearnMoreTooltip("fee_payer")}
+          />
+        )}
+        {secondarySigners && (
+          <ContentRow
+            title="Secondary Signers:"
+            value={secondarySigners.map((address) => (
+              <HashButton hash={address} type={HashType.ACCOUNT} />
+            ))}
+            tooltip={getLearnMoreTooltip("secondary_signers")}
+          />
+        )}
         <UserTransferOrInteractionRows transaction={transactionData} />
         <TransactionFunctionRow transaction={transactionData} />
         <TransactionAmountRow transaction={transactionData} />

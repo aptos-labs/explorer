@@ -10,7 +10,7 @@ module.exports = {
   parserOptions: {ecmaVersion: "latest", sourceType: "module"},
   ignorePatterns: ["pnpm-lock.yaml"],
   // files: ['*.ts', '*.tsx'],
-  // plugins: ['react-refresh'],
+  plugins: ["html"],
   rules: {
     // 'react-refresh/only-export-components': 'warn',
     // TODO: Remove these exceptions once we have better guards

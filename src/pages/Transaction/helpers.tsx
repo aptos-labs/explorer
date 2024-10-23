@@ -48,6 +48,10 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
           link="https://aptos.dev/en/network/glossary#expiration-time"
         />
       );
+    case "fee_payer":
+      return (
+        <LearnMoreTooltip text="Account that paid for the gas fee of the transaction, separate of the sender." />
+      );
     case "function":
       return (
         <LearnMoreTooltip text="Move function executed in the transaction." />
