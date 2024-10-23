@@ -68,7 +68,7 @@ export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
   };
 }
 
-function truncate(
+export function truncate(
   str: string,
   frontLen: number,
   backLen: number,
