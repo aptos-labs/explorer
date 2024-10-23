@@ -39,7 +39,7 @@
     "aptos": "^1.21.0",
     "aptos-node-checker-client": "0.0.5",
     "chart.js": "^4.4.1",
-    "date-fns": "^3.2.0",
+    "date-fns": "^4.0.0",
     "eslint-plugin-html": "^8.1.2",
     "graphql": "^16.8.1",
     "js-sha3": "^0.9.3",
