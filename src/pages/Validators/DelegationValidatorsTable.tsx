@@ -149,7 +149,7 @@ function ValidatorHeaderCell({
         <GeneralTableHeaderCell
           header="Delegators"
           tooltip={
-            <StyledLearnMoreTooltip text="Number of owner accounts who have delegated stake to this stake pool" />
+            <StyledLearnMoreTooltip text="Number of owner accounts who have delegated stake to this stake pool + reward account(s)" />
           }
           isTableTooltip={false}
         />
