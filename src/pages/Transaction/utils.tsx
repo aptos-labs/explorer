@@ -76,8 +76,11 @@ export function getTransactionCounterparty(
     };
   }
 
-  // Note, this used to show the smart contract address, this was super confusing, so we'll return nothing.
-  return undefined;
+  const smartContractAddr = payload.function.split("::")[0];
+  return {
+    address: smartContractAddr,
+    role: "smartContract",
+  };
 }
 
 type ChangeData = {

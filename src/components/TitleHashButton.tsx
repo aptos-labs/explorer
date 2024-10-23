@@ -149,7 +149,10 @@ function Name({address, isValidator}: {address: string; isValidator: boolean}) {
           <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
             <span>{name}</span>
             <Tooltip title={"This is a verified address label."}>
-              <VerifiedOutlined fontSize="small" sx={{position: "relative", top: 2}} />
+              <VerifiedOutlined
+                fontSize="small"
+                sx={{position: "relative", top: 2}}
+              />
             </Tooltip>
           </Typography>
         )}

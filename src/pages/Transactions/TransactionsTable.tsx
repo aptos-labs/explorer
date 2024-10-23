@@ -33,6 +33,7 @@ import {
   getTransactionCounterparty,
 } from "../Transaction/utils";
 import {Link} from "../../routing";
+import {ArrowForwardOutlined, TextSnippetOutlined} from "@mui/icons-material";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -107,10 +108,20 @@ function TransactionReceiverOrCounterPartyCell({
   transaction,
 }: TransactionCellProps) {
   const counterparty = getTransactionCounterparty(transaction);
+  // TODO: Look into adding a different column for smart contract, so it doesn't get confused with the receiver.
   return (
     <GeneralTableCell>
       {counterparty && (
-        <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
+        <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
+          {counterparty.role === "smartContract" ? (
+            <TextSnippetOutlined />
+          ) : (
+            <ArrowForwardOutlined />
+          )}
+          <span>
+            <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
+          </span>
+        </Typography>
       )}
     </GeneralTableCell>
   );
@@ -187,7 +198,7 @@ function TransactionAmountGasCell({
         <Box sx={{fontSize: 11, color: grey[450]}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
             <>
-              <>Gas </>
+              <>Gas</>
               <GasFeeValue
                 gasUsed={transaction.gas_used}
                 gasUnitPrice={transaction.gas_unit_price}
