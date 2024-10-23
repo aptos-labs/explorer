@@ -34,6 +34,7 @@ import {
 } from "../Transaction/utils";
 import {Link} from "../../routing";
 import {ArrowForwardOutlined, TextSnippetOutlined} from "@mui/icons-material";
+import Tooltip from "@mui/material/Tooltip";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -114,9 +115,13 @@ function TransactionReceiverOrCounterPartyCell({
       {counterparty && (
         <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
           {counterparty.role === "smartContract" ? (
-            <TextSnippetOutlined />
+            <Tooltip title={"Smart Contract"} placement="top">
+              <TextSnippetOutlined />
+            </Tooltip>
           ) : (
-            <ArrowForwardOutlined />
+            <Tooltip title={"Receiver"} placement="top">
+              <ArrowForwardOutlined />
+            </Tooltip>
           )}
           <span>
             <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
