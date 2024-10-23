@@ -37,31 +37,50 @@ export function getTransactionCounterparty(
 
   const payload =
     transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
-  const typeArgument =
-    payload.type_arguments.length > 0 ? payload.type_arguments[0] : undefined;
-  const isAptCoinTransfer =
-    (payload.function === "0x1::coin::transfer" ||
-      payload.function === "0x1::aptos_account::transfer_coins") &&
-    typeArgument === "0x1::aptos_coin::AptosCoin";
-  const isAptCoinInitialTransfer =
-    payload.function === "0x1::aptos_account::transfer" ||
-    payload.function === "0x1::aptos_account::transfer_coins";
 
-  if (
-    (isAptCoinTransfer || isAptCoinInitialTransfer) &&
-    payload.arguments.length === 2
-  ) {
+  const isCoinTransfer =
+    payload.function === "0x1::coin::transfer" ||
+    payload.function === "0x1::aptos_account::transfer_coins" ||
+    payload.function === "0x1::aptos_account::transfer";
+  const isPrimaryFaTransfer =
+    payload.function === "0x1::primary_fungible_store::transfer";
+
+  const isObjectTransfer = payload.function === "0x1::object::transfer";
+  const isTokenV2MintSoulbound =
+    payload.function === "0x4::aptos_token::mint_soul_bound";
+
+  if (isCoinTransfer) {
     return {
       address: payload.arguments[0],
       role: "receiver",
     };
-  } else {
-    const smartContractAddr = payload.function.split("::")[0];
+  }
+
+  if (isPrimaryFaTransfer) {
     return {
-      address: smartContractAddr,
-      role: "smartContract",
+      address: payload.arguments[1],
+      role: "receiver",
     };
   }
+
+  if (isObjectTransfer) {
+    return {
+      address: payload.arguments[1],
+      role: "receiver",
+    };
+  }
+  if (isTokenV2MintSoulbound) {
+    return {
+      address: payload.arguments[7],
+      role: "receiver",
+    };
+  }
+
+  const smartContractAddr = payload.function.split("::")[0];
+  return {
+    address: smartContractAddr,
+    role: "smartContract",
+  };
 }
 
 type ChangeData = {

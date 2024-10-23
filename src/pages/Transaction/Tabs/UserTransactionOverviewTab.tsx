@@ -24,14 +24,17 @@ function UserTransferOrInteractionRows({
   transaction: Types.Transaction;
 }) {
   const counterparty = getTransactionCounterparty(transaction);
-
-  if (!counterparty) {
-    return null;
+  let smartContractAddress: string | undefined;
+  if (
+    "payload" in transaction &&
+    "function" in transaction.payload &&
+    transaction.payload.function.includes("::")
+  ) {
+    smartContractAddress = transaction.payload.function.split("::")[0];
   }
-
   return (
     <>
-      {counterparty.role === "receiver" && (
+      {counterparty && counterparty.role === "receiver" && (
         <ContentRow
           title="Receiver:"
           value={
@@ -40,11 +43,11 @@ function UserTransferOrInteractionRows({
           tooltip={getLearnMoreTooltip("receiver")}
         />
       )}
-      {counterparty.role === "smartContract" && (
+      {smartContractAddress && (
         <ContentRow
           title="Smart Contract:"
           value={
-            <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
+            <HashButton hash={smartContractAddress} type={HashType.ACCOUNT} />
           }
           tooltip={getLearnMoreTooltip("smartContract")}
         />
