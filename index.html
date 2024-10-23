@@ -1,20 +1,26 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network." />
+    <meta
+      name="description"
+      content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network."
+    />
     <meta property="og:title" content="Aptos Explorer" />
-    <meta property="og:description" content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network." />
+    <meta
+      property="og:description"
+      content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network."
+    />
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="/manifest.json" />
     <title>Aptos Explorer</title>
-    <!-- 
+    <!--
       This url refers to a css file in adobe fonts/typekit that includes the fonts configured in the aptos web project. The project id is "ifl8enc" which is used in the url.
 
       Fonts used at the time of writing are: (this is configurable in the adobe typekit project and subject to change).
@@ -24,30 +30,45 @@
 
       TODO: purchase font license(s) and integrate directly via @font-face
     -->
+    <link rel="stylesheet" href="https://use.typekit.net/ifl8enc.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter:wght@100..900&display=swap"
       rel="stylesheet"
-      href="https://use.typekit.net/ifl8enc.css"
     />
 
     <!-- Geo Blocking script from geotargetly.com -->
     <script>
-      (function(g,e,o,t,a,r,ge,tl,y){
-        t=g.getElementsByTagName(o)[0];y=g.createElement(e);y.async=true;
-        y.src='https://g9904216750.co/gb?id=-NkqVZbqVT7_Wp1sgHo5&refurl='+g.referrer+'&winurl='+encodeURIComponent(window.location);
-        t.parentNode.insertBefore(y,t);
-      })(document,'script','head');
+      (function (g, e, o, t, a, r, ge, tl, y) {
+        t = g.getElementsByTagName(o)[0];
+        y = g.createElement(e);
+        y.async = true;
+        y.src =
+          "https://g9904216750.co/gb?id=-NkqVZbqVT7_Wp1sgHo5&refurl=" +
+          g.referrer +
+          "&winurl=" +
+          encodeURIComponent(window.location);
+        t.parentNode.insertBefore(y, t);
+      })(document, "script", "head");
     </script>
 
     <!-- Hotjar Tracking Code for https://explorer.aptoslabs.com/ -->
     <script>
-      (function(h,o,t,j,a,r){
-          h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-          h._hjSettings={hjid:3271013,hjsv:6};
-          a=o.getElementsByTagName('head')[0];
-          r=o.createElement('script');r.async=1;
-          r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-          a.appendChild(r);
-      })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+      (function (h, o, t, j, a, r) {
+        h.hj =
+          h.hj ||
+          function () {
+            (h.hj.q = h.hj.q || []).push(arguments);
+          };
+        h._hjSettings = {hjid: 3271013, hjsv: 6};
+        a = o.getElementsByTagName("head")[0];
+        r = o.createElement("script");
+        r.async = 1;
+        r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+        a.appendChild(r);
+      })(window, document, "https://static.hotjar.com/c/hotjar-", ".js?sv=");
     </script>
   </head>
   <body>

@@ -74,7 +74,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
   //
 
   typography: {
-    fontFamily: `lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
+    fontFamily: `"DM Mono",lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
     fontWeightLight: 200,
     fontWeightRegular: 400,
     fontWeightBold: 500,
@@ -103,7 +103,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       fontWeight: "600",
     },
     stats: {
-      fontFamily: `lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
+      fontFamily: `"DM Mono",lft-etica-mono,ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
       fontWeight: "400",
     },
     subtitle1: {
