@@ -121,6 +121,7 @@ function Name({address, isValidator}: {address: string; isValidator: boolean}) {
   if (!name) {
     return null;
   }
+  const isAns = name.endsWith(".apt") || name.endsWith(".petra");
 
   return (
     <Box>
@@ -136,7 +137,7 @@ function Name({address, isValidator}: {address: string; isValidator: boolean}) {
           padding: "0.15rem 1rem 0.15rem 1rem",
         }}
       >
-        {name.endsWith(".apt") ? (
+        {isAns ? (
           <Link
             href={`https://www.aptosnames.com/name/${name}`}
             target="_blank"
@@ -145,14 +146,12 @@ function Name({address, isValidator}: {address: string; isValidator: boolean}) {
             {name}
           </Link>
         ) : (
-          <>
-            <Typography>
-              {name}{" "}
-              <Tooltip title={"This is a verified address label."}>
-                <VerifiedOutlined fontSize="small" />
-              </Tooltip>
-            </Typography>
-          </>
+          <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
+            <span>{name}</span>
+            <Tooltip title={"This is a verified address label."}>
+              <VerifiedOutlined fontSize="small" />
+            </Tooltip>
+          </Typography>
         )}
       </Stack>
     </Box>

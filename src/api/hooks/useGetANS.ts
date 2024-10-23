@@ -47,7 +47,9 @@ export function useGetNameFromAddress(
       if (knownName) {
         return knownName;
       }
-      const cachedName = getLocalStorageWithExpiry(address);
+
+      // Change cache key specifically to invalidate all previous cached keys
+      const cachedName = getLocalStorageWithExpiry(`${address}:name`);
       if (cachedName) {
         return cachedName;
       }
