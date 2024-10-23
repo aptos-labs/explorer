@@ -96,6 +96,13 @@ export default function UserTransactionOverviewTab({
   const feeStatement = transactionData?.events?.find(
     (e) => e.type === "0x1::transaction_fee::FeeStatement",
   );
+  let feePayer;
+  if (
+    transactionData?.signature &&
+    "fee_payer_address" in transactionData.signature
+  ) {
+    feePayer = transactionData.signature.fee_payer_address;
+  }
 
   return (
     <Box marginBottom={3}>
@@ -117,6 +124,15 @@ export default function UserTransactionOverviewTab({
           }
           tooltip={getLearnMoreTooltip("sender")}
         />
+
+        {feePayer && (
+          <ContentRow
+            title="Fee Payer:"
+            value={<HashButton hash={feePayer} type={HashType.ACCOUNT} />}
+            tooltip={getLearnMoreTooltip("fee_payer")}
+          />
+        )}
+
         <UserTransferOrInteractionRows transaction={transactionData} />
         <TransactionFunctionRow transaction={transactionData} />
         <TransactionAmountRow transaction={transactionData} />
