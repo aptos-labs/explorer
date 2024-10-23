@@ -113,7 +113,9 @@ function TransactionReceiverOrCounterPartyCell({
   return (
     <GeneralTableCell>
       {counterparty && (
-        <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
+        <Typography
+          sx={{display: "flex", fontSize: "inherit", alignItems: "row", gap: 1}}
+        >
           {counterparty.role === "smartContract" ? (
             <Tooltip title={"Smart Contract"} placement="top">
               <TextSnippetOutlined sx={{position: "relative", top: 2}} />
