@@ -243,6 +243,15 @@ const DEFAULT_COLUMNS: TransactionColumn[] = [
   "amountGas",
 ];
 
+export const USER_COLUMNS: TransactionColumn[] = [
+  "versionStatus",
+  "timestamp",
+  "sender",
+  "receiverOrCounterParty",
+  "function",
+  "amountGas",
+];
+
 type TransactionRowProps = {
   transaction: Types.Transaction;
   columns: TransactionColumn[];
@@ -365,7 +374,7 @@ type UserTransactionsTableProps = {
 
 export function UserTransactionsTable({
   versions,
-  columns = DEFAULT_COLUMNS,
+  columns = USER_COLUMNS,
   address,
 }: UserTransactionsTableProps) {
   return (
