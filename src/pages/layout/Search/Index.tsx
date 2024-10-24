@@ -31,6 +31,7 @@ import {
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
 import {getAssetSymbol} from "../../../utils";
+import {knownAddresses} from "../../../api/hooks/useGetANS";
 
 export type SearchResult = {
   label: string;
@@ -264,6 +265,23 @@ export default function HeaderSearch() {
     return promises;
   }
 
+  async function handleLabelLookup(
+    searchText: string,
+  ): Promise<(SearchResult | null)[]> {
+    const searchResults = [];
+    const searchLowerCase = searchText.toLowerCase();
+    for (const address in knownAddresses) {
+      const knownName = knownAddresses[address];
+      if (knownName?.toLowerCase() === searchLowerCase) {
+        searchResults.push({
+          label: `Account ${truncateAddress(address)} ${knownName}`,
+          to: `/account/${address}`,
+        });
+      }
+    }
+    return searchResults;
+  }
+
   async function handleCoinLookup(
     searchText: string,
   ): Promise<(SearchResult | null)[]> {
@@ -323,8 +341,8 @@ export default function HeaderSearch() {
       // These are only addresses
       promises.push(...handleAddress(searchText));
     } else if (searchText.length > 2) {
-      // Check against the coin list, should be cheap?
       multipleSearchPromises.push(handleCoinLookup(searchText));
+      multipleSearchPromises.push(handleLabelLookup(searchText));
     }
     const resultsList: (SearchResult | null)[] = [];
     if (multipleSearchPromises) {
