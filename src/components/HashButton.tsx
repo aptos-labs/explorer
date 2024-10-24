@@ -248,7 +248,14 @@ function HashButtonInner({
         variant="contained"
         endIcon={<ChevronRightRoundedIcon sx={{opacity: "0.75", m: 0}} />}
       >
-        {img ? <img src={img} height={20} width={20} /> : null}
+        {img ? (
+          <Box
+            component="span"
+            sx={{mr: 1, display: "flex", alignItems: "center"}}
+          >
+            <img src={img} height={20} width={20} />
+          </Box>
+        ) : null}
         {label ? label : truncateHash}
       </Button>
 
