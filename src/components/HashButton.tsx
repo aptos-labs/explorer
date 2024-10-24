@@ -18,7 +18,7 @@ import {
 } from "../themes/colors/aptosColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
-import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
+import {truncate, truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {assertNever} from "../utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -157,8 +157,8 @@ function AccountHashButtonInner({
           textDecoration: "none",
         }}
       >
-        <Tooltip title={hash} enterDelay={500} enterNextDelay={500}>
-          <span>{name ?? truncateHash}</span>
+        <Tooltip title={name ?? hash} enterDelay={500} enterNextDelay={500}>
+          <span>{name ? truncate(name, 9, 11, "…") : truncateHash}</span>
         </Tooltip>
         <Tooltip title="Copied" open={copyTooltipOpen}>
           <Button
