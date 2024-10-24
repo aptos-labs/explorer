@@ -49,6 +49,8 @@ const labsBannedTokens: Record<string, string> = {
     "scam",
   "0x48327a479bf5c5d2e36d5e9846362cff2d99e0e27ff92859fc247893fded3fbd::APTOS::APTOS":
     "scam",
+  "0xbc106d0fef7e5ce159423a1a9312e011bca7fb57f961146a2f88003a779b25c2::QUEST::QUEST":
+    "scam",
 };
 
 function verifiedLevel(input: VerifiedCellProps): VerifiedType {
