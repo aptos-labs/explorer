@@ -1,5 +1,3 @@
-import {useGlobalState} from "../../global-config/GlobalConfig";
-import {useEffect, useState} from "react";
 import {useViewFunction} from "./useViewFunction";
 
 type FaMetadata = {
@@ -11,24 +9,18 @@ type FaMetadata = {
 };
 
 export function useGetFaMetadata(address: string): FaMetadata | null {
-  const [state] = useGlobalState();
-  const [metadata, setMetadata] = useState<FaMetadata | null>(null);
-
   const {data} = useViewFunction(
     "0x1::fungible_asset::metadata",
     ["0x1::object::ObjectCore"],
     [address],
   );
 
-  useEffect(() => {
-    if (data !== undefined) {
-      const mappedData = data as [FaMetadata];
-      const val = mappedData[0];
-      if (val !== undefined && val !== null) {
-        setMetadata(val);
-      }
+  if (data) {
+    const [val] = data as [FaMetadata];
+    if (val !== undefined && val !== null) {
+      return val;
     }
-  }, [data, state]);
+  }
 
-  return metadata;
+  return null;
 }
