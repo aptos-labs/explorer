@@ -42,7 +42,8 @@ const knownAddresses: Record<string, string> = {
   "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c": "Econia Labs",
   // Lending
   "0x9770fa9c725cbd97eb50b2be5f7416efdfd1f1554beb0750d4dae4c64e860da3": "Aries Markets",
-  "0x3c1d4a86594d681ff7e5d5a233965daeabdc6a15fe5672ceeda5260038857183": "Aptin Finance",
+  "0xb7d960e5f0a58cc0817774e611d7e3ae54c6843816521f02d7ced583d6434896": "Aptin Finance v1",
+  "0x3c1d4a86594d681ff7e5d5a233965daeabdc6a15fe5672ceeda5260038857183": "Aptin Finance v2",
   "0xc6bc659f1649553c1a3fa05d9727433dc03843baac29473c817d06d39e7621ba": "Echelon Market",
   // Liquid staking
   "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a": "Amnis Finance",
@@ -50,6 +51,7 @@ const knownAddresses: Record<string, string> = {
   "0x17f1e926a81639e9557f4e4934df93452945ec30bc962e11351db59eb0d78c33": "VibrantX",
   "0x5ae6789dd2fec1a9ec9cccfb3acaf12e93d432f0a3a42c92fe1a9d490b7bbc06": "Merkle Trade",
   "0x890812a6bbe27dd59188ade3bbdbe40a544e6e104319b7ebc6617d3eb947ac07": "Hippo Aggregator",
+  "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26": "Thala router",
   // NFT marketplace
   "0x584b50b999c78ade62f8359c91b5165ff390338d45f8e55969a04e65d76258c9": "Wapal NFT market",
   "0x2c7bccf7b31baf770fdbcc768d9e9cb3d87805e255355df5db32ac9a669010a2": "Topaz NFT market",
@@ -60,6 +62,8 @@ const knownAddresses: Record<string, string> = {
   "0xd91c64b777e51395c6ea9dec562ed79a4afa0cd6dad5a87b187c37198a1f855a": "Binance 1",
   "0x80174e0fe8cb2d32b038c6c888dd95c3e1560736f0d4a6e8bed6ae43b5c91f6f": "Binance 2",
   "0xae1a6f3d3daccaf77b55044cea133379934bba04a11b9d0bbd643eae5e6e9c70": "Binance 3",
+  "0x0b3581f46ac8a6920fc9b87fecb7b459b9b39c177e65233826a7b4978bad41cd": "Coinbase 1",
+  "0xa4e7455d27731ab857e9701b1e6ed72591132b909fe6e4fd99b66c1d6318d9e8": "Coinbase 2",
   "0x834d639b10d20dcb894728aa4b9b572b2ea2d97073b10eacb111f338b20ea5d7": "OKX 1",
   "0x84b1675891d370d5de8f169031f9c3116d7add256ecf50a4bc71e3135ddba6e0": "Bybit 1",
   // Social
@@ -68,8 +72,10 @@ const knownAddresses: Record<string, string> = {
   "0x6d138096fb880d1c16b48f10686b98a96000c0ac18501425378f784c6b81c34d": "Eragon",
   "0x66cb05df2d855fbae92cdb2dfac9a0b29c969a03998fa817735d27391b52b189": "ReadyGames",
   "0x08afb046f44dd0cb9c445458f9c2e424759cd11f4a270fe6739dcffc16a4db8e": "Slime Revolution",
+  "0x5a96fab415f43721a44c5a761ecfcccc3dae9c21f34313f0e594b49d8d4564f4": "KGeN",
   // Other
   "0x5a0ad9e31a2f452504429b6f7073cb325994c2c66204f5deb8e0561a9e950c3c": "Tevi",
+  "0x541e28fb12aa661a30358f2bebcd44460187ec918cb9cee075c2db86ee6aed93": "Tevi (TVS)",
 };
 
 function getFetchNameUrl(
