@@ -11,9 +11,9 @@ export default function TransactionTypeTooltip() {
   return (
     <TableTooltip title="Transaction Types">
       <Stack spacing={2}>
-        <TooltipTransactionType type={TransactionTypeName.User} />
-        <TooltipTransactionType type={TransactionTypeName.BlockMetadata} />
-        <TooltipTransactionType type={TransactionTypeName.StateCheckpoint} />
+        {Object.values(TransactionTypeName).map((type) => (
+          <TooltipTransactionType type={type} />
+        ))}
       </Stack>
     </TableTooltip>
   );
