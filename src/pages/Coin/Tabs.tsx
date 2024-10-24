@@ -10,6 +10,7 @@ import StyledTab from "../../components/StyledTab";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
 import {CoinData} from "./Components/CoinData";
+import {CoinDescription} from "../../api/hooks/useGetCoinList";
 
 const TAB_VALUES: TabValue[] = ["info", "transactions"];
 
@@ -47,11 +48,25 @@ type TabPanelProps = {
   struct: string;
   data: CoinData | undefined;
   supply: bigint | null;
+  coinData: CoinDescription | undefined;
 };
 
-function TabPanel({value, struct, data, supply}: TabPanelProps): JSX.Element {
+function TabPanel({
+  value,
+  struct,
+  data,
+  supply,
+  coinData,
+}: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
-  return <TabComponent struct={struct} data={data} supply={supply} />;
+  return (
+    <TabComponent
+      struct={struct}
+      data={data}
+      supply={supply}
+      coinData={coinData}
+    />
+  );
 }
 
 type CoinTabsProps = {
@@ -59,6 +74,7 @@ type CoinTabsProps = {
   data: CoinData | undefined;
   tabValues?: TabValue[];
   supply: bigint | null;
+  coinData: CoinDescription | undefined;
 };
 
 // TODO: create reusable Tabs for all pages
@@ -67,6 +83,7 @@ export default function CoinTabs({
   data,
   tabValues = TAB_VALUES,
   supply,
+  coinData,
 }: CoinTabsProps): JSX.Element {
   const {tab, modulesTab} = useParams();
   const navigate = useNavigate();
@@ -107,6 +124,7 @@ export default function CoinTabs({
           struct={struct}
           data={data}
           supply={supply}
+          coinData={coinData}
         />
       </Box>
     </Box>

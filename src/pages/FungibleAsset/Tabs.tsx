@@ -9,7 +9,7 @@ import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
-import {CoinData} from "../Coin/Components/CoinData";
+import {FAData} from "./Components/FAData";
 
 const TAB_VALUES: TabValue[] = ["info", "transactions"];
 
@@ -44,30 +44,27 @@ function getTabIcon(value: TabValue): JSX.Element {
 
 type TabPanelProps = {
   value: TabValue;
-  struct: string;
-  data: CoinData | undefined;
-  supply: bigint | null;
+  address: string;
+  data: FAData | undefined;
 };
 
-function TabPanel({value, struct, data, supply}: TabPanelProps): JSX.Element {
+function TabPanel({value, address, data}: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
-  return <TabComponent struct={struct} data={data} supply={supply} />;
+  return <TabComponent address={address} data={data} />;
 }
 
-type CoinTabsProps = {
-  struct: string;
-  data: CoinData | undefined;
+type FATabsProps = {
+  address: string;
+  data: any | undefined;
   tabValues?: TabValue[];
-  supply: bigint | null;
 };
 
 // TODO: create reusable Tabs for all pages
-export default function CoinTabs({
-  struct,
+export default function FATabs({
+  address,
   data,
   tabValues = TAB_VALUES,
-  supply,
-}: CoinTabsProps): JSX.Element {
+}: FATabsProps): JSX.Element {
   const {tab, modulesTab} = useParams();
   const navigate = useNavigate();
   let effectiveTab: TabValue;
@@ -80,7 +77,7 @@ export default function CoinTabs({
   }
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/coin/${struct}/${newValue}`, {
+    navigate(`/fungible_asset/${address}/${newValue}`, {
       replace: true,
     });
   };
@@ -102,12 +99,7 @@ export default function CoinTabs({
         </StyledTabs>
       </Box>
       <Box>
-        <TabPanel
-          value={effectiveTab}
-          struct={struct}
-          data={data}
-          supply={supply}
-        />
+        <TabPanel value={effectiveTab} address={address} data={data} />
       </Box>
     </Box>
   );

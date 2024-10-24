@@ -3,6 +3,7 @@ import {Types} from "aptos";
 import pako from "pako";
 import {Statsig} from "statsig-react";
 import {AccountAddress, Hex} from "@aptos-labs/ts-sdk";
+
 /**
  * Helper function for exhaustiveness checks.
  *
@@ -250,4 +251,21 @@ export function getStableID(): string {
 /** A wallet sort function to ensure that Petra is always at the top of the wallet list. */
 export function sortPetraFirst(a: AnyAptosWallet) {
   return a.name === "Petra" ? -1 : 1;
+}
+
+export function getAssetSymbol(
+  panoraSymbol: string | null | undefined,
+  bridge: string | null | undefined,
+  symbol: string | null | undefined,
+) {
+  if (panoraSymbol && panoraSymbol !== symbol) {
+    if (bridge) {
+      return `${panoraSymbol} (${bridge} ${symbol})`;
+    }
+    return `${panoraSymbol} (${symbol})`;
+  } else if (symbol) {
+    return symbol;
+  } else {
+    return "Unknown Symbol";
+  }
 }

@@ -12,6 +12,7 @@ import {
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
+import {getAssetSymbol} from "../../../utils";
 
 type BalanceChangeTabProps = {
   transaction: Types.Transaction;
@@ -69,12 +70,11 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
           type: convertType(a),
           asset: {
             decimals: a.metadata?.decimals,
-            symbol:
-              (entry?.panoraSymbol
-                ? entry.panoraSymbol !== a?.metadata?.symbol
-                  ? `${entry.panoraSymbol} (${a.metadata?.symbol})`
-                  : a.metadata?.symbol
-                : a.metadata?.symbol) ?? "Unknown",
+            symbol: getAssetSymbol(
+              entry?.panoraSymbol,
+              entry?.bridge,
+              a.metadata.symbol,
+            ),
             type: a.type,
             id: entry?.tokenAddress ?? a.asset_type,
           },

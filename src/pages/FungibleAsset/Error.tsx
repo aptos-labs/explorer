@@ -4,16 +4,16 @@ import {Alert} from "@mui/material";
 
 type ErrorProps = {
   error: ResponseError;
-  struct?: string;
+  address?: string;
 };
 
-export default function Error({error, struct}: ErrorProps) {
+export default function Error({error, address}: ErrorProps) {
   switch (error.type) {
     case ResponseErrorType.NOT_FOUND:
       return (
         <Alert severity="error" sx={{overflowWrap: "break-word"}}>
           {error.message}
-          Coin not found: {struct}.
+          Fungible asset not found: {address}.
         </Alert>
       );
     case ResponseErrorType.INVALID_INPUT:
@@ -23,10 +23,10 @@ export default function Error({error, struct}: ErrorProps) {
         </Alert>
       );
     case ResponseErrorType.UNHANDLED:
-      if (struct) {
+      if (address) {
         return (
           <Alert severity="error">
-            Unknown error ({error.type}) fetching a Coin {struct}:
+            Unknown error ({error.type}) fetching a fungible asset {address}:
             <br />
             {error.message}
             <br />

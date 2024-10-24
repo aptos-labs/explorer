@@ -1,10 +1,10 @@
 import React from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {CoinData} from "../../Coin/Components/CoinData";
+import {FAData} from "../Components/FAData";
 
 type TransactionsTabProps = {
-  struct: string;
-  data: CoinData | undefined;
+  address: string;
+  data: FAData | undefined;
 };
 
 export default function TransactionsTab({}: TransactionsTabProps) {

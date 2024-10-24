@@ -17,7 +17,7 @@ import {
   getAccountResource,
 } from "../../../api";
 import {sendToGTM} from "../../../api/hooks/useGoogleTagManager";
-import {objectCoreResource} from "../../../constants";
+import {faMetadataResource, objectCoreResource} from "../../../constants";
 import {
   isValidAccountAddress,
   isNumeric,
@@ -26,6 +26,11 @@ import {
   isValidStruct,
 } from "../../utils";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
+import {
+  CoinDescription,
+  useGetCoinList,
+} from "../../../api/hooks/useGetCoinList";
+import {getAssetSymbol} from "../../../utils";
 
 export type SearchResult = {
   label: string;
@@ -50,6 +55,8 @@ export default function HeaderSearch() {
     null,
   );
   const augmentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
+
+  const coinList = useGetCoinList();
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -190,7 +197,21 @@ export default function HeaderSearch() {
         return null;
         // Do nothing. It's expected that not all search input is a valid account
       });
-
+    const faPromise = getAccountResource(
+      {address, resourceType: faMetadataResource},
+      state.aptos_client,
+    ).then(
+      () => {
+        return {
+          label: `Fungible Asset ${address}`,
+          to: `/fungible_asset/${address}`,
+        };
+      },
+      () => {
+        // It's not a fa
+        return null;
+      },
+    );
     const resourcePromise = getAccountResource(
       {address, resourceType: objectCoreResource},
       state.aptos_client,
@@ -235,11 +256,40 @@ export default function HeaderSearch() {
           return null;
         },
       );
+    promises.push(faPromise);
     promises.push(accountPromise);
     promises.push(resourcePromise);
     promises.push(anyResourcePromise);
     promises.push(anyObjectsPromise);
     return promises;
+  }
+
+  async function handleCoinLookup(
+    searchText: string,
+  ): Promise<(SearchResult | null)[]> {
+    const searchLowerCase = searchText.toLowerCase();
+    const coinData = coinList?.data?.data
+      ?.filter(
+        (coin: CoinDescription) =>
+          coin.symbol?.toLowerCase() === searchLowerCase ||
+          coin.panoraSymbol?.toLowerCase() === searchLowerCase ||
+          coin.name?.toLowerCase() === searchLowerCase,
+      )
+      .map((coin: CoinDescription) => {
+        if (coin.tokenAddress) {
+          return {
+            label: `Coin ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)} - ${coin.tokenAddress}`,
+            to: `/coin/${coin.tokenAddress}`,
+          };
+        } else {
+          return {
+            label: `Fungible Asset ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)} - ${coin.faAddress}`,
+            to: `/fungible_asset/${coin.faAddress}`,
+          };
+        }
+      });
+
+    return coinData ?? [];
   }
 
   const fetchData = async (searchText: string) => {
@@ -255,10 +305,12 @@ export default function HeaderSearch() {
     if (searchText.endsWith(".petra")) searchText = searchText.concat(".apt");
     const isAnsName = searchText.endsWith(".apt");
     const promises = [];
+    const multipleSearchPromises = [];
 
     if (isAnsName) {
       promises.push(handleAnsName(searchText));
     } else if (isStruct) {
+      multipleSearchPromises.push(handleCoinLookup(searchText));
       promises.push(handleCoin(searchText));
     } else if (isValidBlockHeightOrVer) {
       // These are block heights AND versions
@@ -270,12 +322,25 @@ export default function HeaderSearch() {
     } else if (isValidAccountAddr) {
       // These are only addresses
       promises.push(...handleAddress(searchText));
+    } else if (searchText.length > 2) {
+      // Check against the coin list, should be cheap?
+      multipleSearchPromises.push(handleCoinLookup(searchText));
     }
-
-    const resultsList = await Promise.all(promises);
+    const resultsList: (SearchResult | null)[] = [];
+    if (multipleSearchPromises) {
+      const results = await Promise.all(multipleSearchPromises);
+      resultsList.push(...results?.flat()?.filter((r) => r !== null));
+    }
+    if (promises) {
+      const results = await Promise.all(promises);
+      resultsList.push(...results);
+    }
 
     const foundAccount = resultsList.find((r) =>
       r?.label?.startsWith("Account"),
+    );
+    const foundFa = resultsList.find((r) =>
+      r?.label?.startsWith("Fungible Asset"),
     );
     const foundObject = resultsList.find((r) => r?.label?.startsWith("Object"));
     const foundDeletedObject = resultsList.find((r) =>
@@ -284,11 +349,27 @@ export default function HeaderSearch() {
     const foundPossibleAddress = resultsList.find((r) =>
       r?.label?.startsWith("Address"),
     );
+    const foundCoinByList = resultsList.find(
+      (r) => r?.label?.startsWith("Coin") && !r?.label?.startsWith("Coin 0x"),
+    );
+    const foundCoinByStruct = resultsList.find((r) =>
+      r?.label?.startsWith("Coin 0x"),
+    );
 
     // Something besides any
     let filteredResults: any[];
 
     switch (true) {
+      case Boolean(foundCoinByList): {
+        filteredResults = resultsList.filter((r) => r !== foundCoinByStruct);
+        break;
+      }
+      case Boolean(foundFa): {
+        filteredResults = resultsList.filter(
+          (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
+        );
+        break;
+      }
       case Boolean(foundAccount): {
         filteredResults = resultsList.filter(
           (r) => r !== foundPossibleAddress && r !== foundDeletedObject,

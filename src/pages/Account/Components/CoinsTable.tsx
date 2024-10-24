@@ -9,6 +9,7 @@ import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {VerifiedCoinCell} from "../../../components/Table/VerifiedCell";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
+import {getAssetSymbol} from "../../../utils";
 
 function CoinNameCell({name}: {name: string}) {
   return (
@@ -129,7 +130,11 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
               <AmountCell
                 amount={coinDesc.amount}
                 decimals={coinDesc.decimals}
-                symbol={coinDesc.symbol}
+                symbol={getAssetSymbol(
+                  coinDesc.panoraSymbol,
+                  coinDesc.bridge,
+                  coinDesc.symbol,
+                )}
               />
             </GeneralTableRow>
           );

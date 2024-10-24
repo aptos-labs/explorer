@@ -106,5 +106,6 @@ export const OCTA = 100000000;
  * Core Address
  */
 export const objectCoreResource = "0x1::object::ObjectCore";
+export const faMetadataResource = "0x1::fungible_asset::Metadata";
 export const tokenV2Address = "0x4::token::Token";
 export const collectionV2Address = "0x4::collection::Collection";
