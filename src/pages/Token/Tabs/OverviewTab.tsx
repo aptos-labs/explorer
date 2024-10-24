@@ -8,7 +8,7 @@ import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard
 import {Link} from "../../../routing";
 import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
 import {Current_Token_Datas_V2} from "aptos";
-import {isValidUrl} from "../../utils";
+import {isValidIpfsUrl, isValidUrl, toIpfsUrl} from "../../utils";
 
 function OwnersRow() {
   const {tokenId} = useParams();
@@ -36,6 +36,11 @@ type OverviewTabProps = {
 export default function OverviewTab({data}: OverviewTabProps) {
   const [metadataIsImage, setMetadataIsImage] = useState<boolean>(true);
 
+  let parsedUrl = data?.token_uri ?? "";
+  if (isValidIpfsUrl(parsedUrl)) {
+    parsedUrl = toIpfsUrl(parsedUrl);
+  }
+
   return (
     <Box marginBottom={3}>
       <ContentBox>
@@ -58,9 +63,10 @@ export default function OverviewTab({data}: OverviewTabProps) {
           title={"Metadata:"}
           value={
             metadataIsImage ? (
-              <a href={data?.token_uri}>
+              <a href={parsedUrl}>
                 <img
-                  src={data?.token_uri}
+                  src={parsedUrl}
+                  alt={data?.token_name}
                   width={150}
                   onError={() => {
                     setMetadataIsImage(false);
@@ -104,10 +110,12 @@ export default function OverviewTab({data}: OverviewTabProps) {
         ) : (
           <Fragment></Fragment>
         )}
-        <ContentRow
-          title={"Largest Property Version:"}
-          value={data?.largest_property_version_v1}
-        />
+        {data?.largest_property_version_v1 && (
+          <ContentRow
+            title={"Largest Property Version:"}
+            value={data?.largest_property_version_v1}
+          />
+        )}
         <ContentRow
           title={"Supply:"}
           value={data?.current_collection?.current_supply}
@@ -122,6 +130,17 @@ export default function OverviewTab({data}: OverviewTabProps) {
             <JsonViewCard data={data?.token_properties} collapsedByDefault />
           }
         />
+        {data?.last_transaction_version && (
+          <ContentRow
+            title={"Last transaction:"}
+            value={
+              <HashButton
+                hash={data?.last_transaction_version.toString()}
+                type={HashType.TRANSACTION}
+              />
+            }
+          />
+        )}
       </ContentBox>
     </Box>
   );
