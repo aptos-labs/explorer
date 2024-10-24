@@ -26,6 +26,7 @@ import SidebarItem from "../../Components/SidebarItem";
 import {Code} from "../../Components/CodeSnippet";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
+import {MovePackageManifest} from "../../Components/MovePackageManifest";
 
 interface ModuleSidebarProps {
   sortedPackages: PackageMetadata[];
@@ -36,6 +37,7 @@ interface ModuleSidebarProps {
 
 interface ModuleContentProps {
   address: string;
+  packageMetadata: PackageMetadata;
   moduleName: string;
   bytecode: string;
 }
@@ -74,6 +76,9 @@ function ViewCode({
   const selectedModule = sortedPackages
     .flatMap((pkg) => pkg.modules)
     .find((module) => module.name === selectedModuleName);
+  const selectedPackage = sortedPackages.find((pkg) =>
+    pkg.modules.some((module) => module.name === selectedModuleName),
+  );
 
   function getLinkToModule(moduleName: string) {
     return `/${accountPagePath(isObject)}/${address}/modules/code/${moduleName}`;
@@ -94,13 +99,14 @@ function ViewCode({
         />
       </Grid>
       <Grid item md={9} xs={12}>
-        {selectedModule === undefined ? (
+        {selectedModule === undefined || selectedPackage === undefined ? (
           <EmptyTabContent
             message={`No module found with name: ${selectedModuleName}`}
           />
         ) : (
           <ModuleContent
             address={address}
+            packageMetadata={selectedPackage}
             moduleName={selectedModuleName}
             bytecode={selectedModule.source}
           />
@@ -184,7 +190,12 @@ function ModuleSidebar({
   );
 }
 
-function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
+function ModuleContent({
+  address,
+  packageMetadata,
+  moduleName,
+  bytecode,
+}: ModuleContentProps) {
   const theme = useTheme();
   return (
     <Stack
@@ -195,6 +206,8 @@ function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
       borderRadius={1}
     >
       <ModuleHeader address={address} moduleName={moduleName} />
+      <Divider />
+      <PackageInfo packageMetadata={packageMetadata} />
       <Divider />
       <Code bytecode={bytecode} />
       <Divider />
@@ -260,6 +273,35 @@ function ABI({address, moduleName}: {address: string; moduleName: string}) {
         ABI
       </Typography>
       <JsonViewCard data={module.abi} />
+    </Box>
+  );
+}
+
+function PackageInfo({packageMetadata}: {packageMetadata: PackageMetadata}) {
+  return (
+    <Box>
+      <Typography fontSize={20} fontWeight={700}>
+        Package Info
+      </Typography>
+      <Box marginTop={2}>
+        <Typography fontSize={14} fontWeight={600}>
+          Name
+        </Typography>
+        <Typography>{packageMetadata.name}</Typography>
+      </Box>
+      <Box marginTop={2}>
+        <Typography fontSize={14} fontWeight={600}>
+          Upgrade Policy
+        </Typography>
+        <Typography>{packageMetadata.upgrade_policy.policy}</Typography>
+      </Box>
+      <Box marginTop={2}>
+        <Typography fontSize={14} fontWeight={600}>
+          Upgrade Number
+        </Typography>
+        <Typography>{packageMetadata.upgrade_number}</Typography>
+      </Box>
+      <MovePackageManifest manifest={packageMetadata.manifest} />
     </Box>
   );
 }
