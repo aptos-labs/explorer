@@ -96,10 +96,10 @@ export function useGetNameFromAddress(
     queryKey: ["ANSName", address, shouldCache, state.network_name],
     queryFn: () => {
       const standardizedAddress = standardizeAddress(address);
-      const knownName = knownAddresses[standardizedAddress.toLowerCase()];
-      if (knownName) {
-        return knownName;
-      }
+      // const knownName = knownAddresses[standardizedAddress.toLowerCase()];
+      // if (knownName) {
+      //   return knownName;
+      // }
 
       // Change cache key specifically to invalidate all previous cached keys
       const cachedName = getLocalStorageWithExpiry(`${address}:name`);
@@ -107,12 +107,23 @@ export function useGetNameFromAddress(
         return cachedName;
       }
       // Ensure there's always .apt at the end
-      return genANSName(
+      const ansName = genANSName(
         address,
         shouldCache,
         state.network_name,
         isValidator,
       ).then((name) => (name ? `${name}.apt` : null));
+
+      // use ANS name if available, otherwise use knownName
+      // ideally on account page, we show both
+      if (ansName === null) {
+        const knownName = knownAddresses[standardizedAddress.toLowerCase()];
+        if (knownName) {
+          return knownName;
+        } else {
+          return null;
+        }
+      }
     },
   });
 
