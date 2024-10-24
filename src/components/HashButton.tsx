@@ -158,7 +158,7 @@ function AccountHashButtonInner({
         }}
       >
         <Tooltip title={name ?? hash} enterDelay={500} enterNextDelay={500}>
-          <span>{name ? truncate(name, 9, 9, "...") : truncateHash}</span>
+          <span>{name ? truncate(name, 9, 11, "…") : truncateHash}</span>
         </Tooltip>
         <Tooltip title="Copied" open={copyTooltipOpen}>
           <Button
