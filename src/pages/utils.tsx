@@ -147,3 +147,17 @@ export function isValidUrl(url: string): boolean {
     return false;
   }
 }
+
+export function isValidIpfsUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+    parsedUrl.toString().startsWith("ipfs://");
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+export function toIpfsUrl(url: string): string {
+  return `https://ipfs.io/ipfs/${url.slice(7)}`;
+}
