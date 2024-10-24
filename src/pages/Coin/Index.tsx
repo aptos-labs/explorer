@@ -12,6 +12,8 @@ import {isValidStruct} from "../utils";
 import CoinTitle from "./Title";
 import {CoinData} from "./Components/CoinData";
 import {useGetCoinSupplyLimit} from "../../api/hooks/useGetCoinSupplyLimit";
+import {useGetCoinList} from "../../api/hooks/useGetCoinList";
+import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
 
 const TAB_VALUES_FULL: TabValue[] = ["info"];
 
@@ -33,6 +35,8 @@ export default function CoinPage() {
     };
   }
 
+  const {data: coinList} = useGetCoinList();
+
   const {
     data,
     error: infoError,
@@ -43,7 +47,7 @@ export default function CoinPage() {
   if (error === null) {
     error = infoError;
   }
-
+  const coinData = findCoinData(coinList?.data, struct);
   const tabValues = isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
 
   return (
@@ -63,6 +67,7 @@ export default function CoinPage() {
               data={data as CoinData | undefined}
               tabValues={tabValues}
               supply={supply}
+              coinData={coinData}
             />
             <Error struct={struct} error={error} />
           </>
@@ -72,6 +77,7 @@ export default function CoinPage() {
             data={data as CoinData | undefined}
             tabValues={tabValues}
             supply={supply}
+            coinData={coinData}
           />
         )}
       </Grid>

@@ -6,6 +6,7 @@ import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabC
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {findCoinData} from "../../Transaction/Tabs/BalanceChangeTab";
 import {VerifiedCoinCell} from "../../../components/Table/VerifiedCell";
+import {getAssetSymbol} from "../../../utils";
 
 type InfoTabProps = {
   address: string;
@@ -17,7 +18,6 @@ export default function InfoTab({address, data}: InfoTabProps) {
     return <EmptyTabContent />;
   }
 
-  // TODO: add hook for image, and the panora symbol
   // TODO: add owner
   // TODO: add migrated coin balance?
   // TODO: Look into making URLs clickable, right now don't want scams
@@ -31,7 +31,6 @@ export default function InfoTab({address, data}: InfoTabProps) {
   }
 
   const coinData = findCoinData(data?.coinData?.data, address);
-  console.log(JSON.stringify(coinData));
 
   return (
     <Box marginBottom={3}>
@@ -62,11 +61,11 @@ export default function InfoTab({address, data}: InfoTabProps) {
           />
           <ContentRow
             title={"Symbol:"}
-            value={
-              coinData?.panoraSymbol !== data?.metadata?.symbol
-                ? coinData?.panoraSymbol + " (" + data?.metadata?.symbol + ")"
-                : data?.metadata?.symbol
-            }
+            value={getAssetSymbol(
+              coinData?.panoraSymbol,
+              coinData?.bridge,
+              data?.metadata?.symbol,
+            )}
           />
           <ContentRow
             title={"Decimals:"}
