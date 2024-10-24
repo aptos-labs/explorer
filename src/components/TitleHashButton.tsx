@@ -23,6 +23,7 @@ export enum HashType {
   TRANSACTION = "transaction",
   NAME = "name",
   STRUCT = "struct",
+  SYMBOL = "symbol",
 }
 
 interface TitleHashButtonProps {

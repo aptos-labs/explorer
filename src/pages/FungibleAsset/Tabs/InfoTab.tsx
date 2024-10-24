@@ -1,12 +1,11 @@
-import {Box, Typography} from "@mui/material";
+import {Box} from "@mui/material";
 import React from "react";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {findCoinData} from "../../Transaction/Tabs/BalanceChangeTab";
-import {VerifiedCoinCell} from "../../../components/Table/VerifiedCell";
 import {getAssetSymbol} from "../../../utils";
+import HashButton, {HashType} from "../../../components/HashButton";
 
 type InfoTabProps = {
   address: string;
@@ -30,40 +29,18 @@ export default function InfoTab({address, data}: InfoTabProps) {
       data.metadata?.symbol;
   }
 
-  const coinData = findCoinData(data?.coinData?.data, address);
+  const icon_uri = data?.coinData?.logoUrl ?? data?.metadata?.icon_uri;
 
   return (
     <Box marginBottom={3}>
       {data && (
         <ContentBox>
-          <ContentRow
-            title={"Name:"}
-            value={
-              <Typography
-                sx={{
-                  display: "flex",
-                  fontSize: "inherit",
-                  alignItems: "row",
-                  gap: 1,
-                }}
-              >
-                <span>{data?.metadata?.name}</span>
-                <VerifiedCoinCell
-                  data={{
-                    id: address,
-                    known: !!coinData,
-                    isBanned: coinData?.isBanned,
-                    isInPanoraTokenList: coinData?.isInPanoraTokenList,
-                  }}
-                />
-              </Typography>
-            }
-          />
+          <ContentRow title={"Name:"} value={data?.metadata?.name} />
           <ContentRow
             title={"Symbol:"}
             value={getAssetSymbol(
-              coinData?.panoraSymbol,
-              coinData?.bridge,
+              data?.coinData?.panoraSymbol,
+              data?.coinData?.bridge,
               data?.metadata?.symbol,
             )}
           />
@@ -75,22 +52,26 @@ export default function InfoTab({address, data}: InfoTabProps) {
           <ContentRow
             title={"Icon:"}
             value={
-              coinData?.logoUrl ? (
-                <img width={200} src={coinData?.logoUrl} />
-              ) : (
-                data?.metadata?.icon_uri && (
-                  <img width={200} src={data?.metadata?.icon_uri} />
-                )
+              icon_uri && (
+                <img
+                  width={100}
+                  alt={`${data?.metadata?.name} icon`}
+                  src={icon_uri}
+                />
               )
             }
           />
           <ContentRow
             title={"Project URL:"}
             value={
-              coinData?.websiteUrl
-                ? coinData.websiteUrl
-                : data?.metadata?.project_uri && data?.metadata?.project_uri
+              data?.coinData?.websiteUrl
+                ? data?.coinData.websiteUrl
+                : data?.metadata?.project_uri
             }
+          />
+          <ContentRow
+            title={"Object Details:"}
+            value={<HashButton hash={address} type={HashType.OBJECT} />}
           />
         </ContentBox>
       )}

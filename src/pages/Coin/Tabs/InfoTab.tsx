@@ -1,4 +1,4 @@
-import {Box, Typography} from "@mui/material";
+import {Box} from "@mui/material";
 import React from "react";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
@@ -7,7 +7,6 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import {CoinData} from "../Components/CoinData";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {CoinDescription} from "../../../api/hooks/useGetCoinList";
-import {VerifiedCoinCell} from "../../../components/Table/VerifiedCell";
 import {getAssetSymbol} from "../../../utils";
 
 type InfoTabProps = {
@@ -39,29 +38,7 @@ export default function InfoTab({
     <Box marginBottom={3}>
       {data && (
         <ContentBox>
-          <ContentRow
-            title={"Name:"}
-            value={
-              <Typography
-                sx={{
-                  display: "flex",
-                  fontSize: "inherit",
-                  alignItems: "row",
-                  gap: 1,
-                }}
-              >
-                <span>{data?.data?.name}</span>
-                <VerifiedCoinCell
-                  data={{
-                    id: struct,
-                    known: !!coinData,
-                    isBanned: coinData?.isBanned,
-                    isInPanoraTokenList: coinData?.isInPanoraTokenList,
-                  }}
-                />
-              </Typography>
-            }
-          />
+          <ContentRow title={"Name:"} value={data?.data?.name} />
           <ContentRow
             title={"Symbol:"}
             value={getAssetSymbol(
@@ -78,9 +55,13 @@ export default function InfoTab({
           <ContentRow
             title={"Icon:"}
             value={
-              coinData?.logoUrl ? (
-                <img width={200} src={coinData?.logoUrl} />
-              ) : null
+              coinData?.logoUrl && (
+                <img
+                  alt={`${data?.data?.name} icon`}
+                  width={100}
+                  src={coinData?.logoUrl}
+                />
+              )
             }
           />
           <ContentRow title={"Project URL:"} value={coinData?.websiteUrl} />

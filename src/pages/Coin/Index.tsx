@@ -57,7 +57,11 @@ export default function CoinPage() {
         <PageHeader />
       </Grid>
       <Grid item xs={12} md={8} lg={9} alignSelf="center">
-        <CoinTitle struct={struct} />
+        <CoinTitle
+          struct={struct}
+          coinData={coinData}
+          symbol={(data as CoinData)?.data?.symbol}
+        />
       </Grid>
       <Grid item xs={12} md={12} lg={12} marginTop={4}>
         {error ? (

@@ -12,6 +12,7 @@ import FATitle from "./Title";
 import {useGetFaMetadata} from "../../api/hooks/useGetFaMetadata";
 import {useGetFASupply} from "../../api/hooks/useGetFaSupply";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
+import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
 
 const TAB_VALUES_FULL: TabValue[] = ["info"];
 
@@ -34,11 +35,13 @@ export default function FAPage() {
   // TODO: add loading state
   // TODO: add errors?
 
-  const {data: coinData} = useGetCoinList();
+  const {data: allCoinData} = useGetCoinList();
   const metadata = useGetFaMetadata(address);
   const supply = useGetFASupply(address);
   const isLoading = false;
 
+  const coinData = findCoinData(allCoinData?.data, address);
+  // TODO: Type and hand to tabs
   const data = {
     coinData: coinData,
     metadata: metadata,
@@ -54,7 +57,7 @@ export default function FAPage() {
         <PageHeader />
       </Grid>
       <Grid item xs={12} md={8} lg={9} alignSelf="center">
-        <FATitle address={address} />
+        <FATitle address={address} metadata={metadata} coinData={coinData} />
       </Grid>
       <Grid item xs={12} md={12} lg={12} marginTop={4}>
         {error ? (

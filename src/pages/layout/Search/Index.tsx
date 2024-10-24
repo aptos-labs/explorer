@@ -268,15 +268,14 @@ export default function HeaderSearch() {
     searchText: string,
   ): Promise<(SearchResult | null)[]> {
     const searchLowerCase = searchText.toLowerCase();
-    const coinData = coinList?.data?.data?.filter(
-      (coin: CoinDescription) =>
-        coin.symbol?.toLowerCase() === searchLowerCase ||
-        coin.panoraSymbol?.toLowerCase() === searchLowerCase ||
-        coin.name?.toLowerCase() === searchLowerCase,
-    );
-
-    if (coinData) {
-      return coinData.map((coin: CoinDescription) => {
+    const coinData = coinList?.data?.data
+      ?.filter(
+        (coin: CoinDescription) =>
+          coin.symbol?.toLowerCase() === searchLowerCase ||
+          coin.panoraSymbol?.toLowerCase() === searchLowerCase ||
+          coin.name?.toLowerCase() === searchLowerCase,
+      )
+      .map((coin: CoinDescription) => {
         if (coin.tokenAddress) {
           return {
             label: `Coin ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)} - ${coin.tokenAddress}`,
@@ -289,8 +288,8 @@ export default function HeaderSearch() {
           };
         }
       });
-    }
-    return [];
+
+    return coinData ?? [];
   }
 
   const fetchData = async (searchText: string) => {
