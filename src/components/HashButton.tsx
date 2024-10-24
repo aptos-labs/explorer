@@ -45,7 +45,7 @@ function getHashLinkStr(input: string, type: HashType): string {
     case HashType.COIN:
       return `/coin/${input}`;
     case HashType.FUNGIBLE_ASSET:
-      return `/object/${input}`; // TODO: Redirect to fungible asset page
+      return `/fungible_asset/${input}`;
     case HashType.OTHERS:
       return "";
     default:
