@@ -31,7 +31,7 @@ const knownAddresses: Record<string, string> = {
   "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa": "PancakeSwap",
   "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af": "ThalaSwap",
   "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12": "LiquidSwap v0",
-  "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e": "LiquidSwap v05",
+  "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e": "LiquidSwap v0.5",
   "0x54cb0bb2c18564b86e34539b9f89cfe1186e39d89fce54e1cd007b8e61673a85": "LiquidSwap v1",
   "0x80273859084bc47f92a6c2d3e9257ebb2349668a1b0fb3db1d759a04c7628855": "LiquidSwap multirouter",
   "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c": "SushiSwap",
@@ -55,7 +55,7 @@ const knownAddresses: Record<string, string> = {
   "0x2c7bccf7b31baf770fdbcc768d9e9cb3d87805e255355df5db32ac9a669010a2": "Topaz NFT market",
   "0xd1fd99c1944b84d1670a2536417e997864ad12303d19eac725891691b04d614e": "Bluemove NFT market",
   "0xf6994988bd40261af9431cd6dd3fcf765569719e66322c7a05cc78a89cd366d4": "Souffl3 NFT market",
-  "0xe11c12ec495f3989c35e1c6a0af414451223305b579291fc8f3d9d0575a23c26": "Mercato NFT market",
+  "0xe11c12ec495f3989c35e1c6a0af414451223305b579291fc8f3d9d0575a23c26": "Tradeport NFT market",
   // CEX
   "0xd91c64b777e51395c6ea9dec562ed79a4afa0cd6dad5a87b187c37198a1f855a": "Binance 1",
   "0x80174e0fe8cb2d32b038c6c888dd95c3e1560736f0d4a6e8bed6ae43b5c91f6f": "Binance 2",
@@ -67,7 +67,7 @@ const knownAddresses: Record<string, string> = {
   // Games
   "0x6d138096fb880d1c16b48f10686b98a96000c0ac18501425378f784c6b81c34d": "Eragon",
   "0x66cb05df2d855fbae92cdb2dfac9a0b29c969a03998fa817735d27391b52b189": "ReadyGames",
-  "0x08afb046f44dd0cb9c445458f9c2e424759cd11f4a270fe6739dcffc16a4db8e": "Slime revolution",
+  "0x08afb046f44dd0cb9c445458f9c2e424759cd11f4a270fe6739dcffc16a4db8e": "Slime Revolution",
   // Other
   "0x5a0ad9e31a2f452504429b6f7073cb325994c2c66204f5deb8e0561a9e950c3c": "Tevi",
 };
@@ -96,6 +96,10 @@ export function useGetNameFromAddress(
     queryKey: ["ANSName", address, shouldCache, state.network_name],
     queryFn: () => {
       const standardizedAddress = standardizeAddress(address);
+      const knownName = knownAddresses[standardizedAddress.toLowerCase()];
+      if (knownName) {
+        return knownName;
+      }
 
       // Change cache key specifically to invalidate all previous cached keys
       const cachedName = getLocalStorageWithExpiry(`${address}:name`);
@@ -103,22 +107,12 @@ export function useGetNameFromAddress(
         return cachedName;
       }
       // Ensure there's always .apt at the end
-      const ansName = genANSName(
+      return genANSName(
         address,
         shouldCache,
         state.network_name,
         isValidator,
       ).then((name) => (name ? `${name}.apt` : null));
-
-      // use ANS name if available, otherwise use knownName
-      // ideally on account page, we show both
-      if (ansName) {
-        return ansName;
-      } else if (knownAddresses[standardizedAddress]) {
-        return knownAddresses[standardizedAddress]; 
-      } else {
-        return null;
-      }
     },
   });
 
