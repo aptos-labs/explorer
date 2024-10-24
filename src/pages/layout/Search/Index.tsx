@@ -17,7 +17,7 @@ import {
   getAccountResource,
 } from "../../../api";
 import {sendToGTM} from "../../../api/hooks/useGoogleTagManager";
-import {objectCoreResource} from "../../../constants";
+import {faMetadataResource, objectCoreResource} from "../../../constants";
 import {
   isValidAccountAddress,
   isNumeric,
@@ -190,7 +190,21 @@ export default function HeaderSearch() {
         return null;
         // Do nothing. It's expected that not all search input is a valid account
       });
-
+    const faPromise = getAccountResource(
+      {address, resourceType: faMetadataResource},
+      state.aptos_client,
+    ).then(
+      () => {
+        return {
+          label: `Fungible Asset ${address}`,
+          to: `/fungible_asset/${address}`,
+        };
+      },
+      () => {
+        // It's not a fa
+        return null;
+      },
+    );
     const resourcePromise = getAccountResource(
       {address, resourceType: objectCoreResource},
       state.aptos_client,
@@ -235,6 +249,7 @@ export default function HeaderSearch() {
           return null;
         },
       );
+    promises.push(faPromise);
     promises.push(accountPromise);
     promises.push(resourcePromise);
     promises.push(anyResourcePromise);
@@ -277,6 +292,9 @@ export default function HeaderSearch() {
     const foundAccount = resultsList.find((r) =>
       r?.label?.startsWith("Account"),
     );
+    const foundFa = resultsList.find((r) =>
+      r?.label?.startsWith("Fungible Asset"),
+    );
     const foundObject = resultsList.find((r) => r?.label?.startsWith("Object"));
     const foundDeletedObject = resultsList.find((r) =>
       r?.label?.startsWith("Deleted Object"),
@@ -289,6 +307,12 @@ export default function HeaderSearch() {
     let filteredResults: any[];
 
     switch (true) {
+      case Boolean(foundFa): {
+        filteredResults = resultsList.filter(
+          (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
+        );
+        break;
+      }
       case Boolean(foundAccount): {
         filteredResults = resultsList.filter(
           (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
