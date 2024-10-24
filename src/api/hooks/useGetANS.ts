@@ -112,13 +112,12 @@ export function useGetNameFromAddress(
 
       // use ANS name if available, otherwise use knownName
       // ideally on account page, we show both
-      if (ansName == null) {
-        const knownName = knownAddresses[standardizedAddress.toLowerCase()];
-        if (knownName) {
-          return knownName;
-        } else {
-          return null;
-        }
+      if (ansName) {
+        return ansName;
+      } else if (knownAddresses[standardizedAddress]) {
+        return knownAddresses[standardizedAddress]; 
+      } else {
+        return null;
       }
     },
   });
