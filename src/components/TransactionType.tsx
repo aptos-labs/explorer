@@ -2,14 +2,13 @@ import {Box, Stack, Typography} from "@mui/material";
 import React from "react";
 import StartRoundedIcon from "@mui/icons-material/StartRounded";
 import OutlinedFlagIcon from "@mui/icons-material/OutlinedFlag";
-import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
-import StopOutlined from "@mui/icons-material/StopOutlined";
 import SubtitlesOutlinedIcon from "@mui/icons-material/SubtitlesOutlined";
 import MultipleStopRoundedIcon from "@mui/icons-material/MultipleStopRounded";
 import UpdateRoundedIcon from "@mui/icons-material/UpdateRounded";
 import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
 import {grey} from "../themes/colors/aptosColorPalette";
 import TooltipTypography from "./TooltipTypography";
+import {CheckCircleOutlined, StopCircleOutlined} from "@mui/icons-material";
 
 export enum TransactionTypeName {
   BlockMetadata = "block_metadata_transaction",
@@ -58,9 +57,9 @@ function getTypeIcon(type: string, color?: Color) {
     case TransactionTypeName.StateCheckpoint:
       return <OutlinedFlagIcon fontSize="small" color={color} />;
     case TransactionTypeName.Validator:
-      return <VerifiedOutlined fontSize="small" color={color} />;
+      return <CheckCircleOutlined fontSize="small" color={color} />;
     case TransactionTypeName.BlockEpilogue:
-      return <StopOutlined fontSize="small" color={color} />;
+      return <StopCircleOutlined fontSize="small" color={color} />;
     default:
       return <QuestionMarkOutlined fontSize="small" color={color} />;
   }
