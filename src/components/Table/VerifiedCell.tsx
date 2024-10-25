@@ -109,11 +109,11 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
   let icon = null;
   switch (level) {
     case VerifiedType.NATIVE_TOKEN:
-      tooltipMessage = `This asset is verified as a native token of Aptos. (${reason})`;
+      tooltipMessage = `This asset is verified as a native token of Aptos.`;
       icon = <VerifiedUser fontSize="small" />;
       break;
     case VerifiedType.LABS_VERIFIED:
-      tooltipMessage = `This asset is verified. (${reason})`;
+      tooltipMessage = `This asset is verified.`;
       icon = <Verified fontSize="small" />;
       break;
     case VerifiedType.COMMUNITY_VERIFIED:
