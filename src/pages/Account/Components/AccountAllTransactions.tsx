@@ -1,13 +1,12 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
-import {Pagination, Stack} from "@mui/material";
+import {Pagination, Stack, Typography} from "@mui/material";
 import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
 import {
   useGetAccountAllTransactionCount,
   useGetAccountAllTransactionVersions,
 } from "../../../api/hooks/useGetAccountAllTransactions";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 function RenderPagination({
@@ -94,19 +93,34 @@ type AccountAllTransactionsProps = {
 export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
-  const txnCount = useGetAccountAllTransactionCount(address);
+  let txnCount = useGetAccountAllTransactionCount(address);
+  let canSeeAll = true;
+
   if (txnCount === undefined) {
-    return <EmptyTabContent />;
+    // If we can't load the number of transactions, the indexer query is too expensive
+    // We'll default to 10k transactions in the event there's no account data,
+    // it's better to allow access then to fail
+    // Sequence number, is not a reliable way to determine the number of transactions, and will lead to
+    // empty pages in really large accounts.
+    txnCount = 10000;
+    canSeeAll = false;
   }
 
   const countPerPage = 25;
   const numPages = Math.ceil(txnCount / countPerPage);
 
   return (
-    <AccountAllTransactionsWithPagination
-      address={address}
-      numPages={numPages}
-      countPerPage={countPerPage}
-    />
+    <Stack>
+      <Typography>
+        {canSeeAll
+          ? `Showing all ${txnCount} transactions`
+          : `Showing the last ${txnCount} transactions`}
+      </Typography>
+      <AccountAllTransactionsWithPagination
+        address={address}
+        numPages={numPages}
+        countPerPage={countPerPage}
+      />
+    </Stack>
   );
 }
