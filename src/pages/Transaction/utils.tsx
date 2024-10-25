@@ -41,7 +41,8 @@ export function getTransactionCounterparty(
   const isCoinTransfer =
     payload.function === "0x1::coin::transfer" ||
     payload.function === "0x1::aptos_account::transfer_coins" ||
-    payload.function === "0x1::aptos_account::transfer";
+    payload.function === "0x1::aptos_account::transfer" ||
+    payload.function === "0x1::aptos_account::fungible_transfer_only";
   const isPrimaryFaTransfer =
     payload.function === "0x1::primary_fungible_store::transfer";
 
