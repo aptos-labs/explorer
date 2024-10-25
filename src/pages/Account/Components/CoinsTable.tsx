@@ -1,5 +1,12 @@
 import * as React from "react";
-import {Table, TableHead, TableRow} from "@mui/material";
+import {
+  Button,
+  Stack,
+  Table,
+  TableRow,
+  Typography,
+  TableHead,
+} from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -89,57 +96,116 @@ export type CoinDescriptionPlusAmount = {
 } & CoinDescription;
 
 export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
+  const [showVerifiedOnly, setShowVerifiedOnly] = React.useState(true);
+
+  const filteredCoins = showVerifiedOnly
+    ? coins.filter((coin) => coin.isInPanoraTokenList)
+    : coins;
+
+  const heavyTextColor = grey[450];
+  const lightTextColor = grey[400];
+
   // TODO: For FA, possibly add store as more info
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <GeneralTableHeaderCell header="Name" />
-          <GeneralTableHeaderCell header="Asset Type" />
-          <GeneralTableHeaderCell header="Asset" />
-          <GeneralTableHeaderCell
-            header="Verified"
-            tooltip={
-              <LearnMoreTooltip
-                text="This uses the Panora token list to verify authenticity of known assets on-chain.  It does not guarantee anything else about the asset and is not financial advice."
-                link="https://github.com/PanoraExchange/Aptos-Tokens"
-              />
+    <>
+      <Stack
+        direction="row"
+        justifyContent="flex-end"
+        spacing={1}
+        marginY={0.5}
+        height={16}
+      >
+        <Button
+          variant="text"
+          onClick={() => setShowVerifiedOnly(true)}
+          sx={{
+            fontSize: 12,
+            fontWeight: 600,
+            color: showVerifiedOnly ? heavyTextColor : lightTextColor,
+            padding: 0,
+            "&:hover": {
+              background: "transparent",
+            },
+          }}
+        >
+          Verified
+        </Button>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: heavyTextColor,
+          }}
+        >
+          |
+        </Typography>
+        <Button
+          variant="text"
+          onClick={() => setShowVerifiedOnly(false)}
+          sx={{
+            fontSize: 12,
+            fontWeight: 600,
+            color: !showVerifiedOnly ? heavyTextColor : lightTextColor,
+            padding: 0,
+            "&:hover": {
+              background: "transparent",
+            },
+          }}
+        >
+          All
+        </Button>
+      </Stack>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <GeneralTableHeaderCell header="Name" />
+            <GeneralTableHeaderCell header="Asset Type" />
+            <GeneralTableHeaderCell header="Asset" />
+            <GeneralTableHeaderCell
+              header="Verified"
+              tooltip={
+                <LearnMoreTooltip
+                  text="This uses the Panora token list to verify authenticity of known assets on-chain. It does not guarantee anything else about the asset and is not financial advice."
+                  link="https://github.com/PanoraExchange/Aptos-Tokens"
+                />
+              }
+              isTableTooltip={true}
+            />
+            <GeneralTableHeaderCell header="Amount" />
+          </TableRow>
+        </TableHead>
+        <GeneralTableBody>
+          {filteredCoins.map((coinDesc, i) => {
+            let friendlyType = coinDesc.tokenStandard;
+            switch (friendlyType) {
+              case "v1":
+                friendlyType = "Coin";
+                break;
+              case "v2":
+                friendlyType = "Fungible Asset";
+                break;
             }
-            isTableTooltip={true}
-          />
-          <GeneralTableHeaderCell header="Amount" />
-        </TableRow>
-      </TableHead>
-      <GeneralTableBody>
-        {coins.map((coinDesc, i) => {
-          let friendlyType = coinDesc.tokenStandard;
-          switch (friendlyType) {
-            case "v1":
-              friendlyType = "Coin";
-              break;
-            case "v2":
-              friendlyType = "Fungible Asset";
-              break;
-          }
-          return (
-            <GeneralTableRow key={i}>
-              <CoinNameCell name={coinDesc.name} />
-              <CoinNameCell name={friendlyType} />
-              <CoinTypeCell data={coinDesc} />
-              <CoinVerifiedCell data={coinDesc} />
-              <AmountCell
-                amount={coinDesc.amount}
-                decimals={coinDesc.decimals}
-                symbol={getAssetSymbol(
-                  coinDesc.panoraSymbol,
-                  coinDesc.bridge,
-                  coinDesc.symbol,
-                )}
-              />
-            </GeneralTableRow>
-          );
-        })}
-      </GeneralTableBody>
-    </Table>
+            return (
+              <GeneralTableRow key={i}>
+                <CoinNameCell name={coinDesc.name} />
+                <CoinNameCell name={friendlyType} />
+                <CoinTypeCell data={coinDesc} />
+                <CoinVerifiedCell data={coinDesc} />
+                <AmountCell
+                  amount={coinDesc.amount}
+                  decimals={coinDesc.decimals}
+                  symbol={getAssetSymbol(
+                    coinDesc.panoraSymbol,
+                    coinDesc.bridge,
+                    coinDesc.symbol,
+                  )}
+                />
+              </GeneralTableRow>
+            );
+          })}
+        </GeneralTableBody>
+      </Table>
+    </>
   );
 }
