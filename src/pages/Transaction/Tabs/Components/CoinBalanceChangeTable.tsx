@@ -13,8 +13,8 @@ import {
 import {Types} from "aptos";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
-import {LearnMoreTooltip} from "../../../../components/IndividualPageContent/LearnMoreTooltip";
 import {VerifiedCoinCell} from "../../../../components/Table/VerifiedCell";
+import {getLearnMoreTooltip} from "../../helpers";
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
@@ -153,12 +153,7 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
       return (
         <GeneralTableHeaderCell
           header="Verified"
-          tooltip={
-            <LearnMoreTooltip
-              text="This uses the Panora token list to verify authenticity of known assets on-chain.  It does not guarantee anything else about the asset and is not financial advice."
-              link="https://github.com/PanoraExchange/Aptos-Tokens"
-            />
-          }
+          tooltip={getLearnMoreTooltip("coin_verification")}
           isTableTooltip={true}
         />
       );

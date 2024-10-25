@@ -3,6 +3,13 @@ import {
   LearnMoreTooltip,
   LearnMoreTooltipPlaceholder,
 } from "../../components/IndividualPageContent/LearnMoreTooltip";
+import TableTooltip from "../../components/Table/TableTooltip";
+import {Box, Link, Stack} from "@mui/material";
+import {
+  getVerifiedMessageAndIcon,
+  VerifiedType,
+} from "../../components/Table/VerifiedCell";
+import TooltipTypography from "../../components/TooltipTypography";
 
 export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
   switch (txnField) {
@@ -137,6 +144,46 @@ export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
           link="https://aptos.dev/en/network/glossary#move-virtual-machine-mvm"
           linkToText
         />
+      );
+    case "coin_verification":
+      return (
+        <TableTooltip title="Transaction Types">
+          <Stack spacing={2}>
+            <TooltipTypography variant="inherit">
+              The explorer uses the{" "}
+              <Link
+                href="https://github.com/PanoraExchange/Aptos-Tokens"
+                target="_blank"
+              >
+                Panora token list
+              </Link>{" "}
+              to verify authenticity of known assets on-chain. It does not
+              guarantee anything else about the asset and is not financial
+              advice. The following levels of verification are below:
+            </TooltipTypography>
+            {Object.values(VerifiedType).map((level) => {
+              const {tooltipMessage, icon} = getVerifiedMessageAndIcon(level);
+
+              return (
+                <Box sx={{display: "flex", alignItems: "flex-start", gap: 2}}>
+                  {icon}
+                  <Stack spacing={0.5}>
+                    <TooltipTypography variant="subtitle2" fontWeight={600}>
+                      {level}
+                    </TooltipTypography>
+                    <TooltipTypography variant="body2">
+                      {tooltipMessage}
+                    </TooltipTypography>
+                  </Stack>
+                </Box>
+              );
+            })}
+          </Stack>
+        </TableTooltip>
+        /*     <LearnMoreTooltip
+               text=""
+               link="https://github.com/PanoraExchange/Aptos-Tokens"
+             />;*/
       );
     default:
       return <LearnMoreTooltipPlaceholder />;

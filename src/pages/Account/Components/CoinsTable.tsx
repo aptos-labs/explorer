@@ -15,8 +15,11 @@ import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {VerifiedCoinCell} from "../../../components/Table/VerifiedCell";
-import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {getAssetSymbol} from "../../../utils";
+import {getLearnMoreTooltip} from "../../Transaction/helpers";
+import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {useEffect} from "react";
+import {Network} from "@aptos-labs/ts-sdk";
 
 function CoinNameCell({name}: {name: string}) {
   return (
@@ -94,6 +97,7 @@ enum CoinVerificationFilterType {
   VERIFIED,
   RECOGNIZED,
   ALL,
+  NONE, // Turns it off entirely
 }
 
 export type CoinDescriptionPlusAmount = {
@@ -102,9 +106,16 @@ export type CoinDescriptionPlusAmount = {
 } & CoinDescription;
 
 export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
+  const [state] = useGlobalState();
   const [verificationFilter, setVerificationFilter] = React.useState(
-    CoinVerificationFilterType.VERIFIED,
+    CoinVerificationFilterType.NONE,
   );
+
+  useEffect(() => {
+    if (state.network_name === Network.MAINNET) {
+      setVerificationFilter(CoinVerificationFilterType.VERIFIED);
+    }
+  }, [state, state.network_value]);
 
   function toIndex(coin: CoinDescriptionPlusAmount): number {
     return coin.panoraOrderIndex
@@ -123,6 +134,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
       filteredCoins = coins.filter((coin) => coin.chainId !== 0);
       break;
     case CoinVerificationFilterType.ALL:
+    case CoinVerificationFilterType.NONE:
       filteredCoins = coins;
       break;
   }
@@ -132,95 +144,99 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   const unselectedTextColor = grey[400];
   const dividerTextColor = grey[200];
 
+  const filterSelector = (
+    <Stack
+      direction="row"
+      justifyContent="flex-end"
+      spacing={1}
+      marginY={0.5}
+      height={16}
+    >
+      <Button
+        variant="text"
+        onClick={() =>
+          setVerificationFilter(CoinVerificationFilterType.VERIFIED)
+        }
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          color:
+            CoinVerificationFilterType.VERIFIED === verificationFilter
+              ? selectedTextColor
+              : unselectedTextColor,
+          padding: 0,
+          "&:hover": {
+            background: "transparent",
+          },
+        }}
+      >
+        Verified
+      </Button>
+      <Typography
+        variant="subtitle1"
+        sx={{
+          fontSize: 11,
+          fontWeight: 600,
+          color: dividerTextColor,
+        }}
+      >
+        |
+      </Typography>
+      <Button
+        variant="text"
+        onClick={() =>
+          setVerificationFilter(CoinVerificationFilterType.RECOGNIZED)
+        }
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          color:
+            CoinVerificationFilterType.RECOGNIZED === verificationFilter
+              ? selectedTextColor
+              : unselectedTextColor,
+          padding: 0,
+          "&:hover": {
+            background: "transparent",
+          },
+        }}
+      >
+        Recognized
+      </Button>
+      <Typography
+        variant="subtitle1"
+        sx={{
+          fontSize: 11,
+          fontWeight: 600,
+          color: dividerTextColor,
+        }}
+      >
+        |
+      </Typography>
+      <Button
+        variant="text"
+        onClick={() => setVerificationFilter(CoinVerificationFilterType.ALL)}
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          color:
+            CoinVerificationFilterType.ALL === verificationFilter
+              ? selectedTextColor
+              : unselectedTextColor,
+          padding: 0,
+          "&:hover": {
+            background: "transparent",
+          },
+        }}
+      >
+        All
+      </Button>
+    </Stack>
+  );
+
   // TODO: For FA, possibly add store as more info
   return (
     <>
-      <Stack
-        direction="row"
-        justifyContent="flex-end"
-        spacing={1}
-        marginY={0.5}
-        height={16}
-      >
-        <Button
-          variant="text"
-          onClick={() =>
-            setVerificationFilter(CoinVerificationFilterType.VERIFIED)
-          }
-          sx={{
-            fontSize: 12,
-            fontWeight: 600,
-            color:
-              CoinVerificationFilterType.VERIFIED === verificationFilter
-                ? selectedTextColor
-                : unselectedTextColor,
-            padding: 0,
-            "&:hover": {
-              background: "transparent",
-            },
-          }}
-        >
-          Verified
-        </Button>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            fontSize: 11,
-            fontWeight: 600,
-            color: dividerTextColor,
-          }}
-        >
-          |
-        </Typography>
-        <Button
-          variant="text"
-          onClick={() =>
-            setVerificationFilter(CoinVerificationFilterType.RECOGNIZED)
-          }
-          sx={{
-            fontSize: 12,
-            fontWeight: 600,
-            color:
-              CoinVerificationFilterType.RECOGNIZED === verificationFilter
-                ? selectedTextColor
-                : unselectedTextColor,
-            padding: 0,
-            "&:hover": {
-              background: "transparent",
-            },
-          }}
-        >
-          Recognized
-        </Button>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            fontSize: 11,
-            fontWeight: 600,
-            color: dividerTextColor,
-          }}
-        >
-          |
-        </Typography>
-        <Button
-          variant="text"
-          onClick={() => setVerificationFilter(CoinVerificationFilterType.ALL)}
-          sx={{
-            fontSize: 12,
-            fontWeight: 600,
-            color:
-              CoinVerificationFilterType.ALL === verificationFilter
-                ? selectedTextColor
-                : unselectedTextColor,
-            padding: 0,
-            "&:hover": {
-              background: "transparent",
-            },
-          }}
-        >
-          All
-        </Button>
-      </Stack>
+      {verificationFilter !== CoinVerificationFilterType.NONE && filterSelector}
       <Table>
         <TableHead>
           <TableRow>
@@ -229,12 +245,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
             <GeneralTableHeaderCell header="Asset" />
             <GeneralTableHeaderCell
               header="Verified"
-              tooltip={
-                <LearnMoreTooltip
-                  text="This uses the Panora token list to verify authenticity of known assets on-chain. It does not guarantee anything else about the asset and is not financial advice."
-                  link="https://github.com/PanoraExchange/Aptos-Tokens"
-                />
-              }
+              tooltip={getLearnMoreTooltip("coin_verification")}
               isTableTooltip={true}
             />
             <GeneralTableHeaderCell header="Amount" />
