@@ -49,6 +49,8 @@ export const knownAddresses: Record<string, string> = {
     "PancakeSwap",
   "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af":
     "ThalaSwap",
+  "0x6b3720cd988adeaf721ed9d4730da4324d52364871a68eac62b46d21e4d2fa99":
+    "Thala Farm",
   "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12":
     "LiquidSwap v0",
   "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e":
