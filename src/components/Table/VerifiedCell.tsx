@@ -20,13 +20,13 @@ type VerifiedCellProps = {
 };
 
 export enum VerifiedType {
-  NATIVE_TOKEN, // Native token e.g. APT
-  LABS_VERIFIED, // Specifically verified by labs
-  COMMUNITY_VERIFIED, // Verified by Panora
-  UNVERIFIED, // In panora list but not verified
-  COMMUNITY_BANNED, // Banned by Panora
-  LABS_BANNED, // Banned by labs
-  UNKNOWN, // Not in panora list, could be anything
+  NATIVE_TOKEN = "Native", // Native token e.g. APT
+  LABS_VERIFIED = "Verified", // Specifically verified by labs
+  COMMUNITY_VERIFIED = "Community Verified", // Verified by Panora
+  RECOGNIZED = "Recognized", // In panora list but not verified
+  UNVERIFIED = "Unverified", // Not in panora list, could be anything
+  LABS_BANNED = "Banned", // Banned by labs
+  COMMUNITY_BANNED = "Community Banned", // Banned by Panora
 }
 
 export function isBannedType(level: VerifiedType): boolean {
@@ -42,6 +42,8 @@ const nativeTokens: Record<string, string> = {
   "0xA": "APT",
 };
 const labsVerifiedTokens: Record<string, string> = {
+  "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b":
+    "Native USD₮",
   "0xd39fcd33aedfd436a1bbb576a48d5c7c0ac317c9a9bb7d53ae9ffb41e8cb9fd9":
     "Find Out Points",
 };
@@ -93,18 +95,19 @@ export function verifiedLevel(input: VerifiedCellProps): VerifiedLevelInfo {
     };
   } else if (input?.known) {
     return {
-      level: VerifiedType.UNVERIFIED,
+      level: VerifiedType.RECOGNIZED,
     };
   } else {
     return {
-      level: VerifiedType.UNKNOWN,
+      level: VerifiedType.UNVERIFIED,
     };
   }
 }
 
-export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
-  const {level, reason} = verifiedLevel(data);
-
+export function getVerifiedMessageAndIcon(
+  level: VerifiedType,
+  reason?: string,
+) {
   let tooltipMessage = "";
   let icon = null;
   switch (level) {
@@ -113,7 +116,7 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
       icon = <VerifiedUser fontSize="small" />;
       break;
     case VerifiedType.LABS_VERIFIED:
-      tooltipMessage = `This asset is verified.`;
+      tooltipMessage = `This asset is verified by the builders of the explorer.`;
       icon = <Verified fontSize="small" />;
       break;
     case VerifiedType.COMMUNITY_VERIFIED:
@@ -121,27 +124,35 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
         "This asset is verified by the community on the Panora token list.";
       icon = <VerifiedOutlined fontSize="small" />;
       break;
-    case VerifiedType.UNVERIFIED:
+    case VerifiedType.RECOGNIZED:
       tooltipMessage =
-        "This asset is recognized, but not been verified by the community.";
+        "This asset is recognized, but many not have been verified by the community.";
       icon = <Warning fontSize="small" />;
       break;
-    case VerifiedType.UNKNOWN:
+    case VerifiedType.UNVERIFIED:
       tooltipMessage =
-        "This asset is not verified, it may or may not be recognized by the community.";
+        "This asset is not verified, it may or may not be recognized by the community.  Please use with caution.";
       icon = <WarningAmberOutlined fontSize="small" />;
       break;
     case VerifiedType.COMMUNITY_BANNED:
       tooltipMessage =
-        "This asset has been banned on the Panora token list, please use with caution.";
+        "This asset has been banned on the Panora token list, please avoid using this asset.";
       icon = <DangerousOutlined fontSize="small" />;
       break;
     case VerifiedType.LABS_BANNED:
-      tooltipMessage = `This asset has been marked as a scam or dangerous, please proceed with caution. (${reason})`;
+      tooltipMessage = `This asset has been marked as a scam or dangerous, please avoid using this asset.`;
+      if (reason) {
+        tooltipMessage += ` (${reason})`;
+      }
       icon = <Dangerous fontSize="small" />;
       break;
   }
+  return {tooltipMessage, icon};
+}
 
+export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
+  const {level, reason} = verifiedLevel(data);
+  const {tooltipMessage, icon} = getVerifiedMessageAndIcon(level, reason);
   return (
     <Stack direction="row" spacing={1} alignItems="center">
       <StyledTooltip title={tooltipMessage}>{icon}</StyledTooltip>

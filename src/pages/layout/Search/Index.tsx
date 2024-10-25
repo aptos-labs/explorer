@@ -36,6 +36,7 @@ import {knownAddresses} from "../../../api/hooks/useGetANS";
 export type SearchResult = {
   label: string;
   to: string | null;
+  image?: string;
 };
 
 export const NotFoundResult: SearchResult = {
@@ -183,7 +184,7 @@ export default function HeaderSearch() {
   }
 
   function handleAddress(searchText: string): Promise<SearchResult | null>[] {
-    // TODO: add digital assets, collections, fungible asset detection, etc.
+    // TODO: add digital assets, collections, etc.
     const promises = [];
     const address = AccountAddress.from(searchText).toStringLong();
     // It's either an account OR an object: we query both at once to save time
@@ -198,6 +199,7 @@ export default function HeaderSearch() {
         return null;
         // Do nothing. It's expected that not all search input is a valid account
       });
+    // TODO: Add searching the coin list first
     const faPromise = getAccountResource(
       {address, resourceType: faMetadataResource},
       state.aptos_client,
@@ -296,13 +298,15 @@ export default function HeaderSearch() {
       .map((coin: CoinDescription) => {
         if (coin.tokenAddress) {
           return {
-            label: `Coin ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)} - ${coin.tokenAddress}`,
+            label: `${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
             to: `/coin/${coin.tokenAddress}`,
+            image: coin.logoUrl,
           };
         } else {
           return {
-            label: `Fungible Asset ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)} - ${coin.faAddress}`,
+            label: `${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
             to: `/fungible_asset/${coin.faAddress}`,
+            image: coin.logoUrl,
           };
         }
       });
@@ -506,7 +510,11 @@ export default function HeaderSearch() {
       renderOption={(props, option) => {
         return (
           <li {...props} key={props.id}>
-            <ResultLink to={option.to} text={option.label} />
+            <ResultLink
+              to={option.to}
+              text={option.label}
+              image={option.image}
+            />
           </li>
         );
       }}

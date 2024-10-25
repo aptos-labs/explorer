@@ -15,8 +15,8 @@ import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {VerifiedCoinCell} from "../../../components/Table/VerifiedCell";
-import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {getAssetSymbol} from "../../../utils";
+import {getLearnMoreTooltip} from "../../Transaction/helpers";
 
 function CoinNameCell({name}: {name: string}) {
   return (
@@ -229,12 +229,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
             <GeneralTableHeaderCell header="Asset" />
             <GeneralTableHeaderCell
               header="Verified"
-              tooltip={
-                <LearnMoreTooltip
-                  text="This uses the Panora token list to verify authenticity of known assets on-chain. It does not guarantee anything else about the asset and is not financial advice."
-                  link="https://github.com/PanoraExchange/Aptos-Tokens"
-                />
-              }
+              tooltip={getLearnMoreTooltip("coin_verification")}
               isTableTooltip={true}
             />
             <GeneralTableHeaderCell header="Amount" />
