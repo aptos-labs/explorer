@@ -16,8 +16,16 @@ const TTL = 60000; // 1 minute
 // https://github.com/aptscan-ai/labels/blob/3187ad6b0710261e37324bbc336f74e9a07334a0/labels.json#L216
 // https://github.com/apscan/explorer/blob/master/src/config/address-tags.ts
 export const knownAddresses: Record<string, string> = {
+  "0x0000000000000000000000000000000000000000000000000000000000000001":
+    "Framework (0x1)",
+  "0x0000000000000000000000000000000000000000000000000000000000000003":
+    "Legacy Token (0x3)",
+  "0x0000000000000000000000000000000000000000000000000000000000000004":
+    "Digital Assets (0x4)",
   "0x000000000000000000000000000000000000000000000000000000000000000a":
-    "AptosCoin Fungible Asset",
+    "Aptos Coin Fungible Asset",
+  "0xdcc43c54a666493b6cbfc1ecc81af0bc24e9b75c5ab3a7065c1fc9632ee8bd82":
+    "GovScan Voting",
   // Aptos labs
   "0x867ed1f6bf916171b1de3ee92849b8978b7d1b9e0a8cc982a3d19d535dfd9c0c":
     "Aptos Name Service",
@@ -34,17 +42,23 @@ export const knownAddresses: Record<string, string> = {
     "LayerZero Bridge",
   "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa":
     "LayerZero Token",
+  "0x8d87a65ba30e09357fa2edea2c80dbac296e5dec2b18287113500b902942929d":
+    "Celer Bridge",
   // DEX
   "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa":
     "PancakeSwap",
   "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af":
     "ThalaSwap",
+  "0x6b3720cd988adeaf721ed9d4730da4324d52364871a68eac62b46d21e4d2fa99":
+    "Thala Farm",
   "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12":
     "LiquidSwap v0",
   "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e":
     "LiquidSwap v0.5",
   "0x54cb0bb2c18564b86e34539b9f89cfe1186e39d89fce54e1cd007b8e61673a85":
     "LiquidSwap v1",
+  "0xb247ddeee87e848315caf9a33b8e4c71ac53db888cb88143d62d2370cca0ead2":
+    "LiquidSwap v1 Farms",
   "0x80273859084bc47f92a6c2d3e9257ebb2349668a1b0fb3db1d759a04c7628855":
     "LiquidSwap router",
   "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c":
@@ -55,6 +69,8 @@ export const knownAddresses: Record<string, string> = {
     "AuxExchange", // dead
   "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1":
     "Cellana Finance",
+  "0xea098f1fa9245447c792d18c069433f5da2904358e1e340c55bdc68a8f5fe037":
+    "Cellana Rewards",
   "0x1c3206329806286fd2223647c9f9b130e66baeb6d7224a18c1f642ffe48f3b4c":
     "Panora Exchange",
   "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c":
@@ -91,17 +107,32 @@ export const knownAddresses: Record<string, string> = {
     "Hippo Aggregator",
   "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26":
     "Thala router",
+  "0x4e5e85fd647c7e19560590831616a3c021080265576af3182535a1d19e8bc2b3":
+    "Uptos Pump",
+  "0xcd7b88c2181881bf8e7ef741cae867aee038e75df94224496a4a81627edf7f65": "Defy",
   // NFT marketplace
+  "0x7ccf0e6e871977c354c331aa0fccdffb562d9fceb27e3d7f61f8e12e470358e9":
+    "Wapal Aggregator",
   "0x584b50b999c78ade62f8359c91b5165ff390338d45f8e55969a04e65d76258c9":
-    "Wapal NFTs",
+    "Wapal Marketplace",
+  "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37":
+    "Wapal Auction",
+  "0xc777f5f82a2773d6e6f9c2e91306fc9c099a57747f64d86c59cf0acab706fd44":
+    "Wapal Launchpad V2",
+  "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac":
+    "Wapal Launchpad",
   "0x2c7bccf7b31baf770fdbcc768d9e9cb3d87805e255355df5db32ac9a669010a2":
-    "Topaz NFTs",
+    "Topaz Marketplace",
   "0xd1fd99c1944b84d1670a2536417e997864ad12303d19eac725891691b04d614e":
-    "Bluemove NFT",
+    "Bluemove Marketplace",
   "0xf6994988bd40261af9431cd6dd3fcf765569719e66322c7a05cc78a89cd366d4":
-    "Souffl3 NFTs",
+    "Souffl3 Marketplace",
   "0xe11c12ec495f3989c35e1c6a0af414451223305b579291fc8f3d9d0575a23c26":
-    "Tradeport NFTs",
+    "Tradeport",
+  "0x86a32dcdd605152e58b984ac2538168214bb57ab4661c591a095563b3d2d6a37":
+    "Tradeport Launchpad",
+  "0x039e8ef8576a8eaf8ebcea5841cc7110bc7b5125aacd25086d510350a90a182e":
+    "Rarible",
   // CEX
   "0xd91c64b777e51395c6ea9dec562ed79a4afa0cd6dad5a87b187c37198a1f855a":
     "Binance 1",
@@ -119,6 +150,7 @@ export const knownAddresses: Record<string, string> = {
   // Social
   "0x8d2d7bcde13b2513617df3f98cdd5d0e4b9f714c6308b9204fe18ad900d92609":
     "Chingari",
+  "0xf6391863cca7d50afc4c998374645c8306e92988c93c6eb4b56972dd571f8467": "Kade",
   // Games
   "0x6d138096fb880d1c16b48f10686b98a96000c0ac18501425378f784c6b81c34d":
     "Eragon",
@@ -127,10 +159,14 @@ export const knownAddresses: Record<string, string> = {
   "0x08afb046f44dd0cb9c445458f9c2e424759cd11f4a270fe6739dcffc16a4db8e":
     "Slime Revolution",
   "0x5a96fab415f43721a44c5a761ecfcccc3dae9c21f34313f0e594b49d8d4564f4": "KGeN",
+  "0x09d518b9b84f327eafc5f6632200ea224a818a935ffd6be5d78ada250bbc44a6":
+    "Supervillain Labs",
   // Other
   "0x5a0ad9e31a2f452504429b6f7073cb325994c2c66204f5deb8e0561a9e950c3c": "Tevi",
   "0x541e28fb12aa661a30358f2bebcd44460187ec918cb9cee075c2db86ee6aed93":
     "Tevi (TVS)",
+  "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62":
+    "Only On Aptos NFT",
 };
 
 function getFetchNameUrl(
