@@ -1,9 +1,16 @@
 import * as React from "react";
-import {Table, TableHead, TableRow} from "@mui/material";
+import {
+  Button,
+  Stack,
+  Table,
+  TableRow,
+  Typography,
+  TableHead,
+} from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../../components/HashButton";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {grey, primary} from "../../../themes/colors/aptosColorPalette";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {CoinDescription} from "../../../api/hooks/useGetCoinList";
@@ -83,63 +90,187 @@ function CoinVerifiedCell({data}: {data: CoinDescriptionPlusAmount}) {
   });
 }
 
+enum CoinVerificationFilterType {
+  VERIFIED,
+  RECOGNIZED,
+  ALL,
+}
+
 export type CoinDescriptionPlusAmount = {
   amount: number;
   tokenStandard: string;
 } & CoinDescription;
 
 export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
+  const [verificationFilter, setVerificationFilter] = React.useState(
+    CoinVerificationFilterType.VERIFIED,
+  );
+
+  function toIndex(coin: CoinDescriptionPlusAmount): number {
+    return coin.panoraOrderIndex
+      ? coin.panoraOrderIndex
+      : coin.chainId !== 0
+        ? 0
+        : 1000000;
+  }
+
+  let filteredCoins = coins;
+  switch (verificationFilter) {
+    case CoinVerificationFilterType.VERIFIED:
+      filteredCoins = coins.filter((coin) => coin.isInPanoraTokenList);
+      break;
+    case CoinVerificationFilterType.RECOGNIZED:
+      filteredCoins = coins.filter((coin) => coin.chainId !== 0);
+      break;
+    case CoinVerificationFilterType.ALL:
+      filteredCoins = coins;
+      break;
+  }
+  filteredCoins = filteredCoins.sort((a, b) => toIndex(a) - toIndex(b));
+
+  const selectedTextColor = primary[500];
+  const unselectedTextColor = grey[400];
+  const dividerTextColor = grey[200];
+
   // TODO: For FA, possibly add store as more info
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <GeneralTableHeaderCell header="Name" />
-          <GeneralTableHeaderCell header="Asset Type" />
-          <GeneralTableHeaderCell header="Asset" />
-          <GeneralTableHeaderCell
-            header="Verified"
-            tooltip={
-              <LearnMoreTooltip
-                text="This uses the Panora token list to verify authenticity of known assets on-chain.  It does not guarantee anything else about the asset and is not financial advice."
-                link="https://github.com/PanoraExchange/Aptos-Tokens"
-              />
-            }
-            isTableTooltip={true}
-          />
-          <GeneralTableHeaderCell header="Amount" />
-        </TableRow>
-      </TableHead>
-      <GeneralTableBody>
-        {coins.map((coinDesc, i) => {
-          let friendlyType = coinDesc.tokenStandard;
-          switch (friendlyType) {
-            case "v1":
-              friendlyType = "Coin";
-              break;
-            case "v2":
-              friendlyType = "Fungible Asset";
-              break;
+    <>
+      <Stack
+        direction="row"
+        justifyContent="flex-end"
+        spacing={1}
+        marginY={0.5}
+        height={16}
+      >
+        <Button
+          variant="text"
+          onClick={() =>
+            setVerificationFilter(CoinVerificationFilterType.VERIFIED)
           }
-          return (
-            <GeneralTableRow key={i}>
-              <CoinNameCell name={coinDesc.name} />
-              <CoinNameCell name={friendlyType} />
-              <CoinTypeCell data={coinDesc} />
-              <CoinVerifiedCell data={coinDesc} />
-              <AmountCell
-                amount={coinDesc.amount}
-                decimals={coinDesc.decimals}
-                symbol={getAssetSymbol(
-                  coinDesc.panoraSymbol,
-                  coinDesc.bridge,
-                  coinDesc.symbol,
-                )}
-              />
-            </GeneralTableRow>
-          );
-        })}
-      </GeneralTableBody>
-    </Table>
+          sx={{
+            fontSize: 12,
+            fontWeight: 600,
+            color:
+              CoinVerificationFilterType.VERIFIED === verificationFilter
+                ? selectedTextColor
+                : unselectedTextColor,
+            padding: 0,
+            "&:hover": {
+              background: "transparent",
+            },
+          }}
+        >
+          Verified
+        </Button>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: dividerTextColor,
+          }}
+        >
+          |
+        </Typography>
+        <Button
+          variant="text"
+          onClick={() =>
+            setVerificationFilter(CoinVerificationFilterType.RECOGNIZED)
+          }
+          sx={{
+            fontSize: 12,
+            fontWeight: 600,
+            color:
+              CoinVerificationFilterType.RECOGNIZED === verificationFilter
+                ? selectedTextColor
+                : unselectedTextColor,
+            padding: 0,
+            "&:hover": {
+              background: "transparent",
+            },
+          }}
+        >
+          Recognized
+        </Button>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            fontSize: 11,
+            fontWeight: 600,
+            color: dividerTextColor,
+          }}
+        >
+          |
+        </Typography>
+        <Button
+          variant="text"
+          onClick={() => setVerificationFilter(CoinVerificationFilterType.ALL)}
+          sx={{
+            fontSize: 12,
+            fontWeight: 600,
+            color:
+              CoinVerificationFilterType.ALL === verificationFilter
+                ? selectedTextColor
+                : unselectedTextColor,
+            padding: 0,
+            "&:hover": {
+              background: "transparent",
+            },
+          }}
+        >
+          All
+        </Button>
+      </Stack>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <GeneralTableHeaderCell header="Name" />
+            <GeneralTableHeaderCell header="Asset Type" />
+            <GeneralTableHeaderCell header="Asset" />
+            <GeneralTableHeaderCell
+              header="Verified"
+              tooltip={
+                <LearnMoreTooltip
+                  text="This uses the Panora token list to verify authenticity of known assets on-chain. It does not guarantee anything else about the asset and is not financial advice."
+                  link="https://github.com/PanoraExchange/Aptos-Tokens"
+                />
+              }
+              isTableTooltip={true}
+            />
+            <GeneralTableHeaderCell header="Amount" />
+          </TableRow>
+        </TableHead>
+        <GeneralTableBody>
+          {filteredCoins.map((coinDesc, i) => {
+            let friendlyType = coinDesc.tokenStandard;
+            switch (friendlyType) {
+              case "v1":
+                friendlyType = "Coin";
+                break;
+              case "v2":
+                friendlyType = "Fungible Asset";
+                break;
+            }
+            return (
+              <GeneralTableRow key={i}>
+                <CoinNameCell name={coinDesc.name} />
+                <CoinNameCell name={friendlyType} />
+                <CoinTypeCell data={coinDesc} />
+                <CoinVerifiedCell data={coinDesc} />
+                <AmountCell
+                  amount={coinDesc.amount}
+                  decimals={coinDesc.decimals}
+                  symbol={getAssetSymbol(
+                    coinDesc.panoraSymbol,
+                    coinDesc.bridge,
+                    coinDesc.symbol,
+                  )}
+                />
+              </GeneralTableRow>
+            );
+          })}
+        </GeneralTableBody>
+      </Table>
+    </>
   );
 }
