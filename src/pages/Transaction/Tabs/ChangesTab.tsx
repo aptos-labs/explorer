@@ -65,6 +65,9 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
             />
           )}
           <ContentRow title="State Key Hash:" value={change.state_key_hash} />
+          {"data" in change && change.data && "type" in change.data && (
+            <ContentRow title="Resource:" value={change.data.type} />
+          )}
           {"data" in change && change.data && (
             <ContentRow
               title="Data:"
