@@ -111,7 +111,7 @@ export default function AccountAllTransactions({
 
   return (
     <Stack>
-      <Typography>
+      <Typography sx={{my: 2}}>
         {canSeeAll
           ? `Showing all ${txnCount} transactions`
           : `Showing the last ${txnCount} transactions`}
