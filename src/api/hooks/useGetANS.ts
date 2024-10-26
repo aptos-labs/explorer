@@ -92,10 +92,13 @@ export const knownAddresses: Record<string, string> = {
     "Superposition",
   "0x2fe576faa841347a9b1b32c869685deb75a15e3f62dfe37cbd6d52cc403a16f6":
     "Joule Finance",
+  "0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01":
+    "Thala CDP",
   // Liquid staking
   "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a":
     "Amnis Finance",
-  "0xfaf4e633ae9eb31366c9ca24214231760926576c7b625313b3688b5e900731f6": "Thala",
+  "0xfaf4e633ae9eb31366c9ca24214231760926576c7b625313b3688b5e900731f6":
+    "Thala LSD",
   "0x6f8ca77dd0a4c65362f475adb1c26ae921b1d75aa6b70e53d0e340efd7d8bc80":
     "TruFin",
   // Defi (other)
