@@ -270,17 +270,21 @@ export default function HeaderSearch() {
   async function handleLabelLookup(
     searchText: string,
   ): Promise<(SearchResult | null)[]> {
-    const searchResults = [];
+    const searchResults: SearchResult[] = [];
     const searchLowerCase = searchText.toLowerCase();
-    for (const address in knownAddresses) {
-      const knownName = knownAddresses[address];
-      if (knownName?.toLowerCase() === searchLowerCase) {
+    Object.entries(knownAddresses).forEach(([address, knownName]) => {
+      if (
+        (searchLowerCase.length >= 4 &&
+          knownName.toLowerCase().startsWith(searchLowerCase)) ||
+        (searchLowerCase.length < 4 &&
+          knownName.toLowerCase() === searchLowerCase)
+      ) {
         searchResults.push({
           label: `Account ${truncateAddress(address)} ${knownName}`,
           to: `/account/${address}`,
         });
       }
-    }
+    });
     return searchResults;
   }
 
