@@ -84,6 +84,8 @@ export const knownAddresses: Record<string, string> = {
     "Aptin Finance v2",
   "0xc6bc659f1649553c1a3fa05d9727433dc03843baac29473c817d06d39e7621ba":
     "Echelon Market",
+  "0x024c90c44edf46aa02c3e370725b918a59c52b5aa551388feb258bd5a1e82271":
+    "Echelon Isolated Markets",
   "0xeab7ea4d635b6b6add79d5045c4a45d8148d88287b1cfa1c3b6a4b56f46839ed":
     "Echo Lending",
   "0x68476f9d437e3f32fd262ba898b5e3ee0a23a1d586a6cf29a28add35f253f6f7":
