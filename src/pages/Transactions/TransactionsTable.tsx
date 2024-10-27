@@ -205,7 +205,7 @@ function TransactionAmountGasCell({
         <Box sx={{fontSize: 11, color: grey[450]}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
             <>
-              <>Gas</>
+              <>Gas</>{" "}
               <GasFeeValue
                 gasUsed={transaction.gas_used}
                 gasUnitPrice={transaction.gas_unit_price}
