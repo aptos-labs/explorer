@@ -42,6 +42,7 @@ const nativeTokens: Record<string, string> = {
   "0xA": "APT",
 };
 const labsVerifiedTokens: Record<string, string> = {
+  "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "USDt",
   "0xd39fcd33aedfd436a1bbb576a48d5c7c0ac317c9a9bb7d53ae9ffb41e8cb9fd9":
     "Find Out Points",
 };

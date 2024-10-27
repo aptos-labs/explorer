@@ -12,6 +12,25 @@ type InfoTabProps = {
   data: any | undefined;
 };
 
+// TODO: put this extra information somewhere else
+const extraInfo: Record<string, string> = {
+  "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b":
+    "This is the official native USD₮ on Aptos.",
+};
+
+function ExtraInfo({address}: {address: string}) {
+  if (extraInfo[address]) {
+    return (
+      <ContentRow
+        title={"Additional Information:"}
+        value={extraInfo[address]}
+      />
+    );
+  }
+
+  return null;
+}
+
 export default function InfoTab({address, data}: InfoTabProps) {
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
@@ -61,6 +80,7 @@ export default function InfoTab({address, data}: InfoTabProps) {
               )
             }
           />
+          <ExtraInfo address={address} />
           <ContentRow
             title={"Project URL:"}
             value={

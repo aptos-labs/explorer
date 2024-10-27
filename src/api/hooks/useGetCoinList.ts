@@ -64,6 +64,26 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     coinGeckoId: null,
     coinMarketCapId: null,
   },
+  "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b",
+    name: "Tether USD",
+    symbol: "USDt", // Turns out USDt is the symbol when unicode USD₮ is not supported
+    decimals: 6,
+    bridge: null,
+    panoraSymbol: null,
+    logoUrl: "https://tether.to/images/logoCircle.svg",
+    websiteUrl: "https://tether.to",
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 2,
+    coinGeckoId: "tether",
+    coinMarketCapId: 825,
+    native: true,
+  },
 };
 
 export function useGetCoinList(options?: {retry?: number | boolean}) {
