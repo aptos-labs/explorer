@@ -73,6 +73,8 @@ export const knownAddresses: Record<string, string> = {
     "Cellana Rewards",
   "0x1c3206329806286fd2223647c9f9b130e66baeb6d7224a18c1f642ffe48f3b4c":
     "Panora Exchange",
+  "0x1c3266eca38df87026255884192b5979eac24cf0dac7a33cfa7af0d27651fb4c":
+    "Panora Exchange", // Petra
   "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c":
     "Econia Labs",
   // Lending
@@ -150,8 +152,13 @@ export const knownAddresses: Record<string, string> = {
   "0xa4e7455d27731ab857e9701b1e6ed72591132b909fe6e4fd99b66c1d6318d9e8":
     "Coinbase 2",
   "0x834d639b10d20dcb894728aa4b9b572b2ea2d97073b10eacb111f338b20ea5d7": "OKX 1",
+  "0x1e6009ce9d288f3d5031c06ca0b19a334214ead798a0cb38808485bd6d997a43": "OKX dapp",
   "0x84b1675891d370d5de8f169031f9c3116d7add256ecf50a4bc71e3135ddba6e0":
     "Bybit 1",
+  "0xfd9192f8ad8dc60c483a884f0fbc8940f5b8618f3cf2bbf91693982b373dfdea":
+    "bitfinex 1",
+  "0xdc7adffa09da5736ce1303f7441f4367fa423617c6822ad2fbc8522d9efd8fa4":
+    "htx 1", // Huobi
   // Social
   "0x8d2d7bcde13b2513617df3f98cdd5d0e4b9f714c6308b9204fe18ad900d92609":
     "Chingari",
@@ -166,14 +173,20 @@ export const knownAddresses: Record<string, string> = {
   "0x5a96fab415f43721a44c5a761ecfcccc3dae9c21f34313f0e594b49d8d4564f4": "KGeN",
   "0x09d518b9b84f327eafc5f6632200ea224a818a935ffd6be5d78ada250bbc44a6":
     "Supervillain Labs",
+  "0x34ca84470e8d2907562f9a2f144c6c780282953b8b025ba220b0ecc5fc0aead9":
+    "STAN app",
   // Fungible assets
   "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "USDt",
   "0xf73e887a8754f540ee6e1a93bdc6dde2af69fc7ca5de32013e89dd44244473cb":
     "USDt contract",
   // Other
+  "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387":
+    "Oracle: Pyth",
+  "0x07d7e436f0b2aafde60774efb26ccc432cf881b677aca7faaf2a01879bd19fb8":
+    "Oracle: Switchboard",
   "0x5a0ad9e31a2f452504429b6f7073cb325994c2c66204f5deb8e0561a9e950c3c": "Tevi",
   "0x541e28fb12aa661a30358f2bebcd44460187ec918cb9cee075c2db86ee6aed93":
-    "Tevi (TVS)",
+    "Tevi (TVS)", // fungible store for TVS asset
   "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62":
     "Only On Aptos NFT",
 };
