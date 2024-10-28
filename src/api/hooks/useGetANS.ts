@@ -115,6 +115,8 @@ export const knownAddresses: Record<string, string> = {
   "0x4e5e85fd647c7e19560590831616a3c021080265576af3182535a1d19e8bc2b3":
     "Uptos Pump",
   "0xcd7b88c2181881bf8e7ef741cae867aee038e75df94224496a4a81627edf7f65": "Defy",
+  "0xa3111961a31597ca770c60be02fc9f72bdee663f563e45223e79793557eef0d9":
+    "Lucid Finance",
   // NFT marketplace
   "0x7ccf0e6e871977c354c331aa0fccdffb562d9fceb27e3d7f61f8e12e470358e9":
     "Wapal Aggregator",
@@ -180,9 +182,9 @@ export const knownAddresses: Record<string, string> = {
     "USDt contract",
   // Other
   "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387":
-    "Oracle: Pyth",
+    "Pyth", // oracle
   "0x07d7e436f0b2aafde60774efb26ccc432cf881b677aca7faaf2a01879bd19fb8":
-    "Oracle: Switchboard",
+    "Switchboard", // oracle
   "0x5a0ad9e31a2f452504429b6f7073cb325994c2c66204f5deb8e0561a9e950c3c": "Tevi",
   "0x541e28fb12aa661a30358f2bebcd44460187ec918cb9cee075c2db86ee6aed93":
     "Tevi (TVS)", // fungible store for TVS asset
