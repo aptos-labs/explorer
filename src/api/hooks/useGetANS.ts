@@ -73,8 +73,6 @@ export const knownAddresses: Record<string, string> = {
     "Cellana Rewards",
   "0x1c3206329806286fd2223647c9f9b130e66baeb6d7224a18c1f642ffe48f3b4c":
     "Panora Exchange",
-  "0x1c3266eca38df87026255884192b5979eac24cf0dac7a33cfa7af0d27651fb4c":
-    "Panora Exchange", // Petra
   "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c":
     "Econia Labs",
   // Lending
