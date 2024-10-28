@@ -52,6 +52,8 @@ function NetworkAndChainIdCached({
   const nameRewrite = (networkName: string) => {
     if (networkName === "testnet") {
       return "suzuka testnet";
+    } else if (networkName === "portoTestnet") {
+      return "porto testnet";
     } else if (networkName === "bardockTestnet") {
       return "bardock testnet";
     } else {

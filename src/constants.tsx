@@ -13,6 +13,10 @@ export const testnetUrl =
   import.meta.env.TESTNET_URL ||
   `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/v1`;
 
+export const portoTestnetUrl =
+  import.meta.env.MOVEMENT_TESTNET_URL ||
+  `https://${prefix}testnet.porto.movementnetwork.xyz/v1`;
+
 export const bardockTestnetUrl =
   import.meta.env.MOVEMENT_TESTNET_URL ||
   `https://${prefix}testnet.bardock.movementnetwork.xyz/v1`;
@@ -25,6 +29,7 @@ export const mevmdevnetUrl =
 export const networks = {
   mainnet: mainnetUrl,
   testnet: testnetUrl,
+  "porto testnet": portoTestnetUrl,
   "bardock testnet": bardockTestnetUrl,
   devnet: devnetUrl,
   local: "http://localhost:30731",
@@ -51,6 +56,7 @@ type ApiKeys = {
  */
 const apiKeys: ApiKeys = {
   mainnet: "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
+  "porto testnet": "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
   "bardock testnet": "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
   testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
   devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
@@ -69,6 +75,7 @@ export function isValidNetworkName(value: string): value is NetworkName {
 
 export enum Network {
   MAINNET = "mainnet",
+  PORTO_TESTNET = "porto-testnet",
   BARDOCK_TESTNET = "bardock-testnet",
   TESTNET = "testnet",
   DEVNET = "devnet",
@@ -85,7 +92,7 @@ for (const key of Object.keys(networks)) {
   }
 }
 
-export const defaultNetworkName: NetworkName = "testnet" as const;
+export const defaultNetworkName: NetworkName = "porto testnet" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;

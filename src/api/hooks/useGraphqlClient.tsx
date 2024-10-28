@@ -25,11 +25,21 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
         import.meta.env.MAINNET_GRAPHQL ||
         `https://${prefix}aptos.movementlabs.xyz/graphql`
       );
-    // case "testnet":
-    //   return (
-    //     import.meta.env.TESTNET_GRAPHQL ||
-    //     `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/graphql`
-    //   );
+    case "testnet":
+      return (
+        import.meta.env.TESTNET_GRAPHQL ||
+        `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/graphql`
+      );
+    case "porto testnet":
+      return (
+        import.meta.env.PORTO_GRAPHQL ||
+        `https://${prefix}testnet.porto.movementnetwork.xyz/graphql`
+      );
+    case "bardock testnet":
+      return (
+        import.meta.env.BARDOCK_GRAPHQL ||
+        `https://${prefix}testnet.bardock.movementnetwork.xyz/graphql`
+      );
     case "devnet":
       return (
         import.meta.env.DEVNET_GRAPHQL ||
