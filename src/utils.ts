@@ -2,7 +2,7 @@ import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
 import {Types} from "aptos";
 import pako from "pako";
 import {Statsig} from "statsig-react";
-import {AccountAddress, Hex} from "@aptos-labs/ts-sdk";
+import {AccountAddress, AccountAddressInput, Hex} from "@aptos-labs/ts-sdk";
 
 /**
  * Helper function for exhaustiveness checks.
@@ -97,8 +97,22 @@ export function getBytecodeSizeInKB(bytecodeHex: string): number {
 /**
  * Standardizes an address to the format "0x" followed by 64 lowercase hexadecimal digits.
  */
-export const standardizeAddress = (address: string): string => {
+export const standardizeAddress = (address: AccountAddressInput): string => {
   return AccountAddress.from(address).toStringLong();
+};
+
+export const tryStandardizeAddress = (
+  address: AccountAddressInput | null | undefined,
+): string | undefined => {
+  if (address) {
+    try {
+      return standardizeAddress(address);
+    } catch (e) {
+      console.log("Failed to standardize address", address, e);
+      return undefined;
+    }
+  }
+  return undefined;
 };
 
 // inspired by https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex

@@ -3,13 +3,13 @@ import ContentBox from "../../../../components/IndividualPageContent/ContentBox"
 import ContentRow from "../../../../components/IndividualPageContent/ContentRow";
 import {truncateAddress} from "../../../utils";
 import {Link} from "../../../../routing";
-import {AccountAddress} from "@aptos-labs/ts-sdk";
+import {standardizeAddress} from "../../../../utils";
 
 const AddressLink: React.FC<{
   address: string;
   type: "address" | "object" | "token";
 }> = ({address, type}) => (
-  <Link to={`/${type}/${AccountAddress.from(address).toString()}`}>
+  <Link to={`/${type}/${standardizeAddress(address)}`}>
     {truncateAddress(address)}
   </Link>
 );
