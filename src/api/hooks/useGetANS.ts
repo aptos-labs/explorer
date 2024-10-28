@@ -138,6 +138,8 @@ export const knownAddresses: Record<string, string> = {
     "Tradeport Launchpad",
   "0x039e8ef8576a8eaf8ebcea5841cc7110bc7b5125aacd25086d510350a90a182e":
     "Rarible",
+  "0x1e6009ce9d288f3d5031c06ca0b19a334214ead798a0cb38808485bd6d997a43":
+    "OKX Marketplace",
   // CEX
   "0xd91c64b777e51395c6ea9dec562ed79a4afa0cd6dad5a87b187c37198a1f855a":
     "Binance 1",
@@ -150,13 +152,12 @@ export const knownAddresses: Record<string, string> = {
   "0xa4e7455d27731ab857e9701b1e6ed72591132b909fe6e4fd99b66c1d6318d9e8":
     "Coinbase 2",
   "0x834d639b10d20dcb894728aa4b9b572b2ea2d97073b10eacb111f338b20ea5d7": "OKX 1",
-  "0x1e6009ce9d288f3d5031c06ca0b19a334214ead798a0cb38808485bd6d997a43": "OKX dapp",
   "0x84b1675891d370d5de8f169031f9c3116d7add256ecf50a4bc71e3135ddba6e0":
     "Bybit 1",
   "0xfd9192f8ad8dc60c483a884f0fbc8940f5b8618f3cf2bbf91693982b373dfdea":
-    "bitfinex 1",
+    "Bitfinex 1",
   "0xdc7adffa09da5736ce1303f7441f4367fa423617c6822ad2fbc8522d9efd8fa4":
-    "htx 1", // Huobi
+    "Htx 1", // Huobi
   // Social
   "0x8d2d7bcde13b2513617df3f98cdd5d0e4b9f714c6308b9204fe18ad900d92609":
     "Chingari",
