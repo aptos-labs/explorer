@@ -1,5 +1,5 @@
 import GeneralTableCell from "./GeneralTableCell";
-import {Stack} from "@mui/material";
+import {Box, Stack, useTheme} from "@mui/material";
 import StyledTooltip from "../StyledTooltip";
 import {
   Dangerous,
@@ -11,12 +11,18 @@ import {
 } from "@mui/icons-material";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import * as React from "react";
+import {
+  codeBlockColor,
+  codeBlockColorClickableOnHover,
+} from "../../themes/colors/aptosColorPalette";
+import {BUTTON_HEIGHT} from "../TitleHashButton";
 
 type VerifiedCellProps = {
   id: string; // FA address or Coin Type
   known: boolean;
   isBanned?: boolean;
   isInPanoraTokenList?: boolean;
+  banner?: boolean;
 };
 
 export enum VerifiedType {
@@ -112,49 +118,72 @@ export function getVerifiedMessageAndIcon(
   switch (level) {
     case VerifiedType.NATIVE_TOKEN:
       tooltipMessage = `This asset is verified as a native token of Aptos.`;
-      icon = <VerifiedUser fontSize="small" />;
+      icon = <VerifiedUser fontSize="small" color="info" />;
       break;
     case VerifiedType.LABS_VERIFIED:
       tooltipMessage = `This asset is verified by the builders of the explorer.`;
-      icon = <Verified fontSize="small" />;
+      icon = <Verified fontSize="small" color="info" />;
       break;
     case VerifiedType.COMMUNITY_VERIFIED:
       tooltipMessage =
         "This asset is verified by the community on the Panora token list.";
-      icon = <VerifiedOutlined fontSize="small" />;
+      icon = <VerifiedOutlined fontSize="small" color="info" />;
       break;
     case VerifiedType.RECOGNIZED:
       tooltipMessage =
         "This asset is recognized, but many not have been verified by the community.";
-      icon = <Warning fontSize="small" />;
+      icon = <Warning fontSize="small" color="secondary" />;
       break;
     case VerifiedType.UNVERIFIED:
       tooltipMessage =
         "This asset is not verified, it may or may not be recognized by the community.  Please use with caution.";
-      icon = <WarningAmberOutlined fontSize="small" />;
+      icon = <WarningAmberOutlined fontSize="small" color="warning" />;
       break;
     case VerifiedType.COMMUNITY_BANNED:
       tooltipMessage =
         "This asset has been banned on the Panora token list, please avoid using this asset.";
-      icon = <DangerousOutlined fontSize="small" />;
+      icon = <DangerousOutlined fontSize="small" color="error" />;
       break;
     case VerifiedType.LABS_BANNED:
       tooltipMessage = `This asset has been marked as a scam or dangerous, please avoid using this asset.`;
       if (reason) {
-        tooltipMessage += ` (${reason})`;
+        tooltipMessage += ` Reason: (${reason})`;
       }
-      icon = <Dangerous fontSize="small" />;
+      icon = <Dangerous fontSize="small" color="error" />;
       break;
   }
   return {tooltipMessage, icon};
 }
 
 export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
+  const theme = useTheme();
   const {level, reason} = verifiedLevel(data);
   const {tooltipMessage, icon} = getVerifiedMessageAndIcon(level, reason);
+
+  const bannerTheme = {
+    height: BUTTON_HEIGHT,
+    backgroundColor: codeBlockColor,
+    "&:hover": {
+      backgroundColor: codeBlockColorClickableOnHover,
+    },
+    color: theme.palette.mode === "dark" ? "#83CCED" : "#0EA5E9",
+    padding: "0.15rem 0.35rem 0.15rem 0.5rem",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+    borderRadius: 50,
+    textDecoration: "none",
+  };
+
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack
+      direction="row"
+      spacing={1}
+      alignItems="center"
+      sx={data.banner ? bannerTheme : undefined}
+    >
       <StyledTooltip title={tooltipMessage}>{icon}</StyledTooltip>
+      {data.banner && <Box>{level}</Box>}
     </Stack>
   );
 }

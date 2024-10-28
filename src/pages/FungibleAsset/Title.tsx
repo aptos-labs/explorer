@@ -38,7 +38,9 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
         {!isBannedType(level) && (
           <TitleHashButton hash={assetSymbol} type={HashType.SYMBOL} />
         )}
-        <VerifiedAsset data={{id: address, known: !!coinData, ...coinData}} />
+        <VerifiedAsset
+          data={{id: address, known: !!coinData, banner: true, ...coinData}}
+        />
       </Stack>
     </Stack>
   );
