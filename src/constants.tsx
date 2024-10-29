@@ -59,7 +59,7 @@ const apiKeys: ApiKeys = {
   "porto testnet": undefined,
   "bardock testnet": undefined,
   testnet: undefined,
-  devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
+  devnet: undefined,
   local: undefined,
   mevmdevnet: undefined,
   custom: undefined,
