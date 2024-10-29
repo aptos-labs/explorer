@@ -8,7 +8,7 @@ import {
   ApolloLink,
 } from "@apollo/client";
 import {useEffect, useState} from "react";
-import {NetworkName, getApiKey} from "../../constants";
+import {NetworkName} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {getCustomParameters} from "../../../src/pages/layout/NetworkSelect";
 
@@ -23,23 +23,23 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
     case "mainnet":
       return (
         import.meta.env.MAINNET_GRAPHQL ||
-        `https://${prefix}aptos.movementlabs.xyz/graphql`
+        `https://indexer.movementnetwork.xyz/v1/graphql`
       );
-    case "testnet":
-      return (
-        import.meta.env.TESTNET_GRAPHQL ||
-        `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/graphql`
-      );
+    // case "testnet":
+    //   return (
+    //     import.meta.env.TESTNET_GRAPHQL ||
+    //     `https://${prefix}indexer.testnet.suzuka.movementlabs.xyz/v1/graphql`
+    //   );
     case "porto testnet":
       return (
         import.meta.env.PORTO_GRAPHQL ||
-        `https://${prefix}testnet.porto.movementnetwork.xyz/graphql`
+        `https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql`
       );
-    case "bardock testnet":
-      return (
-        import.meta.env.BARDOCK_GRAPHQL ||
-        `https://${prefix}testnet.bardock.movementnetwork.xyz/graphql`
-      );
+    // case "bardock testnet":
+    //   return (
+    //     import.meta.env.BARDOCK_GRAPHQL ||
+    //     `https://indexer.testnet.bardock.movementnetwork.xyz/v1/graphql`
+    //   );
     case "devnet":
       return (
         import.meta.env.DEVNET_GRAPHQL ||
@@ -63,13 +63,13 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
 function getGraphqlClient(
   networkName: NetworkName,
 ): ApolloClient<NormalizedCacheObject> {
-  const apiKey = getApiKey(networkName);
+  // const apiKey = getApiKey(networkName);
   // Middleware to attach the authorization token.
   const authMiddleware = new ApolloLink((operation, forward) => {
     operation.setContext(({headers = {}}) => ({
       headers: {
         ...headers,
-        ...(apiKey ? {authorization: `Bearer ${apiKey}`} : {}),
+        // ...(apiKey ? {authorization: `Bearer ${apiKey}`} : {}),
       },
     }));
     return forward(operation);

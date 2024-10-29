@@ -14,8 +14,7 @@ export default function TransactionsPage() {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
 
   useEffect(() => {
-    // setUserTxnOnly(isGraphqlClientSupported);
-    setUserTxnOnly(false);
+    setUserTxnOnly(isGraphqlClientSupported);
   }, [isGraphqlClientSupported, state.network_name]);
 
   useEffect(() => {
