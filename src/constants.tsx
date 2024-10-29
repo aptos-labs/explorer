@@ -55,10 +55,10 @@ type ApiKeys = {
  * value to `undefined`.
  */
 const apiKeys: ApiKeys = {
-  mainnet: "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
-  "porto testnet": "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
-  "bardock testnet": "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
-  testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
+  mainnet: undefined,
+  "porto testnet": undefined,
+  "bardock testnet": undefined,
+  testnet: undefined,
   devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
   local: undefined,
   mevmdevnet: undefined,
