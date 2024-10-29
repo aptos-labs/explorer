@@ -8,15 +8,19 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {grey} from "../themes/colors/aptosColorPalette";
+import {
+  codeBlockColor,
+  codeBlockColorClickableOnHover,
+  grey,
+} from "../themes/colors/aptosColorPalette";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 
-const BUTTON_HEIGHT = 34;
-const TOOLTIP_TIME = 2000; // 2s
+export const BUTTON_HEIGHT = 34;
+export const TOOLTIP_TIME = 2000; // 2s
 
 export enum HashType {
   ACCOUNT = "account",
@@ -124,20 +128,32 @@ function Name({address, isValidator}: {address: string; isValidator: boolean}) {
   }
   const isAns = name.endsWith(".apt") || name.endsWith(".petra");
 
+  const ansStyle = {
+    height: BUTTON_HEIGHT,
+    backgroundColor: `${theme.palette.mode === "dark" ? grey[600] : grey[200]}`,
+    borderRadius: 1,
+    color: "inherit",
+    padding: "0.15rem 1rem 0.15rem 1rem",
+  };
+
+  const knownNameStyle = {
+    height: BUTTON_HEIGHT,
+    backgroundColor: codeBlockColor,
+    "&:hover": {
+      backgroundColor: codeBlockColorClickableOnHover,
+    },
+    color: theme.palette.mode === "dark" ? "#83CCED" : "#0EA5E9",
+    padding: "0.15rem 0.35rem 0.15rem 1rem",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+    borderRadius: 50,
+    textDecoration: "none",
+  };
+
   return (
     <Box>
-      <Stack
-        justifyContent="center"
-        sx={{
-          height: BUTTON_HEIGHT,
-          backgroundColor: `${
-            theme.palette.mode === "dark" ? grey[600] : grey[200]
-          }`,
-          borderRadius: 1,
-          color: "inherit",
-          padding: "0.15rem 1rem 0.15rem 1rem",
-        }}
-      >
+      <Stack justifyContent="center" sx={isAns ? ansStyle : knownNameStyle}>
         {isAns ? (
           <Link
             href={`https://www.aptosnames.com/name/${name}`}

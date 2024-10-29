@@ -158,8 +158,7 @@ export const knownAddresses: Record<string, string> = {
     "Bybit 1",
   "0xfd9192f8ad8dc60c483a884f0fbc8940f5b8618f3cf2bbf91693982b373dfdea":
     "Bitfinex 1",
-  "0xdc7adffa09da5736ce1303f7441f4367fa423617c6822ad2fbc8522d9efd8fa4":
-    "Htx 1", // Huobi
+  "0xdc7adffa09da5736ce1303f7441f4367fa423617c6822ad2fbc8522d9efd8fa4": "Htx 1", // Huobi
   // Social
   "0x8d2d7bcde13b2513617df3f98cdd5d0e4b9f714c6308b9204fe18ad900d92609":
     "Chingari",
@@ -181,8 +180,7 @@ export const knownAddresses: Record<string, string> = {
   "0xf73e887a8754f540ee6e1a93bdc6dde2af69fc7ca5de32013e89dd44244473cb":
     "USDt contract",
   // Other
-  "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387":
-    "Pyth", // oracle
+  "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387": "Pyth", // oracle
   "0x07d7e436f0b2aafde60774efb26ccc432cf881b677aca7faaf2a01879bd19fb8":
     "Switchboard", // oracle
   "0x5a0ad9e31a2f452504429b6f7073cb325994c2c66204f5deb8e0561a9e950c3c": "Tevi",

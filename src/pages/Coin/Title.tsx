@@ -36,7 +36,9 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
         {!isBannedType(level) && (
           <TitleHashButton hash={assetSymbol} type={HashType.SYMBOL} />
         )}
-        <VerifiedAsset data={{id: struct, known: !!coinData, ...coinData}} />
+        <VerifiedAsset
+          data={{id: struct, known: !!coinData, banner: true, ...coinData}}
+        />
       </Stack>
     </Stack>
   );
