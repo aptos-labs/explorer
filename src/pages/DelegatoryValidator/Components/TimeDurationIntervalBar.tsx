@@ -20,7 +20,7 @@ export default function TimeDurationIntervalBar({
   const startTime =
     state.network_name === Network.TESTNET
       ? parseTimestamp(timestamp.toString()).subtract(2, "hours")
-      : parseTimestamp(timestamp.toString()).subtract(30, "days");
+      : parseTimestamp(timestamp.toString()).subtract(14, "days");
 
   // the end of the unlock cycle
   const unlockTime = parseTimestamp(timestamp.toString());
