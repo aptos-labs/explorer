@@ -3,7 +3,12 @@ import {useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {getLedgerInfo} from "..";
 import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
-import {AnalyticsData, ANALYTICS_DATA_URL} from "./useGetAnalyticsData";
+import {
+  AnalyticsData,
+  ANALYTICS_DATA_URL,
+  PORTO_ANALYTICS_DATA_URL,
+  BARDOCK_ANALYTICS_DATA_URL,
+} from "./useGetAnalyticsData";
 
 export function useGetTPS() {
   const [state] = useGlobalState();
@@ -31,9 +36,26 @@ export function useGetPeakTPS() {
   const [peakTps, setPeakTps] = useState<number>();
 
   useEffect(() => {
-    if (state.network_name === "mainnet" || state.network_name === "testnet") {
+    const showNetworks = ["mainnet", "testnet", "porto testnet"];
+    if (showNetworks.includes(state.network_name)) {
       const fetchData = async () => {
-        const response = await fetch(ANALYTICS_DATA_URL);
+        let ANALYTICS_DATA_URL_USE;
+        switch (state.network_name) {
+          case "testnet":
+            ANALYTICS_DATA_URL_USE = ANALYTICS_DATA_URL;
+            break;
+          case "porto testnet":
+            ANALYTICS_DATA_URL_USE = PORTO_ANALYTICS_DATA_URL;
+            break;
+          case "bardock testnet":
+            ANALYTICS_DATA_URL_USE = BARDOCK_ANALYTICS_DATA_URL;
+            break;
+          default:
+            ANALYTICS_DATA_URL_USE = ANALYTICS_DATA_URL;
+            break;
+        }
+
+        const response = await fetch(ANALYTICS_DATA_URL_USE);
         const data: AnalyticsData = await response.json();
         const peakTps =
           data.max_tps_15_blocks_in_past_30_days[0]
