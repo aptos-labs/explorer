@@ -13,9 +13,13 @@ export const testnetUrl =
   import.meta.env.TESTNET_URL ||
   `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/v1`;
 
-export const movementTestnetUrl =
+export const portoTestnetUrl =
   import.meta.env.MOVEMENT_TESTNET_URL ||
-  `https://${prefix}testnet.movementnetwork.xyz/v1`;
+  `https://${prefix}testnet.porto.movementnetwork.xyz/v1`;
+
+export const bardockTestnetUrl =
+  import.meta.env.MOVEMENT_TESTNET_URL ||
+  `https://${prefix}testnet.bardock.movementnetwork.xyz/v1`;
 
 export const mevmdevnetUrl =
   import.meta.env.IMOLA_URL ||
@@ -25,7 +29,8 @@ export const mevmdevnetUrl =
 export const networks = {
   mainnet: mainnetUrl,
   testnet: testnetUrl,
-  "movement testnet": movementTestnetUrl,
+  "porto testnet": portoTestnetUrl,
+  "bardock testnet": bardockTestnetUrl,
   devnet: devnetUrl,
   local: "http://localhost:30731",
   mevmdevnet: mevmdevnetUrl,
@@ -50,10 +55,11 @@ type ApiKeys = {
  * value to `undefined`.
  */
 const apiKeys: ApiKeys = {
-  mainnet: "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
-  "movement testnet": "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
-  testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
-  devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
+  mainnet: undefined,
+  "porto testnet": undefined,
+  "bardock testnet": undefined,
+  testnet: undefined,
+  devnet: undefined,
   local: undefined,
   mevmdevnet: undefined,
   custom: undefined,
@@ -69,7 +75,8 @@ export function isValidNetworkName(value: string): value is NetworkName {
 
 export enum Network {
   MAINNET = "mainnet",
-  MOVEMENT_TESTNET = "movement-testnet",
+  PORTO_TESTNET = "porto-testnet",
+  BARDOCK_TESTNET = "bardock-testnet",
   TESTNET = "testnet",
   DEVNET = "devnet",
   LOCAL = "local",
@@ -85,7 +92,7 @@ for (const key of Object.keys(networks)) {
   }
 }
 
-export const defaultNetworkName: NetworkName = "testnet" as const;
+export const defaultNetworkName: NetworkName = "porto testnet" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;

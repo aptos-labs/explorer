@@ -1,6 +1,11 @@
 import {useEffect, useState} from "react";
-import {defaultNetworkName} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+
+export const BARDOCK_ANALYTICS_DATA_URL =
+  "https://storage.googleapis.com/explorer_stats/chain_stats_bardock_v2.json";
+
+export const PORTO_ANALYTICS_DATA_URL =
+  "https://storage.googleapis.com/explorer_stats/chain_stats_porto_v2.json";
 
 export const ANALYTICS_DATA_URL =
   "https://storage.googleapis.com/explorer_stats/chain_stats_suzuka_v2.json";
@@ -92,9 +97,20 @@ export function useGetAnalyticsData() {
   const [data, setData] = useState<AnalyticsData>();
 
   useEffect(() => {
-    if (state.network_name === defaultNetworkName) {
+    const options = {
+      "bardock testnet": BARDOCK_ANALYTICS_DATA_URL,
+      "porto testnet": PORTO_ANALYTICS_DATA_URL,
+      testnet: ANALYTICS_DATA_URL,
+      mainnet: null,
+      devnet: null,
+      local: null,
+      mevmdevnet: null,
+      custom: null,
+    };
+    const url = options[state.network_name];
+    if (url) {
       const fetchData = async () => {
-        const response = await fetch(ANALYTICS_DATA_URL);
+        const response = await fetch(url);
         const data = await response.json();
         setData(data);
       };
