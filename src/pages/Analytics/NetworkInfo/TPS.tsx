@@ -17,7 +17,8 @@ export default function TPS() {
   const [showPeakTps, setShowPeakTps] = useState<boolean>(true);
 
   useEffect(() => {
-    if (state.network_name === "mainnet" || state.network_name === "testnet") {
+    const showNetworks = ["mainnet", "testnet", "porto testnet"];
+    if (showNetworks.includes(state.network_name)) {
       setShowPeakTps(true);
     } else {
       setShowPeakTps(false);
