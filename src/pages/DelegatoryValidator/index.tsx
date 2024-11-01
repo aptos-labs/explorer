@@ -20,14 +20,11 @@ import Error from "../Account/Error";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {Banner} from "../../components/Banner";
 import {useGetDelegationNodeCommissionChange} from "../../api/hooks/useGetDelegationNodeCommissionChange";
-import {AccountAddress} from "@aptos-labs/ts-sdk";
+import {standardizeAddress} from "../../utils";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
-  const addressHex = useMemo(
-    () => AccountAddress.from(address).toStringLong(),
-    [address],
-  );
+  const addressHex = useMemo(() => standardizeAddress(address), [address]);
   const {validators} = useGetValidators();
   const {connected} = useWallet();
   const {data: accountResource, error} = useGetAccountResource(

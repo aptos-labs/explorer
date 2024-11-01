@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {ResponseError} from "../client";
-import {AccountAddress} from "@aptos-labs/ts-sdk";
+import {tryStandardizeAddress} from "../../utils";
 
 export type CoinDescription = {
   chainId: number;
@@ -115,8 +115,7 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
         return !ret.data.find((coin) => {
           return (
             coin.tokenAddress === key ||
-            (coin.faAddress &&
-              AccountAddress.from(coin.faAddress).toStringLong() === key)
+            tryStandardizeAddress(coin.faAddress) === key
           );
         });
       });

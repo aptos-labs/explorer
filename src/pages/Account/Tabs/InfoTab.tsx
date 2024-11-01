@@ -5,8 +5,8 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
-import {AccountAddress} from "@aptos-labs/ts-sdk";
 import {grey} from "../../../themes/colors/aptosColorPalette";
+import {tryStandardizeAddress} from "../../../utils";
 
 type InfoTabProps = {
   address: string;
@@ -18,9 +18,9 @@ export default function InfoTab({address, accountData}: InfoTabProps) {
     return <EmptyTabContent />;
   }
 
-  const keyRotated = !AccountAddress.from(address).equals(
-    AccountAddress.from(accountData.authentication_key),
-  );
+  const keyRotated =
+    tryStandardizeAddress(address) !==
+    tryStandardizeAddress(accountData.authentication_key);
 
   return (
     <Box marginBottom={3}>

@@ -1,8 +1,7 @@
 import {Types} from "aptos";
-import {standardizeAddress} from "../../utils";
+import {standardizeAddress, tryStandardizeAddress} from "../../utils";
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
 import {TransactionTypeName} from "../../components/TransactionType";
-import {AccountAddress} from "@aptos-labs/ts-sdk";
 
 export type TransactionCounterparty = {
   address: string;
@@ -188,9 +187,9 @@ function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
   const aptEventChange = changes.filter((change) => {
     if (
       "address" in change &&
-      AccountAddress.from(change.address).equals(
-        AccountAddress.from(event.guid.account_address),
-      )
+      change.address &&
+      tryStandardizeAddress(change.address) ===
+        tryStandardizeAddress(event.guid.account_address)
     ) {
       const data = getAptChangeData(change);
       if (data !== undefined) {

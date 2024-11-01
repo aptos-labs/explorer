@@ -11,8 +11,7 @@ import {
   CoinDescription,
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
-import {AccountAddress} from "@aptos-labs/ts-sdk";
-import {getAssetSymbol} from "../../../utils";
+import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
 
 type BalanceChangeTabProps = {
   transaction: Types.Transaction;
@@ -129,16 +128,12 @@ export function findCoinData(
   let entry: CoinDescription | undefined;
   if (coinData) {
     const coinType = asset_type.includes("::") ? asset_type : undefined;
-    const faAddress =
-      asset_type && AccountAddress.isValid({input: asset_type}).valid
-        ? AccountAddress.from(asset_type)
-        : undefined;
+    const faAddress = asset_type && tryStandardizeAddress(asset_type);
     entry = coinData.find((c) => {
       const isMatchingFa =
         faAddress &&
         c.faAddress &&
-        AccountAddress.isValid({input: c.faAddress}).valid &&
-        AccountAddress.from(c.faAddress).equals(faAddress);
+        tryStandardizeAddress(faAddress) === tryStandardizeAddress(c.faAddress);
       const isMatchingCoin =
         coinType && c.tokenAddress && c.tokenAddress === coinType;
       return isMatchingCoin || isMatchingFa;
