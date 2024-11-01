@@ -3,11 +3,10 @@ import Grid from "@mui/material/Grid";
 import TotalSupply from "./TotalSupply";
 import TotalStake from "./TotalStake";
 import TPS from "./TPS";
-import ActiveValidators from "./ActiveValidators";
 import TotalTransactions from "./TotalTransactions";
 import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 import {Link} from "../../../routing";
-import ActiveFullnodes from "./ActiveFullnodes";
+import ActiveNodes from "./ActiveNodes";
 
 type CardStyle = "default" | "outline";
 
@@ -68,12 +67,7 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
           <LinkableContainer linkToAnalyticsPage={onHomePage}>
-            <ActiveValidators />
-          </LinkableContainer>
-        </Grid>
-        <Grid item xs={12} md={6} lg={3}>
-          <LinkableContainer linkToAnalyticsPage={onHomePage}>
-            <ActiveFullnodes />
+            <ActiveNodes />
           </LinkableContainer>
         </Grid>
       </Grid>
