@@ -73,6 +73,8 @@ export const knownAddresses: Record<string, string> = {
     "Cellana Rewards",
   "0x1c3206329806286fd2223647c9f9b130e66baeb6d7224a18c1f642ffe48f3b4c":
     "Panora Exchange",
+  "0x9538c839fe490ccfaf32ad9f7491b5e84e610ff6edc110ff883f06ebde82463d":
+    "KanaLabs",
   "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c":
     "Econia Labs",
   // Lending
@@ -134,6 +136,8 @@ export const knownAddresses: Record<string, string> = {
     "Bluemove Marketplace",
   "0xf6994988bd40261af9431cd6dd3fcf765569719e66322c7a05cc78a89cd366d4":
     "Souffl3 Marketplace",
+  "0x465a0051e8535859d4794f0af24dbf35c5349bedadab26404b20b825035ee790":
+    "Rarible Marketplace",
   "0xe11c12ec495f3989c35e1c6a0af414451223305b579291fc8f3d9d0575a23c26":
     "Tradeport",
   "0x86a32dcdd605152e58b984ac2538168214bb57ab4661c591a095563b3d2d6a37":
@@ -168,7 +172,7 @@ export const knownAddresses: Record<string, string> = {
   "0x6d138096fb880d1c16b48f10686b98a96000c0ac18501425378f784c6b81c34d":
     "Eragon",
   "0x66cb05df2d855fbae92cdb2dfac9a0b29c969a03998fa817735d27391b52b189":
-    "ReadyGames",
+    "PL▶Y",
   "0x08afb046f44dd0cb9c445458f9c2e424759cd11f4a270fe6739dcffc16a4db8e":
     "Slime Revolution",
   "0x5a96fab415f43721a44c5a761ecfcccc3dae9c21f34313f0e594b49d8d4564f4": "KGeN",
