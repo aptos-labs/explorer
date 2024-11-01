@@ -31,7 +31,15 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
   return (
     <Stack direction="column" spacing={2} marginX={1}>
       <Typography variant="h3">{title()}</Typography>
-      <Stack direction="row" spacing={1}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          "& > *": {
+            flexShrink: "0", // Prevent elements from shrinking
+          },
+        }}
+      >
         <TitleHashButton hash={struct} type={HashType.STRUCT} />
         {!isBannedType(level) && (
           <TitleHashButton hash={assetSymbol} type={HashType.SYMBOL} />

@@ -25,12 +25,11 @@ import {
   is32ByteHex,
   isValidStruct,
 } from "../../utils";
-import {AccountAddress} from "@aptos-labs/ts-sdk";
 import {
   CoinDescription,
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
-import {getAssetSymbol} from "../../../utils";
+import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
 import {knownAddresses} from "../../../api/hooks/useGetANS";
 
 export type SearchResult = {
@@ -186,7 +185,11 @@ export default function HeaderSearch() {
   function handleAddress(searchText: string): Promise<SearchResult | null>[] {
     // TODO: add digital assets, collections, etc.
     const promises = [];
-    const address = AccountAddress.from(searchText).toStringLong();
+    const address = tryStandardizeAddress(searchText);
+    if (!address) {
+      return [];
+    }
+
     // It's either an account OR an object: we query both at once to save time
     const accountPromise = getAccount({address}, state.aptos_client)
       .then((): SearchResult => {
@@ -297,7 +300,11 @@ export default function HeaderSearch() {
         (coin: CoinDescription) =>
           coin.symbol?.toLowerCase() === searchLowerCase ||
           coin.panoraSymbol?.toLowerCase() === searchLowerCase ||
-          coin.name?.toLowerCase() === searchLowerCase,
+          coin.name?.toLowerCase() === searchLowerCase ||
+          (coin.faAddress &&
+            tryStandardizeAddress(coin.faAddress) ===
+              tryStandardizeAddress(searchText)) ||
+          coin.tokenAddress === searchText,
       )
       .map((coin: CoinDescription) => {
         if (coin.tokenAddress) {
@@ -345,9 +352,11 @@ export default function HeaderSearch() {
       // These are transaction hashes AND addresses
       promises.push(handleTransaction(searchText));
       promises.push(...handleAddress(searchText));
+      multipleSearchPromises.push(handleCoinLookup(searchText));
     } else if (isValidAccountAddr) {
       // These are only addresses
       promises.push(...handleAddress(searchText));
+      multipleSearchPromises.push(handleCoinLookup(searchText));
     } else if (searchText.length > 2) {
       multipleSearchPromises.push(handleCoinLookup(searchText));
       multipleSearchPromises.push(handleLabelLookup(searchText));
