@@ -29,7 +29,7 @@ export default function ActiveNodes() {
           </Box>
           <Box>
             <Box sx={{fontWeight: 700}}>Active Fullnodes</Box>
-            <Box>Number of approximate fullnodes.</Box>
+            <Box>Approximate number of fullnodes.</Box>
           </Box>
         </Stack>
       }
