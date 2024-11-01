@@ -158,9 +158,7 @@ function TransactionAmount({
   transaction: Types.Transaction;
   address?: string;
 }) {
-  const isAccountTransactionTable = typeof address === "string";
-
-  if (isAccountTransactionTable) {
+  if (address !== undefined) {
     const amount = getCoinBalanceChangeForAccount(transaction, address);
     if (amount !== undefined) {
       let amountAbs = amount;
