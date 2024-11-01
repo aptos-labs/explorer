@@ -18,6 +18,7 @@ export type AnalyticsData = {
   max_tps_15_blocks_in_past_30_days: {
     max_tps_15_blocks_in_past_30_days: number;
   }[];
+  latest_node_count: NodeCountData[];
 };
 
 export type DailyAnalyticsData =
@@ -74,6 +75,11 @@ export type DailyUserTxnData = {
 export type MonthlyActiveUserData = {
   mau_signer_30: number;
   date: string;
+};
+
+export type NodeCountData = {
+  date: string;
+  approx_nodes: number;
 };
 
 export function useGetAnalyticsData() {
