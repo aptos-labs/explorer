@@ -744,7 +744,7 @@ function ContractForm({
                   render={({field: {onChange, value}}) => (
                     <TextField
                       onChange={onChange}
-                      value={isOption ? value : value ?? ""}
+                      value={isOption ? value : (value ?? "")}
                       label={`arg${i}: ${param}`}
                       fullWidth
                     />
