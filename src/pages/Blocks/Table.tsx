@@ -26,11 +26,7 @@ type BlockCellProps = {
 function BlockHeightCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <Link
-        to={`/block/${block.block_height}`}
-        target="_blank"
-        underline="none"
-      >
+      <Link to={`/block/${block.block_height}`} underline="none">
         {block.block_height}
       </Link>
     </GeneralTableCell>
@@ -56,7 +52,7 @@ function BlockHashCell({block}: BlockCellProps) {
 function FirstVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Link to={`/txn/${block.first_version}`} target="_blank" underline="none">
+      <Link to={`/txn/${block.first_version}`} underline="none">
         {block.first_version}
       </Link>
     </GeneralTableCell>
@@ -66,7 +62,7 @@ function FirstVersionCell({block}: BlockCellProps) {
 function LastVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Link to={`/txn/${block.last_version}`} target="_blank" underline="none">
+      <Link to={`/txn/${block.last_version}`} underline="none">
         {block.last_version}
       </Link>
     </GeneralTableCell>
