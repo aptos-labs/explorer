@@ -103,12 +103,15 @@ export const standardizeAddress = (address: AccountAddressInput): string => {
 
 export const tryStandardizeAddress = (
   address: AccountAddressInput | null | undefined,
+  logError?: boolean,
 ): string | undefined => {
   if (address) {
     try {
       return standardizeAddress(address);
     } catch (e) {
-      console.log("Failed to standardize address", address, e);
+      if (logError) {
+        console.log("Failed to standardize address", address, e);
+      }
       return undefined;
     }
   }
