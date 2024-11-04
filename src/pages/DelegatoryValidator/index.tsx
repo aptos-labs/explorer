@@ -1,4 +1,4 @@
-import {Grid, Stack} from "@mui/material";
+import {Grid2, Stack} from "@mui/material";
 import {useParams} from "react-router-dom";
 import PageHeader from "../layout/PageHeader";
 import ValidatorTitle from "./Title";
@@ -99,9 +99,9 @@ export default function ValidatorPage() {
       }}
     >
       <SkeletonTheme>
-        <Grid container>
+        <Grid2 container>
           <PageHeader />
-          <Grid item xs={12}>
+          <Grid2 size={{xs: 12}}>
             <Stack direction="column" spacing={4}>
               <ValidatorTitle
                 address={address}
@@ -133,8 +133,8 @@ export default function ValidatorPage() {
                 />
               )}
             </Stack>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </SkeletonTheme>
     </DelegationStateContext.Provider>
   );
