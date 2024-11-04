@@ -23,7 +23,20 @@ export function getTransactionCounterparty(
     return undefined;
   }
 
-  if (transaction.payload.type !== "entry_function_payload") {
+  let payload: Types.TransactionPayload_EntryFunctionPayload;
+  if (transaction.payload.type === "entry_function_payload") {
+    payload =
+      transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
+  } else if (
+    transaction.payload.type === "multisig_payload" &&
+    "transaction_payload" in transaction.payload &&
+    transaction.payload.transaction_payload &&
+    "type" in transaction.payload.transaction_payload &&
+    transaction.payload.transaction_payload.type === "entry_function_payload"
+  ) {
+    payload = transaction.payload
+      .transaction_payload as Types.TransactionPayload_EntryFunctionPayload;
+  } else {
     return undefined;
   }
 
@@ -33,9 +46,6 @@ export function getTransactionCounterparty(
   // 2. coins are transferred from account1 to account2, and account2 is created upon transaction:
   //    payload function is "0x1::aptos_account::transfer" or "0x1::aptos_account::transfer_coins"
   // In both scenarios, the first item in arguments is the receiver's address, and the second item is the amount.
-
-  const payload =
-    transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
 
   const isCoinTransfer =
     payload.function === "0x1::coin::transfer" ||
@@ -236,28 +246,28 @@ export interface FungibleAssetActivity {
 export function useTransactionBalanceChanges(txn_version: string) {
   const {loading, error, data} = useGraphqlQuery<TransactionResponse>(
     gql`
-      query TransactionQuery($txn_version: String) {
-        fungible_asset_activities(
-          where: {transaction_version: {_eq: ${txn_version}}}
-        ) {
-          amount
-          entry_function_id_str
-          gas_fee_payer_address
-          is_frozen
-          asset_type
-          event_index
-          owner_address
-          transaction_timestamp
-          transaction_version
-          type
-          storage_refund_amount
-          metadata {
-            asset_type
-            decimals
-            symbol
-          }
+        query TransactionQuery($txn_version: String) {
+            fungible_asset_activities(
+                where: {transaction_version: {_eq: ${txn_version}}}
+            ) {
+                amount
+                entry_function_id_str
+                gas_fee_payer_address
+                is_frozen
+                asset_type
+                event_index
+                owner_address
+                transaction_timestamp
+                transaction_version
+                type
+                storage_refund_amount
+                metadata {
+                    asset_type
+                    decimals
+                    symbol
+                }
+            }
         }
-      }
     `,
     {variables: {txn_version}},
   );
