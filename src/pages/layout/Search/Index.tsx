@@ -251,11 +251,15 @@ export default function HeaderSearch() {
     const anyObjectsPromise = state.sdk_v2_client
       .getAccountOwnedObjects({accountAddress: address})
       .then(
-        () => {
-          return {
-            label: `Address ${address}`,
-            to: `/account/${address}`,
-          };
+        (output) => {
+          if (output.length > 0) {
+            return {
+              label: `Address ${address}`,
+              to: `/account/${address}`,
+            };
+          } else {
+            return null;
+          }
         },
         () => {
           // It has no coins
