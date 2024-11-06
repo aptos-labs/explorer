@@ -2,7 +2,7 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useViewFunction} from "./useViewFunction";
 
-export function useGetCoinSupplyLimit(coinType: string): bigint | null {
+export function useGetCoinSupplyLimit(coinType: `${string}::${string}::${string}`): bigint | null {
   const [state] = useGlobalState();
   const [totalSupply, setTotalSupply] = useState<bigint | null>(null);
 

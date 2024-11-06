@@ -198,8 +198,8 @@ function encodeVectorForViewRequest(type: string, value: string) {
               return result;
             }),
           ),
-        ) as any
-      ).hexString;
+        ).toString()
+      );
     } else if (["u16", "u32"].includes(match[1])) {
       return rawVector.map((v) => ensureNumber(v.trim()));
     } else if (["u64", "u128", "u256"].includes(match[1])) {

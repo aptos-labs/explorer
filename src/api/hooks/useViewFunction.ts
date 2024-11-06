@@ -1,17 +1,17 @@
 import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {ResponseError} from "../client";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {view} from "../v2";
-import {InputViewFunctionData, MoveValue} from "@aptos-labs/ts-sdk";
+import {viewJson} from "../v2";
+import {InputViewFunctionJsonData, MoveValue} from "@aptos-labs/ts-sdk";
 
 export function useViewFunction(
   functionName: `${string}::${string}::${string}`,
-  typeArgs: string[],
+  typeArgs: `${string}::${string}::${string}`[],
   args: string[],
 ): UseQueryResult<MoveValue[], ResponseError> {
   const [state] = useGlobalState();
 
-  const request: InputViewFunctionData = {
+  const request: InputViewFunctionJsonData = {
     function: functionName,
     typeArguments: typeArgs,
     functionArguments: args,
@@ -23,7 +23,7 @@ export function useViewFunction(
       {functionName, typeArgs, args},
       state.network_value,
     ],
-    queryFn: () => view(request, state.sdk_v2_client),
+    queryFn: () => viewJson(request, state.sdk_v2_client),
     refetchOnWindowFocus: false,
   });
 }

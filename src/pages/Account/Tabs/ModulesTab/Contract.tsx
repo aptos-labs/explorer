@@ -47,6 +47,7 @@ import {
   InputViewFunctionData,
   MoveValue,
 } from "@aptos-labs/ts-sdk";
+import {viewJson} from "@aptos-labs/ts-sdk/dist/esm/internal/view";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -521,7 +522,7 @@ function ReadContractForm({
     }
     setInProcess(true);
     try {
-      const result = await view(
+      const result = await viewJson(
         viewRequest,
         state.sdk_v2_client,
         data.ledgerVersion,

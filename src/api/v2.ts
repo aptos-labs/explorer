@@ -8,7 +8,7 @@ import {
   APTOS_COIN,
   AptosConfig,
   Block,
-  InputViewFunctionData,
+  InputViewFunctionData, InputViewFunctionJsonData,
   LedgerInfo,
   MoveModuleBytecode,
   MoveResource,
@@ -174,6 +174,29 @@ export function getAccountModule(
   );
 }
 
+export function viewJson<T extends MoveValue[]>(
+  request: InputViewFunctionJsonData,
+  client: Aptos,
+  ledgerVersion?: string,
+): Promise<T> {
+  let parsedVersion = undefined;
+
+  // Handle non-numbers, to default to the latest ledger version
+  if (typeof ledgerVersion === "string") {
+    const parsed = parseInt(ledgerVersion, 10);
+    if (!isNaN(parsed)) {
+      parsedVersion = undefined;
+    } else {
+      parsedVersion = parsed;
+    }
+  }
+
+  return client.viewJson<T>({
+    payload: request,
+    options: {ledgerVersion: parsedVersion},
+  });
+}
+
 export function view<T extends MoveValue[]>(
   request: InputViewFunctionData,
   client: Aptos,
@@ -196,6 +219,7 @@ export function view<T extends MoveValue[]>(
     options: {ledgerVersion: parsedVersion},
   });
 }
+
 
 export function getTableItem<T>(
   requestParameters: {tableHandle: string; data: TableItemRequest},
