@@ -4,13 +4,13 @@ import {
   useQuery,
   UseQueryResult,
 } from "@tanstack/react-query";
-import {Types} from "aptos";
-import {getLedgerInfo, getTransactions} from "../../api";
+import {getLedgerInfo, getTransactions} from "../../api/v2";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
 import {Pagination, Stack} from "@mui/material";
 import TransactionsTable from "./TransactionsTable";
+import {LedgerInfo, TransactionResponse} from "@aptos-labs/ts-sdk";
 
 const LIMIT = 20;
 
@@ -62,7 +62,9 @@ function RenderPagination({
   );
 }
 
-function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
+function TransactionContent({
+  data,
+}: UseQueryResult<Array<TransactionResponse>>) {
   if (!data) {
     // TODO: error handling!
     return null;
@@ -71,7 +73,7 @@ function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
   return <TransactionsTable transactions={data} />;
 }
 
-function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
+function TransactionsPageInner({data}: UseQueryResult<LedgerInfo>) {
   const maxVersion = parseInt(data?.ledger_version ?? "");
   const limit = LIMIT;
   const [state] = useGlobalState();
@@ -85,7 +87,7 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
 
   const result = useQuery({
     queryKey: ["transactions", {start, limit}, state.network_value],
-    queryFn: () => getTransactions({start, limit}, state.aptos_client),
+    queryFn: () => getTransactions({start, limit}, state.sdk_v2_client),
     placeholderData: keepPreviousData,
   });
 
@@ -115,7 +117,7 @@ export default function AllTransactions() {
 
   const result = useQuery({
     queryKey: ["ledgerInfo", state.network_value],
-    queryFn: () => getLedgerInfo(state.aptos_client),
+    queryFn: () => getLedgerInfo(state.sdk_v2_client),
     refetchInterval: 10000,
   });
 

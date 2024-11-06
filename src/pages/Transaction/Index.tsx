@@ -1,24 +1,26 @@
 import {Stack, Grid2, Alert} from "@mui/material";
-import {Types} from "aptos";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {ResponseError} from "../../api/client";
-import {getTransaction} from "../../api";
+import {getTransaction} from "../../api/v2";
 import Error from "./Error";
 import TransactionTitle from "./Title";
 import TransactionTabs from "./Tabs";
 import PageHeader from "../layout/PageHeader";
+import {TransactionResponse} from "@aptos-labs/ts-sdk";
 
 export default function TransactionPage() {
   const [state] = useGlobalState();
   const {txnHashOrVersion: txnParam} = useParams();
   const txnHashOrVersion = txnParam ?? "";
 
-  const {isLoading, data, error} = useQuery<Types.Transaction, ResponseError>({
-    queryKey: ["transaction", {txnHashOrVersion}, state.network_value],
-    queryFn: () => getTransaction({txnHashOrVersion}, state.aptos_client),
-  });
+  const {isLoading, data, error} = useQuery<TransactionResponse, ResponseError>(
+    {
+      queryKey: ["transaction", {txnHashOrVersion}, state.network_value],
+      queryFn: () => getTransaction({txnHashOrVersion}, state.sdk_v2_client),
+    },
+  );
 
   if (isLoading) {
     return null;

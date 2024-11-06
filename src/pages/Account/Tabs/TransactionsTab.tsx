@@ -1,13 +1,13 @@
 import React from "react";
-import {Types} from "aptos";
 import AccountTransactions from "../Components/AccountTransactions";
 import {useGetIsGraphqlClientSupported} from "../../../api/hooks/useGraphqlClient";
 import AccountAllTransactions from "../Components/AccountAllTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {AccountData, MoveResource} from "@aptos-labs/ts-sdk";
 
 type TransactionsTabProps = {
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: AccountData | MoveResource[] | undefined;
 };
 
 export default function TransactionsTab({

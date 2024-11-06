@@ -1,18 +1,20 @@
 import React from "react";
 import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import Button from "@mui/material/Button";
-import {Types} from "aptos";
-import {getTransactions} from "../../api";
+import {getTransactions} from "../../api/v2";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
 import {Stack} from "@mui/material";
 import TransactionsTable from "../Transactions/TransactionsTable";
 import {useAugmentToWithGlobalSearchParams} from "../../routing";
+import {TransactionResponse} from "@aptos-labs/ts-sdk";
 
 const PREVIEW_LIMIT = 10;
 
-function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
+function TransactionContent({
+  data,
+}: UseQueryResult<Array<TransactionResponse>>) {
   if (!data) {
     // TODO: error handling!
     return null;
@@ -26,7 +28,7 @@ export default function TransactionsPreview() {
   const limit = PREVIEW_LIMIT;
   const result = useQuery({
     queryKey: ["transactions", {limit}, state.network_value],
-    queryFn: () => getTransactions({limit}, state.aptos_client),
+    queryFn: () => getTransactions({limit}, state.sdk_v2_client),
   });
   const augmentTo = useAugmentToWithGlobalSearchParams();
 

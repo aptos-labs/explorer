@@ -7,29 +7,30 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {Link} from "../../../routing";
 import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
-import {Current_Token_Datas_V2} from "aptos";
 import {isValidIpfsUrl, isValidUrl, toIpfsUrl} from "../../utils";
+import {GetCurrentTokenOwnershipResponse} from "@aptos-labs/ts-sdk";
+import {GetTokenDataResponse} from "@aptos-labs/ts-sdk/src/types";
 
 function OwnersRow() {
   const {tokenId} = useParams();
-  const {data: owners} = useGetTokenOwners(tokenId);
+  const {data: owner} = useGetTokenOwners(tokenId);
 
   return (
     <ContentRow
       title={"Owner(s):"}
       value={
-        <Stack direction="row" spacing={1}>
-          {(owners ?? []).map((owner: {owner_address: string}) => (
+        owner && (
+          <Stack direction="row" spacing={1}>
             <HashButton hash={owner?.owner_address} type={HashType.ACCOUNT} />
-          ))}
-        </Stack>
+          </Stack>
+        )
       }
     />
   );
 }
 
 type OverviewTabProps = {
-  data: Current_Token_Datas_V2;
+  data: GetTokenDataResponse;
 };
 
 // TODO: add more contents
@@ -74,8 +75,8 @@ export default function OverviewTab({data}: OverviewTabProps) {
                   loading="lazy"
                 />
               </a>
-            ) : isValidUrl(data?.token_uri) ? (
-              <Link to={data?.token_uri} target="_blank">
+            ) : isValidUrl(data?.token_uri ?? "") ? (
+              <Link to={data?.token_uri ?? ""} target="_blank">
                 {data?.token_uri}
               </Link>
             ) : (

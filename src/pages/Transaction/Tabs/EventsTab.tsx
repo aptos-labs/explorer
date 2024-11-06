@@ -1,5 +1,4 @@
 import React from "react";
-import {Types} from "aptos";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
@@ -7,14 +6,14 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import HashButton, {HashType} from "../../../components/HashButton";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {TransactionResponse, Event} from "@aptos-labs/ts-sdk";
 
 type EventsTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function EventsTab({transaction}: EventsTabProps) {
-  const events: Types.Event[] =
-    "events" in transaction ? transaction.events : [];
+  const events: Event[] = "events" in transaction ? transaction.events : [];
 
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(events.length);

@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -7,16 +6,19 @@ import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
+import {
+  StateCheckpointTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
 type StateCheckpointOverviewTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function StateCheckpointOverviewTab({
   transaction,
 }: StateCheckpointOverviewTabProps) {
-  const transactionData =
-    transaction as Types.Transaction_StateCheckpointTransaction;
+  const transactionData = transaction as StateCheckpointTransactionResponse;
 
   return (
     <Box marginBottom={3}>

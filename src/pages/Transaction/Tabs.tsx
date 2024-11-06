@@ -1,6 +1,5 @@
 import * as React from "react";
 import {Box} from "@mui/material";
-import {Types} from "aptos";
 import {assertNever} from "../../utils";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
@@ -24,10 +23,11 @@ import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
 import {TransactionTypeName} from "../../components/TransactionType";
+import {TransactionResponse} from "@aptos-labs/ts-sdk";
 
-function getTabValues(transaction: Types.Transaction): TabValue[] {
+function getTabValues(transaction: TransactionResponse): TabValue[] {
   switch (transaction.type) {
-    case TransactionTypeName.User:
+    case TransactionTypeName.User.valueOf():
       return [
         "userTxnOverview",
         "balanceChange",
@@ -35,17 +35,17 @@ function getTabValues(transaction: Types.Transaction): TabValue[] {
         "payload",
         "changes",
       ];
-    case TransactionTypeName.BlockMetadata:
+    case TransactionTypeName.BlockMetadata.valueOf():
       return ["blockMetadataOverview", "events", "changes"];
-    case TransactionTypeName.StateCheckpoint:
+    case TransactionTypeName.StateCheckpoint.valueOf():
       return ["stateCheckpointOverview"];
-    case TransactionTypeName.Pending:
+    case TransactionTypeName.Pending.valueOf():
       return ["pendingTxnOverview", "payload"];
-    case TransactionTypeName.Genesis:
+    case TransactionTypeName.Genesis.valueOf():
       return ["genesisTxnOverview", "events", "payload", "changes"];
-    case TransactionTypeName.Validator:
+    case TransactionTypeName.Validator.valueOf():
       return ["validatorTxnOverview", "events", "changes"];
-    case TransactionTypeName.BlockEpilogue:
+    case TransactionTypeName.BlockEpilogue.valueOf():
       return ["unknown", "events", "changes"]; // TODO: Make a page for block epilogue
     default:
       return ["unknown", "events", "changes"];
@@ -117,7 +117,7 @@ function getTabIcon(value: TabValue): JSX.Element {
 
 type TabPanelProps = {
   value: TabValue;
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 function TabPanel({value, transaction}: TabPanelProps): JSX.Element {
@@ -126,7 +126,7 @@ function TabPanel({value, transaction}: TabPanelProps): JSX.Element {
 }
 
 type TransactionTabsProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
   tabValues?: TabValue[];
 };
 

@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -17,11 +16,12 @@ import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard
 import {parseExpirationTimestamp} from "../../utils";
 import {TransactionActions} from "./Components/TransactionActions";
 import {grey} from "../../../themes/colors/aptosColorPalette";
+import {TransactionResponse, UserTransactionResponse} from "@aptos-labs/ts-sdk";
 
 function UserTransferOrInteractionRows({
   transaction,
 }: {
-  transaction: Types.Transaction;
+  transaction: UserTransactionResponse;
 }) {
   const counterparty = getTransactionCounterparty(transaction);
   let smartContractAddress: string | undefined;
@@ -59,7 +59,7 @@ function UserTransferOrInteractionRows({
 function TransactionFunctionRow({
   transaction,
 }: {
-  transaction: Types.Transaction;
+  transaction: UserTransactionResponse;
 }) {
   return (
     <ContentRow
@@ -70,7 +70,11 @@ function TransactionFunctionRow({
   );
 }
 
-function TransactionAmountRow({transaction}: {transaction: Types.Transaction}) {
+function TransactionAmountRow({
+  transaction,
+}: {
+  transaction: TransactionResponse;
+}) {
   const amount = getTransactionAmount(transaction);
 
   return (
@@ -87,13 +91,13 @@ function TransactionAmountRow({transaction}: {transaction: Types.Transaction}) {
 }
 
 type UserTransactionOverviewTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function UserTransactionOverviewTab({
   transaction,
 }: UserTransactionOverviewTabProps) {
-  const transactionData = transaction as Types.Transaction_UserTransaction;
+  const transactionData = transaction as UserTransactionResponse;
 
   // TODO: pass into gas fee value to reduce searches
   const feeStatement = transactionData?.events?.find(

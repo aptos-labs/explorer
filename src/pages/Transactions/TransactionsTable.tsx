@@ -7,7 +7,6 @@ import Typography from "@mui/material/Typography";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../components/HashButton";
-import {Types} from "aptos";
 import {assertNever} from "../../utils";
 import {
   TableTransactionType,
@@ -35,9 +34,14 @@ import {
 import {Link} from "../../routing";
 import {ArrowForwardOutlined, TextSnippetOutlined} from "@mui/icons-material";
 import Tooltip from "@mui/material/Tooltip";
+import {
+  isBlockMetadataTransactionResponse,
+  isUserTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
 type TransactionCellProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
   address?: string;
 };
 
@@ -92,10 +96,10 @@ function TransactionTimestampCell({transaction}: TransactionCellProps) {
 
 function TransactionSenderCell({transaction}: TransactionCellProps) {
   let sender;
-  if (transaction.type === TransactionTypeName.User) {
-    sender = (transaction as Types.UserTransaction).sender;
-  } else if (transaction.type === "block_metadata_transaction") {
-    sender = (transaction as Types.BlockMetadataTransaction).proposer;
+  if (isUserTransactionResponse(transaction)) {
+    sender = transaction.sender;
+  } else if (isBlockMetadataTransactionResponse(transaction)) {
+    sender = transaction.proposer;
   }
 
   return (
@@ -155,7 +159,7 @@ function TransactionAmount({
   transaction,
   address,
 }: {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
   address?: string;
 }) {
   if (address !== undefined) {
@@ -242,7 +246,7 @@ const DEFAULT_COLUMNS: TransactionColumn[] = [
 ];
 
 type TransactionRowProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
   columns: TransactionColumn[];
 };
 
@@ -322,7 +326,7 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
 }
 
 type TransactionsTableProps = {
-  transactions: Types.Transaction[];
+  transactions: TransactionResponse[];
   columns?: TransactionColumn[];
   address?: string;
 };

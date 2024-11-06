@@ -1,6 +1,6 @@
 import {NetworkName, networks} from "../../constants";
 import {useQuery} from "@tanstack/react-query";
-import {getLedgerInfoWithoutResponseError} from "..";
+import {getLedgerInfoWithoutResponseError} from "../v2";
 import {
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,

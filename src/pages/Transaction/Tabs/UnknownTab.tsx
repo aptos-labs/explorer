@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Alert, Box} from "@mui/material";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -8,14 +7,17 @@ import {getLearnMoreTooltip} from "../helpers";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+import {
+  BlockMetadataTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
 type UnknownTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function UnknownTab({transaction}: UnknownTabProps) {
-  const transactionData =
-    transaction as Types.Transaction_BlockMetadataTransaction;
+  const transactionData = transaction as BlockMetadataTransactionResponse;
 
   return (
     <Box marginBottom={3}>

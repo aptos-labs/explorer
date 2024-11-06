@@ -1,4 +1,3 @@
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import React from "react";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -7,10 +6,11 @@ import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabC
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import {tryStandardizeAddress} from "../../../utils";
+import {AccountData, MoveResource} from "@aptos-labs/ts-sdk";
 
 type InfoTabProps = {
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: AccountData | MoveResource[] | undefined;
 };
 
 export default function InfoTab({address, accountData}: InfoTabProps) {

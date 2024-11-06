@@ -14,19 +14,17 @@ export default function TokenPage() {
     // TODO: error handling
     return null;
   }
-  const tokenDatas = data ?? [];
-  if (tokenDatas.length === 0) {
+  if (!data) {
     return <EmptyTabContent />;
   }
-  const token = tokenDatas[0];
 
   return (
     <Grid2 container spacing={1}>
       <PageHeader />
       <Grid2 size={{xs: 12}}>
         <Stack direction="column" spacing={4} marginTop={2}>
-          <TokenTitle name={token?.token_name} />
-          <TokenTabs data={token} />
+          <TokenTitle name={data.token_name} />
+          <TokenTabs data={data} />
         </Stack>
       </Grid2>
     </Grid2>

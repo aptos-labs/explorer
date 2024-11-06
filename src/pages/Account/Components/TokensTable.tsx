@@ -7,10 +7,9 @@ import {assertNever} from "../../../utils";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {Link} from "../../../routing";
-import {TokenOwnership} from "../../../api/hooks/useGetAccountTokens";
 
 type TokenCellProps = {
-  token: TokenOwnership;
+  token: any; // FIXME
 };
 
 function TokenNameCell({token}: TokenCellProps) {
@@ -155,7 +154,7 @@ function TokenHeaderCell({column}: TokenHeaderCellProps) {
 }
 
 type TokensTableProps = {
-  tokens: TokenOwnership[];
+  tokens: any[]; // FIXME
   columns?: Column[];
 };
 

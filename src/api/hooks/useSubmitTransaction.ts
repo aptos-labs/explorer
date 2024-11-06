@@ -1,10 +1,10 @@
-import {FailedTransactionError} from "aptos";
 import {useEffect, useState} from "react";
 import {
   useWallet,
   InputTransactionData,
 } from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {AptosApiError} from "@aptos-labs/ts-sdk";
 
 export type TransactionResponse =
   | TransactionResponseOnSubmission
@@ -81,7 +81,7 @@ const useSubmitTransaction = () => {
         // transaction failed
         return {...responseOnError, message: response.message};
       } catch (error) {
-        if (error instanceof FailedTransactionError) {
+        if (error instanceof AptosApiError) {
           return {
             transactionSubmitted: true,
             transactionHash: response ? response.hash : "",

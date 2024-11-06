@@ -12,7 +12,6 @@ import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCel
 import {assertNever} from "../../utils";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import {Types} from "aptos";
 import {
   ValidatorData,
   useGetValidators,
@@ -41,9 +40,10 @@ import {
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import {useQuery} from "@tanstack/react-query";
-import {getValidatorCommisionAndState} from "../../api";
+import {getValidatorCommissionAndState} from "../../api/v2";
 import {MoveValue} from "aptos/src/generated";
 import {ResponseError} from "../../api/client";
+import {AccountAddressInput} from "@aptos-labs/ts-sdk";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -327,7 +327,7 @@ function ViewCell() {
 }
 
 function MyDepositCell({validator}: ValidatorCellProps) {
-  const [totalDeposit, setTotalDeposit] = useState<Types.MoveValue>();
+  const [totalDeposit, setTotalDeposit] = useState<bigint>();
   const {account} = useWallet();
   const {stakes} = useGetDelegatorStakeInfo(
     account?.address!,
@@ -336,22 +336,19 @@ function MyDepositCell({validator}: ValidatorCellProps) {
 
   useMemo(() => {
     setTotalDeposit(
-      stakes.reduce(
-        (prev, current) =>
-          (current =
-            Number(current) + (prev && Number(prev) !== 0 ? Number(prev) : 0)),
-        0,
-      ),
+      stakes.reduce((prev, current) => {
+        return prev ?? 0n + current ?? 0n;
+      }, 0n),
     );
   }, [stakes]);
 
   return (
     <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
-      {Number(totalDeposit) !== 0 ? (
+      {totalDeposit !== 0n ? (
         <Stack direction="row" spacing={1.5}>
           <CheckCircleIcon sx={{color: aptosColor}} fontSize="small" />
           <CurrencyValue
-            amount={Number(totalDeposit).toString()}
+            amount={totalDeposit?.toString() ?? "0"}
             currencyCode="APT"
             fixedDecimalPlaces={0}
           />
@@ -376,7 +373,7 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
   );
   const {commission, status} = validator;
 
-  const rowClick = (address: Types.Address) => {
+  const rowClick = (address: string) => {
     logEvent("delegation_validators_row_clicked", address, {
       commission: commission?.toString() ?? "",
       delegated_stake_amount: validatorVotingPower ?? "",
@@ -441,26 +438,25 @@ export function DelegationValidatorsTable() {
   );
   const sortedValidatorAddrs = sortedValidators.map((v) => v.owner_address);
   const {data: sortedValidatorsWithCommissionAndState, error} = useQuery<
-    Types.MoveValue[],
+    Array<Array<bigint>>,
     ResponseError
   >({
     queryKey: [
-      "validatorCommisionAndState",
+      "validatorCommissionAndState",
       state.aptos_client,
       ...sortedValidatorAddrs,
     ],
     queryFn: () =>
-      getValidatorCommisionAndState(state.aptos_client, sortedValidatorAddrs),
-    select: (res: MoveValue[]) => {
-      /// First arg is always the return value
-      const ret = res[0] as [MoveValue, MoveValue][];
+      getValidatorCommissionAndState(state.sdk_v2_client, sortedValidatorAddrs),
+    select: (res: bigint[][]) => {
+      //FIXME
       return sortedValidators.map((v, i) => {
-        const commision = ret[i][0];
-        const state = ret[i][1];
+        const commission = res[i][0];
+        const state = res[i][1];
         return {
           ...v,
-          commission: Number(commision) / 100,
-          status: Number(state),
+          commission: commission / 100n,
+          status: state,
         };
       });
     }, // commission rate: 22.85% is represented as 2285
@@ -524,6 +520,7 @@ export function DelegationValidatorsTable() {
       </TableHead>
       <GeneralTableBody>
         {sortedValidatorsWithCommissionAndState?.map(
+          // FIXME
           (validator: any, i: number) => {
             return (
               <ValidatorRow

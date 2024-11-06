@@ -1,4 +1,3 @@
-import {Types} from "aptos";
 import React from "react";
 import Error from "../Error";
 import {useGetAccountResources} from "../../../api/hooks/useGetAccountResources";
@@ -7,13 +6,14 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {AccountData, MoveResource} from "@aptos-labs/ts-sdk";
 
 function ResourcesContent({
   data,
 }: {
-  data: Types.MoveResource[] | undefined;
+  data: MoveResource[] | undefined;
 }): JSX.Element {
-  const resources: Types.MoveResource[] = data ?? [];
+  const resources: MoveResource[] = data ?? [];
 
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(resources.length);
@@ -45,7 +45,7 @@ function ResourcesContent({
 
 type ResourcesTabProps = {
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: AccountData | MoveResource[] | undefined;
 };
 
 export default function ResourcesTab({address}: ResourcesTabProps) {

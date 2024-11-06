@@ -272,13 +272,17 @@ export async function getStake(
   client: Aptos,
   delegatorAddress: AccountAddressInput,
   validatorAddress: AccountAddressInput,
-): Promise<MoveValue[]> {
+): Promise<[bigint, bigint, bigint]> {
   const payload: InputViewFunctionData = {
     function: "0x1::delegation_pool::get_stake",
     typeArguments: [],
     functionArguments: [validatorAddress, delegatorAddress],
   };
-  return withResponseError(client.view({payload}));
+  return withResponseError(
+    client
+      .view<string[]>({payload})
+      .then((res) => [BigInt(res[0]), BigInt(res[1]), BigInt(res[2])]),
+  );
 }
 
 export async function getValidatorCommission(
@@ -357,15 +361,21 @@ export async function getValidatorState(
   return withResponseError(client.view({payload}));
 }
 
-export async function getValidatorCommisionAndState(
+export async function getValidatorCommissionAndState(
   client: Aptos,
   validatorAddresses: AccountAddressInput[],
-): Promise<MoveValue[]> {
+): Promise<bigint[][]> {
   const payload: InputViewFunctionData = {
     function:
       "0x7a5c34e80f796fe58c336812f80e15a86a2086c75640270a11207b911d512aba::helpers::pool_address_info",
     typeArguments: [],
     functionArguments: [validatorAddresses],
   };
-  return withResponseError(client.view({payload}));
+  return withResponseError(
+    client
+      .view({payload})
+      .then((res) =>
+        (res[0] as string[][]).map((inner) => inner.map((x) => BigInt(x))),
+      ),
+  );
 }

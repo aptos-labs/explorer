@@ -1,7 +1,7 @@
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
-import {getLedgerInfo} from "..";
+import {getLedgerInfo} from "../v2";
 import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
 import {AnalyticsData, ANALYTICS_DATA_URL} from "./useGetAnalyticsData";
 
@@ -12,7 +12,7 @@ export function useGetTPS() {
 
   const {data: ledgerData} = useQuery({
     queryKey: ["ledgerInfo", state.network_value],
-    queryFn: () => getLedgerInfo(state.aptos_client),
+    queryFn: () => getLedgerInfo(state.sdk_v2_client),
     refetchInterval: 10000,
   });
   const currentBlockHeight = ledgerData?.block_height;

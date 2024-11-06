@@ -1,4 +1,3 @@
-import {Types} from "aptos";
 import React from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {CoinBalanceChangeTable} from "./Components/CoinBalanceChangeTable";
@@ -12,9 +11,10 @@ import {
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
 import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
+import {TransactionResponse, UserTransactionResponse} from "@aptos-labs/ts-sdk";
 
 type BalanceChangeTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
@@ -116,7 +116,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
   return (
     <CoinBalanceChangeTable
       balanceChanges={balanceChanges}
-      transaction={transaction as Types.UserTransaction}
+      transaction={transaction as UserTransactionResponse}
     />
   );
 }

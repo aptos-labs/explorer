@@ -1,37 +1,36 @@
 import {useQuery} from "@tanstack/react-query";
-import {Types} from "aptos";
-import {getValidatorCommission, getValidatorState} from "..";
+import {getValidatorCommission, getValidatorState} from "../v2";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {ResponseError} from "../client";
 import {combineQueries} from "../query-utils";
-import {MoveValue} from "aptos/src/generated";
+import {AccountAddressInput, MoveValue} from "@aptos-labs/ts-sdk";
 
 type DelegationNodeInfoResponse = {
   commission: number | undefined;
   isQueryLoading: boolean;
-  validatorStatus: Types.MoveValue[] | undefined;
+  validatorStatus: MoveValue[] | undefined;
   error: ResponseError | null;
 };
 
 type DelegationNodeInfoProps = {
-  validatorAddress: Types.Address;
+  validatorAddress: AccountAddressInput;
 };
 
 export function useGetDelegationNodeInfo({
   validatorAddress,
 }: DelegationNodeInfoProps): DelegationNodeInfoResponse {
-  const [{aptos_client: client}] = useGlobalState();
+  const [{sdk_v2_client: client}] = useGlobalState();
 
   const {
     combinedQueryState,
     queries: [validatorCommissionQuery, validatorStateQuery],
   } = combineQueries([
-    useQuery<Types.MoveValue[], ResponseError, number>({
+    useQuery<MoveValue[], ResponseError, number>({
       queryKey: ["validatorCommission", client, validatorAddress],
       queryFn: () => getValidatorCommission(client, validatorAddress),
       select: (res: MoveValue[]) => Number(res ? res[0] : 0) / 100, // commission rate: 22.85% is represented as 2285
     }),
-    useQuery<Types.MoveValue[], ResponseError>({
+    useQuery<MoveValue[], ResponseError>({
       queryKey: ["validatorState", client, validatorAddress],
       queryFn: () => getValidatorState(client, validatorAddress),
     }),

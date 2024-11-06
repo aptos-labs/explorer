@@ -1,5 +1,4 @@
 import {Box} from "@mui/material";
-import {Types} from "aptos";
 import React from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -7,17 +6,13 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {Link} from "../../../routing";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
+import {
+  Block,
+  isBlockMetadataTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
-function isBlockMetadataTransaction(
-  txn: Types.Transaction,
-): txn is Types.Transaction_BlockMetadataTransaction {
-  return (
-    (txn as Types.Transaction_BlockMetadataTransaction).type ===
-    "block_metadata_transaction"
-  );
-}
-
-function VersionValue({data}: {data: Types.Block}) {
+function VersionValue({data}: {data: Block}) {
   const {first_version, last_version} = data;
   return (
     <>
@@ -35,29 +30,27 @@ function VersionValue({data}: {data: Types.Block}) {
 function BlockMetadataRows({
   blockTxn,
 }: {
-  blockTxn: Types.Transaction | undefined;
+  blockTxn: TransactionResponse | undefined;
 }) {
-  if (!blockTxn) {
+  if (!blockTxn || !isBlockMetadataTransactionResponse(blockTxn)) {
     return null;
   }
-
-  const txn = blockTxn as Types.Transaction_BlockMetadataTransaction;
 
   return (
     <>
       <ContentRow
         title="Proposer:"
-        value={<HashButton hash={txn.proposer} type={HashType.ACCOUNT} />}
+        value={<HashButton hash={blockTxn.proposer} type={HashType.ACCOUNT} />}
         tooltip={getLearnMoreTooltip("proposer")}
       />
       <ContentRow
         title="Epoch:"
-        value={txn.epoch}
+        value={blockTxn.epoch}
         tooltip={getLearnMoreTooltip("epoch")}
       />
       <ContentRow
         title="Round:"
-        value={txn.round}
+        value={blockTxn.round}
         tooltip={getLearnMoreTooltip("round")}
       />
     </>
@@ -65,13 +58,13 @@ function BlockMetadataRows({
 }
 
 type OverviewTabProps = {
-  data: Types.Block;
+  data: Block;
 };
 
 export default function OverviewTab({data}: OverviewTabProps) {
-  const blockTxn: Types.Transaction | undefined = (
+  const blockTxn: TransactionResponse | undefined = (
     data.transactions ?? []
-  ).find(isBlockMetadataTransaction);
+  ).find(isBlockMetadataTransactionResponse);
 
   return (
     <Box marginBottom={3}>

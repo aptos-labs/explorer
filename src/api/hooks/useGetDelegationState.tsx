@@ -1,10 +1,10 @@
-import {Types} from "aptos";
 import {ValidatorData} from "./useGetValidators";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {getLockedUtilSecs} from "../../pages/DelegatoryValidator/utils";
 import {useGetAccountAPTBalance} from "./useGetAccountAPTBalance";
 import {useGetNumberOfDelegators} from "./useGetNumberOfDelegators";
 import {useGetStakingRewardsRate} from "./useGetStakingRewardsRate";
+import {MoveResource} from "@aptos-labs/ts-sdk";
 
 export type DelegationState = {
   lockedUntilSecs: bigint | null;
@@ -14,7 +14,7 @@ export type DelegationState = {
 };
 
 export function useGetDelegationState(
-  accountResource: Types.MoveResource,
+  accountResource: MoveResource,
   validator: ValidatorData,
 ): DelegationState {
   const {account} = useWallet();

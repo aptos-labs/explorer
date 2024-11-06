@@ -1,13 +1,13 @@
 import React from "react";
 import {TokensTable} from "../Components/TokensTable";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Types} from "aptos";
 import {
   useGetAccountTokens,
   useGetAccountTokensCount,
 } from "../../../api/hooks/useGetAccountTokens";
 import {useSearchParams} from "react-router-dom";
 import {Box, Pagination, Stack} from "@mui/material";
+import {AccountData, MoveResource} from "@aptos-labs/ts-sdk";
 
 const LIMIT = 20;
 
@@ -76,7 +76,7 @@ export function AccountTokensWithPagination({
 
 type TokenTabsProps = {
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: AccountData | MoveResource[] | undefined;
 };
 
 export default function TokenTabs({address}: TokenTabsProps) {

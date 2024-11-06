@@ -1,8 +1,12 @@
 import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
-import {Types} from "aptos";
 import pako from "pako";
 import {Statsig} from "statsig-react";
-import {AccountAddress, AccountAddressInput, Hex} from "@aptos-labs/ts-sdk";
+import {
+  AccountAddress,
+  AccountAddressInput,
+  Hex,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
 /**
  * Helper function for exhaustiveness checks.
@@ -20,8 +24,8 @@ that means it's a pending transaction (and thus it's expected version will be hi
 We can consider the version to be Infinity for this case.
 */
 export function sortTransactions(
-  a: Types.Transaction,
-  b: Types.Transaction,
+  a: TransactionResponse,
+  b: TransactionResponse,
 ): number {
   const first = "version" in a ? parseInt(a.version) : Infinity;
   const second = "version" in b ? parseInt(b.version) : Infinity;

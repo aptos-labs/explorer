@@ -6,13 +6,13 @@ import {
 } from "../../../themes/colors/aptosColorPalette";
 import {APTCurrencyValue} from "./CurrencyValue";
 import GasValue from "./GasValue";
-import {Types} from "aptos";
+import {UserTransactionResponse} from "@aptos-labs/ts-sdk";
 
 type GasFeeValueProps = {
   gasUsed: string;
   gasUnitPrice: string;
   showGasUsed?: boolean;
-  transactionData: Types.Transaction_UserTransaction;
+  transactionData: UserTransactionResponse;
   netGasCost?: boolean;
   storageRefund?: boolean;
 };

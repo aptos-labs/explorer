@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -10,15 +9,17 @@ import {APTCurrencyValue} from "../../../components/IndividualPageContent/Conten
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {parseExpirationTimestamp} from "../../utils";
+import {PendingTransactionResponse} from "@aptos-labs/wallet-adapter-react";
+import {TransactionResponse} from "@aptos-labs/ts-sdk";
 
 type PendingTransactionOverviewTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function PendingTransactionOverviewTab({
   transaction,
 }: PendingTransactionOverviewTabProps) {
-  const transactionData = transaction as Types.Transaction_PendingTransaction;
+  const transactionData = transaction as PendingTransactionResponse;
 
   return (
     <Box marginBottom={3}>

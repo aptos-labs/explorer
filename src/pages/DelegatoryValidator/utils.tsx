@@ -1,4 +1,3 @@
-import {Types} from "aptos";
 import {DelegatedStakingActivity} from "../../api/hooks/useGetDelegatedStakeOperationActivities";
 import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
 import {OCTA} from "../../constants";
@@ -7,6 +6,7 @@ import {
   MINIMUM_APT_IN_POOL,
 } from "./constants";
 import {ApolloError} from "@apollo/client";
+import {MoveResource, MoveValue} from "@aptos-labs/ts-sdk";
 
 interface AccountResourceData {
   locked_until_secs: bigint;
@@ -14,7 +14,7 @@ interface AccountResourceData {
 
 // returns seconds till locked staking funds getting unlocked
 export function getLockedUtilSecs(
-  accountResource?: Types.MoveResource | undefined,
+  accountResource?: MoveResource | undefined,
 ): bigint | null {
   return accountResource
     ? BigInt((accountResource.data as AccountResourceData).locked_until_secs)
@@ -134,7 +134,7 @@ export type APTRequirement = {
 };
 
 export function getStakeOperationAPTRequirement(
-  stakes: Types.MoveValue[],
+  stakes: MoveValue[],
   stakeOperation: StakeOperation,
   balance: number,
 ): APTRequirement {

@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -8,16 +7,19 @@ import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
+import {
+  BlockMetadataTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
 type BlockMetadataOverviewTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function BlockMetadataOverviewTab({
   transaction,
 }: BlockMetadataOverviewTabProps) {
-  const transactionData =
-    transaction as Types.Transaction_BlockMetadataTransaction;
+  const transactionData = transaction as BlockMetadataTransactionResponse;
 
   return (
     <Box marginBottom={3}>

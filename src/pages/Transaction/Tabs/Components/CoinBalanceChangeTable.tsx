@@ -10,15 +10,15 @@ import {
   negativeColor,
   primary,
 } from "../../../../themes/colors/aptosColorPalette";
-import {Types} from "aptos";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
 import {VerifiedCoinCell} from "../../../../components/Table/VerifiedCell";
 import {getLearnMoreTooltip} from "../../helpers";
+import {UserTransactionResponse} from "@aptos-labs/ts-sdk";
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
-  transaction: Types.UserTransaction;
+  transaction: UserTransactionResponse;
 };
 
 function AddressCell({balanceChange}: BalanceChangeCellProps) {
@@ -113,7 +113,7 @@ const DEFAULT_COLUMNS: Column[] = [
 
 type BalanceChangeRowProps = {
   balanceChange: BalanceChange;
-  transaction: Types.UserTransaction;
+  transaction: UserTransactionResponse;
   columns: Column[];
 };
 
@@ -167,7 +167,7 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
 
 type CoinBalanceChangeTableProps = {
   balanceChanges: BalanceChange[];
-  transaction: Types.UserTransaction;
+  transaction: UserTransactionResponse;
   columns?: Column[];
 };
 

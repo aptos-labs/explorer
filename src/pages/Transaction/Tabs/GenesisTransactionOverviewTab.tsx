@@ -1,20 +1,23 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
+import {
+  GenesisTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
 type GenesisTransactionOverviewTabProps = {
-  transaction: Types.Transaction;
+  transaction: TransactionResponse;
 };
 
 export default function GenesisTransactionOverviewTab({
   transaction,
 }: GenesisTransactionOverviewTabProps) {
-  const transactionData = transaction as Types.Transaction_GenesisTransaction;
+  const transactionData = transaction as GenesisTransactionResponse;
 
   return (
     <Box marginBottom={3}>

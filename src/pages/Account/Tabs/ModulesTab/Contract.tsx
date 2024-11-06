@@ -1,4 +1,3 @@
-import {Types} from "aptos";
 import {ReactNode, useEffect, useMemo, useState} from "react";
 import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
@@ -28,7 +27,7 @@ import {useForm, SubmitHandler, Controller} from "react-hook-form";
 import {useParams} from "react-router-dom";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
-import {view} from "../../../../api";
+import {view} from "../../../../api/v2";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {useNavigate} from "../../../../routing";
 import {Code} from "../../Components/CodeSnippet";
@@ -41,7 +40,13 @@ import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
 import {encodeInputArgsForViewRequest, sortPetraFirst} from "../../../../utils";
 import {accountPagePath} from "../../Index";
-import {parseTypeTag} from "@aptos-labs/ts-sdk";
+import {
+  parseTypeTag,
+  MoveFunction,
+  MoveModule,
+  InputViewFunctionData,
+  MoveValue,
+} from "@aptos-labs/ts-sdk";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -52,7 +57,7 @@ type ContractFormType = {
 interface ContractSidebarProps {
   selectedModuleName: string | undefined;
   selectedFnName: string | undefined;
-  moduleAndFnsGroup: Record<string, Types.MoveFunction[]>;
+  moduleAndFnsGroup: Record<string, MoveFunction[]>;
 
   getLinkToFn(moduleName: string, fnName: string, isObject: boolean): string;
 
@@ -106,9 +111,9 @@ function Contract({
       return {
         ...acc,
         [moduleName]: fns,
-      } as Record<string, Types.MoveFunction[]>;
+      } as Record<string, MoveFunction[]>;
     },
-    {} as Record<string, Types.MoveFunction[]>,
+    {} as Record<string, MoveFunction[]>,
   );
 
   const module = modules.find((m) => m.abi?.name === selectedModuleName)?.abi;
@@ -266,13 +271,7 @@ function ContractSidebar({
   );
 }
 
-function RunContractForm({
-  module,
-  fn,
-}: {
-  module: Types.MoveModule;
-  fn: Types.MoveFunction;
-}) {
+function RunContractForm({module, fn}: {module: MoveModule; fn: MoveFunction}) {
   const [state] = useGlobalState();
   const {connected} = useWallet();
   const logEvent = useLogEventWithBasic();
@@ -475,11 +474,11 @@ function ReadContractForm({
   module,
   fn,
 }: {
-  module: Types.MoveModule;
-  fn: Types.MoveFunction;
+  module: MoveModule;
+  fn: MoveFunction;
 }) {
   const [state] = useGlobalState();
-  const [result, setResult] = useState<Types.MoveValue[]>();
+  const [result, setResult] = useState<MoveValue[]>();
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [errMsg, setErrMsg] = useState<string>();
@@ -507,12 +506,12 @@ function ReadContractForm({
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("read_button_clicked", fn.name);
-    let viewRequest: Types.ViewRequest;
+    let viewRequest: InputViewFunctionData;
     try {
       viewRequest = {
         function: `${module.address}::${module.name}::${fn.name}`,
-        type_arguments: data.typeArgs,
-        arguments: data.args.map((arg, i) => {
+        typeArguments: data.typeArgs,
+        functionArguments: data.args.map((arg, i) => {
           return encodeInputArgsForViewRequest(fn.params[i], arg);
         }),
       };
@@ -524,7 +523,7 @@ function ReadContractForm({
     try {
       const result = await view(
         viewRequest,
-        state.aptos_client,
+        state.sdk_v2_client,
         data.ledgerVersion,
       );
       setResult(result);
@@ -663,7 +662,7 @@ function ContractForm({
   result,
   isView,
 }: {
-  fn: Types.MoveFunction;
+  fn: MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
   setFormValid: (valid: boolean) => void;
   result: ReactNode;
@@ -797,7 +796,7 @@ function ContractForm({
   );
 }
 
-function removeSignerParam(fn: Types.MoveFunction) {
+function removeSignerParam(fn: MoveFunction) {
   return fn.params.filter((p) => p !== "signer" && p !== "&signer");
 }
 

@@ -1,9 +1,9 @@
-import {Types} from "aptos";
 import {useQuery, UseQueryResult} from "@tanstack/react-query";
-import {getAccountResource} from "..";
+import {getAccountResource} from "../v2";
 import {ResponseError} from "../client";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {orderBy} from "lodash";
+import {MoveResource} from "@aptos-labs/ts-sdk";
 
 export type ModuleMetadata = {
   name: string;
@@ -17,14 +17,17 @@ export type PackageMetadata = {
 
 export function useGetAccountResource(
   address: string,
-  resource: string,
-): UseQueryResult<Types.MoveResource, ResponseError> {
+  resource: `${string}::${string}::${string}`,
+): UseQueryResult<MoveResource, ResponseError> {
   const [state] = useGlobalState();
 
-  return useQuery<Types.MoveResource, ResponseError>({
+  return useQuery<MoveResource, ResponseError>({
     queryKey: ["accountResource", {address, resource}, state.network_value],
     queryFn: () =>
-      getAccountResource({address, resourceType: resource}, state.aptos_client),
+      getAccountResource(
+        {address, resourceType: resource},
+        state.sdk_v2_client,
+      ),
     refetchOnWindowFocus: false,
   });
 }

@@ -1,29 +1,29 @@
-import {Types} from "aptos";
 import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {ResponseError} from "../client";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {view} from "../index";
+import {view} from "../v2";
+import {InputViewFunctionData, MoveValue} from "@aptos-labs/ts-sdk";
 
 export function useViewFunction(
-  functionName: string,
+  functionName: `${string}::${string}::${string}`,
   typeArgs: string[],
   args: string[],
-): UseQueryResult<Types.MoveValue[], ResponseError> {
+): UseQueryResult<MoveValue[], ResponseError> {
   const [state] = useGlobalState();
 
-  const request: Types.ViewRequest = {
+  const request: InputViewFunctionData = {
     function: functionName,
-    type_arguments: typeArgs,
-    arguments: args,
+    typeArguments: typeArgs,
+    functionArguments: args,
   };
 
-  return useQuery<Types.MoveValue[], ResponseError>({
+  return useQuery<MoveValue[], ResponseError>({
     queryKey: [
       "viewFunction",
       {functionName, typeArgs, args},
       state.network_value,
     ],
-    queryFn: () => view(request, state.aptos_client),
+    queryFn: () => view(request, state.sdk_v2_client),
     refetchOnWindowFocus: false,
   });
 }

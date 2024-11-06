@@ -1,13 +1,13 @@
 import {ApolloError, gql, useQuery as useGraphqlQuery} from "@apollo/client";
-import {Types} from "aptos";
 import {standardizeAddress} from "../../utils";
+import {AccountAddressInput} from "@aptos-labs/ts-sdk";
 
 export interface DelegatedStakingActivity {
   amount: number;
-  delegator_address: Types.Address;
+  delegator_address: AccountAddressInput;
   event_index: number;
   event_type: string;
-  pool_address: Types.Address;
+  pool_address: AccountAddressInput;
   transaction_version: bigint;
 }
 
@@ -34,8 +34,8 @@ const DELEGATED_STAKING_ACTIVITY_QUERY = gql`
 `;
 
 export function useGetDelegatedStakeOperationActivities(
-  delegatorAddress: Types.Address,
-  poolAddress: Types.Address,
+  delegatorAddress: AccountAddressInput,
+  poolAddress: AccountAddressInput,
 ): {
   activities: DelegatedStakingActivity[] | undefined;
   loading: boolean;

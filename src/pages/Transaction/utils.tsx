@@ -1,7 +1,13 @@
-import {Types} from "aptos";
 import {standardizeAddress, tryStandardizeAddress} from "../../utils";
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
 import {TransactionTypeName} from "../../components/TransactionType";
+import {
+  Event,
+  EntryFunctionPayloadResponse,
+  isUserTransactionResponse,
+  TransactionResponse,
+  WriteSetChange,
+} from "@aptos-labs/ts-sdk";
 
 export type TransactionCounterparty = {
   address: string;
@@ -13,9 +19,9 @@ export type TransactionCounterparty = {
 // when the transaction counterparty is a "smartContract",
 //    the transaction is a user interaction (account A interact with smart contract account B)
 export function getTransactionCounterparty(
-  transaction: Types.Transaction,
+  transaction: TransactionResponse,
 ): TransactionCounterparty | undefined {
-  if (transaction.type !== TransactionTypeName.User) {
+  if (!isUserTransactionResponse(transaction)) {
     return undefined;
   }
 
@@ -23,10 +29,9 @@ export function getTransactionCounterparty(
     return undefined;
   }
 
-  let payload: Types.TransactionPayload_EntryFunctionPayload;
+  let payload: EntryFunctionPayloadResponse;
   if (transaction.payload.type === "entry_function_payload") {
-    payload =
-      transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
+    payload = transaction.payload as EntryFunctionPayloadResponse;
   } else if (
     transaction.payload.type === "multisig_payload" &&
     "transaction_payload" in transaction.payload &&
@@ -35,7 +40,7 @@ export function getTransactionCounterparty(
     transaction.payload.transaction_payload.type === "entry_function_payload"
   ) {
     payload = transaction.payload
-      .transaction_payload as Types.TransactionPayload_EntryFunctionPayload;
+      .transaction_payload as EntryFunctionPayloadResponse;
   } else {
     return undefined;
   }
@@ -129,9 +134,8 @@ export type BalanceChange = {
   isInPanoraTokenList?: boolean;
 };
 
-function getBalanceMap(transaction: Types.Transaction) {
-  const events: Types.Event[] =
-    "events" in transaction ? transaction.events : [];
+function getBalanceMap(transaction: TransactionResponse) {
+  const events: Event[] = "events" in transaction ? transaction.events : [];
 
   const accountToBalance = events.reduce(
     (
@@ -141,7 +145,7 @@ function getBalanceMap(transaction: Types.Transaction) {
           amount: bigint;
         };
       },
-      event: Types.Event,
+      event: Event,
     ) => {
       const addr = standardizeAddress(event.guid.account_address);
 
@@ -174,9 +178,7 @@ function getBalanceMap(transaction: Types.Transaction) {
   return accountToBalance;
 }
 
-function getAptChangeData(
-  change: Types.WriteSetChange,
-): ChangeData | undefined {
+function getAptChangeData(change: WriteSetChange): ChangeData | undefined {
   if (
     "address" in change &&
     "data" in change &&
@@ -190,8 +192,8 @@ function getAptChangeData(
   }
 }
 
-function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
-  const changes: Types.WriteSetChange[] =
+function isAptEvent(event: Event, transaction: TransactionResponse) {
+  const changes: WriteSetChange[] =
     "changes" in transaction ? transaction.changes : [];
 
   const aptEventChange = changes.filter((change) => {
@@ -220,7 +222,7 @@ function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
   return aptEventChange.length > 0;
 }
 
-interface TransactionResponse {
+interface FATransactionResponse {
   fungible_asset_activities: Array<FungibleAssetActivity>;
 }
 
@@ -244,7 +246,7 @@ export interface FungibleAssetActivity {
 }
 
 export function useTransactionBalanceChanges(txn_version: string) {
-  const {loading, error, data} = useGraphqlQuery<TransactionResponse>(
+  const {loading, error, data} = useGraphqlQuery<FATransactionResponse>(
     gql`
         query TransactionQuery($txn_version: String) {
             fungible_asset_activities(
@@ -280,7 +282,7 @@ export function useTransactionBalanceChanges(txn_version: string) {
 }
 
 export function getCoinBalanceChangeForAccount(
-  transaction: Types.Transaction,
+  transaction: TransactionResponse,
   address: string,
 ): bigint {
   const accountToBalance = getBalanceMap(transaction);
@@ -294,9 +296,9 @@ export function getCoinBalanceChangeForAccount(
 }
 
 export function getTransactionAmount(
-  transaction: Types.Transaction,
+  transaction: TransactionResponse,
 ): bigint | undefined {
-  if (transaction.type !== TransactionTypeName.User) {
+  if (!isUserTransactionResponse(transaction)) {
     return undefined;
   }
 

@@ -31,22 +31,22 @@ import useSubmitStakeOperation, {
 import {OCTA} from "../../constants";
 import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
 import {DelegationStateContext} from "./context/DelegationContext";
-import {Types} from "aptos";
-import {getAddStakeFee} from "../../api";
+import {getAddStakeFee} from "../../api/v2";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {MINIMUM_APT_IN_POOL} from "./constants";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import TooltipTypography from "../../components/TooltipTypography";
+import {MoveResource, MoveValue} from "@aptos-labs/ts-sdk";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
   isDialogOpen: boolean;
   stakeOperation: StakeOperation;
   commission?: number | undefined;
-  canWithdrawPendingInactive: Types.MoveValue;
-  stakes: Types.MoveValue[];
+  canWithdrawPendingInactive: MoveValue;
+  stakes: MoveValue[];
 };
 
 export default function StakeOperationDialog({
@@ -87,7 +87,7 @@ function StakeOperationDialogContent({
   accountResource,
   validator,
 }: StakeOperationDialogProps & {
-  accountResource: Types.MoveResource;
+  accountResource: MoveResource;
   validator: ValidatorData;
 }) {
   const {balance, lockedUntilSecs, rewardsRateYearly} = useGetDelegationState(
@@ -125,14 +125,14 @@ function StakeOperationDialogContent({
   };
 
   const [state] = useGlobalState();
-  const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
+  const [addStakeFee, setAddStakeFee] = useState<MoveValue>(0);
   const logEvent = useLogEventWithBasic();
 
   useEffect(() => {
     async function fetchData() {
       if (stakeOperation === StakeOperation.STAKE) {
         const fee = await getAddStakeFee(
-          state.aptos_client,
+          state.sdk_v2_client,
           validator!.owner_address,
           Number(amount).toFixed(8),
         );
