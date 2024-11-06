@@ -8,10 +8,7 @@ import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../components/HashButton";
 import {assertNever} from "../../utils";
-import {
-  TableTransactionType,
-  TransactionTypeName,
-} from "../../components/TransactionType";
+import {TableTransactionType} from "../../components/TransactionType";
 import {TableTransactionStatus} from "../../components/TransactionStatus";
 import {getTableFormattedTimestamp} from "../utils";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";

@@ -142,7 +142,7 @@ function StakeOperationDialogContent({
     fetchData();
   }, [
     state.network_value,
-    state.aptos_client,
+    state.sdk_v2_client,
     amount,
     stakeOperation,
     validator,

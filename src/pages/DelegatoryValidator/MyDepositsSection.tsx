@@ -298,7 +298,7 @@ function MyDepositSectionContent({
   }, [
     validator.owner_address,
     state.network_value,
-    state.aptos_client,
+    state.sdk_v2_client,
     validator,
   ]);
 

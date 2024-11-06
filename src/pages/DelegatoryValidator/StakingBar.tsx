@@ -169,7 +169,7 @@ function StakingBarContent({
       setAddStakeFee(fee[0]);
     }
     fetchData();
-  }, [state.network_value, state.aptos_client, balance, validator]);
+  }, [state.network_value, state.sdk_v2_client, balance, validator]);
 
   const stakeButton = (
     <StyledTooltip

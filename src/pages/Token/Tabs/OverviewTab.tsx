@@ -8,7 +8,6 @@ import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard
 import {Link} from "../../../routing";
 import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
 import {isValidIpfsUrl, isValidUrl, toIpfsUrl} from "../../utils";
-import {GetCurrentTokenOwnershipResponse} from "@aptos-labs/ts-sdk";
 import {GetTokenDataResponse} from "@aptos-labs/ts-sdk/src/types";
 
 function OwnersRow() {

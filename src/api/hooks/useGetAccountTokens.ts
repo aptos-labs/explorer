@@ -5,8 +5,6 @@ import {
   GetAccountOwnedTokensQueryResponse,
   GetTokenActivityResponse,
 } from "@aptos-labs/ts-sdk";
-import {IndexerClient} from "aptos";
-import {GetCurrentTokenOwnershipResponse} from "@aptos-labs/ts-sdk/src/types";
 
 export function useGetAccountTokensCount(address: string) {
   const [state] = useGlobalState();

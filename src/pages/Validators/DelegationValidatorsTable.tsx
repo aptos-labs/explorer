@@ -41,9 +41,7 @@ import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import {useQuery} from "@tanstack/react-query";
 import {getValidatorCommissionAndState} from "../../api/v2";
-import {MoveValue} from "aptos/src/generated";
 import {ResponseError} from "../../api/client";
-import {AccountAddressInput} from "@aptos-labs/ts-sdk";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -438,7 +436,7 @@ export function DelegationValidatorsTable() {
   );
   const sortedValidatorAddrs = sortedValidators.map((v) => v.owner_address);
   const {data: sortedValidatorsWithCommissionAndState, error} = useQuery<
-    Array<Array<bigint>>,
+    any, // FIXME: Should have typing
     ResponseError
   >({
     queryKey: [

@@ -1,6 +1,5 @@
 import {standardizeAddress, tryStandardizeAddress} from "../../utils";
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
-import {TransactionTypeName} from "../../components/TransactionType";
 import {
   Event,
   EntryFunctionPayloadResponse,
