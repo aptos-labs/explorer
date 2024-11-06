@@ -67,7 +67,7 @@ export default function BlockMetadataOverviewTab({
           value={
             <TimestampValue
               timestamp={transactionData.timestamp}
-              ensureMilliSeconds
+              ensureMilliSeconds={true}
             />
           }
           tooltip={getLearnMoreTooltip("timestamp")}

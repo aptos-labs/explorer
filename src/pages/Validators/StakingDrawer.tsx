@@ -243,7 +243,7 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                 color: theme.palette.mode === "dark" ? grey[300] : null,
               }}
             >
-              <Typography variant="h5" paragraph>
+              <Typography variant="h5">
                 {"I".repeat(index + 1) + ". " + faqData.title}
               </Typography>
               {faqData.data.map(({question, answer}) => (
@@ -256,12 +256,9 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                     color: theme.palette.mode === "dark" ? grey[300] : null,
                   }}
                 >
-                  <Typography variant="h6" paragraph>
-                    {question}
-                  </Typography>
+                  <Typography variant="h6">{question}</Typography>
                   <Typography
                     variant="body2"
-                    paragraph
                     sx={{
                       fontFamily: "apparat,Geneva,Tahoma,Verdana,sans-serif",
                     }}

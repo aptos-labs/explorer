@@ -1,8 +1,8 @@
 import {standardizeAddress, tryStandardizeAddress} from "../../utils";
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
 import {
-  Event,
   EntryFunctionPayloadResponse,
+  Event,
   isUserTransactionResponse,
   TransactionResponse,
   WriteSetChange,
@@ -136,7 +136,7 @@ export type BalanceChange = {
 function getBalanceMap(transaction: TransactionResponse) {
   const events: Event[] = "events" in transaction ? transaction.events : [];
 
-  const accountToBalance = events.reduce(
+  return events.reduce(
     (
       balanceMap: {
         [key: string]: {
@@ -173,8 +173,6 @@ function getBalanceMap(transaction: TransactionResponse) {
     },
     {},
   );
-
-  return accountToBalance;
 }
 
 function getAptChangeData(change: WriteSetChange): ChangeData | undefined {

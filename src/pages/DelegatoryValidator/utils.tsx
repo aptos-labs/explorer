@@ -28,8 +28,6 @@ export type StakePrincipals = {
 
 /**
  *
- * @param delegatorAddress
- * @param poolAddress
  * @returns stakePrincipals: active stake principal, pending_inactive stake principal
  *          isLoading
  *

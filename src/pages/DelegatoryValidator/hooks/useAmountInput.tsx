@@ -1,6 +1,5 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import AmountTextField from "../../../components/AmountTextField";
-import React from "react";
 import {StakeOperation} from "../../../api/hooks/useSubmitStakeOperation";
 import {MINIMUM_APT_IN_POOL} from "../constants";
 import {OCTA} from "../../../constants";
@@ -38,10 +37,6 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
     const sanitizedInput = sanitizeInput(event.target.value);
     setAmount(sanitizedInput);
   };
-
-  function clearAmount() {
-    setAmount("");
-  }
 
   function renderAmountTextField(
     stakes: MoveValue[],
@@ -130,14 +125,12 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
     minAmount: number | null,
     maxAmount: number | null,
   ): boolean {
-    const isValid = isValidAmount(amount, minAmount, maxAmount);
-    return isValid;
+    return isValidAmount(amount, minAmount, maxAmount);
   }
 
   return {
     amount,
     setAmount,
-    clearAmount,
     renderAmountTextField,
     validateAmountInput,
   };

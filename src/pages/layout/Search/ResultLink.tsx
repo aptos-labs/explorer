@@ -39,7 +39,7 @@ export default function ResultLink({
             component="span"
             sx={{mr: 1, display: "flex", alignItems: "center"}}
           >
-            <img src={image} height={20} width={20} />
+            <img src={image} height={20} width={20} alt={image} />
           </Box>
         ) : null}
         <Typography variant="inherit">{text}</Typography>

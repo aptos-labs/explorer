@@ -40,7 +40,7 @@ export default function StateCheckpointOverviewTab({
             value={
               <TimestampValue
                 timestamp={transactionData.timestamp}
-                ensureMilliSeconds
+                ensureMilliSeconds={true}
               />
             }
             tooltip={getLearnMoreTooltip("timestamp")}

@@ -41,7 +41,7 @@ export default function UnknownTab({transaction}: UnknownTabProps) {
           value={
             <TimestampValue
               timestamp={transactionData.timestamp}
-              ensureMilliSeconds
+              ensureMilliSeconds={true}
             />
           }
           tooltip={getLearnMoreTooltip("timestamp")}

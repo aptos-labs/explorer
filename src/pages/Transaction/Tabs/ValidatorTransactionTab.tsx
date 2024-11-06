@@ -43,7 +43,7 @@ export default function ValidatorTransactionTab({
           value={
             <TimestampValue
               timestamp={transactionData.timestamp}
-              ensureMilliSeconds
+              ensureMilliSeconds={true}
             />
           }
           tooltip={getLearnMoreTooltip("timestamp")}

@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
 import {Pagination, Stack} from "@mui/material";
-import {UserTransactionsTable} from "../Transactions/TransactionsTable";
+import {UserTransactionsTable} from "./TransactionsTable";
 import useGetUserTransactionVersions from "../../api/hooks/useGetUserTransactionVersions";
 
 const LIMIT = 20;

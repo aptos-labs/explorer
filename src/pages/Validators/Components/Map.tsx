@@ -15,8 +15,8 @@ function getCircleRadius(currentGroupSize: number) {
   return Math.pow(currentGroupSize, 1 / 4) * 4;
 }
 
-const LightTooltip = styled(({className, ...props}: TooltipProps) => (
-  <Tooltip {...props} classes={{popper: className}} />
+const LightTooltip = styled(({className, children, ...props}: TooltipProps) => (
+  <Tooltip {...props} classes={{popper: className}} children={children} />
 ))(({theme}) => ({
   [`& .${tooltipClasses.tooltip}`]: {
     backgroundColor: theme.palette.mode === "dark" ? grey[800] : grey[50],

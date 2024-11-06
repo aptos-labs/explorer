@@ -84,8 +84,6 @@ export function truncate(
 
   const strLen = str.length;
   // Setting default values
-  frontLen = frontLen;
-  backLen = backLen;
   truncateStr = truncateStr || "…";
   if (
     (frontLen === 0 && backLen === 0) ||

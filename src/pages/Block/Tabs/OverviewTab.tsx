@@ -84,7 +84,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
           value={
             <TimestampValue
               timestamp={data.block_timestamp}
-              ensureMilliSeconds
+              ensureMilliSeconds={true}
             />
           }
           tooltip={getLearnMoreTooltip("timestamp")}

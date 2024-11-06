@@ -25,14 +25,12 @@ export async function getTransactions(
   client: Aptos,
 ): Promise<TransactionResponse[]> {
   const {start, limit} = requestParameters;
-  const transactions = await withResponseError(
-    client.getTransactions({options: {offset: start, limit}}),
-  );
-
   // Sort in descending order
   // FIXME I think they're already sorted transactions.sort(sortTransactions);
 
-  return transactions;
+  return await withResponseError(
+    client.getTransactions({options: {offset: start, limit}}),
+  );
 }
 
 export async function getAccountTransactions(
@@ -40,17 +38,15 @@ export async function getAccountTransactions(
   client: Aptos,
 ): Promise<TransactionResponse[]> {
   const {address, start, limit} = requestParameters;
-  const transactions = await withResponseError(
+  // Sort in descending order
+  // FIXME I think they're already sorted transactions.sort(sortTransactions);
+
+  return await withResponseError(
     client.getAccountTransactions({
       accountAddress: address,
       options: {offset: start, limit},
     }),
   );
-
-  // Sort in descending order
-  // FIXME I think they're already sorted transactions.sort(sortTransactions);
-
-  return transactions;
 }
 
 export function getTransaction(

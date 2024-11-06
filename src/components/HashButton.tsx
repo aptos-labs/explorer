@@ -253,7 +253,7 @@ function HashButtonInner({
             component="span"
             sx={{mr: 1, display: "flex", alignItems: "center"}}
           >
-            <img src={img} height={20} width={20} />
+            <img src={img} alt={img} height={20} width={20} />
           </Box>
         ) : null}
         {label ? label : truncateHash}

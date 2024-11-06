@@ -15,8 +15,7 @@ function getAgeInSeconds(block: Block): string {
   const blockTimestamp = parseTimestamp(block.block_timestamp);
   const nowTimestamp = parseTimestamp(moment.now().toString());
   const duration = moment.duration(nowTimestamp.diff(blockTimestamp));
-  const durationInSec = duration.asSeconds().toFixed(0);
-  return durationInSec;
+  return duration.asSeconds().toFixed(0);
 }
 
 type BlockCellProps = {

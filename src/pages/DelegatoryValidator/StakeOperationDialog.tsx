@@ -317,7 +317,7 @@ function StakeOperationDialogContent({
                 value={
                   <TimestampValue
                     timestamp={lockedUntilSecs?.toString()!}
-                    ensureMilliSeconds
+                    ensureMilliSeconds={true}
                   />
                 }
               />

@@ -183,7 +183,7 @@ export default function UserTransactionOverviewTab({
           value={
             <TimestampValue
               timestamp={transactionData.timestamp}
-              ensureMilliSeconds
+              ensureMilliSeconds={true}
             />
           }
           tooltip={getLearnMoreTooltip("timestamp")}
