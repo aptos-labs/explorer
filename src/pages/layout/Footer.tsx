@@ -1,8 +1,12 @@
 import React from "react";
-import {Box, Container, Stack, Typography, useTheme} from "@mui/material";
-
-import Grid from "@mui/material/Unstable_Grid2";
-
+import {
+  Box,
+  Container,
+  Grid2,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import GithubLogo from "../../assets/github.svg?react";
 import DiscordLogo from "../../assets/discord.svg?react";
 import TwitterLogo from "../../assets/twitter.svg?react";
@@ -42,15 +46,15 @@ export default function Footer() {
       }}
     >
       <Container maxWidth="xl" sx={{paddingTop: "2rem", paddingBottom: "2rem"}}>
-        <Grid
+        <Grid2
           container
           gap={4}
           alignContent="center"
           alignItems="center"
           direction={{xs: "column", md: "row"}}
         >
-          <Grid
-            xs="auto"
+          <Grid2
+            size={{xs: "auto"}}
             gap={1}
             container
             alignItems={{xs: "center", md: "start"}}
@@ -65,7 +69,7 @@ export default function Footer() {
             >
               <LogoFull />
             </Link>
-            <Grid direction="row" padding="0">
+            <Grid2 container direction="row" padding="0">
               <Typography
                 sx={{
                   textAlign: {
@@ -109,23 +113,23 @@ export default function Footer() {
                   Terms
                 </Link>
               </Stack>
-            </Grid>
-          </Grid>
+            </Grid2>
+          </Grid2>
 
-          <Grid
-            xs="auto"
+          <Grid2
+            size={{xs: "auto"}}
             sx={{marginLeft: {xs: "0", md: "auto"}}}
             container
             justifyContent="end"
           >
-            <Grid
+            <Grid2
               container
               justifyContent={{xs: "center", md: "end"}}
               spacing={3}
               direction="row"
             >
               {socialLinks.map((link) => (
-                <Grid key={link.title}>
+                <Grid2 key={link.title}>
                   <Link
                     color="inherit"
                     to={link.url}
@@ -137,11 +141,11 @@ export default function Footer() {
                   >
                     <SvgIcon component={link.icon} inheritViewBox />
                   </Link>
-                </Grid>
+                </Grid2>
               ))}
-            </Grid>
-          </Grid>
-        </Grid>
+            </Grid2>
+          </Grid2>
+        </Grid2>
       </Container>
     </Box>
   );

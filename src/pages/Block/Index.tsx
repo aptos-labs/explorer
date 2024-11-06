@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {Stack, Grid, Alert} from "@mui/material";
+import {Stack, Grid2, Alert} from "@mui/material";
 import React from "react";
 import BlockTitle from "./Title";
 import BlockTabs from "./Tabs";
@@ -33,14 +33,14 @@ export default function BlockPage() {
   }
 
   return (
-    <Grid container spacing={1}>
+    <Grid2 container spacing={1}>
       <PageHeader />
-      <Grid item xs={12}>
+      <Grid2 size={{xs: 12}}>
         <Stack direction="column" spacing={4} marginTop={2}>
           <BlockTitle />
           <BlockTabs data={data} />
         </Stack>
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 }

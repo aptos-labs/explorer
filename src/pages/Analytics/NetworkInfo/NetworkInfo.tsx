@@ -1,5 +1,5 @@
 import React, {createContext} from "react";
-import Grid from "@mui/material/Grid";
+import {Grid2} from "@mui/material";
 import TotalSupply from "./TotalSupply";
 import TotalStake from "./TotalStake";
 import TPS from "./TPS";
@@ -38,7 +38,7 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
   const onHomePage = isOnHomePage === true;
   return (
     <StyleContext.Provider value={onHomePage ? "default" : "outline"}>
-      <Grid
+      <Grid2
         container
         spacing={3}
         direction="row"
@@ -46,31 +46,31 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
         marginBottom={onHomePage ? 6 : 0}
       >
         {onHomePage && (
-          <Grid item xs={12} md={12} lg={12}>
+          <Grid2 size={{xs: 12, md: 12, lg: 12}}>
             <TotalTransactions />
-          </Grid>
+          </Grid2>
         )}
-        <Grid item xs={12} md={6} lg={3}>
+        <Grid2 size={{xs: 12, md: 6, lg: 3}}>
           <LinkableContainer linkToAnalyticsPage={onHomePage}>
             <TotalSupply />
           </LinkableContainer>
-        </Grid>
-        <Grid item xs={12} md={6} lg={3}>
+        </Grid2>
+        <Grid2 size={{xs: 12, md: 6, lg: 3}}>
           <LinkableContainer linkToAnalyticsPage={onHomePage}>
             <TotalStake />
           </LinkableContainer>
-        </Grid>
-        <Grid item xs={12} md={6} lg={3}>
+        </Grid2>
+        <Grid2 size={{xs: 12, md: 6, lg: 3}}>
           <LinkableContainer linkToAnalyticsPage={onHomePage}>
             <TPS />
           </LinkableContainer>
-        </Grid>
-        <Grid item xs={12} md={6} lg={3}>
+        </Grid2>
+        <Grid2 size={{xs: 12, md: 6, lg: 3}}>
           <LinkableContainer linkToAnalyticsPage={onHomePage}>
             <ActiveNodes />
           </LinkableContainer>
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </StyleContext.Provider>
   );
 }
