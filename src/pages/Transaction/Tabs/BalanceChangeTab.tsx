@@ -26,7 +26,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
 
   function convertAddress(a: FungibleAssetActivity) {
     return a.type.includes("GasFeeEvent")
-      ? a.gas_fee_payer_address ?? a.owner_address
+      ? (a.gas_fee_payer_address ?? a.owner_address)
       : a.owner_address;
   }
 
