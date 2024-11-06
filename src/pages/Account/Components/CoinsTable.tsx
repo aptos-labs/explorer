@@ -89,6 +89,7 @@ function CoinVerifiedCell({data}: {data: CoinDescriptionPlusAmount}) {
       known: data.chainId !== 0,
       isBanned: data.isBanned,
       isInPanoraTokenList: data.isInPanoraTokenList,
+      symbol: data?.panoraSymbol ?? data.symbol,
     },
   });
 }

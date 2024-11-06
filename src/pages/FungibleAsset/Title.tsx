@@ -28,7 +28,12 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
           coinData?.symbol,
         )
       : metadata?.symbol;
-  const {level} = verifiedLevel({id: address, known: !!coinData, ...coinData});
+  const {level} = verifiedLevel({
+    id: address,
+    known: !!coinData,
+    symbol: assetSymbol,
+    ...coinData,
+  });
 
   return (
     <Stack direction="column" spacing={2} marginX={1}>
@@ -39,7 +44,13 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
           <TitleHashButton hash={assetSymbol} type={HashType.SYMBOL} />
         )}
         <VerifiedAsset
-          data={{id: address, known: !!coinData, banner: true, ...coinData}}
+          data={{
+            id: address,
+            known: !!coinData,
+            banner: true,
+            symbol: assetSymbol,
+            ...coinData,
+          }}
         />
       </Stack>
     </Stack>
