@@ -50,6 +50,7 @@ function VerifiedCell({balanceChange}: BalanceChangeCellProps) {
       known: balanceChange.known,
       isBanned: balanceChange.isBanned,
       isInPanoraTokenList: balanceChange.isInPanoraTokenList,
+      symbol: balanceChange?.asset?.symbol,
     },
   });
 }

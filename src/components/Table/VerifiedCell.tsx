@@ -23,6 +23,7 @@ type VerifiedCellProps = {
   isBanned?: boolean;
   isInPanoraTokenList?: boolean;
   banner?: boolean;
+  symbol?: string;
 };
 
 export enum VerifiedType {
@@ -53,6 +54,7 @@ const labsVerifiedTokens: Record<string, string> = {
     "Find Out Points",
 };
 const MARKED_AS_SCAM = "Marked as scam";
+const MARKED_AS_POSSIBLE_SCAM = "Marked as possible scam";
 const labsBannedTokens: Record<string, string> = {
   "0x397071c01929cc6672a17f130bd62b1bce224309029837ce4f18214cc83ce2a7::USDC::USDC":
     MARKED_AS_SCAM,
@@ -68,6 +70,18 @@ const labsBannedTokens: Record<string, string> = {
     MARKED_AS_SCAM,
   "0xbe5e8fa9dd45e010cadba1992409a0fc488ca81f386d636ba38d12641ef91136::maincoin::Aptmeme":
     MARKED_AS_SCAM,
+};
+const labsBannedAddresses: Record<string, string> = {
+  "0x50788befc1107c0cc4473848a92e5c783c635866ce3c98de71d2eeb7d2a34f85":
+    MARKED_AS_SCAM,
+  "0xbbc4a9af0e7fa8885bda5db08028e7b882f2c2bba1e0fedbad1d8316f73f8b2f":
+    MARKED_AS_SCAM,
+};
+
+const labsBannedTokenSymbols: Record<string, string> = {
+  APT: MARKED_AS_SCAM,
+  USDT: MARKED_AS_POSSIBLE_SCAM,
+  USDC: MARKED_AS_POSSIBLE_SCAM,
 };
 
 export type VerifiedLevelInfo = {
@@ -102,11 +116,27 @@ export function verifiedLevel(input: VerifiedCellProps): VerifiedLevelInfo {
     return {
       level: VerifiedType.RECOGNIZED,
     };
-  } else {
+  } else if (
+    input.id.includes("::") &&
+    labsBannedAddresses[input.id.split("::")[0]]
+  ) {
     return {
-      level: VerifiedType.UNVERIFIED,
+      level: VerifiedType.LABS_BANNED,
+      reason: labsBannedAddresses[input.id.split("::")[0]],
+    };
+  } else if (
+    input.symbol &&
+    labsBannedTokenSymbols[input.symbol.toUpperCase() ?? ""]
+  ) {
+    return {
+      level: VerifiedType.LABS_BANNED,
+      reason: labsBannedTokenSymbols[input.symbol.toUpperCase() ?? ""],
     };
   }
+
+  return {
+    level: VerifiedType.UNVERIFIED,
+  };
 }
 
 export function getVerifiedMessageAndIcon(

@@ -22,7 +22,12 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
     symbol,
   );
 
-  const {level} = verifiedLevel({id: struct, known: !!coinData, ...coinData});
+  const {level} = verifiedLevel({
+    id: struct,
+    known: !!coinData,
+    symbol: assetSymbol,
+    ...coinData,
+  });
 
   function title() {
     return `Coin`;
@@ -45,7 +50,13 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
           <TitleHashButton hash={assetSymbol} type={HashType.SYMBOL} />
         )}
         <VerifiedAsset
-          data={{id: struct, known: !!coinData, banner: true, ...coinData}}
+          data={{
+            id: struct,
+            known: !!coinData,
+            banner: true,
+            symbol: assetSymbol,
+            ...coinData,
+          }}
         />
       </Stack>
     </Stack>
