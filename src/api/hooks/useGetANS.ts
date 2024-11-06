@@ -11,6 +11,8 @@ import {ResponseError} from "../client";
 
 const TTL = 60000; // 1 minute
 
+// TODO: Known scam addresses
+
 // This is an override of ANS names, in case we want to display a verified name for an address
 // TODO: this probably belongs somewhere else... but, for now, it's here
 // https://github.com/aptscan-ai/labels/blob/3187ad6b0710261e37324bbc336f74e9a07334a0/labels.json#L216
@@ -193,6 +195,8 @@ export const knownAddresses: Record<string, string> = {
     "Tevi (TVS)", // fungible store for TVS asset
   "0x39673a89d85549ad0d7bef3f53510fe70be2d5abaac0d079330ade5548319b62":
     "Only On Aptos NFT",
+  "0x55f0ee4db1f09caf1bf49b2fb7298dba3a9da674108e26dc7adc78f8c94f298e":
+    "Martian Wallet Fees",
 };
 
 function getFetchNameUrl(
