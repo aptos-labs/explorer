@@ -441,7 +441,7 @@ export function DelegationValidatorsTable() {
   >({
     queryKey: [
       "validatorCommissionAndState",
-      state.aptos_client,
+      state.sdk_v2_client,
       ...sortedValidatorAddrs,
     ],
     queryFn: () =>

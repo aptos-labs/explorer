@@ -69,9 +69,7 @@ const useSubmitTransaction = () => {
 
         // transaction submit succeed
         if ("hash" in response) {
-          await state.aptos_client.waitForTransaction(response["hash"], {
-            checkSuccess: true,
-          });
+          await state.sdk_v2_client.waitForTransaction(response["hash"]);
           return {
             transactionSubmitted: true,
             transactionHash: response["hash"],

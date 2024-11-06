@@ -42,7 +42,7 @@ export default function CoinPage() {
     error: infoError,
     isLoading,
   } = useGetAccountResource(address, `0x1::coin::CoinInfo<${struct}>`);
-  const supply = struct ? useGetCoinSupplyLimit(struct) : null;
+  const supply = useGetCoinSupplyLimit(struct ?? "not::a::struct");
 
   if (error === null) {
     error = infoError;

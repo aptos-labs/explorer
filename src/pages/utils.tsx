@@ -118,7 +118,9 @@ export function isValidAccountAddress(accountAddr: string): boolean {
   );
 }
 
-export function isValidStruct(maybeStruct: string): maybeStruct is `${string}::${string}::${string}` {
+export function isValidStruct(
+  maybeStruct: string,
+): maybeStruct is `${string}::${string}::${string}` {
   return /^0x[0-9a-fA-F]{1,64}::[a-zA-Z0-9_]+::[a-zA-Z0-9_]+$/.test(
     maybeStruct,
   );

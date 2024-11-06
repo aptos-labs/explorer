@@ -8,7 +8,8 @@ import {
   APTOS_COIN,
   AptosConfig,
   Block,
-  InputViewFunctionData, InputViewFunctionJsonData,
+  InputViewFunctionData,
+  InputViewFunctionJsonData,
   LedgerInfo,
   MoveModuleBytecode,
   MoveResource,
@@ -219,7 +220,6 @@ export function view<T extends MoveValue[]>(
     options: {ledgerVersion: parsedVersion},
   });
 }
-
 
 export function getTableItem<T>(
   requestParameters: {tableHandle: string; data: TableItemRequest},

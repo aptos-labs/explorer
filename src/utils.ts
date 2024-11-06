@@ -188,18 +188,16 @@ function encodeVectorForViewRequest(type: string, value: string) {
   const match = type.match(regex);
   if (match) {
     if (match[1] === "u8") {
-      return (
-        new Hex(
-          new Uint8Array(
-            rawVector.map((v) => {
-              const result = ensureNumber(v.trim());
-              if (result < 0 || result > 255)
-                throw new Error(`Invalid u8 value: ${result}`);
-              return result;
-            }),
-          ),
-        ).toString()
-      );
+      return new Hex(
+        new Uint8Array(
+          rawVector.map((v) => {
+            const result = ensureNumber(v.trim());
+            if (result < 0 || result > 255)
+              throw new Error(`Invalid u8 value: ${result}`);
+            return result;
+          }),
+        ),
+      ).toString();
     } else if (["u16", "u32"].includes(match[1])) {
       return rawVector.map((v) => ensureNumber(v.trim()));
     } else if (["u64", "u128", "u256"].includes(match[1])) {

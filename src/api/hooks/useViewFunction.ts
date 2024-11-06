@@ -2,13 +2,13 @@ import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {ResponseError} from "../client";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {viewJson} from "../v2";
-import {InputViewFunctionJsonData, MoveValue} from "@aptos-labs/ts-sdk";
+import {InputViewFunctionJsonData} from "@aptos-labs/ts-sdk";
 
-export function useViewFunction(
+export function useViewFunction<T>(
   functionName: `${string}::${string}::${string}`,
   typeArgs: `${string}::${string}::${string}`[],
   args: string[],
-): UseQueryResult<MoveValue[], ResponseError> {
+): UseQueryResult<T[], ResponseError> {
   const [state] = useGlobalState();
 
   const request: InputViewFunctionJsonData = {
@@ -17,7 +17,7 @@ export function useViewFunction(
     functionArguments: args,
   };
 
-  return useQuery<MoveValue[], ResponseError>({
+  return useQuery<T[], ResponseError>({
     queryKey: [
       "viewFunction",
       {functionName, typeArgs, args},

@@ -9,14 +9,14 @@ type FaMetadata = {
 };
 
 export function useGetFaMetadata(address: string): FaMetadata | null {
-  const {data} = useViewFunction(
+  const {data} = useViewFunction<FaMetadata>(
     "0x1::fungible_asset::metadata",
     ["0x1::object::ObjectCore"],
     [address],
   );
 
   if (data) {
-    const [val] = data as [FaMetadata];
+    const [val] = data;
     if (val !== undefined && val !== null) {
       return val;
     }

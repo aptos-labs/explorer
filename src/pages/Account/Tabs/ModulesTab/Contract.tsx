@@ -27,7 +27,7 @@ import {useForm, SubmitHandler, Controller} from "react-hook-form";
 import {useParams} from "react-router-dom";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
-import {view} from "../../../../api/v2";
+import {viewJson} from "../../../../api/v2";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {useNavigate} from "../../../../routing";
 import {Code} from "../../Components/CodeSnippet";
@@ -44,13 +44,12 @@ import {
   parseTypeTag,
   MoveFunction,
   MoveModule,
-  InputViewFunctionData,
   MoveValue,
+  InputViewFunctionJsonData,
 } from "@aptos-labs/ts-sdk";
-import {viewJson} from "@aptos-labs/ts-sdk/dist/esm/internal/view";
 
 type ContractFormType = {
-  typeArgs: string[];
+  typeArgs: `${string}::${string}::${string}`[];
   args: string[];
   ledgerVersion?: string;
 };
@@ -507,7 +506,7 @@ function ReadContractForm({
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("read_button_clicked", fn.name);
-    let viewRequest: InputViewFunctionData;
+    let viewRequest: InputViewFunctionJsonData;
     try {
       viewRequest = {
         function: `${module.address}::${module.name}::${fn.name}`,
