@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import {createRoot} from "react-dom/client";
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
@@ -51,7 +51,9 @@ declare global {
 
 const queryClient = new QueryClient();
 
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container!);
+root.render(
   <React.StrictMode>
     <StatsigProvider
       sdkKey={
@@ -71,5 +73,4 @@ ReactDOM.render(
       </QueryClientProvider>
     </StatsigProvider>
   </React.StrictMode>,
-  document.getElementById("root"),
 );

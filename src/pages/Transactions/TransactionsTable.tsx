@@ -113,7 +113,7 @@ function TransactionReceiverOrCounterPartyCell({
   return (
     <GeneralTableCell>
       {counterparty && (
-        <Typography
+        <Box
           sx={{display: "flex", fontSize: "inherit", alignItems: "row", gap: 1}}
         >
           {counterparty.role === "smartContract" ? (
@@ -128,7 +128,7 @@ function TransactionReceiverOrCounterPartyCell({
           <span>
             <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
           </span>
-        </Typography>
+        </Box>
       )}
     </GeneralTableCell>
   );

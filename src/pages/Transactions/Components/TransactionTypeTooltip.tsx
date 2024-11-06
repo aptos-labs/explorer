@@ -12,7 +12,7 @@ export default function TransactionTypeTooltip() {
     <TableTooltip title="Transaction Types">
       <Stack spacing={2}>
         {Object.values(TransactionTypeName).map((type) => (
-          <TooltipTransactionType type={type} />
+          <TooltipTransactionType type={type} key={`ttt-${type}`} />
         ))}
       </Stack>
     </TableTooltip>

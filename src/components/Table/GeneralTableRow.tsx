@@ -34,6 +34,7 @@ export default function GeneralTableRow({
         },
   };
 
+  // Note: This will give validateDOMNesting errors, but still work correctly
   if (to) {
     return <TableRow component={Link} to={to} sx={sx} {...props} />;
   }
