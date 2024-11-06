@@ -197,6 +197,8 @@ export const knownAddresses: Record<string, string> = {
     "Only On Aptos NFT",
   "0x55f0ee4db1f09caf1bf49b2fb7298dba3a9da674108e26dc7adc78f8c94f298e":
     "Martian Wallet Fees",
+  "0x407c4d644c0303f46f754b3ceaabf1e4af3f625a4936ae7e0f1c3e51082368ef":
+    "Pontem Wallet Fees",
 };
 
 function getFetchNameUrl(
