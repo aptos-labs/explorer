@@ -1,5 +1,6 @@
 build
 coverage
 public/world.json
+robots.txt
 .husky/
 .prettierignore
