@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import {useAugmentToWithGlobalSearchParams} from "../../routing";
 import {useGetInTestnet} from "../../api/hooks/useGetInTestnet";
+import NetworkSelect from "./NetworkSelect";
 
 function NavButton({
   to,
@@ -28,7 +29,7 @@ function NavButton({
           title={title}
           style={{
             color: "inherit",
-            fontSize: "1rem",
+            fontSize: "0.875rem",
             fontWeight: isActive ? 700 : undefined,
           }}
         >
@@ -48,8 +49,8 @@ export default function Nav() {
       sx={{
         display: {xs: "none", md: "flex"},
         alignItems: "center",
-        gap: {md: 3, lg: 8},
-        marginRight: {md: "2rem", lg: "3.5rem"},
+        gap: {md: 3, lg: 0},
+        marginRight: {md: "0rem", lg: "0rem"},
       }}
     >
       <NavButton
@@ -57,13 +58,15 @@ export default function Nav() {
         title="View All Transactions"
         label="Transactions"
       />
-      {(inMainnet || inTestnet) && (
+
+      {/* {(inMainnet || inTestnet) && (
         <NavButton
           to="/analytics"
           title="View Network Analytics"
           label="Analytics"
         />
-      )}
+      )} */}
+
       {inMainnet && (
         <>
           <NavButton
@@ -75,6 +78,7 @@ export default function Nav() {
       )}
 
       <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
+      <NetworkSelect />
     </Box>
   );
 }

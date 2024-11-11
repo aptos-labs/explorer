@@ -1,6 +1,6 @@
-import { AnyAptosWallet } from "@aptos-labs/wallet-adapter-react";
-import { Breakpoint } from "@mui/material";
-import { useState } from "react";
+import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
+import {Breakpoint} from "@mui/material";
+import {useState} from "react";
 import WalletButton from "./WalletButton";
 import WalletsModal from "./WalletModal";
 

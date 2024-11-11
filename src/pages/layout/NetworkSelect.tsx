@@ -7,7 +7,7 @@ import {
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
-import {useTheme} from "@mui/material/styles";
+import {useTheme, styled} from "@mui/material/styles";
 import {Stack} from "@mui/system";
 import React from "react";
 import {
@@ -136,8 +136,19 @@ export default function NetworkSelect() {
 
   function DropdownIcon(props: SvgIconProps) {
     return (
-      <SvgIcon {...props}>
-        <path d="M16.6,9.7l-2.9,3c-1,1-2.8,1-3.8,0l-2.6-3l-0.8,0.7l2.6,3c0.7,0.7,1.6,1.1,2.6,1.1c1,0,2-0.4,2.6-1.1l2.9-3 L16.6,9.7z" />
+      <SvgIcon
+        {...props}
+        viewBox="0 0 13 8"
+        sx={{
+          fontSize: "12px",
+        }}
+      >
+        <path
+          d="M1 1L6.5 6.5L12 1"
+          stroke="currentColor"
+          strokeWidth="1.375"
+          fill="none"
+        />
       </SvgIcon>
     );
   }
@@ -151,7 +162,7 @@ export default function NetworkSelect() {
           value={state.network_name}
           onChange={handleChange}
           renderValue={(value) => (
-            <Typography>
+            <Typography sx={{fontSize: "0.875rem"}}>
               {value === "testnet" ? "suzuka testnet" : value}
             </Typography>
           )}
@@ -172,6 +183,17 @@ export default function NetworkSelect() {
             color: "inherit",
             alignItems: "center",
             textTransform: "capitalize",
+            "& .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
+            // Remove hover border
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
+            // Remove focus border
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              border: "none",
+            },
             "& .MuiSvgIcon-root": {
               color: theme.palette.text.secondary,
             },
