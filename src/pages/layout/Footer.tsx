@@ -50,8 +50,8 @@ export default function Footer() {
   return (
     <Box
       sx={{
-        background: "#FFD337", // Changed to yellow background
-        color: "#000000", // Changed to black text
+        background: "#FFD337",
+        color: "#000000",
         mt: 8,
       }}
     >
