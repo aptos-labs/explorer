@@ -95,7 +95,7 @@ export default function Header() {
           top: "0",
           borderRadius: "0",
           backdropFilter: "blur(10px)",
-          background: "transparent",
+          background: "#000000",
           ...(!inView &&
             isDark && {
               background: "rgba(18,22,21, 0.85)",
@@ -138,8 +138,7 @@ export default function Header() {
             </Link>
 
             <Nav />
-            <NetworkSelect />
-            <Button
+            {/* <Button
               onClick={toggleColorMode}
               sx={{
                 width: "30px",
@@ -155,11 +154,10 @@ export default function Header() {
               }}
             >
               {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
-            </Button>
+            </Button> */}
             <NavMobile />
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
-
                 <WalletConnector
                   networkSupport={state.network_name}
                   handleNavigate={() =>

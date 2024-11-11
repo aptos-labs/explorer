@@ -50,8 +50,8 @@ export default function Footer() {
   return (
     <Box
       sx={{
-        background: theme.palette.mode === "dark" ? grey[900] : "white",
-        color: theme.palette.mode === "dark" ? grey[100] : "rgba(18,22,21,1)",
+        background: "#FFD337", // Changed to yellow background
+        color: "#000000", // Changed to black text
         mt: 8,
       }}
     >
@@ -76,11 +76,7 @@ export default function Footer() {
               title="Movement Labs"
               sx={{mr: {md: 2}}}
             >
-              {theme.palette.mode !== "dark" ? (
-                <MovementLogoBlack width={50} height={50} />
-              ) : (
-                <MovementLogoWhite width={50} height={50} />
-              )}
+              {/* <MovementLogoBlack width={50} height={50} />{" "} */}
             </Link>
             <Grid direction="row" padding="0">
               <Typography
@@ -91,45 +87,18 @@ export default function Footer() {
                     fontFamily:
                       "space-grotesk-variable, Geneva, Tahoma, Verdana, sans-serif",
                   },
+                  color: "#000000",
                 }}
                 fontSize="0.8rem"
               >
-                © {new Date().getFullYear()}{" "}
+                {new Date().getFullYear()}{" "}
                 <Box component="span" sx={{whiteSpace: "nowrap"}}>
-                  Movement Labs
+                  Movement All Rights Reserved
                 </Box>
               </Typography>
-              {/*<Stack
-                direction="row"
-                spacing={1}
-                justifyContent={{xs: "center", md: "start"}}
-              >
-                <Link
-                  color="inherit"
-                  to="https://aptoslabs.com/privacy"
-                  target="_blank"
-                  sx={{
-                    fontSize: "0.8rem",
-                    fontFamily: "space-grotesk-variable, Geneva, Tahoma, Verdana, sans-serif",
-                  }}
-                >
-                  Privacy
-                </Link>
-                <Link
-                  color="inherit"
-                  to="https://aptoslabs.com/terms"
-                  target="_blank"
-                  sx={{
-                    fontSize: "0.8rem",
-                    fontFamily: "space-grotesk-variable, Geneva, Tahoma, Verdana, sans-serif",
-                  }}
-                >
-                  Terms
-                </Link>
-                </Stack>*/}
             </Grid>
           </Grid>
-
+          {/* 
           <Grid
             xs="auto"
             sx={{marginLeft: {xs: "0", md: "auto"}}}
@@ -145,7 +114,7 @@ export default function Footer() {
               {socialLinks.map((link) => (
                 <Grid key={link.title}>
                   <Link
-                    color="inherit"
+                    color="#000000" // Changed to black
                     to={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -158,7 +127,7 @@ export default function Footer() {
                 </Grid>
               ))}
             </Grid>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </Box>

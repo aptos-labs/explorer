@@ -1,7 +1,7 @@
-import { truncateAddress, useWallet } from "@aptos-labs/wallet-adapter-react";
-import { AccountBalanceWalletOutlined as AccountBalanceWalletOutlinedIcon } from "@mui/icons-material";
-import { Avatar, Button, Typography } from "@mui/material";
-import React, { useState } from "react";
+import {truncateAddress, useWallet} from "@aptos-labs/wallet-adapter-react";
+// import {AccountBalanceWalletOutlined as AccountBalanceWalletOutlinedIcon} from "@mui/icons-material";
+import {Avatar, Button, Typography} from "@mui/material";
+import React, {useState} from "react";
 import WalletMenu from "./WalletMenu";
 
 type WalletButtonProps = {
@@ -13,10 +13,10 @@ export default function WalletButton({
   handleModalOpen,
   handleNavigate,
 }: WalletButtonProps): JSX.Element {
-  const { connected, account, wallet } = useWallet();
+  const {connected, account, wallet} = useWallet();
 
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLButtonElement | null>(
-    null
+    null,
   );
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setPopoverAnchor(event.currentTarget);
@@ -38,14 +38,24 @@ export default function WalletButton({
         variant="contained"
         onClick={connected ? handleClick : onConnectWalletClick}
         className="wallet-button"
-        sx={{ borderRadius: "10px" }}
+        sx={{
+          borderRadius: "8px 16px 4px 18px",
+          padding: "8px 24px",
+          backgroundColor: "#FFD337",
+          color: "#000",
+          textTransform: "none",
+          "&:hover": {
+            backgroundColor: "#E6BE32",
+          },
+          height: "40px",
+        }}
       >
         {connected ? (
           <>
             <Avatar
               alt={wallet?.name}
               src={wallet?.icon}
-              sx={{ width: 24, height: 24 }}
+              sx={{width: 24, height: 24}}
             />
             <Typography noWrap ml={2}>
               {account?.ansName ||
@@ -55,8 +65,13 @@ export default function WalletButton({
           </>
         ) : (
           <>
-            <AccountBalanceWalletOutlinedIcon sx={{ marginRight: 1 }} />
-            <Typography noWrap>Connect Wallet</Typography>
+            {/* <AccountBalanceWalletOutlinedIcon sx={{marginRight: 1}} /> */}
+            <Typography
+              noWrap
+              sx={{fontWeight: 700, fontSize: "20px", lineHeight: "30.07px"}}
+            >
+              Connect Wallet
+            </Typography>
           </>
         )}
       </Button>
