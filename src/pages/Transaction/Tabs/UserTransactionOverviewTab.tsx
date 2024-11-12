@@ -17,6 +17,9 @@ import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard
 import {parseExpirationTimestamp} from "../../utils";
 import {TransactionActions} from "./Components/TransactionActions";
 import {grey} from "../../../themes/colors/aptosColorPalette";
+import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
+import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
+import {findCoinData} from "./BalanceChangeTab";
 
 function UserTransferOrInteractionRows({
   transaction,
@@ -82,6 +85,86 @@ function TransactionAmountRow({transaction}: {transaction: Types.Transaction}) {
         ) : null
       }
       tooltip={getLearnMoreTooltip("amount")}
+    />
+  );
+}
+
+type Swap = {
+  actionType: "swap";
+  dex: string;
+  amountIn: number;
+  amountOut: number;
+  assetIn: string;
+  assetOut: string;
+};
+
+function TransactionActionsRow({
+  transaction,
+}: {
+  transaction: Types.Transaction;
+}) {
+  const events: Types.Event[] =
+    "events" in transaction ? transaction.events : [];
+  const actions = events.map(getEventAction).filter((a) => a !== undefined);
+
+  const {data: coinData} = useGetCoinList();
+
+  return (
+    <ContentRow
+      title="Actions:"
+      value={actions.map(
+        (action, i) =>
+          action.actionType === "swap" &&
+          (() => {
+            const assetInCoin = findCoinData(
+              coinData?.data ?? [],
+              action.assetIn,
+            );
+            const assetOutCoin = findCoinData(
+              coinData?.data ?? [],
+              action.assetOut,
+            );
+
+            return (
+              <Box
+                key={`action-${i}`}
+                sx={{
+                  marginBottom: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                🔄 Swapped{" "}
+                {action.amountIn / Math.pow(10, assetInCoin?.decimals ?? 0)}
+                <HashButton
+                  hash={action.assetIn}
+                  type={
+                    action.assetIn.includes("::")
+                      ? HashType.COIN
+                      : HashType.FUNGIBLE_ASSET
+                  }
+                  img={assetInCoin?.logoUrl}
+                />
+                for{" "}
+                {action.amountOut / Math.pow(10, assetOutCoin?.decimals ?? 0)}
+                <HashButton
+                  hash={action.assetOut}
+                  type={
+                    action.assetOut.includes("::")
+                      ? HashType.COIN
+                      : HashType.FUNGIBLE_ASSET
+                  }
+                  img={assetOutCoin?.logoUrl}
+                />
+                on {action.dex}
+              </Box>
+            );
+          })(),
+      )}
+      tooltip={
+        <LearnMoreTooltip text="Community-curated interpretations of the transaction." />
+      }
     />
   );
 }
@@ -154,6 +237,7 @@ export default function UserTransactionOverviewTab({
         <UserTransferOrInteractionRows transaction={transactionData} />
         <TransactionFunctionRow transaction={transactionData} />
         <TransactionAmountRow transaction={transactionData} />
+        <TransactionActionsRow transaction={transactionData} />
       </ContentBox>
       <ContentBox>
         <TransactionBlockRow version={transactionData.version} />
@@ -276,4 +360,88 @@ export default function UserTransactionOverviewTab({
       <TransactionActions transaction={transaction} />
     </Box>
   );
+}
+
+// we define parse<...>Event(event: Types.Event) -> string | undefined
+// and getEventAction will simply go over the list of parse functions and return the first non-undefined result
+function getEventAction(event: Types.Event): Swap | undefined {
+  const parsers = [parseThalaSwapV1Event, parseThalaSwapV2Event];
+
+  for (const parse of parsers) {
+    const result = parse(event);
+    if (result !== undefined) {
+      return result;
+    }
+  }
+
+  return undefined;
+}
+
+function parseThalaSwapV1Event(event: Types.Event): Swap | undefined {
+  if (
+    !(
+      event.type.startsWith(
+        "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af::weighted_pool::SwapEvent",
+      ) ||
+      event.type.startsWith(
+        "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af::stable_pool::SwapEvent",
+      )
+    )
+  ) {
+    return undefined;
+  }
+
+  const typeArgsMatch = event.type.match(/<(.+)>/);
+  const typeArgs = typeArgsMatch
+    ? typeArgsMatch[1].split(",").map((arg) => arg.trim())
+    : [];
+  const data: {
+    amount_in: string;
+    amount_out: string;
+    idx_in: string;
+    idx_out: string;
+  } = event.data;
+  const amountIn = Number(data.amount_in);
+  const amountOut = Number(data.amount_out);
+  const assetIn = typeArgs[Number(data.idx_in)];
+  const assetOut = typeArgs[Number(data.idx_out)];
+
+  return {
+    actionType: "swap",
+    dex: "ThalaSwap v1",
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function parseThalaSwapV2Event(event: Types.Event): Swap | undefined {
+  if (
+    event.type !==
+    "0x7730cd28ee1cdc9e999336cbc430f99e7c44397c0aa77516f6f23a78559bb5::pool::SwapEvent"
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    amount_in: string;
+    amount_out: string;
+    idx_in: string;
+    idx_out: string;
+    metadata: {inner: string}[];
+  } = event.data;
+  const amountIn = Number(data.amount_in);
+  const amountOut = Number(data.amount_out);
+  const assetIn = data.metadata[Number(data.idx_in)].inner;
+  const assetOut = data.metadata[Number(data.idx_out)].inner;
+
+  return {
+    actionType: "swap",
+    dex: "ThalaSwap v2",
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
 }
