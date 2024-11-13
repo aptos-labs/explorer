@@ -210,7 +210,10 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
       direction="row"
       spacing={1}
       alignItems="center"
-      sx={data.banner ? bannerTheme : undefined}
+      sx={{
+        ...(data.banner ? bannerTheme : {}),
+        padding: 1,
+      }}
     >
       <StyledTooltip title={tooltipMessage}>{icon}</StyledTooltip>
       {data.banner && <Box>{level}</Box>}
