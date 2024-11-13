@@ -76,7 +76,7 @@ export default function InfoTab({address, data}: InfoTabProps) {
               icon_uri && (
                 <img
                   width={100}
-                  alt={`${data?.metadata?.name} icon`}
+                  alt={`${data?.metadata?.name} icon (${icon_uri})`}
                   src={icon_uri}
                 />
               )

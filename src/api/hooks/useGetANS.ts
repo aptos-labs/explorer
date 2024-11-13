@@ -199,6 +199,8 @@ export const knownAddresses: Record<string, string> = {
     "Martian Wallet Fees",
   "0x407c4d644c0303f46f754b3ceaabf1e4af3f625a4936ae7e0f1c3e51082368ef":
     "Pontem Wallet Fees",
+  "0x4de5876d8a8e2be7af6af9f3ca94d9e4fafb24b5f4a5848078d8eb08f08e808a":
+    "Securitize",
 };
 
 function getFetchNameUrl(
