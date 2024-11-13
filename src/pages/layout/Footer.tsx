@@ -69,7 +69,7 @@ export default function Footer() {
             >
               <LogoFull />
             </Link>
-            <Grid2 container direction="row" padding="0">
+            <Grid2 container direction="row" padding="0" spacing={2}>
               <Typography
                 sx={{
                   textAlign: {
