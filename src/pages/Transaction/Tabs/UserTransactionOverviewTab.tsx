@@ -142,7 +142,7 @@ export default function UserTransactionOverviewTab({
             tooltip={getLearnMoreTooltip("fee_payer")}
           />
         )}
-        {secondarySigners && (
+        {secondarySigners && secondarySigners.length > 0 && (
           <ContentRow
             title="Secondary Signers:"
             value={secondarySigners.map((address) => (
