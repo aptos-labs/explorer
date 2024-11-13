@@ -5,6 +5,8 @@ SELECT
 FROM `bigquery-public-data.crypto_aptos_mainnet_us.transactions`
 WHERE tx_type = 'user'
 AND success
-AND DATE(block_timestamp) BETWEEN CURRENT_DATE -30 AND CURRENT_DATE -1
+AND block_timestamp BETWEEN
+  TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 30 DAY
+  AND TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 1 DAY
 GROUP BY 1
 ORDER BY 1
