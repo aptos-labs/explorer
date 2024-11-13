@@ -84,6 +84,26 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     coinMarketCapId: 825,
     native: true,
   },
+  "0x50038be55be5b964cfa32cf128b5cf05f123959f286b4cc02b86cafd48945f89": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0x50038be55be5b964cfa32cf128b5cf05f123959f286b4cc02b86cafd48945f89",
+    name: "BlackRock BUIDL",
+    symbol: "BUIDL",
+    decimals: 6,
+    panoraSymbol: null,
+    bridge: null,
+    logoUrl:
+      "https://securitize-public-files.s3.us-east-2.amazonaws.com/ClientDocuments/buidl/token-logo-256.png",
+    websiteUrl: "http://securitize.io/blackrock/BUIDL",
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 3,
+    coinGeckoId: "blackrock-usd-institutional-digital-liquidity-fund",
+    coinMarketCapId: null,
+  },
 };
 
 export function useGetCoinList(options?: {retry?: number | boolean}) {

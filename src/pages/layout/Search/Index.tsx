@@ -274,18 +274,28 @@ export default function HeaderSearch() {
     return promises;
   }
 
+  function prefixMatchLongerThan4(
+    searchLowerCase: string,
+    knownName: string | null | undefined,
+  ): boolean {
+    if (!knownName) {
+      return false;
+    }
+    const knownLower = knownName.toLowerCase();
+    return (
+      (searchLowerCase.length >= 4 && knownLower.startsWith(searchLowerCase)) ||
+      (searchLowerCase.length < 4 &&
+        knownLower.toLowerCase() === searchLowerCase)
+    );
+  }
+
   async function handleLabelLookup(
     searchText: string,
   ): Promise<(SearchResult | null)[]> {
     const searchResults: SearchResult[] = [];
     const searchLowerCase = searchText.toLowerCase();
     Object.entries(knownAddresses).forEach(([address, knownName]) => {
-      if (
-        (searchLowerCase.length >= 4 &&
-          knownName.toLowerCase().startsWith(searchLowerCase)) ||
-        (searchLowerCase.length < 4 &&
-          knownName.toLowerCase() === searchLowerCase)
-      ) {
+      if (prefixMatchLongerThan4(searchLowerCase, knownName)) {
         searchResults.push({
           label: `Account ${truncateAddress(address)} ${knownName}`,
           to: `/account/${address}`,
@@ -302,9 +312,9 @@ export default function HeaderSearch() {
     const coinData = coinList?.data?.data
       ?.filter(
         (coin: CoinDescription) =>
-          coin.symbol?.toLowerCase() === searchLowerCase ||
-          coin.panoraSymbol?.toLowerCase() === searchLowerCase ||
-          coin.name?.toLowerCase() === searchLowerCase ||
+          prefixMatchLongerThan4(searchLowerCase, coin.name) ||
+          prefixMatchLongerThan4(searchLowerCase, coin.symbol) ||
+          prefixMatchLongerThan4(searchLowerCase, coin.panoraSymbol) ||
           (coin.faAddress &&
             tryStandardizeAddress(coin.faAddress) ===
               tryStandardizeAddress(searchText)) ||
@@ -313,13 +323,13 @@ export default function HeaderSearch() {
       .map((coin: CoinDescription) => {
         if (coin.tokenAddress) {
           return {
-            label: `${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
+            label: `${coin.name} - ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
             to: `/coin/${coin.tokenAddress}`,
             image: coin.logoUrl,
           };
         } else {
           return {
-            label: `${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
+            label: `${coin.name} - ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
             to: `/fungible_asset/${coin.faAddress}`,
             image: coin.logoUrl,
           };
