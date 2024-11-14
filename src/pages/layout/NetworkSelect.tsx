@@ -239,7 +239,7 @@ export default function NetworkSelect() {
               <Typography variant="body2">Chain ID</Typography>
             </Stack>
           </MenuItem>
-          {Object.keys(networks)
+          {/* {Object.keys(networks)
             .filter((networkName) =>
               useGetChainIdCached(networkName as NetworkName),
             )
@@ -251,7 +251,17 @@ export default function NetworkSelect() {
               >
                 <NetworkMenuItem networkName={networkName} />
               </MenuItem>
-            ))}
+            ))} */}
+          {Object.keys(networks).map((networkName: string) => (
+            <MenuItem
+              key={networkName}
+              value={networkName}
+              sx={{paddingY: 0, textTransform: "capitalize"}}
+            >
+              <NetworkMenuItem networkName={networkName} />
+            </MenuItem>
+          ))}
+
           {/* <MenuItem
            key={"custom"}
            value={"custom"}
