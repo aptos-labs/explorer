@@ -18,6 +18,7 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sortPetraFirst} from "../../utils";
 import {useGetInTestnet} from "../../api/hooks/useGetInTestnet";
+import NetworkSelect from "./NetworkSelect";
 
 export default function NavMobile() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -85,17 +86,19 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
           Transactions
         </MenuItem>
-        {(inMainnet || inTestnet) && (
+        {/* {(inMainnet || inTestnet) && (
           <MenuItem onClick={() => handleCloseAndNavigate("/analytics")}>
             Analytics
           </MenuItem>
-        )}
+        )} */}
         {/*<MenuItem onClick={() => handleCloseAndNavigate("/validators")}>
           Validators
         </MenuItem>*/}
         <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
           Blocks
         </MenuItem>
+        <NetworkSelect />
+
         <Divider />
         <WalletConnector
           networkSupport={state.network_name}

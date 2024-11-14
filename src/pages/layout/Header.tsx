@@ -96,16 +96,16 @@ export default function Header() {
           borderRadius: "0",
           backdropFilter: "blur(10px)",
           background: "#000000",
-          ...(!inView &&
-            isDark && {
-              background: "rgba(18,22,21, 0.85)",
-              borderBottom: `1px solid ${theme.palette.common}`,
-            }),
-          ...(!inView &&
-            !isDark && {
-              background: "rgba(254,254,254, 0.8)",
-              borderBottom: `2px solid rgba(18,22,21,0.05)`,
-            }),
+          // ...(!inView &&
+          //   isDark && {
+          //     background: "rgba(18,22,21, 0.85)",
+          //     borderBottom: `1px solid ${theme.palette.common}`,
+          //   }),
+          // ...(!inView &&
+          //   !isDark && {
+          //     background: "rgba(254,254,254, 0.8)",
+          //     borderBottom: `2px solid rgba(18,22,21,0.05)`,
+          //   }),
         }}
       >
         <FeatureBar />

@@ -183,6 +183,7 @@ export default function NetworkSelect() {
             color: "inherit",
             alignItems: "center",
             textTransform: "capitalize",
+
             "& .MuiOutlinedInput-notchedOutline": {
               border: "none",
             },
@@ -201,11 +202,20 @@ export default function NetworkSelect() {
           // dropdown container overrides
           MenuProps={{
             disableScrollLock: true,
+            anchorOrigin: {
+              vertical: "top",
+              horizontal: "left",
+            },
+            transformOrigin: {
+              vertical: "bottom",
+              horizontal: "left",
+            },
             PaperProps: {
               sx: {
                 minWidth: 240,
                 boxShadow: "0 25px 50px -12px rgba(18,22,21,0.25)",
                 marginTop: 0.5,
+
                 "& .MuiMenuItem-root.Mui-selected": {
                   backgroundColor: `${
                     theme.palette.mode === "dark" ? grey[700] : grey[200]
@@ -229,15 +239,19 @@ export default function NetworkSelect() {
               <Typography variant="body2">Chain ID</Typography>
             </Stack>
           </MenuItem>
-          {Object.keys(networks).map((networkName: string) => (
-            <MenuItem
-              key={networkName}
-              value={networkName}
-              sx={{paddingY: 0, textTransform: "capitalize"}}
-            >
-              <NetworkMenuItem networkName={networkName} />
-            </MenuItem>
-          ))}
+          {Object.keys(networks)
+            .filter((networkName) =>
+              useGetChainIdCached(networkName as NetworkName),
+            )
+            .map((networkName: string) => (
+              <MenuItem
+                key={networkName}
+                value={networkName}
+                sx={{paddingY: 0, textTransform: "capitalize"}}
+              >
+                <NetworkMenuItem networkName={networkName} />
+              </MenuItem>
+            ))}
           {/* <MenuItem
            key={"custom"}
            value={"custom"}

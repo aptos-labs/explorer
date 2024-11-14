@@ -114,7 +114,7 @@ export default function Footer() {
               {socialLinks.map((link) => (
                 <Grid key={link.title}>
                   <Link
-                    color="#000000" // Changed to black
+                    color="#000000" 
                     to={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
