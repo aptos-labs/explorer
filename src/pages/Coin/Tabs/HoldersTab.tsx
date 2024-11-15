@@ -14,6 +14,7 @@ import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import LoadingModal from "../../../components/LoadingModal";
 
 type HoldersTabProps = {
   struct: string;
@@ -22,6 +23,9 @@ type HoldersTabProps = {
 
 export default function HoldersTab({struct, data}: HoldersTabProps) {
   const holderData = useGetCoinHolders(struct);
+  if (holderData?.isLoading) {
+    return <LoadingModal open={true} />;
+  }
   if (!data || Array.isArray(data) || !holderData?.data) {
     return <EmptyTabContent />;
   }
@@ -40,14 +44,16 @@ export function HoldersTable({
     <Table>
       <TableHead>
         <TableRow>
+          <GeneralTableHeaderCell header="rank" />
           <GeneralTableHeaderCell header="address" />
           <GeneralTableHeaderCell header="amount" textAlignRight={true} />
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {holders.map((holder) => {
+        {holders.map((holder, i) => {
           return (
             <GeneralTableRow>
+              <GeneralTableCell>{i}</GeneralTableCell>
               <GeneralTableCell>
                 <HashButton
                   hash={holder.owner_address}
