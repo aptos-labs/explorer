@@ -15,7 +15,7 @@ import {useGetCoinSupplyLimit} from "../../api/hooks/useGetCoinSupplyLimit";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
 import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
 
-const TAB_VALUES_FULL: TabValue[] = ["info", "holders"];
+const TAB_VALUES_FULL: TabValue[] = ["info", "holders", "transactions"];
 
 const TAB_VALUES: TabValue[] = ["info"];
 
