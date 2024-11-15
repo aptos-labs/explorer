@@ -1,10 +1,10 @@
 import React from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {FAData} from "../Components/FAData";
+import {FACombinedData} from "../Index";
 
 type TransactionsTabProps = {
   address: string;
-  data: FAData | undefined;
+  data: FACombinedData | undefined;
 };
 
 export default function TransactionsTab({}: TransactionsTabProps) {

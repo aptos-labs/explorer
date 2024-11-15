@@ -1,6 +1,6 @@
 import {useViewFunction} from "./useViewFunction";
 
-type FaMetadata = {
+export type FaMetadata = {
   name: string;
   symbol: string;
   decimals: number;

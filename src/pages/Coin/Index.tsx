@@ -15,9 +15,9 @@ import {useGetCoinSupplyLimit} from "../../api/hooks/useGetCoinSupplyLimit";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
 import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
 
-const TAB_VALUES_FULL: TabValue[] = ["info"];
+const TAB_VALUES_FULL: TabValue[] = ["info", "holders"];
 
-const TAB_VALUES: TabValue[] = ["info", "transactions"];
+const TAB_VALUES: TabValue[] = ["info"];
 
 export default function CoinPage() {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
