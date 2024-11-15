@@ -9,12 +9,14 @@ import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
-import {FAData} from "./Components/FAData";
+import HoldersTab from "./Tabs/HoldersTab";
+import {FACombinedData} from "./Index";
 
-const TAB_VALUES: TabValue[] = ["info", "transactions"];
+const TAB_VALUES: TabValue[] = ["info", "holders", "transactions"];
 
 const TabComponents = Object.freeze({
   transactions: TransactionsTab,
+  holders: HoldersTab,
   info: InfoTab,
 });
 
@@ -24,6 +26,8 @@ function getTabLabel(value: TabValue): string {
   switch (value) {
     case "info":
       return "Info";
+    case "holders":
+      return "Holders";
     case "transactions":
       return "Transactions";
     default:
@@ -35,6 +39,8 @@ function getTabIcon(value: TabValue): JSX.Element {
   switch (value) {
     case "info":
       return <DescriptionOutlinedIcon fontSize="small" />;
+    case "holders":
+      return <WysiwygIcon fontSize="small" />;
     case "transactions":
       return <WysiwygIcon fontSize="small" />;
     default:
@@ -45,7 +51,7 @@ function getTabIcon(value: TabValue): JSX.Element {
 type TabPanelProps = {
   value: TabValue;
   address: string;
-  data: FAData | undefined;
+  data: FACombinedData | undefined;
 };
 
 function TabPanel({value, address, data}: TabPanelProps): JSX.Element {
@@ -55,7 +61,7 @@ function TabPanel({value, address, data}: TabPanelProps): JSX.Element {
 
 type FATabsProps = {
   address: string;
-  data: any | undefined;
+  data: FACombinedData | undefined;
   tabValues?: TabValue[];
 };
 
