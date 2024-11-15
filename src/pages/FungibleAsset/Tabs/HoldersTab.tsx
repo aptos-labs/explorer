@@ -14,6 +14,7 @@ import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {FACombinedData} from "../Index";
+import LoadingModal from "../../../components/LoadingModal";
 
 type HoldersTabProps = {
   address: string;
@@ -22,6 +23,9 @@ type HoldersTabProps = {
 
 export default function HoldersTab({address, data}: HoldersTabProps) {
   const holderData = useGetCoinHolders(address);
+  if (holderData?.isLoading) {
+    return <LoadingModal open={true} />;
+  }
   if (!data || Array.isArray(data) || !holderData?.data) {
     return <EmptyTabContent />;
   }
