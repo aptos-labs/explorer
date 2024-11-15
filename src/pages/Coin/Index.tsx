@@ -14,6 +14,7 @@ import {CoinData} from "./Components/CoinData";
 import {useGetCoinSupplyLimit} from "../../api/hooks/useGetCoinSupplyLimit";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
 import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
+import {useGetCoinPairedFa} from "../../api/hooks/useGetCoinPairedFa";
 
 const TAB_VALUES_FULL: TabValue[] = ["info"];
 
@@ -43,6 +44,7 @@ export default function CoinPage() {
     isLoading,
   } = useGetAccountResource(address, `0x1::coin::CoinInfo<${struct}>`);
   const supply = useGetCoinSupplyLimit(struct);
+  const pairedFa = useGetCoinPairedFa(struct);
 
   if (error === null) {
     error = infoError;
@@ -71,6 +73,7 @@ export default function CoinPage() {
               data={data as CoinData | undefined}
               tabValues={tabValues}
               supply={supply}
+              pairedFa={pairedFa}
               coinData={coinData}
             />
             <Error struct={struct} error={error} />
@@ -81,6 +84,7 @@ export default function CoinPage() {
             data={data as CoinData | undefined}
             tabValues={tabValues}
             supply={supply}
+            pairedFa={pairedFa}
             coinData={coinData}
           />
         )}

@@ -13,6 +13,7 @@ import {useGetFaMetadata} from "../../api/hooks/useGetFaMetadata";
 import {useGetFASupply} from "../../api/hooks/useGetFaSupply";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
 import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
+import {useGetFaPairedCoin} from "../../api/hooks/useGetFaPairedCoin";
 
 const TAB_VALUES_FULL: TabValue[] = ["info"];
 
@@ -38,6 +39,7 @@ export default function FAPage() {
   const {data: allCoinData} = useGetCoinList();
   const metadata = useGetFaMetadata(address);
   const supply = useGetFASupply(address);
+  const pairedCoin = useGetFaPairedCoin(address);
   const isLoading = false;
 
   const coinData = findCoinData(allCoinData?.data, address);
@@ -46,6 +48,7 @@ export default function FAPage() {
     coinData: coinData,
     metadata: metadata,
     supply: supply,
+    pairedCoin: pairedCoin,
   };
 
   const tabValues = isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
