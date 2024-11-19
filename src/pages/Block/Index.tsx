@@ -9,9 +9,10 @@ import PageHeader from "../layout/PageHeader";
 
 export default function BlockPage() {
   const {height} = useParams();
+  const actualHeight = parseInt(height ?? "");
 
   const {data, isLoading, error} = useGetBlockByHeight({
-    height: parseInt(height ?? ""),
+    height: actualHeight,
   });
 
   if (isLoading) {
@@ -37,7 +38,7 @@ export default function BlockPage() {
       <PageHeader />
       <Grid2 size={{xs: 12}}>
         <Stack direction="column" spacing={4} marginTop={2}>
-          <BlockTitle />
+          <BlockTitle height={actualHeight} />
           <BlockTabs data={data} />
         </Stack>
       </Grid2>

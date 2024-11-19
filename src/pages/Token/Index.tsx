@@ -25,7 +25,10 @@ export default function TokenPage() {
       <PageHeader />
       <Grid2 size={{xs: 12}}>
         <Stack direction="column" spacing={4} marginTop={2}>
-          <TokenTitle name={token?.token_name} />
+          <TokenTitle
+            name={token?.token_name ?? ""}
+            tokenDataId={token?.token_data_id ?? ""}
+          />
           <TokenTabs data={token} />
         </Stack>
       </Grid2>

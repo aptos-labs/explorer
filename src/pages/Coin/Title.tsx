@@ -8,6 +8,7 @@ import {
   VerifiedAsset,
   verifiedLevel,
 } from "../../components/Table/VerifiedCell";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 type CoinTitleProps = {
   struct: string;
@@ -28,6 +29,8 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
     symbol: assetSymbol,
     ...coinData,
   });
+
+  usePageMetadata({title: `Coin ${assetSymbol} (${struct})`});
 
   function title() {
     return `Coin`;

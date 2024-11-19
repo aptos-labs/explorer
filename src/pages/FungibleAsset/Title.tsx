@@ -8,6 +8,7 @@ import {
   VerifiedAsset,
   verifiedLevel,
 } from "../../components/Table/VerifiedCell";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 type FATitleProps = {
   address: string;
@@ -28,6 +29,9 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
           coinData?.symbol,
         )
       : metadata?.symbol;
+
+  usePageMetadata({title: `Fungible Asset ${assetSymbol} (${address})`});
+
   const {level} = verifiedLevel({
     id: address,
     known: !!coinData,
