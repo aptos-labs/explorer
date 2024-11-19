@@ -1,5 +1,5 @@
 import {Stack, Typography} from "@mui/material";
-import React from "react";
+import React, {useEffect} from "react";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {CoinDescription} from "../../api/hooks/useGetCoinList";
 import {getAssetSymbol} from "../../utils";
@@ -28,6 +28,10 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
           coinData?.symbol,
         )
       : metadata?.symbol;
+  useEffect(() => {
+    document.title = `Aptos Explorer: Fungible Asset ${assetSymbol} (${address})`;
+  }, [address, assetSymbol]);
+
   const {level} = verifiedLevel({
     id: address,
     known: !!coinData,

@@ -1,5 +1,5 @@
 import {Stack, Typography, Skeleton} from "@mui/material";
-import React from "react";
+import React, {useEffect} from "react";
 import {Types} from "aptos";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import ValidatorStatusIcon from "./Components/ValidatorStatusIcon";
@@ -18,6 +18,10 @@ export default function ValidatorTitle({
   const {validatorStatus} = useGetDelegationNodeInfo({
     validatorAddress: address,
   });
+
+  useEffect(() => {
+    document.title = `Aptos Explorer: Delegated Validator ${address}`;
+  }, [address]);
   return isSkeletonLoading ? (
     ValidatorTitleSkeleton()
   ) : (

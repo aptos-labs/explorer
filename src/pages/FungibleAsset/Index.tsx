@@ -23,6 +23,7 @@ export type FACombinedData = {
   coinData: CoinDescription | undefined;
   metadata: FaMetadata | null;
   supply: bigint | null;
+  pairedCoin: string | null;
 };
 
 export default function FAPage() {
@@ -50,7 +51,7 @@ export default function FAPage() {
 
   const coinData = findCoinData(allCoinData?.data, address);
   // TODO: Type and hand to tabs
-  const data = {
+  const data: FACombinedData = {
     coinData: coinData,
     metadata: metadata,
     supply: supply,

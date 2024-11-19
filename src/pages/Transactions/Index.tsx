@@ -29,6 +29,10 @@ export default function TransactionsPage() {
     }
   }, [userTxnOnly, searchParams, setSearchParams]);
 
+  useEffect(() => {
+    document.title = `Aptos Explorer: Transactions`;
+  }, []);
+
   const toggleUserTxnOnly = () => {
     setUserTxnOnly(!userTxnOnly);
   };

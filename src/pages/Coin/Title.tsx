@@ -1,5 +1,5 @@
 import {Stack, Typography} from "@mui/material";
-import React from "react";
+import React, {useEffect} from "react";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {CoinDescription} from "../../api/hooks/useGetCoinList";
 import {getAssetSymbol} from "../../utils";
@@ -28,6 +28,10 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
     symbol: assetSymbol,
     ...coinData,
   });
+
+  useEffect(() => {
+    document.title = `Aptos Explorer: Fungible Asset ${assetSymbol} (${struct})`;
+  }, [struct, assetSymbol]);
 
   function title() {
     return `Coin`;

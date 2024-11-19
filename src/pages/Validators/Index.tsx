@@ -53,6 +53,8 @@ export default function ValidatorsPage() {
         timestamp: localStorage.getItem(lastVisitKey) ?? "",
       });
     }
+
+    document.title = `Aptos Explorer: Validators`;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
