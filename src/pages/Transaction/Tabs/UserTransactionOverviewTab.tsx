@@ -15,10 +15,12 @@ import TransactionFunction from "./Components/TransactionFunction";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {parseExpirationTimestamp} from "../../utils";
-import {TransactionActions} from "./Components/TransactionActions";
 import {grey} from "../../../themes/colors/aptosColorPalette";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
-import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
+import {
+  CoinDescription,
+  useGetCoinList,
+} from "../../../api/hooks/useGetCoinList";
 import {findCoinData} from "./BalanceChangeTab";
 
 function UserTransferOrInteractionRows({
@@ -89,6 +91,8 @@ function TransactionAmountRow({transaction}: {transaction: Types.Transaction}) {
   );
 }
 
+type EventAction = Swap | TokenMint | TokenBurn | ObjectTransfer;
+
 type Swap = {
   actionType: "swap";
   dex: string;
@@ -96,6 +100,25 @@ type Swap = {
   amountOut: number;
   assetIn: string;
   assetOut: string;
+};
+
+type TokenMint = {
+  actionType: "token mint";
+  collection_address: string;
+  token_address: string;
+};
+type TokenBurn = {
+  actionType: "token burn";
+  previous_owner: string;
+  collection_address: string;
+  token_address: string;
+};
+
+type ObjectTransfer = {
+  actionType: "object transfer";
+  address: string;
+  from: string;
+  to: string;
 };
 
 function TransactionActionsRow({
@@ -112,56 +135,18 @@ function TransactionActionsRow({
   return (
     <ContentRow
       title="Actions:"
-      value={actions.map(
-        (action, i) =>
-          action.actionType === "swap" &&
-          (() => {
-            const assetInCoin = findCoinData(
-              coinData?.data ?? [],
-              action.assetIn,
-            );
-            const assetOutCoin = findCoinData(
-              coinData?.data ?? [],
-              action.assetOut,
-            );
-
-            return (
-              <Box
-                key={`action-${i}`}
-                sx={{
-                  marginBottom: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                🔄 Swapped{" "}
-                {action.amountIn / Math.pow(10, assetInCoin?.decimals ?? 0)}
-                <HashButton
-                  hash={action.assetIn}
-                  type={
-                    action.assetIn.includes("::")
-                      ? HashType.COIN
-                      : HashType.FUNGIBLE_ASSET
-                  }
-                  img={assetInCoin?.logoUrl}
-                />
-                for{" "}
-                {action.amountOut / Math.pow(10, assetOutCoin?.decimals ?? 0)}
-                <HashButton
-                  hash={action.assetOut}
-                  type={
-                    action.assetOut.includes("::")
-                      ? HashType.COIN
-                      : HashType.FUNGIBLE_ASSET
-                  }
-                  img={assetOutCoin?.logoUrl}
-                />
-                on {action.dex}
-              </Box>
-            );
-          })(),
-      )}
+      value={actions.map((action, i) => {
+        switch (action.actionType) {
+          case "swap":
+            return swapAction(coinData, action, i);
+          case "token mint":
+            return nftMintAction(action, i);
+          case "token burn":
+            return nftBurnAction(action, i);
+          case "object transfer":
+            return objectTransferAction(action, i);
+        }
+      })}
       tooltip={
         <LearnMoreTooltip text="Community-curated interpretations of the transaction." />
       }
@@ -357,15 +342,20 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
       </ContentBox>
-      <TransactionActions transaction={transaction} />
     </Box>
   );
 }
 
 // we define parse<...>Event(event: Types.Event) -> string | undefined
 // and getEventAction will simply go over the list of parse functions and return the first non-undefined result
-function getEventAction(event: Types.Event): Swap | undefined {
-  const parsers = [parseThalaSwapV1Event, parseThalaSwapV2Event];
+function getEventAction(event: Types.Event): EventAction | undefined {
+  const parsers = [
+    parseTokenMintEvent,
+    parseTokenBurnEvent,
+    parseObjectTransferEvent,
+    parseThalaSwapV1Event,
+    parseThalaSwapV2Event,
+  ];
 
   for (const parse of parsers) {
     const result = parse(event);
@@ -375,6 +365,175 @@ function getEventAction(event: Types.Event): Swap | undefined {
   }
 
   return undefined;
+}
+
+const swapAction = (
+  coinData: {data: CoinDescription[]} | undefined,
+  action: Swap,
+  i: number,
+) => {
+  const assetInCoin = findCoinData(coinData?.data ?? [], action.assetIn);
+  const assetOutCoin = findCoinData(coinData?.data ?? [], action.assetOut);
+
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      {"🔄 Swapped "}
+      {action.amountIn / Math.pow(10, assetInCoin?.decimals ?? 0)}
+      <HashButton
+        hash={action.assetIn}
+        type={
+          action.assetIn.includes("::")
+            ? HashType.COIN
+            : HashType.FUNGIBLE_ASSET
+        }
+        img={assetInCoin?.logoUrl}
+      />
+      for {action.amountOut / Math.pow(10, assetOutCoin?.decimals ?? 0)}
+      <HashButton
+        hash={action.assetOut}
+        type={
+          action.assetOut.includes("::")
+            ? HashType.COIN
+            : HashType.FUNGIBLE_ASSET
+        }
+        img={assetOutCoin?.logoUrl}
+      />
+      on {action.dex}
+    </Box>
+  );
+};
+
+const nftMintAction = (action: TokenMint, i: number) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      {"🏗️ Minted "}
+      {<HashButton hash={action.token_address} type={HashType.OBJECT} />}
+      {" in collection "}
+      {<HashButton hash={action.collection_address} type={HashType.OBJECT} />}
+    </Box>
+  );
+};
+
+const nftBurnAction = (action: TokenBurn, i: number) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      {"🔥️ Burned "}
+      {<HashButton hash={action.token_address} type={HashType.OBJECT} />}
+      {" in collection "}
+      {<HashButton hash={action.collection_address} type={HashType.OBJECT} />}
+      {" from "}
+      {<HashButton hash={action.previous_owner} type={HashType.ACCOUNT} />}
+    </Box>
+  );
+};
+
+const objectTransferAction = (action: ObjectTransfer, i: number) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      {"⏩ Transferred "}
+      {<HashButton hash={action.address} type={HashType.OBJECT} />} {" from "}
+      {<HashButton hash={action.from} type={HashType.ACCOUNT} />} {" to "}
+      {<HashButton hash={action.to} type={HashType.ACCOUNT} />}
+    </Box>
+  );
+};
+
+function parseTokenMintEvent(event: Types.Event): TokenMint | undefined {
+  if (
+    !event.type.startsWith("0x4::collection::Mint") &&
+    !event.type.startsWith("0x4::collection::MintEvent")
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    collection: string;
+    token: string;
+  } = event.data;
+
+  return {
+    actionType: "token mint",
+    collection_address: data.collection,
+    token_address: data.token,
+  };
+}
+
+function parseTokenBurnEvent(event: Types.Event): TokenBurn | undefined {
+  if (
+    !event.type.startsWith("0x4::collection::Burn") &&
+    !event.type.startsWith("0x4::collection::BurnEvent")
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    collection: string;
+    token: string;
+    previous_owner: string;
+  } = event.data;
+
+  return {
+    actionType: "token burn",
+    collection_address: data.collection,
+    token_address: data.token,
+    previous_owner: data.previous_owner,
+  };
+}
+
+function parseObjectTransferEvent(
+  event: Types.Event,
+): ObjectTransfer | undefined {
+  if (
+    !event.type.startsWith("0x1::object::Transfer") &&
+    !event.type.startsWith("0x1::object::TransferEvent")
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    from: string;
+    to: string;
+    object: string;
+  } = event.data;
+
+  return {
+    actionType: "object transfer",
+    from: data.from,
+    to: data.to,
+    address: data.object,
+  };
 }
 
 function parseThalaSwapV1Event(event: Types.Event): Swap | undefined {
