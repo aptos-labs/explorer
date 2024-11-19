@@ -11,11 +11,13 @@ import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
 import {CoinData} from "./Components/CoinData";
 import {CoinDescription} from "../../api/hooks/useGetCoinList";
+import HoldersTab from "./Tabs/HoldersTab";
 
-const TAB_VALUES: TabValue[] = ["info", "transactions"];
+const TAB_VALUES: TabValue[] = ["info", "holders", "transactions"];
 
 const TabComponents = Object.freeze({
   transactions: TransactionsTab,
+  holders: HoldersTab,
   info: InfoTab,
 });
 
@@ -27,6 +29,8 @@ function getTabLabel(value: TabValue): string {
       return "Info";
     case "transactions":
       return "Transactions";
+    case "holders":
+      return "Holders";
     default:
       return assertNever(value);
   }
@@ -37,6 +41,8 @@ function getTabIcon(value: TabValue): JSX.Element {
     case "info":
       return <DescriptionOutlinedIcon fontSize="small" />;
     case "transactions":
+      return <WysiwygIcon fontSize="small" />;
+    case "holders":
       return <WysiwygIcon fontSize="small" />;
     default:
       return assertNever(value);

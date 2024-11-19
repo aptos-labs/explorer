@@ -9,15 +9,21 @@ import Error from "./Error";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 import {isValidAccountAddress} from "../utils";
 import FATitle from "./Title";
-import {useGetFaMetadata} from "../../api/hooks/useGetFaMetadata";
+import {FaMetadata, useGetFaMetadata} from "../../api/hooks/useGetFaMetadata";
 import {useGetFASupply} from "../../api/hooks/useGetFaSupply";
-import {useGetCoinList} from "../../api/hooks/useGetCoinList";
+import {CoinDescription, useGetCoinList} from "../../api/hooks/useGetCoinList";
 import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
 import {useGetFaPairedCoin} from "../../api/hooks/useGetFaPairedCoin";
 
-const TAB_VALUES_FULL: TabValue[] = ["info"];
+const TAB_VALUES_FULL: TabValue[] = ["info", "holders", "transactions"];
 
-const TAB_VALUES: TabValue[] = ["info", "transactions"];
+const TAB_VALUES: TabValue[] = ["info"];
+
+export type FACombinedData = {
+  coinData: CoinDescription | undefined;
+  metadata: FaMetadata | null;
+  supply: bigint | null;
+};
 
 export default function FAPage() {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();

@@ -6,10 +6,11 @@ import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabC
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {getAssetSymbol} from "../../../utils";
 import HashButton, {HashType} from "../../../components/HashButton";
+import {FACombinedData} from "../Index";
 
 type InfoTabProps = {
   address: string;
-  data: any | undefined;
+  data: FACombinedData | undefined;
 };
 
 // TODO: put this extra information somewhere else
