@@ -1,5 +1,6 @@
 import {Stack, Typography} from "@mui/material";
-import React, {useEffect} from "react";
+import React from "react";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 type BlockTitleProps = {
   name: string;
@@ -7,9 +8,8 @@ type BlockTitleProps = {
 };
 
 export default function TokenTitle({name, tokenDataId}: BlockTitleProps) {
-  useEffect(() => {
-    document.title = `Aptos Explorer: Token ${name} (${tokenDataId})`;
-  }, [name, tokenDataId]);
+  usePageMetadata({title: `Token ${name} (${tokenDataId})`});
+
   return (
     <Stack direction="row" alignItems="center" spacing={2} marginX={1}>
       <Typography variant="h3">Token</Typography>

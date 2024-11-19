@@ -4,14 +4,12 @@ import {defaultNetworkName} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
 import MainnetAnalytics from "./MainnetAnalytics";
-import {useEffect} from "react";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 export default function AnalyticsPage() {
   const [state] = useGlobalState();
 
-  useEffect(() => {
-    document.title = `Aptos Explorer: Network Analytics`;
-  }, []);
+  usePageMetadata({title: "Network Analytics"});
   const titleComponent = (
     <Typography variant="h3" marginBottom={2}>
       Network Analytics

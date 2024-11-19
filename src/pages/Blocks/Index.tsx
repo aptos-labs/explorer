@@ -4,16 +4,14 @@ import {useGetMostRecentBlocks} from "../../api/hooks/useGetMostRecentBlocks";
 import {Box, Typography} from "@mui/material";
 import PageHeader from "../layout/PageHeader";
 import LoadingModal from "../../components/LoadingModal";
-import {useEffect} from "react";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 const BLOCKS_COUNT = 30;
 
 export default function BlocksPage() {
   const {recentBlocks, isLoading} = useGetMostRecentBlocks(BLOCKS_COUNT);
 
-  useEffect(() => {
-    document.title = `Aptos Explorer: Latest Blocks`;
-  }, []);
+  usePageMetadata({title: "Latest Blocks"});
 
   return (
     <>

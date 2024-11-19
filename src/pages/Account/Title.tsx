@@ -1,6 +1,7 @@
 import {Stack, Typography} from "@mui/material";
-import React, {useEffect} from "react";
+import React from "react";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 type AccountTitleProps = {
   address: string;
@@ -20,9 +21,7 @@ export default function AccountTitle({
     title = "Object";
   }
 
-  useEffect(() => {
-    document.title = `Aptos Explorer: ${title} ${address}`;
-  }, [title, address, isObject, isDeleted]);
+  usePageMetadata({title: `${title} ${address}`});
 
   return (
     <Stack direction="column" spacing={2} marginX={1}>

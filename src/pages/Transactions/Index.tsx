@@ -6,6 +6,7 @@ import AllTransactions from "./AllTransactions";
 import UserTransactions from "./UserTransactions";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 export default function TransactionsPage() {
   const [state] = useGlobalState();
@@ -29,9 +30,7 @@ export default function TransactionsPage() {
     }
   }, [userTxnOnly, searchParams, setSearchParams]);
 
-  useEffect(() => {
-    document.title = `Aptos Explorer: Transactions`;
-  }, []);
+  usePageMetadata({title: "Transactions"});
 
   const toggleUserTxnOnly = () => {
     setUserTxnOnly(!userTxnOnly);

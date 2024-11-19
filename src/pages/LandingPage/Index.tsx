@@ -4,12 +4,10 @@ import Box from "@mui/material/Box";
 import NetworkInfo from "../Analytics/NetworkInfo/NetworkInfo";
 import UserTransactionsPreview from "./UserTransactionsPreview";
 import {GithubDiscussionsBanner} from "./GithubDiscussionsBanner";
-import {useEffect} from "react";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 export default function LandingPage() {
-  useEffect(() => {
-    document.title = `Aptos Explorer`;
-  }, []);
+  usePageMetadata({});
   return (
     <Box>
       <GithubDiscussionsBanner />
