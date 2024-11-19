@@ -54,6 +54,7 @@ type TabPanelProps = {
   struct: string;
   data: CoinData | undefined;
   supply: bigint | null;
+  pairedFa: string | null;
   coinData: CoinDescription | undefined;
 };
 
@@ -62,6 +63,7 @@ function TabPanel({
   struct,
   data,
   supply,
+  pairedFa,
   coinData,
 }: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
@@ -70,6 +72,7 @@ function TabPanel({
       struct={struct}
       data={data}
       supply={supply}
+      pairedFa={pairedFa}
       coinData={coinData}
     />
   );
@@ -80,6 +83,7 @@ type CoinTabsProps = {
   data: CoinData | undefined;
   tabValues?: TabValue[];
   supply: bigint | null;
+  pairedFa: string | null;
   coinData: CoinDescription | undefined;
 };
 
@@ -89,6 +93,7 @@ export default function CoinTabs({
   data,
   tabValues = TAB_VALUES,
   supply,
+  pairedFa,
   coinData,
 }: CoinTabsProps): JSX.Element {
   const {tab, modulesTab} = useParams();
@@ -130,6 +135,7 @@ export default function CoinTabs({
           struct={struct}
           data={data}
           supply={supply}
+          pairedFa={pairedFa}
           coinData={coinData}
         />
       </Box>

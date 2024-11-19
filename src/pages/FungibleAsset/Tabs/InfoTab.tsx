@@ -94,8 +94,22 @@ export default function InfoTab({address, data}: InfoTabProps) {
           />
           <ContentRow
             title={"Object Details:"}
-            value={<HashButton hash={address} type={HashType.OBJECT} />}
+            value={
+              <HashButton size="large" hash={address} type={HashType.OBJECT} />
+            }
           />
+          {data.pairedCoin && (
+            <ContentRow
+              title={"Paired Coin:"}
+              value={
+                <HashButton
+                  size="large"
+                  hash={data.pairedCoin}
+                  type={HashType.COIN}
+                />
+              }
+            />
+          )}
         </ContentBox>
       )}
     </Box>

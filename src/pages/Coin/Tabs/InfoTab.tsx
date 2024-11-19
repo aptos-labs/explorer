@@ -13,6 +13,7 @@ type InfoTabProps = {
   struct: string;
   data: CoinData | undefined;
   supply: bigint | null;
+  pairedFa: string | null;
   coinData: CoinDescription | undefined;
 };
 
@@ -20,6 +21,7 @@ export default function InfoTab({
   struct,
   data,
   supply,
+  pairedFa,
   coinData,
 }: InfoTabProps) {
   if (!data || Array.isArray(data)) {
@@ -69,11 +71,24 @@ export default function InfoTab({
             title={"Creator:"}
             value={
               <HashButton
+                size="large"
                 hash={struct.split("::")[0]}
                 type={HashType.ACCOUNT}
               />
             }
           />
+          {pairedFa && (
+            <ContentRow
+              title={"Paired FA:"}
+              value={
+                <HashButton
+                  size="large"
+                  hash={pairedFa}
+                  type={HashType.FUNGIBLE_ASSET}
+                />
+              }
+            />
+          )}
         </ContentBox>
       )}
     </Box>
