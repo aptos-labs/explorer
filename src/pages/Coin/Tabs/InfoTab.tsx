@@ -71,6 +71,7 @@ export default function InfoTab({
             title={"Creator:"}
             value={
               <HashButton
+                size="large"
                 hash={struct.split("::")[0]}
                 type={HashType.ACCOUNT}
               />
@@ -80,7 +81,11 @@ export default function InfoTab({
             <ContentRow
               title={"Paired FA:"}
               value={
-                <HashButton hash={pairedFa} type={HashType.FUNGIBLE_ASSET} />
+                <HashButton
+                  size="large"
+                  hash={pairedFa}
+                  type={HashType.FUNGIBLE_ASSET}
+                />
               }
             />
           )}

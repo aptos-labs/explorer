@@ -1,4 +1,7 @@
 import {useViewFunction} from "./useViewFunction";
+import {Hex} from "@aptos-labs/ts-sdk";
+
+const TEXT_DECODER = new TextDecoder();
 
 export function useGetFaPairedCoin(address: string): string | null {
   const {data} = useViewFunction("0x1::coin::paired_coin", [], [address]);
@@ -27,5 +30,5 @@ export function useGetFaPairedCoin(address: string): string | null {
 }
 
 function hexToUtf8(hexWith0x: string): string {
-  return Buffer.from(hexWith0x.slice(2), "hex").toString("utf8");
+  return TEXT_DECODER.decode(Hex.fromHexString(hexWith0x).toUint8Array());
 }
