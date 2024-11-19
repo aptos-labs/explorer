@@ -7,7 +7,7 @@ import {standardizeAddress} from "../../../../utils";
 
 const AddressLink: React.FC<{
   address: string;
-  type: "address" | "object" | "token";
+  type: "account" | "object" | "token";
 }> = ({address, type}) => (
   <Link to={`/${type}/${standardizeAddress(address)}`}>
     {truncateAddress(address)}
@@ -40,8 +40,8 @@ const mapEventToTransactionAction = (event: Types.Event) => {
     return (
       <li>
         Transfer Object <AddressLink address={object} type="object" /> from{" "}
-        <AddressLink address={from} type="address" /> to{" "}
-        <AddressLink address={to} type="address" />
+        <AddressLink address={from} type="account" /> to{" "}
+        <AddressLink address={to} type="account" />
       </li>
     );
   }
