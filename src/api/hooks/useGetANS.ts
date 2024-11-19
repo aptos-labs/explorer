@@ -123,6 +123,8 @@ export const knownAddresses: Record<string, string> = {
   "0xcd7b88c2181881bf8e7ef741cae867aee038e75df94224496a4a81627edf7f65": "Defy",
   "0xa3111961a31597ca770c60be02fc9f72bdee663f563e45223e79793557eef0d9":
     "Lucid Finance",
+  "0xd47ead75b923422f7967257259e7a298f029da9e5484dc7aa1a9efbd4c3ae648":
+    "Native FA Redemption",
   // NFT marketplace
   "0x7ccf0e6e871977c354c331aa0fccdffb562d9fceb27e3d7f61f8e12e470358e9":
     "Wapal Aggregator",
