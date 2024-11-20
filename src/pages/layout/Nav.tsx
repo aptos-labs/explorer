@@ -59,13 +59,13 @@ export default function Nav() {
         label="Transactions"
       />
 
-      {/* {(inMainnet || inTestnet) && (
+      {(inMainnet || inTestnet) && (
         <NavButton
           to="/analytics"
           title="View Network Analytics"
           label="Analytics"
         />
-      )} */}
+      )}
 
       {inMainnet && (
         <>

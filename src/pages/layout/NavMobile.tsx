@@ -86,11 +86,11 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
           Transactions
         </MenuItem>
-        {/* {(inMainnet || inTestnet) && (
+        {(inMainnet || inTestnet) && (
           <MenuItem onClick={() => handleCloseAndNavigate("/analytics")}>
             Analytics
           </MenuItem>
-        )} */}
+        )}
         {/*<MenuItem onClick={() => handleCloseAndNavigate("/validators")}>
           Validators
         </MenuItem>*/}
