@@ -9,6 +9,7 @@ import {
   verifiedLevel,
 } from "../../components/Table/VerifiedCell";
 import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 type FATitleProps = {
   address: string;
@@ -32,12 +33,16 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
 
   usePageMetadata({title: `Fungible Asset ${assetSymbol} (${address})`});
 
-  const {level} = verifiedLevel({
-    id: address,
-    known: !!coinData,
-    symbol: assetSymbol,
-    ...coinData,
-  });
+  const [state] = useGlobalState();
+  const {level} = verifiedLevel(
+    {
+      id: address,
+      known: !!coinData,
+      symbol: assetSymbol,
+      ...coinData,
+    },
+    state.network_name,
+  );
 
   return (
     <Stack direction="column" spacing={2} marginX={1}>

@@ -8,6 +8,7 @@ import {
   VerifiedUser,
   Warning,
   WarningAmberOutlined,
+  UnpublishedOutlined,
 } from "@mui/icons-material";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import * as React from "react";
@@ -16,6 +17,8 @@ import {
   codeBlockColorClickableOnHover,
 } from "../../themes/colors/aptosColorPalette";
 import {BUTTON_HEIGHT} from "../TitleHashButton";
+import {useGlobalState} from "../../global-config/GlobalConfig";
+import {Network} from "@aptos-labs/ts-sdk";
 
 type VerifiedCellProps = {
   id: string; // FA address or Coin Type
@@ -34,6 +37,7 @@ export enum VerifiedType {
   UNVERIFIED = "Unverified", // Not in panora list, could be anything
   LABS_BANNED = "Banned", // Banned by labs
   COMMUNITY_BANNED = "Community Banned", // Banned by Panora
+  DISABLED = "No Verification",
 }
 
 export function isBannedType(level: VerifiedType): boolean {
@@ -90,7 +94,10 @@ export type VerifiedLevelInfo = {
   reason?: string;
 };
 
-export function verifiedLevel(input: VerifiedCellProps): VerifiedLevelInfo {
+export function verifiedLevel(
+  input: VerifiedCellProps,
+  network: string,
+): VerifiedLevelInfo {
   if (nativeTokens[input.id]) {
     return {
       level: VerifiedType.NATIVE_TOKEN,
@@ -116,6 +123,12 @@ export function verifiedLevel(input: VerifiedCellProps): VerifiedLevelInfo {
   } else if (input?.known) {
     return {
       level: VerifiedType.RECOGNIZED,
+    };
+  } else if (network !== Network.MAINNET) {
+    // Everything below here is for Mainnet only
+    return {
+      level: VerifiedType.DISABLED,
+      reason: "Verification only enabled for Mainnet",
     };
   } else if (
     input.id.includes("::") &&
@@ -182,13 +195,20 @@ export function getVerifiedMessageAndIcon(
       }
       icon = <Dangerous fontSize="small" color="error" />;
       break;
+    case VerifiedType.DISABLED:
+      tooltipMessage = `Verification disabled for non-Mainnet`;
+      if (reason) {
+        tooltipMessage += ` Reason: (${reason})`;
+      }
+      icon = <UnpublishedOutlined fontSize="small" color="disabled" />;
   }
   return {tooltipMessage, icon};
 }
 
 export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
   const theme = useTheme();
-  const {level, reason} = verifiedLevel(data);
+  const [state] = useGlobalState();
+  const {level, reason} = verifiedLevel(data, state.network_name);
   const {tooltipMessage, icon} = getVerifiedMessageAndIcon(level, reason);
 
   const bannerTheme = {
