@@ -9,6 +9,7 @@ import {
   verifiedLevel,
 } from "../../components/Table/VerifiedCell";
 import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
 type CoinTitleProps = {
   struct: string;
@@ -23,12 +24,16 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
     symbol,
   );
 
-  const {level} = verifiedLevel({
-    id: struct,
-    known: !!coinData,
-    symbol: assetSymbol,
-    ...coinData,
-  });
+  const [state] = useGlobalState();
+  const {level} = verifiedLevel(
+    {
+      id: struct,
+      known: !!coinData,
+      symbol: assetSymbol,
+      ...coinData,
+    },
+    state.network_name,
+  );
 
   usePageMetadata({title: `Coin ${assetSymbol} (${struct})`});
 
