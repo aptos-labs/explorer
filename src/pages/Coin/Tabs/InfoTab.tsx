@@ -7,12 +7,17 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import {CoinData} from "../Components/CoinData";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {CoinDescription} from "../../../api/hooks/useGetCoinList";
-import {getAssetSymbol} from "../../../utils";
+import {assertNever, getAssetSymbol} from "../../../utils";
+import {SupplyType} from "../../../api/hooks/useGetCoinSupplyLimit";
+import Tooltip from "@mui/material/Tooltip";
+import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
+import {VerifiedTwoTone} from "@mui/icons-material";
+import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
 
 type InfoTabProps = {
   struct: string;
   data: CoinData | undefined;
-  supply: bigint | null;
+  supplyInfo: [bigint | null, SupplyType | null];
   pairedFa: string | null;
   coinData: CoinDescription | undefined;
 };
@@ -20,12 +25,44 @@ type InfoTabProps = {
 export default function InfoTab({
   struct,
   data,
-  supply,
+  supplyInfo,
   pairedFa,
   coinData,
 }: InfoTabProps) {
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
+  }
+
+  const [supply, supplyType] = supplyInfo;
+  let supplyIcon = null;
+  switch (supplyType) {
+    case SupplyType.ON_CHAIN:
+      supplyIcon = (
+        <Tooltip title={"Supply tracked on-chain, may change over time"}>
+          <VerifiedOutlined />
+        </Tooltip>
+      );
+      break;
+    case SupplyType.VERIFIED_OFF_CHAIN:
+      supplyIcon = (
+        <Tooltip title={"Supply verified off-chain to have a fixed supply"}>
+          <VerifiedTwoTone />
+        </Tooltip>
+      );
+      break;
+    case SupplyType.NO_SUPPLY_TRACKED:
+      supplyIcon = (
+        <Tooltip
+          title={"No supply is tracked for this coin on-chain or off-chain"}
+        >
+          <QuestionMarkOutlined />
+        </Tooltip>
+      );
+      break;
+    case null:
+      break;
+    default:
+      assertNever(supplyType);
   }
 
   let formattedSupply: string | null = null;
@@ -53,7 +90,19 @@ export default function InfoTab({
             title={"Decimals:"}
             value={data?.data?.decimals?.toString()}
           />
-          <ContentRow title={"Total supply:"} value={formattedSupply} />
+          {formattedSupply !== null ? (
+            <ContentRow
+              title={"Total supply:"}
+              value={
+                <>
+                  {`${formattedSupply} `}
+                  {supplyIcon}
+                </>
+              }
+            />
+          ) : (
+            <ContentRow title={"Total supply:"} value={supplyIcon} />
+          )}
           <ContentRow
             title={"Icon:"}
             value={

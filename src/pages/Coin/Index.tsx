@@ -43,7 +43,8 @@ export default function CoinPage() {
     error: infoError,
     isLoading,
   } = useGetAccountResource(address, `0x1::coin::CoinInfo<${struct}>`);
-  const supply = useGetCoinSupplyLimit(struct);
+
+  const supplyInfo = useGetCoinSupplyLimit(struct);
   const pairedFa = useGetCoinPairedFa(struct);
 
   if (error === null) {
@@ -72,7 +73,7 @@ export default function CoinPage() {
               struct={struct}
               data={data as CoinData | undefined}
               tabValues={tabValues}
-              supply={supply}
+              supplyInfo={supplyInfo}
               pairedFa={pairedFa}
               coinData={coinData}
             />
@@ -83,7 +84,7 @@ export default function CoinPage() {
             struct={struct}
             data={data as CoinData | undefined}
             tabValues={tabValues}
-            supply={supply}
+            supplyInfo={supplyInfo}
             pairedFa={pairedFa}
             coinData={coinData}
           />
