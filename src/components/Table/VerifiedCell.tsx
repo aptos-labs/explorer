@@ -27,6 +27,8 @@ import {
   Network,
 } from "@aptos-labs/ts-sdk";
 import {sha3_256} from "js-sha3";
+import {useGetFaPairedCoin} from "../../api/hooks/useGetFaPairedCoin";
+import {useGetCoinList} from "../../api/hooks/useGetCoinList";
 
 type VerifiedCellProps = {
   id: string; // FA address or Coin Type
@@ -242,7 +244,49 @@ export function getVerifiedMessageAndIcon(
 export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
   const theme = useTheme();
   const [state] = useGlobalState();
-  const {level, reason} = verifiedLevel(data, state.network_name);
+
+  const isCoin = data.id.includes("::");
+
+  const pairedCoin = useGetFaPairedCoin(data.id);
+  const {data: coinList} = useGetCoinList();
+
+  let {level, reason}: VerifiedLevelInfo = {
+    level: VerifiedType.UNVERIFIED,
+    reason: undefined,
+  };
+  if (!isCoin && pairedCoin && coinList) {
+    const matchedCoin = coinList.data.find(
+      (desc) => desc.tokenAddress === pairedCoin,
+    );
+    if (matchedCoin) {
+      const matchedCoinData = {
+        id: pairedCoin,
+        known: true,
+        isBanned: matchedCoin.isBanned,
+        symbol: matchedCoin.symbol,
+        isInPanoraTokenList: matchedCoin.isInPanoraTokenList,
+      };
+      const result = verifiedLevel(matchedCoinData, state.network_name);
+      level = result.level;
+      reason = result.reason;
+    } else {
+      const result = verifiedLevel(
+        {
+          id: pairedCoin,
+          known: data.known,
+          symbol: data.symbol,
+          isInPanoraTokenList: data.isInPanoraTokenList,
+        },
+        state.network_name,
+      );
+      level = result.level;
+      reason = result.reason;
+    }
+  } else {
+    const result = verifiedLevel(data, state.network_name);
+    level = result.level;
+    reason = result.reason;
+  }
   const {tooltipMessage, icon} = getVerifiedMessageAndIcon(level, reason);
 
   const bannerTheme = {
