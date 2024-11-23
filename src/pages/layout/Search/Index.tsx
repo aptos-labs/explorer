@@ -31,6 +31,7 @@ import {
 } from "../../../api/hooks/useGetCoinList";
 import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
 import {knownAddresses} from "../../../api/hooks/useGetANS";
+import {getEmojicoinMarketAddressAndTypeTags} from "../../../components/Table/VerifiedCell";
 
 export type SearchResult = {
   label: string;
@@ -339,6 +340,29 @@ export default function HeaderSearch() {
     return coinData ?? [];
   }
 
+  async function handleEmojiCoinLookup(
+    searchText: string,
+  ): Promise<(SearchResult | null)[]> {
+    const {marketAddress, coin, lp} = getEmojicoinMarketAddressAndTypeTags({
+      symbol: searchText,
+    });
+    return getAccount(
+      {address: marketAddress.toString()},
+      state.aptos_client,
+    ).then(() => {
+      return [
+        {
+          label: `${searchText} emojicoin`,
+          to: `/coin/${coin}`,
+        },
+        {
+          label: `${searchText} emojicoin LP`,
+          to: `/coin/${lp}`,
+        },
+      ];
+    });
+  }
+
   const fetchData = async (searchText: string) => {
     setMode("loading");
     const searchPerformanceStart = GTMEvents.SEARCH_STATS + " start";
@@ -371,6 +395,8 @@ export default function HeaderSearch() {
       // These are only addresses
       promises.push(...handleAddress(searchText));
       multipleSearchPromises.push(handleCoinLookup(searchText));
+    } else if (searchText.match(/^\p{Emoji}+$/gu)) {
+      multipleSearchPromises.push(handleEmojiCoinLookup(searchText));
     } else if (searchText.length > 2) {
       multipleSearchPromises.push(handleCoinLookup(searchText));
       multipleSearchPromises.push(handleLabelLookup(searchText));
