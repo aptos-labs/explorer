@@ -335,6 +335,9 @@ export function VerifiedCoinCell({data}: {data: VerifiedCellProps}) {
 export const TEXT_ENCODER = new TextEncoder();
 
 export function getEmojicoinMarketAddressAndTypeTags(args: {symbol: string}) {
+  if (!args.symbol.match(/^\p{Emoji}+$/u)) {
+    return null;
+  }
   const symbolBytes = TEXT_ENCODER.encode(args.symbol);
   const marketAddress = deriveEmojicoinPublisherAddress({
     symbol: symbolBytes,

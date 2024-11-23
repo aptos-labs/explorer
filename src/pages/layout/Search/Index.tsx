@@ -343,9 +343,13 @@ export default function HeaderSearch() {
   async function handleEmojiCoinLookup(
     searchText: string,
   ): Promise<(SearchResult | null)[]> {
-    const {marketAddress, coin, lp} = getEmojicoinMarketAddressAndTypeTags({
+    const emojicoinData = getEmojicoinMarketAddressAndTypeTags({
       symbol: searchText,
     });
+    if (!emojicoinData) {
+      return [];
+    }
+    const {marketAddress, coin, lp} = emojicoinData;
     return getAccount(
       {address: marketAddress.toString()},
       state.aptos_client,
