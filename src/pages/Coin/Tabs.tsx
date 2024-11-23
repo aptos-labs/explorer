@@ -12,6 +12,7 @@ import {useNavigate} from "../../routing";
 import {CoinData} from "./Components/CoinData";
 import {CoinDescription} from "../../api/hooks/useGetCoinList";
 import HoldersTab from "./Tabs/HoldersTab";
+import {SupplyType} from "../../api/hooks/useGetCoinSupplyLimit";
 
 const TAB_VALUES: TabValue[] = ["info", "holders", "transactions"];
 
@@ -53,7 +54,7 @@ type TabPanelProps = {
   value: TabValue;
   struct: string;
   data: CoinData | undefined;
-  supply: bigint | null;
+  supplyInfo: [bigint | null, SupplyType | null];
   pairedFa: string | null;
   coinData: CoinDescription | undefined;
 };
@@ -62,7 +63,7 @@ function TabPanel({
   value,
   struct,
   data,
-  supply,
+  supplyInfo,
   pairedFa,
   coinData,
 }: TabPanelProps): JSX.Element {
@@ -71,7 +72,7 @@ function TabPanel({
     <TabComponent
       struct={struct}
       data={data}
-      supply={supply}
+      supplyInfo={supplyInfo}
       pairedFa={pairedFa}
       coinData={coinData}
     />
@@ -82,7 +83,7 @@ type CoinTabsProps = {
   struct: string;
   data: CoinData | undefined;
   tabValues?: TabValue[];
-  supply: bigint | null;
+  supplyInfo: [bigint | null, SupplyType | null];
   pairedFa: string | null;
   coinData: CoinDescription | undefined;
 };
@@ -92,7 +93,7 @@ export default function CoinTabs({
   struct,
   data,
   tabValues = TAB_VALUES,
-  supply,
+  supplyInfo,
   pairedFa,
   coinData,
 }: CoinTabsProps): JSX.Element {
@@ -134,7 +135,7 @@ export default function CoinTabs({
           value={effectiveTab}
           struct={struct}
           data={data}
-          supply={supply}
+          supplyInfo={supplyInfo}
           pairedFa={pairedFa}
           coinData={coinData}
         />

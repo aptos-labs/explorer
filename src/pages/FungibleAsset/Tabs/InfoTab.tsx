@@ -7,6 +7,8 @@ import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/
 import {getAssetSymbol} from "../../../utils";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {FACombinedData} from "../Index";
+import Tooltip from "@mui/material/Tooltip";
+import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 
 type InfoTabProps = {
   address: string;
@@ -52,6 +54,11 @@ export default function InfoTab({address, data}: InfoTabProps) {
   }
 
   const icon_uri = data?.coinData?.logoUrl ?? data?.metadata?.icon_uri;
+  const supplyIcon = (
+    <Tooltip title={"Supply tracked on-chain, may change over time"}>
+      <VerifiedOutlined />
+    </Tooltip>
+  );
 
   return (
     <Box marginBottom={3}>
@@ -70,7 +77,14 @@ export default function InfoTab({address, data}: InfoTabProps) {
             title={"Decimals:"}
             value={data?.metadata?.decimals?.toString()}
           />
-          <ContentRow title={"Total supply:"} value={formattedSupply} />
+          <ContentRow
+            title={"Total supply:"}
+            value={
+              <>
+                {`${formattedSupply} `} {supplyIcon}
+              </>
+            }
+          />
           <ContentRow
             title={"Icon:"}
             value={

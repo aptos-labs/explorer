@@ -5,7 +5,7 @@ import MetricCard from "./MetricCard";
 import {APTOS_COIN} from "@aptos-labs/ts-sdk";
 
 export default function TotalSupply() {
-  const totalSupply = useGetCoinSupplyLimit(APTOS_COIN);
+  const [totalSupply] = useGetCoinSupplyLimit(APTOS_COIN);
 
   return (
     <MetricCard
