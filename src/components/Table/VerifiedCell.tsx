@@ -116,7 +116,6 @@ export function verifiedLevel(
   let emojicoinInfo: {coin: string; lp: string} | null = null;
   if (isCoin && input.symbol) {
     emojicoinInfo = getEmojicoinMarketAddressAndTypeTags({
-      struct: input.id,
       symbol: input.symbol,
     });
   }
@@ -291,10 +290,7 @@ export function VerifiedCoinCell({data}: {data: VerifiedCellProps}) {
 
 export const TEXT_ENCODER = new TextEncoder();
 
-export function getEmojicoinMarketAddressAndTypeTags(args: {
-  struct: string;
-  symbol: string;
-}) {
+export function getEmojicoinMarketAddressAndTypeTags(args: {symbol: string}) {
   const symbolBytes = TEXT_ENCODER.encode(args.symbol);
   const marketAddress = deriveEmojicoinPublisherAddress({
     symbol: symbolBytes,
