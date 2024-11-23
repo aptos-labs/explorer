@@ -1,11 +1,12 @@
 import * as React from "react";
+import {useEffect} from "react";
 import {
   Button,
   Stack,
   Table,
+  TableHead,
   TableRow,
   Typography,
-  TableHead,
 } from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
@@ -14,11 +15,14 @@ import {grey, primary} from "../../../themes/colors/aptosColorPalette";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {CoinDescription} from "../../../api/hooks/useGetCoinList";
-import {VerifiedCoinCell} from "../../../components/Table/VerifiedCell";
+import {
+  VerifiedCoinCell,
+  verifiedLevel,
+  VerifiedType,
+} from "../../../components/Table/VerifiedCell";
 import {getAssetSymbol} from "../../../utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 import {useGlobalState} from "../../../global-config/GlobalConfig";
-import {useEffect} from "react";
 import {Network} from "@aptos-labs/ts-sdk";
 
 function CoinNameCell({name}: {name: string}) {
@@ -76,7 +80,7 @@ function CoinTypeCell({data}: {data: CoinDescriptionPlusAmount}) {
         hash={data.tokenAddress ?? data.faAddress ?? "Unknown"}
         type={getType()}
         size="large"
-        img={data.logoUrl}
+        img={data.logoUrl ? data.logoUrl : data.symbol}
       />
     </GeneralTableCell>
   );
@@ -127,12 +131,63 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   }
 
   let filteredCoins = coins;
+
+  function getCoinId(coin: CoinDescriptionPlusAmount): string | null {
+    return coin.tokenAddress ?? coin.faAddress;
+  }
+
+  // TODO: This doesn't cover FAs converted from coins.  The logic for verification has gotten pretty out of hand
+  // and needs to be consolidated before going any further
+  const coinVerifications: Record<string, VerifiedType> = {};
+
+  coins.forEach((coin) => {
+    const coinId = getCoinId(coin);
+    if (coinId) {
+      coinVerifications[coinId] = verifiedLevel(
+        {
+          id: coin.tokenAddress ?? coin.faAddress ?? "Unknown",
+          known: coin.chainId !== 0,
+          isBanned: coin.isBanned,
+          isInPanoraTokenList: coin.isInPanoraTokenList,
+          symbol: coin?.panoraSymbol ?? coin.symbol,
+        },
+        state.network_name,
+      ).level;
+    }
+  });
+
   switch (verificationFilter) {
     case CoinVerificationFilterType.VERIFIED:
-      filteredCoins = coins.filter((coin) => coin.isInPanoraTokenList);
+      filteredCoins = coins.filter((coin) => {
+        const coinId = getCoinId(coin);
+        if (coinId && coinVerifications[coinId]) {
+          const level = coinVerifications[coinId];
+          return (
+            level === VerifiedType.LABS_VERIFIED ||
+            level === VerifiedType.COMMUNITY_VERIFIED ||
+            level === VerifiedType.NATIVE_TOKEN
+          );
+        } else {
+          return false;
+        }
+      });
       break;
     case CoinVerificationFilterType.RECOGNIZED:
-      filteredCoins = coins.filter((coin) => coin.chainId !== 0);
+      filteredCoins = coins.filter((coin) => {
+        const coinId = getCoinId(coin);
+        if (coinId && coinVerifications[coinId]) {
+          const level = coinVerifications[coinId];
+          return (
+            level === VerifiedType.LABS_VERIFIED ||
+            level === VerifiedType.COMMUNITY_VERIFIED ||
+            level === VerifiedType.NATIVE_TOKEN ||
+            level === VerifiedType.RECOGNIZED
+          );
+        } else {
+          return false;
+        }
+      });
+
       break;
     case CoinVerificationFilterType.ALL:
     case CoinVerificationFilterType.NONE:

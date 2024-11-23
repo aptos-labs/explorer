@@ -65,7 +65,11 @@ function TokenInfoCell({balanceChange}: BalanceChangeCellProps) {
             ? HashType.COIN
             : HashType.FUNGIBLE_ASSET
         }
-        img={balanceChange.logoUrl}
+        img={
+          balanceChange.logoUrl
+            ? balanceChange.logoUrl
+            : balanceChange.asset.symbol
+        }
       />
     </GeneralTableCell>
   );
