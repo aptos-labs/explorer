@@ -18,7 +18,15 @@ import {
 } from "../../themes/colors/aptosColorPalette";
 import {BUTTON_HEIGHT} from "../TitleHashButton";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {Network} from "@aptos-labs/ts-sdk";
+import {
+  AccountAddress,
+  AccountAddressInput,
+  DeriveScheme,
+  Hex,
+  HexInput,
+  Network,
+} from "@aptos-labs/ts-sdk";
+import {sha3_256} from "js-sha3";
 
 type VerifiedCellProps = {
   id: string; // FA address or Coin Type
@@ -46,6 +54,9 @@ export function isBannedType(level: VerifiedType): boolean {
     level === VerifiedType.LABS_BANNED
   );
 }
+
+const EMOJICOIN_REGISTRY_ADDRESS =
+  "0x4b947ed016c64bde81972d69ea7d356de670d57fd2608b129f4d94ac0d0ee61";
 
 const nativeTokens: Record<string, string> = {
   "0x1::aptos_coin::AptosCoin": "APT",
@@ -99,6 +110,17 @@ export function verifiedLevel(
   input: VerifiedCellProps,
   network: string,
 ): VerifiedLevelInfo {
+  // TODO: Add check for emojis
+  const isCoin = input.id.includes("::");
+
+  let emojicoinInfo: {coin: string; lp: string} | null = null;
+  if (isCoin && input.symbol) {
+    emojicoinInfo = getEmojicoinMarketAddressAndTypeTags({
+      struct: input.id,
+      symbol: input.symbol,
+    });
+  }
+
   if (nativeTokens[input.id]) {
     return {
       level: VerifiedType.NATIVE_TOKEN,
@@ -131,10 +153,19 @@ export function verifiedLevel(
       level: VerifiedType.DISABLED,
       reason: "Verification only enabled for Mainnet",
     };
-  } else if (
-    input.id.includes("::") &&
-    labsBannedAddresses[input.id.split("::")[0]]
-  ) {
+  } else if (isCoin && emojicoinInfo?.lp === input.id) {
+    // Emojicoins are deterministic and therefore automatically verified
+    return {
+      level: VerifiedType.LABS_VERIFIED,
+      reason: "Verified as an Emojicoin LP",
+    };
+  } else if (isCoin && emojicoinInfo?.coin === input.id) {
+    // Emojicoins are deterministic and therefore automatically verified
+    return {
+      level: VerifiedType.LABS_VERIFIED,
+      reason: "Verified as an Emojicoin",
+    };
+  } else if (isCoin && labsBannedAddresses[input.id.split("::")[0]]) {
     return {
       level: VerifiedType.LABS_BANNED,
       reason: labsBannedAddresses[input.id.split("::")[0]],
@@ -167,6 +198,9 @@ export function getVerifiedMessageAndIcon(
       break;
     case VerifiedType.LABS_VERIFIED:
       tooltipMessage = `This asset is verified by the builders of the explorer.`;
+      if (reason) {
+        tooltipMessage += ` Reason: (${reason})`;
+      }
       icon = <Verified fontSize="small" color="info" />;
       break;
     case VerifiedType.COMMUNITY_VERIFIED:
@@ -253,4 +287,47 @@ export function VerifiedCoinCell({data}: {data: VerifiedCellProps}) {
       <VerifiedAsset data={data} />
     </GeneralTableCell>
   );
+}
+
+export const TEXT_ENCODER = new TextEncoder();
+
+export function getEmojicoinMarketAddressAndTypeTags(args: {
+  struct: string;
+  symbol: string;
+}) {
+  const symbolBytes = TEXT_ENCODER.encode(args.symbol);
+  const marketAddress = deriveEmojicoinPublisherAddress({
+    symbol: symbolBytes,
+  });
+
+  return {
+    marketAddress,
+    coin: `${marketAddress.toString()}::coin_factory::Emojicoin`,
+    lp: `${marketAddress.toString()}::coin_factory::EmojicoinLP`,
+  };
+}
+
+export function deriveEmojicoinPublisherAddress(args: {
+  symbol: Uint8Array;
+}): AccountAddress {
+  return createNamedObjectAddress({
+    creator: EMOJICOIN_REGISTRY_ADDRESS,
+    seed: args.symbol,
+  });
+}
+
+export function createNamedObjectAddress(args: {
+  creator: AccountAddressInput;
+  seed: HexInput;
+}): AccountAddress {
+  const creatorAddress = AccountAddress.from(args.creator);
+  const seed = Hex.fromHexInput(args.seed).toUint8Array();
+  const serializedCreatorAddress = creatorAddress.bcsToBytes();
+  const preImage = new Uint8Array([
+    ...serializedCreatorAddress,
+    ...seed,
+    DeriveScheme.DeriveObjectAddressFromSeed,
+  ]);
+
+  return AccountAddress.from(sha3_256(preImage));
 }
