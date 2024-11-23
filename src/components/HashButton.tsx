@@ -221,8 +221,25 @@ function HashButtonInner({
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
+  const imgIsEmoji = img && img.match(/^\p{Emoji}+$/u);
+
   const truncateHash =
     size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
+
+  let icon = null;
+  if (img && imgIsEmoji) {
+    icon = (
+      <Box component="span" sx={{mr: 1, display: "flex", alignItems: "center"}}>
+        {img}
+      </Box>
+    );
+  } else if (img) {
+    icon = (
+      <Box component="span" sx={{mr: 1, display: "flex", alignItems: "center"}}>
+        <img src={img} height={20} width={20} />
+      </Box>
+    );
+  }
 
   return (
     <Box {...props}>
@@ -248,14 +265,7 @@ function HashButtonInner({
         variant="contained"
         endIcon={<ChevronRightRoundedIcon sx={{opacity: "0.75", m: 0}} />}
       >
-        {img ? (
-          <Box
-            component="span"
-            sx={{mr: 1, display: "flex", alignItems: "center"}}
-          >
-            <img src={img} height={20} width={20} />
-          </Box>
-        ) : null}
+        {icon}
         {label ? label : truncateHash}
       </Button>
 

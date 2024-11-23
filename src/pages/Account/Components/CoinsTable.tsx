@@ -76,7 +76,7 @@ function CoinTypeCell({data}: {data: CoinDescriptionPlusAmount}) {
         hash={data.tokenAddress ?? data.faAddress ?? "Unknown"}
         type={getType()}
         size="large"
-        img={data.logoUrl}
+        img={data.logoUrl ? data.logoUrl : data.symbol}
       />
     </GeneralTableCell>
   );
