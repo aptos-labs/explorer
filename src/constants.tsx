@@ -417,6 +417,26 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     coinGeckoId: null,
     coinMarketCapId: null,
   },
+  "0xef0d49f03e48dbd055c3a369f74a304c366bda148005ddf6bb881ced79da0b09": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0xef0d49f03e48dbd055c3a369f74a304c366bda148005ddf6bb881ced79da0b09",
+    name: "Night Coin",
+    symbol: "NIGHT",
+    decimals: 8,
+    panoraSymbol: null,
+    bridge: null,
+    logoUrl:
+      "https://cdn.prod.website-files.com/640388e49053dc6d762dd327/673b864874a63fe32ddaa0f8_android-chrome-512x512.png",
+    websiteUrl: "https://www.midnight.io",
+    category: "Native",
+    isInPanoraTokenList: false,
+    isBanned: false,
+    panoraOrderIndex: 3,
+    coinGeckoId: "CL1311240017",
+    coinMarketCapId: 1011745,
+  },
 };
 
 /**
@@ -446,6 +466,7 @@ export const labsVerifiedTokens: Record<string, string> = {
     "Find Out Points",
   "0x50038be55be5b964cfa32cf128b5cf05f123959f286b4cc02b86cafd48945f89": "BUIDL",
   "0x98e39700e0bc5420d0a5c461a5420f1a17358041761f64147b173dfb9e21052d": "MYCO",
+  "0xef0d49f03e48dbd055c3a369f74a304c366bda148005ddf6bb881ced79da0b09": "NIGHT",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const MARKED_AS_POSSIBLE_SCAM = "Marked as possible scam";
