@@ -17,7 +17,11 @@ import {
   getAccountResource,
 } from "../../../api";
 import {sendToGTM} from "../../../api/hooks/useGoogleTagManager";
-import {faMetadataResource, objectCoreResource} from "../../../constants";
+import {
+  faMetadataResource,
+  knownAddresses,
+  objectCoreResource,
+} from "../../../constants";
 import {
   isValidAccountAddress,
   isNumeric,
@@ -30,7 +34,6 @@ import {
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
 import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
-import {knownAddresses} from "../../../api/hooks/useGetANS";
 import {getEmojicoinMarketAddressAndTypeTags} from "../../../components/Table/VerifiedCell";
 
 export type SearchResult = {
