@@ -389,12 +389,32 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     bridge: null,
     logoUrl:
       "https://securitize-public-files.s3.us-east-2.amazonaws.com/ClientDocuments/buidl/token-logo-256.png",
-    websiteUrl: "http://securitize.io/blackrock/BUIDL",
+    websiteUrl: "https://securitize.io/blackrock/BUIDL",
     category: "Native",
     isInPanoraTokenList: true,
     isBanned: false,
     panoraOrderIndex: 3,
     coinGeckoId: "blackrock-usd-institutional-digital-liquidity-fund",
+    coinMarketCapId: null,
+  },
+  "0x98e39700e0bc5420d0a5c461a5420f1a17358041761f64147b173dfb9e21052d": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0x98e39700e0bc5420d0a5c461a5420f1a17358041761f64147b173dfb9e21052d",
+    name: "Myco",
+    symbol: "MYCO",
+    decimals: 8,
+    panoraSymbol: null,
+    bridge: null,
+    logoUrl:
+      "https://ipfs.io/ipfs/QmZsy7rtbj2vGMxDjCmTdeoa4mFwuxwiTpKkgkx65G93sc?filename=myco%20white%20%26%20green.png",
+    websiteUrl: "https://www.myco.io",
+    category: "Native",
+    isInPanoraTokenList: false,
+    isBanned: false,
+    panoraOrderIndex: 4,
+    coinGeckoId: null,
     coinMarketCapId: null,
   },
 };
@@ -423,6 +443,7 @@ export const labsVerifiedTokens: Record<string, string> = {
   "0xd39fcd33aedfd436a1bbb576a48d5c7c0ac317c9a9bb7d53ae9ffb41e8cb9fd9":
     "Find Out Points",
   "0x50038be55be5b964cfa32cf128b5cf05f123959f286b4cc02b86cafd48945f89": "BUIDL",
+  "0x98e39700e0bc5420d0a5c461a5420f1a17358041761f64147b173dfb9e21052d": "MYCO",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const MARKED_AS_POSSIBLE_SCAM = "Marked as possible scam";
