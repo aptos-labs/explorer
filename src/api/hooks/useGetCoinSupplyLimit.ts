@@ -1,13 +1,10 @@
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useViewFunction} from "./useViewFunction";
+import {supplyLimitOverrides} from "../../constants";
 
 // Override table for coins that have burnt their mint and burn, but did not properly track on-chain supply
 // This will not override an existing supply, but will set a supply if it is not already set
-const supplyLimitOverrides: Record<string, bigint> = {
-  "0x268d4a7a2ad93274edf6116f9f20ad8455223a7ab5fc73154f687e7dbc3e3ec6::LOON::LOON":
-    1000000000000000n,
-};
 
 export enum SupplyType {
   ON_CHAIN = "On-Chain",

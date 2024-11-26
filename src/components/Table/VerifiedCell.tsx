@@ -29,6 +29,15 @@ import {
 import {sha3_256} from "js-sha3";
 import {useGetFaPairedCoin} from "../../api/hooks/useGetFaPairedCoin";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
+import {
+  EMOJICOIN_REGISTRY_ADDRESS,
+  labsBannedAddresses,
+  labsBannedTokens,
+  labsVerifiedTokens,
+  MARKED_AS_POSSIBLE_SCAM,
+  MARKED_AS_SCAM,
+  nativeTokens,
+} from "../../constants";
 
 type VerifiedCellProps = {
   id: string; // FA address or Coin Type
@@ -56,46 +65,6 @@ export function isBannedType(level: VerifiedType): boolean {
     level === VerifiedType.LABS_BANNED
   );
 }
-
-const EMOJICOIN_REGISTRY_ADDRESS =
-  "0x4b947ed016c64bde81972d69ea7d356de670d57fd2608b129f4d94ac0d0ee61";
-
-const nativeTokens: Record<string, string> = {
-  "0x1::aptos_coin::AptosCoin": "APT",
-  "0xa": "APT",
-  "0xA": "APT",
-};
-const labsVerifiedTokens: Record<string, string> = {
-  "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "USDt",
-  "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b": "USDC",
-  "0xd39fcd33aedfd436a1bbb576a48d5c7c0ac317c9a9bb7d53ae9ffb41e8cb9fd9":
-    "Find Out Points",
-  "0x50038be55be5b964cfa32cf128b5cf05f123959f286b4cc02b86cafd48945f89": "BUIDL",
-};
-const MARKED_AS_SCAM = "Marked as scam";
-const MARKED_AS_POSSIBLE_SCAM = "Marked as possible scam";
-const labsBannedTokens: Record<string, string> = {
-  "0x397071c01929cc6672a17f130bd62b1bce224309029837ce4f18214cc83ce2a7::USDC::USDC":
-    MARKED_AS_SCAM,
-  "0x50788befc1107c0cc4473848a92e5c783c635866ce3c98de71d2eeb7d2a34f85::apt_rewards::APTRewards":
-    MARKED_AS_SCAM,
-  "0xbbc4a9af0e7fa8885bda5db08028e7b882f2c2bba1e0fedbad1d8316f73f8b2f::ograffio::Ograffio":
-    MARKED_AS_SCAM,
-  "0xf658475dc67a4d48295dbcea6de1dc3c9af64c1c80d4161284df369be941dafb::moon_coin::MoonCoin":
-    MARKED_AS_SCAM,
-  "0x48327a479bf5c5d2e36d5e9846362cff2d99e0e27ff92859fc247893fded3fbd::APTOS::APTOS":
-    MARKED_AS_SCAM,
-  "0xbc106d0fef7e5ce159423a1a9312e011bca7fb57f961146a2f88003a779b25c2::QUEST::QUEST":
-    MARKED_AS_SCAM,
-  "0xbe5e8fa9dd45e010cadba1992409a0fc488ca81f386d636ba38d12641ef91136::maincoin::Aptmeme":
-    MARKED_AS_SCAM,
-};
-const labsBannedAddresses: Record<string, string> = {
-  "0x50788befc1107c0cc4473848a92e5c783c635866ce3c98de71d2eeb7d2a34f85":
-    MARKED_AS_SCAM,
-  "0xbbc4a9af0e7fa8885bda5db08028e7b882f2c2bba1e0fedbad1d8316f73f8b2f":
-    MARKED_AS_SCAM,
-};
 
 const labsBannedTokenSymbols: Record<string, string> = {
   APT: MARKED_AS_SCAM,
