@@ -1,30 +1,10 @@
 import React from "react";
-import {gql, useQuery} from "@apollo/client";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {Types} from "aptos";
 import {CoinDescriptionPlusAmount, CoinsTable} from "../Components/CoinsTable";
-import {standardizeAddress} from "../../../utils";
 import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
 import {findCoinData} from "../../Transaction/Tabs/BalanceChangeTab";
-
-const COINS_QUERY = gql`
-  query CoinsData($owner_address: String, $limit: Int, $offset: Int) {
-    current_fungible_asset_balances(
-      where: {owner_address: {_eq: $owner_address}}
-      limit: $limit
-      offset: $offset
-    ) {
-      amount
-      asset_type
-      metadata {
-        name
-        decimals
-        symbol
-        token_standard
-      }
-    }
-  }
-`;
+import {useGetAccountCoins} from "../../../api/hooks/useGetAccountCoins";
 
 type TokenTabsProps = {
   address: string;
@@ -32,27 +12,11 @@ type TokenTabsProps = {
 };
 
 export default function CoinsTab({address}: TokenTabsProps) {
-  const addr64Hash = standardizeAddress(address);
   const {data: coinData} = useGetCoinList();
 
-  const {loading, error, data} = useQuery<{
-    current_fungible_asset_balances: {
-      amount: number;
-      asset_type: string;
-      metadata: {
-        name: string;
-        decimals: number;
-        symbol: string;
-        token_standard: string;
-      };
-    }[];
-  }>(COINS_QUERY, {
-    variables: {
-      owner_address: addr64Hash,
-    },
-  });
+  const {isLoading, error, data} = useGetAccountCoins(address);
 
-  if (loading) {
+  if (isLoading) {
     return null;
   }
 
@@ -61,7 +25,7 @@ export default function CoinsTab({address}: TokenTabsProps) {
     return null;
   }
 
-  const coins = data?.current_fungible_asset_balances ?? [];
+  const coins = data ?? [];
 
   if (coins.length === 0) {
     return <EmptyTabContent />;
