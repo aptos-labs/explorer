@@ -27,9 +27,9 @@ function getTabLabel(value: TabValue): string {
     case "info":
       return "Info";
     case "holders":
-      return "Holders";
+      return "Beta - Holders";
     case "transactions":
-      return "Transactions";
+      return "Beta - Transactions";
     default:
       return assertNever(value);
   }
