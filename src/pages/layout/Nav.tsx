@@ -43,6 +43,9 @@ export default function Nav() {
   const inMainnet = useGetInMainnet();
   const inTestnet = useGetInTestnet();
 
+  const mainnetShowAnalytics = false;
+  const mainnetShowValidators = false;
+
   return (
     <Box
       sx={{
@@ -57,14 +60,14 @@ export default function Nav() {
         title="View All Transactions"
         label="Transactions"
       />
-      {(inMainnet || inTestnet) && (
+      {((inMainnet && mainnetShowAnalytics) || inTestnet) && (
         <NavButton
           to="/analytics"
           title="View Network Analytics"
           label="Analytics"
         />
       )}
-      {inMainnet && (
+      {inMainnet && mainnetShowValidators && (
         <>
           <NavButton
             to="/validators"
