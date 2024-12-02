@@ -28,7 +28,6 @@ export const mevmdevnetUrl =
 // This is the constant mapped in the NetworkSelect.tsx file
 export const networks = {
   mainnet: mainnetUrl,
-  testnet: testnetUrl,
   "porto testnet": portoTestnetUrl,
   "bardock testnet": bardockTestnetUrl,
   devnet: devnetUrl,
@@ -58,7 +57,6 @@ const apiKeys: ApiKeys = {
   mainnet: undefined,
   "porto testnet": undefined,
   "bardock testnet": undefined,
-  testnet: undefined,
   devnet: undefined,
   local: undefined,
   mevmdevnet: undefined,
