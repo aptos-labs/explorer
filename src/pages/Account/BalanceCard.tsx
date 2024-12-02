@@ -6,7 +6,7 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import StyledTooltip from "../../components/StyledTooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
-import {getAPTPrice} from "../../api/hooks/useGetAPTPrice";
+import {getAPTPrice} from "../../api/hooks/useGetPrice";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
 type BalanceCardProps = {
