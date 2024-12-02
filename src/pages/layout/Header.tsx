@@ -17,7 +17,6 @@ import NavMobile from "./NavMobile";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
-// import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
 import {WalletConnector} from "../../components/WalletConnector";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
@@ -41,13 +40,10 @@ export default function Header() {
     }
   };
 
-  // const {toggleColorMode} = useColorMode();
   const theme = useTheme();
   const logEvent = useLogEventWithBasic();
-  // const isDark = theme.palette.mode === "dark";
 
   const {ref} = useInView({
-    // const {ref, inView} = useInView({
     rootMargin: "-40px 0px 0px 0px",
     threshold: 0,
   });
@@ -92,16 +88,6 @@ export default function Header() {
           borderRadius: "0",
           backdropFilter: "blur(10px)",
           background: "#000000",
-          // ...(!inView &&
-          //   isDark && {
-          //     background: "rgba(18,22,21, 0.85)",
-          //     borderBottom: `1px solid ${theme.palette.common}`,
-          //   }),
-          // ...(!inView &&
-          //   !isDark && {
-          //     background: "rgba(254,254,254, 0.8)",
-          //     borderBottom: `2px solid rgba(18,22,21,0.05)`,
-          //   }),
         }}
       >
         <FeatureBar />
@@ -120,37 +106,24 @@ export default function Header() {
               color="inherit"
               underline="none"
               sx={{
-                width: {xs: "30px", sm: "30px", md: "40px"},
-                height: {xs: "30px", sm: "30px", md: "40px"},
+                display: "flex",
+                maxWidth: "33vw",
                 marginRight: "auto",
               }}
             >
               {theme.palette.mode === "dark" ? (
-                <LogoIconW width={"221px"} height={"35px"} />
+                <LogoIconW
+                  style={{width: "100%", height: "auto", maxWidth: "221px"}}
+                />
               ) : (
-                <LogoIconB width={"221px"} height={"35px"} />
+                <LogoIconB
+                  style={{width: "100%", height: "auto", maxWidth: "221px"}}
+                />
               )}
-              {/*<LogoIcon />*/}
             </Link>
 
             <Nav />
-            {/* <Button
-              onClick={toggleColorMode}
-              sx={{
-                width: "30px",
-                height: "30px",
-                display: "flex",
-                alignItems: "center",
-                justifyItems: "center",
-                padding: "0",
-                minWidth: "30px",
-                marginLeft: "1rem",
-                color: "inherit",
-                "&:hover": {background: "transparent", opacity: "0.8"},
-              }}
-            >
-              {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
-            </Button> */}
+
             {isOnMobile && <NetworkSelect />}
 
             <NavMobile />
