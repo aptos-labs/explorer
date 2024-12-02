@@ -5,13 +5,10 @@
 const prefix = import.meta.env.REACT_APP_PREFIX || "";
 
 export const mainnetUrl =
-  import.meta.env.MAINNET_URL || `https://${prefix}aptos.movementlabs.xyz/v1`;
+  import.meta.env.MAINNET_URL || `https://mainnet.movementnetwork.xyz/v1`;
 export const devnetUrl =
   import.meta.env.DEVNET_URL ||
   `https://${prefix}aptos.devnet.suzuka.movementlabs.xyz/v1`;
-export const testnetUrl =
-  import.meta.env.TESTNET_URL ||
-  `https://${prefix}aptos.testnet.suzuka.movementlabs.xyz/v1`;
 
 export const portoTestnetUrl =
   import.meta.env.MOVEMENT_TESTNET_URL ||
@@ -28,8 +25,7 @@ export const mevmdevnetUrl =
 // This is the constant mapped in the NetworkSelect.tsx file
 export const networks = {
   mainnet: mainnetUrl,
-  testnet: testnetUrl,
-  "porto testnet": portoTestnetUrl,
+  testnet: portoTestnetUrl,
   "bardock testnet": bardockTestnetUrl,
   devnet: devnetUrl,
   local: "http://localhost:30731",
@@ -56,7 +52,6 @@ type ApiKeys = {
  */
 const apiKeys: ApiKeys = {
   mainnet: undefined,
-  "porto testnet": undefined,
   "bardock testnet": undefined,
   testnet: undefined,
   devnet: undefined,
@@ -75,7 +70,6 @@ export function isValidNetworkName(value: string): value is NetworkName {
 
 export enum Network {
   MAINNET = "mainnet",
-  PORTO_TESTNET = "porto-testnet",
   BARDOCK_TESTNET = "bardock-testnet",
   TESTNET = "testnet",
   DEVNET = "devnet",
@@ -92,7 +86,7 @@ for (const key of Object.keys(networks)) {
   }
 }
 
-export const defaultNetworkName: NetworkName = "porto testnet" as const;
+export const defaultNetworkName: NetworkName = "testnet" as const;
 
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;

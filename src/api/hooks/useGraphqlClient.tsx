@@ -20,17 +20,12 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
 export function getGraphqlURI(networkName: NetworkName): string | undefined {
   const prefix = import.meta.env.REACT_APP_PREFIX || "";
   switch (networkName) {
-    case "mainnet":
-      return (
-        import.meta.env.MAINNET_GRAPHQL ||
-        `https://indexer.movementnetwork.xyz/v1/graphql`
-      );
-    // case "testnet":
+    // case "mainnet":
     //   return (
-    //     import.meta.env.TESTNET_GRAPHQL ||
-    //     `https://${prefix}indexer.testnet.suzuka.movementlabs.xyz/v1/graphql`
+    //     import.meta.env.MAINNET_GRAPHQL ||
+    //     `https://indexer.movementnetwork.xyz/v1/graphql`
     //   );
-    case "porto testnet":
+    case "testnet":
       return (
         import.meta.env.PORTO_GRAPHQL ||
         `https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql`
