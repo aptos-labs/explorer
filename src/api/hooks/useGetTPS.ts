@@ -36,15 +36,12 @@ export function useGetPeakTPS() {
   const [peakTps, setPeakTps] = useState<number>();
 
   useEffect(() => {
-    const showNetworks = ["mainnet", "testnet", "porto testnet"];
+    const showNetworks = ["mainnet", "testnet"];
     if (showNetworks.includes(state.network_name)) {
       const fetchData = async () => {
         let ANALYTICS_DATA_URL_USE;
         switch (state.network_name) {
           case "testnet":
-            ANALYTICS_DATA_URL_USE = ANALYTICS_DATA_URL;
-            break;
-          case "porto testnet":
             ANALYTICS_DATA_URL_USE = PORTO_ANALYTICS_DATA_URL;
             break;
           case "bardock testnet":

@@ -51,8 +51,6 @@ function NetworkAndChainIdCached({
   // rewrite the network name for display
   const nameRewrite = (networkName: string) => {
     if (networkName === "testnet") {
-      return "suzuka testnet";
-    } else if (networkName === "portoTestnet") {
       return "porto testnet";
     } else if (networkName === "bardockTestnet") {
       return "bardock testnet";
@@ -162,8 +160,8 @@ export default function NetworkSelect() {
           value={state.network_name}
           onChange={handleChange}
           renderValue={(value) => (
-            <Typography sx={{fontSize: "0.875rem"}}>
-              {value === "testnet" ? "suzuka testnet" : value}
+            <Typography>
+              {value === "testnet" ? "porto testnet" : value}
             </Typography>
           )}
           onClose={() => {
