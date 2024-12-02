@@ -3,19 +3,14 @@ import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import NetworkSelect from "./NetworkSelect";
-import {useColorMode} from "../../context";
+// import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
 
 // @ts-expect-error logo
 import LogoIconW from "../../assets/svg/logo_txt_w.svg?react";
 // @ts-expect-error logo
 import LogoIconB from "../../assets/svg/logo_txt_b.svg?react";
-// @ts-expect-error logo
-import IconLight from "../../assets/svg/icon_light.svg?react";
-// @ts-expect-error logo
-import IconDark from "../../assets/svg/icon_dark.svg?react";
 
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Nav from "./Nav";
 import NavMobile from "./NavMobile";
@@ -46,12 +41,13 @@ export default function Header() {
     }
   };
 
-  const {toggleColorMode} = useColorMode();
+  // const {toggleColorMode} = useColorMode();
   const theme = useTheme();
   const logEvent = useLogEventWithBasic();
-  const isDark = theme.palette.mode === "dark";
+  // const isDark = theme.palette.mode === "dark";
 
-  const {ref, inView} = useInView({
+  const {ref} = useInView({
+    // const {ref, inView} = useInView({
     rootMargin: "-40px 0px 0px 0px",
     threshold: 0,
   });
@@ -155,6 +151,8 @@ export default function Header() {
             >
               {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
             </Button> */}
+            {isOnMobile && <NetworkSelect />}
+
             <NavMobile />
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
