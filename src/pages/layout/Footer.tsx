@@ -1,52 +1,10 @@
 import React from "react";
-import {Box, Container, Typography, useTheme} from "@mui/material";
+import {Box, Container, Typography} from "@mui/material";
 
 import Grid from "@mui/material/Unstable_Grid2";
-// @ts-expect-error logo
-import GithubLogo from "../../assets/github.svg?react";
-// @ts-expect-error logo
-import DiscordLogo from "../../assets/discord.svg?react";
-// @ts-expect-error logo
-import TwitterLogo from "../../assets/twitter.svg?react";
-// @ts-expect-error logo
-import MediumLogo from "../../assets/medium.svg?react";
-// @ts-expect-error logo
-import LinkedInLogo from "../../assets/linkedin.svg?react";
-import {grey} from "../../themes/colors/aptosColorPalette";
-import SvgIcon from "@mui/material/SvgIcon";
-// @ts-expect-error logo
-import MovementLogoBlack from "../../assets/svg/logob.svg?react";
-// @ts-expect-error logo
-import MovementLogoWhite from "../../assets/svg/logow.svg?react";
 import {Link} from "../../routing";
 
-const socialLinks = [
-  {title: "Git", url: "https://github.com/movementlabsxyz", icon: GithubLogo},
-  {
-    title: "Discord",
-    url: "http://discord.gg/movementlabsxyz",
-    icon: DiscordLogo,
-  },
-  {
-    title: "Twitter",
-    url: "https://twitter.com/movementlabsxyz",
-    icon: TwitterLogo,
-  },
-  {
-    title: "Medium",
-    url: "https://medium.com/movementlabsxyz",
-    icon: MediumLogo,
-  },
-  {
-    title: "LinkedIn",
-    url: "https://www.linkedin.com/company/movementlabsxyz",
-    icon: LinkedInLogo,
-  },
-];
-
 export default function Footer() {
-  const theme = useTheme();
-
   return (
     <Box
       sx={{
@@ -91,7 +49,7 @@ export default function Footer() {
                 }}
                 fontSize="0.8rem"
               >
-                {new Date().getFullYear()}{" "}
+                © {new Date().getFullYear()}{" "}
                 <Box component="span" sx={{whiteSpace: "nowrap"}}>
                   Movement All Rights Reserved
                 </Box>
