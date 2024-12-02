@@ -16,7 +16,7 @@ import {getGraphqlURI} from "../api/hooks/useGraphqlClient";
 import {Aptos, AptosConfig, NetworkToNetworkName} from "@aptos-labs/ts-sdk";
 
 const HEADERS = {
-  "x-indexer-client": "suzuka-explorer",
+  "x-indexer-client": "movement-explorer",
 };
 
 export type GlobalState = {
@@ -122,6 +122,4 @@ export const useGlobalState = () =>
     React.useContext(GlobalActionsContext),
   ] as const;
 
-  export const getCustomParameters = () => {
-
-  }
+export const getCustomParameters = () => {};

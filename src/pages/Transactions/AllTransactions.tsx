@@ -15,7 +15,7 @@ import TransactionsTable from "./TransactionsTable";
 const LIMIT = 20;
 
 function maxStart(maxVersion: number, limit: number) {
-  return 1 + maxVersion - limit;
+  return Math.max(0, 1 + maxVersion - limit);
 }
 
 function RenderPagination({
