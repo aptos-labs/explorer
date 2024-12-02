@@ -437,6 +437,25 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     coinGeckoId: "CL1311240017",
     coinMarketCapId: 1011745,
   },
+  "0xd0ab8c2f76cd640455db56ca758a9766a966c88f77920347aac1719edab1df5e": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0xd0ab8c2f76cd640455db56ca758a9766a966c88f77920347aac1719edab1df5e",
+    name: "Amaterasu",
+    symbol: "AMA",
+    decimals: 8,
+    panoraSymbol: "AMA",
+    bridge: null,
+    logoUrl: "https://assets.amaterasu.gg/hybrid/icon.svg",
+    websiteUrl: "https://www.amaterasu.gg",
+    category: "Native",
+    isInPanoraTokenList: false,
+    isBanned: false,
+    panoraOrderIndex: 3,
+    coinGeckoId: null,
+    coinMarketCapId: null,
+  },
 };
 
 /**
@@ -461,7 +480,7 @@ export const nativeTokens: Record<string, string> = {
   "0xa": "APT",
   "0xA": "APT",
 };
-export const labsVerifiedTokens: Record<string, string> = {
+export const manuallyVerifiedTokens: Record<string, string> = {
   "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "USDt",
   "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b": "USDC",
   "0xd39fcd33aedfd436a1bbb576a48d5c7c0ac317c9a9bb7d53ae9ffb41e8cb9fd9":
@@ -469,6 +488,7 @@ export const labsVerifiedTokens: Record<string, string> = {
   "0x50038be55be5b964cfa32cf128b5cf05f123959f286b4cc02b86cafd48945f89": "BUIDL",
   "0x98e39700e0bc5420d0a5c461a5420f1a17358041761f64147b173dfb9e21052d": "MYCO",
   "0xef0d49f03e48dbd055c3a369f74a304c366bda148005ddf6bb881ced79da0b09": "NIGHT",
+  "0xd0ab8c2f76cd640455db56ca758a9766a966c88f77920347aac1719edab1df5e": "AMA",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const MARKED_AS_POSSIBLE_SCAM = "Marked as possible scam";

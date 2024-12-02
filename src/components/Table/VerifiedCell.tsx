@@ -33,7 +33,7 @@ import {
   EMOJICOIN_REGISTRY_ADDRESS,
   labsBannedAddresses,
   labsBannedTokens,
-  labsVerifiedTokens,
+  manuallyVerifiedTokens,
   MARKED_AS_POSSIBLE_SCAM,
   MARKED_AS_SCAM,
   nativeTokens,
@@ -95,7 +95,7 @@ export function verifiedLevel(
     return {
       level: VerifiedType.NATIVE_TOKEN,
     };
-  } else if (labsVerifiedTokens[input.id]) {
+  } else if (manuallyVerifiedTokens[input.id]) {
     return {
       level: VerifiedType.LABS_VERIFIED,
     };
