@@ -6,7 +6,7 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import StyledTooltip from "../../components/StyledTooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
-import {getAPTPrice} from "../../api/hooks/useGetPrice";
+import {getPrice} from "../../api/hooks/useGetPrice";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
 type BalanceCardProps = {
@@ -21,7 +21,7 @@ export default function BalanceCard({address}: BalanceCardProps) {
   useEffect(() => {
     const fetchPrice = async () => {
       try {
-        const fetchedPrice = await getAPTPrice();
+        const fetchedPrice = await getPrice();
         setPrice(fetchedPrice);
       } catch (error) {
         console.error("Error fetching APT price:", error);
