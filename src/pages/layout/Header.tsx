@@ -2,7 +2,7 @@ import React, {useRef} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
-import NetworkSelect from "./NetworkSelect";
+// import NetworkSelect from "./NetworkSelect";
 // import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
 
@@ -69,21 +69,6 @@ export default function Header() {
     });
     walletAddressRef.current = account.address;
   }
-  const MobileControls = () => {
-    return (
-      <Box
-        sx={{
-          display: {xs: "flex", md: "none"},
-          alignItems: "center",
-          gap: 1,
-          ml: "auto",
-        }}
-      >
-        <NetworkSelect />
-        <NavMobile />
-      </Box>
-    );
-  };
 
   return (
     <>
@@ -138,11 +123,10 @@ export default function Header() {
             </Link>
 
             <Nav />
-            <MobileControls />
 
             {/* {isOnMobile && <NetworkSelect />} */}
 
-            {/* <NavMobile /> */}
+            <NavMobile />
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector
