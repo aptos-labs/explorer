@@ -66,7 +66,6 @@ export default function NavMobile() {
           padding: "0",
           ml: 2,
           color: "white",
-          backgroundColor: "white",
           maxWidth: {xs: "100%", sm: "400px"},
           "&:hover": {
             background: "transparent",
