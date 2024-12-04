@@ -62,13 +62,13 @@ export default function NavMobile() {
         aria-expanded={menuOpen ? "true" : undefined}
         onClick={handleIconClick}
         sx={{
-          minWidth: "32px", // Set explicit width
-          height: "32px", // Set explicit height
-          padding: "4px", // Reduced padding
-          display: "flex", // Add this
-          alignItems: "center", // Add this
-          justifyContent: "center", // Add this
-          color: "white", // Explicitly set color
+          minWidth: "32px",
+          // height: "32px",
+          // padding: "4px",
+          // display: "flex",
+          // alignItems: "center",
+          // justifyContent: "center",
+          color: "white",
           cursor: "pointer",
           maxWidth: {xs: "100%", sm: "400px"},
           "&:hover": {
