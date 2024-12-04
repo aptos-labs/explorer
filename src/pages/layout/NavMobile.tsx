@@ -61,7 +61,8 @@ export default function NavMobile() {
         aria-expanded={menuOpen ? "true" : undefined}
         onClick={handleIconClick}
         sx={{
-          minWidth: "0",
+          // minWidth: "0",
+          minWidth: "32px",
           width: "1.5rem",
           padding: "0",
           ml: 2,
