@@ -82,7 +82,21 @@ export default function NavMobile() {
           "&[aria-expanded=true]": {opacity: "0.7"},
         }}
       >
-        {menuOpen ? <CloseIcon /> : <HamburgerIcon />}
+        {menuOpen ? (
+          <CloseIcon />
+        ) : (
+          <HamburgerIcon
+            sx={{
+              fontSize: 24,
+              width: 24,
+              height: 24,
+              "& path": {
+                stroke: "white",
+                strokeWidth: 2,
+              },
+            }}
+          />
+        )}
       </Button>
       <Menu
         anchorEl={menuAnchorEl}
