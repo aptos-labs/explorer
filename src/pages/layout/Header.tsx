@@ -2,7 +2,7 @@ import React, {useRef} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
-import NetworkSelect from "./NetworkSelect";
+// import NetworkSelect from "./NetworkSelect";
 // import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
 
@@ -81,7 +81,7 @@ export default function Header() {
             gap: 2,
           }}
         >
-          <NetworkSelect />
+          {/* <NetworkSelect /> */}
           <NavMobile />
         </Box>
       </Box>
