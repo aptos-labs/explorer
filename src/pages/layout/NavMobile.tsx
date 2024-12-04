@@ -50,9 +50,9 @@ export default function NavMobile() {
       sx={{
         display: {xs: "block", md: "none"},
         // backgroundColor: "red",
-        // padding: 2,
-        // position: "relative", // Make sure it's in the flow
-        // zIndex: 1000,
+        padding: 2,
+        position: "relative",
+        zIndex: 1000,
       }}
     >
       <Button
