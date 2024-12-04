@@ -143,7 +143,7 @@ export default function Header() {
             <Nav />
             {/* {isOnMobile && <NetworkSelect />}
             <NavMobile /> */}
-            <MobileHeader />
+            {isOnMobile && <MobileHeader />}
 
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
