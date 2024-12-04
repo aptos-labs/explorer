@@ -49,7 +49,7 @@ export default function NavMobile() {
     <Box
       sx={{
         display: {xs: "block", md: "none"},
-        padding: 2,
+        padding: 1,
         position: "relative",
         zIndex: 1000,
       }}
@@ -65,8 +65,16 @@ export default function NavMobile() {
           // width: "1.5rem",
           // padding: "0",
           // ml: 2,
+          // color: "white",
+          // maxWidth: {xs: "100%", sm: "400px"},
+          minWidth: "24px",
+          width: "24px",
+          height: "24px",
+          padding: 0,
           color: "white",
-          maxWidth: {xs: "100%", sm: "400px"},
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           "&:hover": {
             background: "transparent",
             color: `${theme.palette.mode === "dark" ? grey[100] : grey[400]}`,
