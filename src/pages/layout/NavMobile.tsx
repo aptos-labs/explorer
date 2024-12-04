@@ -71,7 +71,7 @@ export default function NavMobile() {
           width: "24px",
           height: "24px",
           padding: 0,
-          color: "white",
+          color: "inherit",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
