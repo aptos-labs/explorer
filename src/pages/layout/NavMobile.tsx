@@ -71,7 +71,7 @@ export default function NavMobile() {
           width: "24px",
           height: "24px",
           padding: 0,
-          color: "#fff",
+          color: "red",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -90,7 +90,7 @@ export default function NavMobile() {
               fontSize: 24,
               width: 24,
               height: 24,
-              color: "#fff",
+              color: "red",
               "& path": {
                 stroke: "white",
                 strokeWidth: 2,
