@@ -70,6 +70,24 @@ export default function Header() {
     walletAddressRef.current = account.address;
   }
 
+  const MobileHeader = () => {
+    return (
+      <Box component="header">
+        <Nav />
+        <Box
+          sx={{
+            display: {xs: "flex", md: "none"},
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          <NetworkSelect />
+          <NavMobile />
+        </Box>
+      </Box>
+    );
+  };
+
   return (
     <>
       <Box
@@ -123,8 +141,9 @@ export default function Header() {
             </Link>
 
             <Nav />
-            {isOnMobile && <NetworkSelect />}
-            <NavMobile />
+            {/* {isOnMobile && <NetworkSelect />}
+            <NavMobile /> */}
+            <MobileHeader />
 
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
