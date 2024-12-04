@@ -62,10 +62,9 @@ export default function NavMobile() {
         onClick={handleIconClick}
         sx={{
           // minWidth: "0",
-          minWidth: "32px",
-          width: "1.5rem",
-          padding: "0",
-          ml: 2,
+          // width: "1.5rem",
+          // padding: "0",
+          // ml: 2,
           color: "white",
           maxWidth: {xs: "100%", sm: "400px"},
           "&:hover": {
