@@ -100,6 +100,7 @@ export default function Header() {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
+              gap: 2,
             }}
             disableGutters
           >
@@ -111,7 +112,8 @@ export default function Header() {
               sx={{
                 display: "flex",
                 maxWidth: "33vw",
-                marginRight: "auto",
+                // marginRight: "auto",
+                flexShrink: 1,
               }}
             >
               {theme.palette.mode === "dark" ? (
@@ -125,11 +127,25 @@ export default function Header() {
               )}
             </Link>
 
-            <Nav />
+            {/* <Nav /> */}
+            <Box sx={{display: {xs: "none", md: "block"}}}>
+              <Nav />
+            </Box>
 
-            {isOnMobile && <NetworkSelect />}
+            {/* {isOnMobile && <NetworkSelect />} */}
 
-            <NavMobile />
+            {/* <NavMobile /> */}
+            <Box
+              sx={{
+                display: {xs: "flex", md: "none"},
+                alignItems: "center",
+                gap: 1,
+                marginLeft: "auto",
+              }}
+            >
+              {isOnMobile && <NetworkSelect />}
+              <NavMobile />
+            </Box>
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector
