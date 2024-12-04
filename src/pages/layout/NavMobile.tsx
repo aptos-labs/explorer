@@ -49,7 +49,6 @@ export default function NavMobile() {
     <Box
       sx={{
         display: {xs: "block", md: "none"},
-        // backgroundColor: "red",
         padding: 2,
         position: "relative",
         zIndex: 1000,
@@ -62,14 +61,12 @@ export default function NavMobile() {
         aria-expanded={menuOpen ? "true" : undefined}
         onClick={handleIconClick}
         sx={{
-          minWidth: "32px",
-          // height: "32px",
-          // padding: "4px",
-          // display: "flex",
-          // alignItems: "center",
-          // justifyContent: "center",
+          minWidth: "0",
+          width: "1.5rem",
+          padding: "0",
+          ml: 2,
           color: "white",
-          cursor: "pointer",
+          backgroundColor: "white",
           maxWidth: {xs: "100%", sm: "400px"},
           "&:hover": {
             background: "transparent",
