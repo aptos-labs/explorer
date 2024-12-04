@@ -69,6 +69,21 @@ export default function Header() {
     });
     walletAddressRef.current = account.address;
   }
+  const MobileControls = () => {
+    return (
+      <Box
+        sx={{
+          display: {xs: "flex", md: "none"},
+          alignItems: "center",
+          gap: 1,
+          ml: "auto",
+        }}
+      >
+        <NetworkSelect />
+        <NavMobile />
+      </Box>
+    );
+  };
 
   return (
     <>
@@ -97,10 +112,6 @@ export default function Header() {
               height: "5rem",
               color:
                 theme.palette.mode === "dark" ? grey[50] : "rgba(18,22,21,1)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 2,
             }}
             disableGutters
           >
@@ -112,8 +123,7 @@ export default function Header() {
               sx={{
                 display: "flex",
                 maxWidth: "33vw",
-                // marginRight: "auto",
-                flexShrink: 1,
+                marginRight: "auto",
               }}
             >
               {theme.palette.mode === "dark" ? (
@@ -127,25 +137,12 @@ export default function Header() {
               )}
             </Link>
 
-            {/* <Nav /> */}
-            <Box sx={{display: {xs: "none", md: "block"}}}>
-              <Nav />
-            </Box>
+            <Nav />
+            <MobileControls />
 
             {/* {isOnMobile && <NetworkSelect />} */}
 
             {/* <NavMobile /> */}
-            <Box
-              sx={{
-                display: {xs: "flex", md: "none"},
-                alignItems: "center",
-                gap: 1,
-                marginLeft: "auto",
-              }}
-            >
-              {isOnMobile && <NetworkSelect />}
-              <NavMobile />
-            </Box>
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector
