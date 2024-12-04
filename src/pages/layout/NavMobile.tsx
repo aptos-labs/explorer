@@ -90,6 +90,7 @@ export default function NavMobile() {
               fontSize: 24,
               width: 24,
               height: 24,
+              color: "#fff",
               "& path": {
                 stroke: "white",
                 strokeWidth: 2,
