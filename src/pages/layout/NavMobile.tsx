@@ -43,14 +43,11 @@ export default function NavMobile() {
     navigate(to);
   };
 
-  console.log("Icons:", {CloseIcon, HamburgerIcon});
-
   return (
     <Box
       sx={{
         display: {xs: "block", md: "none"},
         padding: 1,
-        // position: "relative",
         zIndex: 9999,
       }}
     >
@@ -80,6 +77,11 @@ export default function NavMobile() {
             color: `${theme.palette.mode === "dark" ? grey[100] : grey[400]}`,
           },
           "&[aria-expanded=true]": {opacity: "0.7"},
+          "& svg": {
+            color: "white",
+            width: "24px",
+            height: "24px",
+          },
         }}
       >
         {menuOpen ? (
