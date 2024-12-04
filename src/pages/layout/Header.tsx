@@ -2,7 +2,7 @@ import React, {useRef} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
-// import NetworkSelect from "./NetworkSelect";
+import NetworkSelect from "./NetworkSelect";
 // import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
 
@@ -72,18 +72,16 @@ export default function Header() {
 
   const MobileHeader = () => {
     return (
-      <Box component="header">
-        <Nav />
-        <Box
-          sx={{
-            display: {xs: "flex", md: "none"},
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
-          {/* <NetworkSelect /> */}
-          <NavMobile />
-        </Box>
+      <Box
+        sx={{
+          display: {xs: "flex", md: "none"},
+          alignItems: "center",
+          gap: 2,
+          marginLeft: "auto",
+        }}
+      >
+        <NetworkSelect />
+        <NavMobile />
       </Box>
     );
   };
@@ -115,6 +113,9 @@ export default function Header() {
               height: "5rem",
               color:
                 theme.palette.mode === "dark" ? grey[50] : "rgba(18,22,21,1)",
+              display: "flex", // Add this
+              alignItems: "center", // Add this
+              justifyContent: "space-between",
             }}
             disableGutters
           >

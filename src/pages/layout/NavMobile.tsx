@@ -43,7 +43,15 @@ export default function NavMobile() {
   };
 
   return (
-    <Box sx={{display: {xs: "block", md: "none"}}}>
+    <Box
+      sx={{
+        display: {xs: "block", md: "none"},
+        backgroundColor: "red",
+        padding: 2,
+        position: "relative", // Make sure it's in the flow
+        zIndex: 1000,
+      }}
+    >
       <Button
         id="nav-mobile-button"
         aria-controls={menuOpen ? "nav-mobile-menu" : undefined}
@@ -56,6 +64,7 @@ export default function NavMobile() {
           padding: "0",
           ml: 2,
           color: "inherit",
+          maxWidth: {xs: "100%", sm: "400px"},
           "&:hover": {
             background: "transparent",
             color: `${theme.palette.mode === "dark" ? grey[100] : grey[400]}`,
