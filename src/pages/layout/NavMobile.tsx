@@ -31,6 +31,7 @@ export default function NavMobile() {
   const menuOpen = Boolean(menuAnchorEl);
 
   const handleIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("Button clicked");
     setMenuAnchorEl(event.currentTarget);
   };
   const handleMenuClose = () => {
@@ -41,6 +42,8 @@ export default function NavMobile() {
     setMenuAnchorEl(null);
     navigate(to);
   };
+
+  console.log("Icons:", {CloseIcon, HamburgerIcon});
 
   return (
     <Box
@@ -59,11 +62,14 @@ export default function NavMobile() {
         aria-expanded={menuOpen ? "true" : undefined}
         onClick={handleIconClick}
         sx={{
-          minWidth: "0",
-          width: "1.5rem",
-          padding: "0",
-          ml: 2,
-          color: "inherit",
+          minWidth: "32px", // Set explicit width
+          height: "32px", // Set explicit height
+          padding: "4px", // Reduced padding
+          display: "flex", // Add this
+          alignItems: "center", // Add this
+          justifyContent: "center", // Add this
+          color: "white", // Explicitly set color
+          cursor: "pointer",
           maxWidth: {xs: "100%", sm: "400px"},
           "&:hover": {
             background: "transparent",
