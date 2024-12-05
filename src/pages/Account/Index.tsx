@@ -58,7 +58,9 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
   let addressError: ResponseError | null = null;
   if (maybeAddress) {
     try {
-      address = AccountAddress.from(maybeAddress).toStringLong();
+      address = AccountAddress.from(maybeAddress, {
+        maxMissingChars: 63,
+      }).toStringLong();
     } catch (e: any) {
       addressError = {
         type: ResponseErrorType.INVALID_INPUT,
