@@ -80,7 +80,7 @@ function ValidatorDetailCardContent({
           title="Number of Delegators"
           value={delegatorBalance}
           tooltip={
-            <StyledLearnMoreTooltip text="Number of owner accounts who have delegated stake to this stake pool" />
+            <StyledLearnMoreTooltip text="Number of owner accounts who have delegated stake to this stake pool + reward account(s)" />
           }
         />
         <ContentRowSpaceBetween

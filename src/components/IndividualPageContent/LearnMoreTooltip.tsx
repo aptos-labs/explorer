@@ -37,7 +37,12 @@ export function LearnMoreTooltip({
               <>
                 <Typography variant="inherit">{text}</Typography>
                 {link && (
-                  <Link alignSelf="flex-end" href={link} color="inherit">
+                  <Link
+                    alignSelf="flex-end"
+                    href={link}
+                    target="_blank"
+                    color="inherit"
+                  >
                     Learn More
                   </Link>
                 )}

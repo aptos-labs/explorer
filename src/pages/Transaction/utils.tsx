@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {normalizeAddress} from "../../utils";
+import {standardizeAddress, tryStandardizeAddress} from "../../utils";
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
 import {TransactionTypeName} from "../../components/TransactionType";
 
@@ -23,7 +23,20 @@ export function getTransactionCounterparty(
     return undefined;
   }
 
-  if (transaction.payload.type !== "entry_function_payload") {
+  let payload: Types.TransactionPayload_EntryFunctionPayload;
+  if (transaction.payload.type === "entry_function_payload") {
+    payload =
+      transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
+  } else if (
+    transaction.payload.type === "multisig_payload" &&
+    "transaction_payload" in transaction.payload &&
+    transaction.payload.transaction_payload &&
+    "type" in transaction.payload.transaction_payload &&
+    transaction.payload.transaction_payload.type === "entry_function_payload"
+  ) {
+    payload = transaction.payload
+      .transaction_payload as Types.TransactionPayload_EntryFunctionPayload;
+  } else {
     return undefined;
   }
 
@@ -34,33 +47,50 @@ export function getTransactionCounterparty(
   //    payload function is "0x1::aptos_account::transfer" or "0x1::aptos_account::transfer_coins"
   // In both scenarios, the first item in arguments is the receiver's address, and the second item is the amount.
 
-  const payload =
-    transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
-  const typeArgument =
-    payload.type_arguments.length > 0 ? payload.type_arguments[0] : undefined;
-  const isAptCoinTransfer =
-    (payload.function === "0x1::coin::transfer" ||
-      payload.function === "0x1::aptos_account::transfer_coins") &&
-    typeArgument === "0x1::aptos_coin::AptosCoin";
-  const isAptCoinInitialTransfer =
+  const isCoinTransfer =
+    payload.function === "0x1::coin::transfer" ||
+    payload.function === "0x1::aptos_account::transfer_coins" ||
     payload.function === "0x1::aptos_account::transfer" ||
-    payload.function === "0x1::aptos_account::transfer_coins";
+    payload.function === "0x1::aptos_account::fungible_transfer_only";
+  const isPrimaryFaTransfer =
+    payload.function === "0x1::primary_fungible_store::transfer";
 
-  if (
-    (isAptCoinTransfer || isAptCoinInitialTransfer) &&
-    payload.arguments.length === 2
-  ) {
+  const isObjectTransfer = payload.function === "0x1::object::transfer";
+  const isTokenV2MintSoulbound =
+    payload.function === "0x4::aptos_token::mint_soul_bound";
+
+  if (isCoinTransfer) {
     return {
       address: payload.arguments[0],
       role: "receiver",
     };
-  } else {
-    const smartContractAddr = payload.function.split("::")[0];
+  }
+
+  if (isPrimaryFaTransfer) {
     return {
-      address: smartContractAddr,
-      role: "smartContract",
+      address: payload.arguments[1],
+      role: "receiver",
     };
   }
+
+  if (isObjectTransfer) {
+    return {
+      address: payload.arguments[1],
+      role: "receiver",
+    };
+  }
+  if (isTokenV2MintSoulbound) {
+    return {
+      address: payload.arguments[7],
+      role: "receiver",
+    };
+  }
+
+  const smartContractAddr = payload.function.split("::")[0];
+  return {
+    address: smartContractAddr,
+    role: "smartContract",
+  };
 }
 
 type ChangeData = {
@@ -90,7 +120,13 @@ export type BalanceChange = {
   asset: {
     decimals: number;
     symbol: string;
+    type: string;
+    id: string;
   };
+  known: boolean;
+  isBanned?: boolean;
+  logoUrl?: string;
+  isInPanoraTokenList?: boolean;
 };
 
 function getBalanceMap(transaction: Types.Transaction) {
@@ -107,7 +143,7 @@ function getBalanceMap(transaction: Types.Transaction) {
       },
       event: Types.Event,
     ) => {
-      const addr = normalizeAddress(event.guid.account_address);
+      const addr = standardizeAddress(event.guid.account_address);
 
       if (
         event.type === "0x1::coin::DepositEvent" ||
@@ -159,7 +195,12 @@ function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
     "changes" in transaction ? transaction.changes : [];
 
   const aptEventChange = changes.filter((change) => {
-    if ("address" in change && change.address === event.guid.account_address) {
+    if (
+      "address" in change &&
+      change.address &&
+      tryStandardizeAddress(change.address) ===
+        tryStandardizeAddress(event.guid.account_address)
+    ) {
       const data = getAptChangeData(change);
       if (data !== undefined) {
         const eventCreationNum = event.guid.creation_number;
@@ -183,7 +224,7 @@ interface TransactionResponse {
   fungible_asset_activities: Array<FungibleAssetActivity>;
 }
 
-interface FungibleAssetActivity {
+export interface FungibleAssetActivity {
   amount: number;
   entry_function_id_str: string;
   gas_fee_payer_address?: string;
@@ -205,98 +246,36 @@ interface FungibleAssetActivity {
 export function useTransactionBalanceChanges(txn_version: string) {
   const {loading, error, data} = useGraphqlQuery<TransactionResponse>(
     gql`
-      query TransactionQuery($txn_version: String) {
-        fungible_asset_activities(
-          where: {transaction_version: {_eq: ${txn_version}}}
-        ) {
-          amount
-          entry_function_id_str
-          gas_fee_payer_address
-          is_frozen
-          asset_type
-          event_index
-          owner_address
-          transaction_timestamp
-          transaction_version
-          type
-          storage_refund_amount
-          metadata {
-            asset_type
-            decimals
-            symbol
-          }
+        query TransactionQuery($txn_version: String) {
+            fungible_asset_activities(
+                where: {transaction_version: {_eq: ${txn_version}}}
+            ) {
+                amount
+                entry_function_id_str
+                gas_fee_payer_address
+                is_frozen
+                asset_type
+                event_index
+                owner_address
+                transaction_timestamp
+                transaction_version
+                type
+                storage_refund_amount
+                metadata {
+                    asset_type
+                    decimals
+                    symbol
+                }
+            }
         }
-      }
     `,
     {variables: {txn_version}},
   );
 
-  function convertAddress(a: FungibleAssetActivity) {
-    return a.type.includes("GasFeeEvent")
-      ? a.gas_fee_payer_address ?? a.owner_address
-      : a.owner_address;
-  }
-
-  function convertType(activity: FungibleAssetActivity) {
-    if (activity.type.includes("GasFee")) {
-      return "Gas Fee";
-    }
-    if (activity.type.includes("Withdraw")) {
-      return "Withdraw";
-    }
-    if (activity.type.includes("Deposit")) {
-      return "Deposit";
-    }
-    if (activity.type.includes("StorageRefund")) {
-      return "Storage Refund";
-    }
-
-    return "Unknown";
-  }
-
-  function convertAmount(activity: FungibleAssetActivity) {
-    if (activity.type.includes("GasFeeEvent")) {
-      return -BigInt(activity.amount);
-    }
-    if (activity.type.includes("Withdraw")) {
-      return BigInt(-activity.amount);
-    }
-    return BigInt(activity.amount);
-  }
-
-  const balanceChanges: BalanceChange[] =
-    data?.fungible_asset_activities
-      .filter((a) => a.amount !== null)
-      .map((a) => ({
-        address: convertAddress(a),
-        amount: convertAmount(a),
-        type: convertType(a),
-        asset: {
-          decimals: a.metadata?.decimals,
-          symbol: a.metadata?.symbol,
-        },
-      })) ?? [];
-
-  // Find gas fee and add a storage refund event
-  const gasFeeEvent = data?.fungible_asset_activities.find((a) =>
-    a.type.includes("GasFeeEvent"),
-  );
-  if (gasFeeEvent) {
-    balanceChanges.push({
-      address: gasFeeEvent.gas_fee_payer_address ?? gasFeeEvent.owner_address,
-      amount: BigInt(gasFeeEvent.storage_refund_amount),
-      type: "Storage Refund",
-      asset: {
-        decimals: gasFeeEvent.metadata?.decimals,
-        symbol: gasFeeEvent.metadata?.symbol,
-      },
-    });
-  }
-
   return {
     isLoading: loading,
     error,
-    data: balanceChanges,
+    data,
   };
 }
 

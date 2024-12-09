@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {Stack, Grid} from "@mui/material";
+import {Stack, Grid2} from "@mui/material";
 import TokenTitle from "./Title";
 import TokenTabs from "./Tabs";
 import PageHeader from "../layout/PageHeader";
@@ -21,14 +21,17 @@ export default function TokenPage() {
   const token = tokenDatas[0];
 
   return (
-    <Grid container spacing={1}>
+    <Grid2 container spacing={1}>
       <PageHeader />
-      <Grid item xs={12}>
+      <Grid2 size={{xs: 12}}>
         <Stack direction="column" spacing={4} marginTop={2}>
-          <TokenTitle name={token?.token_name} />
+          <TokenTitle
+            name={token?.token_name ?? ""}
+            tokenDataId={token?.token_data_id ?? ""}
+          />
           <TokenTabs data={token} />
         </Stack>
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 }

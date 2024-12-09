@@ -68,7 +68,7 @@ export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
   };
 }
 
-function truncate(
+export function truncate(
   str: string,
   frontLen: number,
   backLen: number,
@@ -146,4 +146,18 @@ export function isValidUrl(url: string): boolean {
   } catch (_) {
     return false;
   }
+}
+
+export function isValidIpfsUrl(url: string): boolean {
+  try {
+    const parsedUrl = new URL(url);
+    parsedUrl.toString().startsWith("ipfs://");
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+export function toIpfsUrl(url: string): string {
+  return `https://ipfs.io/ipfs/${url.slice(7)}`;
 }

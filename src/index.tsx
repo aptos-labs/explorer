@@ -1,12 +1,11 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import {createRoot} from "react-dom/client";
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
 import {StatsigProvider} from "statsig-react";
 
 import * as Sentry from "@sentry/react";
-import {BrowserTracing} from "@sentry/tracing";
 
 import ReactGA from "react-ga4";
 import {initGTM} from "./api/hooks/useGoogleTagManager";
@@ -32,7 +31,7 @@ if (window.location.origin.includes("explorer.devnet.aptos.dev")) {
 
 Sentry.init({
   dsn: "https://531160c88f78483491d129c02be9f774@o1162451.ingest.sentry.io/6249755",
-  integrations: [new BrowserTracing()],
+  integrations: [Sentry.browserTracingIntegration()],
   environment: import.meta.env.MODE,
   enabled: import.meta.env.PROD,
 
@@ -51,7 +50,9 @@ declare global {
 
 const queryClient = new QueryClient();
 
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container!);
+root.render(
   <React.StrictMode>
     <StatsigProvider
       sdkKey={
@@ -71,5 +72,4 @@ ReactDOM.render(
       </QueryClientProvider>
     </StatsigProvider>
   </React.StrictMode>,
-  document.getElementById("root"),
 );

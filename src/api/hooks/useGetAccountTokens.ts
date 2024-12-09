@@ -1,12 +1,12 @@
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useQuery} from "@tanstack/react-query";
-import {normalizeAddress} from "../../utils";
+import {standardizeAddress} from "../../utils";
 import {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 import {IndexerClient} from "aptos";
 
 export function useGetAccountTokensCount(address: string) {
   const [state] = useGlobalState();
-  const addr64Hash = normalizeAddress(address);
+  const addr64Hash = standardizeAddress(address);
   return useQuery({
     queryKey: ["account_tokens_count", {addr64Hash}, state.network_value],
     queryFn: async () => {
@@ -29,7 +29,7 @@ export function useGetAccountTokens(
   offset?: number,
 ) {
   const [state] = useGlobalState();
-  const addr64Hash = normalizeAddress(address);
+  const addr64Hash = standardizeAddress(address);
   return useQuery<TokenOwnership[]>({
     queryKey: [
       "account_tokens",

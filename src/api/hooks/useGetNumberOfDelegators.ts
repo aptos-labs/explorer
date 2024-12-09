@@ -1,6 +1,6 @@
 import {Types} from "aptos";
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
-import {normalizeAddress} from "../../utils";
+import {standardizeAddress} from "../../utils";
 
 const NUMBER_OF_DELEGATORS_QUERY = gql`
   query numberOfDelegatorsQuery($poolAddress: String) {
@@ -17,7 +17,7 @@ const NUMBER_OF_DELEGATORS_QUERY = gql`
 `;
 
 export function useGetNumberOfDelegators(poolAddress: Types.Address) {
-  const poolAddress64Hash = normalizeAddress(poolAddress);
+  const poolAddress64Hash = standardizeAddress(poolAddress);
 
   const {loading, error, data} = useGraphqlQuery(NUMBER_OF_DELEGATORS_QUERY, {
     variables: {

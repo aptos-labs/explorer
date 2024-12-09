@@ -6,58 +6,140 @@ import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabC
 import HashButton, {HashType} from "../../../components/HashButton";
 import {CoinData} from "../Components/CoinData";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {CoinDescription} from "../../../api/hooks/useGetCoinList";
+import {assertNever, getAssetSymbol} from "../../../utils";
+import {SupplyType} from "../../../api/hooks/useGetCoinSupplyLimit";
+import Tooltip from "@mui/material/Tooltip";
+import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
+import {VerifiedTwoTone} from "@mui/icons-material";
+import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
 
 type InfoTabProps = {
   struct: string;
   data: CoinData | undefined;
+  supplyInfo: [bigint | null, SupplyType | null];
+  pairedFa: string | null;
+  coinData: CoinDescription | undefined;
 };
 
-export default function InfoTab({struct, data}: InfoTabProps) {
+export default function InfoTab({
+  struct,
+  data,
+  supplyInfo,
+  pairedFa,
+  coinData,
+}: InfoTabProps) {
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
   }
 
-  // TODO: add hook for image, and the panora symbol
+  const [supply, supplyType] = supplyInfo;
+  let supplyIcon = null;
+  switch (supplyType) {
+    case SupplyType.ON_CHAIN:
+      supplyIcon = (
+        <Tooltip title={"Supply tracked on-chain, may change over time"}>
+          <VerifiedOutlined />
+        </Tooltip>
+      );
+      break;
+    case SupplyType.VERIFIED_OFF_CHAIN:
+      supplyIcon = (
+        <Tooltip title={"Supply verified off-chain to have a fixed supply"}>
+          <VerifiedTwoTone />
+        </Tooltip>
+      );
+      break;
+    case SupplyType.NO_SUPPLY_TRACKED:
+      supplyIcon = (
+        <Tooltip
+          title={"No supply is tracked for this coin on-chain or off-chain"}
+        >
+          <QuestionMarkOutlined />
+        </Tooltip>
+      );
+      break;
+    case null:
+      break;
+    default:
+      assertNever(supplyType);
+  }
 
-  function getSupply(): string {
-    if (!data) {
-      return "N/A";
-    }
-
-    if (data.data.supply.vec.length > 0) {
-      if (data.data.supply.vec[0].aggregator.vec.length > 0) {
-        // TODO: Lookup table for handle
-        return "N/A";
-      }
-      if (data.data.supply.vec[0].integer.vec.length > 0) {
-        return (
-          getFormattedBalanceStr(
-            data.data.supply.vec[0].integer.vec[0].value,
-            data.data.decimals,
-          ) +
-          " " +
-          data.data.symbol
-        );
-      }
-    }
-
-    return "N/A";
+  let formattedSupply: string | null = null;
+  if (supply !== undefined && supply !== null) {
+    formattedSupply =
+      getFormattedBalanceStr(supply.toString(), data.data.decimals) +
+      " " +
+      data.data.symbol;
   }
 
   return (
     <Box marginBottom={3}>
-      <ContentBox>
-        <ContentRow title={"Name:"} value={data.data.name} />
-        <ContentRow title={"Symbol:"} value={data.data.symbol} />
-        <ContentRow title={"Decimals:"} value={data.data.decimals} />
-        <ContentRow title={"Total supply:"} value={getSupply()} />
-        <ContentRow
-          title={"Creator:"}
-          value={
-            <HashButton hash={struct.split("::")[0]} type={HashType.ACCOUNT} />
-          }
-        />
-      </ContentBox>
+      {data && (
+        <ContentBox>
+          <ContentRow title={"Name:"} value={data?.data?.name} />
+          <ContentRow
+            title={"Symbol:"}
+            value={getAssetSymbol(
+              coinData?.panoraSymbol,
+              coinData?.bridge,
+              data?.data?.symbol,
+            )}
+          />
+          <ContentRow
+            title={"Decimals:"}
+            value={data?.data?.decimals?.toString()}
+          />
+          {formattedSupply !== null ? (
+            <ContentRow
+              title={"Total supply:"}
+              value={
+                <>
+                  {`${formattedSupply} `}
+                  {supplyIcon}
+                </>
+              }
+            />
+          ) : (
+            <ContentRow title={"Total supply:"} value={supplyIcon} />
+          )}
+          <ContentRow
+            title={"Icon:"}
+            value={
+              coinData?.logoUrl && (
+                <img
+                  alt={`${data?.data?.name} icon`}
+                  width={100}
+                  src={coinData?.logoUrl}
+                />
+              )
+            }
+          />
+          <ContentRow title={"Project URL:"} value={coinData?.websiteUrl} />
+          <ContentRow
+            title={"Creator:"}
+            value={
+              <HashButton
+                size="large"
+                hash={struct.split("::")[0]}
+                type={HashType.ACCOUNT}
+              />
+            }
+          />
+          {pairedFa && (
+            <ContentRow
+              title={"Paired FA:"}
+              value={
+                <HashButton
+                  size="large"
+                  hash={pairedFa}
+                  type={HashType.FUNGIBLE_ASSET}
+                />
+              }
+            />
+          )}
+        </ContentBox>
+      )}
     </Box>
   );
 }

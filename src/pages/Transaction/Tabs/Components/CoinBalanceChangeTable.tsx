@@ -13,6 +13,8 @@ import {
 import {Types} from "aptos";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
+import {VerifiedCoinCell} from "../../../../components/Table/VerifiedCell";
+import {getLearnMoreTooltip} from "../../helpers";
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
@@ -33,10 +35,42 @@ function TypeCell({balanceChange}: BalanceChangeCellProps) {
   return (
     <GeneralTableCell
       sx={{
-        textAlign: "right",
+        textAlign: "left",
       }}
     >
       {balanceChange.type}
+    </GeneralTableCell>
+  );
+}
+
+function VerifiedCell({balanceChange}: BalanceChangeCellProps) {
+  return VerifiedCoinCell({
+    data: {
+      id: balanceChange.asset.id,
+      known: balanceChange.known,
+      isBanned: balanceChange.isBanned,
+      isInPanoraTokenList: balanceChange.isInPanoraTokenList,
+      symbol: balanceChange?.asset?.symbol,
+    },
+  });
+}
+
+function TokenInfoCell({balanceChange}: BalanceChangeCellProps) {
+  return (
+    <GeneralTableCell sx={{}}>
+      <HashButton
+        hash={balanceChange.asset.id}
+        type={
+          balanceChange.asset.id.includes("::")
+            ? HashType.COIN
+            : HashType.FUNGIBLE_ASSET
+        }
+        img={
+          balanceChange.logoUrl
+            ? balanceChange.logoUrl
+            : balanceChange.asset.symbol
+        }
+      />
     </GeneralTableCell>
   );
 }
@@ -66,12 +100,20 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
 const BalanceChangeCells = Object.freeze({
   address: AddressCell,
   type: TypeCell,
+  tokenInfo: TokenInfoCell,
+  verified: VerifiedCell,
   amount: AmountCell,
 });
 
 type Column = keyof typeof BalanceChangeCells;
 
-const DEFAULT_COLUMNS: Column[] = ["address", "type", "amount"];
+const DEFAULT_COLUMNS: Column[] = [
+  "address",
+  "type",
+  "tokenInfo",
+  "verified",
+  "amount",
+];
 
 type BalanceChangeRowProps = {
   balanceChange: BalanceChange;
@@ -109,7 +151,17 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
     case "address":
       return <GeneralTableHeaderCell header="Account" />;
     case "type":
-      return <GeneralTableHeaderCell header="Type" textAlignRight={true} />;
+      return <GeneralTableHeaderCell header="Event Type" />;
+    case "tokenInfo":
+      return <GeneralTableHeaderCell header="Asset" />;
+    case "verified":
+      return (
+        <GeneralTableHeaderCell
+          header="Verified"
+          tooltip={getLearnMoreTooltip("coin_verification")}
+          isTableTooltip={true}
+        />
+      );
     case "amount":
       return <GeneralTableHeaderCell header="Change" textAlignRight={true} />;
     default:

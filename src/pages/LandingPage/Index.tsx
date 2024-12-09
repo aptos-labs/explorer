@@ -4,8 +4,10 @@ import Box from "@mui/material/Box";
 import NetworkInfo from "../Analytics/NetworkInfo/NetworkInfo";
 import UserTransactionsPreview from "./UserTransactionsPreview";
 import {GithubDiscussionsBanner} from "./GithubDiscussionsBanner";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 export default function LandingPage() {
+  usePageMetadata({});
   return (
     <Box>
       <GithubDiscussionsBanner />

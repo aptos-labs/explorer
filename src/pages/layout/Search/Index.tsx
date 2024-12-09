@@ -17,7 +17,11 @@ import {
   getAccountResource,
 } from "../../../api";
 import {sendToGTM} from "../../../api/hooks/useGoogleTagManager";
-import {objectCoreResource} from "../../../constants";
+import {
+  faMetadataResource,
+  knownAddresses,
+  objectCoreResource,
+} from "../../../constants";
 import {
   isValidAccountAddress,
   isNumeric,
@@ -25,11 +29,17 @@ import {
   is32ByteHex,
   isValidStruct,
 } from "../../utils";
-import {AccountAddress} from "@aptos-labs/ts-sdk";
+import {
+  CoinDescription,
+  useGetCoinList,
+} from "../../../api/hooks/useGetCoinList";
+import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
+import {getEmojicoinMarketAddressAndTypeTags} from "../../../components/Table/VerifiedCell";
 
 export type SearchResult = {
   label: string;
   to: string | null;
+  image?: string;
 };
 
 export const NotFoundResult: SearchResult = {
@@ -50,6 +60,8 @@ export default function HeaderSearch() {
     null,
   );
   const augmentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
+
+  const coinList = useGetCoinList();
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -175,9 +187,13 @@ export default function HeaderSearch() {
   }
 
   function handleAddress(searchText: string): Promise<SearchResult | null>[] {
-    // TODO: add digital assets, collections, fungible asset detection, etc.
+    // TODO: add digital assets, collections, etc.
     const promises = [];
-    const address = AccountAddress.from(searchText).toStringLong();
+    const address = tryStandardizeAddress(searchText);
+    if (!address) {
+      return [];
+    }
+
     // It's either an account OR an object: we query both at once to save time
     const accountPromise = getAccount({address}, state.aptos_client)
       .then((): SearchResult => {
@@ -190,7 +206,22 @@ export default function HeaderSearch() {
         return null;
         // Do nothing. It's expected that not all search input is a valid account
       });
-
+    // TODO: Add searching the coin list first
+    const faPromise = getAccountResource(
+      {address, resourceType: faMetadataResource},
+      state.aptos_client,
+    ).then(
+      () => {
+        return {
+          label: `Fungible Asset ${address}`,
+          to: `/fungible_asset/${address}`,
+        };
+      },
+      () => {
+        // It's not a fa
+        return null;
+      },
+    );
     const resourcePromise = getAccountResource(
       {address, resourceType: objectCoreResource},
       state.aptos_client,
@@ -224,22 +255,119 @@ export default function HeaderSearch() {
     const anyObjectsPromise = state.sdk_v2_client
       .getAccountOwnedObjects({accountAddress: address})
       .then(
-        () => {
-          return {
-            label: `Address ${address}`,
-            to: `/account/${address}`,
-          };
+        (output) => {
+          if (output.length > 0) {
+            return {
+              label: `Address ${address}`,
+              to: `/account/${address}`,
+            };
+          } else {
+            return null;
+          }
         },
         () => {
           // It has no coins
           return null;
         },
       );
+    promises.push(faPromise);
     promises.push(accountPromise);
     promises.push(resourcePromise);
     promises.push(anyResourcePromise);
     promises.push(anyObjectsPromise);
     return promises;
+  }
+
+  function prefixMatchLongerThan4(
+    searchLowerCase: string,
+    knownName: string | null | undefined,
+  ): boolean {
+    if (!knownName) {
+      return false;
+    }
+    const knownLower = knownName.toLowerCase();
+    return (
+      (searchLowerCase.length >= 4 && knownLower.startsWith(searchLowerCase)) ||
+      (searchLowerCase.length < 4 &&
+        knownLower.toLowerCase() === searchLowerCase)
+    );
+  }
+
+  async function handleLabelLookup(
+    searchText: string,
+  ): Promise<(SearchResult | null)[]> {
+    const searchResults: SearchResult[] = [];
+    const searchLowerCase = searchText.toLowerCase();
+    Object.entries(knownAddresses).forEach(([address, knownName]) => {
+      if (prefixMatchLongerThan4(searchLowerCase, knownName)) {
+        searchResults.push({
+          label: `Account ${truncateAddress(address)} ${knownName}`,
+          to: `/account/${address}`,
+        });
+      }
+    });
+    return searchResults;
+  }
+
+  async function handleCoinLookup(
+    searchText: string,
+  ): Promise<(SearchResult | null)[]> {
+    const searchLowerCase = searchText.toLowerCase();
+    const coinData = coinList?.data?.data
+      ?.filter(
+        (coin: CoinDescription) =>
+          prefixMatchLongerThan4(searchLowerCase, coin.name) ||
+          prefixMatchLongerThan4(searchLowerCase, coin.symbol) ||
+          prefixMatchLongerThan4(searchLowerCase, coin.panoraSymbol) ||
+          (coin.faAddress &&
+            tryStandardizeAddress(coin.faAddress) ===
+              tryStandardizeAddress(searchText)) ||
+          coin.tokenAddress === searchText,
+      )
+      .map((coin: CoinDescription) => {
+        if (coin.tokenAddress) {
+          return {
+            label: `${coin.name} - ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
+            to: `/coin/${coin.tokenAddress}`,
+            image: coin.logoUrl,
+          };
+        } else {
+          return {
+            label: `${coin.name} - ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
+            to: `/fungible_asset/${coin.faAddress}`,
+            image: coin.logoUrl,
+          };
+        }
+      });
+
+    return coinData ?? [];
+  }
+
+  async function handleEmojiCoinLookup(
+    searchText: string,
+  ): Promise<(SearchResult | null)[]> {
+    const emojicoinData = getEmojicoinMarketAddressAndTypeTags({
+      symbol: searchText,
+    });
+    if (!emojicoinData) {
+      return [];
+    }
+    const {marketAddress, coin, lp} = emojicoinData;
+    return getAccount(
+      {address: marketAddress.toString()},
+      state.aptos_client,
+    ).then(() => {
+      return [
+        {
+          label: `${searchText} emojicoin`,
+          to: `/coin/${coin}`,
+        },
+        {
+          label: `${searchText} emojicoin LP`,
+          to: `/coin/${lp}`,
+        },
+      ];
+    });
   }
 
   const fetchData = async (searchText: string) => {
@@ -255,10 +383,12 @@ export default function HeaderSearch() {
     if (searchText.endsWith(".petra")) searchText = searchText.concat(".apt");
     const isAnsName = searchText.endsWith(".apt");
     const promises = [];
+    const multipleSearchPromises = [];
 
     if (isAnsName) {
       promises.push(handleAnsName(searchText));
     } else if (isStruct) {
+      multipleSearchPromises.push(handleCoinLookup(searchText));
       promises.push(handleCoin(searchText));
     } else if (isValidBlockHeightOrVer) {
       // These are block heights AND versions
@@ -267,15 +397,32 @@ export default function HeaderSearch() {
       // These are transaction hashes AND addresses
       promises.push(handleTransaction(searchText));
       promises.push(...handleAddress(searchText));
+      multipleSearchPromises.push(handleCoinLookup(searchText));
     } else if (isValidAccountAddr) {
       // These are only addresses
       promises.push(...handleAddress(searchText));
+      multipleSearchPromises.push(handleCoinLookup(searchText));
+    } else if (searchText.match(/^\p{Emoji}+$/gu)) {
+      multipleSearchPromises.push(handleEmojiCoinLookup(searchText));
+    } else if (searchText.length > 2) {
+      multipleSearchPromises.push(handleCoinLookup(searchText));
+      multipleSearchPromises.push(handleLabelLookup(searchText));
     }
-
-    const resultsList = await Promise.all(promises);
+    const resultsList: (SearchResult | null)[] = [];
+    if (multipleSearchPromises) {
+      const results = await Promise.all(multipleSearchPromises);
+      resultsList.push(...results?.flat()?.filter((r) => r !== null));
+    }
+    if (promises) {
+      const results = await Promise.all(promises);
+      resultsList.push(...results);
+    }
 
     const foundAccount = resultsList.find((r) =>
       r?.label?.startsWith("Account"),
+    );
+    const foundFa = resultsList.find((r) =>
+      r?.label?.startsWith("Fungible Asset"),
     );
     const foundObject = resultsList.find((r) => r?.label?.startsWith("Object"));
     const foundDeletedObject = resultsList.find((r) =>
@@ -284,11 +431,27 @@ export default function HeaderSearch() {
     const foundPossibleAddress = resultsList.find((r) =>
       r?.label?.startsWith("Address"),
     );
+    const foundCoinByList = resultsList.find(
+      (r) => r?.label?.startsWith("Coin") && !r?.label?.startsWith("Coin 0x"),
+    );
+    const foundCoinByStruct = resultsList.find((r) =>
+      r?.label?.startsWith("Coin 0x"),
+    );
 
     // Something besides any
     let filteredResults: any[];
 
     switch (true) {
+      case Boolean(foundCoinByList): {
+        filteredResults = resultsList.filter((r) => r !== foundCoinByStruct);
+        break;
+      }
+      case Boolean(foundFa): {
+        filteredResults = resultsList.filter(
+          (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
+        );
+        break;
+      }
       case Boolean(foundAccount): {
         filteredResults = resultsList.filter(
           (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
@@ -407,7 +570,11 @@ export default function HeaderSearch() {
       renderOption={(props, option) => {
         return (
           <li {...props} key={props.id}>
-            <ResultLink to={option.to} text={option.label} />
+            <ResultLink
+              to={option.to}
+              text={option.label}
+              image={option.image}
+            />
           </li>
         );
       }}

@@ -18,7 +18,7 @@ import {
 } from "../themes/colors/aptosColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
-import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
+import {truncate, truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {assertNever} from "../utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -45,7 +45,7 @@ function getHashLinkStr(input: string, type: HashType): string {
     case HashType.COIN:
       return `/coin/${input}`;
     case HashType.FUNGIBLE_ASSET:
-      return `/object/${input}`; // TODO: Redirect to fungible asset page
+      return `/fungible_asset/${input}`;
     case HashType.OTHERS:
       return "";
     default:
@@ -77,6 +77,7 @@ interface HashButtonProps extends BoxProps {
   type: HashType;
   size?: "small" | "large";
   isValidator?: boolean;
+  img?: string;
 }
 
 export default function HashButton({
@@ -84,6 +85,7 @@ export default function HashButton({
   type,
   size = "small",
   isValidator = false,
+  img,
   ...props
 }: HashButtonProps) {
   if (type === HashType.ACCOUNT || type === HashType.OBJECT) {
@@ -97,7 +99,15 @@ export default function HashButton({
       />
     );
   } else {
-    return <HashButtonInner hash={hash} type={type} size={size} {...props} />;
+    return (
+      <HashButtonInner
+        hash={hash}
+        type={type}
+        size={size}
+        img={img}
+        {...props}
+      />
+    );
   }
 }
 
@@ -147,8 +157,8 @@ function AccountHashButtonInner({
           textDecoration: "none",
         }}
       >
-        <Tooltip title={hash} enterDelay={500} enterNextDelay={500}>
-          <span>{name ?? truncateHash}</span>
+        <Tooltip title={name ?? hash} enterDelay={500} enterNextDelay={500}>
+          <span>{name ? truncate(name, 9, 11, "…") : truncateHash}</span>
         </Tooltip>
         <Tooltip title="Copied" open={copyTooltipOpen}>
           <Button
@@ -184,6 +194,7 @@ interface HashButtonInnerProps extends BoxProps {
   hash: string;
   type: HashType;
   size?: "small" | "large";
+  img?: string;
 }
 
 function HashButtonInner({
@@ -191,6 +202,7 @@ function HashButtonInner({
   hash,
   type,
   size = "small",
+  img,
   ...props
 }: HashButtonInnerProps) {
   const theme = useTheme();
@@ -209,8 +221,25 @@ function HashButtonInner({
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
+  const imgIsEmoji = img && img.match(/^\p{Emoji}+$/u);
+
   const truncateHash =
     size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
+
+  let icon = null;
+  if (img && imgIsEmoji) {
+    icon = (
+      <Box component="span" sx={{mr: 1, display: "flex", alignItems: "center"}}>
+        {img}
+      </Box>
+    );
+  } else if (img) {
+    icon = (
+      <Box component="span" sx={{mr: 1, display: "flex", alignItems: "center"}}>
+        <img src={img} height={20} width={20} />
+      </Box>
+    );
+  }
 
   return (
     <Box {...props}>
@@ -236,6 +265,7 @@ function HashButtonInner({
         variant="contained"
         endIcon={<ChevronRightRoundedIcon sx={{opacity: "0.75", m: 0}} />}
       >
+        {icon}
         {label ? label : truncateHash}
       </Button>
 

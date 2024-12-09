@@ -11,9 +11,9 @@ WITH bmt AS (
     block_height,
     blockmetadata_tx_version AS version,
   FROM `bigquery-public-data.crypto_aptos_mainnet_us.blocks`
-  WHERE
-    DATE(block_timestamp) BETWEEN CURRENT_DATE -32
-    AND CURRENT_DATE
+  WHERE block_timestamp BETWEEN
+    TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 32 DAY
+    AND TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY)
 )
 SELECT
   ds,
@@ -31,8 +31,7 @@ FROM (
   ON b.block_height = c.block_height -1
 )
 WHERE
-  ds BETWEEN CURRENT_DATE -30
-  AND CURRENT_DATE -1
+  ds BETWEEN CURRENT_DATE -30 AND CURRENT_DATE -1
 GROUP BY
   ds
 ORDER BY

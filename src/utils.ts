@@ -2,7 +2,8 @@ import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
 import {Types} from "aptos";
 import pako from "pako";
 import {Statsig} from "statsig-react";
-import {AccountAddress, Hex} from "@aptos-labs/ts-sdk";
+import {AccountAddress, AccountAddressInput, Hex} from "@aptos-labs/ts-sdk";
+
 /**
  * Helper function for exhaustiveness checks.
  *
@@ -25,20 +26,6 @@ export function sortTransactions(
   const first = "version" in a ? parseInt(a.version) : Infinity;
   const second = "version" in b ? parseInt(b.version) : Infinity;
   return first < second ? 1 : -1;
-}
-
-/*
-Converts a utf8 string encoded as hex back to string
-if hex starts with 0x - ignore this part and start from the 3rd char (at index 2).
-*/
-export function hex_to_string(hex: string): string {
-  const hexString = hex.toString();
-  let str = "";
-  let n = hex.startsWith("0x") ? 2 : 0;
-  for (n; n < hexString.length; n += 2) {
-    str += String.fromCharCode(parseInt(hexString.substring(n, n + 2), 16));
-  }
-  return str;
 }
 
 /* set localStorage with Expiry */
@@ -110,8 +97,27 @@ export function getBytecodeSizeInKB(bytecodeHex: string): number {
 /**
  * Standardizes an address to the format "0x" followed by 64 lowercase hexadecimal digits.
  */
-export const standardizeAddress = (address: string): string => {
-  return AccountAddress.from(address).toStringLong();
+export const standardizeAddress = (address: AccountAddressInput): string => {
+  return AccountAddress.from(address, {
+    maxMissingChars: 63,
+  }).toStringLong();
+};
+
+export const tryStandardizeAddress = (
+  address: AccountAddressInput | null | undefined,
+  logError?: boolean,
+): string | undefined => {
+  if (address) {
+    try {
+      return standardizeAddress(address);
+    } catch (e) {
+      if (logError) {
+        console.log("Failed to standardize address", address, e);
+      }
+      return undefined;
+    }
+  }
+  return undefined;
 };
 
 // inspired by https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
@@ -153,7 +159,7 @@ export function encodeInputArgsForViewRequest(type: string, value: string) {
     if (value !== "true" && value !== "false")
       throw new Error(`Invalid bool value: ${value}`);
 
-    return value === "true" ? true : false;
+    return value === "true";
   } else if (["u8", "u16", "u32"].includes(type)) {
     return ensureNumber(value);
   } else if (type.startsWith("0x1::option::Option")) {
@@ -261,13 +267,24 @@ export function getStableID(): string {
   return Statsig.initializeCalled() ? Statsig.getStableID() : "not_initialized";
 }
 
-// address' coming back from the node trim leading zeroes
-// for example: 0x123 => 0x000...000123  (61 0s before 123)
-export function normalizeAddress(address: string): string {
-  return "0x" + address.substring(2).padStart(64, "0");
-}
-
 /** A wallet sort function to ensure that Petra is always at the top of the wallet list. */
 export function sortPetraFirst(a: AnyAptosWallet) {
   return a.name === "Petra" ? -1 : 1;
+}
+
+export function getAssetSymbol(
+  panoraSymbol: string | null | undefined,
+  bridge: string | null | undefined,
+  symbol: string | null | undefined,
+) {
+  if (panoraSymbol && panoraSymbol !== symbol) {
+    if (bridge) {
+      return `${panoraSymbol} (${bridge} ${symbol})`;
+    }
+    return `${panoraSymbol} (${symbol})`;
+  } else if (symbol) {
+    return symbol;
+  } else {
+    return "Unknown Symbol";
+  }
 }

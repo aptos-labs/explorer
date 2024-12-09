@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {Grid} from "@mui/material";
+import {Grid2} from "@mui/material";
 import React from "react";
 import CoinTabs, {TabValue} from "./Tabs";
 import PageHeader from "../layout/PageHeader";
@@ -11,10 +11,14 @@ import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 import {isValidStruct} from "../utils";
 import CoinTitle from "./Title";
 import {CoinData} from "./Components/CoinData";
+import {useGetCoinSupplyLimit} from "../../api/hooks/useGetCoinSupplyLimit";
+import {useGetCoinList} from "../../api/hooks/useGetCoinList";
+import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
+import {useGetCoinPairedFa} from "../../api/hooks/useGetCoinPairedFa";
 
-const TAB_VALUES_FULL: TabValue[] = ["info"];
+const TAB_VALUES_FULL: TabValue[] = ["info", "holders", "transactions"];
 
-const TAB_VALUES: TabValue[] = ["info", "transactions"];
+const TAB_VALUES: TabValue[] = ["info"];
 
 export default function CoinPage() {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
@@ -32,34 +36,46 @@ export default function CoinPage() {
     };
   }
 
+  const {data: coinList} = useGetCoinList();
+
   const {
     data,
     error: infoError,
     isLoading,
   } = useGetAccountResource(address, `0x1::coin::CoinInfo<${struct}>`);
 
+  const supplyInfo = useGetCoinSupplyLimit(struct);
+  const pairedFa = useGetCoinPairedFa(struct);
+
   if (error === null) {
     error = infoError;
   }
-
+  const coinData = findCoinData(coinList?.data, struct);
   const tabValues = isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
 
   return (
-    <Grid container spacing={1}>
+    <Grid2 container spacing={1}>
       <LoadingModal open={isLoading} />
-      <Grid item xs={12} md={12} lg={12}>
+      <Grid2 size={{xs: 12, md: 12, lg: 12}}>
         <PageHeader />
-      </Grid>
-      <Grid item xs={12} md={8} lg={9} alignSelf="center">
-        <CoinTitle struct={struct} />
-      </Grid>
-      <Grid item xs={12} md={12} lg={12} marginTop={4}>
+      </Grid2>
+      <Grid2 size={{xs: 12, md: 8, lg: 9}} alignSelf="center">
+        <CoinTitle
+          struct={struct}
+          coinData={coinData}
+          symbol={(data as CoinData)?.data?.symbol}
+        />
+      </Grid2>
+      <Grid2 size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
         {error ? (
           <>
             <CoinTabs
               struct={struct}
               data={data as CoinData | undefined}
               tabValues={tabValues}
+              supplyInfo={supplyInfo}
+              pairedFa={pairedFa}
+              coinData={coinData}
             />
             <Error struct={struct} error={error} />
           </>
@@ -68,9 +84,12 @@ export default function CoinPage() {
             struct={struct}
             data={data as CoinData | undefined}
             tabValues={tabValues}
+            supplyInfo={supplyInfo}
+            pairedFa={pairedFa}
+            coinData={coinData}
           />
         )}
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 }

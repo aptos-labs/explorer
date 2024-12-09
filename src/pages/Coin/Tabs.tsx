@@ -10,11 +10,15 @@ import StyledTab from "../../components/StyledTab";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
 import {CoinData} from "./Components/CoinData";
+import {CoinDescription} from "../../api/hooks/useGetCoinList";
+import HoldersTab from "./Tabs/HoldersTab";
+import {SupplyType} from "../../api/hooks/useGetCoinSupplyLimit";
 
-const TAB_VALUES: TabValue[] = ["info", "transactions"];
+const TAB_VALUES: TabValue[] = ["info", "holders", "transactions"];
 
 const TabComponents = Object.freeze({
   transactions: TransactionsTab,
+  holders: HoldersTab,
   info: InfoTab,
 });
 
@@ -25,7 +29,9 @@ function getTabLabel(value: TabValue): string {
     case "info":
       return "Info";
     case "transactions":
-      return "Transactions";
+      return "Beta - Transactions";
+    case "holders":
+      return "Beta - Holders";
     default:
       return assertNever(value);
   }
@@ -37,6 +43,8 @@ function getTabIcon(value: TabValue): JSX.Element {
       return <DescriptionOutlinedIcon fontSize="small" />;
     case "transactions":
       return <WysiwygIcon fontSize="small" />;
+    case "holders":
+      return <WysiwygIcon fontSize="small" />;
     default:
       return assertNever(value);
   }
@@ -46,17 +54,38 @@ type TabPanelProps = {
   value: TabValue;
   struct: string;
   data: CoinData | undefined;
+  supplyInfo: [bigint | null, SupplyType | null];
+  pairedFa: string | null;
+  coinData: CoinDescription | undefined;
 };
 
-function TabPanel({value, struct, data}: TabPanelProps): JSX.Element {
+function TabPanel({
+  value,
+  struct,
+  data,
+  supplyInfo,
+  pairedFa,
+  coinData,
+}: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
-  return <TabComponent struct={struct} data={data} />;
+  return (
+    <TabComponent
+      struct={struct}
+      data={data}
+      supplyInfo={supplyInfo}
+      pairedFa={pairedFa}
+      coinData={coinData}
+    />
+  );
 }
 
 type CoinTabsProps = {
   struct: string;
   data: CoinData | undefined;
   tabValues?: TabValue[];
+  supplyInfo: [bigint | null, SupplyType | null];
+  pairedFa: string | null;
+  coinData: CoinDescription | undefined;
 };
 
 // TODO: create reusable Tabs for all pages
@@ -64,6 +93,9 @@ export default function CoinTabs({
   struct,
   data,
   tabValues = TAB_VALUES,
+  supplyInfo,
+  pairedFa,
+  coinData,
 }: CoinTabsProps): JSX.Element {
   const {tab, modulesTab} = useParams();
   const navigate = useNavigate();
@@ -99,7 +131,14 @@ export default function CoinTabs({
         </StyledTabs>
       </Box>
       <Box>
-        <TabPanel value={effectiveTab} struct={struct} data={data} />
+        <TabPanel
+          value={effectiveTab}
+          struct={struct}
+          data={data}
+          supplyInfo={supplyInfo}
+          pairedFa={pairedFa}
+          coinData={coinData}
+        />
       </Box>
     </Box>
   );
