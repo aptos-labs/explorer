@@ -73,3 +73,4 @@ root.render(
     </StatsigProvider>
   </React.StrictMode>,
 );
+
