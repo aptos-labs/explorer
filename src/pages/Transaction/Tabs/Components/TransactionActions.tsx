@@ -9,7 +9,9 @@ const AddressLink: React.FC<{
   address: string;
   type: "address" | "object" | "token";
 }> = ({address, type}) => (
-  <Link to={`/${type}/${AccountAddress.from(address).toString()}`}>
+  <Link
+    to={`/${type === "address" ? "account" : type}/${AccountAddress.from(address).toString()}`}
+  >
     {truncateAddress(address)}
   </Link>
 );
