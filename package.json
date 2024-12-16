@@ -8,7 +8,8 @@
     "overrides": {
       "axios": ">=1.7.4",
       "d3-color": ">=3.1.0",
-      "cross-spawn": "^7.0.6"
+      "cross-spawn": "^7.0.6",
+      "nanoid": ">=3.3.8"
     }
   },
   "dependencies": {

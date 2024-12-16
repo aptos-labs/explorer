@@ -8,6 +8,7 @@ overrides:
   axios: ">=1.7.4"
   d3-color: ">=3.1.0"
   cross-spawn: ^7.0.6
+  nanoid: ">=3.3.8"
 
 dependencies:
   "@apollo/client":
@@ -7565,10 +7566,10 @@ packages:
         integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==,
       }
 
-  /nanoid@3.3.7:
+  /nanoid@3.3.8:
     resolution:
       {
-        integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==,
+        integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==,
       }
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
@@ -7935,7 +7936,7 @@ packages:
       }
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
-      nanoid: 3.3.7
+      nanoid: 3.3.8
       picocolors: 1.1.0
       source-map-js: 1.2.1
     dev: true
