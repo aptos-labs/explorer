@@ -18,6 +18,7 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sortPetraFirst} from "../../utils";
 import {useGetInTestnet} from "../../api/hooks/useGetInTestnet";
+// import NetworkSelect from "./NetworkSelect";
 
 export default function NavMobile() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -30,6 +31,7 @@ export default function NavMobile() {
   const menuOpen = Boolean(menuAnchorEl);
 
   const handleIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("Button clicked");
     setMenuAnchorEl(event.currentTarget);
   };
   const handleMenuClose = () => {
@@ -42,7 +44,13 @@ export default function NavMobile() {
   };
 
   return (
-    <Box sx={{display: {xs: "block", md: "none"}}}>
+    <Box
+      sx={{
+        display: {xs: "block", md: "none"},
+        padding: 1,
+        zIndex: 9999,
+      }}
+    >
       <Button
         id="nav-mobile-button"
         aria-controls={menuOpen ? "nav-mobile-menu" : undefined}
@@ -50,19 +58,42 @@ export default function NavMobile() {
         aria-expanded={menuOpen ? "true" : undefined}
         onClick={handleIconClick}
         sx={{
-          minWidth: "0",
-          width: "1.5rem",
-          padding: "0",
-          ml: 2,
-          color: "inherit",
+          minWidth: "24px",
+          width: "24px",
+          height: "24px",
+          padding: 0,
+          color: "red",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           "&:hover": {
             background: "transparent",
             color: `${theme.palette.mode === "dark" ? grey[100] : grey[400]}`,
           },
           "&[aria-expanded=true]": {opacity: "0.7"},
+          "& svg": {
+            color: "white",
+            width: "24px",
+            height: "24px",
+          },
         }}
       >
-        {menuOpen ? <CloseIcon /> : <HamburgerIcon />}
+        {menuOpen ? (
+          <CloseIcon />
+        ) : (
+          <HamburgerIcon
+            sx={{
+              fontSize: 24,
+              width: 24,
+              height: 24,
+              color: "red",
+              "& path": {
+                stroke: "white",
+                strokeWidth: 2,
+              },
+            }}
+          />
+        )}
       </Button>
       <Menu
         anchorEl={menuAnchorEl}
@@ -96,6 +127,7 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
           Blocks
         </MenuItem>
+
         <Divider />
         <WalletConnector
           networkSupport={state.network_name}
