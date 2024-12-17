@@ -19,8 +19,20 @@ import {Types} from "aptos";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
 import {accountPagePath} from "./Index";
+import NFTsTab from "./Tabs/NFTsTab";
+import {useGlobalState} from "../../global-config/GlobalConfig";
 
-const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
+function getTabValues(isMainnet: boolean): TabValue[] {
+  const baseValues: TabValue[] = [
+    "transactions",
+    "resources",
+    "modules",
+    "info",
+    "coins",
+    "tokens",
+  ];
+  return isMainnet ? [...baseValues, "nfts"] : baseValues;
+}
 
 const TabComponents = Object.freeze({
   transactions: TransactionsTab,
@@ -29,6 +41,7 @@ const TabComponents = Object.freeze({
   resources: ResourcesTab,
   modules: ModulesTab,
   info: InfoTab,
+  nfts: NFTsTab,
 });
 
 export type TabValue = keyof typeof TabComponents;
@@ -47,6 +60,8 @@ function getTabLabel(value: TabValue): string {
       return "Modules";
     case "info":
       return "Info";
+    case "nfts":
+      return "NFTs";
     default:
       return assertNever(value);
   }
@@ -66,6 +81,8 @@ function getTabIcon(value: TabValue): JSX.Element {
       return <ExtensionIcon fontSize="small" />;
     case "info":
       return <DescriptionOutlinedIcon fontSize="small" />;
+    case "nfts":
+      return <AccountBalanceWalletOutlinedIcon fontSize="small" />;
     default:
       return assertNever(value);
   }
@@ -106,8 +123,12 @@ export default function AccountTabs({
   address,
   accountData,
   isObject = false,
-  tabValues = TAB_VALUES,
+  tabValues,
 }: AccountTabsProps): JSX.Element {
+  const [state] = useGlobalState();
+  const defaultTabValues = getTabValues(state.network_value === "mainnet");
+  const effectiveTabValues = tabValues ?? defaultTabValues;
+
   const {tab, modulesTab} = useParams();
   const navigate = useNavigate();
   let effectiveTab: TabValue;
@@ -116,7 +137,7 @@ export default function AccountTabs({
   } else if (tab !== undefined) {
     effectiveTab = tab as TabValue;
   } else {
-    effectiveTab = TAB_VALUES[0];
+    effectiveTab = effectiveTabValues[0];
   }
 
   const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
@@ -129,14 +150,14 @@ export default function AccountTabs({
     <Box sx={{width: "100%"}}>
       <Box>
         <StyledTabs value={effectiveTab} onChange={handleChange}>
-          {tabValues.map((value, i) => (
+          {effectiveTabValues.map((value, i) => (
             <StyledTab
               key={i}
               value={value}
               icon={getTabIcon(value)}
               label={getTabLabel(value)}
               isFirst={i === 0}
-              isLast={i === tabValues.length - 1}
+              isLast={i === effectiveTabValues.length - 1}
             />
           ))}
         </StyledTabs>
