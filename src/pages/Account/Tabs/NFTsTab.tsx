@@ -23,7 +23,7 @@ type DigitalAsset = {
   };
 };
 
-type TokenResponse = {
+export type TokenResponse = {
   syncSqlResponse: {
     result: {
       rows: Array<{
@@ -54,84 +54,28 @@ export default function NFTsTab({address}: NFTsTabProps) {
   const [state] = useGlobalState();
 
   useEffect(() => {
-    const fetchTokenIds = async () => {
+    const fetchAllNFTs = async () => {
       try {
         const response = await fetch("/.netlify/functions/getTokenIds", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({owner: address}),
+          body: JSON.stringify({
+            owner: address,
+            network: state.network_value,
+          }),
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch token IDs");
+          throw new Error("Failed to fetch NFTs");
         }
 
-        const data: TokenResponse = await response.json();
-        return data.syncSqlResponse.result.rows || [];
-      } catch (error) {
-        console.error("Error fetching token IDs:", error);
-        throw error;
-      }
-    };
-
-    const fetchNFTInfo = async (objectId: string) => {
-      try {
-        // Query the Movement explorer endpoint for token resources
-        const response = await fetch(
-          `${state.network_value}/accounts/${objectId}/resources`,
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch NFT info");
-        }
-
-        const data = await response.json();
-
-        // Find the token resource data
-        const tokenResource = data.find(
-          (resource: any) => resource.type === "0x4::token::Token",
-        );
-
-        if (!tokenResource) {
-          throw new Error("Token resource not found");
-        }
-
-        // Extract metadata from the token resource
-        const metadata = tokenResource.data;
-
-        // Transform the data into the required format
-        return {
-          tokenAddress: objectId,
-          tokenData: {
-            name: metadata.name || "",
-            uri: metadata.uri || "",
-            description: metadata.description || "",
-            collection: metadata.collection?.inner || "", // Handle nested collection data
-          },
-        };
-      } catch (error) {
-        console.error("Error fetching NFT info:", error);
-        throw error;
-      }
-    };
-
-    const fetchAllNFTs = async () => {
-      try {
-        // First get all token IDs
-        const tokenIds = await fetchTokenIds();
-
-        // Then fetch info for each token
-        const nftPromises = tokenIds.map((token) =>
-          fetchNFTInfo(token.object.toString()),
-        );
-
-        const nfts = await Promise.all(nftPromises);
+        const nfts = await response.json();
 
         // Transform to DigitalAsset format
         setDigitalAssets(
-          nfts.map((nft) => ({
+          nfts.map((nft: any) => ({
             token_data_id: nft.tokenAddress,
             current_token_data: {
               token_name: nft.tokenData.name,
