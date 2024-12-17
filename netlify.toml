@@ -1,0 +1,11 @@
+[[redirects]]
+  from = "https://explorer.movementlabs.xyz/*"
+  to = "https://explorer.movementnetwork.xyz/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://explorer.movementlabs.xyz/*"
+  to = "https://explorer.movementnetwork.xyz/:splat"
+  status = 301
+  force = true 
