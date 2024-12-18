@@ -13,8 +13,8 @@
   "dependencies": {
     "@apollo/client": "^3.12.3",
     "@aptos-labs/ts-sdk": "^1.33.1",
-    "@aptos-labs/wallet-adapter-mui-design": "3.0.21",
-    "@aptos-labs/wallet-adapter-react": "3.7.7",
+    "@aptos-labs/wallet-adapter-mui-design": "3.0.23",
+    "@aptos-labs/wallet-adapter-react": "3.7.9",
     "@bitget-wallet/aptos-wallet-adapter": "^0.1.2",
     "@blocto/aptos-wallet-adapter-plugin": "^0.2.11",
     "@download/blockies": "^1.0.3",
@@ -56,7 +56,7 @@
     "react-json-view": "^1.21.3",
     "react-loading-skeleton": "^3.5.0",
     "react-number-format": "^5.4.2",
-    "react-router-dom": "^6.28.0",
+    "react-router-dom": "^7.0.2",
     "react-simple-maps": "^3.0.0",
     "react-syntax-highlighter": "^15.6.1",
     "recharts": "^2.15.0",
@@ -111,7 +111,7 @@
     "prettier": "^3.4.2",
     "ts-results": "^3.3.0",
     "typescript": "^5.7.2",
-    "vite": "^5.4.11",
+    "vite": "^6.0.3",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^2.1.8"
   }
