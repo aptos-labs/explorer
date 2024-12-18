@@ -468,7 +468,10 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
  * These must be vetted to not have mint or burn capabilities
  */
 export const supplyLimitOverrides: Record<string, bigint> = {
+  // Note: All Uptos pump coins are 1 billion supply, and the mint / freeze / burn caps are destroyed at creation time
   "0x268d4a7a2ad93274edf6116f9f20ad8455223a7ab5fc73154f687e7dbc3e3ec6::LOON::LOON":
+    1000000000000000n, // Caps burned at creation
+  "0x967adbf2e05fe665ab86a3bf2c4acfa39fbf62097963474ef70a0786dae8cfa2::NRUH::NRUH":
     1000000000000000n, // Caps burned at creation
   "0x4fbed3f8a3fd8a11081c8b6392152a8b0cb14d70d0414586f0c9b858fcd2d6a7::UPTOS::UPTOS":
     8888888888800000000n, // Caps burned at https://explorer.aptoslabs.com/txn/0x4594e752ad872dd4d6fcdcdfe5a226de3556864dfa825bf77d90df810f25257e?network=mainnet no mints since
