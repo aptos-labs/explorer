@@ -16,11 +16,11 @@ dependencies:
     specifier: ^1.33.1
     version: 1.33.1
   "@aptos-labs/wallet-adapter-mui-design":
-    specifier: 3.0.21
-    version: 3.0.21(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@types/react@18.3.17)(@wallet-standard/core@1.1.0)(aptos@1.21.0)(react-dom@18.3.1)(react-router-dom@6.28.0)(react@18.3.1)
+    specifier: 3.0.23
+    version: 3.0.23(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@types/react@18.3.17)(@wallet-standard/core@1.1.0)(aptos@1.21.0)(react-dom@18.3.1)(react-router-dom@7.0.2)(react@18.3.1)
   "@aptos-labs/wallet-adapter-react":
-    specifier: 3.7.7
-    version: 3.7.7(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@types/react@18.3.17)(@wallet-standard/core@1.1.0)(aptos@1.21.0)(react@18.3.1)
+    specifier: 3.7.9
+    version: 3.7.9(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@types/react@18.3.17)(@wallet-standard/core@1.1.0)(aptos@1.21.0)(react@18.3.1)
   "@bitget-wallet/aptos-wallet-adapter":
     specifier: ^0.1.2
     version: 0.1.2(@aptos-labs/wallet-adapter-core@3.5.0)(aptos@1.21.0)
@@ -145,8 +145,8 @@ dependencies:
     specifier: ^5.4.2
     version: 5.4.2(react-dom@18.3.1)(react@18.3.1)
   react-router-dom:
-    specifier: ^6.28.0
-    version: 6.28.0(react-dom@18.3.1)(react@18.3.1)
+    specifier: ^7.0.2
+    version: 7.0.2(react-dom@18.3.1)(react@18.3.1)
   react-simple-maps:
     specifier: ^3.0.0
     version: 3.0.0(prop-types@15.8.1)(react-dom@18.3.1)(react@18.3.1)
@@ -196,7 +196,7 @@ devDependencies:
     version: 7.18.0(eslint@8.57.1)(typescript@5.7.2)
   "@vitejs/plugin-react":
     specifier: ^4.3.4
-    version: 4.3.4(vite@5.4.11)
+    version: 4.3.4(vite@6.0.3)
   eslint:
     specifier: ^8.57.1
     version: 8.57.1
@@ -222,11 +222,11 @@ devDependencies:
     specifier: ^5.7.2
     version: 5.7.2
   vite:
-    specifier: ^5.4.11
-    version: 5.4.11
+    specifier: ^6.0.3
+    version: 6.0.3
   vite-plugin-svgr:
     specifier: ^4.3.0
-    version: 4.3.0(typescript@5.7.2)(vite@5.4.11)
+    version: 4.3.0(typescript@5.7.2)(vite@6.0.3)
   vitest:
     specifier: ^2.1.8
     version: 2.1.8
@@ -370,7 +370,7 @@ packages:
       }
     engines: {node: ">=15.10.0"}
     dependencies:
-      axios: 1.7.4
+      axios: 1.7.9
       got: 11.8.6
     transitivePeerDependencies:
       - debug
@@ -502,32 +502,6 @@ packages:
       tweetnacl: 1.0.3
     dev: false
 
-  /@aptos-labs/wallet-adapter-core@4.22.1(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0)(aptos@1.21.0):
-    resolution:
-      {
-        integrity: sha512-OinSUf9rfubNTJROLCFrldMzX1cPsqbnEmEpFthOSgldhptNobOn06pQTiGOgMhRdre5xubhTyJXuA8OiUhc3A==,
-      }
-    peerDependencies:
-      "@aptos-labs/ts-sdk": ^1.27.1
-      aptos: ^1.21.0
-    dependencies:
-      "@aptos-connect/wallet-adapter-plugin": 2.3.4(@aptos-labs/ts-sdk@1.33.1)(@aptos-labs/wallet-standard@0.2.0)(@telegram-apps/bridge@1.8.0)(aptos@1.21.0)
-      "@aptos-labs/ts-sdk": 1.33.1
-      "@aptos-labs/wallet-standard": 0.2.0(@aptos-labs/ts-sdk@1.33.1)(@wallet-standard/core@1.1.0)
-      "@atomrigslab/aptos-wallet-adapter": 0.1.21(@aptos-labs/ts-sdk@1.33.1)
-      "@mizuwallet-sdk/aptos-wallet-adapter": 0.3.2(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@wallet-standard/core@1.1.0)
-      aptos: 1.21.0
-      buffer: 6.0.3
-      eventemitter3: 4.0.7
-      tweetnacl: 1.0.3
-    transitivePeerDependencies:
-      - "@mizuwallet-sdk/core"
-      - "@mizuwallet-sdk/protocol"
-      - "@telegram-apps/bridge"
-      - "@wallet-standard/core"
-      - debug
-    dev: false
-
   /@aptos-labs/wallet-adapter-core@4.23.0(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0)(aptos@1.21.0):
     resolution:
       {
@@ -554,24 +528,24 @@ packages:
       - debug
     dev: false
 
-  /@aptos-labs/wallet-adapter-mui-design@3.0.21(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@types/react@18.3.17)(@wallet-standard/core@1.1.0)(aptos@1.21.0)(react-dom@18.3.1)(react-router-dom@6.28.0)(react@18.3.1):
+  /@aptos-labs/wallet-adapter-mui-design@3.0.23(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@types/react@18.3.17)(@wallet-standard/core@1.1.0)(aptos@1.21.0)(react-dom@18.3.1)(react-router-dom@7.0.2)(react@18.3.1):
     resolution:
       {
-        integrity: sha512-0hteYdw5DfE0QMId4nrIj2PjUqDnlJ7nVJh+030aUpOhzIRV6ZX5pZnAdCaQBgEtnQOrtUj/LaA9I7hlECvMGA==,
+        integrity: sha512-pgkbt083zYRFTpywgl1fRb+YSi+yE687oySn6BrHzS5AY/quZF5VlvPpTea3Ed+6DRpOpOxCYIiuDhOo9EapPA==,
       }
     peerDependencies:
       react: ^18
       react-dom: ^18
       react-router-dom: ^6.8.0
     dependencies:
-      "@aptos-labs/wallet-adapter-react": 3.7.7(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@types/react@18.3.17)(@wallet-standard/core@1.1.0)(aptos@1.21.0)(react@18.3.1)
+      "@aptos-labs/wallet-adapter-react": 3.7.9(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@types/react@18.3.17)(@wallet-standard/core@1.1.0)(aptos@1.21.0)(react@18.3.1)
       "@emotion/react": 11.14.0(@types/react@18.3.17)(react@18.3.1)
       "@emotion/styled": 11.14.0(@emotion/react@11.14.0)(@types/react@18.3.17)(react@18.3.1)
       "@mui/icons-material": 5.16.12(@mui/material@5.16.12)(@types/react@18.3.17)(react@18.3.1)
       "@mui/material": 5.16.12(@emotion/react@11.14.0)(@emotion/styled@11.14.0)(@types/react@18.3.17)(react-dom@18.3.1)(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-router-dom: 6.28.0(react-dom@18.3.1)(react@18.3.1)
+      react-router-dom: 7.0.2(react-dom@18.3.1)(react@18.3.1)
     transitivePeerDependencies:
       - "@aptos-labs/ts-sdk"
       - "@mizuwallet-sdk/core"
@@ -584,15 +558,15 @@ packages:
       - supports-color
     dev: false
 
-  /@aptos-labs/wallet-adapter-react@3.7.7(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@types/react@18.3.17)(@wallet-standard/core@1.1.0)(aptos@1.21.0)(react@18.3.1):
+  /@aptos-labs/wallet-adapter-react@3.7.9(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@types/react@18.3.17)(@wallet-standard/core@1.1.0)(aptos@1.21.0)(react@18.3.1):
     resolution:
       {
-        integrity: sha512-6sIh8EzpBLaVYqrYsYsyKjAF7r3qijitFiLksDWgw20VPUvq79B5gwIC01mloZRC5RVMxUz5/IuHU6wkVBer8A==,
+        integrity: sha512-WW4L9AVVjaDF2Dg8ZHC7zbIHvlN2CXxUeg9TbBOlf3Ir0rMY4QwbFY+dwmjgYypNFgSQy8Zvz6Rg48Lxo5acfA==,
       }
     peerDependencies:
       react: ^18
     dependencies:
-      "@aptos-labs/wallet-adapter-core": 4.22.1(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0)(aptos@1.21.0)
+      "@aptos-labs/wallet-adapter-core": 4.23.0(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0)(aptos@1.21.0)
       "@radix-ui/react-slot": 1.1.1(@types/react@18.3.17)(react@18.3.1)
       react: 18.3.1
     transitivePeerDependencies:
@@ -1355,12 +1329,36 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/aix-ppc64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-WtKdFM7ls47zkKHFVzMz8opM7LkcsIp9amDUBIAWirg70RM71WRSjdILPsY5Uv1D42ZpUfaPILDlfactHgsRkw==,
+      }
+    engines: {node: ">=18"}
+    cpu: [ppc64]
+    os: [aix]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/android-arm64@0.21.5:
     resolution:
       {
         integrity: sha512-c0uX9VAUBQ7dTDCjq+wdyGLowMdtR/GoC2U5IYk/7D1H1JYC0qseD7+11iMP2mRLN9RcCMRcjC4YMclCzGwS/A==,
       }
     engines: {node: ">=12"}
+    cpu: [arm64]
+    os: [android]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/android-arm64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-Vsm497xFM7tTIPYK9bNTYJyF/lsP590Qc1WxJdlB6ljCbdZKU9SY8i7+Iin4kyhV/KV5J2rOKsBQbB77Ab7L/w==,
+      }
+    engines: {node: ">=18"}
     cpu: [arm64]
     os: [android]
     requiresBuild: true
@@ -1379,12 +1377,36 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/android-arm@0.24.0:
+    resolution:
+      {
+        integrity: sha512-arAtTPo76fJ/ICkXWetLCc9EwEHKaeya4vMrReVlEIUCAUncH7M4bhMQ+M9Vf+FFOZJdTNMXNBrWwW+OXWpSew==,
+      }
+    engines: {node: ">=18"}
+    cpu: [arm]
+    os: [android]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/android-x64@0.21.5:
     resolution:
       {
         integrity: sha512-D7aPRUUNHRBwHxzxRvp856rjUHRFW1SdQATKXH2hqA0kAZb1hKmi02OpYRacl0TxIGz/ZmXWlbZgjwWYaCakTA==,
       }
     engines: {node: ">=12"}
+    cpu: [x64]
+    os: [android]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/android-x64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-t8GrvnFkiIY7pa7mMgJd7p8p8qqYIz1NYiAoKc75Zyv73L3DZW++oYMSHPRarcotTKuSs6m3hTOa5CKHaS02TQ==,
+      }
+    engines: {node: ">=18"}
     cpu: [x64]
     os: [android]
     requiresBuild: true
@@ -1403,12 +1425,36 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/darwin-arm64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-CKyDpRbK1hXwv79soeTJNHb5EiG6ct3efd/FTPdzOWdbZZfGhpbcqIpiD0+vwmpu0wTIL97ZRPZu8vUt46nBSw==,
+      }
+    engines: {node: ">=18"}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/darwin-x64@0.21.5:
     resolution:
       {
         integrity: sha512-se/JjF8NlmKVG4kNIuyWMV/22ZaerB+qaSi5MdrXtd6R08kvs2qCN4C09miupktDitvh8jRFflwGFBQcxZRjbw==,
       }
     engines: {node: ">=12"}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/darwin-x64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-rgtz6flkVkh58od4PwTRqxbKH9cOjaXCMZgWD905JOzjFKW+7EiUObfd/Kav+A6Gyud6WZk9w+xu6QLytdi2OA==,
+      }
+    engines: {node: ">=18"}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
@@ -1427,12 +1473,36 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/freebsd-arm64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-6Mtdq5nHggwfDNLAHkPlyLBpE5L6hwsuXZX8XNmHno9JuL2+bg2BX5tRkwjyfn6sKbxZTq68suOjgWqCicvPXA==,
+      }
+    engines: {node: ">=18"}
+    cpu: [arm64]
+    os: [freebsd]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/freebsd-x64@0.21.5:
     resolution:
       {
         integrity: sha512-J95kNBj1zkbMXtHVH29bBriQygMXqoVQOQYA+ISs0/2l3T9/kj42ow2mpqerRBxDJnmkUDCaQT/dfNXWX/ZZCQ==,
       }
     engines: {node: ">=12"}
+    cpu: [x64]
+    os: [freebsd]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/freebsd-x64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-D3H+xh3/zphoX8ck4S2RxKR6gHlHDXXzOf6f/9dbFt/NRBDIE33+cVa49Kil4WUjxMGW0ZIYBYtaGCa2+OsQwQ==,
+      }
+    engines: {node: ">=18"}
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
@@ -1451,12 +1521,36 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/linux-arm64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-TDijPXTOeE3eaMkRYpcy3LarIg13dS9wWHRdwYRnzlwlA370rNdZqbcp0WTyyV/k2zSxfko52+C7jU5F9Tfj1g==,
+      }
+    engines: {node: ">=18"}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/linux-arm@0.21.5:
     resolution:
       {
         integrity: sha512-bPb5AHZtbeNGjCKVZ9UGqGwo8EUu4cLq68E95A53KlxAPRmUyYv2D6F0uUI65XisGOL1hBP5mTronbgo+0bFcA==,
       }
     engines: {node: ">=12"}
+    cpu: [arm]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/linux-arm@0.24.0:
+    resolution:
+      {
+        integrity: sha512-gJKIi2IjRo5G6Glxb8d3DzYXlxdEj2NlkixPsqePSZMhLudqPhtZ4BUrpIuTjJYXxvF9njql+vRjB2oaC9XpBw==,
+      }
+    engines: {node: ">=18"}
     cpu: [arm]
     os: [linux]
     requiresBuild: true
@@ -1475,12 +1569,36 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/linux-ia32@0.24.0:
+    resolution:
+      {
+        integrity: sha512-K40ip1LAcA0byL05TbCQ4yJ4swvnbzHscRmUilrmP9Am7//0UjPreh4lpYzvThT2Quw66MhjG//20mrufm40mA==,
+      }
+    engines: {node: ">=18"}
+    cpu: [ia32]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/linux-loong64@0.21.5:
     resolution:
       {
         integrity: sha512-uHf1BmMG8qEvzdrzAqg2SIG/02+4/DHB6a9Kbya0XDvwDEKCoC8ZRWI5JJvNdUjtciBGFQ5PuBlpEOXQj+JQSg==,
       }
     engines: {node: ">=12"}
+    cpu: [loong64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/linux-loong64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-0mswrYP/9ai+CU0BzBfPMZ8RVm3RGAN/lmOMgW4aFUSOQBjA31UP8Mr6DDhWSuMwj7jaWOT0p0WoZ6jeHhrD7g==,
+      }
+    engines: {node: ">=18"}
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
@@ -1499,12 +1617,36 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/linux-mips64el@0.24.0:
+    resolution:
+      {
+        integrity: sha512-hIKvXm0/3w/5+RDtCJeXqMZGkI2s4oMUGj3/jM0QzhgIASWrGO5/RlzAzm5nNh/awHE0A19h/CvHQe6FaBNrRA==,
+      }
+    engines: {node: ">=18"}
+    cpu: [mips64el]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/linux-ppc64@0.21.5:
     resolution:
       {
         integrity: sha512-1hHV/Z4OEfMwpLO8rp7CvlhBDnjsC3CttJXIhBi+5Aj5r+MBvy4egg7wCbe//hSsT+RvDAG7s81tAvpL2XAE4w==,
       }
     engines: {node: ">=12"}
+    cpu: [ppc64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/linux-ppc64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-HcZh5BNq0aC52UoocJxaKORfFODWXZxtBaaZNuN3PUX3MoDsChsZqopzi5UupRhPHSEHotoiptqikjN/B77mYQ==,
+      }
+    engines: {node: ">=18"}
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
@@ -1523,12 +1665,36 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/linux-riscv64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-bEh7dMn/h3QxeR2KTy1DUszQjUrIHPZKyO6aN1X4BCnhfYhuQqedHaa5MxSQA/06j3GpiIlFGSsy1c7Gf9padw==,
+      }
+    engines: {node: ">=18"}
+    cpu: [riscv64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/linux-s390x@0.21.5:
     resolution:
       {
         integrity: sha512-zus5sxzqBJD3eXxwvjN1yQkRepANgxE9lgOW2qLnmr8ikMTphkjgXu1HR01K4FJg8h1kEEDAqDcZQtbrRnB41A==,
       }
     engines: {node: ">=12"}
+    cpu: [s390x]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/linux-s390x@0.24.0:
+    resolution:
+      {
+        integrity: sha512-ZcQ6+qRkw1UcZGPyrCiHHkmBaj9SiCD8Oqd556HldP+QlpUIe2Wgn3ehQGVoPOvZvtHm8HPx+bH20c9pvbkX3g==,
+      }
+    engines: {node: ">=18"}
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
@@ -1547,6 +1713,18 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/linux-x64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-vbutsFqQ+foy3wSSbmjBXXIJ6PL3scghJoM8zCL142cGaZKAdCZHyf+Bpu/MmX9zT9Q0zFBVKb36Ma5Fzfa8xA==,
+      }
+    engines: {node: ">=18"}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/netbsd-x64@0.21.5:
     resolution:
       {
@@ -1559,12 +1737,48 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/netbsd-x64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-hjQ0R/ulkO8fCYFsG0FZoH+pWgTTDreqpqY7UnQntnaKv95uP5iW3+dChxnx7C3trQQU40S+OgWhUVwCjVFLvg==,
+      }
+    engines: {node: ">=18"}
+    cpu: [x64]
+    os: [netbsd]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/openbsd-arm64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-MD9uzzkPQbYehwcN583yx3Tu5M8EIoTD+tUgKF982WYL9Pf5rKy9ltgD0eUgs8pvKnmizxjXZyLt0z6DC3rRXg==,
+      }
+    engines: {node: ">=18"}
+    cpu: [arm64]
+    os: [openbsd]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/openbsd-x64@0.21.5:
     resolution:
       {
         integrity: sha512-HLNNw99xsvx12lFBUwoT8EVCsSvRNDVxNpjZ7bPn947b8gJPzeHWyNVhFsaerc0n3TsbOINvRP2byTZ5LKezow==,
       }
     engines: {node: ">=12"}
+    cpu: [x64]
+    os: [openbsd]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/openbsd-x64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-4ir0aY1NGUhIC1hdoCzr1+5b43mw99uNwVzhIq1OY3QcEwPDO3B7WNXBzaKY5Nsf1+N11i1eOfFcq+D/gOS15Q==,
+      }
+    engines: {node: ">=18"}
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
@@ -1583,12 +1797,36 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/sunos-x64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-jVzdzsbM5xrotH+W5f1s+JtUy1UWgjU0Cf4wMvffTB8m6wP5/kx0KiaLHlbJO+dMgtxKV8RQ/JvtlFcdZ1zCPA==,
+      }
+    engines: {node: ">=18"}
+    cpu: [x64]
+    os: [sunos]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/win32-arm64@0.21.5:
     resolution:
       {
         integrity: sha512-Z0gOTd75VvXqyq7nsl93zwahcTROgqvuAcYDUr+vOv8uHhNSKROyU961kgtCD1e95IqPKSQKH7tBTslnS3tA8A==,
       }
     engines: {node: ">=12"}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/win32-arm64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-iKc8GAslzRpBytO2/aN3d2yb2z8XTVfNV0PjGlCxKo5SgWmNXx82I/Q3aG1tFfS+A2igVCY97TJ8tnYwpUWLCA==,
+      }
+    engines: {node: ">=18"}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
@@ -1607,12 +1845,36 @@ packages:
     dev: true
     optional: true
 
+  /@esbuild/win32-ia32@0.24.0:
+    resolution:
+      {
+        integrity: sha512-vQW36KZolfIudCcTnaTpmLQ24Ha1RjygBo39/aLkM2kmjkWmZGEJ5Gn9l5/7tzXA42QGIoWbICfg6KLLkIw6yw==,
+      }
+    engines: {node: ">=18"}
+    cpu: [ia32]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /@esbuild/win32-x64@0.21.5:
     resolution:
       {
         integrity: sha512-tQd/1efJuzPC6rCFwEvLtci/xNFcTZknmXs98FYDfGE4wP9ClFV98nyKrzJKVPMhdDnjzLhdUyMX4PsQAPjwIw==,
       }
     engines: {node: ">=12"}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@esbuild/win32-x64@0.24.0:
+    resolution:
+      {
+        integrity: sha512-7IAFPrjSQIJrGsK6flwg7NFmwBoSTyF3rl7If0hNUFQU4ilTsEPL6GuMuU9BfIWVVGuRnuIidkSMC+c0Otu8IA==,
+      }
+    engines: {node: ">=18"}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
@@ -2680,14 +2942,6 @@ packages:
       react: 18.3.1
     dev: false
 
-  /@remix-run/router@1.21.0:
-    resolution:
-      {
-        integrity: sha512-xfSkCAchbdG5PnbrKqFWwia4Bi61nH+wm8wLEqfHDyp7Y3dZzgqS2itV8i4gAq9pC2HsTpwyBC6Ds8VHZ96JlA==,
-      }
-    engines: {node: ">=14.0.0"}
-    dev: false
-
   /@rise-wallet/wallet-adapter@0.1.2:
     resolution:
       {
@@ -3414,6 +3668,13 @@ packages:
       "@types/har-format": 1.2.16
     dev: false
 
+  /@types/cookie@0.6.0:
+    resolution:
+      {
+        integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==,
+      }
+    dev: false
+
   /@types/d3-array@3.2.1:
     resolution:
       {
@@ -3919,7 +4180,7 @@ packages:
       }
     dev: true
 
-  /@vitejs/plugin-react@4.3.4(vite@5.4.11):
+  /@vitejs/plugin-react@4.3.4(vite@6.0.3):
     resolution:
       {
         integrity: sha512-SCCPBJtYLdE8PX/7ZQAs1QAZ8Jqwih+0VBLum1EGqmCCQal+MIUqLCzj3ZUy8ufbC0cAM4LRlSTm7IQJwWT4ug==,
@@ -3933,7 +4194,7 @@ packages:
       "@babel/plugin-transform-react-jsx-source": 7.25.9(@babel/core@7.26.0)
       "@types/babel__core": 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.11
+      vite: 6.0.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4073,7 +4334,7 @@ packages:
     engines: {node: ">=16"}
     hasBin: true
     dependencies:
-      chalk: 5.3.0
+      chalk: 5.4.0
       commander: 12.1.0
     dev: false
 
@@ -4322,19 +4583,6 @@ packages:
       }
     dev: false
 
-  /axios@1.7.4:
-    resolution:
-      {
-        integrity: sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==,
-      }
-    dependencies:
-      follow-redirects: 1.15.9
-      form-data: 4.0.1
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
   /axios@1.7.9:
     resolution:
       {
@@ -4578,6 +4826,15 @@ packages:
         integrity: sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==,
       }
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+    dev: true
+
+  /chalk@5.4.0:
+    resolution:
+      {
+        integrity: sha512-ZkD35Mx92acjB2yNJgziGqT9oKHEOxjTBTDRpOsRWtdecL/0jM3z5kM/CTzHWvHIen1GvkM85p6TuFfDGfc8/Q==,
+      }
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+    dev: false
 
   /character-entities-legacy@1.1.4:
     resolution:
@@ -4739,6 +4996,14 @@ packages:
         integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==,
       }
     dev: true
+
+  /cookie@1.0.2:
+    resolution:
+      {
+        integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==,
+      }
+    engines: {node: ">=18"}
+    dev: false
 
   /copy-to-clipboard@3.3.3:
     resolution:
@@ -5287,6 +5552,41 @@ packages:
       "@esbuild/win32-arm64": 0.21.5
       "@esbuild/win32-ia32": 0.21.5
       "@esbuild/win32-x64": 0.21.5
+    dev: true
+
+  /esbuild@0.24.0:
+    resolution:
+      {
+        integrity: sha512-FuLPevChGDshgSicjisSooU0cemp/sGXR841D5LHMB7mTVOmsEHcAxaH3irL53+8YDIeVNQEySh4DaYU/iuPqQ==,
+      }
+    engines: {node: ">=18"}
+    hasBin: true
+    requiresBuild: true
+    optionalDependencies:
+      "@esbuild/aix-ppc64": 0.24.0
+      "@esbuild/android-arm": 0.24.0
+      "@esbuild/android-arm64": 0.24.0
+      "@esbuild/android-x64": 0.24.0
+      "@esbuild/darwin-arm64": 0.24.0
+      "@esbuild/darwin-x64": 0.24.0
+      "@esbuild/freebsd-arm64": 0.24.0
+      "@esbuild/freebsd-x64": 0.24.0
+      "@esbuild/linux-arm": 0.24.0
+      "@esbuild/linux-arm64": 0.24.0
+      "@esbuild/linux-ia32": 0.24.0
+      "@esbuild/linux-loong64": 0.24.0
+      "@esbuild/linux-mips64el": 0.24.0
+      "@esbuild/linux-ppc64": 0.24.0
+      "@esbuild/linux-riscv64": 0.24.0
+      "@esbuild/linux-s390x": 0.24.0
+      "@esbuild/linux-x64": 0.24.0
+      "@esbuild/netbsd-x64": 0.24.0
+      "@esbuild/openbsd-arm64": 0.24.0
+      "@esbuild/openbsd-x64": 0.24.0
+      "@esbuild/sunos-x64": 0.24.0
+      "@esbuild/win32-arm64": 0.24.0
+      "@esbuild/win32-ia32": 0.24.0
+      "@esbuild/win32-x64": 0.24.0
     dev: true
 
   /escalade@3.2.0:
@@ -7624,33 +7924,40 @@ packages:
     engines: {node: ">=0.10.0"}
     dev: true
 
-  /react-router-dom@6.28.0(react-dom@18.3.1)(react@18.3.1):
+  /react-router-dom@7.0.2(react-dom@18.3.1)(react@18.3.1):
     resolution:
       {
-        integrity: sha512-kQ7Unsl5YdyOltsPGl31zOjLrDv+m2VcIEcIHqYYD3Lp0UppLjrzcfJqDJwXxFw3TH/yvapbnUvPlAj7Kx5nbg==,
+        integrity: sha512-VJOQ+CDWFDGaWdrG12Nl+d7yHtLaurNgAQZVgaIy7/Xd+DojgmYLosFfZdGz1wpxmjJIAkAMVTKWcvkx1oggAw==,
       }
-    engines: {node: ">=14.0.0"}
+    engines: {node: ">=20.0.0"}
     peerDependencies:
-      react: ">=16.8"
-      react-dom: ">=16.8"
+      react: ">=18"
+      react-dom: ">=18"
     dependencies:
-      "@remix-run/router": 1.21.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      react-router: 6.28.0(react@18.3.1)
+      react-router: 7.0.2(react-dom@18.3.1)(react@18.3.1)
     dev: false
 
-  /react-router@6.28.0(react@18.3.1):
+  /react-router@7.0.2(react-dom@18.3.1)(react@18.3.1):
     resolution:
       {
-        integrity: sha512-HrYdIFqdrnhDw0PqG/AKjAqEqM7AvxCz0DQ4h2W8k6nqmc5uRBYDag0SBxx9iYz5G8gnuNVLzUe13wl9eAsXXg==,
+        integrity: sha512-m5AcPfTRUcjwmhBzOJGEl6Y7+Crqyju0+TgTQxoS4SO+BkWbhOrcfZNq6wSWdl2BBbJbsAoBUb8ZacOFT+/JlA==,
       }
-    engines: {node: ">=14.0.0"}
+    engines: {node: ">=20.0.0"}
     peerDependencies:
-      react: ">=16.8"
+      react: ">=18"
+      react-dom: ">=18"
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
     dependencies:
-      "@remix-run/router": 1.21.0
+      "@types/cookie": 0.6.0
+      cookie: 1.0.2
       react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      set-cookie-parser: 2.7.1
+      turbo-stream: 2.4.0
     dev: false
 
   /react-simple-maps@3.0.0(prop-types@15.8.1)(react-dom@18.3.1)(react@18.3.1):
@@ -7999,6 +8306,13 @@ packages:
     engines: {node: ">=10"}
     hasBin: true
     dev: true
+
+  /set-cookie-parser@2.7.1:
+    resolution:
+      {
+        integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==,
+      }
+    dev: false
 
   /setimmediate@1.0.5:
     resolution:
@@ -8419,6 +8733,13 @@ packages:
         integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==,
       }
 
+  /turbo-stream@2.4.0:
+    resolution:
+      {
+        integrity: sha512-FHncC10WpBd2eOmGwpmQsWLDoK4cqsA/UT/GqNoaKOQnT8uzhtCbg3EoUDMvqpOSAI0S26mr0rkjzbOO6S3v1g==,
+      }
+    dev: false
+
   /tweetnacl-util@0.15.1:
     resolution:
       {
@@ -8616,7 +8937,7 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-svgr@4.3.0(typescript@5.7.2)(vite@5.4.11):
+  /vite-plugin-svgr@4.3.0(typescript@5.7.2)(vite@6.0.3):
     resolution:
       {
         integrity: sha512-Jy9qLB2/PyWklpYy0xk0UU3TlU0t2UMpJXZvf+hWII1lAmRHrOUKi11Uw8N3rxoNk7atZNYO3pR3vI1f7oi+6w==,
@@ -8627,7 +8948,7 @@ packages:
       "@rollup/pluginutils": 5.1.4
       "@svgr/core": 8.1.0(typescript@5.7.2)
       "@svgr/plugin-jsx": 8.1.0(@svgr/core@8.1.0)
-      vite: 5.4.11
+      vite: 6.0.3
     transitivePeerDependencies:
       - rollup
       - supports-color
@@ -8669,6 +8990,56 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.21.5
+      postcss: 8.4.49
+      rollup: 4.28.1
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
+
+  /vite@6.0.3:
+    resolution:
+      {
+        integrity: sha512-Cmuo5P0ENTN6HxLSo6IHsjCLn/81Vgrp81oaiFFMRa8gGDj5xEjIcEpf2ZymZtZR8oU0P2JX5WuUp/rlXcHkAw==,
+      }
+    engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
+    hasBin: true
+    peerDependencies:
+      "@types/node": ^18.0.0 || ^20.0.0 || >=22.0.0
+      jiti: ">=1.21.0"
+      less: "*"
+      lightningcss: ^1.21.0
+      sass: "*"
+      sass-embedded: "*"
+      stylus: "*"
+      sugarss: "*"
+      terser: ^5.16.0
+      tsx: ^4.8.1
+      yaml: ^2.4.2
+    peerDependenciesMeta:
+      "@types/node":
+        optional: true
+      jiti:
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      sass-embedded:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+      tsx:
+        optional: true
+      yaml:
+        optional: true
+    dependencies:
+      esbuild: 0.24.0
       postcss: 8.4.49
       rollup: 4.28.1
     optionalDependencies:
