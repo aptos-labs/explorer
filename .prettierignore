@@ -4,3 +4,4 @@ public/world.json
 robots.txt
 .husky/
 .prettierignore
+.tool-versions
