@@ -11,7 +11,6 @@ import LoadingModal from "../../components/LoadingModal";
 import Error from "./Error";
 // import { MoveNamesBanner } from "./Components/MoveNamesBanner";
 // import { useGlobalState } from "../../global-config/GlobalConfig";
-import { Network } from "aptos";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 import {useNavigate} from "../../routing";
@@ -25,7 +24,13 @@ const TAB_VALUES_FULL: TabValue[] = [
   "info",
 ];
 
-const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
+const TAB_VALUES: TabValue[] = [
+  "transactions",
+  "resources",
+  "modules",
+  "info",
+  "nfts",
+];
 
 // TODO: add ability for object information
 const OBJECT_VALUES_FULL: TabValue[] = [
