@@ -6,9 +6,8 @@ import {
   CardMedia,
   CardContent,
 } from "@mui/material";
-import React, {useEffect, useState} from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {useQuery, gql} from "@apollo/client";
 
 type NFTsTabProps = {
   address: string;
@@ -47,64 +46,43 @@ export type NFTInfo = {
   };
 };
 
-export default function NFTsTab({address}: NFTsTabProps) {
-  const [digitalAssets, setDigitalAssets] = useState<DigitalAsset[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [state] = useGlobalState();
-
-  useEffect(() => {
-    const fetchAllNFTs = async () => {
-      try {
-        const response = await fetch("/.netlify/functions/getTokenIds", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            owner: address,
-            network: state.network_value,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch NFTs");
+const GET_NFTS = gql`
+  query GetNFTs($owner_address: String!) {
+    current_token_datas_v2(
+      where: {
+        current_token_ownerships: {
+          owner_address: {_eq: $owner_address}
+          amount: {_gt: "0"}
         }
-
-        const nfts = await response.json();
-
-        // Transform to DigitalAsset format
-        setDigitalAssets(
-          nfts.map((nft: any) => ({
-            token_data_id: nft.tokenAddress,
-            current_token_data: {
-              token_name: nft.tokenData.name,
-              token_uri: nft.tokenData.uri,
-              description: nft.tokenData.description,
-            },
-          })),
-        );
-
-        setLoading(false);
-      } catch (error) {
-        setError("Failed to fetch NFTs");
-        console.error("Error in NFT fetch process:", error);
-        setLoading(false);
       }
-    };
-
-    fetchAllNFTs();
-  }, [address, state.network_value]);
-
-  const convertIpfsToHttps = (ipfsUrl: string) => {
-    if (!ipfsUrl) return "/placeholder-image.png";
-
-    if (ipfsUrl.startsWith("ipfs://")) {
-      return `https://gateway.pinata.cloud/ipfs/${ipfsUrl.replace("ipfs://", "")}`;
+    ) {
+      collection_id
+      token_uri
+      token_name
+      token_data_id
+      current_token_ownerships(where: {owner_address: {_eq: $owner_address}}) {
+        owner_address
+        amount
+        last_transaction_version
+      }
     }
+  }
+`;
 
-    return ipfsUrl;
-  };
+export default function NFTsTab({address}: NFTsTabProps) {
+  const {loading, error, data} = useQuery(GET_NFTS, {
+    variables: {owner_address: address},
+  });
+
+  const digitalAssets: DigitalAsset[] =
+    data?.current_token_datas_v2.map((nft: any) => ({
+      token_data_id: nft.token_data_id,
+      current_token_data: {
+        token_name: nft.token_name,
+        token_uri: nft.token_uri,
+        description: "",
+      },
+    })) || [];
 
   if (loading) {
     return (
@@ -117,7 +95,9 @@ export default function NFTsTab({address}: NFTsTabProps) {
   if (error) {
     return (
       <Box p={3}>
-        <Typography color="error">{error}</Typography>
+        <Typography color="error">
+          Error loading NFTs: {error.message}
+        </Typography>
       </Box>
     );
   }
@@ -125,6 +105,16 @@ export default function NFTsTab({address}: NFTsTabProps) {
   if (!digitalAssets.length) {
     return <EmptyTabContent message="No NFTs found for this account" />;
   }
+
+  const convertIpfsToHttps = (ipfsUrl: string) => {
+    if (!ipfsUrl) return "/placeholder-image.png";
+
+    if (ipfsUrl.startsWith("ipfs://")) {
+      return `https://gateway.pinata.cloud/ipfs/${ipfsUrl.replace("ipfs://", "")}`;
+    }
+
+    return ipfsUrl;
+  };
 
   return (
     <Box p={3}>

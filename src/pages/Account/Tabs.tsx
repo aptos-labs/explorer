@@ -123,11 +123,10 @@ export default function AccountTabs({
   address,
   accountData,
   isObject = false,
-  tabValues,
 }: AccountTabsProps): JSX.Element {
   const [state] = useGlobalState();
-  const defaultTabValues = getTabValues(state.network_value === "mainnet");
-  const effectiveTabValues = tabValues ?? defaultTabValues;
+  const defaultTabValues = getTabValues(state.network_name === "mainnet");
+  const effectiveTabValues = defaultTabValues;
 
   const {tab, modulesTab} = useParams();
   const navigate = useNavigate();
