@@ -33,6 +33,7 @@
     "@mui/material": "^5.15.4",
     "@mui/system": "^5.15.4",
     "@mui/x-date-pickers": "^7.0.0",
+    "@notifi-network/notifi-react": "^3.1.0",
     "@okwallet/aptos-wallet-adapter": "^0.0.7",
     "@openblockhq/aptos-wallet-adapter": "^0.1.5",
     "@pontem/wallet-adapter-plugin": "^0.2.1",
@@ -83,10 +84,17 @@
     "postinstall": "husky install"
   },
   "lint-staged": {
-    "*": ["prettier --config .prettierrc.json -w", "eslint --fix"]
+    "*": [
+      "prettier --config .prettierrc.json -w",
+      "eslint --fix"
+    ]
   },
   "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
