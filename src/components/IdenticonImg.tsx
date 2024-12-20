@@ -1,5 +1,6 @@
 import React from "react";
 import {createIcon} from "@download/blockies";
+import {useGetProfile} from "../api/hooks/useGetProfile";
 
 interface IdenticonImgProps {
   address: string;
@@ -8,6 +9,19 @@ interface IdenticonImgProps {
 const IdenticonImg: React.FunctionComponent<IdenticonImgProps> = ({
   address,
 }) => {
+  const {data: profile} = useGetProfile(address);
+  if (profile?.avatar_url) {
+    return (
+      <img
+        src={profile.avatar_url}
+        width={30}
+        height={30}
+        alt="Profile Avatar"
+        style={{borderRadius: 2}}
+      />
+    );
+  }
+
   const iconCanvas = createIcon({
     seed: address,
     size: 6,
