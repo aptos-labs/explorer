@@ -20,14 +20,18 @@ import {sortPetraFirst} from "../../utils";
 import {useGetInTestnet} from "../../api/hooks/useGetInTestnet";
 // import NetworkSelect from "./NetworkSelect";
 
-export default function NavMobile() {
+interface NavMobileProps {
+  handleNotificationsClick: () => void;
+}
+
+export default function NavMobile({handleNotificationsClick}: NavMobileProps) {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const navigate = useNavigate();
   const [state] = useGlobalState();
   const inMainnet = useGetInMainnet();
   const inTestnet = useGetInTestnet();
-  const {account} = useWallet();
+  const {account, connected} = useWallet();
   const menuOpen = Boolean(menuAnchorEl);
 
   const handleIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -126,6 +130,14 @@ export default function NavMobile() {
         </MenuItem>*/}
         <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
           Blocks
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleNotificationsClick();
+            if (connected) setMenuAnchorEl(null);
+          }}
+        >
+          Notifications
         </MenuItem>
 
         <Divider />

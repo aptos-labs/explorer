@@ -1,5 +1,5 @@
 import {AptosClient, IndexerClient} from "aptos";
-import React, {useMemo} from "react";
+import React, {useMemo, useState} from "react";
 import {
   FeatureName,
   NetworkName,
@@ -32,19 +32,23 @@ export type GlobalState = {
   readonly indexer_client?: IndexerClient;
   /** derived from network_value */
   readonly sdk_v2_client?: Aptos;
+  readonly isWalletConnectModalOpen: boolean;
 };
 
 type GlobalActions = {
   selectFeature: ReturnType<typeof useFeatureSelector>[1];
   selectNetwork: ReturnType<typeof useNetworkSelector>[1];
+  setWalletConnectModalOpen: (arg: boolean) => void;
 };
 
 function deriveGlobalState({
   feature_name,
   network_name,
+  isWalletConnectModalOpen,
 }: {
   feature_name: FeatureName;
   network_name: NetworkName;
+  isWalletConnectModalOpen: boolean;
 }): GlobalState {
   const indexerUri = getGraphqlURI(network_name);
   const apiKey = getApiKey(network_name);
@@ -55,6 +59,7 @@ function deriveGlobalState({
   return {
     feature_name,
     network_name,
+    isWalletConnectModalOpen,
     network_value: networks[network_name],
     aptos_client: new AptosClient(networks[network_name], {
       HEADERS,
@@ -78,6 +83,7 @@ function deriveGlobalState({
 const initialGlobalState = deriveGlobalState({
   feature_name: getSelectedFeatureFromLocalStorage(),
   network_name: defaultNetworkName,
+  isWalletConnectModalOpen: false,
 });
 
 export const GlobalStateContext = React.createContext(initialGlobalState);
@@ -90,19 +96,22 @@ export const GlobalStateProvider = ({
 }) => {
   const [selectedFeature, selectFeature] = useFeatureSelector();
   const [selectedNetwork, selectNetwork] = useNetworkSelector();
+  const [isWalletConnectModalOpen, setWalletConnectModalOpen] = useState(false);
   const globalState: GlobalState = useMemo(
     () =>
       deriveGlobalState({
         feature_name: selectedFeature,
         network_name: selectedNetwork,
+        isWalletConnectModalOpen,
       }),
-    [selectedFeature, selectedNetwork],
+    [selectedFeature, selectedNetwork, isWalletConnectModalOpen],
   );
 
   const globalActions = useMemo(
     () => ({
       selectFeature,
       selectNetwork,
+      setWalletConnectModalOpen,
     }),
     [selectFeature, selectNetwork],
   );

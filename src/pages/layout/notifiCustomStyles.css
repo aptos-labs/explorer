@@ -1,0 +1,581 @@
+/* custom-notifi-styles.css */
+
+/* Override the default background color */
+:root {
+  /* Color variables */
+  --notifi-color-primary: #f7ca3f; /* Primary color */
+  --notifi-color-rose-pink: #d5828b; /* Error color */
+  --notifi-color-mint-green: #a4de95; /* Verified color */
+  --notifi-color-golden-yellow: #f6c73b; /* Button color */
+  --notifi-color-charcoal-black: #1c1f1e; /* Input color */
+  --notifi-color-ebony: #141715; /* Card color */
+  --notifi-color-dark-gray: #282b2a; /* Stroke color */
+  --notifi-color-pure-white: #ffffff; /* Text color */
+  --notifi-color-gray: #989898; /* Light text color */
+  --notifi-color-stroke: #282b2a;
+  --notifi-color-text: #141715;
+  --notifi-color-light-text: #9d9d9d;
+  --notifi-color-light-card: #fcfcfc;
+  --notifi-color-light-stroke: #e5e4e8;
+  --notifi-color-border: #444450;
+}
+
+.notifi-nav-header {
+  background-color: var(--notifi-nav-header-background);
+  display: flex;
+  padding: 1rem;
+  border-bottom: 1px solid var(--notifi-ftu-header-border);
+}
+
+.notifi-history-detail-message > p > a {
+  color: var(--notifi-color-primary);
+  text-decoration: none;
+}
+
+.notifi-inbox-config-target-list-button-text {
+  color: var(--notifi-target-cta-button-text);
+  font-weight: 500;
+}
+.notifi-inbox-config-target-list-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 0;
+  font-weight: 700;
+  background-color: var(--notifi-target-cta-button-bg);
+  border-radius: 0;
+  margin: 1rem 2rem;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid var(--notifi-color-golden-yellow);
+  text-transform: uppercase;
+}
+
+.notifi-target-list-icon {
+  color: var(--notifi-target-list-icon);
+}
+
+.notifi-target-cta-button {
+  background-color: var(--notifi-target-cta-button-bg);
+  color: var(--notifi-target-cta-button-text);
+  text-align: center;
+  cursor: pointer;
+  border-radius: 0px;
+  min-width: 5.5rem;
+  min-height: 1.25rem;
+  display: flex;
+  justify-content: center;
+  border: 2px solid var(--notifi-color-golden-yellow);
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.notifi-target-state-banner-verify-cta.history {
+  width: 4rem;
+  background-color: var(--notifi-target-cta-button-bg);
+  color: var(--notifi-target-cta-button-text);
+  border-radius: 0;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  border: 2px solid var(--notifi-color-golden-yellow);
+  text-transform: uppercase;
+  height: 29px;
+}
+
+.notifi-history-row-icon {
+  display: flex;
+  justify-content: center;
+  width: 3rem;
+  color: var(--notifi-color-gray);
+}
+
+.notifi-connect-description {
+  color: var(--notifi-color-gray);
+  font-size: 14px;
+  line-height: 133%;
+  text-align: center;
+  padding: 0 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.notifi-connect-title {
+  font-size: 1.5rem;
+  text-align: center;
+  padding: 2.5rem 1rem 0.5rem 1rem;
+  position: relative;
+}
+
+.notifi-target-input-field-input-container {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--notifi-input-field-background);
+  border-radius: 0;
+  padding: 1rem;
+  align-items: center;
+  max-height: 1rem;
+  box-sizing: content-box;
+  border: 1px solid var(--notifi-color-stroke);
+  border: 1px solid var(--notifi-color-input-stroke);
+}
+
+.notifi-history-row-title-text {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+  color: var(--notifi-history-row-title-text);
+  font-weight: normal;
+}
+
+.notifi-target-list-item-target-id {
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.notifi-target-input-field-input-container.focused {
+  border: 1.5px solid var(--notifi-color-primary);
+}
+
+.notifi-target-input-field-icon {
+  margin-right: 0.8rem;
+  color: var(--notifi-target-list-icon);
+}
+
+.notifi-target-input-field-input::placeholder {
+  color: var(--notifi-color-gray);
+}
+
+.notifi-topic-list-tooltip-content {
+  position: absolute;
+  background-color: var(--notifi-topic-list-tooltip-bg);
+  padding: 1rem;
+  border-radius: 6px;
+  border: var(--notifi-topic-list-tooltip-content-border) 1px solid;
+  width: 10rem;
+  display: none;
+  z-index: 1;
+  font-size: 14px;
+}
+
+.notifi-topic-list-tooltip-icon {
+  color: var(--notifi-color-gray);
+}
+
+.notifi-history-detail-subject {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.notifi-history-detail-timestamp {
+  color: var(--notifi-history-detail-timestamp-text);
+  font-size: 14px;
+  margin-bottom: 1rem;
+  font-size: 400;
+}
+
+.notifi-target-cta-link {
+  color: var(--notifi-target-list-cta-link-text);
+  font-weight: 500;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.notifi-history-list-empty-title {
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+
+.notifi-history-list-empty-description {
+  font-size: 0.87rem;
+  font-weight: 400;
+  line-height: 1.5;
+  width: 95%;
+  color: var(--notifi-history-list-empty-description-text);
+  text-align: center;
+}
+
+.notifi-history-row-unread-indicator {
+  background-color: var(--notifi-history-row-unread-indicator);
+  width: 4px;
+  border-radius: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+}
+
+.notifi-history-row {
+  display: flex;
+  padding: 10px 1rem 10px 0;
+  background-color: var(--notifi-history-row-bg);
+  position: relative;
+  margin-bottom: 0.5rem;
+  border-radius: 0;
+  cursor: pointer;
+  border: 1px solid var(--notifi-card-border);
+}
+
+.notifi-history-row.read {
+  border-radius: 0;
+}
+
+.notifi-topic-row {
+  padding: 1rem;
+  background-color: var(--notifi-notifi-topic-list-row-bg);
+  border-radius: 0;
+  border: 1px solid var(--notifi-card-border);
+}
+
+.notifi-target-state-banner-verify {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0.5rem;
+  cursor: pointer;
+  border: 1px solid var(--notifi-card-border);
+}
+
+.notifi-target-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  background-color: var(--notifi-notifi-target-list-item-bg);
+  padding: 1rem;
+  border-radius: 0;
+  position: relative;
+  border: 1px solid var(--notifi-card-border);
+}
+
+.notifi-history-row-timestamp {
+  color: var(--notifi-history-row-timestamp-text);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.notifi-target-state-banner-verify.history {
+  padding: 0.7rem 0.5rem;
+  background-color: var(--notifi-target-state-banner-verify-history-bg);
+  border-radius: 0;
+  cursor: default;
+}
+
+.notifi-target-list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: var(--notifi-notifi-target-list-item-bg);
+  padding: 1rem;
+  border-radius: 0;
+  position: relative;
+  border: 1px solid var(--notifi-card-border);
+}
+
+.notifi-inbox-config-target-edit-button-text,
+.notifi-connect-button-text,
+.notifi-ftu-target-edit-button-text,
+.notifi-ftu-target-list-button-text,
+.notifi-ftu-alert-edit-button-text {
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.notifi-history-row-title-text {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+  color: var(--notifi-history-row-title-text);
+  font-weight: normal;
+  font-size: 14px;
+}
+
+.notifi-history-row-subject {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--notifi-history-row-subject-text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+  font-size: 12px;
+}
+
+.notifi-history-row-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.2rem;
+}
+
+.notifi-topic-row-content {
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-size: 14px;
+}
+
+.notifi-target-state-banner-verify-title {
+  margin-bottom: 0.2rem;
+  font-size: 14px;
+}
+
+.notifi-inbox-config-target-list-item {
+  align-items: start;
+}
+
+.notifi-history-detail-subject,
+.notifi-history-detail-topic {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.notifi-target-state-banner-verify-title.history {
+  font-size: 14px;
+}
+
+.notifi-connect-button {
+  background-color: var(--notifi-connect-button);
+  color: var(--notifi-connect-button-text);
+  border-radius: 0;
+  padding: 0.6rem 0rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  align-items: center;
+  margin: 0.5rem 2rem 0rem 2rem;
+}
+
+.notifi-inbox-config-target-edit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 0;
+  font-weight: 700;
+  color: var(--notifi-ftu-button-text);
+  background-color: var(--notifi-ftu-button);
+  border-radius: 0;
+  margin: 1rem 2rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.notifi-ftu-target-edit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 0;
+  width: 100%;
+  font-weight: 700;
+  color: var(--notifi-ftu-button-text);
+  background-color: var(--notifi-ftu-button);
+  border-radius: 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.notifi-ftu-target-list-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 0;
+  width: 100%;
+  font-weight: 700;
+  color: var(--notifi-ftu-button-text);
+  background-color: var(--notifi-ftu-button);
+  border-radius: 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.notifi-ftu-alert-edit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 0;
+  width: 100%;
+  font-weight: 700;
+  color: var(--notifi-ftu-button-text);
+  background-color: var(--notifi-ftu-button);
+  border-radius: 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.notifi-theme-dark {
+  --notifi-target-cta-button-bg: transparent;
+  --notifi-target-cta-button-text: var(--notifi-color-primary);
+  --notifi-card-border: transparent;
+  --notifi-font-color: var(--notifi-color-white);
+  --notifi-card-background: var(--notifi-color-ebony);
+  --notifi-connect-bg: var(--notifi-color-ebony);
+  --notifi-connect-button: var(--notifi-color-golden-yellow);
+  --notifi-connect-button-text: var(--notifi-color-dark);
+  --notifi-connect-alert-icon: var(--notifi-color-primary);
+  --notifi-ftu-target-edit-description: var(--notifi-color-gray);
+  --notifi-input-field-background: var(--notifi-color-ebony);
+  --notifi-color-input-stroke: var(--notifi-color-stroke);
+  --notifi-toggle-inactive: var(--notifi-color-dusk);
+  --notifi-toggle-active: var(--notifi-color-primary);
+  --notifi-toggle-handle: var(--notifi-color-white);
+  --notifi-nav-header-background: var(--notifi-color-ebony);
+  --notifi-ftu-button-text: var(--notifi-color-dark);
+  --notifi-ftu-button: var(--notifi-color-golden-yellow);
+  --notifi-target-list-cat-button-bg: var(--notifi-color-primary);
+  --notifi-target-list-cat-button-text: var(--notifi-color-white);
+  --notifi-target-list-cta-link-text: var(--notifi-color-primary);
+  --notifi-notifi-target-list-item-bg: var(--notifi-color-charcoal-black);
+  --notifi-notifi-topic-list-row-bg: var(--notifi-color-charcoal-black);
+  --notifi-topic-options-item-bg: var(--notifi-color-grey1);
+  --notifi-topic-options-item-text: var(--notifi-color-heather);
+  --notifi-topic-option-radio-bg: var(--notifi-color-grey1);
+  --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-grey1);
+  --notifi-subscription-input-dropdown-list-bg: var(--notifi-color-grey1);
+  --notifi-spinner-color: var(--notifi-color-ebony);
+  --notifi-topic-stack-row-input-button-bg: var(--notifi-color-secondary-light);
+  --notifi-topic-stack-row-input-button-text: var(--notifi-color-white);
+  --notifi-nav-footer-bg: var(--notifi-color-ebony);
+  --notifi-history-row-bg: var(--notifi-color-charcoal-black);
+  --notifi-history-row-unread-indicator: var(--notifi-color-primary);
+  --notifi-history-row-title-text: var(--notifi-color-pure-white);
+  --notifi-history-row-timestamp-text: var(--notifi-color-gray);
+  --notifi-history-row-subject-text: var(--notifi-color-gray);
+  --notifi-history-detail-bg: var(--notifi-color-ebony);
+  --notifi-history-detail-timestamp-text: var(--notifi-color-gray);
+  --notifi-history-list-empty-icon: var(--notifi-color-primary);
+  --notifi-history-list-empty-description-text: var(--notifi-color-gray);
+  --notifi-target-state-banner-bg: var(--notifi-color-charcoal-black);
+  --notifi-target-state-verify-icon-color: var(--notifi-color-white);
+  --notifi-inbox-config-topic-title-text: var(--notifi-color-gray);
+  --notifi-target-list-remove-text: var(--notifi-color-eggshell);
+  --notifi-target-cta-action-not-require-text: var(--notifi-color-green3);
+  --notifi-target-list-target-verify-message-text: var(--notifi-color-gray);
+  --notifi-target-state-banner-signup-icon-color: var(--notifi-color-primary);
+  --notifi-target-state-banner-signup-cta-bg: var(--notifi-color-primary);
+  --notifi-topic-options-item-selected-text: var(--notifi-color-white);
+  --notifi-topic-option-radio-inner-ring: var(--notifi-color-grey2);
+  --notifi-topic-list-tooltip-bg: var(--notifi-color-ebony);
+  --notifi-topic-list-tooltip-content-border: var(--notifi-color-dark);
+  --notifi-target-list-tooltip-bg: var(--notifi-color-dark);
+  --notifi-target-list-item-tooltip-content-border: var(--notifi-color-dark);
+  --notifi-target-list-item-tooltip-content-text: var(--notifi-color-white);
+  --notifi-target-list-item-tooltip-icon-color-hover: var(--notifi-color-white);
+  --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-white);
+  --notifi-input-separator-text: var(--notifi-color-gray);
+  --notifi-input-separator-line: var(--notifi-color-blackish1);
+  --notifi-ftu-footer-bg: var(--notifi-color-ebony);
+  --notifi-ftu-footer-border: var(--notifi-color-border);
+  --notifi-ftu-header-border: var(--notifi-color-border);
+  --notifi-target-state-banner-signup-history-bg: var(--notifi-color-grey5);
+  --notifi-target-state-banner-verify-history-bg: var(
+    --notifi-color-charcoal-black
+  );
+  --notifi-target-state-banner-verify-cta-history-bg: var(
+    --notifi-color-primary
+  );
+  --notifi-target-state-banner-verify-icon-color: var(--notifi-color-dark);
+  --notifi-inbox-footer-border: var(--notifi-color-border);
+  --notifi-powered-by-text: var(--notifi-color-heather);
+  --notifi-topic-stack-separator: var(--notifi-color-grey5);
+  --notifi-topic-stack-row-cta-text: var(--notifi-color-primary);
+  --notifi-target-input-toggle-unavailable-text: var(--notifi-color-heather);
+  --notifi-button-bg: var(--notifi-color-ebony);
+  --notifi-target-list-icon: var(--notifi-color-gray);
+}
+
+.notifi-theme-light {
+  --notifi-target-cta-button-bg: var(--notifi-color-golden-yellow);
+  --notifi-target-cta-button-text: var(--notifi-color-text);
+  --notifi-card-border: var(--notifi-color-light-stroke);
+  --notifi-font-color: var(--notifi-color-text);
+  --notifi-card-background: var(--notifi-color-white);
+  --notifi-connect-bg: var(--notifi-color-white);
+  --notifi-connect-button: var(--notifi-color-golden-yellow);
+  --notifi-connect-button-text: var(--notifi-color-text);
+  --notifi-connect-alert-icon: var(--notifi-color-primary);
+  --notifi-ftu-target-edit-description: var(--notifi-color-light-text);
+  --notifi-input-field-background: var(--notifi-color-white); /* input bg */
+  --notifi-color-input-stroke: var(
+    --notifi-color-light-stroke
+  ); /* input border */
+  --notifi-toggle-inactive: var(--notifi-color-heather);
+  --notifi-toggle-active: var(--notifi-color-primary);
+  --notifi-toggle-handle: var(--notifi-color-white);
+  --notifi-nav-header-background: var(--notifi-color-white);
+  --notifi-ftu-button-text: var(--notifi-color-dark);
+  --notifi-ftu-button: var(--notifi-color-golden-yellow);
+  --notifi-target-list-cat-button-bg: var(--notifi-color-primary);
+  --notifi-target-list-cat-button-text: var(--notifi-color-white);
+  --notifi-target-list-cta-link-text: var(--notifi-color-text);
+  --notifi-notifi-target-list-item-bg: var(--notifi-color-light-card);
+  --notifi-notifi-topic-list-row-bg: var(--notifi-color-light-card);
+  --notifi-topic-options-item-bg: var(--notifi-color-eggshell);
+  --notifi-topic-options-item-text: var(--notifi-color-dusk);
+  --notifi-topic-option-radio-inner-ring: var(--notifi-color-light);
+  --notifi-topic-option-radio-bg: var(--notifi-color-white);
+  --notifi-subscription-input-dropdown-value-bg: var(--notifi-color-eggshell);
+  --notifi-subscription-input-dropdown-list-bg: var(--notifi-color-eggshell);
+  --notifi-spinner-color: var(--notifi-color-ebony);
+  --notifi-topic-stack-row-input-button-bg: var(--notifi-color-seaglass-dark);
+  --notifi-topic-stack-row-input-button-text: var(--notifi-color-white);
+  --notifi-nav-footer-bg: var(--notifi-color-white);
+  --notifi-history-row-bg: var(--notifi-color-light-card);
+  --notifi-history-row-unread-indicator: var(--notifi-color-primary);
+  --notifi-history-row-title-text: var(--notifi-color-midnight);
+  --notifi-history-row-timestamp-text: var(--notifi-color-dusk);
+  --notifi-history-row-subject-text: var(--notifi-color-dusk);
+  --notifi-history-detail-bg: var(--notifi-color-white);
+  --notifi-history-detail-timestamp-text: var(--notifi-color-dusk);
+  --notifi-history-list-empty-icon: var(--notifi-color-primary);
+  --notifi-history-list-empty-description-text: var(--notifi-color-dusk);
+  --notifi-target-state-banner-bg: var(--notifi-color-light-card);
+  --notifi-target-state-verify-icon-color: var(--notifi-color-black);
+  --notifi-inbox-config-topic-title-text: var(--notifi-color-dusk);
+  --notifi-target-list-remove-text: var(--notifi-color-midnight);
+  --notifi-target-cta-action-not-require-text: var(--notifi-color-green4);
+  --notifi-target-list-target-verify-message-text: var(--notifi-color-dusk);
+  --notifi-target-state-banner-signup-icon-color: var(--notifi-color-primary);
+  --notifi-target-state-banner-signup-cta-bg: var(--notifi-color-primary);
+  --notifi-topic-options-item-selected-text: var(
+    --notifi-color-secondary-light
+  );
+  --notifi-topic-list-tooltip-bg: var(--notifi-color-white);
+  --notifi-topic-list-tooltip-content-border: var(--notifi-color-light-stroke);
+  --notifi-target-list-tooltip-bg: var(--notifi-color-eggshell);
+  --notifi-target-list-item-tooltip-content-border: var(--notifi-color-heather);
+  --notifi-target-list-item-tooltip-content-text: var(--notifi-color-black);
+  --notifi-target-list-item-tooltip-icon-color-hover: var(--notifi-color-dusk);
+  --notifi-topic-list-tooltip-icon-color-hover: var(--notifi-color-dusk);
+  --notifi-input-separator-text: var(
+    --notifi-color-light-text
+  ); /* seprator bg */
+  --notifi-input-separator-line: var(--notifi-color-heather);
+  --notifi-ftu-footer-bg: var(--notifi-color-white);
+  --notifi-ftu-footer-border: var(--notifi-color-cloud);
+  --notifi-ftu-header-border: var(--notifi-color-cloud);
+  --notifi-target-state-banner-signup-history-bg: var(--notifi-color-cloud);
+  --notifi-target-state-banner-verify-history-bg: var(
+    --notifi-color-light-card
+  );
+  --notifi-target-state-banner-verify-cta-history-bg: var(
+    --notifi-color-primary
+  );
+  --notifi-target-state-banner-verify-icon-color: var(--notifi-color-eggshell);
+  --notifi-inbox-footer-border: var(--notifi-color-cloud);
+  --notifi-powered-by-text: var(--notifi-color-midnight);
+  --notifi-topic-stack-separator: var(--notifi-color-heather);
+  --notifi-topic-stack-row-cta-text: var(--notifi-color-primary);
+  --notifi-target-input-toggle-unavailable-text: var(--notifi-color-grey3);
+
+  --notifi-button-bg: var(--notifi-color-golden-yellow);
+  --notifi-button-text: var(--notifi-color-golden-yellow);
+  --notifi-target-list-icon: var(--notifi-color-text);
+}

@@ -1,8 +1,8 @@
 import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
 import {Breakpoint} from "@mui/material";
-import {useState} from "react";
 import WalletButton from "./WalletButton";
 import WalletsModal from "./WalletModal";
+import {useGlobalState} from "../global-config/GlobalConfig";
 
 export interface WalletConnectorProps {
   networkSupport?: string;
@@ -28,7 +28,10 @@ export function WalletConnector({
   sortMoreWallets,
   modalMaxWidth,
 }: WalletConnectorProps) {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [
+    {isWalletConnectModalOpen: modalOpen},
+    {setWalletConnectModalOpen: setModalOpen},
+  ] = useGlobalState();
   const handleModalOpen = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
 
