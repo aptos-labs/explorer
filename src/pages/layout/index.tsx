@@ -24,6 +24,7 @@ import {TokenPocketWallet} from "@tp-lab/aptos-wallet-adapter";
 import {TrustWallet} from "@trustwallet/aptos-wallet-adapter";
 import {WelldoneWallet} from "@welldone-studio/aptos-wallet-adapter";
 import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
+import {RimoWallet} from "rimosafe-plugin-wallet-adapter";
 import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
 import {useMemo} from "react";
 import {Network} from "@aptos-labs/ts-sdk";
@@ -33,6 +34,7 @@ const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 // Statically initialize wallets that don't change for the network
 const martianWallet = new MartianWallet();
 const msafeWallet = new MSafeWalletAdapter();
+const rimowallet = new RimoWallet();
 const okxWallet = new OKXWallet();
 const pontemWallet = new PontemWallet();
 const riseWallet = new RiseWallet();
@@ -45,20 +47,21 @@ function ExplorerWalletAdapterProvider({children}: LayoutProps) {
   const [state] = useGlobalState();
   const wallets = useMemo(
     () => [
-      okxWallet,
-      martianWallet,
       pontemWallet,
+      rimowallet,
+      okxWallet,
       bitgetWallet,
+      msafeWallet,
+      trustWallet,
+      tokenPocketWallet,
+      martianWallet,
       // Blocto supports Testnet/Mainnet for now.
       new BloctoWallet({
         network: NetworkName.Testnet,
         bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
       }),
-      riseWallet,
-      msafeWallet,
-      tokenPocketWallet,
-      trustWallet,
       welldoneWallet,
+      riseWallet,
     ],
     [],
   );

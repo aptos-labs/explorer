@@ -60,6 +60,7 @@
     "react-simple-maps": "^3.0.0",
     "react-syntax-highlighter": "^15.6.1",
     "recharts": "^2.15.0",
+    "rimosafe-plugin-wallet-adapter": "^0.0.1",
     "statsig-react": "^2.1.0"
   },
   "scripts": {
