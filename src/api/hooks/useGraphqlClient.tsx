@@ -81,14 +81,9 @@ export function GraphqlClientProvider({children}: GraphqlClientProviderProps) {
 
 export function useGetIsGraphqlClientSupported(): boolean {
   const [state] = useGlobalState();
-  const [isGraphqlClientSupported, setIsGraphqlClientSupported] =
-    useState<boolean>(getIsGraphqlClientSupportedFor(state.network_name));
-
-  useEffect(() => {
-    setIsGraphqlClientSupported(
-      getIsGraphqlClientSupportedFor(state.network_name),
-    );
-  }, [state.network_name]);
+  const isGraphqlClientSupported = getIsGraphqlClientSupportedFor(
+    state.network_name,
+  );
 
   return isGraphqlClientSupported;
 }
