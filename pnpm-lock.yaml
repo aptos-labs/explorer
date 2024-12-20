@@ -156,6 +156,9 @@ dependencies:
   recharts:
     specifier: ^2.15.0
     version: 2.15.0(react-dom@18.3.1)(react@18.3.1)
+  rimosafe-plugin-wallet-adapter:
+    specifier: ^0.0.1
+    version: 0.0.1(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0)
   statsig-react:
     specifier: ^2.1.0
     version: 2.1.0(react@18.3.1)
@@ -8214,6 +8217,23 @@ packages:
         integrity: sha512-q1b3N5QkRUWUl7iyylaaj3kOpIT0N2i9MqIEQXP73GVsN9cw3fdx8X63cEmWhJGi2PPCF23Ijp7ktmd39rawIA==,
       }
     dev: true
+
+  /rimosafe-plugin-wallet-adapter@0.0.1(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0):
+    resolution:
+      {
+        integrity: sha512-YMVY9kMI1rH6g/owyFGS8IP9vo3mhTA5JSpfQCZcqDJsHabNexJqe//Jt6/ggY2VbtlUH/89OUGllkFLsYcX+Q==,
+      }
+    dependencies:
+      "@aptos-labs/ts-sdk": 1.33.1
+      "@aptos-labs/wallet-adapter-core": 4.23.0(@aptos-labs/ts-sdk@1.33.1)(@mizuwallet-sdk/core@1.4.0)(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0)(aptos@1.21.0)
+      aptos: 1.21.0
+    transitivePeerDependencies:
+      - "@mizuwallet-sdk/core"
+      - "@mizuwallet-sdk/protocol"
+      - "@telegram-apps/bridge"
+      - "@wallet-standard/core"
+      - debug
+    dev: false
 
   /rimraf@3.0.2:
     resolution:
