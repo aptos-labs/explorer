@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
@@ -28,7 +28,7 @@ import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import {Link, useNavigate} from "../../routing";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {sortPetraFirst} from "../../utils";
-import {Stack} from "@mui/system"
+import {Stack} from "@mui/system";
 import Button from "@mui/material/Button";
 import {
   NotifiCardModal,
@@ -66,21 +66,50 @@ const customCopy: NotifiCardModalProps["copy"] = {
 
 interface BadgedBellIconProps {
   connected: boolean; // Indicates if the wallet is connected
-  setIsNotifiPopupVisible: React.Dispatch<React.SetStateAction<boolean>>; // Function to toggle popup visibility
-  isNotifiPopupVisible: boolean; // State for popup visibility
-  toggleWalletConnectModalVisibilityRef: React.MutableRefObject<
-    (() => void) | null
-  >; // Function to open wallet modal
+  handleClick: () => void;
+  isActive: boolean;
 }
 
 const BadgedBellIcon: React.FC<BadgedBellIconProps> = ({
+  handleClick,
+  isActive,
   connected,
-  setIsNotifiPopupVisible,
-  isNotifiPopupVisible,
-  toggleWalletConnectModalVisibilityRef,
 }) => {
   const theme = useTheme();
   const {unreadCount} = useNotifiHistoryContext();
+
+  if (!connected)
+    return (
+      <Button
+        sx={{
+          width: "40px",
+          height: "40px",
+          display: "flex",
+          alignItems: "center",
+          justifyItems: "center",
+          padding: "0",
+          minWidth: "30px",
+          marginLeft: "1rem",
+          color: "inherit",
+          "&:hover": {
+            border:
+              theme.palette.mode === "light"
+                ? `2px solid var(--notifi-color-gray)`
+                : `2px solid var(--notifi-color-border)`,
+            background: "transparent",
+          },
+          border: `${
+            theme.palette.mode === "light"
+              ? `2px solid var(--notifi-color-light-stroke)`
+              : `2px solid var(--notifi-color-dark-gray)`
+          }`,
+        }}
+        onClick={handleClick}
+      >
+        {theme.palette.mode === "light" ? <IconBellLight /> : <IconBell />}
+      </Button>
+    );
+
   return (
     <Badge
       badgeContent={unreadCount}
@@ -104,31 +133,26 @@ const BadgedBellIcon: React.FC<BadgedBellIconProps> = ({
           color: "inherit",
           "&:hover": {
             border:
-              isNotifiPopupVisible && theme.palette.mode === "light"
+              isActive && theme.palette.mode === "light"
                 ? "4px solid #A6A6A7"
-                : isNotifiPopupVisible && theme.palette.mode !== "light"
+                : isActive && theme.palette.mode !== "light"
                   ? "4px solid #635A2C"
-                  : !isNotifiPopupVisible && theme.palette.mode === "light"
+                  : !isActive && theme.palette.mode === "light"
                     ? "2px solid #A6A6A7"
                     : "2px solid #645B2D",
             background: "transparent",
           },
           border: `${
-            isNotifiPopupVisible && theme.palette.mode === "light"
+            isActive && theme.palette.mode === "light"
               ? "4px solid #A6A6A7"
-              : isNotifiPopupVisible && theme.palette.mode !== "light"
+              : isActive && theme.palette.mode !== "light"
                 ? "4px solid #635A2C"
-                : !isNotifiPopupVisible && theme.palette.mode === "light"
+                : !isActive && theme.palette.mode === "light"
                   ? "2px solid #E5E4E8"
                   : "2px solid #282B2A"
           }`,
         }}
-        onClick={() => {
-          if (!connected && toggleWalletConnectModalVisibilityRef.current) {
-            toggleWalletConnectModalVisibilityRef.current();
-          }
-          setIsNotifiPopupVisible((preVal) => !preVal);
-        }}
+        onClick={handleClick}
       >
         {theme.palette.mode === "light" ? <IconBellLight /> : <IconBell />}
       </Button>
@@ -195,22 +219,19 @@ export default function Header() {
 
   const theme = useTheme();
   const logEvent = useLogEventWithBasic();
-  
+
   const {ref} = useInView({
     rootMargin: "-40px 0px 0px 0px",
     threshold: 0,
   });
-  
+
   const [isNotifiPopupVisible, setIsNotifiPopupVisible] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const bellIconRef = useRef<HTMLDivElement | null>(null);
-  const toggleWalletConnectModalVisibilityRef = useRef<(() => void) | null>(
-    null,
-  );
   const notificationRequestedRef = useRef(false);
 
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
-  const [state] = useGlobalState();
+  const [state, {setWalletConnectModalOpen}] = useGlobalState();
   const {account, wallet, network, connected, signMessage} = useWallet();
   const navigate = useNavigate();
   const walletAddressRef = useRef("");
@@ -232,46 +253,55 @@ export default function Header() {
   }
 
   const customClassName: NotifiCardModalProps["classNames"] = {
-      container: "notifi-card-modal",
-    };
-  
-    const handleOutsideClick = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(target) &&
-        bellIconRef.current &&
-        !bellIconRef.current.contains(target)
-      ) {
-        setIsNotifiPopupVisible(false);
-      }
-    };
-  
-    useEffect(() => {
-      if (isNotifiPopupVisible) {
-        document.addEventListener("mousedown", handleOutsideClick);
-      } else {
-        document.removeEventListener("mousedown", handleOutsideClick);
-      }
-      return () => {
-        document.removeEventListener("mousedown", handleOutsideClick);
-      };
-    }, [isNotifiPopupVisible]);
-  
-    useEffect(() => {
-      if (
-        account?.publicKey &&
-        account?.address &&
-        notificationRequestedRef.current
-      ) {
-        setTimeout(() => {
-          setIsNotifiPopupVisible(true);
-          notificationRequestedRef.current = false;
-        }, 3000);
-      }
-    }, [account?.publicKey, account?.address]);
+    container: "notifi-card-modal",
+  };
 
-  const MobileHeader = () => {
+  const handleOutsideClick = (event: MouseEvent) => {
+    const target = event.target as Node;
+    if (
+      modalRef.current &&
+      !modalRef.current.contains(target) &&
+      bellIconRef.current &&
+      !bellIconRef.current.contains(target)
+    ) {
+      setIsNotifiPopupVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isNotifiPopupVisible) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    } else {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [isNotifiPopupVisible]);
+
+  useEffect(() => {
+    if (
+      account?.publicKey &&
+      account?.address &&
+      notificationRequestedRef.current
+    ) {
+      setTimeout(() => {
+        setIsNotifiPopupVisible(true);
+        notificationRequestedRef.current = false;
+      }, 3000);
+    }
+  }, [account?.publicKey, account?.address]);
+
+  const handleBellIconClick = useCallback(() => {
+    if (!connected) {
+      setWalletConnectModalOpen(true);
+      notificationRequestedRef.current = true;
+    } else {
+      setIsNotifiPopupVisible(true);
+    }
+  }, [connected]);
+
+  const MobileHeader = useCallback(() => {
     return (
       <Box
         sx={{
@@ -281,10 +311,10 @@ export default function Header() {
         }}
       >
         <NetworkSelect />
-        <NavMobile />
+        <NavMobile handleNotificationsClick={handleBellIconClick} />
       </Box>
     );
-  };
+  }, [handleBellIconClick]);
 
   return (
     <>
@@ -344,58 +374,12 @@ export default function Header() {
             <Nav />
 
             <Box sx={{position: "relative"}} ref={bellIconRef}>
-              {!connected && (
-                <Button
-                  sx={{
-                    width: "40px",
-                    height: "40px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyItems: "center",
-                    padding: "0",
-                    minWidth: "30px",
-                    marginLeft: "1rem",
-                    color: "inherit",
-                    "&:hover": {
-                      border:
-                        isNotifiPopupVisible && theme.palette.mode === "light"
-                          ? `4px solid var(--notifi-color-gray)`
-                          : isNotifiPopupVisible &&
-                              theme.palette.mode !== "light"
-                            ? `4px solid var(--notifi-color-dark-gray)`
-                            : !isNotifiPopupVisible &&
-                                theme.palette.mode === "light"
-                              ? `2px solid var(--notifi-color-gray)`
-                              : `2px solid var(--notifi-color-border)`,
-                      background: "transparent",
-                    },
-                    border: `${
-                      isNotifiPopupVisible && theme.palette.mode === "light"
-                        ? `4px solid var(--notifi-color-gray)`
-                        : isNotifiPopupVisible && theme.palette.mode !== "light"
-                          ? `4px solid var(--notifi-color-dark-gray)`
-                          : !isNotifiPopupVisible &&
-                              theme.palette.mode === "light"
-                            ? `2px solid var(--notifi-color-light-stroke)`
-                            : `2px solid var(--notifi-color-dark-gray)`
-                    }`,
-                  }}
-                  onClick={() => {
-                    if (
-                      !connected &&
-                      toggleWalletConnectModalVisibilityRef.current
-                    ) {
-                      toggleWalletConnectModalVisibilityRef.current();
-                      notificationRequestedRef.current = true;
-                    }
-                  }}
-                >
-                  {theme.palette.mode === "light" ? (
-                    <IconBellLight />
-                  ) : (
-                    <IconBell />
-                  )}
-                </Button>
+              {!connected && !isOnMobile && (
+                <BadgedBellIcon
+                  isActive={isNotifiPopupVisible}
+                  connected={false}
+                  handleClick={handleBellIconClick}
+                />
               )}
 
               {connected &&
@@ -433,14 +417,13 @@ export default function Header() {
                     accountAddress={account?.address}
                   >
                     <>
-                      <BadgedBellIcon
-                        connected={connected}
-                        setIsNotifiPopupVisible={setIsNotifiPopupVisible}
-                        isNotifiPopupVisible={isNotifiPopupVisible}
-                        toggleWalletConnectModalVisibilityRef={
-                          toggleWalletConnectModalVisibilityRef
-                        }
-                      />
+                      {!isOnMobile && (
+                        <BadgedBellIcon
+                          handleClick={handleBellIconClick}
+                          isActive={isNotifiPopupVisible}
+                          connected={connected}
+                        />
+                      )}
                       {isNotifiPopupVisible && (
                         <Stack
                           sx={{
@@ -482,9 +465,6 @@ export default function Header() {
                   sortDefaultWallets={sortPetraFirst}
                   sortMoreWallets={sortPetraFirst}
                   modalMaxWidth="sm"
-                  toggleWalletConnectModalVisibilityRef={
-                    toggleWalletConnectModalVisibilityRef
-                  }
                 />
               </Box>
             )}
