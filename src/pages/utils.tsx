@@ -136,7 +136,7 @@ export function isValidStruct(maybeStruct: string): boolean {
 }
 
 export function is32ByteHex(text: string) {
-  // If it's 32 byte hex, it must be 64 charcters with or without a 0x in front
+  // If it's 32 byte hex, it must be 64 characters with or without a 0x in front
   return /^(0[xX])?[a-fA-F0-9]{64}$/.test(text);
 }
 
