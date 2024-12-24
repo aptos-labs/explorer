@@ -21,7 +21,7 @@ import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 type TransactionSucceededDialogProps = {
   handleDialogClose: () => void;
   isDialogOpen: boolean;
-  amount: string; // could be staked, unlocked, reactivated or withdrawn amonut
+  amount: string; // could be staked, unlocked, reactivated or withdrawn amount
   transactionHash: string;
   stakeOperation: StakeOperation;
 };
