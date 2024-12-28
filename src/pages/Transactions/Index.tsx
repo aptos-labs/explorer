@@ -11,7 +11,10 @@ export default function TransactionsPage() {
   const [state] = useGlobalState();
   const [userTxnOnly, setUserTxnOnly] = useState<boolean>(true);
   const [searchParams, setSearchParams] = useSearchParams();
-  const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
+  let isGraphqlClientSupported = useGetIsGraphqlClientSupported();
+  if (state.network_name === "mainnet") {
+    isGraphqlClientSupported = false;
+  }
 
   useEffect(() => {
     setUserTxnOnly(isGraphqlClientSupported);
