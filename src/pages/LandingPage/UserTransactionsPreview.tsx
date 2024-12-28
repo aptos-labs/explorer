@@ -12,9 +12,10 @@ const PREVIEW_TRANSACTIONS_COUNT = 10;
 export default function UserTransactionsPreview() {
   const versions = useGetUserTransactionVersions(PREVIEW_TRANSACTIONS_COUNT);
   const augmentTo = useAugmentToWithGlobalSearchParams();
+  const showPreview = true;
 
   // TODO: remove the fallback below when indexer is stable
-  if (versions.length === 0) {
+  if (versions.length === 0 || showPreview) {
     return <TransactionsPreview />;
   }
 
