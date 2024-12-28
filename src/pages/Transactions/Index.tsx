@@ -4,14 +4,17 @@ import {Box, Button, Stack, Typography} from "@mui/material";
 import PageHeader from "../layout/PageHeader";
 import AllTransactions from "./AllTransactions";
 import UserTransactions from "./UserTransactions";
-// import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
+import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export default function TransactionsPage() {
   const [state] = useGlobalState();
   const [userTxnOnly, setUserTxnOnly] = useState<boolean>(true);
   const [searchParams, setSearchParams] = useSearchParams();
-  const isGraphqlClientSupported = false; //useGetIsGraphqlClientSupported();
+  let isGraphqlClientSupported = useGetIsGraphqlClientSupported();
+  if (state.network_name === "mainnet") {
+    isGraphqlClientSupported = false;
+  }
 
   useEffect(() => {
     setUserTxnOnly(isGraphqlClientSupported);
