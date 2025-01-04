@@ -272,6 +272,10 @@ export const knownAddresses: Record<string, string> = {
   "0xfd9192f8ad8dc60c483a884f0fbc8940f5b8618f3cf2bbf91693982b373dfdea":
     "Bitfinex 1",
   "0xdc7adffa09da5736ce1303f7441f4367fa423617c6822ad2fbc8522d9efd8fa4": "Htx 1", // Huobi
+  "0x0cf869189c785beaaad2f5c636ced4805aeae9cbf49070dc93aed2f16b99012a":
+    "Gate 1",
+  "0xe8ca094fec460329aaccc2a644dc73c5e39f1a2ad6e97f82b6cbdc1a5949b9ea":
+    "MEXC 1",
   // Social
   "0x8d2d7bcde13b2513617df3f98cdd5d0e4b9f714c6308b9204fe18ad900d92609":
     "Chingari",
@@ -377,6 +381,26 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     coinMarketCapId: 825,
     native: true,
   },
+  "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b",
+    name: "USDC",
+    symbol: "USDC",
+    decimals: 6,
+    bridge: null,
+    panoraSymbol: null,
+    logoUrl: "https://circle.com/usdc-icon",
+    websiteUrl: "https://circle.com/usdc",
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 3,
+    coinGeckoId: "usd-coin",
+    coinMarketCapId: 3408,
+    native: true,
+  },
   "0x50038be55be5b964cfa32cf128b5cf05f123959f286b4cc02b86cafd48945f89": {
     chainId: 1,
     tokenAddress: null,
@@ -464,7 +488,10 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
  * These must be vetted to not have mint or burn capabilities
  */
 export const supplyLimitOverrides: Record<string, bigint> = {
+  // Note: All Uptos pump coins are 1 billion supply, and the mint / freeze / burn caps are destroyed at creation time
   "0x268d4a7a2ad93274edf6116f9f20ad8455223a7ab5fc73154f687e7dbc3e3ec6::LOON::LOON":
+    1000000000000000n, // Caps burned at creation
+  "0x967adbf2e05fe665ab86a3bf2c4acfa39fbf62097963474ef70a0786dae8cfa2::NRUH::NRUH":
     1000000000000000n, // Caps burned at creation
   "0x4fbed3f8a3fd8a11081c8b6392152a8b0cb14d70d0414586f0c9b858fcd2d6a7::UPTOS::UPTOS":
     8888888888800000000n, // Caps burned at https://explorer.aptoslabs.com/txn/0x4594e752ad872dd4d6fcdcdfe5a226de3556864dfa825bf77d90df810f25257e?network=mainnet no mints since

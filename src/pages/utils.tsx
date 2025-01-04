@@ -1,4 +1,5 @@
 import moment from "moment";
+import {parseTypeTag} from "@aptos-labs/ts-sdk";
 
 function ensureMillisecondTimestamp(timestamp: string): bigint {
   /*
@@ -119,9 +120,19 @@ export function isValidAccountAddress(accountAddr: string): boolean {
 }
 
 export function isValidStruct(maybeStruct: string): boolean {
-  return /^0x[0-9a-fA-F]{1,64}::[a-zA-Z0-9_]+::[a-zA-Z0-9_]+$/.test(
-    maybeStruct,
-  );
+  // First regex it, since it'll be faster, for simplicity, we ignore what's inside <>
+  if (
+    !/^0x[a-fA-F0-9]{1,64}::[a-zA-Z_]+::[a-zA-Z_]+(<.+>)?$/.test(maybeStruct)
+  ) {
+    return false;
+  }
+
+  try {
+    parseTypeTag(maybeStruct);
+  } catch (e: any) {
+    return false;
+  }
+  return true;
 }
 
 export function is32ByteHex(text: string) {
