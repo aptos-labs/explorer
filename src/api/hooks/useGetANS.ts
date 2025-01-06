@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {knownAddresses, NetworkName} from "../../constants";
+import {knownAddresses, NetworkName, scamAddresses} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {
   fetchJsonResponse,
@@ -37,9 +37,14 @@ export function useGetNameFromAddress(
     queryKey: ["ANSName", address, shouldCache, state.network_name],
     queryFn: () => {
       const standardizedAddress = standardizeAddress(address);
-      const knownName = knownAddresses[standardizedAddress.toLowerCase()];
+      const lowercaseStandardizedAddress = standardizedAddress.toLowerCase();
+      const knownName = knownAddresses[lowercaseStandardizedAddress];
       if (knownName) {
         return knownName;
+      }
+      const scamName = scamAddresses[lowercaseStandardizedAddress];
+      if (scamName) {
+        return scamName;
       }
 
       // Change cache key specifically to invalidate all previous cached keys

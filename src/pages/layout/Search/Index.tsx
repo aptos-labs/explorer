@@ -278,7 +278,7 @@ export default function HeaderSearch() {
     return promises;
   }
 
-  function prefixMatchLongerThan4(
+  function prefixMatchLongerThan3(
     searchLowerCase: string,
     knownName: string | null | undefined,
   ): boolean {
@@ -287,8 +287,10 @@ export default function HeaderSearch() {
     }
     const knownLower = knownName.toLowerCase();
     return (
-      (searchLowerCase.length >= 4 && knownLower.startsWith(searchLowerCase)) ||
-      (searchLowerCase.length < 4 &&
+      (searchLowerCase.length >= 3 &&
+        (knownLower.startsWith(searchLowerCase) ||
+          knownLower.includes(searchLowerCase))) ||
+      (searchLowerCase.length < 3 &&
         knownLower.toLowerCase() === searchLowerCase)
     );
   }
@@ -299,7 +301,7 @@ export default function HeaderSearch() {
     const searchResults: SearchResult[] = [];
     const searchLowerCase = searchText.toLowerCase();
     Object.entries(knownAddresses).forEach(([address, knownName]) => {
-      if (prefixMatchLongerThan4(searchLowerCase, knownName)) {
+      if (prefixMatchLongerThan3(searchLowerCase, knownName)) {
         searchResults.push({
           label: `Account ${truncateAddress(address)} ${knownName}`,
           to: `/account/${address}`,
@@ -316,9 +318,9 @@ export default function HeaderSearch() {
     const coinData = coinList?.data?.data
       ?.filter(
         (coin: CoinDescription) =>
-          prefixMatchLongerThan4(searchLowerCase, coin.name) ||
-          prefixMatchLongerThan4(searchLowerCase, coin.symbol) ||
-          prefixMatchLongerThan4(searchLowerCase, coin.panoraSymbol) ||
+          prefixMatchLongerThan3(searchLowerCase, coin.name) ||
+          prefixMatchLongerThan3(searchLowerCase, coin.symbol) ||
+          prefixMatchLongerThan3(searchLowerCase, coin.panoraSymbol) ||
           (coin.faAddress &&
             tryStandardizeAddress(coin.faAddress) ===
               tryStandardizeAddress(searchText)) ||

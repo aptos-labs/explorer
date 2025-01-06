@@ -18,6 +18,9 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
+import {scamAddresses} from "../constants";
+import {standardizeAddress} from "../utils";
+import {DangerousOutlined} from "@mui/icons-material";
 
 export const BUTTON_HEIGHT = 34;
 export const TOOLTIP_TIME = 2000; // 2s
@@ -151,28 +154,50 @@ function Name({address, isValidator}: {address: string; isValidator: boolean}) {
     textDecoration: "none",
   };
 
+  let content = null;
+
+  if (isAns) {
+    content = (
+      <Link
+        href={`https://www.aptosnames.com/name/${name}`}
+        target="_blank"
+        underline="none"
+      >
+        {name}
+      </Link>
+    );
+  } else if (scamAddresses[standardizeAddress(address)]) {
+    content = (
+      <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
+        <span>{name}</span>
+        <Tooltip title={"This is a known scam address."}>
+          <DangerousOutlined
+            fontSize="small"
+            color="error"
+            sx={{position: "relative", top: 2}}
+          />
+        </Tooltip>
+      </Typography>
+    );
+  } else {
+    content = (
+      <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
+        <span>{name}</span>
+        <Tooltip title={"This is a verified address label."}>
+          <VerifiedOutlined
+            fontSize="small"
+            color="info"
+            sx={{position: "relative", top: 2}}
+          />
+        </Tooltip>
+      </Typography>
+    );
+  }
+
   return (
     <Box>
       <Stack justifyContent="center" sx={isAns ? ansStyle : knownNameStyle}>
-        {isAns ? (
-          <Link
-            href={`https://www.aptosnames.com/name/${name}`}
-            target="_blank"
-            underline="none"
-          >
-            {name}
-          </Link>
-        ) : (
-          <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
-            <span>{name}</span>
-            <Tooltip title={"This is a verified address label."}>
-              <VerifiedOutlined
-                fontSize="small"
-                sx={{position: "relative", top: 2}}
-              />
-            </Tooltip>
-          </Typography>
-        )}
+        {content}
       </Stack>
     </Box>
   );

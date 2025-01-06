@@ -271,7 +271,8 @@ export const knownAddresses: Record<string, string> = {
     "Bybit 1",
   "0xfd9192f8ad8dc60c483a884f0fbc8940f5b8618f3cf2bbf91693982b373dfdea":
     "Bitfinex 1",
-  "0xdc7adffa09da5736ce1303f7441f4367fa423617c6822ad2fbc8522d9efd8fa4": "Htx 1", // Huobi
+  "0xdc7adffa09da5736ce1303f7441f4367fa423617c6822ad2fbc8522d9efd8fa4":
+    "Kraken 1",
   "0x0cf869189c785beaaad2f5c636ced4805aeae9cbf49070dc93aed2f16b99012a":
     "Gate 1",
   "0xe8ca094fec460329aaccc2a644dc73c5e39f1a2ad6e97f82b6cbdc1a5949b9ea":
@@ -314,6 +315,14 @@ export const knownAddresses: Record<string, string> = {
     "Emojicoin.fun Registry",
   "0xface729284ae5729100b3a9ad7f7cc025ea09739cd6e7252aff0beb53619cafe":
     "Emojicoin.fun",
+  "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
+    "Burn Address",
+};
+
+export const scamAddresses: Record<string, string> = {
+  // Known Scammers
+  "0xde08428deaca3139a570fffb4231f3a72c6dff015bba93ee4e9436d2b9555b6b":
+    "Known Scam",
 };
 
 /**
