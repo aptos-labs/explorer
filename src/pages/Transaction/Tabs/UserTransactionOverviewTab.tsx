@@ -95,7 +95,13 @@ type EventAction = Swap | TokenMint | TokenBurn | ObjectTransfer;
 
 type Swap = {
   actionType: "swap";
-  dex: string;
+  dex:
+    | "ThalaSwap v1"
+    | "ThalaSwap v2"
+    | "Liquidswap v0"
+    | "Liquidswap v0.5"
+    | "PancakeSwap"
+    | "Cellana";
   amountIn: number;
   amountOut: number;
   assetIn: string;
@@ -353,8 +359,23 @@ function getEventAction(event: Types.Event): EventAction | undefined {
     parseTokenMintEvent,
     parseTokenBurnEvent,
     parseObjectTransferEvent,
+    // swap actions
     parseThalaSwapV1Event,
     parseThalaSwapV2Event,
+    (event: Types.Event) =>
+      parseLiquidswapV0Event(
+        event,
+        "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12",
+        "Liquidswap v0",
+      ),
+    (event: Types.Event) =>
+      parseLiquidswapV0Event(
+        event,
+        "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e",
+        "Liquidswap v0.5",
+      ),
+    parsePancakeSwapEvent,
+    parseCellanaEvent,
   ];
 
   for (const parse of parsers) {
@@ -598,6 +619,115 @@ function parseThalaSwapV2Event(event: Types.Event): Swap | undefined {
   return {
     actionType: "swap",
     dex: "ThalaSwap v2",
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function parseLiquidswapV0Event(
+  event: Types.Event,
+  contract: string,
+  dex: "Liquidswap v0" | "Liquidswap v0.5",
+): Swap | undefined {
+  if (!event.type.startsWith(`${contract}::liquidity_pool::SwapEvent`)) {
+    return undefined;
+  }
+
+  const typeArgsMatch = event.type.match(/<(.+)>/);
+  const typeArgs = typeArgsMatch
+    ? typeArgsMatch[1].split(",").map((arg) => arg.trim())
+    : [];
+
+  const data: {
+    x_in: string;
+    x_out: string;
+    y_in: string;
+    y_out: string;
+  } = event.data;
+
+  const [amountInRaw, amountOutRaw, assetIn, assetOut] =
+    data.x_in === "0"
+      ? [data.y_in, data.x_out, typeArgs[1], typeArgs[0]]
+      : [data.x_in, data.y_out, typeArgs[0], typeArgs[1]];
+
+  const amountIn = Number(amountInRaw);
+  const amountOut = Number(amountOutRaw);
+
+  return {
+    actionType: "swap",
+    dex,
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function parsePancakeSwapEvent(event: Types.Event): Swap | undefined {
+  if (
+    !event.type.startsWith(
+      "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa::swap::SwapEvent",
+    )
+  ) {
+    return undefined;
+  }
+
+  const typeArgsMatch = event.type.match(/<(.+)>/);
+  const typeArgs = typeArgsMatch
+    ? typeArgsMatch[1].split(",").map((arg) => arg.trim())
+    : [];
+
+  const data: {
+    amount_x_in: string;
+    amount_y_in: string;
+    amount_x_out: string;
+    amount_y_out: string;
+  } = event.data;
+
+  const [amountInRaw, amountOutRaw, assetIn, assetOut] =
+    data.amount_x_in === "0"
+      ? [data.amount_y_in, data.amount_x_out, typeArgs[1], typeArgs[0]]
+      : [data.amount_x_in, data.amount_y_out, typeArgs[0], typeArgs[1]];
+
+  const amountIn = Number(amountInRaw);
+  const amountOut = Number(amountOutRaw);
+
+  return {
+    actionType: "swap",
+    dex: "PancakeSwap",
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function parseCellanaEvent(event: Types.Event): Swap | undefined {
+  if (
+    event.type !==
+    "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1::liquidity_pool::SwapEvent"
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    amount_in: string;
+    amount_out: string;
+    from_token: string;
+    to_token: string;
+    pool: string;
+  } = event.data;
+
+  const amountIn = Number(data.amount_in);
+  const amountOut = Number(data.amount_out);
+  const assetIn = data.from_token;
+  const assetOut = data.to_token;
+
+  return {
+    actionType: "swap",
+    dex: "Cellana",
     amountIn,
     amountOut,
     assetIn,

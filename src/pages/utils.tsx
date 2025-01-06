@@ -63,9 +63,9 @@ export interface TimestampDisplay {
 
 export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
   return {
-    formatted: timestamp.format("MM/DD/YY HH:mm:ss [UTC]"),
-    local_formatted: timestamp.local().format("MM/DD/YYYY HH:mm:ss"),
-    local_formatted_short: timestamp.local().format("MM/DD/YY HH:mm"),
+    formatted: timestamp.format("MM/DD/YY HH:mm:ss.SSS [UTC]"),
+    local_formatted: timestamp.local().format("MM/DD/YYYY HH:mm:ss.SSS"),
+    local_formatted_short: timestamp.local().format("MM/DD/YY HH:mm:ss.SSS"),
   };
 }
 
