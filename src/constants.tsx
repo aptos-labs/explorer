@@ -277,6 +277,8 @@ export const knownAddresses: Record<string, string> = {
     "Gate 1",
   "0xe8ca094fec460329aaccc2a644dc73c5e39f1a2ad6e97f82b6cbdc1a5949b9ea":
     "MEXC 1",
+  "0xde084991b91637a08e4da2f1b398f5f935e1393b65d13cc99c597ec5dc105b6b":
+    "Crypto.com 1",
   // Social
   "0x8d2d7bcde13b2513617df3f98cdd5d0e4b9f714c6308b9204fe18ad900d92609":
     "Chingari",
@@ -322,6 +324,8 @@ export const knownAddresses: Record<string, string> = {
 export const scamAddresses: Record<string, string> = {
   // Known Scammers
   "0xde08428deaca3139a570fffb4231f3a72c6dff015bba93ee4e9436d2b9555b6b":
+    "Known Scam",
+  "0x8c3d2d8b2fde2b55a6ce96ebd3c9bd655e3f90bc6cee8d6f3f78f7215d99e755":
     "Known Scam",
 };
 
