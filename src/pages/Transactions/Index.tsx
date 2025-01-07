@@ -1,25 +1,29 @@
-import {useEffect, useState} from "react";
 import {useSearchParams} from "react-router-dom";
 import {Box, Button, Stack, Typography} from "@mui/material";
 import PageHeader from "../layout/PageHeader";
 import AllTransactions from "./AllTransactions";
 import UserTransactions from "./UserTransactions";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
-import {useGlobalState} from "../../global-config/GlobalConfig";
 import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {useEffect} from "react";
 
 export default function TransactionsPage() {
-  const [state] = useGlobalState();
-  const [userTxnOnly, setUserTxnOnly] = useState<boolean>(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
+  const allTxnOnly = searchParams.get("type") === "all";
 
-  useEffect(() => {
-    setUserTxnOnly(isGraphqlClientSupported);
-  }, [isGraphqlClientSupported, state.network_name]);
+  usePageMetadata({title: "Transactions"});
 
+  // Initial search params setup with replace for support back navigation
   useEffect(() => {
-    if (userTxnOnly) {
+    if (!searchParams.get("type")) {
+      searchParams.set("type", isGraphqlClientSupported ? "user" : "all");
+      setSearchParams(searchParams, {replace: true});
+    }
+  }, [isGraphqlClientSupported, searchParams, setSearchParams]);
+
+  const toggleUserTxnOnly = () => {
+    if (allTxnOnly) {
       searchParams.set("type", "user");
       searchParams.delete("start");
       setSearchParams(searchParams);
@@ -28,12 +32,6 @@ export default function TransactionsPage() {
       searchParams.delete("page");
       setSearchParams(searchParams);
     }
-  }, [userTxnOnly, searchParams, setSearchParams]);
-
-  usePageMetadata({title: "Transactions"});
-
-  const toggleUserTxnOnly = () => {
-    setUserTxnOnly(!userTxnOnly);
   };
 
   return (
@@ -41,15 +39,15 @@ export default function TransactionsPage() {
       <PageHeader />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="h3" marginBottom={2}>
-          {userTxnOnly ? "User Transactions" : "All Transactions"}
+          {allTxnOnly ? "All Transactions" : "User Transactions"}
         </Typography>
         {isGraphqlClientSupported && (
           <Button onClick={toggleUserTxnOnly} variant="text">
-            {userTxnOnly ? `View All Transactions` : `View User Transactions`}
+            {allTxnOnly ? `View User Transactions` : `View All Transactions`}
           </Button>
         )}
       </Stack>
-      {userTxnOnly ? <UserTransactions /> : <AllTransactions />}
+      {allTxnOnly ? <AllTransactions /> : <UserTransactions />}
     </Box>
   );
 }
