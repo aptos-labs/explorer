@@ -104,7 +104,9 @@ async function genANSName(
     }
   } catch (error) {
     console.error(
-      `ERROR! Couldn't find ANS name for ${address} on ${networkName}`,
+      "ERROR! Couldn't find ANS name for %s on %s",
+      address,
+      networkName,
       error,
       typeof error,
     );
