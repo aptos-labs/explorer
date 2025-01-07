@@ -16,16 +16,11 @@ export default function TransactionsPage() {
 
   // Initial search params setup with replace for support back navigation
   useEffect(() => {
-    if (isGraphqlClientSupported && !searchParams.get("type")) {
-      searchParams.set("type", "user");
-      return setSearchParams(searchParams, {replace: true});
+    if (!searchParams.get("type")) {
+      searchParams.set("type", isGraphqlClientSupported ? "user" : "all");
+      setSearchParams(searchParams, {replace: true});
     }
-
-    if (!isGraphqlClientSupported && !searchParams.get("type")) {
-      searchParams.set("type", "all");
-      return setSearchParams(searchParams, {replace: true});
-    }
-  }, [isGraphqlClientSupported, searchParams, setSearchParams, allTxnOnly]);
+  }, [isGraphqlClientSupported, searchParams, setSearchParams]);
 
   const toggleUserTxnOnly = () => {
     if (allTxnOnly) {
