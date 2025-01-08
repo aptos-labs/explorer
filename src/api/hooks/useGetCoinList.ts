@@ -29,7 +29,9 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
     queryFn: async (): Promise<any> => {
       const end_point = "https://api.panora.exchange/tokenlist";
 
-      const query = {};
+      const query = {
+        panoraUI: "true, false",
+      };
 
       const headers = {
         "x-api-key":
