@@ -44,13 +44,16 @@ export default function InfoTab({address, data}: InfoTabProps) {
   // TODO: add owner
   // TODO: add migrated coin balance?
   // TODO: Look into making URLs clickable, right now don't want scams
-
+  let marketCap = null;
   let formattedSupply: string | null = null;
   if (data?.supply !== undefined && data?.supply !== null && data?.metadata) {
     formattedSupply =
       getFormattedBalanceStr(data?.supply.toString(), data.metadata?.decimals) +
       " " +
       data.metadata?.symbol;
+    marketCap =
+      parseFloat(data?.coinData?.usdPrice ?? "0") *
+      Number(data?.supply / 10n ** BigInt(data.coinData?.decimals ?? 0));
   }
 
   const icon_uri = data?.coinData?.logoUrl ?? data?.metadata?.icon_uri;
@@ -77,14 +80,32 @@ export default function InfoTab({address, data}: InfoTabProps) {
             title={"Decimals:"}
             value={data?.metadata?.decimals?.toString()}
           />
-          <ContentRow
-            title={"Total supply:"}
-            value={
-              <>
-                {`${formattedSupply} `} {supplyIcon}
-              </>
-            }
-          />
+          <>
+            <ContentRow
+              title={"Total supply:"}
+              value={
+                <>
+                  {`${formattedSupply} `}
+                  {supplyIcon}
+                </>
+              }
+            />
+            {marketCap ? (
+              <ContentRow
+                title={"Current Market Cap (supply * price):"}
+                value={
+                  <>
+                    $
+                    {marketCap.toLocaleString([], {
+                      maximumFractionDigits: 2,
+                      minimumFractionDigits: 2,
+                    })}{" "}
+                    USD
+                  </>
+                }
+              />
+            ) : null}
+          </>
           <ContentRow
             title={"Icon:"}
             value={
