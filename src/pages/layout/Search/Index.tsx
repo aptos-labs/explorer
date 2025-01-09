@@ -28,6 +28,7 @@ import {
   truncateAddress,
   is32ByteHex,
   isValidStruct,
+  coinOrderIndex,
 } from "../../utils";
 import {
   CoinDescription,
@@ -318,14 +319,20 @@ export default function HeaderSearch() {
     const coinData = coinList?.data?.data
       ?.filter(
         (coin: CoinDescription) =>
-          prefixMatchLongerThan3(searchLowerCase, coin.name) ||
-          prefixMatchLongerThan3(searchLowerCase, coin.symbol) ||
-          prefixMatchLongerThan3(searchLowerCase, coin.panoraSymbol) ||
-          (coin.faAddress &&
-            tryStandardizeAddress(coin.faAddress) ===
-              tryStandardizeAddress(searchText)) ||
-          coin.tokenAddress === searchText,
+          !coin.isBanned &&
+          !coin.panoraTags.includes("InternalFA") &&
+          coin.panoraTags.length > 0 &&
+          (prefixMatchLongerThan3(searchLowerCase, coin.name) ||
+            prefixMatchLongerThan3(searchLowerCase, coin.symbol) ||
+            prefixMatchLongerThan3(searchLowerCase, coin.panoraSymbol) ||
+            (coin.faAddress &&
+              tryStandardizeAddress(coin.faAddress) ===
+                tryStandardizeAddress(searchText)) ||
+            coin.tokenAddress === searchText),
       )
+      .sort((coin: CoinDescription, coin2: CoinDescription) => {
+        return coinOrderIndex(coin) - coinOrderIndex(coin2);
+      })
       .map((coin: CoinDescription) => {
         if (coin.tokenAddress) {
           return {

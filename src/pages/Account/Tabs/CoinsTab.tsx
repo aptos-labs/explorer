@@ -2,9 +2,13 @@ import React from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {Types} from "aptos";
 import {CoinDescriptionPlusAmount, CoinsTable} from "../Components/CoinsTable";
-import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
+import {
+  CoinDescription,
+  useGetCoinList,
+} from "../../../api/hooks/useGetCoinList";
 import {findCoinData} from "../../Transaction/Tabs/BalanceChangeTab";
 import {useGetAccountCoins} from "../../../api/hooks/useGetAccountCoins";
+import {coinOrderIndex} from "../../utils";
 
 type TokenTabsProps = {
   address: string;
@@ -37,7 +41,7 @@ export default function CoinsTab({address}: TokenTabsProps) {
     }
     return coins
       .filter((coin) => Boolean(coin.metadata))
-      .map((coin) => {
+      .map((coin): CoinDescriptionPlusAmount => {
         const foundCoin = findCoinData(coinData?.data ?? [], coin.asset_type);
 
         if (!foundCoin) {
@@ -65,6 +69,11 @@ export default function CoinsTab({address}: TokenTabsProps) {
             coinGeckoId: null,
             coinMarketCapId: null,
             tokenStandard: coin.metadata.token_standard,
+            usdPrice: null,
+            panoraTags: [],
+            panoraUI: false,
+            native: false,
+            usdValue: 0,
           };
         } else {
           // Otherwise, use the stuff found in the lookup
@@ -72,8 +81,27 @@ export default function CoinsTab({address}: TokenTabsProps) {
             ...foundCoin,
             amount: coin.amount,
             tokenStandard: coin.metadata.token_standard,
+            usdValue: foundCoin.usdPrice
+              ? Math.round(
+                  100 *
+                    (Number.EPSILON +
+                      (parseFloat(foundCoin.usdPrice) * coin.amount) /
+                        10 ** coin.metadata.decimals),
+                ) / 100
+              : null,
+            assetType: coin.asset_type,
+            assetVersion: coin.metadata.token_standard,
           };
         }
+      })
+      .sort((a, b) => {
+        return (
+          coinOrderIndex(a as CoinDescription) -
+          coinOrderIndex(b as CoinDescription)
+        );
+      })
+      .sort((a, b) => {
+        return (b.usdValue ?? -1) - (a.usdValue ?? -1);
       });
   }
 

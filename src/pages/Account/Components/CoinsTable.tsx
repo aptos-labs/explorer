@@ -24,6 +24,7 @@ import {getAssetSymbol} from "../../../utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 import {useGlobalState} from "../../../global-config/GlobalConfig";
 import {Network} from "@aptos-labs/ts-sdk";
+import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 
 function CoinNameCell({name}: {name: string}) {
   return (
@@ -58,6 +59,20 @@ function AmountCell({
     <GeneralTableCell>
       <span>{formattedAmount}</span>
       <span style={{marginLeft: 8, color: grey[450]}}>{symbol}</span>
+    </GeneralTableCell>
+  );
+}
+
+function USDCell({amount}: {amount: number | null | undefined}) {
+  const inMainnet = useGetInMainnet();
+  if (amount === null || amount === undefined || !inMainnet) {
+    return <GeneralTableCell>N/A</GeneralTableCell>;
+  }
+
+  return (
+    <GeneralTableCell>
+      <span>${amount}</span>
+      <span style={{marginLeft: 8, color: grey[450]}}>{"USD"}</span>
     </GeneralTableCell>
   );
 }
@@ -108,6 +123,9 @@ enum CoinVerificationFilterType {
 export type CoinDescriptionPlusAmount = {
   amount: number;
   tokenStandard: string;
+  usdValue: number | null;
+  assetType: string;
+  assetVersion: string;
 } & CoinDescription;
 
 export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
@@ -305,6 +323,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
               isTableTooltip={true}
             />
             <GeneralTableHeaderCell header="Amount" />
+            <GeneralTableHeaderCell header="USD Value" />
           </TableRow>
         </TableHead>
         <GeneralTableBody>
@@ -333,6 +352,8 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
                     coinDesc.symbol,
                   )}
                 />
+
+                <USDCell amount={coinDesc.usdValue} />
               </GeneralTableRow>
             );
           })}
