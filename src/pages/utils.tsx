@@ -1,5 +1,6 @@
 import moment from "moment";
 import {parseTypeTag} from "@aptos-labs/ts-sdk";
+import {CoinDescription} from "../api/hooks/useGetCoinList";
 
 function ensureMillisecondTimestamp(timestamp: string): bigint {
   /*
@@ -171,4 +172,32 @@ export function isValidIpfsUrl(url: string): boolean {
 
 export function toIpfsUrl(url: string): string {
   return `https://ipfs.io/ipfs/${url.slice(7)}`;
+}
+
+export function coinOrderIndex(coin: CoinDescription) {
+  if (coin.isBanned) {
+    return 10000000;
+  }
+
+  if (!coin.panoraIndex) {
+    return 1000000;
+  }
+  if (coin.panoraTags.includes("InternalFA")) {
+    return coin.panoraIndex + 100000;
+  }
+
+  if (coin.panoraTags.includes("LP")) {
+    return coin.panoraIndex + 100000;
+  }
+
+  if (coin.panoraTags.includes("Bridged")) {
+    return coin.panoraIndex + 10000;
+  }
+
+  // wrapped but not bridged
+  if (coin.name.toLowerCase().includes("wrap")) {
+    return coin.panoraIndex + 50000;
+  }
+
+  return coin.panoraIndex;
 }

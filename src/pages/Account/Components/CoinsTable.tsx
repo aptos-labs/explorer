@@ -62,6 +62,19 @@ function AmountCell({
   );
 }
 
+function USDCell({amount}: {amount: number | null | undefined}) {
+  if (amount === null || amount === undefined) {
+    return <GeneralTableCell>N/A</GeneralTableCell>;
+  }
+
+  return (
+    <GeneralTableCell>
+      <span>${amount}</span>
+      <span style={{marginLeft: 8, color: grey[450]}}>{"USD"}</span>
+    </GeneralTableCell>
+  );
+}
+
 function CoinTypeCell({data}: {data: CoinDescriptionPlusAmount}) {
   function getType() {
     switch (data.tokenStandard) {
@@ -108,6 +121,9 @@ enum CoinVerificationFilterType {
 export type CoinDescriptionPlusAmount = {
   amount: number;
   tokenStandard: string;
+  usdValue: number | null;
+  assetType: string;
+  assetVersion: string;
 } & CoinDescription;
 
 export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
@@ -305,6 +321,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
               isTableTooltip={true}
             />
             <GeneralTableHeaderCell header="Amount" />
+            <GeneralTableHeaderCell header="USD Value" />
           </TableRow>
         </TableHead>
         <GeneralTableBody>
@@ -333,6 +350,8 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
                     coinDesc.symbol,
                   )}
                 />
+
+                <USDCell amount={coinDesc.usdValue} />
               </GeneralTableRow>
             );
           })}
