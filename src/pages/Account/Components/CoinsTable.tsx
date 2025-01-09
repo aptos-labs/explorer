@@ -24,6 +24,7 @@ import {getAssetSymbol} from "../../../utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 import {useGlobalState} from "../../../global-config/GlobalConfig";
 import {Network} from "@aptos-labs/ts-sdk";
+import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 
 function CoinNameCell({name}: {name: string}) {
   return (
@@ -63,7 +64,8 @@ function AmountCell({
 }
 
 function USDCell({amount}: {amount: number | null | undefined}) {
-  if (amount === null || amount === undefined) {
+  const inMainnet = useGetInMainnet();
+  if (amount === null || amount === undefined || !inMainnet) {
     return <GeneralTableCell>N/A</GeneralTableCell>;
   }
 
