@@ -13,8 +13,9 @@ export default function Error({error, address}: ErrorProps) {
       return (
         <Alert severity="error" sx={{overflowWrap: "break-word"}}>
           {error.message}
-          Account not found: {address}. The account may still have tokens or
-          objects associated.
+          Account not found. Please take a look at the Coins and Token tabs. The
+          account has never submitted a transaction, but it may still hold
+          assets.
         </Alert>
       );
     case ResponseErrorType.INVALID_INPUT:
