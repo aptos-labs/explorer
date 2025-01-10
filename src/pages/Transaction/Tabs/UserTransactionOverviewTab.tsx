@@ -101,7 +101,8 @@ type Swap = {
     | "Liquidswap v0"
     | "Liquidswap v0.5"
     | "PancakeSwap"
-    | "Cellana";
+    | "Cellana"
+    | "Thetis Market";
   amountIn: number;
   amountOut: number;
   assetIn: string;
@@ -376,6 +377,7 @@ function getEventAction(event: Types.Event): EventAction | undefined {
       ),
     parsePancakeSwapEvent,
     parseCellanaEvent,
+    parseThetisSwapEvent,
   ];
 
   for (const parse of parsers) {
@@ -728,6 +730,36 @@ function parseCellanaEvent(event: Types.Event): Swap | undefined {
   return {
     actionType: "swap",
     dex: "Cellana",
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function parseThetisSwapEvent(event: Types.Event): Swap | undefined {
+  if (
+    event.type !==
+    "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e::pool_event::Swap"
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    amount_in: string;
+    amount_out: string;
+    token_in: string;
+    token_out: string;
+  } = event.data;
+
+  const amountIn = Number(data.amount_in);
+  const amountOut = Number(data.amount_out);
+  const assetIn = data.token_in;
+  const assetOut = data.token_out;
+
+  return {
+    actionType: "swap",
+    dex: "Thetis Market",
     amountIn,
     amountOut,
     assetIn,
