@@ -65,12 +65,16 @@ export default function InfoTab({
       assertNever(supplyType);
   }
 
+  let marketCap = null;
   let formattedSupply: string | null = null;
   if (supply !== undefined && supply !== null) {
     formattedSupply =
       getFormattedBalanceStr(supply.toString(), data.data.decimals) +
       " " +
       data.data.symbol;
+    marketCap =
+      parseFloat(coinData?.usdPrice ?? "0") *
+      Number(supply / 10n ** BigInt(coinData?.decimals ?? 0));
   }
 
   return (
@@ -91,15 +95,32 @@ export default function InfoTab({
             value={data?.data?.decimals?.toString()}
           />
           {formattedSupply !== null ? (
-            <ContentRow
-              title={"Total supply:"}
-              value={
-                <>
-                  {`${formattedSupply} `}
-                  {supplyIcon}
-                </>
-              }
-            />
+            <>
+              <ContentRow
+                title={"Total supply:"}
+                value={
+                  <>
+                    {`${formattedSupply} `}
+                    {supplyIcon}
+                  </>
+                }
+              />
+              {marketCap ? (
+                <ContentRow
+                  title={"Current Market Cap (supply * price):"}
+                  value={
+                    <>
+                      $
+                      {marketCap.toLocaleString([], {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 2,
+                      })}{" "}
+                      USD
+                    </>
+                  }
+                />
+              ) : null}
+            </>
           ) : (
             <ContentRow title={"Total supply:"} value={supplyIcon} />
           )}
