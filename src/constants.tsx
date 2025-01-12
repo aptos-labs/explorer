@@ -228,6 +228,8 @@ export const knownAddresses: Record<string, string> = {
     "Lucid Finance",
   "0xd47ead75b923422f7967257259e7a298f029da9e5484dc7aa1a9efbd4c3ae648":
     "Native FA Redemption",
+  "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e":
+    "Thetis Market",
   // NFT marketplace
   "0x7ccf0e6e871977c354c331aa0fccdffb562d9fceb27e3d7f61f8e12e470358e9":
     "Wapal Aggregator",
