@@ -1,5 +1,7 @@
 import {Types} from "aptos";
 import React from "react";
+import {Button, Stack, Typography} from "@mui/material";
+import {grey, primary} from "../../../themes/colors/aptosColorPalette";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {CoinBalanceChangeTable} from "./Components/CoinBalanceChangeTable";
 import {
@@ -17,8 +19,82 @@ type BalanceChangeTabProps = {
   transaction: Types.Transaction;
 };
 
+enum BalanceViewType {
+  NON_AGGREGATED,
+  AGGREGATED,
+}
+
+type AggregatedBalance = {
+  address: string;
+  asset: BalanceChange["asset"];
+  totalAmount: bigint;
+  known: boolean;
+  isInPanoraTokenList?: boolean;
+  isBanned?: boolean;
+  logoUrl?: string;
+};
+
+function aggregateBalanceChanges(
+  changes: BalanceChange[],
+): AggregatedBalance[] {
+  const balanceMap = new Map<string, AggregatedBalance>();
+
+  changes.forEach((change) => {
+    const key = `${change.address}-${change.asset.id}`;
+
+    if (balanceMap.has(key)) {
+      const existing = balanceMap.get(key)!;
+      existing.totalAmount += change.amount;
+    } else {
+      balanceMap.set(key, {
+        address: change.address,
+        asset: change.asset,
+        totalAmount: change.amount,
+        known: change.known,
+        isInPanoraTokenList: change.isInPanoraTokenList,
+        isBanned: change.isBanned,
+        logoUrl: change.logoUrl,
+      });
+    }
+  });
+
+  return Array.from(balanceMap.values())
+    .filter((entry) => entry.totalAmount !== BigInt(0))
+    .sort((a, b) => {
+      // First sort by address
+      const addressCompare = a.address.localeCompare(b.address);
+      if (addressCompare !== 0) return addressCompare;
+
+      // Then by asset id
+      return a.asset.id.localeCompare(b.asset.id);
+    });
+}
+
+function AggregatedBalanceTable({
+  balanceChanges,
+  transaction,
+}: {
+  balanceChanges: BalanceChange[];
+  transaction: Types.UserTransaction;
+}) {
+  const aggregatedChanges = aggregateBalanceChanges(balanceChanges);
+  return (
+    <CoinBalanceChangeTable
+      balanceChanges={aggregatedChanges.map(({...agg}) => ({
+        ...agg,
+        amount: agg.totalAmount,
+        type: "Net Change",
+      }))}
+      transaction={transaction}
+    />
+  );
+}
+
 export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
   const {data: coinData} = useGetCoinList();
+  const [viewType, setViewType] = React.useState(
+    BalanceViewType.NON_AGGREGATED,
+  );
 
   const {data: transactionChangesResponse} = useTransactionBalanceChanges(
     "version" in transaction ? transaction.version : transaction.hash,
@@ -113,11 +189,82 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
     return <EmptyTabContent />;
   }
 
+  const selectedTextColor = primary[500];
+  const unselectedTextColor = grey[400];
+  const dividerTextColor = grey[200];
+
+  const viewSelector = (
+    <Stack
+      direction="row"
+      justifyContent="flex-end"
+      spacing={1}
+      marginY={0.5}
+      height={16}
+    >
+      <Button
+        variant="text"
+        onClick={() => setViewType(BalanceViewType.NON_AGGREGATED)}
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          color:
+            BalanceViewType.NON_AGGREGATED === viewType
+              ? selectedTextColor
+              : unselectedTextColor,
+          padding: 0,
+          "&:hover": {
+            background: "transparent",
+          },
+        }}
+      >
+        Non-aggregated
+      </Button>
+      <Typography
+        variant="subtitle1"
+        sx={{
+          fontSize: 11,
+          fontWeight: 600,
+          color: dividerTextColor,
+        }}
+      >
+        |
+      </Typography>
+      <Button
+        variant="text"
+        onClick={() => setViewType(BalanceViewType.AGGREGATED)}
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          color:
+            BalanceViewType.AGGREGATED === viewType
+              ? selectedTextColor
+              : unselectedTextColor,
+          padding: 0,
+          "&:hover": {
+            background: "transparent",
+          },
+        }}
+      >
+        Aggregated
+      </Button>
+    </Stack>
+  );
+
   return (
-    <CoinBalanceChangeTable
-      balanceChanges={balanceChanges}
-      transaction={transaction as Types.UserTransaction}
-    />
+    <>
+      {viewSelector}
+      {viewType === BalanceViewType.NON_AGGREGATED ? (
+        <CoinBalanceChangeTable
+          balanceChanges={balanceChanges}
+          transaction={transaction as Types.UserTransaction}
+        />
+      ) : (
+        <AggregatedBalanceTable
+          balanceChanges={balanceChanges}
+          transaction={transaction as Types.UserTransaction}
+        />
+      )}
+    </>
   );
 }
 
