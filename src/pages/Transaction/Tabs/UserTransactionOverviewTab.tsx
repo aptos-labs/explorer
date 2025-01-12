@@ -96,13 +96,13 @@ type EventAction = Swap | TokenMint | TokenBurn | ObjectTransfer;
 type Swap = {
   actionType: "swap";
   dex:
-    | "ThalaSwap v1"
-    | "ThalaSwap v2"
-    | "Liquidswap v0"
-    | "Liquidswap v0.5"
-    | "PancakeSwap"
-    | "Cellana"
-    | "Thetis Market";
+    | "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af" // "ThalaSwap v1"
+    | "0x007730cd28ee1cdc9e999336cbc430f99e7c44397c0aa77516f6f23a78559bb5" // "ThalaSwap v2"
+    | "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12" // "Liquidswap v0"
+    | "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e" // "Liquidswap v0.5"
+    | "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa" // "PancakeSwap"
+    | "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1" // "Cellana Finance"
+    | "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e"; // "Thetis Market";
   amountIn: number;
   amountOut: number;
   assetIn: string;
@@ -367,13 +367,11 @@ function getEventAction(event: Types.Event): EventAction | undefined {
       parseLiquidswapV0Event(
         event,
         "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12",
-        "Liquidswap v0",
       ),
     (event: Types.Event) =>
       parseLiquidswapV0Event(
         event,
-        "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e",
-        "Liquidswap v0.5",
+        "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e",
       ),
     parsePancakeSwapEvent,
     parseCellanaEvent,
@@ -429,7 +427,7 @@ const swapAction = (
         }
         img={assetOutCoin?.logoUrl}
       />
-      on {action.dex}
+      on <HashButton hash={action.dex} type={HashType.ACCOUNT} />
     </Box>
   );
 };
@@ -590,7 +588,7 @@ function parseThalaSwapV1Event(event: Types.Event): Swap | undefined {
 
   return {
     actionType: "swap",
-    dex: "ThalaSwap v1",
+    dex: "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af",
     amountIn,
     amountOut,
     assetIn,
@@ -620,7 +618,7 @@ function parseThalaSwapV2Event(event: Types.Event): Swap | undefined {
 
   return {
     actionType: "swap",
-    dex: "ThalaSwap v2",
+    dex: "0x007730cd28ee1cdc9e999336cbc430f99e7c44397c0aa77516f6f23a78559bb5",
     amountIn,
     amountOut,
     assetIn,
@@ -630,10 +628,11 @@ function parseThalaSwapV2Event(event: Types.Event): Swap | undefined {
 
 function parseLiquidswapV0Event(
   event: Types.Event,
-  contract: string,
-  dex: "Liquidswap v0" | "Liquidswap v0.5",
+  dex:
+    | "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12"
+    | "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e",
 ): Swap | undefined {
-  if (!event.type.startsWith(`${contract}::liquidity_pool::SwapEvent`)) {
+  if (!event.type.startsWith(`${dex}::liquidity_pool::SwapEvent`)) {
     return undefined;
   }
 
@@ -698,7 +697,7 @@ function parsePancakeSwapEvent(event: Types.Event): Swap | undefined {
 
   return {
     actionType: "swap",
-    dex: "PancakeSwap",
+    dex: "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa",
     amountIn,
     amountOut,
     assetIn,
@@ -729,7 +728,7 @@ function parseCellanaEvent(event: Types.Event): Swap | undefined {
 
   return {
     actionType: "swap",
-    dex: "Cellana",
+    dex: "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1",
     amountIn,
     amountOut,
     assetIn,
@@ -759,7 +758,7 @@ function parseThetisSwapEvent(event: Types.Event): Swap | undefined {
 
   return {
     actionType: "swap",
-    dex: "Thetis Market",
+    dex: "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e",
     amountIn,
     amountOut,
     assetIn,
