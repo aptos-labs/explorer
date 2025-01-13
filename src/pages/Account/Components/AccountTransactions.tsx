@@ -54,7 +54,7 @@ function TransactionsPaginationTable({
   }
 
   const handleChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     newPageNum: number,
   ) => {
     setCurrentPageNum(newPageNum);

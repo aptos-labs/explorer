@@ -1,7 +1,7 @@
 import {Types} from "aptos";
 import {useQuery} from "@tanstack/react-query";
-import {getBlockByHeight, getBlockByVersion} from "../../api";
-import {ResponseError} from "../../api/client";
+import {getBlockByHeight, getBlockByVersion} from "../index";
+import {ResponseError} from "../client";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
 export function useGetBlockByHeight({
@@ -13,13 +13,11 @@ export function useGetBlockByHeight({
 }) {
   const [state] = useGlobalState();
 
-  const result = useQuery<Types.Block, ResponseError>({
+  return useQuery<Types.Block, ResponseError>({
     queryKey: ["block", height, state.network_value],
     queryFn: () =>
       getBlockByHeight({height, withTransactions}, state.aptos_client),
   });
-
-  return result;
 }
 
 export function useGetBlockByVersion({
@@ -31,11 +29,9 @@ export function useGetBlockByVersion({
 }) {
   const [state] = useGlobalState();
 
-  const result = useQuery<Types.Block, ResponseError>({
+  return useQuery<Types.Block, ResponseError>({
     queryKey: ["block", version, state.network_value],
     queryFn: () =>
       getBlockByVersion({version, withTransactions}, state.aptos_client),
   });
-
-  return result;
 }

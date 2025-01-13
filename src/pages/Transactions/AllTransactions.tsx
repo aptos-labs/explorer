@@ -33,7 +33,7 @@ function RenderPagination({
   const currentPage = 1 + Math.floor(progress * numPages);
 
   const handleChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     newPageNum: number,
   ) => {
     const delta = (currentPage - newPageNum) * limit;

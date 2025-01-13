@@ -20,7 +20,7 @@ export default function AmountTextField({
   warnMessage,
   onAmountChange,
   balance,
-}: AmountTextFieldProps): JSX.Element {
+}: AmountTextFieldProps) {
   return (
     <FormControl fullWidth>
       <Stack direction="row" justifyContent="space-between">

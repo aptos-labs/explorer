@@ -11,10 +11,7 @@ export function useGetAccountTransactions(
 ): UseQueryResult<Array<Types.Transaction>, ResponseError> {
   const [state] = useGlobalState();
 
-  const accountTransactionsResult = useQuery<
-    Array<Types.Transaction>,
-    ResponseError
-  >({
+  return useQuery<Array<Types.Transaction>, ResponseError>({
     queryKey: [
       "accountTransactions",
       {address, start, limit},
@@ -23,6 +20,4 @@ export function useGetAccountTransactions(
     queryFn: () =>
       getAccountTransactions({address, start, limit}, state.aptos_client),
   });
-
-  return accountTransactionsResult;
 }

@@ -37,7 +37,7 @@ export enum StakingStatus {
 export interface StakingStatusInterface {
   label: string;
   description: string;
-  icon: JSX.Element;
+  icon: React.JSX.Element;
   stepLabelIcon: React.FunctionComponent;
   sxLight: {
     color: string;

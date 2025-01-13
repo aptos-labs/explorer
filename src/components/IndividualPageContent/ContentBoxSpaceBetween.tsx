@@ -9,7 +9,7 @@ interface ContentBoxSpaceBetweenProps extends BoxProps {
 export default function ContentBoxSpaceBetween({
   children,
   ...props
-}: ContentBoxSpaceBetweenProps): JSX.Element {
+}: ContentBoxSpaceBetweenProps) {
   const theme = useTheme();
   const backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[50];
 

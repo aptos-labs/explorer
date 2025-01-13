@@ -187,14 +187,6 @@ export function view(
   return client.view(request, parsedVersion);
 }
 
-export function getTableItem(
-  requestParameters: {tableHandle: string; data: Types.TableItemRequest},
-  client: AptosClient,
-): Promise<any> {
-  const {tableHandle, data} = requestParameters;
-  return withResponseError(client.getTableItem(tableHandle, data));
-}
-
 export function getBlockByHeight(
   requestParameters: {height: number; withTransactions: boolean},
   client: AptosClient,
@@ -286,18 +278,6 @@ export async function getValidatorCommissionChange(
   return withResponseError(client.view(payload));
 }
 
-export async function getDelegationPoolExist(
-  client: AptosClient,
-  validatorAddress: Types.Address,
-): Promise<Types.MoveValue[]> {
-  const payload: Types.ViewRequest = {
-    function: "0x1::delegation_pool::delegation_pool_exists",
-    type_arguments: [],
-    arguments: [validatorAddress],
-  };
-  return withResponseError(client.view(payload));
-}
-
 // Return whether `pending_inactive` stake can be directly withdrawn from the delegation pool,
 // for the edge case when the validator had gone inactive before its lockup expired.
 export async function getCanWithdrawPendingInactive(
@@ -337,7 +317,7 @@ export async function getValidatorState(
   return withResponseError(client.view(payload));
 }
 
-export async function getValidatorCommisionAndState(
+export async function getValidatorCommissionAndState(
   client: AptosClient,
   validatorAddresses: Types.Address[],
 ): Promise<Types.MoveValue[]> {

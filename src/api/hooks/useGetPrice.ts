@@ -36,7 +36,8 @@ export async function getPrice(
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      console.error(`HTTP error! Status: ${response.status}`);
+      return null;
     }
 
     const data = await response.json();

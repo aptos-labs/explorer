@@ -12,13 +12,13 @@ export default function ResultLink({
   to,
   text,
   image,
-}: ResultLinkProps): JSX.Element {
+}: ResultLinkProps): React.JSX.Element {
   const style = {
     padding: 0.5,
     display: "block",
     width: "100%",
     "&:hover": {
-      backgroundColor: `${"transparent"}!important`,
+      backgroundColor: `"transparent"!important`,
       opacity: "0.8",
     },
   };
@@ -39,7 +39,7 @@ export default function ResultLink({
             component="span"
             sx={{mr: 1, display: "flex", alignItems: "center"}}
           >
-            <img src={image} height={20} width={20} />
+            <img src={image} alt={image} height={20} width={20} />
           </Box>
         ) : null}
         <Typography variant="inherit">{text}</Typography>

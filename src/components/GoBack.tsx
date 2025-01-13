@@ -24,7 +24,7 @@ function BackButton(handleClick: () => void) {
   );
 }
 
-export default function GoBack(): JSX.Element | null {
+export default function GoBack() {
   const navigate = useNavigate();
 
   if (window.history.state && window.history.state.idx > 0) {
