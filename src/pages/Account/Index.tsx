@@ -6,12 +6,11 @@ import AccountTitle from "./Title";
 import BalanceCard from "./BalanceCard";
 import PageHeader from "../layout/PageHeader";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
-import {useGetAccount} from "../../api/hooks/useGetAccount";
 import LoadingModal from "../../components/LoadingModal";
 import Error from "./Error";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {Network} from "aptos";
+import {Network, Types} from "aptos";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 import {useNavigate} from "../../routing";
@@ -36,8 +35,14 @@ const OBJECT_VALUES_FULL: TabValue[] = [
   "tokens",
   "resources",
   "modules",
+  "info",
 ];
-const OBJECT_TAB_VALUES: TabValue[] = ["transactions", "resources", "modules"];
+const OBJECT_TAB_VALUES: TabValue[] = [
+  "transactions",
+  "resources",
+  "modules",
+  "info",
+];
 
 type AccountPageProps = {
   isObject?: boolean;
@@ -50,7 +55,9 @@ export function accountPagePath(isObject: boolean) {
   return "account";
 }
 
-export default function AccountPage({isObject = false}: AccountPageProps) {
+export default function AccountPage({
+  isObject: alreadyIsObject,
+}: AccountPageProps) {
   const navigate = useNavigate();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
   const maybeAddress = useParams().address;
@@ -70,39 +77,49 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
   }
 
   const {
-    data: objectData,
-    error: objectError,
-    isLoading: objectIsLoading,
+    data: resourceData,
+    error: resourceError,
+    isLoading: resourcesIsLoading,
   } = useGetAccountResources(address, {retry: false});
-  const {
-    data: accountData,
-    error: accountError,
-    isLoading: accountIsLoading,
-  } = useGetAccount(address, {retry: false});
 
-  const isDeleted = !objectData?.find((r) => r.type === objectCoreResource);
+  const accountData = resourceData?.find(
+    (r) => r.type === "0x1::account::Account",
+  )?.data as Types.AccountData | undefined;
+  const objectData = resourceData?.find((r) => r.type === objectCoreResource);
+  const tokenData = resourceData?.find((r) => r.type === "0x4::token::Token");
+  const isAccount = !!accountData;
+  const isObject = !!objectData;
+  const isDeleted = !isObject;
+  const isToken = !!tokenData;
 
-  const isLoading = objectIsLoading || accountIsLoading;
-  const data = isObject ? objectData : accountData;
-  let error: ResponseError | null;
+  const isLoading = resourcesIsLoading;
+  let error: ResponseError | null = null;
   if (addressError) {
     error = addressError;
-  } else if (isObject) {
-    error = objectError;
-  } else {
-    error = accountError ? accountError : objectError;
+  } else if (resourceError) {
+    error = resourceError;
   }
 
   useEffect(() => {
     // If we are on the account page, we might be loading an object. This
     // handler will redirect to the object page if no account exists but an
     // object does.
-    if (!isObject && !isLoading) {
-      if (objectData && !accountData) {
+    if (!isLoading) {
+      // TODO: Handle where it's both an object and an account
+      if (!alreadyIsObject && isObject && !isAccount) {
         navigate(`/object/${address}`, {replace: true});
       }
     }
-  }, [address, isObject, isLoading, accountData, objectData, navigate]);
+  }, [
+    address,
+    alreadyIsObject,
+    isObject,
+    isLoading,
+    accountData,
+    resourceData,
+    navigate,
+    isAccount,
+  ]);
 
   const [state] = useGlobalState();
 
@@ -115,6 +132,17 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
     tabValues = isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
   }
 
+  const accountTabs = (
+    <AccountTabs
+      address={address}
+      accountData={accountData}
+      objectData={objectData}
+      resourceData={resourceData}
+      tabValues={tabValues}
+      isObject={isObject}
+    />
+  );
+
   return (
     <Grid2 container spacing={1}>
       <LoadingModal open={isLoading} />
@@ -126,6 +154,7 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
           address={address}
           isObject={isObject}
           isDeleted={isDeleted}
+          isToken={isToken}
         />
       </Grid2>
       <Grid2 size={{xs: 12, md: 4, lg: 3}} marginTop={{md: 0, xs: 2}}>
@@ -137,21 +166,11 @@ export default function AccountPage({isObject = false}: AccountPageProps) {
       <Grid2 size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
         {error ? (
           <>
-            <AccountTabs
-              address={address}
-              accountData={data}
-              tabValues={tabValues}
-              isObject={isObject}
-            />
+            {accountTabs}
             <Error address={address} error={error} />
           </>
         ) : (
-          <AccountTabs
-            address={address}
-            accountData={data}
-            tabValues={tabValues}
-            isObject={isObject}
-          />
+          <>{accountTabs}</>
         )}
       </Grid2>
     </Grid2>

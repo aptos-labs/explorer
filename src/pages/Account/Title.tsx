@@ -7,18 +7,28 @@ type AccountTitleProps = {
   address: string;
   isObject?: boolean;
   isDeleted?: boolean;
+  isToken?: boolean;
 };
 
 export default function AccountTitle({
   address,
+  isToken = false,
   isObject = false,
   isDeleted = false,
 }: AccountTitleProps) {
   let title = "Account";
-  if (isObject && isDeleted) {
-    title = "Deleted Object";
+  if (isToken) {
+    if (isDeleted) {
+      title = "Deleted Token Object";
+    } else {
+      title = `Token Object`;
+    }
   } else if (isObject) {
-    title = "Object";
+    if (isDeleted) {
+      title = "Deleted Object";
+    } else {
+      title = "Object";
+    }
   }
 
   usePageMetadata({title: `${title} ${address}`});

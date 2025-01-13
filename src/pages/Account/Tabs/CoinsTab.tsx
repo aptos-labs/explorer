@@ -1,6 +1,5 @@
 import React from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Types} from "aptos";
 import {CoinDescriptionPlusAmount, CoinsTable} from "../Components/CoinsTable";
 import {
   CoinDescription,
@@ -12,7 +11,6 @@ import {coinOrderIndex} from "../../utils";
 
 type TokenTabsProps = {
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
 };
 
 export default function CoinsTab({address}: TokenTabsProps) {
