@@ -1,7 +1,5 @@
 import {Types} from "aptos";
 import React from "react";
-import Error from "../Error";
-import {useGetAccountResources} from "../../../api/hooks/useGetAccountResources";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import useExpandedList from "../../../components/hooks/useExpandedList";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
@@ -9,11 +7,11 @@ import CollapsibleCard from "../../../components/IndividualPageContent/Collapsib
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 
 function ResourcesContent({
-  data,
+  resourceData,
 }: {
-  data: Types.MoveResource[] | undefined;
+  resourceData: Types.MoveResource[] | undefined;
 }): JSX.Element {
-  const resources: Types.MoveResource[] = data ?? [];
+  const resources: Types.MoveResource[] = resourceData ?? [];
 
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(resources.length);
@@ -44,20 +42,9 @@ function ResourcesContent({
 }
 
 type ResourcesTabProps = {
-  address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  resourceData: Types.MoveResource[] | undefined;
 };
 
-export default function ResourcesTab({address}: ResourcesTabProps) {
-  const {isLoading, data, error} = useGetAccountResources(address);
-
-  if (isLoading) {
-    return null;
-  }
-
-  if (error) {
-    return <Error address={address} error={error} />;
-  }
-
-  return <ResourcesContent data={data} />;
+export default function ResourcesTab({resourceData}: ResourcesTabProps) {
+  return <ResourcesContent resourceData={resourceData} />;
 }

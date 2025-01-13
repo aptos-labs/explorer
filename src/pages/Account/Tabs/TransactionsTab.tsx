@@ -7,7 +7,8 @@ import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabC
 
 type TransactionsTabProps = {
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: Types.AccountData | undefined;
+  objectData: Types.MoveResource | undefined;
 };
 
 export default function TransactionsTab({
@@ -18,7 +19,7 @@ export default function TransactionsTab({
 
   // AccountTransactions: render transactions where the account is the sender
   // AccountAllTransactions: render all transactions where the account is involved
-  if (Array.isArray(accountData)) {
+  if (!accountData) {
     return isGraphqlClientSupported ? (
       <AccountAllTransactions address={address} />
     ) : (

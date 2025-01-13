@@ -74,7 +74,9 @@ function getTabIcon(value: TabValue): JSX.Element {
 type TabPanelProps = {
   value: TabValue;
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: Types.AccountData | undefined;
+  objectData: Types.MoveResource | undefined;
+  resourceData: Types.MoveResource[] | undefined;
   isObject: boolean;
 };
 
@@ -82,6 +84,8 @@ function TabPanel({
   value,
   address,
   accountData,
+  objectData,
+  resourceData,
   isObject,
 }: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
@@ -89,6 +93,8 @@ function TabPanel({
     <TabComponent
       address={address}
       accountData={accountData}
+      objectData={objectData}
+      resourceData={resourceData}
       isObject={isObject}
     />
   );
@@ -96,7 +102,9 @@ function TabPanel({
 
 type AccountTabsProps = {
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: Types.AccountData | undefined;
+  objectData: Types.MoveResource | undefined;
+  resourceData: Types.MoveResource[] | undefined;
   tabValues?: TabValue[];
   isObject?: boolean;
 };
@@ -105,6 +113,8 @@ type AccountTabsProps = {
 export default function AccountTabs({
   address,
   accountData,
+  objectData,
+  resourceData,
   isObject = false,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): JSX.Element {
@@ -146,6 +156,8 @@ export default function AccountTabs({
           value={effectiveTab}
           address={address}
           accountData={accountData}
+          objectData={objectData}
+          resourceData={resourceData}
           isObject={isObject}
         />
       </Box>
