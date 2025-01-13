@@ -1,14 +1,13 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
   ApolloClient,
-  InMemoryCache,
+  ApolloLink,
   ApolloProvider,
   HttpLink,
+  InMemoryCache,
   NormalizedCacheObject,
-  ApolloLink,
 } from "@apollo/client";
-import {useEffect, useState} from "react";
-import {NetworkName, getApiKey} from "../../constants";
+import {getApiKey, NetworkName} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
 function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
@@ -81,9 +80,5 @@ export function GraphqlClientProvider({children}: GraphqlClientProviderProps) {
 
 export function useGetIsGraphqlClientSupported(): boolean {
   const [state] = useGlobalState();
-  const isGraphqlClientSupported = getIsGraphqlClientSupportedFor(
-    state.network_name,
-  );
-
-  return isGraphqlClientSupported;
+  return getIsGraphqlClientSupportedFor(state.network_name);
 }

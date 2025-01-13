@@ -30,7 +30,7 @@ function getTabLabel(value: TabValue): string {
   }
 }
 
-function getTabIcon(value: TabValue): JSX.Element {
+function getTabIcon(value: TabValue): React.JSX.Element {
   switch (value) {
     case "overview":
       return <BarChartOutlinedIcon fontSize="small" />;
@@ -46,7 +46,7 @@ type TabPanelProps = {
   data: any; // TODO: add graphql data typing
 };
 
-function TabPanel({value, data}: TabPanelProps): JSX.Element {
+function TabPanel({value, data}: TabPanelProps): React.JSX.Element {
   const TabComponent = TabComponents[value];
   return <TabComponent data={data} />;
 }
@@ -59,12 +59,12 @@ type AccountTabsProps = {
 export default function TokenTabs({
   data,
   tabValues = TAB_VALUES,
-}: AccountTabsProps): JSX.Element {
+}: AccountTabsProps): React.JSX.Element {
   const {propertyVersion, tab, tokenId} = useParams();
   const navigate = useNavigate();
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/token/${tokenId}/${propertyVersion}/${newValue}`, {
       replace: true,
     });

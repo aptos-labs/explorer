@@ -5,10 +5,7 @@ interface StyledTabsProps extends TabsProps {
   children: React.ReactNode;
 }
 
-export default function StyledTabs({
-  children,
-  ...props
-}: StyledTabsProps): JSX.Element {
+export default function StyledTabs({children, ...props}: StyledTabsProps) {
   return (
     <Tabs
       variant="scrollable"

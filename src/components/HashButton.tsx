@@ -54,7 +54,7 @@ function getHashLinkStr(input: string, type: HashType): string {
   }
 }
 
-function HashLink(hash: string, type: HashType): JSX.Element {
+function HashLink(hash: string, type: HashType) {
   switch (type) {
     case HashType.ACCOUNT:
     case HashType.TRANSACTION:
@@ -206,7 +206,7 @@ function HashButtonInner({
   } else if (img) {
     icon = (
       <Box component="span" sx={{mr: 1, display: "flex", alignItems: "center"}}>
-        <img src={img} height={20} width={20} />
+        <img src={img} alt={img} height={20} width={20} />
       </Box>
     );
   }

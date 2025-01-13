@@ -27,8 +27,7 @@ export default function Header() {
   const scrollTop = () => {
     const docElement = document.documentElement;
     const windowTop =
-      (window.pageYOffset || docElement.scrollTop) -
-      (docElement.clientTop || 0);
+      (window.scrollY || docElement.scrollTop) - (docElement.clientTop || 0);
 
     if (windowTop > 0) {
       window.scrollTo({

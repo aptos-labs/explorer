@@ -133,7 +133,7 @@ function getBalanceMap(transaction: Types.Transaction) {
   const events: Types.Event[] =
     "events" in transaction ? transaction.events : [];
 
-  const accountToBalance = events.reduce(
+  return events.reduce(
     (
       balanceMap: {
         [key: string]: {
@@ -170,8 +170,6 @@ function getBalanceMap(transaction: Types.Transaction) {
     },
     {},
   );
-
-  return accountToBalance;
 }
 
 function getAptChangeData(
