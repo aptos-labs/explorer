@@ -416,6 +416,7 @@ const swapAction = (
             : HashType.FUNGIBLE_ASSET
         }
         img={assetInCoin?.logoUrl}
+        size="small"
       />
       for {action.amountOut / Math.pow(10, assetOutCoin?.decimals ?? 0)}
       <HashButton
@@ -426,6 +427,7 @@ const swapAction = (
             : HashType.FUNGIBLE_ASSET
         }
         img={assetOutCoin?.logoUrl}
+        size="small"
       />
       on <HashButton hash={action.dex} type={HashType.ACCOUNT} />
     </Box>
