@@ -61,11 +61,9 @@ export function useGetAccountAllTransactionVersions(
     return [];
   }
 
-  const versions: number[] = data.account_transactions.map(
+  return data.account_transactions.map(
     (resource: {transaction_version: number}) => {
       return resource.transaction_version;
     },
   );
-
-  return versions;
 }

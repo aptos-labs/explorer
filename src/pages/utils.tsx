@@ -50,7 +50,7 @@ export function parseTimestampString(
   }
 }
 
-// expiration_timestamp can be user inputted so we don't want to do any ensuring of milliseconds
+// expiration_timestamp can be user inputted so we don't want to do any ensuring of milliseconds,
 // but it comes back at a different factor than what we need for parsing on the frontend
 export function parseExpirationTimestamp(timestamp: string): string {
   return (BigInt(timestamp) * 1000n).toString(10);
@@ -86,8 +86,6 @@ export function truncate(
 
   const strLen = str.length;
   // Setting default values
-  frontLen = frontLen;
-  backLen = backLen;
   truncateStr = truncateStr || "…";
   if (
     (frontLen === 0 && backLen === 0) ||

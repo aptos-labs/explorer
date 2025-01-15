@@ -11,7 +11,9 @@ import {
 } from "../../components/Table/VerifiedCell";
 import TooltipTypography from "../../components/TooltipTypography";
 
-export function getLearnMoreTooltip(txnField: string): JSX.Element | null {
+export function getLearnMoreTooltip(
+  txnField: string,
+): React.JSX.Element | null {
   switch (txnField) {
     case "accumulator_root_hash":
       return (

@@ -134,9 +134,7 @@ export function getPublicFunctionLineNumber(
 ) {
   const lines = sourceCode.split("\n");
   const publicEntryFunRegexp = new RegExp(
-    `\\s*public\\s*(entry\\s*)?fun\\s*${escapeRegExp(
-      functionName,
-    )}\\s*(?:<|\\()`,
+    `\s*public\s*(entry\s*)?fun\s*${escapeRegExp(functionName)}\s*[<(]`,
   );
 
   const lineNumber = lines.findIndex((line) =>

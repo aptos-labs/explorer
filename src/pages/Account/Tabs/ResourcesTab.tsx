@@ -10,7 +10,7 @@ function ResourcesContent({
   resourceData,
 }: {
   resourceData: Types.MoveResource[] | undefined;
-}): JSX.Element {
+}): React.JSX.Element {
   const resources: Types.MoveResource[] = resourceData ?? [];
 
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =

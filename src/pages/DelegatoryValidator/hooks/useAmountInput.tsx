@@ -1,6 +1,5 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import AmountTextField from "../../../components/AmountTextField";
-import React from "react";
 import {StakeOperation} from "../../../api/hooks/useSubmitStakeOperation";
 import {MINIMUM_APT_IN_POOL} from "../constants";
 import {OCTA} from "../../../constants";
@@ -46,7 +45,7 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
   function renderAmountTextField(
     stakes: Types.MoveValue[],
     balance?: string | null,
-  ): JSX.Element {
+  ): React.JSX.Element {
     function getWarnMessage() {
       const stakedAmount = Number(stakes[0]) / OCTA;
       const unlockedAmount = Number(stakes[2]) / OCTA;
@@ -81,7 +80,7 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
           /**
            * if pending_inactive pool has less than 10 apt after txn, reactivate all
            * if active pool has less than 10 apt after txn, reactivate 10 apt to meet minimum requirement
-           * if pending_inactive pool has enough stake, ractivate 10 apt to meet minimum requirement
+           * if pending_inactive pool has enough stake, reactivate 10 apt to meet minimum requirement
            * else reactivate all
            */
           if (
@@ -130,8 +129,7 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
     minAmount: number | null,
     maxAmount: number | null,
   ): boolean {
-    const isValid = isValidAmount(amount, minAmount, maxAmount);
-    return isValid;
+    return isValidAmount(amount, minAmount, maxAmount);
   }
 
   return {

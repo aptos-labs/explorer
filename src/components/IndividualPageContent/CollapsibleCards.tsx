@@ -4,12 +4,12 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 
 // return true if there is at least 1 card is not expanded
 function getNotAllExpanded(expandedList: boolean[]): boolean {
-  return expandedList.find((expanded) => expanded === false) !== undefined;
+  return expandedList.find((expanded) => !expanded) !== undefined;
 }
 
 // return true if there is at least 1 card is expanded
 function getNotAllCollapse(expandedList: boolean[]): boolean {
-  return expandedList.find((expanded) => expanded === true) !== undefined;
+  return expandedList.find((expanded) => expanded) !== undefined;
 }
 
 type ExpandAllCollapseAllButtonsProps = {

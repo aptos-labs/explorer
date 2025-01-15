@@ -10,8 +10,8 @@ overrides:
 
 dependencies:
   "@apollo/client":
-    specifier: ^3.12.3
-    version: 3.12.3(@types/react@18.3.17)(graphql@16.10.0)(react-dom@18.3.1)(react@18.3.1)
+    specifier: ^3.12.5
+    version: 3.12.5(@types/react@18.3.17)(graphql@16.10.0)(react-dom@18.3.1)(react@18.3.1)
   "@aptos-labs/ts-sdk":
     specifier: ^1.33.1
     version: 1.33.1
@@ -246,10 +246,10 @@ packages:
       "@jridgewell/trace-mapping": 0.3.25
     dev: true
 
-  /@apollo/client@3.12.3(@types/react@18.3.17)(graphql@16.10.0)(react-dom@18.3.1)(react@18.3.1):
+  /@apollo/client@3.12.5(@types/react@18.3.17)(graphql@16.10.0)(react-dom@18.3.1)(react@18.3.1):
     resolution:
       {
-        integrity: sha512-KZ5zymRdb8bMbGUb1wP2U04ff7qIGgaC1BCdCVC+IPFiXkxEhHBc5fDEQOwAUT+vUo9KbBh3g7QK/JCOswn59w==,
+        integrity: sha512-lOE2TlHx1el4rHs8vaTE4IroyIO9/PD2w598YYiDahF0XSMDdsXMrTpOVh+FuQ6tZ+DXT+hsaMlilZqcFRgu+A==,
       }
     peerDependencies:
       graphql: ^15.0.0 || ^16.0.0

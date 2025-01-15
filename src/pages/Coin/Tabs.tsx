@@ -37,7 +37,7 @@ function getTabLabel(value: TabValue): string {
   }
 }
 
-function getTabIcon(value: TabValue): JSX.Element {
+function getTabIcon(value: TabValue) {
   switch (value) {
     case "info":
       return <DescriptionOutlinedIcon fontSize="small" />;
@@ -66,7 +66,7 @@ function TabPanel({
   supplyInfo,
   pairedFa,
   coinData,
-}: TabPanelProps): JSX.Element {
+}: TabPanelProps) {
   const TabComponent = TabComponents[value];
   return (
     <TabComponent
@@ -96,7 +96,7 @@ export default function CoinTabs({
   supplyInfo,
   pairedFa,
   coinData,
-}: CoinTabsProps): JSX.Element {
+}: CoinTabsProps) {
   const {tab, modulesTab} = useParams();
   const navigate = useNavigate();
   let effectiveTab: TabValue;
@@ -108,7 +108,7 @@ export default function CoinTabs({
     effectiveTab = TAB_VALUES[0];
   }
 
-  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/coin/${struct}/${newValue}`, {
       replace: true,
     });

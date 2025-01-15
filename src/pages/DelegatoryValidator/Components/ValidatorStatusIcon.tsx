@@ -10,7 +10,7 @@ export default function ValidatorStatusIcon({
   validatorStatus,
 }: {
   validatorStatus: ValidatorStatus | undefined;
-}): JSX.Element {
+}): React.JSX.Element {
   const getStatusIcon = () => {
     if (validatorStatus) {
       switch (validatorStatus) {

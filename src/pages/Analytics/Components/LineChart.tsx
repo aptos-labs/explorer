@@ -74,7 +74,7 @@ export default function LineChart({
       },
       y: {
         ticks: {
-          callback: (value: any) => numberFormatter(value, decimals ?? 0),
+          _callback: (value: any) => numberFormatter(value, decimals ?? 0),
           autoSkip: true,
           maxTicksLimit: 3,
         },

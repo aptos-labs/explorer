@@ -65,7 +65,7 @@ export function useGetNameFromAddress(
   return queryResult.data ?? undefined;
 }
 
-// this function will return null if ans name not found to prevent useQuery complaining about undefined return
+// this function will return null if ANS name not found to prevent useQuery complaining about undefined return
 // source for full context: https://tanstack.com/query/v4/docs/react/guides/migrating-to-react-query-4#undefined-is-an-illegal-cache-value-for-successful-queries
 async function genANSName(
   address: string,

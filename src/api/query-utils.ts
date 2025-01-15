@@ -13,7 +13,7 @@ type CombinedQueryResultState = {
  * @returns
  * @example
  * const {
- *  combinedQueryState: {error, isLoading}},
+ *  combinedQueryState: {error, isLoading},
  *  queries: [query1, query2, query3],
  * } = combineQueries([
  * useQuery(...),

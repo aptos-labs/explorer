@@ -20,7 +20,7 @@ function CoinTransferCodeLine({
   address: string;
   moduleName: string;
   functionName: string;
-}): JSX.Element {
+}): React.JSX.Element {
   return (
     <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
       <Link
@@ -37,7 +37,7 @@ function CoinTransferCodeLine({
   );
 }
 
-function ScriptCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
+function ScriptCodeLine({sx}: {sx?: SxProps<Theme>}): React.JSX.Element {
   return (
     <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
       <Stack direction="row" alignItems="center" spacing={1.5}>
@@ -48,7 +48,7 @@ function ScriptCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
   );
 }
 
-function FaucetCodeLine({sx}: {sx?: SxProps<Theme>}): JSX.Element {
+function FaucetCodeLine({sx}: {sx?: SxProps<Theme>}): React.JSX.Element {
   return (
     <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
       <Stack direction="row" alignItems="center" spacing={1.5}>

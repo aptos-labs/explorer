@@ -35,7 +35,7 @@ function getTabLabel(value: TabValue): string {
   }
 }
 
-function getTabIcon(value: TabValue): JSX.Element {
+function getTabIcon(value: TabValue): React.JSX.Element {
   switch (value) {
     case "info":
       return <DescriptionOutlinedIcon fontSize="small" />;
@@ -54,7 +54,7 @@ type TabPanelProps = {
   data: FACombinedData | undefined;
 };
 
-function TabPanel({value, address, data}: TabPanelProps): JSX.Element {
+function TabPanel({value, address, data}: TabPanelProps): React.JSX.Element {
   const TabComponent = TabComponents[value];
   return <TabComponent address={address} data={data} />;
 }
@@ -70,7 +70,7 @@ export default function FATabs({
   address,
   data,
   tabValues = TAB_VALUES,
-}: FATabsProps): JSX.Element {
+}: FATabsProps): React.JSX.Element {
   const {tab, modulesTab} = useParams();
   const navigate = useNavigate();
   let effectiveTab: TabValue;
@@ -82,7 +82,7 @@ export default function FATabs({
     effectiveTab = TAB_VALUES[0];
   }
 
-  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/fungible_asset/${address}/${newValue}`, {
       replace: true,
     });

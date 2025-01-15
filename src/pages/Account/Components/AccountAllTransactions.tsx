@@ -20,7 +20,7 @@ function RenderPagination({
   const logEvent = useLogEventWithBasic();
 
   const handleChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     newPageNum: number,
   ) => {
     searchParams.set("page", newPageNum.toString());

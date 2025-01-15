@@ -69,7 +69,7 @@ export default function NetworkSelect() {
   const [state, {selectNetwork}] = useGlobalState();
   const theme = useTheme();
 
-  const handleChange = (event: SelectChangeEvent<string>) => {
+  const handleChange = (event: SelectChangeEvent) => {
     const network_name = event.target.value;
     selectNetwork(network_name as NetworkName);
   };

@@ -41,7 +41,7 @@ import {
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import {useQuery} from "@tanstack/react-query";
-import {getValidatorCommisionAndState} from "../../api";
+import {getValidatorCommissionAndState} from "../../api";
 import {MoveValue} from "aptos/src/generated";
 import {ResponseError} from "../../api/client";
 
@@ -450,7 +450,7 @@ export function DelegationValidatorsTable() {
       ...sortedValidatorAddrs,
     ],
     queryFn: () =>
-      getValidatorCommisionAndState(state.aptos_client, sortedValidatorAddrs),
+      getValidatorCommissionAndState(state.aptos_client, sortedValidatorAddrs),
     select: (res: MoveValue[]) => {
       /// First arg is always the return value
       const ret = res[0] as [MoveValue, MoveValue][];
