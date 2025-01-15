@@ -36,17 +36,24 @@ export default function CoinPage() {
     };
   }
 
-  const {data: coinList} = useGetCoinList();
+  const {data: coinList, isLoading: isLoadingCoinList} = useGetCoinList();
 
   const {
     data,
     error: infoError,
-    isLoading,
+    isLoading: isLoadingCoinInfo,
   } = useGetAccountResource(address, `0x1::coin::CoinInfo<${struct}>`);
 
-  const supplyInfo = useGetCoinSupplyLimit(struct);
-  const pairedFa = useGetCoinPairedFa(struct);
+  const {isLoading: isLoadingCoinSupply, data: supplyInfo} =
+    useGetCoinSupplyLimit(struct);
+  const {isLoading: isLoadingPairedFa, data: pairedFa} =
+    useGetCoinPairedFa(struct);
 
+  const isLoading =
+    isLoadingCoinInfo ||
+    isLoadingCoinList ||
+    isLoadingCoinSupply ||
+    isLoadingPairedFa;
   if (error === null) {
     error = infoError;
   }

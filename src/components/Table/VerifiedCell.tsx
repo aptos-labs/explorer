@@ -216,7 +216,7 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
 
   const isCoin = data.id.includes("::");
 
-  const pairedCoin = useGetFaPairedCoin(data.id);
+  const {isLoading, data: pairedCoin} = useGetFaPairedCoin(data.id);
   const {data: coinList} = useGetCoinList();
 
   let {level, reason}: VerifiedLevelInfo = {
@@ -273,7 +273,9 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
     textDecoration: "none",
   };
 
-  return (
+  return isLoading ? (
+    <Box>Loading...</Box>
+  ) : (
     <Stack
       direction="row"
       spacing={1}

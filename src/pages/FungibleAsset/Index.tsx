@@ -44,10 +44,12 @@ export default function FAPage() {
   // TODO: add errors?
 
   const {data: allCoinData} = useGetCoinList();
-  const metadata = useGetFaMetadata(address);
-  const supply = useGetFASupply(address);
-  const pairedCoin = useGetFaPairedCoin(address);
-  const isLoading = false;
+  const {isLoading: isLoadingMetadata, data: metadata} =
+    useGetFaMetadata(address);
+  const {isLoading: isLoadingSupply, data: supply} = useGetFASupply(address);
+  const {isLoading: isLoadingPairedCoin, data: pairedCoin} =
+    useGetFaPairedCoin(address);
+  const isLoading = isLoadingMetadata || isLoadingSupply || isLoadingPairedCoin;
 
   const coinData = findCoinData(allCoinData?.data, address);
   // TODO: Type and hand to tabs
