@@ -12,14 +12,19 @@ export enum SupplyType {
   NO_SUPPLY_TRACKED = "No supply tracked",
 }
 
-export function useGetCoinSupplyLimit(
-  coinType: string,
-): [bigint | null, SupplyType | null] {
+export function useGetCoinSupplyLimit(coinType: string): {
+  isLoading: boolean;
+  data: [bigint | null, SupplyType | null];
+} {
   const [state] = useGlobalState();
   const [totalSupply, setTotalSupply] = useState<bigint | null>(null);
   const [supplyType, setSupplyType] = useState<SupplyType | null>(null);
 
-  const {data} = useViewFunction("0x1::coin::supply", [coinType], []);
+  const {isLoading, data} = useViewFunction(
+    "0x1::coin::supply",
+    [coinType],
+    [],
+  );
   const override = supplyLimitOverrides[coinType];
 
   useEffect(() => {
@@ -42,5 +47,5 @@ export function useGetCoinSupplyLimit(
     }
   }, [data, state, override]);
 
-  return [totalSupply, supplyType];
+  return {isLoading, data: [totalSupply, supplyType]};
 }

@@ -8,8 +8,11 @@ export type FaMetadata = {
   project_uri: string;
 };
 
-export function useGetFaMetadata(address: string): FaMetadata | null {
-  const {data} = useViewFunction(
+export function useGetFaMetadata(address: string): {
+  isLoading: boolean;
+  data: FaMetadata | null;
+} {
+  const {data, isLoading} = useViewFunction(
     "0x1::fungible_asset::metadata",
     ["0x1::object::ObjectCore"],
     [address],
@@ -18,9 +21,9 @@ export function useGetFaMetadata(address: string): FaMetadata | null {
   if (data) {
     const [val] = data as [FaMetadata];
     if (val !== undefined && val !== null) {
-      return val;
+      return {isLoading, data: val};
     }
   }
 
-  return null;
+  return {isLoading, data: null};
 }
