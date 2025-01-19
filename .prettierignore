@@ -1,7 +1,7 @@
 build
 coverage
-public/world.json
-robots.txt
+src/app/world.json
+src/app/robots.txt
 .husky/
 .prettierignore
 .tool-versions

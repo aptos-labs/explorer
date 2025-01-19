@@ -43,6 +43,7 @@
     "js-sha3": "^0.9.3",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
+    "next": "^15.1.5",
     "pako": "^2.1.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
@@ -64,13 +65,11 @@
     "statsig-react": "^2.1.0"
   },
   "scripts": {
-    "start": "vite --port 3000",
-    "dev": "vite --port 3000",
-    "build": "tsc --noEmit && vite build",
-    "serve": "vite preview",
+    "start": "next start",
+    "dev": "next dev",
+    "build": "tsc --noEmit && next build",
     "lint": "tsc --noEmit && eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "fmt": "prettier --write '**/*.(js|jsx|ts|tsx|json|css|scss|md)'",
-    "test": "vitest",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -103,7 +102,6 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
-    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^8.57.1",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",
@@ -111,9 +109,6 @@
     "lint-staged": "^15.2.11",
     "prettier": "^3.4.2",
     "ts-results": "^3.3.0",
-    "typescript": "^5.7.2",
-    "vite": "^6.0.3",
-    "vite-plugin-svgr": "^4.3.0",
-    "vitest": "^2.1.8"
+    "typescript": "^5.7.2"
   }
 }

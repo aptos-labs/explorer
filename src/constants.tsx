@@ -4,7 +4,7 @@ import {CoinDescription} from "./api/hooks/useGetCoinList";
  * Network
  */
 export const devnetUrl =
-  import.meta.env.APTOS_DEVNET_URL ||
+  process.env.APTOS_DEVNET_URL ||
   "https://api.devnet.staging.aptoslabs.com/v1";
 
 export const networks: Record<string, string> = {

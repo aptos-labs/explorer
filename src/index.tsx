@@ -18,7 +18,7 @@ initGTM({
   },
 });
 
-ReactGA.initialize(import.meta.env.GA_TRACKING_ID || "G-8XH7V50XK7");
+ReactGA.initialize(process.env.GA_TRACKING_ID || "G-8XH7V50XK7");
 
 // TODO: redirect to the new explorer domain on the domain host
 if (window.location.origin.includes("explorer.devnet.aptos.dev")) {
@@ -32,8 +32,8 @@ if (window.location.origin.includes("explorer.devnet.aptos.dev")) {
 Sentry.init({
   dsn: "https://531160c88f78483491d129c02be9f774@o1162451.ingest.sentry.io/6249755",
   integrations: [Sentry.browserTracingIntegration()],
-  environment: import.meta.env.MODE,
-  enabled: import.meta.env.PROD,
+  environment: process.env.MODE,
+  enabled: process.env.PROD,
 
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
@@ -56,12 +56,12 @@ root.render(
   <React.StrictMode>
     <StatsigProvider
       sdkKey={
-        import.meta.env.REACT_APP_STATSIG_SDK_KEY ||
+        process.env.NEXT_PUBLIC_STATSIG_SDK_KEY ||
         "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
       }
       waitForInitialization={false}
       options={{
-        environment: {tier: import.meta.env.MODE},
+        environment: {tier: process.env.MODE},
       }}
       user={{}}
     >
