@@ -1,6 +1,5 @@
 import React from "react";
 import {createIcon} from "@download/blockies";
-import {useGetProfile} from "../api/hooks/useGetProfile";
 
 interface IdenticonImgProps {
   address: string;
@@ -9,8 +8,9 @@ interface IdenticonImgProps {
 const IdenticonImg: React.FunctionComponent<IdenticonImgProps> = ({
   address,
 }) => {
-  const {data: profile} = useGetProfile(address);
+  /*const {data: profile} = useGetProfile(address);
   if (profile?.avatar_url) {
+    // TODO: Only add this back once we can get caching and error handling of bad URLs working
     return (
       <img
         src={profile.avatar_url}
@@ -20,7 +20,7 @@ const IdenticonImg: React.FunctionComponent<IdenticonImgProps> = ({
         style={{borderRadius: 2}}
       />
     );
-  }
+  }*/
 
   const iconCanvas = createIcon({
     seed: address,
