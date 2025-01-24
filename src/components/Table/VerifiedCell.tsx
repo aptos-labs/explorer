@@ -81,7 +81,6 @@ export function verifiedLevel(
   input: VerifiedCellProps,
   network: string,
 ): VerifiedLevelInfo {
-  // TODO: Add check for emojis
   const isCoin = input.id.includes("::");
 
   let emojicoinInfo: {coin: string; lp: string} | null = null;
@@ -108,14 +107,6 @@ export function verifiedLevel(
     return {
       level: VerifiedType.COMMUNITY_BANNED,
       // TODO: Add a reason?
-    };
-  } else if (input?.isInPanoraTokenList) {
-    return {
-      level: VerifiedType.COMMUNITY_VERIFIED,
-    };
-  } else if (input?.known) {
-    return {
-      level: VerifiedType.RECOGNIZED,
     };
   } else if (network !== Network.MAINNET) {
     // Everything below here is for Mainnet only
@@ -147,6 +138,14 @@ export function verifiedLevel(
     return {
       level: VerifiedType.LABS_BANNED,
       reason: labsBannedTokenSymbols[input.symbol.toUpperCase() ?? ""],
+    };
+  } else if (input?.isInPanoraTokenList) {
+    return {
+      level: VerifiedType.COMMUNITY_VERIFIED,
+    };
+  } else if (input?.known) {
+    return {
+      level: VerifiedType.RECOGNIZED,
     };
   }
 
