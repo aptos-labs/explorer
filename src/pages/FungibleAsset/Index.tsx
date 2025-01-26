@@ -57,7 +57,7 @@ export default function FAPage() {
     coinData: coinData,
     metadata: metadata,
     supply: supply,
-    pairedCoin: pairedCoin,
+    pairedCoin: pairedCoin ?? null,
   };
 
   const tabValues = isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
