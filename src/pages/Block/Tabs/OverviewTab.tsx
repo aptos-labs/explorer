@@ -1,5 +1,4 @@
 import {Box} from "@mui/material";
-import {Types} from "aptos";
 import React from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -7,17 +6,14 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {Link} from "../../../routing";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
+import {
+  Block,
+  BlockMetadataTransactionResponse,
+  isBlockMetadataTransactionResponse,
+  TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 
-function isBlockMetadataTransaction(
-  txn: Types.Transaction,
-): txn is Types.Transaction_BlockMetadataTransaction {
-  return (
-    (txn as Types.Transaction_BlockMetadataTransaction).type ===
-    "block_metadata_transaction"
-  );
-}
-
-function VersionValue({data}: {data: Types.Block}) {
+function VersionValue({data}: {data: Block}) {
   const {first_version, last_version} = data;
   return (
     <>
@@ -36,14 +32,14 @@ function BlockMetadataRows({
   block,
   blockTxn,
 }: {
-  block: Types.Block;
-  blockTxn: Types.Transaction | undefined;
+  block: Block;
+  blockTxn: TransactionResponse | undefined;
 }) {
   if (!blockTxn) {
     return null;
   }
 
-  const txn = blockTxn as Types.Transaction_BlockMetadataTransaction;
+  const txn = blockTxn as BlockMetadataTransactionResponse;
   const previousBlock = (BigInt(block.block_height) - 1n).toString();
   const nextBlock = (BigInt(block.block_height) + 1n).toString();
   return (
@@ -86,39 +82,41 @@ function BlockMetadataRows({
 }
 
 type OverviewTabProps = {
-  data: Types.Block;
+  data: Block;
 };
 
 export default function OverviewTab({data}: OverviewTabProps) {
-  const blockTxn: Types.Transaction | undefined = (
+  const blockTxn: TransactionResponse | undefined = (
     data.transactions ?? []
-  ).find(isBlockMetadataTransaction);
+  ).find(isBlockMetadataTransactionResponse);
 
   return (
-    <Box marginBottom={3}>
-      <ContentBox>
-        <ContentRow
-          title={"Block Height:"}
-          value={data.block_height}
-          tooltip={getLearnMoreTooltip("block_height")}
-        />
-        <ContentRow
-          title={`Transactions (${BigInt(data.last_version) - BigInt(data.first_version) + 1n}):`}
-          value={<VersionValue data={data} />}
-          tooltip={getLearnMoreTooltip("version")}
-        />
-        <ContentRow
-          title={"Timestamp:"}
-          value={
-            <TimestampValue
-              timestamp={data.block_timestamp}
-              ensureMilliSeconds
-            />
-          }
-          tooltip={getLearnMoreTooltip("timestamp")}
-        />
-        <BlockMetadataRows block={data} blockTxn={blockTxn} />
-      </ContentBox>
-    </Box>
+    blockTxn && (
+      <Box marginBottom={3}>
+        <ContentBox>
+          <ContentRow
+            title={"Block Height:"}
+            value={data.block_height}
+            tooltip={getLearnMoreTooltip("block_height")}
+          />
+          <ContentRow
+            title={`Transactions (${BigInt(data.last_version) - BigInt(data.first_version) + 1n}):`}
+            value={<VersionValue data={data} />}
+            tooltip={getLearnMoreTooltip("version")}
+          />
+          <ContentRow
+            title={"Timestamp:"}
+            value={
+              <TimestampValue
+                timestamp={data.block_timestamp}
+                ensureMilliSeconds
+              />
+            }
+            tooltip={getLearnMoreTooltip("timestamp")}
+          />
+          <BlockMetadataRows block={data} blockTxn={blockTxn} />
+        </ContentBox>
+      </Box>
+    )
   );
 }

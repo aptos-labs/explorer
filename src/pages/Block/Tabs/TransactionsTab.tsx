@@ -1,10 +1,11 @@
 import React from "react";
-import {Types} from "aptos";
 import TransactionsTable from "../../Transactions/TransactionsTable";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {Block} from "@aptos-labs/ts-sdk";
+import {Types} from "aptos";
 
 type TransactionsTabProps = {
-  data: Types.Block;
+  data: Block;
 };
 
 export default function TransactionsTab({data}: TransactionsTabProps) {
@@ -13,5 +14,7 @@ export default function TransactionsTab({data}: TransactionsTabProps) {
     return <EmptyTabContent />;
   }
 
-  return <TransactionsTable transactions={transactions} />;
+  return (
+    <TransactionsTable transactions={transactions as Types.Transaction[]} />
+  );
 }
