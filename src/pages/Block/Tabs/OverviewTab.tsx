@@ -33,8 +33,10 @@ function VersionValue({data}: {data: Types.Block}) {
 }
 
 function BlockMetadataRows({
+  block,
   blockTxn,
 }: {
+  block: Types.Block;
   blockTxn: Types.Transaction | undefined;
 }) {
   if (!blockTxn) {
@@ -42,7 +44,8 @@ function BlockMetadataRows({
   }
 
   const txn = blockTxn as Types.Transaction_BlockMetadataTransaction;
-
+  const previousBlock = (BigInt(block.block_height) - 1n).toString();
+  const nextBlock = (BigInt(block.block_height) + 1n).toString();
   return (
     <>
       <ContentRow
@@ -59,6 +62,24 @@ function BlockMetadataRows({
         title="Round:"
         value={txn.round}
         tooltip={getLearnMoreTooltip("round")}
+      />
+      <ContentRow
+        title="Previous Block:"
+        value={
+          <Link to={`/block/${previousBlock}`} underline="none">
+            {previousBlock}
+          </Link>
+        }
+        tooltip={getLearnMoreTooltip("block")}
+      />
+      <ContentRow
+        title="Next Block:"
+        value={
+          <Link to={`/block/${nextBlock}`} underline="none">
+            {nextBlock}
+          </Link>
+        }
+        tooltip={getLearnMoreTooltip("block")}
       />
     </>
   );
@@ -82,7 +103,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
           tooltip={getLearnMoreTooltip("block_height")}
         />
         <ContentRow
-          title={"Version:"}
+          title={`Transactions (${BigInt(data.last_version) - BigInt(data.first_version) + 1n}):`}
           value={<VersionValue data={data} />}
           tooltip={getLearnMoreTooltip("version")}
         />
@@ -96,7 +117,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
           }
           tooltip={getLearnMoreTooltip("timestamp")}
         />
-        <BlockMetadataRows blockTxn={blockTxn} />
+        <BlockMetadataRows block={data} blockTxn={blockTxn} />
       </ContentBox>
     </Box>
   );
