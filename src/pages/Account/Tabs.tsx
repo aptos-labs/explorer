@@ -52,7 +52,7 @@ function getTabLabel(value: TabValue): string {
   }
 }
 
-function getTabIcon(value: TabValue): JSX.Element {
+function getTabIcon(value: TabValue) {
   switch (value) {
     case "transactions":
       return <WysiwygIcon fontSize="small" />;
@@ -87,7 +87,7 @@ function TabPanel({
   objectData,
   resourceData,
   isObject,
-}: TabPanelProps): JSX.Element {
+}: TabPanelProps): React.JSX.Element {
   const TabComponent = TabComponents[value];
   return (
     <TabComponent
@@ -117,7 +117,7 @@ export default function AccountTabs({
   resourceData,
   isObject = false,
   tabValues = TAB_VALUES,
-}: AccountTabsProps): JSX.Element {
+}: AccountTabsProps) {
   const {tab, modulesTab} = useParams();
   const navigate = useNavigate();
   let effectiveTab: TabValue;
@@ -129,7 +129,7 @@ export default function AccountTabs({
     effectiveTab = TAB_VALUES[0];
   }
 
-  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/${accountPagePath(isObject)}/${address}/${newValue}`, {
       replace: true,
     });

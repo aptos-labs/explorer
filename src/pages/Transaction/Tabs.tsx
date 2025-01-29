@@ -91,7 +91,7 @@ function getTabLabel(value: TabValue): string {
   }
 }
 
-function getTabIcon(value: TabValue): JSX.Element {
+function getTabIcon(value: TabValue): React.JSX.Element {
   switch (value) {
     case "userTxnOverview":
     case "blockMetadataOverview":
@@ -120,7 +120,7 @@ type TabPanelProps = {
   transaction: Types.Transaction;
 };
 
-function TabPanel({value, transaction}: TabPanelProps): JSX.Element {
+function TabPanel({value, transaction}: TabPanelProps): React.JSX.Element {
   const TabComponent = TabComponents[value];
   return <TabComponent transaction={transaction} />;
 }
@@ -133,13 +133,13 @@ type TransactionTabsProps = {
 export default function TransactionTabs({
   transaction,
   tabValues = getTabValues(transaction),
-}: TransactionTabsProps): JSX.Element {
+}: TransactionTabsProps): React.JSX.Element {
   const {tab, txnHashOrVersion} = useParams();
   const navigate = useNavigate();
   const value =
     tab === undefined ? getTabValues(transaction)[0] : (tab as TabValue);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/txn/${txnHashOrVersion}/${newValue}`, {replace: true});
   };
 

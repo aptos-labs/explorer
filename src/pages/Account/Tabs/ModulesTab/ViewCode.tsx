@@ -42,13 +42,7 @@ interface ModuleContentProps {
   bytecode: string;
 }
 
-function ViewCode({
-  address,
-  isObject,
-}: {
-  address: string;
-  isObject: boolean;
-}): JSX.Element {
+function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
   const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
 
   const navigate = useNavigate();

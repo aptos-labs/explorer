@@ -8,6 +8,7 @@ import {
   primary,
   warningColor,
 } from "./colors/aptosColorPalette";
+import React from "react";
 
 // Button variants
 declare module "@mui/material/Button" {

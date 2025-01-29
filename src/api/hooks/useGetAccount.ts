@@ -10,11 +10,9 @@ export function useGetAccount(
 ) {
   const [state] = useGlobalState();
 
-  const result = useQuery<Types.AccountData, ResponseError>({
+  return useQuery<Types.AccountData, ResponseError>({
     queryKey: ["account", {address}, state.network_value],
     queryFn: () => getAccount({address}, state.aptos_client),
     retry: options?.retry ?? false,
   });
-
-  return result;
 }

@@ -50,7 +50,6 @@ export enum Network {
   MAINNET = "mainnet",
   TESTNET = "testnet",
   DEVNET = "devnet",
-  LOCAL = "local",
 }
 
 // Remove trailing slashes
@@ -66,8 +65,6 @@ export const defaultNetworkName: NetworkName = "mainnet" as const;
 if (!(defaultNetworkName in networks)) {
   throw `defaultNetworkName '${defaultNetworkName}' not in Networks!`;
 }
-
-export const defaultNetwork = networks[defaultNetworkName];
 
 /**
  * Feature
@@ -97,8 +94,6 @@ export const defaultFeatureName: FeatureName = "prod" as const;
 if (!(defaultFeatureName in features)) {
   throw `defaultFeatureName '${defaultFeatureName}' not in Features!`;
 }
-
-export const defaultFeature = features[defaultFeatureName];
 
 /**
  * Delegation Service
@@ -390,7 +385,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     faAddress:
       "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b",
     name: "Tether USD",
-    symbol: "USDt", // Turns out USDt is the symbol when unicode USD₮ is not supported
+    symbol: "USDt", // Turns out USDt is the symbol when Unicode USD₮ is not supported
     decimals: 6,
     bridge: null,
     panoraSymbol: null,

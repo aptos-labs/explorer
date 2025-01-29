@@ -6,10 +6,7 @@ interface ContentBoxProps extends BoxProps {
   children: React.ReactNode;
 }
 
-export default function ContentBox({
-  children,
-  ...props
-}: ContentBoxProps): JSX.Element {
+export default function ContentBox({children, ...props}: ContentBoxProps) {
   const theme = useTheme();
   // TODO: unify colors for the new transaction page
   const backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[50];

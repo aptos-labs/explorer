@@ -31,7 +31,7 @@ function getTabLabel(value: TabValue): string {
   }
 }
 
-function getTabIcon(value: TabValue): JSX.Element {
+function getTabIcon(value: TabValue) {
   switch (value) {
     case "overview":
       return <BarChartOutlinedIcon fontSize="small" />;
@@ -47,7 +47,7 @@ type TabPanelProps = {
   data: Block;
 };
 
-function TabPanel({value, data}: TabPanelProps): JSX.Element {
+function TabPanel({value, data}: TabPanelProps) {
   const TabComponent = TabComponents[value];
   return <TabComponent data={data} />;
 }
@@ -60,12 +60,12 @@ type AccountTabsProps = {
 export default function BlockTabs({
   data,
   tabValues = TAB_VALUES,
-}: AccountTabsProps): JSX.Element {
+}: AccountTabsProps) {
   const {height, tab} = useParams();
   const navigate = useNavigate();
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/block/${height}/${newValue}`, {replace: true});
   };
 

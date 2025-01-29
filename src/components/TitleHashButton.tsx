@@ -154,7 +154,7 @@ function Name({address, isValidator}: {address: string; isValidator: boolean}) {
     textDecoration: "none",
   };
 
-  let content = null;
+  let content;
 
   if (isAns) {
     content = (

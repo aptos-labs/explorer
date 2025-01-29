@@ -58,7 +58,7 @@ function ReadContract({
   return <Contract address={address} isObject={isObject} isRead={true} />;
 }
 
-function TabPanel({value, address, isObject}: TabPanelProps): JSX.Element {
+function TabPanel({value, address, isObject}: TabPanelProps) {
   const TabComponent = TabComponents[value];
   return <TabComponent address={address} isObject={isObject} />;
 }
@@ -69,7 +69,7 @@ function ModulesTabs({
 }: {
   address: string;
   isObject: boolean;
-}): JSX.Element {
+}) {
   const theme = useTheme();
   const tabValues = Object.keys(TabComponents) as TabValue[];
   const {selectedFnName, selectedModuleName, modulesTab} = useParams();
@@ -78,7 +78,7 @@ function ModulesTabs({
   const value =
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     let eventName = "";
     switch (newValue) {
       case "code":
