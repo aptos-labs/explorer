@@ -12,8 +12,6 @@ import {
   getAccount,
   getAccountResources,
   getTransaction,
-  getBlockByHeight,
-  getBlockByVersion,
   getAccountResource,
 } from "../../../api";
 import {sendToGTM} from "../../../api/hooks/useGoogleTagManager";
@@ -36,6 +34,7 @@ import {
 } from "../../../api/hooks/useGetCoinList";
 import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
 import {getEmojicoinMarketAddressAndTypeTags} from "../../../components/Table/VerifiedCell";
+import {getBlockByHeight, getBlockByVersion} from "../../../api/v2";
 
 export type SearchResult = {
   label: string;
@@ -124,7 +123,7 @@ export default function HeaderSearch() {
     const promises = [];
     const blockByHeightPromise = getBlockByHeight(
       {height: num, withTransactions: false},
-      state.aptos_client,
+      state.sdk_v2_client,
     )
       .then((): SearchResult => {
         return {
@@ -139,7 +138,7 @@ export default function HeaderSearch() {
 
     const blockByVersionPromise = getBlockByVersion(
       {version: num, withTransactions: false},
-      state.aptos_client,
+      state.sdk_v2_client,
     )
       .then((block): SearchResult => {
         return {

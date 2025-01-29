@@ -15,8 +15,7 @@ function getAgeInSeconds(block: Types.Block): string {
   const blockTimestamp = parseTimestamp(block.block_timestamp);
   const nowTimestamp = parseTimestamp(moment.now().toString());
   const duration = moment.duration(nowTimestamp.diff(blockTimestamp));
-  const durationInSec = duration.asSeconds().toFixed(0);
-  return durationInSec;
+  return duration.asSeconds().toFixed(0);
 }
 
 type BlockCellProps = {
@@ -49,6 +48,18 @@ function BlockHashCell({block}: BlockCellProps) {
   );
 }
 
+function CountVersionCell({block}: BlockCellProps) {
+  return (
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      {(
+        BigInt(block.last_version) -
+        BigInt(block.first_version) +
+        BigInt(1)
+      ).toString()}
+    </GeneralTableCell>
+  );
+}
+
 function FirstVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
@@ -73,6 +84,7 @@ const BlockCells = Object.freeze({
   height: BlockHeightCell,
   age: BlockAgeCell,
   hash: BlockHashCell,
+  numVersions: CountVersionCell,
   firstVersion: FirstVersionCell,
   lastVersion: LastVersionCell,
 });
@@ -83,6 +95,7 @@ const DEFAULT_COLUMNS: Column[] = [
   "height",
   "age",
   "hash",
+  "numVersions",
   "firstVersion",
   "lastVersion",
 ];
@@ -117,6 +130,10 @@ function BlockHeaderCell({column}: BlockHeaderCellProps) {
       return <GeneralTableHeaderCell header="Age" />;
     case "hash":
       return <GeneralTableHeaderCell header="Hash" />;
+    case "numVersions":
+      return (
+        <GeneralTableHeaderCell header="Num Transactions" textAlignRight />
+      );
     case "firstVersion":
       return <GeneralTableHeaderCell header="First Version" textAlignRight />;
     case "lastVersion":

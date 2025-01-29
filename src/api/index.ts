@@ -195,22 +195,6 @@ export function getTableItem(
   return withResponseError(client.getTableItem(tableHandle, data));
 }
 
-export function getBlockByHeight(
-  requestParameters: {height: number; withTransactions: boolean},
-  client: AptosClient,
-): Promise<Types.Block> {
-  const {height, withTransactions} = requestParameters;
-  return withResponseError(client.getBlockByHeight(height, withTransactions));
-}
-
-export function getBlockByVersion(
-  requestParameters: {version: number; withTransactions: boolean},
-  client: AptosClient,
-): Promise<Types.Block> {
-  const {version, withTransactions} = requestParameters;
-  return withResponseError(client.getBlockByVersion(version, withTransactions));
-}
-
 export async function getRecentBlocks(
   currentBlockHeight: number,
   count: number,

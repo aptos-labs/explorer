@@ -1,12 +1,12 @@
 import moment from "moment";
 import {useEffect, useState} from "react";
-import {Types} from "aptos";
 import {useGetBlockByHeight} from "./useGetBlock";
 import {parseTimestamp} from "../../pages/utils";
+import {Block} from "@aptos-labs/ts-sdk";
 
 const TPS_FREQUENCY = 600; // calculate tps every 600 blocks
 
-function calculateTps(startBlock: Types.Block, endBlock: Types.Block): number {
+function calculateTps(startBlock: Block, endBlock: Block): number {
   const startTransactionVersion = parseInt(startBlock.last_version);
   const endTransactionVersion = parseInt(endBlock.last_version);
 
