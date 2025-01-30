@@ -451,6 +451,31 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native"],
   },
+  "0xe528f4df568eb9fff6398adc514bc9585fab397f478972bcbebf1e75dee40a88": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0xe528f4df568eb9fff6398adc514bc9585fab397f478972bcbebf1e75dee40a88",
+    name: "Apollo Diversified Credit Fund",
+    symbol: "ACRED",
+    decimals: 6,
+    panoraSymbol: null,
+    bridge: null,
+    logoUrl:
+      "https://securitize-public-files.s3.us-east-2.amazonaws.com/ClientDocuments/apollo/apollo-token-logo-32x32.png",
+    websiteUrl:
+      "http://securitize.io/primary-market/apollo-diversified-credit-securitize-fund",
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 4,
+    panoraIndex: 4,
+    coinGeckoId: null,
+    coinMarketCapId: null,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Native"],
+  },
   "0x98e39700e0bc5420d0a5c461a5420f1a17358041761f64147b173dfb9e21052d": {
     chainId: 1,
     tokenAddress: null,
@@ -555,6 +580,7 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0xd39fcd33aedfd436a1bbb576a48d5c7c0ac317c9a9bb7d53ae9ffb41e8cb9fd9":
     "Find Out Points",
   "0x50038be55be5b964cfa32cf128b5cf05f123959f286b4cc02b86cafd48945f89": "BUIDL",
+  "0xe528f4df568eb9fff6398adc514bc9585fab397f478972bcbebf1e75dee40a88": "ACRED",
   "0x98e39700e0bc5420d0a5c461a5420f1a17358041761f64147b173dfb9e21052d": "MYCO",
   "0xef0d49f03e48dbd055c3a369f74a304c366bda148005ddf6bb881ced79da0b09": "NIGHT",
   "0xd0ab8c2f76cd640455db56ca758a9766a966c88f77920347aac1719edab1df5e": "AMA",
