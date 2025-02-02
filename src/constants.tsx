@@ -308,6 +308,8 @@ export const knownAddresses: Record<string, string> = {
     "Martian Wallet Fees",
   "0x407c4d644c0303f46f754b3ceaabf1e4af3f625a4936ae7e0f1c3e51082368ef":
     "Pontem Wallet Fees",
+  "0xa5c6b23b141f610246348dd08111affcc2d2b1f5c8f8c768ca5c837d4f17fda2":
+    "MSafe Wallet Fees",
   "0x4de5876d8a8e2be7af6af9f3ca94d9e4fafb24b5f4a5848078d8eb08f08e808a":
     "Securitize",
   "0x4b947ed016c64bde81972d69ea7d356de670d57fd2608b129f4d94ac0d0ee61":
