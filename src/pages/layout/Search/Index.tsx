@@ -252,7 +252,22 @@ export default function HeaderSearch() {
         return null;
       },
     );
-    const anyObjectsPromise = state.sdk_v2_client
+
+    promises.push(faPromise);
+    promises.push(accountPromise);
+    promises.push(resourcePromise);
+    promises.push(anyResourcePromise);
+    return promises;
+  }
+
+  // This is a very slow query, for now we will only do it if the address is not found in the other queries
+  function anyOwnedObjects(searchText: string): Promise<SearchResult | null> {
+    const address = tryStandardizeAddress(searchText);
+    if (!address) {
+      return new Promise<null>(() => null);
+    }
+    // Note: This is a very slow query, for now we will only do it if the address is not found in the other queries
+    return state.sdk_v2_client
       .getAccountOwnedObjects({accountAddress: address})
       .then(
         (output) => {
@@ -270,12 +285,6 @@ export default function HeaderSearch() {
           return null;
         },
       );
-    promises.push(faPromise);
-    promises.push(accountPromise);
-    promises.push(resourcePromise);
-    promises.push(anyResourcePromise);
-    promises.push(anyObjectsPromise);
-    return promises;
   }
 
   function prefixMatchLongerThan3(
@@ -490,6 +499,16 @@ export default function HeaderSearch() {
 
         return result;
       });
+
+    // A bit of a hack, but only make the GraphQL queries after all other queries have failed
+    if (results.length === 0) {
+      if (is32Hex || isValidAccountAddr) {
+        const anyObjects = await anyOwnedObjects(searchText);
+        if (anyObjects) {
+          results.push(anyObjects);
+        }
+      }
+    }
 
     window.performance.mark(searchPerformanceEnd);
     sendToGTM({
