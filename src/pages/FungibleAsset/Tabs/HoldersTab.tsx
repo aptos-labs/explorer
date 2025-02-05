@@ -63,10 +63,10 @@ export function HoldersTable({
               <GeneralTableCell align={"right"}>
                 {getFormattedBalanceStr(
                   holder.amount.toString(),
-                  data.coinData?.decimals,
+                  data.coinData?.decimals ?? data.metadata?.decimals,
                 ) +
                   " " +
-                  data.coinData?.symbol}
+                  (data.coinData?.symbol ?? data.metadata?.symbol)}
               </GeneralTableCell>
             </GeneralTableRow>
           );
