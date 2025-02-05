@@ -41,6 +41,8 @@ export type CoinDescription = {
 export function useGetCoinList(options?: {retry?: number | boolean}) {
   return useQuery<{data: CoinDescription[]}, ResponseError>({
     queryKey: ["coinList"],
+    // TODO: Type this correctly
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     queryFn: async (): Promise<any> => {
       const end_point = "https://api.panora.exchange/tokenlist";
 

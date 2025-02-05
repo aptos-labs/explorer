@@ -41,6 +41,8 @@ export function useGetAccountCoinCount(address: string) {
 
   return useQuery<number, ResponseError>({
     queryKey: ["coinCount", address],
+    // TODO type this
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     queryFn: async (): Promise<any> => {
       const response = await state.sdk_v2_client.queryIndexer<{
         current_fungible_asset_balances_aggregate: {aggregate: {count: number}};
@@ -81,6 +83,8 @@ export function useGetAccountCoins(address: string) {
 
   return useQuery<FaBalance[], ResponseError>({
     queryKey: ["coinQuery", address, count.data],
+    // TODO: Type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     queryFn: async (): Promise<any> => {
       if (!count.data) {
         return [];

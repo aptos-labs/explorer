@@ -76,6 +76,7 @@ export function TokenActivitiesWithPagination({
 
 type ActivitiesTabProps = {
   // TODO: add graphql data typing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 };
 

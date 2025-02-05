@@ -175,7 +175,8 @@ function ActionsCell({
   canWithdrawPendingInactive,
 }: MyDepositsSectionCellProps) {
   const {account} = useWallet();
-  const balance = useGetAccountAPTBalance(account?.address!);
+  // FIXME wallet address not guaranteed to be defined
+  const balance = useGetAccountAPTBalance(account?.address ?? "");
   const requirement = getStakeOperationAPTRequirement(
     stakes,
     getStakeOperationFromStakingStatus(status, canWithdrawPendingInactive),
@@ -259,12 +260,14 @@ function MyDepositSectionContent({
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
   const {connected, account, wallet} = useWallet();
+  // FIXME: account is not guaranteed to be defined
+  const walletAddress = account?.address ?? "";
   const {stakes} = useGetDelegatorStakeInfo(
-    account?.address!,
+    walletAddress,
     validator.owner_address,
   );
   const activities = useGetDelegatedStakeOperationActivities(
-    account?.address!,
+    walletAddress,
     validator.owner_address,
   );
   const {stakePrincipals, isLoading: isStakeActivityLoading} =

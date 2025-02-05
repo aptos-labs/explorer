@@ -97,7 +97,9 @@ function ModulesTabs({
         eventName = "read_tab_clicked";
         break;
     }
-    eventName && logEvent(eventName);
+    if (eventName) {
+      logEvent(eventName);
+    }
 
     navigate(
       `/${accountPagePath(isObject)}/${address}/modules/${newValue}/${selectedModuleName}` +
@@ -122,7 +124,9 @@ function ModulesTabs({
         eventName = "read_tab_viewed";
         break;
     }
-    eventName && logEvent(eventName);
+    if (eventName) {
+      logEvent(eventName);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 

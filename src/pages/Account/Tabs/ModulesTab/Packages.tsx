@@ -152,8 +152,10 @@ function PackagesSidebar({
             <TextField {...params} label="Select a module" />
           )}
           onChange={(_, module) => {
-            module && logEvent("modules_clicked", module.name);
-            module && navigateToPackage(module?.name);
+            if (module) {
+              logEvent("modules_clicked", module.name);
+              navigateToPackage(module?.name);
+            }
           }}
           value={
             selectedPackageName

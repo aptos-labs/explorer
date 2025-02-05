@@ -43,6 +43,7 @@ function getTabIcon(value: TabValue): React.JSX.Element {
 
 type TabPanelProps = {
   value: TabValue;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any; // TODO: add graphql data typing
 };
 
@@ -52,6 +53,7 @@ function TabPanel({value, data}: TabPanelProps): React.JSX.Element {
 }
 
 type AccountTabsProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any; // TODO: add graphql data typing
   tabValues?: TabValue[];
 };

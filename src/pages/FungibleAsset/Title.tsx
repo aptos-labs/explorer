@@ -10,11 +10,12 @@ import {
 } from "../../components/Table/VerifiedCell";
 import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {FaMetadata} from "../../api/hooks/useGetFaMetadata";
 
 type FATitleProps = {
   address: string;
   coinData: CoinDescription | undefined;
-  metadata: any | undefined;
+  metadata: FaMetadata | undefined;
 };
 
 export default function FATitle({address, metadata, coinData}: FATitleProps) {
@@ -50,7 +51,10 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.STRUCT} />
         {!isBannedType(level) && (
-          <TitleHashButton hash={assetSymbol} type={HashType.SYMBOL} />
+          <TitleHashButton
+            hash={assetSymbol ?? "Unknown"}
+            type={HashType.SYMBOL}
+          />
         )}
         <VerifiedAsset
           data={{

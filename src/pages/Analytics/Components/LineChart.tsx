@@ -30,6 +30,7 @@ type LineChartProps = {
   labels: string[];
   dataset: number[];
   fill?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tooltipsLabelFunc?: (context: any) => string;
   decimals?: number;
 };
@@ -74,6 +75,7 @@ export default function LineChart({
       },
       y: {
         ticks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           _callback: (value: any) => numberFormatter(value, decimals ?? 0),
           autoSkip: true,
           maxTicksLimit: 3,

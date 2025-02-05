@@ -1,5 +1,5 @@
 import {useQuery as useGraphqlQuery} from "@apollo/client/react/hooks/useQuery";
-import {gql} from "@apollo/client";
+import {ApolloError, gql} from "@apollo/client";
 
 export type FAActivity = {
   transaction_version: number;
@@ -12,7 +12,7 @@ export function useGetCoinActivities(
   offset?: number,
 ): {
   isLoading: boolean;
-  error: any;
+  error: ApolloError | undefined;
   data: FAActivity[] | undefined;
 } {
   const {loading, error, data} = useGraphqlQuery<{

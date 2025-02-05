@@ -64,19 +64,21 @@ export default function InfoTab({
 
   let objectInfo = null;
   if (objectData) {
+    const objData = objectData.data as {
+      owner: string;
+      allow_ungated_transfer: boolean;
+    };
     objectInfo = (
       <Box marginBottom={3}>
         <ContentBox>
           <ContentRow
             title={"Owner:"}
-            value={(objectData.data as any).owner}
+            value={objData.owner}
             tooltip={getLearnMoreTooltip("owner")}
           />
           <ContentRow
             title={"Transferrable:"}
-            value={
-              (objectData.data as any).allow_ungated_transfer ? "Yes" : "No"
-            }
+            value={objData.allow_ungated_transfer ? "Yes" : "No"}
             tooltip={getLearnMoreTooltip("allow_ungated_transfer")}
           />
         </ContentBox>

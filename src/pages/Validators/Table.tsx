@@ -161,7 +161,7 @@ export function ValidatorsTable() {
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {validatorsInOrder.map((validator: any, i: number) => {
+        {validatorsInOrder.map((validator: Validator, i: number) => {
           return (
             <ValidatorRow
               key={i}
