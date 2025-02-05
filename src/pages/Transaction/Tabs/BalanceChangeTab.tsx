@@ -148,7 +148,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
             symbol: getAssetSymbol(
               entry?.panoraSymbol,
               entry?.bridge,
-              a.metadata.symbol,
+              a.metadata?.symbol,
             ),
             type: a.type,
             id: entry?.tokenAddress ?? a.asset_type,
