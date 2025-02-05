@@ -8,6 +8,7 @@ import {
   standardizeAddress,
 } from "../../utils";
 import {ResponseError} from "../client";
+import {NameType} from "../../components/TitleHashButton";
 
 const TTL = 60000; // 1 minute
 
@@ -31,26 +32,32 @@ export function useGetNameFromAddress(
   address: string,
   shouldCache = false,
   isValidator = false,
+  nameType = NameType.ANY,
 ) {
   const [state] = useGlobalState();
   const queryResult = useQuery<string | null, ResponseError>({
-    queryKey: ["ANSName", address, shouldCache, state.network_name],
+    queryKey: ["ANSName", address, shouldCache, state.network_name, nameType],
     queryFn: () => {
       const standardizedAddress = standardizeAddress(address);
       const lowercaseStandardizedAddress = standardizedAddress.toLowerCase();
-      const knownName = knownAddresses[lowercaseStandardizedAddress];
-      if (knownName) {
-        return knownName;
-      }
-      const scamName = scamAddresses[lowercaseStandardizedAddress];
-      if (scamName) {
-        return scamName;
-      }
+      if (nameType !== NameType.ANS) {
+        const knownName = knownAddresses[lowercaseStandardizedAddress];
+        if (knownName) {
+          return knownName;
+        }
+        const scamName = scamAddresses[lowercaseStandardizedAddress];
+        if (scamName) {
+          return scamName;
+        }
 
-      // Change cache key specifically to invalidate all previous cached keys
-      const cachedName = getLocalStorageWithExpiry(`${address}:name`);
-      if (cachedName) {
-        return cachedName;
+        // Change cache key specifically to invalidate all previous cached keys
+        const cachedName = getLocalStorageWithExpiry(`${address}:name`);
+        if (cachedName) {
+          return cachedName;
+        }
+        if (nameType === NameType.LABEL) {
+          return null;
+        }
       }
       // Ensure there's always .apt at the end
       return genANSName(

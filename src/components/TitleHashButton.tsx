@@ -37,17 +37,27 @@ interface TitleHashButtonProps {
   hash: string;
   type: HashType;
   isValidator?: boolean;
+  nameType?: NameType;
+}
+
+export enum NameType {
+  ANY = "any",
+  ANS = "ans",
+  LABEL = "label",
 }
 
 export default function TitleHashButton({
   hash,
   type,
   isValidator = false,
+  nameType = NameType.ANY,
 }: TitleHashButtonProps) {
   if (type !== HashType.NAME) {
     return <HashButton hash={hash} />;
   } else {
-    return <Name address={hash} isValidator={isValidator} />;
+    return (
+      <Name address={hash} isValidator={isValidator} nameType={nameType} />
+    );
   }
 }
 
@@ -122,9 +132,17 @@ function HashButton({hash}: {hash: string}) {
   );
 }
 
-function Name({address, isValidator}: {address: string; isValidator: boolean}) {
+function Name({
+  address,
+  isValidator,
+  nameType,
+}: {
+  address: string;
+  isValidator: boolean;
+  nameType?: NameType;
+}) {
   const theme = useTheme();
-  const name = useGetNameFromAddress(address, true, isValidator);
+  const name = useGetNameFromAddress(address, true, isValidator, nameType);
 
   if (!name) {
     return null;
