@@ -54,7 +54,15 @@ export default function EventsTab({transaction}: EventsTabProps) {
           <ContentRow title="Type:" value={event.type} />
           <ContentRow
             title="Data:"
-            value={<JsonViewCard data={event.data} />}
+            value={
+              <JsonViewCard
+                data={
+                  typeof event.data == "object"
+                    ? event.data
+                    : {__PLACEHOLDER__: event.data}
+                }
+              />
+            }
           />
         </CollapsibleCard>
       ))}
