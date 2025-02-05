@@ -7,3 +7,4 @@ robots.txt
 .tool-versions
 .gitattributes
 .editorconfig
+.node-version
