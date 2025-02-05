@@ -190,6 +190,7 @@ export function view(
 export function getTableItem(
   requestParameters: {tableHandle: string; data: Types.TableItemRequest},
   client: AptosClient,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   const {tableHandle, data} = requestParameters;
   return withResponseError(client.getTableItem(tableHandle, data));

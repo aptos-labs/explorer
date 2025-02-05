@@ -112,6 +112,7 @@ const DEFAULT_COLUMNS: Column[] = [
 ];
 
 type TokenRowProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   token: any; // TODO: add graphql data typing
   columns: Column[];
 };
@@ -173,7 +174,7 @@ export function TokensTable({
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {tokens.map((token: any, i: number) => {
+        {tokens.map((token, i: number) => {
           return <TokenRow key={i} token={token} columns={columns} />;
         })}
       </GeneralTableBody>

@@ -128,7 +128,7 @@ export function isValidStruct(maybeStruct: string): boolean {
 
   try {
     parseTypeTag(maybeStruct);
-  } catch (e: any) {
+  } catch {
     return false;
   }
   return true;
@@ -153,7 +153,7 @@ export function isValidUrl(url: string): boolean {
   try {
     new URL(url);
     return true;
-  } catch (_) {
+  } catch {
     return false;
   }
 }
@@ -163,7 +163,7 @@ export function isValidIpfsUrl(url: string): boolean {
     const parsedUrl = new URL(url);
     parsedUrl.toString().startsWith("ipfs://");
     return true;
-  } catch (_) {
+  } catch {
     return false;
   }
 }

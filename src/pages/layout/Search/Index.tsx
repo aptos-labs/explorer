@@ -456,7 +456,7 @@ export default function HeaderSearch() {
     );
 
     // Something besides any
-    let filteredResults: any[];
+    let filteredResults: (SearchResult | null)[];
 
     switch (true) {
       case Boolean(foundCoinByList): {

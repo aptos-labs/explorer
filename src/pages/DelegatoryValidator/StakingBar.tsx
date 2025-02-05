@@ -143,10 +143,11 @@ function StakingBarContent({
     </Stack>
   );
 
-  const balance = useGetAccountAPTBalance(account?.address!);
+  const walletAddress = account?.address ?? ""; // FIXME: Migrate for SDK V1
+  const balance = useGetAccountAPTBalance(walletAddress);
   const [state] = useGlobalState();
   const {stakes} = useGetDelegatorStakeInfo(
-    account?.address!,
+    walletAddress,
     validator.owner_address,
   );
   const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);

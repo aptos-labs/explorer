@@ -248,8 +248,10 @@ function ContractSidebar({
             <TextField {...params} label="Select a function" />
           )}
           onChange={(_, fn) => {
-            fn && logEvent("function_name_clicked", fn.fnName);
-            fn && navigate(getLinkToFn(fn.moduleName, fn.fnName, isObject));
+            if (fn) {
+              logEvent("function_name_clicked", fn.fnName);
+              navigate(getLinkToFn(fn.moduleName, fn.fnName, isObject));
+            }
           }}
           value={
             selectedModuleName && selectedFnName
@@ -286,6 +288,7 @@ function RunContractForm({
   const convertArgument = (
     arg: string | null | undefined,
     type: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): any => {
     // TypeScript doesn't really protect us from nulls, this enforces it
     if (typeof arg !== "string") {
@@ -297,6 +300,7 @@ function RunContractForm({
       const innerTag = typeTag.value;
       if (innerTag.isVector()) {
         // This must be JSON, let's parse it
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return JSON.parse(arg) as any[];
       }
 
@@ -310,6 +314,7 @@ function RunContractForm({
 
       if (arg.startsWith("[")) {
         // This is supposed to be JSON if it has the bracket
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return JSON.parse(arg) as any[];
       } else {
         // We handle array without brackets otherwise
@@ -516,6 +521,7 @@ function ReadContractForm({
           return encodeInputArgsForViewRequest(fn.params[i], arg);
         }),
       };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       setErrMsg("Parsing arguments failed: " + e?.message);
       return;
@@ -530,6 +536,7 @@ function ReadContractForm({
       setResult(result);
       setErrMsg(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "success"});
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       // Ensure error is a string
       let error = e.message ?? JSON.stringify(e);

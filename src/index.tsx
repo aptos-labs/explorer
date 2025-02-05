@@ -44,6 +44,7 @@ Sentry.init({
 // inform the compiler of the existence of the window.aptos API
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     aptos: any;
   }
 }

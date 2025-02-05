@@ -316,7 +316,7 @@ function StakeOperationDialogContent({
                 title={"Next Unlock In"}
                 value={
                   <TimestampValue
-                    timestamp={lockedUntilSecs?.toString()!}
+                    timestamp={lockedUntilSecs?.toString() ?? "Unknown"}
                     ensureMilliSeconds
                   />
                 }

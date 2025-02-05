@@ -41,7 +41,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   };
 
   const startingLineNumber = useStartingLineNumber(sourceCode);
-  const codeBoxScrollRef = useRef<any>(null);
+  const codeBoxScrollRef = useRef<{scrollTop: number} | null>(null);
   const LINE_HEIGHT_IN_PX = 24;
   useEffect(() => {
     if (codeBoxScrollRef.current) {
@@ -124,7 +124,7 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
   }
 
   const startingLineNumber = useStartingLineNumber(sourceCode);
-  const codeBoxScrollRef = useRef<any>(null);
+  const codeBoxScrollRef = useRef<{scrollTop: number} | null>(null);
   const LINE_HEIGHT_IN_PX = 24;
   useEffect(() => {
     if (codeBoxScrollRef.current) {

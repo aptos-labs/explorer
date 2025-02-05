@@ -24,7 +24,6 @@ import {useParams} from "react-router-dom";
 import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";
 import {Code} from "../../Components/CodeSnippet";
-import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 
 interface ModuleSidebarProps {
@@ -114,7 +113,6 @@ function ModuleSidebar({
 }: ModuleSidebarProps) {
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
-  const logEvent = useLogEventWithBasic();
   const flattedModules = useMemo(
     () =>
       sortedPackages.flatMap((pkg) =>
@@ -164,8 +162,9 @@ function ModuleSidebar({
             <TextField {...params} label="Select a module" />
           )}
           onChange={(_, module) => {
-            module && logEvent("modules_clicked", module.name);
-            module && navigateToModule(module?.name);
+            if (module) {
+              navigateToModule(module.name);
+            }
           }}
           value={
             selectedModuleName

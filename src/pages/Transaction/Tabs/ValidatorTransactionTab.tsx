@@ -15,7 +15,9 @@ type ValidatorTabProps = {
 export default function ValidatorTransactionTab({
   transaction,
 }: ValidatorTabProps) {
-  const transactionData = transaction as any; // TODO: We need to get off SDK v1
+  // FIXME: We need to get off SDK v1
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const transactionData = transaction as any;
 
   return (
     <Box marginBottom={3}>

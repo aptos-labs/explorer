@@ -69,7 +69,11 @@ export default function FAPage() {
         <PageHeader />
       </Grid2>
       <Grid2 size={{xs: 12, md: 8, lg: 9}} alignSelf="center">
-        <FATitle address={address} metadata={metadata} coinData={coinData} />
+        <FATitle
+          address={address}
+          metadata={metadata ?? undefined}
+          coinData={coinData}
+        />
       </Grid2>
       <Grid2 size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
         {error ? (

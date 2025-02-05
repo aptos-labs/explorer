@@ -35,6 +35,7 @@ export default function DailyAvgGasUnitPriceChart({
         labels={labels}
         dataset={dataset}
         fill
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         tooltipsLabelFunc={(context: any) => {
           const priceInteger = Math.round(context.parsed.y).toString();
           const priceInAPT = getFormattedBalanceStr(priceInteger, 8);

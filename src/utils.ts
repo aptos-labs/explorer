@@ -186,18 +186,16 @@ function encodeVectorForViewRequest(type: string, value: string) {
   const match = type.match(regex);
   if (match) {
     if (match[1] === "u8") {
-      return (
-        new Hex(
-          new Uint8Array(
-            rawVector.map((v) => {
-              const result = ensureNumber(v.trim());
-              if (result < 0 || result > 255)
-                throw new Error(`Invalid u8 value: ${result}`);
-              return result;
-            }),
-          ),
-        ) as any
-      ).hexString;
+      return new Hex(
+        new Uint8Array(
+          rawVector.map((v) => {
+            const result = ensureNumber(v.trim());
+            if (result < 0 || result > 255)
+              throw new Error(`Invalid u8 value: ${result}`);
+            return result;
+          }),
+        ),
+      ).toString();
     } else if (["u16", "u32"].includes(match[1])) {
       return rawVector.map((v) => ensureNumber(v.trim()));
     } else if (["u64", "u128", "u256"].includes(match[1])) {
@@ -251,6 +249,7 @@ export function ensureBoolean(val: boolean | string): boolean {
   throw new Error("Invalid boolean string.");
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function assertType(val: any, types: string[] | string, message?: string) {
   if (!types?.includes(typeof val)) {
     throw new Error(

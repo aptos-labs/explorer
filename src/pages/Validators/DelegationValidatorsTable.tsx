@@ -330,7 +330,7 @@ function MyDepositCell({validator}: ValidatorCellProps) {
   const [totalDeposit, setTotalDeposit] = useState<Types.MoveValue>();
   const {account} = useWallet();
   const {stakes} = useGetDelegatorStakeInfo(
-    account?.address!,
+    account?.address ?? "",
     validator.owner_address,
   );
 
@@ -344,6 +344,14 @@ function MyDepositCell({validator}: ValidatorCellProps) {
       ),
     );
   }, [stakes]);
+
+  if (account?.address === undefined) {
+    return (
+      <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
+        <Typography>N/A No wallet connected</Typography>
+      </GeneralTableCell>
+    );
+  }
 
   return (
     <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
@@ -524,11 +532,13 @@ export function DelegationValidatorsTable() {
       </TableHead>
       <GeneralTableBody>
         {sortedValidatorsWithCommissionAndState?.map(
-          (validator: any, i: number) => {
+          (validator: MoveValue, i: number) => {
             return (
               <ValidatorRow
                 key={i}
-                validator={validator}
+                // FIXME: This type should be parsed properly, rather than converting here
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                validator={validator as any}
                 columns={columns}
                 connected={connected}
               />

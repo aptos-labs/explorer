@@ -68,7 +68,7 @@ export default function AccountPage({
       address = AccountAddress.from(maybeAddress, {
         maxMissingChars: 63,
       }).toStringLong();
-    } catch (e: any) {
+    } catch {
       addressError = {
         type: ResponseErrorType.INVALID_INPUT,
         message: `Invalid address '${maybeAddress}'`,

@@ -162,7 +162,7 @@ export default function BlocksTable({
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {blocks.map((block: any, i: number) => {
+        {blocks.map((block: Types.Block, i: number) => {
           return <BlockRow key={i} block={block} columns={columns} />;
         })}
       </GeneralTableBody>
