@@ -5,7 +5,9 @@ import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHea
 import {assertNever} from "../../../../utils";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import {BalanceChange} from "../../utils";
-import CurrencyValue from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import CurrencyValue, {
+  getFormattedBalanceStr,
+} from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {
   negativeColor,
   primary,
@@ -15,6 +17,8 @@ import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
 import {VerifiedCoinCell} from "../../../../components/Table/VerifiedCell";
 import {getLearnMoreTooltip} from "../../helpers";
+import {ContentCopy} from "@mui/icons-material";
+import StyledTooltip from "../../../../components/StyledTooltip";
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
@@ -80,6 +84,19 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
   const isNegative = balanceChange.amount < 0;
   const amount =
     balanceChange.amount < 0 ? -balanceChange.amount : balanceChange.amount;
+  const [showCopied, setShowCopied] = React.useState(false);
+
+  const handleCopy = async () => {
+    const formattedValue = getFormattedBalanceStr(
+      amount.toString(),
+      balanceChange.asset.decimals,
+    );
+    await navigator.clipboard.writeText(
+      `${isNegative ? "-" : ""}${formattedValue}`,
+    );
+    setShowCopied(true);
+    setTimeout(() => setShowCopied(false), 1500);
+  };
 
   return (
     <GeneralTableCell
@@ -87,13 +104,17 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
         textAlign: "right",
         color: isNegative ? negativeColor : primary[600],
       }}
+      onClick={handleCopy}
     >
       {isNegative ? "-" : "+"}
       <CurrencyValue
         amount={amount.toString()}
         currencyCode={balanceChange.asset.symbol}
         decimals={balanceChange.asset.decimals}
-      />
+      />{" "}
+      <StyledTooltip open={showCopied} title="Copied!" placement="top">
+        <ContentCopy style={{height: "1rem", width: "1.25rem"}} />
+      </StyledTooltip>
     </GeneralTableCell>
   );
 }
