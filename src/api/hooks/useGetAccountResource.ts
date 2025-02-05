@@ -14,7 +14,7 @@ export type UpgradePolicy = {
   // 0 is arbitrary, i.e. publisher can upgrade anyway they want, they need to migrate the data manually
   // 1 is compatible
   // 2 is immutable
-  policy: string;
+  policy: number;
 };
 
 export type PackageMetadata = {

@@ -10,8 +10,10 @@ import Contract from "./Contract";
 import {useNavigate} from "../../../../routing";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
+import Packages from "./Packages";
 
 const TabComponents = Object.freeze({
+  packages: Packages,
   code: ViewCode,
   run: RunContract,
   view: ReadContract,
@@ -21,6 +23,8 @@ type TabValue = keyof typeof TabComponents;
 
 function getTabLabel(value: TabValue): string {
   switch (value) {
+    case "packages":
+      return "Packages";
     case "code":
       return "Code";
     case "run":
@@ -81,6 +85,8 @@ function ModulesTabs({
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     let eventName = "";
     switch (newValue) {
+      case "packages":
+        break;
       case "code":
         // no event needed
         break;
@@ -103,6 +109,9 @@ function ModulesTabs({
   useEffect(() => {
     let eventName = "";
     switch (value) {
+      case "packages":
+        eventName = "package_tab_viewed";
+        break;
       case "code":
         eventName = "modules_tab_viewed";
         break;
