@@ -429,6 +429,30 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native"],
   },
+  "0xf37a8864fe737eb8ec2c2931047047cbaed1beed3fb0e5b7c5526dafd3b9c2e9": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0xf37a8864fe737eb8ec2c2931047047cbaed1beed3fb0e5b7c5526dafd3b9c2e9",
+    name: "USDe",
+    symbol: "USDe",
+    decimals: 6,
+    bridge: null,
+    panoraSymbol: null,
+    logoUrl: "https://arweave.net/qeSnRm_FIyp_khPfmg8o1zQeGO4AczDaEKe8jEUOzL4",
+    websiteUrl: "https://ethena.fi",
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 4,
+    panoraIndex: 4,
+    coinGeckoId: "ethena-usde",
+    coinMarketCapId: 29470,
+    native: true,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Native"],
+  },
   "0x50038be55be5b964cfa32cf128b5cf05f123959f286b4cc02b86cafd48945f89": {
     chainId: 1,
     tokenAddress: null,
@@ -579,6 +603,7 @@ export const nativeTokens: Record<string, string> = {
 export const manuallyVerifiedTokens: Record<string, string> = {
   "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "USDt",
   "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b": "USDC",
+  "0xf37a8864fe737eb8ec2c2931047047cbaed1beed3fb0e5b7c5526dafd3b9c2e9": "USDe",
   "0xd39fcd33aedfd436a1bbb576a48d5c7c0ac317c9a9bb7d53ae9ffb41e8cb9fd9":
     "Find Out Points",
   "0x50038be55be5b964cfa32cf128b5cf05f123959f286b4cc02b86cafd48945f89": "BUIDL",
