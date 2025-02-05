@@ -13,8 +13,8 @@
   "dependencies": {
     "@apollo/client": "^3.12.5",
     "@aptos-labs/ts-sdk": "^1.33.1",
-    "@aptos-labs/wallet-adapter-mui-design": "3.0.23",
-    "@aptos-labs/wallet-adapter-react": "3.7.9",
+    "@aptos-labs/wallet-adapter-mui-design": "3.0.25",
+    "@aptos-labs/wallet-adapter-react": "3.7.11",
     "@bitget-wallet/aptos-wallet-adapter": "^0.1.2",
     "@blocto/aptos-wallet-adapter-plugin": "^0.2.11",
     "@download/blockies": "^1.0.3",
@@ -60,7 +60,7 @@
     "react-simple-maps": "^3.0.0",
     "react-syntax-highlighter": "^15.6.1",
     "recharts": "^2.15.0",
-    "rimosafe-plugin-wallet-adapter": "^0.0.1",
+    "rimosafe-plugin-wallet-adapter": "^0.0.4",
     "statsig-react": "^2.1.0"
   },
   "scripts": {
