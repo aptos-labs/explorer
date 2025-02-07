@@ -21,7 +21,7 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
   const prefix = import.meta.env.REACT_APP_PREFIX || "";
   switch (networkName) {
     case "mainnet":
-      return `https://rpc.sentio.xyz/movement-indexer/v1/graphql`;
+      return `https://indexer.mainnet.movementnetwork.xyz/v1/graphql`;
     case "testnet":
       return (
         import.meta.env.PORTO_GRAPHQL ||
@@ -37,8 +37,8 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
         import.meta.env.DEVNET_GRAPHQL ||
         `https://${prefix}aptos.devnet.suzuka.movementlabs.xyz/graphql`
       );
-    case "local":
-      return import.meta.env.LOCAL_GRAPHQL || "http://0.0.0.0:30731/graphql";
+    // case "local":
+    //   return import.meta.env.LOCAL_GRAPHQL || "http://0.0.0.0:30731/graphql";
     case "mevmdevnet":
       return (
         import.meta.env.IMOLA_GRAPHQL ||
