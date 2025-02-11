@@ -661,3 +661,7 @@ export const labsBannedAddresses: Record<string, string> = {
   "0xbbc4a9af0e7fa8885bda5db08028e7b882f2c2bba1e0fedbad1d8316f73f8b2f":
     MARKED_AS_SCAM,
 };
+
+export const labsBannedTokenSymbols: Record<string, string> = {
+  APT: MARKED_AS_SCAM,
+};
