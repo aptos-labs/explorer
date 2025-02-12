@@ -33,9 +33,8 @@ import {
   EMOJICOIN_REGISTRY_ADDRESS,
   labsBannedAddresses,
   labsBannedTokens,
+  labsBannedTokenSymbols,
   manuallyVerifiedTokens,
-  MARKED_AS_POSSIBLE_SCAM,
-  MARKED_AS_SCAM,
   nativeTokens,
 } from "../../constants";
 
@@ -65,12 +64,6 @@ export function isBannedType(level: VerifiedType): boolean {
     level === VerifiedType.LABS_BANNED
   );
 }
-
-const labsBannedTokenSymbols: Record<string, string> = {
-  APT: MARKED_AS_SCAM,
-  USDT: MARKED_AS_POSSIBLE_SCAM,
-  USDC: MARKED_AS_POSSIBLE_SCAM,
-};
 
 export type VerifiedLevelInfo = {
   level: VerifiedType;
