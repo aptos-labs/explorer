@@ -23,6 +23,9 @@ import {
 } from "../../../api/hooks/useGetCoinList";
 import {findCoinData} from "./BalanceChangeTab";
 import {useGetAssetMetadata} from "../../../api/hooks/useGetAssetMetadata";
+import {Hex} from "@aptos-labs/ts-sdk";
+
+const TEXT_DECODER = new TextDecoder();
 
 function UserTransferOrInteractionRows({
   transaction,
@@ -103,7 +106,8 @@ type Swap = {
     | "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e" // "Liquidswap v0.5"
     | "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa" // "PancakeSwap"
     | "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1" // "Cellana Finance"
-    | "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e"; // "Thetis Market";
+    | "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e" // "Thetis Market"
+    | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba"; // "Cetus"
   amountIn: number;
   amountOut: number;
   assetIn: string;
@@ -377,6 +381,7 @@ function getEventAction(event: Types.Event): EventAction | undefined {
     parsePancakeSwapEvent,
     parseCellanaEvent,
     parseThetisSwapEvent,
+    parseCetusSwapEvent,
   ];
 
   for (const parse of parsers) {
@@ -790,4 +795,62 @@ function parseThetisSwapEvent(event: Types.Event): Swap | undefined {
     assetIn,
     assetOut,
   };
+}
+
+function parseCetusSwapEvent(event: Types.Event): Swap | undefined {
+  if (
+    event.type !==
+    "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba::amm_swap::SwapEvent"
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    a_in: string;
+    a_out: string;
+    b_in: string;
+    b_out: string;
+    coin_a_info: {
+      account_address: string;
+      module_name: string;
+      struct_name: string;
+    };
+    coin_b_info: {
+      account_address: string;
+      module_name: string;
+      struct_name: string;
+    };
+  } = event.data;
+
+  const coinA = convertCoinInfoToCoinType(data.coin_a_info);
+  const coinB = convertCoinInfoToCoinType(data.coin_b_info);
+
+  const [amountInRaw, amountOutRaw, assetIn, assetOut] =
+    data.a_in === "0"
+      ? [data.b_in, data.a_out, coinB, coinA]
+      : [data.a_in, data.b_out, coinA, coinB];
+
+  const amountIn = Number(amountInRaw);
+  const amountOut = Number(amountOutRaw);
+
+  return {
+    actionType: "swap",
+    dex: "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba",
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function convertCoinInfoToCoinType(coinInfo: {
+  account_address: string;
+  module_name: string;
+  struct_name: string;
+}): string {
+  return `${coinInfo.account_address}::${hexToUtf8(coinInfo.module_name)}::${hexToUtf8(coinInfo.struct_name)}`;
+}
+
+function hexToUtf8(hexWith0x: string): string {
+  return TEXT_DECODER.decode(Hex.fromHexString(hexWith0x).toUint8Array());
 }
