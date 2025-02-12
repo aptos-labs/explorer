@@ -179,6 +179,7 @@ export const knownAddresses: Record<string, string> = {
     "KanaLabs",
   "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c":
     "Econia Labs",
+  "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba": "Cetus", // dead
   // Lending
   "0x9770fa9c725cbd97eb50b2be5f7416efdfd1f1554beb0750d4dae4c64e860da3":
     "Aries Markets",
@@ -223,7 +224,7 @@ export const knownAddresses: Record<string, string> = {
     "Lucid Finance",
   "0xd47ead75b923422f7967257259e7a298f029da9e5484dc7aa1a9efbd4c3ae648":
     "Native FA Redemption",
-  "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e":
+  "0x0c727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e":
     "Thetis Market",
   // NFT marketplace
   "0x7ccf0e6e871977c354c331aa0fccdffb562d9fceb27e3d7f61f8e12e470358e9":
