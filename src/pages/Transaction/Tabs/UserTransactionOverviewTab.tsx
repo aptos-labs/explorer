@@ -22,6 +22,7 @@ import {
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
 import {findCoinData} from "./BalanceChangeTab";
+import {useGetAssetMetadata} from "../../../api/hooks/useGetAssetMetadata";
 
 function UserTransferOrInteractionRows({
   transaction,
@@ -388,17 +389,26 @@ function getEventAction(event: Types.Event): EventAction | undefined {
   return undefined;
 }
 
-const swapAction = (
-  coinData: {data: CoinDescription[]} | undefined,
-  action: Swap,
-  i: number,
-) => {
+const SwapActionContent = ({
+  action,
+  coinData,
+}: {
+  action: Swap;
+  coinData: {data: CoinDescription[]} | undefined;
+}) => {
+  const {data: assetInMetadata} = useGetAssetMetadata(action.assetIn);
+  const {data: assetOutMetadata} = useGetAssetMetadata(action.assetOut);
+
+  // Try coinData first
   const assetInCoin = findCoinData(coinData?.data ?? [], action.assetIn);
   const assetOutCoin = findCoinData(coinData?.data ?? [], action.assetOut);
 
+  // Use coinData decimals if available, otherwise fall back to metadata, then default to 0
+  const inDecimals = assetInCoin?.decimals ?? assetInMetadata?.decimals ?? 0;
+  const outDecimals = assetOutCoin?.decimals ?? assetOutMetadata?.decimals ?? 0;
+
   return (
     <Box
-      key={`action-${i}`}
       sx={{
         marginBottom: 1,
         display: "flex",
@@ -407,7 +417,7 @@ const swapAction = (
       }}
     >
       {"🔄 Swapped "}
-      {action.amountIn / Math.pow(10, assetInCoin?.decimals ?? 0)}
+      {action.amountIn / Math.pow(10, inDecimals)}
       <HashButton
         hash={action.assetIn}
         type={
@@ -418,7 +428,7 @@ const swapAction = (
         img={assetInCoin?.logoUrl}
         size="small"
       />
-      for {action.amountOut / Math.pow(10, assetOutCoin?.decimals ?? 0)}
+      for {action.amountOut / Math.pow(10, outDecimals)}
       <HashButton
         hash={action.assetOut}
         type={
@@ -431,6 +441,20 @@ const swapAction = (
       />
       on <HashButton hash={action.dex} type={HashType.ACCOUNT} />
     </Box>
+  );
+};
+
+const swapAction = (
+  coinData: {data: CoinDescription[]} | undefined,
+  action: Swap,
+  i: number,
+) => {
+  return (
+    <SwapActionContent
+      key={`action-${i}`}
+      action={action}
+      coinData={coinData}
+    />
   );
 };
 
