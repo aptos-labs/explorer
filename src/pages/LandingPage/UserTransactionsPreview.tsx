@@ -6,18 +6,15 @@ import {UserTransactionsTable} from "../Transactions/TransactionsTable";
 import useGetUserTransactionVersions from "../../api/hooks/useGetUserTransactionVersions";
 import TransactionsPreview from "./TransactionsPreview";
 import {useAugmentToWithGlobalSearchParams} from "../../routing";
-import {useGlobalState} from "../../global-config/GlobalConfig";
 
 const PREVIEW_TRANSACTIONS_COUNT = 10;
 
 export default function UserTransactionsPreview() {
   const versions = useGetUserTransactionVersions(PREVIEW_TRANSACTIONS_COUNT);
   const augmentTo = useAugmentToWithGlobalSearchParams();
-  const [state] = useGlobalState();
-  const showPreview = state.network_name === "mainnet";
 
   // TODO: remove the fallback below when indexer is stable
-  if (versions.length === 0 || showPreview) {
+  if (versions.length === 0) {
     return <TransactionsPreview />;
   }
 
