@@ -166,11 +166,11 @@ export const knownAddresses: Record<string, string> = {
   "0x80273859084bc47f92a6c2d3e9257ebb2349668a1b0fb3db1d759a04c7628855":
     "LiquidSwap router",
   "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c":
-    "SushiSwap", // dead
+    "SushiSwap", // defunct
   "0xa5d3ac4d429052674ed38adc62d010e52d7c24ca159194d17ddc196ddb7e480b":
-    "AptoSwap", // dead
+    "AptoSwap", // defunct
   "0xbd35135844473187163ca197ca93b2ab014370587bb0ed3befff9e902d6bb541":
-    "AuxExchange", // dead
+    "AuxExchange", // defunct
   "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1":
     "Cellana Finance",
   "0xea098f1fa9245447c792d18c069433f5da2904358e1e340c55bdc68a8f5fe037":
@@ -182,13 +182,13 @@ export const knownAddresses: Record<string, string> = {
   "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c":
     "Econia Labs",
   "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba":
-    "Cetus 1", // dead
+    "Cetus 1", // defunct
   "0xa7f01413d33ba919441888637ca1607ca0ddcbfa3c0a9ddea64743aaa560e498":
-    "Cetus 2", // dead
+    "Cetus 2", // defunct
   "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b":
-    "Obric", // dead
+    "Obric", // defunct
   "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c":
-    "AnimeSwap", // dead
+    "AnimeSwap", // defunct
   // Lending
   "0x9770fa9c725cbd97eb50b2be5f7416efdfd1f1554beb0750d4dae4c64e860da3":
     "Aries Markets",
