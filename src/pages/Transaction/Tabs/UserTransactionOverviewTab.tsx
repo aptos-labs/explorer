@@ -715,7 +715,7 @@ function parseLiquidswapV0Event(
   };
 }
 
-function parseBasicEvent(
+function parseBasicSwapEvent(
   event: Types.Event,
   dex:
     | "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa"
