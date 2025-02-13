@@ -106,9 +106,11 @@ type Swap = {
     | "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e" // "Liquidswap v0.5"
     | "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa" // "PancakeSwap"
     | "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c" // "SushiSwap"
+    | "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b" // "Obric"
+    | "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c" // "AnimeSwap"  
     | "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1" // "Cellana Finance"
     | "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e" // "Thetis Market"
-    | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba"; // "Cetus"
+    | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba"; // "Cetus 1"
   amountIn: number;
   amountOut: number;
   assetIn: string;
@@ -372,15 +374,29 @@ function getEventAction(event: Types.Event): EventAction | undefined {
     (event: Types.Event) =>
       parseLiquidswapV0Event(
         event,
-        "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12",
+        "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12", // Liquidswap v0
       ),
     (event: Types.Event) =>
       parseLiquidswapV0Event(
         event,
-        "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e",
+        "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e", // Liquidswap v0.5
       ),
-    parsePancakeSwapEvent,
-    parseSushiSwapEvent,
+    (event: Types.Event) =>
+      parseBasicSwapEvent(
+        event,
+        "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa", // PancakeSwap
+      ),
+    (event: Types.Event) =>
+      parseBasicSwapEvent(
+        event,
+        "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c", // SushiSwap
+      ),
+    (event: Types.Event) =>
+      parseBasicSwapEvent(
+        event,
+        "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c", // AnimeSwap
+      ),
+    parseOrbicSwapEvent,
     parseCellanaEvent,
     parseThetisSwapEvent,
     parseCetusSwapEvent,
@@ -699,10 +715,16 @@ function parseLiquidswapV0Event(
   };
 }
 
-function parsePancakeSwapEvent(event: Types.Event): Swap | undefined {
-  if (
+function parseBasicEvent(
+  event: Types.Event,
+  dex:
+    | "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa"
+    | "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c"
+    | "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c",
+): Swap | undefined {
+  if (!event.type.startsWith(`${dex}::swap::SwapEvent`) && 
     !event.type.startsWith(
-      "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa::swap::SwapEvent",
+      "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c::AnimeSwapPoolV1::SwapEvent",
     )
   ) {
     return undefined;
@@ -730,7 +752,7 @@ function parsePancakeSwapEvent(event: Types.Event): Swap | undefined {
 
   return {
     actionType: "swap",
-    dex: "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa",
+    dex,
     amountIn,
     amountOut,
     assetIn,
@@ -738,38 +760,38 @@ function parsePancakeSwapEvent(event: Types.Event): Swap | undefined {
   };
 }
 
-function parseSushiSwapEvent(event: Types.Event): Swap | undefined {
+function parseOrbicSwapEvent(event: Types.Event): Swap | undefined {
   if (
-    !event.type.startsWith(
-      "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c::swap::SwapEvent",
-    )
+    event.type !==
+    "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b::piece_swap::SwapEvent"
   ) {
     return undefined;
   }
 
-  const typeArgsMatch = event.type.match(/<(.+)>/);
-  const typeArgs = typeArgsMatch
-    ? typeArgsMatch[1].split(",").map((arg) => arg.trim())
-    : [];
-
   const data: {
-    amount_x_in: string;
-    amount_y_in: string;
-    amount_x_out: string;
-    amount_y_out: string;
+    x_in: string;
+    y_out: string;
+    x: {
+      account_address: string;
+      module_name: string;
+      struct_name: string;
+    };
+    y: {
+      account_address: string;
+      module_name: string;
+      struct_name: string;
+    };
   } = event.data;
 
-  const [amountInRaw, amountOutRaw, assetIn, assetOut] =
-    data.amount_x_in === "0"
-      ? [data.amount_y_in, data.amount_x_out, typeArgs[1], typeArgs[0]]
-      : [data.amount_x_in, data.amount_y_out, typeArgs[0], typeArgs[1]];
+  const coinX = convertCoinInfoToCoinType(data.x);
+  const coinY = convertCoinInfoToCoinType(data.y);
 
-  const amountIn = Number(amountInRaw);
-  const amountOut = Number(amountOutRaw);
+  const amountIn = Number(data.x_in);
+  const amountOut = Number(data.y_out);
 
   return {
     actionType: "swap",
-    dex: "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c",
+    dex: "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b",
     amountIn,
     amountOut,
     assetIn,
