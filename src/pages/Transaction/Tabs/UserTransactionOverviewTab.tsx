@@ -103,11 +103,15 @@ type Swap = {
     | "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af" // "ThalaSwap v1"
     | "0x007730cd28ee1cdc9e999336cbc430f99e7c44397c0aa77516f6f23a78559bb5" // "ThalaSwap v2"
     | "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12" // "Liquidswap v0"
-    | "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e" // "Liquidswap v0.5"
+    | "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e" // "Liquidswap v0.5"
     | "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa" // "PancakeSwap"
+    | "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c" // "SushiSwap"
+    | "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c" // "AnimeSwap"
+    | "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b" // "Obric"
+    | "0xbd35135844473187163ca197ca93b2ab014370587bb0ed3befff9e902d6bb541" // "Aux Exchange"
     | "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1" // "Cellana Finance"
     | "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e" // "Thetis Market"
-    | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba"; // "Cetus"
+    | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba"; // "Cetus 1"
   amountIn: number;
   amountOut: number;
   assetIn: string;
@@ -371,14 +375,30 @@ function getEventAction(event: Types.Event): EventAction | undefined {
     (event: Types.Event) =>
       parseLiquidswapV0Event(
         event,
-        "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12",
+        "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12", // Liquidswap v0
       ),
     (event: Types.Event) =>
       parseLiquidswapV0Event(
         event,
-        "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e",
+        "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e", // Liquidswap v0.5
       ),
-    parsePancakeSwapEvent,
+    (event: Types.Event) =>
+      parseBasicSwapEvent(
+        event,
+        "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa", // PancakeSwap
+      ),
+    (event: Types.Event) =>
+      parseBasicSwapEvent(
+        event,
+        "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c", // SushiSwap
+      ),
+    (event: Types.Event) =>
+      parseBasicSwapEvent(
+        event,
+        "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c", // AnimeSwap
+      ),
+    parseOrbicSwapEvent,
+    parseAuxEvent,
     parseCellanaEvent,
     parseThetisSwapEvent,
     parseCetusSwapEvent,
@@ -661,7 +681,7 @@ function parseLiquidswapV0Event(
   event: Types.Event,
   dex:
     | "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12"
-    | "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e",
+    | "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e",
 ): Swap | undefined {
   if (!event.type.startsWith(`${dex}::liquidity_pool::SwapEvent`)) {
     return undefined;
@@ -697,10 +717,16 @@ function parseLiquidswapV0Event(
   };
 }
 
-function parsePancakeSwapEvent(event: Types.Event): Swap | undefined {
-  if (
+function parseBasicSwapEvent(
+  event: Types.Event,
+  dex:
+    | "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa"
+    | "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c"
+    | "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c",
+): Swap | undefined {
+  if (!event.type.startsWith(`${dex}::swap::SwapEvent`) && 
     !event.type.startsWith(
-      "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa::swap::SwapEvent",
+      "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c::AnimeSwapPoolV1::SwapEvent",
     )
   ) {
     return undefined;
@@ -728,7 +754,76 @@ function parsePancakeSwapEvent(event: Types.Event): Swap | undefined {
 
   return {
     actionType: "swap",
-    dex: "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa",
+    dex,
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function parseOrbicSwapEvent(event: Types.Event): Swap | undefined {
+  if (
+    event.type !==
+    "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b::piece_swap::SwapEvent"
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    x_in: string;
+    y_out: string;
+    x: {
+      account_address: string;
+      module_name: string;
+      struct_name: string;
+    };
+    y: {
+      account_address: string;
+      module_name: string;
+      struct_name: string;
+    };
+  } = event.data;
+
+  const assetIn = convertCoinInfoToCoinType(data.x);
+  const assetOut = convertCoinInfoToCoinType(data.y);
+
+  const amountIn = Number(data.x_in);
+  const amountOut = Number(data.y_out);
+
+  return {
+    actionType: "swap",
+    dex: "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b",
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function parseAuxEvent(event: Types.Event): Swap | undefined {
+  if (
+    event.type !==
+    "0xbd35135844473187163ca197ca93b2ab014370587bb0ed3befff9e902d6bb541::amm::SwapEvent"
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    in_au: string;
+    in_coin_type: string;
+    out_au: string;
+    out_coin_type: string;
+  } = event.data;
+
+  const amountIn = Number(data.in_au);
+  const amountOut = Number(data.out_au);
+  const assetIn = data.in_coin_type;
+  const assetOut = data.out_coin_type;
+
+  return {
+    actionType: "swap",
+    dex: "0xbd35135844473187163ca197ca93b2ab014370587bb0ed3befff9e902d6bb541",
     amountIn,
     amountOut,
     assetIn,
