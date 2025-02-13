@@ -25,7 +25,7 @@ const socialLinks = [
     url: "https://discord.com/invite/aptosnetwork",
     icon: DiscordLogo,
   },
-  {title: "Twitter", url: "https://twitter.com/aptoslabs/", icon: TwitterLogo},
+  {title: "Twitter", url: "https://x.com/aptoslabs/", icon: TwitterLogo},
   {title: "Medium", url: "https://aptoslabs.medium.com/", icon: MediumLogo},
   {
     title: "LinkedIn",
