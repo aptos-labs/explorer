@@ -783,8 +783,8 @@ function parseOrbicSwapEvent(event: Types.Event): Swap | undefined {
     };
   } = event.data;
 
-  const coinX = convertCoinInfoToCoinType(data.x);
-  const coinY = convertCoinInfoToCoinType(data.y);
+  const assetIn = convertCoinInfoToCoinType(data.x);
+  const assetOut = convertCoinInfoToCoinType(data.y);
 
   const amountIn = Number(data.x_in);
   const amountOut = Number(data.y_out);
@@ -792,6 +792,36 @@ function parseOrbicSwapEvent(event: Types.Event): Swap | undefined {
   return {
     actionType: "swap",
     dex: "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b",
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function parseAuxEvent(event: Types.Event): Swap | undefined {
+  if (
+    event.type !==
+    "0xbd35135844473187163ca197ca93b2ab014370587bb0ed3befff9e902d6bb541::amm::SwapEvent"
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    in_au: string;
+    in_coin_type: string;
+    out_au: string;
+    out_coin_type: string;
+  } = event.data;
+
+  const amountIn = Number(data.in_au);
+  const amountOut = Number(data.out_au);
+  const assetIn = data.in_coin_type;
+  const assetOut = data.out_coin_type;
+
+  return {
+    actionType: "swap",
+    dex: "0xbd35135844473187163ca197ca93b2ab014370587bb0ed3befff9e902d6bb541",
     amountIn,
     amountOut,
     assetIn,
