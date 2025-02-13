@@ -133,6 +133,8 @@ export const knownAddresses: Record<string, string> = {
     "Aptos yr1: Graffio",
   "0x96c192a4e3c529f0f6b3567f1281676012ce65ba4bb0a9b20b46dec4e371cccd":
     "Aptos yr2: NFT",
+  "0xee443c3b5ae14baaee87ea410a4badba1227dae386a616936aad88d053849638":
+    "Aptos Hongbao celebration",
   // bridge
   "0x5bc11445584a763c1fa7ed39081f1b920954da14e04b32440cba863d03e19625":
     "Wormhole Bridge",
@@ -164,9 +166,9 @@ export const knownAddresses: Record<string, string> = {
   "0x80273859084bc47f92a6c2d3e9257ebb2349668a1b0fb3db1d759a04c7628855":
     "LiquidSwap router",
   "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c":
-    "SushiSwap",
+    "SushiSwap", // dead
   "0xa5d3ac4d429052674ed38adc62d010e52d7c24ca159194d17ddc196ddb7e480b":
-    "AptoSwap",
+    "AptoSwap", // dead
   "0xbd35135844473187163ca197ca93b2ab014370587bb0ed3befff9e902d6bb541":
     "AuxExchange", // dead
   "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1":
@@ -179,7 +181,14 @@ export const knownAddresses: Record<string, string> = {
     "KanaLabs",
   "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c":
     "Econia Labs",
-  "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba": "Cetus", // dead
+  "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba":
+    "Cetus 1", // dead
+  "0xa7f01413d33ba919441888637ca1607ca0ddcbfa3c0a9ddea64743aaa560e498":
+    "Cetus 2", // dead
+  "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b":
+    "Obric", // dead
+  "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c":
+    "AnimeSwap", // dead
   // Lending
   "0x9770fa9c725cbd97eb50b2be5f7416efdfd1f1554beb0750d4dae4c64e860da3":
     "Aries Markets",
@@ -302,6 +311,8 @@ export const knownAddresses: Record<string, string> = {
   "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387": "Pyth", // oracle
   "0x07d7e436f0b2aafde60774efb26ccc432cf881b677aca7faaf2a01879bd19fb8":
     "Switchboard", // oracle
+  "0xfb7ebc84ce674c3c1f7a789a30084d2227056982fb430dfd8b18c8f7737f4f57":
+    "Chainlink", // oracle
   "0x5a0ad9e31a2f452504429b6f7073cb325994c2c66204f5deb8e0561a9e950c3c": "Tevi",
   "0x541e28fb12aa661a30358f2bebcd44460187ec918cb9cee075c2db86ee6aed93":
     "Tevi (TVS)", // fungible store for TVS asset
