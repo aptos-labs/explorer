@@ -30,7 +30,7 @@ import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
-import {useNavigate} from "../../../../routing";
+import {Link, useNavigate} from "../../../../routing";
 import {Code} from "../../Components/CodeSnippet";
 import {
   PackageMetadata,
@@ -435,23 +435,23 @@ function RunContractForm({
                   {/* Has a transaction, display the button to view the transaction */}
                   {transactionResponse.transactionSubmitted &&
                     transactionResponse.transactionHash && (
-                      <Button
-                        variant="outlined"
-                        onClick={() =>
-                          window.open(
-                            `/txn/${transactionResponse.transactionHash}`,
-                            "_blank",
-                          )
-                        }
-                        sx={{
-                          height: "2rem",
-                          minWidth: "unset",
-                          borderRadius: "0.5rem",
-                          whiteSpace: "nowrap",
-                        }}
+                      <Link
+                        to={`/txn/${transactionResponse.transactionHash}`}
+                        color="inherit"
+                        target="_blank"
                       >
-                        View Transaction
-                      </Button>
+                        <Button
+                          variant="outlined"
+                          sx={{
+                            height: "2rem",
+                            minWidth: "unset",
+                            borderRadius: "0.5rem",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          View Transaction
+                        </Button>
+                      </Link>
                     )}
                 </Stack>
               </ExecutionResult>
