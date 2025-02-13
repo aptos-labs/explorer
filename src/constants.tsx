@@ -134,7 +134,7 @@ export const knownAddresses: Record<string, string> = {
   "0x96c192a4e3c529f0f6b3567f1281676012ce65ba4bb0a9b20b46dec4e371cccd":
     "Aptos yr2: NFT",
   "0xee443c3b5ae14baaee87ea410a4badba1227dae386a616936aad88d053849638":
-    "Aptos Hongbao celebration",
+    "Aptos Hongbao",
   // bridge
   "0x5bc11445584a763c1fa7ed39081f1b920954da14e04b32440cba863d03e19625":
     "Wormhole Bridge",
