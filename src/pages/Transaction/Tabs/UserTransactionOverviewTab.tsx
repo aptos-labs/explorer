@@ -105,6 +105,7 @@ type Swap = {
     | "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12" // "Liquidswap v0"
     | "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e" // "Liquidswap v0.5"
     | "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa" // "PancakeSwap"
+    | "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c" // "SushiSwap"
     | "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1" // "Cellana Finance"
     | "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e" // "Thetis Market"
     | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba"; // "Cetus"
@@ -729,6 +730,45 @@ function parsePancakeSwapEvent(event: Types.Event): Swap | undefined {
   return {
     actionType: "swap",
     dex: "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa",
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function parseSushiSwapEvent(event: Types.Event): Swap | undefined {
+  if (
+    !event.type.startsWith(
+      "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c::swap::SwapEvent",
+    )
+  ) {
+    return undefined;
+  }
+
+  const typeArgsMatch = event.type.match(/<(.+)>/);
+  const typeArgs = typeArgsMatch
+    ? typeArgsMatch[1].split(",").map((arg) => arg.trim())
+    : [];
+
+  const data: {
+    amount_x_in: string;
+    amount_y_in: string;
+    amount_x_out: string;
+    amount_y_out: string;
+  } = event.data;
+
+  const [amountInRaw, amountOutRaw, assetIn, assetOut] =
+    data.amount_x_in === "0"
+      ? [data.amount_y_in, data.amount_x_out, typeArgs[1], typeArgs[0]]
+      : [data.amount_x_in, data.amount_y_out, typeArgs[0], typeArgs[1]];
+
+  const amountIn = Number(amountInRaw);
+  const amountOut = Number(amountOutRaw);
+
+  return {
+    actionType: "swap",
+    dex: "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c",
     amountIn,
     amountOut,
     assetIn,
