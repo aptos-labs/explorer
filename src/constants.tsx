@@ -226,6 +226,8 @@ export const knownAddresses: Record<string, string> = {
     "Native FA Redemption",
   "0x0c727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e":
     "Thetis Market",
+  "0x22ac0df99460b1ec8e4ce7dc92cf1387697bde530c7c0397c7adbb7aa49f1682":
+    "Propbase Nexus",
   // NFT marketplace
   "0x7ccf0e6e871977c354c331aa0fccdffb562d9fceb27e3d7f61f8e12e470358e9":
     "Wapal Aggregator",
@@ -598,6 +600,31 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native"],
   },
+  "0xe9c2f12eba13a46b27f42b4028bed6f702e7e12271dbebd08f310df52d064e81": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0xe9c2f12eba13a46b27f42b4028bed6f702e7e12271dbebd08f310df52d064e81",
+    name: "WyndhamGarden1708",
+    symbol: "WG1708",
+    decimals: 8,
+    panoraSymbol: "WG1708",
+    bridge: null,
+    logoUrl:
+      "https://ipfs.propbase.app/ipfs/QmYMqu6frfwYBo7Z2cFpyE5UfZWyKkHn6zMrVhCBW2iuQm",
+    websiteUrl:
+      "https://ipfs.propbase.app/ipfs/QmcKjYgDpZyTjknRz5AhAa6JPoid4mb9Pjoznvgz3VT29v",
+    category: "Native",
+    isInPanoraTokenList: false,
+    isBanned: false,
+    panoraOrderIndex: 8,
+    panoraIndex: 8,
+    coinGeckoId: null,
+    coinMarketCapId: null,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Native"],
+  },
 };
 
 /**
@@ -637,6 +664,8 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0x98e39700e0bc5420d0a5c461a5420f1a17358041761f64147b173dfb9e21052d": "MYCO",
   "0xef0d49f03e48dbd055c3a369f74a304c366bda148005ddf6bb881ced79da0b09": "NIGHT",
   "0xd0ab8c2f76cd640455db56ca758a9766a966c88f77920347aac1719edab1df5e": "AMA",
+  "0xe9c2f12eba13a46b27f42b4028bed6f702e7e12271dbebd08f310df52d064e81":
+    "Propbase WG1708",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const MARKED_AS_POSSIBLE_SCAM = "Marked as possible scam";
