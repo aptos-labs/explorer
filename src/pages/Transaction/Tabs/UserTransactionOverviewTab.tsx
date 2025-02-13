@@ -376,7 +376,7 @@ function getEventAction(event: Types.Event): EventAction | undefined {
     (event: Types.Event) =>
       parseLiquidswapV0Event(
         event,
-        "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e",
+        "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e",
       ),
     parsePancakeSwapEvent,
     parseCellanaEvent,
