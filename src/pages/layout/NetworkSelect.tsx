@@ -7,7 +7,7 @@ import {
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
-import {useTheme, styled} from "@mui/material/styles";
+import {useTheme} from "@mui/material/styles";
 import {Stack} from "@mui/system";
 import React from "react";
 import {
@@ -16,7 +16,7 @@ import {
 } from "../../api/hooks/useGetNetworkChainIds";
 import {NetworkName, networks} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey, yellowMovement} from "../../themes/colors/aptosColorPalette";
 
 interface CustomParams {
   restUrl: string;
@@ -39,6 +39,17 @@ export const getCustomParameters = () => {
   };
 };
 
+export const getDisplayNetworkName = (networkName: string): string => {
+  if (networkName === "testnet") {
+    return "porto testnet";
+  } else if (networkName === "bardockTestnet") {
+    return "bardock testnet";
+  } else if (networkName === "mainnet") {
+    return "mainnet beta";
+  }
+  return networkName;
+};
+
 function NetworkAndChainIdCached({
   networkName,
   chainId,
@@ -47,17 +58,6 @@ function NetworkAndChainIdCached({
   chainId: string | null;
 }) {
   const theme = useTheme();
-
-  // rewrite the network name for display
-  const nameRewrite = (networkName: string) => {
-    if (networkName === "testnet") {
-      return "porto testnet";
-    } else if (networkName === "bardockTestnet") {
-      return "bardock testnet";
-    } else {
-      return networkName;
-    }
-  };
 
   return (
     <Stack
@@ -68,7 +68,7 @@ function NetworkAndChainIdCached({
       width="100%"
       paddingY={0.75}
     >
-      <Typography>{nameRewrite(networkName)}</Typography>
+      <Typography>{getDisplayNetworkName(networkName)}</Typography>
       <Typography variant="body2" sx={{color: theme.palette.text.disabled}}>
         {chainId}
       </Typography>
@@ -160,9 +160,7 @@ export default function NetworkSelect() {
           value={state.network_name}
           onChange={handleChange}
           renderValue={(value) => (
-            <Typography>
-              {value === "testnet" ? "porto testnet" : value}
-            </Typography>
+            <Typography>{getDisplayNetworkName(value)}</Typography>
           )}
           onClose={() => {
             setTimeout(() => {
@@ -215,10 +213,19 @@ export default function NetworkSelect() {
                 marginTop: 0.5,
 
                 "& .MuiMenuItem-root.Mui-selected": {
-                  backgroundColor: `${
-                    theme.palette.mode === "dark" ? grey[700] : grey[200]
-                  }!important`,
+                  backgroundColor: `${yellowMovement} !important`,
+                  color: "black",
                   pointerEvents: "none",
+                  "& .MuiTypography-root": {
+                    color: "black",
+                  },
+                },
+                "& .MuiMenuItem-root:hover": {
+                  backgroundColor: `${yellowMovement} !important`,
+                  color: "black",
+                  "& .MuiTypography-root": {
+                    color: "black",
+                  },
                 },
               },
             },

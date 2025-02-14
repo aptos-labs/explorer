@@ -37,3 +37,5 @@ export const codeBlockColorClickableOnHover: string = "rgba(194,184,165,0.2)";
 // use rgb for codeblock in modal otherwise it will be transparent and not very visible
 export const codeBlockColorRgbLight: string = "#EDEAE6";
 export const codeBlockColorRgbDark: string = "#000000";
+
+export const yellowMovement: string = "#ffda34";
