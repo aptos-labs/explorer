@@ -16,7 +16,7 @@ import {
 } from "../../api/hooks/useGetNetworkChainIds";
 import {NetworkName, networks} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {grey, yellowMovement} from "../../themes/colors/aptosColorPalette";
+import {grey, yellow} from "../../themes/colors/aptosColorPalette";
 
 interface CustomParams {
   restUrl: string;
@@ -213,7 +213,7 @@ export default function NetworkSelect() {
                 marginTop: 0.5,
 
                 "& .MuiMenuItem-root.Mui-selected": {
-                  backgroundColor: `${yellowMovement} !important`,
+                  backgroundColor: `${yellow[300]} !important`,
                   color: "black",
                   pointerEvents: "none",
                   "& .MuiTypography-root": {
@@ -221,7 +221,7 @@ export default function NetworkSelect() {
                   },
                 },
                 "& .MuiMenuItem-root:hover": {
-                  backgroundColor: `${yellowMovement} !important`,
+                  backgroundColor: `${yellow[300]} !important`,
                   color: "black",
                   "& .MuiTypography-root": {
                     color: "black",

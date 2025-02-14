@@ -39,3 +39,16 @@ export const codeBlockColorRgbLight: string = "#EDEAE6";
 export const codeBlockColorRgbDark: string = "#000000";
 
 export const yellowMovement: string = "#ffda34";
+
+export const yellow = {
+  50: "#fff9e5",
+  100: "#fff2cc",
+  200: "#ffe699",
+  300: "#c5af6c",
+  400: "#ffce33",
+  500: "#ffda34",
+  600: "#e6c42f",
+  700: "#ccae2a",
+  800: "#b39825",
+  900: "#998220",
+};
