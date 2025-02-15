@@ -1,3 +1,6 @@
 build
 coverage
 public/world.json
+pnpm-lock.yaml
+.husky/
+.prettierignore

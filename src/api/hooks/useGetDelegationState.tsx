@@ -19,7 +19,7 @@ export function useGetDelegationState(
 ): DelegationState {
   const {account} = useWallet();
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
-  const balance = useGetAccountAPTBalance(account?.address!);
+  const balance = useGetAccountAPTBalance(account?.address!) || "0";
   const {delegatorBalance} = useGetNumberOfDelegators(validator.owner_address);
   const {rewardsRateYearly} = useGetStakingRewardsRate();
 
