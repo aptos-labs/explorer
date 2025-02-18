@@ -185,8 +185,7 @@ export const knownAddresses: Record<string, string> = {
     "Cetus 1", // defunct
   "0xa7f01413d33ba919441888637ca1607ca0ddcbfa3c0a9ddea64743aaa560e498":
     "Cetus 2", // defunct
-  "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b":
-    "Obric", // defunct
+  "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b": "Obric", // defunct
   "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c":
     "AnimeSwap", // defunct
   // Lending
@@ -636,6 +635,30 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native"],
   },
+  "0xc546cc2dd26d9e9a4516b4514288bedf1085259fcb106b84b6469337f527fb92": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0xc546cc2dd26d9e9a4516b4514288bedf1085259fcb106b84b6469337f527fb92",
+    name: "PACT",
+    symbol: "PACT",
+    decimals: 8,
+    panoraSymbol: "PACT",
+    bridge: null,
+    logoUrl:
+      "https://files.pactlabs.xyz/aptos/fa/0xc546cc2dd26d9e9a4516b4514288bedf1085259fcb106b84b6469337f527fb92.png",
+    websiteUrl: "https://pact.foundation",
+    category: "Native",
+    isInPanoraTokenList: false,
+    isBanned: false,
+    panoraOrderIndex: 8,
+    panoraIndex: 8,
+    coinGeckoId: null,
+    coinMarketCapId: null,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Native"],
+  },
 };
 
 /**
@@ -677,6 +700,7 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0xd0ab8c2f76cd640455db56ca758a9766a966c88f77920347aac1719edab1df5e": "AMA",
   "0xe9c2f12eba13a46b27f42b4028bed6f702e7e12271dbebd08f310df52d064e81":
     "Propbase WG1708",
+  "0xc546cc2dd26d9e9a4516b4514288bedf1085259fcb106b84b6469337f527fb92": "PACT",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const MARKED_AS_POSSIBLE_SCAM = "Marked as possible scam";
