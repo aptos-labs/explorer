@@ -230,6 +230,8 @@ export const knownAddresses: Record<string, string> = {
   "0xcd7b88c2181881bf8e7ef741cae867aee038e75df94224496a4a81627edf7f65": "Defy",
   "0xa3111961a31597ca770c60be02fc9f72bdee663f563e45223e79793557eef0d9":
     "Lucid Finance",
+  "0xddb92cba8f18ae94c40c49ca27a2ba31eca85ce37a436e25d36c8e1f516d9c62":
+    "Pact Labs",
   "0xd47ead75b923422f7967257259e7a298f029da9e5484dc7aa1a9efbd4c3ae648":
     "Native FA Redemption",
   "0x0c727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e":
