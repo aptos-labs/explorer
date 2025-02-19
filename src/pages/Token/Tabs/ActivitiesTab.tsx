@@ -62,7 +62,7 @@ export function TokenActivitiesWithPagination({
     <>
       <Stack spacing={2}>
         <Box sx={{width: "auto", overflowX: "auto"}}>
-          <ActivitiesTable activities={(activities ?? []) as unknown as any} />
+          <ActivitiesTable activities={(activities ?? [])} />
         </Box>
         {numPages > 1 && (
           <Box sx={{display: "flex", justifyContent: "center"}}>
@@ -76,6 +76,7 @@ export function TokenActivitiesWithPagination({
 
 type ActivitiesTabProps = {
   // TODO: add graphql data typing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 };
 

@@ -1,10 +1,9 @@
-import {Grid, Stack} from "@mui/material";
+import {Grid2, Stack} from "@mui/material";
 import {useParams} from "react-router-dom";
 import PageHeader from "../layout/PageHeader";
 import ValidatorTitle from "./Title";
 import ValidatorDetailCard from "./DetailCard";
 import ValidatorStakingBar from "./StakingBar";
-import {HexString} from "aptos";
 import {
   useGetValidators,
   ValidatorData,
@@ -21,14 +20,15 @@ import Error from "../Account/Error";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {Banner} from "../../components/Banner";
 import {useGetDelegationNodeCommissionChange} from "../../api/hooks/useGetDelegationNodeCommissionChange";
+import {standardizeAddress} from "../../utils";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
-  const addressHex = useMemo(() => new HexString(address), [address]);
+  const addressHex = useMemo(() => standardizeAddress(address), [address]);
   const {validators} = useGetValidators();
   const {connected} = useWallet();
   const {data: accountResource, error} = useGetAccountResource(
-    addressHex.hex(),
+    addressHex,
     "0x1::stake::StakePool",
   );
   const {
@@ -43,7 +43,7 @@ export default function ValidatorPage() {
   const [delegationValidator, setDelegationValidator] =
     useState<ValidatorData>();
   const validator = validators.find(
-    (validator) => validator.owner_address === addressHex.hex(),
+    (validator) => validator.owner_address === addressHex,
   );
 
   const {commission} = useGetDelegationNodeInfo({
@@ -61,7 +61,7 @@ export default function ValidatorPage() {
       const delegatedStakingPoolsNotInValidators: ValidatorData[] =
         delegatedStakingPools
           .filter((pool) => {
-            return addressHex.hex() === pool.staking_pool_address;
+            return addressHex === pool.staking_pool_address;
           })
           .map((pool) => ({
             owner_address: pool.staking_pool_address,
@@ -99,9 +99,9 @@ export default function ValidatorPage() {
       }}
     >
       <SkeletonTheme>
-        <Grid container>
+        <Grid2 container>
           <PageHeader />
-          <Grid item xs={12}>
+          <Grid2 size={{xs: 12}}>
             <Stack direction="column" spacing={4}>
               <ValidatorTitle
                 address={address}
@@ -133,8 +133,8 @@ export default function ValidatorPage() {
                 />
               )}
             </Stack>
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </SkeletonTheme>
     </DelegationStateContext.Provider>
   );

@@ -10,8 +10,10 @@ import Contract from "./Contract";
 import {useNavigate} from "../../../../routing";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
+import Packages from "./Packages";
 
 const TabComponents = Object.freeze({
+  packages: Packages,
   code: ViewCode,
   run: RunContract,
   view: ReadContract,
@@ -21,6 +23,8 @@ type TabValue = keyof typeof TabComponents;
 
 function getTabLabel(value: TabValue): string {
   switch (value) {
+    case "packages":
+      return "Packages";
     case "code":
       return "Code";
     case "run":
@@ -58,7 +62,7 @@ function ReadContract({
   return <Contract address={address} isObject={isObject} isRead={true} />;
 }
 
-function TabPanel({value, address, isObject}: TabPanelProps): JSX.Element {
+function TabPanel({value, address, isObject}: TabPanelProps) {
   const TabComponent = TabComponents[value];
   return <TabComponent address={address} isObject={isObject} />;
 }
@@ -69,7 +73,7 @@ function ModulesTabs({
 }: {
   address: string;
   isObject: boolean;
-}): JSX.Element {
+}) {
   const theme = useTheme();
   const tabValues = Object.keys(TabComponents) as TabValue[];
   const {selectedFnName, selectedModuleName, modulesTab} = useParams();
@@ -78,9 +82,11 @@ function ModulesTabs({
   const value =
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     let eventName = "";
     switch (newValue) {
+      case "packages":
+        break;
       case "code":
         // no event needed
         break;
@@ -91,7 +97,9 @@ function ModulesTabs({
         eventName = "read_tab_clicked";
         break;
     }
-    eventName && logEvent(eventName);
+    if (eventName) {
+      logEvent(eventName);
+    }
 
     navigate(
       `/${accountPagePath(isObject)}/${address}/modules/${newValue}/${selectedModuleName}` +
@@ -103,6 +111,9 @@ function ModulesTabs({
   useEffect(() => {
     let eventName = "";
     switch (value) {
+      case "packages":
+        eventName = "package_tab_viewed";
+        break;
       case "code":
         eventName = "modules_tab_viewed";
         break;
@@ -113,7 +124,9 @@ function ModulesTabs({
         eventName = "read_tab_viewed";
         break;
     }
-    eventName && logEvent(eventName);
+    if (eventName) {
+      logEvent(eventName);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 

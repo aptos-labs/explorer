@@ -1,0 +1,3 @@
+# Ensure that text files that any contributor introduces to the repository
+# have their line endings normalized to LF
+* text=auto eol=lf

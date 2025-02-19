@@ -143,10 +143,11 @@ function StakingBarContent({
     </Stack>
   );
 
-  const balance = useGetAccountAPTBalance(account?.address!);
+  const walletAddress = account?.address ?? ""; // FIXME: Migrate for SDK V1
+  const balance = useGetAccountAPTBalance(walletAddress);
   const [state] = useGlobalState();
   const {stakes} = useGetDelegatorStakeInfo(
-    account?.address!,
+    walletAddress,
     validator.owner_address,
   );
   const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
@@ -154,7 +155,7 @@ function StakingBarContent({
   // or when balance is less than add_stake fee if minimum stake amount is already met
   const buttonDisabled =
     account !== null &&
-    Number(balance) <=
+    Number(balance?.data ?? 0) <=
       (Number(stakes[0]) === 0
         ? MINIMUM_APT_IN_POOL_FOR_EXPLORER * OCTA + Number(addStakeFee)
         : Number(addStakeFee));

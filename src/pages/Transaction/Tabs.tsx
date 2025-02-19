@@ -22,10 +22,12 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BalanceChangeTab from "./Tabs/BalanceChangeTab";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
+import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
+import {TransactionTypeName} from "../../components/TransactionType";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
-    case "user_transaction":
+    case TransactionTypeName.User:
       return [
         "userTxnOverview",
         "balanceChange",
@@ -33,16 +35,20 @@ function getTabValues(transaction: Types.Transaction): TabValue[] {
         "payload",
         "changes",
       ];
-    case "block_metadata_transaction":
+    case TransactionTypeName.BlockMetadata:
       return ["blockMetadataOverview", "events", "changes"];
-    case "state_checkpoint_transaction":
+    case TransactionTypeName.StateCheckpoint:
       return ["stateCheckpointOverview"];
-    case "pending_transaction":
+    case TransactionTypeName.Pending:
       return ["pendingTxnOverview", "payload"];
-    case "genesis_transaction":
+    case TransactionTypeName.Genesis:
       return ["genesisTxnOverview", "events", "payload", "changes"];
+    case TransactionTypeName.Validator:
+      return ["validatorTxnOverview", "events", "changes"];
+    case TransactionTypeName.BlockEpilogue:
+      return ["unknown", "events", "changes"]; // TODO: Make a page for block epilogue
     default:
-      return ["unknown"];
+      return ["unknown", "events", "changes"];
   }
 }
 
@@ -52,6 +58,7 @@ const TabComponents = Object.freeze({
   stateCheckpointOverview: StateCheckpointOverviewTab,
   pendingTxnOverview: PendingTransactionOverviewTab,
   genesisTxnOverview: GenesisTransactionOverviewTab,
+  validatorTxnOverview: ValidatorTransactionTab,
   balanceChange: BalanceChangeTab,
   events: EventsTab,
   payload: PayloadTab,
@@ -68,6 +75,8 @@ function getTabLabel(value: TabValue): string {
     case "stateCheckpointOverview":
     case "pendingTxnOverview":
     case "genesisTxnOverview":
+    case "validatorTxnOverview":
+    case "unknown":
       return "Overview";
     case "balanceChange":
       return "Balance Change";
@@ -77,20 +86,19 @@ function getTabLabel(value: TabValue): string {
       return "Payload";
     case "changes":
       return "Changes";
-    case "unknown":
-      return "Unknown";
     default:
       return assertNever(value);
   }
 }
 
-function getTabIcon(value: TabValue): JSX.Element {
+function getTabIcon(value: TabValue): React.JSX.Element {
   switch (value) {
     case "userTxnOverview":
     case "blockMetadataOverview":
     case "stateCheckpointOverview":
     case "pendingTxnOverview":
     case "genesisTxnOverview":
+    case "validatorTxnOverview":
       return <BarChartOutlinedIcon fontSize="small" />;
     case "balanceChange":
       return <AccountBalanceWalletOutlinedIcon fontSize="small" />;
@@ -112,7 +120,7 @@ type TabPanelProps = {
   transaction: Types.Transaction;
 };
 
-function TabPanel({value, transaction}: TabPanelProps): JSX.Element {
+function TabPanel({value, transaction}: TabPanelProps): React.JSX.Element {
   const TabComponent = TabComponents[value];
   return <TabComponent transaction={transaction} />;
 }
@@ -125,13 +133,13 @@ type TransactionTabsProps = {
 export default function TransactionTabs({
   transaction,
   tabValues = getTabValues(transaction),
-}: TransactionTabsProps): JSX.Element {
+}: TransactionTabsProps): React.JSX.Element {
   const {tab, txnHashOrVersion} = useParams();
   const navigate = useNavigate();
   const value =
     tab === undefined ? getTabValues(transaction)[0] : (tab as TabValue);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/txn/${txnHashOrVersion}/${newValue}`, {replace: true});
   };
 

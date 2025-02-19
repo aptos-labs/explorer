@@ -15,8 +15,7 @@ function getAgeInSeconds(block: Types.Block): string {
   const blockTimestamp = parseTimestamp(block.block_timestamp);
   const nowTimestamp = parseTimestamp(moment.now().toString());
   const duration = moment.duration(nowTimestamp.diff(blockTimestamp));
-  const durationInSec = duration.asSeconds().toFixed(0);
-  return durationInSec;
+  return duration.asSeconds().toFixed(0);
 }
 
 type BlockCellProps = {
@@ -26,11 +25,7 @@ type BlockCellProps = {
 function BlockHeightCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <Link
-        to={`/block/${block.block_height}`}
-        target="_blank"
-        underline="none"
-      >
+      <Link to={`/block/${block.block_height}`} underline="none">
         {block.block_height}
       </Link>
     </GeneralTableCell>
@@ -53,10 +48,22 @@ function BlockHashCell({block}: BlockCellProps) {
   );
 }
 
+function CountVersionCell({block}: BlockCellProps) {
+  return (
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      {(
+        BigInt(block.last_version) -
+        BigInt(block.first_version) +
+        BigInt(1)
+      ).toString()}
+    </GeneralTableCell>
+  );
+}
+
 function FirstVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Link to={`/txn/${block.first_version}`} target="_blank" underline="none">
+      <Link to={`/txn/${block.first_version}`} underline="none">
         {block.first_version}
       </Link>
     </GeneralTableCell>
@@ -66,7 +73,7 @@ function FirstVersionCell({block}: BlockCellProps) {
 function LastVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Link to={`/txn/${block.last_version}`} target="_blank" underline="none">
+      <Link to={`/txn/${block.last_version}`} underline="none">
         {block.last_version}
       </Link>
     </GeneralTableCell>
@@ -77,6 +84,7 @@ const BlockCells = Object.freeze({
   height: BlockHeightCell,
   age: BlockAgeCell,
   hash: BlockHashCell,
+  numVersions: CountVersionCell,
   firstVersion: FirstVersionCell,
   lastVersion: LastVersionCell,
 });
@@ -87,6 +95,7 @@ const DEFAULT_COLUMNS: Column[] = [
   "height",
   "age",
   "hash",
+  "numVersions",
   "firstVersion",
   "lastVersion",
 ];
@@ -121,6 +130,10 @@ function BlockHeaderCell({column}: BlockHeaderCellProps) {
       return <GeneralTableHeaderCell header="Age" />;
     case "hash":
       return <GeneralTableHeaderCell header="Hash" />;
+    case "numVersions":
+      return (
+        <GeneralTableHeaderCell header="Num Transactions" textAlignRight />
+      );
     case "firstVersion":
       return <GeneralTableHeaderCell header="First Version" textAlignRight />;
     case "lastVersion":
@@ -149,7 +162,7 @@ export default function BlocksTable({
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {blocks.map((block: any, i: number) => {
+        {blocks.map((block: Types.Block, i: number) => {
           return <BlockRow key={i} block={block} columns={columns} />;
         })}
       </GeneralTableBody>

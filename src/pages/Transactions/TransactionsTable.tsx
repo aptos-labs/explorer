@@ -9,7 +9,10 @@ import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCel
 import HashButton, {HashType} from "../../components/HashButton";
 import {Types} from "aptos";
 import {assertNever} from "../../utils";
-import {TableTransactionType} from "../../components/TransactionType";
+import {
+  TableTransactionType,
+  TransactionTypeName,
+} from "../../components/TransactionType";
 import {TableTransactionStatus} from "../../components/TransactionStatus";
 import {getTableFormattedTimestamp} from "../utils";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
@@ -30,6 +33,8 @@ import {
   getTransactionCounterparty,
 } from "../Transaction/utils";
 import {Link} from "../../routing";
+import {ArrowForwardOutlined, TextSnippetOutlined} from "@mui/icons-material";
+import Tooltip from "@mui/material/Tooltip";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -87,7 +92,7 @@ function TransactionTimestampCell({transaction}: TransactionCellProps) {
 
 function TransactionSenderCell({transaction}: TransactionCellProps) {
   let sender;
-  if (transaction.type === "user_transaction") {
+  if (transaction.type === TransactionTypeName.User) {
     sender = (transaction as Types.UserTransaction).sender;
   } else if (transaction.type === "block_metadata_transaction") {
     sender = (transaction as Types.BlockMetadataTransaction).proposer;
@@ -104,10 +109,26 @@ function TransactionReceiverOrCounterPartyCell({
   transaction,
 }: TransactionCellProps) {
   const counterparty = getTransactionCounterparty(transaction);
+  // TODO: Look into adding a different column for smart contract, so it doesn't get confused with the receiver.
   return (
     <GeneralTableCell>
       {counterparty && (
-        <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
+        <Box
+          sx={{display: "flex", fontSize: "inherit", alignItems: "row", gap: 1}}
+        >
+          {counterparty.role === "smartContract" ? (
+            <Tooltip title={"Smart Contract"} placement="top">
+              <TextSnippetOutlined sx={{position: "relative", top: 2}} />
+            </Tooltip>
+          ) : (
+            <Tooltip title={"Receiver"} placement="top">
+              <ArrowForwardOutlined sx={{position: "relative", top: 2}} />
+            </Tooltip>
+          )}
+          <span>
+            <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
+          </span>
+        </Box>
       )}
     </GeneralTableCell>
   );
@@ -137,9 +158,7 @@ function TransactionAmount({
   transaction: Types.Transaction;
   address?: string;
 }) {
-  const isAccountTransactionTable = typeof address === "string";
-
-  if (isAccountTransactionTable) {
+  if (address !== undefined) {
     const amount = getCoinBalanceChangeForAccount(transaction, address);
     if (amount !== undefined) {
       let amountAbs = amount;
@@ -184,10 +203,12 @@ function TransactionAmountGasCell({
         <Box sx={{fontSize: 11, color: grey[450]}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
             <>
-              <>Gas </>
+              <>Gas</>{" "}
               <GasFeeValue
                 gasUsed={transaction.gas_used}
                 gasUnitPrice={transaction.gas_unit_price}
+                transactionData={transaction}
+                netGasCost
               />
             </>
           ) : null}

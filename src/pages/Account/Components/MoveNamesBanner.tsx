@@ -1,4 +1,3 @@
-import "@aptos-labs/aptos-names-connector/dist/index.css";
 import React from "react";
 import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
 import {Banner} from "../../../components/Banner";

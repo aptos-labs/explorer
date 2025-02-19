@@ -3,6 +3,14 @@ import {OCTA} from "../constants";
 import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils";
 import {withResponseError} from "./client";
+import {
+  AccountAddressInput,
+  Aptos,
+  APTOS_COIN,
+  InputViewFunctionData,
+  TypeTagAddress,
+  TypeTagU64,
+} from "@aptos-labs/ts-sdk";
 
 export async function getTransactions(
   requestParameters: {start?: number; limit?: number},
@@ -182,25 +190,10 @@ export function view(
 export function getTableItem(
   requestParameters: {tableHandle: string; data: Types.TableItemRequest},
   client: AptosClient,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   const {tableHandle, data} = requestParameters;
   return withResponseError(client.getTableItem(tableHandle, data));
-}
-
-export function getBlockByHeight(
-  requestParameters: {height: number; withTransactions: boolean},
-  client: AptosClient,
-): Promise<Types.Block> {
-  const {height, withTransactions} = requestParameters;
-  return withResponseError(client.getBlockByHeight(height, withTransactions));
-}
-
-export function getBlockByVersion(
-  requestParameters: {version: number; withTransactions: boolean},
-  client: AptosClient,
-): Promise<Types.Block> {
-  const {version, withTransactions} = requestParameters;
-  return withResponseError(client.getBlockByVersion(version, withTransactions));
 }
 
 export async function getRecentBlocks(
@@ -218,8 +211,37 @@ export async function getRecentBlocks(
       blocks.push(block);
     }
   }
-  console.log("blocks", blocks);
-  return blocks;
+  const blockPromises = [];
+  // Don't await here, or they'll be in serial
+  for (let i = 0; i < count; i++) {
+    const block = client.getBlockByHeight(currentBlockHeight - i, false);
+    blockPromises.push(block);
+  }
+  return Promise.all(blockPromises);
+}
+
+export async function getBalance(
+  client: Aptos,
+  address: AccountAddressInput,
+  coinType?: `0x${string}::${string}::${string}`,
+): Promise<string> {
+  const typeArguments = coinType ? [coinType] : [APTOS_COIN];
+
+  // TODO: Replace with native SDK call
+  const payload: InputViewFunctionData = {
+    function: "0x1::coin::balance",
+    typeArguments,
+    functionArguments: [address],
+    abi: {
+      parameters: [new TypeTagAddress()],
+      typeParameters: [{constraints: []}],
+      returnTypes: [new TypeTagU64()],
+    },
+  };
+  console.log('payload for balance', payload);
+  return withResponseError(
+    client.view<[string]>({payload}).then((res) => res[0]),
+  );
 }
 
 export async function getStake(
@@ -254,18 +276,6 @@ export async function getValidatorCommissionChange(
   const payload: Types.ViewRequest = {
     function:
       "0x1::delegation_pool::operator_commission_percentage_next_lockup_cycle",
-    type_arguments: [],
-    arguments: [validatorAddress],
-  };
-  return withResponseError(client.view(payload));
-}
-
-export async function getDelegationPoolExist(
-  client: AptosClient,
-  validatorAddress: Types.Address,
-): Promise<Types.MoveValue[]> {
-  const payload: Types.ViewRequest = {
-    function: "0x1::delegation_pool::delegation_pool_exists",
     type_arguments: [],
     arguments: [validatorAddress],
   };
@@ -307,6 +317,19 @@ export async function getValidatorState(
     function: "0x1::stake::get_validator_state",
     type_arguments: [],
     arguments: [validatorAddress],
+  };
+  return withResponseError(client.view(payload));
+}
+
+export async function getValidatorCommissionAndState(
+  client: AptosClient,
+  validatorAddresses: Types.Address[],
+): Promise<Types.MoveValue[]> {
+  const payload: Types.ViewRequest = {
+    function:
+      "0x7a5c34e80f796fe58c336812f80e15a86a2086c75640270a11207b911d512aba::helpers::pool_address_info",
+    type_arguments: [],
+    arguments: [validatorAddresses],
   };
   return withResponseError(client.view(payload));
 }

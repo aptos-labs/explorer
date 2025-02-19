@@ -19,7 +19,7 @@ export function LearnMoreTooltip({
   text,
   link,
   linkToText,
-}: LearnMoreTooltipProps): JSX.Element {
+}: LearnMoreTooltipProps) {
   // TODO: unify colors for the new transaction page
   const theme = useTheme();
   const color = theme.palette.mode === "dark" ? grey[600] : grey[200];
@@ -37,7 +37,12 @@ export function LearnMoreTooltip({
               <>
                 <Typography variant="inherit">{text}</Typography>
                 {link && (
-                  <Link alignSelf="flex-end" href={link} color="inherit">
+                  <Link
+                    alignSelf="flex-end"
+                    href={link}
+                    target="_blank"
+                    color="inherit"
+                  >
                     Learn More
                   </Link>
                 )}
@@ -53,6 +58,6 @@ export function LearnMoreTooltip({
   );
 }
 
-export function LearnMoreTooltipPlaceholder(): JSX.Element {
+export function LearnMoreTooltipPlaceholder() {
   return <TooltipBox></TooltipBox>;
 }

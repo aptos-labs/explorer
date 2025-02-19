@@ -12,21 +12,34 @@ import {
   getAccount,
   getAccountResources,
   getTransaction,
-  getBlockByHeight,
-  getBlockByVersion,
+  getAccountResource,
 } from "../../../api";
 import {sendToGTM} from "../../../api/hooks/useGoogleTagManager";
-import {objectCoreAddress} from "../../../constants";
+import {
+  faMetadataResource,
+  knownAddresses,
+  objectCoreResource,
+} from "../../../constants";
 import {
   isValidAccountAddress,
-  isValidTxnHashOrVersion,
   isNumeric,
   truncateAddress,
+  is32ByteHex,
+  isValidStruct,
+  coinOrderIndex,
 } from "../../utils";
+import {
+  CoinDescription,
+  useGetCoinList,
+} from "../../../api/hooks/useGetCoinList";
+import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
+import {getEmojicoinMarketAddressAndTypeTags} from "../../../components/Table/VerifiedCell";
+import {getBlockByHeight, getBlockByVersion} from "../../../api/v2";
 
 export type SearchResult = {
   label: string;
   to: string | null;
+  image?: string;
 };
 
 export const NotFoundResult: SearchResult = {
@@ -48,6 +61,8 @@ export default function HeaderSearch() {
   );
   const augmentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
 
+  const coinList = useGetCoinList();
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
@@ -61,6 +76,317 @@ export default function HeaderSearch() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue]);
 
+  async function handleAnsName(
+    searchText: string,
+  ): Promise<SearchResult | null> {
+    return state.sdk_v2_client
+      .getName({
+        name: searchText,
+      })
+      .then((ansName) => {
+        const address = ansName?.registered_address ?? ansName?.owner_address;
+
+        if (ansName && address) {
+          return {
+            label: `Account ${truncateAddress(address)} ${searchText}`,
+            to: `/account/${address}`,
+          };
+        }
+        return null;
+      })
+      .catch(() => {
+        return null;
+      });
+  }
+
+  async function handleCoin(searchText: string): Promise<SearchResult | null> {
+    const address = searchText.split("::")[0];
+    return getAccountResource(
+      {address, resourceType: `0x1::coin::CoinInfo<${searchText}>`},
+      state.aptos_client,
+    )
+      .then(() => {
+        return {
+          label: `Coin ${searchText}`,
+          to: `/coin/${searchText}`,
+        };
+      })
+      .catch(() => {
+        return null;
+      });
+  }
+
+  function handleBlockHeightOrVersion(
+    searchText: string,
+  ): Promise<SearchResult | null>[] {
+    const num = parseInt(searchText);
+    const promises = [];
+    const blockByHeightPromise = getBlockByHeight(
+      {height: num, withTransactions: false},
+      state.sdk_v2_client,
+    )
+      .then((): SearchResult => {
+        return {
+          label: `Block ${num}`,
+          to: `/block/${num}`,
+        };
+      })
+      .catch(() => {
+        return null;
+        // Do nothing. It's expected that not all search input is a valid transaction
+      });
+
+    const blockByVersionPromise = getBlockByVersion(
+      {version: num, withTransactions: false},
+      state.sdk_v2_client,
+    )
+      .then((block): SearchResult => {
+        return {
+          label: `Block with Txn Version ${num}`,
+          to: `/block/${block.block_height}`,
+        };
+      })
+      .catch(() => {
+        return null;
+        // Do nothing. It's expected that not all search input is a valid transaction
+      });
+    const transactionByVersion = getTransaction(
+      {txnHashOrVersion: num},
+      state.aptos_client,
+    )
+      .then((): SearchResult => {
+        return {
+          label: `Transaction Version ${num}`,
+          to: `/txn/${num}`,
+        };
+      })
+      .catch(() => {
+        return null;
+        // Do nothing. It's expected that not all search input is a valid transaction
+      });
+    promises.push(transactionByVersion);
+    promises.push(blockByHeightPromise);
+    promises.push(blockByVersionPromise);
+    return promises;
+  }
+
+  async function handleTransaction(
+    searchText: string,
+  ): Promise<SearchResult | null> {
+    return getTransaction({txnHashOrVersion: searchText}, state.aptos_client)
+      .then((): SearchResult => {
+        return {
+          label: `Transaction ${searchText}`,
+          to: `/txn/${searchText}`,
+        };
+      })
+      .catch(() => {
+        return null;
+        // Do nothing. It's expected that not all search input is a valid transaction
+      });
+  }
+
+  function handleAddress(searchText: string): Promise<SearchResult | null>[] {
+    // TODO: add digital assets, collections, etc.
+    const promises = [];
+    const address = tryStandardizeAddress(searchText);
+    if (!address) {
+      return [];
+    }
+
+    // It's either an account OR an object: we query both at once to save time
+    const accountPromise = getAccount({address}, state.aptos_client)
+      .then((): SearchResult => {
+        return {
+          label: `Account ${address}`,
+          to: `/account/${address}`,
+        };
+      })
+      .catch(() => {
+        return null;
+        // Do nothing. It's expected that not all search input is a valid account
+      });
+    // TODO: Add searching the coin list first
+    const faPromise = getAccountResource(
+      {address, resourceType: faMetadataResource},
+      state.aptos_client,
+    ).then(
+      () => {
+        return {
+          label: `Fungible Asset ${address}`,
+          to: `/fungible_asset/${address}`,
+        };
+      },
+      () => {
+        // It's not a fa
+        return null;
+      },
+    );
+    const resourcePromise = getAccountResource(
+      {address, resourceType: objectCoreResource},
+      state.aptos_client,
+    ).then(
+      () => {
+        return {
+          label: `Object ${address}`,
+          to: `/object/${address}`,
+        };
+      },
+      () => {
+        // It's not an object
+        return null;
+      },
+    );
+    const anyResourcePromise = getAccountResources(
+      {address},
+      state.aptos_client,
+    ).then(
+      () => {
+        return {
+          label: `Deleted Object ${address}`,
+          to: `/object/${address}`,
+        };
+      },
+      () => {
+        // It has no resources
+        return null;
+      },
+    );
+
+    promises.push(faPromise);
+    promises.push(accountPromise);
+    promises.push(resourcePromise);
+    promises.push(anyResourcePromise);
+    return promises;
+  }
+
+  // This is a very slow query, for now we will only do it if the address is not found in the other queries
+  function anyOwnedObjects(searchText: string): Promise<SearchResult | null> {
+    const address = tryStandardizeAddress(searchText);
+    if (!address) {
+      return new Promise<null>(() => null);
+    }
+    // Note: This is a very slow query, for now we will only do it if the address is not found in the other queries
+    return state.sdk_v2_client
+      .getAccountOwnedObjects({accountAddress: address})
+      .then(
+        (output) => {
+          if (output.length > 0) {
+            return {
+              label: `Address ${address}`,
+              to: `/account/${address}`,
+            };
+          } else {
+            return null;
+          }
+        },
+        () => {
+          // It has no coins
+          return null;
+        },
+      );
+  }
+
+  function prefixMatchLongerThan3(
+    searchLowerCase: string,
+    knownName: string | null | undefined,
+  ): boolean {
+    if (!knownName) {
+      return false;
+    }
+    const knownLower = knownName.toLowerCase();
+    return (
+      (searchLowerCase.length >= 3 &&
+        (knownLower.startsWith(searchLowerCase) ||
+          knownLower.includes(searchLowerCase))) ||
+      (searchLowerCase.length < 3 &&
+        knownLower.toLowerCase() === searchLowerCase)
+    );
+  }
+
+  async function handleLabelLookup(
+    searchText: string,
+  ): Promise<(SearchResult | null)[]> {
+    const searchResults: SearchResult[] = [];
+    const searchLowerCase = searchText.toLowerCase();
+    Object.entries(knownAddresses).forEach(([address, knownName]) => {
+      if (prefixMatchLongerThan3(searchLowerCase, knownName)) {
+        searchResults.push({
+          label: `Account ${truncateAddress(address)} ${knownName}`,
+          to: `/account/${address}`,
+        });
+      }
+    });
+    return searchResults;
+  }
+
+  async function handleCoinLookup(
+    searchText: string,
+  ): Promise<(SearchResult | null)[]> {
+    const searchLowerCase = searchText.toLowerCase();
+    const coinData = coinList?.data?.data
+      ?.filter(
+        (coin: CoinDescription) =>
+          !coin.isBanned &&
+          !coin.panoraTags.includes("InternalFA") &&
+          coin.panoraTags.length > 0 &&
+          (prefixMatchLongerThan3(searchLowerCase, coin.name) ||
+            prefixMatchLongerThan3(searchLowerCase, coin.symbol) ||
+            prefixMatchLongerThan3(searchLowerCase, coin.panoraSymbol) ||
+            (coin.faAddress &&
+              tryStandardizeAddress(coin.faAddress) ===
+                tryStandardizeAddress(searchText)) ||
+            coin.tokenAddress === searchText),
+      )
+      .sort((coin: CoinDescription, coin2: CoinDescription) => {
+        return coinOrderIndex(coin) - coinOrderIndex(coin2);
+      })
+      .map((coin: CoinDescription) => {
+        if (coin.tokenAddress) {
+          return {
+            label: `${coin.name} - ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
+            to: `/coin/${coin.tokenAddress}`,
+            image: coin.logoUrl,
+          };
+        } else {
+          return {
+            label: `${coin.name} - ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
+            to: `/fungible_asset/${coin.faAddress}`,
+            image: coin.logoUrl,
+          };
+        }
+      });
+
+    return coinData ?? [];
+  }
+
+  async function handleEmojiCoinLookup(
+    searchText: string,
+  ): Promise<(SearchResult | null)[]> {
+    const emojicoinData = getEmojicoinMarketAddressAndTypeTags({
+      symbol: searchText,
+    });
+    if (!emojicoinData) {
+      return [];
+    }
+    const {marketAddress, coin, lp} = emojicoinData;
+    return getAccount(
+      {address: marketAddress.toString()},
+      state.aptos_client,
+    ).then(() => {
+      return [
+        {
+          label: `${searchText} emojicoin`,
+          to: `/coin/${coin}`,
+        },
+        {
+          label: `${searchText} emojicoin LP`,
+          to: `/coin/${lp}`,
+        },
+      ];
+    });
+  }
+
   const fetchData = async (searchText: string) => {
     setMode("loading");
     const searchPerformanceStart = GTMEvents.SEARCH_STATS + " start";
@@ -68,134 +394,103 @@ export default function HeaderSearch() {
     window.performance.mark(searchPerformanceStart);
 
     const isValidAccountAddr = isValidAccountAddress(searchText);
-    const isValidTxnHashOrVer = isValidTxnHashOrVersion(searchText);
     const isValidBlockHeightOrVer = isNumeric(searchText);
-
+    const is32Hex = is32ByteHex(searchText);
+    const isStruct = isValidStruct(searchText);
+    if (searchText.endsWith(".petra")) searchText = searchText.concat(".apt");
+    const isAnsName = searchText.endsWith(".apt");
     const promises = [];
-
-    const isAnsName =
-      searchText.endsWith(".apt") || searchText.endsWith(".petra");
+    const multipleSearchPromises = [];
 
     if (isAnsName) {
-      try {
-        const name = await state.sdk_v2_client?.getName({
-          name: searchText,
-        });
-        const address = name?.registered_address;
-        const primaryName = await state.sdk_v2_client?.getPrimaryName({
-          address: name?.owner_address ?? "",
-        });
-
-        if (!primaryName || !name || !address) {
-          throw new Error("Primary name not found");
-        }
-
-        promises.push({
-          label: `Account ${truncateAddress(address)}${
-            primaryName ? ` | ${primaryName}.apt` : ``
-          }`,
-          to: `/account/${name.owner_address}`,
-        });
-      } catch (e) {}
-    } else {
-      if (isValidAccountAddr) {
-        // It's either an account OR an object: we query both at once to save time
-        const accountPromise = await getAccount(
-          {address: searchText},
-          state.aptos_client,
-        )
-          .then((): SearchResult => {
-            return {
-              label: `Account ${searchText}`,
-              to: `/account/${searchText}`,
-            };
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid account
-          });
-
-        const resourcePromise = await getAccountResources(
-          {address: searchText},
-          state.aptos_client,
-        )
-          .then((resources): SearchResult | undefined => {
-            let hasObjectCore = false;
-            resources.forEach((resource) => {
-              if (resource.type === objectCoreAddress) {
-                hasObjectCore = true;
-              }
-            });
-            if (hasObjectCore) {
-              return {
-                label: `Object ${searchText}`,
-                to: `/object/${searchText}`,
-              };
-            }
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid account
-          });
-        promises.push(accountPromise);
-        promises.push(resourcePromise);
-      }
-
-      if (isValidTxnHashOrVer) {
-        const txnPromise = getTransaction(
-          {txnHashOrVersion: searchText},
-          state.aptos_client,
-        )
-          .then((): SearchResult => {
-            return {
-              label: `Transaction ${searchText}`,
-              to: `/txn/${searchText}`,
-            };
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid transaction
-          });
-        promises.push(txnPromise);
-      }
-
-      if (isValidBlockHeightOrVer) {
-        const blockByHeightPromise = getBlockByHeight(
-          {height: parseInt(searchText), withTransactions: false},
-          state.aptos_client,
-        )
-          .then((): SearchResult => {
-            return {
-              label: `Block ${searchText}`,
-              to: `/block/${searchText}`,
-            };
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid transaction
-          });
-
-        const blockByVersionPromise = getBlockByVersion(
-          {version: parseInt(searchText), withTransactions: false},
-          state.aptos_client,
-        )
-          .then((block): SearchResult => {
-            return {
-              label: `Block with Txn Version ${searchText}`,
-              to: `/block/${block.block_height}`,
-            };
-          })
-          .catch(() => {
-            return null;
-            // Do nothing. It's expected that not all search input is a valid transaction
-          });
-        promises.push(blockByHeightPromise);
-        promises.push(blockByVersionPromise);
-      }
+      promises.push(handleAnsName(searchText));
+    } else if (isStruct) {
+      multipleSearchPromises.push(handleCoinLookup(searchText));
+      promises.push(handleCoin(searchText));
+    } else if (isValidBlockHeightOrVer) {
+      // These are block heights AND versions
+      promises.push(...handleBlockHeightOrVersion(searchText));
+    } else if (is32Hex) {
+      // These are transaction hashes AND addresses
+      promises.push(handleTransaction(searchText));
+      promises.push(...handleAddress(searchText));
+      multipleSearchPromises.push(handleCoinLookup(searchText));
+    } else if (isValidAccountAddr) {
+      // These are only addresses
+      promises.push(...handleAddress(searchText));
+      multipleSearchPromises.push(handleCoinLookup(searchText));
+    } else if (searchText.match(/^\p{Emoji}+$/gu)) {
+      multipleSearchPromises.push(handleEmojiCoinLookup(searchText));
+    } else if (searchText.length > 2) {
+      multipleSearchPromises.push(handleCoinLookup(searchText));
+      multipleSearchPromises.push(handleLabelLookup(searchText));
+    }
+    const resultsList: (SearchResult | null)[] = [];
+    if (multipleSearchPromises) {
+      const results = await Promise.all(multipleSearchPromises);
+      resultsList.push(...results?.flat()?.filter((r) => r !== null));
+    }
+    if (promises) {
+      const results = await Promise.all(promises);
+      resultsList.push(...results);
     }
 
-    const resultsList = await Promise.all(promises);
-    const results = resultsList
+    const foundAccount = resultsList.find((r) =>
+      r?.label?.startsWith("Account"),
+    );
+    const foundFa = resultsList.find((r) =>
+      r?.label?.startsWith("Fungible Asset"),
+    );
+    const foundObject = resultsList.find((r) => r?.label?.startsWith("Object"));
+    const foundDeletedObject = resultsList.find((r) =>
+      r?.label?.startsWith("Deleted Object"),
+    );
+    const foundPossibleAddress = resultsList.find((r) =>
+      r?.label?.startsWith("Address"),
+    );
+    const foundCoinByList = resultsList.find(
+      (r) => r?.label?.startsWith("Coin") && !r?.label?.startsWith("Coin 0x"),
+    );
+    const foundCoinByStruct = resultsList.find((r) =>
+      r?.label?.startsWith("Coin 0x"),
+    );
+
+    // Something besides any
+    let filteredResults: (SearchResult | null)[];
+
+    switch (true) {
+      case Boolean(foundCoinByList): {
+        filteredResults = resultsList.filter((r) => r !== foundCoinByStruct);
+        break;
+      }
+      case Boolean(foundFa): {
+        filteredResults = resultsList.filter(
+          (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
+        );
+        break;
+      }
+      case Boolean(foundAccount): {
+        filteredResults = resultsList.filter(
+          (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
+        );
+        break;
+      }
+      case Boolean(foundObject): {
+        filteredResults = resultsList.filter(
+          (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
+        );
+        break;
+      }
+      case Boolean(foundDeletedObject): {
+        filteredResults = resultsList.filter((r) => r !== foundPossibleAddress);
+        break;
+      }
+      default: {
+        filteredResults = resultsList;
+      }
+    }
+    const results = filteredResults
+      .filter((result) => result !== null)
       .filter((result): result is SearchResult => !!result)
       .map((result) => {
         if (result.to) {
@@ -204,6 +499,16 @@ export default function HeaderSearch() {
 
         return result;
       });
+
+    // A bit of a hack, but only make the GraphQL queries after all other queries have failed
+    if (results.length === 0) {
+      if (is32Hex || isValidAccountAddr) {
+        const anyObjects = await anyOwnedObjects(searchText);
+        if (anyObjects) {
+          results.push(anyObjects);
+        }
+      }
+    }
 
     window.performance.mark(searchPerformanceEnd);
     sendToGTM({
@@ -292,7 +597,11 @@ export default function HeaderSearch() {
       renderOption={(props, option) => {
         return (
           <li {...props} key={props.id}>
-            <ResultLink to={option.to} text={option.label} />
+            <ResultLink
+              to={option.to}
+              text={option.label}
+              image={option.image}
+            />
           </li>
         );
       }}

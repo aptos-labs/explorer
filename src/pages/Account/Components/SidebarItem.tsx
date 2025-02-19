@@ -29,12 +29,13 @@ export default function SidebarItem({
     <Link to={linkTo} underline="none" color={"inherit"}>
       <Box
         onClick={() => {
-          loggingInfo &&
+          if (loggingInfo) {
             logEvent(
               loggingInfo.eventName,
               loggingInfo.value,
               loggingInfo.metadata,
             );
+          }
         }}
         sx={{
           fontSize: 12,

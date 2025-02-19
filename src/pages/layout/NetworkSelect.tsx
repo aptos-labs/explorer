@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
 import {useTheme} from "@mui/material/styles";
-import {Stack} from "@mui/system";
+import Stack from "@mui/material/Stack";
 import React from "react";
 import {
   useGetChainIdAndCache,
@@ -221,7 +221,7 @@ export default function NetworkSelect() {
                   },
                 },
                 "& .MuiMenuItem-root:hover": {
-                  backgroundColor: `${yellow[300]} !important`,
+                  backgroundColor: `${grey[500]} !important`,
                   color: "black",
                   "& .MuiTypography-root": {
                     color: "black",

@@ -1,6 +1,11 @@
 build
 coverage
 public/world.json
-pnpm-lock.yaml
+robots.txt
 .husky/
 .prettierignore
+.tool-versions
+.gitattributes
+.editorconfig
+.node-version
+*.sql

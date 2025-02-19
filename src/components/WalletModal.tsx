@@ -22,6 +22,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { grey } from "../themes/colors/aptosColorPalette";
+import { JSX } from "react";
 
 // reported bug with loading mui icons with esm, therefore need to import like this https://github.com/mui/material-ui/issues/35233
 import {
@@ -33,14 +34,13 @@ import { useState } from "react";
 import {WalletConnectorProps} from "@aptos-labs/wallet-adapter-mui-design";
 
 
-interface WalletsModalProps
-  extends Pick<
-    WalletConnectorProps,
-    "networkSupport" | "sortDefaultWallets" | "sortMoreWallets"
-  > {
+interface WalletsModalProps {
   handleClose: () => void;
   modalOpen: boolean;
   maxWidth?: Breakpoint;
+  networkSupport?: string;
+  sortDefaultWallets?: (a: AnyAptosWallet, b: AnyAptosWallet) => number;
+  sortMoreWallets?: (a: AnyAptosWallet, b: AnyAptosWallet) => number;
 }
 
 export default function WalletsModal({
@@ -115,6 +115,7 @@ export default function WalletsModal({
             display: "flex",
             flexDirection: "column",
           }}
+          fontWeight={600}
         >
           {false ? (
             <>
@@ -194,7 +195,7 @@ export default function WalletsModal({
           </>
         )}*/}
         <Stack sx={{ gap: 1 }}>
-          {defaultWallets.map((wallet) => (
+          {defaultWallets.map((wallet: AnyAptosWallet) => (
             <WalletRow
               key={wallet.name}
               wallet={wallet}
@@ -213,7 +214,7 @@ export default function WalletsModal({
               </Button>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <Stack sx={{ gap: 1 }}>
-                  {moreWallets.map((wallet) => (
+                  {moreWallets.map((wallet: AnyAptosWallet) => (
                     <WalletRow
                       key={wallet.name}
                       wallet={wallet}

@@ -9,7 +9,7 @@ import {useGetStakingRewardsRate} from "./useGetStakingRewardsRate";
 export type DelegationState = {
   lockedUntilSecs: bigint | null;
   balance: string | null;
-  delegatorBalance: any;
+  delegatorBalance: number;
   rewardsRateYearly: string | undefined;
 };
 
@@ -19,13 +19,15 @@ export function useGetDelegationState(
 ): DelegationState {
   const {account} = useWallet();
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
-  const balance = useGetAccountAPTBalance(account?.address!) || "0";
+
+  // FIXME Handle the case where the account is not connected
+  const balance = useGetAccountAPTBalance(account?.address ?? "");
   const {delegatorBalance} = useGetNumberOfDelegators(validator.owner_address);
   const {rewardsRateYearly} = useGetStakingRewardsRate();
 
   return {
     lockedUntilSecs,
-    balance,
+    balance: balance.data ?? null,
     delegatorBalance,
     rewardsRateYearly,
   };

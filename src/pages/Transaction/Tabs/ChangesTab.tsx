@@ -9,7 +9,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {
   collectionV2Address,
-  objectCoreAddress,
+  objectCoreResource,
   tokenV2Address,
 } from "../../../constants";
 
@@ -53,7 +53,7 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
                     "data" in change &&
                     "type" in change.data &&
                     [
-                      objectCoreAddress,
+                      objectCoreResource,
                       tokenV2Address,
                       collectionV2Address,
                     ].includes(change.data.type)
@@ -65,6 +65,9 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
             />
           )}
           <ContentRow title="State Key Hash:" value={change.state_key_hash} />
+          {"data" in change && change.data && "type" in change.data && (
+            <ContentRow title="Resource:" value={change.data.type} />
+          )}
           {"data" in change && change.data && (
             <ContentRow
               title="Data:"

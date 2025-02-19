@@ -10,7 +10,7 @@ import {
   InputTransactionData,
 } from "@aptos-labs/wallet-adapter-react";
 import {
-  Grid,
+  Grid2,
   Box,
   Typography,
   Divider,
@@ -30,7 +30,7 @@ import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
-import {useNavigate} from "../../../../routing";
+import {Link, useNavigate} from "../../../../routing";
 import {Code} from "../../Components/CodeSnippet";
 import {
   PackageMetadata,
@@ -91,7 +91,7 @@ function Contract({
 
   const moduleAndFnsGroup = modules.reduce(
     (acc, module) => {
-      if (module.abi === undefined) {
+      if (!module.abi) {
         return acc;
       }
 
@@ -131,8 +131,8 @@ function Contract({
   // so that the state of the form is reset.
   const contractFormKey = module?.name + ":" + fn?.name;
   return (
-    <Grid container spacing={2}>
-      <Grid item md={3} xs={12}>
+    <Grid2 container spacing={2}>
+      <Grid2 size={{md: 3, xs: 12}}>
         <ContractSidebar
           selectedModuleName={selectedModuleName}
           selectedFnName={selectedFnName}
@@ -140,8 +140,8 @@ function Contract({
           getLinkToFn={getLinkToFn}
           isObject={isObject}
         />
-      </Grid>
-      <Grid item md={9} xs={12}>
+      </Grid2>
+      <Grid2 size={{md: 9, xs: 12}}>
         <Box
           padding={4}
           bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
@@ -162,8 +162,8 @@ function Contract({
             </>
           )}
         </Box>
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 }
 
@@ -248,8 +248,10 @@ function ContractSidebar({
             <TextField {...params} label="Select a function" />
           )}
           onChange={(_, fn) => {
-            fn && logEvent("function_name_clicked", fn.fnName);
-            fn && navigate(getLinkToFn(fn.moduleName, fn.fnName, isObject));
+            if (fn) {
+              logEvent("function_name_clicked", fn.fnName);
+              navigate(getLinkToFn(fn.moduleName, fn.fnName, isObject));
+            }
           }}
           value={
             selectedModuleName && selectedFnName
@@ -286,17 +288,19 @@ function RunContractForm({
   const convertArgument = (
     arg: string | null | undefined,
     type: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): any => {
     // TypeScript doesn't really protect us from nulls, this enforces it
     if (typeof arg !== "string") {
       arg = "";
     }
     arg = arg.trim();
-    const typeTag = parseTypeTag(type);
+    const typeTag = parseTypeTag(type, {allowGenerics: true});
     if (typeTag.isVector()) {
       const innerTag = typeTag.value;
       if (innerTag.isVector()) {
         // This must be JSON, let's parse it
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return JSON.parse(arg) as any[];
       }
 
@@ -310,6 +314,7 @@ function RunContractForm({
 
       if (arg.startsWith("[")) {
         // This is supposed to be JSON if it has the bracket
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return JSON.parse(arg) as any[];
       } else {
         // We handle array without brackets otherwise
@@ -430,23 +435,23 @@ function RunContractForm({
                   {/* Has a transaction, display the button to view the transaction */}
                   {transactionResponse.transactionSubmitted &&
                     transactionResponse.transactionHash && (
-                      <Button
-                        variant="outlined"
-                        onClick={() =>
-                          window.open(
-                            `/txn/${transactionResponse.transactionHash}`,
-                            "_blank",
-                          )
-                        }
-                        sx={{
-                          height: "2rem",
-                          minWidth: "unset",
-                          borderRadius: "0rem",
-                          whiteSpace: "nowrap",
-                        }}
+                      <Link
+                        to={`/txn/${transactionResponse.transactionHash}`}
+                        color="inherit"
+                        target="_blank"
                       >
-                        View Transaction
-                      </Button>
+                        <Button
+                          variant="outlined"
+                          sx={{
+                            height: "2rem",
+                            minWidth: "unset",
+                            borderRadius: "0.5rem",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          View Transaction
+                        </Button>
+                      </Link>
                     )}
                 </Stack>
               </ExecutionResult>
@@ -456,8 +461,8 @@ function RunContractForm({
           <Box display="flex" flexDirection="row" alignItems="center">
             <WalletConnector
               networkSupport={state.network_name}
-              sortDefaultWallets={sortPetraFirst}
-              sortMoreWallets={sortPetraFirst}
+              // sortAvailableWallets={sortPetraFirst}
+              // sortInstallableWallets={sortPetraFirst}
               modalMaxWidth="sm"
             />
             <Typography ml={2} fontSize={10}>
@@ -516,6 +521,7 @@ function ReadContractForm({
           return encodeInputArgsForViewRequest(fn.params[i], arg);
         }),
       };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       setErrMsg("Parsing arguments failed: " + e?.message);
       return;
@@ -530,6 +536,7 @@ function ReadContractForm({
       setResult(result);
       setErrMsg(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "success"});
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       // Ensure error is a string
       let error = e.message ?? JSON.stringify(e);
@@ -744,7 +751,7 @@ function ContractForm({
                   render={({field: {onChange, value}}) => (
                     <TextField
                       onChange={onChange}
-                      value={isOption ? value : value ?? ""}
+                      value={isOption ? value : (value ?? "")}
                       label={`arg${i}: ${param}`}
                       fullWidth
                     />

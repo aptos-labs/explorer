@@ -97,6 +97,7 @@ const DEFAULT_COLUMNS: Column[] = [
 ];
 
 type ActivityRowProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   activity: any; // TODO: add graphql data typing
   columns: Column[];
 };
@@ -159,7 +160,7 @@ export function ActivitiesTable({
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {activities.map((activity: any, i: number) => {
+        {activities.map((activity, i: number) => {
           return <ActivityRow key={i} activity={activity} columns={columns} />;
         })}
       </GeneralTableBody>

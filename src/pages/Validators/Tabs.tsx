@@ -38,7 +38,7 @@ type TabPanelProps = {
   networkName: NetworkName;
 };
 
-function TabPanel({value, networkName}: TabPanelProps): JSX.Element {
+function TabPanel({value, networkName}: TabPanelProps): React.JSX.Element {
   switch (networkName) {
     // case Network.PREVIEWNET:
     //   return <ValidatorsTable />;
@@ -56,7 +56,7 @@ function TabPanel({value, networkName}: TabPanelProps): JSX.Element {
   }
 }
 
-export default function ValidatorsPageTabs(): JSX.Element {
+export default function ValidatorsPageTabs(): React.JSX.Element {
   const [state] = useGlobalState();
   const {tab} = useParams();
   const navigate = useNavigate();

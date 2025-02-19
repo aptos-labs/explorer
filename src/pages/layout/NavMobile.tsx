@@ -3,9 +3,7 @@ import React, {useState} from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-// @ts-expect-error logo
 import HamburgerIcon from "../../assets/svg/icon_hamburger.svg?react";
-// @ts-expect-error logo
 import CloseIcon from "../../assets/svg/icon_close.svg?react";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import Box from "@mui/material/Box";
@@ -85,18 +83,7 @@ export default function NavMobile({handleNotificationsClick}: NavMobileProps) {
         {menuOpen ? (
           <CloseIcon />
         ) : (
-          <HamburgerIcon
-            sx={{
-              fontSize: 24,
-              width: 24,
-              height: 24,
-              color: "red",
-              "& path": {
-                stroke: "white",
-                strokeWidth: 2,
-              },
-            }}
-          />
+          <HamburgerIcon />
         )}
       </Button>
       <Menu
@@ -144,8 +131,8 @@ export default function NavMobile({handleNotificationsClick}: NavMobileProps) {
         <WalletConnector
           networkSupport={state.network_name}
           handleNavigate={() => navigate(`/account/${account?.address}`)}
-          sortDefaultWallets={sortPetraFirst}
-          sortMoreWallets={sortPetraFirst}
+          // sortAvailableWallets={sortPetraFirst}
+          // sortInstallableWallets={sortPetraFirst}
           modalMaxWidth="sm"
         />
       </Menu>

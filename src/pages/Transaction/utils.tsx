@@ -1,5 +1,7 @@
 import {Types} from "aptos";
-import {normalizeAddress} from "../../utils";
+import {standardizeAddress, tryStandardizeAddress} from "../../utils";
+import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
+import {TransactionTypeName} from "../../components/TransactionType";
 
 export type TransactionCounterparty = {
   address: string;
@@ -13,7 +15,7 @@ export type TransactionCounterparty = {
 export function getTransactionCounterparty(
   transaction: Types.Transaction,
 ): TransactionCounterparty | undefined {
-  if (transaction.type !== "user_transaction") {
+  if (transaction.type !== TransactionTypeName.User) {
     return undefined;
   }
 
@@ -21,7 +23,20 @@ export function getTransactionCounterparty(
     return undefined;
   }
 
-  if (transaction.payload.type !== "entry_function_payload") {
+  let payload: Types.TransactionPayload_EntryFunctionPayload;
+  if (transaction.payload.type === "entry_function_payload") {
+    payload =
+      transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
+  } else if (
+    transaction.payload.type === "multisig_payload" &&
+    "transaction_payload" in transaction.payload &&
+    transaction.payload.transaction_payload &&
+    "type" in transaction.payload.transaction_payload &&
+    transaction.payload.transaction_payload.type === "entry_function_payload"
+  ) {
+    payload = transaction.payload
+      .transaction_payload as Types.TransactionPayload_EntryFunctionPayload;
+  } else {
     return undefined;
   }
 
@@ -32,33 +47,50 @@ export function getTransactionCounterparty(
   //    payload function is "0x1::aptos_account::transfer" or "0x1::aptos_account::transfer_coins"
   // In both scenarios, the first item in arguments is the receiver's address, and the second item is the amount.
 
-  const payload =
-    transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
-  const typeArgument =
-    payload.type_arguments.length > 0 ? payload.type_arguments[0] : undefined;
-  const isAptCoinTransfer =
-    (payload.function === "0x1::coin::transfer" ||
-      payload.function === "0x1::aptos_account::transfer_coins") &&
-    typeArgument === "0x1::aptos_coin::AptosCoin";
-  const isAptCoinInitialTransfer =
+  const isCoinTransfer =
+    payload.function === "0x1::coin::transfer" ||
+    payload.function === "0x1::aptos_account::transfer_coins" ||
     payload.function === "0x1::aptos_account::transfer" ||
-    payload.function === "0x1::aptos_account::transfer_coins";
+    payload.function === "0x1::aptos_account::fungible_transfer_only";
+  const isPrimaryFaTransfer =
+    payload.function === "0x1::primary_fungible_store::transfer";
 
-  if (
-    (isAptCoinTransfer || isAptCoinInitialTransfer) &&
-    payload.arguments.length === 2
-  ) {
+  const isObjectTransfer = payload.function === "0x1::object::transfer";
+  const isTokenV2MintSoulbound =
+    payload.function === "0x4::aptos_token::mint_soul_bound";
+
+  if (isCoinTransfer) {
     return {
       address: payload.arguments[0],
       role: "receiver",
     };
-  } else {
-    const smartContractAddr = payload.function.split("::")[0];
+  }
+
+  if (isPrimaryFaTransfer) {
     return {
-      address: smartContractAddr,
-      role: "smartContract",
+      address: payload.arguments[1],
+      role: "receiver",
     };
   }
+
+  if (isObjectTransfer) {
+    return {
+      address: payload.arguments[1],
+      role: "receiver",
+    };
+  }
+  if (isTokenV2MintSoulbound) {
+    return {
+      address: payload.arguments[7],
+      role: "receiver",
+    };
+  }
+
+  const smartContractAddr = payload.function.split("::")[0];
+  return {
+    address: smartContractAddr,
+    role: "smartContract",
+  };
 }
 
 type ChangeData = {
@@ -81,22 +113,27 @@ type ChangeData = {
   };
 };
 
-export type TransactionAmount = {
-  amountInvolved: bigint;
-  balanceChanges: BalanceChange[];
-};
-
 export type BalanceChange = {
   address: string;
   amount: bigint;
-  amountAfter: string;
+  type: string;
+  asset: {
+    decimals: number;
+    symbol: string;
+    type: string;
+    id: string;
+  };
+  known: boolean;
+  isBanned?: boolean;
+  logoUrl?: string;
+  isInPanoraTokenList?: boolean;
 };
 
 function getBalanceMap(transaction: Types.Transaction) {
   const events: Types.Event[] =
     "events" in transaction ? transaction.events : [];
 
-  const accountToBalance = events.reduce(
+  return events.reduce(
     (
       balanceMap: {
         [key: string]: {
@@ -106,7 +143,7 @@ function getBalanceMap(transaction: Types.Transaction) {
       },
       event: Types.Event,
     ) => {
-      const addr = normalizeAddress(event.guid.account_address);
+      const addr = standardizeAddress(event.guid.account_address);
 
       if (
         event.type === "0x1::coin::DepositEvent" ||
@@ -133,8 +170,6 @@ function getBalanceMap(transaction: Types.Transaction) {
     },
     {},
   );
-
-  return accountToBalance;
 }
 
 function getAptChangeData(
@@ -158,7 +193,12 @@ function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
     "changes" in transaction ? transaction.changes : [];
 
   const aptEventChange = changes.filter((change) => {
-    if ("address" in change && change.address === event.guid.account_address) {
+    if (
+      "address" in change &&
+      change.address &&
+      tryStandardizeAddress(change.address) ===
+        tryStandardizeAddress(event.guid.account_address)
+    ) {
       const data = getAptChangeData(change);
       if (data !== undefined) {
         const eventCreationNum = event.guid.creation_number;
@@ -178,36 +218,63 @@ function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
   return aptEventChange.length > 0;
 }
 
-export function getCoinBalanceChanges(
-  transaction: Types.Transaction,
-): BalanceChange[] {
-  const accountToBalance = getBalanceMap(transaction);
+interface TransactionResponse {
+  fungible_asset_activities: Array<FungibleAssetActivity>;
+}
 
-  const changes: Types.WriteSetChange[] =
-    "changes" in transaction ? transaction.changes : [];
+export interface FungibleAssetActivity {
+  amount: number;
+  entry_function_id_str: string;
+  gas_fee_payer_address?: string;
+  is_frozen?: boolean;
+  asset_type: string;
+  event_index: number;
+  owner_address: string;
+  transaction_timestamp: string;
+  transaction_version: number;
+  type: string;
+  storage_refund_amount: number;
+  metadata: {
+    asset_type: string;
+    decimals: number;
+    symbol: string;
+  };
+}
 
-  Object.entries(accountToBalance).forEach(([key]) => {
-    changes.filter((change) => {
-      if ("address" in change && change.address === key) {
-        const data = getAptChangeData(change);
-        if (data !== undefined) {
-          accountToBalance[key].amountAfter = data.coin.value;
-          return change;
+export function useTransactionBalanceChanges(txn_version: string) {
+  const {loading, error, data} = useGraphqlQuery<TransactionResponse>(
+    gql`
+        query TransactionQuery($txn_version: String) {
+            fungible_asset_activities(
+                where: {transaction_version: {_eq: ${txn_version}}}
+            ) {
+                amount
+                entry_function_id_str
+                gas_fee_payer_address
+                is_frozen
+                asset_type
+                event_index
+                owner_address
+                transaction_timestamp
+                transaction_version
+                type
+                storage_refund_amount
+                metadata {
+                    asset_type
+                    decimals
+                    symbol
+                }
+            }
         }
-      }
-    });
-  });
+    `,
+    {variables: {txn_version}},
+  );
 
-  const balanceList: BalanceChange[] = [];
-  Object.entries(accountToBalance).forEach(([key, value]) => {
-    balanceList.push({
-      address: key,
-      amount: value.amount,
-      amountAfter: value.amountAfter,
-    });
-  });
-
-  return balanceList;
+  return {
+    isLoading: loading,
+    error,
+    data,
+  };
 }
 
 export function getCoinBalanceChangeForAccount(
@@ -227,7 +294,7 @@ export function getCoinBalanceChangeForAccount(
 export function getTransactionAmount(
   transaction: Types.Transaction,
 ): bigint | undefined {
-  if (transaction.type !== "user_transaction") {
+  if (transaction.type !== TransactionTypeName.User) {
     return undefined;
   }
 

@@ -1,5 +1,4 @@
-import { createAvatar } from '@dicebear/core';
-import { notionistsNeutral } from '@dicebear/collection';
+import {createIcon} from "@download/blockies";
 
 interface IdenticonImgProps {
   address: string;
@@ -17,18 +16,32 @@ function addressToColor(address:string) {
 const IdenticonImg: React.FunctionComponent<IdenticonImgProps> = ({
   address,
 }) => {
-  const iconCanvas = createAvatar(notionistsNeutral,{
+  /*const {data: profile} = useGetProfile(address);
+  if (profile?.avatar_url) {
+    // TODO: Only add this back once we can get caching and error handling of bad URLs working
+    return (
+      <img
+        src={profile.avatar_url}
+        width={30}
+        height={30}
+        alt="Profile Avatar"
+        style={{borderRadius: 2}}
+      />
+    );
+  }*/
+
+  const iconCanvas = createIcon({
     seed: address,
-    size: 24,
+    size: 2,
     scale: 150,
-    backgroundColor: [`${addressToColor(address)}`]
+    bgColor: addressToColor(address),
   });
 
   // Convert canvas to data URL
-  const iconDataURL = iconCanvas.toDataUri();
+  //const iconDataURL = iconCanvas.toDataURL();
 
   // Return an img element with the data URL as the src
-  return <img src={iconDataURL} alt="Identicon" style={{borderRadius: 0}} />;
+  return <></> //<img src={iconDataURL} alt="Identicon" style={{borderRadius: 0, width: 30, height: 30}} />;
 };
 
 export default IdenticonImg;

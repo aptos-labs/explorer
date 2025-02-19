@@ -1,9 +1,8 @@
 import React, {createContext} from "react";
-import Grid from "@mui/material/Grid";
+import {Grid2, Grid} from "@mui/material";
 // import TotalSupply from "./TotalSupply";
 // import TotalStake from "./TotalStake";
 import TPS from "./TPS";
-// import ActiveValidators from "./ActiveValidators";
 import TotalTransactions from "./TotalTransactions";
 import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 import {Link} from "../../../routing";
@@ -51,7 +50,7 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
 
   return (
     <StyleContext.Provider value={onHomePage ? "default" : "outline"}>
-      <Grid
+      <Grid2
         container
         spacing={2}
         direction="row"
@@ -63,11 +62,11 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
             <TotalTransactions type={"card"} />
           </LinkableContainer>
         </Grid>
-        <Grid item xs={12} md={3} lg={2.4}>
+        {/* <Grid item xs={12} md={3} lg={2.4}>
           <LinkableContainer linkToAnalyticsPage={onHomePage}>
             <TPS />
           </LinkableContainer>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} md={3} lg={2.4}>
           <LinkableContainer linkToAnalyticsPage={onHomePage}>
             <TotalNewAccountsCreated
@@ -89,23 +88,7 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
             />
           </LinkableContainer>
         </Grid>
-        {/*
-          <LinkableContainer linkToAnalyticsPage={onHomePage}>
-              <TotalSupply />
-            </LinkableContainer>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <LinkableContainer linkToAnalyticsPage={onHomePage}>
-              <TotalStake />
-            </LinkableContainer>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <LinkableContainer linkToAnalyticsPage={onHomePage}>
-              <ActiveValidators />
-            </LinkableContainer>
-          </Grid>
-        */}
-      </Grid>
+      </Grid2>
     </StyleContext.Provider>
   );
 }

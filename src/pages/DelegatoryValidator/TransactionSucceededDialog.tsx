@@ -4,7 +4,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
+  Grid2,
   Stack,
   Tooltip,
   Typography,
@@ -21,7 +21,7 @@ import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 type TransactionSucceededDialogProps = {
   handleDialogClose: () => void;
   isDialogOpen: boolean;
-  amount: string; // could be staked, unlocked, reactivated or withdrawn amonut
+  amount: string; // could be staked, unlocked, reactivated or withdrawn amount
   transactionHash: string;
   stakeOperation: StakeOperation;
 };
@@ -114,12 +114,12 @@ export default function TransactionSucceededDialog({
             paddingY: 2,
           }}
         >
-          <Grid item xs zeroMinWidth>
+          <Grid2 size="grow">
             <Typography variant="caption">Transaction Address</Typography>
             <Typography variant="body2" style={{overflowWrap: "break-word"}}>
               {transactionHash}
             </Typography>
-          </Grid>
+          </Grid2>
           <Tooltip title="Copied" open={copyTooltipOpen}>
             <Button
               sx={{

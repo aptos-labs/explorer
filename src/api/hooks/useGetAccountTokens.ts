@@ -1,11 +1,12 @@
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useQuery} from "@tanstack/react-query";
-import {normalizeAddress} from "../../utils";
+import {standardizeAddress} from "../../utils";
 import {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
+import {IndexerClient} from "aptos";
 
 export function useGetAccountTokensCount(address: string) {
   const [state] = useGlobalState();
-  const addr64Hash = normalizeAddress(address);
+  const addr64Hash = standardizeAddress(address);
   return useQuery({
     queryKey: ["account_tokens_count", {addr64Hash}, state.network_value],
     queryFn: async () => {
@@ -18,14 +19,18 @@ export function useGetAccountTokensCount(address: string) {
   });
 }
 
+export type TokenOwnership = Awaited<
+  ReturnType<IndexerClient["getOwnedTokens"]>
+>["current_token_ownerships_v2"][0];
+
 export function useGetAccountTokens(
   address: string,
   limit: number,
   offset?: number,
 ) {
   const [state] = useGlobalState();
-  const addr64Hash = normalizeAddress(address);
-  return useQuery({
+  const addr64Hash = standardizeAddress(address);
+  return useQuery<TokenOwnership[]>({
     queryKey: [
       "account_tokens",
       {addr64Hash, limit, offset},
@@ -108,8 +113,8 @@ export function useGetTokenActivities(
       state.network_value,
     ],
     queryFn: async () => {
-      const response: GetTokenActivityResponse | undefined =
-        await state.sdk_v2_client?.getDigitalAssetActivity({
+      const response: GetTokenActivityResponse =
+        await state.sdk_v2_client.getDigitalAssetActivity({
           digitalAssetAddress: tokenDataId,
           options: {
             limit,
@@ -121,7 +126,7 @@ export function useGetTokenActivities(
             ],
           },
         });
-      return response ?? [];
+      return response;
     },
   });
 }

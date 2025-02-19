@@ -13,8 +13,15 @@ export default function Error({error, address}: ErrorProps) {
       return (
         <Alert severity="error" sx={{overflowWrap: "break-word"}}>
           {error.message}
-          Account not found: {address}. The account may still have tokens or
-          objects associated.
+          Account not found. Please take a look at the Coins and Token tabs. The
+          account has never submitted a transaction, but it may still hold
+          assets.
+        </Alert>
+      );
+    case ResponseErrorType.INVALID_INPUT:
+      return (
+        <Alert severity="error">
+          ({error.type}): {error.message}
         </Alert>
       );
     case ResponseErrorType.UNHANDLED:
@@ -32,14 +39,14 @@ export default function Error({error, address}: ErrorProps) {
       } else {
         return (
           <Alert severity="error">
-            To many requests. Please try again 5 minutes later.
+            Too many requests. Please try again 5 minutes later.
           </Alert>
         );
       }
     case ResponseErrorType.TOO_MANY_REQUESTS:
       return (
         <Alert severity="error">
-          To many requests. Please try again 5 minutes later.
+          Too many requests. Please try again 5 minutes later.
         </Alert>
       );
   }

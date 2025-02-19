@@ -1,5 +1,4 @@
 import * as React from "react";
-import {Types} from "aptos";
 import {Box} from "@mui/material";
 import OverviewTab from "./Tabs/OverviewTab";
 import TransactionsTab from "./Tabs/TransactionsTab";
@@ -10,6 +9,7 @@ import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
+import {Block} from "@aptos-labs/ts-sdk";
 
 const TAB_VALUES: TabValue[] = ["overview", "transactions"];
 
@@ -31,7 +31,7 @@ function getTabLabel(value: TabValue): string {
   }
 }
 
-function getTabIcon(value: TabValue): JSX.Element {
+function getTabIcon(value: TabValue) {
   switch (value) {
     case "overview":
       return <BarChartOutlinedIcon fontSize="small" />;
@@ -44,28 +44,28 @@ function getTabIcon(value: TabValue): JSX.Element {
 
 type TabPanelProps = {
   value: TabValue;
-  data: Types.Block;
+  data: Block;
 };
 
-function TabPanel({value, data}: TabPanelProps): JSX.Element {
+function TabPanel({value, data}: TabPanelProps) {
   const TabComponent = TabComponents[value];
   return <TabComponent data={data} />;
 }
 
 type AccountTabsProps = {
-  data: Types.Block;
+  data: Block;
   tabValues?: TabValue[];
 };
 
 export default function BlockTabs({
   data,
   tabValues = TAB_VALUES,
-}: AccountTabsProps): JSX.Element {
+}: AccountTabsProps) {
   const {height, tab} = useParams();
   const navigate = useNavigate();
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/block/${height}/${newValue}`, {replace: true});
   };
 

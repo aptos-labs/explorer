@@ -5,6 +5,7 @@ import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import ValidatorStatusIcon from "./Components/ValidatorStatusIcon";
 import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
 import {getValidatorStatus} from "./utils";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 type ValidatorTitleProps = {
   address: Types.Address;
@@ -18,6 +19,8 @@ export default function ValidatorTitle({
   const {validatorStatus} = useGetDelegationNodeInfo({
     validatorAddress: address,
   });
+
+  usePageMetadata({title: `Delegating Validator ${address}`});
   return isSkeletonLoading ? (
     ValidatorTitleSkeleton()
   ) : (
@@ -27,7 +30,9 @@ export default function ValidatorTitle({
         <TitleHashButton hash={address} type={HashType.ACCOUNT} isValidator />
         <ValidatorStatusIcon
           validatorStatus={
-            validatorStatus ? getValidatorStatus(validatorStatus) : undefined
+            validatorStatus
+              ? getValidatorStatus(Number(validatorStatus[0]))
+              : undefined
           }
         />
       </Stack>

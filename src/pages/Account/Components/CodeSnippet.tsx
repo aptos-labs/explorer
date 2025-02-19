@@ -2,7 +2,7 @@ import {Box, Button, Modal, Stack, Typography, useTheme} from "@mui/material";
 import {ContentCopy, OpenInFull} from "@mui/icons-material";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
-import React, {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../components/StyledTooltip";
@@ -44,7 +44,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   };
 
   const startingLineNumber = useStartingLineNumber(sourceCode);
-  const codeBoxScrollRef = useRef<any>(null);
+  const codeBoxScrollRef = useRef<{scrollTop: number} | null>(null);
   const LINE_HEIGHT_IN_PX = 24;
   useEffect(() => {
     if (codeBoxScrollRef.current) {
@@ -127,7 +127,7 @@ export function Code({bytecode}: {bytecode: string}) {
   }
 
   const startingLineNumber = useStartingLineNumber(sourceCode);
-  const codeBoxScrollRef = useRef<any>(null);
+  const codeBoxScrollRef = useRef<{scrollTop: number} | null>(null);
   const LINE_HEIGHT_IN_PX = 24;
   useEffect(() => {
     if (codeBoxScrollRef.current) {

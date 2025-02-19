@@ -15,13 +15,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": [],
-    "typeRoots": ["./types", "./node_modules/@types"]
+    "types": ["vite/client", "vite-plugin-svgr/client"]
   },
-  "include": [
-    "src",
-    "types/vite-plugin-svgr-client.d.ts",
-    "types/vite-client.d.ts"
-  ],
+  "include": ["src", "typings"],
   "references": [{"path": "./tsconfig.node.json"}]
 }

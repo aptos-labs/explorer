@@ -3,7 +3,7 @@ import {
   TextField,
   Box,
   Divider,
-  Grid,
+  Grid2,
   Stack,
   Typography,
   useMediaQuery,
@@ -24,13 +24,14 @@ import {useParams} from "react-router-dom";
 import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";
 import {Code} from "../../Components/CodeSnippet";
-import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 
 interface ModuleSidebarProps {
   sortedPackages: PackageMetadata[];
   selectedModuleName: string;
+
   getLinkToModule(moduleName: string): string;
+
   navigateToModule(moduleName: string): void;
 }
 
@@ -40,13 +41,7 @@ interface ModuleContentProps {
   bytecode: string;
 }
 
-function ViewCode({
-  address,
-  isObject,
-}: {
-  address: string;
-  isObject: boolean;
-}): JSX.Element {
+function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
   const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
 
   const navigate = useNavigate();
@@ -84,16 +79,16 @@ function ViewCode({
   }
 
   return (
-    <Grid container spacing={2}>
-      <Grid item md={3} xs={12}>
+    <Grid2 container spacing={2}>
+      <Grid2 size={{md: 3, xs: 12}}>
         <ModuleSidebar
           sortedPackages={sortedPackages}
           selectedModuleName={selectedModuleName}
           getLinkToModule={getLinkToModule}
           navigateToModule={navigateToModule}
         />
-      </Grid>
-      <Grid item md={9} xs={12}>
+      </Grid2>
+      <Grid2 size={{md: 9, xs: 12}}>
         {selectedModule === undefined ? (
           <EmptyTabContent
             message={`No module found with name: ${selectedModuleName}`}
@@ -105,8 +100,8 @@ function ViewCode({
             bytecode={selectedModule.source}
           />
         )}
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 }
 
@@ -118,7 +113,6 @@ function ModuleSidebar({
 }: ModuleSidebarProps) {
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
-  const logEvent = useLogEventWithBasic();
   const flattedModules = useMemo(
     () =>
       sortedPackages.flatMap((pkg) =>
@@ -168,8 +162,9 @@ function ModuleSidebar({
             <TextField {...params} label="Select a module" />
           )}
           onChange={(_, module) => {
-            module && logEvent("modules_clicked", module.name);
-            module && navigateToModule(module?.name);
+            if (module) {
+              navigateToModule(module.name);
+            }
           }}
           value={
             selectedModuleName

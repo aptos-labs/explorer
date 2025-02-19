@@ -1,19 +1,24 @@
 import React from "react";
-import {Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import {Link} from "../../../routing";
 
 type ResultLinkProps = {
   to: string | null;
   text: string;
+  image?: string;
 };
 
-export default function ResultLink({to, text}: ResultLinkProps): JSX.Element {
+export default function ResultLink({
+  to,
+  text,
+  image,
+}: ResultLinkProps): React.JSX.Element {
   const style = {
     padding: 0.5,
     display: "block",
     width: "100%",
     "&:hover": {
-      backgroundColor: `${"transparent"}!important`,
+      backgroundColor: `"transparent"!important`,
       opacity: "0.8",
     },
   };
@@ -28,7 +33,17 @@ export default function ResultLink({to, text}: ResultLinkProps): JSX.Element {
 
   return (
     <Link to={to} color="inherit" underline="none" sx={style}>
-      {text}
+      <Box sx={{display: "flex", justifyContent: "left"}}>
+        {image ? (
+          <Box
+            component="span"
+            sx={{mr: 1, display: "flex", alignItems: "center"}}
+          >
+            <img src={image} alt={image} height={20} width={20} />
+          </Box>
+        ) : null}
+        <Typography variant="inherit">{text}</Typography>
+      </Box>
     </Link>
   );
 }

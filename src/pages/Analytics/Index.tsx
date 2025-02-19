@@ -4,10 +4,12 @@ import * as React from "react";
 // import {useGlobalState} from "../../global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
 import MainnetAnalytics from "./MainnetAnalytics";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 export default function AnalyticsPage() {
   // const [state] = useGlobalState();
 
+  usePageMetadata({title: "Network Analytics"});
   const titleComponent = (
     <Typography variant="h3" marginBottom={2}>
       Network Analytics

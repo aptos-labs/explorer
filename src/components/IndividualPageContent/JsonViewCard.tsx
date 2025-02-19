@@ -41,6 +41,7 @@ function useJsonViewCardTheme() {
 }
 
 type JsonViewCardProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
   collapsedByDefault?: boolean;
 };

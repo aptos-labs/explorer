@@ -1,4 +1,5 @@
 import * as React from "react";
+import {JSX} from "react";
 import {Box} from "@mui/material";
 import TransactionsTab from "./Tabs/TransactionsTab";
 import InfoTab from "./Tabs/InfoTab";
@@ -67,7 +68,7 @@ function getTabLabel(value: TabValue): string {
   }
 }
 
-function getTabIcon(value: TabValue): JSX.Element {
+function getTabIcon(value: TabValue) {
   switch (value) {
     case "transactions":
       return <WysiwygIcon fontSize="small" />;
@@ -91,7 +92,9 @@ function getTabIcon(value: TabValue): JSX.Element {
 type TabPanelProps = {
   value: TabValue;
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: Types.AccountData | undefined;
+  objectData: Types.MoveResource | undefined;
+  resourceData: Types.MoveResource[] | undefined;
   isObject: boolean;
 };
 
@@ -99,6 +102,8 @@ function TabPanel({
   value,
   address,
   accountData,
+  objectData,
+  resourceData,
   isObject,
 }: TabPanelProps): JSX.Element {
   const TabComponent = TabComponents[value];
@@ -106,6 +111,8 @@ function TabPanel({
     <TabComponent
       address={address}
       accountData={accountData}
+      objectData={objectData}
+      resourceData={resourceData}
       isObject={isObject}
     />
   );
@@ -113,7 +120,9 @@ function TabPanel({
 
 type AccountTabsProps = {
   address: string;
-  accountData: Types.AccountData | Types.MoveResource[] | undefined;
+  accountData: Types.AccountData | undefined;
+  objectData: Types.MoveResource | undefined;
+  resourceData: Types.MoveResource[] | undefined;
   tabValues?: TabValue[];
   isObject?: boolean;
 };
@@ -122,6 +131,8 @@ type AccountTabsProps = {
 export default function AccountTabs({
   address,
   accountData,
+  objectData,
+  resourceData,
   isObject = false,
 }: AccountTabsProps): JSX.Element {
   const [state] = useGlobalState();
@@ -139,7 +150,7 @@ export default function AccountTabs({
     effectiveTab = effectiveTabValues[0];
   }
 
-  const handleChange = (event: React.SyntheticEvent, newValue: TabValue) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/${accountPagePath(isObject)}/${address}/${newValue}`, {
       replace: true,
     });
@@ -166,6 +177,8 @@ export default function AccountTabs({
           value={effectiveTab}
           address={address}
           accountData={accountData}
+          objectData={objectData}
+          resourceData={resourceData}
           isObject={isObject}
         />
       </Box>

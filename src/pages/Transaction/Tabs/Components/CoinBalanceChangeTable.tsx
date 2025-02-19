@@ -5,7 +5,9 @@ import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHea
 import {assertNever} from "../../../../utils";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import {BalanceChange} from "../../utils";
-import {APTCurrencyValue} from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import CurrencyValue, {
+  getFormattedBalanceStr,
+} from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {
   negativeColor,
   primary,
@@ -13,17 +15,10 @@ import {
 import {Types} from "aptos";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
-
-function getIsSender(
-  address: string,
-  transaction: Types.UserTransaction,
-): boolean {
-  return transaction.sender === address;
-}
-
-function getGas(transaction: Types.UserTransaction): bigint {
-  return BigInt(transaction.gas_unit_price) * BigInt(transaction.gas_used);
-}
+import {VerifiedCoinCell} from "../../../../components/Table/VerifiedCell";
+import {getLearnMoreTooltip} from "../../helpers";
+import {ContentCopy} from "@mui/icons-material";
+import StyledTooltip from "../../../../components/StyledTooltip";
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
@@ -33,53 +28,54 @@ type BalanceChangeCellProps = {
 function AddressCell({balanceChange}: BalanceChangeCellProps) {
   return (
     <GeneralTableCell>
-      <HashButton hash={balanceChange.address} type={HashType.ACCOUNT} />
+      {balanceChange.address ? (
+        <HashButton hash={balanceChange.address} type={HashType.ACCOUNT} />
+      ) : null}
     </GeneralTableCell>
   );
 }
 
-function AmountBeforeCell({
-  balanceChange,
-  transaction,
-}: BalanceChangeCellProps) {
-  let amountBefore = BigInt(balanceChange.amountAfter) - balanceChange.amount;
-
-  const isSender = getIsSender(balanceChange.address, transaction);
-  if (isSender) {
-    amountBefore += getGas(transaction);
-  }
-
-  return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
-      <APTCurrencyValue amount={amountBefore.toString()} />
-    </GeneralTableCell>
-  );
-}
-
-function AmountAfterCell({balanceChange}: BalanceChangeCellProps) {
-  return (
-    <GeneralTableCell sx={{textAlign: "right"}}>
-      <APTCurrencyValue amount={balanceChange.amountAfter} />
-    </GeneralTableCell>
-  );
-}
-
-function GasCell({balanceChange, transaction}: BalanceChangeCellProps) {
-  const isSender = getIsSender(balanceChange.address, transaction);
-
-  if (!isSender) {
-    return <GeneralTableCell />;
-  }
-
+function TypeCell({balanceChange}: BalanceChangeCellProps) {
   return (
     <GeneralTableCell
       sx={{
-        textAlign: "right",
-        color: negativeColor,
+        textAlign: "left",
       }}
     >
-      {"-"}
-      <APTCurrencyValue amount={getGas(transaction).toString()} />
+      {balanceChange.type}
+    </GeneralTableCell>
+  );
+}
+
+function VerifiedCell({balanceChange}: BalanceChangeCellProps) {
+  return VerifiedCoinCell({
+    data: {
+      id: balanceChange.asset.id,
+      known: balanceChange.known,
+      isBanned: balanceChange.isBanned,
+      isInPanoraTokenList: balanceChange.isInPanoraTokenList,
+      symbol: balanceChange?.asset?.symbol,
+    },
+  });
+}
+
+function TokenInfoCell({balanceChange}: BalanceChangeCellProps) {
+  return (
+    <GeneralTableCell sx={{}}>
+      <HashButton
+        hash={balanceChange.asset.id}
+        type={
+          balanceChange.asset.id.includes("::")
+            ? HashType.COIN
+            : HashType.FUNGIBLE_ASSET
+        }
+        size="large"
+        img={
+          balanceChange.logoUrl
+            ? balanceChange.logoUrl
+            : balanceChange.asset.symbol
+        }
+      />
     </GeneralTableCell>
   );
 }
@@ -88,6 +84,19 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
   const isNegative = balanceChange.amount < 0;
   const amount =
     balanceChange.amount < 0 ? -balanceChange.amount : balanceChange.amount;
+  const [showCopied, setShowCopied] = React.useState(false);
+
+  const handleCopy = async () => {
+    const formattedValue = getFormattedBalanceStr(
+      amount.toString(),
+      balanceChange.asset.decimals,
+    );
+    await navigator.clipboard.writeText(
+      `${isNegative ? "-" : ""}${formattedValue}`,
+    );
+    setShowCopied(true);
+    setTimeout(() => setShowCopied(false), 1500);
+  };
 
   return (
     <GeneralTableCell
@@ -95,18 +104,26 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
         textAlign: "right",
         color: isNegative ? negativeColor : primary[600],
       }}
+      onClick={handleCopy}
     >
       {isNegative ? "-" : "+"}
-      <APTCurrencyValue amount={amount.toString()} />
+      <CurrencyValue
+        amount={amount.toString()}
+        currencyCode={balanceChange.asset.symbol}
+        decimals={balanceChange.asset.decimals}
+      />{" "}
+      <StyledTooltip open={showCopied} title="Copied!" placement="top">
+        <ContentCopy style={{height: "1rem", width: "1.25rem"}} />
+      </StyledTooltip>
     </GeneralTableCell>
   );
 }
 
 const BalanceChangeCells = Object.freeze({
   address: AddressCell,
-  amountBefore: AmountBeforeCell,
-  amountAfter: AmountAfterCell,
-  gas: GasCell,
+  type: TypeCell,
+  tokenInfo: TokenInfoCell,
+  verified: VerifiedCell,
   amount: AmountCell,
 });
 
@@ -114,10 +131,10 @@ type Column = keyof typeof BalanceChangeCells;
 
 const DEFAULT_COLUMNS: Column[] = [
   "address",
-  "amountBefore",
-  "gas",
+  "type",
+  "tokenInfo",
+  "verified",
   "amount",
-  "amountAfter",
 ];
 
 type BalanceChangeRowProps = {
@@ -155,16 +172,18 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
   switch (column) {
     case "address":
       return <GeneralTableHeaderCell header="Account" />;
-    case "amountBefore":
+    case "type":
+      return <GeneralTableHeaderCell header="Event Type" />;
+    case "tokenInfo":
+      return <GeneralTableHeaderCell header="Asset" />;
+    case "verified":
       return (
-        <GeneralTableHeaderCell header="Balance Before" textAlignRight={true} />
+        <GeneralTableHeaderCell
+          header="Verified"
+          tooltip={getLearnMoreTooltip("coin_verification")}
+          isTableTooltip={true}
+        />
       );
-    case "amountAfter":
-      return (
-        <GeneralTableHeaderCell header="Balance After" textAlignRight={true} />
-      );
-    case "gas":
-      return <GeneralTableHeaderCell header="Gas" textAlignRight={true} />;
     case "amount":
       return <GeneralTableHeaderCell header="Change" textAlignRight={true} />;
     default:
@@ -193,7 +212,7 @@ export function CoinBalanceChangeTable({
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {balanceChanges.map((balanceChange: any, i: number) => {
+        {balanceChanges.map((balanceChange, i) => {
           return (
             <BalanceChangeRow
               key={i}

@@ -1,13 +1,12 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
   ApolloClient,
-  InMemoryCache,
+  ApolloLink,
   ApolloProvider,
   HttpLink,
+  InMemoryCache,
   NormalizedCacheObject,
-  ApolloLink,
 } from "@apollo/client";
-import {useEffect, useState} from "react";
 import {NetworkName} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {getCustomParameters} from "../../../src/pages/layout/NetworkSelect";
@@ -18,7 +17,6 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
 }
 
 export function getGraphqlURI(networkName: NetworkName): string | undefined {
-  const prefix = import.meta.env.REACT_APP_PREFIX || "";
   switch (networkName) {
     case "mainnet":
       return `https://indexer.mainnet.movementnetwork.xyz/v1/graphql`;
@@ -32,18 +30,18 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
         import.meta.env.BARDOCK_GRAPHQL ||
         `https://indexer.testnet.movementnetwork.xyz/v1/graphql`
       );
-    case "devnet":
-      return (
-        import.meta.env.DEVNET_GRAPHQL ||
-        `https://${prefix}aptos.devnet.suzuka.movementlabs.xyz/graphql`
-      );
+    // case "devnet":
+    //   return (
+    //     import.meta.env.DEVNET_GRAPHQL ||
+    //     `https://${prefix}aptos.devnet.suzuka.movementlabs.xyz/graphql`
+    //   );
     // case "local":
     //   return import.meta.env.LOCAL_GRAPHQL || "http://0.0.0.0:30731/graphql";
-    case "mevmdevnet":
-      return (
-        import.meta.env.IMOLA_GRAPHQL ||
-        `https://${prefix}aptos.devnet.imola.movementlabs.xyz/graphql`
-      );
+    // case "mevmdevnet":
+    //   return (
+    //     import.meta.env.IMOLA_GRAPHQL ||
+    //     `https://${prefix}aptos.devnet.imola.movementlabs.xyz/graphql`
+    //   );
     case "custom":
       return getCustomParameters().graphqlUrl;
 
@@ -102,14 +100,5 @@ export function GraphqlClientProvider({children}: GraphqlClientProviderProps) {
 
 export function useGetIsGraphqlClientSupported(): boolean {
   const [state] = useGlobalState();
-  const [isGraphqlClientSupported, setIsGraphqlClientSupported] =
-    useState<boolean>(getIsGraphqlClientSupportedFor(state.network_name));
-
-  useEffect(() => {
-    setIsGraphqlClientSupported(
-      getIsGraphqlClientSupportedFor(state.network_name),
-    );
-  }, [state.network_name]);
-
-  return isGraphqlClientSupported;
+  return getIsGraphqlClientSupportedFor(state.network_name);
 }

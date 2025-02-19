@@ -11,6 +11,7 @@ import ValidatorsMap from "./ValidatorsMap";
 import {getStableID} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {CommissionChangeBanner} from "./CommissionChangeBanner";
+import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 export default function ValidatorsPage() {
   const [state] = useGlobalState();
@@ -53,8 +54,11 @@ export default function ValidatorsPage() {
         timestamp: localStorage.getItem(lastVisitKey) ?? "",
       });
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  usePageMetadata({title: "Validators"});
 
   return (
     <Box>

@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {parseTimestamp, timestampDisplay} from "../../../pages/utils";
+import {parseTimestampString} from "../../../pages/utils";
 import EmptyValue from "./EmptyValue";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {IconButton, Stack, Typography, useTheme} from "@mui/material";
@@ -27,8 +27,7 @@ export default function TimestampValue({
     return <EmptyValue />;
   }
 
-  const moment = parseTimestamp(timestamp, ensureMilliSeconds);
-  const timestamp_display = timestampDisplay(moment);
+  const timestamp_display = parseTimestampString(timestamp, ensureMilliSeconds);
 
   const copyTimestamp = async () => {
     await navigator.clipboard.writeText(timestamp);
@@ -42,9 +41,7 @@ export default function TimestampValue({
 
   return (
     <Stack direction="row" spacing={1} alignItems="center">
-      <Typography fontSize="inherit">
-        {timestamp_display.local_formatted}
-      </Typography>
+      <Typography fontSize="inherit">{timestamp_display}</Typography>
       <StyledTooltip
         title="Timestamp copied"
         placement="right"

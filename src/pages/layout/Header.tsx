@@ -6,13 +6,9 @@ import NetworkSelect from "./NetworkSelect";
 // import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
 
-// @ts-expect-error logo
 import LogoIconW from "../../assets/svg/logo_txt_w.svg?react";
-// @ts-expect-error logo
 import LogoIconB from "../../assets/svg/logo_txt_b.svg?react";
-// @ts-expect-error logo
 import IconBell from "../../assets/svg/icon_bell.svg?react";
-// @ts-expect-error logo
 import IconBellLight from "../../assets/svg/icon_bell_light.svg?react";
 
 import Box from "@mui/material/Box";
@@ -206,8 +202,7 @@ export default function Header() {
   const scrollTop = () => {
     const docElement = document.documentElement;
     const windowTop =
-      (window.pageYOffset || docElement.scrollTop) -
-      (docElement.clientTop || 0);
+      (window.scrollY || docElement.scrollTop) - (docElement.clientTop || 0);
 
     if (windowTop > 0) {
       window.scrollTo({
@@ -299,7 +294,7 @@ export default function Header() {
     } else {
       setIsNotifiPopupVisible(true);
     }
-  }, [connected]);
+  }, [connected, setWalletConnectModalOpen]);
 
   const MobileHeader = useCallback(() => {
     return (
@@ -462,8 +457,8 @@ export default function Header() {
                   handleNavigate={() =>
                     navigate(`/account/${account?.address}`)
                   }
-                  sortDefaultWallets={sortPetraFirst}
-                  sortMoreWallets={sortPetraFirst}
+                  // sortAvailableWallets={sortPetraFirst}
+                  // sortInstallableWallets={sortPetraFirst}
                   modalMaxWidth="sm"
                 />
               </Box>

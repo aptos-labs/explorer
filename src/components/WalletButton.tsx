@@ -1,7 +1,7 @@
 import {truncateAddress, useWallet} from "@aptos-labs/wallet-adapter-react";
 // import {AccountBalanceWalletOutlined as AccountBalanceWalletOutlinedIcon} from "@mui/icons-material";
 import {Avatar, Button, Typography} from "@mui/material";
-import React, {useState} from "react";
+import React, {useState, JSX} from "react";
 import WalletMenu from "./WalletMenu";
 
 type WalletButtonProps = {
@@ -68,7 +68,7 @@ export default function WalletButton({
             {/* <AccountBalanceWalletOutlinedIcon sx={{marginRight: 1}} /> */}
             <Typography
               noWrap
-              sx={{fontWeight: 700, fontSize: "20px", lineHeight: "30.07px"}}
+              sx={{fontWeight: 600, fontSize: "18px", lineHeight: "28.07px"}}
             >
               Connect Wallet
             </Typography>

@@ -76,7 +76,7 @@ const faqStakingData = [
         Congratulations! You have successfully staked MOVE on Explorer! You can
         also stake MOVE directly to a validator node through the{" "}
         <Link
-          to="https://aptos.dev/nodes/validator-node/operator/delegation-pool-operations/#perform-delegation-pool-operations"
+          to="https://aptos.dev/en/network/nodes/validator-node/connect-nodes/delegation-pool-operations#perform-delegation-pool-operations"
           target="_blank"
         >
           CLI
@@ -174,7 +174,9 @@ const faqValidatorData = [
         trusted to vote on transactions. You can read more about how the
         Movement blockchain works{" "}
         <Link
-          to={"https://aptos.dev/guides/basics-life-of-txn#consensus"}
+          to={
+            "https://aptos.dev/en/network/blockchain/blockchain-deep-dive#consensus"
+          }
           target="_blank"
         >
           here
@@ -241,7 +243,7 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                 color: theme.palette.mode === "dark" ? grey[300] : null,
               }}
             >
-              <Typography variant="h5" paragraph>
+              <Typography variant="h5" component="p">
                 {"I".repeat(index + 1) + ". " + faqData.title}
               </Typography>
               {faqData.data.map(({question, answer}) => (
@@ -254,12 +256,12 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                     color: theme.palette.mode === "dark" ? grey[300] : null,
                   }}
                 >
-                  <Typography variant="h6" paragraph>
+                  <Typography variant="h6" component="p">
                     {question}
                   </Typography>
                   <Typography
                     variant="body2"
-                    paragraph
+                    component="p"
                     sx={{
                       fontFamily:
                         "space-grotesk-variable,Geneva,Tahoma,Verdana,sans-serif",
