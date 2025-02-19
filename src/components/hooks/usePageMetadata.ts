@@ -7,7 +7,7 @@ interface PageMetadataArgs {
 export function usePageMetadata(args: PageMetadataArgs = {}): void {
   useEffect(() => {
     document.title = args.title
-      ? `${args.title} | Aptos Explorer`
-      : "Aptos Explorer";
+      ? `${args.title} | Movement Network Explorer`
+      : "Movement Network Explorer";
   }, [args]);
 }
