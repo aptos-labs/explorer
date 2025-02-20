@@ -23,14 +23,14 @@ import {RiseWallet} from "@rise-wallet/wallet-adapter";
 import {TokenPocketWallet} from "@tp-lab/aptos-wallet-adapter";
 import {TrustWallet} from "@trustwallet/aptos-wallet-adapter";
 import {WelldoneWallet} from "@welldone-studio/aptos-wallet-adapter";
-// import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
+import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
 // import {RimoWallet} from "rimosafe-plugin-wallet-adapter";
 // import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
 import {useMemo} from "react";
 
 // Statically initialize wallets that don't change for the network
 const martianWallet = new MartianWallet();
-// const msafeWallet = new MSafeWalletAdapter();
+const msafeWallet = new MSafeWalletAdapter();
 // const rimowallet = new RimoWallet();
 // const okxWallet = new OKXWallet();
 const pontemWallet = new PontemWallet();
@@ -47,7 +47,7 @@ function ExplorerWalletAdapterProvider({children}: LayoutProps) {
       pontemWallet,
       // rimowallet,
       // okxWallet,
-      // msafeWallet,
+      msafeWallet,
       trustWallet,
       tokenPocketWallet,
       martianWallet,

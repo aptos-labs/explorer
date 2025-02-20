@@ -20,7 +20,7 @@
     "@blocto/aptos-wallet-adapter-plugin": "^0.2.11",
     "@download/blockies": "^1.0.3",
     "@martianwallet/aptos-wallet-adapter": "^0.0.5",
-    "@msafe/aptos-wallet-adapter": "^1.1.3",
+    "@msafe/aptos-wallet-adapter": "^1.1.4",
     "@mui/icons-material": "^6.4.3",
     "@mui/material": "^6.4.3",
     "@mui/system": "^6.4.3",
