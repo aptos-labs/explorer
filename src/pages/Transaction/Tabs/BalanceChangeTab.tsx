@@ -181,7 +181,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
       isBanned: false,
       isInPanoraTokenList: true,
       logoUrl:
-        "https://raw.githubusercontent.com/PanoraExchange/Aptos-Tokens/main/logos/APT.svg",
+        "/logo.png",
     });
   }
 

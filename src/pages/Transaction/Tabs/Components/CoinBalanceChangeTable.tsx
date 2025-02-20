@@ -180,8 +180,8 @@ function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
       return (
         <GeneralTableHeaderCell
           header="Verified"
-          tooltip={getLearnMoreTooltip("coin_verification")}
-          isTableTooltip={true}
+          //tooltip={getLearnMoreTooltip("coin_verification")}
+          isTableTooltip={false}
         />
       );
     case "amount":

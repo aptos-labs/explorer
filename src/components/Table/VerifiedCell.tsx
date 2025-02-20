@@ -155,7 +155,7 @@ export function getVerifiedMessageAndIcon(
   let icon = null;
   switch (level) {
     case VerifiedType.NATIVE_TOKEN:
-      tooltipMessage = `This asset is verified as a native token of Aptos.`;
+      tooltipMessage = `This asset is verified as a native token of Movement.`;
       icon = <VerifiedUser fontSize="small" color="info" />;
       break;
     case VerifiedType.LABS_VERIFIED:
