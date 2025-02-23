@@ -330,7 +330,7 @@ function MyDepositCell({validator}: ValidatorCellProps) {
   const [totalDeposit, setTotalDeposit] = useState<Types.MoveValue>();
   const {account} = useWallet();
   const {stakes} = useGetDelegatorStakeInfo(
-    account?.address ?? "",
+    account?.address?.toStringLong() ?? "",
     validator.owner_address,
   );
 
@@ -389,7 +389,7 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
       commission: commission?.toString() ?? "",
       delegated_stake_amount: validatorVotingPower ?? "",
       network_percentage: networkPercentage ?? "",
-      wallet_address: account?.address ?? "",
+      wallet_address: account?.address?.toStringLong() ?? "",
       wallet_name: wallet?.name ?? "",
       validator_status: status.toString(),
     });

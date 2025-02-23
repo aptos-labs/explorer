@@ -49,7 +49,7 @@ export default function ValidatorsPage() {
       }
 
       logEvent("staking_banner_viewed", localStorage.getItem(viewCountKey), {
-        wallet_address: account?.address ?? "",
+        wallet_address: account?.address?.toStringLong() ?? "",
         wallet_name: wallet?.name ?? "",
         timestamp: localStorage.getItem(lastVisitKey) ?? "",
       });

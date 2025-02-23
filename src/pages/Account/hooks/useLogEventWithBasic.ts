@@ -15,7 +15,7 @@ export const useLogEventWithBasic = () => {
   ) => {
     const metadata = {
       stable_id: getStableID(),
-      wallet_address: account?.address ?? "",
+      wallet_address: account?.address?.toStringLong() ?? "",
       network_type: state.network_name,
       ...extraMetadata,
     };
