@@ -104,7 +104,7 @@ export function useGetAnalyticsData() {
 
   useEffect(() => {
     const options = {
-      "bardock testnet": null,
+      "bardock testnet": BARDOCK_ANALYTICS_DATA_URL,
       testnet: PORTO_ANALYTICS_DATA_URL,
       mainnet: ANALYTICS_DATA_URL,
       devnet: null,

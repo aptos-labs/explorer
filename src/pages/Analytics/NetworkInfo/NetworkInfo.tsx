@@ -2,16 +2,13 @@ import React, {createContext} from "react";
 import {Grid2, Grid} from "@mui/material";
 // import TotalSupply from "./TotalSupply";
 // import TotalStake from "./TotalStake";
-import TPS from "./TPS";
+// import TPS from "./TPS";
 import TotalTransactions from "./TotalTransactions";
-import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 import {Link} from "../../../routing";
 import TotalNewAccountsCreated from "../Charts/TotalNewAccountsCreated";
 import TotalDeployedContracts from "../Charts/TotalDeployedContracts";
 import TotalContractDeployers from "../Charts/TotalContractDeployers";
 import {useGetAnalyticsData} from "../../../api/hooks/useGetAnalyticsData";
-import {useGetInTestnet} from "../../../api/hooks/useGetInTestnet";
-
 type CardStyle = "default" | "outline";
 
 export const StyleContext = createContext<CardStyle>("default");
@@ -23,10 +20,8 @@ function LinkableContainer({
   linkToAnalyticsPage: boolean;
   children: React.ReactNode;
 }) {
-  const inMainnet = useGetInMainnet();
-  const inTestnet = useGetInTestnet();
 
-  return (inMainnet || inTestnet) && linkToAnalyticsPage ? (
+  return linkToAnalyticsPage ? (
     <Link to="/analytics" underline="none" color="inherit" variant="inherit">
       {children}
     </Link>
