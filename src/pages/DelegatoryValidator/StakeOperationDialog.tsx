@@ -151,7 +151,7 @@ function StakeOperationDialogContent({
   const onSubmitClick = async () => {
     logEvent("submit_transaction_button_clicked", stakeOperation, {
       validator_address: validator.owner_address,
-      wallet_address: account?.address ?? "",
+      wallet_address: account?.address?.toStringLong() ?? "",
       wallet_name: wallet?.name ?? "",
       amount: amount,
     });

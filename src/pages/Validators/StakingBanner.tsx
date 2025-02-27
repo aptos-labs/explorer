@@ -24,7 +24,7 @@ export function StakingBanner() {
   const handleClick = () => {
     setOpen(!open);
     logEvent("staking_banner_learn_more_clicked", null, {
-      wallet_address: account?.address ?? "",
+      wallet_address: account?.address?.toStringLong() ?? "",
       wallet_name: wallet?.name ?? "",
     });
   };
