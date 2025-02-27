@@ -724,8 +724,7 @@ function parseBasicSwapEvent(
     | "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c"
     | "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c",
 ): Swap | undefined {
-  if (
-    !event.type.startsWith(`${dex}::swap::SwapEvent`) &&
+  if (!event.type.startsWith(`${dex}::swap::SwapEvent`) && 
     !event.type.startsWith(
       "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c::AnimeSwapPoolV1::SwapEvent",
     )
