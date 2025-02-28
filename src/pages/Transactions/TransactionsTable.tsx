@@ -194,12 +194,11 @@ function TransactionAmount({
 
 function TransactionAmountGasCell({
   transaction,
-  address,
 }: TransactionCellProps) {
   return (
     <GeneralTableCell sx={{paddingY: 1}}>
       <Stack sx={{textAlign: "right"}}>
-        <TransactionAmount transaction={transaction} address={address} />
+        <TransactionAmount transaction={transaction} />
         <Box sx={{fontSize: 11, color: grey[450]}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
             <>

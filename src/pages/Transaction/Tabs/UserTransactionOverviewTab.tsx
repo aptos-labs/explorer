@@ -293,14 +293,14 @@ export default function UserTransactionOverviewTab({
               tooltip={getLearnMoreTooltip("storage_refund")}
             />
             <ContentRow
-              title="Net Gas Changes:"
+              title="Gas Changes:"
               value={
                 <GasFeeValue
                   gasUsed={transactionData.gas_used}
                   gasUnitPrice={transactionData.gas_unit_price}
                   showGasUsed
                   transactionData={transactionData}
-                  netGasCost
+                  //netGasCost
                 />
               }
               tooltip={getLearnMoreTooltip("net_gas_fee")}
