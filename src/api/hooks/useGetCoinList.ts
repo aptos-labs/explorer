@@ -1,6 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
 import {ResponseError} from "../client";
-// import {tryStandardizeAddress} from "../../utils";
 import {HardCodedCoins} from "../../constants";
 
 export type CoinDescription = {
@@ -39,59 +38,36 @@ export type CoinDescription = {
 };
 
 export function useGetCoinList(options?: {retry?: number | boolean}) {
-  // return useQuery<{data: CoinDescription[]}, ResponseError>({
-  //   queryKey: ["coinList"],
-  //   // TODO: Type this correctly
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   queryFn: async (): Promise<any> => {
-  //     const end_point = "https://api.panora.exchange/tokenlist";
-
-  //     const query = {
-  //       panoraUI: "true, false",
-  //     };
-
-  //     const headers = {
-  //       "x-api-key":
-  //         "a4^KV_EaTf4MW#ZdvgGKX#HUD^3IFEAOV_kzpIE^3BQGA8pDnrkT7JcIy#HNlLGi",
-  //     };
-
-  //     const queryString = new URLSearchParams(query);
-  //     const url = `${end_point}?${queryString}`;
-
-  //     const ret: {data: CoinDescription[]} = await (
-  //       await fetch(url, {
-  //         method: "GET",
-  //         headers: headers,
-  //       })
-  //     ).json();
-
-  //     // Merge hardcoded coins with the fetched coins only adding missing
-  //     // TODO: Probably provide a list for bad internet connections / rate limiting
-  //     const hardcodedKeys = Object.keys(HardCodedCoins).filter((key) => {
-  //       return !ret.data.find((coin) => {
-  //         return (
-  //           coin.tokenAddress === key ||
-  //           tryStandardizeAddress(coin.faAddress) === key
-  //         );
-  //       });
-  //     });
-
-  //     // Any that don't exist, add them (and at the beginning)
-  //     const newData: CoinDescription[] = [];
-  //     hardcodedKeys.forEach((key) => {
-  //       newData.push(HardCodedCoins[key]);
-  //     });
-  //     ret.data = newData.concat(ret.data);
-
-  //     return ret;
-  //   },
-  //   retry: options?.retry ?? false,
-  // });
 
   return useQuery<{data: CoinDescription[]}, ResponseError>({
     queryKey: ["coinList"],
     queryFn: async (): Promise<{data: CoinDescription[]}> => {
       const hardcodedCoins = Object.values(HardCodedCoins);
+
+      const end_point = "https://api.coingecko.com/api/v3/simple/price";
+
+      const query = {
+        vs_currencies: "usd",
+        ids: "movement",
+      };
+
+      const queryString = new URLSearchParams(query);
+      const url = `${end_point}?${queryString}`;
+
+      const ret: {movement: {usd: number}} = await (
+        await fetch(url, {
+          method: "GET",
+        })
+      ).json();
+
+      const movePrice = ret.movement.usd || null;
+      
+      hardcodedCoins.forEach((coin) => {
+        if (coin.coinGeckoId === "movement") {
+          coin.usdPrice = movePrice?.toString() ?? null;
+        }
+      });
+
       return { data: hardcodedCoins };
     },
     retry: options?.retry ?? false,
