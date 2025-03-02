@@ -12,10 +12,6 @@ export const devnetUrl =
   import.meta.env.DEVNET_URL ||
   `https://${prefix}aptos.devnet.suzuka.movementlabs.xyz/v1`;
 
-export const portoTestnetUrl =
-  import.meta.env.MOVEMENT_TESTNET_URL ||
-  `https://${prefix}testnet.porto.movementnetwork.xyz/v1`;
-
 export const bardockTestnetUrl =
   import.meta.env.MOVEMENT_TESTNET_URL ||
   `https://${prefix}testnet.bardock.movementnetwork.xyz/v1`;
@@ -27,7 +23,7 @@ export const mevmdevnetUrl =
 // This is the constant mapped in the NetworkSelect.tsx file
 export const networks = {
   mainnet: mainnetUrl,
-  testnet: portoTestnetUrl,
+  testnet: "",
   "bardock testnet": bardockTestnetUrl,
   devnet: devnetUrl,
   local: "http://localhost:30731",

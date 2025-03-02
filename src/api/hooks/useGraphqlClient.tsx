@@ -20,11 +20,11 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
   switch (networkName) {
     case "mainnet":
       return `https://indexer.mainnet.movementnetwork.xyz/v1/graphql`;
-    case "testnet":
-      return (
-        import.meta.env.PORTO_GRAPHQL ||
-        `https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql`
-      );
+    // case "testnet":
+    //   return (
+    //     import.meta.env.PORTO_GRAPHQL ||
+    //     `https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql`
+    //   );
     case "bardock testnet":
       return (
         import.meta.env.BARDOCK_GRAPHQL ||
