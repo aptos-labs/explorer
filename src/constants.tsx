@@ -661,6 +661,29 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native"],
   },
+  "0xed18be0ea061c29dbbd2d22e9eb6bc61fde0babd1579c169bdd1d4f74730c419": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0xed18be0ea061c29dbbd2d22e9eb6bc61fde0babd1579c169bdd1d4f74730c419",
+    name: "EXPO Token",
+    symbol: "EXPO",
+    decimals: 8,
+    panoraSymbol: "EXPO",
+    bridge: null,
+    logoUrl: "https://app-resources.expo2025-wallet.com/expo_token/icon.png",
+    websiteUrl: "hhttps://expo2025-wallet.com/",
+    category: "Native",
+    isInPanoraTokenList: false,
+    isBanned: false,
+    panoraOrderIndex: 8,
+    panoraIndex: 8,
+    coinGeckoId: null,
+    coinMarketCapId: null,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Native"],
+  },
 };
 
 /**
@@ -703,9 +726,9 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0xe9c2f12eba13a46b27f42b4028bed6f702e7e12271dbebd08f310df52d064e81":
     "Propbase WG1708",
   "0xc546cc2dd26d9e9a4516b4514288bedf1085259fcb106b84b6469337f527fb92": "PACT",
+  "0xed18be0ea061c29dbbd2d22e9eb6bc61fde0babd1579c169bdd1d4f74730c419": "EXPO",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
-export const MARKED_AS_POSSIBLE_SCAM = "Marked as possible scam";
 export const labsBannedTokens: Record<string, string> = {
   "0x397071c01929cc6672a17f130bd62b1bce224309029837ce4f18214cc83ce2a7::USDC::USDC":
     MARKED_AS_SCAM,
