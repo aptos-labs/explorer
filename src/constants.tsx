@@ -672,7 +672,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraSymbol: "EXPO",
     bridge: null,
     logoUrl: "https://app-resources.expo2025-wallet.com/expo_token/icon.png",
-    websiteUrl: "hhttps://expo2025-wallet.com/",
+    websiteUrl: "https://expo2025-wallet.com/",
     category: "Native",
     isInPanoraTokenList: false,
     isBanned: false,
