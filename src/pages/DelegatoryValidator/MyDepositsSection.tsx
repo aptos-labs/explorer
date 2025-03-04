@@ -176,7 +176,9 @@ function ActionsCell({
 }: MyDepositsSectionCellProps) {
   const {account} = useWallet();
   // FIXME wallet address not guaranteed to be defined
-  const balance = useGetAccountAPTBalance(account?.address ?? "");
+  const balance = useGetAccountAPTBalance(
+    account?.address?.toStringLong() ?? "",
+  );
   const requirement = getStakeOperationAPTRequirement(
     stakes,
     getStakeOperationFromStakingStatus(status, canWithdrawPendingInactive),
@@ -261,7 +263,7 @@ function MyDepositSectionContent({
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
   const {connected, account, wallet} = useWallet();
   // FIXME: account is not guaranteed to be defined
-  const walletAddress = account?.address ?? "";
+  const walletAddress = account?.address?.toStringLong() ?? "";
   const {stakes} = useGetDelegatorStakeInfo(
     walletAddress,
     validator.owner_address,
@@ -316,7 +318,7 @@ function MyDepositSectionContent({
           "_button_clicked",
         validator?.owner_address,
         {
-          wallet_address: account?.address ?? "",
+          wallet_address: account?.address?.toStringLong() ?? "",
           wallet_name: wallet?.name ?? "",
           amount: Number(stake).toString(),
         },

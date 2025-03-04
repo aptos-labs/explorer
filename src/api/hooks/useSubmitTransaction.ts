@@ -79,7 +79,10 @@ const useSubmitTransaction = () => {
           };
         }
         // transaction failed
-        return {...responseOnError, message: response.message};
+        return {
+          ...responseOnError,
+          message: (response as {message?: string}).message ?? "Unknown Error",
+        };
       } catch (error) {
         if (error instanceof FailedTransactionError) {
           return {
