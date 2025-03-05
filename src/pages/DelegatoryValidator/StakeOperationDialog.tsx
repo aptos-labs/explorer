@@ -25,11 +25,12 @@ import useAmountInput from "./hooks/useAmountInput";
 import LoadingModal from "../../components/LoadingModal";
 import TransactionResponseSnackbar from "../../components/snakebar/TransactionResponseSnackbar";
 import TransactionSucceededDialog from "./TransactionSucceededDialog";
-import useSubmitStakeOperation, {
+import {
+  useSubmitStakeOperation,
   StakeOperation,
-} from "../../api/hooks/useSubmitStakeOperation";
+  useGetDelegationState,
+} from "../../api/hooks/delegations";
 import {OCTA} from "../../constants";
-import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {Types} from "aptos";
 import {getAddStakeFee} from "../../api";

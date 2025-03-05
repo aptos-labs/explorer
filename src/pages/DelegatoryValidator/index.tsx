@@ -14,13 +14,15 @@ import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {SkeletonTheme} from "react-loading-skeleton";
 import {useGetValidatorPageSkeletonLoading} from "../../api/hooks/useGetValidatorPageSkeletonLoading";
 import {DelegationStateContext} from "./context/DelegationContext";
-import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
+import {
+  useGetDelegatedStakingPoolList,
+  useGetDelegationNodeInfo,
+  useGetDelegationNodeCommissionChange,
+} from "../../api/hooks/delegations";
 import {useEffect, useMemo, useState} from "react";
 import Error from "../Account/Error";
-import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
-import {Banner} from "../../components/Banner";
-import {useGetDelegationNodeCommissionChange} from "../../api/hooks/useGetDelegationNodeCommissionChange";
 import {standardizeAddress} from "../../utils";
+import {Banner} from "../../components/Banner";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";

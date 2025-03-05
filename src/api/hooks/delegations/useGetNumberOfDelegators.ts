@@ -1,9 +1,13 @@
-import {Types} from "aptos";
 import {ApolloError, gql, useQuery as useGraphqlQuery} from "@apollo/client";
-import {standardizeAddress} from "../../utils";
+import {standardizeAddress} from "../../../utils";
+import {Types} from "aptos";
+
+interface NumberOfDelegatorsResponse {
+  num_active_delegator: string;
+}
 
 const NUMBER_OF_DELEGATORS_QUERY = gql`
-  query numberOfDelegatorsQuery($poolAddress: String) {
+  query getNumberOfDelegators($poolAddress: String) {
     num_active_delegator_per_pool(
       where: {
         pool_address: {_eq: $poolAddress}
@@ -17,23 +21,27 @@ const NUMBER_OF_DELEGATORS_QUERY = gql`
 `;
 
 export function useGetNumberOfDelegators(poolAddress: Types.Address): {
-  delegatorBalance: number;
+  numberOfDelegators: number;
   loading: boolean;
   error: ApolloError | undefined;
 } {
-  const poolAddress64Hash = standardizeAddress(poolAddress);
+  const poolAddress64Hash = poolAddress ? standardizeAddress(poolAddress) : "";
 
   const {loading, error, data} = useGraphqlQuery(NUMBER_OF_DELEGATORS_QUERY, {
     variables: {
       poolAddress: poolAddress64Hash,
     },
+    skip: !poolAddress,
   });
 
+  const delegatorData = data?.num_active_delegator_per_pool?.[0] as
+    | NumberOfDelegatorsResponse
+    | undefined;
+
   return {
-    delegatorBalance:
-      data?.num_active_delegator_per_pool?.length > 0
-        ? data?.num_active_delegator_per_pool[0].num_active_delegator
-        : 0,
+    numberOfDelegators: delegatorData
+      ? parseInt(delegatorData.num_active_delegator, 10)
+      : 0,
     loading,
     error,
   };

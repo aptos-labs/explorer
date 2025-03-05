@@ -11,8 +11,10 @@ import {
   REWARDS_LEARN_MORE_LINK,
   REWARDS_TOOLTIP_TEXT,
 } from "../Validators/Components/Staking";
-import {useGetDelegationState} from "../../api/hooks/useGetDelegationState";
-import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
+import {
+  useGetDelegationNodeInfo,
+  useGetDelegationState,
+} from "../../api/hooks/delegations";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {useContext} from "react";
 import {Types} from "aptos";

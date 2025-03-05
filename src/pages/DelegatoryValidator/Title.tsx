@@ -1,9 +1,8 @@
 import {Stack, Typography, Skeleton} from "@mui/material";
-import React from "react";
 import {Types} from "aptos";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import ValidatorStatusIcon from "./Components/ValidatorStatusIcon";
-import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
+import {useGetDelegationNodeInfo} from "../../api/hooks/delegations";
 import {getValidatorStatus} from "./utils";
 import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 

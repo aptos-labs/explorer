@@ -1,6 +1,6 @@
 import {ApolloError, gql, useQuery as useGraphqlQuery} from "@apollo/client";
 import {Types} from "aptos";
-import {standardizeAddress} from "../../utils";
+import {standardizeAddress} from "../../../utils";
 
 export interface DelegatedStakingActivity {
   amount: number;
@@ -12,15 +12,9 @@ export interface DelegatedStakingActivity {
 }
 
 const DELEGATED_STAKING_ACTIVITY_QUERY = gql`
-  query delegatedStakingActivities(
-    $delegatorAddress: String
-    $poolAddress: String
-  ) {
+  query getDelegatedStakingActivities($address: String!, $pool: String) {
     delegated_staking_activities(
-      where: {
-        delegator_address: {_eq: $delegatorAddress}
-        pool_address: {_eq: $poolAddress}
-      }
+      where: {delegator_address: {_eq: $address}, pool_address: {_eq: $pool}}
       order_by: {transaction_version: desc}
     ) {
       amount
@@ -48,8 +42,8 @@ export function useGetDelegatedStakeOperationActivities(
     DELEGATED_STAKING_ACTIVITY_QUERY,
     {
       variables: {
-        delegatorAddress: delegatorAddress64Hash,
-        poolAddress: poolAddress64Hash,
+        address: delegatorAddress64Hash,
+        pool: poolAddress64Hash,
       },
     },
   );

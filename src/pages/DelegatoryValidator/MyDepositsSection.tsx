@@ -14,8 +14,11 @@ import {Types} from "aptos";
 import {useContext, useEffect, useState} from "react";
 import {getCanWithdrawPendingInactive} from "../../api";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
-import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
-import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
+import {
+  useGetDelegatorStakeInfo,
+  StakeOperation,
+  useGetDelegatedStakeOperationActivities,
+} from "../../api/hooks/delegations";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
@@ -40,7 +43,6 @@ import {
 } from "./utils";
 import WalletConnectionDialog from "./WalletConnectionDialog";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
-import {useGetDelegatedStakeOperationActivities} from "../../api/hooks/useGetDelegatedStakeOperationActivities";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 const MyDepositsCells = Object.freeze({

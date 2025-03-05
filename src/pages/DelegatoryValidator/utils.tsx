@@ -1,6 +1,8 @@
 import {Types} from "aptos";
-import {DelegatedStakingActivity} from "../../api/hooks/useGetDelegatedStakeOperationActivities";
-import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
+import {
+  DelegatedStakingActivity,
+  StakeOperation,
+} from "../../api/hooks/delegations";
 import {OCTA} from "../../constants";
 import {
   MINIMUM_APT_IN_POOL_FOR_EXPLORER,
@@ -35,7 +37,7 @@ export type StakePrincipals = {
  *    get total amount of (active, inactive, pending_inactive) from `get_stake` SC delegation_pool view function
  *
  * Step 2:
- *    Calculate “principal”
+ *    Calculate "principal"
  *
  *    Active_principal
  *    Loop through all events in sequence (transaction_version asc, event_index asc)
@@ -106,21 +108,21 @@ export function getStakeOperationPrincipals(activities: {
 }
 
 /**
- * There are two pools we’re enforcing this restriction, active pool and pending_inactive pool. When we stake, our fund will eventually move to active pool, when we unlock, our fund will move to pending_inactive pool.
- * The general theme is that if it’s adding APT to the pool, 10 min APT is hard enforced; if it’s taking APT out of the pool, 10 min APT is soft enforced, meaning that if 10min APT’s not met, we will forcefully take every APT out and pool balance is 0.
+ * There are two pools we're enforcing this restriction, active pool and pending_inactive pool. When we stake, our fund will eventually move to active pool, when we unlock, our fund will move to pending_inactive pool.
+ * The general theme is that if it's adding APT to the pool, 10 min APT is hard enforced; if it's taking APT out of the pool, 10 min APT is soft enforced, meaning that if 10min APT's not met, we will forcefully take every APT out and pool balance is 0.
  *
  * STAKE (fund moves to active pool):
- * We need to hard enforce 10 min APT in active pool. On UX, the enforced APT amount will certainly change every time, since we are enforcing the 10 APT at the active pool level. i.e. when there’s 0 in active pool, user has to stake at least 10 APT after add_stake fee, meaning that the limit we wanna display on UX could be 11 APT. Then next time user decides to stake again, there’s no limit at all because active pool already has 10 APTs in it.
+ * We need to hard enforce 10 min APT in active pool. On UX, the enforced APT amount will certainly change every time, since we are enforcing the 10 APT at the active pool level. i.e. when there's 0 in active pool, user has to stake at least 10 APT after add_stake fee, meaning that the limit we wanna display on UX could be 11 APT. Then next time user decides to stake again, there's no limit at all because active pool already has 10 APTs in it.
  *
  * UNLOCK (fund moves from active to pending_inactive pool):
  * We need to hard enforce the 10 minimum APT in the pending_inactive pool. The min APT users can unlock will need to meet the following condition:
- * condition 1: current APT in active pool - unlock amount “should” be greater than 10. I use “should” here because if condition 1’s not met, all funds in the active pool will be unlocked.
+ * condition 1: current APT in active pool - unlock amount "should" be greater than 10. I use "should" here because if condition 1's not met, all funds in the active pool will be unlocked.
  * condition 2: current APT in pending_inactive pool + unlock amount has to be greater than 10 APT
  * One example here to make it clear: Bob has 26 APT in active and has not unlocked anything. If Bob wants to unlock, they have to unlock at least 10 APT and at most 16 APT. If they unlock > 16 APT, all 26 APT will become unlocked (because there'd be < 10 APT remaining in active balances)
  *
  * REACTIVATE (fund moves from pending_inactive to active pool):
  * We need to hard enforce the 10 minimum APT in the pending_inactive as well as active pool. Similar to unlock, the min APT users can reactivate will need to meet the following condition
- * condition 1: current APT in pending_inactive pool - reactivate amount “should” be greater than 10 APT. If condition 1’s not met, all funds in pending_inactive pool will be reactivated.
+ * condition 1: current APT in pending_inactive pool - reactivate amount "should" be greater than 10 APT. If condition 1's not met, all funds in pending_inactive pool will be reactivated.
  * condition 2: current APT in active pool + reactivate amount has to be greater than 10 APT.
  */
 

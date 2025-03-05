@@ -10,11 +10,11 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import React, {useState} from "react";
+import {useState} from "react";
 import StyledDialog from "../../components/StyledDialog";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {grey} from "../../themes/colors/aptosColorPalette";
-import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
+import {StakeOperation} from "../../api/hooks/delegations";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
@@ -60,7 +60,7 @@ export default function TransactionSucceededDialog({
         return (
           <Box>
             <Typography variant="body2" sx={{fontSize: 12}}>
-              {"You’ve successfully unlocked "}
+              {"You've successfully unlocked "}
               <span style={{fontWeight: 600}}>{amount}</span>
               {" APT"}
             </Typography>
@@ -70,7 +70,7 @@ export default function TransactionSucceededDialog({
         return (
           <Box>
             <Typography variant="body2" sx={{fontSize: 12}}>
-              {"You’ve successfully withdrawn "}
+              {"You've successfully withdrawn "}
               <span style={{fontWeight: 600}}>{amount}</span>
               {" APT"}
             </Typography>
