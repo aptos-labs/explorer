@@ -43,12 +43,13 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
     queryKey: ["coinList"],
     queryFn: async (): Promise<{data: CoinDescription[]}> => {
       const hardcodedCoins = Object.values(HardCodedCoins);
+      const coinGeckoIds = hardcodedCoins.map((coin) => coin.coinGeckoId).filter((id) => id !== null);
 
       const end_point = "https://api.coingecko.com/api/v3/simple/price";
 
       const query = {
         vs_currencies: "usd",
-        ids: "movement",
+        ids: coinGeckoIds.join(","),
       };
 
       const queryString = new URLSearchParams(query);
@@ -59,13 +60,13 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
           method: "GET",
         })
       ).json();
-
-      const movePrice = ret.movement.usd || null;
       
       hardcodedCoins.forEach((coin) => {
-        if (coin.coinGeckoId === "movement") {
-          coin.usdPrice = movePrice?.toString() ?? null;
+        if (coin.coinGeckoId) {
+          const priceData = ret[coin.coinGeckoId as keyof typeof ret];
+          coin.usdPrice = priceData?.usd?.toString() ?? null;
         }
+        return coin;
       });
 
       return { data: hardcodedCoins };
