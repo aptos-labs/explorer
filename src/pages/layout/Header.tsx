@@ -52,21 +52,21 @@ export default function Header() {
   const {account, wallet, network} = useWallet();
   const navigate = useNavigate();
   const walletAddressRef = useRef("");
-
-  if (account && walletAddressRef.current !== account.address) {
-    logEvent("wallet_connected", account.address, {
+  const walletAddress = account?.address?.toStringLong();
+  if (walletAddress && walletAddressRef.current !== walletAddress) {
+    logEvent("wallet_connected", walletAddress, {
       wallet_name: wallet!.name,
       network_type: state.network_name,
     });
     sendToGTM({
       dataLayer: {
         event: "walletConnection",
-        walletAddress: account.address,
+        walletAddress: walletAddress,
         walletName: wallet?.name,
         network: network?.name,
       },
     });
-    walletAddressRef.current = account.address;
+    walletAddressRef.current = walletAddress;
   }
 
   return (
@@ -147,9 +147,7 @@ export default function Header() {
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector
                   networkSupport={state.network_name}
-                  handleNavigate={() =>
-                    navigate(`/account/${account?.address}`)
-                  }
+                  handleNavigate={() => navigate(`/account/${walletAddress}`)}
                   sortAvailableWallets={sortPetraFirst}
                   sortInstallableWallets={sortPetraFirst}
                   modalMaxWidth="sm"

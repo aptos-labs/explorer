@@ -1,4 +1,3 @@
-import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
 import {Types} from "aptos";
 import pako from "pako";
 import {Statsig} from "statsig-react";
@@ -267,7 +266,7 @@ export function getStableID(): string {
 }
 
 /** A wallet sort function to ensure that Petra is always at the top of the wallet list. */
-export function sortPetraFirst(a: AnyAptosWallet) {
+export function sortPetraFirst(a: {name: string}) {
   return a.name === "Petra" ? -1 : 1;
 }
 
