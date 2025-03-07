@@ -24,13 +24,15 @@ import {aptosColor, grey, primary} from "../../themes/colors/aptosColorPalette";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import {OperatorAddrCell, ValidatorAddrCell} from "./ValidatorsTable";
-import {useGetNumberOfDelegators} from "../../api/hooks/useGetNumberOfDelegators";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
+import {
+  useGetNumberOfDelegators,
+  useGetDelegatorStakeInfo,
+  useGetDelegatedStakingPoolList,
+} from "../../api/hooks/delegations";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {Stack} from "@mui/material";
-import {useGetDelegatedStakingPoolList} from "../../api/hooks/useGetDelegatedStakingPoolList";
 import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
 import Error from "../Account/Error";
 import {
@@ -263,10 +265,12 @@ function CommissionCell({commission}: ValidatorCellProps) {
 }
 
 function DelegatorCell({validator}: ValidatorCellProps) {
-  const {delegatorBalance} = useGetNumberOfDelegators(validator.owner_address);
+  const {numberOfDelegators} = useGetNumberOfDelegators(
+    validator.owner_address,
+  );
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
-      {delegatorBalance}
+      {numberOfDelegators}
     </GeneralTableCell>
   );
 }
@@ -327,30 +331,26 @@ function ViewCell() {
 }
 
 function MyDepositCell({validator}: ValidatorCellProps) {
-  const [totalDeposit, setTotalDeposit] = useState<Types.MoveValue>();
   const {account} = useWallet();
-  const {stakes} = useGetDelegatorStakeInfo(
+  const {stakes, isLoading} = useGetDelegatorStakeInfo(
     account?.address ?? "",
     validator.owner_address,
   );
+  const [totalDeposit, setTotalDeposit] = useState<Types.MoveValue>();
 
   useMemo(() => {
-    setTotalDeposit(
-      stakes.reduce(
-        (prev, current) =>
-          (current =
-            Number(current) + (prev && Number(prev) !== 0 ? Number(prev) : 0)),
-        0,
-      ),
-    );
+    if (stakes && stakes.length > 0) {
+      setTotalDeposit(
+        stakes.reduce(
+          (acc, stake) => Number(acc) + Number(stake),
+          0 as Types.MoveValue,
+        ),
+      );
+    }
   }, [stakes]);
 
-  if (account?.address === undefined) {
-    return (
-      <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
-        <Typography>N/A No wallet connected</Typography>
-      </GeneralTableCell>
-    );
+  if (isLoading || !account) {
+    return <Typography>-</Typography>;
   }
 
   return (

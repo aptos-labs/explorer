@@ -1,5 +1,5 @@
 import {InputTransactionData} from "@aptos-labs/wallet-adapter-react";
-import useSubmitTransaction from "./useSubmitTransaction";
+import useSubmitTransaction from "../useSubmitTransaction";
 
 // enum name => delegation pool smart contract view function name
 export enum StakeOperation {

@@ -18,15 +18,17 @@ import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../components/StyledTooltip";
 import StakeOperationDialog from "./StakeOperationDialog";
-import {StakeOperation} from "../../api/hooks/useSubmitStakeOperation";
-import {useGetDelegationNodeInfo} from "../../api/hooks/useGetDelegationNodeInfo";
+import {
+  StakeOperation,
+  useGetDelegatorStakeInfo,
+  useGetDelegationNodeInfo,
+} from "../../api/hooks/delegations";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
 import {OCTA} from "../../constants";
 import {Types} from "aptos";
 import {getAddStakeFee} from "../../api";
-import {useGetDelegatorStakeInfo} from "../../api/hooks/useGetDelegatorStakeInfo";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";

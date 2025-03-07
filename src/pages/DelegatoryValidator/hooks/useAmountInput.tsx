@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import AmountTextField from "../../../components/AmountTextField";
-import {StakeOperation} from "../../../api/hooks/useSubmitStakeOperation";
+import {StakeOperation} from "../../../api/hooks/delegations";
 import {MINIMUM_APT_IN_POOL} from "../constants";
 import {OCTA} from "../../../constants";
 import {Types} from "aptos";
