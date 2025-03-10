@@ -22,11 +22,11 @@ import {PontemWallet} from "@pontem/wallet-adapter-plugin";
 import {RiseWallet} from "@rise-wallet/wallet-adapter";
 import {TokenPocketWallet} from "@tp-lab/aptos-wallet-adapter";
 import {TrustWallet} from "@trustwallet/aptos-wallet-adapter";
-import {WelldoneWallet} from "@welldone-studio/aptos-wallet-adapter";
 import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
 // import {RimoWallet} from "rimosafe-plugin-wallet-adapter";
 // import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
 import {useMemo} from "react";
+import NetworkStatus from "../../components/NetworkStatus";
 
 // Statically initialize wallets that don't change for the network
 const martianWallet = new MartianWallet();
@@ -82,39 +82,53 @@ interface LayoutProps {
 }
 
 export default function ExplorerLayout({children}: LayoutProps) {
+
   return (
     <ProvideColorMode>
       <CssBaseline />
       <GlobalStateProvider>
-        <ExplorerWalletAdapterProvider>
-          <GraphqlClientProvider>
-            <Box
-              component="main"
-              sx={{
-                minHeight: "100vh",
-                backgroundColor: "transparent",
-                flexGrow: 1,
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <Header />
-              <Container
-                maxWidth="xl"
+        <NetworkStatusWrapper>
+          <ExplorerWalletAdapterProvider>
+            <GraphqlClientProvider>
+              <Box
+                component="main"
                 sx={{
+                  minHeight: "100vh",
+                  backgroundColor: "transparent",
+                  flexGrow: 1,
                   display: "flex",
                   flexDirection: "column",
-                  flexGrow: 4,
-                  paddingTop: "2rem",
                 }}
               >
-                <Suspense fallback={<Fallback />}>{children}</Suspense>
-              </Container>
-              <Footer />
-            </Box>
-          </GraphqlClientProvider>
-        </ExplorerWalletAdapterProvider>
+                <Header />
+                <Container
+                  maxWidth="xl"
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flexGrow: 4,
+                    paddingTop: "2rem",
+                  }}
+                >
+                  <Suspense fallback={<Fallback />}>{children}</Suspense>
+                </Container>
+                <Footer />
+              </Box>
+            </GraphqlClientProvider>
+          </ExplorerWalletAdapterProvider>
+        </NetworkStatusWrapper>
       </GlobalStateProvider>
     </ProvideColorMode>
+  );
+}
+
+function NetworkStatusWrapper({children}: LayoutProps) {
+  const [state] = useGlobalState();
+  
+  return (
+    <>
+      <NetworkStatus componentName={state.network_name === "mainnet" ? "MAINNET BETA" : "BARDOCK TESTNET"} />
+      {children}
+    </>
   );
 }
