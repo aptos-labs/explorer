@@ -65,20 +65,36 @@ export const useStatusPage = (componentName?: string) => {
                     maintenance.status === 'in_progress');
         });
 
+    const maintenanceStatus = hasScheduledMaintenance
+        ? data.scheduled_maintenances.find((m: ComponentStatus) => 
+            m.components?.some(comp => components.some(c => c.id === comp.id && c.group_id === targetGroup?.id))
+        )
+        : null;
+
     const groupStatus = targetGroup
         ? {
               ...targetGroup,
               hasIssues,
-              underMaintenance: underMaintenance || hasScheduledMaintenance
+              underMaintenance: underMaintenance || (maintenanceStatus?.status === 'in_progress'),
+              scheduledMaintenance: false
           }
         : null
 
     const statusInfo = groupStatus
         ? {
-              description: groupStatus.hasIssues ? 'Issues Reported' : 'All systems operational',
-              indicator: groupStatus.hasIssues ? 'major_outage' : 'none',
+              description: groupStatus.hasIssues 
+                  ? 'Issues Reported' 
+                  : groupStatus.scheduledMaintenance
+                      ? 'Maintenance Scheduled'
+                      : 'All systems operational',
+              indicator: groupStatus.hasIssues 
+                  ? 'major_outage' 
+                  : groupStatus.scheduledMaintenance
+                      ? 'scheduled'
+                      : 'none',
               name: groupStatus.name,
-              maintenance: groupStatus.underMaintenance
+              maintenance: groupStatus.underMaintenance,
+              scheduledMaintenance: groupStatus.scheduledMaintenance
           }
         : null
 
@@ -115,13 +131,15 @@ const StatusCard: React.FC<StatusCardProps> = ({ componentName }) => {
             case 'critical':
             case 'major_outage':
                 return '#ef4444' 
+            case 'scheduled':
+                return '#0ea5e9'  //blue
             default:
                 return '#6b7280' 
         }
     }
 
     if (componentName && statusInfo) {
-        if (!statusInfo.maintenance && statusInfo.indicator === 'none') {
+        if (!statusInfo.maintenance && !statusInfo.scheduledMaintenance && statusInfo.indicator === 'none') {
             return null;
         }
         
@@ -180,6 +198,8 @@ const StatusCard: React.FC<StatusCardProps> = ({ componentName }) => {
                         <div style={textStyle}>
                             {statusInfo.maintenance ? (
                                 <div style={maintenanceTextStyle}>Currently Under Maintenance</div>
+                            ) : statusInfo.scheduledMaintenance ? (
+                                <div style={maintenanceTextStyle}>Maintenance Scheduled</div>
                             ) : (
                                 <div style={normalTextStyle}>{statusInfo.description}</div>
                             )}
