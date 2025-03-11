@@ -1,4 +1,3 @@
-import React from "react";
 import {CircularProgress, Modal, Box} from "@mui/material";
 
 type LoadingModalProps = {

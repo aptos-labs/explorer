@@ -1,24 +1,30 @@
 import * as React from "react";
 import {Box} from "@mui/material";
-import {assertNever} from "../../utils";
-import StyledTabs from "../../components/StyledTabs";
-import StyledTab from "../../components/StyledTab";
-import {useParams, useSearchParams} from "react-router-dom";
-import {ValidatorsTable} from "./ValidatorsTable";
-import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
-import {Network, NetworkName} from "../../constants";
-import {ValidatorsTable as OldValidatorsTable} from "./Table";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {assertNever} from "../../../utils";
+import StyledTabs from "../../../components/StyledTabs";
+import StyledTab from "../../../components/StyledTab";
+import {useParams} from "react-router-dom";
+import {ValidatorsTable} from "../ValidatorsTable";
+import {DelegationValidatorsTable} from "../DelegationValidatorsTable";
+import {EnhancedDelegationValidatorsTable} from "./EnhancedDelegationValidatorsTable";
+import {Network, NetworkName} from "../../../constants";
+import {ValidatorsTable as OldValidatorsTable} from "../Table";
+import {useGlobalState} from "../../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useNavigate} from "../../routing";
-import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
-import {EnhancedDelegationValidatorsTable} from "./Delegation/EnhancedDelegationValidatorsTable";
+import {useNavigate} from "../../../routing";
+import {useLogEventWithBasic} from "../../Account/hooks/useLogEventWithBasic";
 
 enum VALIDATORS_TAB_VALUE {
   ALL_NODES = "all",
   DELEGATION_NODES = "delegation",
   ENHANCED_DELEGATION_NODES = "enhanced_delegation",
 }
+
+const VALIDATORS_TAB_VALUES: VALIDATORS_TAB_VALUE[] = [
+  VALIDATORS_TAB_VALUE.ALL_NODES,
+  VALIDATORS_TAB_VALUE.DELEGATION_NODES,
+  VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES,
+];
 
 function getTabLabel(value: VALIDATORS_TAB_VALUE): string {
   switch (value) {
@@ -57,36 +63,22 @@ function TabPanel({value, networkName}: TabPanelProps): React.JSX.Element {
   }
 }
 
-export default function ValidatorsPageTabs(): React.JSX.Element {
+export default function EnhancedValidatorsPageTabs(): React.JSX.Element {
   const [state] = useGlobalState();
   const {tab} = useParams();
   const navigate = useNavigate();
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
-  const [searchParams] = useSearchParams();
-  const showEnhancedTab = searchParams.get("showEnhanced") === "true";
-
   const value =
     tab === undefined
       ? VALIDATORS_TAB_VALUE.ALL_NODES
       : (tab as VALIDATORS_TAB_VALUE);
 
-  // Define tab values based on URL parameter
-  const tabValues = showEnhancedTab
-    ? [
-        VALIDATORS_TAB_VALUE.ALL_NODES,
-        VALIDATORS_TAB_VALUE.DELEGATION_NODES,
-        VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES,
-      ]
-    : [VALIDATORS_TAB_VALUE.ALL_NODES, VALIDATORS_TAB_VALUE.DELEGATION_NODES];
-
   const handleChange = (
     _event: React.SyntheticEvent,
     newValue: VALIDATORS_TAB_VALUE,
   ) => {
-    navigate(
-      `/validators/${newValue}${showEnhancedTab ? "?showEnhanced=true" : ""}`,
-    );
+    navigate(`/validators/${newValue}`);
     logEvent("validators_tab_clicked", newValue, {
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",
@@ -97,13 +89,13 @@ export default function ValidatorsPageTabs(): React.JSX.Element {
     <Box sx={{width: "100%"}}>
       <Box>
         <StyledTabs value={value} onChange={handleChange}>
-          {tabValues.map((value, i) => (
+          {VALIDATORS_TAB_VALUES.map((value, i) => (
             <StyledTab
               key={i}
               value={value}
               label={getTabLabel(value)}
               isFirst={i === 0}
-              isLast={i === tabValues.length - 1}
+              isLast={i === VALIDATORS_TAB_VALUES.length - 1}
             />
           ))}
         </StyledTabs>
