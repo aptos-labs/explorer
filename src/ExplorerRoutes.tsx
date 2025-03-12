@@ -13,6 +13,9 @@ const TokenPage = lazy(() => import("./pages/Token/Index"));
 const TransactionsPage = lazy(() => import("./pages/Transactions/Index"));
 const BlocksPage = lazy(() => import("./pages/Blocks/Index"));
 const ValidatorsPage = lazy(() => import("./pages/Validators/Index"));
+const EnhancedValidatorsPage = lazy(
+  () => import("./pages/Validators/Delegation/EnhancedValidatorsPage"),
+);
 const ValidatorPage = lazy(() => import("./pages/DelegatoryValidator"));
 const AnalyticsPage = lazy(() => import("./pages/Analytics/Index"));
 
@@ -24,6 +27,9 @@ export default function ExplorerRoutes() {
         <Route path="/transactions" element={<TransactionsPage />} />
         <Route path="/validators" element={<ValidatorsPage />}>
           <Route path=":tab" element={<ValidatorsPage />} />
+        </Route>
+        <Route path="/validators-enhanced" element={<EnhancedValidatorsPage />}>
+          <Route path=":tab" element={<EnhancedValidatorsPage />} />
         </Route>
         <Route path="/validator">
           <Route path=":address" element={<ValidatorPage />} />
