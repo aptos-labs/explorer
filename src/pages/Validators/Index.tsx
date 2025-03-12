@@ -5,6 +5,7 @@ import ValidatorsPageTabs from "./Tabs";
 import ValidatorsMap from "./ValidatorsMap";
 import {CommissionChangeBanner} from "./CommissionChangeBanner";
 import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {OutOfCommissionPoolsBanner} from "../../components/OutOfCommissionPoolsBanner";
 
 export default function ValidatorsPage() {
   const [state] = useGlobalState();
@@ -17,6 +18,7 @@ export default function ValidatorsPage() {
       <Typography variant="h3" marginBottom={2}>
         Validators
       </Typography>
+      <OutOfCommissionPoolsBanner />
       <CommissionChangeBanner />
       {state.network_name === "mainnet" && <ValidatorsMap />}
       <ValidatorsPageTabs />

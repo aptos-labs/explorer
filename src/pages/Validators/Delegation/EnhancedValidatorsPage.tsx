@@ -8,6 +8,7 @@ import {CommissionChangeBanner} from "../CommissionChangeBanner";
 import {usePageMetadata} from "../../../components/hooks/usePageMetadata";
 import {Network} from "../../../constants";
 import {useNavigate} from "../../../routing";
+import {OutOfCommissionPoolsBanner} from "../../../components/OutOfCommissionPoolsBanner";
 
 export default function EnhancedValidatorsPage() {
   const [state] = useGlobalState();
@@ -32,6 +33,7 @@ export default function EnhancedValidatorsPage() {
         Validators
       </Typography>
       <CommissionChangeBanner />
+      <OutOfCommissionPoolsBanner />
       {state.network_name === "mainnet" && <ValidatorsMap />}
       <EnhancedValidatorsPageTabs />
     </Box>
