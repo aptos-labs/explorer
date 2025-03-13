@@ -17,10 +17,6 @@ type InfoTabProps = {
 
 // TODO: put this extra information somewhere else
 const extraInfo: Record<string, string> = {
-  "0x000000000000000000000000000000000000000000000000000000000000000a":
-    "This is the official native gas token on Aptos.  This is the fungible asset version of APT.  It is fully compatible with the coin version when using 0x1::coin functions.  See 0x1::aptos_coin::AptosCoin for the coin version.",
-  "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b":
-    "This is the official native USD₮ on Aptos.",
 };
 
 function ExtraInfo({address}: {address: string}) {
