@@ -88,7 +88,7 @@ const faqStakingData = [
   {
     question: "Can I unstake my MOVE anytime?",
     answer:
-      "You can unstake your MOVE at any time, but the funds will not be available until the next validator unlock date. The validator unlock period is 30 days, but the timing follows from when the delegation pool is initiated. Depending on when in the cycle you choose to unstake your APT, it could be as little as a few hours, or up to 30 days from whence you can withdraw your tokens. I.e. if you unstake 10 days into the 30 day cycle, you have to wait 20 days. If you unstake 18 days into the 30 day cycle, you have to wait 12 days. If you unstaked your tokens, and the the unlock date has passed, you will be able to withdraw the tokens.",
+      "You can unstake your MOVE at any time, but the funds will not be available until the next validator unlock date. The validator unlock period is 30 days, but the timing follows from when the delegation pool is initiated. Depending on when in the cycle you choose to unstake your MOVE, it could be as little as a few hours, or up to 30 days from whence you can withdraw your tokens. I.e. if you unstake 10 days into the 30 day cycle, you have to wait 20 days. If you unstake 18 days into the 30 day cycle, you have to wait 12 days. If you unstaked your tokens, and the the unlock date has passed, you will be able to withdraw the tokens.",
   },
   {
     question: "When can I withdraw funds?",

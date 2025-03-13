@@ -38,10 +38,10 @@ type ApiKeys = {
 
 /**
  * Public Client IDs (API keys) from API Gateway. For mainnet, these come from the prod
- * API Gateway (developers.aptoslabs.com), for testnet and devnet these come from the
- * staging API Gateway (staging.developers.aptoslabs.com).
+ * API Gateway (developers.movementlabs.xyz), for testnet and devnet these come from the
+ * staging API Gateway (staging.developers.movementlabs.xyz).
  *
- * These keys are all generated using the petra@aptoslabs.com account. Learn more:
+ * These keys are all generated using the petra@movementlabs.xyz account. Learn more:
  * https://www.notion.so/aptoslabs/API-Gateway-FAQ-for-product-owners-183b29ba6bed41f8922e6049d9d36486
  *
  * Some networks aren't configured to use API Gateway, e.g. randomnet. For that, set the

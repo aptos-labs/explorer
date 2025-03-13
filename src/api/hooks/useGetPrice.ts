@@ -6,7 +6,7 @@ const COINGECKO_API_ENDPOINT = "https://api.coingecko.com/api/v3/simple/price";
  * Fetches the USD price for a cryptocurrency using its CoinGecko ID.
  *
  * Common CoinGecko IDs:
- * - "aptos" : Aptos (APT)
+ * - "movement" : Movement (MOVE)
  * - "bitcoin": Bitcoin (BTC)
  * - "ethereum": Ethereum (ETH)
  * - "solana": Solana (SOL)

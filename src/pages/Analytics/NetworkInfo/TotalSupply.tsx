@@ -14,7 +14,7 @@ export default function TotalSupply() {
     <MetricCard
       data="Loading..."
       label="Total Supply"
-      tooltip="Amount of APT tokens flowing through the Aptos network."
+      tooltip="Amount of MOVE tokens flowing through the Movement network."
     />
   ) : (
     <MetricCard

@@ -1,5 +1,5 @@
 interface ImportMetaEnv {
-  readonly VITE_APTOS_DEVNET_URL: string;
+  readonly VITE_MOVEMENT_DEVNET_URL: string;
   // add other environment variables here
 }
 

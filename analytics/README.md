@@ -1,6 +1,6 @@
 # Analytics
 
-The [analytics](https://explorer.aptoslabs.com/analytics?network=mainnet) and [validators](https://explorer.aptoslabs.com/validators?network=mainnet) tab on explorer uses some external datasets stored as JSON.
+The [analytics](https://explorer.movementlabs.xyz.com/analytics?network=mainnet) and [validators](https://explorer.movementlabs.xyz/validators?network=mainnet) tab on explorer uses some external datasets stored as JSON.
 
 This folder will hold the logic for generating these JSON from [google public dataset](https://console.cloud.google.com/marketplace/product/bigquery-public-data/crypto-aptos-mainnet-us)
 
@@ -28,9 +28,9 @@ This folder will hold the logic for generating these JSON from [google public da
 ### Active users
 
 A subset of address on chain are accounts (have `0x1::account::Account` resource).
-Accounts can be created in many different ways (direct call to create account, first APT receipt, first signature, etc).
+Accounts can be created in many different ways (direct call to create account, first MOVE receipt, first signature, etc).
 
-We define new accounts as addresses that received APT for the first time.
+We define new accounts as addresses that received MOVE for the first time.
 
 If an address signs a transactions, they are considered an active user.
 

@@ -86,7 +86,7 @@ export default function InfoTab({address, data}: InfoTabProps) {
                 </>
               }
             />
-            {marketCap ? (
+            {/* {marketCap ? (
               <ContentRow
                 title={"Current Market Cap (supply * price):"}
                 value={
@@ -100,7 +100,7 @@ export default function InfoTab({address, data}: InfoTabProps) {
                   </>
                 }
               />
-            ) : null}
+            ) : null} */}
           </>
           <ContentRow
             title={"Icon:"}

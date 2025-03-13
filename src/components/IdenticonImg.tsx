@@ -30,12 +30,12 @@ const IdenticonImg: React.FunctionComponent<IdenticonImgProps> = ({
     );
   }*/
 
-  const iconCanvas = createIcon({
-    seed: address,
-    size: 2,
-    scale: 150,
-    bgColor: addressToColor(address),
-  });
+  // const iconCanvas = createIcon({
+  //   seed: address,
+  //   size: 2,
+  //   scale: 150,
+  //   bgColor: addressToColor(address),
+  // });
 
   // Convert canvas to data URL
   //const iconDataURL = iconCanvas.toDataURL();

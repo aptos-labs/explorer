@@ -9,7 +9,7 @@ assignees: ""
 
 <!--
   Note that Verification requests are only available for addresses.  Coins and Fungible assets must be
-verified by the Panora token list https://github.com/PanoraExchange/Aptos-Tokens/.
+verified by the Panora token list https://github.com/PanoraExchange/Movement-Tokens/.
 
   Please provide as much information as possible to help us verify the address.
 -->
@@ -25,7 +25,7 @@ verified by the Panora token list https://github.com/PanoraExchange/Aptos-Tokens
 ## Name to display
 
 <!--
-  The name to display for the address e.g. `Aptos Explorer`.  This should be under 64 characters, it may be cut off
+  The name to display for the address e.g. `Movement Explorer`.  This should be under 64 characters, it may be cut off
   over 20 characters but show other places
 -->
 

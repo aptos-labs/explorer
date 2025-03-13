@@ -48,7 +48,7 @@ type VerifiedCellProps = {
 };
 
 export enum VerifiedType {
-  NATIVE_TOKEN = "Native", // Native token e.g. APT
+  NATIVE_TOKEN = "Native", // Native token e.g. MOVE
   LABS_VERIFIED = "Verified", // Specifically verified by labs
   COMMUNITY_VERIFIED = "Community Verified", // Verified by Panora
   RECOGNIZED = "Recognized", // In panora list but not verified

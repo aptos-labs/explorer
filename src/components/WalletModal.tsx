@@ -120,7 +120,7 @@ export default function WalletsModal({
           {false ? (
             <>
               <span>Log in or sign up</span>
-              <span>with Social + Aptos Connect</span>
+              <span>with Social + Movement Connect</span>
             </>
           ) : (
             "Connect Wallet"

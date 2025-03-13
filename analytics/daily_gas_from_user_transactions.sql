@@ -1,7 +1,7 @@
 -- only successful txns
 SELECT
   DATE(block_timestamp) as ds,
-  SUM(gas_used * gas_unit_price) / 1e8 as gas_cost -- in APT
+  SUM(gas_used * gas_unit_price) / 1e8 as gas_cost -- in MOVE
 FROM `bigquery-public-data.crypto_aptos_mainnet_us.transactions`
 WHERE tx_type = 'user'
 AND success

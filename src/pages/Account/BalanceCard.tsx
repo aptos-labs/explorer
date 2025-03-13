@@ -24,7 +24,7 @@ export default function BalanceCard({address}: BalanceCardProps) {
         const fetchedPrice = await getPrice();
         setPrice(fetchedPrice);
       } catch (error) {
-        console.error("Error fetching APT price:", error);
+        console.error("Error fetching MOVE price:", error);
         setPrice(null);
       }
     };
@@ -42,7 +42,7 @@ export default function BalanceCard({address}: BalanceCardProps) {
   return balance.data ? (
     <Card height="auto">
       <Stack spacing={1.5} marginY={1}>
-        {/* APT balance */}
+        {/* MOVE balance */}
         <Typography fontSize={17} fontWeight={700}>
           {`${getFormattedBalanceStr(balance.data)} MOVE`}
         </Typography>

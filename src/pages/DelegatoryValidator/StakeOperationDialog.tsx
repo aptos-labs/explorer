@@ -288,7 +288,7 @@ function StakeOperationDialogContent({
           <ContentBoxSpaceBetween>
             <ContentRowSpaceBetween
               title={"Staking Fee"}
-              value={Number(addStakeFee) / OCTA + " APT"}
+              value={Number(addStakeFee) / OCTA + " MOVE"}
               tooltip={
                 <StyledLearnMoreTooltip
                   text={
@@ -339,9 +339,9 @@ function StakeOperationDialogContent({
       </DialogContent>
       <DialogActions>
         <StyledTooltip
-          title={`Minimum stake amount is ${min} APT and maximum stake amount is ${
+          title={`Minimum stake amount is ${min} MOVE and maximum stake amount is ${
             Number(balance) / OCTA
-          } APT`}
+          } MOVE`}
           disableHoverListener={isAmountValid}
           placement="top"
         >
@@ -361,7 +361,7 @@ function StakeOperationDialogContent({
       <DialogContent sx={{textAlign: "center"}}>
         <Typography variant="caption" color={grey[450]}>
           <div>
-            Please do your own research. Aptos Labs is not responsible for the
+            Please do your own research. Movement Labs is not responsible for the
             performance of the validator nodes displayed here, or the security
             of your funds
           </div>

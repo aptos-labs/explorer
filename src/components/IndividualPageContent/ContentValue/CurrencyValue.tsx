@@ -1,6 +1,6 @@
 import React from "react";
 
-const APTOS_DECIMALS = 8;
+const MOVEMENT_DECIMALS = 8;
 
 function trimRight(rightSide: string) {
   while (rightSide.endsWith("0")) {
@@ -20,7 +20,7 @@ export function getFormattedBalanceStr(
   }
 
   const len = balance.length;
-  decimals = decimals || APTOS_DECIMALS;
+  decimals = decimals || MOVEMENT_DECIMALS;
 
   // If length is less than decimals, pad with 0s to decimals length and return
   if (len <= decimals) {
