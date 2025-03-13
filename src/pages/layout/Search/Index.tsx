@@ -310,7 +310,7 @@ export default function HeaderSearch() {
     const searchResults: SearchResult[] = [];
     const searchLowerCase = searchText.toLowerCase();
     Object.entries(knownAddresses).forEach(([address, knownName]) => {
-      if (prefixMatchLongerThan3(searchLowerCase, knownName)) {
+      if (address.toLowerCase() !== '0x000000000000000000000000000000000000000000000000000000000000000a' && prefixMatchLongerThan3(searchLowerCase, knownName)) {
         searchResults.push({
           label: `Account ${truncateAddress(address)} ${knownName}`,
           to: `/account/${address}`,
@@ -333,9 +333,6 @@ export default function HeaderSearch() {
           (prefixMatchLongerThan3(searchLowerCase, coin.name) ||
             prefixMatchLongerThan3(searchLowerCase, coin.symbol) ||
             prefixMatchLongerThan3(searchLowerCase, coin.panoraSymbol) ||
-            (coin.faAddress &&
-              tryStandardizeAddress(coin.faAddress) ===
-                tryStandardizeAddress(searchText)) ||
             coin.tokenAddress === searchText),
       )
       .sort((coin: CoinDescription, coin2: CoinDescription) => {

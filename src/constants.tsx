@@ -201,7 +201,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     isInPanoraTokenList: false,
     panoraUI: false,
     usdPrice: null,
-    panoraTags: ["Native"],
+    panoraTags: ["InternalFA"],
     isBanned: false,
     panoraOrderIndex: 1,
     panoraIndex: 1,
