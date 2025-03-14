@@ -684,6 +684,30 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native"],
   },
+  "0xc9a5d270bb8bb47e7bb34377ceb529db2878e4a7b521b5b8a984b35f8feaa8e2": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0xc9a5d270bb8bb47e7bb34377ceb529db2878e4a7b521b5b8a984b35f8feaa8e2",
+    name: "Rewardy",
+    symbol: "RWD",
+    decimals: 8,
+    panoraSymbol: "RWD",
+    bridge: null,
+    logoUrl:
+      "https://rewardy.s3.ap-northeast-2.amazonaws.com/Rewardy+Coin/front_rwd.png",
+    websiteUrl: "https://www.rewardywallet.com/",
+    category: "Native",
+    isInPanoraTokenList: false,
+    isBanned: false,
+    panoraOrderIndex: 9,
+    panoraIndex: 9,
+    coinGeckoId: null,
+    coinMarketCapId: null,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Native"],
+  },
 };
 
 /**
@@ -727,6 +751,7 @@ export const manuallyVerifiedTokens: Record<string, string> = {
     "Propbase WG1708",
   "0xc546cc2dd26d9e9a4516b4514288bedf1085259fcb106b84b6469337f527fb92": "PACT",
   "0xed18be0ea061c29dbbd2d22e9eb6bc61fde0babd1579c169bdd1d4f74730c419": "EXPO",
+  "0xc9a5d270bb8bb47e7bb34377ceb529db2878e4a7b521b5b8a984b35f8feaa8e2": "RWD",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const labsBannedTokens: Record<string, string> = {
