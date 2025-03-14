@@ -129,9 +129,57 @@ export type BalanceChange = {
   isInPanoraTokenList?: boolean;
 };
 
-function getBalanceMap(transaction: Types.Transaction) {
+type FAEvent = {
+  type:
+    | "0x1::fungible_asset::DepositEvent"
+    | "0x1::fungible_asset::WithdrawEvent";
+  sequence_number: string;
+  guid: {
+    account_address: string;
+    creation_number: string;
+  };
+  data: {
+    amount: string;
+    store: string;
+  };
+};
+
+function getAptBalanceChangeMap(transaction: Types.Transaction) {
   const events: Types.Event[] =
     "events" in transaction ? transaction.events : [];
+
+  // Get all FA stores
+  // TODO: cache or something?
+  const changesByAddress: Record<string, Types.WriteSetChange[]> = {};
+
+  if ("changes" in transaction) {
+    for (const change of transaction.changes) {
+      if (
+        change.type === "write_resource" ||
+        change.type === "create_resource"
+      ) {
+        // Now this is tricky, we need to keep track of resources by address, only counting stores and objects
+        const changeWithData = change as {
+          address: string;
+          data: {type: string};
+        };
+        switch (changeWithData.data.type) {
+          case "0x1::object::ObjectCore":
+          case "0x1::fungible_asset::FungibleStore":
+            const addr = tryStandardizeAddress(changeWithData.address);
+            if (!addr) {
+              break;
+            }
+            if (changesByAddress[addr] === undefined) {
+              changesByAddress[addr] = [];
+            }
+
+            changesByAddress[addr].push(change);
+            break;
+        }
+      }
+    }
+  }
 
   return events.reduce(
     (
@@ -144,28 +192,122 @@ function getBalanceMap(transaction: Types.Transaction) {
       event: Types.Event,
     ) => {
       const addr = standardizeAddress(event.guid.account_address);
+      switch (event.type) {
+        case "0x1::coin::DepositEvent":
+        case "0x1::coin::WithdrawEvent":
+          // deposit and withdraw events could be other coins
+          // here we only care about APT events
+          if (isAptEvent(event, transaction)) {
+            if (!balanceMap[addr]) {
+              balanceMap[addr] = {amount: BigInt(0), amountAfter: ""};
+            }
 
-      if (
-        event.type === "0x1::coin::DepositEvent" ||
-        event.type === "0x1::coin::WithdrawEvent"
-      ) {
-        // deposit and withdraw events could be other coins
-        // here we only care about APT events
-        if (isAptEvent(event, transaction)) {
-          if (!balanceMap[addr]) {
-            balanceMap[addr] = {amount: BigInt(0), amountAfter: ""};
+            const amount = BigInt(event.data.amount);
+
+            if (event.type === "0x1::coin::DepositEvent") {
+              balanceMap[addr].amount += amount;
+            } else {
+              balanceMap[addr].amount -= amount;
+            }
+          }
+          break;
+        case "0x1::fungible_asset::Deposit":
+        case "0x1::fungible_asset::Withdraw":
+          // TODO: Should probably only count primary stores
+          // Here we have to lookup the store in the resources
+          // to determine if the event is for APT or some other coin
+          const faEvent = event as FAEvent;
+          const store = tryStandardizeAddress(faEvent.data.store);
+          // Let's skip it if the address doesn't parse
+          if (!store) {
+            return balanceMap;
           }
 
+          // Lookup the store info
+          const changes = changesByAddress[store];
+          // It should have something, otherwise... this is an issue, but we'll skip
+          if (!changes || changes.length === 0) {
+            return balanceMap;
+          }
+
+          // Determine the asset, and see if it's 0xA (I know a lot of work for this)
+          const faStore = changes.find((change) => {
+            const changeWithData = change as {
+              type: string;
+              data: {type: string};
+            };
+            return (
+              changeWithData.data.type === "0x1::fungible_asset::FungibleStore"
+            );
+          });
+
+          // If no FA store, also an issue, but we'll skip
+          if (!faStore) {
+            return balanceMap;
+          }
+
+          // TODO: fix any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const faStoreData = faStore as any as {
+            data: {
+              type: string;
+              data: {
+                balance: string;
+                frozen: boolean;
+                metadata: {inner: string};
+              };
+            };
+          };
+
+          // TODO: Probably compare with AccountAddress
+          // This is not APT, so skip
+          if (faStoreData.data.data.metadata.inner !== "0xa") {
+            return balanceMap;
+          }
+
+          // Find the owner
+          const object = changes.find((change) => {
+            const changeWithData = change as {
+              type: string;
+              data: {type: string};
+            };
+            return changeWithData.data.type === "0x1::object::ObjectCore";
+          });
+
+          // If no Object, we also... have an issue but skip
+          if (!object) {
+            return balanceMap;
+          }
+
+          // TODO: fix any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const objectData = object as any as {
+            data: {
+              type: string;
+              data: {owner: string};
+            };
+          };
+          const balanceOwner = tryStandardizeAddress(
+            objectData.data.data.owner,
+          );
+          if (!balanceOwner) {
+            return balanceMap;
+          }
+
+          // Finally add the balance
           const amount = BigInt(event.data.amount);
 
-          if (event.type === "0x1::coin::DepositEvent") {
-            balanceMap[addr].amount += amount;
-          } else {
-            balanceMap[addr].amount -= amount;
+          if (balanceMap[balanceOwner] === undefined) {
+            balanceMap[balanceOwner] = {amount: BigInt(0), amountAfter: ""};
           }
-        }
-      }
 
+          if (event.type === "0x1::fungible_asset::Deposit") {
+            balanceMap[balanceOwner].amount += amount;
+          } else {
+            balanceMap[balanceOwner].amount -= amount;
+          }
+          break;
+      }
       return balanceMap;
     },
     {},
@@ -281,7 +423,7 @@ export function getCoinBalanceChangeForAccount(
   transaction: Types.Transaction,
   address: string,
 ): bigint {
-  const accountToBalance = getBalanceMap(transaction);
+  const accountToBalance = getAptBalanceChangeMap(transaction);
 
   if (!accountToBalance.hasOwnProperty(address)) {
     return BigInt(0);
@@ -298,7 +440,7 @@ export function getTransactionAmount(
     return undefined;
   }
 
-  const accountToBalance = getBalanceMap(transaction);
+  const accountToBalance = getAptBalanceChangeMap(transaction);
 
   const [totalDepositAmount, totalWithdrawAmount] = Object.values(
     accountToBalance,
