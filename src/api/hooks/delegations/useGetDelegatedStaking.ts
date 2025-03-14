@@ -1,6 +1,6 @@
 import {ApolloError, gql, useQuery as useGraphqlQuery} from "@apollo/client";
 import {Types} from "aptos";
-import {standardizeAddress} from "../../../utils";
+import {tryStandardizeAddress} from "../../../utils";
 
 export interface DelegatorPoolInfo {
   delegator_address: string;
@@ -34,12 +34,15 @@ const DELEGATED_STAKING_QUERY = gql`
   }
 `;
 
-export function useGetDelegatedStaking(delegatorAddress: Types.Address): {
+export function useGetDelegatedStaking(
+  delegatorAddress: Types.Address | undefined,
+): {
   delegatorPools: DelegatorPoolInfo[] | undefined;
   loading: boolean;
   error: ApolloError | undefined;
 } {
-  const delegatorAddress64Hash = standardizeAddress(delegatorAddress);
+  const delegatorAddress64Hash =
+    tryStandardizeAddress(delegatorAddress) ?? "N/A";
 
   const {loading, error, data} = useGraphqlQuery(DELEGATED_STAKING_QUERY, {
     variables: {
