@@ -637,6 +637,31 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native"],
   },
+  "0x2597fe74a0dba786453d550fb348801183b69e734cdbd15f9c5537b566483cb7": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0x2597fe74a0dba786453d550fb348801183b69e734cdbd15f9c5537b566483cb7",
+    name: "CassiaBanyanTreeB1045",
+    symbol: "CAS1045",
+    decimals: 8,
+    panoraSymbol: "CAS1045",
+    bridge: null,
+    logoUrl:
+      "https://ipfs.propbase.app/ipfs/bafkreifkynuzcjtrj34od4ja26alnkk3lb3rqgbrqpnqho4fmkeezejczu",
+    websiteUrl:
+      "https://ipfs.propbase.app/ipfs/bafkreidrdh4kp4yzvkwuygbniyu3bktmclxduikqqxzgeu2kuc245j3kiy",
+    category: "Native",
+    isInPanoraTokenList: false,
+    isBanned: false,
+    panoraOrderIndex: 8,
+    panoraIndex: 8,
+    coinGeckoId: null,
+    coinMarketCapId: null,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Native"],
+  },
   "0xc546cc2dd26d9e9a4516b4514288bedf1085259fcb106b84b6469337f527fb92": {
     chainId: 1,
     tokenAddress: null,
