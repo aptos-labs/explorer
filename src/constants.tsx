@@ -333,6 +333,8 @@ export const knownAddresses: Record<string, string> = {
     "Emojicoin.fun Registry",
   "0xface729284ae5729100b3a9ad7f7cc025ea09739cd6e7252aff0beb53619cafe":
     "Emojicoin.fun",
+  "0xde220d873e4f5eab5859f368b86fca00fa6fd395279cf54a7d7a5020cb527391":
+    "Aptos Monkeys Echo",
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
 };
