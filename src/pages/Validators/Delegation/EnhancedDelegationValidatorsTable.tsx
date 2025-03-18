@@ -505,7 +505,7 @@ function ValidatorRow({
       network_percentage: totalVotingPower
         ? calculateNetworkPercentage(validatorVotingPower, totalVotingPower)
         : "0",
-      wallet_address: account?.address ?? "",
+      wallet_address: account?.address?.toStringLong() ?? "",
       wallet_name: wallet?.name ?? "",
       validator_status: validator.status.toString(),
     });

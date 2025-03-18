@@ -17,7 +17,9 @@ export function OutOfCommissionPoolsBanner() {
     useState<string[]>([]);
   const [isChecking, setIsChecking] = useState<boolean>(false);
 
-  const {delegatorPools, loading} = useGetDelegatedStaking(account?.address);
+  const {delegatorPools, loading} = useGetDelegatedStaking(
+    account?.address?.toStringLong(),
+  );
 
   useEffect(() => {
     if (!connected || loading || !delegatorPools || !state.aptos_client) {

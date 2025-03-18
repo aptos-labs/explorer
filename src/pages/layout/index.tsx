@@ -22,7 +22,6 @@ function ExplorerWalletAdapterProvider({children}: LayoutProps) {
   return (
     <AptosWalletAdapterProvider
       key={state.network_name}
-      plugins={[]}
       autoConnect={true}
       dappConfig={{
         aptosConnectDappId: AptosConnectId,
