@@ -49,7 +49,7 @@ export default function TransactionSucceededDialog({
     logEvent("view_transaction_button_clicked", stakeOperation, {
       transactionHash: transactionHash,
       amount: amount,
-      wallet_address: account?.address ?? "",
+      wallet_address: account?.address?.toStringLong() ?? "",
       wallet_name: wallet?.name ?? "",
     });
   };

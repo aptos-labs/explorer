@@ -134,18 +134,19 @@ export function useValidatorDelegationData() {
   });
 
   // Batch fetch user stakes if wallet is connected
+  const accountAddress = account?.address?.toStringLong();
   const {
     data: userStakes,
     isLoading: userStakesLoading,
     error: userStakesError,
   } = useQuery({
-    queryKey: ["batchUserStakes", account?.address, validatorAddresses],
+    queryKey: ["batchUserStakes", accountAddress, validatorAddresses],
     queryFn: () => {
-      if (!account?.address) {
+      if (!accountAddress) {
         return [];
       }
       return getBatchUserStakes(
-        account.address,
+        accountAddress,
         validatorAddresses,
         state.aptos_client,
       );

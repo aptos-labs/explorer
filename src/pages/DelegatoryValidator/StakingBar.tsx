@@ -87,7 +87,7 @@ function StakingBarContent({
       commission: commission?.toString() ?? "",
       delegated_stake_amount: validatorVotingPower ?? "",
       network_percentage: networkPercentage ?? "",
-      wallet_address: account?.address ?? "",
+      wallet_address: account?.address?.toStringLong() ?? "",
       wallet_name: wallet?.name ?? "",
     });
     setDialogOpen(true);
@@ -145,7 +145,7 @@ function StakingBarContent({
     </Stack>
   );
 
-  const walletAddress = account?.address ?? ""; // FIXME: Migrate for SDK V1
+  const walletAddress = account?.address?.toStringLong() ?? ""; // FIXME: Migrate for SDK V1
   const balance = useGetAccountAPTBalance(walletAddress);
   const [state] = useGlobalState();
   const {stakes} = useGetDelegatorStakeInfo(
