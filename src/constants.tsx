@@ -329,6 +329,8 @@ export const knownAddresses: Record<string, string> = {
     "MSafe Wallet Fees",
   "0x4de5876d8a8e2be7af6af9f3ca94d9e4fafb24b5f4a5848078d8eb08f08e808a":
     "Securitize",
+  "0xbabe32dbe1cb44c30363894da9f49957d6e2b94a06f2fc5c20a9d1b9e54cface":
+    "Emojicoin.fun Rewards",
   "0x4b947ed016c64bde81972d69ea7d356de670d57fd2608b129f4d94ac0d0ee61":
     "Emojicoin.fun Registry",
   "0xface729284ae5729100b3a9ad7f7cc025ea09739cd6e7252aff0beb53619cafe":
