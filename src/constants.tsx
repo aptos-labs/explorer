@@ -325,6 +325,7 @@ export const knownAddresses: Record<string, string> = {
     "Martian Wallet Fees",
   "0x407c4d644c0303f46f754b3ceaabf1e4af3f625a4936ae7e0f1c3e51082368ef":
     "Pontem Wallet Fees",
+  "0xaa90e0d9d16b63ba4a289fb0dc8d1b454058b21c9b5c76864f825d5c1f32582e": "Msafe",
   "0xa5c6b23b141f610246348dd08111affcc2d2b1f5c8f8c768ca5c837d4f17fda2":
     "MSafe Wallet Fees",
   "0x4de5876d8a8e2be7af6af9f3ca94d9e4fafb24b5f4a5848078d8eb08f08e808a":
@@ -339,6 +340,10 @@ export const knownAddresses: Record<string, string> = {
     "Aptos Monkeys Echo",
   "0xd0995d57c9d4839dcecfdbb34a2650172a69fcfe0444f3229fec90eddf945141":
     "Petra Nudge",
+  "0x631f344549b798ad70cb5ab1842565b082fdfe488b7c6d56a257220222f6a191":
+    "AptID.xyz",
+  "0xbbe8a08f3b9774fccb31e02def5a79f1b7270b2a1cb9ffdc05b2622813298f2a":
+    "Hybrid Assets",
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
 };
