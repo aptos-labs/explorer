@@ -335,6 +335,8 @@ export const knownAddresses: Record<string, string> = {
     "Emojicoin.fun",
   "0xde220d873e4f5eab5859f368b86fca00fa6fd395279cf54a7d7a5020cb527391":
     "Aptos Monkeys Echo",
+  "0xd0995d57c9d4839dcecfdbb34a2650172a69fcfe0444f3229fec90eddf945141":
+    "Petra Nudge",
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
 };
