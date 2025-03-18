@@ -52,9 +52,13 @@ export default function Header() {
   const {account, wallet, network} = useWallet();
   const navigate = useNavigate();
   const walletAddressRef = useRef("");
-
-  if (account && walletAddressRef.current !== account.address) {
-    logEvent("wallet_connected", account.address, {
+  const accountAddress = account?.address?.toStringLong();
+  if (
+    account &&
+    accountAddress &&
+    walletAddressRef.current !== accountAddress
+  ) {
+    logEvent("wallet_connected", accountAddress, {
       wallet_name: wallet!.name,
       network_type: state.network_name,
     });
@@ -66,7 +70,7 @@ export default function Header() {
         network: network?.name,
       },
     });
-    walletAddressRef.current = account.address;
+    walletAddressRef.current = accountAddress;
   }
 
   return (

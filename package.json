@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.13.8",
-    "@aptos-labs/ts-sdk": "1.38.0",
-    "@aptos-labs/wallet-adapter-mui-design": "3.0.25",
-    "@aptos-labs/wallet-adapter-react": "3.7.11",
+    "@aptos-labs/ts-sdk": "1.39.0",
+    "@aptos-labs/wallet-adapter-mui-design": "4.0.15",
+    "@aptos-labs/wallet-adapter-react": "6.0.0",
     "@download/blockies": "^1.0.3",
     "@mui/icons-material": "^7.0.2",
     "@mui/material": "^7.0.2",

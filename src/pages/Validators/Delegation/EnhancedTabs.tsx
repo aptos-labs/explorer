@@ -80,7 +80,7 @@ export default function EnhancedValidatorsPageTabs(): React.JSX.Element {
   ) => {
     navigate(`/validators/${newValue}`);
     logEvent("validators_tab_clicked", newValue, {
-      wallet_address: account?.address ?? "",
+      wallet_address: account?.address?.toStringLong() ?? "",
       wallet_name: wallet?.name ?? "",
     });
   };
