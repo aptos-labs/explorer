@@ -12,46 +12,16 @@ import {
 import {ProvideColorMode} from "../../context";
 import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
 import {AptosWalletAdapterProvider} from "@aptos-labs/wallet-adapter-react";
-import {BitgetWallet} from "@bitget-wallet/aptos-wallet-adapter";
-import {PontemWallet} from "@pontem/wallet-adapter-plugin";
-import {TrustWallet} from "@trustwallet/aptos-wallet-adapter";
-import {WelldoneWallet} from "@welldone-studio/aptos-wallet-adapter";
-import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
-import {RimoWallet} from "rimosafe-plugin-wallet-adapter";
-import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
-import {useMemo} from "react";
 import {Network} from "@aptos-labs/ts-sdk";
 
 const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 
-// Statically initialize wallets that don't change for the network
-const msafeWallet = new MSafeWalletAdapter();
-const rimowallet = new RimoWallet();
-const okxWallet = new OKXWallet();
-const pontemWallet = new PontemWallet();
-const trustWallet = new TrustWallet();
-const welldoneWallet = new WelldoneWallet();
-const bitgetWallet = new BitgetWallet();
-
 function ExplorerWalletAdapterProvider({children}: LayoutProps) {
   const [state] = useGlobalState();
-  const wallets = useMemo(
-    () => [
-      pontemWallet,
-      rimowallet,
-      okxWallet,
-      bitgetWallet,
-      msafeWallet,
-      trustWallet,
-      welldoneWallet,
-    ],
-    [],
-  );
 
   return (
     <AptosWalletAdapterProvider
       key={state.network_name}
-      plugins={wallets}
       autoConnect={true}
       dappConfig={{
         aptosConnectDappId: AptosConnectId,
