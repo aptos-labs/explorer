@@ -207,6 +207,8 @@ export const knownAddresses: Record<string, string> = {
     "Superposition",
   "0x2fe576faa841347a9b1b32c869685deb75a15e3f62dfe37cbd6d52cc403a16f6":
     "Joule Finance",
+  "0x3b90501eae5cdc53c507d53b4ddc5a37e620743ef0b53a6aa4f711118890d1e5":
+    "Joule Bridge",
   "0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01":
     "Thala CDP",
   // Liquid staking
@@ -325,14 +327,25 @@ export const knownAddresses: Record<string, string> = {
     "Martian Wallet Fees",
   "0x407c4d644c0303f46f754b3ceaabf1e4af3f625a4936ae7e0f1c3e51082368ef":
     "Pontem Wallet Fees",
+  "0xaa90e0d9d16b63ba4a289fb0dc8d1b454058b21c9b5c76864f825d5c1f32582e": "Msafe",
   "0xa5c6b23b141f610246348dd08111affcc2d2b1f5c8f8c768ca5c837d4f17fda2":
     "MSafe Wallet Fees",
   "0x4de5876d8a8e2be7af6af9f3ca94d9e4fafb24b5f4a5848078d8eb08f08e808a":
     "Securitize",
+  "0xbabe32dbe1cb44c30363894da9f49957d6e2b94a06f2fc5c20a9d1b9e54cface":
+    "Emojicoin.fun Rewards",
   "0x4b947ed016c64bde81972d69ea7d356de670d57fd2608b129f4d94ac0d0ee61":
     "Emojicoin.fun Registry",
   "0xface729284ae5729100b3a9ad7f7cc025ea09739cd6e7252aff0beb53619cafe":
     "Emojicoin.fun",
+  "0xde220d873e4f5eab5859f368b86fca00fa6fd395279cf54a7d7a5020cb527391":
+    "Aptos Monkeys Echo",
+  "0xd0995d57c9d4839dcecfdbb34a2650172a69fcfe0444f3229fec90eddf945141":
+    "Petra Nudge",
+  "0x631f344549b798ad70cb5ab1842565b082fdfe488b7c6d56a257220222f6a191":
+    "AptID.xyz",
+  "0xbbe8a08f3b9774fccb31e02def5a79f1b7270b2a1cb9ffdc05b2622813298f2a":
+    "Hybrid Assets",
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
 };
