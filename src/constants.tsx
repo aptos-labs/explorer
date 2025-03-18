@@ -272,6 +272,8 @@ export const knownAddresses: Record<string, string> = {
     "Binance 2",
   "0xae1a6f3d3daccaf77b55044cea133379934bba04a11b9d0bbd643eae5e6e9c70":
     "Binance 3",
+  "0x81701e60a8e783aecf4dd5e5c9eb76f70a4431bb7441309dc3c6099f2c9e63d5":
+    "Binance.us 1",
   "0x0b3581f46ac8a6920fc9b87fecb7b459b9b39c177e65233826a7b4978bad41cd":
     "Coinbase 1",
   "0xa4e7455d27731ab857e9701b1e6ed72591132b909fe6e4fd99b66c1d6318d9e8":
