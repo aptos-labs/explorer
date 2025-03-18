@@ -19,11 +19,7 @@ import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeader
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Types} from "aptos";
-import {
-  primary,
-  aptosColor,
-  grey,
-} from "../../../themes/colors/aptosColorPalette";
+import {aptosColor, grey} from "../../../themes/colors/aptosColorPalette";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import {ValidatorAddrCell, OperatorAddrCell} from "../ValidatorsTable";
 import {assertNever} from "../../../utils";
@@ -39,7 +35,6 @@ import {
 } from "../../DelegatoryValidator/utils";
 import {useLogEventWithBasic} from "../../Account/hooks/useLogEventWithBasic";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {ThreeDLoader} from "react-awesome-loaders";
 
 // Define column types
 type Column =
@@ -630,12 +625,7 @@ export function EnhancedDelegationValidatorsTable() {
           minHeight: "300px",
         }}
       >
-        <ThreeDLoader
-          colorRing1={primary[500]}
-          colorRing2={primary[700]}
-          desktopSize={"128px"}
-          mobileSize={"100px"}
-        />
+        -
       </Box>
     );
   }
