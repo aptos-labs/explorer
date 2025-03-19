@@ -14,7 +14,7 @@ import {
   useGetChainIdAndCache,
   useGetChainIdCached,
 } from "../../api/hooks/useGetNetworkChainIds";
-import {NetworkName, networks} from "../../constants";
+import {availableNetworks, NetworkName, networks} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {grey, yellow} from "../../themes/colors/aptosColorPalette";
 
@@ -244,11 +244,9 @@ export default function NetworkSelect() {
               <Typography variant="body2">Chain ID</Typography>
             </Stack>
           </MenuItem>
-          {/* {Object.keys(networks)
-            .filter((networkName) =>
-              useGetChainIdCached(networkName as NetworkName),
-            )
-            .map((networkName: string) => (
+          {Object.entries(networks)
+          .filter(([networkName]) => availableNetworks.includes(networkName))
+            .map(([networkName]) => (
               <MenuItem
                 key={networkName}
                 value={networkName}
@@ -256,16 +254,7 @@ export default function NetworkSelect() {
               >
                 <NetworkMenuItem networkName={networkName} />
               </MenuItem>
-            ))} */}
-          {Object.keys(networks).map((networkName: string) => (
-            <MenuItem
-              key={networkName}
-              value={networkName}
-              sx={{paddingY: 0, textTransform: "capitalize"}}
-            >
-              <NetworkMenuItem networkName={networkName} />
-            </MenuItem>
-          ))}
+            ))}
 
           {/* <MenuItem
            key={"custom"}

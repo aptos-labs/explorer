@@ -8,27 +8,22 @@ const prefix = import.meta.env.REACT_APP_PREFIX || "";
 
 export const mainnetUrl =
   import.meta.env.MAINNET_URL || `https://mainnet.movementnetwork.xyz/v1`;
-export const devnetUrl =
-  import.meta.env.DEVNET_URL ||
-  `https://${prefix}aptos.devnet.suzuka.movementlabs.xyz/v1`;
 
 export const bardockTestnetUrl =
   import.meta.env.MOVEMENT_TESTNET_URL ||
   `https://${prefix}testnet.bardock.movementnetwork.xyz/v1`;
 
-export const mevmdevnetUrl =
-  import.meta.env.IMOLA_URL ||
-  `https://${prefix}aptos.devnet.imola.movementlabs.xyz/v1`;
-
   export const networks = {
     mainnet: mainnetUrl,
     testnet: "",
     "bardock testnet": bardockTestnetUrl,
-    devnet: devnetUrl,
+  devnet: "",
     local: "http://localhost:30731",
     mevmdevnet: "",
     custom: "",
   };
+
+export const availableNetworks = ["mainnet", "bardock testnet"];
 
 export type NetworkName = keyof typeof networks;
 
@@ -37,15 +32,7 @@ type ApiKeys = {
 };
 
 /**
- * Public Client IDs (API keys) from API Gateway. For mainnet, these come from the prod
- * API Gateway (developers.movementlabs.xyz), for testnet and devnet these come from the
- * staging API Gateway (staging.developers.movementlabs.xyz).
- *
- * These keys are all generated using the petra@movementlabs.xyz account. Learn more:
- * https://www.notion.so/aptoslabs/API-Gateway-FAQ-for-product-owners-183b29ba6bed41f8922e6049d9d36486
- *
- * Some networks aren't configured to use API Gateway, e.g. randomnet. For that, set the
- * value to `undefined`.
+ * Public Client IDs (API keys) from API Gateway.
  */
 const apiKeys: ApiKeys = {
   mainnet: undefined,
