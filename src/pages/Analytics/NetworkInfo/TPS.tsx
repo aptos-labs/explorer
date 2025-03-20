@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import {useGetPeakTPS, useGetTPS} from "../../../api/hooks/useGetTPS";
 import {useGlobalState} from "../../../global-config/GlobalConfig";
 import MetricCard, {DoubleMetricCard} from "./MetricCard";
+import { availableNetworks } from "../../../constants";
 
 function getFormattedTPS(tps: number) {
   //tps = tps + 1; // to avoid reducing tps from `toFixed` api
@@ -17,7 +18,7 @@ export default function TPS() {
   const [showPeakTps, setShowPeakTps] = useState<boolean>(true);
 
   useEffect(() => {
-    const showNetworks = ["mainnet", "testnet"];
+    const showNetworks = availableNetworks;
     if (showNetworks.includes(state.network_name)) {
       setShowPeakTps(true);
     } else {

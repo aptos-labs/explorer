@@ -1,5 +1,5 @@
 import React, {createContext} from "react";
-import {Grid2, Grid} from "@mui/material";
+import {Grid} from "@mui/material";
 // import TotalSupply from "./TotalSupply";
 // import TotalStake from "./TotalStake";
 // import TPS from "./TPS";
@@ -45,7 +45,7 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
 
   return (
     <StyleContext.Provider value={onHomePage ? "default" : "outline"}>
-      <Grid2
+      <Grid
         container
         spacing={2}
         direction="row"
@@ -57,11 +57,6 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
             <TotalTransactions type={"card"} />
           </LinkableContainer>
         </Grid>
-        {/* <Grid item xs={12} md={3} lg={2.4}>
-          <LinkableContainer linkToAnalyticsPage={onHomePage}>
-            <TPS />
-          </LinkableContainer>
-        </Grid> */}
         <Grid item xs={12} md={3} lg={2.4}>
           <LinkableContainer linkToAnalyticsPage={onHomePage}>
             <TotalNewAccountsCreated
@@ -83,7 +78,7 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
             />
           </LinkableContainer>
         </Grid>
-      </Grid2>
+      </Grid>
     </StyleContext.Provider>
   );
 }

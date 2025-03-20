@@ -41,9 +41,9 @@ export default function MainnetAnalytics() {
           days={days}
         />
       </Grid2>
-      {/* <Grid2 size={{xs: 12, md: 6, lg: 3}}>
+      <Grid2 size={{xs: 12, md: 6, lg: 3}}>
         <DailyPeakTPSChart data={data.daily_max_tps_15_blocks} days={days} />
-      </Grid2> */}
+      </Grid2>
       <Grid2 size={{xs: 12, md: 6, lg: 3}}>
         <MonthlyActiveUserChart data={data.mau_signers} days={days} />
       </Grid2>

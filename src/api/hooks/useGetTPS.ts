@@ -6,9 +6,9 @@ import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
 import {
   AnalyticsData,
   ANALYTICS_DATA_URL,
-  PORTO_ANALYTICS_DATA_URL,
   BARDOCK_ANALYTICS_DATA_URL,
 } from "./useGetAnalyticsData";
+import {availableNetworks} from "../../constants";
 
 export function useGetTPS() {
   const [state] = useGlobalState();
@@ -36,14 +36,11 @@ export function useGetPeakTPS() {
   const [peakTps, setPeakTps] = useState<number>();
 
   useEffect(() => {
-    const showNetworks = ["mainnet", "testnet"];
+    const showNetworks = availableNetworks;
     if (showNetworks.includes(state.network_name)) {
       const fetchData = async () => {
         let ANALYTICS_DATA_URL_USE;
         switch (state.network_name) {
-          case "testnet":
-            ANALYTICS_DATA_URL_USE = PORTO_ANALYTICS_DATA_URL;
-            break;
           case "bardock testnet":
             ANALYTICS_DATA_URL_USE = BARDOCK_ANALYTICS_DATA_URL;
             break;

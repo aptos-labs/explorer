@@ -4,9 +4,6 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 export const BARDOCK_ANALYTICS_DATA_URL =
   "https://storage.googleapis.com/explorer_stats/chain_stats_bardock_v2.json";
 
-export const PORTO_ANALYTICS_DATA_URL =
-  "https://storage.googleapis.com/explorer_stats/chain_stats_porto_v2.json";
-
 export const ANALYTICS_DATA_URL =
   "https://storage.googleapis.com/explorer_stats/chain_stats_mainnet_v2.json";
 
@@ -105,7 +102,7 @@ export function useGetAnalyticsData() {
   useEffect(() => {
     const options = {
       "bardock testnet": BARDOCK_ANALYTICS_DATA_URL,
-      testnet: PORTO_ANALYTICS_DATA_URL,
+      testnet: null,
       mainnet: ANALYTICS_DATA_URL,
       devnet: null,
       local: null,
