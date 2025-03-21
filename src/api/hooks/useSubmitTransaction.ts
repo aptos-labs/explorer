@@ -77,8 +77,12 @@ const useSubmitTransaction = () => {
             success: true,
           };
         }
-        // transaction failed
-        return {...responseOnError, message: response.message};
+        // transaction failed, this is a legacy behavior
+        return {
+          ...responseOnError,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          message: (response as any)?.message ?? "Unknown Error",
+        };
       } catch (error) {
         if (error instanceof FailedTransactionError) {
           return {
