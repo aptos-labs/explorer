@@ -7,7 +7,7 @@ import {
   ApolloLink,
   NormalizedCacheObject,
 } from "@apollo/client";
-import {standardizeAddress} from "../../../../utils";
+import {tryStandardizeAddress} from "../../../../utils";
 import {getGraphqlURI} from "../../../../api/hooks/useGraphqlClient";
 import {NetworkName, getApiKey} from "../../../../constants";
 import {AptosClient} from "aptos";
@@ -63,7 +63,7 @@ export async function getBatchDelegatorCounts(
   try {
     // Standardize addresses
     const formattedAddresses = validatorAddresses.map(
-      (addr) => `"${standardizeAddress(addr)}"`,
+      (addr) => `"${tryStandardizeAddress(addr)}"`,
     );
 
     // Create GraphQL client with the provided network name
@@ -72,14 +72,14 @@ export async function getBatchDelegatorCounts(
     // Execute GraphQL query using the correct field name
     const {data} = await apolloClient.query({
       query: gql`
-        query GetDelegatorCounts {
-          num_active_delegator_per_pool(
-            where: {pool_address: {_in: [${formattedAddresses.join(",")}]}}
-          ) {
-            pool_address
-            num_active_delegator
+          query GetDelegatorCounts {
+              num_active_delegator_per_pool(
+                  where: {pool_address: {_in: [${formattedAddresses.join(",")}]}}
+              ) {
+                  pool_address
+                  num_active_delegator
+              }
           }
-        }
       `,
     });
 
@@ -89,15 +89,15 @@ export async function getBatchDelegatorCounts(
     const addressToCountMap = new Map<string, number>();
 
     delegatorCounts.forEach((item) => {
-      addressToCountMap.set(
-        standardizeAddress(item.pool_address),
-        parseInt(item.num_active_delegator),
-      );
+      const addr = tryStandardizeAddress(item.pool_address);
+      if (!addr) return;
+      addressToCountMap.set(addr, parseInt(item.num_active_delegator));
     });
 
     // Map results back to original order, with missing values as 0
     return validatorAddresses.map((addr) => {
-      const standardizedAddr = standardizeAddress(addr);
+      const standardizedAddr = tryStandardizeAddress(addr);
+      if (!standardizedAddr) return 0;
       return addressToCountMap.get(standardizedAddr) || 0;
     });
   } catch (error) {

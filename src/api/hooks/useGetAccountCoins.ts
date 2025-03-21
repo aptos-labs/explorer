@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {ResponseError} from "../client";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {standardizeAddress} from "../../utils";
+import {tryStandardizeAddress} from "../../utils";
 
 const COINS_QUERY = `
     query CoinsData($owner_address: String, $limit: Int, $offset: Int) {
@@ -37,13 +37,17 @@ const COIN_COUNT_QUERY = `
 
 export function useGetAccountCoinCount(address: string) {
   const [state] = useGlobalState();
-  const standardizedAddress = standardizeAddress(address);
+  const standardizedAddress = tryStandardizeAddress(address);
 
   return useQuery<number, ResponseError>({
     queryKey: ["coinCount", address],
     // TODO type this
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     queryFn: async (): Promise<any> => {
+      if (!standardizedAddress) {
+        return 0;
+      }
+
       const response = await state.sdk_v2_client.queryIndexer<{
         current_fungible_asset_balances_aggregate: {aggregate: {count: number}};
       }>({
@@ -73,7 +77,7 @@ type FaBalance = {
 
 export function useGetAccountCoins(address: string) {
   const [state] = useGlobalState();
-  const standardizedAddress = standardizeAddress(address);
+  const standardizedAddress = tryStandardizeAddress(address);
 
   // Get count first
   const count = useGetAccountCoinCount(address);
@@ -86,7 +90,7 @@ export function useGetAccountCoins(address: string) {
     // TODO: Type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     queryFn: async (): Promise<any> => {
-      if (!count.data) {
+      if (!address || !count.data) {
         return [];
       }
 

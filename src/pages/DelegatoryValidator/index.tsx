@@ -21,12 +21,14 @@ import {
 } from "../../api/hooks/delegations";
 import {useEffect, useMemo, useState} from "react";
 import Error from "../Account/Error";
-import {standardizeAddress} from "../../utils";
+import {tryStandardizeAddress} from "../../utils";
 import {Banner} from "../../components/Banner";
 
 export default function ValidatorPage() {
   const address = useParams().address ?? "";
-  const addressHex = useMemo(() => standardizeAddress(address), [address]);
+  const addressHex = useMemo(() => {
+    return tryStandardizeAddress(address);
+  }, [address]);
   const {validators} = useGetValidators();
   const {connected} = useWallet();
   const {data: accountResource, error} = useGetAccountResource(

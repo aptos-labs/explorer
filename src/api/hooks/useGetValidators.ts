@@ -2,7 +2,7 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useGetValidatorSet} from "./useGetValidatorSet";
 import {Network} from "../../constants";
-import {standardizeAddress} from "../../utils";
+import {tryStandardizeAddress} from "../../utils";
 
 const MAINNET_VALIDATORS_DATA_URL =
   "https://storage.googleapis.com/aptos-mainnet/explorer/validator_stats_v2.json?cache-version=0";
@@ -57,12 +57,20 @@ function useGetValidatorsRawData() {
         const rawData: ValidatorData[] = await response.json();
         setValidatorsRawData(
           rawData.map((validatorData) => {
+            const owner_address = tryStandardizeAddress(
+              validatorData.owner_address,
+            );
+            const operator_address = tryStandardizeAddress(
+              validatorData.operator_address,
+            );
+            if (!owner_address || !operator_address) {
+              return validatorData;
+            }
+
             return {
               ...validatorData,
-              owner_address: standardizeAddress(validatorData.owner_address),
-              operator_address: standardizeAddress(
-                validatorData.operator_address,
-              ),
+              owner_address,
+              operator_address,
             };
           }),
         );

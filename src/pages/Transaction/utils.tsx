@@ -1,5 +1,5 @@
 import {Types} from "aptos";
-import {standardizeAddress, tryStandardizeAddress} from "../../utils";
+import {tryStandardizeAddress} from "../../utils";
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
 import {TransactionTypeName} from "../../components/TransactionType";
 
@@ -191,7 +191,10 @@ function getAptBalanceChangeMap(transaction: Types.Transaction) {
       },
       event: Types.Event,
     ) => {
-      const addr = standardizeAddress(event.guid.account_address);
+      const addr = tryStandardizeAddress(event.guid.account_address);
+      if (!addr) {
+        return balanceMap;
+      }
       switch (event.type) {
         case "0x1::coin::DepositEvent":
         case "0x1::coin::WithdrawEvent":

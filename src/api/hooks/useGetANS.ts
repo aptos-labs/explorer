@@ -5,7 +5,7 @@ import {
   fetchJsonResponse,
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
-  standardizeAddress,
+  tryStandardizeAddress,
 } from "../../utils";
 import {ResponseError} from "../client";
 import {NameType} from "../../components/TitleHashButton";
@@ -38,7 +38,10 @@ export function useGetNameFromAddress(
   const queryResult = useQuery<string | null, ResponseError>({
     queryKey: ["ANSName", address, shouldCache, state.network_name, nameType],
     queryFn: () => {
-      const standardizedAddress = standardizeAddress(address);
+      const standardizedAddress = tryStandardizeAddress(address);
+      if (!standardizedAddress) {
+        return null;
+      }
       const lowercaseStandardizedAddress = standardizedAddress.toLowerCase();
       if (nameType !== NameType.ANS) {
         const knownName = knownAddresses[lowercaseStandardizedAddress];
