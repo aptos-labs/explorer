@@ -31,7 +31,7 @@
     "@okwallet/aptos-wallet-adapter": "^0.0.7",
     "@pontem/wallet-adapter-plugin": "^0.2.1",
     "@rise-wallet/wallet-adapter": "^0.1.2",
-    "@sentry/react": "^9.6.0",
+    "@sentry/react": "^8.54.0",
     "@tanstack/react-query": "^5.66.0",
     "@tp-lab/aptos-wallet-adapter": "^1.0.1",
     "@trustwallet/aptos-wallet-adapter": "^0.1.6",
