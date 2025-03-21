@@ -1,5 +1,5 @@
 import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
-import {standardizeAddress} from "../../utils";
+import {tryStandardizeAddress} from "../../utils";
 
 const ACCOUNT_TRANSACTIONS_COUNT_QUERY = gql`
   query AccountTransactionsCount($address: String) {
@@ -19,14 +19,14 @@ export function useGetAccountAllTransactionCount(
 ): number | undefined {
   // whenever talking to the indexer, the address needs to fill in leading 0s
   // for example: 0x123 => 0x000...000123  (61 0s before 123)
-  const addr64Hash = standardizeAddress(address);
+  const addr64Hash = tryStandardizeAddress(address);
 
   const {loading, error, data} = useGraphqlQuery(
     ACCOUNT_TRANSACTIONS_COUNT_QUERY,
     {variables: {address: addr64Hash}},
   );
 
-  if (loading || error || !data) {
+  if (!addr64Hash || loading || error || !data) {
     return undefined;
   }
 
@@ -51,13 +51,13 @@ export function useGetAccountAllTransactionVersions(
   limit: number,
   offset?: number,
 ): number[] {
-  const addr64Hash = standardizeAddress(address);
+  const addr64Hash = tryStandardizeAddress(address);
 
   const {loading, error, data} = useGraphqlQuery(ACCOUNT_TRANSACTIONS_QUERY, {
     variables: {address: addr64Hash, limit: limit, offset: offset},
   });
 
-  if (loading || error || !data) {
+  if (!addr64Hash || loading || error || !data) {
     return [];
   }
 

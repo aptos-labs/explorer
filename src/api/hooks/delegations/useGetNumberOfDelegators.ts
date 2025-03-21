@@ -1,5 +1,5 @@
 import {ApolloError, gql, useQuery as useGraphqlQuery} from "@apollo/client";
-import {standardizeAddress} from "../../../utils";
+import {tryStandardizeAddress} from "../../../utils";
 import {Types} from "aptos";
 
 interface NumberOfDelegatorsResponse {
@@ -25,7 +25,7 @@ export function useGetNumberOfDelegators(poolAddress: Types.Address): {
   loading: boolean;
   error: ApolloError | undefined;
 } {
-  const poolAddress64Hash = poolAddress ? standardizeAddress(poolAddress) : "";
+  const poolAddress64Hash = tryStandardizeAddress(poolAddress);
 
   const {loading, error, data} = useGraphqlQuery(NUMBER_OF_DELEGATORS_QUERY, {
     variables: {
@@ -33,6 +33,9 @@ export function useGetNumberOfDelegators(poolAddress: Types.Address): {
     },
     skip: !poolAddress,
   });
+  if (!poolAddress64Hash || loading || error || !data) {
+    return {numberOfDelegators: 0, loading, error};
+  }
 
   const delegatorData = data?.num_active_delegator_per_pool?.[0] as
     | NumberOfDelegatorsResponse

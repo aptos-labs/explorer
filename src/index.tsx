@@ -57,7 +57,7 @@ root.render(
   <React.StrictMode>
     <StatsigProvider
       sdkKey={
-        import.meta.env.REACT_APP_STATSIG_SDK_KEY ||
+        import.meta.env.VITE_STATSIG_SDK_KEY ||
         "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
       }
       waitForInitialization={false}

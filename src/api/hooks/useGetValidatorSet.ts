@@ -1,7 +1,7 @@
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
-import {standardizeAddress} from "../../utils";
+import {tryStandardizeAddress} from "../../utils";
 
 interface ValidatorSetData {
   active_validators: Validator[];
@@ -39,7 +39,10 @@ export function useGetValidatorSet() {
       setNumberOfActiveValidators(data.active_validators.length);
       setActiveValidators(
         data.active_validators.map((validator) => {
-          const processedAddr = standardizeAddress(validator.addr);
+          const processedAddr = tryStandardizeAddress(validator.addr);
+          if (!processedAddr) {
+            return validator;
+          }
           return {
             ...validator,
             addr: processedAddr,

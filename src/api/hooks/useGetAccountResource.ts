@@ -31,15 +31,22 @@ export type PackageMetadata = {
 };
 
 export function useGetAccountResource(
-  address: string,
+  address: string | undefined,
   resource: string,
 ): UseQueryResult<Types.MoveResource, ResponseError> {
   const [state] = useGlobalState();
 
   return useQuery<Types.MoveResource, ResponseError>({
     queryKey: ["accountResource", {address, resource}, state.network_value],
-    queryFn: () =>
-      getAccountResource({address, resourceType: resource}, state.aptos_client),
+    queryFn: async () => {
+      if (!address) {
+        throw new Error("Address is undefined");
+      }
+      return await getAccountResource(
+        {address, resourceType: resource},
+        state.aptos_client,
+      );
+    },
     refetchOnWindowFocus: false,
   });
 }

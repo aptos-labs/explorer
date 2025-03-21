@@ -19,7 +19,7 @@ import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {scamAddresses} from "../constants";
-import {standardizeAddress} from "../utils";
+import {tryStandardizeAddress} from "../utils";
 import {DangerousOutlined} from "@mui/icons-material";
 
 export const BUTTON_HEIGHT = 34;
@@ -173,7 +173,7 @@ function Name({
   };
 
   let content;
-
+  const addr = tryStandardizeAddress(address);
   if (isAns) {
     content = (
       <Link
@@ -184,7 +184,7 @@ function Name({
         {name}
       </Link>
     );
-  } else if (scamAddresses[standardizeAddress(address)]) {
+  } else if (addr && scamAddresses[addr]) {
     content = (
       <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
         <span>{name}</span>
