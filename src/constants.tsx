@@ -181,6 +181,8 @@ export const knownAddresses: Record<string, string> = {
     "KanaLabs",
   "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c":
     "Econia Labs",
+  "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c":
+    "Hyperfluid",
   "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba":
     "Cetus 1", // defunct
   "0xa7f01413d33ba919441888637ca1607ca0ddcbfa3c0a9ddea64743aaa560e498":
