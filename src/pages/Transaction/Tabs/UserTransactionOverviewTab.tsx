@@ -111,7 +111,8 @@ type Swap = {
     | "0xbd35135844473187163ca197ca93b2ab014370587bb0ed3befff9e902d6bb541" // "Aux Exchange"
     | "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1" // "Cellana Finance"
     | "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e" // "Thetis Market"
-    | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba"; // "Cetus 1"
+    | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba" // "Cetus 1"
+    | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c"; // "Hyperfluid"
   amountIn: number;
   amountOut: number;
   assetIn: string;
@@ -402,6 +403,7 @@ function getEventAction(event: Types.Event): EventAction | undefined {
     parseCellanaEvent,
     parseThetisSwapEvent,
     parseCetusSwapEvent,
+    parseHyperfluidSwapEvent,
   ];
 
   for (const parse of parsers) {
@@ -932,6 +934,37 @@ function parseCetusSwapEvent(event: Types.Event): Swap | undefined {
   return {
     actionType: "swap",
     dex: "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba",
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function parseHyperfluidSwapEvent(event: Types.Event): Swap | undefined {
+  if (
+    event.type !==
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEvent"
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    amount_in: string;
+    amount_out: string;
+    from_token: {inner: string};
+    to_token: {inner: string};
+    protocol_fee_amount: string;
+  } = event.data;
+
+  const amountIn = Number(data.amount_in) + Number(data.protocol_fee_amount);
+  const amountOut = Number(data.amount_out);
+  const assetIn = data.from_token.inner;
+  const assetOut = data.to_token.inner;
+
+  return {
+    actionType: "swap",
+    dex: "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c",
     amountIn,
     amountOut,
     assetIn,
