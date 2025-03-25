@@ -2,7 +2,7 @@ import React, {createContext} from "react";
 import {Grid} from "@mui/material";
 // import TotalSupply from "./TotalSupply";
 // import TotalStake from "./TotalStake";
-// import TPS from "./TPS";
+import TPS from "./TPS";
 import TotalTransactions from "./TotalTransactions";
 import {Link} from "../../../routing";
 import TotalNewAccountsCreated from "../Charts/TotalNewAccountsCreated";
@@ -55,6 +55,11 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
         <Grid item xs={12} md={3} lg={2.4}>
           <LinkableContainer linkToAnalyticsPage={onHomePage}>
             <TotalTransactions type={"card"} />
+          </LinkableContainer>
+        </Grid>
+        <Grid item xs={12} md={3} lg={2.4}>
+          <LinkableContainer linkToAnalyticsPage={onHomePage}>
+            <TPS />
           </LinkableContainer>
         </Grid>
         <Grid item xs={12} md={3} lg={2.4}>

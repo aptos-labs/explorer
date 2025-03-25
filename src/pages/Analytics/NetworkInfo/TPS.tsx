@@ -26,12 +26,13 @@ export default function TPS() {
     }
   }, [state]);
 
-  const isMainnet = state.network_name === "mainnet";
+  //const isMainnet = state.network_name === "mainnet" || state.network_name === "devnet";
+  const showRealTime = false; // Toggle to show real-time TPS. Previously targetted mainnet.
 
   return showPeakTps ? (
     <DoubleMetricCard
       data1={
-        isMainnet
+        showRealTime
           ? tps
             ? getFormattedTPS(tps)
             : "-"
@@ -39,12 +40,12 @@ export default function TPS() {
             ? getFormattedTPS(peakTps)
             : "-"
       }
-      data2={isMainnet ? (peakTps ? getFormattedTPS(peakTps) : "-") : undefined}
-      label1={isMainnet ? "REAL-TIME" : "PEAK LAST 30 DAYS"}
-      label2={isMainnet ? "PEAK LAST 30 DAYS" : undefined}
+      data2={showRealTime ? (peakTps ? getFormattedTPS(peakTps) : "-") : undefined}
+      label1={showRealTime ? "REAL-TIME" : "PEAK LAST 30 DAYS"}
+      label2={showRealTime ? "PEAK LAST 30 DAYS" : undefined}
       cardLabel="Max TPS"
       tooltip={
-        isMainnet ? (
+        showRealTime ? (
           <Stack spacing={1}>
             <Box>
               <Box sx={{fontWeight: 700}}>Real-Time</Box>
@@ -53,8 +54,7 @@ export default function TPS() {
             <Box>
               <Box sx={{fontWeight: 700}}>Peak Last 30 Days</Box>
               <Box>
-                Highest rate of transactions per second over the past 30 days,
-                averaged over 15 blocks.
+                Maximum number of transactions in a block on a given day, divided by the duration of that block in seconds.
               </Box>
             </Box>
           </Stack>
@@ -63,8 +63,7 @@ export default function TPS() {
             <Box>
               <Box sx={{fontWeight: 700}}>Peak Last 30 Days</Box>
               <Box>
-                Highest rate of transactions per second over the past 30 days,
-                averaged over 15 blocks.
+              Maximum number of transactions in a block on a given day, divided by the duration of that block in seconds.
               </Box>
             </Box>
           </Stack>

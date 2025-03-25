@@ -26,7 +26,7 @@ export default function DailyPeakTPSChart({
     <CardOutline>
       <ChartTitle
         label="Max TPS"
-        tooltip="Daily highest rate of transactions per second."
+        tooltip="Daily highest rate of transactions in a block on a given day, divided by the duration of that block in seconds."
       />
       <LineChart labels={labels} dataset={dataset} />
     </CardOutline>
