@@ -18,7 +18,7 @@
     "@apollo/client": "^3.12.9",
     "@aptos-labs/ts-sdk": "^1.33.2",
     "@aptos-labs/wallet-adapter-mui-design": "3.0.25",
-    "@aptos-labs/wallet-adapter-react": "3.7.11",
+    "@aptos-labs/wallet-adapter-react": "4.1.5",
     "@bitget-wallet/aptos-wallet-adapter": "^0.1.2",
     "@blocto/aptos-wallet-adapter-plugin": "^0.2.11",
     "@download/blockies": "^1.0.3",
