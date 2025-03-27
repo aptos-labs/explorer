@@ -25,6 +25,168 @@ import {findCoinData} from "./BalanceChangeTab";
 import {useGetAssetMetadata} from "../../../api/hooks/useGetAssetMetadata";
 import {Hex} from "@aptos-labs/ts-sdk";
 
+type EconiaState = {
+  orderID: string | undefined;
+  placeSwapOrder: Types.Event | undefined;
+  fills: Types.Event[];
+  hasCancelOrder: boolean;
+};
+
+// Fetched from https://aptos-mainnet-econia.nodeinfra.com/markets
+// Update this once econia adds more markets
+const ECONIA_MARKETS = [
+  {
+    market_id: 7,
+    base_account_address: "0x1",
+    base_module_name: "aptos_coin",
+    base_struct_name: "AptosCoin",
+    quote_account_address:
+      "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa",
+    quote_module_name: "asset",
+    quote_struct_name: "USDC",
+    tick_size: 1,
+    lot_size: 100000,
+  },
+  {
+    market_id: 8,
+    base_account_address:
+      "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa",
+    base_module_name: "asset",
+    base_struct_name: "WETH",
+    quote_account_address:
+      "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa",
+    quote_module_name: "asset",
+    quote_struct_name: "USDC",
+    tick_size: 1,
+    lot_size: 100,
+  },
+  {
+    market_id: 12,
+    base_account_address:
+      "0x5e975e7f36f2658d4cf146142899c659464a3e0d90f0f4d5f8b2447173c06ef6",
+    base_module_name: "EDOG",
+    base_struct_name: "EDOG",
+    quote_account_address: "0x1",
+    quote_module_name: "aptos_coin",
+    quote_struct_name: "AptosCoin",
+    tick_size: 1,
+    lot_size: 1000000,
+  },
+  {
+    market_id: 2,
+    base_account_address:
+      "0x5e156f1207d0ebfa19a9eeff00d62a282278fb8719f4fab3a586a0a2c0fffbea",
+    base_module_name: "coin",
+    base_struct_name: "T",
+    quote_account_address: "0x1",
+    quote_module_name: "aptos_coin",
+    quote_struct_name: "AptosCoin",
+    tick_size: 2,
+    lot_size: 2,
+  },
+  {
+    market_id: 3,
+    base_account_address:
+      "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa",
+    base_module_name: "asset",
+    base_struct_name: "USDC",
+    quote_account_address: "0x1",
+    quote_module_name: "aptos_coin",
+    quote_struct_name: "AptosCoin",
+    tick_size: 1,
+    lot_size: 100,
+  },
+  {
+    market_id: 9,
+    base_account_address:
+      "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa",
+    base_module_name: "asset",
+    base_struct_name: "USDT",
+    quote_account_address:
+      "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa",
+    quote_module_name: "asset",
+    quote_struct_name: "USDC",
+    tick_size: 10,
+    lot_size: 1000000,
+  },
+  {
+    market_id: 6,
+    base_account_address: "0x1",
+    base_module_name: "aptos_coin",
+    base_struct_name: "AptosCoin",
+    quote_account_address:
+      "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa",
+    quote_module_name: "asset",
+    quote_struct_name: "USDT",
+    tick_size: 1,
+    lot_size: 100,
+  },
+  {
+    market_id: 5,
+    base_account_address: "0x1",
+    base_module_name: "aptos_coin",
+    base_struct_name: "AptosCoin",
+    quote_account_address:
+      "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa",
+    quote_module_name: "asset",
+    quote_struct_name: "USDT",
+    tick_size: 100,
+    lot_size: 1,
+  },
+  {
+    market_id: 1,
+    base_account_address:
+      "0x5e156f1207d0ebfa19a9eeff00d62a282278fb8719f4fab3a586a0a2c0fffbea",
+    base_module_name: "coin",
+    base_struct_name: "T",
+    quote_account_address: "0x1",
+    quote_module_name: "aptos_coin",
+    quote_struct_name: "AptosCoin",
+    tick_size: 1,
+    lot_size: 1,
+  },
+  {
+    market_id: 4,
+    base_account_address:
+      "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa",
+    base_module_name: "asset",
+    base_struct_name: "USDC",
+    quote_account_address: "0x1",
+    quote_module_name: "aptos_coin",
+    quote_struct_name: "AptosCoin",
+    tick_size: 10,
+    lot_size: 1000,
+  },
+  {
+    market_id: 10,
+    base_account_address:
+      "0xe4ccb6d39136469f376242c31b34d10515c8eaaa38092f804db8e08a8f53c5b2",
+    base_module_name: "assets_v1",
+    base_struct_name: "EchoCoin002",
+    quote_account_address:
+      "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa",
+    quote_module_name: "asset",
+    quote_struct_name: "USDT",
+    tick_size: 1,
+    lot_size: 1000000000,
+  },
+  {
+    market_id: 11,
+    base_account_address:
+      "0xe4ccb6d39136469f376242c31b34d10515c8eaaa38092f804db8e08a8f53c5b2",
+    base_module_name: "assets_v1",
+    base_struct_name: "EchoCoin002",
+    quote_account_address: "0x1",
+    quote_module_name: "aptos_coin",
+    quote_struct_name: "AptosCoin",
+    tick_size: 1,
+    lot_size: 1000000000,
+  },
+];
+
+const ECONIA_CONTRACT =
+  "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c";
+
 const TEXT_DECODER = new TextDecoder();
 
 function UserTransferOrInteractionRows({
@@ -113,6 +275,7 @@ type Swap = {
     | "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e" // "Thetis Market"
     | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba" // "Cetus 1"
     | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c"; // "Hyperion"
+    | "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c"; // "Econia"
   amountIn: number;
   amountOut: number;
   assetIn: string;
@@ -138,6 +301,47 @@ type ObjectTransfer = {
   to: string;
 };
 
+const parsers = [
+  parseTokenMintEvent,
+  parseTokenBurnEvent,
+  parseObjectTransferEvent,
+
+  // swap actions
+  parseThalaSwapV1Event,
+  parseThalaSwapV2Event,
+  (event: Types.Event) =>
+    parseLiquidswapV0Event(
+      event,
+      "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12", // Liquidswap v0
+    ),
+  (event: Types.Event) =>
+    parseLiquidswapV0Event(
+      event,
+      "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e", // Liquidswap v0.5
+    ),
+  (event: Types.Event) =>
+    parseBasicSwapEvent(
+      event,
+      "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa", // PancakeSwap
+    ),
+  (event: Types.Event) =>
+    parseBasicSwapEvent(
+      event,
+      "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c", // SushiSwap
+    ),
+  (event: Types.Event) =>
+    parseBasicSwapEvent(
+      event,
+      "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c", // AnimeSwap
+    ),
+  parseOrbicSwapEvent,
+  parseAuxEvent,
+  parseCellanaEvent,
+  parseThetisSwapEvent,
+  parseCetusSwapEvent,
+  parseHyperfluidSwapEvent,
+];
+
 function TransactionActionsRow({
   transaction,
 }: {
@@ -145,7 +349,44 @@ function TransactionActionsRow({
 }) {
   const events: Types.Event[] =
     "events" in transaction ? transaction.events : [];
-  const actions = events.map(getEventAction).filter((a) => a !== undefined);
+
+  const actions: EventAction[] = [];
+  const econiaState: EconiaState = {
+    orderID: undefined,
+    placeSwapOrder: undefined,
+    hasCancelOrder: false,
+    fills: [],
+  };
+
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+
+    // Try single-event parsers first
+    for (const parse of parsers) {
+      const result = parse(event);
+      if (result) {
+        actions.push(result);
+      }
+    }
+
+    // Try Econia parser
+    if (event.type.startsWith(ECONIA_CONTRACT)) {
+      const ready =
+        i === events.length - 1 ||
+        !events[i + 1].type.startsWith(ECONIA_CONTRACT) ||
+        events[i + 1].type !== `${ECONIA_CONTRACT}::user::FillEvent`;
+      const econiaResult = parseEconiaEvent(event, econiaState, ready);
+      if (econiaResult) {
+        actions.push(econiaResult);
+
+        // Reset Econia state
+        econiaState.orderID = undefined;
+        econiaState.placeSwapOrder = undefined;
+        econiaState.hasCancelOrder = false;
+        econiaState.fills = [];
+      }
+    }
+  }
 
   const {data: coinData} = useGetCoinList();
 
@@ -361,59 +602,6 @@ export default function UserTransactionOverviewTab({
       </ContentBox>
     </Box>
   );
-}
-
-// we define parse<...>Event(event: Types.Event) -> string | undefined
-// and getEventAction will simply go over the list of parse functions and return the first non-undefined result
-function getEventAction(event: Types.Event): EventAction | undefined {
-  const parsers = [
-    parseTokenMintEvent,
-    parseTokenBurnEvent,
-    parseObjectTransferEvent,
-    // swap actions
-    parseThalaSwapV1Event,
-    parseThalaSwapV2Event,
-    (event: Types.Event) =>
-      parseLiquidswapV0Event(
-        event,
-        "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12", // Liquidswap v0
-      ),
-    (event: Types.Event) =>
-      parseLiquidswapV0Event(
-        event,
-        "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e", // Liquidswap v0.5
-      ),
-    (event: Types.Event) =>
-      parseBasicSwapEvent(
-        event,
-        "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa", // PancakeSwap
-      ),
-    (event: Types.Event) =>
-      parseBasicSwapEvent(
-        event,
-        "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c", // SushiSwap
-      ),
-    (event: Types.Event) =>
-      parseBasicSwapEvent(
-        event,
-        "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c", // AnimeSwap
-      ),
-    parseOrbicSwapEvent,
-    parseAuxEvent,
-    parseCellanaEvent,
-    parseThetisSwapEvent,
-    parseCetusSwapEvent,
-    parseHyperionSwapEvent,
-  ];
-
-  for (const parse of parsers) {
-    const result = parse(event);
-    if (result !== undefined) {
-      return result;
-    }
-  }
-
-  return undefined;
 }
 
 const SwapActionContent = ({
@@ -970,6 +1158,104 @@ function parseHyperionSwapEvent(event: Types.Event): Swap | undefined {
     assetIn,
     assetOut,
   };
+}
+
+function parseEconiaEvent(
+  event: Types.Event,
+  state: EconiaState,
+  ready: boolean,
+): Swap | undefined {
+  if (!event.type.startsWith(ECONIA_CONTRACT)) {
+    return undefined;
+  }
+
+  if (event.type === `${ECONIA_CONTRACT}::market::PlaceSwapOrderEvent`) {
+    state.orderID = event.data.order_id as string;
+    state.placeSwapOrder = event;
+  } else if (event.type === `${ECONIA_CONTRACT}::user::CancelOrderEvent`) {
+    state.hasCancelOrder = true;
+  } else if (event.type === `${ECONIA_CONTRACT}::user::FillEvent`) {
+    state.fills.push(event);
+  }
+
+  if (!(state.placeSwapOrder && state.hasCancelOrder && ready))
+    return undefined;
+  const placeOrder: {
+    order_id: string;
+    // if true, sell base, otherwise buy base
+    direction: boolean;
+    market_id: string;
+    max_base: string;
+    max_quote: string;
+  } = state.placeSwapOrder.data;
+  const fills: {
+    market_id: string;
+    size: string;
+    price: string;
+    taker_quote_fees_paid: string;
+  }[] = state.fills.map((fill) => fill.data);
+
+  const baseMarket = ECONIA_MARKETS.find(
+    (market) => market.market_id === Number(placeOrder.market_id),
+  )!;
+  const quoteMarket = ECONIA_MARKETS.find(
+    (market) => market.market_id === Number(placeOrder.market_id),
+  )!;
+  const baseAsset = `${baseMarket.base_account_address}::${baseMarket.base_module_name}::${baseMarket.base_struct_name}`;
+  const quoteAsset = `${quoteMarket.quote_account_address}::${quoteMarket.quote_module_name}::${quoteMarket.quote_struct_name}`;
+  if (placeOrder.direction) {
+    // sell base asset
+    const soldBase = fills.reduce(
+      (sum, fill) => sum + BigInt(fill.size) * BigInt(baseMarket.lot_size),
+      0n,
+    );
+    const boughtQuote = fills.reduce(
+      (sum, fill) =>
+        sum +
+        (BigInt(fill.size) *
+          BigInt(fill.price) *
+          BigInt(quoteMarket.tick_size) -
+          BigInt(fill.taker_quote_fees_paid)),
+      0n,
+    );
+    // const remainedBase = BigInt(placeOrder.max_base) - soldBase;
+    const amountIn = Number(soldBase);
+    const amountOut = Number(boughtQuote);
+    return {
+      actionType: "swap",
+      dex: ECONIA_CONTRACT,
+      amountIn,
+      amountOut,
+      assetIn: baseAsset,
+      assetOut: quoteAsset,
+    };
+  } else {
+    // buy base asset
+    const boughtBase = fills.reduce(
+      (sum, fill) => sum + BigInt(fill.size) * BigInt(baseMarket.lot_size),
+      0n,
+    );
+    const soldQuote = fills.reduce(
+      (sum, fill) =>
+        sum +
+        (BigInt(fill.size) *
+          BigInt(fill.price) *
+          BigInt(quoteMarket.tick_size) +
+          BigInt(fill.taker_quote_fees_paid)),
+      0n,
+    );
+    // const remainedQuote = BigInt(placeOrder.max_quote) - soldQuote;
+    const amountIn = Number(soldQuote);
+    const amountOut = Number(boughtBase);
+    return {
+      actionType: "swap",
+      dex: ECONIA_CONTRACT,
+      amountIn,
+      amountOut,
+      assetIn: quoteAsset,
+      assetOut: baseAsset,
+    };
+  }
 }
 
 function convertCoinInfoToCoinType(coinInfo: {
