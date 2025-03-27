@@ -274,7 +274,7 @@ type Swap = {
     | "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1" // "Cellana Finance"
     | "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e" // "Thetis Market"
     | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba" // "Cetus 1"
-    | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c" // "Hyperfluid"
+    | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c"; // "Hyperion"
     | "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c"; // "Econia"
   amountIn: number;
   amountOut: number;
@@ -1129,7 +1129,7 @@ function parseCetusSwapEvent(event: Types.Event): Swap | undefined {
   };
 }
 
-function parseHyperfluidSwapEvent(event: Types.Event): Swap | undefined {
+function parseHyperionSwapEvent(event: Types.Event): Swap | undefined {
   if (
     event.type !==
     "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEvent"
