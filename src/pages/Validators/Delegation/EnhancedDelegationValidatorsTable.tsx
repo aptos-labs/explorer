@@ -103,7 +103,7 @@ function getSortedValidators(
     case "commission":
       sortedValidators.sort((a, b) => {
         const comparison = a.commission - b.commission;
-        return direction === "asc" ? comparison : -comparison;
+        return direction === "asc" ? -comparison : comparison;
       });
       break;
     case "delegator":
