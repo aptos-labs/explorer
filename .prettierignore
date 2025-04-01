@@ -8,3 +8,4 @@ robots.txt
 .gitattributes
 .editorconfig
 .node-version
+.npmrc
