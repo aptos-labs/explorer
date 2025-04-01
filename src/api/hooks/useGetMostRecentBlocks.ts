@@ -17,32 +17,32 @@ export function useGetMostRecentBlocks(
   });
   const currentBlockHeight = parseInt(start ?? ledgerData?.block_height ?? "");
 
-  const {isLoading: isLoading, data: blocks} = useQuery({
-    queryKey: ["block", currentBlockHeight, state.network_value],
-    queryFn: async () => {
-      if (currentBlockHeight !== undefined) {
-        return getRecentBlocks(currentBlockHeight, count, state.aptos_client);
-      }
-    },
-  });
+  // const {isLoading: isLoading, data: blocks} = useQuery({
+  //   queryKey: ["block", currentBlockHeight, state.network_value],
+  //   queryFn: async () => {
+  //     if (currentBlockHeight !== undefined) {
+  //       return 
+  //     }
+  //   },
+  // });
 
   useEffect(() => {
-    if (
-      currentBlockHeight !== undefined &&
-      !isLoadingLedgerData &&
-      !isLoading &&
-      blocks
-    ) {
-      setRecentBlocks(blocks);
+    async function fetchData() {
+      if (
+        currentBlockHeight !== undefined &&
+        !isLoadingLedgerData 
+      ) {
+        const blocks = await getRecentBlocks(currentBlockHeight, count, state.aptos_client);
+        setRecentBlocks(blocks);
+      }
     }
+    fetchData();
   }, [
     currentBlockHeight,
     state,
     count,
-    isLoadingLedgerData,
-    isLoading,
-    blocks,
+    isLoadingLedgerData
   ]);
 
-  return {recentBlocks, isLoading};
+  return {recentBlocks, isLoading: isLoadingLedgerData || recentBlocks.length < 1};
 }
