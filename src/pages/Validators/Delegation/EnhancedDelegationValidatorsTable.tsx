@@ -309,9 +309,9 @@ function CommissionCell({validator}: {validator: ValidatorWithExtendedData}) {
 
   // Color based on commission rate - higher is better
   const getCommissionColor = (rate: number) => {
-    if (rate >= 25) return theme.palette.success.main;
-    if (rate >= 15) return theme.palette.info.main;
-    if (rate >= 5) return theme.palette.warning.main;
+    if (rate <= 5) return theme.palette.success.main;
+    if (rate <= 7) return theme.palette.info.main;
+    if (rate <= 15) return theme.palette.warning.main;
     return theme.palette.error.main;
   };
 
