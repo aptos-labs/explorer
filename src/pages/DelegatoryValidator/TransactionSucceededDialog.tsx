@@ -4,7 +4,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid2,
+  Grid,
   Stack,
   Tooltip,
   Typography,
@@ -114,12 +114,12 @@ export default function TransactionSucceededDialog({
             paddingY: 2,
           }}
         >
-          <Grid2 size="grow">
+          <Grid size="grow">
             <Typography variant="caption">Transaction Address</Typography>
             <Typography variant="body2" style={{overflowWrap: "break-word"}}>
               {transactionHash}
             </Typography>
-          </Grid2>
+          </Grid>
           <Tooltip title="Copied" open={copyTooltipOpen}>
             <Button
               sx={{

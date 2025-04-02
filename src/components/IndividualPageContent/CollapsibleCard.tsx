@@ -1,5 +1,5 @@
 import React from "react";
-import {Stack, Typography, useTheme, Box, Grid2} from "@mui/material";
+import {Stack, Typography, useTheme, Box, Grid} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import {grey} from "../../themes/colors/aptosColorPalette";
@@ -39,18 +39,18 @@ export default function CollapsibleCard({
         }}
         onClick={toggleExpanded}
       >
-        <Grid2
+        <Grid
           container
           direction={{xs: "column", md: "row"}}
           rowSpacing={1}
           columnSpacing={4}
         >
-          <Grid2 size={{md: 3}}>
+          <Grid size={{md: 3}}>
             <Typography variant="body2" color={grey[450]}>
               {titleKey}
             </Typography>
-          </Grid2>
-          <Grid2
+          </Grid>
+          <Grid
             size={{md: 9}}
             width={{xs: 1, md: 0.75}}
             sx={{
@@ -66,8 +66,8 @@ export default function CollapsibleCard({
                 <ExpandMoreIcon fontSize="small" />
               )}
             </Stack>
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Box>
       {expanded && (
         <Box

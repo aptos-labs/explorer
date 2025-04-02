@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, Grid2} from "@mui/material";
+import {Box, Grid} from "@mui/material";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import EmptyValue from "./ContentValue/EmptyValue";
 
@@ -19,14 +19,14 @@ export default function ContentRow({
 }: ContentRowProps) {
   return (
     <Box>
-      <Grid2
+      <Grid
         container
         rowSpacing={0.5}
         columnSpacing={4}
         alignItems="start"
         key={i}
       >
-        <Grid2 container size={{xs: 12, sm: 3}}>
+        <Grid container size={{xs: 12, sm: 3}}>
           <Box sx={{fontSize: "0.875rem", color: grey[450]}}>
             {title}
             <Box
@@ -40,8 +40,8 @@ export default function ContentRow({
               <Box sx={{display: "inline-block"}}>{tooltip}</Box>
             </Box>
           </Box>
-        </Grid2>
-        <Grid2
+        </Grid>
+        <Grid
           size={{xs: 12, sm: 9}}
           sx={{
             fontSize: "0.8rem",
@@ -49,8 +49,8 @@ export default function ContentRow({
           }}
         >
           {value ? <Box>{value}</Box> : <EmptyValue />}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Box>
   );
 }

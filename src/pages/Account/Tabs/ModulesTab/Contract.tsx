@@ -10,7 +10,7 @@ import {
   InputTransactionData,
 } from "@aptos-labs/wallet-adapter-react";
 import {
-  Grid2,
+  Grid,
   Box,
   Typography,
   Divider,
@@ -131,8 +131,8 @@ function Contract({
   // so that the state of the form is reset.
   const contractFormKey = module?.name + ":" + fn?.name;
   return (
-    <Grid2 container spacing={2}>
-      <Grid2 size={{md: 3, xs: 12}}>
+    <Grid container spacing={2}>
+      <Grid size={{md: 3, xs: 12}}>
         <ContractSidebar
           selectedModuleName={selectedModuleName}
           selectedFnName={selectedFnName}
@@ -140,8 +140,8 @@ function Contract({
           getLinkToFn={getLinkToFn}
           isObject={isObject}
         />
-      </Grid2>
-      <Grid2 size={{md: 9, xs: 12}}>
+      </Grid>
+      <Grid size={{md: 9, xs: 12}}>
         <Box
           padding={4}
           bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
@@ -162,8 +162,8 @@ function Contract({
             </>
           )}
         </Box>
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }
 

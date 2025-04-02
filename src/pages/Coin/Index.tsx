@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {Grid2} from "@mui/material";
+import {Grid} from "@mui/material";
 import React from "react";
 import CoinTabs, {TabValue} from "./Tabs";
 import PageHeader from "../layout/PageHeader";
@@ -61,19 +61,19 @@ export default function CoinPage() {
   const tabValues = isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
 
   return (
-    <Grid2 container spacing={1}>
+    <Grid container spacing={1}>
       <LoadingModal open={isLoading} />
-      <Grid2 size={{xs: 12, md: 12, lg: 12}}>
+      <Grid size={{xs: 12, md: 12, lg: 12}}>
         <PageHeader />
-      </Grid2>
-      <Grid2 size={{xs: 12, md: 8, lg: 9}} alignSelf="center">
+      </Grid>
+      <Grid size={{xs: 12, md: 8, lg: 9}} alignSelf="center">
         <CoinTitle
           struct={struct}
           coinData={coinData}
           symbol={(data as CoinData)?.data?.symbol}
         />
-      </Grid2>
-      <Grid2 size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
+      </Grid>
+      <Grid size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
         {error ? (
           <>
             <CoinTabs
@@ -96,7 +96,7 @@ export default function CoinPage() {
             coinData={coinData}
           />
         )}
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }
