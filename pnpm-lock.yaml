@@ -7,10 +7,7 @@ settings:
 overrides:
   axios: ">=1.8.2"
   d3-color: ">=3.1.0"
-  esbuild: ">=0.25.0"
   prismjs: ">=1.30.0"
-  "@babel/runtime": ">=7.26.10"
-  "@babel/helpers": ">=7.26.10"
 
 importers:
   .:
