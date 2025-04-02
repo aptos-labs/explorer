@@ -54,8 +54,7 @@
     "react-router-dom": "^7.4.1",
     "react-simple-maps": "^3.0.0",
     "react-syntax-highlighter": "^15.6.1",
-    "rimosafe-plugin-wallet-adapter": "^0.0.4",
-    "statsig-react": "^2.1.0"
+    "rimosafe-plugin-wallet-adapter": "^0.0.4"
   },
   "scripts": {
     "start": "vite --port 3000",
