@@ -8,12 +8,13 @@
     "overrides": {
       "axios": ">=1.8.2",
       "d3-color": ">=3.1.0",
-      "prismjs": ">=1.30.0"
+      "prismjs": ">=1.30.0",
+      "@aptos-labs/ts-sdk": "1.38.0"
     }
   },
   "dependencies": {
     "@apollo/client": "^3.13.5",
-    "@aptos-labs/ts-sdk": "^1.37.1",
+    "@aptos-labs/ts-sdk": "1.38.0",
     "@aptos-labs/wallet-adapter-mui-design": "3.0.25",
     "@aptos-labs/wallet-adapter-react": "3.7.11",
     "@bitget-wallet/aptos-wallet-adapter": "^0.1.2",
@@ -34,7 +35,6 @@
     "@trustwallet/aptos-wallet-adapter": "^0.1.6",
     "@welldone-studio/aptos-wallet-adapter": "^0.1.5",
     "aptos": "^1.21.0",
-    "buffer": "^6.0.3",
     "chart.js": "^4.4.8",
     "js-sha3": "^0.9.3",
     "lodash": "^4.17.21",
