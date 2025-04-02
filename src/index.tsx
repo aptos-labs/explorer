@@ -3,7 +3,6 @@ import {createRoot} from "react-dom/client";
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
-import {StatsigProvider} from "statsig-react";
 
 import * as Sentry from "@sentry/react";
 
@@ -55,22 +54,10 @@ const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(
   <React.StrictMode>
-    <StatsigProvider
-      sdkKey={
-        import.meta.env.VITE_STATSIG_SDK_KEY ||
-        "client-gQ2Zhz3hNYRf6CSVaczkQcZfK0yUBv5ln42yCDzTwbr"
-      }
-      waitForInitialization={false}
-      options={{
-        environment: {tier: import.meta.env.MODE},
-      }}
-      user={{}}
-    >
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <ExplorerRoutes />
-        </BrowserRouter>
-      </QueryClientProvider>
-    </StatsigProvider>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <ExplorerRoutes />
+      </BrowserRouter>
+    </QueryClientProvider>
   </React.StrictMode>,
 );

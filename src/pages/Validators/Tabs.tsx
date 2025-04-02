@@ -3,7 +3,7 @@ import {Box} from "@mui/material";
 import {assertNever} from "../../utils";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
-import {useParams, useSearchParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {ValidatorsTable} from "./ValidatorsTable";
 import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
 import {Network, NetworkName} from "../../constants";
@@ -23,11 +23,11 @@ enum VALIDATORS_TAB_VALUE {
 function getTabLabel(value: VALIDATORS_TAB_VALUE): string {
   switch (value) {
     case VALIDATORS_TAB_VALUE.ALL_NODES:
-      return "ALL NODES";
+      return "All Nodes";
     case VALIDATORS_TAB_VALUE.DELEGATION_NODES:
-      return "DELEGATION NODES";
+      return "Delegation Nodes";
     case VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES:
-      return "ENHANCED DELEGATION";
+      return "Delegation (New Beta UI)";
     default:
       return assertNever(value);
   }
@@ -63,8 +63,6 @@ export default function ValidatorsPageTabs(): React.JSX.Element {
   const navigate = useNavigate();
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
-  const [searchParams] = useSearchParams();
-  const showEnhancedTab = searchParams.get("showEnhanced") === "true";
 
   const value =
     tab === undefined
@@ -72,21 +70,17 @@ export default function ValidatorsPageTabs(): React.JSX.Element {
       : (tab as VALIDATORS_TAB_VALUE);
 
   // Define tab values based on URL parameter
-  const tabValues = showEnhancedTab
-    ? [
-        VALIDATORS_TAB_VALUE.ALL_NODES,
-        VALIDATORS_TAB_VALUE.DELEGATION_NODES,
-        VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES,
-      ]
-    : [VALIDATORS_TAB_VALUE.ALL_NODES, VALIDATORS_TAB_VALUE.DELEGATION_NODES];
+  const tabValues = [
+    VALIDATORS_TAB_VALUE.ALL_NODES,
+    VALIDATORS_TAB_VALUE.DELEGATION_NODES,
+    VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES,
+  ];
 
   const handleChange = (
     _event: React.SyntheticEvent,
     newValue: VALIDATORS_TAB_VALUE,
   ) => {
-    navigate(
-      `/validators/${newValue}${showEnhancedTab ? "?showEnhanced=true" : ""}`,
-    );
+    navigate(`/validators/${newValue}`);
     logEvent("validators_tab_clicked", newValue, {
       wallet_address: account?.address ?? "",
       wallet_name: wallet?.name ?? "",
