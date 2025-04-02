@@ -3,7 +3,7 @@ import {
   TextField,
   Box,
   Divider,
-  Grid2,
+  Grid,
   Stack,
   Typography,
   useMediaQuery,
@@ -79,16 +79,16 @@ function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
   }
 
   return (
-    <Grid2 container spacing={2}>
-      <Grid2 size={{md: 3, xs: 12}}>
+    <Grid container spacing={2}>
+      <Grid size={{md: 3, xs: 12}}>
         <ModuleSidebar
           sortedPackages={sortedPackages}
           selectedModuleName={selectedModuleName}
           getLinkToModule={getLinkToModule}
           navigateToModule={navigateToModule}
         />
-      </Grid2>
-      <Grid2 size={{md: 9, xs: 12}}>
+      </Grid>
+      <Grid size={{md: 9, xs: 12}}>
         {selectedModule === undefined ? (
           <EmptyTabContent
             message={`No module found with name: ${selectedModuleName}`}
@@ -100,8 +100,8 @@ function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
             bytecode={selectedModule.source}
           />
         )}
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }
 

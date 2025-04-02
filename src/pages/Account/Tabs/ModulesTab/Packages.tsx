@@ -3,7 +3,7 @@ import {
   TextField,
   Box,
   Divider,
-  Grid2,
+  Grid,
   Stack,
   Typography,
   useMediaQuery,
@@ -76,16 +76,16 @@ function Packages({address, isObject}: {address: string; isObject: boolean}) {
   }
 
   return (
-    <Grid2 container spacing={2}>
-      <Grid2 size={{md: 3, xs: 12}}>
+    <Grid container spacing={2}>
+      <Grid size={{md: 3, xs: 12}}>
         <PackagesSidebar
           sortedPackages={sortedPackages}
           selectedPackageName={selectedPackageName}
           getLinkToPackage={getLinkToPackage}
           navigateToPackage={navigateToPackage}
         />
-      </Grid2>
-      <Grid2 size={{md: 9, xs: 12}}>
+      </Grid>
+      <Grid size={{md: 9, xs: 12}}>
         {selectedPackage === undefined ? (
           <EmptyTabContent
             message={`No package found with name: ${selectedPackageName}`}
@@ -97,8 +97,8 @@ function Packages({address, isObject}: {address: string; isObject: boolean}) {
             packageName={selectedPackageName}
           />
         )}
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }
 
