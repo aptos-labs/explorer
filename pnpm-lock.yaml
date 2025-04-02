@@ -7,10 +7,7 @@ settings:
 overrides:
   axios: ">=1.8.2"
   d3-color: ">=3.1.0"
-  esbuild: ">=0.25.0"
   prismjs: ">=1.30.0"
-  "@babel/runtime": ">=7.26.10"
-  "@babel/helpers": ">=7.26.10"
 
 importers:
   .:
@@ -81,6 +78,9 @@ importers:
       aptos:
         specifier: ^1.21.0
         version: 1.21.0
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
       chart.js:
         specifier: ^4.4.8
         version: 4.4.8
@@ -8202,7 +8202,7 @@ snapshots:
   axios@1.8.4:
     dependencies:
       follow-redirects: 1.15.9
-      form-data: 4.0.0
+      form-data: 4.0.2
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug

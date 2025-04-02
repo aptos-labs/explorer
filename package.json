@@ -8,10 +8,7 @@
     "overrides": {
       "axios": ">=1.8.2",
       "d3-color": ">=3.1.0",
-      "esbuild": ">=0.25.0",
-      "prismjs": ">=1.30.0",
-      "@babel/runtime": ">=7.26.10",
-      "@babel/helpers": ">=7.26.10"
+      "prismjs": ">=1.30.0"
     }
   },
   "dependencies": {
@@ -37,6 +34,7 @@
     "@trustwallet/aptos-wallet-adapter": "^0.1.6",
     "@welldone-studio/aptos-wallet-adapter": "^0.1.5",
     "aptos": "^1.21.0",
+    "buffer": "^6.0.3",
     "chart.js": "^4.4.8",
     "js-sha3": "^0.9.3",
     "lodash": "^4.17.21",
