@@ -37,6 +37,7 @@
     "@trustwallet/aptos-wallet-adapter": "^0.1.6",
     "@welldone-studio/aptos-wallet-adapter": "^0.1.5",
     "aptos": "^1.21.0",
+    "buffer": "^6.0.3",
     "chart.js": "^4.4.8",
     "js-sha3": "^0.9.3",
     "lodash": "^4.17.21",
