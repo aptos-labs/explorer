@@ -11,12 +11,8 @@ import {
 } from "../../global-config/GlobalConfig";
 import {ProvideColorMode} from "../../context";
 import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
-import {
-  AptosWalletAdapterProvider,
-  NetworkName,
-} from "@aptos-labs/wallet-adapter-react";
+import {AptosWalletAdapterProvider} from "@aptos-labs/wallet-adapter-react";
 import {BitgetWallet} from "@bitget-wallet/aptos-wallet-adapter";
-import {BloctoWallet} from "@blocto/aptos-wallet-adapter-plugin";
 import {MartianWallet} from "@martianwallet/aptos-wallet-adapter";
 import {PontemWallet} from "@pontem/wallet-adapter-plugin";
 import {RiseWallet} from "@rise-wallet/wallet-adapter";
@@ -55,11 +51,6 @@ function ExplorerWalletAdapterProvider({children}: LayoutProps) {
       trustWallet,
       tokenPocketWallet,
       martianWallet,
-      // Blocto supports Testnet/Mainnet for now.
-      new BloctoWallet({
-        network: NetworkName.Testnet,
-        bloctoAppId: "6d85f56e-5f2e-46cd-b5f2-5cf9695b4d46",
-      }),
       welldoneWallet,
       riseWallet,
     ],

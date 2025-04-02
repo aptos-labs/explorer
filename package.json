@@ -19,7 +19,6 @@
     "@aptos-labs/wallet-adapter-mui-design": "3.0.25",
     "@aptos-labs/wallet-adapter-react": "3.7.11",
     "@bitget-wallet/aptos-wallet-adapter": "^0.1.2",
-    "@blocto/aptos-wallet-adapter-plugin": "^0.2.11",
     "@download/blockies": "^1.0.3",
     "@martianwallet/aptos-wallet-adapter": "^0.0.5",
     "@msafe/aptos-wallet-adapter": "^1.1.4",
