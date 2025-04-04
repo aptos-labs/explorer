@@ -10,7 +10,7 @@
       "d3-color": ">=3.1.0",
       "prismjs": ">=1.30.0",
       "@aptos-labs/ts-sdk": "1.38.0",
-      "glob": "^9"
+      "glob": "^11.0.0"
     }
   },
   "dependencies": {
