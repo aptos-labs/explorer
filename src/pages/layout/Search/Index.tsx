@@ -560,7 +560,6 @@ export default function HeaderSearch() {
       handleHomeEndKeys
       forcePopupIcon={false}
       selectOnFocus={true}
-      freeSolo
       clearOnBlur
       autoSelect={false}
       getOptionLabel={() => ""}
