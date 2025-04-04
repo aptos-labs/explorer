@@ -42,6 +42,7 @@ import StyledTooltip from "../../../../components/StyledTooltip";
 import {encodeInputArgsForViewRequest, sortPetraFirst} from "../../../../utils";
 import {accountPagePath} from "../../Index";
 import {parseTypeTag} from "@aptos-labs/ts-sdk";
+import {WalletDeprecationBanner} from "../../../../components/WalletDeprecationBanner";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -142,6 +143,7 @@ function Contract({
         />
       </Grid>
       <Grid size={{md: 9, xs: 12}}>
+        <WalletDeprecationBanner />
         <Box
           padding={4}
           bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}

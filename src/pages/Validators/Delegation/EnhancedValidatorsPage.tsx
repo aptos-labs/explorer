@@ -4,11 +4,11 @@ import {useGlobalState} from "../../../global-config/GlobalConfig";
 import PageHeader from "../../layout/PageHeader";
 import EnhancedValidatorsPageTabs from "./EnhancedTabs";
 import ValidatorsMap from "../ValidatorsMap";
-import {CommissionChangeBanner} from "../CommissionChangeBanner";
 import {usePageMetadata} from "../../../components/hooks/usePageMetadata";
 import {Network} from "../../../constants";
 import {useNavigate} from "../../../routing";
 import {OutOfCommissionPoolsBanner} from "../../../components/OutOfCommissionPoolsBanner";
+import {WalletDeprecationBanner} from "../../../components/WalletDeprecationBanner";
 
 export default function EnhancedValidatorsPage() {
   const [state] = useGlobalState();
@@ -32,8 +32,8 @@ export default function EnhancedValidatorsPage() {
       <Typography variant="h3" marginBottom={2}>
         Validators
       </Typography>
-      <CommissionChangeBanner />
       <OutOfCommissionPoolsBanner />
+      <WalletDeprecationBanner />
       {state.network_name === "mainnet" && <ValidatorsMap />}
       <EnhancedValidatorsPageTabs />
     </Box>
