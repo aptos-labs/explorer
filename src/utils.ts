@@ -1,4 +1,3 @@
-import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
 import {Types} from "aptos";
 import pako from "pako";
 import {AccountAddress, AccountAddressInput, Hex} from "@aptos-labs/ts-sdk";
@@ -261,7 +260,7 @@ function assertType(val: any, types: string[] | string, message?: string) {
 }
 
 /** A wallet sort function to ensure that Petra is always at the top of the wallet list. */
-export function sortPetraFirst(a: AnyAptosWallet) {
+export function sortPetraFirst(a: {name: string}) {
   return a.name === "Petra" ? -1 : 1;
 }
 

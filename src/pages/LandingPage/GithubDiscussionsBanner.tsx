@@ -26,7 +26,7 @@ export function GithubDiscussionsBanner() {
   const handleClick = () => {
     setOpen(!open);
     logEvent("github_discussions_banner_clicked", null, {
-      wallet_address: account?.address ?? "",
+      wallet_address: account?.address?.toStringLong() ?? "",
       wallet_name: wallet?.name ?? "",
     });
     window.open(GITHUB_DISCUSSION_URL, "_blank");
