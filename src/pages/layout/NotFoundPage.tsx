@@ -1,5 +1,5 @@
 import React from "react";
-import {Card, CardContent, Box, Typography, Grid2} from "@mui/material";
+import {Card, CardContent, Box, Typography, Grid} from "@mui/material";
 
 const bull = (
   <Box
@@ -12,14 +12,14 @@ const bull = (
 
 export default function NotFoundPage() {
   return (
-    <Grid2
+    <Grid
       container
       spacing={0}
       direction="column"
       style={{alignItems: "center"}}
       sx={{mt: 3}}
     >
-      <Grid2 size={{xs: 2}}>
+      <Grid size={{xs: 2}}>
         <Card>
           <CardContent>
             <Typography sx={{fontSize: 14}} color="text.secondary" gutterBottom>
@@ -36,7 +36,7 @@ export default function NotFoundPage() {
             </Typography>
           </CardContent>
         </Card>
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }

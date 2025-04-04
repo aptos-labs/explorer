@@ -1,5 +1,5 @@
 import React from "react";
-import {Grid2, Stack} from "@mui/material";
+import {Grid, Stack} from "@mui/material";
 import {ValidatorGeoMetric} from "../../../api/hooks/useGetValidatorsGeoData";
 import EpochSection from "./Epoch";
 import StakingSection from "./Staking";
@@ -17,7 +17,7 @@ export default function MapMetrics({
   isSkeletonLoading,
 }: MapMetricsProps) {
   return isOnMobile ? (
-    <Grid2
+    <Grid
       container
       direction="row"
       marginX={2}
@@ -25,19 +25,19 @@ export default function MapMetrics({
       marginBottom={4}
       spacing={2}
     >
-      <Grid2 size={{xs: 12, sm: 6}}>
+      <Grid size={{xs: 12, sm: 6}}>
         <NodeCountsSection
           validatorGeoMetric={validatorGeoMetric}
           isSkeletonLoading={isSkeletonLoading}
         />
-      </Grid2>
-      <Grid2 size={{xs: 12, sm: 6}}>
+      </Grid>
+      <Grid size={{xs: 12, sm: 6}}>
         <EpochSection isSkeletonLoading={isSkeletonLoading} />
-      </Grid2>
-      <Grid2 size={{xs: 12, sm: 6}}>
+      </Grid>
+      <Grid size={{xs: 12, sm: 6}}>
         <StakingSection isSkeletonLoading={isSkeletonLoading} />
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   ) : (
     <Stack
       marginY={4}

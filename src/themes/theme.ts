@@ -1,6 +1,5 @@
 import {PaletteMode} from "@mui/material";
 import {ThemeOptions} from "@mui/material/styles";
-import "@mui/material/styles/createPalette";
 import {alpha} from "@mui/material";
 import {
   grey,

@@ -3,9 +3,9 @@ import {useGlobalState} from "../../global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
 import ValidatorsPageTabs from "./Tabs";
 import ValidatorsMap from "./ValidatorsMap";
-import {CommissionChangeBanner} from "./CommissionChangeBanner";
 import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 import {OutOfCommissionPoolsBanner} from "../../components/OutOfCommissionPoolsBanner";
+import {WalletDeprecationBanner} from "../../components/WalletDeprecationBanner";
 
 export default function ValidatorsPage() {
   const [state] = useGlobalState();
@@ -19,7 +19,7 @@ export default function ValidatorsPage() {
         Validators
       </Typography>
       <OutOfCommissionPoolsBanner />
-      <CommissionChangeBanner />
+      <WalletDeprecationBanner />
       {state.network_name === "mainnet" && <ValidatorsMap />}
       <ValidatorsPageTabs />
     </Box>

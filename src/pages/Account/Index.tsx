@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import {Grid2} from "@mui/material";
+import {Grid} from "@mui/material";
 import React, {useEffect} from "react";
 import AccountTabs, {TabValue} from "./Tabs";
 import AccountTitle from "./Title";
@@ -144,26 +144,26 @@ export default function AccountPage({
   );
 
   return (
-    <Grid2 container spacing={1}>
+    <Grid container spacing={1}>
       <LoadingModal open={isLoading} />
-      <Grid2 size={{xs: 12, md: 12, lg: 12}}>
+      <Grid size={{xs: 12, md: 12, lg: 12}}>
         <PageHeader />
-      </Grid2>
-      <Grid2 size={{xs: 12, md: 8, lg: 9}} alignSelf="center">
+      </Grid>
+      <Grid size={{xs: 12, md: 8, lg: 9}} alignSelf="center">
         <AccountTitle
           address={address}
           isObject={isObject}
           isDeleted={isDeleted}
           isToken={isToken}
         />
-      </Grid2>
-      <Grid2 size={{xs: 12, md: 4, lg: 3}} marginTop={{md: 0, xs: 2}}>
+      </Grid>
+      <Grid size={{xs: 12, md: 4, lg: 3}} marginTop={{md: 0, xs: 2}}>
         <BalanceCard address={address} />
-      </Grid2>
-      <Grid2 size={{xs: 12, md: 8, lg: 12}} marginTop={4} alignSelf="center">
+      </Grid>
+      <Grid size={{xs: 12, md: 8, lg: 12}} marginTop={4} alignSelf="center">
         {state.network_name === Network.MAINNET && <AptosNamesBanner />}
-      </Grid2>
-      <Grid2 size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
+      </Grid>
+      <Grid size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
         {error ? (
           <>
             {accountTabs}
@@ -172,7 +172,7 @@ export default function AccountPage({
         ) : (
           <>{accountTabs}</>
         )}
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }
