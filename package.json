@@ -2,14 +2,15 @@
   "name": "aptos-explorer",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@10.7.1",
+  "packageManager": "pnpm@10.8.0",
   "type": "module",
   "pnpm": {
     "overrides": {
+      "@aptos-labs/aptos-client": "^1.1.0",
+      "@aptos-labs/ts-sdk": "1.38.0",
       "axios": ">=1.8.2",
       "d3-color": ">=3.1.0",
       "prismjs": ">=1.30.0",
-      "@aptos-labs/ts-sdk": "1.38.0",
       "glob": "^11.0.0"
     }
   },
@@ -30,7 +31,7 @@
     "@pontem/wallet-adapter-plugin": "^0.2.1",
     "@rise-wallet/wallet-adapter": "^0.1.2",
     "@sentry/react": "^9.11.0",
-    "@tanstack/react-query": "^5.71.10",
+    "@tanstack/react-query": "^5.72.0",
     "@tp-lab/aptos-wallet-adapter": "^1.0.1",
     "@trustwallet/aptos-wallet-adapter": "^0.1.6",
     "@welldone-studio/aptos-wallet-adapter": "^0.1.5",
@@ -51,7 +52,7 @@
     "react-json-view": "^1.21.3",
     "react-loading-skeleton": "^3.5.0",
     "react-number-format": "^5.4.3",
-    "react-router-dom": "^7.4.1",
+    "react-router-dom": "^7.5.0",
     "react-simple-maps": "^3.0.0",
     "react-syntax-highlighter": "^15.6.1",
     "rimosafe-plugin-wallet-adapter": "^0.0.4"
@@ -95,10 +96,10 @@
     "@types/react-gtm-module": "^2.0.4",
     "@types/react-simple-maps": "^3.0.6",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "@typescript-eslint/eslint-plugin": "^8.29.0",
-    "@typescript-eslint/parser": "^8.29.0",
+    "@typescript-eslint/eslint-plugin": "^8.29.1",
+    "@typescript-eslint/parser": "^8.29.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "eslint": "^9.23.0",
+    "eslint": "^9.24.0",
     "eslint-plugin-html": "^8.1.2",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
@@ -107,7 +108,7 @@
     "lint-staged": "^15.5.0",
     "prettier": "^3.5.3",
     "ts-results": "^3.3.0",
-    "typescript": "^5.8.2",
+    "typescript": "^5.8.3",
     "vite": "^6.2.5",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^3.1.1"
