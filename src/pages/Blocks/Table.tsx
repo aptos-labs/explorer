@@ -152,6 +152,10 @@ export default function BlocksTable({
   blocks,
   columns = DEFAULT_COLUMNS,
 }: BlocksTableProps) {
+  // TODO: Fix this better than this change here, this seems to be a bug elsewhere that I'm trying to fix on first load of page
+  if (!Array.isArray(blocks)) {
+    blocks = [blocks];
+  }
   return (
     <Table>
       <TableHead>
@@ -162,9 +166,10 @@ export default function BlocksTable({
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {blocks.map((block: Types.Block, i: number) => {
-          return <BlockRow key={i} block={block} columns={columns} />;
-        })}
+        {blocks &&
+          blocks.map((block: Types.Block, i: number) => {
+            return <BlockRow key={i} block={block} columns={columns} />;
+          })}
       </GeneralTableBody>
     </Table>
   );
