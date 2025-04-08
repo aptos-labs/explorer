@@ -153,7 +153,9 @@ export default function BlocksTable({
   columns = DEFAULT_COLUMNS,
 }: BlocksTableProps) {
   // TODO: Fix this better than this change here, this seems to be a bug elsewhere that I'm trying to fix on first load of page
-  if (!Array.isArray(blocks)) {
+  if (blocks == null) {
+    blocks = [];
+  } else if (!Array.isArray(blocks)) {
     blocks = [blocks];
   }
   return (
