@@ -149,7 +149,7 @@ export const scamAddresses: Record<string, string> = {
 // have functionality used elsewhere
 export const HardCodedCoins: Record<string, CoinDescription> = {
   "0x1::aptos_coin::AptosCoin": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: "0x1::aptos_coin::AptosCoin",
     faAddress: "0x1::aptos_coin::AptosCoin",
     name: "MOVE Coin",
@@ -173,7 +173,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     native: true,
   },
   "0x000000000000000000000000000000000000000000000000000000000000000a": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: "0xa",
     faAddress: "0xa",
     name: "MOVE Coin",
@@ -197,7 +197,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     native: true,
   },
   "0x447721a30109c662dde9c73a0c2c9c9c459fb5e5a9c92f03c50fa69737f5d08d": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0x447721a30109c662dde9c73a0c2c9c9c459fb5e5a9c92f03c50fa69737f5d08d",
@@ -221,7 +221,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0x83121c9f9b0527d1f056e21a950d6bf3b9e9e2e8353d0e95ccea726713cbea39": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0x83121c9f9b0527d1f056e21a950d6bf3b9e9e2e8353d0e95ccea726713cbea39",
@@ -245,7 +245,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0x908828f4fb0213d4034c3ded1630bbd904e8a3a6bf3c63270887f0b06653a376": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0x908828f4fb0213d4034c3ded1630bbd904e8a3a6bf3c63270887f0b06653a376",
@@ -269,7 +269,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0xb06f29f24dde9c6daeec1f930f14a441a8d6c0fbea590725e88b340af3e1939c": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0xb06f29f24dde9c6daeec1f930f14a441a8d6c0fbea590725e88b340af3e1939c",
@@ -293,7 +293,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0x527c43638a6c389a9ad702e7085f31c48223624d5102a5207dfab861f482c46d": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0x527c43638a6c389a9ad702e7085f31c48223624d5102a5207dfab861f482c46d",
@@ -317,7 +317,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0x0658f4ef6f76c8eeffdc06a30946f3f06723a7f9532e2413312b2a612183759c": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0x0658f4ef6f76c8eeffdc06a30946f3f06723a7f9532e2413312b2a612183759c",
@@ -341,7 +341,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0x95c0fd13373299ada1b9f09ff62473ab8b3908e6a30011730210c141dffdc990": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0x95c0fd13373299ada1b9f09ff62473ab8b3908e6a30011730210c141dffdc990",
@@ -365,7 +365,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0xff91f0df99b217436229b85ae900a2b67970eda92a88b06eb305949ec9828ed6": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0xff91f0df99b217436229b85ae900a2b67970eda92a88b06eb305949ec9828ed6",
@@ -389,7 +389,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0x2f6af255328fe11b88d840d1e367e946ccd16bd7ebddd6ee7e2ef9f7ae0c53ef": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0x2f6af255328fe11b88d840d1e367e946ccd16bd7ebddd6ee7e2ef9f7ae0c53ef",
@@ -413,7 +413,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0x51ffc9885233adf3dd411078cad57535ed1982013dc82d9d6c433a55f2e0035d": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0x51ffc9885233adf3dd411078cad57535ed1982013dc82d9d6c433a55f2e0035d",
@@ -437,7 +437,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0xe956f5062c3b9cba00e82dc775d29acf739ffa1e612e619062423b58afdbf035": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0xe956f5062c3b9cba00e82dc775d29acf739ffa1e612e619062423b58afdbf035",
@@ -461,7 +461,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0xe4354602aa4311f36240dd57f3f3435ffccdbd0cd2963f1a69da39a2dbcd59b5": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0xe4354602aa4311f36240dd57f3f3435ffccdbd0cd2963f1a69da39a2dbcd59b5",
@@ -485,7 +485,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraTags: ["Native"],
   },
   "0xbf2efbffbbd7083aaf006379d96b866b73bb4eb9684a7504c62feafe670962c2": {
-    chainId: 1,
+    chainId: 126,
     tokenAddress: null,
     faAddress:
       "0xbf2efbffbbd7083aaf006379d96b866b73bb4eb9684a7504c62feafe670962c2",
@@ -503,6 +503,54 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     panoraIndex: 5,
     coinGeckoId: "staked-frax-usd",
     coinMarketCapId: 36038,
+    native: true,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Native"],
+  },
+  "0x9d146a4c9472a7e7b0dbc72da0eafb02b54173a956ef22a9fba29756f8661c6c": {
+    chainId: 126,
+    tokenAddress: null,
+    faAddress:
+      "0x9d146a4c9472a7e7b0dbc72da0eafb02b54173a956ef22a9fba29756f8661c6c",
+    name: "USDe",
+    symbol: "USDe",
+    decimals: 6,
+    bridge: "LayerZero",
+    logoUrl: "https://arweave.net/qeSnRm_FIyp_khPfmg8o1zQeGO4AczDaEKe8jEUOzL4",
+    websiteUrl: "https://ethena.fi",
+    coinGeckoId: "ethena-usde",
+    coinMarketCapId: 29470,
+    panoraSymbol: null,
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 5,
+    panoraIndex: 5,
+    native: true,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Native"],
+  },
+  "0x74f0c7504507f7357f8a218cc70ce3fc0f4b4e9eb8474e53ca778cb1e0c6dcc5": {
+    chainId: 126,
+    tokenAddress: null,
+    faAddress:
+      "0x74f0c7504507f7357f8a218cc70ce3fc0f4b4e9eb8474e53ca778cb1e0c6dcc5",
+    name: "Staked USDe",
+    symbol: "sUSDe",
+    decimals: 6,
+    bridge: "LayerZero",
+    logoUrl: "https://arweave.net/iY7Aj5iwHKDIDL0m7QxeQN2URRrphWRpdKPJjE8fcaQ",
+    websiteUrl: "https://ethena.fi",
+    coinGeckoId: "ethena-staked-usde",
+    coinMarketCapId: 29471,
+    panoraSymbol: null,
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 5,
+    panoraIndex: 5,
     native: true,
     panoraUI: false,
     usdPrice: null,
@@ -541,7 +589,9 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0x51ffc9885233adf3dd411078cad57535ed1982013dc82d9d6c433a55f2e0035d": "rsETH",
   "0xe956f5062c3b9cba00e82dc775d29acf739ffa1e612e619062423b58afdbf035": "weETH",
   "0xe4354602aa4311f36240dd57f3f3435ffccdbd0cd2963f1a69da39a2dbcd59b5": "frxUSD",
-  "0xbf2efbffbbd7083aaf006379d96b866b73bb4eb9684a7504c62feafe670962c2": "sfrxUSD"
+  "0xbf2efbffbbd7083aaf006379d96b866b73bb4eb9684a7504c62feafe670962c2": "sfrxUSD",
+  "0x9d146a4c9472a7e7b0dbc72da0eafb02b54173a956ef22a9fba29756f8661c6c": "USDe",
+  "0x74f0c7504507f7357f8a218cc70ce3fc0f4b4e9eb8474e53ca778cb1e0c6dcc5": "sUSDe"
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const MARKED_AS_POSSIBLE_SCAM = "Marked as possible scam";
