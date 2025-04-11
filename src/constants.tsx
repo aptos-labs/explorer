@@ -794,6 +794,10 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0xc546cc2dd26d9e9a4516b4514288bedf1085259fcb106b84b6469337f527fb92": "PACT",
   "0xed18be0ea061c29dbbd2d22e9eb6bc61fde0babd1579c169bdd1d4f74730c419": "EXPO",
   "0xc9a5d270bb8bb47e7bb34377ceb529db2878e4a7b521b5b8a984b35f8feaa8e2": "RWD",
+  "0x726ccb3c1ac023b3b24f9f2fc4c07b16f6e26f21b978651fde271767e0b641c4": "rKGEN",
+  "0xb36527754eb54d7ff55daf13bcb54b42b88ec484bd6f0e3b2e0d1db169de6451": "AMI",
+  "0x2ebb2ccac5e027a87fa0e2e5f656a3a4238d6a48d93ec9b610d570fc0aa0df12": "CELL",
+  "0xeedba439a4ab8987a995cf5cfefebd713000b3365718a29dfbc36bc214445fb8": "VIBE"
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const labsBannedTokens: Record<string, string> = {
