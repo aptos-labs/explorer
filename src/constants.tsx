@@ -299,6 +299,7 @@ export const knownAddresses: Record<string, string> = {
   "0x8d2d7bcde13b2513617df3f98cdd5d0e4b9f714c6308b9204fe18ad900d92609":
     "Chingari",
   "0xf6391863cca7d50afc4c998374645c8306e92988c93c6eb4b56972dd571f8467": "Kade",
+  "0xf8d07848ad4937cb96ac14132ff8ce68223ab82cb7b3aa05bc6f78f7e2068a30": "Expo Passport",
   // Games
   "0x6d138096fb880d1c16b48f10686b98a96000c0ac18501425378f784c6b81c34d":
     "Eragon",
@@ -306,19 +307,27 @@ export const knownAddresses: Record<string, string> = {
   "0x08afb046f44dd0cb9c445458f9c2e424759cd11f4a270fe6739dcffc16a4db8e":
     "Slime Revolution",
   "0x5a96fab415f43721a44c5a761ecfcccc3dae9c21f34313f0e594b49d8d4564f4": "KGeN",
+  "0x2387f5f16330dbb0236b1776a0d86c7a4901daaa25cd61ecb33709e025d3172f": "KGeN",
   "0x09d518b9b84f327eafc5f6632200ea224a818a935ffd6be5d78ada250bbc44a6":
     "Supervillain Labs",
   "0x34ca84470e8d2907562f9a2f144c6c780282953b8b025ba220b0ecc5fc0aead9":
     "STAN app",
+  "0xe63780c1d8f66aa2a5f30cc920af21fc82c4707225756c765bd12a2f7da61383": "Balance fun"
   // Fungible assets
   "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "USDt",
   "0xf73e887a8754f540ee6e1a93bdc6dde2af69fc7ca5de32013e89dd44244473cb":
     "USDt contract",
+  "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b": "USDC",
+  "0xe5c5befe31ce06bc1f2fd31210988aac08af6d821b039935557a6f14c03471be": "USDC contract",
   // Other
   "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387": "Pyth", // oracle
   "0x07d7e436f0b2aafde60774efb26ccc432cf881b677aca7faaf2a01879bd19fb8":
     "Switchboard", // oracle
+  "0xfea54925b5ac1912331e2e62049849b37842efaea298118b66f85a59057752b8":
+    "Switchboard", // oracle
   "0xfb7ebc84ce674c3c1f7a789a30084d2227056982fb430dfd8b18c8f7737f4f57":
+    "Chainlink", // oracle
+  "0x9976bb288ed9177b542d568fa1ac386819dc99141630e582315804840f41928a":
     "Chainlink", // oracle
   "0x5a0ad9e31a2f452504429b6f7073cb325994c2c66204f5deb8e0561a9e950c3c": "Tevi",
   "0x541e28fb12aa661a30358f2bebcd44460187ec918cb9cee075c2db86ee6aed93":
