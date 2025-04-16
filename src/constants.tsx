@@ -299,7 +299,8 @@ export const knownAddresses: Record<string, string> = {
   "0x8d2d7bcde13b2513617df3f98cdd5d0e4b9f714c6308b9204fe18ad900d92609":
     "Chingari",
   "0xf6391863cca7d50afc4c998374645c8306e92988c93c6eb4b56972dd571f8467": "Kade",
-  "0xf8d07848ad4937cb96ac14132ff8ce68223ab82cb7b3aa05bc6f78f7e2068a30": "Expo Passport",
+  "0xf8d07848ad4937cb96ac14132ff8ce68223ab82cb7b3aa05bc6f78f7e2068a30":
+    "Expo Passport",
   // Games
   "0x6d138096fb880d1c16b48f10686b98a96000c0ac18501425378f784c6b81c34d":
     "Eragon",
@@ -312,13 +313,15 @@ export const knownAddresses: Record<string, string> = {
     "Supervillain Labs",
   "0x34ca84470e8d2907562f9a2f144c6c780282953b8b025ba220b0ecc5fc0aead9":
     "STAN app",
-  "0xe63780c1d8f66aa2a5f30cc920af21fc82c4707225756c765bd12a2f7da61383": "Balance fun"
+  "0xe63780c1d8f66aa2a5f30cc920af21fc82c4707225756c765bd12a2f7da61383":
+    "Balance fun",
   // Fungible assets
   "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "USDt",
   "0xf73e887a8754f540ee6e1a93bdc6dde2af69fc7ca5de32013e89dd44244473cb":
     "USDt contract",
   "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b": "USDC",
-  "0xe5c5befe31ce06bc1f2fd31210988aac08af6d821b039935557a6f14c03471be": "USDC contract",
+  "0xe5c5befe31ce06bc1f2fd31210988aac08af6d821b039935557a6f14c03471be":
+    "USDC contract",
   // Other
   "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387": "Pyth", // oracle
   "0x07d7e436f0b2aafde60774efb26ccc432cf881b677aca7faaf2a01879bd19fb8":
@@ -806,7 +809,7 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0x726ccb3c1ac023b3b24f9f2fc4c07b16f6e26f21b978651fde271767e0b641c4": "rKGEN",
   "0xb36527754eb54d7ff55daf13bcb54b42b88ec484bd6f0e3b2e0d1db169de6451": "AMI",
   "0x2ebb2ccac5e027a87fa0e2e5f656a3a4238d6a48d93ec9b610d570fc0aa0df12": "CELL",
-  "0xeedba439a4ab8987a995cf5cfefebd713000b3365718a29dfbc36bc214445fb8": "VIBE"
+  "0xeedba439a4ab8987a995cf5cfefebd713000b3365718a29dfbc36bc214445fb8": "VIBE",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const labsBannedTokens: Record<string, string> = {
