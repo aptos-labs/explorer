@@ -556,6 +556,30 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native"],
   },
+  "0x7c9d9f4972072b6ff7dfa48f259688e7286abac9ebd192bbda30fea910139024": {
+    chainId: 126,
+    tokenAddress: null,
+    faAddress:
+      "0x7c9d9f4972072b6ff7dfa48f259688e7286abac9ebd192bbda30fea910139024",
+    name: "Move USD",
+    symbol: "MSD",
+    decimals: 6,
+    bridge: null,
+    logoUrl: "https://raw.githubusercontent.com/arche-labs/assets/refs/heads/main/icons/MSD_200x200.png",
+    websiteUrl: "https://www.archeprotocol.xyz/",
+    coinGeckoId: "",
+    coinMarketCapId: 0,
+    panoraSymbol: null,
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 5,
+    panoraIndex: 5,
+    native: true,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Native"],
+  },
 };
 
 /**
@@ -591,7 +615,8 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0xe4354602aa4311f36240dd57f3f3435ffccdbd0cd2963f1a69da39a2dbcd59b5": "frxUSD",
   "0xbf2efbffbbd7083aaf006379d96b866b73bb4eb9684a7504c62feafe670962c2": "sfrxUSD",
   "0x9d146a4c9472a7e7b0dbc72da0eafb02b54173a956ef22a9fba29756f8661c6c": "USDe",
-  "0x74f0c7504507f7357f8a218cc70ce3fc0f4b4e9eb8474e53ca778cb1e0c6dcc5": "sUSDe"
+  "0x74f0c7504507f7357f8a218cc70ce3fc0f4b4e9eb8474e53ca778cb1e0c6dcc5": "sUSDe",
+  "0x7c9d9f4972072b6ff7dfa48f259688e7286abac9ebd192bbda30fea910139024": "MSD"
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const MARKED_AS_POSSIBLE_SCAM = "Marked as possible scam";
