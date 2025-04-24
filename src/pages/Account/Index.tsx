@@ -95,7 +95,12 @@ export default function AccountPage({
   const isLoading = resourcesIsLoading;
   let error: ResponseError | null = null;
   if (addressError) {
-    error = addressError;
+    // If the address is not found, we can still show the account page, without an error
+    if (addressError.type === ResponseErrorType.NOT_FOUND) {
+      error = resourceError;
+    } else {
+      error = addressError;
+    }
   } else if (resourceError) {
     error = resourceError;
   }
