@@ -109,7 +109,7 @@
     "prettier": "^3.5.3",
     "ts-results": "^3.3.0",
     "typescript": "^5.8.3",
-    "vite": "^6.3.3",
+    "vite": "^6.3.4",
     "vite-plugin-svgr": "^4.3.0",
     "vitest": "^3.1.2"
   }
