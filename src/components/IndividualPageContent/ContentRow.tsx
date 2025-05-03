@@ -48,7 +48,19 @@ export default function ContentRow({
             overflow: "auto",
           }}
         >
-          {value ? <Box>{value}</Box> : <EmptyValue />}
+          {value ? (
+            <Box
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              {value}
+            </Box>
+          ) : (
+            <EmptyValue />
+          )}
         </Grid>
       </Grid>
     </Box>
