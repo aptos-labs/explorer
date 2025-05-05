@@ -243,8 +243,8 @@ export default function HeaderSearch() {
     ).then(
       () => {
         return {
-          label: `Deleted Object ${address}`,
-          to: `/object/${address}`,
+          label: `Address ${address}`,
+          to: `/account/${address}`,
         };
       },
       () => {
@@ -442,9 +442,6 @@ export default function HeaderSearch() {
       r?.label?.startsWith("Fungible Asset"),
     );
     const foundObject = resultsList.find((r) => r?.label?.startsWith("Object"));
-    const foundDeletedObject = resultsList.find((r) =>
-      r?.label?.startsWith("Deleted Object"),
-    );
     const foundPossibleAddress = resultsList.find((r) =>
       r?.label?.startsWith("Address"),
     );
@@ -464,24 +461,14 @@ export default function HeaderSearch() {
         break;
       }
       case Boolean(foundFa): {
-        filteredResults = resultsList.filter(
-          (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
-        );
+        filteredResults = resultsList.filter((r) => r !== foundPossibleAddress);
         break;
       }
       case Boolean(foundAccount): {
-        filteredResults = resultsList.filter(
-          (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
-        );
+        filteredResults = resultsList.filter((r) => r !== foundPossibleAddress);
         break;
       }
       case Boolean(foundObject): {
-        filteredResults = resultsList.filter(
-          (r) => r !== foundPossibleAddress && r !== foundDeletedObject,
-        );
-        break;
-      }
-      case Boolean(foundDeletedObject): {
         filteredResults = resultsList.filter((r) => r !== foundPossibleAddress);
         break;
       }
