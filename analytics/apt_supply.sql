@@ -23,5 +23,5 @@ SELECT
   address AS coin_type, -- fa supply from resource
   CAST(JSON_VALUE(resource, '$.current.value') AS BIGNUMERIC) AS supply,
 FROM `bigquery-public-data.crypto_aptos_mainnet_us.resources` r
-WHERE type_str ='0x1::fungible_asset::ConcurrentSupply' 
+WHERE type_str ='0x1::fungible_asset::ConcurrentSupply'
 AND address ='0x000000000000000000000000000000000000000000000000000000000000000a'

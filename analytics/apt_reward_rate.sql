@@ -8,15 +8,15 @@ SELECT
     type_str AS resource_type,
     CASE
         WHEN type_str = '0x1::staking_config::StakingConfig'
-        THEN CAST(JSON_EXTRACT_SCALAR(resource, '$.rewards_rate') AS INT64) / CAST(JSON_EXTRACT_SCALAR(resource, '$.rewards_rate_denominator') AS INT64)
+        THEN CAST(JSON_VALUE(resource, '$.rewards_rate') AS INT64) / CAST(JSON_VALUE(resource, '$.rewards_rate_denominator') AS INT64)
         WHEN type_str = '0x1::staking_config::StakingRewardsConfig'
-        THEN CAST(JSON_EXTRACT_SCALAR(resource, '$.rewards_rate.value') AS INT64)/POW(2,64)
+        THEN CAST(JSON_VALUE(resource, '$.rewards_rate.value') AS INT64)/POW(2,64)
     END AS reward_rate_per_epoch, -- pct increase per epoch,
     CASE
         WHEN type_str = '0x1::staking_config::StakingConfig'
-        THEN CAST(JSON_EXTRACT_SCALAR(resource, '$.rewards_rate') AS INT64) / CAST(JSON_EXTRACT_SCALAR(resource, '$.rewards_rate_denominator') AS INT64)
+        THEN CAST(JSON_VALUE(resource, '$.rewards_rate') AS INT64) / CAST(JSON_VALUE(resource, '$.rewards_rate_denominator') AS INT64)
         WHEN type_str = '0x1::staking_config::StakingRewardsConfig'
-        THEN CAST(JSON_EXTRACT_SCALAR(resource, '$.rewards_rate.value') AS INT64)/POW(2,64)
+        THEN CAST(JSON_VALUE(resource, '$.rewards_rate.value') AS INT64)/POW(2,64)
     END *12*365 AS reward_rate_per_year_approx -- approx apr
 FROM `bigquery-public-data.crypto_aptos_mainnet_us.resources` r
 WHERE 1=1
