@@ -2,12 +2,12 @@
   "name": "aptos-explorer",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@10.8.0",
+  "packageManager": "pnpm@10.10.0",
   "type": "module",
   "pnpm": {
     "overrides": {
       "@aptos-labs/aptos-client": "^1.1.0",
-      "@aptos-labs/ts-sdk": "1.38.0",
+      "@aptos-labs/ts-sdk": "1.39.0",
       "axios": ">=1.8.2",
       "d3-color": ">=3.1.0",
       "prismjs": ">=1.30.0",
