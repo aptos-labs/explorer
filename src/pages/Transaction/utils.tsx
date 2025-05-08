@@ -133,6 +133,38 @@ function getBalanceMap(transaction: Types.Transaction) {
   const events: Types.Event[] =
     "events" in transaction ? transaction.events : [];
 
+  // compile what fungible assets are updated in the transaction
+  const fungibleAssetChangesByStore: Record<string, Types.WriteSetChange[]> =
+    {};
+  if ("changes" in transaction) {
+    for (const change of transaction.changes) {
+      if (
+        change.type === "write_resource" ||
+        change.type === "create_resource"
+      ) {
+        // track the store address and the changes to the store
+        const changeWithData = change as {
+          address: string;
+          data: {type: string};
+        };
+        switch (changeWithData.data.type) {
+          case "0x1::object::ObjectCore": // needed to determine owner of store
+          case "0x1::fungible_asset::FungibleStore": // needed to determine FA type of store
+            const addr = tryStandardizeAddress(changeWithData.address);
+            if (!addr) {
+              break;
+            }
+            if (fungibleAssetChangesByStore[addr] === undefined) {
+              fungibleAssetChangesByStore[addr] = [];
+            }
+
+            fungibleAssetChangesByStore[addr].push(change);
+            break;
+        }
+      }
+    }
+  }
+
   return events.reduce(
     (
       balanceMap: {
@@ -163,6 +195,102 @@ function getBalanceMap(transaction: Types.Transaction) {
           } else {
             balanceMap[addr].amount -= amount;
           }
+        }
+      } else if (
+        event.type === "0x1::fungible_asset::Withdraw" ||
+        event.type === "0x1::fungible_asset::Deposit"
+      ) {
+        // in order to add to balance map:
+        // 1. must be FA store that shows up in the changes
+        // 2. must be 0xa MOVE
+
+        // verify #1
+        const faEvent = event;
+        const store = tryStandardizeAddress(faEvent.data.store);
+        // skip if the address doesn't parse (shouldn't happen)
+        if (!store) {
+          return balanceMap;
+        }
+
+        const changes = fungibleAssetChangesByStore[store];
+        // skip if no changes (shouldn't happen)
+        if (!changes || changes.length === 0) {
+          return balanceMap;
+        }
+
+        // verify #2
+        const faStore = changes.find((change) => {
+          const changeWithData = change as {
+            type: string;
+            data: {type: string};
+          };
+          return (
+            changeWithData.data.type === "0x1::fungible_asset::FungibleStore" // change of this type has FA type
+          );
+        });
+
+        // skip if no FA store (shouldn't happen)
+        if (!faStore) {
+          return balanceMap;
+        }
+
+        // TODO: fix any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const faStoreData = faStore as any as {
+          data: {
+            type: string;
+            data: {
+              balance: string;
+              frozen: boolean;
+              metadata: {inner: string};
+            };
+          };
+        };
+
+        // skip if not MOVE
+        if (faStoreData.data.data.metadata.inner !== "0xa") {
+          return balanceMap;
+        }
+
+        // Find the owner
+        const object = changes.find((change) => {
+          const changeWithData = change as {
+            type: string;
+            data: {type: string};
+          };
+          return changeWithData.data.type === "0x1::object::ObjectCore"; // change of this type has owner
+        });
+
+        // skip if no owner (shouldn't happen)
+        if (!object) {
+          return balanceMap;
+        }
+
+        // TODO: fix any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const objectData = object as any as {
+          data: {
+            type: string;
+            data: {owner: string};
+          };
+        };
+        const balanceOwner = tryStandardizeAddress(objectData.data.data.owner);
+        // skip if the address doesn't parse (shouldn't happen)
+        if (!balanceOwner) {
+          return balanceMap;
+        }
+
+        // add the balance
+        const amount = BigInt(event.data.amount);
+
+        if (balanceMap[balanceOwner] === undefined) {
+          balanceMap[balanceOwner] = {amount: BigInt(0), amountAfter: ""};
+        }
+
+        if (event.type === "0x1::fungible_asset::Deposit") {
+          balanceMap[balanceOwner].amount += amount;
+        } else {
+          balanceMap[balanceOwner].amount -= amount;
         }
       }
 
@@ -282,11 +410,12 @@ export function getCoinBalanceChangeForAccount(
   address: string,
 ): bigint {
   const accountToBalance = getBalanceMap(transaction);
+  address = standardizeAddress(address);
 
   if (!accountToBalance.hasOwnProperty(address)) {
     return BigInt(0);
   }
-
+  
   const accountBalance = accountToBalance[address];
   return accountBalance.amount;
 }
