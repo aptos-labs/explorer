@@ -387,8 +387,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     decimals: 8,
     panoraSymbol: "APT",
     bridge: null,
-    logoUrl:
-      "https://raw.githubusercontent.com/PanoraExchange/Aptos-Tokens/main/logos/APT.svg",
+    logoUrl: "https://assets.panora.exchange/tokens/aptos/APT.svg",
     websiteUrl: "https://aptosfoundation.org",
     category: "Native",
     isInPanoraTokenList: true,
