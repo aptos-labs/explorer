@@ -180,8 +180,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
       known: true,
       isBanned: false,
       isInPanoraTokenList: true,
-      logoUrl:
-        "https://raw.githubusercontent.com/PanoraExchange/Aptos-Tokens/main/logos/APT.svg",
+      logoUrl: "https://assets.panora.exchange/tokens/aptos/APT.svg",
     });
   }
 
