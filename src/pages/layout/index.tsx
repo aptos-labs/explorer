@@ -26,6 +26,10 @@ function ExplorerWalletAdapterProvider({children}: LayoutProps) {
       dappConfig={{
         aptosConnectDappId: AptosConnectId,
         network: state.network_name as Network,
+        msafeWalletConfig: {
+          appId: AptosConnectId,
+          appUrl: "https://explorer.aptoslabs.com",
+        },
       }}
     >
       {children}
