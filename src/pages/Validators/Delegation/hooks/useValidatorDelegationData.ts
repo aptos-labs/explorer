@@ -15,6 +15,7 @@ import {
   getBatchDelegatorCounts,
   getBatchUserStakes,
 } from "./validatorDataService";
+import {addressFromWallet} from "../../../../utils";
 
 // Extended validator data with additional fields
 export interface ValidatorWithExtendedData extends ValidatorData {
@@ -134,7 +135,7 @@ export function useValidatorDelegationData() {
   });
 
   // Batch fetch user stakes if wallet is connected
-  const accountAddress = account?.address?.toStringLong();
+  const accountAddress = addressFromWallet(account?.address);
   const {
     data: userStakes,
     isLoading: userStakesLoading,

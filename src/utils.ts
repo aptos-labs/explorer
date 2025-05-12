@@ -12,6 +12,13 @@ export function assertNever(x: never): never {
   throw new Error("Unexpected object: " + x);
 }
 
+export function addressFromWallet(address?: string | AccountAddress): string {
+  if (!address) {
+    return "";
+  }
+  return standardizeAddress(address);
+}
+
 /*
 If the transaction doesn't have a version property,
 that means it's a pending transaction (and thus it's expected version will be higher than any existing versions).

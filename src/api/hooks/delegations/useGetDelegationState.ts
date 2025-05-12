@@ -5,6 +5,7 @@ import {getLockedUtilSecs} from "../../../pages/DelegatoryValidator/utils";
 import {useGetAccountAPTBalance} from "../useGetAccountAPTBalance";
 import {useGetNumberOfDelegators} from "./useGetNumberOfDelegators";
 import {useGetStakingRewardsRate} from "../useGetStakingRewardsRate";
+import {addressFromWallet} from "../../../utils";
 
 export type DelegationState = {
   lockedUntilSecs: bigint | null;
@@ -20,9 +21,7 @@ export function useGetDelegationState(
   const {account} = useWallet();
   const lockedUntilSecs = getLockedUtilSecs(accountResource);
   // FIXME Handle the case where the account is not connected
-  const balance = useGetAccountAPTBalance(
-    account?.address?.toStringLong() ?? "",
-  );
+  const balance = useGetAccountAPTBalance(addressFromWallet(account?.address));
   const {numberOfDelegators} = useGetNumberOfDelegators(
     validator.owner_address,
   );

@@ -40,6 +40,7 @@ import {MINIMUM_APT_IN_POOL} from "./constants";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import TooltipTypography from "../../components/TooltipTypography";
+import {addressFromWallet} from "../../utils";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
@@ -152,7 +153,7 @@ function StakeOperationDialogContent({
   const onSubmitClick = async () => {
     logEvent("submit_transaction_button_clicked", stakeOperation, {
       validator_address: validator.owner_address,
-      wallet_address: account?.address?.toStringLong() ?? "",
+      wallet_address: addressFromWallet(account?.address),
       wallet_name: wallet?.name ?? "",
       amount: amount,
     });
