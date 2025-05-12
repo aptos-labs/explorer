@@ -12,6 +12,7 @@ import {Banner} from "../../components/Banner";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {addressFromWallet} from "../../utils";
 
 const GITHUB_DISCUSSION_URL =
   "https://github.com/aptos-labs/aptos-developer-discussions/discussions";
@@ -26,7 +27,7 @@ export function GithubDiscussionsBanner() {
   const handleClick = () => {
     setOpen(!open);
     logEvent("github_discussions_banner_clicked", null, {
-      wallet_address: account?.address?.toStringLong() ?? "",
+      wallet_address: addressFromWallet(account?.address),
       wallet_name: wallet?.name ?? "",
     });
     window.open(GITHUB_DISCUSSION_URL, "_blank");
