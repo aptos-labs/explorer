@@ -242,6 +242,8 @@ export const knownAddresses: Record<string, string> = {
     "Thetis Market",
   "0x22ac0df99460b1ec8e4ce7dc92cf1387697bde530c7c0397c7adbb7aa49f1682":
     "Propbase Nexus",
+  "0x7a38039fffd016adcac2c53795ee49325e5ec6fddf3bf02651c09f9a583655a6":
+    "Kana Perps",
   // NFT marketplace
   "0x7ccf0e6e871977c354c331aa0fccdffb562d9fceb27e3d7f61f8e12e470358e9":
     "Wapal Aggregator",
