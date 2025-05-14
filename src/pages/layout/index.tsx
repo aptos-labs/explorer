@@ -20,7 +20,7 @@ const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 function ExplorerWalletAdapterProvider({children}: LayoutProps) {
   const [state] = useGlobalState();
 
-  const msafeWalletAdapter = new MSafeWalletAdapter("APTOS");
+  const msafeWalletAdapter = new MSafeWalletAdapter();
   return (
     <AptosWalletAdapterProvider
       key={state.network_name}
