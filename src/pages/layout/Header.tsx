@@ -70,7 +70,7 @@ export default function Header() {
         network: network?.name,
       },
     });
-    walletAddressRef.current = accountAddress;
+    walletAddressRef.current = account.address;
   }
 
   return (
@@ -154,7 +154,6 @@ export default function Header() {
                   handleNavigate={() =>
                     navigate(`/account/${account?.address}`)
                   }
-                  sortAvailableWallets={sortPetraFirst}
                   sortInstallableWallets={sortPetraFirst}
                   modalMaxWidth="sm"
                 />

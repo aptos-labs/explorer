@@ -12,6 +12,7 @@ import {
 import {ProvideColorMode} from "../../context";
 import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
 import {AptosWalletAdapterProvider} from "@aptos-labs/wallet-adapter-react";
+import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
 import {Network} from "@aptos-labs/ts-sdk";
 
 const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
@@ -19,16 +20,15 @@ const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 function ExplorerWalletAdapterProvider({children}: LayoutProps) {
   const [state] = useGlobalState();
 
+  const msafeWalletAdapter = new MSafeWalletAdapter("APTOS");
   return (
     <AptosWalletAdapterProvider
       key={state.network_name}
+      plugins={[msafeWalletAdapter]}
       autoConnect={true}
       dappConfig={{
         aptosConnectDappId: AptosConnectId,
         network: state.network_name as Network,
-        msafeWalletConfig: {
-          appUrl: "https://explorer.aptoslabs.com",
-        },
       }}
     >
       {children}
