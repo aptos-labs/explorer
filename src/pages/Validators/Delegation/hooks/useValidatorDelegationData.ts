@@ -154,7 +154,7 @@ export function useValidatorDelegationData() {
     },
     enabled:
       connected &&
-      !!account?.address &&
+      !!accountAddress &&
       validatorAddresses.length > 0 &&
       !!state.aptos_client,
   });
