@@ -271,6 +271,9 @@ export function findCoinData(
   coinData: CoinDescription[] | undefined,
   asset_type: string,
 ): CoinDescription | undefined {
+  if (!asset_type) {
+    return undefined;
+  }
   let entry: CoinDescription | undefined;
   if (coinData) {
     const coinType = asset_type.includes("::") ? asset_type : undefined;
