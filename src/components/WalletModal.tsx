@@ -81,7 +81,6 @@ export default function WalletsModal({
           self.findIndex((w) => w.name === wallet.name) === index,
       )
       .filter((wallet) => {
-        console.log(wallet.name)
         if (!wallet) return false;
         if (unsupportedWallets.includes(wallet.name)) {
           return false;
