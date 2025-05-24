@@ -75,9 +75,15 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
       const queryString = new URLSearchParams(query);
       const url = `${end_point}?${queryString}`;
 
-      const ret: {movement: {usd: number}} = await (
-        await fetch(url, {method: "GET"})
-      ).json();
+      let ret: {movement: {usd: number}} = {movement: {usd: 0}};
+      try {
+        ret = await (
+          await fetch(url, {method: "GET"})
+        ).json();
+      } catch (error) {
+        console.error("Failed to fetch coin prices:", error);
+        return {data: coins}
+      }
 
       // Map to CoinDescription and add usdPrice
       const coinDescriptions: CoinDescription[] = coins.map((coin) => ({
