@@ -55,7 +55,7 @@ export default function WalletsModal({
   const [expanded, setExpanded] = useState(false);
 
   const { wallets = [] } = useWallet();
-
+  
   const {
     /** Wallets that use social login to create an account on the blockchain */
     aptosConnectWallets,
@@ -73,8 +73,24 @@ export default function WalletsModal({
   if (sortDefaultWallets) defaultWallets.sort(sortDefaultWallets);
   if (sortMoreWallets) moreWallets.sort(sortMoreWallets);
 
-  const hasAptosConnectWallets = !!aptosConnectWallets.length;
+  function cleanWalletList(wallets: AnyAptosWallet[]) {
+    const unsupportedWallets = ['Dev T wallet', 'Pontem', 'TrustWallet', 'TokenPocket', 'Martian', 'Rise']
+    return wallets
+      .filter(
+        (wallet, index, self) =>
+          self.findIndex((w) => w.name === wallet.name) === index,
+      )
+      .filter((wallet) => {
+        if (!wallet) return false;
+        if (unsupportedWallets.includes(wallet.name)) {
+          return false;
+        }
+        return wallet;
+      });
+  }
 
+  const hasAptosConnectWallets = !!aptosConnectWallets.length;
+  
   return (
     <Dialog
       open={modalOpen}
@@ -195,7 +211,7 @@ export default function WalletsModal({
           </>
         )}*/}
         <Stack sx={{ gap: 1 }}>
-          {defaultWallets.map((wallet: AnyAptosWallet) => (
+          {cleanWalletList(defaultWallets).map((wallet: AnyAptosWallet) => (
             <WalletRow
               key={wallet.name}
               wallet={wallet}
@@ -214,7 +230,7 @@ export default function WalletsModal({
               </Button>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <Stack sx={{ gap: 1 }}>
-                  {moreWallets.map((wallet: AnyAptosWallet) => (
+                  {cleanWalletList(moreWallets).map((wallet: AnyAptosWallet) => (
                     <WalletRow
                       key={wallet.name}
                       wallet={wallet}
