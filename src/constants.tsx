@@ -136,6 +136,9 @@ export const knownAddresses: Record<string, string> = {
     "MOVE Coin Fungible Asset",
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
+  "0x84b1675891d370d5de8f169031f9c3116d7add256ecf50a4bc71e3135ddba6e0":
+    "Bybit 1",
+
 };
 
 export const scamAddresses: Record<string, string> = {
