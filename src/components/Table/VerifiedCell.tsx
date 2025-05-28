@@ -34,7 +34,6 @@ import {
   labsBannedAddresses,
   labsBannedTokens,
   labsBannedTokenSymbols,
-  manuallyVerifiedTokens,
   nativeTokens,
 } from "../../constants";
 
@@ -88,7 +87,7 @@ export function verifiedLevel(
     return {
       level: VerifiedType.NATIVE_TOKEN,
     };
-  } else if (manuallyVerifiedTokens[input.id] || input.panoraTags?.includes("Verified")) {
+  } else if (input.panoraTags?.includes("Verified")) {
     return {
       level: VerifiedType.LABS_VERIFIED,
     };
