@@ -143,11 +143,11 @@ export const knownAddresses: Record<string, string> = {
   "0xcf869189c785beaaad2f5c636ced4805aeae9cbf49070dc93aed2f16b99012a":
     "Gate 1",
   "0x31d0a30ae53e2ae852fcbdd1fce75a4ea6ad81417739ef96883eba9574ffe31e":
-  "MovePosition Vault 1",
+    "MovePosition Vault 1",
   "0x58739edcac2f86e62342466f20809b268430aedf32937eba32eaac7e0bbf5233":
-  "Echelon Vault 1",
+    "Echelon Vault 1",
   "0x574ecf25ca263b4d9cbd43ded90bba6a52309e0cba2213f9606e4b4a3a20ffae":
-  "Layerbank Valut 1"
+    "Layerbank Valut 1"
 };
 
 export const scamAddresses: Record<string, string> = {
