@@ -138,7 +138,10 @@ export const knownAddresses: Record<string, string> = {
     "Burn Address",
   "0x84b1675891d370d5de8f169031f9c3116d7add256ecf50a4bc71e3135ddba6e0":
     "Bybit 1",
-
+  "0xbeda85a0a4e68adb980382a7182019a7b9a2ad4bba36f41024338dea5ff1eaac":
+    "Kucoin 1",
+  "0xcf869189c785beaaad2f5c636ced4805aeae9cbf49070dc93aed2f16b99012a":
+    "Gate 1"
 };
 
 export const scamAddresses: Record<string, string> = {
