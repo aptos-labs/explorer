@@ -140,7 +140,7 @@ export const knownAddresses: Record<string, string> = {
     "Bybit 1",
   "0xbeda85a0a4e68adb980382a7182019a7b9a2ad4bba36f41024338dea5ff1eaac":
     "Kucoin 1",
-  "0xcf869189c785beaaad2f5c636ced4805aeae9cbf49070dc93aed2f16b99012a":
+  "0x0cf869189c785beaaad2f5c636ced4805aeae9cbf49070dc93aed2f16b99012a":
     "Gate 1",
   "0x31d0a30ae53e2ae852fcbdd1fce75a4ea6ad81417739ef96883eba9574ffe31e":
     "MovePosition Vault 1",
