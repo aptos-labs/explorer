@@ -188,8 +188,10 @@ function CoinMigrationCell({
   switch (isSuccessful) {
     case true:
       icon = <CheckCircleIcon />;
+      break;
     case false:
       icon = <ErrorOutlinedIcon />;
+      break;
   }
   return (
     <>
