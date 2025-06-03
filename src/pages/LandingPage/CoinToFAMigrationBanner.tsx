@@ -27,9 +27,11 @@ export function CoinToFAMigrationBanner() {
       wallet_address: addressFromWallet(account?.address),
       wallet_name: wallet?.name ?? "",
     });
-    window.open(
-      `https://explorer.aptoslabs.com/account/${addressFromWallet(account?.address)}/coins`,
-    );
+    // window.open(
+    //   `https://explorer.aptoslabs.com/account/${addressFromWallet(account?.address)}/coins`,
+    // );
+    // don't open a new tab, just redirect
+    window.location.href = `https://explorer.aptoslabs.com/account/${addressFromWallet(account?.address)}/coins`;
   };
 
   const learnMoreButton = (
