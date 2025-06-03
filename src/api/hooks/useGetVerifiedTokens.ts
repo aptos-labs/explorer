@@ -37,7 +37,7 @@ export function useGetVerifiedTokens() {
           faAddress,
           bridge: token.bridge ?? null,
           panoraSymbol: null,
-          category: "Native",
+          category: "Verified",
           isInPanoraTokenList: true,
           isBanned: false,
           panoraOrderIndex: 5,
