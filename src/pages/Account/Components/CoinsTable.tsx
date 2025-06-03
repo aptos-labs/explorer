@@ -2,6 +2,7 @@ import * as React from "react";
 import {useEffect} from "react";
 import {
   Button,
+  CircularProgress,
   Stack,
   Table,
   TableHead,
@@ -128,10 +129,32 @@ function CoinMigrationCell({
   resourceData: Types.MoveResource[] | undefined;
   data: CoinDescriptionPlusAmount;
 }) {
-  const [isSuccessful, setIsSuccessful] = React.useState<boolean | null>(null);
   const {submitTransaction, transactionResponse, transactionInProcess} =
     useSubmitTransaction();
   const tokenAddress = data.tokenAddress;
+
+  let isMigrated = false;
+  let icon = null;
+  if (
+    transactionResponse?.transactionSubmitted === undefined ||
+    !transactionResponse.transactionSubmitted ||
+    transactionResponse?.success === undefined
+  ) {
+    icon = null;
+  } else if (
+    transactionResponse?.transactionSubmitted &&
+    transactionResponse.success
+  ) {
+    icon = <CheckCircleIcon />;
+    isMigrated = true;
+  } else if (
+    transactionResponse?.transactionSubmitted &&
+    !transactionResponse.success
+  ) {
+    icon = <ErrorOutlinedIcon />;
+    isMigrated = false;
+  }
+
   if (!tokenAddress) {
     return (
       <Button
@@ -148,21 +171,25 @@ function CoinMigrationCell({
   }
 
   if (
+    isMigrated ||
     !resourceData?.find(
       (res) => res.type === `0x1::coin::CoinStore<${tokenAddress}>`,
     )
   ) {
     return (
-      <Button
-        type="submit"
-        disabled={true}
-        variant="contained"
-        sx={{width: "8rem", height: "3rem"}}
-      >
-        <Stack direction="row" spacing={1} alignItems="center">
-          <span>Already Migrated</span>
-        </Stack>
-      </Button>
+      <>
+        <Button
+          type="submit"
+          disabled={true}
+          variant="contained"
+          sx={{width: "8rem", height: "3rem"}}
+        >
+          <Stack direction="row" spacing={1} alignItems="center">
+            <span>Already Migrated</span>
+          </Stack>
+        </Button>
+        {icon}
+      </>
     );
   }
 
@@ -176,23 +203,8 @@ function CoinMigrationCell({
     };
 
     await submitTransaction(payload);
-    if (transactionResponse?.transactionSubmitted) {
-      setIsSuccessful(true);
-    } else {
-      setIsSuccessful(false);
-    }
   };
 
-  let icon = null;
-
-  switch (isSuccessful) {
-    case true:
-      icon = <CheckCircleIcon />;
-      break;
-    case false:
-      icon = <ErrorOutlinedIcon />;
-      break;
-  }
   return (
     <>
       <Button
@@ -203,7 +215,11 @@ function CoinMigrationCell({
         onClick={onClick}
       >
         <Stack direction="row" spacing={1} alignItems="center">
-          <span>Migrate</span>
+          {transactionInProcess ? (
+            <CircularProgress size={30}></CircularProgress>
+          ) : (
+            <span>Migrate</span>
+          )}
         </Stack>
       </Button>
       {icon}
