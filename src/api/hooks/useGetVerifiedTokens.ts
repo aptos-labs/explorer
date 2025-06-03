@@ -5,11 +5,18 @@ import {HardCodedCoins} from "../../constants";
 export function useGetVerifiedTokens() {
   return useQuery<Record<string, CoinDescription>>({
     queryKey: ["verified_tokens"],
-    initialData: HardCodedCoins,
+    placeholderData: HardCodedCoins,
+    refetchOnMount: true,
     queryFn: async () => {
-      const movementRes = await fetch(
-        "https://raw.githubusercontent.com/movementlabsxyz/movement-tokens/refs/heads/main/tokens.json",
-      );
+      let movementRes;
+      try {
+        movementRes = await fetch(
+          "https://raw.githubusercontent.com/movementlabsxyz/movement-tokens/refs/heads/main/tokens.json",
+        );
+      } catch (error) {
+        console.error("Failed to fetch Movement Labs verified tokens:", error);
+        return HardCodedCoins;
+      }
 
       const panoraTokens = HardCodedCoins;
 
