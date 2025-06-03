@@ -29,7 +29,6 @@ export function CoinToFAMigrationBanner() {
     });
     window.open(
       `https://explorer.aptoslabs.com/account/${addressFromWallet(account?.address)}/coins`,
-      "_blank",
     );
   };
 
