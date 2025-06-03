@@ -63,7 +63,7 @@ export function CoinToFAMigrationBanner() {
 
   // maybe add some link to a blog post
   const text =
-    "You have coins that are eligible for migration to fungible assets FA. ";
+    "Check out if you have coins that are eligible for migration to fungible assets.";
 
   const children = isOnMobile ? (
     <Stack direction="column">
