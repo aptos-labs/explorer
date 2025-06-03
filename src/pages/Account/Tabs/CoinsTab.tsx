@@ -8,12 +8,14 @@ import {
 import {findCoinData} from "../../Transaction/Tabs/BalanceChangeTab";
 import {useGetAccountCoins} from "../../../api/hooks/useGetAccountCoins";
 import {coinOrderIndex} from "../../utils";
+import {Types} from "aptos";
 
 type TokenTabsProps = {
   address: string;
+  resourceData: Types.MoveResource[] | undefined;
 };
 
-export default function CoinsTab({address}: TokenTabsProps) {
+export default function CoinsTab({address, resourceData}: TokenTabsProps) {
   const {data: coinData} = useGetCoinList();
 
   const {isLoading, error, data} = useGetAccountCoins(address);
@@ -103,5 +105,11 @@ export default function CoinsTab({address}: TokenTabsProps) {
       });
   }
 
-  return <CoinsTable coins={parse_coins()} />;
+  return (
+    <CoinsTable
+      address={address}
+      resourceData={resourceData}
+      coins={parse_coins()}
+    />
+  );
 }
