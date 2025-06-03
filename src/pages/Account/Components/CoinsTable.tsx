@@ -23,8 +23,16 @@ import {
 import {getAssetSymbol} from "../../../utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 import {useGlobalState} from "../../../global-config/GlobalConfig";
-import {Network} from "@aptos-labs/ts-sdk";
+import {Network, parseTypeTag} from "@aptos-labs/ts-sdk";
 import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
+import {
+  InputTransactionData,
+  useWallet,
+} from "@aptos-labs/wallet-adapter-react";
+import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
+import {Types} from "aptos";
 
 function CoinNameCell({name}: {name: string}) {
   return (
@@ -113,6 +121,94 @@ function CoinVerifiedCell({data}: {data: CoinDescriptionPlusAmount}) {
   });
 }
 
+function CoinMigrationCell({
+  resourceData,
+  data,
+}: {
+  resourceData: Types.MoveResource[] | undefined;
+  data: CoinDescriptionPlusAmount;
+}) {
+  const [isSuccessful, setIsSuccessful] = React.useState<boolean | null>(null);
+  const {submitTransaction, transactionResponse, transactionInProcess} =
+    useSubmitTransaction();
+  const tokenAddress = data.tokenAddress;
+  if (!tokenAddress) {
+    return (
+      <Button
+        type="submit"
+        disabled={true}
+        variant="contained"
+        sx={{width: "8rem", height: "3rem"}}
+      >
+        <Stack direction="row" spacing={1} alignItems="center">
+          <span>No need to migrate</span>
+        </Stack>
+      </Button>
+    );
+  }
+
+  if (
+    !resourceData?.find(
+      (res) => res.type === `0x1::coin::CoinStore<${tokenAddress}>`,
+    )
+  ) {
+    return (
+      <Button
+        type="submit"
+        disabled={true}
+        variant="contained"
+        sx={{width: "8rem", height: "3rem"}}
+      >
+        <Stack direction="row" spacing={1} alignItems="center">
+          <span>Already Migrated</span>
+        </Stack>
+      </Button>
+    );
+  }
+
+  const onClick = async () => {
+    const payload: InputTransactionData = {
+      data: {
+        function: "0x1::coin::migrate_to_fungible_store",
+        typeArguments: [parseTypeTag(tokenAddress)],
+        functionArguments: [],
+      },
+    };
+
+    await submitTransaction(payload);
+    if (transactionResponse?.transactionSubmitted) {
+      setIsSuccessful(true);
+    } else {
+      setIsSuccessful(false);
+    }
+  };
+
+  let icon = null;
+
+  switch (isSuccessful) {
+    case true:
+      icon = <CheckCircleIcon />;
+    case false:
+      icon = <ErrorOutlinedIcon />;
+  }
+  return (
+    <>
+      <Button
+        type="submit"
+        disabled={transactionInProcess}
+        variant="contained"
+        sx={{width: "8rem", height: "3rem"}}
+        onClick={onClick}
+      >
+        <Stack direction="row" spacing={1} alignItems="center">
+          <span>Migrate</span>
+        </Stack>
+      </Button>
+      {icon}
+    </>
+  );
+}
+
 enum CoinVerificationFilterType {
   VERIFIED,
   RECOGNIZED,
@@ -128,11 +224,23 @@ export type CoinDescriptionPlusAmount = {
   assetVersion: string;
 } & CoinDescription;
 
-export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
+export function CoinsTable({
+  address,
+  resourceData,
+  coins,
+}: {
+  address: string;
+  resourceData: Types.MoveResource[] | undefined;
+  coins: CoinDescriptionPlusAmount[];
+}) {
   const [state] = useGlobalState();
   const [verificationFilter, setVerificationFilter] = React.useState(
     CoinVerificationFilterType.NONE,
   );
+  const {connected, account} = useWallet();
+
+  const showMigrateButton =
+    connected && account?.address !== undefined && account.address === address;
 
   useEffect(() => {
     if (state.network_name === Network.MAINNET) {
@@ -324,6 +432,9 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
             />
             <GeneralTableHeaderCell header="Amount" />
             <GeneralTableHeaderCell header="USD Value" />
+            {showMigrateButton && (
+              <GeneralTableHeaderCell header="Migrate to FA" />
+            )}
           </TableRow>
         </TableHead>
         <GeneralTableBody>
@@ -354,6 +465,12 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
                 />
 
                 <USDCell amount={coinDesc.usdValue} />
+                {showMigrateButton && (
+                  <CoinMigrationCell
+                    resourceData={resourceData}
+                    data={coinDesc}
+                  />
+                )}
               </GeneralTableRow>
             );
           })}
