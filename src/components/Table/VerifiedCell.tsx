@@ -167,7 +167,7 @@ export function getVerifiedMessageAndIcon(
       break;
     case VerifiedType.COMMUNITY_VERIFIED:
       tooltipMessage =
-        "This asset is verified by the community on the Panora token list.";
+        "This asset is on the Movement tokens list";
       icon = <VerifiedOutlined fontSize="small" color="info" />;
       break;
     case VerifiedType.RECOGNIZED:
