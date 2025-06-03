@@ -75,7 +75,7 @@ export function CoinToFAMigrationBanner() {
   return wallet === null ? (
     <></>
   ) : (
-    <Banner pillText="NEW" sx={{marginBottom: 2}} action={action}>
+    <Banner pillText="NOTICE" sx={{marginBottom: 2}} action={action}>
       {children}
     </Banner>
   );
