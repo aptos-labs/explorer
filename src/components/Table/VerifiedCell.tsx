@@ -28,13 +28,12 @@ import {
 } from "@aptos-labs/ts-sdk";
 import {sha3_256} from "js-sha3";
 import {useGetFaPairedCoin} from "../../api/hooks/useGetFaPairedCoin";
-import {useGetCoinList} from "../../api/hooks/useGetCoinList";
+import {CoinDescription, useGetCoinList} from "../../api/hooks/useGetCoinList";
 import {
   EMOJICOIN_REGISTRY_ADDRESS,
   labsBannedAddresses,
   labsBannedTokens,
   labsBannedTokenSymbols,
-  manuallyVerifiedTokens,
   nativeTokens,
 } from "../../constants";
 
@@ -45,6 +44,7 @@ type VerifiedCellProps = {
   isInPanoraTokenList?: boolean;
   banner?: boolean;
   symbol?: string;
+  panoraTags?: CoinDescription['panoraTags'];
 };
 
 export enum VerifiedType {
@@ -83,15 +83,15 @@ export function verifiedLevel(
     });
   }
 
-  if (nativeTokens[input.id]) {
+  if (nativeTokens[input.id] || input.panoraTags?.includes("Native")) {
     return {
       level: VerifiedType.NATIVE_TOKEN,
     };
-  } else if (manuallyVerifiedTokens[input.id]) {
+  } else if (input.panoraTags?.includes("Verified")) {
     return {
       level: VerifiedType.LABS_VERIFIED,
     };
-  } else if (labsBannedTokens[input.id]) {
+  } else if (labsBannedTokens[input.id] || input.panoraTags?.includes("Banned")) {
     return {
       level: VerifiedType.LABS_BANNED,
       reason: labsBannedTokens[input.id],
@@ -167,7 +167,7 @@ export function getVerifiedMessageAndIcon(
       break;
     case VerifiedType.COMMUNITY_VERIFIED:
       tooltipMessage =
-        "This asset is verified by the community on the Panora token list.";
+        "This asset is on the Movement tokens list";
       icon = <VerifiedOutlined fontSize="small" color="info" />;
       break;
     case VerifiedType.RECOGNIZED:
