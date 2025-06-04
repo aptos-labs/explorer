@@ -44,10 +44,10 @@ export function useGetVerifiedTokens() {
           panoraIndex: 5,
           coinGeckoId: token.coinGeckoId || null,
           coinMarketCapId: token.coinMarketCapId || null,
-          native: true,
+          native: false,
           panoraUI: false,
           usdPrice: null,
-          panoraTags: ["Native"],
+          panoraTags: ["Verified"],
         };
       }
 
