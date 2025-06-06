@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
-import {assertNever} from "../../utils";
+import {addressFromWallet, assertNever} from "../../utils";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import {Types} from "aptos";
@@ -333,7 +333,7 @@ function ViewCell() {
 function MyDepositCell({validator}: ValidatorCellProps) {
   const {account} = useWallet();
   const {stakes, isLoading} = useGetDelegatorStakeInfo(
-    account?.address ?? "",
+    addressFromWallet(account?.address),
     validator.owner_address,
   );
   const [totalDeposit, setTotalDeposit] = useState<Types.MoveValue>();
@@ -389,7 +389,7 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
       commission: commission?.toString() ?? "",
       delegated_stake_amount: validatorVotingPower ?? "",
       network_percentage: networkPercentage ?? "",
-      wallet_address: account?.address ?? "",
+      wallet_address: addressFromWallet(account?.address),
       wallet_name: wallet?.name ?? "",
       validator_status: status.toString(),
     });

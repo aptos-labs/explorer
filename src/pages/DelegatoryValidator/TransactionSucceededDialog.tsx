@@ -17,6 +17,7 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import {StakeOperation} from "../../api/hooks/delegations";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {addressFromWallet} from "../../utils";
 
 type TransactionSucceededDialogProps = {
   handleDialogClose: () => void;
@@ -49,7 +50,7 @@ export default function TransactionSucceededDialog({
     logEvent("view_transaction_button_clicked", stakeOperation, {
       transactionHash: transactionHash,
       amount: amount,
-      wallet_address: account?.address ?? "",
+      wallet_address: addressFromWallet(account?.address),
       wallet_name: wallet?.name ?? "",
     });
   };

@@ -22,7 +22,7 @@ import {Types} from "aptos";
 import {aptosColor, grey} from "../../../themes/colors/aptosColorPalette";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import {ValidatorAddrCell, OperatorAddrCell} from "../ValidatorsTable";
-import {assertNever} from "../../../utils";
+import {addressFromWallet, assertNever} from "../../../utils";
 import {
   useValidatorDelegationData,
   ValidatorWithExtendedData,
@@ -505,7 +505,7 @@ function ValidatorRow({
       network_percentage: totalVotingPower
         ? calculateNetworkPercentage(validatorVotingPower, totalVotingPower)
         : "0",
-      wallet_address: account?.address ?? "",
+      wallet_address: addressFromWallet(account?.address),
       wallet_name: wallet?.name ?? "",
       validator_status: validator.status.toString(),
     });

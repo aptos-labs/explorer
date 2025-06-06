@@ -4,6 +4,7 @@ import {Banner} from "./Banner";
 import {useGetDelegatedStaking} from "../api/hooks/delegations/useGetDelegatedStaking";
 import {useGlobalState} from "../global-config/GlobalConfig";
 import {getValidatorCommission} from "../api";
+import {addressFromWallet} from "../utils";
 
 /**
  * Component that checks if a user has any pools with 0% commission
@@ -17,7 +18,9 @@ export function OutOfCommissionPoolsBanner() {
     useState<string[]>([]);
   const [isChecking, setIsChecking] = useState<boolean>(false);
 
-  const {delegatorPools, loading} = useGetDelegatedStaking(account?.address);
+  const {delegatorPools, loading} = useGetDelegatedStaking(
+    addressFromWallet(account?.address),
+  );
 
   useEffect(() => {
     if (!connected || loading || !delegatorPools || !state.aptos_client) {

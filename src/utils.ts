@@ -13,6 +13,13 @@ export function assertNever(x: never): never {
   throw new Error("Unexpected object: " + x);
 }
 
+export function addressFromWallet(address?: string | AccountAddress): string {
+  if (!address) {
+    return "";
+  }
+  return standardizeAddress(address);
+}
+
 /*
 If the transaction doesn't have a version property,
 that means it's a pending transaction (and thus it's expected version will be higher than any existing versions).
@@ -97,9 +104,11 @@ export function getBytecodeSizeInKB(bytecodeHex: string): number {
  * Standardizes an address to the format "0x" followed by 64 lowercase hexadecimal digits.
  */
 export const standardizeAddress = (address: AccountAddressInput): string => {
-  return AccountAddress.from(address, {
-    maxMissingChars: 63,
-  }).toStringLong();
+  return (
+    AccountAddress.from(address, {
+      maxMissingChars: 63,
+    })?.toStringLong() ?? "" // TODO `AccountAddress.from` will return `undefined` in certain situations
+  );
 };
 
 export const tryStandardizeAddress = (

@@ -21,7 +21,7 @@ import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import {Link, useNavigate} from "../../routing";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
-import {sortPetraFirst} from "../../utils";
+import {addressFromWallet, sortPetraFirst} from "../../utils";
 
 export default function Header() {
   const scrollTop = () => {
@@ -52,9 +52,13 @@ export default function Header() {
   const {account, wallet, network} = useWallet();
   const navigate = useNavigate();
   const walletAddressRef = useRef("");
-
-  if (account && walletAddressRef.current !== account.address) {
-    logEvent("wallet_connected", account.address, {
+  const accountAddress = addressFromWallet(account?.address);
+  if (
+    account &&
+    accountAddress &&
+    walletAddressRef.current !== accountAddress
+  ) {
+    logEvent("wallet_connected", accountAddress, {
       wallet_name: wallet!.name,
       network_type: state.network_name,
     });
@@ -150,7 +154,6 @@ export default function Header() {
                   handleNavigate={() =>
                     navigate(`/account/${account?.address}`)
                   }
-                  sortAvailableWallets={sortPetraFirst}
                   sortInstallableWallets={sortPetraFirst}
                   modalMaxWidth="sm"
                 />

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Box} from "@mui/material";
-import {assertNever} from "../../utils";
+import {addressFromWallet, assertNever} from "../../utils";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import {useParams} from "react-router-dom";
@@ -82,7 +82,7 @@ export default function ValidatorsPageTabs(): React.JSX.Element {
   ) => {
     navigate(`/validators/${newValue}`);
     logEvent("validators_tab_clicked", newValue, {
-      wallet_address: account?.address ?? "",
+      wallet_address: addressFromWallet(account?.address),
       wallet_name: wallet?.name ?? "",
     });
   };

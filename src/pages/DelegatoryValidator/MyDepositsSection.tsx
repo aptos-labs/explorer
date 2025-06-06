@@ -28,7 +28,7 @@ import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {assertNever} from "../../utils";
+import {addressFromWallet, assertNever} from "../../utils";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
   StakingStatus,
@@ -178,7 +178,7 @@ function ActionsCell({
 }: MyDepositsSectionCellProps) {
   const {account} = useWallet();
   // FIXME wallet address not guaranteed to be defined
-  const balance = useGetAccountAPTBalance(account?.address ?? "");
+  const balance = useGetAccountAPTBalance(addressFromWallet(account?.address));
   const requirement = getStakeOperationAPTRequirement(
     stakes,
     getStakeOperationFromStakingStatus(status, canWithdrawPendingInactive),
@@ -263,7 +263,7 @@ function MyDepositSectionContent({
   const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
   const {connected, account, wallet} = useWallet();
   // FIXME: account is not guaranteed to be defined
-  const walletAddress = account?.address ?? "";
+  const walletAddress = addressFromWallet(account?.address);
   const {stakes} = useGetDelegatorStakeInfo(
     walletAddress,
     validator.owner_address,
@@ -318,7 +318,7 @@ function MyDepositSectionContent({
           "_button_clicked",
         validator?.owner_address,
         {
-          wallet_address: account?.address ?? "",
+          wallet_address: addressFromWallet(account?.address),
           wallet_name: wallet?.name ?? "",
           amount: Number(stake).toString(),
         },

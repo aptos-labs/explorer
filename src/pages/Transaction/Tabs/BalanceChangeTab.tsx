@@ -180,8 +180,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
       known: true,
       isBanned: false,
       isInPanoraTokenList: true,
-      logoUrl:
-        "https://raw.githubusercontent.com/PanoraExchange/Aptos-Tokens/main/logos/APT.svg",
+      logoUrl: "https://assets.panora.exchange/tokens/aptos/APT.svg",
     });
   }
 
@@ -272,6 +271,9 @@ export function findCoinData(
   coinData: CoinDescription[] | undefined,
   asset_type: string,
 ): CoinDescription | undefined {
+  if (!asset_type) {
+    return undefined;
+  }
   let entry: CoinDescription | undefined;
   if (coinData) {
     const coinType = asset_type.includes("::") ? asset_type : undefined;

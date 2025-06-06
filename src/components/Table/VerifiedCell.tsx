@@ -74,7 +74,7 @@ export function verifiedLevel(
   input: VerifiedCellProps,
   network: string,
 ): VerifiedLevelInfo {
-  const isCoin = input.id.includes("::");
+  const isCoin = input?.id?.includes("::") ?? false;
 
   let emojicoinInfo: {coin: string; lp: string} | null = null;
   if (isCoin && input.symbol) {
@@ -206,7 +206,7 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
   const theme = useTheme();
   const [state] = useGlobalState();
 
-  const isCoin = data.id.includes("::");
+  const isCoin = data?.id?.includes("::") ?? false;
 
   const {isLoading, data: pairedCoin} = useGetFaPairedCoin(data.id);
   const {data: coinList} = useGetCoinList();

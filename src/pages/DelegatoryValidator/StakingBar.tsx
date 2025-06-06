@@ -34,6 +34,7 @@ import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import {calculateNetworkPercentage} from "./utils";
+import {addressFromWallet} from "../../utils";
 
 type ValidatorStakingBarProps = {
   setIsStakingBarSkeletonLoading: (arg: boolean) => void;
@@ -87,7 +88,7 @@ function StakingBarContent({
       commission: commission?.toString() ?? "",
       delegated_stake_amount: validatorVotingPower ?? "",
       network_percentage: networkPercentage ?? "",
-      wallet_address: account?.address ?? "",
+      wallet_address: addressFromWallet(account?.address),
       wallet_name: wallet?.name ?? "",
     });
     setDialogOpen(true);
@@ -145,7 +146,7 @@ function StakingBarContent({
     </Stack>
   );
 
-  const walletAddress = account?.address ?? ""; // FIXME: Migrate for SDK V1
+  const walletAddress = addressFromWallet(account?.address);
   const balance = useGetAccountAPTBalance(walletAddress);
   const [state] = useGlobalState();
   const {stakes} = useGetDelegatorStakeInfo(

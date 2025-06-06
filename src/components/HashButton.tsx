@@ -18,8 +18,13 @@ import {
 } from "../themes/colors/aptosColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
-import {truncate, truncateAddress, truncateAddressMiddle} from "../pages/utils";
-import {assertNever} from "../utils";
+import {
+  isValidAccountAddress,
+  truncate,
+  truncateAddress,
+  truncateAddressMiddle,
+} from "../pages/utils";
+import {assertNever, standardizeAddress} from "../utils";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import IdenticonImg from "./IdenticonImg";
@@ -94,14 +99,19 @@ function AccountHashButtonInner({
   size = "small",
   isValidator,
 }: AccountHashButtonInnerProps) {
-  const name = useGetNameFromAddress(hash, false, isValidator);
+  // Standardize address
+  const address = standardizeAddress(hash);
+
+  const name = useGetNameFromAddress(address, false, isValidator);
   const truncateHash =
-    size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
+    size === "large"
+      ? truncateAddressMiddle(address)
+      : truncateAddress(address);
   const [copyTooltipOpen, setCopyTooltipOpen] = useState(false);
   const theme = useTheme();
   const copyAddress = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await navigator.clipboard.writeText(hash);
+    await navigator.clipboard.writeText(address);
     setCopyTooltipOpen(true);
     setTimeout(() => {
       setCopyTooltipOpen(false);
@@ -110,9 +120,9 @@ function AccountHashButtonInner({
 
   return (
     <Stack direction="row" alignItems={"center"} spacing={1}>
-      <IdenticonImg address={hash} />
+      <IdenticonImg address={address} />
       <Link
-        to={getHashLinkStr(hash, type)}
+        to={getHashLinkStr(address, type)}
         sx={{
           backgroundColor: codeBlockColor,
           "&:hover": {
@@ -127,7 +137,7 @@ function AccountHashButtonInner({
           textDecoration: "none",
         }}
       >
-        <Tooltip title={name ?? hash} enterDelay={500} enterNextDelay={500}>
+        <Tooltip title={name ?? address} enterDelay={500} enterNextDelay={500}>
           <span>{name ? truncate(name, 9, 11, "…") : truncateHash}</span>
         </Tooltip>
         <Tooltip title="Copied" open={copyTooltipOpen}>
@@ -337,17 +347,21 @@ function AssetHashButtonInner({
     },
   );
 
+  let coinName = hash;
+  if (isValidAccountAddress(hash)) {
+    coinName = standardizeAddress(hash);
+  }
   const displayName = legitCoin
     ? size === "large"
       ? `${legitCoin.name} (${legitCoin.panoraSymbol ?? legitCoin.symbol})`
       : `${legitCoin.panoraSymbol ?? legitCoin.symbol}`
     : size === "large"
-      ? truncateAddressMiddle(hash)
-      : truncateAddress(hash);
+      ? truncateAddressMiddle(coinName)
+      : truncateAddress(coinName);
 
   const copyAddress = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await navigator.clipboard.writeText(hash);
+    await navigator.clipboard.writeText(coinName);
     setCopyTooltipOpen(true);
     setTimeout(() => {
       setCopyTooltipOpen(false);
@@ -380,7 +394,7 @@ function AssetHashButtonInner({
     <Stack direction="row" alignItems={"center"} spacing={1}>
       {icon}
       <Link
-        to={getHashLinkStr(hash, type)}
+        to={getHashLinkStr(coinName, type)}
         sx={{
           backgroundColor: codeBlockColor,
           "&:hover": {

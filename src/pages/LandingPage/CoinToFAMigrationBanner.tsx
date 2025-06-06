@@ -14,10 +14,7 @@ import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {addressFromWallet} from "../../utils";
 
-const GITHUB_DISCUSSION_URL =
-  "https://github.com/aptos-labs/aptos-developer-discussions/discussions";
-
-export function GithubDiscussionsBanner() {
+export function CoinToFAMigrationBanner() {
   const [open, setOpen] = useState<boolean>(false);
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
@@ -26,11 +23,11 @@ export function GithubDiscussionsBanner() {
 
   const handleClick = () => {
     setOpen(!open);
-    logEvent("github_discussions_banner_clicked", null, {
+    logEvent("coin_to_fa_migration_banner_clicked", null, {
       wallet_address: addressFromWallet(account?.address),
       wallet_name: wallet?.name ?? "",
     });
-    window.open(GITHUB_DISCUSSION_URL, "_blank");
+    window.location.href = `https://explorer.aptoslabs.com/account/${addressFromWallet(account?.address)}/coins`;
   };
 
   const learnMoreButton = (
@@ -39,7 +36,7 @@ export function GithubDiscussionsBanner() {
       onClick={handleClick}
       sx={{alignSelf: "flex-start", transform: `translateX(-0.5rem)`}}
     >
-      <Typography>GO TO DISCUSSIONS</Typography>
+      <Typography>GO TO ACCOUNT</Typography>
       <ArrowForwardIosIcon sx={{marginLeft: 2}} fontSize="small" />
     </Button>
   );
@@ -60,8 +57,9 @@ export function GithubDiscussionsBanner() {
     </>
   );
 
+  // maybe add some link to a blog post
   const text =
-    "Ask your tech questions and hang out with the Aptos developer community in the new developer discussions!";
+    "Check out if you have coins that are eligible for migration to fungible assets.";
 
   const children = isOnMobile ? (
     <Stack direction="column">
@@ -72,8 +70,10 @@ export function GithubDiscussionsBanner() {
     <>{text}</>
   );
 
-  return (
-    <Banner pillText="NEW" sx={{marginBottom: 2}} action={action}>
+  return wallet === null ? (
+    <></>
+  ) : (
+    <Banner pillText="NOTICE" sx={{marginBottom: 2}} action={action}>
       {children}
     </Banner>
   );

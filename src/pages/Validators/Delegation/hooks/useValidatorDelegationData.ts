@@ -15,6 +15,7 @@ import {
   getBatchDelegatorCounts,
   getBatchUserStakes,
 } from "./validatorDataService";
+import {addressFromWallet} from "../../../../utils";
 
 // Extended validator data with additional fields
 export interface ValidatorWithExtendedData extends ValidatorData {
@@ -134,25 +135,26 @@ export function useValidatorDelegationData() {
   });
 
   // Batch fetch user stakes if wallet is connected
+  const accountAddress = addressFromWallet(account?.address);
   const {
     data: userStakes,
     isLoading: userStakesLoading,
     error: userStakesError,
   } = useQuery({
-    queryKey: ["batchUserStakes", account?.address, validatorAddresses],
+    queryKey: ["batchUserStakes", accountAddress, validatorAddresses],
     queryFn: () => {
-      if (!account?.address) {
+      if (!accountAddress) {
         return [];
       }
       return getBatchUserStakes(
-        account.address,
+        accountAddress,
         validatorAddresses,
         state.aptos_client,
       );
     },
     enabled:
       connected &&
-      !!account?.address &&
+      !!accountAddress &&
       validatorAddresses.length > 0 &&
       !!state.aptos_client,
   });
