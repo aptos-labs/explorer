@@ -150,6 +150,10 @@ export const knownAddresses: Record<string, string> = {
     "Layerbank Vault 1",
   "0x79eb0f69a65a088d40776e1789bbc36f247bc5ec0eb2fa5fdbeaa1b1bb3a965a":
     "MEXC 1",
+  "0x03f7399a0d3d646ce94ee0badf16c4c3f3c656fe3a5e142e83b5ebc011aa8b3d":
+    "Mosaic",
+  "0x26a95d4bd7d7fc3debf6469ff94837e03e887088bef3a3f2d08d1131141830d3":
+    "Mosaic AMM",
 };
 
 export const scamAddresses: Record<string, string> = {
