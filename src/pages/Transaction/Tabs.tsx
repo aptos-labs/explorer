@@ -24,6 +24,7 @@ import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
 import {TransactionTypeName} from "../../components/TransactionType";
+import BlockEpilogueOverviewTab from "./Tabs/BlockEpilogueOverviewTab";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -46,7 +47,7 @@ function getTabValues(transaction: Types.Transaction): TabValue[] {
     case TransactionTypeName.Validator:
       return ["validatorTxnOverview", "events", "changes"];
     case TransactionTypeName.BlockEpilogue:
-      return ["unknown", "events", "changes"]; // TODO: Make a page for block epilogue
+      return ["blockEpilogueOverview", "events", "changes"];
     default:
       return ["unknown", "events", "changes"];
   }
@@ -55,6 +56,7 @@ function getTabValues(transaction: Types.Transaction): TabValue[] {
 const TabComponents = Object.freeze({
   userTxnOverview: UserTransactionOverviewTab,
   blockMetadataOverview: BlockMetadataOverviewTab,
+  blockEpilogueOverview: BlockEpilogueOverviewTab,
   stateCheckpointOverview: StateCheckpointOverviewTab,
   pendingTxnOverview: PendingTransactionOverviewTab,
   genesisTxnOverview: GenesisTransactionOverviewTab,
@@ -72,6 +74,7 @@ function getTabLabel(value: TabValue): string {
   switch (value) {
     case "userTxnOverview":
     case "blockMetadataOverview":
+    case "blockEpilogueOverview":
     case "stateCheckpointOverview":
     case "pendingTxnOverview":
     case "genesisTxnOverview":
@@ -95,6 +98,7 @@ function getTabIcon(value: TabValue): React.JSX.Element {
   switch (value) {
     case "userTxnOverview":
     case "blockMetadataOverview":
+    case "blockEpilogueOverview":
     case "stateCheckpointOverview":
     case "pendingTxnOverview":
     case "genesisTxnOverview":
