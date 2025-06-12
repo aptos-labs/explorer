@@ -6,7 +6,7 @@ import {getTransactions} from "../../api";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
-import {Stack} from "@mui/material";
+import {Stack, Typography} from "@mui/material";
 import TransactionsTable from "../Transactions/TransactionsTable";
 import {useAugmentToWithGlobalSearchParams} from "../../routing";
 
@@ -25,7 +25,7 @@ export default function TransactionsPreview() {
   const [state] = useGlobalState();
   const limit = PREVIEW_LIMIT;
   const result = useQuery({
-    queryKey: ["transactions", {limit}, state.network_value],
+    queryKey: ["transactionsPreview", {limit}, state.network_value],
     queryFn: () => getTransactions({limit}, state.aptos_client),
   });
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -33,6 +33,7 @@ export default function TransactionsPreview() {
   return (
     <>
       <Stack spacing={2}>
+        <Typography variant="h5">All Transactions</Typography>
         <Box sx={{width: "auto", overflowX: "auto"}}>
           <TransactionContent {...result} />
         </Box>
