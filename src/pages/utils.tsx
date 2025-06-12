@@ -2,7 +2,7 @@ import moment from "moment";
 import {parseTypeTag} from "@aptos-labs/ts-sdk";
 import {CoinDescription} from "../api/hooks/useGetCoinList";
 
-function ensureMillisecondTimestamp(timestamp: string): bigint {
+export function ensureMillisecondTimestamp(timestamp: string): bigint {
   /*
   Could be: 1646458457
         or: 1646440953658538

@@ -24,6 +24,13 @@ import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
 import {TransactionTypeName} from "../../components/TransactionType";
+import BlockEpilogueOverviewTab from "./Tabs/BlockEpilogueOverviewTab";
+import ContentRow from "../../components/IndividualPageContent/ContentRow";
+import JsonViewCard from "../../components/IndividualPageContent/JsonViewCard";
+import {getLearnMoreTooltip} from "./helpers";
+import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import {useGlobalState} from "../../global-config/GlobalConfig";
+import {Link} from "../../routing";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -46,7 +53,7 @@ function getTabValues(transaction: Types.Transaction): TabValue[] {
     case TransactionTypeName.Validator:
       return ["validatorTxnOverview", "events", "changes"];
     case TransactionTypeName.BlockEpilogue:
-      return ["unknown", "events", "changes"]; // TODO: Make a page for block epilogue
+      return ["blockEpilogueOverview", "events", "changes"];
     default:
       return ["unknown", "events", "changes"];
   }
@@ -55,6 +62,7 @@ function getTabValues(transaction: Types.Transaction): TabValue[] {
 const TabComponents = Object.freeze({
   userTxnOverview: UserTransactionOverviewTab,
   blockMetadataOverview: BlockMetadataOverviewTab,
+  blockEpilogueOverview: BlockEpilogueOverviewTab,
   stateCheckpointOverview: StateCheckpointOverviewTab,
   pendingTxnOverview: PendingTransactionOverviewTab,
   genesisTxnOverview: GenesisTransactionOverviewTab,
@@ -72,6 +80,7 @@ function getTabLabel(value: TabValue): string {
   switch (value) {
     case "userTxnOverview":
     case "blockMetadataOverview":
+    case "blockEpilogueOverview":
     case "stateCheckpointOverview":
     case "pendingTxnOverview":
     case "genesisTxnOverview":
@@ -95,6 +104,7 @@ function getTabIcon(value: TabValue): React.JSX.Element {
   switch (value) {
     case "userTxnOverview":
     case "blockMetadataOverview":
+    case "blockEpilogueOverview":
     case "stateCheckpointOverview":
     case "pendingTxnOverview":
     case "genesisTxnOverview":
@@ -134,6 +144,8 @@ export default function TransactionTabs({
   transaction,
   tabValues = getTabValues(transaction),
 }: TransactionTabsProps): React.JSX.Element {
+  const [globalState] = useGlobalState();
+
   const {tab, txnHashOrVersion} = useParams();
   const navigate = useNavigate();
   const value =
@@ -162,6 +174,25 @@ export default function TransactionTabs({
       <Box>
         <TabPanel value={value} transaction={transaction} />
       </Box>
+      <ContentBox>
+        <ContentRow
+          title="Full Txn (for debug):"
+          value={<JsonViewCard data={transaction} collapsedByDefault />}
+          tooltip={getLearnMoreTooltip("transaction")}
+        />
+        <ContentRow
+          title="API link:"
+          value={
+            <Link
+              color="inherit"
+              to={`https://fullnode.${globalState.network_name.toLowerCase()}.aptoslabs.com/v1/transactions/by_hash/${transaction.hash}`}
+            >
+              Transaction ${transaction.hash}
+            </Link>
+          }
+          tooltip={getLearnMoreTooltip("transaction")}
+        />
+      </ContentBox>
     </Box>
   );
 }

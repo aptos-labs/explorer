@@ -122,6 +122,13 @@ export function getLearnMoreTooltip(
           link="https://aptos.dev/en/network/glossary#sequence-number"
         />
       );
+    case "replay_protection_nonce":
+      return (
+        <LearnMoreTooltip
+          text="The replay protection nonce is a number that prevents replay attacks by ensuring that a transaction can only be executed once in a 60 second period."
+          link="https://aptos.dev/en/network/glossary#replay-protection-nonce"
+        />
+      );
     case "signature":
       return <LearnMoreTooltipPlaceholder />;
     case "state_change_hash":

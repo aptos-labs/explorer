@@ -257,7 +257,13 @@ function TransactionAmountRow({transaction}: {transaction: Types.Transaction}) {
   );
 }
 
-type EventAction = Swap | TokenMint | TokenBurn | ObjectTransfer;
+type EventAction =
+  | Swap
+  | TokenMint
+  | TokenBurn
+  | ObjectTransfer
+  | LegacyTokenDeposit
+  | LegacyTokenWithdraw;
 
 type Swap = {
   actionType: "swap";
@@ -301,10 +307,40 @@ type ObjectTransfer = {
   to: string;
 };
 
+type LegacyTokenDeposit = {
+  actionType: "legacy token deposit";
+  address: string;
+  amount: string;
+  id: {
+    property_version: string;
+    token_data_id: {
+      creator: string;
+      collection: string;
+      name: string;
+    };
+  };
+};
+
+type LegacyTokenWithdraw = {
+  actionType: "legacy token withdraw";
+  address: string;
+  amount: string;
+  id: {
+    property_version: string;
+    token_data_id: {
+      creator: string;
+      collection: string;
+      name: string;
+    };
+  };
+};
+
 const parsers = [
   parseTokenMintEvent,
   parseTokenBurnEvent,
   parseObjectTransferEvent,
+  parseLegacyTokenWithdrawEvent,
+  parseLegacyTokenDepositEvent,
 
   // swap actions
   parseThalaSwapV1Event,
@@ -403,6 +439,10 @@ function TransactionActionsRow({
             return nftBurnAction(action, i);
           case "object transfer":
             return objectTransferAction(action, i);
+          case "legacy token withdraw":
+            return legacyTokenWithdrawAction(action, i);
+          case "legacy token deposit":
+            return legacyTokenDepositAction(action, i);
         }
       })}
       tooltip={
@@ -419,7 +459,10 @@ type UserTransactionOverviewTabProps = {
 export default function UserTransactionOverviewTab({
   transaction,
 }: UserTransactionOverviewTabProps) {
-  const transactionData = transaction as Types.Transaction_UserTransaction;
+  // TODO: Get off SDK V1, this is just a patch
+  const transactionData = transaction as Types.Transaction_UserTransaction & {
+    replay_protection_nonce?: string;
+  };
 
   // TODO: pass into gas fee value to reduce searches
   const feeStatement = transactionData?.events?.find(
@@ -484,11 +527,20 @@ export default function UserTransactionOverviewTab({
       </ContentBox>
       <ContentBox>
         <TransactionBlockRow version={transactionData.version} />
-        <ContentRow
-          title="Sequence Number:"
-          value={transactionData.sequence_number}
-          tooltip={getLearnMoreTooltip("sequence_number")}
-        />
+        {!transactionData?.replay_protection_nonce && (
+          <ContentRow
+            title="Sequence Number:"
+            value={transactionData.sequence_number}
+            tooltip={getLearnMoreTooltip("sequence_number")}
+          />
+        )}
+        {transactionData?.replay_protection_nonce && (
+          <ContentRow
+            title="Replay Protection Nonce:"
+            value={transactionData.replay_protection_nonce}
+            tooltip={getLearnMoreTooltip("replay_protection_nonce")}
+          />
+        )}
         <ContentRow
           title="Expiration Timestamp:"
           value={
@@ -732,6 +784,48 @@ const objectTransferAction = (action: ObjectTransfer, i: number) => {
   );
 };
 
+const legacyTokenDepositAction = (action: LegacyTokenDeposit, i: number) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      {"⬇️ Deposit "}
+      {action.amount}
+      {" of "}
+      {action.id.token_data_id.name}
+      {" NFTs to "}
+      {<HashButton hash={action.address} type={HashType.ACCOUNT} />} {"  "}
+    </Box>
+  );
+};
+
+const legacyTokenWithdrawAction = (action: LegacyTokenWithdraw, i: number) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      {"⬆️ Withdraw "}
+      {action.amount}
+      {" of "}
+      {action.id.token_data_id.name}
+      {" NFTs from "}
+      {<HashButton hash={action.address} type={HashType.ACCOUNT} />} {"  "}
+    </Box>
+  );
+};
+
 function parseTokenMintEvent(event: Types.Event): TokenMint | undefined {
   if (
     !event.type.startsWith("0x4::collection::Mint") &&
@@ -774,6 +868,59 @@ function parseTokenBurnEvent(event: Types.Event): TokenBurn | undefined {
   };
 }
 
+function parseLegacyTokenDepositEvent(
+  event: Types.Event,
+): LegacyTokenDeposit | undefined {
+  if (event.type.startsWith("0x3::token::TokenDeposit")) {
+    const data: {
+      account: string;
+      amount: string;
+      id: {
+        property_version: string;
+        token_data_id: {
+          creator: string;
+          collection: string;
+          name: string;
+        };
+      };
+    } = event.data;
+    return {
+      actionType: "legacy token deposit",
+      address: data.account,
+      amount: data.amount,
+      id: data.id,
+    };
+  }
+
+  return undefined;
+}
+
+function parseLegacyTokenWithdrawEvent(
+  event: Types.Event,
+): LegacyTokenWithdraw | undefined {
+  if (event.type.startsWith("0x3::token::TokenWithdraw")) {
+    const data: {
+      account: string;
+      amount: string;
+      id: {
+        property_version: string;
+        token_data_id: {
+          creator: string;
+          collection: string;
+          name: string;
+        };
+      };
+    } = event.data;
+    return {
+      actionType: "legacy token withdraw",
+      address: data.account,
+      amount: data.amount,
+      id: data.id,
+    };
+  }
+
+  return undefined;
+}
 function parseObjectTransferEvent(
   event: Types.Event,
 ): ObjectTransfer | undefined {
