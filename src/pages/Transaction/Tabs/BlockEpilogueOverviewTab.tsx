@@ -15,28 +15,28 @@ type BlockEpilogueOverviewTabProps = {
 export default function BlockEpilogueOverviewTab({
   transaction,
 }: BlockEpilogueOverviewTabProps) {
-  const transactionData = // TODO: Get off SDK V1
-    transaction as unknown as {
-      version: string;
-      hash: string;
-      state_change_hash: string;
-      event_root_hash: string;
-      accumulator_root_hash: string;
-      state_checkpoint_hash: string;
-      gas_used: string;
-      success: boolean;
-      vm_status: string;
-      timestamp: string;
-      type: string;
-      changes: Array<Types.WriteSetChange>;
-      block_end_info: {
-        block_gas_limit_reached: boolean;
-        block_output_limit_reached: boolean;
-        block_effective_block_gas_units: number;
-        block_approx_output_size: number;
-      };
+  interface TransactionData {
+    version: string;
+    hash: string;
+    state_change_hash: string;
+    event_root_hash: string;
+    accumulator_root_hash: string;
+    state_checkpoint_hash: string;
+    gas_used: string;
+    success: boolean;
+    vm_status: string;
+    timestamp: string;
+    type: string;
+    changes: Array<Types.WriteSetChange>;
+    block_end_info: {
+      block_gas_limit_reached: boolean;
+      block_output_limit_reached: boolean;
+      block_effective_block_gas_units: number;
+      block_approx_output_size: number;
     };
+  }
 
+  const transactionData: TransactionData = transaction as TransactionData;
   return (
     <Box marginBottom={3}>
       <ContentBox padding={4}>
