@@ -459,7 +459,10 @@ type UserTransactionOverviewTabProps = {
 export default function UserTransactionOverviewTab({
   transaction,
 }: UserTransactionOverviewTabProps) {
-  const transactionData = transaction as Types.Transaction_UserTransaction;
+  // TODO: Get off SDK V1, this is just a patch
+  const transactionData = transaction as Types.Transaction_UserTransaction & {
+    replay_protection_nonce?: string;
+  };
 
   // TODO: pass into gas fee value to reduce searches
   const feeStatement = transactionData?.events?.find(
@@ -524,11 +527,20 @@ export default function UserTransactionOverviewTab({
       </ContentBox>
       <ContentBox>
         <TransactionBlockRow version={transactionData.version} />
-        <ContentRow
-          title="Sequence Number:"
-          value={transactionData.sequence_number}
-          tooltip={getLearnMoreTooltip("sequence_number")}
-        />
+        {!transactionData?.replay_protection_nonce && (
+          <ContentRow
+            title="Sequence Number:"
+            value={transactionData.sequence_number}
+            tooltip={getLearnMoreTooltip("sequence_number")}
+          />
+        )}
+        {transactionData?.replay_protection_nonce && (
+          <ContentRow
+            title="Replay Protection Nonce:"
+            value={transactionData.replay_protection_nonce}
+            tooltip={getLearnMoreTooltip("replay_protection_nonce")}
+          />
+        )}
         <ContentRow
           title="Expiration Timestamp:"
           value={
