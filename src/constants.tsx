@@ -154,6 +154,8 @@ export const knownAddresses: Record<string, string> = {
     "Mosaic",
   "0x26a95d4bd7d7fc3debf6469ff94837e03e887088bef3a3f2d08d1131141830d3":
     "Mosaic AMM",
+  "0x373aab3f20ef3c31fc4caa287b0f18170f4a0b4a28c80f7ee79434458f70f241": 
+    "Interest DEX"
 };
 
 export const scamAddresses: Record<string, string> = {
