@@ -297,6 +297,8 @@ export const knownAddresses: Record<string, string> = {
     "MEXC 1",
   "0xde084991b91637a08e4da2f1b398f5f935e1393b65d13cc99c597ec5dc105b6b":
     "Crypto.com 1",
+  "0x0613f31af70ce983b9dca574e033a52351fd2e67b1959bf48574c6e9c956f95e":
+    "Flipster",
   // Social
   "0x8d2d7bcde13b2513617df3f98cdd5d0e4b9f714c6308b9204fe18ad900d92609":
     "Chingari",
