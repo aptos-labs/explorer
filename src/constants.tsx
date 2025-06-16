@@ -213,6 +213,20 @@ export const knownAddresses: Record<string, string> = {
     "Joule Bridge",
   "0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01":
     "Thala CDP",
+  "0x34c3e6af238f3a7fa3f3b0088cbc4b194d21f62e65a15b79ae91364de5a81a3a":
+    "Aave Acl",
+  "0x531069f4741cdead39d70b76e5779863864654fae6db8a752a244ff2f9916c15":
+    "Aave Config",
+  "0x5eb5cc775c5a446db0f3a1c944e11563b97e6a7e1387b9fb459aa26168f738dc":
+    "Aave Data",
+  "0xc0338eea778de2a5348824ddbfcec033c7f7cbe18da6da40869562906b63c78c":
+    "Aave Math",
+  "0x12b05c42ac3209a3c6ffadff4ebb6c3e983e5115f26031d56652815b49a14245":
+    "Aave Mock Underlyings",
+  "0x249676f3faddb83d64fd101baa3f84a171ae02505d796e3edbf4861038a4b5cc":
+    "Aave Oracle",
+  "0x39ddcd9e1a39fa14f25e3f9ec8a86074d05cc0881cbf667df8a6ee70942016fb":
+    "Aave Pool",
   // Liquid staking
   "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a":
     "Amnis Finance",
