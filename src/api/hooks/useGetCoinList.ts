@@ -51,7 +51,8 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
       };
 
       const headers = {
-        "x-api-key": // public key from their docs page
+        // public key from their docs page
+        "x-api-key":
           "a4^KV_EaTf4MW#ZdvgGKX#HUD^3IFEAOV_kzpIE^3BQGA8pDnrkT7JcIy#HNlLGi",
       };
 
