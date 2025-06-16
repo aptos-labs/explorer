@@ -1283,7 +1283,7 @@ function parseHyperionSwapEvent(event: Types.Event): Swap | undefined {
     event.type !==
       "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEventV2" &&
     event.type !==
-    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEventV3"
+      "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEventV3"
   ) {
     return undefined;
   }
