@@ -154,6 +154,8 @@ export const knownAddresses: Record<string, string> = {
     "Mosaic",
   "0x26a95d4bd7d7fc3debf6469ff94837e03e887088bef3a3f2d08d1131141830d3":
     "Mosaic AMM",
+  "0x373aab3f20ef3c31fc4caa287b0f18170f4a0b4a28c80f7ee79434458f70f241": 
+    "Interest DEX",
   "0x46566b4a16a1261ab400ab5b9067de84ba152b5eb4016b217187f2a2ca980c5a":
     "YUZU",
   "0x4c5058bc4cd77fe207b8b9990e8af91e1055b814073f0596068e3b95a7ccd31a":
