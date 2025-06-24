@@ -5,7 +5,8 @@ WITH end_of_epoch AS (
         CAST(JSON_VALUE(data, "$.epoch") AS INT) AS epoch_next
     FROM `bigquery-public-data.crypto_aptos_mainnet_us.events`
     WHERE 1=1
-    AND event_type = '0x1::reconfiguration::NewEpochEvent'
+    AND event_type IN ('0x1::reconfiguration::NewEpochEvent', '0x1::reconfiguration::NewEpoch')
+    AND block_timestamp = '2025-06-15'
 ), validator_set AS (
     SELECT
         tx_version, -- for ValidatorSet
@@ -19,7 +20,7 @@ WITH end_of_epoch AS (
     INNER JOIN end_of_epoch
     USING(tx_version)
     WHERE type_str = '0x1::stake::ValidatorSet'
-    AND date(r.block_timestamp) = '2024-06-29' -- debug
+    AND r.block_timestamp = '2025-06-15'
 ), validator_perf AS (
     -- every block has this, get the last one for an epoch
     SELECT
@@ -34,17 +35,21 @@ WITH end_of_epoch AS (
     INNER JOIN end_of_epoch
     ON r.tx_version = end_of_epoch.tx_version -1
     WHERE type_str = '0x1::stake::ValidatorPerformance'
-    AND date(r.block_timestamp) = '2024-06-29' -- debug
+    AND r.block_timestamp = '2025-06-15'
 ), staking_reward AS (
     SELECT
-        e.address AS pool_address, -- same as pool_address in data
+        IF(e.address != '0x0000000000000000000000000000000000000000000000000000000000000000',
+            e.address,
+            '0x'|| LPAD(LTRIM(JSON_VALUE(data, '$.pool_address'), '0x'), 64, '0')
+        ) AS pool_address,
         e.tx_version,
         e.event_index,
         -- e.block_timestamp,
         -- '0x'|| LPAD(LTRIM(JSON_VALUE(data, '$.pool_address'), '0x'), 64, '0') AS pool_address,
         CAST(JSON_VALUE(e.data, '$.rewards_amount') AS BIGNUMERIC) AS reward_amount,
     FROM `bigquery-public-data.crypto_aptos_mainnet_us.events` e
-    WHERE event_type = '0x1::stake::DistributeRewardsEvent'
+    WHERE event_type IN ('0x1::stake::DistributeRewardsEvent', '0x1::stake::DistributeRewards')
+    AND block_timestamp = '2025-06-15'
 ), validator_status AS (
     SELECT
         epoch_next-1 AS epoch,
@@ -63,6 +68,7 @@ WITH end_of_epoch AS (
     INNER JOIN end_of_epoch
     USING(tx_version)
     WHERE type_str = '0x1::stake::StakePool'
+    AND r.block_timestamp = '2025-06-15'
 ), gov_vote_record AS (
     -- not joined in
     SELECT
@@ -76,7 +82,8 @@ WITH end_of_epoch AS (
         '0x' || LPAD(LTRIM(JSON_VALUE(data, '$.stake_pool'), '0x'), 64, '0') AS validator_id,
         JSON_VALUE(data, '$.proposal_id') AS proposal_id
         FROM `bigquery-public-data.crypto_aptos_mainnet_us.events`
-        WHERE event_type = '0x1::aptos_governance::VoteEvent'
+        WHERE event_type IN ('0x1::aptos_governance::VoteEvent', '0x1::aptos_governance::Vote')
+        AND block_timestamp = '2025-06-15'
         GROUP BY ALL
     )
 )
