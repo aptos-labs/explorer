@@ -5,7 +5,7 @@ WITH end_of_epoch AS (
         CAST(JSON_VALUE(data, "$.epoch") AS INT) AS epoch_next
     FROM `bigquery-public-data.crypto_aptos_mainnet_us.events`
     WHERE 1=1
-    AND event_type = '0x1::reconfiguration::NewEpochEvent'
+    AND event_type IN ('0x1::reconfiguration::NewEpochEvent', '0x1::reconfiguration::NewEpoch')
 ), validator_set AS (
     SELECT
         tx_version, -- for ValidatorSet
@@ -37,14 +37,17 @@ WITH end_of_epoch AS (
     AND date(r.block_timestamp) = '2024-06-29' -- debug
 ), staking_reward AS (
     SELECT
-        e.address AS pool_address, -- same as pool_address in data
+        IF(e.account_address != '0x0000000000000000000000000000000000000000000000000000000000000000',
+            e.account_address,
+            '0x'|| LPAD(LTRIM(JSON_VALUE(data, '$.pool_address'), '0x'), 64, '0')
+        ) AS pool_address,
         e.tx_version,
         e.event_index,
         -- e.block_timestamp,
         -- '0x'|| LPAD(LTRIM(JSON_VALUE(data, '$.pool_address'), '0x'), 64, '0') AS pool_address,
         CAST(JSON_VALUE(e.data, '$.rewards_amount') AS BIGNUMERIC) AS reward_amount,
     FROM `bigquery-public-data.crypto_aptos_mainnet_us.events` e
-    WHERE event_type = '0x1::stake::DistributeRewardsEvent'
+    WHERE event_type IN ('0x1::stake::DistributeRewardsEvent', '0x1::stake::DistributeRewards')
 ), validator_status AS (
     SELECT
         epoch_next-1 AS epoch,
@@ -76,7 +79,7 @@ WITH end_of_epoch AS (
         '0x' || LPAD(LTRIM(JSON_VALUE(data, '$.stake_pool'), '0x'), 64, '0') AS validator_id,
         JSON_VALUE(data, '$.proposal_id') AS proposal_id
         FROM `bigquery-public-data.crypto_aptos_mainnet_us.events`
-        WHERE event_type = '0x1::aptos_governance::VoteEvent'
+        WHERE event_type IN ('0x1::aptos_governance::VoteEvent', '0x1::aptos_governance::Vote')
         GROUP BY ALL
     )
 )
