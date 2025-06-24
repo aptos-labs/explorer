@@ -205,6 +205,8 @@ export const knownAddresses: Record<string, string> = {
     "Echelon Isolated Markets",
   "0xeab7ea4d635b6b6add79d5045c4a45d8148d88287b1cfa1c3b6a4b56f46839ed":
     "Echo Lending",
+  "0x4e1854f6d332c9525e258fb6e66f84b6af8aba687bbcb832a24768c4e175feec":
+    "Echo Lending",
   "0x68476f9d437e3f32fd262ba898b5e3ee0a23a1d586a6cf29a28add35f253f6f7":
     "Meso Finance",
   "0xccd1a84ccea93531d7f165b90134aa0415feb30e8757ab1632dac68c0055f5c2":
@@ -335,6 +337,7 @@ export const knownAddresses: Record<string, string> = {
     "STAN app",
   "0xe63780c1d8f66aa2a5f30cc920af21fc82c4707225756c765bd12a2f7da61383":
     "Balance fun",
+  "0x664f1da7f6256b26a7808e0e5b02e747c4c6450e92b602740a2a5514bba91e52": "Defi Cattos",
   // Fungible assets
   "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "USDt",
   "0xf73e887a8754f540ee6e1a93bdc6dde2af69fc7ca5de32013e89dd44244473cb":
