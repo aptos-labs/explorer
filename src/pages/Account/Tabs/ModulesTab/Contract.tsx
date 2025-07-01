@@ -4,7 +4,7 @@ import Error from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import SidebarItem from "../../Components/SidebarItem";
-import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
+import {WalletConnector} from "../../../../components/WalletConnector";
 import {
   useWallet,
   InputTransactionData,

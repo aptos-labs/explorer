@@ -10,7 +10,7 @@ import Box from "@mui/material/Box";
 import {Divider, useTheme} from "@mui/material";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import {useNavigate} from "../../routing";
-import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
+import {WalletConnector} from "../../components/WalletConnector";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sortPetraFirst} from "../../utils";

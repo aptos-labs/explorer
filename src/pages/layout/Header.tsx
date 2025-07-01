@@ -15,7 +15,7 @@ import NavMobile from "./NavMobile";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
-import {WalletConnector} from "@aptos-labs/wallet-adapter-mui-design";
+import {WalletConnector} from "../../components/WalletConnector";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
