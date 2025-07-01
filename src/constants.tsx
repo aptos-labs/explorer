@@ -352,7 +352,8 @@ export const knownAddresses: Record<string, string> = {
     "STAN app",
   "0xe63780c1d8f66aa2a5f30cc920af21fc82c4707225756c765bd12a2f7da61383":
     "Balance fun",
-  "0x664f1da7f6256b26a7808e0e5b02e747c4c6450e92b602740a2a5514bba91e52": "Defi Cattos",
+  "0x664f1da7f6256b26a7808e0e5b02e747c4c6450e92b602740a2a5514bba91e52":
+    "Defi Cattos",
   // Fungible assets
   "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "USDt",
   "0xf73e887a8754f540ee6e1a93bdc6dde2af69fc7ca5de32013e89dd44244473cb":

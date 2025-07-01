@@ -25,6 +25,7 @@
     "@mui/material": "^7.1.1",
     "@mui/system": "^7.1.1",
     "@mui/x-date-pickers": "^8.5.2",
+    "@okwallet/aptos-wallet-adapter": "^0.0.7",
     "@sentry/react": "^9.28.1",
     "@tanstack/react-query": "^5.80.7",
     "aptos": "^1.21.0",
