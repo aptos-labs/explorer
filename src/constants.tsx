@@ -352,7 +352,8 @@ export const knownAddresses: Record<string, string> = {
     "STAN app",
   "0xe63780c1d8f66aa2a5f30cc920af21fc82c4707225756c765bd12a2f7da61383":
     "Balance fun",
-  "0x664f1da7f6256b26a7808e0e5b02e747c4c6450e92b602740a2a5514bba91e52": "Defi Cattos",
+  "0x664f1da7f6256b26a7808e0e5b02e747c4c6450e92b602740a2a5514bba91e52":
+    "Defi Cattos",
   // Fungible assets
   "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b": "USDt",
   "0xf73e887a8754f540ee6e1a93bdc6dde2af69fc7ca5de32013e89dd44244473cb":
@@ -799,6 +800,29 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native"],
   },
+  "0xb2c7780f0a255a6137e5b39733f5a4c85fe093c549de5c359c1232deef57d1b7": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0xb2c7780f0a255a6137e5b39733f5a4c85fe093c549de5c359c1232deef57d1b7",
+    name: "Echo",
+    symbol: "ECHO",
+    decimals: 8,
+    panoraSymbol: "ECHO",
+    bridge: null,
+    logoUrl: "https://assets.echo-protocol.xyz/images/echo.svg",
+    websiteUrl: "https://www.echo-protocol.xyz/",
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 9,
+    panoraIndex: 9,
+    coinGeckoId: "echo-protocol",
+    coinMarketCapId: 36978,
+    panoraUI: true,
+    usdPrice: null,
+    panoraTags: ["Native"],
+  },
 };
 
 /**
@@ -849,6 +873,7 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0xeedba439a4ab8987a995cf5cfefebd713000b3365718a29dfbc36bc214445fb8": "VIBE",
   "0x2597fe74a0dba786453d550fb348801183b69e734cdbd15f9c5537b566483cb7":
     "CAS1045",
+  "0xb2c7780f0a255a6137e5b39733f5a4c85fe093c549de5c359c1232deef57d1b7": "ECHO",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const labsBannedTokens: Record<string, string> = {
