@@ -159,7 +159,9 @@ export const knownAddresses: Record<string, string> = {
   "0x46566b4a16a1261ab400ab5b9067de84ba152b5eb4016b217187f2a2ca980c5a":
     "YUZU",
   "0x4c5058bc4cd77fe207b8b9990e8af91e1055b814073f0596068e3b95a7ccd31a":
-    "Move.Fun"
+    "Move.Fun",
+  "0x4877ee1d4970d17283fb9477094fd9b203e2c93ec6d6886e5d831c0b84c2ecf7":
+    "Binance"
 };
 
 export const scamAddresses: Record<string, string> = {
