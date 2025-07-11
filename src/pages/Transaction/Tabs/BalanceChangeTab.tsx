@@ -180,8 +180,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
       known: true,
       isBanned: false,
       isInPanoraTokenList: true,
-      logoUrl:
-        "/logo.png",
+      logoUrl: "/logo.png",
     });
   }
 
@@ -274,7 +273,7 @@ export function findCoinData(
 ): CoinDescription | undefined {
   let entry: CoinDescription | undefined;
   if (coinData) {
-    const coinType = asset_type.includes("::") ? asset_type : undefined;
+    const coinType = asset_type.includes("::") ? asset_type.split("::")[0] : undefined;
     const faAddress = asset_type && tryStandardizeAddress(asset_type);
     entry = coinData.find((c) => {
       const isMatchingFa =
