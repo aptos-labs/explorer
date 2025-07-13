@@ -52,6 +52,7 @@ export default function ContentRow({
             <Box
               sx={{
                 display: "inline-flex",
+                flexWrap: "wrap",
                 alignItems: "center",
                 gap: 1,
               }}
