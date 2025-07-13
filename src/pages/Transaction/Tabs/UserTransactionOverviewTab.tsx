@@ -1469,15 +1469,15 @@ function parseTappEvent(
     const data: {
       amount_in: string;
       amount_out: string;
-      tokens: string[];
-      token_in_index: string;
-      token_out_index: string;
+      assets: string[];
+      asset_in_index: string;
+      asset_out_index: string;
     } = event.data;
 
     const amountIn = Number(data.amount_in);
     const amountOut = Number(data.amount_out);
-    const assetIn = data.tokens[Number(data.token_in_index)];
-    const assetOut = data.tokens[Number(data.token_out_index)];
+    const assetIn = data.assets[Number(data.asset_in_index)];
+    const assetOut = data.assets[Number(data.asset_out_index)];
 
     return {
       actionType,
