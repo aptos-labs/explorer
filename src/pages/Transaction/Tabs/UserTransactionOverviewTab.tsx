@@ -32,6 +32,11 @@ type EconiaState = {
   hasCancelOrder: boolean;
 };
 
+type AssetData = {
+  asset: string;
+  amount: number;
+};
+
 // Fetched from https://aptos-mainnet-econia.nodeinfra.com/markets
 // Update this once econia adds more markets
 const ECONIA_MARKETS = [
@@ -259,6 +264,8 @@ function TransactionAmountRow({transaction}: {transaction: Types.Transaction}) {
 
 type EventAction =
   | Swap
+  | AddLiquidity
+  | RemoveLiquidity
   | TokenMint
   | TokenBurn
   | ObjectTransfer
@@ -281,11 +288,28 @@ type Swap = {
     | "0xc727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e" // "Thetis Market"
     | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba" // "Cetus 1"
     | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c" // "Hyperion"
+    | "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a" // "Tapp"
     | "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c"; // "Econia"
   amountIn: number;
   amountOut: number;
   assetIn: string;
   assetOut: string;
+};
+
+type AddLiquidity = {
+  actionType: "add liquidity";
+  dex:
+    | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c" // "Hyperion"
+    | "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a"; // "Tapp"
+  assetData: AssetData[];
+};
+
+type RemoveLiquidity = {
+  actionType: "remove liquidity";
+  dex:
+    | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c" // "Hyperion"
+    | "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a"; // "Tapp"
+  assetData: AssetData[];
 };
 
 type TokenMint = {
@@ -342,7 +366,7 @@ const parsers = [
   parseLegacyTokenWithdrawEvent,
   parseLegacyTokenDepositEvent,
 
-  // swap actions
+  // swap / liquidity actions
   parseThalaSwapV1Event,
   parseThalaSwapV2Event,
   (event: Types.Event) =>
@@ -375,7 +399,8 @@ const parsers = [
   parseCellanaEvent,
   parseThetisSwapEvent,
   parseCetusSwapEvent,
-  parseHyperionSwapEvent,
+  parseHyperionEvent,
+  parseTappEvent,
 ];
 
 function TransactionActionsRow({
@@ -433,6 +458,10 @@ function TransactionActionsRow({
         switch (action.actionType) {
           case "swap":
             return swapAction(coinData, action, i);
+          case "add liquidity":
+            return liquidityAction(coinData, action, i);
+          case "remove liquidity":
+            return liquidityAction(coinData, action, i);
           case "token mint":
             return nftMintAction(action, i);
           case "token burn":
@@ -722,6 +751,70 @@ const swapAction = (
       action={action}
       coinData={coinData}
     />
+  );
+};
+
+const LiquidityAssetContent = ({
+  asset,
+  coinData,
+  index,
+  totalAssets,
+}: {
+  asset: AssetData;
+  coinData: {data: CoinDescription[]} | undefined;
+  index: number;
+  totalAssets: number;
+}) => {
+  const {data: assetMetadata} = useGetAssetMetadata(asset.asset);
+  const assetCoin = findCoinData(coinData?.data ?? [], asset.asset);
+  const decimals = assetCoin?.decimals ?? assetMetadata?.decimals ?? 0;
+
+  return (
+    <React.Fragment>
+      {asset.amount / Math.pow(10, decimals)}
+      <HashButton
+        hash={asset.asset}
+        type={
+          asset.asset.includes("::") ? HashType.COIN : HashType.FUNGIBLE_ASSET
+        }
+        img={assetCoin?.logoUrl}
+        size="small"
+      />
+      {index < totalAssets - 2 && ", "}
+      {index === totalAssets - 2 && " and "}
+    </React.Fragment>
+  );
+};
+
+const liquidityAction = (
+  coinData: {data: CoinDescription[]} | undefined,
+  action: AddLiquidity | RemoveLiquidity,
+  i: number,
+) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      {action.actionType === "add liquidity"
+        ? "➕ Add Liquidity "
+        : "➖ Remove Liquidity "}
+      {action.assetData.map((asset, index) => (
+        <LiquidityAssetContent
+          key={`action-${i}-asset-${index}`}
+          asset={asset}
+          coinData={coinData}
+          index={index}
+          totalAssets={action.assetData.length}
+        />
+      ))}
+      on <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+    </Box>
   );
 };
 
@@ -1276,38 +1369,141 @@ function parseCetusSwapEvent(event: Types.Event): Swap | undefined {
   };
 }
 
-function parseHyperionSwapEvent(event: Types.Event): Swap | undefined {
-  if (
-    event.type !==
-      "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEvent" &&
-    event.type !==
-      "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEventV2" &&
-    event.type !==
-      "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEventV3"
-  ) {
-    return undefined;
+function parseHyperionEvent(
+  event: Types.Event,
+): Swap | AddLiquidity | RemoveLiquidity | undefined {
+  const dex =
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c";
+  const eventTypeToAction: Record<
+    string,
+    "swap" | "add liquidity" | "remove liquidity"
+  > = {
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEvent":
+      "swap",
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEventV2":
+      "swap",
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEventV3":
+      "swap",
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::AddLiquidityEvent":
+      "add liquidity",
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::AddLiquidityEventV2":
+      "add liquidity",
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::AddLiquidityEventV3":
+      "add liquidity",
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::RemoveLiquidityEvent":
+      "remove liquidity",
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::RemoveLiquidityEventV2":
+      "remove liquidity",
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::RemoveLiquidityEventV3":
+      "remove liquidity",
+  };
+
+  const actionType = eventTypeToAction[event.type];
+  if (!actionType) return undefined;
+  // processing swap events
+  if (actionType === "swap") {
+    const data: {
+      amount_in: string;
+      amount_out: string;
+      from_token: {inner: string};
+      to_token: {inner: string};
+      protocol_fee_amount: string;
+    } = event.data;
+
+    const amountIn = Number(data.amount_in) + Number(data.protocol_fee_amount);
+    const amountOut = Number(data.amount_out);
+    const assetIn = data.from_token.inner;
+    const assetOut = data.to_token.inner;
+
+    return {
+      actionType,
+      dex,
+      amountIn,
+      amountOut,
+      assetIn,
+      assetOut,
+    };
   }
 
+  // processing liquidity events
   const data: {
-    amount_in: string;
-    amount_out: string;
-    from_token: {inner: string};
-    to_token: {inner: string};
-    protocol_fee_amount: string;
+    amount_a: string;
+    amount_b: string;
+    token_a: {inner: string};
+    token_b: {inner: string};
   } = event.data;
 
-  const amountIn = Number(data.amount_in) + Number(data.protocol_fee_amount);
-  const amountOut = Number(data.amount_out);
-  const assetIn = data.from_token.inner;
-  const assetOut = data.to_token.inner;
+  const assetData: AssetData[] = [
+    {asset: data.token_a.inner, amount: Number(data.amount_a)},
+    {asset: data.token_b.inner, amount: Number(data.amount_b)},
+  ];
 
   return {
-    actionType: "swap",
-    dex: "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c",
-    amountIn,
-    amountOut,
-    assetIn,
-    assetOut,
+    actionType,
+    dex,
+    assetData,
+  };
+}
+
+function parseTappEvent(
+  event: Types.Event,
+): Swap | AddLiquidity | RemoveLiquidity | undefined {
+  const dex =
+    "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a";
+  const eventTypeToAction: Record<
+    string,
+    "swap" | "add liquidity" | "remove liquidity"
+  > = {
+    "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a::router::Swapped":
+      "swap",
+    "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a::router::LiquidityAdded":
+      "add liquidity",
+    "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a::router::LiquidityRemoved":
+      "remove liquidity",
+  };
+
+  const actionType = eventTypeToAction[event.type];
+  if (!actionType) return undefined;
+  // processing swap events
+  if (actionType === "swap") {
+    const data: {
+      amount_in: string;
+      amount_out: string;
+      tokens: string[];
+      token_in_index: string;
+      token_out_index: string;
+    } = event.data;
+
+    const amountIn = Number(data.amount_in);
+    const amountOut = Number(data.amount_out);
+    const assetIn = data.tokens[Number(data.token_in_index)];
+    const assetOut = data.tokens[Number(data.token_out_index)];
+
+    return {
+      actionType,
+      dex,
+      amountIn,
+      amountOut,
+      assetIn,
+      assetOut,
+    };
+  }
+
+  // processing liquidity events
+  const data: {
+    assets: string[];
+    amounts: number[];
+  } = event.data;
+
+  const assetData: AssetData[] = data.assets.map((asset, idx) => ({
+    asset,
+    amount: data.amounts[idx],
+  }));
+
+  return {
+    actionType,
+    dex,
+    assetData,
   };
 }
 
