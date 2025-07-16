@@ -268,6 +268,7 @@ type EventAction =
   | RemoveLiquidity
   | TokenMint
   | TokenBurn
+  | LiquidStaking
   | ObjectTransfer
   | LegacyTokenDeposit
   | LegacyTokenWithdraw;
@@ -309,6 +310,23 @@ type RemoveLiquidity = {
   dex:
     | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c" // "Hyperion"
     | "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a"; // "Tapp"
+  assetData: AssetData[];
+};
+
+type LiquidStaking = {
+  actionType: "liquid staking";
+  subActionType:
+    | "mint"
+    | "stake"
+    | "unstake"
+    | "request"
+    | "withdraw"
+    | "cancel";
+  dex:
+    | "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a" // "Amnis"
+    | "0x6f8ca77dd0a4c65362f475adb1c26ae921b1d75aa6b70e53d0e340efd7d8bc80" // "TruFi"
+    | "0xfaf4e633ae9eb31366c9ca24214231760926576c7b625313b3688b5e900731f6" // "ThalaLSD"
+    | "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f"; // "Kofi"
   assetData: AssetData[];
 };
 
@@ -401,6 +419,12 @@ const parsers = [
   parseCetusSwapEvent,
   parseHyperionEvent,
   parseTappEvent,
+
+  // staking / unstaking actions
+  parseAmisLSDEvent,
+  parseTruFiLSDEvent,
+  parseThalaLSDEvent,
+  parseKofiLSDEvent,
 ];
 
 function TransactionActionsRow({
@@ -462,6 +486,8 @@ function TransactionActionsRow({
             return liquidityAction(coinData, action, i);
           case "remove liquidity":
             return liquidityAction(coinData, action, i);
+          case "liquid staking":
+            return liquidStakingAction(coinData, action, i);
           case "token mint":
             return nftMintAction(action, i);
           case "token burn":
@@ -806,6 +832,76 @@ const liquidityAction = (
         : "➖ Remove Liquidity "}
       {action.assetData.map((asset, index) => (
         <LiquidityAssetContent
+          key={`action-${i}-asset-${index}`}
+          asset={asset}
+          coinData={coinData}
+          index={index}
+          totalAssets={action.assetData.length}
+        />
+      ))}
+      on <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+    </Box>
+  );
+};
+const LiquidStakingContent = ({
+  asset,
+  coinData,
+  index,
+  totalAssets,
+}: {
+  asset: AssetData;
+  coinData: {data: CoinDescription[]} | undefined;
+  index: number;
+  totalAssets: number;
+}) => {
+  const {data: assetMetadata} = useGetAssetMetadata(asset.asset);
+  const assetCoin = findCoinData(coinData?.data ?? [], asset.asset);
+  const decimals = assetCoin?.decimals ?? assetMetadata?.decimals ?? 0;
+
+  return (
+    <React.Fragment>
+      {asset.amount / Math.pow(10, decimals)}
+      <HashButton
+        hash={asset.asset}
+        type={
+          asset.asset.includes("::") ? HashType.COIN : HashType.FUNGIBLE_ASSET
+        }
+        img={assetCoin?.logoUrl}
+        size="small"
+      />
+      {index === totalAssets - 2 && " for "}
+    </React.Fragment>
+  );
+};
+
+const liquidStakingAction = (
+  coinData: {data: CoinDescription[]} | undefined,
+  action: LiquidStaking,
+  i: number,
+) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      {action.subActionType === "mint"
+        ? "🏗️ Mint "
+        : action.subActionType === "stake"
+          ? "➕ Stake "
+          : action.subActionType === "unstake"
+            ? "➖ Unstake "
+            : action.subActionType === "request"
+              ? "➖ Request Unstaking "
+              : action.subActionType === "cancel"
+                ? "➖ Cancel Unstaking "
+                : "➖ Withdraw Unstaked "}
+      {action.assetData.map((asset, index) => (
+        <LiquidStakingContent
           key={`action-${i}-asset-${index}`}
           asset={asset}
           coinData={coinData}
@@ -1603,6 +1699,310 @@ function parseEconiaEvent(
       assetOut: baseAsset,
     };
   }
+}
+
+function parseAmisLSDEvent(event: Types.Event): LiquidStaking | undefined {
+  const dex =
+    "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a";
+  const actionType = "liquid staking";
+  const aptos_coin = "0x1::aptos_coin::AptosCoin";
+  const liquid_aptos =
+    "0xa259be733b6a759909f92815927fa213904df6540519568692caf0b068fe8e62";
+  const staked_liquid_aptos =
+    "0xb614bfdf9edc39b330bbf9c3c5bcd0473eee2f6d4e21748629cc367869ece627";
+  const assetData: AssetData[] = [];
+  const eventTypeToAction: Record<
+    string,
+    "mint" | "stake" | "unstake" | "request" | "withdraw" | "cancel"
+  > = {
+    "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a::router::MintEvent":
+      "mint", // sometimes Amis will not Mint if have unstaking reserve frpm treasury. no way to track that right now.
+    "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a::router::StakeEvent":
+      "stake",
+    "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a::router::UnstakeEvent":
+      "unstake",
+    "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a::router::WithdrawalRequestEvent":
+      "request",
+    "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a::router::WithdrawalCancelEvent":
+      "cancel",
+    "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a::router::WithdrawEvent":
+      "withdraw",
+  };
+
+  const subActionType = eventTypeToAction[event.type];
+  if (!subActionType) return undefined;
+  // processing swap events
+  if (subActionType === "mint") {
+    const data: {
+      apt: string;
+      amapt: string;
+    } = event.data;
+    // Minted {1} for {2}
+    assetData.push({asset: liquid_aptos, amount: Number(data.amapt)});
+    assetData.push({asset: aptos_coin, amount: Number(data.apt)});
+  } else if (subActionType === "stake") {
+    const data: {
+      amapt: string;
+      stapt: string;
+    } = event.data;
+
+    assetData.push({asset: liquid_aptos, amount: Number(data.amapt)});
+    assetData.push({asset: staked_liquid_aptos, amount: Number(data.stapt)});
+  } else if (subActionType === "unstake") {
+    const data: {
+      amapt: string;
+      stapt: string;
+    } = event.data;
+
+    assetData.push({asset: staked_liquid_aptos, amount: Number(data.stapt)});
+    assetData.push({asset: liquid_aptos, amount: Number(data.amapt)});
+  } else if (subActionType === "request") {
+    const data: {
+      amount: string;
+    } = event.data;
+
+    assetData.push({asset: liquid_aptos, amount: Number(data.amount)});
+  } else if (subActionType === "withdraw") {
+    const data: {
+      amount: string;
+    } = event.data;
+
+    assetData.push({asset: aptos_coin, amount: Number(data.amount)});
+  } else if (subActionType === "cancel") {
+    const data: {
+      amount: string;
+    } = event.data;
+
+    assetData.push({asset: liquid_aptos, amount: Number(data.amount)});
+  }
+
+  return {
+    actionType,
+    subActionType,
+    dex,
+    assetData,
+  };
+}
+
+function parseTruFiLSDEvent(event: Types.Event): LiquidStaking | undefined {
+  const dex =
+    "0x6f8ca77dd0a4c65362f475adb1c26ae921b1d75aa6b70e53d0e340efd7d8bc80";
+  const actionType = "liquid staking";
+  const aptos_coin = "0x1::aptos_coin::AptosCoin";
+  const liquid_aptos =
+    "0xaef6a8c3182e076db72d64324617114cacf9a52f28325edc10b483f7f05da0e7";
+  const assetData: AssetData[] = [];
+  const eventTypeToAction: Record<
+    string,
+    "mint" | "stake" | "unstake" | "request" | "withdraw" | "cancel"
+  > = {
+    "0x6f8ca77dd0a4c65362f475adb1c26ae921b1d75aa6b70e53d0e340efd7d8bc80::staker::DepositedEvent":
+      "mint",
+    "0x6f8ca77dd0a4c65362f475adb1c26ae921b1d75aa6b70e53d0e340efd7d8bc80::staker::UnlockedEvent":
+      "request",
+    "0x6f8ca77dd0a4c65362f475adb1c26ae921b1d75aa6b70e53d0e340efd7d8bc80::staker::WithdrawalClaimedEvent":
+      "withdraw",
+  };
+
+  const subActionType = eventTypeToAction[event.type];
+  if (!subActionType) return undefined;
+  // processing swap events
+  if (subActionType === "mint") {
+    const data: {
+      amount: string;
+      shares_minted: string;
+    } = event.data;
+
+    // Minted {1} for {2}
+    assetData.push({asset: liquid_aptos, amount: Number(data.shares_minted)});
+    assetData.push({asset: aptos_coin, amount: Number(data.amount)});
+  } else if (subActionType === "request") {
+    const data: {
+      shares_burned: string;
+      amount: string;
+    } = event.data;
+
+    assetData.push({asset: liquid_aptos, amount: Number(data.shares_burned)});
+    assetData.push({asset: aptos_coin, amount: Number(data.amount)});
+  } else if (subActionType === "withdraw") {
+    const data: {
+      amount: string;
+    } = event.data;
+
+    assetData.push({asset: aptos_coin, amount: Number(data.amount)});
+  }
+
+  return {
+    actionType,
+    subActionType,
+    dex,
+    assetData,
+  };
+}
+
+function parseThalaLSDEvent(event: Types.Event): LiquidStaking | undefined {
+  const dex =
+    "0xfaf4e633ae9eb31366c9ca24214231760926576c7b625313b3688b5e900731f6";
+  const actionType = "liquid staking";
+  const aptos_coin = "0x1::aptos_coin::AptosCoin";
+  const liquid_aptos =
+    "0xa0d9d647c5737a5aed08d2cfeb39c31cf901d44bc4aa024eaa7e5e68b804e011";
+  const staked_liquid_aptos =
+    "0x0a9ce1bddf93b074697ec5e483bc5050bc64cff2acd31e1ccfd8ac8cae5e4abe";
+  const assetData: AssetData[] = [];
+  const eventTypeToAction: Record<
+    string,
+    "mint" | "stake" | "unstake" | "request" | "withdraw" | "cancel"
+  > = {
+    "0xfaf4e633ae9eb31366c9ca24214231760926576c7b625313b3688b5e900731f6::staking::StakeAPTEvent":
+      "mint",
+    "0xfaf4e633ae9eb31366c9ca24214231760926576c7b625313b3688b5e900731f6::staking::StakeThalaAPTEvent":
+      "stake",
+    "0xfaf4e633ae9eb31366c9ca24214231760926576c7b625313b3688b5e900731f6::staking::UnstakeThalaAPTEvent":
+      "unstake",
+    "0xfaf4e633ae9eb31366c9ca24214231760926576c7b625313b3688b5e900731f6::staking::RequestUnstakeAPTEvent":
+      "request",
+    "0xfaf4e633ae9eb31366c9ca24214231760926576c7b625313b3688b5e900731f6::staking::CompleteUnstakeAPTEvent":
+      "withdraw",
+  };
+
+  const subActionType = eventTypeToAction[event.type];
+  if (!subActionType) return undefined;
+  // processing swap events
+  if (subActionType === "mint") {
+    const data: {
+      staked_APT: string;
+      minted_thAPT: string;
+    } = event.data;
+
+    // Minted {1} for {2}
+    assetData.push({asset: liquid_aptos, amount: Number(data.minted_thAPT)});
+    assetData.push({asset: aptos_coin, amount: Number(data.staked_APT)});
+  } else if (subActionType === "stake") {
+    const data: {
+      thAPT_staked: string;
+      sthAPT_minted: string;
+    } = event.data;
+
+    assetData.push({asset: liquid_aptos, amount: Number(data.thAPT_staked)});
+    assetData.push({
+      asset: staked_liquid_aptos,
+      amount: Number(data.sthAPT_minted),
+    });
+  } else if (subActionType === "unstake") {
+    const data: {
+      sthAPT_burnt: string;
+      thAPT_unstaked: string;
+    } = event.data;
+
+    assetData.push({
+      asset: staked_liquid_aptos,
+      amount: Number(data.sthAPT_burnt),
+    });
+    assetData.push({asset: liquid_aptos, amount: Number(data.thAPT_unstaked)});
+  } else if (subActionType === "request") {
+    const data: {
+      request_amount: string;
+      actual_amount: string;
+    } = event.data;
+
+    assetData.push({asset: liquid_aptos, amount: Number(data.request_amount)});
+    assetData.push({asset: aptos_coin, amount: Number(data.actual_amount)});
+  } else if (subActionType === "withdraw") {
+    const data: {
+      unstaked_amount: string;
+    } = event.data;
+
+    assetData.push({asset: aptos_coin, amount: Number(data.unstaked_amount)});
+  }
+
+  return {
+    actionType,
+    subActionType,
+    dex,
+    assetData,
+  };
+}
+
+function parseKofiLSDEvent(event: Types.Event): LiquidStaking | undefined {
+  const dex =
+    "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f";
+  const actionType = "liquid staking";
+  const aptos_coin = "0x1::aptos_coin::AptosCoin";
+  const liquid_aptos =
+    "0x821c94e69bc7ca058c913b7b5e6b0a5c9fd1523d58723a966fb8c1f5ea888105";
+  const staked_liquid_aptos =
+    "0x42556039b88593e768c97ab1a3ab0c6a17230825769304482dff8fdebe4c002b";
+  const assetData: AssetData[] = [];
+  const eventTypeToAction: Record<
+    string,
+    "mint" | "stake" | "unstake" | "request" | "withdraw" | "cancel"
+  > = {
+    "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f::minting_manager::MintEvent":
+      "mint", // sometimes Amis will not Mint if have unstaking reserve frpm treasury. no way to track that right now.
+    "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f::staking_manager::StakeEvent":
+      "stake",
+    "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f::staking_manager::UnstakeEvent":
+      "unstake",
+    "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f::withdrawal_manager::WithdrawalRequestEvent":
+      "request",
+    "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f::withdrawal_manager::WithdrawalFinalizedEvent":
+      "withdraw",
+  };
+
+  const subActionType = eventTypeToAction[event.type];
+  if (!subActionType) return undefined;
+  // processing swap events
+  if (subActionType === "mint") {
+    const data: {
+      amount: string;
+    } = event.data;
+
+    assetData.push({asset: liquid_aptos, amount: Number(data.amount)});
+  } else if (subActionType === "stake") {
+    const data: {
+      kapt_amount: string;
+      stkapt_amount: string;
+    } = event.data;
+
+    assetData.push({asset: liquid_aptos, amount: Number(data.kapt_amount)});
+    assetData.push({
+      asset: staked_liquid_aptos,
+      amount: Number(data.stkapt_amount),
+    });
+  } else if (subActionType === "unstake") {
+    const data: {
+      kapt_amount: string;
+      stkapt_amount: string;
+    } = event.data;
+
+    assetData.push({
+      asset: staked_liquid_aptos,
+      amount: Number(data.stkapt_amount),
+    });
+    assetData.push({asset: liquid_aptos, amount: Number(data.kapt_amount)});
+  } else if (subActionType === "request") {
+    const data: {
+      kapt_amount: string;
+      apt_amount: string;
+    } = event.data;
+
+    assetData.push({asset: liquid_aptos, amount: Number(data.kapt_amount)});
+    assetData.push({asset: aptos_coin, amount: Number(data.apt_amount)});
+  } else if (subActionType === "withdraw") {
+    const data: {
+      apt_amount: string;
+    } = event.data;
+
+    assetData.push({asset: aptos_coin, amount: Number(data.apt_amount)});
+  }
+
+  return {
+    actionType,
+    subActionType,
+    dex,
+    assetData,
+  };
 }
 
 function convertCoinInfoToCoinType(coinInfo: {

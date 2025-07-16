@@ -238,6 +238,7 @@ export const knownAddresses: Record<string, string> = {
     "Thala LSD",
   "0x6f8ca77dd0a4c65362f475adb1c26ae921b1d75aa6b70e53d0e340efd7d8bc80":
     "TruFin",
+  "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f": "Kofi",
   // Defi (other)
   "0x17f1e926a81639e9557f4e4934df93452945ec30bc962e11351db59eb0d78c33":
     "VibrantX",
