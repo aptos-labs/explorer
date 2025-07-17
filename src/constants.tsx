@@ -824,6 +824,30 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native"],
   },
+  "0x435ad41e7b383cef98899c4e5a22c8dc88ab67b22f95e5663d6c6649298c3a9d": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0x435ad41e7b383cef98899c4e5a22c8dc88ab67b22f95e5663d6c6649298c3a9d",
+    name: "Hyperion",
+    symbol: "RION",
+    decimals: 6,
+    panoraSymbol: "RION",
+    bridge: null,
+    logoUrl:
+      "https://khnk24lv2ydj52ib5vomdmtlxhxxmvvyztzaa2jnrsgzk4ff4yfq.arweave.net/UdqtcXXWBp7pAe1cwbJrue92VrjM8gBpLYyNlXCl5gs",
+    websiteUrl: "https://hyperion.xyz/",
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 9,
+    panoraIndex: 9,
+    coinGeckoId: "hyperion",
+    coinMarketCapId: 37344,
+    panoraUI: true,
+    usdPrice: null,
+    panoraTags: ["Native", "Verified"],
+  },
 };
 
 /**
@@ -875,6 +899,7 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0x2597fe74a0dba786453d550fb348801183b69e734cdbd15f9c5537b566483cb7":
     "CAS1045",
   "0xb2c7780f0a255a6137e5b39733f5a4c85fe093c549de5c359c1232deef57d1b7": "ECHO",
+  "0x435ad41e7b383cef98899c4e5a22c8dc88ab67b22f95e5663d6c6649298c3a9d": "RION",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const labsBannedTokens: Record<string, string> = {
