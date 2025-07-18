@@ -24,6 +24,7 @@ import {
 import {findCoinData} from "./BalanceChangeTab";
 import {useGetAssetMetadata} from "../../../api/hooks/useGetAssetMetadata";
 import {Hex} from "@aptos-labs/ts-sdk";
+import {TransactionTypeName} from "../../../components/TransactionType";
 
 type EconiaState = {
   orderID: string | undefined;
@@ -33,6 +34,14 @@ type EconiaState = {
 };
 
 type AssetData = {
+  asset: string;
+  amount: number;
+};
+
+type AssetTransfer = {
+  actionType: "asset transfer";
+  from: string;
+  to: string;
   asset: string;
   amount: number;
 };
@@ -273,6 +282,8 @@ type EventAction =
   | LegacyTokenDeposit
   | LegacyTokenWithdraw;
 
+type FunctionAction = AssetTransfer;
+
 type Swap = {
   actionType: "swap";
   dex:
@@ -377,7 +388,7 @@ type LegacyTokenWithdraw = {
   };
 };
 
-const parsers = [
+const eventParsers = [
   parseTokenMintEvent,
   parseTokenBurnEvent,
   parseObjectTransferEvent,
@@ -427,14 +438,8 @@ const parsers = [
   parseKofiLSDEvent,
 ];
 
-function TransactionActionsRow({
-  transaction,
-}: {
-  transaction: Types.Transaction;
-}) {
-  const events: Types.Event[] =
-    "events" in transaction ? transaction.events : [];
-
+const functionParsers = [parseAssetTransferFunction];
+function parseEvents(events: Types.Event[]): EventAction[] {
   const actions: EventAction[] = [];
   const econiaState: EconiaState = {
     orderID: undefined,
@@ -447,7 +452,7 @@ function TransactionActionsRow({
     const event = events[i];
 
     // Try single-event parsers first
-    for (const parse of parsers) {
+    for (const parse of eventParsers) {
       const result = parse(event);
       if (result) {
         actions.push(result);
@@ -472,8 +477,84 @@ function TransactionActionsRow({
       }
     }
   }
+  return actions;
+}
 
+function parseFunction(
+  transaction: Types.Transaction,
+): FunctionAction[] | undefined {
+  if (transaction.type !== TransactionTypeName.User) {
+    return undefined;
+  }
+
+  const transactionData = transaction as Types.Transaction_UserTransaction;
+
+  if (!transactionData.success) {
+    return undefined;
+  }
+
+  if (!("payload" in transactionData)) {
+    return undefined;
+  }
+
+  let payload: Types.TransactionPayload_EntryFunctionPayload;
+  if (transactionData.payload.type === "entry_function_payload") {
+    payload =
+      transactionData.payload as Types.TransactionPayload_EntryFunctionPayload;
+  } else if (
+    transactionData.payload.type === "multisig_payload" &&
+    "transaction_payload" in transactionData.payload &&
+    transactionData.payload.transaction_payload &&
+    "type" in transactionData.payload.transaction_payload &&
+    transactionData.payload.transaction_payload.type ===
+      "entry_function_payload"
+  ) {
+    payload = transactionData.payload
+      .transaction_payload as Types.TransactionPayload_EntryFunctionPayload;
+  } else {
+    return undefined;
+  }
+
+  let actions: FunctionAction[] = [];
+
+  for (const parse of functionParsers) {
+    const result = parse(transactionData.sender, payload);
+    console.log(result);
+    if (result !== undefined) {
+      actions = [...actions, ...result];
+    }
+  }
+  return actions;
+}
+
+function TransactionActionsRow({
+  transaction,
+}: {
+  transaction: Types.Transaction;
+}) {
+  const functionActions = parseFunction(transaction);
   const {data: coinData} = useGetCoinList();
+  if (functionActions !== undefined && functionActions.length > 0) {
+    return (
+      <ContentRow
+        title="Actions:"
+        value={functionActions.map((action, i) => {
+          switch (action.actionType) {
+            case "asset transfer":
+              return assetTransferAction(coinData, action, i);
+          }
+        })}
+        tooltip={
+          <LearnMoreTooltip text="Community-curated interpretations of the transaction." />
+        }
+      />
+    );
+  }
+
+  const events: Types.Event[] =
+    "events" in transaction ? transaction.events : [];
+
+  const actions = parseEvents(events);
 
   return (
     <ContentRow
@@ -1014,6 +1095,125 @@ const legacyTokenWithdrawAction = (action: LegacyTokenWithdraw, i: number) => {
     </Box>
   );
 };
+const AssetTransferContent = ({
+  asset,
+  coinData,
+  amount,
+}: {
+  asset: string;
+  coinData: {data: CoinDescription[]} | undefined;
+  amount: number;
+}) => {
+  const {data: assetMetadata} = useGetAssetMetadata(asset);
+  const assetCoin = findCoinData(coinData?.data ?? [], asset);
+  const decimals = assetCoin?.decimals ?? assetMetadata?.decimals ?? 0;
+
+  return (
+    <React.Fragment>
+      {amount / Math.pow(10, decimals)}
+      <HashButton
+        hash={asset}
+        type={asset.includes("::") ? HashType.COIN : HashType.FUNGIBLE_ASSET}
+        img={assetCoin?.logoUrl}
+        size="small"
+      />
+    </React.Fragment>
+  );
+};
+
+const assetTransferAction = (
+  coinData: {data: CoinDescription[]} | undefined,
+  action: AssetTransfer,
+  i: number,
+) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      {"⏩ Transferred "}
+      <AssetTransferContent
+        key={`action-${i}-asset`}
+        asset={action.asset}
+        coinData={coinData}
+        amount={action.amount}
+      />
+      {" from "}
+      {<HashButton hash={action.from} type={HashType.ACCOUNT} />} {" to "}
+      {<HashButton hash={action.to} type={HashType.ACCOUNT} />}
+    </Box>
+  );
+};
+
+function parseAssetTransferFunction(
+  sender: string,
+  payload: Types.TransactionPayload_EntryFunctionPayload,
+): FunctionAction[] | undefined {
+  const functionToAction: Record<
+    string,
+    "single fa" | "batch fa" | "single coin" | "batch coin"
+  > = {
+    "0x1::aptos_account::transfer_fungible_assets": "single fa",
+    "0x1::aptos_account::batch_transfer_fungible_assets": "batch fa",
+    "0x1::aptos_account::transfer_coins": "single coin",
+    "0x1::aptos_account::batch_transfer_coins": "batch coin",
+  };
+
+  const actionType = functionToAction[payload.function];
+  if (!actionType) return undefined;
+
+  const actions: FunctionAction[] = [];
+
+  switch (actionType) {
+    case "single fa":
+      actions.push({
+        actionType: "asset transfer",
+        from: sender,
+        to: payload.arguments[1],
+        asset: payload.arguments[0].inner,
+        amount: Number(payload.arguments[2]),
+      });
+      break;
+    case "batch fa":
+      for (let i = 0; i < payload.arguments[1].length; i++) {
+        actions.push({
+          actionType: "asset transfer",
+          from: sender,
+          to: payload.arguments[1][i],
+          asset: payload.arguments[0].inner,
+          amount: Number(payload.arguments[2][i]),
+        });
+      }
+      break;
+    case "single coin":
+      actions.push({
+        actionType: "asset transfer",
+        from: sender,
+        to: payload.arguments[0],
+        asset: payload.type_arguments.join("::"),
+        amount: Number(payload.arguments[1]),
+      });
+      break;
+    case "batch coin":
+      for (let i = 0; i < payload.arguments[1].length; i++) {
+        actions.push({
+          actionType: "asset transfer",
+          from: sender,
+          to: payload.arguments[0][i],
+          asset: payload.type_arguments.join("::"),
+          amount: Number(payload.arguments[1][i]),
+        });
+      }
+      break;
+  }
+
+  return actions;
+}
 
 function parseTokenMintEvent(event: Types.Event): TokenMint | undefined {
   if (
