@@ -43,6 +43,7 @@ import {encodeInputArgsForViewRequest, sortPetraFirst} from "../../../../utils";
 import {accountPagePath} from "../../Index";
 import {parseTypeTag} from "@aptos-labs/ts-sdk";
 import {WalletDeprecationBanner} from "../../../../components/WalletDeprecationBanner";
+import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 
 type ContractFormType = {
   typeArgs: string[];
@@ -76,6 +77,14 @@ function Contract({
   const selectedModule = sortedPackages
     .flatMap((pkg) => pkg.modules)
     .find((module) => module.name === selectedModuleName);
+
+  // Always call the hook, but conditionally enable it
+  const shouldFetchBytecode = selectedModule?.source === "0x";
+  const {data: moduleBytecode} = useGetAccountModule(
+    address,
+    selectedModuleName || "",
+    shouldFetchBytecode,
+  );
 
   if (isLoading) {
     return null;
@@ -160,7 +169,12 @@ function Contract({
           {module && fn && selectedModule && (
             <>
               <Divider sx={{margin: "24px 0"}} />
-              <Code bytecode={selectedModule?.source} />
+              <Code
+                source={selectedModule?.source}
+                bytecode={
+                  shouldFetchBytecode ? moduleBytecode?.bytecode : undefined
+                }
+              />
             </>
           )}
         </Box>

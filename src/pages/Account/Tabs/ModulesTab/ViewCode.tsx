@@ -181,6 +181,15 @@ function ModuleSidebar({
 
 function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
   const theme = useTheme();
+
+  // Always call the hook, but conditionally enable it
+  const shouldFetchBytecode = bytecode === "0x";
+  const {data: module} = useGetAccountModule(
+    address,
+    moduleName,
+    shouldFetchBytecode,
+  );
+
   return (
     <Stack
       direction="column"
@@ -191,7 +200,10 @@ function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
     >
       <ModuleHeader address={address} moduleName={moduleName} />
       <Divider />
-      <Code bytecode={bytecode} />
+      <Code
+        source={bytecode}
+        bytecode={shouldFetchBytecode ? module?.bytecode : undefined}
+      />
       <Divider />
       <ABI address={address} moduleName={moduleName} />
     </Stack>

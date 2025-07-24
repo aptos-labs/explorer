@@ -1,7 +1,11 @@
 import {Box, Button, Modal, Stack, Typography, useTheme} from "@mui/material";
 import {ContentCopy, OpenInFull} from "@mui/icons-material";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
+import {
+  getPublicFunctionLineNumber,
+  transformCode,
+  disassembleBytecode,
+} from "../../../utils";
 import {useEffect, useRef, useState} from "react";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
@@ -105,13 +109,22 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   );
 }
 
-export function Code({bytecode}: {bytecode: string}) {
+export function Code({source, bytecode}: {source?: string; bytecode?: string}) {
   const {selectedModuleName} = useParams();
   const logEvent = useLogEventWithBasic();
 
   const TOOLTIP_TIME = 2000; // 2s
 
-  const sourceCode = bytecode === "0x" ? undefined : transformCode(bytecode);
+  // Try to decompress source code
+  const sourceCode = source === "0x" ? undefined : transformCode(source || "");
+
+  // If no source code, use disassembled bytecode
+  const disassemblyCode =
+    !sourceCode && bytecode ? disassembleBytecode(bytecode) : undefined;
+
+  // Final display code: source > disassembly > undefined
+  const displayCode = sourceCode || disassemblyCode;
+  const isDisassembly = !sourceCode && disassemblyCode;
 
   const theme = useTheme();
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
@@ -126,7 +139,7 @@ export function Code({bytecode}: {bytecode: string}) {
     }, TOOLTIP_TIME);
   }
 
-  const startingLineNumber = useStartingLineNumber(sourceCode);
+  const startingLineNumber = useStartingLineNumber(displayCode);
   const codeBoxScrollRef = useRef<{scrollTop: number} | null>(null);
   const LINE_HEIGHT_IN_PX = 24;
   useEffect(() => {
@@ -152,9 +165,11 @@ export function Code({bytecode}: {bytecode: string}) {
           alignItems={"center"}
         >
           <Typography fontSize={20} fontWeight={700}>
-            Code
+            {isDisassembly ? "Disassembly(Beta)" : "Code"}
           </Typography>
-          <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. We cannot verify it." />
+          {sourceCode && (
+            <StyledLearnMoreTooltip text="Please be aware that this code was provided by the owner and it could be different to the real code on blockchain. We cannot verify it." />
+          )}
         </Stack>
         {sourceCode && (
           <Stack direction="row" spacing={2}>
@@ -192,7 +207,7 @@ export function Code({bytecode}: {bytecode: string}) {
                 </Typography>
               </Button>
             </StyledTooltip>
-            <ExpandCode sourceCode={sourceCode} />
+            <ExpandCode sourceCode={displayCode} />
           </Stack>
         )}
       </Stack>
@@ -208,7 +223,18 @@ export function Code({bytecode}: {bytecode: string}) {
           different from the actual bytecode.
         </Typography>
       )}
-      {!sourceCode ? (
+      {isDisassembly && (
+        <Typography
+          variant="body1"
+          fontSize={14}
+          fontWeight={400}
+          marginBottom={"16px"}
+          color={theme.palette.mode === "dark" ? grey[400] : grey[600]}
+        >
+          This is the disassembled bytecode from the blockchain.
+        </Typography>
+      )}
+      {!displayCode ? (
         <Box>
           Unfortunately, the source code cannot be shown because the package
           publisher has chosen not to make it available
@@ -224,7 +250,7 @@ export function Code({bytecode}: {bytecode: string}) {
           ref={codeBoxScrollRef}
         >
           <SyntaxHighlighter
-            language="rust"
+            language={isDisassembly ? "text" : "rust"}
             key={theme.palette.mode}
             style={
               theme.palette.mode === "light" ? solarizedLight : solarizedDark
@@ -232,7 +258,7 @@ export function Code({bytecode}: {bytecode: string}) {
             customStyle={{margin: 0, backgroundColor: "unset"}}
             showLineNumbers
           >
-            {sourceCode}
+            {displayCode}
           </SyntaxHighlighter>
         </Box>
       )}

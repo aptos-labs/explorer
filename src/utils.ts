@@ -2,6 +2,7 @@ import {AnyAptosWallet} from "@aptos-labs/wallet-adapter-react";
 import {Types} from "aptos";
 import pako from "pako";
 import {AccountAddress, AccountAddressInput, Hex} from "@aptos-labs/ts-sdk";
+import {disassemble_to_string} from "aptos-disassemble";
 
 /**
  * Helper function for exhaustiveness checks.
@@ -288,5 +289,26 @@ export function getAssetSymbol(
     return symbol;
   } else {
     return "Unknown Symbol";
+  }
+}
+
+/**
+ * Disassemble bytecode to readable string
+ * @param bytecode module bytecode in hex string
+ * @returns disassembled bytecode as string
+ */
+export function disassembleBytecode(bytecode: string): string {
+  try {
+    // Convert hex string to Uint8Array
+    const bytes = Hex.fromHexString(bytecode).toUint8Array();
+
+    // Use aptos-disassemble library
+    const result = disassemble_to_string(bytes);
+
+    // Convert result to string format
+    return result;
+  } catch (error) {
+    console.error("Failed to disassemble bytecode:", error);
+    return `// Failed to disassemble bytecode: ${error}\n// Raw bytecode: ${bytecode}`;
   }
 }
