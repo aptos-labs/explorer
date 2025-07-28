@@ -11,6 +11,7 @@ overrides:
   d3-color: ">=3.1.0"
   prismjs: ">=1.30.0"
   glob: ^11.0.0
+  form-data: ">=4.0.4"
 
 importers:
   .:
@@ -3777,20 +3778,6 @@ packages:
         integrity: sha512-gIXjKqtFuWEgzFRJA9WCQeSJLZDjgJUOMCMzxtvFq/37KojM1BFGufqsCy0r4qSQmYLsZYMeyRqzIWOMup03sw==,
       }
     engines: {node: ">=14"}
-
-  form-data@3.0.4:
-    resolution:
-      {
-        integrity: sha512-f0cRzm6dkyVYV3nPoooP8XlccPQukegwhAnpoLcXy+X+A8KfpGOoXwDr9FLZd3wzgLaBGQBE3lY93Zm/i1JvIQ==,
-      }
-    engines: {node: ">= 6"}
-
-  form-data@4.0.0:
-    resolution:
-      {
-        integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==,
-      }
-    engines: {node: ">= 6"}
 
   form-data@4.0.4:
     resolution:
@@ -7881,7 +7868,7 @@ snapshots:
       "@noble/hashes": 1.3.3
       "@scure/bip39": 1.2.1
       eventemitter3: 5.0.1
-      form-data: 4.0.0
+      form-data: 4.0.4
       tweetnacl: 1.0.3
     transitivePeerDependencies:
       - got
@@ -8541,21 +8528,6 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  form-data@3.0.4:
-    dependencies:
-      asynckit: 0.4.0
-      combined-stream: 1.0.8
-      es-set-tostringtag: 2.1.0
-      hasown: 2.0.2
-      mime-types: 2.1.35
-    optional: true
-
-  form-data@4.0.0:
-    dependencies:
-      asynckit: 0.4.0
-      combined-stream: 1.0.8
-      mime-types: 2.1.35
-
   form-data@4.0.4:
     dependencies:
       asynckit: 0.4.0
@@ -8920,7 +8892,7 @@ snapshots:
       decimal.js: 10.6.0
       domexception: 2.0.1
       escodegen: 2.1.0
-      form-data: 3.0.4
+      form-data: 4.0.4
       html-encoding-sniffer: 2.0.1
       http-proxy-agent: 4.0.1
       https-proxy-agent: 5.0.1

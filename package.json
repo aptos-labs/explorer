@@ -11,7 +11,8 @@
       "@aptos-labs/ts-sdk": "3.1.0",
       "d3-color": ">=3.1.0",
       "prismjs": ">=1.30.0",
-      "glob": "^11.0.0"
+      "glob": "^11.0.0",
+      "form-data": ">=4.0.4"
     }
   },
   "dependencies": {
