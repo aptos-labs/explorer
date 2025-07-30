@@ -121,7 +121,9 @@ export function isValidAccountAddress(accountAddr: string): boolean {
 export function isValidStruct(maybeStruct: string): boolean {
   // First regex it, since it'll be faster, for simplicity, we ignore what's inside <>
   if (
-    !/^0x[a-fA-F0-9]{1,64}::[a-zA-Z_]+::[a-zA-Z_]+(<.+>)?$/.test(maybeStruct)
+    !/^0x[a-fA-F0-9]{1,64}::[a-zA-Z_][a-zA-Z0-9_]*::[a-zA-Z_][a-zA-Z0-9_]*(<.+>)?$/.test(
+      maybeStruct,
+    )
   ) {
     return false;
   }
