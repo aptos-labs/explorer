@@ -1174,7 +1174,12 @@ function parseAssetTransferFunction(
         actionType: "asset transfer",
         from: sender,
         to: payload.arguments[1],
-        asset: payload.arguments[0].inner,
+        asset:
+          payload.arguments[0] &&
+          typeof payload.arguments[0] === "object" &&
+          "inner" in payload.arguments[0]
+            ? payload.arguments[0].inner
+            : undefined,
         amount: Number(payload.arguments[2]),
       });
       break;
@@ -1184,7 +1189,12 @@ function parseAssetTransferFunction(
           actionType: "asset transfer",
           from: sender,
           to: payload.arguments[1][i],
-          asset: payload.arguments[0].inner,
+          asset:
+            payload.arguments[0] &&
+            typeof payload.arguments[0] === "object" &&
+            "inner" in payload.arguments[0]
+              ? payload.arguments[0].inner
+              : undefined,
           amount: Number(payload.arguments[2][i]),
         });
       }
@@ -1194,14 +1204,19 @@ function parseAssetTransferFunction(
         actionType: "asset transfer",
         from: sender,
         to: payload.arguments[0],
-        asset: Array.isArray(payload.type_arguments) && payload.type_arguments.length > 0
-          ? payload.type_arguments.join("::")
-          : "unknown",
+        asset:
+          Array.isArray(payload.type_arguments) &&
+          payload.type_arguments.length > 0
+            ? payload.type_arguments.join("::")
+            : "unknown",
         amount: Number(payload.arguments[1]),
       });
       break;
     case "batch coin":
-      if (Array.isArray(payload.arguments[1]) && Array.isArray(payload.arguments[0])) {
+      if (
+        Array.isArray(payload.arguments[1]) &&
+        Array.isArray(payload.arguments[0])
+      ) {
         for (let i = 0; i < payload.arguments[1].length; i++) {
           actions.push({
             actionType: "asset transfer",
