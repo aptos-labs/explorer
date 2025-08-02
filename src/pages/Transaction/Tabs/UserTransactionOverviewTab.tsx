@@ -519,7 +519,6 @@ function parseFunction(
 
   for (const parse of functionParsers) {
     const result = parse(transactionData.sender, payload);
-    console.log(result);
     if (result !== undefined) {
       actions = [...actions, ...result];
     }
