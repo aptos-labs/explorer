@@ -1194,7 +1194,9 @@ function parseAssetTransferFunction(
         actionType: "asset transfer",
         from: sender,
         to: payload.arguments[0],
-        asset: payload.type_arguments.join("::"),
+        asset: Array.isArray(payload.type_arguments) && payload.type_arguments.length > 0
+          ? payload.type_arguments.join("::")
+          : "unknown",
         amount: Number(payload.arguments[1]),
       });
       break;
