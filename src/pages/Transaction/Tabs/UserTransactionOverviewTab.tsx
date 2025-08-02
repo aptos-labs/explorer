@@ -1158,6 +1158,7 @@ function parseAssetTransferFunction(
     "single fa" | "batch fa" | "single coin" | "batch coin"
   > = {
     "0x1::aptos_account::transfer_fungible_assets": "single fa",
+    "0x1::primary_fungible_store::transfer": "single fa",
     "0x1::aptos_account::batch_transfer_fungible_assets": "batch fa",
     "0x1::aptos_account::transfer_coins": "single coin",
     "0x1::aptos_account::batch_transfer_coins": "batch coin",
