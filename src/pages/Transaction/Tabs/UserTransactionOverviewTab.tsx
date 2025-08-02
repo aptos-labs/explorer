@@ -1201,14 +1201,16 @@ function parseAssetTransferFunction(
       });
       break;
     case "batch coin":
-      for (let i = 0; i < payload.arguments[1].length; i++) {
-        actions.push({
-          actionType: "asset transfer",
-          from: sender,
-          to: payload.arguments[0][i],
-          asset: payload.type_arguments.join("::"),
-          amount: Number(payload.arguments[1][i]),
-        });
+      if (Array.isArray(payload.arguments[1]) && Array.isArray(payload.arguments[0])) {
+        for (let i = 0; i < payload.arguments[1].length; i++) {
+          actions.push({
+            actionType: "asset transfer",
+            from: sender,
+            to: payload.arguments[0][i],
+            asset: payload.type_arguments.join("::"),
+            amount: Number(payload.arguments[1][i]),
+          });
+        }
       }
       break;
   }
