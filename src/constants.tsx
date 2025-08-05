@@ -400,6 +400,8 @@ export const knownAddresses: Record<string, string> = {
     "AptID.xyz",
   "0xbbe8a08f3b9774fccb31e02def5a79f1b7270b2a1cb9ffdc05b2622813298f2a":
     "Hybrid Assets",
+  "0x80f686c7bba12a0fce839ff160cb69774715497288996b861528727ccd256cdb":
+    "UFC Strike",
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
 };
