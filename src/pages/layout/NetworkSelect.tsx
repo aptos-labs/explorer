@@ -14,7 +14,7 @@ import {
   useGetChainIdAndCache,
   useGetChainIdCached,
 } from "../../api/hooks/useGetNetworkChainIds";
-import {NetworkName, networks} from "../../constants";
+import {hiddenNetworks, NetworkName, networks} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {grey} from "../../themes/colors/aptosColorPalette";
 
@@ -54,6 +54,9 @@ function NetworkAndChainId({networkName}: {networkName: string}) {
 
 function NetworkMenuItem({networkName}: {networkName: string}) {
   const chainIdCached = useGetChainIdCached(networkName as NetworkName);
+  if (hiddenNetworks.includes(networkName)) {
+    return null;
+  }
 
   return chainIdCached ? (
     <NetworkAndChainIdCached
