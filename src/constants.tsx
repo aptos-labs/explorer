@@ -11,8 +11,11 @@ export const networks: Record<string, string> = {
   mainnet: "https://api.mainnet.aptoslabs.com/v1",
   testnet: "https://api.testnet.staging.aptoslabs.com/v1",
   devnet: devnetUrl,
+  decibel: "https://api.netna.staging.aptoslabs.com/v1",
   local: "http://127.0.0.1:8080/v1",
 };
+
+export const hiddenNetworks = ["decibel"];
 
 export type NetworkName = keyof typeof networks;
 
@@ -35,6 +38,7 @@ const apiKeys: ApiKeys = {
   mainnet: "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
   testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
   devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
+  decibel: undefined,
   local: undefined,
 };
 
@@ -50,6 +54,7 @@ export enum Network {
   MAINNET = "mainnet",
   TESTNET = "testnet",
   DEVNET = "devnet",
+  DECIBEL = "decibel",
 }
 
 // Remove trailing slashes
@@ -400,6 +405,8 @@ export const knownAddresses: Record<string, string> = {
     "AptID.xyz",
   "0xbbe8a08f3b9774fccb31e02def5a79f1b7270b2a1cb9ffdc05b2622813298f2a":
     "Hybrid Assets",
+  "0x80f686c7bba12a0fce839ff160cb69774715497288996b861528727ccd256cdb":
+    "UFC Strike",
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
 };
