@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {Stack, Typography} from "@mui/material";
+import {Link, Stack, Typography} from "@mui/material";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {Card} from "../../components/Card";
 import {grey} from "../../themes/colors/aptosColorPalette";
@@ -8,6 +8,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {getPrice} from "../../api/hooks/useGetPrice";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {OpenInNew} from "@mui/icons-material";
 
 type BalanceCardProps = {
   address: string;
@@ -62,6 +63,18 @@ export default function BalanceCard({address}: BalanceCardProps) {
           >
             <InfoOutlinedIcon sx={{fontSize: 15, color: grey[450]}} />
           </StyledTooltip>
+        </Stack>
+
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Link
+            href={`https://aptos.lightscan.one/portfolio/${address}`}
+            underline="none"
+            fontSize={12}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            DeFi positions on Lightscan <OpenInNew sx={{fontSize: 12}} />
+          </Link>
         </Stack>
       </Stack>
     </Card>
