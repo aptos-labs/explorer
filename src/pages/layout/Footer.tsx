@@ -105,6 +105,16 @@ export default function Footer() {
                 >
                   Terms
                 </Link>
+                <Link
+                  color="inherit"
+                  to="/request-verification"
+                  sx={{
+                    fontSize: "0.8rem",
+                    fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                  }}
+                >
+                  Request Verification
+                </Link>
               </Stack>
             </Grid>
           </Grid>
