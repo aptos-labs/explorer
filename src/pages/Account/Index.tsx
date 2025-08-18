@@ -9,6 +9,7 @@ import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 import LoadingModal from "../../components/LoadingModal";
 import Error from "./Error";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
+import {PetraVaultBanner} from "./Components/PetraVaultBanner";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {Network, Types} from "aptos";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
@@ -194,6 +195,7 @@ export default function AccountPage({
       </Grid>
       <Grid size={{xs: 12, md: 8, lg: 12}} marginTop={4} alignSelf="center">
         {state.network_name === Network.MAINNET && <AptosNamesBanner />}
+        {isMultisig && <PetraVaultBanner address={address} />}
       </Grid>
       <Grid size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
         {error ? (
