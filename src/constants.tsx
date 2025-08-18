@@ -236,6 +236,20 @@ export const knownAddresses: Record<string, string> = {
     "Aave Oracle",
   "0x39ddcd9e1a39fa14f25e3f9ec8a86074d05cc0881cbf667df8a6ee70942016fb":
     "Aave Pool",
+  "0xb23539ad6490a465e92e751943a3eaedf4b48d7d844ff59adf2ae66bcb09f53d":
+    "Aave Testnet Acl",
+  "0x4fb5d8348c8873295f97136bbe1c43d976fb18a4a966a85e21d16958eaecef99":
+    "Aave Testnet Config",
+  "0xb0ec364235f47ad2a8eb52d639c80579b11497d0711879840f1ce51c885b165f":
+    "Aave Testnet Data",
+  "0xf6f896cefd7b1b1e85ff56033981cf92dcd5d6e93b1349a7ab5003761c52498d":
+    "Aave Testnet Math",
+  "0xe2b42cab2f84bf57edaf87bcaffee409c2b3d5243e3def00d9d2f7dec568d867":
+    "Aave Testnet Mock Underlyings",
+  "0xcb9eb79a52f41933192c2e1e37a9e72bfd726fdb9a687cd6cfe45527e52f4e41":
+    "Aave Testnet Oracle",
+  "0xbd7912c555a06809c2e385eab635ff0ef52b1fa062ce865c785c67694a12bb12":
+    "Aave Testnet Pool",
   // Liquid staking
   "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a":
     "Amnis Finance",
