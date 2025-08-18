@@ -1220,7 +1220,10 @@ function parseAssetTransferFunction(
       actions.push({
         actionType: "asset transfer",
         from: sender,
-        to: payload.arguments[1],
+        to:
+          payload.arguments[1] && typeof payload.arguments[1] === "string"
+            ? payload.arguments[1]
+            : "unknown",
         asset:
           payload.arguments[0] &&
           typeof payload.arguments[0] === "object" &&
@@ -1235,7 +1238,11 @@ function parseAssetTransferFunction(
         actions.push({
           actionType: "asset transfer",
           from: sender,
-          to: payload.arguments[1][i],
+          to:
+            payload.arguments[1][i] &&
+            typeof payload.arguments[1][i] === "string"
+              ? payload.arguments[1][i]
+              : "unknown",
           asset:
             payload.arguments[0] &&
             typeof payload.arguments[0] === "object" &&
@@ -1250,7 +1257,10 @@ function parseAssetTransferFunction(
       actions.push({
         actionType: "asset transfer",
         from: sender,
-        to: payload.arguments[0],
+        to:
+          payload.arguments[0] && typeof payload.arguments[0] === "string"
+            ? payload.arguments[0]
+            : "unknown",
         asset:
           Array.isArray(payload.type_arguments) &&
           payload.type_arguments.length > 0
@@ -1268,8 +1278,16 @@ function parseAssetTransferFunction(
           actions.push({
             actionType: "asset transfer",
             from: sender,
-            to: payload.arguments[0][i],
-            asset: payload.type_arguments.join("::"),
+            to:
+              payload.arguments[0][i] &&
+              typeof payload.arguments[0][i] === "string"
+                ? payload.arguments[0][i]
+                : "unknown",
+            asset:
+              Array.isArray(payload.type_arguments) &&
+              payload.type_arguments.length > 0
+                ? payload.type_arguments.join("::")
+                : "unknown",
             amount: Number(payload.arguments[1][i]),
           });
         }
