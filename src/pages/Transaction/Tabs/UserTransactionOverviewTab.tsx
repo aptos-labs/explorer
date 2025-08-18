@@ -275,6 +275,7 @@ type EventAction =
   | Swap
   | AddLiquidity
   | RemoveLiquidity
+  | ClaimFeesAndRewards
   | TokenMint
   | TokenBurn
   | LiquidStaking
@@ -318,6 +319,14 @@ type AddLiquidity = {
 
 type RemoveLiquidity = {
   actionType: "remove liquidity";
+  dex:
+    | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c" // "Hyperion"
+    | "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a"; // "Tapp"
+  assetData: AssetData[];
+};
+
+type ClaimFeesAndRewards = {
+  actionType: "claim fees" | "claim rewards";
   dex:
     | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c" // "Hyperion"
     | "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a"; // "Tapp"
@@ -566,6 +575,10 @@ function TransactionActionsRow({
             return liquidityAction(coinData, action, i);
           case "remove liquidity":
             return liquidityAction(coinData, action, i);
+          case "claim fees":
+            return claimAction(coinData, action, i);
+          case "claim rewards":
+            return claimAction(coinData, action, i);
           case "liquid staking":
             return liquidStakingAction(coinData, action, i);
           case "token mint":
@@ -923,6 +936,39 @@ const liquidityAction = (
     </Box>
   );
 };
+
+const claimAction = (
+  coinData: {data: CoinDescription[]} | undefined,
+  action: ClaimFeesAndRewards,
+  i: number,
+) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+      }}
+    >
+      {action.actionType === "claim fees"
+        ? "💰 Claim Fees "
+        : "💰 Claim Rewards "}
+      {action.assetData.map((asset, index) => (
+        <LiquidityAssetContent
+          key={`action-${i}-asset-${index}`}
+          asset={asset}
+          coinData={coinData}
+          index={index}
+          totalAssets={action.assetData.length}
+        />
+      ))}
+      on <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+    </Box>
+  );
+};
+
 const LiquidStakingContent = ({
   asset,
   coinData,
@@ -1686,12 +1732,16 @@ function parseCetusSwapEvent(event: Types.Event): Swap | undefined {
 
 function parseHyperionEvent(
   event: Types.Event,
-): Swap | AddLiquidity | RemoveLiquidity | undefined {
+): Swap | AddLiquidity | RemoveLiquidity | ClaimFeesAndRewards | undefined {
   const dex =
     "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c";
   const eventTypeToAction: Record<
     string,
-    "swap" | "add liquidity" | "remove liquidity"
+    | "swap"
+    | "add liquidity"
+    | "remove liquidity"
+    | "claim rewards"
+    | "claim fees"
   > = {
     "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::SwapEvent":
       "swap",
@@ -1711,6 +1761,12 @@ function parseHyperionEvent(
       "remove liquidity",
     "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::RemoveLiquidityEventV3":
       "remove liquidity",
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::rewarder::ClaimRewardsEvent":
+      "claim rewards",
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::ClaimFeesEvent":
+      "claim fees",
+    "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c::pool_v3::ClaimFeesEventV2":
+      "claim fees",
   };
 
   const actionType = eventTypeToAction[event.type];
@@ -1737,6 +1793,43 @@ function parseHyperionEvent(
       amountOut,
       assetIn,
       assetOut,
+    };
+  }
+  if (actionType === "claim fees") {
+    const data: {
+      amount: string;
+      token: {inner: string};
+    } = event.data;
+
+    const amount = Number(data.amount);
+    if (amount == 0) return undefined;
+
+    const assetData: AssetData[] = [{asset: data.token.inner, amount: amount}];
+
+    return {
+      actionType,
+      dex,
+      assetData,
+    };
+  }
+
+  if (actionType === "claim rewards") {
+    const data: {
+      amount: string;
+      reward_fa: {inner: string};
+    } = event.data;
+
+    const amount = Number(data.amount);
+    if (amount == 0) return undefined;
+
+    const assetData: AssetData[] = [
+      {asset: data.reward_fa.inner, amount: amount},
+    ];
+
+    return {
+      actionType,
+      dex,
+      assetData,
     };
   }
 
