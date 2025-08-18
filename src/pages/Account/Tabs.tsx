@@ -11,10 +11,12 @@ import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalance
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import ExtensionIcon from "@mui/icons-material/Extension";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import GroupIcon from "@mui/icons-material/Group";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import TokensTab from "./Tabs/TokensTab";
 import CoinsTab from "./Tabs/CoinsTab";
+import MultisigTab from "./Tabs/MultisigTab";
 import {Types} from "aptos";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
@@ -26,6 +28,7 @@ const TabComponents = Object.freeze({
   transactions: TransactionsTab,
   coins: CoinsTab,
   tokens: TokensTab,
+  multisig: MultisigTab,
   resources: ResourcesTab,
   modules: ModulesTab,
   info: InfoTab,
@@ -41,6 +44,8 @@ function getTabLabel(value: TabValue): string {
       return "Coins";
     case "tokens":
       return "Tokens";
+    case "multisig":
+      return "Multisig";
     case "resources":
       return "Resources";
     case "modules":
@@ -60,6 +65,8 @@ function getTabIcon(value: TabValue) {
       return <MonetizationOnOutlinedIcon fontSize="small" />;
     case "tokens":
       return <AccountBalanceWalletOutlinedIcon fontSize="small" />;
+    case "multisig":
+      return <GroupIcon fontSize="small" />;
     case "resources":
       return <DynamicFeedIcon fontSize="small" />;
     case "modules":
