@@ -1,14 +1,14 @@
--- This is an expensive scan
+-- Look at signers instead of '0x1::account::Account' to include
+-- for stateless accounts: https://github.com/aptos-foundation/AIPs/blob/main/aips/aip-115.md
 SELECT
   DATE(min_block_timestamp) as ds,
-  COUNT(DISTINCT address) as new_account_count
+  COUNT(DISTINCT signer) as new_account_count
 FROM (
   SELECT
-    address,
+    signer,
     min(block_timestamp) as min_block_timestamp
-  FROM `bigquery-public-data.crypto_aptos_mainnet_us.resources` 
+  FROM `bigquery-public-data.crypto_aptos_mainnet_us.signatures` 
   WHERE 1=1
-  AND type_str = '0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>'
   GROUP BY 1
 )
 WHERE min_block_timestamp BETWEEN
