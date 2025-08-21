@@ -160,7 +160,7 @@ function TransactionAmount({
 }) {
   if (address !== undefined) {
     const amount = getCoinBalanceChangeForAccount(transaction, address);
-    if (amount !== undefined) {
+    if (amount !== undefined && amount !== BigInt(0)) {
       let amountAbs = amount;
       let color = undefined;
       if (amount > 0) {
@@ -180,7 +180,7 @@ function TransactionAmount({
     }
   } else {
     const amount = getTransactionAmount(transaction);
-    if (amount !== undefined) {
+    if (amount !== undefined && amount !== BigInt(0)) {
       return (
         <Box>
           <APTCurrencyValue amount={amount.toString()} />
@@ -189,7 +189,7 @@ function TransactionAmount({
     }
   }
 
-  return null;
+  return <Box sx={{color: grey[450]}}>N/A</Box>;
 }
 
 function TransactionAmountGasCell({
@@ -311,7 +311,7 @@ function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
     case "sender":
       return <GeneralTableHeaderCell header="Sender" />;
     case "receiverOrCounterParty":
-      return <GeneralTableHeaderCell header="Sent To" />;
+      return <GeneralTableHeaderCell header="Sent To / Contract" />;
     case "function":
       return <GeneralTableHeaderCell header="Function" />;
     case "amountGas":
