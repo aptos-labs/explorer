@@ -23,7 +23,7 @@ WITH first_signer_or_account AS (
 )
 
 SELECT
-  min_block_date as date,
+  min_block_date as ds,
   COUNT(DISTINCT address) as new_account_count
 FROM (
   SELECT
