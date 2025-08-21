@@ -7,14 +7,6 @@ SELECT
   DATE(min_block_timestamp) as ds,
   COUNT(DISTINCT address) as new_account_count
 FROM (
-  SELECT
-    signer AS address,
-    min(block_timestamp) as min_block_timestamp
-  FROM `bigquery-public-data.crypto_aptos_mainnet_us.signatures` 
-  WHERE 1=1
-  GROUP BY 1
-
-  UNION ALL
 
   SELECT  -- expensive scan
     address,
@@ -22,7 +14,16 @@ FROM (
   FROM `bigquery-public-data.crypto_aptos_mainnet_us.resources` 
   WHERE 1=1
   AND type_str = '0x1::account::Account'
-  GROUP BY 1  
+  GROUP BY 1
+
+  UNION ALL
+  
+  SELECT
+    signer AS address,
+    min(block_timestamp) as min_block_timestamp
+  FROM `bigquery-public-data.crypto_aptos_mainnet_us.signatures` 
+  WHERE 1=1
+  GROUP BY 1
 )
 WHERE min_block_timestamp BETWEEN
   TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), DAY) - INTERVAL 30 DAY
