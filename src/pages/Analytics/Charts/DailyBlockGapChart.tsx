@@ -33,7 +33,6 @@ export default function DailyBlockGapChart({
       <LineChart
         labels={labels}
         dataset={dataset}
-        fill
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         tooltipsLabelFunc={(context: any) => {
           const milliseconds = Math.round(context.parsed.y);
