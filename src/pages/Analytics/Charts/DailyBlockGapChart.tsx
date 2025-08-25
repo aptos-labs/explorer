@@ -27,8 +27,8 @@ export default function DailyBlockGapChart({
   return (
     <CardOutline>
       <ChartTitle
-        label="Block Time"
-        tooltip="Median block time (gap between blocks) in milliseconds. Will vary based on network latency between validators and blockchain congestion (more txn per block vs faster blocks)."
+        label="Median Block Time"
+        tooltip="P50 block time (gap between blocks) in milliseconds. Changes based on network latency between validators and blockchain congestion (more txn per block vs faster blocks)."
       />
       <LineChart
         labels={labels}
