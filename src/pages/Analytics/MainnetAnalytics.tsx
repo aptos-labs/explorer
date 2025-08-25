@@ -6,6 +6,7 @@ import ChartRangeDaysSelect, {
 } from "./Components/ChartRangeDaysSelect";
 import DailyActiveUserChart from "./Charts/DailyActiveUserChart";
 import DailyAvgGasUnitPriceChart from "./Charts/DailyAvgGasUnitPriceChart";
+import DailyBlockGapChart from "./Charts/DailyBlockGapChart";
 import DailyDeployedContractsChart from "./Charts/DailyDeployedContractsChart";
 import DailyPeakTPSChart from "./Charts/DailyPeakTPSChart";
 import DailyNewAccountsCreatedChart from "./Charts/DailyNewAccountsCreatedChart";
@@ -77,6 +78,12 @@ export default function MainnetAnalytics() {
       <Grid size={{xs: 12, md: 6, lg: 3}}>
         <DailyAvgGasUnitPriceChart
           data={data.daily_average_gas_unit_price}
+          days={days}
+        />
+      </Grid>
+      <Grid size={{xs: 12, md: 6, lg: 3}}>
+        <DailyBlockGapChart
+          data={data.daily_block_gap}
           days={days}
         />
       </Grid>
