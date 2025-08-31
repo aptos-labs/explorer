@@ -282,7 +282,9 @@ export function findCoinData(
         tryStandardizeAddress(faAddress) === tryStandardizeAddress(c.faAddress);
       const isMatchingCoin =
         coinType && c.tokenAddress && c.tokenAddress === coinType;
-      return isMatchingCoin || isMatchingFa;
+      const isMatchingFullCoinType =
+        asset_type && c.tokenAddress && c.tokenAddress === asset_type;
+      return isMatchingCoin || isMatchingFa || isMatchingFullCoinType;
     });
   }
   return entry;
