@@ -8,6 +8,7 @@ import {usePageMetadata} from "../../components/hooks/usePageMetadata";
 
 type AccountTitleProps = {
   address: string;
+  isMultisig?: boolean;
   isObject?: boolean;
   isDeleted?: boolean;
   isToken?: boolean;
@@ -15,12 +16,15 @@ type AccountTitleProps = {
 
 export default function AccountTitle({
   address,
+  isMultisig = false,
   isToken = false,
   isObject = false,
   isDeleted = false,
 }: AccountTitleProps) {
   let title = "Account";
-  if (isToken) {
+  if (isMultisig) {
+    title = "Multisig Account";
+  } else if (isToken) {
     if (isDeleted) {
       title = "Deleted Token Object";
     } else {

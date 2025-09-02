@@ -9,6 +9,7 @@ import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 import LoadingModal from "../../components/LoadingModal";
 import Error from "./Error";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
+import {PetraVaultBanner} from "./Components/PetraVaultBanner";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {Network, Types} from "aptos";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
@@ -27,6 +28,24 @@ const TAB_VALUES_FULL: TabValue[] = [
 ];
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
+
+const TAB_VALUES_MULTISIG_FULL: TabValue[] = [
+  "transactions",
+  "multisig",
+  "coins",
+  "tokens",
+  "resources",
+  "modules",
+  "info",
+];
+
+const TAB_VALUES_MULTISIG: TabValue[] = [
+  "transactions",
+  "multisig",
+  "resources",
+  "modules",
+  "info",
+];
 
 // TODO: add ability for object information
 const OBJECT_VALUES_FULL: TabValue[] = [
@@ -87,10 +106,14 @@ export default function AccountPage({
   )?.data as Types.AccountData | undefined;
   const objectData = resourceData?.find((r) => r.type === objectCoreResource);
   const tokenData = resourceData?.find((r) => r.type === "0x4::token::Token");
+  const multisigData = resourceData?.find(
+    (r) => r.type === "0x1::multisig_account::MultisigAccount",
+  );
   const isAccount = !!accountData;
   const isObject = !!objectData;
   const isDeleted = !isObject;
   const isToken = !!tokenData;
+  const isMultisig = !!multisigData;
 
   const isLoading = resourcesIsLoading;
   let error: ResponseError | null = null;
@@ -133,6 +156,10 @@ export default function AccountPage({
     tabValues = isGraphqlClientSupported
       ? OBJECT_VALUES_FULL
       : OBJECT_TAB_VALUES;
+  } else if (isMultisig) {
+    tabValues = isGraphqlClientSupported
+      ? TAB_VALUES_MULTISIG_FULL
+      : TAB_VALUES_MULTISIG;
   } else {
     tabValues = isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
   }
@@ -157,6 +184,7 @@ export default function AccountPage({
       <Grid size={{xs: 12, md: 8, lg: 9}} alignSelf="center">
         <AccountTitle
           address={address}
+          isMultisig={isMultisig}
           isObject={isObject}
           isDeleted={isDeleted}
           isToken={isToken}
@@ -167,6 +195,7 @@ export default function AccountPage({
       </Grid>
       <Grid size={{xs: 12, md: 8, lg: 12}} marginTop={4} alignSelf="center">
         {state.network_name === Network.MAINNET && <AptosNamesBanner />}
+        {isMultisig && <PetraVaultBanner address={address} />}
       </Grid>
       <Grid size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
         {error ? (
