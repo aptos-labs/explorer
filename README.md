@@ -29,6 +29,30 @@ Supported variables:
 | `LIBRA2_LOCAL_URL`    | `http://127.0.0.1:8080`      |
 | `LIBRA2_LOCALNET_URL` | `http://127.0.0.1:8080`      |
 
+Each `LIBRA2_*_URL` variable overrides the default endpoint for the matching
+network. Variables are loaded from `.env.local` and can be tailored to point to
+custom fullnodes or indexers.
+
+### Running against different networks
+
+Libra2XP defaults to mainnet. To explore other Libra2 networks, start the app
+and select a network either from the UI's network dropdown or by appending a
+`?network=<name>` query parameter:
+
+```sh
+pnpm start
+```
+
+Then open one of the following URLs in your browser:
+
+- `http://localhost:3000` (mainnet)
+- `http://localhost:3000/?network=testnet`
+- `http://localhost:3000/?network=devnet`
+- `http://localhost:3000/?network=local`
+
+If your local node runs on a non-default address, update `LIBRA2_LOCAL_URL` in
+`.env.local` accordingly before starting the app.
+
 ### GraphQL support
 
 Libra2's indexer does not yet provide the full GraphQL schema.
