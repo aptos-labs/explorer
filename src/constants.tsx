@@ -4,18 +4,17 @@ import {CoinDescription} from "./api/hooks/useGetCoinList";
  * Network
  */
 export const devnetUrl =
-  import.meta.env.APTOS_DEVNET_URL ||
-  "https://api.devnet.staging.aptoslabs.com/v1";
+  import.meta.env.VITE_DEVNET_URL || "https://devnet.libra2.org";
 
 export const networks: Record<string, string> = {
-  mainnet: "https://api.mainnet.aptoslabs.com/v1",
-  testnet: "https://api.testnet.staging.aptoslabs.com/v1",
+  mainnet: "https://mainnet.libra2.org",
+  testnet: "https://testnet.libra2.org",
   devnet: devnetUrl,
-  decibel: "https://api.netna.staging.aptoslabs.com/v1",
-  local: "http://127.0.0.1:8080/v1",
+  local: "http://127.0.0.1:8080",
+  localnet: "http://127.0.0.1:8080",
 };
 
-export const hiddenNetworks = ["decibel"];
+export const hiddenNetworks = ["localnet"];
 
 export type NetworkName = keyof typeof networks;
 
@@ -35,11 +34,11 @@ type ApiKeys = {
  * value to `undefined`.
  */
 const apiKeys: ApiKeys = {
-  mainnet: "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
-  testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
-  devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
-  decibel: undefined,
+  mainnet: undefined,
+  testnet: undefined,
+  devnet: undefined,
   local: undefined,
+  localnet: undefined,
 };
 
 export function getApiKey(network_name: NetworkName): string | undefined {
@@ -54,7 +53,6 @@ export enum Network {
   MAINNET = "mainnet",
   TESTNET = "testnet",
   DEVNET = "devnet",
-  DECIBEL = "decibel",
 }
 
 // Remove trailing slashes
