@@ -21,13 +21,20 @@ cp .env.example .env.local
 
 Supported variables:
 
-| Variable | Default |
-|----------|---------|
-| `LIBRA2_MAINNET_URL` | `https://mainnet.libra2.org` |
-| `LIBRA2_TESTNET_URL` | `https://testnet.libra2.org` |
-| `LIBRA2_DEVNET_URL` | `https://devnet.libra2.org` |
-| `LIBRA2_LOCAL_URL` | `http://127.0.0.1:8080` |
-| `LIBRA2_LOCALNET_URL` | `http://127.0.0.1:8080` |
+| Variable              | Default                      |
+| --------------------- | ---------------------------- |
+| `LIBRA2_MAINNET_URL`  | `https://mainnet.libra2.org` |
+| `LIBRA2_TESTNET_URL`  | `https://testnet.libra2.org` |
+| `LIBRA2_DEVNET_URL`   | `https://devnet.libra2.org`  |
+| `LIBRA2_LOCAL_URL`    | `http://127.0.0.1:8080`      |
+| `LIBRA2_LOCALNET_URL` | `http://127.0.0.1:8080`      |
+
+### GraphQL support
+
+Libra2's indexer does not yet provide the full GraphQL schema.
+When a GraphQL endpoint is unavailable the explorer temporarily
+falls back to REST endpoints, so some queries may be limited until
+native support is added.
 
 Build dependencies:
 
