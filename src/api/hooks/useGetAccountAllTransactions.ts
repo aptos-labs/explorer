@@ -104,7 +104,12 @@ export function useGetAccountAllTransactionVersions(
         start: offset,
         limit,
       });
-      return txns.map((txn: Types.Transaction) => Number(txn.version));
+      return txns
+        .filter(
+          (txn): txn is Types.Transaction & {version: string} =>
+            "version" in txn,
+        )
+        .map((txn) => Number(txn.version));
     },
     enabled: !isGraphqlClientSupported,
   });
