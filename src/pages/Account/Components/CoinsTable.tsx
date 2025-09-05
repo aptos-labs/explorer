@@ -12,7 +12,7 @@ import {
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../../components/HashButton";
-import {grey, primary} from "../../../themes/colors/aptosColorPalette";
+import {grey, primary} from "../../../themes/colors/libra2ColorPalette";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {CoinDescription} from "../../../api/hooks/useGetCoinList";

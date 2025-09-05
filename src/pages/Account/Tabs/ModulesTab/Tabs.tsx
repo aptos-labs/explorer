@@ -3,7 +3,7 @@ import React, {useEffect} from "react";
 import {useParams} from "react-router-dom";
 import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
-import {grey} from "../../../../themes/colors/aptosColorPalette";
+import {grey} from "../../../../themes/colors/libra2ColorPalette";
 import {assertNever} from "../../../../utils";
 import ViewCode from "./ViewCode";
 import Contract from "./Contract";

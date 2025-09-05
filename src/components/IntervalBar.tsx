@@ -1,6 +1,6 @@
 import {Stack, Typography, useTheme} from "@mui/material";
 import React, {useState} from "react";
-import {grey} from "../themes/colors/aptosColorPalette";
+import {grey} from "../themes/colors/libra2ColorPalette";
 import Countdown from "react-countdown";
 import StyledTooltip from "./StyledTooltip";
 

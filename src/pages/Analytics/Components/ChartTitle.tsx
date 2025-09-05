@@ -2,7 +2,7 @@ import {Stack, Typography} from "@mui/material";
 import * as React from "react";
 import StyledTooltip from "../../../components/StyledTooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {grey} from "../../../themes/colors/libra2ColorPalette";
 
 type ChartTitleProps = {
   label: string;

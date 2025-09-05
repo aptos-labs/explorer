@@ -6,7 +6,7 @@ import {
   negativeColor,
   primary,
   warningColor,
-} from "./colors/aptosColorPalette";
+} from "./colors/libra2ColorPalette";
 import React from "react";
 
 // Button variants

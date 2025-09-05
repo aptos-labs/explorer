@@ -11,7 +11,7 @@ import TableTooltip from "../../../components/Table/TableTooltip";
 import TooltipTypography from "../../../components/TooltipTypography";
 import {StakingStatusInterface} from "./StakingStatusIcon";
 import {SvgIcon} from "@mui/material";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {grey} from "../../../themes/colors/libra2ColorPalette";
 
 type MyDepositsSectionProps = {
   steps: StakingStatusInterface[];

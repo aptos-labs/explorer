@@ -4,7 +4,7 @@ import {Box, Typography, Stack} from "@mui/material";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {grey} from "../../../themes/colors/libra2ColorPalette";
 import HashButton, {HashType} from "../../../components/HashButton";
 
 const MULTISIG_ACCOUNT_RESOURCE = "0x1::multisig_account::MultisigAccount";

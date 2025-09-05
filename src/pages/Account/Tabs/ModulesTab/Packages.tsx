@@ -15,7 +15,7 @@ import {
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import {grey} from "../../../../themes/colors/aptosColorPalette";
+import {grey} from "../../../../themes/colors/libra2ColorPalette";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";

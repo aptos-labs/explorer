@@ -20,7 +20,11 @@ import {
 import CurrencyValue, {
   APTCurrencyValue,
 } from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {aptosColor, grey, primary} from "../../themes/colors/aptosColorPalette";
+import {
+  libra2Color,
+  grey,
+  primary,
+} from "../../themes/colors/libra2ColorPalette";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import {OperatorAddrCell, ValidatorAddrCell} from "./ValidatorsTable";
@@ -316,7 +320,7 @@ function ViewCell() {
         fontSize="small"
         sx={{
           color: "black",
-          backgroundColor: aptosColor,
+          backgroundColor: libra2Color,
           "&:hover": {
             backgroundColor: alpha(primary["500"], 1),
           },
@@ -357,7 +361,7 @@ function MyDepositCell({validator}: ValidatorCellProps) {
     <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
       {Number(totalDeposit) !== 0 ? (
         <Stack direction="row" spacing={1.5}>
-          <CheckCircleIcon sx={{color: aptosColor}} fontSize="small" />
+          <CheckCircleIcon sx={{color: libra2Color}} fontSize="small" />
           <CurrencyValue
             amount={Number(totalDeposit).toString()}
             currencyCode="APT"

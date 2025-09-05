@@ -1,7 +1,7 @@
 import {Box, useTheme} from "@mui/material";
 import React from "react";
 import ReactJson from "react-json-view";
-import {codeBlockColor} from "../../themes/colors/aptosColorPalette";
+import {codeBlockColor} from "../../themes/colors/libra2ColorPalette";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 const TEXT_COLOR_LIGHT = "#0EA5E9";

@@ -29,7 +29,7 @@ import {useParams} from "react-router-dom";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
-import {grey} from "../../../../themes/colors/aptosColorPalette";
+import {grey} from "../../../../themes/colors/libra2ColorPalette";
 import {Link, useNavigate} from "../../../../routing";
 import {Code} from "../../Components/CodeSnippet";
 import {

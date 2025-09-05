@@ -12,7 +12,7 @@ import {
   codeBlockColor,
   codeBlockColorRgbDark,
   codeBlockColorRgbLight,
-} from "../../../themes/colors/aptosColorPalette";
+} from "../../../themes/colors/libra2ColorPalette";
 import {useParams} from "react-router-dom";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 

@@ -24,8 +24,8 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import {
   grey,
   negativeColor,
-  aptosColor,
-} from "../../themes/colors/aptosColorPalette";
+  libra2Color,
+} from "../../themes/colors/libra2ColorPalette";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
 import {
   getCoinBalanceChangeForAccount,
@@ -164,7 +164,7 @@ function TransactionAmount({
       let amountAbs = amount;
       let color = undefined;
       if (amount > 0) {
-        color = aptosColor;
+        color = libra2Color;
       } else if (amount < 0) {
         color = negativeColor;
         amountAbs = -amount;
