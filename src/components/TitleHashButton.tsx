@@ -12,7 +12,7 @@ import {
   codeBlockColor,
   codeBlockColorClickableOnHover,
   grey,
-} from "../themes/colors/aptosColorPalette";
+} from "../themes/colors/libra2ColorPalette";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";

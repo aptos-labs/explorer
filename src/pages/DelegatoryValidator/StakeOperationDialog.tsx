@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import {useContext, useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
-import {grey, negativeColor} from "../../themes/colors/aptosColorPalette";
+import {grey, negativeColor} from "../../themes/colors/libra2ColorPalette";
 import {getStakeOperationAPTRequirement} from "./utils";
 import StyledDialog from "../../components/StyledDialog";
 import StyledTooltip, {

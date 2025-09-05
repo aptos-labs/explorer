@@ -6,7 +6,7 @@ import SubtitlesOutlinedIcon from "@mui/icons-material/SubtitlesOutlined";
 import MultipleStopRoundedIcon from "@mui/icons-material/MultipleStopRounded";
 import UpdateRoundedIcon from "@mui/icons-material/UpdateRounded";
 import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
-import {grey} from "../themes/colors/aptosColorPalette";
+import {grey} from "../themes/colors/libra2ColorPalette";
 import TooltipTypography from "./TooltipTypography";
 import {CheckCircleOutlined, StopCircleOutlined} from "@mui/icons-material";
 

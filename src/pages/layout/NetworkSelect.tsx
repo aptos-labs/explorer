@@ -16,7 +16,7 @@ import {
 } from "../../api/hooks/useGetNetworkChainIds";
 import {hiddenNetworks, NetworkName, networks} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/libra2ColorPalette";
 
 function NetworkAndChainIdCached({
   networkName,

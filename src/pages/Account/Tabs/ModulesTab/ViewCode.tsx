@@ -17,7 +17,7 @@ import {
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import {grey} from "../../../../themes/colors/aptosColorPalette";
+import {grey} from "../../../../themes/colors/libra2ColorPalette";
 import {getBytecodeSizeInKB} from "../../../../utils";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import {useParams} from "react-router-dom";

@@ -13,7 +13,7 @@ import {
 import {useState} from "react";
 import StyledDialog from "../../components/StyledDialog";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/libra2ColorPalette";
 import {StakeOperation} from "../../api/hooks/delegations";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import {Link, Stack, Typography} from "@mui/material";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {Card} from "../../components/Card";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/libra2ColorPalette";
 import StyledTooltip from "../../components/StyledTooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";

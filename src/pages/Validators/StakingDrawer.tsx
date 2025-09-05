@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import SideDrawer from "../../components/SideDrawer";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/libra2ColorPalette";
 import {REWARDS_LEARN_MORE_LINK} from "./Components/Staking";
 import {Link} from "../../routing";
 

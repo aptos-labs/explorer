@@ -11,7 +11,7 @@ import {useContext, useEffect, useState} from "react";
 import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/libra2ColorPalette";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import WalletConnectionDialog from "./WalletConnectionDialog";
 import StyledTooltip, {

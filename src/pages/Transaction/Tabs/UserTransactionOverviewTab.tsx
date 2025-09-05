@@ -15,7 +15,7 @@ import TransactionFunction from "./Components/TransactionFunction";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {parseExpirationTimestamp} from "../../utils";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {grey} from "../../../themes/colors/libra2ColorPalette";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {
   CoinDescription,

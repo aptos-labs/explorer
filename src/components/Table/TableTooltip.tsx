@@ -5,7 +5,7 @@ import {useState} from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import {IconButton, Stack, useTheme} from "@mui/material";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/libra2ColorPalette";
 import TooltipTypography from "../TooltipTypography";
 
 type TableTooltipProps = {

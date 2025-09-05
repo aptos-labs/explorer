@@ -1,7 +1,7 @@
 import {Types} from "aptos";
 import React from "react";
 import {Button, Stack, Typography} from "@mui/material";
-import {grey, primary} from "../../../themes/colors/aptosColorPalette";
+import {grey, primary} from "../../../themes/colors/libra2ColorPalette";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {CoinBalanceChangeTable} from "./Components/CoinBalanceChangeTable";
 import {

@@ -5,7 +5,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import HamburgerIcon from "../../assets/svg/icon_hamburger.svg?react";
 import CloseIcon from "../../assets/svg/icon_close.svg?react";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/libra2ColorPalette";
 import Box from "@mui/material/Box";
 import {Divider, useTheme} from "@mui/material";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";

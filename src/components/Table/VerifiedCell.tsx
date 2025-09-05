@@ -15,7 +15,7 @@ import * as React from "react";
 import {
   codeBlockColor,
   codeBlockColorClickableOnHover,
-} from "../../themes/colors/aptosColorPalette";
+} from "../../themes/colors/libra2ColorPalette";
 import {BUTTON_HEIGHT} from "../TitleHashButton";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 import {

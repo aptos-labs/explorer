@@ -5,10 +5,10 @@ import DiscordLogo from "../../assets/discord.svg?react";
 import TwitterLogo from "../../assets/twitter.svg?react";
 import MediumLogo from "../../assets/medium.svg?react";
 import LinkedInLogo from "../../assets/linkedin.svg?react";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/libra2ColorPalette";
 import SvgIcon from "@mui/material/SvgIcon";
 
-import LogoFull from "../../assets/svg/aptos_logo_labs.svg?react";
+import LogoFull from "../../assets/svg/libra2_logo_labs.svg?react";
 import {Link} from "../../routing";
 
 const socialLinks = [

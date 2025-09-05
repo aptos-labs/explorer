@@ -1,7 +1,7 @@
 import React from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {Box, Link, Typography, useTheme} from "@mui/material";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {grey} from "../../themes/colors/libra2ColorPalette";
 import {Stack} from "@mui/system";
 import StyledTooltip from "../StyledTooltip";
 

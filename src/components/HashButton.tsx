@@ -15,7 +15,7 @@ import {
   codeBlockColorClickableOnHover,
   grey,
   primary,
-} from "../themes/colors/aptosColorPalette";
+} from "../themes/colors/libra2ColorPalette";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import {

@@ -5,7 +5,7 @@ import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOu
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
 import {Link} from "../../../../routing";
-import {codeBlockColorClickableOnHover} from "../../../../themes/colors/aptosColorPalette";
+import {codeBlockColorClickableOnHover} from "../../../../themes/colors/libra2ColorPalette";
 import {WaterDropOutlined} from "@mui/icons-material";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
 import {Network} from "@aptos-labs/ts-sdk";
