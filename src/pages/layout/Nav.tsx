@@ -68,6 +68,11 @@ export default function Nav() {
         label="Validators"
       />
       <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
+      <NavButton
+        to="/ai-agent-view"
+        title="View AI Agent Behavior"
+        label="AI Agent View"
+      />
     </Box>
   );
 }
