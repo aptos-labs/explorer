@@ -21,7 +21,7 @@ import {
 } from "@aptos-labs/ts-sdk";
 
 const HEADERS = {
-  "x-indexer-client": "aptos-explorer",
+  "x-indexer-client": "libra2xp",
 };
 
 export type GlobalState = {
