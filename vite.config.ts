@@ -8,8 +8,8 @@ export default defineConfig(() => {
       outDir: "build",
       sourcemap: true,
     },
-    // in addition to the default VITE_ prefix, also support REACT_APP_ prefixed environment variables for compatibility reasons with legacy create-react-app.
-    envPrefix: ["VITE_", "REACT_APP_"],
+    // in addition to the default VITE_ prefix, also support REACT_APP_ and LIBRA2_ prefixed environment variables for compatibility with legacy create-react-app and Libra2-specific settings.
+    envPrefix: ["VITE_", "REACT_APP_", "LIBRA2_"],
     plugins: [react(), svgr()],
   };
 });
