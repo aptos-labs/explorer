@@ -3,15 +3,18 @@ import {CoinDescription} from "./api/hooks/useGetCoinList";
 /**
  * Network
  */
-export const devnetUrl =
-  import.meta.env.VITE_DEVNET_URL || "https://devnet.libra2.org";
-
 export const networks: Record<string, string> = {
-  mainnet: "https://mainnet.libra2.org",
-  testnet: "https://testnet.libra2.org",
-  devnet: devnetUrl,
-  local: "http://127.0.0.1:8080",
-  localnet: "http://127.0.0.1:8080",
+  mainnet:
+    import.meta.env.LIBRA2_MAINNET_URL || "https://mainnet.libra2.org",
+  testnet:
+    import.meta.env.LIBRA2_TESTNET_URL || "https://testnet.libra2.org",
+  devnet:
+    import.meta.env.LIBRA2_DEVNET_URL || "https://devnet.libra2.org",
+  local: import.meta.env.LIBRA2_LOCAL_URL || "http://127.0.0.1:8080",
+  localnet:
+    import.meta.env.LIBRA2_LOCALNET_URL ||
+    import.meta.env.LIBRA2_LOCAL_URL ||
+    "http://127.0.0.1:8080",
 };
 
 export const hiddenNetworks = ["localnet"];

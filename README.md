@@ -10,6 +10,25 @@ Install dependencies:
 pnpm install
 ```
 
+### Environment configuration
+
+Network endpoints can be customized through environment variables. Copy the
+example file and adjust values as needed:
+
+```sh
+cp .env.example .env.local
+```
+
+Supported variables:
+
+| Variable | Default |
+|----------|---------|
+| `LIBRA2_MAINNET_URL` | `https://mainnet.libra2.org` |
+| `LIBRA2_TESTNET_URL` | `https://testnet.libra2.org` |
+| `LIBRA2_DEVNET_URL` | `https://devnet.libra2.org` |
+| `LIBRA2_LOCAL_URL` | `http://127.0.0.1:8080` |
+| `LIBRA2_LOCALNET_URL` | `http://127.0.0.1:8080` |
+
 Build dependencies:
 
 ```sh
