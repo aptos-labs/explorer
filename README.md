@@ -1,4 +1,4 @@
-# Aptos Explorer
+# Libra2XP
 
 ## How to use
 

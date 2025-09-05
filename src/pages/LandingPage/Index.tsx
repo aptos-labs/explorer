@@ -14,7 +14,7 @@ export default function LandingPage() {
       <CoinToFAMigrationBanner />
       <WalletDeprecationBanner />
       <Typography variant="h3" component="h3" marginBottom={4}>
-        Aptos Explorer
+        Libra2 Explorer
       </Typography>
       <NetworkInfo isOnHomePage />
       <HeaderSearch />

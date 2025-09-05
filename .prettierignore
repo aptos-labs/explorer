@@ -1,6 +1,7 @@
 build
 coverage
 public/world.json
+public/_redirects
 robots.txt
 .husky/
 .prettierignore
