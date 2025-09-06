@@ -279,6 +279,7 @@ type Swap = {
   dex:
     | "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af" // "ThalaSwap v1"
     | "0x007730cd28ee1cdc9e999336cbc430f99e7c44397c0aa77516f6f23a78559bb5" // "ThalaSwap v2"
+    | "0x763fe3edb6ab9ef216a3e7ff1a2d6ac643a351218dadc6ff21667ccfc9fb1743" // "ThalaSwap CL"
     | "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12" // "Liquidswap v0"
     | "0x163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e" // "Liquidswap v0.5"
     | "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa" // "PancakeSwap"
@@ -396,6 +397,7 @@ const parsers = [
   // swap / liquidity actions
   parseThalaSwapV1Event,
   parseThalaSwapV2Event,
+  parseThalaSwapCLEvent,
   (event: Types.Event) =>
     parseLiquidswapV0Event(
       event,
@@ -1242,6 +1244,37 @@ function parseThalaSwapV2Event(event: Types.Event): Swap | undefined {
   return {
     actionType: "swap",
     dex: "0x007730cd28ee1cdc9e999336cbc430f99e7c44397c0aa77516f6f23a78559bb5",
+    amountIn,
+    amountOut,
+    assetIn,
+    assetOut,
+  };
+}
+
+function parseThalaSwapCLEvent(event: Types.Event): Swap | undefined {
+  if (
+    event.type !==
+    "0x763fe3edb6ab9ef216a3e7ff1a2d6ac643a351218dadc6ff21667ccfc9fb1743::pool::SwapEvent"
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    amount_in: string;
+    amount_out: string;
+    metadata_0: {inner: string};
+    metadata_1: {inner: string};
+    zero_for_one: boolean;
+  } = event.data;
+  const amountIn = Number(data.amount_in);
+  const amountOut = Number(data.amount_out);
+  const [assetIn, assetOut] = data.zero_for_one
+    ? [data.metadata_0.inner, data.metadata_1.inner]
+    : [data.metadata_1.inner, data.metadata_0.inner];
+
+  return {
+    actionType: "swap",
+    dex: "0x763fe3edb6ab9ef216a3e7ff1a2d6ac643a351218dadc6ff21667ccfc9fb1743",
     amountIn,
     amountOut,
     assetIn,
