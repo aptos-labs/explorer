@@ -28,6 +28,7 @@ export default function TokenPage() {
           <TokenTitle
             name={token?.token_name ?? ""}
             tokenDataId={token?.token_data_id ?? ""}
+            tokenCollection={token?.collection_id ?? ""}
           />
           <TokenTabs data={token} />
         </Stack>

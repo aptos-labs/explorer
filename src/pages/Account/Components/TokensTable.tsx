@@ -8,12 +8,28 @@ import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {Link} from "../../../routing";
 import {TokenOwnership} from "../../../api/hooks/useGetAccountTokens";
+import {labsBannedCollections} from "../../../constants";
+import {Dangerous} from "@mui/icons-material";
+import StyledTooltip from "../../../components/StyledTooltip";
 
 type TokenCellProps = {
   token: TokenOwnership;
 };
 
 function TokenNameCell({token}: TokenCellProps) {
+  let badge = null;
+  const reason =
+    labsBannedCollections[token?.current_token_data?.collection_id ?? ""];
+  if (reason) {
+    let tooltipMessage = `This asset has been marked as a scam or dangerous, please avoid using this asset.`;
+    tooltipMessage += ` Reason: (${reason})`;
+    badge = (
+      <StyledTooltip title={tooltipMessage}>
+        <Dangerous fontSize="small" color="error" />
+      </StyledTooltip>
+    );
+  }
+
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
       <Link
@@ -30,6 +46,8 @@ function TokenNameCell({token}: TokenCellProps) {
           }}
         >
           {token?.current_token_data?.token_name}
+          {/* Show warning for banned collections */}
+          {badge}
         </Box>
       </Link>
     </GeneralTableCell>

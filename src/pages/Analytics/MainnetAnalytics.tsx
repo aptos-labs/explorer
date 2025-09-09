@@ -82,10 +82,7 @@ export default function MainnetAnalytics() {
         />
       </Grid>
       <Grid size={{xs: 12, md: 6, lg: 3}}>
-        <DailyBlockGapChart
-          data={data.daily_block_gap}
-          days={days}
-        />
+        <DailyBlockGapChart data={data.daily_block_gap} days={days} />
       </Grid>
     </Grid>
   );
