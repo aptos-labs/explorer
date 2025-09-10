@@ -7,6 +7,8 @@ import {
   groupAndSortWallets,
   isInstallRequired,
   useWallet,
+  aptosStandardSupportedWalletList,
+  AdapterWallet,
 } from "@aptos-labs/wallet-adapter-react";
 import {
   Box,
@@ -47,7 +49,15 @@ export default function WalletsModal({
 }: WalletsModalProps): JSX.Element {
   const theme = useTheme();
 
-  const {wallets = []} = useWallet();
+  const {wallets: installedWallets = []} = useWallet();
+  const wallets: AdapterWallet[] = [...installedWallets];
+  const installedWalletNames = wallets.map((wallet) => wallet.name);
+  for (const wallet of aptosStandardSupportedWalletList) {
+    if (!installedWalletNames.includes(wallet.name)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      wallets.push(wallet as any); // TODO: Make this typed properly
+    }
+  }
 
   const {aptosConnectWallets, availableWallets, installableWallets} =
     groupAndSortWallets([...wallets], walletSortingOptions);

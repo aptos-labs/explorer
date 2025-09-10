@@ -78,7 +78,9 @@ const useSubmitTransaction = () => {
           };
         }
         // transaction failed
-        return {...responseOnError, message: response.message};
+        // Note this is for backwards compatibility
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return {...responseOnError, message: (response as any).message};
       } catch (error) {
         if (error instanceof FailedTransactionError) {
           return {
