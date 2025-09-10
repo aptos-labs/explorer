@@ -15,7 +15,7 @@ type TokenTabsProps = {
   resourceData: Types.MoveResource[] | undefined;
 };
 
-export default function CoinsTab({address, resourceData}: TokenTabsProps) {
+export default function CoinsTab({address}: TokenTabsProps) {
   const {data: coinData} = useGetCoinList();
 
   const {isLoading, error, data} = useGetAccountCoins(address);
@@ -105,11 +105,5 @@ export default function CoinsTab({address, resourceData}: TokenTabsProps) {
       });
   }
 
-  return (
-    <CoinsTable
-      address={address}
-      resourceData={resourceData}
-      coins={parse_coins()}
-    />
-  );
+  return <CoinsTable coins={parse_coins()} />;
 }
