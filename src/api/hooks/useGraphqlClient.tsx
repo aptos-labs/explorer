@@ -2,13 +2,12 @@ import React, {useEffect, useState} from "react";
 import {
   ApolloClient,
   ApolloLink,
-  ApolloProvider,
   HttpLink,
   InMemoryCache,
-  NormalizedCacheObject,
 } from "@apollo/client";
 import {getApiKey, NetworkName} from "../../constants";
 import {useGlobalState} from "../../global-config/GlobalConfig";
+import {ApolloProvider} from "@apollo/client/react";
 
 function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   const graphqlUri = getGraphqlURI(networkName);
@@ -32,9 +31,7 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
   }
 }
 
-function getGraphqlClient(
-  networkName: NetworkName,
-): ApolloClient<NormalizedCacheObject> {
+function getGraphqlClient(networkName: NetworkName): ApolloClient {
   const apiKey = getApiKey(networkName);
   // Middleware to attach the authorization token.
   const authMiddleware = new ApolloLink((operation, forward) => {
@@ -59,9 +56,9 @@ function getGraphqlClient(
 
 export function useGetGraphqlClient() {
   const [state] = useGlobalState();
-  const [graphqlClient, setGraphqlClient] = useState<
-    ApolloClient<NormalizedCacheObject>
-  >(getGraphqlClient(state.network_name));
+  const [graphqlClient, setGraphqlClient] = useState<ApolloClient>(
+    getGraphqlClient(state.network_name),
+  );
 
   useEffect(() => {
     setGraphqlClient(getGraphqlClient(state.network_name));

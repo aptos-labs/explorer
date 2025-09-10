@@ -34,7 +34,7 @@ declare module "@mui/material/styles" {
   }
 }
 
-declare module "@mui/material/styles/createPalette" {
+declare module "@mui/material/styles" {
   interface Palette {
     lineShade: {
       main: string;

@@ -4,9 +4,8 @@ import {getValidatorCommission, getValidatorState} from "../..";
 import {useGlobalState} from "../../../global-config/GlobalConfig";
 import {ResponseError} from "../../client";
 import {combineQueries} from "../../query-utils";
-import {MoveValue} from "aptos/src/generated";
 import {useGetNumberOfDelegators} from "./useGetNumberOfDelegators";
-import {ApolloError} from "@apollo/client";
+import {CombinedGraphQLErrors} from "@apollo/client";
 
 type DelegationNodeInfoProps = {
   validatorAddress: Types.Address;
@@ -18,7 +17,7 @@ type DelegationNodeInfoResponse = {
   isQueryLoading: boolean;
   validatorStatus: Types.MoveValue[] | undefined;
   numberOfDelegators?: number;
-  error: ResponseError | ApolloError | null;
+  error: ResponseError | CombinedGraphQLErrors | null;
 };
 
 export function useGetDelegationNodeInfo({
@@ -43,7 +42,7 @@ export function useGetDelegationNodeInfo({
     useQuery<Types.MoveValue[], ResponseError, number>({
       queryKey: ["validatorCommission", client, validatorAddress],
       queryFn: () => getValidatorCommission(client, validatorAddress),
-      select: (res: MoveValue[]) => Number(res ? res[0] : 0) / 100, // commission rate: 22.85% is represented as 2285
+      select: (res) => Number(res ? res[0] : 0) / 100, // commission rate: 22.85% is represented as 2285
       enabled: !!client && isValidAddress,
     }),
     useQuery<Types.MoveValue[], ResponseError>({

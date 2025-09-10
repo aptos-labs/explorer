@@ -1,5 +1,5 @@
-import {useQuery as useGraphqlQuery} from "@apollo/client/react/hooks/useQuery";
-import {ApolloError, gql} from "@apollo/client";
+import {useQuery as useGraphqlQuery} from "@apollo/client/react";
+import {CombinedGraphQLErrors, gql} from "@apollo/client";
 
 export type CoinHolder = {
   owner_address: string;
@@ -11,7 +11,7 @@ export function useGetCoinHolders(
   offset?: number,
 ): {
   isLoading: boolean;
-  error: ApolloError | undefined;
+  error: CombinedGraphQLErrors | undefined;
   data: CoinHolder[] | undefined;
 } {
   const {loading, error, data} = useGraphqlQuery<{
@@ -35,7 +35,8 @@ export function useGetCoinHolders(
 
   return {
     isLoading: loading,
-    error,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    error: error as any,
     data: data?.current_fungible_asset_balances,
   };
 }

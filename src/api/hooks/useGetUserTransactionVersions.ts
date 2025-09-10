@@ -1,4 +1,5 @@
-import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
+import {gql} from "@apollo/client";
+import {useQuery as useGraphqlQuery} from "@apollo/client/react";
 
 const USER_TRANSACTIONS_QUERY = gql`
   query UserTransactions($limit: Int, $start_version: bigint, $offset: Int) {
@@ -27,10 +28,11 @@ export default function useGetUserTransactionVersions(
   offset?: number,
 ): number[] {
   const topTxnsOnly = startVersion === undefined || offset === undefined;
-  const {loading, error, data} = useGraphqlQuery(
-    topTxnsOnly ? TOP_USER_TRANSACTIONS_QUERY : USER_TRANSACTIONS_QUERY,
-    {variables: {limit: limit, start_version: startVersion, offset: offset}},
-  );
+  const {loading, error, data} = useGraphqlQuery<{
+    user_transactions: {version: number}[];
+  }>(topTxnsOnly ? TOP_USER_TRANSACTIONS_QUERY : USER_TRANSACTIONS_QUERY, {
+    variables: {limit: limit, start_version: startVersion, offset: offset},
+  });
 
   if (loading || error || !data) {
     return [];

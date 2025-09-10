@@ -7,10 +7,9 @@ import {
   ValidatorData,
   useGetValidators,
 } from "../../../../api/hooks/useGetValidators";
-import {useGetDelegatedStakingPoolList} from "../../../../api/hooks/delegations";
+import {useGetDelegatedStakingPoolList} from "../../../../api/hooks";
 import {getValidatorCommissionAndState} from "../../../../api";
 import {ResponseError} from "../../../../api/client";
-import {MoveValue} from "aptos/src/generated";
 import {
   getBatchDelegatorCounts,
   getBatchUserStakes,
@@ -99,9 +98,10 @@ export function useValidatorDelegationData() {
       );
     },
     enabled: validatorAddresses.length > 0 && !!state.aptos_client,
-    select: (res: MoveValue[]) => {
+    select: (res) => {
       // First arg is always the return value
-      const ret = res[0] as [MoveValue, MoveValue][];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const ret = res[0] as [any, any][];
       return processedValidators.map((v, i) => {
         const commission = ret[i]?.[0];
         const status = ret[i]?.[1];

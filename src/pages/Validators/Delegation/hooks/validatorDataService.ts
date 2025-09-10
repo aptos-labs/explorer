@@ -5,7 +5,6 @@ import {
   InMemoryCache,
   HttpLink,
   ApolloLink,
-  NormalizedCacheObject,
 } from "@apollo/client";
 import {tryStandardizeAddress} from "../../../../utils";
 import {getGraphqlURI} from "../../../../api/hooks/useGraphqlClient";
@@ -19,9 +18,7 @@ interface DelegatorCountItem {
 }
 
 // Create a GraphQL client instance
-function createGraphqlClient(
-  networkName: NetworkName,
-): ApolloClient<NormalizedCacheObject> {
+function createGraphqlClient(networkName: NetworkName): ApolloClient {
   const apiKey = getApiKey(networkName);
 
   // Middleware to attach the authorization token
@@ -70,7 +67,9 @@ export async function getBatchDelegatorCounts(
     const apolloClient = createGraphqlClient(networkName);
 
     // Execute GraphQL query using the correct field name
-    const {data} = await apolloClient.query({
+    const {data} = await apolloClient.query<{
+      num_active_delegator_per_pool: DelegatorCountItem[];
+    }>({
       query: gql`
           query GetDelegatorCounts {
               num_active_delegator_per_pool(
@@ -84,8 +83,7 @@ export async function getBatchDelegatorCounts(
     });
 
     // Process and return results
-    const delegatorCounts =
-      data.num_active_delegator_per_pool as DelegatorCountItem[];
+    const delegatorCounts = data?.num_active_delegator_per_pool ?? [];
     const addressToCountMap = new Map<string, number>();
 
     delegatorCounts.forEach((item) => {

@@ -1,4 +1,5 @@
-import {ApolloError, gql, useQuery as useGraphqlQuery} from "@apollo/client";
+import {CombinedGraphQLErrors, gql} from "@apollo/client";
+import {useQuery as useGraphqlQuery} from "@apollo/client/react";
 import {Types} from "aptos";
 import {tryStandardizeAddress} from "../../../utils";
 
@@ -33,20 +34,19 @@ export function useGetDelegatedStakeOperationActivities(
 ): {
   activities: DelegatedStakingActivity[] | undefined;
   loading: boolean;
-  error: ApolloError | undefined;
+  error: CombinedGraphQLErrors | undefined;
 } {
   const delegatorAddress64Hash = tryStandardizeAddress(delegatorAddress);
   const poolAddress64Hash = tryStandardizeAddress(poolAddress);
 
-  const {loading, error, data} = useGraphqlQuery(
-    DELEGATED_STAKING_ACTIVITY_QUERY,
-    {
-      variables: {
-        address: delegatorAddress64Hash,
-        pool: poolAddress64Hash,
-      },
+  const {loading, error, data} = useGraphqlQuery<{
+    delegated_staking_activities: DelegatedStakingActivity[];
+  }>(DELEGATED_STAKING_ACTIVITY_QUERY, {
+    variables: {
+      address: delegatorAddress64Hash,
+      pool: poolAddress64Hash,
     },
-  );
+  });
   if (
     !delegatorAddress64Hash ||
     !poolAddress64Hash ||
@@ -54,7 +54,8 @@ export function useGetDelegatedStakeOperationActivities(
     error ||
     !data
   ) {
-    return {activities: undefined, loading, error};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return {activities: undefined, loading, error: error as any};
   }
 
   return {activities: data?.delegated_staking_activities, loading, error};

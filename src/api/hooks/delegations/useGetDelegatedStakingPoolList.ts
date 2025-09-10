@@ -1,10 +1,5 @@
-import {
-  ApolloError,
-  gql,
-  useQuery as useGraphqlQuery,
-  ApolloClient,
-  NormalizedCacheObject,
-} from "@apollo/client";
+import {CombinedGraphQLErrors, gql, ApolloClient} from "@apollo/client";
+import {useQuery as useGraphqlQuery} from "@apollo/client/react";
 import {useQuery} from "@tanstack/react-query";
 
 export interface DelegatedStakingPool {
@@ -34,7 +29,7 @@ const VALIDATOR_LIST_QUERY = gql`
 `;
 
 async function fetchAllDelegationPools(
-  apolloClient: ApolloClient<NormalizedCacheObject>,
+  apolloClient: ApolloClient,
 ): Promise<DelegatedStakingPool[]> {
   const LIMIT = 100;
   let offset = 0;
@@ -42,7 +37,9 @@ async function fetchAllDelegationPools(
   let allPools: DelegatedStakingPool[] = [];
 
   while (hasMore) {
-    const result = await apolloClient.query({
+    const result = await apolloClient.query<{
+      delegated_staking_pools: DelegatedStakingPool[];
+    }>({
       query: VALIDATOR_LIST_QUERY,
       variables: {
         limit: LIMIT,
@@ -50,7 +47,7 @@ async function fetchAllDelegationPools(
       },
     });
 
-    const pools = result.data.delegated_staking_pools;
+    const pools = result.data?.delegated_staking_pools ?? [];
 
     if (pools && pools.length > 0) {
       allPools = [...allPools, ...pools];
@@ -71,7 +68,7 @@ async function fetchAllDelegationPools(
 export function useGetDelegatedStakingPoolList(): {
   delegatedStakingPools: DelegatedStakingPool[];
   loading: boolean;
-  error?: ApolloError;
+  error?: CombinedGraphQLErrors;
 } {
   const {client, error: apolloError} = useGraphqlQuery(VALIDATOR_LIST_QUERY, {
     skip: true,
@@ -88,7 +85,9 @@ export function useGetDelegatedStakingPoolList(): {
     return {
       delegatedStakingPools: [],
       loading: isLoading,
-      error: apolloError || (error as ApolloError),
+      // TODO: Fix this any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      error: apolloError || (error as CombinedGraphQLErrors as any),
     };
   }
 
