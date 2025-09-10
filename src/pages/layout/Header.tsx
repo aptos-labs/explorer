@@ -22,6 +22,7 @@ import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import {Link, useNavigate} from "../../routing";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {addressFromWallet, sortPetraFirst} from "../../utils";
+import {AccountAddress} from "@aptos-labs/ts-sdk";
 
 export default function Header() {
   const scrollTop = () => {
@@ -70,7 +71,7 @@ export default function Header() {
         network: network?.name,
       },
     });
-    walletAddressRef.current = account.address;
+    walletAddressRef.current = AccountAddress.from(account.address).toString();
   }
 
   return (

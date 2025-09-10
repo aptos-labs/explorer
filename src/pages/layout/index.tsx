@@ -12,8 +12,6 @@ import {
 import {ProvideColorMode} from "../../context";
 import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
 import {AptosWalletAdapterProvider} from "@aptos-labs/wallet-adapter-react";
-import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
-import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
 import {Network} from "@aptos-labs/ts-sdk";
 import {hiddenNetworks} from "../../constants";
 
@@ -22,17 +20,14 @@ const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 function ExplorerWalletAdapterProvider({children}: LayoutProps) {
   const [state] = useGlobalState();
 
-  const okxWalletAdapter = new OKXWallet();
-  const msafeWalletAdapter = new MSafeWalletAdapter();
   let networkName = state.network_name;
   if (hiddenNetworks.includes(networkName)) {
-    // Exoctic networks cause issues with the wallet adapter so for now we can pretend it's local
+    // Other networks cause issues with the wallet adapter, so for now we can pretend it's local
     networkName = "local";
   }
   return (
     <AptosWalletAdapterProvider
       key={networkName}
-      plugins={[okxWalletAdapter, msafeWalletAdapter]}
       autoConnect={true}
       dappConfig={{
         aptosConnectDappId: AptosConnectId,
