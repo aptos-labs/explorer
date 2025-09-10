@@ -348,6 +348,8 @@ export const knownAddresses: Record<string, string> = {
     "Bitfinex 1",
   "0xdc7adffa09da5736ce1303f7441f4367fa423617c6822ad2fbc8522d9efd8fa4":
     "Kraken 1",
+  "0x7ec963a7f9a4ee5d87e9431f5646162626c35774c799f4181d574f0ba938bf38":
+    "Kraken Staking",
   "0x0cf869189c785beaaad2f5c636ced4805aeae9cbf49070dc93aed2f16b99012a":
     "Gate 1",
   "0xe8ca094fec460329aaccc2a644dc73c5e39f1a2ad6e97f82b6cbdc1a5949b9ea":
