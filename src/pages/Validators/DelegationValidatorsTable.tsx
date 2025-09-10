@@ -44,7 +44,6 @@ import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import {useQuery} from "@tanstack/react-query";
 import {getValidatorCommissionAndState} from "../../api";
-import {MoveValue} from "aptos/src/generated";
 import {ResponseError} from "../../api/client";
 
 function getSortedValidators(
@@ -459,9 +458,10 @@ export function DelegationValidatorsTable() {
     ],
     queryFn: () =>
       getValidatorCommissionAndState(state.aptos_client, sortedValidatorAddrs),
-    select: (res: MoveValue[]) => {
+    select: (res) => {
       /// First arg is always the return value
-      const ret = res[0] as [MoveValue, MoveValue][];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const ret = res[0] as [any, any][];
       return sortedValidators.map((v, i) => {
         const commision = ret[i][0];
         const state = ret[i][1];
@@ -531,20 +531,18 @@ export function DelegationValidatorsTable() {
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {sortedValidatorsWithCommissionAndState?.map(
-          (validator: MoveValue, i: number) => {
-            return (
-              <ValidatorRow
-                key={i}
-                // FIXME: This type should be parsed properly, rather than converting here
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                validator={validator as any}
-                columns={columns}
-                connected={connected}
-              />
-            );
-          },
-        )}
+        {sortedValidatorsWithCommissionAndState?.map((validator, i) => {
+          return (
+            <ValidatorRow
+              key={i}
+              // FIXME: This type should be parsed properly, rather than converting here
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              validator={validator as any}
+              columns={columns}
+              connected={connected}
+            />
+          );
+        })}
       </GeneralTableBody>
     </Table>
   );

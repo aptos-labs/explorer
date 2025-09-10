@@ -8,7 +8,7 @@ import {
   MINIMUM_APT_IN_POOL_FOR_EXPLORER,
   MINIMUM_APT_IN_POOL,
 } from "./constants";
-import {ApolloError} from "@apollo/client";
+import {CombinedGraphQLErrors} from "@apollo/client";
 
 interface AccountResourceData {
   locked_until_secs: bigint;
@@ -61,7 +61,7 @@ export type StakePrincipals = {
 export function getStakeOperationPrincipals(activities: {
   activities: DelegatedStakingActivity[] | undefined;
   loading: boolean;
-  error: ApolloError | undefined;
+  error: CombinedGraphQLErrors | undefined;
 }) {
   if (activities.error) {
     return {stakePrincipals: undefined, isLoading: false};

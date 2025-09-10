@@ -1,6 +1,7 @@
 import {Types} from "aptos";
 import {tryStandardizeAddress} from "../../utils";
-import {gql, useQuery as useGraphqlQuery} from "@apollo/client";
+import {gql} from "@apollo/client";
+import {useQuery as useGraphqlQuery} from "@apollo/client/react";
 import {TransactionTypeName} from "../../components/TransactionType";
 
 export type TransactionCounterparty = {

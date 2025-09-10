@@ -1,4 +1,5 @@
-import {ApolloError, gql, useQuery as useGraphqlQuery} from "@apollo/client";
+import {CombinedGraphQLErrors, gql} from "@apollo/client";
+import {useQuery as useGraphqlQuery} from "@apollo/client/react";
 import {tryStandardizeAddress} from "../../../utils";
 import {Types} from "aptos";
 
@@ -23,18 +24,21 @@ const NUMBER_OF_DELEGATORS_QUERY = gql`
 export function useGetNumberOfDelegators(poolAddress: Types.Address): {
   numberOfDelegators: number;
   loading: boolean;
-  error: ApolloError | undefined;
+  error: CombinedGraphQLErrors | undefined;
 } {
   const poolAddress64Hash = tryStandardizeAddress(poolAddress);
 
-  const {loading, error, data} = useGraphqlQuery(NUMBER_OF_DELEGATORS_QUERY, {
+  const {loading, error, data} = useGraphqlQuery<{
+    num_active_delegator_per_pool: NumberOfDelegatorsResponse[];
+  }>(NUMBER_OF_DELEGATORS_QUERY, {
     variables: {
       poolAddress: poolAddress64Hash,
     },
     skip: !poolAddress,
   });
   if (!poolAddress64Hash || loading || error || !data) {
-    return {numberOfDelegators: 0, loading, error};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return {numberOfDelegators: 0, loading, error: error as any};
   }
 
   const delegatorData = data?.num_active_delegator_per_pool?.[0] as
