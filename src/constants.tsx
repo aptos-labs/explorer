@@ -372,7 +372,7 @@ export const knownAddresses: Record<string, string> = {
     "Slime Revolution",
   "0x5a96fab415f43721a44c5a761ecfcccc3dae9c21f34313f0e594b49d8d4564f4": "KGeN",
   "0x2387f5f16330dbb0236b1776a0d86c7a4901daaa25cd61ecb33709e025d3172f": "KGeN",
-  "0x2a8227993a4e38537a57caefe5e7e9a51327bf6cd732c1f56648f26f68304ebc": "KGeN",
+  //"0x2a8227993a4e38537a57caefe5e7e9a51327bf6cd732c1f56648f26f68304ebc": "KGeN",
   "0x09d518b9b84f327eafc5f6632200ea224a818a935ffd6be5d78ada250bbc44a6":
     "Supervillain Labs",
   "0x34ca84470e8d2907562f9a2f144c6c780282953b8b025ba220b0ecc5fc0aead9":
