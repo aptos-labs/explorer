@@ -875,6 +875,30 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native", "Verified"],
   },
+  "0x2a8227993a4e38537a57caefe5e7e9a51327bf6cd732c1f56648f26f68304ebc": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0x2a8227993a4e38537a57caefe5e7e9a51327bf6cd732c1f56648f26f68304ebc",
+    name: "KGEN",
+    symbol: "KGEN",
+    decimals: 8,
+    panoraSymbol: "KGEN",
+    bridge: null,
+    logoUrl:
+      "https://prod-image-bucket.kgen.io/assets/kgen_token_logo.png",
+    websiteUrl: "https://kgen.io/",
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 9,
+    panoraIndex: 9,
+    coinGeckoId: "kgen",
+    coinMarketCapId: 37344,
+    panoraUI: true,
+    usdPrice: null,
+    panoraTags: ["Native", "Verified"],
+  },
 };
 
 /**
