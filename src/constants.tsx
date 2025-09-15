@@ -429,6 +429,8 @@ export const knownAddresses: Record<string, string> = {
     "UFC Strike",
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
+  "0x2a8227993a4e38537a57caefe5e7e9a51327bf6cd732c1f56648f26f68304ebc":
+    "KGEN",
 };
 
 export const scamAddresses: Record<string, string> = {
