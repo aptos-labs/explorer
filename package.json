@@ -8,7 +8,7 @@
     "overrides": {
       "@aptos-labs/aptos-client": "^2.0.0",
       "@aptos-labs/wallet-standard": "^0.5.1",
-      "@aptos-labs/ts-sdk": "4.0.0",
+      "@aptos-labs/ts-sdk": "5.0.0",
       "d3-color": ">=3.1.0",
       "prismjs": ">=1.30.0",
       "glob": "^11.0.0",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.0.4",
-    "@aptos-labs/ts-sdk": "4.0.0",
+    "@aptos-labs/ts-sdk": "5.0.0",
     "@aptos-labs/wallet-adapter-mui-design": "5.0.4",
     "@aptos-labs/wallet-adapter-react": "7.0.4",
     "@download/blockies": "^1.0.3",
