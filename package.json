@@ -26,7 +26,7 @@
     "@mui/material": "^7.2.0",
     "@mui/system": "^7.2.0",
     "@mui/x-date-pickers": "^8.8.0",
-    "@sentry/react": "^9.40.0",
+    "@sentry/react": "^10.0.0",
     "@tanstack/react-query": "^5.83.0",
     "aptos": "^1.21.0",
     "chart.js": "^4.5.0",
