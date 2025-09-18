@@ -889,8 +889,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     decimals: 8,
     panoraSymbol: "KGEN",
     bridge: null,
-    logoUrl:
-      "https://prod-image-bucket.kgen.io/assets/kgen_token_logo.png",
+    logoUrl: "https://prod-image-bucket.kgen.io/assets/kgen_token_logo.png",
     websiteUrl: "https://kgen.io/",
     category: "Native",
     isInPanoraTokenList: true,
