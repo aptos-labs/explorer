@@ -1,60 +1,17 @@
-import {useGlobalState} from "../../global-config/GlobalConfig";
-import {useEffect, useMemo, useState} from "react";
-import {useGetAccountResource} from "./useGetAccountResource";
-import {useGetEpochTime} from "./useGetEpochTime";
-
-interface ConfigurationData {
-  rewards_rate: string;
-  rewards_rate_denominator: string;
-}
-
-function useGetStakingConfig() {
-  const [state] = useGlobalState();
-  const [rewardsRatePerEpoch, setRewardsRatePerEpoch] = useState<string>();
-  const [rewardsRateDenominator, setRewardsRateDenominator] =
-    useState<string>();
-
-  const {data: configuration} = useGetAccountResource(
-    "0x1",
-    "0x1::staking_config::StakingConfig",
-  );
-
-  useEffect(() => {
-    if (configuration?.data !== undefined) {
-      const data = configuration.data as ConfigurationData;
-      setRewardsRatePerEpoch(data.rewards_rate);
-      setRewardsRateDenominator(data.rewards_rate_denominator);
-    }
-  }, [configuration?.data, state]);
-
-  return {rewardsRatePerEpoch, rewardsRateDenominator};
-}
+import {useViewFunction} from "./useViewFunction";
 
 export function useGetStakingRewardsRate() {
-  const {epochInterval} = useGetEpochTime();
-  const {rewardsRatePerEpoch, rewardsRateDenominator} = useGetStakingConfig();
-  const [rewardsRateYearly, setRewardsRateYearly] = useState<string>();
+  const response = useViewFunction("0x1::staking_config::reward_rate", [], []);
+  if (response.data && response.data.length == 2) {
+    const [numerator, denominator] = response.data;
+    // TODO: Note, that if the epoch length changes, this changes.
+    // 4380 is 2 hour epochs, 12 times a day for 365 days
+    const rate =
+      (100 * 4380 * parseInt(numerator as string)) /
+      parseInt(denominator as string);
 
-  useMemo(() => {
-    if (
-      epochInterval !== undefined &&
-      rewardsRatePerEpoch !== undefined &&
-      rewardsRateDenominator !== undefined
-    ) {
-      const ratePerEpoch = parseInt(rewardsRatePerEpoch);
-      const denominator = parseInt(rewardsRateDenominator);
-
-      const epochInSec = parseInt(epochInterval) / 1000 / 1000;
-      const yearInSec = 60 * 60 * 24 * 365;
-      const epochsPerYear = yearInSec / epochInSec;
-
-      const rate = (
-        ((ratePerEpoch * epochsPerYear) / denominator) *
-        100
-      ).toFixed(0);
-      setRewardsRateYearly(rate);
-    }
-  }, [epochInterval, rewardsRatePerEpoch, rewardsRateDenominator]);
-
-  return {rewardsRateYearly};
+    return {...response, rewardsRateYearly: rate.toPrecision(4)};
+  } else {
+    return {...response, rewardsRateYearly: "N/A"};
+  }
 }
