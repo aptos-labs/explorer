@@ -292,6 +292,7 @@ type Swap = {
     | "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba" // "Cetus 1"
     | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c" // "Hyperion"
     | "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a" // "Tapp"
+    | "0x12169b6e1bf75ab1a2b2d987d20f8dd4c191e5dbc2066cb7e9af40b1fa7fb659" // "Earnium"
     | "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c"; // "Econia"
   amountIn: number;
   amountOut: number;
@@ -430,6 +431,7 @@ const parsers = [
   parseCetusSwapEvent,
   parseHyperionEvent,
   parseTappEvent,
+  parseEarniumEvent,
 
   // staking / unstaking actions
   parseAmisLSDEvent,
@@ -1727,6 +1729,46 @@ function parseTappEvent(
     dex,
     assetData,
   };
+}
+
+function parseEarniumEvent(
+  event: Types.Event,
+): Swap | undefined {
+  const dex =
+    "0x12169b6e1bf75ab1a2b2d987d20f8dd4c191e5dbc2066cb7e9af40b1fa7fb659";
+  const eventTypeToAction: Record<
+    string,
+    "swap"
+  > = {
+    "0x12169b6e1bf75ab1a2b2d987d20f8dd4c191e5dbc2066cb7e9af40b1fa7fb659::liquidity_pool::SwapEvent":
+      "swap"
+  };
+
+  const actionType = eventTypeToAction[event.type];
+  if (!actionType) return undefined;
+  // processing swap events
+  if (actionType === "swap") {
+    const data: {
+      amount_in: string;
+      amount_out: string;
+      from_token: {inner: string};
+      to_token: {inner: string};
+    } = event.data;
+
+    const amountIn = Number(data.amount_in);
+    const amountOut = Number(data.amount_out);
+    const assetIn = data.from_token.inner;
+    const assetOut = data.to_token.inner;
+
+    return {
+      actionType,
+      dex,
+      amountIn,
+      amountOut,
+      assetIn,
+      assetOut,
+    };
+  }
 }
 
 function parseEconiaEvent(
