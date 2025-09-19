@@ -30,7 +30,7 @@ import NetworkStatus from "../../components/NetworkStatus";
 
 // Statically initialize wallets that don't change for the network
 const martianWallet = new MartianWallet();
-const msafeWallet = new MSafeWalletAdapter();
+const msafeWallet = new MSafeWalletAdapter(undefined, 'MOVEMENT');
 // const rimowallet = new RimoWallet();
 // const okxWallet = new OKXWallet();
 const pontemWallet = new PontemWallet();

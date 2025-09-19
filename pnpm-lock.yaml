@@ -37,8 +37,8 @@ importers:
         specifier: ^0.0.5
         version: 0.0.5
       '@msafe/aptos-wallet-adapter':
-        specifier: ^1.1.4
-        version: 1.1.4(@aptos-labs/ts-sdk@1.35.0(axios@1.7.9)(got@11.8.6))(@mizuwallet-sdk/core@1.4.0(@aptos-labs/ts-sdk@1.35.0(axios@1.7.9)(got@11.8.6))(@mizuwallet-sdk/protocol@0.0.6)(graphql-request@7.1.2(graphql@16.10.0)))(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0)(axios@1.7.9)(got@11.8.6)
+        specifier: ^1.1.8
+        version: 1.1.8(@aptos-labs/ts-sdk@1.35.0(axios@1.7.9)(got@11.8.6))(@mizuwallet-sdk/core@1.4.0(@aptos-labs/ts-sdk@1.35.0(axios@1.7.9)(got@11.8.6))(@mizuwallet-sdk/protocol@0.0.6)(graphql-request@7.1.2(graphql@16.10.0)))(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0)(axios@1.7.9)(got@11.8.6)
       '@mui/icons-material':
         specifier: ^6.4.3
         version: 6.4.4(@mui/material@6.4.4(@emotion/react@11.14.0(@types/react@19.0.8)(react@19.0.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.0.8)(react@19.0.0))(@types/react@19.0.8)(react@19.0.0))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(@types/react@19.0.8)(react@19.0.0)
@@ -967,8 +967,8 @@ packages:
   '@mizuwallet-sdk/protocol@0.0.6':
     resolution: {integrity: sha512-I6ibbdPmPqsqc4JfCfI9qplZ2RcqeUxawyYBNb3TNhibMqQhoVUUaczt9kLuML20ODTvvZW/ja+5S6PXSzWPiw==}
 
-  '@msafe/aptos-wallet-adapter@1.1.4':
-    resolution: {integrity: sha512-ygemfS+uxnqdQDmvIpOTo+/TcAaP8g4ggA+nFCSA4KI8AbfgjtgWlELbreme2tBiPCZ/x42qQTXVZpUVkzemCg==}
+  '@msafe/aptos-wallet-adapter@1.1.8':
+    resolution: {integrity: sha512-S+lusMyOCPla/BGlrAywm72KdjlShmto66VOpTacVvDBjDCAEAWM++7WmygQeUn+hjpIm2BNkPyW2B2g/tydqg==}
 
   '@msafe/aptos-wallet@8.0.2':
     resolution: {integrity: sha512-qKnZj5vRGG1wpxNB4RTZr4rxJdHwnsbqmJ9JcA1MvDZu7pzI7FvrHQYhUd0np+bzaRQg/hiVpp+a7XlLJlDHNw==}
@@ -1562,17 +1562,19 @@ packages:
   '@telegram-apps/bridge@1.8.0':
     resolution: {integrity: sha512-MTwJRdr0Qr437v5csEv/lPu5GDrJiamYpeeZxBUXgNrTMDB4wcLJ9FKSb3d0J/RL61v+ubxQMgw/wG6BUDH46A==}
 
-  '@telegram-apps/signals@1.1.1':
-    resolution: {integrity: sha512-vz37r8lemGpPzDiBRfqpXYBynzmy3SFnY6zfHsTZABTYYt0b0WQZyU5mFDqqqugGhka78Gy11xmr9csgy4YgGA==}
+  '@telegram-apps/signals@1.1.2':
+    resolution: {integrity: sha512-1P1kdCLX7MfETGPxH7f3UZKIsdE7Tz5S7QmN4Km1sbYQMakD5Bi1NecSMR7/wnHp50gWMI1JzENcMtCEmouhSg==}
 
   '@telegram-apps/toolkit@1.1.1':
     resolution: {integrity: sha512-+vhKx6ngfvjyTE6Xagl3z1TPVbfx5s7xAkcYzCdHYUo6T60jLIqLgyZMcI1UPoIAMuMu1pHoO+p8QNCj/+tFmw==}
 
   '@telegram-apps/transformers@1.2.2':
     resolution: {integrity: sha512-vvMwXckd1D7Ozc0h66PSUwF5QLrRV9HlGJFFeBuUex8QEk5mSPtsJkLiqB8aBbwuFDa91+TUSM/CxqPZO/e9YQ==}
+    deprecated: This package is not supported anymore. Use @tma.js/transfomers instead
 
   '@telegram-apps/types@1.2.1':
     resolution: {integrity: sha512-so4HLh7clur0YyMthi9KVIgWoGpZdXlFOuQjk3+Q5NAvJZ11nAheBSwPlGw/Ko92+zwvrSBE/lQyN2+p17RP+w==}
+    deprecated: This package is not supported anymore. Use @tma.js/types instead
 
   '@tp-lab/aptos-wallet-adapter@1.0.1':
     resolution: {integrity: sha512-/ZFeAiR6PZ3t9UP3P3hjxzc433fi40dWnMX13oemzOITz2ISrW3hqYIVHHGyDuOFx4kQsVydBzArX+GXSCh8Rg==}
@@ -1811,8 +1813,8 @@ packages:
     resolution: {integrity: sha512-v2W5q/NlX1qkn2q/JOXQT//pOAdrhz7+nOcO2uiH9+a0uvreL+sdWWqkhFmMcX+HEBjaibdOQMUoIfDhOGX4XA==}
     engines: {node: '>=16'}
 
-  '@wallet-standard/errors@0.1.0':
-    resolution: {integrity: sha512-ag0eq5ixy7rz8M5YUWGi/EoIJ69KJ+KILFNunoufgmXVkiISC7+NIZXJYTJrapni4f9twE1hfT+8+IV2CYCvmg==}
+  '@wallet-standard/errors@0.1.1':
+    resolution: {integrity: sha512-V8Ju1Wvol8i/VDyQOHhjhxmMVwmKiwyxUZBnHhtiPZJTWY0U/Shb2iEWyGngYEbAkp2sGTmEeNX1tVyGR7PqNw==}
     engines: {node: '>=16'}
     hasBin: true
 
@@ -2103,6 +2105,10 @@ packages:
 
   chalk@5.4.1:
     resolution: {integrity: sha512-zgVZuo2WcZgfUEmsn6eO3kINexW8RAE4maiQ8QNs8CtpPCSyMiYsULR3HQYkm3w8FIA3SberyMJMSldGsW+U3w==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+
+  chalk@5.6.2:
+    resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   character-entities-legacy@1.1.4:
@@ -5124,7 +5130,7 @@ snapshots:
       tweetnacl: 1.0.3
       tweetnacl-util: 0.15.1
 
-  '@msafe/aptos-wallet-adapter@1.1.4(@aptos-labs/ts-sdk@1.35.0(axios@1.7.9)(got@11.8.6))(@mizuwallet-sdk/core@1.4.0(@aptos-labs/ts-sdk@1.35.0(axios@1.7.9)(got@11.8.6))(@mizuwallet-sdk/protocol@0.0.6)(graphql-request@7.1.2(graphql@16.10.0)))(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0)(axios@1.7.9)(got@11.8.6)':
+  '@msafe/aptos-wallet-adapter@1.1.8(@aptos-labs/ts-sdk@1.35.0(axios@1.7.9)(got@11.8.6))(@mizuwallet-sdk/core@1.4.0(@aptos-labs/ts-sdk@1.35.0(axios@1.7.9)(got@11.8.6))(@mizuwallet-sdk/protocol@0.0.6)(graphql-request@7.1.2(graphql@16.10.0)))(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0)(axios@1.7.9)(got@11.8.6)':
     dependencies:
       '@aptos-labs/wallet-adapter-core': 4.25.0(@aptos-labs/ts-sdk@1.35.0(axios@1.7.9)(got@11.8.6))(@mizuwallet-sdk/core@1.4.0(@aptos-labs/ts-sdk@1.35.0(axios@1.7.9)(got@11.8.6))(@mizuwallet-sdk/protocol@0.0.6)(graphql-request@7.1.2(graphql@16.10.0)))(@mizuwallet-sdk/protocol@0.0.6)(@telegram-apps/bridge@1.8.0)(@wallet-standard/core@1.1.0)(aptos@1.21.0)(axios@1.7.9)(got@11.8.6)
       '@msafe/aptos-wallet': 8.0.2
@@ -5705,12 +5711,12 @@ snapshots:
 
   '@telegram-apps/bridge@1.8.0':
     dependencies:
-      '@telegram-apps/signals': 1.1.1
+      '@telegram-apps/signals': 1.1.2
       '@telegram-apps/toolkit': 1.1.1
       '@telegram-apps/transformers': 1.2.2
       '@telegram-apps/types': 1.2.1
 
-  '@telegram-apps/signals@1.1.1': {}
+  '@telegram-apps/signals@1.1.2': {}
 
   '@telegram-apps/toolkit@1.1.1': {}
 
@@ -6026,14 +6032,14 @@ snapshots:
     dependencies:
       '@wallet-standard/app': 1.1.0
       '@wallet-standard/base': 1.1.0
-      '@wallet-standard/errors': 0.1.0
+      '@wallet-standard/errors': 0.1.1
       '@wallet-standard/features': 1.1.0
       '@wallet-standard/wallet': 1.1.0
 
-  '@wallet-standard/errors@0.1.0':
+  '@wallet-standard/errors@0.1.1':
     dependencies:
-      chalk: 5.4.1
-      commander: 12.1.0
+      chalk: 5.6.2
+      commander: 13.1.0
 
   '@wallet-standard/features@1.1.0':
     dependencies:
@@ -6421,6 +6427,8 @@ snapshots:
       supports-color: 7.2.0
 
   chalk@5.4.1: {}
+
+  chalk@5.6.2: {}
 
   character-entities-legacy@1.1.4: {}
 
