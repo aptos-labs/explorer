@@ -2,7 +2,7 @@
   "name": "aptos-explorer",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "pnpm@10.17.0",
   "type": "module",
   "pnpm": {
     "overrides": {
@@ -19,8 +19,8 @@
   "dependencies": {
     "@apollo/client": "^4.0.4",
     "@aptos-labs/ts-sdk": "5.0.0",
-    "@aptos-labs/wallet-adapter-mui-design": "5.0.4",
-    "@aptos-labs/wallet-adapter-react": "7.0.4",
+    "@aptos-labs/wallet-adapter-mui-design": "5.1.0",
+    "@aptos-labs/wallet-adapter-react": "7.1.0",
     "@download/blockies": "^1.0.3",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
