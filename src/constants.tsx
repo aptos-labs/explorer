@@ -123,6 +123,7 @@ export const collectionV2Address = "0x4::collection::Collection";
 // TODO: this probably belongs somewhere else... but, for now, it's here
 // https://github.com/aptscan-ai/labels/blob/3187ad6b0710261e37324bbc336f74e9a07334a0/labels.json#L216
 // https://github.com/apscan/explorer/blob/master/src/config/address-tags.ts
+// TODO: Pull from both knownAddresses and the token addresses
 export const knownAddresses: Record<string, string> = {
   "0x0000000000000000000000000000000000000000000000000000000000000001":
     "Framework (0x1)",
@@ -431,6 +432,8 @@ export const knownAddresses: Record<string, string> = {
     "Hybrid Assets",
   "0x80f686c7bba12a0fce839ff160cb69774715497288996b861528727ccd256cdb":
     "UFC Strike",
+  "0x05fabd1b12e39967a3c24e91b7b8f67719a6dacee74f3c8b9fb7d93e855437d2":
+    "WLFI USD",
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
 };
@@ -902,6 +905,30 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native", "Verified"],
   },
+  "0x05fabd1b12e39967a3c24e91b7b8f67719a6dacee74f3c8b9fb7d93e855437d2": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0x05fabd1b12e39967a3c24e91b7b8f67719a6dacee74f3c8b9fb7d93e855437d2",
+    name: "World Liberty Financial USD",
+    symbol: "USD1",
+    decimals: 6,
+    panoraSymbol: "USD1",
+    bridge: null,
+    logoUrl:
+      "https://raw.githubusercontent.com/worldliberty/usd1-metadata/refs/heads/main/logo.png",
+    websiteUrl: "https://worldlibertyfinancial.com/",
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 9,
+    panoraIndex: 9,
+    coinGeckoId: "usd1-wlfi",
+    coinMarketCapId: 36148,
+    panoraUI: true,
+    usdPrice: null,
+    panoraTags: ["Native", "Verified"],
+  },
 };
 
 /**
@@ -955,6 +982,7 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0xb2c7780f0a255a6137e5b39733f5a4c85fe093c549de5c359c1232deef57d1b7": "ECHO",
   "0x435ad41e7b383cef98899c4e5a22c8dc88ab67b22f95e5663d6c6649298c3a9d": "RION",
   "0x2a8227993a4e38537a57caefe5e7e9a51327bf6cd732c1f56648f26f68304ebc": "KGeN",
+  "0x05fabd1b12e39967a3c24e91b7b8f67719a6dacee74f3c8b9fb7d93e855437d2": "USD1",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const labsBannedTokens: Record<string, string> = {

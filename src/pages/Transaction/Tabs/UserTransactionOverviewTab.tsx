@@ -1731,17 +1731,12 @@ function parseTappEvent(
   };
 }
 
-function parseEarniumEvent(
-  event: Types.Event,
-): Swap | undefined {
+function parseEarniumEvent(event: Types.Event): Swap | undefined {
   const dex =
     "0x12169b6e1bf75ab1a2b2d987d20f8dd4c191e5dbc2066cb7e9af40b1fa7fb659";
-  const eventTypeToAction: Record<
-    string,
-    "swap"
-  > = {
+  const eventTypeToAction: Record<string, "swap"> = {
     "0x12169b6e1bf75ab1a2b2d987d20f8dd4c191e5dbc2066cb7e9af40b1fa7fb659::liquidity_pool::SwapEvent":
-      "swap"
+      "swap",
   };
 
   const actionType = eventTypeToAction[event.type];
