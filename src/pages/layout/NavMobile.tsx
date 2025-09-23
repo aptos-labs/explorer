@@ -91,6 +91,9 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
           Blocks
         </MenuItem>
+        <MenuItem onClick={() => handleCloseAndNavigate("/verification")}>
+          Verification
+        </MenuItem>
         <Divider />
         <WalletConnector
           networkSupport={state.network_name}
