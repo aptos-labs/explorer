@@ -18,6 +18,7 @@ const EnhancedValidatorsPage = lazy(
 );
 const ValidatorPage = lazy(() => import("./pages/DelegatoryValidator"));
 const AnalyticsPage = lazy(() => import("./pages/Analytics/Index"));
+const VerificationPage = lazy(() => import("./pages/Verification/Index"));
 
 export default function ExplorerRoutes() {
   return (
@@ -90,6 +91,7 @@ export default function ExplorerRoutes() {
           />
         </Route>
         <Route path="/analytics" element={<AnalyticsPage />} />
+        <Route path="/verification" element={<VerificationPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </ExplorerLayout>
