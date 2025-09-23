@@ -68,11 +68,6 @@ export default function Nav() {
         label="Validators"
       />
       <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
-      <NavButton
-        to="/verification"
-        title="Token & Address Verification Instructions"
-        label="Verification"
-      />
     </Box>
   );
 }
