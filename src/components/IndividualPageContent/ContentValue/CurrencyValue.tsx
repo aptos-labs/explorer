@@ -91,7 +91,7 @@ export function APTCurrencyValue({
   return (
     <CurrencyValue
       {...{amount, decimals, fixedDecimalPlaces}}
-      currencyCode="APT"
+      currencyCode="LBT"
     />
   );
 }

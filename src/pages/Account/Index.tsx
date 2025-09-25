@@ -191,7 +191,12 @@ export default function AccountPage({
         />
       </Grid>
       <Grid size={{xs: 12, md: 4, lg: 3}} marginTop={{md: 0, xs: 2}}>
-        <BalanceCard address={address} />
+        <BalanceCard
+          address={address}
+          coinType={"0x1::libra2_coin::Libra2Coin"} // 你的 LBT 类型
+          symbol="LBT"
+          decimals={8}
+        />
       </Grid>
       <Grid size={{xs: 12, md: 8, lg: 12}} marginTop={4} alignSelf="center">
         {state.network_name === Network.MAINNET && <AptosNamesBanner />}

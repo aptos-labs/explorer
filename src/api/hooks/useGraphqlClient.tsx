@@ -25,7 +25,7 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
       return "https://devnet.libra2.org/v1/graphql";
     case "local":
     case "localnet":
-      return "http://127.0.0.1:8080/v1/graphql";
+      return "http://127.0.0.1:8090/v1/graphql";
     default:
       return undefined;
   }

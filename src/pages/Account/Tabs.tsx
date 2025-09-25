@@ -22,7 +22,7 @@ import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
 import {accountPagePath} from "./Index";
 
-const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
+const TAB_VALUES: TabValue[] = ["transactions", "coins", "tokens", "multisig", "resources", "modules", "info"];
 
 const TabComponents = Object.freeze({
   transactions: TransactionsTab,
