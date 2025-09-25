@@ -1,10 +1,8 @@
 import {
   AnyAptosWallet,
-  AptosPrivacyPolicy,
   WalletItem,
-  getAptosConnectWallets,
+  groupAndSortWallets,
   isInstallRequired,
-  partitionWallets,
   useWallet,
 } from "@aptos-labs/wallet-adapter-react";
 import {
@@ -13,7 +11,6 @@ import {
   Button,
   Collapse,
   Dialog,
-  Divider,
   IconButton,
   ListItem,
   ListItemText,
@@ -28,53 +25,31 @@ import { JSX } from "react";
 import {
   Close as CloseIcon,
   ExpandMore,
-  LanOutlined as LanOutlinedIcon,
 } from "@mui/icons-material";
 import { useState } from "react";
-import {WalletConnectorProps} from "@aptos-labs/wallet-adapter-mui-design";
 
 
 interface WalletsModalProps {
   handleClose: () => void;
   modalOpen: boolean;
   maxWidth?: Breakpoint;
-  networkSupport?: string;
-  sortDefaultWallets?: (a: AnyAptosWallet, b: AnyAptosWallet) => number;
-  sortMoreWallets?: (a: AnyAptosWallet, b: AnyAptosWallet) => number;
 }
 
 export default function WalletsModal({
   handleClose,
   modalOpen,
-  networkSupport,
-  sortDefaultWallets,
-  sortMoreWallets,
   maxWidth,
 }: WalletsModalProps): JSX.Element {
   const theme = useTheme();
   const [expanded, setExpanded] = useState(false);
 
   const { wallets = [] } = useWallet();
-  
-  const {
-    /** Wallets that use social login to create an account on the blockchain */
-    aptosConnectWallets,
-    /** Wallets that use traditional wallet extensions */
-    otherWallets,
-  } = getAptosConnectWallets(wallets);
 
-  const {
-    /** Wallets that are currently installed or loadable. */
-    defaultWallets,
-    /** Wallets that are NOT currently installed or loadable. */
-    moreWallets,
-  } = partitionWallets(otherWallets);
-
-  if (sortDefaultWallets) defaultWallets.sort(sortDefaultWallets);
-  if (sortMoreWallets) moreWallets.sort(sortMoreWallets);
+  const { availableWallets, installableWallets } =
+    groupAndSortWallets(wallets, {});
 
   function cleanWalletList(wallets: AnyAptosWallet[]) {
-    const unsupportedWallets = ['Dev T wallet', 'Pontem', 'TrustWallet', 'TokenPocket', 'Martian', 'Rise']
+    const unsupportedWallets = ['Dev T wallet', 'Pontem Wallet', 'Pontem', 'TrustWallet', 'TokenPocket', 'Martian', 'Rise', 'Petra']
     return wallets
       .filter(
         (wallet, index, self) =>
@@ -89,8 +64,6 @@ export default function WalletsModal({
       });
   }
 
-  const hasAptosConnectWallets = !!aptosConnectWallets.length;
-  
   return (
     <Dialog
       open={modalOpen}
@@ -211,14 +184,14 @@ export default function WalletsModal({
           </>
         )}*/}
         <Stack sx={{ gap: 1 }}>
-          {cleanWalletList(defaultWallets).map((wallet: AnyAptosWallet) => (
+          {cleanWalletList(availableWallets).map((wallet: AnyAptosWallet) => (
             <WalletRow
               key={wallet.name}
               wallet={wallet}
               onConnect={handleClose}
             />
           ))}
-          {!!moreWallets.length && (
+          {!!installableWallets.length && (
             <>
               <Button
                 variant="text"
@@ -230,7 +203,7 @@ export default function WalletsModal({
               </Button>
               <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <Stack sx={{ gap: 1 }}>
-                  {cleanWalletList(moreWallets).map((wallet: AnyAptosWallet) => (
+                  {cleanWalletList(installableWallets).map((wallet: AnyAptosWallet) => (
                     <WalletRow
                       key={wallet.name}
                       wallet={wallet}
@@ -276,15 +249,28 @@ function WalletRow({ wallet, onConnect }: WalletRowProps) {
             primaryTypographyProps={{ fontSize: "1.125rem" }}
           />
           {isInstallRequired(wallet) ? (
-            <WalletItem.InstallLink asChild>
+            wallet.name?.toLowerCase() === 'msafe' ? (
               <Button
-                LinkComponent={"a"}
+                component="a"
+                href="https://movement.m-safe.io/store/0?url=https%3A%2F%2Fexplorer.movementnetwork.xyz"
+                target="_blank"
+                rel="noopener noreferrer"
                 size="small"
                 className="wallet-connect-install"
               >
                 Install
               </Button>
-            </WalletItem.InstallLink>
+            ) : (
+              <WalletItem.InstallLink asChild>
+                <Button
+                  LinkComponent={"a"}
+                  size="small"
+                  className="wallet-connect-install"
+                >
+                  Install
+                </Button>
+              </WalletItem.InstallLink>
+            )
           ) : (
             <WalletItem.ConnectButton asChild>
               <Button
@@ -302,19 +288,3 @@ function WalletRow({ wallet, onConnect }: WalletRowProps) {
   );
 }
 
-function AptosConnectWalletRow({ wallet, onConnect }: WalletRowProps) {
-  return (
-    <WalletItem wallet={wallet} onConnect={onConnect} asChild>
-      <WalletItem.ConnectButton asChild>
-        <Button
-          size="large"
-          variant="outlined"
-          sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
-        >
-          <Box component={WalletItem.Icon} sx={{ width: 20, height: 20 }} />
-          <WalletItem.Name />
-        </Button>
-      </WalletItem.ConnectButton>
-    </WalletItem>
-  );
-}

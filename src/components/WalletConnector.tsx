@@ -21,11 +21,12 @@ export interface WalletConnectorProps {
   modalMaxWidth?: Breakpoint;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function WalletConnector({
-  networkSupport,
+  networkSupport: _networkSupport,
   handleNavigate,
-  sortDefaultWallets,
-  sortMoreWallets,
+  sortDefaultWallets: _sortDefaultWallets,
+  sortMoreWallets: _sortMoreWallets,
   modalMaxWidth,
 }: WalletConnectorProps) {
   const [
@@ -44,9 +45,6 @@ export function WalletConnector({
       <WalletsModal
         handleClose={handleClose}
         modalOpen={modalOpen}
-        networkSupport={networkSupport}
-        sortDefaultWallets={sortDefaultWallets}
-        sortMoreWallets={sortMoreWallets}
         maxWidth={modalMaxWidth}
       />
     </>
