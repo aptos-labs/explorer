@@ -11,7 +11,7 @@ export const mainnetUrl =
 
 export const bardockTestnetUrl =
   import.meta.env.MOVEMENT_TESTNET_URL ||
-  `https://${prefix}full.testnet.movementinfra.xyz/v1`;
+  `https://testnet.movementnetwork.xyz/v1`;
 
   export const networks = {
     mainnet: mainnetUrl,

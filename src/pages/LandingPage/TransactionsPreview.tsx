@@ -23,14 +23,10 @@ function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
 
 export default function TransactionsPreview() {
   const [state] = useGlobalState();
-  const limit = 35;
+  const limit = PREVIEW_LIMIT;
   const result = useQuery({
     queryKey: ["transactions", {limit}, state.network_value],
     queryFn: () => getTransactions({limit}, state.aptos_client),
-    select: (data) =>
-      data
-        .filter((tx) => tx.type === "user_transaction")
-        .slice(0, PREVIEW_LIMIT),
   });
   const augmentTo = useAugmentToWithGlobalSearchParams();
 
