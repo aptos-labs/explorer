@@ -10,7 +10,7 @@ import {Stack} from "@mui/material";
 import TransactionsTable from "../Transactions/TransactionsTable";
 import {useAugmentToWithGlobalSearchParams} from "../../routing";
 
-const PREVIEW_LIMIT = 10;
+const PREVIEW_LIMIT = 35;
 
 function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
   if (!data) {
@@ -27,6 +27,10 @@ export default function TransactionsPreview() {
   const result = useQuery({
     queryKey: ["transactions", {limit}, state.network_value],
     queryFn: () => getTransactions({limit}, state.aptos_client),
+    select: (data) =>
+      data
+        .filter((tx) => tx.type === "user_transaction")
+        .slice(0, PREVIEW_LIMIT),
   });
   const augmentTo = useAugmentToWithGlobalSearchParams();
 

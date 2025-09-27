@@ -26,11 +26,10 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
     //     `https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql`
     //   );
     case "bardock testnet":
-      return undefined;
-      // return (
-      //   import.meta.env.BARDOCK_GRAPHQL ||
-      //   `https://indexer.testnet.movementnetwork.xyz/v1/graphql`
-      // );
+      return (
+        import.meta.env.BARDOCK_GRAPHQL ||
+        `https://hasura.testnet.movementnetwork.xyz/v1/graphql`
+      );
     // case "devnet":
     //   return (
     //     import.meta.env.DEVNET_GRAPHQL ||
