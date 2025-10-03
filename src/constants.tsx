@@ -929,6 +929,30 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native", "Verified"],
   },
+  "0x878370592f9129e14b76558689a4b570ad22678111df775befbfcbc9fb3d90ab": {
+    chainId: 1,
+    tokenAddress:
+      "0x5ae6789dd2fec1a9ec9cccfb3acaf12e93d432f0a3a42c92fe1a9d490b7bbc06::mkl_token::MKL",
+    faAddress:
+      "0x878370592f9129e14b76558689a4b570ad22678111df775befbfcbc9fb3d90ab",
+    name: "MKL",
+    symbol: "MKL",
+    decimals: 6,
+    panoraSymbol: "MKL",
+    bridge: null,
+    logoUrl: "https://assets.panora.exchange/tokens/aptos/MKL.png",
+    websiteUrl: "https://merkle.trade",
+    category: "Native",
+    isInPanoraTokenList: true,
+    isBanned: false,
+    panoraOrderIndex: 9,
+    panoraIndex: 9,
+    coinGeckoId: "merkle-trade",
+    coinMarketCapId: 32997,
+    panoraUI: true,
+    usdPrice: null,
+    panoraTags: ["Native", "Verified"],
+  },
 };
 
 /**
@@ -983,6 +1007,9 @@ export const manuallyVerifiedTokens: Record<string, string> = {
   "0x435ad41e7b383cef98899c4e5a22c8dc88ab67b22f95e5663d6c6649298c3a9d": "RION",
   "0x2a8227993a4e38537a57caefe5e7e9a51327bf6cd732c1f56648f26f68304ebc": "KGeN",
   "0x05fabd1b12e39967a3c24e91b7b8f67719a6dacee74f3c8b9fb7d93e855437d2": "USD1",
+  "0x878370592f9129e14b76558689a4b570ad22678111df775befbfcbc9fb3d90ab": "MKL",
+  "0x5ae6789dd2fec1a9ec9cccfb3acaf12e93d432f0a3a42c92fe1a9d490b7bbc06::mkl_token::MKL":
+    "MKL",
 };
 export const MARKED_AS_SCAM = "Marked as scam";
 export const labsBannedTokens: Record<string, string> = {
