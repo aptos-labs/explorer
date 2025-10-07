@@ -24,8 +24,8 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
       return "https://api.devnet.staging.aptoslabs.com/v1/graphql";
     case "decibel":
       return "https://api.netna.staging.aptoslabs.com/v1/graphql";
-    case "shelbydevnet":
-      return "https://api.devnet.staging.shelby.xyz/v1/graphql";
+    case "shelbynet":
+      return "https://api.shelbynet.staging.shelby.xyz/v1/graphql";
     case "local":
       return "http://127.0.0.1:8090/v1/graphql";
     default:

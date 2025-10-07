@@ -12,11 +12,11 @@ export const networks: Record<string, string> = {
   testnet: "https://api.testnet.staging.aptoslabs.com/v1",
   devnet: devnetUrl,
   decibel: "https://api.netna.staging.aptoslabs.com/v1",
-  shelbydevnet: "https://api.devnet.staging.shelby.xyz/v1",
+  shelbynet: "https://api.shelbynet.staging.shelby.xyz/v1",
   local: "http://127.0.0.1:8080/v1",
 };
 
-export const hiddenNetworks = ["decibel", "shelbydevnet"];
+export const hiddenNetworks = ["decibel", "shelbynet"];
 
 export type NetworkName = keyof typeof networks;
 
@@ -40,7 +40,7 @@ const apiKeys: ApiKeys = {
   testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
   devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
   decibel: undefined,
-  shelbydevnet: "AG-MGQQAXV57YJVDQANQPBQDFJVFMUY912EC",
+  shelbynet: "AG-MGQQAXV57YJVDQANQPBQDFJVFMUY912EC",
   local: undefined,
 };
 
@@ -57,7 +57,7 @@ export enum Network {
   TESTNET = "testnet",
   DEVNET = "devnet",
   DECIBEL = "decibel",
-  SHELBYDEVNET = "shelbydevnet",
+  SHELBYNET = "shelbynet",
 }
 
 // Remove trailing slashes
