@@ -103,35 +103,45 @@ function ModulesTabs({
       logEvent(eventName);
     }
 
-    let moduleNameParam = "";
-    let fnNameParam = "";
-
-    if (value === "packages" && newValue !== "packages") {
-      // From packages to other tabs: convert package name to first module name
-      if (selectedModuleName) {
-        const selectedPackage = sortedPackages.find(
-          (pkg) => pkg.name === selectedModuleName,
-        );
-        if (selectedPackage && selectedPackage.modules.length > 0) {
-          moduleNameParam = selectedPackage.modules[0].name;
+    const {moduleNameParam, fnNameParam} = (() => {
+      if (value === "packages" && newValue !== "packages") {
+        // From packages to other tabs: convert package name to first module name
+        if (selectedModuleName) {
+          const selectedPackage = sortedPackages.find(
+            (pkg) => pkg.name === selectedModuleName,
+          );
+          if (selectedPackage && selectedPackage.modules.length > 0) {
+            return {
+              moduleNameParam: selectedPackage.modules[0].name,
+              fnNameParam: "",
+            };
+          }
         }
-      }
-    } else if (value !== "packages" && newValue === "packages") {
-      // From other tabs to packages: convert module name to package name
-      if (selectedModuleName) {
-        const packageForModule = sortedPackages.find((pkg) =>
-          pkg.modules.some((mod) => mod.name === selectedModuleName),
-        );
-        if (packageForModule) {
-          moduleNameParam = packageForModule.name;
+        return {moduleNameParam: "", fnNameParam: ""};
+      } else if (value !== "packages" && newValue === "packages") {
+        // From other tabs to packages: convert module name to package name
+        if (selectedModuleName) {
+          const packageForModule = sortedPackages.find((pkg) =>
+            pkg.modules.some((mod) => mod.name === selectedModuleName),
+          );
+          if (packageForModule) {
+            return {
+              moduleNameParam: packageForModule.name,
+              fnNameParam: "",
+            };
+          }
         }
+        return {moduleNameParam: "", fnNameParam: ""};
+      } else if (value !== "packages" && newValue !== "packages") {
+        // Between non-packages tabs: preserve module name and function name
+        return {
+          moduleNameParam: selectedModuleName || "",
+          fnNameParam: selectedFnName ? `/${selectedFnName}` : "",
+        };
       }
-    } else if (value !== "packages" && newValue !== "packages") {
-      // Between non-packages tabs: preserve module name and function name
-      moduleNameParam = selectedModuleName || "";
-      fnNameParam = selectedFnName ? `/${selectedFnName}` : "";
-    }
-    // If both are packages or no conversion needed, leave params empty
+      // If both are packages or no conversion needed, leave params empty
+      return {moduleNameParam: "", fnNameParam: ""};
+    })();
 
     navigate(
       `/${accountPagePath(isObject)}/${address}/modules/${newValue}${moduleNameParam ? `/${moduleNameParam}` : ""}${fnNameParam}`,
