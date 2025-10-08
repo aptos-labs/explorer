@@ -50,11 +50,15 @@ export default function ExplorerRoutes() {
 
         <Route path="/account">
           <Route
+            path=":address/modules/:modulesTab/:selectedModuleName/:selectedFnName"
+            element={<AccountPage />}
+          />
+          <Route
             path=":address/modules/:modulesTab/:selectedModuleName"
             element={<AccountPage />}
           />
           <Route
-            path=":address/modules/:modulesTab/:selectedModuleName/:selectedFnName"
+            path=":address/modules/:modulesTab"
             element={<AccountPage />}
           />
           <Route path=":address/:tab" element={<AccountPage />} />
@@ -63,11 +67,15 @@ export default function ExplorerRoutes() {
 
         <Route path="/object">
           <Route
+            path=":address/modules/:modulesTab/:selectedModuleName/:selectedFnName"
+            element={<AccountPage isObject={true} />}
+          />
+          <Route
             path=":address/modules/:modulesTab/:selectedModuleName"
             element={<AccountPage isObject={true} />}
           />
           <Route
-            path=":address/modules/:modulesTab/:selectedModuleName/:selectedFnName"
+            path=":address/modules/:modulesTab"
             element={<AccountPage isObject={true} />}
           />
           <Route
