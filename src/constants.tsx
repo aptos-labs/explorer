@@ -1,4 +1,5 @@
-import {CoinDescription} from "./api/hooks/useGetCoinList";
+import {NetworkToNodeAPI, Network as AptosNetwork} from "@aptos-labs/ts-sdk";
+import type {CoinDescription} from "./api/hooks/useGetCoinList";
 
 /**
  * Network
@@ -8,15 +9,15 @@ export const devnetUrl =
   "https://api.devnet.staging.aptoslabs.com/v1";
 
 export const networks: Record<string, string> = {
-  mainnet: "https://api.mainnet.aptoslabs.com/v1",
-  testnet: "https://api.testnet.staging.aptoslabs.com/v1",
+  mainnet: NetworkToNodeAPI[AptosNetwork.MAINNET],
+  testnet: NetworkToNodeAPI[AptosNetwork.TESTNET],
   devnet: devnetUrl,
   decibel: "https://api.netna.staging.aptoslabs.com/v1",
-  shelbynet: "https://api.shelbynet.staging.shelby.xyz/v1",
-  local: "http://127.0.0.1:8080/v1",
+  shelbynet: NetworkToNodeAPI[AptosNetwork.SHELBYNET],
+  local: NetworkToNodeAPI[AptosNetwork.LOCAL],
 };
 
-export const hiddenNetworks = ["decibel", "shelbynet"];
+export const hiddenNetworks = ["decibel"];
 
 export type NetworkName = keyof typeof networks;
 
