@@ -119,16 +119,11 @@ function ModulesTabs({
     } else if (value !== "packages" && newValue === "packages") {
       // From other tabs to packages: convert module name to package name
       if (selectedModuleName) {
-        const selectedModule = sortedPackages
-          .flatMap((pkg) => pkg.modules)
-          .find((module) => module.name === selectedModuleName);
-        if (selectedModule) {
-          const packageForModule = sortedPackages.find((pkg) =>
-            pkg.modules.some((mod) => mod.name === selectedModuleName),
-          );
-          if (packageForModule) {
-            moduleNameParam = packageForModule.name;
-          }
+        const packageForModule = sortedPackages.find((pkg) =>
+          pkg.modules.some((mod) => mod.name === selectedModuleName),
+        );
+        if (packageForModule) {
+          moduleNameParam = packageForModule.name;
         }
       }
     } else if (value !== "packages" && newValue !== "packages") {
