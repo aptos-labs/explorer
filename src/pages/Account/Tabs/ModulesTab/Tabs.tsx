@@ -11,6 +11,7 @@ import {useNavigate} from "../../../../routing";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 import Packages from "./Packages";
+import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
 
 const TabComponents = Object.freeze({
   packages: Packages,
@@ -79,6 +80,7 @@ function ModulesTabs({
   const {selectedFnName, selectedModuleName, modulesTab} = useParams();
   const navigate = useNavigate();
   const logEvent = useLogEventWithBasic();
+  const sortedPackages = useGetAccountPackages(address);
   const value =
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
@@ -101,9 +103,43 @@ function ModulesTabs({
       logEvent(eventName);
     }
 
+    let moduleNameParam = "";
+    let fnNameParam = "";
+
+    if (value === "packages" && newValue !== "packages") {
+      // From packages to other tabs: convert package name to first module name
+      if (selectedModuleName) {
+        const selectedPackage = sortedPackages.find(
+          (pkg) => pkg.name === selectedModuleName,
+        );
+        if (selectedPackage && selectedPackage.modules.length > 0) {
+          moduleNameParam = selectedPackage.modules[0].name;
+        }
+      }
+    } else if (value !== "packages" && newValue === "packages") {
+      // From other tabs to packages: convert module name to package name
+      if (selectedModuleName) {
+        const selectedModule = sortedPackages
+          .flatMap((pkg) => pkg.modules)
+          .find((module) => module.name === selectedModuleName);
+        if (selectedModule) {
+          const packageForModule = sortedPackages.find((pkg) =>
+            pkg.modules.some((mod) => mod.name === selectedModuleName),
+          );
+          if (packageForModule) {
+            moduleNameParam = packageForModule.name;
+          }
+        }
+      }
+    } else if (value !== "packages" && newValue !== "packages") {
+      // Between non-packages tabs: preserve module name and function name
+      moduleNameParam = selectedModuleName || "";
+      fnNameParam = selectedFnName ? `/${selectedFnName}` : "";
+    }
+    // If both are packages or no conversion needed, leave params empty
+
     navigate(
-      `/${accountPagePath(isObject)}/${address}/modules/${newValue}/${selectedModuleName}` +
-        (selectedFnName ? `/${selectedFnName}` : ``),
+      `/${accountPagePath(isObject)}/${address}/modules/${newValue}${moduleNameParam ? `/${moduleNameParam}` : ""}${fnNameParam}`,
       {replace: true},
     );
   };
