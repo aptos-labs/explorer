@@ -1,4 +1,4 @@
-import {useViewFunction} from "./useViewFunction";
+import {useViewFunction, UseViewFunctionOptions} from "./useViewFunction";
 
 export type FaMetadata = {
   name: string;
@@ -8,7 +8,10 @@ export type FaMetadata = {
   project_uri: string;
 };
 
-export function useGetFaMetadata(address: string): {
+export function useGetFaMetadata(
+  address: string,
+  options: UseViewFunctionOptions = {},
+): {
   isLoading: boolean;
   data: FaMetadata | null;
 } {
@@ -16,6 +19,11 @@ export function useGetFaMetadata(address: string): {
     "0x1::fungible_asset::metadata",
     ["0x1::object::ObjectCore"],
     [address],
+    {
+      gcTime: 30 * 60 * 1000,
+      staleTime: 5 * 60 * 1000,
+      ...options,
+    },
   );
 
   if (data) {
