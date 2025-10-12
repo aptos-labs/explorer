@@ -19,6 +19,8 @@ import {VerifiedCoinCell} from "../../../../components/Table/VerifiedCell";
 import {getLearnMoreTooltip} from "../../helpers";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
+import {useGetFaMetadata} from "../../../../api/hooks/useGetFaMetadata";
+import {isValidAccountAddress} from "../../../utils";
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
@@ -60,6 +62,13 @@ function VerifiedCell({balanceChange}: BalanceChangeCellProps) {
 }
 
 function TokenInfoCell({balanceChange}: BalanceChangeCellProps) {
+  const assetId = balanceChange.asset.id;
+  const isFa = isValidAccountAddress(assetId);
+
+  const {data: metadata} = useGetFaMetadata(balanceChange.asset.id, {
+    enabled: balanceChange.logoUrl === undefined && isFa,
+  });
+
   return (
     <GeneralTableCell sx={{}}>
       <HashButton
@@ -70,11 +79,7 @@ function TokenInfoCell({balanceChange}: BalanceChangeCellProps) {
             : HashType.FUNGIBLE_ASSET
         }
         size="large"
-        img={
-          balanceChange.logoUrl
-            ? balanceChange.logoUrl
-            : balanceChange.asset.symbol
-        }
+        img={balanceChange.logoUrl || metadata?.icon_uri}
       />
     </GeneralTableCell>
   );
