@@ -6,7 +6,7 @@ import {
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
 import {findCoinData} from "../../Transaction/Tabs/BalanceChangeTab";
-import {useGetAccountCoins} from "../../../api/hooks/useGetAccountCoins";
+import {useGetAllAccountCoins} from "../../../api/hooks/useGetAccountCoins";
 import {coinOrderIndex} from "../../utils";
 import {Types} from "aptos";
 
@@ -18,7 +18,7 @@ type TokenTabsProps = {
 export default function CoinsTab({address}: TokenTabsProps) {
   const {data: coinData} = useGetCoinList();
 
-  const {isLoading, error, data} = useGetAccountCoins(address);
+  const {isLoading, error, data} = useGetAllAccountCoins(address);
 
   if (isLoading) {
     return null;

@@ -75,7 +75,43 @@ type FaBalance = {
   };
 };
 
-export function useGetAccountCoins(address: string) {
+export function useGetAccountCoins(
+  address: string,
+  limit: number = 100,
+  offset: number = 0,
+) {
+  const [state] = useGlobalState();
+  const standardizedAddress = tryStandardizeAddress(address);
+
+  return useQuery<FaBalance[], ResponseError>({
+    queryKey: ["coinQuery", address, limit, offset],
+    // TODO: Type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    queryFn: async (): Promise<any> => {
+      if (!standardizedAddress) {
+        return [];
+      }
+
+      const response = await state.sdk_v2_client.queryIndexer<{
+        current_fungible_asset_balances: FaBalance[];
+      }>({
+        query: {
+          query: COINS_QUERY,
+          variables: {
+            owner_address: standardizedAddress,
+            limit,
+            offset,
+          },
+        },
+      });
+
+      return response.current_fungible_asset_balances;
+    },
+  });
+}
+
+// Legacy function that fetches all coins at once for backward compatibility
+export function useGetAllAccountCoins(address: string) {
   const [state] = useGlobalState();
   const standardizedAddress = tryStandardizeAddress(address);
 
@@ -86,7 +122,7 @@ export function useGetAccountCoins(address: string) {
   const PAGE_SIZE = 100;
 
   return useQuery<FaBalance[], ResponseError>({
-    queryKey: ["coinQuery", address, count.data],
+    queryKey: ["allCoinsQuery", address, count.data],
     // TODO: Type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     queryFn: async (): Promise<any> => {
@@ -94,7 +130,6 @@ export function useGetAccountCoins(address: string) {
         return [];
       }
 
-      // TODO: make the UI paginate this, rather than query all at once
       const promises = [];
       for (let i = 0; i < count.data; i += PAGE_SIZE) {
         promises.push(
