@@ -12,6 +12,16 @@ import {NameType} from "../../components/TitleHashButton";
 
 const TTL = 60000; // 1 minute
 
+function getAddressFromNameUrl(network: NetworkName, name: string) {
+  if (network !== "testnet" && network !== "mainnet") {
+    return undefined;
+  }
+
+  // Remove .apt suffix if present
+  const cleanName = name.endsWith(".apt") ? name.slice(0, -4) : name;
+  return `https://www.aptosnames.com/api/${network}/v1/address/${cleanName}.apt`;
+}
+
 // TODO: Known scam addresses
 
 function getFetchNameUrl(
@@ -123,4 +133,43 @@ async function genANSName(
   }
 
   return null;
+}
+
+export function useGetAddressFromName(name: string) {
+  const [state] = useGlobalState();
+
+  return useQuery<string | null, ResponseError>({
+    queryKey: ["ANSAddress", name, state.network_name],
+    queryFn: async (): Promise<string | null> => {
+      if (!name || !name.endsWith(".apt")) {
+        return null;
+      }
+
+      try {
+        const url = getAddressFromNameUrl(state.network_name, name);
+        if (!url) {
+          return null;
+        }
+
+        const response = await fetchJsonResponse(url);
+
+        // The API returns the address directly or in an object
+        if (typeof response === "string") {
+          return tryStandardizeAddress(response) || null;
+        } else if (response && response.address) {
+          return tryStandardizeAddress(response.address) || null;
+        }
+
+        return null;
+      } catch (error) {
+        console.error(
+          "ERROR! Couldn't resolve ANS name %s on %s",
+          name,
+          state.network_name,
+          error,
+        );
+        return null;
+      }
+    },
+  });
 }
