@@ -17,6 +17,7 @@ import {AccountAddress} from "@aptos-labs/ts-sdk";
 import {useNavigate} from "../../routing";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 import {objectCoreResource} from "../../constants";
+import {useGetAddressFromName} from "../../api/hooks/useGetANS";
 
 const TAB_VALUES_FULL: TabValue[] = [
   "transactions",
@@ -80,18 +81,42 @@ export default function AccountPage({
   const navigate = useNavigate();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
   const maybeAddress = useParams().address;
+
+  // Check if this is an ANS name
+  const isAptName = maybeAddress?.endsWith(".apt");
+  const ansQuery = useGetAddressFromName(isAptName ? maybeAddress || "" : "");
+
   let address: string = "";
   let addressError: ResponseError | null = null;
+
   if (maybeAddress) {
-    try {
-      address = AccountAddress.from(maybeAddress, {
-        maxMissingChars: 63,
-      }).toStringLong();
-    } catch {
-      addressError = {
-        type: ResponseErrorType.INVALID_INPUT,
-        message: `Invalid address '${maybeAddress}'`,
-      };
+    if (isAptName) {
+      // Handle ANS name resolution
+      if (ansQuery.isLoading) {
+        // Still loading ANS resolution, keep address empty for now
+        address = "";
+      } else if (ansQuery.data) {
+        // Successfully resolved ANS name
+        address = ansQuery.data;
+      } else if (ansQuery.isError || (!ansQuery.isLoading && !ansQuery.data)) {
+        // ANS resolution failed
+        addressError = {
+          type: ResponseErrorType.NOT_FOUND,
+          message: `ANS name '${maybeAddress}' not found`,
+        };
+      }
+    } else {
+      // Handle regular address
+      try {
+        address = AccountAddress.from(maybeAddress, {
+          maxMissingChars: 63,
+        }).toStringLong();
+      } catch {
+        addressError = {
+          type: ResponseErrorType.INVALID_INPUT,
+          message: `Invalid address '${maybeAddress}'`,
+        };
+      }
     }
   }
 
@@ -115,7 +140,7 @@ export default function AccountPage({
   const isToken = !!tokenData;
   const isMultisig = !!multisigData;
 
-  const isLoading = resourcesIsLoading;
+  const isLoading = resourcesIsLoading || (!!isAptName && ansQuery.isLoading);
   let error: ResponseError | null = null;
   if (addressError) {
     // If the address is not found, we can still show the account page, without an error
@@ -138,6 +163,15 @@ export default function AccountPage({
         navigate(`/object/${address}`, {replace: true});
       }
     }
+
+    // If we successfully resolved an ANS name and have an address,
+    // optionally redirect to the address URL for clean URLs
+    // (This is optional - you may want to keep the ANS name in the URL)
+    // if (isAptName && address && !isLoading && maybeAddress !== address) {
+    //   const currentPath = window.location.pathname;
+    //   const newPath = currentPath.replace(`/account/${maybeAddress}`, `/account/${address}`);
+    //   navigate(newPath, { replace: true });
+    // }
   }, [
     address,
     alreadyIsObject,
@@ -147,6 +181,8 @@ export default function AccountPage({
     resourceData,
     navigate,
     isAccount,
+    isAptName,
+    maybeAddress,
   ]);
 
   const [state] = useGlobalState();
