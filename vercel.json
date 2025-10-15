@@ -1,4 +1,18 @@
 {
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "query",
+          "key": "network",
+          "value": "testnet"
+        }
+      ],
+      "destination": "/:path*?network=bardock%20testnet",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
