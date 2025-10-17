@@ -8,7 +8,8 @@ import LinkedInLogo from "../../assets/linkedin.svg?react";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import SvgIcon from "@mui/material/SvgIcon";
 
-import LogoFull from "../../assets/svg/aptos_logo_labs.svg?react";
+import LogoFullLight from "../../assets/svg/aptos_logo_full_light.svg?react";
+import LogoFullDark from "../../assets/svg/aptos_logo_full_dark.svg?react";
 import {Link} from "../../routing";
 
 const socialLinks = [
@@ -29,6 +30,7 @@ const socialLinks = [
 
 export default function Footer() {
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
 
   return (
     <Box
@@ -60,7 +62,11 @@ export default function Footer() {
               title="Aptos Labs"
               sx={{width: "8rem", mr: {md: 2}}}
             >
-              <LogoFull />
+              {isDark ? (
+                <LogoFullDark width="8rem" height="3rem" />
+              ) : (
+                <LogoFullLight width="8rem" height="3rem" />
+              )}
             </Link>
             <Grid container direction="row" padding="0" spacing={2}>
               <Typography
