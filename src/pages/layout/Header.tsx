@@ -5,8 +5,9 @@ import Container from "@mui/material/Container";
 import NetworkSelect from "./NetworkSelect";
 import {useColorMode} from "../../context";
 import {useMediaQuery, useTheme} from "@mui/material";
-import LogoIcon from "../../assets/svg/aptos_logo_icon.svg?react";
 import IconLight from "../../assets/svg/icon_light.svg?react";
+import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";
+import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
 import IconDark from "../../assets/svg/icon_dark.svg?react";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -125,7 +126,11 @@ export default function Header() {
                 marginRight: "auto",
               }}
             >
-              <LogoIcon />
+              {isDark ? (
+                <LogoIconDark width="3rem" height="3rem" />
+              ) : (
+                <LogoIconLight width="3rem" height="3rem" />
+              )}
             </Link>
 
             <Nav />

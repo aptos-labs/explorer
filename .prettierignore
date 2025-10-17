@@ -9,3 +9,4 @@ robots.txt
 .editorconfig
 .node-version
 .npmrc
+*.svg
