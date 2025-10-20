@@ -16,7 +16,11 @@ export const networks: Record<string, string> = {
   local: "http://127.0.0.1:8080/v1",
 };
 
-export const hiddenNetworks = ["decibel", "shelbynet"];
+export const hiddenNetworks: readonly NetworkName[] = [
+  "decibel",
+  "shelbynet",
+  "local",
+] as const;
 
 export type NetworkName = keyof typeof networks;
 
