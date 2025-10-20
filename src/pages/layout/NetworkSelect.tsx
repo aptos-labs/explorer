@@ -26,7 +26,6 @@ function NetworkAndChainIdCached({
   chainId: string | null;
 }) {
   const theme = useTheme();
-
   return (
     <Stack
       direction="row"
@@ -38,7 +37,7 @@ function NetworkAndChainIdCached({
     >
       <Typography>{networkName}</Typography>
       <Typography variant="body2" sx={{color: theme.palette.text.disabled}}>
-        {chainId}
+        {chainId ?? "…"}
       </Typography>
     </Stack>
   );
@@ -76,6 +75,11 @@ export default function NetworkSelect() {
     const network_name = event.target.value;
     selectNetwork(network_name as NetworkName);
   };
+
+  const visibleNetworkNames = React.useMemo(
+    () => Object.keys(networks).filter((n) => !hiddenNetworks.includes(n)),
+    [],
+  );
 
   function DropdownIcon(props: SvgIconProps) {
     return (
@@ -146,7 +150,8 @@ export default function NetworkSelect() {
               <Typography variant="body2">Chain ID</Typography>
             </Stack>
           </MenuItem>
-          {Object.keys(networks).map((networkName: string) => (
+
+          {visibleNetworkNames.map((networkName) => (
             <MenuItem
               key={networkName}
               value={networkName}
