@@ -166,11 +166,11 @@ export const knownAddresses: Record<string, string> = {
     "ThalaSwap v1",
   "0x007730cd28ee1cdc9e999336cbc430f99e7c44397c0aa77516f6f23a78559bb5":
     "ThalaSwap v2",
-  "0x763fe3edb6ab9ef216a3e7ff1a2d6ac643a351218dadc6ff21667ccfc9fb1743":
+  "0x075b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920":
     "ThalaSwap CL",
   "0x6b3720cd988adeaf721ed9d4730da4324d52364871a68eac62b46d21e4d2fa99":
     "Thala Farm",
-  "0xb408a210ace33d559012784fa2715d4b2424780ecae5b1173ff51a1cbcfb1fc5":
+  "0xcb8365dc9f7ac6283169598aaad7db9c7b12f52da127007f37fa4565170ff59c":
     "ThalaSwap CL Farm",
   "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12":
     "LiquidSwap v0",
