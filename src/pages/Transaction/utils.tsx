@@ -41,35 +41,32 @@ export function getTransactionCounterparty(
     return undefined;
   }
 
-  // there are two scenarios that this transaction is an APT coin transfer:
+  // there are two scenarios that this transaction is a 1:1 APT coin transfer:
   // 1. coins are transferred from account1 to account2:
   //    payload function is "0x1::coin::transfer" or "0x1::aptos_account::transfer_coins" and the first item in type_arguments is "0x1::aptos_coin::AptosCoin"
   // 2. coins are transferred from account1 to account2, and account2 is created upon transaction:
   //    payload function is "0x1::aptos_account::transfer" or "0x1::aptos_account::transfer_coins"
   // In both scenarios, the first item in arguments is the receiver's address, and the second item is the amount.
+  //
+  // When transferring objects (and Fungible Assets), the receiver is the second argument.
 
   const isCoinTransfer =
     payload.function === "0x1::coin::transfer" ||
     payload.function === "0x1::aptos_account::transfer_coins" ||
     payload.function === "0x1::aptos_account::transfer" ||
-    payload.function === "0x1::aptos_account::fungible_transfer_only";
-  const isPrimaryFaTransfer =
+    payload.function === "0x1::aptos_account::fungible_transfer_only"; // rare
+  const isObjectTransfer =
+    payload.function === "0x1::object::transfer" ||
+    payload.function === "0x1::object::transfer_call" ||
+    payload.function === "0x1::aptos_account::transfer_fungible_assets" ||
     payload.function === "0x1::primary_fungible_store::transfer";
 
-  const isObjectTransfer = payload.function === "0x1::object::transfer";
   const isTokenV2MintSoulbound =
     payload.function === "0x4::aptos_token::mint_soul_bound";
 
   if (isCoinTransfer) {
     return {
       address: payload.arguments[0],
-      role: "receiver",
-    };
-  }
-
-  if (isPrimaryFaTransfer) {
-    return {
-      address: payload.arguments[1],
       role: "receiver",
     };
   }
