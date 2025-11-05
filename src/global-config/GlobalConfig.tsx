@@ -1,5 +1,7 @@
+import {Aptos, AptosConfig, NetworkToNetworkName} from "@aptos-labs/ts-sdk";
 import {AptosClient, IndexerClient} from "aptos";
 import React, {useMemo, useState} from "react";
+import {getGraphqlURI} from "../api/hooks/useGraphqlClient";
 import {
   FeatureName,
   NetworkName,
@@ -12,8 +14,6 @@ import {
   useFeatureSelector,
 } from "./feature-selection";
 import {useNetworkSelector} from "./network-selection";
-import {getGraphqlURI} from "../api/hooks/useGraphqlClient";
-import {Aptos, AptosConfig, NetworkToNetworkName} from "@aptos-labs/ts-sdk";
 
 const HEADERS = {
   "x-indexer-client": "movement-explorer",
@@ -50,26 +50,33 @@ function deriveGlobalState({
   network_name: NetworkName;
   isWalletConnectModalOpen: boolean;
 }): GlobalState {
-  const indexerUri = getGraphqlURI(network_name);
-  const apiKey = getApiKey(network_name);
+  const networkUrl = networks[network_name];
+
+  // If network has no URL, fallback to mainnet to prevent crashes
+  const safeNetworkName = networkUrl === "" ? defaultNetworkName : network_name;
+  const safeNetworkUrl =
+    networkUrl === "" ? networks[defaultNetworkName] : networkUrl;
+
+  const indexerUri = getGraphqlURI(safeNetworkName);
+  const apiKey = getApiKey(safeNetworkName);
   let indexerClient = undefined;
   if (indexerUri) {
     indexerClient = new IndexerClient(indexerUri, {HEADERS, TOKEN: apiKey});
   }
   return {
     feature_name,
-    network_name,
+    network_name: safeNetworkName,
     isWalletConnectModalOpen,
-    network_value: networks[network_name],
-    aptos_client: new AptosClient(networks[network_name], {
+    network_value: safeNetworkUrl,
+    aptos_client: new AptosClient(safeNetworkUrl, {
       HEADERS,
       TOKEN: apiKey,
     }),
     indexer_client: indexerClient,
     sdk_v2_client: new Aptos(
       new AptosConfig({
-        network: NetworkToNetworkName[network_name],
-        fullnode: networks[network_name],
+        network: NetworkToNetworkName[safeNetworkName],
+        fullnode: safeNetworkUrl,
         indexer: indexerUri,
         clientConfig: {
           HEADERS,

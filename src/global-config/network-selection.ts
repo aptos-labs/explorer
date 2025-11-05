@@ -1,10 +1,11 @@
+import {useEffect} from "react";
 import {useSearchParams} from "react-router-dom";
 import {
   NetworkName,
-  isValidNetworkName,
   defaultNetworkName,
+  isValidNetworkName,
+  networks,
 } from "../constants";
-import {useEffect} from "react";
 
 const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "selected_network";
 
@@ -62,8 +63,20 @@ export function useNetworkSelector() {
   useEffect(
     () => {
       const currentNetworkSearchParam = searchParams.get("network");
-      if (!isValidNetworkName(currentNetworkSearchParam ?? "")) {
-        selectNetwork(getUserSelectedNetworkFromLocalStorageWithDefault(), {
+
+      // Redirect testnet to bardock testnet (testnet is valid but has no URL)
+      if (currentNetworkSearchParam === "testnet") {
+        selectNetwork("bardock testnet", {replace: true});
+        return;
+      }
+
+      // Check if network is valid AND has a URL (not empty)
+      if (
+        !isValidNetworkName(currentNetworkSearchParam ?? "") ||
+        (currentNetworkSearchParam &&
+          networks[currentNetworkSearchParam as NetworkName] === "")
+      ) {
+        selectNetwork(defaultNetworkName, {
           replace: true,
         });
       }
