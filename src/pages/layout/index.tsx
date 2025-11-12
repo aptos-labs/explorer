@@ -25,10 +25,12 @@ import {TrustWallet} from "@trustwallet/aptos-wallet-adapter";
 import {MSafeWalletAdapter} from "@msafe/aptos-wallet-adapter";
 // import {RimoWallet} from "rimosafe-plugin-wallet-adapter";
 // import {OKXWallet} from "@okwallet/aptos-wallet-adapter";
+import {PetraWallet} from "petra-plugin-wallet-adapter";
 import {useMemo} from "react";
 import NetworkStatus from "../../components/NetworkStatus";
 
 // Statically initialize wallets that don't change for the network
+const petraWallet = new PetraWallet();
 const martianWallet = new MartianWallet();
 const msafeWallet = new MSafeWalletAdapter();
 // const rimowallet = new RimoWallet();
@@ -44,6 +46,7 @@ function ExplorerWalletAdapterProvider({children}: LayoutProps) {
   const [state] = useGlobalState();
   const wallets = useMemo(
     () => [
+      petraWallet,
       pontemWallet,
       // rimowallet,
       // okxWallet,
