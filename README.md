@@ -12,7 +12,7 @@ pnpm install
 
 Build dependencies:
 
-```sh
+```shpnpm build
 pnpm build
 ```
 
