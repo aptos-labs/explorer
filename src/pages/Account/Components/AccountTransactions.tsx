@@ -61,6 +61,10 @@ function TransactionsPaginationTable({
   };
 
   // TODO: add loading spinner
+  // Only show pagination when there is actual data
+  const hasData = data && data.length > 0;
+  const shouldShowPagination = numOfPages > 1 && hasData;
+
   return (
     <>
       {(!data || data.length === 0) && !isLoading ? (
@@ -68,7 +72,7 @@ function TransactionsPaginationTable({
       ) : (
         <TransactionsTable transactions={data ?? []} />
       )}
-      {numOfPages > 1 && (
+      {shouldShowPagination && (
         <Box sx={{display: "flex", justifyContent: "center"}}>
           <Pagination
             sx={{mt: 3}}

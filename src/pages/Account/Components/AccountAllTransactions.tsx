@@ -70,13 +70,18 @@ export function AccountAllTransactionsWithPagination({
     offset,
   );
 
+  // Only show pagination when there is actual data
+  // If the first page has no data, the account has no transactions, so pagination should not be shown
+  const hasData = versions.length > 0;
+  const shouldShowPagination = numPages > 1 && hasData;
+
   return (
     <>
       <Stack spacing={2}>
         <Box sx={{width: "auto", overflowX: "auto"}}>
           <UserTransactionsTable versions={versions} address={address} />
         </Box>
-        {numPages > 1 && (
+        {shouldShowPagination && (
           <Box sx={{display: "flex", justifyContent: "center"}}>
             <RenderPagination currentPage={currentPage} numPages={numPages} />
           </Box>
@@ -107,7 +112,8 @@ export default function AccountAllTransactions({
   }
 
   const countPerPage = 25;
-  const numPages = Math.ceil(txnCount / countPerPage);
+  // If transaction count is 0, set numPages to 0 so pagination won't be shown
+  const numPages = txnCount > 0 ? Math.ceil(txnCount / countPerPage) : 0;
 
   return (
     <Stack>
