@@ -1,10 +1,12 @@
-import {Stack, Typography} from "@mui/material";
-import React from "react";
+import {Box, Link, Stack, Typography} from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import TitleHashButton, {
   HashType,
   NameType,
 } from "../../components/TitleHashButton";
 import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import StyledTooltip from "../../components/StyledTooltip";
+import {useIsDaaAccount} from "./hooks/useIsDaaAccount";
 
 type AccountTitleProps = {
   address: string;
@@ -21,6 +23,8 @@ export default function AccountTitle({
   isObject = false,
   isDeleted = false,
 }: AccountTitleProps) {
+  const isDAA = useIsDaaAccount(address);
+
   let title = "Account";
   if (isMultisig) {
     title = "Multisig Account";
@@ -36,6 +40,8 @@ export default function AccountTitle({
     } else {
       title = "Object";
     }
+  } else if (isDAA) {
+    title = "Derivable Aptos Account";
   }
 
   usePageMetadata({title: `${title} ${address}`});
@@ -56,6 +62,56 @@ export default function AccountTitle({
           nameType={NameType.ANS}
         />
       </Stack>
+      {isDAA && (
+        <Box sx={{mb: 4}}>
+          <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 1}}>
+            <Typography variant="body1">
+              This is a Derivable Aptos Account
+            </Typography>
+            <StyledTooltip
+              title={
+                // Put your tooltip content here
+                <Typography variant="body2">
+                  Learn more about
+                  <Link
+                    href="https://aptos.dev/build/sdks/wallet-adapter/x-chain-accounts"
+                    target="_blank"
+                    underline="none"
+                  >
+                    <Typography variant="body2" sx={{fontWeight: 600}}>
+                      Derivable Aptos Accounts
+                    </Typography>
+                  </Link>
+                </Typography>
+              }
+              arrow
+            >
+              <InfoOutlinedIcon
+                sx={{
+                  fontSize: 18,
+                  color: "info.main",
+                  cursor: "help",
+                }}
+              />
+            </StyledTooltip>
+          </Box>
+          <Stack spacing={1}>
+            <Typography variant="body1">
+              To get more insights on your derivable aptos accounts, please
+              visit the
+            </Typography>
+            <Link
+              href="https://daa-dashboard.vercel.app/"
+              target="_blank"
+              underline="none"
+            >
+              <Typography variant="body2" sx={{fontWeight: 600}}>
+                Derivable Aptos Account Dashboard
+              </Typography>
+            </Link>
+          </Stack>
+        </Box>
+      )}
     </Stack>
   );
 }
