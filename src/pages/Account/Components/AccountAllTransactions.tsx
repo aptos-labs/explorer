@@ -12,9 +12,11 @@ import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 function RenderPagination({
   currentPage,
   numPages,
+  canSeeAll,
 }: {
   currentPage: number;
   numPages: number;
+  canSeeAll: boolean;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const logEvent = useLogEventWithBasic();
@@ -39,7 +41,7 @@ function RenderPagination({
       count={numPages}
       variant="outlined"
       showFirstButton
-      showLastButton
+      showLastButton={canSeeAll}
       page={currentPage}
       siblingCount={4}
       boundaryCount={0}
@@ -53,12 +55,14 @@ type AccountAllTransactionsWithPaginationProps = {
   address: string;
   numPages: number;
   countPerPage: number;
+  canSeeAll: boolean;
 };
 
 export function AccountAllTransactionsWithPagination({
   address,
   numPages,
   countPerPage,
+  canSeeAll,
 }: AccountAllTransactionsWithPaginationProps) {
   const [searchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") ?? "1");
@@ -78,7 +82,11 @@ export function AccountAllTransactionsWithPagination({
         </Box>
         {numPages > 1 && (
           <Box sx={{display: "flex", justifyContent: "center"}}>
-            <RenderPagination currentPage={currentPage} numPages={numPages} />
+            <RenderPagination
+              currentPage={currentPage}
+              numPages={numPages}
+              canSeeAll={canSeeAll}
+            />
           </Box>
         )}
       </Stack>
@@ -120,6 +128,7 @@ export default function AccountAllTransactions({
         address={address}
         numPages={numPages}
         countPerPage={countPerPage}
+        canSeeAll={canSeeAll}
       />
     </Stack>
   );
