@@ -1,7 +1,13 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
-import {Pagination, Stack, Typography} from "@mui/material";
+import {
+  Pagination,
+  PaginationItem,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
 import {
   useGetAccountAllTransactionCount,
@@ -12,9 +18,11 @@ import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 function RenderPagination({
   currentPage,
   numPages,
+  canSeeAll,
 }: {
   currentPage: number;
   numPages: number;
+  canSeeAll: boolean;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const logEvent = useLogEventWithBasic();
@@ -45,6 +53,19 @@ function RenderPagination({
       boundaryCount={0}
       shape="rounded"
       onChange={handleChange}
+      renderItem={(item) => {
+        // Disable the "last" button with a tooltip when we can't determine the final page.
+        if (item.type === "last" && !canSeeAll) {
+          return (
+            <Tooltip title="Failed to load transaction count, cannot determine final page">
+              <span>
+                <PaginationItem {...item} disabled />
+              </span>
+            </Tooltip>
+          );
+        }
+        return <PaginationItem {...item} />;
+      }}
     />
   );
 }
@@ -53,12 +74,14 @@ type AccountAllTransactionsWithPaginationProps = {
   address: string;
   numPages: number;
   countPerPage: number;
+  canSeeAll: boolean;
 };
 
 export function AccountAllTransactionsWithPagination({
   address,
   numPages,
   countPerPage,
+  canSeeAll,
 }: AccountAllTransactionsWithPaginationProps) {
   const [searchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") ?? "1");
@@ -78,7 +101,11 @@ export function AccountAllTransactionsWithPagination({
         </Box>
         {numPages > 1 && (
           <Box sx={{display: "flex", justifyContent: "center"}}>
-            <RenderPagination currentPage={currentPage} numPages={numPages} />
+            <RenderPagination
+              currentPage={currentPage}
+              numPages={numPages}
+              canSeeAll={canSeeAll}
+            />
           </Box>
         )}
       </Stack>
@@ -120,6 +147,7 @@ export default function AccountAllTransactions({
         address={address}
         numPages={numPages}
         countPerPage={countPerPage}
+        canSeeAll={canSeeAll}
       />
     </Stack>
   );
