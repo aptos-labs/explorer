@@ -1,7 +1,13 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
-import {Pagination, Stack, Typography} from "@mui/material";
+import {
+  Pagination,
+  PaginationItem,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
 import {
   useGetAccountAllTransactionCount,
@@ -41,12 +47,25 @@ function RenderPagination({
       count={numPages}
       variant="outlined"
       showFirstButton
-      showLastButton={canSeeAll}
+      showLastButton
       page={currentPage}
       siblingCount={4}
       boundaryCount={0}
       shape="rounded"
       onChange={handleChange}
+      renderItem={(item) => {
+        // Disable the "last" button with a tooltip when we can't determine the final page.
+        if (item.type === "last" && !canSeeAll) {
+          return (
+            <Tooltip title="Failed to load transaction count, cannot determine final page">
+              <span>
+                <PaginationItem {...item} disabled />
+              </span>
+            </Tooltip>
+          );
+        }
+        return <PaginationItem {...item} />;
+      }}
     />
   );
 }
