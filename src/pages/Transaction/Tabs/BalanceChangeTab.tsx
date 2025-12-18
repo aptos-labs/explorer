@@ -299,7 +299,7 @@ export function findCoinData(
   asset_type: string,
 ): CoinDescription | undefined {
   let entry: CoinDescription | undefined;
-  if (coinData) {
+  if (coinData && asset_type) {
     const coinType = asset_type.includes("::") ? asset_type.split("::")[0] : undefined;
     const faAddress = asset_type && tryStandardizeAddress(asset_type);
     entry = coinData.find((c) => {

@@ -3,7 +3,7 @@ import {ApolloError, gql} from "@apollo/client";
 
 export type CoinHolder = {
   owner_address: string;
-  amount: number;
+  amount_v2: number;
 };
 
 export function useGetCoinHolders(
@@ -23,10 +23,10 @@ export function useGetCoinHolders(
           where: {asset_type: {_eq: $coin_type}}
           limit: 100
           offset: $offset
-          order_by: {amount: desc}
+          order_by: {amount_v2: desc}
         ) {
           owner_address
-          amount
+          amount_v2
         }
       }
     `,

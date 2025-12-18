@@ -62,7 +62,7 @@ export function HoldersTable({
               </GeneralTableCell>
               <GeneralTableCell align={"right"}>
                 {getFormattedBalanceStr(
-                  holder.amount.toString(),
+                  holder.amount_v2.toString(),
                   data.data.decimals,
                 ) +
                   " " +

@@ -38,24 +38,28 @@ export default function CoinsTab({address}: TokenTabsProps) {
       return [];
     }
     return coins
-      .filter((coin) => Boolean(coin.metadata))
+      .filter((coin) => Boolean(coin.metadata) && Boolean(coin.asset_type_v2))
       .map((coin): CoinDescriptionPlusAmount => {
-        const foundCoin = findCoinData(coinData?.data ?? [], coin.asset_type);
+        const foundCoin = findCoinData(coinData?.data ?? [], coin.asset_type_v2);
+
+        // Determine token standard based on source:
+        // - is_v1_coin = true means from coin_balances table → "v1" (Coin)
+        // - is_v1_coin = false means from FA table → "v2" (Fungible Asset)
+        const inferredTokenStandard = coin.is_v1_coin ? "v1" : "v2";
+        const isV1Format = coin.asset_type_v2.includes("::");
 
         if (!foundCoin) {
-          // Minimally, return the information we do know
+          // Coin not found in list - just display as-is
           return {
             name: coin.metadata.name,
-            amount: coin.amount,
+            amount: coin.amount_v2,
             decimals: coin.metadata.decimals,
             symbol: coin.metadata.symbol,
-            assetType: coin.asset_type,
-            assetVersion: coin.metadata.token_standard,
+            assetType: coin.asset_type_v2,
+            assetVersion: inferredTokenStandard,
             chainId: 0,
-            tokenAddress:
-              coin.metadata.token_standard === "v1" ? coin.asset_type : null,
-            faAddress:
-              coin.metadata.token_standard === "v2" ? coin.asset_type : null,
+            tokenAddress: isV1Format ? coin.asset_type_v2 : null,
+            faAddress: !isV1Format ? coin.asset_type_v2 : null,
             bridge: null,
             panoraSymbol: null,
             logoUrl: "",
@@ -66,7 +70,7 @@ export default function CoinsTab({address}: TokenTabsProps) {
             panoraOrderIndex: 20000000,
             coinGeckoId: null,
             coinMarketCapId: null,
-            tokenStandard: coin.metadata.token_standard,
+            tokenStandard: inferredTokenStandard,
             usdPrice: null,
             panoraTags: [],
             panoraUI: false,
@@ -75,20 +79,26 @@ export default function CoinsTab({address}: TokenTabsProps) {
           };
         } else {
           // Otherwise, use the stuff found in the lookup
+          // For FA (v2), use faAddress; for Coin (v1), use tokenAddress
+          const isFA = !coin.is_v1_coin;
+
           return {
             ...foundCoin,
-            amount: coin.amount,
-            tokenStandard: coin.metadata.token_standard,
+            amount: coin.amount_v2,
+            tokenStandard: inferredTokenStandard,
             usdValue: foundCoin.usdPrice
               ? Math.round(
                   100 *
                     (Number.EPSILON +
-                      (parseFloat(foundCoin.usdPrice) * coin.amount) /
+                      (parseFloat(foundCoin.usdPrice) * coin.amount_v2) /
                         10 ** coin.metadata.decimals),
                 ) / 100
               : null,
-            assetType: coin.asset_type,
-            assetVersion: coin.metadata.token_standard,
+            assetType: coin.asset_type_v2,
+            assetVersion: inferredTokenStandard,
+            // For FA, clear tokenAddress so faAddress is used; for Coin, keep tokenAddress
+            tokenAddress: isFA ? null : foundCoin.tokenAddress,
+            faAddress: isFA ? (foundCoin.faAddress ?? coin.asset_type_v2) : foundCoin.faAddress,
           };
         }
       })

@@ -5,7 +5,7 @@ import {Card} from "../../components/Card";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import StyledTooltip from "../../components/StyledTooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
+import {useGetUnifiedMOVEBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {getPrice} from "../../api/hooks/useGetPrice";
 import {useGlobalState} from "../../global-config/GlobalConfig";
 
@@ -14,7 +14,7 @@ type BalanceCardProps = {
 };
 
 export default function BalanceCard({address}: BalanceCardProps) {
-  const balance = useGetAccountAPTBalance(address);
+  const balance = useGetUnifiedMOVEBalance(address);
   const [globalState] = useGlobalState();
   const [price, setPrice] = useState<number | null>(null);
 

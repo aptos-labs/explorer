@@ -13,3 +13,14 @@ export function useGetAccountAPTBalance(address: Types.Address) {
     retry: false,
   });
 }
+
+/**
+ * Get unified MOVE balance (v1 Coin + v2 Fungible Asset)
+ * Uses coin::balance view function which returns the total balance
+ * combining both CoinStore (v1) and FungibleStore (v2) balances.
+ */
+export function useGetUnifiedMOVEBalance(address: Types.Address) {
+  // coin::balance returns the correct total (v1 Coin + v2 FA)
+  // This is the ground truth for the user's total MOVE balance
+  return useGetAccountAPTBalance(address);
+}
