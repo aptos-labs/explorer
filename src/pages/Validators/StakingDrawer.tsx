@@ -197,7 +197,7 @@ const faqValidatorData = [
         1M MOVE. Only active validators will earn rewards.
         <br />
         <br />
-        However, please do your own research, Movement labs is not responsible
+        However, please do your own research, Movement Network is not responsible
         for the veracity of the information displayed, nor responsible for the
         security of your funds, past or future performance of the validator
         node.

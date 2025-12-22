@@ -1,8 +1,3 @@
-import {AptosClient, Types} from "aptos";
-import {OCTA} from "../constants";
-import {isNumeric} from "../pages/utils";
-import {sortTransactions} from "../utils";
-import {withResponseError} from "./client";
 import {
   AccountAddressInput,
   Aptos,
@@ -11,18 +6,23 @@ import {
   TypeTagAddress,
   TypeTagU64,
 } from "@aptos-labs/ts-sdk";
+import { AptosClient, Types } from "aptos";
+import { OCTA } from "../constants";
+import { isNumeric } from "../pages/utils";
+import { sortTransactions } from "../utils";
+import { withResponseError } from "./client";
 
 export async function getTransactions(
-  requestParameters: {start?: number; limit?: number},
+  requestParameters: { start?: number; limit?: number },
   client: AptosClient,
 ): Promise<Types.Transaction[]> {
-  const {start, limit} = requestParameters;
+  const { start, limit } = requestParameters;
   let bigStart;
   if (start !== undefined) {
     bigStart = BigInt(start);
   }
   const transactions = await withResponseError(
-    client.getTransactions({start: bigStart, limit}),
+    client.getTransactions({ start: bigStart, limit }),
   );
 
   // Sort in descending order
@@ -32,16 +32,16 @@ export async function getTransactions(
 }
 
 export async function getAccountTransactions(
-  requestParameters: {address: string; start?: number; limit?: number},
+  requestParameters: { address: string; start?: number; limit?: number },
   client: AptosClient,
 ): Promise<Types.Transaction[]> {
-  const {address, start, limit} = requestParameters;
+  const { address, start, limit } = requestParameters;
   let bigStart;
   if (start !== undefined) {
     bigStart = BigInt(start);
   }
   const transactions = await withResponseError(
-    client.getAccountTransactions(address, {start: bigStart, limit}),
+    client.getAccountTransactions(address, { start: bigStart, limit }),
   );
 
   // Sort in descending order
@@ -51,10 +51,10 @@ export async function getAccountTransactions(
 }
 
 export function getTransaction(
-  requestParameters: {txnHashOrVersion: string | number},
+  requestParameters: { txnHashOrVersion: string | number },
   client: AptosClient,
 ): Promise<Types.Transaction> {
-  const {txnHashOrVersion} = requestParameters;
+  const { txnHashOrVersion } = requestParameters;
   if (typeof txnHashOrVersion === "number" || isNumeric(txnHashOrVersion)) {
     const version =
       typeof txnHashOrVersion === "number"
@@ -97,24 +97,24 @@ export function getLedgerInfoWithoutResponseError(
 }
 
 export function getAccount(
-  requestParameters: {address: string},
+  requestParameters: { address: string },
   client: AptosClient,
 ): Promise<Types.AccountData> {
-  const {address} = requestParameters;
+  const { address } = requestParameters;
   return withResponseError(client.getAccount(address));
 }
 
 export function getAccountResources(
-  requestParameters: {address: string; ledgerVersion?: number},
+  requestParameters: { address: string; ledgerVersion?: number },
   client: AptosClient,
 ): Promise<Types.MoveResource[]> {
-  const {address, ledgerVersion} = requestParameters;
+  const { address, ledgerVersion } = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
   }
   return withResponseError(
-    client.getAccountResources(address, {ledgerVersion: ledgerVersionBig}),
+    client.getAccountResources(address, { ledgerVersion: ledgerVersionBig }),
   );
 }
 
@@ -126,7 +126,7 @@ export function getAccountResource(
   },
   client: AptosClient,
 ): Promise<Types.MoveResource> {
-  const {address, resourceType, ledgerVersion} = requestParameters;
+  const { address, resourceType, ledgerVersion } = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
@@ -139,16 +139,16 @@ export function getAccountResource(
 }
 
 export function getAccountModules(
-  requestParameters: {address: string; ledgerVersion?: number},
+  requestParameters: { address: string; ledgerVersion?: number },
   client: AptosClient,
 ): Promise<Types.MoveModuleBytecode[]> {
-  const {address, ledgerVersion} = requestParameters;
+  const { address, ledgerVersion } = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
   }
   return withResponseError(
-    client.getAccountModules(address, {ledgerVersion: ledgerVersionBig}),
+    client.getAccountModules(address, { ledgerVersion: ledgerVersionBig }),
   );
 }
 
@@ -160,7 +160,7 @@ export function getAccountModule(
   },
   client: AptosClient,
 ): Promise<Types.MoveModuleBytecode> {
-  const {address, moduleName, ledgerVersion} = requestParameters;
+  const { address, moduleName, ledgerVersion } = requestParameters;
   let ledgerVersionBig;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
@@ -188,11 +188,11 @@ export function view(
 }
 
 export function getTableItem(
-  requestParameters: {tableHandle: string; data: Types.TableItemRequest},
+  requestParameters: { tableHandle: string; data: Types.TableItemRequest },
   client: AptosClient,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
-  const {tableHandle, data} = requestParameters;
+  const { tableHandle, data } = requestParameters;
   return withResponseError(client.getTableItem(tableHandle, data));
 }
 
@@ -234,13 +234,13 @@ export async function getBalance(
     functionArguments: [address],
     abi: {
       parameters: [new TypeTagAddress()],
-      typeParameters: [{constraints: []}],
+      typeParameters: [{ constraints: [] }],
       returnTypes: [new TypeTagU64()],
     },
   };
   console.log('payload for balance', payload);
   return withResponseError(
-    client.view<[string]>({payload}).then((res) => res[0]),
+    client.view<[string]>({ payload }).then((res) => res[0]),
   );
 }
 
@@ -327,7 +327,7 @@ export async function getValidatorCommissionAndState(
 ): Promise<Types.MoveValue[]> {
   const payload: Types.ViewRequest = {
     function:
-      "0x7a5c34e80f796fe58c336812f80e15a86a2086c75640270a11207b911d512aba::helpers::pool_address_info",
+      "0x040a42bd0a00d1c4ea04dd6e02d687ac50619fb143c578d325b093f24a75960d::helpers::pool_address_info",
     type_arguments: [],
     arguments: [validatorAddresses],
   };

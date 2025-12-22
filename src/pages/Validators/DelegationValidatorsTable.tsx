@@ -206,7 +206,8 @@ const DelegationValidatorCells = Object.freeze({
 
 type Column = keyof typeof DelegationValidatorCells;
 
-const DEFAULT_COLUMNS: Column[] = [
+// Base columns without rewards (shown when JSON stats not available)
+const BASE_COLUMNS: Column[] = [
   "view",
   "addr",
   "status",
@@ -214,20 +215,21 @@ const DEFAULT_COLUMNS: Column[] = [
   "delegatedAmount",
   "commission",
   "delegator",
-  "rewardsEarned",
-  "myDeposit",
 ];
 
-const COLUMNS_WITHOUT_WALLET_CONNECTION: Column[] = [
-  "view",
-  "addr",
-  "status",
-  "operatorAddr",
-  "delegatedAmount",
-  "commission",
-  "delegator",
-  "rewardsEarned",
-];
+// Rewards column - only shown when JSON stats are available
+const REWARDS_COLUMN: Column = "rewardsEarned";
+
+function getColumns(connected: boolean, hasJsonStats: boolean): Column[] {
+  const columns = [...BASE_COLUMNS];
+  if (hasJsonStats) {
+    columns.push(REWARDS_COLUMN);
+  }
+  if (connected) {
+    columns.push("myDeposit");
+  }
+  return columns;
+}
 
 type ValidatorRowProps = {
   validator: ValidatorData & {
@@ -430,12 +432,10 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
 
 export function DelegationValidatorsTable() {
   const [state] = useGlobalState();
-  const {validators} = useGetValidators();
+  const {validators, hasJsonStats} = useGetValidators();
   const {connected} = useWallet();
-  const columns = connected
-    ? DEFAULT_COLUMNS
-    : COLUMNS_WITHOUT_WALLET_CONNECTION;
-  const [sortColumn, setSortColumn] = useState<Column>("rewardsEarned");
+  const columns = getColumns(connected, hasJsonStats);
+  const [sortColumn, setSortColumn] = useState<Column>("delegatedAmount");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
   const [delegationValidators, setDelegationValidators] = useState<
     ValidatorData[]

@@ -248,13 +248,14 @@ const ValidatorCells = Object.freeze({
 
 type Column = keyof typeof ValidatorCells;
 
+// JSON-dependent columns (rewardsPerf, lastEpochPerf, location) removed until Movement has validator stats JSON files
 const DEFAULT_COLUMNS: Column[] = [
   "addr",
   "operatorAddr",
   "votingPower",
-  "rewardsPerf",
-  "lastEpochPerf",
-  "location",
+  // "rewardsPerf", // Requires JSON data - disabled
+  // "lastEpochPerf", // Requires JSON data - disabled
+  // "location", // Requires JSON data - disabled
 ];
 
 // const PREVIEWNET_COLUMNS: Column[] = [

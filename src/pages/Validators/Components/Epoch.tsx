@@ -10,8 +10,8 @@ import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
 import IntervalBar, {IntervalType} from "../../../components/IntervalBar";
 
 const EPOCH_TOOLTIP_TEXT =
-  "An epoch in the Movement blockchain is defined as a duration of time, in seconds, during which a number of blocks are voted on by the validators. The Aptos mainnet epoch is set as 7200 seconds (two hours).";
-const EPOCH_LEARN_MORE_LINK = "https://movementnetwork.xyz";
+  "An epoch in the Movement blockchain is defined as a duration of time, in seconds, during which a number of blocks are voted on by the validators. The Movement mainnet epoch is set as 7200 seconds (two hours).";
+const EPOCH_LEARN_MORE_LINK = "https://docs.movementnetwork.xyz";
 
 type EpochProps = {
   isSkeletonLoading: boolean;

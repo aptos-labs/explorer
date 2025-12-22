@@ -160,6 +160,9 @@ function StakingBarContent({
         ? MINIMUM_APT_IN_POOL_FOR_EXPLORER * OCTA + Number(addStakeFee)
         : Number(addStakeFee));
 
+  const MAX_STAKE_PERCENTAGE = 30;
+  const isOverStakeLimit = Number(networkPercentage) >= MAX_STAKE_PERCENTAGE;
+
   useEffect(() => {
     async function fetchData() {
       const fee = await getAddStakeFee(
@@ -172,7 +175,7 @@ function StakingBarContent({
     fetchData();
   }, [state.network_value, state.aptos_client, balance, validator]);
 
-  const stakeButton = (
+  const stakeButton = isOverStakeLimit ? null : (
     <StyledTooltip
       title={`You can't stake because minimum 11 MOVE requirement is not met`}
       disableHoverListener={!buttonDisabled}

@@ -14,14 +14,14 @@ export function useGetVerifiedTokens() {
           "https://raw.githubusercontent.com/movementlabsxyz/movement-tokens/refs/heads/main/tokens.json",
         );
       } catch (error) {
-        console.error("Failed to fetch Movement Labs verified tokens:", error);
+        console.error("Failed to fetch Movement Network verified tokens:", error);
         return HardCodedCoins;
       }
 
       const panoraTokens = HardCodedCoins;
 
       if (!movementRes.ok) {
-        throw new Error("Failed to fetch Movement Labs verified tokens");
+        throw new Error("Failed to fetch Movement Network verified tokens");
       }
 
       const movementTokens: Record<string, MovementVerifiedToken> =

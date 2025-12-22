@@ -27,9 +27,9 @@ export default function Footer() {
             direction="column"
           >
             <Link
-              to="https://movementlabs.xyz/"
+              to="https://movementnetwork.xyz/"
               target="_blank"
-              title="Movement Labs"
+              title="Movement Network"
               sx={{mr: {md: 2}}}
             >
               {/* <MovementLogoBlack width={50} height={50} />{" "} */}

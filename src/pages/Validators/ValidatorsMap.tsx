@@ -14,7 +14,7 @@ export default function ValidatorsMap() {
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const backgroundColor = isDarkTheme ? grey[800] : grey[50];
 
-  const {validatorGeoMetric, validatorGeoGroups} = useGetValidatorSetGeoData();
+  const {validatorGeoMetric, validatorGeoGroups, hasGeoData} = useGetValidatorSetGeoData();
   const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
   const {curEpoch} = useGetEpochTime();
   const {totalVotingPower} = useGetValidatorSet();
@@ -25,6 +25,20 @@ export default function ValidatorsMap() {
       setIsSkeletonLoading(false);
     }
   }, [curEpoch, totalVotingPower, numberOfActiveValidators]);
+
+  // When no geo data, render a simpler layout without the map container styling
+  if (!hasGeoData) {
+    return (
+      <SkeletonTheme baseColor={isDarkTheme ? grey[500] : undefined}>
+        <MapMetrics
+          validatorGeoMetric={validatorGeoMetric}
+          isOnMobile={isOnMobile}
+          isSkeletonLoading={isSkeletonLoading}
+          hasGeoData={hasGeoData}
+        />
+      </SkeletonTheme>
+    );
+  }
 
   return (
     <SkeletonTheme baseColor={isDarkTheme ? grey[500] : undefined}>
@@ -41,6 +55,7 @@ export default function ValidatorsMap() {
             validatorGeoMetric={validatorGeoMetric}
             isOnMobile={isOnMobile}
             isSkeletonLoading={isSkeletonLoading}
+            hasGeoData={hasGeoData}
           />
         </Stack>
       ) : (
@@ -55,6 +70,7 @@ export default function ValidatorsMap() {
             validatorGeoMetric={validatorGeoMetric}
             isOnMobile={isOnMobile}
             isSkeletonLoading={isSkeletonLoading}
+            hasGeoData={hasGeoData}
           />
           <Map validatorGeoGroups={validatorGeoGroups} />
         </Stack>
