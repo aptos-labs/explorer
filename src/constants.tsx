@@ -11,7 +11,7 @@ export const networks: Record<string, string> = {
   mainnet: "https://api.mainnet.aptoslabs.com/v1",
   testnet: "https://api.testnet.staging.aptoslabs.com/v1",
   devnet: devnetUrl,
-  decibel: "https://api.netna.staging.aptoslabs.com/v1",
+  decibel: "https://api.netna.aptoslabs.com/v1",
   shelbynet: "https://api.shelbynet.staging.shelby.xyz/v1",
   local: "http://127.0.0.1:8080/v1",
 };
@@ -43,7 +43,7 @@ const apiKeys: ApiKeys = {
   mainnet: "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
   testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
   devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
-  decibel: undefined,
+  decibel: "AG-JAG5SGHTW6VICWAU1IAQ3ZTODVHBYDWGV",
   shelbynet: "AG-MGQQAXV57YJVDQANQPBQDFJVFMUY912EC",
   local: undefined,
 };
