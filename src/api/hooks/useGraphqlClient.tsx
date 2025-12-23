@@ -23,7 +23,7 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
     case "devnet":
       return "https://api.devnet.staging.aptoslabs.com/v1/graphql";
     case "decibel":
-      return "https://api.netna.staging.aptoslabs.com/v1/graphql";
+      return "https://api.netna.aptoslabs.com/v1/graphql";
     case "shelbynet":
       return "https://api.shelbynet.staging.shelby.xyz/v1/graphql";
     case "local":
