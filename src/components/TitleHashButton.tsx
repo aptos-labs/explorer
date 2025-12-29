@@ -163,7 +163,7 @@ function Name({
     "&:hover": {
       backgroundColor: codeBlockColorClickableOnHover,
     },
-    color: theme.palette.mode === "dark" ? "#83CCED" : "#0EA5E9",
+    color: theme.palette.primary.main,
     padding: "0.15rem 0.35rem 0.15rem 1rem",
     overflow: "hidden",
     whiteSpace: "nowrap",

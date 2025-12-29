@@ -62,24 +62,23 @@ export const getSemanticColors = (mode: PaletteMode) => {
       info: isDark ? brandColors.babyBlue : "#5A9BC8", // Darker blue for light mode
     },
 
-    // Code block colors - ensure good contrast in both modes
-    codeBlock: {
-      background: isDark
-        ? alpha(brandColors.babyBlue, 0.1)
-        : alpha(brandColors.babyBlue, 0.1),
-      backgroundHover: isDark
-        ? alpha(brandColors.babyBlue, 0.2)
-        : alpha(brandColors.babyBlue, 0.2),
-      backgroundRgb: isDark ? "#212D32" : "#E3ECF3",
-      // Use darker blue for light mode text for better contrast
-      text: isDark ? "#83CCED" : "#0A7FA8", // Darker blue for light mode
-      textSecondary: alpha(isDark ? "#83CCED" : "#0A7FA8", 0.5), // Increased opacity for visibility
-    },
-
     // Link colors - use darker variant for light mode
     link: {
       main: isDark ? brandColors.babyBlue : "#5A9BC8", // Darker blue for light mode contrast
       hover: isDark ? brandColors.mint : "#4A8BB8", // Even darker on hover for light mode
+    },
+
+    // Code block colors - ensure good contrast in both modes
+    codeBlock: {
+      background: alpha(brandColors.babyBlue, 0.1),
+      backgroundHover: alpha(brandColors.babyBlue, 0.2),
+      // Use brand colors for RGB backgrounds - darker for dark mode, lighter for light mode
+      backgroundRgb: isDark
+        ? alpha(brandColors.babyBlue, 0.15)
+        : alpha(brandColors.babyBlue, 0.08),
+      // Use link color for text (defined above)
+      text: isDark ? brandColors.babyBlue : "#5A9BC8",
+      textSecondary: alpha(isDark ? brandColors.babyBlue : "#5A9BC8", 0.5),
     },
   };
 };
@@ -93,49 +92,51 @@ export const getThemeColors = (mode: PaletteMode) => {
 
 /**
  * Status colors for staking operations
+ * Uses brand colors with appropriate contrast for light/dark modes
  */
 export const getStakingStatusColors = (mode: PaletteMode) => {
   const isDark = mode === "dark";
+  const semanticColors = getSemanticColors(mode);
+
   return {
     staked: {
-      text: isDark ? "rgba(125, 211, 252, 1)" : "rgba(14, 165, 233, 1)",
-      background: isDark
-        ? "rgba(125, 211, 252, 0.1)"
-        : "rgba(14, 165, 233, 0.1)",
+      text: semanticColors.link.main,
+      background: alpha(semanticColors.link.main, 0.1),
     },
     withdrawPending: {
-      text: isDark ? "rgba(234, 179, 8, 1)" : "rgba(202, 138, 4, 1)",
-      background: isDark
-        ? "rgba(252, 211, 77, 0.1)"
-        : "rgba(250, 204, 21, 0.2)",
+      text: semanticColors.status.warning,
+      background: alpha(semanticColors.status.warning, isDark ? 0.1 : 0.2),
     },
     withdrawReady: {
-      text: "rgba(20, 184, 166, 1)",
-      background: "rgba(20, 184, 166, 0.1)",
+      text: semanticColors.status.success,
+      background: alpha(semanticColors.status.success, 0.1),
     },
   };
 };
 
 /**
  * Validator status colors
+ * Uses brand colors for consistency
  */
-export const getValidatorStatusColors = () => {
+export const getValidatorStatusColors = (mode: PaletteMode = "light") => {
+  const semanticColors = getSemanticColors(mode);
+
   return {
     pendingActive: {
-      text: "#44c6ee",
-      background: alpha("#44c6ee", 0.1),
+      text: semanticColors.status.info,
+      background: alpha(semanticColors.status.info, 0.1),
     },
     active: {
-      text: "#14B8A6",
-      background: alpha("#14B8A6", 0.1),
+      text: semanticColors.status.success,
+      background: alpha(semanticColors.status.success, 0.1),
     },
     pendingInactive: {
-      text: "rgba(252, 211, 77, 1)",
-      background: alpha("rgba(252, 211, 77, 1)", 0.1),
+      text: semanticColors.status.warning,
+      background: alpha(semanticColors.status.warning, 0.1),
     },
     inactive: {
-      text: "rgb(249, 115, 115, 1)",
-      background: alpha("rgb(249, 115, 115, 1)", 0.1),
+      text: semanticColors.status.error,
+      background: alpha(semanticColors.status.error, 0.1),
     },
   };
 };
@@ -193,6 +194,8 @@ export const legacyColorMappings = {
   aptosColor: brandColors.babyBlue,
   codeBlockColor: alpha(brandColors.babyBlue, 0.1),
   codeBlockColorClickableOnHover: alpha(brandColors.babyBlue, 0.2),
-  codeBlockColorRgbLight: "#E3ECF3",
-  codeBlockColorRgbDark: "#212D32",
+  // These RGB colors are used in code blocks that need solid backgrounds (not transparent)
+  // Using brand colors with appropriate tints for visibility
+  codeBlockColorRgbLight: alpha(brandColors.babyBlue, 0.08), // Light mode - very light blue tint
+  codeBlockColorRgbDark: alpha(brandColors.babyBlue, 0.15), // Dark mode - subtle blue tint
 };

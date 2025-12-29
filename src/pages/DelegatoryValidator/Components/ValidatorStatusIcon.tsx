@@ -1,4 +1,4 @@
-import {Chip} from "@mui/material";
+import {Chip, useTheme} from "@mui/material";
 import React from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DangerousIcon from "@mui/icons-material/Dangerous";
@@ -12,7 +12,8 @@ export default function ValidatorStatusIcon({
 }: {
   validatorStatus: ValidatorStatus | undefined;
 }): React.JSX.Element {
-  const statusColors = getValidatorStatusColors();
+  const theme = useTheme();
+  const statusColors = getValidatorStatusColors(theme.palette.mode);
 
   const getStatusIcon = () => {
     if (validatorStatus) {

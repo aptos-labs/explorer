@@ -1,5 +1,5 @@
 import React from "react";
-import {Box, useTheme, styled, Typography, Stack} from "@mui/material";
+import {Box, useTheme, styled, Typography, Stack, alpha} from "@mui/material";
 import Tooltip, {TooltipProps, tooltipClasses} from "@mui/material/Tooltip";
 import {ComposableMap, Geographies, Geography, Marker} from "react-simple-maps";
 import {
@@ -22,7 +22,7 @@ const LightTooltip = styled(({className, ...props}: TooltipProps) => (
   [`& .${tooltipClasses.tooltip}`]: {
     backgroundColor: theme.palette.mode === "dark" ? grey[800] : grey[50],
     color: theme.palette.mode === "dark" ? grey[50] : grey[800],
-    boxShadow: "1px 1px 3px 3px rgba(0, 0, 0, 0.05)",
+    boxShadow: `1px 1px 3px 3px ${alpha(theme.palette.common.black, 0.05)}`,
     borderRadius: 4,
   },
 }));
@@ -63,14 +63,14 @@ function MapMarker({group}: {group: ValidatorGeoGroup}) {
       <Marker coordinates={[countryLng, countryLat]}>
         <g>
           <circle
-            fill="rgba(0,0,0,0)"
+            fill="transparent"
             stroke={MARKER_COLOR}
             strokeWidth={0.6}
             strokeOpacity={0.4}
             r={radius + 2}
           />
           <circle
-            fill="rgba(0,0,0,0)"
+            fill="transparent"
             stroke={MARKER_COLOR}
             strokeWidth={0.6}
             strokeOpacity={0.8}

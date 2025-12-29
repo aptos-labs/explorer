@@ -9,6 +9,7 @@ import {
   Theme,
   useMediaQuery,
   useTheme,
+  alpha,
 } from "@mui/material";
 import React, {useState} from "react";
 import CloseIcon from "@mui/icons-material/Close";
@@ -60,7 +61,7 @@ export function Banner({
         top: 0,
         right: 0,
         "&:hover": {
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          backgroundColor: alpha(brandColors.white, 0.1),
         },
       }}
       size="medium"
