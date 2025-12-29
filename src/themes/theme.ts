@@ -1,7 +1,6 @@
 import {PaletteMode} from "@mui/material";
 import {ThemeOptions} from "@mui/material/styles";
 import {alpha} from "@mui/material";
-import {grey, primary} from "./colors/aptosColorPalette";
 import {getSemanticColors, brandColors} from "./colors/aptosBrandColors";
 import React from "react";
 
@@ -59,9 +58,6 @@ declare module "@mui/material/Divider" {
     bumpRightDark: true;
   }
 }
-
-const primaryColor = primary["400"];
-const primaryColorToned = primary["600"];
 
 const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
   const semanticColors = getSemanticColors(mode);
@@ -277,9 +273,10 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
         styleOverrides: {
           root: ({theme}) => ({
             borderRadius: `${theme.shape.borderRadius}px`,
-            backgroundColor: `${
-              theme.palette.mode === "dark" ? grey[700] : grey[100]
-            }`,
+            backgroundColor:
+              theme.palette.mode === "dark"
+                ? theme.palette.neutralShade.lighter
+                : theme.palette.neutralShade.darker,
             transition: "none",
             "&.Mui-focused": {
               filter: `${
@@ -287,12 +284,13 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
                   ? "brightness(1.1)"
                   : "brightness(0.98)"
               }`,
-              boxShadow: `0 0 0 3px ${alpha(primaryColor, 0.5)}`,
+              boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.5)}`,
             },
             "&:hover": {
-              backgroundColor: `${
-                theme.palette.mode === "dark" ? grey[800] : grey[50]
-              }`,
+              backgroundColor:
+                theme.palette.mode === "dark"
+                  ? theme.palette.neutralShade.main
+                  : theme.palette.neutralShade.main,
               filter: `${
                 theme.palette.mode === "dark"
                   ? "brightness(1.1)"
@@ -307,24 +305,14 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
         styleOverrides: {
           root: ({theme}) => ({
             "&.Mui-focused": {
-              boxShadow: `0 0 0 2px ${alpha(
-                theme.palette.mode === "dark"
-                  ? primaryColor
-                  : primaryColorToned,
-                0.35,
-              )}`,
+              boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.35)}`,
             },
             ".MuiOutlinedInput-notchedOutline": {
               borderColor: theme.palette.lineShade.main,
             },
             "&:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline":
               {
-                borderColor: `${alpha(
-                  theme.palette.mode === "dark"
-                    ? primaryColor
-                    : primaryColorToned,
-                  0.35,
-                )}`,
+                borderColor: alpha(theme.palette.primary.main, 0.35),
               },
           }),
         },
@@ -369,82 +357,90 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
           },
           {
             props: {variant: "bump"},
-            style: {
-              transform: "translateY(-20px)",
-              border: `0`,
-              height: "20px",
-              background: "transparent",
-              position: "relative",
-              "&::before, &::after": {
-                content: '""',
-                position: "absolute",
-                bottom: "0",
-                willChange: "transform",
-              },
-              "&::before": {
-                display: "block",
-                width: "100%",
-                height: "1px",
-                background: `${primaryColorToned}`,
-                maskClip: "content-box",
-                maskImage: `-webkit-linear-gradient(black, black),
+            style: ({theme}) => {
+              const primaryColorHex = theme.palette.primary.main.replace(
+                "#",
+                "",
+              );
+              return {
+                transform: "translateY(-20px)",
+                border: `0`,
+                height: "20px",
+                background: "transparent",
+                position: "relative",
+                "&::before, &::after": {
+                  content: '""',
+                  position: "absolute",
+                  bottom: "0",
+                  willChange: "transform",
+                },
+                "&::before": {
+                  display: "block",
+                  width: "100%",
+                  height: "1px",
+                  background: theme.palette.primary.main,
+                  maskClip: "content-box",
+                  maskImage: `-webkit-linear-gradient(black, black),
             url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="6" viewBox="0 0 14 6"><rect fill="black" x="0" y="0" width="13" height="6"></rect></svg>')`,
-                maskPosition: `0 0, 20%`,
-                maskRepeat: "no-repeat",
-                maskComposite: "exclude",
-                WebkitMaskComposite: "xor",
-              },
-              "&::after": {
-                width: "14px",
-                height: "6px",
-                backgroundSize: "100%",
-                backgroundRepeat: "none",
-                backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColorToned.substring(
-                  1,
-                )}" stroke-miterlimit="10"/></svg>')`,
-                transform: `translateX(calc(-1 * 20%))`,
-                left: "20%",
-              },
+                  maskPosition: `0 0, 20%`,
+                  maskRepeat: "no-repeat",
+                  maskComposite: "exclude",
+                  WebkitMaskComposite: "xor",
+                },
+                "&::after": {
+                  width: "14px",
+                  height: "6px",
+                  backgroundSize: "100%",
+                  backgroundRepeat: "none",
+                  backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColorHex}" stroke-miterlimit="10"/></svg>')`,
+                  transform: `translateX(calc(-1 * 20%))`,
+                  left: "20%",
+                },
+              };
             },
           },
           {
             props: {variant: "bumpDark"},
-            style: {
-              transform: "translateY(-20px)",
-              border: `0`,
-              height: "20px",
-              background: "transparent",
-              position: "relative",
-              "&::before, &::after": {
-                content: '""',
-                position: "absolute",
-                bottom: "0",
-                willChange: "transform",
-              },
-              "&::before": {
-                display: "block",
-                width: "100%",
-                height: "1px",
-                background: `${primaryColor}`,
-                maskClip: "content-box",
-                maskImage: `-webkit-linear-gradient(black, black),
+            style: ({theme}) => {
+              const primaryColorHex = theme.palette.primary.main.replace(
+                "#",
+                "",
+              );
+              return {
+                transform: "translateY(-20px)",
+                border: `0`,
+                height: "20px",
+                background: "transparent",
+                position: "relative",
+                "&::before, &::after": {
+                  content: '""',
+                  position: "absolute",
+                  bottom: "0",
+                  willChange: "transform",
+                },
+                "&::before": {
+                  display: "block",
+                  width: "100%",
+                  height: "1px",
+                  background: theme.palette.primary.main,
+                  maskClip: "content-box",
+                  maskImage: `-webkit-linear-gradient(black, black),
             url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="6" viewBox="0 0 14 6"><rect fill="white" x="0" y="0" width="13" height="6"></rect></svg>')`,
-                maskPosition: `0 0, 20%`,
-                maskRepeat: "no-repeat",
-                maskComposite: "exclude",
-                WebkitMaskComposite: "xor",
-              },
-              "&::after": {
-                width: "14px",
-                height: "6px",
-                backgroundSize: "100%",
-                backgroundRepeat: "none",
-                backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColor.substring(
-                  1,
-                )}" stroke-miterlimit="10"/></svg>')`,
-                transform: `translateX(calc(-1 * 20%))`,
-                left: "20%",
-              },
+                  maskPosition: `0 0, 20%`,
+                  maskRepeat: "no-repeat",
+                  maskComposite: "exclude",
+                  WebkitMaskComposite: "xor",
+                },
+                "&::after": {
+                  width: "14px",
+                  height: "6px",
+                  backgroundSize: "100%",
+                  backgroundRepeat: "none",
+                  backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColorHex}" stroke-miterlimit="10"/></svg>')`,
+                  transform: `translateX(calc(-1 * 20%))`,
+                  left: "20%",
+                },
+              };
             },
           },
           {
@@ -488,40 +484,46 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
           },
           {
             props: {variant: "bumpRightDark"},
-            style: {
-              transform: "translateY(-20px)",
-              border: `0`,
-              height: "20px",
-              background: "transparent",
-              position: "relative",
-              "&::before, &::after": {
-                content: '""',
-                position: "absolute",
-                bottom: "0",
-                willChange: "transform",
-              },
-              "&::before": {
-                display: "block",
-                width: "100%",
-                height: "1px",
-                background: `${primaryColor}`,
-                maskClip: "content-box",
-                maskImage: `-webkit-linear-gradient(black, black),
+            style: ({theme}) => {
+              const primaryColorHex = theme.palette.primary.main.replace(
+                "#",
+                "",
+              );
+              return {
+                transform: "translateY(-20px)",
+                border: `0`,
+                height: "20px",
+                background: "transparent",
+                position: "relative",
+                "&::before, &::after": {
+                  content: '""',
+                  position: "absolute",
+                  bottom: "0",
+                  willChange: "transform",
+                },
+                "&::before": {
+                  display: "block",
+                  width: "100%",
+                  height: "1px",
+                  background: theme.palette.primary.main,
+                  maskClip: "content-box",
+                  maskImage: `-webkit-linear-gradient(black, black),
             url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="6" viewBox="0 0 14 6"><rect fill="white" x="0" y="0" width="13" height="6"></rect></svg>')`,
-                maskPosition: `0 0, 78%`,
-                maskRepeat: "no-repeat",
-                maskComposite: "exclude",
-                WebkitMaskComposite: "xor",
-              },
-              "&::after": {
-                width: "14px",
-                height: "6px",
-                backgroundSize: "100%",
-                backgroundRepeat: "none",
-                backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColor}" stroke-miterlimit="10"/></svg>')`,
-                transform: `translateX(calc(-1 * 78%))`,
-                left: "78%",
-              },
+                  maskPosition: `0 0, 78%`,
+                  maskRepeat: "no-repeat",
+                  maskComposite: "exclude",
+                  WebkitMaskComposite: "xor",
+                },
+                "&::after": {
+                  width: "14px",
+                  height: "6px",
+                  backgroundSize: "100%",
+                  backgroundRepeat: "none",
+                  backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="6" viewBox="0 0 14 6"><path d="M0,5.5a2.09,2.09,0,0,0,1.51-.64L4.66,1.53a3.36,3.36,0,0,1,4.69-.15,2.28,2.28,0,0,1,.22.22l2.88,3.21A2.08,2.08,0,0,0,14,5.5" fill="none" stroke="%23${primaryColorHex}" stroke-miterlimit="10"/></svg>')`,
+                  transform: `translateX(calc(-1 * 78%))`,
+                  left: "78%",
+                },
+              };
             },
           },
         ],
@@ -583,7 +585,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
             whiteSpace: "nowrap",
             borderStyle: "solid",
             borderWidth: "0 0 0 0",
-            borderColor: grey[700],
+            borderColor: theme.palette.lineShade.main,
             "&:first-of-type": {
               borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
             },
@@ -615,7 +617,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
             },
             "&.Mui-disabled": {
               opacity: 0.5,
-              color: theme.palette.mode === "dark" ? grey[400] : "black",
+              color: theme.palette.text.disabled,
             },
           }),
         },
@@ -640,7 +642,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
             props: {variant: "nav"},
             style: ({theme}) => ({
               textTransform: "capitalize",
-              color: theme.palette.mode === "dark" ? grey[300] : grey[600],
+              color: theme.palette.text.secondary,
               fontSize: "1rem",
               fontWeight: "normal",
               "&:hover": {

@@ -1,6 +1,5 @@
 import * as React from "react";
 import {Box, BoxProps, Stack, useTheme} from "@mui/material";
-import {grey} from "../../themes/colors/aptosColorPalette";
 
 interface ContentBoxProps extends BoxProps {
   children: React.ReactNode;
@@ -8,8 +7,7 @@ interface ContentBoxProps extends BoxProps {
 
 export default function ContentBox({children, ...props}: ContentBoxProps) {
   const theme = useTheme();
-  // TODO: unify colors for the new transaction page
-  const backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[50];
+  const backgroundColor = theme.palette.background.paper;
 
   return (
     <Box

@@ -164,11 +164,7 @@ export default function BlocksTable({
   const blockRows = useMemo(
     () =>
       blocks.map((block: Types.Block) => (
-        <BlockRow
-          key={block.block_height}
-          block={block}
-          columns={columns}
-        />
+        <BlockRow key={block.block_height} block={block} columns={columns} />
       )),
     [blocks, columns],
   );
