@@ -11,7 +11,7 @@ import {Divider, useTheme} from "@mui/material";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import {useNavigate} from "../../routing";
 import {WalletConnector} from "../../components/WalletConnector";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sortPetraFirst} from "../../utils";
 
@@ -19,7 +19,7 @@ export default function NavMobile() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const navigate = useNavigate();
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   const inMainnet = useGetInMainnet();
   const {account} = useWallet();
   const menuOpen = Boolean(menuAnchorEl);
@@ -93,7 +93,7 @@ export default function NavMobile() {
         </MenuItem>
         <Divider />
         <WalletConnector
-          networkSupport={state.network_name}
+          networkSupport={networkName}
           handleNavigate={() => navigate(`/account/${account?.address}`)}
           sortAvailableWallets={sortPetraFirst}
           sortInstallableWallets={sortPetraFirst}

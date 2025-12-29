@@ -8,7 +8,7 @@ import {ValidatorsTable} from "./ValidatorsTable";
 import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
 import {Network, NetworkName} from "../../constants";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useNavigate} from "../../routing";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
@@ -58,7 +58,7 @@ function TabPanel({value, networkName}: TabPanelProps): React.JSX.Element {
 }
 
 export default function ValidatorsPageTabs(): React.JSX.Element {
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   const {tab} = useParams();
   const navigate = useNavigate();
   const {account, wallet} = useWallet();
@@ -103,7 +103,7 @@ export default function ValidatorsPageTabs(): React.JSX.Element {
         </StyledTabs>
       </Box>
       <Box sx={{width: "auto", overflowX: "auto"}}>
-        <TabPanel value={value} networkName={state.network_name} />
+        <TabPanel value={value} networkName={networkName} />
       </Box>
     </Box>
   );

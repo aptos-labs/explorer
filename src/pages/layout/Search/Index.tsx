@@ -6,7 +6,11 @@ import {
   useAugmentToWithGlobalSearchParams,
   useNavigate,
 } from "../../../routing";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {
+  useNetworkName,
+  useAptosClient,
+  useSdkV2Client,
+} from "../../../global-config/GlobalConfig";
 import {GTMEvents} from "../../../dataConstants";
 import {
   getAccount,
@@ -51,7 +55,9 @@ type SearchMode = "idle" | "typing" | "loading" | "results";
 
 export default function HeaderSearch() {
   const navigate = useNavigate();
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
+  const aptosClient = useAptosClient();
+  const sdkV2Client = useSdkV2Client();
   const [mode, setMode] = useState<SearchMode>("idle");
   const [inputValue, setInputValue] = useState<string>("");
   const [options, setOptions] = useState<SearchResult[]>([]);
@@ -79,7 +85,7 @@ export default function HeaderSearch() {
   async function handleAnsName(
     searchText: string,
   ): Promise<SearchResult | null> {
-    return state.sdk_v2_client
+    return sdkV2Client
       .getName({
         name: searchText,
       })
@@ -103,7 +109,7 @@ export default function HeaderSearch() {
     const address = searchText.split("::")[0];
     return getAccountResource(
       {address, resourceType: `0x1::coin::CoinInfo<${searchText}>`},
-      state.aptos_client,
+      aptosClient,
     )
       .then(() => {
         return {
@@ -123,7 +129,7 @@ export default function HeaderSearch() {
     const promises = [];
     const blockByHeightPromise = getBlockByHeight(
       {height: num, withTransactions: false},
-      state.sdk_v2_client,
+      sdkV2Client,
     )
       .then((): SearchResult => {
         return {
@@ -138,7 +144,7 @@ export default function HeaderSearch() {
 
     const blockByVersionPromise = getBlockByVersion(
       {version: num, withTransactions: false},
-      state.sdk_v2_client,
+      sdkV2Client,
     )
       .then((block): SearchResult => {
         return {
@@ -152,7 +158,7 @@ export default function HeaderSearch() {
       });
     const transactionByVersion = getTransaction(
       {txnHashOrVersion: num},
-      state.aptos_client,
+      aptosClient,
     )
       .then((): SearchResult => {
         return {
@@ -173,7 +179,7 @@ export default function HeaderSearch() {
   async function handleTransaction(
     searchText: string,
   ): Promise<SearchResult | null> {
-    return getTransaction({txnHashOrVersion: searchText}, state.aptos_client)
+    return getTransaction({txnHashOrVersion: searchText}, aptosClient)
       .then((): SearchResult => {
         return {
           label: `Transaction ${searchText}`,
@@ -195,7 +201,7 @@ export default function HeaderSearch() {
     }
 
     // It's either an account OR an object: we query both at once to save time
-    const accountPromise = getAccount({address}, state.aptos_client)
+    const accountPromise = getAccount({address}, aptosClient)
       .then((): SearchResult => {
         return {
           label: `Account ${address}`,
@@ -209,7 +215,7 @@ export default function HeaderSearch() {
     // TODO: Add searching the coin list first
     const faPromise = getAccountResource(
       {address, resourceType: faMetadataResource},
-      state.aptos_client,
+      aptosClient,
     ).then(
       () => {
         return {
@@ -224,7 +230,7 @@ export default function HeaderSearch() {
     );
     const resourcePromise = getAccountResource(
       {address, resourceType: objectCoreResource},
-      state.aptos_client,
+      aptosClient,
     ).then(
       () => {
         return {
@@ -237,10 +243,7 @@ export default function HeaderSearch() {
         return null;
       },
     );
-    const anyResourcePromise = getAccountResources(
-      {address},
-      state.aptos_client,
-    ).then(
+    const anyResourcePromise = getAccountResources({address}, aptosClient).then(
       () => {
         return {
           label: `Address ${address}`,
@@ -267,24 +270,22 @@ export default function HeaderSearch() {
       return new Promise<null>(() => null);
     }
     // Note: This is a very slow query, for now we will only do it if the address is not found in the other queries
-    return state.sdk_v2_client
-      .getAccountOwnedObjects({accountAddress: address})
-      .then(
-        (output) => {
-          if (output.length > 0) {
-            return {
-              label: `Address ${address}`,
-              to: `/account/${address}`,
-            };
-          } else {
-            return null;
-          }
-        },
-        () => {
-          // It has no coins
+    return sdkV2Client.getAccountOwnedObjects({accountAddress: address}).then(
+      (output: Array<{object_address: string}>) => {
+        if (output.length > 0) {
+          return {
+            label: `Address ${address}`,
+            to: `/account/${address}`,
+          };
+        } else {
           return null;
-        },
-      );
+        }
+      },
+      () => {
+        // It has no coins
+        return null;
+      },
+    );
   }
 
   function prefixMatchLongerThan3(
@@ -370,21 +371,20 @@ export default function HeaderSearch() {
       return [];
     }
     const {marketAddress, coin, lp} = emojicoinData;
-    return getAccount(
-      {address: marketAddress.toString()},
-      state.aptos_client,
-    ).then(() => {
-      return [
-        {
-          label: `${searchText} emojicoin`,
-          to: `/coin/${coin}`,
-        },
-        {
-          label: `${searchText} emojicoin LP`,
-          to: `/coin/${lp}`,
-        },
-      ];
-    });
+    return getAccount({address: marketAddress.toString()}, aptosClient).then(
+      () => {
+        return [
+          {
+            label: `${searchText} emojicoin`,
+            to: `/coin/${coin}`,
+          },
+          {
+            label: `${searchText} emojicoin LP`,
+            to: `/coin/${lp}`,
+          },
+        ];
+      },
+    );
   }
 
   const fetchData = async (searchText: string) => {
@@ -501,7 +501,7 @@ export default function HeaderSearch() {
     sendToGTM({
       dataLayer: {
         event: GTMEvents.SEARCH_STATS,
-        network: state.network_name,
+        network: networkName,
         searchText: searchText,
         searchResult: results.length === 0 ? "notFound" : "success",
         duration: window.performance.measure(

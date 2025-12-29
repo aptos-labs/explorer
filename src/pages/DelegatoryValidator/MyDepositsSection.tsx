@@ -27,7 +27,10 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+} from "../../global-config/GlobalConfig";
 import {addressFromWallet, assertNever} from "../../utils";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
@@ -286,25 +289,21 @@ function MyDepositSectionContent({
     }
   }, [isStakeActivityLoading, setIsMyDepositsSectionSkeletonLoading]);
 
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
   const [canWithdrawPendingInactive, setCanWithdrawPendingInactive] =
     useState<Types.MoveValue>(false);
 
   useEffect(() => {
     async function fetchData() {
       const canWithdraw = await getCanWithdrawPendingInactive(
-        state.aptos_client,
+        aptosClient,
         validator!.owner_address,
       );
       setCanWithdrawPendingInactive(canWithdraw[0]);
     }
     fetchData();
-  }, [
-    validator.owner_address,
-    state.network_value,
-    state.aptos_client,
-    validator,
-  ]);
+  }, [validator.owner_address, networkValue, aptosClient, validator]);
 
   function MyDepositRow({stake, status}: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);

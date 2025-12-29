@@ -29,7 +29,10 @@ import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
 import {OCTA} from "../../constants";
 import {Types} from "aptos";
 import {getAddStakeFee} from "../../api";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+} from "../../global-config/GlobalConfig";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
@@ -148,7 +151,8 @@ function StakingBarContent({
 
   const walletAddress = addressFromWallet(account?.address);
   const balance = useGetAccountAPTBalance(walletAddress);
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
   const {stakes} = useGetDelegatorStakeInfo(
     walletAddress,
     validator.owner_address,
@@ -166,14 +170,14 @@ function StakingBarContent({
   useEffect(() => {
     async function fetchData() {
       const fee = await getAddStakeFee(
-        state.aptos_client,
+        aptosClient,
         validator!.owner_address,
         MINIMUM_APT_IN_POOL_FOR_EXPLORER.toString(),
       );
       setAddStakeFee(fee[0]);
     }
     fetchData();
-  }, [state.network_value, state.aptos_client, balance, validator]);
+  }, [networkValue, aptosClient, balance, validator]);
 
   const stakeButton = (
     <StyledTooltip

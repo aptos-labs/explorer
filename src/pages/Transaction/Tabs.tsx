@@ -29,7 +29,7 @@ import ContentRow from "../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../components/IndividualPageContent/JsonViewCard";
 import {getLearnMoreTooltip} from "./helpers";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkName} from "../../global-config/GlobalConfig";
 import {Link} from "../../routing";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
@@ -144,7 +144,7 @@ export default function TransactionTabs({
   transaction,
   tabValues = getTabValues(transaction),
 }: TransactionTabsProps): React.JSX.Element {
-  const [globalState] = useGlobalState();
+  const networkName = useNetworkName();
 
   const {tab, txnHashOrVersion} = useParams();
   const navigate = useNavigate();
@@ -185,7 +185,7 @@ export default function TransactionTabs({
           value={
             <Link
               color="inherit"
-              to={`https://fullnode.${globalState.network_name.toLowerCase()}.aptoslabs.com/v1/transactions/by_hash/${transaction.hash}`}
+              to={`https://fullnode.${networkName.toLowerCase()}.aptoslabs.com/v1/transactions/by_hash/${transaction.hash}`}
             >
               Transaction ${transaction.hash}
             </Link>

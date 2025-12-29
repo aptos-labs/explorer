@@ -1,14 +1,18 @@
 import React from "react";
 import {useQuery} from "@tanstack/react-query";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+} from "../../../global-config/GlobalConfig";
 import {getLedgerInfo} from "../../../api";
 import {Stack, Typography} from "@mui/material";
 
 export default function TotalTransactions() {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
   const {data: ledgerData} = useQuery({
-    queryKey: ["ledgerInfo", state.network_value],
-    queryFn: () => getLedgerInfo(state.aptos_client),
+    queryKey: ["ledgerInfo", networkValue],
+    queryFn: () => getLedgerInfo(aptosClient),
     refetchInterval: 10000,
   });
   const ledgerVersion = ledgerData?.ledger_version;

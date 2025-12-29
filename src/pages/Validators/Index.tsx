@@ -1,5 +1,5 @@
 import {Box, Typography} from "@mui/material";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkName} from "../../global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
 import ValidatorsPageTabs from "./Tabs";
 import ValidatorsMap from "./ValidatorsMap";
@@ -8,7 +8,7 @@ import {OutOfCommissionPoolsBanner} from "../../components/OutOfCommissionPoolsB
 import {WalletDeprecationBanner} from "../../components/WalletDeprecationBanner";
 
 export default function ValidatorsPage() {
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
 
   usePageMetadata({title: "Validators"});
 
@@ -20,7 +20,7 @@ export default function ValidatorsPage() {
       </Typography>
       <OutOfCommissionPoolsBanner />
       <WalletDeprecationBanner />
-      {state.network_name === "mainnet" && <ValidatorsMap />}
+      {networkName === "mainnet" && <ValidatorsMap />}
       <ValidatorsPageTabs />
     </Box>
   );
