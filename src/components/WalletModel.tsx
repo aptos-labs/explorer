@@ -23,7 +23,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {grey} from "./aptosColorPalette";
+import {grey} from "../themes/colors/aptosColorPalette";
 // reported bug with loading mui icons with esm, therefore need to import like this https://github.com/mui/material-ui/issues/35233
 import {
   ArrowBack,

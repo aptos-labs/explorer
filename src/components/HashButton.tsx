@@ -9,6 +9,7 @@ import {
   useTheme,
   Tooltip,
   Stack,
+  alpha,
 } from "@mui/material";
 import {
   codeBlockColor,
@@ -128,7 +129,7 @@ function AccountHashButtonInner({
           "&:hover": {
             backgroundColor: codeBlockColorClickableOnHover,
           },
-          color: theme.palette.mode === "dark" ? "#83CCED" : "#0EA5E9",
+          color: theme.palette.primary.main,
           padding: "0.15rem 0.35rem 0.15rem 1rem",
           overflow: "hidden",
           whiteSpace: "nowrap",
@@ -258,11 +259,7 @@ function HashButtonInner({
           ".MuiPaper-root": {boxShadow: "none"},
           "&.MuiModal-root .MuiBackdrop-root": {
             transition: "none!important",
-            backgroundColor: `${
-              theme.palette.mode === "dark"
-                ? "rgba(18,22,21,0.5)"
-                : "rgba(255,255,255,0.5)"
-            }`,
+            backgroundColor: alpha(theme.palette.background.default, 0.5),
           },
         }}
         id={id}
@@ -406,7 +403,7 @@ function AssetHashButtonInner({
           "&:hover": {
             backgroundColor: codeBlockColorClickableOnHover,
           },
-          color: theme.palette.mode === "dark" ? "#83CCED" : "#0EA5E9",
+          color: theme.palette.primary.main,
           padding: "0.15rem 0.35rem 0.15rem 1rem",
           overflow: "hidden",
           whiteSpace: "nowrap",

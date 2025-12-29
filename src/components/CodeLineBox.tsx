@@ -5,9 +5,6 @@ import {
   codeBlockColorClickableOnHover,
 } from "../themes/colors/aptosColorPalette";
 
-const TEXT_COLOR_LIGHT = "#0EA5E9";
-const TEXT_COLOR_DARK = "#83CCED";
-
 export function CodeLineBox({
   children,
   sx,
@@ -23,8 +20,7 @@ export function CodeLineBox({
       sx={[
         {
           width: "max-content",
-          color:
-            theme.palette.mode === "dark" ? TEXT_COLOR_DARK : TEXT_COLOR_LIGHT,
+          color: theme.palette.primary.main,
           padding: "0.35rem 1rem 0.35rem 1rem",
           overflow: "hidden",
           whiteSpace: "nowrap",
