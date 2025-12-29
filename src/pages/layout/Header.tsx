@@ -4,7 +4,7 @@ import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import NetworkSelect from "./NetworkSelect";
 import {useColorMode} from "../../context";
-import {useMediaQuery, useTheme, alpha} from "@mui/material";
+import {useMediaQuery, useTheme, alpha, Typography} from "@mui/material";
 import IconLight from "../../assets/svg/icon_light.svg?react";
 import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";
 import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
@@ -125,9 +125,11 @@ export default function Header() {
               color="inherit"
               underline="none"
               sx={{
-                width: {xs: "30px", sm: "30px", md: "40px"},
-                height: {xs: "30px", sm: "30px", md: "40px"},
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
                 marginRight: "auto",
+                textDecoration: "none",
               }}
             >
               {isDark ? (
@@ -135,6 +137,16 @@ export default function Header() {
               ) : (
                 <LogoIconLight width="3rem" height="3rem" />
               )}
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  display: {xs: "none", sm: "block"},
+                  fontSize: {sm: "1.1rem", md: "1.25rem"},
+                }}
+              >
+                Aptos Explorer
+              </Typography>
             </Link>
 
             <Nav />
