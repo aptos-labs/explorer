@@ -22,14 +22,19 @@ const IdenticonImg: React.FunctionComponent<IdenticonImgProps> = ({
     );
   }*/
 
-  const iconCanvas = createIcon({
-    seed: address,
-    size: 6,
-    scale: 5,
-  });
+  // Memoize icon canvas creation to avoid regenerating on every render
+  const iconCanvas = React.useMemo(
+    () =>
+      createIcon({
+        seed: address,
+        size: 6,
+        scale: 5,
+      }),
+    [address],
+  );
 
-  // Convert canvas to data URL
-  const iconDataURL = iconCanvas.toDataURL();
+  // Memoize canvas generation to avoid regenerating on every render
+  const iconDataURL = React.useMemo(() => iconCanvas.toDataURL(), [iconCanvas]);
 
   // Return an img element with the data URL as the src
   return <img src={iconDataURL} alt="Identicon" style={{borderRadius: 2}} />;

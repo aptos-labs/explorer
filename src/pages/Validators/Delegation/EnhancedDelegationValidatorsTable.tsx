@@ -482,7 +482,7 @@ function MyDepositCell({validator}: {validator: ValidatorWithExtendedData}) {
 }
 
 // Row component
-function ValidatorRow({
+const ValidatorRow = React.memo(function ValidatorRow({
   validator,
   columns,
   connected,
@@ -552,7 +552,7 @@ function ValidatorRow({
       })}
     </GeneralTableRow>
   );
-}
+});
 
 // Main component
 export function EnhancedDelegationValidatorsTable() {

@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useMemo, useCallback} from "react";
 import {
   Button,
   Stack,
@@ -25,7 +26,7 @@ import {useGlobalState} from "../../../global-config/GlobalConfig";
 import {Network} from "@aptos-labs/ts-sdk";
 import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 
-function CoinNameCell({name}: {name: string}) {
+const CoinNameCell = React.memo(function CoinNameCell({name}: {name: string}) {
   return (
     <GeneralTableCell
       sx={{
@@ -38,9 +39,9 @@ function CoinNameCell({name}: {name: string}) {
       {name}
     </GeneralTableCell>
   );
-}
+});
 
-function AmountCell({
+const AmountCell = React.memo(function AmountCell({
   amount,
   decimals,
   symbol,
@@ -60,9 +61,13 @@ function AmountCell({
       <span style={{marginLeft: 8, color: grey[450]}}>{symbol}</span>
     </GeneralTableCell>
   );
-}
+});
 
-function USDCell({amount}: {amount: number | null | undefined}) {
+const USDCell = React.memo(function USDCell({
+  amount,
+}: {
+  amount: number | null | undefined;
+}) {
   const inMainnet = useGetInMainnet();
   if (amount === null || amount === undefined || !inMainnet) {
     return <GeneralTableCell>N/A</GeneralTableCell>;
@@ -74,9 +79,13 @@ function USDCell({amount}: {amount: number | null | undefined}) {
       <span style={{marginLeft: 8, color: grey[450]}}>{"USD"}</span>
     </GeneralTableCell>
   );
-}
+});
 
-function CoinTypeCell({data}: {data: CoinDescriptionPlusAmount}) {
+const CoinTypeCell = React.memo(function CoinTypeCell({
+  data,
+}: {
+  data: CoinDescriptionPlusAmount;
+}) {
   function getType() {
     switch (data.tokenStandard) {
       case "v1":
@@ -98,9 +107,13 @@ function CoinTypeCell({data}: {data: CoinDescriptionPlusAmount}) {
       />
     </GeneralTableCell>
   );
-}
+});
 
-function CoinVerifiedCell({data}: {data: CoinDescriptionPlusAmount}) {
+const CoinVerifiedCell = React.memo(function CoinVerifiedCell({
+  data,
+}: {
+  data: CoinDescriptionPlusAmount;
+}) {
   return VerifiedCoinCell({
     data: {
       id: data.tokenAddress ?? data.faAddress ?? "Unknown",
@@ -110,7 +123,7 @@ function CoinVerifiedCell({data}: {data: CoinDescriptionPlusAmount}) {
       symbol: data?.panoraSymbol ?? data.symbol,
     },
   });
-}
+});
 
 enum CoinVerificationFilterType {
   VERIFIED,
@@ -140,79 +153,97 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
     }
   }, [state.network_name]);
 
-  function toIndex(coin: CoinDescriptionPlusAmount): number {
+  const toIndex = useCallback((coin: CoinDescriptionPlusAmount): number => {
     return coin.panoraOrderIndex
       ? coin.panoraOrderIndex
       : coin.chainId !== 0
         ? 0
         : 1000000;
-  }
+  }, []);
 
-  let filteredCoins = coins;
+  const getCoinId = useCallback(
+    (coin: CoinDescriptionPlusAmount): string | null => {
+      return coin.tokenAddress ?? coin.faAddress;
+    },
+    [],
+  );
 
-  function getCoinId(coin: CoinDescriptionPlusAmount): string | null {
-    return coin.tokenAddress ?? coin.faAddress;
-  }
+  // Memoize coin verifications calculation
+  const coinVerifications = useMemo<Record<string, VerifiedType>>(() => {
+    const verifications: Record<string, VerifiedType> = {};
+    coins.forEach((coin) => {
+      const coinId = getCoinId(coin);
+      if (coinId) {
+        verifications[coinId] = verifiedLevel(
+          {
+            id: coin.tokenAddress ?? coin.faAddress ?? "Unknown",
+            known: coin.chainId !== 0,
+            isBanned: coin.isBanned,
+            isInPanoraTokenList: coin.isInPanoraTokenList,
+            symbol: coin?.panoraSymbol ?? coin.symbol,
+          },
+          state.network_name,
+        ).level;
+      }
+    });
+    return verifications;
+  }, [coins, getCoinId, state.network_name]);
 
-  // TODO: This doesn't cover FAs converted from coins.  The logic for verification has gotten pretty out of hand
-  // and needs to be consolidated before going any further
-  const coinVerifications: Record<string, VerifiedType> = {};
+  // Memoize filter logic
+  const filterCoins = useCallback(
+    (
+      coinsToFilter: CoinDescriptionPlusAmount[],
+      filter: CoinVerificationFilterType,
+    ): CoinDescriptionPlusAmount[] => {
+      let filtered: CoinDescriptionPlusAmount[];
 
-  coins.forEach((coin) => {
-    const coinId = getCoinId(coin);
-    if (coinId) {
-      coinVerifications[coinId] = verifiedLevel(
-        {
-          id: coin.tokenAddress ?? coin.faAddress ?? "Unknown",
-          known: coin.chainId !== 0,
-          isBanned: coin.isBanned,
-          isInPanoraTokenList: coin.isInPanoraTokenList,
-          symbol: coin?.panoraSymbol ?? coin.symbol,
-        },
-        state.network_name,
-      ).level;
-    }
-  });
+      switch (filter) {
+        case CoinVerificationFilterType.VERIFIED:
+          filtered = coinsToFilter.filter((coin) => {
+            const coinId = getCoinId(coin);
+            if (coinId && coinVerifications[coinId]) {
+              const level = coinVerifications[coinId];
+              return (
+                level === VerifiedType.LABS_VERIFIED ||
+                level === VerifiedType.COMMUNITY_VERIFIED ||
+                level === VerifiedType.NATIVE_TOKEN
+              );
+            }
+            return false;
+          });
+          break;
+        case CoinVerificationFilterType.RECOGNIZED:
+          filtered = coinsToFilter.filter((coin) => {
+            const coinId = getCoinId(coin);
+            if (coinId && coinVerifications[coinId]) {
+              const level = coinVerifications[coinId];
+              return (
+                level === VerifiedType.LABS_VERIFIED ||
+                level === VerifiedType.COMMUNITY_VERIFIED ||
+                level === VerifiedType.NATIVE_TOKEN ||
+                level === VerifiedType.RECOGNIZED
+              );
+            }
+            return false;
+          });
+          break;
+        case CoinVerificationFilterType.ALL:
+        case CoinVerificationFilterType.NONE:
+        default:
+          filtered = coinsToFilter;
+          break;
+      }
 
-  switch (verificationFilter) {
-    case CoinVerificationFilterType.VERIFIED:
-      filteredCoins = coins.filter((coin) => {
-        const coinId = getCoinId(coin);
-        if (coinId && coinVerifications[coinId]) {
-          const level = coinVerifications[coinId];
-          return (
-            level === VerifiedType.LABS_VERIFIED ||
-            level === VerifiedType.COMMUNITY_VERIFIED ||
-            level === VerifiedType.NATIVE_TOKEN
-          );
-        } else {
-          return false;
-        }
-      });
-      break;
-    case CoinVerificationFilterType.RECOGNIZED:
-      filteredCoins = coins.filter((coin) => {
-        const coinId = getCoinId(coin);
-        if (coinId && coinVerifications[coinId]) {
-          const level = coinVerifications[coinId];
-          return (
-            level === VerifiedType.LABS_VERIFIED ||
-            level === VerifiedType.COMMUNITY_VERIFIED ||
-            level === VerifiedType.NATIVE_TOKEN ||
-            level === VerifiedType.RECOGNIZED
-          );
-        } else {
-          return false;
-        }
-      });
+      return filtered.sort((a, b) => toIndex(a) - toIndex(b));
+    },
+    [coinVerifications, getCoinId, toIndex],
+  );
 
-      break;
-    case CoinVerificationFilterType.ALL:
-    case CoinVerificationFilterType.NONE:
-      filteredCoins = coins;
-      break;
-  }
-  filteredCoins = filteredCoins.sort((a, b) => toIndex(a) - toIndex(b));
+  // Memoize filtered and sorted coins
+  const filteredCoins = useMemo(
+    () => filterCoins(coins, verificationFilter),
+    [coins, verificationFilter, filterCoins],
+  );
 
   const selectedTextColor = primary[500];
   const unselectedTextColor = grey[400];

@@ -73,6 +73,34 @@ function Contract({
   const {data, isLoading, error} = useGetAccountModules(address);
   const {selectedModuleName, selectedFnName} = useParams();
   const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
+  const modules = useMemo(() => data ?? [], [data]);
+
+  const moduleAndFnsGroup = useMemo(
+    () =>
+      modules.reduce(
+        (acc, module) => {
+          if (!module.abi) {
+            return acc;
+          }
+
+          const fns = module.abi.exposed_functions.filter((fn) =>
+            isRead ? fn.is_view : fn.is_entry,
+          );
+          if (fns.length === 0) {
+            return acc;
+          }
+
+          const moduleName = module.abi.name;
+          return {
+            ...acc,
+            [moduleName]: fns,
+          } as Record<string, Types.MoveFunction[]>;
+        },
+        {} as Record<string, Types.MoveFunction[]>,
+      ),
+    [modules, isRead],
+  );
+
   const selectedModule = sortedPackages
     .flatMap((pkg) => pkg.modules)
     .find((module) => module.name === selectedModuleName);
@@ -85,32 +113,9 @@ function Contract({
     return <Error address={address} error={error} />;
   }
 
-  const modules = data ?? [];
   if (modules.length === 0) {
     return <EmptyTabContent />;
   }
-
-  const moduleAndFnsGroup = modules.reduce(
-    (acc, module) => {
-      if (!module.abi) {
-        return acc;
-      }
-
-      const fns = module.abi.exposed_functions.filter((fn) =>
-        isRead ? fn.is_view : fn.is_entry,
-      );
-      if (fns.length === 0) {
-        return acc;
-      }
-
-      const moduleName = module.abi.name;
-      return {
-        ...acc,
-        [moduleName]: fns,
-      } as Record<string, Types.MoveFunction[]>;
-    },
-    {} as Record<string, Types.MoveFunction[]>,
-  );
 
   const module = modules.find((m) => m.abi?.name === selectedModuleName)?.abi;
   const fn = selectedModuleName

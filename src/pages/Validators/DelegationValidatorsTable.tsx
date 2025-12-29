@@ -475,12 +475,14 @@ export function DelegationValidatorsTable() {
     }
     return [];
   }, [validators, loading, delegatedStakingPools]);
-  const sortedValidators = getSortedValidators(
-    delegationValidators,
-    sortColumn,
-    sortDirection,
+  const sortedValidators = useMemo(
+    () => getSortedValidators(delegationValidators, sortColumn, sortDirection),
+    [delegationValidators, sortColumn, sortDirection],
   );
-  const sortedValidatorAddrs = sortedValidators.map((v) => v.owner_address);
+  const sortedValidatorAddrs = useMemo(
+    () => sortedValidators.map((v) => v.owner_address),
+    [sortedValidators],
+  );
   const {data: sortedValidatorsWithCommissionAndState, error} = useQuery<
     Types.MoveValue[],
     ResponseError

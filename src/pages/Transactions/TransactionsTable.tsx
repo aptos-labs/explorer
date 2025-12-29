@@ -246,7 +246,10 @@ type TransactionRowProps = {
   columns: TransactionColumn[];
 };
 
-function TransactionRow({transaction, columns}: TransactionRowProps) {
+const TransactionRow = React.memo(function TransactionRow({
+  transaction,
+  columns,
+}: TransactionRowProps) {
   return (
     <GeneralTableRow
       to={`/txn/${"version" in transaction && transaction.version}`}
@@ -257,7 +260,7 @@ function TransactionRow({transaction, columns}: TransactionRowProps) {
       })}
     </GeneralTableRow>
   );
-}
+});
 
 type UserTransactionRowProps = {
   version: number;
