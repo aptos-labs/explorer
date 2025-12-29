@@ -42,8 +42,7 @@ export function useGetCoinActivities(
 
   return {
     isLoading: loading,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error: error as any,
+    error: error ? (error as CombinedGraphQLErrors) : undefined,
     data: data?.fungible_asset_activities,
   };
 }

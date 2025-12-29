@@ -41,9 +41,7 @@ export function useGetAccountCoinCount(address: string) {
 
   return useQuery<number, ResponseError>({
     queryKey: ["coinCount", address],
-    // TODO type this
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    queryFn: async (): Promise<any> => {
+    queryFn: async (): Promise<number> => {
       if (!standardizedAddress) {
         return 0;
       }
@@ -85,9 +83,7 @@ export function useGetAccountCoins(
 
   return useQuery<FaBalance[], ResponseError>({
     queryKey: ["coinQuery", address, limit, offset],
-    // TODO: Type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    queryFn: async (): Promise<any> => {
+    queryFn: async (): Promise<FaBalance[]> => {
       if (!standardizedAddress) {
         return [];
       }
@@ -123,9 +119,7 @@ export function useGetAllAccountCoins(address: string) {
 
   return useQuery<FaBalance[], ResponseError>({
     queryKey: ["allCoinsQuery", address, count.data],
-    // TODO: Type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    queryFn: async (): Promise<any> => {
+    queryFn: async (): Promise<FaBalance[]> => {
       if (!address || !count.data) {
         return [];
       }

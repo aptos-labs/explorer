@@ -85,9 +85,11 @@ export function useGetDelegatedStakingPoolList(): {
     return {
       delegatedStakingPools: [],
       loading: isLoading,
-      // TODO: Fix this any
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      error: apolloError || (error as CombinedGraphQLErrors as any),
+      error: apolloError
+        ? (apolloError as CombinedGraphQLErrors)
+        : error
+          ? (error as unknown as CombinedGraphQLErrors)
+          : undefined,
     };
   }
 

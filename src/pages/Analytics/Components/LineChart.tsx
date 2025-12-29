@@ -10,6 +10,7 @@ import {
   Tooltip,
   Filler,
   Legend,
+  TooltipItem,
 } from "chart.js";
 import {Line} from "react-chartjs-2";
 import {numberFormatter} from "../utils";
@@ -30,8 +31,7 @@ type LineChartProps = {
   labels: string[];
   dataset: number[];
   fill?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tooltipsLabelFunc?: (context: any) => string;
+  tooltipsLabelFunc?: (context: TooltipItem<"line">) => string;
   decimals?: number;
 };
 
@@ -75,8 +75,11 @@ export default function LineChart({
       },
       y: {
         ticks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          _callback: (value: any) => numberFormatter(value, decimals ?? 0),
+          callback: (value: string | number) =>
+            numberFormatter(
+              typeof value === "string" ? parseFloat(value) : value,
+              decimals ?? 0,
+            ),
           autoSkip: true,
           maxTicksLimit: 3,
         },

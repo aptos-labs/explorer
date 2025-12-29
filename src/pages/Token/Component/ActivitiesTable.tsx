@@ -97,8 +97,7 @@ const DEFAULT_COLUMNS: Column[] = [
 ];
 
 type ActivityRowProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  activity: any; // TODO: add graphql data typing
+  activity: GetTokenActivityResponse[0];
   columns: Column[];
 };
 

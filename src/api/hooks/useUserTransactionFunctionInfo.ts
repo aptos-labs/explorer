@@ -37,8 +37,7 @@ export function useGetUserTransactionFunctionInfo(
 
   return {
     isLoading: loading,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error: error as any,
+    error: error ? (error as CombinedGraphQLErrors) : undefined,
     data: data?.user_transactions,
   };
 }

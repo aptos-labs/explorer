@@ -59,30 +59,49 @@ const useSubmitTransaction = () => {
         message: "Unknown Error",
       };
 
-      let response;
+      let response: {hash?: string; [key: string]: unknown} | undefined;
       try {
-        response = await signAndSubmitTransaction(transaction);
+        response = (await signAndSubmitTransaction(transaction)) as {
+          hash?: string;
+          [key: string]: unknown;
+        };
 
         // transaction submit succeed
-        if ("hash" in response) {
-          await aptosClient.waitForTransaction(response["hash"], {
+        if (
+          response &&
+          "hash" in response &&
+          typeof response.hash === "string"
+        ) {
+          await aptosClient.waitForTransaction(response.hash, {
             checkSuccess: true,
           });
           return {
             transactionSubmitted: true,
-            transactionHash: response["hash"],
+            transactionHash: response.hash,
             success: true,
           };
         }
         // transaction failed
         // Note this is for backwards compatibility
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return {...responseOnError, message: (response as any).message};
+        // Response can be an object with a message property or other error shape
+        const errorMessage =
+          response &&
+          typeof response === "object" &&
+          "message" in response &&
+          typeof response.message === "string"
+            ? response.message
+            : "Transaction submission failed";
+        return {...responseOnError, message: errorMessage};
       } catch (error) {
         if (error instanceof FailedTransactionError) {
           return {
             transactionSubmitted: true,
-            transactionHash: response ? response.hash : "",
+            transactionHash:
+              response &&
+              "hash" in response &&
+              typeof response.hash === "string"
+                ? response.hash
+                : "",
             message: error.message,
             success: false,
           };

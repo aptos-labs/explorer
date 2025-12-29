@@ -9,6 +9,7 @@ import {
   useWallet,
   aptosStandardSupportedWalletList,
   AdapterWallet,
+  AdapterNotDetectedWallet,
 } from "@aptos-labs/wallet-adapter-react";
 import {
   Box,
@@ -55,8 +56,10 @@ export default function WalletsModal({
   const installedWalletNames = wallets.map((wallet) => wallet.name);
   for (const wallet of aptosStandardSupportedWalletList) {
     if (!installedWalletNames.includes(wallet.name)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      wallets.push(wallet as any); // TODO: Make this typed properly
+      // aptosStandardSupportedWalletList contains AdapterNotDetectedWallet items
+      // which are compatible with AdapterWallet for our use case
+      // Use unknown first for type conversion
+      wallets.push(wallet as unknown as AdapterWallet);
     }
   }
 
@@ -264,8 +267,7 @@ export default function WalletsModal({
 }
 
 interface WalletRowProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  wallet: any;
+  wallet: AdapterWallet | AdapterNotDetectedWallet;
   onConnect?: () => void;
 }
 

@@ -5,6 +5,7 @@ import {getLabels} from "../utils";
 import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
 import {CardOutline} from "../../../components/Card";
+import {TooltipItem} from "chart.js";
 
 export function getDataset(data: DailyBlockGapData[], days: number): number[] {
   return data
@@ -33,9 +34,12 @@ export default function DailyBlockGapChart({
       <LineChart
         labels={labels}
         dataset={dataset}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        tooltipsLabelFunc={(context: any) => {
-          const milliseconds = Math.round(context.parsed.y);
+        tooltipsLabelFunc={(context: TooltipItem<"line">) => {
+          const yValue = context.parsed.y;
+          if (yValue === null || yValue === undefined) {
+            return "N/A";
+          }
+          const milliseconds = Math.round(yValue);
           return `${milliseconds} ms`;
         }}
       />

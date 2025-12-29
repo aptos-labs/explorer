@@ -9,6 +9,7 @@ import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import {useParams} from "react-router-dom";
 import {useNavigate} from "../../routing";
+import {Current_Token_Datas_V2} from "aptos";
 
 const TAB_VALUES: TabValue[] = ["overview", "activities"];
 
@@ -43,8 +44,7 @@ function getTabIcon(value: TabValue): React.JSX.Element {
 
 type TabPanelProps = {
   value: TabValue;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any; // TODO: add graphql data typing
+  data: Current_Token_Datas_V2;
 };
 
 function TabPanel({value, data}: TabPanelProps): React.JSX.Element {
@@ -53,8 +53,7 @@ function TabPanel({value, data}: TabPanelProps): React.JSX.Element {
 }
 
 type AccountTabsProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any; // TODO: add graphql data typing
+  data: Current_Token_Datas_V2;
   tabValues?: TabValue[];
 };
 

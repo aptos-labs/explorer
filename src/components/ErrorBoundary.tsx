@@ -40,8 +40,8 @@ export class ErrorBoundary extends Component<Props, State> {
 
     // Report to Sentry if available
     if (typeof window !== "undefined" && "Sentry" in window) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const Sentry = (window as any).Sentry;
+      const Sentry = (window as {Sentry?: typeof import("@sentry/react")})
+        .Sentry;
       if (Sentry && typeof Sentry.captureException === "function") {
         Sentry.captureException(error, {
           contexts: {

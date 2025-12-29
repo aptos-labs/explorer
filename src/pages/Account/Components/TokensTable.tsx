@@ -132,8 +132,7 @@ const DEFAULT_COLUMNS: Column[] = [
 ];
 
 type TokenRowProps = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  token: any; // TODO: add graphql data typing
+  token: TokenOwnership;
   columns: Column[];
 };
 
