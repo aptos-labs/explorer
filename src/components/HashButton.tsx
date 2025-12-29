@@ -194,7 +194,9 @@ function HashButtonInner({
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
 
-  const imgIsEmoji = img && img.match(/^\p{Emoji}+$/u);
+  // Check if img is an emoji (including variation selectors like \uFE0F)
+  // The regex matches one or more emoji characters, with optional variation selectors
+  const imgIsEmoji = img && /^\p{Emoji}[\p{Emoji}\uFE0F]*$/u.test(img);
 
   const truncateHash =
     size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
@@ -361,7 +363,9 @@ function AssetHashButtonInner({
     }, 2000);
   };
 
-  const imgIsEmoji = img && img.match(/^\p{Emoji}+$/u);
+  // Check if img is an emoji (including variation selectors like \uFE0F)
+  // The regex matches one or more emoji characters, with optional variation selectors
+  const imgIsEmoji = img && /^\p{Emoji}[\p{Emoji}\uFE0F]*$/u.test(img);
   let icon = null;
   if (img && imgIsEmoji) {
     icon = (
