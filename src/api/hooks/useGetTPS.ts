@@ -1,4 +1,8 @@
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+  useNetworkName,
+} from "../../global-config/GlobalConfig";
 import {useEffect, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {getLedgerInfo} from "..";
@@ -6,11 +10,12 @@ import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
 import {AnalyticsData, ANALYTICS_DATA_URL} from "./useGetAnalyticsData";
 
 export function useGetTPS() {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
 
   const {data: ledgerData} = useQuery({
-    queryKey: ["ledgerInfo", state.network_value],
-    queryFn: () => getLedgerInfo(state.aptos_client),
+    queryKey: ["ledgerInfo", networkValue],
+    queryFn: () => getLedgerInfo(aptosClient),
     refetchInterval: 10000,
     // Real-time data - no stale time, but keep in cache briefly
     staleTime: 0,
@@ -25,11 +30,11 @@ export function useGetTPS() {
 }
 
 export function useGetPeakTPS() {
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   const [peakTps, setPeakTps] = useState<number>();
 
   useEffect(() => {
-    if (state.network_name === "mainnet") {
+    if (networkName === "mainnet") {
       const fetchData = async () => {
         const response = await fetch(ANALYTICS_DATA_URL);
         const data: AnalyticsData = await response.json();
@@ -43,7 +48,7 @@ export function useGetPeakTPS() {
         console.error("ERROR!", error, typeof error);
       });
     }
-  }, [state.network_name]);
+  }, [networkName]);
 
-  return state.network_name === "mainnet" ? {peakTps} : {peakTps: undefined};
+  return networkName === "mainnet" ? {peakTps} : {peakTps: undefined};
 }

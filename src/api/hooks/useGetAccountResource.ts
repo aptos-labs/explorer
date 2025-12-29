@@ -2,7 +2,10 @@ import {Types} from "aptos";
 import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {getAccountResource} from "..";
 import {ResponseError} from "../client";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+} from "../../global-config/GlobalConfig";
 import {orderBy} from "lodash";
 
 export type ModuleMetadata = {
@@ -34,17 +37,18 @@ export function useGetAccountResource(
   address: string | undefined,
   resource: string,
 ): UseQueryResult<Types.MoveResource, ResponseError> {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
 
   return useQuery<Types.MoveResource, ResponseError>({
-    queryKey: ["accountResource", {address, resource}, state.network_value],
+    queryKey: ["accountResource", {address, resource}, networkValue],
     queryFn: async () => {
       if (!address) {
         throw new Error("Address is undefined");
       }
       return await getAccountResource(
         {address, resourceType: resource},
-        state.aptos_client,
+        aptosClient,
       );
     },
     refetchOnWindowFocus: false,
