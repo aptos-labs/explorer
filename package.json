@@ -22,7 +22,7 @@
     "@mui/material": "^7.3.6",
     "@mui/system": "^7.3.6",
     "@mui/x-date-pickers": "^8.23.0",
-    "@sentry/react": "^9.47.1",
+    "@sentry/react": "^10.32.1",
     "@tanstack/react-query": "^5.90.14",
     "@tanstack/react-virtual": "^3.13.13",
     "aptos": "^1.22.1",
