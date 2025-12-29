@@ -105,7 +105,7 @@ type BlockRowProps = {
   columns: Column[];
 };
 
-function BlockRow({block, columns}: BlockRowProps) {
+const BlockRow = React.memo(function BlockRow({block, columns}: BlockRowProps) {
   const augmentTo = useAugmentToWithGlobalSearchParams();
 
   return (
@@ -116,7 +116,7 @@ function BlockRow({block, columns}: BlockRowProps) {
       })}
     </GeneralTableRow>
   );
-}
+});
 
 type BlockHeaderCellProps = {
   column: Column;

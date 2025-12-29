@@ -8,28 +8,49 @@ export enum ResponseErrorType {
 export type ResponseError = {type: ResponseErrorType; message?: string};
 
 export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
-  return await promise.catch((error) => {
-    console.error("ERROR!", error, typeof error);
-    if (typeof error == "object" && "status" in error) {
-      // This is a request!
-      error = error as Response;
-      if (error.status === 404) {
+  return await promise.catch((error: unknown) => {
+    // Log error for debugging
+    if (import.meta.env.DEV) {
+      console.error("API Error:", error);
+    }
+
+    // Handle Response objects (fetch API errors)
+    if (typeof error === "object" && error !== null && "status" in error) {
+      const response = error as Response;
+      if (response.status === 404) {
         throw {type: ResponseErrorType.NOT_FOUND};
       }
+      if (response.status === 429) {
+        throw {type: ResponseErrorType.TOO_MANY_REQUESTS};
+      }
+      if (response.status === 400) {
+        throw {
+          type: ResponseErrorType.INVALID_INPUT,
+          message: `Invalid request: ${response.statusText}`,
+        };
+      }
     }
-    if (
-      error.message
-        .toLowerCase()
-        .includes(ResponseErrorType.TOO_MANY_REQUESTS.toLowerCase())
-    ) {
+
+    // Handle Error objects
+    if (error instanceof Error) {
+      const errorMessage = error.message.toLowerCase();
+      if (
+        errorMessage.includes(ResponseErrorType.TOO_MANY_REQUESTS.toLowerCase())
+      ) {
+        throw {
+          type: ResponseErrorType.TOO_MANY_REQUESTS,
+        };
+      }
       throw {
-        type: ResponseErrorType.TOO_MANY_REQUESTS,
+        type: ResponseErrorType.UNHANDLED,
+        message: error.message,
       };
     }
 
+    // Handle unknown error types
     throw {
       type: ResponseErrorType.UNHANDLED,
-      message: error.toString(),
+      message: error instanceof Error ? error.message : String(error),
     };
   });
 }

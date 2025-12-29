@@ -27,10 +27,11 @@ export type TransactionResponseOnError = {
 const useSubmitTransaction = () => {
   const [transactionResponse, setTransactionResponse] =
     useState<TransactionResponse | null>(null);
-  const [transactionInProcess, setTransactionInProcess] =
-    useState<boolean>(false);
   const [state] = useGlobalState();
   const {signAndSubmitTransaction, wallet, network} = useWallet();
+
+  // Calculate transactionInProcess during render instead of using state
+  const transactionInProcess = transactionResponse === null;
 
   async function submitTransaction(transaction: InputTransactionData) {
     if (
@@ -46,7 +47,8 @@ const useSubmitTransaction = () => {
       return;
     }
 
-    setTransactionInProcess(true);
+    // Set to null to indicate transaction is in process
+    setTransactionResponse(null);
 
     const signAndSubmitTransactionCall = async (
       transaction: InputTransactionData,

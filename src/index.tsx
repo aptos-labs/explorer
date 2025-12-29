@@ -3,6 +3,7 @@ import {createRoot} from "react-dom/client";
 import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
+import {ErrorBoundary} from "./components/ErrorBoundary";
 
 import * as Sentry from "@sentry/react";
 
@@ -48,16 +49,33 @@ declare global {
   }
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Default staleTime: 30 seconds for dynamic data
+      staleTime: 30 * 1000,
+      // Default gcTime (formerly cacheTime): 5 minutes
+      gcTime: 5 * 60 * 1000,
+      // Refetch on window focus for real-time data
+      refetchOnWindowFocus: true,
+      // Retry failed requests once
+      retry: 1,
+      // Don't refetch on mount if data is fresh
+      refetchOnMount: true,
+    },
+  },
+});
 
 const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ExplorerRoutes />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <ExplorerRoutes />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ErrorBoundary>
   </React.StrictMode>,
 );

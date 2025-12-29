@@ -379,13 +379,19 @@ function AssetHashButtonInner({
   } else if (img) {
     icon = (
       <Box component="span" sx={{mr: 1, display: "flex", alignItems: "center"}}>
-        <img src={img} height={20} width={20} />
+        <img src={img} height={20} width={20} loading="lazy" alt="" />
       </Box>
     );
   } else if (legitCoin?.logoUrl) {
     icon = (
       <Box component="span" sx={{mr: 1, display: "flex", alignItems: "center"}}>
-        <img src={legitCoin.logoUrl} height={20} width={20} />
+        <img
+          src={legitCoin.logoUrl}
+          height={20}
+          width={20}
+          loading="lazy"
+          alt=""
+        />
       </Box>
     );
   }
