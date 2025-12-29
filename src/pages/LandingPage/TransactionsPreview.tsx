@@ -9,15 +9,46 @@ import {
 } from "../../global-config/GlobalConfig";
 import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
-import {Stack, Typography} from "@mui/material";
+import {Stack, Typography, CircularProgress} from "@mui/material";
 import TransactionsTable from "../Transactions/TransactionsTable";
 import {useAugmentToWithGlobalSearchParams} from "../../routing";
+import {ResponseError, ResponseErrorType} from "../../api/client";
+import TransactionsError from "../Transactions/Error";
 
 const PREVIEW_LIMIT = 10;
 
-function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
+function TransactionContent({
+  data,
+  isLoading,
+  error,
+}: UseQueryResult<Array<Types.Transaction>, ResponseError>) {
+  if (isLoading) {
+    return (
+      <Box sx={{display: "flex", justifyContent: "center", py: 4}}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    // Convert Error to ResponseError if needed
+    const responseError: ResponseError =
+      typeof error === "object" &&
+      error !== null &&
+      "type" in error &&
+      typeof (error as {type: unknown}).type === "string"
+        ? (error as ResponseError)
+        : {
+            type: ResponseErrorType.UNHANDLED,
+            message:
+              typeof error === "object" && error !== null && "message" in error
+                ? String((error as {message: unknown}).message)
+                : String(error),
+          };
+    return <TransactionsError error={responseError} />;
+  }
+
   if (!data) {
-    // TODO: error handling!
     return null;
   }
 
@@ -28,7 +59,7 @@ export default function TransactionsPreview() {
   const networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
   const limit = PREVIEW_LIMIT;
-  const result = useQuery({
+  const result = useQuery<Array<Types.Transaction>, ResponseError>({
     queryKey: ["transactionsPreview", {limit}, networkValue],
     queryFn: () => getTransactions({limit}, aptosClient),
   });

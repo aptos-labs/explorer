@@ -40,16 +40,19 @@ export default function FAPage() {
     };
   }
 
-  // TODO: add loading state
-  // TODO: add errors?
-
   const {data: allCoinData} = useGetCoinList();
   const {isLoading: isLoadingMetadata, data: metadata} =
     useGetFaMetadata(address);
   const {isLoading: isLoadingSupply, data: supply} = useGetFASupply(address);
-  const {isLoading: isLoadingPairedCoin, data: pairedCoin} =
-    useGetFaPairedCoin(address);
+  const {
+    isLoading: isLoadingPairedCoin,
+    data: pairedCoin,
+    error: pairedCoinError,
+  } = useGetFaPairedCoin(address);
   const isLoading = isLoadingMetadata || isLoadingSupply || isLoadingPairedCoin;
+
+  // Check for errors (only pairedCoin hook returns error)
+  const apiError = pairedCoinError;
 
   const coinData = findCoinData(allCoinData?.data, address);
   // TODO: Type and hand to tabs
@@ -80,6 +83,11 @@ export default function FAPage() {
           <>
             <FATabs address={address} data={data} tabValues={tabValues} />
             <Error address={address} error={error} />
+          </>
+        ) : apiError ? (
+          <>
+            <FATabs address={address} data={data} tabValues={tabValues} />
+            <Error address={address} error={apiError as ResponseError} />
           </>
         ) : (
           <FATabs address={address} data={data} tabValues={tabValues} />

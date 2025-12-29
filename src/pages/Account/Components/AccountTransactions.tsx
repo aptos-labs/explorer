@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Pagination, Box} from "@mui/material";
+import {Pagination, Box, CircularProgress} from "@mui/material";
 import TransactionsTable from "../../Transactions/TransactionsTable";
 import Error from "../Error";
 import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
@@ -60,10 +60,17 @@ function TransactionsPaginationTable({
     setCurrentPageNum(newPageNum);
   };
 
-  // TODO: add loading spinner
+  if (isLoading) {
+    return (
+      <Box sx={{display: "flex", justifyContent: "center", py: 4}}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <>
-      {(!data || data.length === 0) && !isLoading ? (
+      {!data || data.length === 0 ? (
         <EmptyTabContent />
       ) : (
         <TransactionsTable transactions={data ?? []} />

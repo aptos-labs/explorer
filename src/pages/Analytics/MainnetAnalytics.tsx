@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Grid} from "@mui/material";
+import {Grid, Alert} from "@mui/material";
 import {useGetAnalyticsData} from "../../api/hooks/useGetAnalyticsData";
 import ChartRangeDaysSelect, {
   ChartRangeDays,
@@ -24,8 +24,16 @@ export default function MainnetAnalytics() {
   const data = useGetAnalyticsData();
 
   if (!data) {
-    // TODO: apply better error message
-    return null;
+    return (
+      <Grid container spacing={3} marginTop={3}>
+        <Grid size={{xs: 12}}>
+          <Alert severity="warning">
+            Analytics data is not available at this time. Please try again
+            later.
+          </Alert>
+        </Grid>
+      </Grid>
+    );
   }
 
   return (
