@@ -1,6 +1,5 @@
 import React from "react";
 import {Box, useTheme} from "@mui/material";
-import {grey} from "../../../themes/colors/aptosColorPalette";
 import {Link} from "../../../routing";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
@@ -45,13 +44,14 @@ export default function SidebarItem({
           bgcolor: !selected
             ? "transparent"
             : theme.palette.mode === "dark"
-              ? grey[500]
-              : grey[200],
-          ...(theme.palette.mode === "dark" && !selected && {color: grey[400]}),
+              ? theme.palette.neutralShade.lighter
+              : theme.palette.neutralShade.darker,
+          ...(theme.palette.mode === "dark" &&
+            !selected && {color: theme.palette.text.secondary}),
           ":hover": {
             cursor: "pointer",
             ...(theme.palette.mode === "dark" &&
-              !selected && {color: grey[200]}),
+              !selected && {color: theme.palette.text.primary}),
           },
         }}
       >

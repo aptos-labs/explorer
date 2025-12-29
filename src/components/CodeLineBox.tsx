@@ -1,9 +1,6 @@
 import React from "react";
 import {Box, SxProps, Theme, useTheme} from "@mui/material";
-import {
-  codeBlockColor,
-  codeBlockColorClickableOnHover,
-} from "../themes/colors/aptosColorPalette";
+import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 
 export function CodeLineBox({
   children,
@@ -15,6 +12,10 @@ export function CodeLineBox({
   clickable?: boolean;
 }) {
   const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
+  const codeBlockBg = semanticColors.codeBlock.background;
+  const codeBlockBgHover = semanticColors.codeBlock.backgroundHover;
+
   return (
     <Box
       sx={[
@@ -30,9 +31,9 @@ export function CodeLineBox({
           fontSize: 13,
           ...(clickable
             ? {
-                backgroundColor: codeBlockColor,
+                backgroundColor: codeBlockBg,
                 "&:hover": {
-                  backgroundColor: codeBlockColorClickableOnHover,
+                  backgroundColor: codeBlockBgHover,
                 },
               }
             : {
@@ -41,7 +42,7 @@ export function CodeLineBox({
         },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
-      borderColor={codeBlockColor}
+      borderColor={codeBlockBg}
       borderRadius={50}
     >
       {children}

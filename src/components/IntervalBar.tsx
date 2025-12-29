@@ -1,6 +1,5 @@
 import {Stack, Typography, useTheme, alpha} from "@mui/material";
 import React, {useState} from "react";
-import {grey} from "../themes/colors/aptosColorPalette";
 import Countdown from "react-countdown";
 import StyledTooltip from "./StyledTooltip";
 
@@ -71,7 +70,7 @@ export default function IntervalBar({
       >
         {percentage >= 50 && (
           <Typography
-            color={grey[50]}
+            color={theme.palette.common.white}
             sx={{fontSize: 10, fontWeight: 600}}
             marginX={0.5}
           >
@@ -94,7 +93,7 @@ export default function IntervalBar({
       >
         {percentage < 50 && (
           <Typography
-            color={theme.palette.mode === "dark" ? grey[50] : grey[500]}
+            color={theme.palette.text.secondary}
             sx={{fontSize: 10, fontWeight: 600}}
             marginX={0.5}
           >
