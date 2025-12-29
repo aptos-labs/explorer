@@ -77,7 +77,7 @@ export default function HeaderSearch() {
     if (mode !== "loading" && inputValue.trim().length > 0) {
       timer = setTimeout(() => {
         fetchData(inputValue.trim(), abortController.signal);
-      }, 300); // Reduced from 500ms to 300ms
+      }, 500); // Debounce set to 500ms to balance responsiveness and API efficiency
     }
 
     return () => {
@@ -124,7 +124,7 @@ export default function HeaderSearch() {
       // Normalize search text
       let normalizedSearchText = searchText;
       if (normalizedSearchText.endsWith(".petra")) {
-        normalizedSearchText = normalizedSearchText.concat(".apt");
+        normalizedSearchText = normalizedSearchText + ".apt";
       }
 
       // Detect input type for optimized query strategy
@@ -296,11 +296,21 @@ export default function HeaderSearch() {
     });
 
     // Cache results
-    const cacheTTL = results.some(
+    const hasTransactionsOrBlocks = results.some(
       (r) => r.label.startsWith("Transaction") || r.label.startsWith("Block"),
-    )
-      ? 60 * 60 * 1000 // 1 hour for transactions/blocks
-      : 5 * 60 * 1000; // 5 minutes for accounts/addresses
+    );
+    // We cache pure transaction/block result sets longer than everything else.
+    // Mixed result sets (e.g. transactions + accounts) and non-transaction results
+    // use the shorter TTL to avoid stale, frequently-changing data.
+    const hasOnlyTransactionsOrBlocks =
+      hasTransactionsOrBlocks &&
+      results.every(
+        (r) => r.label.startsWith("Transaction") || r.label.startsWith("Block"),
+      );
+
+    const cacheTTL = hasOnlyTransactionsOrBlocks
+      ? 60 * 60 * 1000 // 1 hour for pure transaction/block results
+      : 5 * 60 * 1000; // 5 minutes for accounts/addresses/coins or mixed results
     setLocalStorageWithExpiry(cacheKey, results, cacheTTL);
 
     // Performance tracking
@@ -396,7 +406,12 @@ export default function HeaderSearch() {
       renderOption={(props, option) => {
         if (option.isGroupHeader) {
           return (
-            <li {...props} key={props.id} style={{pointerEvents: "none"}}>
+            <li
+              {...props}
+              key={props.id}
+              style={{pointerEvents: "none"}}
+              tabIndex={-1}
+            >
               <Typography
                 variant="caption"
                 sx={{

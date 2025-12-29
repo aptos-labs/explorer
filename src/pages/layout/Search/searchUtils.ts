@@ -70,7 +70,7 @@ export function detectInputType(searchText: string): {
 } {
   let normalizedText = searchText;
   if (normalizedText.endsWith(".petra")) {
-    normalizedText = normalizedText.concat(".apt");
+    normalizedText = normalizedText + ".apt";
   }
 
   return {
@@ -119,7 +119,7 @@ export function prefixMatchLongerThan3(
     (searchLowerCase.length >= 3 &&
       (knownLower.startsWith(searchLowerCase) ||
         knownLower.includes(searchLowerCase))) ||
-    (searchLowerCase.length < 3 && knownLower.toLowerCase() === searchLowerCase)
+    (searchLowerCase.length < 3 && knownLower === searchLowerCase)
   );
 }
 
