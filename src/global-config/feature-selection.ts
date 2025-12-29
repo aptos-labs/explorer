@@ -5,7 +5,7 @@ import {
   features,
   isValidFeatureName,
 } from "../constants";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useState} from "react";
 
 export function getSelectedFeatureFromLocalStorage(): FeatureName {
   let selected_feature = localStorage.getItem("selected_feature");
@@ -23,11 +23,16 @@ export function getSelectedFeatureFromLocalStorage(): FeatureName {
 // don't use this hook directly in components, rather use: const [useGlobalState, {selectFeature}] = useGlobalState();
 export function useFeatureSelector() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedFeature, setSelectedFeature] = useState(
-    getSelectedFeatureFromLocalStorage,
-  );
-
-  const featureQueryParam = searchParams.get("feature");
+  const [selectedFeature, setSelectedFeature] = useState(() => {
+    const featureQueryParam = searchParams.get("feature");
+    if (
+      featureQueryParam &&
+      isValidFeatureName(featureQueryParam as FeatureName)
+    ) {
+      return featureQueryParam as FeatureName;
+    }
+    return getSelectedFeatureFromLocalStorage();
+  });
 
   const selectFeature = useCallback(
     (feature_name: FeatureName) => {
@@ -52,12 +57,6 @@ export function useFeatureSelector() {
     },
     [setSearchParams],
   );
-
-  useEffect(() => {
-    if (featureQueryParam) {
-      selectFeature(featureQueryParam as FeatureName);
-    }
-  }, [featureQueryParam, selectFeature]);
 
   return [selectedFeature, selectFeature] as const;
 }

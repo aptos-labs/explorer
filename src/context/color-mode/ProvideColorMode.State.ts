@@ -1,4 +1,4 @@
-import {useMemo, useState, useEffect, useLayoutEffect} from "react";
+import {useMemo, useState, useEffect} from "react";
 import {createTheme, responsiveFontSizes} from "@mui/material";
 import getDesignTokens from "../../themes/theme";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -16,16 +16,11 @@ const useProvideColorMode = () => {
     ? "dark"
     : "light";
 
-  const [mode, setMode] = useState<Mode>("light");
-
-  useLayoutEffect(() => {
+  // Initialize mode directly instead of using useLayoutEffect
+  const [mode, setMode] = useState<Mode>(() => {
     const savedMode = localStorage.getItem("color_scheme") as Mode | null;
-    if (savedMode !== null) {
-      setMode(savedMode);
-    } else {
-      setMode(prefersDarkMode);
-    }
-  }, [prefersDarkMode]);
+    return savedMode !== null ? savedMode : prefersDarkMode;
+  });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");

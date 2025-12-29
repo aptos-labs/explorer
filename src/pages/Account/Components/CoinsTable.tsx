@@ -1,5 +1,4 @@
 import * as React from "react";
-import {useEffect} from "react";
 import {
   Button,
   Stack,
@@ -134,11 +133,12 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
     CoinVerificationFilterType.NONE,
   );
 
-  useEffect(() => {
+  // Set default filter based on network
+  React.useEffect(() => {
     if (state.network_name === Network.MAINNET) {
       setVerificationFilter(CoinVerificationFilterType.VERIFIED);
     }
-  }, [state, state.network_value]);
+  }, [state.network_name]);
 
   function toIndex(coin: CoinDescriptionPlusAmount): number {
     return coin.panoraOrderIndex

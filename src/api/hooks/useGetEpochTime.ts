@@ -1,5 +1,3 @@
-import {useGlobalState} from "../../global-config/GlobalConfig";
-import {useEffect, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
 
 interface ConfigurationData {
@@ -12,11 +10,6 @@ interface BlockResourceData {
 }
 
 export function useGetEpochTime() {
-  const [state] = useGlobalState();
-  const [curEpoch, setCurEpoch] = useState<string>();
-  const [lastEpochTime, setLastEpochTime] = useState<string>();
-  const [epochInterval, setEpochInterval] = useState<string>();
-
   const {data: configuration} = useGetAccountResource(
     "0x1",
     "0x1::reconfiguration::Configuration",
@@ -27,18 +20,21 @@ export function useGetEpochTime() {
     "0x1::block::BlockResource",
   );
 
-  useEffect(() => {
-    if (configuration?.data !== undefined) {
-      const data = configuration.data as ConfigurationData;
-      setCurEpoch(data.epoch);
-      setLastEpochTime(data.last_reconfiguration_time);
-    }
+  // Calculate values during render instead of using useEffect
+  let curEpoch: string | undefined;
+  let lastEpochTime: string | undefined;
+  let epochInterval: string | undefined;
 
-    if (blockResource?.data !== undefined) {
-      const data = blockResource.data as BlockResourceData;
-      setEpochInterval(data.epoch_interval);
-    }
-  }, [configuration?.data, blockResource?.data, state]);
+  if (configuration?.data !== undefined) {
+    const data = configuration.data as ConfigurationData;
+    curEpoch = data.epoch;
+    lastEpochTime = data.last_reconfiguration_time;
+  }
+
+  if (blockResource?.data !== undefined) {
+    const data = blockResource.data as BlockResourceData;
+    epochInterval = data.epoch_interval;
+  }
 
   return {curEpoch, lastEpochTime, epochInterval};
 }

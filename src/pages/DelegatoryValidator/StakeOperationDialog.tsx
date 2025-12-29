@@ -108,12 +108,25 @@ function StakeOperationDialogContent({
   const {amount, setAmount, renderAmountTextField, validateAmountInput} =
     useAmountInput(stakeOperation);
 
-  const [transactionHash, setTransactionHash] = useState<string>("");
-  const [enteredAmount, setEnteredAmount] = useState<string>("");
   const [
     isTransactionSucceededDialogOpen,
     setIsTransactionSucceededDialogOpen,
   ] = useState<boolean>(false);
+
+  // Calculate values during render instead of using useEffect
+  const transactionHash = transactionResponse?.transactionSubmitted
+    ? transactionResponse?.transactionHash
+    : "";
+  const enteredAmount = transactionResponse?.transactionSubmitted ? amount : "";
+  const [currentTime, setCurrentTime] = useState<number>(() => Date.now());
+
+  // Update current time every second to avoid calling Date.now() during render
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const minMax = getStakeOperationAPTRequirement(
     stakes,
@@ -175,14 +188,12 @@ function StakeOperationDialogContent({
 
   useEffect(() => {
     if (transactionResponse?.transactionSubmitted) {
-      setTransactionHash(transactionResponse?.transactionHash);
-      setEnteredAmount(amount);
       handleDialogClose();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsTransactionSucceededDialogOpen(true);
     }
   }, [
     transactionResponse,
-    amount,
     handleDialogClose,
     setIsTransactionSucceededDialogOpen,
   ]);
@@ -313,7 +324,7 @@ function StakeOperationDialogContent({
                 />
               }
             />
-            {Number(lockedUntilSecs) > Date.now() / 1000 && (
+            {Number(lockedUntilSecs) > currentTime / 1000 && (
               <ContentRowSpaceBetween
                 title={"Next Unlock In"}
                 value={

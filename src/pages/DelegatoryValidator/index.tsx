@@ -19,7 +19,7 @@ import {
   useGetDelegationNodeInfo,
   useGetDelegationNodeCommissionChange,
 } from "../../api/hooks/delegations";
-import {useEffect, useMemo, useState} from "react";
+import {useMemo} from "react";
 import Error from "../Account/Error";
 import {tryStandardizeAddress} from "../../utils";
 import {Banner} from "../../components/Banner";
@@ -44,11 +44,38 @@ export default function ValidatorPage() {
   const {delegatedStakingPools, loading} =
     useGetDelegatedStakingPoolList() ?? [];
 
-  const [delegationValidator, setDelegationValidator] =
-    useState<ValidatorData>();
   const validator = validators.find(
     (validator) => validator.owner_address === addressHex,
   );
+
+  // Calculate delegationValidator during render instead of using useEffect
+  let delegationValidator: ValidatorData | undefined;
+  if (!loading) {
+    // If the validator is not in the list of validators, it means that the validator was never active.
+    // In this case, we need to get the validator data from the delegated staking pools list and manually
+    // populate required fields.
+    const delegatedStakingPoolsNotInValidators: ValidatorData[] =
+      delegatedStakingPools
+        .filter((pool) => {
+          return addressHex === pool.staking_pool_address;
+        })
+        .map((pool) => ({
+          owner_address: pool.staking_pool_address,
+          operator_address: pool.current_staking_pool.operator_address,
+          voting_power: validator?.voting_power ?? "0",
+          governance_voting_record: validator?.governance_voting_record ?? "",
+          last_epoch: validator?.last_epoch ?? 0,
+          last_epoch_performance: validator?.last_epoch_performance ?? "",
+          liveness: validator?.liveness ?? 0,
+          rewards_growth: validator?.rewards_growth ?? 0,
+          apt_rewards_distributed: validator?.apt_rewards_distributed ?? 0,
+        }));
+
+    delegationValidator =
+      delegatedStakingPoolsNotInValidators.length > 0
+        ? delegatedStakingPoolsNotInValidators[0]
+        : undefined;
+  }
 
   const {commission} = useGetDelegationNodeInfo({
     validatorAddress: delegationValidator?.owner_address ?? "",
@@ -56,36 +83,6 @@ export default function ValidatorPage() {
   const {nextCommission} = useGetDelegationNodeCommissionChange({
     validatorAddress: delegationValidator?.owner_address ?? "",
   });
-
-  useEffect(() => {
-    if (!loading) {
-      // If the validator is not in the list of validators, it means that the validator was never active.
-      // In this case, we need to get the validator data from the delegated staking pools list and manually
-      // populate required fields.
-      const delegatedStakingPoolsNotInValidators: ValidatorData[] =
-        delegatedStakingPools
-          .filter((pool) => {
-            return addressHex === pool.staking_pool_address;
-          })
-          .map((pool) => ({
-            owner_address: pool.staking_pool_address,
-            operator_address: pool.current_staking_pool.operator_address,
-            voting_power: validator?.voting_power ?? "0",
-            governance_voting_record: validator?.governance_voting_record ?? "",
-            last_epoch: validator?.last_epoch ?? 0,
-            last_epoch_performance: validator?.last_epoch_performance ?? "",
-            liveness: validator?.liveness ?? 0,
-            rewards_growth: validator?.rewards_growth ?? 0,
-            apt_rewards_distributed: validator?.apt_rewards_distributed ?? 0,
-          }));
-
-      setDelegationValidator(
-        delegatedStakingPoolsNotInValidators.length > 0
-          ? delegatedStakingPoolsNotInValidators[0]
-          : undefined,
-      );
-    }
-  }, [delegatedStakingPools, loading, validators, validator, addressHex]);
 
   if (error) {
     return <Error error={error} />;

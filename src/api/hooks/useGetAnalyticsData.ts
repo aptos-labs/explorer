@@ -104,10 +104,8 @@ export function useGetAnalyticsData() {
       fetchData().catch((error) => {
         console.error("ERROR!", error, typeof error);
       });
-    } else {
-      setData(undefined);
     }
-  }, [state]);
+  }, [state.network_name]);
 
-  return data;
+  return state.network_name === defaultNetworkName ? data : undefined;
 }

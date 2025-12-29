@@ -1,5 +1,4 @@
 import moment from "moment";
-import {useEffect, useState} from "react";
 import {useGetBlockByHeight} from "./useGetBlock";
 import {parseTimestamp} from "../../pages/utils";
 import {Block} from "@aptos-labs/ts-sdk";
@@ -21,8 +20,6 @@ function calculateTps(startBlock: Block, endBlock: Block): number {
 export function useGetTPSByBlockHeight(currentBlockHeight: number | undefined) {
   const blockHeight = currentBlockHeight ?? TPS_FREQUENCY;
 
-  const [tps, setTps] = useState<number | null>(null);
-
   const {data: startBlock} = useGetBlockByHeight({
     height: blockHeight - TPS_FREQUENCY,
     withTransactions: false,
@@ -32,11 +29,11 @@ export function useGetTPSByBlockHeight(currentBlockHeight: number | undefined) {
     withTransactions: false,
   });
 
-  useEffect(() => {
-    if (startBlock !== undefined && endBlock !== undefined) {
-      setTps(calculateTps(startBlock, endBlock));
-    }
-  }, [startBlock, endBlock]);
+  // Calculate tps during render instead of using useEffect
+  const tps =
+    startBlock !== undefined && endBlock !== undefined
+      ? calculateTps(startBlock, endBlock)
+      : null;
 
   return {tps};
 }

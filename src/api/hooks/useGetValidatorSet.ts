@@ -1,5 +1,3 @@
-import {useGlobalState} from "../../global-config/GlobalConfig";
-import {useEffect, useState} from "react";
 import {useGetAccountResource} from "./useGetAccountResource";
 import {tryStandardizeAddress} from "../../utils";
 
@@ -20,37 +18,31 @@ export interface Validator {
 }
 
 export function useGetValidatorSet() {
-  const [state] = useGlobalState();
-  const [totalVotingPower, setTotalVotingPower] = useState<string | null>(null);
-  const [numberOfActiveValidators, setNumberOfActiveValidators] = useState<
-    number | null
-  >(null);
-  const [activeValidators, setActiveValidators] = useState<Validator[]>([]);
-
   const {data: validatorSet} = useGetAccountResource(
     "0x1",
     "0x1::stake::ValidatorSet",
   );
 
-  useEffect(() => {
-    if (validatorSet?.data !== undefined) {
-      const data = validatorSet.data as ValidatorSetData;
-      setTotalVotingPower(data.total_voting_power);
-      setNumberOfActiveValidators(data.active_validators.length);
-      setActiveValidators(
-        data.active_validators.map((validator) => {
-          const processedAddr = tryStandardizeAddress(validator.addr);
-          if (!processedAddr) {
-            return validator;
-          }
-          return {
-            ...validator,
-            addr: processedAddr,
-          };
-        }),
-      );
-    }
-  }, [validatorSet?.data, state]);
+  // Calculate values during render instead of using useEffect
+  let totalVotingPower: string | null = null;
+  let numberOfActiveValidators: number | null = null;
+  let activeValidators: Validator[] = [];
+
+  if (validatorSet?.data !== undefined) {
+    const data = validatorSet.data as ValidatorSetData;
+    totalVotingPower = data.total_voting_power;
+    numberOfActiveValidators = data.active_validators.length;
+    activeValidators = data.active_validators.map((validator) => {
+      const processedAddr = tryStandardizeAddress(validator.addr);
+      if (!processedAddr) {
+        return validator;
+      }
+      return {
+        ...validator,
+        addr: processedAddr,
+      };
+    });
+  }
 
   return {totalVotingPower, numberOfActiveValidators, activeValidators};
 }

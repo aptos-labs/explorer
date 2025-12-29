@@ -64,7 +64,7 @@ export default function HeaderSearch() {
   const coinList = useGetCoinList();
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: number;
 
     if (mode !== "loading" && inputValue.trim().length > 0) {
       timer = setTimeout(() => {

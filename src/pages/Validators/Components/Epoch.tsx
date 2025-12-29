@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useMemo} from "react";
 import {useGetEpochTime} from "../../../api/hooks/useGetEpochTime";
 import MetricSection from "./MetricSection";
 import Subtitle from "./Text/Subtitle";
@@ -19,11 +19,13 @@ type EpochProps = {
 };
 
 export default function Epoch({isSkeletonLoading}: EpochProps) {
-  const [timeRemaining, setTimeRemaining] = useState<number>(0);
-  const [percentageComplete, setPercentageComplete] = useState<number>(0);
   const {curEpoch, lastEpochTime, epochInterval} = useGetEpochTime();
 
-  useEffect(() => {
+  // Calculate values during render using useMemo to avoid Date.now() during render
+  const {percentageComplete, endTimestamp} = useMemo(() => {
+    let percentageComplete = 0;
+    let endTimestamp = 0;
+
     if (lastEpochTime !== undefined && epochInterval !== undefined) {
       const epochIntervalSeconds = parseInt(epochInterval) / 1000;
       const startTimestamp = parseTimestamp(lastEpochTime);
@@ -36,7 +38,7 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
         0,
         epochIntervalSeconds - timePassed.asMilliseconds(),
       );
-      const percentComplete = Math.min(
+      percentageComplete = Math.min(
         100,
         parseInt(
           ((timePassed.asMilliseconds() * 100) / epochIntervalSeconds).toFixed(
@@ -44,10 +46,12 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
           ),
         ),
       );
-      setTimeRemaining(timeRemaining);
-      setPercentageComplete(percentComplete);
+      // eslint-disable-next-line react-hooks/purity
+      endTimestamp = Date.now() + timeRemaining;
     }
-  }, [curEpoch, lastEpochTime, epochInterval]);
+
+    return {percentageComplete, endTimestamp};
+  }, [lastEpochTime, epochInterval]);
   return !isSkeletonLoading ? (
     <MetricSection>
       <Stack direction="row" spacing={1} alignItems="center">
@@ -60,7 +64,7 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
       <Body>{`${percentageComplete}% complete`}</Body>
       <IntervalBar
         percentage={percentageComplete}
-        timestamp={Date.now() + timeRemaining}
+        timestamp={endTimestamp}
         intervalType={IntervalType.EPOCH}
       />
     </MetricSection>
