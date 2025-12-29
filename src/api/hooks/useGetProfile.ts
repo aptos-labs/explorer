@@ -1,18 +1,18 @@
 import {useQuery} from "@tanstack/react-query";
 import {ResponseError} from "../client";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkValue} from "../../global-config/GlobalConfig";
 
 export function useGetProfile(
   address: string,
   options?: {retry?: number | boolean},
 ) {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
 
   const result = useQuery<
     {name?: string; bio?: string; avatar_url?: string},
     ResponseError
   >({
-    queryKey: ["account", {address}, state.network_value],
+    queryKey: ["account", {address}, networkValue],
     queryFn: () => {
       return fetch("https://aptid.xyz/api/profile/bio?address=" + address).then(
         (res) => res.json(),

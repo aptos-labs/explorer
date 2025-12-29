@@ -27,7 +27,10 @@ import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
 import {useParams} from "react-router-dom";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
-import {useGlobalState} from "../../../../global-config/GlobalConfig";
+import {
+  useNetworkName,
+  useAptosClient,
+} from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
 import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {Link, useNavigate} from "../../../../routing";
@@ -296,7 +299,7 @@ function RunContractForm({
   module: Types.MoveModule;
   fn: Types.MoveFunction;
 }) {
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   const {connected} = useWallet();
   const logEvent = useLogEventWithBasic();
   const [formValid, setFormValid] = useState(false);
@@ -487,7 +490,7 @@ function RunContractForm({
         ) : (
           <Box display="flex" flexDirection="row" alignItems="center">
             <WalletConnector
-              networkSupport={state.network_name}
+              networkSupport={networkName}
               sortInstallableWallets={sortPetraFirst}
               modalMaxWidth="sm"
             />
@@ -509,7 +512,7 @@ function ReadContractForm({
   module: Types.MoveModule;
   fn: Types.MoveFunction;
 }) {
-  const [state] = useGlobalState();
+  const aptosClient = useAptosClient();
   const [result, setResult] = useState<Types.MoveValue[]>();
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
@@ -553,11 +556,7 @@ function ReadContractForm({
     }
     setInProcess(true);
     try {
-      const result = await view(
-        viewRequest,
-        state.aptos_client,
-        data.ledgerVersion,
-      );
+      const result = await view(viewRequest, aptosClient, data.ledgerVersion);
       setResult(result);
       setErrMsg(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "success"});

@@ -17,7 +17,7 @@ import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
 import {WalletConnector} from "../../components/WalletConnector";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import {Link, useNavigate} from "../../routing";
@@ -50,7 +50,7 @@ export default function Header() {
   });
 
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   const {account, wallet, network} = useWallet();
   const navigate = useNavigate();
   const walletAddressRef = useRef("");
@@ -65,7 +65,7 @@ export default function Header() {
     ) {
       logEvent("wallet_connected", accountAddress, {
         wallet_name: wallet!.name,
-        network_type: state.network_name,
+        network_type: networkName,
       });
       sendToGTM({
         dataLayer: {
@@ -79,14 +79,7 @@ export default function Header() {
         account.address,
       ).toString();
     }
-  }, [
-    account,
-    accountAddress,
-    state.network_name,
-    wallet,
-    logEvent,
-    network?.name,
-  ]);
+  }, [account, accountAddress, networkName, wallet, logEvent, network?.name]);
 
   return (
     <>
@@ -169,7 +162,7 @@ export default function Header() {
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector
-                  networkSupport={state.network_name}
+                  networkSupport={networkName}
                   handleNavigate={() =>
                     navigate(`/account/${account?.address}`)
                   }

@@ -1,13 +1,17 @@
 import {Types} from "aptos";
 import {useQuery} from "@tanstack/react-query";
 import {getStake} from "../..";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+} from "../../../global-config/GlobalConfig";
 
 export function useGetDelegatorStakeInfo(
   delegatorAddress: Types.Address,
   validatorAddress: Types.Address,
 ) {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
 
   // Validate addresses
   const isValidDelegator = !!delegatorAddress && delegatorAddress.length > 0;
@@ -17,16 +21,15 @@ export function useGetDelegatorStakeInfo(
   const {data, isLoading, error} = useQuery({
     queryKey: [
       "delegatorStakeInfo",
-      state.network_value,
+      networkValue,
       delegatorAddress,
       validatorAddress,
     ],
-    queryFn: () =>
-      getStake(state.aptos_client, delegatorAddress, validatorAddress),
+    queryFn: () => getStake(aptosClient, delegatorAddress, validatorAddress),
     enabled:
       !!delegatorAddress &&
       !!validatorAddress &&
-      !!state.aptos_client &&
+      !!aptosClient &&
       areAddressesValid,
   });
 

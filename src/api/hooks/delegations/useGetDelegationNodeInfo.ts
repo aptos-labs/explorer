@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {Types} from "aptos";
 import {getValidatorCommission, getValidatorState} from "../..";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {useAptosClient} from "../../../global-config/GlobalConfig";
 import {ResponseError} from "../../client";
 import {combineQueries} from "../../query-utils";
 import {useGetNumberOfDelegators} from "./useGetNumberOfDelegators";
@@ -23,7 +23,7 @@ type DelegationNodeInfoResponse = {
 export function useGetDelegationNodeInfo({
   validatorAddress,
 }: DelegationNodeInfoProps): DelegationNodeInfoResponse {
-  const [{aptos_client: client}] = useGlobalState();
+  const client = useAptosClient();
 
   // Validate validatorAddress
   const isValidAddress = !!validatorAddress && validatorAddress.length > 0;

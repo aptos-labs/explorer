@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {Types} from "aptos";
 import {getValidatorCommissionChange} from "../..";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {useAptosClient} from "../../../global-config/GlobalConfig";
 import {ResponseError} from "../../client";
 
 type DelegationNodeCommissionChangeProps = {
@@ -17,7 +17,7 @@ type DelegationNodeInfoResponse = {
 export function useGetDelegationNodeCommissionChange({
   validatorAddress,
 }: DelegationNodeCommissionChangeProps): DelegationNodeInfoResponse {
-  const [{aptos_client: client}] = useGlobalState();
+  const client = useAptosClient();
 
   const {
     data: nextCommission,

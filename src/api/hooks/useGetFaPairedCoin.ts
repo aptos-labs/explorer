@@ -3,7 +3,10 @@ import {Types} from "aptos";
 import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {ResponseError} from "../client";
 import {view} from "../index";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+} from "../../global-config/GlobalConfig";
 import {isValidAccountAddress} from "../../pages/utils";
 
 const TEXT_DECODER = new TextDecoder();
@@ -11,7 +14,8 @@ const TEXT_DECODER = new TextDecoder();
 export function useGetFaPairedCoin(
   address: string,
 ): UseQueryResult<string | undefined, ResponseError> {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
   const request: Types.ViewRequest = {
     function: "0x1::coin::paired_coin",
     type_arguments: [],
@@ -19,10 +23,10 @@ export function useGetFaPairedCoin(
   };
 
   return useQuery<string | undefined, ResponseError>({
-    queryKey: ["pairedCoin", address, state.network_value],
+    queryKey: ["pairedCoin", address, networkValue],
     queryFn: async () => {
       if (isValidAccountAddress(address)) {
-        const data = await view(request, state.aptos_client);
+        const data = await view(request, aptosClient);
         if (data !== undefined) {
           const mappedData = data as [
             {

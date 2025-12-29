@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {knownAddresses, NetworkName, scamAddresses} from "../../constants";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkName} from "../../global-config/GlobalConfig";
 import {
   fetchJsonResponse,
   getLocalStorageWithExpiry,
@@ -44,9 +44,9 @@ export function useGetNameFromAddress(
   isValidator = false,
   nameType = NameType.ANY,
 ) {
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   const queryResult = useQuery<string | null, ResponseError>({
-    queryKey: ["ANSName", address, shouldCache, state.network_name, nameType],
+    queryKey: ["ANSName", address, shouldCache, networkName, nameType],
     queryFn: () => {
       const standardizedAddress = tryStandardizeAddress(address);
       if (!standardizedAddress) {
@@ -73,12 +73,9 @@ export function useGetNameFromAddress(
         }
       }
       // Ensure there's always .apt at the end
-      return genANSName(
-        address,
-        shouldCache,
-        state.network_name,
-        isValidator,
-      ).then((name) => (name ? `${name}.apt` : null));
+      return genANSName(address, shouldCache, networkName, isValidator).then(
+        (name) => (name ? `${name}.apt` : null),
+      );
     },
   });
 
@@ -136,17 +133,17 @@ async function genANSName(
 }
 
 export function useGetAddressFromName(name: string) {
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
 
   return useQuery<string | null, ResponseError>({
-    queryKey: ["ANSAddress", name, state.network_name],
+    queryKey: ["ANSAddress", name, networkName],
     queryFn: async (): Promise<string | null> => {
       if (!name || !name.endsWith(".apt")) {
         return null;
       }
 
       try {
-        const url = getAddressFromNameUrl(state.network_name, name);
+        const url = getAddressFromNameUrl(networkName, name);
         if (!url) {
           return null;
         }
@@ -165,7 +162,7 @@ export function useGetAddressFromName(name: string) {
         console.error(
           "ERROR! Couldn't resolve ANS name %s on %s",
           name,
-          state.network_name,
+          networkName,
           error,
         );
         return null;
