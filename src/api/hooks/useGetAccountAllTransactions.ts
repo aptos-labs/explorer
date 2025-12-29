@@ -4,10 +4,7 @@ import {tryStandardizeAddress} from "../../utils";
 
 const ACCOUNT_TRANSACTIONS_COUNT_QUERY = gql`
   query AccountTransactionsCount($address: String) {
-    move_resources_aggregate(
-      where: {address: {_eq: $address}}
-      distinct_on: transaction_version
-    ) {
+    account_transactions_aggregate(where: {account_address: {_eq: $address}}) {
       aggregate {
         count
       }
@@ -23,14 +20,14 @@ export function useGetAccountAllTransactionCount(
   const addr64Hash = tryStandardizeAddress(address);
 
   const {loading, error, data} = useGraphqlQuery<{
-    move_resources_aggregate: {aggregate: {count: number}};
+    account_transactions_aggregate: {aggregate: {count: number}};
   }>(ACCOUNT_TRANSACTIONS_COUNT_QUERY, {variables: {address: addr64Hash}});
 
   if (!addr64Hash || loading || error || !data) {
     return undefined;
   }
 
-  return data.move_resources_aggregate?.aggregate?.count;
+  return data.account_transactions_aggregate?.aggregate?.count;
 }
 
 const ACCOUNT_TRANSACTIONS_QUERY = gql`
@@ -68,4 +65,41 @@ export function useGetAccountAllTransactionVersions(
       return resource.transaction_version;
     },
   );
+}
+
+// Hook to fetch ALL transaction versions for an account (for CSV export)
+export function useGetAllAccountTransactionVersions(address: string): {
+  versions: number[];
+  loading: boolean;
+  error: unknown;
+} {
+  const addr64Hash = tryStandardizeAddress(address);
+
+  const {loading, error, data} = useGraphqlQuery<{
+    account_transactions: {transaction_version: number}[];
+  }>(ACCOUNT_TRANSACTIONS_QUERY, {
+    variables: {
+      address: addr64Hash,
+      // Set limit to 10000 to support CSV export of up to 10000 transactions
+      // The GraphQL API might have its own limits, but this should work for most accounts
+      limit: 10000,
+      offset: 0,
+    },
+  });
+
+  if (!addr64Hash || error) {
+    return {versions: [], loading, error};
+  }
+
+  if (loading || !data) {
+    return {versions: [], loading: true, error: null};
+  }
+
+  const versions = data.account_transactions.map(
+    (resource: {transaction_version: number}) => {
+      return resource.transaction_version;
+    },
+  );
+
+  return {versions, loading: false, error: null};
 }

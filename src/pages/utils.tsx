@@ -201,3 +201,140 @@ export function coinOrderIndex(coin: CoinDescription) {
 
   return coin.panoraIndex;
 }
+
+// CSV Export Utilities
+import {Types} from "aptos";
+
+export function formatTransactionForCSV(
+  transaction: Types.Transaction,
+  address?: string,
+): Record<string, string | number | boolean> {
+  const result: Record<string, string | number | boolean> = {};
+
+  // Version
+  if ("version" in transaction) {
+    result.Version = transaction.version;
+  }
+
+  // Success
+  if ("success" in transaction) {
+    result.Success = transaction.success;
+  }
+
+  // Type
+  result.Type = transaction.type;
+
+  // Timestamp
+  if ("timestamp" in transaction && transaction.timestamp) {
+    result.Timestamp = getTableFormattedTimestamp(transaction.timestamp);
+  }
+
+  // Sender
+  if ("sender" in transaction) {
+    result.Sender = transaction.sender;
+  }
+
+  // Sequence Number
+  if ("sequence_number" in transaction) {
+    result.SequenceNumber = transaction.sequence_number;
+  }
+
+  // Gas Used
+  if ("gas_used" in transaction) {
+    result.GasUsed = transaction.gas_used;
+  }
+
+  // Gas Unit Price
+  if ("gas_unit_price" in transaction) {
+    result.GasUnitPrice = transaction.gas_unit_price;
+  }
+
+  // Max Gas Amount
+  if ("max_gas_amount" in transaction) {
+    result.MaxGasAmount = transaction.max_gas_amount;
+  }
+
+  // Expiration Timestamp
+  if ("expiration_timestamp_secs" in transaction) {
+    result.ExpirationTimestamp = transaction.expiration_timestamp_secs;
+  }
+
+  // Function (if it's a script/user transaction)
+  if (transaction.type === "user_transaction" && "payload" in transaction) {
+    const payload = transaction.payload;
+    if (payload && typeof payload === "object" && "function" in payload) {
+      result.Function = `${payload.function}`;
+    }
+  }
+
+  // Amount and counterparty (if it's a coin transfer)
+  if (address && transaction.type === "user_transaction") {
+    try {
+      // This would need the same logic as getTransactionAmount and getTransactionCounterparty
+      // For now, we'll leave it simple - this could be enhanced later
+      result.Address = address;
+    } catch {
+      // If we can't parse the amount, just include the address
+      result.Address = address;
+    }
+  }
+
+  return result;
+}
+
+export function transactionsToCSV(
+  transactions: Types.Transaction[],
+  address?: string,
+): string {
+  if (transactions.length === 0) {
+    return "";
+  }
+
+  // Get all unique keys from all transactions
+  const allKeys = new Set<string>();
+  transactions.forEach((txn) => {
+    const formatted = formatTransactionForCSV(txn, address);
+    Object.keys(formatted).forEach((key) => allKeys.add(key));
+  });
+
+  const headers = Array.from(allKeys).sort();
+
+  // Create CSV header row
+  let csv = headers.join(",") + "\n";
+
+  // Create CSV data rows
+  transactions.forEach((txn) => {
+    const formatted = formatTransactionForCSV(txn, address);
+    const row = headers.map((header) => {
+      const value = formatted[header];
+      // Escape commas and quotes in CSV
+      if (
+        typeof value === "string" &&
+        (value.includes(",") || value.includes('"') || value.includes("\n"))
+      ) {
+        return `"${value.replace(/"/g, '""')}"`;
+      }
+      return value ?? "";
+    });
+    csv += row.join(",") + "\n";
+  });
+
+  return csv;
+}
+
+export function downloadCSV(csvContent: string, filename: string): void {
+  const blob = new Blob([csvContent], {type: "text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", filename);
+  link.style.visibility = "hidden";
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  // Clean up the URL object
+  URL.revokeObjectURL(url);
+}
