@@ -1,6 +1,7 @@
 import * as React from "react";
 import {useMemo, useCallback} from "react";
 import {
+  Box,
   Button,
   Stack,
   Table,
@@ -14,6 +15,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import {grey, primary} from "../../../themes/colors/aptosColorPalette";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
 import {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {
   VerifiedCoinCell,
@@ -338,58 +340,79 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
     </Stack>
   );
 
+  // Memoize coin rows for virtualization
+  const coinRows = useMemo(() => {
+    return filteredCoins.map((coinDesc, i) => {
+      let friendlyType = coinDesc.tokenStandard;
+      switch (friendlyType) {
+        case "v1":
+          friendlyType = "Coin";
+          break;
+        case "v2":
+          friendlyType = "Fungible Asset";
+          break;
+      }
+      return (
+        <GeneralTableRow key={i}>
+          <CoinNameCell name={coinDesc.name} />
+          <CoinNameCell name={friendlyType} />
+          <CoinTypeCell data={coinDesc} />
+          <CoinVerifiedCell data={coinDesc} />
+          <AmountCell
+            amount={coinDesc.amount}
+            decimals={coinDesc.decimals}
+            symbol={getAssetSymbol(
+              coinDesc.panoraSymbol,
+              coinDesc.bridge,
+              coinDesc.symbol,
+            )}
+          />
+          <USDCell amount={coinDesc.usdValue} />
+        </GeneralTableRow>
+      );
+    });
+  }, [filteredCoins]);
+
   // TODO: For FA, possibly add store as more info
   return (
     <>
       {verificationFilter !== CoinVerificationFilterType.NONE && filterSelector}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <GeneralTableHeaderCell header="Name" />
-            <GeneralTableHeaderCell header="Asset Type" />
-            <GeneralTableHeaderCell header="Asset" />
-            <GeneralTableHeaderCell
-              header="Verified"
-              tooltip={getLearnMoreTooltip("coin_verification")}
-              isTableTooltip={true}
-            />
-            <GeneralTableHeaderCell header="Amount" />
-            <GeneralTableHeaderCell header="USD Value" />
-          </TableRow>
-        </TableHead>
-        <GeneralTableBody>
-          {filteredCoins.map((coinDesc, i) => {
-            let friendlyType = coinDesc.tokenStandard;
-            switch (friendlyType) {
-              case "v1":
-                friendlyType = "Coin";
-                break;
-              case "v2":
-                friendlyType = "Fungible Asset";
-                break;
-            }
-            return (
-              <GeneralTableRow key={i}>
-                <CoinNameCell name={coinDesc.name} />
-                <CoinNameCell name={friendlyType} />
-                <CoinTypeCell data={coinDesc} />
-                <CoinVerifiedCell data={coinDesc} />
-                <AmountCell
-                  amount={coinDesc.amount}
-                  decimals={coinDesc.decimals}
-                  symbol={getAssetSymbol(
-                    coinDesc.panoraSymbol,
-                    coinDesc.bridge,
-                    coinDesc.symbol,
-                  )}
-                />
-
-                <USDCell amount={coinDesc.usdValue} />
-              </GeneralTableRow>
-            );
-          })}
-        </GeneralTableBody>
-      </Table>
+      <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <GeneralTableHeaderCell header="Name" />
+              <GeneralTableHeaderCell header="Asset Type" />
+              <GeneralTableHeaderCell header="Asset" />
+              <GeneralTableHeaderCell
+                header="Verified"
+                tooltip={getLearnMoreTooltip("coin_verification")}
+                isTableTooltip={true}
+              />
+              <GeneralTableHeaderCell header="Amount" />
+              <GeneralTableHeaderCell header="USD Value" />
+            </TableRow>
+          </TableHead>
+          {filteredCoins.length > 0 ? (
+            <VirtualizedTableBody
+              estimatedRowHeight={60}
+              virtualizationThreshold={15}
+            >
+              {coinRows}
+            </VirtualizedTableBody>
+          ) : (
+            <GeneralTableBody>
+              <TableRow>
+                <GeneralTableCell colSpan={6} sx={{textAlign: "center", py: 3}}>
+                  <Typography variant="body1" color="text.secondary">
+                    No coins found
+                  </Typography>
+                </GeneralTableCell>
+              </TableRow>
+            </GeneralTableBody>
+          )}
+        </Table>
+      </Box>
     </>
   );
 }
