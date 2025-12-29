@@ -12,7 +12,7 @@ import {
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../../components/HashButton";
-import {grey, primary} from "../../../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
@@ -52,6 +52,7 @@ const AmountCell = React.memo(function AmountCell({
   decimals: number | null | undefined;
   symbol: string;
 }) {
+  const theme = useTheme();
   if (amount == null || decimals == null) {
     return <GeneralTableCell>-</GeneralTableCell>;
   }
@@ -60,7 +61,9 @@ const AmountCell = React.memo(function AmountCell({
   return (
     <GeneralTableCell>
       <span>{formattedAmount}</span>
-      <span style={{marginLeft: 8, color: grey[450]}}>{symbol}</span>
+      <span style={{marginLeft: 8, color: theme.palette.text.secondary}}>
+        {symbol}
+      </span>
     </GeneralTableCell>
   );
 });
@@ -70,6 +73,7 @@ const USDCell = React.memo(function USDCell({
 }: {
   amount: number | null | undefined;
 }) {
+  const theme = useTheme();
   const inMainnet = useGetInMainnet();
   if (amount === null || amount === undefined || !inMainnet) {
     return <GeneralTableCell>N/A</GeneralTableCell>;
@@ -78,7 +82,9 @@ const USDCell = React.memo(function USDCell({
   return (
     <GeneralTableCell>
       <span>${amount}</span>
-      <span style={{marginLeft: 8, color: grey[450]}}>{"USD"}</span>
+      <span style={{marginLeft: 8, color: theme.palette.text.secondary}}>
+        {"USD"}
+      </span>
     </GeneralTableCell>
   );
 });
@@ -143,6 +149,7 @@ export type CoinDescriptionPlusAmount = {
 } & CoinDescription;
 
 export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
+  const theme = useTheme();
   const networkName = useNetworkName();
   const [verificationFilter, setVerificationFilter] = React.useState(
     CoinVerificationFilterType.NONE,
@@ -247,9 +254,12 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
     [coins, verificationFilter, filterCoins],
   );
 
-  const selectedTextColor = primary[500];
-  const unselectedTextColor = grey[400];
-  const dividerTextColor = grey[200];
+  const selectedTextColor = theme.palette.primary.main;
+  const unselectedTextColor = theme.palette.text.secondary;
+  const dividerTextColor =
+    theme.palette.mode === "dark"
+      ? theme.palette.neutralShade.lighter
+      : theme.palette.neutralShade.darker;
 
   const filterSelector = (
     <Stack

@@ -1,6 +1,5 @@
 import * as React from "react";
 import {Box, BoxProps, Stack, useTheme} from "@mui/material";
-import {grey} from "../../themes/colors/aptosColorPalette";
 
 interface ContentBoxSpaceBetweenProps extends BoxProps {
   children: React.ReactNode;
@@ -11,7 +10,7 @@ export default function ContentBoxSpaceBetween({
   ...props
 }: ContentBoxSpaceBetweenProps) {
   const theme = useTheme();
-  const backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[50];
+  const backgroundColor = theme.palette.background.paper;
 
   return (
     <Box

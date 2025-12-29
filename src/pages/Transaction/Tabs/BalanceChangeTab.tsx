@@ -1,7 +1,7 @@
 import {Types} from "aptos";
 import React from "react";
 import {Button, Stack, Typography} from "@mui/material";
-import {grey, primary} from "../../../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {CoinBalanceChangeTable} from "./Components/CoinBalanceChangeTable";
 import {
@@ -91,6 +91,7 @@ function AggregatedBalanceTable({
 }
 
 export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
+  const theme = useTheme();
   const {data: coinData} = useGetCoinList();
   const [viewType, setViewType] = React.useState(
     BalanceViewType.NON_AGGREGATED,
@@ -188,9 +189,12 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
     return <EmptyTabContent />;
   }
 
-  const selectedTextColor = primary[500];
-  const unselectedTextColor = grey[400];
-  const dividerTextColor = grey[200];
+  const selectedTextColor = theme.palette.primary.main;
+  const unselectedTextColor = theme.palette.text.secondary;
+  const dividerTextColor =
+    theme.palette.mode === "dark"
+      ? theme.palette.neutralShade.lighter
+      : theme.palette.neutralShade.darker;
 
   const viewSelector = (
     <Stack

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import {Link, Stack, Typography} from "@mui/material";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {Card} from "../../components/Card";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material";
 import StyledTooltip from "../../components/StyledTooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
@@ -15,6 +15,7 @@ type BalanceCardProps = {
 };
 
 export default function BalanceCard({address}: BalanceCardProps) {
+  const theme = useTheme();
   const balance = useGetAccountAPTBalance(address);
   const networkName = useNetworkName();
   const [price, setPrice] = useState<number | null>(null);
@@ -48,20 +49,22 @@ export default function BalanceCard({address}: BalanceCardProps) {
 
         {/* USD value */}
         {networkName === "mainnet" && balanceUSD !== null && (
-          <Typography fontSize={14} color={grey[450]}>
+          <Typography fontSize={14} color={theme.palette.text.secondary}>
             ${balanceUSD.toLocaleString(undefined, {maximumFractionDigits: 2})}{" "}
             USD
           </Typography>
         )}
 
         <Stack direction="row" spacing={1} alignItems="center">
-          <Typography fontSize={12} color={grey[450]}>
+          <Typography fontSize={12} color={theme.palette.text.secondary}>
             Balance
           </Typography>
           <StyledTooltip
             title={`This balance reflects the amount of APT tokens held in your wallet${networkName === "mainnet" ? ` and their live value in USD at a rate of 1 APT = $${price?.toFixed(2)}` : ""}.`}
           >
-            <InfoOutlinedIcon sx={{fontSize: 15, color: grey[450]}} />
+            <InfoOutlinedIcon
+              sx={{fontSize: 15, color: theme.palette.text.secondary}}
+            />
           </StyledTooltip>
         </Stack>
 

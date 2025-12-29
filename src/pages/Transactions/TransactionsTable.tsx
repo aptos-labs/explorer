@@ -1,6 +1,7 @@
 import * as React from "react";
 import {useMemo} from "react";
-import {Box, Stack} from "@mui/material";
+import {Box, Stack, useTheme} from "@mui/material";
+import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -23,11 +24,6 @@ import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentVa
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
-import {
-  grey,
-  negativeColor,
-  aptosColor,
-} from "../../themes/colors/aptosColorPalette";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
 import {
   getCoinBalanceChangeForAccount,
@@ -160,15 +156,17 @@ function TransactionAmount({
   transaction: Types.Transaction;
   address?: string;
 }) {
+  const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   if (address !== undefined) {
     const amount = getCoinBalanceChangeForAccount(transaction, address);
     if (amount !== undefined) {
       let amountAbs = amount;
       let color = undefined;
       if (amount > 0) {
-        color = aptosColor;
+        color = semanticColors.status.info;
       } else if (amount < 0) {
-        color = negativeColor;
+        color = semanticColors.status.error;
         amountAbs = -amount;
       }
 
@@ -198,11 +196,12 @@ function TransactionAmountGasCell({
   transaction,
   address,
 }: TransactionCellProps) {
+  const theme = useTheme();
   return (
     <GeneralTableCell sx={{paddingY: 1}}>
       <Stack sx={{textAlign: "right"}}>
         <TransactionAmount transaction={transaction} address={address} />
-        <Box sx={{fontSize: 11, color: grey[450]}}>
+        <Box sx={{fontSize: 11, color: theme.palette.text.secondary}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
             <>
               <>Gas</>{" "}

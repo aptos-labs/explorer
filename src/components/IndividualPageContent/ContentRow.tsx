@@ -1,6 +1,5 @@
 import React from "react";
-import {Box, Grid} from "@mui/material";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {Box, Grid, useTheme} from "@mui/material";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 type ContentRowProps = {
@@ -16,6 +15,7 @@ export default function ContentRow({
   tooltip,
   i,
 }: ContentRowProps) {
+  const theme = useTheme();
   return (
     <Box>
       <Grid
@@ -26,7 +26,7 @@ export default function ContentRow({
         key={i}
       >
         <Grid container size={{xs: 12, sm: 3}}>
-          <Box sx={{fontSize: "0.875rem", color: grey[450]}}>
+          <Box sx={{fontSize: "0.875rem", color: theme.palette.text.secondary}}>
             {title}
             <Box
               component="span"

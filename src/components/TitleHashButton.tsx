@@ -8,11 +8,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  codeBlockColor,
-  codeBlockColorClickableOnHover,
-  grey,
-} from "../themes/colors/aptosColorPalette";
+import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
@@ -83,17 +79,19 @@ function HashButton({hash}: {hash: string}) {
       sx={{
         height: BUTTON_HEIGHT,
         textTransform: "none",
-        backgroundColor: `${
-          theme.palette.mode === "dark" ? grey[600] : grey[200]
-        }`,
+        backgroundColor:
+          theme.palette.mode === "dark"
+            ? theme.palette.neutralShade.lighter
+            : theme.palette.neutralShade.darker,
         display: "flex",
         borderRadius: 1,
         color: "inherit",
         padding: "0.15rem 0.5rem 0.15rem 1rem",
         "&:hover": {
-          backgroundColor: `${
-            theme.palette.mode === "dark" ? grey[500] : grey[300]
-          }`,
+          backgroundColor:
+            theme.palette.mode === "dark"
+              ? theme.palette.neutralShade.main
+              : theme.palette.neutralShade.main,
         },
       }}
       size="small"
@@ -142,6 +140,7 @@ function Name({
   nameType?: NameType;
 }) {
   const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   const name = useGetNameFromAddress(address, true, isValidator, nameType);
 
   if (!name) {
@@ -151,7 +150,10 @@ function Name({
 
   const ansStyle = {
     height: BUTTON_HEIGHT,
-    backgroundColor: `${theme.palette.mode === "dark" ? grey[600] : grey[200]}`,
+    backgroundColor:
+      theme.palette.mode === "dark"
+        ? theme.palette.neutralShade.lighter
+        : theme.palette.neutralShade.darker,
     borderRadius: 1,
     color: "inherit",
     padding: "0.15rem 1rem 0.15rem 1rem",
@@ -159,9 +161,9 @@ function Name({
 
   const knownNameStyle = {
     height: BUTTON_HEIGHT,
-    backgroundColor: codeBlockColor,
+    backgroundColor: semanticColors.codeBlock.background,
     "&:hover": {
-      backgroundColor: codeBlockColorClickableOnHover,
+      backgroundColor: semanticColors.codeBlock.backgroundHover,
     },
     color: theme.palette.primary.main,
     padding: "0.15rem 0.35rem 0.15rem 1rem",

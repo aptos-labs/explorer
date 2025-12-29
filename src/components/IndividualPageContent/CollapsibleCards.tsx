@@ -1,6 +1,5 @@
 import React from "react";
 import {Stack, Typography, useTheme, Box, Button} from "@mui/material";
-import {grey} from "../../themes/colors/aptosColorPalette";
 
 // return true if there is at least 1 card is not expanded
 function getNotAllExpanded(expandedList: boolean[]): boolean {
@@ -25,8 +24,8 @@ function ExpandAllCollapseAllButtons({
 }: ExpandAllCollapseAllButtonsProps) {
   const theme = useTheme();
 
-  const heavyTextColor = grey[450];
-  const lightTextColor = theme.palette.mode === "dark" ? grey[500] : grey[400];
+  const heavyTextColor = theme.palette.text.secondary;
+  const lightTextColor = theme.palette.text.disabled;
 
   const enableExpandAllButton = getNotAllExpanded(expandedList);
   const enableCollapseAllButton = getNotAllCollapse(expandedList);

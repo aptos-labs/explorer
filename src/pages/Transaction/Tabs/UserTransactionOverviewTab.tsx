@@ -15,7 +15,7 @@ import TransactionFunction from "./Components/TransactionFunction";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {parseExpirationTimestamp} from "../../utils";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {
   CoinDescription,
@@ -531,6 +531,7 @@ type UserTransactionOverviewTabProps = {
 export default function UserTransactionOverviewTab({
   transaction,
 }: UserTransactionOverviewTabProps) {
+  const theme = useTheme();
   // TODO: Get off SDK V1, this is just a patch
   const transactionData = transaction as Types.Transaction_UserTransaction & {
     replay_protection_nonce?: string;
@@ -682,7 +683,7 @@ export default function UserTransactionOverviewTab({
           value={
             <>
               <APTCurrencyValue amount={transactionData.gas_unit_price} />{" "}
-              <span style={{color: grey[450]}}>
+              <span style={{color: theme.palette.text.secondary}}>
                 ({transactionData.gas_unit_price} Octas)
               </span>
             </>

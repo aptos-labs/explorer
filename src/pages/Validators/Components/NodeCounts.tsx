@@ -2,7 +2,7 @@ import {Skeleton, Typography} from "@mui/material";
 import React from "react";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import {ValidatorGeoMetric} from "../../../api/hooks/useGetValidatorsGeoData";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material";
 import {
   fontSizeBodySmall,
   fontSizeSubtitle,
@@ -20,6 +20,7 @@ export default function NodeCounts({
   validatorGeoMetric,
   isSkeletonLoading,
 }: NodeCountsProps) {
+  const theme = useTheme();
   const {numberOfActiveValidators} = useGetValidatorSet();
 
   return !isSkeletonLoading ? (
@@ -29,13 +30,13 @@ export default function NodeCounts({
       </Typography>
       <Typography
         sx={{fontSize: {xs: fontSizeBodySmall, md: fontSizeSubtitle}}}
-        color={grey[450]}
+        color={theme.palette.text.secondary}
       >
         {validatorGeoMetric.countryCount} Countries
       </Typography>
       <Typography
         sx={{fontSize: {xs: fontSizeBodySmall, md: fontSizeSubtitle}}}
-        color={grey[450]}
+        color={theme.palette.text.secondary}
       >
         {validatorGeoMetric.cityCount} Cities
       </Typography>

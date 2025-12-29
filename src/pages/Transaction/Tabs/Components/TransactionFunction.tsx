@@ -1,14 +1,14 @@
 import React from "react";
-import {Box, Stack, SxProps, Theme} from "@mui/material";
+import {Box, Stack, SxProps, Theme, useTheme} from "@mui/material";
 import {Types} from "aptos";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
 import {Link} from "../../../../routing";
-import {codeBlockColorClickableOnHover} from "../../../../themes/colors/aptosColorPalette";
 import {WaterDropOutlined} from "@mui/icons-material";
 import {useNetworkName} from "../../../../global-config/GlobalConfig";
 import {Network} from "@aptos-labs/ts-sdk";
+import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 
 function CoinTransferCodeLine({
   sx,
@@ -70,6 +70,8 @@ export default function TransactionFunction({
   transaction: Types.Transaction;
   sx?: SxProps<Theme>;
 }) {
+  const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   const networkName = useNetworkName();
   if (!("payload" in transaction)) {
     return null;
@@ -128,7 +130,7 @@ export default function TransactionFunction({
           ...(Array.isArray(sx) ? sx : [sx]),
           {
             "&:hover": {
-              backgroundColor: codeBlockColorClickableOnHover,
+              backgroundColor: semanticColors.codeBlock.backgroundHover,
             },
           },
         ]}

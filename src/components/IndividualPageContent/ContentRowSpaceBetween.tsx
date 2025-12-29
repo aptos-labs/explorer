@@ -1,6 +1,5 @@
 import React from "react";
-import {Box, Stack, Typography} from "@mui/material";
-import {grey} from "../../themes/colors/aptosColorPalette";
+import {Box, Stack, Typography, useTheme} from "@mui/material";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 type ContentRowSmallProps = {
@@ -15,10 +14,13 @@ export default function ContentRowSpaceBetween({
   value,
   tooltip,
 }: ContentRowSmallProps) {
+  const theme = useTheme();
   return (
     <Stack direction="row" justifyContent="space-between">
       <Stack direction="row" alignItems="center" spacing={0.5}>
-        <Typography sx={{fontSize: "0.875rem", color: grey[450]}}>
+        <Typography
+          sx={{fontSize: "0.875rem", color: theme.palette.text.secondary}}
+        >
           {title}
         </Typography>
         {tooltip}

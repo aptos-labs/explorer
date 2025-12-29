@@ -19,7 +19,6 @@ import {
   useNetworkName,
   useGlobalActions,
 } from "../../global-config/GlobalConfig";
-import {grey} from "../../themes/colors/aptosColorPalette";
 
 function NetworkAndChainIdCached({
   networkName,
@@ -133,7 +132,9 @@ export default function NetworkSelect() {
                 marginTop: 0.5,
                 "& .MuiMenuItem-root.Mui-selected": {
                   backgroundColor: `${
-                    theme.palette.mode === "dark" ? grey[700] : grey[200]
+                    theme.palette.mode === "dark"
+                      ? theme.palette.neutralShade.lighter
+                      : theme.palette.neutralShade.darker
                   }!important`,
                   pointerEvents: "none",
                 },
@@ -148,7 +149,7 @@ export default function NetworkSelect() {
               justifyContent="space-between"
               spacing={3}
               width="100%"
-              color={grey[450]}
+              color={theme.palette.text.secondary}
             >
               <Typography variant="body2">Network</Typography>
               <Typography variant="body2">Chain ID</Typography>
