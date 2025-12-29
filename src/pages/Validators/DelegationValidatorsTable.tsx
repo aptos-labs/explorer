@@ -360,7 +360,11 @@ function MyDepositCell({validator}: ValidatorCellProps) {
   }, [stakes]);
 
   if (isLoading || !account) {
-    return <Typography>-</Typography>;
+    return (
+      <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
+        <Typography>-</Typography>
+      </GeneralTableCell>
+    );
   }
 
   return (
