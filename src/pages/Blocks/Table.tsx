@@ -1,5 +1,6 @@
 import * as React from "react";
-import {Table, TableHead, TableRow} from "@mui/material";
+import {useMemo} from "react";
+import {Table, TableHead, TableRow, Box} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -7,7 +8,7 @@ import HashButton, {HashType} from "../../components/HashButton";
 import {Types} from "aptos";
 import {parseTimestamp} from "../utils";
 import moment from "moment";
-import GeneralTableBody from "../../components/Table/GeneralTableBody";
+import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import {Link, useAugmentToWithGlobalSearchParams} from "../../routing";
 
@@ -158,21 +159,37 @@ export default function BlocksTable({
   } else if (!Array.isArray(blocks)) {
     blocks = [blocks];
   }
+
+  // Memoize block rows for virtualization
+  const blockRows = useMemo(
+    () =>
+      blocks.map((block: Types.Block, i: number) => (
+        <BlockRow
+          key={`${i}-${block.block_height}`}
+          block={block}
+          columns={columns}
+        />
+      )),
+    [blocks, columns],
+  );
+
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          {columns.map((column) => (
-            <BlockHeaderCell key={column} column={column} />
-          ))}
-        </TableRow>
-      </TableHead>
-      <GeneralTableBody>
-        {blocks &&
-          blocks.map((block: Types.Block, i: number) => {
-            return <BlockRow key={i} block={block} columns={columns} />;
-          })}
-      </GeneralTableBody>
-    </Table>
+    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {columns.map((column) => (
+              <BlockHeaderCell key={column} column={column} />
+            ))}
+          </TableRow>
+        </TableHead>
+        <VirtualizedTableBody
+          estimatedRowHeight={65}
+          virtualizationThreshold={15}
+        >
+          {blockRows}
+        </VirtualizedTableBody>
+      </Table>
+    </Box>
   );
 }
