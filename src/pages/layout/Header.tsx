@@ -4,7 +4,7 @@ import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import NetworkSelect from "./NetworkSelect";
 import {useColorMode} from "../../context";
-import {useMediaQuery, useTheme} from "@mui/material";
+import {useMediaQuery, useTheme, alpha} from "@mui/material";
 import IconLight from "../../assets/svg/icon_light.svg?react";
 import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";
 import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
@@ -13,7 +13,6 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Nav from "./Nav";
 import NavMobile from "./NavMobile";
-import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
 import {WalletConnector} from "../../components/WalletConnector";
@@ -101,13 +100,13 @@ export default function Header() {
           background: "transparent",
           ...(!inView &&
             isDark && {
-              background: "rgba(18,22,21, 0.85)",
+              background: alpha(theme.palette.background.default, 0.85),
               borderBottom: `1px solid ${theme.palette.common}`,
             }),
           ...(!inView &&
             !isDark && {
-              background: "rgba(254,254,254, 0.8)",
-              borderBottom: `2px solid rgba(18,22,21,0.05)`,
+              background: alpha(theme.palette.background.default, 0.8),
+              borderBottom: `2px solid ${alpha(theme.palette.text.primary, 0.05)}`,
             }),
         }}
       >
@@ -116,8 +115,7 @@ export default function Header() {
           <Toolbar
             sx={{
               height: "5rem",
-              color:
-                theme.palette.mode === "dark" ? grey[50] : "rgba(18,22,21,1)",
+              color: theme.palette.text.primary,
             }}
             disableGutters
           >

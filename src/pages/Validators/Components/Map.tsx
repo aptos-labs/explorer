@@ -7,8 +7,9 @@ import {
   ValidatorGeoGroup,
 } from "../../../api/hooks/useGetValidatorsGeoData";
 import {grey} from "../../../themes/colors/aptosColorPalette";
+import {brandColors} from "../../../themes/colors/aptosBrandColors";
 
-const MARKER_COLOR = "#22D3EE";
+const MARKER_COLOR = brandColors.babyBlue;
 const MIN_NODE_COUNT_SHOWN_IN_MARKER = 5;
 
 function getCircleRadius(currentGroupSize: number) {

@@ -1,4 +1,4 @@
-import {Box, Link, Stack, Typography} from "@mui/material";
+import {Box, Link, Stack, Typography, useTheme} from "@mui/material";
 import React from "react";
 import {defaultFeatureName, features} from "../../constants";
 import {
@@ -6,13 +6,12 @@ import {
   useGlobalActions,
 } from "../../global-config/GlobalConfig";
 
-const ALERT_COLOR: string = "#F97373"; // red
-
 /**
  * This is the information bar on top of the screen when the current feature is not "prod".
  * This bar is used to indicate that it is now in development mode.
  */
 export default function FeatureBar() {
+  const theme = useTheme();
   const featureName = useFeatureName();
   const {selectFeature} = useGlobalActions();
 
@@ -21,7 +20,7 @@ export default function FeatureBar() {
   }
 
   return (
-    <Box sx={{backgroundColor: ALERT_COLOR}} padding={1}>
+    <Box sx={{backgroundColor: theme.palette.error.main}} padding={1}>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Typography>{`This is the ${features[featureName]}.`}</Typography>
         <Link

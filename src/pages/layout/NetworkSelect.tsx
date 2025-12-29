@@ -7,7 +7,7 @@ import {
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
-import {useTheme} from "@mui/material/styles";
+import {useTheme, alpha} from "@mui/material";
 import {Stack} from "@mui/system";
 import React from "react";
 import {
@@ -129,7 +129,7 @@ export default function NetworkSelect() {
             PaperProps: {
               sx: {
                 minWidth: 240,
-                boxShadow: "0 25px 50px -12px rgba(18,22,21,0.25)",
+                boxShadow: `0 25px 50px -12px ${alpha(theme.palette.text.primary, 0.25)}`,
                 marginTop: 0.5,
                 "& .MuiMenuItem-root.Mui-selected": {
                   backgroundColor: `${
