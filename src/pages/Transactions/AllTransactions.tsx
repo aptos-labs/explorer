@@ -6,7 +6,10 @@ import {
 } from "@tanstack/react-query";
 import {Types} from "aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+} from "../../global-config/GlobalConfig";
 import Box from "@mui/material/Box";
 import {useSearchParams} from "react-router-dom";
 import {Pagination, Stack} from "@mui/material";
@@ -74,7 +77,8 @@ function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
 function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
   const maxVersion = parseInt(data?.ledger_version ?? "");
   const limit = LIMIT;
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
   const [searchParams] = useSearchParams();
 
   let start = maxStart(maxVersion, limit);
@@ -84,8 +88,8 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
   }
 
   const result = useQuery({
-    queryKey: ["transactions", {start, limit}, state.network_value],
-    queryFn: () => getTransactions({start, limit}, state.aptos_client),
+    queryKey: ["transactions", {start, limit}, networkValue],
+    queryFn: () => getTransactions({start, limit}, aptosClient),
     placeholderData: keepPreviousData,
   });
 
@@ -111,11 +115,12 @@ function TransactionsPageInner({data}: UseQueryResult<Types.IndexResponse>) {
 }
 
 export default function AllTransactions() {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
 
   const result = useQuery({
-    queryKey: ["ledgerInfo", state.network_value],
-    queryFn: () => getLedgerInfo(state.aptos_client),
+    queryKey: ["ledgerInfo", networkValue],
+    queryFn: () => getLedgerInfo(aptosClient),
     refetchInterval: 10000,
   });
 

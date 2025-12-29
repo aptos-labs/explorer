@@ -7,7 +7,7 @@ import {CodeLineBox} from "../../../../components/CodeLineBox";
 import {Link} from "../../../../routing";
 import {codeBlockColorClickableOnHover} from "../../../../themes/colors/aptosColorPalette";
 import {WaterDropOutlined} from "@mui/icons-material";
-import {useGlobalState} from "../../../../global-config/GlobalConfig";
+import {useNetworkName} from "../../../../global-config/GlobalConfig";
 import {Network} from "@aptos-labs/ts-sdk";
 
 function CoinTransferCodeLine({
@@ -70,7 +70,7 @@ export default function TransactionFunction({
   transaction: Types.Transaction;
   sx?: SxProps<Theme>;
 }) {
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   if (!("payload" in transaction)) {
     return null;
   }
@@ -81,12 +81,12 @@ export default function TransactionFunction({
     "bytecode" in transaction.payload.code
   ) {
     if (
-      state.network_name === Network.TESTNET &&
+      networkName === Network.TESTNET &&
       transaction.payload.code.bytecode === TESTNET_FAUCET_SCRIPT
     ) {
       return <FaucetCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />;
     } else if (
-      state.network_name === Network.DEVNET &&
+      networkName === Network.DEVNET &&
       transaction.payload.code.bytecode === DEVNET_FAUCET_SCRIPT
     ) {
       return <FaucetCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />;

@@ -2,7 +2,7 @@ import moment from "moment";
 import React from "react";
 import IntervalBar, {IntervalType} from "../../../components/IntervalBar";
 import {Network} from "../../../constants";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
 import {parseTimestamp} from "../../utils";
 
 export default function TimeDurationIntervalBar({
@@ -10,7 +10,7 @@ export default function TimeDurationIntervalBar({
 }: {
   timestamp?: number;
 }) {
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
 
   if (!timestamp) {
     return null;
@@ -18,7 +18,7 @@ export default function TimeDurationIntervalBar({
 
   // the beginning of the unlock cycle
   const startTime =
-    state.network_name === Network.TESTNET
+    networkName === Network.TESTNET
       ? parseTimestamp(timestamp.toString()).subtract(2, "hours")
       : parseTimestamp(timestamp.toString()).subtract(14, "days");
 

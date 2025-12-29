@@ -11,7 +11,7 @@ import ConnectWalletModalIcon from "../../assets/forum_icon.svg?react";
 import {WalletConnector} from "../../components/WalletConnector";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useNavigate} from "react-router-dom";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkName} from "../../global-config/GlobalConfig";
 import {sortPetraFirst} from "../../utils";
 
 type WalletConnectionDialogProps = {
@@ -23,7 +23,7 @@ export default function WalletConnectionDialog({
   handleDialogClose,
   isDialogOpen,
 }: WalletConnectionDialogProps) {
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   const navigate = useNavigate();
   const {account} = useWallet();
 
@@ -41,7 +41,7 @@ export default function WalletConnectionDialog({
       <DialogActions>
         <Stack sx={{width: "100%"}}>
           <WalletConnector
-            networkSupport={state.network_name}
+            networkSupport={networkName}
             handleNavigate={() => navigate(`/account/${account?.address}`)}
             sortInstallableWallets={sortPetraFirst}
             modalMaxWidth="sm"

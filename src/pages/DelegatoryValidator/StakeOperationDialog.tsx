@@ -35,7 +35,10 @@ import {DelegationStateContext} from "./context/DelegationContext";
 import {Types} from "aptos";
 import {getAddStakeFee} from "../../api";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+} from "../../global-config/GlobalConfig";
 import {MINIMUM_APT_IN_POOL} from "./constants";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
@@ -139,7 +142,8 @@ function StakeOperationDialogContent({
     setAmount("");
   };
 
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
   const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
   const logEvent = useLogEventWithBasic();
 
@@ -147,7 +151,7 @@ function StakeOperationDialogContent({
     async function fetchData() {
       if (stakeOperation === StakeOperation.STAKE) {
         const fee = await getAddStakeFee(
-          state.aptos_client,
+          aptosClient,
           validator!.owner_address,
           Number(amount).toFixed(8),
         );
@@ -155,13 +159,7 @@ function StakeOperationDialogContent({
       }
     }
     fetchData();
-  }, [
-    state.network_value,
-    state.aptos_client,
-    amount,
-    stakeOperation,
-    validator,
-  ]);
+  }, [networkValue, aptosClient, amount, stakeOperation, validator]);
 
   const onSubmitClick = async () => {
     logEvent("submit_transaction_button_clicked", stakeOperation, {

@@ -3,7 +3,10 @@ import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import Button from "@mui/material/Button";
 import {Types} from "aptos";
 import {getTransactions} from "../../api";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+} from "../../global-config/GlobalConfig";
 import Box from "@mui/material/Box";
 import * as RRD from "react-router-dom";
 import {Stack, Typography} from "@mui/material";
@@ -22,11 +25,12 @@ function TransactionContent({data}: UseQueryResult<Array<Types.Transaction>>) {
 }
 
 export default function TransactionsPreview() {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
   const limit = PREVIEW_LIMIT;
   const result = useQuery({
-    queryKey: ["transactionsPreview", {limit}, state.network_value],
-    queryFn: () => getTransactions({limit}, state.aptos_client),
+    queryKey: ["transactionsPreview", {limit}, networkValue],
+    queryFn: () => getTransactions({limit}, aptosClient),
   });
   const augmentTo = useAugmentToWithGlobalSearchParams();
 

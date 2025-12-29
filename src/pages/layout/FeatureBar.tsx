@@ -1,7 +1,10 @@
 import {Box, Link, Stack, Typography} from "@mui/material";
 import React from "react";
 import {defaultFeatureName, features} from "../../constants";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useFeatureName,
+  useGlobalActions,
+} from "../../global-config/GlobalConfig";
 
 const ALERT_COLOR: string = "#F97373"; // red
 
@@ -10,18 +13,17 @@ const ALERT_COLOR: string = "#F97373"; // red
  * This bar is used to indicate that it is now in development mode.
  */
 export default function FeatureBar() {
-  const [globalState, {selectFeature}] = useGlobalState();
+  const featureName = useFeatureName();
+  const {selectFeature} = useGlobalActions();
 
-  if (globalState.feature_name === defaultFeatureName) {
+  if (featureName === defaultFeatureName) {
     return null;
   }
 
   return (
     <Box sx={{backgroundColor: ALERT_COLOR}} padding={1}>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <Typography>{`This is the ${
-          features[globalState.feature_name]
-        }.`}</Typography>
+        <Typography>{`This is the ${features[featureName]}.`}</Typography>
         <Link
           component="button"
           variant="body2"

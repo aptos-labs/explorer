@@ -9,7 +9,7 @@ import {
   verifiedLevel,
 } from "../../components/Table/VerifiedCell";
 import {usePageMetadata} from "../../components/hooks/usePageMetadata";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkName} from "../../global-config/GlobalConfig";
 
 type CoinTitleProps = {
   struct: string;
@@ -24,7 +24,7 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
     symbol,
   );
 
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   const {level} = verifiedLevel(
     {
       id: struct,
@@ -32,7 +32,7 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
       symbol: assetSymbol,
       ...coinData,
     },
-    state.network_name,
+    networkName,
   );
 
   usePageMetadata({title: `Coin ${assetSymbol} (${struct})`});

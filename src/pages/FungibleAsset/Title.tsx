@@ -9,7 +9,7 @@ import {
   verifiedLevel,
 } from "../../components/Table/VerifiedCell";
 import {usePageMetadata} from "../../components/hooks/usePageMetadata";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkName} from "../../global-config/GlobalConfig";
 import {FaMetadata} from "../../api/hooks/useGetFaMetadata";
 
 type FATitleProps = {
@@ -34,7 +34,7 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
 
   usePageMetadata({title: `Fungible Asset ${assetSymbol} (${address})`});
 
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   const {level} = verifiedLevel(
     {
       id: address,
@@ -42,7 +42,7 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
       symbol: assetSymbol,
       ...coinData,
     },
-    state.network_name,
+    networkName,
   );
 
   return (

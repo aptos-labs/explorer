@@ -7,7 +7,7 @@ import Footer from "./Footer";
 import {Fallback} from "./Fallback";
 import {
   GlobalStateProvider,
-  useGlobalState,
+  useNetworkName,
 } from "../../global-config/GlobalConfig";
 import {ProvideColorMode} from "../../context";
 import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
@@ -18,9 +18,9 @@ import {hiddenNetworks} from "../../constants";
 const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 
 function ExplorerWalletAdapterProvider({children}: LayoutProps) {
-  const [state] = useGlobalState();
+  const networkNameFromState = useNetworkName();
 
-  let networkName = state.network_name;
+  let networkName = networkNameFromState;
   if (hiddenNetworks.includes(networkName)) {
     // Other networks cause issues with the wallet adapter, so for now we can pretend it's local
     networkName = "local";
