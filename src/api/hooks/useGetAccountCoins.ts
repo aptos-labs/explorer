@@ -12,7 +12,11 @@ const MOVE_COIN_TYPE = "0x1::aptos_coin::AptosCoin";
 const FA_BALANCES_QUERY = `
     query FungibleAssetBalances($owner_address: String) {
         current_fungible_asset_balances(
-            where: {owner_address: {_eq: $owner_address}}
+            where: {
+                owner_address: {_eq: $owner_address},
+                amount: {_gt: "0"}
+            },
+            limit: 500
         ) {
             amount
             asset_type
