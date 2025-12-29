@@ -44,10 +44,19 @@ Sentry.init({
 });
 
 // inform the compiler of the existence of the window.aptos API
+// This is the legacy Petra wallet API that may be injected by browser extensions
 declare global {
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    aptos: any;
+    aptos?: {
+      connect?: () => Promise<unknown>;
+      disconnect?: () => Promise<void>;
+      account?: () => Promise<{address: string}>;
+      signAndSubmitTransaction?: (transaction: unknown) => Promise<unknown>;
+      signTransaction?: (transaction: unknown) => Promise<unknown>;
+      isConnected?: () => Promise<boolean>;
+      network?: () => Promise<string>;
+      [key: string]: unknown; // Allow for additional properties
+    };
   }
 }
 

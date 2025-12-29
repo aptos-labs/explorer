@@ -63,8 +63,11 @@ export default function BarChart({labels, dataset}: BarChartProps) {
       },
       y: {
         ticks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          _callback: (value: any) => numberFormatter(value, 0),
+          callback: (value: string | number) =>
+            numberFormatter(
+              typeof value === "string" ? parseFloat(value) : value,
+              0,
+            ),
           autoSkip: true,
           maxTicksLimit: 3,
         },

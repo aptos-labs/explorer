@@ -4,6 +4,25 @@ import {gql} from "@apollo/client";
 import {useQuery as useGraphqlQuery} from "@apollo/client/react";
 import {TransactionTypeName} from "../../components/TransactionType";
 
+// Type definitions for specific Move resource structures
+type FungibleStoreResource = Types.MoveResource & {
+  data: {
+    type: string;
+    data: {
+      balance: string;
+      frozen: boolean;
+      metadata: {inner: string};
+    };
+  };
+};
+
+type ObjectCoreResource = Types.MoveResource & {
+  data: {
+    type: string;
+    data: {owner: string};
+  };
+};
+
 export type TransactionCounterparty = {
   address: string;
   role: "receiver" | "smartContract";
@@ -247,18 +266,7 @@ function getAptBalanceChangeMap(transaction: Types.Transaction) {
             return balanceMap;
           }
 
-          // TODO: fix any
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const faStoreData = faStore as any as {
-            data: {
-              type: string;
-              data: {
-                balance: string;
-                frozen: boolean;
-                metadata: {inner: string};
-              };
-            };
-          };
+          const faStoreData = faStore as unknown as FungibleStoreResource;
 
           // TODO: Probably compare with AccountAddress
           // This is not APT, so skip
@@ -280,14 +288,7 @@ function getAptBalanceChangeMap(transaction: Types.Transaction) {
             return balanceMap;
           }
 
-          // TODO: fix any
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const objectData = object as any as {
-            data: {
-              type: string;
-              data: {owner: string};
-            };
-          };
+          const objectData = object as unknown as ObjectCoreResource;
           const balanceOwner = tryStandardizeAddress(
             objectData.data.data.owner,
           );

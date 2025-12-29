@@ -56,7 +56,6 @@ export function useGetDelegatedStaking(
   return {
     delegatorPools: data?.delegator_distinct_pool,
     loading,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error: error as any,
+    error: error ? (error as CombinedGraphQLErrors) : undefined,
   };
 }

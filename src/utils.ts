@@ -239,8 +239,11 @@ export function ensureBoolean(val: boolean | string): boolean {
   throw new Error("Invalid boolean string.");
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function assertType(val: any, types: string[] | string, message?: string) {
+function assertType(
+  val: unknown,
+  types: string[] | string,
+  message?: string,
+): asserts val is string | number | boolean | object {
   if (!types?.includes(typeof val)) {
     throw new Error(
       message ||

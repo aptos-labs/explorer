@@ -114,17 +114,19 @@ function MultisigContent({
 
   // Helper function to safely get nested value
   function safeGet(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    obj: any | undefined,
+    obj: unknown,
     path: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    defaultValue: any = "N/A",
-  ) {
+    defaultValue: string | number = "N/A",
+  ): string | number {
     return path.split(".").reduce((current, key) => {
-      return current && current[key] !== undefined
-        ? current[key]
+      return current &&
+        typeof current === "object" &&
+        current !== null &&
+        key in current &&
+        current[key as keyof typeof current] !== undefined
+        ? (current[key as keyof typeof current] as unknown)
         : defaultValue;
-    }, obj);
+    }, obj as unknown) as string | number;
   }
 
   return (
@@ -186,10 +188,11 @@ function MultisigContent({
 
       {/* Check for pending transactions - try different possible structures */}
       {(() => {
+        // Access transactions directly from typed data structure
         const transactions =
-          safeGet(multisigData, "transactions.inner.data", null) ||
-          safeGet(multisigData, "transactions.data", null) ||
-          safeGet(multisigData, "transactions", null);
+          multisigData.transactions?.inner?.data ||
+          (multisigData.transactions as unknown as {data?: unknown[]})?.data ||
+          (multisigData.transactions as unknown as unknown[]);
 
         if (
           transactions &&
@@ -201,9 +204,23 @@ function MultisigContent({
               <Typography variant="h6" sx={{mb: 1}}>
                 Pending Transactions ({transactions.length})
               </Typography>
-              {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                transactions.map((tx: any, index: number) => (
+              {transactions.map(
+                (
+                  tx: {
+                    key?: string;
+                    value?: {
+                      creator?: string;
+                      creation_time_secs?: string;
+                      votes?: {
+                        data?: Array<{
+                          key?: string;
+                          value?: boolean;
+                        }>;
+                      };
+                    };
+                  },
+                  index: number,
+                ) => (
                   <Box
                     key={index}
                     sx={{
@@ -241,8 +258,13 @@ function MultisigContent({
                               required
                             </Typography>
                             {tx.value.votes.data.map(
-                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                              (vote: any, voteIndex: number) => (
+                              (
+                                vote: {
+                                  key?: string;
+                                  value?: boolean;
+                                },
+                                voteIndex: number,
+                              ) => (
                                 <Typography
                                   key={voteIndex}
                                   variant="body2"
@@ -262,8 +284,8 @@ function MultisigContent({
                       </>
                     )}
                   </Box>
-                ))
-              }
+                ),
+              )}
             </Box>
           );
         }

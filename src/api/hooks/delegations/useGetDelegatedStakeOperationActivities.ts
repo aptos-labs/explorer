@@ -54,8 +54,11 @@ export function useGetDelegatedStakeOperationActivities(
     error ||
     !data
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {activities: undefined, loading, error: error as any};
+    return {
+      activities: undefined,
+      loading,
+      error: error ? (error as CombinedGraphQLErrors) : undefined,
+    };
   }
 
   return {activities: data?.delegated_staking_activities, loading, error};

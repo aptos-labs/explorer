@@ -6,6 +6,7 @@ import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import ChartTitle from "../Components/ChartTitle";
 import {CardOutline} from "../../../components/Card";
+import {TooltipItem} from "chart.js";
 
 export function getDataset(data: DailyAvgGasData[], days: number): number[] {
   return data
@@ -35,9 +36,12 @@ export default function DailyAvgGasUnitPriceChart({
         labels={labels}
         dataset={dataset}
         fill
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        tooltipsLabelFunc={(context: any) => {
-          const priceInteger = Math.round(context.parsed.y).toString();
+        tooltipsLabelFunc={(context: TooltipItem<"line">) => {
+          const yValue = context.parsed.y;
+          if (yValue === null || yValue === undefined) {
+            return "N/A";
+          }
+          const priceInteger = Math.round(yValue).toString();
           const priceInAPT = getFormattedBalanceStr(priceInteger, 8);
           return `${priceInAPT} APT`;
         }}

@@ -37,8 +37,11 @@ export function useGetNumberOfDelegators(poolAddress: Types.Address): {
     skip: !poolAddress,
   });
   if (!poolAddress64Hash || loading || error || !data) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return {numberOfDelegators: 0, loading, error: error as any};
+    return {
+      numberOfDelegators: 0,
+      loading,
+      error: error ? (error as CombinedGraphQLErrors) : undefined,
+    };
   }
 
   const delegatorData = data?.num_active_delegator_per_pool?.[0] as

@@ -74,10 +74,10 @@ export function TokenActivitiesWithPagination({
   );
 }
 
+import {Current_Token_Datas_V2} from "aptos";
+
 type ActivitiesTabProps = {
-  // TODO: add graphql data typing
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: Current_Token_Datas_V2;
 };
 
 export default function ActivitiesTab({

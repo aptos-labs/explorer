@@ -7,8 +7,7 @@ type ContentRowSmallProps = {
   title: string;
   value: React.ReactNode;
   tooltip?: React.ReactNode;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  i?: any;
+  i?: string | number;
 };
 
 export default function ContentRowSpaceBetween({

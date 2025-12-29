@@ -16,8 +16,18 @@ export default function ValidatorTransactionTab({
   transaction,
 }: ValidatorTabProps) {
   // FIXME: We need to get off SDK v1
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const transactionData = transaction as any;
+  // Validator transactions have additional properties beyond base Transaction type
+  // Type assertion is needed until we migrate to SDK v2
+  const transactionData = transaction as Types.Transaction & {
+    validator_transaction_type?: string;
+    success?: boolean;
+    version?: string;
+    timestamp?: string;
+    vm_status?: string;
+    state_change_hash?: string;
+    event_root_hash?: string;
+    accumulator_root_hash?: string;
+  };
 
   return (
     <Box marginBottom={3}>
@@ -29,22 +39,26 @@ export default function ValidatorTransactionTab({
         />
         <ContentRow
           title="Status:"
-          value={<TransactionStatus success={transactionData.success} />}
+          value={
+            <TransactionStatus success={transactionData.success ?? false} />
+          }
           tooltip={getLearnMoreTooltip("status")}
         />
         <ContentRow
           title="Validator Transaction Type:"
-          value={transactionData.validator_transaction_type}
+          value={transactionData.validator_transaction_type ?? "Unknown"}
           tooltip={getLearnMoreTooltip("proposer")}
         />
       </ContentBox>
       <ContentBox>
-        <TransactionBlockRow version={transactionData.version} />
+        <TransactionBlockRow
+          version={transactionData.version ?? String(transaction)}
+        />
         <ContentRow
           title="Timestamp:"
           value={
             <TimestampValue
-              timestamp={transactionData.timestamp}
+              timestamp={transactionData.timestamp ?? ""}
               ensureMilliSeconds
             />
           }
@@ -52,7 +66,7 @@ export default function ValidatorTransactionTab({
         />
         <ContentRow
           title="VM Status:"
-          value={transactionData.vm_status}
+          value={transactionData.vm_status ?? ""}
           tooltip={getLearnMoreTooltip("vm_status")}
         />
       </ContentBox>

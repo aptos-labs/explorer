@@ -309,13 +309,12 @@ function RunContractForm({
   const fnParams = removeSignerParam(fn);
 
   // TODO: We should use the SDKv2 for this
-  // Note: Return type is intentionally broad due to dynamic type conversion at runtime
-  // The actual type depends on the Move type being converted
+  // Note: Return type uses Types.MoveValue which is the union type for all Move values
+  // The actual type depends on the Move type being converted at runtime
   const convertArgument = (
     arg: string | null | undefined,
     type: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): any => {
+  ): Types.MoveValue => {
     // TypeScript doesn't really protect us from nulls, this enforces it
     if (typeof arg !== "string") {
       arg = "";
@@ -326,8 +325,7 @@ function RunContractForm({
       const innerTag = typeTag.value;
       if (innerTag.isVector()) {
         // This must be JSON, let's parse it
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return JSON.parse(arg) as any[];
+        return JSON.parse(arg) as Types.MoveValue[];
       }
 
       if (innerTag.isU8()) {
@@ -340,27 +338,25 @@ function RunContractForm({
 
       if (arg.startsWith("[")) {
         // This is supposed to be JSON if it has the bracket
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return JSON.parse(arg) as any[];
+        return JSON.parse(arg) as Types.MoveValue[];
       } else {
         // We handle array without brackets otherwise
         return arg.split(",").map((arg) => {
           return arg.trim();
-        });
+        }) as Types.MoveValue[];
       }
     } else if (typeTag.isStruct()) {
       if (typeTag.isOption()) {
         // This we need to handle if there is no value, we take "empty trimmed" as no value
         if (arg === "") {
-          return undefined;
+          return undefined as unknown as Types.MoveValue;
         } else {
           // Convert for the inner type if it isn't empty
-          arg = convertArgument(
+          const converted = convertArgument(
             arg,
             typeTag.value.typeArgs[0].toString(),
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ) as any;
-          return arg;
+          );
+          return converted;
         }
       }
     }
@@ -378,7 +374,14 @@ function RunContractForm({
         typeArguments: data.typeArgs,
         functionArguments: data.args.map((arg, i) => {
           const type = fnParams[i];
-          return convertArgument(arg, type);
+          // Convert MoveValue to the expected argument type
+          // The wallet adapter will handle the conversion
+          return convertArgument(arg, type) as unknown as
+            | string
+            | number
+            | boolean
+            | Uint8Array
+            | (string | number | boolean | Uint8Array)[];
         }),
       },
     };
