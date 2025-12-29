@@ -1,11 +1,13 @@
 import * as React from "react";
-import {Box} from "@mui/material";
+import {useMemo} from "react";
+import {Box, Typography} from "@mui/material";
 import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../utils";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
 import {Link} from "../../../routing";
 import {TokenOwnership} from "../../../api/hooks/useGetAccountTokens";
 import {labsBannedCollections} from "../../../constants";
@@ -182,20 +184,47 @@ export function TokensTable({
   tokens,
   columns = DEFAULT_COLUMNS,
 }: TokensTableProps) {
+  // Memoize token rows for virtualization
+  const tokenRows = useMemo(
+    () =>
+      tokens.map((token, i: number) => (
+        <TokenRow key={i} token={token} columns={columns} />
+      )),
+    [tokens, columns],
+  );
+
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          {columns.map((column) => (
-            <TokenHeaderCell key={column} column={column} />
-          ))}
-        </TableRow>
-      </TableHead>
-      <GeneralTableBody>
-        {tokens.map((token, i: number) => {
-          return <TokenRow key={i} token={token} columns={columns} />;
-        })}
-      </GeneralTableBody>
-    </Table>
+    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {columns.map((column) => (
+              <TokenHeaderCell key={column} column={column} />
+            ))}
+          </TableRow>
+        </TableHead>
+        {tokens.length > 0 ? (
+          <VirtualizedTableBody
+            estimatedRowHeight={60}
+            virtualizationThreshold={15}
+          >
+            {tokenRows}
+          </VirtualizedTableBody>
+        ) : (
+          <GeneralTableBody>
+            <TableRow>
+              <GeneralTableCell
+                colSpan={columns.length}
+                sx={{textAlign: "center", py: 3}}
+              >
+                <Typography variant="body1" color="text.secondary">
+                  No tokens found
+                </Typography>
+              </GeneralTableCell>
+            </TableRow>
+          </GeneralTableBody>
+        )}
+      </Table>
+    </Box>
   );
 }

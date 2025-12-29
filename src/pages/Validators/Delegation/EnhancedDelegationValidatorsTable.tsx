@@ -11,12 +11,12 @@ import {
   Chip,
   LinearProgress,
   Tooltip,
-  Pagination,
 } from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
+import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Types} from "aptos";
 import {aptosColor, grey} from "../../../themes/colors/aptosColorPalette";
@@ -564,10 +564,6 @@ export function EnhancedDelegationValidatorsTable() {
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
   const {totalVotingPower} = useGetValidatorSet();
 
-  // Pagination state - use a larger number to show more validators per page
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 20; // Increased from 10 to 20
-
   // Use our optimized data fetching hook
   const {validators, isLoading, error} = useValidatorDelegationData();
 
@@ -585,19 +581,18 @@ export function EnhancedDelegationValidatorsTable() {
     return getSortedValidators(filteredValidators, sortColumn, sortDirection);
   }, [validators, sortColumn, sortDirection]);
 
-  // Calculate pagination
-  const paginatedValidators = useMemo(() => {
-    const startIndex = (page - 1) * rowsPerPage;
-    return sortedValidators.slice(startIndex, startIndex + rowsPerPage);
-  }, [sortedValidators, page, rowsPerPage]);
-
-  // Handle pagination change
-  const handlePageChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
-    setPage(value);
-  };
+  // Memoize validator rows for virtualization
+  const validatorRows = useMemo(() => {
+    return sortedValidators.map((validator, i) => (
+      <ValidatorRow
+        key={`${validator.owner_address}-${i}`}
+        validator={validator}
+        columns={columns}
+        connected={connected}
+        totalVotingPower={totalVotingPower}
+      />
+    ));
+  }, [sortedValidators, columns, connected, totalVotingPower]);
 
   if (error) {
     // Handle both ResponseError and Error types
@@ -632,7 +627,7 @@ export function EnhancedDelegationValidatorsTable() {
 
   return (
     <Box>
-      <Box sx={{overflowX: "auto"}}>
+      <Box sx={{overflowX: "auto", maxHeight: "800px", overflowY: "auto"}}>
         <Table>
           <TableHead>
             <TableRow sx={{verticalAlign: "bottom"}}>
@@ -648,18 +643,15 @@ export function EnhancedDelegationValidatorsTable() {
               ))}
             </TableRow>
           </TableHead>
-          <GeneralTableBody>
-            {paginatedValidators.length > 0 ? (
-              paginatedValidators.map((validator, i) => (
-                <ValidatorRow
-                  key={`${validator.owner_address}-${i}`}
-                  validator={validator}
-                  columns={columns}
-                  connected={connected}
-                  totalVotingPower={totalVotingPower}
-                />
-              ))
-            ) : (
+          {sortedValidators.length > 0 ? (
+            <VirtualizedTableBody
+              estimatedRowHeight={70}
+              virtualizationThreshold={15}
+            >
+              {validatorRows}
+            </VirtualizedTableBody>
+          ) : (
+            <GeneralTableBody>
               <TableRow>
                 <GeneralTableCell
                   colSpan={columns.length}
@@ -670,29 +662,10 @@ export function EnhancedDelegationValidatorsTable() {
                   </Typography>
                 </GeneralTableCell>
               </TableRow>
-            )}
-          </GeneralTableBody>
+            </GeneralTableBody>
+          )}
         </Table>
       </Box>
-
-      {sortedValidators.length > rowsPerPage && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            p: 2,
-          }}
-        >
-          <Pagination
-            count={Math.ceil(sortedValidators.length / rowsPerPage)}
-            page={page}
-            onChange={handlePageChange}
-            color="primary"
-            showFirstButton
-            showLastButton
-          />
-        </Box>
-      )}
     </Box>
   );
 }
