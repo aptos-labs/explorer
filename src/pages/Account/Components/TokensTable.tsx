@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useMemo} from "react";
-import {Box, Typography} from "@mui/material";
+import {Box, Typography, useMediaQuery, useTheme} from "@mui/material";
 import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
@@ -8,6 +8,7 @@ import {assertNever} from "../../../utils";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
+import ResponsiveTableContainer from "../../../components/Table/ResponsiveTableContainer";
 import {Link} from "../../../routing";
 import {TokenOwnership} from "../../../api/hooks/useGetAccountTokens";
 import {labsBannedCollections} from "../../../constants";
@@ -131,6 +132,9 @@ const DEFAULT_COLUMNS: Column[] = [
   "amount",
 ];
 
+// Columns to show on mobile (smaller screens)
+const MOBILE_COLUMNS: Column[] = ["name", "propertyVersion", "type", "amount"];
+
 type TokenRowProps = {
   token: TokenOwnership;
   columns: Column[];
@@ -183,21 +187,34 @@ export function TokensTable({
   tokens,
   columns = DEFAULT_COLUMNS,
 }: TokensTableProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  // Use responsive columns if no custom columns provided
+  const responsiveColumns = useMemo(() => {
+    if (columns !== DEFAULT_COLUMNS) {
+      // If custom columns provided, use them as-is
+      return columns;
+    }
+    // Otherwise, use responsive columns based on screen size
+    return isMobile ? MOBILE_COLUMNS : DEFAULT_COLUMNS;
+  }, [columns, isMobile]);
+
   // Memoize token rows for virtualization
   const tokenRows = useMemo(
     () =>
       tokens.map((token, i: number) => (
-        <TokenRow key={i} token={token} columns={columns} />
+        <TokenRow key={i} token={token} columns={responsiveColumns} />
       )),
-    [tokens, columns],
+    [tokens, responsiveColumns],
   );
 
   return (
-    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+    <ResponsiveTableContainer>
       <Table>
         <TableHead>
           <TableRow>
-            {columns.map((column) => (
+            {responsiveColumns.map((column) => (
               <TokenHeaderCell key={column} column={column} />
             ))}
           </TableRow>
@@ -213,7 +230,7 @@ export function TokensTable({
           <GeneralTableBody>
             <TableRow>
               <GeneralTableCell
-                colSpan={columns.length}
+                colSpan={responsiveColumns.length}
                 sx={{textAlign: "center", py: 3}}
               >
                 <Typography variant="body1" color="text.secondary">
@@ -224,6 +241,6 @@ export function TokensTable({
           </GeneralTableBody>
         )}
       </Table>
-    </Box>
+    </ResponsiveTableContainer>
   );
 }

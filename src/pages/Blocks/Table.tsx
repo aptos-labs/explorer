@@ -1,6 +1,12 @@
 import * as React from "react";
 import {useMemo} from "react";
-import {Table, TableHead, TableRow, Box} from "@mui/material";
+import {
+  Table,
+  TableHead,
+  TableRow,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -10,6 +16,7 @@ import {parseTimestamp} from "../utils";
 import moment from "moment";
 import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import ResponsiveTableContainer from "../../components/Table/ResponsiveTableContainer";
 import {Link, useAugmentToWithGlobalSearchParams} from "../../routing";
 
 function getAgeInSeconds(block: Types.Block): string {
@@ -101,6 +108,9 @@ const DEFAULT_COLUMNS: Column[] = [
   "lastVersion",
 ];
 
+// Columns to show on mobile (smaller screens)
+const MOBILE_COLUMNS: Column[] = ["height", "age", "numVersions"];
+
 type BlockRowProps = {
   block: Types.Block;
   columns: Column[];
@@ -153,12 +163,25 @@ export default function BlocksTable({
   blocks,
   columns = DEFAULT_COLUMNS,
 }: BlocksTableProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   // TODO: Fix this better than this change here, this seems to be a bug elsewhere that I'm trying to fix on first load of page
   if (blocks == null) {
     blocks = [];
   } else if (!Array.isArray(blocks)) {
     blocks = [blocks];
   }
+
+  // Use responsive columns if no custom columns provided
+  const responsiveColumns = useMemo(() => {
+    if (columns !== DEFAULT_COLUMNS) {
+      // If custom columns provided, use them as-is
+      return columns;
+    }
+    // Otherwise, use responsive columns based on screen size
+    return isMobile ? MOBILE_COLUMNS : DEFAULT_COLUMNS;
+  }, [columns, isMobile]);
 
   // Memoize block rows for virtualization
   const blockRows = useMemo(
@@ -167,18 +190,18 @@ export default function BlocksTable({
         <BlockRow
           key={block.block_height}
           block={block}
-          columns={columns}
+          columns={responsiveColumns}
         />
       )),
-    [blocks, columns],
+    [blocks, responsiveColumns],
   );
 
   return (
-    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+    <ResponsiveTableContainer>
       <Table>
         <TableHead>
           <TableRow>
-            {columns.map((column) => (
+            {responsiveColumns.map((column) => (
               <BlockHeaderCell key={column} column={column} />
             ))}
           </TableRow>
@@ -190,6 +213,6 @@ export default function BlocksTable({
           {blockRows}
         </VirtualizedTableBody>
       </Table>
-    </Box>
+    </ResponsiveTableContainer>
   );
 }

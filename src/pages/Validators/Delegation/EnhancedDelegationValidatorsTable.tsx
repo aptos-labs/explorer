@@ -17,6 +17,7 @@ import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
+import ResponsiveTableContainer from "../../../components/Table/ResponsiveTableContainer";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Types} from "aptos";
 import {aptosColor, grey} from "../../../themes/colors/aptosColorPalette";
@@ -627,7 +628,7 @@ export function EnhancedDelegationValidatorsTable() {
 
   return (
     <Box>
-      <Box sx={{overflowX: "auto", maxHeight: "800px", overflowY: "auto"}}>
+      <ResponsiveTableContainer>
         <Table>
           <TableHead>
             <TableRow sx={{verticalAlign: "bottom"}}>
@@ -665,7 +666,7 @@ export function EnhancedDelegationValidatorsTable() {
             </GeneralTableBody>
           )}
         </Table>
-      </Box>
+      </ResponsiveTableContainer>
     </Box>
   );
 }

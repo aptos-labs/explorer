@@ -1,7 +1,6 @@
 import * as React from "react";
 import {useMemo, useCallback} from "react";
 import {
-  Box,
   Button,
   Stack,
   Table,
@@ -16,6 +15,7 @@ import {grey, primary} from "../../../themes/colors/aptosColorPalette";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
+import ResponsiveTableContainer from "../../../components/Table/ResponsiveTableContainer";
 import {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {
   VerifiedCoinCell,
@@ -100,7 +100,13 @@ const CoinTypeCell = React.memo(function CoinTypeCell({
   }
 
   return (
-    <GeneralTableCell sx={{width: 450}}>
+    <GeneralTableCell
+      sx={{
+        maxWidth: {xs: 200, md: 350, lg: 450},
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      }}
+    >
       <HashButton
         hash={data.tokenAddress ?? data.faAddress ?? "Unknown"}
         type={getType()}
@@ -377,7 +383,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   return (
     <>
       {verificationFilter !== CoinVerificationFilterType.NONE && filterSelector}
-      <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+      <ResponsiveTableContainer>
         <Table>
           <TableHead>
             <TableRow>
@@ -412,7 +418,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
             </GeneralTableBody>
           )}
         </Table>
-      </Box>
+      </ResponsiveTableContainer>
     </>
   );
 }

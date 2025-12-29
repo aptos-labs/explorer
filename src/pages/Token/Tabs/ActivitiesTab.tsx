@@ -61,7 +61,7 @@ export function TokenActivitiesWithPagination({
   return (
     <>
       <Stack spacing={2}>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
+        <Box sx={{width: "100%"}}>
           <ActivitiesTable activities={activities ?? []} />
         </Box>
         {numPages > 1 && (

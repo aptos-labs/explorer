@@ -61,7 +61,7 @@ export function AccountTokensWithPagination({
   return (
     <>
       <Stack spacing={2}>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
+        <Box sx={{width: "100%"}}>
           <TokensTable tokens={tokens ?? []} />
         </Box>
         {numPages > 1 && (

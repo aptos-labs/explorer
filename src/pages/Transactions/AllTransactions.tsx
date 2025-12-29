@@ -171,7 +171,7 @@ function TransactionsPageInner({
   return (
     <>
       <Stack spacing={2}>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
+        <Box sx={{width: "100%"}}>
           <TransactionContent
             data={result.data}
             isLoading={result.isLoading}
