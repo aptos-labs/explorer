@@ -14,5 +14,8 @@ export function useGetAccount(
     queryKey: ["account", {address}, state.network_value],
     queryFn: () => getAccount({address}, state.aptos_client),
     retry: options?.retry ?? false,
+    // Account data is semi-static - cache for 5 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
   });
 }

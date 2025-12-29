@@ -485,7 +485,8 @@ export function DelegationValidatorsTable() {
   );
   const {data: sortedValidatorsWithCommissionAndState, error} = useQuery<
     Types.MoveValue[],
-    ResponseError
+    ResponseError,
+    Array<ValidatorData & {commission: number; status: number}>
   >({
     queryKey: [
       "validatorCommisionAndState",
@@ -496,18 +497,20 @@ export function DelegationValidatorsTable() {
       getValidatorCommissionAndState(state.aptos_client, sortedValidatorAddrs),
     select: (res) => {
       /// First arg is always the return value
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const ret = res[0] as [any, any][];
+      const ret = res[0] as Array<[unknown, unknown]>;
       return sortedValidators.map((v, i) => {
-        const commision = ret[i][0];
-        const state = ret[i][1];
+        const commission = ret[i]?.[0];
+        const state = ret[i]?.[1];
         return {
           ...v,
-          commission: Number(commision) / 100,
-          status: Number(state),
+          commission: commission ? Number(commission) / 100 : 0,
+          status: state ? Number(state) : 0,
         };
       });
     }, // commission rate: 22.85% is represented as 2285
+    // Validator commission and state are semi-static - cache for 1 minute
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
 
   if (error) {
@@ -534,9 +537,7 @@ export function DelegationValidatorsTable() {
           return (
             <ValidatorRow
               key={i}
-              // FIXME: This type should be parsed properly, rather than converting here
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              validator={validator as any}
+              validator={validator}
               columns={columns}
               connected={connected}
             />

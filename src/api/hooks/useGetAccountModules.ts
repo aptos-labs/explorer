@@ -12,5 +12,8 @@ export function useGetAccountModules(
   return useQuery<Array<Types.MoveModuleBytecode>, ResponseError>({
     queryKey: ["accountModules", {address}, state.network_value],
     queryFn: () => getAccountModules({address}, state.aptos_client),
+    // Module code is semi-static - cache for 5 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
   });
 }
