@@ -74,27 +74,21 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
       fontWeightRegular: 400,
       fontWeightBold: 600,
       h1: {
-        fontFamily: `"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif`,
         fontWeight: "600",
       },
       h2: {
-        fontFamily: `"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif`,
         fontWeight: "600",
       },
       h3: {
-        fontFamily: `"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif`,
         fontWeight: "600",
       },
       h4: {
-        fontFamily: `"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif`,
         fontWeight: "600",
       },
       h5: {
-        fontFamily: `"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif`,
         fontWeight: "600",
       },
       h6: {
-        fontFamily: `"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif`,
         fontWeight: "600",
       },
       stats: {
@@ -628,8 +622,8 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
               backgroundColor: theme.palette.primary.main,
               color:
                 theme.palette.mode === "dark"
-                  ? brandColors.black
-                  : brandColors.white,
+                  ? brandColors.white
+                  : brandColors.black,
               fontSize: "1.1rem",
               padding: "12px 34px",
               minWidth: "8rem",
