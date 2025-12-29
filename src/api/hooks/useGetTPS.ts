@@ -7,8 +7,6 @@ import {AnalyticsData, ANALYTICS_DATA_URL} from "./useGetAnalyticsData";
 
 export function useGetTPS() {
   const [state] = useGlobalState();
-  const [blockHeight, setBlockHeight] = useState<number | undefined>();
-  const {tps} = useGetTPSByBlockHeight(blockHeight);
 
   const {data: ledgerData} = useQuery({
     queryKey: ["ledgerInfo", state.network_value],
@@ -16,12 +14,9 @@ export function useGetTPS() {
     refetchInterval: 10000,
   });
   const currentBlockHeight = ledgerData?.block_height;
-
-  useEffect(() => {
-    if (currentBlockHeight !== undefined) {
-      setBlockHeight(parseInt(currentBlockHeight));
-    }
-  }, [currentBlockHeight, state]);
+  const blockHeight =
+    currentBlockHeight !== undefined ? parseInt(currentBlockHeight) : undefined;
+  const {tps} = useGetTPSByBlockHeight(blockHeight);
 
   return {tps};
 }
@@ -44,10 +39,8 @@ export function useGetPeakTPS() {
       fetchData().catch((error) => {
         console.error("ERROR!", error, typeof error);
       });
-    } else {
-      setPeakTps(undefined);
     }
-  }, [state]);
+  }, [state.network_name]);
 
-  return {peakTps};
+  return state.network_name === "mainnet" ? {peakTps} : {peakTps: undefined};
 }

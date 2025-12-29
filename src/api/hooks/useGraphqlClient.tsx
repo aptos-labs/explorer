@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {
   ApolloClient,
   ApolloLink,
@@ -58,15 +58,9 @@ function getGraphqlClient(networkName: NetworkName): ApolloClient {
 
 export function useGetGraphqlClient() {
   const [state] = useGlobalState();
-  const [graphqlClient, setGraphqlClient] = useState<ApolloClient>(
-    getGraphqlClient(state.network_name),
-  );
 
-  useEffect(() => {
-    setGraphqlClient(getGraphqlClient(state.network_name));
-  }, [state.network_name]);
-
-  return graphqlClient;
+  // Calculate graphqlClient during render instead of using useEffect
+  return getGraphqlClient(state.network_name);
 }
 
 type GraphqlClientProviderProps = {

@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useMemo} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {Types} from "aptos";
 import {useGlobalState} from "../../../../global-config/GlobalConfig";
@@ -35,13 +35,8 @@ export function useValidatorDelegationData() {
   const {delegatedStakingPools, loading: poolsLoading} =
     useGetDelegatedStakingPoolList() ?? [];
 
-  // State for processed validators
-  const [processedValidators, setProcessedValidators] = useState<
-    ValidatorData[]
-  >([]);
-
-  // Process validators and delegation pools
-  useEffect(() => {
+  // Calculate processed validators during render instead of using useEffect
+  const processedValidators = useMemo(() => {
     if (!poolsLoading) {
       const validatorsInDelegatedStakingPools: ValidatorData[] =
         validators.filter((validator) => {
@@ -70,11 +65,12 @@ export function useValidatorDelegationData() {
             apt_rewards_distributed: 0,
           }));
 
-      setProcessedValidators([
+      return [
         ...validatorsInDelegatedStakingPools,
         ...delegatedStakingPoolsNotInValidators,
-      ]);
+      ];
     }
+    return [];
   }, [validators, poolsLoading, delegatedStakingPools]);
 
   // Get validator addresses for batch queries

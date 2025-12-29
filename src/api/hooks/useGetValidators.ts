@@ -79,34 +79,33 @@ function useGetValidatorsRawData() {
       fetchData().catch((error) => {
         console.error("ERROR!", error, typeof error);
       });
-    } else {
-      setValidatorsRawData([]);
     }
-  }, [state]);
+  }, [state.network_name]);
 
-  return {validatorsRawData};
+  return state.network_name === Network.MAINNET ||
+    state.network_name === Network.TESTNET
+    ? {validatorsRawData}
+    : {validatorsRawData: []};
 }
 
 export function useGetValidators() {
   const {activeValidators} = useGetValidatorSet();
   const {validatorsRawData} = useGetValidatorsRawData();
 
-  const [validators, setValidators] = useState<ValidatorData[]>([]);
+  // Calculate validators during render instead of using useEffect
+  let validators: ValidatorData[] = [];
+  if (activeValidators.length > 0 && validatorsRawData.length > 0) {
+    const validatorsCopy = JSON.parse(JSON.stringify(validatorsRawData));
 
-  useEffect(() => {
-    if (activeValidators.length > 0 && validatorsRawData.length > 0) {
-      const validatorsCopy = JSON.parse(JSON.stringify(validatorsRawData));
+    validatorsCopy.forEach((validator: ValidatorData) => {
+      const activeValidator = activeValidators.find(
+        (activeValidator) => activeValidator.addr === validator.owner_address,
+      );
+      validator.voting_power = activeValidator?.voting_power ?? "0";
+    });
 
-      validatorsCopy.forEach((validator: ValidatorData) => {
-        const activeValidator = activeValidators.find(
-          (activeValidator) => activeValidator.addr === validator.owner_address,
-        );
-        validator.voting_power = activeValidator?.voting_power ?? "0";
-      });
-
-      setValidators(validatorsCopy);
-    }
-  }, [activeValidators, validatorsRawData]);
+    validators = validatorsCopy;
+  }
 
   return {validators};
 }

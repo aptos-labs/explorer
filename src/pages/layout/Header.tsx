@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React, {useRef, useEffect} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
@@ -55,25 +55,38 @@ export default function Header() {
   const navigate = useNavigate();
   const walletAddressRef = useRef("");
   const accountAddress = addressFromWallet(account?.address);
-  if (
-    account &&
-    accountAddress &&
-    walletAddressRef.current !== accountAddress
-  ) {
-    logEvent("wallet_connected", accountAddress, {
-      wallet_name: wallet!.name,
-      network_type: state.network_name,
-    });
-    sendToGTM({
-      dataLayer: {
-        event: "walletConnection",
-        walletAddress: account.address,
-        walletName: wallet?.name,
-        network: network?.name,
-      },
-    });
-    walletAddressRef.current = AccountAddress.from(account.address).toString();
-  }
+
+  // Handle wallet connection logging in useEffect instead of during render
+  useEffect(() => {
+    if (
+      account &&
+      accountAddress &&
+      walletAddressRef.current !== accountAddress
+    ) {
+      logEvent("wallet_connected", accountAddress, {
+        wallet_name: wallet!.name,
+        network_type: state.network_name,
+      });
+      sendToGTM({
+        dataLayer: {
+          event: "walletConnection",
+          walletAddress: account.address,
+          walletName: wallet?.name,
+          network: network?.name,
+        },
+      });
+      walletAddressRef.current = AccountAddress.from(
+        account.address,
+      ).toString();
+    }
+  }, [
+    account,
+    accountAddress,
+    state.network_name,
+    wallet,
+    logEvent,
+    network?.name,
+  ]);
 
   return (
     <>

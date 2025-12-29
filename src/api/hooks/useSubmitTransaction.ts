@@ -1,5 +1,5 @@
 import {FailedTransactionError} from "aptos";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {
   useWallet,
   InputTransactionData,
@@ -31,12 +31,6 @@ const useSubmitTransaction = () => {
     useState<boolean>(false);
   const [state] = useGlobalState();
   const {signAndSubmitTransaction, wallet, network} = useWallet();
-
-  useEffect(() => {
-    if (transactionResponse !== null) {
-      setTransactionInProcess(false);
-    }
-  }, [transactionResponse]);
 
   async function submitTransaction(transaction: InputTransactionData) {
     if (

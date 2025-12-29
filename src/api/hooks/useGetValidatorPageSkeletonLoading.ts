@@ -1,5 +1,5 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useState, useEffect} from "react";
+import {useState} from "react";
 
 type useGetValidatorPageSkeletonLoadingResponse = {
   setIsMyDepositsSectionSkeletonLoading: (arg: boolean) => void;
@@ -15,13 +15,10 @@ export function useGetValidatorPageSkeletonLoading(): useGetValidatorPageSkeleto
   ] = useState<boolean>(connected);
   const [isStakingBarSkeletonLoading, setIsStakingBarSkeletonLoading] =
     useState<boolean>(true);
-  const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    if (!isMyDepositsSectionSkeletonLoading && !isStakingBarSkeletonLoading) {
-      setIsSkeletonLoading(false);
-    }
-  }, [isMyDepositsSectionSkeletonLoading, isStakingBarSkeletonLoading]);
+  // Calculate isSkeletonLoading during render instead of using useEffect
+  const isSkeletonLoading =
+    isMyDepositsSectionSkeletonLoading || isStakingBarSkeletonLoading;
 
   return {
     setIsMyDepositsSectionSkeletonLoading,

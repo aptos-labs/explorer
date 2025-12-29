@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Stack, useMediaQuery, useTheme} from "@mui/material";
 import Map from "./Components/Map";
 import {grey} from "../../themes/colors/aptosColorPalette";
@@ -15,16 +15,13 @@ export default function ValidatorsMap() {
   const backgroundColor = isDarkTheme ? grey[800] : grey[50];
 
   const {validatorGeoMetric, validatorGeoGroups} = useGetValidatorSetGeoData();
-  const [isSkeletonLoading, setIsSkeletonLoading] = useState<boolean>(true);
   const {curEpoch} = useGetEpochTime();
   const {totalVotingPower} = useGetValidatorSet();
   const {numberOfActiveValidators} = useGetValidatorSet();
 
-  useEffect(() => {
-    if (curEpoch && totalVotingPower && numberOfActiveValidators) {
-      setIsSkeletonLoading(false);
-    }
-  }, [curEpoch, totalVotingPower, numberOfActiveValidators]);
+  // Calculate isSkeletonLoading during render instead of using useEffect
+  const isSkeletonLoading =
+    !curEpoch || !totalVotingPower || !numberOfActiveValidators;
 
   return (
     <SkeletonTheme baseColor={isDarkTheme ? grey[500] : undefined}>

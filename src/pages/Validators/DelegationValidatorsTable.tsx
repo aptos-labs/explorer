@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useMemo, useState} from "react";
 import {
   alpha,
   Box,
@@ -335,17 +335,15 @@ function MyDepositCell({validator}: ValidatorCellProps) {
     addressFromWallet(account?.address),
     validator.owner_address,
   );
-  const [totalDeposit, setTotalDeposit] = useState<Types.MoveValue>();
-
-  useMemo(() => {
+  // Calculate totalDeposit during render instead of using useMemo with setState
+  const totalDeposit = useMemo(() => {
     if (stakes && stakes.length > 0) {
-      setTotalDeposit(
-        stakes.reduce(
-          (acc, stake) => Number(acc) + Number(stake),
-          0 as Types.MoveValue,
-        ),
+      return stakes.reduce(
+        (acc, stake) => Number(acc) + Number(stake),
+        0 as Types.MoveValue,
       );
     }
+    return undefined;
   }, [stakes]);
 
   if (isLoading || !account) {
@@ -436,11 +434,47 @@ export function DelegationValidatorsTable() {
     : COLUMNS_WITHOUT_WALLET_CONNECTION;
   const [sortColumn, setSortColumn] = useState<Column>("rewardsEarned");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
-  const [delegationValidators, setDelegationValidators] = useState<
-    ValidatorData[]
-  >([]);
   const {delegatedStakingPools, loading} =
     useGetDelegatedStakingPoolList() ?? [];
+
+  // Calculate delegationValidators during render instead of using useEffect
+  const delegationValidators = useMemo(() => {
+    if (!loading) {
+      // delegated staking pools that are in validators list, meaning that they are either active or once active now inactive
+      const validatorsInDelegatedStakingPools: ValidatorData[] =
+        validators.filter((validator) => {
+          return delegatedStakingPools.some(
+            (pool) => pool.staking_pool_address === validator.owner_address,
+          );
+        });
+
+      // delegated staking pools that are not in validators list, meaning that they were never active
+      const delegatedStakingPoolsNotInValidators: ValidatorData[] =
+        delegatedStakingPools
+          .filter((pool) => {
+            return !validators.some(
+              (validator) =>
+                validator.owner_address === pool.staking_pool_address,
+            );
+          })
+          .map((pool) => ({
+            owner_address: pool.staking_pool_address,
+            operator_address: pool.current_staking_pool.operator_address,
+            voting_power: "0",
+            governance_voting_record: "",
+            last_epoch: 0,
+            last_epoch_performance: "",
+            liveness: 0,
+            rewards_growth: 0,
+            apt_rewards_distributed: 0,
+          }));
+      return [
+        ...validatorsInDelegatedStakingPools,
+        ...delegatedStakingPoolsNotInValidators,
+      ];
+    }
+    return [];
+  }, [validators, loading, delegatedStakingPools]);
   const sortedValidators = getSortedValidators(
     delegationValidators,
     sortColumn,
@@ -473,43 +507,6 @@ export function DelegationValidatorsTable() {
       });
     }, // commission rate: 22.85% is represented as 2285
   });
-
-  useEffect(() => {
-    if (!loading) {
-      // delegated staking pools that are in validators list, meaning that they are either active or once active now inactive
-      const validatorsInDelegatedStakingPools: ValidatorData[] =
-        validators.filter((validator) => {
-          return delegatedStakingPools.some(
-            (pool) => pool.staking_pool_address === validator.owner_address,
-          );
-        });
-
-      // delegated staking pools that are not in validators list, meaning that they were never active
-      const delegatedStakingPoolsNotInValidators: ValidatorData[] =
-        delegatedStakingPools
-          .filter((pool) => {
-            return !validators.some(
-              (validator) =>
-                validator.owner_address === pool.staking_pool_address,
-            );
-          })
-          .map((pool) => ({
-            owner_address: pool.staking_pool_address,
-            operator_address: pool.current_staking_pool.operator_address,
-            voting_power: "0",
-            governance_voting_record: "",
-            last_epoch: 0,
-            last_epoch_performance: "",
-            liveness: 0,
-            rewards_growth: 0,
-            apt_rewards_distributed: 0,
-          }));
-      setDelegationValidators([
-        ...validatorsInDelegatedStakingPools,
-        ...delegatedStakingPoolsNotInValidators,
-      ]);
-    }
-  }, [validators, state.network_value, loading, delegatedStakingPools]);
 
   if (error) {
     return <Error error={error} />;
