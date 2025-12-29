@@ -163,9 +163,9 @@ export default function BlocksTable({
   // Memoize block rows for virtualization
   const blockRows = useMemo(
     () =>
-      blocks.map((block: Types.Block, i: number) => (
+      blocks.map((block: Types.Block) => (
         <BlockRow
-          key={`${i}-${block.block_height}`}
+          key={block.block_height}
           block={block}
           columns={columns}
         />
