@@ -141,6 +141,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
             text: {
               primary: semanticColors.text.primary,
               secondary: semanticColors.text.secondary,
+              disabled: semanticColors.text.disabled,
             },
 
             lineShade: {
@@ -149,6 +150,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
 
             neutralShade: {
               main: brandColors.white,
+              lighter: brandColors.white,
               darker: brandColors.creme,
             },
           }
@@ -182,6 +184,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
             text: {
               primary: semanticColors.text.primary,
               secondary: semanticColors.text.secondary,
+              disabled: semanticColors.text.disabled,
             },
 
             lineShade: {
@@ -191,6 +194,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
             neutralShade: {
               main: brandColors.ink,
               lighter: brandColors.coal,
+              darker: brandColors.black,
             },
           }),
     },
