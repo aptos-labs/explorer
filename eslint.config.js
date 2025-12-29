@@ -1,15 +1,17 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-const globals = require("globals");
-const reactHtml = require("eslint-plugin-html");
-const parser = require("@typescript-eslint/parser");
+import {fileURLToPath} from "node:url";
+import {dirname} from "node:path";
+import globals from "globals";
+import reactHtml from "eslint-plugin-html";
+import parser from "@typescript-eslint/parser";
+import {FlatCompat} from "@eslint/eslintrc";
 
-const eslintRc = require("@eslint/eslintrc");
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const compat = new eslintRc.FlatCompat({
+const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-module.exports = [
+export default [
   {
     ignores: [
       "pnpm-lock.yaml",
