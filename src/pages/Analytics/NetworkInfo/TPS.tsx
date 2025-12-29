@@ -1,7 +1,7 @@
 import {Box, Stack} from "@mui/material";
 import React from "react";
 import {useGetPeakTPS, useGetTPS} from "../../../api/hooks/useGetTPS";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
 import MetricCard, {DoubleMetricCard} from "./MetricCard";
 
 function getFormattedTPS(tps: number) {
@@ -12,10 +12,10 @@ function getFormattedTPS(tps: number) {
 export default function TPS() {
   const {tps} = useGetTPS();
   const {peakTps} = useGetPeakTPS();
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
 
   // Calculate showPeakTps during render instead of using useEffect
-  const showPeakTps = state.network_name === "mainnet";
+  const showPeakTps = networkName === "mainnet";
 
   return showPeakTps ? (
     <DoubleMetricCard

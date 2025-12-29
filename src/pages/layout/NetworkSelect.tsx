@@ -15,7 +15,10 @@ import {
   useGetChainIdCached,
 } from "../../api/hooks/useGetNetworkChainIds";
 import {hiddenNetworks, NetworkName, networks} from "../../constants";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkName,
+  useGlobalActions,
+} from "../../global-config/GlobalConfig";
 import {grey} from "../../themes/colors/aptosColorPalette";
 
 function NetworkAndChainIdCached({
@@ -68,7 +71,8 @@ function NetworkMenuItem({networkName}: {networkName: string}) {
 }
 
 export default function NetworkSelect() {
-  const [state, {selectNetwork}] = useGlobalState();
+  const networkName = useNetworkName();
+  const {selectNetwork} = useGlobalActions();
   const theme = useTheme();
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -95,7 +99,7 @@ export default function NetworkSelect() {
         <Select
           id="network-select"
           inputProps={{"aria-label": "Select Network"}}
-          value={state.network_name}
+          value={networkName}
           onChange={handleChange}
           renderValue={(value) => <Typography>{value}</Typography>}
           onClose={() => {

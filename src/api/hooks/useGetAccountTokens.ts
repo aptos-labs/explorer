@@ -1,20 +1,24 @@
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useIndexerClient,
+  useSdkV2Client,
+} from "../../global-config/GlobalConfig";
 import {useQuery} from "@tanstack/react-query";
 import {tryStandardizeAddress} from "../../utils";
 import {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 import {IndexerClient} from "aptos";
 
 export function useGetAccountTokensCount(address: string) {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const indexerClient = useIndexerClient();
   const addr64Hash = tryStandardizeAddress(address);
   return useQuery({
-    queryKey: ["account_tokens_count", {addr64Hash}, state.network_value],
+    queryKey: ["account_tokens_count", {addr64Hash}, networkValue],
     queryFn: async () => {
       if (!addr64Hash) {
         return 0;
       }
-      const response =
-        await state.indexer_client?.getAccountTokensCount(address);
+      const response = await indexerClient?.getAccountTokensCount(address);
       return (
         response?.current_token_ownerships_v2_aggregate?.aggregate?.count ?? 0
       );
@@ -31,19 +35,16 @@ export function useGetAccountTokens(
   limit: number,
   offset?: number,
 ) {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const indexerClient = useIndexerClient();
   const addr64Hash = tryStandardizeAddress(address);
   return useQuery<TokenOwnership[]>({
-    queryKey: [
-      "account_tokens",
-      {addr64Hash, limit, offset},
-      state.network_value,
-    ],
+    queryKey: ["account_tokens", {addr64Hash, limit, offset}, networkValue],
     queryFn: async () => {
       if (!addr64Hash) {
         return [];
       }
-      const response = await state.indexer_client?.getOwnedTokens(address, {
+      const response = await indexerClient?.getOwnedTokens(address, {
         options: {
           limit,
           offset,
@@ -63,28 +64,30 @@ export function useGetAccountTokens(
 }
 
 export function useGetTokenData(tokenDataId?: string) {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const indexerClient = useIndexerClient();
   return useQuery({
-    queryKey: ["token_data", {tokenDataId}, state.network_value],
+    queryKey: ["token_data", {tokenDataId}, networkValue],
     queryFn: async () => {
       if (!tokenDataId) {
         return undefined;
       }
-      const response = await state.indexer_client?.getTokenData(tokenDataId);
+      const response = await indexerClient?.getTokenData(tokenDataId);
       return response?.current_token_datas_v2;
     },
   });
 }
 
 export function useGetTokenOwners(tokenDataId?: string) {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const indexerClient = useIndexerClient();
   return useQuery({
-    queryKey: ["token_owners", {tokenDataId}, state.network_value],
+    queryKey: ["token_owners", {tokenDataId}, networkValue],
     queryFn: async () => {
       if (!tokenDataId) {
         return [];
       }
-      const response = await state.indexer_client?.getTokenOwnersData(
+      const response = await indexerClient?.getTokenOwnersData(
         tokenDataId,
         undefined,
         {},
@@ -95,12 +98,13 @@ export function useGetTokenOwners(tokenDataId?: string) {
 }
 
 export function useGetTokenActivitiesCount(tokenDataId: string) {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const indexerClient = useIndexerClient();
   return useQuery({
-    queryKey: ["token_activities_count", {tokenDataId}, state.network_value],
+    queryKey: ["token_activities_count", {tokenDataId}, networkValue],
     queryFn: async () => {
       const response =
-        await state.indexer_client?.getTokenActivitiesCount(tokenDataId);
+        await indexerClient?.getTokenActivitiesCount(tokenDataId);
       return response?.token_activities_v2_aggregate?.aggregate?.count ?? 0;
     },
   });
@@ -111,16 +115,13 @@ export function useGetTokenActivities(
   limit: number,
   offset?: number,
 ) {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const sdkV2Client = useSdkV2Client();
   return useQuery({
-    queryKey: [
-      "token_activities",
-      {tokenDataId, limit, offset},
-      state.network_value,
-    ],
+    queryKey: ["token_activities", {tokenDataId, limit, offset}, networkValue],
     queryFn: async () => {
       const response: GetTokenActivityResponse =
-        await state.sdk_v2_client.getDigitalAssetActivity({
+        await sdkV2Client.getDigitalAssetActivity({
           digitalAssetAddress: tokenDataId,
           options: {
             limit,

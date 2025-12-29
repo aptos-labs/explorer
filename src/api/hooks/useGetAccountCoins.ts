@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {ResponseError} from "../client";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useSdkV2Client} from "../../global-config/GlobalConfig";
 import {tryStandardizeAddress} from "../../utils";
 
 const COINS_QUERY = `
@@ -36,7 +36,7 @@ const COIN_COUNT_QUERY = `
 `;
 
 export function useGetAccountCoinCount(address: string) {
-  const [state] = useGlobalState();
+  const sdkV2Client = useSdkV2Client();
   const standardizedAddress = tryStandardizeAddress(address);
 
   return useQuery<number, ResponseError>({
@@ -48,7 +48,7 @@ export function useGetAccountCoinCount(address: string) {
         return 0;
       }
 
-      const response = await state.sdk_v2_client.queryIndexer<{
+      const response = await sdkV2Client.queryIndexer<{
         current_fungible_asset_balances_aggregate: {aggregate: {count: number}};
       }>({
         query: {
@@ -80,7 +80,7 @@ export function useGetAccountCoins(
   limit: number = 100,
   offset: number = 0,
 ) {
-  const [state] = useGlobalState();
+  const sdkV2Client = useSdkV2Client();
   const standardizedAddress = tryStandardizeAddress(address);
 
   return useQuery<FaBalance[], ResponseError>({
@@ -92,7 +92,7 @@ export function useGetAccountCoins(
         return [];
       }
 
-      const response = await state.sdk_v2_client.queryIndexer<{
+      const response = await sdkV2Client.queryIndexer<{
         current_fungible_asset_balances: FaBalance[];
       }>({
         query: {
@@ -112,7 +112,7 @@ export function useGetAccountCoins(
 
 // Legacy function that fetches all coins at once for backward compatibility
 export function useGetAllAccountCoins(address: string) {
-  const [state] = useGlobalState();
+  const sdkV2Client = useSdkV2Client();
   const standardizedAddress = tryStandardizeAddress(address);
 
   // Get count first
@@ -133,7 +133,7 @@ export function useGetAllAccountCoins(address: string) {
       const promises = [];
       for (let i = 0; i < count.data; i += PAGE_SIZE) {
         promises.push(
-          state.sdk_v2_client.queryIndexer<{
+          sdkV2Client.queryIndexer<{
             current_fungible_asset_balances: FaBalance[];
           }>({
             query: {

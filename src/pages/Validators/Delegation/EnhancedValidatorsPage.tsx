@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Box, Typography} from "@mui/material";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
 import PageHeader from "../../layout/PageHeader";
 import EnhancedValidatorsPageTabs from "./EnhancedTabs";
 import ValidatorsMap from "../ValidatorsMap";
@@ -11,18 +11,18 @@ import {OutOfCommissionPoolsBanner} from "../../../components/OutOfCommissionPoo
 import {WalletDeprecationBanner} from "../../../components/WalletDeprecationBanner";
 
 export default function EnhancedValidatorsPage() {
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   const navigate = useNavigate();
 
   usePageMetadata({title: "Validators"});
 
   React.useEffect(() => {
-    if (state.network_name === Network.DEVNET) {
+    if (networkName === Network.DEVNET) {
       navigate("/validators");
     }
-  }, [state.network_name, navigate]);
+  }, [networkName, navigate]);
 
-  if (state.network_name === Network.DEVNET) {
+  if (networkName === Network.DEVNET) {
     return null;
   }
 
@@ -34,7 +34,7 @@ export default function EnhancedValidatorsPage() {
       </Typography>
       <OutOfCommissionPoolsBanner />
       <WalletDeprecationBanner />
-      {state.network_name === "mainnet" && <ValidatorsMap />}
+      {networkName === "mainnet" && <ValidatorsMap />}
       <EnhancedValidatorsPageTabs />
     </Box>
   );

@@ -17,7 +17,7 @@ import {
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {transactionsToCSV, downloadCSV} from "../../utils";
 import {Types} from "aptos";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {useAptosClient} from "../../../global-config/GlobalConfig";
 import {getTransaction} from "../../../api";
 import {gql} from "@apollo/client";
 import {useGetGraphqlClient} from "../../../api/hooks/useGraphqlClient";
@@ -173,7 +173,7 @@ function CSVExportButton({
 }) {
   const [isExporting, setIsExporting] = React.useState(false);
   const [exportProgress, setExportProgress] = React.useState(0);
-  const [state] = useGlobalState();
+  const aptosClient = useAptosClient();
   const logEvent = useLogEventWithBasic();
   const graphqlClient = useGetGraphqlClient();
 
@@ -393,7 +393,7 @@ function CSVExportButton({
               async () => {
                 return await getTransaction(
                   {txnHashOrVersion: version},
-                  state.aptos_client,
+                  aptosClient,
                 );
               },
               3, // max retries

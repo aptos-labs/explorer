@@ -4,7 +4,7 @@ import {
   useWallet,
   InputTransactionData,
 } from "@aptos-labs/wallet-adapter-react";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkName, useAptosClient} from "../../global-config/GlobalConfig";
 
 export type TransactionResponse =
   | TransactionResponseOnSubmission
@@ -27,7 +27,8 @@ export type TransactionResponseOnError = {
 const useSubmitTransaction = () => {
   const [transactionResponse, setTransactionResponse] =
     useState<TransactionResponse | null>(null);
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
+  const aptosClient = useAptosClient();
   const {signAndSubmitTransaction, wallet, network} = useWallet();
 
   // Calculate transactionInProcess during render instead of using state
@@ -35,7 +36,7 @@ const useSubmitTransaction = () => {
 
   async function submitTransaction(transaction: InputTransactionData) {
     if (
-      network?.name.toLocaleLowerCase() !== state.network_name &&
+      network?.name.toLocaleLowerCase() !== networkName &&
       // TODO: This is a hack to get around network being cached
       wallet?.name !== "Google (AptosConnect)"
     ) {
@@ -64,7 +65,7 @@ const useSubmitTransaction = () => {
 
         // transaction submit succeed
         if ("hash" in response) {
-          await state.aptos_client.waitForTransaction(response["hash"], {
+          await aptosClient.waitForTransaction(response["hash"], {
             checkSuccess: true,
           });
           return {

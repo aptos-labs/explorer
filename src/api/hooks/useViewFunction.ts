@@ -1,7 +1,10 @@
 import {Types} from "aptos";
 import {useQuery, UseQueryOptions, UseQueryResult} from "@tanstack/react-query";
 import {ResponseError} from "../client";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+} from "../../global-config/GlobalConfig";
 import {view} from "../index";
 
 export type UseViewFunctionOptions = Pick<
@@ -15,7 +18,8 @@ export function useViewFunction(
   args: string[],
   options: UseViewFunctionOptions = {},
 ): UseQueryResult<Types.MoveValue[], ResponseError> {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
 
   const request: Types.ViewRequest = {
     function: functionName,
@@ -24,12 +28,8 @@ export function useViewFunction(
   };
 
   return useQuery<Types.MoveValue[], ResponseError>({
-    queryKey: [
-      "viewFunction",
-      {functionName, typeArgs, args},
-      state.network_value,
-    ],
-    queryFn: () => view(request, state.aptos_client),
+    queryKey: ["viewFunction", {functionName, typeArgs, args}, networkValue],
+    queryFn: () => view(request, aptosClient),
     refetchOnWindowFocus: false,
     ...options,
   });

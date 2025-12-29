@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Banner} from "./Banner";
 import {useGetDelegatedStaking} from "../api/hooks/delegations/useGetDelegatedStaking";
-import {useGlobalState} from "../global-config/GlobalConfig";
+import {useAptosClient} from "../global-config/GlobalConfig";
 import {getValidatorCommission} from "../api";
 import {addressFromWallet} from "../utils";
 
@@ -12,7 +12,7 @@ import {addressFromWallet} from "../utils";
  */
 export function OutOfCommissionPoolsBanner() {
   const {connected, account} = useWallet();
-  const [state] = useGlobalState();
+  const aptosClient = useAptosClient();
   const [hasZeroCommission, setHasZeroCommission] = useState<boolean>(false);
   const [zeroCommissionPoolAddresses, setZeroCommissionPoolAddresses] =
     useState<string[]>([]);
@@ -23,7 +23,7 @@ export function OutOfCommissionPoolsBanner() {
   );
 
   useEffect(() => {
-    if (!connected || loading || !delegatorPools || !state.aptos_client) {
+    if (!connected || loading || !delegatorPools || !aptosClient) {
       setHasZeroCommission(false);
       setZeroCommissionPoolAddresses([]);
       return;
@@ -38,7 +38,7 @@ export function OutOfCommissionPoolsBanner() {
         const poolChecks = delegatorPools.map(async (pool) => {
           try {
             const commissionResult = await getValidatorCommission(
-              state.aptos_client,
+              aptosClient,
               pool.pool_address,
             );
 
@@ -80,7 +80,7 @@ export function OutOfCommissionPoolsBanner() {
     };
 
     checkPools();
-  }, [connected, loading, delegatorPools, state.aptos_client, isChecking]);
+  }, [connected, loading, delegatorPools, aptosClient, isChecking]);
 
   if (!connected || !hasZeroCommission) {
     return null;

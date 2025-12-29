@@ -17,7 +17,7 @@ import {
   codeBlockColorClickableOnHover,
 } from "../../themes/colors/aptosColorPalette";
 import {BUTTON_HEIGHT} from "../TitleHashButton";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useNetworkName} from "../../global-config/GlobalConfig";
 import {
   AccountAddress,
   AccountAddressInput,
@@ -204,7 +204,7 @@ export function getVerifiedMessageAndIcon(
 
 export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
   const theme = useTheme();
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
 
   const isCoin = data?.id?.includes("::") ?? false;
 
@@ -227,7 +227,7 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
         symbol: matchedCoin.symbol,
         isInPanoraTokenList: matchedCoin.isInPanoraTokenList,
       };
-      const result = verifiedLevel(matchedCoinData, state.network_name);
+      const result = verifiedLevel(matchedCoinData, networkName);
       level = result.level;
       reason = result.reason;
     } else {
@@ -238,13 +238,13 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
           symbol: data.symbol,
           isInPanoraTokenList: data.isInPanoraTokenList,
         },
-        state.network_name,
+        networkName,
       );
       level = result.level;
       reason = result.reason;
     }
   } else {
-    const result = verifiedLevel(data, state.network_name);
+    const result = verifiedLevel(data, networkName);
     level = result.level;
     reason = result.reason;
   }
