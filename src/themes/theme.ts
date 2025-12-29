@@ -532,6 +532,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
         root: {
           borderCollapse: "separate",
           borderSpacing: "0px 0.5rem",
+          width: "100%",
         },
       },
     },
@@ -583,6 +584,8 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
           borderStyle: "solid",
           borderWidth: "0 0 0 0",
           borderColor: grey[700],
+          overflow: "hidden",
+          textOverflow: "ellipsis",
           "&:first-of-type": {
             borderRadius: `${theme.shape.borderRadius}px 0 0 ${theme.shape.borderRadius}px`,
           },

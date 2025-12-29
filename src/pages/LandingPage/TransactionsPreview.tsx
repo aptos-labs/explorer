@@ -69,7 +69,7 @@ export default function TransactionsPreview() {
     <>
       <Stack spacing={2}>
         <Typography variant="h5">All Transactions</Typography>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
+        <Box sx={{width: "100%"}}>
           <TransactionContent {...result} />
         </Box>
 

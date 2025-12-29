@@ -52,7 +52,7 @@ export default function UserTransactions() {
   return (
     <>
       <Stack spacing={2}>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
+        <Box sx={{width: "100%"}}>
           <UserTransactionsTable versions={versions} />
         </Box>
         <Box sx={{display: "flex", justifyContent: "center"}}>

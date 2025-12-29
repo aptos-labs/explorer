@@ -102,7 +102,7 @@ export default function ValidatorsPageTabs(): React.JSX.Element {
           ))}
         </StyledTabs>
       </Box>
-      <Box sx={{width: "auto", overflowX: "auto"}}>
+      <Box sx={{width: "100%"}}>
         <TabPanel value={value} networkName={networkName} />
       </Box>
     </Box>

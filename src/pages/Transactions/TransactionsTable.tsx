@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useMemo} from "react";
-import {Box, Stack} from "@mui/material";
+import {Box, Stack, useMediaQuery, useTheme} from "@mui/material";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -23,6 +23,7 @@ import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentVa
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
+import ResponsiveTableContainer from "../../components/Table/ResponsiveTableContainer";
 import {
   grey,
   negativeColor,
@@ -243,6 +244,14 @@ const DEFAULT_COLUMNS: TransactionColumn[] = [
   "amountGas",
 ];
 
+// Columns to show on mobile (smaller screens)
+const MOBILE_COLUMNS: TransactionColumn[] = [
+  "versionStatus",
+  "type",
+  "timestamp",
+  "amountGas",
+];
+
 type TransactionRowProps = {
   transaction: Types.Transaction;
   columns: TransactionColumn[];
@@ -336,24 +345,37 @@ export default function TransactionsTable({
   transactions,
   columns = DEFAULT_COLUMNS,
 }: TransactionsTableProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  // Use responsive columns if no custom columns provided
+  const responsiveColumns = useMemo(() => {
+    if (columns !== DEFAULT_COLUMNS) {
+      // If custom columns provided, use them as-is
+      return columns;
+    }
+    // Otherwise, use responsive columns based on screen size
+    return isMobile ? MOBILE_COLUMNS : DEFAULT_COLUMNS;
+  }, [columns, isMobile]);
+
   const rows = useMemo(
     () =>
       transactions.map((transaction, i) => (
         <TransactionRow
           key={`${i}-${transaction.hash}`}
           transaction={transaction}
-          columns={columns}
+          columns={responsiveColumns}
         />
       )),
-    [transactions, columns],
+    [transactions, responsiveColumns],
   );
 
   return (
-    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+    <ResponsiveTableContainer>
       <Table>
         <TableHead>
           <TableRow>
-            {columns.map((column) => (
+            {responsiveColumns.map((column) => (
               <TransactionHeaderCell key={column} column={column} />
             ))}
           </TableRow>
@@ -365,7 +387,7 @@ export default function TransactionsTable({
           {rows}
         </VirtualizedTableBody>
       </Table>
-    </Box>
+    </ResponsiveTableContainer>
   );
 }
 
