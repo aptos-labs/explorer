@@ -11,7 +11,6 @@ import {useContext, useEffect, useState} from "react";
 import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
-import {grey} from "../../themes/colors/aptosColorPalette";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import WalletConnectionDialog from "./WalletConnectionDialog";
 import StyledTooltip, {
@@ -115,7 +114,7 @@ function StakingBarContent({
         />
       </Typography>
       <Stack direction="row" alignItems="center" spacing={0.5}>
-        <Typography variant="body2" color={grey[450]}>
+        <Typography variant="body2" color={theme.palette.text.secondary}>
           Delegated Stake Amount
         </Typography>
         <StyledLearnMoreTooltip text="The total amount of delegated stake in this stake pool" />
@@ -126,7 +125,7 @@ function StakingBarContent({
   const delegatedStakePercentage = (
     <Stack direction="column" spacing={0.5}>
       <Typography sx={{fontWeight: 600}}>{networkPercentage}%</Typography>
-      <Typography variant="body2" color={grey[450]}>
+      <Typography variant="body2" color={theme.palette.text.secondary}>
         Of Network
       </Typography>
     </Stack>
@@ -141,7 +140,7 @@ function StakingBarContent({
         />
       </Typography>
       <Stack direction="row" alignItems="center" spacing={0.5}>
-        <Typography variant="body2" color={grey[450]}>
+        <Typography variant="body2" color={theme.palette.text.secondary}>
           Rewards Earned So Far
         </Typography>
         <StyledLearnMoreTooltip text="Amount of rewards earned by this stake pool to date" />

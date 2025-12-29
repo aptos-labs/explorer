@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import SideDrawer from "../../components/SideDrawer";
-import {grey} from "../../themes/colors/aptosColorPalette";
 import {REWARDS_LEARN_MORE_LINK} from "./Components/Staking";
 import {Link} from "../../routing";
 
@@ -240,7 +239,10 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                 flexDirection: "column",
                 alignItems: "flex-start",
                 padding: 1,
-                color: theme.palette.mode === "dark" ? grey[300] : null,
+                color:
+                  theme.palette.mode === "dark"
+                    ? theme.palette.text.secondary
+                    : null,
               }}
             >
               <Typography variant="h5" component="p">
@@ -253,7 +255,10 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
                     flexDirection: "column",
                     alignItems: "flex-start",
                     padding: 1,
-                    color: theme.palette.mode === "dark" ? grey[300] : null,
+                    color:
+                      theme.palette.mode === "dark"
+                        ? theme.palette.text.secondary
+                        : null,
                   }}
                 >
                   <Typography variant="h6" component="p">

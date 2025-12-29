@@ -6,6 +6,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useTheme,
 } from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
@@ -20,7 +21,10 @@ import {
 import CurrencyValue, {
   APTCurrencyValue,
 } from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {aptosColor, grey, primary} from "../../themes/colors/aptosColorPalette";
+import {
+  getSemanticColors,
+  brandColors,
+} from "../../themes/colors/aptosBrandColors";
 import {useAptosClient} from "../../global-config/GlobalConfig";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import {OperatorAddrCell, ValidatorAddrCell} from "./ValidatorsTable";
@@ -295,6 +299,7 @@ function DelegatedAmountCell({
   delegatedStakeAmount,
   networkPercentage,
 }: ValidatorCellProps) {
+  const theme = useTheme();
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
       <Box>
@@ -303,21 +308,28 @@ function DelegatedAmountCell({
           fixedDecimalPlaces={0}
         />
       </Box>
-      <Box sx={{fontSize: 11, color: grey[450]}}>{networkPercentage}%</Box>
+      <Box sx={{fontSize: 11, color: theme.palette.text.secondary}}>
+        {networkPercentage}%
+      </Box>
     </GeneralTableCell>
   );
 }
 
 function ViewCell() {
+  const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   return (
     <GeneralTableCell>
       <VisibilityOutlinedIcon
         fontSize="small"
         sx={{
-          color: "black",
-          backgroundColor: aptosColor,
+          color:
+            theme.palette.mode === "dark"
+              ? brandColors.black
+              : brandColors.white,
+          backgroundColor: semanticColors.status.info,
           "&:hover": {
-            backgroundColor: alpha(primary["500"], 1),
+            backgroundColor: alpha(theme.palette.primary.main, 1),
           },
           borderRadius: 0.75,
           width: "2rem",
@@ -330,6 +342,7 @@ function ViewCell() {
 }
 
 function MyDepositCell({validator}: ValidatorCellProps) {
+  const theme = useTheme();
   const {account} = useWallet();
   const {stakes, isLoading} = useGetDelegatorStakeInfo(
     addressFromWallet(account?.address),
@@ -354,7 +367,10 @@ function MyDepositCell({validator}: ValidatorCellProps) {
     <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
       {Number(totalDeposit) !== 0 ? (
         <Stack direction="row" spacing={1.5}>
-          <CheckCircleIcon sx={{color: aptosColor}} fontSize="small" />
+          <CheckCircleIcon
+            sx={{color: theme.palette.primary.main}}
+            fontSize="small"
+          />
           <CurrencyValue
             amount={Number(totalDeposit).toString()}
             currencyCode="APT"

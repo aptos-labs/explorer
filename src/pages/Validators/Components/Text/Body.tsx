@@ -1,6 +1,6 @@
 import {Typography, TypographyProps} from "@mui/material";
 import React from "react";
-import {grey} from "../../../../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material";
 import {fontSizeBody, fontSizeBodySmall} from "../../constants";
 
 interface BodyProps extends TypographyProps {
@@ -8,10 +8,11 @@ interface BodyProps extends TypographyProps {
 }
 
 export default function Body({children, ...props}: BodyProps) {
+  const theme = useTheme();
   return (
     <Typography
       sx={{fontSize: {xs: fontSizeBodySmall, md: fontSizeBody}}}
-      color={grey[450]}
+      color={theme.palette.text.secondary}
       {...props}
     >
       {children}

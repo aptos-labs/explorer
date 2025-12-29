@@ -1,7 +1,7 @@
 import {Box, useTheme, alpha} from "@mui/material";
 import React from "react";
 import ReactJson from "react-json-view";
-import {codeBlockColor} from "../../themes/colors/aptosColorPalette";
+import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 const TRANSPARENT = "rgba(0,0,0,0)";
@@ -47,6 +47,7 @@ export default function JsonViewCard({
   collapsedByDefault,
 }: JsonViewCardProps) {
   const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   const jsonViewCardTheme = useJsonViewCardTheme();
 
   if (!data) {
@@ -56,7 +57,7 @@ export default function JsonViewCard({
   return (
     <Box
       sx={{
-        backgroundColor: codeBlockColor,
+        backgroundColor: semanticColors.codeBlock.background,
         overflow: "auto",
         maxHeight: MAX_CARD_HEIGHT,
       }}

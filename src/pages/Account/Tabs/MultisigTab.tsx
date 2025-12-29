@@ -1,10 +1,9 @@
 import {Types} from "aptos";
 import React from "react";
-import {Box, Typography, Stack} from "@mui/material";
+import {Box, Typography, Stack, useTheme} from "@mui/material";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import {grey} from "../../../themes/colors/aptosColorPalette";
 import HashButton, {HashType} from "../../../components/HashButton";
 
 const MULTISIG_ACCOUNT_RESOURCE = "0x1::multisig_account::MultisigAccount";
@@ -109,6 +108,7 @@ function MultisigContent({
 }: {
   multisigResource: Types.MoveResource;
 }): React.JSX.Element {
+  const theme = useTheme();
   const multisigData: MultisigAccountData =
     multisigResource.data as MultisigAccountData; // Use any for now to handle unknown structure
 
@@ -226,7 +226,7 @@ function MultisigContent({
                     sx={{
                       mb: 2,
                       p: 2,
-                      backgroundColor: grey[50],
+                      backgroundColor: theme.palette.background.paper,
                       borderRadius: 1,
                     }}
                   >

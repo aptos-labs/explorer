@@ -187,7 +187,7 @@ export default function TransactionTabs({
               color="inherit"
               to={`https://fullnode.${networkName.toLowerCase()}.aptoslabs.com/v1/transactions/by_hash/${transaction.hash}`}
             >
-              Transaction ${transaction.hash}
+              Transaction {transaction.hash}
             </Link>
           }
           tooltip={getLearnMoreTooltip("transaction")}

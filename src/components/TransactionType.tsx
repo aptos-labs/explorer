@@ -6,7 +6,7 @@ import SubtitlesOutlinedIcon from "@mui/icons-material/SubtitlesOutlined";
 import MultipleStopRoundedIcon from "@mui/icons-material/MultipleStopRounded";
 import UpdateRoundedIcon from "@mui/icons-material/UpdateRounded";
 import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
-import {grey} from "../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material";
 import TooltipTypography from "./TooltipTypography";
 import {CheckCircleOutlined, StopCircleOutlined} from "@mui/icons-material";
 
@@ -91,8 +91,16 @@ type TransactionTypeProps = {
 };
 
 export function TransactionType({type}: TransactionTypeProps) {
+  const theme = useTheme();
   return (
-    <Box sx={{display: "flex", alignItems: "center", gap: 1, color: grey[450]}}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        color: theme.palette.text.secondary,
+      }}
+    >
       {getTypeIcon(type, "inherit")}
       <Typography variant="body2">{getTypeLabel(type)}</Typography>
     </Box>

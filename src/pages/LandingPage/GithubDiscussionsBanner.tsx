@@ -6,7 +6,6 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {grey} from "@mui/material/colors";
 import {useState} from "react";
 import {Banner} from "../../components/Banner";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -49,7 +48,7 @@ export function GithubDiscussionsBanner() {
       orientation="vertical"
       variant="middle"
       flexItem
-      sx={{color: grey[200]}}
+      sx={{color: theme.palette.text.secondary}}
     />
   );
 

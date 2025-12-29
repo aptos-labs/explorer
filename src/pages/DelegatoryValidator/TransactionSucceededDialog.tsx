@@ -13,7 +13,6 @@ import {
 import {useState} from "react";
 import StyledDialog from "../../components/StyledDialog";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import {grey} from "../../themes/colors/aptosColorPalette";
 import {StakeOperation} from "../../api/hooks/delegations";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
@@ -106,9 +105,7 @@ export default function TransactionSucceededDialog({
         <Stack
           direction="row"
           sx={{
-            backgroundColor: `${
-              theme.palette.mode === "dark" ? grey[600] : grey[50]
-            }`,
+            backgroundColor: `${theme.palette.background.paper}`,
             paddingLeft: "inherit",
             marginX: 1,
             borderRadius: 1,
@@ -127,7 +124,9 @@ export default function TransactionSucceededDialog({
                 color: "inherit",
                 "&:hover": {
                   backgroundColor: `${
-                    theme.palette.mode === "dark" ? grey[500] : grey[300]
+                    theme.palette.mode === "dark"
+                      ? theme.palette.neutralShade.lighter
+                      : theme.palette.neutralShade.darker
                   }`,
                 },
               }}

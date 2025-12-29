@@ -11,7 +11,6 @@ import TableTooltip from "../../../components/Table/TableTooltip";
 import TooltipTypography from "../../../components/TooltipTypography";
 import {StakingStatusInterface} from "./StakingStatusIcon";
 import {SvgIcon} from "@mui/material";
-import {grey} from "../../../themes/colors/aptosColorPalette";
 
 type MyDepositsSectionProps = {
   steps: StakingStatusInterface[];
@@ -32,7 +31,7 @@ export default function MyDepositsStatusTooltip({
               <StepLabel
                 icon={<SvgIcon component={step.stepLabelIcon} inheritViewBox />}
                 sx={{
-                  color: theme.palette.mode === "dark" ? grey[200] : grey[800],
+                  color: theme.palette.text.primary,
                 }}
               >
                 <Chip

@@ -9,7 +9,6 @@ import {
 import {SxProps} from "@mui/system";
 import {Theme} from "@mui/material/styles";
 import SouthIcon from "@mui/icons-material/South";
-import {aptosColor} from "../../themes/colors/aptosColorPalette";
 
 interface GeneralTableHeaderCellProps {
   header: React.ReactNode;
@@ -59,7 +58,7 @@ export default function GeneralTableHeaderCell({
         "&.MuiTableSortLabel-root .MuiTableSortLabel-icon": {
           marginLeft: 0,
           marginRight: 0.5,
-          color: aptosColor,
+          color: theme.palette.primary.main,
         },
         flexDirection: "row-reverse",
       }}

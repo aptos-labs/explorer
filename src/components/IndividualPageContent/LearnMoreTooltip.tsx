@@ -1,7 +1,6 @@
 import React from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {Box, Link, Typography, useTheme} from "@mui/material";
-import {grey} from "../../themes/colors/aptosColorPalette";
 import {Stack} from "@mui/system";
 import StyledTooltip from "../StyledTooltip";
 
@@ -20,9 +19,8 @@ export function LearnMoreTooltip({
   link,
   linkToText,
 }: LearnMoreTooltipProps) {
-  // TODO: unify colors for the new transaction page
   const theme = useTheme();
-  const color = theme.palette.mode === "dark" ? grey[600] : grey[200];
+  const color = theme.palette.text.secondary;
 
   return (
     <TooltipBox>

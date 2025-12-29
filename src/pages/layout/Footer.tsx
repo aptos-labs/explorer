@@ -5,7 +5,6 @@ import DiscordLogo from "../../assets/discord.svg?react";
 import TwitterLogo from "../../assets/twitter.svg?react";
 import MediumLogo from "../../assets/medium.svg?react";
 import LinkedInLogo from "../../assets/linkedin.svg?react";
-import {grey} from "../../themes/colors/aptosColorPalette";
 import SvgIcon from "@mui/material/SvgIcon";
 
 import LogoFullLight from "../../assets/svg/aptos_logo_full_light.svg?react";
@@ -35,7 +34,7 @@ export default function Footer() {
   return (
     <Box
       sx={{
-        background: theme.palette.mode === "dark" ? grey[900] : "white",
+        background: theme.palette.background.default,
         color: theme.palette.text.primary,
         mt: 8,
       }}

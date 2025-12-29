@@ -1,6 +1,5 @@
 import React, {useContext} from "react";
 import {Box, BoxProps, useTheme, alpha} from "@mui/material";
-import {grey} from "../themes/colors/aptosColorPalette";
 import {StyleContext} from "../pages/Analytics/NetworkInfo/NetworkInfo";
 
 interface CardProps extends BoxProps {
@@ -23,7 +22,7 @@ export function Card({children, ...props}: CardProps) {
   return (
     <Box
       sx={{
-        background: theme.palette.mode === "dark" ? grey[800] : grey[100],
+        background: theme.palette.background.paper,
         padding: 2.5,
         borderRadius: 1,
       }}

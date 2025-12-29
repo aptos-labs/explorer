@@ -3,7 +3,6 @@ import React, {useEffect} from "react";
 import {useParams} from "react-router-dom";
 import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
-import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {assertNever} from "../../../../utils";
 import ViewCode from "./ViewCode";
 import Contract from "./Contract";
@@ -184,12 +183,18 @@ function ModulesTabs({
           // borderRadius: "10px",
         },
         "& *::-webkit-scrollbar-thumb": {
-          background: theme.palette.mode === "dark" ? grey[500] : grey[200],
+          background:
+            theme.palette.mode === "dark"
+              ? theme.palette.neutralShade.lighter
+              : theme.palette.neutralShade.darker,
           borderRadius: "10px",
           padding: "2px",
         },
         "& *::-webkit-scrollbar-thumb:hover": {
-          background: theme.palette.mode === "dark" ? grey[400] : grey[300],
+          background:
+            theme.palette.mode === "dark"
+              ? theme.palette.neutralShade.main
+              : theme.palette.neutralShade.main,
         },
         "& *::-webkit-scrollbar-corner": {
           opacity: 0,
@@ -201,7 +206,7 @@ function ModulesTabs({
         marginY={4}
         borderColor="red"
         borderRadius={1}
-        bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+        bgcolor={theme.palette.background.paper}
       >
         <StyledTabs value={value} onChange={handleChange}>
           {tabValues.map((value, i) => (

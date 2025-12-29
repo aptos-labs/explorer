@@ -6,7 +6,6 @@ import {
   City,
   ValidatorGeoGroup,
 } from "../../../api/hooks/useGetValidatorsGeoData";
-import {grey} from "../../../themes/colors/aptosColorPalette";
 import {brandColors} from "../../../themes/colors/aptosBrandColors";
 
 const MARKER_COLOR = brandColors.babyBlue;
@@ -20,14 +19,15 @@ const LightTooltip = styled(({className, ...props}: TooltipProps) => (
   <Tooltip {...props} classes={{popper: className}} />
 ))(({theme}) => ({
   [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.mode === "dark" ? grey[800] : grey[50],
-    color: theme.palette.mode === "dark" ? grey[50] : grey[800],
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.primary,
     boxShadow: `1px 1px 3px 3px ${alpha(theme.palette.common.black, 0.05)}`,
     borderRadius: 4,
   },
 }));
 
 function MapMarker({group}: {group: ValidatorGeoGroup}) {
+  const theme = useTheme();
   const {country, countryLng, countryLat, nodes, cities} = group;
   const radius = getCircleRadius(nodes.length);
 
@@ -80,7 +80,7 @@ function MapMarker({group}: {group: ValidatorGeoGroup}) {
           {nodes.length >= MIN_NODE_COUNT_SHOWN_IN_MARKER && (
             <text
               textAnchor="middle"
-              fill={grey[900]}
+              fill={theme.palette.text.primary}
               transform={`translate(0, 3.3)`}
               fontSize={9}
             >
@@ -117,7 +117,11 @@ export default function Map({validatorGeoGroups}: MapProps) {
               <Geography
                 key={geo.rsmKey}
                 geography={geo}
-                fill={theme.palette.mode === "dark" ? grey[600] : grey[200]}
+                fill={
+                  theme.palette.mode === "dark"
+                    ? theme.palette.neutralShade.lighter
+                    : brandColors.sand
+                }
                 style={{
                   default: {
                     outline: "0",

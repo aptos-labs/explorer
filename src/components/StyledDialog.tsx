@@ -1,7 +1,6 @@
-import {Dialog, DialogProps, IconButton, Stack} from "@mui/material";
+import {Dialog, DialogProps, IconButton, Stack, useTheme} from "@mui/material";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import {grey} from "../themes/colors/aptosColorPalette";
 
 interface StyledDialogProps extends DialogProps {
   handleDialogClose: () => void;
@@ -13,6 +12,7 @@ export default function StyledDialog({
   children,
   ...props
 }: StyledDialogProps) {
+  const theme = useTheme();
   return (
     <Dialog onClose={handleDialogClose} {...props}>
       <IconButton
@@ -21,7 +21,7 @@ export default function StyledDialog({
           position: "absolute",
           right: 12,
           top: 12,
-          color: grey[450],
+          color: theme.palette.text.secondary,
         }}
       >
         <CloseIcon />

@@ -8,10 +8,8 @@ import {BalanceChange} from "../../utils";
 import CurrencyValue, {
   getFormattedBalanceStr,
 } from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {
-  negativeColor,
-  primary,
-} from "../../../../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material";
+import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 import {Types} from "aptos";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
@@ -86,6 +84,8 @@ function TokenInfoCell({balanceChange}: BalanceChangeCellProps) {
 }
 
 function AmountCell({balanceChange}: BalanceChangeCellProps) {
+  const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   const isNegative = balanceChange.amount < 0;
   const amount =
     balanceChange.amount < 0 ? -balanceChange.amount : balanceChange.amount;
@@ -107,7 +107,9 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
     <GeneralTableCell
       sx={{
         textAlign: "right",
-        color: isNegative ? negativeColor : primary[600],
+        color: isNegative
+          ? semanticColors.status.error
+          : theme.palette.primary.main,
       }}
       onClick={handleCopy}
     >
