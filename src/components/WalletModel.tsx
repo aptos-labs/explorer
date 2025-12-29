@@ -34,7 +34,8 @@ import {JSX} from "react";
 import {WalletConnectorProps} from "./WalletConnector";
 
 interface WalletsModalProps
-  extends Pick<WalletConnectorProps, "networkSupport" | "modalMaxWidth">,
+  extends
+    Pick<WalletConnectorProps, "networkSupport" | "modalMaxWidth">,
     WalletSortingOptions {
   handleClose: () => void;
   modalOpen: boolean;
