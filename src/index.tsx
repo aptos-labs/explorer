@@ -4,6 +4,8 @@ import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import ExplorerRoutes from "./ExplorerRoutes";
 import {ErrorBoundary} from "./components/ErrorBoundary";
+import {isRateLimitError} from "./utils/rateLimiter";
+import {ResponseError, ResponseErrorType} from "./api/client";
 
 import * as Sentry from "@sentry/react";
 
@@ -58,8 +60,41 @@ const queryClient = new QueryClient({
       gcTime: 5 * 60 * 1000,
       // Refetch on window focus for real-time data
       refetchOnWindowFocus: true,
-      // Retry failed requests once
-      retry: 1,
+      // Custom retry logic that handles rate limits with exponential backoff
+      retry: (failureCount, error) => {
+        // Don't retry on 404 errors
+        if (
+          error &&
+          typeof error === "object" &&
+          "type" in error &&
+          (error as ResponseError).type === ResponseErrorType.NOT_FOUND
+        ) {
+          return false;
+        }
+        // Retry rate limit errors up to 3 times with exponential backoff
+        if (isRateLimitError(error)) {
+          return failureCount < 3;
+        }
+        // Retry other errors once
+        return failureCount < 1;
+      },
+      // Exponential backoff for retries (handled by React Query)
+      retryDelay: (attemptIndex, error) => {
+        // For rate limit errors, use exponential backoff
+        if (isRateLimitError(error)) {
+          const baseDelay = 1000; // 1 second
+          const maxDelay = 30000; // 30 seconds max
+          const delay = Math.min(
+            baseDelay * Math.pow(2, attemptIndex),
+            maxDelay,
+          );
+          // Add jitter (±20%)
+          const jitter = delay * 0.2 * (Math.random() * 2 - 1);
+          return Math.max(0, delay + jitter);
+        }
+        // For other errors, use shorter delay
+        return Math.min(1000 * (attemptIndex + 1), 5000);
+      },
       // Don't refetch on mount if data is fresh
       refetchOnMount: true,
     },

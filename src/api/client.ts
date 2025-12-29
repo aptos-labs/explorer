@@ -7,6 +7,12 @@ export enum ResponseErrorType {
 
 export type ResponseError = {type: ResponseErrorType; message?: string};
 
+/**
+ * Wraps a promise with error handling and rate limit detection.
+ *
+ * @param promise - The promise to wrap
+ * @returns Promise that resolves with the result or throws a ResponseError
+ */
 export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
   return await promise.catch((error: unknown) => {
     // Log error for debugging

@@ -43,6 +43,14 @@ export {
   getLocalStorageWithExpiry,
 } from "./utils/cacheManager";
 
+// Re-export rate limiter utilities
+export {
+  withRateLimit,
+  isRateLimitError,
+  retryWithBackoff,
+  getEndpointFromUrl,
+} from "./utils/rateLimiter";
+
 export async function fetchJsonResponse(url: string) {
   const response = await fetch(url);
   return await response.json();
