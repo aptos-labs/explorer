@@ -1,6 +1,8 @@
 import React from "react";
 import {ResponseError, ResponseErrorType} from "../../api/client";
-import {Alert} from "@mui/material";
+import {Typography, Stack, useTheme} from "@mui/material";
+import {ErrorOutline} from "@mui/icons-material";
+import ContentBox from "../../components/IndividualPageContent/ContentBox";
 
 type ErrorProps = {
   error: ResponseError;
@@ -8,30 +10,56 @@ type ErrorProps = {
 };
 
 export default function TokenError({error, tokenId}: ErrorProps) {
+  const theme = useTheme();
+
+  const renderErrorContent = (title: string, message: React.ReactNode) => (
+    <ContentBox>
+      <Stack direction="row" spacing={2} alignItems="flex-start">
+        <ErrorOutline
+          sx={{
+            color: theme.palette.error.main,
+            fontSize: 28,
+            mt: 0.5,
+          }}
+        />
+        <Stack spacing={1} sx={{flex: 1}}>
+          <Typography variant="h6" color="error">
+            {title}
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            {message}
+          </Typography>
+        </Stack>
+      </Stack>
+    </ContentBox>
+  );
+
   switch (error.type) {
     case ResponseErrorType.NOT_FOUND:
-      return (
-        <Alert severity="error" sx={{overflowWrap: "break-word"}}>
+      return renderErrorContent(
+        "Token Not Found",
+        <>
           {error.message || "Token not found."}
           {tokenId && ` Token ID: ${tokenId}`}
-        </Alert>
+        </>,
       );
     case ResponseErrorType.INVALID_INPUT:
-      return (
-        <Alert severity="error">
+      return renderErrorContent(
+        "Invalid Token ID",
+        <>
           Invalid token ID ({error.type}): {error.message}
-        </Alert>
+        </>,
       );
     case ResponseErrorType.TOO_MANY_REQUESTS:
-      return (
-        <Alert severity="error">
-          Too many requests. Please try again in a few moments.
-        </Alert>
+      return renderErrorContent(
+        "Too Many Requests",
+        <>Too many requests. Please try again in a few moments.</>,
       );
     case ResponseErrorType.UNHANDLED:
     default:
-      return (
-        <Alert severity="error">
+      return renderErrorContent(
+        "Error Loading Token",
+        <>
           Unable to load token information.
           {error.message && (
             <>
@@ -40,8 +68,9 @@ export default function TokenError({error, tokenId}: ErrorProps) {
             </>
           )}
           <br />
+          <br />
           Please try again later.
-        </Alert>
+        </>,
       );
   }
 }
