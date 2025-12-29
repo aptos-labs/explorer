@@ -1,7 +1,10 @@
 import {useMemo} from "react";
 import {useQuery} from "@tanstack/react-query";
 import {Types} from "aptos";
-import {useGlobalState} from "../../../../global-config/GlobalConfig";
+import {
+  useAptosClient,
+  useNetworkName,
+} from "../../../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {
   ValidatorData,
@@ -29,7 +32,8 @@ export interface ValidatorWithExtendedData extends ValidatorData {
  * Solves the N+1 query problem by batching requests
  */
 export function useValidatorDelegationData() {
-  const [state] = useGlobalState();
+  const aptosClient = useAptosClient();
+  const networkName = useNetworkName();
   const {validators} = useGetValidators();
   const {connected, account} = useWallet();
   const {delegatedStakingPools, loading: poolsLoading} =
@@ -84,16 +88,13 @@ export function useValidatorDelegationData() {
   } = useQuery<Types.MoveValue[], ResponseError>({
     queryKey: [
       "validatorCommisionAndState",
-      state.aptos_client,
+      aptosClient,
       ...validatorAddresses,
     ],
     queryFn: () => {
-      return getValidatorCommissionAndState(
-        state.aptos_client,
-        validatorAddresses,
-      );
+      return getValidatorCommissionAndState(aptosClient, validatorAddresses);
     },
-    enabled: validatorAddresses.length > 0 && !!state.aptos_client,
+    enabled: validatorAddresses.length > 0 && !!aptosClient,
     select: (res) => {
       // First arg is always the return value
       const ret = res[0] as Array<[unknown, unknown]>;
@@ -115,18 +116,15 @@ export function useValidatorDelegationData() {
     isLoading: delegatorCountsLoading,
     error: delegatorCountsError,
   } = useQuery({
-    queryKey: ["batchDelegatorCounts", validatorAddresses, state.network_name],
+    queryKey: ["batchDelegatorCounts", validatorAddresses, networkName],
     queryFn: () => {
       return getBatchDelegatorCounts(
         validatorAddresses,
-        state.aptos_client,
-        state.network_name,
+        aptosClient,
+        networkName,
       );
     },
-    enabled:
-      validatorAddresses.length > 0 &&
-      !!state.aptos_client &&
-      !!state.network_name,
+    enabled: validatorAddresses.length > 0 && !!aptosClient && !!networkName,
   });
 
   // Batch fetch user stakes if wallet is connected
@@ -144,14 +142,14 @@ export function useValidatorDelegationData() {
       return getBatchUserStakes(
         accountAddress,
         validatorAddresses,
-        state.aptos_client,
+        aptosClient,
       );
     },
     enabled:
       connected &&
       !!accountAddress &&
       validatorAddresses.length > 0 &&
-      !!state.aptos_client,
+      !!aptosClient,
   });
 
   // Combine all data

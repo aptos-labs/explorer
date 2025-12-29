@@ -33,39 +33,42 @@ const useProvideColorMode = () => {
     };
   }, []);
 
-  const toggleColorMode = () => {
-    setMode((prevMode) => {
-      if (prevMode === "light") {
-        localStorage.setItem("color_scheme", "dark");
-        return "dark";
-      } else {
-        localStorage.setItem("color_scheme", "light");
-        return "light";
-      }
-    });
-  };
-
-  let theme = useMemo(
-    () => responsiveFontSizes(createTheme(getDesignTokens(mode))),
-    [mode],
+  // Memoize toggleColorMode to ensure stable reference
+  const toggleColorMode = useMemo(
+    () => () => {
+      setMode((prevMode) => {
+        if (prevMode === "light") {
+          localStorage.setItem("color_scheme", "dark");
+          return "dark";
+        } else {
+          localStorage.setItem("color_scheme", "light");
+          return "light";
+        }
+      });
+    },
+    [], // Empty deps - setMode is stable from useState
   );
 
-  theme = createTheme(theme, {
-    typography: {
-      h1: {
-        fontSize: "2.5rem",
-        [theme.breakpoints.up("sm")]: {
+  // Memoize theme creation to prevent unnecessary re-renders
+  const theme = useMemo(() => {
+    const baseTheme = responsiveFontSizes(createTheme(getDesignTokens(mode)));
+    return createTheme(baseTheme, {
+      typography: {
+        h1: {
           fontSize: "2.5rem",
-        },
-        [theme.breakpoints.up("md")]: {
-          fontSize: "3rem",
-        },
-        [theme.breakpoints.up("lg")]: {
-          fontSize: "3.5rem",
+          [baseTheme.breakpoints.up("sm")]: {
+            fontSize: "2.5rem",
+          },
+          [baseTheme.breakpoints.up("md")]: {
+            fontSize: "3rem",
+          },
+          [baseTheme.breakpoints.up("lg")]: {
+            fontSize: "3.5rem",
+          },
         },
       },
-    },
-  });
+    });
+  }, [mode]);
 
   return {toggleColorMode, theme};
 };

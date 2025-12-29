@@ -1,4 +1,7 @@
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {
+  useNetworkValue,
+  useAptosClient,
+} from "../../global-config/GlobalConfig";
 import {useQuery} from "@tanstack/react-query";
 import {getLedgerInfo, getRecentBlocks} from "..";
 
@@ -6,11 +9,12 @@ export function useGetMostRecentBlocks(
   start: string | undefined,
   count: number,
 ) {
-  const [state] = useGlobalState();
+  const networkValue = useNetworkValue();
+  const aptosClient = useAptosClient();
 
   const {isLoading: isLoadingLedgerData, data: ledgerData} = useQuery({
-    queryKey: ["ledgerInfo", state.network_value],
-    queryFn: () => getLedgerInfo(state.aptos_client),
+    queryKey: ["ledgerInfo", networkValue],
+    queryFn: () => getLedgerInfo(aptosClient),
     // Real-time data - no stale time
     staleTime: 0,
     gcTime: 30 * 1000, // Keep in cache for 30 seconds
@@ -18,10 +22,10 @@ export function useGetMostRecentBlocks(
   const currentBlockHeight = parseInt(start ?? ledgerData?.block_height ?? "");
 
   const {isLoading: isLoading, data: blocks} = useQuery({
-    queryKey: ["block", currentBlockHeight, state.network_value],
+    queryKey: ["block", currentBlockHeight, networkValue],
     queryFn: async () => {
       if (currentBlockHeight !== undefined) {
-        return getRecentBlocks(currentBlockHeight, count, state.aptos_client);
+        return getRecentBlocks(currentBlockHeight, count, aptosClient);
       }
     },
     enabled: currentBlockHeight !== undefined,

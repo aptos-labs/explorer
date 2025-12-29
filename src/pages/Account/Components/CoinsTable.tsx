@@ -22,7 +22,7 @@ import {
 } from "../../../components/Table/VerifiedCell";
 import {getAssetSymbol} from "../../../utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
-import {useGlobalState} from "../../../global-config/GlobalConfig";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
 import {Network} from "@aptos-labs/ts-sdk";
 import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 
@@ -141,17 +141,17 @@ export type CoinDescriptionPlusAmount = {
 } & CoinDescription;
 
 export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
-  const [state] = useGlobalState();
+  const networkName = useNetworkName();
   const [verificationFilter, setVerificationFilter] = React.useState(
     CoinVerificationFilterType.NONE,
   );
 
   // Set default filter based on network
   React.useEffect(() => {
-    if (state.network_name === Network.MAINNET) {
+    if (networkName === Network.MAINNET) {
       setVerificationFilter(CoinVerificationFilterType.VERIFIED);
     }
-  }, [state.network_name]);
+  }, [networkName]);
 
   const toIndex = useCallback((coin: CoinDescriptionPlusAmount): number => {
     return coin.panoraOrderIndex
@@ -182,12 +182,12 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
             isInPanoraTokenList: coin.isInPanoraTokenList,
             symbol: coin?.panoraSymbol ?? coin.symbol,
           },
-          state.network_name,
+          networkName,
         ).level;
       }
     });
     return verifications;
-  }, [coins, getCoinId, state.network_name]);
+  }, [coins, getCoinId, networkName]);
 
   // Memoize filter logic
   const filterCoins = useCallback(

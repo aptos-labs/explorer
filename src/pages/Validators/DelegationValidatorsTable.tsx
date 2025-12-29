@@ -21,7 +21,7 @@ import CurrencyValue, {
   APTCurrencyValue,
 } from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {aptosColor, grey, primary} from "../../themes/colors/aptosColorPalette";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+import {useAptosClient} from "../../global-config/GlobalConfig";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import {OperatorAddrCell, ValidatorAddrCell} from "./ValidatorsTable";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
@@ -426,7 +426,7 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
 }
 
 export function DelegationValidatorsTable() {
-  const [state] = useGlobalState();
+  const aptosClient = useAptosClient();
   const {validators} = useGetValidators();
   const {connected} = useWallet();
   const columns = connected
@@ -490,11 +490,11 @@ export function DelegationValidatorsTable() {
   >({
     queryKey: [
       "validatorCommisionAndState",
-      state.aptos_client,
+      aptosClient,
       ...sortedValidatorAddrs,
     ],
     queryFn: () =>
-      getValidatorCommissionAndState(state.aptos_client, sortedValidatorAddrs),
+      getValidatorCommissionAndState(aptosClient, sortedValidatorAddrs),
     select: (res) => {
       /// First arg is always the return value
       const ret = res[0] as Array<[unknown, unknown]>;

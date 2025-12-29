@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
 import {defaultNetworkName} from "../../constants";
-import {useGlobalState} from "../../global-config/GlobalConfig";
+// Using selective hook - component will only re-render when network_name changes
+// instead of re-rendering on any global state change
+import {useNetworkName} from "../../global-config/GlobalConfig";
 
 export const ANALYTICS_DATA_URL =
   "https://storage.googleapis.com/aptos-mainnet/explorer/chain_stats_v2.json?cache-version=0";
@@ -90,11 +92,12 @@ export type NodeCountData = {
 };
 
 export function useGetAnalyticsData() {
-  const [state] = useGlobalState();
+  // Only subscribe to network_name changes - prevents re-renders when other state changes
+  const networkName = useNetworkName();
   const [data, setData] = useState<AnalyticsData>();
 
   useEffect(() => {
-    if (state.network_name === defaultNetworkName) {
+    if (networkName === defaultNetworkName) {
       const fetchData = async () => {
         const response = await fetch(ANALYTICS_DATA_URL);
         const data = await response.json();
@@ -105,7 +108,7 @@ export function useGetAnalyticsData() {
         console.error("ERROR!", error, typeof error);
       });
     }
-  }, [state.network_name]);
+  }, [networkName]);
 
-  return state.network_name === defaultNetworkName ? data : undefined;
+  return networkName === defaultNetworkName ? data : undefined;
 }
