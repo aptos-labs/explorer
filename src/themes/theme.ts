@@ -622,8 +622,8 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
               backgroundColor: theme.palette.primary.main,
               color:
                 theme.palette.mode === "dark"
-                  ? brandColors.white
-                  : brandColors.black,
+                  ? brandColors.black
+                  : brandColors.white,
               fontSize: "1.1rem",
               padding: "12px 34px",
               minWidth: "8rem",
