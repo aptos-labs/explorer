@@ -11,6 +11,8 @@ import {
   Chip,
   LinearProgress,
   Tooltip,
+  CircularProgress,
+  Skeleton,
 } from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
@@ -609,19 +611,66 @@ export function EnhancedDelegationValidatorsTable() {
     );
   }
 
+  // Loading skeleton component
+  const LoadingSkeletonRow = React.memo(() => (
+    <GeneralTableRow>
+      {columns.map((column) => (
+        <GeneralTableCell key={column} sx={{paddingRight: 5}}>
+          <Skeleton
+            variant="text"
+            width={column === "addr" ? 200 : column === "status" ? 80 : 100}
+            height={24}
+          />
+        </GeneralTableCell>
+      ))}
+    </GeneralTableRow>
+  ));
+
   if (isLoading) {
     return (
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          minHeight: "300px",
-        }}
-      >
-        -
+      <Box>
+        <Box sx={{overflowX: "auto", maxHeight: "800px", overflowY: "auto"}}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{verticalAlign: "bottom"}}>
+                {columns.map((column) => (
+                  <ValidatorHeaderCell
+                    key={column}
+                    column={column}
+                    direction={
+                      sortColumn === column ? sortDirection : undefined
+                    }
+                    setDirection={setSortDirection}
+                    setSortColumn={setSortColumn}
+                    connected={connected}
+                  />
+                ))}
+              </TableRow>
+            </TableHead>
+            <GeneralTableBody>
+              {/* Show skeleton rows while loading */}
+              {Array.from({length: 10}).map((_, index) => (
+                <LoadingSkeletonRow key={`skeleton-${index}`} />
+              ))}
+            </GeneralTableBody>
+          </Table>
+        </Box>
+        {/* Loading indicator overlay */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 2,
+            mt: 2,
+            py: 2,
+          }}
+        >
+          <CircularProgress size={24} />
+          <Typography variant="body2" color="text.secondary">
+            Loading validators...
+          </Typography>
+        </Box>
       </Box>
     );
   }

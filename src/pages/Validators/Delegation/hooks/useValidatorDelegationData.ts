@@ -95,6 +95,9 @@ export function useValidatorDelegationData() {
       return getValidatorCommissionAndState(aptosClient, validatorAddresses);
     },
     enabled: validatorAddresses.length > 0 && !!aptosClient,
+    // Cache for 30 seconds to reduce API calls
+    staleTime: 30 * 1000,
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
     select: (res) => {
       // First arg is always the return value
       const ret = res[0] as Array<[unknown, unknown]>;
@@ -125,6 +128,9 @@ export function useValidatorDelegationData() {
       );
     },
     enabled: validatorAddresses.length > 0 && !!aptosClient && !!networkName,
+    // Cache for 30 seconds to reduce API calls
+    staleTime: 30 * 1000,
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
 
   // Batch fetch user stakes if wallet is connected
@@ -150,6 +156,9 @@ export function useValidatorDelegationData() {
       !!accountAddress &&
       validatorAddresses.length > 0 &&
       !!aptosClient,
+    // Cache for 10 seconds (user stakes change more frequently)
+    staleTime: 10 * 1000,
+    gcTime: 2 * 60 * 1000, // Keep in cache for 2 minutes
   });
 
   // Combine all data
