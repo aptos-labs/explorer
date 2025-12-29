@@ -75,11 +75,11 @@ export function Banner({
 
   // Determine text color based on background color brightness
   const getPillTextColor = (bgColor: string) => {
-    // For light backgrounds (Baby Blue, Mint), use dark text
-    // For dark backgrounds (Coral), use white text
+    // For light backgrounds (Baby Blue, Mint), use dark text in light mode
+    // and theme-appropriate text color in dark mode
     if (bgColor === brandColors.babyBlue || bgColor === brandColors.mint) {
       return theme.palette.mode === "dark"
-        ? brandColors.black
+        ? theme.palette.text.primary
         : brandColors.black;
     }
     // For coral/error/warning, use white text

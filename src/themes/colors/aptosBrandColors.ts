@@ -31,7 +31,7 @@ export const getSemanticColors = (mode: PaletteMode) => {
     // Primary colors for interactive elements
     // Use darker variant for light mode to ensure visibility
     primary: isDark ? brandColors.babyBlue : "#5A9BC8", // Darker blue for light mode contrast
-    secondary: brandColors.mint,
+    secondary: isDark ? brandColors.mint : "#7BC47F", // Darker green for light mode contrast
 
     // Background colors
     background: {
@@ -84,11 +84,13 @@ export const getSemanticColors = (mode: PaletteMode) => {
 };
 
 /**
- * Get theme-aware colors based on mode
+ * Get theme-aware colors based on mode.
+ *
+ * This is a stable public alias for {@link getSemanticColors}, kept to avoid
+ * breaking existing callers and to provide a semantically clear entry point
+ * for theme color retrieval.
  */
-export const getThemeColors = (mode: PaletteMode) => {
-  return getSemanticColors(mode);
-};
+export const getThemeColors = getSemanticColors;
 
 /**
  * Status colors for staking operations
