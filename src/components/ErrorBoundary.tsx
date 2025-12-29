@@ -1,6 +1,14 @@
 import React, {Component, ErrorInfo, ReactNode} from "react";
-import {Alert, Box, Button, Container, Typography} from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Typography,
+  Stack,
+  useTheme,
+} from "@mui/material";
 import {ErrorOutline} from "@mui/icons-material";
+import ContentBox from "./IndividualPageContent/ContentBox";
 
 interface Props {
   children: ReactNode;
@@ -69,40 +77,82 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <Container maxWidth="md" sx={{py: 4}}>
-          <Alert
-            severity="error"
-            icon={<ErrorOutline />}
-            sx={{mb: 2}}
-            action={
-              <Button color="inherit" size="small" onClick={this.handleReset}>
-                Try Again
-              </Button>
-            }
-          >
-            <Typography variant="h6" gutterBottom>
-              Something went wrong
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {this.state.error?.message ||
-                "An unexpected error occurred. Please try refreshing the page."}
-            </Typography>
-            {import.meta.env.DEV && this.state.errorInfo && (
-              <Box sx={{mt: 2, p: 2, bgcolor: "background.paper"}}>
-                <Typography
-                  variant="caption"
-                  component="pre"
-                  sx={{fontSize: "0.75rem"}}
-                >
-                  {this.state.error?.stack}
-                </Typography>
-              </Box>
-            )}
-          </Alert>
-        </Container>
+        <ErrorBoundaryContent
+          error={this.state.error}
+          errorInfo={this.state.errorInfo}
+          onReset={this.handleReset}
+        />
       );
     }
 
     return this.props.children;
   }
+}
+
+function ErrorBoundaryContent({
+  error,
+  errorInfo,
+  onReset,
+}: {
+  error: Error | null;
+  errorInfo: ErrorInfo | null;
+  onReset: () => void;
+}) {
+  const theme = useTheme();
+
+  return (
+    <Container maxWidth="md" sx={{py: 4}}>
+      <ContentBox>
+        <Stack direction="row" spacing={2} alignItems="flex-start">
+          <ErrorOutline
+            sx={{
+              color: theme.palette.error.main,
+              fontSize: 28,
+              mt: 0.5,
+            }}
+          />
+          <Stack spacing={2} sx={{flex: 1}}>
+            <Stack spacing={1}>
+              <Typography variant="h6" color="error">
+                Something went wrong
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                {error?.message ||
+                  "An unexpected error occurred. Please try refreshing the page."}
+              </Typography>
+            </Stack>
+            <Button
+              variant="outlined"
+              onClick={onReset}
+              sx={{alignSelf: "flex-start"}}
+            >
+              Try Again
+            </Button>
+            {import.meta.env.DEV && errorInfo && (
+              <Box
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  bgcolor: "background.paper",
+                  borderRadius: 1,
+                }}
+              >
+                <Typography
+                  variant="caption"
+                  component="pre"
+                  sx={{
+                    fontSize: "0.75rem",
+                    fontFamily: "monospace",
+                    overflow: "auto",
+                  }}
+                >
+                  {error?.stack}
+                </Typography>
+              </Box>
+            )}
+          </Stack>
+        </Stack>
+      </ContentBox>
+    </Container>
+  );
 }

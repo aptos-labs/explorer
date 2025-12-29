@@ -1,42 +1,34 @@
 import React from "react";
-import {Card, CardContent, Box, Typography, Grid} from "@mui/material";
-
-const bull = (
-  <Box
-    component="span"
-    sx={{display: "inline-block", mx: "2px", transform: "scale(0.8)"}}
-  >
-    •
-  </Box>
-);
+import {Typography, Stack, useTheme} from "@mui/material";
+import {ErrorOutline} from "@mui/icons-material";
+import ContentBox from "../../components/IndividualPageContent/ContentBox";
 
 export default function NotFoundPage() {
+  const theme = useTheme();
+
   return (
-    <Grid
-      container
-      spacing={0}
-      direction="column"
-      style={{alignItems: "center"}}
-      sx={{mt: 3}}
-    >
-      <Grid size={{xs: 2}}>
-        <Card>
-          <CardContent>
-            <Typography sx={{fontSize: 14}} color="text.secondary" gutterBottom>
-              Word of the Day
-            </Typography>
-            <Typography variant="h5" component="div">
-              404{bull}Pa{bull}ge{bull}Not{bull}Fou{bull}nd
-            </Typography>
-            <Typography variant="body2">
-              Maybe the page you are looking for has been removed, or you typed
-              in the wrong URL.
-              <br />
-              You don't have to go home, but you can't stay here!
-            </Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-    </Grid>
+    <ContentBox>
+      <Stack direction="row" spacing={2} alignItems="flex-start">
+        <ErrorOutline
+          sx={{
+            color: theme.palette.error.main,
+            fontSize: 28,
+            mt: 0.5,
+          }}
+        />
+        <Stack spacing={1} sx={{flex: 1}}>
+          <Typography variant="h6" color="error">
+            Page Not Found (404)
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Maybe the page you are looking for has been removed, or you typed in
+            the wrong URL.
+            <br />
+            <br />
+            You don't have to go home, but you can't stay here!
+          </Typography>
+        </Stack>
+      </Stack>
+    </ContentBox>
   );
 }
