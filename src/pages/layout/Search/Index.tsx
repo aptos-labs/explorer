@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from "react";
-import {Autocomplete} from "@mui/material";
+import {Autocomplete, Typography} from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
 import SearchInput from "./SearchInput";
 import ResultLink from "./ResultLink";
@@ -36,6 +36,7 @@ import {
   handleCoinLookup,
   handleEmojiCoinLookup,
   filterSearchResults,
+  groupSearchResults,
 } from "./searchUtils";
 
 // Re-export for backward compatibility
@@ -95,7 +96,9 @@ export default function HeaderSearch() {
     const cachedResults = getLocalStorageWithExpiry<SearchResult[]>(cacheKey);
 
     if (cachedResults && cachedResults.length > 0) {
-      const results = cachedResults.map((result) => {
+      // Apply grouping to cached results as well
+      const groupedCachedResults = groupSearchResults(cachedResults);
+      const results = groupedCachedResults.map((result) => {
         if (result.to) {
           return {...result, to: augmentToWithGlobalSearchParams(result.to)};
         }
@@ -265,7 +268,10 @@ export default function HeaderSearch() {
         }
       }
 
-      await finalizeResults(filteredResults, normalizedSearchText, cacheKey);
+      // Group results by asset type
+      const groupedResults = groupSearchResults(filteredResults);
+
+      await finalizeResults(groupedResults, normalizedSearchText, cacheKey);
     } catch (error) {
       if (signal.aborted) return;
       console.error("Search error:", error);
@@ -367,7 +373,11 @@ export default function HeaderSearch() {
       }}
       onKeyDown={(event) => {
         if (event.key === "Enter") {
-          const selected = selectedOption?.to ?? options[0]?.to;
+          // Skip group headers when navigating
+          const selectableOption = options.find(
+            (opt) => opt.to && !opt.isGroupHeader,
+          );
+          const selected = selectedOption?.to ?? selectableOption?.to;
           if (selected) {
             navigate(selected);
           }
@@ -384,6 +394,26 @@ export default function HeaderSearch() {
         );
       }}
       renderOption={(props, option) => {
+        if (option.isGroupHeader) {
+          return (
+            <li {...props} key={props.id} style={{pointerEvents: "none"}}>
+              <Typography
+                variant="caption"
+                sx={{
+                  px: 1.5,
+                  py: 0.5,
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  fontSize: "0.75rem",
+                  color: "text.secondary",
+                  backgroundColor: "action.hover",
+                }}
+              >
+                {option.label}
+              </Typography>
+            </li>
+          );
+        }
         return (
           <li {...props} key={props.id}>
             <ResultLink

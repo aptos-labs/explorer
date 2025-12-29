@@ -30,6 +30,8 @@ export type SearchResult = {
   label: string;
   to: string | null;
   image?: string;
+  type?: string; // Asset type for grouping: 'account', 'coin', 'transaction', 'block', 'fungible-asset', 'object', 'address'
+  isGroupHeader?: boolean; // True if this is a group header
 };
 
 export const NotFoundResult: SearchResult = {
@@ -141,6 +143,7 @@ export async function handleAnsName(
       return {
         label: `Account ${truncateAddress(address)} ${searchText}`,
         to: `/account/${address}`,
+        type: "account",
       };
     }
     return null;
@@ -168,6 +171,7 @@ export async function handleCoin(
     return {
       label: `Coin ${searchText}`,
       to: `/coin/${searchText}`,
+      type: "coin",
     };
   } catch {
     return null;
@@ -194,6 +198,7 @@ export async function handleBlockHeightOrVersion(
         (): SearchResult => ({
           label: `Block ${num}`,
           to: `/block/${num}`,
+          type: "block",
         }),
       )
       .catch(() => null),
@@ -202,6 +207,7 @@ export async function handleBlockHeightOrVersion(
         (): SearchResult => ({
           label: `Transaction Version ${num}`,
           to: `/txn/${num}`,
+          type: "transaction",
         }),
       )
       .catch(() => null),
@@ -210,6 +216,7 @@ export async function handleBlockHeightOrVersion(
         (block): SearchResult => ({
           label: `Block with Txn Version ${num}`,
           to: `/block/${block.block_height}`,
+          type: "block",
         }),
       )
       .catch(() => null),
@@ -236,6 +243,7 @@ export async function handleTransaction(
     return {
       label: `Transaction ${searchText}`,
       to: `/txn/${searchText}`,
+      type: "transaction",
     };
   } catch {
     return null;
@@ -276,6 +284,7 @@ export async function handleAddress(
     results.push({
       label: `Account ${address}`,
       to: `/account/${address}`,
+      type: "account",
     });
   } catch {
     // Account doesn't exist, continue checking other types
@@ -291,6 +300,7 @@ export async function handleAddress(
         (): SearchResult => ({
           label: `Fungible Asset ${address}`,
           to: `/fungible_asset/${address}`,
+          type: "fungible-asset",
         }),
       )
       .catch(() => null),
@@ -302,6 +312,7 @@ export async function handleAddress(
         (): SearchResult => ({
           label: `Object ${address}`,
           to: `/object/${address}`,
+          type: "object",
         }),
       )
       .catch(() => null),
@@ -310,6 +321,7 @@ export async function handleAddress(
         (): SearchResult => ({
           label: `Address ${address}`,
           to: `/account/${address}`,
+          type: "address",
         }),
       )
       .catch(() => null),
@@ -344,6 +356,7 @@ export async function anyOwnedObjects(
       return {
         label: `Address ${address}`,
         to: `/account/${address}`,
+        type: "address",
       };
     }
     return null;
@@ -363,6 +376,7 @@ export function handleLabelLookup(searchText: string): SearchResult[] {
       searchResults.push({
         label: `Account ${truncateAddress(address)} ${knownName}`,
         to: `/account/${address}`,
+        type: "account",
       });
     }
   });
@@ -402,12 +416,14 @@ export function handleCoinLookup(
           label: `${coin.name} - ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
           to: `/coin/${coin.tokenAddress}`,
           image: coin.logoUrl,
+          type: "coin",
         };
       } else {
         return {
           label: `${coin.name} - ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
           to: `/fungible_asset/${coin.faAddress}`,
           image: coin.logoUrl,
+          type: "fungible-asset",
         };
       }
     });
@@ -438,15 +454,66 @@ export async function handleEmojiCoinLookup(
       {
         label: `${searchText} emojicoin`,
         to: `/coin/${coin}`,
+        type: "coin",
       },
       {
         label: `${searchText} emojicoin LP`,
         to: `/coin/${lp}`,
+        type: "coin",
       },
     ];
   } catch {
     return [];
   }
+}
+
+/**
+ * Extract asset type from result label
+ */
+function getResultType(result: SearchResult): string {
+  if (result.type) {
+    return result.type;
+  }
+  const label = result.label.toLowerCase();
+  if (label.startsWith("account") && !label.includes("address")) {
+    return "account";
+  }
+  if (label.startsWith("coin")) {
+    return "coin";
+  }
+  if (label.startsWith("transaction")) {
+    return "transaction";
+  }
+  if (label.startsWith("block")) {
+    return "block";
+  }
+  if (label.startsWith("fungible asset")) {
+    return "fungible-asset";
+  }
+  if (label.startsWith("object")) {
+    return "object";
+  }
+  if (label.startsWith("address")) {
+    return "address";
+  }
+  return "other";
+}
+
+/**
+ * Get display name for asset type
+ */
+function getTypeDisplayName(type: string): string {
+  const typeMap: Record<string, string> = {
+    account: "Accounts",
+    coin: "Coins",
+    transaction: "Transactions",
+    block: "Blocks",
+    "fungible-asset": "Fungible Assets",
+    object: "Objects",
+    address: "Addresses",
+    other: "Other",
+  };
+  return typeMap[type] || type;
 }
 
 /**
@@ -497,4 +564,58 @@ export function filterSearchResults(
   return filteredResults
     .filter((result) => result !== null)
     .filter((result): result is SearchResult => !!result);
+}
+
+/**
+ * Group search results by asset type
+ */
+export function groupSearchResults(results: SearchResult[]): SearchResult[] {
+  if (results.length === 0) {
+    return results;
+  }
+
+  // Filter out any existing group headers to avoid duplicates
+  const resultsWithoutHeaders = results.filter(
+    (result) => !result.isGroupHeader,
+  );
+
+  // Group results by type
+  const grouped = new Map<string, SearchResult[]>();
+  for (const result of resultsWithoutHeaders) {
+    const type = getResultType(result);
+    if (!grouped.has(type)) {
+      grouped.set(type, []);
+    }
+    grouped.get(type)!.push(result);
+  }
+
+  // Define priority order for types - coins and fungible assets first
+  const typeOrder = [
+    "coin",
+    "fungible-asset",
+    "account",
+    "transaction",
+    "block",
+    "object",
+    "address",
+    "other",
+  ];
+
+  // Build grouped results array with headers
+  const groupedResults: SearchResult[] = [];
+  for (const type of typeOrder) {
+    const typeResults = grouped.get(type);
+    if (typeResults && typeResults.length > 0) {
+      // Always add group header
+      groupedResults.push({
+        label: getTypeDisplayName(type),
+        to: null,
+        type,
+        isGroupHeader: true,
+      });
+      groupedResults.push(...typeResults);
+    }
+  }
+
+  return groupedResults;
 }
