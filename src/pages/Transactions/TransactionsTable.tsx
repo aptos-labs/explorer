@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useMemo} from "react";
 import {Box, Stack} from "@mui/material";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -21,6 +22,7 @@ import TransactionTypeTooltip from "./Components/TransactionTypeTooltip";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
+import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
 import {
   grey,
   negativeColor,
@@ -334,27 +336,36 @@ export default function TransactionsTable({
   transactions,
   columns = DEFAULT_COLUMNS,
 }: TransactionsTableProps) {
+  const rows = useMemo(
+    () =>
+      transactions.map((transaction, i) => (
+        <TransactionRow
+          key={`${i}-${transaction.hash}`}
+          transaction={transaction}
+          columns={columns}
+        />
+      )),
+    [transactions, columns],
+  );
+
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          {columns.map((column) => (
-            <TransactionHeaderCell key={column} column={column} />
-          ))}
-        </TableRow>
-      </TableHead>
-      <GeneralTableBody>
-        {transactions.map((transaction, i) => {
-          return (
-            <TransactionRow
-              key={`${i}-${transaction.hash}`}
-              transaction={transaction}
-              columns={columns}
-            />
-          );
-        })}
-      </GeneralTableBody>
-    </Table>
+    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {columns.map((column) => (
+              <TransactionHeaderCell key={column} column={column} />
+            ))}
+          </TableRow>
+        </TableHead>
+        <VirtualizedTableBody
+          estimatedRowHeight={65}
+          virtualizationThreshold={15}
+        >
+          {rows}
+        </VirtualizedTableBody>
+      </Table>
+    </Box>
   );
 }
 
