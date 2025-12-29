@@ -41,9 +41,7 @@ export type CoinDescription = {
 export function useGetCoinList(options?: {retry?: number | boolean}) {
   return useQuery<{data: CoinDescription[]}, ResponseError>({
     queryKey: ["coinList"],
-    // TODO: Type this correctly
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    queryFn: async (): Promise<any> => {
+    queryFn: async (): Promise<{data: CoinDescription[]}> => {
       const end_point = "https://api.panora.exchange/tokenlist";
 
       const query = {
@@ -87,5 +85,8 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
       return ret;
     },
     retry: options?.retry ?? false,
+    // Coin list is static metadata - cache for 1 hour
+    staleTime: 60 * 60 * 1000,
+    gcTime: 24 * 60 * 60 * 1000, // Keep in cache for 24 hours
   });
 }

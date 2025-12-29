@@ -19,5 +19,8 @@ export function useGetAccountTransactions(
     ],
     queryFn: () =>
       getAccountTransactions({address, start, limit}, state.aptos_client),
+    // Transaction lists are dynamic - cache for 30 seconds
+    staleTime: 30 * 1000,
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
 }

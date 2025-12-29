@@ -12,6 +12,9 @@ export function useGetTPS() {
     queryKey: ["ledgerInfo", state.network_value],
     queryFn: () => getLedgerInfo(state.aptos_client),
     refetchInterval: 10000,
+    // Real-time data - no stale time, but keep in cache briefly
+    staleTime: 0,
+    gcTime: 30 * 1000, // Keep in cache for 30 seconds
   });
   const currentBlockHeight = ledgerData?.block_height;
   const blockHeight =

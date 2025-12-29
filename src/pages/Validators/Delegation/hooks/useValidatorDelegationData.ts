@@ -96,8 +96,7 @@ export function useValidatorDelegationData() {
     enabled: validatorAddresses.length > 0 && !!state.aptos_client,
     select: (res) => {
       // First arg is always the return value
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const ret = res[0] as [any, any][];
+      const ret = res[0] as Array<[unknown, unknown]>;
       return processedValidators.map((v, i) => {
         const commission = ret[i]?.[0];
         const status = ret[i]?.[1];

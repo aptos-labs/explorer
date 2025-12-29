@@ -50,6 +50,20 @@ type ContractFormType = {
   ledgerVersion?: string;
 };
 
+// Helper function to extract error message safely
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return (error as Error).message;
+  }
+  if (typeof error === "object" && error !== null) {
+    const errorObj = error as Record<string, unknown>;
+    if ("message" in errorObj && typeof errorObj.message === "string") {
+      return errorObj.message;
+    }
+  }
+  return "Unknown error";
+}
+
 interface ContractSidebarProps {
   selectedModuleName: string | undefined;
   selectedFnName: string | undefined;
@@ -292,6 +306,8 @@ function RunContractForm({
   const fnParams = removeSignerParam(fn);
 
   // TODO: We should use the SDKv2 for this
+  // Note: Return type is intentionally broad due to dynamic type conversion at runtime
+  // The actual type depends on the Move type being converted
   const convertArgument = (
     arg: string | null | undefined,
     type: string,
@@ -336,7 +352,11 @@ function RunContractForm({
           return undefined;
         } else {
           // Convert for the inner type if it isn't empty
-          arg = convertArgument(arg, typeTag.value.typeArgs[0].toString());
+          arg = convertArgument(
+            arg,
+            typeTag.value.typeArgs[0].toString(),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ) as any;
           return arg;
         }
       }
@@ -527,9 +547,8 @@ function ReadContractForm({
           return encodeInputArgsForViewRequest(fn.params[i], arg);
         }),
       };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      setErrMsg("Parsing arguments failed: " + e?.message);
+    } catch (e: unknown) {
+      setErrMsg("Parsing arguments failed: " + getErrorMessage(e));
       return;
     }
     setInProcess(true);
@@ -542,10 +561,9 @@ function ReadContractForm({
       setResult(result);
       setErrMsg(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "success"});
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
+    } catch (e: unknown) {
       // Ensure error is a string
-      let error = e.message ?? JSON.stringify(e);
+      let error = getErrorMessage(e);
 
       const prefix = "Error:";
       if (error.startsWith(prefix)) {
