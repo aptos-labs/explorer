@@ -247,10 +247,10 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
       },
       MuiDrawer: {
         styleOverrides: {
-          paper: () => ({
+          paper: ({theme}) => ({
             borderRadius: 0,
             transition: `transform 500ms !important`,
-            boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+            boxShadow: `0 25px 50px -12px ${alpha(theme.palette.common.black, 0.25)}`,
           }),
           root: ({theme}) => ({
             zIndex: theme.zIndex.drawer,
@@ -259,9 +259,9 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
       },
       MuiPopover: {
         styleOverrides: {
-          paper: {
-            boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
-          },
+          paper: ({theme}) => ({
+            boxShadow: `0 25px 50px -12px ${alpha(theme.palette.common.black, 0.25)}`,
+          }),
         },
       },
 
