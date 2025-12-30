@@ -1,6 +1,6 @@
 import {Types} from "aptos";
 import {ReactNode, useEffect, useMemo, useState} from "react";
-import Error from "../../Error";
+import ErrorPage from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import SidebarItem from "../../Components/SidebarItem";
@@ -30,6 +30,7 @@ import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {
   useNetworkName,
   useAptosClient,
+  useSdkV2Client,
 } from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
 import {Link, useNavigate} from "../../../../routing";
@@ -41,15 +42,138 @@ import {
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
-import {
-  encodeInputArgsForViewRequest,
-  sortPetraFirst,
-  extractFunctionParamNames,
-  transformCode,
-} from "../../../../utils";
+import {encodeInputArgsForViewRequest, sortPetraFirst} from "../../../../utils";
 import {accountPagePath} from "../../Index";
-import {parseTypeTag} from "@aptos-labs/ts-sdk";
+import {Aptos, Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
 import {WalletDeprecationBanner} from "../../../../components/WalletDeprecationBanner";
+
+/**
+ * Check if a string looks like an ANS name (ends with .apt)
+ */
+function isAnsName(value: string): boolean {
+  return value.trim().endsWith(".apt");
+}
+
+/**
+ * Check if a string is a valid hex string (with or without 0x prefix)
+ */
+function isHexString(value: string): boolean {
+  const trimmed = value.trim();
+  // Check for 0x prefix first
+  if (trimmed.startsWith("0x")) {
+    return /^0x[0-9a-fA-F]*$/.test(trimmed);
+  }
+  // Also accept plain hex without prefix if it looks like hex (all hex chars, even length)
+  return /^[0-9a-fA-F]+$/.test(trimmed) && trimmed.length % 2 === 0;
+}
+
+/**
+ * Convert a hex string to a Uint8Array.
+ * Accepts both 0x-prefixed and non-prefixed hex strings.
+ */
+function hexToBytes(hexString: string): Uint8Array {
+  const trimmed = hexString.trim();
+  // Use the SDK's Hex class for proper conversion
+  const hex = trimmed.startsWith("0x") ? trimmed : `0x${trimmed}`;
+  return Hex.fromHexString(hex).toUint8Array();
+}
+
+/**
+ * Resolve an ANS name to an address using the SDK v2 client.
+ * Throws an error if the name cannot be resolved.
+ */
+async function resolveAnsName(
+  name: string,
+  sdkV2Client: Aptos,
+): Promise<string> {
+  const ansName = await sdkV2Client.getName({name});
+  const address = ansName?.registered_address ?? ansName?.owner_address;
+
+  if (!address) {
+    throw new Error(`Failed to resolve ANS name: ${name}`);
+  }
+
+  return address;
+}
+
+/**
+ * Process a single argument value, resolving ANS names if needed.
+ * For address types, if the value looks like an ANS name (.apt), resolve it.
+ * Throws an error if ANS resolution fails.
+ */
+async function resolveAnsInArgument(
+  arg: string | null | undefined,
+  type: string,
+  sdkV2Client: Aptos,
+): Promise<string> {
+  if (typeof arg !== "string" || !arg.trim()) {
+    return arg ?? "";
+  }
+
+  const trimmedArg = arg.trim();
+  const typeTag = parseTypeTag(type, {allowGenerics: true});
+
+  // Handle vector types - check inner elements for address type
+  if (typeTag.isVector()) {
+    const innerTag = typeTag.value;
+    if (innerTag.isAddress()) {
+      // Parse as array and resolve each ANS name
+      let items: string[];
+      if (trimmedArg.startsWith("[")) {
+        items = JSON.parse(trimmedArg) as string[];
+      } else {
+        items = trimmedArg.split(",").map((item) => item.trim());
+      }
+
+      const resolvedItems = await Promise.all(
+        items.map(async (item) => {
+          if (isAnsName(item)) {
+            return resolveAnsName(item, sdkV2Client);
+          }
+          return item;
+        }),
+      );
+
+      // Return in the same format as input
+      if (trimmedArg.startsWith("[")) {
+        return JSON.stringify(resolvedItems);
+      }
+      return resolvedItems.join(", ");
+    }
+    // For non-address vectors, return as-is
+    return trimmedArg;
+  }
+
+  // Handle Option<address> type
+  if (typeTag.isStruct() && typeTag.isOption()) {
+    const innerType = typeTag.value.typeArgs[0];
+    if (innerType.isAddress() && isAnsName(trimmedArg)) {
+      return resolveAnsName(trimmedArg, sdkV2Client);
+    }
+    return trimmedArg;
+  }
+
+  // Handle direct address type
+  if (typeTag.isAddress() && isAnsName(trimmedArg)) {
+    return resolveAnsName(trimmedArg, sdkV2Client);
+  }
+
+  return trimmedArg;
+}
+
+/**
+ * Process all arguments, resolving any ANS names in address-type parameters.
+ * Throws an error if any ANS resolution fails.
+ */
+async function resolveAnsInArguments(
+  args: (string | undefined)[],
+  paramTypes: string[],
+  sdkV2Client: Aptos,
+): Promise<string[]> {
+  return Promise.all(
+    args.map((arg, i) => resolveAnsInArgument(arg, paramTypes[i], sdkV2Client)),
+  );
+}
 
 type ContractFormType = {
   typeArgs: string[];
@@ -131,7 +255,7 @@ function Contract({
   }
 
   if (error) {
-    return <Error address={address} error={error} />;
+    return <ErrorPage address={address} error={error} />;
   }
 
   if (modules.length === 0) {
@@ -178,19 +302,9 @@ function Contract({
           {!module || !fn ? (
             <Typography>Please select a function</Typography>
           ) : isRead ? (
-            <ReadContractForm
-              module={module}
-              fn={fn}
-              key={contractFormKey}
-              sourceCode={selectedModule?.source}
-            />
+            <ReadContractForm module={module} fn={fn} key={contractFormKey} />
           ) : (
-            <RunContractForm
-              module={module}
-              fn={fn}
-              key={contractFormKey}
-              sourceCode={selectedModule?.source}
-            />
+            <RunContractForm module={module} fn={fn} key={contractFormKey} />
           )}
 
           {module && fn && selectedModule && (
@@ -309,16 +423,16 @@ function ContractSidebar({
 function RunContractForm({
   module,
   fn,
-  sourceCode,
 }: {
   module: Types.MoveModule;
   fn: Types.MoveFunction;
-  sourceCode?: string;
 }) {
   const networkName = useNetworkName();
+  const sdkV2Client = useSdkV2Client();
   const {connected} = useWallet();
   const logEvent = useLogEventWithBasic();
   const [formValid, setFormValid] = useState(false);
+  const [ansError, setAnsError] = useState<string | undefined>();
   const {submitTransaction, transactionResponse, transactionInProcess} =
     useSubmitTransaction();
 
@@ -345,10 +459,10 @@ function RunContractForm({
       }
 
       if (innerTag.isU8()) {
-        // U8 we take as an array or hex
-        if (arg.startsWith("0x")) {
-          // For hex, let the hex pass through
-          return arg;
+        // For vector<u8>, support both hex strings and byte arrays
+        if (isHexString(arg)) {
+          // Convert hex string to Uint8Array for proper handling
+          return hexToBytes(arg);
         }
       }
 
@@ -383,12 +497,28 @@ function RunContractForm({
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("write_button_clicked", fn.name);
+    setAnsError(undefined);
+
+    // Resolve any ANS names in arguments before processing
+    let resolvedArgs: string[];
+    try {
+      resolvedArgs = await resolveAnsInArguments(
+        data.args,
+        fnParams,
+        sdkV2Client,
+      );
+    } catch (e: unknown) {
+      const errorMsg =
+        e instanceof Error ? e.message : "Failed to resolve ANS name";
+      setAnsError(errorMsg);
+      return;
+    }
 
     const payload: InputTransactionData = {
       data: {
         function: `${module.address}::${module.name}::${fn.name}`,
         typeArguments: data.typeArgs,
-        functionArguments: data.args.map((arg, i) => {
+        functionArguments: resolvedArgs.map((arg, i) => {
           const type = fnParams[i];
           // Convert MoveValue to the expected argument type
           // The wallet adapter will handle the conversion
@@ -419,7 +549,6 @@ function RunContractForm({
       onSubmit={onSubmit}
       setFormValid={setFormValid}
       isView={false}
-      sourceCode={sourceCode}
       result={
         connected ? (
           <Box>
@@ -444,8 +573,29 @@ function RunContractForm({
               </span>
             </StyledTooltip>
 
+            {/* ANS resolution error */}
+            {ansError && (
+              <ExecutionResult success={false}>
+                <Stack
+                  direction="row"
+                  gap={2}
+                  pt={3}
+                  justifyContent="space-between"
+                >
+                  <Stack>
+                    <Typography fontSize={12} fontWeight={600} mb={1}>
+                      ANS Resolution Error:
+                    </Typography>
+                    <Typography fontSize={12} fontWeight={400}>
+                      {ansError}
+                    </Typography>
+                  </Stack>
+                </Stack>
+              </ExecutionResult>
+            )}
+
             {/* Has some execution result to display */}
-            {!transactionInProcess && transactionResponse && (
+            {!transactionInProcess && transactionResponse && !ansError && (
               <ExecutionResult success={isFunctionSuccess}>
                 <Stack
                   direction="row"
@@ -528,13 +678,12 @@ const TOOLTIP_TIME = 2000; // 2s
 function ReadContractForm({
   module,
   fn,
-  sourceCode,
 }: {
   module: Types.MoveModule;
   fn: Types.MoveFunction;
-  sourceCode?: string;
 }) {
   const aptosClient = useAptosClient();
+  const sdkV2Client = useSdkV2Client();
   const [result, setResult] = useState<Types.MoveValue[]>();
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
@@ -563,12 +712,30 @@ function ReadContractForm({
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("read_button_clicked", fn.name);
+    setErrMsg(undefined);
+    setResult(undefined);
+
+    // Resolve any ANS names in arguments before processing
+    let resolvedArgs: string[];
+    try {
+      resolvedArgs = await resolveAnsInArguments(
+        data.args,
+        fn.params,
+        sdkV2Client,
+      );
+    } catch (e: unknown) {
+      const errorMsg =
+        e instanceof Error ? e.message : "Failed to resolve ANS name";
+      setErrMsg("ANS Resolution Error: " + errorMsg);
+      return;
+    }
+
     let viewRequest: Types.ViewRequest;
     try {
       viewRequest = {
         function: `${module.address}::${module.name}::${fn.name}`,
         type_arguments: data.typeArgs,
-        arguments: data.args.map((arg, i) => {
+        arguments: resolvedArgs.map((arg, i) => {
           return encodeInputArgsForViewRequest(fn.params[i], arg);
         }),
       };
@@ -604,7 +771,6 @@ function ReadContractForm({
       onSubmit={onSubmit}
       setFormValid={setFormValid}
       isView={true}
-      sourceCode={sourceCode}
       result={
         <Box>
           <StyledTooltip
@@ -719,14 +885,12 @@ function ContractForm({
   setFormValid,
   result,
   isView,
-  sourceCode,
 }: {
   fn: Types.MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
   setFormValid: (valid: boolean) => void;
   result: ReactNode;
   isView: boolean;
-  sourceCode?: string;
 }) {
   const {account} = useWallet();
   const {
@@ -742,26 +906,6 @@ function ContractForm({
   });
 
   const fnParams = removeSignerParam(fn);
-
-  // Try to extract parameter names from source code if available
-  const paramNames = useMemo(() => {
-    if (!sourceCode) return undefined;
-    try {
-      const decodedSource = transformCode(sourceCode);
-      if (!decodedSource) return undefined;
-      const allParamNames = extractFunctionParamNames(decodedSource, fn.name);
-      if (!allParamNames) return undefined;
-      // Filter out signer params to match fnParams
-      const hasSigner = fn.params.length !== fnParams.length;
-      if (hasSigner) {
-        // Skip the leading param names that correspond to signer params (or other filtered params)
-        return allParamNames.slice(fn.params.length - fnParams.length);
-      }
-      return allParamNames;
-    } catch {
-      return undefined;
-    }
-  }, [sourceCode, fn.name, fn.params.length, fnParams.length]);
   const hasSigner = fnParams.length !== fn.params.length;
 
   useEffect(() => {
@@ -814,7 +958,6 @@ function ContractForm({
             {fnParams.map((param, i) => {
               // TODO: Need a nice way to differentiate between option and empty string
               const isOption = param.startsWith("0x1::option::Option");
-              const paramName = paramNames?.[i] ?? `arg${i}`;
               return (
                 <Controller
                   key={`args-${i}`}
@@ -825,7 +968,7 @@ function ContractForm({
                     <TextField
                       onChange={onChange}
                       value={isOption ? value : (value ?? "")}
-                      label={`${paramName}: ${param}`}
+                      label={`arg${i}: ${param}`}
                       fullWidth
                     />
                   )}
@@ -855,6 +998,14 @@ function ContractForm({
           {/* TODO: Figure out a better way to show instructions, I tried, and it wasn't pretty */}
           <Typography fontSize={14} fontWeight={600}>
             How to use:
+          </Typography>
+          <Typography fontSize={14} fontWeight={600}>
+            ANS names (.apt) are supported for address arguments (e.g.
+            gregnazario.apt will resolve to the address)
+          </Typography>
+          <Typography fontSize={14} fontWeight={600}>
+            vector&lt;u8&gt; accepts hex strings (e.g. 0xDEADBEEF or DEADBEEF)
+            or byte arrays (e.g. [222, 173, 190, 239])
           </Typography>
           <Typography fontSize={14} fontWeight={600}>
             Option arguments can be submitted with no value, which would be
