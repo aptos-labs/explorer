@@ -754,7 +754,7 @@ function ContractForm({
       // Filter out signer params to match fnParams
       const hasSigner = fn.params.length !== fnParams.length;
       if (hasSigner) {
-        // Remove the first param name if it was a signer
+        // Skip the leading param names that correspond to signer params (or other filtered params)
         return allParamNames.slice(fn.params.length - fnParams.length);
       }
       return allParamNames;
