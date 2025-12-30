@@ -152,6 +152,13 @@ export function encodeInputArgsForViewRequest(type: string, value: string) {
     return value === "true";
   } else if (["u8", "u16", "u32"].includes(type)) {
     return ensureNumber(value);
+  } else if (["i8", "i16", "i32"].includes(type)) {
+    // Signed integers that fit in JS number
+    return ensureSignedNumber(value);
+  } else if (["i64", "i128", "i256"].includes(type)) {
+    // Signed integers that need string representation for large values
+    ensureSignedBigInt(value);
+    return value;
   } else if (type.startsWith("0x1::option::Option")) {
     return {vec: [...(value ? [value] : [])]};
   } else return value;
@@ -192,6 +199,13 @@ function encodeVectorForViewRequest(type: string, value: string) {
       // For bigint, not need to convert, only validation
       rawVector.forEach((v) => ensureBigInt(v.trim()));
       return rawVector;
+    } else if (["i8", "i16", "i32"].includes(match[1])) {
+      // Signed integers that fit in JS number
+      return rawVector.map((v) => ensureSignedNumber(v.trim()));
+    } else if (["i64", "i128", "i256"].includes(match[1])) {
+      // Signed integers that need string representation for large values
+      rawVector.forEach((v) => ensureSignedBigInt(v.trim()));
+      return rawVector.map((v) => v.trim());
     } else if (match[1] === "bool") {
       return rawVector.map((v) => ensureBoolean(v.trim()));
     } else {
@@ -218,9 +232,31 @@ function ensureNumber(val: number | string): number {
   return res;
 }
 
+function ensureSignedNumber(val: number | string): number {
+  assertType(val, ["number", "string"]);
+  if (typeof val === "number") {
+    return val;
+  }
+
+  // Handle negative numbers - parseInt handles the negative sign
+  const trimmed = val.trim();
+  const res = Number.parseInt(trimmed, 10);
+  if (Number.isNaN(res)) {
+    throw new Error(`Invalid signed number string: ${val}`);
+  }
+
+  return res;
+}
+
 export function ensureBigInt(val: number | bigint | string): bigint {
   assertType(val, ["number", "bigint", "string"]);
   return BigInt(val);
+}
+
+export function ensureSignedBigInt(val: number | bigint | string): bigint {
+  assertType(val, ["number", "bigint", "string"]);
+  // BigInt constructor handles negative numbers naturally
+  return BigInt(typeof val === "string" ? val.trim() : val);
 }
 
 export function ensureBoolean(val: boolean | string): boolean {
