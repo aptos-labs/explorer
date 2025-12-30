@@ -812,11 +812,29 @@ function ReadContractForm({
                 mt={2}
                 justifyContent="space-between"
               >
-                <Stack>
-                  <Typography fontSize={12} fontWeight={400} pl={1} pt="6px">
+                <Box
+                  sx={{
+                    flex: 1,
+                    maxWidth: "100%",
+                    overflow: "auto",
+                    maxHeight: 400,
+                  }}
+                >
+                  <Typography
+                    component="pre"
+                    fontSize={12}
+                    fontWeight={400}
+                    sx={{
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                      margin: 0,
+                      fontFamily: "monospace",
+                    }}
+                    color={errMsg ? "error" : "inherit"}
+                  >
                     {errMsg ? "Error: " + errMsg : resultString}
                   </Typography>
-                </Stack>
+                </Box>
 
                 {!errMsg && (
                   <StyledTooltip
