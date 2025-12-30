@@ -1042,6 +1042,10 @@ function ContractForm({
             Numbers and booleans must be inputted without quotes if providing
             JSON
           </Typography>
+          <Typography fontSize={14} fontWeight={600}>
+            Signed integers (i8, i16, i32, i64, i128, i256) support negative
+            values e.g. -42
+          </Typography>
         </Stack>
       </Box>
     </form>
