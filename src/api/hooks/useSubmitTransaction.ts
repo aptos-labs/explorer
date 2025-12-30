@@ -27,12 +27,10 @@ export type TransactionResponseOnError = {
 const useSubmitTransaction = () => {
   const [transactionResponse, setTransactionResponse] =
     useState<TransactionResponse | null>(null);
+  const [transactionInProcess, setTransactionInProcess] = useState(false);
   const networkName = useNetworkName();
   const aptosClient = useAptosClient();
   const {signAndSubmitTransaction, wallet, network} = useWallet();
-
-  // Calculate transactionInProcess during render instead of using state
-  const transactionInProcess = transactionResponse === null;
 
   async function submitTransaction(transaction: InputTransactionData) {
     if (
@@ -48,7 +46,8 @@ const useSubmitTransaction = () => {
       return;
     }
 
-    // Set to null to indicate transaction is in process
+    // Set in process state
+    setTransactionInProcess(true);
     setTransactionResponse(null);
 
     const signAndSubmitTransactionCall = async (
@@ -112,13 +111,15 @@ const useSubmitTransaction = () => {
       return responseOnError;
     };
 
-    await signAndSubmitTransactionCall(transaction).then(
-      setTransactionResponse,
-    );
+    await signAndSubmitTransactionCall(transaction).then((response) => {
+      setTransactionResponse(response);
+      setTransactionInProcess(false);
+    });
   }
 
   function clearTransactionResponse() {
     setTransactionResponse(null);
+    setTransactionInProcess(false);
   }
 
   return {
