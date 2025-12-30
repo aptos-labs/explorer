@@ -120,7 +120,17 @@ async function resolveAnsInArgument(
       // Parse as array and resolve each ANS name
       let items: string[];
       if (trimmedArg.startsWith("[")) {
-        items = JSON.parse(trimmedArg) as string[];
+        try {
+          items = JSON.parse(trimmedArg) as string[];
+        } catch (error) {
+          const message =
+            "Invalid JSON array format for address vector argument. " +
+            "Please provide a valid JSON array of addresses, e.g., " +
+            '["addr1", "addr2"].';
+          throw new Error(
+            error instanceof Error ? `${message} ${error.message}` : message,
+          );
+        }
       } else {
         items = trimmedArg.split(",").map((item) => item.trim());
       }
