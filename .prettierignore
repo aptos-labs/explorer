@@ -11,3 +11,5 @@ robots.txt
 .npmrc
 *.svg
 *.xml
+*.ico
+*.png
