@@ -4,12 +4,11 @@ import {defaultNetworkName} from "../../constants";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
 import MainnetAnalytics from "./MainnetAnalytics";
-import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 
 export default function AnalyticsPage() {
   const networkName = useNetworkName();
 
-  usePageMetadata({title: "Network Analytics"});
   const titleComponent = (
     <Typography variant="h3" marginBottom={2}>
       Network Analytics
@@ -18,6 +17,10 @@ export default function AnalyticsPage() {
 
   return (
     <Box>
+      <PageMetadata
+        title="Network Analytics"
+        description="View Aptos network analytics including daily active users, transaction volumes, gas fees, block production, and other key blockchain metrics."
+      />
       <PageHeader />
       {networkName === defaultNetworkName ? (
         <>

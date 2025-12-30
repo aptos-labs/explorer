@@ -10,3 +10,4 @@ robots.txt
 .node-version
 .npmrc
 *.svg
+*.xml

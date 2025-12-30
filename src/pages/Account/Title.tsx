@@ -4,7 +4,7 @@ import TitleHashButton, {
   HashType,
   NameType,
 } from "../../components/TitleHashButton";
-import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import StyledTooltip from "../../components/StyledTooltip";
 import {useIsDaaAccount} from "./hooks/useIsDaaAccount";
 
@@ -26,28 +26,35 @@ export default function AccountTitle({
   const isDAA = useIsDaaAccount(address);
 
   let title = "Account";
+  let description = `View details for Aptos account ${address}. See transactions, resources, modules, coins, and NFTs owned by this account.`;
+
   if (isMultisig) {
     title = "Multisig Account";
+    description = `View details for Aptos multisig account ${address}. See pending transactions, owners, and multisig configuration.`;
   } else if (isToken) {
     if (isDeleted) {
       title = "Deleted Token Object";
+      description = `This token object ${address} has been deleted from the Aptos blockchain.`;
     } else {
       title = `Token Object`;
+      description = `View token object ${address} on the Aptos blockchain. See token metadata, ownership, and transfer history.`;
     }
   } else if (isObject) {
     if (isDeleted) {
       title = "Deleted Object";
+      description = `This object ${address} has been deleted from the Aptos blockchain.`;
     } else {
       title = "Object";
+      description = `View object ${address} on the Aptos blockchain. See object resources, ownership, and associated data.`;
     }
   } else if (isDAA) {
     title = "Derivable Aptos Account";
+    description = `View derivable Aptos account ${address}. Cross-chain account derived from another blockchain address.`;
   }
-
-  usePageMetadata({title: `${title} ${address}`});
 
   return (
     <Stack direction="column" spacing={2} marginX={1}>
+      <PageMetadata title={`${title} ${address}`} description={description} />
       <Typography variant="h3">{title}</Typography>
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.ACCOUNT} />

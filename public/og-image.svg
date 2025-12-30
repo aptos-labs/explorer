@@ -1,0 +1,38 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#16213e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f3460;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4ade80;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#22d3ee;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg-gradient)"/>
+  
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="200" fill="#4ade80" opacity="0.05"/>
+  <circle cx="1100" cy="530" r="250" fill="#22d3ee" opacity="0.05"/>
+  <circle cx="900" cy="150" r="150" fill="#4ade80" opacity="0.03"/>
+  
+  <!-- Aptos Logo placeholder (simple A shape) -->
+  <g transform="translate(520, 180)">
+    <path d="M80 0 L160 200 L130 200 L80 80 L30 200 L0 200 Z" fill="url(#accent-gradient)"/>
+    <rect x="40" y="130" width="80" height="20" fill="url(#accent-gradient)"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="600" y="420" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="700" fill="#ffffff">Aptos Explorer</text>
+  
+  <!-- Subtitle -->
+  <text x="600" y="480" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#94a3b8">Explore the Aptos Blockchain</text>
+  
+  <!-- Bottom accent line -->
+  <rect x="400" y="530" width="400" height="4" rx="2" fill="url(#accent-gradient)"/>
+</svg>
+
+
