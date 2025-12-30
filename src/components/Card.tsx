@@ -1,6 +1,5 @@
 import React, {useContext} from "react";
-import {Box, BoxProps, useTheme} from "@mui/material";
-import {grey} from "../themes/colors/aptosColorPalette";
+import {Box, BoxProps, useTheme, alpha} from "@mui/material";
 import {StyleContext} from "../pages/Analytics/NetworkInfo/NetworkInfo";
 
 interface CardProps extends BoxProps {
@@ -23,7 +22,7 @@ export function Card({children, ...props}: CardProps) {
   return (
     <Box
       sx={{
-        background: theme.palette.mode === "dark" ? grey[800] : grey[100],
+        background: theme.palette.background.paper,
         padding: 2.5,
         borderRadius: 1,
       }}
@@ -42,10 +41,12 @@ export function CardOutline({children, ...props}: CardProps) {
       sx={{
         padding: 2.5,
         borderRadius: 1,
-        boxShadow:
+        boxShadow: `0px 0px 5px 2px ${alpha(
           theme.palette.mode === "dark"
-            ? "0px 0px 5px 2px rgba(256, 256, 256, 0.15)"
-            : "0px 0px 5px 2px rgba(0, 0, 0, 0.05)",
+            ? theme.palette.common.white
+            : theme.palette.common.black,
+          theme.palette.mode === "dark" ? 0.15 : 0.05,
+        )}`,
       }}
       {...props}
     >

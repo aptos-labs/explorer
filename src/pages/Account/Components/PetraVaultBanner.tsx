@@ -1,6 +1,7 @@
 import React from "react";
 import {Banner} from "../../../components/Banner";
-import {Button, Stack, useMediaQuery, useTheme} from "@mui/material";
+import {Button, Stack, useMediaQuery, useTheme, alpha} from "@mui/material";
+import {brandColors} from "../../../themes/colors/aptosBrandColors";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 interface PetraVaultBannerProps {
@@ -23,10 +24,10 @@ export function PetraVaultBanner({address}: PetraVaultBannerProps) {
         window.open(petraVaultUrl, "_blank", "noopener,noreferrer")
       }
       sx={{
-        backgroundColor: "rgba(255, 255, 255, 0.2)",
-        color: "white",
+        backgroundColor: alpha(brandColors.white, 0.2),
+        color: brandColors.white,
         "&:hover": {
-          backgroundColor: "rgba(255, 255, 255, 0.3)",
+          backgroundColor: alpha(brandColors.white, 0.3),
         },
         textTransform: "none",
         fontWeight: 600,

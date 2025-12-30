@@ -7,7 +7,7 @@ import {
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
-import {useTheme} from "@mui/material/styles";
+import {useTheme, alpha} from "@mui/material";
 import {Stack} from "@mui/system";
 import React from "react";
 import {
@@ -19,7 +19,6 @@ import {
   useNetworkName,
   useGlobalActions,
 } from "../../global-config/GlobalConfig";
-import {grey} from "../../themes/colors/aptosColorPalette";
 
 function NetworkAndChainIdCached({
   networkName,
@@ -129,11 +128,13 @@ export default function NetworkSelect() {
             PaperProps: {
               sx: {
                 minWidth: 240,
-                boxShadow: "0 25px 50px -12px rgba(18,22,21,0.25)",
+                boxShadow: `0 25px 50px -12px ${alpha(theme.palette.text.primary, 0.25)}`,
                 marginTop: 0.5,
                 "& .MuiMenuItem-root.Mui-selected": {
                   backgroundColor: `${
-                    theme.palette.mode === "dark" ? grey[700] : grey[200]
+                    theme.palette.mode === "dark"
+                      ? theme.palette.neutralShade.lighter
+                      : theme.palette.neutralShade.darker
                   }!important`,
                   pointerEvents: "none",
                 },
@@ -148,7 +149,7 @@ export default function NetworkSelect() {
               justifyContent="space-between"
               spacing={3}
               width="100%"
-              color={grey[450]}
+              color={theme.palette.text.secondary}
             >
               <Typography variant="body2">Network</Typography>
               <Typography variant="body2">Chain ID</Typography>

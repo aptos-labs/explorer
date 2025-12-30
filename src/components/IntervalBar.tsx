@@ -1,11 +1,7 @@
-import {Stack, Typography, useTheme} from "@mui/material";
+import {Stack, Typography, useTheme, alpha} from "@mui/material";
 import React, {useState} from "react";
-import {grey} from "../themes/colors/aptosColorPalette";
 import Countdown from "react-countdown";
 import StyledTooltip from "./StyledTooltip";
-
-const BAR_COLOR = "#818CF8";
-const BAR_BACKGROUND_COLOR = "rgb(129, 140, 248, 0.4)";
 
 export enum IntervalType {
   EPOCH = "EPOCH",
@@ -28,6 +24,9 @@ export default function IntervalBar({
   const handleCountdownComplete = () => {
     setDisplayTooltip(true);
   };
+
+  const barColor = theme.palette.primary.main;
+  const barBackgroundColor = alpha(theme.palette.primary.main, 0.4);
 
   const renderer = ({
     days,
@@ -63,7 +62,7 @@ export default function IntervalBar({
       <Stack
         width={`${percentage}%`}
         sx={{
-          backgroundColor: BAR_COLOR,
+          backgroundColor: barColor,
           borderRadius:
             percentage < 100 ? "4px 0px 0px 4px" : "4px 4px 4px 4px",
         }}
@@ -71,7 +70,7 @@ export default function IntervalBar({
       >
         {percentage >= 50 && (
           <Typography
-            color={grey[50]}
+            color={theme.palette.common.white}
             sx={{fontSize: 10, fontWeight: 600}}
             marginX={0.5}
           >
@@ -86,7 +85,7 @@ export default function IntervalBar({
       <Stack
         width={`${100 - percentage}%`}
         sx={{
-          backgroundColor: BAR_BACKGROUND_COLOR,
+          backgroundColor: barBackgroundColor,
           borderRadius: percentage > 0 ? "0px 4px 4px 0px" : "4px 4px 4px 4px",
         }}
         alignItems="flex-end"
@@ -94,7 +93,7 @@ export default function IntervalBar({
       >
         {percentage < 50 && (
           <Typography
-            color={theme.palette.mode === "dark" ? grey[50] : grey[500]}
+            color={theme.palette.text.secondary}
             sx={{fontSize: 10, fontWeight: 600}}
             marginX={0.5}
           >

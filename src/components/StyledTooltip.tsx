@@ -5,10 +5,10 @@ import {
   Tooltip,
   TooltipProps,
   Typography,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import {grey} from "../themes/colors/aptosColorPalette";
 
 interface StyledTooltipProps extends TooltipProps {
   title: NonNullable<React.ReactNode>;
@@ -45,6 +45,7 @@ export function StyledLearnMoreTooltip({
   link,
   linkToText,
 }: StyledLearnMoreTooltipProps) {
+  const theme = useTheme();
   return (
     <StyledTooltip
       placement="bottom-start"
@@ -72,7 +73,10 @@ export function StyledLearnMoreTooltip({
         </Stack>
       }
     >
-      <InfoOutlinedIcon htmlColor={grey[450]} sx={{fontSize: 15}} />
+      <InfoOutlinedIcon
+        htmlColor={theme.palette.text.secondary}
+        sx={{fontSize: 15}}
+      />
     </StyledTooltip>
   );
 }

@@ -10,12 +10,7 @@ import {
   solarizedLight,
   solarizedDark,
 } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import {
-  codeBlockColor,
-  codeBlockColorRgbDark,
-  codeBlockColorRgbLight,
-  grey,
-} from "../../../themes/colors/aptosColorPalette";
+import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {useParams} from "react-router-dom";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
@@ -30,6 +25,7 @@ function useStartingLineNumber(sourceCode?: string) {
 
 function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   const {selectedModuleName} = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const logEvent = useLogEventWithBasic();
@@ -90,10 +86,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
             }
             customStyle={{
               margin: 0,
-              backgroundColor:
-                theme.palette.mode === "light"
-                  ? codeBlockColorRgbLight
-                  : codeBlockColorRgbDark,
+              backgroundColor: semanticColors.codeBlock.backgroundRgb,
             }}
             showLineNumbers
           >
@@ -114,6 +107,7 @@ export function Code({bytecode}: {bytecode: string}) {
   const sourceCode = bytecode === "0x" ? undefined : transformCode(bytecode);
 
   const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
   async function copyCode() {
@@ -202,7 +196,7 @@ export function Code({bytecode}: {bytecode: string}) {
           fontSize={14}
           fontWeight={400}
           marginBottom={"16px"}
-          color={theme.palette.mode === "dark" ? grey[400] : grey[600]}
+          color={theme.palette.text.secondary}
         >
           The source code is plain text uploaded by the deployer, which can be
           different from the actual bytecode.
@@ -219,7 +213,7 @@ export function Code({bytecode}: {bytecode: string}) {
             maxHeight: "100vh",
             overflow: "auto",
             borderRadius: 1,
-            backgroundColor: codeBlockColor,
+            backgroundColor: semanticColors.codeBlock.background,
           }}
           ref={codeBoxScrollRef}
         >

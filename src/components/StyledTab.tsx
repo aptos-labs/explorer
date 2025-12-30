@@ -1,6 +1,5 @@
 import * as React from "react";
 import {Tab, TabProps, useTheme} from "@mui/material";
-import {grey} from "../themes/colors/aptosColorPalette";
 
 interface StyledTabProps extends TabProps {
   isFirst: boolean;
@@ -15,12 +14,14 @@ export default function StyledTab({
   ...props
 }: StyledTabProps) {
   const theme = useTheme();
-  // TODO: unify colors for the new transaction page
   let backgroundColor;
   if (!secondary) {
-    backgroundColor = theme.palette.mode === "dark" ? grey[800] : grey[50];
+    backgroundColor = theme.palette.background.paper;
   } else {
-    backgroundColor = theme.palette.mode === "dark" ? grey[700] : grey[200];
+    backgroundColor =
+      theme.palette.mode === "dark"
+        ? theme.palette.neutralShade.lighter
+        : theme.palette.neutralShade.darker;
   }
 
   return (
@@ -30,7 +31,7 @@ export default function StyledTab({
         textTransform: "none",
         fontSize: {xs: "small", md: "medium"},
         paddingX: 3,
-        color: grey[450],
+        color: theme.palette.text.secondary,
         minWidth: {xs: 0, md: "200px"},
         "&.Mui-selected": {
           color: "inherit",

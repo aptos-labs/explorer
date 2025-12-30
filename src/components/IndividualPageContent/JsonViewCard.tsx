@@ -1,12 +1,9 @@
-import {Box, useTheme} from "@mui/material";
+import {Box, useTheme, alpha} from "@mui/material";
 import React from "react";
 import ReactJson from "react-json-view";
-import {codeBlockColor} from "../../themes/colors/aptosColorPalette";
+import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
 
-const TEXT_COLOR_LIGHT = "#0EA5E9";
-const TEXT_COLOR_DARK = "#83CCED";
-const SECONDARY_TEXT_COLOR = "rgba(14,165,233,0.3)";
 const TRANSPARENT = "rgba(0,0,0,0)";
 
 const GROUP_ARRAYS_AFTER_LENGTH = 100;
@@ -15,17 +12,17 @@ const MAX_CARD_HEIGHT = 500;
 
 function useJsonViewCardTheme() {
   const theme = useTheme();
-  const textColor =
-    theme.palette.mode === "dark" ? TEXT_COLOR_DARK : TEXT_COLOR_LIGHT;
+  const textColor = theme.palette.primary.main;
+  const secondaryTextColor = alpha(theme.palette.primary.main, 0.3);
 
   return {
     scheme: "aptos_explorer",
     author: "aptos",
     base00: TRANSPARENT,
     base01: textColor,
-    base02: SECONDARY_TEXT_COLOR, // line color
+    base02: secondaryTextColor, // line color
     base03: textColor,
-    base04: SECONDARY_TEXT_COLOR, // item count color
+    base04: secondaryTextColor, // item count color
     base05: textColor,
     base06: textColor,
     base07: textColor, // key color
@@ -34,8 +31,8 @@ function useJsonViewCardTheme() {
     base0A: textColor,
     base0B: textColor,
     base0C: textColor,
-    base0D: SECONDARY_TEXT_COLOR, // object triangle color
-    base0E: SECONDARY_TEXT_COLOR, // array triangle color
+    base0D: secondaryTextColor, // object triangle color
+    base0E: secondaryTextColor, // array triangle color
     base0F: textColor, // copy icon color
   };
 }
@@ -50,6 +47,7 @@ export default function JsonViewCard({
   collapsedByDefault,
 }: JsonViewCardProps) {
   const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   const jsonViewCardTheme = useJsonViewCardTheme();
 
   if (!data) {
@@ -59,7 +57,7 @@ export default function JsonViewCard({
   return (
     <Box
       sx={{
-        backgroundColor: codeBlockColor,
+        backgroundColor: semanticColors.codeBlock.background,
         overflow: "auto",
         maxHeight: MAX_CARD_HEIGHT,
       }}

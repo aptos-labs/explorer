@@ -1,9 +1,6 @@
 import React from "react";
-import {
-  aptosColor,
-  grey,
-  negativeColor,
-} from "../../../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material";
+import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {APTCurrencyValue} from "./CurrencyValue";
 import GasValue from "./GasValue";
 import {Types} from "aptos";
@@ -25,6 +22,8 @@ export default function GasFeeValue({
   netGasCost = false,
   storageRefund = false,
 }: GasFeeValueProps) {
+  const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   const grossGasUnits = BigInt(gasUsed);
   const netGasWithoutRefund = BigInt(gasUnitPrice) * grossGasUnits;
 
@@ -36,7 +35,7 @@ export default function GasFeeValue({
       <>
         <APTCurrencyValue amount={netGasWithoutRefund.toString()} />
         {showGasUsed === true && (
-          <span style={{color: grey[450]}}>
+          <span style={{color: theme.palette.text.secondary}}>
             {" ("}
             <GasValue gas={gasUsed} />
             {")"}
@@ -64,9 +63,9 @@ export default function GasFeeValue({
     let amountAbs = netGasWithRefund;
     let color = undefined;
     if (netGasWithRefund < 0) {
-      color = aptosColor;
+      color = semanticColors.status.info;
     } else if (netGasWithRefund > 0) {
-      color = negativeColor;
+      color = semanticColors.status.error;
       amountAbs = -netGasWithRefund;
     }
     return (
@@ -82,7 +81,7 @@ export default function GasFeeValue({
     <>
       <APTCurrencyValue amount={netGasWithoutRefund.toString()} />
       {showGasUsed === true && (
-        <span style={{color: grey[450]}}>
+        <span style={{color: theme.palette.text.secondary}}>
           {" ("}
           <GasValue gas={grossGasUnits.toString()} />
           {")"}

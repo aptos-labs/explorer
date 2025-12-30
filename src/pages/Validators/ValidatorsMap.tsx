@@ -1,7 +1,6 @@
 import React from "react";
 import {Stack, useMediaQuery, useTheme} from "@mui/material";
 import Map from "./Components/Map";
-import {grey} from "../../themes/colors/aptosColorPalette";
 import MapMetrics from "./Components/MapMetrics";
 import {useGetValidatorSetGeoData} from "../../api/hooks/useGetValidatorsGeoData";
 import {useGetEpochTime} from "../../api/hooks/useGetEpochTime";
@@ -12,7 +11,7 @@ export default function ValidatorsMap() {
   const theme = useTheme();
   const isDarkTheme = theme.palette.mode === "dark";
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
-  const backgroundColor = isDarkTheme ? grey[800] : grey[50];
+  const backgroundColor = theme.palette.background.paper;
 
   const {validatorGeoMetric, validatorGeoGroups} = useGetValidatorSetGeoData();
   const {curEpoch} = useGetEpochTime();
@@ -24,7 +23,9 @@ export default function ValidatorsMap() {
     !curEpoch || !totalVotingPower || !numberOfActiveValidators;
 
   return (
-    <SkeletonTheme baseColor={isDarkTheme ? grey[500] : undefined}>
+    <SkeletonTheme
+      baseColor={isDarkTheme ? theme.palette.neutralShade.lighter : undefined}
+    >
       {isOnMobile ? (
         <Stack
           direction="column"

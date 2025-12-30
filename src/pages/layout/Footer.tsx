@@ -5,7 +5,6 @@ import DiscordLogo from "../../assets/discord.svg?react";
 import TwitterLogo from "../../assets/twitter.svg?react";
 import MediumLogo from "../../assets/medium.svg?react";
 import LinkedInLogo from "../../assets/linkedin.svg?react";
-import {grey} from "../../themes/colors/aptosColorPalette";
 import SvgIcon from "@mui/material/SvgIcon";
 
 import LogoFullLight from "../../assets/svg/aptos_logo_full_light.svg?react";
@@ -35,8 +34,8 @@ export default function Footer() {
   return (
     <Box
       sx={{
-        background: theme.palette.mode === "dark" ? grey[900] : "white",
-        color: theme.palette.mode === "dark" ? grey[100] : "rgba(18,22,21,1)",
+        background: theme.palette.background.default,
+        color: theme.palette.text.primary,
         mt: 8,
       }}
     >
@@ -74,7 +73,8 @@ export default function Footer() {
                   textAlign: {
                     xs: "center",
                     md: "left",
-                    fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                    fontFamily:
+                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   },
                 }}
                 fontSize="0.8rem"
@@ -95,7 +95,8 @@ export default function Footer() {
                   target="_blank"
                   sx={{
                     fontSize: "0.8rem",
-                    fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                    fontFamily:
+                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   }}
                 >
                   Privacy
@@ -106,7 +107,8 @@ export default function Footer() {
                   target="_blank"
                   sx={{
                     fontSize: "0.8rem",
-                    fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                    fontFamily:
+                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   }}
                 >
                   Terms
@@ -116,7 +118,8 @@ export default function Footer() {
                   to="/verification"
                   sx={{
                     fontSize: "0.8rem",
-                    fontFamily: "apparat, Geneva, Tahoma, Verdana, sans-serif",
+                    fontFamily:
+                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   }}
                 >
                   Token & Address Verification

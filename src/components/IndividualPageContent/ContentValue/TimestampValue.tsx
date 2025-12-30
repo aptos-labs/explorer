@@ -3,7 +3,6 @@ import {parseTimestampString} from "../../../pages/utils";
 import EmptyValue from "./EmptyValue";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {IconButton, Stack, Typography, useTheme} from "@mui/material";
-import {grey} from "../../../themes/colors/aptosColorPalette";
 import StyledTooltip from "../../StyledTooltip";
 
 const TOOLTIP_TIME = 2000; // 2s
@@ -18,10 +17,8 @@ export default function TimestampValue({
   timestamp,
 }: TimestampValueProps) {
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
-
-  // TODO: unify colors for the new transaction page
   const theme = useTheme();
-  const color = theme.palette.mode === "dark" ? grey[600] : grey[200];
+  const color = theme.palette.text.secondary;
 
   if (timestamp === "0") {
     return <EmptyValue />;

@@ -12,10 +12,7 @@ import {
 } from "@mui/icons-material";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import * as React from "react";
-import {
-  codeBlockColor,
-  codeBlockColorClickableOnHover,
-} from "../../themes/colors/aptosColorPalette";
+import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import {BUTTON_HEIGHT} from "../TitleHashButton";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {
@@ -249,14 +246,15 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
     reason = result.reason;
   }
   const {tooltipMessage, icon} = getVerifiedMessageAndIcon(level, reason);
+  const semanticColors = getSemanticColors(theme.palette.mode);
 
   const bannerTheme = {
     height: BUTTON_HEIGHT,
-    backgroundColor: codeBlockColor,
+    backgroundColor: semanticColors.codeBlock.background,
     "&:hover": {
-      backgroundColor: codeBlockColorClickableOnHover,
+      backgroundColor: semanticColors.codeBlock.backgroundHover,
     },
-    color: theme.palette.mode === "dark" ? "#83CCED" : "#0EA5E9",
+    color: theme.palette.primary.main,
     padding: "0.15rem 0.35rem 0.15rem 0.5rem",
     overflow: "hidden",
     whiteSpace: "nowrap",

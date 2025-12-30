@@ -1,16 +1,20 @@
-import {Chip} from "@mui/material";
+import {Chip, useTheme} from "@mui/material";
 import React from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DangerousIcon from "@mui/icons-material/Dangerous";
 import PendingIcon from "@mui/icons-material/Pending";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import {ValidatorStatus} from "../utils";
+import {getValidatorStatusColors} from "../../../themes/colors/aptosBrandColors";
 
 export default function ValidatorStatusIcon({
   validatorStatus,
 }: {
   validatorStatus: ValidatorStatus | undefined;
 }): React.JSX.Element {
+  const theme = useTheme();
+  const statusColors = getValidatorStatusColors(theme.palette.mode);
+
   const getStatusIcon = () => {
     if (validatorStatus) {
       switch (validatorStatus) {
@@ -21,8 +25,8 @@ export default function ValidatorStatusIcon({
               color={"warning"}
               icon={<PendingIcon />}
               sx={{
-                color: "#44c6ee",
-                backgroundColor: "rgba(68, 198, 238, 0.1)",
+                color: statusColors.pendingActive.text,
+                backgroundColor: statusColors.pendingActive.background,
               }}
             />
           );
@@ -33,8 +37,8 @@ export default function ValidatorStatusIcon({
               color={"primary"}
               icon={<CheckCircleIcon />}
               sx={{
-                color: "#14B8A6",
-                backgroundColor: "rgba(20, 184, 166, 0.1)",
+                color: statusColors.active.text,
+                backgroundColor: statusColors.active.background,
               }}
             />
           );
@@ -45,8 +49,8 @@ export default function ValidatorStatusIcon({
               color={"warning"}
               icon={<MoreHorizIcon />}
               sx={{
-                color: "rgba(252, 211, 77, 1)",
-                backgroundColor: "rgba(252, 211, 77, 0.1)",
+                color: statusColors.pendingInactive.text,
+                backgroundColor: statusColors.pendingInactive.background,
               }}
             />
           );
@@ -57,8 +61,8 @@ export default function ValidatorStatusIcon({
               color={"error"}
               icon={<DangerousIcon />}
               sx={{
-                color: "rgb(249, 115, 115, 1)",
-                backgroundColor: "rgb(249, 115, 115, 0.1)",
+                color: statusColors.inactive.text,
+                backgroundColor: statusColors.inactive.background,
               }}
             />
           );

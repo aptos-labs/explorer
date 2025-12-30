@@ -9,13 +9,9 @@ import {
   useTheme,
   Tooltip,
   Stack,
+  alpha,
 } from "@mui/material";
-import {
-  codeBlockColor,
-  codeBlockColorClickableOnHover,
-  grey,
-  primary,
-} from "../themes/colors/aptosColorPalette";
+import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import {
@@ -109,6 +105,7 @@ function AccountHashButtonInner({
       : truncateAddress(address);
   const [copyTooltipOpen, setCopyTooltipOpen] = useState(false);
   const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   const copyAddress = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await navigator.clipboard.writeText(address);
@@ -124,11 +121,11 @@ function AccountHashButtonInner({
       <Link
         to={getHashLinkStr(address, type)}
         sx={{
-          backgroundColor: codeBlockColor,
+          backgroundColor: semanticColors.codeBlock.background,
           "&:hover": {
-            backgroundColor: codeBlockColorClickableOnHover,
+            backgroundColor: semanticColors.codeBlock.backgroundHover,
           },
-          color: theme.palette.mode === "dark" ? "#83CCED" : "#0EA5E9",
+          color: theme.palette.primary.main,
           padding: "0.15rem 0.35rem 0.15rem 1rem",
           overflow: "hidden",
           whiteSpace: "nowrap",
@@ -145,12 +142,8 @@ function AccountHashButtonInner({
             sx={{
               color: "inherit",
               "&:hover": {
-                backgroundColor: `${
-                  theme.palette.mode === "dark" ? primary[700] : primary[100]
-                }`,
-                color: `${
-                  theme.palette.mode === "dark" ? primary[100] : primary[600]
-                }`,
+                backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                color: theme.palette.primary.main,
               },
               padding: "0.25rem 0.5rem 0.25rem 0.5rem",
               margin: "0 0 0 0.2rem",
@@ -228,17 +221,19 @@ function HashButtonInner({
       <Button
         sx={{
           textTransform: "none",
-          backgroundColor: `${
-            theme.palette.mode === "dark" ? grey[600] : grey[200]
-          }`,
+          backgroundColor:
+            theme.palette.mode === "dark"
+              ? theme.palette.neutralShade.lighter
+              : theme.palette.neutralShade.darker,
           display: "flex",
           borderRadius: 1,
           color: "inherit",
           padding: "0.15rem 0.5rem 0.15rem 1rem",
           "&:hover": {
-            backgroundColor: `${
-              theme.palette.mode === "dark" ? grey[500] : grey[300]
-            }`,
+            backgroundColor:
+              theme.palette.mode === "dark"
+                ? theme.palette.neutralShade.main
+                : theme.palette.neutralShade.main,
           },
           minWidth: 141,
         }}
@@ -260,11 +255,7 @@ function HashButtonInner({
           ".MuiPaper-root": {boxShadow: "none"},
           "&.MuiModal-root .MuiBackdrop-root": {
             transition: "none!important",
-            backgroundColor: `${
-              theme.palette.mode === "dark"
-                ? "rgba(18,22,21,0.5)"
-                : "rgba(255,255,255,0.5)"
-            }`,
+            backgroundColor: alpha(theme.palette.background.default, 0.5),
           },
         }}
         id={id}
@@ -284,9 +275,10 @@ function HashButtonInner({
           sx={{
             display: "flex",
             alignItems: "center",
-            backgroundColor: `${
-              theme.palette.mode === "dark" ? grey[600] : grey[200]
-            }`,
+            backgroundColor:
+              theme.palette.mode === "dark"
+                ? theme.palette.neutralShade.lighter
+                : theme.palette.neutralShade.darker,
             px: 2,
             py: "0.15rem",
             fontSize: "14px",
@@ -334,6 +326,7 @@ function AssetHashButtonInner({
   const {data: coinData} = useGetCoinList();
   const [copyTooltipOpen, setCopyTooltipOpen] = useState(false);
   const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
 
   const legitCoin: CoinDescription | undefined = coinData?.data?.find(
     (coin: CoinDescription) => {
@@ -406,11 +399,11 @@ function AssetHashButtonInner({
       <Link
         to={getHashLinkStr(coinName, type)}
         sx={{
-          backgroundColor: codeBlockColor,
+          backgroundColor: semanticColors.codeBlock.background,
           "&:hover": {
-            backgroundColor: codeBlockColorClickableOnHover,
+            backgroundColor: semanticColors.codeBlock.backgroundHover,
           },
-          color: theme.palette.mode === "dark" ? "#83CCED" : "#0EA5E9",
+          color: theme.palette.primary.main,
           padding: "0.15rem 0.35rem 0.15rem 1rem",
           overflow: "hidden",
           whiteSpace: "nowrap",
@@ -427,12 +420,8 @@ function AssetHashButtonInner({
             sx={{
               color: "inherit",
               "&:hover": {
-                backgroundColor: `${
-                  theme.palette.mode === "dark" ? primary[700] : primary[100]
-                }`,
-                color: `${
-                  theme.palette.mode === "dark" ? primary[100] : primary[600]
-                }`,
+                backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                color: theme.palette.primary.main,
               },
               padding: "0.25rem 0.5rem 0.25rem 0.5rem",
               margin: "0 0 0 0.2rem",

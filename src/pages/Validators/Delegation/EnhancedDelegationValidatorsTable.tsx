@@ -21,7 +21,6 @@ import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Types} from "aptos";
-import {aptosColor, grey} from "../../../themes/colors/aptosColorPalette";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import {ValidatorAddrCell, OperatorAddrCell} from "../ValidatorsTable";
 import {addressFromWallet, assertNever} from "../../../utils";
@@ -285,7 +284,8 @@ function StatusCell({validator}: {validator: ValidatorWithExtendedData}) {
   };
 
   const statusColor =
-    statusColors[validatorStatus as keyof typeof statusColors] || grey[500];
+    statusColors[validatorStatus as keyof typeof statusColors] ||
+    theme.palette.text.secondary;
 
   return (
     <GeneralTableCell sx={{paddingRight: 5}}>
@@ -398,6 +398,7 @@ function DelegatedAmountCell({
   validator: ValidatorWithExtendedData;
   totalVotingPower: string | null;
 }) {
+  const theme = useTheme();
   const networkPercentage = totalVotingPower
     ? calculateNetworkPercentage(validator.voting_power, totalVotingPower)
     : "0";
@@ -421,15 +422,15 @@ function DelegatedAmountCell({
               height: 4,
               borderRadius: 2,
               flexGrow: 1,
-              backgroundColor: alpha(aptosColor, 0.1),
+              backgroundColor: alpha(theme.palette.primary.main, 0.1),
               "& .MuiLinearProgress-bar": {
-                backgroundColor: aptosColor,
+                backgroundColor: theme.palette.primary.main,
               },
             }}
           />
           <Typography
             variant="caption"
-            sx={{ml: 1, color: grey[450], minWidth: "36px"}}
+            sx={{ml: 1, color: theme.palette.text.secondary, minWidth: "36px"}}
           >
             {networkPercentage}%
           </Typography>

@@ -5,7 +5,7 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material";
 import {tryStandardizeAddress} from "../../../utils";
 
 type InfoTabProps = {
@@ -19,6 +19,7 @@ export default function InfoTab({
   accountData,
   objectData,
 }: InfoTabProps) {
+  const theme = useTheme();
   if (!accountData && !objectData) {
     return <EmptyTabContent />;
   }
@@ -43,7 +44,9 @@ export default function InfoTab({
               value={
                 <>
                   {`${accountData.authentication_key} `}
-                  <span style={{marginLeft: 8, color: grey[450]}}>
+                  <span
+                    style={{marginLeft: 8, color: theme.palette.text.secondary}}
+                  >
                     (rotated)
                   </span>
                 </>

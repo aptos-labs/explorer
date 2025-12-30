@@ -17,7 +17,6 @@ import {
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {getBytecodeSizeInKB} from "../../../../utils";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import {useParams} from "react-router-dom";
@@ -124,7 +123,7 @@ function ModuleSidebar({
   return (
     <Box
       sx={{padding: "24px", maxHeight: "100vh", overflowY: "auto"}}
-      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      bgcolor={theme.palette.background.paper}
       borderRadius={1}
     >
       {isWideScreen ? (
@@ -186,7 +185,7 @@ function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
       direction="column"
       spacing={2}
       padding={"24px"}
-      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      bgcolor={theme.palette.background.paper}
       borderRadius={1}
     >
       <ModuleHeader address={address} moduleName={moduleName} />

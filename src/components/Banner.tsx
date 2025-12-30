@@ -9,10 +9,12 @@ import {
   Theme,
   useMediaQuery,
   useTheme,
+  alpha,
 } from "@mui/material";
 import React, {useState} from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import AptosBannerImage from "../assets/Banner.jpg";
+import {brandColors} from "../themes/colors/aptosBrandColors";
 
 type PillColors =
   | "primary"
@@ -23,12 +25,12 @@ type PillColors =
   | "warning"
   | "inherit";
 const PillColors: Record<PillColors, string> = {
-  error: "#f44336",
-  info: "#2196f3",
-  primary: "#8B5CF6",
-  secondary: "#f50057",
-  success: "#4caf50",
-  warning: "#ff9800",
+  error: brandColors.coral,
+  info: brandColors.babyBlue,
+  primary: brandColors.babyBlue,
+  secondary: brandColors.mint,
+  success: brandColors.mint,
+  warning: brandColors.coral,
   inherit: "inherit",
 };
 
@@ -54,10 +56,13 @@ export function Banner({
   const closeIcon = (
     <IconButton
       sx={{
-        color: "#ffffff",
+        color: brandColors.white,
         position: "relative",
         top: 0,
         right: 0,
+        "&:hover": {
+          backgroundColor: alpha(brandColors.white, 0.1),
+        },
       }}
       size="medium"
       onClick={() => {
@@ -68,17 +73,36 @@ export function Banner({
     </IconButton>
   );
 
+  // Determine text color based on background color brightness
+  const getPillTextColor = (bgColor: string) => {
+    // For light backgrounds (Baby Blue, Mint), use dark text in light mode
+    // and theme-appropriate text color in dark mode
+    if (bgColor === brandColors.babyBlue || bgColor === brandColors.mint) {
+      return theme.palette.mode === "dark"
+        ? theme.palette.text.primary
+        : brandColors.black;
+    }
+    // For coral/error/warning, use white text
+    return brandColors.white;
+  };
+
   const pill = Boolean(pillText) && (
     <Typography
       sx={{
         backgroundColor: PillColors[pillColor],
-        color: "#ffffff",
-        borderRadius: 1,
-        paddingX: 1,
-        minWidth: "3rem",
-        height: "1.5rem",
+        color: getPillTextColor(PillColors[pillColor]),
+        borderRadius: "4px",
+        paddingX: 1.5,
+        paddingY: 0.25,
+        minWidth: "fit-content",
+        height: "fit-content",
         flex: "0 0 auto",
         textAlign: "center",
+        fontSize: "0.75rem",
+        fontWeight: 600,
+        textTransform: "uppercase",
+        letterSpacing: "0.5px",
+        fontFamily: theme.typography.fontFamily,
       }}
     >
       {pillText}
@@ -87,9 +111,12 @@ export function Banner({
 
   const text = (
     <Typography
-      color="#ffffff"
+      color={brandColors.white}
       sx={{
-        fontFamily: "apparat,Geneva,Tahoma,Verdana,sans-serif",
+        fontFamily: theme.typography.fontFamily,
+        fontSize: "0.875rem",
+        fontWeight: 400,
+        lineHeight: 1.5,
       }}
     >
       {children}
@@ -101,7 +128,21 @@ export function Banner({
       <Box sx={[...(Array.isArray(sx) ? sx : [sx])]}>
         {isOnMobile ? (
           <Alert
-            sx={{backgroundImage: `url(${AptosBannerImage})`, borderRadius: 1}}
+            sx={{
+              backgroundImage: `url(${AptosBannerImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              borderRadius: theme.shape.borderRadius,
+              backgroundColor:
+                theme.palette.mode === "dark"
+                  ? brandColors.ink
+                  : brandColors.black,
+              padding: 2,
+              "& .MuiAlert-message": {
+                width: "100%",
+                padding: 0,
+              },
+            }}
             icon={false}
             action={
               <Stack
@@ -117,10 +158,9 @@ export function Banner({
           >
             <Stack
               direction="column"
-              spacing={1}
-              marginLeft={2}
+              spacing={1.5}
               sx={{
-                paddingTop: 0.5,
+                alignItems: "flex-start",
               }}
             >
               {pill}
@@ -129,14 +169,28 @@ export function Banner({
           </Alert>
         ) : (
           <Alert
-            sx={{backgroundImage: `url(${AptosBannerImage})`, borderRadius: 1}}
+            sx={{
+              backgroundImage: `url(${AptosBannerImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              borderRadius: theme.shape.borderRadius,
+              backgroundColor:
+                theme.palette.mode === "dark"
+                  ? brandColors.ink
+                  : brandColors.black,
+              padding: 2,
+              "& .MuiAlert-message": {
+                width: "100%",
+                padding: 0,
+              },
+            }}
             icon={false}
             action={
               <Stack
                 direction="row"
                 spacing={1}
                 marginRight={2}
-                sx={{verticalAlign: "center"}}
+                sx={{verticalAlign: "center", alignItems: "center"}}
               >
                 {action}
                 {closeIcon}
@@ -145,11 +199,10 @@ export function Banner({
           >
             <Stack
               direction="row"
-              spacing={1}
-              marginLeft={2}
+              spacing={2}
               sx={{
-                paddingTop: 0.5,
-                verticalAlign: "center",
+                alignItems: "center",
+                flexWrap: "wrap",
               }}
             >
               {pill}

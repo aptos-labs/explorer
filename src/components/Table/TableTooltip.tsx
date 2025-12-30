@@ -5,7 +5,6 @@ import {useState} from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import {IconButton, Stack, useTheme} from "@mui/material";
-import {grey} from "../../themes/colors/aptosColorPalette";
 import TooltipTypography from "../TooltipTypography";
 
 type TableTooltipProps = {
@@ -38,7 +37,10 @@ export default function TableTooltip({children, title}: TableTooltipProps) {
         >
           <Box
             sx={{
-              bgcolor: theme.palette.mode === "dark" ? grey[600] : grey[200],
+              bgcolor:
+                theme.palette.mode === "dark"
+                  ? theme.palette.neutralShade.lighter
+                  : theme.palette.neutralShade.darker,
               borderRadius: "10px 10px 0 0",
               paddingX: 3,
               paddingTop: 2,

@@ -1,7 +1,7 @@
 import React from "react";
-import {Box} from "@mui/material";
-import {grey} from "../../../themes/colors/aptosColorPalette";
+import {Box, useTheme} from "@mui/material";
 
 export default function EmptyValue() {
-  return <Box color={grey[450]}>N/A</Box>;
+  const theme = useTheme();
+  return <Box color={theme.palette.text.secondary}>N/A</Box>;
 }

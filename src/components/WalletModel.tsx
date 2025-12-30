@@ -23,7 +23,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {grey} from "./aptosColorPalette";
 // reported bug with loading mui icons with esm, therefore need to import like this https://github.com/mui/material-ui/issues/35233
 import {
   ArrowBack,
@@ -112,7 +111,7 @@ export default function WalletsModal({
             position: "absolute",
             right: 12,
             top: 12,
-            color: grey[450],
+            color: theme.palette.text.secondary,
           }}
         >
           <CloseIcon />
@@ -149,14 +148,14 @@ export default function WalletsModal({
               <LanOutlinedIcon
                 sx={{
                   fontSize: "0.9rem",
-                  color: grey[400],
+                  color: theme.palette.text.secondary,
                 }}
               />
               <Typography
                 sx={{
                   display: "inline-flex",
                   fontSize: "0.9rem",
-                  color: grey[400],
+                  color: theme.palette.text.secondary,
                 }}
                 align="center"
               >
@@ -181,7 +180,7 @@ export default function WalletsModal({
                   gap: 0.5,
                   justifyContent: "center",
                   alignItems: "center",
-                  color: grey[400],
+                  color: theme.palette.text.secondary,
                 }}
               >
                 Learn more about{" "}
@@ -216,7 +215,7 @@ export default function WalletsModal({
                   <Box
                     component={AptosPrivacyPolicy.Link}
                     sx={{
-                      color: grey[400],
+                      color: theme.palette.text.secondary,
                       textDecoration: "underline",
                       textUnderlineOffset: "4px",
                     }}
@@ -231,11 +230,13 @@ export default function WalletsModal({
                     gap: 0.75,
                     fontSize: "12px",
                     lineHeight: "20px",
-                    color: grey[400],
+                    color: theme.palette.text.secondary,
                   }}
                 />
               </Stack>
-              <Divider sx={{color: grey[400], pt: 2}}>Or</Divider>
+              <Divider sx={{color: theme.palette.text.secondary, pt: 2}}>
+                Or
+              </Divider>
             </Stack>
           )}
           <Stack sx={{gap: 1}}>
@@ -285,7 +286,10 @@ function WalletRow({wallet, onConnect}: WalletRowProps) {
             py: 1.5,
             gap: 2,
             border: "solid 1px",
-            borderColor: theme.palette.mode === "dark" ? grey[700] : grey[200],
+            borderColor:
+              theme.palette.mode === "dark"
+                ? theme.palette.neutralShade.lighter
+                : theme.palette.neutralShade.darker,
             borderRadius: `${theme.shape.borderRadius}px`,
           }}
         >

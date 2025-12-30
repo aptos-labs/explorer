@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Box} from "@mui/material";
+import {Box, Typography, Stack, useTheme} from "@mui/material";
 import {Types} from "aptos";
 import {assertNever} from "../../utils";
 import StyledTabs from "../../components/StyledTabs";
@@ -31,6 +31,8 @@ import {getLearnMoreTooltip} from "./helpers";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {Link} from "../../routing";
+import {ErrorOutline} from "@mui/icons-material";
+import {useEffect} from "react";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -131,7 +133,31 @@ type TabPanelProps = {
 };
 
 function TabPanel({value, transaction}: TabPanelProps): React.JSX.Element {
+  const theme = useTheme();
   const TabComponent = TabComponents[value];
+  if (!TabComponent) {
+    return (
+      <ContentBox>
+        <Stack direction="row" spacing={2} alignItems="flex-start">
+          <ErrorOutline
+            sx={{
+              color: theme.palette.error.main,
+              fontSize: 28,
+              mt: 0.5,
+            }}
+          />
+          <Stack spacing={1} sx={{flex: 1}}>
+            <Typography variant="h6" color="error">
+              Invalid Tab
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              The tab "{value}" is not valid for this transaction type.
+            </Typography>
+          </Stack>
+        </Stack>
+      </ContentBox>
+    );
+  }
   return <TabComponent transaction={transaction} />;
 }
 
@@ -148,8 +174,27 @@ export default function TransactionTabs({
 
   const {tab, txnHashOrVersion} = useParams();
   const navigate = useNavigate();
-  const value =
-    tab === undefined ? getTabValues(transaction)[0] : (tab as TabValue);
+
+  // Validate tab value - check if it exists in TabComponents and is valid for this transaction
+  const isValidTab = React.useCallback(
+    (tabName: string | undefined): tabName is TabValue => {
+      if (!tabName) return false;
+      return (
+        tabName in TabComponents && tabValues.includes(tabName as TabValue)
+      );
+    },
+    [tabValues],
+  );
+
+  const defaultTab = tabValues[0];
+  const value = isValidTab(tab) ? tab : defaultTab;
+
+  // Redirect to valid tab if invalid tab was provided
+  useEffect(() => {
+    if (tab && !isValidTab(tab)) {
+      navigate(`/txn/${txnHashOrVersion}/${defaultTab}`, {replace: true});
+    }
+  }, [tab, txnHashOrVersion, defaultTab, navigate, isValidTab]);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate(`/txn/${txnHashOrVersion}/${newValue}`, {replace: true});
@@ -187,7 +232,7 @@ export default function TransactionTabs({
               color="inherit"
               to={`https://fullnode.${networkName.toLowerCase()}.aptoslabs.com/v1/transactions/by_hash/${transaction.hash}`}
             >
-              Transaction ${transaction.hash}
+              Transaction {transaction.hash}
             </Link>
           }
           tooltip={getLearnMoreTooltip("transaction")}

@@ -32,7 +32,6 @@ import {
   useAptosClient,
 } from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
-import {grey} from "../../../../themes/colors/aptosColorPalette";
 import {Link, useNavigate} from "../../../../routing";
 import {Code} from "../../Components/CodeSnippet";
 import {
@@ -168,7 +167,7 @@ function Contract({
         <WalletDeprecationBanner />
         <Box
           padding={4}
-          bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+          bgcolor={theme.palette.background.paper}
           borderRadius={1}
         >
           {!module || !fn ? (
@@ -218,7 +217,7 @@ function ContractSidebar({
   return (
     <Box
       sx={{padding: "24px", maxHeight: "100vh", overflowY: "auto"}}
-      bgcolor={theme.palette.mode === "dark" ? grey[800] : grey[100]}
+      bgcolor={theme.palette.background.paper}
       borderRadius={1}
     >
       {isWideScreen ? (
@@ -673,7 +672,11 @@ function ExecutionResult({
     <Box
       padding={3}
       borderRadius={1}
-      bgcolor={theme.palette.mode === "dark" ? grey[700] : grey[200]}
+      bgcolor={
+        theme.palette.mode === "dark"
+          ? theme.palette.neutralShade.lighter
+          : theme.palette.neutralShade.darker
+      }
       mt={4}
     >
       <Alert

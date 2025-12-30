@@ -9,7 +9,8 @@ import {
 } from "@mui/material";
 import {useContext, useEffect, useState} from "react";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
-import {grey, negativeColor} from "../../themes/colors/aptosColorPalette";
+import {useTheme} from "@mui/material";
+import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import {getStakeOperationAPTRequirement} from "./utils";
 import StyledDialog from "../../components/StyledDialog";
 import StyledTooltip, {
@@ -95,6 +96,8 @@ function StakeOperationDialogContent({
   accountResource: Types.MoveResource;
   validator: ValidatorData;
 }) {
+  const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
   const {balance, lockedUntilSecs, rewardsRateYearly} = useGetDelegationState(
     accountResource,
     validator,
@@ -341,7 +344,7 @@ function StakeOperationDialogContent({
           <TooltipTypography
             textAlign="center"
             variant="body2"
-            color={negativeColor}
+            color={semanticColors.status.error}
           >
             The commission rate for this pool is 100%, you will not receive
             rewards.
@@ -370,7 +373,7 @@ function StakeOperationDialogContent({
         </StyledTooltip>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
-        <Typography variant="caption" color={grey[450]}>
+        <Typography variant="caption" color={theme.palette.text.secondary}>
           <div>
             Please do your own research. Aptos Labs is not responsible for the
             performance of the validator nodes displayed here, or the security
@@ -431,7 +434,7 @@ function StakeOperationDialogContent({
         </Button>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
-        <Typography variant="caption" color={grey[450]}>
+        <Typography variant="caption" color={theme.palette.text.secondary}>
           <div>
             Please do your own research. Aptos Labs is not responsible for the
             security of your funds
@@ -483,7 +486,7 @@ function StakeOperationDialogContent({
         </Button>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
-        <Typography variant="caption" color={grey[450]}>
+        <Typography variant="caption" color={theme.palette.text.secondary}>
           <div>
             Please do your own research. Aptos Labs is not responsible for the
             security of your funds

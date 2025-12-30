@@ -1,20 +1,20 @@
 import React from "react";
-import {Box, Stack, Typography} from "@mui/material";
+import {Box, Stack, Typography, useTheme, alpha} from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import PriorityHighOutlinedIcon from "@mui/icons-material/PriorityHighOutlined";
-
-// TODO: unify the colors
-const SUCCESS_COLOR = "#00BFA5";
-const SUCCESS_BACKGROUND_COLOR = "rgba(0,191,165,0.1)";
-const ERROR_COLOR = "#F97373";
-const ERROR_BACKGROUND_COLOR = "rgba(249,115,115,0.1)";
 
 type TransactionStatusProps = {
   success: boolean;
 };
 
 export function TransactionStatus({success}: TransactionStatusProps) {
+  const theme = useTheme();
+  const successColor = theme.palette.success.main;
+  const errorColor = theme.palette.error.main;
+  const successBackgroundColor = alpha(successColor, 0.1);
+  const errorBackgroundColor = alpha(errorColor, 0.1);
+
   return success ? (
     <Stack
       direction="row"
@@ -23,7 +23,7 @@ export function TransactionStatus({success}: TransactionStatusProps) {
       alignItems="center"
       justifyContent="center"
       sx={{
-        backgroundColor: SUCCESS_BACKGROUND_COLOR,
+        backgroundColor: successBackgroundColor,
         width: 114,
       }}
       borderRadius={1}
@@ -31,9 +31,9 @@ export function TransactionStatus({success}: TransactionStatusProps) {
       <CheckCircleIcon
         fontSize="small"
         titleAccess="Executed successfully"
-        sx={{color: SUCCESS_COLOR}}
+        sx={{color: successColor}}
       />
-      <Typography variant="body2" sx={{color: SUCCESS_COLOR}}>
+      <Typography variant="body2" sx={{color: successColor}}>
         Success
       </Typography>
     </Stack>
@@ -45,7 +45,7 @@ export function TransactionStatus({success}: TransactionStatusProps) {
       alignItems="center"
       justifyContent="center"
       sx={{
-        backgroundColor: ERROR_BACKGROUND_COLOR,
+        backgroundColor: errorBackgroundColor,
         width: 90,
       }}
       borderRadius={1}
@@ -53,9 +53,9 @@ export function TransactionStatus({success}: TransactionStatusProps) {
       <ErrorOutlinedIcon
         fontSize="small"
         titleAccess="Failed to Execute"
-        sx={{color: ERROR_COLOR}}
+        sx={{color: errorColor}}
       />
-      <Typography variant="body2" sx={{color: ERROR_COLOR}}>
+      <Typography variant="body2" sx={{color: errorColor}}>
         Fail
       </Typography>
     </Stack>

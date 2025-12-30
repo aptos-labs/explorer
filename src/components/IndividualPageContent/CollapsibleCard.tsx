@@ -2,7 +2,6 @@ import React from "react";
 import {Stack, Typography, useTheme, Box, Grid} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import {grey} from "../../themes/colors/aptosColorPalette";
 
 type CollapsibleCardProps = {
   titleKey: string;
@@ -21,11 +20,11 @@ export default function CollapsibleCard({
   ...props
 }: CollapsibleCardProps) {
   const theme = useTheme();
-  // TODO: unify colors for the new transaction page
   const titleBackgroundColor =
-    theme.palette.mode === "dark" ? grey[700] : grey[100];
-  const contentBackgroundColor =
-    theme.palette.mode === "dark" ? grey[800] : grey[50];
+    theme.palette.mode === "dark"
+      ? theme.palette.neutralShade.lighter
+      : theme.palette.neutralShade.darker;
+  const contentBackgroundColor = theme.palette.background.paper;
 
   return (
     <Box {...props}>
@@ -33,7 +32,7 @@ export default function CollapsibleCard({
         paddingX={4}
         paddingY={2}
         sx={{
-          color: grey[450],
+          color: theme.palette.text.secondary,
           backgroundColor: titleBackgroundColor,
           borderRadius: expanded ? "10px 10px 0px 0px" : "10px 10px 10px 10px",
         }}
@@ -46,7 +45,7 @@ export default function CollapsibleCard({
           columnSpacing={4}
         >
           <Grid size={{md: 3}}>
-            <Typography variant="body2" color={grey[450]}>
+            <Typography variant="body2" color={theme.palette.text.secondary}>
               {titleKey}
             </Typography>
           </Grid>
