@@ -153,12 +153,29 @@ export function encodeInputArgsForViewRequest(type: string, value: string) {
   } else if (["u8", "u16", "u32"].includes(type)) {
     return ensureNumber(value);
   } else if (["i8", "i16", "i32"].includes(type)) {
-    // Signed integers that fit in JS number
-    return ensureSignedNumber(value);
+    // Signed integers that fit in JS number with explicit range validation
+    const num = ensureSignedNumber(value);
+    if (
+      (type === "i8" && (num < -128 || num > 127)) ||
+      (type === "i16" && (num < -32768 || num > 32767)) ||
+      (type === "i32" && (num < -2147483648 || num > 2147483647))
+    ) {
+      throw new Error(
+        `Invalid ${type} value: ${value}. Expected a value in the ` +
+          `range ${
+            type === "i8"
+              ? "-128 to 127"
+              : type === "i16"
+                ? "-32768 to 32767"
+                : "-2147483648 to 2147483647"
+          }`,
+      );
+    }
+    return num;
   } else if (["i64", "i128", "i256"].includes(type)) {
     // Signed integers that need string representation for large values
     ensureSignedBigInt(value);
-    return value;
+    return value.trim();
   } else if (type.startsWith("0x1::option::Option")) {
     return {vec: [...(value ? [value] : [])]};
   } else return value;
@@ -200,8 +217,27 @@ function encodeVectorForViewRequest(type: string, value: string) {
       rawVector.forEach((v) => ensureBigInt(v.trim()));
       return rawVector;
     } else if (["i8", "i16", "i32"].includes(match[1])) {
-      // Signed integers that fit in JS number
-      return rawVector.map((v) => ensureSignedNumber(v.trim()));
+      // Signed integers that fit in JS number with per-type range validation
+      let min: number;
+      let max: number;
+      if (match[1] === "i8") {
+        min = -128;
+        max = 127;
+      } else if (match[1] === "i16") {
+        min = -32768;
+        max = 32767;
+      } else {
+        // "i32"
+        min = -2147483648;
+        max = 2147483647;
+      }
+      return rawVector.map((v) => {
+        const result = ensureSignedNumber(v.trim());
+        if (result < min || result > max) {
+          throw new Error(`Invalid ${match[1]} value: ${result}`);
+        }
+        return result;
+      });
     } else if (["i64", "i128", "i256"].includes(match[1])) {
       // Signed integers that need string representation for large values
       rawVector.forEach((v) => ensureSignedBigInt(v.trim()));
