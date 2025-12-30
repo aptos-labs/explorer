@@ -41,7 +41,12 @@ import {
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
-import {encodeInputArgsForViewRequest, sortPetraFirst} from "../../../../utils";
+import {
+  encodeInputArgsForViewRequest,
+  sortPetraFirst,
+  extractFunctionParamNames,
+  transformCode,
+} from "../../../../utils";
 import {accountPagePath} from "../../Index";
 import {parseTypeTag} from "@aptos-labs/ts-sdk";
 import {WalletDeprecationBanner} from "../../../../components/WalletDeprecationBanner";
@@ -173,9 +178,19 @@ function Contract({
           {!module || !fn ? (
             <Typography>Please select a function</Typography>
           ) : isRead ? (
-            <ReadContractForm module={module} fn={fn} key={contractFormKey} />
+            <ReadContractForm
+              module={module}
+              fn={fn}
+              key={contractFormKey}
+              sourceCode={selectedModule?.source}
+            />
           ) : (
-            <RunContractForm module={module} fn={fn} key={contractFormKey} />
+            <RunContractForm
+              module={module}
+              fn={fn}
+              key={contractFormKey}
+              sourceCode={selectedModule?.source}
+            />
           )}
 
           {module && fn && selectedModule && (
@@ -294,9 +309,11 @@ function ContractSidebar({
 function RunContractForm({
   module,
   fn,
+  sourceCode,
 }: {
   module: Types.MoveModule;
   fn: Types.MoveFunction;
+  sourceCode?: string;
 }) {
   const networkName = useNetworkName();
   const {connected} = useWallet();
@@ -402,6 +419,7 @@ function RunContractForm({
       onSubmit={onSubmit}
       setFormValid={setFormValid}
       isView={false}
+      sourceCode={sourceCode}
       result={
         connected ? (
           <Box>
@@ -510,9 +528,11 @@ const TOOLTIP_TIME = 2000; // 2s
 function ReadContractForm({
   module,
   fn,
+  sourceCode,
 }: {
   module: Types.MoveModule;
   fn: Types.MoveFunction;
+  sourceCode?: string;
 }) {
   const aptosClient = useAptosClient();
   const [result, setResult] = useState<Types.MoveValue[]>();
@@ -584,6 +604,7 @@ function ReadContractForm({
       onSubmit={onSubmit}
       setFormValid={setFormValid}
       isView={true}
+      sourceCode={sourceCode}
       result={
         <Box>
           <StyledTooltip
@@ -698,12 +719,14 @@ function ContractForm({
   setFormValid,
   result,
   isView,
+  sourceCode,
 }: {
   fn: Types.MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
   setFormValid: (valid: boolean) => void;
   result: ReactNode;
   isView: boolean;
+  sourceCode?: string;
 }) {
   const {account} = useWallet();
   const {
@@ -719,6 +742,26 @@ function ContractForm({
   });
 
   const fnParams = removeSignerParam(fn);
+
+  // Try to extract parameter names from source code if available
+  const paramNames = useMemo(() => {
+    if (!sourceCode) return undefined;
+    try {
+      const decodedSource = transformCode(sourceCode);
+      if (!decodedSource) return undefined;
+      const allParamNames = extractFunctionParamNames(decodedSource, fn.name);
+      if (!allParamNames) return undefined;
+      // Filter out signer params to match fnParams
+      const hasSigner = fn.params.length !== fnParams.length;
+      if (hasSigner) {
+        // Remove the first param name if it was a signer
+        return allParamNames.slice(fn.params.length - fnParams.length);
+      }
+      return allParamNames;
+    } catch {
+      return undefined;
+    }
+  }, [sourceCode, fn.name, fn.params.length, fnParams.length]);
   const hasSigner = fnParams.length !== fn.params.length;
 
   useEffect(() => {
@@ -771,6 +814,7 @@ function ContractForm({
             {fnParams.map((param, i) => {
               // TODO: Need a nice way to differentiate between option and empty string
               const isOption = param.startsWith("0x1::option::Option");
+              const paramName = paramNames?.[i] ?? `arg${i}`;
               return (
                 <Controller
                   key={`args-${i}`}
@@ -781,7 +825,7 @@ function ContractForm({
                     <TextField
                       onChange={onChange}
                       value={isOption ? value : (value ?? "")}
-                      label={`arg${i}: ${param}`}
+                      label={`${paramName}: ${param}`}
                       fullWidth
                     />
                   )}
