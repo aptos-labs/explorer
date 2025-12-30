@@ -370,7 +370,7 @@ function ContractSidebar({
               .map(([moduleName, fns]) => (
                 <Box key={moduleName} marginBottom={3}>
                   <Typography
-                    fontSize={14}
+                    fontSize={15}
                     fontWeight={600}
                     marginBottom={"8px"}
                   >
@@ -944,7 +944,7 @@ function ContractForm({
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box>
         <Stack spacing={4}>
-          <Typography fontSize={14} fontWeight={600}>
+          <Typography fontSize={15} fontWeight={600}>
             {fn.name}
             {fn.generic_type_params.length > 0 &&
               "<" +
