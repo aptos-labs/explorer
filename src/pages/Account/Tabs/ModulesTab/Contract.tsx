@@ -695,8 +695,6 @@ function ReadContractForm({
   const aptosClient = useAptosClient();
   const sdkV2Client = useSdkV2Client();
   const [result, setResult] = useState<Types.MoveValue[]>();
-  const theme = useTheme();
-  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [errMsg, setErrMsg] = useState<string>();
   const [inProcess, setInProcess] = useState(false);
   const [formValid, setFormValid] = useState(false);
@@ -806,17 +804,29 @@ function ReadContractForm({
           {!inProcess && (errMsg || result) && (
             <>
               <Divider sx={{margin: "24px 0"}} />
-              <Stack
-                direction={isWideScreen ? "row" : "column"}
-                gap={2}
-                mt={2}
-                justifyContent="space-between"
-              >
-                <Stack>
-                  <Typography fontSize={12} fontWeight={400} pl={1} pt="6px">
+              <Stack direction="column" gap={2} mt={2}>
+                <Box
+                  sx={{
+                    maxWidth: "100%",
+                    overflow: "auto",
+                    maxHeight: 400,
+                  }}
+                >
+                  <Typography
+                    component="pre"
+                    fontSize={12}
+                    fontWeight={400}
+                    sx={{
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                      margin: 0,
+                      fontFamily: "monospace",
+                    }}
+                    color={errMsg ? "error" : "inherit"}
+                  >
                     {errMsg ? "Error: " + errMsg : resultString}
                   </Typography>
-                </Stack>
+                </Box>
 
                 {!errMsg && (
                   <StyledTooltip
