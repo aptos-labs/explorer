@@ -4,15 +4,13 @@ import PageHeader from "../layout/PageHeader";
 import AllTransactions from "./AllTransactions";
 import UserTransactions from "./UserTransactions";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
-import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {useEffect} from "react";
 
 export default function TransactionsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
   const allTxnOnly = searchParams.get("type") === "all";
-
-  usePageMetadata({title: "Transactions"});
 
   // Initial search params setup with replace for support back navigation
   useEffect(() => {
@@ -36,6 +34,10 @@ export default function TransactionsPage() {
 
   return (
     <Box>
+      <PageMetadata
+        title="Transactions"
+        description="Browse recent transactions on the Aptos blockchain. View transaction details, gas fees, sender and receiver addresses, and transaction status."
+      />
       <PageHeader />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="h3" marginBottom={2}>

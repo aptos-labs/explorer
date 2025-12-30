@@ -3,7 +3,7 @@ import React from "react";
 import {Types} from "aptos";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {TransactionType} from "../../components/TransactionType";
-import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 
 type TransactionTitleProps = {
   transaction: Types.Transaction;
@@ -12,12 +12,14 @@ type TransactionTitleProps = {
 export default function TransactionTitle({transaction}: TransactionTitleProps) {
   let title = `Transaction ${transaction.hash}`;
   if ("version" in transaction) {
-    title = ` Transaction ${transaction.version} (${transaction.hash})`;
+    title = `Transaction ${transaction.version} (${transaction.hash})`;
   }
 
-  usePageMetadata({title});
+  const description = `View transaction ${transaction.hash} on the Aptos blockchain. See transaction details, gas fees, events, and state changes.`;
+
   return (
     <Stack direction="column" spacing={2} marginX={1}>
+      <PageMetadata title={title} description={description} />
       <Typography variant="h3">Transaction</Typography>
       <TitleHashButton hash={transaction.hash} type={HashType.TRANSACTION} />
       <TransactionType type={transaction.type} />

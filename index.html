@@ -23,11 +23,76 @@
       name="description"
       content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network."
     />
+    <!-- Open Graph meta tags -->
     <meta property="og:title" content="Aptos Explorer" />
     <meta
       property="og:description"
       content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network."
     />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://explorer.aptoslabs.com/" />
+    <meta property="og:site_name" content="Aptos Explorer" />
+    <meta
+      property="og:image"
+      content="https://explorer.aptoslabs.com/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Aptos Explorer - Blockchain Explorer"
+    />
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@Aptos" />
+    <meta name="twitter:title" content="Aptos Explorer" />
+    <meta
+      name="twitter:description"
+      content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network."
+    />
+    <meta
+      name="twitter:image"
+      content="https://explorer.aptoslabs.com/og-image.png"
+    />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://explorer.aptoslabs.com/" />
+
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Aptos Explorer",
+        "alternateName": "Aptos Block Explorer",
+        "url": "https://explorer.aptoslabs.com",
+        "description": "Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://explorer.aptoslabs.com/?search={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Aptos Labs",
+          "url": "https://aptoslabs.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://explorer.aptoslabs.com/favicon-light.svg"
+          },
+          "sameAs": [
+            "https://twitter.com/Aptos",
+            "https://github.com/aptos-labs",
+            "https://discord.gg/aptoslabs"
+          ]
+        }
+      }
+    </script>
+
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/

@@ -8,7 +8,7 @@ import {
   VerifiedAsset,
   verifiedLevel,
 } from "../../components/Table/VerifiedCell";
-import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {FaMetadata} from "../../api/hooks/useGetFaMetadata";
 
@@ -32,8 +32,6 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
         )
       : metadata?.symbol;
 
-  usePageMetadata({title: `Fungible Asset ${assetSymbol} (${address})`});
-
   const networkName = useNetworkName();
   const {level} = verifiedLevel(
     {
@@ -47,6 +45,10 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
 
   return (
     <Stack direction="column" spacing={2} marginX={1}>
+      <PageMetadata
+        title={`Fungible Asset ${assetSymbol} (${address})`}
+        description={`View ${assetSymbol || "fungible asset"} details on the Aptos blockchain. See token supply, holders, metadata, and transaction history.`}
+      />
       <Typography variant="h3">{title()}</Typography>
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.STRUCT} />

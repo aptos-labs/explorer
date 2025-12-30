@@ -3,3 +3,5 @@ Allow: /
 Disallow: /*?network=testnet
 Disallow: /*?network=devnet
 Disallow: /*?network=local
+
+Sitemap: https://explorer.aptoslabs.com/sitemap.xml

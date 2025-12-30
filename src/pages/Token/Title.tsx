@@ -1,6 +1,6 @@
 import {Stack, Typography} from "@mui/material";
 import React from "react";
-import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {labsBannedCollections} from "../../constants";
 import StyledTooltip from "../../components/StyledTooltip";
 import {Dangerous} from "@mui/icons-material";
@@ -16,7 +16,6 @@ export default function TokenTitle({
   tokenDataId,
   tokenCollection,
 }: BlockTitleProps) {
-  usePageMetadata({title: `Token ${name} (${tokenDataId})`});
   let badge = null;
   const reason = labsBannedCollections[tokenCollection];
   if (reason) {
@@ -31,6 +30,10 @@ export default function TokenTitle({
 
   return (
     <Stack direction="row" alignItems="center" spacing={2} marginX={1}>
+      <PageMetadata
+        title={`Token ${name} (${tokenDataId})`}
+        description={`View NFT token "${name}" on the Aptos blockchain. See token metadata, ownership history, and collection details.`}
+      />
       <Typography variant="h3">{name}</Typography>
       {badge}
     </Stack>

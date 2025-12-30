@@ -4,7 +4,7 @@ import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import ValidatorStatusIcon from "./Components/ValidatorStatusIcon";
 import {useGetDelegationNodeInfo} from "../../api/hooks/delegations";
 import {getValidatorStatus} from "./utils";
-import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 
 type ValidatorTitleProps = {
   address: Types.Address;
@@ -19,11 +19,14 @@ export default function ValidatorTitle({
     validatorAddress: address,
   });
 
-  usePageMetadata({title: `Delegating Validator ${address}`});
   return isSkeletonLoading ? (
     ValidatorTitleSkeleton()
   ) : (
     <Stack direction="column" spacing={4} marginX={1}>
+      <PageMetadata
+        title={`Validator ${address}`}
+        description={`View validator ${address} on Aptos. See delegation details, commission rates, stake amounts, voting power, and performance metrics.`}
+      />
       <Typography variant="h3">Validator</Typography>
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.ACCOUNT} isValidator />

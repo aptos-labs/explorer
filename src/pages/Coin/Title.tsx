@@ -8,7 +8,7 @@ import {
   VerifiedAsset,
   verifiedLevel,
 } from "../../components/Table/VerifiedCell";
-import {usePageMetadata} from "../../components/hooks/usePageMetadata";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 
 type CoinTitleProps = {
@@ -35,14 +35,16 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
     networkName,
   );
 
-  usePageMetadata({title: `Coin ${assetSymbol} (${struct})`});
-
   function title() {
     return `Coin`;
   }
 
   return (
     <Stack direction="column" spacing={2} marginX={1}>
+      <PageMetadata
+        title={`Coin ${assetSymbol} (${struct})`}
+        description={`View ${assetSymbol} coin details on the Aptos blockchain. See token supply, holders, transactions, and market information.`}
+      />
       <Typography variant="h3">{title()}</Typography>
       <Stack
         direction="row"
