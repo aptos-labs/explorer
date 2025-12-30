@@ -37,7 +37,7 @@ export default function SidebarItem({
           }
         }}
         sx={{
-          fontSize: 12,
+          fontSize: 14,
           fontWeight: selected ? 600 : 400,
           padding: "8px",
           borderRadius: 1,
