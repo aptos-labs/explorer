@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useMemo} from "react";
-import {Table, TableHead, TableRow, Box} from "@mui/material";
+import {Table, TableHead, TableRow} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -170,22 +170,20 @@ export default function BlocksTable({
   );
 
   return (
-    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {columns.map((column) => (
-              <BlockHeaderCell key={column} column={column} />
-            ))}
-          </TableRow>
-        </TableHead>
-        <VirtualizedTableBody
-          estimatedRowHeight={65}
-          virtualizationThreshold={15}
-        >
-          {blockRows}
-        </VirtualizedTableBody>
-      </Table>
-    </Box>
+    <Table>
+      <TableHead>
+        <TableRow>
+          {columns.map((column) => (
+            <BlockHeaderCell key={column} column={column} />
+          ))}
+        </TableRow>
+      </TableHead>
+      <VirtualizedTableBody
+        estimatedRowHeight={65}
+        virtualizationThreshold={15}
+      >
+        {blockRows}
+      </VirtualizedTableBody>
+    </Table>
   );
 }

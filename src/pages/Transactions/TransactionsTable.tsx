@@ -348,23 +348,21 @@ export default function TransactionsTable({
   );
 
   return (
-    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {columns.map((column) => (
-              <TransactionHeaderCell key={column} column={column} />
-            ))}
-          </TableRow>
-        </TableHead>
-        <VirtualizedTableBody
-          estimatedRowHeight={65}
-          virtualizationThreshold={15}
-        >
-          {rows}
-        </VirtualizedTableBody>
-      </Table>
-    </Box>
+    <Table>
+      <TableHead>
+        <TableRow>
+          {columns.map((column) => (
+            <TransactionHeaderCell key={column} column={column} />
+          ))}
+        </TableRow>
+      </TableHead>
+      <VirtualizedTableBody
+        estimatedRowHeight={65}
+        virtualizationThreshold={15}
+      >
+        {rows}
+      </VirtualizedTableBody>
+    </Table>
   );
 }
 

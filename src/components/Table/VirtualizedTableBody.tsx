@@ -1,5 +1,5 @@
-import React, {useRef, useMemo} from "react";
-import {useVirtualizer} from "@tanstack/react-virtual";
+import React, {useRef, useMemo, useCallback} from "react";
+import {useVirtualizer, useWindowVirtualizer} from "@tanstack/react-virtual";
 import {TableBody, TableBodyProps, SxProps, Theme} from "@mui/material";
 
 interface VirtualizedTableBodyProps extends Omit<TableBodyProps, "children"> {
@@ -10,11 +10,6 @@ interface VirtualizedTableBodyProps extends Omit<TableBodyProps, "children"> {
    */
   estimatedRowHeight?: number;
   /**
-   * Maximum height of the table body container.
-   * If not provided, will use a default of 600px.
-   */
-  maxHeight?: number;
-  /**
    * Minimum number of rows before virtualization kicks in.
    * Defaults to 20.
    */
@@ -24,7 +19,14 @@ interface VirtualizedTableBodyProps extends Omit<TableBodyProps, "children"> {
    */
   sx?: SxProps<Theme>;
   /**
+   * Whether to use window scroll for virtualization.
+   * Defaults to true for page-level scrolling.
+   * Set to false to use a scrollable parent container instead.
+   */
+  useWindowScroll?: boolean;
+  /**
    * Ref to the scrollable parent element.
+   * Only used when useWindowScroll is false.
    * If not provided, will look for a parent with overflow: auto/scroll.
    */
   scrollElementRef?: React.RefObject<HTMLElement>;
@@ -34,15 +36,28 @@ interface VirtualizedTableBodyProps extends Omit<TableBodyProps, "children"> {
  * VirtualizedTableBody - A virtualized table body component that only renders
  * visible rows, improving performance for large datasets.
  *
- * Note: This requires the parent Table to be wrapped in a scrollable container.
- * The table should have a fixed layout and the container should have maxHeight set.
+ * By default, uses window scroll for virtualization, allowing tables to
+ * participate in page-level scrolling without internal scrollbars.
  *
  * @example
  * ```tsx
+ * // Default: uses window scroll (no container needed)
+ * <Table>
+ *   <TableHead>...</TableHead>
+ *   <VirtualizedTableBody estimatedRowHeight={60}>
+ *     {items.map((item) => (
+ *       <TableRow key={item.id}>
+ *         <TableCell>{item.name}</TableCell>
+ *       </TableRow>
+ *     ))}
+ *   </VirtualizedTableBody>
+ * </Table>
+ *
+ * // With container scroll (legacy behavior)
  * <Box sx={{ maxHeight: '600px', overflow: 'auto' }}>
  *   <Table>
  *     <TableHead>...</TableHead>
- *     <VirtualizedTableBody estimatedRowHeight={60}>
+ *     <VirtualizedTableBody useWindowScroll={false} estimatedRowHeight={60}>
  *       {items.map((item) => (
  *         <TableRow key={item.id}>
  *           <TableCell>{item.name}</TableCell>
@@ -57,6 +72,7 @@ export default function VirtualizedTableBody({
   children,
   estimatedRowHeight = 60,
   virtualizationThreshold = 20,
+  useWindowScroll = true,
   scrollElementRef,
   sx,
   ...tableBodyProps
@@ -71,8 +87,8 @@ export default function VirtualizedTableBody({
   // Only virtualize if we have more than the threshold
   const shouldVirtualize = rows.length > virtualizationThreshold;
 
-  // Find scrollable parent
-  const getScrollElement = () => {
+  // Find scrollable parent (for container-based scrolling)
+  const findScrollableParent = useCallback(() => {
     if (scrollElementRef?.current) {
       return scrollElementRef.current;
     }
@@ -91,17 +107,30 @@ export default function VirtualizedTableBody({
       element = element.parentElement;
     }
     return null;
-  };
+  }, [scrollElementRef]);
 
-  // Note: TanStack Virtual's useVirtualizer returns functions that cannot be memoized,
+  // Window virtualizer for page-level scrolling
+  // Note: TanStack Virtual's useWindowVirtualizer returns functions that cannot be memoized,
   // but this is safe for our use case as we're not passing these functions to memoized components
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const virtualizer = useVirtualizer({
-    count: rows.length,
-    getScrollElement,
+  const windowVirtualizer = useWindowVirtualizer({
+    count: useWindowScroll && shouldVirtualize ? rows.length : 0,
     estimateSize: () => estimatedRowHeight,
-    overscan: 5, // Render 5 extra rows above and below visible area
+    overscan: 5,
   });
+
+  // Container virtualizer for element-based scrolling
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const containerVirtualizer = useVirtualizer({
+    count: !useWindowScroll && shouldVirtualize ? rows.length : 0,
+    getScrollElement: findScrollableParent,
+    estimateSize: () => estimatedRowHeight,
+    overscan: 5,
+  });
+
+  // Select the active virtualizer
+  const virtualizer = useWindowScroll
+    ? windowVirtualizer
+    : containerVirtualizer;
 
   if (!shouldVirtualize) {
     // For small lists, render normally without virtualization

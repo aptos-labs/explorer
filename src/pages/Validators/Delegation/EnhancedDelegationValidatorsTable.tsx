@@ -629,7 +629,7 @@ export function EnhancedDelegationValidatorsTable() {
   if (isLoading) {
     return (
       <Box>
-        <Box sx={{overflowX: "auto", maxHeight: "800px", overflowY: "auto"}}>
+        <Box sx={{overflowX: "auto"}}>
           <Table>
             <TableHead>
               <TableRow sx={{verticalAlign: "bottom"}}>
@@ -676,46 +676,44 @@ export function EnhancedDelegationValidatorsTable() {
   }
 
   return (
-    <Box>
-      <Box sx={{overflowX: "auto", maxHeight: "800px", overflowY: "auto"}}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{verticalAlign: "bottom"}}>
-              {columns.map((column) => (
-                <ValidatorHeaderCell
-                  key={column}
-                  column={column}
-                  direction={sortColumn === column ? sortDirection : undefined}
-                  setDirection={setSortDirection}
-                  setSortColumn={setSortColumn}
-                  connected={connected}
-                />
-              ))}
+    <Box sx={{overflowX: "auto"}}>
+      <Table>
+        <TableHead>
+          <TableRow sx={{verticalAlign: "bottom"}}>
+            {columns.map((column) => (
+              <ValidatorHeaderCell
+                key={column}
+                column={column}
+                direction={sortColumn === column ? sortDirection : undefined}
+                setDirection={setSortDirection}
+                setSortColumn={setSortColumn}
+                connected={connected}
+              />
+            ))}
+          </TableRow>
+        </TableHead>
+        {sortedValidators.length > 0 ? (
+          <VirtualizedTableBody
+            estimatedRowHeight={70}
+            virtualizationThreshold={15}
+          >
+            {validatorRows}
+          </VirtualizedTableBody>
+        ) : (
+          <GeneralTableBody>
+            <TableRow>
+              <GeneralTableCell
+                colSpan={columns.length}
+                sx={{textAlign: "center", py: 3}}
+              >
+                <Typography variant="body1" color="text.secondary">
+                  No validators found
+                </Typography>
+              </GeneralTableCell>
             </TableRow>
-          </TableHead>
-          {sortedValidators.length > 0 ? (
-            <VirtualizedTableBody
-              estimatedRowHeight={70}
-              virtualizationThreshold={15}
-            >
-              {validatorRows}
-            </VirtualizedTableBody>
-          ) : (
-            <GeneralTableBody>
-              <TableRow>
-                <GeneralTableCell
-                  colSpan={columns.length}
-                  sx={{textAlign: "center", py: 3}}
-                >
-                  <Typography variant="body1" color="text.secondary">
-                    No validators found
-                  </Typography>
-                </GeneralTableCell>
-              </TableRow>
-            </GeneralTableBody>
-          )}
-        </Table>
-      </Box>
+          </GeneralTableBody>
+        )}
+      </Table>
     </Box>
   );
 }

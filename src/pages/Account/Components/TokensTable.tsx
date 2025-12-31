@@ -193,37 +193,35 @@ export function TokensTable({
   );
 
   return (
-    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
-      <Table>
-        <TableHead>
+    <Table>
+      <TableHead>
+        <TableRow>
+          {columns.map((column) => (
+            <TokenHeaderCell key={column} column={column} />
+          ))}
+        </TableRow>
+      </TableHead>
+      {tokens.length > 0 ? (
+        <VirtualizedTableBody
+          estimatedRowHeight={60}
+          virtualizationThreshold={15}
+        >
+          {tokenRows}
+        </VirtualizedTableBody>
+      ) : (
+        <GeneralTableBody>
           <TableRow>
-            {columns.map((column) => (
-              <TokenHeaderCell key={column} column={column} />
-            ))}
+            <GeneralTableCell
+              colSpan={columns.length}
+              sx={{textAlign: "center", py: 3}}
+            >
+              <Typography variant="body1" color="text.secondary">
+                No tokens found
+              </Typography>
+            </GeneralTableCell>
           </TableRow>
-        </TableHead>
-        {tokens.length > 0 ? (
-          <VirtualizedTableBody
-            estimatedRowHeight={60}
-            virtualizationThreshold={15}
-          >
-            {tokenRows}
-          </VirtualizedTableBody>
-        ) : (
-          <GeneralTableBody>
-            <TableRow>
-              <GeneralTableCell
-                colSpan={columns.length}
-                sx={{textAlign: "center", py: 3}}
-              >
-                <Typography variant="body1" color="text.secondary">
-                  No tokens found
-                </Typography>
-              </GeneralTableCell>
-            </TableRow>
-          </GeneralTableBody>
-        )}
-      </Table>
-    </Box>
+        </GeneralTableBody>
+      )}
+    </Table>
   );
 }

@@ -1,7 +1,6 @@
 import * as React from "react";
 import {useMemo, useCallback} from "react";
 import {
-  Box,
   Button,
   Stack,
   Table,
@@ -387,42 +386,40 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   return (
     <>
       {verificationFilter !== CoinVerificationFilterType.NONE && filterSelector}
-      <Box sx={{maxHeight: "800px", overflow: "auto"}}>
-        <Table>
-          <TableHead>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <GeneralTableHeaderCell header="Name" />
+            <GeneralTableHeaderCell header="Asset Type" />
+            <GeneralTableHeaderCell header="Asset" />
+            <GeneralTableHeaderCell
+              header="Verified"
+              tooltip={getLearnMoreTooltip("coin_verification")}
+              isTableTooltip={true}
+            />
+            <GeneralTableHeaderCell header="Amount" />
+            <GeneralTableHeaderCell header="USD Value" />
+          </TableRow>
+        </TableHead>
+        {filteredCoins.length > 0 ? (
+          <VirtualizedTableBody
+            estimatedRowHeight={60}
+            virtualizationThreshold={15}
+          >
+            {coinRows}
+          </VirtualizedTableBody>
+        ) : (
+          <GeneralTableBody>
             <TableRow>
-              <GeneralTableHeaderCell header="Name" />
-              <GeneralTableHeaderCell header="Asset Type" />
-              <GeneralTableHeaderCell header="Asset" />
-              <GeneralTableHeaderCell
-                header="Verified"
-                tooltip={getLearnMoreTooltip("coin_verification")}
-                isTableTooltip={true}
-              />
-              <GeneralTableHeaderCell header="Amount" />
-              <GeneralTableHeaderCell header="USD Value" />
+              <GeneralTableCell colSpan={6} sx={{textAlign: "center", py: 3}}>
+                <Typography variant="body1" color="text.secondary">
+                  No coins found
+                </Typography>
+              </GeneralTableCell>
             </TableRow>
-          </TableHead>
-          {filteredCoins.length > 0 ? (
-            <VirtualizedTableBody
-              estimatedRowHeight={60}
-              virtualizationThreshold={15}
-            >
-              {coinRows}
-            </VirtualizedTableBody>
-          ) : (
-            <GeneralTableBody>
-              <TableRow>
-                <GeneralTableCell colSpan={6} sx={{textAlign: "center", py: 3}}>
-                  <Typography variant="body1" color="text.secondary">
-                    No coins found
-                  </Typography>
-                </GeneralTableCell>
-              </TableRow>
-            </GeneralTableBody>
-          )}
-        </Table>
-      </Box>
+          </GeneralTableBody>
+        )}
+      </Table>
     </>
   );
 }
