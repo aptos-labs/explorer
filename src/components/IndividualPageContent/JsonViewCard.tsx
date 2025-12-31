@@ -212,6 +212,10 @@ export default function JsonViewCard({
         overflow: "auto",
         maxHeight: MAX_CARD_HEIGHT,
         position: "relative",
+        // Keep react-json-view copy button always visible when hovering the card
+        "&:hover .copy-to-clipboard-container": {
+          display: "inline-block !important",
+        },
         "& .object-key, & .array-key": clickableHoverStyle,
         "& .string-value": clickableHoverStyle,
         "& .variable-value > span:first-of-type": clickableHoverStyle,
