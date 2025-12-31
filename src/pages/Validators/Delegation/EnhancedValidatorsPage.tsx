@@ -8,7 +8,6 @@ import {PageMetadata} from "../../../components/hooks/usePageMetadata";
 import {Network} from "../../../constants";
 import {useNavigate} from "../../../routing";
 import {OutOfCommissionPoolsBanner} from "../../../components/OutOfCommissionPoolsBanner";
-import {WalletDeprecationBanner} from "../../../components/WalletDeprecationBanner";
 
 export default function EnhancedValidatorsPage() {
   const networkName = useNetworkName();
@@ -35,7 +34,6 @@ export default function EnhancedValidatorsPage() {
         Validators
       </Typography>
       <OutOfCommissionPoolsBanner />
-      <WalletDeprecationBanner />
       {networkName === "mainnet" && <ValidatorsMap />}
       <EnhancedValidatorsPageTabs />
     </Box>

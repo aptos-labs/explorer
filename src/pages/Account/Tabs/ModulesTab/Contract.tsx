@@ -45,7 +45,6 @@ import StyledTooltip from "../../../../components/StyledTooltip";
 import {encodeInputArgsForViewRequest, sortPetraFirst} from "../../../../utils";
 import {accountPagePath} from "../../Index";
 import {Aptos, Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
-import {WalletDeprecationBanner} from "../../../../components/WalletDeprecationBanner";
 
 /**
  * Check if a string looks like an ANS name (ends with .apt)
@@ -303,7 +302,6 @@ function Contract({
         />
       </Grid>
       <Grid size={{md: 9, xs: 12}}>
-        <WalletDeprecationBanner />
         <Box
           padding={4}
           bgcolor={theme.palette.background.paper}
