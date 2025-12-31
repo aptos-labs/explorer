@@ -5,7 +5,6 @@ import ValidatorsPageTabs from "./Tabs";
 import ValidatorsMap from "./ValidatorsMap";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {OutOfCommissionPoolsBanner} from "../../components/OutOfCommissionPoolsBanner";
-import {WalletDeprecationBanner} from "../../components/WalletDeprecationBanner";
 
 export default function ValidatorsPage() {
   const networkName = useNetworkName();
@@ -21,7 +20,6 @@ export default function ValidatorsPage() {
         Validators
       </Typography>
       <OutOfCommissionPoolsBanner />
-      <WalletDeprecationBanner />
       {networkName === "mainnet" && <ValidatorsMap />}
       <ValidatorsPageTabs />
     </Box>
