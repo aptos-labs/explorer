@@ -10,10 +10,6 @@ const GROUP_ARRAYS_AFTER_LENGTH = 100;
 const COLLAPSE_STRINGS_AFTER_LENGTH = 80;
 const MAX_CARD_HEIGHT = 500;
 
-// Tooltip messages
-const TOOLTIP_COPY = "Click to copy";
-const TOOLTIP_COPIED = "Copied!";
-
 function useJsonViewCardTheme() {
   const theme = useTheme();
   const textColor = theme.palette.primary.main;
@@ -46,57 +42,137 @@ type JsonViewCardProps = {
   collapsedByDefault?: boolean;
 };
 
-// Check if element is a copyable key or value
-function getCopyableElement(
-  element: HTMLElement,
-): {type: "key" | "value"; text: string; element: HTMLElement} | null {
-  // Check for object key - direct match
-  if (element.classList.contains("object-key")) {
-    return {type: "key", text: element.textContent || "", element};
+// ============================================================================
+// Click-to-copy functionality for keys and values
+// ============================================================================
+
+const HOVER_DELAY_MS = 500;
+const COPIED_DISPLAY_MS = 1500;
+
+/**
+ * Finds the copyable element (key or value) from a click/hover target.
+ * Returns the element and its text content (values without quotes).
+ */
+function findCopyableElement(
+  target: HTMLElement,
+): {text: string; element: HTMLElement} | null {
+  // Key elements
+  const keyEl = target.closest(".object-key") || target.closest(".array-key");
+  if (keyEl) {
+    return {text: keyEl.textContent || "", element: keyEl as HTMLElement};
   }
 
-  // Check for object key - might be clicking on child span inside object-key
-  const parentObjectKey = element.closest(".object-key") as HTMLElement | null;
-  if (parentObjectKey) {
+  // String value
+  if (target.classList.contains("string-value")) {
     return {
-      type: "key",
-      text: parentObjectKey.textContent || "",
-      element: parentObjectKey,
+      text: (target.textContent || "").replace(/^"|"$/g, ""),
+      element: target,
     };
   }
 
-  // Check for array index key (e.g., 0, 1, 2...)
-  if (element.classList.contains("array-key")) {
-    return {type: "key", text: element.textContent || "", element};
-  }
-
-  // Check for string value (inside variable-value span)
-  if (element.classList.contains("string-value")) {
-    // Get the text without surrounding quotes
-    const text = element.textContent || "";
-    // Remove surrounding quotes if present
-    const unquoted = text.replace(/^"|"$/g, "");
-    return {type: "value", text: unquoted, element};
-  }
-
-  // Check if it's a direct value element (number, boolean, null, etc.)
-  const parentVariableValue = element.closest(".variable-value");
-  if (parentVariableValue && !element.closest(".copy-to-clipboard-container")) {
-    // Check if the element itself contains the value (not a wrapper)
-    const spanElement = element.closest("span") as HTMLElement | null;
-    if (
-      spanElement &&
-      spanElement.parentElement?.classList.contains("variable-value")
-    ) {
-      const text = spanElement.textContent || "";
-      // Remove surrounding quotes for strings
-      const unquoted = text.replace(/^"|"$/g, "");
-      return {type: "value", text: unquoted, element: spanElement};
+  // Other value types (number, boolean, null)
+  const valueContainer = target.closest(".variable-value");
+  if (valueContainer && !target.closest(".copy-to-clipboard-container")) {
+    const span = target.closest("span") as HTMLElement | null;
+    if (span?.parentElement?.classList.contains("variable-value")) {
+      return {
+        text: (span.textContent || "").replace(/^"|"$/g, ""),
+        element: span,
+      };
     }
   }
 
   return null;
 }
+
+/** Hook for click-to-copy tooltip state management */
+function useCopyTooltip() {
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const hoverTimer = useRef<number | null>(null);
+  const copiedTimer = useRef<number | null>(null);
+
+  const clearHoverTimer = () => {
+    if (hoverTimer.current) {
+      window.clearTimeout(hoverTimer.current);
+      hoverTimer.current = null;
+    }
+  };
+
+  const handleClick = useCallback(async (e: React.MouseEvent) => {
+    const copyable = findCopyableElement(e.target as HTMLElement);
+    if (!copyable) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    clearHoverTimer();
+
+    try {
+      await navigator.clipboard.writeText(copyable.text);
+      setAnchor(copyable.element);
+      setCopied(true);
+      setOpen(true);
+
+      if (copiedTimer.current) window.clearTimeout(copiedTimer.current);
+      copiedTimer.current = window.setTimeout(() => {
+        setOpen(false);
+        setCopied(false);
+        setAnchor(null);
+      }, COPIED_DISPLAY_MS);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  }, []);
+
+  const handleMouseOver = useCallback(
+    (e: React.MouseEvent) => {
+      const copyable = findCopyableElement(e.target as HTMLElement);
+      if (!copyable || copied) return;
+
+      setAnchor(copyable.element);
+      if (!hoverTimer.current) {
+        hoverTimer.current = window.setTimeout(() => {
+          setOpen(true);
+          hoverTimer.current = null;
+        }, HOVER_DELAY_MS);
+      }
+    },
+    [copied],
+  );
+
+  const handleMouseOut = useCallback(
+    (e: React.MouseEvent) => {
+      if (!findCopyableElement(e.target as HTMLElement)) return;
+      clearHoverTimer();
+      if (!copied) {
+        setOpen(false);
+        setAnchor(null);
+      }
+    },
+    [copied],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    clearHoverTimer();
+    if (!copied) {
+      setOpen(false);
+      setAnchor(null);
+    }
+  }, [copied]);
+
+  return {
+    tooltipOpen: open && anchor !== null,
+    tooltipText: copied ? "Copied!" : "Click to copy",
+    anchor,
+    handleClick,
+    handleMouseOver,
+    handleMouseOut,
+    handleMouseLeave,
+  };
+}
+
+// ============================================================================
 
 export default function JsonViewCard({
   data,
@@ -106,111 +182,28 @@ export default function JsonViewCard({
   const semanticColors = getSemanticColors(theme.palette.mode);
   const jsonViewCardTheme = useJsonViewCardTheme();
 
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-  const [tooltipText, setTooltipText] = useState(TOOLTIP_COPY);
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const copyTimeoutRef = useRef<number | null>(null);
-  const hoverTimeoutRef = useRef<number | null>(null);
-
-  // Handle click to copy
-  const handleClick = useCallback(async (event: React.MouseEvent) => {
-    const target = event.target as HTMLElement;
-    const copyable = getCopyableElement(target);
-
-    if (copyable) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      // Clear hover timeout
-      if (hoverTimeoutRef.current) {
-        window.clearTimeout(hoverTimeoutRef.current);
-        hoverTimeoutRef.current = null;
-      }
-
-      try {
-        await navigator.clipboard.writeText(copyable.text);
-        setAnchorEl(copyable.element);
-        setTooltipText(TOOLTIP_COPIED);
-        setTooltipOpen(true);
-
-        // Clear previous copy timeout if exists
-        if (copyTimeoutRef.current) {
-          window.clearTimeout(copyTimeoutRef.current);
-        }
-
-        // Reset tooltip after delay
-        copyTimeoutRef.current = window.setTimeout(() => {
-          setTooltipOpen(false);
-          setTooltipText(TOOLTIP_COPY);
-          setAnchorEl(null);
-        }, 1500);
-      } catch (err) {
-        // Fallback for browsers that don't support clipboard API
-        console.error("Failed to copy:", err);
-      }
-    }
-  }, []);
-
-  // Handle mouse over to detect hoverable elements and show tooltip
-  const handleMouseOver = useCallback(
-    (event: React.MouseEvent) => {
-      const target = event.target as HTMLElement;
-      const copyable = getCopyableElement(target);
-
-      if (copyable) {
-        // Get the actual element to anchor the tooltip
-        const element = copyable.element;
-        setAnchorEl(element);
-
-        // Only set up hover delay if not already showing "Copied!" message
-        if (tooltipText === TOOLTIP_COPY && !hoverTimeoutRef.current) {
-          hoverTimeoutRef.current = window.setTimeout(() => {
-            setTooltipOpen(true);
-            hoverTimeoutRef.current = null;
-          }, 500); // 500ms delay before showing tooltip
-        }
-      }
-    },
-    [tooltipText],
-  );
-
-  // Handle mouse out from copyable elements
-  const handleMouseOut = useCallback(
-    (event: React.MouseEvent) => {
-      const target = event.target as HTMLElement;
-      const copyable = getCopyableElement(target);
-
-      if (copyable) {
-        // Clear hover timeout if moving away from copyable element
-        if (hoverTimeoutRef.current) {
-          window.clearTimeout(hoverTimeoutRef.current);
-          hoverTimeoutRef.current = null;
-        }
-        if (tooltipText === TOOLTIP_COPY) {
-          setTooltipOpen(false);
-          setAnchorEl(null);
-        }
-      }
-    },
-    [tooltipText],
-  );
-
-  // Handle mouse leave from the container
-  const handleMouseLeave = useCallback(() => {
-    // Clear hover timeout
-    if (hoverTimeoutRef.current) {
-      window.clearTimeout(hoverTimeoutRef.current);
-      hoverTimeoutRef.current = null;
-    }
-    if (tooltipText === TOOLTIP_COPY) {
-      setTooltipOpen(false);
-      setAnchorEl(null);
-    }
-  }, [tooltipText]);
+  const {
+    tooltipOpen,
+    tooltipText,
+    anchor,
+    handleClick,
+    handleMouseOver,
+    handleMouseOut,
+    handleMouseLeave,
+  } = useCopyTooltip();
 
   if (!data) {
     return <EmptyValue />;
   }
+
+  const clickableHoverStyle = {
+    cursor: "pointer",
+    borderRadius: "2px",
+    transition: "background-color 0.15s ease",
+    "&:hover": {
+      backgroundColor: alpha(theme.palette.primary.main, 0.15),
+    },
+  };
 
   return (
     <Box
@@ -219,31 +212,9 @@ export default function JsonViewCard({
         overflow: "auto",
         maxHeight: MAX_CARD_HEIGHT,
         position: "relative",
-        // Style for clickable keys and values - cursor pointer only on specific elements
-        "& .object-key, & .array-key": {
-          cursor: "pointer",
-          borderRadius: "2px",
-          transition: "background-color 0.15s ease",
-          "&:hover": {
-            backgroundColor: alpha(theme.palette.primary.main, 0.15),
-          },
-        },
-        "& .string-value": {
-          cursor: "pointer",
-          borderRadius: "2px",
-          transition: "background-color 0.15s ease",
-          "&:hover": {
-            backgroundColor: alpha(theme.palette.primary.main, 0.15),
-          },
-        },
-        "& .variable-value > span:first-of-type": {
-          cursor: "pointer",
-          borderRadius: "2px",
-          transition: "background-color 0.15s ease",
-          "&:hover": {
-            backgroundColor: alpha(theme.palette.primary.main, 0.15),
-          },
-        },
+        "& .object-key, & .array-key": clickableHoverStyle,
+        "& .string-value": clickableHoverStyle,
+        "& .variable-value > span:first-of-type": clickableHoverStyle,
       }}
       padding={2}
       borderRadius={1}
@@ -253,18 +224,12 @@ export default function JsonViewCard({
       onMouseLeave={handleMouseLeave}
     >
       <Tooltip
-        open={tooltipOpen && anchorEl !== null}
+        open={tooltipOpen}
         title={tooltipText}
         placement="top"
-        PopperProps={{
-          anchorEl: anchorEl,
-        }}
+        PopperProps={{anchorEl: anchor}}
         componentsProps={{
-          tooltip: {
-            sx: {
-              fontSize: "0.75rem",
-            },
-          },
+          tooltip: {sx: {fontSize: "0.75rem"}},
         }}
       >
         <Box sx={{display: "contents"}} />
