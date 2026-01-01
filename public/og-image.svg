@@ -20,8 +20,8 @@
   <!-- Magnifying Glass Icon -->
   <g transform="translate(460, 40) scale(0.75)">
     <!-- Handle -->
-    <path d="M207,232 L232,207 L377,352 L352,377 Z" fill="#F9F9F0"/>
-    <circle cx="364" cy="364" r="18" fill="#F9F9F0"/>
+    <path d="M207,232 L232,207 L310,285 L285,310 Z" fill="#F9F9F0"/>
+    <circle cx="298" cy="298" r="14" fill="#F9F9F0"/>
 
     <!-- Lens outer outline -->
     <circle cx="145" cy="145" r="104" fill="none" stroke="#333333" stroke-width="2"/>

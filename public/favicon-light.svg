@@ -7,8 +7,8 @@
   </defs>
 
   <!-- Handle with outline -->
-  <path d="M207,232 L232,207 L377,352 L352,377 Z" fill="#202124" stroke="#202124" stroke-width="2"/>
-  <circle cx="364" cy="364" r="18" fill="#202124"/>
+  <path d="M207,232 L232,207 L310,285 L285,310 Z" fill="#202124" stroke="#202124" stroke-width="2"/>
+  <circle cx="298" cy="298" r="14" fill="#202124"/>
 
   <!-- Lens outer outline (for visibility on white backgrounds) -->
   <circle cx="145" cy="145" r="104" fill="none" stroke="#e0e0e0" stroke-width="2"/>
