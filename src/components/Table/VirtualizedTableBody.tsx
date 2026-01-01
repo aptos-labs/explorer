@@ -32,6 +32,166 @@ interface VirtualizedTableBodyProps extends Omit<TableBodyProps, "children"> {
   scrollElementRef?: React.RefObject<HTMLElement>;
 }
 
+// Shared props for internal virtualizer components
+interface VirtualizerContentProps {
+  rows: React.ReactNode[];
+  estimatedRowHeight: number;
+  sx?: SxProps<Theme>;
+  tableBodyProps: Omit<TableBodyProps, "children">;
+}
+
+// Shared TableBody styling
+const tableBodySx = {
+  "&.MuiTableBody-root::before": {
+    height: "0px",
+  },
+};
+
+/**
+ * Internal component for window-based virtualization.
+ * Only instantiates useWindowVirtualizer.
+ */
+function WindowVirtualizedContent({
+  rows,
+  estimatedRowHeight,
+  sx,
+  tableBodyProps,
+}: VirtualizerContentProps) {
+  const parentRef = useRef<HTMLTableSectionElement>(null);
+
+  const virtualizer = useWindowVirtualizer({
+    count: rows.length,
+    estimateSize: () => estimatedRowHeight,
+    overscan: 5,
+  });
+
+  const virtualItems = virtualizer.getVirtualItems();
+  const totalSize = virtualizer.getTotalSize();
+
+  return (
+    <TableBody
+      ref={parentRef}
+      sx={[tableBodySx, ...(Array.isArray(sx) ? sx : [sx])]}
+      {...tableBodyProps}
+    >
+      {/* Top spacer */}
+      {virtualItems.length > 0 && virtualItems[0] && (
+        <tr aria-hidden="true" style={{height: `${virtualItems[0].start}px`}} />
+      )}
+      {/* Render only visible rows */}
+      {virtualItems.map((virtualItem) => {
+        const row = rows[virtualItem.index];
+        if (React.isValidElement(row)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return React.cloneElement(row as React.ReactElement<any>, {
+            key: virtualItem.key,
+            "data-index": virtualItem.index,
+            ref: virtualizer.measureElement,
+          });
+        }
+        return row;
+      })}
+      {/* Bottom spacer */}
+      {virtualItems.length > 0 && virtualItems[virtualItems.length - 1] && (
+        <tr
+          aria-hidden="true"
+          style={{
+            height: `${
+              totalSize - virtualItems[virtualItems.length - 1].end
+            }px`,
+          }}
+        />
+      )}
+    </TableBody>
+  );
+}
+
+/**
+ * Internal component for container-based virtualization.
+ * Only instantiates useVirtualizer.
+ */
+function ContainerVirtualizedContent({
+  rows,
+  estimatedRowHeight,
+  sx,
+  tableBodyProps,
+  scrollElementRef,
+}: VirtualizerContentProps & {
+  scrollElementRef?: React.RefObject<HTMLElement>;
+}) {
+  const parentRef = useRef<HTMLTableSectionElement>(null);
+
+  // Find scrollable parent (for container-based scrolling)
+  const findScrollableParent = useCallback(() => {
+    if (scrollElementRef?.current) {
+      return scrollElementRef.current;
+    }
+    // Try to find scrollable parent
+    let element = parentRef.current?.parentElement;
+    while (element) {
+      const style = window.getComputedStyle(element);
+      if (
+        style.overflow === "auto" ||
+        style.overflow === "scroll" ||
+        style.overflowY === "auto" ||
+        style.overflowY === "scroll"
+      ) {
+        return element;
+      }
+      element = element.parentElement;
+    }
+    return null;
+  }, [scrollElementRef, parentRef]);
+
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const virtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: findScrollableParent,
+    estimateSize: () => estimatedRowHeight,
+    overscan: 5,
+  });
+
+  const virtualItems = virtualizer.getVirtualItems();
+  const totalSize = virtualizer.getTotalSize();
+
+  return (
+    <TableBody
+      ref={parentRef}
+      sx={[tableBodySx, ...(Array.isArray(sx) ? sx : [sx])]}
+      {...tableBodyProps}
+    >
+      {/* Top spacer */}
+      {virtualItems.length > 0 && virtualItems[0] && (
+        <tr aria-hidden="true" style={{height: `${virtualItems[0].start}px`}} />
+      )}
+      {/* Render only visible rows */}
+      {virtualItems.map((virtualItem) => {
+        const row = rows[virtualItem.index];
+        if (React.isValidElement(row)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return React.cloneElement(row as React.ReactElement<any>, {
+            key: virtualItem.key,
+            "data-index": virtualItem.index,
+            ref: virtualizer.measureElement,
+          });
+        }
+        return row;
+      })}
+      {/* Bottom spacer */}
+      {virtualItems.length > 0 && virtualItems[virtualItems.length - 1] && (
+        <tr
+          aria-hidden="true"
+          style={{
+            height: `${
+              totalSize - virtualItems[virtualItems.length - 1].end
+            }px`,
+          }}
+        />
+      )}
+    </TableBody>
+  );
+}
+
 /**
  * VirtualizedTableBody - A virtualized table body component that only renders
  * visible rows, improving performance for large datasets.
@@ -77,8 +237,6 @@ export default function VirtualizedTableBody({
   sx,
   ...tableBodyProps
 }: VirtualizedTableBodyProps) {
-  const parentRef = useRef<HTMLTableSectionElement>(null);
-
   // Convert children to array if needed
   const rows = useMemo(() => {
     return React.Children.toArray(children);
@@ -87,64 +245,11 @@ export default function VirtualizedTableBody({
   // Only virtualize if we have more than the threshold
   const shouldVirtualize = rows.length > virtualizationThreshold;
 
-  // Find scrollable parent (for container-based scrolling)
-  const findScrollableParent = useCallback(() => {
-    if (scrollElementRef?.current) {
-      return scrollElementRef.current;
-    }
-    // Try to find scrollable parent
-    let element = parentRef.current?.parentElement;
-    while (element) {
-      const style = window.getComputedStyle(element);
-      if (
-        style.overflow === "auto" ||
-        style.overflow === "scroll" ||
-        style.overflowY === "auto" ||
-        style.overflowY === "scroll"
-      ) {
-        return element;
-      }
-      element = element.parentElement;
-    }
-    return null;
-  }, [scrollElementRef]);
-
-  // Window virtualizer for page-level scrolling
-  // Note: TanStack Virtual's useWindowVirtualizer returns functions that cannot be memoized,
-  // but this is safe for our use case as we're not passing these functions to memoized components
-  const windowVirtualizer = useWindowVirtualizer({
-    count: useWindowScroll && shouldVirtualize ? rows.length : 0,
-    estimateSize: () => estimatedRowHeight,
-    overscan: 5,
-  });
-
-  // Container virtualizer for element-based scrolling
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const containerVirtualizer = useVirtualizer({
-    count: !useWindowScroll && shouldVirtualize ? rows.length : 0,
-    getScrollElement: findScrollableParent,
-    estimateSize: () => estimatedRowHeight,
-    overscan: 5,
-  });
-
-  // Select the active virtualizer
-  const virtualizer = useWindowScroll
-    ? windowVirtualizer
-    : containerVirtualizer;
-
+  // For small lists, render normally without virtualization
   if (!shouldVirtualize) {
-    // For small lists, render normally without virtualization
     return (
       <TableBody
-        ref={parentRef}
-        sx={[
-          {
-            "&.MuiTableBody-root::before": {
-              height: "0px",
-            },
-          },
-          ...(Array.isArray(sx) ? sx : [sx]),
-        ]}
+        sx={[tableBodySx, ...(Array.isArray(sx) ? sx : [sx])]}
         {...tableBodyProps}
       >
         {children}
@@ -152,51 +257,26 @@ export default function VirtualizedTableBody({
     );
   }
 
-  const virtualItems = virtualizer.getVirtualItems();
-  const totalSize = virtualizer.getTotalSize();
+  // Render the appropriate virtualized content based on scroll mode
+  // Using conditional rendering ensures only one virtualizer hook is instantiated
+  if (useWindowScroll) {
+    return (
+      <WindowVirtualizedContent
+        rows={rows}
+        estimatedRowHeight={estimatedRowHeight}
+        sx={sx}
+        tableBodyProps={tableBodyProps}
+      />
+    );
+  }
 
   return (
-    <TableBody
-      ref={parentRef}
-      sx={[
-        {
-          "&.MuiTableBody-root::before": {
-            height: "0px",
-          },
-        },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-      {...tableBodyProps}
-    >
-      {/* Top spacer */}
-      {virtualItems.length > 0 && virtualItems[0] && (
-        <tr aria-hidden="true" style={{height: `${virtualItems[0].start}px`}} />
-      )}
-      {/* Render only visible rows */}
-      {virtualItems.map((virtualItem) => {
-        const row = rows[virtualItem.index];
-        // Clone the row element and add measurement attributes
-        if (React.isValidElement(row)) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return React.cloneElement(row as React.ReactElement<any>, {
-            key: virtualItem.key,
-            "data-index": virtualItem.index,
-            ref: virtualizer.measureElement,
-          });
-        }
-        return row;
-      })}
-      {/* Bottom spacer */}
-      {virtualItems.length > 0 && virtualItems[virtualItems.length - 1] && (
-        <tr
-          aria-hidden="true"
-          style={{
-            height: `${
-              totalSize - virtualItems[virtualItems.length - 1].end
-            }px`,
-          }}
-        />
-      )}
-    </TableBody>
+    <ContainerVirtualizedContent
+      rows={rows}
+      estimatedRowHeight={estimatedRowHeight}
+      sx={sx}
+      tableBodyProps={tableBodyProps}
+      scrollElementRef={scrollElementRef}
+    />
   );
 }
