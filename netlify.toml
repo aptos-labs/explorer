@@ -2,73 +2,10 @@
 
 [build]
   command = "pnpm build"
-  publish = ".output/public"
-  functions = ".output/server"
+  publish = "dist/client"
 
 [build.environment]
   NODE_VERSION = "20"
-
-[functions]
-  node_bundler = "esbuild"
-  included_files = [".output/server/**"]
-
-# Redirect all requests to the SSR function for server-side rendering
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/server"
-  status = 200
-  force = false
-
-# Static assets should be served directly from CDN
-[[redirects]]
-  from = "/assets/*"
-  to = "/assets/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/favicon-light.svg"
-  to = "/favicon-light.svg"
-  status = 200
-
-[[redirects]]
-  from = "/favicon-dark.svg"
-  to = "/favicon-dark.svg"
-  status = 200
-
-[[redirects]]
-  from = "/favicon.ico"
-  to = "/favicon.ico"
-  status = 200
-
-[[redirects]]
-  from = "/og-image.png"
-  to = "/og-image.png"
-  status = 200
-
-[[redirects]]
-  from = "/manifest.json"
-  to = "/manifest.json"
-  status = 200
-
-[[redirects]]
-  from = "/robots.txt"
-  to = "/robots.txt"
-  status = 200
-
-[[redirects]]
-  from = "/sitemap.xml"
-  to = "/sitemap.xml"
-  status = 200
-
-[[redirects]]
-  from = "/world.json"
-  to = "/world.json"
-  status = 200
-
-[[redirects]]
-  from = "/apple-touch-icon.png"
-  to = "/apple-touch-icon.png"
-  status = 200
 
 # Headers for security and caching
 [[headers]]
@@ -109,4 +46,3 @@
 
 [context.branch-deploy.environment]
   NODE_ENV = "production"
-
