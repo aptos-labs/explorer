@@ -16,6 +16,8 @@ import {Route as TransactionsRouteImport} from "./routes/transactions";
 import {Route as BlocksRouteImport} from "./routes/blocks";
 import {Route as AnalyticsRouteImport} from "./routes/analytics";
 import {Route as IndexRouteImport} from "./routes/index";
+import {Route as ValidatorsTabRouteImport} from "./routes/validators.$tab";
+import {Route as ValidatorsEnhancedTabRouteImport} from "./routes/validators-enhanced.$tab";
 import {Route as ValidatorAddressRouteImport} from "./routes/validator.$address";
 import {Route as TxnTxnHashOrVersionRouteImport} from "./routes/txn.$txnHashOrVersion";
 import {Route as TokenTokenIdRouteImport} from "./routes/token.$tokenId";
@@ -24,6 +26,13 @@ import {Route as Fungible_assetAddressRouteImport} from "./routes/fungible_asset
 import {Route as CoinStructRouteImport} from "./routes/coin.$struct";
 import {Route as BlockHeightRouteImport} from "./routes/block.$height";
 import {Route as AccountAddressRouteImport} from "./routes/account.$address";
+import {Route as TxnTxnHashOrVersionTabRouteImport} from "./routes/txn.$txnHashOrVersion.$tab";
+import {Route as TokenTokenIdPropertyVersionRouteImport} from "./routes/token.$tokenId.$propertyVersion";
+import {Route as ObjectAddressTabRouteImport} from "./routes/object.$address.$tab";
+import {Route as Fungible_assetAddressTabRouteImport} from "./routes/fungible_asset.$address.$tab";
+import {Route as CoinStructTabRouteImport} from "./routes/coin.$struct.$tab";
+import {Route as BlockHeightTabRouteImport} from "./routes/block.$height.$tab";
+import {Route as AccountAddressTabRouteImport} from "./routes/account.$address.$tab";
 
 const VerificationRoute = VerificationRouteImport.update({
   id: "/verification",
@@ -59,6 +68,16 @@ const IndexRoute = IndexRouteImport.update({
   id: "/",
   path: "/",
   getParentRoute: () => rootRouteImport,
+} as any);
+const ValidatorsTabRoute = ValidatorsTabRouteImport.update({
+  id: "/$tab",
+  path: "/$tab",
+  getParentRoute: () => ValidatorsRoute,
+} as any);
+const ValidatorsEnhancedTabRoute = ValidatorsEnhancedTabRouteImport.update({
+  id: "/$tab",
+  path: "/$tab",
+  getParentRoute: () => ValidatorsEnhancedRoute,
 } as any);
 const ValidatorAddressRoute = ValidatorAddressRouteImport.update({
   id: "/validator/$address",
@@ -100,40 +119,95 @@ const AccountAddressRoute = AccountAddressRouteImport.update({
   path: "/account/$address",
   getParentRoute: () => rootRouteImport,
 } as any);
+const TxnTxnHashOrVersionTabRoute = TxnTxnHashOrVersionTabRouteImport.update({
+  id: "/$tab",
+  path: "/$tab",
+  getParentRoute: () => TxnTxnHashOrVersionRoute,
+} as any);
+const TokenTokenIdPropertyVersionRoute =
+  TokenTokenIdPropertyVersionRouteImport.update({
+    id: "/$propertyVersion",
+    path: "/$propertyVersion",
+    getParentRoute: () => TokenTokenIdRoute,
+  } as any);
+const ObjectAddressTabRoute = ObjectAddressTabRouteImport.update({
+  id: "/$tab",
+  path: "/$tab",
+  getParentRoute: () => ObjectAddressRoute,
+} as any);
+const Fungible_assetAddressTabRoute =
+  Fungible_assetAddressTabRouteImport.update({
+    id: "/$tab",
+    path: "/$tab",
+    getParentRoute: () => Fungible_assetAddressRoute,
+  } as any);
+const CoinStructTabRoute = CoinStructTabRouteImport.update({
+  id: "/$tab",
+  path: "/$tab",
+  getParentRoute: () => CoinStructRoute,
+} as any);
+const BlockHeightTabRoute = BlockHeightTabRouteImport.update({
+  id: "/$tab",
+  path: "/$tab",
+  getParentRoute: () => BlockHeightRoute,
+} as any);
+const AccountAddressTabRoute = AccountAddressTabRouteImport.update({
+  id: "/$tab",
+  path: "/$tab",
+  getParentRoute: () => AccountAddressRoute,
+} as any);
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
   "/analytics": typeof AnalyticsRoute;
   "/blocks": typeof BlocksRoute;
   "/transactions": typeof TransactionsRoute;
-  "/validators": typeof ValidatorsRoute;
-  "/validators-enhanced": typeof ValidatorsEnhancedRoute;
+  "/validators": typeof ValidatorsRouteWithChildren;
+  "/validators-enhanced": typeof ValidatorsEnhancedRouteWithChildren;
   "/verification": typeof VerificationRoute;
-  "/account/$address": typeof AccountAddressRoute;
-  "/block/$height": typeof BlockHeightRoute;
-  "/coin/$struct": typeof CoinStructRoute;
-  "/fungible_asset/$address": typeof Fungible_assetAddressRoute;
-  "/object/$address": typeof ObjectAddressRoute;
-  "/token/$tokenId": typeof TokenTokenIdRoute;
-  "/txn/$txnHashOrVersion": typeof TxnTxnHashOrVersionRoute;
+  "/account/$address": typeof AccountAddressRouteWithChildren;
+  "/block/$height": typeof BlockHeightRouteWithChildren;
+  "/coin/$struct": typeof CoinStructRouteWithChildren;
+  "/fungible_asset/$address": typeof Fungible_assetAddressRouteWithChildren;
+  "/object/$address": typeof ObjectAddressRouteWithChildren;
+  "/token/$tokenId": typeof TokenTokenIdRouteWithChildren;
+  "/txn/$txnHashOrVersion": typeof TxnTxnHashOrVersionRouteWithChildren;
   "/validator/$address": typeof ValidatorAddressRoute;
+  "/validators-enhanced/$tab": typeof ValidatorsEnhancedTabRoute;
+  "/validators/$tab": typeof ValidatorsTabRoute;
+  "/account/$address/$tab": typeof AccountAddressTabRoute;
+  "/block/$height/$tab": typeof BlockHeightTabRoute;
+  "/coin/$struct/$tab": typeof CoinStructTabRoute;
+  "/fungible_asset/$address/$tab": typeof Fungible_assetAddressTabRoute;
+  "/object/$address/$tab": typeof ObjectAddressTabRoute;
+  "/token/$tokenId/$propertyVersion": typeof TokenTokenIdPropertyVersionRoute;
+  "/txn/$txnHashOrVersion/$tab": typeof TxnTxnHashOrVersionTabRoute;
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
   "/analytics": typeof AnalyticsRoute;
   "/blocks": typeof BlocksRoute;
   "/transactions": typeof TransactionsRoute;
-  "/validators": typeof ValidatorsRoute;
-  "/validators-enhanced": typeof ValidatorsEnhancedRoute;
+  "/validators": typeof ValidatorsRouteWithChildren;
+  "/validators-enhanced": typeof ValidatorsEnhancedRouteWithChildren;
   "/verification": typeof VerificationRoute;
-  "/account/$address": typeof AccountAddressRoute;
-  "/block/$height": typeof BlockHeightRoute;
-  "/coin/$struct": typeof CoinStructRoute;
-  "/fungible_asset/$address": typeof Fungible_assetAddressRoute;
-  "/object/$address": typeof ObjectAddressRoute;
-  "/token/$tokenId": typeof TokenTokenIdRoute;
-  "/txn/$txnHashOrVersion": typeof TxnTxnHashOrVersionRoute;
+  "/account/$address": typeof AccountAddressRouteWithChildren;
+  "/block/$height": typeof BlockHeightRouteWithChildren;
+  "/coin/$struct": typeof CoinStructRouteWithChildren;
+  "/fungible_asset/$address": typeof Fungible_assetAddressRouteWithChildren;
+  "/object/$address": typeof ObjectAddressRouteWithChildren;
+  "/token/$tokenId": typeof TokenTokenIdRouteWithChildren;
+  "/txn/$txnHashOrVersion": typeof TxnTxnHashOrVersionRouteWithChildren;
   "/validator/$address": typeof ValidatorAddressRoute;
+  "/validators-enhanced/$tab": typeof ValidatorsEnhancedTabRoute;
+  "/validators/$tab": typeof ValidatorsTabRoute;
+  "/account/$address/$tab": typeof AccountAddressTabRoute;
+  "/block/$height/$tab": typeof BlockHeightTabRoute;
+  "/coin/$struct/$tab": typeof CoinStructTabRoute;
+  "/fungible_asset/$address/$tab": typeof Fungible_assetAddressTabRoute;
+  "/object/$address/$tab": typeof ObjectAddressTabRoute;
+  "/token/$tokenId/$propertyVersion": typeof TokenTokenIdPropertyVersionRoute;
+  "/txn/$txnHashOrVersion/$tab": typeof TxnTxnHashOrVersionTabRoute;
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport;
@@ -141,17 +215,26 @@ export interface FileRoutesById {
   "/analytics": typeof AnalyticsRoute;
   "/blocks": typeof BlocksRoute;
   "/transactions": typeof TransactionsRoute;
-  "/validators": typeof ValidatorsRoute;
-  "/validators-enhanced": typeof ValidatorsEnhancedRoute;
+  "/validators": typeof ValidatorsRouteWithChildren;
+  "/validators-enhanced": typeof ValidatorsEnhancedRouteWithChildren;
   "/verification": typeof VerificationRoute;
-  "/account/$address": typeof AccountAddressRoute;
-  "/block/$height": typeof BlockHeightRoute;
-  "/coin/$struct": typeof CoinStructRoute;
-  "/fungible_asset/$address": typeof Fungible_assetAddressRoute;
-  "/object/$address": typeof ObjectAddressRoute;
-  "/token/$tokenId": typeof TokenTokenIdRoute;
-  "/txn/$txnHashOrVersion": typeof TxnTxnHashOrVersionRoute;
+  "/account/$address": typeof AccountAddressRouteWithChildren;
+  "/block/$height": typeof BlockHeightRouteWithChildren;
+  "/coin/$struct": typeof CoinStructRouteWithChildren;
+  "/fungible_asset/$address": typeof Fungible_assetAddressRouteWithChildren;
+  "/object/$address": typeof ObjectAddressRouteWithChildren;
+  "/token/$tokenId": typeof TokenTokenIdRouteWithChildren;
+  "/txn/$txnHashOrVersion": typeof TxnTxnHashOrVersionRouteWithChildren;
   "/validator/$address": typeof ValidatorAddressRoute;
+  "/validators-enhanced/$tab": typeof ValidatorsEnhancedTabRoute;
+  "/validators/$tab": typeof ValidatorsTabRoute;
+  "/account/$address/$tab": typeof AccountAddressTabRoute;
+  "/block/$height/$tab": typeof BlockHeightTabRoute;
+  "/coin/$struct/$tab": typeof CoinStructTabRoute;
+  "/fungible_asset/$address/$tab": typeof Fungible_assetAddressTabRoute;
+  "/object/$address/$tab": typeof ObjectAddressTabRoute;
+  "/token/$tokenId/$propertyVersion": typeof TokenTokenIdPropertyVersionRoute;
+  "/txn/$txnHashOrVersion/$tab": typeof TxnTxnHashOrVersionTabRoute;
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
@@ -170,7 +253,16 @@ export interface FileRouteTypes {
     | "/object/$address"
     | "/token/$tokenId"
     | "/txn/$txnHashOrVersion"
-    | "/validator/$address";
+    | "/validator/$address"
+    | "/validators-enhanced/$tab"
+    | "/validators/$tab"
+    | "/account/$address/$tab"
+    | "/block/$height/$tab"
+    | "/coin/$struct/$tab"
+    | "/fungible_asset/$address/$tab"
+    | "/object/$address/$tab"
+    | "/token/$tokenId/$propertyVersion"
+    | "/txn/$txnHashOrVersion/$tab";
   fileRoutesByTo: FileRoutesByTo;
   to:
     | "/"
@@ -187,7 +279,16 @@ export interface FileRouteTypes {
     | "/object/$address"
     | "/token/$tokenId"
     | "/txn/$txnHashOrVersion"
-    | "/validator/$address";
+    | "/validator/$address"
+    | "/validators-enhanced/$tab"
+    | "/validators/$tab"
+    | "/account/$address/$tab"
+    | "/block/$height/$tab"
+    | "/coin/$struct/$tab"
+    | "/fungible_asset/$address/$tab"
+    | "/object/$address/$tab"
+    | "/token/$tokenId/$propertyVersion"
+    | "/txn/$txnHashOrVersion/$tab";
   id:
     | "__root__"
     | "/"
@@ -204,7 +305,16 @@ export interface FileRouteTypes {
     | "/object/$address"
     | "/token/$tokenId"
     | "/txn/$txnHashOrVersion"
-    | "/validator/$address";
+    | "/validator/$address"
+    | "/validators-enhanced/$tab"
+    | "/validators/$tab"
+    | "/account/$address/$tab"
+    | "/block/$height/$tab"
+    | "/coin/$struct/$tab"
+    | "/fungible_asset/$address/$tab"
+    | "/object/$address/$tab"
+    | "/token/$tokenId/$propertyVersion"
+    | "/txn/$txnHashOrVersion/$tab";
   fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
@@ -212,16 +322,16 @@ export interface RootRouteChildren {
   AnalyticsRoute: typeof AnalyticsRoute;
   BlocksRoute: typeof BlocksRoute;
   TransactionsRoute: typeof TransactionsRoute;
-  ValidatorsRoute: typeof ValidatorsRoute;
-  ValidatorsEnhancedRoute: typeof ValidatorsEnhancedRoute;
+  ValidatorsRoute: typeof ValidatorsRouteWithChildren;
+  ValidatorsEnhancedRoute: typeof ValidatorsEnhancedRouteWithChildren;
   VerificationRoute: typeof VerificationRoute;
-  AccountAddressRoute: typeof AccountAddressRoute;
-  BlockHeightRoute: typeof BlockHeightRoute;
-  CoinStructRoute: typeof CoinStructRoute;
-  Fungible_assetAddressRoute: typeof Fungible_assetAddressRoute;
-  ObjectAddressRoute: typeof ObjectAddressRoute;
-  TokenTokenIdRoute: typeof TokenTokenIdRoute;
-  TxnTxnHashOrVersionRoute: typeof TxnTxnHashOrVersionRoute;
+  AccountAddressRoute: typeof AccountAddressRouteWithChildren;
+  BlockHeightRoute: typeof BlockHeightRouteWithChildren;
+  CoinStructRoute: typeof CoinStructRouteWithChildren;
+  Fungible_assetAddressRoute: typeof Fungible_assetAddressRouteWithChildren;
+  ObjectAddressRoute: typeof ObjectAddressRouteWithChildren;
+  TokenTokenIdRoute: typeof TokenTokenIdRouteWithChildren;
+  TxnTxnHashOrVersionRoute: typeof TxnTxnHashOrVersionRouteWithChildren;
   ValidatorAddressRoute: typeof ValidatorAddressRoute;
 }
 
@@ -275,6 +385,20 @@ declare module "@tanstack/react-router" {
       fullPath: "/";
       preLoaderRoute: typeof IndexRouteImport;
       parentRoute: typeof rootRouteImport;
+    };
+    "/validators/$tab": {
+      id: "/validators/$tab";
+      path: "/$tab";
+      fullPath: "/validators/$tab";
+      preLoaderRoute: typeof ValidatorsTabRouteImport;
+      parentRoute: typeof ValidatorsRoute;
+    };
+    "/validators-enhanced/$tab": {
+      id: "/validators-enhanced/$tab";
+      path: "/$tab";
+      fullPath: "/validators-enhanced/$tab";
+      preLoaderRoute: typeof ValidatorsEnhancedTabRouteImport;
+      parentRoute: typeof ValidatorsEnhancedRoute;
     };
     "/validator/$address": {
       id: "/validator/$address";
@@ -332,24 +456,180 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AccountAddressRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    "/txn/$txnHashOrVersion/$tab": {
+      id: "/txn/$txnHashOrVersion/$tab";
+      path: "/$tab";
+      fullPath: "/txn/$txnHashOrVersion/$tab";
+      preLoaderRoute: typeof TxnTxnHashOrVersionTabRouteImport;
+      parentRoute: typeof TxnTxnHashOrVersionRoute;
+    };
+    "/token/$tokenId/$propertyVersion": {
+      id: "/token/$tokenId/$propertyVersion";
+      path: "/$propertyVersion";
+      fullPath: "/token/$tokenId/$propertyVersion";
+      preLoaderRoute: typeof TokenTokenIdPropertyVersionRouteImport;
+      parentRoute: typeof TokenTokenIdRoute;
+    };
+    "/object/$address/$tab": {
+      id: "/object/$address/$tab";
+      path: "/$tab";
+      fullPath: "/object/$address/$tab";
+      preLoaderRoute: typeof ObjectAddressTabRouteImport;
+      parentRoute: typeof ObjectAddressRoute;
+    };
+    "/fungible_asset/$address/$tab": {
+      id: "/fungible_asset/$address/$tab";
+      path: "/$tab";
+      fullPath: "/fungible_asset/$address/$tab";
+      preLoaderRoute: typeof Fungible_assetAddressTabRouteImport;
+      parentRoute: typeof Fungible_assetAddressRoute;
+    };
+    "/coin/$struct/$tab": {
+      id: "/coin/$struct/$tab";
+      path: "/$tab";
+      fullPath: "/coin/$struct/$tab";
+      preLoaderRoute: typeof CoinStructTabRouteImport;
+      parentRoute: typeof CoinStructRoute;
+    };
+    "/block/$height/$tab": {
+      id: "/block/$height/$tab";
+      path: "/$tab";
+      fullPath: "/block/$height/$tab";
+      preLoaderRoute: typeof BlockHeightTabRouteImport;
+      parentRoute: typeof BlockHeightRoute;
+    };
+    "/account/$address/$tab": {
+      id: "/account/$address/$tab";
+      path: "/$tab";
+      fullPath: "/account/$address/$tab";
+      preLoaderRoute: typeof AccountAddressTabRouteImport;
+      parentRoute: typeof AccountAddressRoute;
+    };
   }
 }
+
+interface ValidatorsRouteChildren {
+  ValidatorsTabRoute: typeof ValidatorsTabRoute;
+}
+
+const ValidatorsRouteChildren: ValidatorsRouteChildren = {
+  ValidatorsTabRoute: ValidatorsTabRoute,
+};
+
+const ValidatorsRouteWithChildren = ValidatorsRoute._addFileChildren(
+  ValidatorsRouteChildren,
+);
+
+interface ValidatorsEnhancedRouteChildren {
+  ValidatorsEnhancedTabRoute: typeof ValidatorsEnhancedTabRoute;
+}
+
+const ValidatorsEnhancedRouteChildren: ValidatorsEnhancedRouteChildren = {
+  ValidatorsEnhancedTabRoute: ValidatorsEnhancedTabRoute,
+};
+
+const ValidatorsEnhancedRouteWithChildren =
+  ValidatorsEnhancedRoute._addFileChildren(ValidatorsEnhancedRouteChildren);
+
+interface AccountAddressRouteChildren {
+  AccountAddressTabRoute: typeof AccountAddressTabRoute;
+}
+
+const AccountAddressRouteChildren: AccountAddressRouteChildren = {
+  AccountAddressTabRoute: AccountAddressTabRoute,
+};
+
+const AccountAddressRouteWithChildren = AccountAddressRoute._addFileChildren(
+  AccountAddressRouteChildren,
+);
+
+interface BlockHeightRouteChildren {
+  BlockHeightTabRoute: typeof BlockHeightTabRoute;
+}
+
+const BlockHeightRouteChildren: BlockHeightRouteChildren = {
+  BlockHeightTabRoute: BlockHeightTabRoute,
+};
+
+const BlockHeightRouteWithChildren = BlockHeightRoute._addFileChildren(
+  BlockHeightRouteChildren,
+);
+
+interface CoinStructRouteChildren {
+  CoinStructTabRoute: typeof CoinStructTabRoute;
+}
+
+const CoinStructRouteChildren: CoinStructRouteChildren = {
+  CoinStructTabRoute: CoinStructTabRoute,
+};
+
+const CoinStructRouteWithChildren = CoinStructRoute._addFileChildren(
+  CoinStructRouteChildren,
+);
+
+interface Fungible_assetAddressRouteChildren {
+  Fungible_assetAddressTabRoute: typeof Fungible_assetAddressTabRoute;
+}
+
+const Fungible_assetAddressRouteChildren: Fungible_assetAddressRouteChildren = {
+  Fungible_assetAddressTabRoute: Fungible_assetAddressTabRoute,
+};
+
+const Fungible_assetAddressRouteWithChildren =
+  Fungible_assetAddressRoute._addFileChildren(
+    Fungible_assetAddressRouteChildren,
+  );
+
+interface ObjectAddressRouteChildren {
+  ObjectAddressTabRoute: typeof ObjectAddressTabRoute;
+}
+
+const ObjectAddressRouteChildren: ObjectAddressRouteChildren = {
+  ObjectAddressTabRoute: ObjectAddressTabRoute,
+};
+
+const ObjectAddressRouteWithChildren = ObjectAddressRoute._addFileChildren(
+  ObjectAddressRouteChildren,
+);
+
+interface TokenTokenIdRouteChildren {
+  TokenTokenIdPropertyVersionRoute: typeof TokenTokenIdPropertyVersionRoute;
+}
+
+const TokenTokenIdRouteChildren: TokenTokenIdRouteChildren = {
+  TokenTokenIdPropertyVersionRoute: TokenTokenIdPropertyVersionRoute,
+};
+
+const TokenTokenIdRouteWithChildren = TokenTokenIdRoute._addFileChildren(
+  TokenTokenIdRouteChildren,
+);
+
+interface TxnTxnHashOrVersionRouteChildren {
+  TxnTxnHashOrVersionTabRoute: typeof TxnTxnHashOrVersionTabRoute;
+}
+
+const TxnTxnHashOrVersionRouteChildren: TxnTxnHashOrVersionRouteChildren = {
+  TxnTxnHashOrVersionTabRoute: TxnTxnHashOrVersionTabRoute,
+};
+
+const TxnTxnHashOrVersionRouteWithChildren =
+  TxnTxnHashOrVersionRoute._addFileChildren(TxnTxnHashOrVersionRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyticsRoute: AnalyticsRoute,
   BlocksRoute: BlocksRoute,
   TransactionsRoute: TransactionsRoute,
-  ValidatorsRoute: ValidatorsRoute,
-  ValidatorsEnhancedRoute: ValidatorsEnhancedRoute,
+  ValidatorsRoute: ValidatorsRouteWithChildren,
+  ValidatorsEnhancedRoute: ValidatorsEnhancedRouteWithChildren,
   VerificationRoute: VerificationRoute,
-  AccountAddressRoute: AccountAddressRoute,
-  BlockHeightRoute: BlockHeightRoute,
-  CoinStructRoute: CoinStructRoute,
-  Fungible_assetAddressRoute: Fungible_assetAddressRoute,
-  ObjectAddressRoute: ObjectAddressRoute,
-  TokenTokenIdRoute: TokenTokenIdRoute,
-  TxnTxnHashOrVersionRoute: TxnTxnHashOrVersionRoute,
+  AccountAddressRoute: AccountAddressRouteWithChildren,
+  BlockHeightRoute: BlockHeightRouteWithChildren,
+  CoinStructRoute: CoinStructRouteWithChildren,
+  Fungible_assetAddressRoute: Fungible_assetAddressRouteWithChildren,
+  ObjectAddressRoute: ObjectAddressRouteWithChildren,
+  TokenTokenIdRoute: TokenTokenIdRouteWithChildren,
+  TxnTxnHashOrVersionRoute: TxnTxnHashOrVersionRouteWithChildren,
   ValidatorAddressRoute: ValidatorAddressRoute,
 };
 export const routeTree = rootRouteImport
