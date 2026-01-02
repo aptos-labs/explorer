@@ -7,6 +7,7 @@ import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabC
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 import {useTheme} from "@mui/material";
 import {tryStandardizeAddress} from "../../../utils";
+import HashButton, {HashType} from "../../../components/HashButton";
 
 type InfoTabProps = {
   address: string;
@@ -76,7 +77,7 @@ export default function InfoTab({
         <ContentBox>
           <ContentRow
             title={"Owner:"}
-            value={objData.owner}
+            value={<HashButton hash={objData.owner} type={HashType.ACCOUNT} />}
             tooltip={getLearnMoreTooltip("owner")}
           />
           <ContentRow
