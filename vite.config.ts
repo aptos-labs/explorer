@@ -17,6 +17,27 @@ export default defineConfig({
   envPrefix: ["VITE_", "REACT_APP_"],
   build: {
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        // Manual chunks for better caching - these libraries rarely change
+        manualChunks: {
+          // React core - very stable
+          "vendor-react": ["react", "react-dom"],
+          // MUI - large bundle, rarely changes
+          "vendor-mui": ["@mui/material", "@mui/icons-material", "@mui/system"],
+          // Charts - only needed on analytics pages
+          "vendor-charts": ["chart.js", "react-chartjs-2"],
+          // Aptos SDK - core blockchain functionality
+          "vendor-aptos": ["@aptos-labs/ts-sdk", "aptos"],
+          // Data fetching - stable utilities
+          "vendor-query": [
+            "@tanstack/react-query",
+            "@apollo/client",
+            "graphql",
+          ],
+        },
+      },
+    },
   },
   resolve: {
     alias: {

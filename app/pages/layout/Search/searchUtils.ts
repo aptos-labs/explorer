@@ -367,20 +367,51 @@ export async function anyOwnedObjects(
 
 /**
  * Handle label lookup from known addresses
+ * Searches both by label name and by address
  */
 export function handleLabelLookup(searchText: string): SearchResult[] {
   const searchResults: SearchResult[] = [];
-  const searchLowerCase = searchText.toLowerCase();
+  const searchLowerCase = searchText.toLowerCase().trim();
+
+  // Skip very short searches
+  if (searchLowerCase.length < 2) {
+    return searchResults;
+  }
+
   Object.entries(knownAddresses).forEach(([address, knownName]) => {
-    if (prefixMatchLongerThan3(searchLowerCase, knownName)) {
+    const knownNameLower = knownName.toLowerCase();
+
+    // Match by label name (e.g., "binance", "aptos labs")
+    const nameMatches =
+      searchLowerCase.length >= 3 &&
+      (knownNameLower.includes(searchLowerCase) ||
+        // Also match individual words in the label
+        knownNameLower
+          .split(/\s+/)
+          .some((word) => word.startsWith(searchLowerCase)));
+
+    // Match by address (partial address match)
+    const addressMatches =
+      searchLowerCase.length >= 4 &&
+      address.toLowerCase().includes(searchLowerCase);
+
+    if (nameMatches || addressMatches) {
       searchResults.push({
-        label: `Account ${truncateAddress(address)} ${knownName}`,
+        label: `${knownName} (${truncateAddress(address)})`,
         to: `/account/${address}`,
         type: "account",
       });
     }
   });
-  return searchResults;
+
+  // Sort results: exact matches first, then by label length (shorter = more relevant)
+  return searchResults.sort((a, b) => {
+    const aExact = a.label.toLowerCase().startsWith(searchLowerCase);
+    const bExact = b.label.toLowerCase().startsWith(searchLowerCase);
+    if (aExact && !bExact) return -1;
+    if (bExact && !aExact) return 1;
+    return a.label.length - b.label.length;
+  });
 }
 
 /**

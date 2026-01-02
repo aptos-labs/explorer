@@ -6,17 +6,16 @@ import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCel
 import {assertNever} from "../../utils";
 import HashButton, {HashType} from "../../components/HashButton";
 import {Types} from "aptos";
-import {parseTimestamp} from "../utils";
-import moment from "moment";
+import {parseTimestamp, getTimeDiffInSeconds} from "../utils";
 import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import {Link, useAugmentToWithGlobalSearchParams} from "../../routing";
 
 function getAgeInSeconds(block: Types.Block): string {
   const blockTimestamp = parseTimestamp(block.block_timestamp);
-  const nowTimestamp = parseTimestamp(moment.now().toString());
-  const duration = moment.duration(nowTimestamp.diff(blockTimestamp));
-  return duration.asSeconds().toFixed(0);
+  const nowTimestamp = new Date();
+  const durationInSec = getTimeDiffInSeconds(blockTimestamp, nowTimestamp);
+  return durationInSec.toFixed(0);
 }
 
 type BlockCellProps = {

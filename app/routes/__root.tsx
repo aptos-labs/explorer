@@ -1,12 +1,30 @@
-import React, {Suspense} from "react";
+import React, {Suspense, lazy} from "react";
 import {createRootRouteWithContext, Outlet} from "@tanstack/react-router";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
-import {TanStackRouterDevtools} from "@tanstack/react-router-devtools";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import {HelmetProvider} from "react-helmet-async";
+
+// Check if in development mode
+const isDev = process.env.NODE_ENV === "development";
+
+// Lazy load devtools only in development to reduce production bundle size
+const ReactQueryDevtools = isDev
+  ? lazy(() =>
+      import("@tanstack/react-query-devtools").then((mod) => ({
+        default: mod.ReactQueryDevtools,
+      })),
+    )
+  : () => null;
+
+const TanStackRouterDevtools = isDev
+  ? lazy(() =>
+      import("@tanstack/react-router-devtools").then((mod) => ({
+        default: mod.TanStackRouterDevtools,
+      })),
+    )
+  : () => null;
 
 import {ProvideColorMode} from "../context/color-mode";
 import {GlobalConfigProvider} from "../global-config";
@@ -73,8 +91,12 @@ function RootComponent() {
             </GlobalStateProvider>
           </GlobalConfigProvider>
         </ProvideColorMode>
-        <ReactQueryDevtools buttonPosition="bottom-left" />
-        <TanStackRouterDevtools position="bottom-right" />
+        {isDev && (
+          <Suspense fallback={null}>
+            <ReactQueryDevtools buttonPosition="bottom-left" />
+            <TanStackRouterDevtools position="bottom-right" />
+          </Suspense>
+        )}
       </QueryClientProvider>
     </HelmetProvider>
   );

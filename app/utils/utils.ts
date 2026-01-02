@@ -10,7 +10,7 @@ import {
   AdapterNotDetectedWallet,
   AdapterWallet,
 } from "@aptos-labs/wallet-adapter-react";
-import moment from "moment";
+import {format, differenceInMilliseconds} from "date-fns";
 
 /**
  * Hydration-safe timestamp formatter.
@@ -359,20 +359,27 @@ export function ensureMillisecondTimestamp(
   return BigInt(timestamp);
 }
 
+/**
+ * Parse a timestamp string into a Date object
+ * @param timestamp - Timestamp string (microseconds or milliseconds)
+ * @param ensureMilliSeconds - Whether to convert to milliseconds
+ * @returns Date object
+ */
 export function parseTimestamp(
   timestamp: string,
   ensureMilliSeconds: boolean = true,
-): moment.Moment {
+): Date {
   let time: bigint;
   if (ensureMilliSeconds) {
     time = ensureMillisecondTimestamp(timestamp);
   } else {
     time = BigInt(timestamp);
   }
+  // Max safe date value
   if (time > 8640000000000000n) {
-    return moment(8640000000000000);
+    return new Date(8640000000000000);
   } else {
-    return moment(parseInt(time.toString()));
+    return new Date(Number(time));
   }
 }
 
@@ -387,9 +394,9 @@ export function parseTimestampString(
     time = BigInt(timestamp);
   }
   if (time > 8640000000000000n) {
-    return `> ${timestampDisplay(moment(8640000000000000)).local_formatted}`;
+    return `> ${timestampDisplay(new Date(8640000000000000)).local_formatted}`;
   } else {
-    return timestampDisplay(moment(parseInt(time.toString()))).local_formatted;
+    return timestampDisplay(new Date(Number(time))).local_formatted;
   }
 }
 
@@ -403,12 +410,27 @@ export interface TimestampDisplay {
   local_formatted_short: string;
 }
 
-export function timestampDisplay(timestamp: moment.Moment): TimestampDisplay {
+export function timestampDisplay(timestamp: Date): TimestampDisplay {
   return {
-    formatted: timestamp.format("MM/DD/YY HH:mm:ss.SSS [UTC]"),
-    local_formatted: timestamp.local().format("MM/DD/YYYY HH:mm:ss.SSS"),
-    local_formatted_short: timestamp.local().format("MM/DD/YY HH:mm:ss.SSS"),
+    formatted: format(timestamp, "MM/dd/yy HH:mm:ss.SSS") + " UTC",
+    local_formatted: format(timestamp, "MM/dd/yyyy HH:mm:ss.SSS"),
+    local_formatted_short: format(timestamp, "MM/dd/yy HH:mm:ss.SSS"),
   };
+}
+
+/**
+ * Calculate the difference between two dates in milliseconds
+ * Replacement for moment.duration().diff()
+ */
+export function getTimeDiffInMs(startDate: Date, endDate: Date): number {
+  return differenceInMilliseconds(endDate, startDate);
+}
+
+/**
+ * Calculate the difference between two dates in seconds
+ */
+export function getTimeDiffInSeconds(startDate: Date, endDate: Date): number {
+  return differenceInMilliseconds(endDate, startDate) / 1000;
 }
 
 export function truncate(

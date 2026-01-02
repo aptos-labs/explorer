@@ -10,7 +10,8 @@ import {
 import {ResponseError} from "../client";
 import {NameType} from "../../components/TitleHashButton";
 
-const TTL = 60000; // 1 minute
+// ANS names rarely change - cache for 30 minutes
+const TTL = 30 * 60 * 1000; // 30 minutes
 
 function getAddressFromNameUrl(network: NetworkName, name: string) {
   if (network !== "testnet" && network !== "mainnet") {
@@ -47,6 +48,9 @@ export function useGetNameFromAddress(
   const networkName = useNetworkName();
   const queryResult = useQuery<string | null, ResponseError>({
     queryKey: ["ANSName", address, shouldCache, networkName, nameType],
+    // ANS names rarely change - cache for 30 minutes
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
     queryFn: () => {
       const standardizedAddress = tryStandardizeAddress(address);
       if (!standardizedAddress) {
@@ -137,6 +141,9 @@ export function useGetAddressFromName(name: string) {
 
   return useQuery<string | null, ResponseError>({
     queryKey: ["ANSAddress", name, networkName],
+    // ANS addresses rarely change - cache for 30 minutes
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
     queryFn: async (): Promise<string | null> => {
       if (!name || !name.endsWith(".apt")) {
         return null;
