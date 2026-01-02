@@ -1,4 +1,4 @@
-import moment from "moment";
+import {subHours, subDays} from "date-fns";
 import React from "react";
 import IntervalBar, {IntervalType} from "../../../components/IntervalBar";
 import {Network} from "../../../constants";
@@ -16,25 +16,21 @@ export default function TimeDurationIntervalBar({
     return null;
   }
 
-  // the beginning of the unlock cycle
-  const startTime =
-    networkName === Network.TESTNET
-      ? parseTimestamp(timestamp.toString()).subtract(2, "hours")
-      : parseTimestamp(timestamp.toString()).subtract(14, "days");
-
   // the end of the unlock cycle
   const unlockTime = parseTimestamp(timestamp.toString());
 
+  // the beginning of the unlock cycle
+  const startTime =
+    networkName === Network.TESTNET
+      ? subHours(unlockTime, 2)
+      : subDays(unlockTime, 14);
+
   // the time already passed in the unlock cycle
-  const alreadyPassedTime = moment.duration(
-    moment().valueOf() - startTime.valueOf(),
-    "milliseconds",
-  );
+  const now = Date.now();
+  const alreadyPassedTimeMs = now - startTime.getTime();
 
   const percentage =
-    (alreadyPassedTime.asMilliseconds() /
-      (unlockTime.valueOf() - startTime.valueOf())) *
-    100;
+    (alreadyPassedTimeMs / (unlockTime.getTime() - startTime.getTime())) * 100;
 
   return (
     <IntervalBar

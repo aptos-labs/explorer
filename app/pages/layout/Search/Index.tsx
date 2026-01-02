@@ -250,6 +250,19 @@ export default function HeaderSearch() {
         resultsList.push(...labelResults);
       }
 
+      // Always include label lookup for any text search
+      // This allows searching by label name (e.g., "Binance", "Aptos Labs")
+      // even when input might look like other types
+      if (!inputType.isAnsName && !inputType.isGeneric) {
+        const labelResults = handleLabelLookup(normalizedSearchText);
+        for (const labelResult of labelResults) {
+          // Only add if not already in results
+          if (!resultsList.some((r) => r?.to === labelResult.to)) {
+            resultsList.push(labelResult);
+          }
+        }
+      }
+
       // Filter and deduplicate results
       let filteredResults = filterSearchResults(resultsList);
 

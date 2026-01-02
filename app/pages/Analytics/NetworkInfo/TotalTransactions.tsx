@@ -14,6 +14,8 @@ export default function TotalTransactions() {
     queryKey: ["ledgerInfo", networkValue],
     queryFn: () => getLedgerInfo(aptosClient),
     refetchInterval: 10000,
+    // Match staleTime to refetch interval to prevent unnecessary fetches on mount
+    staleTime: 10000,
   });
   const ledgerVersion = ledgerData?.ledger_version;
 

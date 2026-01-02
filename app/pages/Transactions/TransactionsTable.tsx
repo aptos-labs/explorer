@@ -269,7 +269,7 @@ type UserTransactionRowProps = {
   address?: string;
 };
 
-function UserTransactionRow({
+const UserTransactionRow = React.memo(function UserTransactionRow({
   version,
   columns,
   address,
@@ -290,7 +290,7 @@ function UserTransactionRow({
       })}
     </GeneralTableRow>
   );
-}
+});
 
 type TransactionHeaderCellProps = {
   column: TransactionColumn;

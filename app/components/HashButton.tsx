@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useCallback, memo} from "react";
 import {
   Box,
   BoxProps,
@@ -89,7 +89,7 @@ interface AccountHashButtonInnerProps extends BoxProps {
   isValidator: boolean;
 }
 
-function AccountHashButtonInner({
+const AccountHashButtonInner = memo(function AccountHashButtonInner({
   hash,
   type,
   size = "small",
@@ -106,14 +106,18 @@ function AccountHashButtonInner({
   const [copyTooltipOpen, setCopyTooltipOpen] = useState(false);
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
-  const copyAddress = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    await navigator.clipboard.writeText(address);
-    setCopyTooltipOpen(true);
-    setTimeout(() => {
-      setCopyTooltipOpen(false);
-    }, 2000);
-  };
+
+  const copyAddress = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      await navigator.clipboard.writeText(address);
+      setCopyTooltipOpen(true);
+      setTimeout(() => {
+        setCopyTooltipOpen(false);
+      }, 2000);
+    },
+    [address],
+  );
 
   return (
     <Stack direction="row" alignItems={"center"} spacing={1}>
@@ -160,7 +164,7 @@ function AccountHashButtonInner({
       </Link>
     </Stack>
   );
-}
+});
 
 interface HashButtonInnerProps extends BoxProps {
   label?: string;
@@ -170,7 +174,7 @@ interface HashButtonInnerProps extends BoxProps {
   img?: string;
 }
 
-function HashButtonInner({
+const HashButtonInner = memo(function HashButtonInner({
   label,
   hash,
   type,
@@ -181,15 +185,21 @@ function HashButtonInner({
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const hashExpand = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-  };
+  const hashExpand = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      setAnchorEl(event.currentTarget);
+    },
+    [],
+  );
 
-  const hashCollapse = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    setAnchorEl(null);
-  };
+  const hashCollapse = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      setAnchorEl(null);
+    },
+    [],
+  );
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -211,7 +221,7 @@ function HashButtonInner({
   } else if (img) {
     icon = (
       <Box component="span" sx={{mr: 1, display: "flex", alignItems: "center"}}>
-        <img src={img} alt={img} height={20} width={20} />
+        <img src={img} alt={img} height={20} width={20} loading="lazy" />
       </Box>
     );
   }
@@ -308,7 +318,7 @@ function HashButtonInner({
       </Popover>
     </Box>
   );
-}
+});
 
 interface AssetHashButtonInnerProps extends BoxProps {
   hash: string;
@@ -317,7 +327,7 @@ interface AssetHashButtonInnerProps extends BoxProps {
   img?: string;
 }
 
-function AssetHashButtonInner({
+const AssetHashButtonInner = memo(function AssetHashButtonInner({
   hash,
   type,
   size = "small",
@@ -354,14 +364,17 @@ function AssetHashButtonInner({
       ? truncateAddressMiddle(coinName)
       : truncateAddress(coinName);
 
-  const copyAddress = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    await navigator.clipboard.writeText(coinName);
-    setCopyTooltipOpen(true);
-    setTimeout(() => {
-      setCopyTooltipOpen(false);
-    }, 2000);
-  };
+  const copyAddress = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      await navigator.clipboard.writeText(coinName);
+      setCopyTooltipOpen(true);
+      setTimeout(() => {
+        setCopyTooltipOpen(false);
+      }, 2000);
+    },
+    [coinName],
+  );
 
   // Check if img is an emoji (including variation selectors like \uFE0F)
   // The regex matches one or more emoji characters, with optional variation selectors
@@ -438,7 +451,7 @@ function AssetHashButtonInner({
       </Link>
     </Stack>
   );
-}
+});
 
 export default function HashButton({
   hash,

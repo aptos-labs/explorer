@@ -47,7 +47,11 @@ const useProvideColorMode = () => {
     ).matches;
     const systemMode = prefersDark ? "dark" : "light";
     setMode(systemMode);
-    Cookies.set(COLOR_MODE_COOKIE, systemMode, {expires: 365, sameSite: "lax"});
+    Cookies.set(COLOR_MODE_COOKIE, systemMode, {
+      expires: 365,
+      sameSite: "lax",
+      secure: window.location.protocol === "https:",
+    });
   }, []);
 
   // Listen for system preference changes
@@ -64,6 +68,7 @@ const useProvideColorMode = () => {
         Cookies.set(COLOR_MODE_COOKIE, newMode, {
           expires: 365,
           sameSite: "lax",
+          secure: window.location.protocol === "https:",
         });
       }
     };
@@ -78,7 +83,11 @@ const useProvideColorMode = () => {
   const toggleColorMode = useCallback(() => {
     setMode((prevMode) => {
       const newMode = prevMode === "light" ? "dark" : "light";
-      Cookies.set(COLOR_MODE_COOKIE, newMode, {expires: 365, sameSite: "lax"});
+      Cookies.set(COLOR_MODE_COOKIE, newMode, {
+        expires: 365,
+        sameSite: "lax",
+        secure: window.location.protocol === "https:",
+      });
       return newMode;
     });
   }, []);

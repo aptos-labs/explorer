@@ -3,8 +3,7 @@ import {useGetEpochTime} from "../../../api/hooks/useGetEpochTime";
 import MetricSection from "./MetricSection";
 import Subtitle from "./Text/Subtitle";
 import Body from "./Text/Body";
-import moment from "moment";
-import {parseTimestamp} from "../../utils";
+import {parseTimestamp, getTimeDiffInMs} from "../../utils";
 import {Stack, Skeleton} from "@mui/material";
 import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
 import IntervalBar, {IntervalType} from "../../../components/IntervalBar";
@@ -29,22 +28,15 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
     if (lastEpochTime !== undefined && epochInterval !== undefined) {
       const epochIntervalSeconds = parseInt(epochInterval) / 1000;
       const startTimestamp = parseTimestamp(lastEpochTime);
-      const nowTimestamp = parseTimestamp(moment.now().toString());
-      const timePassed = moment.duration(nowTimestamp.diff(startTimestamp));
+      const nowTimestamp = new Date();
+      const timePassedMs = getTimeDiffInMs(startTimestamp, nowTimestamp);
 
       // Once randomness is enabled, epoch will be 2h + DKG time (<30s).
       // No need to reflect this period in explorer.
-      const timeRemaining = Math.max(
-        0,
-        epochIntervalSeconds - timePassed.asMilliseconds(),
-      );
+      const timeRemaining = Math.max(0, epochIntervalSeconds - timePassedMs);
       percentageComplete = Math.min(
         100,
-        parseInt(
-          ((timePassed.asMilliseconds() * 100) / epochIntervalSeconds).toFixed(
-            0,
-          ),
-        ),
+        parseInt(((timePassedMs * 100) / epochIntervalSeconds).toFixed(0)),
       );
       // eslint-disable-next-line react-hooks/purity
       endTimestamp = Date.now() + timeRemaining;

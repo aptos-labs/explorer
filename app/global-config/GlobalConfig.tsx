@@ -39,7 +39,11 @@ function getNetworkNameFromCookie(): NetworkName {
 
 function setNetworkNameCookie(name: NetworkName) {
   if (typeof window !== "undefined") {
-    Cookies.set(NETWORK_COOKIE_NAME, name, {expires: 365});
+    Cookies.set(NETWORK_COOKIE_NAME, name, {
+      expires: 365,
+      sameSite: "lax",
+      secure: window.location.protocol === "https:",
+    });
   }
 }
 
