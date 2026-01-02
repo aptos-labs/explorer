@@ -33,7 +33,7 @@ import {
   useSdkV2Client,
 } from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
-import {Link} from "../../../../routing";
+import {Link, useNavigate} from "../../../../routing";
 import {Code} from "../../Components/CodeSnippet";
 import {
   PackageMetadata,
@@ -339,6 +339,7 @@ function ContractSidebar({
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const logEvent = useLogEventWithBasic();
+  const navigate = useNavigate();
   const flattedFns = useMemo(
     () =>
       Object.entries(moduleAndFnsGroup).flatMap(([moduleName, fns]) =>
@@ -411,12 +412,7 @@ function ContractSidebar({
           onChange={(_, fn) => {
             if (fn) {
               logEvent("function_name_clicked", fn.fnName);
-              // Use getLinkToFn which already constructs the proper URL
-              window.location.href = getLinkToFn(
-                fn.moduleName,
-                fn.fnName,
-                isObject,
-              );
+              navigate({to: getLinkToFn(fn.moduleName, fn.fnName, isObject)});
             }
           }}
           value={
