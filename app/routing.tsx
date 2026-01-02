@@ -72,7 +72,10 @@ export const Link = React.forwardRef<
  */
 export function useSearchParams(): [
   URLSearchParams,
-  (params: Record<string, string | undefined>) => void,
+  (
+    params: URLSearchParams | Record<string, string | undefined>,
+    options?: {replace?: boolean},
+  ) => void,
 ] {
   const search = useSearch({strict: false}) as Record<
     string,
@@ -91,17 +94,25 @@ export function useSearchParams(): [
   }
 
   // Function to update search params
-  const setSearchParams = (params: Record<string, string | undefined>) => {
-    const newSearch = {...search};
-    Object.entries(params).forEach(([key, value]) => {
-      if (value === undefined || value === "") {
-        delete newSearch[key];
-      } else {
+  const setSearchParams = (
+    params: URLSearchParams | Record<string, string | undefined>,
+    options?: {replace?: boolean},
+  ) => {
+    // Convert URLSearchParams to object if needed
+    const paramsObj: Record<string, string | undefined> =
+      params instanceof URLSearchParams
+        ? Object.fromEntries(params.entries())
+        : params;
+
+    const newSearch: Record<string, string | undefined> = {};
+    Object.entries(paramsObj).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
         newSearch[key] = value;
       }
     });
+
     // @ts-expect-error - TanStack Router's search type is complex
-    navigate({search: newSearch});
+    navigate({search: newSearch, replace: options?.replace});
   };
 
   return [searchParams, setSearchParams];

@@ -5,7 +5,15 @@ import {Block} from "@aptos-labs/ts-sdk";
 
 const TPS_FREQUENCY = 600; // calculate tps every 600 blocks
 
-function calculateTps(startBlock: Block, endBlock: Block): number {
+function calculateTps(startBlock: Block, endBlock: Block): number | null {
+  // Ensure blocks have required data
+  if (!startBlock?.block_timestamp || !endBlock?.block_timestamp) {
+    return null;
+  }
+  if (!startBlock?.last_version || !endBlock?.last_version) {
+    return null;
+  }
+
   const startTransactionVersion = parseInt(startBlock.last_version);
   const endTransactionVersion = parseInt(endBlock.last_version);
 
@@ -13,6 +21,10 @@ function calculateTps(startBlock: Block, endBlock: Block): number {
   const endTimestamp = parseTimestamp(endBlock.block_timestamp);
   const duration = moment.duration(endTimestamp.diff(startTimestamp));
   const durationInSec = duration.asSeconds();
+
+  if (durationInSec <= 0) {
+    return null;
+  }
 
   return (endTransactionVersion - startTransactionVersion) / durationInSec;
 }

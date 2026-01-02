@@ -5,7 +5,7 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import {AptosClient} from "aptos";
+import {AptosClient, IndexerClient} from "aptos";
 import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import {useSearch} from "@tanstack/react-router";
 import {
@@ -14,6 +14,7 @@ import {
   NetworkName,
   getApiKey,
   isValidNetworkName,
+  getGraphqlURI,
 } from "../constants";
 import Cookies from "js-cookie";
 
@@ -216,12 +217,46 @@ export function useSdkV2Client(): Aptos {
   return useAptosClientV2();
 }
 
+// IndexerClient cache
+const indexerClientCache = new Map<string, IndexerClient>();
+
+function createIndexerClient(
+  networkName: NetworkName,
+): IndexerClient | undefined {
+  const indexerUri = getGraphqlURI(networkName);
+  const apiKey = getApiKey(networkName);
+
+  if (!indexerUri) {
+    return undefined;
+  }
+
+  const headers: Record<string, string> = {};
+  if (apiKey) {
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  }
+
+  return new IndexerClient(indexerUri, {HEADERS: headers, TOKEN: apiKey});
+}
+
+function getCachedIndexerClient(
+  networkName: NetworkName,
+): IndexerClient | undefined {
+  if (!indexerClientCache.has(networkName)) {
+    const client = createIndexerClient(networkName);
+    if (client) {
+      indexerClientCache.set(networkName, client);
+    }
+  }
+  return indexerClientCache.get(networkName);
+}
+
 /**
  * Hook to get an indexer client.
- * For now, this returns the SDK v2 client which has indexer functionality built in.
+ * Returns the legacy IndexerClient from the aptos package for GraphQL queries.
  */
-export function useIndexerClient(): Aptos {
-  return useAptosClientV2();
+export function useIndexerClient(): IndexerClient | undefined {
+  const networkName = useNetworkName();
+  return useMemo(() => getCachedIndexerClient(networkName), [networkName]);
 }
 
 /**

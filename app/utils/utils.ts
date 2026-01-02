@@ -343,7 +343,12 @@ export function getAssetSymbol(
 /**
  * Timestamp utilities
  */
-export function ensureMillisecondTimestamp(timestamp: string): bigint {
+export function ensureMillisecondTimestamp(
+  timestamp: string | undefined | null,
+): bigint {
+  if (!timestamp) {
+    return BigInt(0);
+  }
   if (timestamp.length > 13) {
     timestamp = timestamp.slice(0, 13);
   }

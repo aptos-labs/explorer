@@ -1,6 +1,7 @@
 import {createRouter as createTanStackRouter} from "@tanstack/react-router";
 import {QueryClient} from "@tanstack/react-query";
 import {routeTree} from "./routeTree.gen";
+import {NavigationPending} from "./components/NavigationPending";
 
 // Create a new QueryClient for each request (SSR safety)
 function createQueryClient() {
@@ -64,6 +65,12 @@ export function createRouter() {
     defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
     scrollRestoration: true,
+    // Show pending component during navigation
+    defaultPendingComponent: NavigationPending,
+    // Minimum time to show pending component to avoid flicker
+    defaultPendingMinMs: 200,
+    // Wait before showing pending component for fast navigations
+    defaultPendingMs: 100,
   });
 
   return router;

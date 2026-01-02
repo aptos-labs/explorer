@@ -1,13 +1,12 @@
 import React from "react";
 import {createFileRoute} from "@tanstack/react-router";
-import {useQuery} from "@tanstack/react-query";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import {
   Box,
   Typography,
   Card,
   CardContent,
   Grid,
-  Skeleton,
   Chip,
   Divider,
   Alert,
@@ -16,7 +15,6 @@ import {
   Paper,
 } from "@mui/material";
 import {Link} from "@tanstack/react-router";
-import {useGlobalState} from "../context/global-state";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import {
   truncateAddress,
@@ -24,7 +22,9 @@ import {
   formatNumber,
   formatTimestampLocal,
 } from "../utils";
-import {getTransaction} from "../api/client";
+import {transactionQueryOptions} from "../api/queries";
+import {getClientFromSearch, getNetworkFromSearch} from "../api/createClient";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/txn/$txnHashOrVersion")({
   head: ({params}) => ({
@@ -65,50 +65,58 @@ export const Route = createFileRoute("/txn/$txnHashOrVersion")({
       },
     ],
   }),
+  // Loader prefetches transaction data
+  loader: async ({context, params, location}) => {
+    const search = location.search as Record<string, string | undefined>;
+    const client = getClientFromSearch(search);
+    const networkName = getNetworkFromSearch(search);
+
+    // Prefetch transaction data
+    await context.queryClient.ensureQueryData(
+      transactionQueryOptions(params.txnHashOrVersion, client, networkName),
+    );
+
+    return {};
+  },
+  pendingComponent: PagePending,
+  // Handle errors gracefully
+  errorComponent: ({error}) => (
+    <Box>
+      <Alert severity="error" sx={{mb: 2}}>
+        Error loading transaction: {String(error)}
+      </Alert>
+    </Box>
+  ),
   component: TransactionPage,
 });
 
 function TransactionPage() {
   const {txnHashOrVersion} = Route.useParams();
-  const {sdk_v2_client, network_name} = useGlobalState();
+  const search = Route.useSearch() as Record<string, string | undefined>;
+  const client = getClientFromSearch(search);
+  const networkName = getNetworkFromSearch(search);
   const [activeTab, setActiveTab] = React.useState(0);
 
-  const {
-    data: transaction,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["transaction", txnHashOrVersion, network_name],
-    queryFn: () => getTransaction(txnHashOrVersion, sdk_v2_client),
-    staleTime: 60 * 60 * 1000, // 1 hour - transactions are immutable
-  });
+  // Data is already loaded by the loader
+  const {data: transaction} = useSuspenseQuery(
+    transactionQueryOptions(txnHashOrVersion, client, networkName),
+  );
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
 
-  if (error) {
-    return (
-      <Box>
-        <Alert severity="error" sx={{mb: 2}}>
-          Error loading transaction: {String(error)}
-        </Alert>
-        <Typography variant="body2">
-          Transaction hash or version: {txnHashOrVersion}
-        </Typography>
-      </Box>
-    );
-  }
-
   const isUserTransaction = transaction?.type === "user_transaction";
   const sender =
     isUserTransaction && "sender" in transaction ? transaction.sender : null;
-  const gasUsed = transaction?.gas_used ? Number(transaction.gas_used) : 0;
+  const gasUsed = "gas_used" in transaction ? Number(transaction.gas_used) : 0;
   const gasUnitPrice =
     isUserTransaction && "gas_unit_price" in transaction
       ? Number(transaction.gas_unit_price)
       : 0;
   const totalGasFee = octaToApt(gasUsed * gasUnitPrice);
+  const success = "success" in transaction ? transaction.success : false;
+  const version = "version" in transaction ? transaction.version : "";
 
   return (
     <Box>
@@ -118,8 +126,8 @@ function TransactionPage() {
           <Typography variant="h4">Transaction</Typography>
           {transaction && (
             <Chip
-              label={transaction.success ? "Success" : "Failed"}
-              color={transaction.success ? "success" : "error"}
+              label={success ? "Success" : "Failed"}
+              color={success ? "success" : "error"}
               size="small"
             />
           )}
@@ -131,7 +139,7 @@ function TransactionPage() {
             wordBreak: "break-all",
           }}
         >
-          {isLoading ? <Skeleton width={400} /> : transaction?.hash}
+          {transaction?.hash}
         </Typography>
       </Box>
 
@@ -143,9 +151,7 @@ function TransactionPage() {
               <Typography variant="subtitle2" color="text.secondary">
                 Version
               </Typography>
-              <Typography variant="h6">
-                {isLoading ? <Skeleton width={80} /> : transaction?.version}
-              </Typography>
+              <Typography variant="h6">{version}</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -156,15 +162,11 @@ function TransactionPage() {
                 Type
               </Typography>
               <Typography variant="h6">
-                {isLoading ? (
-                  <Skeleton width={100} />
-                ) : (
-                  <Chip
-                    label={transaction?.type.replace("_transaction", "")}
-                    variant="outlined"
-                    size="small"
-                  />
-                )}
+                <Chip
+                  label={transaction?.type.replace("_transaction", "")}
+                  variant="outlined"
+                  size="small"
+                />
               </Typography>
             </CardContent>
           </Card>
@@ -175,9 +177,7 @@ function TransactionPage() {
               <Typography variant="subtitle2" color="text.secondary">
                 Gas Used
               </Typography>
-              <Typography variant="h6">
-                {isLoading ? <Skeleton width={80} /> : formatNumber(gasUsed)}
-              </Typography>
+              <Typography variant="h6">{formatNumber(gasUsed)}</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -188,11 +188,7 @@ function TransactionPage() {
                 Gas Fee
               </Typography>
               <Typography variant="h6">
-                {isLoading ? (
-                  <Skeleton width={100} />
-                ) : (
-                  `${totalGasFee.toFixed(8)} APT`
-                )}
+                {`${totalGasFee.toFixed(8)} APT`}
               </Typography>
             </CardContent>
           </Card>
@@ -230,37 +226,15 @@ function TransactionPage() {
       </Box>
 
       {/* Tab Content */}
-      {activeTab === 0 && (
-        <OverviewTab transaction={transaction} isLoading={isLoading} />
-      )}
-      {activeTab === 1 && (
-        <PayloadTab transaction={transaction} isLoading={isLoading} />
-      )}
-      {activeTab === 2 && (
-        <EventsTab transaction={transaction} isLoading={isLoading} />
-      )}
-      {activeTab === 3 && (
-        <ChangesTab transaction={transaction} isLoading={isLoading} />
-      )}
+      {activeTab === 0 && <OverviewTab transaction={transaction} />}
+      {activeTab === 1 && <PayloadTab transaction={transaction} />}
+      {activeTab === 2 && <EventsTab transaction={transaction} />}
+      {activeTab === 3 && <ChangesTab transaction={transaction} />}
     </Box>
   );
 }
 
-function OverviewTab({
-  transaction,
-  isLoading,
-}: {
-  transaction: unknown;
-  isLoading: boolean;
-}) {
-  if (isLoading) {
-    return (
-      <Paper sx={{p: 3}}>
-        <Skeleton height={200} />
-      </Paper>
-    );
-  }
-
+function OverviewTab({transaction}: {transaction: unknown}) {
   const tx = transaction as {
     version?: string;
     hash?: string;
@@ -332,21 +306,7 @@ function OverviewTab({
   );
 }
 
-function PayloadTab({
-  transaction,
-  isLoading,
-}: {
-  transaction: unknown;
-  isLoading: boolean;
-}) {
-  if (isLoading) {
-    return (
-      <Paper sx={{p: 3}}>
-        <Skeleton height={200} />
-      </Paper>
-    );
-  }
-
+function PayloadTab({transaction}: {transaction: unknown}) {
   const tx = transaction as {payload?: object};
   const payload = tx?.payload;
 
@@ -372,21 +332,7 @@ function PayloadTab({
   );
 }
 
-function EventsTab({
-  transaction,
-  isLoading,
-}: {
-  transaction: unknown;
-  isLoading: boolean;
-}) {
-  if (isLoading) {
-    return (
-      <Paper sx={{p: 3}}>
-        <Skeleton height={200} />
-      </Paper>
-    );
-  }
-
+function EventsTab({transaction}: {transaction: unknown}) {
   const tx = transaction as {events?: {type: string; data: object}[]};
   const events = tx?.events || [];
 
@@ -423,21 +369,7 @@ function EventsTab({
   );
 }
 
-function ChangesTab({
-  transaction,
-  isLoading,
-}: {
-  transaction: unknown;
-  isLoading: boolean;
-}) {
-  if (isLoading) {
-    return (
-      <Paper sx={{p: 3}}>
-        <Skeleton height={200} />
-      </Paper>
-    );
-  }
-
+function ChangesTab({transaction}: {transaction: unknown}) {
   const tx = transaction as {changes?: {type: string; address?: string}[]};
   const changes = tx?.changes || [];
 
