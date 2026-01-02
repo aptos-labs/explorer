@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" role="img" aria-label="Aptos Explorer">
+  <defs>
+    <clipPath id="lensClip">
+      <circle cx="145" cy="145" r="88"/>
+    </clipPath>
+  </defs>
+
+  <!-- Handle with outline -->
+  <path d="M207,232 L232,207 L310,285 L285,310 Z" fill="#202124" stroke="#202124" stroke-width="2"/>
+  <circle cx="298" cy="298" r="14" fill="#202124"/>
+
+  <!-- Lens outer outline (for visibility on white backgrounds) -->
+  <circle cx="145" cy="145" r="104" fill="none" stroke="#e0e0e0" stroke-width="2"/>
+  
+  <!-- Lens Rim -->
+  <circle cx="145" cy="145" r="100" fill="#ffffff" stroke="#202124" stroke-width="8"/>
+  <circle cx="145" cy="145" r="92" fill="#f8f9fa"/>
+
+  <!-- Aptos symbol inside lens -->
+  <g clip-path="url(#lensClip)">
+    <g transform="translate(57,57) scale(0.295)">
+      <path d="M30.6608 171.033C18.0837 197.498 9.30164 226.119 5 256.181H255.339L309.999 171.033H30.6608Z" fill="#0F0E0B"/>
+      <path d="M594.999 256.182C590.687 226.111 581.915 197.499 569.338 171.034H419.288L364.648 85.8753H508.549C454.803 33.2026 381.199 0.716797 299.994 0.716797C218.79 0.716797 145.195 33.2026 91.4395 85.8653H364.648L309.988 171.024L364.648 256.172H594.989L594.999 256.182Z" fill="#0F0E0B"/>
+      <path d="M146.04 426.5L91.3809 511.648C145.136 564.311 218.601 597.284 299.805 597.284C381.01 597.284 455.718 565.99 509.672 511.648H200.7L146.04 426.5Z" fill="#0F0E0B"/>
+      <path d="M200.68 341.331H5C9.31157 371.412 18.0837 400.024 30.6608 426.489H146.04L200.68 341.331Z" fill="#0F0E0B"/>
+      <path d="M255.339 426.499H569.339C581.916 400.034 590.698 371.413 595 341.351H309.999L255.339 256.192L200.68 341.341" fill="#0F0E0B"/>
+    </g>
+  </g>
+</svg>

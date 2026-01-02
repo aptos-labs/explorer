@@ -1,0 +1,223 @@
+import React from "react";
+import {Box, Container, Grid, Stack, Typography, useTheme} from "@mui/material";
+import SvgIcon from "@mui/material/SvgIcon";
+import {Link} from "@tanstack/react-router";
+
+// Import SVGs - we'll use inline SVGs for SSR compatibility
+const GithubIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+  </svg>
+);
+
+const DiscordIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+    <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z" />
+  </svg>
+);
+
+const TwitterIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
+const MediumIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+    <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
+  </svg>
+);
+
+const LinkedInIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+  </svg>
+);
+
+const AptosLogo = ({isDark}: {isDark: boolean}) => (
+  <svg
+    width="128"
+    height="48"
+    viewBox="0 0 130 36"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M26.8461 12.3333H21.4948C21.1102 12.3333 20.7386 12.4666 20.4408 12.7111L17.3333 15.2222L14.2259 12.7111C13.9281 12.4666 13.5565 12.3333 13.1719 12.3333H7.82051C7.08888 12.3333 6.49487 12.9273 6.49487 13.659V14.2222C6.49487 14.9539 7.08888 15.5479 7.82051 15.5479H12.3999L17.3333 19.5556L22.2668 15.5479H26.8461C27.5778 15.5479 28.1718 14.9539 28.1718 14.2222V13.659C28.1718 12.9273 27.5778 12.3333 26.8461 12.3333Z"
+      fill={isDark ? "#F9F9F0" : "#0F0E0B"}
+    />
+    <path
+      d="M26.8461 20.4521H21.4948C21.1102 20.4521 20.7386 20.5854 20.4408 20.8299L17.3333 23.341L14.2259 20.8299C13.9281 20.5854 13.5565 20.4521 13.1719 20.4521H7.82051C7.08888 20.4521 6.49487 21.0461 6.49487 21.7778V22.341C6.49487 23.0727 7.08888 23.6667 7.82051 23.6667H12.3999L17.3333 27.6744L22.2668 23.6667H26.8461C27.5778 23.6667 28.1718 23.0727 28.1718 22.341V21.7778C28.1718 21.0461 27.5778 20.4521 26.8461 20.4521Z"
+      fill={isDark ? "#F9F9F0" : "#0F0E0B"}
+    />
+    <text
+      x="40"
+      y="24"
+      fontFamily="IBM Plex Sans, sans-serif"
+      fontSize="16"
+      fontWeight="600"
+      fill={isDark ? "#F9F9F0" : "#0F0E0B"}
+    >
+      Aptos
+    </text>
+  </svg>
+);
+
+const socialLinks = [
+  {title: "Git", url: "https://github.com/aptos-labs", icon: GithubIcon},
+  {
+    title: "Discord",
+    url: "https://discord.com/invite/aptosnetwork",
+    icon: DiscordIcon,
+  },
+  {title: "Twitter", url: "https://x.com/aptoslabs/", icon: TwitterIcon},
+  {title: "Medium", url: "https://aptoslabs.medium.com/", icon: MediumIcon},
+  {
+    title: "LinkedIn",
+    url: "https://www.linkedin.com/company/aptoslabs/",
+    icon: LinkedInIcon,
+  },
+];
+
+export default function Footer() {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+
+  return (
+    <Box
+      sx={{
+        background: theme.palette.background.default,
+        color: theme.palette.text.primary,
+        mt: 8,
+      }}
+    >
+      <Container maxWidth="xl" sx={{paddingTop: "2rem", paddingBottom: "2rem"}}>
+        <Grid
+          container
+          gap={4}
+          alignContent="center"
+          alignItems="center"
+          direction={{xs: "column", md: "row"}}
+        >
+          <Grid
+            size={{xs: "auto"}}
+            gap={1}
+            container
+            alignItems={{xs: "center", md: "start"}}
+            direction="column"
+          >
+            <a
+              href="https://aptoslabs.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Aptos Labs"
+              style={{
+                width: "8rem",
+                marginRight: "1rem",
+                textDecoration: "none",
+              }}
+            >
+              <AptosLogo isDark={isDark} />
+            </a>
+            <Grid container direction="row" padding="0" spacing={2}>
+              <Typography
+                sx={{
+                  textAlign: {
+                    xs: "center",
+                    md: "left",
+                    fontFamily:
+                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  },
+                }}
+                fontSize="0.8rem"
+              >
+                © {new Date().getFullYear()}{" "}
+                <Box component="span" sx={{whiteSpace: "nowrap"}}>
+                  Aptos Labs
+                </Box>
+              </Typography>
+              <Stack
+                direction="row"
+                spacing={1}
+                justifyContent={{xs: "center", md: "start"}}
+              >
+                <a
+                  href="https://aptoslabs.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: "inherit",
+                    fontSize: "0.8rem",
+                    fontFamily:
+                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    textDecoration: "none",
+                  }}
+                >
+                  Privacy
+                </a>
+                <a
+                  href="https://aptoslabs.com/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: "inherit",
+                    fontSize: "0.8rem",
+                    fontFamily:
+                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    textDecoration: "none",
+                  }}
+                >
+                  Terms
+                </a>
+                <Link
+                  to="/verification"
+                  style={{
+                    color: "inherit",
+                    fontSize: "0.8rem",
+                    fontFamily:
+                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    textDecoration: "none",
+                  }}
+                >
+                  Token & Address Verification
+                </Link>
+              </Stack>
+            </Grid>
+          </Grid>
+
+          <Grid
+            size={{xs: "auto"}}
+            sx={{marginLeft: {xs: "0", md: "auto"}}}
+            container
+            justifyContent="end"
+          >
+            <Grid
+              container
+              justifyContent={{xs: "center", md: "end"}}
+              spacing={3}
+              direction="row"
+            >
+              {socialLinks.map((link) => (
+                <Grid key={link.title}>
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={link.title}
+                    style={{
+                      display: "block",
+                      width: "26px",
+                      color: "inherit",
+                    }}
+                  >
+                    <SvgIcon component={link.icon} inheritViewBox />
+                  </a>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
+  );
+}
