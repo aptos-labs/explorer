@@ -326,7 +326,8 @@ function getAptChangeData(
     change.data.type === "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>" &&
     "data" in change.data
   ) {
-    return JSON.parse(JSON.stringify(change.data.data)) as ChangeData;
+    // Use structuredClone for better performance than JSON.parse(JSON.stringify())
+    return structuredClone(change.data.data) as ChangeData;
   } else {
     return undefined;
   }

@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useParams} from "@tanstack/react-router";
 import {Box, Stack, Typography, CircularProgress} from "@mui/material";
 import React, {Fragment, useState, useEffect} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -15,7 +15,8 @@ import {
 } from "../../utils";
 
 function OwnersRow() {
-  const {tokenId} = useParams();
+  const params = useParams({strict: false}) as {tokenId?: string};
+  const tokenId = params?.tokenId ?? "";
   const {data: owners} = useGetTokenOwners(tokenId);
 
   return (

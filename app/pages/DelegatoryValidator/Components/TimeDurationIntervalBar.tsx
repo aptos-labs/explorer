@@ -1,5 +1,5 @@
 import {subHours, subDays} from "date-fns";
-import React from "react";
+import React, {useState} from "react";
 import IntervalBar, {IntervalType} from "../../../components/IntervalBar";
 import {Network} from "../../../constants";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
@@ -11,6 +11,8 @@ export default function TimeDurationIntervalBar({
   timestamp?: number;
 }) {
   const networkName = useNetworkName();
+  // Capture current time at mount to avoid impure Date.now() calls during render
+  const [now] = useState(() => Date.now());
 
   if (!timestamp) {
     return null;
@@ -26,7 +28,6 @@ export default function TimeDurationIntervalBar({
       : subDays(unlockTime, 14);
 
   // the time already passed in the unlock cycle
-  const now = Date.now();
   const alreadyPassedTimeMs = now - startTime.getTime();
 
   const percentage =
