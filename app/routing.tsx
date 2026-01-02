@@ -3,13 +3,68 @@
  * Re-exports from TanStack Router for backward compatibility
  */
 
+import React from "react";
+import {styled} from "@mui/material/styles";
 import {
+  Link as TanStackLink,
   useSearch,
   useNavigate as useTanStackNavigate,
 } from "@tanstack/react-router";
 
-// Re-export commonly used routing utilities from TanStack Router
-export {Link, useNavigate, useSearch, useParams} from "@tanstack/react-router";
+// Re-export hooks from TanStack Router
+export {useNavigate, useSearch, useParams} from "@tanstack/react-router";
+
+/**
+ * Styled TanStack Router Link that matches MUI Link styling
+ * Inherits color from parent, no underlines, proper font weight
+ */
+const StyledTanStackLink = styled(TanStackLink)({
+  color: "inherit",
+  textDecoration: "none",
+  fontWeight: 400,
+  "&:hover": {
+    textDecoration: "none",
+    opacity: 0.8,
+  },
+});
+
+/**
+ * Custom Link component that wraps TanStack Router's Link with MUI styling
+ * Supports common MUI Link props like color and sx
+ */
+export const Link = React.forwardRef<
+  HTMLAnchorElement,
+  React.ComponentProps<typeof TanStackLink> & {
+    color?: "inherit" | "primary" | "secondary" | "error" | string;
+    underline?: "none" | "hover" | "always";
+    sx?: React.CSSProperties;
+  }
+>(({children, onClick, color, sx, ...props}, ref) => {
+  const colorStyle =
+    color === "primary"
+      ? {color: "var(--mui-palette-primary-main)"}
+      : color === "secondary"
+        ? {color: "var(--mui-palette-secondary-main)"}
+        : color === "error"
+          ? {color: "var(--mui-palette-error-main)"}
+          : color && color !== "inherit"
+            ? {color}
+            : {};
+
+  return (
+    <StyledTanStackLink
+      ref={ref}
+      {...props}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (onClick) onClick(e);
+      }}
+      style={{...colorStyle, ...(sx as React.CSSProperties)}}
+    >
+      {children}
+    </StyledTanStackLink>
+  );
+});
 
 /**
  * Compatibility hook for useSearchParams (react-router-dom style)
@@ -45,7 +100,8 @@ export function useSearchParams(): [
         newSearch[key] = value;
       }
     });
-    navigate({search: newSearch as Record<string, string>});
+    // @ts-expect-error - TanStack Router's search type is complex
+    navigate({search: newSearch});
   };
 
   return [searchParams, setSearchParams];
