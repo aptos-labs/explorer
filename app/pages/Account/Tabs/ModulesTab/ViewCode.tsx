@@ -19,7 +19,7 @@ import {
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import {getBytecodeSizeInKB} from "../../../../utils";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
-import {useParams} from "@tanstack/react-router";
+import {useSearch} from "../../../../routing";
 import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";
 import {Code} from "../../Components/CodeSnippet";
@@ -45,19 +45,23 @@ function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
 
   const navigate = useNavigate();
 
-  const selectedModuleName = useParams().selectedModuleName ?? "";
+  const search = useSearch({strict: false}) as {selectedModuleName?: string};
+  const selectedModuleName = search?.selectedModuleName ?? "";
   useEffect(() => {
     if (
       !selectedModuleName &&
       sortedPackages.length > 0 &&
       sortedPackages[0].modules.length > 0
     ) {
-      navigate(
-        `/${accountPagePath(isObject)}/${address}/modules/code/${sortedPackages[0].modules[0].name}`,
-        {
-          replace: true,
+      navigate({
+        to: `/${accountPagePath(isObject)}/${address}`,
+        search: {
+          tab: "modules",
+          modulesTab: "code",
+          selectedModuleName: sortedPackages[0].modules[0].name,
         },
-      );
+        replace: true,
+      });
     }
   }, [selectedModuleName, sortedPackages, address, navigate, isObject]);
 
@@ -70,11 +74,18 @@ function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
     .find((module) => module.name === selectedModuleName);
 
   function getLinkToModule(moduleName: string) {
-    return `/${accountPagePath(isObject)}/${address}/modules/code/${moduleName}`;
+    return `/${accountPagePath(isObject)}/${address}?tab=modules&modulesTab=code&selectedModuleName=${moduleName}`;
   }
 
   function navigateToModule(moduleName: string) {
-    navigate(getLinkToModule(moduleName));
+    navigate({
+      to: `/${accountPagePath(isObject)}/${address}`,
+      search: {
+        tab: "modules",
+        modulesTab: "code",
+        selectedModuleName: moduleName,
+      },
+    });
   }
 
   return (

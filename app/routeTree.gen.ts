@@ -8,330 +8,330 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as VerificationRouteImport } from './routes/verification'
-import { Route as ValidatorsEnhancedRouteImport } from './routes/validators-enhanced'
-import { Route as ValidatorsRouteImport } from './routes/validators'
-import { Route as TransactionsRouteImport } from './routes/transactions'
-import { Route as BlocksRouteImport } from './routes/blocks'
-import { Route as AnalyticsRouteImport } from './routes/analytics'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as ValidatorAddressRouteImport } from './routes/validator.$address'
-import { Route as TxnTxnHashOrVersionRouteImport } from './routes/txn.$txnHashOrVersion'
-import { Route as TokenTokenIdRouteImport } from './routes/token.$tokenId'
-import { Route as ObjectAddressRouteImport } from './routes/object.$address'
-import { Route as Fungible_assetAddressRouteImport } from './routes/fungible_asset.$address'
-import { Route as CoinStructRouteImport } from './routes/coin.$struct'
-import { Route as BlockHeightRouteImport } from './routes/block.$height'
-import { Route as AccountAddressRouteImport } from './routes/account.$address'
+import {Route as rootRouteImport} from "./routes/__root";
+import {Route as VerificationRouteImport} from "./routes/verification";
+import {Route as ValidatorsEnhancedRouteImport} from "./routes/validators-enhanced";
+import {Route as ValidatorsRouteImport} from "./routes/validators";
+import {Route as TransactionsRouteImport} from "./routes/transactions";
+import {Route as BlocksRouteImport} from "./routes/blocks";
+import {Route as AnalyticsRouteImport} from "./routes/analytics";
+import {Route as IndexRouteImport} from "./routes/index";
+import {Route as ValidatorAddressRouteImport} from "./routes/validator.$address";
+import {Route as TxnTxnHashOrVersionRouteImport} from "./routes/txn.$txnHashOrVersion";
+import {Route as TokenTokenIdRouteImport} from "./routes/token.$tokenId";
+import {Route as ObjectAddressRouteImport} from "./routes/object.$address";
+import {Route as Fungible_assetAddressRouteImport} from "./routes/fungible_asset.$address";
+import {Route as CoinStructRouteImport} from "./routes/coin.$struct";
+import {Route as BlockHeightRouteImport} from "./routes/block.$height";
+import {Route as AccountAddressRouteImport} from "./routes/account.$address";
 
 const VerificationRoute = VerificationRouteImport.update({
-  id: '/verification',
-  path: '/verification',
+  id: "/verification",
+  path: "/verification",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ValidatorsEnhancedRoute = ValidatorsEnhancedRouteImport.update({
-  id: '/validators-enhanced',
-  path: '/validators-enhanced',
+  id: "/validators-enhanced",
+  path: "/validators-enhanced",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ValidatorsRoute = ValidatorsRouteImport.update({
-  id: '/validators',
-  path: '/validators',
+  id: "/validators",
+  path: "/validators",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const TransactionsRoute = TransactionsRouteImport.update({
-  id: '/transactions',
-  path: '/transactions',
+  id: "/transactions",
+  path: "/transactions",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const BlocksRoute = BlocksRouteImport.update({
-  id: '/blocks',
-  path: '/blocks',
+  id: "/blocks",
+  path: "/blocks",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AnalyticsRoute = AnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
+  id: "/analytics",
+  path: "/analytics",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ValidatorAddressRoute = ValidatorAddressRouteImport.update({
-  id: '/validator/$address',
-  path: '/validator/$address',
+  id: "/validator/$address",
+  path: "/validator/$address",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const TxnTxnHashOrVersionRoute = TxnTxnHashOrVersionRouteImport.update({
-  id: '/txn/$txnHashOrVersion',
-  path: '/txn/$txnHashOrVersion',
+  id: "/txn/$txnHashOrVersion",
+  path: "/txn/$txnHashOrVersion",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const TokenTokenIdRoute = TokenTokenIdRouteImport.update({
-  id: '/token/$tokenId',
-  path: '/token/$tokenId',
+  id: "/token/$tokenId",
+  path: "/token/$tokenId",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const ObjectAddressRoute = ObjectAddressRouteImport.update({
-  id: '/object/$address',
-  path: '/object/$address',
+  id: "/object/$address",
+  path: "/object/$address",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const Fungible_assetAddressRoute = Fungible_assetAddressRouteImport.update({
-  id: '/fungible_asset/$address',
-  path: '/fungible_asset/$address',
+  id: "/fungible_asset/$address",
+  path: "/fungible_asset/$address",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const CoinStructRoute = CoinStructRouteImport.update({
-  id: '/coin/$struct',
-  path: '/coin/$struct',
+  id: "/coin/$struct",
+  path: "/coin/$struct",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const BlockHeightRoute = BlockHeightRouteImport.update({
-  id: '/block/$height',
-  path: '/block/$height',
+  id: "/block/$height",
+  path: "/block/$height",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AccountAddressRoute = AccountAddressRouteImport.update({
-  id: '/account/$address',
-  path: '/account/$address',
+  id: "/account/$address",
+  path: "/account/$address",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/analytics': typeof AnalyticsRoute
-  '/blocks': typeof BlocksRoute
-  '/transactions': typeof TransactionsRoute
-  '/validators': typeof ValidatorsRoute
-  '/validators-enhanced': typeof ValidatorsEnhancedRoute
-  '/verification': typeof VerificationRoute
-  '/account/$address': typeof AccountAddressRoute
-  '/block/$height': typeof BlockHeightRoute
-  '/coin/$struct': typeof CoinStructRoute
-  '/fungible_asset/$address': typeof Fungible_assetAddressRoute
-  '/object/$address': typeof ObjectAddressRoute
-  '/token/$tokenId': typeof TokenTokenIdRoute
-  '/txn/$txnHashOrVersion': typeof TxnTxnHashOrVersionRoute
-  '/validator/$address': typeof ValidatorAddressRoute
+  "/": typeof IndexRoute;
+  "/analytics": typeof AnalyticsRoute;
+  "/blocks": typeof BlocksRoute;
+  "/transactions": typeof TransactionsRoute;
+  "/validators": typeof ValidatorsRoute;
+  "/validators-enhanced": typeof ValidatorsEnhancedRoute;
+  "/verification": typeof VerificationRoute;
+  "/account/$address": typeof AccountAddressRoute;
+  "/block/$height": typeof BlockHeightRoute;
+  "/coin/$struct": typeof CoinStructRoute;
+  "/fungible_asset/$address": typeof Fungible_assetAddressRoute;
+  "/object/$address": typeof ObjectAddressRoute;
+  "/token/$tokenId": typeof TokenTokenIdRoute;
+  "/txn/$txnHashOrVersion": typeof TxnTxnHashOrVersionRoute;
+  "/validator/$address": typeof ValidatorAddressRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/analytics': typeof AnalyticsRoute
-  '/blocks': typeof BlocksRoute
-  '/transactions': typeof TransactionsRoute
-  '/validators': typeof ValidatorsRoute
-  '/validators-enhanced': typeof ValidatorsEnhancedRoute
-  '/verification': typeof VerificationRoute
-  '/account/$address': typeof AccountAddressRoute
-  '/block/$height': typeof BlockHeightRoute
-  '/coin/$struct': typeof CoinStructRoute
-  '/fungible_asset/$address': typeof Fungible_assetAddressRoute
-  '/object/$address': typeof ObjectAddressRoute
-  '/token/$tokenId': typeof TokenTokenIdRoute
-  '/txn/$txnHashOrVersion': typeof TxnTxnHashOrVersionRoute
-  '/validator/$address': typeof ValidatorAddressRoute
+  "/": typeof IndexRoute;
+  "/analytics": typeof AnalyticsRoute;
+  "/blocks": typeof BlocksRoute;
+  "/transactions": typeof TransactionsRoute;
+  "/validators": typeof ValidatorsRoute;
+  "/validators-enhanced": typeof ValidatorsEnhancedRoute;
+  "/verification": typeof VerificationRoute;
+  "/account/$address": typeof AccountAddressRoute;
+  "/block/$height": typeof BlockHeightRoute;
+  "/coin/$struct": typeof CoinStructRoute;
+  "/fungible_asset/$address": typeof Fungible_assetAddressRoute;
+  "/object/$address": typeof ObjectAddressRoute;
+  "/token/$tokenId": typeof TokenTokenIdRoute;
+  "/txn/$txnHashOrVersion": typeof TxnTxnHashOrVersionRoute;
+  "/validator/$address": typeof ValidatorAddressRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/analytics': typeof AnalyticsRoute
-  '/blocks': typeof BlocksRoute
-  '/transactions': typeof TransactionsRoute
-  '/validators': typeof ValidatorsRoute
-  '/validators-enhanced': typeof ValidatorsEnhancedRoute
-  '/verification': typeof VerificationRoute
-  '/account/$address': typeof AccountAddressRoute
-  '/block/$height': typeof BlockHeightRoute
-  '/coin/$struct': typeof CoinStructRoute
-  '/fungible_asset/$address': typeof Fungible_assetAddressRoute
-  '/object/$address': typeof ObjectAddressRoute
-  '/token/$tokenId': typeof TokenTokenIdRoute
-  '/txn/$txnHashOrVersion': typeof TxnTxnHashOrVersionRoute
-  '/validator/$address': typeof ValidatorAddressRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/analytics": typeof AnalyticsRoute;
+  "/blocks": typeof BlocksRoute;
+  "/transactions": typeof TransactionsRoute;
+  "/validators": typeof ValidatorsRoute;
+  "/validators-enhanced": typeof ValidatorsEnhancedRoute;
+  "/verification": typeof VerificationRoute;
+  "/account/$address": typeof AccountAddressRoute;
+  "/block/$height": typeof BlockHeightRoute;
+  "/coin/$struct": typeof CoinStructRoute;
+  "/fungible_asset/$address": typeof Fungible_assetAddressRoute;
+  "/object/$address": typeof ObjectAddressRoute;
+  "/token/$tokenId": typeof TokenTokenIdRoute;
+  "/txn/$txnHashOrVersion": typeof TxnTxnHashOrVersionRoute;
+  "/validator/$address": typeof ValidatorAddressRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/analytics'
-    | '/blocks'
-    | '/transactions'
-    | '/validators'
-    | '/validators-enhanced'
-    | '/verification'
-    | '/account/$address'
-    | '/block/$height'
-    | '/coin/$struct'
-    | '/fungible_asset/$address'
-    | '/object/$address'
-    | '/token/$tokenId'
-    | '/txn/$txnHashOrVersion'
-    | '/validator/$address'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/analytics"
+    | "/blocks"
+    | "/transactions"
+    | "/validators"
+    | "/validators-enhanced"
+    | "/verification"
+    | "/account/$address"
+    | "/block/$height"
+    | "/coin/$struct"
+    | "/fungible_asset/$address"
+    | "/object/$address"
+    | "/token/$tokenId"
+    | "/txn/$txnHashOrVersion"
+    | "/validator/$address";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/analytics'
-    | '/blocks'
-    | '/transactions'
-    | '/validators'
-    | '/validators-enhanced'
-    | '/verification'
-    | '/account/$address'
-    | '/block/$height'
-    | '/coin/$struct'
-    | '/fungible_asset/$address'
-    | '/object/$address'
-    | '/token/$tokenId'
-    | '/txn/$txnHashOrVersion'
-    | '/validator/$address'
+    | "/"
+    | "/analytics"
+    | "/blocks"
+    | "/transactions"
+    | "/validators"
+    | "/validators-enhanced"
+    | "/verification"
+    | "/account/$address"
+    | "/block/$height"
+    | "/coin/$struct"
+    | "/fungible_asset/$address"
+    | "/object/$address"
+    | "/token/$tokenId"
+    | "/txn/$txnHashOrVersion"
+    | "/validator/$address";
   id:
-    | '__root__'
-    | '/'
-    | '/analytics'
-    | '/blocks'
-    | '/transactions'
-    | '/validators'
-    | '/validators-enhanced'
-    | '/verification'
-    | '/account/$address'
-    | '/block/$height'
-    | '/coin/$struct'
-    | '/fungible_asset/$address'
-    | '/object/$address'
-    | '/token/$tokenId'
-    | '/txn/$txnHashOrVersion'
-    | '/validator/$address'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/analytics"
+    | "/blocks"
+    | "/transactions"
+    | "/validators"
+    | "/validators-enhanced"
+    | "/verification"
+    | "/account/$address"
+    | "/block/$height"
+    | "/coin/$struct"
+    | "/fungible_asset/$address"
+    | "/object/$address"
+    | "/token/$tokenId"
+    | "/txn/$txnHashOrVersion"
+    | "/validator/$address";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AnalyticsRoute: typeof AnalyticsRoute
-  BlocksRoute: typeof BlocksRoute
-  TransactionsRoute: typeof TransactionsRoute
-  ValidatorsRoute: typeof ValidatorsRoute
-  ValidatorsEnhancedRoute: typeof ValidatorsEnhancedRoute
-  VerificationRoute: typeof VerificationRoute
-  AccountAddressRoute: typeof AccountAddressRoute
-  BlockHeightRoute: typeof BlockHeightRoute
-  CoinStructRoute: typeof CoinStructRoute
-  Fungible_assetAddressRoute: typeof Fungible_assetAddressRoute
-  ObjectAddressRoute: typeof ObjectAddressRoute
-  TokenTokenIdRoute: typeof TokenTokenIdRoute
-  TxnTxnHashOrVersionRoute: typeof TxnTxnHashOrVersionRoute
-  ValidatorAddressRoute: typeof ValidatorAddressRoute
+  IndexRoute: typeof IndexRoute;
+  AnalyticsRoute: typeof AnalyticsRoute;
+  BlocksRoute: typeof BlocksRoute;
+  TransactionsRoute: typeof TransactionsRoute;
+  ValidatorsRoute: typeof ValidatorsRoute;
+  ValidatorsEnhancedRoute: typeof ValidatorsEnhancedRoute;
+  VerificationRoute: typeof VerificationRoute;
+  AccountAddressRoute: typeof AccountAddressRoute;
+  BlockHeightRoute: typeof BlockHeightRoute;
+  CoinStructRoute: typeof CoinStructRoute;
+  Fungible_assetAddressRoute: typeof Fungible_assetAddressRoute;
+  ObjectAddressRoute: typeof ObjectAddressRoute;
+  TokenTokenIdRoute: typeof TokenTokenIdRoute;
+  TxnTxnHashOrVersionRoute: typeof TxnTxnHashOrVersionRoute;
+  ValidatorAddressRoute: typeof ValidatorAddressRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/verification': {
-      id: '/verification'
-      path: '/verification'
-      fullPath: '/verification'
-      preLoaderRoute: typeof VerificationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/validators-enhanced': {
-      id: '/validators-enhanced'
-      path: '/validators-enhanced'
-      fullPath: '/validators-enhanced'
-      preLoaderRoute: typeof ValidatorsEnhancedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/validators': {
-      id: '/validators'
-      path: '/validators'
-      fullPath: '/validators'
-      preLoaderRoute: typeof ValidatorsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/transactions': {
-      id: '/transactions'
-      path: '/transactions'
-      fullPath: '/transactions'
-      preLoaderRoute: typeof TransactionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blocks': {
-      id: '/blocks'
-      path: '/blocks'
-      fullPath: '/blocks'
-      preLoaderRoute: typeof BlocksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/analytics': {
-      id: '/analytics'
-      path: '/analytics'
-      fullPath: '/analytics'
-      preLoaderRoute: typeof AnalyticsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/validator/$address': {
-      id: '/validator/$address'
-      path: '/validator/$address'
-      fullPath: '/validator/$address'
-      preLoaderRoute: typeof ValidatorAddressRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/txn/$txnHashOrVersion': {
-      id: '/txn/$txnHashOrVersion'
-      path: '/txn/$txnHashOrVersion'
-      fullPath: '/txn/$txnHashOrVersion'
-      preLoaderRoute: typeof TxnTxnHashOrVersionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/token/$tokenId': {
-      id: '/token/$tokenId'
-      path: '/token/$tokenId'
-      fullPath: '/token/$tokenId'
-      preLoaderRoute: typeof TokenTokenIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/object/$address': {
-      id: '/object/$address'
-      path: '/object/$address'
-      fullPath: '/object/$address'
-      preLoaderRoute: typeof ObjectAddressRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/fungible_asset/$address': {
-      id: '/fungible_asset/$address'
-      path: '/fungible_asset/$address'
-      fullPath: '/fungible_asset/$address'
-      preLoaderRoute: typeof Fungible_assetAddressRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/coin/$struct': {
-      id: '/coin/$struct'
-      path: '/coin/$struct'
-      fullPath: '/coin/$struct'
-      preLoaderRoute: typeof CoinStructRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/block/$height': {
-      id: '/block/$height'
-      path: '/block/$height'
-      fullPath: '/block/$height'
-      preLoaderRoute: typeof BlockHeightRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/account/$address': {
-      id: '/account/$address'
-      path: '/account/$address'
-      fullPath: '/account/$address'
-      preLoaderRoute: typeof AccountAddressRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+    "/verification": {
+      id: "/verification";
+      path: "/verification";
+      fullPath: "/verification";
+      preLoaderRoute: typeof VerificationRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/validators-enhanced": {
+      id: "/validators-enhanced";
+      path: "/validators-enhanced";
+      fullPath: "/validators-enhanced";
+      preLoaderRoute: typeof ValidatorsEnhancedRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/validators": {
+      id: "/validators";
+      path: "/validators";
+      fullPath: "/validators";
+      preLoaderRoute: typeof ValidatorsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/transactions": {
+      id: "/transactions";
+      path: "/transactions";
+      fullPath: "/transactions";
+      preLoaderRoute: typeof TransactionsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/blocks": {
+      id: "/blocks";
+      path: "/blocks";
+      fullPath: "/blocks";
+      preLoaderRoute: typeof BlocksRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/analytics": {
+      id: "/analytics";
+      path: "/analytics";
+      fullPath: "/analytics";
+      preLoaderRoute: typeof AnalyticsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/validator/$address": {
+      id: "/validator/$address";
+      path: "/validator/$address";
+      fullPath: "/validator/$address";
+      preLoaderRoute: typeof ValidatorAddressRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/txn/$txnHashOrVersion": {
+      id: "/txn/$txnHashOrVersion";
+      path: "/txn/$txnHashOrVersion";
+      fullPath: "/txn/$txnHashOrVersion";
+      preLoaderRoute: typeof TxnTxnHashOrVersionRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/token/$tokenId": {
+      id: "/token/$tokenId";
+      path: "/token/$tokenId";
+      fullPath: "/token/$tokenId";
+      preLoaderRoute: typeof TokenTokenIdRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/object/$address": {
+      id: "/object/$address";
+      path: "/object/$address";
+      fullPath: "/object/$address";
+      preLoaderRoute: typeof ObjectAddressRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/fungible_asset/$address": {
+      id: "/fungible_asset/$address";
+      path: "/fungible_asset/$address";
+      fullPath: "/fungible_asset/$address";
+      preLoaderRoute: typeof Fungible_assetAddressRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/coin/$struct": {
+      id: "/coin/$struct";
+      path: "/coin/$struct";
+      fullPath: "/coin/$struct";
+      preLoaderRoute: typeof CoinStructRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/block/$height": {
+      id: "/block/$height";
+      path: "/block/$height";
+      fullPath: "/block/$height";
+      preLoaderRoute: typeof BlockHeightRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/account/$address": {
+      id: "/account/$address";
+      path: "/account/$address";
+      fullPath: "/account/$address";
+      preLoaderRoute: typeof AccountAddressRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
@@ -351,7 +351,7 @@ const rootRouteChildren: RootRouteChildren = {
   TokenTokenIdRoute: TokenTokenIdRoute,
   TxnTxnHashOrVersionRoute: TxnTxnHashOrVersionRoute,
   ValidatorAddressRoute: ValidatorAddressRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();

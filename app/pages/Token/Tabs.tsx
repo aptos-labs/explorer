@@ -8,7 +8,7 @@ import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import {useParams} from "@tanstack/react-router";
-import {useNavigate} from "../../routing";
+import {useNavigate, useSearch} from "../../routing";
 import {Current_Token_Datas_V2} from "aptos";
 
 const TAB_VALUES: TabValue[] = ["overview", "activities"];
@@ -61,12 +61,21 @@ export default function TokenTabs({
   data,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): React.JSX.Element {
-  const {propertyVersion, tab, tokenId} = useParams();
+  const params = useParams({strict: false}) as {tokenId?: string};
+  const search = useSearch({strict: false}) as {
+    tab?: string;
+    propertyVersion?: string;
+  };
+  const tokenId = params?.tokenId;
+  const propertyVersion = search?.propertyVersion;
+  const tab = search?.tab;
   const navigate = useNavigate();
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/token/${tokenId}/${propertyVersion}/${newValue}`, {
+    navigate({
+      to: `/token/${tokenId}`,
+      search: {tab: newValue, propertyVersion},
       replace: true,
     });
   };

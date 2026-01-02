@@ -28,7 +28,8 @@ export type FACombinedData = {
 
 export default function FAPage() {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
-  const maybeAddress = useParams().address;
+  const params = useParams({strict: false}) as {address?: string};
+  const maybeAddress = params?.address;
   let address: string = "";
   let error: ResponseError | null = null;
   if (maybeAddress && isValidAccountAddress(maybeAddress)) {

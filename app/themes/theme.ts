@@ -221,9 +221,15 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
       // Link overrides
       MuiLink: {
         styleOverrides: {
-          root: {
+          root: ({}) => ({
             fontWeight: "400",
-          },
+            color: semanticColors.link.main,
+            textDecorationColor: alpha(semanticColors.link.main, 0.4),
+            "&:hover": {
+              color: semanticColors.link.hover,
+              textDecorationColor: semanticColors.link.hover,
+            },
+          }),
         },
       },
 

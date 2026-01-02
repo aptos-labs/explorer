@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
-import {useParams} from "@tanstack/react-router";
+import {useSearch} from "../../../../routing";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import {
   useNetworkName,
@@ -33,7 +33,7 @@ import {
   useSdkV2Client,
 } from "../../../../global-config/GlobalConfig";
 import {view} from "../../../../api";
-import {Link, useNavigate} from "../../../../routing";
+import {Link} from "../../../../routing";
 import {Code} from "../../Components/CodeSnippet";
 import {
   PackageMetadata,
@@ -225,7 +225,12 @@ function Contract({
 }) {
   const theme = useTheme();
   const {data, isLoading, error} = useGetAccountModules(address);
-  const {selectedModuleName, selectedFnName} = useParams();
+  const search = useSearch({strict: false}) as {
+    selectedModuleName?: string;
+    selectedFnName?: string;
+  };
+  const selectedModuleName = search?.selectedModuleName;
+  const selectedFnName = search?.selectedFnName;
   const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
   const modules = useMemo(() => data ?? [], [data]);
 
@@ -279,12 +284,9 @@ function Contract({
     : undefined;
 
   function getLinkToFn(moduleName: string, fnName: string, isObject: boolean) {
-    // This string implicitly depends on the fact that
-    // the `isRead` value is determined by the
-    // pathname `view` and `run`.
-    return `/${accountPagePath(isObject)}/${address}/modules/${
-      isRead ? "view" : "run"
-    }/${moduleName}/${fnName}`;
+    // Using search params for module/function selection
+    const modulesTabValue = isRead ? "view" : "run";
+    return `/${accountPagePath(isObject)}/${address}?tab=modules&modulesTab=${modulesTabValue}&selectedModuleName=${moduleName}&selectedFnName=${fnName}`;
   }
 
   // Use this key to force re-mount the Form component when the fn changes,
@@ -336,7 +338,6 @@ function ContractSidebar({
 }: ContractSidebarProps) {
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
-  const navigate = useNavigate();
   const logEvent = useLogEventWithBasic();
   const flattedFns = useMemo(
     () =>
@@ -410,7 +411,12 @@ function ContractSidebar({
           onChange={(_, fn) => {
             if (fn) {
               logEvent("function_name_clicked", fn.fnName);
-              navigate(getLinkToFn(fn.moduleName, fn.fnName, isObject));
+              // Use getLinkToFn which already constructs the proper URL
+              window.location.href = getLinkToFn(
+                fn.moduleName,
+                fn.fnName,
+                isObject,
+              );
             }
           }}
           value={
@@ -644,7 +650,10 @@ function RunContractForm({
                   {transactionResponse.transactionSubmitted &&
                     transactionResponse.transactionHash && (
                       <Link
-                        to={`/txn/${transactionResponse.transactionHash}`}
+                        to="/txn/$txnHashOrVersion"
+                        params={{
+                          txnHashOrVersion: transactionResponse.transactionHash,
+                        }}
                         color="inherit"
                         target="_blank"
                       >
