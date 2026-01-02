@@ -11,7 +11,11 @@
  */
 
 import {useEffect, useMemo} from "react";
-import {Helmet} from "react-helmet-async";
+import * as ReactHelmetAsync from "react-helmet-async";
+const Helmet =
+  ReactHelmetAsync.Helmet ||
+  (ReactHelmetAsync as unknown as {default: typeof ReactHelmetAsync}).default
+    ?.Helmet;
 
 // Base URL for the explorer
 const BASE_URL = "https://explorer.aptoslabs.com";
