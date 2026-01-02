@@ -62,6 +62,7 @@ export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
   // Update network when URL param changes
   useEffect(() => {
     if (search?.network && isValidNetworkName(search.network)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setNetworkNameState(search.network);
     }
   }, [search?.network]);

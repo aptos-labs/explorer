@@ -18,7 +18,7 @@ export type ResponseError = {type: ResponseErrorType; message?: string};
 export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
   return await promise.catch((error: unknown) => {
     // Log error for debugging
-    if (import.meta.env.DEV) {
+    if (process.env.NODE_ENV === "development") {
       console.error("API Error:", error);
     }
 
@@ -163,7 +163,10 @@ export async function viewFunction<T extends unknown[]>(
       payload: {
         function: payload.function,
         typeArguments: payload.typeArguments || [],
-        functionArguments: payload.functionArguments || [],
+        functionArguments:
+          (payload.functionArguments as Parameters<
+            typeof client.view
+          >[0]["payload"]["functionArguments"]) || [],
       },
     }),
   );

@@ -174,7 +174,7 @@ export default function Header() {
                 <WalletConnector
                   networkSupport={networkName}
                   handleNavigate={() =>
-                    navigate(`/account/${account?.address}`)
+                    navigate({to: `/account/${account?.address}`})
                   }
                   sortInstallableWallets={sortPetraFirst}
                   modalMaxWidth="sm"

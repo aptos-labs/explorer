@@ -6,7 +6,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import {Fallback} from "./Fallback";
 import {
-  GlobalStateProvider,
+  GlobalConfigProvider,
   useNetworkName,
 } from "../../global-config/GlobalConfig";
 import {ProvideColorMode} from "../../context";
@@ -47,7 +47,7 @@ export default function ExplorerLayout({children}: LayoutProps) {
   return (
     <ProvideColorMode>
       <CssBaseline />
-      <GlobalStateProvider>
+      <GlobalConfigProvider>
         <ExplorerWalletAdapterProvider>
           <GraphqlClientProvider>
             <Box
@@ -76,7 +76,7 @@ export default function ExplorerLayout({children}: LayoutProps) {
             </Box>
           </GraphqlClientProvider>
         </ExplorerWalletAdapterProvider>
-      </GlobalStateProvider>
+      </GlobalConfigProvider>
     </ProvideColorMode>
   );
 }

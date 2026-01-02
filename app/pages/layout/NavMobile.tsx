@@ -32,7 +32,7 @@ export default function NavMobile() {
 
   const handleCloseAndNavigate = (to: string) => {
     setMenuAnchorEl(null);
-    navigate(to);
+    navigate({to});
   };
 
   return (
@@ -93,7 +93,7 @@ export default function NavMobile() {
         <Divider />
         <WalletConnector
           networkSupport={networkName}
-          handleNavigate={() => navigate(`/account/${account?.address}`)}
+          handleNavigate={() => navigate({to: `/account/${account?.address}`})}
           sortAvailableWallets={sortPetraFirst}
           sortInstallableWallets={sortPetraFirst}
           modalMaxWidth="sm"

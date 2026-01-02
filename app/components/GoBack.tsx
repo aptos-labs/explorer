@@ -1,6 +1,5 @@
 import Button from "@mui/material/Button";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import {useNavigate} from "../routing";
 
 function BackButton(handleClick: () => void) {
   return (
@@ -25,11 +24,13 @@ function BackButton(handleClick: () => void) {
 }
 
 export default function GoBack() {
-  const navigate = useNavigate();
-
-  if (window.history.state && window.history.state.idx > 0) {
+  if (
+    typeof window !== "undefined" &&
+    window.history.state &&
+    window.history.state.idx > 0
+  ) {
     return BackButton(() => {
-      navigate(-1);
+      window.history.back();
     });
   } else {
     return null;

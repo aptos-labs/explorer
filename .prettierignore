@@ -15,3 +15,5 @@ robots.txt
 *.png
 *.sh
 *.toml
+
+app/routeTree.gen.ts

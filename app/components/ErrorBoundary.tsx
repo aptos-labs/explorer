@@ -27,7 +27,7 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
           <Typography variant="body1" color="text.secondary" sx={{mb: 3}}>
             {error.message || "An unexpected error occurred"}
           </Typography>
-          {import.meta.env.DEV && (
+          {process.env.NODE_ENV === "development" && (
             <Box
               component="pre"
               sx={{

@@ -1,5 +1,5 @@
 import React from "react";
-import {NavLink} from "@tanstack/react-router";
+import {Link, useLocation} from "@tanstack/react-router";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
@@ -15,26 +15,27 @@ function NavButton({
   label: string;
 }) {
   const augumentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
+  const location = useLocation();
+  const isActive =
+    location.pathname === to || location.pathname.startsWith(to + "/");
 
   return (
-    <NavLink
+    <Link
       to={augumentToWithGlobalSearchParams(to)}
       style={{textDecoration: "none", color: "inherit"}}
     >
-      {({isActive}) => (
-        <Button
-          variant="nav"
-          title={title}
-          style={{
-            color: "inherit",
-            fontSize: "1rem",
-            fontWeight: isActive ? 700 : undefined,
-          }}
-        >
-          {label}
-        </Button>
-      )}
-    </NavLink>
+      <Button
+        variant="nav"
+        title={title}
+        style={{
+          color: "inherit",
+          fontSize: "1rem",
+          fontWeight: isActive ? 700 : undefined,
+        }}
+      >
+        {label}
+      </Button>
+    </Link>
   );
 }
 

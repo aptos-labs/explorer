@@ -6,7 +6,7 @@ import {
   SelectChangeEvent,
   useTheme,
 } from "@mui/material";
-import {useNetworkName, useNetworkSelector} from "../../global-config";
+import {useNetworkSelector} from "../../global-config";
 import {networks, NetworkName, hiddenNetworks} from "../../constants";
 
 export default function NetworkSelect() {
