@@ -26,7 +26,12 @@ const IdenticonImg = memo(function IdenticonImg({address}: IdenticonImgProps) {
 
   // Return an img element with the data URL as the src
   return (
-    <img src={iconDataURL} alt="Identicon" style={imgStyle} loading="lazy" />
+    <img
+      src={iconDataURL}
+      alt={`Account identicon for ${address.slice(0, 10)}...`}
+      style={imgStyle}
+      loading="lazy"
+    />
   );
 });
 

@@ -51,35 +51,9 @@ export default function JsonViewCard({
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const jsonViewCardTheme = useJsonViewCardTheme();
-  const [isClient, setIsClient] = React.useState(false);
-
-  // Only render on client side
-  React.useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   if (!data) {
     return <EmptyValue />;
-  }
-
-  if (!isClient) {
-    return (
-      <Box
-        sx={{
-          backgroundColor: semanticColors.codeBlock.background,
-          overflow: "auto",
-          maxHeight: MAX_CARD_HEIGHT,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: 100,
-        }}
-        padding={2}
-        borderRadius={1}
-      >
-        <CircularProgress size={24} />
-      </Box>
-    );
   }
 
   return (
