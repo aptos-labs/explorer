@@ -1,20 +1,130 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
     <title>Aptos Explorer</title>
+    <meta name="title" content="Aptos Explorer" />
+    <meta
+      name="description"
+      content="Explore transactions, accounts, blocks, validators, and activity on the Aptos blockchain. The official block explorer for the Aptos network."
+    />
+    <meta
+      name="keywords"
+      content="Aptos, blockchain, explorer, web3, crypto, transactions, accounts, blocks, validators, NFTs, tokens, staking"
+    />
+    <meta name="author" content="Aptos Labs" />
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="theme-color"
+      content="#000000"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aptos Explorer" />
+    <meta property="og:url" content="https://explorer.aptoslabs.com/" />
+    <meta property="og:title" content="Aptos Explorer" />
+    <meta
+      property="og:description"
+      content="Explore transactions, accounts, blocks, validators, and activity on the Aptos blockchain. The official block explorer for the Aptos network."
+    />
+    <meta
+      property="og:image"
+      content="https://explorer.aptoslabs.com/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Aptos Explorer - Blockchain Explorer for Aptos"
+    />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@AptosLabs" />
+    <meta name="twitter:creator" content="@AptosLabs" />
+    <meta name="twitter:title" content="Aptos Explorer" />
+    <meta
+      name="twitter:description"
+      content="Explore transactions, accounts, blocks, validators, and activity on the Aptos blockchain."
+    />
+    <meta
+      name="twitter:image"
+      content="https://explorer.aptoslabs.com/og-image.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="Aptos Explorer - Blockchain Explorer for Aptos"
+    />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://explorer.aptoslabs.com/" />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet" />
-    <link rel="icon" href="/favicon-light.svg" type="image/svg+xml" media="(prefers-color-scheme: light)" />
-    <link rel="icon" href="/favicon-dark.svg" type="image/svg+xml" media="(prefers-color-scheme: dark)" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Favicons -->
+    <link
+      rel="icon"
+      href="/favicon-light.svg"
+      type="image/svg+xml"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      href="/favicon-dark.svg"
+      type="image/svg+xml"
+      media="(prefers-color-scheme: dark)"
+    />
     <link rel="icon" href="/favicon-light.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Aptos Explorer",
+        "url": "https://explorer.aptoslabs.com/",
+        "description": "Explore transactions, accounts, blocks, validators, and activity on the Aptos blockchain.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Aptos Labs",
+          "url": "https://aptoslabs.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://explorer.aptoslabs.com/apple-touch-icon.png"
+          }
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://explorer.aptoslabs.com/?search={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/app/client.tsx"></script>
   </body>
 </html>
-

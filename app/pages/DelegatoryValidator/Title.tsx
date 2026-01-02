@@ -19,13 +19,28 @@ export default function ValidatorTitle({
     validatorAddress: address,
   });
 
+  const shortAddress = `${address.slice(0, 10)}...${address.slice(-8)}`;
+  const statusText = validatorStatus
+    ? getValidatorStatus(Number(validatorStatus[0]))
+    : "unknown";
+
   return isSkeletonLoading ? (
     ValidatorTitleSkeleton()
   ) : (
     <Stack direction="column" spacing={4} marginX={1}>
       <PageMetadata
-        title={`Validator ${address}`}
-        description={`View validator ${address} on Aptos. See delegation details, commission rates, stake amounts, voting power, and performance metrics.`}
+        title={`Validator ${shortAddress}`}
+        description={`View Aptos validator ${shortAddress}. Status: ${statusText}. See delegation pool, commission rates, stake amounts, voting power, rewards, and performance metrics.`}
+        type="validator"
+        keywords={[
+          "validator",
+          "staking",
+          "delegation",
+          "APT",
+          "proof of stake",
+          "rewards",
+        ]}
+        canonicalPath={`/validator/${address}`}
       />
       <Typography variant="h3">Validator</Typography>
       <Stack direction="row" spacing={1}>

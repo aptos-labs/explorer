@@ -13,7 +13,19 @@ export default function ValidatorsPage() {
     <Box>
       <PageMetadata
         title="Validators"
-        description="View all validators on the Aptos blockchain network. Monitor validator performance, stake amounts, commission rates, and delegation status."
+        description="View all validators on the Aptos blockchain network. Monitor validator performance, stake amounts, commission rates, voting power, and delegation status. Stake your APT with trusted validators."
+        type="validator"
+        keywords={[
+          "validators",
+          "staking",
+          "delegation",
+          "APT",
+          "proof of stake",
+          "consensus",
+          "rewards",
+          "commission",
+        ]}
+        canonicalPath="/validators"
       />
       <PageHeader />
       <Typography variant="h3" marginBottom={2}>

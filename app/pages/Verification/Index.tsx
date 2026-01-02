@@ -10,8 +10,18 @@ export default function VerificationPage() {
   return (
     <>
       <PageMetadata
-        title="Token & Address Verification Instructions"
-        description="Learn how to verify tokens and addresses on Aptos Explorer. Get your project verified through the Panora token list or address verification process."
+        title="Token & Address Verification"
+        description="Learn how to verify tokens and addresses on Aptos Explorer. Get your project verified through the Panora token list. Protect users from scams with official verification."
+        type="article"
+        keywords={[
+          "verification",
+          "token verification",
+          "address verification",
+          "Panora",
+          "scam protection",
+          "trusted",
+        ]}
+        canonicalPath="/verification"
       />
       <Box maxWidth="lg" mx="auto" px={3}>
         <Typography variant="h3" component="h1" mb={4}>

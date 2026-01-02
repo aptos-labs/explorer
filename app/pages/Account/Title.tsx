@@ -4,7 +4,7 @@ import TitleHashButton, {
   HashType,
   NameType,
 } from "../../components/TitleHashButton";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import {PageMetadata, PageType} from "../../components/hooks/usePageMetadata";
 import StyledTooltip from "../../components/StyledTooltip";
 import {useIsDaaAccount} from "./hooks/useIsDaaAccount";
 
@@ -27,11 +27,16 @@ export default function AccountTitle({
 
   let title = "Account";
   let description = `View details for Aptos account ${address}. See transactions, resources, modules, coins, and NFTs owned by this account.`;
+  let pageType: PageType = "account";
+  let keywords: string[] = ["account", "wallet", "address"];
 
   if (isMultisig) {
     title = "Multisig Account";
     description = `View details for Aptos multisig account ${address}. See pending transactions, owners, and multisig configuration.`;
+    keywords = ["multisig", "multi-signature", "account", "governance"];
   } else if (isToken) {
+    pageType = "token";
+    keywords = ["token", "NFT", "digital asset"];
     if (isDeleted) {
       title = "Deleted Token Object";
       description = `This token object ${address} has been deleted from the Aptos blockchain.`;
@@ -47,14 +52,25 @@ export default function AccountTitle({
       title = "Object";
       description = `View object ${address} on the Aptos blockchain. See object resources, ownership, and associated data.`;
     }
+    keywords = ["object", "resource", "move"];
   } else if (isDAA) {
     title = "Derivable Aptos Account";
     description = `View derivable Aptos account ${address}. Cross-chain account derived from another blockchain address.`;
+    keywords = ["DAA", "derivable", "cross-chain", "account"];
   }
+
+  // Truncate address for title to keep it reasonable
+  const shortAddress = `${address.slice(0, 10)}...${address.slice(-8)}`;
 
   return (
     <Stack direction="column" spacing={2} marginX={1}>
-      <PageMetadata title={`${title} ${address}`} description={description} />
+      <PageMetadata
+        title={`${title} ${shortAddress}`}
+        description={description}
+        type={pageType}
+        keywords={keywords}
+        canonicalPath={`/account/${address}`}
+      />
       <Typography variant="h3">{title}</Typography>
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.ACCOUNT} />
