@@ -217,6 +217,11 @@ export function useSdkV2Client(): Aptos {
   return useAptosClientV2();
 }
 
+// Default headers for indexer requests
+const INDEXER_HEADERS = {
+  "x-indexer-client": "aptos-explorer",
+};
+
 // IndexerClient cache
 const indexerClientCache = new Map<string, IndexerClient>();
 
@@ -230,12 +235,10 @@ function createIndexerClient(
     return undefined;
   }
 
-  const headers: Record<string, string> = {};
-  if (apiKey) {
-    headers["Authorization"] = `Bearer ${apiKey}`;
-  }
-
-  return new IndexerClient(indexerUri, {HEADERS: headers, TOKEN: apiKey});
+  return new IndexerClient(indexerUri, {
+    HEADERS: INDEXER_HEADERS,
+    TOKEN: apiKey,
+  });
 }
 
 function getCachedIndexerClient(
