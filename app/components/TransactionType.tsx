@@ -1,5 +1,5 @@
 import {Box, Stack, Typography} from "@mui/material";
-import React from "react";
+import React, {memo} from "react";
 import StartRoundedIcon from "@mui/icons-material/StartRounded";
 import OutlinedFlagIcon from "@mui/icons-material/OutlinedFlag";
 import SubtitlesOutlinedIcon from "@mui/icons-material/SubtitlesOutlined";
@@ -9,6 +9,17 @@ import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
 import {useTheme} from "@mui/material";
 import TooltipTypography from "./TooltipTypography";
 import {CheckCircleOutlined, StopCircleOutlined} from "@mui/icons-material";
+
+// Extracted static styles to avoid recreation on every render
+const tableTransactionTypeStyle = {
+  display: "flex",
+  alignItems: "center",
+} as const;
+const tooltipTransactionTypeStyle = {
+  display: "flex",
+  alignItems: "flex-start",
+  gap: 2,
+} as const;
 
 export enum TransactionTypeName {
   BlockMetadata = "block_metadata_transaction",
@@ -107,17 +118,20 @@ export function TransactionType({type}: TransactionTypeProps) {
   );
 }
 
-export function TableTransactionType({type}: TransactionTypeProps) {
+// Memoized since rendered many times in transaction tables
+export const TableTransactionType = memo(function TableTransactionType({
+  type,
+}: TransactionTypeProps) {
   return (
-    <Box sx={{display: "flex", alignItems: "center"}}>
-      {getTypeIcon(type, "inherit")}
-    </Box>
+    <Box sx={tableTransactionTypeStyle}>{getTypeIcon(type, "inherit")}</Box>
   );
-}
+});
 
-export function TooltipTransactionType({type}: TransactionTypeProps) {
+export const TooltipTransactionType = memo(function TooltipTransactionType({
+  type,
+}: TransactionTypeProps) {
   return (
-    <Box sx={{display: "flex", alignItems: "flex-start", gap: 2}}>
+    <Box sx={tooltipTransactionTypeStyle}>
       {getTypeIcon(type, "inherit")}
       <Stack spacing={0.5}>
         <TooltipTypography variant="subtitle2" fontWeight={600}>
@@ -129,4 +143,4 @@ export function TooltipTransactionType({type}: TransactionTypeProps) {
       </Stack>
     </Box>
   );
-}
+});

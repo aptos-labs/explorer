@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 import {Box, Grid, useTheme} from "@mui/material";
 import EmptyValue from "./ContentValue/EmptyValue";
 
@@ -9,7 +9,27 @@ type ContentRowProps = {
   i?: string | number;
 };
 
-export default function ContentRow({
+// Extracted static styles to avoid recreation on every render
+const tooltipWrapperStyle = {
+  display: "inline",
+  whiteSpace: "nowrap",
+} as const;
+
+const tooltipInnerStyle = {display: "inline-block"} as const;
+
+const valueGridStyle = {
+  fontSize: "0.8rem",
+  overflow: "auto",
+} as const;
+
+const valueBoxStyle = {
+  display: "inline-flex",
+  flexWrap: "wrap",
+  alignItems: "center",
+  gap: 1,
+} as const;
+
+const ContentRow = memo(function ContentRow({
   title,
   value,
   tooltip,
@@ -28,41 +48,18 @@ export default function ContentRow({
         <Grid container size={{xs: 12, sm: 3}}>
           <Box sx={{fontSize: "0.875rem", color: theme.palette.text.secondary}}>
             {title}
-            <Box
-              component="span"
-              sx={{
-                display: "inline",
-                whiteSpace: "nowrap",
-              }}
-            >
+            <Box component="span" sx={tooltipWrapperStyle}>
               &nbsp;
-              <Box sx={{display: "inline-block"}}>{tooltip}</Box>
+              <Box sx={tooltipInnerStyle}>{tooltip}</Box>
             </Box>
           </Box>
         </Grid>
-        <Grid
-          size={{xs: 12, sm: 9}}
-          sx={{
-            fontSize: "0.8rem",
-            overflow: "auto",
-          }}
-        >
-          {value ? (
-            <Box
-              sx={{
-                display: "inline-flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-                gap: 1,
-              }}
-            >
-              {value}
-            </Box>
-          ) : (
-            <EmptyValue />
-          )}
+        <Grid size={{xs: 12, sm: 9}} sx={valueGridStyle}>
+          {value ? <Box sx={valueBoxStyle}>{value}</Box> : <EmptyValue />}
         </Grid>
       </Grid>
     </Box>
   );
-}
+});
+
+export default ContentRow;
