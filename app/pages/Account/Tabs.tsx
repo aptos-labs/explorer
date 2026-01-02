@@ -18,8 +18,7 @@ import TokensTab from "./Tabs/TokensTab";
 import CoinsTab from "./Tabs/CoinsTab";
 import MultisigTab from "./Tabs/MultisigTab";
 import {Types} from "aptos";
-import {useParams} from "@tanstack/react-router";
-import {useNavigate} from "../../routing";
+import {useNavigate, useSearch} from "../../routing";
 import {accountPagePath} from "./Index";
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
@@ -125,19 +124,29 @@ export default function AccountTabs({
   isObject = false,
   tabValues = TAB_VALUES,
 }: AccountTabsProps) {
-  const {tab, modulesTab} = useParams();
+  // Use search params for tab selection in TanStack Router
+  const search = useSearch({strict: false}) as {
+    tab?: string;
+    modulesTab?: string;
+  };
   const navigate = useNavigate();
+
   let effectiveTab: TabValue;
-  if (modulesTab) {
+  if (search?.modulesTab) {
     effectiveTab = "modules" as TabValue;
-  } else if (tab !== undefined) {
-    effectiveTab = tab as TabValue;
+  } else if (
+    search?.tab !== undefined &&
+    tabValues.includes(search.tab as TabValue)
+  ) {
+    effectiveTab = search.tab as TabValue;
   } else {
     effectiveTab = TAB_VALUES[0];
   }
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/${accountPagePath(isObject)}/${address}/${newValue}`, {
+    navigate({
+      to: `/${accountPagePath(isObject)}/${address}`,
+      search: {tab: newValue},
       replace: true,
     });
   };

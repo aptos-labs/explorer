@@ -8,7 +8,8 @@ import Error from "./Error";
 import PageHeader from "../layout/PageHeader";
 
 export default function BlockPage() {
-  const {height} = useParams();
+  const params = useParams({strict: false}) as {height?: string};
+  const height = params?.height;
   const actualHeight = parseInt(height ?? "");
 
   const {data, isLoading, error} = useGetBlockByHeight({

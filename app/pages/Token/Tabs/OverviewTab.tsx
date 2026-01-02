@@ -11,7 +11,8 @@ import {Current_Token_Datas_V2} from "aptos";
 import {isValidIpfsUrl, isValidUrl, toIpfsUrl} from "../../utils";
 
 function OwnersRow() {
-  const {tokenId} = useParams();
+  const params = useParams({strict: false}) as {tokenId?: string};
+  const tokenId = params?.tokenId ?? "";
   const {data: owners} = useGetTokenOwners(tokenId);
 
   return (

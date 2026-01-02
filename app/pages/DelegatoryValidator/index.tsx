@@ -25,7 +25,8 @@ import {tryStandardizeAddress} from "../../utils";
 import {Banner} from "../../components/Banner";
 
 export default function ValidatorPage() {
-  const address = useParams().address ?? "";
+  const params = useParams({strict: false}) as {address?: string};
+  const address = params?.address ?? "";
   const addressHex = useMemo(() => {
     return tryStandardizeAddress(address);
   }, [address]);
