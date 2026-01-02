@@ -218,18 +218,17 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
         },
       },
 
-      // Link overrides
+      // Link overrides - match original explorer styling
       MuiLink: {
+        defaultProps: {
+          underline: "none",
+          color: "inherit",
+        },
         styleOverrides: {
-          root: ({}) => ({
+          root: {
             fontWeight: "400",
-            color: semanticColors.link.main,
-            textDecorationColor: alpha(semanticColors.link.main, 0.4),
-            "&:hover": {
-              color: semanticColors.link.hover,
-              textDecorationColor: semanticColors.link.hover,
-            },
-          }),
+            textDecoration: "none",
+          },
         },
       },
 
