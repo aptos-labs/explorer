@@ -36,7 +36,17 @@ export default function TransactionsPage() {
     <Box>
       <PageMetadata
         title="Transactions"
-        description="Browse recent transactions on the Aptos blockchain. View transaction details, gas fees, sender and receiver addresses, and transaction status."
+        description="Browse recent transactions on the Aptos blockchain. View transaction details, type, gas fees, sender and receiver addresses, events, and status. Real-time transaction monitoring."
+        type="website"
+        keywords={[
+          "transactions",
+          "tx",
+          "transfer",
+          "gas fees",
+          "blockchain activity",
+          "real-time",
+        ]}
+        canonicalPath="/transactions"
       />
       <PageHeader />
       <Stack direction="row" justifyContent="space-between" alignItems="center">

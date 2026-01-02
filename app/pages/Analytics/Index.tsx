@@ -19,7 +19,18 @@ export default function AnalyticsPage() {
     <Box>
       <PageMetadata
         title="Network Analytics"
-        description="View Aptos network analytics including daily active users, transaction volumes, gas fees, block production, and other key blockchain metrics."
+        description="View Aptos network analytics including daily active users, transaction volumes, TPS, gas fees, staking stats, and blockchain metrics. Interactive charts and real-time data."
+        type="website"
+        keywords={[
+          "analytics",
+          "metrics",
+          "TPS",
+          "daily active users",
+          "transaction volume",
+          "gas fees",
+          "blockchain statistics",
+        ]}
+        canonicalPath="/analytics"
       />
       <PageHeader />
       {networkName === defaultNetworkName ? (
