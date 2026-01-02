@@ -160,18 +160,147 @@ export function isValidUrl(url: string): boolean {
   }
 }
 
+/**
+ * Check if a URL is an IPFS URL (either native ipfs:// or gateway URL)
+ * Matches:
+ * - ipfs://hash
+ * - ipns://hash
+ * - https://any-domain.com/ipfs/hash
+ * - https://any-domain.com/ipns/hash
+ * - https://{hash}.ipfs.{domain}/ (subdomain gateway)
+ * - https://{hash}.ipns.{domain}/ (subdomain gateway)
+ */
 export function isValidIpfsUrl(url: string): boolean {
+  if (!url) return false;
+
+  // Check for native IPFS/IPNS protocol
+  if (url.startsWith("ipfs://") || url.startsWith("ipns://")) {
+    return true;
+  }
+
   try {
     const parsedUrl = new URL(url);
-    parsedUrl.toString().startsWith("ipfs://");
-    return true;
+
+    // Check for path-based gateway URLs (/ipfs/hash or /ipns/hash)
+    const pathMatch = parsedUrl.pathname.match(/^\/(ipfs|ipns)\/(.+)/);
+    if (pathMatch) {
+      return true;
+    }
+
+    // Check for subdomain gateway URLs ({hash}.ipfs.{domain} or {hash}.ipns.{domain})
+    // e.g., bafybei...ipfs.w3s.link, bafybei...ipfs.dweb.link
+    const subdomainMatch = parsedUrl.hostname.match(
+      /^([a-zA-Z0-9]+)\.(ipfs|ipns)\..+$/,
+    );
+    if (subdomainMatch) {
+      return true;
+    }
+
+    return false;
   } catch {
     return false;
   }
 }
 
+/**
+ * Convert any IPFS URL to a normalized ipfs.io gateway URL for loading data
+ * Handles:
+ * - ipfs://hash → https://ipfs.io/ipfs/hash
+ * - ipns://hash → https://ipfs.io/ipns/hash
+ * - https://any-gateway.com/ipfs/hash → https://ipfs.io/ipfs/hash
+ * - https://any-gateway.com/ipns/hash → https://ipfs.io/ipns/hash
+ * - https://{hash}.ipfs.{domain}/path → https://ipfs.io/ipfs/{hash}/path
+ * - https://{hash}.ipns.{domain}/path → https://ipfs.io/ipns/{hash}/path
+ */
 export function toIpfsUrl(url: string): string {
-  return `https://ipfs.io/ipfs/${url.slice(7)}`;
+  if (!url) return url;
+
+  // Handle native ipfs:// protocol
+  if (url.startsWith("ipfs://")) {
+    return `https://ipfs.io/ipfs/${url.slice(7)}`;
+  }
+
+  // Handle native ipns:// protocol
+  if (url.startsWith("ipns://")) {
+    return `https://ipfs.io/ipns/${url.slice(7)}`;
+  }
+
+  try {
+    const parsedUrl = new URL(url);
+
+    // Handle path-based gateway URLs - extract the /ipfs/hash or /ipns/hash part
+    const pathMatch = parsedUrl.pathname.match(/^\/(ipfs|ipns)\/(.+)/);
+    if (pathMatch) {
+      const [, protocol, hash] = pathMatch;
+      // Preserve any query string and fragment
+      const suffix = (parsedUrl.search || "") + (parsedUrl.hash || "");
+      return `https://ipfs.io/${protocol}/${hash}${suffix}`;
+    }
+
+    // Handle subdomain gateway URLs ({hash}.ipfs.{domain} or {hash}.ipns.{domain})
+    const subdomainMatch = parsedUrl.hostname.match(
+      /^([a-zA-Z0-9]+)\.(ipfs|ipns)\..+$/,
+    );
+    if (subdomainMatch) {
+      const [, hash, protocol] = subdomainMatch;
+      // Include pathname (minus leading slash if combining with hash)
+      const path = parsedUrl.pathname === "/" ? "" : parsedUrl.pathname;
+      const suffix = (parsedUrl.search || "") + (parsedUrl.hash || "");
+      return `https://ipfs.io/${protocol}/${hash}${path}${suffix}`;
+    }
+  } catch {
+    // Not a valid URL, return as-is
+  }
+
+  return url;
+}
+
+/**
+ * Convert any IPFS URL to a normalized ipfs:// or ipns:// protocol URL for display
+ * Handles:
+ * - https://any-gateway.com/ipfs/hash → ipfs://hash
+ * - https://any-gateway.com/ipns/hash → ipns://hash
+ * - https://{hash}.ipfs.{domain}/path → ipfs://{hash}/path
+ * - https://{hash}.ipns.{domain}/path → ipns://{hash}/path
+ * - ipfs://hash → ipfs://hash (unchanged)
+ * - ipns://hash → ipns://hash (unchanged)
+ */
+export function toIpfsDisplayUrl(url: string): string {
+  if (!url) return url;
+
+  // Already in native format
+  if (url.startsWith("ipfs://") || url.startsWith("ipns://")) {
+    return url;
+  }
+
+  try {
+    const parsedUrl = new URL(url);
+
+    // Handle path-based gateway URLs - extract the /ipfs/hash or /ipns/hash part
+    const pathMatch = parsedUrl.pathname.match(/^\/(ipfs|ipns)\/(.+)/);
+    if (pathMatch) {
+      const [, protocol, hash] = pathMatch;
+      // Preserve any query string and fragment
+      const suffix = (parsedUrl.search || "") + (parsedUrl.hash || "");
+      return `${protocol}://${hash}${suffix}`;
+    }
+
+    // Handle subdomain gateway URLs ({hash}.ipfs.{domain} or {hash}.ipns.{domain})
+    const subdomainMatch = parsedUrl.hostname.match(
+      /^([a-zA-Z0-9]+)\.(ipfs|ipns)\..+$/,
+    );
+    if (subdomainMatch) {
+      const [, hash, protocol] = subdomainMatch;
+      // Include pathname (minus leading slash if combining with hash)
+      const path = parsedUrl.pathname === "/" ? "" : parsedUrl.pathname;
+      const suffix = (parsedUrl.search || "") + (parsedUrl.hash || "");
+      return `${protocol}://${hash}${path}${suffix}`;
+    }
+  } catch {
+    // Not a valid URL, return as-is
+  }
+
+  return url;
 }
 
 export function coinOrderIndex(coin: CoinDescription) {

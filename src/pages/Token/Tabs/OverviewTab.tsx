@@ -1,6 +1,6 @@
 import {useParams} from "react-router-dom";
-import {Box, Stack, Typography} from "@mui/material";
-import React, {Fragment, useState} from "react";
+import {Box, Stack, Typography, CircularProgress} from "@mui/material";
+import React, {Fragment, useState, useEffect} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
@@ -8,7 +8,12 @@ import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard
 import {Link} from "../../../routing";
 import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
 import {Current_Token_Datas_V2} from "aptos";
-import {isValidIpfsUrl, isValidUrl, toIpfsUrl} from "../../utils";
+import {
+  isValidIpfsUrl,
+  isValidUrl,
+  toIpfsUrl,
+  toIpfsDisplayUrl,
+} from "../../utils";
 
 function OwnersRow() {
   const {tokenId} = useParams();
@@ -32,14 +37,98 @@ type OverviewTabProps = {
   data: Current_Token_Datas_V2;
 };
 
+// Image loading states
+type ImageState = "loading" | "loaded" | "failed";
+
+// Normalize a URL for loading (convert IPFS to gateway URL)
+function getLoadUrl(url: string): string {
+  if (!url) return url;
+  return isValidIpfsUrl(url) ? toIpfsUrl(url) : url;
+}
+
+// Normalize a URL for display (show ipfs:// protocol)
+function getDisplayUrl(url: string): string {
+  if (!url) return url;
+  return isValidIpfsUrl(url) ? toIpfsDisplayUrl(url) : url;
+}
+
 // TODO: add more contents
 export default function OverviewTab({data}: OverviewTabProps) {
-  const [metadataIsImage, setMetadataIsImage] = useState<boolean>(true);
+  const [imageState, setImageState] = useState<ImageState>("loading");
+  const [resolvedImageUrl, setResolvedImageUrl] = useState<string | null>(null);
+  const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
 
-  let parsedUrl = data?.token_uri ?? "";
-  if (isValidIpfsUrl(parsedUrl)) {
-    parsedUrl = toIpfsUrl(parsedUrl);
-  }
+  const rawUrl = data?.token_uri ?? "";
+  const metadataLoadUrl = getLoadUrl(rawUrl);
+  const metadataDisplayUrl = getDisplayUrl(rawUrl);
+
+  // Check if URL looks like it could be a direct image
+  const looksLikeDirectImage =
+    metadataLoadUrl &&
+    (metadataLoadUrl.endsWith(".png") ||
+      metadataLoadUrl.endsWith(".jpg") ||
+      metadataLoadUrl.endsWith(".jpeg") ||
+      metadataLoadUrl.endsWith(".gif") ||
+      metadataLoadUrl.endsWith(".webp") ||
+      metadataLoadUrl.endsWith(".svg"));
+
+  // Fetch metadata JSON to extract image URL
+  useEffect(() => {
+    // If it looks like a direct image URL, don't try to fetch as JSON
+    if (looksLikeDirectImage) {
+      setResolvedImageUrl(metadataLoadUrl);
+      return;
+    }
+
+    if (!metadataLoadUrl || !isValidUrl(metadataLoadUrl)) {
+      return;
+    }
+
+    setIsLoadingMetadata(true);
+    setImageState("loading");
+
+    // Try to fetch metadata as JSON
+    fetch(metadataLoadUrl)
+      .then((response) => {
+        const contentType = response.headers.get("content-type");
+        // If it's JSON, parse it and look for image field
+        if (
+          contentType?.includes("application/json") ||
+          contentType?.includes("text/plain")
+        ) {
+          return response.json();
+        }
+        // If it's an image, use the URL directly
+        if (contentType?.startsWith("image/")) {
+          return {_directImage: true};
+        }
+        // Try parsing as JSON anyway (some servers don't set content-type correctly)
+        return response.json();
+      })
+      .then((metadata) => {
+        if (metadata._directImage) {
+          setResolvedImageUrl(metadataLoadUrl);
+        } else if (metadata.image) {
+          // Found image field in JSON metadata - normalize it for loading
+          setResolvedImageUrl(getLoadUrl(metadata.image));
+        } else if (metadata.animation_url) {
+          // Some NFTs use animation_url for the media
+          setResolvedImageUrl(getLoadUrl(metadata.animation_url));
+        } else {
+          // No image field found, try using the URL directly
+          setResolvedImageUrl(metadataLoadUrl);
+        }
+      })
+      .catch(() => {
+        // Failed to parse as JSON, try using URL directly as image
+        setResolvedImageUrl(metadataLoadUrl);
+      })
+      .finally(() => {
+        setIsLoadingMetadata(false);
+      });
+  }, [metadataLoadUrl, looksLikeDirectImage]);
+
+  const showImage = resolvedImageUrl && imageState !== "failed";
 
   return (
     <Box marginBottom={3}>
@@ -62,25 +151,62 @@ export default function OverviewTab({data}: OverviewTabProps) {
         <ContentRow
           title={"Metadata:"}
           value={
-            metadataIsImage ? (
-              <a href={parsedUrl}>
-                <img
-                  src={parsedUrl}
-                  alt={data?.token_name}
-                  width={150}
-                  onError={() => {
-                    setMetadataIsImage(false);
+            <Stack spacing={1}>
+              {/* Always show the display URL first (ipfs:// for IPFS links) */}
+              {metadataDisplayUrl && (
+                <Typography
+                  fontSize="0.8rem"
+                  sx={{wordBreak: "break-all"}}
+                  component="div"
+                >
+                  {isValidUrl(metadataLoadUrl) ? (
+                    <a
+                      href={metadataLoadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{color: "inherit"}}
+                    >
+                      {metadataDisplayUrl}
+                    </a>
+                  ) : (
+                    metadataDisplayUrl
+                  )}
+                </Typography>
+              )}
+              {/* Show loading spinner while fetching metadata */}
+              {isLoadingMetadata && (
+                <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
+                  <CircularProgress size={16} />
+                  <Typography fontSize="0.75rem" color="text.secondary">
+                    Loading metadata...
+                  </Typography>
+                </Box>
+              )}
+              {/* Show image once resolved */}
+              {showImage && !isLoadingMetadata && (
+                <Box
+                  sx={{
+                    visibility: imageState === "loaded" ? "visible" : "hidden",
+                    height: imageState === "loaded" ? "auto" : 0,
+                    overflow: "hidden",
                   }}
-                  loading="lazy"
-                />
-              </a>
-            ) : isValidUrl(data?.token_uri) ? (
-              <Link to={data?.token_uri} target="_blank">
-                {data?.token_uri}
-              </Link>
-            ) : (
-              <Typography fontSize="0.8rem">{data?.token_uri}</Typography>
-            )
+                >
+                  <a
+                    href={resolvedImageUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src={resolvedImageUrl}
+                      alt={data?.token_name}
+                      width={150}
+                      onLoad={() => setImageState("loaded")}
+                      onError={() => setImageState("failed")}
+                    />
+                  </a>
+                </Box>
+              )}
+            </Stack>
           }
         />
       </ContentBox>

@@ -32,14 +32,15 @@ function TokenNameCell({token}: TokenCellProps) {
     );
   }
 
+  const propertyVersion = token?.property_version_v1;
+  const tokenDataId = token?.current_token_data?.token_data_id;
+  const linkTo = propertyVersion
+    ? `/token/${tokenDataId}?propertyVersion=${propertyVersion}`
+    : `/token/${tokenDataId}`;
+
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <Link
-        to={`/token/${token?.current_token_data?.token_data_id}/${
-          token?.property_version_v1 ?? 0
-        }`}
-        color="primary"
-      >
+      <Link to={linkTo} color="primary">
         <Box
           sx={{
             maxWidth: {xs: 150, md: 250, lg: 400},
@@ -137,12 +138,14 @@ type TokenRowProps = {
 };
 
 function TokenRow({token, columns}: TokenRowProps) {
+  const propertyVersion = token?.property_version_v1;
+  const tokenDataId = token?.current_token_data?.token_data_id;
+  const linkTo = propertyVersion
+    ? `/token/${tokenDataId}?propertyVersion=${propertyVersion}`
+    : `/token/${tokenDataId}`;
+
   return (
-    <GeneralTableRow
-      to={`/token/${token?.current_token_data?.token_data_id}/${
-        token?.property_version_v1 ?? 0
-      }`}
-    >
+    <GeneralTableRow to={linkTo}>
       {columns.map((column) => {
         const Cell = TokenCells[column];
         return <Cell key={column} token={token} />;
