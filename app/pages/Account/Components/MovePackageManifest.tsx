@@ -1,16 +1,71 @@
-import {Box, Button, Modal, Stack, Typography, useTheme} from "@mui/material";
-import {ContentCopy, OpenInFull} from "@mui/icons-material";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
-import {useEffect, useRef, useState} from "react";
-import StyledTooltip from "../../../components/StyledTooltip";
 import {
-  solarizedLight,
-  solarizedDark,
-} from "react-syntax-highlighter/dist/esm/styles/hljs";
+  Box,
+  Button,
+  CircularProgress,
+  Modal,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import {ContentCopy, OpenInFull} from "@mui/icons-material";
+import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
+import {lazy, Suspense, useEffect, useRef, useState} from "react";
+import StyledTooltip from "../../../components/StyledTooltip";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {useSearch} from "../../../routing";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
+
+// Lazy load react-syntax-highlighter (~150KB) - only needed when viewing code
+const SyntaxHighlighter = lazy(() => import("react-syntax-highlighter"));
+
+// Lazy load styles to reduce initial bundle size
+const loadStyles = () =>
+  import("react-syntax-highlighter/dist/esm/styles/hljs").then((mod) => ({
+    solarizedLight: mod.solarizedLight,
+    solarizedDark: mod.solarizedDark,
+  }));
+
+// Cache for loaded styles
+let stylesCache: {
+  solarizedLight: Record<string, React.CSSProperties>;
+  solarizedDark: Record<string, React.CSSProperties>;
+} | null = null;
+
+function useHighlighterStyles() {
+  const [styles, setStyles] = useState(stylesCache);
+
+  useEffect(() => {
+    if (!stylesCache) {
+      loadStyles().then((loadedStyles) => {
+        stylesCache = loadedStyles;
+        setStyles(loadedStyles);
+      });
+    }
+  }, []);
+
+  return styles;
+}
+
+// Loading fallback component
+function CodeLoadingFallback() {
+  const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
+
+  return (
+    <Box
+      sx={{
+        backgroundColor: semanticColors.codeBlock.background,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: 200,
+        borderRadius: 1,
+      }}
+    >
+      <CircularProgress size={24} />
+    </Box>
+  );
+}
 
 function useStartingLineNumber(sourceCode?: string) {
   const search = useSearch({strict: false}) as {selectedFnName?: string};
@@ -29,6 +84,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   const selectedModuleName = search?.selectedModuleName;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const logEvent = useLogEventWithBasic();
+  const styles = useHighlighterStyles();
 
   const handleOpenModal = () => {
     logEvent("expand_button_clicked", selectedModuleName);
@@ -78,20 +134,26 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
           }}
           ref={codeBoxScrollRef}
         >
-          <SyntaxHighlighter
-            language="rust"
-            key={theme.palette.mode}
-            style={
-              theme.palette.mode === "light" ? solarizedLight : solarizedDark
-            }
-            customStyle={{
-              margin: 0,
-              backgroundColor: semanticColors.codeBlock.backgroundRgb,
-            }}
-            showLineNumbers
-          >
-            {sourceCode!}
-          </SyntaxHighlighter>
+          <Suspense fallback={<CodeLoadingFallback />}>
+            {styles && (
+              <SyntaxHighlighter
+                language="rust"
+                key={theme.palette.mode}
+                style={
+                  theme.palette.mode === "light"
+                    ? styles.solarizedLight
+                    : styles.solarizedDark
+                }
+                customStyle={{
+                  margin: 0,
+                  backgroundColor: semanticColors.codeBlock.backgroundRgb,
+                }}
+                showLineNumbers
+              >
+                {sourceCode!}
+              </SyntaxHighlighter>
+            )}
+          </Suspense>
         </Box>
       </Modal>
     </Box>
@@ -104,6 +166,7 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
   };
   const selectedModuleName = searchManifest?.selectedModuleName;
   const logEvent = useLogEventWithBasic();
+  const styles = useHighlighterStyles();
 
   const TOOLTIP_TIME = 2000; // 2s
 
@@ -201,17 +264,23 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
         }}
         ref={codeBoxScrollRef}
       >
-        <SyntaxHighlighter
-          language="rust"
-          key={theme.palette.mode}
-          style={
-            theme.palette.mode === "light" ? solarizedLight : solarizedDark
-          }
-          customStyle={{margin: 0, backgroundColor: "unset"}}
-          showLineNumbers
-        >
-          {sourceCode}
-        </SyntaxHighlighter>
+        <Suspense fallback={<CodeLoadingFallback />}>
+          {styles && (
+            <SyntaxHighlighter
+              language="rust"
+              key={theme.palette.mode}
+              style={
+                theme.palette.mode === "light"
+                  ? styles.solarizedLight
+                  : styles.solarizedDark
+              }
+              customStyle={{margin: 0, backgroundColor: "unset"}}
+              showLineNumbers
+            >
+              {sourceCode}
+            </SyntaxHighlighter>
+          )}
+        </Suspense>
       </Box>
     </Box>
   );

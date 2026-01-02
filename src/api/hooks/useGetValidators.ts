@@ -91,7 +91,8 @@ export function useGetValidators() {
   // Calculate validators during render instead of using useEffect
   let validators: ValidatorData[] = [];
   if (activeValidators.length > 0 && validatorsRawData.length > 0) {
-    const validatorsCopy = JSON.parse(JSON.stringify(validatorsRawData));
+    // Use structuredClone for better performance than JSON.parse(JSON.stringify())
+    const validatorsCopy = structuredClone(validatorsRawData);
 
     validatorsCopy.forEach((validator: ValidatorData) => {
       const activeValidator = activeValidators.find(
