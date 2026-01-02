@@ -22,7 +22,7 @@ function LinkableContainer({
   const inMainnet = useGetInMainnet();
 
   return inMainnet && linkToAnalyticsPage ? (
-    <Link to="/analytics" underline="none" color="inherit" variant="inherit">
+    <Link to="/analytics" underline="none" color="inherit">
       {children}
     </Link>
   ) : (

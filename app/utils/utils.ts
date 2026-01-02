@@ -72,7 +72,6 @@ export function sortTransactions(
  * Cache Manager - localStorage with expiry
  */
 const CACHE_PREFIX = "aptos_explorer_cache_";
-const MAX_CACHE_SIZE = 5 * 1024 * 1024;
 const CACHE_VERSION = "1.0";
 
 interface CacheItem<T = string> {
@@ -119,7 +118,7 @@ export function getLocalStorageWithExpiry<T = string>(key: string): T | null {
     }
 
     return item.value;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -146,8 +145,10 @@ export function getEndpointFromUrl(url: string): string {
 
 export async function withRateLimit<T>(
   fn: () => Promise<T>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _endpoint: string,
 ): Promise<T> {
+  // endpoint param reserved for future rate limiting implementation
   return fn();
 }
 

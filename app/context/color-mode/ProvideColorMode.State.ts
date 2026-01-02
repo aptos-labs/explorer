@@ -31,6 +31,7 @@ const useProvideColorMode = () => {
 
   // Handle hydration and system preference
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsHydrated(true);
 
     // Check for saved preference in cookie first

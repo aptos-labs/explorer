@@ -4,7 +4,8 @@
  */
 
 import React from "react";
-import {styled} from "@mui/material/styles";
+import {styled, SxProps, Theme} from "@mui/material/styles";
+import Box from "@mui/material/Box";
 import {
   Link as TanStackLink,
   useSearch,
@@ -30,14 +31,14 @@ const StyledTanStackLink = styled(TanStackLink)({
 
 /**
  * Custom Link component that wraps TanStack Router's Link with MUI styling
- * Supports common MUI Link props like color and sx
+ * Supports common MUI Link props like color and sx (including pseudo-selectors)
  */
 export const Link = React.forwardRef<
   HTMLAnchorElement,
   React.ComponentProps<typeof TanStackLink> & {
     color?: "inherit" | "primary" | "secondary" | "error" | string;
     underline?: "none" | "hover" | "always";
-    sx?: React.CSSProperties;
+    sx?: SxProps<Theme>;
   }
 >(({children, onClick, color, sx, ...props}, ref) => {
   const colorStyle =
@@ -51,6 +52,34 @@ export const Link = React.forwardRef<
             ? {color}
             : {};
 
+  // If sx prop is provided with complex styles (like pseudo-selectors), wrap in Box
+  if (
+    sx &&
+    typeof sx === "object" &&
+    Object.keys(sx).some((k) => k.startsWith("&"))
+  ) {
+    // Ensure children is not a function (TanStack Router allows function children)
+    const resolvedChildren = typeof children === "function" ? null : children;
+    return (
+      <Box
+        component={StyledTanStackLink}
+        ref={ref}
+        {...props}
+        onClick={(e: React.MouseEvent) => {
+          e.stopPropagation();
+          if (onClick) onClick(e as React.MouseEvent<HTMLAnchorElement>);
+        }}
+        sx={{
+          ...colorStyle,
+          textDecoration: "none",
+          ...(sx as object),
+        }}
+      >
+        {resolvedChildren}
+      </Box>
+    );
+  }
+
   return (
     <StyledTanStackLink
       ref={ref}
@@ -59,7 +88,7 @@ export const Link = React.forwardRef<
         e.stopPropagation();
         if (onClick) onClick(e);
       }}
-      style={{...colorStyle, ...(sx as React.CSSProperties)}}
+      style={{...colorStyle, ...((sx as React.CSSProperties) || {})}}
     >
       {children}
     </StyledTanStackLink>

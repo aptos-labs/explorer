@@ -5,7 +5,6 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
-import {Link} from "../../../routing";
 import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
 import {Current_Token_Datas_V2} from "aptos";
 import {
@@ -76,6 +75,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
   useEffect(() => {
     // If it looks like a direct image URL, don't try to fetch as JSON
     if (looksLikeDirectImage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResolvedImageUrl(metadataLoadUrl);
       return;
     }

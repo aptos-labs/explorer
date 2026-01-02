@@ -72,7 +72,7 @@ export default function HeaderSearch() {
 
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
-    let timer: number;
+    let timer: ReturnType<typeof setTimeout> | undefined;
 
     if (mode !== "loading" && inputValue.trim().length > 0) {
       timer = setTimeout(() => {
@@ -81,7 +81,7 @@ export default function HeaderSearch() {
     }
 
     return () => {
-      clearTimeout(timer);
+      if (timer) clearTimeout(timer);
       abortController.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -390,7 +390,7 @@ export default function HeaderSearch() {
           );
           const selected = selectedOption?.to ?? selectableOption?.to;
           if (selected) {
-            navigate(selected);
+            navigate({to: selected});
           }
           event.preventDefault();
         }
