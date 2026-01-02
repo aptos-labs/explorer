@@ -15,8 +15,7 @@ export default function ValidatorsMap() {
 
   const {validatorGeoMetric, validatorGeoGroups} = useGetValidatorSetGeoData();
   const {curEpoch} = useGetEpochTime();
-  const {totalVotingPower} = useGetValidatorSet();
-  const {numberOfActiveValidators} = useGetValidatorSet();
+  const {totalVotingPower, numberOfActiveValidators} = useGetValidatorSet();
 
   // Calculate isSkeletonLoading during render instead of using useEffect
   const isSkeletonLoading =

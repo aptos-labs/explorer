@@ -1,5 +1,6 @@
 import {useNetworkName} from "../../global-config";
-import {useEffect, useState} from "react";
+import {useMemo} from "react";
+import {useQuery} from "@tanstack/react-query";
 import {useGetValidatorSet} from "./useGetValidatorSet";
 import {Network} from "../../constants";
 import {tryStandardizeAddress} from "../../utils";
@@ -33,75 +34,80 @@ export interface GeoData {
   epoch: number;
 }
 
+function getValidatorDataUrl(networkName: string): string | undefined {
+  switch (networkName) {
+    case Network.MAINNET:
+      return MAINNET_VALIDATORS_DATA_URL;
+    case Network.TESTNET:
+      return TESTNET_VALIDATORS_DATA_URL;
+    default:
+      return undefined;
+  }
+}
+
 function useGetValidatorsRawData() {
   const networkName = useNetworkName();
-  const [validatorsRawData, setValidatorsRawData] = useState<ValidatorData[]>(
-    [],
-  );
+  const isEnabled =
+    networkName === Network.MAINNET || networkName === Network.TESTNET;
 
-  useEffect(() => {
-    if (networkName === Network.MAINNET || networkName === Network.TESTNET) {
-      const getDataUrl = () => {
-        switch (networkName) {
-          case Network.MAINNET:
-            return MAINNET_VALIDATORS_DATA_URL;
-          default:
-            return TESTNET_VALIDATORS_DATA_URL;
-        }
-      };
-      const fetchData = async () => {
-        const response = await fetch(getDataUrl());
-        const rawData: ValidatorData[] = await response.json();
-        setValidatorsRawData(
-          rawData.map((validatorData) => {
-            const owner_address = tryStandardizeAddress(
-              validatorData.owner_address,
-            );
-            const operator_address = tryStandardizeAddress(
-              validatorData.operator_address,
-            );
-            if (!owner_address || !operator_address) {
-              return validatorData;
-            }
+  const {data: validatorsRawData = []} = useQuery<ValidatorData[]>({
+    queryKey: ["validatorsRawData", networkName],
+    queryFn: async () => {
+      const url = getValidatorDataUrl(networkName);
+      if (!url) {
+        return [];
+      }
 
-            return {
-              ...validatorData,
-              owner_address,
-              operator_address,
-            };
-          }),
+      const response = await fetch(url);
+      const rawData: ValidatorData[] = await response.json();
+
+      return rawData.map((validatorData) => {
+        const owner_address = tryStandardizeAddress(
+          validatorData.owner_address,
         );
-      };
+        const operator_address = tryStandardizeAddress(
+          validatorData.operator_address,
+        );
+        if (!owner_address || !operator_address) {
+          return validatorData;
+        }
 
-      fetchData().catch((error) => {
-        console.error("ERROR!", error, typeof error);
+        return {
+          ...validatorData,
+          owner_address,
+          operator_address,
+        };
       });
-    }
-  }, [networkName]);
+    },
+    enabled: isEnabled,
+    // Validator stats update periodically - cache for 5 minutes
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+  });
 
-  return networkName === Network.MAINNET || networkName === Network.TESTNET
-    ? {validatorsRawData}
-    : {validatorsRawData: []};
+  return {validatorsRawData};
 }
 
 export function useGetValidators() {
   const {activeValidators} = useGetValidatorSet();
   const {validatorsRawData} = useGetValidatorsRawData();
 
-  // Calculate validators during render instead of using useEffect
-  let validators: ValidatorData[] = [];
-  if (activeValidators.length > 0 && validatorsRawData.length > 0) {
-    const validatorsCopy = JSON.parse(JSON.stringify(validatorsRawData));
+  // Memoize validators calculation to prevent unnecessary recomputation
+  const validators = useMemo(() => {
+    if (activeValidators.length === 0 || validatorsRawData.length === 0) {
+      return [];
+    }
 
-    validatorsCopy.forEach((validator: ValidatorData) => {
+    return validatorsRawData.map((validator) => {
       const activeValidator = activeValidators.find(
-        (activeValidator) => activeValidator.addr === validator.owner_address,
+        (active) => active.addr === validator.owner_address,
       );
-      validator.voting_power = activeValidator?.voting_power ?? "0";
+      return {
+        ...validator,
+        voting_power: activeValidator?.voting_power ?? "0",
+      };
     });
-
-    validators = validatorsCopy;
-  }
+  }, [activeValidators, validatorsRawData]);
 
   return {validators};
 }
