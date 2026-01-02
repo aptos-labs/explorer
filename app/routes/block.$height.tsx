@@ -1,13 +1,12 @@
 import React from "react";
 import {createFileRoute} from "@tanstack/react-router";
-import {useQuery} from "@tanstack/react-query";
+import {useSuspenseQuery} from "@tanstack/react-query";
 import {
   Box,
   Typography,
   Card,
   CardContent,
   Grid,
-  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -19,9 +18,11 @@ import {
   Alert,
 } from "@mui/material";
 import {Link} from "@tanstack/react-router";
-import {useGlobalState} from "../context/global-state";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import {truncateAddress, formatNumber, formatTimestampLocal} from "../utils";
+import {blockQueryOptions} from "../api/queries";
+import {getClientFromSearch} from "../api/createClient";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/block/$height")({
   head: ({params}) => ({
@@ -52,45 +53,58 @@ export const Route = createFileRoute("/block/$height")({
     ],
     links: [{rel: "canonical", href: `${BASE_URL}/block/${params.height}`}],
   }),
+  // Loader prefetches block data
+  loader: async ({context, params, location}) => {
+    const search = location.search as Record<string, string | undefined>;
+    const client = getClientFromSearch(search);
+
+    // Prefetch block data
+    await context.queryClient.ensureQueryData(
+      blockQueryOptions(params.height, client),
+    );
+
+    return {};
+  },
+  pendingComponent: PagePending,
+  errorComponent: ({error}) => (
+    <Box>
+      <Alert severity="error" sx={{mb: 2}}>
+        Error loading block: {String(error)}
+      </Alert>
+    </Box>
+  ),
   component: BlockPage,
 });
 
 function BlockPage() {
   const {height} = Route.useParams();
-  const {sdk_v2_client, network_name} = useGlobalState();
+  const search = Route.useSearch() as Record<string, string | undefined>;
+  const client = getClientFromSearch(search);
 
-  const {
-    data: block,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["block", height, network_name],
-    queryFn: () =>
-      sdk_v2_client.getBlockByHeight({
-        blockHeight: Number(height),
-        options: {withTransactions: true},
-      }),
-  });
+  // Data is already loaded by the loader
+  const {data: block} = useSuspenseQuery(blockQueryOptions(height, client));
 
-  if (error) {
-    return (
-      <Box>
-        <Alert severity="error" sx={{mb: 2}}>
-          Error loading block: {String(error)}
-        </Alert>
-        <Typography variant="body2">Block height: {height}</Typography>
-      </Box>
-    );
-  }
+  // Type assertion for block_metadata - SDK types are incomplete
+  const blockData = block as {
+    block_height?: string;
+    first_version?: string;
+    last_version?: string;
+    block_metadata?: {
+      epoch?: string;
+      round?: string;
+      proposer?: string;
+      timestamp?: string;
+    };
+    transactions?: Array<{
+      version: string;
+      type: string;
+      success: boolean;
+      gas_used: string;
+    }>;
+  };
 
-  const metadata = block?.block_metadata as {
-    epoch?: string;
-    round?: string;
-    proposer?: string;
-    timestamp?: string;
-  } | null;
-
-  const transactions = block?.transactions || [];
+  const metadata = blockData?.block_metadata;
+  const transactions = blockData?.transactions || [];
 
   return (
     <Box>
@@ -110,11 +124,7 @@ function BlockPage() {
                 Block Height
               </Typography>
               <Typography variant="h6">
-                {isLoading ? (
-                  <Skeleton width={80} />
-                ) : (
-                  formatNumber(Number(height))
-                )}
+                {formatNumber(Number(height))}
               </Typography>
             </CardContent>
           </Card>
@@ -125,9 +135,7 @@ function BlockPage() {
               <Typography variant="subtitle2" color="text.secondary">
                 Epoch
               </Typography>
-              <Typography variant="h6">
-                {isLoading ? <Skeleton width={60} /> : metadata?.epoch || "-"}
-              </Typography>
+              <Typography variant="h6">{metadata?.epoch || "-"}</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -137,9 +145,7 @@ function BlockPage() {
               <Typography variant="subtitle2" color="text.secondary">
                 Round
               </Typography>
-              <Typography variant="h6">
-                {isLoading ? <Skeleton width={60} /> : metadata?.round || "-"}
-              </Typography>
+              <Typography variant="h6">{metadata?.round || "-"}</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -149,9 +155,7 @@ function BlockPage() {
               <Typography variant="subtitle2" color="text.secondary">
                 Transactions
               </Typography>
-              <Typography variant="h6">
-                {isLoading ? <Skeleton width={40} /> : transactions.length}
-              </Typography>
+              <Typography variant="h6">{transactions.length}</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -165,16 +169,14 @@ function BlockPage() {
               <Typography variant="subtitle2" color="text.secondary">
                 Proposer
               </Typography>
-              {isLoading ? (
-                <Skeleton width={200} />
-              ) : metadata?.proposer ? (
+              {metadata?.proposer ? (
                 <Link
                   to="/account/$address"
                   params={{address: metadata.proposer}}
                   style={{textDecoration: "none"}}
                 >
                   <Typography sx={{fontFamily: "monospace"}}>
-                    {truncateAddress(metadata.proposer, 12)}
+                    {truncateAddress(metadata.proposer)}
                   </Typography>
                 </Link>
               ) : (
@@ -186,50 +188,38 @@ function BlockPage() {
                 Timestamp
               </Typography>
               <Typography>
-                {isLoading ? (
-                  <Skeleton width={200} />
-                ) : metadata?.timestamp ? (
-                  formatTimestampLocal(metadata.timestamp)
-                ) : (
-                  "-"
-                )}
+                {metadata?.timestamp
+                  ? formatTimestampLocal(metadata.timestamp)
+                  : "-"}
               </Typography>
             </Grid>
             <Grid size={{xs: 12, md: 6}}>
               <Typography variant="subtitle2" color="text.secondary">
                 First Version
               </Typography>
-              {isLoading ? (
-                <Skeleton width={100} />
-              ) : (
-                <Link
-                  to="/txn/$txnHashOrVersion"
-                  params={{txnHashOrVersion: block?.first_version || ""}}
-                  style={{textDecoration: "none"}}
-                >
-                  <Typography sx={{fontFamily: "monospace"}}>
-                    {block?.first_version}
-                  </Typography>
-                </Link>
-              )}
+              <Link
+                to="/txn/$txnHashOrVersion"
+                params={{txnHashOrVersion: blockData?.first_version || ""}}
+                style={{textDecoration: "none"}}
+              >
+                <Typography sx={{fontFamily: "monospace"}}>
+                  {blockData?.first_version}
+                </Typography>
+              </Link>
             </Grid>
             <Grid size={{xs: 12, md: 6}}>
               <Typography variant="subtitle2" color="text.secondary">
                 Last Version
               </Typography>
-              {isLoading ? (
-                <Skeleton width={100} />
-              ) : (
-                <Link
-                  to="/txn/$txnHashOrVersion"
-                  params={{txnHashOrVersion: block?.last_version || ""}}
-                  style={{textDecoration: "none"}}
-                >
-                  <Typography sx={{fontFamily: "monospace"}}>
-                    {block?.last_version}
-                  </Typography>
-                </Link>
-              )}
+              <Link
+                to="/txn/$txnHashOrVersion"
+                params={{txnHashOrVersion: blockData?.last_version || ""}}
+                style={{textDecoration: "none"}}
+              >
+                <Typography sx={{fontFamily: "monospace"}}>
+                  {blockData?.last_version}
+                </Typography>
+              </Link>
             </Grid>
           </Grid>
         </CardContent>
@@ -250,24 +240,7 @@ function BlockPage() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {isLoading ? (
-              Array.from({length: 5}).map((_, i) => (
-                <TableRow key={i}>
-                  <TableCell>
-                    <Skeleton width={80} />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton width={100} />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton width={80} />
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton width={60} />
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : transactions.length > 0 ? (
+            {transactions.length > 0 ? (
               transactions.map((tx) => (
                 <TableRow key={tx.version} hover>
                   <TableCell>

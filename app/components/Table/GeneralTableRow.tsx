@@ -39,7 +39,8 @@ export default function GeneralTableRow({
 
   const handleClick = () => {
     if (to) {
-      navigate(augmentTo(to));
+      // @ts-expect-error - TanStack Router navigate accepts string or object
+      navigate({to: augmentTo(to)});
     }
     if (onClick) {
       onClick();

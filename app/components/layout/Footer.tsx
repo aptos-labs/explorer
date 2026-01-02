@@ -2,6 +2,9 @@ import React from "react";
 import {Box, Container, Grid, Stack, Typography, useTheme} from "@mui/material";
 import SvgIcon from "@mui/material/SvgIcon";
 import {Link} from "@tanstack/react-router";
+// Import the original Aptos logos
+import AptosLogoFullLight from "../../assets/svg/aptos_logo_full_light.svg?react";
+import AptosLogoFullDark from "../../assets/svg/aptos_logo_full_dark.svg?react";
 
 // Import SVGs - we'll use inline SVGs for SSR compatibility
 const GithubIcon = () => (
@@ -31,35 +34,6 @@ const MediumIcon = () => (
 const LinkedInIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-  </svg>
-);
-
-const AptosLogo = ({isDark}: {isDark: boolean}) => (
-  <svg
-    width="128"
-    height="48"
-    viewBox="0 0 130 36"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M26.8461 12.3333H21.4948C21.1102 12.3333 20.7386 12.4666 20.4408 12.7111L17.3333 15.2222L14.2259 12.7111C13.9281 12.4666 13.5565 12.3333 13.1719 12.3333H7.82051C7.08888 12.3333 6.49487 12.9273 6.49487 13.659V14.2222C6.49487 14.9539 7.08888 15.5479 7.82051 15.5479H12.3999L17.3333 19.5556L22.2668 15.5479H26.8461C27.5778 15.5479 28.1718 14.9539 28.1718 14.2222V13.659C28.1718 12.9273 27.5778 12.3333 26.8461 12.3333Z"
-      fill={isDark ? "#F9F9F0" : "#0F0E0B"}
-    />
-    <path
-      d="M26.8461 20.4521H21.4948C21.1102 20.4521 20.7386 20.5854 20.4408 20.8299L17.3333 23.341L14.2259 20.8299C13.9281 20.5854 13.5565 20.4521 13.1719 20.4521H7.82051C7.08888 20.4521 6.49487 21.0461 6.49487 21.7778V22.341C6.49487 23.0727 7.08888 23.6667 7.82051 23.6667H12.3999L17.3333 27.6744L22.2668 23.6667H26.8461C27.5778 23.6667 28.1718 23.0727 28.1718 22.341V21.7778C28.1718 21.0461 27.5778 20.4521 26.8461 20.4521Z"
-      fill={isDark ? "#F9F9F0" : "#0F0E0B"}
-    />
-    <text
-      x="40"
-      y="24"
-      fontFamily="IBM Plex Sans, sans-serif"
-      fontSize="16"
-      fontWeight="600"
-      fill={isDark ? "#F9F9F0" : "#0F0E0B"}
-    >
-      Aptos
-    </text>
   </svg>
 );
 
@@ -117,7 +91,11 @@ export default function Footer() {
                 textDecoration: "none",
               }}
             >
-              <AptosLogo isDark={isDark} />
+              {isDark ? (
+                <AptosLogoFullDark width="128" height="36" />
+              ) : (
+                <AptosLogoFullLight width="128" height="36" />
+              )}
             </a>
             <Grid container direction="row" padding="0" spacing={2}>
               <Typography

@@ -21,7 +21,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import {Link, useNavigate} from "@tanstack/react-router";
 import {useInView} from "react-intersection-observer";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import NetworkSelect from "./NetworkSelect";
+import {WalletConnector} from "../WalletConnector";
+import {useNetworkName} from "../../global-config";
+import {sortPetraFirst} from "../../utils";
 // Import the actual Aptos logos
 import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";
 import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
@@ -61,6 +65,8 @@ export default function Header() {
 
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const navigate = useNavigate();
+  const networkName = useNetworkName();
+  const {account} = useWallet();
 
   return (
     <>
@@ -174,6 +180,20 @@ export default function Header() {
             >
               {isDark ? <IconDark /> : <IconLight />}
             </Button>
+
+            {/* Wallet Connect Button */}
+            {!isOnMobile && (
+              <Box sx={{marginLeft: "1rem"}}>
+                <WalletConnector
+                  networkSupport={networkName}
+                  handleNavigate={() =>
+                    navigate({to: `/account/${account?.address}`})
+                  }
+                  sortInstallableWallets={sortPetraFirst}
+                  modalMaxWidth="sm"
+                />
+              </Box>
+            )}
 
             {/* Mobile Menu Button */}
             {isOnMobile && (
