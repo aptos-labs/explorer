@@ -11,15 +11,16 @@
  */
 
 import {useEffect, useMemo} from "react";
+// Note: Using namespace import + fallback pattern due to CommonJS/ESM compatibility
+// issues with react-helmet-async in SSR. Named import fails during server rendering.
 import * as ReactHelmetAsync from "react-helmet-async";
 const Helmet =
   ReactHelmetAsync.Helmet ||
   (ReactHelmetAsync as unknown as {default: typeof ReactHelmetAsync}).default
     ?.Helmet;
 
-// Base URL for the explorer
-const BASE_URL = "https://explorer.aptoslabs.com";
-const DEFAULT_OG_IMAGE = `${BASE_URL}/og-image.png`;
+import {BASE_URL, DEFAULT_OG_IMAGE} from "../../lib/constants";
+
 const SITE_NAME = "Aptos Explorer";
 const TWITTER_HANDLE = "@aptaboratories";
 

@@ -2,14 +2,16 @@ import {useGetBlockByHeight} from "./useGetBlock";
 import {parseTimestamp, getTimeDiffInSeconds} from "../../pages/utils";
 import {Block} from "@aptos-labs/ts-sdk";
 
-const TPS_FREQUENCY = 600; // calculate tps every 600 blocks
+const TPS_FREQUENCY = 600; // calculate TPS every 600 blocks
 
-function calculateTps(startBlock: Block, endBlock: Block): number | null {
+function calculateTPS(startBlock: Block, endBlock: Block): number | null {
   // Ensure blocks have required data
-  if (!startBlock?.block_timestamp || !endBlock?.block_timestamp) {
-    return null;
-  }
-  if (!startBlock?.last_version || !endBlock?.last_version) {
+  if (
+    !startBlock?.block_timestamp ||
+    !endBlock?.block_timestamp ||
+    !startBlock?.last_version ||
+    !endBlock?.last_version
+  ) {
     return null;
   }
 
@@ -39,10 +41,10 @@ export function useGetTPSByBlockHeight(currentBlockHeight: number | undefined) {
     withTransactions: false,
   });
 
-  // Calculate tps during render instead of using useEffect
+  // Calculate TPS during render instead of using useEffect
   const tps =
     startBlock !== undefined && endBlock !== undefined
-      ? calculateTps(startBlock, endBlock)
+      ? calculateTPS(startBlock, endBlock)
       : null;
 
   return {tps};

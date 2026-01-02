@@ -11,6 +11,10 @@ const MAINNET_VALIDATORS_DATA_URL =
 const TESTNET_VALIDATORS_DATA_URL =
   "https://storage.googleapis.com/aptos-testnet/explorer/validator_stats_v2.json?cache-version=0";
 
+// Cache durations for validator stats
+const VALIDATOR_STATS_STALE_TIME = 5 * 60 * 1000; // 5 minutes
+const VALIDATOR_STATS_GC_TIME = 30 * 60 * 1000; // 30 minutes
+
 export interface ValidatorData {
   owner_address: string;
   operator_address: string;
@@ -80,9 +84,8 @@ function useGetValidatorsRawData() {
       });
     },
     enabled: isEnabled,
-    // Validator stats update periodically - cache for 5 minutes
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    staleTime: VALIDATOR_STATS_STALE_TIME,
+    gcTime: VALIDATOR_STATS_GC_TIME,
   });
 
   return {validatorsRawData};
