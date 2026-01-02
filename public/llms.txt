@@ -1,0 +1,57 @@
+# Aptos Explorer
+
+> The official block explorer for the Aptos blockchain network.
+
+## Overview
+
+Aptos Explorer is a web application that allows users to explore and analyze data on the Aptos blockchain. It provides detailed information about transactions, accounts, blocks, validators, tokens, and other on-chain activity.
+
+## Key Features
+
+- **Transaction Explorer**: View detailed transaction information including payload, events, gas usage, and state changes
+- **Account Browser**: Explore account balances, resources, modules, and transaction history
+- **Block Explorer**: Navigate blockchain blocks and their contents
+- **Validator Dashboard**: Monitor validator performance, staking, and governance participation
+- **Token & NFT Support**: View fungible assets, coins, and NFT collections
+- **Analytics**: Real-time network statistics including TPS, total supply, and active nodes
+
+## URL Structure
+
+- `/` - Landing page with network overview
+- `/transactions` - List of recent transactions
+- `/txn/{version}` - Individual transaction details by version
+- `/txn/{hash}` - Individual transaction details by hash
+- `/account/{address}` - Account details and resources
+- `/block/{height}` - Block details by height
+- `/blocks` - List of recent blocks
+- `/validators` - Validator list and statistics
+- `/analytics` - Network analytics and charts
+- `/coin/{coinType}` - Coin/token information
+- `/fungible_asset/{address}` - Fungible asset details
+- `/token/{tokenId}` - NFT/token details
+
+## Networks
+
+The explorer supports multiple Aptos networks:
+- **Mainnet** - Production network (default)
+- **Testnet** - Testing network
+- **Devnet** - Development network
+
+Network can be selected via URL query parameter: `?network=testnet`
+
+## API Information
+
+The explorer fetches data from:
+- Aptos REST API (node endpoints)
+- Aptos Indexer GraphQL API
+
+## Contact
+
+- Website: https://aptoslabs.com
+- Documentation: https://aptos.dev
+- GitHub: https://github.com/aptos-labs
+
+## Full Documentation
+
+For comprehensive documentation, see: /llms-full.txt
+

@@ -68,6 +68,18 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       },
       {name: "author", content: "Aptos Labs"},
       {name: "robots", content: "index, follow"},
+      // AI/LLM optimization meta tags
+      {
+        name: "ai:description",
+        content:
+          "Aptos blockchain explorer for viewing transactions, accounts, blocks, validators, tokens, and network analytics",
+      },
+      {name: "ai:site_type", content: "blockchain_explorer"},
+      {
+        name: "ai:primary_topics",
+        content:
+          "blockchain, cryptocurrency, Aptos, transactions, smart contracts, Move language",
+      },
     ],
     links: [
       // Fonts
@@ -85,6 +97,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       {rel: "icon", href: "/favicon-light.svg", type: "image/svg+xml"},
       {rel: "apple-touch-icon", href: "/apple-touch-icon.png"},
       {rel: "manifest", href: "/manifest.json"},
+      // LLM documentation link
+      {
+        rel: "help",
+        href: "/llms.txt",
+        type: "text/plain",
+        title: "LLM Documentation",
+      },
     ],
   }),
   errorComponent: ({error}) => <ErrorBoundary error={error} />,
