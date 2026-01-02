@@ -40,6 +40,13 @@ interface ImportMetaEnv {
   readonly VITE_BASE_URL?: string;
   readonly REACT_APP_GTM_ID?: string;
   readonly NODE_ENV?: string;
+  // API Keys for different networks
+  readonly VITE_APTOS_MAINNET_API_KEY?: string;
+  readonly VITE_APTOS_TESTNET_API_KEY?: string;
+  readonly VITE_APTOS_DEVNET_API_KEY?: string;
+  readonly VITE_APTOS_DECIBEL_API_KEY?: string;
+  readonly VITE_APTOS_SHELBYNET_API_KEY?: string;
+  readonly VITE_APTOS_LOCAL_API_KEY?: string;
 }
 
 interface ImportMeta {
