@@ -3,7 +3,7 @@ import {Box} from "@mui/material";
 import {addressFromWallet, assertNever} from "../../../utils";
 import StyledTabs from "../../../components/StyledTabs";
 import StyledTab from "../../../components/StyledTab";
-import {useParams} from "@tanstack/react-router";
+import {useSearch} from "../../../routing";
 import {ValidatorsTable} from "../ValidatorsTable";
 import {DelegationValidatorsTable} from "../DelegationValidatorsTable";
 import {EnhancedDelegationValidatorsTable} from "./EnhancedDelegationValidatorsTable";
@@ -65,7 +65,8 @@ function TabPanel({value, networkName}: TabPanelProps): React.JSX.Element {
 
 export default function EnhancedValidatorsPageTabs(): React.JSX.Element {
   const networkName = useNetworkName();
-  const {tab} = useParams();
+  const search = useSearch({strict: false}) as {tab?: string};
+  const tab = search?.tab;
   const navigate = useNavigate();
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
@@ -78,7 +79,10 @@ export default function EnhancedValidatorsPageTabs(): React.JSX.Element {
     _event: React.SyntheticEvent,
     newValue: VALIDATORS_TAB_VALUE,
   ) => {
-    navigate(`/validators/${newValue}`);
+    navigate({
+      to: "/validators",
+      search: {tab: newValue},
+    });
     logEvent("validators_tab_clicked", newValue, {
       wallet_address: addressFromWallet(account?.address),
       wallet_name: wallet?.name ?? "",

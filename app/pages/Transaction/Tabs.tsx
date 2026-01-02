@@ -20,7 +20,7 @@ import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BalanceChangeTab from "./Tabs/BalanceChangeTab";
-import {useParams} from "@tanstack/react-router";
+import {useParams, useSearch} from "@tanstack/react-router";
 import {useNavigate} from "../../routing";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
 import {TransactionTypeName} from "../../components/TransactionType";
@@ -30,7 +30,6 @@ import JsonViewCard from "../../components/IndividualPageContent/JsonViewCard";
 import {getLearnMoreTooltip} from "./helpers";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import {useNetworkName} from "../../global-config/GlobalConfig";
-import {Link} from "../../routing";
 import {ErrorOutline} from "@mui/icons-material";
 import {useEffect} from "react";
 
@@ -172,7 +171,10 @@ export default function TransactionTabs({
 }: TransactionTabsProps): React.JSX.Element {
   const networkName = useNetworkName();
 
-  const {tab, txnHashOrVersion} = useParams();
+  const params = useParams({strict: false}) as {txnHashOrVersion?: string};
+  const search = useSearch({strict: false}) as {tab?: string};
+  const tab = search?.tab;
+  const txnHashOrVersion = params?.txnHashOrVersion;
   const navigate = useNavigate();
 
   // Validate tab value - check if it exists in TabComponents and is valid for this transaction
@@ -192,12 +194,22 @@ export default function TransactionTabs({
   // Redirect to valid tab if invalid tab was provided
   useEffect(() => {
     if (tab && !isValidTab(tab)) {
-      navigate(`/txn/${txnHashOrVersion}/${defaultTab}`, {replace: true});
+      navigate({
+        to: "/txn/$txnHashOrVersion",
+        params: {txnHashOrVersion: txnHashOrVersion ?? ""},
+        search: {tab: defaultTab},
+        replace: true,
+      });
     }
   }, [tab, txnHashOrVersion, defaultTab, navigate, isValidTab]);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate(`/txn/${txnHashOrVersion}/${newValue}`, {replace: true});
+    navigate({
+      to: "/txn/$txnHashOrVersion",
+      params: {txnHashOrVersion: txnHashOrVersion ?? ""},
+      search: {tab: newValue},
+      replace: true,
+    });
   };
 
   return (
@@ -228,12 +240,14 @@ export default function TransactionTabs({
         <ContentRow
           title="API link:"
           value={
-            <Link
-              color="inherit"
-              to={`https://fullnode.${networkName.toLowerCase()}.aptoslabs.com/v1/transactions/by_hash/${transaction.hash}`}
+            <a
+              style={{color: "inherit"}}
+              href={`https://fullnode.${networkName.toLowerCase()}.aptoslabs.com/v1/transactions/by_hash/${transaction.hash}`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Transaction {transaction.hash}
-            </Link>
+            </a>
           }
           tooltip={getLearnMoreTooltip("transaction")}
         />

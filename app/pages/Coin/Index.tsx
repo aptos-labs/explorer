@@ -22,7 +22,8 @@ const TAB_VALUES: TabValue[] = ["info"];
 
 export default function CoinPage() {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
-  const maybeStruct = useParams().struct;
+  const params = useParams({strict: false}) as {struct?: string};
+  const maybeStruct = params?.struct;
   let address = "";
   let struct: string = "";
   let error: ResponseError | null = null;

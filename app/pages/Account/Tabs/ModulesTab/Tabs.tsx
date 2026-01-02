@@ -1,6 +1,6 @@
 import {Box, useTheme} from "@mui/material";
 import React, {useEffect} from "react";
-import {useParams} from "@tanstack/react-router";
+import {useSearch} from "../../../../routing";
 import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
 import {assertNever} from "../../../../utils";
@@ -76,7 +76,14 @@ function ModulesTabs({
 }) {
   const theme = useTheme();
   const tabValues = Object.keys(TabComponents) as TabValue[];
-  const {selectedFnName, selectedModuleName, modulesTab} = useParams();
+  const search = useSearch({strict: false}) as {
+    selectedFnName?: string;
+    selectedModuleName?: string;
+    modulesTab?: string;
+  };
+  const selectedFnName = search?.selectedFnName;
+  const selectedModuleName = search?.selectedModuleName;
+  const modulesTab = search?.modulesTab;
   const navigate = useNavigate();
   const logEvent = useLogEventWithBasic();
   const sortedPackages = useGetAccountPackages(address);
@@ -142,10 +149,16 @@ function ModulesTabs({
       return {moduleNameParam: "", fnNameParam: ""};
     })();
 
-    navigate(
-      `/${accountPagePath(isObject)}/${address}/modules/${newValue}${moduleNameParam ? `/${moduleNameParam}` : ""}${fnNameParam}`,
-      {replace: true},
-    );
+    navigate({
+      to: `/${accountPagePath(isObject)}/${address}`,
+      search: {
+        tab: "modules",
+        modulesTab: newValue,
+        selectedModuleName: moduleNameParam || undefined,
+        selectedFnName: fnNameParam ? fnNameParam.slice(1) : undefined, // Remove leading slash
+      },
+      replace: true,
+    });
   };
 
   useEffect(() => {

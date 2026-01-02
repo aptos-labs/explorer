@@ -15,7 +15,7 @@ import {
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import {useParams} from "@tanstack/react-router";
+import {useSearch} from "../../../../routing";
 import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
@@ -42,19 +42,23 @@ function Packages({address, isObject}: {address: string; isObject: boolean}) {
 
   const navigate = useNavigate();
 
-  const selectedPackageName = useParams().selectedModuleName ?? "";
+  const search = useSearch({strict: false}) as {selectedModuleName?: string};
+  const selectedPackageName = search?.selectedModuleName ?? "";
   useEffect(() => {
     if (
       !selectedPackageName &&
       sortedPackages.length > 0 &&
       sortedPackages[0].modules.length > 0
     ) {
-      navigate(
-        `/${accountPagePath(isObject)}/${address}/modules/packages/${sortedPackages[0].name}`,
-        {
-          replace: true,
+      navigate({
+        to: `/${accountPagePath(isObject)}/${address}`,
+        search: {
+          tab: "modules",
+          modulesTab: "packages",
+          selectedModuleName: sortedPackages[0].name,
         },
-      );
+        replace: true,
+      });
     }
   }, [selectedPackageName, sortedPackages, address, navigate, isObject]);
 
@@ -67,11 +71,18 @@ function Packages({address, isObject}: {address: string; isObject: boolean}) {
   );
 
   function getLinkToPackage(moduleName: string) {
-    return `/${accountPagePath(isObject)}/${address}/modules/packages/${moduleName}`;
+    return `/${accountPagePath(isObject)}/${address}?tab=modules&modulesTab=packages&selectedModuleName=${moduleName}`;
   }
 
   function navigateToPackage(moduleName: string) {
-    navigate(getLinkToPackage(moduleName));
+    navigate({
+      to: `/${accountPagePath(isObject)}/${address}`,
+      search: {
+        tab: "modules",
+        modulesTab: "packages",
+        selectedModuleName: moduleName,
+      },
+    });
   }
 
   return (
@@ -222,9 +233,14 @@ function PackageInfo({
           getOptionLabel={(option) => option.name}
           defaultValue={packageMetadata.modules[0]}
           onChange={(_event, value) => {
-            navigate(
-              `${accountPagePath(false)}/${address}/modules/code/${value.name}`,
-            );
+            navigate({
+              to: `/${accountPagePath(false)}/${address}`,
+              search: {
+                tab: "modules",
+                modulesTab: "code",
+                selectedModuleName: value.name,
+              },
+            });
           }}
           renderInput={(params) => (
             <TextField {...params} variant="outlined" size="small" />

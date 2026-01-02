@@ -11,11 +11,12 @@ import {
   solarizedDark,
 } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
-import {useParams} from "@tanstack/react-router";
+import {useSearch} from "../../../routing";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 function useStartingLineNumber(sourceCode?: string) {
-  const functionToHighlight = useParams().selectedFnName;
+  const search = useSearch({strict: false}) as {selectedFnName?: string};
+  const functionToHighlight = search?.selectedFnName;
 
   if (!sourceCode) return 0;
   if (!functionToHighlight) return 0;
@@ -26,7 +27,8 @@ function useStartingLineNumber(sourceCode?: string) {
 function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
-  const {selectedModuleName} = useParams();
+  const search = useSearch({strict: false}) as {selectedModuleName?: string};
+  const selectedModuleName = search?.selectedModuleName;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const logEvent = useLogEventWithBasic();
 
@@ -99,7 +101,10 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
 }
 
 export function Code({bytecode}: {bytecode: string}) {
-  const {selectedModuleName} = useParams();
+  const searchCode = useSearch({strict: false}) as {
+    selectedModuleName?: string;
+  };
+  const selectedModuleName = searchCode?.selectedModuleName;
   const logEvent = useLogEventWithBasic();
 
   const TOOLTIP_TIME = 2000; // 2s

@@ -9,7 +9,8 @@ import TokenError from "./Error";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 
 export default function TokenPage() {
-  const {tokenId} = useParams();
+  const params = useParams({strict: false}) as {tokenId?: string};
+  const tokenId = params?.tokenId ?? "";
   const {data, isLoading, error} = useGetTokenData(tokenId);
 
   if (isLoading) {

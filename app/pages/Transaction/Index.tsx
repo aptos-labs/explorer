@@ -16,8 +16,8 @@ import PageHeader from "../layout/PageHeader";
 export default function TransactionPage() {
   const networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
-  const {txnHashOrVersion: txnParam} = useParams();
-  const txnHashOrVersion = txnParam ?? "";
+  const params = useParams({strict: false}) as {txnHashOrVersion?: string};
+  const txnHashOrVersion = params?.txnHashOrVersion ?? "";
 
   const {isLoading, data, error} = useQuery<Types.Transaction, ResponseError>({
     queryKey: ["transaction", {txnHashOrVersion}, networkValue],
