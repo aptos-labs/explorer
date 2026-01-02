@@ -1,0 +1,92 @@
+import * as React from "react";
+import {Types} from "aptos";
+import {Box} from "@mui/material";
+import ContentBox from "../../../components/IndividualPageContent/ContentBox";
+import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import {getLearnMoreTooltip} from "../helpers";
+import {TransactionStatus} from "../../../components/TransactionStatus";
+import TransactionBlockRow from "./Components/TransactionBlockRow";
+import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+
+type ValidatorTabProps = {
+  transaction: Types.Transaction;
+};
+
+export default function ValidatorTransactionTab({
+  transaction,
+}: ValidatorTabProps) {
+  // FIXME: We need to get off SDK v1
+  // Validator transactions have additional properties beyond base Transaction type
+  // Type assertion is needed until we migrate to SDK v2
+  const transactionData = transaction as Types.Transaction & {
+    validator_transaction_type?: string;
+    success?: boolean;
+    version?: string;
+    timestamp?: string;
+    vm_status?: string;
+    state_change_hash?: string;
+    event_root_hash?: string;
+    accumulator_root_hash?: string;
+  };
+
+  return (
+    <Box marginBottom={3}>
+      <ContentBox padding={4}>
+        <ContentRow
+          title={"Version:"}
+          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          tooltip={getLearnMoreTooltip("version")}
+        />
+        <ContentRow
+          title="Status:"
+          value={
+            <TransactionStatus success={transactionData.success ?? false} />
+          }
+          tooltip={getLearnMoreTooltip("status")}
+        />
+        <ContentRow
+          title="Validator Transaction Type:"
+          value={transactionData.validator_transaction_type ?? "Unknown"}
+          tooltip={getLearnMoreTooltip("proposer")}
+        />
+      </ContentBox>
+      <ContentBox>
+        <TransactionBlockRow
+          version={transactionData.version ?? String(transaction)}
+        />
+        <ContentRow
+          title="Timestamp:"
+          value={
+            <TimestampValue
+              timestamp={transactionData.timestamp ?? ""}
+              ensureMilliSeconds
+            />
+          }
+          tooltip={getLearnMoreTooltip("timestamp")}
+        />
+        <ContentRow
+          title="VM Status:"
+          value={transactionData.vm_status ?? ""}
+          tooltip={getLearnMoreTooltip("vm_status")}
+        />
+      </ContentBox>
+      <ContentBox>
+        <ContentRow
+          title="State Change Hash:"
+          value={transactionData.state_change_hash}
+          tooltip={getLearnMoreTooltip("state_change_hash")}
+        />
+        <ContentRow
+          title="Event Root Hash:"
+          value={transactionData.event_root_hash}
+          tooltip={getLearnMoreTooltip("event_root_hash")}
+        />
+        <ContentRow
+          title="Accumulator Root Hash:"
+          value={transactionData.accumulator_root_hash}
+          tooltip={getLearnMoreTooltip("accumulator_root_hash")}
+        />
+      </ContentBox>
+    </Box>
+  );
+}
