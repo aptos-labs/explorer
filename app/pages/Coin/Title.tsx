@@ -39,11 +39,30 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
     return `Coin`;
   }
 
+  // Truncate struct for title readability
+  const shortStruct =
+    struct.length > 40
+      ? `${struct.slice(0, 20)}...${struct.slice(-15)}`
+      : struct;
+
   return (
     <Stack direction="column" spacing={2} marginX={1}>
       <PageMetadata
-        title={`Coin ${assetSymbol} (${struct})`}
-        description={`View ${assetSymbol} coin details on the Aptos blockchain. See token supply, holders, transactions, and market information.`}
+        title={
+          assetSymbol ? `${assetSymbol} - Aptos Coin` : `Coin ${shortStruct}`
+        }
+        description={`View ${assetSymbol || "coin"} on Aptos. ${coinData?.name ? `${coinData.name}. ` : ""}See token supply, holders, price, transactions, and market information.`}
+        type="coin"
+        keywords={[
+          "coin",
+          "token",
+          assetSymbol || "",
+          coinData?.name || "",
+          "cryptocurrency",
+          "fungible token",
+        ].filter(Boolean)}
+        canonicalPath={`/coin/${struct}`}
+        image={coinData?.logoUrl}
       />
       <Typography variant="h3">{title()}</Typography>
       <Stack

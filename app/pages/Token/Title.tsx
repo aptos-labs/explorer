@@ -5,17 +5,19 @@ import {labsBannedCollections} from "../../constants";
 import StyledTooltip from "../../components/StyledTooltip";
 import {Dangerous} from "@mui/icons-material";
 
-type BlockTitleProps = {
+type TokenTitleProps = {
   name: string;
   tokenDataId: string;
   tokenCollection: string;
+  imageUrl?: string;
 };
 
 export default function TokenTitle({
   name,
   tokenDataId,
   tokenCollection,
-}: BlockTitleProps) {
+  imageUrl,
+}: TokenTitleProps) {
   let badge = null;
   const reason = labsBannedCollections[tokenCollection];
   if (reason) {
@@ -31,8 +33,19 @@ export default function TokenTitle({
   return (
     <Stack direction="row" alignItems="center" spacing={2} marginX={1}>
       <PageMetadata
-        title={`Token ${name} (${tokenDataId})`}
-        description={`View NFT token "${name}" on the Aptos blockchain. See token metadata, ownership history, and collection details.`}
+        title={`${name} - NFT Token`}
+        description={`View NFT "${name}" from the ${tokenCollection || "unknown"} collection on Aptos. See token metadata, ownership history, properties, and collection details.`}
+        type="token"
+        keywords={[
+          "NFT",
+          "token",
+          name,
+          tokenCollection,
+          "digital collectible",
+          "Aptos NFT",
+        ].filter(Boolean)}
+        canonicalPath={`/token/${tokenDataId}`}
+        image={imageUrl}
       />
       <Typography variant="h3">{name}</Typography>
       {badge}

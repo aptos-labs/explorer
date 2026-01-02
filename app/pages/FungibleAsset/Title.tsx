@@ -43,11 +43,29 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
     networkName,
   );
 
+  // Truncate address for title readability
+  const shortAddress = `${address.slice(0, 10)}...${address.slice(-8)}`;
+
   return (
     <Stack direction="column" spacing={2} marginX={1}>
       <PageMetadata
-        title={`Fungible Asset ${assetSymbol} (${address})`}
-        description={`View ${assetSymbol || "fungible asset"} details on the Aptos blockchain. See token supply, holders, metadata, and transaction history.`}
+        title={
+          assetSymbol
+            ? `${assetSymbol} - Fungible Asset`
+            : `Fungible Asset ${shortAddress}`
+        }
+        description={`View ${assetSymbol || "fungible asset"} on Aptos. ${metadata?.name ? `${metadata.name}. ` : ""}See token supply, decimals, holders, metadata, and transaction history.`}
+        type="coin"
+        keywords={[
+          "fungible asset",
+          "FA",
+          "token",
+          assetSymbol || "",
+          metadata?.name || "",
+          "cryptocurrency",
+        ].filter(Boolean)}
+        canonicalPath={`/fungible_asset/${address}`}
+        image={metadata?.icon_uri || coinData?.logoUrl}
       />
       <Typography variant="h3">{title()}</Typography>
       <Stack direction="row" spacing={1}>
