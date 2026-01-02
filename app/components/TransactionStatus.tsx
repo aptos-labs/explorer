@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 import {Box, Stack, Typography, useTheme, alpha} from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
@@ -8,7 +8,13 @@ type TransactionStatusProps = {
   success: boolean;
 };
 
-export function TransactionStatus({success}: TransactionStatusProps) {
+// Extracted static styles
+const tableStatusStyle = {display: "flex", alignItems: "center"} as const;
+const iconStyle = {fontSize: "inherit"} as const;
+
+export const TransactionStatus = memo(function TransactionStatus({
+  success,
+}: TransactionStatusProps) {
   const theme = useTheme();
   const successColor = theme.palette.success.main;
   const errorColor = theme.palette.error.main;
@@ -60,21 +66,19 @@ export function TransactionStatus({success}: TransactionStatusProps) {
       </Typography>
     </Stack>
   );
-}
+});
 
-export function TableTransactionStatus({success}: TransactionStatusProps) {
+// Memoized since rendered many times in transaction tables
+export const TableTransactionStatus = memo(function TableTransactionStatus({
+  success,
+}: TransactionStatusProps) {
   return success ? null : (
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
+    <Box sx={tableStatusStyle}>
       <PriorityHighOutlinedIcon
-        sx={{fontSize: "inherit"}}
+        sx={iconStyle}
         color="error"
         titleAccess="Failed to Execute"
       />
     </Box>
   );
-}
+});

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {memo} from "react";
 import {SxProps, TableCell, TableCellProps, Theme} from "@mui/material";
 
 interface GeneralTableCellProps extends TableCellProps {
@@ -6,24 +6,26 @@ interface GeneralTableCellProps extends TableCellProps {
   sx?: SxProps<Theme>;
 }
 
-// TODO: use GeneralTableCell for all tables
-export default function GeneralTableCell({
+// Base padding style extracted to avoid recreation on every render
+const baseCellStyle = {
+  paddingY: 1.5,
+  paddingX: 1.5,
+} as const;
+
+// Memoized to prevent unnecessary re-renders in large tables
+const GeneralTableCell = memo(function GeneralTableCell({
   children,
   sx,
   ...props
 }: GeneralTableCellProps) {
   return (
     <TableCell
-      sx={[
-        {
-          paddingY: 1.5,
-          paddingX: 1.5,
-        },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
+      sx={[baseCellStyle, ...(Array.isArray(sx) ? sx : [sx])]}
       {...props}
     >
       {children}
     </TableCell>
   );
-}
+});
+
+export default GeneralTableCell;

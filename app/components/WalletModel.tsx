@@ -30,8 +30,18 @@ import {
   Close as CloseIcon,
   LanOutlined as LanOutlinedIcon,
 } from "@mui/icons-material";
-import {JSX} from "react";
+import {JSX, useMemo} from "react";
 import {WalletConnectorProps} from "./WalletConnector";
+
+// Sort comparator for OKX wallet priority
+const sortOkxFirst = (
+  a: AdapterWallet | AdapterNotDetectedWallet,
+  b: AdapterWallet | AdapterNotDetectedWallet,
+) => {
+  if (a.name === "OKX Wallet" && b.name !== "OKX Wallet") return -1;
+  if (b.name === "OKX Wallet" && a.name !== "OKX Wallet") return 1;
+  return 0;
+};
 
 interface WalletsModalProps
   extends
@@ -49,40 +59,43 @@ export default function WalletsModal({
   ...walletSortingOptions
 }: WalletsModalProps): JSX.Element {
   const theme = useTheme();
-
   const {wallets: installedWallets = []} = useWallet();
-  const wallets: AdapterWallet[] = [...installedWallets];
-  const installedWalletNames = wallets.map((wallet) => wallet.name);
-  for (const wallet of aptosStandardSupportedWalletList) {
-    if (!installedWalletNames.includes(wallet.name)) {
-      // aptosStandardSupportedWalletList contains AdapterNotDetectedWallet items
-      // which are compatible with AdapterWallet for our use case
-      // Use unknown first for type conversion
-      wallets.push(wallet as unknown as AdapterWallet);
+
+  // Memoize wallet list construction to avoid recalculating on every render
+  const wallets = useMemo(() => {
+    const result: AdapterWallet[] = [...installedWallets];
+    const installedWalletNames = result.map((wallet) => wallet.name);
+    for (const wallet of aptosStandardSupportedWalletList) {
+      if (!installedWalletNames.includes(wallet.name)) {
+        result.push(wallet as unknown as AdapterWallet);
+      }
     }
-  }
+    return result;
+  }, [installedWallets]);
 
-  const {aptosConnectWallets, availableWallets, installableWallets} =
-    groupAndSortWallets([...wallets], walletSortingOptions);
+  // Memoize wallet grouping and sorting
+  const {
+    aptosConnectWallets,
+    filteredAvailableWallets,
+    sortedInstallableWallets,
+  } = useMemo(() => {
+    const {aptosConnectWallets, availableWallets, installableWallets} =
+      groupAndSortWallets([...wallets], walletSortingOptions);
 
-  // Filter out "T wallet" from available wallets
-  const filteredAvailableWallets = availableWallets.filter(
-    (wallet) => wallet.name !== "T wallet",
-  );
+    // Filter out "T wallet" and sort with OKX first
+    const filteredAvailable = availableWallets
+      .filter((wallet) => wallet.name !== "T wallet")
+      .sort(sortOkxFirst);
 
-  // Sort available wallets with "OKX" first
-  filteredAvailableWallets.sort((a, b) => {
-    if (a.name === "OKX Wallet" && b.name !== "OKX Wallet") return -1;
-    if (b.name === "OKX Wallet" && a.name !== "OKX Wallet") return 1;
-    return 0;
-  });
+    // Sort installable wallets with OKX first
+    const sortedInstallable = [...installableWallets].sort(sortOkxFirst);
 
-  // Sort installable wallets with "OKX" first
-  installableWallets.sort((a, b) => {
-    if (a.name === "OKX Wallet" && b.name !== "OKX Wallet") return -1;
-    if (b.name === "OKX Wallet" && a.name !== "OKX Wallet") return 1;
-    return 0;
-  });
+    return {
+      aptosConnectWallets,
+      filteredAvailableWallets: filteredAvailable,
+      sortedInstallableWallets: sortedInstallable,
+    };
+  }, [wallets, walletSortingOptions]);
 
   const hasAptosConnectWallets = !!aptosConnectWallets.length;
 
@@ -247,10 +260,10 @@ export default function WalletsModal({
                 onConnect={handleClose}
               />
             ))}
-            {!!installableWallets.length && (
+            {!!sortedInstallableWallets.length && (
               <>
                 <Stack sx={{gap: 1}}>
-                  {installableWallets.map((wallet) => (
+                  {sortedInstallableWallets.map((wallet) => (
                     <WalletRow
                       key={wallet.name}
                       wallet={wallet}

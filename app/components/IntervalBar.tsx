@@ -1,5 +1,5 @@
 import {Stack, Typography, useTheme, alpha} from "@mui/material";
-import React, {useState} from "react";
+import React, {useState, useCallback, memo} from "react";
 import Countdown from "react-countdown";
 import StyledTooltip from "./StyledTooltip";
 
@@ -14,48 +14,55 @@ type IntervalBarProps = {
   intervalType: IntervalType;
 };
 
-export default function IntervalBar({
+// Extracted static styles
+const typographyStyle = {fontSize: 10, fontWeight: 600} as const;
+
+const IntervalBar = memo(function IntervalBar({
   percentage,
   timestamp,
   intervalType,
 }: IntervalBarProps) {
   const theme = useTheme();
   const [displayTooltip, setDisplayTooltip] = useState<boolean>(false);
-  const handleCountdownComplete = () => {
+  const handleCountdownComplete = useCallback(() => {
     setDisplayTooltip(true);
-  };
+  }, []);
 
   const barColor = theme.palette.primary.main;
   const barBackgroundColor = alpha(theme.palette.primary.main, 0.4);
 
-  const renderer = ({
-    days,
-    hours,
-    minutes,
-    seconds,
-  }: {
-    days: number;
-    hours: number;
-    minutes: number;
-    seconds: number;
-  }) => {
-    switch (intervalType) {
-      case IntervalType.EPOCH:
-        return (
-          <span>
-            {hours}h {minutes}m {seconds}s
-          </span>
-        );
-      case IntervalType.UNLOCK_COUNTDOWN:
-        return (
-          <span>
-            {days >= 10
-              ? `${days}d ${hours}h ${minutes}m`
-              : `${days}d ${hours}h ${minutes}m ${seconds}s`}
-          </span>
-        );
-    }
-  };
+  // Memoize renderer to avoid recreation on every render
+  const renderer = useCallback(
+    ({
+      days,
+      hours,
+      minutes,
+      seconds,
+    }: {
+      days: number;
+      hours: number;
+      minutes: number;
+      seconds: number;
+    }) => {
+      switch (intervalType) {
+        case IntervalType.EPOCH:
+          return (
+            <span>
+              {hours}h {minutes}m {seconds}s
+            </span>
+          );
+        case IntervalType.UNLOCK_COUNTDOWN:
+          return (
+            <span>
+              {days >= 10
+                ? `${days}d ${hours}h ${minutes}m`
+                : `${days}d ${hours}h ${minutes}m ${seconds}s`}
+            </span>
+          );
+      }
+    },
+    [intervalType],
+  );
 
   const intervalBar = (
     <Stack direction="row" width={182} height={16}>
@@ -71,7 +78,7 @@ export default function IntervalBar({
         {percentage >= 50 && (
           <Typography
             color={theme.palette.common.white}
-            sx={{fontSize: 10, fontWeight: 600}}
+            sx={typographyStyle}
             marginX={0.5}
           >
             <Countdown
@@ -94,7 +101,7 @@ export default function IntervalBar({
         {percentage < 50 && (
           <Typography
             color={theme.palette.text.secondary}
-            sx={{fontSize: 10, fontWeight: 600}}
+            sx={typographyStyle}
             marginX={0.5}
           >
             <Countdown
@@ -118,4 +125,6 @@ export default function IntervalBar({
   ) : (
     <>{intervalBar}</>
   );
-}
+});
+
+export default IntervalBar;
