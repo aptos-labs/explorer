@@ -5,3 +5,8 @@ Disallow: /*?network=devnet
 Disallow: /*?network=local
 
 Sitemap: https://explorer.aptoslabs.com/sitemap.xml
+
+# LLM-specific files for AI assistants
+# See https://llmstxt.org for the llms.txt standard
+LLMs: https://explorer.aptoslabs.com/llms.txt
+LLMs-full: https://explorer.aptoslabs.com/llms-full.txt
