@@ -59,7 +59,7 @@ export default function Footer() {
               to="https://aptoslabs.com/"
               target="_blank"
               title="Aptos Labs"
-              sx={{width: "8rem", mr: {md: 2}}}
+              sx={{width: "8rem", marginRight: "1rem"}}
             >
               {isDark ? (
                 <LogoFullDark width="8rem" height="3rem" />
@@ -148,8 +148,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     title={link.title}
-                    width="26px"
-                    sx={{display: "block"}}
+                    sx={{display: "block", width: "26px"}}
                   >
                     <SvgIcon component={link.icon} inheritViewBox />
                   </Link>

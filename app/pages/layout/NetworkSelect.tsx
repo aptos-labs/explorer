@@ -15,10 +15,7 @@ import {
   useGetChainIdCached,
 } from "../../api/hooks/useGetNetworkChainIds";
 import {hiddenNetworks, NetworkName, networks} from "../../constants";
-import {
-  useNetworkName,
-  useGlobalActions,
-} from "../../global-config/GlobalConfig";
+import {useNetworkSelector} from "../../global-config/GlobalConfig";
 
 function NetworkAndChainIdCached({
   networkName,
@@ -70,13 +67,12 @@ function NetworkMenuItem({networkName}: {networkName: string}) {
 }
 
 export default function NetworkSelect() {
-  const networkName = useNetworkName();
-  const {selectNetwork} = useGlobalActions();
+  const [networkName, setNetworkName] = useNetworkSelector();
   const theme = useTheme();
 
   const handleChange = (event: SelectChangeEvent) => {
     const network_name = event.target.value;
-    selectNetwork(network_name as NetworkName);
+    setNetworkName(network_name as NetworkName);
   };
 
   const visibleNetworkNames = React.useMemo(

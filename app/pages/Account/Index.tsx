@@ -161,7 +161,7 @@ export default function AccountPage({
     if (!isLoading) {
       // TODO: Handle where it's both an object and an account
       if (!alreadyIsObject && isObject && !isAccount) {
-        navigate(`/object/${address}`, {replace: true});
+        navigate({to: `/object/${address}`, replace: true});
       }
     }
 

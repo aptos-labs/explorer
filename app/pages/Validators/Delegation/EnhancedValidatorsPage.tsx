@@ -15,7 +15,7 @@ export default function EnhancedValidatorsPage() {
 
   React.useEffect(() => {
     if (networkName === Network.DEVNET) {
-      navigate("/validators");
+      navigate({to: "/validators"});
     }
   }, [networkName, navigate]);
 

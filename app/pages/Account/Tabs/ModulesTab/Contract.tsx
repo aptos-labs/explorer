@@ -650,10 +650,7 @@ function RunContractForm({
                   {transactionResponse.transactionSubmitted &&
                     transactionResponse.transactionHash && (
                       <Link
-                        to="/txn/$txnHashOrVersion"
-                        params={{
-                          txnHashOrVersion: transactionResponse.transactionHash,
-                        }}
+                        to={`/txn/${transactionResponse.transactionHash}`}
                         color="inherit"
                         target="_blank"
                       >
