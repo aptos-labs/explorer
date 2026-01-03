@@ -32,3 +32,4 @@ yarn-error.log*
 
 dist/
 .tanstack/
+stats.html

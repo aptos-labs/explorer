@@ -11,14 +11,11 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 // Universal import pattern for ESM/CJS compatibility
 import * as ReactHelmetAsync from "react-helmet-async";
-const HelmetProvider =
-  (
-    ReactHelmetAsync as {
-      HelmetProvider?: typeof ReactHelmetAsync.HelmetProvider;
-    }
-  ).HelmetProvider ??
+const HelmetProvider = ((
+  ReactHelmetAsync as {HelmetProvider?: typeof ReactHelmetAsync.HelmetProvider}
+).HelmetProvider ??
   (ReactHelmetAsync as {default?: typeof ReactHelmetAsync}).default
-    ?.HelmetProvider;
+    ?.HelmetProvider) as typeof ReactHelmetAsync.HelmetProvider;
 
 // Check if in development mode
 const isDev = process.env.NODE_ENV === "development";
