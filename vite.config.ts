@@ -1,9 +1,11 @@
 import {defineConfig} from "vite";
-import react from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react-swc";
 import viteSvgr from "vite-plugin-svgr";
 import {TanStackRouterVite} from "@tanstack/router-plugin/vite";
 import {tanstackStart} from "@tanstack/react-start/plugin/vite";
 import netlify from "@netlify/vite-plugin-tanstack-start";
+import compression from "vite-plugin-compression";
+import {visualizer} from "rollup-plugin-visualizer";
 
 export default defineConfig({
   plugins: [
@@ -23,6 +25,16 @@ export default defineConfig({
     react(),
     viteSvgr(),
     netlify(),
+    // Pre-compress assets for faster delivery (Netlify serves these automatically)
+    compression({algorithm: "gzip", ext: ".gz"}),
+    compression({algorithm: "brotliCompress", ext: ".br"}),
+    // Bundle analyzer - generates stats.html after build (run: pnpm build && open stats.html)
+    visualizer({
+      filename: "stats.html",
+      open: false, // Don't auto-open, just generate the file
+      gzipSize: true,
+      brotliSize: true,
+    }),
   ],
   // Support both VITE_ and REACT_APP_ prefixed environment variables
   envPrefix: ["VITE_", "REACT_APP_"],

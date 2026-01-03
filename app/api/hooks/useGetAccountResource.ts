@@ -3,7 +3,7 @@ import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {getAccountResource} from "..";
 import {ResponseError} from "../client";
 import {useNetworkValue, useAptosClient} from "../../global-config";
-import orderBy from "lodash/orderBy";
+import {orderBy} from "es-toolkit";
 
 export type ModuleMetadata = {
   name: string;
@@ -68,7 +68,7 @@ export function useGetAccountPackages(address: string) {
 
   const packages: PackageMetadata[] =
     registryData?.packages?.map((pkg): PackageMetadata => {
-      const sortedModules = orderBy(pkg.modules, "name");
+      const sortedModules = orderBy(pkg.modules, ["name"], ["asc"]);
       return {
         name: pkg.name,
         modules: sortedModules,
@@ -79,5 +79,5 @@ export function useGetAccountPackages(address: string) {
       };
     }) || [];
 
-  return orderBy(packages, "name");
+  return orderBy(packages, ["name"], ["asc"]);
 }

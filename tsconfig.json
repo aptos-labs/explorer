@@ -14,7 +14,11 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Linting - relaxed for migration */
+    /* Linting - can enable stricter options incrementally:
+     * "verbatimModuleSyntax": true,      // Requires `import type` for types
+     * "noUncheckedIndexedAccess": true,  // Safer array access
+     * "exactOptionalPropertyTypes": true // Stricter optional props
+     */
     "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
