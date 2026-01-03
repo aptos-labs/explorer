@@ -1,4 +1,4 @@
-import React, {lazy, Suspense} from "react";
+import React, {useState, useEffect} from "react";
 import {
   Stack,
   useMediaQuery,
@@ -11,10 +11,7 @@ import {useGetValidatorSetGeoData} from "../../api/hooks/useGetValidatorsGeoData
 import {useGetEpochTime} from "../../api/hooks/useGetEpochTime";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import {SkeletonTheme} from "react-loading-skeleton";
-
-// Lazy load Map component to avoid SSR issues with react-simple-maps/d3
-// These libraries have ESM/CommonJS compatibility issues during server rendering
-const Map = lazy(() => import("./Components/Map"));
+import type {ValidatorGeoGroup} from "../../api/hooks/useGetValidatorsGeoData";
 
 // Loading placeholder for the map
 function MapLoading() {
@@ -31,6 +28,43 @@ function MapLoading() {
       <CircularProgress />
     </Box>
   );
+}
+
+// Client-only Map wrapper - prevents any SSR import of react-simple-maps
+function ClientOnlyMap({
+  validatorGeoGroups,
+}: {
+  validatorGeoGroups: ValidatorGeoGroup[];
+}) {
+  const [MapComponent, setMapComponent] = useState<React.ComponentType<{
+    validatorGeoGroups: ValidatorGeoGroup[];
+  }> | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    // Only import on client side after confirming we're in browser
+    if (!isClient) return;
+
+    // Use dynamic path to prevent Vite SSR static analysis
+    const loadMap = async () => {
+      const {loadMapComponent} = await import("./Components/MapLoader");
+      const Map = await loadMapComponent();
+      if (Map) {
+        setMapComponent(() => Map);
+      }
+    };
+    loadMap();
+  }, [isClient]);
+
+  if (!MapComponent) {
+    return <MapLoading />;
+  }
+
+  return <MapComponent validatorGeoGroups={validatorGeoGroups} />;
 }
 
 export default function ValidatorsMap() {
@@ -59,9 +93,7 @@ export default function ValidatorsMap() {
           sx={{backgroundColor: backgroundColor}}
           overflow="hidden"
         >
-          <Suspense fallback={<MapLoading />}>
-            <Map validatorGeoGroups={validatorGeoGroups} />
-          </Suspense>
+          <ClientOnlyMap validatorGeoGroups={validatorGeoGroups} />
           <MapMetrics
             validatorGeoMetric={validatorGeoMetric}
             isOnMobile={isOnMobile}
@@ -81,9 +113,7 @@ export default function ValidatorsMap() {
             isOnMobile={isOnMobile}
             isSkeletonLoading={isSkeletonLoading}
           />
-          <Suspense fallback={<MapLoading />}>
-            <Map validatorGeoGroups={validatorGeoGroups} />
-          </Suspense>
+          <ClientOnlyMap validatorGeoGroups={validatorGeoGroups} />
         </Stack>
       )}
     </SkeletonTheme>
