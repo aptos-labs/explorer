@@ -148,12 +148,14 @@ export default function VirtualizedTableBody({
         const row = rows[virtualItem.index];
         // Clone the row element and add measurement attributes
         if (React.isValidElement(row)) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return React.cloneElement(row as React.ReactElement<any>, {
-            key: virtualItem.key,
-            "data-index": virtualItem.index,
-            ref: virtualizer.measureElement,
-          });
+          return React.cloneElement(
+            row as React.ReactElement<Record<string, unknown>>,
+            {
+              key: virtualItem.key,
+              "data-index": virtualItem.index,
+              ref: virtualizer.measureElement,
+            },
+          );
         }
         return row;
       })}
