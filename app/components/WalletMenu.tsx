@@ -25,8 +25,9 @@ export default function WalletMenu({
   const id = popoverOpen ? "wallet-popover" : undefined;
 
   const onAccountOptionClicked = () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    handleNavigate && handleNavigate();
+    if (handleNavigate) {
+      handleNavigate();
+    }
     handlePopoverClose();
   };
 

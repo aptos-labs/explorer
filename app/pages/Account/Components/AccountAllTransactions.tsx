@@ -229,8 +229,7 @@ function CSVExportButton({
   };
 
   // Retry function with exponential backoff
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
-  const retryWithBackoff = async <T extends unknown>(
+  const retryWithBackoff = async <T,>(
     fn: () => Promise<T>,
     maxRetries: number = 3,
     baseDelay: number = 1000,

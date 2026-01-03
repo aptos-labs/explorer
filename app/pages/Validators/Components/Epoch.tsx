@@ -38,8 +38,8 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
         100,
         parseInt(((timePassedMs * 100) / epochIntervalSeconds).toFixed(0)),
       );
-      // eslint-disable-next-line react-hooks/purity
-      endTimestamp = Date.now() + timeRemaining;
+      // Use nowTimestamp for consistency (already computed above)
+      endTimestamp = nowTimestamp.getTime() + timeRemaining;
     }
 
     return {percentageComplete, endTimestamp};
