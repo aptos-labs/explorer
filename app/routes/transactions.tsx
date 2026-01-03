@@ -1,6 +1,7 @@
 import {createFileRoute} from "@tanstack/react-router";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import TransactionsPage from "../pages/Transactions/Index";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/transactions")({
   head: () => ({
@@ -28,5 +29,6 @@ export const Route = createFileRoute("/transactions")({
     ],
     links: [{rel: "canonical", href: `${BASE_URL}/transactions`}],
   }),
+  pendingComponent: PagePending,
   component: TransactionsPage,
 });

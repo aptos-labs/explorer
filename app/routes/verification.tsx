@@ -1,6 +1,7 @@
 import {createFileRoute} from "@tanstack/react-router";
 import VerificationPage from "../pages/Verification/Index";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/verification")({
   head: () => ({
@@ -34,5 +35,6 @@ export const Route = createFileRoute("/verification")({
     ],
     links: [{rel: "canonical", href: `${BASE_URL}/verification`}],
   }),
+  pendingComponent: PagePending,
   component: VerificationPage,
 });

@@ -1,7 +1,11 @@
 export {useColorMode, ProvideColorMode} from "./color-mode";
+// Re-export network state from global-config (consolidated state management)
 export {
-  GlobalStateProvider,
   useGlobalState,
   useNetworkName,
-} from "./global-state";
+  useNetworkSelector,
+  useNetworkValue,
+  useSdkV2Client,
+} from "../global-config";
+export type {GlobalState} from "../global-config";
 export {WalletAdapterProvider} from "./wallet-adapter";

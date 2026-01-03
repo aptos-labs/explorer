@@ -2,6 +2,7 @@ import {createFileRoute} from "@tanstack/react-router";
 import ValidatorPage from "../pages/DelegatoryValidator/index";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import {truncateAddress} from "../utils";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/validator/$address")({
   head: ({params}) => ({
@@ -36,5 +37,6 @@ export const Route = createFileRoute("/validator/$address")({
       {rel: "canonical", href: `${BASE_URL}/validator/${params.address}`},
     ],
   }),
+  pendingComponent: PagePending,
   component: ValidatorPage,
 });

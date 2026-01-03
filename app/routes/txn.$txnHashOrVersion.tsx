@@ -2,6 +2,7 @@ import {createFileRoute} from "@tanstack/react-router";
 import TransactionPage from "../pages/Transaction/Index";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import {truncateAddress} from "../utils";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/txn/$txnHashOrVersion")({
   head: ({params}) => ({
@@ -42,5 +43,6 @@ export const Route = createFileRoute("/txn/$txnHashOrVersion")({
       },
     ],
   }),
+  pendingComponent: PagePending,
   component: TransactionPage,
 });
