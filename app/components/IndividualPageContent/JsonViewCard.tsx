@@ -3,41 +3,10 @@ import React, {lazy, Suspense} from "react";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
 
-// Dynamically import react-json-view only on client side
-const ReactJson = lazy(() => import("react-json-view"));
+// Dynamically import @uiw/react-json-view only on client side (React 19 compatible)
+const JsonView = lazy(() => import("@uiw/react-json-view"));
 
-const TRANSPARENT = "rgba(0,0,0,0)";
-
-const GROUP_ARRAYS_AFTER_LENGTH = 100;
-const COLLAPSE_STRINGS_AFTER_LENGTH = 80;
 const MAX_CARD_HEIGHT = 500;
-
-function useJsonViewCardTheme() {
-  const theme = useTheme();
-  const textColor = theme.palette.primary.main;
-  const secondaryTextColor = alpha(theme.palette.primary.main, 0.3);
-
-  return {
-    scheme: "aptos_explorer",
-    author: "aptos",
-    base00: TRANSPARENT,
-    base01: textColor,
-    base02: secondaryTextColor, // line color
-    base03: textColor,
-    base04: secondaryTextColor, // item count color
-    base05: textColor,
-    base06: textColor,
-    base07: textColor, // key color
-    base08: textColor,
-    base09: textColor, // value and data type color
-    base0A: textColor,
-    base0B: textColor,
-    base0C: textColor,
-    base0D: secondaryTextColor, // object triangle color
-    base0E: secondaryTextColor, // array triangle color
-    base0F: textColor, // copy icon color
-  };
-}
 
 type JsonViewCardProps = {
   data: unknown;
@@ -50,7 +19,8 @@ export default function JsonViewCard({
 }: JsonViewCardProps) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
-  const jsonViewCardTheme = useJsonViewCardTheme();
+  const textColor = theme.palette.primary.main;
+  const secondaryTextColor = alpha(theme.palette.primary.main, 0.3);
 
   if (!data) {
     return <EmptyValue />;
@@ -67,21 +37,31 @@ export default function JsonViewCard({
       borderRadius={1}
     >
       <Suspense fallback={<CircularProgress size={24} />}>
-        <ReactJson
-          src={data}
-          theme={jsonViewCardTheme}
-          name={null}
-          collapseStringsAfterLength={COLLAPSE_STRINGS_AFTER_LENGTH}
-          displayObjectSize={false}
+        <JsonView
+          value={data as object}
+          collapsed={collapsedByDefault ? 1 : false}
           displayDataTypes={false}
-          quotesOnKeys={false}
-          groupArraysAfterLength={GROUP_ARRAYS_AFTER_LENGTH}
-          style={{
-            fontFamily: theme.typography.fontFamily,
-            fontWeight: theme.typography.fontWeightRegular,
-            fontSize: theme.typography.fontSize,
-          }}
-          collapsed={collapsedByDefault}
+          displayObjectSize={false}
+          enableClipboard={true}
+          style={
+            {
+              fontFamily: theme.typography.fontFamily,
+              fontSize: theme.typography.fontSize,
+              backgroundColor: "transparent",
+              // Custom colors using CSS variables
+              "--w-rjv-key-string": textColor,
+              "--w-rjv-type-string-color": textColor,
+              "--w-rjv-type-int-color": textColor,
+              "--w-rjv-type-float-color": textColor,
+              "--w-rjv-type-boolean-color": textColor,
+              "--w-rjv-type-null-color": secondaryTextColor,
+              "--w-rjv-arrow-color": secondaryTextColor,
+              "--w-rjv-brackets-color": secondaryTextColor,
+              "--w-rjv-colon-color": secondaryTextColor,
+              "--w-rjv-ellipsis-color": secondaryTextColor,
+              "--w-rjv-info-color": secondaryTextColor,
+            } as React.CSSProperties
+          }
         />
       </Suspense>
     </Box>

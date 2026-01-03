@@ -13,9 +13,10 @@
 import {useEffect, useMemo} from "react";
 // Universal import pattern for ESM/CJS compatibility
 import * as ReactHelmetAsync from "react-helmet-async";
-const Helmet =
-  (ReactHelmetAsync as {Helmet?: typeof ReactHelmetAsync.Helmet}).Helmet ??
-  (ReactHelmetAsync as {default?: typeof ReactHelmetAsync}).default?.Helmet;
+const Helmet = ((ReactHelmetAsync as {Helmet?: typeof ReactHelmetAsync.Helmet})
+  .Helmet ??
+  (ReactHelmetAsync as {default?: typeof ReactHelmetAsync}).default
+    ?.Helmet) as typeof ReactHelmetAsync.Helmet;
 
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../../lib/constants";
 

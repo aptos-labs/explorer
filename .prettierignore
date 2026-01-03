@@ -17,3 +17,4 @@ robots.txt
 *.toml
 *.txt
 app/routeTree.gen.ts
+.gitignore
