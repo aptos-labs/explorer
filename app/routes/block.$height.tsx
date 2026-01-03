@@ -1,6 +1,7 @@
 import {createFileRoute} from "@tanstack/react-router";
 import BlockPage from "../pages/Block/Index";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/block/$height")({
   head: ({params}) => ({
@@ -31,5 +32,6 @@ export const Route = createFileRoute("/block/$height")({
     ],
     links: [{rel: "canonical", href: `${BASE_URL}/block/${params.height}`}],
   }),
+  pendingComponent: PagePending,
   component: BlockPage,
 });

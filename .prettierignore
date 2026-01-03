@@ -18,3 +18,4 @@ robots.txt
 *.txt
 app/routeTree.gen.ts
 .gitignore
+_redirects

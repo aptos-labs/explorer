@@ -2,6 +2,7 @@ import {createFileRoute} from "@tanstack/react-router";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import {truncateAddress} from "../utils";
 import AccountPage from "../pages/Account/Index";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/object/$address")({
   head: ({params}) => ({
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/object/$address")({
     ],
     links: [{rel: "canonical", href: `${BASE_URL}/object/${params.address}`}],
   }),
+  pendingComponent: PagePending,
   component: ObjectPage,
 });
 

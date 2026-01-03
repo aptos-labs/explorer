@@ -1,6 +1,7 @@
 import {createFileRoute} from "@tanstack/react-router";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import CoinPage from "../pages/Coin/Index";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/coin/$struct")({
   head: ({params}) => ({
@@ -28,5 +29,6 @@ export const Route = createFileRoute("/coin/$struct")({
     ],
     links: [{rel: "canonical", href: `${BASE_URL}/coin/${params.struct}`}],
   }),
+  pendingComponent: PagePending,
   component: CoinPage,
 });

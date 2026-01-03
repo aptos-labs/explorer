@@ -2,6 +2,7 @@ import {createFileRoute} from "@tanstack/react-router";
 import TokenPage from "../pages/Token/Index";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import {truncateAddress} from "../utils";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/token/$tokenId")({
   head: ({params}) => ({
@@ -32,5 +33,6 @@ export const Route = createFileRoute("/token/$tokenId")({
     ],
     links: [{rel: "canonical", href: `${BASE_URL}/token/${params.tokenId}`}],
   }),
+  pendingComponent: PagePending,
   component: TokenPage,
 });

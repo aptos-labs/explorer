@@ -39,7 +39,6 @@ const TanStackRouterDevtools = isDev
 
 import {ProvideColorMode} from "../context/color-mode";
 import {GlobalConfigProvider} from "../global-config";
-import {GlobalStateProvider} from "../context/global-state";
 import {WalletAdapterProvider} from "../context/wallet-adapter";
 import {GraphqlClientProvider} from "../api/hooks/useGraphqlClient";
 import Header from "../components/layout/Header";
@@ -128,38 +127,36 @@ function RootComponent() {
               <ProvideColorMode>
                 <CssBaseline />
                 <GlobalConfigProvider>
-                  <GlobalStateProvider>
-                    <GraphqlClientProvider>
-                      <WalletAdapterProvider>
-                        <Box
-                          component="main"
+                  <GraphqlClientProvider>
+                    <WalletAdapterProvider>
+                      <Box
+                        component="main"
+                        sx={{
+                          minHeight: "100vh",
+                          backgroundColor: "transparent",
+                          flexGrow: 1,
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Header />
+                        <Container
+                          maxWidth="xl"
                           sx={{
-                            minHeight: "100vh",
-                            backgroundColor: "transparent",
-                            flexGrow: 1,
                             display: "flex",
                             flexDirection: "column",
+                            flexGrow: 4,
+                            paddingTop: "2rem",
                           }}
                         >
-                          <Header />
-                          <Container
-                            maxWidth="xl"
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              flexGrow: 4,
-                              paddingTop: "2rem",
-                            }}
-                          >
-                            <Suspense fallback={<Fallback />}>
-                              <Outlet />
-                            </Suspense>
-                          </Container>
-                          <Footer />
-                        </Box>
-                      </WalletAdapterProvider>
-                    </GraphqlClientProvider>
-                  </GlobalStateProvider>
+                          <Suspense fallback={<Fallback />}>
+                            <Outlet />
+                          </Suspense>
+                        </Container>
+                        <Footer />
+                      </Box>
+                    </WalletAdapterProvider>
+                  </GraphqlClientProvider>
                 </GlobalConfigProvider>
               </ProvideColorMode>
               {isDev && (

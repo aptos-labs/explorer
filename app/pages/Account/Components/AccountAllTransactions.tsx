@@ -246,17 +246,21 @@ function CSVExportButton({
         if (isRateLimit && attempt < maxRetries - 1) {
           // Exponential backoff: 1s, 2s, 4s for rate limits
           const delay = baseDelay * Math.pow(2, attempt);
-          console.warn(
-            `Rate limit hit, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`,
-          );
+          if (process.env.NODE_ENV === "development") {
+            console.warn(
+              `Rate limit hit, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`,
+            );
+          }
           await sleep(delay);
         } else if (!isRateLimit && attempt < maxRetries - 1) {
           // Shorter delay for other errors
           const delay = baseDelay * (attempt + 1);
-          console.warn(
-            `Error occurred, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`,
-            error,
-          );
+          if (process.env.NODE_ENV === "development") {
+            console.warn(
+              `Error occurred, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`,
+              error,
+            );
+          }
           await sleep(delay);
         } else {
           // Last attempt failed or non-retryable error
@@ -431,9 +435,11 @@ function CSVExportButton({
 
       // Log warning if some transactions failed
       if (failedVersions.length > 0) {
-        console.warn(
-          `Failed to fetch ${failedVersions.length} out of ${versions.length} transactions`,
-        );
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            `Failed to fetch ${failedVersions.length} out of ${versions.length} transactions`,
+          );
+        }
         logEvent("export_transactions_csv_partial", transactions.length, {
           address: address,
           exported_transactions: transactions.length.toString(),

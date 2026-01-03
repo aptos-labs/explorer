@@ -1,6 +1,7 @@
 import {createFileRoute} from "@tanstack/react-router";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import ValidatorsPage from "../pages/Validators/Index";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/validators")({
   head: () => ({
@@ -28,5 +29,6 @@ export const Route = createFileRoute("/validators")({
     ],
     links: [{rel: "canonical", href: `${BASE_URL}/validators`}],
   }),
+  pendingComponent: PagePending,
   component: ValidatorsPage,
 });

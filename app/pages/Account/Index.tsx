@@ -10,7 +10,7 @@ import LoadingModal from "../../components/LoadingModal";
 import Error from "./Error";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
 import {PetraVaultBanner} from "./Components/PetraVaultBanner";
-import {useNetworkName} from "../../context/global-state";
+import {useNetworkName} from "../../global-config";
 import {Network, Types} from "aptos";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 import {AccountAddress} from "@aptos-labs/ts-sdk";

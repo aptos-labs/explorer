@@ -140,8 +140,12 @@ export function useSearchParams(): [
       }
     });
 
-    // @ts-expect-error - TanStack Router's search type is complex
-    navigate({search: newSearch, replace: options?.replace});
+    // Navigate with search params - using type assertion for TanStack Router compatibility
+    // The search type is dynamically typed based on route definitions, but we need generic support
+    navigate({
+      search: newSearch as unknown as Parameters<typeof navigate>[0]["search"],
+      replace: options?.replace,
+    });
   };
 
   return [searchParams, setSearchParams];

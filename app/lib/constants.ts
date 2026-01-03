@@ -35,7 +35,9 @@ const apiKeys: ApiKeys = {
   testnet: import.meta.env.VITE_APTOS_TESTNET_API_KEY,
   devnet: import.meta.env.VITE_APTOS_DEVNET_API_KEY,
   decibel: import.meta.env.VITE_APTOS_DECIBEL_API_KEY,
-  shelbynet: import.meta.env.VITE_APTOS_SHELBYNET_API_KEY,
+  shelbynet:
+    import.meta.env.VITE_APTOS_SHELBYNET_API_KEY ||
+    "AG-MGQQAXV57YJVDQANQPBQDFJVFMUY912EC",
   local: import.meta.env.VITE_APTOS_LOCAL_API_KEY || undefined,
 };
 
