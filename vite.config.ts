@@ -28,6 +28,8 @@ export default defineConfig({
   envPrefix: ["VITE_", "REACT_APP_"],
   build: {
     sourcemap: true,
+    // Increase limit since gzipped sizes are reasonable (~200kB)
+    chunkSizeWarningLimit: 700,
   },
   // SSR configuration - handle packages with ESM/CommonJS compatibility issues
   ssr: {
@@ -61,6 +63,8 @@ export default defineConfig({
                 "@apollo/client",
                 "graphql",
               ],
+              // Wallet adapters - only needed for wallet interactions
+              "vendor-wallet": ["@aptos-labs/wallet-adapter-react"],
             },
           },
         },
