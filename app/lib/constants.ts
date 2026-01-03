@@ -31,21 +31,11 @@ type ApiKeys = {
  * These can be overridden via environment variables (VITE_APTOS_<NETWORK>_API_KEY)
  */
 const apiKeys: ApiKeys = {
-  mainnet:
-    import.meta.env.VITE_APTOS_MAINNET_API_KEY ||
-    "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
-  testnet:
-    import.meta.env.VITE_APTOS_TESTNET_API_KEY ||
-    "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
-  devnet:
-    import.meta.env.VITE_APTOS_DEVNET_API_KEY ||
-    "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
-  decibel:
-    import.meta.env.VITE_APTOS_DECIBEL_API_KEY ||
-    "AG-JAG5SGHTW6VICWAU1IAQ3ZTODVHBYDWGV",
-  shelbynet:
-    import.meta.env.VITE_APTOS_SHELBYNET_API_KEY ||
-    "AG-MGQQAXV57YJVDQANQPBQDFJVFMUY912EC",
+  mainnet: import.meta.env.VITE_APTOS_MAINNET_API_KEY,
+  testnet: import.meta.env.VITE_APTOS_TESTNET_API_KEY,
+  devnet: import.meta.env.VITE_APTOS_DEVNET_API_KEY,
+  decibel: import.meta.env.VITE_APTOS_DECIBEL_API_KEY,
+  shelbynet: import.meta.env.VITE_APTOS_SHELBYNET_API_KEY,
   local: import.meta.env.VITE_APTOS_LOCAL_API_KEY || undefined,
 };
 
