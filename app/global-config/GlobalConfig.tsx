@@ -63,12 +63,18 @@ export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
     return getNetworkNameFromCookie();
   });
 
-  // Update network when URL param changes
+  // Sync network state with URL param changes
+  // This effect is intentional - URL param is the source of truth when present
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     if (search?.network && isValidNetworkName(search.network)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+      // URL param takes priority - update state
       setNetworkNameState(search.network);
+    } else if (!search?.network) {
+      // URL param removed - revert to cookie value
+      setNetworkNameState(getNetworkNameFromCookie());
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [search?.network]);
 
   const setNetworkName = React.useCallback((name: NetworkName) => {

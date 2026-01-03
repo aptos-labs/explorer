@@ -2,6 +2,7 @@ import {createFileRoute} from "@tanstack/react-router";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import {truncateAddress} from "../utils";
 import FAPage from "../pages/FungibleAsset/Index";
+import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/fungible_asset/$address")({
   head: ({params}) => ({
@@ -39,5 +40,6 @@ export const Route = createFileRoute("/fungible_asset/$address")({
       {rel: "canonical", href: `${BASE_URL}/fungible_asset/${params.address}`},
     ],
   }),
+  pendingComponent: PagePending,
   component: FAPage,
 });

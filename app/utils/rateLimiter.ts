@@ -298,9 +298,11 @@ export async function retryWithBackoff<T>(
           30000, // max 30 seconds
         );
 
-        console.warn(
-          `Rate limit hit, retrying in ${Math.round(delay)}ms (attempt ${attempt + 1}/${maxRetries})`,
-        );
+        if (process.env.NODE_ENV === "development") {
+          console.warn(
+            `Rate limit hit, retrying in ${Math.round(delay)}ms (attempt ${attempt + 1}/${maxRetries})`,
+          );
+        }
 
         await new Promise((resolve) => setTimeout(resolve, delay));
       }

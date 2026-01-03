@@ -216,8 +216,8 @@ export const tryStandardizeAddress = (
     try {
       return standardizeAddress(address);
     } catch (e) {
-      if (logError) {
-        console.log("Failed to standardize address", address, e);
+      if (logError && process.env.NODE_ENV === "development") {
+        console.warn("Failed to standardize address", address, e);
       }
       return undefined;
     }
