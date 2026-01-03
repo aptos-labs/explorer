@@ -9,6 +9,7 @@ overrides:
   "@aptos-labs/wallet-standard": ^0.5.2
   "@aptos-labs/ts-sdk": 5.2.0
   d3-color: ">=3.1.0"
+  d3-interpolate: ">=3.0.0"
 
 importers:
   .:
@@ -4026,11 +4027,12 @@ packages:
         integrity: sha512-8pM1WGMLGFuhq9S+FpPURxic+gKzjluCD/CHTuUF3mXMeiCo0i6R0tO1s4+GArRFde96SLcW/kOFRjoAosPsFA==,
       }
 
-  d3-interpolate@2.0.1:
+  d3-interpolate@3.0.1:
     resolution:
       {
-        integrity: sha512-c5UhwwTs/yybcmTpAVqwSFl6vrQ8JZJoT5F7xNFK9pymv5C0Ymcc9/LIJHtYIggg/yS9YHw8i8O8tgb9pupjeQ==,
+        integrity: sha512-3bYs1rOD33uo8aqJfKP3JWPAibgw8Zm2+L9vBKEHJ2Rg+viTR7o5Mmv5mZcieN+FRYaAOWX5SJATX6k1PWz72g==,
       }
+    engines: {node: ">=12"}
 
   d3-selection@2.0.0:
     resolution:
@@ -11055,7 +11057,7 @@ snapshots:
     dependencies:
       d3-array: 2.12.1
 
-  d3-interpolate@2.0.1:
+  d3-interpolate@3.0.1:
     dependencies:
       d3-color: 3.1.0
 
@@ -11068,7 +11070,7 @@ snapshots:
       d3-color: 3.1.0
       d3-dispatch: 2.0.0
       d3-ease: 2.0.0
-      d3-interpolate: 2.0.1
+      d3-interpolate: 3.0.1
       d3-selection: 2.0.0
       d3-timer: 2.0.0
 
@@ -11076,7 +11078,7 @@ snapshots:
     dependencies:
       d3-dispatch: 2.0.0
       d3-drag: 2.0.0
-      d3-interpolate: 2.0.1
+      d3-interpolate: 3.0.1
       d3-selection: 2.0.0
       d3-transition: 2.0.0(d3-selection@2.0.0)
 
