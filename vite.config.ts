@@ -33,9 +33,13 @@ export default defineConfig({
   },
   // SSR configuration - handle packages with ESM/CommonJS compatibility issues
   ssr: {
-    // Packages that should NOT be externalized during SSR
-    // react-simple-maps and d3 libraries are lazy-loaded to avoid SSR issues
-    noExternal: [],
+    // Packages that should NOT be externalized during SSR (bundled instead)
+    // This ensures CJS packages are properly transformed for ESM SSR context
+    noExternal: [
+      "js-sha3", // CJS - crypto utilities
+      "react-helmet-async", // CJS/ESM hybrid
+      "react-countdown", // CJS with ESM entry
+    ],
   },
   // Environment-specific configuration
   environments: {
