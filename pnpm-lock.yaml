@@ -8,8 +8,17 @@ overrides:
   "@aptos-labs/aptos-client": ^2.1.0
   "@aptos-labs/wallet-standard": ^0.5.2
   "@aptos-labs/ts-sdk": 5.2.0
+  d3-array: ">=3.0.0"
   d3-color: ">=3.1.0"
+  d3-dispatch: ">=3.0.0"
+  d3-drag: ">=3.0.0"
+  d3-ease: ">=3.0.0"
+  d3-geo: ">=3.0.0"
   d3-interpolate: ">=3.0.0"
+  d3-selection: ">=3.0.0"
+  d3-timer: ">=3.0.0"
+  d3-transition: ">=3.0.0"
+  d3-zoom: ">=3.0.0"
 
 importers:
   .:
@@ -4051,11 +4060,12 @@ packages:
         integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==,
       }
 
-  d3-array@2.12.1:
+  d3-array@3.2.4:
     resolution:
       {
-        integrity: sha512-B0ErZK/66mHtEsR1TkPEEkwdy+WDesimkM5gpZr5Dsg54BiTA5RXtYW5qTLIAcekaS9xfZrzBLF/OAkB3Qn1YQ==,
+        integrity: sha512-tdQAmyA18i4J7wprpYq8ClcxZy3SC31QMeByyCFyRt7BVHdREQZ5lpzoe5mFEYZUWe+oq8HBvk9JjpibyEV4Jg==,
       }
+    engines: {node: ">=12"}
 
   d3-color@3.1.0:
     resolution:
@@ -4064,29 +4074,33 @@ packages:
       }
     engines: {node: ">=12"}
 
-  d3-dispatch@2.0.0:
+  d3-dispatch@3.0.1:
     resolution:
       {
-        integrity: sha512-S/m2VsXI7gAti2pBoLClFFTMOO1HTtT0j99AuXLoGFKO6deHDdnv6ZGTxSTTUTgO1zVcv82fCOtDjYK4EECmWA==,
+        integrity: sha512-rzUyPU/S7rwUflMyLc1ETDeBj0NRuHKKAcvukozwhshr6g6c5d8zh4c2gQjY2bZ0dXeGLWc1PF174P2tVvKhfg==,
       }
+    engines: {node: ">=12"}
 
-  d3-drag@2.0.0:
+  d3-drag@3.0.0:
     resolution:
       {
-        integrity: sha512-g9y9WbMnF5uqB9qKqwIIa/921RYWzlUDv9Jl1/yONQwxbOfszAWTCm8u7HOTgJgRDXiRZN56cHT9pd24dmXs8w==,
+        integrity: sha512-pWbUJLdETVA8lQNJecMxoXfH6x+mO2UQo8rSmZ+QqxcbyA3hfeprFgIT//HW2nlHChWeIIMwS2Fq+gEARkhTkg==,
       }
+    engines: {node: ">=12"}
 
-  d3-ease@2.0.0:
+  d3-ease@3.0.1:
     resolution:
       {
-        integrity: sha512-68/n9JWarxXkOWMshcT5IcjbB+agblQUaIsbnXmrzejn2O82n3p2A9R2zEB9HIEFWKFwPAEDDN8gR0VdSAyyAQ==,
+        integrity: sha512-wR/XK3D3XcLIZwpbvQwQ5fK+8Ykds1ip7A2Txe0yxncXSdq1L9skcG7blcedkOX+ZcgxGAmLX1FrRGbADwzi0w==,
       }
+    engines: {node: ">=12"}
 
-  d3-geo@2.0.2:
+  d3-geo@3.1.1:
     resolution:
       {
-        integrity: sha512-8pM1WGMLGFuhq9S+FpPURxic+gKzjluCD/CHTuUF3mXMeiCo0i6R0tO1s4+GArRFde96SLcW/kOFRjoAosPsFA==,
+        integrity: sha512-637ln3gXKXOwhalDzinUgY83KzNWZRKbYubaG+fGVuc/dxO64RRljtCTnf5ecMyE1RIdtqpkVcq0IbtU2S8j2Q==,
       }
+    engines: {node: ">=12"}
 
   d3-interpolate@3.0.1:
     resolution:
@@ -4095,31 +4109,35 @@ packages:
       }
     engines: {node: ">=12"}
 
-  d3-selection@2.0.0:
+  d3-selection@3.0.0:
     resolution:
       {
-        integrity: sha512-XoGGqhLUN/W14NmaqcO/bb1nqjDAw5WtSYb2X8wiuQWvSZUsUVYsOSkOybUrNvcBjaywBdYPy03eXHMXjk9nZA==,
+        integrity: sha512-fmTRWbNMmsmWq6xJV8D19U/gw/bwrHfNXxrIN+HfZgnzqTHp9jOmKMhsTUjXOJnZOdZY9Q28y4yebKzqDKlxlQ==,
       }
+    engines: {node: ">=12"}
 
-  d3-timer@2.0.0:
+  d3-timer@3.0.1:
     resolution:
       {
-        integrity: sha512-TO4VLh0/420Y/9dO3+f9abDEFYeCUr2WZRlxJvbp4HPTQcSylXNiL6yZa9FIUvV1yRiFufl1bszTCLDqv9PWNA==,
+        integrity: sha512-ndfJ/JxxMd3nw31uyKoY2naivF+r29V+Lc0svZxe1JvvIRmi8hUsrMvdOwgS1o6uBHmiz91geQ0ylPP0aj1VUA==,
       }
+    engines: {node: ">=12"}
 
-  d3-transition@2.0.0:
+  d3-transition@3.0.1:
     resolution:
       {
-        integrity: sha512-42ltAGgJesfQE3u9LuuBHNbGrI/AJjNL2OAUdclE70UE6Vy239GCBEYD38uBPoLeNsOhFStGpPI0BAOV+HMxog==,
+        integrity: sha512-ApKvfjsSR6tg06xrL434C0WydLr7JewBB3V+/39RMHsaXTOG0zmt/OAXeng5M5LBm0ojmxJrpomQVZ1aPvBL4w==,
       }
+    engines: {node: ">=12"}
     peerDependencies:
-      d3-selection: "2"
+      d3-selection: ">=3.0.0"
 
-  d3-zoom@2.0.0:
+  d3-zoom@3.0.0:
     resolution:
       {
-        integrity: sha512-fFg7aoaEm9/jf+qfstak0IYpnesZLiMX6GZvXtUSdv8RH2o4E2qeelgdU09eKS6wGuiGMfcnMI0nTIqWzRHGpw==,
+        integrity: sha512-b8AmV3kfQaqWAuacbPuNbL6vahnOJflOhexLzMMNLga62+/nh0JzvJ0aO/5a5MVgUFGS7Hu1P9P03o3fJkDCyw==,
       }
+    engines: {node: ">=12"}
 
   data-uri-to-buffer@4.0.1:
     resolution:
@@ -11053,49 +11071,49 @@ snapshots:
 
   csstype@3.2.3: {}
 
-  d3-array@2.12.1:
+  d3-array@3.2.4:
     dependencies:
       internmap: 1.0.1
 
   d3-color@3.1.0: {}
 
-  d3-dispatch@2.0.0: {}
+  d3-dispatch@3.0.1: {}
 
-  d3-drag@2.0.0:
+  d3-drag@3.0.0:
     dependencies:
-      d3-dispatch: 2.0.0
-      d3-selection: 2.0.0
+      d3-dispatch: 3.0.1
+      d3-selection: 3.0.0
 
-  d3-ease@2.0.0: {}
+  d3-ease@3.0.1: {}
 
-  d3-geo@2.0.2:
+  d3-geo@3.1.1:
     dependencies:
-      d3-array: 2.12.1
+      d3-array: 3.2.4
 
   d3-interpolate@3.0.1:
     dependencies:
       d3-color: 3.1.0
 
-  d3-selection@2.0.0: {}
+  d3-selection@3.0.0: {}
 
-  d3-timer@2.0.0: {}
+  d3-timer@3.0.1: {}
 
-  d3-transition@2.0.0(d3-selection@2.0.0):
+  d3-transition@3.0.1(d3-selection@3.0.0):
     dependencies:
       d3-color: 3.1.0
-      d3-dispatch: 2.0.0
-      d3-ease: 2.0.0
+      d3-dispatch: 3.0.1
+      d3-ease: 3.0.1
       d3-interpolate: 3.0.1
-      d3-selection: 2.0.0
-      d3-timer: 2.0.0
+      d3-selection: 3.0.0
+      d3-timer: 3.0.1
 
-  d3-zoom@2.0.0:
+  d3-zoom@3.0.0:
     dependencies:
-      d3-dispatch: 2.0.0
-      d3-drag: 2.0.0
+      d3-dispatch: 3.0.1
+      d3-drag: 3.0.0
       d3-interpolate: 3.0.1
-      d3-selection: 2.0.0
-      d3-transition: 2.0.0(d3-selection@2.0.0)
+      d3-selection: 3.0.0
+      d3-transition: 3.0.1(d3-selection@3.0.0)
 
   data-uri-to-buffer@4.0.1: {}
 
@@ -12710,9 +12728,9 @@ snapshots:
 
   react-simple-maps@3.0.0(prop-types@15.8.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
-      d3-geo: 2.0.2
-      d3-selection: 2.0.0
-      d3-zoom: 2.0.0
+      d3-geo: 3.1.1
+      d3-selection: 3.0.0
+      d3-zoom: 3.0.0
       prop-types: 15.8.1
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
