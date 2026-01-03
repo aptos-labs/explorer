@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// Log event with basic info
+// Log event with basic info (stub - parameters prefixed with _ indicate intentional non-use)
 export const useLogEventWithBasic = () => {
   return (
-    eventName: string,
-    value?: string | number | null,
-    extraMetadata?: Record<string, string> | null,
+    _eventName: string,
+    _value?: string | number | null,
+    _extraMetadata?: Record<string, string> | null,
   ) => {
-    // Do nothing for now
+    // Placeholder for future analytics implementation
   };
 };

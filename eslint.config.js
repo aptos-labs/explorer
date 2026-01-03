@@ -41,5 +41,17 @@ export default [
     plugins: {
       html: reactHtml,
     },
+
+    rules: {
+      // Allow unused variables/args with underscore prefix (common convention)
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+    },
   },
 ];

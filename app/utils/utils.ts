@@ -145,10 +145,8 @@ export function getEndpointFromUrl(url: string): string {
 
 export async function withRateLimit<T>(
   fn: () => Promise<T>,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _endpoint: string,
+  _endpoint: string, // Reserved for future rate limiting implementation
 ): Promise<T> {
-  // endpoint param reserved for future rate limiting implementation
   return fn();
 }
 
