@@ -29,6 +29,12 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
+  // SSR configuration - handle packages with ESM/CommonJS compatibility issues
+  ssr: {
+    // Packages that should NOT be externalized during SSR
+    // react-simple-maps and d3 libraries are lazy-loaded to avoid SSR issues
+    noExternal: [],
+  },
   // Environment-specific configuration
   environments: {
     client: {
