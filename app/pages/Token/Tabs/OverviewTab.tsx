@@ -1,6 +1,6 @@
 import {useParams} from "@tanstack/react-router";
 import {Box, Stack, Typography, CircularProgress} from "@mui/material";
-import React, {Fragment, useState, useEffect} from "react";
+import React, {Fragment, useState, useEffect, useMemo} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
@@ -55,41 +55,58 @@ function getDisplayUrl(url: string): string {
 // TODO: add more contents
 export default function OverviewTab({data}: OverviewTabProps) {
   const [imageState, setImageState] = useState<ImageState>("loading");
-  const [resolvedImageUrl, setResolvedImageUrl] = useState<string | null>(null);
   const [isLoadingMetadata, setIsLoadingMetadata] = useState(false);
+  const [fetchedImageUrl, setFetchedImageUrl] = useState<string | null>(null);
 
   const rawUrl = data?.token_uri ?? "";
   const metadataLoadUrl = getLoadUrl(rawUrl);
   const metadataDisplayUrl = getDisplayUrl(rawUrl);
 
   // Check if URL looks like it could be a direct image
-  const looksLikeDirectImage =
-    metadataLoadUrl &&
-    (metadataLoadUrl.endsWith(".png") ||
-      metadataLoadUrl.endsWith(".jpg") ||
-      metadataLoadUrl.endsWith(".jpeg") ||
-      metadataLoadUrl.endsWith(".gif") ||
-      metadataLoadUrl.endsWith(".webp") ||
-      metadataLoadUrl.endsWith(".svg"));
+  const looksLikeDirectImage = useMemo(
+    () =>
+      Boolean(
+        metadataLoadUrl &&
+        (metadataLoadUrl.endsWith(".png") ||
+          metadataLoadUrl.endsWith(".jpg") ||
+          metadataLoadUrl.endsWith(".jpeg") ||
+          metadataLoadUrl.endsWith(".gif") ||
+          metadataLoadUrl.endsWith(".webp") ||
+          metadataLoadUrl.endsWith(".svg")),
+      ),
+    [metadataLoadUrl],
+  );
 
-  // Fetch metadata JSON to extract image URL
+  // For direct images, use URL directly; for metadata URLs, use fetched URL
+  const resolvedImageUrl = looksLikeDirectImage
+    ? metadataLoadUrl
+    : fetchedImageUrl;
+
+  // Fetch metadata JSON to extract image URL (only for non-direct images)
   useEffect(() => {
-    // If it looks like a direct image URL, don't try to fetch as JSON
-    if (looksLikeDirectImage) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setResolvedImageUrl(metadataLoadUrl);
+    // Skip if it's a direct image URL or invalid
+    if (
+      looksLikeDirectImage ||
+      !metadataLoadUrl ||
+      !isValidUrl(metadataLoadUrl)
+    ) {
       return;
     }
 
-    if (!metadataLoadUrl || !isValidUrl(metadataLoadUrl)) {
-      return;
-    }
+    // Use AbortController for cleanup
+    const controller = new AbortController();
+    let isCancelled = false;
 
-    setIsLoadingMetadata(true);
-    setImageState("loading");
+    // Start loading - use a microtask to avoid synchronous setState in effect
+    queueMicrotask(() => {
+      if (!isCancelled) {
+        setIsLoadingMetadata(true);
+        setImageState("loading");
+      }
+    });
 
     // Try to fetch metadata as JSON
-    fetch(metadataLoadUrl)
+    fetch(metadataLoadUrl, {signal: controller.signal})
       .then((response) => {
         const contentType = response.headers.get("content-type");
         // If it's JSON, parse it and look for image field
@@ -107,26 +124,36 @@ export default function OverviewTab({data}: OverviewTabProps) {
         return response.json();
       })
       .then((metadata) => {
+        if (isCancelled) return;
         if (metadata._directImage) {
-          setResolvedImageUrl(metadataLoadUrl);
+          setFetchedImageUrl(metadataLoadUrl);
         } else if (metadata.image) {
           // Found image field in JSON metadata - normalize it for loading
-          setResolvedImageUrl(getLoadUrl(metadata.image));
+          setFetchedImageUrl(getLoadUrl(metadata.image));
         } else if (metadata.animation_url) {
           // Some NFTs use animation_url for the media
-          setResolvedImageUrl(getLoadUrl(metadata.animation_url));
+          setFetchedImageUrl(getLoadUrl(metadata.animation_url));
         } else {
           // No image field found, try using the URL directly
-          setResolvedImageUrl(metadataLoadUrl);
+          setFetchedImageUrl(metadataLoadUrl);
         }
       })
       .catch(() => {
         // Failed to parse as JSON, try using URL directly as image
-        setResolvedImageUrl(metadataLoadUrl);
+        if (!isCancelled) {
+          setFetchedImageUrl(metadataLoadUrl);
+        }
       })
       .finally(() => {
-        setIsLoadingMetadata(false);
+        if (!isCancelled) {
+          setIsLoadingMetadata(false);
+        }
       });
+
+    return () => {
+      isCancelled = true;
+      controller.abort();
+    };
   }, [metadataLoadUrl, looksLikeDirectImage]);
 
   const showImage = resolvedImageUrl && imageState !== "failed";

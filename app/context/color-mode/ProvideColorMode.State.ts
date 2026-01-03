@@ -1,4 +1,4 @@
-import {useMemo, useState, useEffect, useCallback} from "react";
+import {useMemo, useState, useEffect, useCallback, useRef} from "react";
 import {createTheme, responsiveFontSizes} from "@mui/material";
 import getDesignTokens from "../../themes/theme";
 import Cookies from "js-cookie";
@@ -16,47 +16,42 @@ const COLOR_MODE_COOKIE = "color_scheme";
  * Uses cookies instead of localStorage for SSR compatibility
  */
 const useProvideColorMode = () => {
-  // Initialize from cookie or default to light (avoids hydration mismatch)
+  // Initialize from cookie, system preference, or default to light
   const [mode, setMode] = useState<Mode>(() => {
-    // During SSR, we can't access cookies directly in useState initializer
-    // So we default to "light" and update in useEffect
+    // During SSR, default to light (will be overridden on client)
     if (typeof window === "undefined") {
       return "light";
     }
-    const savedMode = Cookies.get(COLOR_MODE_COOKIE) as Mode | null;
-    return savedMode === "dark" || savedMode === "light" ? savedMode : "light";
-  });
-
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  // Handle hydration and system preference
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsHydrated(true);
-
-    // Check for saved preference in cookie first
+    // Check cookie first
     const savedMode = Cookies.get(COLOR_MODE_COOKIE) as Mode | null;
     if (savedMode === "dark" || savedMode === "light") {
-      setMode(savedMode);
-      return;
+      return savedMode;
     }
-
-    // Fall back to system preference
+    // No cookie - check system preference
     const prefersDark = window.matchMedia(
       "(prefers-color-scheme: dark)",
     ).matches;
     const systemMode = prefersDark ? "dark" : "light";
-    setMode(systemMode);
+    // Persist system preference to cookie for SSR consistency
     Cookies.set(COLOR_MODE_COOKIE, systemMode, {
       expires: 365,
       sameSite: "lax",
       secure: window.location.protocol === "https:",
     });
+    return systemMode;
+  });
+
+  // Track hydration with a ref for system preference listener
+  const isHydrated = useRef(false);
+
+  // Mark as hydrated after first render
+  useEffect(() => {
+    isHydrated.current = true;
   }, []);
 
   // Listen for system preference changes
   useEffect(() => {
-    if (!isHydrated) return;
+    if (!isHydrated.current) return;
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = (e: MediaQueryListEvent) => {
