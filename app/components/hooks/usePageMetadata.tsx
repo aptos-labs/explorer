@@ -11,13 +11,7 @@
  */
 
 import {useEffect, useMemo} from "react";
-// Note: Using namespace import + fallback pattern due to CommonJS/ESM compatibility
-// issues with react-helmet-async in SSR. Named import fails during server rendering.
-import * as ReactHelmetAsync from "react-helmet-async";
-const Helmet =
-  ReactHelmetAsync.Helmet ||
-  (ReactHelmetAsync as unknown as {default: typeof ReactHelmetAsync}).default
-    ?.Helmet;
+import {Helmet} from "react-helmet-async";
 
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../../lib/constants";
 
