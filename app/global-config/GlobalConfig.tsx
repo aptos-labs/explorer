@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useMemo,
-  ReactNode,
-  useEffect,
-} from "react";
+import React, {createContext, useContext, useMemo, ReactNode} from "react";
 import {AptosClient, IndexerClient} from "aptos";
 import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import {useSearch} from "@tanstack/react-router";
@@ -55,30 +49,22 @@ export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
   // Get network from URL search params (takes priority)
   const search = useSearch({strict: false}) as {network?: string};
 
-  const [networkName, setNetworkNameState] = React.useState<NetworkName>(() => {
-    // URL param takes priority over cookie
-    if (search?.network && isValidNetworkName(search.network)) {
-      return search.network;
-    }
-    return getNetworkNameFromCookie();
-  });
+  // URL param network (if valid)
+  const networkFromUrl =
+    search?.network && isValidNetworkName(search.network)
+      ? search.network
+      : null;
 
-  // Sync network state with URL param changes
-  // This effect is intentional - URL param is the source of truth when present
-  useEffect(() => {
-    /* eslint-disable react-hooks/set-state-in-effect */
-    if (search?.network && isValidNetworkName(search.network)) {
-      // URL param takes priority - update state
-      setNetworkNameState(search.network);
-    } else if (!search?.network) {
-      // URL param removed - revert to cookie value
-      setNetworkNameState(getNetworkNameFromCookie());
-    }
-    /* eslint-enable react-hooks/set-state-in-effect */
-  }, [search?.network]);
+  // User's saved preference from cookie
+  const [savedNetworkName, setSavedNetworkName] = React.useState<NetworkName>(
+    () => getNetworkNameFromCookie(),
+  );
+
+  // URL param takes priority, falls back to saved preference
+  const networkName = networkFromUrl ?? savedNetworkName;
 
   const setNetworkName = React.useCallback((name: NetworkName) => {
-    setNetworkNameState(name);
+    setSavedNetworkName(name);
     setNetworkNameCookie(name);
   }, []);
 

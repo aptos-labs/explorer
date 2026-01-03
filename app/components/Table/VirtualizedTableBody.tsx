@@ -1,4 +1,4 @@
-import React, {useRef, useMemo} from "react";
+import React, {useRef, useMemo, useCallback} from "react";
 import {useVirtualizer} from "@tanstack/react-virtual";
 import {TableBody, TableBodyProps, SxProps, Theme} from "@mui/material";
 
@@ -71,8 +71,8 @@ export default function VirtualizedTableBody({
   // Only virtualize if we have more than the threshold
   const shouldVirtualize = rows.length > virtualizationThreshold;
 
-  // Find scrollable parent
-  const getScrollElement = () => {
+  // Find scrollable parent - memoized to satisfy react-hooks rules
+  const getScrollElement = useCallback(() => {
     if (scrollElementRef?.current) {
       return scrollElementRef.current;
     }
@@ -91,10 +91,10 @@ export default function VirtualizedTableBody({
       element = element.parentElement;
     }
     return null;
-  };
+  }, [scrollElementRef]);
 
-  // Note: TanStack Virtual's useVirtualizer returns functions that cannot be memoized,
-  // but this is safe for our use case as we're not passing these functions to memoized components
+  // TanStack Virtual's API returns unmemoizable functions by design.
+  // This is a known library limitation, not a code issue.
   // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: rows.length,
