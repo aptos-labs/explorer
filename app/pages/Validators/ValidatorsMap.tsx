@@ -1,11 +1,37 @@
-import React from "react";
-import {Stack, useMediaQuery, useTheme} from "@mui/material";
-import Map from "./Components/Map";
+import React, {lazy, Suspense} from "react";
+import {
+  Stack,
+  useMediaQuery,
+  useTheme,
+  CircularProgress,
+  Box,
+} from "@mui/material";
 import MapMetrics from "./Components/MapMetrics";
 import {useGetValidatorSetGeoData} from "../../api/hooks/useGetValidatorsGeoData";
 import {useGetEpochTime} from "../../api/hooks/useGetEpochTime";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import {SkeletonTheme} from "react-loading-skeleton";
+
+// Lazy load Map component to avoid SSR issues with react-simple-maps/d3
+// These libraries have ESM/CommonJS compatibility issues during server rendering
+const Map = lazy(() => import("./Components/Map"));
+
+// Loading placeholder for the map
+function MapLoading() {
+  return (
+    <Box
+      sx={{
+        width: "100%",
+        height: 450,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <CircularProgress />
+    </Box>
+  );
+}
 
 export default function ValidatorsMap() {
   const theme = useTheme();
@@ -33,7 +59,9 @@ export default function ValidatorsMap() {
           sx={{backgroundColor: backgroundColor}}
           overflow="hidden"
         >
-          <Map validatorGeoGroups={validatorGeoGroups} />
+          <Suspense fallback={<MapLoading />}>
+            <Map validatorGeoGroups={validatorGeoGroups} />
+          </Suspense>
           <MapMetrics
             validatorGeoMetric={validatorGeoMetric}
             isOnMobile={isOnMobile}
@@ -53,7 +81,9 @@ export default function ValidatorsMap() {
             isOnMobile={isOnMobile}
             isSkeletonLoading={isSkeletonLoading}
           />
-          <Map validatorGeoGroups={validatorGeoGroups} />
+          <Suspense fallback={<MapLoading />}>
+            <Map validatorGeoGroups={validatorGeoGroups} />
+          </Suspense>
         </Stack>
       )}
     </SkeletonTheme>
