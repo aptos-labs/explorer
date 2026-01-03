@@ -114,10 +114,8 @@ function StakeOperationDialogContent({
   const {amount, setAmount, renderAmountTextField, validateAmountInput} =
     useAmountInput(stakeOperation);
 
-  const [
-    isTransactionSucceededDialogOpen,
-    setIsTransactionSucceededDialogOpen,
-  ] = useState<boolean>(false);
+  // Track which transaction hash has been dismissed (instead of a boolean that needs reset)
+  const [dismissedTxHash, setDismissedTxHash] = useState<string | null>(null);
 
   // Calculate values during render instead of using useEffect
   const transactionHash = transactionResponse?.transactionSubmitted
@@ -182,22 +180,35 @@ function StakeOperationDialogContent({
     clearTransactionResponse();
   };
 
+  // Get current transaction hash (only if submitted)
+  const currentTxHash =
+    transactionResponse?.transactionSubmitted === true
+      ? transactionResponse.transactionHash
+      : null;
+
   const onCloseTransactionSucceededDialog = () => {
-    setIsTransactionSucceededDialogOpen(false);
+    // Mark this specific transaction as dismissed
+    if (currentTxHash) {
+      setDismissedTxHash(currentTxHash);
+    }
     window.location.reload();
   };
 
+  // Close the main dialog when transaction succeeds
   useEffect(() => {
-    if (transactionResponse?.transactionSubmitted) {
+    if (transactionResponse?.transactionSubmitted === true && isDialogOpen) {
       handleDialogClose();
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsTransactionSucceededDialogOpen(true);
     }
   }, [
-    transactionResponse,
+    transactionResponse?.transactionSubmitted,
+    isDialogOpen,
     handleDialogClose,
-    setIsTransactionSucceededDialogOpen,
   ]);
+
+  // Derive success dialog visibility: show if transaction submitted AND not dismissed
+  // A new transaction (different hash) will show even if previous was dismissed
+  const isTransactionSucceededDialogOpen =
+    currentTxHash !== null && currentTxHash !== dismissedTxHash;
 
   const getAmount = () => {
     const stakedAmount = Number(stakes[0]) / OCTA;
