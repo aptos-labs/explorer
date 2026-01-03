@@ -1,2 +1,5 @@
-/proposals/*  https://governance.aptosfoundation.org
-/*    /index.html   200 
+# Redirect proposals to governance site
+/proposals/*  https://governance.aptosfoundation.org  301
+
+# Note: SSR routing is handled by TanStack Start via Netlify Functions
+# No SPA fallback needed - the Netlify plugin handles this automatically

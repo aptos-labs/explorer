@@ -1,0 +1,165 @@
+# Aptos Explorer - Full Documentation for LLMs
+
+## About Aptos
+
+Aptos is a Layer 1 blockchain built with Move, a safe and flexible programming language originally developed at Meta. The Aptos blockchain is designed for scalability, safety, and upgradeability.
+
+### Key Aptos Concepts
+
+- **Move Language**: A resource-oriented programming language for smart contracts
+- **Accounts**: Identified by 32-byte addresses (64 hex characters, prefixed with 0x)
+- **Resources**: Typed data stored under accounts, defined by Move modules
+- **Modules**: Smart contract code deployed on-chain
+- **Transactions**: Signed messages that modify blockchain state
+- **Events**: Structured logs emitted during transaction execution
+- **Gas**: Computation and storage fees paid in APT (native token)
+
+## Explorer Page Types
+
+### Transaction Pages (`/txn/{version}` or `/txn/{hash}`)
+
+Displays:
+- Transaction version (sequential ID)
+- Transaction hash (unique identifier)
+- Sender address
+- Status (success/failure)
+- Gas used and gas unit price
+- Timestamp
+- Transaction type (user_transaction, block_metadata, state_checkpoint, etc.)
+- Payload (function called, arguments)
+- Events emitted
+- State changes (resource modifications)
+
+### Account Pages (`/account/{address}`)
+
+Tabs include:
+- **Info**: Account sequence number, authentication key
+- **Resources**: Move resources stored under the account
+- **Modules**: Smart contract code deployed by this account
+- **Transactions**: Transaction history for this account
+- **Tokens**: NFTs owned by this account
+- **Coins**: Fungible token balances
+
+### Block Pages (`/block/{height}`)
+
+Displays:
+- Block height
+- Block hash
+- Timestamp
+- First and last transaction versions
+- Number of transactions
+- Validator that proposed the block
+
+### Validator Pages (`/validators`)
+
+Shows:
+- Active validator set
+- Voting power distribution
+- Performance metrics (liveness, rewards)
+- Geographic distribution
+- Staking information
+
+### Analytics Pages (`/analytics`)
+
+Charts and metrics for:
+- Daily active users
+- Transaction volume
+- Gas consumption
+- TPS (transactions per second)
+- Total supply and staking statistics
+- New accounts created
+
+## Common Query Parameters
+
+- `network` - Select network: mainnet, testnet, devnet
+- `tab` - Select tab on multi-tab pages
+- `page` - Pagination for list views
+
+## Data Types
+
+### Addresses
+- 32 bytes, displayed as 64 hex characters
+- Always prefixed with `0x`
+- Example: `0x1` (core framework), `0x4` (token standard)
+
+### Transaction Versions
+- Sequential integers starting from 0
+- Unique identifier for each transaction
+- Current mainnet version: billions
+
+### Transaction Hashes
+- 32-byte SHA3-256 hash
+- Displayed as 64 hex characters with `0x` prefix
+
+### Timestamps
+- Microseconds since Unix epoch
+- Displayed in human-readable format with timezone
+
+### Amounts
+- Stored as integers in smallest unit (Octas for APT)
+- 1 APT = 100,000,000 Octas (10^8)
+- Display conversion handled by explorer
+
+## Move Resource Types
+
+Common resource types shown in explorer:
+
+- `0x1::coin::CoinStore<T>` - Token balance for coin type T
+- `0x1::account::Account` - Basic account information
+- `0x1::staking_contract::StakingContract` - Staking delegation
+- `0x4::token::Token` - NFT token data
+- `0x4::collection::Collection` - NFT collection data
+- `0x1::fungible_asset::Metadata` - Fungible asset metadata
+
+## API Endpoints Used
+
+The explorer uses these Aptos APIs:
+
+### REST API (Node)
+- `GET /accounts/{address}` - Account info
+- `GET /accounts/{address}/resources` - Account resources
+- `GET /accounts/{address}/modules` - Account modules
+- `GET /transactions` - Transaction list
+- `GET /transactions/by_hash/{hash}` - Transaction by hash
+- `GET /transactions/by_version/{version}` - Transaction by version
+- `GET /blocks/by_height/{height}` - Block by height
+
+### Indexer GraphQL API
+- Account transactions
+- Token ownership
+- Collection data
+- Event history
+- Aggregated analytics
+
+## Technical Stack
+
+- **Frontend**: React with TypeScript
+- **Routing**: TanStack Router (file-based routing)
+- **Data Fetching**: TanStack Query (React Query)
+- **UI**: Material-UI (MUI)
+- **Styling**: Emotion CSS-in-JS
+- **Build**: Vite
+- **Deployment**: Netlify with SSR
+
+## SEO and Accessibility
+
+- Server-side rendering for initial page load
+- Structured data (JSON-LD) for search engines
+- Open Graph and Twitter Card meta tags
+- Semantic HTML structure
+- Responsive design for all devices
+
+## Rate Limiting
+
+The explorer implements client-side rate limiting to prevent API abuse:
+- Requests are queued and throttled
+- Cached responses are served when available
+- Errors are handled gracefully with retry logic
+
+## Contributing
+
+The explorer is open source:
+- Repository: https://github.com/aptos-labs/explorer
+- Issues and PRs welcome
+- MIT License
+

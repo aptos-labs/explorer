@@ -14,3 +14,8 @@ robots.txt
 *.ico
 *.png
 *.sh
+*.toml
+*.txt
+app/routeTree.gen.ts
+.gitignore
+_redirects

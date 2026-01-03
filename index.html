@@ -1,41 +1,42 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <link
-      rel="icon"
-      href="/favicon-light.svg"
-      type="image/svg+xml"
-      media="(prefers-color-scheme: light)"
-    />
-    <!-- Favicon for dark mode -->
-    <link
-      rel="icon"
-      href="/favicon-dark.svg"
-      type="image/svg+xml"
-      media="(prefers-color-scheme: dark)"
-    />
-    <!-- Default/fallback favicon -->
-    <link rel="icon" href="/favicon-light.svg" type="image/svg+xml" />
-    <!-- ICO fallback for legacy browsers -->
-    <link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16" />
-    <!-- Apple Touch Icon for iOS -->
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <meta name="theme-color" content="#0a0a0a" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
+    <title>Aptos Explorer</title>
+    <meta name="title" content="Aptos Explorer" />
     <meta
       name="description"
-      content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network."
+      content="Explore transactions, accounts, blocks, validators, and activity on the Aptos blockchain. The official block explorer for the Aptos network."
     />
-    <!-- Open Graph meta tags -->
+    <meta
+      name="keywords"
+      content="Aptos, blockchain, explorer, web3, crypto, transactions, accounts, blocks, validators, NFTs, tokens, staking"
+    />
+    <meta name="author" content="Aptos Labs" />
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="theme-color"
+      content="#000000"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta
+      name="theme-color"
+      content="#ffffff"
+      media="(prefers-color-scheme: light)"
+    />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aptos Explorer" />
+    <meta property="og:url" content="https://explorer.aptoslabs.com/" />
     <meta property="og:title" content="Aptos Explorer" />
     <meta
       property="og:description"
-      content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network."
+      content="Explore transactions, accounts, blocks, validators, and activity on the Aptos blockchain. The official block explorer for the Aptos network."
     />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://explorer.aptoslabs.com/" />
-    <meta property="og:site_name" content="Aptos Explorer" />
     <meta
       property="og:image"
       content="https://explorer.aptoslabs.com/og-image.png"
@@ -44,66 +45,36 @@
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content="Aptos Explorer - Blockchain Explorer"
+      content="Aptos Explorer - Blockchain Explorer for Aptos"
     />
+    <meta property="og:locale" content="en_US" />
 
-    <!-- Twitter Card meta tags -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Aptos" />
+    <meta name="twitter:site" content="@AptosLabs" />
+    <meta name="twitter:creator" content="@AptosLabs" />
     <meta name="twitter:title" content="Aptos Explorer" />
     <meta
       name="twitter:description"
-      content="Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network."
+      content="Explore transactions, accounts, blocks, validators, and activity on the Aptos blockchain."
     />
     <meta
       name="twitter:image"
       content="https://explorer.aptoslabs.com/og-image.png"
     />
+    <meta
+      name="twitter:image:alt"
+      content="Aptos Explorer - Blockchain Explorer for Aptos"
+    />
 
-    <!-- Canonical URL -->
+    <!-- Canonical -->
     <link rel="canonical" href="https://explorer.aptoslabs.com/" />
 
-    <!-- Structured Data (JSON-LD) for SEO -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Aptos Explorer",
-        "alternateName": "Aptos Block Explorer",
-        "url": "https://explorer.aptoslabs.com",
-        "description": "Explore transactions, accounts, events, nodes, gas fees and other network activity within the Aptos Network.",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": {
-            "@type": "EntryPoint",
-            "urlTemplate": "https://explorer.aptoslabs.com/?search={search_term_string}"
-          },
-          "query-input": "required name=search_term_string"
-        },
-        "publisher": {
-          "@type": "Organization",
-          "name": "Aptos Labs",
-          "url": "https://aptoslabs.com",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://explorer.aptoslabs.com/favicon-light.svg"
-          },
-          "sameAs": [
-            "https://twitter.com/Aptos",
-            "https://github.com/aptos-labs",
-            "https://discord.gg/aptoslabs"
-          ]
-        }
-      }
-    </script>
+    <!-- Preconnect to API (reduces connection latency for first API calls) -->
+    <link rel="preconnect" href="https://api.mainnet.aptoslabs.com" />
+    <link rel="dns-prefetch" href="https://api.mainnet.aptoslabs.com" />
 
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="/manifest.json" />
-    <title>Aptos Explorer</title>
-    <!-- IBM Plex fonts from Google Fonts -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -111,34 +82,53 @@
       rel="stylesheet"
     />
 
-    <!-- Geo Blocking script from geotargetly.com -->
-    <script>
-      (function (g, e, o, t, a, r, ge, tl, y) {
-        t = g.getElementsByTagName(o)[0];
-        y = g.createElement(e);
-        y.async = true;
-        y.src =
-          "https://g9904216750.co/gb?id=-NkqVZbqVT7_Wp1sgHo5&refurl=" +
-          g.referrer +
-          "&winurl=" +
-          encodeURIComponent(window.location);
-        t.parentNode.insertBefore(y, t);
-      })(document, "script", "head");
+    <!-- Favicons -->
+    <link
+      rel="icon"
+      href="/favicon-light.svg"
+      type="image/svg+xml"
+      media="(prefers-color-scheme: light)"
+    />
+    <link
+      rel="icon"
+      href="/favicon-dark.svg"
+      type="image/svg+xml"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link rel="icon" href="/favicon-light.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Aptos Explorer",
+        "url": "https://explorer.aptoslabs.com/",
+        "description": "Explore transactions, accounts, blocks, validators, and activity on the Aptos blockchain.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Aptos Labs",
+          "url": "https://aptoslabs.com/",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://explorer.aptoslabs.com/apple-touch-icon.png"
+          }
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://explorer.aptoslabs.com/?search={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
     </script>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <script type="module" src="/src/index.tsx"></script>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <script type="module" src="/app/client.tsx"></script>
   </body>
 </html>
