@@ -9,11 +9,7 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import * as ReactHelmetAsync from "react-helmet-async";
-const HelmetProvider =
-  ReactHelmetAsync.HelmetProvider ||
-  (ReactHelmetAsync as unknown as {default: typeof ReactHelmetAsync}).default
-    ?.HelmetProvider;
+import {HelmetProvider} from "react-helmet-async";
 
 // Check if in development mode
 const isDev = process.env.NODE_ENV === "development";
