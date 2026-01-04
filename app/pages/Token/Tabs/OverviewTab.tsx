@@ -239,7 +239,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
         />
       </ContentBox>
       <ContentBox>
-        {data.token_standard == "v2" ? (
+        {data.token_standard === "v2" ? (
           <Fragment>
             <ContentRow
               title={"Collection id:"}
