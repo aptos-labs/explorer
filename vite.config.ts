@@ -48,7 +48,6 @@ export default defineConfig({
     // Packages that should NOT be externalized during SSR (bundled instead)
     // This ensures CJS packages are properly transformed for ESM SSR context
     noExternal: [
-      "js-sha3", // CJS - crypto utilities
       "react-helmet-async", // CJS/ESM hybrid
       "react-countdown", // CJS with ESM entry
     ],

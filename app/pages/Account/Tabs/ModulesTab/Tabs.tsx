@@ -180,8 +180,7 @@ function ModulesTabs({
     if (eventName) {
       logEvent(eventName);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [value, logEvent]);
 
   return (
     <Box
