@@ -44,6 +44,9 @@ importers:
       "@mui/system":
         specifier: ^7.3.6
         version: 7.3.6(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.3))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.7)(react@19.2.3))(@types/react@19.2.7)(react@19.2.3))(@types/react@19.2.7)(react@19.2.3)
+      "@noble/hashes":
+        specifier: ^2.0.1
+        version: 2.0.1
       "@tanstack/react-query":
         specifier: ^5.90.16
         version: 5.90.16(react@19.2.3)
@@ -80,9 +83,6 @@ importers:
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
-      js-sha3:
-        specifier: ^0.9.3
-        version: 0.9.3
       pako:
         specifier: ^2.1.0
         version: 2.1.0
@@ -1612,6 +1612,13 @@ packages:
         integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==,
       }
     engines: {node: ^14.21.3 || >=16}
+
+  "@noble/hashes@2.0.1":
+    resolution:
+      {
+        integrity: sha512-XlOlEbQcE9fmuXxrVTXCTlG2nlRXa9Rj3rr5Ue/+tX+nmkgbX720YHh0VR3hBF9xDvwnb8D2shVGOwNx+ulArw==,
+      }
+    engines: {node: ">= 20.19.0"}
 
   "@nodelib/fs.scandir@2.1.5":
     resolution:
@@ -5719,12 +5726,6 @@ packages:
         integrity: sha512-ckb7kyVojGAnArouVR+5lBIuwU1fcrn7E/YYSd0FK7oIngAkMmRvHASLro9Zt5SQdWToaI66NybG+OGxPw/HlQ==,
       }
 
-  js-sha3@0.9.3:
-    resolution:
-      {
-        integrity: sha512-BcJPCQeLg6WjEx3FE591wVAevlli8lxsxm9/FzV4HXkV49TmBH38Yvrpce6fjbADGMKFrBMGTqrVz3qPIZ88Gg==,
-      }
-
   js-tokens@4.0.0:
     resolution:
       {
@@ -9520,6 +9521,8 @@ snapshots:
 
   "@noble/hashes@1.8.0": {}
 
+  "@noble/hashes@2.0.1": {}
+
   "@nodelib/fs.scandir@2.1.5":
     dependencies:
       "@nodelib/fs.stat": 2.0.5
@@ -12039,8 +12042,6 @@ snapshots:
   js-image-generator@1.0.4:
     dependencies:
       jpeg-js: 0.4.4
-
-  js-sha3@0.9.3: {}
 
   js-tokens@4.0.0: {}
 

@@ -5,11 +5,13 @@ import {useGetValidatorSet} from "./useGetValidatorSet";
 import {Network} from "../../constants";
 import {tryStandardizeAddress} from "../../utils";
 
-const MAINNET_VALIDATORS_DATA_URL =
-  "https://storage.googleapis.com/aptos-mainnet/explorer/validator_stats_v2.json?cache-version=0";
+// Cache version can be bumped via env var to force fresh data after deployments
+const VALIDATOR_STATS_CACHE_VERSION =
+  import.meta.env.VITE_VALIDATOR_STATS_CACHE_VERSION ?? "0";
 
-const TESTNET_VALIDATORS_DATA_URL =
-  "https://storage.googleapis.com/aptos-testnet/explorer/validator_stats_v2.json?cache-version=0";
+const MAINNET_VALIDATORS_DATA_URL = `https://storage.googleapis.com/aptos-mainnet/explorer/validator_stats_v2.json?cache-version=${VALIDATOR_STATS_CACHE_VERSION}`;
+
+const TESTNET_VALIDATORS_DATA_URL = `https://storage.googleapis.com/aptos-testnet/explorer/validator_stats_v2.json?cache-version=${VALIDATOR_STATS_CACHE_VERSION}`;
 
 // Cache durations for validator stats
 const VALIDATOR_STATS_STALE_TIME = 5 * 60 * 1000; // 5 minutes

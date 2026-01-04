@@ -27,6 +27,7 @@ export default function GoBack() {
   if (
     typeof window !== "undefined" &&
     window.history.state &&
+    typeof window.history.state.idx === "number" &&
     window.history.state.idx > 0
   ) {
     return BackButton(() => {
