@@ -23,10 +23,8 @@ import {
   HexInput,
   Network,
 } from "@aptos-labs/ts-sdk";
-// Note: Using default import + destructure pattern due to CommonJS/ESM compatibility
-// issues with js-sha3 in SSR. Named import fails with "not found" during server rendering.
-import sha3 from "js-sha3";
-const {sha3_256} = sha3;
+// Using @noble/hashes for better ESM support in SSR (replaces js-sha3)
+import {sha3_256} from "@noble/hashes/sha3.js";
 import {useGetFaPairedCoin} from "../../api/hooks/useGetFaPairedCoin";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
 import {

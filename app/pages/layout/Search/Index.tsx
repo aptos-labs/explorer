@@ -64,29 +64,12 @@ export default function HeaderSearch() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const inFlightRequestsRef = useRef<Set<string>>(new Set());
 
-  useEffect(() => {
-    // Abort previous request when input changes
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
+  // Store fetchData in a ref to avoid stale closures while keeping debounce behavior
+  const fetchDataRef = useRef<
+    (searchText: string, signal: AbortSignal) => Promise<void>
+  >(null!);
 
-    const abortController = new AbortController();
-    abortControllerRef.current = abortController;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-
-    if (mode !== "loading" && inputValue.trim().length > 0) {
-      timer = setTimeout(() => {
-        fetchData(inputValue.trim(), abortController.signal);
-      }, 500); // Debounce set to 500ms to balance responsiveness and API efficiency
-    }
-
-    return () => {
-      if (timer) clearTimeout(timer);
-      abortController.abort();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputValue]);
-
+  // Define fetchData and update the ref
   const fetchData = async (searchText: string, signal: AbortSignal) => {
     if (signal.aborted) return;
 
@@ -352,6 +335,33 @@ export default function HeaderSearch() {
     setMode("idle");
     setOpen(true);
   };
+
+  // Keep fetchDataRef updated with the latest fetchData function
+  fetchDataRef.current = fetchData;
+
+  // Debounced effect that triggers search on inputValue changes
+  useEffect(() => {
+    // Abort previous request when input changes
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    if (mode !== "loading" && inputValue.trim().length > 0) {
+      timer = setTimeout(() => {
+        // Call through ref to get latest fetchData without adding it to deps
+        fetchDataRef.current(inputValue.trim(), abortController.signal);
+      }, 500); // Debounce set to 500ms to balance responsiveness and API efficiency
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+      abortController.abort();
+    };
+  }, [inputValue, mode]);
 
   return (
     <Autocomplete

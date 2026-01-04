@@ -15,10 +15,8 @@ export function useGetAccountTokensCount(address: string) {
   return useQuery({
     queryKey: ["account_tokens_count", {addr64Hash}, networkValue],
     queryFn: async () => {
-      if (!addr64Hash || !indexerClient) {
-        return 0;
-      }
-      const response = await indexerClient.getAccountTokensCount(address);
+      // enabled flag ensures indexerClient exists when this runs
+      const response = await indexerClient!.getAccountTokensCount(address);
       return (
         response?.current_token_ownerships_v2_aggregate?.aggregate?.count ?? 0
       );
@@ -42,10 +40,8 @@ export function useGetAccountTokens(
   return useQuery<TokenOwnership[]>({
     queryKey: ["account_tokens", {addr64Hash, limit, offset}, networkValue],
     queryFn: async () => {
-      if (!addr64Hash || !indexerClient) {
-        return [];
-      }
-      const response = await indexerClient.getOwnedTokens(address, {
+      // enabled flag ensures indexerClient exists when this runs
+      const response = await indexerClient!.getOwnedTokens(address, {
         options: {
           limit,
           offset,
@@ -71,10 +67,8 @@ export function useGetTokenData(tokenDataId?: string) {
   return useQuery({
     queryKey: ["token_data", {tokenDataId}, networkValue],
     queryFn: async () => {
-      if (!tokenDataId || !indexerClient) {
-        return undefined;
-      }
-      const response = await indexerClient.getTokenData(tokenDataId);
+      // enabled flag ensures tokenDataId and indexerClient exist when this runs
+      const response = await indexerClient!.getTokenData(tokenDataId!);
       return response?.current_token_datas_v2;
     },
     enabled: !!tokenDataId && !!indexerClient,
@@ -87,11 +81,9 @@ export function useGetTokenOwners(tokenDataId?: string) {
   return useQuery({
     queryKey: ["token_owners", {tokenDataId}, networkValue],
     queryFn: async () => {
-      if (!tokenDataId || !indexerClient) {
-        return [];
-      }
-      const response = await indexerClient.getTokenOwnersData(
-        tokenDataId,
+      // enabled flag ensures tokenDataId and indexerClient exist when this runs
+      const response = await indexerClient!.getTokenOwnersData(
+        tokenDataId!,
         undefined,
         {},
       );
@@ -107,10 +99,9 @@ export function useGetTokenActivitiesCount(tokenDataId: string) {
   return useQuery({
     queryKey: ["token_activities_count", {tokenDataId}, networkValue],
     queryFn: async () => {
-      if (!indexerClient) {
-        return 0;
-      }
-      const response = await indexerClient.getTokenActivitiesCount(tokenDataId);
+      // enabled flag ensures indexerClient exists when this runs
+      const response =
+        await indexerClient!.getTokenActivitiesCount(tokenDataId);
       return response?.token_activities_v2_aggregate?.aggregate?.count ?? 0;
     },
     enabled: !!tokenDataId && !!indexerClient,
