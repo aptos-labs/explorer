@@ -93,16 +93,15 @@ function findCopyableElement(
  * - Copy status: "idle" (hovering), "copied" (success), "error" (failed)
  * - Hover timer: delays tooltip appearance by HOVER_DELAY_MS
  * - Feedback timer: auto-hides tooltip after COPIED_DISPLAY_MS
- *
- * @returns {Object} Tooltip state and event handlers
- * @returns {boolean} tooltipOpen - Whether tooltip should be visible
- * @returns {string} tooltipText - "Click to copy" | "Copied!" | "Failed to copy"
- * @returns {boolean} isError - Whether copy failed (for error styling)
- * @returns {HTMLElement|null} anchor - Element to anchor tooltip to
- * @returns {Function} handleClick - Click handler for copying
- * @returns {Function} handleMouseOver - Mouse enter handler for hover tooltip
- * @returns {Function} handleMouseOut - Mouse leave handler for copyable elements
- * @returns {Function} handleMouseLeave - Mouse leave handler for container
+ * @returns Tooltip state and event handlers:
+ *   - tooltipOpen: boolean
+ *   - tooltipText: string
+ *   - isError: boolean
+ *   - anchor: HTMLElement|null
+ *   - handleClick: Function
+ *   - handleMouseOver: Function
+ *   - handleMouseOut: Function
+ *   - handleMouseLeave: Function
  */
 function useCopyTooltip() {
   const [open, setOpen] = useState(false);
@@ -284,7 +283,7 @@ export default function JsonViewCard({
         open={tooltipOpen}
         anchorEl={anchor}
         placement="top"
-        sx={{zIndex: 1500}}
+        sx={{zIndex: theme.zIndex.tooltip}}
       >
         <Paper
           sx={{
