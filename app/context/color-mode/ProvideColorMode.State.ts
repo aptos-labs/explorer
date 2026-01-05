@@ -16,11 +16,11 @@ const COLOR_MODE_COOKIE = "color_scheme";
  * Uses cookies instead of localStorage for SSR compatibility
  */
 const useProvideColorMode = () => {
-  // Initialize from cookie, system preference, or default to light
+  // Initialize from cookie, system preference, or default to dark
   const [mode, setMode] = useState<Mode>(() => {
-    // During SSR, default to light (will be overridden on client)
+    // During SSR, default to dark (will be overridden on client)
     if (typeof window === "undefined") {
-      return "light";
+      return "dark";
     }
     // Check cookie first
     const savedMode = Cookies.get(COLOR_MODE_COOKIE) as Mode | null;
