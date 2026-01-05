@@ -33,3 +33,8 @@ yarn-error.log*
 dist/
 .tanstack/
 stats.html
+
+# Analysis/planning docs (not for version control)
+REMAINING_APTOS_DEPENDENCIES.md
+TRANSACTION_MIGRATION_ANALYSIS.md
+FUTURE_CLEANUP.md
