@@ -1,6 +1,6 @@
 import * as React from "react";
 import {useMemo} from "react";
-import {Box, Stack, useTheme} from "@mui/material";
+import {Box, Stack, useTheme, useMediaQuery, Paper} from "@mui/material";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -30,7 +30,11 @@ import {
   getTransactionAmount,
   getTransactionCounterparty,
 } from "../Transaction/utils";
-import {Link} from "../../routing";
+import {
+  Link,
+  useNavigate,
+  useAugmentToWithGlobalSearchParams,
+} from "../../routing";
 import {ArrowForwardOutlined, TextSnippetOutlined} from "@mui/icons-material";
 import Tooltip from "@mui/material/Tooltip";
 
@@ -230,6 +234,113 @@ const TransactionCells = Object.freeze({
   amountGas: TransactionAmountGasCell,
 });
 
+// Mobile card component for transactions
+type TransactionCardProps = {
+  transaction: Types.Transaction;
+  address?: string;
+};
+
+function TransactionCard({transaction, address}: TransactionCardProps) {
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const augmentTo = useAugmentToWithGlobalSearchParams();
+
+  const version = "version" in transaction ? transaction.version : null;
+  const timestamp =
+    "timestamp" in transaction
+      ? getTableFormattedTimestamp(transaction.timestamp)
+      : "-";
+
+  const handleClick = () => {
+    if (version) {
+      navigate({to: augmentTo(`/txn/${version}`)});
+    }
+  };
+
+  return (
+    <Paper
+      onClick={handleClick}
+      sx={{
+        px: 2,
+        py: 1.5,
+        mb: 1,
+        cursor: "pointer",
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: 2,
+        "&:hover": {
+          filter:
+            theme.palette.mode === "dark"
+              ? "brightness(0.9)"
+              : "brightness(0.99)",
+        },
+        "&:active": {
+          background: theme.palette.neutralShade.main,
+          transform: "translate(0,0.1rem)",
+        },
+      }}
+    >
+      {/* Row 1: Version, Type Icon, Timestamp */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{mb: 0.75}}
+      >
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography
+            sx={{fontWeight: 600, fontSize: "0.9rem", color: "primary.main"}}
+          >
+            {version}
+          </Typography>
+          <TableTransactionType type={transaction.type} />
+          {"success" in transaction && !transaction.success && (
+            <TableTransactionStatus success={false} />
+          )}
+        </Stack>
+        <Typography variant="caption" color="text.secondary">
+          {timestamp}
+        </Typography>
+      </Stack>
+
+      {/* Row 2: Function + Amount/Gas */}
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Box sx={{flex: 1, minWidth: 0, overflow: "hidden", mr: 2}}>
+          <TransactionFunction
+            transaction={transaction}
+            sx={{
+              fontSize: "0.85rem",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          />
+        </Box>
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+          sx={{flexShrink: 0}}
+        >
+          <TransactionAmount transaction={transaction} address={address} />
+          {"gas_used" in transaction && "gas_unit_price" in transaction && (
+            <Typography
+              variant="caption"
+              sx={{color: theme.palette.text.secondary, fontSize: "0.75rem"}}
+            >
+              <GasFeeValue
+                gasUsed={transaction.gas_used}
+                gasUnitPrice={transaction.gas_unit_price}
+                transactionData={transaction}
+                netGasCost
+              />
+            </Typography>
+          )}
+        </Stack>
+      </Stack>
+    </Paper>
+  );
+}
+
 type TransactionColumn = keyof typeof TransactionCells;
 
 const DEFAULT_COLUMNS: TransactionColumn[] = [
@@ -334,7 +445,11 @@ type TransactionsTableProps = {
 export default function TransactionsTable({
   transactions,
   columns = DEFAULT_COLUMNS,
+  address,
 }: TransactionsTableProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   const rows = useMemo(
     () =>
       transactions.map((transaction, i) => (
@@ -347,6 +462,22 @@ export default function TransactionsTable({
     [transactions, columns],
   );
 
+  // Mobile card view
+  if (isMobile) {
+    return (
+      <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+        {transactions.map((transaction, i) => (
+          <TransactionCard
+            key={`${i}-${transaction.hash}`}
+            transaction={transaction}
+            address={address}
+          />
+        ))}
+      </Box>
+    );
+  }
+
+  // Desktop table view
   return (
     <Box sx={{maxHeight: "800px", overflow: "auto"}}>
       <Table>
@@ -368,6 +499,25 @@ export default function TransactionsTable({
   );
 }
 
+// Mobile card component for user transactions (fetches data)
+type UserTransactionCardProps = {
+  version: number;
+  address?: string;
+};
+
+const UserTransactionCard = React.memo(function UserTransactionCard({
+  version,
+  address,
+}: UserTransactionCardProps) {
+  const {data: transaction, isError} = useGetTransaction(version.toString());
+
+  if (!transaction || isError) {
+    return null;
+  }
+
+  return <TransactionCard transaction={transaction} address={address} />;
+});
+
 type UserTransactionsTableProps = {
   versions: number[];
   columns?: TransactionColumn[];
@@ -379,6 +529,25 @@ export function UserTransactionsTable({
   columns = DEFAULT_COLUMNS,
   address,
 }: UserTransactionsTableProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  // Mobile card view
+  if (isMobile) {
+    return (
+      <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+        {versions.map((version, i) => (
+          <UserTransactionCard
+            key={`${i}-${version}`}
+            version={version}
+            address={address}
+          />
+        ))}
+      </Box>
+    );
+  }
+
+  // Desktop table view
   return (
     <Table>
       <TableHead>
