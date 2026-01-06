@@ -1,14 +1,18 @@
 import * as React from "react";
 import {useMemo} from "react";
-import {Box, Typography} from "@mui/material";
-import {Table, TableHead, TableRow} from "@mui/material";
+import {Box, Typography, Paper, Stack, useMediaQuery} from "@mui/material";
+import {Table, TableHead, TableRow, useTheme} from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../utils";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
-import {Link} from "../../../routing";
+import {
+  Link,
+  useNavigate,
+  useAugmentToWithGlobalSearchParams,
+} from "../../../routing";
 import {TokenOwnership} from "../../../api/hooks/useGetAccountTokens";
 import {labsBannedCollections} from "../../../constants";
 import {Dangerous} from "@mui/icons-material";
@@ -121,6 +125,121 @@ const TokenCells = Object.freeze({
   amount: AmountCell,
 });
 
+// Mobile card component for tokens
+function TokenCard({token}: {token: TokenOwnership}) {
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const augmentTo = useAugmentToWithGlobalSearchParams();
+
+  const propertyVersion = token?.property_version_v1;
+  const tokenDataId = token?.current_token_data?.token_data_id;
+  const linkTo = propertyVersion
+    ? `/token/${tokenDataId}?propertyVersion=${propertyVersion}`
+    : `/token/${tokenDataId}`;
+
+  const reason =
+    labsBannedCollections[token?.current_token_data?.collection_id ?? ""];
+
+  const handleClick = () => {
+    if (tokenDataId) {
+      navigate({to: augmentTo(linkTo)});
+    }
+  };
+
+  return (
+    <Paper
+      onClick={handleClick}
+      sx={{
+        px: 2,
+        py: 1.5,
+        mb: 1,
+        cursor: "pointer",
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: 2,
+        "&:hover": {
+          filter:
+            theme.palette.mode === "dark"
+              ? "brightness(0.9)"
+              : "brightness(0.99)",
+        },
+        "&:active": {
+          background: theme.palette.neutralShade.main,
+          transform: "translate(0,0.1rem)",
+        },
+      }}
+    >
+      {/* Row 1: Token Name, Type badge, Warning if banned */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{mb: 0.75}}
+      >
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+          sx={{flex: 1, minWidth: 0}}
+        >
+          <Typography
+            sx={{
+              fontWeight: 600,
+              fontSize: "0.9rem",
+              color: "primary.main",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {token?.current_token_data?.token_name}
+          </Typography>
+          {reason && (
+            <StyledTooltip
+              title={`This asset has been marked as a scam or dangerous. Reason: (${reason})`}
+            >
+              <Dangerous fontSize="small" color="error" />
+            </StyledTooltip>
+          )}
+        </Stack>
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+            flexShrink: 0,
+            backgroundColor: theme.palette.action.hover,
+            px: 0.75,
+            py: 0.25,
+            borderRadius: 1,
+            fontSize: "0.7rem",
+          }}
+        >
+          {token?.token_standard}
+        </Typography>
+      </Stack>
+
+      {/* Row 2: Collection, Amount */}
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography
+          sx={{
+            fontSize: "0.85rem",
+            color: "text.secondary",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            flex: 1,
+            mr: 2,
+          }}
+        >
+          {token?.current_token_data?.current_collection?.collection_name}
+        </Typography>
+        <Typography sx={{fontSize: "0.85rem", flexShrink: 0}}>
+          {token?.amount}
+        </Typography>
+      </Stack>
+    </Paper>
+  );
+}
+
 type Column = keyof typeof TokenCells;
 
 const DEFAULT_COLUMNS: Column[] = [
@@ -186,6 +305,9 @@ export function TokensTable({
   tokens,
   columns = DEFAULT_COLUMNS,
 }: TokensTableProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   // Memoize token rows for virtualization
   const tokenRows = useMemo(
     () =>
@@ -195,6 +317,26 @@ export function TokensTable({
     [tokens, columns],
   );
 
+  // Mobile card view
+  if (isMobile) {
+    return (
+      <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+        {tokens.length > 0 ? (
+          tokens.map((token, i) => <TokenCard key={i} token={token} />)
+        ) : (
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{textAlign: "center", py: 3}}
+          >
+            No tokens found
+          </Typography>
+        )}
+      </Box>
+    );
+  }
+
+  // Desktop table view
   return (
     <Box sx={{maxHeight: "800px", overflow: "auto"}}>
       <Table>
