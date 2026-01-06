@@ -8,6 +8,8 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Paper,
+  useMediaQuery,
 } from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
@@ -21,12 +23,17 @@ import {
   VerifiedCoinCell,
   verifiedLevel,
   VerifiedType,
+  getVerifiedMessageAndIcon,
 } from "../../../components/Table/VerifiedCell";
 import {getAssetSymbol} from "../../../utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
 import {Network} from "@aptos-labs/ts-sdk";
 import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
+import {
+  useNavigate,
+  useAugmentToWithGlobalSearchParams,
+} from "../../../routing";
 
 const CoinNameCell = React.memo(function CoinNameCell({name}: {name: string}) {
   return (
@@ -147,6 +154,140 @@ export type CoinDescriptionPlusAmount = {
   assetType: string;
   assetVersion: string;
 } & CoinDescription;
+
+// Mobile card component for coins
+function CoinCard({
+  coin,
+  networkName,
+}: {
+  coin: CoinDescriptionPlusAmount;
+  networkName: string;
+}) {
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const augmentTo = useAugmentToWithGlobalSearchParams();
+  const inMainnet = useGetInMainnet();
+
+  const assetId = coin.tokenAddress ?? coin.faAddress;
+  const isFA = coin.tokenStandard === "v2";
+  const linkTo = isFA ? `/fungible_asset/${assetId}` : `/coin/${assetId}`;
+
+  const formattedAmount =
+    coin.amount != null && coin.decimals != null
+      ? coin.amount / Math.pow(10, coin.decimals)
+      : null;
+
+  const symbol = getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol);
+
+  const verification = verifiedLevel(
+    {
+      id: assetId ?? "Unknown",
+      known: coin.chainId !== 0,
+      isBanned: coin.isBanned,
+      isInPanoraTokenList: coin.isInPanoraTokenList,
+      symbol: coin?.panoraSymbol ?? coin.symbol,
+    },
+    networkName,
+  );
+
+  const handleClick = () => {
+    if (assetId) {
+      navigate({to: augmentTo(linkTo)});
+    }
+  };
+
+  return (
+    <Paper
+      onClick={handleClick}
+      sx={{
+        px: 2,
+        py: 1.5,
+        mb: 1,
+        cursor: "pointer",
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: 2,
+        "&:hover": {
+          filter:
+            theme.palette.mode === "dark"
+              ? "brightness(0.9)"
+              : "brightness(0.99)",
+        },
+        "&:active": {
+          background: theme.palette.neutralShade.main,
+          transform: "translate(0,0.1rem)",
+        },
+      }}
+    >
+      {/* Row 1: Logo, Name, Type, Verified badge */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{mb: 0.75}}
+      >
+        <Stack
+          direction="row"
+          spacing={1.5}
+          alignItems="center"
+          sx={{flex: 1, minWidth: 0}}
+        >
+          {coin.logoUrl && (
+            <Box
+              component="img"
+              src={coin.logoUrl}
+              alt={coin.symbol}
+              sx={{width: 24, height: 24, borderRadius: "50%", flexShrink: 0}}
+            />
+          )}
+          <Typography
+            sx={{
+              fontWeight: 600,
+              fontSize: "0.9rem",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {coin.name}
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+              flexShrink: 0,
+              backgroundColor: theme.palette.action.hover,
+              px: 0.75,
+              py: 0.25,
+              borderRadius: 1,
+              fontSize: "0.7rem",
+            }}
+          >
+            {isFA ? "FA" : "Coin"}
+          </Typography>
+        </Stack>
+        {getVerifiedMessageAndIcon(verification.level).icon}
+      </Stack>
+
+      {/* Row 2: Amount + Symbol, USD Value */}
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography sx={{fontSize: "0.85rem"}}>
+          {formattedAmount !== null ? formattedAmount.toLocaleString() : "-"}
+          <Typography
+            component="span"
+            sx={{ml: 0.75, color: "text.secondary", fontSize: "0.85rem"}}
+          >
+            {symbol}
+          </Typography>
+        </Typography>
+        <Typography sx={{fontSize: "0.85rem", color: "text.secondary"}}>
+          {coin.usdValue !== null && inMainnet
+            ? `$${coin.usdValue.toLocaleString()}`
+            : ""}
+        </Typography>
+      </Stack>
+    </Paper>
+  );
+}
 
 export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   const theme = useTheme();
@@ -383,7 +524,34 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
     });
   }, [filteredCoins]);
 
-  // TODO: For FA, possibly add store as more info
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  // Mobile card view
+  if (isMobile) {
+    return (
+      <>
+        {verificationFilter !== CoinVerificationFilterType.NONE &&
+          filterSelector}
+        <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+          {filteredCoins.length > 0 ? (
+            filteredCoins.map((coin, i) => (
+              <CoinCard key={i} coin={coin} networkName={networkName} />
+            ))
+          ) : (
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              sx={{textAlign: "center", py: 3}}
+            >
+              No coins found
+            </Typography>
+          )}
+        </Box>
+      </>
+    );
+  }
+
+  // Desktop table view
   return (
     <>
       {verificationFilter !== CoinVerificationFilterType.NONE && filterSelector}
