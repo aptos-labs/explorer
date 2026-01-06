@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import {Box, Container, Grid, Stack, Typography, useTheme} from "@mui/material";
 import SvgIcon from "@mui/material/SvgIcon";
 import {Link} from "@tanstack/react-router";
+import {clearCache} from "../../utils/cacheManager";
 // Import the original Aptos logos
 import AptosLogoFullLight from "../../assets/svg/aptos_logo_full_light.svg?react";
 import AptosLogoFullDark from "../../assets/svg/aptos_logo_full_dark.svg?react";
@@ -56,6 +57,13 @@ const socialLinks = [
 export default function Footer() {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
+  const [cacheCleared, setCacheCleared] = useState(false);
+
+  const handleClearCache = () => {
+    clearCache();
+    setCacheCleared(true);
+    setTimeout(() => setCacheCleared(false), 2000);
+  };
 
   return (
     <Box
@@ -159,6 +167,23 @@ export default function Footer() {
                 >
                   Token & Address Verification
                 </Link>
+                <button
+                  onClick={handleClearCache}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "inherit",
+                    fontSize: "0.8rem",
+                    fontFamily:
+                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    cursor: "pointer",
+                    padding: 0,
+                    opacity: 0.7,
+                  }}
+                  title="Clear search cache"
+                >
+                  {cacheCleared ? "✓ Cleared" : "Clear Cache"}
+                </button>
               </Stack>
             </Grid>
           </Grid>

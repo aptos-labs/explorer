@@ -64,12 +64,29 @@ export default function HeaderSearch() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const inFlightRequestsRef = useRef<Set<string>>(new Set());
 
-  // Store fetchData in a ref to avoid stale closures while keeping debounce behavior
-  const fetchDataRef = useRef<
-    (searchText: string, signal: AbortSignal) => Promise<void>
-  >(null!);
+  useEffect(() => {
+    // Abort previous request when input changes
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
 
-  // Define fetchData and update the ref
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    let timer: number;
+
+    if (mode !== "loading" && inputValue.trim().length > 0) {
+      timer = setTimeout(() => {
+        fetchData(inputValue.trim(), abortController.signal);
+      }, 500) as unknown as number; // Debounce set to 500ms to balance responsiveness and API efficiency
+    }
+
+    return () => {
+      clearTimeout(timer);
+      abortController.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputValue]);
+
   const fetchData = async (searchText: string, signal: AbortSignal) => {
     if (signal.aborted) return;
 
@@ -128,7 +145,12 @@ export default function HeaderSearch() {
           // ANS names are definitive, can early exit
           if (isDefinitiveResult(result)) {
             const finalResults = filterSearchResults(resultsList);
-            await finalizeResults(finalResults, normalizedSearchText, cacheKey);
+            const groupedResults = groupSearchResults(finalResults);
+            await finalizeResults(
+              groupedResults,
+              normalizedSearchText,
+              cacheKey,
+            );
             return;
           }
         }
@@ -161,7 +183,8 @@ export default function HeaderSearch() {
         const definitiveResult = resultsList.find(isDefinitiveResult);
         if (definitiveResult) {
           const finalResults = filterSearchResults(resultsList);
-          await finalizeResults(finalResults, normalizedSearchText, cacheKey);
+          const groupedResults = groupSearchResults(finalResults);
+          await finalizeResults(groupedResults, normalizedSearchText, cacheKey);
           return;
         }
       } else if (inputType.is32Hex) {
@@ -231,19 +254,6 @@ export default function HeaderSearch() {
 
         const labelResults = handleLabelLookup(normalizedSearchText);
         resultsList.push(...labelResults);
-      }
-
-      // Always include label lookup for any text search
-      // This allows searching by label name (e.g., "Binance", "Aptos Labs")
-      // even when input might look like other types
-      if (!inputType.isAnsName && !inputType.isGeneric) {
-        const labelResults = handleLabelLookup(normalizedSearchText);
-        for (const labelResult of labelResults) {
-          // Only add if not already in results
-          if (!resultsList.some((r) => r?.to === labelResult.to)) {
-            resultsList.push(labelResult);
-          }
-        }
       }
 
       // Filter and deduplicate results
@@ -336,33 +346,6 @@ export default function HeaderSearch() {
     setOpen(true);
   };
 
-  // Keep fetchDataRef updated with the latest fetchData function
-  fetchDataRef.current = fetchData;
-
-  // Debounced effect that triggers search on inputValue changes
-  useEffect(() => {
-    // Abort previous request when input changes
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    const abortController = new AbortController();
-    abortControllerRef.current = abortController;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-
-    if (mode !== "loading" && inputValue.trim().length > 0) {
-      timer = setTimeout(() => {
-        // Call through ref to get latest fetchData without adding it to deps
-        fetchDataRef.current(inputValue.trim(), abortController.signal);
-      }, 500); // Debounce set to 500ms to balance responsiveness and API efficiency
-    }
-
-    return () => {
-      if (timer) clearTimeout(timer);
-      abortController.abort();
-    };
-  }, [inputValue, mode]);
-
   return (
     <Autocomplete
       open={open}
@@ -394,6 +377,7 @@ export default function HeaderSearch() {
       autoSelect={false}
       getOptionLabel={() => ""}
       filterOptions={(x) => x.filter((x) => !!x)}
+      getOptionDisabled={(option) => option.isGroupHeader === true}
       options={options}
       inputValue={inputValue}
       onInputChange={(event, newInputValue, reason) => {
@@ -429,21 +413,28 @@ export default function HeaderSearch() {
       }}
       renderOption={(props, option) => {
         if (option.isGroupHeader) {
+          // Don't spread props for group headers - render as non-interactive divider
           return (
             <li
-              {...props}
               key={props.id}
-              style={{pointerEvents: "none"}}
-              tabIndex={-1}
+              role="presentation"
+              style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                cursor: "default",
+              }}
             >
               <Typography
                 variant="caption"
                 sx={{
-                  px: 1.5,
-                  py: 0.5,
+                  display: "block",
+                  px: 2,
+                  py: 0.75,
                   fontWeight: 600,
                   textTransform: "uppercase",
-                  fontSize: "0.75rem",
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.05em",
                   color: "text.secondary",
                   backgroundColor: "action.hover",
                 }}
