@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from "react";
+import React, {useRef, useEffect, useCallback} from "react";
 import Toolbar from "@mui/material/Toolbar";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
@@ -25,7 +25,7 @@ import {addressFromWallet, sortPetraFirst} from "../../utils";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 
 export default function Header() {
-  const scrollTop = () => {
+  const scrollTop = useCallback(() => {
     const docElement = document.documentElement;
     const windowTop =
       (window.scrollY || docElement.scrollTop) - (docElement.clientTop || 0);
@@ -36,7 +36,7 @@ export default function Header() {
         behavior: "smooth",
       });
     }
-  };
+  }, []);
 
   const {toggleColorMode} = useColorMode();
   const theme = useTheme();
@@ -59,11 +59,12 @@ export default function Header() {
   useEffect(() => {
     if (
       account &&
+      wallet &&
       accountAddress &&
       walletAddressRef.current !== accountAddress
     ) {
       logEvent("wallet_connected", accountAddress, {
-        wallet_name: wallet!.name,
+        wallet_name: wallet.name,
         network_type: networkName,
       });
       sendToGTM({

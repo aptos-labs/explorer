@@ -17,6 +17,15 @@ import {
 import {hiddenNetworks, NetworkName, networks} from "../../constants";
 import {useNetworkSelector} from "../../global-config/GlobalConfig";
 
+// Moved outside component to avoid recreation on every render
+function DropdownIcon(props: SvgIconProps) {
+  return (
+    <SvgIcon {...props}>
+      <path d="M16.6,9.7l-2.9,3c-1,1-2.8,1-3.8,0l-2.6-3l-0.8,0.7l2.6,3c0.7,0.7,1.6,1.1,2.6,1.1c1,0,2-0.4,2.6-1.1l2.9-3 L16.6,9.7z" />
+    </SvgIcon>
+  );
+}
+
 function NetworkAndChainIdCached({
   networkName,
   chainId,
@@ -79,14 +88,6 @@ export default function NetworkSelect() {
     () => Object.keys(networks).filter((n) => !hiddenNetworks.includes(n)),
     [],
   );
-
-  function DropdownIcon(props: SvgIconProps) {
-    return (
-      <SvgIcon {...props}>
-        <path d="M16.6,9.7l-2.9,3c-1,1-2.8,1-3.8,0l-2.6-3l-0.8,0.7l2.6,3c0.7,0.7,1.6,1.1,2.6,1.1c1,0,2-0.4,2.6-1.1l2.9-3 L16.6,9.7z" />
-      </SvgIcon>
-    );
-  }
 
   return (
     <Box>
