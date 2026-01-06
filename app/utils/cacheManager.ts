@@ -7,6 +7,13 @@ const CACHE_PREFIX = "aptos_explorer_cache_";
 const MAX_CACHE_SIZE = 5 * 1024 * 1024; // 5MB limit
 const CACHE_VERSION = "1.0";
 
+/**
+ * Check if we're running in a browser environment
+ */
+function isBrowser(): boolean {
+  return typeof window !== "undefined" && typeof localStorage !== "undefined";
+}
+
 interface CacheItem<T = string> {
   value: T;
   expiry: number;
@@ -22,6 +29,8 @@ export function setLocalStorageWithExpiry<T = string>(
   value: T,
   ttl: number,
 ): void {
+  if (!isBrowser()) return;
+
   try {
     const now = Date.now();
     const item: CacheItem<T> = {
@@ -81,6 +90,8 @@ export function setLocalStorageWithExpiry<T = string>(
  * @returns Cached value or null if expired/not found
  */
 export function getLocalStorageWithExpiry<T = string>(key: string): T | null {
+  if (!isBrowser()) return null;
+
   try {
     const fullKey = `${CACHE_PREFIX}${key}`;
     const itemStr = localStorage.getItem(fullKey);
@@ -121,6 +132,8 @@ export function getLocalStorageWithExpiry<T = string>(key: string): T | null {
  * Remove an item from cache
  */
 export function removeLocalStorageItem(key: string): void {
+  if (!isBrowser()) return;
+
   try {
     localStorage.removeItem(`${CACHE_PREFIX}${key}`);
   } catch (error) {
@@ -132,6 +145,8 @@ export function removeLocalStorageItem(key: string): void {
  * Get total size of cache in bytes
  */
 function getCacheSize(): number {
+  if (!isBrowser()) return 0;
+
   let totalSize = 0;
   try {
     for (let i = 0; i < localStorage.length; i++) {
@@ -153,6 +168,8 @@ function getCacheSize(): number {
  * Clean up expired items from cache
  */
 function cleanupExpiredItems(): void {
+  if (!isBrowser()) return;
+
   const now = Date.now();
   const keysToRemove: string[] = [];
 
@@ -185,6 +202,8 @@ function cleanupExpiredItems(): void {
  * Evict oldest items until cache size is below limit
  */
 function evictOldestItems(targetSize: number): void {
+  if (!isBrowser()) return;
+
   const items: Array<{key: string; timestamp: number; size: number}> = [];
 
   try {
@@ -228,6 +247,8 @@ function evictOldestItems(targetSize: number): void {
  * Clear all cache items
  */
 export function clearCache(): void {
+  if (!isBrowser()) return;
+
   try {
     const keysToRemove: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
@@ -250,6 +271,10 @@ export function getCacheStats(): {
   totalSize: number;
   maxSize: number;
 } {
+  if (!isBrowser()) {
+    return {itemCount: 0, totalSize: 0, maxSize: MAX_CACHE_SIZE};
+  }
+
   let itemCount = 0;
   let totalSize = 0;
 
