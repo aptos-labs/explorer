@@ -237,26 +237,20 @@ export default function HeaderSearch() {
           }
         } else if (inputType.is32Hex) {
           // 32-byte hex (transaction hash or address)
-          // Try transaction first (fastest)
-          const txnResult = await handleTransaction(
-            normalizedSearchText,
-            sdkV2Client,
-            signal,
-          );
+          // Run txn + address lookups in parallel to avoid blocking address results
+          // behind a potentially-slow transaction lookup (common for 32-byte addresses).
+          const [txnResult, addressResults] = await Promise.all([
+            handleTransaction(normalizedSearchText, sdkV2Client, signal),
+            handleAddress(
+              normalizedSearchText,
+              sdkV2Client,
+              queryClient,
+              networkValue,
+              signal,
+            ),
+          ]);
           if (signal.aborted) return;
-          if (txnResult) {
-            resultsList.push(txnResult);
-          }
-
-          // Try address lookup
-          const addressResults = await handleAddress(
-            normalizedSearchText,
-            sdkV2Client,
-            queryClient,
-            networkValue,
-            signal,
-          );
-          if (signal.aborted) return;
+          if (txnResult) resultsList.push(txnResult);
           resultsList.push(...addressResults);
 
           // Coin lookup (fast, no API call)
