@@ -488,6 +488,10 @@ export async function handleEmojiCoinLookup(
  * Extract asset type from result label
  */
 function getResultType(result: SearchResult): string {
+  // Map coin and fungible-asset to unified "asset" category
+  if (result.type === "coin" || result.type === "fungible-asset") {
+    return "asset";
+  }
   if (result.type) {
     return result.type;
   }
@@ -495,17 +499,14 @@ function getResultType(result: SearchResult): string {
   if (label.startsWith("account") && !label.includes("address")) {
     return "account";
   }
-  if (label.startsWith("coin")) {
-    return "coin";
+  if (label.startsWith("coin") || label.startsWith("fungible asset")) {
+    return "asset"; // Combined coins and fungible assets
   }
   if (label.startsWith("transaction")) {
     return "transaction";
   }
   if (label.startsWith("block")) {
     return "block";
-  }
-  if (label.startsWith("fungible asset")) {
-    return "fungible-asset";
   }
   if (label.startsWith("object")) {
     return "object";
@@ -522,10 +523,9 @@ function getResultType(result: SearchResult): string {
 function getTypeDisplayName(type: string): string {
   const typeMap: Record<string, string> = {
     account: "Accounts",
-    coin: "Coins",
+    asset: "Assets", // Combined coins and fungible assets
     transaction: "Transactions",
     block: "Blocks",
-    "fungible-asset": "Fungible Assets",
     object: "Objects",
     address: "Addresses",
     other: "Other",
@@ -606,10 +606,9 @@ export function groupSearchResults(results: SearchResult[]): SearchResult[] {
     grouped.get(type)!.push(result);
   }
 
-  // Define priority order for types - coins and fungible assets first
+  // Define priority order for types - assets (coins/fungible assets) first
   const typeOrder = [
-    "coin",
-    "fungible-asset",
+    "asset",
     "account",
     "transaction",
     "block",
