@@ -49,13 +49,10 @@ function ClientOnlyMap({
     // Only import on client side after confirming we're in browser
     if (!isClient) return;
 
-    // Use dynamic path to prevent Vite SSR static analysis
+    // Use dynamic import directly to allow Vite to bundle it while keeping it client-only
     const loadMap = async () => {
-      const {loadMapComponent} = await import("./Components/MapLoader");
-      const Map = await loadMapComponent();
-      if (Map) {
-        setMapComponent(() => Map);
-      }
+      const module = await import("./Components/Map");
+      setMapComponent(() => module.default);
     };
     loadMap();
   }, [isClient]);
