@@ -26,16 +26,25 @@ function useCurrentNetwork(): string | undefined {
 
 /**
  * Custom useNavigate hook that preserves the network search param.
+ * Uses a ref to avoid recreating the callback when network changes.
  */
 export function useNavigate() {
   const tanstackNavigate = useTanStackNavigate();
   const currentNetwork = useCurrentNetwork();
 
+  // Store current network in ref to avoid callback recreation
+  const networkRef = React.useRef(currentNetwork);
+  React.useEffect(() => {
+    networkRef.current = currentNetwork;
+  }, [currentNetwork]);
+
   return React.useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (options: any) => {
+      const network = networkRef.current;
+
       // If there's a current network, preserve it
-      if (currentNetwork) {
+      if (network) {
         // Check if network is already in the `to` path string (e.g., "/path?network=decibel")
         const toPath = typeof options.to === "string" ? options.to : "";
         if (toPath.includes("network=")) {
@@ -53,14 +62,14 @@ export function useNavigate() {
             ...options,
             search: {
               ...(existingSearch as object),
-              network: currentNetwork,
+              network: network,
             },
           });
         }
       }
       return tanstackNavigate(options);
     },
-    [tanstackNavigate, currentNetwork],
+    [tanstackNavigate],
   );
 }
 

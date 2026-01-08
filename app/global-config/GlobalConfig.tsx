@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useMemo, ReactNode} from "react";
 import {AptosClient, IndexerClient} from "aptos";
 import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
-import {useSearch, useLocation, useNavigate} from "@tanstack/react-router";
+import {useSearch} from "@tanstack/react-router";
 import {
   networks,
   defaultNetworkName,
@@ -48,8 +48,6 @@ interface GlobalConfigProviderProps {
 export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
   // Get network from URL search params (takes priority)
   const search = useSearch({strict: false}) as {network?: string};
-  const location = useLocation();
-  const navigate = useNavigate();
 
   // URL param network (if valid)
   const networkFromUrl =
@@ -61,6 +59,9 @@ export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
   const [savedNetworkName, setSavedNetworkName] = React.useState<NetworkName>(
     () => getNetworkNameFromCookie(),
   );
+
+  // Track if we've already added the network param to prevent infinite loops
+  const hasAddedNetworkParam = React.useRef(false);
 
   // Sync cookie with URL param when URL has a valid network
   // This ensures the cookie stays in sync for hidden networks accessed via URL
@@ -75,22 +76,25 @@ export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
   const networkName = networkFromUrl ?? savedNetworkName;
 
   // Always ensure network param is in the URL for easy link sharing
-  // This runs client-side only and uses replace to avoid adding history entries
+  // Uses window.history.replaceState to avoid router re-renders and infinite loops
   React.useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // If no network param in URL, add it
-    if (!networkFromUrl) {
-      const currentSearch = new URLSearchParams(window.location.search);
-      currentSearch.set("network", networkName);
-
-      navigate({
-        to: location.pathname,
-        search: Object.fromEntries(currentSearch.entries()),
-        replace: true,
-      });
+    // If network param is already in URL, reset the guard for future navigations
+    if (networkFromUrl) {
+      hasAddedNetworkParam.current = false;
+      return;
     }
-  }, [networkFromUrl, networkName, location.pathname, navigate]);
+
+    // Guard against adding network param multiple times
+    if (hasAddedNetworkParam.current) return;
+
+    // Add network param to URL
+    const url = new URL(window.location.href);
+    url.searchParams.set("network", networkName);
+    window.history.replaceState(null, "", url.toString());
+    hasAddedNetworkParam.current = true;
+  }, [networkFromUrl, networkName]);
 
   const setNetworkName = React.useCallback((name: NetworkName) => {
     setSavedNetworkName(name);
