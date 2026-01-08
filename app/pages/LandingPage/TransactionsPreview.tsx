@@ -8,10 +8,9 @@ import {
   useAptosClient,
 } from "../../global-config/GlobalConfig";
 import Box from "@mui/material/Box";
-import * as RRD from "@tanstack/react-router";
 import {Stack, Typography, CircularProgress} from "@mui/material";
 import TransactionsTable from "../Transactions/TransactionsTable";
-import {useAugmentToWithGlobalSearchParams} from "../../routing";
+import {Link} from "../../routing";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 import TransactionsError from "../Transactions/Error";
 
@@ -63,8 +62,6 @@ export default function TransactionsPreview() {
     queryKey: ["transactionsPreview", {limit}, networkValue],
     queryFn: () => getTransactions({limit}, aptosClient),
   });
-  const augmentTo = useAugmentToWithGlobalSearchParams();
-
   return (
     <>
       <Stack spacing={2}>
@@ -75,8 +72,8 @@ export default function TransactionsPreview() {
 
         <Box sx={{display: "flex", justifyContent: "center"}}>
           <Button
-            component={RRD.Link}
-            to={augmentTo("/transactions")}
+            component={Link}
+            to="/transactions"
             variant="primary"
             sx={{margin: "0 auto", mt: 6}}
           >

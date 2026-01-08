@@ -10,7 +10,7 @@ import StyledDialog from "../../components/StyledDialog";
 import ConnectWalletModalIcon from "../../assets/forum_icon.svg?react";
 import {WalletConnector} from "../../components/WalletConnector";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useNavigate} from "@tanstack/react-router";
+import {useNavigate} from "../../routing";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {sortPetraFirst} from "../../utils";
 

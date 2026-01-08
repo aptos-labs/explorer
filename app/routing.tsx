@@ -13,7 +13,56 @@ import {
 } from "@tanstack/react-router";
 
 // Re-export hooks from TanStack Router
-export {useNavigate, useSearch, useParams} from "@tanstack/react-router";
+export {useSearch, useParams} from "@tanstack/react-router";
+
+/**
+ * Hook to get the current network from search params.
+ * Used internally to preserve network across navigation.
+ */
+function useCurrentNetwork(): string | undefined {
+  const search = useSearch({strict: false}) as {network?: string};
+  return search?.network;
+}
+
+/**
+ * Custom useNavigate hook that preserves the network search param.
+ */
+export function useNavigate() {
+  const tanstackNavigate = useTanStackNavigate();
+  const currentNetwork = useCurrentNetwork();
+
+  return React.useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (options: any) => {
+      // If there's a current network, preserve it
+      if (currentNetwork) {
+        // Check if network is already in the `to` path string (e.g., "/path?network=decibel")
+        const toPath = typeof options.to === "string" ? options.to : "";
+        if (toPath.includes("network=")) {
+          return tanstackNavigate(options);
+        }
+
+        // Check if network is already in the search object
+        const existingSearch =
+          typeof options.search === "object" ? options.search : {};
+        const hasNetwork =
+          existingSearch && "network" in (existingSearch as object);
+
+        if (!hasNetwork) {
+          return tanstackNavigate({
+            ...options,
+            search: {
+              ...(existingSearch as object),
+              network: currentNetwork,
+            },
+          });
+        }
+      }
+      return tanstackNavigate(options);
+    },
+    [tanstackNavigate, currentNetwork],
+  );
+}
 
 /**
  * Styled TanStack Router Link that matches MUI Link styling
@@ -32,6 +81,7 @@ const StyledTanStackLink = styled(TanStackLink)({
 /**
  * Custom Link component that wraps TanStack Router's Link with MUI styling
  * Supports common MUI Link props like color and sx (including pseudo-selectors)
+ * Automatically preserves the network search param across navigation
  */
 export const Link = React.forwardRef<
   HTMLAnchorElement,
@@ -40,7 +90,31 @@ export const Link = React.forwardRef<
     underline?: "none" | "hover" | "always";
     sx?: SxProps<Theme>;
   }
->(({children, onClick, color, sx, ...props}, ref) => {
+>(({children, onClick, color, sx, search, to, ...props}, ref) => {
+  const currentNetwork = useCurrentNetwork();
+
+  // Check if `to` prop already contains network= (from useAugmentToWithGlobalSearchParams)
+  const toStr = typeof to === "string" ? to : "";
+  const toHasNetwork = toStr.includes("network=");
+
+  // Merge current network into search params if not already specified
+  // Using type assertion to bypass TanStack Router's strict search typing
+  const mergedSearch = React.useMemo(() => {
+    // Don't add network if it's already in the `to` path or if no current network
+    if (!currentNetwork || toHasNetwork) return search;
+
+    const existingSearch = typeof search === "object" ? search : {};
+    const hasNetwork =
+      existingSearch && "network" in (existingSearch as object);
+
+    if (hasNetwork) return search;
+
+    return {
+      ...(existingSearch as object),
+      network: currentNetwork,
+    } as unknown as typeof search;
+  }, [search, currentNetwork, toHasNetwork]);
+
   const colorStyle =
     color === "primary"
       ? {color: "var(--mui-palette-primary-main)"}
@@ -64,6 +138,8 @@ export const Link = React.forwardRef<
       <Box
         component={StyledTanStackLink}
         ref={ref}
+        to={to}
+        search={mergedSearch}
         {...props}
         onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
@@ -83,6 +159,8 @@ export const Link = React.forwardRef<
   return (
     <StyledTanStackLink
       ref={ref}
+      to={to}
+      search={mergedSearch}
       {...props}
       onClick={(e) => {
         e.stopPropagation();
@@ -98,6 +176,7 @@ export const Link = React.forwardRef<
 /**
  * Compatibility hook for useSearchParams (react-router-dom style)
  * Returns a tuple of [searchParams, setSearchParams]
+ * Automatically preserves the network search param
  */
 export function useSearchParams(): [
   URLSearchParams,
@@ -111,6 +190,7 @@ export function useSearchParams(): [
     string | undefined
   >;
   const navigate = useTanStackNavigate();
+  const currentNetwork = useCurrentNetwork();
 
   // Convert search object to URLSearchParams
   const searchParams = new URLSearchParams();
@@ -123,30 +203,40 @@ export function useSearchParams(): [
   }
 
   // Function to update search params
-  const setSearchParams = (
-    params: URLSearchParams | Record<string, string | undefined>,
-    options?: {replace?: boolean},
-  ) => {
-    // Convert URLSearchParams to object if needed
-    const paramsObj: Record<string, string | undefined> =
-      params instanceof URLSearchParams
-        ? Object.fromEntries(params.entries())
-        : params;
+  const setSearchParams = React.useCallback(
+    (
+      params: URLSearchParams | Record<string, string | undefined>,
+      options?: {replace?: boolean},
+    ) => {
+      // Convert URLSearchParams to object if needed
+      const paramsObj: Record<string, string | undefined> =
+        params instanceof URLSearchParams
+          ? Object.fromEntries(params.entries())
+          : params;
 
-    const newSearch: Record<string, string | undefined> = {};
-    Object.entries(paramsObj).forEach(([key, value]) => {
-      if (value !== undefined && value !== "") {
-        newSearch[key] = value;
+      const newSearch: Record<string, string | undefined> = {};
+      Object.entries(paramsObj).forEach(([key, value]) => {
+        if (value !== undefined && value !== "") {
+          newSearch[key] = value;
+        }
+      });
+
+      // Preserve network param if not explicitly set
+      if (currentNetwork && !("network" in newSearch)) {
+        newSearch.network = currentNetwork;
       }
-    });
 
-    // Navigate with search params - using type assertion for TanStack Router compatibility
-    // The search type is dynamically typed based on route definitions, but we need generic support
-    navigate({
-      search: newSearch as unknown as Parameters<typeof navigate>[0]["search"],
-      replace: options?.replace,
-    });
-  };
+      // Navigate with search params - using type assertion for TanStack Router compatibility
+      // The search type is dynamically typed based on route definitions, but we need generic support
+      navigate({
+        search: newSearch as unknown as Parameters<
+          typeof navigate
+        >[0]["search"],
+        replace: options?.replace,
+      });
+    },
+    [navigate, currentNetwork],
+  );
 
   return [searchParams, setSearchParams];
 }
@@ -199,9 +289,24 @@ export function parsePath(
 
 /**
  * Helper hook to augment a "to" path with global search params.
- * This is a placeholder that can be enhanced to preserve network params.
+ * Preserves the network param in the URL query string.
  */
 export function useAugmentToWithGlobalSearchParams() {
-  // For now, just return the path as-is
-  return (to: string) => to;
+  const currentNetwork = useCurrentNetwork();
+
+  return React.useCallback(
+    (to: string) => {
+      if (!currentNetwork) return to;
+
+      // Check if the path already has query params
+      const hasQuery = to.includes("?");
+      const separator = hasQuery ? "&" : "?";
+
+      // Check if network is already in the path
+      if (to.includes("network=")) return to;
+
+      return `${to}${separator}network=${encodeURIComponent(currentNetwork)}`;
+    },
+    [currentNetwork],
+  );
 }

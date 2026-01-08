@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Box, Container, Grid, Stack, Typography, useTheme} from "@mui/material";
 import SvgIcon from "@mui/material/SvgIcon";
-import {Link} from "@tanstack/react-router";
+import {Link} from "../../routing";
 import {clearCache} from "../../utils/cacheManager";
 // Import the original Aptos logos
 import AptosLogoFullLight from "../../assets/svg/aptos_logo_full_light.svg?react";

@@ -1,7 +1,7 @@
 import React, {useState, useCallback} from "react";
 import {TextField, InputAdornment, Box, Paper, IconButton} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import {useNavigate} from "@tanstack/react-router";
+import {useNavigate} from "../../routing";
 
 export default function HeaderSearch() {
   const [searchValue, setSearchValue] = useState("");

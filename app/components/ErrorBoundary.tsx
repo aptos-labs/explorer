@@ -1,6 +1,6 @@
 import React from "react";
 import {Box, Typography, Button, Card, CardContent} from "@mui/material";
-import {Link} from "@tanstack/react-router";
+import {Link} from "../routing";
 
 interface ErrorBoundaryProps {
   error: Error;

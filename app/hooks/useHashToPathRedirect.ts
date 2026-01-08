@@ -6,7 +6,8 @@
  * hash-based tab navigation.
  */
 import {useEffect} from "react";
-import {useNavigate, useLocation} from "@tanstack/react-router";
+import {useLocation} from "@tanstack/react-router";
+import {useNavigate} from "../routing";
 
 // Valid tabs for each route pattern
 const ROUTE_TABS: Record<string, Set<string>> = {
@@ -119,12 +120,19 @@ export function useHashToPathRedirect(): void {
       ? `/validators/${hash}`
       : `${pathname}/${hash}`;
 
-    // Preserve any existing search params
-    const searchParams = window.location.search;
+    // Parse existing search params into an object
+    const searchParamsObj: Record<string, string> = {};
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    urlSearchParams.forEach((value, key) => {
+      searchParamsObj[key] = value;
+    });
 
     // Navigate to path-based URL, replacing history entry
+    // Pass search as object so our custom useNavigate can preserve network
     navigate({
-      to: newPath + searchParams,
+      to: newPath,
+      search:
+        Object.keys(searchParamsObj).length > 0 ? searchParamsObj : undefined,
       replace: true,
     });
   }, [location.pathname, navigate]);
