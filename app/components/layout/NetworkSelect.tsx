@@ -18,10 +18,18 @@ export default function NetworkSelect() {
     setNetworkName(newNetwork);
   };
 
-  // Filter out hidden networks for the dropdown
+  // Filter out hidden networks for the dropdown options
   const visibleNetworks = Object.keys(networks).filter(
     (network) => !hiddenNetworks.includes(network as NetworkName),
   ) as NetworkName[];
+
+  // Check if current network is a hidden network
+  const isHiddenNetwork = hiddenNetworks.includes(networkName);
+
+  // Custom render for the selected value to show hidden network names
+  const renderValue = (selected: string) => {
+    return <span style={{textTransform: "capitalize"}}>{selected}</span>;
+  };
 
   return (
     <FormControl size="small" sx={{ml: 2, minWidth: 120}}>
@@ -29,6 +37,7 @@ export default function NetworkSelect() {
         value={networkName}
         onChange={handleChange}
         displayEmpty
+        renderValue={renderValue}
         sx={{
           color: theme.palette.text.primary,
           "& .MuiOutlinedInput-notchedOutline": {
@@ -42,10 +51,19 @@ export default function NetworkSelect() {
           },
           "& .MuiSelect-select": {
             py: 1,
-            textTransform: "capitalize",
           },
         }}
       >
+        {/* Hidden MenuItem for when a private network is selected - needed for MUI value lookup */}
+        {isHiddenNetwork && (
+          <MenuItem
+            key={networkName}
+            value={networkName}
+            sx={{display: "none"}}
+          >
+            {networkName}
+          </MenuItem>
+        )}
         {visibleNetworks.map((network) => (
           <MenuItem
             key={network}
