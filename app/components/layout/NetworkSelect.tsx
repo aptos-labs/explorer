@@ -6,16 +6,30 @@ import {
   SelectChangeEvent,
   useTheme,
 } from "@mui/material";
+import {useLocation} from "@tanstack/react-router";
 import {useNetworkSelector} from "../../global-config";
 import {networks, NetworkName, hiddenNetworks} from "../../constants";
+import {useLocalnetDetection} from "../../hooks/useLocalnetDetection";
+import {useNavigate} from "../../routing";
 
 export default function NetworkSelect() {
   const theme = useTheme();
   const [networkName, setNetworkName] = useNetworkSelector();
+  const isLocalnetAvailable = useLocalnetDetection();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChange = (event: SelectChangeEvent) => {
     const newNetwork = event.target.value as NetworkName;
     setNetworkName(newNetwork);
+
+    // Also update the URL to reflect the new network
+    // This ensures the URL param and cookie stay in sync
+    navigate({
+      to: location.pathname,
+      search: {network: newNetwork},
+      replace: true,
+    });
   };
 
   // Filter out hidden networks for the dropdown options
@@ -23,12 +37,16 @@ export default function NetworkSelect() {
     (network) => !hiddenNetworks.includes(network as NetworkName),
   ) as NetworkName[];
 
-  // Check if current network is a hidden network
-  const isHiddenNetwork = hiddenNetworks.includes(networkName);
+  // Check if current network is a hidden network (but not local if it's available)
+  const isHiddenNetwork =
+    hiddenNetworks.includes(networkName) &&
+    !(networkName === "local" && isLocalnetAvailable);
 
   // Custom render for the selected value to show hidden network names
   const renderValue = (selected: string) => {
-    return <span style={{textTransform: "capitalize"}}>{selected}</span>;
+    // Display "localnet" instead of "local" for better UX
+    const displayName = selected === "local" ? "localnet" : selected;
+    return <span style={{textTransform: "capitalize"}}>{displayName}</span>;
   };
 
   return (
@@ -73,6 +91,16 @@ export default function NetworkSelect() {
             {network}
           </MenuItem>
         ))}
+        {/* Show localnet option when detected */}
+        {isLocalnetAvailable && (
+          <MenuItem
+            key="local"
+            value="local"
+            sx={{textTransform: "capitalize"}}
+          >
+            localnet
+          </MenuItem>
+        )}
       </Select>
     </FormControl>
   );

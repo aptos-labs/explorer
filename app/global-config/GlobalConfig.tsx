@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useMemo, ReactNode} from "react";
 import {AptosClient, IndexerClient} from "aptos";
 import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
-import {useSearch} from "@tanstack/react-router";
+import {useSearch, useLocation, useNavigate} from "@tanstack/react-router";
 import {
   networks,
   defaultNetworkName,
@@ -48,6 +48,8 @@ interface GlobalConfigProviderProps {
 export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
   // Get network from URL search params (takes priority)
   const search = useSearch({strict: false}) as {network?: string};
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // URL param network (if valid)
   const networkFromUrl =
@@ -71,6 +73,24 @@ export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
 
   // URL param takes priority, falls back to saved preference
   const networkName = networkFromUrl ?? savedNetworkName;
+
+  // Always ensure network param is in the URL for easy link sharing
+  // This runs client-side only and uses replace to avoid adding history entries
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // If no network param in URL, add it
+    if (!networkFromUrl) {
+      const currentSearch = new URLSearchParams(window.location.search);
+      currentSearch.set("network", networkName);
+
+      navigate({
+        to: location.pathname,
+        search: Object.fromEntries(currentSearch.entries()),
+        replace: true,
+      });
+    }
+  }, [networkFromUrl, networkName, location.pathname, navigate]);
 
   const setNetworkName = React.useCallback((name: NetworkName) => {
     setSavedNetworkName(name);
