@@ -1,38 +1,28 @@
-import {createFileRoute} from "@tanstack/react-router";
-import TokenPage from "../pages/Token/Index";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import {truncateAddress} from "../utils";
-import {PagePending} from "../components/NavigationPending";
+import {createFileRoute, redirect} from "@tanstack/react-router";
 
+// Redirect /token/:tokenId to /token/:tokenId/overview (default tab)
+// Also handles backward compatibility: /token/:tokenId?tab=xxx -> /token/:tokenId/xxx
 export const Route = createFileRoute("/token/$tokenId")({
-  head: ({params}) => ({
-    meta: [
-      {title: `Token ${truncateAddress(params.tokenId)} | Aptos Explorer`},
-      {
-        name: "description",
-        content: `View NFT token details for ${params.tokenId} on the Aptos blockchain.`,
-      },
-      {
-        property: "og:title",
-        content: `Token ${truncateAddress(params.tokenId)} | Aptos Explorer`,
-      },
-      {
-        property: "og:description",
-        content: `View NFT token details for ${params.tokenId} on the Aptos blockchain.`,
-      },
-      {property: "og:url", content: `${BASE_URL}/token/${params.tokenId}`},
-      {property: "og:image", content: DEFAULT_OG_IMAGE},
-      {
-        name: "twitter:title",
-        content: `Token ${truncateAddress(params.tokenId)} | Aptos Explorer`,
-      },
-      {
-        name: "twitter:description",
-        content: `View NFT token details for ${params.tokenId} on the Aptos blockchain.`,
-      },
-    ],
-    links: [{rel: "canonical", href: `${BASE_URL}/token/${params.tokenId}`}],
-  }),
-  pendingComponent: PagePending,
-  component: TokenPage,
+  beforeLoad: ({params, search}) => {
+    const searchParams = search as {tab?: string; propertyVersion?: string};
+    // If there's a tab query param, redirect to path-based route
+    if (searchParams?.tab) {
+      throw redirect({
+        to: "/token/$tokenId/$tab",
+        params: {tokenId: params.tokenId, tab: searchParams.tab},
+        search: searchParams.propertyVersion
+          ? {propertyVersion: searchParams.propertyVersion}
+          : undefined,
+      });
+    }
+    // Default: redirect to "overview" tab, preserving propertyVersion if present
+    throw redirect({
+      to: "/token/$tokenId/$tab",
+      params: {tokenId: params.tokenId, tab: "overview"},
+      search: searchParams?.propertyVersion
+        ? {propertyVersion: searchParams.propertyVersion}
+        : undefined,
+    });
+  },
+  component: () => null,
 });

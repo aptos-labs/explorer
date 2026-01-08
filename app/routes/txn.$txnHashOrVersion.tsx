@@ -1,48 +1,28 @@
-import {createFileRoute} from "@tanstack/react-router";
-import TransactionPage from "../pages/Transaction/Index";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import {truncateAddress} from "../utils";
-import {PagePending} from "../components/NavigationPending";
+import {createFileRoute, redirect} from "@tanstack/react-router";
 
+// Redirect /txn/:txnHashOrVersion to /txn/:txnHashOrVersion/userTxnOverview (default tab)
+// Also handles backward compatibility: /txn/:txnHashOrVersion?tab=xxx -> /txn/:txnHashOrVersion/xxx
 export const Route = createFileRoute("/txn/$txnHashOrVersion")({
-  head: ({params}) => ({
-    meta: [
-      {
-        title: `Transaction ${truncateAddress(params.txnHashOrVersion)} | Aptos Explorer`,
+  beforeLoad: ({params, search}) => {
+    const searchParams = search as {tab?: string};
+    // If there's a tab query param, redirect to path-based route
+    if (searchParams?.tab) {
+      throw redirect({
+        to: "/txn/$txnHashOrVersion/$tab",
+        params: {
+          txnHashOrVersion: params.txnHashOrVersion,
+          tab: searchParams.tab,
+        },
+      });
+    }
+    // Default: redirect to "userTxnOverview" tab (first tab for user transactions)
+    throw redirect({
+      to: "/txn/$txnHashOrVersion/$tab",
+      params: {
+        txnHashOrVersion: params.txnHashOrVersion,
+        tab: "userTxnOverview",
       },
-      {
-        name: "description",
-        content: `View transaction details for ${params.txnHashOrVersion} on the Aptos blockchain.`,
-      },
-      {
-        property: "og:title",
-        content: `Transaction ${truncateAddress(params.txnHashOrVersion)} | Aptos Explorer`,
-      },
-      {
-        property: "og:description",
-        content: `View transaction details for ${params.txnHashOrVersion} on the Aptos blockchain.`,
-      },
-      {
-        property: "og:url",
-        content: `${BASE_URL}/txn/${params.txnHashOrVersion}`,
-      },
-      {property: "og:image", content: DEFAULT_OG_IMAGE},
-      {
-        name: "twitter:title",
-        content: `Transaction ${truncateAddress(params.txnHashOrVersion)} | Aptos Explorer`,
-      },
-      {
-        name: "twitter:description",
-        content: `View transaction details for ${params.txnHashOrVersion} on the Aptos blockchain.`,
-      },
-    ],
-    links: [
-      {
-        rel: "canonical",
-        href: `${BASE_URL}/txn/${params.txnHashOrVersion}`,
-      },
-    ],
-  }),
-  pendingComponent: PagePending,
-  component: TransactionPage,
+    });
+  },
+  component: () => null,
 });

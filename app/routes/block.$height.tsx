@@ -1,37 +1,22 @@
-import {createFileRoute} from "@tanstack/react-router";
-import BlockPage from "../pages/Block/Index";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import {PagePending} from "../components/NavigationPending";
+import {createFileRoute, redirect} from "@tanstack/react-router";
 
+// Redirect /block/:height to /block/:height/overview (default tab)
+// Also handles backward compatibility: /block/:height?tab=xxx -> /block/:height/xxx
 export const Route = createFileRoute("/block/$height")({
-  head: ({params}) => ({
-    meta: [
-      {title: `Block ${params.height} | Aptos Explorer`},
-      {
-        name: "description",
-        content: `View block ${params.height} details on the Aptos blockchain.`,
-      },
-      {
-        property: "og:title",
-        content: `Block ${params.height} | Aptos Explorer`,
-      },
-      {
-        property: "og:description",
-        content: `View block ${params.height} details on the Aptos blockchain.`,
-      },
-      {property: "og:url", content: `${BASE_URL}/block/${params.height}`},
-      {property: "og:image", content: DEFAULT_OG_IMAGE},
-      {
-        name: "twitter:title",
-        content: `Block ${params.height} | Aptos Explorer`,
-      },
-      {
-        name: "twitter:description",
-        content: `View block ${params.height} details on the Aptos blockchain.`,
-      },
-    ],
-    links: [{rel: "canonical", href: `${BASE_URL}/block/${params.height}`}],
-  }),
-  pendingComponent: PagePending,
-  component: BlockPage,
+  beforeLoad: ({params, search}) => {
+    const searchParams = search as {tab?: string};
+    // If there's a tab query param, redirect to path-based route
+    if (searchParams?.tab) {
+      throw redirect({
+        to: "/block/$height/$tab",
+        params: {height: params.height, tab: searchParams.tab},
+      });
+    }
+    // Default: redirect to "overview" tab
+    throw redirect({
+      to: "/block/$height/$tab",
+      params: {height: params.height, tab: "overview"},
+    });
+  },
+  component: () => null,
 });

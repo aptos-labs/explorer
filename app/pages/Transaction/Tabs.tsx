@@ -20,7 +20,7 @@ import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BalanceChangeTab from "./Tabs/BalanceChangeTab";
-import {useParams, useSearch} from "@tanstack/react-router";
+import {useParams} from "@tanstack/react-router";
 import {useNavigate} from "../../routing";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
 import {TransactionTypeName} from "../../components/TransactionType";
@@ -171,9 +171,11 @@ export default function TransactionTabs({
 }: TransactionTabsProps): React.JSX.Element {
   const networkName = useNetworkName();
 
-  const params = useParams({strict: false}) as {txnHashOrVersion?: string};
-  const search = useSearch({strict: false}) as {tab?: string};
-  const tab = search?.tab;
+  const params = useParams({strict: false}) as {
+    txnHashOrVersion?: string;
+    tab?: string;
+  };
+  const tab = params?.tab;
   const txnHashOrVersion = params?.txnHashOrVersion;
   const navigate = useNavigate();
 
@@ -195,9 +197,8 @@ export default function TransactionTabs({
   useEffect(() => {
     if (tab && !isValidTab(tab)) {
       navigate({
-        to: "/txn/$txnHashOrVersion",
-        params: {txnHashOrVersion: txnHashOrVersion ?? ""},
-        search: {tab: defaultTab},
+        to: "/txn/$txnHashOrVersion/$tab",
+        params: {txnHashOrVersion: txnHashOrVersion ?? "", tab: defaultTab},
         replace: true,
       });
     }
@@ -205,9 +206,8 @@ export default function TransactionTabs({
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate({
-      to: "/txn/$txnHashOrVersion",
-      params: {txnHashOrVersion: txnHashOrVersion ?? ""},
-      search: {tab: newValue},
+      to: "/txn/$txnHashOrVersion/$tab",
+      params: {txnHashOrVersion: txnHashOrVersion ?? "", tab: newValue},
       replace: true,
     });
   };

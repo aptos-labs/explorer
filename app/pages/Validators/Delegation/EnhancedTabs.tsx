@@ -3,7 +3,6 @@ import {Box} from "@mui/material";
 import {addressFromWallet, assertNever} from "../../../utils";
 import StyledTabs from "../../../components/StyledTabs";
 import StyledTab from "../../../components/StyledTab";
-import {useSearch} from "../../../routing";
 import {ValidatorsTable} from "../ValidatorsTable";
 import {DelegationValidatorsTable} from "../DelegationValidatorsTable";
 import {EnhancedDelegationValidatorsTable} from "./EnhancedDelegationValidatorsTable";
@@ -13,6 +12,7 @@ import {useNetworkName} from "../../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useNavigate} from "../../../routing";
 import {useLogEventWithBasic} from "../../Account/hooks/useLogEventWithBasic";
+import {useParams} from "@tanstack/react-router";
 
 enum VALIDATORS_TAB_VALUE {
   ALL_NODES = "all",
@@ -65,8 +65,8 @@ function TabPanel({value, networkName}: TabPanelProps): React.JSX.Element {
 
 export default function EnhancedValidatorsPageTabs(): React.JSX.Element {
   const networkName = useNetworkName();
-  const search = useSearch({strict: false}) as {tab?: string};
-  const tab = search?.tab;
+  const params = useParams({strict: false}) as {tab?: string};
+  const tab = params?.tab;
   const navigate = useNavigate();
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
@@ -80,8 +80,8 @@ export default function EnhancedValidatorsPageTabs(): React.JSX.Element {
     newValue: VALIDATORS_TAB_VALUE,
   ) => {
     navigate({
-      to: "/validators",
-      search: {tab: newValue},
+      to: "/validators/$tab",
+      params: {tab: newValue},
     });
     logEvent("validators_tab_clicked", newValue, {
       wallet_address: addressFromWallet(account?.address),

@@ -61,21 +61,19 @@ export default function TokenTabs({
   data,
   tabValues = TAB_VALUES,
 }: AccountTabsProps): React.JSX.Element {
-  const params = useParams({strict: false}) as {tokenId?: string};
-  const search = useSearch({strict: false}) as {
-    tab?: string;
-    propertyVersion?: string;
-  };
+  const params = useParams({strict: false}) as {tokenId?: string; tab?: string};
+  const search = useSearch({strict: false}) as {propertyVersion?: string};
   const tokenId = params?.tokenId;
   const propertyVersion = search?.propertyVersion;
-  const tab = search?.tab;
+  const tab = params?.tab;
   const navigate = useNavigate();
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate({
-      to: `/token/${tokenId}`,
-      search: {tab: newValue, propertyVersion},
+      to: "/token/$tokenId/$tab",
+      params: {tokenId: tokenId ?? "", tab: newValue},
+      search: propertyVersion ? {propertyVersion} : undefined,
       replace: true,
     });
   };

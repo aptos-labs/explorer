@@ -27,7 +27,7 @@ import { Route as CoinStructRouteImport } from './routes/coin.$struct'
 import { Route as BlockHeightRouteImport } from './routes/block.$height'
 import { Route as AccountAddressRouteImport } from './routes/account.$address'
 import { Route as TxnTxnHashOrVersionTabRouteImport } from './routes/txn.$txnHashOrVersion.$tab'
-import { Route as TokenTokenIdPropertyVersionRouteImport } from './routes/token.$tokenId.$propertyVersion'
+import { Route as TokenTokenIdTabRouteImport } from './routes/token.$tokenId.$tab'
 import { Route as ObjectAddressTabRouteImport } from './routes/object.$address.$tab'
 import { Route as Fungible_assetAddressTabRouteImport } from './routes/fungible_asset.$address.$tab'
 import { Route as CoinStructTabRouteImport } from './routes/coin.$struct.$tab'
@@ -124,12 +124,11 @@ const TxnTxnHashOrVersionTabRoute = TxnTxnHashOrVersionTabRouteImport.update({
   path: '/$tab',
   getParentRoute: () => TxnTxnHashOrVersionRoute,
 } as any)
-const TokenTokenIdPropertyVersionRoute =
-  TokenTokenIdPropertyVersionRouteImport.update({
-    id: '/$propertyVersion',
-    path: '/$propertyVersion',
-    getParentRoute: () => TokenTokenIdRoute,
-  } as any)
+const TokenTokenIdTabRoute = TokenTokenIdTabRouteImport.update({
+  id: '/$tab',
+  path: '/$tab',
+  getParentRoute: () => TokenTokenIdRoute,
+} as any)
 const ObjectAddressTabRoute = ObjectAddressTabRouteImport.update({
   id: '/$tab',
   path: '/$tab',
@@ -180,7 +179,7 @@ export interface FileRoutesByFullPath {
   '/coin/$struct/$tab': typeof CoinStructTabRoute
   '/fungible_asset/$address/$tab': typeof Fungible_assetAddressTabRoute
   '/object/$address/$tab': typeof ObjectAddressTabRoute
-  '/token/$tokenId/$propertyVersion': typeof TokenTokenIdPropertyVersionRoute
+  '/token/$tokenId/$tab': typeof TokenTokenIdTabRoute
   '/txn/$txnHashOrVersion/$tab': typeof TxnTxnHashOrVersionTabRoute
 }
 export interface FileRoutesByTo {
@@ -206,7 +205,7 @@ export interface FileRoutesByTo {
   '/coin/$struct/$tab': typeof CoinStructTabRoute
   '/fungible_asset/$address/$tab': typeof Fungible_assetAddressTabRoute
   '/object/$address/$tab': typeof ObjectAddressTabRoute
-  '/token/$tokenId/$propertyVersion': typeof TokenTokenIdPropertyVersionRoute
+  '/token/$tokenId/$tab': typeof TokenTokenIdTabRoute
   '/txn/$txnHashOrVersion/$tab': typeof TxnTxnHashOrVersionTabRoute
 }
 export interface FileRoutesById {
@@ -233,7 +232,7 @@ export interface FileRoutesById {
   '/coin/$struct/$tab': typeof CoinStructTabRoute
   '/fungible_asset/$address/$tab': typeof Fungible_assetAddressTabRoute
   '/object/$address/$tab': typeof ObjectAddressTabRoute
-  '/token/$tokenId/$propertyVersion': typeof TokenTokenIdPropertyVersionRoute
+  '/token/$tokenId/$tab': typeof TokenTokenIdTabRoute
   '/txn/$txnHashOrVersion/$tab': typeof TxnTxnHashOrVersionTabRoute
 }
 export interface FileRouteTypes {
@@ -261,7 +260,7 @@ export interface FileRouteTypes {
     | '/coin/$struct/$tab'
     | '/fungible_asset/$address/$tab'
     | '/object/$address/$tab'
-    | '/token/$tokenId/$propertyVersion'
+    | '/token/$tokenId/$tab'
     | '/txn/$txnHashOrVersion/$tab'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -287,7 +286,7 @@ export interface FileRouteTypes {
     | '/coin/$struct/$tab'
     | '/fungible_asset/$address/$tab'
     | '/object/$address/$tab'
-    | '/token/$tokenId/$propertyVersion'
+    | '/token/$tokenId/$tab'
     | '/txn/$txnHashOrVersion/$tab'
   id:
     | '__root__'
@@ -313,7 +312,7 @@ export interface FileRouteTypes {
     | '/coin/$struct/$tab'
     | '/fungible_asset/$address/$tab'
     | '/object/$address/$tab'
-    | '/token/$tokenId/$propertyVersion'
+    | '/token/$tokenId/$tab'
     | '/txn/$txnHashOrVersion/$tab'
   fileRoutesById: FileRoutesById
 }
@@ -463,11 +462,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TxnTxnHashOrVersionTabRouteImport
       parentRoute: typeof TxnTxnHashOrVersionRoute
     }
-    '/token/$tokenId/$propertyVersion': {
-      id: '/token/$tokenId/$propertyVersion'
-      path: '/$propertyVersion'
-      fullPath: '/token/$tokenId/$propertyVersion'
-      preLoaderRoute: typeof TokenTokenIdPropertyVersionRouteImport
+    '/token/$tokenId/$tab': {
+      id: '/token/$tokenId/$tab'
+      path: '/$tab'
+      fullPath: '/token/$tokenId/$tab'
+      preLoaderRoute: typeof TokenTokenIdTabRouteImport
       parentRoute: typeof TokenTokenIdRoute
     }
     '/object/$address/$tab': {
@@ -593,11 +592,11 @@ const ObjectAddressRouteWithChildren = ObjectAddressRoute._addFileChildren(
 )
 
 interface TokenTokenIdRouteChildren {
-  TokenTokenIdPropertyVersionRoute: typeof TokenTokenIdPropertyVersionRoute
+  TokenTokenIdTabRoute: typeof TokenTokenIdTabRoute
 }
 
 const TokenTokenIdRouteChildren: TokenTokenIdRouteChildren = {
-  TokenTokenIdPropertyVersionRoute: TokenTokenIdPropertyVersionRoute,
+  TokenTokenIdTabRoute: TokenTokenIdTabRoute,
 }
 
 const TokenTokenIdRouteWithChildren = TokenTokenIdRoute._addFileChildren(

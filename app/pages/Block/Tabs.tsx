@@ -8,7 +8,7 @@ import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import {useParams} from "@tanstack/react-router";
-import {useNavigate, useSearch} from "../../routing";
+import {useNavigate} from "../../routing";
 import {Block} from "@aptos-labs/ts-sdk";
 
 const TAB_VALUES: TabValue[] = ["overview", "transactions"];
@@ -61,17 +61,16 @@ export default function BlockTabs({
   data,
   tabValues = TAB_VALUES,
 }: AccountTabsProps) {
-  const params = useParams({strict: false}) as {height?: string};
-  const search = useSearch({strict: false}) as {tab?: string};
+  const params = useParams({strict: false}) as {height?: string; tab?: string};
   const height = params?.height;
-  const tab = search?.tab;
+  const tab = params?.tab;
   const navigate = useNavigate();
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate({
-      to: `/block/${height}`,
-      search: {tab: newValue},
+      to: "/block/$height/$tab",
+      params: {height: height ?? "", tab: newValue},
       replace: true,
     });
   };
