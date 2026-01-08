@@ -8,6 +8,7 @@ export type CoinHolder = {
 
 export function useGetCoinHolders(
   coin_type: string,
+  limit: number = 25,
   offset?: number,
 ): {
   isLoading: boolean;
@@ -18,10 +19,14 @@ export function useGetCoinHolders(
     current_fungible_asset_balances: CoinHolder[];
   }>(
     gql`
-      query GetFungibleAssetBalances($coin_type: String!, $offset: Int!) {
+      query GetFungibleAssetBalances(
+        $coin_type: String!
+        $limit: Int!
+        $offset: Int!
+      ) {
         current_fungible_asset_balances(
           where: {asset_type: {_eq: $coin_type}}
-          limit: 100
+          limit: $limit
           offset: $offset
           order_by: {amount: desc}
         ) {
@@ -30,7 +35,7 @@ export function useGetCoinHolders(
         }
       }
     `,
-    {variables: {coin_type, offset: offset ?? 0}},
+    {variables: {coin_type, limit, offset: offset ?? 0}},
   );
 
   return {
