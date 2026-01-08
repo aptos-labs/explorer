@@ -46,6 +46,7 @@ import Footer from "../components/layout/Footer";
 import {Fallback} from "../components/layout/Fallback";
 import {ErrorBoundary, NotFoundError} from "../components/ErrorBoundary";
 import {useHashToPathRedirect} from "../hooks/useHashToPathRedirect";
+import LocalnetUnavailableModal from "../components/LocalnetUnavailableModal";
 
 // Router context type
 interface RouterContext {
@@ -131,6 +132,7 @@ function RootComponent() {
               <ProvideColorMode>
                 <CssBaseline />
                 <GlobalConfigProvider>
+                  <LocalnetUnavailableModal />
                   <GraphqlClientProvider>
                     <WalletAdapterProvider>
                       <Box

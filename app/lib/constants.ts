@@ -17,7 +17,6 @@ export const networks: Record<string, string> = {
 export const hiddenNetworks: readonly NetworkName[] = [
   "decibel",
   "shelbynet",
-  "local",
 ] as const;
 
 export type NetworkName = keyof typeof networks;

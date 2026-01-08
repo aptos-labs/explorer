@@ -4,12 +4,19 @@ import {networks} from "../constants";
 const LOCALNET_URL = networks.local;
 const CHECK_INTERVAL = 30000; // Re-check every 30 seconds
 
+interface LocalnetDetectionResult {
+  isAvailable: boolean;
+  isChecked: boolean; // True after initial check completes
+}
+
 /**
  * Hook to detect if a local Aptos node is running.
  * Only runs on the client side.
+ * Returns both availability status and whether the initial check has completed.
  */
-export function useLocalnetDetection(): boolean {
+export function useLocalnetDetection(): LocalnetDetectionResult {
   const [isLocalnetAvailable, setIsLocalnetAvailable] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     // Only run on client
@@ -32,13 +39,16 @@ export function useLocalnetDetection(): boolean {
           // Check if it looks like a valid Aptos node response
           if (data && data.chain_id !== undefined) {
             setIsLocalnetAvailable(true);
+            setIsChecked(true);
             return;
           }
         }
         setIsLocalnetAvailable(false);
+        setIsChecked(true);
       } catch {
         // Network error, localnet not running
         setIsLocalnetAvailable(false);
+        setIsChecked(true);
       }
     };
 
@@ -51,5 +61,5 @@ export function useLocalnetDetection(): boolean {
     return () => clearInterval(interval);
   }, []);
 
-  return isLocalnetAvailable;
+  return {isAvailable: isLocalnetAvailable, isChecked};
 }
