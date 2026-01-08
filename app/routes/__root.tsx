@@ -45,6 +45,7 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import {Fallback} from "../components/layout/Fallback";
 import {ErrorBoundary, NotFoundError} from "../components/ErrorBoundary";
+import {useHashToPathRedirect} from "../hooks/useHashToPathRedirect";
 
 // Router context type
 interface RouterContext {
@@ -114,6 +115,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootComponent() {
   const {queryClient} = Route.useRouteContext();
+
+  // Redirect hash-based tab URLs to path-based URLs for backward compatibility
+  useHashToPathRedirect();
 
   return (
     <html lang="en">
