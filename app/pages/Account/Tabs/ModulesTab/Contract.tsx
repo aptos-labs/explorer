@@ -20,13 +20,17 @@ import {
   useTheme,
   useMediaQuery,
   Autocomplete,
-  Alert,
   CircularProgress,
+  Collapse,
+  IconButton,
+  InputAdornment,
+  Chip,
+  Paper,
 } from "@mui/material";
 import React from "react";
 import {useForm, SubmitHandler, Controller} from "react-hook-form";
-import {useSearch} from "../../../../routing";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
+import {useModulesPathParams} from "./Tabs";
 import {
   useNetworkName,
   useAptosClient,
@@ -40,9 +44,23 @@ import {
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
-import {ContentCopy} from "@mui/icons-material";
+import {
+  ContentCopy,
+  ExpandMore,
+  ExpandLess,
+  Search,
+  HelpOutline,
+  CheckCircle,
+  Error as ErrorIcon,
+  OpenInNew,
+} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
-import {encodeInputArgsForViewRequest, sortPetraFirst} from "../../../../utils";
+import {
+  encodeInputArgsForViewRequest,
+  sortPetraFirst,
+  transformCode,
+  extractFunctionParamNames,
+} from "../../../../utils";
 import {accountPagePath} from "../../Index";
 import {Aptos, Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
 
@@ -58,28 +76,23 @@ function isAnsName(value: string): boolean {
  */
 function isHexString(value: string): boolean {
   const trimmed = value.trim();
-  // Check for 0x prefix first
   if (trimmed.startsWith("0x")) {
     return /^0x[0-9a-fA-F]*$/.test(trimmed);
   }
-  // Also accept plain hex without prefix if it looks like hex (all hex chars, even length)
   return /^[0-9a-fA-F]+$/.test(trimmed) && trimmed.length % 2 === 0;
 }
 
 /**
  * Convert a hex string to a Uint8Array.
- * Accepts both 0x-prefixed and non-prefixed hex strings.
  */
 function hexToBytes(hexString: string): Uint8Array {
   const trimmed = hexString.trim();
-  // Use the SDK's Hex class for proper conversion
   const hex = trimmed.startsWith("0x") ? trimmed : `0x${trimmed}`;
   return Hex.fromHexString(hex).toUint8Array();
 }
 
 /**
  * Resolve an ANS name to an address using the SDK v2 client.
- * Throws an error if the name cannot be resolved.
  */
 async function resolveAnsName(
   name: string,
@@ -87,18 +100,14 @@ async function resolveAnsName(
 ): Promise<string> {
   const ansName = await sdkV2Client.getName({name});
   const address = ansName?.registered_address ?? ansName?.owner_address;
-
   if (!address) {
     throw new Error(`Failed to resolve ANS name: ${name}`);
   }
-
   return address;
 }
 
 /**
  * Process a single argument value, resolving ANS names if needed.
- * For address types, if the value looks like an ANS name (.apt), resolve it.
- * Throws an error if ANS resolution fails.
  */
 async function resolveAnsInArgument(
   arg: string | null | undefined,
@@ -112,11 +121,9 @@ async function resolveAnsInArgument(
   const trimmedArg = arg.trim();
   const typeTag = parseTypeTag(type, {allowGenerics: true});
 
-  // Handle vector types - check inner elements for address type
   if (typeTag.isVector()) {
     const innerTag = typeTag.value;
     if (innerTag.isAddress()) {
-      // Parse as array and resolve each ANS name
       let items: string[];
       if (trimmedArg.startsWith("[")) {
         try {
@@ -143,17 +150,14 @@ async function resolveAnsInArgument(
         }),
       );
 
-      // Return in the same format as input
       if (trimmedArg.startsWith("[")) {
         return JSON.stringify(resolvedItems);
       }
       return resolvedItems.join(", ");
     }
-    // For non-address vectors, return as-is
     return trimmedArg;
   }
 
-  // Handle Option<address> type
   if (typeTag.isStruct() && typeTag.isOption()) {
     const innerType = typeTag.value.typeArgs[0];
     if (innerType.isAddress() && isAnsName(trimmedArg)) {
@@ -162,7 +166,6 @@ async function resolveAnsInArgument(
     return trimmedArg;
   }
 
-  // Handle direct address type
   if (typeTag.isAddress() && isAnsName(trimmedArg)) {
     return resolveAnsName(trimmedArg, sdkV2Client);
   }
@@ -172,7 +175,6 @@ async function resolveAnsInArgument(
 
 /**
  * Process all arguments, resolving any ANS names in address-type parameters.
- * Throws an error if any ANS resolution fails.
  */
 async function resolveAnsInArguments(
   args: (string | undefined)[],
@@ -190,10 +192,9 @@ type ContractFormType = {
   ledgerVersion?: string;
 };
 
-// Helper function to extract error message safely
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
-    return (error as Error).message;
+    return error.message;
   }
   if (typeof error === "object" && error !== null) {
     const errorObj = error as Record<string, unknown>;
@@ -204,13 +205,54 @@ function getErrorMessage(error: unknown): string {
   return "Unknown error";
 }
 
+/** Get a user-friendly type name */
+function getFriendlyTypeName(type: string): string {
+  // Simplify common types
+  if (type === "address") return "Address";
+  if (type === "bool") return "Boolean";
+  if (type === "u8") return "Number (u8)";
+  if (type === "u16") return "Number (u16)";
+  if (type === "u32") return "Number (u32)";
+  if (type === "u64") return "Number (u64)";
+  if (type === "u128") return "Number (u128)";
+  if (type === "u256") return "Number (u256)";
+  if (type === "0x1::string::String") return "String";
+  if (type.startsWith("vector<u8>")) return "Bytes (hex or array)";
+  if (type.startsWith("vector<")) {
+    const inner = type.slice(7, -1);
+    return `Array of ${getFriendlyTypeName(inner)}`;
+  }
+  if (type.startsWith("0x1::option::Option<")) {
+    const inner = type.slice(20, -1);
+    return `Optional ${getFriendlyTypeName(inner)}`;
+  }
+  // Return shortened version for complex types
+  if (type.includes("::")) {
+    const parts = type.split("::");
+    return parts[parts.length - 1];
+  }
+  return type;
+}
+
+/** Get placeholder text for input based on type */
+function getPlaceholder(type: string): string {
+  if (type === "address") return "0x1 or name.apt";
+  if (type === "bool") return "true or false";
+  if (type.startsWith("u")) return "0";
+  if (type === "0x1::string::String") return "Enter text...";
+  if (type === "vector<u8>") return "0xDEADBEEF or [222, 173, 190, 239]";
+  if (type.startsWith("vector<address>")) return '0x1, 0x2 or ["0x1", "0x2"]';
+  if (type.startsWith("vector<"))
+    return 'value1, value2 or ["value1", "value2"]';
+  if (type.startsWith("0x1::option::Option<")) return "Leave empty for none";
+  return "";
+}
+
 interface ContractSidebarProps {
   selectedModuleName: string | undefined;
   selectedFnName: string | undefined;
   moduleAndFnsGroup: Record<string, Types.MoveFunction[]>;
-
   getLinkToFn(moduleName: string, fnName: string, isObject: boolean): string;
-
   isObject: boolean;
 }
 
@@ -225,12 +267,10 @@ function Contract({
 }) {
   const theme = useTheme();
   const {data, isLoading, error} = useGetAccountModules(address);
-  const search = useSearch({strict: false}) as {
-    selectedModuleName?: string;
-    selectedFnName?: string;
-  };
-  const selectedModuleName = search?.selectedModuleName;
-  const selectedFnName = search?.selectedFnName;
+
+  // Get selected module and function from path params
+  const {selectedModuleName, selectedFnName} = useModulesPathParams();
+
   const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
   const modules = useMemo(() => data ?? [], [data]);
 
@@ -265,7 +305,11 @@ function Contract({
     .find((module) => module.name === selectedModuleName);
 
   if (isLoading) {
-    return null;
+    return (
+      <Box display="flex" justifyContent="center" py={8}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error) {
@@ -284,14 +328,13 @@ function Contract({
     : undefined;
 
   function getLinkToFn(moduleName: string, fnName: string, isObject: boolean) {
-    // Using search params for module/function selection within the modules tab path
     const modulesTabValue = isRead ? "view" : "run";
-    return `/${accountPagePath(isObject)}/${address}/modules?modulesTab=${modulesTabValue}&selectedModuleName=${moduleName}&selectedFnName=${fnName}`;
+    return `/${accountPagePath(isObject)}/${address}/modules/${modulesTabValue}/${moduleName}/${fnName}`;
   }
 
-  // Use this key to force re-mount the Form component when the fn changes,
-  // so that the state of the form is reset.
   const contractFormKey = module?.name + ":" + fn?.name;
+  const totalFunctions = Object.values(moduleAndFnsGroup).flat().length;
+
   return (
     <Grid container spacing={2}>
       <Grid size={{md: 3, xs: 12}}>
@@ -304,26 +347,56 @@ function Contract({
         />
       </Grid>
       <Grid size={{md: 9, xs: 12}}>
-        <Box
-          padding={4}
-          bgcolor={theme.palette.background.paper}
-          borderRadius={1}
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            bgcolor: theme.palette.background.paper,
+            borderRadius: 2,
+          }}
         >
           {!module || !fn ? (
-            <Typography>Please select a function</Typography>
+            <Box textAlign="center" py={6}>
+              <Typography variant="h6" color="text.secondary" gutterBottom>
+                Select a function to {isRead ? "view" : "run"}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {totalFunctions} {isRead ? "view" : "entry"} function
+                {totalFunctions !== 1 ? "s" : ""} available
+              </Typography>
+            </Box>
           ) : isRead ? (
-            <ReadContractForm module={module} fn={fn} key={contractFormKey} />
+            <ReadContractForm
+              module={module}
+              fn={fn}
+              sourceCode={selectedModule?.source}
+              key={contractFormKey}
+            />
           ) : (
-            <RunContractForm module={module} fn={fn} key={contractFormKey} />
+            <RunContractForm
+              module={module}
+              fn={fn}
+              sourceCode={selectedModule?.source}
+              key={contractFormKey}
+            />
           )}
 
           {module && fn && selectedModule && (
             <>
-              <Divider sx={{margin: "24px 0"}} />
-              <Code bytecode={selectedModule?.source} />
+              <Divider sx={{my: 3}} />
+              <Box>
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                  gutterBottom
+                >
+                  Source Code
+                </Typography>
+                <Code bytecode={selectedModule?.source} />
+              </Box>
             </>
           )}
-        </Box>
+        </Paper>
       </Grid>
     </Grid>
   );
@@ -340,6 +413,8 @@ function ContractSidebar({
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const logEvent = useLogEventWithBasic();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+
   const flattedFns = useMemo(
     () =>
       Object.entries(moduleAndFnsGroup).flatMap(([moduleName, fns]) =>
@@ -347,32 +422,91 @@ function ContractSidebar({
           .map((fn) => ({
             moduleName,
             fnName: fn.name,
+            fn,
           }))
-          .sort((a, b) => a.fnName[0].localeCompare(b.fnName[0])),
+          .sort((a, b) => a.fnName.localeCompare(b.fnName)),
       ),
     [moduleAndFnsGroup],
   );
 
+  // Filter functions based on search query
+  const filteredModuleAndFns = useMemo(() => {
+    if (!searchQuery.trim()) return moduleAndFnsGroup;
+
+    const query = searchQuery.toLowerCase();
+    const result: Record<string, Types.MoveFunction[]> = {};
+
+    Object.entries(moduleAndFnsGroup).forEach(([moduleName, fns]) => {
+      const matchingFns = fns.filter(
+        (fn) =>
+          fn.name.toLowerCase().includes(query) ||
+          moduleName.toLowerCase().includes(query),
+      );
+      if (matchingFns.length > 0) {
+        result[moduleName] = matchingFns;
+      }
+    });
+
+    return result;
+  }, [moduleAndFnsGroup, searchQuery]);
+
+  const totalCount = flattedFns.length;
+  const filteredCount = Object.values(filteredModuleAndFns).flat().length;
+
   return (
-    <Box
-      sx={{padding: "24px", maxHeight: "100vh", overflowY: "auto"}}
-      bgcolor={theme.palette.background.paper}
-      borderRadius={1}
+    <Paper
+      elevation={0}
+      sx={{
+        p: 2,
+        maxHeight: "80vh",
+        overflowY: "auto",
+        bgcolor: theme.palette.background.paper,
+        borderRadius: 2,
+      }}
     >
       {isWideScreen ? (
         <>
-          <Typography fontSize={16} fontWeight={500} marginBottom={"24px"}>
-            Select function
-          </Typography>
+          <TextField
+            size="small"
+            fullWidth
+            placeholder="Search functions..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search fontSize="small" color="action" />
+                </InputAdornment>
+              ),
+            }}
+            sx={{mb: 2}}
+          />
+
+          {searchQuery && (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{display: "block", mb: 2}}
+            >
+              {filteredCount} of {totalCount} functions
+            </Typography>
+          )}
+
           <Box>
-            {Object.entries(moduleAndFnsGroup)
+            {Object.entries(filteredModuleAndFns)
               .sort((a, b) => a[0].localeCompare(b[0]))
               .map(([moduleName, fns]) => (
-                <Box key={moduleName} marginBottom={3}>
+                <Box key={moduleName} mb={2}>
                   <Typography
-                    fontSize={15}
+                    variant="caption"
                     fontWeight={600}
-                    marginBottom={"8px"}
+                    color="text.secondary"
+                    sx={{
+                      display: "block",
+                      mb: 1,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
                   >
                     {moduleName}
                   </Typography>
@@ -394,10 +528,20 @@ function ContractSidebar({
                         />
                       );
                     })}
-                    <Divider sx={{marginTop: "24px"}} />
                   </Box>
                 </Box>
               ))}
+
+            {Object.keys(filteredModuleAndFns).length === 0 && (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                textAlign="center"
+                py={4}
+              >
+                No functions match "{searchQuery}"
+              </Typography>
+            )}
           </Box>
         </>
       ) : (
@@ -407,7 +551,7 @@ function ContractSidebar({
           groupBy={(option) => option.moduleName}
           getOptionLabel={(option) => option.fnName}
           renderInput={(params) => (
-            <TextField {...params} label="Select a function" />
+            <TextField {...params} label="Select a function" size="small" />
           )}
           onChange={(_, fn) => {
             if (fn) {
@@ -426,16 +570,18 @@ function ContractSidebar({
           }
         />
       )}
-    </Box>
+    </Paper>
   );
 }
 
 function RunContractForm({
   module,
   fn,
+  sourceCode,
 }: {
   module: Types.MoveModule;
   fn: Types.MoveFunction;
+  sourceCode?: string;
 }) {
   const networkName = useNetworkName();
   const sdkV2Client = useSdkV2Client();
@@ -448,14 +594,10 @@ function RunContractForm({
 
   const fnParams = removeSignerParam(fn);
 
-  // TODO: We should use the SDKv2 for this
-  // Note: Return type uses Types.MoveValue which is the union type for all Move values
-  // The actual type depends on the Move type being converted at runtime
   const convertArgument = (
     arg: string | null | undefined,
     type: string,
   ): Types.MoveValue => {
-    // TypeScript doesn't really protect us from nulls, this enforces it
     if (typeof arg !== "string") {
       arg = "";
     }
@@ -464,34 +606,27 @@ function RunContractForm({
     if (typeTag.isVector()) {
       const innerTag = typeTag.value;
       if (innerTag.isVector()) {
-        // This must be JSON, let's parse it
         return JSON.parse(arg) as Types.MoveValue[];
       }
 
       if (innerTag.isU8()) {
-        // For vector<u8>, support both hex strings and byte arrays
         if (isHexString(arg)) {
-          // Convert hex string to Uint8Array for proper handling
           return hexToBytes(arg);
         }
       }
 
       if (arg.startsWith("[")) {
-        // This is supposed to be JSON if it has the bracket
         return JSON.parse(arg) as Types.MoveValue[];
       } else {
-        // We handle array without brackets otherwise
         return arg.split(",").map((arg) => {
           return arg.trim();
         }) as Types.MoveValue[];
       }
     } else if (typeTag.isStruct()) {
       if (typeTag.isOption()) {
-        // This we need to handle if there is no value, we take "empty trimmed" as no value
         if (arg === "") {
           return undefined as unknown as Types.MoveValue;
         } else {
-          // Convert for the inner type if it isn't empty
           const converted = convertArgument(
             arg,
             typeTag.value.typeArgs[0].toString(),
@@ -501,7 +636,6 @@ function RunContractForm({
       }
     }
 
-    // For all other cases return it straight
     return arg;
   };
 
@@ -509,7 +643,6 @@ function RunContractForm({
     logEvent("write_button_clicked", fn.name);
     setAnsError(undefined);
 
-    // Resolve any ANS names in arguments before processing
     let resolvedArgs: string[];
     try {
       resolvedArgs = await resolveAnsInArguments(
@@ -530,8 +663,6 @@ function RunContractForm({
         typeArguments: data.typeArgs,
         functionArguments: resolvedArgs.map((arg, i) => {
           const type = fnParams[i];
-          // Convert MoveValue to the expected argument type
-          // The wallet adapter will handle the conversion
           return convertArgument(arg, type) as unknown as
             | string
             | number
@@ -553,150 +684,158 @@ function RunContractForm({
   const isFunctionSuccess = !!(
     transactionResponse?.transactionSubmitted && transactionResponse?.success
   );
+
   return (
     <ContractForm
       fn={fn}
       onSubmit={onSubmit}
       setFormValid={setFormValid}
       isView={false}
+      sourceCode={sourceCode}
       result={
         connected ? (
           <Box>
-            <StyledTooltip
-              title="Input arguments cannot be empty."
-              placement="right"
-              disableHoverListener={formValid}
+            <Button
+              type="submit"
+              disabled={transactionInProcess || !formValid}
+              variant="contained"
+              size="large"
+              sx={{
+                minWidth: 140,
+                height: 48,
+                fontWeight: 600,
+              }}
             >
-              <span>
-                <Button
-                  type="submit"
-                  disabled={transactionInProcess || !formValid}
-                  variant="contained"
-                  sx={{width: "8rem", height: "3rem"}}
-                >
-                  {transactionInProcess ? (
-                    <CircularProgress size={30}></CircularProgress>
-                  ) : (
-                    "Run"
-                  )}
-                </Button>
-              </span>
-            </StyledTooltip>
+              {transactionInProcess ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Execute"
+              )}
+            </Button>
 
-            {/* ANS resolution error */}
-            {ansError && (
-              <ExecutionResult success={false}>
-                <Stack
-                  direction="row"
-                  gap={2}
-                  pt={3}
-                  justifyContent="space-between"
-                >
-                  <Stack>
-                    <Typography fontSize={12} fontWeight={600} mb={1}>
-                      ANS Resolution Error:
-                    </Typography>
-                    <Typography fontSize={12} fontWeight={400}>
-                      {ansError}
-                    </Typography>
-                  </Stack>
-                </Stack>
-              </ExecutionResult>
+            {!formValid && !transactionInProcess && (
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{display: "block", mt: 1}}
+              >
+                Fill in all required fields to execute
+              </Typography>
             )}
 
-            {/* Has some execution result to display */}
+            {ansError && (
+              <ResultCard success={false} sx={{mt: 3}}>
+                <Stack direction="row" spacing={1} alignItems="flex-start">
+                  <ErrorIcon color="error" fontSize="small" />
+                  <Box>
+                    <Typography variant="subtitle2" color="error">
+                      ANS Resolution Error
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {ansError}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </ResultCard>
+            )}
+
             {!transactionInProcess && transactionResponse && !ansError && (
-              <ExecutionResult success={isFunctionSuccess}>
-                <Stack
-                  direction="row"
-                  gap={2}
-                  pt={3}
-                  justifyContent="space-between"
-                >
-                  <Stack>
-                    {/* It's failed, display an error */}
-                    {!isFunctionSuccess && (
-                      <>
-                        <Typography fontSize={12} fontWeight={600} mb={1}>
-                          Error:
-                        </Typography>
-                        <Typography fontSize={12} fontWeight={400}>
-                          {transactionResponse.message
-                            ? transactionResponse.message
-                            : "Unknown"}
-                        </Typography>
-                      </>
+              <ResultCard success={isFunctionSuccess} sx={{mt: 3}}>
+                <Stack direction="row" spacing={1} alignItems="flex-start">
+                  {isFunctionSuccess ? (
+                    <CheckCircle color="success" fontSize="small" />
+                  ) : (
+                    <ErrorIcon color="error" fontSize="small" />
+                  )}
+                  <Box flex={1}>
+                    <Typography
+                      variant="subtitle2"
+                      color={isFunctionSuccess ? "success.main" : "error"}
+                    >
+                      {isFunctionSuccess
+                        ? "Transaction Successful"
+                        : "Transaction Failed"}
+                    </Typography>
+
+                    {!isFunctionSuccess && transactionResponse.message && (
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{mt: 0.5}}
+                      >
+                        {transactionResponse.message}
+                      </Typography>
                     )}
 
-                    {/* Has a transaction, display the hash */}
                     {transactionResponse.transactionSubmitted &&
                       transactionResponse.transactionHash && (
-                        <>
-                          <Typography fontSize={12} fontWeight={600} mb={1}>
-                            Transaction:
-                          </Typography>
-                          <Typography fontSize={12} fontWeight={400}>
-                            {transactionResponse.transactionHash}
-                          </Typography>
-                        </>
-                      )}
-                  </Stack>
-
-                  {/* Has a transaction, display the button to view the transaction */}
-                  {transactionResponse.transactionSubmitted &&
-                    transactionResponse.transactionHash && (
-                      <Link
-                        to={`/txn/${transactionResponse.transactionHash}`}
-                        color="inherit"
-                        target="_blank"
-                      >
-                        <Button
-                          variant="outlined"
-                          sx={{
-                            height: "2rem",
-                            minWidth: "unset",
-                            borderRadius: "0.5rem",
-                            whiteSpace: "nowrap",
-                          }}
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          alignItems="center"
+                          sx={{mt: 1}}
                         >
-                          View Transaction
-                        </Button>
-                      </Link>
-                    )}
+                          <Typography
+                            variant="body2"
+                            fontFamily="monospace"
+                            sx={{
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {transactionResponse.transactionHash.slice(0, 20)}
+                            ...
+                          </Typography>
+                          <Link
+                            to={`/txn/${transactionResponse.transactionHash}/userTxnOverview`}
+                            color="primary"
+                          >
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              endIcon={<OpenInNew fontSize="small" />}
+                            >
+                              View
+                            </Button>
+                          </Link>
+                        </Stack>
+                      )}
+                  </Box>
                 </Stack>
-              </ExecutionResult>
+              </ResultCard>
             )}
           </Box>
         ) : (
-          <Box display="flex" flexDirection="row" alignItems="center">
+          <Stack direction="row" spacing={2} alignItems="center">
             <WalletConnector
               networkSupport={networkName}
               sortInstallableWallets={sortPetraFirst}
               modalMaxWidth="sm"
             />
-            <Typography ml={2} fontSize={10}>
-              To run you need to connect wallet first
+            <Typography variant="body2" color="text.secondary">
+              Connect wallet to execute transactions
             </Typography>
-          </Box>
+          </Stack>
         )
       }
     />
   );
 }
 
-const TOOLTIP_TIME = 2000; // 2s
+const TOOLTIP_TIME = 2000;
+
 function ReadContractForm({
   module,
   fn,
+  sourceCode,
 }: {
   module: Types.MoveModule;
   fn: Types.MoveFunction;
+  sourceCode?: string;
 }) {
   const aptosClient = useAptosClient();
   const sdkV2Client = useSdkV2Client();
   const [result, setResult] = useState<Types.MoveValue[]>();
-  const theme = useTheme();
-  const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [errMsg, setErrMsg] = useState<string>();
   const [inProcess, setInProcess] = useState(false);
   const [formValid, setFormValid] = useState(false);
@@ -725,7 +864,6 @@ function ReadContractForm({
     setErrMsg(undefined);
     setResult(undefined);
 
-    // Resolve any ANS names in arguments before processing
     let resolvedArgs: string[];
     try {
       resolvedArgs = await resolveAnsInArguments(
@@ -760,14 +898,11 @@ function ReadContractForm({
       setErrMsg(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "success"});
     } catch (e: unknown) {
-      // Ensure error is a string
       let error = getErrorMessage(e);
-
       const prefix = "Error:";
       if (error.startsWith(prefix)) {
         error = error.substring(prefix.length).trim();
       }
-
       setErrMsg(error);
       setResult(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "failed"});
@@ -781,93 +916,101 @@ function ReadContractForm({
       onSubmit={onSubmit}
       setFormValid={setFormValid}
       isView={true}
+      sourceCode={sourceCode}
       result={
         <Box>
-          <StyledTooltip
-            title="Input arguments cannot be empty."
-            disableHoverListener={formValid}
-            placement="right"
+          <Button
+            type="submit"
+            disabled={inProcess || !formValid}
+            variant="contained"
+            size="large"
+            sx={{
+              minWidth: 140,
+              height: 48,
+              fontWeight: 600,
+            }}
           >
-            <span>
-              <Button
-                type="submit"
-                disabled={inProcess || !formValid}
-                variant="contained"
-                sx={{width: "8rem", height: "3rem"}}
-              >
-                {inProcess ? (
-                  <CircularProgress size={30}></CircularProgress>
-                ) : (
-                  "View"
-                )}
-              </Button>
-            </span>
-          </StyledTooltip>
+            {inProcess ? (
+              <CircularProgress size={24} color="inherit" />
+            ) : (
+              "Query"
+            )}
+          </Button>
+
+          {!formValid && !inProcess && (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{display: "block", mt: 1}}
+            >
+              Fill in all required fields to query
+            </Typography>
+          )}
+
           {!inProcess && (errMsg || result) && (
-            <>
-              <Divider sx={{margin: "24px 0"}} />
+            <ResultCard success={!errMsg} sx={{mt: 3}}>
               <Stack
-                direction={isWideScreen ? "row" : "column"}
-                gap={2}
-                mt={2}
+                direction="row"
                 justifyContent="space-between"
+                alignItems="flex-start"
               >
-                <Box
-                  sx={{
-                    flex: 1,
-                    maxWidth: "100%",
-                    overflow: "auto",
-                    maxHeight: 400,
-                  }}
-                >
-                  <Typography
-                    component="pre"
-                    fontSize={12}
-                    fontWeight={400}
-                    sx={{
-                      whiteSpace: "pre-wrap",
-                      wordBreak: "break-word",
-                      margin: 0,
-                      fontFamily: "monospace",
-                    }}
-                    color={errMsg ? "error" : "inherit"}
-                  >
-                    {errMsg ? "Error: " + errMsg : resultString}
-                  </Typography>
+                <Box flex={1} overflow="auto" maxHeight={400}>
+                  {errMsg ? (
+                    <Stack direction="row" spacing={1} alignItems="flex-start">
+                      <ErrorIcon color="error" fontSize="small" />
+                      <Box>
+                        <Typography variant="subtitle2" color="error">
+                          Error
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {errMsg}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  ) : (
+                    <>
+                      <Typography
+                        variant="subtitle2"
+                        color="success.main"
+                        gutterBottom
+                      >
+                        Result
+                      </Typography>
+                      <Typography
+                        component="pre"
+                        sx={{
+                          fontFamily: "monospace",
+                          fontSize: 13,
+                          whiteSpace: "pre-wrap",
+                          wordBreak: "break-word",
+                          m: 0,
+                          p: 1.5,
+                          bgcolor: "action.hover",
+                          borderRadius: 1,
+                        }}
+                      >
+                        {resultString}
+                      </Typography>
+                    </>
+                  )}
                 </Box>
 
-                {!errMsg && (
+                {!errMsg && result && (
                   <StyledTooltip
-                    title="Value copied"
-                    placement="right"
+                    title="Copied!"
+                    placement="top"
                     open={tooltipOpen}
                     disableFocusListener
                     disableHoverListener
                     disableTouchListener
                   >
-                    <Button
-                      sx={{
-                        height: "2rem",
-                        minWidth: "unset",
-                        width: "fit-content",
-                      }}
-                      onClick={copyValue}
-                    >
-                      <ContentCopy style={{height: "1rem", width: "1.25rem"}} />
-                      <Typography
-                        marginLeft={1}
-                        fontSize={12}
-                        sx={{
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        Copy value
-                      </Typography>
-                    </Button>
+                    <IconButton onClick={copyValue} size="small">
+                      <ContentCopy fontSize="small" />
+                    </IconButton>
                   </StyledTooltip>
                 )}
               </Stack>
-            </>
+            </ResultCard>
           )}
         </Box>
       }
@@ -875,34 +1018,110 @@ function ReadContractForm({
   );
 }
 
-function ExecutionResult({
+function ResultCard({
   success,
   children,
+  sx,
 }: {
   success: boolean;
   children: React.ReactNode;
+  sx?: object;
 }) {
   const theme = useTheme();
   return (
     <Box
-      padding={3}
-      borderRadius={1}
-      bgcolor={
-        theme.palette.mode === "dark"
-          ? theme.palette.neutralShade.lighter
-          : theme.palette.neutralShade.darker
-      }
-      mt={4}
+      sx={{
+        p: 2,
+        borderRadius: 2,
+        border: 1,
+        borderColor: success ? "success.main" : "error.main",
+        bgcolor:
+          theme.palette.mode === "dark"
+            ? success
+              ? "rgba(46, 125, 50, 0.1)"
+              : "rgba(211, 47, 47, 0.1)"
+            : success
+              ? "rgba(46, 125, 50, 0.05)"
+              : "rgba(211, 47, 47, 0.05)",
+        ...sx,
+      }}
     >
-      <Alert
-        severity={success ? "success" : "error"}
-        sx={{width: "fit-content", padding: "0rem 1rem"}}
+      {children}
+    </Box>
+  );
+}
+
+function HelpSection() {
+  const [expanded, setExpanded] = useState(false);
+  const theme = useTheme();
+
+  const helpItems = [
+    {
+      title: "ANS Names",
+      desc: "Use .apt names for addresses (e.g., gregnazario.apt)",
+    },
+    {
+      title: "Bytes (vector<u8>)",
+      desc: "Use hex (0xDEADBEEF) or array ([222, 173, 190, 239])",
+    },
+    {
+      title: "Optional Values",
+      desc: "Leave empty for Option::none",
+    },
+    {
+      title: "Arrays",
+      desc: 'Use JSON ["a", "b"] or comma-separated: a, b',
+    },
+    {
+      title: "Nested Arrays",
+      desc: "Must use JSON format",
+    },
+  ];
+
+  return (
+    <Box sx={{mt: 3}}>
+      <Button
+        size="small"
+        startIcon={<HelpOutline fontSize="small" />}
+        endIcon={expanded ? <ExpandLess /> : <ExpandMore />}
+        onClick={() => setExpanded(!expanded)}
+        sx={{
+          color: "text.secondary",
+          textTransform: "none",
+        }}
       >
-        <Typography fontSize={12}>
-          {success ? "Function successfully executed" : "Function failed"}
-        </Typography>
-      </Alert>
-      <Box>{children}</Box>
+        Input format help
+      </Button>
+      <Collapse in={expanded}>
+        <Box
+          sx={{
+            mt: 1,
+            p: 2,
+            bgcolor:
+              theme.palette.mode === "dark"
+                ? "rgba(255,255,255,0.03)"
+                : "rgba(0,0,0,0.02)",
+            borderRadius: 1,
+          }}
+        >
+          <Stack spacing={1}>
+            {helpItems.map((item, i) => (
+              <Box key={i}>
+                <Typography
+                  variant="caption"
+                  fontWeight={600}
+                  color="text.primary"
+                >
+                  {item.title}
+                </Typography>
+                <Typography variant="caption" color="text.secondary" ml={1}>
+                  — {item.desc}
+                </Typography>
+              </Box>
+            ))}
+          </Stack>
+        </Box>
+      </Collapse>
     </Box>
   );
 }
@@ -913,14 +1132,17 @@ function ContractForm({
   setFormValid,
   result,
   isView,
+  sourceCode,
 }: {
   fn: Types.MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
   setFormValid: (valid: boolean) => void;
   result: ReactNode;
   isView: boolean;
+  sourceCode?: string;
 }) {
   const {account} = useWallet();
+  const theme = useTheme();
   const {
     handleSubmit,
     control,
@@ -936,6 +1158,19 @@ function ContractForm({
   const fnParams = removeSignerParam(fn);
   const hasSigner = fnParams.length !== fn.params.length;
 
+  // Extract parameter names from source code if available
+  const paramNames = useMemo(() => {
+    if (!sourceCode) return null;
+    const decodedSource = transformCode(sourceCode);
+    if (!decodedSource) return null;
+    const names = extractFunctionParamNames(decodedSource, fn.name);
+    // If we have a signer param that was removed, also remove it from extracted names
+    if (names && hasSigner) {
+      return names.slice(1);
+    }
+    return names;
+  }, [sourceCode, fn.name, hasSigner]);
+
   useEffect(() => {
     setFormValid(isValid);
   }, [isValid, setFormValid]);
@@ -943,118 +1178,244 @@ function ContractForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box>
-        <Stack spacing={4}>
-          <Typography fontSize={15} fontWeight={600}>
-            {fn.name}
-            {fn.generic_type_params.length > 0 &&
-              "<" +
-                [...Array(fn.generic_type_params.length)].map(
-                  (_, i) => `T${i}`,
-                ) +
-                ">"}
-            ({fn.params.join(", ")})
-          </Typography>
-          <Stack spacing={4}>
-            {[...Array(fn.generic_type_params.length)].map((_, i) => (
-              <Controller
-                key={i}
-                name={`typeArgs.${i}`}
-                control={control}
-                rules={{required: true}}
-                render={({field: {onChange, value}}) => (
+        {/* Function Header */}
+        <Box mb={3}>
+          <Stack direction="row" spacing={1} alignItems="center" mb={1}>
+            <Typography variant="h6" fontWeight={600}>
+              {fn.name}
+            </Typography>
+            <Chip
+              label={isView ? "View" : "Entry"}
+              size="small"
+              color={isView ? "info" : "primary"}
+              variant="outlined"
+            />
+          </Stack>
+
+          {/* Function Signature */}
+          <Box
+            sx={{
+              p: 1.5,
+              bgcolor:
+                theme.palette.mode === "dark"
+                  ? "rgba(255,255,255,0.03)"
+                  : "rgba(0,0,0,0.02)",
+              borderRadius: 1,
+              fontFamily: "monospace",
+              fontSize: 13,
+              overflow: "auto",
+            }}
+          >
+            <Typography component="span" color="primary.main" fontWeight={600}>
+              {fn.name}
+            </Typography>
+            {fn.generic_type_params.length > 0 && (
+              <Typography component="span" color="text.secondary">
+                {"<"}
+                {fn.generic_type_params.map((_, i) => `T${i}`).join(", ")}
+                {">"}
+              </Typography>
+            )}
+            <Typography component="span" color="text.secondary">
+              (
+            </Typography>
+            {fn.params.length > 0 && (
+              <Box component="span">
+                {fn.params.map((param, i) => {
+                  // Get the full param names (without signer removal) for display
+                  const fullParamNames = sourceCode
+                    ? extractFunctionParamNames(
+                        transformCode(sourceCode),
+                        fn.name,
+                      )
+                    : null;
+                  const paramName = fullParamNames?.[i];
+                  return (
+                    <React.Fragment key={i}>
+                      {i > 0 && (
+                        <Typography component="span" color="text.secondary">
+                          ,{" "}
+                        </Typography>
+                      )}
+                      {paramName && (
+                        <Typography component="span" color="info.main">
+                          {paramName}:{" "}
+                        </Typography>
+                      )}
+                      <Typography component="span" color="warning.main">
+                        {param}
+                      </Typography>
+                    </React.Fragment>
+                  );
+                })}
+              </Box>
+            )}
+            <Typography component="span" color="text.secondary">
+              )
+            </Typography>
+            {fn.return.length > 0 && (
+              <>
+                <Typography component="span" color="text.secondary">
+                  {" → "}
+                </Typography>
+                <Typography component="span" color="success.main">
+                  {fn.return.join(", ")}
+                </Typography>
+              </>
+            )}
+          </Box>
+        </Box>
+
+        <Divider sx={{mb: 3}} />
+
+        {/* Form Fields */}
+        <Stack spacing={3}>
+          {/* Type Arguments */}
+          {fn.generic_type_params.length > 0 && (
+            <Box>
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                gutterBottom
+              >
+                Type Arguments
+              </Typography>
+              <Stack spacing={2}>
+                {fn.generic_type_params.map((_, i) => (
+                  <Controller
+                    key={i}
+                    name={`typeArgs.${i}`}
+                    control={control}
+                    rules={{required: true}}
+                    render={({field: {onChange, value}}) => (
+                      <TextField
+                        onChange={onChange}
+                        value={value ?? ""}
+                        label={`T${i}`}
+                        placeholder="0x1::module::Type"
+                        fullWidth
+                        size="small"
+                      />
+                    )}
+                  />
+                ))}
+              </Stack>
+            </Box>
+          )}
+
+          {/* Function Arguments */}
+          {(hasSigner || fnParams.length > 0) && (
+            <Box>
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                gutterBottom
+              >
+                Arguments
+              </Typography>
+              <Stack spacing={2}>
+                {hasSigner && (
                   <TextField
-                    onChange={onChange}
-                    value={value ?? ""}
-                    label={`T${i}`}
+                    value={account?.address ?? ""}
+                    label="signer (your wallet)"
+                    disabled
                     fullWidth
+                    size="small"
+                    InputProps={{
+                      sx: {fontFamily: "monospace", fontSize: 13},
+                    }}
                   />
                 )}
-              />
-            ))}
-            {hasSigner &&
-              (account ? (
-                <TextField
-                  key="args-signer"
-                  value={account.address}
-                  label="signer"
-                  disabled
-                  fullWidth
-                />
-              ) : (
-                <TextField label="signer" disabled fullWidth />
-              ))}
-            {fnParams.map((param, i) => {
-              // TODO: Need a nice way to differentiate between option and empty string
-              const isOption = param.startsWith("0x1::option::Option");
-              return (
-                <Controller
-                  key={`args-${i}`}
-                  name={`args.${i}`}
-                  control={control}
-                  rules={{required: !isOption}}
-                  render={({field: {onChange, value}}) => (
-                    <TextField
-                      onChange={onChange}
-                      value={isOption ? value : (value ?? "")}
-                      label={`arg${i}: ${param}`}
-                      fullWidth
+                {fnParams.map((param, i) => {
+                  const isOption = param.startsWith("0x1::option::Option");
+                  const friendlyName = getFriendlyTypeName(param);
+                  const placeholder = getPlaceholder(param);
+                  // Use extracted param name if available, otherwise fall back to friendly type name
+                  const argName = paramNames?.[i];
+                  const displayLabel = argName
+                    ? `${argName} (${friendlyName})`
+                    : friendlyName;
+
+                  return (
+                    <Controller
+                      key={`args-${i}`}
+                      name={`args.${i}`}
+                      control={control}
+                      rules={{required: !isOption}}
+                      render={({field: {onChange, value}}) => (
+                        <TextField
+                          onChange={onChange}
+                          value={isOption ? value : (value ?? "")}
+                          label={displayLabel}
+                          placeholder={placeholder}
+                          fullWidth
+                          size="small"
+                          InputLabelProps={{shrink: true}}
+                          helperText={
+                            <Typography
+                              component="span"
+                              variant="caption"
+                              fontFamily="monospace"
+                              color="text.secondary"
+                            >
+                              {param}
+                            </Typography>
+                          }
+                          InputProps={{
+                            endAdornment: isOption ? (
+                              <InputAdornment position="end">
+                                <Chip
+                                  label="optional"
+                                  size="small"
+                                  variant="outlined"
+                                  sx={{height: 20, fontSize: 10}}
+                                />
+                              </InputAdornment>
+                            ) : undefined,
+                          }}
+                        />
+                      )}
                     />
-                  )}
-                />
-              );
-            })}
-          </Stack>
+                  );
+                })}
+              </Stack>
+            </Box>
+          )}
+
+          {/* Ledger Version for View */}
           {isView && (
-            <Stack spacing={4}>
+            <Box>
+              <Typography
+                variant="subtitle2"
+                color="text.secondary"
+                gutterBottom
+              >
+                Options
+              </Typography>
               <Controller
-                key={"ledgerVersion"}
-                name={"ledgerVersion"}
+                name="ledgerVersion"
                 control={control}
                 rules={{required: false}}
                 render={({field: {onChange, value}}) => (
                   <TextField
                     onChange={onChange}
-                    value={value}
-                    label={"ledgerVersion: defaults to current version"}
+                    value={value ?? ""}
+                    label="Ledger Version"
+                    placeholder="Leave empty for latest"
                     fullWidth
+                    size="small"
+                    helperText="Query at a specific blockchain version"
                   />
                 )}
               />
-            </Stack>
+            </Box>
           )}
-          {result}
-          {/* TODO: Figure out a better way to show instructions, I tried, and it wasn't pretty */}
-          <Typography fontSize={14} fontWeight={600}>
-            How to use:
-          </Typography>
-          <Typography fontSize={14} fontWeight={600}>
-            ANS names (.apt) are supported for address arguments (e.g.
-            gregnazario.apt will resolve to the address)
-          </Typography>
-          <Typography fontSize={14} fontWeight={600}>
-            vector&lt;u8&gt; accepts hex strings (e.g. 0xDEADBEEF or DEADBEEF)
-            or byte arrays (e.g. [222, 173, 190, 239])
-          </Typography>
-          <Typography fontSize={14} fontWeight={600}>
-            Option arguments can be submitted with no value, which would be
-            Option::none
-          </Typography>
-          <Typography fontSize={14} fontWeight={600}>
-            Nested vectors must be provided in JSON
-          </Typography>
-          <Typography fontSize={14} fontWeight={600}>
-            Vector arguments can be provided in JSON or as a comma separated
-            list e.g. 0x1, 0x2 or ["0x1", "0x2"]
-          </Typography>
-          <Typography fontSize={14} fontWeight={600}>
-            Numbers and booleans must be inputted without quotes if providing
-            JSON
-          </Typography>
-          <Typography fontSize={14} fontWeight={600}>
-            Signed integers (i8, i16, i32, i64, i128, i256) support negative
-            values e.g. -42
-          </Typography>
+
+          {/* Submit Button & Results */}
+          <Box>{result}</Box>
         </Stack>
+
+        <HelpSection />
       </Box>
     </form>
   );

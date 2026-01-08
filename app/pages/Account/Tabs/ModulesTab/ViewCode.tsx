@@ -19,11 +19,11 @@ import {
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import {getBytecodeSizeInKB} from "../../../../utils";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
-import {useSearch} from "../../../../routing";
 import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";
 import {Code} from "../../Components/CodeSnippet";
 import {accountPagePath} from "../../Index";
+import {useModulesPathParams} from "./Tabs";
 
 interface ModuleSidebarProps {
   sortedPackages: PackageMetadata[];
@@ -45,21 +45,19 @@ function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
 
   const navigate = useNavigate();
 
-  const search = useSearch({strict: false}) as {selectedModuleName?: string};
-  const selectedModuleName = search?.selectedModuleName ?? "";
+  // Get selected module from path params
+  const {selectedModuleName: selectedModuleFromPath} = useModulesPathParams();
+  const selectedModuleName = selectedModuleFromPath ?? "";
+
   useEffect(() => {
     if (
       !selectedModuleName &&
       sortedPackages.length > 0 &&
       sortedPackages[0].modules.length > 0
     ) {
+      // Redirect to first module using path-based routing
       navigate({
-        to: `/${accountPagePath(isObject)}/$address/$tab`,
-        params: {address, tab: "modules"},
-        search: {
-          modulesTab: "code",
-          selectedModuleName: sortedPackages[0].modules[0].name,
-        },
+        to: `/${accountPagePath(isObject)}/${address}/modules/code/${sortedPackages[0].modules[0].name}`,
         replace: true,
       });
     }
@@ -74,17 +72,12 @@ function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
     .find((module) => module.name === selectedModuleName);
 
   function getLinkToModule(moduleName: string) {
-    return `/${accountPagePath(isObject)}/${address}/modules?modulesTab=code&selectedModuleName=${moduleName}`;
+    return `/${accountPagePath(isObject)}/${address}/modules/code/${moduleName}`;
   }
 
   function navigateToModule(moduleName: string) {
     navigate({
-      to: `/${accountPagePath(isObject)}/$address/$tab`,
-      params: {address, tab: "modules"},
-      search: {
-        modulesTab: "code",
-        selectedModuleName: moduleName,
-      },
+      to: `/${accountPagePath(isObject)}/${address}/modules/code/${moduleName}`,
     });
   }
 

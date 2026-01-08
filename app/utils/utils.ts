@@ -242,6 +242,84 @@ export function getPublicFunctionLineNumber(
   return lineNumber !== -1 ? lineNumber : 0;
 }
 
+/**
+ * Extract parameter names from Move source code for a given function.
+ * Returns an array of parameter names in order, or null if parsing fails.
+ *
+ * Example Move function:
+ *   public entry fun transfer<T>(sender: &signer, recipient: address, amount: u64)
+ * Would return: ["sender", "recipient", "amount"]
+ */
+export function extractFunctionParamNames(
+  sourceCode: string,
+  functionName: string,
+): string[] | null {
+  if (!sourceCode || !functionName) return null;
+
+  try {
+    // Find the function definition - handles public, public(friend), entry, view
+    const funcRegex = new RegExp(
+      `(?:public(?:\\s*\\([^)]*\\))?\\s*)?(?:entry\\s+)?fun\\s+${escapeRegExp(functionName)}\\s*(?:<[^>]*>)?\\s*\\(([^)]*)\\)`,
+      "s",
+    );
+
+    const match = sourceCode.match(funcRegex);
+    if (!match || !match[1]) return null;
+
+    const paramsStr = match[1].trim();
+    if (!paramsStr) return [];
+
+    // Parse parameters - they're in format: name: type, name2: type2
+    // Handle multi-line and complex types like vector<u8>, Option<address>, etc.
+    const params: string[] = [];
+    let depth = 0;
+    let currentParam = "";
+
+    for (let i = 0; i < paramsStr.length; i++) {
+      const char = paramsStr[i];
+
+      if (char === "<") {
+        depth++;
+        currentParam += char;
+      } else if (char === ">") {
+        depth--;
+        currentParam += char;
+      } else if (char === "," && depth === 0) {
+        // End of parameter
+        const paramName = extractParamName(currentParam.trim());
+        if (paramName) params.push(paramName);
+        currentParam = "";
+      } else {
+        currentParam += char;
+      }
+    }
+
+    // Don't forget the last parameter
+    if (currentParam.trim()) {
+      const paramName = extractParamName(currentParam.trim());
+      if (paramName) params.push(paramName);
+    }
+
+    return params.length > 0 ? params : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Extract just the parameter name from a "name: type" string
+ */
+function extractParamName(paramStr: string): string | null {
+  // Format is: name: type
+  // Handle references like &signer, &mut T
+  const colonIndex = paramStr.indexOf(":");
+  if (colonIndex === -1) return null;
+
+  const name = paramStr.substring(0, colonIndex).trim();
+  // Remove any leading & or mut
+  return name || null;
+}
+
 export function encodeInputArgsForViewRequest(type: string, value: string) {
   if (type.includes("vector")) {
     return value.trim().startsWith("0x")
