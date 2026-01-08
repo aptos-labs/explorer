@@ -51,9 +51,9 @@ function Packages({address, isObject}: {address: string; isObject: boolean}) {
       sortedPackages[0].modules.length > 0
     ) {
       navigate({
-        to: `/${accountPagePath(isObject)}/${address}`,
+        to: `/${accountPagePath(isObject)}/$address/$tab`,
+        params: {address, tab: "modules"},
         search: {
-          tab: "modules",
           modulesTab: "packages",
           selectedModuleName: sortedPackages[0].name,
         },
@@ -71,14 +71,14 @@ function Packages({address, isObject}: {address: string; isObject: boolean}) {
   );
 
   function getLinkToPackage(moduleName: string) {
-    return `/${accountPagePath(isObject)}/${address}?tab=modules&modulesTab=packages&selectedModuleName=${moduleName}`;
+    return `/${accountPagePath(isObject)}/${address}/modules?modulesTab=packages&selectedModuleName=${moduleName}`;
   }
 
   function navigateToPackage(moduleName: string) {
     navigate({
-      to: `/${accountPagePath(isObject)}/${address}`,
+      to: `/${accountPagePath(isObject)}/$address/$tab`,
+      params: {address, tab: "modules"},
       search: {
-        tab: "modules",
         modulesTab: "packages",
         selectedModuleName: moduleName,
       },
@@ -234,9 +234,9 @@ function PackageInfo({
           defaultValue={packageMetadata.modules[0]}
           onChange={(_event, value) => {
             navigate({
-              to: `/${accountPagePath(false)}/${address}`,
+              to: `/${accountPagePath(false)}/$address/$tab`,
+              params: {address, tab: "modules"},
               search: {
-                tab: "modules",
                 modulesTab: "code",
                 selectedModuleName: value.name,
               },

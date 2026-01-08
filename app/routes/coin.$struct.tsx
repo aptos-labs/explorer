@@ -1,34 +1,22 @@
-import {createFileRoute} from "@tanstack/react-router";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import CoinPage from "../pages/Coin/Index";
-import {PagePending} from "../components/NavigationPending";
+import {createFileRoute, redirect} from "@tanstack/react-router";
 
+// Redirect /coin/:struct to /coin/:struct/info (default tab)
+// Also handles backward compatibility: /coin/:struct?tab=xxx -> /coin/:struct/xxx
 export const Route = createFileRoute("/coin/$struct")({
-  head: ({params}) => ({
-    meta: [
-      {title: `Coin ${params.struct} | Aptos Explorer`},
-      {
-        name: "description",
-        content: `View coin details for ${params.struct} on the Aptos blockchain.`,
-      },
-      {property: "og:title", content: `Coin ${params.struct} | Aptos Explorer`},
-      {
-        property: "og:description",
-        content: `View coin details for ${params.struct} on the Aptos blockchain.`,
-      },
-      {property: "og:url", content: `${BASE_URL}/coin/${params.struct}`},
-      {property: "og:image", content: DEFAULT_OG_IMAGE},
-      {
-        name: "twitter:title",
-        content: `Coin ${params.struct} | Aptos Explorer`,
-      },
-      {
-        name: "twitter:description",
-        content: `View coin details for ${params.struct} on the Aptos blockchain.`,
-      },
-    ],
-    links: [{rel: "canonical", href: `${BASE_URL}/coin/${params.struct}`}],
-  }),
-  pendingComponent: PagePending,
-  component: CoinPage,
+  beforeLoad: ({params, search}) => {
+    const searchParams = search as {tab?: string};
+    // If there's a tab query param, redirect to path-based route
+    if (searchParams?.tab) {
+      throw redirect({
+        to: "/coin/$struct/$tab",
+        params: {struct: params.struct, tab: searchParams.tab},
+      });
+    }
+    // Default: redirect to "info" tab
+    throw redirect({
+      to: "/coin/$struct/$tab",
+      params: {struct: params.struct, tab: "info"},
+    });
+  },
+  component: () => null,
 });

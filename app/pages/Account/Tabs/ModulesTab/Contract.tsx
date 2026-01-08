@@ -284,9 +284,9 @@ function Contract({
     : undefined;
 
   function getLinkToFn(moduleName: string, fnName: string, isObject: boolean) {
-    // Using search params for module/function selection
+    // Using search params for module/function selection within the modules tab path
     const modulesTabValue = isRead ? "view" : "run";
-    return `/${accountPagePath(isObject)}/${address}?tab=modules&modulesTab=${modulesTabValue}&selectedModuleName=${moduleName}&selectedFnName=${fnName}`;
+    return `/${accountPagePath(isObject)}/${address}/modules?modulesTab=${modulesTabValue}&selectedModuleName=${moduleName}&selectedFnName=${fnName}`;
   }
 
   // Use this key to force re-mount the Form component when the fn changes,

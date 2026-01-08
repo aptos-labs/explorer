@@ -54,9 +54,9 @@ function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
       sortedPackages[0].modules.length > 0
     ) {
       navigate({
-        to: `/${accountPagePath(isObject)}/${address}`,
+        to: `/${accountPagePath(isObject)}/$address/$tab`,
+        params: {address, tab: "modules"},
         search: {
-          tab: "modules",
           modulesTab: "code",
           selectedModuleName: sortedPackages[0].modules[0].name,
         },
@@ -74,14 +74,14 @@ function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
     .find((module) => module.name === selectedModuleName);
 
   function getLinkToModule(moduleName: string) {
-    return `/${accountPagePath(isObject)}/${address}?tab=modules&modulesTab=code&selectedModuleName=${moduleName}`;
+    return `/${accountPagePath(isObject)}/${address}/modules?modulesTab=code&selectedModuleName=${moduleName}`;
   }
 
   function navigateToModule(moduleName: string) {
     navigate({
-      to: `/${accountPagePath(isObject)}/${address}`,
+      to: `/${accountPagePath(isObject)}/$address/$tab`,
+      params: {address, tab: "modules"},
       search: {
-        tab: "modules",
         modulesTab: "code",
         selectedModuleName: moduleName,
       },

@@ -1,45 +1,22 @@
-import {createFileRoute} from "@tanstack/react-router";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import {truncateAddress} from "../utils";
-import FAPage from "../pages/FungibleAsset/Index";
-import {PagePending} from "../components/NavigationPending";
+import {createFileRoute, redirect} from "@tanstack/react-router";
 
+// Redirect /fungible_asset/:address to /fungible_asset/:address/info (default tab)
+// Also handles backward compatibility: /fungible_asset/:address?tab=xxx -> /fungible_asset/:address/xxx
 export const Route = createFileRoute("/fungible_asset/$address")({
-  head: ({params}) => ({
-    meta: [
-      {
-        title: `Fungible Asset ${truncateAddress(params.address)} | Aptos Explorer`,
-      },
-      {
-        name: "description",
-        content: `View fungible asset details for ${params.address} on the Aptos blockchain.`,
-      },
-      {
-        property: "og:title",
-        content: `Fungible Asset ${truncateAddress(params.address)} | Aptos Explorer`,
-      },
-      {
-        property: "og:description",
-        content: `View fungible asset details for ${params.address} on the Aptos blockchain.`,
-      },
-      {
-        property: "og:url",
-        content: `${BASE_URL}/fungible_asset/${params.address}`,
-      },
-      {property: "og:image", content: DEFAULT_OG_IMAGE},
-      {
-        name: "twitter:title",
-        content: `Fungible Asset ${truncateAddress(params.address)} | Aptos Explorer`,
-      },
-      {
-        name: "twitter:description",
-        content: `View fungible asset details for ${params.address} on the Aptos blockchain.`,
-      },
-    ],
-    links: [
-      {rel: "canonical", href: `${BASE_URL}/fungible_asset/${params.address}`},
-    ],
-  }),
-  pendingComponent: PagePending,
-  component: FAPage,
+  beforeLoad: ({params, search}) => {
+    const searchParams = search as {tab?: string};
+    // If there's a tab query param, redirect to path-based route
+    if (searchParams?.tab) {
+      throw redirect({
+        to: "/fungible_asset/$address/$tab",
+        params: {address: params.address, tab: searchParams.tab},
+      });
+    }
+    // Default: redirect to "info" tab
+    throw redirect({
+      to: "/fungible_asset/$address/$tab",
+      params: {address: params.address, tab: "info"},
+    });
+  },
+  component: () => null,
 });

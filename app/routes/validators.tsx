@@ -1,34 +1,22 @@
-import {createFileRoute} from "@tanstack/react-router";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import ValidatorsPage from "../pages/Validators/Index";
-import {PagePending} from "../components/NavigationPending";
+import {createFileRoute, redirect} from "@tanstack/react-router";
 
+// Redirect /validators to /validators/all (default tab)
+// Also handles backward compatibility: /validators?tab=xxx -> /validators/xxx
 export const Route = createFileRoute("/validators")({
-  head: () => ({
-    meta: [
-      {title: "Validators | Aptos Explorer"},
-      {
-        name: "description",
-        content:
-          "View all validators on the Aptos blockchain network. Monitor validator performance, stake amounts, commission rates, and delegation status.",
-      },
-      {property: "og:title", content: "Validators | Aptos Explorer"},
-      {
-        property: "og:description",
-        content:
-          "View all validators on the Aptos blockchain network. Monitor validator performance, stake amounts, commission rates, and delegation status.",
-      },
-      {property: "og:url", content: `${BASE_URL}/validators`},
-      {property: "og:image", content: DEFAULT_OG_IMAGE},
-      {name: "twitter:title", content: "Validators | Aptos Explorer"},
-      {
-        name: "twitter:description",
-        content:
-          "View all validators on the Aptos blockchain network. Monitor validator performance, stake amounts, commission rates, and delegation status.",
-      },
-    ],
-    links: [{rel: "canonical", href: `${BASE_URL}/validators`}],
-  }),
-  pendingComponent: PagePending,
-  component: ValidatorsPage,
+  beforeLoad: ({search}) => {
+    const searchParams = search as {tab?: string};
+    // If there's a tab query param, redirect to path-based route
+    if (searchParams?.tab) {
+      throw redirect({
+        to: "/validators/$tab",
+        params: {tab: searchParams.tab},
+      });
+    }
+    // Default: redirect to "all" tab
+    throw redirect({
+      to: "/validators/$tab",
+      params: {tab: "all"},
+    });
+  },
+  component: () => null,
 });

@@ -7,11 +7,12 @@ import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
-import {useNavigate, useSearch} from "../../routing";
+import {useNavigate} from "../../routing";
 import {CoinData} from "./Components/CoinData";
 import {CoinDescription} from "../../api/hooks/useGetCoinList";
 import HoldersTab from "./Tabs/HoldersTab";
 import {SupplyType} from "../../api/hooks/useGetCoinSupplyLimit";
+import {useParams} from "@tanstack/react-router";
 
 const TAB_VALUES: TabValue[] = ["info", "holders", "transactions"];
 
@@ -96,28 +97,20 @@ export default function CoinTabs({
   pairedFa,
   coinData,
 }: CoinTabsProps) {
-  const search = useSearch({strict: false}) as {
-    tab?: string;
-    modulesTab?: string;
-  };
+  const params = useParams({strict: false}) as {struct?: string; tab?: string};
   const navigate = useNavigate();
 
   let effectiveTab: TabValue;
-  if (search?.modulesTab) {
-    effectiveTab = "modules" as TabValue;
-  } else if (
-    search?.tab !== undefined &&
-    tabValues.includes(search.tab as TabValue)
-  ) {
-    effectiveTab = search.tab as TabValue;
+  if (params?.tab !== undefined && tabValues.includes(params.tab as TabValue)) {
+    effectiveTab = params.tab as TabValue;
   } else {
     effectiveTab = TAB_VALUES[0];
   }
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate({
-      to: `/coin/${struct}`,
-      search: {tab: newValue},
+      to: "/coin/$struct/$tab",
+      params: {struct, tab: newValue},
       replace: true,
     });
   };
