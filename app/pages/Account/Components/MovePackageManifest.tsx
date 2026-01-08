@@ -12,8 +12,8 @@ import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
 import {lazy, Suspense, useEffect, useRef, useState} from "react";
 import StyledTooltip from "../../../components/StyledTooltip";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
-import {useSearch} from "../../../routing";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
+import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
 // Lazy load react-syntax-highlighter (~150KB) - only needed when viewing code
 const SyntaxHighlighter = lazy(() => import("react-syntax-highlighter"));
@@ -68,8 +68,8 @@ function CodeLoadingFallback() {
 }
 
 function useStartingLineNumber(sourceCode?: string) {
-  const search = useSearch({strict: false}) as {selectedFnName?: string};
-  const functionToHighlight = search?.selectedFnName;
+  const {selectedFnName} = useModulesPathParams();
+  const functionToHighlight = selectedFnName;
 
   if (!sourceCode) return 0;
   if (!functionToHighlight) return 0;
@@ -80,8 +80,7 @@ function useStartingLineNumber(sourceCode?: string) {
 function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
-  const search = useSearch({strict: false}) as {selectedModuleName?: string};
-  const selectedModuleName = search?.selectedModuleName;
+  const {selectedModuleName} = useModulesPathParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const logEvent = useLogEventWithBasic();
   const styles = useHighlighterStyles();
@@ -161,10 +160,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
 }
 
 export function MovePackageManifest({manifest}: {manifest: string}) {
-  const searchManifest = useSearch({strict: false}) as {
-    selectedModuleName?: string;
-  };
-  const selectedModuleName = searchManifest?.selectedModuleName;
+  const {selectedModuleName} = useModulesPathParams();
   const logEvent = useLogEventWithBasic();
   const styles = useHighlighterStyles();
 

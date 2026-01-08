@@ -1,10 +1,15 @@
-import {createFileRoute, redirect} from "@tanstack/react-router";
+import {createFileRoute, Outlet, redirect} from "@tanstack/react-router";
 
-// Redirect /txn/:txnHashOrVersion to /txn/:txnHashOrVersion/userTxnOverview (default tab)
-// Also handles backward compatibility: /txn/:txnHashOrVersion?tab=xxx -> /txn/:txnHashOrVersion/xxx
+// Layout route for /txn/:txnHashOrVersion/*
+// Handles backward compatibility redirects from query params to path-based tabs
 export const Route = createFileRoute("/txn/$txnHashOrVersion")({
-  beforeLoad: ({params, search}) => {
-    const searchParams = search as {tab?: string};
+  beforeLoad: ({params, search, location}) => {
+    const searchParams = search as {tab?: string; network?: string};
+
+    // Check if we're on the exact /txn/:txnHashOrVersion path (no child route)
+    const pathSegments = location.pathname.split("/").filter(Boolean);
+    const isExactMatch = pathSegments.length === 2; // ["txn", "txnHashOrVersion"]
+
     // If there's a tab query param, redirect to path-based route
     if (searchParams?.tab) {
       throw redirect({
@@ -13,16 +18,24 @@ export const Route = createFileRoute("/txn/$txnHashOrVersion")({
           txnHashOrVersion: params.txnHashOrVersion,
           tab: searchParams.tab,
         },
+        search: searchParams.network
+          ? {network: searchParams.network}
+          : undefined,
       });
     }
-    // Default: redirect to "userTxnOverview" tab (first tab for user transactions)
-    throw redirect({
-      to: "/txn/$txnHashOrVersion/$tab",
-      params: {
-        txnHashOrVersion: params.txnHashOrVersion,
-        tab: "userTxnOverview",
-      },
-    });
+    // Default: redirect to "userTxnOverview" tab only if on exact path
+    if (isExactMatch) {
+      throw redirect({
+        to: "/txn/$txnHashOrVersion/$tab",
+        params: {
+          txnHashOrVersion: params.txnHashOrVersion,
+          tab: "userTxnOverview",
+        },
+        search: searchParams?.network
+          ? {network: searchParams.network}
+          : undefined,
+      });
+    }
   },
-  component: () => null,
+  component: () => <Outlet />,
 });

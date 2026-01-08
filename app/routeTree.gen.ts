@@ -28,11 +28,15 @@ import { Route as BlockHeightRouteImport } from './routes/block.$height'
 import { Route as AccountAddressRouteImport } from './routes/account.$address'
 import { Route as TxnTxnHashOrVersionTabRouteImport } from './routes/txn.$txnHashOrVersion.$tab'
 import { Route as TokenTokenIdTabRouteImport } from './routes/token.$tokenId.$tab'
+import { Route as ObjectAddressModulesRouteImport } from './routes/object.$address.modules'
 import { Route as ObjectAddressTabRouteImport } from './routes/object.$address.$tab'
 import { Route as Fungible_assetAddressTabRouteImport } from './routes/fungible_asset.$address.$tab'
 import { Route as CoinStructTabRouteImport } from './routes/coin.$struct.$tab'
 import { Route as BlockHeightTabRouteImport } from './routes/block.$height.$tab'
+import { Route as AccountAddressModulesRouteImport } from './routes/account.$address.modules'
 import { Route as AccountAddressTabRouteImport } from './routes/account.$address.$tab'
+import { Route as ObjectAddressModulesSplatRouteImport } from './routes/object.$address.modules.$'
+import { Route as AccountAddressModulesSplatRouteImport } from './routes/account.$address.modules.$'
 
 const VerificationRoute = VerificationRouteImport.update({
   id: '/verification',
@@ -129,6 +133,11 @@ const TokenTokenIdTabRoute = TokenTokenIdTabRouteImport.update({
   path: '/$tab',
   getParentRoute: () => TokenTokenIdRoute,
 } as any)
+const ObjectAddressModulesRoute = ObjectAddressModulesRouteImport.update({
+  id: '/modules',
+  path: '/modules',
+  getParentRoute: () => ObjectAddressRoute,
+} as any)
 const ObjectAddressTabRoute = ObjectAddressTabRouteImport.update({
   id: '/$tab',
   path: '/$tab',
@@ -150,11 +159,28 @@ const BlockHeightTabRoute = BlockHeightTabRouteImport.update({
   path: '/$tab',
   getParentRoute: () => BlockHeightRoute,
 } as any)
+const AccountAddressModulesRoute = AccountAddressModulesRouteImport.update({
+  id: '/modules',
+  path: '/modules',
+  getParentRoute: () => AccountAddressRoute,
+} as any)
 const AccountAddressTabRoute = AccountAddressTabRouteImport.update({
   id: '/$tab',
   path: '/$tab',
   getParentRoute: () => AccountAddressRoute,
 } as any)
+const ObjectAddressModulesSplatRoute =
+  ObjectAddressModulesSplatRouteImport.update({
+    id: '/$',
+    path: '/$',
+    getParentRoute: () => ObjectAddressModulesRoute,
+  } as any)
+const AccountAddressModulesSplatRoute =
+  AccountAddressModulesSplatRouteImport.update({
+    id: '/$',
+    path: '/$',
+    getParentRoute: () => AccountAddressModulesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -175,12 +201,16 @@ export interface FileRoutesByFullPath {
   '/validators-enhanced/$tab': typeof ValidatorsEnhancedTabRoute
   '/validators/$tab': typeof ValidatorsTabRoute
   '/account/$address/$tab': typeof AccountAddressTabRoute
+  '/account/$address/modules': typeof AccountAddressModulesRouteWithChildren
   '/block/$height/$tab': typeof BlockHeightTabRoute
   '/coin/$struct/$tab': typeof CoinStructTabRoute
   '/fungible_asset/$address/$tab': typeof Fungible_assetAddressTabRoute
   '/object/$address/$tab': typeof ObjectAddressTabRoute
+  '/object/$address/modules': typeof ObjectAddressModulesRouteWithChildren
   '/token/$tokenId/$tab': typeof TokenTokenIdTabRoute
   '/txn/$txnHashOrVersion/$tab': typeof TxnTxnHashOrVersionTabRoute
+  '/account/$address/modules/$': typeof AccountAddressModulesSplatRoute
+  '/object/$address/modules/$': typeof ObjectAddressModulesSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -201,12 +231,16 @@ export interface FileRoutesByTo {
   '/validators-enhanced/$tab': typeof ValidatorsEnhancedTabRoute
   '/validators/$tab': typeof ValidatorsTabRoute
   '/account/$address/$tab': typeof AccountAddressTabRoute
+  '/account/$address/modules': typeof AccountAddressModulesRouteWithChildren
   '/block/$height/$tab': typeof BlockHeightTabRoute
   '/coin/$struct/$tab': typeof CoinStructTabRoute
   '/fungible_asset/$address/$tab': typeof Fungible_assetAddressTabRoute
   '/object/$address/$tab': typeof ObjectAddressTabRoute
+  '/object/$address/modules': typeof ObjectAddressModulesRouteWithChildren
   '/token/$tokenId/$tab': typeof TokenTokenIdTabRoute
   '/txn/$txnHashOrVersion/$tab': typeof TxnTxnHashOrVersionTabRoute
+  '/account/$address/modules/$': typeof AccountAddressModulesSplatRoute
+  '/object/$address/modules/$': typeof ObjectAddressModulesSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -228,12 +262,16 @@ export interface FileRoutesById {
   '/validators-enhanced/$tab': typeof ValidatorsEnhancedTabRoute
   '/validators/$tab': typeof ValidatorsTabRoute
   '/account/$address/$tab': typeof AccountAddressTabRoute
+  '/account/$address/modules': typeof AccountAddressModulesRouteWithChildren
   '/block/$height/$tab': typeof BlockHeightTabRoute
   '/coin/$struct/$tab': typeof CoinStructTabRoute
   '/fungible_asset/$address/$tab': typeof Fungible_assetAddressTabRoute
   '/object/$address/$tab': typeof ObjectAddressTabRoute
+  '/object/$address/modules': typeof ObjectAddressModulesRouteWithChildren
   '/token/$tokenId/$tab': typeof TokenTokenIdTabRoute
   '/txn/$txnHashOrVersion/$tab': typeof TxnTxnHashOrVersionTabRoute
+  '/account/$address/modules/$': typeof AccountAddressModulesSplatRoute
+  '/object/$address/modules/$': typeof ObjectAddressModulesSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -256,12 +294,16 @@ export interface FileRouteTypes {
     | '/validators-enhanced/$tab'
     | '/validators/$tab'
     | '/account/$address/$tab'
+    | '/account/$address/modules'
     | '/block/$height/$tab'
     | '/coin/$struct/$tab'
     | '/fungible_asset/$address/$tab'
     | '/object/$address/$tab'
+    | '/object/$address/modules'
     | '/token/$tokenId/$tab'
     | '/txn/$txnHashOrVersion/$tab'
+    | '/account/$address/modules/$'
+    | '/object/$address/modules/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -282,12 +324,16 @@ export interface FileRouteTypes {
     | '/validators-enhanced/$tab'
     | '/validators/$tab'
     | '/account/$address/$tab'
+    | '/account/$address/modules'
     | '/block/$height/$tab'
     | '/coin/$struct/$tab'
     | '/fungible_asset/$address/$tab'
     | '/object/$address/$tab'
+    | '/object/$address/modules'
     | '/token/$tokenId/$tab'
     | '/txn/$txnHashOrVersion/$tab'
+    | '/account/$address/modules/$'
+    | '/object/$address/modules/$'
   id:
     | '__root__'
     | '/'
@@ -308,12 +354,16 @@ export interface FileRouteTypes {
     | '/validators-enhanced/$tab'
     | '/validators/$tab'
     | '/account/$address/$tab'
+    | '/account/$address/modules'
     | '/block/$height/$tab'
     | '/coin/$struct/$tab'
     | '/fungible_asset/$address/$tab'
     | '/object/$address/$tab'
+    | '/object/$address/modules'
     | '/token/$tokenId/$tab'
     | '/txn/$txnHashOrVersion/$tab'
+    | '/account/$address/modules/$'
+    | '/object/$address/modules/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -469,6 +519,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TokenTokenIdTabRouteImport
       parentRoute: typeof TokenTokenIdRoute
     }
+    '/object/$address/modules': {
+      id: '/object/$address/modules'
+      path: '/modules'
+      fullPath: '/object/$address/modules'
+      preLoaderRoute: typeof ObjectAddressModulesRouteImport
+      parentRoute: typeof ObjectAddressRoute
+    }
     '/object/$address/$tab': {
       id: '/object/$address/$tab'
       path: '/$tab'
@@ -497,12 +554,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlockHeightTabRouteImport
       parentRoute: typeof BlockHeightRoute
     }
+    '/account/$address/modules': {
+      id: '/account/$address/modules'
+      path: '/modules'
+      fullPath: '/account/$address/modules'
+      preLoaderRoute: typeof AccountAddressModulesRouteImport
+      parentRoute: typeof AccountAddressRoute
+    }
     '/account/$address/$tab': {
       id: '/account/$address/$tab'
       path: '/$tab'
       fullPath: '/account/$address/$tab'
       preLoaderRoute: typeof AccountAddressTabRouteImport
       parentRoute: typeof AccountAddressRoute
+    }
+    '/object/$address/modules/$': {
+      id: '/object/$address/modules/$'
+      path: '/$'
+      fullPath: '/object/$address/modules/$'
+      preLoaderRoute: typeof ObjectAddressModulesSplatRouteImport
+      parentRoute: typeof ObjectAddressModulesRoute
+    }
+    '/account/$address/modules/$': {
+      id: '/account/$address/modules/$'
+      path: '/$'
+      fullPath: '/account/$address/modules/$'
+      preLoaderRoute: typeof AccountAddressModulesSplatRouteImport
+      parentRoute: typeof AccountAddressModulesRoute
     }
   }
 }
@@ -530,12 +608,27 @@ const ValidatorsEnhancedRouteChildren: ValidatorsEnhancedRouteChildren = {
 const ValidatorsEnhancedRouteWithChildren =
   ValidatorsEnhancedRoute._addFileChildren(ValidatorsEnhancedRouteChildren)
 
+interface AccountAddressModulesRouteChildren {
+  AccountAddressModulesSplatRoute: typeof AccountAddressModulesSplatRoute
+}
+
+const AccountAddressModulesRouteChildren: AccountAddressModulesRouteChildren = {
+  AccountAddressModulesSplatRoute: AccountAddressModulesSplatRoute,
+}
+
+const AccountAddressModulesRouteWithChildren =
+  AccountAddressModulesRoute._addFileChildren(
+    AccountAddressModulesRouteChildren,
+  )
+
 interface AccountAddressRouteChildren {
   AccountAddressTabRoute: typeof AccountAddressTabRoute
+  AccountAddressModulesRoute: typeof AccountAddressModulesRouteWithChildren
 }
 
 const AccountAddressRouteChildren: AccountAddressRouteChildren = {
   AccountAddressTabRoute: AccountAddressTabRoute,
+  AccountAddressModulesRoute: AccountAddressModulesRouteWithChildren,
 }
 
 const AccountAddressRouteWithChildren = AccountAddressRoute._addFileChildren(
@@ -579,12 +672,25 @@ const Fungible_assetAddressRouteWithChildren =
     Fungible_assetAddressRouteChildren,
   )
 
+interface ObjectAddressModulesRouteChildren {
+  ObjectAddressModulesSplatRoute: typeof ObjectAddressModulesSplatRoute
+}
+
+const ObjectAddressModulesRouteChildren: ObjectAddressModulesRouteChildren = {
+  ObjectAddressModulesSplatRoute: ObjectAddressModulesSplatRoute,
+}
+
+const ObjectAddressModulesRouteWithChildren =
+  ObjectAddressModulesRoute._addFileChildren(ObjectAddressModulesRouteChildren)
+
 interface ObjectAddressRouteChildren {
   ObjectAddressTabRoute: typeof ObjectAddressTabRoute
+  ObjectAddressModulesRoute: typeof ObjectAddressModulesRouteWithChildren
 }
 
 const ObjectAddressRouteChildren: ObjectAddressRouteChildren = {
   ObjectAddressTabRoute: ObjectAddressTabRoute,
+  ObjectAddressModulesRoute: ObjectAddressModulesRouteWithChildren,
 }
 
 const ObjectAddressRouteWithChildren = ObjectAddressRoute._addFileChildren(

@@ -1,6 +1,5 @@
 import {Box, useTheme} from "@mui/material";
 import React, {useEffect} from "react";
-import {useSearch} from "../../../../routing";
 import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
 import {assertNever} from "../../../../utils";
@@ -11,6 +10,7 @@ import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 import Packages from "./Packages";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
+import {useParams} from "@tanstack/react-router";
 
 const TabComponents = Object.freeze({
   packages: Packages,
@@ -67,6 +67,30 @@ function TabPanel({value, address, isObject}: TabPanelProps) {
   return <TabComponent address={address} isObject={isObject} />;
 }
 
+/**
+ * Parse modules path params from the splat route.
+ * Path format: /account/:address/modules/:modulesTab/:moduleName?/:fnName?
+ * The splat param contains everything after /modules/
+ */
+export function useModulesPathParams() {
+  const params = useParams({strict: false}) as {
+    address?: string;
+    _splat?: string;
+  };
+
+  const splatParts = params._splat?.split("/").filter(Boolean) ?? [];
+
+  const modulesTab = splatParts[0] as TabValue | undefined;
+  const selectedModuleName = splatParts[1];
+  const selectedFnName = splatParts[2];
+
+  return {
+    modulesTab,
+    selectedModuleName,
+    selectedFnName,
+  };
+}
+
 function ModulesTabs({
   address,
   isObject,
@@ -76,14 +100,11 @@ function ModulesTabs({
 }) {
   const theme = useTheme();
   const tabValues = Object.keys(TabComponents) as TabValue[];
-  const search = useSearch({strict: false}) as {
-    selectedFnName?: string;
-    selectedModuleName?: string;
-    modulesTab?: string;
-  };
-  const selectedFnName = search?.selectedFnName;
-  const selectedModuleName = search?.selectedModuleName;
-  const modulesTab = search?.modulesTab;
+
+  // Parse path params from splat route
+  const {modulesTab, selectedModuleName, selectedFnName} =
+    useModulesPathParams();
+
   const navigate = useNavigate();
   const logEvent = useLogEventWithBasic();
   const sortedPackages = useGetAccountPackages(address);
@@ -142,21 +163,24 @@ function ModulesTabs({
         // Between non-packages tabs: preserve module name and function name
         return {
           moduleNameParam: selectedModuleName || "",
-          fnNameParam: selectedFnName ? `/${selectedFnName}` : "",
+          fnNameParam: selectedFnName || "",
         };
       }
       // If both are packages or no conversion needed, leave params empty
       return {moduleNameParam: "", fnNameParam: ""};
     })();
 
+    // Build path-based URL
+    let path = `/${accountPagePath(isObject)}/${address}/modules/${newValue}`;
+    if (moduleNameParam) {
+      path += `/${moduleNameParam}`;
+      if (fnNameParam) {
+        path += `/${fnNameParam}`;
+      }
+    }
+
     navigate({
-      to: `/${accountPagePath(isObject)}/${address}`,
-      search: {
-        tab: "modules",
-        modulesTab: newValue,
-        selectedModuleName: moduleNameParam || undefined,
-        selectedFnName: fnNameParam ? fnNameParam.slice(1) : undefined, // Remove leading slash
-      },
+      to: path,
       replace: true,
     });
   };

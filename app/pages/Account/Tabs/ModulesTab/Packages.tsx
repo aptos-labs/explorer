@@ -15,12 +15,12 @@ import {
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import {useSearch} from "../../../../routing";
 import {useNavigate} from "../../../../routing";
 import SidebarItem from "../../Components/SidebarItem";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 import {MovePackageManifest} from "../../Components/MovePackageManifest";
+import {useModulesPathParams} from "./Tabs";
 
 interface PackageSidebarProps {
   sortedPackages: PackageMetadata[];
@@ -42,21 +42,19 @@ function Packages({address, isObject}: {address: string; isObject: boolean}) {
 
   const navigate = useNavigate();
 
-  const search = useSearch({strict: false}) as {selectedModuleName?: string};
-  const selectedPackageName = search?.selectedModuleName ?? "";
+  // Get selected package from path params (uses selectedModuleName for package name in packages tab)
+  const {selectedModuleName} = useModulesPathParams();
+  const selectedPackageName = selectedModuleName ?? "";
+
   useEffect(() => {
     if (
       !selectedPackageName &&
       sortedPackages.length > 0 &&
       sortedPackages[0].modules.length > 0
     ) {
+      // Redirect to first package using path-based routing
       navigate({
-        to: `/${accountPagePath(isObject)}/$address/$tab`,
-        params: {address, tab: "modules"},
-        search: {
-          modulesTab: "packages",
-          selectedModuleName: sortedPackages[0].name,
-        },
+        to: `/${accountPagePath(isObject)}/${address}/modules/packages/${sortedPackages[0].name}`,
         replace: true,
       });
     }
@@ -70,18 +68,13 @@ function Packages({address, isObject}: {address: string; isObject: boolean}) {
     (pkg) => pkg.name === selectedPackageName,
   );
 
-  function getLinkToPackage(moduleName: string) {
-    return `/${accountPagePath(isObject)}/${address}/modules?modulesTab=packages&selectedModuleName=${moduleName}`;
+  function getLinkToPackage(packageName: string) {
+    return `/${accountPagePath(isObject)}/${address}/modules/packages/${packageName}`;
   }
 
-  function navigateToPackage(moduleName: string) {
+  function navigateToPackage(packageName: string) {
     navigate({
-      to: `/${accountPagePath(isObject)}/$address/$tab`,
-      params: {address, tab: "modules"},
-      search: {
-        modulesTab: "packages",
-        selectedModuleName: moduleName,
-      },
+      to: `/${accountPagePath(isObject)}/${address}/modules/packages/${packageName}`,
     });
   }
 
@@ -233,13 +226,9 @@ function PackageInfo({
           getOptionLabel={(option) => option.name}
           defaultValue={packageMetadata.modules[0]}
           onChange={(_event, value) => {
+            // Navigate to code view for the selected module
             navigate({
-              to: `/${accountPagePath(false)}/$address/$tab`,
-              params: {address, tab: "modules"},
-              search: {
-                modulesTab: "code",
-                selectedModuleName: value.name,
-              },
+              to: `/${accountPagePath(false)}/${address}/modules/code/${value.name}`,
             });
           }}
           renderInput={(params) => (
