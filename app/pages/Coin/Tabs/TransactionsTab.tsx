@@ -1,6 +1,5 @@
 import React from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import LoadingModal from "../../../components/LoadingModal";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -14,6 +13,7 @@ import {
   useGetCoinActivities,
 } from "../../../api/hooks/useGetCoinActivities";
 import {CoinData} from "../Components/CoinData";
+import {Box, CircularProgress} from "@mui/material";
 
 type TransactionsTabProps = {
   struct: string;
@@ -23,7 +23,11 @@ type TransactionsTabProps = {
 export default function TransactionsTab({struct, data}: TransactionsTabProps) {
   const holderData = useGetCoinActivities(struct);
   if (holderData?.isLoading) {
-    return <LoadingModal open={true} />;
+    return (
+      <Box sx={{display: "flex", justifyContent: "center", padding: 4}}>
+        <CircularProgress />
+      </Box>
+    );
   }
   if (!data || Array.isArray(data) || !holderData?.data) {
     return <EmptyTabContent />;

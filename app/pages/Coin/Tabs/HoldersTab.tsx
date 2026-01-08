@@ -14,7 +14,7 @@ import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import LoadingModal from "../../../components/LoadingModal";
+import {Box, CircularProgress} from "@mui/material";
 
 type HoldersTabProps = {
   struct: string;
@@ -24,7 +24,11 @@ type HoldersTabProps = {
 export default function HoldersTab({struct, data}: HoldersTabProps) {
   const holderData = useGetCoinHolders(struct);
   if (holderData?.isLoading) {
-    return <LoadingModal open={true} />;
+    return (
+      <Box sx={{display: "flex", justifyContent: "center", padding: 4}}>
+        <CircularProgress />
+      </Box>
+    );
   }
   if (!data || Array.isArray(data) || !holderData?.data) {
     return <EmptyTabContent />;
