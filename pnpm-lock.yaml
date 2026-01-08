@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  "@aptos-connect/wallet-adapter-plugin": ^3.0.1
   "@aptos-labs/aptos-client": ^2.1.0
   "@aptos-labs/wallet-standard": ^0.5.2
   "@aptos-labs/ts-sdk": 5.2.0
@@ -234,10 +235,10 @@ packages:
       subscriptions-transport-ws:
         optional: true
 
-  "@aptos-connect/wallet-adapter-plugin@2.8.0":
+  "@aptos-connect/wallet-adapter-plugin@3.0.1":
     resolution:
       {
-        integrity: sha512-xa+qeqLbPNBTWh8LzldvXJBW6E7xv4OW5TZ18lckmbWD9FZHKpd1rFgIizFHX1RX4j9PRhnfZCZo8RlMm2oUSA==,
+        integrity: sha512-skqglrS/Vuawhr9DYFE6LuBe8hRG82UQiZl3quHFn9bwlRW3ZOQ0Ykc6imuSjottGWHGlYBwvQxvxhsyq1ptmQ==,
       }
     peerDependencies:
       "@aptos-labs/ts-sdk": 5.2.0
@@ -250,10 +251,10 @@ packages:
     peerDependencies:
       "@aptos-labs/ts-sdk": 5.2.0
 
-  "@aptos-connect/web-transport@0.5.0":
+  "@aptos-connect/web-transport@0.6.1":
     resolution:
       {
-        integrity: sha512-Rqy30VSiEVyvZ5jmegg358ZOHDzHzuK5uZ63RCcTnCARg1mb+epg6RwVD23W7JbuLhA50V1hBiu3ZTTFWgLN5w==,
+        integrity: sha512-wyzOsYnYltTduI1ZbHwOz5PDxQ0K1LuABOtllV9z+rhUdDABKGSOdCO/0L0ybI9LYE4epvTYxcn72B7rjIQkMg==,
       }
     peerDependencies:
       "@aptos-labs/ts-sdk": 5.2.0
@@ -961,10 +962,10 @@ packages:
     peerDependencies:
       "@aptos-labs/ts-sdk": 5.2.0
 
-  "@identity-connect/dapp-sdk@0.15.0":
+  "@identity-connect/dapp-sdk@0.16.1":
     resolution:
       {
-        integrity: sha512-wWRQCWce1GhQTRu0SFURMFB80ErHw2sr1ZpK2bwPo99us1LmW6yRCETnOjRzVA04wSn/0B3ZvrlOT4i7lohe+Q==,
+        integrity: sha512-Zy1KMPSxLc5HRCSxORjYtTGG3S85RMdQ9oKm9m9v7ia6T0MS9V0JSWXF/mv2wTaW66EL+zMPzpWL8eCWyZC1wg==,
       }
     peerDependencies:
       "@aptos-labs/ts-sdk": 5.2.0
@@ -8421,13 +8422,13 @@ snapshots:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
 
-  "@aptos-connect/wallet-adapter-plugin@2.8.0(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)":
+  "@aptos-connect/wallet-adapter-plugin@3.0.1(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)":
     dependencies:
       "@aptos-connect/wallet-api": 0.6.0(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0)
       "@aptos-labs/ts-sdk": 5.2.0(got@11.8.6)
       "@aptos-labs/wallet-standard": 0.5.2(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0)
       "@identity-connect/crypto": 0.3.0(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0)
-      "@identity-connect/dapp-sdk": 0.15.0(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@aptos-labs/wallet-standard@0.5.2(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)
+      "@identity-connect/dapp-sdk": 0.16.1(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@aptos-labs/wallet-standard@0.5.2(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)
     transitivePeerDependencies:
       - "@telegram-apps/bridge"
       - "@wallet-standard/core"
@@ -8441,7 +8442,7 @@ snapshots:
     transitivePeerDependencies:
       - "@wallet-standard/core"
 
-  "@aptos-connect/web-transport@0.5.0(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@aptos-labs/wallet-standard@0.5.2(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)":
+  "@aptos-connect/web-transport@0.6.1(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@aptos-labs/wallet-standard@0.5.2(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)":
     dependencies:
       "@aptos-connect/wallet-api": 0.6.0(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0)
       "@aptos-labs/ts-sdk": 5.2.0(got@11.8.6)
@@ -8476,7 +8477,7 @@ snapshots:
 
   "@aptos-labs/wallet-adapter-core@7.10.1(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)":
     dependencies:
-      "@aptos-connect/wallet-adapter-plugin": 2.8.0(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)
+      "@aptos-connect/wallet-adapter-plugin": 3.0.1(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)
       "@aptos-labs/ts-sdk": 5.2.0(got@11.8.6)
       "@aptos-labs/wallet-standard": 0.5.2(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0)
       buffer: 6.0.3
@@ -8890,10 +8891,10 @@ snapshots:
     transitivePeerDependencies:
       - "@wallet-standard/core"
 
-  "@identity-connect/dapp-sdk@0.15.0(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@aptos-labs/wallet-standard@0.5.2(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)":
+  "@identity-connect/dapp-sdk@0.16.1(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@aptos-labs/wallet-standard@0.5.2(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)":
     dependencies:
       "@aptos-connect/wallet-api": 0.6.0(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0)
-      "@aptos-connect/web-transport": 0.5.0(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@aptos-labs/wallet-standard@0.5.2(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)
+      "@aptos-connect/web-transport": 0.6.1(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@aptos-labs/wallet-standard@0.5.2(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)
       "@aptos-labs/ts-sdk": 5.2.0(got@11.8.6)
       "@aptos-labs/wallet-standard": 0.5.2(@aptos-labs/ts-sdk@5.2.0(got@11.8.6))(@wallet-standard/core@1.1.0)
       "@identity-connect/api": 0.8.0

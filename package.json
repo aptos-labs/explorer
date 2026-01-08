@@ -6,6 +6,7 @@
   "type": "module",
   "pnpm": {
     "overrides": {
+      "@aptos-connect/wallet-adapter-plugin": "^3.0.1",
       "@aptos-labs/aptos-client": "^2.1.0",
       "@aptos-labs/wallet-standard": "^0.5.2",
       "@aptos-labs/ts-sdk": "5.2.0",
