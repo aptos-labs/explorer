@@ -15,7 +15,7 @@ import {useNavigate} from "../../routing";
 export default function NetworkSelect() {
   const theme = useTheme();
   const [networkName, setNetworkName] = useNetworkSelector();
-  const isLocalnetAvailable = useLocalnetDetection();
+  const {isAvailable: isLocalnetAvailable} = useLocalnetDetection();
   const navigate = useNavigate();
   const location = useLocation();
 
