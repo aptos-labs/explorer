@@ -1,11 +1,10 @@
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import * as RRD from "@tanstack/react-router";
 import {Stack, Typography} from "@mui/material";
 import {UserTransactionsTable} from "../Transactions/TransactionsTable";
 import useGetUserTransactionVersions from "../../api/hooks/useGetUserTransactionVersions";
 import TransactionsPreview from "./TransactionsPreview";
-import {useAugmentToWithGlobalSearchParams} from "../../routing";
+import {Link} from "../../routing";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 import {Types} from "aptos";
 import {ensureMillisecondTimestamp} from "../utils";
@@ -17,8 +16,6 @@ export default function UserTransactionsPreview() {
   const latestVersion = useGetTransaction(
     versions[0] ? versions[0].toString() : "1",
   );
-  const augmentTo = useAugmentToWithGlobalSearchParams();
-
   // When there's no data, show the normal preview component
   if (!latestVersion?.data || versions.length === 0)
     return <TransactionsPreview />;
@@ -47,8 +44,8 @@ export default function UserTransactionsPreview() {
         </Box>
         <Box sx={{display: "flex", justifyContent: "center"}}>
           <Button
-            component={RRD.Link}
-            to={augmentTo("/transactions")}
+            component={Link}
+            to="/transactions"
             variant="primary"
             sx={{margin: "0 auto", mt: 3}}
           >

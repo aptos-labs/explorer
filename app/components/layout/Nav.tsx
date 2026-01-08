@@ -3,7 +3,7 @@ import {useLocation} from "@tanstack/react-router";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
-import {Link, useAugmentToWithGlobalSearchParams} from "../../routing";
+import {Link} from "../../routing";
 
 function NavButton({
   to,
@@ -14,16 +14,12 @@ function NavButton({
   title: string;
   label: string;
 }) {
-  const augumentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
   const location = useLocation();
   const isActive =
     location.pathname === to || location.pathname.startsWith(to + "/");
 
   return (
-    <Link
-      to={augumentToWithGlobalSearchParams(to)}
-      style={{textDecoration: "none", color: "inherit"}}
-    >
+    <Link to={to} style={{textDecoration: "none", color: "inherit"}}>
       <Button
         variant="nav"
         title={title}

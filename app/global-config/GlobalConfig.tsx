@@ -60,6 +60,15 @@ export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
     () => getNetworkNameFromCookie(),
   );
 
+  // Sync cookie with URL param when URL has a valid network
+  // This ensures the cookie stays in sync for hidden networks accessed via URL
+  React.useEffect(() => {
+    if (networkFromUrl && networkFromUrl !== savedNetworkName) {
+      setSavedNetworkName(networkFromUrl);
+      setNetworkNameCookie(networkFromUrl);
+    }
+  }, [networkFromUrl, savedNetworkName]);
+
   // URL param takes priority, falls back to saved preference
   const networkName = networkFromUrl ?? savedNetworkName;
 
