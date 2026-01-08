@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, Suspense} from "react";
 import {
   Stack,
   useMediaQuery,
@@ -31,62 +31,68 @@ function MapLoading() {
   );
 }
 
+// Lazy load the Map component
+const LazyMap = React.lazy(() => import("./Components/Map"));
+
+class MapErrorBoundary extends React.Component<
+  {children: React.ReactNode},
+  {hasError: boolean}
+> {
+  constructor(props: {children: React.ReactNode}) {
+    super(props);
+    this.state = {hasError: false};
+  }
+
+  static getDerivedStateFromError(error: unknown) {
+    console.error("Map component error:", error);
+    return {hasError: true};
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <Box
+          sx={{
+            width: "100%",
+            height: 450,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Typography color="text.secondary">Unable to load map</Typography>
+        </Box>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 // Client-only Map wrapper - prevents any SSR import of react-simple-maps
 function ClientOnlyMap({
   validatorGeoGroups,
 }: {
   validatorGeoGroups: ValidatorGeoGroup[];
 }) {
-  const [MapComponent, setMapComponent] = useState<React.ComponentType<{
-    validatorGeoGroups: ValidatorGeoGroup[];
-  }> | null>(null);
   const [isClient, setIsClient] = useState(false);
-  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsClient(true);
   }, []);
 
-  useEffect(() => {
-    // Only import on client side after confirming we're in browser
-    if (!isClient) return;
-
-    // Use dynamic import directly to allow Vite to bundle it while keeping it client-only
-    const loadMap = async () => {
-      try {
-        const module = await import("./Components/Map");
-        setMapComponent(() => module.default);
-      } catch (e) {
-        console.error("Failed to load map component", e);
-        setHasError(true);
-      }
-    };
-    loadMap();
-  }, [isClient]);
-
-  if (hasError) {
-    return (
-      <Box
-        sx={{
-          width: "100%",
-          height: 450,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Typography color="text.secondary">
-          Failed to load map component
-        </Typography>
-      </Box>
-    );
-  }
-
-  if (!MapComponent) {
+  if (!isClient) {
     return <MapLoading />;
   }
 
-  return <MapComponent validatorGeoGroups={validatorGeoGroups} />;
+  return (
+    <MapErrorBoundary>
+      <Suspense fallback={<MapLoading />}>
+        <LazyMap validatorGeoGroups={validatorGeoGroups} />
+      </Suspense>
+    </MapErrorBoundary>
+  );
 }
 
 export default function ValidatorsMap() {
