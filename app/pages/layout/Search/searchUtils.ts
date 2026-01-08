@@ -432,6 +432,23 @@ export function handleCoinLookup(
 }
 
 /**
+ * Fallback address result for valid account addresses with no on-chain data yet.
+ */
+export function createFallbackAddressResult(
+  searchText: string,
+): SearchResult | null {
+  const address = tryStandardizeAddress(searchText);
+  if (!address) {
+    return null;
+  }
+  return {
+    label: `Address ${address}`,
+    to: `/account/${address}`,
+    type: "address",
+  };
+}
+
+/**
  * Handle emoji coin lookup
  */
 export async function handleEmojiCoinLookup(

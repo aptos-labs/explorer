@@ -35,6 +35,7 @@ import {
   handleLabelLookup,
   handleCoinLookup,
   handleEmojiCoinLookup,
+  createFallbackAddressResult,
   filterSearchResults,
   groupSearchResults,
 } from "./searchUtils";
@@ -316,6 +317,19 @@ export default function HeaderSearch() {
           }
         }
 
+        // If we still have no results but the input is a valid address,
+        // allow navigating to the account page even if the account has no data yet.
+        if (
+          filteredResults.length === 0 &&
+          (inputType.is32Hex || inputType.isValidAccountAddr)
+        ) {
+          const fallbackAddressResult =
+            createFallbackAddressResult(normalizedSearchText);
+          if (fallbackAddressResult) {
+            filteredResults = [fallbackAddressResult];
+          }
+        }
+
         // Group results by asset type
         const groupedResults = groupSearchResults(filteredResults);
 
@@ -357,7 +371,7 @@ export default function HeaderSearch() {
     abortControllerRef.current = abortController;
     let timer: ReturnType<typeof setTimeout>;
 
-    if (mode !== "loading" && inputValue.trim().length > 0) {
+    if (inputValue.trim().length > 0) {
       timer = setTimeout(() => {
         fetchDataRef.current(inputValue.trim(), abortController.signal);
       }, 500); // Debounce set to 500ms to balance responsiveness and API efficiency
@@ -367,7 +381,7 @@ export default function HeaderSearch() {
       clearTimeout(timer);
       abortController.abort();
     };
-  }, [inputValue, mode]);
+  }, [inputValue]);
 
   return (
     <Autocomplete
