@@ -16,6 +16,7 @@ import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as BlocksRouteImport } from './routes/blocks'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DocumentationRouteImport } from './routes/documentation'
 import { Route as ValidatorsTabRouteImport } from './routes/validators.$tab'
 import { Route as ValidatorsEnhancedTabRouteImport } from './routes/validators-enhanced.$tab'
 import { Route as ValidatorAddressRouteImport } from './routes/validator.$address'
@@ -71,6 +72,11 @@ const AnalyticsRoute = AnalyticsRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocumentationRoute = DocumentationRouteImport.update({
+  id: '/documentation',
+  path: '/documentation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ValidatorsTabRoute = ValidatorsTabRouteImport.update({
@@ -186,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
   '/blocks': typeof BlocksRoute
+  '/documentation': typeof DocumentationRoute
   '/transactions': typeof TransactionsRoute
   '/validators': typeof ValidatorsRouteWithChildren
   '/validators-enhanced': typeof ValidatorsEnhancedRouteWithChildren
@@ -216,6 +223,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
   '/blocks': typeof BlocksRoute
+  '/documentation': typeof DocumentationRoute
   '/transactions': typeof TransactionsRoute
   '/validators': typeof ValidatorsRouteWithChildren
   '/validators-enhanced': typeof ValidatorsEnhancedRouteWithChildren
@@ -247,6 +255,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
   '/blocks': typeof BlocksRoute
+  '/documentation': typeof DocumentationRoute
   '/transactions': typeof TransactionsRoute
   '/validators': typeof ValidatorsRouteWithChildren
   '/validators-enhanced': typeof ValidatorsEnhancedRouteWithChildren
@@ -279,6 +288,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analytics'
     | '/blocks'
+    | '/documentation'
     | '/transactions'
     | '/validators'
     | '/validators-enhanced'
@@ -309,6 +319,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analytics'
     | '/blocks'
+    | '/documentation'
     | '/transactions'
     | '/validators'
     | '/validators-enhanced'
@@ -339,6 +350,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analytics'
     | '/blocks'
+    | '/documentation'
     | '/transactions'
     | '/validators'
     | '/validators-enhanced'
@@ -370,6 +382,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyticsRoute: typeof AnalyticsRoute
   BlocksRoute: typeof BlocksRoute
+  DocumentationRoute: typeof DocumentationRoute
   TransactionsRoute: typeof TransactionsRoute
   ValidatorsRoute: typeof ValidatorsRouteWithChildren
   ValidatorsEnhancedRoute: typeof ValidatorsEnhancedRouteWithChildren
@@ -433,6 +446,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documentation': {
+      id: '/documentation'
+      path: '/documentation'
+      fullPath: '/documentation'
+      preLoaderRoute: typeof DocumentationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/validators/$tab': {
@@ -724,6 +744,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyticsRoute: AnalyticsRoute,
   BlocksRoute: BlocksRoute,
+  DocumentationRoute: DocumentationRoute,
   TransactionsRoute: TransactionsRoute,
   ValidatorsRoute: ValidatorsRouteWithChildren,
   ValidatorsEnhancedRoute: ValidatorsEnhancedRouteWithChildren,
