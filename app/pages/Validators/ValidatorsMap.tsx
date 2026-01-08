@@ -5,6 +5,7 @@ import {
   useTheme,
   CircularProgress,
   Box,
+  Typography,
 } from "@mui/material";
 import MapMetrics from "./Components/MapMetrics";
 import {useGetValidatorSetGeoData} from "../../api/hooks/useGetValidatorsGeoData";
@@ -40,6 +41,7 @@ function ClientOnlyMap({
     validatorGeoGroups: ValidatorGeoGroup[];
   }> | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -51,11 +53,34 @@ function ClientOnlyMap({
 
     // Use dynamic import directly to allow Vite to bundle it while keeping it client-only
     const loadMap = async () => {
-      const module = await import("./Components/Map");
-      setMapComponent(() => module.default);
+      try {
+        const module = await import("./Components/Map");
+        setMapComponent(() => module.default);
+      } catch (e) {
+        console.error("Failed to load map component", e);
+        setHasError(true);
+      }
     };
     loadMap();
   }, [isClient]);
+
+  if (hasError) {
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          height: 450,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Typography color="text.secondary">
+          Failed to load map component
+        </Typography>
+      </Box>
+    );
+  }
 
   if (!MapComponent) {
     return <MapLoading />;
