@@ -192,7 +192,7 @@ export default function AccountPage({
             <Error address={address} error={error} />
           </>
         ) : (
-          accountTabs
+          <>{accountTabs}</>
         )}
       </Grid>
     </Grid>
