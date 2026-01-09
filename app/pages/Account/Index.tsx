@@ -21,6 +21,8 @@ import {useAccountTabValues} from "./hooks/useAccountTabValues";
 
 type AccountPageProps = {
   isObject?: boolean;
+  /** Custom content to render instead of the default tab panel (used for modules sub-routes) */
+  children?: React.ReactNode;
 };
 
 export function accountPagePath(isObject: boolean) {
@@ -32,6 +34,7 @@ export function accountPagePath(isObject: boolean) {
 
 export default function AccountPage({
   isObject: alreadyIsObject,
+  children,
 }: AccountPageProps) {
   const navigate = useNavigate();
   const params = useParams({strict: false}) as {address?: string};
@@ -141,7 +144,10 @@ export default function AccountPage({
   ]);
 
   const networkName = useNetworkName();
-  const {tabValues} = useAccountTabValues(address, alreadyIsObject);
+  const tabValues = useAccountTabValues(
+    alreadyIsObject || isObject,
+    isMultisig,
+  );
 
   const accountTabs = (
     <AccountTabs
@@ -151,7 +157,10 @@ export default function AccountPage({
       resourceData={resourceData}
       tabValues={tabValues}
       isObject={isObject}
-    />
+      currentTab={children ? "modules" : undefined}
+    >
+      {children}
+    </AccountTabs>
   );
 
   return (
@@ -183,7 +192,7 @@ export default function AccountPage({
             <Error address={address} error={error} />
           </>
         ) : (
-          <>{accountTabs}</>
+          accountTabs
         )}
       </Grid>
     </Grid>
