@@ -17,17 +17,26 @@ const NETWORK_COOKIE_NAME = "network";
 
 /**
  * Get network name from search params or cookies.
+ * Note: "local" network is only valid on the client side - the server cannot
+ * reach the user's local machine. During SSR, we fall back to the default network
+ * and let the client reconnect to local after hydration.
  */
 export function getNetworkFromSearch(
   search: Record<string, string | undefined>,
 ): NetworkName {
+  const isServer = typeof window === "undefined";
+
   // Check URL search param first
   if (search?.network && isValidNetworkName(search.network)) {
+    // "local" network only works client-side - server can't reach user's localhost
+    if (search.network === "local" && isServer) {
+      return defaultNetworkName;
+    }
     return search.network;
   }
 
-  // Fall back to cookie
-  if (typeof window !== "undefined") {
+  // Fall back to cookie (only on client)
+  if (!isServer) {
     const cookie = Cookies.get(NETWORK_COOKIE_NAME);
     if (cookie && isValidNetworkName(cookie)) {
       return cookie;
