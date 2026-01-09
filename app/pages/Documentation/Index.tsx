@@ -1,4 +1,4 @@
-import {Box, Typography, Paper, Divider} from "@mui/material";
+import {Box, Typography, Paper, Divider, Link} from "@mui/material";
 import * as React from "react";
 import PageHeader from "../layout/PageHeader";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
@@ -113,6 +113,24 @@ export default function DocumentationPage() {
                 <li><strong>Block Heights:</strong> Inspect specific blocks.</li>
                 <li><strong>Resources/Modules:</strong> Find specific Move structs or functions.</li>
             </ul>
+        </Section>
+
+        <Divider sx={{my: 4}} />
+
+        <Section title="Additional Resources">
+            <Typography paragraph>
+                For in-depth developer documentation, tutorials, and API references, please visit:
+            </Typography>
+            <Typography>
+                <Link 
+                    href="https://aptos.dev" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    sx={{fontSize: '1.1rem'}}
+                >
+                    aptos.dev
+                </Link>
+            </Typography>
         </Section>
       </Paper>
     </Box>
