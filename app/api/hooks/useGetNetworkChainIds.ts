@@ -20,9 +20,9 @@ export function useGetChainIdAndCache(networkName: NetworkName): string | null {
 
   const chainId = data?.chain_id ? data?.chain_id.toString() : null;
 
-  // cache network chain ids (except local) to `localStorage` to avoid refetching chain data
+  // cache network chain ids (except localnet) to `localStorage` to avoid refetching chain data
   // as the chain ids for those networks won't be changed very often
-  if (chainId !== null && networkName !== "local") {
+  if (chainId !== null && networkName !== "localnet") {
     setLocalStorageWithExpiry(`${networkName}ChainId`, chainId, TTL);
   }
 

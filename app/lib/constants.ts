@@ -11,13 +11,13 @@ export const networks: Record<string, string> = {
   devnet: devnetUrl,
   decibel: "https://api.netna.aptoslabs.com/v1",
   shelbynet: "https://api.shelbynet.staging.shelby.xyz/v1",
-  local: "http://127.0.0.1:8080/v1",
+  localnet: "http://127.0.0.1:8080/v1",
 };
 
 export const hiddenNetworks: readonly NetworkName[] = [
   "decibel",
   "shelbynet",
-  "local",
+  "localnet",
 ] as const;
 
 export type NetworkName = keyof typeof networks;
@@ -38,7 +38,7 @@ const apiKeys: ApiKeys = {
   shelbynet:
     import.meta.env.VITE_APTOS_SHELBYNET_API_KEY ||
     "AG-MGQQAXV57YJVDQANQPBQDFJVFMUY912EC",
-  local: import.meta.env.VITE_APTOS_LOCAL_API_KEY || undefined,
+  localnet: import.meta.env.VITE_APTOS_LOCALNET_API_KEY || undefined,
 };
 
 export function getApiKey(network_name: NetworkName): string | undefined {
@@ -116,7 +116,7 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
       return "https://api.netna.aptoslabs.com/v1/graphql";
     case "shelbynet":
       return "https://api.shelbynet.staging.shelby.xyz/v1/graphql";
-    case "local":
+    case "localnet":
       return "http://127.0.0.1:8090/v1/graphql";
     default:
       return undefined;

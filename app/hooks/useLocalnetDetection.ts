@@ -1,7 +1,7 @@
 import {useState, useEffect} from "react";
 import {networks} from "../constants";
 
-const LOCALNET_URL = networks.local;
+const LOCALNET_URL = networks.localnet;
 const CHECK_INTERVAL = 30000; // Re-check every 30 seconds
 
 interface LocalnetDetectionResult {

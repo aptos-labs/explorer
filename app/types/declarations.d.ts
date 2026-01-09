@@ -46,7 +46,7 @@ interface ImportMetaEnv {
   readonly VITE_APTOS_DEVNET_API_KEY?: string;
   readonly VITE_APTOS_DECIBEL_API_KEY?: string;
   readonly VITE_APTOS_SHELBYNET_API_KEY?: string;
-  readonly VITE_APTOS_LOCAL_API_KEY?: string;
+  readonly VITE_APTOS_LOCALNET_API_KEY?: string;
   // Cache busting version for validator stats (bump to force fresh data)
   readonly VITE_VALIDATOR_STATS_CACHE_VERSION?: string;
 }

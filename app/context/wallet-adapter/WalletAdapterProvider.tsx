@@ -15,8 +15,8 @@ export function WalletAdapterProvider({children}: WalletAdapterProviderProps) {
 
   let networkName = networkNameFromState;
   if (hiddenNetworks.includes(networkName)) {
-    // Other networks cause issues with the wallet adapter, so for now we can pretend it's local
-    networkName = "local";
+    // Other networks cause issues with the wallet adapter, so for now we can pretend it's localnet
+    networkName = "localnet";
   }
 
   return (

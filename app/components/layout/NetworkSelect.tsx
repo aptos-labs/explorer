@@ -37,16 +37,14 @@ export default function NetworkSelect() {
     (network) => !hiddenNetworks.includes(network as NetworkName),
   ) as NetworkName[];
 
-  // Check if current network is a hidden network (but not local if it's available)
+  // Check if current network is a hidden network (but not localnet if it's available)
   const isHiddenNetwork =
     hiddenNetworks.includes(networkName) &&
-    !(networkName === "local" && isLocalnetAvailable);
+    !(networkName === "localnet" && isLocalnetAvailable);
 
   // Custom render for the selected value to show hidden network names
   const renderValue = (selected: string) => {
-    // Display "localnet" instead of "local" for better UX
-    const displayName = selected === "local" ? "localnet" : selected;
-    return <span style={{textTransform: "capitalize"}}>{displayName}</span>;
+    return <span style={{textTransform: "capitalize"}}>{selected}</span>;
   };
 
   return (
@@ -94,8 +92,8 @@ export default function NetworkSelect() {
         {/* Show localnet option when detected */}
         {isLocalnetAvailable && (
           <MenuItem
-            key="local"
-            value="local"
+            key="localnet"
+            value="localnet"
             sx={{textTransform: "capitalize"}}
           >
             localnet

@@ -18,7 +18,7 @@ export default function LocalnetUnavailableModal() {
   const {isAvailable, isChecked} = useLocalnetDetection();
 
   // Show modal when on localnet, initial check is done, and it's not running
-  const showModal = networkName === "local" && isChecked && !isAvailable;
+  const showModal = networkName === "localnet" && isChecked && !isAvailable;
 
   const handleSwitchToMainnet = () => {
     setNetworkName(defaultNetworkName);
