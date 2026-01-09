@@ -50,12 +50,12 @@ export default defineConfig({
     noExternal: [
       "react-helmet-async", // CJS/ESM hybrid
       "react-countdown", // CJS with ESM entry
+      "react-simple-maps", // CJS with ESM entry
     ],
     // Packages to externalize during SSR (not bundled, loaded at runtime)
     // react-simple-maps is CJS and tries to require() ESM d3 packages
     // Since it's lazy-loaded client-only, we can safely externalize it
     external: [
-      "react-simple-maps",
       "d3-geo",
       "d3-zoom",
       "d3-selection",
