@@ -1,11 +1,10 @@
 import {useParams} from "@tanstack/react-router";
 import {Grid} from "@mui/material";
 import React, {useEffect} from "react";
-import AccountTabs, {TabValue} from "./Tabs";
+import AccountTabs from "./Tabs";
 import AccountTitle from "./Title";
 import BalanceCard from "./BalanceCard";
 import PageHeader from "../layout/PageHeader";
-import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 import LoadingModal from "../../components/LoadingModal";
 import Error from "./Error";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
@@ -18,51 +17,7 @@ import {useNavigate} from "../../routing";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 import {objectCoreResource} from "../../constants";
 import {useGetAddressFromName} from "../../api/hooks/useGetANS";
-
-const TAB_VALUES_FULL: TabValue[] = [
-  "transactions",
-  "coins",
-  "tokens",
-  "resources",
-  "modules",
-  "info",
-];
-
-const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
-
-const TAB_VALUES_MULTISIG_FULL: TabValue[] = [
-  "transactions",
-  "multisig",
-  "coins",
-  "tokens",
-  "resources",
-  "modules",
-  "info",
-];
-
-const TAB_VALUES_MULTISIG: TabValue[] = [
-  "transactions",
-  "multisig",
-  "resources",
-  "modules",
-  "info",
-];
-
-// TODO: add ability for object information
-const OBJECT_VALUES_FULL: TabValue[] = [
-  "transactions",
-  "coins",
-  "tokens",
-  "resources",
-  "modules",
-  "info",
-];
-const OBJECT_TAB_VALUES: TabValue[] = [
-  "transactions",
-  "resources",
-  "modules",
-  "info",
-];
+import {useAccountTabValues} from "./hooks/useAccountTabValues";
 
 type AccountPageProps = {
   isObject?: boolean;
@@ -79,7 +34,6 @@ export default function AccountPage({
   isObject: alreadyIsObject,
 }: AccountPageProps) {
   const navigate = useNavigate();
-  const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
   const params = useParams({strict: false}) as {address?: string};
   const maybeAddress = params.address;
 
@@ -187,19 +141,7 @@ export default function AccountPage({
   ]);
 
   const networkName = useNetworkName();
-
-  let tabValues;
-  if (isObject) {
-    tabValues = isGraphqlClientSupported
-      ? OBJECT_VALUES_FULL
-      : OBJECT_TAB_VALUES;
-  } else if (isMultisig) {
-    tabValues = isGraphqlClientSupported
-      ? TAB_VALUES_MULTISIG_FULL
-      : TAB_VALUES_MULTISIG;
-  } else {
-    tabValues = isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
-  }
+  const {tabValues} = useAccountTabValues(address, alreadyIsObject);
 
   const accountTabs = (
     <AccountTabs
