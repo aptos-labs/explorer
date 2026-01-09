@@ -50,6 +50,9 @@ export default defineConfig({
     noExternal: [
       "react-helmet-async", // CJS/ESM hybrid
       "react-countdown", // CJS with ESM entry
+      // react-simple-maps and d3 packages need to be bundled to handle CJS require() of ESM
+      // Vite will transform the CJS require() calls to work in ESM context
+      // The Map.client.tsx file with react-simple-maps is only loaded client-side via @vite-ignore dynamic import
       "react-simple-maps",
       "d3-geo",
       "d3-zoom",
@@ -63,8 +66,6 @@ export default defineConfig({
       "d3-color",
       "d3-array",
     ],
-    // Packages to externalize during SSR (not bundled, loaded at runtime)
-    external: [],
   },
   // Environment-specific configuration
   environments: {

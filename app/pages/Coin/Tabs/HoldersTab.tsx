@@ -39,9 +39,7 @@ export default function HoldersTab({struct, data}: HoldersTabProps) {
     return <EmptyTabContent />;
   }
 
-  const pageCount = holderData.count
-    ? Math.ceil(holderData.count / LIMIT)
-    : 0;
+  const pageCount = holderData.count ? Math.ceil(holderData.count / LIMIT) : 0;
 
   const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -52,11 +50,7 @@ export default function HoldersTab({struct, data}: HoldersTabProps) {
       <HoldersTable data={data} holders={holderData.data} offset={offset} />
       {pageCount > 1 && (
         <Box sx={{display: "flex", justifyContent: "center", padding: 2}}>
-          <Pagination
-            count={pageCount}
-            page={page}
-            onChange={handleChange}
-          />
+          <Pagination count={pageCount} page={page} onChange={handleChange} />
         </Box>
       )}
     </Box>
