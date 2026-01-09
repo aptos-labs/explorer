@@ -32,14 +32,16 @@ export default function NetworkSelect() {
     });
   };
 
-  // Filter out hidden networks for the dropdown options
+  // Filter out hidden networks and "local" (shown separately as "Localnet" when available)
   const visibleNetworks = Object.keys(networks).filter(
-    (network) => !hiddenNetworks.includes(network as NetworkName),
+    (network) =>
+      !hiddenNetworks.includes(network as NetworkName) && network !== "local",
   ) as NetworkName[];
 
   // Check if current network is a hidden network (but not local if it's available)
   const isHiddenNetwork =
-    hiddenNetworks.includes(networkName) &&
+    (hiddenNetworks.includes(networkName) ||
+      (networkName === "local" && !isLocalnetAvailable)) &&
     !(networkName === "local" && isLocalnetAvailable);
 
   // Custom render for the selected value to show hidden network names
