@@ -109,11 +109,15 @@ function TabPanel({
 
 type AccountTabsProps = {
   address: string;
-  accountData: Types.AccountData | undefined;
-  objectData: Types.MoveResource | undefined;
-  resourceData: Types.MoveResource[] | undefined;
+  accountData?: Types.AccountData | undefined;
+  objectData?: Types.MoveResource | undefined;
+  resourceData?: Types.MoveResource[] | undefined;
   tabValues?: TabValue[];
   isObject?: boolean;
+  /** If true, only render the navigation tabs without the content panel */
+  navOnly?: boolean;
+  /** Override the current tab value (used with navOnly) */
+  currentTab?: TabValue;
 };
 
 // TODO: create reusable Tabs for all pages
@@ -124,13 +128,20 @@ export default function AccountTabs({
   resourceData,
   isObject = false,
   tabValues = TAB_VALUES,
+  navOnly = false,
+  currentTab,
 }: AccountTabsProps) {
   // Use path params for tab selection in TanStack Router
   const params = useParams({strict: false}) as {tab?: string};
   const navigate = useNavigate();
 
   let effectiveTab: TabValue;
-  if (params?.tab !== undefined && tabValues.includes(params.tab as TabValue)) {
+  if (currentTab !== undefined) {
+    effectiveTab = currentTab;
+  } else if (
+    params?.tab !== undefined &&
+    tabValues.includes(params.tab as TabValue)
+  ) {
     effectiveTab = params.tab as TabValue;
   } else {
     effectiveTab = TAB_VALUES[0];
@@ -169,16 +180,18 @@ export default function AccountTabs({
           ))}
         </StyledTabs>
       </Box>
-      <Box>
-        <TabPanel
-          value={effectiveTab}
-          address={address}
-          accountData={accountData}
-          objectData={objectData}
-          resourceData={resourceData}
-          isObject={isObject}
-        />
-      </Box>
+      {!navOnly && (
+        <Box>
+          <TabPanel
+            value={effectiveTab}
+            address={address}
+            accountData={accountData}
+            objectData={objectData}
+            resourceData={resourceData}
+            isObject={isObject}
+          />
+        </Box>
+      )}
     </Box>
   );
 }
