@@ -60,6 +60,7 @@ import {
   sortPetraFirst,
   transformCode,
   extractFunctionParamNames,
+  extractPrivateViewFunctions,
 } from "../../../../utils";
 import {accountPagePath} from "../../Index";
 import {Aptos, Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
@@ -282,22 +283,53 @@ function Contract({
             return acc;
           }
 
+          // Get exposed functions from ABI
           const fns = module.abi.exposed_functions.filter((fn) =>
             isRead ? fn.is_view : fn.is_entry,
           );
-          if (fns.length === 0) {
+
+          // If this is a view function tab, also parse private view functions from source
+          let privateFns: Types.MoveFunction[] = [];
+          if (isRead) {
+            const moduleMetadata = sortedPackages
+              .flatMap((pkg) => pkg.modules)
+              .find((m) => m.name === module.abi!.name);
+
+            if (moduleMetadata?.source) {
+              const decodedSource = transformCode(moduleMetadata.source);
+              if (decodedSource) {
+                const privateViewFns =
+                  extractPrivateViewFunctions(decodedSource);
+                // Convert PrivateViewFunction to Types.MoveFunction format
+                privateFns = privateViewFns.map(
+                  (pvf): Types.MoveFunction => ({
+                    name: pvf.name,
+                    visibility: pvf.visibility as Types.MoveFunctionVisibility,
+                    is_entry: pvf.is_entry,
+                    is_view: pvf.is_view,
+                    generic_type_params: pvf.generic_type_params,
+                    params: pvf.params,
+                    return: pvf.return,
+                  }),
+                );
+              }
+            }
+          }
+
+          const allFns = [...fns, ...privateFns];
+          if (allFns.length === 0) {
             return acc;
           }
 
           const moduleName = module.abi.name;
           return {
             ...acc,
-            [moduleName]: fns,
+            [moduleName]: allFns,
           } as Record<string, Types.MoveFunction[]>;
         },
         {} as Record<string, Types.MoveFunction[]>,
       ),
-    [modules, isRead],
+    [modules, isRead, sortedPackages],
   );
 
   const selectedModule = sortedPackages

@@ -243,6 +243,230 @@ export function getPublicFunctionLineNumber(
 }
 
 /**
+ * Represents a private view function parsed from source code
+ */
+export interface PrivateViewFunction {
+  name: string;
+  visibility: string;
+  is_entry: boolean;
+  is_view: boolean;
+  generic_type_params: Array<{constraints: string[]}>;
+  params: string[];
+  return: string[];
+}
+
+/**
+ * Extract private view functions from Move source code.
+ * Returns an array of parsed function metadata.
+ */
+export function extractPrivateViewFunctions(
+  sourceCode: string,
+): PrivateViewFunction[] {
+  if (!sourceCode) return [];
+
+  const functions: PrivateViewFunction[] = [];
+
+  try {
+    // Match private view functions with the #[view] attribute
+    // This regex looks for:
+    // 1. Optional whitespace
+    // 2. #[view] attribute
+    // 3. Optional whitespace (including newlines)
+    // 4. fun keyword (not public)
+    // 5. Function name
+    // 6. Optional generic type parameters
+    // 7. Parameters in parentheses
+    // 8. Optional return type
+    const viewFunctionRegex =
+      /#\[view\]\s+fun\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*(<[^>]*>)?\s*\(([^)]*)\)(?:\s*:\s*([^{]+))?/g;
+
+    let match;
+    while ((match = viewFunctionRegex.exec(sourceCode)) !== null) {
+      const [, functionName, genericParams, paramsStr, returnType] = match;
+
+      // Parse generic type parameters
+      const generic_type_params = parseGenericTypeParams(genericParams || "");
+
+      // Parse parameters
+      const params = parseParameters(paramsStr);
+
+      // Parse return type
+      const returnTypes = parseReturnType(returnType || "");
+
+      functions.push({
+        name: functionName,
+        visibility: "private",
+        is_entry: false,
+        is_view: true,
+        generic_type_params,
+        params,
+        return: returnTypes,
+      });
+    }
+
+    return functions;
+  } catch (error) {
+    console.error("Error parsing private view functions:", error);
+    return [];
+  }
+}
+
+/**
+ * Parse generic type parameters from a string like "<T, U: copy>"
+ */
+function parseGenericTypeParams(
+  genericStr: string,
+): Array<{constraints: string[]}> {
+  if (!genericStr) return [];
+
+  // Remove angle brackets
+  const inner = genericStr.slice(1, -1).trim();
+  if (!inner) return [];
+
+  // Split by comma, considering nested generics
+  const params: Array<{constraints: string[]}> = [];
+  let depth = 0;
+  let current = "";
+
+  for (let i = 0; i < inner.length; i++) {
+    const char = inner[i];
+    if (char === "<") {
+      depth++;
+      current += char;
+    } else if (char === ">") {
+      depth--;
+      current += char;
+    } else if (char === "," && depth === 0) {
+      const param = current.trim();
+      if (param) {
+        // Check for constraints like "T: copy + drop"
+        const colonIndex = param.indexOf(":");
+        const constraints =
+          colonIndex > -1
+            ? param
+                .slice(colonIndex + 1)
+                .split("+")
+                .map((c) => c.trim())
+            : [];
+        params.push({constraints});
+      }
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+
+  // Don't forget the last parameter
+  if (current.trim()) {
+    const param = current.trim();
+    const colonIndex = param.indexOf(":");
+    const constraints =
+      colonIndex > -1
+        ? param
+            .slice(colonIndex + 1)
+            .split("+")
+            .map((c) => c.trim())
+        : [];
+    params.push({constraints});
+  }
+
+  return params;
+}
+
+/**
+ * Parse function parameters from a string like "arg1: u64, arg2: address"
+ * Returns array of type strings (without parameter names)
+ */
+function parseParameters(paramsStr: string): string[] {
+  if (!paramsStr || !paramsStr.trim()) return [];
+
+  const params: string[] = [];
+  let depth = 0;
+  let current = "";
+
+  for (let i = 0; i < paramsStr.length; i++) {
+    const char = paramsStr[i];
+
+    if (char === "<") {
+      depth++;
+      current += char;
+    } else if (char === ">") {
+      depth--;
+      current += char;
+    } else if (char === "," && depth === 0) {
+      // End of parameter
+      const paramType = extractParamType(current.trim());
+      if (paramType) params.push(paramType);
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+
+  // Don't forget the last parameter
+  if (current.trim()) {
+    const paramType = extractParamType(current.trim());
+    if (paramType) params.push(paramType);
+  }
+
+  return params;
+}
+
+/**
+ * Extract the type from a parameter string like "name: &signer" or "amount: u64"
+ */
+function extractParamType(paramStr: string): string | null {
+  const colonIndex = paramStr.indexOf(":");
+  if (colonIndex === -1) return null;
+
+  return paramStr.slice(colonIndex + 1).trim();
+}
+
+/**
+ * Parse return type from a string like "bool" or "(u64, address)" or "vector<u8>"
+ */
+function parseReturnType(returnStr: string): string[] {
+  if (!returnStr || !returnStr.trim()) return [];
+
+  const trimmed = returnStr.trim();
+
+  // Handle tuple return types: (T1, T2, T3)
+  if (trimmed.startsWith("(") && trimmed.endsWith(")")) {
+    const inner = trimmed.slice(1, -1);
+    const types: string[] = [];
+    let depth = 0;
+    let current = "";
+
+    for (let i = 0; i < inner.length; i++) {
+      const char = inner[i];
+
+      if (char === "<" || char === "(") {
+        depth++;
+        current += char;
+      } else if (char === ">" || char === ")") {
+        depth--;
+        current += char;
+      } else if (char === "," && depth === 0) {
+        const type = current.trim();
+        if (type) types.push(type);
+        current = "";
+      } else {
+        current += char;
+      }
+    }
+
+    if (current.trim()) {
+      types.push(current.trim());
+    }
+
+    return types;
+  }
+
+  // Single return type
+  return [trimmed];
+}
+
+/**
  * Extract parameter names from Move source code for a given function.
  * Returns an array of parameter names in order, or null if parsing fails.
  *

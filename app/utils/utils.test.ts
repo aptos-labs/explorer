@@ -20,6 +20,7 @@ import {
   ensureBoolean,
   getAssetSymbol,
   isRateLimitError,
+  extractPrivateViewFunctions,
 } from "./utils";
 
 describe("Address utilities", () => {
@@ -369,6 +370,171 @@ describe("Error utilities", () => {
       expect(isRateLimitError({status: 500})).toBe(false);
       expect(isRateLimitError(null)).toBe(false);
       expect(isRateLimitError(undefined)).toBe(false);
+    });
+  });
+});
+
+describe("Move source code parsing", () => {
+  describe("extractPrivateViewFunctions", () => {
+    it("should extract simple private view function", () => {
+      const source = `
+        module market {
+          #[view]
+          fun get_price(): u64 {
+            100
+          }
+        }
+      `;
+      const functions = extractPrivateViewFunctions(source);
+      expect(functions).toHaveLength(1);
+      expect(functions[0].name).toBe("get_price");
+      expect(functions[0].is_view).toBe(true);
+      expect(functions[0].visibility).toBe("private");
+      expect(functions[0].params).toEqual([]);
+      expect(functions[0].return).toEqual(["u64"]);
+    });
+
+    it("should extract private view function without newline after #[view]", () => {
+      const source = `
+        module market {
+          #[view] fun get_price(): u64 {
+            100
+          }
+        }
+      `;
+      const functions = extractPrivateViewFunctions(source);
+      expect(functions).toHaveLength(1);
+      expect(functions[0].name).toBe("get_price");
+      expect(functions[0].is_view).toBe(true);
+    });
+
+    it("should extract private view function with parameters", () => {
+      const source = `
+        module market {
+          #[view]
+          fun index_orders(market_id: u64, user: address): vector<Order> {
+            // implementation
+          }
+        }
+      `;
+      const functions = extractPrivateViewFunctions(source);
+      expect(functions).toHaveLength(1);
+      expect(functions[0].name).toBe("index_orders");
+      expect(functions[0].params).toEqual(["u64", "address"]);
+      expect(functions[0].return).toEqual(["vector<Order>"]);
+    });
+
+    it("should extract private view function with generic type parameters", () => {
+      const source = `
+        module market {
+          #[view]
+          fun get_value<T: copy + drop>(key: u64): T {
+            // implementation
+          }
+        }
+      `;
+      const functions = extractPrivateViewFunctions(source);
+      expect(functions).toHaveLength(1);
+      expect(functions[0].name).toBe("get_value");
+      expect(functions[0].generic_type_params).toHaveLength(1);
+      expect(functions[0].generic_type_params[0].constraints).toEqual([
+        "copy",
+        "drop",
+      ]);
+      expect(functions[0].params).toEqual(["u64"]);
+      expect(functions[0].return).toEqual(["T"]);
+    });
+
+    it("should extract private view function with tuple return", () => {
+      const source = `
+        module market {
+          #[view]
+          fun get_stats(): (u64, u128, bool) {
+            (100, 1000, true)
+          }
+        }
+      `;
+      const functions = extractPrivateViewFunctions(source);
+      expect(functions).toHaveLength(1);
+      expect(functions[0].name).toBe("get_stats");
+      expect(functions[0].return).toEqual(["u64", "u128", "bool"]);
+    });
+
+    it("should extract multiple private view functions", () => {
+      const source = `
+        module market {
+          #[view]
+          fun get_price(): u64 {
+            100
+          }
+
+          public fun not_a_view(): bool {
+            true
+          }
+
+          #[view]
+          fun get_count(addr: address): u64 {
+            10
+          }
+        }
+      `;
+      const functions = extractPrivateViewFunctions(source);
+      expect(functions).toHaveLength(2);
+      expect(functions[0].name).toBe("get_price");
+      expect(functions[1].name).toBe("get_count");
+    });
+
+    it("should not extract public view functions", () => {
+      const source = `
+        module market {
+          #[view]
+          public fun get_price(): u64 {
+            100
+          }
+        }
+      `;
+      const functions = extractPrivateViewFunctions(source);
+      expect(functions).toHaveLength(0);
+    });
+
+    it("should handle complex parameter types", () => {
+      const source = `
+        module market {
+          #[view]
+          fun complex_fn(
+            orders: vector<Order>,
+            opt: 0x1::option::Option<address>,
+            ref: &signer
+          ): (bool, vector<u8>) {
+            (true, vector::empty())
+          }
+        }
+      `;
+      const functions = extractPrivateViewFunctions(source);
+      expect(functions).toHaveLength(1);
+      expect(functions[0].params).toEqual([
+        "vector<Order>",
+        "0x1::option::Option<address>",
+        "&signer",
+      ]);
+      expect(functions[0].return).toEqual(["bool", "vector<u8>"]);
+    });
+
+    it("should return empty array for source without private view functions", () => {
+      const source = `
+        module market {
+          public fun do_something(): bool {
+            true
+          }
+        }
+      `;
+      const functions = extractPrivateViewFunctions(source);
+      expect(functions).toEqual([]);
+    });
+
+    it("should return empty array for empty source", () => {
+      const functions = extractPrivateViewFunctions("");
+      expect(functions).toEqual([]);
     });
   });
 });
