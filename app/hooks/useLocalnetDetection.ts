@@ -25,7 +25,9 @@ export function useLocalnetDetection(): LocalnetDetectionResult {
     const checkLocalnet = async () => {
       try {
         // Try to fetch the ledger info from localnet
-        const response = await fetch(LOCALNET_URL, {
+        // Use /v1/ with trailing slash as that's the standard Aptos API root endpoint
+        const checkUrl = `${LOCALNET_URL}/`;
+        const response = await fetch(checkUrl, {
           method: "GET",
           headers: {
             Accept: "application/json",
