@@ -114,10 +114,10 @@ type AccountTabsProps = {
   resourceData?: Types.MoveResource[] | undefined;
   tabValues?: TabValue[];
   isObject?: boolean;
-  /** If true, only render the navigation tabs without the content panel */
-  navOnly?: boolean;
-  /** Override the current tab value (used with navOnly) */
+  /** Override the current tab value */
   currentTab?: TabValue;
+  /** Custom content to render instead of the default TabPanel */
+  children?: React.ReactNode;
 };
 
 // TODO: create reusable Tabs for all pages
@@ -128,8 +128,8 @@ export default function AccountTabs({
   resourceData,
   isObject = false,
   tabValues = TAB_VALUES,
-  navOnly = false,
   currentTab,
+  children,
 }: AccountTabsProps) {
   // Use path params for tab selection in TanStack Router
   const params = useParams({strict: false}) as {tab?: string};
@@ -180,8 +180,8 @@ export default function AccountTabs({
           ))}
         </StyledTabs>
       </Box>
-      {!navOnly && (
-        <Box>
+      <Box>
+        {children ?? (
           <TabPanel
             value={effectiveTab}
             address={address}
@@ -190,8 +190,8 @@ export default function AccountTabs({
             resourceData={resourceData}
             isObject={isObject}
           />
-        </Box>
-      )}
+        )}
+      </Box>
     </Box>
   );
 }

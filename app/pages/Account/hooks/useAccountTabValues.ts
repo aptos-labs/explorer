@@ -1,6 +1,4 @@
 import {useGetIsGraphqlClientSupported} from "../../../api/hooks/useGraphqlClient";
-import {useGetAccountResources} from "../../../api/hooks/useGetAccountResources";
-import {objectCoreResource} from "../../../constants";
 import {TabValue} from "../Tabs";
 
 const TAB_VALUES_FULL: TabValue[] = [
@@ -49,33 +47,29 @@ const OBJECT_TAB_VALUES: TabValue[] = [
 ];
 
 /**
- * Hook to get the correct tab values for an account/object page.
- * Considers: isGraphqlClientSupported, isObject, isMultisig
+ * Pure function to get the correct tab values for an account/object page.
  */
-export function useAccountTabValues(address: string, isObjectRoute = false) {
-  const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
-  const {data: resourceData} = useGetAccountResources(address, {retry: false});
-
-  const objectData = resourceData?.find((r) => r.type === objectCoreResource);
-  const multisigData = resourceData?.find(
-    (r) => r.type === "0x1::multisig_account::MultisigAccount",
-  );
-
-  const isObject = isObjectRoute || !!objectData;
-  const isMultisig = !!multisigData;
-
-  let tabValues: TabValue[];
+export function getTabValues(
+  isGraphqlClientSupported: boolean,
+  isObject: boolean,
+  isMultisig: boolean,
+): TabValue[] {
   if (isObject) {
-    tabValues = isGraphqlClientSupported
-      ? OBJECT_VALUES_FULL
-      : OBJECT_TAB_VALUES;
-  } else if (isMultisig) {
-    tabValues = isGraphqlClientSupported
+    return isGraphqlClientSupported ? OBJECT_VALUES_FULL : OBJECT_TAB_VALUES;
+  }
+  if (isMultisig) {
+    return isGraphqlClientSupported
       ? TAB_VALUES_MULTISIG_FULL
       : TAB_VALUES_MULTISIG;
-  } else {
-    tabValues = isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
   }
+  return isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
+}
 
-  return {tabValues, isObject, isMultisig};
+/**
+ * Hook to get the correct tab values for an account/object page.
+ * Use this when you already have isObject and isMultisig from parent component.
+ */
+export function useAccountTabValues(isObject: boolean, isMultisig: boolean) {
+  const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
+  return getTabValues(isGraphqlClientSupported, isObject, isMultisig);
 }
