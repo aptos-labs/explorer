@@ -170,6 +170,9 @@ export default function Footer() {
                 <Link to="/verification" sx={footerLinkSx}>
                   Token & Address Verification
                 </Link>
+                <Link to="/documentation" sx={footerLinkSx}>
+                  Docs
+                </Link>
                 <Box
                   component="button"
                   type="button"
