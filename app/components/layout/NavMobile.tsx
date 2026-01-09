@@ -94,6 +94,9 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/coins")}>
           Coins
         </MenuItem>
+        <MenuItem onClick={() => handleCloseAndNavigate("/documentation")}>
+          Docs
+        </MenuItem>
         <Divider />
         <WalletConnector
           networkSupport={networkName}

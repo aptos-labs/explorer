@@ -71,6 +71,11 @@ export default function Nav() {
         title="View Coins & Fungible Assets"
         label="Coins"
       />
+      <NavButton
+        to="/documentation"
+        title="View Documentation"
+        label="Docs"
+      />
     </Box>
   );
 }
