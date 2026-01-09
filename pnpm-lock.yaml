@@ -14,12 +14,9 @@ overrides:
   d3-dispatch: ">=3.0.0"
   d3-drag: ">=3.0.0"
   d3-ease: ">=3.0.0"
-  d3-geo: ">=3.0.0"
   d3-interpolate: ">=3.0.0"
-  d3-selection: ">=3.0.0"
   d3-timer: ">=3.0.0"
   d3-transition: ">=3.0.0"
-  d3-zoom: ">=3.0.0"
 
 importers:
   .:
@@ -69,6 +66,15 @@ importers:
       chart.js:
         specifier: ^4.5.1
         version: 4.5.1
+      d3-geo:
+        specifier: ^3.1.1
+        version: 3.1.1
+      d3-selection:
+        specifier: ^3.0.0
+        version: 3.0.0
+      d3-zoom:
+        specifier: ^3.0.0
+        version: 3.0.0
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -4103,6 +4109,12 @@ packages:
       }
     engines: {node: ">=12"}
 
+  d3-geo@2.0.2:
+    resolution:
+      {
+        integrity: sha512-8pM1WGMLGFuhq9S+FpPURxic+gKzjluCD/CHTuUF3mXMeiCo0i6R0tO1s4+GArRFde96SLcW/kOFRjoAosPsFA==,
+      }
+
   d3-geo@3.1.1:
     resolution:
       {
@@ -4116,6 +4128,12 @@ packages:
         integrity: sha512-3bYs1rOD33uo8aqJfKP3JWPAibgw8Zm2+L9vBKEHJ2Rg+viTR7o5Mmv5mZcieN+FRYaAOWX5SJATX6k1PWz72g==,
       }
     engines: {node: ">=12"}
+
+  d3-selection@2.0.0:
+    resolution:
+      {
+        integrity: sha512-XoGGqhLUN/W14NmaqcO/bb1nqjDAw5WtSYb2X8wiuQWvSZUsUVYsOSkOybUrNvcBjaywBdYPy03eXHMXjk9nZA==,
+      }
 
   d3-selection@3.0.0:
     resolution:
@@ -4138,7 +4156,13 @@ packages:
       }
     engines: {node: ">=12"}
     peerDependencies:
-      d3-selection: ">=3.0.0"
+      d3-selection: 2 - 3
+
+  d3-zoom@2.0.0:
+    resolution:
+      {
+        integrity: sha512-fFg7aoaEm9/jf+qfstak0IYpnesZLiMX6GZvXtUSdv8RH2o4E2qeelgdU09eKS6wGuiGMfcnMI0nTIqWzRHGpw==,
+      }
 
   d3-zoom@3.0.0:
     resolution:
@@ -11090,6 +11114,10 @@ snapshots:
 
   d3-ease@3.0.1: {}
 
+  d3-geo@2.0.2:
+    dependencies:
+      d3-array: 3.2.4
+
   d3-geo@3.1.1:
     dependencies:
       d3-array: 3.2.4
@@ -11098,9 +11126,20 @@ snapshots:
     dependencies:
       d3-color: 3.1.0
 
+  d3-selection@2.0.0: {}
+
   d3-selection@3.0.0: {}
 
   d3-timer@3.0.1: {}
+
+  d3-transition@3.0.1(d3-selection@2.0.0):
+    dependencies:
+      d3-color: 3.1.0
+      d3-dispatch: 3.0.1
+      d3-ease: 3.0.1
+      d3-interpolate: 3.0.1
+      d3-selection: 2.0.0
+      d3-timer: 3.0.1
 
   d3-transition@3.0.1(d3-selection@3.0.0):
     dependencies:
@@ -11110,6 +11149,14 @@ snapshots:
       d3-interpolate: 3.0.1
       d3-selection: 3.0.0
       d3-timer: 3.0.1
+
+  d3-zoom@2.0.0:
+    dependencies:
+      d3-dispatch: 3.0.1
+      d3-drag: 3.0.0
+      d3-interpolate: 3.0.1
+      d3-selection: 2.0.0
+      d3-transition: 3.0.1(d3-selection@2.0.0)
 
   d3-zoom@3.0.0:
     dependencies:
@@ -12730,9 +12777,9 @@ snapshots:
 
   react-simple-maps@3.0.0(prop-types@15.8.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
-      d3-geo: 3.1.1
-      d3-selection: 3.0.0
-      d3-zoom: 3.0.0
+      d3-geo: 2.0.2
+      d3-selection: 2.0.0
+      d3-zoom: 2.0.0
       prop-types: 15.8.1
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
