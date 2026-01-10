@@ -532,6 +532,23 @@ describe("Move source code parsing", () => {
       expect(functions).toEqual([]);
     });
 
+    it("should extract private view function with acquires clause", () => {
+      const source = `
+        module market {
+          #[view]
+          fun index_orders(market_id: u64): Orders
+          acquires OrderBooks {
+            // implementation
+          }
+        }
+      `;
+      const functions = extractPrivateViewFunctions(source);
+      expect(functions).toHaveLength(1);
+      expect(functions[0].name).toBe("index_orders");
+      expect(functions[0].params).toEqual(["u64"]);
+      expect(functions[0].return).toEqual(["Orders"]);
+    });
+
     it("should return empty array for empty source", () => {
       const functions = extractPrivateViewFunctions("");
       expect(functions).toEqual([]);

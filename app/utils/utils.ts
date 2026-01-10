@@ -269,16 +269,17 @@ export function extractPrivateViewFunctions(
   try {
     // Match private view functions with the #[view] attribute
     // This regex looks for:
-    // 1. Optional whitespace
-    // 2. #[view] attribute
-    // 3. Optional whitespace (including newlines)
-    // 4. fun keyword (not public)
-    // 5. Function name
-    // 6. Optional generic type parameters
-    // 7. Parameters in parentheses
-    // 8. Optional return type
+    // 1. #[view] attribute
+    // 2. Optional whitespace (including newlines)
+    // 3. fun keyword (not public)
+    // 4. Function name
+    // 5. Optional generic type parameters
+    // 6. Parameters in parentheses
+    // 7. Optional return type (stops before 'acquires' or '{')
+    // 8. Optional acquires clause
+    // Using 's' flag to make . match newlines
     const viewFunctionRegex =
-      /#\[view\]\s+fun\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*(<[^>]*>)?\s*\(([^)]*)\)(?:\s*:\s*([^{]+))?/g;
+      /#\[view\]\s+fun\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*(<[^>]*>)?\s*\(([^)]*)\)(?:\s*:\s*([^{]+?))?(?:\s+acquires\s+[^{]+)?\s*\{/gs;
 
     let match;
     while ((match = viewFunctionRegex.exec(sourceCode)) !== null) {
@@ -290,8 +291,13 @@ export function extractPrivateViewFunctions(
       // Parse parameters
       const params = parseParameters(paramsStr);
 
-      // Parse return type
-      const returnTypes = parseReturnType(returnType || "");
+      // Parse return type (trim and remove any trailing 'acquires' keyword)
+      let cleanReturnType = returnType || "";
+      if (cleanReturnType) {
+        // Remove 'acquires' and everything after it if it somehow got captured
+        cleanReturnType = cleanReturnType.replace(/\s*acquires\s+.*/i, "");
+      }
+      const returnTypes = parseReturnType(cleanReturnType);
 
       functions.push({
         name: functionName,

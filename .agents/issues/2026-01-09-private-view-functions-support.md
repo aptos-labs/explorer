@@ -46,7 +46,8 @@ The parser uses regex to match private view functions with this pattern:
 
 ```move
 #[view]
-fun function_name<T1, T2>(param1: Type1, param2: Type2): ReturnType {
+fun function_name<T1, T2>(param1: Type1, param2: Type2): ReturnType
+acquires ResourceName {
   // implementation
 }
 ```
@@ -56,11 +57,12 @@ Key features:
 - Handles generic type parameters with constraints (e.g., `T: copy + drop`)
 - Supports complex nested types (e.g., `vector<Order>`, `0x1::option::Option<address>`)
 - Parses tuple return types (e.g., `(u64, address, bool)`)
+- Correctly handles `acquires` clauses for resource access
 - Correctly ignores public view functions (already in ABI)
 
 ## Testing
 
-All 67 tests pass, including 9 new tests for private view function parsing:
+All 69 tests pass, including 11 new tests for private view function parsing:
 
 - ✅ Simple function extraction
 - ✅ Functions with parameters
@@ -68,6 +70,7 @@ All 67 tests pass, including 9 new tests for private view function parsing:
 - ✅ Tuple return types
 - ✅ Multiple functions in one module
 - ✅ Complex parameter types
+- ✅ Functions with `acquires` clauses
 - ✅ Edge cases (empty source, no matches)
 
 ## Verification
