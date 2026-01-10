@@ -19,7 +19,11 @@ export const Route = createFileRoute("/account/$address/$tab")({
 
     // Prefetch account info - don't await to avoid blocking navigation
     // This runs in parallel with rendering
-    queryClient.prefetchQuery(accountInfoQueryOptions(params.address, client));
+    queryClient
+      .prefetchQuery(accountInfoQueryOptions(params.address, client))
+      .catch(() => {
+        // Prefetch failures are non-critical - the component will fetch if needed
+      });
 
     return {networkName};
   },

@@ -19,9 +19,13 @@ export const Route = createFileRoute("/txn/$txnHashOrVersion/$tab")({
 
     // Prefetch transaction data - don't await to avoid blocking navigation
     // Transactions are immutable so they cache very well
-    queryClient.prefetchQuery(
-      transactionQueryOptions(params.txnHashOrVersion, client, networkName),
-    );
+    queryClient
+      .prefetchQuery(
+        transactionQueryOptions(params.txnHashOrVersion, client, networkName),
+      )
+      .catch(() => {
+        // Prefetch failures are non-critical - the component will fetch if needed
+      });
 
     return {networkName};
   },
