@@ -16,7 +16,11 @@ export const Route = createFileRoute("/block/$height/$tab")({
     const client = getClientFromSearch(search);
 
     // Prefetch block data - blocks are immutable so they cache very well
-    queryClient.prefetchQuery(blockQueryOptions(params.height, client));
+    queryClient
+      .prefetchQuery(blockQueryOptions(params.height, client))
+      .catch(() => {
+        // Prefetch failures are non-critical - the component will fetch if needed
+      });
 
     return {};
   },
