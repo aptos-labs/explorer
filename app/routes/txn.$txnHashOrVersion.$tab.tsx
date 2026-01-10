@@ -3,9 +3,28 @@ import TransactionPage from "../pages/Transaction/Index";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import {truncateAddress} from "../utils";
 import {PagePending} from "../components/NavigationPending";
+import {getClientFromSearch, getNetworkFromSearch} from "../api/createClient";
+import {transactionQueryOptions} from "../api/queries";
 
 // Primary route for transaction with tab in path
 export const Route = createFileRoute("/txn/$txnHashOrVersion/$tab")({
+  // Prefetch transaction data during navigation for faster perceived load
+  loader: async ({params, context, location}) => {
+    const {queryClient} = context;
+    const search = Object.fromEntries(
+      new URLSearchParams(location.search),
+    ) as Record<string, string>;
+    const client = getClientFromSearch(search);
+    const networkName = getNetworkFromSearch(search);
+
+    // Prefetch transaction data - don't await to avoid blocking navigation
+    // Transactions are immutable so they cache very well
+    queryClient.prefetchQuery(
+      transactionQueryOptions(params.txnHashOrVersion, client, networkName),
+    );
+
+    return {networkName};
+  },
   head: ({params}) => {
     const tabTitle =
       params.tab === "balanceChange"

@@ -17,6 +17,9 @@ interface DelegatorCountItem {
   num_active_delegator: string;
 }
 
+// Cache Apollo clients per network to preserve GraphQL cache
+const apolloClientCache = new Map<NetworkName, ApolloClient>();
+
 // Create a GraphQL client instance
 function createGraphqlClient(networkName: NetworkName): ApolloClient {
   const apiKey = getApiKey(networkName);
@@ -43,6 +46,17 @@ function createGraphqlClient(networkName: NetworkName): ApolloClient {
 }
 
 /**
+ * Get a cached Apollo client for the given network.
+ * Uses singleton pattern per network to preserve GraphQL cache.
+ */
+function getGraphqlClient(networkName: NetworkName): ApolloClient {
+  if (!apolloClientCache.has(networkName)) {
+    apolloClientCache.set(networkName, createGraphqlClient(networkName));
+  }
+  return apolloClientCache.get(networkName)!;
+}
+
+/**
  * Batch fetch delegator counts for multiple validators
  * @param validatorAddresses Array of validator addresses
  * @param client AptosClient instance
@@ -63,8 +77,8 @@ export async function getBatchDelegatorCounts(
       (addr) => `"${tryStandardizeAddress(addr)}"`,
     );
 
-    // Create GraphQL client with the provided network name
-    const apolloClient = createGraphqlClient(networkName);
+    // Get cached GraphQL client for the network
+    const apolloClient = getGraphqlClient(networkName);
 
     // Execute GraphQL query using the correct field name
     const {data} = await apolloClient.query<{
