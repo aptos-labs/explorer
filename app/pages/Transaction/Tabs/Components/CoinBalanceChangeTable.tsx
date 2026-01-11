@@ -418,20 +418,33 @@ function BalanceChangeCard({
           sx={{
             flex: 1,
             minWidth: 0,
-            overflow: "hidden",
             mr: 2,
           }}
         >
           <Typography
             variant="caption"
             color="text.secondary"
-            sx={{display: "block", mb: 0.25}}
+            sx={{display: "block", mb: 0.5}}
           >
             Account
           </Typography>
           <Stack direction="row" spacing={0.75} alignItems="center">
             {balanceChange.address && (
-              <Box sx={{flexShrink: 0, width: 20, height: 20}}>
+              <Box
+                sx={{
+                  flexShrink: 0,
+                  width: 20,
+                  height: 20,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  "& img": {
+                    width: 20,
+                    height: 20,
+                    display: "block",
+                  },
+                }}
+              >
                 <IdenticonImg address={balanceChange.address} />
               </Box>
             )}
@@ -442,6 +455,7 @@ function BalanceChangeCard({
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
                 color: theme.palette.primary.main,
+                minWidth: 0,
               }}
             >
               {balanceChange.address
