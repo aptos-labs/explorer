@@ -27,15 +27,20 @@ export default function StyledTab({
         : theme.palette.neutralShade.darker;
   }
 
+  // On mobile: show only icon if available, otherwise show compact label
+  const hasIcon = props.icon !== undefined;
+  const showLabelOnMobile = !hasIcon;
+  const mobileLabel = showLabelOnMobile ? label : undefined;
+
   const tabElement = (
     <Tab
       sx={{
         minHeight: {xs: 48, md: 60},
         textTransform: "none",
         fontSize: {xs: "small", md: "medium"},
-        paddingX: {xs: 1.5, md: 3},
+        paddingX: {xs: showLabelOnMobile ? 2 : 1.5, md: 3},
         color: theme.palette.text.secondary,
-        minWidth: {xs: 48, md: "200px"},
+        minWidth: {xs: showLabelOnMobile ? "auto" : 48, md: "200px"},
         "&.Mui-selected": {
           color: "inherit",
           backgroundColor: backgroundColor,
@@ -54,14 +59,15 @@ export default function StyledTab({
       }}
       iconPosition="start"
       disableRipple
-      // Hide label on mobile, show only icons for compact view
-      label={isMobile ? undefined : label}
+      // Hide label on mobile when icon is available, show only icons for compact view
+      label={isMobile ? mobileLabel : label}
       {...props}
     />
   );
 
-  // On mobile, wrap in tooltip to show label on hover/tap
-  if (isMobile && label) {
+  // On mobile with icon, wrap in tooltip to show label on hover/tap
+  // Note: label should be a string or simple content for proper tooltip rendering
+  if (isMobile && hasIcon && label) {
     return (
       <Tooltip title={label} arrow enterTouchDelay={0} leaveTouchDelay={1500}>
         {tabElement}

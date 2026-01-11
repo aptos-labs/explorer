@@ -20,7 +20,7 @@ export default function StyledTabs({children, ...props}: StyledTabsProps) {
         },
         // Show scroll buttons on mobile for better discoverability
         "& .MuiTabs-scrollButtons": {
-          opacity: {xs: 1, md: 1},
+          opacity: 1,
           "&.Mui-disabled": {
             opacity: 0.3,
           },
@@ -33,9 +33,9 @@ export default function StyledTabs({children, ...props}: StyledTabsProps) {
             backgroundColor: theme.palette.action.hover,
           },
         },
-        // Ensure proper spacing for mobile tabs container
+        // Ensure proper alignment for mobile tabs container
         "& .MuiTabs-flexContainer": {
-          gap: {xs: 0.5, md: 0},
+          gap: 0,
         },
       }}
       {...props}

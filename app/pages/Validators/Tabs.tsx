@@ -13,6 +13,9 @@ import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {EnhancedDelegationValidatorsTable} from "./Delegation/EnhancedDelegationValidatorsTable";
 import {useParams} from "@tanstack/react-router";
+import HubOutlinedIcon from "@mui/icons-material/HubOutlined";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 
 export enum VALIDATORS_TAB_VALUE {
   ALL_NODES = "all",
@@ -28,6 +31,19 @@ function getTabLabel(value: VALIDATORS_TAB_VALUE): string {
       return "Delegation Nodes";
     case VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES:
       return "Delegation (New Beta UI)";
+    default:
+      return assertNever(value);
+  }
+}
+
+function getTabIcon(value: VALIDATORS_TAB_VALUE): React.JSX.Element {
+  switch (value) {
+    case VALIDATORS_TAB_VALUE.ALL_NODES:
+      return <HubOutlinedIcon fontSize="small" />;
+    case VALIDATORS_TAB_VALUE.DELEGATION_NODES:
+      return <GroupsOutlinedIcon fontSize="small" />;
+    case VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES:
+      return <AutoAwesomeOutlinedIcon fontSize="small" />;
     default:
       return assertNever(value);
   }
@@ -99,6 +115,7 @@ export default function ValidatorsPageTabs(): React.JSX.Element {
             <StyledTab
               key={i}
               value={value}
+              icon={getTabIcon(value)}
               label={getTabLabel(value)}
               isFirst={i === 0}
               isLast={i === tabValues.length - 1}
