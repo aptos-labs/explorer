@@ -37,6 +37,7 @@ import {getLearnMoreTooltip} from "../../helpers";
 import StyledTooltip from "../../../../components/StyledTooltip";
 import {useGetFaMetadata} from "../../../../api/hooks/useGetFaMetadata";
 import {isValidAccountAddress} from "../../../utils";
+import IdenticonImg from "../../../../components/IdenticonImg";
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
@@ -428,19 +429,26 @@ function BalanceChangeCard({
           >
             Account
           </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              color: theme.palette.primary.main,
-            }}
-          >
-            {balanceChange.address
-              ? `${balanceChange.address.slice(0, 8)}...${balanceChange.address.slice(-6)}`
-              : "-"}
-          </Typography>
+          <Stack direction="row" spacing={0.75} alignItems="center">
+            {balanceChange.address && (
+              <Box sx={{flexShrink: 0, width: 20, height: 20}}>
+                <IdenticonImg address={balanceChange.address} />
+              </Box>
+            )}
+            <Typography
+              variant="body2"
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                color: theme.palette.primary.main,
+              }}
+            >
+              {balanceChange.address
+                ? `${balanceChange.address.slice(0, 8)}...${balanceChange.address.slice(-6)}`
+                : "-"}
+            </Typography>
+          </Stack>
         </Box>
         <Stack
           direction="row"
