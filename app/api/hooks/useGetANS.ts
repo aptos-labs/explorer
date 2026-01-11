@@ -18,9 +18,10 @@ function getAddressFromNameUrl(network: NetworkName, name: string) {
     return undefined;
   }
 
-  // Remove .apt suffix if present
+  // Remove .apt suffix if present and lowercase for API compatibility
   const cleanName = name.endsWith(".apt") ? name.slice(0, -4) : name;
-  return `https://www.aptosnames.com/api/${network}/v1/address/${cleanName}.apt`;
+  const normalizedName = cleanName.toLowerCase();
+  return `https://www.aptosnames.com/api/${network}/v1/address/${normalizedName}.apt`;
 }
 
 // TODO: Known scam addresses
@@ -138,14 +139,16 @@ async function genANSName(
 
 export function useGetAddressFromName(name: string) {
   const networkName = useNetworkName();
+  // Normalize name for consistent caching (ANS names are case-insensitive)
+  const normalizedName = name.toLowerCase();
 
   return useQuery<string | null, ResponseError>({
-    queryKey: ["ANSAddress", name, networkName],
+    queryKey: ["ANSAddress", normalizedName, networkName],
     // ANS addresses rarely change - cache for 30 minutes
     staleTime: 30 * 60 * 1000,
     gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
     queryFn: async (): Promise<string | null> => {
-      if (!name || !name.endsWith(".apt")) {
+      if (!normalizedName || !normalizedName.endsWith(".apt")) {
         return null;
       }
 

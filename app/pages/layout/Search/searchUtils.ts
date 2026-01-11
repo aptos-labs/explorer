@@ -73,6 +73,11 @@ export function detectInputType(searchText: string): {
     normalizedText = normalizedText + ".apt";
   }
 
+  // ANS names should be lowercase for API compatibility
+  if (normalizedText.endsWith(".apt")) {
+    normalizedText = normalizedText.toLowerCase();
+  }
+
   return {
     isAnsName: normalizedText.endsWith(".apt"),
     isStruct: isValidStruct(normalizedText),
@@ -134,8 +139,10 @@ export async function handleAnsName(
   if (signal?.aborted) return null;
 
   try {
+    // ANS names must be lowercase for API compatibility
+    const normalizedName = searchText.toLowerCase();
     const ansName = await sdkV2Client.getName({
-      name: searchText,
+      name: normalizedName,
     });
     const address = ansName?.registered_address ?? ansName?.owner_address;
 
