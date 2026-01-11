@@ -3,9 +3,30 @@ import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import {truncateAddress} from "../utils";
 import AccountPage from "../pages/Account/Index";
 import {PagePending} from "../components/NavigationPending";
+import {getClientFromSearch, getNetworkFromSearch} from "../api/createClient";
+import {accountInfoQueryOptions} from "../api/queries";
 
 // Primary route for account with tab in path
 export const Route = createFileRoute("/account/$address/$tab")({
+  // Prefetch account data during navigation for faster perceived load
+  loader: async ({params, context, location}) => {
+    const {queryClient} = context;
+    const search = Object.fromEntries(
+      new URLSearchParams(location.search),
+    ) as Record<string, string>;
+    const client = getClientFromSearch(search);
+    const networkName = getNetworkFromSearch(search);
+
+    // Prefetch account info - don't await to avoid blocking navigation
+    // This runs in parallel with rendering
+    queryClient
+      .prefetchQuery(accountInfoQueryOptions(params.address, client))
+      .catch(() => {
+        // Prefetch failures are non-critical - the component will fetch if needed
+      });
+
+    return {networkName};
+  },
   head: ({params}) => {
     const tabTitle =
       params.tab === "transactions"
