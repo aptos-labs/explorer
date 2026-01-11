@@ -1,5 +1,13 @@
 import * as React from "react";
-import {Box, Typography, Stack, useTheme} from "@mui/material";
+import {
+  Box,
+  Typography,
+  Stack,
+  useTheme,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
 import {Types} from "aptos";
 import {assertNever} from "../../utils";
 import StyledTabs from "../../components/StyledTabs";
@@ -19,6 +27,7 @@ import CallMergeOutlinedIcon from "@mui/icons-material/CallMergeOutlined";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import BalanceChangeTab from "./Tabs/BalanceChangeTab";
 import {useParams} from "@tanstack/react-router";
 import {useNavigate} from "../../routing";
@@ -31,7 +40,7 @@ import {getLearnMoreTooltip} from "./helpers";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {ErrorOutline} from "@mui/icons-material";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -160,6 +169,85 @@ function TabPanel({value, transaction}: TabPanelProps): React.JSX.Element {
   return <TabComponent transaction={transaction} />;
 }
 
+type TransactionDebugInfoProps = {
+  transaction: Types.Transaction;
+  networkName: string;
+};
+
+function TransactionDebugInfo({
+  transaction,
+  networkName,
+}: TransactionDebugInfoProps): React.JSX.Element {
+  const theme = useTheme();
+  const [expanded, setExpanded] = useState(false);
+
+  const handleChange = (_event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded);
+  };
+
+  return (
+    <Accordion
+      expanded={expanded}
+      onChange={handleChange}
+      sx={{
+        marginTop: 3,
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: `${theme.shape.borderRadius}px !important`,
+        "&:before": {
+          display: "none",
+        },
+        "&.Mui-expanded": {
+          margin: 0,
+          marginTop: 3,
+        },
+      }}
+      disableGutters
+    >
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        sx={{
+          padding: 4,
+          "& .MuiAccordionSummary-content": {
+            margin: 0,
+          },
+        }}
+      >
+        <Typography
+          variant="body1"
+          sx={{color: theme.palette.text.secondary, fontWeight: 500}}
+        >
+          Transaction Debug Info
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails sx={{padding: 4, paddingTop: 0}}>
+        {expanded && (
+          <Stack direction="column" spacing={4}>
+            <ContentRow
+              title="Full Txn (for debug):"
+              value={<JsonViewCard data={transaction} collapsedByDefault />}
+              tooltip={getLearnMoreTooltip("transaction")}
+            />
+            <ContentRow
+              title="API link:"
+              value={
+                <a
+                  style={{color: "inherit"}}
+                  href={`https://fullnode.${networkName.toLowerCase()}.aptoslabs.com/v1/transactions/by_hash/${transaction.hash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Transaction {transaction.hash}
+                </a>
+              }
+              tooltip={getLearnMoreTooltip("transaction")}
+            />
+          </Stack>
+        )}
+      </AccordionDetails>
+    </Accordion>
+  );
+}
+
 type TransactionTabsProps = {
   transaction: Types.Transaction;
   tabValues?: TabValue[];
@@ -231,27 +319,10 @@ export default function TransactionTabs({
       <Box>
         <TabPanel value={value} transaction={transaction} />
       </Box>
-      <ContentBox>
-        <ContentRow
-          title="Full Txn (for debug):"
-          value={<JsonViewCard data={transaction} collapsedByDefault />}
-          tooltip={getLearnMoreTooltip("transaction")}
-        />
-        <ContentRow
-          title="API link:"
-          value={
-            <a
-              style={{color: "inherit"}}
-              href={`https://fullnode.${networkName.toLowerCase()}.aptoslabs.com/v1/transactions/by_hash/${transaction.hash}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Transaction {transaction.hash}
-            </a>
-          }
-          tooltip={getLearnMoreTooltip("transaction")}
-        />
-      </ContentBox>
+      <TransactionDebugInfo
+        transaction={transaction}
+        networkName={networkName}
+      />
     </Box>
   );
 }
