@@ -134,8 +134,10 @@ export async function handleAnsName(
   if (signal?.aborted) return null;
 
   try {
+    // ANS names must be lowercase for API compatibility
+    const normalizedName = searchText.toLowerCase();
     const ansName = await sdkV2Client.getName({
-      name: searchText,
+      name: normalizedName,
     });
     const address = ansName?.registered_address ?? ansName?.owner_address;
 
