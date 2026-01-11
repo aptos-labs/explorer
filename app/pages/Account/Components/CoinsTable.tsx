@@ -67,7 +67,7 @@ const AmountCell = React.memo(function AmountCell({
   const formattedAmount = amount / Math.pow(10, decimals);
   return (
     <GeneralTableCell>
-      <span>{formattedAmount}</span>
+      <span>{formattedAmount.toLocaleString()}</span>
       <span style={{marginLeft: 8, color: theme.palette.text.secondary}}>
         {symbol}
       </span>
@@ -88,7 +88,13 @@ const USDCell = React.memo(function USDCell({
 
   return (
     <GeneralTableCell>
-      <span>${amount}</span>
+      <span>
+        $
+        {amount.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </span>
       <span style={{marginLeft: 8, color: theme.palette.text.secondary}}>
         {"USD"}
       </span>
@@ -281,7 +287,10 @@ function CoinCard({
         </Typography>
         <Typography sx={{fontSize: "0.85rem", color: "text.secondary"}}>
           {coin.usdValue !== null && inMainnet
-            ? `$${coin.usdValue.toLocaleString()}`
+            ? `$${coin.usdValue.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}`
             : ""}
         </Typography>
       </Stack>
