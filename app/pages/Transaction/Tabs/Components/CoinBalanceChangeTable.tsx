@@ -458,6 +458,15 @@ function BalanceChangeCard({
           <Typography variant="caption" color="text.secondary">
             {balanceChange.asset.symbol || "Unknown"}
           </Typography>
+          <VerifiedAsset
+            data={{
+              id: balanceChange?.asset?.id,
+              known: balanceChange.known,
+              isBanned: balanceChange.isBanned,
+              isInPanoraTokenList: balanceChange.isInPanoraTokenList,
+              symbol: balanceChange?.asset?.symbol,
+            }}
+          />
         </Stack>
       </Stack>
     </Paper>
