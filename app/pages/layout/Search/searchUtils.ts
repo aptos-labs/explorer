@@ -73,11 +73,6 @@ export function detectInputType(searchText: string): {
     normalizedText = normalizedText + ".apt";
   }
 
-  // ANS names should be lowercase for API compatibility
-  if (normalizedText.endsWith(".apt")) {
-    normalizedText = normalizedText.toLowerCase();
-  }
-
   return {
     isAnsName: normalizedText.endsWith(".apt"),
     isStruct: isValidStruct(normalizedText),
