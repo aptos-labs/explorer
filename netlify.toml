@@ -46,3 +46,78 @@
 
 [context.branch-deploy.environment]
   NODE_ENV = "production"
+
+# API Proxy for CORS on preview builds
+# These redirects proxy API requests through Netlify to avoid CORS issues
+# when the Aptos API servers don't recognize preview deployment origins
+
+[[redirects]]
+  from = "/api-proxy/mainnet/*"
+  to = "https://api.mainnet.aptoslabs.com/v1/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "netlify-proxy"}
+
+[[redirects]]
+  from = "/api-proxy/testnet/*"
+  to = "https://api.testnet.staging.aptoslabs.com/v1/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "netlify-proxy"}
+
+[[redirects]]
+  from = "/api-proxy/devnet/*"
+  to = "https://api.devnet.staging.aptoslabs.com/v1/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "netlify-proxy"}
+
+[[redirects]]
+  from = "/api-proxy/decibel/*"
+  to = "https://api.netna.aptoslabs.com/v1/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "netlify-proxy"}
+
+[[redirects]]
+  from = "/api-proxy/shelbynet/*"
+  to = "https://api.shelbynet.staging.shelby.xyz/v1/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "netlify-proxy"}
+
+# GraphQL proxy endpoints
+[[redirects]]
+  from = "/graphql-proxy/mainnet"
+  to = "https://api.mainnet.aptoslabs.com/v1/graphql"
+  status = 200
+  force = true
+  headers = {X-From = "netlify-proxy"}
+
+[[redirects]]
+  from = "/graphql-proxy/testnet"
+  to = "https://api.testnet.staging.aptoslabs.com/v1/graphql"
+  status = 200
+  force = true
+  headers = {X-From = "netlify-proxy"}
+
+[[redirects]]
+  from = "/graphql-proxy/devnet"
+  to = "https://api.devnet.staging.aptoslabs.com/v1/graphql"
+  status = 200
+  force = true
+  headers = {X-From = "netlify-proxy"}
+
+[[redirects]]
+  from = "/graphql-proxy/decibel"
+  to = "https://api.netna.aptoslabs.com/v1/graphql"
+  status = 200
+  force = true
+  headers = {X-From = "netlify-proxy"}
+
+[[redirects]]
+  from = "/graphql-proxy/shelbynet"
+  to = "https://api.shelbynet.staging.shelby.xyz/v1/graphql"
+  status = 200
+  force = true
+  headers = {X-From = "netlify-proxy"}

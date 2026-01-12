@@ -1,11 +1,48 @@
 /**
  * Network Configuration
  */
+
+/**
+ * Check if the app is running on a Netlify preview/branch deployment.
+ * These deployments need to use the API proxy to avoid CORS issues since
+ * the Aptos API servers don't include preview origins in their CORS policy.
+ */
+function isNetlifyPreviewDeployment(): boolean {
+  if (typeof window === "undefined") {
+    // During SSR, check for Netlify environment variable
+    // CONTEXT is "deploy-preview" or "branch-deploy" for non-production builds
+    const context = process.env.CONTEXT;
+    return context === "deploy-preview" || context === "branch-deploy";
+  }
+  // Client-side: check if hostname matches Netlify preview pattern
+  // e.g., deploy-preview-123--site-name.netlify.app or branch-name--site-name.netlify.app
+  const hostname = window.location.hostname;
+  return (
+    hostname.includes(".netlify.app") && !hostname.startsWith("aptos-explorer")
+  );
+}
+
+/**
+ * Get the API URL for a network, using proxy on Netlify preview deployments.
+ */
+function getNetworkUrl(
+  network: string,
+  directUrl: string,
+  proxyPath: string,
+): string {
+  if (isNetlifyPreviewDeployment()) {
+    // Use relative proxy URL on preview deployments
+    return proxyPath;
+  }
+  return directUrl;
+}
+
 export const devnetUrl =
   import.meta.env.APTOS_DEVNET_URL ||
   "https://api.devnet.staging.aptoslabs.com/v1";
 
-export const networks: Record<string, string> = {
+// Direct API URLs (used in production)
+const directNetworks: Record<string, string> = {
   mainnet: "https://api.mainnet.aptoslabs.com/v1",
   testnet: "https://api.testnet.staging.aptoslabs.com/v1",
   devnet: devnetUrl,
@@ -14,12 +51,62 @@ export const networks: Record<string, string> = {
   local: "http://127.0.0.1:8080/v1",
 };
 
+// Proxy paths for preview deployments (relative URLs)
+const proxyPaths: Record<string, string> = {
+  mainnet: "/api-proxy/mainnet",
+  testnet: "/api-proxy/testnet",
+  devnet: "/api-proxy/devnet",
+  decibel: "/api-proxy/decibel",
+  shelbynet: "/api-proxy/shelbynet",
+  local: "http://127.0.0.1:8080/v1", // Local always uses direct connection
+};
+
+// Type for network names (based on directNetworks keys)
+export type NetworkName = keyof typeof directNetworks;
+
+/**
+ * Get the network URL for a given network name.
+ * On preview deployments, returns the proxy URL; otherwise returns the direct URL.
+ */
+export function getNetworkApiUrl(networkName: NetworkName): string {
+  const directUrl = directNetworks[networkName];
+  const proxyPath = proxyPaths[networkName];
+  return getNetworkUrl(networkName, directUrl, proxyPath);
+}
+
+// Export networks object that dynamically resolves URLs based on deployment context
+// Uses a Proxy to intercept property access and return proxied URLs on preview deployments
+export const networks: Record<NetworkName, string> = new Proxy(
+  directNetworks as Record<NetworkName, string>,
+  {
+    get(target, prop: string) {
+      if (prop in target) {
+        const networkName = prop as NetworkName;
+        return getNetworkUrl(
+          networkName,
+          target[networkName],
+          proxyPaths[networkName] || target[networkName],
+        );
+      }
+      return undefined;
+    },
+    // Support Object.keys() and 'in' operator
+    ownKeys(target) {
+      return Reflect.ownKeys(target);
+    },
+    getOwnPropertyDescriptor(target, prop) {
+      return Reflect.getOwnPropertyDescriptor(target, prop);
+    },
+    has(target, prop) {
+      return Reflect.has(target, prop);
+    },
+  },
+);
+
 export const hiddenNetworks: readonly NetworkName[] = [
   "decibel",
   "shelbynet",
 ] as const;
-
-export type NetworkName = keyof typeof networks;
 
 type ApiKeys = {
   [key in NetworkName]: string | undefined;
@@ -45,7 +132,7 @@ export function getApiKey(network_name: NetworkName): string | undefined {
 }
 
 export function isValidNetworkName(value: string): value is NetworkName {
-  return value in networks;
+  return value in directNetworks;
 }
 
 export enum Network {
@@ -56,11 +143,11 @@ export enum Network {
   SHELBYNET = "shelbynet",
 }
 
-// Remove trailing slashes
-for (const key of Object.keys(networks)) {
+// Remove trailing slashes from direct URLs (done once at module load)
+for (const key of Object.keys(directNetworks)) {
   const networkName = key as NetworkName;
-  if (networks[networkName].endsWith("/")) {
-    networks[networkName] = networks[networkName].slice(0, -1);
+  if (directNetworks[networkName].endsWith("/")) {
+    directNetworks[networkName] = directNetworks[networkName].slice(0, -1);
   }
 }
 
@@ -103,23 +190,38 @@ export const collectionV2Address = "0x4::collection::Collection";
 /**
  * GraphQL Endpoints
  */
+
+// Direct GraphQL URLs (used in production)
+const directGraphqlUrls: Record<string, string> = {
+  mainnet: "https://api.mainnet.aptoslabs.com/v1/graphql",
+  testnet: "https://api.testnet.staging.aptoslabs.com/v1/graphql",
+  devnet: "https://api.devnet.staging.aptoslabs.com/v1/graphql",
+  decibel: "https://api.netna.aptoslabs.com/v1/graphql",
+  shelbynet: "https://api.shelbynet.staging.shelby.xyz/v1/graphql",
+  local: "http://127.0.0.1:8090/v1/graphql",
+};
+
+// Proxy paths for GraphQL on preview deployments
+const graphqlProxyPaths: Record<string, string> = {
+  mainnet: "/graphql-proxy/mainnet",
+  testnet: "/graphql-proxy/testnet",
+  devnet: "/graphql-proxy/devnet",
+  decibel: "/graphql-proxy/decibel",
+  shelbynet: "/graphql-proxy/shelbynet",
+  local: "http://127.0.0.1:8090/v1/graphql", // Local always uses direct connection
+};
+
 export function getGraphqlURI(networkName: NetworkName): string | undefined {
-  switch (networkName) {
-    case "mainnet":
-      return "https://api.mainnet.aptoslabs.com/v1/graphql";
-    case "testnet":
-      return "https://api.testnet.staging.aptoslabs.com/v1/graphql";
-    case "devnet":
-      return "https://api.devnet.staging.aptoslabs.com/v1/graphql";
-    case "decibel":
-      return "https://api.netna.aptoslabs.com/v1/graphql";
-    case "shelbynet":
-      return "https://api.shelbynet.staging.shelby.xyz/v1/graphql";
-    case "local":
-      return "http://127.0.0.1:8090/v1/graphql";
-    default:
-      return undefined;
+  const directUrl = directGraphqlUrls[networkName];
+  if (!directUrl) {
+    return undefined;
   }
+
+  if (isNetlifyPreviewDeployment()) {
+    return graphqlProxyPaths[networkName] || directUrl;
+  }
+
+  return directUrl;
 }
 
 /**

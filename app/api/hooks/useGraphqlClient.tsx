@@ -5,7 +5,7 @@ import {
   HttpLink,
   InMemoryCache,
 } from "@apollo/client";
-import {getApiKey, NetworkName} from "../../constants";
+import {getApiKey, getGraphqlURI, NetworkName} from "../../constants";
 import {useNetworkName} from "../../global-config";
 import {ApolloProvider} from "@apollo/client/react";
 
@@ -14,24 +14,8 @@ function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   return typeof graphqlUri === "string" && graphqlUri.length > 0;
 }
 
-export function getGraphqlURI(networkName: NetworkName): string | undefined {
-  switch (networkName) {
-    case "mainnet":
-      return "https://api.mainnet.aptoslabs.com/v1/graphql";
-    case "testnet":
-      return "https://api.testnet.staging.aptoslabs.com/v1/graphql";
-    case "devnet":
-      return "https://api.devnet.staging.aptoslabs.com/v1/graphql";
-    case "decibel":
-      return "https://api.netna.aptoslabs.com/v1/graphql";
-    case "shelbynet":
-      return "https://api.shelbynet.staging.shelby.xyz/v1/graphql";
-    case "local":
-      return "http://127.0.0.1:8090/v1/graphql";
-    default:
-      return undefined;
-  }
-}
+// Re-export for consumers that were importing from here
+export {getGraphqlURI} from "../../constants";
 
 // Cache Apollo clients per network to preserve GraphQL cache across renders
 const apolloClientCache = new Map<NetworkName, ApolloClient>();
