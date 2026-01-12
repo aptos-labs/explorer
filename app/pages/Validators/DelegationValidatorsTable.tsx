@@ -462,42 +462,39 @@ function DelegationValidatorCard({
         },
       }}
     >
-      {/* Row 1: Status and Addresses */}
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 1}}
-      >
-        <Stack direction="row" spacing={1} alignItems="center">
-          <ValidatorStatusIcon validatorStatus={validatorStatus} />
-          <Box sx={{flex: 1, minWidth: 0}}>
-            <Typography
-              variant="caption"
-              sx={{color: "text.secondary", display: "block"}}
-            >
-              Pool
-            </Typography>
-            <HashButton
-              hash={validator.owner_address}
-              type={HashType.ACCOUNT}
-            />
-          </Box>
-        </Stack>
-        <Box sx={{textAlign: "right"}}>
-          <Typography
-            variant="caption"
-            sx={{color: "text.secondary", display: "block"}}
-          >
-            Operator
-          </Typography>
-          <HashButton
-            hash={validator.operator_address}
-            type={HashType.ACCOUNT}
-            isValidator
-          />
-        </Box>
+      {/* Status */}
+      <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1}}>
+        <ValidatorStatusIcon validatorStatus={validatorStatus} />
+        <Typography variant="body2" sx={{fontWeight: 500}}>
+          {validatorStatus}
+        </Typography>
       </Stack>
+
+      {/* Pool Address */}
+      <Box sx={{mb: 1}}>
+        <Typography
+          variant="caption"
+          sx={{color: "text.secondary", display: "block"}}
+        >
+          Pool Address
+        </Typography>
+        <HashButton hash={validator.owner_address} type={HashType.ACCOUNT} />
+      </Box>
+
+      {/* Operator Address */}
+      <Box sx={{mb: 1.5}}>
+        <Typography
+          variant="caption"
+          sx={{color: "text.secondary", display: "block"}}
+        >
+          Operator
+        </Typography>
+        <HashButton
+          hash={validator.operator_address}
+          type={HashType.ACCOUNT}
+          isValidator
+        />
+      </Box>
 
       {/* Row 2: Key metrics */}
       <Stack
