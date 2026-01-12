@@ -273,43 +273,33 @@ function ValidatorCard({validator}: {validator: ValidatorData}) {
         borderRadius: 2,
       }}
     >
-      {/* Row 1: Address labels */}
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 1}}
-      >
+      {/* Pool Address */}
+      <Box sx={{mb: 1}}>
         <Typography
           variant="caption"
-          sx={{color: "text.secondary", fontWeight: 500}}
+          sx={{color: "text.secondary", fontWeight: 500, display: "block"}}
         >
           Pool Address
         </Typography>
+        <HashButton hash={validator.owner_address} type={HashType.ACCOUNT} />
+      </Box>
+
+      {/* Operator Address */}
+      <Box sx={{mb: 1.5}}>
         <Typography
           variant="caption"
-          sx={{color: "text.secondary", fontWeight: 500}}
+          sx={{color: "text.secondary", fontWeight: 500, display: "block"}}
         >
           Operator
         </Typography>
-      </Stack>
-
-      {/* Row 2: Addresses */}
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 1.5}}
-      >
-        <HashButton hash={validator.owner_address} type={HashType.ACCOUNT} />
         <HashButton
           hash={validator.operator_address}
           type={HashType.ACCOUNT}
           isValidator
         />
-      </Stack>
+      </Box>
 
-      {/* Row 3: Stats */}
+      {/* Stats */}
       <Stack
         direction="row"
         justifyContent="space-between"
