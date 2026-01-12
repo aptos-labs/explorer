@@ -1,6 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import {Box, Typography, Button, Card, CardContent} from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import {Link} from "../routing";
+import {isModuleFetchError} from "../utils/moduleErrorHandler";
 
 interface ErrorBoundaryProps {
   error: Error;
@@ -8,6 +10,55 @@ interface ErrorBoundaryProps {
 }
 
 export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
+  const [isReloading, setIsReloading] = useState(false);
+  const isModuleError = isModuleFetchError(error);
+
+  const handleReload = () => {
+    setIsReloading(true);
+    window.location.reload();
+  };
+
+  // Show a friendlier message for module loading errors
+  if (isModuleError) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "50vh",
+          p: 3,
+        }}
+      >
+        <Card sx={{maxWidth: 500, textAlign: "center"}}>
+          <CardContent>
+            <Typography variant="h4" gutterBottom color="primary">
+              Update Available
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{mb: 3}}>
+              A new version of the explorer has been deployed. Please refresh
+              the page to load the latest version.
+            </Typography>
+            <Box sx={{display: "flex", gap: 2, justifyContent: "center"}}>
+              <Button
+                variant="contained"
+                onClick={handleReload}
+                disabled={isReloading}
+                startIcon={<RefreshIcon />}
+              >
+                {isReloading ? "Refreshing..." : "Refresh Page"}
+              </Button>
+              <Button component={Link} to="/" variant="outlined">
+                Go Home
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+    );
+  }
+
   return (
     <Box
       sx={{
