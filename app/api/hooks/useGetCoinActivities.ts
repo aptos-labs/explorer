@@ -14,9 +14,15 @@ export function useGetCoinActivities(
   isLoading: boolean;
   error: CombinedGraphQLErrors | undefined;
   data: FAActivity[] | undefined;
+  count: number | undefined;
 } {
   const {loading, error, data} = useGraphqlQuery<{
     fungible_asset_activities: FAActivity[];
+    fungible_asset_activities_aggregate: {
+      aggregate: {
+        count: number;
+      };
+    };
   }>(
     // Exclude gas fees from the list
     gql`
@@ -38,6 +44,16 @@ export function useGetCoinActivities(
           transaction_version
           owner_address
         }
+        fungible_asset_activities_aggregate(
+          where: {
+            asset_type: {_eq: $asset}
+            type: {_neq: "0x1::aptos_coin::GasFeeEvent"}
+          }
+        ) {
+          aggregate {
+            count
+          }
+        }
       }
     `,
     {variables: {asset, limit, offset: offset ?? 0}},
@@ -47,5 +63,6 @@ export function useGetCoinActivities(
     isLoading: loading,
     error: error ? (error as CombinedGraphQLErrors) : undefined,
     data: data?.fungible_asset_activities,
+    count: data?.fungible_asset_activities_aggregate?.aggregate?.count,
   };
 }

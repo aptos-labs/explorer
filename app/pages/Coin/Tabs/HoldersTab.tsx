@@ -25,6 +25,14 @@ const LIMIT = 25;
 
 export default function HoldersTab({struct, data}: HoldersTabProps) {
   const [page, setPage] = useState(1);
+  const [prevStruct, setPrevStruct] = useState(struct);
+
+  // Reset page when struct changes (during render, per React best practices)
+  if (struct !== prevStruct) {
+    setPrevStruct(struct);
+    setPage(1);
+  }
+
   const offset = (page - 1) * LIMIT;
   const holderData = useGetCoinHolders(struct, LIMIT, offset);
 

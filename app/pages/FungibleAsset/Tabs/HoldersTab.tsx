@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {
   CoinHolder,
@@ -14,31 +14,65 @@ import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {FACombinedData} from "../Index";
-import LoadingModal from "../../../components/LoadingModal";
+import {Box, CircularProgress, Pagination} from "@mui/material";
 
 type HoldersTabProps = {
   address: string;
   data: FACombinedData | undefined;
 };
 
+const LIMIT = 25;
+
 export default function HoldersTab({address, data}: HoldersTabProps) {
-  const holderData = useGetCoinHolders(address);
+  const [page, setPage] = useState(1);
+  const [prevAddress, setPrevAddress] = useState(address);
+
+  // Reset page when address changes (during render, per React best practices)
+  if (address !== prevAddress) {
+    setPrevAddress(address);
+    setPage(1);
+  }
+
+  const offset = (page - 1) * LIMIT;
+  const holderData = useGetCoinHolders(address, LIMIT, offset);
+
   if (holderData?.isLoading) {
-    return <LoadingModal open={true} />;
+    return (
+      <Box sx={{display: "flex", justifyContent: "center", padding: 4}}>
+        <CircularProgress />
+      </Box>
+    );
   }
   if (!data || Array.isArray(data) || !holderData?.data) {
     return <EmptyTabContent />;
   }
 
-  return <HoldersTable data={data} holders={holderData.data} />;
+  const pageCount = holderData.count ? Math.ceil(holderData.count / LIMIT) : 0;
+
+  const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+  return (
+    <Box>
+      <HoldersTable data={data} holders={holderData.data} offset={offset} />
+      {pageCount > 1 && (
+        <Box sx={{display: "flex", justifyContent: "center", padding: 2}}>
+          <Pagination count={pageCount} page={page} onChange={handleChange} />
+        </Box>
+      )}
+    </Box>
+  );
 }
 
 export function HoldersTable({
   data,
   holders,
+  offset = 0,
 }: {
   holders: CoinHolder[];
   data: FACombinedData;
+  offset?: number;
 }) {
   return (
     <Table>
@@ -52,8 +86,8 @@ export function HoldersTable({
       <GeneralTableBody>
         {holders.map((holder, i) => {
           return (
-            <GeneralTableRow>
-              <GeneralTableCell>{i}</GeneralTableCell>
+            <GeneralTableRow key={holder.owner_address}>
+              <GeneralTableCell>{offset + i + 1}</GeneralTableCell>
               <GeneralTableCell>
                 <HashButton
                   hash={holder.owner_address}
