@@ -46,6 +46,7 @@ import Footer from "../components/layout/Footer";
 import {Fallback} from "../components/layout/Fallback";
 import {ErrorBoundary, NotFoundError} from "../components/ErrorBoundary";
 import {useHashToPathRedirect} from "../hooks/useHashToPathRedirect";
+import {useOldUrlRedirect} from "../hooks/useOldUrlRedirect";
 import LocalnetUnavailableModal from "../components/LocalnetUnavailableModal";
 
 // Router context type
@@ -118,6 +119,10 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootComponent() {
   const {queryClient} = Route.useRouteContext();
+
+  // Redirect old subdomain-based URLs to the new query parameter format for backward compatibility
+  // e.g., explorer.devnet.aptos.dev → explorer.aptoslabs.com?network=devnet
+  useOldUrlRedirect();
 
   // Redirect hash-based tab URLs to path-based URLs for backward compatibility
   useHashToPathRedirect();

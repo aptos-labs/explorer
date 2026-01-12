@@ -46,3 +46,54 @@
 
 [context.branch-deploy.environment]
   NODE_ENV = "production"
+
+# Redirects for old subdomain-based URLs (2022 format) to new query parameter format
+# These ensure backward compatibility for old bookmarks and links
+# Old format: https://explorer.{network}.aptos.dev/path
+# New format: https://explorer.aptoslabs.com/path?network={network}
+
+# Redirect from explorer.devnet.aptos.dev to explorer.aptoslabs.com with network=devnet
+[[redirects]]
+  from = "https://explorer.devnet.aptos.dev/*"
+  to = "https://explorer.aptoslabs.com/:splat?network=devnet"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://devnet.aptos.dev/*"
+  to = "https://explorer.aptoslabs.com/:splat?network=devnet"
+  status = 301
+  force = true
+
+# Redirect from explorer.testnet.aptos.dev to explorer.aptoslabs.com with network=testnet
+[[redirects]]
+  from = "https://explorer.testnet.aptos.dev/*"
+  to = "https://explorer.aptoslabs.com/:splat?network=testnet"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://testnet.aptos.dev/*"
+  to = "https://explorer.aptoslabs.com/:splat?network=testnet"
+  status = 301
+  force = true
+
+# Redirect from explorer.mainnet.aptos.dev to explorer.aptoslabs.com with network=mainnet
+[[redirects]]
+  from = "https://explorer.mainnet.aptos.dev/*"
+  to = "https://explorer.aptoslabs.com/:splat?network=mainnet"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://mainnet.aptos.dev/*"
+  to = "https://explorer.aptoslabs.com/:splat?network=mainnet"
+  status = 301
+  force = true
+
+# Redirect from explorer.aptos.dev (without network subdomain) to mainnet
+[[redirects]]
+  from = "https://explorer.aptos.dev/*"
+  to = "https://explorer.aptoslabs.com/:splat?network=mainnet"
+  status = 301
+  force = true
