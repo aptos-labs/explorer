@@ -155,6 +155,45 @@ function SubSection({
   );
 }
 
+function ScreenshotPlaceholder({label}: {label: string}) {
+  const theme = useTheme();
+  return (
+    <Box
+      sx={{
+        my: 3,
+        p: 4,
+        border: `2px dashed ${theme.palette.divider}`,
+        borderRadius: 2,
+        bgcolor:
+          theme.palette.mode === "dark"
+            ? "rgba(255,255,255,0.02)"
+            : "rgba(0,0,0,0.02)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: 200,
+      }}
+    >
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{
+          textTransform: "uppercase",
+          letterSpacing: "0.5px",
+          fontSize: "0.75rem",
+          mb: 1,
+        }}
+      >
+        Screenshot
+      </Typography>
+      <Typography variant="body1" color="text.secondary" textAlign="center">
+        {label}
+      </Typography>
+    </Box>
+  );
+}
+
 export default function DocumentationPage() {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
@@ -217,6 +256,8 @@ export default function DocumentationPage() {
                 between networks using the network selector dropdown in the top
                 navigation bar.
               </Typography>
+
+              <ScreenshotPlaceholder label="Network selector dropdown showing Mainnet, Testnet, Devnet options with chain IDs" />
 
               <SubSection title="Available Networks">
                 <ul>
@@ -340,6 +381,8 @@ export default function DocumentationPage() {
                 address. The Account page provides comprehensive information
                 about any address on the network.
               </Typography>
+
+              <ScreenshotPlaceholder label="Account page showing balance card and navigation tabs (Transactions, Coins, Tokens, Resources, Modules, Info)" />
 
               <SubSection title="Account Tabs">
                 <Typography paragraph>
@@ -528,6 +571,8 @@ export default function DocumentationPage() {
                 submit transactions.
               </Typography>
 
+              <ScreenshotPlaceholder label="Modules tab showing function sidebar, input fields, and execution results" />
+
               <SubSection title="View Functions (Read-Only)">
                 <Typography paragraph>
                   View functions allow you to query on-chain data without
@@ -667,6 +712,8 @@ export default function DocumentationPage() {
                 viewing your personal account.
               </Typography>
 
+              <ScreenshotPlaceholder label="Wallet connection modal showing available wallet options (Petra, etc.)" />
+
               <SubSection title="How to Connect">
                 <ol>
                   <li>
@@ -728,6 +775,8 @@ export default function DocumentationPage() {
                 delegated proof-of-stake, which means you delegate your tokens
                 to validators who participate in consensus.
               </Typography>
+
+              <ScreenshotPlaceholder label="Validators page showing delegation pools with stake amounts, commission rates, and rewards performance" />
 
               <SubSection title="How to Stake">
                 <ol>
@@ -818,6 +867,8 @@ export default function DocumentationPage() {
                 finding anything on the Aptos blockchain. It supports multiple
                 input types and provides intelligent results.
               </Typography>
+
+              <ScreenshotPlaceholder label="Search bar with dropdown showing grouped results (Accounts, Assets, Transactions, Blocks)" />
 
               <SubSection title="What You Can Search">
                 <ul>
