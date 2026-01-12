@@ -62,6 +62,76 @@ export default function DocumentationPage() {
 
         <Divider sx={{my: 4}} />
 
+        <Section id="networks" title="Network Selection">
+          <Typography paragraph>
+            The Aptos blockchain runs on multiple networks. You can switch
+            between networks using the network selector dropdown in the top
+            navigation bar.
+          </Typography>
+
+          <SubSection title="Available Networks">
+            <ul>
+              <li>
+                <strong>Mainnet:</strong> The production network where real
+                transactions occur with real value. This is the default network
+                and where most users will want to explore.
+              </li>
+              <li>
+                <strong>Testnet:</strong> A testing environment that mirrors
+                mainnet functionality but uses test tokens with no real value.
+                Ideal for developers testing applications before deploying to
+                mainnet.
+              </li>
+              <li>
+                <strong>Devnet:</strong> A development network that resets
+                periodically. Used for early-stage development and
+                experimentation.
+              </li>
+              <li>
+                <strong>Local:</strong> Connect to a local Aptos node running on
+                your machine (http://127.0.0.1:8080). Useful for developers
+                running a local development environment.
+              </li>
+            </ul>
+          </SubSection>
+
+          <SubSection title="Network Differences">
+            <Typography paragraph>
+              Each network is independent with its own:
+            </Typography>
+            <ul>
+              <li>
+                <strong>Chain ID:</strong> A unique identifier displayed next to
+                each network name in the selector.
+              </li>
+              <li>
+                <strong>State:</strong> Accounts, transactions, and data are
+                separate between networks.
+              </li>
+              <li>
+                <strong>Tokens:</strong> APT and other tokens on testnet/devnet
+                have no real value.
+              </li>
+            </ul>
+            <Typography paragraph sx={{mt: 2}}>
+              <strong>Note:</strong> Some features like Analytics are only
+              available on Mainnet where meaningful network-wide metrics exist.
+            </Typography>
+          </SubSection>
+
+          <SubSection title="Sharing Links">
+            <Typography paragraph>
+              When you select a network, the URL automatically includes a{" "}
+              <code>?network=</code> parameter. This means you can share links
+              that will open directly to the correct network. For example, a
+              testnet transaction link will automatically switch the viewer to
+              testnet.
+            </Typography>
+          </SubSection>
+        </Section>
+
+        <Divider sx={{my: 4}} />
+
         <Section title="Transactions">
           <Typography paragraph>
             Transactions represent state changes on the blockchain. The
