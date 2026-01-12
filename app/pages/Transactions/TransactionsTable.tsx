@@ -465,7 +465,7 @@ export default function TransactionsTable({
   // Mobile card view
   if (isMobile) {
     return (
-      <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+      <Box>
         {transactions.map((transaction, i) => (
           <TransactionCard
             key={`${i}-${transaction.hash}`}
@@ -479,7 +479,7 @@ export default function TransactionsTable({
 
   // Desktop table view
   return (
-    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+    <Box sx={{overflowX: "auto"}}>
       <Table>
         <TableHead>
           <TableRow>
@@ -535,7 +535,7 @@ export function UserTransactionsTable({
   // Mobile card view
   if (isMobile) {
     return (
-      <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+      <Box>
         {versions.map((version, i) => (
           <UserTransactionCard
             key={`${i}-${version}`}

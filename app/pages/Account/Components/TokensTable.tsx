@@ -320,7 +320,7 @@ export function TokensTable({
   // Mobile card view
   if (isMobile) {
     return (
-      <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+      <Box>
         {tokens.length > 0 ? (
           tokens.map((token, i) => <TokenCard key={i} token={token} />)
         ) : (
@@ -338,7 +338,7 @@ export function TokensTable({
 
   // Desktop table view
   return (
-    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+    <Box sx={{overflowX: "auto"}}>
       <Table>
         <TableHead>
           <TableRow>

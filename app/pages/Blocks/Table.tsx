@@ -169,7 +169,7 @@ export default function BlocksTable({
   );
 
   return (
-    <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+    <Box sx={{overflowX: "auto"}}>
       <Table>
         <TableHead>
           <TableRow>

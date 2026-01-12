@@ -541,7 +541,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
       <>
         {verificationFilter !== CoinVerificationFilterType.NONE &&
           filterSelector}
-        <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+        <Box>
           {filteredCoins.length > 0 ? (
             filteredCoins.map((coin, i) => (
               <CoinCard key={i} coin={coin} networkName={networkName} />
@@ -564,7 +564,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   return (
     <>
       {verificationFilter !== CoinVerificationFilterType.NONE && filterSelector}
-      <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+      <Box sx={{overflowX: "auto"}}>
         <Table>
           <TableHead>
             <TableRow>
