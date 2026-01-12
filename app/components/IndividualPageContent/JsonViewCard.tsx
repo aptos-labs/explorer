@@ -209,21 +209,24 @@ export default function JsonViewCard({
     return <EmptyValue />;
   }
 
-  // Hover styles for keys (coral-based)
-  const keyHoverStyle = {
+  // Common hover styles - base properties shared by all clickable elements
+  const baseHoverStyle = {
     cursor: "pointer",
     borderRadius: "2px",
     transition: "background-color 0.15s ease",
+  };
+
+  // Key hover style (coral-based)
+  const keyHoverStyle = {
+    ...baseHoverStyle,
     "&:hover": {
       backgroundColor: alpha(keyColor, 0.15),
     },
   };
 
-  // Hover styles for values (blue-based)
+  // Value hover style (blue-based)
   const valueHoverStyle = {
-    cursor: "pointer",
-    borderRadius: "2px",
-    transition: "background-color 0.15s ease",
+    ...baseHoverStyle,
     "&:hover": {
       backgroundColor: alpha(valueColor, 0.15),
     },
@@ -236,12 +239,11 @@ export default function JsonViewCard({
         overflow: "auto",
         maxHeight: MAX_CARD_HEIGHT,
         position: "relative",
-        // Hoverable elements - keys use coral hover, values use blue hover
+        // Keys: coral-based hover (matches JS selector [class*="object-key"])
         '& [class*="object-key"]': keyHoverStyle,
-        '& [class*="string-value"]': valueHoverStyle,
-        '& [class*="int-value"]': valueHoverStyle,
-        '& [class*="float-value"]': valueHoverStyle,
-        '& [class*="bool-value"]': valueHoverStyle,
+        // All value types: blue-based hover (matches JS selector [class*="value"])
+        // Covers: string, int, float, bool, null, undefined, bigint, nan, date, url, etc.
+        '& [class*="-value"]': valueHoverStyle,
       }}
       padding={2}
       borderRadius={1}
