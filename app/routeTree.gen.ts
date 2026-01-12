@@ -13,10 +13,10 @@ import { Route as VerificationRouteImport } from './routes/verification'
 import { Route as ValidatorsEnhancedRouteImport } from './routes/validators-enhanced'
 import { Route as ValidatorsRouteImport } from './routes/validators'
 import { Route as TransactionsRouteImport } from './routes/transactions'
+import { Route as DocumentationRouteImport } from './routes/documentation'
 import { Route as BlocksRouteImport } from './routes/blocks'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DocumentationRouteImport } from './routes/documentation'
 import { Route as ValidatorsTabRouteImport } from './routes/validators.$tab'
 import { Route as ValidatorsEnhancedTabRouteImport } from './routes/validators-enhanced.$tab'
 import { Route as ValidatorAddressRouteImport } from './routes/validator.$address'
@@ -59,6 +59,11 @@ const TransactionsRoute = TransactionsRouteImport.update({
   path: '/transactions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocumentationRoute = DocumentationRouteImport.update({
+  id: '/documentation',
+  path: '/documentation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlocksRoute = BlocksRouteImport.update({
   id: '/blocks',
   path: '/blocks',
@@ -72,11 +77,6 @@ const AnalyticsRoute = AnalyticsRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DocumentationRoute = DocumentationRouteImport.update({
-  id: '/documentation',
-  path: '/documentation',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ValidatorsTabRoute = ValidatorsTabRouteImport.update({
@@ -427,6 +427,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TransactionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/documentation': {
+      id: '/documentation'
+      path: '/documentation'
+      fullPath: '/documentation'
+      preLoaderRoute: typeof DocumentationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blocks': {
       id: '/blocks'
       path: '/blocks'
@@ -446,13 +453,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/documentation': {
-      id: '/documentation'
-      path: '/documentation'
-      fullPath: '/documentation'
-      preLoaderRoute: typeof DocumentationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/validators/$tab': {
