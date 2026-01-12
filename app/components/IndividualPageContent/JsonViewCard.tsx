@@ -215,12 +215,9 @@ export default function JsonViewCard({
     <Box
       sx={{
         backgroundColor: semanticColors.codeBlock.background,
-        overflowY: "auto",
-        overflowX: "hidden",
+        overflow: "auto",
         maxHeight: MAX_CARD_HEIGHT,
         position: "relative",
-        wordBreak: "break-word",
-        overflowWrap: "anywhere",
         // Hoverable elements
         '& [class*="object-key"]': clickableHoverStyle,
         '& [class*="string-value"]': clickableHoverStyle,
