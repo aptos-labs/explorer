@@ -153,28 +153,44 @@ const BalanceChangeCells = Object.freeze({
   amount: AmountCell,
 });
 
+// Helper function to get absolute amount and sign from a balance change
+function getAmountInfo(balanceChange: BalanceChange): {
+  isNegative: boolean;
+  absoluteAmount: bigint;
+} {
+  const isNegative = balanceChange.amount < 0;
+  const absoluteAmount = isNegative
+    ? -balanceChange.amount
+    : balanceChange.amount;
+  return {isNegative, absoluteAmount};
+}
+
+// Helper function to generate a unique key for a balance change
+function getBalanceChangeKey(
+  balanceChange: BalanceChange,
+  index: number,
+): string {
+  return `${balanceChange.address}-${balanceChange.asset.id}-${balanceChange.type}-${index}`;
+}
+
 // Modal component for displaying full balance change details
 type BalanceChangeDetailsModalProps = {
   open: boolean;
   onClose: () => void;
   balanceChange: BalanceChange | null;
-  transaction: Types.UserTransaction;
 };
 
 function BalanceChangeDetailsModal({
   open,
   onClose,
   balanceChange,
-  transaction: _transaction,
 }: BalanceChangeDetailsModalProps) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
 
   if (!balanceChange) return null;
 
-  const isNegative = balanceChange.amount < 0;
-  const amount =
-    balanceChange.amount < 0 ? -balanceChange.amount : balanceChange.amount;
+  const {isNegative, absoluteAmount} = getAmountInfo(balanceChange);
 
   return (
     <Dialog
@@ -303,7 +319,7 @@ function BalanceChangeDetailsModal({
             >
               {isNegative ? "-" : "+"}
               <CurrencyValue
-                amount={amount.toString()}
+                amount={absoluteAmount.toString()}
                 currencyCode={balanceChange.asset.symbol}
                 decimals={balanceChange.asset.decimals}
               />
@@ -318,24 +334,27 @@ function BalanceChangeDetailsModal({
 // Mobile card component for balance changes
 type BalanceChangeCardProps = {
   balanceChange: BalanceChange;
-  transaction: Types.UserTransaction;
   onClick: () => void;
 };
 
-function BalanceChangeCard({
-  balanceChange,
-  transaction: _transaction,
-  onClick,
-}: BalanceChangeCardProps) {
+function BalanceChangeCard({balanceChange, onClick}: BalanceChangeCardProps) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
 
-  const isNegative = balanceChange.amount < 0;
-  const amount =
-    balanceChange.amount < 0 ? -balanceChange.amount : balanceChange.amount;
+  const {isNegative, absoluteAmount} = getAmountInfo(balanceChange);
 
   const assetId = balanceChange.asset.id;
   const isFa = isValidAccountAddress(assetId);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onClick();
+      }
+    },
+    [onClick],
+  );
 
   const {data: metadata} = useGetFaMetadata(balanceChange.asset.id, {
     enabled: balanceChange.logoUrl === undefined && isFa,
@@ -346,6 +365,9 @@ function BalanceChangeCard({
   return (
     <Paper
       onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
       sx={{
         px: 2,
         py: 1.5,
@@ -362,6 +384,10 @@ function BalanceChangeCard({
         "&:active": {
           background: theme.palette.neutralShade.main,
           transform: "translate(0,0.1rem)",
+        },
+        "&:focus-visible": {
+          outline: `2px solid ${theme.palette.primary.main}`,
+          outlineOffset: 2,
         },
       }}
     >
@@ -400,7 +426,7 @@ function BalanceChangeCard({
         >
           {isNegative ? "-" : "+"}
           <CurrencyValue
-            amount={amount.toString()}
+            amount={absoluteAmount.toString()}
             currencyCode={balanceChange.asset.symbol}
             decimals={balanceChange.asset.decimals}
           />
@@ -583,7 +609,11 @@ export function CoinBalanceChangeTable({
 
   const handleCloseModal = useCallback(() => {
     setModalOpen(false);
-    setSelectedBalanceChange(null);
+    // Delay clearing the selected balance change until after the modal
+    // close animation has had time to complete.
+    setTimeout(() => {
+      setSelectedBalanceChange(null);
+    }, 200);
   }, []);
 
   // Mobile card view
@@ -593,9 +623,8 @@ export function CoinBalanceChangeTable({
         <Box sx={{maxHeight: "800px", overflow: "auto"}}>
           {balanceChanges.map((balanceChange, i) => (
             <BalanceChangeCard
-              key={i}
+              key={getBalanceChangeKey(balanceChange, i)}
               balanceChange={balanceChange}
-              transaction={transaction}
               onClick={() => handleCardClick(balanceChange)}
             />
           ))}
@@ -604,7 +633,6 @@ export function CoinBalanceChangeTable({
           open={modalOpen}
           onClose={handleCloseModal}
           balanceChange={selectedBalanceChange}
-          transaction={transaction}
         />
       </>
     );
@@ -624,7 +652,7 @@ export function CoinBalanceChangeTable({
         {balanceChanges.map((balanceChange, i) => {
           return (
             <BalanceChangeRow
-              key={i}
+              key={getBalanceChangeKey(balanceChange, i)}
               balanceChange={balanceChange}
               transaction={transaction}
               columns={columns}
