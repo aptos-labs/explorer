@@ -184,7 +184,14 @@ export default function JsonViewCard({
 }: JsonViewCardProps) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
-  const textColor = theme.palette.primary.main;
+  const isDark = theme.palette.mode === "dark";
+
+  // Key color: warm coral tone for visual distinction from values
+  // Uses darker coral in light mode for better contrast
+  const keyColor = isDark ? "#FF9676" : "#E85A30";
+
+  // Value color: cool blue tone (primary color)
+  const valueColor = theme.palette.primary.main;
   const secondaryTextColor = alpha(theme.palette.primary.main, 0.3);
 
   const {
@@ -202,12 +209,23 @@ export default function JsonViewCard({
     return <EmptyValue />;
   }
 
-  const clickableHoverStyle = {
+  // Hover styles for keys (coral-based)
+  const keyHoverStyle = {
     cursor: "pointer",
     borderRadius: "2px",
     transition: "background-color 0.15s ease",
     "&:hover": {
-      backgroundColor: alpha(theme.palette.primary.main, 0.15),
+      backgroundColor: alpha(keyColor, 0.15),
+    },
+  };
+
+  // Hover styles for values (blue-based)
+  const valueHoverStyle = {
+    cursor: "pointer",
+    borderRadius: "2px",
+    transition: "background-color 0.15s ease",
+    "&:hover": {
+      backgroundColor: alpha(valueColor, 0.15),
     },
   };
 
@@ -218,12 +236,12 @@ export default function JsonViewCard({
         overflow: "auto",
         maxHeight: MAX_CARD_HEIGHT,
         position: "relative",
-        // Hoverable elements
-        '& [class*="object-key"]': clickableHoverStyle,
-        '& [class*="string-value"]': clickableHoverStyle,
-        '& [class*="int-value"]': clickableHoverStyle,
-        '& [class*="float-value"]': clickableHoverStyle,
-        '& [class*="bool-value"]': clickableHoverStyle,
+        // Hoverable elements - keys use coral hover, values use blue hover
+        '& [class*="object-key"]': keyHoverStyle,
+        '& [class*="string-value"]': valueHoverStyle,
+        '& [class*="int-value"]': valueHoverStyle,
+        '& [class*="float-value"]': valueHoverStyle,
+        '& [class*="bool-value"]': valueHoverStyle,
       }}
       padding={2}
       borderRadius={1}
@@ -268,11 +286,14 @@ export default function JsonViewCard({
               lineHeight: 1.6,
               backgroundColor: "transparent",
               // Custom colors using CSS variables
-              "--w-rjv-key-string": textColor,
-              "--w-rjv-type-string-color": textColor,
-              "--w-rjv-type-int-color": textColor,
-              "--w-rjv-type-float-color": textColor,
-              "--w-rjv-type-boolean-color": textColor,
+              // Key: warm coral tone for visual distinction
+              "--w-rjv-key-string": keyColor,
+              // Values: cool blue tone
+              "--w-rjv-type-string-color": valueColor,
+              "--w-rjv-type-int-color": valueColor,
+              "--w-rjv-type-float-color": valueColor,
+              "--w-rjv-type-boolean-color": valueColor,
+              // Secondary elements: muted
               "--w-rjv-type-null-color": secondaryTextColor,
               "--w-rjv-arrow-color": secondaryTextColor,
               "--w-rjv-brackets-color": secondaryTextColor,
