@@ -672,6 +672,88 @@ export default function DocumentationPage() {
 
         <Divider sx={{my: 4}} />
 
+        <Section id="coins-vs-fungible-assets" title="Coins vs Fungible Assets">
+          <Typography paragraph>
+            Aptos supports two standards for fungible tokens: the legacy Coin
+            standard and the newer Fungible Asset (FA) standard. Understanding
+            the difference helps when exploring token balances and transactions.
+          </Typography>
+
+          <SubSection title="Coins (Legacy Standard)">
+            <Typography paragraph>
+              The Coin standard was the original way to create fungible tokens
+              on Aptos:
+            </Typography>
+            <ul>
+              <li>
+                <strong>Type-based:</strong> Coins are identified by their Move
+                type, like <code>0x1::aptos_coin::AptosCoin</code> for APT.
+              </li>
+              <li>
+                <strong>Stored in CoinStore:</strong> Coins are held in a
+                CoinStore resource under your account.
+              </li>
+              <li>
+                <strong>Registration required:</strong> You must register (opt
+                in) to receive a specific coin type.
+              </li>
+              <li>
+                <strong>URL format:</strong> View coins at{" "}
+                <code>/coin/TYPE</code> (e.g.,{" "}
+                <code>/coin/0x1::aptos_coin::AptosCoin</code>).
+              </li>
+            </ul>
+          </SubSection>
+
+          <SubSection title="Fungible Assets (FA Standard)">
+            <Typography paragraph>
+              Fungible Assets are the newer, more flexible token standard:
+            </Typography>
+            <ul>
+              <li>
+                <strong>Object-based:</strong> Each fungible asset is backed by
+                a metadata object with a unique address.
+              </li>
+              <li>
+                <strong>No registration needed:</strong> You can receive
+                fungible assets without prior opt-in.
+              </li>
+              <li>
+                <strong>Better composability:</strong> FAs work better with
+                objects and modern Aptos features.
+              </li>
+              <li>
+                <strong>URL format:</strong> View fungible assets at{" "}
+                <code>/fungible_asset/ADDRESS</code>.
+              </li>
+            </ul>
+            <Typography paragraph sx={{mt: 2}}>
+              <strong>Note:</strong> APT exists as both a Coin and a Fungible
+              Asset. Most new tokens are created using the FA standard.
+            </Typography>
+          </SubSection>
+
+          <SubSection title="Viewing in the Explorer">
+            <Typography paragraph>When viewing an account's assets:</Typography>
+            <ul>
+              <li>
+                The <strong>Coins</strong> tab shows both legacy coins and
+                fungible assets in a unified view.
+              </li>
+              <li>
+                Search results group coins and fungible assets together under
+                "Assets" for convenience.
+              </li>
+              <li>
+                Token pages display metadata like name, symbol, decimals, and
+                total supply.
+              </li>
+            </ul>
+          </SubSection>
+        </Section>
+
+        <Divider sx={{my: 4}} />
+
         <Section title="Analytics">
           <Typography paragraph>
             The Analytics section provides visual insights into the network's
