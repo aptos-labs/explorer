@@ -28,7 +28,9 @@ export default function ContentRowSpaceBetween({
       <Box
         sx={{
           fontSize: "0.8rem",
-          overflow: "auto",
+          overflow: "hidden",
+          wordBreak: "break-word",
+          overflowWrap: "anywhere",
         }}
       >
         {value ? <Box>{value}</Box> : <EmptyValue />}

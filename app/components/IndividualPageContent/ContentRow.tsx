@@ -19,7 +19,9 @@ const tooltipInnerStyle = {display: "inline-block"} as const;
 
 const valueGridStyle = {
   fontSize: "0.8rem",
-  overflow: "auto",
+  overflow: "hidden",
+  wordBreak: "break-word",
+  overflowWrap: "anywhere",
 } as const;
 
 const valueBoxStyle = {

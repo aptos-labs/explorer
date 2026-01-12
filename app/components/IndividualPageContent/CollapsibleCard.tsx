@@ -54,7 +54,9 @@ export default function CollapsibleCard({
             width={{xs: 1, md: 0.75}}
             sx={{
               fontSize: 13.5,
-              overflow: "auto",
+              overflow: "hidden",
+              wordBreak: "break-word",
+              overflowWrap: "anywhere",
             }}
           >
             <Stack direction="row" justifyContent="space-between">
