@@ -271,6 +271,97 @@ export default function DocumentationPage() {
 
         <Divider sx={{my: 4}} />
 
+        <Section id="objects-vs-accounts" title="Objects vs Accounts">
+          <Typography paragraph>
+            On Aptos, both accounts and objects are identified by addresses, but
+            they serve different purposes and have distinct characteristics.
+          </Typography>
+
+          <SubSection title="Accounts">
+            <Typography paragraph>
+              Accounts are the primary way users interact with the blockchain:
+            </Typography>
+            <ul>
+              <li>
+                <strong>User-controlled:</strong> Accounts have an associated
+                private key that allows the owner to sign transactions.
+              </li>
+              <li>
+                <strong>Sequence numbers:</strong> Each account tracks a
+                sequence number to prevent transaction replay attacks.
+              </li>
+              <li>
+                <strong>Authentication key:</strong> Accounts have an
+                authentication key that can be rotated for security.
+              </li>
+              <li>
+                <strong>Can publish modules:</strong> Accounts can deploy smart
+                contracts (Move modules) to the blockchain.
+              </li>
+            </ul>
+            <Typography paragraph sx={{mt: 2}}>
+              The Explorer shows account pages at <code>/account/ADDRESS</code>.
+            </Typography>
+          </SubSection>
+
+          <SubSection title="Objects">
+            <Typography paragraph>
+              Objects are a newer Aptos primitive that provide more flexible
+              ownership and resource management:
+            </Typography>
+            <ul>
+              <li>
+                <strong>Transferable:</strong> Objects can be transferred
+                between accounts, unlike resources stored directly in accounts.
+              </li>
+              <li>
+                <strong>Owned by accounts:</strong> Every object has an owner
+                (an account or another object).
+              </li>
+              <li>
+                <strong>Can hold resources:</strong> Objects can store Move
+                resources just like accounts.
+              </li>
+              <li>
+                <strong>NFTs and tokens:</strong> Most NFTs and digital assets
+                on Aptos are implemented as objects.
+              </li>
+              <li>
+                <strong>No private key:</strong> Objects don't have signing
+                capability—only their owner can authorize actions.
+              </li>
+            </ul>
+            <Typography paragraph sx={{mt: 2}}>
+              The Explorer shows object pages at <code>/object/ADDRESS</code>.
+              When you navigate to an address that is an object (not an
+              account), the Explorer automatically redirects to the object view.
+            </Typography>
+          </SubSection>
+
+          <SubSection title="How to Tell the Difference">
+            <Typography paragraph>
+              The Explorer will indicate whether you're viewing an account or
+              object:
+            </Typography>
+            <ul>
+              <li>
+                <strong>URL path:</strong> <code>/account/</code> for accounts,{" "}
+                <code>/object/</code> for objects.
+              </li>
+              <li>
+                <strong>Page title:</strong> Shows "Account" or "Object"
+                accordingly.
+              </li>
+              <li>
+                <strong>Info tab:</strong> Objects show owner information;
+                accounts show authentication key and sequence number.
+              </li>
+            </ul>
+          </SubSection>
+        </Section>
+
+        <Divider sx={{my: 4}} />
+
         <Section id="modules" title="Interacting with Smart Contracts">
           <Typography paragraph>
             The Explorer allows you to interact directly with Move modules
