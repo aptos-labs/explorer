@@ -14,6 +14,8 @@ const OLD_DOMAIN_MAPPINGS: Record<string, string> = {
   "explorer.devnet.aptos.dev": "devnet",
   "explorer.testnet.aptos.dev": "testnet",
   "explorer.mainnet.aptos.dev": "mainnet",
+  // explorer.aptos.dev without network subdomain defaults to mainnet
+  "explorer.aptos.dev": "mainnet",
   // Also handle legacy aptos.dev domains without "explorer" prefix
   "devnet.aptos.dev": "devnet",
   "testnet.aptos.dev": "testnet",
