@@ -396,8 +396,8 @@ export function ValidatorsTable() {
   if (isMobile) {
     return (
       <Box>
-        {sortedValidators.map((validator: ValidatorData, i: number) => (
-          <ValidatorCard key={i} validator={validator} />
+        {sortedValidators.map((validator: ValidatorData) => (
+          <ValidatorCard key={validator.owner_address} validator={validator} />
         ))}
       </Box>
     );
@@ -421,9 +421,13 @@ export function ValidatorsTable() {
           </TableRow>
         </TableHead>
         <GeneralTableBody>
-          {sortedValidators.map((validator: ValidatorData, i: number) => {
+          {sortedValidators.map((validator: ValidatorData) => {
             return (
-              <ValidatorRow key={i} validator={validator} columns={columns} />
+              <ValidatorRow
+                key={validator.owner_address}
+                validator={validator}
+                columns={columns}
+              />
             );
           })}
         </GeneralTableBody>

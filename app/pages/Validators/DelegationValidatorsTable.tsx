@@ -49,6 +49,7 @@ import {
 } from "../DelegatoryValidator/utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
+import {useNavigate, useAugmentToWithGlobalSearchParams} from "../../routing";
 import {useQuery} from "@tanstack/react-query";
 import {getValidatorCommissionAndState} from "../../api";
 import {ResponseError} from "../../api/client";
@@ -394,6 +395,8 @@ function MyDepositCell({validator}: ValidatorCellProps) {
 }
 
 // Mobile card component for delegation validators
+// TODO: Consider lifting data fetching (numberOfDelegators, stakes) to parent
+// component to reduce API calls when rendering many cards
 function DelegationValidatorCard({
   validator,
   connected,
@@ -402,6 +405,8 @@ function DelegationValidatorCard({
   connected: boolean;
 }) {
   const theme = useTheme();
+  const navigate = useNavigate();
+  const augmentTo = useAugmentToWithGlobalSearchParams();
   const {account} = useWallet();
   const {totalVotingPower} = useGetValidatorSet();
   const {numberOfDelegators} = useGetNumberOfDelegators(
@@ -436,20 +441,20 @@ function DelegationValidatorCard({
     return null;
   }
 
+  const handleClick = () => {
+    navigate({to: augmentTo(`/validator/${validator.owner_address}`)});
+  };
+
   return (
     <Paper
-      component="a"
-      href={`/validator/${validator.owner_address}`}
+      onClick={handleClick}
       sx={{
-        display: "block",
         px: 2,
         py: 1.5,
         mb: 1,
         cursor: "pointer",
         backgroundColor: theme.palette.background.paper,
         borderRadius: 2,
-        textDecoration: "none",
-        color: "inherit",
         "&:hover": {
           filter:
             theme.palette.mode === "dark"
@@ -749,9 +754,9 @@ export function DelegationValidatorsTable() {
   if (isMobile) {
     return (
       <Box>
-        {sortedValidatorsWithCommissionAndState?.map((validator, i) => (
+        {sortedValidatorsWithCommissionAndState?.map((validator) => (
           <DelegationValidatorCard
-            key={i}
+            key={validator.owner_address}
             validator={validator}
             connected={connected}
           />
@@ -779,10 +784,10 @@ export function DelegationValidatorsTable() {
           </TableRow>
         </TableHead>
         <GeneralTableBody>
-          {sortedValidatorsWithCommissionAndState?.map((validator, i) => {
+          {sortedValidatorsWithCommissionAndState?.map((validator) => {
             return (
               <ValidatorRow
-                key={i}
+                key={validator.owner_address}
                 validator={validator}
                 columns={columns}
                 connected={connected}
