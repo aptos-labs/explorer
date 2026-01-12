@@ -51,10 +51,11 @@ function ClientOnlyMap({
     // Only import on client side after confirming we're in browser
     if (!isClient) return;
 
-    // Use dynamic import directly to allow Vite to bundle it while keeping it client-only
+    // Use dynamic import to load the client-only Map component
+    // Map.client.tsx contains react-simple-maps which can't be imported during SSR
     const loadMap = async () => {
       try {
-        const module = await import("./Components/Map");
+        const module = await import("./Components/Map.client");
         setMapComponent(() => module.default);
       } catch (e) {
         console.error("Failed to load map component", e);
