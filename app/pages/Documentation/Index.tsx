@@ -672,6 +672,87 @@ export default function DocumentationPage() {
 
         <Divider sx={{my: 4}} />
 
+        <Section id="ans" title="Aptos Name Service (ANS)">
+          <Typography paragraph>
+            The Aptos Name Service (ANS) provides human-readable names for
+            blockchain addresses, making it easier to identify and share
+            accounts. Instead of remembering long hexadecimal addresses, you can
+            use names like <code>alice.apt</code>.
+          </Typography>
+
+          <SubSection title="How ANS Works">
+            <ul>
+              <li>
+                <strong>Format:</strong> ANS names end with <code>.apt</code>{" "}
+                (e.g., <code>gregnazario.apt</code>).
+              </li>
+              <li>
+                <strong>Uniqueness:</strong> Each name is unique and resolves to
+                exactly one address.
+              </li>
+              <li>
+                <strong>Ownership:</strong> Names are owned as NFTs and can be
+                transferred or sold.
+              </li>
+              <li>
+                <strong>Expiration:</strong> Names must be renewed periodically
+                to maintain ownership.
+              </li>
+            </ul>
+          </SubSection>
+
+          <SubSection title="Using ANS in the Explorer">
+            <Typography paragraph>
+              ANS names are supported throughout the Explorer:
+            </Typography>
+            <ul>
+              <li>
+                <strong>Search:</strong> Type an ANS name in the search bar to
+                find the associated account.
+              </li>
+              <li>
+                <strong>Direct navigation:</strong> Go directly to{" "}
+                <code>/account/name.apt</code> in your browser.
+              </li>
+              <li>
+                <strong>Function inputs:</strong> When calling smart contract
+                functions, you can use ANS names instead of addresses for any
+                address parameter.
+              </li>
+              <li>
+                <strong>Display:</strong> The Explorer shows ANS names alongside
+                addresses when available.
+              </li>
+            </ul>
+          </SubSection>
+
+          <SubSection title="Petra Wallet Integration">
+            <Typography paragraph>
+              The Explorer also recognizes <code>.petra</code> names from the
+              Petra wallet, which automatically resolve to <code>.apt</code>{" "}
+              names. For example, searching for <code>alice.petra</code> will
+              find <code>alice.apt</code>.
+            </Typography>
+          </SubSection>
+
+          <SubSection title="Getting an ANS Name">
+            <Typography paragraph>
+              To register your own ANS name, visit the{" "}
+              <Link
+                href="https://www.aptosnames.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Aptos Names
+              </Link>{" "}
+              website. Registration requires an Aptos wallet and a small amount
+              of APT for the registration fee.
+            </Typography>
+          </SubSection>
+        </Section>
+
+        <Divider sx={{my: 4}} />
+
         <Section id="coins-vs-fungible-assets" title="Coins vs Fungible Assets">
           <Typography paragraph>
             Aptos supports two standards for fungible tokens: the legacy Coin
