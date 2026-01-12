@@ -16,6 +16,18 @@ const RELOAD_TIMESTAMP_KEY = "module-fetch-reload-timestamp";
 const MAX_RELOAD_ATTEMPTS = 2;
 const RELOAD_WINDOW_MS = 30000; // 30 seconds window for reload attempts
 
+// Common patterns for module loading failures
+export const MODULE_ERROR_PATTERNS = [
+  /Failed to fetch dynamically imported module/i,
+  /Loading chunk .+ failed/i,
+  /ChunkLoadError/i,
+  /Loading CSS chunk .+ failed/i,
+  /Unable to preload CSS/i,
+  /Failed to load module script/i,
+  /error loading dynamically imported module/i,
+  /Importing a module script failed/i,
+];
+
 /**
  * Checks if an error is a module/chunk loading failure
  */
@@ -29,25 +41,14 @@ export function isModuleFetchError(error: unknown): boolean {
         ? error
         : "";
 
-  // Common patterns for module loading failures
-  const moduleErrorPatterns = [
-    /Failed to fetch dynamically imported module/i,
-    /Loading chunk .+ failed/i,
-    /ChunkLoadError/i,
-    /Loading CSS chunk .+ failed/i,
-    /Unable to preload CSS/i,
-    /Failed to load module script/i,
-    /error loading dynamically imported module/i,
-    /Importing a module script failed/i,
-  ];
-
-  return moduleErrorPatterns.some((pattern) => pattern.test(errorMessage));
+  return MODULE_ERROR_PATTERNS.some((pattern) => pattern.test(errorMessage));
 }
 
 /**
  * Gets the current reload attempt count within the time window
+ * Exported for testing purposes
  */
-function getReloadAttempts(): number {
+export function getReloadAttempts(): number {
   if (typeof window === "undefined") return 0;
 
   try {
@@ -66,19 +67,26 @@ function getReloadAttempts(): number {
 
     return attempts ? parseInt(attempts, 10) : 0;
   } catch {
-    // sessionStorage might be unavailable
-    return 0;
+    // sessionStorage might be unavailable (private browsing, storage quota, etc.)
+    // Return a high number to prevent reloads when we can't track them
+    return MAX_RELOAD_ATTEMPTS;
   }
 }
 
 /**
  * Increments the reload attempt counter
+ * Returns true if the increment was successful
  */
-function incrementReloadAttempts(): void {
-  if (typeof window === "undefined") return;
+function incrementReloadAttempts(): boolean {
+  if (typeof window === "undefined") return false;
 
   try {
     const currentAttempts = getReloadAttempts();
+
+    // If we got MAX_RELOAD_ATTEMPTS from a sessionStorage failure, don't proceed
+    if (currentAttempts >= MAX_RELOAD_ATTEMPTS) {
+      return false;
+    }
 
     // Set timestamp on first attempt
     if (currentAttempts === 0) {
@@ -86,8 +94,13 @@ function incrementReloadAttempts(): void {
     }
 
     sessionStorage.setItem(RELOAD_KEY, (currentAttempts + 1).toString());
+
+    // Verify the write was successful
+    const verifyAttempts = sessionStorage.getItem(RELOAD_KEY);
+    return verifyAttempts === (currentAttempts + 1).toString();
   } catch {
     // sessionStorage might be unavailable
+    return false;
   }
 }
 
@@ -103,6 +116,16 @@ export function clearReloadAttempts(): void {
   } catch {
     // sessionStorage might be unavailable
   }
+}
+
+/**
+ * Force reload with cache busting to ensure fresh assets are loaded
+ */
+function forceReload(): void {
+  // Add a cache-busting query parameter to ensure the browser fetches fresh assets
+  const url = new URL(window.location.href);
+  url.searchParams.set("_reload", Date.now().toString());
+  window.location.replace(url.toString());
 }
 
 /**
@@ -125,14 +148,22 @@ export function handleModuleFetchError(error: unknown): boolean {
     return false;
   }
 
+  // Only proceed with reload if we can successfully track the attempt
+  // This prevents infinite reloads when sessionStorage is unavailable
+  if (!incrementReloadAttempts()) {
+    console.error(
+      "[ModuleErrorHandler] Could not track reload attempt, not reloading to prevent infinite loop",
+      error,
+    );
+    return false;
+  }
+
   console.warn(
     `[ModuleErrorHandler] Module fetch error detected, reloading page (attempt ${attempts + 1}/${MAX_RELOAD_ATTEMPTS})`,
   );
 
-  incrementReloadAttempts();
-
-  // Force a hard reload to bypass browser cache
-  window.location.reload();
+  // Force reload with cache busting
+  forceReload();
   return true;
 }
 
@@ -144,10 +175,16 @@ export function setupModuleErrorHandler(): void {
   if (typeof window === "undefined") return;
 
   // Clear reload attempts on successful page load
-  // Use a small delay to ensure the page has fully loaded
-  window.addEventListener("load", () => {
+  // Handle case where document is already loaded (common during hydration)
+  if (document.readyState === "complete") {
+    // Document already loaded, clear attempts after a short delay
     setTimeout(clearReloadAttempts, 1000);
-  });
+  } else {
+    // Document still loading, wait for load event
+    window.addEventListener("load", () => {
+      setTimeout(clearReloadAttempts, 1000);
+    });
+  }
 
   // Handle unhandled promise rejections (async import failures)
   window.addEventListener("unhandledrejection", (event) => {
