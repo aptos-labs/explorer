@@ -109,11 +109,15 @@ function TabPanel({
 
 type AccountTabsProps = {
   address: string;
-  accountData: Types.AccountData | undefined;
-  objectData: Types.MoveResource | undefined;
-  resourceData: Types.MoveResource[] | undefined;
+  accountData?: Types.AccountData | undefined;
+  objectData?: Types.MoveResource | undefined;
+  resourceData?: Types.MoveResource[] | undefined;
   tabValues?: TabValue[];
   isObject?: boolean;
+  /** Override the current tab value */
+  currentTab?: TabValue;
+  /** Custom content to render instead of the default TabPanel */
+  children?: React.ReactNode;
 };
 
 // TODO: create reusable Tabs for all pages
@@ -124,13 +128,20 @@ export default function AccountTabs({
   resourceData,
   isObject = false,
   tabValues = TAB_VALUES,
+  currentTab,
+  children,
 }: AccountTabsProps) {
   // Use path params for tab selection in TanStack Router
   const params = useParams({strict: false}) as {tab?: string};
   const navigate = useNavigate();
 
   let effectiveTab: TabValue;
-  if (params?.tab !== undefined && tabValues.includes(params.tab as TabValue)) {
+  if (currentTab !== undefined) {
+    effectiveTab = currentTab;
+  } else if (
+    params?.tab !== undefined &&
+    tabValues.includes(params.tab as TabValue)
+  ) {
     effectiveTab = params.tab as TabValue;
   } else {
     effectiveTab = TAB_VALUES[0];
@@ -170,14 +181,16 @@ export default function AccountTabs({
         </StyledTabs>
       </Box>
       <Box>
-        <TabPanel
-          value={effectiveTab}
-          address={address}
-          accountData={accountData}
-          objectData={objectData}
-          resourceData={resourceData}
-          isObject={isObject}
-        />
+        {children ?? (
+          <TabPanel
+            value={effectiveTab}
+            address={address}
+            accountData={accountData}
+            objectData={objectData}
+            resourceData={resourceData}
+            isObject={isObject}
+          />
+        )}
       </Box>
     </Box>
   );

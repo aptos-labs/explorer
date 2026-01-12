@@ -11,6 +11,10 @@ import {accountPagePath} from "../../Index";
 import Packages from "./Packages";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
 import {useParams} from "@tanstack/react-router";
+import InventoryOutlinedIcon from "@mui/icons-material/InventoryOutlined";
+import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
+import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 
 const TabComponents = Object.freeze({
   packages: Packages,
@@ -31,6 +35,21 @@ function getTabLabel(value: TabValue): string {
       return "Run";
     case "view":
       return "View";
+    default:
+      return assertNever(value);
+  }
+}
+
+function getTabIcon(value: TabValue): React.JSX.Element {
+  switch (value) {
+    case "packages":
+      return <InventoryOutlinedIcon fontSize="small" />;
+    case "code":
+      return <CodeOutlinedIcon fontSize="small" />;
+    case "run":
+      return <PlayArrowOutlinedIcon fontSize="small" />;
+    case "view":
+      return <VisibilityOutlinedIcon fontSize="small" />;
     default:
       return assertNever(value);
   }
@@ -250,6 +269,7 @@ function ModulesTabs({
               secondary
               key={i}
               value={value}
+              icon={getTabIcon(value)}
               label={getTabLabel(value)}
               isFirst={i === 0}
               isLast={i === tabValues.length - 1}

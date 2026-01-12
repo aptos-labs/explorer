@@ -16,6 +16,8 @@ robots.txt
 *.sh
 *.toml
 *.txt
+*.mdc
+.gitkeep
 app/routeTree.gen.ts
 .gitignore
 _redirects

@@ -259,10 +259,13 @@ export default function JsonViewCard({
           displayDataTypes={false}
           displayObjectSize={false}
           enableClipboard={false}
+          indentWidth={24}
+          shortenTextAfterLength={80}
           style={
             {
               fontFamily: theme.typography.fontFamily,
               fontSize: theme.typography.fontSize,
+              lineHeight: 1.6,
               backgroundColor: "transparent",
               // Custom colors using CSS variables
               "--w-rjv-key-string": textColor,

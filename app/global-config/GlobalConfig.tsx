@@ -46,13 +46,18 @@ interface GlobalConfigProviderProps {
 }
 
 export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
+  const isServer = typeof window === "undefined";
+
   // Get network from URL search params (takes priority)
   const search = useSearch({strict: false}) as {network?: string};
 
   // URL param network (if valid)
+  // Note: "local" network only works client-side - server can't reach user's localhost
   const networkFromUrl =
     search?.network && isValidNetworkName(search.network)
-      ? search.network
+      ? search.network === "local" && isServer
+        ? null // Don't use local network on server
+        : search.network
       : null;
 
   // User's saved preference from cookie
@@ -73,7 +78,13 @@ export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
   }, [networkFromUrl, savedNetworkName]);
 
   // URL param takes priority, falls back to saved preference
-  const networkName = networkFromUrl ?? savedNetworkName;
+  // On server, if the intended network is "local", fall back to default for SSR
+  // Client will reconnect to local after hydration
+  const intendedNetwork = networkFromUrl ?? savedNetworkName;
+  const networkName =
+    intendedNetwork === "local" && isServer
+      ? defaultNetworkName
+      : intendedNetwork;
 
   // Always ensure network param is in the URL for easy link sharing
   // Uses window.history.replaceState to avoid router re-renders and infinite loops

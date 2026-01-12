@@ -1,5 +1,21 @@
 import * as React from "react";
-import {Table, TableHead, TableRow} from "@mui/material";
+import {useState, useCallback} from "react";
+import {
+  Table,
+  TableHead,
+  TableRow,
+  Box,
+  Stack,
+  Paper,
+  Typography,
+  useMediaQuery,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  Divider,
+} from "@mui/material";
+import {Close as CloseIcon, ContentCopy} from "@mui/icons-material";
 import GeneralTableRow from "../../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../../utils";
@@ -13,12 +29,15 @@ import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 import {Types} from "aptos";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
-import {VerifiedCoinCell} from "../../../../components/Table/VerifiedCell";
+import {
+  VerifiedCoinCell,
+  VerifiedAsset,
+} from "../../../../components/Table/VerifiedCell";
 import {getLearnMoreTooltip} from "../../helpers";
-import {ContentCopy} from "@mui/icons-material";
 import StyledTooltip from "../../../../components/StyledTooltip";
 import {useGetFaMetadata} from "../../../../api/hooks/useGetFaMetadata";
 import {isValidAccountAddress} from "../../../utils";
+import IdenticonImg from "../../../../components/IdenticonImg";
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;
@@ -50,11 +69,11 @@ function TypeCell({balanceChange}: BalanceChangeCellProps) {
 function VerifiedCell({balanceChange}: BalanceChangeCellProps) {
   return VerifiedCoinCell({
     data: {
-      id: balanceChange?.asset?.id,
+      id: balanceChange.asset.id,
       known: balanceChange.known,
       isBanned: balanceChange.isBanned,
       isInPanoraTokenList: balanceChange.isInPanoraTokenList,
-      symbol: balanceChange?.asset?.symbol,
+      symbol: balanceChange.asset.symbol,
     },
   });
 }
@@ -72,7 +91,7 @@ function TokenInfoCell({balanceChange}: BalanceChangeCellProps) {
       <HashButton
         hash={balanceChange.asset.id}
         type={
-          balanceChange?.asset?.id?.includes("::")
+          balanceChange.asset.id.includes("::")
             ? HashType.COIN
             : HashType.FUNGIBLE_ASSET
         }
@@ -133,6 +152,374 @@ const BalanceChangeCells = Object.freeze({
   verified: VerifiedCell,
   amount: AmountCell,
 });
+
+// Helper function to get absolute amount and sign from a balance change
+function getAmountInfo(balanceChange: BalanceChange): {
+  isNegative: boolean;
+  absoluteAmount: bigint;
+} {
+  const isNegative = balanceChange.amount < 0;
+  const absoluteAmount = isNegative
+    ? -balanceChange.amount
+    : balanceChange.amount;
+  return {isNegative, absoluteAmount};
+}
+
+// Helper function to generate a unique key for a balance change
+function getBalanceChangeKey(
+  balanceChange: BalanceChange,
+  index: number,
+): string {
+  return `${balanceChange.address}-${balanceChange.asset.id}-${balanceChange.type}-${index}`;
+}
+
+// Modal component for displaying full balance change details
+type BalanceChangeDetailsModalProps = {
+  open: boolean;
+  onClose: () => void;
+  balanceChange: BalanceChange | null;
+};
+
+function BalanceChangeDetailsModal({
+  open,
+  onClose,
+  balanceChange,
+}: BalanceChangeDetailsModalProps) {
+  const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
+
+  if (!balanceChange) return null;
+
+  const {isNegative, absoluteAmount} = getAmountInfo(balanceChange);
+
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="sm"
+      PaperProps={{
+        sx: {
+          borderRadius: 2,
+          backgroundColor: theme.palette.background.paper,
+        },
+      }}
+    >
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          pb: 1,
+        }}
+      >
+        <Typography variant="h6" fontWeight={600}>
+          Balance Change Details
+        </Typography>
+        <IconButton
+          onClick={onClose}
+          size="small"
+          sx={{color: theme.palette.text.secondary}}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <Divider />
+      <DialogContent sx={{pt: 2}}>
+        <Stack spacing={2.5}>
+          {/* Account */}
+          <Box>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{mb: 0.5, display: "block"}}
+            >
+              Account
+            </Typography>
+            {balanceChange.address && (
+              <HashButton
+                hash={balanceChange.address}
+                type={HashType.ACCOUNT}
+                size="large"
+              />
+            )}
+          </Box>
+
+          {/* Event Type */}
+          <Box>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{mb: 0.5, display: "block"}}
+            >
+              Event Type
+            </Typography>
+            <Typography variant="body2">{balanceChange.type}</Typography>
+          </Box>
+
+          {/* Asset */}
+          <Box>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{mb: 0.5, display: "block"}}
+            >
+              Asset
+            </Typography>
+            <HashButton
+              hash={balanceChange.asset.id}
+              type={
+                balanceChange.asset.id.includes("::")
+                  ? HashType.COIN
+                  : HashType.FUNGIBLE_ASSET
+              }
+              size="large"
+              img={balanceChange.logoUrl}
+            />
+          </Box>
+
+          {/* Verification Status */}
+          <Box>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{mb: 0.5, display: "block"}}
+            >
+              Verification Status
+            </Typography>
+            <VerifiedAsset
+              data={{
+                id: balanceChange.asset.id,
+                known: balanceChange.known,
+                isBanned: balanceChange.isBanned,
+                isInPanoraTokenList: balanceChange.isInPanoraTokenList,
+                symbol: balanceChange.asset.symbol,
+                banner: true,
+              }}
+            />
+          </Box>
+
+          {/* Amount */}
+          <Box>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{mb: 0.5, display: "block"}}
+            >
+              Change Amount
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontWeight: 600,
+                color: isNegative
+                  ? semanticColors.status.error
+                  : theme.palette.primary.main,
+              }}
+            >
+              {isNegative ? "-" : "+"}
+              <CurrencyValue
+                amount={absoluteAmount.toString()}
+                currencyCode={balanceChange.asset.symbol}
+                decimals={balanceChange.asset.decimals}
+              />
+            </Typography>
+          </Box>
+        </Stack>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Mobile card component for balance changes
+type BalanceChangeCardProps = {
+  balanceChange: BalanceChange;
+  onClick: () => void;
+};
+
+function BalanceChangeCard({balanceChange, onClick}: BalanceChangeCardProps) {
+  const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
+
+  const {isNegative, absoluteAmount} = getAmountInfo(balanceChange);
+
+  const assetId = balanceChange.asset.id;
+  const isFa = isValidAccountAddress(assetId);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onClick();
+      }
+    },
+    [onClick],
+  );
+
+  const {data: metadata} = useGetFaMetadata(balanceChange.asset.id, {
+    enabled: balanceChange.logoUrl === undefined && isFa,
+  });
+
+  const logoUrl = balanceChange.logoUrl || metadata?.icon_uri;
+
+  return (
+    <Paper
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      sx={{
+        px: 2,
+        py: 1.5,
+        mb: 1,
+        cursor: "pointer",
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: 2,
+        "&:hover": {
+          filter:
+            theme.palette.mode === "dark"
+              ? "brightness(0.9)"
+              : "brightness(0.99)",
+        },
+        "&:active": {
+          background: theme.palette.neutralShade.main,
+          transform: "translate(0,0.1rem)",
+        },
+        "&:focus-visible": {
+          outline: `2px solid ${theme.palette.primary.main}`,
+          outlineOffset: 2,
+        },
+      }}
+    >
+      {/* Row 1: Type badge and Amount */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{mb: 0.75}}
+      >
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography
+            variant="caption"
+            sx={{
+              px: 1,
+              py: 0.25,
+              borderRadius: 1,
+              backgroundColor:
+                theme.palette.mode === "dark"
+                  ? theme.palette.neutralShade.lighter
+                  : theme.palette.neutralShade.darker,
+              fontWeight: 500,
+            }}
+          >
+            {balanceChange.type}
+          </Typography>
+        </Stack>
+        <Typography
+          variant="body2"
+          sx={{
+            fontWeight: 600,
+            color: isNegative
+              ? semanticColors.status.error
+              : theme.palette.primary.main,
+          }}
+        >
+          {isNegative ? "-" : "+"}
+          <CurrencyValue
+            amount={absoluteAmount.toString()}
+            currencyCode={balanceChange.asset.symbol}
+            decimals={balanceChange.asset.decimals}
+          />
+        </Typography>
+      </Stack>
+
+      {/* Row 2: Account address and Asset with icon */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{mt: 0.5}}
+      >
+        <Box
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            mr: 2,
+          }}
+        >
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{display: "block", mb: 0.5}}
+          >
+            Account
+          </Typography>
+          <Stack direction="row" spacing={0.75} alignItems="center">
+            {balanceChange.address && (
+              <Box
+                sx={{
+                  flexShrink: 0,
+                  width: 20,
+                  height: 20,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  "& img": {
+                    width: 20,
+                    height: 20,
+                    display: "block",
+                  },
+                }}
+              >
+                <IdenticonImg address={balanceChange.address} />
+              </Box>
+            )}
+            <Typography
+              variant="body2"
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                color: theme.palette.primary.main,
+                minWidth: 0,
+              }}
+            >
+              {balanceChange.address
+                ? `${balanceChange.address.slice(0, 8)}...${balanceChange.address.slice(-6)}`
+                : "-"}
+            </Typography>
+          </Stack>
+        </Box>
+        <Stack
+          direction="row"
+          spacing={0.5}
+          alignItems="center"
+          sx={{flexShrink: 0}}
+        >
+          {logoUrl && (
+            <img
+              src={logoUrl}
+              alt=""
+              style={{width: 16, height: 16, borderRadius: 4}}
+            />
+          )}
+          <Typography variant="caption" color="text.secondary">
+            {balanceChange.asset.symbol || "Unknown"}
+          </Typography>
+          <VerifiedAsset
+            data={{
+              id: balanceChange.asset.id,
+              known: balanceChange.known,
+              isBanned: balanceChange.isBanned,
+              isInPanoraTokenList: balanceChange.isInPanoraTokenList,
+              symbol: balanceChange.asset.symbol,
+            }}
+          />
+        </Stack>
+      </Stack>
+    </Paper>
+  );
+}
 
 type Column = keyof typeof BalanceChangeCells;
 
@@ -209,6 +596,49 @@ export function CoinBalanceChangeTable({
   transaction,
   columns = DEFAULT_COLUMNS,
 }: CoinBalanceChangeTableProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [selectedBalanceChange, setSelectedBalanceChange] =
+    useState<BalanceChange | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleCardClick = useCallback((balanceChange: BalanceChange) => {
+    setSelectedBalanceChange(balanceChange);
+    setModalOpen(true);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setModalOpen(false);
+    // Delay clearing the selected balance change until after the modal
+    // close animation has had time to complete.
+    setTimeout(() => {
+      setSelectedBalanceChange(null);
+    }, 200);
+  }, []);
+
+  // Mobile card view
+  if (isMobile) {
+    return (
+      <>
+        <Box sx={{maxHeight: "800px", overflow: "auto"}}>
+          {balanceChanges.map((balanceChange, i) => (
+            <BalanceChangeCard
+              key={getBalanceChangeKey(balanceChange, i)}
+              balanceChange={balanceChange}
+              onClick={() => handleCardClick(balanceChange)}
+            />
+          ))}
+        </Box>
+        <BalanceChangeDetailsModal
+          open={modalOpen}
+          onClose={handleCloseModal}
+          balanceChange={selectedBalanceChange}
+        />
+      </>
+    );
+  }
+
+  // Desktop table view
   return (
     <Table>
       <TableHead>
@@ -222,7 +652,7 @@ export function CoinBalanceChangeTable({
         {balanceChanges.map((balanceChange, i) => {
           return (
             <BalanceChangeRow
-              key={i}
+              key={getBalanceChangeKey(balanceChange, i)}
               balanceChange={balanceChange}
               transaction={transaction}
               columns={columns}

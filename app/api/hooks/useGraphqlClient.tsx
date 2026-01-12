@@ -33,7 +33,10 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
   }
 }
 
-function getGraphqlClient(networkName: NetworkName): ApolloClient {
+// Cache Apollo clients per network to preserve GraphQL cache across renders
+const apolloClientCache = new Map<NetworkName, ApolloClient>();
+
+function createGraphqlClient(networkName: NetworkName): ApolloClient {
   const apiKey = getApiKey(networkName);
   // Middleware to attach the authorization token.
   const authMiddleware = new ApolloLink((operation, forward) => {
@@ -56,10 +59,21 @@ function getGraphqlClient(networkName: NetworkName): ApolloClient {
   });
 }
 
+/**
+ * Get a cached Apollo client for the given network.
+ * Uses singleton pattern per network to preserve GraphQL cache.
+ */
+function getGraphqlClient(networkName: NetworkName): ApolloClient {
+  if (!apolloClientCache.has(networkName)) {
+    apolloClientCache.set(networkName, createGraphqlClient(networkName));
+  }
+  return apolloClientCache.get(networkName)!;
+}
+
 export function useGetGraphqlClient() {
   const networkName = useNetworkName();
 
-  // Calculate graphqlClient during render instead of using useEffect
+  // Return cached client to preserve GraphQL cache across renders
   return getGraphqlClient(networkName);
 }
 
