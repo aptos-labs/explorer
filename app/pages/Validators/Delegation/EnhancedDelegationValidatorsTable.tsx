@@ -629,7 +629,7 @@ export function EnhancedDelegationValidatorsTable() {
   if (isLoading) {
     return (
       <Box>
-        <Box sx={{overflowX: "auto", maxHeight: "800px", overflowY: "auto"}}>
+        <Box sx={{overflowX: "auto"}}>
           <Table>
             <TableHead>
               <TableRow sx={{verticalAlign: "bottom"}}>
@@ -677,7 +677,7 @@ export function EnhancedDelegationValidatorsTable() {
 
   return (
     <Box>
-      <Box sx={{overflowX: "auto", maxHeight: "800px", overflowY: "auto"}}>
+      <Box sx={{overflowX: "auto"}}>
         <Table>
           <TableHead>
             <TableRow sx={{verticalAlign: "bottom"}}>
