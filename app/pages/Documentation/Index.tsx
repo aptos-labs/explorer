@@ -869,6 +869,124 @@ export default function DocumentationPage() {
 
         <Divider sx={{my: 4}} />
 
+        <Section id="troubleshooting" title="Troubleshooting & FAQ">
+          <Typography paragraph>
+            Common questions and solutions when using the Aptos Explorer.
+          </Typography>
+
+          <SubSection title="Why can't I find my transaction?">
+            <ul>
+              <li>
+                <strong>Wrong network:</strong> Make sure you're viewing the
+                correct network (Mainnet, Testnet, Devnet). Check the network
+                selector in the top navigation.
+              </li>
+              <li>
+                <strong>Transaction pending:</strong> If recently submitted, the
+                transaction may still be processing. Transactions typically
+                confirm within seconds.
+              </li>
+              <li>
+                <strong>Transaction failed:</strong> The transaction may have
+                been rejected before being recorded. Check your wallet for error
+                messages.
+              </li>
+              <li>
+                <strong>Incorrect hash:</strong> Verify you've copied the
+                complete transaction hash without extra spaces.
+              </li>
+            </ul>
+          </SubSection>
+
+          <SubSection title="Why does my balance look wrong?">
+            <ul>
+              <li>
+                <strong>Decimal display:</strong> APT has 8 decimal places.
+                Large numbers like "100000000" represent 1 APT.
+              </li>
+              <li>
+                <strong>Staked tokens:</strong> If you've staked APT, those
+                tokens won't appear in your regular balance. Check the
+                Validators page for your staking positions.
+              </li>
+              <li>
+                <strong>Pending transactions:</strong> Recent transactions may
+                not be reflected immediately. Refresh the page after a few
+                seconds.
+              </li>
+              <li>
+                <strong>Multiple token types:</strong> You may have both legacy
+                Coin APT and Fungible Asset APT. Check the Coins tab for a
+                complete breakdown.
+              </li>
+            </ul>
+          </SubSection>
+
+          <SubSection title="Why can't I execute a transaction?">
+            <ul>
+              <li>
+                <strong>Wallet not connected:</strong> Entry functions require a
+                connected wallet. Click "Connect Wallet" in the navigation bar.
+              </li>
+              <li>
+                <strong>Wrong network:</strong> Your wallet must be connected to
+                the same network as the Explorer is viewing.
+              </li>
+              <li>
+                <strong>Insufficient balance:</strong> You need enough APT to
+                pay gas fees. Check your balance on the account page.
+              </li>
+              <li>
+                <strong>Invalid arguments:</strong> Ensure all required fields
+                are filled and in the correct format. Use the "Input format
+                help" button for guidance.
+              </li>
+            </ul>
+          </SubSection>
+
+          <SubSection title="Why is the page loading slowly?">
+            <ul>
+              <li>
+                <strong>Large accounts:</strong> Accounts with many transactions
+                or resources may take longer to load.
+              </li>
+              <li>
+                <strong>Network congestion:</strong> During high activity
+                periods, API responses may be slower.
+              </li>
+              <li>
+                <strong>Local network issues:</strong> If using the local
+                network, ensure your node is running and accessible.
+              </li>
+            </ul>
+          </SubSection>
+
+          <SubSection title="Why don't I see Analytics?">
+            <Typography paragraph>
+              The Analytics page is only available on Mainnet. Switch to Mainnet
+              using the network selector to access network-wide metrics and
+              charts.
+            </Typography>
+          </SubSection>
+
+          <SubSection title="How do I report a bug or request a feature?">
+            <Typography paragraph>
+              The Aptos Explorer is open source. You can report issues or
+              request features on the{" "}
+              <Link
+                href="https://github.com/aptos-labs/explorer"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub repository
+              </Link>
+              .
+            </Typography>
+          </SubSection>
+        </Section>
+
+        <Divider sx={{my: 4}} />
+
         <Section title="Additional Resources">
           <Typography paragraph>
             For in-depth developer documentation, tutorials, and API references,
