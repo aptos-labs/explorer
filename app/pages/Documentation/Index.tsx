@@ -446,6 +446,53 @@ export default function DocumentationPage() {
               </li>
             </ul>
           </SubSection>
+
+          <SubSection title="Historical State Queries">
+            <Typography paragraph>
+              When using view functions, you can query the blockchain state at a
+              specific point in time using the <strong>Ledger Version</strong>{" "}
+              field.
+            </Typography>
+            <ul>
+              <li>
+                <strong>What is a ledger version?</strong> Every transaction on
+                Aptos increments the ledger version. It's like a global counter
+                that represents the state of the blockchain after each
+                transaction.
+              </li>
+              <li>
+                <strong>Default behavior:</strong> If left empty, view functions
+                query the latest state.
+              </li>
+              <li>
+                <strong>Historical queries:</strong> Enter a specific version
+                number to see what the state was at that point. For example, if
+                you want to know an account's balance before a specific
+                transaction, use the version number just before that
+                transaction.
+              </li>
+              <li>
+                <strong>Finding versions:</strong> You can find version numbers
+                on transaction pages—each transaction shows its version in the
+                transaction details.
+              </li>
+            </ul>
+            <Typography paragraph sx={{mt: 2}}>
+              <strong>Example use cases:</strong>
+            </Typography>
+            <ul>
+              <li>
+                Check what an account's balance was at a specific block height
+              </li>
+              <li>
+                Debug why a transaction failed by checking state at that version
+              </li>
+              <li>Verify historical data for auditing purposes</li>
+              <li>
+                Compare state before and after a specific transaction or upgrade
+              </li>
+            </ul>
+          </SubSection>
         </Section>
 
         <Divider sx={{my: 4}} />
