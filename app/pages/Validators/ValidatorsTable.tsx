@@ -1,5 +1,15 @@
 import React, {useState} from "react";
-import {Box, Stack, Table, TableHead, TableRow} from "@mui/material";
+import {
+  Box,
+  Stack,
+  Table,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  useTheme,
+  useMediaQuery,
+} from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
@@ -244,6 +254,112 @@ const ValidatorCells = Object.freeze({
   location: LocationCell,
 });
 
+// Mobile card component for validators
+function ValidatorCard({validator}: {validator: ValidatorData}) {
+  const theme = useTheme();
+
+  const location =
+    validator.location_stats?.city && validator.location_stats?.country
+      ? `${validator.location_stats.city}, ${validator.location_stats.country}`
+      : null;
+
+  return (
+    <Paper
+      sx={{
+        px: 2,
+        py: 1.5,
+        mb: 1,
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: 2,
+      }}
+    >
+      {/* Row 1: Address labels */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{mb: 1}}
+      >
+        <Typography
+          variant="caption"
+          sx={{color: "text.secondary", fontWeight: 500}}
+        >
+          Pool Address
+        </Typography>
+        <Typography
+          variant="caption"
+          sx={{color: "text.secondary", fontWeight: 500}}
+        >
+          Operator
+        </Typography>
+      </Stack>
+
+      {/* Row 2: Addresses */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{mb: 1.5}}
+      >
+        <HashButton hash={validator.owner_address} type={HashType.ACCOUNT} />
+        <HashButton
+          hash={validator.operator_address}
+          type={HashType.ACCOUNT}
+          isValidator
+        />
+      </Stack>
+
+      {/* Row 3: Stats */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        flexWrap="wrap"
+        gap={1}
+      >
+        <Box>
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            Voting Power
+          </Typography>
+          <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
+            {getFormattedBalanceStr(
+              validator.voting_power.toString(),
+              undefined,
+              0,
+            )}
+          </Typography>
+        </Box>
+        <Box sx={{textAlign: "center"}}>
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            Rewards Perf
+          </Typography>
+          <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
+            {validator.rewards_growth !== undefined
+              ? `${validator.rewards_growth.toFixed(2)}%`
+              : "-"}
+          </Typography>
+        </Box>
+        <Box sx={{textAlign: "center"}}>
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            Last Epoch
+          </Typography>
+          <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
+            {validator.last_epoch_performance ?? "-"}
+          </Typography>
+        </Box>
+        {location && (
+          <Box sx={{textAlign: "right"}}>
+            <Typography variant="caption" sx={{color: "text.secondary"}}>
+              Location
+            </Typography>
+            <Typography sx={{fontSize: "0.85rem"}}>{location}</Typography>
+          </Box>
+        )}
+      </Stack>
+    </Paper>
+  );
+}
+
 type Column = keyof typeof ValidatorCells;
 
 const DEFAULT_COLUMNS: Column[] = [
@@ -272,6 +388,8 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
 }
 
 export function ValidatorsTable() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const {validators} = useGetValidators();
 
   const [sortColumn, setSortColumn] = useState<Column>("votingPower");
@@ -284,28 +402,42 @@ export function ValidatorsTable() {
 
   const columns = DEFAULT_COLUMNS;
 
+  // Mobile card view
+  if (isMobile) {
+    return (
+      <Box>
+        {sortedValidators.map((validator: ValidatorData, i: number) => (
+          <ValidatorCard key={i} validator={validator} />
+        ))}
+      </Box>
+    );
+  }
+
+  // Desktop table view
   return (
-    <Table>
-      <TableHead>
-        <TableRow sx={{verticalAlign: "bottom"}}>
-          {columns.map((column) => (
-            <ValidatorHeaderCell
-              key={column}
-              column={column}
-              direction={sortColumn === column ? sortDirection : undefined}
-              setDirection={setSortDirection}
-              setSortColumn={setSortColumn}
-            />
-          ))}
-        </TableRow>
-      </TableHead>
-      <GeneralTableBody>
-        {sortedValidators.map((validator: ValidatorData, i: number) => {
-          return (
-            <ValidatorRow key={i} validator={validator} columns={columns} />
-          );
-        })}
-      </GeneralTableBody>
-    </Table>
+    <Box sx={{overflowX: "auto"}}>
+      <Table>
+        <TableHead>
+          <TableRow sx={{verticalAlign: "bottom"}}>
+            {columns.map((column) => (
+              <ValidatorHeaderCell
+                key={column}
+                column={column}
+                direction={sortColumn === column ? sortDirection : undefined}
+                setDirection={setSortDirection}
+                setSortColumn={setSortColumn}
+              />
+            ))}
+          </TableRow>
+        </TableHead>
+        <GeneralTableBody>
+          {sortedValidators.map((validator: ValidatorData, i: number) => {
+            return (
+              <ValidatorRow key={i} validator={validator} columns={columns} />
+            );
+          })}
+        </GeneralTableBody>
+      </Table>
+    </Box>
   );
 }
