@@ -69,11 +69,11 @@ function TypeCell({balanceChange}: BalanceChangeCellProps) {
 function VerifiedCell({balanceChange}: BalanceChangeCellProps) {
   return VerifiedCoinCell({
     data: {
-      id: balanceChange?.asset?.id,
+      id: balanceChange.asset.id,
       known: balanceChange.known,
       isBanned: balanceChange.isBanned,
       isInPanoraTokenList: balanceChange.isInPanoraTokenList,
-      symbol: balanceChange?.asset?.symbol,
+      symbol: balanceChange.asset.symbol,
     },
   });
 }
@@ -91,7 +91,7 @@ function TokenInfoCell({balanceChange}: BalanceChangeCellProps) {
       <HashButton
         hash={balanceChange.asset.id}
         type={
-          balanceChange?.asset?.id?.includes("::")
+          balanceChange.asset.id.includes("::")
             ? HashType.COIN
             : HashType.FUNGIBLE_ASSET
         }
@@ -269,7 +269,7 @@ function BalanceChangeDetailsModal({
             <HashButton
               hash={balanceChange.asset.id}
               type={
-                balanceChange?.asset?.id?.includes("::")
+                balanceChange.asset.id.includes("::")
                   ? HashType.COIN
                   : HashType.FUNGIBLE_ASSET
               }
@@ -289,11 +289,11 @@ function BalanceChangeDetailsModal({
             </Typography>
             <VerifiedAsset
               data={{
-                id: balanceChange?.asset?.id,
+                id: balanceChange.asset.id,
                 known: balanceChange.known,
                 isBanned: balanceChange.isBanned,
                 isInPanoraTokenList: balanceChange.isInPanoraTokenList,
-                symbol: balanceChange?.asset?.symbol,
+                symbol: balanceChange.asset.symbol,
                 banner: true,
               }}
             />
@@ -508,11 +508,11 @@ function BalanceChangeCard({balanceChange, onClick}: BalanceChangeCardProps) {
           </Typography>
           <VerifiedAsset
             data={{
-              id: balanceChange?.asset?.id,
+              id: balanceChange.asset.id,
               known: balanceChange.known,
               isBanned: balanceChange.isBanned,
               isInPanoraTokenList: balanceChange.isInPanoraTokenList,
-              symbol: balanceChange?.asset?.symbol,
+              symbol: balanceChange.asset.symbol,
             }}
           />
         </Stack>
