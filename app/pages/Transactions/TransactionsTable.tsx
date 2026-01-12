@@ -291,22 +291,8 @@ function TransactionDetailDialog({
     }
   };
 
-  // Get the function string
-  let functionStr = "";
-  if ("payload" in transaction) {
-    if (
-      transaction.payload.type === "multisig_payload" &&
-      "transaction_payload" in transaction.payload &&
-      transaction.payload.transaction_payload &&
-      "function" in transaction.payload.transaction_payload
-    ) {
-      functionStr = transaction.payload.transaction_payload.function;
-    } else if ("function" in transaction.payload) {
-      functionStr = transaction.payload.function;
-    } else if (transaction.payload.type === "script_payload") {
-      functionStr = "Script";
-    }
-  }
+  // Check if transaction has a payload (for showing Function section)
+  const hasPayload = "payload" in transaction;
 
   return (
     <Dialog
@@ -335,6 +321,7 @@ function TransactionDetailDialog({
           )}
         </Stack>
         <IconButton
+          aria-label="Close dialog"
           onClick={onClose}
           sx={{
             position: "absolute",
@@ -367,7 +354,7 @@ function TransactionDetailDialog({
           </Stack>
 
           {/* Function */}
-          {functionStr && (
+          {hasPayload && (
             <Box>
               <Typography variant="body2" color="text.secondary" sx={{mb: 0.5}}>
                 Function
@@ -397,6 +384,7 @@ function TransactionDetailDialog({
                   title={copiedField === "sender" ? "Copied!" : "Copy address"}
                 >
                   <IconButton
+                    aria-label="Copy sender address"
                     size="small"
                     onClick={() => handleCopy(sender, "sender")}
                   >
@@ -435,6 +423,7 @@ function TransactionDetailDialog({
                   }
                 >
                   <IconButton
+                    aria-label="Copy counterparty address"
                     size="small"
                     onClick={() =>
                       handleCopy(counterparty.address, "counterparty")
