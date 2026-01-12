@@ -7,6 +7,8 @@ import {
   TableRow,
   Typography,
   useTheme,
+  useMediaQuery,
+  Paper,
 } from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
@@ -27,6 +29,7 @@ import {
 } from "../../themes/colors/aptosBrandColors";
 import {useAptosClient} from "../../global-config/GlobalConfig";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
+import HashButton, {HashType} from "../../components/HashButton";
 import {OperatorAddrCell, ValidatorAddrCell} from "./ValidatorsTable";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
@@ -390,6 +393,212 @@ function MyDepositCell({validator}: ValidatorCellProps) {
   );
 }
 
+// Mobile card component for delegation validators
+function DelegationValidatorCard({
+  validator,
+  connected,
+}: {
+  validator: ValidatorData & {commission: number; status: number};
+  connected: boolean;
+}) {
+  const theme = useTheme();
+  const {account} = useWallet();
+  const {totalVotingPower} = useGetValidatorSet();
+  const {numberOfDelegators} = useGetNumberOfDelegators(
+    validator.owner_address,
+  );
+  const {stakes} = useGetDelegatorStakeInfo(
+    addressFromWallet(account?.address),
+    validator.owner_address,
+  );
+
+  const validatorVotingPower = validator.voting_power;
+  const networkPercentage = calculateNetworkPercentage(
+    validatorVotingPower,
+    totalVotingPower,
+  );
+  const {commission, status} = validator;
+  const validatorStatus = getValidatorStatus(status);
+
+  // Calculate total deposit
+  const totalDeposit = useMemo(() => {
+    if (stakes && stakes.length > 0) {
+      return stakes.reduce(
+        (acc, stake) => Number(acc) + Number(stake),
+        0 as Types.MoveValue,
+      );
+    }
+    return undefined;
+  }, [stakes]);
+
+  // Hide inactive validators with no delegated stake
+  if (validatorStatus === "Inactive" && validatorVotingPower === "0") {
+    return null;
+  }
+
+  return (
+    <Paper
+      component="a"
+      href={`/validator/${validator.owner_address}`}
+      sx={{
+        display: "block",
+        px: 2,
+        py: 1.5,
+        mb: 1,
+        cursor: "pointer",
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: 2,
+        textDecoration: "none",
+        color: "inherit",
+        "&:hover": {
+          filter:
+            theme.palette.mode === "dark"
+              ? "brightness(0.9)"
+              : "brightness(0.99)",
+        },
+        "&:active": {
+          background: theme.palette.neutralShade.main,
+          transform: "translate(0,0.1rem)",
+        },
+      }}
+    >
+      {/* Row 1: Status and Addresses */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{mb: 1}}
+      >
+        <Stack direction="row" spacing={1} alignItems="center">
+          <ValidatorStatusIcon validatorStatus={validatorStatus} />
+          <Box sx={{flex: 1, minWidth: 0}}>
+            <Typography
+              variant="caption"
+              sx={{color: "text.secondary", display: "block"}}
+            >
+              Pool
+            </Typography>
+            <HashButton
+              hash={validator.owner_address}
+              type={HashType.ACCOUNT}
+            />
+          </Box>
+        </Stack>
+        <Box sx={{textAlign: "right"}}>
+          <Typography
+            variant="caption"
+            sx={{color: "text.secondary", display: "block"}}
+          >
+            Operator
+          </Typography>
+          <HashButton
+            hash={validator.operator_address}
+            type={HashType.ACCOUNT}
+            isValidator
+          />
+        </Box>
+      </Stack>
+
+      {/* Row 2: Key metrics */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="flex-start"
+        flexWrap="wrap"
+        gap={1.5}
+        sx={{mb: connected && account ? 1 : 0}}
+      >
+        <Box>
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            Delegated
+          </Typography>
+          <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
+            <APTCurrencyValue
+              amount={validatorVotingPower ?? "0"}
+              fixedDecimalPlaces={0}
+            />
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{color: "text.secondary", fontSize: "0.7rem"}}
+          >
+            {networkPercentage}% of network
+          </Typography>
+        </Box>
+        <Box sx={{textAlign: "center"}}>
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            Commission
+          </Typography>
+          <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
+            {commission !== undefined ? `${commission}%` : "-"}
+          </Typography>
+        </Box>
+        <Box sx={{textAlign: "center"}}>
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            Delegators
+          </Typography>
+          <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
+            {numberOfDelegators ?? "-"}
+          </Typography>
+        </Box>
+        <Box sx={{textAlign: "right"}}>
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            Rewards
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: "0.85rem",
+              fontWeight: 600,
+              color: theme.palette.success.main,
+            }}
+          >
+            <APTCurrencyValue
+              amount={Number(validator.apt_rewards_distributed).toFixed(2)}
+              decimals={0}
+            />
+          </Typography>
+        </Box>
+      </Stack>
+
+      {/* Row 3: My Deposit (if connected) */}
+      {connected && account && (
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{
+            pt: 1,
+            borderTop: `1px solid ${theme.palette.divider}`,
+          }}
+        >
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            My Deposit
+          </Typography>
+          {totalDeposit !== undefined && Number(totalDeposit) !== 0 ? (
+            <Stack direction="row" spacing={1} alignItems="center">
+              <CheckCircleIcon
+                sx={{color: theme.palette.primary.main}}
+                fontSize="small"
+              />
+              <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
+                <CurrencyValue
+                  amount={Number(totalDeposit).toString()}
+                  currencyCode="APT"
+                  fixedDecimalPlaces={0}
+                />
+              </Typography>
+            </Stack>
+          ) : (
+            <Typography sx={{fontSize: "0.85rem", color: "text.secondary"}}>
+              N/A
+            </Typography>
+          )}
+        </Stack>
+      )}
+    </Paper>
+  );
+}
+
 function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
@@ -446,6 +655,8 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
 }
 
 export function DelegationValidatorsTable() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const aptosClient = useAptosClient();
   const {validators} = useGetValidators();
   const {connected} = useWallet();
@@ -536,34 +747,53 @@ export function DelegationValidatorsTable() {
   if (error) {
     return <Error error={error} />;
   }
+
+  // Mobile card view
+  if (isMobile) {
+    return (
+      <Box>
+        {sortedValidatorsWithCommissionAndState?.map((validator, i) => (
+          <DelegationValidatorCard
+            key={i}
+            validator={validator}
+            connected={connected}
+          />
+        ))}
+      </Box>
+    );
+  }
+
+  // Desktop table view
   return (
-    <Table>
-      <TableHead>
-        <TableRow sx={{verticalAlign: "bottom"}}>
-          {columns.map((column) => (
-            <ValidatorHeaderCell
-              key={column}
-              column={column}
-              direction={sortColumn === column ? sortDirection : undefined}
-              setDirection={setSortDirection}
-              setSortColumn={setSortColumn}
-              connected={connected}
-            />
-          ))}
-        </TableRow>
-      </TableHead>
-      <GeneralTableBody>
-        {sortedValidatorsWithCommissionAndState?.map((validator, i) => {
-          return (
-            <ValidatorRow
-              key={i}
-              validator={validator}
-              columns={columns}
-              connected={connected}
-            />
-          );
-        })}
-      </GeneralTableBody>
-    </Table>
+    <Box sx={{overflowX: "auto"}}>
+      <Table>
+        <TableHead>
+          <TableRow sx={{verticalAlign: "bottom"}}>
+            {columns.map((column) => (
+              <ValidatorHeaderCell
+                key={column}
+                column={column}
+                direction={sortColumn === column ? sortDirection : undefined}
+                setDirection={setSortDirection}
+                setSortColumn={setSortColumn}
+                connected={connected}
+              />
+            ))}
+          </TableRow>
+        </TableHead>
+        <GeneralTableBody>
+          {sortedValidatorsWithCommissionAndState?.map((validator, i) => {
+            return (
+              <ValidatorRow
+                key={i}
+                validator={validator}
+                columns={columns}
+                connected={connected}
+              />
+            );
+          })}
+        </GeneralTableBody>
+      </Table>
+    </Box>
   );
 }
