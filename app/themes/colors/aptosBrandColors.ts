@@ -80,6 +80,13 @@ export const getSemanticColors = (mode: PaletteMode) => {
       text: isDark ? brandColors.babyBlue : "#5A9BC8",
       textSecondary: alpha(isDark ? brandColors.babyBlue : "#5A9BC8", 0.5),
     },
+
+    // JSON viewer colors - for JsonViewCard component
+    jsonView: {
+      // Key color: warm coral tone for visual distinction from values
+      // Uses darker coral in light mode for better contrast
+      key: isDark ? "#FF9676" : "#E85A30",
+    },
   };
 };
 
