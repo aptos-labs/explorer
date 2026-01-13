@@ -1,7 +1,6 @@
-import React from "react";
+import React, {useState} from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {FACombinedData} from "../Index";
-import LoadingModal from "../../../components/LoadingModal";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -14,22 +13,57 @@ import {
   FAActivity,
   useGetCoinActivities,
 } from "../../../api/hooks/useGetCoinActivities";
+import {Box, CircularProgress, Pagination} from "@mui/material";
 
 type TransactionsTabProps = {
   address: string;
   data: FACombinedData | undefined;
 };
 
+const LIMIT = 25;
+
 export default function TransactionsTab({address, data}: TransactionsTabProps) {
-  const holderData = useGetCoinActivities(address);
-  if (holderData?.isLoading) {
-    return <LoadingModal open={true} />;
+  const [page, setPage] = useState(1);
+  const [prevAddress, setPrevAddress] = useState(address);
+
+  // Reset page when address changes (during render, per React best practices)
+  if (address !== prevAddress) {
+    setPrevAddress(address);
+    setPage(1);
   }
-  if (!data || Array.isArray(data) || !holderData?.data) {
+
+  const offset = (page - 1) * LIMIT;
+  const activityData = useGetCoinActivities(address, LIMIT, offset);
+
+  if (activityData?.isLoading) {
+    return (
+      <Box sx={{display: "flex", justifyContent: "center", padding: 4}}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+  if (!data || Array.isArray(data) || !activityData?.data) {
     return <EmptyTabContent />;
   }
 
-  return <FAActivityTable data={data} activities={holderData.data} />;
+  const pageCount = activityData.count
+    ? Math.ceil(activityData.count / LIMIT)
+    : 0;
+
+  const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+  return (
+    <Box>
+      <FAActivityTable data={data} activities={activityData.data} />
+      {pageCount > 1 && (
+        <Box sx={{display: "flex", justifyContent: "center", padding: 2}}>
+          <Pagination count={pageCount} page={page} onChange={handleChange} />
+        </Box>
+      )}
+    </Box>
+  );
 }
 
 export function FAActivityTable({
@@ -49,7 +83,7 @@ export function FAActivityTable({
       <GeneralTableBody>
         {activities.map((activity) => {
           return (
-            <GeneralTableRow>
+            <GeneralTableRow key={activity.transaction_version}>
               <GeneralTableCell>
                 <HashButton
                   hash={activity.transaction_version.toString()}

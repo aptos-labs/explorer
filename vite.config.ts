@@ -52,6 +52,7 @@ export default defineConfig({
       "react-countdown", // CJS with ESM entry
       // react-simple-maps and d3 packages need to be bundled to handle CJS require() of ESM
       // Vite will transform the CJS require() calls to work in ESM context
+      // Map.client.tsx (containing react-simple-maps) is dynamically imported client-side in ValidatorsMap.tsx
       "react-simple-maps",
       "d3-geo",
       "d3-zoom",
