@@ -1,6 +1,8 @@
 import React from "react";
 import {Box, Typography, Button, Card, CardContent} from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import {Link} from "../routing";
+import {isModuleFetchError} from "../utils/moduleErrorHandler";
 
 interface ErrorBoundaryProps {
   error: Error;
@@ -8,6 +10,57 @@ interface ErrorBoundaryProps {
 }
 
 export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
+  const isModuleError = isModuleFetchError(error);
+
+  const handleReload = () => {
+    window.location.reload();
+  };
+
+  // Show a friendlier message for module loading errors.
+  // Note: The global error handler (setupModuleErrorHandler) catches most module errors
+  // before they reach this boundary. This UI serves as a fallback for errors that occur
+  // during React rendering or when the global handler has exhausted its reload attempts.
+  if (isModuleError) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "50vh",
+          p: 3,
+        }}
+      >
+        <Card sx={{maxWidth: 500, textAlign: "center"}}>
+          <CardContent>
+            <Typography variant="h4" gutterBottom color="primary">
+              Update Available
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{mb: 3}}>
+              A new version of the explorer has been deployed. Please refresh
+              the page to load the latest version.
+            </Typography>
+            <Box sx={{display: "flex", gap: 2, justifyContent: "center"}}>
+              <Button
+                variant="contained"
+                onClick={handleReload}
+                startIcon={<RefreshIcon />}
+              >
+                Refresh Page
+              </Button>
+              {/* Use native anchor tag instead of Link component for module errors,
+                  since the router may also be affected by the chunk loading failure */}
+              <Button component="a" href="/" variant="outlined">
+                Go Home
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+    );
+  }
+
   return (
     <Box
       sx={{
