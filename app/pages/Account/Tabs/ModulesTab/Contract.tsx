@@ -60,6 +60,7 @@ import {
   sortPetraFirst,
   transformCode,
   extractFunctionParamNames,
+  extractFunctionTypeParamNames,
 } from "../../../../utils";
 import {accountPagePath} from "../../Index";
 import {Aptos, Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
@@ -1171,6 +1172,14 @@ function ContractForm({
     return names;
   }, [sourceCode, fn.name, hasSigner]);
 
+  // Extract type parameter names from source code if available
+  const typeParamNames = useMemo(() => {
+    if (!sourceCode) return null;
+    const decodedSource = transformCode(sourceCode);
+    if (!decodedSource) return null;
+    return extractFunctionTypeParamNames(decodedSource, fn.name);
+  }, [sourceCode, fn.name]);
+
   useEffect(() => {
     setFormValid(isValid);
   }, [isValid, setFormValid]);
@@ -1212,7 +1221,9 @@ function ContractForm({
             {fn.generic_type_params.length > 0 && (
               <Typography component="span" color="text.secondary">
                 {"<"}
-                {fn.generic_type_params.map((_, i) => `T${i}`).join(", ")}
+                {fn.generic_type_params
+                  .map((_, i) => typeParamNames?.[i] ?? `T${i}`)
+                  .join(", ")}
                 {">"}
               </Typography>
             )}
@@ -1281,24 +1292,27 @@ function ContractForm({
                 Type Arguments
               </Typography>
               <Stack spacing={2}>
-                {fn.generic_type_params.map((_, i) => (
-                  <Controller
-                    key={i}
-                    name={`typeArgs.${i}`}
-                    control={control}
-                    rules={{required: true}}
-                    render={({field: {onChange, value}}) => (
-                      <TextField
-                        onChange={onChange}
-                        value={value ?? ""}
-                        label={`T${i}`}
-                        placeholder="0x1::module::Type"
-                        fullWidth
-                        size="small"
-                      />
-                    )}
-                  />
-                ))}
+                {fn.generic_type_params.map((_, i) => {
+                  const typeParamName = typeParamNames?.[i] ?? `T${i}`;
+                  return (
+                    <Controller
+                      key={i}
+                      name={`typeArgs.${i}`}
+                      control={control}
+                      rules={{required: true}}
+                      render={({field: {onChange, value}}) => (
+                        <TextField
+                          onChange={onChange}
+                          value={value ?? ""}
+                          label={typeParamName}
+                          placeholder="0x1::module::Type"
+                          fullWidth
+                          size="small"
+                        />
+                      )}
+                    />
+                  );
+                })}
               </Stack>
             </Box>
           )}

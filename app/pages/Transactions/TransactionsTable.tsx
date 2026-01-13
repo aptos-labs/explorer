@@ -35,7 +35,20 @@ import {
   useNavigate,
   useAugmentToWithGlobalSearchParams,
 } from "../../routing";
-import {ArrowForwardOutlined, TextSnippetOutlined} from "@mui/icons-material";
+import {
+  ArrowForwardOutlined,
+  TextSnippetOutlined,
+  ContentCopy,
+  OpenInNew,
+} from "@mui/icons-material";
+import {truncateAddress} from "../utils";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 import Tooltip from "@mui/material/Tooltip";
 
 type TransactionCellProps = {
@@ -234,6 +247,251 @@ const TransactionCells = Object.freeze({
   amountGas: TransactionAmountGasCell,
 });
 
+// Transaction Detail Dialog for mobile view
+type TransactionDetailDialogProps = {
+  open: boolean;
+  onClose: () => void;
+  transaction: Types.Transaction;
+  address?: string;
+};
+
+function TransactionDetailDialog({
+  open,
+  onClose,
+  transaction,
+  address,
+}: TransactionDetailDialogProps) {
+  const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
+  const navigate = useNavigate();
+  const augmentTo = useAugmentToWithGlobalSearchParams();
+  const [copiedField, setCopiedField] = React.useState<string | null>(null);
+
+  const version = "version" in transaction ? transaction.version : null;
+  const timestamp =
+    "timestamp" in transaction
+      ? getTableFormattedTimestamp(transaction.timestamp)
+      : "-";
+  const counterparty = getTransactionCounterparty(transaction);
+  const sender =
+    transaction.type === TransactionTypeName.User
+      ? (transaction as Types.UserTransaction).sender
+      : null;
+
+  const handleCopy = async (text: string, field: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const handleViewFullDetails = () => {
+    onClose();
+    if (version) {
+      navigate({to: augmentTo(`/txn/${version}`)});
+    }
+  };
+
+  // Check if transaction has a payload (for showing Function section)
+  const hasPayload = "payload" in transaction;
+
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="sm"
+      PaperProps={{
+        sx: {
+          borderRadius: 2,
+          m: 2,
+          maxHeight: "calc(100vh - 32px)",
+        },
+      }}
+    >
+      <DialogTitle sx={{pr: 6, pb: 1}}>
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <Typography variant="h6" component="span">
+            Transaction
+          </Typography>
+          <Link to={`/txn/${version}`} color="primary" sx={{fontWeight: 600}}>
+            {version}
+          </Link>
+          {"success" in transaction && (
+            <TableTransactionStatus success={transaction.success} />
+          )}
+        </Stack>
+        <IconButton
+          aria-label="Close dialog"
+          onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: theme.palette.text.secondary,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+
+      <DialogContent dividers>
+        <Stack spacing={2}>
+          {/* Type and Timestamp */}
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant="body2" color="text.secondary">
+                Type:
+              </Typography>
+              <TableTransactionType type={transaction.type} />
+            </Stack>
+            <Typography variant="body2" color="text.secondary">
+              {timestamp}
+            </Typography>
+          </Stack>
+
+          {/* Function */}
+          {hasPayload && (
+            <Box>
+              <Typography variant="body2" color="text.secondary" sx={{mb: 0.5}}>
+                Function
+              </Typography>
+              <Box
+                sx={{
+                  p: 1.5,
+                  backgroundColor: theme.palette.background.default,
+                  borderRadius: 1,
+                  wordBreak: "break-word",
+                }}
+              >
+                <TransactionFunction transaction={transaction} />
+              </Box>
+            </Box>
+          )}
+
+          {/* Sender */}
+          {sender && (
+            <Box>
+              <Typography variant="body2" color="text.secondary" sx={{mb: 0.5}}>
+                Sender
+              </Typography>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                <HashButton hash={sender} type={HashType.ACCOUNT} />
+                <Tooltip
+                  title={copiedField === "sender" ? "Copied!" : "Copy address"}
+                >
+                  <IconButton
+                    aria-label="Copy sender address"
+                    size="small"
+                    onClick={() => handleCopy(sender, "sender")}
+                  >
+                    <ContentCopy fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
+            </Box>
+          )}
+
+          {/* Counterparty (Receiver/Contract) */}
+          {counterparty && (
+            <Box>
+              <Typography variant="body2" color="text.secondary" sx={{mb: 0.5}}>
+                {counterparty.role === "smartContract"
+                  ? "Contract"
+                  : "Receiver"}
+              </Typography>
+              <Stack direction="row" alignItems="center" spacing={1}>
+                {counterparty.role === "smartContract" ? (
+                  <TextSnippetOutlined
+                    sx={{fontSize: 18, color: theme.palette.text.secondary}}
+                  />
+                ) : (
+                  <ArrowForwardOutlined
+                    sx={{fontSize: 18, color: theme.palette.text.secondary}}
+                  />
+                )}
+                <HashButton
+                  hash={counterparty.address}
+                  type={HashType.ACCOUNT}
+                />
+                <Tooltip
+                  title={
+                    copiedField === "counterparty" ? "Copied!" : "Copy address"
+                  }
+                >
+                  <IconButton
+                    aria-label="Copy counterparty address"
+                    size="small"
+                    onClick={() =>
+                      handleCopy(counterparty.address, "counterparty")
+                    }
+                  >
+                    <ContentCopy fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Stack>
+            </Box>
+          )}
+
+          {/* Amount */}
+          <Box>
+            <Typography variant="body2" color="text.secondary" sx={{mb: 0.5}}>
+              Amount
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                fontWeight: 500,
+                color: address
+                  ? getCoinBalanceChangeForAccount(transaction, address) > 0
+                    ? semanticColors.status.info
+                    : getCoinBalanceChangeForAccount(transaction, address) < 0
+                      ? semanticColors.status.error
+                      : undefined
+                  : undefined,
+              }}
+            >
+              <TransactionAmount transaction={transaction} address={address} />
+            </Typography>
+          </Box>
+
+          {/* Gas Fee */}
+          {"gas_used" in transaction && "gas_unit_price" in transaction && (
+            <Box>
+              <Typography variant="body2" color="text.secondary" sx={{mb: 0.5}}>
+                Gas Fee
+              </Typography>
+              <Typography variant="body1">
+                <GasFeeValue
+                  gasUsed={transaction.gas_used}
+                  gasUnitPrice={transaction.gas_unit_price}
+                  transactionData={transaction}
+                  netGasCost
+                />
+              </Typography>
+            </Box>
+          )}
+        </Stack>
+      </DialogContent>
+
+      <DialogActions sx={{p: 2}}>
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={handleViewFullDetails}
+          endIcon={<OpenInNew />}
+          sx={{borderRadius: 2}}
+        >
+          View Full Details
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 // Mobile card component for transactions
 type TransactionCardProps = {
   transaction: Types.Transaction;
@@ -242,102 +500,144 @@ type TransactionCardProps = {
 
 function TransactionCard({transaction, address}: TransactionCardProps) {
   const theme = useTheme();
-  const navigate = useNavigate();
-  const augmentTo = useAugmentToWithGlobalSearchParams();
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const version = "version" in transaction ? transaction.version : null;
   const timestamp =
     "timestamp" in transaction
       ? getTableFormattedTimestamp(transaction.timestamp)
       : "-";
+  const counterparty = getTransactionCounterparty(transaction);
 
   const handleClick = () => {
-    if (version) {
-      navigate({to: augmentTo(`/txn/${version}`)});
-    }
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   return (
-    <Paper
-      onClick={handleClick}
-      sx={{
-        px: 2,
-        py: 1.5,
-        mb: 1,
-        cursor: "pointer",
-        backgroundColor: theme.palette.background.paper,
-        borderRadius: 2,
-        "&:hover": {
-          filter:
-            theme.palette.mode === "dark"
-              ? "brightness(0.9)"
-              : "brightness(0.99)",
-        },
-        "&:active": {
-          background: theme.palette.neutralShade.main,
-          transform: "translate(0,0.1rem)",
-        },
-      }}
-    >
-      {/* Row 1: Version, Type Icon, Timestamp */}
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 0.75}}
+    <>
+      <Paper
+        onClick={handleClick}
+        sx={{
+          px: 2,
+          py: 1.5,
+          mb: 1,
+          cursor: "pointer",
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: 2,
+          "&:hover": {
+            filter:
+              theme.palette.mode === "dark"
+                ? "brightness(0.9)"
+                : "brightness(0.99)",
+          },
+          "&:active": {
+            background: theme.palette.neutralShade.main,
+            transform: "translate(0,0.1rem)",
+          },
+        }}
       >
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Typography
-            sx={{fontWeight: 600, fontSize: "0.9rem", color: "primary.main"}}
-          >
-            {version}
+        {/* Row 1: Version, Type Icon, Status, Timestamp */}
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{mb: 0.75}}
+        >
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography
+              sx={{fontWeight: 600, fontSize: "0.9rem", color: "primary.main"}}
+            >
+              {version}
+            </Typography>
+            <TableTransactionType type={transaction.type} />
+            {"success" in transaction && !transaction.success && (
+              <TableTransactionStatus success={false} />
+            )}
+          </Stack>
+          <Typography variant="caption" color="text.secondary">
+            {timestamp}
           </Typography>
-          <TableTransactionType type={transaction.type} />
-          {"success" in transaction && !transaction.success && (
-            <TableTransactionStatus success={false} />
-          )}
         </Stack>
-        <Typography variant="caption" color="text.secondary">
-          {timestamp}
-        </Typography>
-      </Stack>
 
-      {/* Row 2: Function + Amount/Gas */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Box sx={{flex: 1, minWidth: 0, overflow: "hidden", mr: 2}}>
+        {/* Row 2: Function (full, wraps naturally) */}
+        <Box sx={{mb: 0.5}}>
           <TransactionFunction
             transaction={transaction}
             sx={{
               fontSize: "0.85rem",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
             }}
           />
         </Box>
+
+        {/* Row 3: Counterparty + Amount/Gas */}
         <Stack
           direction="row"
-          spacing={1}
+          justifyContent="space-between"
           alignItems="center"
-          sx={{flexShrink: 0}}
         >
-          <TransactionAmount transaction={transaction} address={address} />
-          {"gas_used" in transaction && "gas_unit_price" in transaction && (
-            <Typography
-              variant="caption"
-              sx={{color: theme.palette.text.secondary, fontSize: "0.75rem"}}
-            >
-              <GasFeeValue
-                gasUsed={transaction.gas_used}
-                gasUnitPrice={transaction.gas_unit_price}
-                transactionData={transaction}
-                netGasCost
-              />
-            </Typography>
-          )}
+          <Box sx={{minWidth: 0, overflow: "hidden"}}>
+            {counterparty && (
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                {counterparty.role === "smartContract" ? (
+                  <Tooltip title="Smart Contract" placement="top">
+                    <TextSnippetOutlined
+                      sx={{fontSize: 14, color: theme.palette.text.secondary}}
+                    />
+                  </Tooltip>
+                ) : (
+                  <Tooltip title="Receiver" placement="top">
+                    <ArrowForwardOutlined
+                      sx={{fontSize: 14, color: theme.palette.text.secondary}}
+                    />
+                  </Tooltip>
+                )}
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    fontFamily: "monospace",
+                  }}
+                >
+                  {truncateAddress(counterparty.address)}
+                </Typography>
+              </Stack>
+            )}
+          </Box>
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={{flexShrink: 0}}
+          >
+            <TransactionAmount transaction={transaction} address={address} />
+            {"gas_used" in transaction && "gas_unit_price" in transaction && (
+              <Typography
+                variant="caption"
+                sx={{color: theme.palette.text.secondary, fontSize: "0.75rem"}}
+              >
+                <GasFeeValue
+                  gasUsed={transaction.gas_used}
+                  gasUnitPrice={transaction.gas_unit_price}
+                  transactionData={transaction}
+                  netGasCost
+                />
+              </Typography>
+            )}
+          </Stack>
         </Stack>
-      </Stack>
-    </Paper>
+      </Paper>
+
+      <TransactionDetailDialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        transaction={transaction}
+        address={address}
+      />
+    </>
   );
 }
 

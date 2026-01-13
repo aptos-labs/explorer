@@ -320,6 +320,91 @@ function extractParamName(paramStr: string): string | null {
   return name || null;
 }
 
+/**
+ * Extract generic type parameter names from Move source code for a given function.
+ * Returns an array of type parameter names in order, or null if parsing fails.
+ *
+ * Example Move function:
+ *   public entry fun transfer<CoinType, Recipient: key + store>(sender: &signer, amount: u64)
+ * Would return: ["CoinType", "Recipient"]
+ */
+export function extractFunctionTypeParamNames(
+  sourceCode: string,
+  functionName: string,
+): string[] | null {
+  if (!sourceCode || !functionName) return null;
+
+  try {
+    // Find the function definition and capture the generic type params part
+    // Handles public, public(friend), entry, view
+    const funcRegex = new RegExp(
+      `(?:public(?:\\s*\\([^)]*\\))?\\s*)?(?:entry\\s+)?fun\\s+${escapeRegExp(functionName)}\\s*<([^>]*)>`,
+      "s",
+    );
+
+    const match = sourceCode.match(funcRegex);
+    if (!match || !match[1]) return null;
+
+    const typeParamsStr = match[1].trim();
+    if (!typeParamsStr) return [];
+
+    // Parse type parameters - they're in format: T, U: key + store, V: drop
+    // We need to handle nested generics like T: Struct<U>
+    const typeParams: string[] = [];
+    let depth = 0;
+    let currentParam = "";
+
+    for (let i = 0; i < typeParamsStr.length; i++) {
+      const char = typeParamsStr[i];
+
+      if (char === "<") {
+        depth++;
+        currentParam += char;
+      } else if (char === ">") {
+        depth--;
+        currentParam += char;
+      } else if (char === "," && depth === 0) {
+        // End of type parameter
+        const paramName = extractTypeParamName(currentParam.trim());
+        if (paramName) typeParams.push(paramName);
+        currentParam = "";
+      } else {
+        currentParam += char;
+      }
+    }
+
+    // Don't forget the last type parameter
+    if (currentParam.trim()) {
+      const paramName = extractTypeParamName(currentParam.trim());
+      if (paramName) typeParams.push(paramName);
+    }
+
+    return typeParams.length > 0 ? typeParams : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Extract just the type parameter name from a "T: constraint" string
+ * For example:
+ *   "T" -> "T"
+ *   "CoinType: key + store" -> "CoinType"
+ *   "T: Struct<U>" -> "T"
+ */
+function extractTypeParamName(typeParamStr: string): string | null {
+  // Type params may have constraints after a colon
+  // Format: Name or Name: constraints
+  const colonIndex = typeParamStr.indexOf(":");
+  if (colonIndex === -1) {
+    // No constraints, just the name
+    return typeParamStr.trim() || null;
+  }
+
+  const name = typeParamStr.substring(0, colonIndex).trim();
+  return name || null;
+}
+
 export function encodeInputArgsForViewRequest(type: string, value: string) {
   if (type.includes("vector")) {
     return value.trim().startsWith("0x")
