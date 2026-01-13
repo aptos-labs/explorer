@@ -15,6 +15,8 @@ import {
   Tooltip,
   CircularProgress,
   Skeleton,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
@@ -762,24 +764,27 @@ export function EnhancedDelegationValidatorsTable() {
     : COLUMNS_WITHOUT_WALLET_CONNECTION;
   const [sortColumn, setSortColumn] = useState<Column>("rewardsEarned");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
+  const [showInactiveValidators, setShowInactiveValidators] = useState(false);
   const {totalVotingPower} = useGetValidatorSet();
 
   // Use our optimized data fetching hook
   const {validators, isLoading, error} = useValidatorDelegationData();
 
-  // Sort validators and filter out inactive validators with no voting power
+  // Sort validators and filter out inactive validators with no voting power unless toggle is enabled
   const sortedValidators = useMemo(() => {
     if (!validators) return [];
 
-    // Filter out inactive validators with no voting power
-    const filteredValidators = validators.filter((validator) => {
-      const status = getValidatorStatus(validator.status);
-      const votingPower = validator.voting_power;
-      return !(status === "Inactive" && votingPower === "0");
-    });
+    // Filter out inactive validators with no voting power (unless showInactiveValidators is enabled)
+    const filteredValidators = showInactiveValidators
+      ? validators
+      : validators.filter((validator) => {
+          const status = getValidatorStatus(validator.status);
+          const votingPower = validator.voting_power;
+          return !(status === "Inactive" && votingPower === "0");
+        });
 
     return getSortedValidators(filteredValidators, sortColumn, sortDirection);
-  }, [validators, sortColumn, sortDirection]);
+  }, [validators, sortColumn, sortDirection, showInactiveValidators]);
 
   // Memoize validator rows for virtualization
   const validatorRows = useMemo(() => {
@@ -918,20 +923,44 @@ export function EnhancedDelegationValidatorsTable() {
     );
   }
 
+  // Toggle component for showing inactive validators
+  const InactiveValidatorsToggle = (
+    <Box sx={{mb: 2, display: "flex", justifyContent: "flex-end"}}>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={showInactiveValidators}
+            onChange={(e) => setShowInactiveValidators(e.target.checked)}
+            size="small"
+          />
+        }
+        label={
+          <Typography variant="body2" color="text.secondary">
+            Show inactive validators (for unstaking)
+          </Typography>
+        }
+      />
+    </Box>
+  );
+
   // Mobile card view
   if (isMobile) {
     if (sortedValidators.length === 0) {
       return (
-        <Box sx={{textAlign: "center", py: 3}}>
-          <Typography variant="body1" color="text.secondary">
-            No validators found
-          </Typography>
+        <Box>
+          {InactiveValidatorsToggle}
+          <Box sx={{textAlign: "center", py: 3}}>
+            <Typography variant="body1" color="text.secondary">
+              No validators found
+            </Typography>
+          </Box>
         </Box>
       );
     }
 
     return (
       <Box>
+        {InactiveValidatorsToggle}
         {sortedValidators.map((validator) => (
           <EnhancedDelegationValidatorCard
             key={validator.owner_address}
@@ -947,6 +976,7 @@ export function EnhancedDelegationValidatorsTable() {
   // Desktop table view
   return (
     <Box>
+      {InactiveValidatorsToggle}
       <Box sx={{overflowX: "auto"}}>
         <Table>
           <TableHead>

@@ -9,6 +9,8 @@ import {
   useTheme,
   useMediaQuery,
   Paper,
+  FormControlLabel,
+  Switch,
 } from "@mui/material";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
@@ -400,9 +402,11 @@ function MyDepositCell({validator}: ValidatorCellProps) {
 function DelegationValidatorCard({
   validator,
   connected,
+  showInactiveValidators,
 }: {
   validator: ValidatorData & {commission: number; status: number};
   connected: boolean;
+  showInactiveValidators: boolean;
 }) {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -436,8 +440,12 @@ function DelegationValidatorCard({
     return undefined;
   }, [stakes]);
 
-  // Hide inactive validators with no delegated stake
-  if (validatorStatus === "Inactive" && validatorVotingPower === "0") {
+  // Hide inactive validators with no delegated stake unless showInactiveValidators is enabled
+  if (
+    !showInactiveValidators &&
+    validatorStatus === "Inactive" &&
+    validatorVotingPower === "0"
+  ) {
     return null;
   }
 
@@ -601,7 +609,12 @@ function DelegationValidatorCard({
   );
 }
 
-function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
+function ValidatorRow({
+  validator,
+  columns,
+  connected,
+  showInactiveValidators,
+}: ValidatorRowProps & {showInactiveValidators: boolean}) {
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
   const {totalVotingPower} = useGetValidatorSet();
@@ -623,10 +636,11 @@ function ValidatorRow({validator, columns, connected}: ValidatorRowProps) {
     });
   };
 
-  // Hide delegators that are inactive and have no delegated stake
+  // Hide delegators that are inactive and have no delegated stake unless showInactiveValidators is enabled
   // TODO: Don't show inactive validators unless the users have a deposit
   // Would require some querying restructing to be efficient.
   if (
+    !showInactiveValidators &&
     getValidatorStatus(status) === "Inactive" &&
     validatorVotingPower === "0"
   ) {
@@ -667,6 +681,7 @@ export function DelegationValidatorsTable() {
     : COLUMNS_WITHOUT_WALLET_CONNECTION;
   const [sortColumn, setSortColumn] = useState<Column>("rewardsEarned");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
+  const [showInactiveValidators, setShowInactiveValidators] = useState(false);
   const {delegatedStakingPools, loading} =
     useGetDelegatedStakingPoolList() ?? [];
 
@@ -750,15 +765,37 @@ export function DelegationValidatorsTable() {
     return <Error error={error} />;
   }
 
+  // Toggle component for showing inactive validators
+  const InactiveValidatorsToggle = (
+    <Box sx={{mb: 2, display: "flex", justifyContent: "flex-end"}}>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={showInactiveValidators}
+            onChange={(e) => setShowInactiveValidators(e.target.checked)}
+            size="small"
+          />
+        }
+        label={
+          <Typography variant="body2" color="text.secondary">
+            Show inactive validators (for unstaking)
+          </Typography>
+        }
+      />
+    </Box>
+  );
+
   // Mobile card view
   if (isMobile) {
     return (
       <Box>
+        {InactiveValidatorsToggle}
         {sortedValidatorsWithCommissionAndState?.map((validator) => (
           <DelegationValidatorCard
             key={validator.owner_address}
             validator={validator}
             connected={connected}
+            showInactiveValidators={showInactiveValidators}
           />
         ))}
       </Box>
@@ -767,35 +804,39 @@ export function DelegationValidatorsTable() {
 
   // Desktop table view
   return (
-    <Box sx={{overflowX: "auto"}}>
-      <Table>
-        <TableHead>
-          <TableRow sx={{verticalAlign: "bottom"}}>
-            {columns.map((column) => (
-              <ValidatorHeaderCell
-                key={column}
-                column={column}
-                direction={sortColumn === column ? sortDirection : undefined}
-                setDirection={setSortDirection}
-                setSortColumn={setSortColumn}
-                connected={connected}
-              />
-            ))}
-          </TableRow>
-        </TableHead>
-        <GeneralTableBody>
-          {sortedValidatorsWithCommissionAndState?.map((validator) => {
-            return (
-              <ValidatorRow
-                key={validator.owner_address}
-                validator={validator}
-                columns={columns}
-                connected={connected}
-              />
-            );
-          })}
-        </GeneralTableBody>
-      </Table>
+    <Box>
+      {InactiveValidatorsToggle}
+      <Box sx={{overflowX: "auto"}}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{verticalAlign: "bottom"}}>
+              {columns.map((column) => (
+                <ValidatorHeaderCell
+                  key={column}
+                  column={column}
+                  direction={sortColumn === column ? sortDirection : undefined}
+                  setDirection={setSortDirection}
+                  setSortColumn={setSortColumn}
+                  connected={connected}
+                />
+              ))}
+            </TableRow>
+          </TableHead>
+          <GeneralTableBody>
+            {sortedValidatorsWithCommissionAndState?.map((validator) => {
+              return (
+                <ValidatorRow
+                  key={validator.owner_address}
+                  validator={validator}
+                  columns={columns}
+                  connected={connected}
+                  showInactiveValidators={showInactiveValidators}
+                />
+              );
+            })}
+          </GeneralTableBody>
+        </Table>
+      </Box>
     </Box>
   );
 }
