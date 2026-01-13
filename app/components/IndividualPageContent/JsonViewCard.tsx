@@ -184,11 +184,9 @@ export default function JsonViewCard({
 }: JsonViewCardProps) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
-  const isDark = theme.palette.mode === "dark";
 
-  // Key color: warm coral tone for visual distinction from values
-  // Uses darker coral in light mode for better contrast
-  const keyColor = isDark ? "#FF9676" : "#E85A30";
+  // Key color: warm coral tone for visual distinction from values (from theme)
+  const keyColor = semanticColors.jsonView.key;
 
   // Value color: cool blue tone (primary color)
   const valueColor = theme.palette.primary.main;
