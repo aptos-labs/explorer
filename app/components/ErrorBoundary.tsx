@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import {Box, Typography, Button, Card, CardContent} from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {Link} from "../routing";
@@ -10,15 +10,16 @@ interface ErrorBoundaryProps {
 }
 
 export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
-  const [isReloading, setIsReloading] = useState(false);
   const isModuleError = isModuleFetchError(error);
 
   const handleReload = () => {
-    setIsReloading(true);
     window.location.reload();
   };
 
-  // Show a friendlier message for module loading errors
+  // Show a friendlier message for module loading errors.
+  // Note: The global error handler (setupModuleErrorHandler) catches most module errors
+  // before they reach this boundary. This UI serves as a fallback for errors that occur
+  // during React rendering or when the global handler has exhausted its reload attempts.
   if (isModuleError) {
     return (
       <Box
@@ -44,12 +45,13 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
               <Button
                 variant="contained"
                 onClick={handleReload}
-                disabled={isReloading}
                 startIcon={<RefreshIcon />}
               >
-                {isReloading ? "Refreshing..." : "Refresh Page"}
+                Refresh Page
               </Button>
-              <Button component={Link} to="/" variant="outlined">
+              {/* Use native anchor tag instead of Link component for module errors,
+                  since the router may also be affected by the chunk loading failure */}
+              <Button component="a" href="/" variant="outlined">
                 Go Home
               </Button>
             </Box>

@@ -16,6 +16,9 @@ const RELOAD_TIMESTAMP_KEY = "module-fetch-reload-timestamp";
 const MAX_RELOAD_ATTEMPTS = 2;
 const RELOAD_WINDOW_MS = 30000; // 30 seconds window for reload attempts
 
+// Track if setupModuleErrorHandler has been called to prevent duplicate registrations
+let isHandlerSetup = false;
+
 // Common patterns for module loading failures
 export const MODULE_ERROR_PATTERNS = [
   /Failed to fetch dynamically imported module/i,
@@ -45,6 +48,15 @@ export function isModuleFetchError(error: unknown): boolean {
 }
 
 /**
+ * Safely parses an integer from a string, returning a default value if invalid.
+ */
+function safeParseInt(value: string | null, defaultValue: number): number {
+  if (!value) return defaultValue;
+  const parsed = parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : defaultValue;
+}
+
+/**
  * Gets the current reload attempt count within the time window
  * Exported for testing purposes
  */
@@ -57,15 +69,16 @@ export function getReloadAttempts(): number {
 
     // If timestamp is outside the window, reset
     if (timestamp) {
-      const elapsed = Date.now() - parseInt(timestamp, 10);
-      if (elapsed > RELOAD_WINDOW_MS) {
+      const parsedTimestamp = safeParseInt(timestamp, 0);
+      const elapsed = Date.now() - parsedTimestamp;
+      if (elapsed > RELOAD_WINDOW_MS || parsedTimestamp === 0) {
         sessionStorage.removeItem(RELOAD_KEY);
         sessionStorage.removeItem(RELOAD_TIMESTAMP_KEY);
         return 0;
       }
     }
 
-    return attempts ? parseInt(attempts, 10) : 0;
+    return safeParseInt(attempts, 0);
   } catch {
     // sessionStorage might be unavailable (private browsing, storage quota, etc.)
     // Return a high number to prevent reloads when we can't track them
@@ -95,7 +108,10 @@ function incrementReloadAttempts(): boolean {
 
     sessionStorage.setItem(RELOAD_KEY, (currentAttempts + 1).toString());
 
-    // Verify the write was successful
+    // Verify the write was successful. In some environments (e.g. strict privacy
+    // modes, disabled storage, or when the storage quota is exceeded) calls to
+    // sessionStorage.setItem() may appear to succeed but the value is not actually
+    // persisted, so we perform a read-after-write check to confirm the increment.
     const verifyAttempts = sessionStorage.getItem(RELOAD_KEY);
     return verifyAttempts === (currentAttempts + 1).toString();
   } catch {
@@ -119,18 +135,22 @@ export function clearReloadAttempts(): void {
 }
 
 /**
- * Force reload with cache busting to ensure fresh assets are loaded
+ * Force reload with cache busting to ensure fresh assets are loaded.
+ * Uses a combination of timestamp and random value for unpredictable cache-busting.
+ * Exported for testing purposes.
  */
-function forceReload(): void {
+export function forceReload(): void {
   // Add a cache-busting query parameter to ensure the browser fetches fresh assets
+  // Combine timestamp with random value to make the parameter unpredictable
+  const cacheBuster = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const url = new URL(window.location.href);
-  url.searchParams.set("_reload", Date.now().toString());
+  url.searchParams.set("_reload", cacheBuster);
   window.location.replace(url.toString());
 }
 
 /**
  * Handles a module fetch error by reloading the page if appropriate
- * Returns true if a reload was triggered
+ * Returns true if a reload was scheduled (not necessarily completed)
  */
 export function handleModuleFetchError(error: unknown): boolean {
   if (!isModuleFetchError(error)) return false;
@@ -158,32 +178,42 @@ export function handleModuleFetchError(error: unknown): boolean {
     return false;
   }
 
-  console.warn(
-    `[ModuleErrorHandler] Module fetch error detected, reloading page (attempt ${attempts + 1}/${MAX_RELOAD_ATTEMPTS})`,
-  );
+  // Add a small random delay before reloading to reduce the chance of multiple
+  // simultaneous errors racing on the reload attempt counters
+  const delayMs = Math.floor(Math.random() * 100);
 
-  // Force reload with cache busting
-  forceReload();
+  setTimeout(() => {
+    console.info(
+      `[ModuleErrorHandler] Module fetch error detected, reloading page (attempt ${attempts + 1}/${MAX_RELOAD_ATTEMPTS})`,
+    );
+
+    // Force reload with cache busting
+    forceReload();
+  }, delayMs);
+
   return true;
 }
 
 /**
- * Sets up a global error handler for unhandled module fetch errors
- * Should be called once during app initialization
+ * Sets up a global error handler for unhandled module fetch errors.
+ * Should be called once during app initialization.
+ * Multiple calls are safe - duplicate registrations are prevented.
  */
 export function setupModuleErrorHandler(): void {
   if (typeof window === "undefined") return;
 
-  // Clear reload attempts on successful page load
-  // Handle case where document is already loaded (common during hydration)
+  // Prevent duplicate event listener registrations
+  if (isHandlerSetup) return;
+  isHandlerSetup = true;
+
+  // Clear reload attempts on successful page load.
+  // Handle case where document is already loaded (common during hydration).
   if (document.readyState === "complete") {
-    // Document already loaded, clear attempts after a short delay
-    setTimeout(clearReloadAttempts, 1000);
+    // Document already loaded, clear attempts immediately
+    clearReloadAttempts();
   } else {
-    // Document still loading, wait for load event
-    window.addEventListener("load", () => {
-      setTimeout(clearReloadAttempts, 1000);
-    });
+    // Document still loading, clear attempts once the load event fires
+    window.addEventListener("load", clearReloadAttempts);
   }
 
   // Handle unhandled promise rejections (async import failures)

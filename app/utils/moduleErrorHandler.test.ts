@@ -9,6 +9,7 @@ describe("moduleErrorHandler", () => {
   let clearReloadAttempts: typeof import("./moduleErrorHandler").clearReloadAttempts;
   let getReloadAttempts: typeof import("./moduleErrorHandler").getReloadAttempts;
   let handleModuleFetchError: typeof import("./moduleErrorHandler").handleModuleFetchError;
+  let forceReload: typeof import("./moduleErrorHandler").forceReload;
   let MODULE_ERROR_PATTERNS: typeof import("./moduleErrorHandler").MODULE_ERROR_PATTERNS;
 
   // Track location.replace calls
@@ -38,6 +39,7 @@ describe("moduleErrorHandler", () => {
     clearReloadAttempts = module.clearReloadAttempts;
     getReloadAttempts = module.getReloadAttempts;
     handleModuleFetchError = module.handleModuleFetchError;
+    forceReload = module.forceReload;
     MODULE_ERROR_PATTERNS = module.MODULE_ERROR_PATTERNS;
   });
 
@@ -152,6 +154,28 @@ describe("moduleErrorHandler", () => {
         sessionStorage.getItem("module-fetch-reload-timestamp"),
       ).toBeNull();
     });
+
+    it("handles malformed data gracefully", () => {
+      sessionStorage.setItem("module-fetch-reload", "invalid");
+      sessionStorage.setItem("module-fetch-reload-timestamp", "also-invalid");
+
+      // Should return 0 for invalid attempt count and reset due to invalid timestamp
+      expect(getReloadAttempts()).toBe(0);
+    });
+  });
+
+  describe("forceReload", () => {
+    it("calls location.replace with cache-busting parameter", () => {
+      forceReload();
+
+      expect(replaceMock).toHaveBeenCalled();
+      const calledUrl = replaceMock.mock.calls[0][0];
+      expect(calledUrl).toContain("_reload=");
+      // Verify the cache buster contains both timestamp and random component
+      const urlObj = new URL(calledUrl);
+      const reloadParam = urlObj.searchParams.get("_reload");
+      expect(reloadParam).toMatch(/^\d+-[0-9a-f]+$/);
+    });
   });
 
   describe("handleModuleFetchError", () => {
@@ -160,16 +184,23 @@ describe("moduleErrorHandler", () => {
       expect(replaceMock).not.toHaveBeenCalled();
     });
 
-    it("triggers reload for module fetch errors", () => {
-      const error = new Error("Failed to fetch dynamically imported module");
+    it("schedules reload for module fetch errors", async () => {
+      vi.useFakeTimers();
 
+      const error = new Error("Failed to fetch dynamically imported module");
       const result = handleModuleFetchError(error);
 
       expect(result).toBe(true);
+
+      // Fast-forward timers to trigger the delayed reload
+      await vi.runAllTimersAsync();
+
       expect(replaceMock).toHaveBeenCalled();
       // Check cache-busting parameter was added
       const calledUrl = replaceMock.mock.calls[0][0];
       expect(calledUrl).toContain("_reload=");
+
+      vi.useRealTimers();
     });
 
     it("increments reload attempts on each call", () => {
