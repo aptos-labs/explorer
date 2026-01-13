@@ -65,6 +65,11 @@ export default function Nav() {
         label="Validators"
       />
       <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
+      <NavButton
+        to="/coins"
+        title="View Coins & Fungible Assets"
+        label="Coins"
+      />
     </Box>
   );
 }
