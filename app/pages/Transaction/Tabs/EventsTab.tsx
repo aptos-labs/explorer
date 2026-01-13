@@ -7,6 +7,9 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import HashButton, {HashType} from "../../../components/HashButton";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import IdentifiedEventData, {
+  canDisplayIdentifiedEventData,
+} from "./Components/IdentifiedEventCard";
 
 type EventsTabProps = {
   transaction: Types.Transaction;
@@ -79,13 +82,20 @@ export default function EventsTab({transaction}: EventsTabProps) {
             <ContentRow
               title="Data:"
               value={
-                <JsonViewCard
-                  data={
-                    typeof event.data == "object"
-                      ? event.data
-                      : {__PLACEHOLDER__: event.data}
-                  }
-                />
+                canDisplayIdentifiedEventData(event.data) ? (
+                  <IdentifiedEventData
+                    eventType={event.type}
+                    data={event.data}
+                  />
+                ) : (
+                  <JsonViewCard
+                    data={
+                      typeof event.data == "object"
+                        ? event.data
+                        : {__PLACEHOLDER__: event.data}
+                    }
+                  />
+                )
               }
             />
           </CollapsibleCard>
