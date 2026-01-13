@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useCallback} from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {FACombinedData} from "../Index";
 import Table from "@mui/material/Table";
@@ -13,7 +13,7 @@ import {
   FAActivity,
   useGetCoinActivities,
 } from "../../../api/hooks/useGetCoinActivities";
-import {Box, CircularProgress, Pagination} from "@mui/material";
+import {Box, Button, CircularProgress} from "@mui/material";
 
 type TransactionsTabProps = {
   address: string;
@@ -23,43 +23,80 @@ type TransactionsTabProps = {
 const LIMIT = 25;
 
 export default function TransactionsTab({address, data}: TransactionsTabProps) {
-  const [page, setPage] = useState(1);
+  // Store accumulated activities for "Load More" pattern
+  const [allActivities, setAllActivities] = useState<FAActivity[]>([]);
+  const [cursor, setCursor] = useState<number | undefined>(undefined);
   const [prevAddress, setPrevAddress] = useState(address);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  // Reset page when address changes (during render, per React best practices)
+  // Reset state when address changes (during render, per React best practices)
   if (address !== prevAddress) {
     setPrevAddress(address);
-    setPage(1);
+    setAllActivities([]);
+    setCursor(undefined);
+    setIsLoadingMore(false);
   }
 
-  const offset = (page - 1) * LIMIT;
-  const activityData = useGetCoinActivities(address, LIMIT, offset);
+  const activityData = useGetCoinActivities(address, LIMIT, cursor);
 
-  if (activityData?.isLoading) {
+  // Merge new data with existing data when load completes
+  React.useEffect(() => {
+    if (activityData.data && !activityData.isLoading) {
+      if (cursor === undefined) {
+        // Initial load - replace all activities
+        setAllActivities(activityData.data);
+      } else if (isLoadingMore) {
+        // Load more - append new activities
+        setAllActivities((prev) => {
+          // Deduplicate by transaction_version
+          const existingVersions = new Set(
+            prev.map((a) => a.transaction_version),
+          );
+          const newActivities = activityData.data!.filter(
+            (a) => !existingVersions.has(a.transaction_version),
+          );
+          return [...prev, ...newActivities];
+        });
+        setIsLoadingMore(false);
+      }
+    }
+  }, [activityData.data, activityData.isLoading, cursor, isLoadingMore]);
+
+  const handleLoadMore = useCallback(() => {
+    if (allActivities.length > 0) {
+      const lastActivity = allActivities[allActivities.length - 1];
+      setIsLoadingMore(true);
+      setCursor(lastActivity.transaction_version);
+    }
+  }, [allActivities]);
+
+  // Show loading only on initial load
+  if (activityData.isLoading && allActivities.length === 0) {
     return (
       <Box sx={{display: "flex", justifyContent: "center", padding: 4}}>
         <CircularProgress />
       </Box>
     );
   }
-  if (!data || Array.isArray(data) || !activityData?.data) {
+
+  if (!data || Array.isArray(data) || allActivities.length === 0) {
     return <EmptyTabContent />;
   }
 
-  const pageCount = activityData.count
-    ? Math.ceil(activityData.count / LIMIT)
-    : 0;
-
-  const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-  };
-
   return (
     <Box>
-      <FAActivityTable data={data} activities={activityData.data} />
-      {pageCount > 1 && (
+      <FAActivityTable data={data} activities={allActivities} />
+      {activityData.hasMore && (
         <Box sx={{display: "flex", justifyContent: "center", padding: 2}}>
-          <Pagination count={pageCount} page={page} onChange={handleChange} />
+          <Button
+            variant="outlined"
+            onClick={handleLoadMore}
+            disabled={isLoadingMore || activityData.isLoading}
+          >
+            {isLoadingMore || activityData.isLoading
+              ? "Loading..."
+              : "Load More"}
+          </Button>
         </Box>
       )}
     </Box>
