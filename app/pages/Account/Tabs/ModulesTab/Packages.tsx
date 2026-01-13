@@ -9,7 +9,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {useEffect, useMemo} from "react";
+import {useEffect} from "react";
 import {
   PackageMetadata,
   useGetAccountPackages,
@@ -114,13 +114,6 @@ function PackagesSidebar({
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const logEvent = useLogEventWithBasic();
-  const flattedModules = useMemo(
-    () =>
-      sortedPackages.flatMap((pkg) =>
-        pkg.modules.map((module) => ({...module, pkg: pkg.name})),
-      ),
-    [sortedPackages],
-  );
 
   return (
     <Box
@@ -148,23 +141,20 @@ function PackagesSidebar({
       ) : (
         <Autocomplete
           fullWidth
-          options={flattedModules}
-          groupBy={(option) => option.pkg}
+          options={sortedPackages}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
-            <TextField {...params} label="Select a module" />
+            <TextField {...params} label="Select a package" />
           )}
-          onChange={(_, module) => {
-            if (module) {
-              logEvent("modules_clicked", module.name);
-              navigateToPackage(module?.name);
+          onChange={(_, pkg) => {
+            if (pkg) {
+              logEvent("package_clicked", pkg.name);
+              navigateToPackage(pkg.name);
             }
           }}
           value={
             selectedPackageName
-              ? flattedModules.find(
-                  (module) => module.name === selectedPackageName,
-                )
+              ? sortedPackages.find((pkg) => pkg.name === selectedPackageName)
               : null
           }
         />
