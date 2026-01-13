@@ -8,6 +8,8 @@ import {
   Divider,
   alpha,
   Grid,
+  CircularProgress,
+  Tooltip,
 } from "@mui/material";
 import {Types} from "aptos";
 import HashButton, {HashType} from "../../../../components/HashButton";
@@ -19,6 +21,8 @@ import {isValidAccountAddress} from "../../../utils";
 import FunctionsIcon from "@mui/icons-material/Functions";
 import CategoryIcon from "@mui/icons-material/Category";
 import DataArrayIcon from "@mui/icons-material/DataArray";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import {useGetFunctionInfo} from "../../../../api/hooks/useGetFunctionInfo";
 
 // Type guard for entry function payload
 function isEntryFunctionPayload(
@@ -324,6 +328,108 @@ function TypeArgumentLabel({typeArg}: {typeArg: string}) {
   );
 }
 
+// Get a user-friendly type name
+function getFriendlyTypeName(type: string): string {
+  if (type === "address") return "Address";
+  if (type === "bool") return "Boolean";
+  if (type === "u8") return "u8";
+  if (type === "u16") return "u16";
+  if (type === "u32") return "u32";
+  if (type === "u64") return "u64";
+  if (type === "u128") return "u128";
+  if (type === "u256") return "u256";
+  if (type === "0x1::string::String") return "String";
+  if (type.startsWith("vector<u8>")) return "Bytes";
+  if (type.startsWith("vector<")) {
+    const inner = type.slice(7, -1);
+    return `Vec<${getFriendlyTypeName(inner)}>`;
+  }
+  if (type.startsWith("0x1::option::Option<")) {
+    const inner = type.slice(20, -1);
+    return `Option<${getFriendlyTypeName(inner)}>`;
+  }
+  // Return shortened version for complex types
+  if (type.includes("::")) {
+    const parts = type.split("::");
+    return parts[parts.length - 1];
+  }
+  return type;
+}
+
+// Argument row component with name, type, and value
+function ArgumentRow({
+  index,
+  name,
+  type,
+  value,
+}: {
+  index: number;
+  name: string | null;
+  type: string | null;
+  value: unknown;
+}) {
+  const theme = useTheme();
+  const friendlyType = type ? getFriendlyTypeName(type) : null;
+
+  return (
+    <Grid container spacing={1} alignItems="flex-start">
+      <Grid size={{xs: 12, sm: 3}}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5,
+            flexWrap: "wrap",
+          }}
+        >
+          {name ? (
+            <Chip
+              label={name}
+              size="small"
+              sx={{
+                backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                fontSize: "0.75rem",
+                fontWeight: 500,
+                maxWidth: "100%",
+              }}
+            />
+          ) : (
+            <Chip
+              label={`arg${index}`}
+              size="small"
+              sx={{
+                backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                fontSize: "0.75rem",
+                fontWeight: 500,
+              }}
+            />
+          )}
+          {type && (
+            <Tooltip title={type} placement="top" arrow>
+              <Chip
+                label={friendlyType}
+                size="small"
+                variant="outlined"
+                sx={{
+                  fontSize: "0.65rem",
+                  height: 20,
+                  color: theme.palette.text.secondary,
+                  borderColor: alpha(theme.palette.text.secondary, 0.3),
+                }}
+              />
+            </Tooltip>
+          )}
+        </Box>
+      </Grid>
+      <Grid size={{xs: 12, sm: 9}}>
+        <Box sx={{maxWidth: "100%", overflow: "hidden"}}>
+          <ArgumentValue value={value} />
+        </Box>
+      </Grid>
+    </Grid>
+  );
+}
+
 type IdentifiedPayloadCardProps = {
   payload: Types.TransactionPayload;
 };
@@ -342,6 +448,10 @@ export default function IdentifiedPayloadCard({
     typeArguments,
     functionArguments,
   } = extractFunctionInfo(payload);
+
+  // Fetch function info (parameter names and types) from ABI/source
+  const {data: functionInfo, isLoading: functionInfoLoading} =
+    useGetFunctionInfo(functionFullStr);
 
   // For script payloads
   if (isScriptPayload(payload)) {
@@ -423,6 +533,10 @@ export default function IdentifiedPayloadCard({
   const isMultisig = isMultisigPayload(payload);
   const multisigAddress = isMultisig ? payload.multisig_address : null;
 
+  // Get parameter info from fetched function data
+  const params = functionInfo?.params ?? [];
+  const typeParamNames = functionInfo?.typeParamNames ?? null;
+
   return (
     <ContentBox>
       {isMultisig && multisigAddress && (
@@ -486,7 +600,24 @@ export default function IdentifiedPayloadCard({
                 sx={{gap: 0.5}}
               >
                 {typeArguments.map((typeArg, i) => (
-                  <TypeArgumentLabel key={i} typeArg={typeArg} />
+                  <Box
+                    key={i}
+                    sx={{display: "flex", alignItems: "center", gap: 0.5}}
+                  >
+                    {typeParamNames?.[i] && (
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: theme.palette.text.secondary,
+                          fontFamily: "monospace",
+                          fontSize: "0.7rem",
+                        }}
+                      >
+                        {typeParamNames[i]}:
+                      </Typography>
+                    )}
+                    <TypeArgumentLabel typeArg={typeArg} />
+                  </Box>
                 ))}
               </Stack>
             </Box>
@@ -497,45 +628,39 @@ export default function IdentifiedPayloadCard({
         <>
           <Divider sx={{my: 1}} />
           <Box sx={{mb: 1}}>
-            <Typography
-              variant="subtitle2"
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                color: theme.palette.text.secondary,
-                mb: 1,
-              }}
-            >
-              <DataArrayIcon sx={{fontSize: 18}} />
-              Arguments ({functionArguments.length})
-            </Typography>
+            <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1}}>
+              <DataArrayIcon
+                sx={{fontSize: 18, color: theme.palette.text.secondary}}
+              />
+              <Typography
+                variant="subtitle2"
+                sx={{color: theme.palette.text.secondary}}
+              >
+                Arguments ({functionArguments.length})
+              </Typography>
+              {functionInfoLoading && <CircularProgress size={14} />}
+              {functionInfo?.paramNames && (
+                <Tooltip title="Parameter names recovered from source code">
+                  <InfoOutlinedIcon
+                    sx={{
+                      fontSize: 16,
+                      color: theme.palette.success.main,
+                      opacity: 0.7,
+                    }}
+                  />
+                </Tooltip>
+              )}
+            </Stack>
           </Box>
           <Stack spacing={1.5}>
             {functionArguments.map((arg, i) => (
-              <Grid container key={i} spacing={1} alignItems="flex-start">
-                <Grid size={{xs: 12, sm: 2}}>
-                  <Chip
-                    label={`arg${i}`}
-                    size="small"
-                    sx={{
-                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                      fontSize: "0.75rem",
-                      fontWeight: 500,
-                    }}
-                  />
-                </Grid>
-                <Grid size={{xs: 12, sm: 10}}>
-                  <Box
-                    sx={{
-                      maxWidth: "100%",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <ArgumentValue value={arg} />
-                  </Box>
-                </Grid>
-              </Grid>
+              <ArgumentRow
+                key={i}
+                index={i}
+                name={params[i]?.name ?? null}
+                type={params[i]?.type ?? null}
+                value={arg}
+              />
             ))}
           </Stack>
         </>
