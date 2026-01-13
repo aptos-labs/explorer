@@ -7,8 +7,10 @@ import {
   Typography,
   Button,
   CircularProgress,
+  Alert,
+  AlertTitle,
 } from "@mui/material";
-import {GetApp as DownloadIcon} from "@mui/icons-material";
+import {GetApp as DownloadIcon, InfoOutlined} from "@mui/icons-material";
 import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
 import {
   useGetAccountAllTransactionCount,
@@ -22,6 +24,9 @@ import {getTransaction} from "../../../api";
 import {gql} from "@apollo/client";
 import {useGetGraphqlClient} from "../../../api/hooks/useGraphqlClient";
 import {tryStandardizeAddress} from "../../../utils";
+
+// Maximum transactions we can display due to indexer query performance constraints
+const MAX_DISPLAYABLE_TRANSACTIONS = 10000;
 
 function RenderPagination({
   currentPage,
@@ -107,34 +112,75 @@ type AccountAllTransactionsProps = {
 export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
-  let txnCount = useGetAccountAllTransactionCount(address);
-  let canSeeAll = true;
+  const rawTxnCount = useGetAccountAllTransactionCount(address);
+  let txnCount: number;
+  let isLimitedByPerformance = false;
+  let totalKnownCount: number | undefined;
 
-  if (txnCount === undefined) {
+  if (rawTxnCount === undefined) {
     // If we can't load the number of transactions, the indexer query is too expensive
-    // We'll default to 10k transactions in the event there's no account data,
+    // We'll default to max displayable transactions in the event there's no account data,
     // it's better to allow access then to fail
-    // Sequence number, is not a reliable way to determine the number of transactions, and will lead to
-    // empty pages in really large accounts.
-    txnCount = 10000;
-    canSeeAll = false;
+    // Sequence number is not a reliable way to determine the number of transactions,
+    // and will lead to empty pages in really large accounts.
+    txnCount = MAX_DISPLAYABLE_TRANSACTIONS;
+    isLimitedByPerformance = true;
+    totalKnownCount = undefined;
+  } else if (rawTxnCount > MAX_DISPLAYABLE_TRANSACTIONS) {
+    // Account has more transactions than we can display
+    txnCount = MAX_DISPLAYABLE_TRANSACTIONS;
+    isLimitedByPerformance = true;
+    totalKnownCount = rawTxnCount;
+  } else {
+    txnCount = rawTxnCount;
   }
 
   const countPerPage = 25;
   const numPages = Math.ceil(txnCount / countPerPage);
 
   return (
-    <Stack>
+    <Stack spacing={2}>
+      {isLimitedByPerformance && (
+        <Alert
+          severity="info"
+          icon={<InfoOutlined />}
+          sx={{
+            "& .MuiAlert-message": {
+              width: "100%",
+            },
+          }}
+        >
+          <AlertTitle>Transaction History Limited</AlertTitle>
+          {totalKnownCount !== undefined ? (
+            <>
+              This account has{" "}
+              <strong>{totalKnownCount.toLocaleString()}</strong> total
+              transactions. Due to performance constraints, only the most recent{" "}
+              <strong>{MAX_DISPLAYABLE_TRANSACTIONS.toLocaleString()}</strong>{" "}
+              transactions are displayed. Older transactions are not shown but
+              can still be accessed directly by their version number.
+            </>
+          ) : (
+            <>
+              This account has a large transaction history. Due to performance
+              constraints, only the most recent{" "}
+              <strong>{MAX_DISPLAYABLE_TRANSACTIONS.toLocaleString()}</strong>{" "}
+              transactions are displayed. Older transactions are not shown but
+              can still be accessed directly by their version number.
+            </>
+          )}
+        </Alert>
+      )}
       <Stack
         direction="row"
         justifyContent="space-between"
         alignItems="center"
-        sx={{my: 2}}
+        sx={{my: isLimitedByPerformance ? 0 : 2}}
       >
         <Typography>
-          {canSeeAll
-            ? `Showing all ${txnCount} transactions`
-            : `Showing the last ${txnCount} transactions`}
+          {isLimitedByPerformance
+            ? `Showing latest ${txnCount.toLocaleString()} transactions`
+            : `Showing all ${txnCount.toLocaleString()} transactions`}
         </Typography>
         {txnCount > 0 && (
           <CSVExportButton address={address} totalTransactionCount={txnCount} />
@@ -365,7 +411,10 @@ function CSVExportButton({
     setIsExporting(true);
     setExportProgress(0);
 
-    const maxTransactions = Math.min(totalTransactionCount, 10000);
+    const maxTransactions = Math.min(
+      totalTransactionCount,
+      MAX_DISPLAYABLE_TRANSACTIONS,
+    );
     logEvent("export_transactions_csv", maxTransactions, {
       address: address,
       total_transactions: maxTransactions.toString(),
@@ -509,7 +558,7 @@ function CSVExportButton({
         ? totalTransactionCount > 100
           ? `Exporting... ${exportProgress}%`
           : "Exporting..."
-        : `Export CSV (${Math.min(totalTransactionCount, 10000)})`}
+        : `Export CSV (${Math.min(totalTransactionCount, MAX_DISPLAYABLE_TRANSACTIONS).toLocaleString()})`}
     </Button>
   );
 }
