@@ -8,6 +8,8 @@ import {
   Stack,
   alpha,
   useTheme,
+  useMediaQuery,
+  Paper,
   Chip,
   LinearProgress,
   Tooltip,
@@ -36,6 +38,12 @@ import {
 } from "../../DelegatoryValidator/utils";
 import {useLogEventWithBasic} from "../../Account/hooks/useLogEventWithBasic";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {
+  useNavigate,
+  useAugmentToWithGlobalSearchParams,
+} from "../../../routing";
+import HashButton, {HashType} from "../../../components/HashButton";
+import ValidatorStatusIcon from "../../DelegatoryValidator/Components/ValidatorStatusIcon";
 
 // Define column types
 type Column =
@@ -557,8 +565,195 @@ const ValidatorRow = React.memo(function ValidatorRow({
   );
 });
 
+// Mobile card component for enhanced delegation validators
+function EnhancedDelegationValidatorCard({
+  validator,
+  connected,
+  totalVotingPower,
+}: {
+  validator: ValidatorWithExtendedData;
+  connected: boolean;
+  totalVotingPower: string | null;
+}) {
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const augmentTo = useAugmentToWithGlobalSearchParams();
+
+  const validatorStatus = getValidatorStatus(validator.status);
+  const networkPercentage = totalVotingPower
+    ? calculateNetworkPercentage(validator.voting_power, totalVotingPower)
+    : "0";
+
+  const handleClick = () => {
+    navigate({to: augmentTo(`/validator/${validator.owner_address}`)});
+  };
+
+  return (
+    <Paper
+      onClick={handleClick}
+      sx={{
+        px: 2,
+        py: 1.5,
+        mb: 1,
+        cursor: "pointer",
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: 2,
+        "&:hover": {
+          filter:
+            theme.palette.mode === "dark"
+              ? "brightness(0.9)"
+              : "brightness(0.99)",
+        },
+        "&:active": {
+          background: theme.palette.neutralShade.main,
+          transform: "translate(0,0.1rem)",
+        },
+      }}
+    >
+      {/* Status */}
+      <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1}}>
+        <ValidatorStatusIcon validatorStatus={validatorStatus} />
+        <Typography variant="body2" sx={{fontWeight: 500}}>
+          {validatorStatus}
+        </Typography>
+      </Stack>
+
+      {/* Pool Address */}
+      <Box sx={{mb: 1}}>
+        <Typography
+          variant="caption"
+          sx={{color: "text.secondary", display: "block"}}
+        >
+          Pool Address
+        </Typography>
+        <HashButton hash={validator.owner_address} type={HashType.ACCOUNT} />
+      </Box>
+
+      {/* Operator Address */}
+      <Box sx={{mb: 1.5}}>
+        <Typography
+          variant="caption"
+          sx={{color: "text.secondary", display: "block"}}
+        >
+          Operator
+        </Typography>
+        <HashButton
+          hash={validator.operator_address}
+          type={HashType.ACCOUNT}
+          isValidator
+        />
+      </Box>
+
+      {/* Row 2: Key metrics */}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="flex-start"
+        flexWrap="wrap"
+        gap={1.5}
+        sx={{mb: connected ? 1 : 0}}
+      >
+        <Box>
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            Delegated
+          </Typography>
+          <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
+            <APTCurrencyValue
+              amount={validator.voting_power ?? "0"}
+              fixedDecimalPlaces={0}
+            />
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{color: "text.secondary", fontSize: "0.7rem"}}
+          >
+            {networkPercentage}% of network
+          </Typography>
+        </Box>
+        <Box sx={{textAlign: "center"}}>
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            Commission
+          </Typography>
+          <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
+            {validator.commission !== undefined
+              ? `${validator.commission}%`
+              : "-"}
+          </Typography>
+        </Box>
+        <Box sx={{textAlign: "center"}}>
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            Delegators
+          </Typography>
+          <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
+            {validator.delegatorCount !== undefined
+              ? validator.delegatorCount.toLocaleString()
+              : "-"}
+          </Typography>
+        </Box>
+        <Box sx={{textAlign: "right"}}>
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            Rewards
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: "0.85rem",
+              fontWeight: 600,
+              color: theme.palette.success.main,
+            }}
+          >
+            <APTCurrencyValue
+              amount={Number(validator.apt_rewards_distributed).toFixed(2)}
+              decimals={0}
+            />
+          </Typography>
+        </Box>
+      </Stack>
+
+      {/* Row 3: My Deposit (if connected) */}
+      {connected && (
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{
+            pt: 1,
+            borderTop: `1px solid ${theme.palette.divider}`,
+          }}
+        >
+          <Typography variant="caption" sx={{color: "text.secondary"}}>
+            My Deposit
+          </Typography>
+          {validator.userStake !== undefined && validator.userStake > 0 ? (
+            <Stack direction="row" spacing={1} alignItems="center">
+              <CheckCircleIcon
+                sx={{color: theme.palette.success.main}}
+                fontSize="small"
+              />
+              <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
+                <APTCurrencyValue
+                  amount={Math.floor(
+                    validator.userStake * 100000000,
+                  ).toString()}
+                  decimals={8}
+                  fixedDecimalPlaces={0}
+                />
+              </Typography>
+            </Stack>
+          ) : (
+            <Typography sx={{fontSize: "0.85rem", color: "text.secondary"}}>
+              N/A
+            </Typography>
+          )}
+        </Stack>
+      )}
+    </Paper>
+  );
+}
+
 // Main component
 export function EnhancedDelegationValidatorsTable() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const {connected} = useWallet();
   const columns = connected
     ? DEFAULT_COLUMNS
@@ -627,6 +822,52 @@ export function EnhancedDelegationValidatorsTable() {
   ));
 
   if (isLoading) {
+    // Mobile loading state
+    if (isMobile) {
+      return (
+        <Box>
+          {Array.from({length: 5}).map((_, index) => (
+            <Paper
+              key={`skeleton-${index}`}
+              sx={{
+                px: 2,
+                py: 1.5,
+                mb: 1,
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: 2,
+              }}
+            >
+              <Skeleton variant="text" width={100} height={24} sx={{mb: 1}} />
+              <Skeleton variant="text" width="60%" height={20} sx={{mb: 0.5}} />
+              <Skeleton variant="text" width="50%" height={20} sx={{mb: 1.5}} />
+              <Stack direction="row" justifyContent="space-between" gap={1}>
+                <Skeleton variant="text" width={70} height={40} />
+                <Skeleton variant="text" width={60} height={40} />
+                <Skeleton variant="text" width={50} height={40} />
+                <Skeleton variant="text" width={70} height={40} />
+              </Stack>
+            </Paper>
+          ))}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 2,
+              mt: 2,
+              py: 2,
+            }}
+          >
+            <CircularProgress size={24} />
+            <Typography variant="body2" color="text.secondary">
+              Loading validators...
+            </Typography>
+          </Box>
+        </Box>
+      );
+    }
+
+    // Desktop loading state
     return (
       <Box>
         <Box sx={{overflowX: "auto"}}>
@@ -675,6 +916,33 @@ export function EnhancedDelegationValidatorsTable() {
     );
   }
 
+  // Mobile card view
+  if (isMobile) {
+    if (sortedValidators.length === 0) {
+      return (
+        <Box sx={{textAlign: "center", py: 3}}>
+          <Typography variant="body1" color="text.secondary">
+            No validators found
+          </Typography>
+        </Box>
+      );
+    }
+
+    return (
+      <Box>
+        {sortedValidators.map((validator) => (
+          <EnhancedDelegationValidatorCard
+            key={validator.owner_address}
+            validator={validator}
+            connected={connected}
+            totalVotingPower={totalVotingPower}
+          />
+        ))}
+      </Box>
+    );
+  }
+
+  // Desktop table view
   return (
     <Box>
       <Box sx={{overflowX: "auto"}}>
