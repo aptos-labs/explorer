@@ -118,6 +118,37 @@ export const knownAddresses: Record<string, string> = {
     "Joule Bridge",
   "0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01":
     "Thala CDP",
+  // Yeap Finance
+  "0x028b7f9f45e3c2846c67e52656e68eca2b5427e347cbb6b84babe2cbfb4dd671":
+    "Yeap Deployer",
+  "0xdf3728b33bf766ce6a2d2def9588c5e9311d574075f1b2fecfdceb672630f2df":
+    "Yeap Deployment Proxy",
+  "0x7135c5016dbb106cef86c8e86f8224950e293c955e47d85fad1dacebd499c86e":
+    "Yeap Protocol Object",
+  "0xd9ddbe1698749284ded9042095a4c86da4d4641034305bee1fed3b05276804eb":
+    "Yeap Borrow API",
+  "0xbf060526a668c930d9f4e7e53454eee04cd5605ebc52ffe7616b90e5d4fd1660":
+    "Yeap Borrow Protocol Common",
+  "0xdd21ef98d7aac0b5ed43ab1f1d7db1fdd6ab4b11ea47daba324fed32fec6c43b":
+    "Yeap Earn API",
+  "0xe91cbd739dec33cc4eba965a6794ea98b9b9739965a76d37d365bb08efba18f6":
+    "Yeap Earn Protocol",
+  "0x0580240d4d50a27acb8aa97f9d2ff187a4a0109557bf0a3c1eb016f429fec4fc":
+    "Yeap Hyperion LLP Protocol",
+  "0x2e260d06de0f8091434883aa9d5112b5e21a4c5a4c4bc8eaacaf923a99c2419b":
+    "Yeap IRM",
+  "0x038f7ab94ec470555cac53682ecf4521fdd50eff2e57bf9053d7bcb77842600f":
+    "Yeap Oracle",
+  "0xcbaf4a3b7db44a42a476c559b8dc2ddd3f831ca797356b37664252433040d7f8":
+    "Yeap Oracle Lens",
+  "0x9d5f60258ed3e10919f118140e3ba5b75a128d232928c8efbe63503223a5a6dc":
+    "Yeap Oracle Manager",
+  "0x4e72993902a071191274f42266a7da9daa3a2d68bc81d97229a9219099ed67c5":
+    "Yeap SCMD Protocol",
+  "0x109817339346eadc9c6c7d652ecbc615a80298fa387b32f93127024cf887dbd3":
+    "Yeap Utils",
+  "0x07b90b95e1060d9d2e424c6687ba03cccaed6996cccd4868b759c9fca361fa70":
+    "Yeap Vault",
   "0x34c3e6af238f3a7fa3f3b0088cbc4b194d21f62e65a15b79ae91364de5a81a3a":
     "Aave Acl",
   "0x531069f4741cdead39d70b76e5779863864654fae6db8a752a244ff2f9916c15":
