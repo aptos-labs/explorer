@@ -24,6 +24,10 @@ import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
 import {CoinDescription} from "../../api/hooks/useGetCoinList";
 import {
+  useGetCoinMarketData,
+  CoinMarketData,
+} from "../../api/hooks/useGetCoinMarketData";
+import {
   VerifiedCoinCell,
   verifiedLevel,
   VerifiedType,
@@ -43,11 +47,11 @@ enum CoinVerificationFilterType {
 }
 
 // Helper to format price
-function formatPrice(price: string | null | undefined): string {
+function formatPrice(price: number | string | null | undefined): string {
   if (price === null || price === undefined) {
     return "—";
   }
-  const numPrice = parseFloat(price);
+  const numPrice = typeof price === "string" ? parseFloat(price) : price;
   if (isNaN(numPrice)) {
     return "—";
   }
@@ -63,12 +67,41 @@ function formatPrice(price: string | null | undefined): string {
   })}`;
 }
 
+// Helper to format market cap
+function formatMarketCap(marketCap: number | null | undefined): string {
+  if (marketCap === null || marketCap === undefined || marketCap === 0) {
+    return "—";
+  }
+  if (marketCap >= 1e12) {
+    return `$${(marketCap / 1e12).toFixed(2)}T`;
+  }
+  if (marketCap >= 1e9) {
+    return `$${(marketCap / 1e9).toFixed(2)}B`;
+  }
+  if (marketCap >= 1e6) {
+    return `$${(marketCap / 1e6).toFixed(2)}M`;
+  }
+  if (marketCap >= 1e3) {
+    return `$${(marketCap / 1e3).toFixed(2)}K`;
+  }
+  return `$${marketCap.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })}`;
+}
+
+// Extended coin type with market data
+type CoinWithMarketData = CoinDescription & {
+  marketCap?: number | null;
+  marketPrice?: number | null;
+};
+
 // Mobile card component for coins
 function CoinCard({
   coin,
   networkName,
 }: {
-  coin: CoinDescription;
+  coin: CoinWithMarketData;
   networkName: string;
 }) {
   const theme = useTheme();
@@ -98,6 +131,9 @@ function CoinCard({
       navigate({to: augmentTo(linkTo)});
     }
   };
+
+  // Use market price from CoinGecko if available, otherwise use Panora price
+  const displayPrice = coin.marketPrice ?? coin.usdPrice;
 
   return (
     <Paper
@@ -183,19 +219,35 @@ function CoinCard({
         </Stack>
       </Stack>
 
-      {/* Row 2: Price */}
-      {inMainnet && coin.usdPrice && (
+      {/* Row 2: Price and Market Cap */}
+      {inMainnet && (
         <Stack
           direction="row"
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography sx={{fontSize: "0.85rem", color: "text.secondary"}}>
-            Price
-          </Typography>
-          <Typography sx={{fontSize: "0.85rem", fontWeight: 500}}>
-            {formatPrice(coin.usdPrice)}
-          </Typography>
+          <Box>
+            <Typography
+              variant="caption"
+              sx={{color: "text.secondary", fontSize: "0.7rem"}}
+            >
+              Price
+            </Typography>
+            <Typography sx={{fontSize: "0.85rem", fontWeight: 500}}>
+              {formatPrice(displayPrice)}
+            </Typography>
+          </Box>
+          <Box sx={{textAlign: "right"}}>
+            <Typography
+              variant="caption"
+              sx={{color: "text.secondary", fontSize: "0.7rem"}}
+            >
+              Market Cap
+            </Typography>
+            <Typography sx={{fontSize: "0.85rem", fontWeight: 500}}>
+              {formatMarketCap(coin.marketCap)}
+            </Typography>
+          </Box>
         </Stack>
       )}
     </Paper>
@@ -314,7 +366,7 @@ const CoinVerifiedCell = React.memo(function CoinVerifiedCell({
 const PriceCell = React.memo(function PriceCell({
   price,
 }: {
-  price: string | null;
+  price: number | string | null;
 }) {
   const inMainnet = useGetInMainnet();
 
@@ -325,6 +377,24 @@ const PriceCell = React.memo(function PriceCell({
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
       {formatPrice(price)}
+    </GeneralTableCell>
+  );
+});
+
+const MarketCapCell = React.memo(function MarketCapCell({
+  marketCap,
+}: {
+  marketCap: number | null | undefined;
+}) {
+  const inMainnet = useGetInMainnet();
+
+  if (!inMainnet) {
+    return <GeneralTableCell sx={{textAlign: "right"}}>—</GeneralTableCell>;
+  }
+
+  return (
+    <GeneralTableCell sx={{textAlign: "right"}}>
+      {formatMarketCap(marketCap)}
     </GeneralTableCell>
   );
 });
@@ -346,22 +416,16 @@ export default function CoinsListTable({
   );
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Fetch market data from CoinGecko
+  const {data: marketData, isLoading: isMarketDataLoading} =
+    useGetCoinMarketData(coins);
+
   // Set default filter based on network
   React.useEffect(() => {
     if (networkName !== Network.MAINNET) {
       setVerificationFilter(CoinVerificationFilterType.ALL);
     }
   }, [networkName]);
-
-  const toIndex = useCallback((coin: CoinDescription): number => {
-    return coin.panoraOrderIndex
-      ? coin.panoraOrderIndex
-      : coin.panoraIndex
-        ? coin.panoraIndex
-        : coin.chainId !== 0
-          ? 0
-          : 1000000;
-  }, []);
 
   const getCoinId = useCallback((coin: CoinDescription): string | null => {
     return coin.tokenAddress ?? coin.faAddress;
@@ -388,9 +452,24 @@ export default function CoinsListTable({
     return verifications;
   }, [coins, getCoinId, networkName]);
 
+  // Merge coins with market data
+  const coinsWithMarketData = useMemo<CoinWithMarketData[]>(() => {
+    return coins.map((coin) => {
+      const geckoData: CoinMarketData | undefined = coin.coinGeckoId
+        ? marketData?.[coin.coinGeckoId]
+        : undefined;
+
+      return {
+        ...coin,
+        marketCap: geckoData?.market_cap ?? null,
+        marketPrice: geckoData?.current_price ?? null,
+      };
+    });
+  }, [coins, marketData]);
+
   // Filter and search logic
   const filteredCoins = useMemo(() => {
-    let filtered = coins;
+    let filtered = coinsWithMarketData;
 
     // Apply verification filter
     switch (verificationFilter) {
@@ -448,15 +527,30 @@ export default function CoinsListTable({
       });
     }
 
-    // Sort by panora index
-    return filtered.sort((a, b) => toIndex(a) - toIndex(b));
+    // Sort by market cap (descending), coins without market cap go to the end
+    return filtered.sort((a, b) => {
+      const aMarketCap = a.marketCap ?? 0;
+      const bMarketCap = b.marketCap ?? 0;
+
+      // If both have market cap, sort descending
+      if (aMarketCap > 0 && bMarketCap > 0) {
+        return bMarketCap - aMarketCap;
+      }
+      // Coins with market cap come first
+      if (aMarketCap > 0) return -1;
+      if (bMarketCap > 0) return 1;
+
+      // For coins without market cap, use panora index
+      const aIndex = a.panoraOrderIndex ?? a.panoraIndex ?? 1000000;
+      const bIndex = b.panoraOrderIndex ?? b.panoraIndex ?? 1000000;
+      return aIndex - bIndex;
+    });
   }, [
-    coins,
+    coinsWithMarketData,
     verificationFilter,
     searchQuery,
     coinVerifications,
     getCoinId,
-    toIndex,
   ]);
 
   const selectedTextColor = theme.palette.primary.main;
@@ -563,13 +657,16 @@ export default function CoinsListTable({
         coin.bridge,
         coin.symbol,
       );
+      // Use market price from CoinGecko if available, otherwise use Panora price
+      const displayPrice = coin.marketPrice ?? coin.usdPrice;
       return (
         <GeneralTableRow key={coin.tokenAddress ?? coin.faAddress ?? i}>
           <CoinLogoCell coin={coin} />
           <CoinNameCell name={coin.name} symbol={symbol} />
           <CoinTypeCell coin={coin} />
           <CoinVerifiedCell coin={coin} />
-          <PriceCell price={coin.usdPrice} />
+          <PriceCell price={displayPrice} />
+          <MarketCapCell marketCap={coin.marketCap} />
         </GeneralTableRow>
       );
     });
@@ -620,6 +717,7 @@ export default function CoinsListTable({
         </Stack>
         <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
           {filteredCoins.length} coins found
+          {isMarketDataLoading && " (loading market data...)"}
         </Typography>
         <Box>
           {filteredCoins.length > 0 ? (
@@ -676,6 +774,7 @@ export default function CoinsListTable({
       </Stack>
       <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
         {filteredCoins.length} coins found
+        {isMarketDataLoading && " (loading market data...)"}
       </Typography>
       <Box sx={{overflowX: "auto"}}>
         <Table>
@@ -690,7 +789,10 @@ export default function CoinsListTable({
                 isTableTooltip={true}
               />
               {inMainnet && (
-                <GeneralTableHeaderCell header="Price" textAlignRight />
+                <>
+                  <GeneralTableHeaderCell header="Price" textAlignRight />
+                  <GeneralTableHeaderCell header="Market Cap" textAlignRight />
+                </>
               )}
             </TableRow>
           </TableHead>
@@ -704,7 +806,10 @@ export default function CoinsListTable({
           ) : (
             <GeneralTableBody>
               <TableRow>
-                <GeneralTableCell colSpan={5} sx={{textAlign: "center", py: 3}}>
+                <GeneralTableCell
+                  colSpan={inMainnet ? 6 : 4}
+                  sx={{textAlign: "center", py: 3}}
+                >
                   <Typography variant="body1" color="text.secondary">
                     No coins found
                   </Typography>
