@@ -51,20 +51,31 @@ function getChangeTypeColor(
   return "default";
 }
 
-// Extract short resource name from type
-function getShortResourceName(change: Types.WriteSetChange): string | null {
+// Extract full resource type from change
+function getResourceType(change: Types.WriteSetChange): string | null {
   if (
     "data" in change &&
     change.data &&
     typeof change.data === "object" &&
     "type" in change.data
   ) {
-    const fullType = change.data.type;
-    const parts = fullType.split("::");
-    const baseName = parts[parts.length - 1]?.split("<")[0] || fullType;
-    return baseName;
+    return change.data.type;
   }
   return null;
+}
+
+// Get address from change
+function getChangeAddress(change: Types.WriteSetChange): string | null {
+  if ("address" in change && change.address) {
+    return change.address;
+  }
+  return null;
+}
+
+// Truncate address for display
+function truncateAddress(address: string): string {
+  if (address.length <= 12) return address;
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
 type ChangesTabProps = {
@@ -76,9 +87,9 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
   const changes: Types.WriteSetChange[] =
     "changes" in transaction ? transaction.changes : [];
 
-  // Track which cards are expanded (default: first 3 expanded)
+  // Track which cards are expanded (default: all collapsed)
   const [expandedList, setExpandedList] = useState<boolean[]>(() =>
-    changes.map((_, i) => i < 3),
+    changes.map(() => false),
   );
 
   // Track which cards show raw JSON
@@ -156,7 +167,8 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
         {changes.map((change, i) => {
           const shortLabel = getChangeTypeShortLabel(change.type);
           const chipColor = getChangeTypeColor(change.type);
-          const resourceName = getShortResourceName(change);
+          const resourceType = getResourceType(change);
+          const address = getChangeAddress(change);
 
           return (
             <Accordion
@@ -179,22 +191,24 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 sx={{
-                  padding: "4px 16px",
-                  minHeight: 48,
+                  padding: "8px 16px",
+                  minHeight: "auto",
                   "& .MuiAccordionSummary-content": {
-                    margin: "8px 0",
-                    alignItems: "center",
+                    margin: "4px 0",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    gap: 0.5,
                   },
                 }}
               >
+                {/* First row: index, type chip, and address */}
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
                     gap: 1.5,
                     flexWrap: "wrap",
-                    flex: 1,
-                    mr: 1,
+                    width: "100%",
                   }}
                 >
                   <Typography
@@ -218,23 +232,43 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
                       fontWeight: 500,
                     }}
                   />
-                  {resourceName && (
+                  {address && (
                     <Typography
                       variant="body2"
                       sx={{
                         fontFamily: "monospace",
-                        fontSize: "0.8rem",
-                        color: theme.palette.text.primary,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                        maxWidth: {xs: 150, sm: 300, md: 400},
+                        fontSize: "0.75rem",
+                        color: theme.palette.text.secondary,
+                        backgroundColor:
+                          theme.palette.mode === "dark"
+                            ? theme.palette.grey[800]
+                            : theme.palette.grey[100],
+                        padding: "2px 8px",
+                        borderRadius: 1,
                       }}
                     >
-                      {resourceName}
+                      {truncateAddress(address)}
                     </Typography>
                   )}
                 </Box>
+                {/* Second row: full resource type */}
+                {resourceType && (
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontFamily: "monospace",
+                      fontSize: "0.75rem",
+                      color: theme.palette.text.primary,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                      maxWidth: "100%",
+                      pl: "46px", // align with content after index
+                    }}
+                  >
+                    {resourceType}
+                  </Typography>
+                )}
               </AccordionSummary>
               <AccordionDetails
                 sx={{
