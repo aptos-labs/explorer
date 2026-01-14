@@ -181,6 +181,7 @@ function Name({
       <Link
         href={`https://www.aptosnames.com/name/${name}`}
         target="_blank"
+        rel="noopener noreferrer"
         underline="none"
       >
         {name}
