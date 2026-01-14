@@ -163,6 +163,7 @@ export function getLearnMoreTooltip(
               <Link
                 href="https://github.com/PanoraExchange/Aptos-Tokens"
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 Panora token list
               </Link>{" "}

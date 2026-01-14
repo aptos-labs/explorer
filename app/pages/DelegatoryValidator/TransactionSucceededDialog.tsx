@@ -141,6 +141,7 @@ export default function TransactionSucceededDialog({
           href={`/txn/${transactionHash}`}
           onClick={onViewTransactionClick}
           target="_blank"
+          rel="noopener noreferrer"
           variant="primary"
           fullWidth
           sx={{marginX: 3}}

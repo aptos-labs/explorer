@@ -702,7 +702,9 @@ function EnhancedDelegationValidatorCard({
             }}
           >
             <APTCurrencyValue
-              amount={(Number(validator.apt_rewards_distributed) || 0).toFixed(2)}
+              amount={(Number(validator.apt_rewards_distributed) || 0).toFixed(
+                2,
+              )}
               decimals={0}
             />
           </Typography>

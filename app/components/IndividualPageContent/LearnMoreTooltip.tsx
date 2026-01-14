@@ -28,7 +28,13 @@ export function LearnMoreTooltip({
         title={
           <Stack alignItems="flex-end">
             {linkToText ? (
-              <Link alignSelf="flex-end" href={link} color="inherit">
+              <Link
+                alignSelf="flex-end"
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                color="inherit"
+              >
                 {text}
               </Link>
             ) : (
@@ -39,6 +45,7 @@ export function LearnMoreTooltip({
                     alignSelf="flex-end"
                     href={link}
                     target="_blank"
+                    rel="noopener noreferrer"
                     color="inherit"
                   >
                     Learn More

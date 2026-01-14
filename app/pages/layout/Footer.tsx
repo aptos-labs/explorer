@@ -58,6 +58,7 @@ export default function Footer() {
               color="inherit"
               to="https://aptoslabs.com/"
               target="_blank"
+              rel="noopener noreferrer"
               title="Aptos Labs"
               sx={{width: "8rem", marginRight: "1rem"}}
             >
@@ -93,6 +94,7 @@ export default function Footer() {
                   color="inherit"
                   to="https://aptoslabs.com/privacy"
                   target="_blank"
+                  rel="noopener noreferrer"
                   sx={{
                     fontSize: "0.8rem",
                     fontFamily:
@@ -105,6 +107,7 @@ export default function Footer() {
                   color="inherit"
                   to="https://aptoslabs.com/terms"
                   target="_blank"
+                  rel="noopener noreferrer"
                   sx={{
                     fontSize: "0.8rem",
                     fontFamily:

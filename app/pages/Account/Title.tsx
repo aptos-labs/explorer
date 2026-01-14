@@ -99,6 +99,7 @@ export default function AccountTitle({
                   <Link
                     href="https://aptos.dev/build/sdks/wallet-adapter/x-chain-accounts"
                     target="_blank"
+                    rel="noopener noreferrer"
                     underline="none"
                   >
                     <Typography variant="body2" sx={{fontWeight: 600}}>
@@ -126,6 +127,7 @@ export default function AccountTitle({
             <Link
               href="https://daa-dashboard.vercel.app/"
               target="_blank"
+              rel="noopener noreferrer"
               underline="none"
             >
               <Typography variant="body2" sx={{fontWeight: 600}}>

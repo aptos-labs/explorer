@@ -77,6 +77,7 @@ const faqStakingData = [
         <Link
           to="https://aptos.dev/en/network/nodes/validator-node/connect-nodes/delegation-pool-operations#perform-delegation-pool-operations"
           target="_blank"
+          rel="noopener noreferrer"
         >
           CLI
         </Link>
@@ -177,6 +178,7 @@ const faqValidatorData = [
             "https://aptos.dev/en/network/blockchain/blockchain-deep-dive#consensus"
           }
           target="_blank"
+          rel="noopener noreferrer"
         >
           here
         </Link>
@@ -284,6 +286,7 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
           sx={{margin: 1, marginTop: 2}}
           href={REWARDS_LEARN_MORE_LINK}
           target="_blank"
+          rel="noopener noreferrer"
         >
           Learn more about staking
         </Button>

@@ -52,7 +52,13 @@ export function StyledLearnMoreTooltip({
       title={
         <Stack alignItems="flex-end">
           {linkToText ? (
-            <Link alignSelf="flex-end" href={link} color="inherit">
+            <Link
+              alignSelf="flex-end"
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              color="inherit"
+            >
               {text}
             </Link>
           ) : (
@@ -64,6 +70,7 @@ export function StyledLearnMoreTooltip({
                   href={link}
                   color="inherit"
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Learn More
                 </Link>

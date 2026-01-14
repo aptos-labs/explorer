@@ -550,7 +550,7 @@ export const HardCodedCoins: Record<string, CoinDescription> = {
     logoUrl:
       "https://securitize-public-files.s3.us-east-2.amazonaws.com/ClientDocuments/apollo/apollo-token-logo-32x32.png",
     websiteUrl:
-      "http://securitize.io/primary-market/apollo-diversified-credit-securitize-fund",
+      "https://securitize.io/primary-market/apollo-diversified-credit-securitize-fund",
     category: "Native",
     isInPanoraTokenList: true,
     isBanned: false,
