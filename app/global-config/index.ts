@@ -9,5 +9,6 @@ export {
   useSdkV2Client,
   useIndexerClient,
   useFeatureName,
+  useFeatureSelector,
 } from "./GlobalConfig";
 export type {GlobalState} from "./GlobalConfig";
