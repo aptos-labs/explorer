@@ -9,15 +9,21 @@ import {
   getApiKey,
   isValidNetworkName,
   getGraphqlURI,
+  defaultFeatureName,
+  FeatureName,
+  isValidFeatureName,
 } from "../constants";
 import Cookies from "js-cookie";
 
 const NETWORK_COOKIE_NAME = "network";
+const FEATURE_COOKIE_NAME = "feature";
 
 // Network context
 interface GlobalContextValue {
   networkName: NetworkName;
   setNetworkName: (name: NetworkName) => void;
+  featureName: FeatureName;
+  setFeatureName: (name: FeatureName) => void;
 }
 
 const GlobalContext = createContext<GlobalContextValue | undefined>(undefined);
@@ -34,6 +40,29 @@ function getNetworkNameFromCookie(): NetworkName {
 function setNetworkNameCookie(name: NetworkName) {
   if (typeof window !== "undefined") {
     Cookies.set(NETWORK_COOKIE_NAME, name, {
+      expires: 365,
+      sameSite: "lax",
+      secure: window.location.protocol === "https:",
+    });
+  }
+}
+
+function getFeatureNameFromCookie(): FeatureName {
+  if (typeof window === "undefined") return defaultFeatureName;
+  const cookie = Cookies.get(FEATURE_COOKIE_NAME);
+  if (cookie && isValidFeatureName(cookie)) {
+    return cookie as FeatureName;
+  }
+  return defaultFeatureName;
+}
+
+function setFeatureNameCookie(name: FeatureName) {
+  if (typeof window !== "undefined") {
+    if (name === defaultFeatureName) {
+      Cookies.remove(FEATURE_COOKIE_NAME);
+      return;
+    }
+    Cookies.set(FEATURE_COOKIE_NAME, name, {
       expires: 365,
       sameSite: "lax",
       secure: window.location.protocol === "https:",
@@ -63,6 +92,9 @@ export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
   // User's saved preference from cookie
   const [savedNetworkName, setSavedNetworkName] = React.useState<NetworkName>(
     () => getNetworkNameFromCookie(),
+  );
+  const [savedFeatureName, setSavedFeatureName] = React.useState<FeatureName>(
+    () => getFeatureNameFromCookie(),
   );
 
   // Track if we've already added the network param to prevent infinite loops
@@ -112,12 +144,19 @@ export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
     setNetworkNameCookie(name);
   }, []);
 
+  const setFeatureName = React.useCallback((name: FeatureName) => {
+    setSavedFeatureName(name);
+    setFeatureNameCookie(name);
+  }, []);
+
   const value = useMemo(
     () => ({
       networkName,
       setNetworkName,
+      featureName: savedFeatureName,
+      setFeatureName,
     }),
-    [networkName, setNetworkName],
+    [networkName, setNetworkName, savedFeatureName, setFeatureName],
   );
 
   return (
@@ -147,6 +186,14 @@ export function useNetworkSelector(): [
 ] {
   const {networkName, setNetworkName} = useGlobalContext();
   return [networkName, setNetworkName];
+}
+
+export function useFeatureSelector(): [
+  FeatureName,
+  (name: FeatureName) => void,
+] {
+  const {featureName, setFeatureName} = useGlobalContext();
+  return [featureName, setFeatureName];
 }
 
 export function useNetworkValue(): string {
@@ -304,9 +351,9 @@ export function useIndexerClient(): IndexerClient | undefined {
 }
 
 /**
- * Hook to get the feature name from environment or cookie.
+ * Hook to get the feature name from cookie-based settings.
  */
-export function useFeatureName(): string {
-  // Default to "prod" - can be enhanced to read from cookie/env
-  return "prod";
+export function useFeatureName(): FeatureName {
+  const {featureName} = useGlobalContext();
+  return featureName;
 }

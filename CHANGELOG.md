@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Kanban-style task management in `.agents/tasks/`
 - Issue tracking templates in `.agents/issues/`
 - Task and issue templates in `.agents/templates/`
+- Settings page with cookie-based feature mode selection.
 
 ### Changed
 
