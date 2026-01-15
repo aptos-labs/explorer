@@ -13,6 +13,7 @@ import {
   Skeleton,
   TextField,
   InputAdornment,
+  Alert,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
@@ -44,6 +45,13 @@ enum CoinVerificationFilterType {
   VERIFIED,
   RECOGNIZED,
   ALL,
+}
+
+// Helper to get initial filter based on network
+function getInitialFilter(networkName: string): CoinVerificationFilterType {
+  return networkName === Network.MAINNET
+    ? CoinVerificationFilterType.VERIFIED
+    : CoinVerificationFilterType.ALL;
 }
 
 // Helper to format price
@@ -411,21 +419,19 @@ export default function CoinsListTable({
   const theme = useTheme();
   const networkName = useNetworkName();
   const inMainnet = useGetInMainnet();
-  const [verificationFilter, setVerificationFilter] = useState(
-    CoinVerificationFilterType.VERIFIED,
+
+  // Initialize filter directly based on network to avoid flash of incorrect content
+  const [verificationFilter, setVerificationFilter] = useState(() =>
+    getInitialFilter(networkName),
   );
   const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch market data from CoinGecko
-  const {data: marketData, isLoading: isMarketDataLoading} =
-    useGetCoinMarketData(coins);
-
-  // Set default filter based on network
-  React.useEffect(() => {
-    if (networkName !== Network.MAINNET) {
-      setVerificationFilter(CoinVerificationFilterType.ALL);
-    }
-  }, [networkName]);
+  const {
+    data: marketData,
+    isLoading: isMarketDataLoading,
+    errors: marketDataErrors,
+  } = useGetCoinMarketData(coins);
 
   const getCoinId = useCallback((coin: CoinDescription): string | null => {
     return coin.tokenAddress ?? coin.faAddress;
@@ -528,7 +534,8 @@ export default function CoinsListTable({
     }
 
     // Sort by market cap (descending), coins without market cap go to the end
-    return filtered.sort((a, b) => {
+    // Use spread operator to avoid mutating the original array
+    return [...filtered].sort((a, b) => {
       const aMarketCap = a.marketCap ?? 0;
       const bMarketCap = b.marketCap ?? 0;
 
@@ -690,6 +697,10 @@ export default function CoinsListTable({
     );
   }
 
+  // Market data error alert (only show if we had errors and no data)
+  const showMarketDataError =
+    marketDataErrors.length > 0 && !marketData && inMainnet;
+
   // Mobile card view
   if (isMobile) {
     return (
@@ -715,6 +726,11 @@ export default function CoinsListTable({
           />
           {filterSelector}
         </Stack>
+        {showMarketDataError && (
+          <Alert severity="warning" sx={{mb: 2}}>
+            Unable to load market data. Price and market cap may be unavailable.
+          </Alert>
+        )}
         <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
           {filteredCoins.length} coins found
           {isMarketDataLoading && " (loading market data...)"}
@@ -772,6 +788,11 @@ export default function CoinsListTable({
         />
         {filterSelector}
       </Stack>
+      {showMarketDataError && (
+        <Alert severity="warning" sx={{mb: 2}}>
+          Unable to load market data. Price and market cap may be unavailable.
+        </Alert>
+      )}
       <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
         {filteredCoins.length} coins found
         {isMarketDataLoading && " (loading market data...)"}
