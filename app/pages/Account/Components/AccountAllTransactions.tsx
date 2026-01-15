@@ -136,7 +136,7 @@ export default function AccountAllTransactions({
         >
           <AlertTitle>Transaction History Limited</AlertTitle>
           This account has a large transaction history. Due to performance
-          constraints, only the most recent{" "}
+          constraints, only the latest{" "}
           <strong>{MAX_DISPLAYABLE_TRANSACTIONS.toLocaleString()}</strong>{" "}
           transactions are displayed. Older transactions are not shown but can
           still be accessed directly by their version number.
@@ -149,8 +149,9 @@ export default function AccountAllTransactions({
         sx={{my: isCountUnknown ? 0 : 2}}
       >
         <Typography variant="body1" fontWeight="medium">
-          {txnCount.toLocaleString()} transactions
-          {isCountUnknown && " (estimated)"}
+          {isCountUnknown
+            ? `Showing up to ${txnCount.toLocaleString()} transactions`
+            : `${txnCount.toLocaleString()} transactions`}
         </Typography>
         {txnCount > 0 && (
           <CSVExportButton address={address} totalTransactionCount={txnCount} />
