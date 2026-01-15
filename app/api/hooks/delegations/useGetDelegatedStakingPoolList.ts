@@ -1,6 +1,7 @@
 import {CombinedGraphQLErrors, gql, ApolloClient} from "@apollo/client";
 import {useQuery as useGraphqlQuery} from "@apollo/client/react";
 import {useQuery} from "@tanstack/react-query";
+import {useNetworkName} from "../../../global-config";
 
 export interface DelegatedStakingPool {
   staking_pool_address: string;
@@ -70,15 +71,17 @@ export function useGetDelegatedStakingPoolList(): {
   loading: boolean;
   error?: CombinedGraphQLErrors;
 } {
+  const networkName = useNetworkName();
   const {client, error: apolloError} = useGraphqlQuery(VALIDATOR_LIST_QUERY, {
     skip: true,
   });
 
   const {data, isLoading, error} = useQuery({
-    queryKey: ["delegationPools"],
+    queryKey: ["delegationPools", networkName],
     queryFn: () => fetchAllDelegationPools(client),
     enabled: !!client,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
   });
 
   if (apolloError || error) {

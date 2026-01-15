@@ -12,13 +12,16 @@ export function useGetProfile(
     {name?: string; bio?: string; avatar_url?: string},
     ResponseError
   >({
-    queryKey: ["account", {address}, networkValue],
+    queryKey: ["profile", {address}, networkValue],
     queryFn: () => {
       return fetch("https://aptid.xyz/api/profile/bio?address=" + address).then(
         (res) => res.json(),
       );
     },
     retry: options?.retry ?? false,
+    // Profile data is semi-static - cache for 10 minutes
+    staleTime: 10 * 60 * 1000,
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
   });
 
   return result;

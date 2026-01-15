@@ -1,5 +1,9 @@
 import {Types} from "aptos";
-import {useQuery, UseQueryResult} from "@tanstack/react-query";
+import {
+  useQuery,
+  UseQueryResult,
+  keepPreviousData,
+} from "@tanstack/react-query";
 import {getAccountTransactions} from "..";
 import {ResponseError} from "../client";
 import {useNetworkValue, useAptosClient} from "../../global-config";
@@ -15,6 +19,7 @@ export function useGetAccountTransactions(
   return useQuery<Array<Types.Transaction>, ResponseError>({
     queryKey: ["accountTransactions", {address, start, limit}, networkValue],
     queryFn: () => getAccountTransactions({address, start, limit}, aptosClient),
+    placeholderData: keepPreviousData,
     // Transaction lists are dynamic - cache for 30 seconds
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes

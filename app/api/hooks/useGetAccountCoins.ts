@@ -1,6 +1,6 @@
-import {useQuery} from "@tanstack/react-query";
+import {useQuery, keepPreviousData} from "@tanstack/react-query";
 import {ResponseError} from "../client";
-import {useSdkV2Client} from "../../global-config";
+import {useSdkV2Client, useNetworkValue} from "../../global-config";
 import {tryStandardizeAddress} from "../../utils";
 
 const COINS_QUERY = `
@@ -37,10 +37,11 @@ const COIN_COUNT_QUERY = `
 
 export function useGetAccountCoinCount(address: string) {
   const sdkV2Client = useSdkV2Client();
+  const networkValue = useNetworkValue();
   const standardizedAddress = tryStandardizeAddress(address);
 
   return useQuery<number, ResponseError>({
-    queryKey: ["coinCount", address],
+    queryKey: ["coinCount", standardizedAddress || address, networkValue],
     queryFn: async (): Promise<number> => {
       if (!standardizedAddress) {
         return 0;
@@ -79,10 +80,17 @@ export function useGetAccountCoins(
   offset: number = 0,
 ) {
   const sdkV2Client = useSdkV2Client();
+  const networkValue = useNetworkValue();
   const standardizedAddress = tryStandardizeAddress(address);
 
   return useQuery<FaBalance[], ResponseError>({
-    queryKey: ["coinQuery", address, limit, offset],
+    queryKey: [
+      "coinQuery",
+      standardizedAddress || address,
+      limit,
+      offset,
+      networkValue,
+    ],
     queryFn: async (): Promise<FaBalance[]> => {
       if (!standardizedAddress) {
         return [];
@@ -103,12 +111,19 @@ export function useGetAccountCoins(
 
       return response.current_fungible_asset_balances;
     },
+    placeholderData: keepPreviousData,
+    // Coin lists are semi-static - cache for 1 minute
+    staleTime: 60 * 1000,
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 }
 
 // Legacy function that fetches all coins at once for backward compatibility
+// TODO: Consider migrating to useInfiniteQuery for on-demand pagination to reduce
+// initial request fan-out for accounts with many coins
 export function useGetAllAccountCoins(address: string) {
   const sdkV2Client = useSdkV2Client();
+  const networkValue = useNetworkValue();
   const standardizedAddress = tryStandardizeAddress(address);
 
   // Get count first
@@ -118,12 +133,18 @@ export function useGetAllAccountCoins(address: string) {
   const PAGE_SIZE = 100;
 
   return useQuery<FaBalance[], ResponseError>({
-    queryKey: ["allCoinsQuery", address, count.data],
+    queryKey: [
+      "allCoinsQuery",
+      standardizedAddress || address,
+      count.data,
+      networkValue,
+    ],
     queryFn: async (): Promise<FaBalance[]> => {
       if (!address || !count.data) {
         return [];
       }
 
+      // Fetch all pages in parallel to minimize total request time
       const promises = [];
       for (let i = 0; i < count.data; i += PAGE_SIZE) {
         promises.push(
@@ -145,5 +166,9 @@ export function useGetAllAccountCoins(address: string) {
       const responses = await Promise.all(promises);
       return responses.flatMap((r) => r.current_fungible_asset_balances);
     },
+    enabled: !!address && !!count.data,
+    // Coin lists are semi-static - cache for 1 minute
+    staleTime: 60 * 1000,
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 }

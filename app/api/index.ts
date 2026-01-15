@@ -201,6 +201,14 @@ export function getTableItem(
   return withResponseError(client.getTableItem(tableHandle, data));
 }
 
+/**
+ * Fetch multiple recent blocks in parallel.
+ *
+ * Note: This makes N parallel requests (one per block). For better performance,
+ * consider using a GraphQL query that can fetch multiple blocks in a single request
+ * if the indexer supports it. Current implementation uses Promise.all for optimal
+ * parallelization.
+ */
 export async function getRecentBlocks(
   currentBlockHeight: number,
   count: number,

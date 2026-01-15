@@ -58,5 +58,8 @@ export function useGetPrice(coinId: string = "aptos") {
   return useQuery({
     queryKey: ["price", coinId],
     queryFn: () => getPrice(coinId),
+    // Price data updates frequently but not in real-time - cache for 2 minutes
+    staleTime: 2 * 60 * 1000,
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 }

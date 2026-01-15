@@ -3,7 +3,7 @@ import {
   useIndexerClient,
   useSdkV2Client,
 } from "../../global-config";
-import {useQuery} from "@tanstack/react-query";
+import {useQuery, keepPreviousData} from "@tanstack/react-query";
 import {tryStandardizeAddress} from "../../utils";
 import {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 import {IndexerClient} from "aptos";
@@ -37,6 +37,7 @@ export function useGetAccountTokens(
   const networkValue = useNetworkValue();
   const indexerClient = useIndexerClient();
   const addr64Hash = tryStandardizeAddress(address);
+
   return useQuery<TokenOwnership[]>({
     queryKey: ["account_tokens", {addr64Hash, limit, offset}, networkValue],
     queryFn: async () => {
@@ -58,6 +59,10 @@ export function useGetAccountTokens(
       return response?.current_token_ownerships_v2 ?? [];
     },
     enabled: !!addr64Hash && !!indexerClient,
+    placeholderData: keepPreviousData,
+    // Token lists are semi-static - cache for 1 minute
+    staleTime: 60 * 1000,
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 }
 
@@ -133,5 +138,9 @@ export function useGetTokenActivities(
         });
       return response;
     },
+    placeholderData: keepPreviousData,
+    // Token activities are dynamic - cache for 30 seconds
+    staleTime: 30 * 1000,
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   });
 }
