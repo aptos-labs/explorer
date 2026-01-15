@@ -113,34 +113,18 @@ export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
   const rawTxnCount = useGetAccountAllTransactionCount(address);
-  let txnCount: number;
-  let isLimitedByPerformance = false;
-  let totalKnownCount: number | undefined;
 
-  if (rawTxnCount === undefined) {
-    // If we can't load the number of transactions, the indexer query is too expensive
-    // We'll default to max displayable transactions in the event there's no account data,
-    // it's better to allow access then to fail
-    // Sequence number is not a reliable way to determine the number of transactions,
-    // and will lead to empty pages in really large accounts.
-    txnCount = MAX_DISPLAYABLE_TRANSACTIONS;
-    isLimitedByPerformance = true;
-    totalKnownCount = undefined;
-  } else if (rawTxnCount > MAX_DISPLAYABLE_TRANSACTIONS) {
-    // Account has more transactions than we can display
-    txnCount = MAX_DISPLAYABLE_TRANSACTIONS;
-    isLimitedByPerformance = true;
-    totalKnownCount = rawTxnCount;
-  } else {
-    txnCount = rawTxnCount;
-  }
+  // If we have the actual count, use it - allow users to page through all transactions.
+  // Only fall back to the limit when the count query times out (returns undefined).
+  const isCountUnknown = rawTxnCount === undefined;
+  const txnCount = isCountUnknown ? MAX_DISPLAYABLE_TRANSACTIONS : rawTxnCount;
 
   const countPerPage = 25;
   const numPages = Math.ceil(txnCount / countPerPage);
 
   return (
     <Stack spacing={2}>
-      {isLimitedByPerformance && (
+      {isCountUnknown && (
         <Alert
           severity="info"
           icon={<InfoOutlined />}
@@ -151,36 +135,22 @@ export default function AccountAllTransactions({
           }}
         >
           <AlertTitle>Transaction History Limited</AlertTitle>
-          {totalKnownCount !== undefined ? (
-            <>
-              This account has{" "}
-              <strong>{totalKnownCount.toLocaleString()}</strong> total
-              transactions. Due to performance constraints, only the most recent{" "}
-              <strong>{MAX_DISPLAYABLE_TRANSACTIONS.toLocaleString()}</strong>{" "}
-              transactions are displayed. Older transactions are not shown but
-              can still be accessed directly by their version number.
-            </>
-          ) : (
-            <>
-              This account has a large transaction history. Due to performance
-              constraints, only the most recent{" "}
-              <strong>{MAX_DISPLAYABLE_TRANSACTIONS.toLocaleString()}</strong>{" "}
-              transactions are displayed. Older transactions are not shown but
-              can still be accessed directly by their version number.
-            </>
-          )}
+          This account has a large transaction history. Due to performance
+          constraints, only the most recent{" "}
+          <strong>{MAX_DISPLAYABLE_TRANSACTIONS.toLocaleString()}</strong>{" "}
+          transactions are displayed. Older transactions are not shown but can
+          still be accessed directly by their version number.
         </Alert>
       )}
       <Stack
         direction="row"
         justifyContent="space-between"
         alignItems="center"
-        sx={{my: isLimitedByPerformance ? 0 : 2}}
+        sx={{my: isCountUnknown ? 0 : 2}}
       >
-        <Typography>
-          {isLimitedByPerformance
-            ? `Showing latest ${txnCount.toLocaleString()} transactions`
-            : `Showing all ${txnCount.toLocaleString()} transactions`}
+        <Typography variant="body1" fontWeight="medium">
+          {txnCount.toLocaleString()} transactions
+          {isCountUnknown && " (estimated)"}
         </Typography>
         {txnCount > 0 && (
           <CSVExportButton address={address} totalTransactionCount={txnCount} />
