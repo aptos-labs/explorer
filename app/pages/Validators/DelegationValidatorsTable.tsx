@@ -636,9 +636,9 @@ function ValidatorRow({
     });
   };
 
-  // Hide delegators that are inactive and have no delegated stake unless showInactiveValidators is enabled
+  // Hide validators that are inactive and have no delegated stake unless showInactiveValidators is enabled
   // TODO: Don't show inactive validators unless the users have a deposit
-  // Would require some querying restructing to be efficient.
+  // Would require some querying restructuring to be efficient.
   if (
     !showInactiveValidators &&
     getValidatorStatus(status) === "Inactive" &&
