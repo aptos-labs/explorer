@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Enhanced `AGENTS.md` with comprehensive role definitions and workflow documentation
+- Unified footer action link styling for consistency
 
 ---
 
