@@ -65,6 +65,27 @@ export default function Footer() {
     setTimeout(() => setCacheCleared(false), 2000);
   };
 
+  const footerLinkSx = {
+    color: "inherit",
+    fontSize: "0.8rem",
+    fontFamily:
+      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    textDecoration: "none",
+    transition: "opacity 0.2s ease",
+    "&:hover": {
+      opacity: 0.8,
+      textDecoration: "none",
+    },
+  };
+
+  const footerButtonSx = {
+    ...footerLinkSx,
+    background: "none",
+    border: "none",
+    padding: 0,
+    cursor: "pointer",
+  };
+
   return (
     <Box
       sx={{
@@ -127,63 +148,36 @@ export default function Footer() {
                 spacing={1}
                 justifyContent={{xs: "center", md: "start"}}
               >
-                <a
+                <Box
+                  component="a"
                   href="https://aptoslabs.com/privacy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{
-                    color: "inherit",
-                    fontSize: "0.8rem",
-                    fontFamily:
-                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                    textDecoration: "none",
-                  }}
+                  sx={footerLinkSx}
                 >
                   Privacy
-                </a>
-                <a
+                </Box>
+                <Box
+                  component="a"
                   href="https://aptoslabs.com/terms"
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{
-                    color: "inherit",
-                    fontSize: "0.8rem",
-                    fontFamily:
-                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                    textDecoration: "none",
-                  }}
+                  sx={footerLinkSx}
                 >
                   Terms
-                </a>
-                <Link
-                  to="/verification"
-                  style={{
-                    color: "inherit",
-                    fontSize: "0.8rem",
-                    fontFamily:
-                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                    textDecoration: "none",
-                  }}
-                >
+                </Box>
+                <Link to="/verification" sx={footerLinkSx}>
                   Token & Address Verification
                 </Link>
-                <button
+                <Box
+                  component="button"
+                  type="button"
                   onClick={handleClearCache}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "inherit",
-                    fontSize: "0.8rem",
-                    fontFamily:
-                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                    cursor: "pointer",
-                    padding: 0,
-                    opacity: 0.7,
-                  }}
+                  sx={footerButtonSx}
                   title="Clear search cache"
                 >
                   {cacheCleared ? "✓ Cleared" : "Clear Cache"}
-                </button>
+                </Box>
               </Stack>
             </Grid>
           </Grid>
