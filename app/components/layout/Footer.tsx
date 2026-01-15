@@ -167,6 +167,18 @@ export default function Footer() {
                 >
                   Token & Address Verification
                 </Link>
+                <Link
+                  to="/documentation"
+                  style={{
+                    color: "inherit",
+                    fontSize: "0.8rem",
+                    fontFamily:
+                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    textDecoration: "none",
+                  }}
+                >
+                  Docs
+                </Link>
                 <button
                   onClick={handleClearCache}
                   style={{
