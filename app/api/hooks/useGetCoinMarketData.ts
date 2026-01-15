@@ -4,8 +4,12 @@ import {CoinDescription} from "./useGetCoinList";
 
 const COINGECKO_API_ENDPOINT = "https://api.coingecko.com/api/v3/coins/markets";
 
-// Rate limiting: CoinGecko free tier allows 10-50 calls/minute
-// We add a delay between batch requests to avoid hitting rate limits
+// Rate limiting: CoinGecko free tier allows 10-50 calls/minute depending on endpoint and usage.
+// We add a delay between batch requests to avoid hitting rate limits.
+// 1500ms (~40 calls/minute) is intentionally conservative: it stays well below the upper limit,
+// adds a safety margin for bursts / retries, and slightly favors reliability over minimal latency.
+// If CoinGecko limits or usage patterns change, this value can be tuned, but should remain within
+// the documented rate window to avoid HTTP 429 responses.
 const BATCH_DELAY_MS = 1500;
 
 export type CoinMarketData = {
@@ -111,7 +115,8 @@ export function useGetCoinMarketData(coins: CoinDescription[]) {
   }, [coins]);
 
   const queryResult = useQuery<CoinMarketDataResult>({
-    queryKey: ["coinMarketData", sortedUniqueIds.join(",")],
+    // Use array directly as query key - React Query handles array comparisons efficiently
+    queryKey: ["coinMarketData", sortedUniqueIds],
     queryFn: () => getCoinMarketData(sortedUniqueIds),
     enabled: sortedUniqueIds.length > 0,
     // Market data is somewhat dynamic - cache for 5 minutes

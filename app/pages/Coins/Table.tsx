@@ -47,6 +47,14 @@ enum CoinVerificationFilterType {
   ALL,
 }
 
+// Default index for coins without a Panora order index.
+// This large value ensures unindexed coins appear after indexed ones when sorting.
+const DEFAULT_PANORA_INDEX = 1000000;
+
+// Column counts for the table (used for empty state colSpan)
+const BASE_COLUMN_COUNT = 4; // Asset, Name, Type, Status
+const MAINNET_EXTRA_COLUMNS = 2; // Price, Market Cap
+
 // Helper to get initial filter based on network
 function getInitialFilter(networkName: string): CoinVerificationFilterType {
   return networkName === Network.MAINNET
@@ -548,8 +556,10 @@ export default function CoinsListTable({
       if (bMarketCap > 0) return 1;
 
       // For coins without market cap, use panora index
-      const aIndex = a.panoraOrderIndex ?? a.panoraIndex ?? 1000000;
-      const bIndex = b.panoraOrderIndex ?? b.panoraIndex ?? 1000000;
+      const aIndex =
+        a.panoraOrderIndex ?? a.panoraIndex ?? DEFAULT_PANORA_INDEX;
+      const bIndex =
+        b.panoraOrderIndex ?? b.panoraIndex ?? DEFAULT_PANORA_INDEX;
       return aIndex - bIndex;
     });
   }, [
@@ -828,7 +838,9 @@ export default function CoinsListTable({
             <GeneralTableBody>
               <TableRow>
                 <GeneralTableCell
-                  colSpan={inMainnet ? 6 : 4}
+                  colSpan={
+                    BASE_COLUMN_COUNT + (inMainnet ? MAINNET_EXTRA_COLUMNS : 0)
+                  }
                   sx={{textAlign: "center", py: 3}}
                 >
                   <Typography variant="body1" color="text.secondary">
