@@ -17,7 +17,8 @@
       "d3-ease": ">=3.0.0",
       "d3-interpolate": ">=3.0.0",
       "d3-timer": ">=3.0.0",
-      "d3-transition": ">=3.0.0"
+      "d3-transition": ">=3.0.0",
+      "h3": ">=1.15.5"
     }
   },
   "dependencies": {
