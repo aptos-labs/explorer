@@ -41,9 +41,9 @@ function getTabLabel(value: TabValue): string {
     case "transactions":
       return "Transactions";
     case "coins":
-      return "Coins";
+      return "Assets";
     case "tokens":
-      return "Tokens";
+      return "NFTs";
     case "multisig":
       return "Multisig";
     case "resources":

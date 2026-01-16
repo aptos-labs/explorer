@@ -168,6 +168,7 @@ function createAptosClient(networkName: NetworkName): AptosClient {
 function createAptosV2Client(networkName: NetworkName): Aptos {
   const nodeUrl = networks[networkName];
   const apiKey = getApiKey(networkName);
+  const indexerUrl = getGraphqlURI(networkName);
 
   // Map network name to SDK Network enum
   let network: SdkNetwork;
@@ -188,6 +189,7 @@ function createAptosV2Client(networkName: NetworkName): Aptos {
   const config = new AptosConfig({
     network,
     fullnode: nodeUrl,
+    indexer: indexerUrl,
     clientConfig: apiKey
       ? {
           HEADERS: {
