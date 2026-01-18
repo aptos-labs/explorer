@@ -688,6 +688,7 @@ function RunContractForm({
 
   return (
     <ContractForm
+      module={module}
       fn={fn}
       onSubmit={onSubmit}
       setFormValid={setFormValid}
@@ -913,6 +914,7 @@ function ReadContractForm({
 
   return (
     <ContractForm
+      module={module}
       fn={fn}
       onSubmit={onSubmit}
       setFormValid={setFormValid}
@@ -1128,6 +1130,7 @@ function HelpSection() {
 }
 
 function ContractForm({
+  module,
   fn,
   onSubmit,
   setFormValid,
@@ -1135,6 +1138,7 @@ function ContractForm({
   isView,
   sourceCode,
 }: {
+  module: Types.MoveModule;
   fn: Types.MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
   setFormValid: (valid: boolean) => void;
@@ -1144,6 +1148,7 @@ function ContractForm({
 }) {
   const {account} = useWallet();
   const theme = useTheme();
+  const [fnCopyTooltipOpen, setFnCopyTooltipOpen] = useState(false);
   const {
     handleSubmit,
     control,
@@ -1158,6 +1163,16 @@ function ContractForm({
 
   const fnParams = removeSignerParam(fn);
   const hasSigner = fnParams.length !== fn.params.length;
+
+  const fullFunctionId = `${module.address}::${module.name}::${fn.name}`;
+
+  async function copyFullFunctionId() {
+    await navigator.clipboard.writeText(fullFunctionId);
+    setFnCopyTooltipOpen(true);
+    setTimeout(() => {
+      setFnCopyTooltipOpen(false);
+    }, TOOLTIP_TIME);
+  }
 
   // Extract parameter names from source code if available
   const paramNames = useMemo(() => {
@@ -1193,6 +1208,20 @@ function ContractForm({
             <Typography variant="h6" fontWeight={600}>
               {fn.name}
             </Typography>
+            <StyledTooltip
+              title={
+                fnCopyTooltipOpen ? "Copied!" : "Copy full function identifier"
+              }
+              placement="top"
+              open={fnCopyTooltipOpen || undefined}
+              disableFocusListener={fnCopyTooltipOpen}
+              disableHoverListener={fnCopyTooltipOpen}
+              disableTouchListener={fnCopyTooltipOpen}
+            >
+              <IconButton onClick={copyFullFunctionId} size="small">
+                <ContentCopy fontSize="small" />
+              </IconButton>
+            </StyledTooltip>
             <Chip
               label={isView ? "View" : "Entry"}
               size="small"
