@@ -1,11 +1,9 @@
 import {QueryClient} from "@tanstack/react-query";
 import {Types} from "aptos";
 import {Aptos} from "@aptos-labs/ts-sdk";
-import {
-  faMetadataResource,
-  knownAddresses,
-  objectCoreResource,
-} from "../../../constants";
+import {faMetadataResource, objectCoreResource} from "../../../constants";
+import {getKnownAddresses} from "../../../data";
+import {NetworkName} from "../../../lib/constants";
 import {
   isValidAccountAddress,
   isNumeric,
@@ -369,10 +367,15 @@ export async function anyOwnedObjects(
 
 /**
  * Handle label lookup from known addresses
+ * Uses network-specific known addresses based on current network
  */
-export function handleLabelLookup(searchText: string): SearchResult[] {
+export function handleLabelLookup(
+  searchText: string,
+  networkName: NetworkName,
+): SearchResult[] {
   const searchResults: SearchResult[] = [];
   const searchLowerCase = searchText.toLowerCase();
+  const knownAddresses = getKnownAddresses(networkName);
   Object.entries(knownAddresses).forEach(([address, knownName]) => {
     if (prefixMatchLongerThan3(searchLowerCase, knownName)) {
       searchResults.push({
