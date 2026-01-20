@@ -295,7 +295,10 @@ export default function HeaderSearch() {
           );
           resultsList.push(...coinResults);
 
-          const labelResults = handleLabelLookup(normalizedSearchText);
+          const labelResults = handleLabelLookup(
+            normalizedSearchText,
+            networkName,
+          );
           resultsList.push(...labelResults);
         }
 

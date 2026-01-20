@@ -1,7 +1,9 @@
 import {useQuery} from "@tanstack/react-query";
 import {ResponseError} from "../client";
 import {tryStandardizeAddress} from "../../utils";
-import {HardCodedCoins} from "../../constants";
+import {getHardCodedCoins} from "../../data";
+import {useNetworkName} from "../../global-config/GlobalConfig";
+import {NetworkName} from "../../lib/constants";
 
 export type CoinDescription = {
   chainId: number; // Chain id (1 if mainnet) TODO: Handle across all of explorer to filter based on testnet / mainnet
@@ -38,10 +40,24 @@ export type CoinDescription = {
   native?: boolean; // Added for our own purposes, not from Panora
 };
 
+/**
+ * Fetch coin list from Panora API with network-specific hardcoded coins
+ * Note: Panora API is mainnet-only, so testnet/devnet will only show hardcoded coins
+ */
 export function useGetCoinList(options?: {retry?: number | boolean}) {
+  const networkName = useNetworkName();
+
   return useQuery<{data: CoinDescription[]}, ResponseError>({
-    queryKey: ["coinList"],
+    queryKey: ["coinList", networkName],
     queryFn: async (): Promise<{data: CoinDescription[]}> => {
+      const hardCodedCoins = getHardCodedCoins(networkName);
+
+      // Only fetch from Panora on mainnet (Panora doesn't have testnet/devnet data)
+      if (networkName !== "mainnet") {
+        // Return only hardcoded coins for non-mainnet networks
+        return {data: Object.values(hardCodedCoins)};
+      }
+
       const end_point = "https://api.panora.exchange/tokenlist";
 
       const query = {
@@ -66,7 +82,7 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
 
       // Merge hardcoded coins with the fetched coins only adding missing
       // TODO: Probably provide a list for bad internet connections / rate limiting
-      const hardcodedKeys = Object.keys(HardCodedCoins).filter((key) => {
+      const hardcodedKeys = Object.keys(hardCodedCoins).filter((key) => {
         return !ret.data.find((coin) => {
           return (
             coin.tokenAddress === key ||
@@ -78,7 +94,7 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
       // Any that don't exist, add them (and at the beginning)
       const newData: CoinDescription[] = [];
       hardcodedKeys.forEach((key) => {
-        newData.push(HardCodedCoins[key]);
+        newData.push(hardCodedCoins[key]);
       });
       ret.data = newData.concat(ret.data);
 
@@ -89,4 +105,14 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
     staleTime: 60 * 60 * 1000,
     gcTime: 24 * 60 * 60 * 1000, // Keep in cache for 24 hours
   });
+}
+
+/**
+ * Non-hook version for use outside of React components
+ * Requires network name to be passed explicitly
+ */
+export function getCoinListForNetwork(
+  networkName: NetworkName,
+): CoinDescription[] {
+  return Object.values(getHardCodedCoins(networkName));
 }
