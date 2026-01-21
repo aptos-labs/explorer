@@ -353,7 +353,7 @@ export const mainnetKnownAddresses: Record<string, string> = {
  * Known scam addresses for Mainnet
  */
 export const mainnetScamAddresses: Record<string, string> = {
-  "0xde08428deaca3139a570fffb4231f3a72c6dff015bba93ee4e9bb6bc61fde0b6b":
+  "0xde08428deaca3139a570fffb4231f3a72c6dff015bba93ee4e9436d2b9555b6b":
     "Known Scam",
   "0x8c3d2d8b2fde2b55a6ce96ebd3c9bd655e3f90bc6cee8d6f3f78f7215d99e755":
     "Known Scam",
