@@ -14,6 +14,7 @@ import IconBellLight from "../../assets/svg/icon_bell_light.svg?react";
 import Box from "@mui/material/Box";
 import Nav from "./Nav";
 import NavMobile from "./NavMobile";
+import GlobalNavMenu from "./GlobalNavMenu";
 import {grey} from "../../themes/colors/aptosColorPalette";
 import {useInView} from "react-intersection-observer";
 import FeatureBar from "./FeatureBar";
@@ -463,6 +464,8 @@ export default function Header() {
                 />
               </Box>
             )}
+
+            {!isOnMobile && <GlobalNavMenu />}
           </Toolbar>
         </Container>
       </MuiAppBar>
