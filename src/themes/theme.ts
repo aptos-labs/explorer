@@ -227,6 +227,20 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => ({
       }
 
       @font-face {
+        font-family: 'TWKEverett';
+        font-style: normal;
+        font-weight: 700;
+        src: url('/fonts/TWKEverett-Bold.otf') format('opentype');
+      }
+
+      @font-face {
+        font-family: 'TWKEverett';
+        font-style: normal;
+        font-weight: 900;
+        src: url('/fonts/TWKEverett-Black.otf') format('opentype');
+      }
+
+      @font-face {
         font-family: 'Cosmo';
         font-style: normal;
         font-weight: 400;

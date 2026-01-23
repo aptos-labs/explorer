@@ -162,6 +162,7 @@ function FooterColumnComponent({
       <Typography
         sx={{
           fontSize: "1rem",
+          fontFamily: "'TWKEverett', sans-serif",
           fontWeight: 900,
           textTransform: "uppercase",
           letterSpacing: "0.05em",
@@ -273,6 +274,7 @@ function DesktopFooter({
         <Typography
           sx={{
             mb: 8,
+            fontFamily: "'TWKEverett', sans-serif",
             fontSize: "2rem",
             fontWeight: 900,
             textTransform: "uppercase",
@@ -387,6 +389,7 @@ function MobileFooter({
           sx={{
             mt: 4,
             textAlign: "center",
+            fontFamily: "'TWKEverett', sans-serif",
             fontSize: "1.5rem",
             fontWeight: 700,
             textTransform: "uppercase",
@@ -425,6 +428,7 @@ function MobileFooter({
         <Box sx={{display: "flex", flexDirection: "column", gap: 2}}>
           <Typography
             sx={{
+              fontFamily: "'TWKEverett', sans-serif",
               fontSize: "1rem",
               fontWeight: 900,
               textTransform: "uppercase",
