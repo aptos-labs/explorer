@@ -266,14 +266,14 @@ function DesktopFooter({
         width: "100%",
         backgroundColor: "#000",
         px: 6,
-        py: 10,
+        py: 6,
       }}
     >
       {/* Heading at top */}
       {showHeading && (
         <Typography
           sx={{
-            mb: 8,
+            mb: 5,
             fontFamily: "'TWKEverett', sans-serif",
             fontSize: "2rem",
             fontWeight: 900,
@@ -334,7 +334,7 @@ function DesktopFooter({
       {/* Copyright at bottom center */}
       <Typography
         sx={{
-          mt: 8,
+          mt: 5,
           textAlign: "center",
           fontSize: "1rem",
           color: "rgba(255, 255, 255, 0.6)",

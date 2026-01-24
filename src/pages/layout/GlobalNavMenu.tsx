@@ -3,6 +3,7 @@ import {
   Box,
   IconButton,
   Modal,
+  Skeleton,
   Slide,
   Typography,
   useMediaQuery,
@@ -196,6 +197,7 @@ export default function GlobalNavMenu({
   items = defaultNavItems,
 }: GlobalNavMenuProps) {
   const [open, setOpen] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -261,6 +263,7 @@ export default function GlobalNavMenu({
                 right: 24,
                 color: "#fff",
                 zIndex: 10,
+                border: 0,
                 "&:hover": {
                   opacity: 1,
                 },
@@ -293,7 +296,7 @@ export default function GlobalNavMenu({
                 </Box>
 
                 {/* Apps section */}
-                <Box sx={{px: 3, pb: 5}}>
+                <Box sx={{px: 3, pb: 3}}>
                   <Typography
                     sx={{
                       fontFamily: "'TWKEverett', sans-serif",
@@ -329,7 +332,7 @@ export default function GlobalNavMenu({
                 </Box>
 
                 {/* Main content */}
-                <Box sx={{px: 5, pb: 5}}>
+                <Box sx={{px: 5, pb: 3}}>
                   <Box sx={{display: "flex", gap: 5}}>
                     {/* Apps columns */}
                     <Box
@@ -377,7 +380,7 @@ export default function GlobalNavMenu({
                       </Box>
                     </Box>
 
-                    {/* Right section - Video and Alliance */}
+                    {/* Right section - Video and KAST */}
                     <Box
                       sx={{
                         display: {xs: "none", xl: "flex"},
@@ -388,31 +391,48 @@ export default function GlobalNavMenu({
                         gap: 4,
                       }}
                     >
-                      {/* Video section */}
+                      {/* Video section - Vimeo embed */}
                       <Box
                         sx={{
                           width: 384,
                           height: 224,
                           borderRadius: "8px",
                           overflow: "hidden",
+                          position: "relative",
                         }}
                       >
+                        {!isVideoLoaded && (
+                          <Skeleton
+                            variant="rectangular"
+                            sx={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              width: "100%",
+                              height: "100%",
+                              bgcolor: "rgba(255, 255, 255, 0.1)",
+                            }}
+                          />
+                        )}
                         <iframe
+                          src="https://player.vimeo.com/video/1157746076?badge=0&autopause=0&player_id=0&app_id=58479"
                           width="384"
                           height="224"
-                          src="https://www.youtube.com/embed/vl6qoOeGRL0"
-                          title="Movement Labs"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
+                          frameBorder="0"
+                          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                          referrerPolicy="strict-origin-when-cross-origin"
+                          title="Movement x KAST"
+                          onLoad={() => setIsVideoLoaded(true)}
                           style={{
                             width: "100%",
                             height: "100%",
                             border: "none",
+                            visibility: isVideoLoaded ? "visible" : "hidden",
                           }}
                         />
                       </Box>
 
-                      {/* Move Alliance section */}
+                      {/* Movement x KAST section */}
                       <Box sx={{width: 400}}>
                         <Typography
                           sx={{
@@ -424,7 +444,7 @@ export default function GlobalNavMenu({
                             mb: 1,
                           }}
                         >
-                          INTRODUCING MOVE ALLIANCE
+                          MOVEMENT x KAST
                         </Typography>
                         <Typography
                           sx={{
@@ -433,7 +453,7 @@ export default function GlobalNavMenu({
                             lineHeight: 1.6,
                           }}
                         >
-                          This first-of-its-kind ecosystem flywheel fuses{" "}
+                          Earn 4% cashback in{" "}
                           <Box
                             component="a"
                             href="https://x.com/search?q=%24MOVE&src=cashtag_click"
@@ -444,12 +464,16 @@ export default function GlobalNavMenu({
                               textDecoration: "underline",
                             }}
                           >
-                            MOVE
+                            $MOVE
                           </Box>{" "}
-                          buybacks with performance incentives that benefits the
-                          builders, the community, and the Movement network.{" "}
+                          tokens on every purchase at 150+ million merchants
+                          worldwide. The first dual-rewards cashback program in
+                          Move history.{" "}
                           <Box
-                            component="span"
+                            component="a"
+                            href="https://www.movementnetwork.xyz/article/movement-kast-faq"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             sx={{
                               color: "#81ffba",
                               textDecoration: "underline dotted",
