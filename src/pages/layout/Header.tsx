@@ -306,6 +306,7 @@ export default function Header() {
           gap: 2,
         }}
       >
+        <GlobalNavMenu />
         <NetworkSelect />
         <NavMobile handleNotificationsClick={handleBellIconClick} />
       </Box>
