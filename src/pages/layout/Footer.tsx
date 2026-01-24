@@ -104,17 +104,17 @@ const defaultColumns: FooterColumn[] = [
       {label: "Developer Portal", href: "https://developer.movementnetwork.xyz/"},
     ],
   },
-  {
-    title: "Contact",
-    links: [
-      {label: "Contact Us", href: "#"},
-      {label: "FAQs", href: "#"},
-      {
-        label: "Support",
-        href: "https://discord.com/channels/1101576619493167217/1362083188104626516",
-      },
-    ],
-  },
+  // {
+  //   title: "Contact",
+  //   links: [
+  //     {label: "Contact Us", href: "#"},
+  //     {label: "FAQs", href: "#"},
+  //     {
+  //       label: "Support",
+  //       href: "https://discord.com/channels/1101576619493167217/1362083188104626516",
+  //     },
+  //   ],
+  // },
 ];
 
 const defaultSocialLinks: SocialLink[] = [
