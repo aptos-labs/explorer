@@ -1167,11 +1167,19 @@ function ContractForm({
   const fullFunctionId = `${module.address}::${module.name}::${fn.name}`;
 
   async function copyFullFunctionId() {
-    await navigator.clipboard.writeText(fullFunctionId);
-    setFnCopyTooltipOpen(true);
-    setTimeout(() => {
-      setFnCopyTooltipOpen(false);
-    }, TOOLTIP_TIME);
+    try {
+      if (!navigator?.clipboard?.writeText) {
+        console.error("Clipboard API is not available in this environment.");
+        return;
+      }
+      await navigator.clipboard.writeText(fullFunctionId);
+      setFnCopyTooltipOpen(true);
+      setTimeout(() => {
+        setFnCopyTooltipOpen(false);
+      }, TOOLTIP_TIME);
+    } catch (error) {
+      console.error("Failed to copy function id to clipboard:", error);
+    }
   }
 
   // Extract parameter names from source code if available
@@ -1218,7 +1226,11 @@ function ContractForm({
               disableHoverListener={fnCopyTooltipOpen}
               disableTouchListener={fnCopyTooltipOpen}
             >
-              <IconButton onClick={copyFullFunctionId} size="small">
+              <IconButton
+                onClick={copyFullFunctionId}
+                size="small"
+                aria-label="Copy full function identifier"
+              >
                 <ContentCopy fontSize="small" />
               </IconButton>
             </StyledTooltip>
