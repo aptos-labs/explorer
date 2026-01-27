@@ -49,7 +49,8 @@ export default defineConfig({
     // This ensures CJS packages are properly transformed for ESM SSR context
     noExternal: [
       "react-helmet-async", // CJS/ESM hybrid
-      "react-countdown", // CJS with ESM entry
+      "react-countdown", // CJS with ESM entry - needs prop-types to be bundled
+      "prop-types", // CommonJS module used by react-countdown
       // react-simple-maps and d3 packages need to be bundled to handle CJS require() of ESM
       // Vite will transform the CJS require() calls to work in ESM context
       // Map.client.tsx (containing react-simple-maps) is dynamically imported client-side in ValidatorsMap.tsx
@@ -112,7 +113,12 @@ export default defineConfig({
       "aptos",
       "@tanstack/react-query",
       "@apollo/client",
+      "react-countdown",
     ],
+    esbuildOptions: {
+      // Handle CommonJS modules that use named exports
+      mainFields: ["module", "main"],
+    },
   },
   server: {
     watch: {

@@ -1,5 +1,6 @@
 import {IconButton} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import {createPortal} from "react-dom";
 import {TransactionResponse} from "../../api/hooks/useSubmitTransaction";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 import FailureSnackbar from "./FailureSnackbar";
@@ -32,21 +33,25 @@ export default function TransactionResponseSnackbar({
     return null;
   }
 
-  if (!transactionResponse.transactionSubmitted) {
-    return (
-      <ErrorSnackbar
-        errorMessage={transactionResponse.message}
-        onCloseSnackbar={onCloseSnackbar}
-      />
-    );
-  }
-
-  return (
+  // Use Portal to render outside of table structure
+  const snackbarContent = !transactionResponse.transactionSubmitted ? (
+    <ErrorSnackbar
+      errorMessage={transactionResponse.message}
+      onCloseSnackbar={onCloseSnackbar}
+    />
+  ) : (
     <TransactionStatusSnackbar
       transactionHash={transactionResponse.transactionHash}
       onCloseSnackbar={onCloseSnackbar}
     />
   );
+
+  // Only use portal in browser environment
+  if (typeof document !== "undefined") {
+    return createPortal(snackbarContent, document.body);
+  }
+
+  return snackbarContent;
 }
 
 interface TransactionStatusSnackbarProps {

@@ -1,6 +1,5 @@
 import {Stack, Typography, useTheme, alpha} from "@mui/material";
-import React, {useState, useCallback, memo} from "react";
-import Countdown from "react-countdown";
+import React, {useState, useCallback, memo, useEffect} from "react";
 import StyledTooltip from "./StyledTooltip";
 
 export enum IntervalType {
@@ -24,6 +23,23 @@ const IntervalBar = memo(function IntervalBar({
 }: IntervalBarProps) {
   const theme = useTheme();
   const [displayTooltip, setDisplayTooltip] = useState<boolean>(false);
+  const [Countdown, setCountdown] = useState<React.ComponentType<
+    Record<string, unknown>
+  > | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  // Only load react-countdown on client side to avoid SSR issues
+  useEffect(() => {
+    setIsClient(true);
+    import("react-countdown").then((module) => {
+      setCountdown(
+        module.default as unknown as React.ComponentType<
+          Record<string, unknown>
+        >,
+      );
+    });
+  }, []);
+
   const handleCountdownComplete = useCallback(() => {
     setDisplayTooltip(true);
   }, []);
@@ -81,11 +97,15 @@ const IntervalBar = memo(function IntervalBar({
             sx={typographyStyle}
             marginX={0.5}
           >
-            <Countdown
-              date={timestamp}
-              renderer={renderer}
-              onComplete={handleCountdownComplete}
-            />
+            {isClient && Countdown ? (
+              <Countdown
+                date={timestamp}
+                renderer={renderer}
+                onComplete={handleCountdownComplete}
+              />
+            ) : (
+              <span>--</span>
+            )}
           </Typography>
         )}
       </Stack>
@@ -104,11 +124,15 @@ const IntervalBar = memo(function IntervalBar({
             sx={typographyStyle}
             marginX={0.5}
           >
-            <Countdown
-              date={timestamp}
-              renderer={renderer}
-              onComplete={handleCountdownComplete}
-            />
+            {isClient && Countdown ? (
+              <Countdown
+                date={timestamp}
+                renderer={renderer}
+                onComplete={handleCountdownComplete}
+              />
+            ) : (
+              <span>--</span>
+            )}
           </Typography>
         )}
       </Stack>
