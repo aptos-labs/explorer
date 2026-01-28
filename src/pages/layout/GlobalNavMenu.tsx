@@ -353,6 +353,7 @@ export default function GlobalNavMenu({
                             color: "#fff",
                             letterSpacing: "0.05em",
                             mb: 2,
+                            pl: 2,
                           }}
                         >
                           APPS
@@ -394,7 +395,7 @@ export default function GlobalNavMenu({
                       {/* Video section - Vimeo embed */}
                       <Box
                         sx={{
-                          width: 384,
+                          width: 400,
                           height: 224,
                           borderRadius: "8px",
                           overflow: "hidden",
@@ -416,7 +417,7 @@ export default function GlobalNavMenu({
                         )}
                         <iframe
                           src="https://player.vimeo.com/video/1157746076?badge=0&autopause=0&player_id=0&app_id=58479"
-                          width="384"
+                          width="400"
                           height="224"
                           frameBorder="0"
                           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"

@@ -269,7 +269,7 @@ function DesktopFooter({
         py: 6,
       }}
     >
-      {/* Heading at top */}
+      {/* Heading centered */}
       {showHeading && (
         <Typography
           sx={{
@@ -280,6 +280,7 @@ function DesktopFooter({
             textTransform: "uppercase",
             lineHeight: 1.5,
             color: "#fff",
+            textAlign: "center",
           }}
         >
           {heading}
@@ -290,7 +291,7 @@ function DesktopFooter({
       <Box
         sx={{
           display: "flex",
-          alignItems: "flex-start",
+          alignItems: "center",
           justifyContent: "space-between",
         }}
       >
