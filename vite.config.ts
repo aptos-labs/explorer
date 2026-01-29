@@ -1,4 +1,4 @@
-import {defineConfig} from "vite";
+import {defineConfig, type PluginOption} from "vite";
 import react from "@vitejs/plugin-react-swc";
 import viteSvgr from "vite-plugin-svgr";
 import {TanStackRouterVite} from "@tanstack/router-plugin/vite";
@@ -34,7 +34,9 @@ export default defineConfig({
       open: false, // Don't auto-open, just generate the file
       gzipSize: true,
       brotliSize: true,
-    }),
+    }) as PluginOption,
+    // PWA: Service worker is manually configured in public/sw.js
+    // This ensures compatibility with TanStack Start SSR
   ],
   // Support both VITE_ and REACT_APP_ prefixed environment variables
   envPrefix: ["VITE_", "REACT_APP_"],
