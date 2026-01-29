@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Progressive Web App (PWA) support with service worker for offline caching
+- Enhanced manifest.json with full PWA configuration (icons, screenshots, categories)
+- Service worker with intelligent caching strategies for static assets, fonts, and API calls
+- Netlify caching headers optimized for PWA assets (sw.js, manifest.json)
 - Multi-agent documentation system with 7 specialized roles (Architect, Coder, Reviewer, Tester, QA/Auditor, Cost Cutter, Modernizer)
 - Cross-tool compatibility with symlinks for Claude Code, Gemini, Warp, and GitHub Copilot
 - Cursor IDE integration with role-specific rules (`.cursor/rules/`) and notepads (`.cursor/notepads/`)
