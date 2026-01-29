@@ -5,6 +5,19 @@ const CACHE_NAME = "aptos-explorer-v1";
 const STATIC_CACHE_NAME = "aptos-explorer-static-v1";
 const DYNAMIC_CACHE_NAME = "aptos-explorer-dynamic-v1";
 
+// Allowed API hostnames for caching (exact match or subdomain)
+const APTOS_API_DOMAIN = "aptoslabs.com";
+
+/**
+ * Check if hostname is a valid Aptos Labs domain
+ * Prevents subdomain attacks like "evil-aptoslabs.com" or "aptoslabs.com.evil.com"
+ */
+function isAptosLabsDomain(hostname) {
+  return (
+    hostname === APTOS_API_DOMAIN || hostname.endsWith("." + APTOS_API_DOMAIN)
+  );
+}
+
 // Static assets to cache on install
 const STATIC_ASSETS = [
   "/",
@@ -84,10 +97,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   // Aptos API calls - Network First (always try fresh data)
-  if (
-    url.hostname.includes("aptoslabs.com") &&
-    url.pathname.startsWith("/v1")
-  ) {
+  if (isAptosLabsDomain(url.hostname) && url.pathname.startsWith("/v1")) {
     event.respondWith(networkFirst(request, DYNAMIC_CACHE_NAME, 5 * 60));
     return;
   }
