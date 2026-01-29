@@ -1,6 +1,15 @@
 {
+  "name": "Aptos Explorer",
   "short_name": "Aptos Explorer",
-  "name": "Aptos Block Explorer",
+  "description": "Explore transactions, accounts, blocks, validators, and activity on the Aptos blockchain.",
+  "theme_color": "#0a0a0a",
+  "background_color": "#0a0a0a",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "start_url": "/",
+  "id": "/",
+  "categories": ["finance", "utilities", "business"],
   "icons": [
     {
       "src": "favicon.ico",
@@ -11,17 +20,34 @@
       "src": "favicon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "favicon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#0a0a0a",
-  "background_color": "#0a0a0a"
+  "screenshots": [
+    {
+      "src": "og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Aptos Explorer Homepage"
+    }
+  ]
 }
