@@ -26,7 +26,7 @@
   "dependencies": {
     "@apollo/client": "^4.1.2",
     "@aptos-labs/ts-sdk": "5.2.1",
-    "@aptos-labs/wallet-adapter-react": "7.2.8",
+    "@aptos-labs/wallet-adapter-react": "8.2.0",
     "@download/blockies": "^1.0.3",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
