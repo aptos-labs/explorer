@@ -32,8 +32,8 @@ importers:
         specifier: 5.2.1
         version: 5.2.1(got@11.8.6)
       '@aptos-labs/wallet-adapter-react':
-        specifier: 7.2.8
-        version: 7.2.8(@aptos-labs/ts-sdk@5.2.1(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@types/react@19.2.9)(@wallet-standard/core@1.1.0)(react@19.2.3)
+        specifier: 8.2.0
+        version: 8.2.0(@aptos-labs/ts-sdk@5.2.1(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@types/react@19.2.9)(@wallet-standard/core@1.1.0)(react@19.2.3)
       '@download/blockies':
         specifier: ^1.0.3
         version: 1.0.3
@@ -283,13 +283,13 @@ packages:
     resolution: {integrity: sha512-kazYjqfsPCBx2UJI+nYUOb6Ov7q7brSgYEfxp2sP27IeJWdDNa50lfs0WIpDJ92kQxdtlm9q3ZWw7Toh9f1gxQ==}
     engines: {node: '>=20.0.0'}
 
-  '@aptos-labs/wallet-adapter-core@7.10.2':
-    resolution: {integrity: sha512-8my6jCfjLT0HqShGbnKXnqoERA1dTYuiH4of5WHEGHsB5OxYI5o+NHnDyCf/LQGtsZ8tEGaU5pOE+kGgFnlV8g==}
+  '@aptos-labs/wallet-adapter-core@8.2.0':
+    resolution: {integrity: sha512-vN9CMMVSMT1b4pMKdwgvdc/CwYX8x91mxvhzmMfyhrPt6w4ydv/0Q/pj1fKcHPSlWtpWY48aphebBWSH3XGOow==}
     peerDependencies:
       '@aptos-labs/ts-sdk': 5.2.1
 
-  '@aptos-labs/wallet-adapter-react@7.2.8':
-    resolution: {integrity: sha512-WHPLvfvpXRBdjlnKY13fufy+oAov4J7PWIGlVD0XwgpMDWgi1WuMb8iYtGePcRqfDan5nvhALV04qRAsWwMGqQ==}
+  '@aptos-labs/wallet-adapter-react@8.2.0':
+    resolution: {integrity: sha512-IWpdeOEZ88wHNW3vmZI9L60MQbaP0bifrUsdDKNQwR0ZbivBhyowEzayQCvlloftgYWyIq6qvr/SFIX/+wzbtw==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
@@ -5492,6 +5492,7 @@ packages:
   tar@7.5.6:
     resolution: {integrity: sha512-xqUeu2JAIJpXyvskvU3uvQW8PAmHrtXp2KDuMJwQqW8Sqq0CaZBAQ+dKS3RBXVhU4wC5NjAdKrmh84241gO9cA==}
     engines: {node: '>=18'}
+    deprecated: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
 
   temp-dir@2.0.0:
     resolution: {integrity: sha512-aoBAniQmmwtcKp/7BzsH8Cxzv8OL736p7v1ihGb5e9DJ9kTwGWHrQrVB5+lfVDzfGrdRzXch+ig7LHaY1JTOrg==}
@@ -6232,7 +6233,7 @@ snapshots:
     transitivePeerDependencies:
       - got
 
-  '@aptos-labs/wallet-adapter-core@7.10.2(@aptos-labs/ts-sdk@5.2.1(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)':
+  '@aptos-labs/wallet-adapter-core@8.2.0(@aptos-labs/ts-sdk@5.2.1(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)':
     dependencies:
       '@aptos-connect/wallet-adapter-plugin': 3.0.1(@aptos-labs/ts-sdk@5.2.1(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)
       '@aptos-labs/ts-sdk': 5.2.1(got@11.8.6)
@@ -6245,9 +6246,9 @@ snapshots:
       - '@wallet-standard/core'
       - debug
 
-  '@aptos-labs/wallet-adapter-react@7.2.8(@aptos-labs/ts-sdk@5.2.1(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@types/react@19.2.9)(@wallet-standard/core@1.1.0)(react@19.2.3)':
+  '@aptos-labs/wallet-adapter-react@8.2.0(@aptos-labs/ts-sdk@5.2.1(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@types/react@19.2.9)(@wallet-standard/core@1.1.0)(react@19.2.3)':
     dependencies:
-      '@aptos-labs/wallet-adapter-core': 7.10.2(@aptos-labs/ts-sdk@5.2.1(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)
+      '@aptos-labs/wallet-adapter-core': 8.2.0(@aptos-labs/ts-sdk@5.2.1(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)
       '@radix-ui/react-slot': 1.2.4(@types/react@19.2.9)(react@19.2.3)
       react: 19.2.3
     transitivePeerDependencies:
