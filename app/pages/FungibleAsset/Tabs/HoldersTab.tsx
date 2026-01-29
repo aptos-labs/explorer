@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useReducer} from "react";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {
   CoinHolder,
@@ -14,7 +14,7 @@ import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {FACombinedData} from "../Index";
-import {Box, CircularProgress, Pagination} from "@mui/material";
+import {Box, Button, CircularProgress} from "@mui/material";
 
 type HoldersTabProps = {
   address: string;
@@ -23,42 +23,98 @@ type HoldersTabProps = {
 
 const LIMIT = 25;
 
+// Wrapper component that remounts HoldersContent when address changes
 export default function HoldersTab({address, data}: HoldersTabProps) {
-  const [page, setPage] = useState(1);
-  const [prevAddress, setPrevAddress] = useState(address);
+  return <HoldersContent key={address} address={address} data={data} />;
+}
 
-  // Reset page when address changes (during render, per React best practices)
-  if (address !== prevAddress) {
-    setPrevAddress(address);
-    setPage(1);
+type HoldersState = {
+  offset: number;
+  holders: CoinHolder[];
+  lastLoadedOffset: number;
+};
+
+type HoldersAction =
+  | {type: "LOAD_MORE"}
+  | {type: "DATA_LOADED"; payload: {offset: number; data: CoinHolder[]}};
+
+function holdersReducer(state: HoldersState, action: HoldersAction): HoldersState {
+  switch (action.type) {
+    case "LOAD_MORE":
+      return {...state, offset: state.offset + LIMIT};
+    case "DATA_LOADED":
+      if (action.payload.offset === state.lastLoadedOffset) {
+        return state; // Already processed this offset
+      }
+      if (action.payload.offset === 0) {
+        return {
+          ...state,
+          holders: action.payload.data,
+          lastLoadedOffset: 0,
+        };
+      }
+      return {
+        ...state,
+        holders: [...state.holders, ...action.payload.data],
+        lastLoadedOffset: action.payload.offset,
+      };
+    default:
+      return state;
+  }
+}
+
+function HoldersContent({address, data}: HoldersTabProps) {
+  const [state, dispatch] = useReducer(holdersReducer, {
+    offset: 0,
+    holders: [],
+    lastLoadedOffset: -1,
+  });
+
+  const holderData = useGetCoinHolders(address, LIMIT, state.offset);
+
+  // Process loaded data via reducer dispatch
+  if (
+    holderData.data &&
+    holderData.data.length > 0 &&
+    state.lastLoadedOffset !== state.offset
+  ) {
+    dispatch({
+      type: "DATA_LOADED",
+      payload: {offset: state.offset, data: holderData.data},
+    });
   }
 
-  const offset = (page - 1) * LIMIT;
-  const holderData = useGetCoinHolders(address, LIMIT, offset);
-
-  if (holderData?.isLoading) {
+  // Show loading only on initial load
+  if (holderData.isLoading && state.holders.length === 0) {
     return (
       <Box sx={{display: "flex", justifyContent: "center", padding: 4}}>
         <CircularProgress />
       </Box>
     );
   }
-  if (!data || Array.isArray(data) || !holderData?.data) {
+  if (!data || Array.isArray(data) || state.holders.length === 0) {
     return <EmptyTabContent />;
   }
 
-  const pageCount = holderData.count ? Math.ceil(holderData.count / LIMIT) : 0;
-
-  const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
+  const handleLoadMore = () => {
+    dispatch({type: "LOAD_MORE"});
   };
 
   return (
     <Box>
-      <HoldersTable data={data} holders={holderData.data} offset={offset} />
-      {pageCount > 1 && (
+      <HoldersTable data={data} holders={state.holders} offset={0} />
+      {holderData.hasMore && (
         <Box sx={{display: "flex", justifyContent: "center", padding: 2}}>
-          <Pagination count={pageCount} page={page} onChange={handleChange} />
+          <Button
+            variant="outlined"
+            onClick={handleLoadMore}
+            disabled={holderData.isLoading}
+            startIcon={
+              holderData.isLoading ? <CircularProgress size={16} /> : null
+            }
+          >
+            {holderData.isLoading ? "Loading..." : "Load more"}
+          </Button>
         </Box>
       )}
     </Box>

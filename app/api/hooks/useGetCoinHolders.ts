@@ -14,15 +14,10 @@ export function useGetCoinHolders(
   isLoading: boolean;
   error: CombinedGraphQLErrors | undefined;
   data: CoinHolder[] | undefined;
-  count: number | undefined;
+  hasMore: boolean;
 } {
   const {loading, error, data} = useGraphqlQuery<{
     current_fungible_asset_balances: CoinHolder[];
-    current_fungible_asset_balances_aggregate: {
-      aggregate: {
-        count: number;
-      };
-    };
   }>(
     gql`
       query GetFungibleAssetBalances(
@@ -39,13 +34,6 @@ export function useGetCoinHolders(
           owner_address
           amount
         }
-        current_fungible_asset_balances_aggregate(
-          where: {asset_type: {_eq: $coin_type}}
-        ) {
-          aggregate {
-            count
-          }
-        }
       }
     `,
     {variables: {coin_type, limit, offset: offset ?? 0}},
@@ -55,6 +43,6 @@ export function useGetCoinHolders(
     isLoading: loading,
     error: error ? (error as CombinedGraphQLErrors) : undefined,
     data: data?.current_fungible_asset_balances,
-    count: data?.current_fungible_asset_balances_aggregate?.aggregate?.count,
+    hasMore: (data?.current_fungible_asset_balances?.length ?? 0) === limit,
   };
 }
