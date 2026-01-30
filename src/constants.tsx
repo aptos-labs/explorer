@@ -413,8 +413,6 @@ export const knownAddresses: Record<string, string> = {
     "Only On Aptos NFT",
   "0x55f0ee4db1f09caf1bf49b2fb7298dba3a9da674108e26dc7adc78f8c94f298e":
     "Martian Wallet Fees",
-  "0x407c4d644c0303f46f754b3ceaabf1e4af3f625a4936ae7e0f1c3e51082368ef":
-    "Pontem Wallet Fees",
   "0xaa90e0d9d16b63ba4a289fb0dc8d1b454058b21c9b5c76864f825d5c1f32582e": "Msafe",
   "0xa5c6b23b141f610246348dd08111affcc2d2b1f5c8f8c768ca5c837d4f17fda2":
     "MSafe Wallet Fees",
