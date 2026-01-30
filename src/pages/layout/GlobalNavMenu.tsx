@@ -264,8 +264,11 @@ export default function GlobalNavMenu({
                 color: "#fff",
                 zIndex: 10,
                 border: 0,
+                borderRadius: "50%",
+                p: 1,
                 "&:hover": {
                   opacity: 1,
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
                 },
                 opacity: 0.7,
               }}
