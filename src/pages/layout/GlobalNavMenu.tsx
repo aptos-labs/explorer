@@ -335,7 +335,7 @@ export default function GlobalNavMenu({
                 </Box>
 
                 {/* Main content */}
-                <Box sx={{px: 5, pb: 3}}>
+                <Box sx={{px: 5, pb: 3, maxWidth: 1400, mx: "auto"}}>
                   <Box sx={{display: "flex", gap: 5}}>
                     {/* Apps columns */}
                     <Box

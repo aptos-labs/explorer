@@ -108,6 +108,7 @@ export default function ExplorerLayout({children}: LayoutProps) {
                     flexDirection: "column",
                     flexGrow: 4,
                     paddingTop: "2rem",
+                    paddingBottom: "4rem",
                   }}
                 >
                   <Suspense fallback={<Fallback />}>{children}</Suspense>
