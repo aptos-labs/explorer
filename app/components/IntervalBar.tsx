@@ -28,17 +28,33 @@ const IntervalBar = memo(function IntervalBar({
   > | null>(null);
   const [isClient, setIsClient] = useState(false);
 
-  // Only load react-countdown on client side to avoid SSR issues
   useEffect(() => {
     setIsClient(true);
-    import("react-countdown").then((module) => {
-      setCountdown(
-        module.default as unknown as React.ComponentType<
-          Record<string, unknown>
-        >,
-      );
-    });
   }, []);
+
+  useEffect(() => {
+    // Only import on client side after confirming we're in browser
+    if (!isClient) return;
+
+    // Use dynamic import to load react-countdown client-side only
+    // This prevents SSR errors with prop-types require() calls
+    const loadCountdown = async () => {
+      try {
+        const module = await import("react-countdown");
+        // Use function wrapper like ValidatorsMap pattern - this ensures the component
+        // is properly wrapped and can be used as a React component
+        setCountdown(
+          () =>
+            module.default as unknown as React.ComponentType<
+              Record<string, unknown>
+            >,
+        );
+      } catch (e) {
+        console.error("Failed to load react-countdown", e);
+      }
+    };
+    loadCountdown();
+  }, [isClient]);
 
   const handleCountdownComplete = useCallback(() => {
     setDisplayTooltip(true);
