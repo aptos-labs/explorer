@@ -15,7 +15,11 @@ import {defaultNetworkName} from "../constants";
 
 export default function LocalnetUnavailableModal() {
   const [networkName, setNetworkName] = useNetworkSelector();
-  const {isAvailable, isChecked} = useLocalnetDetection();
+  // Only check for localnet availability when local network is explicitly selected
+  // This prevents prompting users about local device connections unless they choose localnet
+  const {isAvailable, isChecked} = useLocalnetDetection({
+    enabled: networkName === "local",
+  });
 
   // Show modal when on localnet, initial check is done, and it's not running
   const showModal = networkName === "local" && isChecked && !isAvailable;

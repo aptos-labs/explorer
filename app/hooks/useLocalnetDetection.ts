@@ -9,18 +9,35 @@ interface LocalnetDetectionResult {
   isChecked: boolean; // True after initial check completes
 }
 
+interface UseLocalnetDetectionOptions {
+  /**
+   * Whether to actively check for localnet availability.
+   * When false, the hook will not make any network requests.
+   * Defaults to false to avoid prompting users about local device connections
+   * unless they explicitly select the local network.
+   */
+  enabled?: boolean;
+}
+
 /**
  * Hook to detect if a local Aptos node is running.
- * Only runs on the client side.
+ * Only runs on the client side and only when enabled.
  * Returns both availability status and whether the initial check has completed.
+ *
+ * @param options.enabled - Whether to actively check for localnet. Defaults to false.
  */
-export function useLocalnetDetection(): LocalnetDetectionResult {
+export function useLocalnetDetection(
+  options: UseLocalnetDetectionOptions = {},
+): LocalnetDetectionResult {
+  const {enabled = false} = options;
   const [isLocalnetAvailable, setIsLocalnetAvailable] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
-    // Only run on client
-    if (typeof window === "undefined") return;
+    // Only run on client and when enabled
+    if (typeof window === "undefined" || !enabled) {
+      return;
+    }
 
     const checkLocalnet = async () => {
       try {
@@ -59,7 +76,15 @@ export function useLocalnetDetection(): LocalnetDetectionResult {
     const interval = setInterval(checkLocalnet, CHECK_INTERVAL);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [enabled]);
+
+  // When not enabled, return unchecked state (checking hasn't started)
+  // This is fine because the LocalnetUnavailableModal only shows the modal
+  // when networkName === "local" (which enables this hook), so the returned
+  // values when disabled don't affect the modal display.
+  if (!enabled) {
+    return {isAvailable: false, isChecked: false};
+  }
 
   return {isAvailable: isLocalnetAvailable, isChecked};
 }
