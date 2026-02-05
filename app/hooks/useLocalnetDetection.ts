@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useRef} from "react";
 import {networks} from "../constants";
 
 const LOCALNET_URL = networks.local;
@@ -33,13 +33,31 @@ export function useLocalnetDetection(
   const [isLocalnetAvailable, setIsLocalnetAvailable] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
+  // Track the previous enabled value to detect transitions
+  const prevEnabledRef = useRef(enabled);
+
   useEffect(() => {
     // Only run on client and when enabled
     if (typeof window === "undefined" || !enabled) {
       return;
     }
 
+    // Track whether this effect instance is still active (not cleaned up)
+    let isActive = true;
+
+    // Reset state when enabled transitions from false to true
+    // to avoid returning stale values from a previous check.
+    // We check this before defining checkLocalnet so the reset happens first.
+    const needsReset = !prevEnabledRef.current && enabled;
+    prevEnabledRef.current = enabled;
+
     const checkLocalnet = async () => {
+      // Reset state at the start of the check if this is a fresh enable
+      if (needsReset) {
+        setIsLocalnetAvailable(false);
+        setIsChecked(false);
+      }
+
       try {
         // Try to fetch the ledger info from localnet
         const response = await fetch(LOCALNET_URL, {
@@ -50,6 +68,9 @@ export function useLocalnetDetection(
           // Short timeout to avoid blocking
           signal: AbortSignal.timeout(2000),
         });
+
+        // Only update state if this effect is still active
+        if (!isActive) return;
 
         if (response.ok) {
           const data = await response.json();
@@ -63,6 +84,8 @@ export function useLocalnetDetection(
         setIsLocalnetAvailable(false);
         setIsChecked(true);
       } catch {
+        // Only update state if this effect is still active
+        if (!isActive) return;
         // Network error, localnet not running
         setIsLocalnetAvailable(false);
         setIsChecked(true);
@@ -75,7 +98,10 @@ export function useLocalnetDetection(
     // Periodic re-check
     const interval = setInterval(checkLocalnet, CHECK_INTERVAL);
 
-    return () => clearInterval(interval);
+    return () => {
+      isActive = false;
+      clearInterval(interval);
+    };
   }, [enabled]);
 
   // When not enabled, return unchecked state (checking hasn't started)
