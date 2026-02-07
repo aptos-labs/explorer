@@ -4,6 +4,9 @@
  * This is a thin fetch wrapper around the Aptos REST API used by functions
  * in `app/api/index.ts`.  It exposes only the methods the explorer actually
  * calls, keeping bundle size close to zero.
+ *
+ * NOTE: The base URL passed to the constructor is expected to already include
+ * the `/v1` path segment (e.g. `https://api.mainnet.aptoslabs.com/v1`).
  */
 
 import type {Types} from "~/types/aptos";
@@ -64,7 +67,7 @@ export class AptosClient {
     limit?: number;
   }): Promise<Types.Transaction[]> {
     return this.request(
-      `/v1/transactions${this.qs({start: opts?.start, limit: opts?.limit})}`,
+      `/transactions${this.qs({start: opts?.start, limit: opts?.limit})}`,
     );
   }
 
@@ -73,32 +76,32 @@ export class AptosClient {
     opts?: {start?: bigint | number; limit?: number},
   ): Promise<Types.Transaction[]> {
     return this.request(
-      `/v1/accounts/${address}/transactions${this.qs({start: opts?.start, limit: opts?.limit})}`,
+      `/accounts/${address}/transactions${this.qs({start: opts?.start, limit: opts?.limit})}`,
     );
   }
 
   async getTransactionByVersion(
     version: bigint | number,
   ): Promise<Types.Transaction> {
-    return this.request(`/v1/transactions/by_version/${version}`);
+    return this.request(`/transactions/by_version/${version}`);
   }
 
   async getTransactionByHash(hash: string): Promise<Types.Transaction> {
-    return this.request(`/v1/transactions/by_hash/${hash}`);
+    return this.request(`/transactions/by_hash/${hash}`);
   }
 
   // ------------------------------------------------------------------
   // Ledger
   // ------------------------------------------------------------------
   async getLedgerInfo(): Promise<Types.IndexResponse> {
-    return this.request("/v1");
+    return this.request("");
   }
 
   // ------------------------------------------------------------------
   // Accounts
   // ------------------------------------------------------------------
   async getAccount(address: string): Promise<Types.AccountData> {
-    return this.request(`/v1/accounts/${address}`);
+    return this.request(`/accounts/${address}`);
   }
 
   async getAccountResources(
@@ -106,7 +109,7 @@ export class AptosClient {
     opts?: {ledgerVersion?: bigint | number},
   ): Promise<Types.MoveResource[]> {
     return this.request(
-      `/v1/accounts/${address}/resources${this.qs({ledger_version: opts?.ledgerVersion})}`,
+      `/accounts/${address}/resources${this.qs({ledger_version: opts?.ledgerVersion})}`,
     );
   }
 
@@ -116,7 +119,7 @@ export class AptosClient {
     opts?: {ledgerVersion?: bigint | number},
   ): Promise<Types.MoveResource> {
     return this.request(
-      `/v1/accounts/${address}/resource/${encodeURIComponent(resourceType)}${this.qs({ledger_version: opts?.ledgerVersion})}`,
+      `/accounts/${address}/resource/${encodeURIComponent(resourceType)}${this.qs({ledger_version: opts?.ledgerVersion})}`,
     );
   }
 
@@ -125,7 +128,7 @@ export class AptosClient {
     opts?: {ledgerVersion?: bigint | number},
   ): Promise<Types.MoveModuleBytecode[]> {
     return this.request(
-      `/v1/accounts/${address}/modules${this.qs({ledger_version: opts?.ledgerVersion})}`,
+      `/accounts/${address}/modules${this.qs({ledger_version: opts?.ledgerVersion})}`,
     );
   }
 
@@ -135,7 +138,7 @@ export class AptosClient {
     opts?: {ledgerVersion?: bigint | number},
   ): Promise<Types.MoveModuleBytecode> {
     return this.request(
-      `/v1/accounts/${address}/module/${moduleName}${this.qs({ledger_version: opts?.ledgerVersion})}`,
+      `/accounts/${address}/module/${moduleName}${this.qs({ledger_version: opts?.ledgerVersion})}`,
     );
   }
 
@@ -147,7 +150,7 @@ export class AptosClient {
     ledgerVersion?: string,
   ): Promise<Types.MoveValue[]> {
     const qs = ledgerVersion ? `?ledger_version=${ledgerVersion}` : "";
-    return this.request(`/v1/view${qs}`, {
+    return this.request(`/view${qs}`, {
       method: "POST",
       body: JSON.stringify(request),
     });
@@ -160,7 +163,7 @@ export class AptosClient {
     tableHandle: string,
     data: Types.TableItemRequest,
   ): Promise<unknown> {
-    return this.request(`/v1/tables/${tableHandle}/item`, {
+    return this.request(`/tables/${tableHandle}/item`, {
       method: "POST",
       body: JSON.stringify(data),
     });
@@ -174,7 +177,7 @@ export class AptosClient {
     withTransactions?: boolean,
   ): Promise<Types.Block> {
     return this.request(
-      `/v1/blocks/by_height/${height}${this.qs({with_transactions: withTransactions})}`,
+      `/blocks/by_height/${height}${this.qs({with_transactions: withTransactions})}`,
     );
   }
 
