@@ -6,7 +6,7 @@ import {
   Stack,
   TableSortLabel,
 } from "@mui/material";
-import {SxProps} from "@mui/system";
+import type {SxProps} from "@mui/material";
 import {Theme} from "@mui/material/styles";
 import SouthIcon from "@mui/icons-material/South";
 

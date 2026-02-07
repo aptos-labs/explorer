@@ -1,7 +1,7 @@
 import React from "react";
 import {TokensTable} from "../Components/TokensTable";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {
   useGetAccountTokens,
   useGetAccountTokensCount,

@@ -1,7 +1,9 @@
-import {CombinedGraphQLErrors, gql} from "@apollo/client";
-import {useQuery as useGraphqlQuery} from "@apollo/client/react";
-import {Types} from "aptos";
+import {useQuery} from "@tanstack/react-query";
+import {gql} from "graphql-request";
+import {Types} from "~/types/aptos";
 import {tryStandardizeAddress} from "../../../utils";
+import {useGetGraphqlClient} from "../useGraphqlClient";
+import {useNetworkValue} from "../../../global-config";
 
 export interface DelegatorPoolInfo {
   delegator_address: string;
@@ -40,22 +42,25 @@ export function useGetDelegatedStaking(
 ): {
   delegatorPools: DelegatorPoolInfo[] | undefined;
   loading: boolean;
-  error: CombinedGraphQLErrors | undefined;
+  error: Error | undefined;
 } {
   const delegatorAddress64Hash =
     tryStandardizeAddress(delegatorAddress) ?? "N/A";
+  const client = useGetGraphqlClient();
+  const networkValue = useNetworkValue();
 
-  const {loading, error, data} = useGraphqlQuery<{
-    delegator_distinct_pool: DelegatorPoolInfo[];
-  }>(DELEGATED_STAKING_QUERY, {
-    variables: {
-      address: delegatorAddress64Hash,
-    },
+  const {isLoading, error, data} = useQuery({
+    queryKey: ["delegatedStaking", delegatorAddress64Hash, networkValue],
+    queryFn: () =>
+      client.request<{
+        delegator_distinct_pool: DelegatorPoolInfo[];
+      }>(DELEGATED_STAKING_QUERY, {address: delegatorAddress64Hash}),
+    enabled: !!delegatorAddress,
   });
 
   return {
     delegatorPools: data?.delegator_distinct_pool,
-    loading,
-    error: error ? (error as CombinedGraphQLErrors) : undefined,
+    loading: isLoading,
+    error: error ? (error as Error) : undefined,
   };
 }

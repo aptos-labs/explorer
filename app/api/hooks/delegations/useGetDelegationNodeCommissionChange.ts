@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {getValidatorCommissionChange} from "../..";
 import {useAptosClient} from "../../../global-config";
 import {ResponseError} from "../../client";

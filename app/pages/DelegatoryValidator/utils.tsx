@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {
   DelegatedStakingActivity,
   StakeOperation,
@@ -8,7 +8,7 @@ import {
   MINIMUM_APT_IN_POOL_FOR_EXPLORER,
   MINIMUM_APT_IN_POOL,
 } from "./constants";
-import {CombinedGraphQLErrors} from "@apollo/client";
+// CombinedGraphQLErrors replaced with Error after Apollo removal
 
 interface AccountResourceData {
   locked_until_secs: bigint;
@@ -61,7 +61,7 @@ export type StakePrincipals = {
 export function getStakeOperationPrincipals(activities: {
   activities: DelegatedStakingActivity[] | undefined;
   loading: boolean;
-  error: CombinedGraphQLErrors | undefined;
+  error: Error | undefined;
 }) {
   if (activities.error) {
     return {stakePrincipals: undefined, isLoading: false};

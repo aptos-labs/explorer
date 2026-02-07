@@ -51,7 +51,6 @@ export default defineConfig({
     // This ensures CJS packages are properly transformed for ESM SSR context
     noExternal: [
       "react-helmet-async", // CJS/ESM hybrid
-      "react-countdown", // CJS with ESM entry
       // react-simple-maps and d3 packages need to be bundled to handle CJS require() of ESM
       // Vite will transform the CJS require() calls to work in ESM context
       // Map.client.tsx (containing react-simple-maps) is dynamically imported client-side in ValidatorsMap.tsx
@@ -80,20 +79,16 @@ export default defineConfig({
               // React core - very stable
               "vendor-react": ["react", "react-dom"],
               // MUI - large bundle, rarely changes
-              "vendor-mui": [
-                "@mui/material",
-                "@mui/icons-material",
-                "@mui/system",
-              ],
+              "vendor-mui": ["@mui/material", "@mui/icons-material"],
               // Charts - only needed on analytics pages
               "vendor-charts": ["chart.js", "react-chartjs-2"],
               // Aptos SDK - core blockchain functionality
-              "vendor-aptos": ["@aptos-labs/ts-sdk", "aptos"],
+              "vendor-aptos": ["@aptos-labs/ts-sdk"],
               // Data fetching - stable utilities
               "vendor-query": [
                 "@tanstack/react-query",
-                "@apollo/client",
                 "graphql",
+                "graphql-request",
               ],
               // Wallet adapters - only needed for wallet interactions
               "vendor-wallet": ["@aptos-labs/wallet-adapter-react"],
@@ -109,12 +104,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: [
-      "@aptos-labs/ts-sdk",
-      "aptos",
-      "@tanstack/react-query",
-      "@apollo/client",
-    ],
+    include: ["@aptos-labs/ts-sdk", "@tanstack/react-query", "graphql-request"],
   },
   server: {
     watch: {

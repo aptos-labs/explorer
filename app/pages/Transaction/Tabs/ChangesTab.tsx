@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import useExpandedList from "../../../components/hooks/useExpandedList";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";

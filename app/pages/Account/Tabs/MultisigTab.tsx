@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import React from "react";
 import {Box, Typography, Stack, useTheme} from "@mui/material";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";

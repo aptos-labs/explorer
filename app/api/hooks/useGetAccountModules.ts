@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {getAccountModules} from "..";
 import {ResponseError} from "../client";

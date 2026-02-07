@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {useQuery, UseQueryOptions, UseQueryResult} from "@tanstack/react-query";
 import {ResponseError} from "../client";
 import {useNetworkValue, useAptosClient} from "../../global-config";

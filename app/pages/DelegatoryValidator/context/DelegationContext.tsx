@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {createContext} from "react";
 import {ValidatorData} from "../../../api/hooks/useGetValidators";
 

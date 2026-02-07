@@ -1,6 +1,6 @@
-import {CombinedGraphQLErrors, gql, ApolloClient} from "@apollo/client";
-import {useQuery as useGraphqlQuery} from "@apollo/client/react";
 import {useQuery} from "@tanstack/react-query";
+import {gql, GraphQLClient} from "graphql-request";
+import {useGetGraphqlClient} from "../useGraphqlClient";
 
 export interface DelegatedStakingPool {
   staking_pool_address: string;
@@ -29,7 +29,7 @@ const VALIDATOR_LIST_QUERY = gql`
 `;
 
 async function fetchAllDelegationPools(
-  apolloClient: ApolloClient,
+  client: GraphQLClient,
 ): Promise<DelegatedStakingPool[]> {
   const LIMIT = 100;
   let offset = 0;
@@ -37,21 +37,14 @@ async function fetchAllDelegationPools(
   let allPools: DelegatedStakingPool[] = [];
 
   while (hasMore) {
-    const result = await apolloClient.query<{
+    const result = await client.request<{
       delegated_staking_pools: DelegatedStakingPool[];
-    }>({
-      query: VALIDATOR_LIST_QUERY,
-      variables: {
-        limit: LIMIT,
-        offset: offset,
-      },
-    });
+    }>(VALIDATOR_LIST_QUERY, {limit: LIMIT, offset});
 
-    const pools = result.data?.delegated_staking_pools ?? [];
+    const pools = result?.delegated_staking_pools ?? [];
 
-    if (pools && pools.length > 0) {
+    if (pools.length > 0) {
       allPools = [...allPools, ...pools];
-
       if (pools.length < LIMIT) {
         hasMore = false;
       } else {
@@ -68,34 +61,19 @@ async function fetchAllDelegationPools(
 export function useGetDelegatedStakingPoolList(): {
   delegatedStakingPools: DelegatedStakingPool[];
   loading: boolean;
-  error?: CombinedGraphQLErrors;
+  error?: Error;
 } {
-  const {client, error: apolloError} = useGraphqlQuery(VALIDATOR_LIST_QUERY, {
-    skip: true,
-  });
+  const client = useGetGraphqlClient();
 
   const {data, isLoading, error} = useQuery({
     queryKey: ["delegationPools"],
     queryFn: () => fetchAllDelegationPools(client),
-    enabled: !!client,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
-
-  if (apolloError || error) {
-    return {
-      delegatedStakingPools: [],
-      loading: isLoading,
-      error: apolloError
-        ? (apolloError as CombinedGraphQLErrors)
-        : error
-          ? (error as unknown as CombinedGraphQLErrors)
-          : undefined,
-    };
-  }
 
   return {
     delegatedStakingPools: data || [],
     loading: isLoading,
-    error: undefined,
+    error: error ? (error as Error) : undefined,
   };
 }

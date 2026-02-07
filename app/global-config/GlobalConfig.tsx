@@ -1,5 +1,6 @@
 import React, {createContext, useContext, useMemo, ReactNode} from "react";
-import {AptosClient, IndexerClient} from "aptos";
+import {AptosClient} from "../api/legacyClient";
+import {IndexerClient} from "../api/indexerClient";
 import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import {useSearch} from "@tanstack/react-router";
 import {

@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {ValidatorData} from "../useGetValidators";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {getLockedUtilSecs} from "../../../pages/DelegatoryValidator/utils";

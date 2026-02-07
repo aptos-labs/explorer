@@ -33,7 +33,7 @@ import {
 } from "../../api/hooks/delegations";
 import {OCTA} from "../../constants";
 import {DelegationStateContext} from "./context/DelegationContext";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {getAddStakeFee} from "../../api";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {

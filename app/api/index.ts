@@ -1,4 +1,5 @@
-import {AptosClient, Types} from "aptos";
+import {Types} from "~/types/aptos";
+import {AptosClient} from "./legacyClient";
 import {
   AccountAddressInput,
   Aptos,

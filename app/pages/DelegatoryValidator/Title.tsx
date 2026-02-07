@@ -1,5 +1,5 @@
 import {Stack, Typography, Skeleton} from "@mui/material";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import ValidatorStatusIcon from "./Components/ValidatorStatusIcon";
 import {useGetDelegationNodeInfo} from "../../api/hooks/delegations";

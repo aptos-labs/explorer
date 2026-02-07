@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import React from "react";
 import {Button, Stack, Typography} from "@mui/material";
 import {useTheme} from "@mui/material";

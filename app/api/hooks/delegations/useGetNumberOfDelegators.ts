@@ -1,7 +1,9 @@
-import {CombinedGraphQLErrors, gql} from "@apollo/client";
-import {useQuery as useGraphqlQuery} from "@apollo/client/react";
+import {useQuery} from "@tanstack/react-query";
+import {gql} from "graphql-request";
 import {tryStandardizeAddress} from "../../../utils";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
+import {useGetGraphqlClient} from "../useGraphqlClient";
+import {useNetworkValue} from "../../../global-config";
 
 interface NumberOfDelegatorsResponse {
   num_active_delegator: string;
@@ -24,23 +26,26 @@ const NUMBER_OF_DELEGATORS_QUERY = gql`
 export function useGetNumberOfDelegators(poolAddress: Types.Address): {
   numberOfDelegators: number;
   loading: boolean;
-  error: CombinedGraphQLErrors | undefined;
+  error: Error | undefined;
 } {
   const poolAddress64Hash = tryStandardizeAddress(poolAddress);
+  const client = useGetGraphqlClient();
+  const networkValue = useNetworkValue();
 
-  const {loading, error, data} = useGraphqlQuery<{
-    num_active_delegator_per_pool: NumberOfDelegatorsResponse[];
-  }>(NUMBER_OF_DELEGATORS_QUERY, {
-    variables: {
-      poolAddress: poolAddress64Hash,
-    },
-    skip: !poolAddress,
+  const {isLoading, error, data} = useQuery({
+    queryKey: ["numberOfDelegators", poolAddress64Hash, networkValue],
+    queryFn: () =>
+      client.request<{
+        num_active_delegator_per_pool: NumberOfDelegatorsResponse[];
+      }>(NUMBER_OF_DELEGATORS_QUERY, {poolAddress: poolAddress64Hash}),
+    enabled: !!poolAddress && !!poolAddress64Hash,
   });
-  if (!poolAddress64Hash || loading || error || !data) {
+
+  if (!poolAddress64Hash || isLoading || error || !data) {
     return {
       numberOfDelegators: 0,
-      loading,
-      error: error ? (error as CombinedGraphQLErrors) : undefined,
+      loading: isLoading,
+      error: error ? (error as Error) : undefined,
     };
   }
 
@@ -52,7 +57,7 @@ export function useGetNumberOfDelegators(poolAddress: Types.Address): {
     numberOfDelegators: delegatorData
       ? parseInt(delegatorData.num_active_delegator, 10)
       : 0,
-    loading,
-    error,
+    loading: isLoading,
+    error: undefined,
   };
 }

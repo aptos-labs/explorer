@@ -1,5 +1,5 @@
 import {Hex} from "@aptos-labs/ts-sdk";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import {ResponseError} from "../client";
 import {view} from "../index";

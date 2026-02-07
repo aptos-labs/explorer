@@ -6,7 +6,7 @@ import {
 import {useQuery} from "@tanstack/react-query";
 import {tryStandardizeAddress} from "../../utils";
 import {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
-import {IndexerClient} from "aptos";
+import {IndexerClient} from "../indexerClient";
 
 export function useGetAccountTokensCount(address: string) {
   const networkValue = useNetworkValue();

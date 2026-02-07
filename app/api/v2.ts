@@ -1,5 +1,5 @@
 import {withResponseError} from "./client";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {Aptos, Block, AccountAddress} from "@aptos-labs/ts-sdk";
 import {isNumeric} from "../pages/utils";
 

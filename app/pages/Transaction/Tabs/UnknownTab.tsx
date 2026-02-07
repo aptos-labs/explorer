@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {Alert, Box} from "@mui/material";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";

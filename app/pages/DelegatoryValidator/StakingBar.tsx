@@ -26,7 +26,7 @@ import {DelegationStateContext} from "./context/DelegationContext";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
 import {OCTA} from "../../constants";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {getAddStakeFee} from "../../api";
 import {
   useNetworkValue,

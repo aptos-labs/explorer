@@ -1,4 +1,4 @@
-import {FailedTransactionError} from "aptos";
+import {FailedTransactionError} from "~/types/aptos";
 import {useState} from "react";
 import {
   useWallet,

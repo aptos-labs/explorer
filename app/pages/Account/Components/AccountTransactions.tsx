@@ -4,7 +4,7 @@ import TransactionsTable from "../../Transactions/TransactionsTable";
 import Error from "../Error";
 import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 
 const TXN_PER_PAGE = 25;
 

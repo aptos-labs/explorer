@@ -17,7 +17,7 @@ import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCel
 import {addressFromWallet, assertNever} from "../../utils";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {
   ValidatorData,
   useGetValidators,

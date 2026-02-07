@@ -18,10 +18,10 @@ import {
 } from "../../../api/hooks/useGetAccountAllTransactions";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {transactionsToCSV, downloadCSV} from "../../utils";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {useAptosClient} from "../../../global-config/GlobalConfig";
 import {getTransaction} from "../../../api";
-import {gql} from "@apollo/client";
+import {gql} from "graphql-request";
 import {useGetGraphqlClient} from "../../../api/hooks/useGraphqlClient";
 import {tryStandardizeAddress} from "../../../utils";
 
@@ -306,24 +306,20 @@ function CSVExportButton({
     while (hasMore && allVersions.length < maxCount) {
       try {
         const result = await retryWithBackoff(async () => {
-          return await graphqlClient.query<{
+          return await graphqlClient.request<{
             account_transactions: {transaction_version: number}[];
-          }>({
-            query: ACCOUNT_TRANSACTIONS_QUERY,
-            variables: {
-              address: addr64Hash,
-              limit: pageSize,
-              offset: offset,
-            },
-            fetchPolicy: "network-only", // Always fetch fresh data
+          }>(ACCOUNT_TRANSACTIONS_QUERY, {
+            address: addr64Hash,
+            limit: pageSize,
+            offset: offset,
           });
         });
 
-        if (!result.data) {
+        if (!result) {
           throw new Error("No data returned from GraphQL query");
         }
 
-        const versions = result.data.account_transactions.map(
+        const versions = result.account_transactions.map(
           (txn) => txn.transaction_version,
         );
 

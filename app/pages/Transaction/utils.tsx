@@ -1,7 +1,8 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {tryStandardizeAddress} from "../../utils";
-import {gql} from "@apollo/client";
-import {useQuery as useGraphqlQuery} from "@apollo/client/react";
+import {gql} from "graphql-request";
+import {useQuery} from "@tanstack/react-query";
+import {useGetGraphqlClient} from "../../api/hooks/useGraphqlClient";
 import {TransactionTypeName} from "../../components/TransactionType";
 
 // Type definitions for specific Move resource structures
@@ -386,37 +387,43 @@ export interface FungibleAssetActivity {
   };
 }
 
+const TRANSACTION_BALANCE_CHANGES_QUERY = gql`
+  query TransactionQuery($txn_version: String) {
+    fungible_asset_activities(
+      where: {transaction_version: {_eq: $txn_version}}
+    ) {
+      amount
+      entry_function_id_str
+      gas_fee_payer_address
+      is_frozen
+      asset_type
+      event_index
+      owner_address
+      transaction_timestamp
+      transaction_version
+      type
+      storage_refund_amount
+      metadata {
+        asset_type
+        decimals
+        symbol
+      }
+    }
+  }
+`;
+
 export function useTransactionBalanceChanges(txn_version: string) {
-  const {loading, error, data} = useGraphqlQuery<TransactionResponse>(
-    gql`
-        query TransactionQuery($txn_version: String) {
-            fungible_asset_activities(
-                where: {transaction_version: {_eq: ${txn_version}}}
-            ) {
-                amount
-                entry_function_id_str
-                gas_fee_payer_address
-                is_frozen
-                asset_type
-                event_index
-                owner_address
-                transaction_timestamp
-                transaction_version
-                type
-                storage_refund_amount
-                metadata {
-                    asset_type
-                    decimals
-                    symbol
-                }
-            }
-        }
-    `,
-    {variables: {txn_version}},
-  );
+  const client = useGetGraphqlClient();
+  const {isLoading, error, data} = useQuery({
+    queryKey: ["transactionBalanceChanges", txn_version],
+    queryFn: () =>
+      client.request<TransactionResponse>(TRANSACTION_BALANCE_CHANGES_QUERY, {
+        txn_version,
+      }),
+  });
 
   return {
-    isLoading: loading,
+    isLoading,
     error,
     data,
   };

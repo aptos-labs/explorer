@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {ReactNode, useEffect, useMemo, useState} from "react";
 import ErrorPage from "../../Error";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
@@ -44,16 +44,14 @@ import {
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
-import {
-  ContentCopy,
-  ExpandMore,
-  ExpandLess,
-  Search,
-  HelpOutline,
-  CheckCircle,
-  Error as ErrorIcon,
-  OpenInNew,
-} from "@mui/icons-material";
+import ContentCopy from "@mui/icons-material/ContentCopy";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import Search from "@mui/icons-material/Search";
+import HelpOutline from "@mui/icons-material/HelpOutline";
+import CheckCircle from "@mui/icons-material/CheckCircle";
+import ErrorIcon from "@mui/icons-material/Error";
+import OpenInNew from "@mui/icons-material/OpenInNew";
 import StyledTooltip from "../../../../components/StyledTooltip";
 import {
   encodeInputArgsForViewRequest,

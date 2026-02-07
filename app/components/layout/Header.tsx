@@ -11,7 +11,7 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import {useInView} from "react-intersection-observer";
+import {useInView} from "../../hooks/useInView";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 import NetworkSelect from "./NetworkSelect";

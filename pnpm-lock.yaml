@@ -24,9 +24,6 @@ overrides:
 importers:
   .:
     dependencies:
-      "@apollo/client":
-        specifier: ^4.1.2
-        version: 4.1.2(graphql@16.12.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rxjs@7.8.2)
       "@aptos-labs/ts-sdk":
         specifier: 6.0.0
         version: 6.0.0(got@11.8.6)
@@ -42,9 +39,6 @@ importers:
       "@mui/material":
         specifier: ^7.3.6
         version: 7.3.7(@emotion/react@11.14.0(@types/react@19.2.9)(react@19.2.3))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.9)(react@19.2.3))(@types/react@19.2.9)(react@19.2.3))(@types/react@19.2.9)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      "@mui/system":
-        specifier: ^7.3.6
-        version: 7.3.7(@emotion/react@11.14.0(@types/react@19.2.9)(react@19.2.3))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.9)(react@19.2.3))(@types/react@19.2.9)(react@19.2.3))(@types/react@19.2.9)(react@19.2.3)
       "@noble/hashes":
         specifier: ^2.0.1
         version: 2.0.1
@@ -63,9 +57,6 @@ importers:
       "@uiw/react-json-view":
         specifier: 2.0.0-alpha.41
         version: 2.0.0-alpha.41(@babel/runtime@7.28.6)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      aptos:
-        specifier: ^1.22.1
-        version: 1.22.1(got@11.8.6)
       chart.js:
         specifier: ^4.5.1
         version: 4.5.1
@@ -102,30 +93,15 @@ importers:
       react-chartjs-2:
         specifier: ^5.3.1
         version: 5.3.1(chart.js@4.5.1)(react@19.2.3)
-      react-countdown:
-        specifier: ^2.3.6
-        version: 2.3.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react-dom:
         specifier: ^19.2.3
         version: 19.2.3(react@19.2.3)
-      react-gtm-module:
-        specifier: ^2.0.11
-        version: 2.0.11
       react-helmet-async:
         specifier: ^2.0.5
         version: 2.0.5(react@19.2.3)
       react-hook-form:
         specifier: ^7.71.1
         version: 7.71.1(react@19.2.3)
-      react-intersection-observer:
-        specifier: ^10.0.2
-        version: 10.0.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react-loading-skeleton:
-        specifier: ^3.5.0
-        version: 3.5.0(react@19.2.3)
-      react-number-format:
-        specifier: ^5.4.4
-        version: 5.4.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react-simple-maps:
         specifier: ^3.0.0
         version: 3.0.0(prop-types@15.8.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -233,28 +209,6 @@ packages:
     engines: {node: ">=10"}
     peerDependencies:
       ajv: ">=8"
-
-  "@apollo/client@4.1.2":
-    resolution:
-      {
-        integrity: sha512-MxlWuO94Y6TRf6+d4KfG5bCUXg5NP4s7zPKRA0PDNNa18K86zcbpHUgWKdx6wMT/5KVMeC5rsZkDqZLr/R0mFw==,
-      }
-    peerDependencies:
-      graphql: ^16.0.0
-      graphql-ws: ^5.5.5 || ^6.0.3
-      react: ^17.0.0 || ^18.0.0 || >=19.0.0-rc
-      react-dom: ^17.0.0 || ^18.0.0 || >=19.0.0-rc
-      rxjs: ^7.3.0
-      subscriptions-transport-ws: ^0.9.0 || ^0.11.0
-    peerDependenciesMeta:
-      graphql-ws:
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-      subscriptions-transport-ws:
-        optional: true
 
   "@aptos-connect/wallet-adapter-plugin@3.0.1":
     resolution:
@@ -2309,13 +2263,6 @@ packages:
       }
     engines: {node: ^14.21.3 || >=16}
 
-  "@noble/hashes@1.3.3":
-    resolution:
-      {
-        integrity: sha512-V7/fPHgl+jsVPXqqeOzT8egNj2iBIVt+ECeMMG8TdcnTikP3oaBtUVqpT/gYCR68aEBJSF+XbYUxStjbFMqIIA==,
-      }
-    engines: {node: ">= 16"}
-
   "@noble/hashes@1.8.0":
     resolution:
       {
@@ -2921,12 +2868,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  "@scure/base@1.1.9":
-    resolution:
-      {
-        integrity: sha512-8YKhl8GHiNI/pU2VMaofa2Tor7PJRAjwQLBBuilkJ9L5+13yVbC7JO/wS7piioAvPSwR3JKM1IJ/u4xQzbcXKg==,
-      }
-
   "@scure/base@1.2.6":
     resolution:
       {
@@ -2937,12 +2878,6 @@ packages:
     resolution:
       {
         integrity: sha512-E4FFX/N3f4B80AKWp5dP6ow+flD1LQZo/w8UnLGYZO674jS6YnYeepycOOksv+vLPSpgN35wgKgy+ybfTb2SMw==,
-      }
-
-  "@scure/bip39@1.2.1":
-    resolution:
-      {
-        integrity: sha512-Z3/Fsz1yr904dduJD0NpiyRHhRYHdcnyh73FZWiV+/qhWi83wNJ3NWolYqCEN+ZWsUz2TWwajJggcRE9r1zUYg==,
       }
 
   "@scure/bip39@1.6.0":
@@ -4000,34 +3935,6 @@ packages:
       }
     engines: {node: ">=18.0.0"}
 
-  "@wry/caches@1.0.1":
-    resolution:
-      {
-        integrity: sha512-bXuaUNLVVkD20wcGBWRyo7j9N3TxePEWFZj2Y+r9OoUzfqmavM84+mFykRicNsBqatba5JLay1t48wxaXaWnlA==,
-      }
-    engines: {node: ">=8"}
-
-  "@wry/context@0.7.4":
-    resolution:
-      {
-        integrity: sha512-jmT7Sb4ZQWI5iyu3lobQxICu2nC/vbUhP0vIdd6tHC9PTfenmRmuIFqktc6GH9cgi+ZHnsLWPvfSvc4DrYmKiQ==,
-      }
-    engines: {node: ">=8"}
-
-  "@wry/equality@0.5.7":
-    resolution:
-      {
-        integrity: sha512-BRFORjsTuQv5gxcXsuDXx6oGRhuVsEGwZy6LOzRRfgu+eSfxbhUQ9L9YtSEIuIjY/o7g3iWFjrc5eSY1GXP2Dw==,
-      }
-    engines: {node: ">=8"}
-
-  "@wry/trie@0.5.0":
-    resolution:
-      {
-        integrity: sha512-FNoYzHawTMk/6KMQoEG5O4PuioX19UbwdQKF44yw0nLfOypfQdjtfZzo/UIJWAJ23sNIFbD1Ug9lbaDGMwbqQA==,
-      }
-    engines: {node: ">=8"}
-
   abab@2.0.6:
     resolution:
       {
@@ -4176,14 +4083,6 @@ packages:
         integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==,
       }
     engines: {node: ">= 8"}
-
-  aptos@1.22.1:
-    resolution:
-      {
-        integrity: sha512-zw8IbCkMOpXdeAxp106W6CLHR8i88QY+z5u912XIlwZ3AngUVKY55b3rG8KP3uKEeLAIcY9FVWzS5ndzV60grg==,
-      }
-    engines: {node: ">=20.0.0"}
-    deprecated: Please update to the newer '@aptos-labs/ts-sdk'.  'aptos' is deprecated
 
   archiver-utils@5.0.2:
     resolution:
@@ -6232,15 +6131,6 @@ packages:
     peerDependencies:
       graphql: 14 - 16
 
-  graphql-tag@2.12.6:
-    resolution:
-      {
-        integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==,
-      }
-    engines: {node: ">=10"}
-    peerDependencies:
-      graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-
   graphql@16.12.0:
     resolution:
       {
@@ -7780,12 +7670,6 @@ packages:
       }
     engines: {node: ">=12"}
 
-  optimism@0.18.1:
-    resolution:
-      {
-        integrity: sha512-mLXNwWPa9dgFyDqkNi54sjDyNJ9/fTI6WGBLgnXku1vdKY/jovHfZT5r+aiVeFFLOz+foPNOm5YJ4mqgld2GBQ==,
-      }
-
   optionator@0.9.4:
     resolution:
       {
@@ -8236,15 +8120,6 @@ packages:
       chart.js: ^4.1.1
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  react-countdown@2.3.6:
-    resolution:
-      {
-        integrity: sha512-ZfX6S08Hb6x6W6eCn1hMDvxPICI/T30fd+gaeVTCR/2cGZ2WJ3f26e4ImNIMX1fHkopJrUdnRpWXP13/D39+gg==,
-      }
-    peerDependencies:
-      react: ">= 15"
-      react-dom: ">= 15"
-
   react-dom@19.2.3:
     resolution:
       {
@@ -8257,12 +8132,6 @@ packages:
     resolution:
       {
         integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==,
-      }
-
-  react-gtm-module@2.0.11:
-    resolution:
-      {
-        integrity: sha512-8gyj4TTxeP7eEyc2QKawEuQoAZdjKvMY4pgWfycGmqGByhs17fR+zEBs0JUDq4US/l+vbTl+6zvUIx27iDo/Vw==,
       }
 
   react-helmet-async@2.0.5:
@@ -8282,18 +8151,6 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
 
-  react-intersection-observer@10.0.2:
-    resolution:
-      {
-        integrity: sha512-lAMzxVWrBko6SLd1jx6l84fVrzJu91hpxHlvD2as2Wec9mDCjdYXwc5xNOFBchpeBir0Y7AGBW+C/AYMa7CSFg==,
-      }
-    peerDependencies:
-      react: ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-
   react-is@16.13.1:
     resolution:
       {
@@ -8305,23 +8162,6 @@ packages:
       {
         integrity: sha512-qJNJfu81ByyabuG7hPFEbXqNcWSU3+eVus+KJs+0ncpGfMyYdvSmxiJxbWR65lYi1I+/0HBcliO029gc4F+PnA==,
       }
-
-  react-loading-skeleton@3.5.0:
-    resolution:
-      {
-        integrity: sha512-gxxSyLbrEAdXTKgfbpBEFZCO/P153DnqSCQau2+o6lNy1jgMRr2MmRmOzMmyrwSaSYLRB8g7b0waYPmUjz7IhQ==,
-      }
-    peerDependencies:
-      react: ">=16.8.0"
-
-  react-number-format@5.4.4:
-    resolution:
-      {
-        integrity: sha512-wOmoNZoOpvMminhifQYiYSTCLUDOiUbBunrMrMjA+dV52sY+vck1S4UhR6PkgnoCquvvMSeJjErXZ4qSaWCliA==,
-      }
-    peerDependencies:
-      react: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   react-simple-maps@3.0.0:
     resolution:
@@ -8627,12 +8467,6 @@ packages:
     resolution:
       {
         integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==,
-      }
-
-  rxjs@7.8.2:
-    resolution:
-      {
-        integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==,
       }
 
   safe-array-concat@1.1.3:
@@ -10229,21 +10063,6 @@ snapshots:
       json-schema: 0.4.0
       jsonpointer: 5.0.1
       leven: 3.1.0
-
-  "@apollo/client@4.1.2(graphql@16.12.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rxjs@7.8.2)":
-    dependencies:
-      "@graphql-typed-document-node/core": 3.2.0(graphql@16.12.0)
-      "@wry/caches": 1.0.1
-      "@wry/equality": 0.5.7
-      "@wry/trie": 0.5.0
-      graphql: 16.12.0
-      graphql-tag: 2.12.6(graphql@16.12.0)
-      optimism: 0.18.1
-      rxjs: 7.8.2
-      tslib: 2.8.1
-    optionalDependencies:
-      react: 19.2.3
-      react-dom: 19.2.3(react@19.2.3)
 
   "@aptos-connect/wallet-adapter-plugin@3.0.1(@aptos-labs/ts-sdk@6.0.0(got@11.8.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.0)":
     dependencies:
@@ -11942,8 +11761,6 @@ snapshots:
     dependencies:
       "@noble/hashes": 1.8.0
 
-  "@noble/hashes@1.3.3": {}
-
   "@noble/hashes@1.8.0": {}
 
   "@noble/hashes@2.0.1": {}
@@ -12246,8 +12063,6 @@ snapshots:
   "@rollup/rollup-win32-x64-msvc@4.55.1":
     optional: true
 
-  "@scure/base@1.1.9": {}
-
   "@scure/base@1.2.6": {}
 
   "@scure/bip32@1.7.0":
@@ -12255,11 +12070,6 @@ snapshots:
       "@noble/curves": 1.9.7
       "@noble/hashes": 1.8.0
       "@scure/base": 1.2.6
-
-  "@scure/bip39@1.2.1":
-    dependencies:
-      "@noble/hashes": 1.3.3
-      "@scure/base": 1.1.9
 
   "@scure/bip39@1.6.0":
     dependencies:
@@ -13051,22 +12861,6 @@ snapshots:
       "@whatwg-node/promise-helpers": 1.3.2
       tslib: 2.8.1
 
-  "@wry/caches@1.0.1":
-    dependencies:
-      tslib: 2.8.1
-
-  "@wry/context@0.7.4":
-    dependencies:
-      tslib: 2.8.1
-
-  "@wry/equality@0.5.7":
-    dependencies:
-      tslib: 2.8.1
-
-  "@wry/trie@0.5.0":
-    dependencies:
-      tslib: 2.8.1
-
   abab@2.0.6:
     optional: true
 
@@ -13145,16 +12939,6 @@ snapshots:
     dependencies:
       normalize-path: 3.0.0
       picomatch: 2.3.1
-
-  aptos@1.22.1(got@11.8.6):
-    dependencies:
-      "@aptos-labs/aptos-client": 2.1.0(got@11.8.6)
-      "@noble/hashes": 1.3.3
-      "@scure/bip39": 1.2.1
-      eventemitter3: 5.0.1
-      tweetnacl: 1.0.3
-    transitivePeerDependencies:
-      - got
 
   archiver-utils@5.0.2:
     dependencies:
@@ -14463,11 +14247,6 @@ snapshots:
       "@graphql-typed-document-node/core": 3.2.0(graphql@16.12.0)
       graphql: 16.12.0
 
-  graphql-tag@2.12.6(graphql@16.12.0):
-    dependencies:
-      graphql: 16.12.0
-      tslib: 2.8.1
-
   graphql@16.12.0: {}
 
   h3@1.15.5:
@@ -15337,13 +15116,6 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  optimism@0.18.1:
-    dependencies:
-      "@wry/caches": 1.0.1
-      "@wry/context": 0.7.4
-      "@wry/trie": 0.5.0
-      tslib: 2.8.1
-
   optionator@0.9.4:
     dependencies:
       deep-is: 0.1.4
@@ -15588,20 +15360,12 @@ snapshots:
       chart.js: 4.5.1
       react: 19.2.3
 
-  react-countdown@2.3.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
-    dependencies:
-      prop-types: 15.8.1
-      react: 19.2.3
-      react-dom: 19.2.3(react@19.2.3)
-
   react-dom@19.2.3(react@19.2.3):
     dependencies:
       react: 19.2.3
       scheduler: 0.27.0
 
   react-fast-compare@3.2.2: {}
-
-  react-gtm-module@2.0.11: {}
 
   react-helmet-async@2.0.5(react@19.2.3):
     dependencies:
@@ -15614,24 +15378,9 @@ snapshots:
     dependencies:
       react: 19.2.3
 
-  react-intersection-observer@10.0.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
-    dependencies:
-      react: 19.2.3
-    optionalDependencies:
-      react-dom: 19.2.3(react@19.2.3)
-
   react-is@16.13.1: {}
 
   react-is@19.2.3: {}
-
-  react-loading-skeleton@3.5.0(react@19.2.3):
-    dependencies:
-      react: 19.2.3
-
-  react-number-format@5.4.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
-    dependencies:
-      react: 19.2.3
-      react-dom: 19.2.3(react@19.2.3)
 
   react-simple-maps@3.0.0(prop-types@15.8.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
@@ -15871,10 +15620,6 @@ snapshots:
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
-
-  rxjs@7.8.2:
-    dependencies:
-      tslib: 2.8.1
 
   safe-array-concat@1.1.3:
     dependencies:
