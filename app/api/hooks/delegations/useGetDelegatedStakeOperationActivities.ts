@@ -1,7 +1,9 @@
-import {CombinedGraphQLErrors, gql} from "@apollo/client";
-import {useQuery as useGraphqlQuery} from "@apollo/client/react";
-import {Types} from "aptos";
+import {useQuery} from "@tanstack/react-query";
+import {gql} from "graphql-request";
+import {Types} from "~/types/aptos";
 import {tryStandardizeAddress} from "../../../utils";
+import {useGetGraphqlClient} from "../useGraphqlClient";
+import {useNetworkValue} from "../../../global-config";
 
 export interface DelegatedStakingActivity {
   amount: number;
@@ -34,32 +36,33 @@ export function useGetDelegatedStakeOperationActivities(
 ): {
   activities: DelegatedStakingActivity[] | undefined;
   loading: boolean;
-  error: CombinedGraphQLErrors | undefined;
+  error: Error | undefined;
 } {
   const delegatorAddress64Hash = tryStandardizeAddress(delegatorAddress);
   const poolAddress64Hash = tryStandardizeAddress(poolAddress);
+  const client = useGetGraphqlClient();
+  const networkValue = useNetworkValue();
 
-  const {loading, error, data} = useGraphqlQuery<{
-    delegated_staking_activities: DelegatedStakingActivity[];
-  }>(DELEGATED_STAKING_ACTIVITY_QUERY, {
-    variables: {
-      address: delegatorAddress64Hash,
-      pool: poolAddress64Hash,
-    },
+  const {isLoading, error, data} = useQuery({
+    queryKey: [
+      "delegatedStakeActivities",
+      delegatorAddress64Hash,
+      poolAddress64Hash,
+      networkValue,
+    ],
+    queryFn: () =>
+      client.request<{
+        delegated_staking_activities: DelegatedStakingActivity[];
+      }>(DELEGATED_STAKING_ACTIVITY_QUERY, {
+        address: delegatorAddress64Hash,
+        pool: poolAddress64Hash,
+      }),
+    enabled: !!delegatorAddress64Hash && !!poolAddress64Hash,
   });
-  if (
-    !delegatorAddress64Hash ||
-    !poolAddress64Hash ||
-    loading ||
-    error ||
-    !data
-  ) {
-    return {
-      activities: undefined,
-      loading,
-      error: error ? (error as CombinedGraphQLErrors) : undefined,
-    };
-  }
 
-  return {activities: data?.delegated_staking_activities, loading, error};
+  return {
+    activities: data?.delegated_staking_activities,
+    loading: isLoading,
+    error: error ? (error as Error) : undefined,
+  };
 }

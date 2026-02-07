@@ -1,6 +1,5 @@
 import {Stack, Typography, useTheme, alpha} from "@mui/material";
-import React, {useState, useCallback, memo} from "react";
-import Countdown from "react-countdown";
+import React, {useCallback, useEffect, useRef, useState, memo} from "react";
 import StyledTooltip from "./StyledTooltip";
 
 export enum IntervalType {
@@ -17,52 +16,66 @@ type IntervalBarProps = {
 // Extracted static styles
 const typographyStyle = {fontSize: 10, fontWeight: 600} as const;
 
+function useCountdown(targetDate: number) {
+  const [remaining, setRemaining] = useState(() =>
+    Math.max(0, targetDate - Date.now()),
+  );
+  const rafRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    const tick = () => {
+      const diff = Math.max(0, targetDate - Date.now());
+      setRemaining(diff);
+      if (diff <= 0 && rafRef.current) {
+        clearInterval(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+    rafRef.current = setInterval(tick, 1000);
+    return () => {
+      if (rafRef.current) clearInterval(rafRef.current);
+    };
+  }, [targetDate]);
+
+  const totalSeconds = Math.floor(remaining / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return {days, hours, minutes, seconds, completed: remaining <= 0};
+}
+
 const IntervalBar = memo(function IntervalBar({
   percentage,
   timestamp,
   intervalType,
 }: IntervalBarProps) {
   const theme = useTheme();
-  const [displayTooltip, setDisplayTooltip] = useState<boolean>(false);
-  const handleCountdownComplete = useCallback(() => {
-    setDisplayTooltip(true);
-  }, []);
+  const {days, hours, minutes, seconds, completed} = useCountdown(timestamp);
+  const displayTooltip = completed;
 
   const barColor = theme.palette.primary.main;
   const barBackgroundColor = alpha(theme.palette.primary.main, 0.4);
 
-  // Memoize renderer to avoid recreation on every render
-  const renderer = useCallback(
-    ({
-      days,
-      hours,
-      minutes,
-      seconds,
-    }: {
-      days: number;
-      hours: number;
-      minutes: number;
-      seconds: number;
-    }) => {
-      switch (intervalType) {
-        case IntervalType.EPOCH:
-          return (
-            <span>
-              {hours}h {minutes}m {seconds}s
-            </span>
-          );
-        case IntervalType.UNLOCK_COUNTDOWN:
-          return (
-            <span>
-              {days >= 10
-                ? `${days}d ${hours}h ${minutes}m`
-                : `${days}d ${hours}h ${minutes}m ${seconds}s`}
-            </span>
-          );
-      }
-    },
-    [intervalType],
-  );
+  const renderTime = useCallback(() => {
+    switch (intervalType) {
+      case IntervalType.EPOCH:
+        return (
+          <span>
+            {hours}h {minutes}m {seconds}s
+          </span>
+        );
+      case IntervalType.UNLOCK_COUNTDOWN:
+        return (
+          <span>
+            {days >= 10
+              ? `${days}d ${hours}h ${minutes}m`
+              : `${days}d ${hours}h ${minutes}m ${seconds}s`}
+          </span>
+        );
+    }
+  }, [intervalType, days, hours, minutes, seconds]);
 
   const intervalBar = (
     <Stack direction="row" width={182} height={16}>
@@ -81,11 +94,7 @@ const IntervalBar = memo(function IntervalBar({
             sx={typographyStyle}
             marginX={0.5}
           >
-            <Countdown
-              date={timestamp}
-              renderer={renderer}
-              onComplete={handleCountdownComplete}
-            />
+            {renderTime()}
           </Typography>
         )}
       </Stack>
@@ -104,11 +113,7 @@ const IntervalBar = memo(function IntervalBar({
             sx={typographyStyle}
             marginX={0.5}
           >
-            <Countdown
-              date={timestamp}
-              renderer={renderer}
-              onComplete={handleCountdownComplete}
-            />
+            {renderTime()}
           </Typography>
         )}
       </Stack>

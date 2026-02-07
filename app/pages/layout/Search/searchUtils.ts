@@ -1,5 +1,5 @@
 import {QueryClient} from "@tanstack/react-query";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {Aptos} from "@aptos-labs/ts-sdk";
 import {faMetadataResource, objectCoreResource} from "../../../constants";
 import {getKnownAddresses} from "../../../data";

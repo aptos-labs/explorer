@@ -15,7 +15,7 @@ import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../utils";
 import HashButton, {HashType} from "../../components/HashButton";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {parseTimestamp, getTimeDiffInSeconds} from "../utils";
 import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";

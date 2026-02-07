@@ -17,7 +17,7 @@ import {
 } from "../../api/hooks/delegations";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {useContext} from "react";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {ValidatorData} from "../../api/hooks/useGetValidators";
 
 type ValidatorDetailProps = {

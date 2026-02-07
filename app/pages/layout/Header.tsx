@@ -13,7 +13,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Nav from "./Nav";
 import NavMobile from "./NavMobile";
-import {useInView} from "react-intersection-observer";
+import {useInView} from "../../hooks/useInView";
 import FeatureBar from "./FeatureBar";
 import {WalletConnector} from "../../components/WalletConnector";
 import {useNetworkName} from "../../global-config/GlobalConfig";

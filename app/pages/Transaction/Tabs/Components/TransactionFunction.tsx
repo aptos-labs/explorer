@@ -1,6 +1,6 @@
 import React from "react";
 import {Box, Stack, SxProps, Theme, useTheme} from "@mui/material";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import {CodeLineBox} from "../../../../components/CodeLineBox";

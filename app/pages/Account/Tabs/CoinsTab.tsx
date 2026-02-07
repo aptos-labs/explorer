@@ -8,7 +8,7 @@ import {
 import {findCoinData} from "../../Transaction/Tabs/BalanceChangeTab";
 import {useGetAllAccountCoins} from "../../../api/hooks/useGetAccountCoins";
 import {coinOrderIndex} from "../../utils";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 
 type TokenTabsProps = {
   address: string;

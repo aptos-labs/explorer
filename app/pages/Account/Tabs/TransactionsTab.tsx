@@ -1,5 +1,5 @@
 import React from "react";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import AccountTransactions from "../Components/AccountTransactions";
 import {useGetIsGraphqlClientSupported} from "../../../api/hooks/useGraphqlClient";
 import AccountAllTransactions from "../Components/AccountAllTransactions";

@@ -15,8 +15,15 @@ import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
-// Lazy load react-syntax-highlighter (~150KB) - only needed when viewing code
-const SyntaxHighlighter = lazy(() => import("react-syntax-highlighter"));
+// Lazy load react-syntax-highlighter light build with only rust language (~20KB vs ~150KB)
+const SyntaxHighlighter = lazy(() =>
+  import("react-syntax-highlighter/dist/esm/light").then(async (mod) => {
+    const rust =
+      await import("react-syntax-highlighter/dist/esm/languages/hljs/rust");
+    mod.default.registerLanguage("rust", rust.default);
+    return mod;
+  }),
+);
 
 // Lazy load styles to reduce initial bundle size
 const loadStyles = () =>

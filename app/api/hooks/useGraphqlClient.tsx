@@ -1,13 +1,7 @@
 import React from "react";
-import {
-  ApolloClient,
-  ApolloLink,
-  HttpLink,
-  InMemoryCache,
-} from "@apollo/client";
+import {GraphQLClient} from "graphql-request";
 import {getApiKey, NetworkName} from "../../constants";
 import {useNetworkName} from "../../global-config";
-import {ApolloProvider} from "@apollo/client/react";
 
 function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   const graphqlUri = getGraphqlURI(networkName);
@@ -33,47 +27,31 @@ export function getGraphqlURI(networkName: NetworkName): string | undefined {
   }
 }
 
-// Cache Apollo clients per network to preserve GraphQL cache across renders
-const apolloClientCache = new Map<NetworkName, ApolloClient>();
+// Cache GraphQL clients per network
+const clientCache = new Map<NetworkName, GraphQLClient>();
 
-function createGraphqlClient(networkName: NetworkName): ApolloClient {
+function createGraphqlClient(networkName: NetworkName): GraphQLClient {
   const apiKey = getApiKey(networkName);
-  // Middleware to attach the authorization token.
-  const authMiddleware = new ApolloLink((operation, forward) => {
-    operation.setContext(({headers = {}}) => ({
-      headers: {
-        ...headers,
-        ...(apiKey ? {authorization: `Bearer ${apiKey}`} : {}),
-      },
-    }));
-    return forward(operation);
-  });
-
-  const httpLink = new HttpLink({
-    uri: getGraphqlURI(networkName),
-  });
-
-  return new ApolloClient({
-    link: ApolloLink.from([authMiddleware, httpLink]),
-    cache: new InMemoryCache(),
-  });
+  const uri = getGraphqlURI(networkName) ?? "";
+  const headers: Record<string, string> = {};
+  if (apiKey) {
+    headers["Authorization"] = `Bearer ${apiKey}`;
+  }
+  return new GraphQLClient(uri, {headers});
 }
 
 /**
- * Get a cached Apollo client for the given network.
- * Uses singleton pattern per network to preserve GraphQL cache.
+ * Get a cached GraphQL client for the given network.
  */
-function getGraphqlClient(networkName: NetworkName): ApolloClient {
-  if (!apolloClientCache.has(networkName)) {
-    apolloClientCache.set(networkName, createGraphqlClient(networkName));
+export function getGraphqlClient(networkName: NetworkName): GraphQLClient {
+  if (!clientCache.has(networkName)) {
+    clientCache.set(networkName, createGraphqlClient(networkName));
   }
-  return apolloClientCache.get(networkName)!;
+  return clientCache.get(networkName)!;
 }
 
-export function useGetGraphqlClient() {
+export function useGetGraphqlClient(): GraphQLClient {
   const networkName = useNetworkName();
-
-  // Return cached client to preserve GraphQL cache across renders
   return getGraphqlClient(networkName);
 }
 
@@ -81,10 +59,12 @@ type GraphqlClientProviderProps = {
   children: React.ReactNode;
 };
 
+/**
+ * No-op provider kept for backward compatibility.
+ * Apollo has been removed; GraphQL queries now use graphql-request + TanStack Query.
+ */
 export function GraphqlClientProvider({children}: GraphqlClientProviderProps) {
-  const graphqlClient = useGetGraphqlClient();
-
-  return <ApolloProvider client={graphqlClient}>{children}</ApolloProvider>;
+  return <>{children}</>;
 }
 
 export function useGetIsGraphqlClientSupported(): boolean {

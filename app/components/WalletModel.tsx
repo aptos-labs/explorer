@@ -24,12 +24,9 @@ import {
   useTheme,
 } from "@mui/material";
 // reported bug with loading mui icons with esm, therefore need to import like this https://github.com/mui/material-ui/issues/35233
-import {
-  ArrowBack,
-  ArrowForward,
-  Close as CloseIcon,
-  LanOutlined as LanOutlinedIcon,
-} from "@mui/icons-material";
+import {ArrowBack, ArrowForward} from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
+import LanOutlinedIcon from "@mui/icons-material/LanOutlined";
 import {JSX, useMemo} from "react";
 import {WalletConnectorProps} from "./WalletConnector";
 

@@ -6,7 +6,7 @@ import useGetUserTransactionVersions from "../../api/hooks/useGetUserTransaction
 import TransactionsPreview from "./TransactionsPreview";
 import {Link} from "../../routing";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {ensureMillisecondTimestamp} from "../utils";
 
 const PREVIEW_TRANSACTIONS_COUNT = 10;

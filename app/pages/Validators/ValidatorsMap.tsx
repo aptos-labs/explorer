@@ -11,7 +11,7 @@ import MapMetrics from "./Components/MapMetrics";
 import {useGetValidatorSetGeoData} from "../../api/hooks/useGetValidatorsGeoData";
 import {useGetEpochTime} from "../../api/hooks/useGetEpochTime";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
-import {SkeletonTheme} from "react-loading-skeleton";
+// SkeletonTheme removed (react-loading-skeleton) - MUI Skeleton handles theming
 import type {ValidatorGeoGroup} from "../../api/hooks/useGetValidatorsGeoData";
 
 // Loading placeholder for the map
@@ -92,7 +92,6 @@ function ClientOnlyMap({
 
 export default function ValidatorsMap() {
   const theme = useTheme();
-  const isDarkTheme = theme.palette.mode === "dark";
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const backgroundColor = theme.palette.background.paper;
 
@@ -105,9 +104,7 @@ export default function ValidatorsMap() {
     !curEpoch || !totalVotingPower || !numberOfActiveValidators;
 
   return (
-    <SkeletonTheme
-      baseColor={isDarkTheme ? theme.palette.neutralShade.lighter : undefined}
-    >
+    <>
       {isOnMobile ? (
         <Stack
           direction="column"
@@ -139,6 +136,6 @@ export default function ValidatorsMap() {
           <ClientOnlyMap validatorGeoGroups={validatorGeoGroups} />
         </Stack>
       )}
-    </SkeletonTheme>
+    </>
   );
 }

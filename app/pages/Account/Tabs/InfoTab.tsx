@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {Box} from "@mui/material";
 import React from "react";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";

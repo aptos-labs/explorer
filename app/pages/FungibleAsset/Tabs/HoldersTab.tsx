@@ -38,7 +38,10 @@ type HoldersAction =
   | {type: "LOAD_MORE"}
   | {type: "DATA_LOADED"; payload: {offset: number; data: CoinHolder[]}};
 
-function holdersReducer(state: HoldersState, action: HoldersAction): HoldersState {
+function holdersReducer(
+  state: HoldersState,
+  action: HoldersAction,
+): HoldersState {
   switch (action.type) {
     case "LOAD_MORE":
       return {...state, offset: state.offset + LIMIT};

@@ -1,5 +1,5 @@
 import {Stack, Grid, Alert} from "@mui/material";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {
   useNetworkValue,
   useAptosClient,

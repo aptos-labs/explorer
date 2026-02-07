@@ -1,6 +1,8 @@
-import {gql} from "@apollo/client";
-import {useQuery as useGraphqlQuery} from "@apollo/client/react";
+import {useQuery} from "@tanstack/react-query";
+import {gql} from "graphql-request";
 import {tryStandardizeAddress} from "../../utils";
+import {useGetGraphqlClient} from "./useGraphqlClient";
+import {useNetworkValue} from "../../global-config";
 
 const ACCOUNT_TRANSACTIONS_COUNT_QUERY = gql`
   query AccountTransactionsCount($address: String) {
@@ -15,19 +17,20 @@ const ACCOUNT_TRANSACTIONS_COUNT_QUERY = gql`
 export function useGetAccountAllTransactionCount(
   address: string,
 ): number | undefined {
-  // whenever talking to the indexer, the address needs to fill in leading 0s
-  // for example: 0x123 => 0x000...000123  (61 0s before 123)
   const addr64Hash = tryStandardizeAddress(address);
+  const client = useGetGraphqlClient();
+  const networkValue = useNetworkValue();
 
-  const {loading, error, data} = useGraphqlQuery<{
-    account_transactions_aggregate: {aggregate: {count: number}};
-  }>(ACCOUNT_TRANSACTIONS_COUNT_QUERY, {variables: {address: addr64Hash}});
+  const {data} = useQuery({
+    queryKey: ["accountTxnCount", addr64Hash, networkValue],
+    queryFn: () =>
+      client.request<{
+        account_transactions_aggregate: {aggregate: {count: number}};
+      }>(ACCOUNT_TRANSACTIONS_COUNT_QUERY, {address: addr64Hash}),
+    enabled: !!addr64Hash,
+  });
 
-  if (!addr64Hash || loading || error || !data) {
-    return undefined;
-  }
-
-  return data.account_transactions_aggregate?.aggregate?.count;
+  return data?.account_transactions_aggregate?.aggregate?.count;
 }
 
 const ACCOUNT_TRANSACTIONS_QUERY = gql`
@@ -49,57 +52,63 @@ export function useGetAccountAllTransactionVersions(
   offset?: number,
 ): number[] {
   const addr64Hash = tryStandardizeAddress(address);
+  const client = useGetGraphqlClient();
+  const networkValue = useNetworkValue();
 
-  const {loading, error, data} = useGraphqlQuery<{
-    account_transactions: {transaction_version: number}[];
-  }>(ACCOUNT_TRANSACTIONS_QUERY, {
-    variables: {address: addr64Hash, limit: limit, offset: offset},
+  const {data} = useQuery({
+    queryKey: ["accountTxnVersions", addr64Hash, limit, offset, networkValue],
+    queryFn: () =>
+      client.request<{
+        account_transactions: {transaction_version: number}[];
+      }>(ACCOUNT_TRANSACTIONS_QUERY, {
+        address: addr64Hash,
+        limit,
+        offset,
+      }),
+    enabled: !!addr64Hash,
   });
 
-  if (!addr64Hash || loading || error || !data) {
-    return [];
-  }
-
+  if (!data) return [];
   return data.account_transactions.map(
-    (resource: {transaction_version: number}) => {
-      return resource.transaction_version;
-    },
+    (resource: {transaction_version: number}) => resource.transaction_version,
   );
 }
 
-// Hook to fetch ALL transaction versions for an account (for CSV export)
 export function useGetAllAccountTransactionVersions(address: string): {
   versions: number[];
   loading: boolean;
   error: unknown;
 } {
   const addr64Hash = tryStandardizeAddress(address);
+  const client = useGetGraphqlClient();
+  const networkValue = useNetworkValue();
 
-  const {loading, error, data} = useGraphqlQuery<{
-    account_transactions: {transaction_version: number}[];
-  }>(ACCOUNT_TRANSACTIONS_QUERY, {
-    variables: {
-      address: addr64Hash,
-      // Set limit to 10000 to support CSV export of up to 10000 transactions
-      // The GraphQL API might have its own limits, but this should work for most accounts
-      limit: 10000,
-      offset: 0,
-    },
+  const {isLoading, error, data} = useQuery({
+    queryKey: ["allAccountTxnVersions", addr64Hash, networkValue],
+    queryFn: () =>
+      client.request<{
+        account_transactions: {transaction_version: number}[];
+      }>(ACCOUNT_TRANSACTIONS_QUERY, {
+        address: addr64Hash,
+        limit: 10000,
+        offset: 0,
+      }),
+    enabled: !!addr64Hash,
   });
 
   if (!addr64Hash || error) {
-    return {versions: [], loading, error};
+    return {versions: [], loading: isLoading, error};
   }
 
-  if (loading || !data) {
+  if (isLoading || !data) {
     return {versions: [], loading: true, error: null};
   }
 
-  const versions = data.account_transactions.map(
-    (resource: {transaction_version: number}) => {
-      return resource.transaction_version;
-    },
-  );
-
-  return {versions, loading: false, error: null};
+  return {
+    versions: data.account_transactions.map(
+      (r: {transaction_version: number}) => r.transaction_version,
+    ),
+    loading: false,
+    error: null,
+  };
 }

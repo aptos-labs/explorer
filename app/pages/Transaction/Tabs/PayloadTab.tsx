@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {Box} from "@mui/material";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";

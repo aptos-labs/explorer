@@ -24,7 +24,7 @@ import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeader
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import {ValidatorAddrCell, OperatorAddrCell} from "../ValidatorsTable";
 import {addressFromWallet, assertNever} from "../../../utils";

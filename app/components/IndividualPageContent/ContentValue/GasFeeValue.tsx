@@ -3,7 +3,7 @@ import {useTheme} from "@mui/material";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {APTCurrencyValue} from "./CurrencyValue";
 import GasValue from "./GasValue";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 
 type GasFeeValueProps = {
   gasUsed: string;

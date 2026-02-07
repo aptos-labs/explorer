@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import pako from "pako";
 import {
   AccountAddress,

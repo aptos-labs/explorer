@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
 import {useTheme, alpha} from "@mui/material";
-import {Stack} from "@mui/system";
+import {Stack} from "@mui/material";
 import React from "react";
 import {
   useGetChainIdAndCache,

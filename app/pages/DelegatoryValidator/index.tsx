@@ -11,7 +11,7 @@ import {
 import MyDepositsSection from "./MyDepositsSection";
 import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {SkeletonTheme} from "react-loading-skeleton";
+// SkeletonTheme removed (react-loading-skeleton) - MUI Skeleton handles theming
 import {useGetValidatorPageSkeletonLoading} from "../../api/hooks/useGetValidatorPageSkeletonLoading";
 import {DelegationStateContext} from "./context/DelegationContext";
 import {
@@ -100,44 +100,42 @@ export default function ValidatorPage() {
         validator: validator ? validator : delegationValidator,
       }}
     >
-      <SkeletonTheme>
-        <Grid container>
-          <PageHeader />
-          <Grid size={{xs: 12}}>
-            <Stack direction="column" spacing={4}>
-              <ValidatorTitle
-                address={address}
-                isSkeletonLoading={isSkeletonLoading}
-              />
-              {nextCommission && commission !== nextCommission && (
-                <Banner
-                  pillText="INFO"
-                  pillColor="warning"
-                  sx={{marginBottom: 2}}
-                >
-                  The current commission rate is {commission}%. The commission
-                  rate will be updated to {nextCommission}% at the current
-                  lockup period.
-                </Banner>
-              )}
+      <Grid container>
+        <PageHeader />
+        <Grid size={{xs: 12}}>
+          <Stack direction="column" spacing={4}>
+            <ValidatorTitle
+              address={address}
+              isSkeletonLoading={isSkeletonLoading}
+            />
+            {nextCommission && commission !== nextCommission && (
+              <Banner
+                pillText="INFO"
+                pillColor="warning"
+                sx={{marginBottom: 2}}
+              >
+                The current commission rate is {commission}%. The commission
+                rate will be updated to {nextCommission}% at the current lockup
+                period.
+              </Banner>
+            )}
 
-              <ValidatorStakingBar
-                setIsStakingBarSkeletonLoading={setIsStakingBarSkeletonLoading}
+            <ValidatorStakingBar
+              setIsStakingBarSkeletonLoading={setIsStakingBarSkeletonLoading}
+              isSkeletonLoading={isSkeletonLoading}
+            />
+            <ValidatorDetailCard isSkeletonLoading={isSkeletonLoading} />
+            {connected && (
+              <MyDepositsSection
+                setIsMyDepositsSectionSkeletonLoading={
+                  setIsMyDepositsSectionSkeletonLoading
+                }
                 isSkeletonLoading={isSkeletonLoading}
               />
-              <ValidatorDetailCard isSkeletonLoading={isSkeletonLoading} />
-              {connected && (
-                <MyDepositsSection
-                  setIsMyDepositsSectionSkeletonLoading={
-                    setIsMyDepositsSectionSkeletonLoading
-                  }
-                  isSkeletonLoading={isSkeletonLoading}
-                />
-              )}
-            </Stack>
-          </Grid>
+            )}
+          </Stack>
         </Grid>
-      </SkeletonTheme>
+      </Grid>
     </DelegationStateContext.Provider>
   );
 }

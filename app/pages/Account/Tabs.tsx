@@ -17,7 +17,7 @@ import StyledTab from "../../components/StyledTab";
 import TokensTab from "./Tabs/TokensTab";
 import CoinsTab from "./Tabs/CoinsTab";
 import MultisigTab from "./Tabs/MultisigTab";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {useNavigate} from "../../routing";
 import {accountPagePath} from "./Index";
 import {useParams} from "@tanstack/react-router";

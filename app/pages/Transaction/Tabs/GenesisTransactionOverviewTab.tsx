@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {Box} from "@mui/material";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";

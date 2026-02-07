@@ -1,5 +1,6 @@
-import {gql} from "@apollo/client";
-import {useQuery as useGraphqlQuery} from "@apollo/client/react";
+import {useQuery} from "@tanstack/react-query";
+import {gql} from "graphql-request";
+import {useGetGraphqlClient} from "./useGraphqlClient";
 
 const USER_TRANSACTIONS_QUERY = gql`
   query UserTransactions($limit: Int, $start_version: bigint, $offset: Int) {
@@ -27,18 +28,21 @@ export default function useGetUserTransactionVersions(
   startVersion?: number,
   offset?: number,
 ): number[] {
+  const client = useGetGraphqlClient();
   const topTxnsOnly = startVersion === undefined || offset === undefined;
-  const {loading, error, data} = useGraphqlQuery<{
-    user_transactions: {version: number}[];
-  }>(topTxnsOnly ? TOP_USER_TRANSACTIONS_QUERY : USER_TRANSACTIONS_QUERY, {
-    variables: {limit: limit, start_version: startVersion, offset: offset},
+
+  const {data} = useQuery({
+    queryKey: ["userTransactionVersions", limit, startVersion, offset],
+    queryFn: () =>
+      client.request<{user_transactions: {version: number}[]}>(
+        topTxnsOnly ? TOP_USER_TRANSACTIONS_QUERY : USER_TRANSACTIONS_QUERY,
+        {limit, start_version: startVersion, offset},
+      ),
   });
 
-  if (loading || error || !data) {
+  if (!data) {
     return [];
   }
 
-  return data.user_transactions.map((txn: {version: number}) => {
-    return txn.version;
-  });
+  return data.user_transactions.map((txn: {version: number}) => txn.version);
 }

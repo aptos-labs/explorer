@@ -1,6 +1,6 @@
 import {useMemo} from "react";
 import {useQuery} from "@tanstack/react-query";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {
   useAptosClient,
   useNetworkName,

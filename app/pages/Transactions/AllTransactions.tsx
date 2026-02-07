@@ -4,7 +4,7 @@ import {
   useQuery,
   UseQueryResult,
 } from "@tanstack/react-query";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
 import {
   useNetworkValue,

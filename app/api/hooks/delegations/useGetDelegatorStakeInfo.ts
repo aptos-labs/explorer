@@ -1,4 +1,4 @@
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {useQuery} from "@tanstack/react-query";
 import {getStake} from "../..";
 import {useNetworkValue, useAptosClient} from "../../../global-config";

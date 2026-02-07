@@ -1,6 +1,6 @@
 import {Stack, Typography} from "@mui/material";
 import React from "react";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {TransactionType} from "../../components/TransactionType";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";

@@ -1,11 +1,11 @@
 import {useQuery} from "@tanstack/react-query";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {getValidatorCommission, getValidatorState} from "../..";
 import {useAptosClient} from "../../../global-config";
 import {ResponseError} from "../../client";
 import {combineQueries} from "../../query-utils";
 import {useGetNumberOfDelegators} from "./useGetNumberOfDelegators";
-import {CombinedGraphQLErrors} from "@apollo/client";
+// CombinedGraphQLErrors replaced with Error after Apollo removal
 
 type DelegationNodeInfoProps = {
   validatorAddress: Types.Address;
@@ -17,7 +17,7 @@ type DelegationNodeInfoResponse = {
   isQueryLoading: boolean;
   validatorStatus: Types.MoveValue[] | undefined;
   numberOfDelegators?: number;
-  error: ResponseError | CombinedGraphQLErrors | null;
+  error: ResponseError | Error | null;
 };
 
 export function useGetDelegationNodeInfo({

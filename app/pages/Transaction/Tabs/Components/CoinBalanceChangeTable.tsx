@@ -15,7 +15,8 @@ import {
   IconButton,
   Divider,
 } from "@mui/material";
-import {Close as CloseIcon, ContentCopy} from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
+import ContentCopy from "@mui/icons-material/ContentCopy";
 import GeneralTableRow from "../../../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHeaderCell";
 import {assertNever} from "../../../../utils";
@@ -26,7 +27,7 @@ import CurrencyValue, {
 } from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {useTheme} from "@mui/material";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
 import {

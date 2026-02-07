@@ -1,7 +1,7 @@
 import React from "react";
 import {useQuery, UseQueryResult} from "@tanstack/react-query";
 import Button from "@mui/material/Button";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {getTransactions} from "../../api";
 import {
   useNetworkValue,

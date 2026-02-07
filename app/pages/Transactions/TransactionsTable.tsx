@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import HashButton, {HashType} from "../../components/HashButton";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 import {assertNever} from "../../utils";
 import {
   TableTransactionType,
@@ -35,12 +35,10 @@ import {
   useNavigate,
   useAugmentToWithGlobalSearchParams,
 } from "../../routing";
-import {
-  ArrowForwardOutlined,
-  TextSnippetOutlined,
-  ContentCopy,
-  OpenInNew,
-} from "@mui/icons-material";
+import ArrowForwardOutlined from "@mui/icons-material/ArrowForwardOutlined";
+import TextSnippetOutlined from "@mui/icons-material/TextSnippetOutlined";
+import ContentCopy from "@mui/icons-material/ContentCopy";
+import OpenInNew from "@mui/icons-material/OpenInNew";
 import {truncateAddress} from "../utils";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";

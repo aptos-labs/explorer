@@ -9,7 +9,7 @@ import StyledTabs from "../../components/StyledTabs";
 import StyledTab from "../../components/StyledTab";
 import {useParams} from "@tanstack/react-router";
 import {useNavigate, useSearch} from "../../routing";
-import {Current_Token_Datas_V2} from "aptos";
+import type {Current_Token_Datas_V2} from "~/types/aptos";
 
 const TAB_VALUES: TabValue[] = ["overview", "activities"];
 

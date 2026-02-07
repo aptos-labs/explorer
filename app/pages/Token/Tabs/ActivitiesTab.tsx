@@ -74,7 +74,7 @@ export function TokenActivitiesWithPagination({
   );
 }
 
-import {Current_Token_Datas_V2} from "aptos";
+import type {Current_Token_Datas_V2} from "~/types/aptos";
 
 type ActivitiesTabProps = {
   data: Current_Token_Datas_V2;

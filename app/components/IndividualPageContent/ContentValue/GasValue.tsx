@@ -1,15 +1,15 @@
 import React from "react";
-import {NumericFormat} from "react-number-format";
 
 type GasValueProps = {
   gas: string;
 };
 
+function formatWithThousandSeparator(value: string): string {
+  const num = Number(value);
+  if (isNaN(num)) return value;
+  return new Intl.NumberFormat().format(num);
+}
+
 export default function GasValue({gas}: GasValueProps) {
-  return (
-    <span>
-      <NumericFormat value={gas} displayType="text" thousandSeparator /> Gas
-      Units
-    </span>
-  );
+  return <span>{formatWithThousandSeparator(gas)} Gas Units</span>;
 }

@@ -6,7 +6,7 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
-import {Current_Token_Datas_V2} from "aptos";
+import type {Current_Token_Datas_V2} from "~/types/aptos";
 import {
   isValidIpfsUrl,
   isValidUrl,

@@ -3,7 +3,7 @@ import AmountTextField from "../../../components/AmountTextField";
 import {StakeOperation} from "../../../api/hooks/delegations";
 import {MINIMUM_APT_IN_POOL} from "../constants";
 import {OCTA} from "../../../constants";
-import {Types} from "aptos";
+import {Types} from "~/types/aptos";
 
 function sanitizeInput(input: string): string {
   const digitsAndDecimals = /[0-9.]/g;

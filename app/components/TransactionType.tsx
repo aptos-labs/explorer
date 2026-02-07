@@ -8,7 +8,8 @@ import UpdateRoundedIcon from "@mui/icons-material/UpdateRounded";
 import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
 import {useTheme} from "@mui/material";
 import TooltipTypography from "./TooltipTypography";
-import {CheckCircleOutlined, StopCircleOutlined} from "@mui/icons-material";
+import CheckCircleOutlined from "@mui/icons-material/CheckCircleOutlined";
+import StopCircleOutlined from "@mui/icons-material/StopCircleOutlined";
 
 // Extracted static styles to avoid recreation on every render
 const tableTransactionTypeStyle = {
