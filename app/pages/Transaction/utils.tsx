@@ -1,8 +1,7 @@
 import {Types} from "~/types/aptos";
 import {tryStandardizeAddress} from "../../utils";
-import {gql} from "graphql-request";
 import {useQuery} from "@tanstack/react-query";
-import {useGetGraphqlClient} from "../../api/hooks/useGraphqlClient";
+import {useSdkV2Client} from "../../global-config";
 import {TransactionTypeName} from "../../components/TransactionType";
 
 // Type definitions for specific Move resource structures
@@ -387,7 +386,7 @@ export interface FungibleAssetActivity {
   };
 }
 
-const TRANSACTION_BALANCE_CHANGES_QUERY = gql`
+const TRANSACTION_BALANCE_CHANGES_QUERY = `
   query TransactionQuery($txn_version: String) {
     fungible_asset_activities(
       where: {transaction_version: {_eq: $txn_version}}
@@ -413,12 +412,15 @@ const TRANSACTION_BALANCE_CHANGES_QUERY = gql`
 `;
 
 export function useTransactionBalanceChanges(txn_version: string) {
-  const client = useGetGraphqlClient();
+  const client = useSdkV2Client();
   const {isLoading, error, data} = useQuery({
     queryKey: ["transactionBalanceChanges", txn_version],
     queryFn: () =>
-      client.request<TransactionResponse>(TRANSACTION_BALANCE_CHANGES_QUERY, {
-        txn_version,
+      client.queryIndexer<TransactionResponse>({
+        query: {
+          query: TRANSACTION_BALANCE_CHANGES_QUERY,
+          variables: {txn_version},
+        },
       }),
   });
 

@@ -326,6 +326,3 @@ export async function getValidatorCommissionAndState(
   };
   return withResponseError(client.view(payload));
 }
-
-// Re-export GraphQL client
-export * from "./graphql";

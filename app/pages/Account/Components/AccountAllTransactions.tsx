@@ -19,10 +19,11 @@ import {
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {transactionsToCSV, downloadCSV} from "../../utils";
 import {Types} from "~/types/aptos";
-import {useAptosClient} from "../../../global-config/GlobalConfig";
+import {
+  useAptosClient,
+  useSdkV2Client,
+} from "../../../global-config/GlobalConfig";
 import {getTransaction} from "../../../api";
-import {gql} from "graphql-request";
-import {useGetGraphqlClient} from "../../../api/hooks/useGraphqlClient";
 import {tryStandardizeAddress} from "../../../utils";
 
 // Maximum transactions we can display due to indexer query performance constraints
@@ -167,7 +168,7 @@ export default function AccountAllTransactions({
 }
 
 // GraphQL query for fetching transaction versions
-const ACCOUNT_TRANSACTIONS_QUERY = gql`
+const ACCOUNT_TRANSACTIONS_QUERY = `
   query AccountTransactionsData($address: String, $limit: Int, $offset: Int) {
     account_transactions(
       where: {account_address: {_eq: $address}}
@@ -192,7 +193,7 @@ function CSVExportButton({
   const [exportProgress, setExportProgress] = React.useState(0);
   const aptosClient = useAptosClient();
   const logEvent = useLogEventWithBasic();
-  const graphqlClient = useGetGraphqlClient();
+  const sdkV2Client = useSdkV2Client();
 
   // Helper function to check if error is a rate limit error
   const isRateLimitError = (error: unknown): boolean => {
@@ -306,12 +307,17 @@ function CSVExportButton({
     while (hasMore && allVersions.length < maxCount) {
       try {
         const result = await retryWithBackoff(async () => {
-          return await graphqlClient.request<{
+          return await sdkV2Client.queryIndexer<{
             account_transactions: {transaction_version: number}[];
-          }>(ACCOUNT_TRANSACTIONS_QUERY, {
-            address: addr64Hash,
-            limit: pageSize,
-            offset: offset,
+          }>({
+            query: {
+              query: ACCOUNT_TRANSACTIONS_QUERY,
+              variables: {
+                address: addr64Hash,
+                limit: pageSize,
+                offset: offset,
+              },
+            },
           });
         });
 

@@ -85,11 +85,7 @@ export default defineConfig({
               // Aptos SDK - core blockchain functionality
               "vendor-aptos": ["@aptos-labs/ts-sdk"],
               // Data fetching - stable utilities
-              "vendor-query": [
-                "@tanstack/react-query",
-                "graphql",
-                "graphql-request",
-              ],
+              "vendor-query": ["@tanstack/react-query"],
               // Wallet adapters - only needed for wallet interactions
               "vendor-wallet": ["@aptos-labs/wallet-adapter-react"],
             },
@@ -104,7 +100,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    include: ["@aptos-labs/ts-sdk", "@tanstack/react-query", "graphql-request"],
+    include: ["@aptos-labs/ts-sdk", "@tanstack/react-query"],
   },
   server: {
     watch: {

@@ -76,12 +76,6 @@ importers:
       es-toolkit:
         specifier: ^1.44.0
         version: 1.44.0
-      graphql:
-        specifier: ^16.12.0
-        version: 16.12.0
-      graphql-request:
-        specifier: ^7.4.0
-        version: 7.4.0(graphql@16.12.0)
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
@@ -1744,14 +1738,6 @@ packages:
       {
         integrity: sha512-m9FVDXU3GT2ITSe0UaMA5rU3QkfC/UXtCU8y0gSN/GugTqtVldOBWIB5V6V3sbmenVZUIpU6f+mPEO2+m5iTaA==,
       }
-
-  "@graphql-typed-document-node/core@3.2.0":
-    resolution:
-      {
-        integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==,
-      }
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
   "@humanfs/core@0.19.1":
     resolution:
@@ -6313,21 +6299,6 @@ packages:
       {
         integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==,
       }
-
-  graphql-request@7.4.0:
-    resolution:
-      {
-        integrity: sha512-xfr+zFb/QYbs4l4ty0dltqiXIp07U6sl+tOKAb0t50/EnQek6CVVBLjETXi+FghElytvgaAWtIOt3EV7zLzIAQ==,
-      }
-    peerDependencies:
-      graphql: 14 - 16
-
-  graphql@16.12.0:
-    resolution:
-      {
-        integrity: sha512-DKKrynuQRne0PNpEbzuEdHlYOMksHSUI8Zc9Unei5gTsMNA2/vMpoMz/yKba50pejK56qj98qM0SjYxAKi13gQ==,
-      }
-    engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   h3@1.15.5:
     resolution:
@@ -11322,10 +11293,6 @@ snapshots:
 
   "@fastify/busboy@3.2.0": {}
 
-  "@graphql-typed-document-node/core@3.2.0(graphql@16.12.0)":
-    dependencies:
-      graphql: 16.12.0
-
   "@humanfs/core@0.19.1": {}
 
   "@humanfs/node@0.16.7":
@@ -14471,13 +14438,6 @@ snapshots:
       responselike: 2.0.1
 
   graceful-fs@4.2.11: {}
-
-  graphql-request@7.4.0(graphql@16.12.0):
-    dependencies:
-      "@graphql-typed-document-node/core": 3.2.0(graphql@16.12.0)
-      graphql: 16.12.0
-
-  graphql@16.12.0: {}
 
   h3@1.15.5:
     dependencies:

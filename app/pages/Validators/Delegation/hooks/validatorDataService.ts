@@ -1,7 +1,6 @@
 import {Types} from "~/types/aptos";
-import {gql} from "graphql-request";
 import {tryStandardizeAddress} from "../../../../utils";
-import {getGraphqlClient} from "../../../../api/hooks/useGraphqlClient";
+import {getCachedV2Client} from "../../../../global-config";
 import {NetworkName} from "../../../../constants";
 import {AptosClient} from "../../../../api/legacyClient";
 
@@ -11,7 +10,7 @@ interface DelegatorCountItem {
   num_active_delegator: string;
 }
 
-const DELEGATOR_COUNTS_QUERY = gql`
+const DELEGATOR_COUNTS_QUERY = `
   query GetDelegatorCounts($addresses: [String!]!) {
     num_active_delegator_per_pool(where: {pool_address: {_in: $addresses}}) {
       pool_address
@@ -35,11 +34,16 @@ export async function getBatchDelegatorCounts(
       (addr) => tryStandardizeAddress(addr) ?? addr,
     );
 
-    const graphqlClient = getGraphqlClient(networkName);
+    const client = getCachedV2Client(networkName);
 
-    const data = await graphqlClient.request<{
+    const data = await client.queryIndexer<{
       num_active_delegator_per_pool: DelegatorCountItem[];
-    }>(DELEGATOR_COUNTS_QUERY, {addresses: formattedAddresses});
+    }>({
+      query: {
+        query: DELEGATOR_COUNTS_QUERY,
+        variables: {addresses: formattedAddresses},
+      },
+    });
 
     const delegatorCounts = data?.num_active_delegator_per_pool ?? [];
     const addressToCountMap = new Map<string, number>();
