@@ -1,15 +1,13 @@
 import {useQuery} from "@tanstack/react-query";
-import {gql} from "graphql-request";
 import {tryStandardizeAddress} from "../../../utils";
 import {Types} from "~/types/aptos";
-import {useGetGraphqlClient} from "../useGraphqlClient";
-import {useNetworkValue} from "../../../global-config";
+import {useNetworkValue, useSdkV2Client} from "../../../global-config";
 
 interface NumberOfDelegatorsResponse {
   num_active_delegator: string;
 }
 
-const NUMBER_OF_DELEGATORS_QUERY = gql`
+const NUMBER_OF_DELEGATORS_QUERY = `
   query getNumberOfDelegators($poolAddress: String) {
     num_active_delegator_per_pool(
       where: {
@@ -29,15 +27,20 @@ export function useGetNumberOfDelegators(poolAddress: Types.Address): {
   error: Error | undefined;
 } {
   const poolAddress64Hash = tryStandardizeAddress(poolAddress);
-  const client = useGetGraphqlClient();
+  const client = useSdkV2Client();
   const networkValue = useNetworkValue();
 
   const {isLoading, error, data} = useQuery({
     queryKey: ["numberOfDelegators", poolAddress64Hash, networkValue],
     queryFn: () =>
-      client.request<{
+      client.queryIndexer<{
         num_active_delegator_per_pool: NumberOfDelegatorsResponse[];
-      }>(NUMBER_OF_DELEGATORS_QUERY, {poolAddress: poolAddress64Hash}),
+      }>({
+        query: {
+          query: NUMBER_OF_DELEGATORS_QUERY,
+          variables: {poolAddress: poolAddress64Hash},
+        },
+      }),
     enabled: !!poolAddress && !!poolAddress64Hash,
   });
 

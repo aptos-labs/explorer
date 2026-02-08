@@ -1,8 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
-import {gql} from "graphql-request";
-import {useGetGraphqlClient} from "./useGraphqlClient";
+import {useSdkV2Client} from "../../global-config";
 
-const USER_TRANSACTIONS_QUERY = gql`
+const USER_TRANSACTIONS_QUERY = `
   query UserTransactions($limit: Int, $start_version: bigint, $offset: Int) {
     user_transactions(
       limit: $limit
@@ -15,7 +14,7 @@ const USER_TRANSACTIONS_QUERY = gql`
   }
 `;
 
-const TOP_USER_TRANSACTIONS_QUERY = gql`
+const TOP_USER_TRANSACTIONS_QUERY = `
   query UserTransactions($limit: Int) {
     user_transactions(limit: $limit, order_by: {version: desc}) {
       version
@@ -28,16 +27,20 @@ export default function useGetUserTransactionVersions(
   startVersion?: number,
   offset?: number,
 ): number[] {
-  const client = useGetGraphqlClient();
+  const client = useSdkV2Client();
   const topTxnsOnly = startVersion === undefined || offset === undefined;
 
   const {data} = useQuery({
     queryKey: ["userTransactionVersions", limit, startVersion, offset],
     queryFn: () =>
-      client.request<{user_transactions: {version: number}[]}>(
-        topTxnsOnly ? TOP_USER_TRANSACTIONS_QUERY : USER_TRANSACTIONS_QUERY,
-        {limit, start_version: startVersion, offset},
-      ),
+      client.queryIndexer<{user_transactions: {version: number}[]}>({
+        query: {
+          query: topTxnsOnly
+            ? TOP_USER_TRANSACTIONS_QUERY
+            : USER_TRANSACTIONS_QUERY,
+          variables: {limit, start_version: startVersion, offset},
+        },
+      }),
   });
 
   if (!data) {

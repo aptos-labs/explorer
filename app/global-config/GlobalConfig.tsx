@@ -1,6 +1,5 @@
 import React, {createContext, useContext, useMemo, ReactNode} from "react";
 import {AptosClient} from "../api/legacyClient";
-import {IndexerClient} from "../api/indexerClient";
 import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import {useSearch} from "@tanstack/react-router";
 import {
@@ -206,7 +205,7 @@ function createAptosV2Client(networkName: NetworkName): Aptos {
 // Client cache to prevent unnecessary recreations
 const clientCache = new Map<string, Aptos>();
 
-function getCachedV2Client(networkName: NetworkName): Aptos {
+export function getCachedV2Client(networkName: NetworkName): Aptos {
   if (!clientCache.has(networkName)) {
     clientCache.set(networkName, createAptosV2Client(networkName));
   }
@@ -259,51 +258,6 @@ export function useGlobalState(): GlobalState {
  */
 export function useSdkV2Client(): Aptos {
   return useAptosClientV2();
-}
-
-// Default headers for indexer requests
-const INDEXER_HEADERS = {
-  "x-indexer-client": "aptos-explorer",
-};
-
-// IndexerClient cache
-const indexerClientCache = new Map<string, IndexerClient>();
-
-function createIndexerClient(
-  networkName: NetworkName,
-): IndexerClient | undefined {
-  const indexerUri = getGraphqlURI(networkName);
-  const apiKey = getApiKey(networkName);
-
-  if (!indexerUri) {
-    return undefined;
-  }
-
-  return new IndexerClient(indexerUri, {
-    HEADERS: INDEXER_HEADERS,
-    TOKEN: apiKey,
-  });
-}
-
-function getCachedIndexerClient(
-  networkName: NetworkName,
-): IndexerClient | undefined {
-  if (!indexerClientCache.has(networkName)) {
-    const client = createIndexerClient(networkName);
-    if (client) {
-      indexerClientCache.set(networkName, client);
-    }
-  }
-  return indexerClientCache.get(networkName);
-}
-
-/**
- * Hook to get an indexer client.
- * Returns the legacy IndexerClient from the aptos package for GraphQL queries.
- */
-export function useIndexerClient(): IndexerClient | undefined {
-  const networkName = useNetworkName();
-  return useMemo(() => getCachedIndexerClient(networkName), [networkName]);
 }
 
 /**

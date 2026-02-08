@@ -7,7 +7,7 @@ export {
   useAptosClientV2,
   useGlobalState,
   useSdkV2Client,
-  useIndexerClient,
+  getCachedV2Client,
   useFeatureName,
 } from "./GlobalConfig";
 export type {GlobalState} from "./GlobalConfig";

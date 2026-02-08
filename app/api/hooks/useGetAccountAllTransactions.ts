@@ -1,10 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
-import {gql} from "graphql-request";
 import {tryStandardizeAddress} from "../../utils";
-import {useGetGraphqlClient} from "./useGraphqlClient";
-import {useNetworkValue} from "../../global-config";
+import {useNetworkValue, useSdkV2Client} from "../../global-config";
 
-const ACCOUNT_TRANSACTIONS_COUNT_QUERY = gql`
+const ACCOUNT_TRANSACTIONS_COUNT_QUERY = `
   query AccountTransactionsCount($address: String) {
     account_transactions_aggregate(where: {account_address: {_eq: $address}}) {
       aggregate {
@@ -18,22 +16,27 @@ export function useGetAccountAllTransactionCount(
   address: string,
 ): number | undefined {
   const addr64Hash = tryStandardizeAddress(address);
-  const client = useGetGraphqlClient();
+  const client = useSdkV2Client();
   const networkValue = useNetworkValue();
 
   const {data} = useQuery({
     queryKey: ["accountTxnCount", addr64Hash, networkValue],
     queryFn: () =>
-      client.request<{
+      client.queryIndexer<{
         account_transactions_aggregate: {aggregate: {count: number}};
-      }>(ACCOUNT_TRANSACTIONS_COUNT_QUERY, {address: addr64Hash}),
+      }>({
+        query: {
+          query: ACCOUNT_TRANSACTIONS_COUNT_QUERY,
+          variables: {address: addr64Hash},
+        },
+      }),
     enabled: !!addr64Hash,
   });
 
   return data?.account_transactions_aggregate?.aggregate?.count;
 }
 
-const ACCOUNT_TRANSACTIONS_QUERY = gql`
+const ACCOUNT_TRANSACTIONS_QUERY = `
   query AccountTransactionsData($address: String, $limit: Int, $offset: Int) {
     account_transactions(
       where: {account_address: {_eq: $address}}
@@ -52,18 +55,19 @@ export function useGetAccountAllTransactionVersions(
   offset?: number,
 ): number[] {
   const addr64Hash = tryStandardizeAddress(address);
-  const client = useGetGraphqlClient();
+  const client = useSdkV2Client();
   const networkValue = useNetworkValue();
 
   const {data} = useQuery({
     queryKey: ["accountTxnVersions", addr64Hash, limit, offset, networkValue],
     queryFn: () =>
-      client.request<{
+      client.queryIndexer<{
         account_transactions: {transaction_version: number}[];
-      }>(ACCOUNT_TRANSACTIONS_QUERY, {
-        address: addr64Hash,
-        limit,
-        offset,
+      }>({
+        query: {
+          query: ACCOUNT_TRANSACTIONS_QUERY,
+          variables: {address: addr64Hash, limit, offset},
+        },
       }),
     enabled: !!addr64Hash,
   });
@@ -80,18 +84,19 @@ export function useGetAllAccountTransactionVersions(address: string): {
   error: unknown;
 } {
   const addr64Hash = tryStandardizeAddress(address);
-  const client = useGetGraphqlClient();
+  const client = useSdkV2Client();
   const networkValue = useNetworkValue();
 
   const {isLoading, error, data} = useQuery({
     queryKey: ["allAccountTxnVersions", addr64Hash, networkValue],
     queryFn: () =>
-      client.request<{
+      client.queryIndexer<{
         account_transactions: {transaction_version: number}[];
-      }>(ACCOUNT_TRANSACTIONS_QUERY, {
-        address: addr64Hash,
-        limit: 10000,
-        offset: 0,
+      }>({
+        query: {
+          query: ACCOUNT_TRANSACTIONS_QUERY,
+          variables: {address: addr64Hash, limit: 10000, offset: 0},
+        },
       }),
     enabled: !!addr64Hash,
   });

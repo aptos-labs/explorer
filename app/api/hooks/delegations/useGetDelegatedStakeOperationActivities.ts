@@ -1,9 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
-import {gql} from "graphql-request";
 import {Types} from "~/types/aptos";
 import {tryStandardizeAddress} from "../../../utils";
-import {useGetGraphqlClient} from "../useGraphqlClient";
-import {useNetworkValue} from "../../../global-config";
+import {useNetworkValue, useSdkV2Client} from "../../../global-config";
 
 export interface DelegatedStakingActivity {
   amount: number;
@@ -14,7 +12,7 @@ export interface DelegatedStakingActivity {
   transaction_version: bigint;
 }
 
-const DELEGATED_STAKING_ACTIVITY_QUERY = gql`
+const DELEGATED_STAKING_ACTIVITY_QUERY = `
   query getDelegatedStakingActivities($address: String!, $pool: String) {
     delegated_staking_activities(
       where: {delegator_address: {_eq: $address}, pool_address: {_eq: $pool}}
@@ -40,7 +38,7 @@ export function useGetDelegatedStakeOperationActivities(
 } {
   const delegatorAddress64Hash = tryStandardizeAddress(delegatorAddress);
   const poolAddress64Hash = tryStandardizeAddress(poolAddress);
-  const client = useGetGraphqlClient();
+  const client = useSdkV2Client();
   const networkValue = useNetworkValue();
 
   const {isLoading, error, data} = useQuery({
@@ -51,11 +49,16 @@ export function useGetDelegatedStakeOperationActivities(
       networkValue,
     ],
     queryFn: () =>
-      client.request<{
+      client.queryIndexer<{
         delegated_staking_activities: DelegatedStakingActivity[];
-      }>(DELEGATED_STAKING_ACTIVITY_QUERY, {
-        address: delegatorAddress64Hash,
-        pool: poolAddress64Hash,
+      }>({
+        query: {
+          query: DELEGATED_STAKING_ACTIVITY_QUERY,
+          variables: {
+            address: delegatorAddress64Hash,
+            pool: poolAddress64Hash,
+          },
+        },
       }),
     enabled: !!delegatorAddress64Hash && !!poolAddress64Hash,
   });

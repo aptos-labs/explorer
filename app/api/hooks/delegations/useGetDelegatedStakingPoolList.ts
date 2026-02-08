@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
-import {gql, GraphQLClient} from "graphql-request";
-import {useGetGraphqlClient} from "../useGraphqlClient";
+import {Aptos} from "@aptos-labs/ts-sdk";
+import {useSdkV2Client} from "../../../global-config";
 
 export interface DelegatedStakingPool {
   staking_pool_address: string;
@@ -13,7 +13,7 @@ export interface DelegatedStakingPool {
   };
 }
 
-const VALIDATOR_LIST_QUERY = gql`
+const VALIDATOR_LIST_QUERY = `
   query DelegationPools($limit: Int!, $offset: Int!) {
     delegated_staking_pools(limit: $limit, offset: $offset) {
       staking_pool_address
@@ -29,7 +29,7 @@ const VALIDATOR_LIST_QUERY = gql`
 `;
 
 async function fetchAllDelegationPools(
-  client: GraphQLClient,
+  client: Aptos,
 ): Promise<DelegatedStakingPool[]> {
   const LIMIT = 100;
   let offset = 0;
@@ -37,9 +37,14 @@ async function fetchAllDelegationPools(
   let allPools: DelegatedStakingPool[] = [];
 
   while (hasMore) {
-    const result = await client.request<{
+    const result = await client.queryIndexer<{
       delegated_staking_pools: DelegatedStakingPool[];
-    }>(VALIDATOR_LIST_QUERY, {limit: LIMIT, offset});
+    }>({
+      query: {
+        query: VALIDATOR_LIST_QUERY,
+        variables: {limit: LIMIT, offset},
+      },
+    });
 
     const pools = result?.delegated_staking_pools ?? [];
 
@@ -63,7 +68,7 @@ export function useGetDelegatedStakingPoolList(): {
   loading: boolean;
   error?: Error;
 } {
-  const client = useGetGraphqlClient();
+  const client = useSdkV2Client();
 
   const {data, isLoading, error} = useQuery({
     queryKey: ["delegationPools"],

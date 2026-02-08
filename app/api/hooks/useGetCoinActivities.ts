@@ -1,13 +1,12 @@
 import {useQuery} from "@tanstack/react-query";
-import {gql} from "graphql-request";
-import {useGetGraphqlClient} from "./useGraphqlClient";
+import {useSdkV2Client} from "../../global-config";
 
 export type FAActivity = {
   transaction_version: number;
   owner_address: string;
 };
 
-const COIN_ACTIVITIES_QUERY = gql`
+const COIN_ACTIVITIES_QUERY = `
   query GetFungibleAssetActivities($asset: String, $limit: Int, $offset: Int) {
     fungible_asset_activities(
       where: {
@@ -45,16 +44,21 @@ export function useGetCoinActivities(
   data: FAActivity[] | undefined;
   count: number | undefined;
 } {
-  const client = useGetGraphqlClient();
+  const client = useSdkV2Client();
   const {isLoading, error, data} = useQuery({
     queryKey: ["coinActivities", asset, limit, offset ?? 0],
     queryFn: () =>
-      client.request<{
+      client.queryIndexer<{
         fungible_asset_activities: FAActivity[];
         fungible_asset_activities_aggregate: {
           aggregate: {count: number};
         };
-      }>(COIN_ACTIVITIES_QUERY, {asset, limit, offset: offset ?? 0}),
+      }>({
+        query: {
+          query: COIN_ACTIVITIES_QUERY,
+          variables: {asset, limit, offset: offset ?? 0},
+        },
+      }),
   });
 
   return {

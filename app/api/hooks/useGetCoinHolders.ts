@@ -1,13 +1,12 @@
 import {useQuery} from "@tanstack/react-query";
-import {gql} from "graphql-request";
-import {useGetGraphqlClient} from "./useGraphqlClient";
+import {useSdkV2Client} from "../../global-config";
 
 export type CoinHolder = {
   owner_address: string;
   amount: number;
 };
 
-const COIN_HOLDERS_QUERY = gql`
+const COIN_HOLDERS_QUERY = `
   query GetFungibleAssetBalances(
     $coin_type: String!
     $limit: Int!
@@ -35,14 +34,16 @@ export function useGetCoinHolders(
   data: CoinHolder[] | undefined;
   hasMore: boolean;
 } {
-  const client = useGetGraphqlClient();
+  const client = useSdkV2Client();
   const {isLoading, error, data} = useQuery({
     queryKey: ["coinHolders", coin_type, limit, offset ?? 0],
     queryFn: () =>
-      client.request<{current_fungible_asset_balances: CoinHolder[]}>(
-        COIN_HOLDERS_QUERY,
-        {coin_type, limit, offset: offset ?? 0},
-      ),
+      client.queryIndexer<{current_fungible_asset_balances: CoinHolder[]}>({
+        query: {
+          query: COIN_HOLDERS_QUERY,
+          variables: {coin_type, limit, offset: offset ?? 0},
+        },
+      }),
   });
 
   return {
