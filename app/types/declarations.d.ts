@@ -11,13 +11,6 @@ declare module "@download/blockies" {
   }): HTMLCanvasElement;
 }
 
-declare module "highlightjs-move" {
-  // highlight.js language definition for Move on Aptos
-  // https://github.com/gregnazario/highlightjs-move
-  const move: (hljs: unknown) => unknown;
-  export default move;
-}
-
 declare module "*.svg" {
   const content: string;
   export default content;

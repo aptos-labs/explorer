@@ -42,7 +42,6 @@
     "d3-zoom": "^3.0.0",
     "date-fns": "^4.1.0",
     "es-toolkit": "^1.44.0",
-    "highlightjs-move": "^0.1.0",
     "js-cookie": "^3.0.5",
     "pako": "^2.1.0",
     "react": "^19.2.4",
