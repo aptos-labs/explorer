@@ -81,7 +81,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
           <Suspense fallback={<CodeLoadingFallback />}>
             {styles && (
               <SyntaxHighlighter
-                language="move"
+                language="toml"
                 key={theme.palette.mode}
                 style={
                   theme.palette.mode === "light"
@@ -208,7 +208,7 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
         <Suspense fallback={<CodeLoadingFallback />}>
           {styles && (
             <SyntaxHighlighter
-              language="move"
+              language="toml"
               key={theme.palette.mode}
               style={
                 theme.palette.mode === "light"
