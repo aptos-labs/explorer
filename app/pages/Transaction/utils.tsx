@@ -1,7 +1,7 @@
 import {Types} from "~/types/aptos";
 import {tryStandardizeAddress} from "../../utils";
 import {useQuery} from "@tanstack/react-query";
-import {useSdkV2Client} from "../../global-config";
+import {useSdkV2Client, useNetworkValue} from "../../global-config";
 import {TransactionTypeName} from "../../components/TransactionType";
 
 // Type definitions for specific Move resource structures
@@ -413,8 +413,9 @@ const TRANSACTION_BALANCE_CHANGES_QUERY = `
 
 export function useTransactionBalanceChanges(txn_version: string) {
   const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
   const {isLoading, error, data} = useQuery({
-    queryKey: ["transactionBalanceChanges", txn_version],
+    queryKey: ["transactionBalanceChanges", txn_version, networkValue],
     queryFn: () =>
       client.queryIndexer<TransactionResponse>({
         query: {

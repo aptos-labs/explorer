@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {Aptos} from "@aptos-labs/ts-sdk";
-import {useSdkV2Client} from "../../../global-config";
+import {useSdkV2Client, useNetworkValue} from "../../../global-config";
 
 export interface DelegatedStakingPool {
   staking_pool_address: string;
@@ -69,9 +69,10 @@ export function useGetDelegatedStakingPoolList(): {
   error?: Error;
 } {
   const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
 
   const {data, isLoading, error} = useQuery({
-    queryKey: ["delegationPools"],
+    queryKey: ["delegationPools", networkValue],
     queryFn: () => fetchAllDelegationPools(client),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });

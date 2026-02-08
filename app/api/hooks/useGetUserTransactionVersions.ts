@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {useSdkV2Client} from "../../global-config";
+import {useSdkV2Client, useNetworkValue} from "../../global-config";
 
 const USER_TRANSACTIONS_QUERY = `
   query UserTransactions($limit: Int, $start_version: bigint, $offset: Int) {
@@ -28,10 +28,17 @@ export default function useGetUserTransactionVersions(
   offset?: number,
 ): number[] {
   const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
   const topTxnsOnly = startVersion === undefined || offset === undefined;
 
   const {data} = useQuery({
-    queryKey: ["userTransactionVersions", limit, startVersion, offset],
+    queryKey: [
+      "userTransactionVersions",
+      limit,
+      startVersion,
+      offset,
+      networkValue,
+    ],
     queryFn: () =>
       client.queryIndexer<{user_transactions: {version: number}[]}>({
         query: {

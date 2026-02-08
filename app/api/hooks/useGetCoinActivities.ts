@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {useSdkV2Client} from "../../global-config";
+import {useSdkV2Client, useNetworkValue} from "../../global-config";
 
 export type FAActivity = {
   transaction_version: number;
@@ -45,8 +45,9 @@ export function useGetCoinActivities(
   count: number | undefined;
 } {
   const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
   const {isLoading, error, data} = useQuery({
-    queryKey: ["coinActivities", asset, limit, offset ?? 0],
+    queryKey: ["coinActivities", asset, limit, offset ?? 0, networkValue],
     queryFn: () =>
       client.queryIndexer<{
         fungible_asset_activities: FAActivity[];
