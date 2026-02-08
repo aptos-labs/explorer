@@ -31,6 +31,8 @@ function useCountdown(targetDate: number) {
         rafRef.current = null;
       }
     };
+    // Reset immediately when targetDate changes to avoid showing stale values
+    tick();
     rafRef.current = setInterval(tick, 1000);
     return () => {
       if (rafRef.current) clearInterval(rafRef.current);

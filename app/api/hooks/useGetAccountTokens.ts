@@ -27,7 +27,7 @@ const OWNED_TOKENS_QUERY = `
     $order_by: [current_token_ownerships_v2_order_by!]
   ) {
     current_token_ownerships_v2(
-      where: {owner_address: {_eq: $owner}, amount: {_gt: 0}}
+      where: {owner_address: {_eq: $owner}, amount: {_gt: "0"}}
       limit: $limit
       offset: $offset
       order_by: $order_by
@@ -111,7 +111,7 @@ const TOKEN_ACTIVITIES_COUNT_QUERY = `
 export type TokenOwnership = {
   token_data_id: string;
   token_standard: string;
-  amount: number;
+  amount: string | number;
   owner_address: string;
   last_transaction_version: number;
   last_transaction_timestamp: string;
