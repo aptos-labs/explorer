@@ -76,6 +76,9 @@ importers:
       es-toolkit:
         specifier: ^1.44.0
         version: 1.44.0
+      highlightjs-move:
+        specifier: 0.2.0
+        version: 0.2.0(highlight.js@10.7.3)
       js-cookie:
         specifier: ^3.0.5
         version: 3.0.5
@@ -5396,6 +5399,14 @@ packages:
       {
         integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==,
       }
+
+  highlightjs-move@0.2.0:
+    resolution:
+      {
+        integrity: sha512-QxLg2GLEk5nW/ARcGE4N00RDm0+h6j0zrxoxI2n3vSmMPR5jf3cBpN+JArF4bvAekp6jL+HBB38IFoAwlh/bsg==,
+      }
+    peerDependencies:
+      highlight.js: ">=10.0.0"
 
   highlightjs-vue@1.0.0:
     resolution:
@@ -11911,6 +11922,10 @@ snapshots:
       hermes-estree: 0.25.1
 
   highlight.js@10.7.3: {}
+
+  highlightjs-move@0.2.0(highlight.js@10.7.3):
+    dependencies:
+      highlight.js: 10.7.3
 
   highlightjs-vue@1.0.0: {}
 
