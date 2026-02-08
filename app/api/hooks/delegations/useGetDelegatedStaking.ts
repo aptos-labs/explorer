@@ -42,8 +42,7 @@ export function useGetDelegatedStaking(
   loading: boolean;
   error: Error | undefined;
 } {
-  const delegatorAddress64Hash =
-    tryStandardizeAddress(delegatorAddress) ?? "N/A";
+  const delegatorAddress64Hash = tryStandardizeAddress(delegatorAddress);
   const client = useSdkV2Client();
   const networkValue = useNetworkValue();
 
@@ -55,10 +54,10 @@ export function useGetDelegatedStaking(
       }>({
         query: {
           query: DELEGATED_STAKING_QUERY,
-          variables: {address: delegatorAddress64Hash},
+          variables: {address: delegatorAddress64Hash!},
         },
       }),
-    enabled: !!delegatorAddress,
+    enabled: !!delegatorAddress64Hash,
   });
 
   return {
