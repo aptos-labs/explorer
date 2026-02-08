@@ -13,12 +13,37 @@ import {lazy, useEffect, useState} from "react";
 import {Box, CircularProgress, useTheme} from "@mui/material";
 import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 
+/**
+ * Polyfill for hljs.regex (introduced in highlight.js v11).
+ * react-syntax-highlighter v16 bundles hljs v10.7.3 which lacks this API,
+ * but highlightjs-move uses regex.concat() and regex.lookahead().
+ */
+function ensureHljsRegex(hljs: Record<string, unknown>) {
+  if (hljs.regex) return;
+  const source = (re: string | RegExp) =>
+    typeof re === "string" ? re : re.source;
+  hljs.regex = {
+    concat: (...args: (string | RegExp)[]) =>
+      args.map((a) => source(a)).join(""),
+    lookahead: (re: string | RegExp) => `(?=${source(re)})`,
+    either: (...args: (string | RegExp)[]) =>
+      `(${args.map((a) => source(a)).join("|")})`,
+    optional: (re: string | RegExp) => `(?:${source(re)})?`,
+    source,
+  };
+}
+
 // Lazy load react-syntax-highlighter light build with only Move language (~20KB vs ~150KB)
 export const SyntaxHighlighter = lazy(() =>
   import("react-syntax-highlighter/dist/esm/light").then(async (mod) => {
-    // Register Move language from highlightjs-move package
+    // Register Move language from highlightjs-move package.
+    // Wrap the language function to inject hljs.regex polyfill for hljs v10 compat.
     const move = await import("highlightjs-move");
-    mod.default.registerLanguage("move", move.default);
+    const moveWithCompat = (hljs: Record<string, unknown>) => {
+      ensureHljsRegex(hljs);
+      return (move.default as (hljs: unknown) => unknown)(hljs);
+    };
+    mod.default.registerLanguage("move", moveWithCompat);
     return mod;
   }),
 );
