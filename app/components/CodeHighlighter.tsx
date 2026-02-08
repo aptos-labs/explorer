@@ -13,12 +13,16 @@ import {lazy, useEffect, useState} from "react";
 import {Box, CircularProgress, useTheme} from "@mui/material";
 import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 
-// Lazy load react-syntax-highlighter light build with only Move language (~20KB vs ~150KB)
+// Lazy load react-syntax-highlighter light build with Move + TOML languages
 export const SyntaxHighlighter = lazy(() =>
   import("react-syntax-highlighter/dist/esm/light").then(async (mod) => {
-    // Use the v10-compatible grammar from highlightjs-move
-    const move = await import("highlightjs-move/v10");
+    const [move, ini] = await Promise.all([
+      import("highlightjs-move/v10"),
+      import("react-syntax-highlighter/dist/esm/languages/hljs/ini"),
+    ]);
     mod.default.registerLanguage("move", move.default);
+    // hljs "ini" grammar includes TOML as an alias
+    mod.default.registerLanguage("toml", ini.default);
     return mod;
   }),
 );
