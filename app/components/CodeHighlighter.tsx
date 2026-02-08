@@ -3,18 +3,22 @@
  *
  * Both CodeSnippet.tsx and MovePackageManifest.tsx import from here
  * to avoid duplicating the lazy loading and style caching logic.
+ *
+ * Uses highlightjs-move (https://github.com/gregnazario/highlightjs-move)
+ * for proper Move 2.x syntax highlighting including enums, pattern matching,
+ * lambdas, signed integers, and the Move Specification Language.
  */
 
 import {lazy, useEffect, useState} from "react";
 import {Box, CircularProgress, useTheme} from "@mui/material";
 import {getSemanticColors} from "../themes/colors/aptosBrandColors";
-import hljsMove from "../utils/hljsMove";
 
 // Lazy load react-syntax-highlighter light build with only Move language (~20KB vs ~150KB)
 export const SyntaxHighlighter = lazy(() =>
   import("react-syntax-highlighter/dist/esm/light").then(async (mod) => {
-    // Register Move as a custom language
-    mod.default.registerLanguage("move", hljsMove);
+    // Register Move language from highlightjs-move package
+    const move = await import("highlightjs-move");
+    mod.default.registerLanguage("move", move.default);
     return mod;
   }),
 );
