@@ -9,9 +9,11 @@
  * ValidatorsMap.tsx imports Map.client.tsx directly via dynamic import.
  */
 import type {ValidatorGeoGroup} from "../../../api/hooks/useGetValidatorsGeoData";
+import type {MapGroupBy} from "./Map.client";
 
 type MapProps = {
   validatorGeoGroups: ValidatorGeoGroup[];
+  groupBy: MapGroupBy;
 };
 
 // SSR placeholder - not used at runtime.
