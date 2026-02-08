@@ -9,7 +9,7 @@
  * bundled in react-syntax-highlighter v16.
  */
 
-import {lazy, useEffect, useState} from "react";
+import {type CSSProperties, lazy, useEffect, useState} from "react";
 import {Box, CircularProgress, useTheme} from "@mui/material";
 import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 
@@ -36,8 +36,8 @@ const loadStyles = () =>
 
 // Cache for loaded styles
 let stylesCache: {
-  solarizedLight: Record<string, React.CSSProperties>;
-  solarizedDark: Record<string, React.CSSProperties>;
+  solarizedLight: Record<string, CSSProperties>;
+  solarizedDark: Record<string, CSSProperties>;
 } | null = null;
 
 export function useHighlighterStyles() {

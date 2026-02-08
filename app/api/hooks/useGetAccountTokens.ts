@@ -149,7 +149,7 @@ export function useGetAccountTokensCount(address: string) {
       }>({
         query: {
           query: ACCOUNT_TOKENS_COUNT_QUERY,
-          variables: {owner: address},
+          variables: {owner: addr64Hash},
         },
       });
       return (
@@ -177,7 +177,7 @@ export function useGetAccountTokens(
         query: {
           query: OWNED_TOKENS_QUERY,
           variables: {
-            owner: address,
+            owner: addr64Hash,
             limit,
             offset,
             order_by: [
