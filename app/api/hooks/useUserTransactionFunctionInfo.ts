@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {useSdkV2Client} from "../../global-config";
+import {useSdkV2Client, useNetworkValue} from "../../global-config";
 
 export type UserTransactionFunctionInfo = {
   signature: {function_info: string};
@@ -26,8 +26,9 @@ export function useGetUserTransactionFunctionInfo(
   data: UserTransactionFunctionInfo[] | undefined;
 } {
   const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
   const {isLoading, error, data} = useQuery({
-    queryKey: ["userTxnFunctionInfo", limit, sender],
+    queryKey: ["userTxnFunctionInfo", limit, sender, networkValue],
     queryFn: () =>
       client.queryIndexer<{
         user_transactions: UserTransactionFunctionInfo[];

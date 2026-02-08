@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {useSdkV2Client} from "../../global-config";
+import {useSdkV2Client, useNetworkValue} from "../../global-config";
 
 export type CoinHolder = {
   owner_address: string;
@@ -35,8 +35,9 @@ export function useGetCoinHolders(
   hasMore: boolean;
 } {
   const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
   const {isLoading, error, data} = useQuery({
-    queryKey: ["coinHolders", coin_type, limit, offset ?? 0],
+    queryKey: ["coinHolders", coin_type, limit, offset ?? 0, networkValue],
     queryFn: () =>
       client.queryIndexer<{current_fungible_asset_balances: CoinHolder[]}>({
         query: {
