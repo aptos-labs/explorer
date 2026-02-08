@@ -10,10 +10,12 @@ import {Box, useTheme, styled, Typography, Stack, alpha} from "@mui/material";
 import Tooltip, {TooltipProps, tooltipClasses} from "@mui/material/Tooltip";
 import {ComposableMap, Geographies, Geography, Marker} from "react-simple-maps";
 import {
-  City,
+  CityBreakdown,
   ValidatorGeoGroup,
 } from "../../../api/hooks/useGetValidatorsGeoData";
 import {brandColors} from "../../../themes/colors/aptosBrandColors";
+
+export type MapGroupBy = "city" | "country";
 
 const MARKER_COLOR = brandColors.babyBlue;
 const MIN_NODE_COUNT_SHOWN_IN_MARKER = 5;
@@ -33,10 +35,18 @@ const LightTooltip = styled(({className, ...props}: TooltipProps) => (
   },
 }));
 
-function MapMarker({group}: {group: ValidatorGeoGroup}) {
+function MapMarker({
+  group,
+  groupBy,
+}: {
+  group: ValidatorGeoGroup;
+  groupBy: MapGroupBy;
+}) {
   const theme = useTheme();
-  const {country, countryLng, countryLat, nodes, cities} = group;
+  const {city, country, lng, lat, nodes, cities} = group;
   const radius = getCircleRadius(nodes.length);
+
+  const isCountryMode = groupBy === "country";
 
   return (
     <LightTooltip
@@ -46,28 +56,31 @@ function MapMarker({group}: {group: ValidatorGeoGroup}) {
             direction="row"
             justifyContent="space-between"
             spacing={4}
-            marginBottom={1}
+            marginBottom={isCountryMode && cities?.length ? 1 : 0.5}
           >
-            <Typography variant="body2">{country}</Typography>
+            <Typography variant="body2">
+              {isCountryMode ? country : `${city}, ${country}`}
+            </Typography>
             <Typography variant="body2">{nodes.length}</Typography>
           </Stack>
-          {cities.map((city: City) => (
-            <Stack
-              key={city.name}
-              direction="row"
-              justifyContent="space-between"
-              spacing={4}
-              sx={{fontSize: 11}}
-              marginBottom={0.5}
-            >
-              <Box>{city.name}</Box>
-              <Box>{city.count}</Box>
-            </Stack>
-          ))}
+          {isCountryMode &&
+            cities?.map((c: CityBreakdown) => (
+              <Stack
+                key={c.name}
+                direction="row"
+                justifyContent="space-between"
+                spacing={4}
+                sx={{fontSize: 11}}
+                marginBottom={0.5}
+              >
+                <Box>{c.name}</Box>
+                <Box>{c.count}</Box>
+              </Stack>
+            ))}
         </Box>
       }
     >
-      <Marker coordinates={[countryLng, countryLat]}>
+      <Marker coordinates={[lng, lat]}>
         <g>
           <circle
             fill="transparent"
@@ -102,9 +115,10 @@ function MapMarker({group}: {group: ValidatorGeoGroup}) {
 
 type MapProps = {
   validatorGeoGroups: ValidatorGeoGroup[];
+  groupBy: MapGroupBy;
 };
 
-export default function Map({validatorGeoGroups}: MapProps) {
+export default function Map({validatorGeoGroups, groupBy}: MapProps) {
   const theme = useTheme();
 
   return (
@@ -144,8 +158,16 @@ export default function Map({validatorGeoGroups}: MapProps) {
             ))
           }
         </Geographies>
-        {validatorGeoGroups.map((group, idx) => (
-          <MapMarker key={`${group.country}-${idx}`} group={group} />
+        {validatorGeoGroups.map((group) => (
+          <MapMarker
+            key={
+              groupBy === "city"
+                ? `${group.city}-${group.country}`
+                : group.country
+            }
+            group={group}
+            groupBy={groupBy}
+          />
         ))}
       </ComposableMap>
     </Box>

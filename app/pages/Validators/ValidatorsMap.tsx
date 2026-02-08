@@ -6,13 +6,15 @@ import {
   CircularProgress,
   Box,
   Typography,
+  ToggleButtonGroup,
+  ToggleButton,
 } from "@mui/material";
 import MapMetrics from "./Components/MapMetrics";
 import {useGetValidatorSetGeoData} from "../../api/hooks/useGetValidatorsGeoData";
 import {useGetEpochTime} from "../../api/hooks/useGetEpochTime";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
-// SkeletonTheme removed (react-loading-skeleton) - MUI Skeleton handles theming
 import type {ValidatorGeoGroup} from "../../api/hooks/useGetValidatorsGeoData";
+import type {MapGroupBy} from "./Components/Map.client";
 
 // Loading placeholder for the map
 function MapLoading() {
@@ -34,11 +36,14 @@ function MapLoading() {
 // Client-only Map wrapper - prevents any SSR import of react-simple-maps
 function ClientOnlyMap({
   validatorGeoGroups,
+  groupBy,
 }: {
   validatorGeoGroups: ValidatorGeoGroup[];
+  groupBy: MapGroupBy;
 }) {
   const [MapComponent, setMapComponent] = useState<React.ComponentType<{
     validatorGeoGroups: ValidatorGeoGroup[];
+    groupBy: MapGroupBy;
   }> | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -87,7 +92,9 @@ function ClientOnlyMap({
     return <MapLoading />;
   }
 
-  return <MapComponent validatorGeoGroups={validatorGeoGroups} />;
+  return (
+    <MapComponent validatorGeoGroups={validatorGeoGroups} groupBy={groupBy} />
+  );
 }
 
 export default function ValidatorsMap() {
@@ -95,13 +102,56 @@ export default function ValidatorsMap() {
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const backgroundColor = theme.palette.background.paper;
 
-  const {validatorGeoMetric, validatorGeoGroups} = useGetValidatorSetGeoData();
+  const {validatorGeoMetric, cityGroups, countryGroups} =
+    useGetValidatorSetGeoData();
   const {curEpoch} = useGetEpochTime();
   const {totalVotingPower, numberOfActiveValidators} = useGetValidatorSet();
+
+  const [groupBy, setGroupBy] = useState<MapGroupBy>("city");
+
+  const handleGroupByChange = (
+    _event: React.MouseEvent<HTMLElement>,
+    newValue: MapGroupBy | null,
+  ) => {
+    if (newValue !== null) {
+      setGroupBy(newValue);
+    }
+  };
 
   // Calculate isSkeletonLoading during render instead of using useEffect
   const isSkeletonLoading =
     !curEpoch || !totalVotingPower || !numberOfActiveValidators;
+
+  const activeGroups = groupBy === "city" ? cityGroups : countryGroups;
+
+  const toggle = (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: isOnMobile ? "center" : "flex-end",
+        px: 2,
+        pt: 1,
+      }}
+    >
+      <ToggleButtonGroup
+        value={groupBy}
+        exclusive
+        onChange={handleGroupByChange}
+        size="small"
+        sx={{
+          "& .MuiToggleButton-root": {
+            textTransform: "none",
+            fontSize: "0.75rem",
+            px: 1.5,
+            py: 0.25,
+          },
+        }}
+      >
+        <ToggleButton value="city">By City</ToggleButton>
+        <ToggleButton value="country">By Country</ToggleButton>
+      </ToggleButtonGroup>
+    </Box>
+  );
 
   return (
     <>
@@ -113,7 +163,8 @@ export default function ValidatorsMap() {
           sx={{backgroundColor: backgroundColor}}
           overflow="hidden"
         >
-          <ClientOnlyMap validatorGeoGroups={validatorGeoGroups} />
+          {toggle}
+          <ClientOnlyMap validatorGeoGroups={activeGroups} groupBy={groupBy} />
           <MapMetrics
             validatorGeoMetric={validatorGeoMetric}
             isOnMobile={isOnMobile}
@@ -133,7 +184,13 @@ export default function ValidatorsMap() {
             isOnMobile={isOnMobile}
             isSkeletonLoading={isSkeletonLoading}
           />
-          <ClientOnlyMap validatorGeoGroups={validatorGeoGroups} />
+          <Box sx={{flex: 1, position: "relative"}}>
+            {toggle}
+            <ClientOnlyMap
+              validatorGeoGroups={activeGroups}
+              groupBy={groupBy}
+            />
+          </Box>
         </Stack>
       )}
     </>

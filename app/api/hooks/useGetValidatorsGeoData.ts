@@ -1,5 +1,5 @@
 import {useMemo} from "react";
-import {GeoData, ValidatorData, useGetValidators} from "./useGetValidators";
+import {GeoData, useGetValidators} from "./useGetValidators";
 
 export type ValidatorGeoMetric = {
   nodeCount: number;
@@ -7,92 +7,107 @@ export type ValidatorGeoMetric = {
   cityCount: number;
 };
 
-export type City = {
+export type CityBreakdown = {
   name: string;
   count: number;
 };
 
 export interface ValidatorGeoGroup {
+  city: string;
   country: string;
-  countryLat: number;
-  countryLng: number;
+  lat: number;
+  lng: number;
   nodes: GeoData[];
-  cities: City[];
+  /** Present only in country-level groups */
+  cities?: CityBreakdown[];
 }
 
 export function useGetValidatorSetGeoData() {
   const {validators} = useGetValidators();
 
-  // Calculate geo data during render instead of using useMemo with setState
-  const {validatorGeoGroups, validatorGeoMetric} = useMemo(() => {
-    const groups: ValidatorGeoGroup[] = validators.reduce(
-      (groups: ValidatorGeoGroup[], validatorData: ValidatorData) => {
-        const geoData = validatorData.location_stats;
-        const country = geoData?.country;
-        if (!country) {
-          return groups;
-        }
+  const {cityGroups, countryGroups, validatorGeoMetric} = useMemo(() => {
+    // -- City-level groups --
+    const cityMap = new Map<string, ValidatorGeoGroup>();
+    const countries = new Set<string>();
 
-        const existingGroup = groups.find((group) => group.country === country);
-        if (existingGroup) {
-          existingGroup.nodes.push(geoData);
-        } else {
-          const newGroup = {
-            country: country,
-            countryLat: 0,
-            countryLng: 0,
-            nodes: [geoData],
-            cities: [],
-          };
-          groups.push(newGroup);
-        }
-        return groups;
-      },
-      [],
-    );
+    for (const validatorData of validators) {
+      const geoData = validatorData.location_stats;
+      if (!geoData?.country || !geoData?.city) {
+        continue;
+      }
 
-    let totalCityCount = 0;
+      countries.add(geoData.country);
+      const key = `${geoData.city}|${geoData.country}`;
 
-    groups.map((group: ValidatorGeoGroup) => {
+      const existing = cityMap.get(key);
+      if (existing) {
+        existing.nodes.push(geoData);
+      } else {
+        cityMap.set(key, {
+          city: geoData.city,
+          country: geoData.country,
+          lat: 0,
+          lng: 0,
+          nodes: [geoData],
+        });
+      }
+    }
+
+    const cityGroups = Array.from(cityMap.values());
+    for (const group of cityGroups) {
       const count = group.nodes.length;
+      let latSum = 0;
+      let lngSum = 0;
+      for (const node of group.nodes) {
+        latSum += node.latitude;
+        lngSum += node.longitude;
+      }
+      group.lat = latSum / count;
+      group.lng = lngSum / count;
+    }
 
-      // process lat and lng
-      const latitudeSum = group.nodes.reduce((sum: number, node: GeoData) => {
-        return sum + node.latitude;
-      }, 0);
-      const longitudeSum = group.nodes.reduce((sum: number, node: GeoData) => {
-        return sum + node.longitude;
-      }, 0);
-      group.countryLat = latitudeSum / count;
-      group.countryLng = longitudeSum / count;
+    // -- Country-level groups (aggregated from city groups) --
+    const countryMap = new Map<string, ValidatorGeoGroup>();
 
-      // process cities
-      const cities = group.cities;
-      group.nodes.map((node: GeoData) => {
-        const city = node.city;
-        const existingCity = cities.find(
-          (nodeCity: City) => nodeCity.name === city,
-        );
-        if (existingCity) {
-          existingCity.count++;
-        } else {
-          const newCity = {name: city, count: 1};
-          cities.push(newCity);
-        }
-      });
-      cities.sort((city1: City, city2: City) => city2.count - city1.count);
+    for (const cg of cityGroups) {
+      const existing = countryMap.get(cg.country);
+      if (existing) {
+        existing.nodes.push(...cg.nodes);
+        existing.cities!.push({name: cg.city, count: cg.nodes.length});
+      } else {
+        countryMap.set(cg.country, {
+          city: "",
+          country: cg.country,
+          lat: 0,
+          lng: 0,
+          nodes: [...cg.nodes],
+          cities: [{name: cg.city, count: cg.nodes.length}],
+        });
+      }
+    }
 
-      totalCityCount += cities.length;
-    });
+    const countryGroups = Array.from(countryMap.values());
+    for (const group of countryGroups) {
+      const count = group.nodes.length;
+      let latSum = 0;
+      let lngSum = 0;
+      for (const node of group.nodes) {
+        latSum += node.latitude;
+        lngSum += node.longitude;
+      }
+      group.lat = latSum / count;
+      group.lng = lngSum / count;
+      group.cities!.sort((a, b) => b.count - a.count);
+    }
 
     const validatorGeoMetric: ValidatorGeoMetric = {
       nodeCount: validators.length,
-      countryCount: groups.length,
-      cityCount: totalCityCount,
+      countryCount: countries.size,
+      cityCount: cityGroups.length,
     };
 
-    return {validatorGeoGroups: groups, validatorGeoMetric};
+    return {cityGroups, countryGroups, validatorGeoMetric};
   }, [validators]);
 
-  return {validatorGeoGroups, validatorGeoMetric};
+  return {cityGroups, countryGroups, validatorGeoMetric};
 }
