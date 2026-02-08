@@ -1,78 +1,16 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Modal,
-  Stack,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import {Box, Button, Modal, Stack, Typography, useTheme} from "@mui/material";
 import {ContentCopy, OpenInFull} from "@mui/icons-material";
 import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
-import {lazy, Suspense, useEffect, useRef, useState} from "react";
+import {Suspense, useEffect, useRef, useState} from "react";
 import StyledTooltip from "../../../components/StyledTooltip";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
-
-// Lazy load react-syntax-highlighter light build with only rust language (~20KB vs ~150KB)
-const SyntaxHighlighter = lazy(() =>
-  import("react-syntax-highlighter/dist/esm/light").then(async (mod) => {
-    const rust =
-      await import("react-syntax-highlighter/dist/esm/languages/hljs/rust");
-    mod.default.registerLanguage("rust", rust.default);
-    return mod;
-  }),
-);
-
-// Lazy load styles to reduce initial bundle size
-const loadStyles = () =>
-  import("react-syntax-highlighter/dist/esm/styles/hljs").then((mod) => ({
-    solarizedLight: mod.solarizedLight,
-    solarizedDark: mod.solarizedDark,
-  }));
-
-// Cache for loaded styles
-let stylesCache: {
-  solarizedLight: Record<string, React.CSSProperties>;
-  solarizedDark: Record<string, React.CSSProperties>;
-} | null = null;
-
-function useHighlighterStyles() {
-  const [styles, setStyles] = useState(stylesCache);
-
-  useEffect(() => {
-    if (!stylesCache) {
-      loadStyles().then((loadedStyles) => {
-        stylesCache = loadedStyles;
-        setStyles(loadedStyles);
-      });
-    }
-  }, []);
-
-  return styles;
-}
-
-// Loading fallback component
-function CodeLoadingFallback() {
-  const theme = useTheme();
-  const semanticColors = getSemanticColors(theme.palette.mode);
-
-  return (
-    <Box
-      sx={{
-        backgroundColor: semanticColors.codeBlock.background,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: 200,
-        borderRadius: 1,
-      }}
-    >
-      <CircularProgress size={24} />
-    </Box>
-  );
-}
+import {
+  SyntaxHighlighter,
+  useHighlighterStyles,
+  CodeLoadingFallback,
+} from "../../../components/CodeHighlighter";
 
 function useStartingLineNumber(sourceCode?: string) {
   const {selectedFnName} = useModulesPathParams();
@@ -143,7 +81,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
           <Suspense fallback={<CodeLoadingFallback />}>
             {styles && (
               <SyntaxHighlighter
-                language="rust"
+                language="move"
                 key={theme.palette.mode}
                 style={
                   theme.palette.mode === "light"
@@ -270,7 +208,7 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
         <Suspense fallback={<CodeLoadingFallback />}>
           {styles && (
             <SyntaxHighlighter
-              language="rust"
+              language="move"
               key={theme.palette.mode}
               style={
                 theme.palette.mode === "light"
