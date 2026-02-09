@@ -24,7 +24,6 @@ const DELEGATOR_COUNTS_QUERY = `
  */
 export async function getBatchDelegatorCounts(
   validatorAddresses: Types.Address[],
-  client: AptosClient,
   networkName: NetworkName,
 ): Promise<number[]> {
   if (!validatorAddresses.length) return [];
