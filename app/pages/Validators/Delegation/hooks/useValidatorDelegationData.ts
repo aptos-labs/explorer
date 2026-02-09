@@ -121,11 +121,7 @@ export function useValidatorDelegationData() {
   } = useQuery({
     queryKey: ["batchDelegatorCounts", validatorAddresses, networkName],
     queryFn: () => {
-      return getBatchDelegatorCounts(
-        validatorAddresses,
-        aptosClient,
-        networkName,
-      );
+      return getBatchDelegatorCounts(validatorAddresses, networkName);
     },
     enabled: validatorAddresses.length > 0 && !!aptosClient && !!networkName,
     // Cache for 30 seconds to reduce API calls
