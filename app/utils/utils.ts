@@ -414,9 +414,9 @@ export function encodeInputArgsForViewRequest(type: string, value: string) {
     if (value !== "true" && value !== "false")
       throw new Error(`Invalid bool value: ${value}`);
     return value === "true";
-  } else if (["u8", "u16", "u32"].includes(type)) {
+  } else if (["u8", "u16", "u32", "i8", "i16", "i32"].includes(type)) {
     return ensureNumber(value);
-  } else if (["u64", "u128", "u256"].includes(type)) {
+  } else if (["u64", "u128", "u256", "i64", "i128", "i256"].includes(type)) {
     ensureBigInt(value);
     return value.trim();
   } else if (type.startsWith("0x1::option::Option")) {
@@ -449,9 +449,11 @@ function encodeVectorForViewRequest(type: string, value: string) {
           }),
         ),
       ).toString();
-    } else if (["u16", "u32"].includes(match[1])) {
+    } else if (["u16", "u32", "i8", "i16", "i32"].includes(match[1])) {
       return rawVector.map((v) => ensureNumber(v.trim()));
-    } else if (["u64", "u128", "u256"].includes(match[1])) {
+    } else if (
+      ["u64", "u128", "u256", "i64", "i128", "i256"].includes(match[1])
+    ) {
       rawVector.forEach((v) => ensureBigInt(v.trim()));
       return rawVector;
     } else if (match[1] === "bool") {
