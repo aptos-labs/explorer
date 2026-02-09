@@ -9,7 +9,7 @@
       "@aptos-connect/wallet-adapter-plugin": "^3.0.1",
       "@aptos-labs/aptos-client": "^2.1.0",
       "@aptos-labs/wallet-standard": "^0.5.2",
-      "@aptos-labs/ts-sdk": "5.2.1",
+      "@aptos-labs/ts-sdk": "6.0.0",
       "d3-array": ">=3.0.0",
       "d3-color": ">=3.1.0",
       "d3-dispatch": ">=3.0.0",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.1.2",
-    "@aptos-labs/ts-sdk": "5.2.1",
+    "@aptos-labs/ts-sdk": "6.0.0",
     "@aptos-labs/wallet-adapter-react": "7.2.8",
     "@download/blockies": "^1.0.3",
     "@mui/icons-material": "^7.3.6",
