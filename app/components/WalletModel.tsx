@@ -23,8 +23,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-// reported bug with loading mui icons with esm, therefore need to import like this https://github.com/mui/material-ui/issues/35233
-import {ArrowBack, ArrowForward} from "@mui/icons-material";
+// Use direct path imports for MUI icons to avoid barrel re-export overhead
+// See https://github.com/mui/material-ui/issues/35233
+import ArrowBack from "@mui/icons-material/ArrowBack";
+import ArrowForward from "@mui/icons-material/ArrowForward";
 import CloseIcon from "@mui/icons-material/Close";
 import LanOutlinedIcon from "@mui/icons-material/LanOutlined";
 import {JSX, useMemo} from "react";
