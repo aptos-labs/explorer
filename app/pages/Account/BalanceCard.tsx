@@ -1,8 +1,16 @@
 import React, {useState, useEffect} from "react";
-import {Link, Stack, Typography} from "@mui/material";
+import {
+  Link,
+  Stack,
+  Typography,
+  FormControl,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+  useTheme,
+} from "@mui/material";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {Card} from "../../components/Card";
-import {useTheme} from "@mui/material";
 import StyledTooltip from "../../components/StyledTooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
@@ -14,11 +22,29 @@ type BalanceCardProps = {
   address: string;
 };
 
+type PortfolioProvider = "lightscan" | "yieldai";
+
+const portfolioProviders: Record<
+  PortfolioProvider,
+  {label: string; getUrl: (address: string) => string}
+> = {
+  lightscan: {
+    label: "Lightscan",
+    getUrl: (address) => `https://aptos.lightscan.one/portfolio/${address}`,
+  },
+  yieldai: {
+    label: "Yield AI",
+    getUrl: (address) => `https://yieldai.app/portfolio/${address}`,
+  },
+};
+
 export default function BalanceCard({address}: BalanceCardProps) {
   const theme = useTheme();
   const balance = useGetAccountAPTBalance(address);
   const networkName = useNetworkName();
   const [price, setPrice] = useState<number | null>(null);
+  const [portfolioProvider, setPortfolioProvider] =
+    useState<PortfolioProvider>("yieldai");
 
   useEffect(() => {
     const fetchPrice = async () => {
@@ -34,10 +60,16 @@ export default function BalanceCard({address}: BalanceCardProps) {
     fetchPrice();
   }, []);
 
+  const handleProviderChange = (event: SelectChangeEvent) => {
+    setPortfolioProvider(event.target.value as PortfolioProvider);
+  };
+
   const balanceUSD =
     balance.data && price !== null
       ? (Number(balance.data) * Number(price)) / 10e7
       : null;
+
+  const selectedProvider = portfolioProviders[portfolioProvider];
 
   return balance.data ? (
     <Card height="auto">
@@ -69,14 +101,54 @@ export default function BalanceCard({address}: BalanceCardProps) {
         </Stack>
 
         <Stack direction="row" spacing={1} alignItems="center">
+          <Typography
+            id="defi-positions-provider-label"
+            fontSize={12}
+            color={theme.palette.text.secondary}
+          >
+            DeFi positions on
+          </Typography>
+          <FormControl size="small" sx={{minWidth: 100}}>
+            <Select
+              value={portfolioProvider}
+              onChange={handleProviderChange}
+              inputProps={{"aria-labelledby": "defi-positions-provider-label"}}
+              sx={{
+                fontSize: 12,
+                color: theme.palette.text.primary,
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: theme.palette.divider,
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: theme.palette.primary.main,
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: theme.palette.primary.main,
+                },
+                "& .MuiSelect-select": {
+                  py: 0.5,
+                  px: 1,
+                },
+              }}
+            >
+              {(Object.keys(portfolioProviders) as PortfolioProvider[]).map(
+                (provider) => (
+                  <MenuItem key={provider} value={provider} sx={{fontSize: 12}}>
+                    {portfolioProviders[provider].label}
+                  </MenuItem>
+                ),
+              )}
+            </Select>
+          </FormControl>
           <Link
-            href={`https://aptos.lightscan.one/portfolio/${address}`}
+            href={selectedProvider.getUrl(address)}
             underline="none"
             fontSize={12}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`Open portfolio on ${selectedProvider.label} in new tab`}
           >
-            DeFi positions on Lightscan <OpenInNew sx={{fontSize: 12}} />
+            <OpenInNew sx={{fontSize: 12}} />
           </Link>
         </Stack>
       </Stack>
