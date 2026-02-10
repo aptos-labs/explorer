@@ -1,8 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {knownAddresses, NetworkName, scamAddresses} from "../../constants";
-import {useNetworkName} from "../../global-config";
+import {getCachedV2Client, useNetworkName} from "../../global-config";
 import {
-  fetchJsonResponse,
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
   tryStandardizeAddress,
@@ -13,31 +12,73 @@ import {NameType} from "../../components/TitleHashButton";
 // ANS names rarely change - cache for 30 minutes
 const TTL = 30 * 60 * 1000; // 30 minutes
 
-function getAddressFromNameUrl(network: NetworkName, name: string) {
-  if (network !== "testnet" && network !== "mainnet") {
-    return undefined;
-  }
-
-  // Remove .apt suffix if present and lowercase for API compatibility
-  const cleanName = name.endsWith(".apt") ? name.slice(0, -4) : name;
-  const normalizedName = cleanName.toLowerCase();
-  return `https://www.aptosnames.com/api/${network}/v1/address/${normalizedName}.apt`;
+function isAnsSupportedNetwork(network: NetworkName): boolean {
+  return network === "testnet" || network === "mainnet";
 }
 
-// TODO: Known scam addresses
-
-function getFetchNameUrl(
-  network: NetworkName,
+// this function will return null if ANS name not found to prevent useQuery complaining about undefined return
+// source for full context: https://tanstack.com/query/v4/docs/react/guides/migrating-to-react-query-4#undefined-is-an-illegal-cache-value-for-successful-queries
+async function genANSName(
   address: string,
-  isPrimary: boolean,
-) {
-  if (network !== "testnet" && network !== "mainnet") {
-    return undefined;
+  shouldCache: boolean,
+  networkName: NetworkName,
+  isValidator: boolean,
+): Promise<string | null> {
+  if (!isAnsSupportedNetwork(networkName)) {
+    return null;
   }
 
-  return isPrimary
-    ? `https://www.aptosnames.com/api/${network}/v1/primary-name/${address}`
-    : `https://www.aptosnames.com/api/${network}/v1/name/${address}`;
+  const standardizedAddress = tryStandardizeAddress(address);
+  if (!standardizedAddress) {
+    return null;
+  }
+
+  const client = getCachedV2Client(networkName);
+
+  try {
+    const primaryName = await client.getPrimaryName({
+      address: standardizedAddress,
+    });
+
+    if (primaryName) {
+      if (shouldCache) {
+        setLocalStorageWithExpiry(address, primaryName, TTL);
+      }
+      return primaryName;
+    }
+
+    if (isValidator) {
+      return null;
+    }
+
+    const {names: ansNames} = await client.getAccountNames({
+      accountAddress: standardizedAddress,
+    });
+    const first = ansNames[0];
+    const fallbackName = first
+      ? first.subdomain
+        ? `${first.subdomain}.${first.domain}`
+        : first.domain
+      : null;
+
+    if (fallbackName) {
+      if (shouldCache) {
+        setLocalStorageWithExpiry(address, fallbackName, TTL);
+      }
+      return fallbackName;
+    }
+
+    return null;
+  } catch (error) {
+    console.error(
+      "ERROR! Couldn't find ANS name for %s on %s",
+      address,
+      networkName,
+      error,
+      typeof error,
+    );
+    return null;
+  }
 }
 
 export function useGetNameFromAddress(
@@ -87,56 +128,6 @@ export function useGetNameFromAddress(
   return queryResult.data ?? undefined;
 }
 
-// this function will return null if ANS name not found to prevent useQuery complaining about undefined return
-// source for full context: https://tanstack.com/query/v4/docs/react/guides/migrating-to-react-query-4#undefined-is-an-illegal-cache-value-for-successful-queries
-async function genANSName(
-  address: string,
-  shouldCache: boolean,
-  networkName: NetworkName,
-  isValidator: boolean,
-): Promise<string | null> {
-  const primaryNameUrl = getFetchNameUrl(networkName, address, true);
-
-  if (!primaryNameUrl) {
-    return null;
-  }
-
-  try {
-    const {name: primaryName} = await fetchJsonResponse(primaryNameUrl);
-
-    if (primaryName) {
-      if (shouldCache) {
-        setLocalStorageWithExpiry(address, primaryName, TTL);
-      }
-      return primaryName;
-    } else if (isValidator) {
-      return null;
-    } else {
-      const nameUrl = getFetchNameUrl(networkName, address, false);
-
-      if (!nameUrl) {
-        return null;
-      }
-
-      const {name} = await fetchJsonResponse(nameUrl);
-      if (shouldCache) {
-        setLocalStorageWithExpiry(address, name, TTL);
-      }
-      return name ?? null;
-    }
-  } catch (error) {
-    console.error(
-      "ERROR! Couldn't find ANS name for %s on %s",
-      address,
-      networkName,
-      error,
-      typeof error,
-    );
-  }
-
-  return null;
-}
-
 export function useGetAddressFromName(name: string) {
   const networkName = useNetworkName();
   // Normalize name for consistent caching (ANS names are case-insensitive)
@@ -152,22 +143,20 @@ export function useGetAddressFromName(name: string) {
         return null;
       }
 
-      try {
-        const url = getAddressFromNameUrl(networkName, name);
-        if (!url) {
-          return null;
-        }
-
-        const response = await fetchJsonResponse(url);
-
-        // The API returns the address directly or in an object
-        if (typeof response === "string") {
-          return tryStandardizeAddress(response) || null;
-        } else if (response && response.address) {
-          return tryStandardizeAddress(response.address) || null;
-        }
-
+      if (!isAnsSupportedNetwork(networkName)) {
         return null;
+      }
+
+      try {
+        const cleanName = normalizedName.endsWith(".apt")
+          ? normalizedName.slice(0, -4)
+          : normalizedName;
+        const client = getCachedV2Client(networkName);
+        const ansName = await client.getName({
+          name: `${cleanName}.apt`,
+        });
+        const address = ansName?.registered_address ?? ansName?.owner_address;
+        return address ? (tryStandardizeAddress(address) ?? null) : null;
       } catch (error) {
         console.error(
           "ERROR! Couldn't resolve ANS name %s on %s",
