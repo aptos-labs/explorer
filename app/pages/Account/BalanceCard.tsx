@@ -7,10 +7,10 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  useTheme,
 } from "@mui/material";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {Card} from "../../components/Card";
-import {useTheme} from "@mui/material";
 import StyledTooltip from "../../components/StyledTooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
@@ -101,13 +101,18 @@ export default function BalanceCard({address}: BalanceCardProps) {
         </Stack>
 
         <Stack direction="row" spacing={1} alignItems="center">
-          <Typography fontSize={12} color={theme.palette.text.secondary}>
+          <Typography
+            id="defi-positions-provider-label"
+            fontSize={12}
+            color={theme.palette.text.secondary}
+          >
             DeFi positions on
           </Typography>
           <FormControl size="small" sx={{minWidth: 100}}>
             <Select
               value={portfolioProvider}
               onChange={handleProviderChange}
+              inputProps={{"aria-labelledby": "defi-positions-provider-label"}}
               sx={{
                 fontSize: 12,
                 color: theme.palette.text.primary,
@@ -141,6 +146,7 @@ export default function BalanceCard({address}: BalanceCardProps) {
             fontSize={12}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={`Open portfolio on ${selectedProvider.label} in new tab`}
           >
             <OpenInNew sx={{fontSize: 12}} />
           </Link>
