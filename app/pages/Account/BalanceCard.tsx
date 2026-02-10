@@ -34,7 +34,7 @@ const portfolioProviders: Record<
   },
   yieldai: {
     label: "Yield AI",
-    getUrl: (address) => `https://app.yield.ai/portfolio/${address}`,
+    getUrl: (address) => `https://yieldai.app/portfolio/${address}`,
   },
 };
 
