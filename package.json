@@ -21,7 +21,8 @@
       "h3": ">=1.15.5",
       "tar": ">=7.5.7",
       "lodash": ">=4.17.23",
-      "@isaacs/brace-expansion": ">=5.0.1"
+      "@isaacs/brace-expansion": ">=5.0.1",
+      "@identity-connect/dapp-sdk": "^0.16.1"
     }
   },
   "dependencies": {
