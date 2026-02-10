@@ -204,7 +204,7 @@ function getErrorMessage(error: unknown): string {
   return "Unknown error";
 }
 
-/** Get a user-friendly type name */
+/** Get a user-friendly type name. */
 function getFriendlyTypeName(type: string): string {
   // Simplify common types
   if (type === "address") return "Address";
@@ -215,6 +215,12 @@ function getFriendlyTypeName(type: string): string {
   if (type === "u64") return "Number (u64)";
   if (type === "u128") return "Number (u128)";
   if (type === "u256") return "Number (u256)";
+  if (type === "i8") return "Signed Number (i8)";
+  if (type === "i16") return "Signed Number (i16)";
+  if (type === "i32") return "Signed Number (i32)";
+  if (type === "i64") return "Signed Number (i64)";
+  if (type === "i128") return "Signed Number (i128)";
+  if (type === "i256") return "Signed Number (i256)";
   if (type === "0x1::string::String") return "String";
   if (type.startsWith("vector<u8>")) return "Bytes (hex or array)";
   if (type.startsWith("vector<")) {
@@ -233,11 +239,12 @@ function getFriendlyTypeName(type: string): string {
   return type;
 }
 
-/** Get placeholder text for input based on type */
+/** Get placeholder text for input based on type. */
 function getPlaceholder(type: string): string {
   if (type === "address") return "0x1 or name.apt";
   if (type === "bool") return "true or false";
   if (type.startsWith("u")) return "0";
+  if (type.startsWith("i")) return "0";
   if (type === "0x1::string::String") return "Enter text...";
   if (type === "vector<u8>") return "0xDEADBEEF or [222, 173, 190, 239]";
   if (type.startsWith("vector<address>")) return '0x1, 0x2 or ["0x1", "0x2"]';
