@@ -93,7 +93,6 @@ export default function AccountTitle({
             </Typography>
             <StyledTooltip
               title={
-                // Put your tooltip content here
                 <Typography variant="body2">
                   Learn more about
                   <Link
@@ -125,7 +124,7 @@ export default function AccountTitle({
               visit the
             </Typography>
             <Link
-              href="https://daa-dashboard.vercel.app/"
+              href="https://daadashboard.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               underline="none"
