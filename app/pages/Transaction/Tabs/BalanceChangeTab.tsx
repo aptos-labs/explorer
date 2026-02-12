@@ -102,6 +102,124 @@ function AggregatedBalanceTable({
   );
 }
 
+// Parse raw transaction events as a fallback when indexer returns no FA activities
+function parseRawEventsForBalanceChanges(
+  transaction: Types.Transaction,
+  coinData: CoinDescription[] | undefined,
+): BalanceChange[] {
+  if (!("events" in transaction)) {
+    return [];
+  }
+
+  const events = transaction.events;
+  const changes: BalanceChange[] = [];
+
+  for (const event of events) {
+    // Handle FA v2 module events
+    if (
+      event.type === "0x1::fungible_asset::Deposit" ||
+      event.type === "0x1::fungible_asset::Withdraw"
+    ) {
+      const data = event.data as {
+        store: string;
+        amount: string;
+      };
+
+      // Try to find the FA metadata from the store address
+      // The store is a FungibleStore object, we need to find the owner and asset
+      const storeAddress = tryStandardizeAddress(data.store);
+      if (!storeAddress) continue;
+
+      const isDeposit = event.type === "0x1::fungible_asset::Deposit";
+      const amount = BigInt(data.amount);
+
+      // For v2 FA events, we need to determine the asset type from transaction changes
+      // This is a simplified fallback - the asset type may not be accurately determined
+      let assetType = storeAddress; // Use store address as a placeholder
+
+      // Try to find the asset type from write set changes
+      if ("changes" in transaction) {
+        for (const change of transaction.changes) {
+          if (
+            change.type === "write_resource" &&
+            "address" in change &&
+            tryStandardizeAddress(change.address) === storeAddress
+          ) {
+            const changeData = change as {
+              data?: {
+                type?: string;
+                data?: {
+                  metadata?: {inner: string};
+                };
+              };
+            };
+            if (
+              changeData.data?.type === "0x1::fungible_asset::FungibleStore" &&
+              changeData.data?.data?.metadata?.inner
+            ) {
+              assetType =
+                tryStandardizeAddress(changeData.data.data.metadata.inner) ||
+                assetType;
+            }
+          }
+        }
+      }
+
+      const entry = findCoinData(coinData, assetType);
+
+      changes.push({
+        address: storeAddress, // Note: This is the store address, not owner
+        amount: isDeposit ? amount : -amount,
+        type: isDeposit ? "Deposit" : "Withdraw",
+        asset: {
+          decimals: entry?.decimals ?? 8,
+          symbol: entry?.symbol ?? "FA",
+          type: "v2",
+          id: entry?.tokenAddress ?? assetType,
+        },
+        known: entry !== undefined,
+        isInPanoraTokenList: entry?.isInPanoraTokenList,
+        isBanned: entry?.isBanned,
+        logoUrl: entry?.logoUrl,
+      });
+    }
+
+    // Handle legacy coin events
+    if (
+      event.type === "0x1::coin::DepositEvent" ||
+      event.type === "0x1::coin::WithdrawEvent"
+    ) {
+      const data = event.data as {amount: string};
+      const isDeposit = event.type === "0x1::coin::DepositEvent";
+      const amount = BigInt(data.amount);
+      const address = tryStandardizeAddress(event.guid.account_address);
+
+      if (!address) continue;
+
+      // For coin events, we default to APT
+      const coinType = "0x1::aptos_coin::AptosCoin"; // Default to APT
+
+      changes.push({
+        address,
+        amount: isDeposit ? amount : -amount,
+        type: isDeposit ? "Deposit" : "Withdraw",
+        asset: {
+          decimals: 8,
+          symbol: "APT",
+          type: "v1",
+          id: coinType,
+        },
+        known: true,
+        isInPanoraTokenList: true,
+        isBanned: false,
+        logoUrl: "https://assets.panora.exchange/tokens/aptos/APT.svg",
+      });
+    }
+  }
+
+  return changes;
+}
+
 export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
   const theme = useTheme();
   const networkName = useNetworkName();
@@ -170,8 +288,12 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
   }, []);
 
   const balanceChanges: BalanceChange[] = React.useMemo(() => {
-    const changes: BalanceChange[] =
-      transactionChangesResponse?.fungible_asset_activities
+    const indexerActivities =
+      transactionChangesResponse?.fungible_asset_activities ?? [];
+
+    // If indexer has activities, use them
+    if (indexerActivities.length > 0) {
+      const changes: BalanceChange[] = indexerActivities
         .filter((a) => a.amount !== null)
         .map((a) => {
           const entry = findCoinData(coinData?.data, a.asset_type);
@@ -196,38 +318,43 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
             logoUrl: entry?.logoUrl,
             panoraSymbol: entry?.panoraSymbol,
           };
-        }) ?? [];
+        });
 
-    // Find gas fee and add a storage refund event
-    const gasFeeEvent =
-      transactionChangesResponse?.fungible_asset_activities.find((a) =>
+      // Find gas fee and add a storage refund event
+      const gasFeeEvent = indexerActivities.find((a) =>
         a.type.includes("GasFeeEvent"),
       );
-    if (gasFeeEvent && (gasFeeEvent?.storage_refund_amount ?? 0) > 0) {
-      changes.push({
-        address: gasFeeEvent.gas_fee_payer_address ?? gasFeeEvent.owner_address,
-        amount: BigInt(gasFeeEvent.storage_refund_amount),
-        type: "Storage Refund",
-        asset: {
-          decimals: gasFeeEvent.metadata?.decimals,
-          symbol: gasFeeEvent.metadata?.symbol,
-          type: "v1",
-          id: gasFeeEvent.asset_type,
-        },
-        known: true,
-        isBanned: false,
-        isInPanoraTokenList: true,
-        logoUrl: "https://assets.panora.exchange/tokens/aptos/APT.svg",
-      });
+      if (gasFeeEvent && (gasFeeEvent?.storage_refund_amount ?? 0) > 0) {
+        changes.push({
+          address:
+            gasFeeEvent.gas_fee_payer_address ?? gasFeeEvent.owner_address,
+          amount: BigInt(gasFeeEvent.storage_refund_amount),
+          type: "Storage Refund",
+          asset: {
+            decimals: gasFeeEvent.metadata?.decimals,
+            symbol: gasFeeEvent.metadata?.symbol,
+            type: "v1",
+            id: gasFeeEvent.asset_type,
+          },
+          known: true,
+          isBanned: false,
+          isInPanoraTokenList: true,
+          logoUrl: "https://assets.panora.exchange/tokens/aptos/APT.svg",
+        });
+      }
+
+      return changes;
     }
 
-    return changes;
+    // Fallback: Parse raw transaction events when indexer has no activities
+    return parseRawEventsForBalanceChanges(transaction, coinData?.data);
   }, [
     transactionChangesResponse,
     coinData,
     convertAddress,
     convertType,
     convertAmount,
+    transaction,
   ]);
 
   // Filter balance changes by verification status (for mobile)
