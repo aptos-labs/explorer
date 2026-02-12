@@ -1,6 +1,6 @@
 import {Types} from "~/types/aptos";
 import React from "react";
-import {Button, Stack, Typography} from "@mui/material";
+import {Button, Stack, Typography, useMediaQuery} from "@mui/material";
 import {useTheme} from "@mui/material";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {CoinBalanceChangeTable} from "./Components/CoinBalanceChangeTable";
@@ -14,6 +14,12 @@ import {
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
 import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
+import {
+  verifiedLevel,
+  VerifiedType,
+} from "../../../components/Table/VerifiedCell";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
+import {Network} from "@aptos-labs/ts-sdk";
 
 type BalanceChangeTabProps = {
   transaction: Types.Transaction;
@@ -22,6 +28,12 @@ type BalanceChangeTabProps = {
 enum BalanceViewType {
   NON_AGGREGATED,
   AGGREGATED,
+}
+
+enum VerificationFilterType {
+  VERIFIED,
+  RECOGNIZED,
+  ALL,
 }
 
 type AggregatedBalance = {
@@ -92,22 +104,29 @@ function AggregatedBalanceTable({
 
 export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
   const theme = useTheme();
+  const networkName = useNetworkName();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const {data: coinData} = useGetCoinList();
   const [viewType, setViewType] = React.useState(
     BalanceViewType.NON_AGGREGATED,
+  );
+  const [verificationFilter, setVerificationFilter] = React.useState(
+    networkName === Network.MAINNET
+      ? VerificationFilterType.VERIFIED
+      : VerificationFilterType.ALL,
   );
 
   const {data: transactionChangesResponse} = useTransactionBalanceChanges(
     "version" in transaction ? transaction.version : transaction.hash,
   );
 
-  function convertAddress(a: FungibleAssetActivity) {
+  const convertAddress = React.useCallback((a: FungibleAssetActivity) => {
     return a.type.includes("GasFeeEvent")
       ? (a.gas_fee_payer_address ?? a.owner_address)
       : a.owner_address;
-  }
+  }, []);
 
-  function convertType(activity: FungibleAssetActivity) {
+  const convertType = React.useCallback((activity: FungibleAssetActivity) => {
     if (activity.type.includes("GasFee")) {
       return "Gas Fee";
     }
@@ -120,70 +139,132 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
     if (activity.type.includes("StorageRefund")) {
       return "Storage Refund";
     }
+    if (activity.type.includes("Transfer")) {
+      return "Transfer";
+    }
+    if (activity.type.includes("Mint")) {
+      return "Mint";
+    }
+    if (activity.type.includes("Burn")) {
+      return "Burn";
+    }
+    if (activity.type.includes("Frozen")) {
+      return "Frozen";
+    }
 
     return "Unknown";
-  }
+  }, []);
 
-  function convertAmount(activity: FungibleAssetActivity) {
+  const convertAmount = React.useCallback((activity: FungibleAssetActivity) => {
     if (activity.type.includes("GasFeeEvent")) {
       return -BigInt(activity.amount);
     }
     if (activity.type.includes("Withdraw")) {
       return BigInt(-activity.amount);
     }
+    if (activity.type.includes("Burn")) {
+      return BigInt(-activity.amount);
+    }
+    // Deposit, Mint, Transfer - positive amounts
     return BigInt(activity.amount);
-  }
+  }, []);
 
-  const balanceChanges: BalanceChange[] =
-    transactionChangesResponse?.fungible_asset_activities
-      .filter((a) => a.amount !== null)
-      .map((a) => {
-        const entry = findCoinData(coinData?.data, a.asset_type);
+  const balanceChanges: BalanceChange[] = React.useMemo(() => {
+    const changes: BalanceChange[] =
+      transactionChangesResponse?.fungible_asset_activities
+        .filter((a) => a.amount !== null)
+        .map((a) => {
+          const entry = findCoinData(coinData?.data, a.asset_type);
 
-        return {
-          address: convertAddress(a),
-          amount: convertAmount(a),
-          type: convertType(a),
-          asset: {
-            decimals: a.metadata?.decimals,
-            symbol: getAssetSymbol(
-              entry?.panoraSymbol,
-              entry?.bridge,
-              a.metadata?.symbol,
-            ),
-            type: a.type,
-            id: entry?.tokenAddress ?? a.asset_type,
-          },
-          known: entry !== undefined,
-          isInPanoraTokenList: entry?.isInPanoraTokenList,
-          isBanned: entry?.isBanned,
-          logoUrl: entry?.logoUrl,
-          panoraSymbol: entry?.panoraSymbol,
-        };
-      }) ?? [];
+          return {
+            address: convertAddress(a),
+            amount: convertAmount(a),
+            type: convertType(a),
+            asset: {
+              decimals: a.metadata?.decimals,
+              symbol: getAssetSymbol(
+                entry?.panoraSymbol,
+                entry?.bridge,
+                a.metadata?.symbol,
+              ),
+              type: a.type,
+              id: entry?.tokenAddress ?? a.asset_type,
+            },
+            known: entry !== undefined,
+            isInPanoraTokenList: entry?.isInPanoraTokenList,
+            isBanned: entry?.isBanned,
+            logoUrl: entry?.logoUrl,
+            panoraSymbol: entry?.panoraSymbol,
+          };
+        }) ?? [];
 
-  // Find gas fee and add a storage refund event
-  const gasFeeEvent =
-    transactionChangesResponse?.fungible_asset_activities.find((a) =>
-      a.type.includes("GasFeeEvent"),
-    );
-  if (gasFeeEvent && (gasFeeEvent?.storage_refund_amount ?? 0) > 0) {
-    balanceChanges.push({
-      address: gasFeeEvent.gas_fee_payer_address ?? gasFeeEvent.owner_address,
-      amount: BigInt(gasFeeEvent.storage_refund_amount),
-      type: "Storage Refund",
-      asset: {
-        decimals: gasFeeEvent.metadata?.decimals,
-        symbol: gasFeeEvent.metadata?.symbol,
-        type: "v1",
-        id: gasFeeEvent.asset_type,
-      },
-      known: true,
-      isBanned: false,
-      isInPanoraTokenList: true,
-      logoUrl: "https://assets.panora.exchange/tokens/aptos/APT.svg",
+    // Find gas fee and add a storage refund event
+    const gasFeeEvent =
+      transactionChangesResponse?.fungible_asset_activities.find((a) =>
+        a.type.includes("GasFeeEvent"),
+      );
+    if (gasFeeEvent && (gasFeeEvent?.storage_refund_amount ?? 0) > 0) {
+      changes.push({
+        address: gasFeeEvent.gas_fee_payer_address ?? gasFeeEvent.owner_address,
+        amount: BigInt(gasFeeEvent.storage_refund_amount),
+        type: "Storage Refund",
+        asset: {
+          decimals: gasFeeEvent.metadata?.decimals,
+          symbol: gasFeeEvent.metadata?.symbol,
+          type: "v1",
+          id: gasFeeEvent.asset_type,
+        },
+        known: true,
+        isBanned: false,
+        isInPanoraTokenList: true,
+        logoUrl: "https://assets.panora.exchange/tokens/aptos/APT.svg",
+      });
+    }
+
+    return changes;
+  }, [
+    transactionChangesResponse,
+    coinData,
+    convertAddress,
+    convertType,
+    convertAmount,
+  ]);
+
+  // Filter balance changes by verification status (for mobile)
+  const filteredBalanceChanges = React.useMemo(() => {
+    if (verificationFilter === VerificationFilterType.ALL) {
+      return balanceChanges;
+    }
+
+    return balanceChanges.filter((change) => {
+      const level = verifiedLevel(
+        {
+          id: change.asset.id,
+          known: change.known,
+          isBanned: change.isBanned,
+          isInPanoraTokenList: change.isInPanoraTokenList,
+          symbol: change.asset.symbol,
+        },
+        networkName,
+      ).level;
+
+      if (verificationFilter === VerificationFilterType.VERIFIED) {
+        return (
+          level === VerifiedType.LABS_VERIFIED ||
+          level === VerifiedType.COMMUNITY_VERIFIED ||
+          level === VerifiedType.NATIVE_TOKEN
+        );
+      }
+
+      // RECOGNIZED filter
+      return (
+        level === VerifiedType.LABS_VERIFIED ||
+        level === VerifiedType.COMMUNITY_VERIFIED ||
+        level === VerifiedType.NATIVE_TOKEN ||
+        level === VerifiedType.RECOGNIZED
+      );
     });
-  }
+  }, [balanceChanges, verificationFilter, networkName]);
 
   if (balanceChanges.length === 0) {
     return <EmptyTabContent />;
@@ -195,6 +276,91 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
     theme.palette.mode === "dark"
       ? theme.palette.neutralShade.lighter
       : theme.palette.neutralShade.darker;
+
+  const verificationSelector = (
+    <Stack
+      direction="row"
+      justifyContent="flex-end"
+      spacing={1}
+      marginY={0.5}
+      height={16}
+    >
+      <Button
+        variant="text"
+        onClick={() => setVerificationFilter(VerificationFilterType.VERIFIED)}
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          color:
+            VerificationFilterType.VERIFIED === verificationFilter
+              ? selectedTextColor
+              : unselectedTextColor,
+          padding: 0,
+          "&:hover": {
+            background: "transparent",
+          },
+        }}
+      >
+        Verified
+      </Button>
+      <Typography
+        variant="subtitle1"
+        sx={{
+          fontSize: 11,
+          fontWeight: 600,
+          color: dividerTextColor,
+        }}
+      >
+        |
+      </Typography>
+      <Button
+        variant="text"
+        onClick={() => setVerificationFilter(VerificationFilterType.RECOGNIZED)}
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          color:
+            VerificationFilterType.RECOGNIZED === verificationFilter
+              ? selectedTextColor
+              : unselectedTextColor,
+          padding: 0,
+          "&:hover": {
+            background: "transparent",
+          },
+        }}
+      >
+        Recognized
+      </Button>
+      <Typography
+        variant="subtitle1"
+        sx={{
+          fontSize: 11,
+          fontWeight: 600,
+          color: dividerTextColor,
+        }}
+      >
+        |
+      </Typography>
+      <Button
+        variant="text"
+        onClick={() => setVerificationFilter(VerificationFilterType.ALL)}
+        sx={{
+          fontSize: 12,
+          fontWeight: 600,
+          color:
+            VerificationFilterType.ALL === verificationFilter
+              ? selectedTextColor
+              : unselectedTextColor,
+          padding: 0,
+          "&:hover": {
+            background: "transparent",
+          },
+        }}
+      >
+        All
+      </Button>
+    </Stack>
+  );
 
   const viewSelector = (
     <Stack
@@ -253,17 +419,33 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
     </Stack>
   );
 
+  // Use filtered changes on mobile, all changes on desktop
+  const displayedBalanceChanges = isMobile
+    ? filteredBalanceChanges
+    : balanceChanges;
+
   return (
     <>
-      {viewSelector}
-      {viewType === BalanceViewType.NON_AGGREGATED ? (
+      <Stack
+        direction={isMobile ? "column" : "row"}
+        justifyContent={isMobile ? "flex-start" : "space-between"}
+        alignItems={isMobile ? "stretch" : "center"}
+        spacing={isMobile ? 1 : 0}
+        sx={{mb: isMobile ? 1 : 0}}
+      >
+        {isMobile && networkName === Network.MAINNET && verificationSelector}
+        {viewSelector}
+      </Stack>
+      {displayedBalanceChanges.length === 0 ? (
+        <EmptyTabContent />
+      ) : viewType === BalanceViewType.NON_AGGREGATED ? (
         <CoinBalanceChangeTable
-          balanceChanges={balanceChanges}
+          balanceChanges={displayedBalanceChanges}
           transaction={transaction as Types.UserTransaction}
         />
       ) : (
         <AggregatedBalanceTable
-          balanceChanges={balanceChanges}
+          balanceChanges={displayedBalanceChanges}
           transaction={transaction as Types.UserTransaction}
         />
       )}
