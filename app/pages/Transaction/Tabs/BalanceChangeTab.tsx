@@ -102,6 +102,71 @@ function AggregatedBalanceTable({
   );
 }
 
+// Type definitions for parsing write set changes
+type FungibleStoreChangeData = {
+  type: string;
+  data?: {
+    type?: string;
+    data?: {
+      metadata?: {inner: string};
+    };
+  };
+};
+
+type ObjectCoreChangeData = {
+  type: string;
+  data?: {
+    type?: string;
+    data?: {
+      owner?: string;
+    };
+  };
+};
+
+// Helper to check if a coin event is for APT
+function isAptCoinEvent(
+  event: Types.Event,
+  transaction: Types.Transaction,
+): boolean {
+  const txnChanges: Types.WriteSetChange[] =
+    "changes" in transaction ? transaction.changes : [];
+
+  // Check if there's an APT CoinStore change for this account
+  return txnChanges.some((change) => {
+    if (
+      "address" in change &&
+      change.address &&
+      tryStandardizeAddress(change.address) ===
+        tryStandardizeAddress(event.guid.account_address) &&
+      "data" in change &&
+      change.data &&
+      "type" in change.data &&
+      change.data.type === "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>"
+    ) {
+      // Verify the event creation number matches the change's deposit/withdraw events
+      const data = change.data as {
+        data?: {
+          deposit_events?: {guid: {id: {creation_num: string}}};
+          withdraw_events?: {guid: {id: {creation_num: string}}};
+        };
+      };
+      if (data.data) {
+        const eventCreationNum = event.guid.creation_number;
+        if (event.type === "0x1::coin::DepositEvent") {
+          return (
+            data.data.deposit_events?.guid.id.creation_num === eventCreationNum
+          );
+        } else if (event.type === "0x1::coin::WithdrawEvent") {
+          return (
+            data.data.withdraw_events?.guid.id.creation_num === eventCreationNum
+          );
+        }
+      }
+    }
+    return false;
+  });
+}
+
 // Parse raw transaction events as a fallback when indexer returns no FA activities
 function parseRawEventsForBalanceChanges(
   transaction: Types.Transaction,
@@ -114,6 +179,26 @@ function parseRawEventsForBalanceChanges(
   const events = transaction.events;
   const changes: BalanceChange[] = [];
 
+  // Group changes by address for easier lookup
+  const changesByAddress: Record<string, Types.WriteSetChange[]> = {};
+  if ("changes" in transaction) {
+    for (const change of transaction.changes) {
+      if (
+        (change.type === "write_resource" ||
+          change.type === "create_resource") &&
+        "address" in change
+      ) {
+        const addr = tryStandardizeAddress(change.address);
+        if (addr) {
+          if (!changesByAddress[addr]) {
+            changesByAddress[addr] = [];
+          }
+          changesByAddress[addr].push(change);
+        }
+      }
+    }
+  }
+
   for (const event of events) {
     // Handle FA v2 module events
     if (
@@ -125,50 +210,49 @@ function parseRawEventsForBalanceChanges(
         amount: string;
       };
 
-      // Try to find the FA metadata from the store address
-      // The store is a FungibleStore object, we need to find the owner and asset
       const storeAddress = tryStandardizeAddress(data.store);
       if (!storeAddress) continue;
 
       const isDeposit = event.type === "0x1::fungible_asset::Deposit";
       const amount = BigInt(data.amount);
 
-      // For v2 FA events, we need to determine the asset type from transaction changes
-      // This is a simplified fallback - the asset type may not be accurately determined
-      let assetType = storeAddress; // Use store address as a placeholder
+      // Look up changes for this store address
+      const storeChanges = changesByAddress[storeAddress] ?? [];
 
-      // Try to find the asset type from write set changes
-      if ("changes" in transaction) {
-        for (const change of transaction.changes) {
-          if (
-            change.type === "write_resource" &&
-            "address" in change &&
-            tryStandardizeAddress(change.address) === storeAddress
-          ) {
-            const changeData = change as {
-              data?: {
-                type?: string;
-                data?: {
-                  metadata?: {inner: string};
-                };
-              };
-            };
-            if (
-              changeData.data?.type === "0x1::fungible_asset::FungibleStore" &&
-              changeData.data?.data?.metadata?.inner
-            ) {
-              assetType =
-                tryStandardizeAddress(changeData.data.data.metadata.inner) ||
-                assetType;
-            }
-          }
+      // Find the FungibleStore to get the asset type
+      let assetType = storeAddress; // Default placeholder
+      const faStoreChange = storeChanges.find((change) => {
+        const changeData = change as FungibleStoreChangeData;
+        return changeData.data?.type === "0x1::fungible_asset::FungibleStore";
+      });
+
+      if (faStoreChange) {
+        const faData = faStoreChange as FungibleStoreChangeData;
+        if (faData.data?.data?.metadata?.inner) {
+          assetType =
+            tryStandardizeAddress(faData.data.data.metadata.inner) || assetType;
+        }
+      }
+
+      // Find the ObjectCore to get the owner address
+      let ownerAddress = storeAddress; // Default to store address if owner not found
+      const objectCoreChange = storeChanges.find((change) => {
+        const changeData = change as ObjectCoreChangeData;
+        return changeData.data?.type === "0x1::object::ObjectCore";
+      });
+
+      if (objectCoreChange) {
+        const objData = objectCoreChange as ObjectCoreChangeData;
+        if (objData.data?.data?.owner) {
+          ownerAddress =
+            tryStandardizeAddress(objData.data.data.owner) || ownerAddress;
         }
       }
 
       const entry = findCoinData(coinData, assetType);
 
       changes.push({
-        address: storeAddress, // Note: This is the store address, not owner
+        address: ownerAddress,
         amount: isDeposit ? amount : -amount,
         type: isDeposit ? "Deposit" : "Withdraw",
         asset: {
@@ -184,20 +268,22 @@ function parseRawEventsForBalanceChanges(
       });
     }
 
-    // Handle legacy coin events
+    // Handle legacy coin events - only for APT
     if (
       event.type === "0x1::coin::DepositEvent" ||
       event.type === "0x1::coin::WithdrawEvent"
     ) {
+      // Only process APT coin events to avoid incorrect balance display
+      if (!isAptCoinEvent(event, transaction)) {
+        continue;
+      }
+
       const data = event.data as {amount: string};
       const isDeposit = event.type === "0x1::coin::DepositEvent";
       const amount = BigInt(data.amount);
       const address = tryStandardizeAddress(event.guid.account_address);
 
       if (!address) continue;
-
-      // For coin events, we default to APT
-      const coinType = "0x1::aptos_coin::AptosCoin"; // Default to APT
 
       changes.push({
         address,
@@ -207,7 +293,7 @@ function parseRawEventsForBalanceChanges(
           decimals: 8,
           symbol: "APT",
           type: "v1",
-          id: coinType,
+          id: "0x1::aptos_coin::AptosCoin",
         },
         known: true,
         isInPanoraTokenList: true,
