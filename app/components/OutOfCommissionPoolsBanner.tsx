@@ -13,26 +13,21 @@ import {addressFromWallet} from "../utils";
 export function OutOfCommissionPoolsBanner() {
   const {connected, account} = useWallet();
   const aptosClient = useAptosClient();
-  const [hasZeroCommission, setHasZeroCommission] = useState<boolean>(false);
   const [zeroCommissionPoolAddresses, setZeroCommissionPoolAddresses] =
     useState<string[]>([]);
-  const [isChecking, setIsChecking] = useState<boolean>(false);
 
   const {delegatorPools, loading} = useGetDelegatedStaking(
     addressFromWallet(account?.address),
   );
 
   useEffect(() => {
-    if (!connected || loading || !delegatorPools || !aptosClient) {
-      setHasZeroCommission(false);
-      setZeroCommissionPoolAddresses([]);
-      return;
-    }
-
-    if (isChecking) return;
+    let cancelled = false;
 
     const checkPools = async () => {
-      setIsChecking(true);
+      if (!connected || loading || !delegatorPools || !aptosClient) {
+        setZeroCommissionPoolAddresses([]);
+        return;
+      }
 
       try {
         const poolChecks = delegatorPools.map(async (pool) => {
@@ -66,21 +61,26 @@ export function OutOfCommissionPoolsBanner() {
 
         const results = await Promise.all(poolChecks);
 
+        if (cancelled) return;
+
         const zeroCommissionPools = results
           .filter((result) => result.hasZeroCommission)
           .map((result) => result.address);
 
         setZeroCommissionPoolAddresses(zeroCommissionPools);
-        setHasZeroCommission(zeroCommissionPools.length > 0);
       } catch (error) {
         console.error("Error checking pool commissions:", error);
-      } finally {
-        setIsChecking(false);
       }
     };
 
     checkPools();
-  }, [connected, loading, delegatorPools, aptosClient, isChecking]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [connected, loading, delegatorPools, aptosClient]);
+
+  const hasZeroCommission = zeroCommissionPoolAddresses.length > 0;
 
   if (!connected || !hasZeroCommission) {
     return null;
