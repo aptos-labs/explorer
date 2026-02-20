@@ -9,12 +9,14 @@ import Error from "./Error";
 import {ResponseError, ResponseErrorType} from "../../api/client";
 import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 import {isValidStruct} from "../utils";
+import {getAssetSymbol} from "../../utils";
 import CoinTitle from "./Title";
 import {CoinData} from "./Components/CoinData";
 import {useGetCoinSupplyLimit} from "../../api/hooks/useGetCoinSupplyLimit";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
 import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
 import {useGetCoinPairedFa} from "../../api/hooks/useGetCoinPairedFa";
+import VerificationBanner from "../../components/VerificationBanner";
 
 const TAB_VALUES_FULL: TabValue[] = ["info", "holders", "transactions"];
 
@@ -72,6 +74,18 @@ export default function CoinPage() {
           struct={struct}
           coinData={coinData}
           symbol={(data as CoinData)?.data?.symbol}
+        />
+      </Grid>
+      <Grid size={{xs: 12}} sx={{mt: 2}}>
+        <VerificationBanner
+          id={struct}
+          known={!!coinData}
+          coinData={coinData}
+          symbol={getAssetSymbol(
+            coinData?.panoraSymbol,
+            coinData?.bridge,
+            (data as CoinData)?.data?.symbol,
+          )}
         />
       </Grid>
       <Grid size={{xs: 12, md: 12, lg: 12}} marginTop={4}>

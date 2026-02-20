@@ -14,6 +14,8 @@ import {useGetFASupply} from "../../api/hooks/useGetFaSupply";
 import {CoinDescription, useGetCoinList} from "../../api/hooks/useGetCoinList";
 import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
 import {useGetFaPairedCoin} from "../../api/hooks/useGetFaPairedCoin";
+import VerificationBanner from "../../components/VerificationBanner";
+import {getAssetSymbol} from "../../utils";
 
 const TAB_VALUES_FULL: TabValue[] = ["info", "holders", "transactions"];
 
@@ -77,6 +79,23 @@ export default function FAPage() {
           address={address}
           metadata={metadata ?? undefined}
           coinData={coinData}
+        />
+      </Grid>
+      <Grid size={{xs: 12}} sx={{mt: 2}}>
+        <VerificationBanner
+          id={address}
+          known={!!coinData}
+          coinData={coinData}
+          symbol={
+            coinData?.panoraSymbol &&
+            metadata?.symbol !== coinData?.panoraSymbol
+              ? getAssetSymbol(
+                  coinData?.panoraSymbol,
+                  coinData?.bridge,
+                  coinData?.symbol,
+                )
+              : metadata?.symbol
+          }
         />
       </Grid>
       <Grid size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
