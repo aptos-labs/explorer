@@ -62,6 +62,42 @@
     Cache-Control = "public, max-age=86400"
     Content-Type = "application/manifest+json"
 
+# LLM discovery files
+[[headers]]
+  for = "/llms.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type = "text/plain; charset=utf-8"
+    X-Robots-Tag = "noarchive"
+
+[[headers]]
+  for = "/llms-full.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type = "text/plain; charset=utf-8"
+    X-Robots-Tag = "noarchive"
+
+# OpenSearch description
+[[headers]]
+  for = "/opensearch.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type = "application/opensearchdescription+xml; charset=utf-8"
+
+# Sitemap
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    Content-Type = "application/xml; charset=utf-8"
+
+# Robots
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type = "text/plain; charset=utf-8"
+
 # Environment variable configuration
 [context.production.environment]
   NODE_ENV = "production"

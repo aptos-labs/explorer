@@ -150,7 +150,7 @@ export function ActivitiesTable({
   columns = DEFAULT_COLUMNS,
 }: ActivitiesTableProps) {
   return (
-    <Table>
+    <Table aria-label="Token activities" data-entity-type="token-activity">
       <TableHead>
         <TableRow>
           {columns.map((column) => (

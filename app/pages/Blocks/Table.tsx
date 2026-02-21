@@ -310,7 +310,7 @@ export default function BlocksTable({
   // Desktop table view
   return (
     <Box sx={{overflowX: "auto"}}>
-      <Table>
+      <Table aria-label="Blocks" data-entity-type="block">
         <TableHead>
           <TableRow>
             {columns.map((column) => (

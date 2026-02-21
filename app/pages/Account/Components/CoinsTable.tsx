@@ -565,7 +565,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
     <>
       {verificationFilter !== CoinVerificationFilterType.NONE && filterSelector}
       <Box sx={{overflowX: "auto"}}>
-        <Table>
+        <Table aria-label="Account coins" data-entity-type="coin">
           <TableHead>
             <TableRow>
               <GeneralTableHeaderCell header="Name" />

@@ -641,7 +641,7 @@ export function CoinBalanceChangeTable({
 
   // Desktop table view
   return (
-    <Table>
+    <Table aria-label="Balance changes" data-entity-type="balance-change">
       <TableHead>
         <TableRow>
           {columns.map((column) => (

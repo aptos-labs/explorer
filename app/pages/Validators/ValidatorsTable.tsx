@@ -406,7 +406,7 @@ export function ValidatorsTable() {
   // Desktop table view
   return (
     <Box sx={{overflowX: "auto"}}>
-      <Table>
+      <Table aria-label="Validators" data-entity-type="validator">
         <TableHead>
           <TableRow sx={{verticalAlign: "bottom"}}>
             {columns.map((column) => (

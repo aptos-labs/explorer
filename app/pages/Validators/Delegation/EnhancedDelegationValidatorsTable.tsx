@@ -878,7 +878,10 @@ export function EnhancedDelegationValidatorsTable() {
     return (
       <Box>
         <Box sx={{overflowX: "auto"}}>
-          <Table>
+          <Table
+            aria-label="Delegation validators"
+            data-entity-type="validator"
+          >
             <TableHead>
               <TableRow sx={{verticalAlign: "bottom"}}>
                 {columns.map((column) => (
@@ -978,7 +981,7 @@ export function EnhancedDelegationValidatorsTable() {
     <Box>
       {InactiveValidatorsToggle}
       <Box sx={{overflowX: "auto"}}>
-        <Table>
+        <Table aria-label="Delegation validators" data-entity-type="validator">
           <TableHead>
             <TableRow sx={{verticalAlign: "bottom"}}>
               {columns.map((column) => (

@@ -339,7 +339,7 @@ export function TokensTable({
   // Desktop table view
   return (
     <Box sx={{overflowX: "auto"}}>
-      <Table>
+      <Table aria-label="Account tokens" data-entity-type="token">
         <TableHead>
           <TableRow>
             {columns.map((column) => (

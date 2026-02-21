@@ -73,7 +73,7 @@ export function FAActivityTable({
   data: CoinData;
 }) {
   return (
-    <Table>
+    <Table aria-label="Coin transactions" data-entity-type="transaction">
       <TableHead>
         <TableRow>
           <GeneralTableHeaderCell header="version" />
