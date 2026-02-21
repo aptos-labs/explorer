@@ -152,7 +152,7 @@ export function ValidatorsTable() {
   );
 
   return (
-    <Table>
+    <Table aria-label="Validators" data-entity-type="validator">
       <TableHead>
         <TableRow>
           {DEFAULT_COLUMNS.map((column) => (

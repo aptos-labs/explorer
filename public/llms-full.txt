@@ -1,8 +1,16 @@
-# Aptos Explorer - Full Documentation for LLMs
+# Aptos Explorer — Full LLM Reference
+
+> Last updated: 2026-02-21
+
+> Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
+
+For a shorter overview, see [/llms.txt](https://explorer.aptoslabs.com/llms.txt).
+
+---
 
 ## About Aptos
 
-Aptos is a Layer 1 blockchain built with Move, a safe and flexible programming language originally developed at Meta. The Aptos blockchain is designed for scalability, safety, and upgradeability.
+Aptos is a Layer 1 blockchain built with Move, a resource-oriented programming language originally developed at Meta. The Aptos blockchain is designed for scalability, safety, and upgradeability.
 
 ### Key Aptos Concepts
 
@@ -12,40 +20,179 @@ Aptos is a Layer 1 blockchain built with Move, a safe and flexible programming l
 - **Modules**: Smart contract code deployed on-chain
 - **Transactions**: Signed messages that modify blockchain state
 - **Events**: Structured logs emitted during transaction execution
-- **Gas**: Computation and storage fees paid in APT (native token)
+- **Gas**: Computation and storage fees paid in APT (the native token)
+
+---
+
+## URL Construction Guide
+
+**Base URL**: `https://explorer.aptoslabs.com`
+
+All URLs default to **mainnet**. To specify a network, append `?network=testnet`, `?network=devnet`, or `?network=local`.
+
+### Page Routes and Tabs
+
+Each detail page has tabs accessible via path segments:
+
+#### Transactions
+- `/transactions` — paginated list of recent transactions
+- `/txn/{version}` — transaction by version number (integer)
+- `/txn/{hash}` — transaction by hash (0x-prefixed hex)
+- Tab paths: `/txn/{id}/userTxnOverview`, `/txn/{id}/events`, `/txn/{id}/payload`, `/txn/{id}/changes`, `/txn/{id}/balanceChange`
+
+#### Accounts
+- `/account/{address}` — account overview (redirects to `/account/{address}/transactions`)
+- Tab paths: `/account/{address}/transactions`, `/account/{address}/coins`, `/account/{address}/tokens`, `/account/{address}/resources`, `/account/{address}/modules`, `/account/{address}/info`
+- Module source: `/account/{address}/modules/{moduleName}` — view source of a specific module
+
+#### Blocks
+- `/blocks` — paginated list of recent blocks
+- `/block/{height}` — block by height (integer)
+- Tab paths: `/block/{height}/overview`, `/block/{height}/transactions`
+
+#### Validators
+- `/validators` — active validator set with performance metrics
+- `/validators/delegation` — delegation/staking information
+
+#### Coins and Tokens
+- `/coins` — list of known coins/fungible assets
+- `/coin/{type}` — coin details by Move type (e.g., `/coin/0x1::aptos_coin::AptosCoin`)
+- Tab paths: `/coin/{type}/info`, `/coin/{type}/transactions`
+- `/fungible_asset/{address}` — fungible asset by metadata address
+- `/token/{tokenId}` — individual NFT/token details
+
+#### Other Pages
+- `/analytics` — network analytics charts (TPS, DAU, gas, supply)
+- `/verification` — on-chain verification tools
+
+### Network Query Parameter
+
+Append to any URL:
+- `?network=mainnet` (default, can be omitted)
+- `?network=testnet`
+- `?network=devnet`
+
+Example: `https://explorer.aptoslabs.com/account/0x1/modules?network=testnet`
+
+---
+
+## Key Addresses and Types
+
+| Address | Description |
+|---|---|
+| `0x1` | Aptos Framework — core modules (coin, account, staking, governance, fungible_asset) |
+| `0x3` | Token v1 standard (legacy NFT/token module) |
+| `0x4` | Token v2 / Digital Asset standard (current NFT standard) |
+
+| Type | Description |
+|---|---|
+| `0x1::aptos_coin::AptosCoin` | Native APT coin type |
+| `0x1::coin::CoinStore<T>` | Token balance for coin type T |
+| `0x1::account::Account` | Basic account information resource |
+| `0x1::staking_contract::StakingContract` | Staking delegation resource |
+| `0x4::token::Token` | NFT token v2 data |
+| `0x4::collection::Collection` | NFT collection v2 data |
+| `0x1::fungible_asset::Metadata` | Fungible asset metadata |
+
+---
+
+## Data Interpretation Guide
+
+### Amounts and Units
+- **Octas**: The smallest unit of APT. 1 APT = 100,000,000 Octas (10^8)
+- Raw amounts in API responses and on-chain data are always in Octas
+- The explorer displays converted APT values with decimal notation
+- Example: `150000000` Octas = `1.5` APT
+
+### Transaction Identifiers
+- **Version**: A sequential integer (0, 1, 2, …) assigned to every committed transaction. This is the primary identifier.
+- **Hash**: A 32-byte SHA3-256 hash (64 hex chars, 0x-prefixed). Used to look up transactions before they are committed or when the version is unknown.
+- Both `/txn/123456` (version) and `/txn/0xabc...def` (hash) are valid.
+
+### Address Format
+- 32 bytes = 64 hex characters, always 0x-prefixed
+- Short form: leading zeros can be omitted (e.g., `0x1` is `0x0000…0001`)
+- The explorer accepts both short and full-length addresses
+
+### Move Resource Type Syntax
+- Format: `{address}::{module_name}::{struct_name}`
+- With generics: `{address}::{module_name}::{struct_name}<{type_param}>`
+- Example: `0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>`
+
+### Epochs and Rounds
+- **Epoch**: A period (~2 hours on mainnet) during which the validator set is fixed
+- **Round**: A sub-unit within an epoch for consensus
+- Epoch boundaries trigger staking reward distribution
+
+### Sequence Numbers
+- Each account has a sequence number that increments with every transaction sent
+- Analogous to nonces in Ethereum
+- Visible on the account info tab
+
+---
+
+## Example Prompts and Answers
+
+Below are worked examples showing how to route user questions to explorer URLs.
+
+**Q: "What is transaction 582947613?"**
+A: Visit `https://explorer.aptoslabs.com/txn/582947613` — this shows the full transaction details including sender, payload, events, and gas.
+
+**Q: "Show me the balance of 0xce462d0a77e4f6e7e9be93a08d498e6934fbb8ac02ddd6d5a472dd9dde9f7798"**
+A: Visit `https://explorer.aptoslabs.com/account/0xce46…7798/coins` — the coins tab shows all fungible token balances for this account.
+
+**Q: "What modules does the Aptos Framework have?"**
+A: Visit `https://explorer.aptoslabs.com/account/0x1/modules` — this lists all Move modules deployed at address 0x1 with viewable source code.
+
+**Q: "Is there an APT coin page?"**
+A: Yes — `https://explorer.aptoslabs.com/coin/0x1::aptos_coin::AptosCoin` shows supply, metadata, and recent transactions for native APT.
+
+**Q: "What's the current TPS on Aptos?"**
+A: Visit `https://explorer.aptoslabs.com/analytics` — the analytics page shows real-time and historical TPS charts along with other network metrics.
+
+**Q: "Show me block 50000000"**
+A: Visit `https://explorer.aptoslabs.com/block/50000000` — shows the block's proposer, timestamp, and contained transactions.
+
+**Q: "How do I check the same account on testnet?"**
+A: Append `?network=testnet` to the URL. Example: `https://explorer.aptoslabs.com/account/0x1?network=testnet`
+
+**Q: "What validators are currently active?"**
+A: Visit `https://explorer.aptoslabs.com/validators` — shows the active validator set with voting power, performance, and staking info.
+
+**Q: "Where can I see token/NFT details?"**
+A: Individual NFTs: `/token/{tokenId}`. Collections are visible via the owning account's tokens tab. Fungible assets: `/fungible_asset/{address}`.
+
+**Q: "Convert 250000000 Octas to APT"**
+A: 250000000 ÷ 100000000 = 2.5 APT. The explorer shows converted values automatically.
+
+---
 
 ## Explorer Page Types
 
 ### Transaction Pages (`/txn/{version}` or `/txn/{hash}`)
 
 Displays:
-- Transaction version (sequential ID)
-- Transaction hash (unique identifier)
-- Sender address
-- Status (success/failure)
+- Transaction version (sequential ID) and hash (unique identifier)
+- Sender address and status (success/failure)
 - Gas used and gas unit price
-- Timestamp
-- Transaction type (user_transaction, block_metadata, state_checkpoint, etc.)
+- Timestamp and transaction type (user_transaction, block_metadata, state_checkpoint, etc.)
 - Payload (function called, arguments)
-- Events emitted
-- State changes (resource modifications)
+- Events emitted, state changes (resource modifications), and balance changes
 
 ### Account Pages (`/account/{address}`)
 
 Tabs include:
-- **Info**: Account sequence number, authentication key
+- **Transactions**: Transaction history for this account
+- **Coins**: Fungible token balances
+- **Tokens**: NFTs owned by this account
 - **Resources**: Move resources stored under the account
 - **Modules**: Smart contract code deployed by this account
-- **Transactions**: Transaction history for this account
-- **Tokens**: NFTs owned by this account
-- **Coins**: Fungible token balances
+- **Info**: Account sequence number, authentication key
 
 ### Block Pages (`/block/{height}`)
 
 Displays:
-- Block height
-- Block hash
-- Timestamp
+- Block height, hash, and timestamp
 - First and last transaction versions
 - Number of transactions
 - Validator that proposed the block
@@ -53,83 +200,58 @@ Displays:
 ### Validator Pages (`/validators`)
 
 Shows:
-- Active validator set
-- Voting power distribution
+- Active validator set with voting power distribution
 - Performance metrics (liveness, rewards)
-- Geographic distribution
-- Staking information
+- Staking and delegation information
 
 ### Analytics Pages (`/analytics`)
 
 Charts and metrics for:
-- Daily active users
-- Transaction volume
-- Gas consumption
-- TPS (transactions per second)
+- Daily active users and transaction volume
+- Gas consumption and TPS (transactions per second)
 - Total supply and staking statistics
 - New accounts created
 
+---
+
 ## Common Query Parameters
 
-- `network` - Select network: mainnet, testnet, devnet
-- `tab` - Select tab on multi-tab pages
-- `page` - Pagination for list views
+- `network` — Select network: mainnet (default), testnet, devnet
+- Page/tab selection is path-based (e.g., `/account/0x1/modules`), not query-param-based
 
-## Data Types
+---
 
-### Addresses
-- 32 bytes, displayed as 64 hex characters
-- Always prefixed with `0x`
-- Example: `0x1` (core framework), `0x4` (token standard)
+## API Endpoints Used by the Explorer
 
-### Transaction Versions
-- Sequential integers starting from 0
-- Unique identifier for each transaction
-- Current mainnet version: billions
-
-### Transaction Hashes
-- 32-byte SHA3-256 hash
-- Displayed as 64 hex characters with `0x` prefix
-
-### Timestamps
-- Microseconds since Unix epoch
-- Displayed in human-readable format with timezone
-
-### Amounts
-- Stored as integers in smallest unit (Octas for APT)
-- 1 APT = 100,000,000 Octas (10^8)
-- Display conversion handled by explorer
-
-## Move Resource Types
-
-Common resource types shown in explorer:
-
-- `0x1::coin::CoinStore<T>` - Token balance for coin type T
-- `0x1::account::Account` - Basic account information
-- `0x1::staking_contract::StakingContract` - Staking delegation
-- `0x4::token::Token` - NFT token data
-- `0x4::collection::Collection` - NFT collection data
-- `0x1::fungible_asset::Metadata` - Fungible asset metadata
-
-## API Endpoints Used
-
-The explorer uses these Aptos APIs:
+The explorer fetches data from these Aptos APIs (for reference — these are not explorer URLs):
 
 ### REST API (Node)
-- `GET /accounts/{address}` - Account info
-- `GET /accounts/{address}/resources` - Account resources
-- `GET /accounts/{address}/modules` - Account modules
-- `GET /transactions` - Transaction list
-- `GET /transactions/by_hash/{hash}` - Transaction by hash
-- `GET /transactions/by_version/{version}` - Transaction by version
-- `GET /blocks/by_height/{height}` - Block by height
+- `GET /accounts/{address}` — Account info
+- `GET /accounts/{address}/resources` — Account resources
+- `GET /accounts/{address}/modules` — Account modules
+- `GET /transactions` — Transaction list
+- `GET /transactions/by_hash/{hash}` — Transaction by hash
+- `GET /transactions/by_version/{version}` — Transaction by version
+- `GET /blocks/by_height/{height}` — Block by height
 
 ### Indexer GraphQL API
-- Account transactions
-- Token ownership
-- Collection data
-- Event history
-- Aggregated analytics
+- Account transactions, token ownership, collection data
+- Event history, aggregated analytics
+
+---
+
+## Limitations
+
+The explorer **cannot** do the following:
+- **No historical price data**: The explorer shows on-chain data only, not market prices or charts
+- **No cross-chain data**: Only Aptos L1 is supported — no bridged asset tracking or multi-chain views
+- **No wallet signing**: The explorer is read-only for browsing; it does not initiate or sign transactions
+- **No full-text search of code**: Module source can be viewed but not searched across all accounts
+- **No time-range queries**: Transaction/event history is paginated, not filterable by date range
+- **No private/encrypted data**: Only public on-chain state is displayed
+- **Testnet/devnet data resets**: These networks reset periodically; historical data may be unavailable
+
+---
 
 ## Technical Stack
 
@@ -137,29 +259,14 @@ The explorer uses these Aptos APIs:
 - **Routing**: TanStack Router (file-based routing)
 - **Data Fetching**: TanStack Query (React Query)
 - **UI**: Material-UI (MUI)
-- **Styling**: Emotion CSS-in-JS
-- **Build**: Vite
-- **Deployment**: Netlify with SSR
+- **Build**: Vite with SSR
+- **Deployment**: Netlify
 
-## SEO and Accessibility
+---
 
-- Server-side rendering for initial page load
-- Structured data (JSON-LD) for search engines
-- Open Graph and Twitter Card meta tags
-- Semantic HTML structure
-- Responsive design for all devices
+## Related Resources
 
-## Rate Limiting
-
-The explorer implements client-side rate limiting to prevent API abuse:
-- Requests are queued and throttled
-- Cached responses are served when available
-- Errors are handled gracefully with retry logic
-
-## Contributing
-
-The explorer is open source:
-- Repository: https://github.com/aptos-labs/explorer
-- Issues and PRs welcome
-- MIT License
-
+- Aptos developer docs: [aptos.dev](https://aptos.dev)
+- Aptos GitHub: [github.com/aptos-labs](https://github.com/aptos-labs)
+- Explorer source code: [github.com/aptos-labs/explorer](https://github.com/aptos-labs/explorer)
+- Aptos Labs: [aptoslabs.com](https://aptoslabs.com)

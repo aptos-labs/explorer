@@ -83,6 +83,50 @@ export function usePageMetadata({
 }
 
 /**
+ * Generate BreadcrumbList schema from canonical URL path segments.
+ * E.g., /account/0x1/transactions → [Explorer, Account 0x1, Transactions]
+ */
+function generateBreadcrumbList(
+  canonicalUrl: string,
+): StructuredDataProps | null {
+  const url = new URL(canonicalUrl);
+  const segments = url.pathname.split("/").filter(Boolean);
+  if (segments.length === 0) return null;
+
+  const items = [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Explorer",
+      item: BASE_URL,
+    },
+  ];
+
+  let currentPath = "";
+  for (let i = 0; i < segments.length; i++) {
+    currentPath += `/${segments[i]}`;
+    const raw = decodeURIComponent(segments[i]);
+    // Truncate long hex addresses for display
+    const name =
+      raw.startsWith("0x") && raw.length > 10
+        ? `${raw.slice(0, 6)}…${raw.slice(-4)}`
+        : raw.charAt(0).toUpperCase() + raw.slice(1).replace(/[_-]/g, " ");
+    items.push({
+      "@type": "ListItem",
+      position: i + 2,
+      name,
+      item: `${BASE_URL}${currentPath}`,
+    });
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items,
+  };
+}
+
+/**
  * Generate JSON-LD structured data for the page
  */
 function generateStructuredData(
@@ -127,6 +171,12 @@ function generateStructuredData(
   structuredDataItems.push(websiteSchema);
   structuredDataItems.push(webPageSchema);
 
+  // BreadcrumbList from URL path
+  const breadcrumb = generateBreadcrumbList(canonicalUrl);
+  if (breadcrumb) {
+    structuredDataItems.push(breadcrumb);
+  }
+
   // Add custom structured data if provided
   if (props.structuredData) {
     structuredDataItems.push({
@@ -140,11 +190,13 @@ function generateStructuredData(
     case "transaction":
       structuredDataItems.push({
         "@context": "https://schema.org",
-        "@type": "Action",
+        "@type": "DigitalDocument",
         name: fullTitle,
         url: canonicalUrl,
         description: props.description,
-        actionStatus: "CompletedActionStatus",
+        additionalType: "https://schema.org/Thing",
+        encodingFormat: "application/json",
+        isAccessibleForFree: true,
       });
       break;
     case "account":
@@ -169,6 +221,40 @@ function generateStructuredData(
         name: fullTitle,
         url: canonicalUrl,
         description: props.description,
+      });
+      break;
+    case "token":
+      structuredDataItems.push({
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        name: fullTitle,
+        url: canonicalUrl,
+        description: props.description,
+        additionalType: "DigitalArt",
+      });
+      break;
+    case "coin":
+      structuredDataItems.push({
+        "@context": "https://schema.org",
+        "@type": "FinancialProduct",
+        name: fullTitle,
+        url: canonicalUrl,
+        description: props.description,
+        category: "Cryptocurrency",
+      });
+      break;
+    case "validator":
+      structuredDataItems.push({
+        "@context": "https://schema.org",
+        "@type": "Service",
+        name: fullTitle,
+        url: canonicalUrl,
+        description: props.description,
+        serviceType: "Blockchain Validation",
+        provider: {
+          "@type": "Organization",
+          name: "Aptos Network",
+        },
       });
       break;
     default:

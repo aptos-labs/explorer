@@ -37,6 +37,7 @@ const TanStackRouterDevtools = isDev
     )
   : () => null;
 
+import {BASE_URL} from "../lib/constants";
 import {ProvideColorMode} from "../context/color-mode";
 import {GlobalConfigProvider} from "../global-config";
 import {WalletAdapterProvider} from "../context/wallet-adapter";
@@ -78,6 +79,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         content:
           "Aptos blockchain explorer for viewing transactions, accounts, blocks, validators, tokens, and network analytics",
       },
+      {property: "og:locale", content: "en_US"},
       {name: "ai:site_type", content: "blockchain_explorer"},
       {
         name: "ai:primary_topics",
@@ -103,13 +105,35 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       {rel: "icon", href: "/favicon-light.svg", type: "image/svg+xml"},
       {rel: "apple-touch-icon", href: "/apple-touch-icon.png"},
       {rel: "manifest", href: "/manifest.json"},
-      // LLM documentation link
+      // LLM documentation links
       {
         rel: "help",
         href: "/llms.txt",
         type: "text/plain",
         title: "LLM Documentation",
       },
+      {
+        rel: "alternate",
+        href: "/llms.txt",
+        type: "text/markdown",
+        title: "LLM Documentation (Summary)",
+      },
+      {
+        rel: "alternate",
+        href: "/llms-full.txt",
+        type: "text/markdown",
+        title: "LLM Documentation (Full)",
+      },
+      // OpenSearch for browser search bar integration
+      {
+        rel: "search",
+        href: "/opensearch.xml",
+        type: "application/opensearchdescription+xml",
+        title: "Aptos Explorer",
+      },
+      // Hreflang for language/locale signaling
+      {rel: "alternate", href: BASE_URL, hrefLang: "en"},
+      {rel: "alternate", href: BASE_URL, hrefLang: "x-default"},
     ],
   }),
   errorComponent: ({error}) => <ErrorBoundary error={error} />,

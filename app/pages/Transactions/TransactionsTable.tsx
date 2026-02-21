@@ -778,7 +778,7 @@ export default function TransactionsTable({
   // Desktop table view
   return (
     <Box sx={{overflowX: "auto"}}>
-      <Table>
+      <Table aria-label="Transactions" data-entity-type="transaction">
         <TableHead>
           <TableRow>
             {columns.map((column) => (
@@ -847,7 +847,7 @@ export function UserTransactionsTable({
 
   // Desktop table view
   return (
-    <Table>
+    <Table aria-label="Transactions" data-entity-type="transaction">
       <TableHead>
         <TableRow>
           {columns.map((column) => (

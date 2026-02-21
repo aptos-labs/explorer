@@ -808,7 +808,7 @@ export default function CoinsListTable({
         {isMarketDataLoading && " (loading market data...)"}
       </Typography>
       <Box sx={{overflowX: "auto"}}>
-        <Table>
+        <Table aria-label="Coins" data-entity-type="coin">
           <TableHead>
             <TableRow>
               <GeneralTableHeaderCell header="Asset" />

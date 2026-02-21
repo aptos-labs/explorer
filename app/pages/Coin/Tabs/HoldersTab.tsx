@@ -134,7 +134,7 @@ export function HoldersTable({
   offset?: number;
 }) {
   return (
-    <Table>
+    <Table aria-label="Coin holders" data-entity-type="holder">
       <TableHead>
         <TableRow>
           <GeneralTableHeaderCell header="rank" />

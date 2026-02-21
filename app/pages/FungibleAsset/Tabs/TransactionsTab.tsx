@@ -73,7 +73,7 @@ export function FAActivityTable({
   data: FACombinedData;
 }) {
   return (
-    <Table>
+    <Table aria-label="Asset transactions" data-entity-type="transaction">
       <TableHead>
         <TableRow>
           <GeneralTableHeaderCell header="version" />

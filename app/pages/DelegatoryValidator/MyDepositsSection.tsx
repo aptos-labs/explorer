@@ -375,7 +375,7 @@ function MyDepositSectionContent({
       <Typography variant="h5" marginX={1}>
         My Deposits
       </Typography>
-      <Table>
+      <Table aria-label="My deposits" data-entity-type="deposit">
         <TableHead>
           <TableRow>
             {columns.map((columnName, idx) => (

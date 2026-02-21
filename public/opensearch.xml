@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Aptos Explorer</ShortName>
+  <Description>Search transactions, accounts, blocks, and tokens on the Aptos blockchain</Description>
+  <Tags>aptos blockchain explorer crypto web3</Tags>
+  <Contact>https://aptoslabs.com</Contact>
+  <Url type="text/html" template="https://explorer.aptoslabs.com/search?q={searchTerms}"/>
+  <Image height="16" width="16" type="image/svg+xml">https://explorer.aptoslabs.com/favicon-light.svg</Image>
+  <InputEncoding>UTF-8</InputEncoding>
+  <OutputEncoding>UTF-8</OutputEncoding>
+</OpenSearchDescription>
