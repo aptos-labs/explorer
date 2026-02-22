@@ -195,7 +195,7 @@ function generateStructuredData(
         url: canonicalUrl,
         description: props.description,
         additionalType: "https://schema.org/Thing",
-        encodingFormat: "application/json",
+        encodingFormat: "text/html",
         isAccessibleForFree: true,
       });
       break;
@@ -230,7 +230,7 @@ function generateStructuredData(
         name: fullTitle,
         url: canonicalUrl,
         description: props.description,
-        additionalType: "DigitalArt",
+        additionalType: "https://schema.org/DigitalArt",
       });
       break;
     case "coin":

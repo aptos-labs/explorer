@@ -3,7 +3,6 @@
   <!-- Main Pages -->
   <url>
     <loc>https://explorer.aptoslabs.com/</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>always</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,7 +10,6 @@
   <!-- Transactions -->
   <url>
     <loc>https://explorer.aptoslabs.com/transactions</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>always</changefreq>
     <priority>0.9</priority>
   </url>
@@ -19,7 +17,6 @@
   <!-- Blocks -->
   <url>
     <loc>https://explorer.aptoslabs.com/blocks</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>always</changefreq>
     <priority>0.9</priority>
   </url>
@@ -27,13 +24,11 @@
   <!-- Validators -->
   <url>
     <loc>https://explorer.aptoslabs.com/validators</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://explorer.aptoslabs.com/validators/delegation</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -41,7 +36,6 @@
   <!-- Analytics -->
   <url>
     <loc>https://explorer.aptoslabs.com/analytics</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
@@ -49,7 +43,6 @@
   <!-- Coins list -->
   <url>
     <loc>https://explorer.aptoslabs.com/coins</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
@@ -57,7 +50,6 @@
   <!-- Account - 0x1 (Aptos Framework) -->
   <url>
     <loc>https://explorer.aptoslabs.com/account/0x1/info</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -65,7 +57,6 @@
   <!-- Account - 0x3 (Token Module) -->
   <url>
     <loc>https://explorer.aptoslabs.com/account/0x3/info</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -73,7 +64,6 @@
   <!-- Account - 0x4 (Token v2) -->
   <url>
     <loc>https://explorer.aptoslabs.com/account/0x4/info</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -81,7 +71,6 @@
   <!-- Popular Coins -->
   <url>
     <loc>https://explorer.aptoslabs.com/coin/0x1::aptos_coin::AptosCoin</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
@@ -89,7 +78,6 @@
   <!-- Verification -->
   <url>
     <loc>https://explorer.aptoslabs.com/verification</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -97,13 +85,11 @@
   <!-- LLM documentation (discoverable) -->
   <url>
     <loc>https://explorer.aptoslabs.com/llms.txt</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://explorer.aptoslabs.com/llms-full.txt</loc>
-    <lastmod>2026-02-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>

@@ -37,7 +37,6 @@ const TanStackRouterDevtools = isDev
     )
   : () => null;
 
-import {BASE_URL} from "../lib/constants";
 import {ProvideColorMode} from "../context/color-mode";
 import {GlobalConfigProvider} from "../global-config";
 import {WalletAdapterProvider} from "../context/wallet-adapter";
@@ -115,13 +114,13 @@ export const Route = createRootRouteWithContext<RouterContext>()({
       {
         rel: "alternate",
         href: "/llms.txt",
-        type: "text/markdown",
+        type: "text/plain",
         title: "LLM Documentation (Summary)",
       },
       {
         rel: "alternate",
         href: "/llms-full.txt",
-        type: "text/markdown",
+        type: "text/plain",
         title: "LLM Documentation (Full)",
       },
       // OpenSearch for browser search bar integration
@@ -131,9 +130,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         type: "application/opensearchdescription+xml",
         title: "Aptos Explorer",
       },
-      // Hreflang for language/locale signaling
-      {rel: "alternate", href: BASE_URL, hrefLang: "en"},
-      {rel: "alternate", href: BASE_URL, hrefLang: "x-default"},
     ],
   }),
   errorComponent: ({error}) => <ErrorBoundary error={error} />,
