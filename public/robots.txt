@@ -7,38 +7,65 @@ Disallow: /*?network=local
 # AI crawlers — explicit allow with polite crawl delay
 User-agent: GPTBot
 Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: anthropic-ai
 Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: Applebot-Extended
 Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: GoogleOther
 Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: cohere-ai
 Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: Meta-ExternalAgent
 Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
 Crawl-delay: 2
 
 Sitemap: https://explorer.aptoslabs.com/sitemap.xml
