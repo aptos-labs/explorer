@@ -144,14 +144,6 @@ function generateStructuredData(
     url: BASE_URL,
     description:
       "Explore transactions, accounts, blocks, and activity on the Aptos blockchain.",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${BASE_URL}/search?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
   };
 
   // WebPage schema for the current page

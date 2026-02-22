@@ -123,13 +123,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         type: "text/plain",
         title: "LLM Documentation (Full)",
       },
-      // OpenSearch for browser search bar integration
-      {
-        rel: "search",
-        href: "/opensearch.xml",
-        type: "application/opensearchdescription+xml",
-        title: "Aptos Explorer",
-      },
     ],
   }),
   errorComponent: ({error}) => <ErrorBoundary error={error} />,
