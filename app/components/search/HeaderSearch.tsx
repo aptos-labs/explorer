@@ -58,6 +58,7 @@ export default function HeaderSearch() {
       >
         <TextField
           fullWidth
+          aria-label="Search by address, transaction hash, block height, or version"
           placeholder="Search by address, transaction hash, block height, or version..."
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
@@ -72,7 +73,11 @@ export default function HeaderSearch() {
               ),
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={handleSearch} edge="end">
+                  <IconButton
+                    aria-label="Search"
+                    onClick={handleSearch}
+                    edge="end"
+                  >
                     <SearchIcon />
                   </IconButton>
                 </InputAdornment>

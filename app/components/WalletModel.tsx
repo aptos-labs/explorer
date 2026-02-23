@@ -118,6 +118,7 @@ export default function WalletsModal({
         }}
       >
         <IconButton
+          aria-label="Close"
           onClick={handleClose}
           sx={{
             position: "absolute",
@@ -365,7 +366,7 @@ function renderEducationScreen(screen: AboutAptosConnectEducationScreen) {
           justifyItems: "start",
         }}
       >
-        <IconButton onClick={screen.cancel}>
+        <IconButton aria-label="Go back" onClick={screen.cancel}>
           <ArrowBack />
         </IconButton>
         <Typography variant="body1" component="h2" width="100%" align="center">

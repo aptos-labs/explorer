@@ -53,6 +53,7 @@ export default function NetworkSelect() {
         value={networkName}
         onChange={handleChange}
         displayEmpty
+        inputProps={{"aria-label": "Select network"}}
         renderValue={renderValue}
         sx={{
           color: theme.palette.text.primary,
