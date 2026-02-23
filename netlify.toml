@@ -77,13 +77,6 @@
     Content-Type = "text/plain; charset=utf-8"
     X-Robots-Tag = "noarchive"
 
-# OpenSearch description
-[[headers]]
-  for = "/opensearch.xml"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"
-    Content-Type = "application/opensearchdescription+xml; charset=utf-8"
-
 # Sitemap
 [[headers]]
   for = "/sitemap.xml"
