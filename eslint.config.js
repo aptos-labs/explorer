@@ -1,15 +1,8 @@
-import {fileURLToPath} from "node:url";
-import {dirname} from "node:path";
 import globals from "globals";
-import reactHtml from "eslint-plugin-html";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
 import parser from "@typescript-eslint/parser";
-import {FlatCompat} from "@eslint/eslintrc";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+import reactHooks from "eslint-plugin-react-hooks";
+import reactHtml from "eslint-plugin-html";
 
 export default [
   {
@@ -25,8 +18,8 @@ export default [
   {
     files: ["*.ts", "*.tsx"],
   },
-  ...compat.extends("plugin:@typescript-eslint/recommended"),
-  ...compat.extends("plugin:react-hooks/recommended"),
+  ...tsPlugin.configs["flat/recommended"],
+  reactHooks.configs.flat["recommended"],
   {
     languageOptions: {
       parser: parser,
@@ -43,7 +36,6 @@ export default [
     },
 
     rules: {
-      // Allow unused variables/args with underscore prefix (common convention)
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
