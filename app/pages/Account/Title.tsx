@@ -71,7 +71,9 @@ export default function AccountTitle({
         keywords={keywords}
         canonicalPath={`/account/${address}`}
       />
-      <Typography variant="h3">{title}</Typography>
+      <Typography variant="h3" component="h1">
+        {title}
+      </Typography>
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.ACCOUNT} />
         <TitleHashButton

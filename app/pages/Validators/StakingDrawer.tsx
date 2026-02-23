@@ -171,8 +171,7 @@ const faqValidatorData = [
       <React.Fragment>
         Validator nodes confirm transactions by proposing and executing blocks
         on the network. The stake that they hold helps to prove that they are
-        trusted to vote on transactions. You can read more about how the Aptos
-        blockchain works{" "}
+        trusted to vote on transactions. You can read more about{" "}
         <Link
           to={
             "https://aptos.dev/en/network/blockchain/blockchain-deep-dive#consensus"
@@ -180,7 +179,7 @@ const faqValidatorData = [
           target="_blank"
           rel="noopener noreferrer"
         >
-          here
+          how the Aptos blockchain works
         </Link>
         .
       </React.Fragment>

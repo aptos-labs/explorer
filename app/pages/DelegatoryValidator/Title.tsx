@@ -42,7 +42,9 @@ export default function ValidatorTitle({
         ]}
         canonicalPath={`/validator/${address}`}
       />
-      <Typography variant="h3">Validator</Typography>
+      <Typography variant="h3" component="h1">
+        Validator
+      </Typography>
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.ACCOUNT} isValidator />
         <ValidatorStatusIcon

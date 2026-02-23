@@ -221,7 +221,7 @@ const HashButtonInner = memo(function HashButtonInner({
   } else if (img) {
     icon = (
       <Box component="span" sx={{mr: 1, display: "flex", alignItems: "center"}}>
-        <img src={img} alt={img} height={20} width={20} loading="lazy" />
+        <img src={img} alt="" height={20} width={20} loading="lazy" />
       </Box>
     );
   }

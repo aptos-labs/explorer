@@ -156,7 +156,6 @@ function RootComponent() {
                   <GraphqlClientProvider>
                     <WalletAdapterProvider>
                       <Box
-                        component="main"
                         sx={{
                           minHeight: "100vh",
                           backgroundColor: "transparent",
@@ -167,6 +166,7 @@ function RootComponent() {
                       >
                         <Header />
                         <Container
+                          component="main"
                           maxWidth="xl"
                           sx={{
                             display: "flex",

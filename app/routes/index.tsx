@@ -1,5 +1,6 @@
 import {createFileRoute} from "@tanstack/react-router";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import NetworkInfo from "../pages/Analytics/NetworkInfo/NetworkInfo";
 import HeaderSearch from "../pages/layout/Search/Index";
 import UserTransactionsPreview from "../pages/LandingPage/UserTransactionsPreview";
@@ -39,6 +40,22 @@ export const Route = createFileRoute("/")({
 function LandingPage() {
   return (
     <Box>
+      <Typography
+        variant="h1"
+        sx={{
+          position: "absolute",
+          width: "1px",
+          height: "1px",
+          padding: 0,
+          margin: "-1px",
+          overflow: "hidden",
+          clip: "rect(0, 0, 0, 0)",
+          whiteSpace: "nowrap",
+          borderWidth: 0,
+        }}
+      >
+        Aptos Explorer
+      </Typography>
       <NetworkInfo isOnHomePage />
       <HeaderSearch />
       <UserTransactionsPreview />

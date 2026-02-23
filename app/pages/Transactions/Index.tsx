@@ -50,7 +50,7 @@ export default function TransactionsPage() {
       />
       <PageHeader />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography variant="h3" marginBottom={2}>
+        <Typography variant="h3" component="h1" marginBottom={2}>
           {allTxnOnly ? "All Transactions" : "User Transactions"}
         </Typography>
         {isGraphqlClientSupported && (

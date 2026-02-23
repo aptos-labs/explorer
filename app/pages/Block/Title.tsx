@@ -12,7 +12,9 @@ export default function BlockTitle({height}: {height: number}) {
         keywords={["block", "height", `block ${height}`, "proposer", "epoch"]}
         canonicalPath={`/block/${height}`}
       />
-      <Typography variant="h3">Block</Typography>
+      <Typography variant="h3" component="h1">
+        Block
+      </Typography>
     </Stack>
   );
 }

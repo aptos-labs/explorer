@@ -29,7 +29,7 @@ export default function CoinsPage() {
       <LoadingModal open={isLoading} />
       <Box>
         <PageHeader />
-        <Typography variant="h3" marginBottom={2}>
+        <Typography variant="h3" component="h1" marginBottom={2}>
           Coins & Fungible Assets
         </Typography>
         {error ? (

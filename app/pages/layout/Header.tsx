@@ -134,9 +134,9 @@ export default function Header() {
               }}
             >
               {isDark ? (
-                <LogoIconDark width="3rem" height="3rem" />
+                <LogoIconDark width="3rem" height="3rem" aria-hidden="true" />
               ) : (
-                <LogoIconLight width="3rem" height="3rem" />
+                <LogoIconLight width="3rem" height="3rem" aria-hidden="true" />
               )}
               <Typography
                 variant="h6"
@@ -154,6 +154,7 @@ export default function Header() {
             <NetworkSelect />
             <Button
               onClick={toggleColorMode}
+              aria-label="Toggle dark mode"
               sx={{
                 width: "30px",
                 height: "30px",

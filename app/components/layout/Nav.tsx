@@ -40,6 +40,8 @@ export default function Nav() {
 
   return (
     <Box
+      component="nav"
+      aria-label="Main navigation"
       sx={{
         display: {xs: "none", md: "flex"},
         alignItems: "center",
