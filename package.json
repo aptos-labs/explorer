@@ -19,9 +19,18 @@
       "d3-timer": ">=3.0.0",
       "d3-transition": ">=3.0.0",
       "h3": ">=1.15.5",
-      "tar": ">=7.5.7",
+      "tar": ">=7.5.8",
       "lodash": ">=4.17.23",
-      "@isaacs/brace-expansion": ">=5.0.1"
+      "@isaacs/brace-expansion": ">=5.0.1",
+      "axios": ">=1.13.5",
+      "eslint>minimatch": ">=10.2.1",
+      "@eslint/config-array>minimatch": ">=10.2.1",
+      "@netlify/zip-it-and-ship-it>minimatch": ">=10.2.1",
+      "readdir-glob>minimatch": ">=10.2.1",
+      "glob>minimatch": ">=10.2.1",
+      "@typescript-eslint/typescript-estree>minimatch": ">=10.2.1",
+      "eslint>ajv": "6.14.0",
+      "@netlify/edge-bundler>ajv": "8.18.0"
     }
   },
   "dependencies": {
@@ -82,7 +91,6 @@
     ]
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.3",
     "@netlify/vite-plugin-tanstack-start": "^1.2.9",
     "@tanstack/react-query-devtools": "^5.91.3",
     "@tanstack/react-router-devtools": "^1.158.4",
