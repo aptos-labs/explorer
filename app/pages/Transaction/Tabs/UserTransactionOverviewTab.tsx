@@ -752,34 +752,68 @@ const SwapActionContent = ({
       sx={{
         marginBottom: 1,
         display: "flex",
+        flexWrap: "wrap",
         alignItems: "center",
-        gap: 1,
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
       }}
     >
-      {"🔄 Swapped "}
-      {action.amountIn / Math.pow(10, inDecimals)}
-      <HashButton
-        hash={action.assetIn}
-        type={
-          action.assetIn.includes("::")
-            ? HashType.COIN
-            : HashType.FUNGIBLE_ASSET
-        }
-        img={assetInCoin?.logoUrl}
-        size="small"
-      />
-      for {action.amountOut / Math.pow(10, outDecimals)}
-      <HashButton
-        hash={action.assetOut}
-        type={
-          action.assetOut.includes("::")
-            ? HashType.COIN
-            : HashType.FUNGIBLE_ASSET
-        }
-        img={assetOutCoin?.logoUrl}
-        size="small"
-      />
-      on <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>🔄 Swapped</span>
+        <span>{action.amountIn / Math.pow(10, inDecimals)}</span>
+        <HashButton
+          hash={action.assetIn}
+          type={
+            action.assetIn.includes("::")
+              ? HashType.COIN
+              : HashType.FUNGIBLE_ASSET
+          }
+          img={assetInCoin?.logoUrl}
+          size="small"
+        />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>for</span>
+        <span>{action.amountOut / Math.pow(10, outDecimals)}</span>
+        <HashButton
+          hash={action.assetOut}
+          type={
+            action.assetOut.includes("::")
+              ? HashType.COIN
+              : HashType.FUNGIBLE_ASSET
+          }
+          img={assetOutCoin?.logoUrl}
+          size="small"
+        />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>on</span>
+        <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+      </Box>
     </Box>
   );
 };
@@ -841,23 +875,48 @@ const liquidityAction = (
       sx={{
         marginBottom: 1,
         display: "flex",
+        flexWrap: "wrap",
         alignItems: "center",
-        gap: 1,
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
       }}
     >
-      {action.actionType === "add liquidity"
-        ? "➕ Add Liquidity "
-        : "➖ Remove Liquidity "}
-      {action.assetData.map((asset, index) => (
-        <LiquidityAssetContent
-          key={`action-${i}-asset-${index}`}
-          asset={asset}
-          coinData={coinData}
-          index={index}
-          totalAssets={action.assetData.length}
-        />
-      ))}
-      on <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>
+          {action.actionType === "add liquidity"
+            ? "➕ Add Liquidity"
+            : "➖ Remove Liquidity"}
+        </span>
+        {action.assetData.map((asset, index) => (
+          <LiquidityAssetContent
+            key={`action-${i}-asset-${index}`}
+            asset={asset}
+            coinData={coinData}
+            index={index}
+            totalAssets={action.assetData.length}
+          />
+        ))}
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>on</span>
+        <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+      </Box>
     </Box>
   );
 };
@@ -873,23 +932,48 @@ const claimAction = (
       sx={{
         marginBottom: 1,
         display: "flex",
+        flexWrap: "wrap",
         alignItems: "center",
-        gap: 1,
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
       }}
     >
-      {action.actionType === "claim fees"
-        ? "💰 Claim Fees "
-        : "💰 Claim Rewards "}
-      {action.assetData.map((asset, index) => (
-        <LiquidityAssetContent
-          key={`action-${i}-asset-${index}`}
-          asset={asset}
-          coinData={coinData}
-          index={index}
-          totalAssets={action.assetData.length}
-        />
-      ))}
-      on <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>
+          {action.actionType === "claim fees"
+            ? "💰 Claim Fees"
+            : "💰 Claim Rewards"}
+        </span>
+        {action.assetData.map((asset, index) => (
+          <LiquidityAssetContent
+            key={`action-${i}-asset-${index}`}
+            asset={asset}
+            coinData={coinData}
+            index={index}
+            totalAssets={action.assetData.length}
+          />
+        ))}
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>on</span>
+        <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+      </Box>
     </Box>
   );
 };
@@ -936,31 +1020,56 @@ const liquidStakingAction = (
       sx={{
         marginBottom: 1,
         display: "flex",
+        flexWrap: "wrap",
         alignItems: "center",
-        gap: 1,
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
       }}
     >
-      {action.subActionType === "mint"
-        ? "🏗️ Mint "
-        : action.subActionType === "stake"
-          ? "➕ Stake "
-          : action.subActionType === "unstake"
-            ? "➖ Unstake "
-            : action.subActionType === "request"
-              ? "➖ Request Unstaking "
-              : action.subActionType === "cancel"
-                ? "➖ Cancel Unstaking "
-                : "➖ Withdraw Unstaked "}
-      {action.assetData.map((asset, index) => (
-        <LiquidStakingContent
-          key={`action-${i}-asset-${index}`}
-          asset={asset}
-          coinData={coinData}
-          index={index}
-          totalAssets={action.assetData.length}
-        />
-      ))}
-      on <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>
+          {action.subActionType === "mint"
+            ? "🏗️ Mint"
+            : action.subActionType === "stake"
+              ? "➕ Stake"
+              : action.subActionType === "unstake"
+                ? "➖ Unstake"
+                : action.subActionType === "request"
+                  ? "➖ Request Unstaking"
+                  : action.subActionType === "cancel"
+                    ? "➖ Cancel Unstaking"
+                    : "➖ Withdraw Unstaked"}
+        </span>
+        {action.assetData.map((asset, index) => (
+          <LiquidStakingContent
+            key={`action-${i}-asset-${index}`}
+            asset={asset}
+            coinData={coinData}
+            index={index}
+            totalAssets={action.assetData.length}
+          />
+        ))}
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>on</span>
+        <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+      </Box>
     </Box>
   );
 };
@@ -972,14 +1081,36 @@ const nftMintAction = (action: TokenMint, i: number) => {
       sx={{
         marginBottom: 1,
         display: "flex",
+        flexWrap: "wrap",
         alignItems: "center",
-        gap: 1,
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
       }}
     >
-      {"🏗️ Minted "}
-      {<HashButton hash={action.token_address} type={HashType.OBJECT} />}
-      {" in collection "}
-      {<HashButton hash={action.collection_address} type={HashType.OBJECT} />}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>🏗️ Minted</span>
+        <HashButton hash={action.token_address} type={HashType.OBJECT} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>in collection</span>
+        <HashButton hash={action.collection_address} type={HashType.OBJECT} />
+      </Box>
     </Box>
   );
 };
@@ -991,16 +1122,47 @@ const nftBurnAction = (action: TokenBurn, i: number) => {
       sx={{
         marginBottom: 1,
         display: "flex",
+        flexWrap: "wrap",
         alignItems: "center",
-        gap: 1,
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
       }}
     >
-      {"🔥️ Burned "}
-      {<HashButton hash={action.token_address} type={HashType.OBJECT} />}
-      {" in collection "}
-      {<HashButton hash={action.collection_address} type={HashType.OBJECT} />}
-      {" from "}
-      {<HashButton hash={action.previous_owner} type={HashType.ACCOUNT} />}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>🔥️ Burned</span>
+        <HashButton hash={action.token_address} type={HashType.OBJECT} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>in collection</span>
+        <HashButton hash={action.collection_address} type={HashType.OBJECT} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>from</span>
+        <HashButton hash={action.previous_owner} type={HashType.ACCOUNT} />
+      </Box>
     </Box>
   );
 };
@@ -1012,14 +1174,47 @@ const objectTransferAction = (action: ObjectTransfer, i: number) => {
       sx={{
         marginBottom: 1,
         display: "flex",
+        flexWrap: "wrap",
         alignItems: "center",
-        gap: 1,
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
       }}
     >
-      {"⏩ Transferred "}
-      {<HashButton hash={action.address} type={HashType.OBJECT} />} {" from "}
-      {<HashButton hash={action.from} type={HashType.ACCOUNT} />} {" to "}
-      {<HashButton hash={action.to} type={HashType.ACCOUNT} />}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>⏩ Transferred</span>
+        <HashButton hash={action.address} type={HashType.OBJECT} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>from</span>
+        <HashButton hash={action.from} type={HashType.ACCOUNT} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>to</span>
+        <HashButton hash={action.to} type={HashType.ACCOUNT} />
+      </Box>
     </Box>
   );
 };
@@ -1031,16 +1226,39 @@ const legacyTokenDepositAction = (action: LegacyTokenDeposit, i: number) => {
       sx={{
         marginBottom: 1,
         display: "flex",
+        flexWrap: "wrap",
         alignItems: "center",
-        gap: 1,
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
       }}
     >
-      {"⬇️ Deposit "}
-      {action.amount}
-      {" of "}
-      {action.id.token_data_id.name}
-      {" NFTs to "}
-      {<HashButton hash={action.address} type={HashType.ACCOUNT} />} {"  "}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>⬇️ Deposit</span>
+        <span>{action.amount}</span>
+        <span>of</span>
+        <span>{action.id.token_data_id.name}</span>
+        <span>NFTs</span>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>to</span>
+        <HashButton hash={action.address} type={HashType.ACCOUNT} />
+      </Box>
     </Box>
   );
 };
@@ -1052,16 +1270,39 @@ const legacyTokenWithdrawAction = (action: LegacyTokenWithdraw, i: number) => {
       sx={{
         marginBottom: 1,
         display: "flex",
+        flexWrap: "wrap",
         alignItems: "center",
-        gap: 1,
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
       }}
     >
-      {"⬆️ Withdraw "}
-      {action.amount}
-      {" of "}
-      {action.id.token_data_id.name}
-      {" NFTs from "}
-      {<HashButton hash={action.address} type={HashType.ACCOUNT} />} {"  "}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>⬆️ Withdraw</span>
+        <span>{action.amount}</span>
+        <span>of</span>
+        <span>{action.id.token_data_id.name}</span>
+        <span>NFTs</span>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>from</span>
+        <HashButton hash={action.address} type={HashType.ACCOUNT} />
+      </Box>
     </Box>
   );
 };
