@@ -33,6 +33,7 @@ export default function Footer() {
 
   return (
     <Box
+      component="footer"
       sx={{
         background: theme.palette.background.default,
         color: theme.palette.text.primary,

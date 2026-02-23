@@ -64,7 +64,9 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
         canonicalPath={`/coin/${struct}`}
         image={coinData?.logoUrl}
       />
-      <Typography variant="h3">{title()}</Typography>
+      <Typography variant="h3" component="h1">
+        {title()}
+      </Typography>
       <Stack
         direction="row"
         spacing={1}

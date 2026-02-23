@@ -34,7 +34,9 @@ export default function TransactionTitle({transaction}: TransactionTitleProps) {
         ].filter(Boolean)}
         canonicalPath={version ? `/txn/${version}` : `/txn/${transaction.hash}`}
       />
-      <Typography variant="h3">Transaction</Typography>
+      <Typography variant="h3" component="h1">
+        Transaction
+      </Typography>
       <TitleHashButton hash={transaction.hash} type={HashType.TRANSACTION} />
       <TransactionType type={transaction.type} />
     </Stack>

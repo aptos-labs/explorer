@@ -67,7 +67,9 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
         canonicalPath={`/fungible_asset/${address}`}
         image={metadata?.icon_uri || coinData?.logoUrl}
       />
-      <Typography variant="h3">{title()}</Typography>
+      <Typography variant="h3" component="h1">
+        {title()}
+      </Typography>
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.STRUCT} />
         {!isBannedType(level) && (
