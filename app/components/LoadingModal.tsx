@@ -1,4 +1,4 @@
-import {CircularProgress, Modal, Box} from "@mui/material";
+import {CircularProgress, Modal, Box, Typography} from "@mui/material";
 
 type LoadingModalProps = {
   open: boolean;
@@ -6,7 +6,7 @@ type LoadingModalProps = {
 
 export default function LoadingModal({open}: LoadingModalProps) {
   return (
-    <Modal open={open} aria-label="Loading">
+    <Modal open={open} aria-labelledby="loading-modal-title">
       <Box
         sx={{
           position: "absolute",
@@ -15,7 +15,23 @@ export default function LoadingModal({open}: LoadingModalProps) {
           outline: "0",
         }}
       >
-        <CircularProgress aria-label="Loading" />
+        <Typography
+          id="loading-modal-title"
+          sx={{
+            position: "absolute",
+            width: "1px",
+            height: "1px",
+            padding: 0,
+            margin: "-1px",
+            overflow: "hidden",
+            clip: "rect(0, 0, 0, 0)",
+            whiteSpace: "nowrap",
+            borderWidth: 0,
+          }}
+        >
+          Loading
+        </Typography>
+        <CircularProgress />
       </Box>
     </Modal>
   );

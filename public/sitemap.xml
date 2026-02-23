@@ -49,21 +49,21 @@
 
   <!-- Account - 0x1 (Aptos Framework) -->
   <url>
-    <loc>https://explorer.aptoslabs.com/account/0x1/info</loc>
+    <loc>https://explorer.aptoslabs.com/account/0x1/transactions</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Account - 0x3 (Token Module) -->
   <url>
-    <loc>https://explorer.aptoslabs.com/account/0x3/info</loc>
+    <loc>https://explorer.aptoslabs.com/account/0x3/transactions</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Account - 0x4 (Token v2) -->
   <url>
-    <loc>https://explorer.aptoslabs.com/account/0x4/info</loc>
+    <loc>https://explorer.aptoslabs.com/account/0x4/transactions</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

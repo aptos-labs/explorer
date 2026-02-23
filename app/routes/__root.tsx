@@ -48,6 +48,7 @@ import {ErrorBoundary, NotFoundError} from "../components/ErrorBoundary";
 import {useHashToPathRedirect} from "../hooks/useHashToPathRedirect";
 import {useOldUrlRedirect} from "../hooks/useOldUrlRedirect";
 import LocalnetUnavailableModal from "../components/LocalnetUnavailableModal";
+import {BASE_URL} from "../lib/constants";
 
 // Router context type
 interface RouterContext {
@@ -123,6 +124,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         type: "text/plain",
         title: "LLM Documentation (Full)",
       },
+      // Language/region hints for search engines
+      {rel: "alternate", href: BASE_URL, hrefLang: "en"},
+      {rel: "alternate", href: BASE_URL, hrefLang: "x-default"},
     ],
   }),
   errorComponent: ({error}) => <ErrorBoundary error={error} />,
