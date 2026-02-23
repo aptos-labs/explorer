@@ -36,6 +36,8 @@ export default [
     },
 
     rules: {
+      // Allow intentionally unused variables/parameters/errors to be prefixed with "_"
+      // so they are ignored by the no-unused-vars rule while still signaling intent.
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
