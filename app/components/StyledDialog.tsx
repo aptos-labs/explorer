@@ -16,6 +16,7 @@ export default function StyledDialog({
   return (
     <Dialog onClose={handleDialogClose} {...props}>
       <IconButton
+        aria-label="Close"
         onClick={handleDialogClose}
         sx={{
           position: "absolute",

@@ -39,6 +39,7 @@ export default function NavMobile() {
     <Box sx={{display: {xs: "block", md: "none"}}}>
       <Button
         id="nav-mobile-button"
+        aria-label="Navigation menu"
         aria-controls={menuOpen ? "nav-mobile-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={menuOpen ? "true" : undefined}

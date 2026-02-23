@@ -6,7 +6,7 @@ type LoadingModalProps = {
 
 export default function LoadingModal({open}: LoadingModalProps) {
   return (
-    <Modal open={open}>
+    <Modal open={open} aria-label="Loading">
       <Box
         sx={{
           position: "absolute",
@@ -15,7 +15,7 @@ export default function LoadingModal({open}: LoadingModalProps) {
           outline: "0",
         }}
       >
-        <CircularProgress />
+        <CircularProgress aria-label="Loading" />
       </Box>
     </Modal>
   );
