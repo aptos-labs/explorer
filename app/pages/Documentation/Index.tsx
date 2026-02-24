@@ -3,7 +3,7 @@ import {
   Typography,
   Paper,
   Divider,
-  Link,
+  Link as MuiLink,
   List,
   ListItem,
   ListItemButton,
@@ -15,6 +15,7 @@ import {
 import * as React from "react";
 import PageHeader from "../layout/PageHeader";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import {Link} from "../../routing";
 
 const NAV_ITEMS = [
   {id: "overview", label: "Overview"},
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   {id: "validators", label: "Validators"},
   {id: "accounts", label: "Accounts"},
   {id: "objects-vs-accounts", label: "Objects vs Accounts"},
+  {id: "coins-page", label: "Coins Page"},
   {id: "modules", label: "Smart Contracts"},
   {id: "wallet", label: "Connecting a Wallet"},
   {id: "staking", label: "Staking APT"},
@@ -155,43 +157,8 @@ function SubSection({
   );
 }
 
-function ScreenshotPlaceholder({label}: {label: string}) {
-  const theme = useTheme();
-  return (
-    <Box
-      sx={{
-        my: 3,
-        p: 4,
-        border: `2px dashed ${theme.palette.divider}`,
-        borderRadius: 2,
-        bgcolor:
-          theme.palette.mode === "dark"
-            ? "rgba(255,255,255,0.02)"
-            : "rgba(0,0,0,0.02)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: 200,
-      }}
-    >
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{
-          textTransform: "uppercase",
-          letterSpacing: "0.5px",
-          fontSize: "0.75rem",
-          mb: 1,
-        }}
-      >
-        Screenshot
-      </Typography>
-      <Typography variant="body1" color="text.secondary" textAlign="center">
-        {label}
-      </Typography>
-    </Box>
-  );
+function ScreenshotPlaceholder({label: _label}: {label: string}) {
+  return null;
 }
 
 export default function DocumentationPage() {
@@ -558,6 +525,78 @@ export default function DocumentationPage() {
                     accounts show authentication key and sequence number.
                   </li>
                 </ul>
+              </SubSection>
+            </Section>
+
+            <Divider sx={{my: 4}} />
+
+            <Section id="coins-page" title="Coins Page">
+              <Typography paragraph>
+                The Coins page provides a comprehensive view of all fungible
+                tokens on the Aptos blockchain. It displays a ranked list of
+                coins and fungible assets, making it easy to discover and
+                explore tokens in the ecosystem.
+              </Typography>
+
+              <ScreenshotPlaceholder label="Coins page showing ranked list of tokens with market data and verification badges" />
+
+              <SubSection title="What You'll Find">
+                <ul>
+                  <li>
+                    <strong>Token Rankings:</strong> Tokens are ranked by market
+                    cap or other relevant metrics, helping you discover the most
+                    significant assets on Aptos.
+                  </li>
+                  <li>
+                    <strong>Token Details:</strong> Each token shows its name,
+                    symbol, current price, market cap, total supply, and 24-hour
+                    trading volume.
+                  </li>
+                  <li>
+                    <strong>Verification Status:</strong> Verified tokens
+                    display a checkmark badge, indicating they've been reviewed
+                    and confirmed as legitimate.
+                  </li>
+                  <li>
+                    <strong>Token Type:</strong> The list includes both legacy
+                    Coins and Fungible Assets (FA), with clear indicators for
+                    each type.
+                  </li>
+                </ul>
+              </SubSection>
+
+              <SubSection title="Exploring Token Details">
+                <Typography paragraph>
+                  Click on any token to view its detailed page, which includes:
+                </Typography>
+                <ul>
+                  <li>
+                    <strong>Overview:</strong> Basic token information including
+                    name, symbol, decimals, and total supply.
+                  </li>
+                  <li>
+                    <strong>Holders:</strong> List of top holders and the
+                    distribution of tokens across addresses.
+                  </li>
+                  <li>
+                    <strong>Transactions:</strong> Recent transactions involving
+                    the token.
+                  </li>
+                  <li>
+                    <strong>Contract Information:</strong> The token's contract
+                    address and related metadata.
+                  </li>
+                </ul>
+              </SubSection>
+
+              <SubSection title="Token Verification">
+                <Typography paragraph>
+                  Verified tokens have been reviewed through the Aptos token
+                  verification process. To learn about token verification or to
+                  request verification for your token, visit the{" "}
+                  <Link to="/verification">Token & Address Verification</Link>{" "}
+                  page.
+                </Typography>
               </SubSection>
             </Section>
 
@@ -1008,13 +1047,13 @@ export default function DocumentationPage() {
               <SubSection title="Getting an ANS Name">
                 <Typography paragraph>
                   To register your own ANS name, visit the{" "}
-                  <Link
+                  <MuiLink
                     href="https://www.aptosnames.com"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     Aptos Names
-                  </Link>{" "}
+                  </MuiLink>{" "}
                   website. Registration requires an Aptos wallet and a small
                   amount of APT for the registration fee.
                 </Typography>
@@ -1252,13 +1291,13 @@ export default function DocumentationPage() {
                 <Typography paragraph>
                   The Aptos Explorer is open source. You can report issues or
                   request features on the{" "}
-                  <Link
+                  <MuiLink
                     href="https://github.com/aptos-labs/explorer"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     GitHub repository
-                  </Link>
+                  </MuiLink>
                   .
                 </Typography>
               </SubSection>
@@ -1272,14 +1311,14 @@ export default function DocumentationPage() {
                 references, please visit:
               </Typography>
               <Typography>
-                <Link
+                <MuiLink
                   href="https://aptos.dev"
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{fontSize: "1.1rem"}}
                 >
                   aptos.dev
-                </Link>
+                </MuiLink>
               </Typography>
             </Section>
           </Paper>
