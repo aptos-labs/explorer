@@ -66,11 +66,6 @@ export default function Nav() {
         label="Validators"
       />
       <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
-      <NavButton
-        to="/documentation"
-        title="View Documentation"
-        label="Docs"
-      />
     </Box>
   );
 }
