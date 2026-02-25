@@ -1,5 +1,4 @@
 import {Box, Stack} from "@mui/material";
-import React from "react";
 import {useGetPeakTPS, useGetTPS} from "../../../api/hooks/useGetTPS";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
 import MetricCard, {DoubleMetricCard} from "./MetricCard";

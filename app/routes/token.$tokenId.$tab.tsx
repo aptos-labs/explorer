@@ -1,8 +1,8 @@
 import {createFileRoute, redirect} from "@tanstack/react-router";
-import TokenPage from "../pages/Token/Index";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import {truncateAddress} from "../utils";
 import {PagePending} from "../components/NavigationPending";
+import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
+import TokenPage from "../pages/Token/Index";
+import {truncateAddress} from "../utils";
 
 // Primary route for token with tab in path
 // Also handles backward compatibility for old /token/:tokenId/:propertyVersion routes

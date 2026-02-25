@@ -1,22 +1,30 @@
-import * as React from "react";
+import {Dangerous} from "@mui/icons-material";
+import {
+  Box,
+  Paper,
+  Stack,
+  Table,
+  TableHead,
+  TableRow,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import {useMemo} from "react";
-import {Box, Typography, Paper, Stack, useMediaQuery} from "@mui/material";
-import {Table, TableHead, TableRow, useTheme} from "@mui/material";
-import GeneralTableRow from "../../../components/Table/GeneralTableRow";
-import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
-import {assertNever} from "../../../utils";
+import type {TokenOwnership} from "../../../api/hooks/useGetAccountTokens";
+import StyledTooltip from "../../../components/StyledTooltip";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
+import {labsBannedCollections} from "../../../constants";
 import {
   Link,
-  useNavigate,
   useAugmentToWithGlobalSearchParams,
+  useNavigate,
 } from "../../../routing";
-import {TokenOwnership} from "../../../api/hooks/useGetAccountTokens";
-import {labsBannedCollections} from "../../../constants";
-import {Dangerous} from "@mui/icons-material";
-import StyledTooltip from "../../../components/StyledTooltip";
+import {assertNever} from "../../../utils";
 
 type TokenCellProps = {
   token: TokenOwnership;

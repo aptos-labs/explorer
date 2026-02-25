@@ -1,33 +1,33 @@
-import React, {useRef, useEffect} from "react";
-import Toolbar from "@mui/material/Toolbar";
-import MuiAppBar from "@mui/material/AppBar";
-import Container from "@mui/material/Container";
-import {useColorMode} from "../../context/color-mode";
+import {AccountAddress} from "@aptos-labs/ts-sdk";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {
+  alpha,
+  Box,
+  Button,
+  Typography,
   useMediaQuery,
   useTheme,
-  alpha,
-  Typography,
-  Button,
-  Box,
 } from "@mui/material";
-import {useInView} from "../../hooks/useInView";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {AccountAddress} from "@aptos-labs/ts-sdk";
-import NetworkSelect from "./NetworkSelect";
-import Nav from "./Nav";
-import NavMobile from "./NavMobile";
-import FeatureBar from "./FeatureBar";
-import {WalletConnector} from "../WalletConnector";
-import {useNetworkName} from "../../global-config";
-import {addressFromWallet, sortPetraFirst} from "../../utils";
+import MuiAppBar from "@mui/material/AppBar";
+import Container from "@mui/material/Container";
+import Toolbar from "@mui/material/Toolbar";
+import {useEffect, useRef} from "react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
+import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
+import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";
+import IconDark from "../../assets/svg/icon_dark.svg?react";
+import IconLight from "../../assets/svg/icon_light.svg?react";
+import {useColorMode} from "../../context/color-mode";
+import {useNetworkName} from "../../global-config";
+import {useInView} from "../../hooks/useInView";
 import {useLogEventWithBasic} from "../../pages/Account/hooks/useLogEventWithBasic";
 import {Link, useNavigate} from "../../routing";
-import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";
-import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
-import IconLight from "../../assets/svg/icon_light.svg?react";
-import IconDark from "../../assets/svg/icon_dark.svg?react";
+import {addressFromWallet, sortPetraFirst} from "../../utils";
+import {WalletConnector} from "../WalletConnector";
+import FeatureBar from "./FeatureBar";
+import Nav from "./Nav";
+import NavMobile from "./NavMobile";
+import NetworkSelect from "./NetworkSelect";
 
 export default function Header() {
   const scrollTop = () => {

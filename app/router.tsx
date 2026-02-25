@@ -1,7 +1,7 @@
-import {createRouter as createTanStackRouter} from "@tanstack/react-router";
 import {QueryClient} from "@tanstack/react-query";
-import {routeTree} from "./routeTree.gen";
+import {createRouter as createTanStackRouter} from "@tanstack/react-router";
 import {NavigationPending} from "./components/NavigationPending";
+import {routeTree} from "./routeTree.gen";
 
 // Create a new QueryClient for each request (SSR safety)
 function createQueryClient() {

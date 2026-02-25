@@ -1,67 +1,66 @@
-import {Types} from "~/types/aptos";
-import {ReactNode, useEffect, useMemo, useState} from "react";
-import ErrorPage from "../../Error";
-import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
-import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import SidebarItem from "../../Components/SidebarItem";
-import {WalletConnector} from "../../../../components/WalletConnector";
+import {type Aptos, Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
 import {
+  type InputTransactionData,
   useWallet,
-  InputTransactionData,
 } from "@aptos-labs/wallet-adapter-react";
+import CheckCircle from "@mui/icons-material/CheckCircle";
+import ContentCopy from "@mui/icons-material/ContentCopy";
+import ErrorIcon from "@mui/icons-material/Error";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import HelpOutline from "@mui/icons-material/HelpOutline";
+import OpenInNew from "@mui/icons-material/OpenInNew";
+import Search from "@mui/icons-material/Search";
 import {
-  Grid,
-  Box,
-  Typography,
-  Divider,
-  Stack,
-  TextField,
-  Button,
-  useTheme,
-  useMediaQuery,
   Autocomplete,
+  Box,
+  Button,
+  Chip,
   CircularProgress,
   Collapse,
+  Divider,
+  Grid,
   IconButton,
   InputAdornment,
-  Chip,
   Paper,
+  Stack,
+  TextField,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import React from "react";
-import {useForm, SubmitHandler, Controller} from "react-hook-form";
-import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
-import {useModulesPathParams} from "./Tabs";
-import {
-  useNetworkName,
-  useAptosClient,
-  useSdkV2Client,
-} from "../../../../global-config/GlobalConfig";
+import React, {type ReactNode, useEffect, useMemo, useState} from "react";
+import {Controller, type SubmitHandler, useForm} from "react-hook-form";
+import type {Types} from "~/types/aptos";
 import {view} from "../../../../api";
-import {Link, useNavigate} from "../../../../routing";
-import {Code} from "../../Components/CodeSnippet";
+import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import {
-  PackageMetadata,
+  type PackageMetadata,
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
-import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
-import ContentCopy from "@mui/icons-material/ContentCopy";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import Search from "@mui/icons-material/Search";
-import HelpOutline from "@mui/icons-material/HelpOutline";
-import CheckCircle from "@mui/icons-material/CheckCircle";
-import ErrorIcon from "@mui/icons-material/Error";
-import OpenInNew from "@mui/icons-material/OpenInNew";
+import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
+import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import StyledTooltip from "../../../../components/StyledTooltip";
+import {WalletConnector} from "../../../../components/WalletConnector";
+import {
+  useAptosClient,
+  useNetworkName,
+  useSdkV2Client,
+} from "../../../../global-config/GlobalConfig";
+import {Link, useNavigate} from "../../../../routing";
 import {
   encodeInputArgsForViewRequest,
-  sortPetraFirst,
-  transformCode,
   extractFunctionParamNames,
   extractFunctionTypeParamNames,
+  sortPetraFirst,
+  transformCode,
 } from "../../../../utils";
+import {Code} from "../../Components/CodeSnippet";
+import SidebarItem from "../../Components/SidebarItem";
+import ErrorPage from "../../Error";
+import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
-import {Aptos, Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
+import {useModulesPathParams} from "./Tabs";
 
 /**
  * Check if a string looks like an ANS name (ends with .apt)
@@ -338,7 +337,7 @@ function Contract({
     return `/${accountPagePath(isObject)}/${address}/modules/${modulesTabValue}/${moduleName}/${fnName}`;
   }
 
-  const contractFormKey = module?.name + ":" + fn?.name;
+  const contractFormKey = `${module?.name}:${fn?.name}`;
   const totalFunctions = Object.values(moduleAndFnsGroup).flat().length;
 
   return (
@@ -881,7 +880,7 @@ function ReadContractForm({
     } catch (e: unknown) {
       const errorMsg =
         e instanceof Error ? e.message : "Failed to resolve ANS name";
-      setErrMsg("ANS Resolution Error: " + errorMsg);
+      setErrMsg(`ANS Resolution Error: ${errorMsg}`);
       return;
     }
 
@@ -895,7 +894,7 @@ function ReadContractForm({
         }),
       };
     } catch (e: unknown) {
-      setErrMsg("Parsing arguments failed: " + getErrorMessage(e));
+      setErrMsg(`Parsing arguments failed: ${getErrorMessage(e)}`);
       return;
     }
     setInProcess(true);

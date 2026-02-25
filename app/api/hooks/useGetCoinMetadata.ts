@@ -1,4 +1,4 @@
-import {CoinData} from "../../pages/Coin/Components/CoinData";
+import type {CoinData} from "../../pages/Coin/Components/CoinData";
 import {useGetAccountResource} from "./useGetAccountResource";
 
 export function useGetCoinMetadata(coinType: string): {

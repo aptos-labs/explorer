@@ -1,8 +1,8 @@
-import {Types} from "~/types/aptos";
-import {tryStandardizeAddress} from "../../utils";
 import {useQuery} from "@tanstack/react-query";
-import {useSdkV2Client, useNetworkValue} from "../../global-config";
+import type {Types} from "~/types/aptos";
 import {TransactionTypeName} from "../../components/TransactionType";
+import {useNetworkValue, useSdkV2Client} from "../../global-config";
+import {tryStandardizeAddress} from "../../utils";
 
 // Type definitions for specific Move resource structures
 type FungibleStoreResource = Types.MoveResource & {
@@ -182,7 +182,7 @@ function getAptBalanceChangeMap(transaction: Types.Transaction) {
         };
         switch (changeWithData.data.type) {
           case "0x1::object::ObjectCore":
-          case "0x1::fungible_asset::FungibleStore":
+          case "0x1::fungible_asset::FungibleStore": {
             const addr = tryStandardizeAddress(changeWithData.address);
             if (!addr) {
               break;
@@ -193,6 +193,7 @@ function getAptBalanceChangeMap(transaction: Types.Transaction) {
 
             changesByAddress[addr].push(change);
             break;
+          }
         }
       }
     }
@@ -232,7 +233,7 @@ function getAptBalanceChangeMap(transaction: Types.Transaction) {
           }
           break;
         case "0x1::fungible_asset::Deposit":
-        case "0x1::fungible_asset::Withdraw":
+        case "0x1::fungible_asset::Withdraw": {
           // TODO: Should probably only count primary stores
           // Here we have to lookup the store in the resources
           // to determine if the event is for APT or some other coin
@@ -309,6 +310,7 @@ function getAptBalanceChangeMap(transaction: Types.Transaction) {
             balanceMap[balanceOwner].amount -= amount;
           }
           break;
+        }
       }
       return balanceMap;
     },
@@ -438,7 +440,7 @@ export function getCoinBalanceChangeForAccount(
 ): bigint {
   const accountToBalance = getAptBalanceChangeMap(transaction);
 
-  if (!accountToBalance.hasOwnProperty(address)) {
+  if (!Object.hasOwn(accountToBalance, address)) {
     return BigInt(0);
   }
 

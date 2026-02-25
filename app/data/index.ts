@@ -8,56 +8,53 @@
  * - Supply limit overrides
  */
 
-import {NetworkName} from "../lib/constants";
-import {CoinDescription} from "../api/hooks/useGetCoinList";
-
-// Mainnet data
+import type {CoinDescription} from "../api/hooks/useGetCoinList";
+import type {NetworkName} from "../lib/constants";
 import {
-  mainnetKnownAddresses,
-  mainnetScamAddresses,
-} from "./mainnet/knownAddresses";
-import {
-  mainnetHardCodedCoins,
-  mainnetNativeTokens,
-  mainnetVerifiedTokens,
-  mainnetBannedTokens,
-  mainnetBannedAddresses,
-  mainnetBannedTokenSymbols,
-  mainnetBannedCollections,
-  mainnetSupplyLimitOverrides,
-} from "./mainnet/assets";
-
-// Testnet data
-import {
-  testnetKnownAddresses,
-  testnetScamAddresses,
-} from "./testnet/knownAddresses";
-import {
-  testnetHardCodedCoins,
-  testnetNativeTokens,
-  testnetVerifiedTokens,
-  testnetBannedTokens,
-  testnetBannedAddresses,
-  testnetBannedTokenSymbols,
-  testnetBannedCollections,
-  testnetSupplyLimitOverrides,
-} from "./testnet/assets";
-
+  devnetBannedAddresses,
+  devnetBannedCollections,
+  devnetBannedTokenSymbols,
+  devnetBannedTokens,
+  devnetHardCodedCoins,
+  devnetNativeTokens,
+  devnetSupplyLimitOverrides,
+  devnetVerifiedTokens,
+} from "./devnet/assets";
 // Devnet data
 import {
   devnetKnownAddresses,
   devnetScamAddresses,
 } from "./devnet/knownAddresses";
 import {
-  devnetHardCodedCoins,
-  devnetNativeTokens,
-  devnetVerifiedTokens,
-  devnetBannedTokens,
-  devnetBannedAddresses,
-  devnetBannedTokenSymbols,
-  devnetBannedCollections,
-  devnetSupplyLimitOverrides,
-} from "./devnet/assets";
+  mainnetBannedAddresses,
+  mainnetBannedCollections,
+  mainnetBannedTokenSymbols,
+  mainnetBannedTokens,
+  mainnetHardCodedCoins,
+  mainnetNativeTokens,
+  mainnetSupplyLimitOverrides,
+  mainnetVerifiedTokens,
+} from "./mainnet/assets";
+// Mainnet data
+import {
+  mainnetKnownAddresses,
+  mainnetScamAddresses,
+} from "./mainnet/knownAddresses";
+import {
+  testnetBannedAddresses,
+  testnetBannedCollections,
+  testnetBannedTokenSymbols,
+  testnetBannedTokens,
+  testnetHardCodedCoins,
+  testnetNativeTokens,
+  testnetSupplyLimitOverrides,
+  testnetVerifiedTokens,
+} from "./testnet/assets";
+// Testnet data
+import {
+  testnetKnownAddresses,
+  testnetScamAddresses,
+} from "./testnet/knownAddresses";
 
 // Type definitions for data structures
 export interface NetworkData {

@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {useSdkV2Client, useNetworkValue} from "../../global-config";
+import {useNetworkValue, useSdkV2Client} from "../../global-config";
 
 const USER_TRANSACTIONS_QUERY = `
   query UserTransactions($limit: Int, $start_version: bigint, $offset: Int) {

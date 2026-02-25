@@ -1,18 +1,18 @@
-import React, {useState} from "react";
-
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {Divider, useTheme} from "@mui/material";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import HamburgerIcon from "../../assets/svg/icon_hamburger.svg?react";
-import CloseIcon from "../../assets/svg/icon_close.svg?react";
-import Box from "@mui/material/Box";
-import {Divider, useTheme} from "@mui/material";
+import type React from "react";
+import {useState} from "react";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
-import {useNavigate} from "../../routing";
-import {WalletConnector} from "../WalletConnector";
+import CloseIcon from "../../assets/svg/icon_close.svg?react";
+import HamburgerIcon from "../../assets/svg/icon_hamburger.svg?react";
 import {useNetworkName} from "../../global-config";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import {useNavigate} from "../../routing";
 import {sortPetraFirst} from "../../utils";
+import {WalletConnector} from "../WalletConnector";
 
 export default function NavMobile() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);

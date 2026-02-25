@@ -1,9 +1,9 @@
-import React from "react";
-import Box from "@mui/material/Box";
-import {useSearchParams} from "../../routing";
 import {Pagination, Stack} from "@mui/material";
-import {UserTransactionsTable} from "./TransactionsTable";
+import Box from "@mui/material/Box";
+import type React from "react";
 import useGetUserTransactionVersions from "../../api/hooks/useGetUserTransactionVersions";
+import {useSearchParams} from "../../routing";
+import {UserTransactionsTable} from "./TransactionsTable";
 
 const LIMIT = 20;
 const NUM_PAGES = 100;
@@ -18,7 +18,7 @@ function RenderPagination({
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     newPageNum: number,
   ) => {
     searchParams.set("page", newPageNum.toString());
@@ -43,22 +43,20 @@ function RenderPagination({
 
 export default function UserTransactions() {
   const [searchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") ?? "1");
+  const currentPage = parseInt(searchParams.get("page") ?? "1", 10);
   const offset = (currentPage - 1) * LIMIT;
 
   const startVersion = useGetUserTransactionVersions(1)[0];
   const versions = useGetUserTransactionVersions(LIMIT, startVersion, offset);
 
   return (
-    <>
-      <Stack spacing={2}>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
-          <UserTransactionsTable versions={versions} />
-        </Box>
-        <Box sx={{display: "flex", justifyContent: "center"}}>
-          <RenderPagination currentPage={currentPage} numPages={NUM_PAGES} />
-        </Box>
-      </Stack>
-    </>
+    <Stack spacing={2}>
+      <Box sx={{width: "auto", overflowX: "auto"}}>
+        <UserTransactionsTable versions={versions} />
+      </Box>
+      <Box sx={{display: "flex", justifyContent: "center"}}>
+        <RenderPagination currentPage={currentPage} numPages={NUM_PAGES} />
+      </Box>
+    </Stack>
   );
 }

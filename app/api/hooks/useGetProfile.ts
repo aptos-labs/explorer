@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
-import {ResponseError} from "../client";
 import {useNetworkValue} from "../../global-config";
+import type {ResponseError} from "../client";
 
 export function useGetProfile(
   address: string,
@@ -14,7 +14,7 @@ export function useGetProfile(
   >({
     queryKey: ["account", {address}, networkValue],
     queryFn: () => {
-      return fetch("https://aptid.xyz/api/profile/bio?address=" + address).then(
+      return fetch(`https://aptid.xyz/api/profile/bio?address=${address}`).then(
         (res) => res.json(),
       );
     },

@@ -2,8 +2,8 @@
  * Navigation pending component shown during route transitions.
  * This is displayed when navigating between routes while data is loading.
  */
-import React from "react";
-import {Box, LinearProgress, Fade} from "@mui/material";
+
+import {Box, Fade, LinearProgress} from "@mui/material";
 
 export function NavigationPending() {
   return (

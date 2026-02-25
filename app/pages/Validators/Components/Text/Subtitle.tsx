@@ -1,5 +1,4 @@
 import {Typography} from "@mui/material";
-import React from "react";
 import {fontSizeSubtitle, fontSizeSubtitleSmall} from "../../constants";
 
 type SubtitleProps = {

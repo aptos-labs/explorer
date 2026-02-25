@@ -1,11 +1,11 @@
-import {Types} from "~/types/aptos";
-import {ValidatorData} from "../useGetValidators";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import type {Types} from "~/types/aptos";
 import {getLockedUtilSecs} from "../../../pages/DelegatoryValidator/utils";
-import {useGetAccountAPTBalance} from "../useGetAccountAPTBalance";
-import {useGetNumberOfDelegators} from "./useGetNumberOfDelegators";
-import {useGetStakingRewardsRate} from "../useGetStakingRewardsRate";
 import {addressFromWallet} from "../../../utils";
+import {useGetAccountAPTBalance} from "../useGetAccountAPTBalance";
+import {useGetStakingRewardsRate} from "../useGetStakingRewardsRate";
+import type {ValidatorData} from "../useGetValidators";
+import {useGetNumberOfDelegators} from "./useGetNumberOfDelegators";
 
 export type DelegationState = {
   lockedUntilSecs: bigint | null;

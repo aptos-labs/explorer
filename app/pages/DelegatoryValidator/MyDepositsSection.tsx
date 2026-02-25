@@ -10,15 +10,16 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {Types} from "~/types/aptos";
 import {useContext, useEffect, useState} from "react";
+import type {Types} from "~/types/aptos";
 import {getCanWithdrawPendingInactive} from "../../api";
-import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {
-  useGetDelegatorStakeInfo,
   StakeOperation,
   useGetDelegatedStakeOperationActivities,
+  useGetDelegatorStakeInfo,
 } from "../../api/hooks/delegations";
+import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
+import type {ValidatorData} from "../../api/hooks/useGetValidators";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
@@ -28,25 +29,24 @@ import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import {
-  useNetworkValue,
   useAptosClient,
+  useNetworkValue,
 } from "../../global-config/GlobalConfig";
 import {addressFromWallet, assertNever} from "../../utils";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
-  StakingStatus,
   STAKING_STATUS_STEPS,
+  StakingStatus,
 } from "./Components/StakingStatusIcon";
 import {DelegationStateContext} from "./context/DelegationContext";
 import StakeOperationDialog from "./StakeOperationDialog";
 import {
   getStakeOperationAPTRequirement,
   getStakeOperationPrincipals,
-  StakePrincipals,
+  type StakePrincipals,
 } from "./utils";
 import WalletConnectionDialog from "./WalletConnectionDialog";
-import {ValidatorData} from "../../api/hooks/useGetValidators";
-import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 const MyDepositsCells = Object.freeze({
   amount: AmountCell,
@@ -289,7 +289,7 @@ function MyDepositSectionContent({
     }
   }, [isStakeActivityLoading, setIsMyDepositsSectionSkeletonLoading]);
 
-  const networkValue = useNetworkValue();
+  const _networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
   const [canWithdrawPendingInactive, setCanWithdrawPendingInactive] =
     useState<Types.MoveValue>(false);
@@ -298,12 +298,12 @@ function MyDepositSectionContent({
     async function fetchData() {
       const canWithdraw = await getCanWithdrawPendingInactive(
         aptosClient,
-        validator!.owner_address,
+        validator?.owner_address,
       );
       setCanWithdrawPendingInactive(canWithdraw[0]);
     }
     fetchData();
-  }, [validator.owner_address, networkValue, aptosClient, validator]);
+  }, [validator.owner_address, aptosClient, validator]);
 
   function MyDepositRow({stake, status}: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);

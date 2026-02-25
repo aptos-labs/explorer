@@ -1,5 +1,5 @@
-import {Stack, Typography, useTheme, alpha} from "@mui/material";
-import React, {useCallback, useEffect, useRef, useState, memo} from "react";
+import {alpha, Stack, Typography, useTheme} from "@mui/material";
+import {memo, useCallback, useEffect, useRef, useState} from "react";
 import StyledTooltip from "./StyledTooltip";
 
 export enum IntervalType {
@@ -130,7 +130,7 @@ const IntervalBar = memo(function IntervalBar({
       {intervalBar}
     </StyledTooltip>
   ) : (
-    <>{intervalBar}</>
+    intervalBar
   );
 });
 

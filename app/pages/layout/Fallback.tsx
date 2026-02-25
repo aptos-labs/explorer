@@ -1,6 +1,6 @@
-import {ReactNode, useEffect, useState} from "react";
-import Container from "@mui/material/Container";
 import CircularProgress from "@mui/material/CircularProgress";
+import Container from "@mui/material/Container";
+import {type ReactNode, useEffect, useState} from "react";
 
 export function Fallback() {
   const [fallback, setFallback] = useState<ReactNode | null>(null);

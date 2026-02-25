@@ -1,8 +1,8 @@
-import React from "react";
+import type {Network} from "@aptos-labs/ts-sdk";
 import {AptosWalletAdapterProvider} from "@aptos-labs/wallet-adapter-react";
-import {Network} from "@aptos-labs/ts-sdk";
-import {useNetworkName} from "../../global-config";
+import type React from "react";
 import {hiddenNetworks} from "../../constants";
+import {useNetworkName} from "../../global-config";
 
 const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 

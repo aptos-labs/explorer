@@ -1,20 +1,20 @@
-import React, {useState} from "react";
-import {Grid, Alert} from "@mui/material";
+import {Alert, Grid} from "@mui/material";
+import {useState} from "react";
 import {useGetAnalyticsData} from "../../api/hooks/useGetAnalyticsData";
-import ChartRangeDaysSelect, {
-  ChartRangeDays,
-} from "./Components/ChartRangeDaysSelect";
 import DailyActiveUserChart from "./Charts/DailyActiveUserChart";
 import DailyAvgGasUnitPriceChart from "./Charts/DailyAvgGasUnitPriceChart";
 import DailyBlockGapChart from "./Charts/DailyBlockGapChart";
-import DailyDeployedContractsChart from "./Charts/DailyDeployedContractsChart";
-import DailyPeakTPSChart from "./Charts/DailyPeakTPSChart";
-import DailyNewAccountsCreatedChart from "./Charts/DailyNewAccountsCreatedChart";
-import DailyUserTransactionsChart from "./Charts/DailyUserTransactionsChart";
-import NetworkInfo from "./NetworkInfo/NetworkInfo";
-import DailyGasConsumptionChart from "./Charts/DailyGasConsumptionChart";
 import DailyContractDeployersChart from "./Charts/DailyContractDeployersChart";
+import DailyDeployedContractsChart from "./Charts/DailyDeployedContractsChart";
+import DailyGasConsumptionChart from "./Charts/DailyGasConsumptionChart";
+import DailyNewAccountsCreatedChart from "./Charts/DailyNewAccountsCreatedChart";
+import DailyPeakTPSChart from "./Charts/DailyPeakTPSChart";
+import DailyUserTransactionsChart from "./Charts/DailyUserTransactionsChart";
 import MonthlyActiveUserChart from "./Charts/MonthlyActiveUserChart";
+import ChartRangeDaysSelect, {
+  ChartRangeDays,
+} from "./Components/ChartRangeDaysSelect";
+import NetworkInfo from "./NetworkInfo/NetworkInfo";
 
 export default function MainnetAnalytics() {
   const [days, setDays] = useState<ChartRangeDays>(

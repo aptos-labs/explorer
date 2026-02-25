@@ -1,20 +1,21 @@
-import React, {useState, useEffect} from "react";
 import {
+  Box,
+  CircularProgress,
   Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
   useMediaQuery,
   useTheme,
-  CircularProgress,
-  Box,
-  Typography,
-  ToggleButtonGroup,
-  ToggleButton,
 } from "@mui/material";
-import MapMetrics from "./Components/MapMetrics";
-import {useGetValidatorSetGeoData} from "../../api/hooks/useGetValidatorsGeoData";
+import type React from "react";
+import {useEffect, useState} from "react";
 import {useGetEpochTime} from "../../api/hooks/useGetEpochTime";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import type {ValidatorGeoGroup} from "../../api/hooks/useGetValidatorsGeoData";
+import {useGetValidatorSetGeoData} from "../../api/hooks/useGetValidatorsGeoData";
 import type {MapGroupBy} from "./Components/Map.client";
+import MapMetrics from "./Components/MapMetrics";
 
 // Loading placeholder for the map
 function MapLoading() {

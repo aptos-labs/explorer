@@ -1,5 +1,10 @@
-import * as React from "react";
-import {Tab, TabProps, Tooltip, useMediaQuery, useTheme} from "@mui/material";
+import {
+  Tab,
+  type TabProps,
+  Tooltip,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 
 interface StyledTabProps extends TabProps {
   isFirst: boolean;

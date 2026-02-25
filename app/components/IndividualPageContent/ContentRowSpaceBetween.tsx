@@ -1,5 +1,5 @@
-import React from "react";
 import {Box, Stack, Typography, useTheme} from "@mui/material";
+import type React from "react";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 type ContentRowSmallProps = {

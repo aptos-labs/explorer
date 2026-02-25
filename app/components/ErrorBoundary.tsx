@@ -1,6 +1,5 @@
-import React from "react";
-import {Box, Typography, Button, Card, CardContent} from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import {Box, Button, Card, CardContent, Typography} from "@mui/material";
 import {Link} from "../routing";
 import {isModuleFetchError} from "../utils/moduleErrorHandler";
 

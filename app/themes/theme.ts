@@ -1,8 +1,7 @@
-import {PaletteMode} from "@mui/material";
-import {ThemeOptions} from "@mui/material/styles";
-import {alpha} from "@mui/material";
-import {getSemanticColors, brandColors} from "./colors/aptosBrandColors";
-import React from "react";
+import {alpha, type PaletteMode} from "@mui/material";
+import type {ThemeOptions} from "@mui/material/styles";
+import type React from "react";
+import {brandColors, getSemanticColors} from "./colors/aptosBrandColors";
 
 // Button variants
 declare module "@mui/material/Button" {

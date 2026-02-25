@@ -1,5 +1,5 @@
-import {hydrateRoot} from "react-dom/client";
 import {StartClient} from "@tanstack/react-start/client";
+import {hydrateRoot} from "react-dom/client";
 import {setupModuleErrorHandler} from "./utils/moduleErrorHandler";
 
 // Set up global error handler for module loading failures

@@ -1,10 +1,11 @@
-import React, {useState} from "react";
-import {Pagination, Box, CircularProgress} from "@mui/material";
-import TransactionsTable from "../../Transactions/TransactionsTable";
-import Error from "../Error";
+import {Box, CircularProgress, Pagination} from "@mui/material";
+import type React from "react";
+import {useState} from "react";
+import type {Types} from "~/types/aptos";
 import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Types} from "~/types/aptos";
+import TransactionsTable from "../../Transactions/TransactionsTable";
+import Error from "../Error";
 
 const TXN_PER_PAGE = 25;
 
@@ -111,7 +112,7 @@ export default function AccountTransactions({
   return (
     <TransactionsPaginationTable
       address={address}
-      sequenceNum={parseInt(accountData.sequence_number)}
+      sequenceNum={parseInt(accountData.sequence_number, 10)}
     />
   );
 }

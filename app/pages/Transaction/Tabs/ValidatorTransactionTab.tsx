@@ -1,12 +1,11 @@
-import * as React from "react";
-import {Types} from "~/types/aptos";
 import {Box} from "@mui/material";
+import type {Types} from "~/types/aptos";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import {getLearnMoreTooltip} from "../helpers";
-import {TransactionStatus} from "../../../components/TransactionStatus";
-import TransactionBlockRow from "./Components/TransactionBlockRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+import {TransactionStatus} from "../../../components/TransactionStatus";
+import {getLearnMoreTooltip} from "../helpers";
+import TransactionBlockRow from "./Components/TransactionBlockRow";
 
 type ValidatorTabProps = {
   transaction: Types.Transaction;

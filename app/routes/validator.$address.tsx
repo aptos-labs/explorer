@@ -1,8 +1,8 @@
 import {createFileRoute} from "@tanstack/react-router";
-import ValidatorPage from "../pages/DelegatoryValidator/index";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import {truncateAddress} from "../utils";
 import {PagePending} from "../components/NavigationPending";
+import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
+import ValidatorPage from "../pages/DelegatoryValidator/index";
+import {truncateAddress} from "../utils";
 
 export const Route = createFileRoute("/validator/$address")({
   head: ({params}) => ({

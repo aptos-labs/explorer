@@ -1,11 +1,11 @@
-import {Stack} from "@mui/material";
 import {
   FormControl,
-  OutlinedInput,
-  InputAdornment,
   FormHelperText,
+  InputAdornment,
+  OutlinedInput,
+  Stack,
 } from "@mui/material";
-import React from "react";
+import type React from "react";
 import {getFormattedBalanceStr} from "./IndividualPageContent/ContentValue/CurrencyValue";
 
 interface AmountTextFieldProps {

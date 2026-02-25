@@ -1,13 +1,12 @@
-import * as React from "react";
+import type {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 import {Table, TableHead, TableRow} from "@mui/material";
-import GeneralTableRow from "../../../components/Table/GeneralTableRow";
-import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
-import {assertNever} from "../../../utils";
 import HashButton, {HashType} from "../../../components/HashButton";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import {Link} from "../../../routing";
-import {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
+import {assertNever} from "../../../utils";
 
 type ActivityCellProps = {
   activity: GetTokenActivityResponse[0];

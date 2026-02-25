@@ -6,21 +6,21 @@
  */
 
 import {useMemo} from "react";
+import type {CoinDescription} from "../api/hooks/useGetCoinList";
 import {useNetworkName} from "../global-config/GlobalConfig";
-import {CoinDescription} from "../api/hooks/useGetCoinList";
 import {
-  getNetworkData,
-  getKnownAddresses,
-  getScamAddresses,
-  getHardCodedCoins,
-  getNativeTokens,
-  getVerifiedTokens,
-  getBannedTokens,
   getBannedAddresses,
-  getBannedTokenSymbols,
   getBannedCollections,
+  getBannedTokenSymbols,
+  getBannedTokens,
+  getHardCodedCoins,
+  getKnownAddresses,
+  getNativeTokens,
+  getNetworkData,
+  getScamAddresses,
   getSupplyLimitOverrides,
-  NetworkData,
+  getVerifiedTokens,
+  type NetworkData,
 } from "./index";
 
 /**

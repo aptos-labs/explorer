@@ -1,6 +1,6 @@
-import {PropsWithChildren, useMemo, useCallback} from "react";
-import {SxProps, TableRow, useTheme} from "@mui/material";
-import {useNavigate, useAugmentToWithGlobalSearchParams} from "../../routing";
+import {type SxProps, TableRow, useTheme} from "@mui/material";
+import {type PropsWithChildren, useCallback, useMemo} from "react";
+import {useAugmentToWithGlobalSearchParams, useNavigate} from "../../routing";
 
 export default function GeneralTableRow({
   to,

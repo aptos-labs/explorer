@@ -1,11 +1,10 @@
-import * as React from "react";
-import BlocksTable from "./Table";
-import {useGetMostRecentBlocks} from "../../api/hooks/useGetMostRecentBlocks";
 import {Box, Typography} from "@mui/material";
-import PageHeader from "../layout/PageHeader";
-import LoadingModal from "../../components/LoadingModal";
+import {useGetMostRecentBlocks} from "../../api/hooks/useGetMostRecentBlocks";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import LoadingModal from "../../components/LoadingModal";
 import {useSearchParams} from "../../routing";
+import PageHeader from "../layout/PageHeader";
+import BlocksTable from "./Table";
 
 const BLOCKS_COUNT = 30;
 

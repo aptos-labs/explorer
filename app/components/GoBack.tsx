@@ -1,25 +1,23 @@
-import Button from "@mui/material/Button";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
+import Button from "@mui/material/Button";
 
 function BackButton(handleClick: () => void) {
   return (
-    <>
-      <Button
-        color="primary"
-        variant="text"
-        onClick={handleClick}
-        sx={{
-          mb: 2,
-          p: 0,
-          "&:hover": {
-            background: "transparent",
-          },
-        }}
-        startIcon={<ArrowBackRoundedIcon />}
-      >
-        Back
-      </Button>
-    </>
+    <Button
+      color="primary"
+      variant="text"
+      onClick={handleClick}
+      sx={{
+        mb: 2,
+        p: 0,
+        "&:hover": {
+          background: "transparent",
+        },
+      }}
+      startIcon={<ArrowBackRoundedIcon />}
+    >
+      Back
+    </Button>
   );
 }
 

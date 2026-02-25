@@ -1,8 +1,8 @@
+import type {Block} from "@aptos-labs/ts-sdk";
 import {useQuery} from "@tanstack/react-query";
-import {ResponseError} from "../../api/client";
+import type {ResponseError} from "../../api/client";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
 import {getBlockByHeight, getBlockByVersion} from "../v2";
-import {Block} from "@aptos-labs/ts-sdk";
 
 export function useGetBlockByHeight({
   height,

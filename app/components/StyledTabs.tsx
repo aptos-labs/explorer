@@ -1,5 +1,5 @@
-import React from "react";
-import {Tabs, TabsProps, useMediaQuery, useTheme} from "@mui/material";
+import {Tabs, type TabsProps, useMediaQuery, useTheme} from "@mui/material";
+import type React from "react";
 
 interface StyledTabsProps extends TabsProps {
   children: React.ReactNode;

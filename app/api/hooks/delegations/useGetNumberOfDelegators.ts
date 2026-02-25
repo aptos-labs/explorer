@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
-import {tryStandardizeAddress} from "../../../utils";
-import {Types} from "~/types/aptos";
+import type {Types} from "~/types/aptos";
 import {useNetworkValue, useSdkV2Client} from "../../../global-config";
+import {tryStandardizeAddress} from "../../../utils";
 
 interface NumberOfDelegatorsResponse {
   num_active_delegator: string;

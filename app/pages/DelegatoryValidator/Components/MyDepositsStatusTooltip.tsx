@@ -4,13 +4,12 @@ import {
   StepContent,
   StepLabel,
   Stepper,
+  SvgIcon,
   useTheme,
 } from "@mui/material";
-import React from "react";
 import TableTooltip from "../../../components/Table/TableTooltip";
 import TooltipTypography from "../../../components/TooltipTypography";
-import {StakingStatusInterface} from "./StakingStatusIcon";
-import {SvgIcon} from "@mui/material";
+import type {StakingStatusInterface} from "./StakingStatusIcon";
 
 type MyDepositsSectionProps = {
   steps: StakingStatusInterface[];

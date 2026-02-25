@@ -1,13 +1,13 @@
 import {useQuery} from "@tanstack/react-query";
-import {knownAddresses, NetworkName, scamAddresses} from "../../constants";
+import {NameType} from "../../components/TitleHashButton";
+import {knownAddresses, type NetworkName, scamAddresses} from "../../constants";
 import {getCachedV2Client, useNetworkName} from "../../global-config";
 import {
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
   tryStandardizeAddress,
 } from "../../utils";
-import {ResponseError} from "../client";
-import {NameType} from "../../components/TitleHashButton";
+import type {ResponseError} from "../client";
 
 // ANS names rarely change - cache for 30 minutes
 const TTL = 30 * 60 * 1000; // 30 minutes

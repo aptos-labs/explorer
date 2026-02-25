@@ -1,30 +1,30 @@
-import React from "react";
-import Box from "@mui/material/Box";
-import {useSearchParams} from "../../../routing";
+import {GetApp as DownloadIcon, InfoOutlined} from "@mui/icons-material";
 import {
+  Alert,
+  AlertTitle,
+  Button,
+  CircularProgress,
   Pagination,
   Stack,
   Typography,
-  Button,
-  CircularProgress,
-  Alert,
-  AlertTitle,
 } from "@mui/material";
-import {GetApp as DownloadIcon, InfoOutlined} from "@mui/icons-material";
-import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
+import Box from "@mui/material/Box";
+import React from "react";
+import type {Types} from "~/types/aptos";
+import {getTransaction} from "../../../api";
 import {
   useGetAccountAllTransactionCount,
   useGetAccountAllTransactionVersions,
 } from "../../../api/hooks/useGetAccountAllTransactions";
-import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
-import {transactionsToCSV, downloadCSV} from "../../utils";
-import {Types} from "~/types/aptos";
 import {
   useAptosClient,
   useSdkV2Client,
 } from "../../../global-config/GlobalConfig";
-import {getTransaction} from "../../../api";
+import {useSearchParams} from "../../../routing";
 import {tryStandardizeAddress} from "../../../utils";
+import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
+import {downloadCSV, transactionsToCSV} from "../../utils";
+import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 // Maximum transactions we can display due to indexer query performance constraints
 const MAX_DISPLAYABLE_TRANSACTIONS = 10000;
@@ -81,7 +81,7 @@ export function AccountAllTransactionsWithPagination({
   countPerPage,
 }: AccountAllTransactionsWithPaginationProps) {
   const [searchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") ?? "1");
+  const currentPage = parseInt(searchParams.get("page") ?? "1", 10);
   const offset = (currentPage - 1) * countPerPage;
 
   const versions = useGetAccountAllTransactionVersions(
@@ -91,18 +91,16 @@ export function AccountAllTransactionsWithPagination({
   );
 
   return (
-    <>
-      <Stack spacing={2}>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
-          <UserTransactionsTable versions={versions} address={address} />
+    <Stack spacing={2}>
+      <Box sx={{width: "auto", overflowX: "auto"}}>
+        <UserTransactionsTable versions={versions} address={address} />
+      </Box>
+      {numPages > 1 && (
+        <Box sx={{display: "flex", justifyContent: "center"}}>
+          <RenderPagination currentPage={currentPage} numPages={numPages} />
         </Box>
-        {numPages > 1 && (
-          <Box sx={{display: "flex", justifyContent: "center"}}>
-            <RenderPagination currentPage={currentPage} numPages={numPages} />
-          </Box>
-        )}
-      </Stack>
-    </>
+      )}
+    </Stack>
   );
 }
 
@@ -262,7 +260,7 @@ function CSVExportButton({
 
         if (isRateLimit && attempt < maxRetries - 1) {
           // Exponential backoff: 1s, 2s, 4s for rate limits
-          const delay = baseDelay * Math.pow(2, attempt);
+          const delay = baseDelay * 2 ** attempt;
           if (process.env.NODE_ENV === "development") {
             console.warn(
               `Rate limit hit, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`,

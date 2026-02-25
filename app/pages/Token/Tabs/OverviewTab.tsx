@@ -1,17 +1,17 @@
+import {Box, CircularProgress, Stack, Typography} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
-import {Box, Stack, Typography, CircularProgress} from "@mui/material";
-import React, {Fragment, useState, useEffect, useMemo} from "react";
+import {Fragment, useEffect, useMemo, useState} from "react";
+import type {Current_Token_Datas_V2} from "~/types/aptos";
+import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
-import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
-import type {Current_Token_Datas_V2} from "~/types/aptos";
 import {
   isValidIpfsUrl,
   isValidUrl,
-  toIpfsUrl,
   toIpfsDisplayUrl,
+  toIpfsUrl,
 } from "../../utils";
 
 function OwnersRow() {
@@ -67,12 +67,12 @@ export default function OverviewTab({data}: OverviewTabProps) {
     () =>
       Boolean(
         metadataLoadUrl &&
-        (metadataLoadUrl.endsWith(".png") ||
-          metadataLoadUrl.endsWith(".jpg") ||
-          metadataLoadUrl.endsWith(".jpeg") ||
-          metadataLoadUrl.endsWith(".gif") ||
-          metadataLoadUrl.endsWith(".webp") ||
-          metadataLoadUrl.endsWith(".svg")),
+          (metadataLoadUrl.endsWith(".png") ||
+            metadataLoadUrl.endsWith(".jpg") ||
+            metadataLoadUrl.endsWith(".jpeg") ||
+            metadataLoadUrl.endsWith(".gif") ||
+            metadataLoadUrl.endsWith(".webp") ||
+            metadataLoadUrl.endsWith(".svg")),
       ),
     [metadataLoadUrl],
   );

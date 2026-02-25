@@ -1,39 +1,39 @@
-import * as React from "react";
-import {useMemo, useCallback} from "react";
+import {Network} from "@aptos-labs/ts-sdk";
 import {
   Box,
   Button,
+  Paper,
   Stack,
   Table,
   TableHead,
   TableRow,
   Typography,
-  Paper,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import GeneralTableRow from "../../../components/Table/GeneralTableRow";
-import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
+import * as React from "react";
+import {useCallback, useMemo} from "react";
+import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
+import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 import HashButton, {HashType} from "../../../components/HashButton";
-import {useTheme} from "@mui/material";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
-import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
-import {CoinDescription} from "../../../api/hooks/useGetCoinList";
+import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import {
-  VerifiedCoinCell,
-  verifiedLevel,
-  VerifiedType,
   getVerifiedMessageAndIcon,
+  VerifiedCoinCell,
+  VerifiedType,
+  verifiedLevel,
 } from "../../../components/Table/VerifiedCell";
+import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
+import {
+  useAugmentToWithGlobalSearchParams,
+  useNavigate,
+} from "../../../routing";
 import {getAssetSymbol} from "../../../utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
-import {useNetworkName} from "../../../global-config/GlobalConfig";
-import {Network} from "@aptos-labs/ts-sdk";
-import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
-import {
-  useNavigate,
-  useAugmentToWithGlobalSearchParams,
-} from "../../../routing";
 
 const CoinNameCell = React.memo(function CoinNameCell({name}: {name: string}) {
   return (
@@ -64,7 +64,7 @@ const AmountCell = React.memo(function AmountCell({
     return <GeneralTableCell>-</GeneralTableCell>;
   }
 
-  const formattedAmount = amount / Math.pow(10, decimals);
+  const formattedAmount = amount / 10 ** decimals;
   return (
     <GeneralTableCell>
       <span>{formattedAmount.toLocaleString()}</span>
@@ -180,7 +180,7 @@ function CoinCard({
 
   const formattedAmount =
     coin.amount != null && coin.decimals != null
-      ? coin.amount / Math.pow(10, coin.decimals)
+      ? coin.amount / 10 ** coin.decimals
       : null;
 
   const symbol = getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol);
@@ -386,8 +386,6 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
             return false;
           });
           break;
-        case CoinVerificationFilterType.ALL:
-        case CoinVerificationFilterType.NONE:
         default:
           filtered = coinsToFilter;
           break;

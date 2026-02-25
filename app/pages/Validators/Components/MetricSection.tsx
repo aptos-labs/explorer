@@ -1,5 +1,5 @@
-import React from "react";
 import {Stack} from "@mui/material";
+import type React from "react";
 
 type MetricSectionProps = {
   children: React.ReactNode;

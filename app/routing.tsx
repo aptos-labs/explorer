@@ -3,17 +3,17 @@
  * Re-exports from TanStack Router for backward compatibility
  */
 
-import React from "react";
-import {styled, SxProps, Theme} from "@mui/material/styles";
 import Box from "@mui/material/Box";
+import {type SxProps, styled, type Theme} from "@mui/material/styles";
 import {
   Link as TanStackLink,
   useSearch,
   useNavigate as useTanStackNavigate,
 } from "@tanstack/react-router";
+import React from "react";
 
 // Re-export hooks from TanStack Router
-export {useSearch, useParams} from "@tanstack/react-router";
+export {useParams, useSearch} from "@tanstack/react-router";
 
 /**
  * Hook to get the current network from search params.
@@ -39,7 +39,7 @@ export function useNavigate() {
   }, [currentNetwork]);
 
   return React.useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: router options type varies by route
     (options: any) => {
       const network = networkRef.current;
 

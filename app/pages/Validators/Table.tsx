@@ -1,16 +1,15 @@
-import * as React from "react";
 import {Table, TableHead, TableRow} from "@mui/material";
-import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
-import {assertNever} from "../../utils";
 import {
   useGetValidatorSet,
-  Validator,
+  type Validator,
 } from "../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../components/Table/GeneralTableRow";
+import {assertNever} from "../../utils";
 
 type ValidatorCellProps = {
   validator: Validator;
@@ -148,7 +147,8 @@ export function ValidatorsTable() {
 
   const validatorsInOrder = validatorsCopy.sort(
     (validator1, validator2) =>
-      parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
+      parseInt(validator2.voting_power, 10) -
+      parseInt(validator1.voting_power, 10),
   );
 
   return (

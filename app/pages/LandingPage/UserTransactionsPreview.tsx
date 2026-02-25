@@ -1,13 +1,13 @@
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
 import {Stack, Typography} from "@mui/material";
-import {UserTransactionsTable} from "../Transactions/TransactionsTable";
-import useGetUserTransactionVersions from "../../api/hooks/useGetUserTransactionVersions";
-import TransactionsPreview from "./TransactionsPreview";
-import {Link} from "../../routing";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import type {Types} from "~/types/aptos";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
-import {Types} from "~/types/aptos";
+import useGetUserTransactionVersions from "../../api/hooks/useGetUserTransactionVersions";
+import {Link} from "../../routing";
+import {UserTransactionsTable} from "../Transactions/TransactionsTable";
 import {ensureMillisecondTimestamp} from "../utils";
+import TransactionsPreview from "./TransactionsPreview";
 
 const PREVIEW_TRANSACTIONS_COUNT = 10;
 
@@ -36,23 +36,21 @@ export default function UserTransactionsPreview() {
   }
 
   return (
-    <>
-      <Stack spacing={2}>
-        <Typography variant="h5">User Transactions</Typography>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
-          <UserTransactionsTable versions={versions} />
-        </Box>
-        <Box sx={{display: "flex", justifyContent: "center"}}>
-          <Button
-            component={Link}
-            to="/transactions"
-            variant="primary"
-            sx={{margin: "0 auto", mt: 3}}
-          >
-            View all Transactions
-          </Button>
-        </Box>
-      </Stack>
-    </>
+    <Stack spacing={2}>
+      <Typography variant="h5">User Transactions</Typography>
+      <Box sx={{width: "auto", overflowX: "auto"}}>
+        <UserTransactionsTable versions={versions} />
+      </Box>
+      <Box sx={{display: "flex", justifyContent: "center"}}>
+        <Button
+          component={Link}
+          to="/transactions"
+          variant="primary"
+          sx={{margin: "0 auto", mt: 3}}
+        >
+          View all Transactions
+        </Button>
+      </Box>
+    </Stack>
   );
 }

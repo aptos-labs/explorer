@@ -1,8 +1,6 @@
-import {Skeleton, Typography} from "@mui/material";
-import React from "react";
+import {Skeleton, Typography, useTheme} from "@mui/material";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
-import {ValidatorGeoMetric} from "../../../api/hooks/useGetValidatorsGeoData";
-import {useTheme} from "@mui/material";
+import type {ValidatorGeoMetric} from "../../../api/hooks/useGetValidatorsGeoData";
 import {
   fontSizeBodySmall,
   fontSizeSubtitle,

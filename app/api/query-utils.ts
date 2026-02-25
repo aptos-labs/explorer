@@ -1,5 +1,5 @@
-import {UseQueryResult} from "@tanstack/react-query";
-import {ResponseError} from "./client";
+import type {UseQueryResult} from "@tanstack/react-query";
+import type {ResponseError} from "./client";
 
 type CombinedQueryResultState = {
   isLoading: boolean;

@@ -1,5 +1,5 @@
-import {useGetFaMetadata} from "./useGetFaMetadata";
 import {useGetCoinMetadata} from "./useGetCoinMetadata";
+import {useGetFaMetadata} from "./useGetFaMetadata";
 
 export type AssetMetadata = {
   name: string;

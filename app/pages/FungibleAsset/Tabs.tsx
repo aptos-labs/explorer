@@ -1,16 +1,16 @@
-import * as React from "react";
-import {Box} from "@mui/material";
-import TransactionsTab from "./Tabs/TransactionsTab";
-import InfoTab from "./Tabs/InfoTab";
-import {assertNever} from "../../utils";
-import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import StyledTabs from "../../components/StyledTabs";
-import StyledTab from "../../components/StyledTab";
-import {useNavigate} from "../../routing";
-import HoldersTab from "./Tabs/HoldersTab";
-import {FACombinedData} from "./Index";
+import WysiwygIcon from "@mui/icons-material/Wysiwyg";
+import {Box} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
+import type * as React from "react";
+import StyledTab from "../../components/StyledTab";
+import StyledTabs from "../../components/StyledTabs";
+import {useNavigate} from "../../routing";
+import {assertNever} from "../../utils";
+import type {FACombinedData} from "./Index";
+import HoldersTab from "./Tabs/HoldersTab";
+import InfoTab from "./Tabs/InfoTab";
+import TransactionsTab from "./Tabs/TransactionsTab";
 
 const TAB_VALUES: TabValue[] = ["info", "holders", "transactions"];
 

@@ -1,31 +1,35 @@
-import React, {useState, useCallback, memo} from "react";
-import {
-  Box,
-  BoxProps,
-  Button,
-  Typography,
-  Popover,
-  IconButton,
-  useTheme,
-  Tooltip,
-  Stack,
-  alpha,
-} from "@mui/material";
-import {getSemanticColors} from "../themes/colors/aptosBrandColors";
-import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import {
+  alpha,
+  Box,
+  type BoxProps,
+  Button,
+  IconButton,
+  Popover,
+  Stack,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import type React from "react";
+import {memo, useCallback, useState} from "react";
+import {useGetNameFromAddress} from "../api/hooks/useGetANS";
+import {
+  type CoinDescription,
+  useGetCoinList,
+} from "../api/hooks/useGetCoinList";
 import {
   isValidAccountAddress,
   truncate,
   truncateAddress,
   truncateAddressMiddle,
 } from "../pages/utils";
-import {assertNever, standardizeAddress} from "../utils";
-import {useGetNameFromAddress} from "../api/hooks/useGetANS";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import IdenticonImg from "./IdenticonImg";
 import {Link} from "../routing";
-import {useGetCoinList, CoinDescription} from "../api/hooks/useGetCoinList";
+import {getSemanticColors} from "../themes/colors/aptosBrandColors";
+import {assertNever, standardizeAddress} from "../utils";
+import IdenticonImg from "./IdenticonImg";
 
 export enum HashType {
   ACCOUNT = "account",

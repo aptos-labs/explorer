@@ -1,13 +1,11 @@
-import {Types} from "~/types/aptos";
-import {Box} from "@mui/material";
-import React from "react";
+import {Box, useTheme} from "@mui/material";
+import type {Types} from "~/types/aptos";
+import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {getLearnMoreTooltip} from "../../Transaction/helpers";
-import {useTheme} from "@mui/material";
 import {tryStandardizeAddress} from "../../../utils";
-import HashButton, {HashType} from "../../../components/HashButton";
+import {getLearnMoreTooltip} from "../../Transaction/helpers";
 
 type InfoTabProps = {
   address: string;

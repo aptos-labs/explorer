@@ -1,11 +1,10 @@
-import React from "react";
+import SearchIcon from "@mui/icons-material/Search";
 import {
-  AutocompleteRenderInputParams,
+  type AutocompleteRenderInputParams,
   CircularProgress,
   InputAdornment,
   TextField,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 
 interface SearchInputProps extends AutocompleteRenderInputParams {
   loading?: boolean;

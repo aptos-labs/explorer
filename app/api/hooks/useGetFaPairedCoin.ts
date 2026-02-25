@@ -1,10 +1,10 @@
 import {Hex} from "@aptos-labs/ts-sdk";
-import {Types} from "~/types/aptos";
-import {useQuery, UseQueryResult} from "@tanstack/react-query";
-import {ResponseError} from "../client";
-import {view} from "../index";
-import {useNetworkValue, useAptosClient} from "../../global-config";
+import {type UseQueryResult, useQuery} from "@tanstack/react-query";
+import type {Types} from "~/types/aptos";
+import {useAptosClient, useNetworkValue} from "../../global-config";
 import {isValidAccountAddress} from "../../pages/utils";
+import type {ResponseError} from "../client";
+import {view} from "../index";
 
 const TEXT_DECODER = new TextDecoder();
 

@@ -1,7 +1,8 @@
 import {truncateAddress, useWallet} from "@aptos-labs/wallet-adapter-react";
 import {AccountBalanceWalletOutlined as AccountBalanceWalletOutlinedIcon} from "@mui/icons-material";
 import {Avatar, Button, Typography} from "@mui/material";
-import React, {JSX, useState} from "react";
+import type React from "react";
+import {type JSX, useState} from "react";
 import WalletMenu from "./WalletMenu";
 
 type WalletButtonProps = {

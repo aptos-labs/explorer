@@ -1,13 +1,12 @@
-import * as React from "react";
-import {Types} from "~/types/aptos";
 import {Alert, Box} from "@mui/material";
-import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import type {Types} from "~/types/aptos";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import {getLearnMoreTooltip} from "../helpers";
-import {TransactionStatus} from "../../../components/TransactionStatus";
-import TransactionBlockRow from "./Components/TransactionBlockRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {TransactionStatus} from "../../../components/TransactionStatus";
+import {getLearnMoreTooltip} from "../helpers";
+import TransactionBlockRow from "./Components/TransactionBlockRow";
 
 type UnknownTabProps = {
   transaction: Types.Transaction;

@@ -1,5 +1,5 @@
-import React from "react";
-import {Box, SxProps, Theme, useTheme} from "@mui/material";
+import {Box, type SxProps, type Theme, useTheme} from "@mui/material";
+import type React from "react";
 import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 
 export function CodeLineBox({

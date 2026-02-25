@@ -1,19 +1,20 @@
-import React, {Suspense} from "react";
-import CssBaseline from "@mui/material/CssBaseline";
+import type {Network} from "@aptos-labs/ts-sdk";
+import {AptosWalletAdapterProvider} from "@aptos-labs/wallet-adapter-react";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Header from "./Header";
-import Footer from "./Footer";
-import {Fallback} from "./Fallback";
+import CssBaseline from "@mui/material/CssBaseline";
+import type React from "react";
+import {Suspense} from "react";
+import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
+import {hiddenNetworks} from "../../constants";
+import {ProvideColorMode} from "../../context";
 import {
   GlobalConfigProvider,
   useNetworkName,
 } from "../../global-config/GlobalConfig";
-import {ProvideColorMode} from "../../context";
-import {GraphqlClientProvider} from "../../api/hooks/useGraphqlClient";
-import {AptosWalletAdapterProvider} from "@aptos-labs/wallet-adapter-react";
-import {Network} from "@aptos-labs/ts-sdk";
-import {hiddenNetworks} from "../../constants";
+import {Fallback} from "./Fallback";
+import Footer from "./Footer";
+import Header from "./Header";
 
 const AptosConnectId = "99d260d0-c69d-4c15-965f-f6f9b7b00102";
 

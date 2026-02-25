@@ -1,15 +1,14 @@
 import {Stack, Typography} from "@mui/material";
-import React from "react";
-import TitleHashButton, {HashType} from "../../components/TitleHashButton";
-import {CoinDescription} from "../../api/hooks/useGetCoinList";
-import {getAssetSymbol} from "../../utils";
+import type {CoinDescription} from "../../api/hooks/useGetCoinList";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {
   isBannedType,
   VerifiedAsset,
   verifiedLevel,
 } from "../../components/Table/VerifiedCell";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {useNetworkName} from "../../global-config/GlobalConfig";
+import {getAssetSymbol} from "../../utils";
 
 type CoinTitleProps = {
   struct: string;

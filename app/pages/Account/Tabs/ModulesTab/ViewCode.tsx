@@ -1,27 +1,27 @@
 import {
   Autocomplete,
-  TextField,
   Box,
   Divider,
   Grid,
   Stack,
+  TextField,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import {useEffect, useMemo} from "react";
-import Error from "../../Error";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {
-  PackageMetadata,
+  type PackageMetadata,
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import {getBytecodeSizeInKB} from "../../../../utils";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import {useNavigate} from "../../../../routing";
-import SidebarItem from "../../Components/SidebarItem";
+import {getBytecodeSizeInKB} from "../../../../utils";
 import {Code} from "../../Components/CodeSnippet";
+import SidebarItem from "../../Components/SidebarItem";
+import Error from "../../Error";
 import {accountPagePath} from "../../Index";
 import {useModulesPathParams} from "./Tabs";
 

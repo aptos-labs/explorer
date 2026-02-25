@@ -1,24 +1,23 @@
 import {Skeleton, Stack, useMediaQuery, useTheme} from "@mui/material";
-import HashButton from "../../components/HashButton";
-import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
-import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
-import {HashType} from "../../components/HashButton";
-import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
-import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
-import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
-import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
-import {
-  REWARDS_LEARN_MORE_LINK,
-  REWARDS_TOOLTIP_TEXT,
-} from "../Validators/Components/Staking";
+import {useContext} from "react";
+import type {Types} from "~/types/aptos";
 import {
   useGetDelegationNodeInfo,
   useGetDelegationState,
 } from "../../api/hooks/delegations";
+import type {ValidatorData} from "../../api/hooks/useGetValidators";
+import HashButton, {HashType} from "../../components/HashButton";
+import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
+import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
+import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
+import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
+import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
+import {
+  REWARDS_LEARN_MORE_LINK,
+  REWARDS_TOOLTIP_TEXT,
+} from "../Validators/Components/Staking";
+import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
 import {DelegationStateContext} from "./context/DelegationContext";
-import {useContext} from "react";
-import {Types} from "~/types/aptos";
-import {ValidatorData} from "../../api/hooks/useGetValidators";
 
 type ValidatorDetailProps = {
   isSkeletonLoading: boolean;

@@ -1,4 +1,4 @@
-import {CoinDescription} from "../../api/hooks/useGetCoinList";
+import type {CoinDescription} from "../../api/hooks/useGetCoinList";
 
 /**
  * Hardcoded coin/asset metadata for Testnet

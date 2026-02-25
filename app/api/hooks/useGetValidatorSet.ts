@@ -1,5 +1,5 @@
-import {useGetAccountResource} from "./useGetAccountResource";
 import {tryStandardizeAddress} from "../../utils";
+import {useGetAccountResource} from "./useGetAccountResource";
 
 interface ValidatorSetData {
   active_validators: Validator[];

@@ -1,10 +1,9 @@
-import * as React from "react";
-import {DailyUserTxnData} from "../../../api/hooks/useGetAnalyticsData";
-import {getLabels} from "../utils";
-import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
-import ChartTitle from "../Components/ChartTitle";
+import type {DailyUserTxnData} from "../../../api/hooks/useGetAnalyticsData";
 import {CardOutline} from "../../../components/Card";
+import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
+import ChartTitle from "../Components/ChartTitle";
 import LineChart from "../Components/LineChart";
+import {getLabels} from "../utils";
 
 function getDataset(data: DailyUserTxnData[], days: number): number[] {
   return data.slice(-days).map((dailyData) => dailyData.num_user_transactions);

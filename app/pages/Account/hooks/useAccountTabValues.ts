@@ -1,5 +1,5 @@
 import {useGetIsGraphqlClientSupported} from "../../../api/hooks/useGraphqlClient";
-import {TabValue} from "../Tabs";
+import type {TabValue} from "../Tabs";
 
 const TAB_VALUES_FULL: TabValue[] = [
   "transactions",

@@ -1,44 +1,44 @@
-import * as React from "react";
-import {useState, useCallback} from "react";
+import CloseIcon from "@mui/icons-material/Close";
+import ContentCopy from "@mui/icons-material/ContentCopy";
 import {
+  Box,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  IconButton,
+  Paper,
+  Stack,
   Table,
   TableHead,
   TableRow,
-  Box,
-  Stack,
-  Paper,
   Typography,
   useMediaQuery,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-  Divider,
+  useTheme,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import ContentCopy from "@mui/icons-material/ContentCopy";
-import GeneralTableRow from "../../../../components/Table/GeneralTableRow";
-import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHeaderCell";
-import {assertNever} from "../../../../utils";
+import * as React from "react";
+import {useCallback, useState} from "react";
+import type {Types} from "~/types/aptos";
+import {useGetFaMetadata} from "../../../../api/hooks/useGetFaMetadata";
 import HashButton, {HashType} from "../../../../components/HashButton";
-import {BalanceChange} from "../../utils";
+import IdenticonImg from "../../../../components/IdenticonImg";
 import CurrencyValue, {
   getFormattedBalanceStr,
 } from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {useTheme} from "@mui/material";
-import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
-import {Types} from "~/types/aptos";
+import StyledTooltip from "../../../../components/StyledTooltip";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../../../components/Table/GeneralTableRow";
 import {
-  VerifiedCoinCell,
   VerifiedAsset,
+  VerifiedCoinCell,
 } from "../../../../components/Table/VerifiedCell";
-import {getLearnMoreTooltip} from "../../helpers";
-import StyledTooltip from "../../../../components/StyledTooltip";
-import {useGetFaMetadata} from "../../../../api/hooks/useGetFaMetadata";
+import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
+import {assertNever} from "../../../../utils";
 import {isValidAccountAddress} from "../../../utils";
-import IdenticonImg from "../../../../components/IdenticonImg";
+import {getLearnMoreTooltip} from "../../helpers";
+import type {BalanceChange} from "../../utils";
 
 type BalanceChangeCellProps = {
   balanceChange: BalanceChange;

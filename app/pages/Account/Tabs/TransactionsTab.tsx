@@ -1,9 +1,8 @@
-import React from "react";
-import {Types} from "~/types/aptos";
-import AccountTransactions from "../Components/AccountTransactions";
+import type {Types} from "~/types/aptos";
 import {useGetIsGraphqlClientSupported} from "../../../api/hooks/useGraphqlClient";
-import AccountAllTransactions from "../Components/AccountAllTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import AccountAllTransactions from "../Components/AccountAllTransactions";
+import AccountTransactions from "../Components/AccountTransactions";
 
 type TransactionsTabProps = {
   address: string;

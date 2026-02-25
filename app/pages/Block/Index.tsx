@@ -1,16 +1,15 @@
+import {Alert, Grid, Stack} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
-import {Stack, Grid, Alert} from "@mui/material";
-import React from "react";
-import BlockTitle from "./Title";
-import BlockTabs from "./Tabs";
 import {useGetBlockByHeight} from "../../api/hooks/useGetBlock";
-import Error from "./Error";
 import PageHeader from "../layout/PageHeader";
+import Error from "./Error";
+import BlockTabs from "./Tabs";
+import BlockTitle from "./Title";
 
 export default function BlockPage() {
   const params = useParams({strict: false}) as {height?: string};
   const height = params?.height;
-  const actualHeight = parseInt(height ?? "");
+  const actualHeight = parseInt(height ?? "", 10);
 
   const {data, isLoading, error} = useGetBlockByHeight({
     height: actualHeight,

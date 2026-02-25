@@ -1,7 +1,6 @@
-import * as React from "react";
 import {Stack} from "@mui/material";
-import TableTooltip from "../../../components/Table/TableTooltip";
 import {CodeLineBox} from "../../../components/CodeLineBox";
+import TableTooltip from "../../../components/Table/TableTooltip";
 import TooltipTypography from "../../../components/TooltipTypography";
 
 export default function LastEpochPerformanceTooltip() {

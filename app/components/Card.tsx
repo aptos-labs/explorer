@@ -1,5 +1,6 @@
-import React, {useContext} from "react";
-import {Box, BoxProps, useTheme, alpha} from "@mui/material";
+import {alpha, Box, type BoxProps, useTheme} from "@mui/material";
+import type React from "react";
+import {useContext} from "react";
 import {StyleContext} from "../pages/Analytics/NetworkInfo/NetworkInfo";
 
 interface CardProps extends BoxProps {
@@ -9,7 +10,7 @@ interface CardProps extends BoxProps {
 export function CardWithStyle({children, ...props}: CardProps) {
   const style = useContext(StyleContext);
 
-  return style == "default" ? (
+  return style === "default" ? (
     <Card {...props}>{children}</Card>
   ) : (
     <CardOutline {...props}>{children}</CardOutline>

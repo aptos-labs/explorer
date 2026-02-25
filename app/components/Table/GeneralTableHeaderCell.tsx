@@ -1,14 +1,14 @@
-import React from "react";
-import {
-  Typography,
-  TableCell,
-  useTheme,
-  Stack,
-  TableSortLabel,
-} from "@mui/material";
-import type {SxProps} from "@mui/material";
-import {Theme} from "@mui/material/styles";
 import SouthIcon from "@mui/icons-material/South";
+import type {SxProps} from "@mui/material";
+import {
+  Stack,
+  TableCell,
+  TableSortLabel,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import type {Theme} from "@mui/material/styles";
+import type React from "react";
 
 interface GeneralTableHeaderCellProps {
   header: React.ReactNode;

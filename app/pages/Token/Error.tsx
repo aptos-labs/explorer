@@ -1,7 +1,7 @@
-import React from "react";
-import {ResponseError, ResponseErrorType} from "../../api/client";
-import {Typography, Stack, useTheme} from "@mui/material";
 import {ErrorOutline} from "@mui/icons-material";
+import {Stack, Typography, useTheme} from "@mui/material";
+import type React from "react";
+import {type ResponseError, ResponseErrorType} from "../../api/client";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 
 type ErrorProps = {
@@ -55,7 +55,6 @@ export default function TokenError({error, tokenId}: ErrorProps) {
         "Too Many Requests",
         <>Too many requests. Please try again in a few moments.</>,
       );
-    case ResponseErrorType.UNHANDLED:
     default:
       return renderErrorContent(
         "Error Loading Token",

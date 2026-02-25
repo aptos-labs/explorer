@@ -1,6 +1,6 @@
-import React from "react";
-import Drawer from "@mui/material/Drawer";
 import {useMediaQuery, useTheme} from "@mui/material";
+import Drawer from "@mui/material/Drawer";
+import type React from "react";
 
 type SideDrawerProps = {
   children: React.ReactNode;
@@ -21,7 +21,7 @@ export default function SideDrawer({
       sx={{
         width: isMobile ? "80%" : "33%",
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: {
+        "& .MuiDrawer-paper": {
           width: isMobile ? "80%" : "33%",
         },
       }}

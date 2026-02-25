@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 const APTOS_DECIMALS = 8;
 
@@ -15,7 +15,7 @@ export function getFormattedBalanceStr(
   fixedDecimalPlaces?: number,
 ): string {
   // If balance is zero or decimals is 0, just return it
-  if (balance == "0" || (decimals !== undefined && decimals === 0)) {
+  if (balance === "0" || (decimals !== undefined && decimals === 0)) {
     return balance;
   }
 
@@ -24,7 +24,7 @@ export function getFormattedBalanceStr(
 
   // If length is less than decimals, pad with 0s to decimals length and return
   if (len <= decimals) {
-    return "0." + (trimRight("0".repeat(decimals - len) + balance) || "0");
+    return `0.${trimRight("0".repeat(decimals - len) + balance) || "0"}`;
   }
 
   // Otherwise, insert decimal point at len - decimals
@@ -32,7 +32,7 @@ export function getFormattedBalanceStr(
     "en-US",
   );
   let rightSide = balance.slice(len - decimals);
-  if (BigInt(rightSide) == BigInt(0)) {
+  if (BigInt(rightSide) === BigInt(0)) {
     return leftSide;
   }
 
@@ -49,7 +49,7 @@ export function getFormattedBalanceStr(
     return leftSide;
   }
 
-  return leftSide + "." + trimRight(rightSide);
+  return `${leftSide}.${trimRight(rightSide)}`;
 }
 
 type CurrencyValueProps = {

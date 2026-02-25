@@ -1,7 +1,7 @@
-import {Types} from "~/types/aptos";
 import {useQuery} from "@tanstack/react-query";
+import type {Types} from "~/types/aptos";
+import {useAptosClient, useNetworkValue} from "../../../global-config";
 import {getStake} from "../..";
-import {useNetworkValue, useAptosClient} from "../../../global-config";
 
 export function useGetDelegatorStakeInfo(
   delegatorAddress: Types.Address,

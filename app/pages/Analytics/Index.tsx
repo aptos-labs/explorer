@@ -1,10 +1,9 @@
 import {Box, Typography} from "@mui/material";
-import * as React from "react";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {defaultNetworkName} from "../../constants";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
 import MainnetAnalytics from "./MainnetAnalytics";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
 
 export default function AnalyticsPage() {
   const networkName = useNetworkName();

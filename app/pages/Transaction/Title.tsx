@@ -1,9 +1,8 @@
 import {Stack, Typography} from "@mui/material";
-import React from "react";
-import {Types} from "~/types/aptos";
+import type {Types} from "~/types/aptos";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {TransactionType} from "../../components/TransactionType";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
 
 type TransactionTitleProps = {
   transaction: Types.Transaction;

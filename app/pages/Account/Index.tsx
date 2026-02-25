@@ -1,23 +1,24 @@
-import {useParams} from "@tanstack/react-router";
+import {AccountAddress, Network} from "@aptos-labs/ts-sdk";
 import {Grid} from "@mui/material";
-import React, {useEffect} from "react";
-import AccountTabs from "./Tabs";
-import AccountTitle from "./Title";
-import BalanceCard from "./BalanceCard";
-import PageHeader from "../layout/PageHeader";
+import {useParams} from "@tanstack/react-router";
+import type React from "react";
+import {useEffect} from "react";
+import type {Types} from "~/types/aptos";
+import {type ResponseError, ResponseErrorType} from "../../api/client";
+import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
+import {useGetAddressFromName} from "../../api/hooks/useGetANS";
 import LoadingModal from "../../components/LoadingModal";
-import Error from "./Error";
+import {objectCoreResource} from "../../constants";
+import {useNetworkName} from "../../global-config";
+import {useNavigate} from "../../routing";
+import PageHeader from "../layout/PageHeader";
+import BalanceCard from "./BalanceCard";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
 import {PetraVaultBanner} from "./Components/PetraVaultBanner";
-import {useNetworkName} from "../../global-config";
-import {Types} from "~/types/aptos";
-import {Network, AccountAddress} from "@aptos-labs/ts-sdk";
-import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
-import {useNavigate} from "../../routing";
-import {ResponseError, ResponseErrorType} from "../../api/client";
-import {objectCoreResource} from "../../constants";
-import {useGetAddressFromName} from "../../api/hooks/useGetANS";
+import Error from "./Error";
 import {useAccountTabValues} from "./hooks/useAccountTabValues";
+import AccountTabs from "./Tabs";
+import AccountTitle from "./Title";
 
 type AccountPageProps = {
   isObject?: boolean;
@@ -130,18 +131,7 @@ export default function AccountPage({
     //   const newPath = currentPath.replace(`/account/${maybeAddress}`, `/account/${address}`);
     //   navigate(newPath, { replace: true });
     // }
-  }, [
-    address,
-    alreadyIsObject,
-    isObject,
-    isLoading,
-    accountData,
-    resourceData,
-    navigate,
-    isAccount,
-    isAptName,
-    maybeAddress,
-  ]);
+  }, [address, alreadyIsObject, isObject, isLoading, navigate, isAccount]);
 
   const networkName = useNetworkName();
   const tabValues = useAccountTabValues(
@@ -192,7 +182,7 @@ export default function AccountPage({
             <Error address={address} error={error} />
           </>
         ) : (
-          <>{accountTabs}</>
+          accountTabs
         )}
       </Grid>
     </Grid>

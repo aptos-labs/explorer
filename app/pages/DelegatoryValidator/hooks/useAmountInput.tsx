@@ -1,9 +1,10 @@
-import React, {useState} from "react";
-import AmountTextField from "../../../components/AmountTextField";
+import type React from "react";
+import {useState} from "react";
+import type {Types} from "~/types/aptos";
 import {StakeOperation} from "../../../api/hooks/delegations";
-import {MINIMUM_APT_IN_POOL} from "../constants";
+import AmountTextField from "../../../components/AmountTextField";
 import {OCTA} from "../../../constants";
-import {Types} from "~/types/aptos";
+import {MINIMUM_APT_IN_POOL} from "../constants";
 
 function sanitizeInput(input: string): string {
   const digitsAndDecimals = /[0-9.]/g;

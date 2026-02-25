@@ -1,7 +1,7 @@
 // Aptos Explorer Service Worker
 // Provides offline support, caching, and PWA functionality
 
-const CACHE_NAME = "aptos-explorer-v1";
+const _CACHE_NAME = "aptos-explorer-v1";
 const STATIC_CACHE_NAME = "aptos-explorer-static-v1";
 const DYNAMIC_CACHE_NAME = "aptos-explorer-dynamic-v1";
 
@@ -14,7 +14,7 @@ const APTOS_API_DOMAIN = "aptoslabs.com";
  */
 function isAptosLabsDomain(hostname) {
   return (
-    hostname === APTOS_API_DOMAIN || hostname.endsWith("." + APTOS_API_DOMAIN)
+    hostname === APTOS_API_DOMAIN || hostname.endsWith(`.${APTOS_API_DOMAIN}`)
   );
 }
 
@@ -129,7 +129,7 @@ self.addEventListener("fetch", (event) => {
 });
 
 // Cache First strategy - good for static assets that rarely change
-async function cacheFirst(request, cacheName, maxAgeSeconds) {
+async function cacheFirst(request, cacheName, _maxAgeSeconds) {
   const cache = await caches.open(cacheName);
   const cachedResponse = await cache.match(request);
 
@@ -143,7 +143,7 @@ async function cacheFirst(request, cacheName, maxAgeSeconds) {
       cache.put(request, networkResponse.clone());
     }
     return networkResponse;
-  } catch (error) {
+  } catch (_error) {
     console.log(
       "[SW] Network request failed, no cache available:",
       request.url,
@@ -156,7 +156,7 @@ async function cacheFirst(request, cacheName, maxAgeSeconds) {
 }
 
 // Network First strategy - good for dynamic content
-async function networkFirst(request, cacheName, maxAgeSeconds) {
+async function networkFirst(request, cacheName, _maxAgeSeconds) {
   const cache = await caches.open(cacheName);
 
   try {
@@ -165,7 +165,7 @@ async function networkFirst(request, cacheName, maxAgeSeconds) {
       cache.put(request, networkResponse.clone());
     }
     return networkResponse;
-  } catch (error) {
+  } catch (_error) {
     console.log("[SW] Network request failed, trying cache:", request.url);
     const cachedResponse = await cache.match(request);
     if (cachedResponse) {

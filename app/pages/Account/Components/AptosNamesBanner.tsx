@@ -1,9 +1,8 @@
-import React from "react";
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
-import {Banner} from "../../../components/Banner";
 // import useSubmitTransaction from "../../../api/hooks/useSubmitTransaction";
 // import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Stack, useMediaQuery, useTheme} from "@mui/material";
+import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
+import {Banner} from "../../../components/Banner";
 
 export function AptosNamesBanner() {
   const inDev = useGetInDevMode();
@@ -33,7 +32,7 @@ export function AptosNamesBanner() {
       {ANSConnector}
     </Stack>
   ) : (
-    <>{text}</>
+    text
   );
 
   return inDev ? (

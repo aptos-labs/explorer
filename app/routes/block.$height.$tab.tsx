@@ -1,9 +1,9 @@
 import {createFileRoute} from "@tanstack/react-router";
-import BlockPage from "../pages/Block/Index";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import {PagePending} from "../components/NavigationPending";
 import {getClientFromSearch} from "../api/createClient";
 import {blockQueryOptions} from "../api/queries";
+import {PagePending} from "../components/NavigationPending";
+import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
+import BlockPage from "../pages/Block/Index";
 
 // Primary route for block with tab in path
 export const Route = createFileRoute("/block/$height/$tab")({

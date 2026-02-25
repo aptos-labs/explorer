@@ -1,50 +1,50 @@
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {
+  Box,
   Button,
   DialogActions,
   DialogContent,
   DialogTitle,
   Stack,
   Typography,
-  Box,
+  useTheme,
 } from "@mui/material";
 import {useContext, useEffect, useState} from "react";
+import type {Types} from "~/types/aptos";
+import {getAddStakeFee} from "../../api";
+import {
+  StakeOperation,
+  useGetDelegationState,
+  useSubmitStakeOperation,
+} from "../../api/hooks/delegations";
+import type {ValidatorData} from "../../api/hooks/useGetValidators";
+import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
+import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
-import {useTheme} from "@mui/material";
-import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
-import {getStakeOperationAPTRequirement} from "./utils";
+import LoadingModal from "../../components/LoadingModal";
 import StyledDialog from "../../components/StyledDialog";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../components/StyledTooltip";
+import TransactionResponseSnackbar from "../../components/snakebar/TransactionResponseSnackbar";
+import TooltipTypography from "../../components/TooltipTypography";
+import {OCTA} from "../../constants";
+import {
+  useAptosClient,
+  useNetworkValue,
+} from "../../global-config/GlobalConfig";
+import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
+import {addressFromWallet} from "../../utils";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {
   REWARDS_LEARN_MORE_LINK,
   REWARDS_TOOLTIP_TEXT,
 } from "../Validators/Components/Staking";
-import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
-import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
-import useAmountInput from "./hooks/useAmountInput";
-import LoadingModal from "../../components/LoadingModal";
-import TransactionResponseSnackbar from "../../components/snakebar/TransactionResponseSnackbar";
-import TransactionSucceededDialog from "./TransactionSucceededDialog";
-import {
-  useSubmitStakeOperation,
-  StakeOperation,
-  useGetDelegationState,
-} from "../../api/hooks/delegations";
-import {OCTA} from "../../constants";
-import {DelegationStateContext} from "./context/DelegationContext";
-import {Types} from "~/types/aptos";
-import {getAddStakeFee} from "../../api";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {
-  useNetworkValue,
-  useAptosClient,
-} from "../../global-config/GlobalConfig";
 import {MINIMUM_APT_IN_POOL} from "./constants";
-import {ValidatorData} from "../../api/hooks/useGetValidators";
-import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
-import TooltipTypography from "../../components/TooltipTypography";
-import {addressFromWallet} from "../../utils";
+import {DelegationStateContext} from "./context/DelegationContext";
+import useAmountInput from "./hooks/useAmountInput";
+import TransactionSucceededDialog from "./TransactionSucceededDialog";
+import {getStakeOperationAPTRequirement} from "./utils";
 
 type StakeOperationDialogProps = {
   handleDialogClose: () => void;
@@ -143,7 +143,7 @@ function StakeOperationDialogContent({
     setAmount("");
   };
 
-  const networkValue = useNetworkValue();
+  const _networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
   const [addStakeFee, setAddStakeFee] = useState<Types.MoveValue>(0);
   const logEvent = useLogEventWithBasic();
@@ -153,14 +153,14 @@ function StakeOperationDialogContent({
       if (stakeOperation === StakeOperation.STAKE) {
         const fee = await getAddStakeFee(
           aptosClient,
-          validator!.owner_address,
+          validator?.owner_address,
           Number(amount).toFixed(8),
         );
         setAddStakeFee(fee[0]);
       }
     }
     fetchData();
-  }, [networkValue, aptosClient, amount, stakeOperation, validator]);
+  }, [aptosClient, amount, stakeOperation, validator]);
 
   const onSubmitClick = async () => {
     logEvent("submit_transaction_button_clicked", stakeOperation, {
@@ -313,7 +313,7 @@ function StakeOperationDialogContent({
           <ContentBoxSpaceBetween>
             <ContentRowSpaceBetween
               title={"Staking Fee"}
-              value={Number(addStakeFee) / OCTA + " APT"}
+              value={`${Number(addStakeFee) / OCTA} APT`}
               tooltip={
                 <StyledLearnMoreTooltip
                   text={

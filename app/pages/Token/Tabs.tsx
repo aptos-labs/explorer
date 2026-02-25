@@ -1,15 +1,15 @@
-import * as React from "react";
-import {Box} from "@mui/material";
-import OverviewTab from "./Tabs/OverviewTab";
-import ActivitiesTab from "./Tabs/ActivitiesTab";
-import {assertNever} from "../../utils";
-import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import StyledTabs from "../../components/StyledTabs";
-import StyledTab from "../../components/StyledTab";
+import WysiwygIcon from "@mui/icons-material/Wysiwyg";
+import {Box} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
-import {useNavigate, useSearch} from "../../routing";
+import type * as React from "react";
 import type {Current_Token_Datas_V2} from "~/types/aptos";
+import StyledTab from "../../components/StyledTab";
+import StyledTabs from "../../components/StyledTabs";
+import {useNavigate, useSearch} from "../../routing";
+import {assertNever} from "../../utils";
+import ActivitiesTab from "./Tabs/ActivitiesTab";
+import OverviewTab from "./Tabs/OverviewTab";
 
 const TAB_VALUES: TabValue[] = ["overview", "activities"];
 

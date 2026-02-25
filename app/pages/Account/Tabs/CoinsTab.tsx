@@ -1,14 +1,16 @@
-import React from "react";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {CoinDescriptionPlusAmount, CoinsTable} from "../Components/CoinsTable";
+import type {Types} from "~/types/aptos";
+import {useGetAllAccountCoins} from "../../../api/hooks/useGetAccountCoins";
 import {
-  CoinDescription,
+  type CoinDescription,
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {findCoinData} from "../../Transaction/Tabs/BalanceChangeTab";
-import {useGetAllAccountCoins} from "../../../api/hooks/useGetAccountCoins";
 import {coinOrderIndex} from "../../utils";
-import {Types} from "~/types/aptos";
+import {
+  type CoinDescriptionPlusAmount,
+  CoinsTable,
+} from "../Components/CoinsTable";
 
 type TokenTabsProps = {
   address: string;

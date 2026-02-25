@@ -1,3 +1,5 @@
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {
   Box,
   Button,
@@ -11,12 +13,10 @@ import {
   useTheme,
 } from "@mui/material";
 import {useState} from "react";
-import StyledDialog from "../../components/StyledDialog";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {StakeOperation} from "../../api/hooks/delegations";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import StyledDialog from "../../components/StyledDialog";
 import {addressFromWallet} from "../../utils";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 type TransactionSucceededDialogProps = {
   handleDialogClose: () => void;

@@ -1,5 +1,5 @@
-import {useViewFunction} from "./useViewFunction";
 import {supplyLimitOverrides} from "../../constants";
+import {useViewFunction} from "./useViewFunction";
 
 // Override table for coins that have burnt their mint and burn, but did not properly track on-chain supply
 // This will not override an existing supply, but will set a supply if it is not already set

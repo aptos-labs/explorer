@@ -1,6 +1,4 @@
-import {Typography, TypographyProps} from "@mui/material";
-import React from "react";
-import {useTheme} from "@mui/material";
+import {Typography, type TypographyProps, useTheme} from "@mui/material";
 import {fontSizeBody, fontSizeBodySmall} from "../../constants";
 
 interface BodyProps extends TypographyProps {

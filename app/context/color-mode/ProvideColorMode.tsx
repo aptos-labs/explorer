@@ -1,6 +1,9 @@
 import {ThemeProvider} from "@mui/material/styles";
-import React, {createContext, useContext, useMemo} from "react";
-import useProvideColorMode, {ColorModeContext} from "./ProvideColorMode.State";
+import type React from "react";
+import {createContext, useContext, useMemo} from "react";
+import useProvideColorMode, {
+  type ColorModeContext,
+} from "./ProvideColorMode.State";
 
 interface ProvideColorModeProps {
   children: React.ReactNode;

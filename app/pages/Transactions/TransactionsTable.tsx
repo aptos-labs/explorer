@@ -1,53 +1,52 @@
-import * as React from "react";
-import {useMemo} from "react";
-import {Box, Stack, useTheme, useMediaQuery, Paper} from "@mui/material";
-import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
+import ArrowForwardOutlined from "@mui/icons-material/ArrowForwardOutlined";
+import CloseIcon from "@mui/icons-material/Close";
+import ContentCopy from "@mui/icons-material/ContentCopy";
+import OpenInNew from "@mui/icons-material/OpenInNew";
+import TextSnippetOutlined from "@mui/icons-material/TextSnippetOutlined";
+import {Box, Paper, Stack, useMediaQuery, useTheme} from "@mui/material";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
+import * as React from "react";
+import {useMemo} from "react";
+import type {Types} from "~/types/aptos";
+import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 import HashButton, {HashType} from "../../components/HashButton";
-import {Types} from "~/types/aptos";
-import {assertNever} from "../../utils";
+import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
+import GeneralTableBody from "../../components/Table/GeneralTableBody";
+import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../components/Table/GeneralTableRow";
+import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
+import {TableTransactionStatus} from "../../components/TransactionStatus";
 import {
   TableTransactionType,
   TransactionTypeName,
 } from "../../components/TransactionType";
-import {TableTransactionStatus} from "../../components/TransactionStatus";
-import {getTableFormattedTimestamp} from "../utils";
-import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
-import {useGetTransaction} from "../../api/hooks/useGetTransaction";
-import TransactionTypeTooltip from "./Components/TransactionTypeTooltip";
-import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import GeneralTableBody from "../../components/Table/GeneralTableBody";
-import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
+import {
+  Link,
+  useAugmentToWithGlobalSearchParams,
+  useNavigate,
+} from "../../routing";
+import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
+import {assertNever} from "../../utils";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
 import {
   getCoinBalanceChangeForAccount,
   getTransactionAmount,
   getTransactionCounterparty,
 } from "../Transaction/utils";
-import {
-  Link,
-  useNavigate,
-  useAugmentToWithGlobalSearchParams,
-} from "../../routing";
-import ArrowForwardOutlined from "@mui/icons-material/ArrowForwardOutlined";
-import TextSnippetOutlined from "@mui/icons-material/TextSnippetOutlined";
-import ContentCopy from "@mui/icons-material/ContentCopy";
-import OpenInNew from "@mui/icons-material/OpenInNew";
-import {truncateAddress} from "../utils";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import Tooltip from "@mui/material/Tooltip";
+import {getTableFormattedTimestamp, truncateAddress} from "../utils";
+import TransactionTypeTooltip from "./Components/TransactionTypeTooltip";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -177,7 +176,7 @@ function TransactionAmount({
     const amount = getCoinBalanceChangeForAccount(transaction, address);
     if (amount !== undefined) {
       let amountAbs = amount;
-      let color = undefined;
+      let color;
       if (amount > 0) {
         color = semanticColors.status.info;
       } else if (amount < 0) {
@@ -219,7 +218,7 @@ function TransactionAmountGasCell({
         <Box sx={{fontSize: 11, color: theme.palette.text.secondary}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
             <>
-              <>Gas</>{" "}
+              Gas{" "}
               <GasFeeValue
                 gasUsed={transaction.gas_used}
                 gasUnitPrice={transaction.gas_unit_price}

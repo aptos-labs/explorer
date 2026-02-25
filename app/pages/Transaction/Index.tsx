@@ -1,17 +1,17 @@
-import {Stack, Grid, Alert} from "@mui/material";
-import {Types} from "~/types/aptos";
-import {
-  useNetworkValue,
-  useAptosClient,
-} from "../../global-config/GlobalConfig";
-import {useParams} from "@tanstack/react-router";
+import {Alert, Grid, Stack} from "@mui/material";
 import {useQuery} from "@tanstack/react-query";
-import {ResponseError} from "../../api/client";
+import {useParams} from "@tanstack/react-router";
+import type {Types} from "~/types/aptos";
 import {getTransaction} from "../../api";
-import Error from "./Error";
-import TransactionTitle from "./Title";
-import TransactionTabs from "./Tabs";
+import type {ResponseError} from "../../api/client";
+import {
+  useAptosClient,
+  useNetworkValue,
+} from "../../global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
+import Error from "./Error";
+import TransactionTabs from "./Tabs";
+import TransactionTitle from "./Title";
 
 export default function TransactionPage() {
   const networkValue = useNetworkValue();

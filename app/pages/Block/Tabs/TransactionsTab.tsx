@@ -1,8 +1,7 @@
-import React from "react";
-import TransactionsTable from "../../Transactions/TransactionsTable";
+import type {Block} from "@aptos-labs/ts-sdk";
+import type {Types} from "~/types/aptos";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Block} from "@aptos-labs/ts-sdk";
-import {Types} from "~/types/aptos";
+import TransactionsTable from "../../Transactions/TransactionsTable";
 
 type TransactionsTabProps = {
   data: Block;

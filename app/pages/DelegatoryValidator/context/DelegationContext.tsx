@@ -1,6 +1,6 @@
-import {Types} from "~/types/aptos";
 import {createContext} from "react";
-import {ValidatorData} from "../../../api/hooks/useGetValidators";
+import type {Types} from "~/types/aptos";
+import type {ValidatorData} from "../../../api/hooks/useGetValidators";
 
 type DelegationState = {
   accountResource: Types.MoveResource | undefined;

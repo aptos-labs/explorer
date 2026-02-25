@@ -1,25 +1,20 @@
-import {Types} from "~/types/aptos";
-import {AptosClient} from "./legacyClient";
 import {
-  AccountAddressInput,
-  Aptos,
+  type AccountAddressInput,
   APTOS_COIN,
-  InputViewFunctionData,
+  type Aptos,
+  type InputViewFunctionData,
   TypeTagAddress,
   TypeTagU64,
 } from "@aptos-labs/ts-sdk";
+import type {Types} from "~/types/aptos";
 import {OCTA} from "../constants";
 import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils/utils";
+import {AptosClient} from "./legacyClient";
 
 // Error wrapper
 export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
-  try {
-    return await promise;
-  } catch (error) {
-    // Re-throw with more context if needed
-    throw error;
-  }
+  return await promise;
 }
 
 export async function getTransactions(
@@ -69,7 +64,7 @@ export function getTransaction(
     const version =
       typeof txnHashOrVersion === "number"
         ? txnHashOrVersion
-        : parseInt(txnHashOrVersion);
+        : parseInt(txnHashOrVersion, 10);
     return getTransactionByVersion(version, client);
   } else {
     return getTransactionByHash(txnHashOrVersion as string, client);
@@ -187,7 +182,10 @@ export function view(
   let parsedVersion = ledgerVersion;
 
   // Handle non-numbers, to default to the latest ledger version
-  if (typeof ledgerVersion === "string" && isNaN(parseInt(ledgerVersion, 10))) {
+  if (
+    typeof ledgerVersion === "string" &&
+    Number.isNaN(parseInt(ledgerVersion, 10))
+  ) {
     parsedVersion = undefined;
   }
 

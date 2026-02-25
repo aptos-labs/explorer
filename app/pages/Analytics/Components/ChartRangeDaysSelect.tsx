@@ -1,6 +1,5 @@
-import * as React from "react";
 import {MenuItem} from "@mui/material";
-import Select, {SelectChangeEvent} from "@mui/material/Select";
+import Select, {type SelectChangeEvent} from "@mui/material/Select";
 
 export enum ChartRangeDays {
   DEFAULT_RANGE = 7,
@@ -17,7 +16,7 @@ export default function ChartRangeDaysSelect({
   setDays,
 }: ChartRangeDaysSelectProps) {
   const handleChange = (event: SelectChangeEvent) => {
-    setDays(parseInt(event.target.value));
+    setDays(parseInt(event.target.value, 10));
   };
 
   return (

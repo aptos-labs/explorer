@@ -1,7 +1,7 @@
-import React from "react";
-import {Stack, Typography, useTheme, Box, Grid} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import {Box, Grid, Stack, Typography, useTheme} from "@mui/material";
+import type React from "react";
 
 type CollapsibleCardProps = {
   titleKey: string;

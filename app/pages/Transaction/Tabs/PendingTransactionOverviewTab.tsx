@@ -1,15 +1,14 @@
-import * as React from "react";
-import {Types} from "~/types/aptos";
 import {Box} from "@mui/material";
+import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import {getLearnMoreTooltip} from "../helpers";
-import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
+import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {parseExpirationTimestamp} from "../../utils";
+import {getLearnMoreTooltip} from "../helpers";
 
 type PendingTransactionOverviewTabProps = {
   transaction: Types.Transaction;

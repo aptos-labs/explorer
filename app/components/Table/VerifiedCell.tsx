@@ -1,40 +1,39 @@
-import GeneralTableCell from "./GeneralTableCell";
-import {Box, Stack, useTheme} from "@mui/material";
-import StyledTooltip from "../StyledTooltip";
+import {
+  AccountAddress,
+  type AccountAddressInput,
+  DeriveScheme,
+  Hex,
+  type HexInput,
+  Network,
+} from "@aptos-labs/ts-sdk";
 import {
   Dangerous,
   DangerousOutlined,
+  UnpublishedOutlined,
   Verified,
   VerifiedUser,
   Warning,
   WarningAmberOutlined,
-  UnpublishedOutlined,
 } from "@mui/icons-material";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
-import * as React from "react";
-import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
-import {BUTTON_HEIGHT} from "../TitleHashButton";
-import {useNetworkName} from "../../global-config/GlobalConfig";
-import {
-  AccountAddress,
-  AccountAddressInput,
-  DeriveScheme,
-  Hex,
-  HexInput,
-  Network,
-} from "@aptos-labs/ts-sdk";
+import {Box, Stack, useTheme} from "@mui/material";
 // Using @noble/hashes for better ESM support in SSR (replaces js-sha3)
 import {sha3_256} from "@noble/hashes/sha3.js";
-import {useGetFaPairedCoin} from "../../api/hooks/useGetFaPairedCoin";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
+import {useGetFaPairedCoin} from "../../api/hooks/useGetFaPairedCoin";
 import {
   EMOJICOIN_REGISTRY_ADDRESS,
   labsBannedAddresses,
-  labsBannedTokens,
   labsBannedTokenSymbols,
+  labsBannedTokens,
   manuallyVerifiedTokens,
   nativeTokens,
 } from "../../constants";
+import {useNetworkName} from "../../global-config/GlobalConfig";
+import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
+import StyledTooltip from "../StyledTooltip";
+import {BUTTON_HEIGHT} from "../TitleHashButton";
+import GeneralTableCell from "./GeneralTableCell";
 
 type VerifiedCellProps = {
   id: string; // FA address or Coin Type

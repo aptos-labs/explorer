@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import {describe, it, expect, beforeEach, afterEach, vi} from "vitest";
+import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 
 describe("moduleErrorHandler", () => {
   // We need to dynamically import the module after setting up mocks

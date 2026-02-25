@@ -1,19 +1,13 @@
 import {
-  Box,
-  useTheme,
   alpha,
+  Box,
   CircularProgress,
-  Popper,
   Paper,
+  Popper,
+  useTheme,
 } from "@mui/material";
-import React, {
-  lazy,
-  Suspense,
-  useState,
-  useCallback,
-  useRef,
-  useEffect,
-} from "react";
+import type React from "react";
+import {lazy, Suspense, useCallback, useEffect, useRef, useState} from "react";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
 
@@ -121,7 +115,7 @@ function useCopyTooltip() {
       const target = e.target as HTMLElement;
 
       // Skip if still hovering the same anchor element
-      if (anchor && anchor.contains(target)) return;
+      if (anchor?.contains(target)) return;
 
       const copyable = findCopyableElement(target);
       if (!copyable) return;

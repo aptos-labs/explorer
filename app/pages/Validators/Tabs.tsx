@@ -1,21 +1,21 @@
-import * as React from "react";
-import {Box} from "@mui/material";
-import {addressFromWallet, assertNever} from "../../utils";
-import StyledTabs from "../../components/StyledTabs";
-import StyledTab from "../../components/StyledTab";
-import {useNavigate} from "../../routing";
-import {ValidatorsTable} from "./ValidatorsTable";
-import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
-import {Network, NetworkName} from "../../constants";
-import {ValidatorsTable as OldValidatorsTable} from "./Table";
-import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import HubOutlinedIcon from "@mui/icons-material/HubOutlined";
+import {Box} from "@mui/material";
+import {useParams} from "@tanstack/react-router";
+import type * as React from "react";
+import StyledTab from "../../components/StyledTab";
+import StyledTabs from "../../components/StyledTabs";
+import {Network, type NetworkName} from "../../constants";
+import {useNetworkName} from "../../global-config/GlobalConfig";
+import {useNavigate} from "../../routing";
+import {addressFromWallet, assertNever} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {EnhancedDelegationValidatorsTable} from "./Delegation/EnhancedDelegationValidatorsTable";
-import {useParams} from "@tanstack/react-router";
-import HubOutlinedIcon from "@mui/icons-material/HubOutlined";
-import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
-import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
+import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
+import {ValidatorsTable as OldValidatorsTable} from "./Table";
+import {ValidatorsTable} from "./ValidatorsTable";
 
 export enum VALIDATORS_TAB_VALUE {
   ALL_NODES = "all",

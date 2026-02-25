@@ -1,5 +1,6 @@
-import React, {memo} from "react";
 import {Box, Grid, useTheme} from "@mui/material";
+import type React from "react";
+import {memo} from "react";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 type ContentRowProps = {

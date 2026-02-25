@@ -9,8 +9,8 @@
  * bundled in react-syntax-highlighter v16.
  */
 
-import {type CSSProperties, lazy, useEffect, useState} from "react";
 import {Box, CircularProgress, useTheme} from "@mui/material";
+import {type CSSProperties, lazy, useEffect, useState} from "react";
 import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 
 // Lazy load react-syntax-highlighter light build with Move + TOML languages

@@ -1,8 +1,8 @@
-import HeaderSearch from "../layout/Search/Index";
 import Box from "@mui/material/Box";
-import NetworkInfo from "../Analytics/NetworkInfo/NetworkInfo";
-import UserTransactionsPreview from "./UserTransactionsPreview";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import NetworkInfo from "../Analytics/NetworkInfo/NetworkInfo";
+import HeaderSearch from "../layout/Search/Index";
+import UserTransactionsPreview from "./UserTransactionsPreview";
 
 export default function LandingPage() {
   return (

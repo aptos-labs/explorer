@@ -1,45 +1,45 @@
-import * as React from "react";
-import {useMemo, useCallback, useState} from "react";
+import {Network} from "@aptos-labs/ts-sdk";
+import SearchIcon from "@mui/icons-material/Search";
 import {
+  Alert,
   Box,
   Button,
+  InputAdornment,
+  Paper,
+  Skeleton,
   Stack,
   Table,
   TableHead,
   TableRow,
-  Typography,
-  Paper,
-  useMediaQuery,
-  Skeleton,
   TextField,
-  InputAdornment,
-  Alert,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
+import * as React from "react";
+import {useCallback, useMemo, useState} from "react";
+import type {CoinDescription} from "../../api/hooks/useGetCoinList";
+import {
+  type CoinMarketData,
+  useGetCoinMarketData,
+} from "../../api/hooks/useGetCoinMarketData";
+import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import HashButton, {HashType} from "../../components/HashButton";
-import {useTheme} from "@mui/material";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
-import {CoinDescription} from "../../api/hooks/useGetCoinList";
+import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import {
-  useGetCoinMarketData,
-  CoinMarketData,
-} from "../../api/hooks/useGetCoinMarketData";
-import {
-  VerifiedCoinCell,
-  verifiedLevel,
-  VerifiedType,
   getVerifiedMessageAndIcon,
+  VerifiedCoinCell,
+  VerifiedType,
+  verifiedLevel,
 } from "../../components/Table/VerifiedCell";
+import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
+import {useNetworkName} from "../../global-config/GlobalConfig";
+import {useAugmentToWithGlobalSearchParams, useNavigate} from "../../routing";
 import {getAssetSymbol} from "../../utils";
 import {getLearnMoreTooltip} from "../Transaction/helpers";
-import {useNetworkName} from "../../global-config/GlobalConfig";
-import {Network} from "@aptos-labs/ts-sdk";
-import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
-import {useNavigate, useAugmentToWithGlobalSearchParams} from "../../routing";
 
 enum CoinVerificationFilterType {
   VERIFIED,
@@ -68,7 +68,7 @@ function formatPrice(price: number | string | null | undefined): string {
     return "—";
   }
   const numPrice = typeof price === "string" ? parseFloat(price) : price;
-  if (isNaN(numPrice)) {
+  if (Number.isNaN(numPrice)) {
     return "—";
   }
   if (numPrice < 0.0001) {
@@ -516,7 +516,6 @@ export default function CoinsListTable({
           return false;
         });
         break;
-      case CoinVerificationFilterType.ALL:
       default:
         break;
     }

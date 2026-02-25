@@ -1,6 +1,11 @@
-import React, {useRef, useMemo, useCallback} from "react";
+import {
+  type SxProps,
+  TableBody,
+  type TableBodyProps,
+  type Theme,
+} from "@mui/material";
 import {useVirtualizer} from "@tanstack/react-virtual";
-import {TableBody, TableBodyProps, SxProps, Theme} from "@mui/material";
+import React, {useCallback, useMemo, useRef} from "react";
 
 interface VirtualizedTableBodyProps extends Omit<TableBodyProps, "children"> {
   children: React.ReactNode[];
@@ -93,9 +98,6 @@ export default function VirtualizedTableBody({
     return null;
   }, [scrollElementRef]);
 
-  // TanStack Virtual's API returns unmemoizable functions by design.
-  // This is a known library limitation, not a code issue.
-  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement,
@@ -141,7 +143,7 @@ export default function VirtualizedTableBody({
     >
       {/* Top spacer */}
       {virtualItems.length > 0 && virtualItems[0] && (
-        <tr aria-hidden="true" style={{height: `${virtualItems[0].start}px`}} />
+        <tr style={{height: `${virtualItems[0].start}px`}} />
       )}
       {/* Render only visible rows */}
       {virtualItems.map((virtualItem) => {
@@ -162,7 +164,6 @@ export default function VirtualizedTableBody({
       {/* Bottom spacer */}
       {virtualItems.length > 0 && virtualItems[virtualItems.length - 1] && (
         <tr
-          aria-hidden="true"
           style={{
             height: `${
               totalSize - virtualItems[virtualItems.length - 1].end

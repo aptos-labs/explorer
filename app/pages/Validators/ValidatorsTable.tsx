@@ -1,28 +1,29 @@
-import React, {useState} from "react";
 import {
   Box,
+  Paper,
   Stack,
   Table,
   TableHead,
   TableRow,
-  Paper,
   Typography,
-  useTheme,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
-import {assertNever} from "../../utils";
+import type React from "react";
+import {useState} from "react";
+import {
+  useGetValidators,
+  type ValidatorData,
+} from "../../api/hooks/useGetValidators";
 import HashButton, {HashType} from "../../components/HashButton";
+import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
+import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../components/Table/GeneralTableRow";
+import {assertNever} from "../../utils";
 import LastEpochPerformanceTooltip from "./Components/LastEpochPerformanceTooltip";
-import {
-  ValidatorData,
-  useGetValidators,
-} from "../../api/hooks/useGetValidators";
-import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -52,7 +53,8 @@ function getValidatorsOrderedBy(
     case "votingPower":
       return validatorsCopy.sort(
         (validator1, validator2) =>
-          parseInt(validator2.voting_power) - parseInt(validator1.voting_power),
+          parseInt(validator2.voting_power, 10) -
+          parseInt(validator1.voting_power, 10),
       );
     case "rewardsPerf":
       return validatorsCopy.sort(
@@ -62,8 +64,8 @@ function getValidatorsOrderedBy(
     case "lastEpochPerf":
       return validatorsCopy.sort(
         (validator1, validator2) =>
-          parseInt(validator2.last_epoch_performance ?? "") -
-          parseInt(validator1.last_epoch_performance ?? ""),
+          parseInt(validator2.last_epoch_performance ?? "", 10) -
+          parseInt(validator1.last_epoch_performance ?? "", 10),
       );
     case "location":
       return validatorsCopy.sort((validator1, validator2) =>

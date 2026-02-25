@@ -1,12 +1,12 @@
+import {Box, CircularProgress, Grid, Stack} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
-import {Stack, Grid, CircularProgress, Box} from "@mui/material";
-import TokenTitle from "./Title";
-import TokenTabs from "./Tabs";
-import PageHeader from "../layout/PageHeader";
-import EmptyTabContent from "../../components/IndividualPageContent/EmptyTabContent";
+import {type ResponseError, ResponseErrorType} from "../../api/client";
 import {useGetTokenData} from "../../api/hooks/useGetAccountTokens";
+import EmptyTabContent from "../../components/IndividualPageContent/EmptyTabContent";
+import PageHeader from "../layout/PageHeader";
 import TokenError from "./Error";
-import {ResponseError, ResponseErrorType} from "../../api/client";
+import TokenTabs from "./Tabs";
+import TokenTitle from "./Title";
 
 export default function TokenPage() {
   const params = useParams({strict: false}) as {tokenId?: string};

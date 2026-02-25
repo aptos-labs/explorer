@@ -1,6 +1,6 @@
+import type {Block} from "@aptos-labs/ts-sdk";
+import {getTimeDiffInSeconds, parseTimestamp} from "../../pages/utils";
 import {useGetBlockByHeight} from "./useGetBlock";
-import {parseTimestamp, getTimeDiffInSeconds} from "../../pages/utils";
-import {Block} from "@aptos-labs/ts-sdk";
 
 const TPS_FREQUENCY = 600; // calculate TPS every 600 blocks
 
@@ -15,8 +15,8 @@ function calculateTPS(startBlock: Block, endBlock: Block): number | null {
     return null;
   }
 
-  const startTransactionVersion = parseInt(startBlock.last_version);
-  const endTransactionVersion = parseInt(endBlock.last_version);
+  const startTransactionVersion = parseInt(startBlock.last_version, 10);
+  const endTransactionVersion = parseInt(endBlock.last_version, 10);
 
   const startTimestamp = parseTimestamp(startBlock.block_timestamp);
   const endTimestamp = parseTimestamp(endBlock.block_timestamp);

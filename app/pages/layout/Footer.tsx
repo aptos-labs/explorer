@@ -1,14 +1,13 @@
-import React from "react";
 import {Box, Container, Grid, Stack, Typography, useTheme} from "@mui/material";
-import GithubLogo from "../../assets/github.svg?react";
-import DiscordLogo from "../../assets/discord.svg?react";
-import TwitterLogo from "../../assets/twitter.svg?react";
-import MediumLogo from "../../assets/medium.svg?react";
-import LinkedInLogo from "../../assets/linkedin.svg?react";
 import SvgIcon from "@mui/material/SvgIcon";
+import DiscordLogo from "../../assets/discord.svg?react";
+import GithubLogo from "../../assets/github.svg?react";
+import LinkedInLogo from "../../assets/linkedin.svg?react";
+import MediumLogo from "../../assets/medium.svg?react";
+import LogoFullDark from "../../assets/svg/aptos_logo_full_dark.svg?react";
 
 import LogoFullLight from "../../assets/svg/aptos_logo_full_light.svg?react";
-import LogoFullDark from "../../assets/svg/aptos_logo_full_dark.svg?react";
+import TwitterLogo from "../../assets/twitter.svg?react";
 import {Link} from "../../routing";
 
 const socialLinks = [

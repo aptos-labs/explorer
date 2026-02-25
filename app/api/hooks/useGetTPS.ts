@@ -1,13 +1,13 @@
+import {useQuery} from "@tanstack/react-query";
+import {useEffect, useState} from "react";
 import {
-  useNetworkValue,
   useAptosClient,
   useNetworkName,
+  useNetworkValue,
 } from "../../global-config";
-import {useEffect, useState} from "react";
-import {useQuery} from "@tanstack/react-query";
 import {getLedgerInfo} from "..";
+import {ANALYTICS_DATA_URL, type AnalyticsData} from "./useGetAnalyticsData";
 import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
-import {AnalyticsData, ANALYTICS_DATA_URL} from "./useGetAnalyticsData";
 
 export function useGetTPS() {
   const networkValue = useNetworkValue();
@@ -23,7 +23,9 @@ export function useGetTPS() {
   });
   const currentBlockHeight = ledgerData?.block_height;
   const blockHeight =
-    currentBlockHeight !== undefined ? parseInt(currentBlockHeight) : undefined;
+    currentBlockHeight !== undefined
+      ? parseInt(currentBlockHeight, 10)
+      : undefined;
   const {tps} = useGetTPSByBlockHeight(blockHeight);
 
   return {tps};

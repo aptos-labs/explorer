@@ -1,5 +1,5 @@
-import {useNetworkValue, useAptosClient} from "../../global-config";
 import {useQuery} from "@tanstack/react-query";
+import {useAptosClient, useNetworkValue} from "../../global-config";
 import {getLedgerInfo, getRecentBlocks} from "..";
 
 export function useGetMostRecentBlocks(
@@ -16,9 +16,12 @@ export function useGetMostRecentBlocks(
     staleTime: 0,
     gcTime: 30 * 1000, // Keep in cache for 30 seconds
   });
-  const currentBlockHeight = parseInt(start ?? ledgerData?.block_height ?? "");
+  const currentBlockHeight = parseInt(
+    start ?? ledgerData?.block_height ?? "",
+    10,
+  );
 
-  const {isLoading: isLoading, data: blocks} = useQuery({
+  const {isLoading, data: blocks} = useQuery({
     queryKey: ["block", currentBlockHeight, networkValue],
     queryFn: async () => {
       if (currentBlockHeight !== undefined) {

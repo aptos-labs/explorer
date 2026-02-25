@@ -1,15 +1,14 @@
-import {Box, Stack, Typography} from "@mui/material";
-import React, {memo} from "react";
-import StartRoundedIcon from "@mui/icons-material/StartRounded";
-import OutlinedFlagIcon from "@mui/icons-material/OutlinedFlag";
-import SubtitlesOutlinedIcon from "@mui/icons-material/SubtitlesOutlined";
-import MultipleStopRoundedIcon from "@mui/icons-material/MultipleStopRounded";
-import UpdateRoundedIcon from "@mui/icons-material/UpdateRounded";
-import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
-import {useTheme} from "@mui/material";
-import TooltipTypography from "./TooltipTypography";
 import CheckCircleOutlined from "@mui/icons-material/CheckCircleOutlined";
+import MultipleStopRoundedIcon from "@mui/icons-material/MultipleStopRounded";
+import OutlinedFlagIcon from "@mui/icons-material/OutlinedFlag";
+import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
+import StartRoundedIcon from "@mui/icons-material/StartRounded";
 import StopCircleOutlined from "@mui/icons-material/StopCircleOutlined";
+import SubtitlesOutlinedIcon from "@mui/icons-material/SubtitlesOutlined";
+import UpdateRoundedIcon from "@mui/icons-material/UpdateRounded";
+import {Box, Stack, Typography, useTheme} from "@mui/material";
+import {memo} from "react";
+import TooltipTypography from "./TooltipTypography";
 
 // Extracted static styles to avoid recreation on every render
 const tableTransactionTypeStyle = {

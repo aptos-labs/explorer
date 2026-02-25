@@ -1,8 +1,8 @@
-import {Types} from "~/types/aptos";
-import {tryStandardizeAddress} from "../../../../utils";
+import type {Types} from "~/types/aptos";
+import type {AptosClient} from "../../../../api/legacyClient";
+import type {NetworkName} from "../../../../constants";
 import {getCachedV2Client} from "../../../../global-config";
-import {NetworkName} from "../../../../constants";
-import {AptosClient} from "../../../../api/legacyClient";
+import {tryStandardizeAddress} from "../../../../utils";
 
 // Interface for delegator count response
 interface DelegatorCountItem {
@@ -50,7 +50,7 @@ export async function getBatchDelegatorCounts(
     delegatorCounts.forEach((item) => {
       const addr = tryStandardizeAddress(item.pool_address);
       if (!addr) return;
-      addressToCountMap.set(addr, parseInt(item.num_active_delegator));
+      addressToCountMap.set(addr, parseInt(item.num_active_delegator, 10));
     });
 
     return validatorAddresses.map((addr) => {

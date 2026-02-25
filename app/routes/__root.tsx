@@ -1,16 +1,17 @@
-import React, {Suspense, lazy} from "react";
-import {
-  createRootRouteWithContext,
-  Outlet,
-  HeadContent,
-  Scripts,
-} from "@tanstack/react-router";
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import {type QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {
+  createRootRouteWithContext,
+  HeadContent,
+  Outlet,
+  Scripts,
+} from "@tanstack/react-router";
+import {lazy, Suspense} from "react";
 // Universal import pattern for ESM/CJS compatibility
 import * as ReactHelmetAsync from "react-helmet-async";
+
 const HelmetProvider = ((
   ReactHelmetAsync as {HelmetProvider?: typeof ReactHelmetAsync.HelmetProvider}
 ).HelmetProvider ??
@@ -37,17 +38,17 @@ const TanStackRouterDevtools = isDev
     )
   : () => null;
 
-import {ProvideColorMode} from "../context/color-mode";
-import {GlobalConfigProvider} from "../global-config";
-import {WalletAdapterProvider} from "../context/wallet-adapter";
 import {GraphqlClientProvider} from "../api/hooks/useGraphqlClient";
-import Header from "../components/layout/Header";
-import Footer from "../components/layout/Footer";
-import {Fallback} from "../components/layout/Fallback";
 import {ErrorBoundary, NotFoundError} from "../components/ErrorBoundary";
+import LocalnetUnavailableModal from "../components/LocalnetUnavailableModal";
+import {Fallback} from "../components/layout/Fallback";
+import Footer from "../components/layout/Footer";
+import Header from "../components/layout/Header";
+import {ProvideColorMode} from "../context/color-mode";
+import {WalletAdapterProvider} from "../context/wallet-adapter";
+import {GlobalConfigProvider} from "../global-config";
 import {useHashToPathRedirect} from "../hooks/useHashToPathRedirect";
 import {useOldUrlRedirect} from "../hooks/useOldUrlRedirect";
-import LocalnetUnavailableModal from "../components/LocalnetUnavailableModal";
 import {BASE_URL} from "../lib/constants";
 
 // Router context type

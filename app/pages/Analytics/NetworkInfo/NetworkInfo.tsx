@@ -1,12 +1,13 @@
-import React, {createContext} from "react";
 import {Grid} from "@mui/material";
-import TotalSupply from "./TotalSupply";
-import TotalStake from "./TotalStake";
-import TPS from "./TPS";
-import TotalTransactions from "./TotalTransactions";
+import type React from "react";
+import {createContext} from "react";
 import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 import {Link} from "../../../routing";
 import ActiveNodes from "./ActiveNodes";
+import TotalStake from "./TotalStake";
+import TotalSupply from "./TotalSupply";
+import TotalTransactions from "./TotalTransactions";
+import TPS from "./TPS";
 
 type CardStyle = "default" | "outline";
 
@@ -26,7 +27,7 @@ function LinkableContainer({
       {children}
     </Link>
   ) : (
-    <>{children}</>
+    children
   );
 }
 

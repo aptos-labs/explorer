@@ -1,10 +1,11 @@
 import {useQuery} from "@tanstack/react-query";
-import {Types} from "~/types/aptos";
-import {getValidatorCommission, getValidatorState} from "../..";
+import type {Types} from "~/types/aptos";
 import {useAptosClient} from "../../../global-config";
-import {ResponseError} from "../../client";
+import {getValidatorCommission, getValidatorState} from "../..";
+import type {ResponseError} from "../../client";
 import {combineQueries} from "../../query-utils";
 import {useGetNumberOfDelegators} from "./useGetNumberOfDelegators";
+
 // CombinedGraphQLErrors replaced with Error after Apollo removal
 
 type DelegationNodeInfoProps = {

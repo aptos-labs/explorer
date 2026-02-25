@@ -1,8 +1,7 @@
-import React from "react";
-import {Banner} from "../../../components/Banner";
-import {Button, Stack, useMediaQuery, useTheme, alpha} from "@mui/material";
-import {brandColors} from "../../../themes/colors/aptosBrandColors";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import {alpha, Button, Stack, useMediaQuery, useTheme} from "@mui/material";
+import {Banner} from "../../../components/Banner";
+import {brandColors} from "../../../themes/colors/aptosBrandColors";
 
 interface PetraVaultBannerProps {
   address: string;
@@ -46,7 +45,7 @@ export function PetraVaultBanner({address}: PetraVaultBannerProps) {
       {vaultButton}
     </Stack>
   ) : (
-    <>{text}</>
+    text
   );
 
   return (

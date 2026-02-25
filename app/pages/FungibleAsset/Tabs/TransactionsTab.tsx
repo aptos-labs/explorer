@@ -1,19 +1,20 @@
-import React, {useState} from "react";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {FACombinedData} from "../Index";
+import {Box, CircularProgress, Pagination} from "@mui/material";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
-import GeneralTableBody from "../../../components/Table/GeneralTableBody";
-import GeneralTableRow from "../../../components/Table/GeneralTableRow";
-import GeneralTableCell from "../../../components/Table/GeneralTableCell";
-import HashButton, {HashType} from "../../../components/HashButton";
+import type React from "react";
+import {useState} from "react";
 import {
-  FAActivity,
+  type FAActivity,
   useGetCoinActivities,
 } from "../../../api/hooks/useGetCoinActivities";
-import {Box, CircularProgress, Pagination} from "@mui/material";
+import HashButton, {HashType} from "../../../components/HashButton";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import GeneralTableBody from "../../../components/Table/GeneralTableBody";
+import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../../components/Table/GeneralTableRow";
+import type {FACombinedData} from "../Index";
 
 type TransactionsTabProps = {
   address: string;

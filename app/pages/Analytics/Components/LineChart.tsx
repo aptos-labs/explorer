@@ -1,20 +1,19 @@
 import {Box} from "@mui/material";
-import * as React from "react";
 import {
-  Chart as ChartJS,
   CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
+  Chart as ChartJS,
   Filler,
   Legend,
-  TooltipItem,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  type TooltipItem,
 } from "chart.js";
 import {Line} from "react-chartjs-2";
-import {numberFormatter} from "../utils";
 import {BACKGROUND_COLOR, COLOR, HIGHLIGHT_COLOR} from "../constants";
+import {numberFormatter} from "../utils";
 
 ChartJS.register(
   CategoryScale,

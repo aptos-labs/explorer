@@ -1,21 +1,26 @@
-import {useParams} from "@tanstack/react-router";
 import {Grid} from "@mui/material";
-import React from "react";
-import FATabs, {TabValue} from "./Tabs";
-import PageHeader from "../layout/PageHeader";
+import {useParams} from "@tanstack/react-router";
+import {type ResponseError, ResponseErrorType} from "../../api/client";
+import {
+  type CoinDescription,
+  useGetCoinList,
+} from "../../api/hooks/useGetCoinList";
+import {
+  type FaMetadata,
+  useGetFaMetadata,
+} from "../../api/hooks/useGetFaMetadata";
+import {useGetFaPairedCoin} from "../../api/hooks/useGetFaPairedCoin";
+import {useGetFASupply} from "../../api/hooks/useGetFaSupply";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 import LoadingModal from "../../components/LoadingModal";
-import Error from "./Error";
-import {ResponseError, ResponseErrorType} from "../../api/client";
-import {isValidAccountAddress} from "../utils";
-import FATitle from "./Title";
-import {FaMetadata, useGetFaMetadata} from "../../api/hooks/useGetFaMetadata";
-import {useGetFASupply} from "../../api/hooks/useGetFaSupply";
-import {CoinDescription, useGetCoinList} from "../../api/hooks/useGetCoinList";
-import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
-import {useGetFaPairedCoin} from "../../api/hooks/useGetFaPairedCoin";
 import VerificationBanner from "../../components/VerificationBanner";
 import {getAssetSymbol} from "../../utils";
+import PageHeader from "../layout/PageHeader";
+import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
+import {isValidAccountAddress} from "../utils";
+import Error from "./Error";
+import FATabs, {type TabValue} from "./Tabs";
+import FATitle from "./Title";
 
 const TAB_VALUES_FULL: TabValue[] = ["info", "holders", "transactions"];
 

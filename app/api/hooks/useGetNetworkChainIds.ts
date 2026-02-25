@@ -1,10 +1,10 @@
-import {NetworkName, networks} from "../../constants";
 import {useQuery} from "@tanstack/react-query";
-import {getLedgerInfoWithoutResponseError} from "..";
+import {type NetworkName, networks} from "../../constants";
 import {
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
 } from "../../utils";
+import {getLedgerInfoWithoutResponseError} from "..";
 
 const TTL = 3600000; // 1 hour
 

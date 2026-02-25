@@ -1,5 +1,10 @@
-import React from "react";
-import {SxProps, TableBody, TableBodyProps, Theme} from "@mui/material";
+import {
+  type SxProps,
+  TableBody,
+  type TableBodyProps,
+  type Theme,
+} from "@mui/material";
+import type React from "react";
 
 interface GeneralTableBodyProps extends TableBodyProps {
   children?: React.ReactNode;

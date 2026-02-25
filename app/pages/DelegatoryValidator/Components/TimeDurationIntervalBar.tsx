@@ -1,5 +1,5 @@
-import {subHours, subDays} from "date-fns";
-import React, {useState} from "react";
+import {subDays, subHours} from "date-fns";
+import {useState} from "react";
 import IntervalBar, {IntervalType} from "../../../components/IntervalBar";
 import {Network} from "../../../constants";
 import {useNetworkName} from "../../../global-config/GlobalConfig";

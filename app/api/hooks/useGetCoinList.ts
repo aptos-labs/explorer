@@ -1,9 +1,9 @@
 import {useQuery} from "@tanstack/react-query";
-import {ResponseError} from "../client";
-import {tryStandardizeAddress} from "../../utils";
 import {getHardCodedCoins} from "../../data";
 import {useNetworkName} from "../../global-config/GlobalConfig";
-import {NetworkName} from "../../lib/constants";
+import type {NetworkName} from "../../lib/constants";
+import {tryStandardizeAddress} from "../../utils";
+import type {ResponseError} from "../client";
 
 export type CoinDescription = {
   chainId: number; // Chain id (1 if mainnet) TODO: Handle across all of explorer to filter based on testnet / mainnet

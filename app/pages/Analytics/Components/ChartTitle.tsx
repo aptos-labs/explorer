@@ -1,8 +1,7 @@
-import {Stack, Typography} from "@mui/material";
-import * as React from "react";
-import StyledTooltip from "../../../components/StyledTooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import {useTheme} from "@mui/material";
+import {Stack, Typography, useTheme} from "@mui/material";
+import type * as React from "react";
+import StyledTooltip from "../../../components/StyledTooltip";
 
 type ChartTitleProps = {
   label: string;

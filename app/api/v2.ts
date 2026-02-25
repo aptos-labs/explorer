@@ -1,7 +1,7 @@
-import {withResponseError} from "./client";
-import {Types} from "~/types/aptos";
-import {Aptos, Block, AccountAddress} from "@aptos-labs/ts-sdk";
+import {AccountAddress, type Aptos, type Block} from "@aptos-labs/ts-sdk";
+import type {Types} from "~/types/aptos";
 import {isNumeric} from "../pages/utils";
+import {withResponseError} from "./client";
 
 export function getBlockByHeight(
   requestParameters: {height: number; withTransactions: boolean},
@@ -132,7 +132,7 @@ export async function getTransactionV2(
     const version =
       typeof txnHashOrVersion === "number"
         ? txnHashOrVersion
-        : parseInt(txnHashOrVersion);
+        : parseInt(txnHashOrVersion, 10);
     const txn = await withResponseError(
       aptos.getTransactionByVersion({ledgerVersion: version}),
     );

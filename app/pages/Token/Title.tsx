@@ -1,9 +1,8 @@
-import {Stack, Typography} from "@mui/material";
-import React from "react";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
-import {labsBannedCollections} from "../../constants";
-import StyledTooltip from "../../components/StyledTooltip";
 import {Dangerous} from "@mui/icons-material";
+import {Stack, Typography} from "@mui/material";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import StyledTooltip from "../../components/StyledTooltip";
+import {labsBannedCollections} from "../../constants";
 
 type TokenTitleProps = {
   name: string;

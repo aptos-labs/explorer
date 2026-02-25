@@ -1,25 +1,25 @@
 import {
   Autocomplete,
-  TextField,
   Box,
   Divider,
   Grid,
   Stack,
+  TextField,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import {useEffect} from "react";
 import {
-  PackageMetadata,
+  type PackageMetadata,
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import {useNavigate} from "../../../../routing";
+import {MovePackageManifest} from "../../Components/MovePackageManifest";
 import SidebarItem from "../../Components/SidebarItem";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
-import {MovePackageManifest} from "../../Components/MovePackageManifest";
 import {useModulesPathParams} from "./Tabs";
 
 interface PackageSidebarProps {

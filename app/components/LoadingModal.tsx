@@ -1,4 +1,4 @@
-import {CircularProgress, Modal, Box, Typography} from "@mui/material";
+import {Box, CircularProgress, Modal, Typography} from "@mui/material";
 
 type LoadingModalProps = {
   open: boolean;
