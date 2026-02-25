@@ -143,7 +143,8 @@ export default function VirtualizedTableBody({
     >
       {/* Top spacer */}
       {virtualItems.length > 0 && virtualItems[0] && (
-        <tr style={{height: `${virtualItems[0].start}px`}} />
+        // biome-ignore lint/a11y/noAriaHiddenOnFocusable: presentational spacer row, not interactive
+        <tr aria-hidden="true" style={{height: `${virtualItems[0].start}px`}} />
       )}
       {/* Render only visible rows */}
       {virtualItems.map((virtualItem) => {
@@ -163,7 +164,9 @@ export default function VirtualizedTableBody({
       })}
       {/* Bottom spacer */}
       {virtualItems.length > 0 && virtualItems[virtualItems.length - 1] && (
+        // biome-ignore lint/a11y/noAriaHiddenOnFocusable: presentational spacer row, not interactive
         <tr
+          aria-hidden="true"
           style={{
             height: `${
               totalSize - virtualItems[virtualItems.length - 1].end

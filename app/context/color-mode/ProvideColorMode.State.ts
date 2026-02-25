@@ -1,6 +1,6 @@
 import {createTheme, responsiveFontSizes} from "@mui/material";
 import Cookies from "js-cookie";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import getDesignTokens from "../../themes/theme";
 
 export interface ColorModeContext {
@@ -41,17 +41,16 @@ const useProvideColorMode = () => {
     return systemMode;
   });
 
-  // Track hydration with a ref for system preference listener
-  const isHydrated = useRef(false);
+  // Track hydration so the media-query listener is only attached client-side
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  // Mark as hydrated after first render
   useEffect(() => {
-    isHydrated.current = true;
+    setIsHydrated(true);
   }, []);
 
   // Listen for system preference changes
   useEffect(() => {
-    if (!isHydrated.current) return;
+    if (!isHydrated) return;
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = (e: MediaQueryListEvent) => {
@@ -72,7 +71,7 @@ const useProvideColorMode = () => {
     return () => {
       mediaQuery.removeEventListener("change", handleChange);
     };
-  }, []);
+  }, [isHydrated]);
 
   // Memoize toggleColorMode to ensure stable reference
   const toggleColorMode = useCallback(() => {

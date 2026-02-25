@@ -26,10 +26,7 @@ import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../components/StyledTooltip";
 import {OCTA} from "../../constants";
-import {
-  useAptosClient,
-  useNetworkValue,
-} from "../../global-config/GlobalConfig";
+import {useAptosClient} from "../../global-config/GlobalConfig";
 import {addressFromWallet} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
@@ -150,7 +147,6 @@ function StakingBarContent({
 
   const walletAddress = addressFromWallet(account?.address);
   const balance = useGetAccountAPTBalance(walletAddress);
-  const _networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
   const {stakes} = useGetDelegatorStakeInfo(
     walletAddress,
