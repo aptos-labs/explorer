@@ -28,10 +28,7 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import {
-  useAptosClient,
-  useNetworkValue,
-} from "../../global-config/GlobalConfig";
+import {useAptosClient} from "../../global-config/GlobalConfig";
 import {addressFromWallet, assertNever} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
@@ -289,7 +286,6 @@ function MyDepositSectionContent({
     }
   }, [isStakeActivityLoading, setIsMyDepositsSectionSkeletonLoading]);
 
-  const _networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
   const [canWithdrawPendingInactive, setCanWithdrawPendingInactive] =
     useState<Types.MoveValue>(false);
@@ -303,7 +299,7 @@ function MyDepositSectionContent({
       setCanWithdrawPendingInactive(canWithdraw[0]);
     }
     fetchData();
-  }, [validator.owner_address, aptosClient, validator]);
+  }, [validator?.owner_address, aptosClient]);
 
   function MyDepositRow({stake, status}: MyDepositRowProps) {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false);
