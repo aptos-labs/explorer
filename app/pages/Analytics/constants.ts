@@ -1,5 +1,5 @@
-import {brandColors} from "../../themes/colors/aptosBrandColors";
 import {alpha} from "@mui/material";
+import {brandColors} from "../../themes/colors/aptosBrandColors";
 
 // Chart colors using brand colors
 export const COLOR = alpha(brandColors.babyBlue, 0.6);

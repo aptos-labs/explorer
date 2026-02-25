@@ -2,7 +2,11 @@
  * Utility functions for the Aptos Explorer
  */
 
-import {NetworkName, isValidNetworkName, defaultNetworkName} from "./constants";
+import {
+  defaultNetworkName,
+  isValidNetworkName,
+  type NetworkName,
+} from "./constants";
 
 /**
  * Gets the network name from search params, defaulting to mainnet

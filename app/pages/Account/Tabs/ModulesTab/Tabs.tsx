@@ -1,20 +1,21 @@
-import {Box, useTheme} from "@mui/material";
-import React, {useEffect} from "react";
-import StyledTab from "../../../../components/StyledTab";
-import StyledTabs from "../../../../components/StyledTabs";
-import {assertNever} from "../../../../utils";
-import ViewCode from "./ViewCode";
-import Contract from "./Contract";
-import {useNavigate} from "../../../../routing";
-import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
-import {accountPagePath} from "../../Index";
-import Packages from "./Packages";
-import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
-import {useParams} from "@tanstack/react-router";
-import InventoryOutlinedIcon from "@mui/icons-material/InventoryOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
+import InventoryOutlinedIcon from "@mui/icons-material/InventoryOutlined";
 import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import {Box, useTheme} from "@mui/material";
+import {useParams} from "@tanstack/react-router";
+import type React from "react";
+import {useEffect} from "react";
+import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
+import StyledTab from "../../../../components/StyledTab";
+import StyledTabs from "../../../../components/StyledTabs";
+import {useNavigate} from "../../../../routing";
+import {assertNever} from "../../../../utils";
+import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
+import {accountPagePath} from "../../Index";
+import Contract from "./Contract";
+import Packages from "./Packages";
+import ViewCode from "./ViewCode";
 
 const TabComponents = Object.freeze({
   packages: Packages,

@@ -1,12 +1,12 @@
-import React, {useMemo} from "react";
+import {Skeleton, Stack} from "@mui/material";
+import {useMemo} from "react";
 import {useGetEpochTime} from "../../../api/hooks/useGetEpochTime";
-import MetricSection from "./MetricSection";
-import Subtitle from "./Text/Subtitle";
-import Body from "./Text/Body";
-import {parseTimestamp, getTimeDiffInMs} from "../../utils";
-import {Stack, Skeleton} from "@mui/material";
-import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
 import IntervalBar, {IntervalType} from "../../../components/IntervalBar";
+import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
+import {getTimeDiffInMs, parseTimestamp} from "../../utils";
+import MetricSection from "./MetricSection";
+import Body from "./Text/Body";
+import Subtitle from "./Text/Subtitle";
 
 const EPOCH_TOOLTIP_TEXT =
   "An epoch in the Aptos blockchain is defined as a duration of time, in seconds, during which a number of blocks are voted on by the validators. The Aptos mainnet epoch is set as 7200 seconds (two hours).";
@@ -26,7 +26,7 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
     let endTimestamp = 0;
 
     if (lastEpochTime !== undefined && epochInterval !== undefined) {
-      const epochIntervalSeconds = parseInt(epochInterval) / 1000;
+      const epochIntervalSeconds = parseInt(epochInterval, 10) / 1000;
       const startTimestamp = parseTimestamp(lastEpochTime);
       const nowTimestamp = new Date();
       const timePassedMs = getTimeDiffInMs(startTimestamp, nowTimestamp);
@@ -36,7 +36,7 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
       const timeRemaining = Math.max(0, epochIntervalSeconds - timePassedMs);
       percentageComplete = Math.min(
         100,
-        parseInt(((timePassedMs * 100) / epochIntervalSeconds).toFixed(0)),
+        parseInt(((timePassedMs * 100) / epochIntervalSeconds).toFixed(0), 10),
       );
       // Use nowTimestamp for consistency (already computed above)
       endTimestamp = nowTimestamp.getTime() + timeRemaining;

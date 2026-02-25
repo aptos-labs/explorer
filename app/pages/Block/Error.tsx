@@ -1,7 +1,6 @@
-import React from "react";
-import {ResponseError, ResponseErrorType} from "../../api/client";
-import {Typography, Stack, useTheme} from "@mui/material";
 import {ErrorOutline} from "@mui/icons-material";
+import {Stack, Typography, useTheme} from "@mui/material";
+import {type ResponseError, ResponseErrorType} from "../../api/client";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 
 type ErrorProps = {
@@ -12,7 +11,7 @@ type ErrorProps = {
 export default function Error({error, height}: ErrorProps) {
   const theme = useTheme();
 
-  if (error.type == ResponseErrorType.NOT_FOUND) {
+  if (error.type === ResponseErrorType.NOT_FOUND) {
     return (
       <ContentBox>
         <Stack direction="row" spacing={2} alignItems="flex-start">

@@ -1,5 +1,5 @@
-import * as React from "react";
-import {Box, BoxProps, Stack, useTheme} from "@mui/material";
+import {Box, type BoxProps, Stack, useTheme} from "@mui/material";
+import type * as React from "react";
 
 interface ContentBoxProps extends BoxProps {
   children: React.ReactNode;

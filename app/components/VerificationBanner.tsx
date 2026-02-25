@@ -1,21 +1,23 @@
-import React from "react";
-import {Alert, AlertTitle, Box, Button, Stack, useTheme} from "@mui/material";
 import {
+  OpenInNew,
   Verified,
   VerifiedUser,
   WarningAmber,
-  OpenInNew,
 } from "@mui/icons-material";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
+import {Alert, AlertTitle, Box, Button, Stack, useTheme} from "@mui/material";
+import {
+  type CoinDescription,
+  useGetCoinList,
+} from "../api/hooks/useGetCoinList";
+import {useGetFaPairedCoin} from "../api/hooks/useGetFaPairedCoin";
+import {useNetworkName} from "../global-config/GlobalConfig";
 import {Link} from "../routing";
 import {
+  type VerifiedLevelInfo,
   VerifiedType,
   verifiedLevel,
-  VerifiedLevelInfo,
 } from "./Table/VerifiedCell";
-import {useGetFaPairedCoin} from "../api/hooks/useGetFaPairedCoin";
-import {useGetCoinList, CoinDescription} from "../api/hooks/useGetCoinList";
-import {useNetworkName} from "../global-config/GlobalConfig";
 
 type VerificationBannerProps = {
   id: string;

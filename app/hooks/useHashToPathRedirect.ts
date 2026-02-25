@@ -5,8 +5,9 @@
  * This provides backward compatibility for old bookmarks/links that used
  * hash-based tab navigation.
  */
-import {useEffect} from "react";
+
 import {useLocation} from "@tanstack/react-router";
+import {useEffect} from "react";
 import {useNavigate} from "../routing";
 
 // Valid tabs for each route pattern

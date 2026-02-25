@@ -1,20 +1,21 @@
 import {
+  alpha,
   FormControl,
   Select,
-  SelectChangeEvent,
+  type SelectChangeEvent,
+  Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
-import SvgIcon, {SvgIconProps} from "@mui/material/SvgIcon";
-import {useTheme, alpha} from "@mui/material";
-import {Stack} from "@mui/material";
+import SvgIcon, {type SvgIconProps} from "@mui/material/SvgIcon";
 import React from "react";
 import {
   useGetChainIdAndCache,
   useGetChainIdCached,
 } from "../../api/hooks/useGetNetworkChainIds";
-import {hiddenNetworks, NetworkName, networks} from "../../constants";
+import {hiddenNetworks, type NetworkName, networks} from "../../constants";
 import {useNetworkSelector} from "../../global-config/GlobalConfig";
 
 // Moved outside component to avoid recreation on every render

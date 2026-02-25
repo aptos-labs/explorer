@@ -1,17 +1,16 @@
+import {
+  type Block,
+  type BlockMetadataTransactionResponse,
+  isBlockMetadataTransactionResponse,
+  type TransactionResponse,
+} from "@aptos-labs/ts-sdk";
 import {Box} from "@mui/material";
-import React from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {Link} from "../../../routing";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
-import {
-  Block,
-  BlockMetadataTransactionResponse,
-  isBlockMetadataTransactionResponse,
-  TransactionResponse,
-} from "@aptos-labs/ts-sdk";
 
 function VersionValue({data}: {data: Block}) {
   const {first_version, last_version} = data;

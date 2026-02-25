@@ -1,43 +1,43 @@
-import React, {useEffect, useState, useRef, useCallback} from "react";
 import {Autocomplete, Typography} from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
-import SearchInput from "./SearchInput";
-import ResultLink from "./ResultLink";
-import {
-  useAugmentToWithGlobalSearchParams,
-  useNavigate,
-} from "../../../routing";
+import {useCallback, useEffect, useRef, useState} from "react";
+import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
+import {sendToGTM} from "../../../api/hooks/useGoogleTagManager";
+import {GTMEvents} from "../../../dataConstants";
 import {
   useNetworkName,
   useNetworkValue,
   useSdkV2Client,
 } from "../../../global-config/GlobalConfig";
-import {GTMEvents} from "../../../dataConstants";
-import {sendToGTM} from "../../../api/hooks/useGoogleTagManager";
-import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
+import {
+  useAugmentToWithGlobalSearchParams,
+  useNavigate,
+} from "../../../routing";
 import {
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
 } from "../../../utils/cacheManager";
+import ResultLink from "./ResultLink";
+import SearchInput from "./SearchInput";
 import {
-  SearchResult,
-  NotFoundResult,
-  detectInputType,
-  normalizeSearchInput,
-  getSearchCacheKey,
-  isDefinitiveResult,
-  handleAnsName,
-  handleCoin,
-  handleBlockHeightOrVersion,
-  handleTransaction,
-  handleAddress,
   anyOwnedObjects,
-  handleLabelLookup,
+  createFallbackAddressResult,
+  detectInputType,
+  filterSearchResults,
+  getSearchCacheKey,
+  groupSearchResults,
+  handleAddress,
+  handleAnsName,
+  handleBlockHeightOrVersion,
+  handleCoin,
   handleCoinLookup,
   handleEmojiCoinLookup,
-  createFallbackAddressResult,
-  filterSearchResults,
-  groupSearchResults,
+  handleLabelLookup,
+  handleTransaction,
+  isDefinitiveResult,
+  NotFoundResult,
+  normalizeSearchInput,
+  type SearchResult,
 } from "./searchUtils";
 
 // Re-export for backward compatibility
@@ -103,8 +103,8 @@ export default function HeaderSearch() {
       setLocalStorageWithExpiry(cacheKey, results, cacheTTL);
 
       // Performance tracking
-      const searchPerformanceStart = GTMEvents.SEARCH_STATS + " start";
-      const searchPerformanceEnd = GTMEvents.SEARCH_STATS + " end";
+      const searchPerformanceStart = `${GTMEvents.SEARCH_STATS} start`;
+      const searchPerformanceEnd = `${GTMEvents.SEARCH_STATS} end`;
       window.performance.mark(searchPerformanceEnd);
       sendToGTM({
         dataLayer: {
@@ -162,14 +162,14 @@ export default function HeaderSearch() {
       inFlightRequestsRef.current.add(normalizedInput);
 
       setMode("loading");
-      const searchPerformanceStart = GTMEvents.SEARCH_STATS + " start";
+      const searchPerformanceStart = `${GTMEvents.SEARCH_STATS} start`;
       window.performance.mark(searchPerformanceStart);
 
       try {
         // Normalize search text
         let normalizedSearchText = searchText;
         if (normalizedSearchText.endsWith(".petra")) {
-          normalizedSearchText = normalizedSearchText + ".apt";
+          normalizedSearchText = `${normalizedSearchText}.apt`;
         }
 
         // Detect input type for optimized query strategy
@@ -494,7 +494,7 @@ export default function HeaderSearch() {
           </li>
         );
       }}
-      onHighlightChange={(event, option) => {
+      onHighlightChange={(_event, option) => {
         if (option !== null) {
           const optionCopy = Object.assign({}, option);
           setSelectedOption(optionCopy);

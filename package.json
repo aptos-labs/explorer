@@ -23,13 +23,9 @@
       "lodash": ">=4.17.23",
       "@isaacs/brace-expansion": ">=5.0.1",
       "axios": ">=1.13.5",
-      "eslint>minimatch": ">=10.2.1",
-      "@eslint/config-array>minimatch": ">=10.2.1",
       "@netlify/zip-it-and-ship-it>minimatch": ">=10.2.1",
       "readdir-glob>minimatch": ">=10.2.1",
       "glob>minimatch": ">=10.2.1",
-      "@typescript-eslint/typescript-estree>minimatch": ">=10.2.1",
-      "eslint>ajv": "6.14.0",
       "@netlify/edge-bundler>ajv": "8.18.0"
     }
   },
@@ -67,15 +63,15 @@
     "dev": "vite dev --port 3030",
     "build": "vite build",
     "serve": "vite preview",
-    "lint": "tsc --noEmit && eslint --report-unused-disable-directives --max-warnings 0",
-    "fmt": "prettier --write '**/*.(js|jsx|ts|tsx|json|css|scss|md)'",
+    "lint": "tsc --noEmit && biome lint .",
+    "fmt": "biome format --write .",
+    "check": "biome check --write .",
     "test": "vitest",
     "prepare": "husky"
   },
   "lint-staged": {
     "*": [
-      "prettier --config .prettierrc.json -w",
-      "eslint --fix"
+      "biome check --write --no-errors-on-unmatched"
     ]
   },
   "browserslist": {
@@ -91,6 +87,7 @@
     ]
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.4",
     "@netlify/vite-plugin-tanstack-start": "^1.2.9",
     "@tanstack/react-query-devtools": "^5.91.3",
     "@tanstack/react-router-devtools": "^1.158.4",
@@ -101,16 +98,9 @@
     "@types/react-dom": "^19.2.3",
     "@types/react-simple-maps": "^3.0.6",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "@typescript-eslint/eslint-plugin": "^8.54.0",
-    "@typescript-eslint/parser": "^8.54.0",
     "@vitejs/plugin-react-swc": "^4.2.3",
-    "eslint": "^10.0.0",
-    "eslint-plugin-html": "^8.1.4",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "globals": "^17.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
-    "prettier": "^3.8.1",
     "rollup-plugin-visualizer": "^7.0.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",

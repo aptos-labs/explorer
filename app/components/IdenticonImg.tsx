@@ -1,5 +1,5 @@
-import React, {memo} from "react";
 import {createIcon} from "@download/blockies";
+import React, {memo} from "react";
 
 interface IdenticonImgProps {
   address: string;

@@ -1,6 +1,5 @@
-import React from "react";
-import {Typography, Stack, useTheme} from "@mui/material";
 import {ErrorOutline} from "@mui/icons-material";
+import {Stack, Typography, useTheme} from "@mui/material";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 
 export default function NotFoundPage() {

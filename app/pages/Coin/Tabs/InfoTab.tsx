@@ -1,18 +1,17 @@
-import {Box} from "@mui/material";
-import React from "react";
-import ContentBox from "../../../components/IndividualPageContent/ContentBox";
-import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import HashButton, {HashType} from "../../../components/HashButton";
-import {CoinData} from "../Components/CoinData";
-import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {CoinDescription} from "../../../api/hooks/useGetCoinList";
-import {assertNever, getAssetSymbol} from "../../../utils";
-import {SupplyType} from "../../../api/hooks/useGetCoinSupplyLimit";
-import Tooltip from "@mui/material/Tooltip";
-import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {VerifiedTwoTone} from "@mui/icons-material";
 import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
+import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
+import {Box} from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
+import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
+import {SupplyType} from "../../../api/hooks/useGetCoinSupplyLimit";
+import HashButton, {HashType} from "../../../components/HashButton";
+import ContentBox from "../../../components/IndividualPageContent/ContentBox";
+import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {assertNever, getAssetSymbol} from "../../../utils";
+import type {CoinData} from "../Components/CoinData";
 
 type InfoTabProps = {
   struct: string;

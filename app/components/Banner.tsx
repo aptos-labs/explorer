@@ -1,18 +1,19 @@
+import CloseIcon from "@mui/icons-material/Close";
 import {
-  Collapse,
   Alert,
-  Stack,
-  Typography,
-  IconButton,
+  alpha,
   Box,
-  SxProps,
-  Theme,
+  Collapse,
+  IconButton,
+  Stack,
+  type SxProps,
+  type Theme,
+  Typography,
   useMediaQuery,
   useTheme,
-  alpha,
 } from "@mui/material";
-import React, {useState} from "react";
-import CloseIcon from "@mui/icons-material/Close";
+import type React from "react";
+import {useState} from "react";
 import AptosBannerImage from "../assets/Banner.jpg";
 import {brandColors} from "../themes/colors/aptosBrandColors";
 

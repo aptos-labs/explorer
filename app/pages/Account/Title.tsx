@@ -1,11 +1,14 @@
-import {Box, Link, Stack, Typography} from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import {Box, Link, Stack, Typography} from "@mui/material";
+import {
+  PageMetadata,
+  type PageType,
+} from "../../components/hooks/usePageMetadata";
+import StyledTooltip from "../../components/StyledTooltip";
 import TitleHashButton, {
   HashType,
   NameType,
 } from "../../components/TitleHashButton";
-import {PageMetadata, PageType} from "../../components/hooks/usePageMetadata";
-import StyledTooltip from "../../components/StyledTooltip";
 import {useIsDaaAccount} from "./hooks/useIsDaaAccount";
 
 type AccountTitleProps = {

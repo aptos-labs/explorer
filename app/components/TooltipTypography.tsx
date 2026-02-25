@@ -1,5 +1,5 @@
-import * as React from "react";
-import {Typography, TypographyProps} from "@mui/material";
+import {Typography, type TypographyProps} from "@mui/material";
+import type * as React from "react";
 
 interface TooltipTypography extends TypographyProps {
   children?: React.ReactNode;

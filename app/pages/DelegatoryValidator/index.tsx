@@ -1,28 +1,28 @@
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Grid, Stack} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
-import PageHeader from "../layout/PageHeader";
-import ValidatorTitle from "./Title";
-import ValidatorDetailCard from "./DetailCard";
-import ValidatorStakingBar from "./StakingBar";
-import {
-  useGetValidators,
-  ValidatorData,
-} from "../../api/hooks/useGetValidators";
-import MyDepositsSection from "./MyDepositsSection";
-import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-// SkeletonTheme removed (react-loading-skeleton) - MUI Skeleton handles theming
-import {useGetValidatorPageSkeletonLoading} from "../../api/hooks/useGetValidatorPageSkeletonLoading";
-import {DelegationStateContext} from "./context/DelegationContext";
+import {useMemo} from "react";
 import {
   useGetDelegatedStakingPoolList,
-  useGetDelegationNodeInfo,
   useGetDelegationNodeCommissionChange,
+  useGetDelegationNodeInfo,
 } from "../../api/hooks/delegations";
-import {useMemo} from "react";
-import Error from "../Account/Error";
-import {tryStandardizeAddress} from "../../utils";
+import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
+// SkeletonTheme removed (react-loading-skeleton) - MUI Skeleton handles theming
+import {useGetValidatorPageSkeletonLoading} from "../../api/hooks/useGetValidatorPageSkeletonLoading";
+import {
+  useGetValidators,
+  type ValidatorData,
+} from "../../api/hooks/useGetValidators";
 import {Banner} from "../../components/Banner";
+import {tryStandardizeAddress} from "../../utils";
+import Error from "../Account/Error";
+import PageHeader from "../layout/PageHeader";
+import {DelegationStateContext} from "./context/DelegationContext";
+import ValidatorDetailCard from "./DetailCard";
+import MyDepositsSection from "./MyDepositsSection";
+import ValidatorStakingBar from "./StakingBar";
+import ValidatorTitle from "./Title";
 
 export default function ValidatorPage() {
   const params = useParams({strict: false}) as {address?: string};

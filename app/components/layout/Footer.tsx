@@ -1,11 +1,11 @@
-import React, {useState} from "react";
 import {Box, Container, Grid, Stack, Typography, useTheme} from "@mui/material";
 import SvgIcon from "@mui/material/SvgIcon";
-import {Link} from "../../routing";
-import {clearCache} from "../../utils/cacheManager";
+import {useState} from "react";
+import AptosLogoFullDark from "../../assets/svg/aptos_logo_full_dark.svg?react";
 // Import the original Aptos logos
 import AptosLogoFullLight from "../../assets/svg/aptos_logo_full_light.svg?react";
-import AptosLogoFullDark from "../../assets/svg/aptos_logo_full_dark.svg?react";
+import {Link} from "../../routing";
+import {clearCache} from "../../utils/cacheManager";
 
 // Import SVGs - we'll use inline SVGs for SSR compatibility
 const GithubIcon = () => (

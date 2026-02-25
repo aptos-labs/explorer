@@ -1,5 +1,4 @@
 import {Stack, Typography} from "@mui/material";
-import React from "react";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 
 export default function BlockTitle({height}: {height: number}) {

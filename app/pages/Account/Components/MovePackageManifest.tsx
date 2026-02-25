@@ -1,16 +1,16 @@
-import {Box, Button, Modal, Stack, Typography, useTheme} from "@mui/material";
 import {ContentCopy, OpenInFull} from "@mui/icons-material";
-import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
+import {Box, Button, Modal, Stack, Typography, useTheme} from "@mui/material";
 import {Suspense, useEffect, useRef, useState} from "react";
-import StyledTooltip from "../../../components/StyledTooltip";
-import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
-import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
-import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 import {
+  CodeLoadingFallback,
   SyntaxHighlighter,
   useHighlighterStyles,
-  CodeLoadingFallback,
 } from "../../../components/CodeHighlighter";
+import StyledTooltip from "../../../components/StyledTooltip";
+import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
+import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
+import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
+import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
 function useStartingLineNumber(sourceCode?: string) {
   const {selectedFnName} = useModulesPathParams();

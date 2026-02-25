@@ -8,8 +8,8 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import SideDrawer from "../../components/SideDrawer";
-import {REWARDS_LEARN_MORE_LINK} from "./Components/Staking";
 import {Link} from "../../routing";
+import {REWARDS_LEARN_MORE_LINK} from "./Components/Staking";
 
 type StakingDrawerProps = {
   open: boolean;
@@ -247,7 +247,7 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
               }}
             >
               <Typography variant="h5" component="p">
-                {"I".repeat(index + 1) + ". " + faqData.title}
+                {`${"I".repeat(index + 1)}. ${faqData.title}`}
               </Typography>
               {faqData.data.map(({question, answer}) => (
                 <ListItem

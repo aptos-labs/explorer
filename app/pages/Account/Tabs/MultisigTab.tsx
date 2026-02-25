@@ -1,10 +1,10 @@
-import {Types} from "~/types/aptos";
-import React from "react";
-import {Box, Typography, Stack, useTheme} from "@mui/material";
-import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {Box, Stack, Typography, useTheme} from "@mui/material";
+import type React from "react";
+import type {Types} from "~/types/aptos";
+import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import HashButton, {HashType} from "../../../components/HashButton";
+import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 
 const MULTISIG_ACCOUNT_RESOURCE = "0x1::multisig_account::MultisigAccount";
 
@@ -242,11 +242,11 @@ function MultisigContent({
                           <Typography variant="body2" sx={{mb: 1}}>
                             Creation Time:{" "}
                             {new Date(
-                              parseInt(tx.value.creation_time_secs) * 1000,
+                              parseInt(tx.value.creation_time_secs, 10) * 1000,
                             ).toLocaleString()}
                           </Typography>
                         )}
-                        {tx.value.votes && tx.value.votes.data && (
+                        {tx.value.votes?.data && (
                           <>
                             <Typography variant="body2" sx={{mb: 1}}>
                               Votes: {tx.value.votes.data.length} /{" "}

@@ -1,18 +1,17 @@
-import React from "react";
-import {useQuery, UseQueryResult} from "@tanstack/react-query";
-import Button from "@mui/material/Button";
-import {Types} from "~/types/aptos";
-import {getTransactions} from "../../api";
-import {
-  useNetworkValue,
-  useAptosClient,
-} from "../../global-config/GlobalConfig";
+import {CircularProgress, Stack, Typography} from "@mui/material";
 import Box from "@mui/material/Box";
-import {Stack, Typography, CircularProgress} from "@mui/material";
-import TransactionsTable from "../Transactions/TransactionsTable";
+import Button from "@mui/material/Button";
+import {type UseQueryResult, useQuery} from "@tanstack/react-query";
+import type {Types} from "~/types/aptos";
+import {getTransactions} from "../../api";
+import {type ResponseError, ResponseErrorType} from "../../api/client";
+import {
+  useAptosClient,
+  useNetworkValue,
+} from "../../global-config/GlobalConfig";
 import {Link} from "../../routing";
-import {ResponseError, ResponseErrorType} from "../../api/client";
 import TransactionsError from "../Transactions/Error";
+import TransactionsTable from "../Transactions/TransactionsTable";
 
 const PREVIEW_LIMIT = 10;
 
@@ -63,24 +62,22 @@ export default function TransactionsPreview() {
     queryFn: () => getTransactions({limit}, aptosClient),
   });
   return (
-    <>
-      <Stack spacing={2}>
-        <Typography variant="h5">All Transactions</Typography>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
-          <TransactionContent {...result} />
-        </Box>
+    <Stack spacing={2}>
+      <Typography variant="h5">All Transactions</Typography>
+      <Box sx={{width: "auto", overflowX: "auto"}}>
+        <TransactionContent {...result} />
+      </Box>
 
-        <Box sx={{display: "flex", justifyContent: "center"}}>
-          <Button
-            component={Link}
-            to="/transactions"
-            variant="primary"
-            sx={{margin: "0 auto", mt: 6}}
-          >
-            View all Transactions
-          </Button>
-        </Box>
-      </Stack>
-    </>
+      <Box sx={{display: "flex", justifyContent: "center"}}>
+        <Button
+          component={Link}
+          to="/transactions"
+          variant="primary"
+          sx={{margin: "0 auto", mt: 6}}
+        >
+          View all Transactions
+        </Button>
+      </Box>
+    </Stack>
   );
 }

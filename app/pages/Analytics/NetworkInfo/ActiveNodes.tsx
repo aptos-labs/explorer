@@ -1,8 +1,7 @@
 import {Box, Stack} from "@mui/material";
-import React from "react";
-import {DoubleMetricCard} from "./MetricCard";
-import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import {useGetFullnodeCount} from "../../../api/hooks/useGetFullnodeCount";
+import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
+import {DoubleMetricCard} from "./MetricCard";
 
 export default function ActiveNodes() {
   const {latestNodeCount} = useGetFullnodeCount();

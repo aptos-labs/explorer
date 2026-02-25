@@ -1,16 +1,22 @@
 import {
   AboutAptosConnect,
-  AboutAptosConnectEducationScreen,
+  type AboutAptosConnectEducationScreen,
+  type AdapterNotDetectedWallet,
+  type AdapterWallet,
   AptosPrivacyPolicy,
-  WalletItem,
-  WalletSortingOptions,
+  aptosStandardSupportedWalletList,
   groupAndSortWallets,
   isInstallRequired,
   useWallet,
-  aptosStandardSupportedWalletList,
-  AdapterWallet,
-  AdapterNotDetectedWallet,
+  WalletItem,
+  type WalletSortingOptions,
 } from "@aptos-labs/wallet-adapter-react";
+// Use direct path imports for MUI icons to avoid barrel re-export overhead
+// See https://github.com/mui/material-ui/issues/35233
+import ArrowBack from "@mui/icons-material/ArrowBack";
+import ArrowForward from "@mui/icons-material/ArrowForward";
+import CloseIcon from "@mui/icons-material/Close";
+import LanOutlinedIcon from "@mui/icons-material/LanOutlined";
 import {
   Box,
   Button,
@@ -23,14 +29,8 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-// Use direct path imports for MUI icons to avoid barrel re-export overhead
-// See https://github.com/mui/material-ui/issues/35233
-import ArrowBack from "@mui/icons-material/ArrowBack";
-import ArrowForward from "@mui/icons-material/ArrowForward";
-import CloseIcon from "@mui/icons-material/Close";
-import LanOutlinedIcon from "@mui/icons-material/LanOutlined";
-import {JSX, useMemo} from "react";
-import {WalletConnectorProps} from "./WalletConnector";
+import {type JSX, useMemo} from "react";
+import type {WalletConnectorProps} from "./WalletConnector";
 
 // Sort comparator for OKX wallet priority
 const sortOkxFirst = (
@@ -43,8 +43,7 @@ const sortOkxFirst = (
 };
 
 interface WalletsModalProps
-  extends
-    Pick<WalletConnectorProps, "networkSupport" | "modalMaxWidth">,
+  extends Pick<WalletConnectorProps, "networkSupport" | "modalMaxWidth">,
     WalletSortingOptions {
   handleClose: () => void;
   modalOpen: boolean;
@@ -261,17 +260,15 @@ export default function WalletsModal({
               />
             ))}
             {!!sortedInstallableWallets.length && (
-              <>
-                <Stack sx={{gap: 1}}>
-                  {sortedInstallableWallets.map((wallet) => (
-                    <WalletRow
-                      key={wallet.name}
-                      wallet={wallet}
-                      onConnect={handleClose}
-                    />
-                  ))}
-                </Stack>
-              </>
+              <Stack sx={{gap: 1}}>
+                {sortedInstallableWallets.map((wallet) => (
+                  <WalletRow
+                    key={wallet.name}
+                    wallet={wallet}
+                    onConnect={handleClose}
+                  />
+                ))}
+              </Stack>
             )}
           </Stack>
         </AboutAptosConnect>

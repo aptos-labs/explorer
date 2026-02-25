@@ -1,12 +1,11 @@
-import React from "react";
-import MetricSection from "./MetricSection";
-import Subtitle from "./Text/Subtitle";
-import Body from "./Text/Body";
 import {Skeleton, Stack} from "@mui/material";
+import {useGetStakingRewardsRate} from "../../../api/hooks/useGetStakingRewardsRate";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {useGetStakingRewardsRate} from "../../../api/hooks/useGetStakingRewardsRate";
 import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
+import MetricSection from "./MetricSection";
+import Body from "./Text/Body";
+import Subtitle from "./Text/Subtitle";
 
 export const REWARDS_TOOLTIP_TEXT =
   "Represents the Annual Percentage Rate (APR) that accrue on staked APT. Rewards are paid out by the network after each Epoch. APR is subject to change based on validator performance or in accordance with network specifications. There is no guarantee that the current APR will continue to apply in future periods.";

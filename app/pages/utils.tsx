@@ -2,7 +2,7 @@
 export * from "../utils";
 
 // Import CoinDescription for type usage
-import {CoinDescription} from "../api/hooks/useGetCoinList";
+import type {CoinDescription} from "../api/hooks/useGetCoinList";
 
 /**
  * Coin ordering utility for list display

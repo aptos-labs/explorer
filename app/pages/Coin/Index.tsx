@@ -1,22 +1,21 @@
-import {useParams} from "@tanstack/react-router";
 import {Grid} from "@mui/material";
-import React from "react";
-import CoinTabs, {TabValue} from "./Tabs";
-import PageHeader from "../layout/PageHeader";
+import {useParams} from "@tanstack/react-router";
+import {type ResponseError, ResponseErrorType} from "../../api/client";
+import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
+import {useGetCoinList} from "../../api/hooks/useGetCoinList";
+import {useGetCoinPairedFa} from "../../api/hooks/useGetCoinPairedFa";
+import {useGetCoinSupplyLimit} from "../../api/hooks/useGetCoinSupplyLimit";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 import LoadingModal from "../../components/LoadingModal";
-import Error from "./Error";
-import {ResponseError, ResponseErrorType} from "../../api/client";
-import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
-import {isValidStruct} from "../utils";
-import {getAssetSymbol} from "../../utils";
-import CoinTitle from "./Title";
-import {CoinData} from "./Components/CoinData";
-import {useGetCoinSupplyLimit} from "../../api/hooks/useGetCoinSupplyLimit";
-import {useGetCoinList} from "../../api/hooks/useGetCoinList";
-import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
-import {useGetCoinPairedFa} from "../../api/hooks/useGetCoinPairedFa";
 import VerificationBanner from "../../components/VerificationBanner";
+import {getAssetSymbol} from "../../utils";
+import PageHeader from "../layout/PageHeader";
+import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
+import {isValidStruct} from "../utils";
+import type {CoinData} from "./Components/CoinData";
+import Error from "./Error";
+import CoinTabs, {type TabValue} from "./Tabs";
+import CoinTitle from "./Title";
 
 const TAB_VALUES_FULL: TabValue[] = ["info", "holders", "transactions"];
 

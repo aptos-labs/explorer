@@ -1,5 +1,11 @@
-import React, {memo} from "react";
-import {SxProps, TableCell, TableCellProps, Theme} from "@mui/material";
+import {
+  type SxProps,
+  TableCell,
+  type TableCellProps,
+  type Theme,
+} from "@mui/material";
+import type React from "react";
+import {memo} from "react";
 
 interface GeneralTableCellProps extends TableCellProps {
   children?: React.ReactNode;

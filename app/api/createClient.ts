@@ -5,12 +5,12 @@
 import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import Cookies from "js-cookie";
 import {
-  networks,
   defaultNetworkName,
-  NetworkName,
   getApiKey,
-  isValidNetworkName,
   getGraphqlURI,
+  isValidNetworkName,
+  type NetworkName,
+  networks,
 } from "../lib/constants";
 
 const NETWORK_COOKIE_NAME = "network";

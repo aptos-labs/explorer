@@ -1,29 +1,28 @@
+import {Hex} from "@aptos-labs/ts-sdk";
+import {Box, useTheme} from "@mui/material";
 import * as React from "react";
-import {Types} from "~/types/aptos";
-import {Box} from "@mui/material";
+import type {Types} from "~/types/aptos";
+import {useGetAssetMetadata} from "../../../api/hooks/useGetAssetMetadata";
+import {
+  type CoinDescription,
+  useGetCoinList,
+} from "../../../api/hooks/useGetCoinList";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import {TransactionStatus} from "../../../components/TransactionStatus";
-import {getLearnMoreTooltip} from "../helpers";
-import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import GasFeeValue from "../../../components/IndividualPageContent/ContentValue/GasFeeValue";
-import {getTransactionAmount, getTransactionCounterparty} from "../utils";
-import TransactionFunction from "./Components/TransactionFunction";
-import TransactionBlockRow from "./Components/TransactionBlockRow";
+import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
+import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
-import {parseExpirationTimestamp} from "../../utils";
-import {useTheme} from "@mui/material";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
-import {
-  CoinDescription,
-  useGetCoinList,
-} from "../../../api/hooks/useGetCoinList";
+import {TransactionStatus} from "../../../components/TransactionStatus";
+import {parseExpirationTimestamp} from "../../utils";
+import {getLearnMoreTooltip} from "../helpers";
+import {getTransactionAmount, getTransactionCounterparty} from "../utils";
 import {findCoinData} from "./BalanceChangeTab";
-import {useGetAssetMetadata} from "../../../api/hooks/useGetAssetMetadata";
-import {Hex} from "@aptos-labs/ts-sdk";
+import TransactionBlockRow from "./Components/TransactionBlockRow";
+import TransactionFunction from "./Components/TransactionFunction";
 
 type EconiaState = {
   orderID: string | undefined;
@@ -769,7 +768,7 @@ const SwapActionContent = ({
         }}
       >
         <span>🔄 Swapped</span>
-        <span>{action.amountIn / Math.pow(10, inDecimals)}</span>
+        <span>{action.amountIn / 10 ** inDecimals}</span>
         <HashButton
           hash={action.assetIn}
           type={
@@ -791,7 +790,7 @@ const SwapActionContent = ({
         }}
       >
         <span>for</span>
-        <span>{action.amountOut / Math.pow(10, outDecimals)}</span>
+        <span>{action.amountOut / 10 ** outDecimals}</span>
         <HashButton
           hash={action.assetOut}
           type={
@@ -849,7 +848,7 @@ const LiquidityAssetContent = ({
 
   return (
     <React.Fragment>
-      {asset.amount / Math.pow(10, decimals)}
+      {asset.amount / 10 ** decimals}
       <HashButton
         hash={asset.asset}
         type={
@@ -995,7 +994,7 @@ const LiquidStakingContent = ({
 
   return (
     <React.Fragment>
-      {asset.amount / Math.pow(10, decimals)}
+      {asset.amount / 10 ** decimals}
       <HashButton
         hash={asset.asset}
         type={
@@ -1860,7 +1859,7 @@ function parseHyperionEvent(
     } = event.data;
 
     const amount = Number(data.amount);
-    if (amount == 0) return undefined;
+    if (amount === 0) return undefined;
 
     const assetData: AssetData[] = [{asset: data.token.inner, amount: amount}];
 
@@ -1878,7 +1877,7 @@ function parseHyperionEvent(
     } = event.data;
 
     const amount = Number(data.amount);
-    if (amount == 0) return undefined;
+    if (amount === 0) return undefined;
 
     const assetData: AssetData[] = [
       {asset: data.reward_fa.inner, amount: amount},

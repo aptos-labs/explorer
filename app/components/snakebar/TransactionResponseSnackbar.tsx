@@ -1,9 +1,9 @@
-import {IconButton} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import {TransactionResponse} from "../../api/hooks/useSubmitTransaction";
+import {IconButton} from "@mui/material";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
-import FailureSnackbar from "./FailureSnackbar";
+import type {TransactionResponse} from "../../api/hooks/useSubmitTransaction";
 import ErrorSnackbar from "./ErrorSnackbar";
+import FailureSnackbar from "./FailureSnackbar";
 
 export function CloseAction({onCloseSnackbar}: {onCloseSnackbar: () => void}) {
   return (

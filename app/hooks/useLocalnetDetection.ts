@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {networks} from "../constants";
 
 const LOCALNET_URL = networks.local;

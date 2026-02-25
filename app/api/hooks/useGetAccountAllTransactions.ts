@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
-import {tryStandardizeAddress} from "../../utils";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
+import {tryStandardizeAddress} from "../../utils";
 
 const ACCOUNT_TRANSACTIONS_COUNT_QUERY = `
   query AccountTransactionsCount($address: String) {

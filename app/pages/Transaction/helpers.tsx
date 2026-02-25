@@ -1,10 +1,10 @@
-import React from "react";
+import {Box, Link, Stack} from "@mui/material";
+import type React from "react";
 import {
   LearnMoreTooltip,
   LearnMoreTooltipPlaceholder,
 } from "../../components/IndividualPageContent/LearnMoreTooltip";
 import TableTooltip from "../../components/Table/TableTooltip";
-import {Box, Link, Stack} from "@mui/material";
 import {
   getVerifiedMessageAndIcon,
   VerifiedType,

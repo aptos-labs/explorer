@@ -1,14 +1,13 @@
+import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {Box} from "@mui/material";
-import React from "react";
+import Tooltip from "@mui/material/Tooltip";
+import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {getAssetSymbol} from "../../../utils";
-import HashButton, {HashType} from "../../../components/HashButton";
-import {FACombinedData} from "../Index";
-import Tooltip from "@mui/material/Tooltip";
-import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
+import type {FACombinedData} from "../Index";
 
 type InfoTabProps = {
   address: string;
@@ -80,32 +79,30 @@ export default function InfoTab({address, data}: InfoTabProps) {
             title={"Decimals:"}
             value={data?.metadata?.decimals?.toString()}
           />
-          <>
+          <ContentRow
+            title={"Total supply:"}
+            value={
+              <>
+                {`${formattedSupply} `}
+                {supplyIcon}
+              </>
+            }
+          />
+          {marketCap ? (
             <ContentRow
-              title={"Total supply:"}
+              title={"Current Market Cap (supply * price):"}
               value={
                 <>
-                  {`${formattedSupply} `}
-                  {supplyIcon}
+                  $
+                  {marketCap.toLocaleString([], {
+                    maximumFractionDigits: 2,
+                    minimumFractionDigits: 2,
+                  })}{" "}
+                  USD
                 </>
               }
             />
-            {marketCap ? (
-              <ContentRow
-                title={"Current Market Cap (supply * price):"}
-                value={
-                  <>
-                    $
-                    {marketCap.toLocaleString([], {
-                      maximumFractionDigits: 2,
-                      minimumFractionDigits: 2,
-                    })}{" "}
-                    USD
-                  </>
-                }
-              />
-            ) : null}
-          </>
+          ) : null}
           <ContentRow
             title={"Icon:"}
             value={

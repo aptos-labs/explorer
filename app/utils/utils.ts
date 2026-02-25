@@ -1,16 +1,16 @@
-import {Types} from "~/types/aptos";
-import pako from "pako";
 import {
   AccountAddress,
-  AccountAddressInput,
+  type AccountAddressInput,
   Hex,
   parseTypeTag,
 } from "@aptos-labs/ts-sdk";
-import {
+import type {
   AdapterNotDetectedWallet,
   AdapterWallet,
 } from "@aptos-labs/wallet-adapter-react";
-import {format, differenceInMilliseconds} from "date-fns";
+import {differenceInMilliseconds, format} from "date-fns";
+import pako from "pako";
+import type {Types} from "~/types/aptos";
 
 /**
  * Hydration-safe timestamp formatter.
@@ -45,7 +45,7 @@ export function formatTimestampLocal(
  * Helper function for exhaustiveness checks.
  */
 export function assertNever(x: never): never {
-  throw new Error("Unexpected object: " + x);
+  throw new Error(`Unexpected object: ${x}`);
 }
 
 export function addressFromWallet(address?: string | AccountAddress): string {
@@ -63,8 +63,8 @@ export function sortTransactions(
   a: Types.Transaction,
   b: Types.Transaction,
 ): number {
-  const first = "version" in a ? parseInt(a.version) : Infinity;
-  const second = "version" in b ? parseInt(b.version) : Infinity;
+  const first = "version" in a ? parseInt(a.version, 10) : Infinity;
+  const second = "version" in b ? parseInt(b.version, 10) : Infinity;
   return first < second ? 1 : -1;
 }
 
@@ -163,7 +163,7 @@ export async function retryWithBackoff<T>(
       lastError = error;
       if (!isRateLimitError(error)) throw error;
       if (attempt < maxRetries - 1) {
-        const delay = baseDelayMs * Math.pow(2, attempt);
+        const delay = baseDelayMs * 2 ** attempt;
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
@@ -429,7 +429,7 @@ export function deserializeVector(vectorString: string): string[] {
   if (result[0] === "[" && result[result.length - 1] === "]") {
     result = result.slice(1, -1);
   }
-  if (result.length == 0) return [];
+  if (result.length === 0) return [];
   return result.split(",");
 }
 
@@ -516,8 +516,8 @@ export function ensureMillisecondTimestamp(
   if (timestamp.length > 13) {
     timestamp = timestamp.slice(0, 13);
   }
-  if (timestamp.length == 10) {
-    timestamp = timestamp + "000";
+  if (timestamp.length === 10) {
+    timestamp = `${timestamp}000`;
   }
   return BigInt(timestamp);
 }
@@ -575,7 +575,7 @@ export interface TimestampDisplay {
 
 export function timestampDisplay(timestamp: Date): TimestampDisplay {
   return {
-    formatted: format(timestamp, "MM/dd/yy HH:mm:ss.SSS") + " UTC",
+    formatted: `${format(timestamp, "MM/dd/yy HH:mm:ss.SSS")} UTC`,
     local_formatted: format(timestamp, "MM/dd/yyyy HH:mm:ss.SSS"),
     local_formatted_short: format(timestamp, "MM/dd/yy HH:mm:ss.SSS"),
   };
@@ -896,7 +896,7 @@ export function transactionsToCSV(
   });
 
   const headers = Array.from(allKeys).sort();
-  let csv = headers.join(",") + "\n";
+  let csv = `${headers.join(",")}\n`;
 
   transactions.forEach((txn) => {
     const formatted = formatTransactionForCSV(txn, address);
@@ -910,7 +910,7 @@ export function transactionsToCSV(
       }
       return value ?? "";
     });
-    csv += row.join(",") + "\n";
+    csv += `${row.join(",")}\n`;
   });
 
   return csv;

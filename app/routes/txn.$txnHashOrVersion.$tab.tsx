@@ -1,10 +1,10 @@
 import {createFileRoute} from "@tanstack/react-router";
-import TransactionPage from "../pages/Transaction/Index";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import {truncateAddress} from "../utils";
-import {PagePending} from "../components/NavigationPending";
 import {getClientFromSearch, getNetworkFromSearch} from "../api/createClient";
 import {transactionQueryOptions} from "../api/queries";
+import {PagePending} from "../components/NavigationPending";
+import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
+import TransactionPage from "../pages/Transaction/Index";
+import {truncateAddress} from "../utils";
 
 // Primary route for transaction with tab in path
 export const Route = createFileRoute("/txn/$txnHashOrVersion/$tab")({

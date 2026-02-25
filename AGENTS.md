@@ -10,8 +10,9 @@ pnpm dev              # Dev server on port 3030
 pnpm start            # Dev server on port 3000
 pnpm build            # Production build
 pnpm test             # Run Vitest
-pnpm lint             # TypeScript + ESLint checks
-pnpm fmt              # Apply Prettier formatting
+pnpm lint             # TypeScript + Biome lint checks
+pnpm fmt              # Apply Biome formatting
+pnpm check            # Biome lint + format + organize imports
 ```
 
 **Before committing**: Always run `pnpm fmt && pnpm lint` to ensure code quality.
@@ -88,7 +89,7 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 
 - Functional React components with PascalCase filenames
 - Hooks use `useX` prefix (e.g., `useAccountData`)
-- 2-space indentation, double quotes, trailing commas (Prettier enforced)
+- 2-space indentation, double quotes, trailing commas (Biome enforced)
 - Default exports for entry points, named exports for shared utilities
 
 **Outputs**: Working code, TODO comments, issue files, CHANGELOG entries

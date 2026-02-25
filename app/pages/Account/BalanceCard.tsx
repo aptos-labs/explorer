@@ -1,22 +1,22 @@
-import React, {useState, useEffect} from "react";
+import {OpenInNew} from "@mui/icons-material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
+  FormControl,
   Link,
+  MenuItem,
+  Select,
+  type SelectChangeEvent,
   Stack,
   Typography,
-  FormControl,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
   useTheme,
 } from "@mui/material";
-import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {Card} from "../../components/Card";
-import StyledTooltip from "../../components/StyledTooltip";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import {useEffect, useState} from "react";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {getPrice} from "../../api/hooks/useGetPrice";
+import {Card} from "../../components/Card";
+import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import StyledTooltip from "../../components/StyledTooltip";
 import {useNetworkName} from "../../global-config/GlobalConfig";
-import {OpenInNew} from "@mui/icons-material";
 
 type BalanceCardProps = {
   address: string;

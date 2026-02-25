@@ -2,8 +2,9 @@
  * Query options for TanStack Query.
  * These can be shared between route loaders and components.
  */
+
+import type {Aptos} from "@aptos-labs/ts-sdk";
 import {queryOptions} from "@tanstack/react-query";
-import {Aptos} from "@aptos-labs/ts-sdk";
 import {getTransaction} from "./client";
 
 // Transactions list query

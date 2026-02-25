@@ -11,7 +11,7 @@
 
 import type {Types} from "~/types/aptos";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// biome-ignore-all lint/suspicious/noExplicitAny: legacy REST client wraps untyped API responses
 
 interface AptosClientConfig {
   HEADERS?: Record<string, string>;

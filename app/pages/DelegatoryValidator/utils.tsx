@@ -1,13 +1,14 @@
-import {Types} from "~/types/aptos";
+import type {Types} from "~/types/aptos";
 import {
-  DelegatedStakingActivity,
+  type DelegatedStakingActivity,
   StakeOperation,
 } from "../../api/hooks/delegations";
 import {OCTA} from "../../constants";
 import {
-  MINIMUM_APT_IN_POOL_FOR_EXPLORER,
   MINIMUM_APT_IN_POOL,
+  MINIMUM_APT_IN_POOL_FOR_EXPLORER,
 } from "./constants";
+
 // CombinedGraphQLErrors replaced with Error after Apollo removal
 
 interface AccountResourceData {

@@ -1,10 +1,9 @@
-import * as React from "react";
 import {Stack} from "@mui/material";
+import TableTooltip from "../../../components/Table/TableTooltip";
 import {
   TooltipTransactionType,
   TransactionTypeName,
 } from "../../../components/TransactionType";
-import TableTooltip from "../../../components/Table/TableTooltip";
 
 export default function TransactionTypeTooltip() {
   // TODO: Re-evaluate what belongs in this one

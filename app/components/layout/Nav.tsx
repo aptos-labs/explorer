@@ -1,7 +1,6 @@
-import React from "react";
-import {useLocation} from "@tanstack/react-router";
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import {useLocation} from "@tanstack/react-router";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import {Link} from "../../routing";
 
@@ -16,7 +15,7 @@ function NavButton({
 }) {
   const location = useLocation();
   const isActive =
-    location.pathname === to || location.pathname.startsWith(to + "/");
+    location.pathname === to || location.pathname.startsWith(`${to}/`);
 
   return (
     <Link to={to} style={{textDecoration: "none", color: "inherit"}}>

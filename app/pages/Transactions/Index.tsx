@@ -1,11 +1,11 @@
-import {useSearchParams} from "../../routing";
 import {Box, Button, Stack, Typography} from "@mui/material";
+import {useEffect} from "react";
+import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import {useSearchParams} from "../../routing";
 import PageHeader from "../layout/PageHeader";
 import AllTransactions from "./AllTransactions";
 import UserTransactions from "./UserTransactions";
-import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
-import {useEffect} from "react";
 
 export default function TransactionsPage() {
   const [searchParams, setSearchParams] = useSearchParams();

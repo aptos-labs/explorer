@@ -1,29 +1,29 @@
-import * as React from "react";
-import {useMemo} from "react";
 import {
+  Box,
+  Paper,
+  Stack,
   Table,
   TableHead,
   TableRow,
-  Box,
-  Paper,
   Typography,
-  Stack,
-  useTheme,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
-import {assertNever} from "../../utils";
+import * as React from "react";
+import {useMemo} from "react";
+import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../components/HashButton";
-import {Types} from "~/types/aptos";
-import {parseTimestamp, getTimeDiffInSeconds} from "../utils";
-import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../components/Table/GeneralTableRow";
+import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
 import {
   Link,
-  useNavigate,
   useAugmentToWithGlobalSearchParams,
+  useNavigate,
 } from "../../routing";
+import {assertNever} from "../../utils";
+import {getTimeDiffInSeconds, parseTimestamp} from "../utils";
 
 function getAgeInSeconds(block: Types.Block): string {
   const blockTimestamp = parseTimestamp(block.block_timestamp);

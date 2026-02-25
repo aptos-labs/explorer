@@ -1,7 +1,11 @@
-import {Types} from "~/types/aptos";
-import {useQuery, UseQueryOptions, UseQueryResult} from "@tanstack/react-query";
-import {ResponseError} from "../client";
-import {useNetworkValue, useAptosClient} from "../../global-config";
+import {
+  type UseQueryOptions,
+  type UseQueryResult,
+  useQuery,
+} from "@tanstack/react-query";
+import type {Types} from "~/types/aptos";
+import {useAptosClient, useNetworkValue} from "../../global-config";
+import type {ResponseError} from "../client";
 import {view} from "../index";
 
 export type UseViewFunctionOptions = Pick<

@@ -1,6 +1,6 @@
-import React, {useState} from "react";
-import {Types} from "~/types/aptos";
 import {Box} from "@mui/material";
+import {useState} from "react";
+import type {Types} from "~/types/aptos";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";

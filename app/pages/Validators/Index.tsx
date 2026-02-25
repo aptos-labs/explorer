@@ -1,10 +1,10 @@
 import {Box, Typography} from "@mui/material";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import {OutOfCommissionPoolsBanner} from "../../components/OutOfCommissionPoolsBanner";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
 import ValidatorsPageTabs from "./Tabs";
 import ValidatorsMap from "./ValidatorsMap";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
-import {OutOfCommissionPoolsBanner} from "../../components/OutOfCommissionPoolsBanner";
 
 export default function ValidatorsPage() {
   const networkName = useNetworkName();

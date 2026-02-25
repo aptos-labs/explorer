@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
-import {ResponseError} from "../client";
 import {useSdkV2Client} from "../../global-config";
 import {tryStandardizeAddress} from "../../utils";
+import type {ResponseError} from "../client";
 
 const COINS_QUERY = `
     query CoinsData($owner_address: String, $limit: Int, $offset: Int) {

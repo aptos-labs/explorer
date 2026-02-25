@@ -1,11 +1,11 @@
-import {Chip, useTheme} from "@mui/material";
-import React from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DangerousIcon from "@mui/icons-material/Dangerous";
-import PendingIcon from "@mui/icons-material/Pending";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import {ValidatorStatus} from "../utils";
+import PendingIcon from "@mui/icons-material/Pending";
+import {Chip, useTheme} from "@mui/material";
+import type React from "react";
 import {getValidatorStatusColors} from "../../../themes/colors/aptosBrandColors";
+import type {ValidatorStatus} from "../utils";
 
 export default function ValidatorStatusIcon({
   validatorStatus,

@@ -5,11 +5,14 @@
  * The .client.tsx naming convention signals this is client-only code.
  * Do not import this file directly - use dynamic import from ValidatorsMap.tsx
  */
-import React from "react";
-import {Box, useTheme, styled, Typography, Stack, alpha} from "@mui/material";
-import Tooltip, {TooltipProps, tooltipClasses} from "@mui/material/Tooltip";
+
+import {alpha, Box, Stack, styled, Typography, useTheme} from "@mui/material";
+import Tooltip, {
+  type TooltipProps,
+  tooltipClasses,
+} from "@mui/material/Tooltip";
 import {ComposableMap, Geographies, Geography, Marker} from "react-simple-maps";
-import {
+import type {
   CityBreakdown,
   ValidatorGeoGroup,
 } from "../../../api/hooks/useGetValidatorsGeoData";
@@ -21,7 +24,7 @@ const MARKER_COLOR = brandColors.babyBlue;
 const MIN_NODE_COUNT_SHOWN_IN_MARKER = 5;
 
 function getCircleRadius(currentGroupSize: number) {
-  return Math.pow(currentGroupSize, 1 / 4) * 4;
+  return currentGroupSize ** (1 / 4) * 4;
 }
 
 const LightTooltip = styled(({className, ...props}: TooltipProps) => (

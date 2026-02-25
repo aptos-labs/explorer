@@ -1,20 +1,20 @@
-import React, {useReducer} from "react";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {CoinData} from "../Components/CoinData";
-import {
-  CoinHolder,
-  useGetCoinHolders,
-} from "../../../api/hooks/useGetCoinHolders";
+import {Box, Button, CircularProgress} from "@mui/material";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import GeneralTableBody from "../../../components/Table/GeneralTableBody";
-import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
-import GeneralTableRow from "../../../components/Table/GeneralTableRow";
-import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+import {useReducer} from "react";
+import {
+  type CoinHolder,
+  useGetCoinHolders,
+} from "../../../api/hooks/useGetCoinHolders";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {Box, Button, CircularProgress} from "@mui/material";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import GeneralTableBody from "../../../components/Table/GeneralTableBody";
+import GeneralTableCell from "../../../components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../../components/Table/GeneralTableRow";
+import type {CoinData} from "../Components/CoinData";
 
 type HoldersTabProps = {
   struct: string;

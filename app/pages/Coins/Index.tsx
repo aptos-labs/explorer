@@ -1,9 +1,8 @@
-import * as React from "react";
 import {Box, Typography} from "@mui/material";
-import PageHeader from "../layout/PageHeader";
-import LoadingModal from "../../components/LoadingModal";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import LoadingModal from "../../components/LoadingModal";
+import PageHeader from "../layout/PageHeader";
 import CoinsListTable from "./Table";
 
 export default function CoinsPage() {

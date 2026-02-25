@@ -1,6 +1,5 @@
 import {Box, Stack, Typography, useTheme} from "@mui/material";
-import React from "react";
-import {defaultFeatureName, features, FeatureName} from "../../constants";
+import {defaultFeatureName, type FeatureName, features} from "../../constants";
 import {useFeatureName} from "../../global-config";
 
 /**

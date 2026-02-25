@@ -1,13 +1,13 @@
-import * as React from "react";
 import {Box, Typography} from "@mui/material";
-import {useNetworkName} from "../../../global-config/GlobalConfig";
-import PageHeader from "../../layout/PageHeader";
-import EnhancedValidatorsPageTabs from "./EnhancedTabs";
-import ValidatorsMap from "../ValidatorsMap";
+import * as React from "react";
 import {PageMetadata} from "../../../components/hooks/usePageMetadata";
-import {Network} from "../../../constants";
-import {useNavigate} from "../../../routing";
 import {OutOfCommissionPoolsBanner} from "../../../components/OutOfCommissionPoolsBanner";
+import {Network} from "../../../constants";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
+import {useNavigate} from "../../../routing";
+import PageHeader from "../../layout/PageHeader";
+import ValidatorsMap from "../ValidatorsMap";
+import EnhancedValidatorsPageTabs from "./EnhancedTabs";
 
 export default function EnhancedValidatorsPage() {
   const networkName = useNetworkName();

@@ -1,4 +1,6 @@
-import React, {useState} from "react";
+import {DangerousOutlined} from "@mui/icons-material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {
   Box,
   Button,
@@ -8,15 +10,13 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {getSemanticColors} from "../themes/colors/aptosBrandColors";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
+import {useState} from "react";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
-import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {scamAddresses} from "../constants";
+import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
+import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 import {tryStandardizeAddress} from "../utils";
-import {DangerousOutlined} from "@mui/icons-material";
 
 export const BUTTON_HEIGHT = 34;
 export const TOOLTIP_TIME = 2000; // 2s

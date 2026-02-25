@@ -1,10 +1,10 @@
-import * as React from "react";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import {IconButton, Stack, useTheme} from "@mui/material";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import type * as React from "react";
 import {useState} from "react";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import {IconButton, Stack, useTheme} from "@mui/material";
 import TooltipTypography from "../TooltipTypography";
 
 type TableTooltipProps = {

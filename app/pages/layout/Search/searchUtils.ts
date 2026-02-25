@@ -1,28 +1,28 @@
-import {QueryClient} from "@tanstack/react-query";
-import {Types} from "~/types/aptos";
-import {Aptos} from "@aptos-labs/ts-sdk";
-import {faMetadataResource, objectCoreResource} from "../../../constants";
-import {getKnownAddresses} from "../../../data";
-import {NetworkName} from "../../../lib/constants";
+import type {Aptos} from "@aptos-labs/ts-sdk";
+import type {QueryClient} from "@tanstack/react-query";
+import type {Types} from "~/types/aptos";
+import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {
-  isValidAccountAddress,
-  isNumeric,
-  truncateAddress,
-  is32ByteHex,
-  isValidStruct,
-  coinOrderIndex,
-} from "../../utils";
-import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
-import {CoinDescription} from "../../../api/hooks/useGetCoinList";
-import {getEmojicoinMarketAddressAndTypeTags} from "../../../components/Table/VerifiedCell";
-import {
-  getBlockByHeight,
-  getBlockByVersion,
-  getAccountV2,
   getAccountResourcesV2,
   getAccountResourceV2,
+  getAccountV2,
+  getBlockByHeight,
+  getBlockByVersion,
   getTransactionV2,
 } from "../../../api/v2";
+import {getEmojicoinMarketAddressAndTypeTags} from "../../../components/Table/VerifiedCell";
+import {faMetadataResource, objectCoreResource} from "../../../constants";
+import {getKnownAddresses} from "../../../data";
+import type {NetworkName} from "../../../lib/constants";
+import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
+import {
+  coinOrderIndex,
+  is32ByteHex,
+  isNumeric,
+  isValidAccountAddress,
+  isValidStruct,
+  truncateAddress,
+} from "../../utils";
 
 export type SearchResult = {
   label: string;
@@ -68,7 +68,7 @@ export function detectInputType(searchText: string): {
 } {
   let normalizedText = searchText;
   if (normalizedText.endsWith(".petra")) {
-    normalizedText = normalizedText + ".apt";
+    normalizedText = `${normalizedText}.apt`;
   }
 
   return {
@@ -188,7 +188,7 @@ export async function handleBlockHeightOrVersion(
 ): Promise<SearchResult[]> {
   if (signal?.aborted) return [];
 
-  const num = parseInt(searchText);
+  const num = parseInt(searchText, 10);
   const results: SearchResult[] = [];
 
   // Try block by height, transaction by version, and block by version in parallel
@@ -608,7 +608,7 @@ export function groupSearchResults(results: SearchResult[]): SearchResult[] {
     if (!grouped.has(type)) {
       grouped.set(type, []);
     }
-    grouped.get(type)!.push(result);
+    grouped.get(type)?.push(result);
   }
 
   // Define priority order for types - assets (coins/fungible assets) first

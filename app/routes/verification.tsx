@@ -1,7 +1,7 @@
 import {createFileRoute} from "@tanstack/react-router";
-import VerificationPage from "../pages/Verification/Index";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import {PagePending} from "../components/NavigationPending";
+import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
+import VerificationPage from "../pages/Verification/Index";
 
 export const Route = createFileRoute("/verification")({
   head: () => ({

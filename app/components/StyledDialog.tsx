@@ -1,6 +1,12 @@
-import {Dialog, DialogProps, IconButton, Stack, useTheme} from "@mui/material";
-import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import {
+  Dialog,
+  type DialogProps,
+  IconButton,
+  Stack,
+  useTheme,
+} from "@mui/material";
+import type React from "react";
 
 interface StyledDialogProps extends DialogProps {
   handleDialogClose: () => void;

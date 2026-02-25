@@ -1,11 +1,10 @@
-import * as React from "react";
-import {Types} from "~/types/aptos";
-import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
-import useExpandedList from "../../../components/hooks/useExpandedList";
-import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../../components/HashButton";
+import useExpandedList from "../../../components/hooks/useExpandedList";
+import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
+import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
+import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {
   collectionV2Address,

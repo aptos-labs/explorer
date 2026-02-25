@@ -1,51 +1,51 @@
-import React, {useMemo, useState} from "react";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
+  alpha,
   Box,
-  Typography,
+  Chip,
+  CircularProgress,
+  FormControlLabel,
+  LinearProgress,
+  Paper,
+  Skeleton,
+  Stack,
+  Switch,
   Table,
   TableHead,
   TableRow,
-  Stack,
-  alpha,
-  useTheme,
-  useMediaQuery,
-  Paper,
-  Chip,
-  LinearProgress,
   Tooltip,
-  CircularProgress,
-  Skeleton,
-  FormControlLabel,
-  Switch,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import GeneralTableRow from "../../../components/Table/GeneralTableRow";
+import React, {useMemo, useState} from "react";
+import type {Types} from "~/types/aptos";
+import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
+import HashButton, {HashType} from "../../../components/HashButton";
+import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
+import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
-import GeneralTableBody from "../../../components/Table/GeneralTableBody";
+import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {Types} from "~/types/aptos";
-import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
-import {ValidatorAddrCell, OperatorAddrCell} from "../ValidatorsTable";
-import {addressFromWallet, assertNever} from "../../../utils";
 import {
-  useValidatorDelegationData,
-  ValidatorWithExtendedData,
-} from "./hooks/useValidatorDelegationData";
-import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+  useAugmentToWithGlobalSearchParams,
+  useNavigate,
+} from "../../../routing";
+import {addressFromWallet, assertNever} from "../../../utils";
+import {useLogEventWithBasic} from "../../Account/hooks/useLogEventWithBasic";
+import ValidatorStatusIcon from "../../DelegatoryValidator/Components/ValidatorStatusIcon";
 import {
   calculateNetworkPercentage,
   getValidatorStatus,
 } from "../../DelegatoryValidator/utils";
-import {useLogEventWithBasic} from "../../Account/hooks/useLogEventWithBasic";
-import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {OperatorAddrCell, ValidatorAddrCell} from "../ValidatorsTable";
 import {
-  useNavigate,
-  useAugmentToWithGlobalSearchParams,
-} from "../../../routing";
-import HashButton, {HashType} from "../../../components/HashButton";
-import ValidatorStatusIcon from "../../DelegatoryValidator/Components/ValidatorStatusIcon";
+  useValidatorDelegationData,
+  type ValidatorWithExtendedData,
+} from "./hooks/useValidatorDelegationData";
 
 // Define column types
 type Column =

@@ -1,5 +1,5 @@
-import React from "react";
-import {Stack, Typography, useTheme, Box, Button} from "@mui/material";
+import {Box, Button, Stack, Typography, useTheme} from "@mui/material";
+import type React from "react";
 
 // return true if there is at least 1 card is not expanded
 function getNotAllExpanded(expandedList: boolean[]): boolean {

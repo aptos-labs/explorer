@@ -1,13 +1,13 @@
-import React from "react";
-import {Box, Stack, SxProps, Theme, useTheme} from "@mui/material";
-import {Types} from "~/types/aptos";
+import {Network} from "@aptos-labs/ts-sdk";
+import {WaterDropOutlined} from "@mui/icons-material";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import {Box, Stack, type SxProps, type Theme, useTheme} from "@mui/material";
+import type React from "react";
+import type {Types} from "~/types/aptos";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
-import {Link} from "../../../../routing";
-import {WaterDropOutlined} from "@mui/icons-material";
 import {useNetworkName} from "../../../../global-config/GlobalConfig";
-import {Network} from "@aptos-labs/ts-sdk";
+import {Link} from "../../../../routing";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 
 function CoinTransferCodeLine({
@@ -145,7 +145,7 @@ export default function TransactionFunction({
         underline="none"
         style={{color: "inherit"}}
       >
-        {moduleName + "::" + functionName}
+        {`${moduleName}::${functionName}`}
       </Link>
     </CodeLineBox>
   );

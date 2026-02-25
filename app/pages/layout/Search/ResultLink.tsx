@@ -1,5 +1,6 @@
-import React, {memo} from "react";
 import {Box, Typography} from "@mui/material";
+import type React from "react";
+import {memo} from "react";
 import {Link} from "../../../routing";
 
 type ResultLinkProps = {

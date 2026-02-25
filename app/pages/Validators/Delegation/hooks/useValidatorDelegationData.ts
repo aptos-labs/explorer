@@ -1,23 +1,23 @@
-import {useMemo} from "react";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useQuery} from "@tanstack/react-query";
-import {Types} from "~/types/aptos";
+import {useMemo} from "react";
+import type {Types} from "~/types/aptos";
+import {getValidatorCommissionAndState} from "../../../../api";
+import type {ResponseError} from "../../../../api/client";
+import {useGetDelegatedStakingPoolList} from "../../../../api/hooks";
+import {
+  useGetValidators,
+  type ValidatorData,
+} from "../../../../api/hooks/useGetValidators";
 import {
   useAptosClient,
   useNetworkName,
 } from "../../../../global-config/GlobalConfig";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {
-  ValidatorData,
-  useGetValidators,
-} from "../../../../api/hooks/useGetValidators";
-import {useGetDelegatedStakingPoolList} from "../../../../api/hooks";
-import {getValidatorCommissionAndState} from "../../../../api";
-import {ResponseError} from "../../../../api/client";
+import {addressFromWallet} from "../../../../utils";
 import {
   getBatchDelegatorCounts,
   getBatchUserStakes,
 } from "./validatorDataService";
-import {addressFromWallet} from "../../../../utils";
 
 // Extended validator data with additional fields
 export interface ValidatorWithExtendedData extends ValidatorData {

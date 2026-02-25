@@ -1,7 +1,7 @@
-import {useMemo, useState, useEffect, useCallback, useRef} from "react";
 import {createTheme, responsiveFontSizes} from "@mui/material";
-import getDesignTokens from "../../themes/theme";
 import Cookies from "js-cookie";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import getDesignTokens from "../../themes/theme";
 
 export interface ColorModeContext {
   toggleColorMode: () => void;
@@ -72,7 +72,7 @@ const useProvideColorMode = () => {
     return () => {
       mediaQuery.removeEventListener("change", handleChange);
     };
-  }, [isHydrated]);
+  }, []);
 
   // Memoize toggleColorMode to ensure stable reference
   const toggleColorMode = useCallback(() => {

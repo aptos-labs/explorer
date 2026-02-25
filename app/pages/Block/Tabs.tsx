@@ -1,15 +1,15 @@
-import * as React from "react";
+import type {Block} from "@aptos-labs/ts-sdk";
+import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
+import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import {Box} from "@mui/material";
+import {useParams} from "@tanstack/react-router";
+import type * as React from "react";
+import StyledTab from "../../components/StyledTab";
+import StyledTabs from "../../components/StyledTabs";
+import {useNavigate} from "../../routing";
+import {assertNever} from "../../utils";
 import OverviewTab from "./Tabs/OverviewTab";
 import TransactionsTab from "./Tabs/TransactionsTab";
-import {assertNever} from "../../utils";
-import WysiwygIcon from "@mui/icons-material/Wysiwyg";
-import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-import StyledTabs from "../../components/StyledTabs";
-import StyledTab from "../../components/StyledTab";
-import {useParams} from "@tanstack/react-router";
-import {useNavigate} from "../../routing";
-import {Block} from "@aptos-labs/ts-sdk";
 
 const TAB_VALUES: TabValue[] = ["overview", "transactions"];
 

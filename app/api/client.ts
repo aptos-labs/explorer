@@ -1,4 +1,4 @@
-import {Aptos} from "@aptos-labs/ts-sdk";
+import type {Aptos} from "@aptos-labs/ts-sdk";
 
 export enum ResponseErrorType {
   NOT_FOUND = "Not Found",

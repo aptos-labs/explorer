@@ -1,11 +1,10 @@
-import * as React from "react";
 import {useGetBlockByVersion} from "../../../../api/hooks/useGetBlock";
 import ContentRow from "../../../../components/IndividualPageContent/ContentRow";
-import {getLearnMoreTooltip} from "../../helpers";
 import {Link} from "../../../../routing";
+import {getLearnMoreTooltip} from "../../helpers";
 
 export default function TransactionBlockRow({version}: {version: string}) {
-  const {data} = useGetBlockByVersion({version: parseInt(version)});
+  const {data} = useGetBlockByVersion({version: parseInt(version, 10)});
 
   if (!data) {
     return null;

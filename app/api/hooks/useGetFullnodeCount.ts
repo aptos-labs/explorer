@@ -1,4 +1,4 @@
-import {NodeCountData, useGetAnalyticsData} from "./useGetAnalyticsData";
+import {type NodeCountData, useGetAnalyticsData} from "./useGetAnalyticsData";
 
 export function useGetFullnodeCount() {
   const analyticsData = useGetAnalyticsData();

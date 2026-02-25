@@ -1,5 +1,3 @@
-import React from "react";
-
 type GasValueProps = {
   gas: string;
 };
@@ -11,7 +9,7 @@ function formatWithThousandSeparator(value: string): string {
   if (!/^-?\d+$/.test(trimmed)) {
     // Not a pure integer string - fall back to Number
     const num = Number(trimmed);
-    if (isNaN(num)) return value;
+    if (Number.isNaN(num)) return value;
     return new Intl.NumberFormat().format(num);
   }
   // Insert thousand separators manually for integer strings

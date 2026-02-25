@@ -1,9 +1,9 @@
-import {useNetworkValue, useSdkV2Client} from "../../global-config";
+import type {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 import {useQuery} from "@tanstack/react-query";
+import {useNetworkValue, useSdkV2Client} from "../../global-config";
 import {tryStandardizeAddress} from "../../utils";
-import {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// biome-ignore-all lint/suspicious/noExplicitAny: indexer query results use dynamic shapes
 
 // --- Inlined queries from former IndexerClient ---
 

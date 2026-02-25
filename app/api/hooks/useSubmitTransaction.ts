@@ -1,10 +1,10 @@
-import {FailedTransactionError} from "~/types/aptos";
-import {useState} from "react";
 import {
+  type InputTransactionData,
   useWallet,
-  InputTransactionData,
 } from "@aptos-labs/wallet-adapter-react";
-import {useNetworkName, useAptosClient} from "../../global-config";
+import {useState} from "react";
+import {FailedTransactionError} from "~/types/aptos";
+import {useAptosClient, useNetworkName} from "../../global-config";
 
 export type TransactionResponse =
   | TransactionResponseOnSubmission

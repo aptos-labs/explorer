@@ -1,9 +1,8 @@
-import React from "react";
 import {useTheme} from "@mui/material";
+import type {Types} from "~/types/aptos";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {APTCurrencyValue} from "./CurrencyValue";
 import GasValue from "./GasValue";
-import {Types} from "~/types/aptos";
 
 type GasFeeValueProps = {
   gasUsed: string;
@@ -52,16 +51,12 @@ export default function GasFeeValue({
   const netGasWithRefund = feeStatementGasUnitsCost - storageRefundOctas;
 
   if (storageRefund) {
-    return (
-      <>
-        <APTCurrencyValue amount={storageRefundOctas.toString()} />
-      </>
-    );
+    return <APTCurrencyValue amount={storageRefundOctas.toString()} />;
   }
 
   if (netGasCost) {
     let amountAbs = netGasWithRefund;
-    let color = undefined;
+    let color;
     if (netGasWithRefund < 0) {
       color = semanticColors.status.info;
     } else if (netGasWithRefund > 0) {

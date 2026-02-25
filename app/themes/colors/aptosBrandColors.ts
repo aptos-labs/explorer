@@ -1,5 +1,4 @@
-import {PaletteMode} from "@mui/material";
-import {alpha} from "@mui/material";
+import {alpha, type PaletteMode} from "@mui/material";
 
 /**
  * Aptos Brand Colors

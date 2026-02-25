@@ -7,7 +7,7 @@ import {
   Popover,
   Tooltip,
 } from "@mui/material";
-import {JSX, useState} from "react";
+import {type JSX, useState} from "react";
 
 type WalletMenuProps = {
   popoverAnchor: HTMLButtonElement | null;

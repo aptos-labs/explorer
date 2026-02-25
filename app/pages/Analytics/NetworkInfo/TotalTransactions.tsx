@@ -1,11 +1,10 @@
-import React from "react";
-import {useQuery} from "@tanstack/react-query";
-import {
-  useNetworkValue,
-  useAptosClient,
-} from "../../../global-config/GlobalConfig";
-import {getLedgerInfo} from "../../../api";
 import {Stack, Typography} from "@mui/material";
+import {useQuery} from "@tanstack/react-query";
+import {getLedgerInfo} from "../../../api";
+import {
+  useAptosClient,
+  useNetworkValue,
+} from "../../../global-config/GlobalConfig";
 
 export default function TotalTransactions() {
   const networkValue = useNetworkValue();
@@ -23,7 +22,9 @@ export default function TotalTransactions() {
     <Stack direction="column">
       <Typography variant="body2" alignSelf="flex-end">
         {`TOTAL TRANSACTIONS: ${
-          ledgerVersion ? parseInt(ledgerVersion).toLocaleString("en-US") : "-"
+          ledgerVersion
+            ? parseInt(ledgerVersion, 10).toLocaleString("en-US")
+            : "-"
         }`}
       </Typography>
     </Stack>

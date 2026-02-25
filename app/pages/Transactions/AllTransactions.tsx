@@ -1,21 +1,21 @@
-import React from "react";
+import {Alert, CircularProgress, Pagination, Stack} from "@mui/material";
+import Box from "@mui/material/Box";
 import {
   keepPreviousData,
+  type UseQueryResult,
   useQuery,
-  UseQueryResult,
 } from "@tanstack/react-query";
-import {Types} from "~/types/aptos";
+import type React from "react";
+import type {Types} from "~/types/aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
+import {type ResponseError, ResponseErrorType} from "../../api/client";
 import {
-  useNetworkValue,
   useAptosClient,
+  useNetworkValue,
 } from "../../global-config/GlobalConfig";
-import Box from "@mui/material/Box";
 import {useSearchParams} from "../../routing";
-import {Pagination, Stack, CircularProgress, Alert} from "@mui/material";
-import TransactionsTable from "./TransactionsTable";
-import {ResponseError, ResponseErrorType} from "../../api/client";
 import TransactionsError from "./Error";
+import TransactionsTable from "./TransactionsTable";
 
 const LIMIT = 20;
 
@@ -119,12 +119,14 @@ function TransactionsPageInner({
   const [searchParams] = useSearchParams();
 
   // Calculate start/limit before early returns to avoid hook rule violations
-  const maxVersion = data?.ledger_version ? parseInt(data.ledger_version) : 0;
+  const maxVersion = data?.ledger_version
+    ? parseInt(data.ledger_version, 10)
+    : 0;
   const limit = LIMIT;
   let start = maxStart(maxVersion, limit);
   const startParam = searchParams.get("start");
   if (startParam !== null) {
-    start = parseInt(startParam);
+    start = parseInt(startParam, 10);
   }
 
   const result = useQuery<Array<Types.Transaction>, ResponseError>({
@@ -169,44 +171,42 @@ function TransactionsPageInner({
   }
 
   return (
-    <>
-      <Stack spacing={2}>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
-          <TransactionContent
-            data={result.data}
-            isLoading={result.isLoading}
-            error={
-              result.error
-                ? typeof result.error === "object" &&
-                  result.error !== null &&
-                  "type" in result.error &&
-                  typeof (result.error as {type: unknown}).type === "string"
-                  ? (result.error as ResponseError)
-                  : {
-                      type: ResponseErrorType.UNHANDLED,
-                      message:
-                        typeof result.error === "object" &&
-                        result.error !== null &&
-                        "message" in result.error
-                          ? String((result.error as {message: unknown}).message)
-                          : String(result.error),
-                    }
-                : null
-            }
-          />
-        </Box>
+    <Stack spacing={2}>
+      <Box sx={{width: "auto", overflowX: "auto"}}>
+        <TransactionContent
+          data={result.data}
+          isLoading={result.isLoading}
+          error={
+            result.error
+              ? typeof result.error === "object" &&
+                result.error !== null &&
+                "type" in result.error &&
+                typeof (result.error as {type: unknown}).type === "string"
+                ? (result.error as ResponseError)
+                : {
+                    type: ResponseErrorType.UNHANDLED,
+                    message:
+                      typeof result.error === "object" &&
+                      result.error !== null &&
+                      "message" in result.error
+                        ? String((result.error as {message: unknown}).message)
+                        : String(result.error),
+                  }
+              : null
+          }
+        />
+      </Box>
 
-        <Box sx={{display: "flex", justifyContent: "center"}}>
-          <RenderPagination
-            {...{
-              start,
-              limit,
-              maxVersion,
-            }}
-          />
-        </Box>
-      </Stack>
-    </>
+      <Box sx={{display: "flex", justifyContent: "center"}}>
+        <RenderPagination
+          {...{
+            start,
+            limit,
+            maxVersion,
+          }}
+        />
+      </Box>
+    </Stack>
   );
 }
 

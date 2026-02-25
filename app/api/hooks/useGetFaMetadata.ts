@@ -1,4 +1,4 @@
-import {useViewFunction, UseViewFunctionOptions} from "./useViewFunction";
+import {type UseViewFunctionOptions, useViewFunction} from "./useViewFunction";
 
 export type FaMetadata = {
   name: string;

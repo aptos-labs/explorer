@@ -1,11 +1,10 @@
-import * as React from "react";
-import {DailyBlockGapData} from "../../../api/hooks/useGetAnalyticsData";
+import type {TooltipItem} from "chart.js";
+import type {DailyBlockGapData} from "../../../api/hooks/useGetAnalyticsData";
+import {CardOutline} from "../../../components/Card";
+import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
+import ChartTitle from "../Components/ChartTitle";
 import LineChart from "../Components/LineChart";
 import {getLabels} from "../utils";
-import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
-import ChartTitle from "../Components/ChartTitle";
-import {CardOutline} from "../../../components/Card";
-import {TooltipItem} from "chart.js";
 
 export function getDataset(data: DailyBlockGapData[], days: number): number[] {
   return data

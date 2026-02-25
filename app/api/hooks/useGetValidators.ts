@@ -1,9 +1,9 @@
-import {useNetworkName} from "../../global-config";
-import {useMemo} from "react";
 import {useQuery} from "@tanstack/react-query";
-import {useGetValidatorSet} from "./useGetValidatorSet";
+import {useMemo} from "react";
 import {Network} from "../../constants";
+import {useNetworkName} from "../../global-config";
 import {tryStandardizeAddress} from "../../utils";
+import {useGetValidatorSet} from "./useGetValidatorSet";
 
 // Cache version can be bumped via env var to force fresh data after deployments
 const VALIDATOR_STATS_CACHE_VERSION =

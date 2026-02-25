@@ -1,10 +1,10 @@
-import {Stack, Typography, Skeleton} from "@mui/material";
-import {Types} from "~/types/aptos";
+import {Skeleton, Stack, Typography} from "@mui/material";
+import type {Types} from "~/types/aptos";
+import {useGetDelegationNodeInfo} from "../../api/hooks/delegations";
+import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import ValidatorStatusIcon from "./Components/ValidatorStatusIcon";
-import {useGetDelegationNodeInfo} from "../../api/hooks/delegations";
 import {getValidatorStatus} from "./utils";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
 
 type ValidatorTitleProps = {
   address: Types.Address;

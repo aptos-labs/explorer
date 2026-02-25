@@ -1,6 +1,6 @@
+import type {Aptos} from "@aptos-labs/ts-sdk";
 import {useQuery} from "@tanstack/react-query";
-import {Aptos} from "@aptos-labs/ts-sdk";
-import {useSdkV2Client, useNetworkValue} from "../../../global-config";
+import {useNetworkValue, useSdkV2Client} from "../../../global-config";
 
 export interface DelegatedStakingPool {
   staking_pool_address: string;

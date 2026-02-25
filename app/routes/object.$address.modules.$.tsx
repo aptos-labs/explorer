@@ -1,6 +1,6 @@
 import {createFileRoute, useParams} from "@tanstack/react-router";
-import ModulesTabs from "../pages/Account/Tabs/ModulesTab/Tabs";
 import AccountPage from "../pages/Account/Index";
+import ModulesTabs from "../pages/Account/Tabs/ModulesTab/Tabs";
 
 // Splat route for /object/:address/modules/*
 // Captures: /modules/code, /modules/code/MyModule, /modules/view/MyModule/myFunc, etc.

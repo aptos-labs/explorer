@@ -1,4 +1,4 @@
-import {DailyAnalyticsData} from "../../api/hooks/useGetAnalyticsData";
+import type {DailyAnalyticsData} from "../../api/hooks/useGetAnalyticsData";
 
 export function numberFormatter(num: number, digits: number) {
   const lookup = [
@@ -14,9 +14,7 @@ export function numberFormatter(num: number, digits: number) {
   const item = lookup
     .slice()
     .reverse()
-    .find(function (item) {
-      return num >= item.value;
-    });
+    .find((item) => num >= item.value);
   return item
     ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
     : "0";

@@ -13,6 +13,7 @@
 import {useEffect, useMemo} from "react";
 // Universal import pattern for ESM/CJS compatibility
 import * as ReactHelmetAsync from "react-helmet-async";
+
 const Helmet = ((ReactHelmetAsync as {Helmet?: typeof ReactHelmetAsync.Helmet})
   .Helmet ??
   (ReactHelmetAsync as {default?: typeof ReactHelmetAsync}).default

@@ -1,17 +1,16 @@
-import React from "react";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Typography,
-  Box,
-} from "@mui/material";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography,
+} from "@mui/material";
+import {defaultNetworkName} from "../constants";
 import {useNetworkSelector} from "../global-config";
 import {useLocalnetDetection} from "../hooks/useLocalnetDetection";
-import {defaultNetworkName} from "../constants";
 
 export default function LocalnetUnavailableModal() {
   const [networkName, setNetworkName] = useNetworkSelector();

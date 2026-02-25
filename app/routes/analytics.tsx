@@ -1,7 +1,7 @@
 import {createFileRoute} from "@tanstack/react-router";
+import {PagePending} from "../components/NavigationPending";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import AnalyticsPage from "../pages/Analytics/Index";
-import {PagePending} from "../components/NavigationPending";
 
 export const Route = createFileRoute("/analytics")({
   head: () => ({

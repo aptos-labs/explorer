@@ -1,12 +1,12 @@
-import React from "react";
-import {ActivitiesTable} from "../Component/ActivitiesTable";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {useSearchParams} from "../../../routing";
 import {Box, Pagination, Stack} from "@mui/material";
+import type React from "react";
 import {
   useGetTokenActivities,
   useGetTokenActivitiesCount,
 } from "../../../api/hooks/useGetAccountTokens";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {useSearchParams} from "../../../routing";
+import {ActivitiesTable} from "../Component/ActivitiesTable";
 
 const LIMIT = 20;
 
@@ -20,7 +20,7 @@ function RenderPagination({
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     newPageNum: number,
   ) => {
     searchParams.set("page", newPageNum.toString());
@@ -53,24 +53,22 @@ export function TokenActivitiesWithPagination({
   numPages,
 }: TokenActivitiesWithPaginationProps) {
   const [searchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") ?? "1");
+  const currentPage = parseInt(searchParams.get("page") ?? "1", 10);
   const offset = (currentPage - 1) * LIMIT;
 
   const {data: activities} = useGetTokenActivities(tokenId, LIMIT, offset);
 
   return (
-    <>
-      <Stack spacing={2}>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
-          <ActivitiesTable activities={activities ?? []} />
+    <Stack spacing={2}>
+      <Box sx={{width: "auto", overflowX: "auto"}}>
+        <ActivitiesTable activities={activities ?? []} />
+      </Box>
+      {numPages > 1 && (
+        <Box sx={{display: "flex", justifyContent: "center"}}>
+          <RenderPagination currentPage={currentPage} numPages={numPages} />
         </Box>
-        {numPages > 1 && (
-          <Box sx={{display: "flex", justifyContent: "center"}}>
-            <RenderPagination currentPage={currentPage} numPages={numPages} />
-          </Box>
-        )}
-      </Stack>
-    </>
+      )}
+    </Stack>
   );
 }
 

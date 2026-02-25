@@ -1,11 +1,10 @@
-import React from "react";
-import {Types} from "~/types/aptos";
-import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
-import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
-import useExpandedList from "../../../components/hooks/useExpandedList";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../../components/HashButton";
+import useExpandedList from "../../../components/hooks/useExpandedList";
+import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
+import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
+import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 
 type EventsTabProps = {
@@ -81,7 +80,7 @@ export default function EventsTab({transaction}: EventsTabProps) {
               value={
                 <JsonViewCard
                   data={
-                    typeof event.data == "object"
+                    typeof event.data === "object"
                       ? event.data
                       : {__PLACEHOLDER__: event.data}
                   }

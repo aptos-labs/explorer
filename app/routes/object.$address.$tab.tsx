@@ -1,8 +1,8 @@
 import {createFileRoute} from "@tanstack/react-router";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import {truncateAddress} from "../utils";
-import AccountPage from "../pages/Account/Index";
 import {PagePending} from "../components/NavigationPending";
+import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
+import AccountPage from "../pages/Account/Index";
+import {truncateAddress} from "../utils";
 
 // Primary route for object with tab in path
 export const Route = createFileRoute("/object/$address/$tab")({

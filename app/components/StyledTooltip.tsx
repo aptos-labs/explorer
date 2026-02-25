@@ -1,14 +1,14 @@
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
   Box,
   Link,
   Stack,
   Tooltip,
-  TooltipProps,
+  type TooltipProps,
   Typography,
   useTheme,
 } from "@mui/material";
-import React from "react";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import type React from "react";
 
 interface StyledTooltipProps extends TooltipProps {
   title: NonNullable<React.ReactNode>;

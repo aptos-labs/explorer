@@ -1,7 +1,6 @@
-import React from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import {Box, Link, Typography, useTheme} from "@mui/material";
-import {Stack} from "@mui/material";
+import {Box, Link, Stack, Typography, useTheme} from "@mui/material";
+import type React from "react";
 import StyledTooltip from "../StyledTooltip";
 
 function TooltipBox({children}: {children?: React.ReactNode}) {

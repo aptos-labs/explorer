@@ -1,25 +1,30 @@
-import {Types} from "~/types/aptos";
+import {Network} from "@aptos-labs/ts-sdk";
+import {
+  Button,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import React from "react";
-import {Button, Stack, Typography, useMediaQuery} from "@mui/material";
-import {useTheme} from "@mui/material";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {CoinBalanceChangeTable} from "./Components/CoinBalanceChangeTable";
+import type {Types} from "~/types/aptos";
 import {
-  BalanceChange,
-  FungibleAssetActivity,
-  useTransactionBalanceChanges,
-} from "../utils";
-import {
-  CoinDescription,
+  type CoinDescription,
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
-import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {
-  verifiedLevel,
   VerifiedType,
+  verifiedLevel,
 } from "../../../components/Table/VerifiedCell";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
-import {Network} from "@aptos-labs/ts-sdk";
+import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
+import {
+  type BalanceChange,
+  type FungibleAssetActivity,
+  useTransactionBalanceChanges,
+} from "../utils";
+import {CoinBalanceChangeTable} from "./Components/CoinBalanceChangeTable";
 
 type BalanceChangeTabProps = {
   transaction: Types.Transaction;

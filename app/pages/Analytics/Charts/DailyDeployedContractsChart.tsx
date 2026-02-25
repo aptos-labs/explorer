@@ -1,10 +1,9 @@
-import * as React from "react";
-import {DailyContractData} from "../../../api/hooks/useGetAnalyticsData";
-import BarChart from "../Components/BarChart";
-import {getLabels} from "../utils";
-import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
-import ChartTitle from "../Components/ChartTitle";
+import type {DailyContractData} from "../../../api/hooks/useGetAnalyticsData";
 import {CardOutline} from "../../../components/Card";
+import BarChart from "../Components/BarChart";
+import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
+import ChartTitle from "../Components/ChartTitle";
+import {getLabels} from "../utils";
 
 function getDataset(data: DailyContractData[], days: number): number[] {
   return data

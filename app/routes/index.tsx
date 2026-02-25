@@ -1,10 +1,10 @@
-import {createFileRoute} from "@tanstack/react-router";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import NetworkInfo from "../pages/Analytics/NetworkInfo/NetworkInfo";
-import HeaderSearch from "../pages/layout/Search/Index";
-import UserTransactionsPreview from "../pages/LandingPage/UserTransactionsPreview";
+import {createFileRoute} from "@tanstack/react-router";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
+import NetworkInfo from "../pages/Analytics/NetworkInfo/NetworkInfo";
+import UserTransactionsPreview from "../pages/LandingPage/UserTransactionsPreview";
+import HeaderSearch from "../pages/layout/Search/Index";
 
 const DESCRIPTION =
   "Explore transactions, accounts, events, validators, gas fees and other network activity on the Aptos blockchain. Real-time data and analytics for the Aptos Network.";

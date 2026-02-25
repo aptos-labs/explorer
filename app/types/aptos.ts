@@ -5,7 +5,7 @@
  * `import { Types } from "aptos"`. They are compile-time only (zero runtime cost).
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// biome-ignore-all lint/suspicious/noExplicitAny: legacy API types use `any` extensively
 
 // ---------------------------------------------------------------------------
 // Core primitives
@@ -413,7 +413,7 @@ export interface Current_Token_Datas_V2 {
 // Allows `import { Types } from "~/types/aptos"` and then `Types.Transaction`
 // exactly like the old `import { Types } from "aptos"`.
 // ---------------------------------------------------------------------------
-// eslint-disable-next-line @typescript-eslint/no-namespace
+// biome-ignore lint/style/noNamespace: preserves `Types.X` access pattern from legacy `aptos` package
 export namespace Types {
   export type Address = import("~/types/aptos").Address;
   export type MoveValue = import("~/types/aptos").MoveValue;

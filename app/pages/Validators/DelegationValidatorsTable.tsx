@@ -1,60 +1,61 @@
-import React, {useMemo, useState} from "react";
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
   alpha,
   Box,
+  FormControlLabel,
+  Paper,
+  Stack,
+  Switch,
   Table,
   TableHead,
   TableRow,
   Typography,
-  useTheme,
   useMediaQuery,
-  Paper,
-  FormControlLabel,
-  Switch,
+  useTheme,
 } from "@mui/material";
-import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
-import {addressFromWallet, assertNever} from "../../utils";
-import GeneralTableBody from "../../components/Table/GeneralTableBody";
-import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import {Types} from "~/types/aptos";
+import {useQuery} from "@tanstack/react-query";
+import type React from "react";
+import {useMemo, useState} from "react";
+import type {Types} from "~/types/aptos";
+import {getValidatorCommissionAndState} from "../../api";
+import type {ResponseError} from "../../api/client";
 import {
-  ValidatorData,
+  useGetDelegatedStakingPoolList,
+  useGetDelegatorStakeInfo,
+  useGetNumberOfDelegators,
+} from "../../api/hooks/delegations";
+import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
+import {
   useGetValidators,
+  type ValidatorData,
 } from "../../api/hooks/useGetValidators";
+import HashButton, {HashType} from "../../components/HashButton";
 import CurrencyValue, {
   APTCurrencyValue,
 } from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {
-  getSemanticColors,
-  brandColors,
-} from "../../themes/colors/aptosBrandColors";
-import {useAptosClient} from "../../global-config/GlobalConfig";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
-import HashButton, {HashType} from "../../components/HashButton";
-import {OperatorAddrCell, ValidatorAddrCell} from "./ValidatorsTable";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import GeneralTableBody from "../../components/Table/GeneralTableBody";
+import GeneralTableCell from "../../components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "../../components/Table/GeneralTableRow";
+import {useAptosClient} from "../../global-config/GlobalConfig";
+import {useAugmentToWithGlobalSearchParams, useNavigate} from "../../routing";
 import {
-  useGetNumberOfDelegators,
-  useGetDelegatorStakeInfo,
-  useGetDelegatedStakingPoolList,
-} from "../../api/hooks/delegations";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import {Stack} from "@mui/material";
-import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
+  brandColors,
+  getSemanticColors,
+} from "../../themes/colors/aptosBrandColors";
+import {addressFromWallet, assertNever} from "../../utils";
 import Error from "../Account/Error";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
 import {
-  ValidatorStatus,
   calculateNetworkPercentage,
   getValidatorStatus,
+  type ValidatorStatus,
 } from "../DelegatoryValidator/utils";
-import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
-import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
-import {useNavigate, useAugmentToWithGlobalSearchParams} from "../../routing";
-import {useQuery} from "@tanstack/react-query";
-import {getValidatorCommissionAndState} from "../../api";
-import {ResponseError} from "../../api/client";
+import {OperatorAddrCell, ValidatorAddrCell} from "./ValidatorsTable";
 
 function getSortedValidators(
   validators: ValidatorData[],

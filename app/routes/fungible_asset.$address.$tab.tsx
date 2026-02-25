@@ -1,8 +1,8 @@
 import {createFileRoute} from "@tanstack/react-router";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import {truncateAddress} from "../utils";
-import FAPage from "../pages/FungibleAsset/Index";
 import {PagePending} from "../components/NavigationPending";
+import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
+import FAPage from "../pages/FungibleAsset/Index";
+import {truncateAddress} from "../utils";
 
 // Primary route for fungible asset with tab in path
 export const Route = createFileRoute("/fungible_asset/$address/$tab")({

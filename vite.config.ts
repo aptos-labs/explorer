@@ -1,11 +1,11 @@
-import {defineConfig, type PluginOption} from "vite";
-import react from "@vitejs/plugin-react-swc";
-import viteSvgr from "vite-plugin-svgr";
-import {TanStackRouterVite} from "@tanstack/router-plugin/vite";
-import {tanstackStart} from "@tanstack/react-start/plugin/vite";
 import netlify from "@netlify/vite-plugin-tanstack-start";
-import compression from "vite-plugin-compression";
+import {tanstackStart} from "@tanstack/react-start/plugin/vite";
+import {TanStackRouterVite} from "@tanstack/router-plugin/vite";
+import react from "@vitejs/plugin-react-swc";
 import {visualizer} from "rollup-plugin-visualizer";
+import {defineConfig, type PluginOption} from "vite";
+import compression from "vite-plugin-compression";
+import viteSvgr from "vite-plugin-svgr";
 
 export default defineConfig({
   plugins: [

@@ -1,8 +1,8 @@
-import React, {memo} from "react";
-import {Box, Stack, Typography, useTheme, alpha} from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import PriorityHighOutlinedIcon from "@mui/icons-material/PriorityHighOutlined";
+import {alpha, Box, Stack, Typography, useTheme} from "@mui/material";
+import {memo} from "react";
 
 type TransactionStatusProps = {
   success: boolean;

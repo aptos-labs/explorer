@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
-import {Types} from "~/types/aptos";
-import {tryStandardizeAddress} from "../../../utils";
+import type {Types} from "~/types/aptos";
 import {useNetworkValue, useSdkV2Client} from "../../../global-config";
+import {tryStandardizeAddress} from "../../../utils";
 
 export interface DelegatorPoolInfo {
   delegator_address: string;

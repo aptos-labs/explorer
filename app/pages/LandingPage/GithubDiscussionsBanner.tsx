@@ -1,3 +1,5 @@
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {
   Button,
   Divider,
@@ -8,10 +10,8 @@ import {
 } from "@mui/material";
 import {useState} from "react";
 import {Banner} from "../../components/Banner";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {addressFromWallet} from "../../utils";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 const GITHUB_DISCUSSION_URL =
   "https://github.com/aptos-labs/aptos-developer-discussions/discussions";
@@ -68,7 +68,7 @@ export function GithubDiscussionsBanner() {
       {learnMoreButton}
     </Stack>
   ) : (
-    <>{text}</>
+    text
   );
 
   return (

@@ -1,3 +1,5 @@
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import {
   Button,
   Divider,
@@ -8,35 +10,33 @@ import {
   useTheme,
 } from "@mui/material";
 import {useContext, useEffect, useState} from "react";
+import type {Types} from "~/types/aptos";
+import {getAddStakeFee} from "../../api";
+import {
+  StakeOperation,
+  useGetDelegationNodeInfo,
+  useGetDelegatorStakeInfo,
+} from "../../api/hooks/delegations";
+import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
+import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
+import type {ValidatorData} from "../../api/hooks/useGetValidators";
 import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import WalletConnectionDialog from "./WalletConnectionDialog";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../components/StyledTooltip";
-import StakeOperationDialog from "./StakeOperationDialog";
-import {
-  StakeOperation,
-  useGetDelegatorStakeInfo,
-  useGetDelegationNodeInfo,
-} from "../../api/hooks/delegations";
-import {DelegationStateContext} from "./context/DelegationContext";
-import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
-import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
 import {OCTA} from "../../constants";
-import {Types} from "~/types/aptos";
-import {getAddStakeFee} from "../../api";
 import {
-  useNetworkValue,
   useAptosClient,
+  useNetworkValue,
 } from "../../global-config/GlobalConfig";
-import {ValidatorData} from "../../api/hooks/useGetValidators";
-import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
-import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
-import {calculateNetworkPercentage} from "./utils";
 import {addressFromWallet} from "../../utils";
+import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
+import {DelegationStateContext} from "./context/DelegationContext";
+import StakeOperationDialog from "./StakeOperationDialog";
+import {calculateNetworkPercentage} from "./utils";
+import WalletConnectionDialog from "./WalletConnectionDialog";
 
 type ValidatorStakingBarProps = {
   setIsStakingBarSkeletonLoading: (arg: boolean) => void;
@@ -150,7 +150,7 @@ function StakingBarContent({
 
   const walletAddress = addressFromWallet(account?.address);
   const balance = useGetAccountAPTBalance(walletAddress);
-  const networkValue = useNetworkValue();
+  const _networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
   const {stakes} = useGetDelegatorStakeInfo(
     walletAddress,
@@ -170,13 +170,13 @@ function StakingBarContent({
     async function fetchData() {
       const fee = await getAddStakeFee(
         aptosClient,
-        validator!.owner_address,
+        validator?.owner_address,
         MINIMUM_APT_IN_POOL_FOR_EXPLORER.toString(),
       );
       setAddStakeFee(fee[0]);
     }
     fetchData();
-  }, [networkValue, aptosClient, balance, validator]);
+  }, [aptosClient, validator]);
 
   const stakeButton = (
     <StyledTooltip

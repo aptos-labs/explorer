@@ -1,8 +1,7 @@
-import {Snackbar, Alert, Typography} from "@mui/material";
-import {CloseAction} from "./TransactionResponseSnackbar";
-import {Types} from "~/types/aptos";
-import React from "react";
+import {Alert, Snackbar, Typography} from "@mui/material";
+import type {Types} from "~/types/aptos";
 import {Link} from "../../routing";
+import {CloseAction} from "./TransactionResponseSnackbar";
 
 type FailureSnackbarProps = {
   onCloseSnackbar: () => void;

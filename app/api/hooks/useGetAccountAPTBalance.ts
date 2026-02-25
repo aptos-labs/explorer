@@ -1,8 +1,8 @@
-import {Types} from "~/types/aptos";
 import {useQuery} from "@tanstack/react-query";
-import {ResponseError} from "../client";
-import {getBalance} from "../index";
+import type {Types} from "~/types/aptos";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
+import type {ResponseError} from "../client";
+import {getBalance} from "../index";
 
 export function useGetAccountAPTBalance(address: Types.Address) {
   const networkValue = useNetworkValue();

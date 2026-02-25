@@ -1,16 +1,16 @@
-import React, {createContext, useContext, useMemo, ReactNode} from "react";
-import {AptosClient} from "../api/legacyClient";
 import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import {useSearch} from "@tanstack/react-router";
-import {
-  networks,
-  defaultNetworkName,
-  NetworkName,
-  getApiKey,
-  isValidNetworkName,
-  getGraphqlURI,
-} from "../constants";
 import Cookies from "js-cookie";
+import React, {createContext, type ReactNode, useContext, useMemo} from "react";
+import {AptosClient} from "../api/legacyClient";
+import {
+  defaultNetworkName,
+  getApiKey,
+  getGraphqlURI,
+  isValidNetworkName,
+  type NetworkName,
+  networks,
+} from "../constants";
 
 const NETWORK_COOKIE_NAME = "network";
 
@@ -160,7 +160,7 @@ function createAptosClient(networkName: NetworkName): AptosClient {
   const apiKey = getApiKey(networkName);
   const headers: Record<string, string> = {};
   if (apiKey) {
-    headers["Authorization"] = `Bearer ${apiKey}`;
+    headers.Authorization = `Bearer ${apiKey}`;
   }
   return new AptosClient(nodeUrl, {HEADERS: headers});
 }

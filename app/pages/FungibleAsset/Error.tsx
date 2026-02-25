@@ -1,7 +1,7 @@
-import React from "react";
-import {ResponseError, ResponseErrorType} from "../../api/client";
-import {Typography, Stack, useTheme} from "@mui/material";
 import {ErrorOutline} from "@mui/icons-material";
+import {Stack, Typography, useTheme} from "@mui/material";
+import type React from "react";
+import {type ResponseError, ResponseErrorType} from "../../api/client";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 
 type ErrorProps = {

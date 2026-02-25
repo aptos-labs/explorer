@@ -1,9 +1,9 @@
-import {Types} from "~/types/aptos";
-import {useQuery, UseQueryResult} from "@tanstack/react-query";
-import {getAccountResource} from "..";
-import {ResponseError} from "../client";
-import {useNetworkValue, useAptosClient} from "../../global-config";
+import {type UseQueryResult, useQuery} from "@tanstack/react-query";
 import {orderBy} from "es-toolkit";
+import type {Types} from "~/types/aptos";
+import {useAptosClient, useNetworkValue} from "../../global-config";
+import {getAccountResource} from "..";
+import type {ResponseError} from "../client";
 
 export type ModuleMetadata = {
   name: string;

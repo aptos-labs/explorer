@@ -1,13 +1,13 @@
-import React from "react";
-import {TokensTable} from "../Components/TokensTable";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {Types} from "~/types/aptos";
+import {Box, Pagination, Stack} from "@mui/material";
+import type React from "react";
+import type {Types} from "~/types/aptos";
 import {
   useGetAccountTokens,
   useGetAccountTokensCount,
 } from "../../../api/hooks/useGetAccountTokens";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {useSearchParams} from "../../../routing";
-import {Box, Pagination, Stack} from "@mui/material";
+import {TokensTable} from "../Components/TokensTable";
 
 const LIMIT = 20;
 
@@ -54,23 +54,21 @@ export function AccountTokensWithPagination({
   numPages,
 }: AccountTokensWithPaginationProps) {
   const [searchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") ?? "1");
+  const currentPage = parseInt(searchParams.get("page") ?? "1", 10);
   const offset = (currentPage - 1) * LIMIT;
 
   const {data: tokens} = useGetAccountTokens(address, LIMIT, offset);
   return (
-    <>
-      <Stack spacing={2}>
-        <Box sx={{width: "auto", overflowX: "auto"}}>
-          <TokensTable tokens={tokens ?? []} />
+    <Stack spacing={2}>
+      <Box sx={{width: "auto", overflowX: "auto"}}>
+        <TokensTable tokens={tokens ?? []} />
+      </Box>
+      {numPages > 1 && (
+        <Box sx={{display: "flex", justifyContent: "center"}}>
+          <RenderPagination currentPage={currentPage} numPages={numPages} />
         </Box>
-        {numPages > 1 && (
-          <Box sx={{display: "flex", justifyContent: "center"}}>
-            <RenderPagination currentPage={currentPage} numPages={numPages} />
-          </Box>
-        )}
-      </Stack>
-    </>
+      )}
+    </Stack>
   );
 }
 

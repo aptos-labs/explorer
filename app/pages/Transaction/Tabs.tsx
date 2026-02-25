@@ -1,46 +1,46 @@
-import * as React from "react";
-import {
-  Box,
-  Typography,
-  Stack,
-  useTheme,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
-import {Types} from "~/types/aptos";
-import {assertNever} from "../../utils";
-import StyledTabs from "../../components/StyledTabs";
-import StyledTab from "../../components/StyledTab";
-import UserTransactionOverviewTab from "./Tabs/UserTransactionOverviewTab";
-import BlockMetadataOverviewTab from "./Tabs/BlockMetadataOverviewTab";
-import StateCheckpointOverviewTab from "./Tabs/StateCheckpointOverviewTab";
-import PendingTransactionOverviewTab from "./Tabs/PendingTransactionOverviewTab";
-import GenesisTransactionOverviewTab from "./Tabs/GenesisTransactionOverviewTab";
+import {ErrorOutline} from "@mui/icons-material";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
-import EventsTab from "./Tabs/EventsTab";
-import PayloadTab from "./Tabs/PayloadTab";
-import ChangesTab from "./Tabs/ChangesTab";
-import UnknownTab from "./Tabs/UnknownTab";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import CallMergeOutlinedIcon from "@mui/icons-material/CallMergeOutlined";
-import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import BalanceChangeTab from "./Tabs/BalanceChangeTab";
+import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
+import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
-import {useNavigate} from "../../routing";
-import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
-import {TransactionTypeName} from "../../components/TransactionType";
-import BlockEpilogueOverviewTab from "./Tabs/BlockEpilogueOverviewTab";
+import * as React from "react";
+import {useEffect, useState} from "react";
+import type {Types} from "~/types/aptos";
+import ContentBox from "../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../components/IndividualPageContent/JsonViewCard";
-import {getLearnMoreTooltip} from "./helpers";
-import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import StyledTab from "../../components/StyledTab";
+import StyledTabs from "../../components/StyledTabs";
+import {TransactionTypeName} from "../../components/TransactionType";
 import {useNetworkName} from "../../global-config/GlobalConfig";
-import {ErrorOutline} from "@mui/icons-material";
-import {useEffect, useState} from "react";
+import {useNavigate} from "../../routing";
+import {assertNever} from "../../utils";
+import {getLearnMoreTooltip} from "./helpers";
+import BalanceChangeTab from "./Tabs/BalanceChangeTab";
+import BlockEpilogueOverviewTab from "./Tabs/BlockEpilogueOverviewTab";
+import BlockMetadataOverviewTab from "./Tabs/BlockMetadataOverviewTab";
+import ChangesTab from "./Tabs/ChangesTab";
+import EventsTab from "./Tabs/EventsTab";
+import GenesisTransactionOverviewTab from "./Tabs/GenesisTransactionOverviewTab";
+import PayloadTab from "./Tabs/PayloadTab";
+import PendingTransactionOverviewTab from "./Tabs/PendingTransactionOverviewTab";
+import StateCheckpointOverviewTab from "./Tabs/StateCheckpointOverviewTab";
+import UnknownTab from "./Tabs/UnknownTab";
+import UserTransactionOverviewTab from "./Tabs/UserTransactionOverviewTab";
+import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {

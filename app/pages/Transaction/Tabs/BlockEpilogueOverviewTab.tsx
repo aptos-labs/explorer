@@ -1,11 +1,10 @@
-import * as React from "react";
-import {Types} from "~/types/aptos";
 import {Box} from "@mui/material";
+import type {Types} from "~/types/aptos";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
-import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 
 type BlockEpilogueOverviewTabProps = {

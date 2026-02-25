@@ -1,14 +1,13 @@
-import React from "react";
 import {
   FormControl,
-  Select,
   MenuItem,
-  SelectChangeEvent,
+  Select,
+  type SelectChangeEvent,
   useTheme,
 } from "@mui/material";
 import {useLocation} from "@tanstack/react-router";
+import {hiddenNetworks, type NetworkName, networks} from "../../constants";
 import {useNetworkSelector} from "../../global-config";
-import {networks, NetworkName, hiddenNetworks} from "../../constants";
 import {useNavigate} from "../../routing";
 
 export default function NetworkSelect() {

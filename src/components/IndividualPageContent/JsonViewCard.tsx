@@ -1,5 +1,6 @@
-import {Box, useTheme, alpha, Popper, Paper} from "@mui/material";
-import React, {useState, useCallback, useRef, useEffect} from "react";
+import {alpha, Box, Paper, Popper, useTheme} from "@mui/material";
+import type React from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import ReactJson from "react-json-view";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
@@ -130,34 +131,37 @@ function useCopyTooltip() {
       clearHoverTimer();
       clearFeedbackTimer();
     };
-  }, []);
+  }, [clearFeedbackTimer, clearHoverTimer]);
 
-  const handleClick = useCallback(async (e: React.MouseEvent) => {
-    const copyable = findCopyableElement(e.target as HTMLElement);
-    if (!copyable) return;
+  const handleClick = useCallback(
+    async (e: React.MouseEvent) => {
+      const copyable = findCopyableElement(e.target as HTMLElement);
+      if (!copyable) return;
 
-    e.preventDefault();
-    e.stopPropagation();
-    clearHoverTimer();
+      e.preventDefault();
+      e.stopPropagation();
+      clearHoverTimer();
 
-    setAnchor(copyable.element);
-    setOpen(true);
+      setAnchor(copyable.element);
+      setOpen(true);
 
-    try {
-      await navigator.clipboard.writeText(copyable.text);
-      setStatus("copied");
-    } catch (err) {
-      console.error("Failed to copy:", err);
-      setStatus("error");
-    }
+      try {
+        await navigator.clipboard.writeText(copyable.text);
+        setStatus("copied");
+      } catch (err) {
+        console.error("Failed to copy:", err);
+        setStatus("error");
+      }
 
-    clearFeedbackTimer();
-    feedbackTimer.current = window.setTimeout(() => {
-      setOpen(false);
-      setStatus("idle");
-      setAnchor(null);
-    }, COPIED_DISPLAY_MS);
-  }, []);
+      clearFeedbackTimer();
+      feedbackTimer.current = window.setTimeout(() => {
+        setOpen(false);
+        setStatus("idle");
+        setAnchor(null);
+      }, COPIED_DISPLAY_MS);
+    },
+    [clearFeedbackTimer, clearHoverTimer],
+  );
 
   const handleMouseOver = useCallback(
     (e: React.MouseEvent) => {
@@ -166,7 +170,7 @@ function useCopyTooltip() {
       const target = e.target as HTMLElement;
 
       // Skip if still hovering the same anchor element
-      if (anchor && anchor.contains(target)) return;
+      if (anchor?.contains(target)) return;
 
       const copyable = findCopyableElement(target);
       if (!copyable) return;
@@ -181,7 +185,11 @@ function useCopyTooltip() {
         hoverTimer.current = null;
       }, HOVER_DELAY_MS);
     },
-    [status, anchor],
+    [
+      status,
+      anchor, // Moving to a different element, reset timer and anchor
+      clearHoverTimer,
+    ],
   );
 
   const handleMouseOut = useCallback(
@@ -193,7 +201,7 @@ function useCopyTooltip() {
         setAnchor(null);
       }
     },
-    [status],
+    [status, clearHoverTimer],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -202,7 +210,7 @@ function useCopyTooltip() {
       setOpen(false);
       setAnchor(null);
     }
-  }, [status]);
+  }, [status, clearHoverTimer]);
 
   const tooltipText =
     status === "copied"

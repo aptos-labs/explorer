@@ -25,7 +25,7 @@ export const initGTM = ({events}: GTMParams) => {
   // Initialize dataLayer
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
-    "gtm.start": new Date().getTime(),
+    "gtm.start": Date.now(),
     event: "gtm.js",
     ...events,
   });

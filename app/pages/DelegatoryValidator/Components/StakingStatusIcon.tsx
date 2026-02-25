@@ -1,5 +1,12 @@
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import LockIcon from "@mui/icons-material/Lock";
+import PendingIcon from "@mui/icons-material/Pending";
 import {Chip, useTheme} from "@mui/material";
-import React from "react";
+import type React from "react";
+import Counter1Logo from "../../../assets/svg/stepper_counter_1.svg?react";
+import Counter2Logo from "../../../assets/svg/stepper_counter_2.svg?react";
+import Counter3Logo from "../../../assets/svg/stepper_counter_3.svg?react";
+import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import {
   STAKED_BACKGROUND_COLOR_DARK,
   STAKED_BACKGROUND_COLOR_LIGHT,
@@ -20,18 +27,11 @@ import {
   WITHDRAW_READY_TEXT_COLOR_DARK,
   WITHDRAW_READY_TEXT_COLOR_LIGHT,
 } from "../constants";
-import LockIcon from "@mui/icons-material/Lock";
-import PendingIcon from "@mui/icons-material/Pending";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import GeneralTableCell from "../../../components/Table/GeneralTableCell";
-import Counter1Logo from "../../../assets/svg/stepper_counter_1.svg?react";
-import Counter2Logo from "../../../assets/svg/stepper_counter_2.svg?react";
-import Counter3Logo from "../../../assets/svg/stepper_counter_3.svg?react";
 
 export enum StakingStatus {
-  "STAKED",
-  "WITHDRAW_PENDING",
-  "WITHDRAW_READY",
+  STAKED,
+  WITHDRAW_PENDING,
+  WITHDRAW_READY,
 }
 
 export interface StakingStatusInterface {
