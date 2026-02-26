@@ -17,7 +17,11 @@ export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
   try {
     return await promise;
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+    if (error instanceof Error) {
+      error.message = `Request failed: ${error.message}`;
+      throw error;
+    }
+    const message = String(error);
     throw new Error(`Request failed: ${message}`);
   }
 }
