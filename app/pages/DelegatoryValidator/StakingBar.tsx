@@ -163,16 +163,17 @@ function StakingBarContent({
         : Number(addStakeFee));
 
   useEffect(() => {
+    if (!validator?.owner_address) return;
     async function fetchData() {
       const fee = await getAddStakeFee(
         aptosClient,
-        validator?.owner_address,
+        validator!.owner_address,
         MINIMUM_APT_IN_POOL_FOR_EXPLORER.toString(),
       );
       setAddStakeFee(fee[0]);
     }
     fetchData();
-  }, [aptosClient, validator]);
+  }, [aptosClient, validator?.owner_address]);
 
   const stakeButton = (
     <StyledTooltip

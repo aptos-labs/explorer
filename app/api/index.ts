@@ -14,7 +14,12 @@ import {AptosClient} from "./legacyClient";
 
 // Error wrapper
 export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
-  return await promise;
+  try {
+    return await promise;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Request failed: ${message}`);
+  }
 }
 
 export async function getTransactions(
