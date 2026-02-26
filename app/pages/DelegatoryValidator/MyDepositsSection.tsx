@@ -291,10 +291,11 @@ function MyDepositSectionContent({
     useState<Types.MoveValue>(false);
 
   useEffect(() => {
+    if (!validator?.owner_address) return;
     async function fetchData() {
       const canWithdraw = await getCanWithdrawPendingInactive(
         aptosClient,
-        validator?.owner_address,
+        validator!.owner_address,
       );
       setCanWithdrawPendingInactive(canWithdraw[0]);
     }
