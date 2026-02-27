@@ -23,9 +23,9 @@
       "lodash": ">=4.17.23",
       "@isaacs/brace-expansion": ">=5.0.1",
       "axios": ">=1.13.5",
-      "@netlify/zip-it-and-ship-it>minimatch": ">=10.2.1",
-      "readdir-glob>minimatch": ">=10.2.1",
-      "glob>minimatch": ">=10.2.1",
+      "@netlify/zip-it-and-ship-it>minimatch": ">=10.2.3",
+      "readdir-glob>minimatch": ">=10.2.3",
+      "glob>minimatch": ">=10.2.3",
       "@netlify/edge-bundler>ajv": "8.18.0"
     }
   },
