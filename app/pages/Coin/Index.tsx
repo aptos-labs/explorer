@@ -48,14 +48,10 @@ export default function CoinPage() {
 
   const {isLoading: isLoadingCoinSupply, data: supplyInfo} =
     useGetCoinSupplyLimit(struct);
-  const {isLoading: isLoadingPairedFa, data: pairedFa} =
-    useGetCoinPairedFa(struct);
+  const {data: pairedFa} = useGetCoinPairedFa(struct);
 
   const isLoading =
-    isLoadingCoinInfo ||
-    isLoadingCoinList ||
-    isLoadingCoinSupply ||
-    isLoadingPairedFa;
+    isLoadingCoinInfo || isLoadingCoinList || isLoadingCoinSupply;
   if (error === null) {
     error = infoError;
   }

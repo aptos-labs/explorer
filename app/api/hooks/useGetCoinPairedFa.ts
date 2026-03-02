@@ -1,22 +1,19 @@
-import {useViewFunction} from "./useViewFunction";
+import {pairedFaMetadataAddress} from "@aptos-labs/ts-sdk";
 
 export function useGetCoinPairedFa(coinType: string): {
   isLoading: boolean;
   data: string | null;
 } {
-  const {isLoading, data} = useViewFunction(
-    "0x1::coin::paired_metadata",
-    [coinType],
-    [],
-  );
-
-  if (data !== undefined) {
-    const mappedData = data as [{vec: [{inner: string}]}];
-    const val = mappedData[0]?.vec[0];
-    if (val !== undefined && val !== null) {
-      return {isLoading, data: val.inner};
-    }
+  if (!coinType) {
+    return {isLoading: false, data: null};
   }
 
-  return {isLoading, data: null};
+  try {
+    const address = pairedFaMetadataAddress(
+      coinType as `0x${string}::${string}::${string}`,
+    );
+    return {isLoading: false, data: address.toStringLong()};
+  } catch {
+    return {isLoading: false, data: null};
+  }
 }
