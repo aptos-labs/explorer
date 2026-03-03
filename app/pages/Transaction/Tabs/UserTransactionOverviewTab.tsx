@@ -1,5 +1,6 @@
 import {Hex} from "@aptos-labs/ts-sdk";
-import {Box, useTheme} from "@mui/material";
+import {OpenInNew} from "@mui/icons-material";
+import {Box, Link, useTheme} from "@mui/material";
 import * as React from "react";
 import type {Types} from "~/types/aptos";
 import {useGetAssetMetadata} from "../../../api/hooks/useGetAssetMetadata";
@@ -271,7 +272,8 @@ type EventAction =
   | LiquidStaking
   | ObjectTransfer
   | LegacyTokenDeposit
-  | LegacyTokenWithdraw;
+  | LegacyTokenWithdraw
+  | Wormhole;
 
 type Swap = {
   actionType: "swap";
@@ -431,6 +433,7 @@ const parsers = [
   parseHyperionEvent,
   parseTappEvent,
   parseEarniumEvent,
+  parseWormholeBurnEvent,
 
   // staking / unstaking actions
   parseAmisLSDEvent,
@@ -514,6 +517,8 @@ function TransactionActionsRow({
             return legacyTokenWithdrawAction(action, i);
           case "legacy token deposit":
             return legacyTokenDepositAction(action, i);
+          case "wormhole burn":
+            return wormholeBurnAction(transaction.hash, coinData, action, i);
         }
       })}
       tooltip={
@@ -2419,4 +2424,128 @@ function convertCoinInfoToCoinType(coinInfo: {
 
 function hexToUtf8(hexWith0x: string): string {
   return TEXT_DECODER.decode(Hex.fromHexString(hexWith0x).toUint8Array());
+}
+
+type Wormhole = {
+  actionType: "wormhole burn";
+  assetData: AssetData[];
+};
+
+const WormholeAssetContent = ({
+  asset,
+  coinData,
+  index,
+  totalAssets,
+}: {
+  asset: AssetData;
+  coinData: {data: CoinDescription[]} | undefined;
+  index: number;
+  totalAssets: number;
+}) => {
+  const {data: assetMetadata} = useGetAssetMetadata(asset.asset);
+  const assetCoin = findCoinData(coinData?.data ?? [], asset.asset);
+  const decimals = assetCoin?.decimals ?? assetMetadata?.decimals ?? 0;
+
+  return (
+    <React.Fragment>
+      {asset.amount / 10 ** decimals}
+      <HashButton
+        hash={asset.asset}
+        type={
+          asset.asset.includes("::") ? HashType.COIN : HashType.FUNGIBLE_ASSET
+        }
+        img={assetCoin?.logoUrl}
+        size="small"
+      />
+      {index < totalAssets - 2 && ", "}
+      {index === totalAssets - 2 && " and "}
+    </React.Fragment>
+  );
+};
+
+const wormholeBurnAction = (
+  hash: string,
+  coinData: {data: CoinDescription[]} | undefined,
+  action: Wormhole,
+  i: number,
+) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>{"🔥️ Bridged out"}</span>
+        {action.assetData.map((asset, index) => (
+          <LiquidityAssetContent
+            key={`action-${i}-asset-${index}`}
+            asset={asset}
+            coinData={coinData}
+            index={index}
+            totalAssets={action.assetData.length}
+          />
+        ))}
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>
+          <Link
+            href={`https://wormholescan.io/#/tx/${hash}?network=Mainnet`}
+            underline="none"
+            fontSize={12}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Open WormholeScan in new tab`}
+          >
+            on Wormhole
+            <OpenInNew sx={{fontSize: 12}} />
+          </Link>
+        </span>
+      </Box>
+    </Box>
+  );
+};
+
+function parseWormholeBurnEvent(event: Types.Event): Wormhole | undefined {
+  if (
+    event.type !==
+    "0x9bce6734f7b63e835108e3bd8c36743d4709fe435f44791918801d0989640a9d::token_messenger::DepositForBurn"
+  ) {
+    return undefined;
+  }
+
+  const data: {
+    amount: string;
+    burn_token: string;
+  } = event.data;
+
+  const amount = Number(data.amount);
+  const assetData: AssetData[] = [{asset: data.burn_token, amount: amount}];
+
+  return {
+    actionType: "wormhole burn",
+    assetData,
+  };
 }
