@@ -53,7 +53,7 @@
     "react": "^19.2.4",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.4",
-    "react-helmet-async": "^2.0.5",
+    "react-helmet-async": "^3.0.0",
     "react-hook-form": "^7.71.1",
     "react-simple-maps": "^3.0.0",
     "react-syntax-highlighter": "^16.1.0"
