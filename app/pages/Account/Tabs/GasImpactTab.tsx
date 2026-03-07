@@ -25,20 +25,11 @@ import {TransactionTypeName} from "../../../components/TransactionType";
 import {Link} from "../../../routing";
 import {AIP140_CONFIG, wouldExceedGasLimit} from "../../../utils/aip140";
 import TransactionFunction from "../../Transaction/Tabs/Components/TransactionFunction";
+import {
+  getPageStartSequenceNumbers,
+  TXN_PER_PAGE,
+} from "../Components/AccountTransactions";
 import Error from "../Error";
-
-const TXN_PER_PAGE = 25;
-
-function getPageStarts(sequenceNum: number): number[] {
-  const starts: number[] = [];
-  const pages = Math.ceil(sequenceNum / TXN_PER_PAGE);
-  let num = sequenceNum;
-  for (let i = 0; i < pages; i++) {
-    num = num - TXN_PER_PAGE;
-    starts.push(num >= 0 ? num : 0);
-  }
-  return starts;
-}
 
 type GasImpactRowProps = {
   transaction: Types.Transaction;
@@ -93,11 +84,29 @@ function GasImpactRow({transaction}: GasImpactRowProps) {
       <GeneralTableCell sx={{textAlign: "center"}}>
         {exceeds ? (
           <Tooltip title="Would exceed max gas limit">
-            <WarningAmberIcon sx={{color: theme.palette.warning.main}} />
+            <Box
+              component="span"
+              tabIndex={0}
+              aria-label="Gas usage would exceed the maximum gas limit"
+            >
+              <WarningAmberIcon
+                sx={{color: theme.palette.warning.main}}
+                aria-hidden
+              />
+            </Box>
           </Tooltip>
         ) : (
           <Tooltip title="Within gas limit">
-            <CheckCircleOutlineIcon sx={{color: theme.palette.success.main}} />
+            <Box
+              component="span"
+              tabIndex={0}
+              aria-label="Gas usage is within the maximum gas limit"
+            >
+              <CheckCircleOutlineIcon
+                sx={{color: theme.palette.success.main}}
+                aria-hidden
+              />
+            </Box>
           </Tooltip>
         )}
       </GeneralTableCell>
@@ -113,7 +122,7 @@ type GasImpactTableProps = {
 function GasImpactTable({address, sequenceNum}: GasImpactTableProps) {
   const [currentPageNum, setCurrentPageNum] = React.useState(1);
   const numOfPages = Math.ceil(sequenceNum / TXN_PER_PAGE);
-  const pageStarts = getPageStarts(sequenceNum);
+  const pageStarts = getPageStartSequenceNumbers(sequenceNum);
 
   const start = pageStarts[currentPageNum - 1];
   const limit =
