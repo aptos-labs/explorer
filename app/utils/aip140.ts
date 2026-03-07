@@ -25,6 +25,10 @@ export function wouldExceedGasLimit(
   maxGasAmount: string,
 ): boolean {
   if (!AIP140_CONFIG.enabled) return false;
-  const projected = BigInt(gasUsed) * AIP140_CONFIG.gasMultiplier;
-  return projected > BigInt(maxGasAmount);
+  try {
+    const projected = BigInt(gasUsed) * AIP140_CONFIG.gasMultiplier;
+    return projected > BigInt(maxGasAmount);
+  } catch {
+    return false;
+  }
 }
