@@ -7,6 +7,7 @@ import {
   type CoinDescription,
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
+import {AIP140GasBanner} from "../../../components/AIP140GasBanner";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
@@ -558,6 +559,7 @@ export default function UserTransactionOverviewTab({
 
   return (
     <Box marginBottom={3}>
+      <AIP140GasBanner transaction={transactionData} />
       <ContentBox padding={4}>
         <ContentRow
           title={"Version:"}

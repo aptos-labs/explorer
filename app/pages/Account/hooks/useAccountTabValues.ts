@@ -1,4 +1,5 @@
 import {useGetIsGraphqlClientSupported} from "../../../api/hooks/useGraphqlClient";
+import {AIP140_CONFIG} from "../../../utils/aip140";
 import type {TabValue} from "../Tabs";
 
 const TAB_VALUES_FULL: TabValue[] = [
@@ -54,15 +55,22 @@ export function getTabValues(
   isObject: boolean,
   isMultisig: boolean,
 ): TabValue[] {
+  let tabs: TabValue[];
   if (isObject) {
-    return isGraphqlClientSupported ? OBJECT_VALUES_FULL : OBJECT_TAB_VALUES;
+    tabs = isGraphqlClientSupported
+      ? [...OBJECT_VALUES_FULL]
+      : [...OBJECT_TAB_VALUES];
+  } else if (isMultisig) {
+    tabs = isGraphqlClientSupported
+      ? [...TAB_VALUES_MULTISIG_FULL]
+      : [...TAB_VALUES_MULTISIG];
+  } else {
+    tabs = isGraphqlClientSupported ? [...TAB_VALUES_FULL] : [...TAB_VALUES];
   }
-  if (isMultisig) {
-    return isGraphqlClientSupported
-      ? TAB_VALUES_MULTISIG_FULL
-      : TAB_VALUES_MULTISIG;
+  if (AIP140_CONFIG.enabled && !isObject) {
+    tabs.push("gas-impact");
   }
-  return isGraphqlClientSupported ? TAB_VALUES_FULL : TAB_VALUES;
+  return tabs;
 }
 
 /**

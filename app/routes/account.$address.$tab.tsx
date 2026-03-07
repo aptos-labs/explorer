@@ -41,7 +41,9 @@ export const Route = createFileRoute("/account/$address/$tab")({
                 ? "Modules"
                 : params.tab === "multisig"
                   ? "Multisig"
-                  : "Info";
+                  : params.tab === "gas-impact"
+                    ? "Gas Impact"
+                    : "Info";
     return {
       meta: [
         {
