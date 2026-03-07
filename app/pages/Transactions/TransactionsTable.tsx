@@ -106,7 +106,7 @@ function TransactionTimestampCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionSenderCell({transaction}: TransactionCellProps) {
-  let sender;
+  let sender: string | undefined;
   if (transaction.type === TransactionTypeName.User) {
     sender = (transaction as Types.UserTransaction).sender;
   } else if (transaction.type === "block_metadata_transaction") {
@@ -179,7 +179,7 @@ function TransactionAmount({
     const amount = getCoinBalanceChangeForAccount(transaction, address);
     if (amount !== undefined) {
       let amountAbs = amount;
-      let color;
+      let color: string | undefined;
       if (amount > 0) {
         color = semanticColors.status.info;
       } else if (amount < 0) {
@@ -218,7 +218,7 @@ function TransactionAmountGasCell({
 
   const showAIP140Warning =
     showWarnings &&
-    transaction.type === "user_transaction" &&
+    transaction.type === TransactionTypeName.User &&
     "gas_used" in transaction &&
     "max_gas_amount" in transaction &&
     wouldExceedGasLimit(transaction.gas_used, transaction.max_gas_amount);
@@ -237,9 +237,16 @@ function TransactionAmountGasCell({
             >
               {showAIP140Warning && (
                 <Tooltip title="Would exceed max gas under AIP-140 (10x)">
-                  <WarningAmberIcon
-                    sx={{fontSize: 14, color: theme.palette.warning.main}}
-                  />
+                  <Box
+                    component="span"
+                    tabIndex={0}
+                    aria-label="Transaction would exceed max gas under AIP-140 (10x)"
+                  >
+                    <WarningAmberIcon
+                      sx={{fontSize: 14, color: theme.palette.warning.main}}
+                      aria-hidden
+                    />
+                  </Box>
                 </Tooltip>
               )}
               <span>
@@ -641,19 +648,26 @@ function TransactionCard({transaction, address}: TransactionCardProps) {
             {"gas_used" in transaction && "gas_unit_price" in transaction && (
               <Stack direction="row" spacing={0.5} alignItems="center">
                 {showWarnings &&
-                  transaction.type === "user_transaction" &&
+                  transaction.type === TransactionTypeName.User &&
                   "max_gas_amount" in transaction &&
                   wouldExceedGasLimit(
                     transaction.gas_used,
                     transaction.max_gas_amount,
                   ) && (
                     <Tooltip title="Would exceed max gas under AIP-140 (10x)">
-                      <WarningAmberIcon
-                        sx={{
-                          fontSize: 12,
-                          color: theme.palette.warning.main,
-                        }}
-                      />
+                      <Box
+                        component="span"
+                        tabIndex={0}
+                        aria-label="Transaction would exceed max gas under AIP-140 (10x)"
+                      >
+                        <WarningAmberIcon
+                          sx={{
+                            fontSize: 12,
+                            color: theme.palette.warning.main,
+                          }}
+                          aria-hidden
+                        />
+                      </Box>
                     </Tooltip>
                   )}
                 <Typography

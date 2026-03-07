@@ -67,7 +67,7 @@ export function getTabValues(
   } else {
     tabs = isGraphqlClientSupported ? [...TAB_VALUES_FULL] : [...TAB_VALUES];
   }
-  if (AIP140_CONFIG.enabled) {
+  if (AIP140_CONFIG.enabled && !isObject) {
     tabs.push("gas-impact");
   }
   return tabs;
