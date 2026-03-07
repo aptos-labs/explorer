@@ -33,6 +33,7 @@ import {
   TableTransactionType,
   TransactionTypeName,
 } from "../../components/TransactionType";
+import {useAIP140Warnings} from "../../context/AIP140Context";
 import {
   Link,
   useAugmentToWithGlobalSearchParams,
@@ -40,7 +41,7 @@ import {
 } from "../../routing";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import {assertNever} from "../../utils";
-import {AIP140_CONFIG, wouldExceedGasLimit} from "../../utils/aip140";
+import {wouldExceedGasLimit} from "../../utils/aip140";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
 import {
   getCoinBalanceChangeForAccount,
@@ -213,9 +214,10 @@ function TransactionAmountGasCell({
   address,
 }: TransactionCellProps) {
   const theme = useTheme();
+  const {showWarnings} = useAIP140Warnings();
 
   const showAIP140Warning =
-    AIP140_CONFIG.enabled &&
+    showWarnings &&
     transaction.type === "user_transaction" &&
     "gas_used" in transaction &&
     "max_gas_amount" in transaction &&
@@ -521,6 +523,7 @@ type TransactionCardProps = {
 
 function TransactionCard({transaction, address}: TransactionCardProps) {
   const theme = useTheme();
+  const {showWarnings} = useAIP140Warnings();
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const version = "version" in transaction ? transaction.version : null;
@@ -637,7 +640,7 @@ function TransactionCard({transaction, address}: TransactionCardProps) {
             <TransactionAmount transaction={transaction} address={address} />
             {"gas_used" in transaction && "gas_unit_price" in transaction && (
               <Stack direction="row" spacing={0.5} alignItems="center">
-                {AIP140_CONFIG.enabled &&
+                {showWarnings &&
                   transaction.type === "user_transaction" &&
                   "max_gas_amount" in transaction &&
                   wouldExceedGasLimit(
