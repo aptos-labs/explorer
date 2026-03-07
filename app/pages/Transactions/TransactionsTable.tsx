@@ -3,6 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import OpenInNew from "@mui/icons-material/OpenInNew";
 import TextSnippetOutlined from "@mui/icons-material/TextSnippetOutlined";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import {Box, Paper, Stack, useMediaQuery, useTheme} from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -39,6 +40,7 @@ import {
 } from "../../routing";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import {assertNever} from "../../utils";
+import {AIP140_CONFIG, wouldExceedGasLimit} from "../../utils/aip140";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
 import {
   getCoinBalanceChangeForAccount,
@@ -211,21 +213,43 @@ function TransactionAmountGasCell({
   address,
 }: TransactionCellProps) {
   const theme = useTheme();
+
+  const showAIP140Warning =
+    AIP140_CONFIG.enabled &&
+    transaction.type === "user_transaction" &&
+    "gas_used" in transaction &&
+    "max_gas_amount" in transaction &&
+    wouldExceedGasLimit(transaction.gas_used, transaction.max_gas_amount);
+
   return (
     <GeneralTableCell sx={{paddingY: 1}}>
       <Stack sx={{textAlign: "right"}}>
         <TransactionAmount transaction={transaction} address={address} />
         <Box sx={{fontSize: 11, color: theme.palette.text.secondary}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
-            <>
-              Gas{" "}
-              <GasFeeValue
-                gasUsed={transaction.gas_used}
-                gasUnitPrice={transaction.gas_unit_price}
-                transactionData={transaction}
-                netGasCost
-              />
-            </>
+            <Stack
+              direction="row"
+              spacing={0.5}
+              alignItems="center"
+              justifyContent="flex-end"
+            >
+              {showAIP140Warning && (
+                <Tooltip title="Would exceed max gas under AIP-140 (10x)">
+                  <WarningAmberIcon
+                    sx={{fontSize: 14, color: theme.palette.warning.main}}
+                  />
+                </Tooltip>
+              )}
+              <span>
+                Gas{" "}
+                <GasFeeValue
+                  gasUsed={transaction.gas_used}
+                  gasUnitPrice={transaction.gas_unit_price}
+                  transactionData={transaction}
+                  netGasCost
+                />
+              </span>
+            </Stack>
           ) : null}
         </Box>
       </Stack>
@@ -612,17 +636,38 @@ function TransactionCard({transaction, address}: TransactionCardProps) {
           >
             <TransactionAmount transaction={transaction} address={address} />
             {"gas_used" in transaction && "gas_unit_price" in transaction && (
-              <Typography
-                variant="caption"
-                sx={{color: theme.palette.text.secondary, fontSize: "0.75rem"}}
-              >
-                <GasFeeValue
-                  gasUsed={transaction.gas_used}
-                  gasUnitPrice={transaction.gas_unit_price}
-                  transactionData={transaction}
-                  netGasCost
-                />
-              </Typography>
+              <Stack direction="row" spacing={0.5} alignItems="center">
+                {AIP140_CONFIG.enabled &&
+                  transaction.type === "user_transaction" &&
+                  "max_gas_amount" in transaction &&
+                  wouldExceedGasLimit(
+                    transaction.gas_used,
+                    transaction.max_gas_amount,
+                  ) && (
+                    <Tooltip title="Would exceed max gas under AIP-140 (10x)">
+                      <WarningAmberIcon
+                        sx={{
+                          fontSize: 12,
+                          color: theme.palette.warning.main,
+                        }}
+                      />
+                    </Tooltip>
+                  )}
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    fontSize: "0.75rem",
+                  }}
+                >
+                  <GasFeeValue
+                    gasUsed={transaction.gas_used}
+                    gasUnitPrice={transaction.gas_unit_price}
+                    transactionData={transaction}
+                    netGasCost
+                  />
+                </Typography>
+              </Stack>
             )}
           </Stack>
         </Stack>
