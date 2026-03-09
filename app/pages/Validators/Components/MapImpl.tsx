@@ -1,9 +1,7 @@
 /**
  * Client-only Map component that uses react-simple-maps.
- * This file should ONLY be imported via dynamic import() on the client.
- *
- * The .client.tsx naming convention signals this is client-only code.
- * Do not import this file directly - use dynamic import from ValidatorsMap.tsx
+ * This file should ONLY be imported via dynamic import() on the client,
+ * since react-simple-maps requires browser APIs.
  */
 
 import {alpha, Box, Stack, styled, Typography, useTheme} from "@mui/material";
@@ -17,8 +15,7 @@ import type {
   ValidatorGeoGroup,
 } from "../../../api/hooks/useGetValidatorsGeoData";
 import {brandColors} from "../../../themes/colors/aptosBrandColors";
-
-export type MapGroupBy = "city" | "country";
+import type {MapGroupBy} from "../types";
 
 const MARKER_COLOR = brandColors.babyBlue;
 const MIN_NODE_COUNT_SHOWN_IN_MARKER = 5;
