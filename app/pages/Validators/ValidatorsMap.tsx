@@ -14,8 +14,8 @@ import {useGetEpochTime} from "../../api/hooks/useGetEpochTime";
 import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import type {ValidatorGeoGroup} from "../../api/hooks/useGetValidatorsGeoData";
 import {useGetValidatorSetGeoData} from "../../api/hooks/useGetValidatorsGeoData";
-import type {MapGroupBy} from "./Components/Map.client";
 import MapMetrics from "./Components/MapMetrics";
+import type {MapGroupBy} from "./types";
 
 // Loading placeholder for the map
 function MapLoading() {
@@ -58,10 +58,10 @@ function ClientOnlyMap({
     if (!isClient) return;
 
     // Use dynamic import to load the client-only Map component
-    // Map.client.tsx contains react-simple-maps which can't be imported during SSR
+    // MapImpl.tsx contains react-simple-maps which can't be imported during SSR
     const loadMap = async () => {
       try {
-        const module = await import("./Components/Map.client");
+        const module = await import("./Components/MapImpl");
         setMapComponent(() => module.default);
       } catch (e) {
         console.error("Failed to load map component", e);
