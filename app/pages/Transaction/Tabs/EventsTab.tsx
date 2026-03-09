@@ -47,7 +47,7 @@ export default function EventsTab({transaction}: EventsTabProps) {
           <CollapsibleCard
             key={i}
             titleKey="Index:"
-            titleValue={i.toString()}
+            titleValue={`${i} — ${event.type}`}
             expanded={expandedList[i]}
             toggleExpanded={() => toggleExpandedAt(i)}
           >
