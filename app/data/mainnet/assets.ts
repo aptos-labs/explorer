@@ -554,6 +554,8 @@ export const mainnetVerifiedTokens: Record<string, string> = {
     "MKL",
   "0x51964f09020498a1421a2a3bafe8e1d9fa72574b60446486c599bc6f3e9fae29::echelon_coin::ELON":
     "ELON",
+  "0xe50684a338db732d8fb8a3ac71c4b8633878bd0193bca5de2ebc852a83b35099::propbase_coin::PROPS":
+    "PROPS",
 };
 
 /**

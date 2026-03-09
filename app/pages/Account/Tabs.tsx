@@ -3,6 +3,7 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import ExtensionIcon from "@mui/icons-material/Extension";
 import GroupIcon from "@mui/icons-material/Group";
+import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import {Box} from "@mui/material";
@@ -15,6 +16,7 @@ import {useNavigate} from "../../routing";
 import {assertNever} from "../../utils";
 import {accountPagePath} from "./Index";
 import CoinsTab from "./Tabs/CoinsTab";
+import GasImpactTab from "./Tabs/GasImpactTab";
 import InfoTab from "./Tabs/InfoTab";
 import ModulesTab from "./Tabs/ModulesTab";
 import MultisigTab from "./Tabs/MultisigTab";
@@ -32,6 +34,7 @@ const TabComponents = Object.freeze({
   resources: ResourcesTab,
   modules: ModulesTab,
   info: InfoTab,
+  "gas-impact": GasImpactTab,
 });
 
 export type TabValue = keyof typeof TabComponents;
@@ -52,6 +55,8 @@ function getTabLabel(value: TabValue): string {
       return "Modules";
     case "info":
       return "Info";
+    case "gas-impact":
+      return "Gas Impact";
     default:
       return assertNever(value);
   }
@@ -73,6 +78,8 @@ function getTabIcon(value: TabValue) {
       return <ExtensionIcon fontSize="small" />;
     case "info":
       return <DescriptionOutlinedIcon fontSize="small" />;
+    case "gas-impact":
+      return <LocalGasStationIcon fontSize="small" />;
     default:
       return assertNever(value);
   }

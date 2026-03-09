@@ -7,9 +7,9 @@ import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabC
 import TransactionsTable from "../../Transactions/TransactionsTable";
 import Error from "../Error";
 
-const TXN_PER_PAGE = 25;
+export const TXN_PER_PAGE = 25;
 
-function getPageStartSequenceNumbers(sequenceNum: number): number[] {
+export function getPageStartSequenceNumbers(sequenceNum: number): number[] {
   const pageStarts: number[] = [];
 
   const numOfPages = Math.ceil(sequenceNum / TXN_PER_PAGE);
