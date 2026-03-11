@@ -26,10 +26,11 @@ type ApiKeys = {
 };
 
 /**
- * Public Client IDs (API keys) from API Gateway
- * These can be overridden via environment variables (VITE_APTOS_<NETWORK>_API_KEY)
+ * Client API keys (VITE_ prefixed) - exposed in the browser bundle.
+ * Use these for client-side API calls only.
+ * Set via: VITE_APTOS_<NETWORK>_API_KEY
  */
-const apiKeys: ApiKeys = {
+const clientApiKeys: ApiKeys = {
   mainnet: import.meta.env.VITE_APTOS_MAINNET_API_KEY,
   testnet: import.meta.env.VITE_APTOS_TESTNET_API_KEY,
   devnet: import.meta.env.VITE_APTOS_DEVNET_API_KEY,
@@ -38,8 +39,26 @@ const apiKeys: ApiKeys = {
   local: import.meta.env.VITE_APTOS_LOCAL_API_KEY || undefined,
 };
 
+/**
+ * Get the client-side API key for a network.
+ * This key is safe to expose in the browser (client API key).
+ */
 export function getApiKey(network_name: NetworkName): string | undefined {
-  return apiKeys[network_name];
+  return clientApiKeys[network_name];
+}
+
+/**
+ * Get the server-side API key for a network.
+ * Reads from APTOS_<NETWORK>_API_KEY (no VITE_ prefix, never sent to browser).
+ * Falls back to the client key if no server key is configured.
+ */
+export function getServerApiKey(network_name: NetworkName): string | undefined {
+  if (typeof process !== "undefined" && process.env) {
+    const envKey = `APTOS_${network_name.toUpperCase()}_API_KEY`;
+    const serverKey = process.env[envKey];
+    if (serverKey) return serverKey;
+  }
+  return clientApiKeys[network_name];
 }
 
 export function isValidNetworkName(value: string): value is NetworkName {
