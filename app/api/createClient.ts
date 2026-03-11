@@ -6,8 +6,8 @@ import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import Cookies from "js-cookie";
 import {
   defaultNetworkName,
-  getApiKey,
   getGraphqlURI,
+  getServerApiKey,
   isValidNetworkName,
   type NetworkName,
   networks,
@@ -51,7 +51,7 @@ export function getNetworkFromSearch(
  */
 export function createAptosClient(networkName: NetworkName): Aptos {
   const nodeUrl = networks[networkName];
-  const apiKey = getApiKey(networkName);
+  const apiKey = getServerApiKey(networkName);
   const indexerUri = getGraphqlURI(networkName);
 
   // Map network name to SDK Network enum

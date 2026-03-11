@@ -47,13 +47,15 @@ interface ImportMetaEnv {
   readonly VITE_BASE_URL?: string;
   readonly REACT_APP_GTM_ID?: string;
   readonly NODE_ENV?: string;
-  // API Keys for different networks
+  // Client API keys (exposed in browser bundle - use client/public keys only)
   readonly VITE_APTOS_MAINNET_API_KEY?: string;
   readonly VITE_APTOS_TESTNET_API_KEY?: string;
   readonly VITE_APTOS_DEVNET_API_KEY?: string;
   readonly VITE_APTOS_DECIBEL_API_KEY?: string;
   readonly VITE_APTOS_SHELBYNET_API_KEY?: string;
   readonly VITE_APTOS_LOCAL_API_KEY?: string;
+  // Server API keys are read from process.env (APTOS_<NETWORK>_API_KEY)
+  // and are NOT included in ImportMetaEnv to prevent accidental client exposure.
   // Cache busting version for validator stats (bump to force fresh data)
   readonly VITE_VALIDATOR_STATS_CACHE_VERSION?: string;
 }
