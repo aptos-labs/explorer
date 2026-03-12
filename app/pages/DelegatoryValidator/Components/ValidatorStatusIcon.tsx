@@ -11,7 +11,7 @@ export default function ValidatorStatusIcon({
   validatorStatus,
 }: {
   validatorStatus: ValidatorStatus | undefined;
-}): React.JSX.Element {
+}): React.JSX.Element | null {
   const theme = useTheme();
   const statusColors = getValidatorStatusColors(theme.palette.mode);
 
@@ -67,10 +67,10 @@ export default function ValidatorStatusIcon({
             />
           );
         default:
-          return <></>;
+          return null;
       }
     }
-    return <></>;
+    return null;
   };
 
   return getStatusIcon();

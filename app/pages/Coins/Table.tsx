@@ -695,8 +695,8 @@ export default function CoinsListTable({
     return (
       <Box>
         {[...Array(10)].map((_, i) => (
-          <Skeleton
-            key={i}
+          <Skeleton // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton list
+            key={`skeleton-${i}`}
             variant="rectangular"
             height={60}
             sx={{mb: 1, borderRadius: 1}}

@@ -54,10 +54,31 @@ export default function WalletsModal({
   modalOpen,
   networkSupport,
   modalMaxWidth,
-  ...walletSortingOptions
+  sortAptosConnectWallets,
+  sortPetraWebWallets,
+  sortAvailableWallets,
+  sortInstallableWallets,
+  fallbacks,
 }: WalletsModalProps): JSX.Element {
   const theme = useTheme();
   const {wallets: installedWallets = []} = useWallet();
+
+  const walletSortingOptions = useMemo<WalletSortingOptions>(
+    () => ({
+      sortAptosConnectWallets,
+      sortPetraWebWallets,
+      sortAvailableWallets,
+      sortInstallableWallets,
+      fallbacks,
+    }),
+    [
+      sortAptosConnectWallets,
+      sortPetraWebWallets,
+      sortAvailableWallets,
+      sortInstallableWallets,
+      fallbacks,
+    ],
+  );
 
   // Memoize wallet list construction to avoid recalculating on every render
   const wallets = useMemo(() => {
@@ -420,30 +441,32 @@ function renderEducationScreen(screen: AboutAptosConnectEducationScreen) {
             placeSelf: "center",
           }}
         >
-          {screen.screenIndicators.map((ScreenIndicator, i) => (
-            <Box
-              key={i}
-              component={ScreenIndicator}
-              sx={{
-                px: 0,
-                py: 2,
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
+          {Array.from(screen.screenIndicators.entries()).map(
+            ([indicatorIndex, ScreenIndicator]) => (
               <Box
+                key={indicatorIndex}
+                component={ScreenIndicator}
                 sx={{
-                  height: "2px",
-                  width: "24px",
-                  bgcolor: (theme) => theme.palette.text.disabled,
-                  "[data-active]>&": {
-                    bgcolor: (theme) => theme.palette.text.primary,
-                  },
+                  px: 0,
+                  py: 2,
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
                 }}
-              />
-            </Box>
-          ))}
+              >
+                <Box
+                  sx={{
+                    height: "2px",
+                    width: "24px",
+                    bgcolor: (theme) => theme.palette.text.disabled,
+                    "[data-active]>&": {
+                      bgcolor: (theme) => theme.palette.text.primary,
+                    },
+                  }}
+                />
+              </Box>
+            ),
+          )}
         </Box>
         <Button
           size="small"

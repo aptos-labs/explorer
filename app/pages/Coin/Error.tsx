@@ -9,7 +9,7 @@ type ErrorProps = {
   struct?: string;
 };
 
-export default function Error({error, struct}: ErrorProps) {
+export default function CoinError({error, struct}: ErrorProps) {
   const theme = useTheme();
 
   const renderErrorContent = (title: string, message: React.ReactNode) => (

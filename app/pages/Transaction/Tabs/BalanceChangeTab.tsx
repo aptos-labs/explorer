@@ -60,8 +60,10 @@ function aggregateBalanceChanges(
     const key = `${change.address}-${change.asset.id}`;
 
     if (balanceMap.has(key)) {
-      const existing = balanceMap.get(key)!;
-      existing.totalAmount += change.amount;
+      const existing = balanceMap.get(key);
+      if (existing) {
+        existing.totalAmount += change.amount;
+      }
     } else {
       balanceMap.set(key, {
         address: change.address,

@@ -68,7 +68,7 @@ export default function Header() {
       walletAddressRef.current !== accountAddress
     ) {
       logEvent("wallet_connected", accountAddress, {
-        wallet_name: wallet!.name,
+        wallet_name: wallet?.name ?? "unknown",
         network_type: networkName,
       });
       sendToGTM({

@@ -398,8 +398,11 @@ export function PageMetadata(props: PageMetadataProps) {
       <meta name="twitter:image:alt" content={fullTitle} />
 
       {/* JSON-LD Structured Data */}
-      {structuredData.map((data, index) => (
-        <script key={index} type="application/ld+json">
+      {Array.from(structuredData.entries()).map(([entryIndex, data]) => (
+        <script
+          key={`${data["@type"]}-${entryIndex}`}
+          type="application/ld+json"
+        >
           {JSON.stringify(data)}
         </script>
       ))}

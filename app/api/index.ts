@@ -31,7 +31,7 @@ export async function getTransactions(
   client: AptosClient,
 ): Promise<Types.Transaction[]> {
   const {start, limit} = requestParameters;
-  let bigStart;
+  let bigStart: bigint | undefined;
   if (start !== undefined) {
     bigStart = BigInt(start);
   }
@@ -50,7 +50,7 @@ export async function getAccountTransactions(
   client: AptosClient,
 ): Promise<Types.Transaction[]> {
   const {address, start, limit} = requestParameters;
-  let bigStart;
+  let bigStart: bigint | undefined;
   if (start !== undefined) {
     bigStart = BigInt(start);
   }
@@ -120,7 +120,7 @@ export function getAccountResources(
   client: AptosClient,
 ): Promise<Types.MoveResource[]> {
   const {address, ledgerVersion} = requestParameters;
-  let ledgerVersionBig;
+  let ledgerVersionBig: bigint | undefined;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
   }
@@ -138,7 +138,7 @@ export function getAccountResource(
   client: AptosClient,
 ): Promise<Types.MoveResource> {
   const {address, resourceType, ledgerVersion} = requestParameters;
-  let ledgerVersionBig;
+  let ledgerVersionBig: bigint | undefined;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
   }
@@ -154,7 +154,7 @@ export function getAccountModules(
   client: AptosClient,
 ): Promise<Types.MoveModuleBytecode[]> {
   const {address, ledgerVersion} = requestParameters;
-  let ledgerVersionBig;
+  let ledgerVersionBig: bigint | undefined;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
   }
@@ -172,7 +172,7 @@ export function getAccountModule(
   client: AptosClient,
 ): Promise<Types.MoveModuleBytecode> {
   const {address, moduleName, ledgerVersion} = requestParameters;
-  let ledgerVersionBig;
+  let ledgerVersionBig: bigint | undefined;
   if (ledgerVersion !== undefined) {
     ledgerVersionBig = BigInt(ledgerVersion);
   }

@@ -94,7 +94,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
                 }}
                 showLineNumbers
               >
-                {sourceCode!}
+                {sourceCode ?? ""}
               </SyntaxHighlighter>
             )}
           </Suspense>

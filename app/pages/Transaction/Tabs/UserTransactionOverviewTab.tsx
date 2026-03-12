@@ -494,6 +494,7 @@ function TransactionActionsRow({
   return (
     <ContentRow
       title="Actions:"
+      // biome-ignore lint/suspicious/useIterableCallbackReturn: all union cases are covered
       value={actions.map((action, i) => {
         switch (action.actionType) {
           case "swap":
@@ -594,7 +595,11 @@ export default function UserTransactionOverviewTab({
           <ContentRow
             title="Secondary Signers:"
             value={secondarySigners.map((address) => (
-              <HashButton hash={address} type={HashType.ACCOUNT} />
+              <HashButton
+                key={address}
+                hash={address}
+                type={HashType.ACCOUNT}
+              />
             ))}
             tooltip={getLearnMoreTooltip("secondary_signers")}
           />
@@ -904,7 +909,7 @@ const liquidityAction = (
         </span>
         {action.assetData.map((asset, index) => (
           <LiquidityAssetContent
-            key={`action-${i}-asset-${index}`}
+            key={`action-${i}-asset-${asset.asset}`}
             asset={asset}
             coinData={coinData}
             index={index}
@@ -961,7 +966,7 @@ const claimAction = (
         </span>
         {action.assetData.map((asset, index) => (
           <LiquidityAssetContent
-            key={`action-${i}-asset-${index}`}
+            key={`action-${i}-asset-${asset.asset}`}
             asset={asset}
             coinData={coinData}
             index={index}
@@ -1057,7 +1062,7 @@ const liquidStakingAction = (
         </span>
         {action.assetData.map((asset, index) => (
           <LiquidStakingContent
-            key={`action-${i}-asset-${index}`}
+            key={`action-${i}-asset-${asset.asset}`}
             asset={asset}
             coinData={coinData}
             index={index}
@@ -2051,10 +2056,11 @@ function parseEconiaEvent(
 
   const baseMarket = ECONIA_MARKETS.find(
     (market) => market.market_id === Number(placeOrder.market_id),
-  )!;
+  );
   const quoteMarket = ECONIA_MARKETS.find(
     (market) => market.market_id === Number(placeOrder.market_id),
-  )!;
+  );
+  if (!baseMarket || !quoteMarket) return undefined;
   const baseAsset = `${baseMarket.base_account_address}::${baseMarket.base_module_name}::${baseMarket.base_struct_name}`;
   const quoteAsset = `${quoteMarket.quote_account_address}::${quoteMarket.quote_module_name}::${quoteMarket.quote_struct_name}`;
   if (placeOrder.direction) {
@@ -2433,38 +2439,6 @@ type Wormhole = {
   assetData: AssetData[];
 };
 
-const WormholeAssetContent = ({
-  asset,
-  coinData,
-  index,
-  totalAssets,
-}: {
-  asset: AssetData;
-  coinData: {data: CoinDescription[]} | undefined;
-  index: number;
-  totalAssets: number;
-}) => {
-  const {data: assetMetadata} = useGetAssetMetadata(asset.asset);
-  const assetCoin = findCoinData(coinData?.data ?? [], asset.asset);
-  const decimals = assetCoin?.decimals ?? assetMetadata?.decimals ?? 0;
-
-  return (
-    <React.Fragment>
-      {asset.amount / 10 ** decimals}
-      <HashButton
-        hash={asset.asset}
-        type={
-          asset.asset.includes("::") ? HashType.COIN : HashType.FUNGIBLE_ASSET
-        }
-        img={assetCoin?.logoUrl}
-        size="small"
-      />
-      {index < totalAssets - 2 && ", "}
-      {index === totalAssets - 2 && " and "}
-    </React.Fragment>
-  );
-};
-
 const wormholeBurnAction = (
   hash: string,
   coinData: {data: CoinDescription[]} | undefined,
@@ -2496,7 +2470,7 @@ const wormholeBurnAction = (
         <span>{"🔥️ Bridged out"}</span>
         {action.assetData.map((asset, index) => (
           <LiquidityAssetContent
-            key={`action-${i}-asset-${index}`}
+            key={`action-${i}-asset-${asset.asset}`}
             asset={asset}
             coinData={coinData}
             index={index}

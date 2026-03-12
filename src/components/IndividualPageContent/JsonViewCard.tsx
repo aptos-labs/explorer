@@ -111,19 +111,19 @@ function useCopyTooltip() {
   const hoverTimer = useRef<number | null>(null);
   const feedbackTimer = useRef<number | null>(null);
 
-  const clearHoverTimer = () => {
+  const clearHoverTimer = useCallback(() => {
     if (hoverTimer.current) {
       window.clearTimeout(hoverTimer.current);
       hoverTimer.current = null;
     }
-  };
+  }, []);
 
-  const clearFeedbackTimer = () => {
+  const clearFeedbackTimer = useCallback(() => {
     if (feedbackTimer.current) {
       window.clearTimeout(feedbackTimer.current);
       feedbackTimer.current = null;
     }
-  };
+  }, []);
 
   // Cleanup timers on unmount to prevent memory leaks
   useEffect(() => {

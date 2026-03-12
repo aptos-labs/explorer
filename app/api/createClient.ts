@@ -96,6 +96,7 @@ export function getCachedClient(networkName: NetworkName): Aptos {
   if (!clientCache.has(networkName)) {
     clientCache.set(networkName, createAptosClient(networkName));
   }
+  // biome-ignore lint/style/noNonNullAssertion: guaranteed by the .has() check above
   return clientCache.get(networkName)!;
 }
 

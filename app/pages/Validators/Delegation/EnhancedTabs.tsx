@@ -60,7 +60,10 @@ type TabPanelProps = {
   networkName: NetworkName;
 };
 
-function TabPanel({value, networkName}: TabPanelProps): React.JSX.Element {
+function TabPanel({
+  value,
+  networkName,
+}: TabPanelProps): React.JSX.Element | null {
   switch (networkName) {
     case Network.MAINNET:
     case Network.TESTNET:
@@ -71,11 +74,11 @@ function TabPanel({value, networkName}: TabPanelProps): React.JSX.Element {
       } else if (value === VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES) {
         return <EnhancedDelegationValidatorsTable />;
       }
-      return <></>;
+      return null;
     case Network.DEVNET:
       return <OldValidatorsTable />;
     default:
-      return <></>;
+      return null;
   }
 }
 
@@ -109,12 +112,12 @@ export default function EnhancedValidatorsPageTabs(): React.JSX.Element {
     <Box sx={{width: "100%"}}>
       <Box>
         <StyledTabs value={value} onChange={handleChange}>
-          {VALIDATORS_TAB_VALUES.map((value, i) => (
+          {VALIDATORS_TAB_VALUES.map((tabValue, i) => (
             <StyledTab
-              key={i}
-              value={value}
-              icon={getTabIcon(value)}
-              label={getTabLabel(value)}
+              key={tabValue}
+              value={tabValue}
+              icon={getTabIcon(tabValue)}
+              label={getTabLabel(tabValue)}
               isFirst={i === 0}
               isLast={i === VALIDATORS_TAB_VALUES.length - 1}
             />

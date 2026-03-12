@@ -1,9 +1,9 @@
+// biome-ignore-all lint/suspicious/noExplicitAny: indexer query results use dynamic shapes
+
 import type {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 import {useQuery} from "@tanstack/react-query";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
 import {tryStandardizeAddress} from "../../utils";
-
-// biome-ignore-all lint/suspicious/noExplicitAny: indexer query results use dynamic shapes
 
 // --- Inlined queries from former IndexerClient ---
 
@@ -204,6 +204,7 @@ export function useGetTokenData(tokenDataId?: string) {
       }>({
         query: {
           query: TOKEN_DATA_QUERY,
+          // biome-ignore lint/style/noNonNullAssertion: enabled guard ensures non-null
           variables: {token_data_id: tokenDataId!},
         },
       });
@@ -224,6 +225,7 @@ export function useGetTokenOwners(tokenDataId?: string) {
       }>({
         query: {
           query: TOKEN_OWNERS_QUERY,
+          // biome-ignore lint/style/noNonNullAssertion: enabled guard ensures non-null
           variables: {token_data_id: tokenDataId!},
         },
       });

@@ -435,7 +435,7 @@ export function deserializeVector(vectorString: string): string[] {
 
 function encodeVectorForViewRequest(type: string, value: string) {
   const rawVector = deserializeVector(value);
-  const regex = /vector<([^]+)>/;
+  const regex = /vector<([\s\S]+)>/;
   const match = type.match(regex);
   if (match) {
     if (match[1] === "u8") {
@@ -454,7 +454,9 @@ function encodeVectorForViewRequest(type: string, value: string) {
     } else if (
       ["u64", "u128", "u256", "i64", "i128", "i256"].includes(match[1])
     ) {
-      rawVector.forEach((v) => ensureBigInt(v.trim()));
+      rawVector.forEach((v) => {
+        ensureBigInt(v.trim());
+      });
       return rawVector;
     } else if (match[1] === "bool") {
       return rawVector.map((v) => ensureBoolean(v.trim()));
@@ -892,7 +894,9 @@ export function transactionsToCSV(
   const allKeys = new Set<string>();
   transactions.forEach((txn) => {
     const formatted = formatTransactionForCSV(txn, address);
-    Object.keys(formatted).forEach((key) => allKeys.add(key));
+    Object.keys(formatted).forEach((key) => {
+      allKeys.add(key);
+    });
   });
 
   const headers = Array.from(allKeys).sort();

@@ -121,7 +121,7 @@ export default function CoinTabs({
         <StyledTabs value={effectiveTab} onChange={handleChange}>
           {tabValues.map((value, i) => (
             <StyledTab
-              key={`${i}-${value}`}
+              key={value}
               value={value}
               icon={getTabIcon(value)}
               label={getTabLabel(value)}

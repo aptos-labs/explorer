@@ -811,9 +811,9 @@ export default function TransactionsTable({
 
   const rows = useMemo(
     () =>
-      transactions.map((transaction, i) => (
+      transactions.map((transaction) => (
         <TransactionRow
-          key={`${i}-${transaction.hash}`}
+          key={transaction.hash}
           transaction={transaction}
           columns={columns}
         />
@@ -825,9 +825,9 @@ export default function TransactionsTable({
   if (isMobile) {
     return (
       <Box>
-        {transactions.map((transaction, i) => (
+        {transactions.map((transaction) => (
           <TransactionCard
-            key={`${i}-${transaction.hash}`}
+            key={transaction.hash}
             transaction={transaction}
             address={address}
           />
@@ -895,9 +895,9 @@ export function UserTransactionsTable({
   if (isMobile) {
     return (
       <Box>
-        {versions.map((version, i) => (
+        {versions.map((version) => (
           <UserTransactionCard
-            key={`${i}-${version}`}
+            key={version}
             version={version}
             address={address}
           />
@@ -917,10 +917,10 @@ export function UserTransactionsTable({
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {versions.map((version, i) => {
+        {versions.map((version) => {
           return (
             <UserTransactionRow
-              key={`${i}-${version}`}
+              key={version}
               version={version}
               columns={columns}
               address={address}

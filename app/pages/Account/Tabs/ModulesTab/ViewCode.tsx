@@ -21,7 +21,7 @@ import {useNavigate} from "../../../../routing";
 import {getBytecodeSizeInKB} from "../../../../utils";
 import {Code} from "../../Components/CodeSnippet";
 import SidebarItem from "../../Components/SidebarItem";
-import Error from "../../Error";
+import AccountError from "../../Error";
 import {accountPagePath} from "../../Index";
 import {useModulesPathParams} from "./Tabs";
 
@@ -245,7 +245,7 @@ function ABI({address, moduleName}: {address: string; moduleName: string}) {
   }
 
   if (error) {
-    return <Error address={address} error={error} />;
+    return <AccountError address={address} error={error} />;
   }
 
   if (!module) {

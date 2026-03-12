@@ -54,6 +54,7 @@ export function useGetDelegatedStaking(
       }>({
         query: {
           query: DELEGATED_STAKING_QUERY,
+          // biome-ignore lint/style/noNonNullAssertion: enabled guard ensures non-null
           variables: {address: delegatorAddress64Hash!},
         },
       }),

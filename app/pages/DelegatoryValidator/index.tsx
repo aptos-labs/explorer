@@ -16,7 +16,7 @@ import {
 } from "../../api/hooks/useGetValidators";
 import {Banner} from "../../components/Banner";
 import {tryStandardizeAddress} from "../../utils";
-import Error from "../Account/Error";
+import AccountError from "../Account/Error";
 import PageHeader from "../layout/PageHeader";
 import {DelegationStateContext} from "./context/DelegationContext";
 import ValidatorDetailCard from "./DetailCard";
@@ -86,7 +86,7 @@ export default function ValidatorPage() {
   });
 
   if (error) {
-    return <Error error={error} />;
+    return <AccountError error={error} />;
   }
 
   if ((!validator && !delegationValidator) || !accountResource) {

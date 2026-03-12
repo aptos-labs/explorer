@@ -9,7 +9,7 @@ type ErrorProps = {
   address?: string;
 };
 
-export default function Error({error, address}: ErrorProps) {
+export default function FungibleAssetError({error, address}: ErrorProps) {
   const theme = useTheme();
 
   const renderErrorContent = (title: string, message: React.ReactNode) => (

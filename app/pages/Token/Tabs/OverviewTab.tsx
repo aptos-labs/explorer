@@ -25,7 +25,11 @@ function OwnersRow() {
       value={
         <Stack direction="row" spacing={1}>
           {(owners ?? []).map((owner: {owner_address: string}) => (
-            <HashButton hash={owner?.owner_address} type={HashType.ACCOUNT} />
+            <HashButton
+              key={owner.owner_address}
+              hash={owner?.owner_address}
+              type={HashType.ACCOUNT}
+            />
           ))}
         </Stack>
       }
@@ -261,9 +265,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
               }
             />
           </Fragment>
-        ) : (
-          <Fragment></Fragment>
-        )}
+        ) : null}
         {data?.largest_property_version_v1 != null && (
           <ContentRow
             title={"Largest Property Version:"}

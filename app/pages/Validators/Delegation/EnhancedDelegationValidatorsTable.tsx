@@ -788,9 +788,9 @@ export function EnhancedDelegationValidatorsTable() {
 
   // Memoize validator rows for virtualization
   const validatorRows = useMemo(() => {
-    return sortedValidators.map((validator, i) => (
+    return sortedValidators.map((validator) => (
       <ValidatorRow
-        key={`${validator.owner_address}-${i}`}
+        key={validator.owner_address}
         validator={validator}
         columns={columns}
         connected={connected}
@@ -833,9 +833,9 @@ export function EnhancedDelegationValidatorsTable() {
     if (isMobile) {
       return (
         <Box>
-          {Array.from({length: 5}).map((_, index) => (
+          {["sk-0", "sk-1", "sk-2", "sk-3", "sk-4"].map((skeletonKey) => (
             <Paper
-              key={`skeleton-${index}`}
+              key={skeletonKey}
               sx={{
                 px: 2,
                 py: 1.5,
@@ -900,8 +900,19 @@ export function EnhancedDelegationValidatorsTable() {
             </TableHead>
             <GeneralTableBody>
               {/* Show skeleton rows while loading */}
-              {Array.from({length: 10}).map((_, index) => (
-                <LoadingSkeletonRow key={`skeleton-${index}`} />
+              {[
+                "sk-0",
+                "sk-1",
+                "sk-2",
+                "sk-3",
+                "sk-4",
+                "sk-5",
+                "sk-6",
+                "sk-7",
+                "sk-8",
+                "sk-9",
+              ].map((skeletonKey) => (
+                <LoadingSkeletonRow key={skeletonKey} />
               ))}
             </GeneralTableBody>
           </Table>

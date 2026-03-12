@@ -115,7 +115,7 @@ function useCopyTooltip() {
       const target = e.target as HTMLElement;
 
       // Skip if still hovering the same anchor element
-      if (anchor && anchor.contains(target)) return;
+      if (anchor?.contains(target)) return;
 
       const copyable = findCopyableElement(target);
       if (!copyable) return;

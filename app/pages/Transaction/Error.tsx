@@ -8,7 +8,10 @@ type ErrorProps = {
   txnHashOrVersion: string;
 };
 
-export default function Error({error, txnHashOrVersion}: ErrorProps) {
+export default function TransactionError({
+  error,
+  txnHashOrVersion,
+}: ErrorProps) {
   const theme = useTheme();
 
   if (error.type === ResponseErrorType.NOT_FOUND) {

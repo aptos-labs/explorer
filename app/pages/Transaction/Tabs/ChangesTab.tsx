@@ -35,7 +35,7 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
     >
       {changes.map((change, i) => (
         <CollapsibleCard
-          key={i}
+          key={change.state_key_hash}
           titleKey="Index:"
           titleValue={i.toString()}
           expanded={expandedList[i]}

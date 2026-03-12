@@ -9,7 +9,7 @@ import {
   useNetworkValue,
 } from "../../global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
-import Error from "./Error";
+import TransactionError from "./Error";
 import TransactionTabs from "./Tabs";
 import TransactionTitle from "./Title";
 
@@ -29,7 +29,9 @@ export default function TransactionPage() {
   }
 
   if (error) {
-    return <Error error={error} txnHashOrVersion={txnHashOrVersion} />;
+    return (
+      <TransactionError error={error} txnHashOrVersion={txnHashOrVersion} />
+    );
   }
 
   if (!data) {

@@ -157,7 +157,7 @@ function MultisigContent({
           </Typography>
           {multisigData.owners.map((owner: string, index: number) => (
             <Stack
-              key={index}
+              key={owner}
               direction="row"
               alignItems="center"
               spacing={2}
@@ -222,7 +222,7 @@ function MultisigContent({
                   index: number,
                 ) => (
                   <Box
-                    key={index}
+                    key={tx.key ?? `tx-${index}`}
                     sx={{
                       mb: 2,
                       p: 2,
@@ -266,7 +266,7 @@ function MultisigContent({
                                 voteIndex: number,
                               ) => (
                                 <Typography
-                                  key={voteIndex}
+                                  key={vote.key ?? `vote-${voteIndex}`}
                                   variant="body2"
                                   sx={{
                                     ml: 2,

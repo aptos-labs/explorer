@@ -608,8 +608,10 @@ export function groupSearchResults(results: SearchResult[]): SearchResult[] {
     if (!grouped.has(type)) {
       grouped.set(type, []);
     }
-    const bucket = grouped.get(type)!;
-    bucket.push(result);
+    const bucket = grouped.get(type);
+    if (bucket) {
+      bucket.push(result);
+    }
   }
 
   // Define priority order for types - assets (coins/fungible assets) first

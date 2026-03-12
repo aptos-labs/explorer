@@ -413,7 +413,6 @@ export interface Current_Token_Datas_V2 {
 // Allows `import { Types } from "~/types/aptos"` and then `Types.Transaction`
 // exactly like the old `import { Types } from "aptos"`.
 // ---------------------------------------------------------------------------
-// biome-ignore lint/style/noNamespace: preserves `Types.X` access pattern from legacy `aptos` package
 export namespace Types {
   export type Address = import("~/types/aptos").Address;
   export type MoveValue = import("~/types/aptos").MoveValue;

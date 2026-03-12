@@ -118,7 +118,7 @@ type MapProps = {
   groupBy: MapGroupBy;
 };
 
-export default function Map({validatorGeoGroups, groupBy}: MapProps) {
+export default function ValidatorMap({validatorGeoGroups, groupBy}: MapProps) {
   const theme = useTheme();
 
   return (
