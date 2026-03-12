@@ -227,9 +227,7 @@ export function calculateNetworkPercentage(
   validatorVotingPower: string,
   totalVotingPower: string | null,
 ): string {
-  return (
-    (parseInt(validatorVotingPower ?? "0", 10) /
-      parseInt(totalVotingPower ?? "0", 10)) *
-    100
-  ).toFixed(2);
+  const total = parseInt(totalVotingPower ?? "0", 10);
+  if (!total) return "0.00";
+  return ((parseInt(validatorVotingPower ?? "0", 10) / total) * 100).toFixed(2);
 }
