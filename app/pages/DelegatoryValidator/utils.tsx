@@ -74,14 +74,14 @@ export function getStakeOperationPrincipals(activities: {
   let pendingInactivePrincipals = 0;
 
   const activitiesCopy: DelegatedStakingActivity[] = JSON.parse(
-    JSON.stringify(activities.activities!),
+    JSON.stringify(activities.activities),
   );
 
   activitiesCopy
     .sort(
       (a, b) => Number(a.transaction_version) - Number(b.transaction_version),
     )
-    .map((activity: DelegatedStakingActivity) => {
+    .forEach((activity: DelegatedStakingActivity) => {
       const eventType = activity.event_type.split("::")[2];
       const amount = activity.amount;
       switch (eventType) {
@@ -228,7 +228,8 @@ export function calculateNetworkPercentage(
   totalVotingPower: string | null,
 ): string {
   return (
-    (parseInt(validatorVotingPower!, 10) / parseInt(totalVotingPower!, 10)) *
+    (parseInt(validatorVotingPower ?? "0", 10) /
+      parseInt(totalVotingPower ?? "0", 10)) *
     100
   ).toFixed(2);
 }

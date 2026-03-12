@@ -77,6 +77,7 @@ function getRateLimiter(
       processing: false,
     });
   }
+  // biome-ignore lint/style/noNonNullAssertion: endpoint was just set above if missing
   return endpointLimiters.get(endpoint)!;
 }
 

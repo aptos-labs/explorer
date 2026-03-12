@@ -18,7 +18,7 @@ import {getAssetSymbol} from "../../utils";
 import PageHeader from "../layout/PageHeader";
 import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
 import {isValidAccountAddress} from "../utils";
-import Error from "./Error";
+import FungibleAssetError from "./Error";
 import FATabs, {type TabValue} from "./Tabs";
 import FATitle from "./Title";
 
@@ -107,12 +107,15 @@ export default function FAPage() {
         {error ? (
           <>
             <FATabs address={address} data={data} tabValues={tabValues} />
-            <Error address={address} error={error} />
+            <FungibleAssetError address={address} error={error} />
           </>
         ) : apiError ? (
           <>
             <FATabs address={address} data={data} tabValues={tabValues} />
-            <Error address={address} error={apiError as ResponseError} />
+            <FungibleAssetError
+              address={address}
+              error={apiError as ResponseError}
+            />
           </>
         ) : (
           <FATabs address={address} data={data} tabValues={tabValues} />

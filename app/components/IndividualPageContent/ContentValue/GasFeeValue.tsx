@@ -56,7 +56,7 @@ export default function GasFeeValue({
 
   if (netGasCost) {
     let amountAbs = netGasWithRefund;
-    let color;
+    let color: string | undefined;
     if (netGasWithRefund < 0) {
       color = semanticColors.status.info;
     } else if (netGasWithRefund > 0) {

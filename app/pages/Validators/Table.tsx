@@ -161,10 +161,10 @@ export function ValidatorsTable() {
         </TableRow>
       </TableHead>
       <GeneralTableBody>
-        {validatorsInOrder.map((validator: Validator, i: number) => {
+        {validatorsInOrder.map((validator: Validator) => {
           return (
             <ValidatorRow
-              key={i}
+              key={validator.addr}
               validator={validator}
               columns={DEFAULT_COLUMNS}
             />

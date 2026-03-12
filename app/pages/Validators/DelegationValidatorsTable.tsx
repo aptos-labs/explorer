@@ -47,7 +47,7 @@ import {
   getSemanticColors,
 } from "../../themes/colors/aptosBrandColors";
 import {addressFromWallet, assertNever} from "../../utils";
-import Error from "../Account/Error";
+import AccountError from "../Account/Error";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import ValidatorStatusIcon from "../DelegatoryValidator/Components/ValidatorStatusIcon";
 import {
@@ -763,7 +763,7 @@ export function DelegationValidatorsTable() {
   });
 
   if (error) {
-    return <Error error={error} />;
+    return <AccountError error={error} />;
   }
 
   // Toggle component for showing inactive validators

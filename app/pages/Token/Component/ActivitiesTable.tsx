@@ -159,7 +159,10 @@ export function ActivitiesTable({
       </TableHead>
       <GeneralTableBody>
         {activities.map((activity, i: number) => {
-          return <ActivityRow key={i} activity={activity} columns={columns} />;
+          return (
+            // biome-ignore lint/suspicious/noArrayIndexKey: activities lack unique identifier
+            <ActivityRow key={i} activity={activity} columns={columns} />
+          );
         })}
       </GeneralTableBody>
     </Table>

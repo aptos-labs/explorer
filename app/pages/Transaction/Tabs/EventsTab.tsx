@@ -45,6 +45,7 @@ export default function EventsTab({transaction}: EventsTabProps) {
         const hideZeroFields = isModuleEvent(event);
         return (
           <CollapsibleCard
+            // biome-ignore lint/suspicious/noArrayIndexKey: events lack unique identifier
             key={i}
             titleKey="Index:"
             titleValue={`${i} — ${event.type}`}

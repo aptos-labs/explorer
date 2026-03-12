@@ -467,10 +467,10 @@ function StakeOperationDialogContent({
         <Stack direction="column" spacing={2}>
           {renderAmountTextField(stakes)}
           <Stack direction="row" spacing={1}>
-            {percentageSelection.map((percentage, idx) => {
+            {percentageSelection.map((percentage) => {
               return (
                 <Button
-                  key={idx}
+                  key={percentage}
                   variant="outlined"
                   onClick={() =>
                     setAmount(

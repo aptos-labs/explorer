@@ -11,6 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import type React from "react";
 import {useState} from "react";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
 import {scamAddresses} from "../constants";
@@ -174,7 +175,7 @@ function Name({
     textDecoration: "none",
   };
 
-  let content;
+  let content: React.ReactNode;
   const addr = tryStandardizeAddress(address);
   if (isAns) {
     content = (

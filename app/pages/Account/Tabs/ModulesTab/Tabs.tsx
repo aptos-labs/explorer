@@ -268,7 +268,7 @@ function ModulesTabs({
           {tabValues.map((value, i) => (
             <StyledTab
               secondary
-              key={i}
+              key={value}
               value={value}
               icon={getTabIcon(value)}
               label={getTabLabel(value)}

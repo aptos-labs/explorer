@@ -192,7 +192,9 @@ function cleanupExpiredItems(): void {
       }
     }
 
-    keysToRemove.forEach((key) => localStorage.removeItem(key));
+    keysToRemove.forEach((key) => {
+      localStorage.removeItem(key);
+    });
   } catch (error) {
     console.error("Error cleaning up expired cache items:", error);
   }
@@ -257,7 +259,9 @@ export function clearCache(): void {
         keysToRemove.push(key);
       }
     }
-    keysToRemove.forEach((key) => localStorage.removeItem(key));
+    keysToRemove.forEach((key) => {
+      localStorage.removeItem(key);
+    });
   } catch (error) {
     console.error("Error clearing cache:", error);
   }

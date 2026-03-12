@@ -73,7 +73,7 @@ export function useGetValidatorSetGeoData() {
       const existing = countryMap.get(cg.country);
       if (existing) {
         existing.nodes.push(...cg.nodes);
-        existing.cities!.push({name: cg.city, count: cg.nodes.length});
+        existing.cities?.push({name: cg.city, count: cg.nodes.length});
       } else {
         countryMap.set(cg.country, {
           city: "",
@@ -97,7 +97,7 @@ export function useGetValidatorSetGeoData() {
       }
       group.lat = latSum / count;
       group.lng = lngSum / count;
-      group.cities!.sort((a, b) => b.count - a.count);
+      group.cities?.sort((a, b) => b.count - a.count);
     }
 
     const validatorGeoMetric: ValidatorGeoMetric = {

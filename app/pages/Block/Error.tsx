@@ -8,7 +8,7 @@ type ErrorProps = {
   height: string;
 };
 
-export default function Error({error, height}: ErrorProps) {
+export default function BlockError({error, height}: ErrorProps) {
   const theme = useTheme();
 
   if (error.type === ResponseErrorType.NOT_FOUND) {

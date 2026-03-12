@@ -320,7 +320,11 @@ export function TokensTable({
   const tokenRows = useMemo(
     () =>
       tokens.map((token, i: number) => (
-        <TokenRow key={i} token={token} columns={columns} />
+        <TokenRow
+          key={token?.current_token_data?.token_data_id ?? `token-${i}`}
+          token={token}
+          columns={columns}
+        />
       )),
     [tokens, columns],
   );
@@ -330,7 +334,12 @@ export function TokensTable({
     return (
       <Box>
         {tokens.length > 0 ? (
-          tokens.map((token, i) => <TokenCard key={i} token={token} />)
+          tokens.map((token, i) => (
+            <TokenCard
+              key={token?.current_token_data?.token_data_id ?? `token-${i}`}
+              token={token}
+            />
+          ))
         ) : (
           <Typography
             variant="body1"

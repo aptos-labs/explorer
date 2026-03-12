@@ -349,17 +349,18 @@ function isAptEvent(event: Types.Event, transaction: Types.Transaction) {
       const data = getAptChangeData(change);
       if (data !== undefined) {
         const eventCreationNum = event.guid.creation_number;
-        let changeCreationNum;
+        let changeCreationNum: string | undefined;
         if (event.type === "0x1::coin::DepositEvent") {
           changeCreationNum = data.deposit_events.guid.id.creation_num;
         } else if (event.type === "0x1::coin::WithdrawEvent") {
           changeCreationNum = data.withdraw_events.guid.id.creation_num;
         }
         if (eventCreationNum === changeCreationNum) {
-          return change;
+          return true;
         }
       }
     }
+    return false;
   });
 
   return aptEventChange.length > 0;

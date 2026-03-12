@@ -177,7 +177,7 @@ export default function AccountTabs({
         <StyledTabs value={effectiveTab} onChange={handleChange}>
           {tabValues.map((value, i) => (
             <StyledTab
-              key={i}
+              key={value}
               value={value}
               icon={getTabIcon(value)}
               label={getTabLabel(value)}

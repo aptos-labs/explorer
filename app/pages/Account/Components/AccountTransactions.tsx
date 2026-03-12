@@ -5,7 +5,7 @@ import type {Types} from "~/types/aptos";
 import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import TransactionsTable from "../../Transactions/TransactionsTable";
-import Error from "../Error";
+import AccountError from "../Error";
 
 export const TXN_PER_PAGE = 25;
 
@@ -51,7 +51,7 @@ function TransactionsPaginationTable({
   );
 
   if (error) {
-    return <Error address={address} error={error} />;
+    return <AccountError address={address} error={error} />;
   }
 
   const handleChange = (

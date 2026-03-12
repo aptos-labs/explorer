@@ -295,10 +295,8 @@ function Contract({
           }
 
           const moduleName = module.abi.name;
-          return {
-            ...acc,
-            [moduleName]: fns,
-          } as Record<string, Types.MoveFunction[]>;
+          acc[moduleName] = fns;
+          return acc;
         },
         {} as Record<string, Types.MoveFunction[]>,
       ),
@@ -1112,8 +1110,8 @@ function HelpSection() {
           }}
         >
           <Stack spacing={1}>
-            {helpItems.map((item, i) => (
-              <Box key={i}>
+            {helpItems.map((item) => (
+              <Box key={item.title}>
                 <Typography
                   variant="caption"
                   fontWeight={600}
@@ -1287,6 +1285,7 @@ function ContractForm({
                     : null;
                   const paramName = fullParamNames?.[i];
                   return (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: params identified by position
                     <React.Fragment key={i}>
                       {i > 0 && (
                         <Typography component="span" color="text.secondary">
@@ -1341,6 +1340,7 @@ function ContractForm({
                   const typeParamName = typeParamNames?.[i] ?? `T${i}`;
                   return (
                     <Controller
+                      // biome-ignore lint/suspicious/noArrayIndexKey: type params identified by position
                       key={i}
                       name={`typeArgs.${i}`}
                       control={control}
@@ -1396,7 +1396,7 @@ function ContractForm({
                     : friendlyName;
 
                   return (
-                    <Controller
+                    <Controller // biome-ignore lint/suspicious/noArrayIndexKey: args identified by position
                       key={`args-${i}`}
                       name={`args.${i}`}
                       control={control}

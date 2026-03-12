@@ -15,7 +15,7 @@ import PageHeader from "../layout/PageHeader";
 import BalanceCard from "./BalanceCard";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
 import {PetraVaultBanner} from "./Components/PetraVaultBanner";
-import Error from "./Error";
+import AccountError from "./Error";
 import {useAccountTabValues} from "./hooks/useAccountTabValues";
 import AccountTabs from "./Tabs";
 import AccountTitle from "./Title";
@@ -179,7 +179,7 @@ export default function AccountPage({
         {error ? (
           <>
             {accountTabs}
-            <Error address={address} error={error} />
+            <AccountError address={address} error={error} />
           </>
         ) : (
           accountTabs

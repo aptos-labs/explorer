@@ -175,7 +175,10 @@ export function getLearnMoreTooltip(
               const {tooltipMessage, icon} = getVerifiedMessageAndIcon(level);
 
               return (
-                <Box sx={{display: "flex", alignItems: "flex-start", gap: 2}}>
+                <Box
+                  key={level}
+                  sx={{display: "flex", alignItems: "flex-start", gap: 2}}
+                >
                   {icon}
                   <Stack spacing={0.5}>
                     <TooltipTypography variant="subtitle2" fontWeight={600}>

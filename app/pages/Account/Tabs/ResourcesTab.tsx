@@ -28,7 +28,7 @@ function ResourcesContent({
     >
       {resources.map((resource, i) => (
         <CollapsibleCard
-          key={i}
+          key={resource.type}
           titleKey="Type:"
           titleValue={resource.type}
           expanded={expandedList[i]}

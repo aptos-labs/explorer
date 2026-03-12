@@ -167,7 +167,7 @@ function StakingBarContent({
     async function fetchData() {
       const fee = await getAddStakeFee(
         aptosClient,
-        validator!.owner_address,
+        validator.owner_address,
         MINIMUM_APT_IN_POOL_FOR_EXPLORER.toString(),
       );
       setAddStakeFee(fee[0]);

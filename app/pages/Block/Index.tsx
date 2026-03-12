@@ -2,7 +2,7 @@ import {Alert, Grid, Stack} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import {useGetBlockByHeight} from "../../api/hooks/useGetBlock";
 import PageHeader from "../layout/PageHeader";
-import Error from "./Error";
+import BlockError from "./Error";
 import BlockTabs from "./Tabs";
 import BlockTitle from "./Title";
 
@@ -20,7 +20,7 @@ export default function BlockPage() {
   }
 
   if (error) {
-    return <Error error={error} height={height ?? ""} />;
+    return <BlockError error={error} height={height ?? ""} />;
   }
 
   if (!data) {

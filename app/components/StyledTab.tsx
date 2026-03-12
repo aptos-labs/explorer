@@ -22,7 +22,7 @@ export default function StyledTab({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  let backgroundColor;
+  let backgroundColor: string;
   if (!secondary) {
     backgroundColor = theme.palette.background.paper;
   } else {

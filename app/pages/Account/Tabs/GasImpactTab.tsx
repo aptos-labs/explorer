@@ -29,7 +29,7 @@ import {
   getPageStartSequenceNumbers,
   TXN_PER_PAGE,
 } from "../Components/AccountTransactions";
-import Error from "../Error";
+import AccountError from "../Error";
 
 type GasImpactRowProps = {
   transaction: Types.Transaction;
@@ -137,7 +137,7 @@ function GasImpactTable({address, sequenceNum}: GasImpactTableProps) {
   );
 
   if (error) {
-    return <Error address={address} error={error} />;
+    return <AccountError address={address} error={error} />;
   }
 
   if (isLoading) {

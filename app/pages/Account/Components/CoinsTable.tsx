@@ -511,7 +511,9 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
           break;
       }
       return (
-        <GeneralTableRow key={i}>
+        <GeneralTableRow
+          key={coinDesc.tokenAddress ?? coinDesc.faAddress ?? `coin-${i}`}
+        >
           <CoinNameCell name={coinDesc.name} />
           <CoinNameCell name={friendlyType} />
           <CoinTypeCell data={coinDesc} />
@@ -542,7 +544,11 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
         <Box>
           {filteredCoins.length > 0 ? (
             filteredCoins.map((coin, i) => (
-              <CoinCard key={i} coin={coin} networkName={networkName} />
+              <CoinCard
+                key={coin.tokenAddress ?? coin.faAddress ?? `coin-${i}`}
+                coin={coin}
+                networkName={networkName}
+              />
             ))
           ) : (
             <Typography

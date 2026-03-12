@@ -210,7 +210,7 @@ const HashButtonInner = memo(function HashButtonInner({
 
   // Check if img is an emoji (including variation selectors like \uFE0F)
   // The regex matches one or more emoji characters, with optional variation selectors
-  const imgIsEmoji = img && /^\p{Emoji}[\p{Emoji}\uFE0F]*$/u.test(img);
+  const imgIsEmoji = img && /^\p{Emoji}(?:\p{Emoji}|\uFE0F)*$/u.test(img);
 
   const truncateHash =
     size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
@@ -382,7 +382,7 @@ const AssetHashButtonInner = memo(function AssetHashButtonInner({
 
   // Check if img is an emoji (including variation selectors like \uFE0F)
   // The regex matches one or more emoji characters, with optional variation selectors
-  const imgIsEmoji = img && /^\p{Emoji}[\p{Emoji}\uFE0F]*$/u.test(img);
+  const imgIsEmoji = img && /^\p{Emoji}(?:\p{Emoji}|\uFE0F)*$/u.test(img);
   let icon = null;
   if (img && imgIsEmoji) {
     icon = (

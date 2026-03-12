@@ -13,7 +13,7 @@ import PageHeader from "../layout/PageHeader";
 import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
 import {isValidStruct} from "../utils";
 import type {CoinData} from "./Components/CoinData";
-import Error from "./Error";
+import CoinError from "./Error";
 import CoinTabs, {type TabValue} from "./Tabs";
 import CoinTitle from "./Title";
 
@@ -98,7 +98,7 @@ export default function CoinPage() {
               pairedFa={pairedFa}
               coinData={coinData}
             />
-            <Error struct={struct} error={error} />
+            <CoinError struct={struct} error={error} />
           </>
         ) : (
           <CoinTabs

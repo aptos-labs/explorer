@@ -225,10 +225,10 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
         <Typography variant="h4" sx={{margin: 1, marginBottom: 3}}>
           Delegated Staking FAQ
         </Typography>
-        {faqData.map((faqData, index) => {
+        {faqData.map((faqSection, index) => {
           return (
             <ListItem
-              key={index}
+              key={faqSection.title}
               id={
                 index === 0
                   ? "staking-section"
@@ -247,9 +247,9 @@ export function StakingDrawer({open, handleClick}: StakingDrawerProps) {
               }}
             >
               <Typography variant="h5" component="p">
-                {`${"I".repeat(index + 1)}. ${faqData.title}`}
+                {`${"I".repeat(index + 1)}. ${faqSection.title}`}
               </Typography>
-              {faqData.data.map(({question, answer}) => (
+              {faqSection.data.map(({question, answer}) => (
                 <ListItem
                   key={question}
                   sx={{

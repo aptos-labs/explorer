@@ -9,9 +9,9 @@
  * the `/v1` path segment (e.g. `https://api.mainnet.aptoslabs.com/v1`).
  */
 
-import type {Types} from "~/types/aptos";
-
 // biome-ignore-all lint/suspicious/noExplicitAny: legacy REST client wraps untyped API responses
+
+import type {Types} from "~/types/aptos";
 
 interface AptosClientConfig {
   HEADERS?: Record<string, string>;
@@ -209,9 +209,9 @@ export class AptosClient {
           }
           return txn;
         }
-      } catch (e: any) {
+      } catch (e) {
         // 404 means not found yet — keep polling
-        if (!e?.message?.includes("404")) throw e;
+        if (!(e instanceof Error && e.message?.includes("404"))) throw e;
       }
       await new Promise((r) => setTimeout(r, interval));
     }

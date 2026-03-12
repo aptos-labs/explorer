@@ -295,7 +295,7 @@ function MyDepositSectionContent({
     async function fetchData() {
       const canWithdraw = await getCanWithdrawPendingInactive(
         aptosClient,
-        validator!.owner_address,
+        validator.owner_address,
       );
       setCanWithdrawPendingInactive(canWithdraw[0]);
     }
@@ -375,8 +375,11 @@ function MyDepositSectionContent({
       <Table aria-label="My deposits" data-entity-type="deposit">
         <TableHead>
           <TableRow>
-            {columns.map((columnName, idx) => (
-              <MyDepositsSectionHeaderCell column={columnName} key={idx} />
+            {columns.map((columnName) => (
+              <MyDepositsSectionHeaderCell
+                column={columnName}
+                key={columnName}
+              />
             ))}
           </TableRow>
         </TableHead>
@@ -385,6 +388,7 @@ function MyDepositSectionContent({
             (stake, idx) =>
               stake &&
               Number(stake) !== 0 && (
+                // biome-ignore lint/suspicious/noArrayIndexKey: index maps to staking status enum
                 <MyDepositRow key={idx} stake={Number(stake)} status={idx} />
               ),
           )}

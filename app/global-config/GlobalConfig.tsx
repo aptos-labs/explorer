@@ -206,10 +206,11 @@ function createAptosV2Client(networkName: NetworkName): Aptos {
 const clientCache = new Map<string, Aptos>();
 
 export function getCachedV2Client(networkName: NetworkName): Aptos {
-  if (!clientCache.has(networkName)) {
-    clientCache.set(networkName, createAptosV2Client(networkName));
-  }
-  return clientCache.get(networkName)!;
+  const existing = clientCache.get(networkName);
+  if (existing) return existing;
+  const client = createAptosV2Client(networkName);
+  clientCache.set(networkName, client);
+  return client;
 }
 
 // Aptos client hooks
