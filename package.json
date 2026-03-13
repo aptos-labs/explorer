@@ -9,7 +9,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@aptos-labs/aptos-client": "^2.2.0",
+      "@aptos-labs/aptos-client": "^3.0.0",
       "@aptos-labs/ts-sdk": "^6.1.0",
       "d3-array": ">=3.0.0",
       "d3-color": ">=3.1.0",
@@ -23,7 +23,7 @@
     }
   },
   "dependencies": {
-    "@aptos-labs/aptos-client": "^2.2.0",
+    "@aptos-labs/aptos-client": "^3.0.0",
     "@aptos-labs/ts-sdk": "^6.1.0",
     "@aptos-labs/wallet-adapter-react": "^8.3.0",
     "@download/blockies": "^1.0.3",
