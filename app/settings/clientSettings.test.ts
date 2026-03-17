@@ -8,7 +8,7 @@ import {
   sanitizeExplorerClientSettings,
 } from "./clientSettings";
 
-function createStorageMock(initialValue?: string) {
+function createStorageMock(initialValue?: string, shouldThrowOnWrite = false) {
   const storage = new Map<string, string>();
 
   if (initialValue !== undefined) {
@@ -18,8 +18,30 @@ function createStorageMock(initialValue?: string) {
   return {
     getItem: (key: string) => storage.get(key) ?? null,
     setItem: (key: string, value: string) => {
+      if (shouldThrowOnWrite) {
+        throw new Error("storage unavailable");
+      }
+
       storage.set(key, value);
     },
+    removeItem: (key: string) => {
+      storage.delete(key);
+    },
+  };
+}
+
+function createStorageCollection({
+  localValue,
+  sessionValue,
+  shouldThrowOnLocalWrite = false,
+}: {
+  localValue?: string;
+  sessionValue?: string;
+  shouldThrowOnLocalWrite?: boolean;
+}) {
+  return {
+    localStorage: createStorageMock(localValue, shouldThrowOnLocalWrite),
+    sessionStorage: createStorageMock(sessionValue),
   };
 }
 
@@ -40,9 +62,11 @@ describe("clientSettings", () => {
       expect(
         sanitizeExplorerClientSettings({
           geomiDevApiKeyOverride: "  override-key  ",
+          rememberGeomiDevApiKeyOverride: true,
         }),
       ).toEqual({
         geomiDevApiKeyOverride: "override-key",
+        rememberGeomiDevApiKeyOverride: true,
       });
     });
 
@@ -55,51 +79,108 @@ describe("clientSettings", () => {
 
   describe("loadExplorerClientSettings", () => {
     it("returns defaults for malformed storage values", () => {
-      const storage = createStorageMock("not-json");
-      expect(loadExplorerClientSettings(storage)).toEqual(
+      const storages = createStorageCollection({sessionValue: "not-json"});
+      expect(loadExplorerClientSettings(storages)).toEqual(
         defaultExplorerClientSettings,
       );
     });
 
-    it("reads and sanitizes persisted settings", () => {
-      const storage = createStorageMock(
-        JSON.stringify({
+    it("prefers session settings over local settings", () => {
+      const storages = createStorageCollection({
+        localValue: JSON.stringify({
+          geomiDevApiKeyOverride: "local-key",
+          rememberGeomiDevApiKeyOverride: true,
+        }),
+        sessionValue: JSON.stringify({
+          geomiDevApiKeyOverride: "  session-key  ",
+        }),
+      });
+
+      expect(loadExplorerClientSettings(storages)).toEqual({
+        geomiDevApiKeyOverride: "session-key",
+        rememberGeomiDevApiKeyOverride: false,
+      });
+    });
+
+    it("reads and sanitizes remembered local settings", () => {
+      const storages = createStorageCollection({
+        localValue: JSON.stringify({
           geomiDevApiKeyOverride: "  saved-key  ",
         }),
-      );
+      });
 
-      expect(loadExplorerClientSettings(storage)).toEqual({
+      expect(loadExplorerClientSettings(storages)).toEqual({
         geomiDevApiKeyOverride: "saved-key",
+        rememberGeomiDevApiKeyOverride: true,
       });
     });
   });
 
   describe("persistExplorerClientSettings", () => {
-    it("writes normalized settings to storage", () => {
-      const storage = createStorageMock();
+    it("writes normalized settings to session storage by default", () => {
+      const storages = createStorageCollection({});
 
       persistExplorerClientSettings(
-        {geomiDevApiKeyOverride: "  persisted-key  "},
-        storage,
+        {
+          geomiDevApiKeyOverride: "  persisted-key  ",
+          rememberGeomiDevApiKeyOverride: false,
+        },
+        storages,
       );
 
-      expect(loadExplorerClientSettings(storage)).toEqual({
+      expect(loadExplorerClientSettings(storages)).toEqual({
         geomiDevApiKeyOverride: "persisted-key",
+        rememberGeomiDevApiKeyOverride: false,
       });
     });
 
-    it("fails gracefully when storage writes throw", () => {
-      const storage = {
-        getItem: () => null,
-        setItem: () => {
-          throw new Error("storage unavailable");
+    it("writes remembered settings to local storage", () => {
+      const storages = createStorageCollection({});
+
+      persistExplorerClientSettings(
+        {
+          geomiDevApiKeyOverride: "persisted-key",
+          rememberGeomiDevApiKeyOverride: true,
         },
-      };
+        storages,
+      );
+
+      expect(loadExplorerClientSettings(storages)).toEqual({
+        geomiDevApiKeyOverride: "persisted-key",
+        rememberGeomiDevApiKeyOverride: true,
+      });
+    });
+
+    it("clears stored settings when the key is emptied", () => {
+      const storages = createStorageCollection({
+        localValue: JSON.stringify({
+          geomiDevApiKeyOverride: "persisted-key",
+        }),
+      });
+
+      persistExplorerClientSettings(
+        {
+          geomiDevApiKeyOverride: "",
+          rememberGeomiDevApiKeyOverride: false,
+        },
+        storages,
+      );
+
+      expect(loadExplorerClientSettings(storages)).toEqual(
+        defaultExplorerClientSettings,
+      );
+    });
+
+    it("fails gracefully when storage writes throw", () => {
+      const storages = createStorageCollection({shouldThrowOnLocalWrite: true});
 
       expect(() =>
         persistExplorerClientSettings(
-          {geomiDevApiKeyOverride: "persisted-key"},
-          storage,
+          {
+            geomiDevApiKeyOverride: "persisted-key",
+            rememberGeomiDevApiKeyOverride: true,
+          },
+          storages,
         ),
       ).not.toThrow();
     });

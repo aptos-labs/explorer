@@ -1,16 +1,23 @@
 export interface ExplorerClientSettings {
   geomiDevApiKeyOverride: string;
+  rememberGeomiDevApiKeyOverride: boolean;
 }
 
 export const EXPLORER_SETTINGS_STORAGE_KEY = "aptos-explorer-settings";
 
 export const defaultExplorerClientSettings: ExplorerClientSettings = {
   geomiDevApiKeyOverride: "",
+  rememberGeomiDevApiKeyOverride: false,
 };
 
-type StorageLike = Pick<Storage, "getItem" | "setItem">;
+type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 
-function getStorage(): StorageLike | null {
+interface ExplorerSettingsStorage {
+  localStorage: StorageLike | null;
+  sessionStorage: StorageLike | null;
+}
+
+function getLocalStorage(): StorageLike | null {
   if (typeof window === "undefined") {
     return null;
   }
@@ -20,6 +27,29 @@ function getStorage(): StorageLike | null {
   } catch {
     return null;
   }
+}
+
+function getSessionStorage(): StorageLike | null {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    return window.sessionStorage;
+  } catch {
+    return null;
+  }
+}
+
+function getAvailableStorages(): ExplorerSettingsStorage {
+  return {
+    localStorage: getLocalStorage(),
+    sessionStorage: getSessionStorage(),
+  };
+}
+
+function normalizeRememberGeomiDevApiKeyOverride(value: unknown): boolean {
+  return value === true;
 }
 
 export function normalizeGeomiDevApiKeyOverride(
@@ -35,43 +65,92 @@ export function sanitizeExplorerClientSettings(
     geomiDevApiKeyOverride: normalizeGeomiDevApiKeyOverride(
       value?.geomiDevApiKeyOverride,
     ),
+    rememberGeomiDevApiKeyOverride: normalizeRememberGeomiDevApiKeyOverride(
+      value?.rememberGeomiDevApiKeyOverride,
+    ),
   };
 }
 
-export function loadExplorerClientSettings(
-  storage: StorageLike | null = getStorage(),
-): ExplorerClientSettings {
+function loadStoredExplorerClientSettings(
+  storage: StorageLike | null,
+): Partial<ExplorerClientSettings> | null {
   if (!storage) {
-    return defaultExplorerClientSettings;
+    return null;
   }
 
   try {
     const rawSettings = storage.getItem(EXPLORER_SETTINGS_STORAGE_KEY);
     if (!rawSettings) {
-      return defaultExplorerClientSettings;
+      return null;
     }
 
-    const parsedSettings = JSON.parse(
-      rawSettings,
-    ) as Partial<ExplorerClientSettings>;
-    return sanitizeExplorerClientSettings(parsedSettings);
+    return JSON.parse(rawSettings) as Partial<ExplorerClientSettings>;
   } catch {
-    return defaultExplorerClientSettings;
+    return null;
   }
+}
+
+function clearStoredExplorerClientSettings(storages: ExplorerSettingsStorage) {
+  for (const storage of [storages.localStorage, storages.sessionStorage]) {
+    if (!storage) {
+      continue;
+    }
+
+    try {
+      storage.removeItem(EXPLORER_SETTINGS_STORAGE_KEY);
+    } catch {
+      // Ignore storage removal failures so settings UI changes do not crash the app.
+    }
+  }
+}
+
+export function loadExplorerClientSettings(
+  storages: ExplorerSettingsStorage = getAvailableStorages(),
+): ExplorerClientSettings {
+  const sessionSettings = loadStoredExplorerClientSettings(
+    storages.sessionStorage,
+  );
+  if (sessionSettings) {
+    return sanitizeExplorerClientSettings({
+      ...sessionSettings,
+      rememberGeomiDevApiKeyOverride: false,
+    });
+  }
+
+  const localSettings = loadStoredExplorerClientSettings(storages.localStorage);
+  if (localSettings) {
+    return sanitizeExplorerClientSettings({
+      ...localSettings,
+      rememberGeomiDevApiKeyOverride: true,
+    });
+  }
+
+  return defaultExplorerClientSettings;
 }
 
 export function persistExplorerClientSettings(
   settings: ExplorerClientSettings,
-  storage: StorageLike | null = getStorage(),
+  storages: ExplorerSettingsStorage = getAvailableStorages(),
 ) {
-  if (!storage) {
+  const sanitizedSettings = sanitizeExplorerClientSettings(settings);
+  clearStoredExplorerClientSettings(storages);
+
+  if (!sanitizedSettings.geomiDevApiKeyOverride) {
+    return;
+  }
+
+  const targetStorage = sanitizedSettings.rememberGeomiDevApiKeyOverride
+    ? storages.localStorage
+    : storages.sessionStorage;
+
+  if (!targetStorage) {
     return;
   }
 
   try {
-    storage.setItem(
+    targetStorage.setItem(
       EXPLORER_SETTINGS_STORAGE_KEY,
-      JSON.stringify(sanitizeExplorerClientSettings(settings)),
+      JSON.stringify(sanitizedSettings),
     );
   } catch {
     // Ignore storage write failures so settings UI changes do not crash the app.

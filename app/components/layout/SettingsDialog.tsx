@@ -1,11 +1,17 @@
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
   Stack,
   TextField,
   Typography,
@@ -16,6 +22,7 @@ import {useEffect, useMemo, useState} from "react";
 import {clearCachedSearchClients} from "../../api/createClient";
 import {clearCachedV2Clients} from "../../global-config";
 import {
+  type ExplorerClientSettings,
   normalizeGeomiDevApiKeyOverride,
   useExplorerSettings,
 } from "../../settings";
@@ -28,26 +35,26 @@ type SettingsDialogProps = {
 export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const {
-    settings: {geomiDevApiKeyOverride},
-    setGeomiDevApiKeyOverride,
-  } = useExplorerSettings();
-  const [draftGeomiDevApiKey, setDraftGeomiDevApiKey] = useState(
-    geomiDevApiKeyOverride,
-  );
+  const {settings, setExplorerSettings} = useExplorerSettings();
+  const [draftSettings, setDraftSettings] =
+    useState<ExplorerClientSettings>(settings);
   const [isSaving, setIsSaving] = useState(false);
+  const [showGeomiDevApiKey, setShowGeomiDevApiKey] = useState(false);
 
   useEffect(() => {
     if (open) {
-      setDraftGeomiDevApiKey(geomiDevApiKeyOverride);
+      setDraftSettings(settings);
+      setShowGeomiDevApiKey(false);
     }
-  }, [geomiDevApiKeyOverride, open]);
+  }, [open, settings]);
 
   const hasChanges = useMemo(
     () =>
-      normalizeGeomiDevApiKeyOverride(draftGeomiDevApiKey) !==
-      geomiDevApiKeyOverride,
-    [draftGeomiDevApiKey, geomiDevApiKeyOverride],
+      normalizeGeomiDevApiKeyOverride(draftSettings.geomiDevApiKeyOverride) !==
+        settings.geomiDevApiKeyOverride ||
+      draftSettings.rememberGeomiDevApiKeyOverride !==
+        settings.rememberGeomiDevApiKeyOverride,
+    [draftSettings, settings],
   );
 
   const handleSave = async () => {
@@ -59,7 +66,7 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
     setIsSaving(true);
 
     try {
-      setGeomiDevApiKeyOverride(draftGeomiDevApiKey);
+      setExplorerSettings(draftSettings);
       clearCachedV2Clients();
       clearCachedSearchClients();
       await queryClient.invalidateQueries();
@@ -85,9 +92,8 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
               API overrides
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Saved only in this browser. When set, client-side explorer
-              requests will use this geomi.dev key instead of the default
-              bundled key.
+              Used only in your browser. By default the override is stored for
+              the current browser session and cleared when the session ends.
             </Typography>
           </Box>
 
@@ -95,15 +101,60 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
             autoComplete="off"
             fullWidth
             label="geomi.dev API key override"
-            onChange={(event) => setDraftGeomiDevApiKey(event.target.value)}
+            onChange={(event) =>
+              setDraftSettings((currentSettings) => ({
+                ...currentSettings,
+                geomiDevApiKeyOverride: event.target.value,
+              }))
+            }
             placeholder="Paste your geomi.dev API key"
             slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={
+                        showGeomiDevApiKey ? "Hide API key" : "Show API key"
+                      }
+                      edge="end"
+                      onClick={() => setShowGeomiDevApiKey((value) => !value)}
+                    >
+                      {showGeomiDevApiKey ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
               htmlInput: {
                 spellCheck: false,
               },
             }}
-            value={draftGeomiDevApiKey}
+            type={showGeomiDevApiKey ? "text" : "password"}
+            value={draftSettings.geomiDevApiKeyOverride}
           />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={draftSettings.rememberGeomiDevApiKeyOverride}
+                onChange={(event) =>
+                  setDraftSettings((currentSettings) => ({
+                    ...currentSettings,
+                    rememberGeomiDevApiKeyOverride: event.target.checked,
+                  }))
+                }
+              />
+            }
+            label="Remember on this device"
+          />
+
+          <Alert severity="warning">
+            Remembering the key stores it in this browser&apos;s local storage.
+            Avoid enabling this on shared or untrusted devices.
+          </Alert>
 
           <Alert severity="info">
             Existing data will refresh after save so new requests use the
@@ -116,8 +167,14 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
           Cancel
         </Button>
         <Button
-          onClick={() => setDraftGeomiDevApiKey("")}
-          disabled={isSaving || !draftGeomiDevApiKey}
+          onClick={() =>
+            setDraftSettings((currentSettings) => ({
+              ...currentSettings,
+              geomiDevApiKeyOverride: "",
+              rememberGeomiDevApiKeyOverride: false,
+            }))
+          }
+          disabled={isSaving || !draftSettings.geomiDevApiKeyOverride}
         >
           Clear
         </Button>

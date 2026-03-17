@@ -17,7 +17,7 @@ import {
 
 interface ExplorerSettingsContextValue {
   settings: ExplorerClientSettings;
-  setGeomiDevApiKeyOverride: (value: string) => void;
+  setExplorerSettings: (value: ExplorerClientSettings) => void;
 }
 
 const ExplorerSettingsContext = createContext<
@@ -31,10 +31,7 @@ export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
 
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
-      if (
-        event.storageArea === window.localStorage &&
-        event.key === EXPLORER_SETTINGS_STORAGE_KEY
-      ) {
+      if (event.key === EXPLORER_SETTINGS_STORAGE_KEY) {
         setSettings(loadExplorerClientSettings());
       }
     };
@@ -45,24 +42,18 @@ export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
     };
   }, []);
 
-  const setGeomiDevApiKeyOverride = useCallback((value: string) => {
-    setSettings((previousSettings) => {
-      const nextSettings = sanitizeExplorerClientSettings({
-        ...previousSettings,
-        geomiDevApiKeyOverride: value,
-      });
-
-      persistExplorerClientSettings(nextSettings);
-      return nextSettings;
-    });
+  const setExplorerSettings = useCallback((value: ExplorerClientSettings) => {
+    const nextSettings = sanitizeExplorerClientSettings(value);
+    persistExplorerClientSettings(nextSettings);
+    setSettings(nextSettings);
   }, []);
 
   const value = useMemo(
     () => ({
       settings,
-      setGeomiDevApiKeyOverride,
+      setExplorerSettings,
     }),
-    [settings, setGeomiDevApiKeyOverride],
+    [settings, setExplorerSettings],
   );
 
   return (
