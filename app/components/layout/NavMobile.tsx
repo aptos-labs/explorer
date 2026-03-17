@@ -84,6 +84,9 @@ export default function NavMobile() {
           maxWidth: "none",
         }}
       >
+        <MenuItem onClick={() => handleCloseAndNavigate("/search")}>
+          Search
+        </MenuItem>
         <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
           Transactions
         </MenuItem>

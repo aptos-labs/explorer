@@ -48,6 +48,7 @@ export default function Nav() {
         marginRight: {md: "2rem", lg: "3.5rem"},
       }}
     >
+      <NavButton to="/search" title="Search the Explorer" label="Search" />
       <NavButton
         to="/transactions"
         title="View All Transactions"
