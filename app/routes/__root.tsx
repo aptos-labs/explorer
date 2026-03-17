@@ -50,6 +50,7 @@ import {GlobalConfigProvider} from "../global-config";
 import {useHashToPathRedirect} from "../hooks/useHashToPathRedirect";
 import {useOldUrlRedirect} from "../hooks/useOldUrlRedirect";
 import {BASE_URL} from "../lib/constants";
+import {ExplorerSettingsProvider} from "../settings";
 
 // Router context type
 interface RouterContext {
@@ -156,39 +157,41 @@ function RootComponent() {
             <QueryClientProvider client={queryClient}>
               <ProvideColorMode>
                 <CssBaseline />
-                <GlobalConfigProvider>
-                  <LocalnetUnavailableModal />
-                  <GraphqlClientProvider>
-                    <WalletAdapterProvider>
-                      <Box
-                        sx={{
-                          minHeight: "100vh",
-                          backgroundColor: "transparent",
-                          flexGrow: 1,
-                          display: "flex",
-                          flexDirection: "column",
-                        }}
-                      >
-                        <Header />
-                        <Container
-                          component="main"
-                          maxWidth="xl"
+                <ExplorerSettingsProvider>
+                  <GlobalConfigProvider>
+                    <LocalnetUnavailableModal />
+                    <GraphqlClientProvider>
+                      <WalletAdapterProvider>
+                        <Box
                           sx={{
+                            minHeight: "100vh",
+                            backgroundColor: "transparent",
+                            flexGrow: 1,
                             display: "flex",
                             flexDirection: "column",
-                            flexGrow: 4,
-                            paddingTop: "2rem",
                           }}
                         >
-                          <Suspense fallback={<Fallback />}>
-                            <Outlet />
-                          </Suspense>
-                        </Container>
-                        <Footer />
-                      </Box>
-                    </WalletAdapterProvider>
-                  </GraphqlClientProvider>
-                </GlobalConfigProvider>
+                          <Header />
+                          <Container
+                            component="main"
+                            maxWidth="xl"
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column",
+                              flexGrow: 4,
+                              paddingTop: "2rem",
+                            }}
+                          >
+                            <Suspense fallback={<Fallback />}>
+                              <Outlet />
+                            </Suspense>
+                          </Container>
+                          <Footer />
+                        </Box>
+                      </WalletAdapterProvider>
+                    </GraphqlClientProvider>
+                  </GlobalConfigProvider>
+                </ExplorerSettingsProvider>
               </ProvideColorMode>
               {isDev && (
                 <Suspense fallback={null}>

@@ -54,7 +54,15 @@ const isNetlifyPreview =
  * This key is safe to expose in the browser (client API key).
  * Returns undefined on Netlify preview builds.
  */
-export function getApiKey(network_name: NetworkName): string | undefined {
+export function getApiKey(
+  network_name: NetworkName,
+  overrideApiKey?: string,
+): string | undefined {
+  const normalizedOverride = overrideApiKey?.trim();
+  if (normalizedOverride) {
+    return normalizedOverride;
+  }
+
   if (isNetlifyPreview) return undefined;
   return clientApiKeys[network_name];
 }

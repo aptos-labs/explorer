@@ -1,5 +1,6 @@
 export type {GlobalState} from "./GlobalConfig";
 export {
+  clearCachedV2Clients,
   GlobalConfigProvider,
   getCachedV2Client,
   useAptosClient,

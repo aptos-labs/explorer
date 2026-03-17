@@ -11,6 +11,7 @@ import {
   type NetworkName,
   networks,
 } from "../constants";
+import {getGeomiDevApiKeyOverride, useExplorerSettings} from "../settings";
 
 const NETWORK_COOKIE_NAME = "network";
 
@@ -155,9 +156,12 @@ export function useNetworkValue(): string {
 }
 
 // Create Aptos clients
-function createAptosClient(networkName: NetworkName): AptosClient {
+function createAptosClient(
+  networkName: NetworkName,
+  apiKeyOverride = getGeomiDevApiKeyOverride(),
+): AptosClient {
   const nodeUrl = networks[networkName];
-  const apiKey = getApiKey(networkName);
+  const apiKey = getApiKey(networkName, apiKeyOverride);
   const headers: Record<string, string> = {};
   if (apiKey) {
     headers.Authorization = `Bearer ${apiKey}`;
@@ -165,9 +169,12 @@ function createAptosClient(networkName: NetworkName): AptosClient {
   return new AptosClient(nodeUrl, {HEADERS: headers});
 }
 
-function createAptosV2Client(networkName: NetworkName): Aptos {
+function createAptosV2Client(
+  networkName: NetworkName,
+  apiKeyOverride = getGeomiDevApiKeyOverride(),
+): Aptos {
   const nodeUrl = networks[networkName];
-  const apiKey = getApiKey(networkName);
+  const apiKey = getApiKey(networkName, apiKeyOverride);
   const indexerUrl = getGraphqlURI(networkName);
 
   // Map network name to SDK Network enum
@@ -205,23 +212,49 @@ function createAptosV2Client(networkName: NetworkName): Aptos {
 // Client cache to prevent unnecessary recreations
 const clientCache = new Map<string, Aptos>();
 
-export function getCachedV2Client(networkName: NetworkName): Aptos {
-  const existing = clientCache.get(networkName);
+function getClientCacheKey(networkName: NetworkName, apiKeyOverride?: string) {
+  return `${networkName}:${apiKeyOverride?.trim() ?? ""}`;
+}
+
+export function clearCachedV2Clients() {
+  clientCache.clear();
+}
+
+export function getCachedV2Client(
+  networkName: NetworkName,
+  apiKeyOverride = getGeomiDevApiKeyOverride(),
+): Aptos {
+  const cacheKey = getClientCacheKey(networkName, apiKeyOverride);
+  const existing = clientCache.get(cacheKey);
   if (existing) return existing;
-  const client = createAptosV2Client(networkName);
-  clientCache.set(networkName, client);
+  const client = createAptosV2Client(networkName, apiKeyOverride);
+  clientCache.set(cacheKey, client);
   return client;
 }
 
 // Aptos client hooks
 export function useAptosClient(): AptosClient {
   const networkName = useNetworkName();
-  return useMemo(() => createAptosClient(networkName), [networkName]);
+  const {
+    settings: {geomiDevApiKeyOverride},
+  } = useExplorerSettings();
+
+  return useMemo(
+    () => createAptosClient(networkName, geomiDevApiKeyOverride),
+    [networkName, geomiDevApiKeyOverride],
+  );
 }
 
 export function useAptosClientV2(): Aptos {
   const networkName = useNetworkName();
-  return useMemo(() => getCachedV2Client(networkName), [networkName]);
+  const {
+    settings: {geomiDevApiKeyOverride},
+  } = useExplorerSettings();
+
+  return useMemo(
+    () => getCachedV2Client(networkName, geomiDevApiKeyOverride),
+    [networkName, geomiDevApiKeyOverride],
+  );
 }
 
 // Legacy-compatible GlobalState interface
@@ -238,9 +271,12 @@ export type GlobalState = {
 export function useGlobalState(): GlobalState {
   const networkName = useNetworkName();
   const networkValue = networks[networkName];
+  const {
+    settings: {geomiDevApiKeyOverride},
+  } = useExplorerSettings();
   const sdk_v2_client = useMemo(
-    () => getCachedV2Client(networkName),
-    [networkName],
+    () => getCachedV2Client(networkName, geomiDevApiKeyOverride),
+    [networkName, geomiDevApiKeyOverride],
   );
 
   return useMemo(

@@ -6,12 +6,14 @@ import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import Cookies from "js-cookie";
 import {
   defaultNetworkName,
+  getApiKey,
   getGraphqlURI,
   getServerApiKey,
   isValidNetworkName,
   type NetworkName,
   networks,
 } from "../lib/constants";
+import {getGeomiDevApiKeyOverride} from "../settings";
 
 const NETWORK_COOKIE_NAME = "network";
 
@@ -51,7 +53,10 @@ export function getNetworkFromSearch(
  */
 export function createAptosClient(networkName: NetworkName): Aptos {
   const nodeUrl = networks[networkName];
-  const apiKey = getServerApiKey(networkName);
+  const apiKey =
+    typeof window === "undefined"
+      ? getServerApiKey(networkName)
+      : getApiKey(networkName, getGeomiDevApiKeyOverride());
   const indexerUri = getGraphqlURI(networkName);
 
   // Map network name to SDK Network enum
@@ -88,6 +93,10 @@ export function createAptosClient(networkName: NetworkName): Aptos {
 
 // Cache clients to avoid recreating them
 const clientCache = new Map<NetworkName, Aptos>();
+
+export function clearCachedSearchClients() {
+  clientCache.clear();
+}
 
 /**
  * Get a cached Aptos client for the given network.

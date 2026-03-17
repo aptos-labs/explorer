@@ -13,9 +13,11 @@ import {useNetworkName} from "../../global-config";
 import {useNavigate} from "../../routing";
 import {sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
+import SettingsDialog from "./SettingsDialog";
 
 export default function NavMobile() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const theme = useTheme();
   const navigate = useNavigate();
   const networkName = useNetworkName();
@@ -33,6 +35,11 @@ export default function NavMobile() {
   const handleCloseAndNavigate = (to: string) => {
     setMenuAnchorEl(null);
     navigate({to});
+  };
+
+  const handleOpenSettings = () => {
+    handleMenuClose();
+    setIsSettingsOpen(true);
   };
 
   return (
@@ -94,6 +101,7 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/coins")}>
           Coins
         </MenuItem>
+        <MenuItem onClick={handleOpenSettings}>Settings</MenuItem>
         <Divider />
         <WalletConnector
           networkSupport={networkName}
@@ -103,6 +111,10 @@ export default function NavMobile() {
           modalMaxWidth="sm"
         />
       </Menu>
+      <SettingsDialog
+        open={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
     </Box>
   );
 }

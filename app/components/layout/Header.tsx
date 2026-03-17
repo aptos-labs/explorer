@@ -1,9 +1,11 @@
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import {
   alpha,
   Box,
   Button,
+  IconButton,
   Typography,
   useMediaQuery,
   useTheme,
@@ -11,7 +13,7 @@ import {
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
 import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";
@@ -28,6 +30,7 @@ import FeatureBar from "./FeatureBar";
 import Nav from "./Nav";
 import NavMobile from "./NavMobile";
 import NetworkSelect from "./NetworkSelect";
+import SettingsDialog from "./SettingsDialog";
 
 export default function Header() {
   const scrollTop = () => {
@@ -54,6 +57,7 @@ export default function Header() {
   });
 
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const networkName = useNetworkName();
   const {account, wallet, network} = useWallet();
   const navigate = useNavigate();
@@ -166,6 +170,24 @@ export default function Header() {
 
             <Nav />
             <NetworkSelect />
+            {!isOnMobile && (
+              <>
+                <IconButton
+                  aria-label="Open settings"
+                  onClick={() => setIsSettingsOpen(true)}
+                  sx={{
+                    marginLeft: "1rem",
+                    color: "inherit",
+                  }}
+                >
+                  <SettingsOutlinedIcon fontSize="small" />
+                </IconButton>
+                <SettingsDialog
+                  open={isSettingsOpen}
+                  onClose={() => setIsSettingsOpen(false)}
+                />
+              </>
+            )}
 
             <Button
               onClick={toggleColorMode}
