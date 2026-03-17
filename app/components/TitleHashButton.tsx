@@ -62,11 +62,12 @@ function HashButton({hash}: {hash: string}) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const isOnSmallerScreen = !useMediaQuery(theme.breakpoints.up("lg"));
+  const address = tryStandardizeAddress(hash) ?? hash;
 
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
 
   const copyAddress = async () => {
-    await navigator.clipboard.writeText(hash);
+    await navigator.clipboard.writeText(address);
 
     setTooltipOpen(true);
 
@@ -107,10 +108,10 @@ function HashButton({hash}: {hash: string}) {
     >
       <Typography variant="body2">
         {isOnMobile
-          ? truncateAddress(hash)
+          ? truncateAddress(address)
           : isOnSmallerScreen
-            ? truncateAddressMiddle(hash)
-            : hash}
+            ? truncateAddressMiddle(address)
+            : address}
       </Typography>
     </Button>
   );

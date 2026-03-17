@@ -40,7 +40,7 @@ import {
   useNavigate,
 } from "../../routing";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
-import {assertNever} from "../../utils";
+import {assertNever, standardizeAddress} from "../../utils";
 import {wouldExceedGasLimit} from "../../utils/aip140";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
 import {
@@ -309,7 +309,7 @@ function TransactionDetailDialog({
   const counterparty = getTransactionCounterparty(transaction);
   const sender =
     transaction.type === TransactionTypeName.User
-      ? (transaction as Types.UserTransaction).sender
+      ? standardizeAddress((transaction as Types.UserTransaction).sender)
       : null;
 
   const handleCopy = async (text: string, field: string) => {

@@ -35,7 +35,7 @@ import {
   VerifiedCoinCell,
 } from "../../../../components/Table/VerifiedCell";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
-import {assertNever} from "../../../../utils";
+import {assertNever, tryStandardizeAddress} from "../../../../utils";
 import {isValidAccountAddress} from "../../../utils";
 import {getLearnMoreTooltip} from "../../helpers";
 import type {BalanceChange} from "../../utils";
@@ -486,7 +486,12 @@ function BalanceChangeCard({balanceChange, onClick}: BalanceChangeCardProps) {
               }}
             >
               {balanceChange.address
-                ? `${balanceChange.address.slice(0, 8)}...${balanceChange.address.slice(-6)}`
+                ? (() => {
+                    const addr =
+                      tryStandardizeAddress(balanceChange.address) ??
+                      balanceChange.address;
+                    return `${addr.slice(0, 8)}...${addr.slice(-6)}`;
+                  })()
                 : "-"}
             </Typography>
           </Stack>

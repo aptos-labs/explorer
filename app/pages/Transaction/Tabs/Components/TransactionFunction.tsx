@@ -9,6 +9,7 @@ import {CodeLineBox} from "../../../../components/CodeLineBox";
 import {useNetworkName} from "../../../../global-config/GlobalConfig";
 import {Link} from "../../../../routing";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
+import {tryStandardizeAddress} from "../../../../utils";
 
 function CoinTransferCodeLine({
   sx,
@@ -115,7 +116,8 @@ export default function TransactionFunction({
     return null;
   }
 
-  const [address, moduleName, functionName] = functionFullStr.split("::");
+  const [rawAddress, moduleName, functionName] = functionFullStr.split("::");
+  const address = tryStandardizeAddress(rawAddress) ?? rawAddress;
 
   if (
     functionFullStr === "0x1::coin::transfer" ||

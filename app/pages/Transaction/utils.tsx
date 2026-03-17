@@ -2,7 +2,7 @@ import {useQuery} from "@tanstack/react-query";
 import type {Types} from "~/types/aptos";
 import {TransactionTypeName} from "../../components/TransactionType";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
-import {tryStandardizeAddress} from "../../utils";
+import {standardizeAddress, tryStandardizeAddress} from "../../utils";
 
 // Type definitions for specific Move resource structures
 type FungibleStoreResource = Types.MoveResource & {
@@ -85,25 +85,25 @@ export function getTransactionCounterparty(
 
   if (isCoinTransfer) {
     return {
-      address: payload.arguments[0],
+      address: standardizeAddress(payload.arguments[0]),
       role: "receiver",
     };
   }
 
   if (isObjectTransfer) {
     return {
-      address: payload.arguments[1],
+      address: standardizeAddress(payload.arguments[1]),
       role: "receiver",
     };
   }
   if (isTokenV2MintSoulbound) {
     return {
-      address: payload.arguments[7],
+      address: standardizeAddress(payload.arguments[7]),
       role: "receiver",
     };
   }
 
-  const smartContractAddr = payload.function.split("::")[0];
+  const smartContractAddr = standardizeAddress(payload.function.split("::")[0]);
   return {
     address: smartContractAddr,
     role: "smartContract",

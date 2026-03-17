@@ -19,6 +19,7 @@ import TimestampValue from "../../../components/IndividualPageContent/ContentVal
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {TransactionStatus} from "../../../components/TransactionStatus";
+import {standardizeAddress} from "../../../utils";
 import {parseExpirationTimestamp} from "../../utils";
 import {getLearnMoreTooltip} from "../helpers";
 import {getTransactionAmount, getTransactionCounterparty} from "../utils";
@@ -207,7 +208,9 @@ function UserTransferOrInteractionRows({
     "function" in transaction.payload &&
     transaction.payload.function.includes("::")
   ) {
-    smartContractAddress = transaction.payload.function.split("::")[0];
+    smartContractAddress = standardizeAddress(
+      transaction.payload.function.split("::")[0],
+    );
   }
   return (
     <>
