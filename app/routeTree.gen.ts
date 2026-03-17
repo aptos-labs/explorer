@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as VerificationRouteImport } from './routes/verification'
 import { Route as ValidatorsEnhancedRouteImport } from './routes/validators-enhanced'
 import { Route as ValidatorsRouteImport } from './routes/validators'
@@ -39,6 +40,11 @@ import { Route as AccountAddressTabRouteImport } from './routes/account.$address
 import { Route as ObjectAddressModulesSplatRouteImport } from './routes/object.$address.modules.$'
 import { Route as AccountAddressModulesSplatRouteImport } from './routes/account.$address.modules.$'
 
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VerificationRoute = VerificationRouteImport.update({
   id: '/verification',
   path: '/verification',
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AnalyticsRoute
   '/blocks': typeof BlocksRoute
   '/coins': typeof CoinsRoute
+  '/search': typeof SearchRoute
   '/transactions': typeof TransactionsRoute
   '/validators': typeof ValidatorsRouteWithChildren
   '/validators-enhanced': typeof ValidatorsEnhancedRouteWithChildren
@@ -224,6 +231,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AnalyticsRoute
   '/blocks': typeof BlocksRoute
   '/coins': typeof CoinsRoute
+  '/search': typeof SearchRoute
   '/transactions': typeof TransactionsRoute
   '/validators': typeof ValidatorsRouteWithChildren
   '/validators-enhanced': typeof ValidatorsEnhancedRouteWithChildren
@@ -256,6 +264,7 @@ export interface FileRoutesById {
   '/analytics': typeof AnalyticsRoute
   '/blocks': typeof BlocksRoute
   '/coins': typeof CoinsRoute
+  '/search': typeof SearchRoute
   '/transactions': typeof TransactionsRoute
   '/validators': typeof ValidatorsRouteWithChildren
   '/validators-enhanced': typeof ValidatorsEnhancedRouteWithChildren
@@ -289,6 +298,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/blocks'
     | '/coins'
+    | '/search'
     | '/transactions'
     | '/validators'
     | '/validators-enhanced'
@@ -320,6 +330,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/blocks'
     | '/coins'
+    | '/search'
     | '/transactions'
     | '/validators'
     | '/validators-enhanced'
@@ -351,6 +362,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/blocks'
     | '/coins'
+    | '/search'
     | '/transactions'
     | '/validators'
     | '/validators-enhanced'
@@ -383,6 +395,7 @@ export interface RootRouteChildren {
   AnalyticsRoute: typeof AnalyticsRoute
   BlocksRoute: typeof BlocksRoute
   CoinsRoute: typeof CoinsRoute
+  SearchRoute: typeof SearchRoute
   TransactionsRoute: typeof TransactionsRoute
   ValidatorsRoute: typeof ValidatorsRouteWithChildren
   ValidatorsEnhancedRoute: typeof ValidatorsEnhancedRouteWithChildren
@@ -399,6 +412,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/verification': {
       id: '/verification'
       path: '/verification'
@@ -745,6 +765,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyticsRoute: AnalyticsRoute,
   BlocksRoute: BlocksRoute,
   CoinsRoute: CoinsRoute,
+  SearchRoute: SearchRoute,
   TransactionsRoute: TransactionsRoute,
   ValidatorsRoute: ValidatorsRouteWithChildren,
   ValidatorsEnhancedRoute: ValidatorsEnhancedRouteWithChildren,
