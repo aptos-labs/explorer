@@ -1,4 +1,5 @@
 import {Box, Chip, Stack, Typography, useTheme} from "@mui/material";
+import {useMemo} from "react";
 import type {
   Types,
   WriteSetChange,
@@ -41,6 +42,8 @@ type TableItemChange =
   | WriteSetChange_WriteTableItem
   | WriteSetChange_DeleteTableItem;
 
+type EnclosingAccount = {address: string; resourceType: string};
+
 function isTableItemChange(change: WriteSetChange): change is TableItemChange {
   return (
     change.type === "write_table_item" || change.type === "delete_table_item"
@@ -54,14 +57,22 @@ function isWriteTableItem(
 }
 
 /**
- * Scans resource changes to find accounts whose resource data references
- * the given table handle, indicating they hold the table.
+ * Builds a map from table handle → enclosing accounts by scanning all
+ * resource changes once. This avoids repeated O(n) scans per table item.
  */
-function findEnclosingAccounts(
-  handle: string,
+function buildHandleToAccountsIndex(
   changes: WriteSetChange[],
-): Array<{address: string; resourceType: string}> {
-  const results: Array<{address: string; resourceType: string}> = [];
+): Map<string, EnclosingAccount[]> {
+  const handles = new Set<string>();
+  for (const change of changes) {
+    if (isTableItemChange(change)) {
+      handles.add(change.handle);
+    }
+  }
+
+  if (handles.size === 0) return new Map();
+
+  const index = new Map<string, EnclosingAccount[]>();
   const seen = new Set<string>();
 
   for (const change of changes) {
@@ -70,20 +81,24 @@ function findEnclosingAccounts(
       change.data
     ) {
       const dataStr = JSON.stringify(change.data);
-      if (dataStr.includes(handle)) {
-        const key = `${change.address}::${change.data.type}`;
-        if (!seen.has(key)) {
-          seen.add(key);
-          results.push({
-            address: change.address,
-            resourceType: change.data.type,
-          });
+      for (const handle of handles) {
+        if (dataStr.includes(handle)) {
+          const dedupeKey = `${handle}::${change.address}::${change.data.type}`;
+          if (!seen.has(dedupeKey)) {
+            seen.add(dedupeKey);
+            const existing = index.get(handle) ?? [];
+            existing.push({
+              address: change.address,
+              resourceType: change.data.type,
+            });
+            index.set(handle, existing);
+          }
         }
       }
     }
   }
 
-  return results;
+  return index;
 }
 
 /**
@@ -140,13 +155,12 @@ function DecodedValueDisplay({value}: {value: unknown}) {
 
 function TableItemDetails({
   change,
-  allChanges,
+  enclosingAccounts,
 }: {
   change: TableItemChange;
-  allChanges: WriteSetChange[];
+  enclosingAccounts: EnclosingAccount[];
 }) {
   const theme = useTheme();
-  const enclosingAccounts = findEnclosingAccounts(change.handle, allChanges);
   const hasDecodedData = !!change.data;
   const mutedColor = theme.palette.text.secondary;
 
@@ -202,24 +216,24 @@ function TableItemDetails({
             value={<DecodedValueDisplay value={change.data.key} />}
           />
 
-          {isWriteTableItem(change) && change.data && (
-            <>
-              <ContentRow
-                title="Value Type:"
-                value={
-                  <Chip
-                    label={change.data.value_type}
-                    size="small"
-                    variant="outlined"
-                    sx={{fontFamily: "monospace", fontSize: "0.75rem"}}
-                  />
-                }
-              />
-              <ContentRow
-                title="Value (Decoded):"
-                value={<DecodedValueDisplay value={change.data.value} />}
-              />
-            </>
+          {change.data.value_type && (
+            <ContentRow
+              title="Value Type:"
+              value={
+                <Chip
+                  label={change.data.value_type}
+                  size="small"
+                  variant="outlined"
+                  sx={{fontFamily: "monospace", fontSize: "0.75rem"}}
+                />
+              }
+            />
+          )}
+          {change.data.value !== undefined && (
+            <ContentRow
+              title="Value (Decoded):"
+              value={<DecodedValueDisplay value={change.data.value} />}
+            />
           )}
         </>
       )}
@@ -269,6 +283,11 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
 
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(changes.length);
+
+  const handleToAccounts = useMemo(
+    () => buildHandleToAccountsIndex(changes),
+    [changes],
+  );
 
   if (changes.length === 0) {
     return <EmptyTabContent />;
@@ -325,7 +344,10 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
           )}
 
           {isTableItemChange(change) && (
-            <TableItemDetails change={change} allChanges={changes} />
+            <TableItemDetails
+              change={change}
+              enclosingAccounts={handleToAccounts.get(change.handle) ?? []}
+            />
           )}
 
           {!isTableItemChange(change) && "key" in change && (
