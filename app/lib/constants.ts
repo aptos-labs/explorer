@@ -50,12 +50,24 @@ const isNetlifyPreview =
   import.meta.env.VITE_NETLIFY_CONTEXT === "branch-deploy";
 
 /**
+ * Dedicated mainnet API key for Netlify preview deployments.
+ * Scoped only to preview URLs so it does not interfere with production rate limits.
+ * Set via: VITE_APTOS_MAINNET_PREVIEW_API_KEY
+ */
+const previewMainnetApiKey: string | undefined = import.meta.env
+  .VITE_APTOS_MAINNET_PREVIEW_API_KEY;
+
+/**
  * Get the client-side API key for a network.
  * This key is safe to expose in the browser (client API key).
- * Returns undefined on Netlify preview builds.
+ * On Netlify preview builds only mainnet is authenticated, using the dedicated
+ * preview key (VITE_APTOS_MAINNET_PREVIEW_API_KEY). All other networks return
+ * undefined on preview builds.
  */
 export function getApiKey(network_name: NetworkName): string | undefined {
-  if (isNetlifyPreview) return undefined;
+  if (isNetlifyPreview) {
+    return network_name === "mainnet" ? previewMainnetApiKey : undefined;
+  }
   return clientApiKeys[network_name];
 }
 
@@ -63,17 +75,20 @@ export function getApiKey(network_name: NetworkName): string | undefined {
  * Get the server-side API key for a network.
  * Reads from APTOS_<NETWORK>_API_KEY (no VITE_ prefix, never sent to browser).
  * Falls back to the client key if no server key is configured.
- * Returns undefined on Netlify preview builds (checked via the CONTEXT runtime var).
+ * On Netlify preview builds only mainnet is authenticated, using
+ * APTOS_MAINNET_PREVIEW_API_KEY (server) or VITE_APTOS_MAINNET_PREVIEW_API_KEY
+ * (client fallback). All other networks return undefined on preview builds.
  */
 export function getServerApiKey(network_name: NetworkName): string | undefined {
-  // Netlify sets CONTEXT at SSR function runtime; suppress keys for preview contexts.
+  // Netlify sets CONTEXT at SSR function runtime; scope keys for preview contexts.
   const netlifyContext =
     typeof process !== "undefined" ? process.env.CONTEXT : undefined;
   if (
     netlifyContext === "deploy-preview" ||
     netlifyContext === "branch-deploy"
   ) {
-    return undefined;
+    if (network_name !== "mainnet") return undefined;
+    return process.env.APTOS_MAINNET_PREVIEW_API_KEY || previewMainnetApiKey;
   }
 
   if (typeof process !== "undefined" && process.env) {

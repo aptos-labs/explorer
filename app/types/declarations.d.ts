@@ -54,6 +54,9 @@ interface ImportMetaEnv {
   readonly VITE_APTOS_DECIBEL_API_KEY?: string;
   readonly VITE_APTOS_SHELBYNET_API_KEY?: string;
   readonly VITE_APTOS_LOCAL_API_KEY?: string;
+  // Dedicated mainnet key for Netlify preview builds (deploy-preview / branch-deploy).
+  // Must be scoped to preview deployment URLs, not production.
+  readonly VITE_APTOS_MAINNET_PREVIEW_API_KEY?: string;
   // Server API keys are read from process.env (APTOS_<NETWORK>_API_KEY)
   // and are NOT included in ImportMetaEnv to prevent accidental client exposure.
   // Netlify build context baked in at build time (production | deploy-preview | branch-deploy).
