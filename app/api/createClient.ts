@@ -13,7 +13,10 @@ import {
   type NetworkName,
   networks,
 } from "../lib/constants";
-import {getGeomiDevApiKeyOverride} from "../settings";
+import {
+  getGeomiDevApiKeyOverride,
+  normalizeGeomiDevApiKeyOverride,
+} from "../settings";
 
 const NETWORK_COOKIE_NAME = "network";
 
@@ -92,7 +95,11 @@ export function createAptosClient(networkName: NetworkName): Aptos {
 }
 
 // Cache clients to avoid recreating them
-const clientCache = new Map<NetworkName, Aptos>();
+const clientCache = new Map<string, Aptos>();
+
+function getClientCacheKey(networkName: NetworkName, apiKeyOverride?: string) {
+  return `${networkName}:${normalizeGeomiDevApiKeyOverride(apiKeyOverride)}`;
+}
 
 export function clearCachedSearchClients() {
   clientCache.clear();
@@ -102,11 +109,15 @@ export function clearCachedSearchClients() {
  * Get a cached Aptos client for the given network.
  */
 export function getCachedClient(networkName: NetworkName): Aptos {
-  if (!clientCache.has(networkName)) {
-    clientCache.set(networkName, createAptosClient(networkName));
+  const apiKeyOverride =
+    typeof window === "undefined" ? undefined : getGeomiDevApiKeyOverride();
+  const cacheKey = getClientCacheKey(networkName, apiKeyOverride);
+
+  if (!clientCache.has(cacheKey)) {
+    clientCache.set(cacheKey, createAptosClient(networkName));
   }
   // biome-ignore lint/style/noNonNullAssertion: guaranteed by the .has() check above
-  return clientCache.get(networkName)!;
+  return clientCache.get(cacheKey)!;
 }
 
 /**

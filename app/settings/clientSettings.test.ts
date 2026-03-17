@@ -1,6 +1,7 @@
 import {describe, expect, it} from "vitest";
 import {
   defaultExplorerClientSettings,
+  EXPLORER_SETTINGS_STORAGE_KEY,
   loadExplorerClientSettings,
   normalizeGeomiDevApiKeyOverride,
   persistExplorerClientSettings,
@@ -11,7 +12,7 @@ function createStorageMock(initialValue?: string) {
   const storage = new Map<string, string>();
 
   if (initialValue !== undefined) {
-    storage.set("aptos-explorer-settings", initialValue);
+    storage.set(EXPLORER_SETTINGS_STORAGE_KEY, initialValue);
   }
 
   return {
@@ -85,6 +86,22 @@ describe("clientSettings", () => {
       expect(loadExplorerClientSettings(storage)).toEqual({
         geomiDevApiKeyOverride: "persisted-key",
       });
+    });
+
+    it("fails gracefully when storage writes throw", () => {
+      const storage = {
+        getItem: () => null,
+        setItem: () => {
+          throw new Error("storage unavailable");
+        },
+      };
+
+      expect(() =>
+        persistExplorerClientSettings(
+          {geomiDevApiKeyOverride: "persisted-key"},
+          storage,
+        ),
+      ).not.toThrow();
     });
   });
 });

@@ -52,7 +52,8 @@ const isNetlifyPreview =
 /**
  * Get the client-side API key for a network.
  * This key is safe to expose in the browser (client API key).
- * Returns undefined on Netlify preview builds.
+ * Returns undefined on Netlify preview builds unless an explicit override is
+ * provided by the user in the browser.
  */
 export function getApiKey(
   network_name: NetworkName,

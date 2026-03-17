@@ -68,10 +68,14 @@ export function persistExplorerClientSettings(
     return;
   }
 
-  storage.setItem(
-    EXPLORER_SETTINGS_STORAGE_KEY,
-    JSON.stringify(sanitizeExplorerClientSettings(settings)),
-  );
+  try {
+    storage.setItem(
+      EXPLORER_SETTINGS_STORAGE_KEY,
+      JSON.stringify(sanitizeExplorerClientSettings(settings)),
+    );
+  } catch {
+    // Ignore storage write failures so settings UI changes do not crash the app.
+  }
 }
 
 export function getGeomiDevApiKeyOverride(): string | undefined {
