@@ -137,7 +137,8 @@ function generateStructuredData(
 ): StructuredDataProps[] {
   const structuredDataItems: StructuredDataProps[] = [];
 
-  // WebSite schema for the main site
+  // WebSite schema for the main site — includes SearchAction so search engines
+  // and AI tools know the site has a search feature
   const websiteSchema: StructuredDataProps = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -145,6 +146,14 @@ function generateStructuredData(
     url: BASE_URL,
     description:
       "Explore transactions, accounts, blocks, and activity on the Aptos blockchain.",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${BASE_URL}/?search={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
   };
 
   // WebPage schema for the current page
@@ -187,9 +196,15 @@ function generateStructuredData(
         name: fullTitle,
         url: canonicalUrl,
         description: props.description,
-        additionalType: "https://schema.org/Thing",
+        // Identifier from the URL: either a version number or 0x-prefixed hash
+        identifier: canonicalUrl.split("/txn/")[1]?.split("/")[0] ?? undefined,
         encodingFormat: "text/html",
         isAccessibleForFree: true,
+        publisher: {
+          "@type": "Organization",
+          name: "Aptos Labs",
+          url: "https://aptoslabs.com",
+        },
       });
       break;
     case "account":
@@ -204,6 +219,9 @@ function generateStructuredData(
           "@type": "Thing",
           name: fullTitle,
           url: canonicalUrl,
+          // Identifier is the blockchain address extracted from the canonical URL
+          identifier:
+            canonicalUrl.split("/account/")[1]?.split("/")[0] ?? undefined,
         },
       });
       break;
@@ -214,6 +232,15 @@ function generateStructuredData(
         name: fullTitle,
         url: canonicalUrl,
         description: props.description,
+        // Identifier is the block height
+        identifier:
+          canonicalUrl.split("/block/")[1]?.split("/")[0] ?? undefined,
+        isAccessibleForFree: true,
+        creator: {
+          "@type": "Organization",
+          name: "Aptos Labs",
+          url: "https://aptoslabs.com",
+        },
       });
       break;
     case "token":
@@ -224,6 +251,7 @@ function generateStructuredData(
         url: canonicalUrl,
         description: props.description,
         additionalType: "https://schema.org/DigitalArt",
+        isAccessibleForFree: true,
       });
       break;
     case "coin":
@@ -234,6 +262,14 @@ function generateStructuredData(
         url: canonicalUrl,
         description: props.description,
         category: "Cryptocurrency",
+        // Move type identifier for the coin (e.g. 0x1::aptos_coin::AptosCoin)
+        identifier: canonicalUrl.split("/coin/")[1]?.split("/")[0] ?? undefined,
+        isAccessibleForFree: true,
+        provider: {
+          "@type": "Organization",
+          name: "Aptos Labs",
+          url: "https://aptoslabs.com",
+        },
       });
       break;
     case "validator":
@@ -244,9 +280,13 @@ function generateStructuredData(
         url: canonicalUrl,
         description: props.description,
         serviceType: "Blockchain Validation",
+        // Validator address identifier
+        identifier:
+          canonicalUrl.split("/validator")[1]?.split("/")[1] ?? undefined,
         provider: {
           "@type": "Organization",
           name: "Aptos Network",
+          url: "https://aptoslabs.com",
         },
       });
       break;
