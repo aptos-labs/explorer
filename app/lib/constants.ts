@@ -40,10 +40,22 @@ const clientApiKeys: ApiKeys = {
 };
 
 /**
+ * True when the build was produced by a Netlify preview deployment (deploy-preview
+ * or branch-deploy context). API keys are intentionally suppressed for these
+ * contexts because the keys are not scoped to preview deployment URLs.
+ * Local development and production builds are unaffected.
+ */
+const isNetlifyPreview =
+  import.meta.env.VITE_NETLIFY_CONTEXT === "deploy-preview" ||
+  import.meta.env.VITE_NETLIFY_CONTEXT === "branch-deploy";
+
+/**
  * Get the client-side API key for a network.
  * This key is safe to expose in the browser (client API key).
+ * Returns undefined on Netlify preview builds.
  */
 export function getApiKey(network_name: NetworkName): string | undefined {
+  if (isNetlifyPreview) return undefined;
   return clientApiKeys[network_name];
 }
 
@@ -51,8 +63,19 @@ export function getApiKey(network_name: NetworkName): string | undefined {
  * Get the server-side API key for a network.
  * Reads from APTOS_<NETWORK>_API_KEY (no VITE_ prefix, never sent to browser).
  * Falls back to the client key if no server key is configured.
+ * Returns undefined on Netlify preview builds (checked via the CONTEXT runtime var).
  */
 export function getServerApiKey(network_name: NetworkName): string | undefined {
+  // Netlify sets CONTEXT at SSR function runtime; suppress keys for preview contexts.
+  const netlifyContext =
+    typeof process !== "undefined" ? process.env.CONTEXT : undefined;
+  if (
+    netlifyContext === "deploy-preview" ||
+    netlifyContext === "branch-deploy"
+  ) {
+    return undefined;
+  }
+
   if (typeof process !== "undefined" && process.env) {
     const envKey = `APTOS_${network_name.toUpperCase()}_API_KEY`;
     const serverKey = process.env[envKey];

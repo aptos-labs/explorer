@@ -92,14 +92,21 @@
     Content-Type = "text/plain; charset=utf-8"
 
 # Environment variable configuration
+# VITE_NETLIFY_CONTEXT is baked into the client bundle at build time so that
+# client-side code can identify the deploy context without relying on runtime
+# environment variables. API keys are suppressed for preview and branch-deploy
+# contexts because the keys are not scoped to those deployment URLs.
 [context.production.environment]
   NODE_ENV = "production"
+  VITE_NETLIFY_CONTEXT = "production"
 
 [context.deploy-preview.environment]
   NODE_ENV = "production"
+  VITE_NETLIFY_CONTEXT = "deploy-preview"
 
 [context.branch-deploy.environment]
   NODE_ENV = "production"
+  VITE_NETLIFY_CONTEXT = "branch-deploy"
 
 # Redirects for old subdomain-based URLs (2022 format) to new query parameter format
 # These ensure backward compatibility for old bookmarks and links
