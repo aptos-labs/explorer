@@ -135,9 +135,9 @@ export interface WriteSetChange_DeleteTableItem {
   handle: string;
   key: string;
   data?: {
-    key: string;
+    key: any;
     key_type: string;
-    value: string;
+    value: any;
     value_type: string;
   };
 }
@@ -163,9 +163,9 @@ export interface WriteSetChange_WriteTableItem {
   key: string;
   value: string;
   data?: {
-    key: string;
+    key: any;
     key_type: string;
-    value: string;
+    value: any;
     value_type: string;
   };
 }
