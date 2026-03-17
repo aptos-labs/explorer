@@ -329,3 +329,34 @@ Role-specific rules are available in tool-native formats:
 - **Styling**: Review existing components in `app/components/`
 - **Deployment**: Check `netlify.toml` and `RATE_LIMITING.md`
 - **Context optimization**: See `CONTEXT_OPTIMIZATION.md`
+
+## Cursor Cloud specific instructions
+
+### Environment
+
+- **Node.js 24+** is required (`engines` field in `package.json`). The VM ships with Node 22 via nvm; run `nvm install 24 && nvm alias default 24` before anything else.
+- **pnpm 10.32.1** is the pinned package manager. Enable it with `corepack enable && corepack prepare pnpm@10.32.1 --activate`.
+- No Docker, databases, or external backend services are required. The explorer is a pure frontend/SSR app that reads from public Aptos API endpoints.
+- All environment variables are optional; sensible defaults are hardcoded. See `.env.example` for available overrides.
+
+### Running services
+
+| Command | Purpose | Port |
+|---------|---------|------|
+| `pnpm dev` | Dev server (hot reload) | 3030 |
+| `pnpm start` | Dev server (alt) | 3000 |
+
+The dev server takes ~2-3 seconds to start. The Netlify Vite plugin emits informational warnings about linking to a Netlify site — these are safe to ignore.
+
+### Lint / Test / Build
+
+Standard commands are in the Quick Reference at the top of this file. Non-obvious notes:
+
+- `pnpm lint` runs `tsc --noEmit` first, then `biome lint .` — both must pass.
+- `pnpm test --run` runs Vitest in single-run (CI) mode; `pnpm test` runs in watch mode.
+- `pnpm build` produces a production SSR build under `dist/`. It is not required for local development.
+- The `pnpm install` step may warn about ignored build scripts for `@parcel/watcher`, `bufferutil`, `sharp`, and `utf-8-validate`. These are non-blocking and safe to ignore (the project configures `pnpm.onlyBuiltDependencies` for the packages it needs).
+
+### Pre-commit hooks
+
+Husky + lint-staged is configured: on commit, `biome check --write --no-errors-on-unmatched` runs on staged files. Run `pnpm fmt && pnpm lint` before committing to avoid surprises.
