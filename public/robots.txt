@@ -12,6 +12,13 @@ Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
+Crawl-delay: 2
+
 User-agent: ChatGPT-User
 Allow: /
 Disallow: /*?network=testnet
@@ -62,6 +69,41 @@ Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: Meta-ExternalAgent
+Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
+Crawl-delay: 2
+
+User-agent: Bytespider
+Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
+Crawl-delay: 2
+
+User-agent: CCBot
+Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
+Crawl-delay: 2
+
+User-agent: Amazonbot
+Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
+Crawl-delay: 2
+
+User-agent: DuckAssistBot
+Allow: /
+Disallow: /*?network=testnet
+Disallow: /*?network=devnet
+Disallow: /*?network=local
+Crawl-delay: 2
+
+User-agent: YouBot
 Allow: /
 Disallow: /*?network=testnet
 Disallow: /*?network=devnet
