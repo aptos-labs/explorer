@@ -94,6 +94,8 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 
 **Outputs**: Working code, TODO comments, issue files, CHANGELOG entries
 
+> **When adding or removing routes/tabs**: Update `public/llms.txt`, `public/llms-full.txt`, and `public/sitemap.xml`. See the [LLM / AI Accessibility](#llm--ai-accessibility) section for the full checklist.
+
 ---
 
 ### 3. Reviewer
@@ -116,6 +118,7 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 - [ ] TypeScript strict mode compliance
 - [ ] No hardcoded values that should be constants
 - [ ] Accessible (proper ARIA attributes, keyboard navigation)
+- [ ] If routes/tabs were added or changed: `llms.txt`, `llms-full.txt`, and `sitemap.xml` updated
 
 **Outputs**: Review feedback, approval or change requests
 
@@ -322,6 +325,46 @@ Role-specific rules are available in tool-native formats:
 
 ---
 
+## LLM / AI Accessibility
+
+The explorer maintains dedicated documentation for AI systems and LLM-powered tools. These files must be kept accurate — stale or incomplete content directly degrades the ability of AI assistants to route users to the correct pages.
+
+### Files to Maintain
+
+| File | Purpose | Update when |
+| --------------------------------- | -------------------------------------------------- | ---------------------------------------- |
+| `public/llms.txt` | Short LLM reference (llmstxt.org standard) | Any route or tab is added/changed/removed |
+| `public/llms-full.txt` | Full LLM reference with API docs and examples | Same as above, plus stack/feature changes |
+| `public/robots.txt` | Bot crawl rules including named AI crawlers | New AI crawler agents become prominent |
+| `public/sitemap.xml` | Static URL list for crawlers | New high-value static or semi-static pages |
+| `app/components/hooks/usePageMetadata.tsx` | JSON-LD structured data per page type | New page types or schema improvements |
+| `app/routes/__root.tsx` | Root `<head>` AI meta tags and LLM doc link hints | Site-level description or topic changes |
+
+### Route / Tab Checklist
+
+When you **add a new route or tab**, update all of the following:
+
+- [ ] `public/llms.txt` — add the path pattern under the correct section
+- [ ] `public/llms-full.txt` — add the path pattern **and** a description of what the page shows; update the "Last updated" date at the top
+- [ ] `public/sitemap.xml` — add an entry if the page is static or semi-static (e.g., a framework account page, a well-known coin)
+- [ ] `app/components/hooks/usePageMetadata.tsx` — add a `case` in `generateStructuredData` if the page needs a new entity-specific JSON-LD schema
+
+When you **remove or rename a route**, remove or update the corresponding entries in all four files.
+
+### llms-full.txt Conventions
+
+- The `> Last updated:` line at the top must be updated to today's date on every substantive edit.
+- Tab paths must be listed as full path examples, not just tab names.
+- Any new external API the explorer starts consuming (e.g., a new price feed) should be added to the "API Endpoints Used by the Explorer" section.
+- The "Technical Stack" section should reflect the major version of React, TypeScript, MUI, and Vite currently in `package.json`.
+
+### Structured Data Conventions
+
+- Every new **page type** (e.g., a new entity like "collection" or "multisig") should get a `case` in `generateStructuredData()` in `usePageMetadata.tsx` with an appropriate schema.org type and an `identifier` field extracted from the canonical URL.
+- The `WebSite` schema's `potentialAction: SearchAction` uses `/?search={search_term_string}` — update the `urlTemplate` if the search URL pattern changes.
+
+---
+
 ## Getting Help
 
 - **Architecture questions**: Check `app/router.tsx` and route files
@@ -329,34 +372,4 @@ Role-specific rules are available in tool-native formats:
 - **Styling**: Review existing components in `app/components/`
 - **Deployment**: Check `netlify.toml` and `RATE_LIMITING.md`
 - **Context optimization**: See `CONTEXT_OPTIMIZATION.md`
-
-## Cursor Cloud specific instructions
-
-### Environment
-
-The VM update script installs **Node.js 24+** (via nvm), activates **pnpm 10.32.1** (via corepack), and runs `pnpm install`. After startup, **Biome**, **TypeScript**, and **Vitest** are available immediately — no manual setup required.
-
-- No Docker, databases, or external backend services are required. The explorer is a pure frontend/SSR app that reads from public Aptos API endpoints.
-- All environment variables are optional; sensible defaults are hardcoded. See `.env.example` for available overrides.
-
-### Running services
-
-| Command | Purpose | Port |
-|---------|---------|------|
-| `pnpm dev` | Dev server (hot reload) | 3030 |
-| `pnpm start` | Dev server (alt) | 3000 |
-
-The dev server takes ~2-3 seconds to start. The Netlify Vite plugin emits informational warnings about linking to a Netlify site — these are safe to ignore.
-
-### Lint / Test / Build
-
-Standard commands are in the Quick Reference at the top of this file. Non-obvious notes:
-
-- `pnpm lint` runs `tsc --noEmit` first, then `biome lint .` — both must pass.
-- `pnpm test --run` runs Vitest in single-run (CI) mode; `pnpm test` runs in watch mode.
-- `pnpm build` produces a production SSR build under `dist/`. It is not required for local development.
-- The `pnpm install` step may warn about ignored build scripts for `@parcel/watcher`, `bufferutil`, `sharp`, and `utf-8-validate`. These are non-blocking and safe to ignore (the project configures `pnpm.onlyBuiltDependencies` for the packages it needs).
-
-### Pre-commit hooks
-
-Husky + lint-staged is configured: on commit, `biome check --write --no-errors-on-unmatched` runs on staged files. Run `pnpm fmt && pnpm lint` before committing to avoid surprises.
+- **LLM/AI discoverability**: See `public/llms.txt`, `public/llms-full.txt`, and `public/robots.txt`
