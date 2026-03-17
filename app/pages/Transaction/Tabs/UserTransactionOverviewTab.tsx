@@ -275,6 +275,7 @@ type EventAction =
   | TokenBurn
   | LiquidStaking
   | ObjectTransfer
+  | FungibleAssetTransfer
   | LegacyTokenDeposit
   | LegacyTokenWithdraw
   | Wormhole;
@@ -365,6 +366,14 @@ type ObjectTransfer = {
   to: string;
 };
 
+type FungibleAssetTransfer = {
+  actionType: "fungible asset transfer";
+  from: string;
+  to: string;
+  metadata: string;
+  amount: string;
+};
+
 type LegacyTokenDeposit = {
   actionType: "legacy token deposit";
   address: string;
@@ -446,6 +455,84 @@ const parsers = [
   parseKofiLSDEvent,
 ];
 
+const FA_TRANSFER_FUNCTIONS: Record<
+  string,
+  {metadataIndex: number; recipientIndex: number; amountIndex: number}
+> = {
+  "0x1::aptos_account::transfer_fungible_assets": {
+    metadataIndex: 0,
+    recipientIndex: 1,
+    amountIndex: 2,
+  },
+  "0x1::primary_fungible_store::transfer": {
+    metadataIndex: 0,
+    recipientIndex: 1,
+    amountIndex: 2,
+  },
+};
+
+function parseFungibleAssetTransferFromPayload(
+  transaction: Types.Transaction,
+): FungibleAssetTransfer | undefined {
+  if (
+    !("payload" in transaction) ||
+    !("sender" in transaction) ||
+    !("success" in transaction) ||
+    !transaction.success
+  ) {
+    return undefined;
+  }
+
+  const payload = transaction.payload;
+  if (
+    payload.type !== "entry_function_payload" ||
+    !("function" in payload) ||
+    !("arguments" in payload)
+  ) {
+    return undefined;
+  }
+
+  const funcConfig =
+    FA_TRANSFER_FUNCTIONS[
+      payload.function as keyof typeof FA_TRANSFER_FUNCTIONS
+    ];
+  if (!funcConfig) {
+    return undefined;
+  }
+
+  const args = (payload as Types.TransactionPayload_EntryFunctionPayload)
+    .arguments;
+  if (
+    args.length <=
+    Math.max(
+      funcConfig.amountIndex,
+      funcConfig.recipientIndex,
+      funcConfig.metadataIndex,
+    )
+  ) {
+    return undefined;
+  }
+
+  const metadataArg = args[funcConfig.metadataIndex];
+  const metadata =
+    typeof metadataArg === "object" &&
+    metadataArg !== null &&
+    "inner" in metadataArg
+      ? (metadataArg as {inner: string}).inner
+      : String(metadataArg);
+
+  const to = String(args[funcConfig.recipientIndex]);
+  const amount = String(args[funcConfig.amountIndex]);
+
+  return {
+    actionType: "fungible asset transfer",
+    from: (transaction as {sender: string}).sender,
+    to,
+    metadata,
+    amount,
+  };
+}
+
 function TransactionActionsRow({
   transaction,
 }: {
@@ -492,6 +579,12 @@ function TransactionActionsRow({
     }
   }
 
+  // Parse FA transfer actions from payload (these functions don't emit transfer events)
+  const faTransferAction = parseFungibleAssetTransferFromPayload(transaction);
+  if (faTransferAction) {
+    actions.push(faTransferAction);
+  }
+
   const {data: coinData} = useGetCoinList();
 
   return (
@@ -518,6 +611,8 @@ function TransactionActionsRow({
             return nftBurnAction(action, i);
           case "object transfer":
             return objectTransferAction(action, i);
+          case "fungible asset transfer":
+            return fungibleAssetTransferAction(coinData, action, i);
           case "legacy token withdraw":
             return legacyTokenWithdrawAction(action, i);
           case "legacy token deposit":
@@ -1206,6 +1301,93 @@ const objectTransferAction = (action: ObjectTransfer, i: number) => {
       >
         <span>⏩ Transferred</span>
         <HashButton hash={action.address} type={HashType.OBJECT} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>from</span>
+        <HashButton hash={action.from} type={HashType.ACCOUNT} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>to</span>
+        <HashButton hash={action.to} type={HashType.ACCOUNT} />
+      </Box>
+    </Box>
+  );
+};
+
+const FungibleAssetAmount = ({
+  metadata,
+  amount,
+  coinData,
+}: {
+  metadata: string;
+  amount: string;
+  coinData: {data: CoinDescription[]} | undefined;
+}) => {
+  const {data: assetMetadata} = useGetAssetMetadata(metadata);
+  const assetCoin = findCoinData(coinData?.data ?? [], metadata);
+  const decimals = assetCoin?.decimals ?? assetMetadata?.decimals ?? 0;
+  const displayAmount = Number(amount) / 10 ** decimals;
+
+  return (
+    <React.Fragment>
+      {displayAmount}
+      <HashButton
+        hash={metadata}
+        type={HashType.FUNGIBLE_ASSET}
+        img={assetCoin?.logoUrl}
+        size="small"
+      />
+    </React.Fragment>
+  );
+};
+
+const fungibleAssetTransferAction = (
+  coinData: {data: CoinDescription[]} | undefined,
+  action: FungibleAssetTransfer,
+  i: number,
+) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>💸 Transferred</span>
+        <FungibleAssetAmount
+          metadata={action.metadata}
+          amount={action.amount}
+          coinData={coinData}
+        />
       </Box>
       <Box
         sx={{
