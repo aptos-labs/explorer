@@ -118,15 +118,24 @@ function prepareDisplayValue(val: unknown): {
   }
 
   if (typeof val === "string") {
-    try {
-      const parsed = JSON.parse(val);
-      if (typeof parsed === "object" && parsed !== null) {
-        return {isComplex: true, value: parsed};
+    const trimmed = val.trim();
+    // Only attempt JSON parsing for strings that look like JSON
+    // objects/arrays (start with "{" or "["). This avoids coercing
+    // primitive-like strings (e.g. "123", "true") and preserves
+    // large numeric strings as-is.
+    if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (typeof parsed === "object" && parsed !== null) {
+          return {isComplex: true, value: parsed};
+        }
+        return {isComplex: false, value: parsed};
+      } catch {
+        // Fall through to returning the original string below.
       }
-      return {isComplex: false, value: parsed};
-    } catch {
-      return {isComplex: false, value: val};
     }
+
+    return {isComplex: false, value: val};
   }
 
   return {isComplex: false, value: val};
