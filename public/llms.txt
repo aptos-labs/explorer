@@ -25,7 +25,7 @@ All URLs default to mainnet. Append `?network=testnet` or `?network=devnet` for 
 - Block: `/block/{height}`
   - Tabs: `/block/{height}/overview`, `/block/{height}/transactions`
 - Validators: `/validators`
-  - Tabs: `/validators/all`, `/validators/delegation`
+  - Tabs: `/validators/all`, `/validators/delegation`, `/validators/enhanced_delegation`
 - Individual validator: `/validator/{address}`
 - Coin: `/coin/{type}` — e.g., `/coin/0x1::aptos_coin::AptosCoin`
   - Tabs: `/coin/{type}/info`, `/coin/{type}/transactions`, `/coin/{type}/holders`

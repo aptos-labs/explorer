@@ -65,6 +65,7 @@ Each detail page has tabs accessible via path segments:
 - Tab paths:
   - `/validators/all` — full validator list with voting power, liveness, rewards
   - `/validators/delegation` — delegation/staking pool information
+  - `/validators/enhanced_delegation` — enhanced delegation view with additional staking metrics
 - `/validator/{address}` — individual delegatory validator detail page
 
 #### Coins and Fungible Assets
