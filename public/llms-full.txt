@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-17
+> Last updated: 2026-03-17 (rev 2)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -65,7 +65,7 @@ Each detail page has tabs accessible via path segments:
 - Tab paths:
   - `/validators/all` — full validator list with voting power, liveness, rewards
   - `/validators/delegation` — delegation/staking pool information
-  - `/validators/enhanced_delegation` — enhanced delegation view with additional staking metrics
+  - `/validators/enhanced_delegation` — enhanced delegation view with additional pool metrics
 - `/validator/{address}` — individual delegatory validator detail page
 
 #### Coins and Fungible Assets
@@ -198,6 +198,9 @@ A: Individual NFTs: `/token/{tokenId}`. Collections are visible via the owning a
 **Q: "Convert 250000000 Octas to APT"**
 A: 250000000 ÷ 100000000 = 2.5 APT. The explorer shows converted values automatically.
 
+**Q: "I have a string but I'm not sure if it's an address or a transaction hash"**
+A: Use `https://explorer.aptoslabs.com/?search={string}` — the explorer will detect the type and navigate to the correct page automatically.
+
 **Q: "What is alice.apt's address?"**
 A: Enter `alice.apt` in the explorer search bar — it resolves the ANS name and navigates to the associated account page.
 
@@ -267,6 +270,7 @@ Charts and metrics for:
 ## Common Query Parameters
 
 - `network` — Select network: mainnet (default), testnet, devnet
+- `search` — On the home page only (`/?search={query}`), pre-fills the search box and automatically navigates to the result if the query resolves to exactly one match. Useful for AI/LLM-generated links when the exact entity type is unknown.
 - Page/tab selection is path-based (e.g., `/account/0x1/modules`), not query-param-based
 
 ---

@@ -62,6 +62,7 @@ All URLs default to mainnet. Append `?network=testnet` or `?network=devnet` for 
 | APT coin info | `/coin/0x1::aptos_coin::AptosCoin` |
 | Network analytics | `/analytics` |
 | Same on testnet | append `?network=testnet` to any URL |
+| General search / unknown input | `/?search={query}` — pre-fills the search box and auto-navigates on single result |
 
 ## Quick Data Reference
 
