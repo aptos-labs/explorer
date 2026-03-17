@@ -24,6 +24,7 @@ import {parseExpirationTimestamp} from "../../utils";
 import {getLearnMoreTooltip} from "../helpers";
 import {getTransactionAmount, getTransactionCounterparty} from "../utils";
 import {findCoinData} from "./BalanceChangeTab";
+import TransactionArguments from "./Components/TransactionArguments";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import TransactionFunction from "./Components/TransactionFunction";
 
@@ -778,6 +779,11 @@ export default function UserTransactionOverviewTab({
         )}
         <UserTransferOrInteractionRows transaction={transactionData} />
         <TransactionFunctionRow transaction={transactionData} />
+        <ContentRow
+          title="Arguments:"
+          value={<TransactionArguments transaction={transactionData} />}
+          tooltip={getLearnMoreTooltip("arguments")}
+        />
         <TransactionAmountRow transaction={transactionData} />
         <TransactionActionsRow transaction={transactionData} />
       </ContentBox>

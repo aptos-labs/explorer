@@ -65,6 +65,10 @@ export function getLearnMoreTooltip(
       return (
         <LearnMoreTooltip text="Move function executed in the transaction." />
       );
+    case "arguments":
+      return (
+        <LearnMoreTooltip text="Type and function arguments passed to the entry function. Includes a copyable CLI command." />
+      );
     case "gas_fee":
       return (
         <LearnMoreTooltip
