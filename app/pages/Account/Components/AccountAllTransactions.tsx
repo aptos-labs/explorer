@@ -9,9 +9,10 @@ import {
   Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
-import React, {useCallback} from "react";
+import React from "react";
 import type {Types} from "~/types/aptos";
 import {getTransaction} from "../../../api";
+import useFunctionFilter from "../../../api/hooks/useFunctionFilter";
 import {
   useGetAccountAllTransactionCount,
   useGetAccountAllTransactionVersions,
@@ -182,21 +183,7 @@ type AccountAllTransactionsProps = {
 export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const functionFilter = searchParams.get("fn") ?? "";
-
-  const handleFunctionFilterChange = useCallback(
-    (value: string) => {
-      if (value) {
-        searchParams.set("fn", value);
-      } else {
-        searchParams.delete("fn");
-      }
-      searchParams.delete("page");
-      setSearchParams(searchParams);
-    },
-    [searchParams, setSearchParams],
-  );
+  const {functionFilter, handleFunctionFilterChange} = useFunctionFilter();
 
   const rawTxnCount = useGetAccountAllTransactionCount(address);
 

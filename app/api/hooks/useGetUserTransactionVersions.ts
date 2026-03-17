@@ -50,6 +50,18 @@ const TOP_USER_TRANSACTIONS_FUNCTION_QUERY = `
   }
 `;
 
+const USER_TRANSACTIONS_FUNCTION_COUNT_QUERY = `
+  query UserTransactionsByFunctionCount($entry_function_id_str: String) {
+    user_transactions_aggregate(
+      where: {entry_function_id_str: {_eq: $entry_function_id_str}}
+    ) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
 export default function useGetUserTransactionVersions(
   limit: number,
   startVersion?: number,
@@ -83,6 +95,29 @@ export default function useGetUserTransactionVersions(
   }
 
   return data.user_transactions.map((txn: {version: number}) => txn.version);
+}
+
+export function useGetUserTransactionsByFunctionCount(
+  functionFilter: string,
+): number | undefined {
+  const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
+
+  const {data} = useQuery({
+    queryKey: ["userTransactionsByFunctionCount", functionFilter, networkValue],
+    queryFn: () =>
+      client.queryIndexer<{
+        user_transactions_aggregate: {aggregate: {count: number}};
+      }>({
+        query: {
+          query: USER_TRANSACTIONS_FUNCTION_COUNT_QUERY,
+          variables: {entry_function_id_str: functionFilter},
+        },
+      }),
+    enabled: functionFilter.length > 0,
+  });
+
+  return data?.user_transactions_aggregate?.aggregate?.count;
 }
 
 export function useGetUserTransactionVersionsByFunction(

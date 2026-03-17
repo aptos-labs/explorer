@@ -12,10 +12,11 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import type React from "react";
-import {useCallback, useMemo} from "react";
+import {useMemo} from "react";
 import type {Types} from "~/types/aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
+import useFunctionFilter from "../../api/hooks/useFunctionFilter";
 import {
   useAptosClient,
   useNetworkValue,
@@ -161,21 +162,9 @@ function TransactionsPageInner({
 }: UseQueryResult<Types.IndexResponse, ResponseError>) {
   const networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
-  const functionFilter = searchParams.get("fn") ?? "";
-
-  const handleFunctionFilterChange = useCallback(
-    (value: string) => {
-      if (value) {
-        searchParams.set("fn", value);
-      } else {
-        searchParams.delete("fn");
-      }
-      setSearchParams(searchParams);
-    },
-    [searchParams, setSearchParams],
-  );
+  const {functionFilter, handleFunctionFilterChange} = useFunctionFilter();
 
   const maxVersion = data?.ledger_version
     ? parseInt(data.ledger_version, 10)
