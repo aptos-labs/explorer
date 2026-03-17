@@ -1,10 +1,4 @@
-import {
-  type Aptos,
-  Ed25519PublicKey,
-  Hex,
-  parseTypeTag,
-  Secp256k1PublicKey,
-} from "@aptos-labs/ts-sdk";
+import {type Aptos, Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
 import {
   type InputTransactionData,
   useWallet,
@@ -67,38 +61,6 @@ import ErrorPage from "../../Error";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 import {useModulesPathParams} from "./Tabs";
-
-/**
- * Create a PublicKey from a hex string, detecting the key type by byte length.
- * Ed25519 keys are 32 bytes; Secp256k1 compressed keys are 33 bytes.
- */
-function createPublicKeyFromHex(
-  publicKeyHex: string,
-): Ed25519PublicKey | Secp256k1PublicKey {
-  const hexStr = publicKeyHex.startsWith("0x")
-    ? publicKeyHex.slice(2)
-    : publicKeyHex;
-  const byteLength = hexStr.length / 2;
-
-  if (byteLength === 32) {
-    return new Ed25519PublicKey(publicKeyHex);
-  }
-  if (byteLength === 33 || byteLength === 65) {
-    return new Secp256k1PublicKey(publicKeyHex);
-  }
-
-  try {
-    return new Ed25519PublicKey(publicKeyHex);
-  } catch {
-    try {
-      return new Secp256k1PublicKey(publicKeyHex);
-    } catch {
-      throw new Error(
-        "Unsupported public key type. Simulation supports Ed25519 and Secp256k1 wallets.",
-      );
-    }
-  }
-}
 
 /**
  * Check if a string looks like an ANS name (ends with .apt)
@@ -741,13 +703,8 @@ function RunContractForm({
         },
       });
 
-      const publicKeyHex = Array.isArray(account.publicKey)
-        ? account.publicKey[0]
-        : account.publicKey;
-      const publicKey = createPublicKeyFromHex(publicKeyHex);
-
       const result = await sdkV2Client.transaction.simulate.simple({
-        signerPublicKey: publicKey,
+        signerPublicKey: account.publicKey,
         transaction,
       });
 
