@@ -46,7 +46,17 @@ export {NotFoundResult};
 
 type SearchMode = "idle" | "typing" | "loading" | "results";
 
-export default function HeaderSearch() {
+interface HeaderSearchProps {
+  /**
+   * When provided (e.g. from a `?search=` URL parameter), the search box is
+   * pre-populated with this value and the search fires automatically. If the
+   * query resolves to exactly one selectable result the component navigates
+   * there without any user interaction — useful for AI/LLM-generated links.
+   */
+  initialSearch?: string;
+}
+
+export default function HeaderSearch({initialSearch}: HeaderSearchProps) {
   const navigate = useNavigate();
   const networkName = useNetworkName();
   const networkValue = useNetworkValue();
@@ -59,11 +69,28 @@ export default function HeaderSearch() {
   const [selectedOption, setSelectedOption] = useState<SearchResult | null>(
     null,
   );
+  // Track whether the current search was URL-initiated so we can auto-navigate
+  // on a single definitive result without disrupting manual keyboard searches.
+  const isUrlInitiatedRef = useRef(false);
   const augmentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
 
   const coinList = useGetCoinList();
   const abortControllerRef = useRef<AbortController | null>(null);
   const inFlightRequestsRef = useRef<Set<string>>(new Set());
+  // Capture the initial search value in a ref so the mount-only effect below
+  // can read it without creating a stale-closure lint warning.
+  const initialSearchRef = useRef(initialSearch);
+
+  // Seed the search box from the URL ?search= parameter on first render.
+  // Setting inputValue here triggers the existing debounce effect below.
+  useEffect(() => {
+    const value = initialSearchRef.current?.trim();
+    if (value) {
+      isUrlInitiatedRef.current = true;
+      setMode("typing");
+      setInputValue(value);
+    }
+  }, []); // Intentionally fires only on mount; value is stable via ref.
 
   // Ref to store the latest fetchData function to avoid stale closures in debounce effect
   const fetchDataRef = useRef<
@@ -124,11 +151,25 @@ export default function HeaderSearch() {
         results.push(NotFoundResult);
       }
 
+      // When the search was triggered by a ?search= URL parameter and there is
+      // exactly one navigable (non-header, non-not-found) result, go there
+      // directly without displaying the dropdown.
+      const navigableResults = results.filter(
+        (r) => r.to && !r.isGroupHeader && r !== NotFoundResult,
+      );
+      const destination =
+        navigableResults.length === 1 ? navigableResults[0].to : undefined;
+      if (isUrlInitiatedRef.current && destination) {
+        isUrlInitiatedRef.current = false;
+        navigate({to: destination});
+        return;
+      }
+
       setOptions(results);
       setMode("idle");
       setOpen(true);
     },
-    [augmentToWithGlobalSearchParams, networkName],
+    [augmentToWithGlobalSearchParams, navigate, networkName],
   );
 
   const fetchData = useCallback(
