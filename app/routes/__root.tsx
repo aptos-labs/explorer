@@ -171,8 +171,37 @@ function RootComponent() {
                             flexDirection: "column",
                           }}
                         >
+                          <Box
+                            component="a"
+                            href="#main-content"
+                            sx={{
+                              position: "absolute",
+                              top: "-100%",
+                              left: "50%",
+                              transform: "translateX(-50%)",
+                              zIndex: 9999,
+                              px: 3,
+                              py: 1.5,
+                              borderRadius: 1,
+                              fontWeight: 600,
+                              fontSize: "0.9rem",
+                              textDecoration: "none",
+                              color: "background.default",
+                              bgcolor: "text.primary",
+                              border: "2px solid",
+                              borderColor: "background.default",
+                              outline: "none",
+                              transition: "top 0.1s",
+                              "&:focus": {
+                                top: "1rem",
+                              },
+                            }}
+                          >
+                            Skip to main content
+                          </Box>
                           <Header />
                           <Container
+                            id="main-content"
                             component="main"
                             maxWidth="xl"
                             sx={{
