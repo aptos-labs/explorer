@@ -19,7 +19,7 @@ import TimestampValue from "../../../components/IndividualPageContent/ContentVal
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {TransactionStatus} from "../../../components/TransactionStatus";
-import {standardizeAddress} from "../../../utils";
+import {standardizeAddress, tryStandardizeAddress} from "../../../utils";
 import {parseExpirationTimestamp} from "../../utils";
 import {getLearnMoreTooltip} from "../helpers";
 import {getTransactionAmount, getTransactionCounterparty} from "../utils";
@@ -455,25 +455,73 @@ const parsers = [
   parseKofiLSDEvent,
 ];
 
-const FA_TRANSFER_FUNCTIONS: Record<
-  string,
-  {metadataIndex: number; recipientIndex: number; amountIndex: number}
-> = {
-  "0x1::aptos_account::transfer_fungible_assets": {
-    metadataIndex: 0,
-    recipientIndex: 1,
-    amountIndex: 2,
-  },
-  "0x1::primary_fungible_store::transfer": {
-    metadataIndex: 0,
-    recipientIndex: 1,
-    amountIndex: 2,
-  },
-};
+function extractObjectInner(arg: unknown): string {
+  if (typeof arg === "object" && arg !== null && "inner" in arg) {
+    return (arg as {inner: string}).inner;
+  }
+  return String(arg);
+}
+
+/**
+ * Resolve the owner of a FungibleStore from the transaction's write-set
+ * changes by finding the ObjectCore at the store address.
+ */
+function resolveStoreOwnerFromChanges(
+  transaction: Types.Transaction,
+  storeAddr: string,
+): string | undefined {
+  if (!("changes" in transaction)) return undefined;
+  const changes = (transaction as {changes: Types.WriteSetChange[]}).changes;
+
+  const normalised = tryStandardizeAddress(storeAddr);
+  if (!normalised) return undefined;
+
+  for (const change of changes) {
+    if (change.type !== "write_resource" && change.type !== "create_resource")
+      continue;
+    const c = change as {address: string; data: {type: string; data: unknown}};
+    if (
+      tryStandardizeAddress(c.address) === normalised &&
+      c.data.type === "0x1::object::ObjectCore"
+    ) {
+      return (c.data.data as {owner: string}).owner;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Resolve the metadata address for a FungibleStore from the transaction's
+ * write-set changes.
+ */
+function resolveStoreMetadataFromChanges(
+  transaction: Types.Transaction,
+  storeAddr: string,
+): string | undefined {
+  if (!("changes" in transaction)) return undefined;
+  const changes = (transaction as {changes: Types.WriteSetChange[]}).changes;
+
+  const normalised = tryStandardizeAddress(storeAddr);
+  if (!normalised) return undefined;
+
+  for (const change of changes) {
+    if (change.type !== "write_resource" && change.type !== "create_resource")
+      continue;
+    const c = change as {address: string; data: {type: string; data: unknown}};
+    if (
+      tryStandardizeAddress(c.address) === normalised &&
+      c.data.type === "0x1::fungible_asset::FungibleStore"
+    ) {
+      const storeData = c.data.data as {metadata: {inner: string}};
+      return storeData.metadata.inner;
+    }
+  }
+  return undefined;
+}
 
 function parseFungibleAssetTransferFromPayload(
   transaction: Types.Transaction,
-): FungibleAssetTransfer | undefined {
+): FungibleAssetTransfer | FungibleAssetTransfer[] | undefined {
   if (
     !("payload" in transaction) ||
     !("sender" in transaction) ||
@@ -492,45 +540,67 @@ function parseFungibleAssetTransferFromPayload(
     return undefined;
   }
 
-  const funcConfig =
-    FA_TRANSFER_FUNCTIONS[
-      payload.function as keyof typeof FA_TRANSFER_FUNCTIONS
-    ];
-  if (!funcConfig) {
-    return undefined;
-  }
+  const typedPayload = payload as Types.TransactionPayload_EntryFunctionPayload;
+  const args = typedPayload.arguments;
+  const sender = (transaction as {sender: string}).sender;
+  const fn = typedPayload.function;
 
-  const args = (payload as Types.TransactionPayload_EntryFunctionPayload)
-    .arguments;
+  // 0x1::aptos_account::transfer_fungible_assets(metadata, to, amount)
+  // 0x1::primary_fungible_store::transfer(metadata, recipient, amount)
   if (
-    args.length <=
-    Math.max(
-      funcConfig.amountIndex,
-      funcConfig.recipientIndex,
-      funcConfig.metadataIndex,
-    )
+    fn === "0x1::aptos_account::transfer_fungible_assets" ||
+    fn === "0x1::primary_fungible_store::transfer"
   ) {
-    return undefined;
+    if (args.length < 3) return undefined;
+    return {
+      actionType: "fungible asset transfer",
+      from: sender,
+      to: String(args[1]),
+      metadata: extractObjectInner(args[0]),
+      amount: String(args[2]),
+    };
   }
 
-  const metadataArg = args[funcConfig.metadataIndex];
-  const metadata =
-    typeof metadataArg === "object" &&
-    metadataArg !== null &&
-    "inner" in metadataArg
-      ? (metadataArg as {inner: string}).inner
-      : String(metadataArg);
+  // 0x1::fungible_asset::transfer(from_store, to_store, amount)
+  // 0x1::dispatchable_fungible_asset::transfer(from_store, to_store, amount)
+  if (
+    fn === "0x1::fungible_asset::transfer" ||
+    fn === "0x1::dispatchable_fungible_asset::transfer"
+  ) {
+    if (args.length < 3) return undefined;
+    const toStoreAddr = extractObjectInner(args[1]);
+    const to = resolveStoreOwnerFromChanges(transaction, toStoreAddr);
+    const metadata = resolveStoreMetadataFromChanges(transaction, toStoreAddr);
+    if (!to) return undefined;
+    return {
+      actionType: "fungible asset transfer",
+      from: sender,
+      to,
+      metadata: metadata ?? toStoreAddr,
+      amount: String(args[2]),
+    };
+  }
 
-  const to = String(args[funcConfig.recipientIndex]);
-  const amount = String(args[funcConfig.amountIndex]);
+  // 0x1::aptos_account::batch_transfer_fungible_assets(metadata, recipients[], amounts[])
+  if (fn === "0x1::aptos_account::batch_transfer_fungible_assets") {
+    if (args.length < 3) return undefined;
+    const metadata = extractObjectInner(args[0]);
+    const recipients = args[1];
+    const amounts = args[2];
+    if (!Array.isArray(recipients) || !Array.isArray(amounts)) return undefined;
+    if (recipients.length === 0 || recipients.length !== amounts.length)
+      return undefined;
 
-  return {
-    actionType: "fungible asset transfer",
-    from: (transaction as {sender: string}).sender,
-    to,
-    metadata,
-    amount,
-  };
+    return recipients.map((recipient, i) => ({
+      actionType: "fungible asset transfer" as const,
+      from: sender,
+      to: String(recipient),
+      metadata,
+      amount: String(amounts[i]),
+    }));
+  }
+
+  return undefined;
 }
 
 function TransactionActionsRow({
@@ -580,9 +650,13 @@ function TransactionActionsRow({
   }
 
   // Parse FA transfer actions from payload (these functions don't emit transfer events)
-  const faTransferAction = parseFungibleAssetTransferFromPayload(transaction);
-  if (faTransferAction) {
-    actions.push(faTransferAction);
+  const faTransferResult = parseFungibleAssetTransferFromPayload(transaction);
+  if (faTransferResult) {
+    if (Array.isArray(faTransferResult)) {
+      actions.push(...faTransferResult);
+    } else {
+      actions.push(faTransferResult);
+    }
   }
 
   const {data: coinData} = useGetCoinList();

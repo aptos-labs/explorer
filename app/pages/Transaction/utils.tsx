@@ -32,6 +32,34 @@ export type TransactionCounterparty = {
 //    the transaction is a user transfer (account A send money to account B)
 // when the transaction counterparty is a "smartContract",
 //    the transaction is a user interaction (account A interact with smart contract account B)
+/**
+ * Given a FungibleStore address, find the owner from ObjectCore in the
+ * transaction's write-set changes.
+ */
+function resolveStoreOwner(
+  transaction: Types.Transaction,
+  storeAddr: string,
+): string | undefined {
+  if (!("changes" in transaction)) return undefined;
+  const normalised = tryStandardizeAddress(storeAddr);
+  if (!normalised) return undefined;
+
+  for (const change of (transaction as {changes: Types.WriteSetChange[]})
+    .changes) {
+    if (change.type !== "write_resource" && change.type !== "create_resource") {
+      continue;
+    }
+    const c = change as {address: string; data: {type: string; data: unknown}};
+    if (
+      tryStandardizeAddress(c.address) === normalised &&
+      c.data.type === "0x1::object::ObjectCore"
+    ) {
+      return (c.data.data as {owner: string}).owner;
+    }
+  }
+  return undefined;
+}
+
 export function getTransactionCounterparty(
   transaction: Types.Transaction,
 ): TransactionCounterparty | undefined {
@@ -60,25 +88,30 @@ export function getTransactionCounterparty(
     return undefined;
   }
 
-  // there are two scenarios that this transaction is a 1:1 APT coin transfer:
-  // 1. coins are transferred from account1 to account2:
-  //    payload function is "0x1::coin::transfer" or "0x1::aptos_account::transfer_coins" and the first item in type_arguments is "0x1::aptos_coin::AptosCoin"
-  // 2. coins are transferred from account1 to account2, and account2 is created upon transaction:
-  //    payload function is "0x1::aptos_account::transfer" or "0x1::aptos_account::transfer_coins"
-  // In both scenarios, the first item in arguments is the receiver's address, and the second item is the amount.
-  //
-  // When transferring objects (and Fungible Assets), the receiver is the second argument.
-
+  // Coin transfers: receiver is the first argument
   const isCoinTransfer =
     payload.function === "0x1::coin::transfer" ||
     payload.function === "0x1::aptos_account::transfer_coins" ||
     payload.function === "0x1::aptos_account::transfer" ||
     payload.function === "0x1::aptos_account::fungible_transfer_only"; // rare
+
+  // Object and FA transfers: receiver is the second argument
   const isObjectTransfer =
     payload.function === "0x1::object::transfer" ||
     payload.function === "0x1::object::transfer_call" ||
     payload.function === "0x1::aptos_account::transfer_fungible_assets" ||
     payload.function === "0x1::primary_fungible_store::transfer";
+
+  // Store-to-store FA transfers: arguments are (from_store, to_store, amount).
+  // The receiver is the owner of the destination store, resolved from changes.
+  const isStoreTransfer =
+    payload.function === "0x1::fungible_asset::transfer" ||
+    payload.function === "0x1::dispatchable_fungible_asset::transfer";
+
+  // Batch FA transfer: arguments are (metadata, recipients[], amounts[]).
+  // Only resolve to a single receiver when there is exactly one recipient.
+  const isBatchFATransfer =
+    payload.function === "0x1::aptos_account::batch_transfer_fungible_assets";
 
   const isTokenV2MintSoulbound =
     payload.function === "0x4::aptos_token::mint_soul_bound";
@@ -101,6 +134,34 @@ export function getTransactionCounterparty(
       address: standardized ?? String(arg),
       role: "receiver",
     };
+  }
+
+  if (isStoreTransfer && payload.arguments.length >= 3) {
+    const toStoreArg = payload.arguments[1];
+    const toStoreAddr =
+      typeof toStoreArg === "object" &&
+      toStoreArg !== null &&
+      "inner" in toStoreArg
+        ? (toStoreArg as {inner: string}).inner
+        : String(toStoreArg);
+    const owner = resolveStoreOwner(transaction, toStoreAddr);
+    if (owner) {
+      return {
+        address: tryStandardizeAddress(owner) ?? owner,
+        role: "receiver",
+      };
+    }
+  }
+
+  if (isBatchFATransfer && payload.arguments.length >= 2) {
+    const recipients = payload.arguments[1];
+    if (Array.isArray(recipients) && recipients.length === 1) {
+      const addr = String(recipients[0]);
+      return {
+        address: tryStandardizeAddress(addr) ?? addr,
+        role: "receiver",
+      };
+    }
   }
 
   if (isTokenV2MintSoulbound && payload.arguments.length >= 8) {
