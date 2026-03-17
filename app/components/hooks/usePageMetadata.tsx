@@ -251,7 +251,7 @@ function generateStructuredData(
         url: canonicalUrl,
         description: props.description,
         additionalType: "https://schema.org/DigitalArt",
-        // Identifier is the tokenId extracted from the canonical URL
+        // Token ID extracted from the canonical URL
         identifier:
           canonicalUrl.split("/token/")[1]?.split("/")[0] ?? undefined,
         isAccessibleForFree: true,
