@@ -10,6 +10,8 @@
 - View validator performance, staking, and delegation info
 - Explore fungible assets, coins, and NFT token details
 - Check network analytics (TPS, daily active users, gas, supply)
+- Resolve Aptos Name Service (ANS) `.apt` names to addresses
+- View Move objects (on-chain resources implementing the Object model)
 
 ## URL Templates
 
@@ -18,24 +20,32 @@ All URLs default to mainnet. Append `?network=testnet` or `?network=devnet` for 
 - Transaction: `/txn/{version}` or `/txn/{hash}`
   - Tabs: `/txn/{id}/userTxnOverview`, `/txn/{id}/events`, `/txn/{id}/payload`, `/txn/{id}/changes`, `/txn/{id}/balanceChange`
 - Account: `/account/{address}`
-  - Tabs: `/account/{address}/transactions`, `/account/{address}/coins`, `/account/{address}/tokens`, `/account/{address}/resources`, `/account/{address}/modules`, `/account/{address}/info`
+  - Tabs: `/account/{address}/transactions`, `/account/{address}/coins`, `/account/{address}/tokens`, `/account/{address}/resources`, `/account/{address}/modules`, `/account/{address}/multisig`, `/account/{address}/gas-impact`, `/account/{address}/info`
+  - Module source: `/account/{address}/modules/{moduleName}`
 - Block: `/block/{height}`
   - Tabs: `/block/{height}/overview`, `/block/{height}/transactions`
 - Validators: `/validators`
-  - Tabs: `/validators/delegation`
+  - Tabs: `/validators/all`, `/validators/delegation`
+- Individual validator: `/validator/{address}`
 - Coin: `/coin/{type}` — e.g., `/coin/0x1::aptos_coin::AptosCoin`
+  - Tabs: `/coin/{type}/info`, `/coin/{type}/transactions`, `/coin/{type}/holders`
 - Fungible asset: `/fungible_asset/{address}`
+  - Tabs: `/fungible_asset/{address}/info`, `/fungible_asset/{address}/transactions`, `/fungible_asset/{address}/holders`
 - NFT token: `/token/{tokenId}`
+  - Tabs: `/token/{tokenId}/overview`, `/token/{tokenId}/activities`
+- Move object: `/object/{address}`
+  - Tabs: `/object/{address}/info`, `/object/{address}/transactions`, `/object/{address}/coins`, `/object/{address}/tokens`, `/object/{address}/resources`, `/object/{address}/modules`
 - Coins list: `/coins`
 - Analytics: `/analytics`
 - Blocks list: `/blocks`
 - Transactions list: `/transactions`
+- Verification: `/verification`
 
 ## Key Addresses
 
-- `0x1` — Aptos Framework (core modules: coin, account, staking, governance)
-- `0x3` — Token v1 standard
-- `0x4` — Token v2 / Digital Asset standard
+- `0x1` — Aptos Framework (core modules: coin, account, staking, governance, fungible_asset)
+- `0x3` — Token v1 standard (legacy NFT/token module)
+- `0x4` — Token v2 / Digital Asset standard (current NFT standard)
 - APT coin type: `0x1::aptos_coin::AptosCoin`
 
 ## Example Queries
@@ -46,6 +56,7 @@ All URLs default to mainnet. Append `?network=testnet` or `?network=devnet` for 
 | What happened in tx 0xabc…def? | `/txn/0xabc…def` |
 | What's in account 0x1? | `/account/0x1` |
 | Show 0x1's modules | `/account/0x1/modules` |
+| Show account 0x1's APT coin module source | `/account/0x1/modules/aptos_coin` |
 | Latest blocks | `/blocks` |
 | Validator stats | `/validators` |
 | APT coin info | `/coin/0x1::aptos_coin::AptosCoin` |
@@ -58,6 +69,7 @@ All URLs default to mainnet. Append `?network=testnet` or `?network=devnet` for 
 - Addresses: 32 bytes, hex with `0x` prefix (e.g., `0x1`, `0x00…01`)
 - Transaction versions: sequential integers from 0
 - Move resource syntax: `{address}::{module}::{struct}<{type_params}>`
+- ANS names: `.apt` suffix (e.g., `alice.apt`) resolve to 32-byte addresses
 
 ## More Information
 

@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-02-21
+> Last updated: 2026-03-17
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -21,6 +21,8 @@ Aptos is a Layer 1 blockchain built with Move, a resource-oriented programming l
 - **Transactions**: Signed messages that modify blockchain state
 - **Events**: Structured logs emitted during transaction execution
 - **Gas**: Computation and storage fees paid in APT (the native token)
+- **Objects**: First-class on-chain entities (beyond accounts) that can hold resources — see `/object/{address}`
+- **ANS**: Aptos Name Service — resolves human-readable `.apt` names to addresses
 
 ---
 
@@ -42,7 +44,15 @@ Each detail page has tabs accessible via path segments:
 
 #### Accounts
 - `/account/{address}` — account overview (redirects to `/account/{address}/transactions`)
-- Tab paths: `/account/{address}/transactions`, `/account/{address}/coins`, `/account/{address}/tokens`, `/account/{address}/resources`, `/account/{address}/modules`, `/account/{address}/info`
+- Tab paths:
+  - `/account/{address}/transactions` — full transaction history
+  - `/account/{address}/coins` — fungible token balances
+  - `/account/{address}/tokens` — NFTs owned by this account
+  - `/account/{address}/resources` — raw Move resources stored under the account
+  - `/account/{address}/modules` — Move smart contract modules deployed here
+  - `/account/{address}/multisig` — multisig transaction queue (if account is a multisig)
+  - `/account/{address}/gas-impact` — AIP-140 gas cost impact analysis for recent transactions
+  - `/account/{address}/info` — sequence number, authentication key, account type
 - Module source: `/account/{address}/modules/{moduleName}` — view source of a specific module
 
 #### Blocks
@@ -51,18 +61,30 @@ Each detail page has tabs accessible via path segments:
 - Tab paths: `/block/{height}/overview`, `/block/{height}/transactions`
 
 #### Validators
-- `/validators` — active validator set with performance metrics
-- `/validators/delegation` — delegation/staking information
+- `/validators` — active validator set with performance metrics (redirects to `/validators/all`)
+- Tab paths:
+  - `/validators/all` — full validator list with voting power, liveness, rewards
+  - `/validators/delegation` — delegation/staking pool information
+- `/validator/{address}` — individual delegatory validator detail page
 
-#### Coins and Tokens
-- `/coins` — list of known coins/fungible assets
+#### Coins and Fungible Assets
+- `/coins` — list of known coins and fungible assets
 - `/coin/{type}` — coin details by Move type (e.g., `/coin/0x1::aptos_coin::AptosCoin`)
-- Tab paths: `/coin/{type}/info`, `/coin/{type}/transactions`
+  - Tab paths: `/coin/{type}/info`, `/coin/{type}/transactions`, `/coin/{type}/holders`
 - `/fungible_asset/{address}` — fungible asset by metadata address
+  - Tab paths: `/fungible_asset/{address}/info`, `/fungible_asset/{address}/transactions`, `/fungible_asset/{address}/holders`
+
+#### Tokens (NFTs)
 - `/token/{tokenId}` — individual NFT/token details
+  - Tab paths: `/token/{tokenId}/overview`, `/token/{tokenId}/activities`
+
+#### Move Objects
+- `/object/{address}` — Move object detail page (objects implementing the Aptos Object model)
+  - Tab paths: `/object/{address}/info`, `/object/{address}/transactions`, `/object/{address}/coins`, `/object/{address}/tokens`, `/object/{address}/resources`, `/object/{address}/modules`
+  - Module source: `/object/{address}/modules/{moduleName}`
 
 #### Other Pages
-- `/analytics` — network analytics charts (TPS, DAU, gas, supply)
+- `/analytics` — network analytics charts (TPS, DAU, gas, supply, new accounts)
 - `/verification` — on-chain verification tools
 
 ### Network Query Parameter
@@ -93,6 +115,7 @@ Example: `https://explorer.aptoslabs.com/account/0x1/modules?network=testnet`
 | `0x4::token::Token` | NFT token v2 data |
 | `0x4::collection::Collection` | NFT collection v2 data |
 | `0x1::fungible_asset::Metadata` | Fungible asset metadata |
+| `0x1::object::ObjectCore` | Core resource for Move objects |
 
 ---
 
@@ -128,6 +151,15 @@ Example: `https://explorer.aptoslabs.com/account/0x1/modules?network=testnet`
 - Each account has a sequence number that increments with every transaction sent
 - Analogous to nonces in Ethereum
 - Visible on the account info tab
+
+### ANS (Aptos Name Service)
+- Human-readable `.apt` names (e.g., `alice.apt`) can be looked up in the account page
+- The explorer resolves ANS names: an account's primary `.apt` name is displayed alongside the address
+- Enter an ANS name in the search bar to navigate to the associated account
+
+### Gas Impact (AIP-140)
+- The `gas-impact` tab on account pages shows how AIP-140 (proposed 10x gas cost increase) would affect recent transactions
+- Useful for developers auditing transaction gas efficiency before potential protocol changes
 
 ---
 
@@ -165,6 +197,12 @@ A: Individual NFTs: `/token/{tokenId}`. Collections are visible via the owning a
 **Q: "Convert 250000000 Octas to APT"**
 A: 250000000 ÷ 100000000 = 2.5 APT. The explorer shows converted values automatically.
 
+**Q: "What is alice.apt's address?"**
+A: Enter `alice.apt` in the explorer search bar — it resolves the ANS name and navigates to the associated account page.
+
+**Q: "How can I see the APT fungible asset (not the coin)?"**
+A: The APT fungible asset metadata lives at address `0xa` (the paired FA for `0x1::aptos_coin::AptosCoin`). Visit `https://explorer.aptoslabs.com/fungible_asset/0xa` for its info and holders.
+
 ---
 
 ## Explorer Page Types
@@ -183,11 +221,13 @@ Displays:
 
 Tabs include:
 - **Transactions**: Transaction history for this account
-- **Coins**: Fungible token balances
-- **Tokens**: NFTs owned by this account
-- **Resources**: Move resources stored under the account
-- **Modules**: Smart contract code deployed by this account
-- **Info**: Account sequence number, authentication key
+- **Coins**: Fungible token balances (both legacy coins and FA-standard tokens)
+- **Tokens**: NFTs owned by this account (Token v2 / Digital Asset standard)
+- **Resources**: Raw Move resources stored under the account (JSON view)
+- **Modules**: Smart contract code deployed by this account (with source if verified)
+- **Multisig**: Pending and completed multisig transactions (if applicable)
+- **Gas Impact**: AIP-140 gas cost analysis for recent transactions
+- **Info**: Account sequence number, authentication key, account type
 
 ### Block Pages (`/block/{height}`)
 
@@ -203,6 +243,15 @@ Shows:
 - Active validator set with voting power distribution
 - Performance metrics (liveness, rewards)
 - Staking and delegation information
+
+### Move Object Pages (`/object/{address}`)
+
+Shows:
+- Object info: type, owner, creation number
+- Resources stored within the object
+- Transactions involving the object
+- Coins and tokens held by the object
+- Modules deployed on the object (for objects that are also accounts)
 
 ### Analytics Pages (`/analytics`)
 
@@ -225,18 +274,24 @@ Charts and metrics for:
 
 The explorer fetches data from these Aptos APIs (for reference — these are not explorer URLs):
 
-### REST API (Node)
-- `GET /accounts/{address}` — Account info
-- `GET /accounts/{address}/resources` — Account resources
-- `GET /accounts/{address}/modules` — Account modules
-- `GET /transactions` — Transaction list
+### REST API (Node/Fullnode)
+- `GET /accounts/{address}` — Account info (sequence number, auth key)
+- `GET /accounts/{address}/resources` — All Move resources
+- `GET /accounts/{address}/modules` — All Move modules
+- `GET /transactions` — Recent transaction list
 - `GET /transactions/by_hash/{hash}` — Transaction by hash
 - `GET /transactions/by_version/{version}` — Transaction by version
 - `GET /blocks/by_height/{height}` — Block by height
+- `POST /view` — Call a Move view function (read-only on-chain query)
 
 ### Indexer GraphQL API
-- Account transactions, token ownership, collection data
-- Event history, aggregated analytics
+- Endpoint: configured via environment (varies by network)
+- Queries: account transaction history, token ownership (`current_token_ownerships_v2`), fungible asset balances (`current_fungible_asset_balances`), event history, aggregate analytics
+
+### External APIs
+- **Panora** (`api.panora.exchange/tokenlist`) — Full token/coin list with metadata, logos, bridge tags
+- **CoinGecko** (`api.coingecko.com`) — Current market prices and market cap data for coins
+- **GCS Bucket** (`storage.googleapis.com/aptos-mainnet/explorer/`) — Validator stats JSON, chain analytics JSON
 
 ---
 
@@ -245,22 +300,23 @@ The explorer fetches data from these Aptos APIs (for reference — these are not
 The explorer **cannot** do the following:
 - **No historical price data**: The explorer shows on-chain data only, not market prices or charts
 - **No cross-chain data**: Only Aptos L1 is supported — no bridged asset tracking or multi-chain views
-- **No wallet signing**: The explorer is read-only for browsing; it does not initiate or sign transactions
+- **No wallet signing**: The explorer is read-only for browsing; it does not initiate or sign transactions on your behalf
 - **No full-text search of code**: Module source can be viewed but not searched across all accounts
 - **No time-range queries**: Transaction/event history is paginated, not filterable by date range
 - **No private/encrypted data**: Only public on-chain state is displayed
 - **Testnet/devnet data resets**: These networks reset periodically; historical data may be unavailable
+- **No historical balance snapshots**: Only current balances are shown
 
 ---
 
 ## Technical Stack
 
-- **Frontend**: React with TypeScript
-- **Routing**: TanStack Router (file-based routing)
-- **Data Fetching**: TanStack Query (React Query)
-- **UI**: Material-UI (MUI)
-- **Build**: Vite with SSR
-- **Deployment**: Netlify
+- **Frontend**: React 19 with TypeScript 5.9
+- **Routing**: TanStack Router (file-based routing) with SSR via TanStack Start
+- **Data Fetching**: TanStack Query v5 (React Query) with prefetching and caching
+- **UI**: Material-UI (MUI) v7
+- **Build**: Vite 7 with SSR and Netlify deployment
+- **Blockchain SDK**: `@aptos-labs/ts-sdk` for fullnode REST and indexer GraphQL
 
 ---
 
