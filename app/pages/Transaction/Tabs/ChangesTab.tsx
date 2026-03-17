@@ -16,6 +16,21 @@ type ChangesTabProps = {
   transaction: Types.Transaction;
 };
 
+function getChangeTitleValue(
+  change: Types.WriteSetChange,
+  index: number,
+): string {
+  const parts = [index.toString(), change.type];
+
+  if ("address" in change) {
+    parts.push(change.address);
+  } else if ("handle" in change) {
+    parts.push(change.handle);
+  }
+
+  return parts.join(" — ");
+}
+
 export default function ChangesTab({transaction}: ChangesTabProps) {
   const changes: Types.WriteSetChange[] =
     "changes" in transaction ? transaction.changes : [];
@@ -37,7 +52,7 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
         <CollapsibleCard
           key={change.state_key_hash}
           titleKey="Index:"
-          titleValue={i.toString()}
+          titleValue={getChangeTitleValue(change, i)}
           expanded={expandedList[i]}
           toggleExpanded={() => toggleExpandedAt(i)}
         >
