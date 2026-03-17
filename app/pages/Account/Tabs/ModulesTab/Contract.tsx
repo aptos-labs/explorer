@@ -3,6 +3,7 @@ import {
   Ed25519PublicKey,
   Hex,
   parseTypeTag,
+  Secp256k1PublicKey,
 } from "@aptos-labs/ts-sdk";
 import {
   type InputTransactionData,
@@ -34,13 +35,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, {
-  type ReactNode,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, {type ReactNode, useEffect, useMemo, useState} from "react";
 import {Controller, type SubmitHandler, useForm} from "react-hook-form";
 import type {Types} from "~/types/aptos";
 import {view} from "../../../../api";
@@ -72,6 +67,38 @@ import ErrorPage from "../../Error";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 import {useModulesPathParams} from "./Tabs";
+
+/**
+ * Create a PublicKey from a hex string, detecting the key type by byte length.
+ * Ed25519 keys are 32 bytes; Secp256k1 compressed keys are 33 bytes.
+ */
+function createPublicKeyFromHex(
+  publicKeyHex: string,
+): Ed25519PublicKey | Secp256k1PublicKey {
+  const hexStr = publicKeyHex.startsWith("0x")
+    ? publicKeyHex.slice(2)
+    : publicKeyHex;
+  const byteLength = hexStr.length / 2;
+
+  if (byteLength === 32) {
+    return new Ed25519PublicKey(publicKeyHex);
+  }
+  if (byteLength === 33 || byteLength === 65) {
+    return new Secp256k1PublicKey(publicKeyHex);
+  }
+
+  try {
+    return new Ed25519PublicKey(publicKeyHex);
+  } catch {
+    try {
+      return new Secp256k1PublicKey(publicKeyHex);
+    } catch {
+      throw new Error(
+        "Unsupported public key type. Simulation supports Ed25519 and Secp256k1 wallets.",
+      );
+    }
+  }
+}
 
 /**
  * Check if a string looks like an ANS name (ends with .apt)
@@ -200,6 +227,10 @@ type ContractFormType = {
   args: string[];
   ledgerVersion?: string;
 };
+
+type FormTriggerSubmit = (
+  handler: SubmitHandler<ContractFormType>,
+) => (e?: React.BaseSyntheticEvent) => Promise<void>;
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
@@ -610,7 +641,6 @@ function RunContractForm({
     clearTransactionResponse,
   } = useSubmitTransaction();
 
-  const simulateRef = useRef(false);
   const [simulationInProcess, setSimulationInProcess] = useState(false);
   const [simulationResult, setSimulationResult] = useState<unknown[] | null>(
     null,
@@ -714,7 +744,7 @@ function RunContractForm({
       const publicKeyHex = Array.isArray(account.publicKey)
         ? account.publicKey[0]
         : account.publicKey;
-      const publicKey = new Ed25519PublicKey(publicKeyHex);
+      const publicKey = createPublicKeyFromHex(publicKeyHex);
 
       const result = await sdkV2Client.transaction.simulate.simple({
         signerPublicKey: publicKey,
@@ -738,14 +768,6 @@ function RunContractForm({
   };
 
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
-    const isSimulation = simulateRef.current;
-    simulateRef.current = false;
-
-    if (isSimulation) {
-      await handleSimulate(data);
-      return;
-    }
-
     logEvent("write_button_clicked", fn.name);
     setAnsError(undefined);
     setSimulationResult(null);
@@ -801,7 +823,7 @@ function RunContractForm({
       setFormValid={setFormValid}
       isView={false}
       sourceCode={sourceCode}
-      result={
+      result={(formHandleSubmit) =>
         connected ? (
           <Box>
             <Stack direction="row" spacing={2}>
@@ -812,9 +834,6 @@ function RunContractForm({
                 }
                 variant="contained"
                 size="large"
-                onClick={() => {
-                  simulateRef.current = false;
-                }}
                 sx={{
                   minWidth: 140,
                   height: 48,
@@ -828,15 +847,13 @@ function RunContractForm({
                 )}
               </Button>
               <Button
-                type="submit"
+                type="button"
                 disabled={
                   transactionInProcess || simulationInProcess || !formValid
                 }
                 variant="outlined"
                 size="large"
-                onClick={() => {
-                  simulateRef.current = true;
-                }}
+                onClick={formHandleSubmit(handleSimulate)}
                 sx={{
                   minWidth: 140,
                   height: 48,
@@ -1076,7 +1093,7 @@ function ReadContractForm({
       setFormValid={setFormValid}
       isView={true}
       sourceCode={sourceCode}
-      result={
+      result={() => (
         <Box>
           <Button
             type="submit"
@@ -1172,7 +1189,7 @@ function ReadContractForm({
             </ResultCard>
           )}
         </Box>
-      }
+      )}
     />
   );
 }
@@ -1428,7 +1445,7 @@ function ContractForm({
   fn: Types.MoveFunction;
   onSubmit: SubmitHandler<ContractFormType>;
   setFormValid: (valid: boolean) => void;
-  result: ReactNode;
+  result: (formHandleSubmit: FormTriggerSubmit) => ReactNode;
   isView: boolean;
   sourceCode?: string;
 }) {
@@ -1755,7 +1772,7 @@ function ContractForm({
           )}
 
           {/* Submit Button & Results */}
-          <Box>{result}</Box>
+          <Box>{result(handleSubmit)}</Box>
         </Stack>
 
         <HelpSection />
