@@ -117,3 +117,107 @@ export function useGetAllAccountTransactionVersions(address: string): {
     error: null,
   };
 }
+
+const ACCOUNT_USER_TRANSACTIONS_BY_FUNCTION_QUERY = `
+  query AccountUserTransactionsByFunction($sender: String, $entry_function_id_str: String, $limit: Int, $offset: Int) {
+    user_transactions(
+      where: {
+        sender: {_eq: $sender}
+        entry_function_id_str: {_eq: $entry_function_id_str}
+      }
+      order_by: {version: desc}
+      limit: $limit
+      offset: $offset
+    ) {
+      version
+    }
+  }
+`;
+
+const ACCOUNT_USER_TRANSACTIONS_BY_FUNCTION_COUNT_QUERY = `
+  query AccountUserTransactionsByFunctionCount($sender: String, $entry_function_id_str: String) {
+    user_transactions_aggregate(
+      where: {
+        sender: {_eq: $sender}
+        entry_function_id_str: {_eq: $entry_function_id_str}
+      }
+    ) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export function useGetAccountTransactionsByFunctionCount(
+  address: string,
+  functionFilter: string,
+): number | undefined {
+  const addr64Hash = tryStandardizeAddress(address);
+  const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
+
+  const {data} = useQuery({
+    queryKey: ["accountTxnByFnCount", addr64Hash, functionFilter, networkValue],
+    queryFn: () =>
+      client.queryIndexer<{
+        user_transactions_aggregate: {aggregate: {count: number}};
+      }>({
+        query: {
+          query: ACCOUNT_USER_TRANSACTIONS_BY_FUNCTION_COUNT_QUERY,
+          variables: {
+            sender: addr64Hash,
+            entry_function_id_str: functionFilter,
+          },
+        },
+      }),
+    enabled: !!addr64Hash && functionFilter.length > 0,
+  });
+
+  return data?.user_transactions_aggregate?.aggregate?.count;
+}
+
+export function useGetAccountTransactionVersionsByFunction(
+  address: string,
+  functionFilter: string,
+  limit: number,
+  offset?: number,
+): {versions: number[]; isLoading: boolean} {
+  const addr64Hash = tryStandardizeAddress(address);
+  const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
+
+  const {data, isLoading} = useQuery({
+    queryKey: [
+      "accountTxnVersionsByFn",
+      addr64Hash,
+      functionFilter,
+      limit,
+      offset,
+      networkValue,
+    ],
+    queryFn: () =>
+      client.queryIndexer<{
+        user_transactions: {version: number}[];
+      }>({
+        query: {
+          query: ACCOUNT_USER_TRANSACTIONS_BY_FUNCTION_QUERY,
+          variables: {
+            sender: addr64Hash,
+            entry_function_id_str: functionFilter,
+            limit,
+            offset,
+          },
+        },
+      }),
+    enabled: !!addr64Hash && functionFilter.length > 0,
+  });
+
+  if (!data) return {versions: [], isLoading};
+  return {
+    versions: data.user_transactions.map(
+      (txn: {version: number}) => txn.version,
+    ),
+    isLoading,
+  };
+}

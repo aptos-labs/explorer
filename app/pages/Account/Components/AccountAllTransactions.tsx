@@ -9,12 +9,14 @@ import {
   Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
-import React from "react";
+import React, {useCallback} from "react";
 import type {Types} from "~/types/aptos";
 import {getTransaction} from "../../../api";
 import {
   useGetAccountAllTransactionCount,
   useGetAccountAllTransactionVersions,
+  useGetAccountTransactionsByFunctionCount,
+  useGetAccountTransactionVersionsByFunction,
 } from "../../../api/hooks/useGetAccountAllTransactions";
 import {
   useAptosClient,
@@ -22,6 +24,7 @@ import {
 } from "../../../global-config/GlobalConfig";
 import {useSearchParams} from "../../../routing";
 import {tryStandardizeAddress} from "../../../utils";
+import FunctionFilter from "../../Transactions/Components/FunctionFilter";
 import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
 import {downloadCSV, transactionsToCSV} from "../../utils";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
@@ -104,6 +107,74 @@ export function AccountAllTransactionsWithPagination({
   );
 }
 
+type FilteredAccountTransactionsProps = {
+  address: string;
+  functionFilter: string;
+  countPerPage: number;
+};
+
+function FilteredAccountTransactions({
+  address,
+  functionFilter,
+  countPerPage,
+}: FilteredAccountTransactionsProps) {
+  const [searchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get("page") ?? "1", 10);
+  const offset = (currentPage - 1) * countPerPage;
+
+  const txnCount = useGetAccountTransactionsByFunctionCount(
+    address,
+    functionFilter,
+  );
+  const {versions, isLoading} = useGetAccountTransactionVersionsByFunction(
+    address,
+    functionFilter,
+    countPerPage,
+    offset,
+  );
+
+  const numPages =
+    txnCount !== undefined ? Math.ceil(txnCount / countPerPage) : 1;
+
+  if (isLoading) {
+    return (
+      <Box sx={{display: "flex", justifyContent: "center", py: 4}}>
+        <CircularProgress size={28} />
+      </Box>
+    );
+  }
+
+  if (versions.length === 0) {
+    return (
+      <Box sx={{py: 4, textAlign: "center"}}>
+        <Typography color="text.secondary">
+          No transactions found for function "{functionFilter}" sent by this
+          account
+        </Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Stack spacing={2}>
+      {txnCount !== undefined && (
+        <Typography variant="body2" color="text.secondary">
+          {txnCount.toLocaleString()} matching transaction
+          {txnCount !== 1 ? "s" : ""} (sent by this account)
+        </Typography>
+      )}
+      <Box sx={{width: "auto", overflowX: "auto"}}>
+        <UserTransactionsTable versions={versions} address={address} />
+      </Box>
+      {numPages > 1 && (
+        <Box sx={{display: "flex", justifyContent: "center"}}>
+          <RenderPagination currentPage={currentPage} numPages={numPages} />
+        </Box>
+      )}
+    </Stack>
+  );
+}
+
 type AccountAllTransactionsProps = {
   address: string;
 };
@@ -111,10 +182,24 @@ type AccountAllTransactionsProps = {
 export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const functionFilter = searchParams.get("fn") ?? "";
+
+  const handleFunctionFilterChange = useCallback(
+    (value: string) => {
+      if (value) {
+        searchParams.set("fn", value);
+      } else {
+        searchParams.delete("fn");
+      }
+      searchParams.delete("page");
+      setSearchParams(searchParams);
+    },
+    [searchParams, setSearchParams],
+  );
+
   const rawTxnCount = useGetAccountAllTransactionCount(address);
 
-  // If we have the actual count, use it - allow users to page through all transactions.
-  // Only fall back to the limit when the count query times out (returns undefined).
   const isCountUnknown = rawTxnCount === undefined;
   const txnCount = isCountUnknown ? MAX_DISPLAYABLE_TRANSACTIONS : rawTxnCount;
 
@@ -123,7 +208,11 @@ export default function AccountAllTransactions({
 
   return (
     <Stack spacing={2}>
-      {isCountUnknown && (
+      <FunctionFilter
+        value={functionFilter}
+        onChange={handleFunctionFilterChange}
+      />
+      {!functionFilter && isCountUnknown && (
         <Alert
           severity="info"
           icon={<InfoOutlined />}
@@ -141,26 +230,39 @@ export default function AccountAllTransactions({
           still be accessed directly by their version number.
         </Alert>
       )}
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{my: isCountUnknown ? 0 : 2}}
-      >
-        <Typography variant="body1" fontWeight="medium">
-          {isCountUnknown
-            ? `Showing up to ${txnCount.toLocaleString()} transactions`
-            : `${txnCount.toLocaleString()} transactions`}
-        </Typography>
-        {txnCount > 0 && (
-          <CSVExportButton address={address} totalTransactionCount={txnCount} />
-        )}
-      </Stack>
-      <AccountAllTransactionsWithPagination
-        address={address}
-        numPages={numPages}
-        countPerPage={countPerPage}
-      />
+      {functionFilter ? (
+        <FilteredAccountTransactions
+          address={address}
+          functionFilter={functionFilter}
+          countPerPage={countPerPage}
+        />
+      ) : (
+        <>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            sx={{my: isCountUnknown ? 0 : 2}}
+          >
+            <Typography variant="body1" fontWeight="medium">
+              {isCountUnknown
+                ? `Showing up to ${txnCount.toLocaleString()} transactions`
+                : `${txnCount.toLocaleString()} transactions`}
+            </Typography>
+            {txnCount > 0 && (
+              <CSVExportButton
+                address={address}
+                totalTransactionCount={txnCount}
+              />
+            )}
+          </Stack>
+          <AccountAllTransactionsWithPagination
+            address={address}
+            numPages={numPages}
+            countPerPage={countPerPage}
+          />
+        </>
+      )}
     </Stack>
   );
 }
