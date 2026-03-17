@@ -20,6 +20,7 @@ import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {standardizeAddress, tryStandardizeAddress} from "../../../utils";
+import {extractEntryFunctionPayload} from "../../../utils/cliCommand";
 import {parseExpirationTimestamp} from "../../utils";
 import {getLearnMoreTooltip} from "../helpers";
 import {getTransactionAmount, getTransactionCounterparty} from "../utils";
@@ -247,6 +248,25 @@ function TransactionFunctionRow({
       title="Function:"
       value={<TransactionFunction transaction={transaction} />}
       tooltip={getLearnMoreTooltip("function")}
+    />
+  );
+}
+
+function TransactionArgumentsRow({
+  transaction,
+}: {
+  transaction: Types.Transaction;
+}) {
+  const payload = extractEntryFunctionPayload(transaction);
+  if (!payload) return null;
+  if (payload.arguments.length === 0 && payload.type_arguments.length === 0) {
+    return null;
+  }
+  return (
+    <ContentRow
+      title="Arguments:"
+      value={<TransactionArguments transaction={transaction} />}
+      tooltip={getLearnMoreTooltip("arguments")}
     />
   );
 }
@@ -779,11 +799,7 @@ export default function UserTransactionOverviewTab({
         )}
         <UserTransferOrInteractionRows transaction={transactionData} />
         <TransactionFunctionRow transaction={transactionData} />
-        <ContentRow
-          title="Arguments:"
-          value={<TransactionArguments transaction={transactionData} />}
-          tooltip={getLearnMoreTooltip("arguments")}
-        />
+        <TransactionArgumentsRow transaction={transactionData} />
         <TransactionAmountRow transaction={transactionData} />
         <TransactionActionsRow transaction={transactionData} />
       </ContentBox>

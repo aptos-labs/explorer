@@ -40,9 +40,12 @@ export default function TransactionArguments({
   const functionParts = payload?.function?.split("::") ?? [];
   const [address, moduleName, functionName] = functionParts;
 
+  const hasValidFunction = !!(address && moduleName && functionName);
+
   const {data: moduleData} = useGetAccountModule(
     address ?? "",
     moduleName ?? "",
+    {enabled: hasValidFunction},
   );
 
   const moveFunction = moduleData?.abi?.exposed_functions?.find(
@@ -283,7 +286,11 @@ export default function TransactionArguments({
               </Typography>
             </Stack>
             <Tooltip title={copied ? "Copied!" : "Copy CLI command"}>
-              <IconButton size="small" onClick={handleCopy}>
+              <IconButton
+                size="small"
+                onClick={handleCopy}
+                aria-label="Copy CLI command"
+              >
                 {copied ? (
                   <CheckIcon sx={{fontSize: 16}} color="success" />
                 ) : (

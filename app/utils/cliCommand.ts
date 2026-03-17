@@ -1,6 +1,14 @@
 import type {Types} from "~/types/aptos";
 
 /**
+ * Escapes a string for use inside single-quoted POSIX shell arguments.
+ * Replaces `'` with `'\''` (end quote, escaped quote, start quote).
+ */
+function shellEscape(value: string): string {
+  return value.replace(/'/g, "'\\''");
+}
+
+/**
  * Formats a single argument value for the Aptos CLI.
  * Handles nested objects/arrays by JSON-serializing them,
  * and wraps string values appropriately.
@@ -29,12 +37,16 @@ export function generateCliCommand(
   payload: Types.TransactionPayload_EntryFunctionPayload,
   paramTypes?: string[],
 ): string {
-  const parts = ["aptos move run \\"];
-  parts.push(`  --function-id '${payload.function}'`);
+  const lines = [
+    `aptos move run`,
+    `  --function-id '${shellEscape(payload.function)}'`,
+  ];
 
   if (payload.type_arguments.length > 0) {
-    const typeArgs = payload.type_arguments.map((ta) => `'${ta}'`).join(" ");
-    parts.push(`  --type-args ${typeArgs}`);
+    const typeArgs = payload.type_arguments
+      .map((ta) => `'${shellEscape(ta)}'`)
+      .join(" ");
+    lines.push(`  --type-args ${typeArgs}`);
   }
 
   if (payload.arguments.length > 0) {
@@ -44,12 +56,12 @@ export function generateCliCommand(
 
     const args = payload.arguments.map((arg, i) => {
       const type = filteredParamTypes?.[i] ?? "?";
-      return `'${formatArgForCli(type, arg)}'`;
+      return `'${shellEscape(formatArgForCli(type, arg))}'`;
     });
-    parts.push(`  --args ${args.join(" ")}`);
+    lines.push(`  --args ${args.join(" ")}`);
   }
 
-  return parts.join(" \\\n");
+  return lines.join(" \\\n");
 }
 
 /**
@@ -71,7 +83,8 @@ export function extractEntryFunctionPayload(
   if (
     payload.type === "multisig_payload" &&
     "transaction_payload" in payload &&
-    payload.transaction_payload
+    payload.transaction_payload &&
+    payload.transaction_payload.type === "entry_function_payload"
   ) {
     return payload.transaction_payload as Types.TransactionPayload_EntryFunctionPayload;
   }

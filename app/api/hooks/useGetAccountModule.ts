@@ -7,6 +7,7 @@ import type {ResponseError} from "../client";
 export function useGetAccountModule(
   address: string,
   moduleName: string,
+  options?: {enabled?: boolean},
 ): UseQueryResult<Types.MoveModuleBytecode, ResponseError> {
   const networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
@@ -15,5 +16,6 @@ export function useGetAccountModule(
     queryKey: ["accountModule", {address, moduleName}, networkValue],
     queryFn: () => getAccountModule({address, moduleName}, aptosClient),
     refetchOnWindowFocus: false,
+    enabled: options?.enabled,
   });
 }

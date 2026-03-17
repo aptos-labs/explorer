@@ -11,12 +11,43 @@ describe("generateCliCommand", () => {
     };
 
     const result = generateCliCommand(payload);
-    expect(result).toContain("aptos move run");
-    expect(result).toContain(
-      "--function-id '0x1::aptos_account::create_account'",
+    expect(result).toBe(
+      "aptos move run \\\n  --function-id '0x1::aptos_account::create_account'",
     );
-    expect(result).not.toContain("--type-args");
-    expect(result).not.toContain("--args");
+  });
+
+  it("generates a full command with correct multi-line formatting", () => {
+    const payload = {
+      type: "entry_function_payload" as const,
+      function: "0x1::coin::transfer",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: ["0xabc123", "1000"],
+    };
+
+    const result = generateCliCommand(payload, ["&signer", "address", "u64"]);
+
+    const expected = [
+      "aptos move run",
+      "  --function-id '0x1::coin::transfer'",
+      "  --type-args '0x1::aptos_coin::AptosCoin'",
+      "  --args 'address:0xabc123' 'u64:1000'",
+    ].join(" \\\n");
+
+    expect(result).toBe(expected);
+  });
+
+  it("does not have a trailing backslash on the last line", () => {
+    const payload = {
+      type: "entry_function_payload" as const,
+      function: "0x1::coin::transfer",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: ["0xabc123", "1000"],
+    };
+
+    const result = generateCliCommand(payload, ["&signer", "address", "u64"]);
+    const lines = result.split("\n");
+    const lastLine = lines[lines.length - 1];
+    expect(lastLine.trimEnd().endsWith("\\")).toBe(false);
   });
 
   it("generates a command with type arguments", () => {
@@ -85,6 +116,30 @@ describe("generateCliCommand", () => {
       "--type-args '0x1::aptos_coin::AptosCoin' '0x2::token::Token'",
     );
   });
+
+  it("escapes single quotes in argument values", () => {
+    const payload = {
+      type: "entry_function_payload" as const,
+      function: "0x1::some_module::func",
+      type_arguments: [],
+      arguments: ["hello'world"],
+    };
+
+    const result = generateCliCommand(payload, ["&signer", "string"]);
+    expect(result).toContain("'string:hello'\\''world'");
+  });
+
+  it("escapes single quotes in type arguments", () => {
+    const payload = {
+      type: "entry_function_payload" as const,
+      function: "0x1::some_module::func",
+      type_arguments: ["0x1::module::Struct<'T>"],
+      arguments: [],
+    };
+
+    const result = generateCliCommand(payload);
+    expect(result).toContain("'0x1::module::Struct<'\\''T>'");
+  });
 });
 
 describe("extractEntryFunctionPayload", () => {
@@ -148,7 +203,7 @@ describe("extractEntryFunctionPayload", () => {
     expect(result?.arguments).toEqual(["0xabc", "1000"]);
   });
 
-  it("extracts payload from multisig_payload", () => {
+  it("extracts payload from multisig_payload with entry_function_payload", () => {
     const txn = {
       type: "user_transaction" as const,
       version: "1",
@@ -184,6 +239,70 @@ describe("extractEntryFunctionPayload", () => {
     expect(result).toBeDefined();
     expect(result?.function).toBe("0x1::coin::transfer");
     expect(result?.arguments).toEqual(["0xabc", "500"]);
+  });
+
+  it("returns undefined for multisig_payload with non-entry transaction_payload", () => {
+    const txn = {
+      type: "user_transaction" as const,
+      version: "1",
+      hash: "0x123",
+      state_change_hash: "",
+      event_root_hash: "",
+      state_checkpoint_hash: null,
+      gas_used: "100",
+      success: true,
+      vm_status: "",
+      accumulator_root_hash: "",
+      changes: [],
+      sender: "0x1",
+      sequence_number: "0",
+      max_gas_amount: "1000",
+      gas_unit_price: "1",
+      expiration_timestamp_secs: "999999999",
+      payload: {
+        type: "multisig_payload" as const,
+        multisig_address: "0xmulti",
+        transaction_payload: {
+          type: "script_payload" as const,
+          code: {bytecode: "0xabc"},
+          type_arguments: [],
+          arguments: [],
+        } as any,
+      },
+      events: [],
+      timestamp: "0",
+    };
+
+    expect(extractEntryFunctionPayload(txn)).toBeUndefined();
+  });
+
+  it("returns undefined for multisig_payload without transaction_payload", () => {
+    const txn = {
+      type: "user_transaction" as const,
+      version: "1",
+      hash: "0x123",
+      state_change_hash: "",
+      event_root_hash: "",
+      state_checkpoint_hash: null,
+      gas_used: "100",
+      success: true,
+      vm_status: "",
+      accumulator_root_hash: "",
+      changes: [],
+      sender: "0x1",
+      sequence_number: "0",
+      max_gas_amount: "1000",
+      gas_unit_price: "1",
+      expiration_timestamp_secs: "999999999",
+      payload: {
+        type: "multisig_payload" as const,
+        multisig_address: "0xmulti",
+      },
+      events: [],
+      timestamp: "0",
+    };
+
+    expect(extractEntryFunctionPayload(txn)).toBeUndefined();
   });
 
   it("returns undefined for script_payload", () => {
