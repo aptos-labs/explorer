@@ -334,8 +334,8 @@ Role-specific rules are available in tool-native formats:
 
 ### Environment
 
-- **Node.js 24+** is required (`engines` field in `package.json`). The VM ships with Node 22 via nvm; run `nvm install 24 && nvm alias default 24` before anything else.
-- **pnpm 10.32.1** is the pinned package manager. Enable it with `corepack enable && corepack prepare pnpm@10.32.1 --activate`.
+The VM update script installs **Node.js 24+** (via nvm), activates **pnpm 10.32.1** (via corepack), and runs `pnpm install`. After startup, **Biome**, **TypeScript**, and **Vitest** are available immediately — no manual setup required.
+
 - No Docker, databases, or external backend services are required. The explorer is a pure frontend/SSR app that reads from public Aptos API endpoints.
 - All environment variables are optional; sensible defaults are hardcoded. See `.env.example` for available overrides.
 
