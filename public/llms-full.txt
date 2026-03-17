@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-17 (rev 2)
+> Last updated: 2026-03-17 (rev 3)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -83,6 +83,13 @@ Each detail page has tabs accessible via path segments:
 - `/object/{address}` — Move object detail page (objects implementing the Aptos Object model)
   - Tab paths: `/object/{address}/info`, `/object/{address}/transactions`, `/object/{address}/coins`, `/object/{address}/tokens`, `/object/{address}/resources`, `/object/{address}/modules`
   - Module source: `/object/{address}/modules/{moduleName}`
+
+#### Search Page
+- `/search` — full-page search with inline results (grouped by entity type)
+- `/search?q={query}` — pre-populates the search box and executes the query immediately
+  - Detects input type automatically: address, transaction hash/version, block height, ANS name (`.apt`), coin struct, emoji coin
+  - Results grouped as: Accounts, Transactions, Blocks, Coins, Fungible Assets, Objects
+  - On Enter key or a single unambiguous result, navigates directly to the entity page
 
 #### Other Pages
 - `/analytics` — network analytics charts (TPS, DAU, gas, supply, new accounts)
@@ -199,7 +206,7 @@ A: Individual NFTs: `/token/{tokenId}`. Collections are visible via the owning a
 A: 250000000 ÷ 100000000 = 2.5 APT. The explorer shows converted values automatically.
 
 **Q: "I have a string but I'm not sure if it's an address or a transaction hash"**
-A: Use `https://explorer.aptoslabs.com/?search={string}` — the explorer will detect the type and navigate to the correct page automatically.
+A: Use `https://explorer.aptoslabs.com/search?q={string}` — the search page detects the input type and shows matching results grouped by entity type (accounts, transactions, blocks, coins, etc.).
 
 **Q: "What is alice.apt's address?"**
 A: Enter `alice.apt` in the explorer search bar — it resolves the ANS name and navigates to the associated account page.
@@ -270,7 +277,8 @@ Charts and metrics for:
 ## Common Query Parameters
 
 - `network` — Select network: mainnet (default), testnet, devnet
-- `search` — On the home page only (`/?search={query}`), pre-fills the search box and automatically navigates to the result if the query resolves to exactly one match. Useful for AI/LLM-generated links when the exact entity type is unknown.
+- `q` — On the search page (`/search?q={query}`), pre-fills the search input and executes the query immediately. Results are displayed inline on the page. Preferred for AI/LLM-generated links when the exact entity type is unknown.
+- `search` — On the home page only (`/?search={query}`), same auto-detection but auto-navigates directly for unambiguous single results instead of showing a results page.
 - Page/tab selection is path-based (e.g., `/account/0x1/modules`), not query-param-based
 
 ---
