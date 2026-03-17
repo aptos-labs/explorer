@@ -511,13 +511,44 @@ export function getCoinBalanceChangeForAccount(
   address: string,
 ): bigint {
   const accountToBalance = getAptBalanceChangeMap(transaction);
+  const standardizedAddress = tryStandardizeAddress(address);
+  const lookupAddress = standardizedAddress ?? address;
 
-  if (!Object.hasOwn(accountToBalance, address)) {
-    return BigInt(0);
+  if (Object.hasOwn(accountToBalance, lookupAddress)) {
+    return accountToBalance[lookupAddress].amount;
   }
 
-  const accountBalance = accountToBalance[address];
-  return accountBalance.amount;
+  // Account has no direct coin/FA balance changes.
+  // Check if it participated in the transaction via write set changes.
+  // If so, calculate the "unaccounted" coin flow: the net APT that moved
+  // through non-coin mechanisms (e.g., staking to a delegation pool).
+  if ("changes" in transaction) {
+    const involvedViaChanges = transaction.changes.some((change) => {
+      if ("address" in change) {
+        const changeAddr = tryStandardizeAddress(
+          (change as {address: string}).address,
+        );
+        return changeAddr === lookupAddress;
+      }
+      return false;
+    });
+
+    if (involvedViaChanges) {
+      const netCoinFlow = Object.values(accountToBalance).reduce(
+        (sum, entry) => sum + entry.amount,
+        BigInt(0),
+      );
+      // A negative net flow means more APT was withdrawn than deposited
+      // via coin events — the difference went to this account through
+      // other mechanisms (e.g., staked). A positive net flow means this
+      // account sent APT out (e.g., unstaking withdrawal to delegator).
+      if (netCoinFlow !== BigInt(0)) {
+        return -netCoinFlow;
+      }
+    }
+  }
+
+  return BigInt(0);
 }
 
 export function getTransactionAmount(
