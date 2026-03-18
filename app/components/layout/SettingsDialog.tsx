@@ -157,6 +157,13 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
           </Alert>
 
           <Alert severity="info">
+            This key is not stored by the explorer application server. Your
+            browser uses it only for client-side API requests. For best
+            security, use a client key with only the origin{" "}
+            <code>https://explorer.aptoslabs.com</code> enabled and enforced.
+          </Alert>
+
+          <Alert severity="info">
             Existing data will refresh after save so new requests use the
             updated key immediately.
           </Alert>
