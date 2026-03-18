@@ -11,7 +11,11 @@ import {
   type NetworkName,
   networks,
 } from "../constants";
-import {getGeomiDevApiKeyOverride, useExplorerSettings} from "../settings";
+import {
+  getGeomiDevApiKeyOverride,
+  normalizeGeomiDevApiKeyOverride,
+  useExplorerSettings,
+} from "../settings";
 
 const NETWORK_COOKIE_NAME = "network";
 
@@ -213,7 +217,7 @@ function createAptosV2Client(
 const clientCache = new Map<string, Aptos>();
 
 function getClientCacheKey(networkName: NetworkName, apiKeyOverride?: string) {
-  return `${networkName}:${apiKeyOverride?.trim() ?? ""}`;
+  return `${networkName}:${normalizeGeomiDevApiKeyOverride(apiKeyOverride)}`;
 }
 
 export function clearCachedV2Clients() {

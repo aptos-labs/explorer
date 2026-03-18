@@ -32,7 +32,14 @@ export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
 
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
-      if (event.key === EXPLORER_SETTINGS_STORAGE_KEY) {
+      const isRelevantStorageArea =
+        event.storageArea === window.localStorage ||
+        event.storageArea === window.sessionStorage;
+
+      if (
+        isRelevantStorageArea &&
+        (event.key === EXPLORER_SETTINGS_STORAGE_KEY || event.key === null)
+      ) {
         setSettings(loadExplorerClientSettings());
       }
     };
