@@ -1,11 +1,11 @@
 import {afterEach, describe, expect, it} from "vitest";
-import {AIP141_CONFIG, isPostAip141, wouldExceedGasLimit} from "./aip140";
+import {AIP141_CONFIG, isAip141Executed, wouldExceedGasLimit} from "./aip140";
 
 describe("aip141", () => {
   afterEach(() => {
     AIP141_CONFIG.enabled = true;
     AIP141_CONFIG.gasReductionVersion = 0n;
-    AIP141_CONFIG.aip141EnablementVersion = 0n;
+    AIP141_CONFIG.aip141GasScheduleVersion = 0;
   });
 
   describe("wouldExceedGasLimit", () => {
@@ -55,43 +55,26 @@ describe("aip141", () => {
       AIP141_CONFIG.gasReductionVersion = 1000n;
       expect(wouldExceedGasLimit("300000", "2000000")).toBe(true);
     });
-
-    it("applies 10x check for transactions after AIP-141 enablement", () => {
-      AIP141_CONFIG.aip141EnablementVersion = 5000n;
-      expect(wouldExceedGasLimit("300000", "2000000", "6000")).toBe(true);
-      expect(wouldExceedGasLimit("100000", "2000000", "6000")).toBe(false);
-    });
   });
 
-  describe("isPostAip141", () => {
-    it("returns false when aip141EnablementVersion is 0n", () => {
-      expect(isPostAip141("1000")).toBe(false);
+  describe("isAip141Executed", () => {
+    it("returns false when aip141GasScheduleVersion is 0", () => {
+      expect(isAip141Executed(15)).toBe(false);
     });
 
-    it("returns false when no version is provided", () => {
-      AIP141_CONFIG.aip141EnablementVersion = 5000n;
-      expect(isPostAip141()).toBe(false);
-      expect(isPostAip141(undefined)).toBe(false);
+    it("returns false when on-chain version is below target", () => {
+      AIP141_CONFIG.aip141GasScheduleVersion = 20;
+      expect(isAip141Executed(19)).toBe(false);
     });
 
-    it("returns false for transactions before enablement", () => {
-      AIP141_CONFIG.aip141EnablementVersion = 5000n;
-      expect(isPostAip141("4999")).toBe(false);
+    it("returns true when on-chain version equals target", () => {
+      AIP141_CONFIG.aip141GasScheduleVersion = 20;
+      expect(isAip141Executed(20)).toBe(true);
     });
 
-    it("returns true for transactions at enablement version", () => {
-      AIP141_CONFIG.aip141EnablementVersion = 5000n;
-      expect(isPostAip141("5000")).toBe(true);
-    });
-
-    it("returns true for transactions after enablement version", () => {
-      AIP141_CONFIG.aip141EnablementVersion = 5000n;
-      expect(isPostAip141("10000")).toBe(true);
-    });
-
-    it("returns false for non-numeric version", () => {
-      AIP141_CONFIG.aip141EnablementVersion = 5000n;
-      expect(isPostAip141("abc")).toBe(false);
+    it("returns true when on-chain version exceeds target", () => {
+      AIP141_CONFIG.aip141GasScheduleVersion = 20;
+      expect(isAip141Executed(25)).toBe(true);
     });
   });
 
@@ -108,8 +91,8 @@ describe("aip141", () => {
       expect(AIP141_CONFIG.gasReductionVersion).toBe(0n);
     });
 
-    it("defaults aip141EnablementVersion to 0n", () => {
-      expect(AIP141_CONFIG.aip141EnablementVersion).toBe(0n);
+    it("defaults aip141GasScheduleVersion to 0", () => {
+      expect(AIP141_CONFIG.aip141GasScheduleVersion).toBe(0);
     });
   });
 });

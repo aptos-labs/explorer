@@ -23,9 +23,10 @@ import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeader
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import {TransactionTypeName} from "../../../components/TransactionType";
 import {Link} from "../../../routing";
+import {useGetGasScheduleVersion} from "../../../api/hooks/useGetGasScheduleVersion";
 import {
   AIP141_CONFIG,
-  isPostAip141,
+  isAip141Executed,
   wouldExceedGasLimit,
 } from "../../../utils/aip140";
 import TransactionFunction from "../../Transaction/Tabs/Components/TransactionFunction";
@@ -144,6 +145,10 @@ function GasImpactTable({address, sequenceNum}: GasImpactTableProps) {
     limit,
   );
 
+  const gasScheduleVersion = useGetGasScheduleVersion();
+  const executed =
+    gasScheduleVersion !== undefined && isAip141Executed(gasScheduleVersion);
+
   if (error) {
     return <AccountError address={address} error={error} />;
   }
@@ -163,11 +168,6 @@ function GasImpactTable({address, sequenceNum}: GasImpactTableProps) {
     return wouldExceedGasLimit(ut.gas_used, ut.max_gas_amount, ut.version);
   }).length;
 
-  const anyPostAip141 = userTxns.some((t) => {
-    const ut = t as Types.Transaction_UserTransaction;
-    return isPostAip141(ut.version);
-  });
-
   return (
     <>
       {userTxns.length > 0 && (
@@ -175,7 +175,7 @@ function GasImpactTable({address, sequenceNum}: GasImpactTableProps) {
           severity={affectedCount > 0 ? "warning" : "success"}
           sx={{mb: 2}}
         >
-          {anyPostAip141
+          {executed
             ? `AIP-141 has been executed. ${affectedCount} of ${userTxns.length} transactions on this page exceed their max gas limit at current gas costs.`
             : `${affectedCount} of ${userTxns.length} transactions on this page would exceed their max gas limit under AIP-141 (10x gas costs).`}
         </Alert>

@@ -1,9 +1,10 @@
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import {Stack, Typography} from "@mui/material";
 import type {Types} from "~/types/aptos";
+import {useGetGasScheduleVersion} from "../api/hooks/useGetGasScheduleVersion";
 import {
   AIP141_CONFIG,
-  isPostAip141,
+  isAip141Executed,
   wouldExceedGasLimit,
 } from "../utils/aip140";
 import {Banner} from "./Banner";
@@ -13,6 +14,10 @@ type AIP140GasBannerProps = {
 };
 
 export function AIP140GasBanner({transaction}: AIP140GasBannerProps) {
+  const gasScheduleVersion = useGetGasScheduleVersion();
+  const executed =
+    gasScheduleVersion !== undefined && isAip141Executed(gasScheduleVersion);
+
   if (!AIP141_CONFIG.enabled) return null;
 
   const {gas_used, max_gas_amount, version} = transaction;
@@ -22,14 +27,13 @@ export function AIP140GasBanner({transaction}: AIP140GasBannerProps) {
   const projectedStr = projected.toLocaleString();
   const maxGasStr = BigInt(max_gas_amount).toLocaleString();
   const gasUsedStr = BigInt(gas_used).toLocaleString();
-  const postAip141 = isPostAip141(version);
 
   return (
     <Banner pillText="AIP-141" pillColor="warning" sx={{marginBottom: 2}}>
       <Stack direction="row" spacing={1} alignItems="center">
         <WarningAmberIcon sx={{fontSize: 18}} />
         <Typography component="span" sx={{fontSize: "inherit"}}>
-          {postAip141 ? (
+          {executed ? (
             <>
               AIP-141 has been executed. This transaction used{" "}
               <strong>{gasUsedStr}</strong> gas units (current impact). A

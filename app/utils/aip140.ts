@@ -5,6 +5,11 @@
  * determine which transactions would exceed their max gas limit under the
  * new pricing.
  *
+ * Enablement is driven by the on-chain gas schedule version
+ * (`0x1::gas_schedule::GasScheduleV2.feature_version`). Once the gas
+ * schedule version reaches `aip141GasScheduleVersion`, AIP-141 is live
+ * and the UI switches to "executed / current impact" messaging.
+ *
  * There are three eras to consider:
  *  1. Before the 100x gas reduction — transactions used the old (high) gas
  *     schedule. AIP-141's net effect on these is actually a ~10x *decrease*
@@ -22,35 +27,31 @@ export const AIP141_CONFIG = {
   /** The gas cost multiplier to project */
   gasMultiplier: 10n,
   /**
-   * Mainnet version at which the 100x gas reduction took effect.
+   * Mainnet ledger version at which the 100x gas reduction took effect.
    * Transactions *before* this version used the old high-gas schedule and
    * should not be flagged (AIP-141 would net-reduce their gas).
    * Set to 0n to treat all transactions as post-reduction (default).
    */
   gasReductionVersion: 0n,
   /**
-   * Mainnet version at which AIP-141 takes effect.
-   * After this version gas is already raised; the 10x check guards against
-   * a further increase.  Set to 0n while AIP-141 is not yet enabled.
+   * The gas schedule `feature_version` at which AIP-141 takes effect.
+   * The next gas schedule version bump enables AIP-141. When the on-chain
+   * gas schedule version is >= this value, AIP-141 is considered live.
+   * Set to 0 while the target version is unknown.
    */
-  aip141EnablementVersion: 0n,
+  aip141GasScheduleVersion: 0,
 };
 
 /** @deprecated Use AIP141_CONFIG instead */
 export const AIP140_CONFIG = AIP141_CONFIG;
 
 /**
- * Returns true when AIP-141 is live and the given transaction version
- * falls at or after the enablement version.
+ * Returns true when AIP-141 is live based on the current on-chain gas
+ * schedule version compared to the configured target.
  */
-export function isPostAip141(version?: string): boolean {
-  if (AIP141_CONFIG.aip141EnablementVersion === 0n) return false;
-  if (!version) return false;
-  try {
-    return BigInt(version) >= AIP141_CONFIG.aip141EnablementVersion;
-  } catch {
-    return false;
-  }
+export function isAip141Executed(currentGasScheduleVersion: number): boolean {
+  if (AIP141_CONFIG.aip141GasScheduleVersion === 0) return false;
+  return currentGasScheduleVersion >= AIP141_CONFIG.aip141GasScheduleVersion;
 }
 
 /**
