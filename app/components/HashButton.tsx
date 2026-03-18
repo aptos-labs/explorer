@@ -84,6 +84,7 @@ interface HashButtonProps extends BoxProps {
   size?: "small" | "large";
   isValidator?: boolean;
   img?: string;
+  resolveName?: boolean;
 }
 
 interface AccountHashButtonInnerProps extends BoxProps {
@@ -91,6 +92,7 @@ interface AccountHashButtonInnerProps extends BoxProps {
   type: HashType;
   size?: "small" | "large";
   isValidator: boolean;
+  resolveName: boolean;
 }
 
 const AccountHashButtonInner = memo(function AccountHashButtonInner({
@@ -98,11 +100,14 @@ const AccountHashButtonInner = memo(function AccountHashButtonInner({
   type,
   size = "small",
   isValidator,
+  resolveName,
 }: AccountHashButtonInnerProps) {
   // Standardize address
   const address = standardizeAddress(hash);
 
-  const name = useGetNameFromAddress(address, false, isValidator);
+  const name = useGetNameFromAddress(address, false, isValidator, undefined, {
+    enabled: resolveName,
+  });
   const truncateHash =
     size === "large"
       ? truncateAddressMiddle(address)
@@ -463,6 +468,7 @@ export default function HashButton({
   size = "small",
   isValidator = false,
   img,
+  resolveName = true,
   ...props
 }: HashButtonProps) {
   if (type === HashType.ACCOUNT || type === HashType.OBJECT) {
@@ -472,6 +478,7 @@ export default function HashButton({
         type={type}
         size={size}
         isValidator={isValidator}
+        resolveName={resolveName}
         {...props}
       />
     );

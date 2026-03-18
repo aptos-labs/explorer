@@ -628,7 +628,11 @@ function EnhancedDelegationValidatorCard({
         >
           Pool Address
         </Typography>
-        <HashButton hash={validator.owner_address} type={HashType.ACCOUNT} />
+        <HashButton
+          hash={validator.owner_address}
+          type={HashType.ACCOUNT}
+          resolveName={false}
+        />
       </Box>
 
       {/* Operator Address */}
@@ -643,6 +647,7 @@ function EnhancedDelegationValidatorCard({
           hash={validator.operator_address}
           type={HashType.ACCOUNT}
           isValidator
+          resolveName={false}
         />
       </Box>
 

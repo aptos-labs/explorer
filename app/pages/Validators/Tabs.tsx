@@ -13,7 +13,6 @@ import {useNavigate} from "../../routing";
 import {addressFromWallet, assertNever} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {EnhancedDelegationValidatorsTable} from "./Delegation/EnhancedDelegationValidatorsTable";
-import {DelegationValidatorsTable} from "./DelegationValidatorsTable";
 import {ValidatorsTable as OldValidatorsTable} from "./Table";
 import {ValidatorsTable} from "./ValidatorsTable";
 
@@ -64,7 +63,7 @@ function TabPanel({
       if (value === VALIDATORS_TAB_VALUE.ALL_NODES) {
         return <ValidatorsTable />;
       } else if (value === VALIDATORS_TAB_VALUE.DELEGATION_NODES) {
-        return <DelegationValidatorsTable />;
+        return <EnhancedDelegationValidatorsTable />;
       } else if (value === VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES) {
         return <EnhancedDelegationValidatorsTable />;
       }

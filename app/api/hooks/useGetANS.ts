@@ -32,6 +32,7 @@ async function genANSName(
   if (!standardizedAddress) {
     return null;
   }
+  const cacheKey = `${standardizedAddress}:name`;
 
   const client = getCachedV2Client(networkName);
 
@@ -42,7 +43,7 @@ async function genANSName(
 
     if (primaryName) {
       if (shouldCache) {
-        setLocalStorageWithExpiry(address, primaryName, TTL);
+        setLocalStorageWithExpiry(cacheKey, primaryName, TTL);
       }
       return primaryName;
     }
@@ -63,7 +64,7 @@ async function genANSName(
 
     if (fallbackName) {
       if (shouldCache) {
-        setLocalStorageWithExpiry(address, fallbackName, TTL);
+        setLocalStorageWithExpiry(cacheKey, fallbackName, TTL);
       }
       return fallbackName;
     }
@@ -86,15 +87,26 @@ export function useGetNameFromAddress(
   shouldCache = false,
   isValidator = false,
   nameType = NameType.ANY,
+  options?: {enabled?: boolean},
 ) {
   const networkName = useNetworkName();
+  const standardizedAddress = tryStandardizeAddress(address);
+  const cacheKey = standardizedAddress ? `${standardizedAddress}:name` : null;
+  const isEnabled = (options?.enabled ?? true) && !!standardizedAddress;
+
   const queryResult = useQuery<string | null, ResponseError>({
-    queryKey: ["ANSName", address, shouldCache, networkName, nameType],
+    queryKey: [
+      "ANSName",
+      standardizedAddress ?? address,
+      networkName,
+      nameType,
+      isValidator,
+    ],
     // ANS names rarely change - cache for 30 minutes
     staleTime: 30 * 60 * 1000,
     gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+    enabled: isEnabled,
     queryFn: () => {
-      const standardizedAddress = tryStandardizeAddress(address);
       if (!standardizedAddress) {
         return null;
       }
@@ -110,7 +122,9 @@ export function useGetNameFromAddress(
         }
 
         // Change cache key specifically to invalidate all previous cached keys
-        const cachedName = getLocalStorageWithExpiry(`${address}:name`);
+        const cachedName = cacheKey
+          ? getLocalStorageWithExpiry(cacheKey)
+          : null;
         if (cachedName) {
           return cachedName;
         }
