@@ -1,10 +1,11 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {createFileRoute} from "@tanstack/react-router";
+import {useState} from "react";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import NetworkInfo from "../pages/Analytics/NetworkInfo/NetworkInfo";
 import UserTransactionsPreview from "../pages/LandingPage/UserTransactionsPreview";
-import HeaderSearch from "../pages/layout/Search/Index";
+import SearchWithResults from "../pages/Search/SearchWithResults";
 
 const DESCRIPTION =
   "Explore transactions, accounts, events, validators, gas fees and other network activity on the Aptos blockchain. Real-time data and analytics for the Aptos Network.";
@@ -42,6 +43,7 @@ export const Route = createFileRoute("/")({
 
 function LandingPage() {
   const {search: initialSearch} = Route.useSearch();
+  const [hasSearchResults, setHasSearchResults] = useState(false);
 
   return (
     <Box>
@@ -62,8 +64,12 @@ function LandingPage() {
         Aptos Explorer
       </Typography>
       <NetworkInfo isOnHomePage />
-      <HeaderSearch initialSearch={initialSearch} />
-      <UserTransactionsPreview />
+      <SearchWithResults
+        initialQuery={initialSearch}
+        updateUrl={false}
+        onResultsChange={setHasSearchResults}
+      />
+      {!hasSearchResults && <UserTransactionsPreview />}
     </Box>
   );
 }
