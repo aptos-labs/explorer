@@ -1,10 +1,12 @@
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import {createFileRoute} from "@tanstack/react-router";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
-import NetworkInfo from "../pages/Analytics/NetworkInfo/NetworkInfo";
-import UserTransactionsPreview from "../pages/LandingPage/UserTransactionsPreview";
+import TotalTransactions from "../pages/Analytics/NetworkInfo/TotalTransactions";
 import HeaderSearch from "../pages/layout/Search/Index";
+import {Link} from "../routing";
 
 const DESCRIPTION =
   "Explore transactions, accounts, events, validators, gas fees and other network activity on the Aptos blockchain. Real-time data and analytics for the Aptos Network.";
@@ -43,22 +45,41 @@ function LandingPage() {
       <Typography
         variant="h1"
         sx={{
-          position: "absolute",
-          width: "1px",
-          height: "1px",
-          padding: 0,
-          margin: "-1px",
-          overflow: "hidden",
-          clip: "rect(0, 0, 0, 0)",
-          whiteSpace: "nowrap",
-          borderWidth: 0,
+          mb: 2,
+          textAlign: "center",
         }}
       >
         Aptos Explorer
       </Typography>
-      <NetworkInfo isOnHomePage />
-      <HeaderSearch />
-      <UserTransactionsPreview />
+      <Typography
+        variant="h5"
+        color="text.secondary"
+        sx={{mb: 4, textAlign: "center"}}
+      >
+        Search the chain, then jump straight to transactions, blocks,
+        validators, or analytics.
+      </Typography>
+      <Box sx={{maxWidth: 980, mx: "auto", mb: 3}}>
+        <HeaderSearch />
+      </Box>
+      <Box sx={{display: "flex", justifyContent: "center", mb: 4}}>
+        <TotalTransactions />
+      </Box>
+      <Stack
+        direction={{xs: "column", sm: "row"}}
+        spacing={2}
+        justifyContent="center"
+      >
+        <Button component={Link} to="/transactions" variant="primary">
+          Browse Transactions
+        </Button>
+        <Button component={Link} to="/blocks" variant="outlined">
+          View Latest Blocks
+        </Button>
+        <Button component={Link} to="/analytics" variant="outlined">
+          Open Analytics
+        </Button>
+      </Stack>
     </Box>
   );
 }
