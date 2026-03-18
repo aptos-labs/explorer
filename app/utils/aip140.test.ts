@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it} from "vitest";
-import {AIP141_CONFIG, wouldExceedGasLimit} from "./aip140";
+import {AIP141_CONFIG, isPostAip141, wouldExceedGasLimit} from "./aip140";
 
 describe("aip141", () => {
   afterEach(() => {
@@ -60,6 +60,38 @@ describe("aip141", () => {
       AIP141_CONFIG.aip141EnablementVersion = 5000n;
       expect(wouldExceedGasLimit("300000", "2000000", "6000")).toBe(true);
       expect(wouldExceedGasLimit("100000", "2000000", "6000")).toBe(false);
+    });
+  });
+
+  describe("isPostAip141", () => {
+    it("returns false when aip141EnablementVersion is 0n", () => {
+      expect(isPostAip141("1000")).toBe(false);
+    });
+
+    it("returns false when no version is provided", () => {
+      AIP141_CONFIG.aip141EnablementVersion = 5000n;
+      expect(isPostAip141()).toBe(false);
+      expect(isPostAip141(undefined)).toBe(false);
+    });
+
+    it("returns false for transactions before enablement", () => {
+      AIP141_CONFIG.aip141EnablementVersion = 5000n;
+      expect(isPostAip141("4999")).toBe(false);
+    });
+
+    it("returns true for transactions at enablement version", () => {
+      AIP141_CONFIG.aip141EnablementVersion = 5000n;
+      expect(isPostAip141("5000")).toBe(true);
+    });
+
+    it("returns true for transactions after enablement version", () => {
+      AIP141_CONFIG.aip141EnablementVersion = 5000n;
+      expect(isPostAip141("10000")).toBe(true);
+    });
+
+    it("returns false for non-numeric version", () => {
+      AIP141_CONFIG.aip141EnablementVersion = 5000n;
+      expect(isPostAip141("abc")).toBe(false);
     });
   });
 

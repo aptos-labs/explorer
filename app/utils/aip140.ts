@@ -40,6 +40,20 @@ export const AIP141_CONFIG = {
 export const AIP140_CONFIG = AIP141_CONFIG;
 
 /**
+ * Returns true when AIP-141 is live and the given transaction version
+ * falls at or after the enablement version.
+ */
+export function isPostAip141(version?: string): boolean {
+  if (AIP141_CONFIG.aip141EnablementVersion === 0n) return false;
+  if (!version) return false;
+  try {
+    return BigInt(version) >= AIP141_CONFIG.aip141EnablementVersion;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Returns true when a transaction's gas usage — projected through the
  * AIP-141 multiplier — would exceed its max gas amount.
  *
