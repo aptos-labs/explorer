@@ -1,12 +1,11 @@
 import {useQuery} from "@tanstack/react-query";
-import {useEffect, useState} from "react";
 import {
   useAptosClient,
   useNetworkName,
   useNetworkValue,
 } from "../../global-config";
 import {getLedgerInfo} from "..";
-import {ANALYTICS_DATA_URL, type AnalyticsData} from "./useGetAnalyticsData";
+import {useGetAnalyticsData} from "./useGetAnalyticsData";
 import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
 
 export function useGetTPS() {
@@ -33,24 +32,13 @@ export function useGetTPS() {
 
 export function useGetPeakTPS() {
   const networkName = useNetworkName();
-  const [peakTps, setPeakTps] = useState<number>();
+  const analyticsData = useGetAnalyticsData();
 
-  useEffect(() => {
-    if (networkName === "mainnet") {
-      const fetchData = async () => {
-        const response = await fetch(ANALYTICS_DATA_URL);
-        const data: AnalyticsData = await response.json();
-        const peakTps =
-          data.max_tps_15_blocks_in_past_30_days[0]
-            .max_tps_15_blocks_in_past_30_days;
-        setPeakTps(peakTps);
-      };
-
-      fetchData().catch((error) => {
-        console.error("ERROR!", error, typeof error);
-      });
-    }
-  }, [networkName]);
+  const peakTps =
+    networkName === "mainnet"
+      ? analyticsData?.max_tps_15_blocks_in_past_30_days[0]
+          ?.max_tps_15_blocks_in_past_30_days
+      : undefined;
 
   return networkName === "mainnet" ? {peakTps} : {peakTps: undefined};
 }

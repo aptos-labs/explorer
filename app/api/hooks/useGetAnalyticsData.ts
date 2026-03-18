@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useQuery} from "@tanstack/react-query";
 import {defaultNetworkName} from "../../constants";
 // Using selective hook - component will only re-render when network_name changes
 // instead of re-rendering on any global state change
@@ -91,24 +91,30 @@ export type NodeCountData = {
   approx_nodes: number;
 };
 
+const ANALYTICS_DATA_STALE_TIME = 10 * 60 * 1000;
+const ANALYTICS_DATA_GC_TIME = 60 * 60 * 1000;
+
 export function useGetAnalyticsData() {
   // Only subscribe to network_name changes - prevents re-renders when other state changes
   const networkName = useNetworkName();
-  const [data, setData] = useState<AnalyticsData>();
+  const isEnabled = networkName === defaultNetworkName;
 
-  useEffect(() => {
-    if (networkName === defaultNetworkName) {
-      const fetchData = async () => {
-        const response = await fetch(ANALYTICS_DATA_URL);
-        const data = await response.json();
-        setData(data);
-      };
+  const {data} = useQuery<AnalyticsData>({
+    queryKey: ["analyticsData", networkName],
+    queryFn: async () => {
+      const response = await fetch(ANALYTICS_DATA_URL);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch analytics data: ${response.status}`);
+      }
+      return response.json() as Promise<AnalyticsData>;
+    },
+    enabled: isEnabled,
+    staleTime: ANALYTICS_DATA_STALE_TIME,
+    gcTime: ANALYTICS_DATA_GC_TIME,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: 1,
+  });
 
-      fetchData().catch((error) => {
-        console.error("ERROR!", error, typeof error);
-      });
-    }
-  }, [networkName]);
-
-  return networkName === defaultNetworkName ? data : undefined;
+  return isEnabled ? data : undefined;
 }
