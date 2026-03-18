@@ -5,7 +5,7 @@ describe("aip141", () => {
   afterEach(() => {
     AIP141_CONFIG.enabled = true;
     AIP141_CONFIG.gasReductionVersion = 0n;
-    AIP141_CONFIG.aip141GasScheduleVersion = 0;
+    AIP141_CONFIG.aip141GasScheduleVersion = 46;
   });
 
   describe("wouldExceedGasLimit", () => {
@@ -59,22 +59,20 @@ describe("aip141", () => {
 
   describe("isAip141Executed", () => {
     it("returns false when aip141GasScheduleVersion is 0", () => {
+      AIP141_CONFIG.aip141GasScheduleVersion = 0;
       expect(isAip141Executed(15)).toBe(false);
     });
 
     it("returns false when on-chain version is below target", () => {
-      AIP141_CONFIG.aip141GasScheduleVersion = 20;
-      expect(isAip141Executed(19)).toBe(false);
+      expect(isAip141Executed(45)).toBe(false);
     });
 
     it("returns true when on-chain version equals target", () => {
-      AIP141_CONFIG.aip141GasScheduleVersion = 20;
-      expect(isAip141Executed(20)).toBe(true);
+      expect(isAip141Executed(46)).toBe(true);
     });
 
     it("returns true when on-chain version exceeds target", () => {
-      AIP141_CONFIG.aip141GasScheduleVersion = 20;
-      expect(isAip141Executed(25)).toBe(true);
+      expect(isAip141Executed(50)).toBe(true);
     });
   });
 
@@ -91,8 +89,8 @@ describe("aip141", () => {
       expect(AIP141_CONFIG.gasReductionVersion).toBe(0n);
     });
 
-    it("defaults aip141GasScheduleVersion to 0", () => {
-      expect(AIP141_CONFIG.aip141GasScheduleVersion).toBe(0);
+    it("has aip141GasScheduleVersion set to 46", () => {
+      expect(AIP141_CONFIG.aip141GasScheduleVersion).toBe(46);
     });
   });
 });

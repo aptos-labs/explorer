@@ -39,7 +39,7 @@ export const AIP141_CONFIG = {
    * gas schedule version is >= this value, AIP-141 is considered live.
    * Set to 0 while the target version is unknown.
    */
-  aip141GasScheduleVersion: 0,
+  aip141GasScheduleVersion: 46,
 };
 
 /** @deprecated Use AIP141_CONFIG instead */
