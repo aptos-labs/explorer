@@ -27,10 +27,11 @@ export const AIP141_CONFIG = {
   /** The gas cost multiplier to project */
   gasMultiplier: 10n,
   /**
-   * Mainnet ledger version at which AIP-17 reduced gas costs ~100x
-   * (gas schedule feature_version 5 → 7, Apr 7 2023 18:14:03 UTC).
-   * Transactions *before* this version used the old high-gas schedule and
-   * should not be flagged (AIP-141 would net-reduce their gas).
+   * Mainnet ledger version at which AIP-17 took effect, bumping the gas
+   * schedule to feature_version 7 (the current gas cost baseline).
+   * Apr 7 2023 18:14:03 UTC.  Transactions *before* this version used the
+   * old high-gas schedule and should not be flagged (AIP-141 would
+   * net-reduce their gas).
    */
   gasReductionVersion: 116277493n,
   /**
