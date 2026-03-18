@@ -10,7 +10,7 @@ import {AIP141_CONFIG} from "../../../utils/aip140";
 import AccountAllTransactions from "../Components/AccountAllTransactions";
 import AccountTransactions from "../Components/AccountTransactions";
 
-function AIP140Toggle() {
+function AIP141Toggle() {
   const {showWarnings, setShowWarnings} = useAIP140Warnings();
 
   if (!AIP141_CONFIG.enabled) return null;
@@ -60,7 +60,7 @@ export default function TransactionsTab({
 
   return (
     <AIP140Provider>
-      <AIP140Toggle />
+      <AIP141Toggle />
       {content}
     </AIP140Provider>
   );

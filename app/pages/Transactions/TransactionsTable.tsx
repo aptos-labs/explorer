@@ -216,7 +216,7 @@ function TransactionAmountGasCell({
   const theme = useTheme();
   const {showWarnings} = useAIP140Warnings();
 
-  const showAIP140Warning =
+  const showAIP141Warning =
     showWarnings &&
     transaction.type === TransactionTypeName.User &&
     "gas_used" in transaction &&
@@ -239,7 +239,7 @@ function TransactionAmountGasCell({
               alignItems="center"
               justifyContent="flex-end"
             >
-              {showAIP140Warning && (
+              {showAIP141Warning && (
                 <Tooltip title="Would exceed max gas under AIP-141 (10x)">
                   <Box
                     component="span"

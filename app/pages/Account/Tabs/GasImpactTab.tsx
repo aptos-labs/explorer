@@ -145,7 +145,7 @@ function GasImpactTable({address, sequenceNum}: GasImpactTableProps) {
     limit,
   );
 
-  const gasScheduleVersion = useGetGasScheduleVersion();
+  const gasScheduleVersion = useGetGasScheduleVersion(AIP141_CONFIG.enabled);
   const executed =
     gasScheduleVersion !== undefined && isAip141Executed(gasScheduleVersion);
 
@@ -176,7 +176,7 @@ function GasImpactTable({address, sequenceNum}: GasImpactTableProps) {
           sx={{mb: 2}}
         >
           {executed
-            ? `AIP-141 has been executed. ${affectedCount} of ${userTxns.length} transactions on this page exceed their max gas limit at current gas costs.`
+            ? `AIP-141 has been executed. ${affectedCount} of ${userTxns.length} transactions on this page would exceed their max gas limit under a further 10x gas projection.`
             : `${affectedCount} of ${userTxns.length} transactions on this page would exceed their max gas limit under AIP-141 (10x gas costs).`}
         </Alert>
       )}

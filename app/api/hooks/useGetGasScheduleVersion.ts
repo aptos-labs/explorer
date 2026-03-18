@@ -8,10 +8,13 @@ interface GasScheduleV2Data {
 /**
  * Fetches the current gas schedule feature_version from
  * `0x1::gas_schedule::GasScheduleV2`.
+ *
+ * Pass `enabled: false` to skip the network request (e.g. when the
+ * AIP-141 UI is globally disabled).
  */
-export function useGetGasScheduleVersion(): number | undefined {
+export function useGetGasScheduleVersion(enabled = true): number | undefined {
   const {data} = useGetAccountResource(
-    "0x1",
+    enabled ? "0x1" : undefined,
     "0x1::gas_schedule::GasScheduleV2",
   );
 
