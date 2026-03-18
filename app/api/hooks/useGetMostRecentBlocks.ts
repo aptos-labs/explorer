@@ -89,7 +89,7 @@ export function useGetMostRecentBlocks(
         return {
           block_height: row.block_height.toString(),
           block_hash: row.id,
-          block_timestamp: row.timestamp,
+          block_timestamp: new Date(row.timestamp).getTime().toString(),
           first_version: row.version.toString(),
           last_version: (nextFirstVersion - 1n).toString(),
         };
