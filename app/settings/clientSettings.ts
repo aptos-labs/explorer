@@ -61,13 +61,17 @@ export function normalizeGeomiDevApiKeyOverride(
 export function sanitizeExplorerClientSettings(
   value: Partial<ExplorerClientSettings> | null | undefined,
 ): ExplorerClientSettings {
+  const geomiDevApiKeyOverride = normalizeGeomiDevApiKeyOverride(
+    value?.geomiDevApiKeyOverride,
+  );
+
   return {
-    geomiDevApiKeyOverride: normalizeGeomiDevApiKeyOverride(
-      value?.geomiDevApiKeyOverride,
-    ),
-    rememberGeomiDevApiKeyOverride: normalizeRememberGeomiDevApiKeyOverride(
-      value?.rememberGeomiDevApiKeyOverride,
-    ),
+    geomiDevApiKeyOverride,
+    rememberGeomiDevApiKeyOverride:
+      geomiDevApiKeyOverride.length > 0 &&
+      normalizeRememberGeomiDevApiKeyOverride(
+        value?.rememberGeomiDevApiKeyOverride,
+      ),
   };
 }
 
@@ -90,7 +94,9 @@ function loadStoredExplorerClientSettings(
   }
 }
 
-function clearStoredExplorerClientSettings(storages: ExplorerSettingsStorage) {
+export function clearExplorerClientSettings(
+  storages: ExplorerSettingsStorage = getAvailableStorages(),
+) {
   for (const storage of [storages.localStorage, storages.sessionStorage]) {
     if (!storage) {
       continue;
@@ -133,7 +139,7 @@ export function persistExplorerClientSettings(
   storages: ExplorerSettingsStorage = getAvailableStorages(),
 ) {
   const sanitizedSettings = sanitizeExplorerClientSettings(settings);
-  clearStoredExplorerClientSettings(storages);
+  clearExplorerClientSettings(storages);
 
   if (!sanitizedSettings.geomiDevApiKeyOverride) {
     return;

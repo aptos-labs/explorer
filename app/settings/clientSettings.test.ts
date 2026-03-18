@@ -1,5 +1,6 @@
 import {describe, expect, it} from "vitest";
 import {
+  clearExplorerClientSettings,
   defaultExplorerClientSettings,
   EXPLORER_SETTINGS_STORAGE_KEY,
   loadExplorerClientSettings,
@@ -68,6 +69,15 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverride: "override-key",
         rememberGeomiDevApiKeyOverride: true,
       });
+    });
+
+    it("forces remember to false when the key is empty", () => {
+      expect(
+        sanitizeExplorerClientSettings({
+          geomiDevApiKeyOverride: "   ",
+          rememberGeomiDevApiKeyOverride: true,
+        }),
+      ).toEqual(defaultExplorerClientSettings);
     });
 
     it("falls back to the default settings shape", () => {
@@ -156,6 +166,9 @@ describe("clientSettings", () => {
         localValue: JSON.stringify({
           geomiDevApiKeyOverride: "persisted-key",
         }),
+        sessionValue: JSON.stringify({
+          geomiDevApiKeyOverride: "session-key",
+        }),
       });
 
       persistExplorerClientSettings(
@@ -165,6 +178,23 @@ describe("clientSettings", () => {
         },
         storages,
       );
+
+      expect(loadExplorerClientSettings(storages)).toEqual(
+        defaultExplorerClientSettings,
+      );
+    });
+
+    it("clears keys from both local and session storage", () => {
+      const storages = createStorageCollection({
+        localValue: JSON.stringify({
+          geomiDevApiKeyOverride: "persisted-key",
+        }),
+        sessionValue: JSON.stringify({
+          geomiDevApiKeyOverride: "session-key",
+        }),
+      });
+
+      clearExplorerClientSettings(storages);
 
       expect(loadExplorerClientSettings(storages)).toEqual(
         defaultExplorerClientSettings,

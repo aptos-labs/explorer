@@ -54,12 +54,15 @@ export function getNetworkFromSearch(
 /**
  * Create an Aptos v2 client for the given network.
  */
-export function createAptosClient(networkName: NetworkName): Aptos {
+export function createAptosClient(
+  networkName: NetworkName,
+  apiKeyOverride?: string,
+): Aptos {
   const nodeUrl = networks[networkName];
   const apiKey =
     typeof window === "undefined"
       ? getServerApiKey(networkName)
-      : getApiKey(networkName, getGeomiDevApiKeyOverride());
+      : getApiKey(networkName, apiKeyOverride ?? getGeomiDevApiKeyOverride());
   const indexerUri = getGraphqlURI(networkName);
 
   // Map network name to SDK Network enum
@@ -114,7 +117,7 @@ export function getCachedClient(networkName: NetworkName): Aptos {
   const cacheKey = getClientCacheKey(networkName, apiKeyOverride);
 
   if (!clientCache.has(cacheKey)) {
-    clientCache.set(cacheKey, createAptosClient(networkName));
+    clientCache.set(cacheKey, createAptosClient(networkName, apiKeyOverride));
   }
   // biome-ignore lint/style/noNonNullAssertion: guaranteed by the .has() check above
   return clientCache.get(cacheKey)!;

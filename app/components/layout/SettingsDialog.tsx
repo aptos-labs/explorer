@@ -18,10 +18,11 @@ import {
 } from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
 import {useRouter} from "@tanstack/react-router";
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {clearCachedSearchClients} from "../../api/createClient";
 import {clearCachedV2Clients} from "../../global-config";
 import {
+  defaultExplorerClientSettings,
   type ExplorerClientSettings,
   normalizeGeomiDevApiKeyOverride,
   useExplorerSettings,
@@ -40,12 +41,14 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
     useState<ExplorerClientSettings>(settings);
   const [isSaving, setIsSaving] = useState(false);
   const [showGeomiDevApiKey, setShowGeomiDevApiKey] = useState(false);
+  const wasOpenRef = useRef(open);
 
   useEffect(() => {
-    if (open) {
+    if (open && !wasOpenRef.current) {
       setDraftSettings(settings);
       setShowGeomiDevApiKey(false);
     }
+    wasOpenRef.current = open;
   }, [open, settings]);
 
   const hasChanges = useMemo(
@@ -174,13 +177,7 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
           Cancel
         </Button>
         <Button
-          onClick={() =>
-            setDraftSettings((currentSettings) => ({
-              ...currentSettings,
-              geomiDevApiKeyOverride: "",
-              rememberGeomiDevApiKeyOverride: false,
-            }))
-          }
+          onClick={() => setDraftSettings(defaultExplorerClientSettings)}
           disabled={isSaving || !draftSettings.geomiDevApiKeyOverride}
         >
           Clear

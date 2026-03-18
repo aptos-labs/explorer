@@ -8,6 +8,7 @@ import {
   useState,
 } from "react";
 import {
+  clearExplorerClientSettings,
   EXPLORER_SETTINGS_STORAGE_KEY,
   type ExplorerClientSettings,
   loadExplorerClientSettings,
@@ -44,7 +45,11 @@ export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
 
   const setExplorerSettings = useCallback((value: ExplorerClientSettings) => {
     const nextSettings = sanitizeExplorerClientSettings(value);
-    persistExplorerClientSettings(nextSettings);
+    if (!nextSettings.geomiDevApiKeyOverride) {
+      clearExplorerClientSettings();
+    } else {
+      persistExplorerClientSettings(nextSettings);
+    }
     setSettings(nextSettings);
   }, []);
 
