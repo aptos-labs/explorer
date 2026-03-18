@@ -269,6 +269,8 @@ export const mainnetKnownAddresses: Record<string, string> = {
     "Crypto.com 1",
   "0x0613f31af70ce983b9dca574e033a52351fd2e67b1959bf48574c6e9c956f95e":
     "Flipster",
+  "0xe46614656e3c58e1bec32b63eafae5e9a5fec44bf14b6a8848d202c10054c5a6":
+    "Kucoin 1",
 
   // Social
   "0x8d2d7bcde13b2513617df3f98cdd5d0e4b9f714c6308b9204fe18ad900d92609":
