@@ -127,12 +127,13 @@ function FilteredAccountTransactions({
     address,
     functionFilter,
   );
-  const {versions, isLoading} = useGetAccountTransactionVersionsByFunction(
-    address,
-    functionFilter,
-    countPerPage,
-    offset,
-  );
+  const {versions, isLoading, isError} =
+    useGetAccountTransactionVersionsByFunction(
+      address,
+      functionFilter,
+      countPerPage,
+      offset,
+    );
 
   const numPages =
     txnCount !== undefined ? Math.ceil(txnCount / countPerPage) : 1;
@@ -142,6 +143,15 @@ function FilteredAccountTransactions({
       <Box sx={{display: "flex", justifyContent: "center", py: 4}}>
         <CircularProgress size={28} />
       </Box>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Alert severity="error">
+        Failed to filter transactions by function. The function ID may be
+        invalid or the indexer may be temporarily unavailable.
+      </Alert>
     );
   }
 

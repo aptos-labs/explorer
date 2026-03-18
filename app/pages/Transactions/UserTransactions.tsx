@@ -1,4 +1,10 @@
-import {CircularProgress, Pagination, Stack, Typography} from "@mui/material";
+import {
+  Alert,
+  CircularProgress,
+  Pagination,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import type React from "react";
 import useFunctionFilter from "../../api/hooks/useFunctionFilter";
@@ -53,12 +59,13 @@ function FilteredUserTransactions({functionFilter}: {functionFilter: string}) {
 
   const startVersion = useGetUserTransactionVersions(1)[0];
   const txnCount = useGetUserTransactionsByFunctionCount(functionFilter);
-  const {versions, isLoading} = useGetUserTransactionVersionsByFunction(
-    LIMIT,
-    functionFilter,
-    startVersion,
-    offset,
-  );
+  const {versions, isLoading, isError} =
+    useGetUserTransactionVersionsByFunction(
+      LIMIT,
+      functionFilter,
+      startVersion,
+      startVersion !== undefined ? offset : undefined,
+    );
 
   const numPages =
     txnCount !== undefined ? Math.max(1, Math.ceil(txnCount / LIMIT)) : 1;
@@ -68,6 +75,15 @@ function FilteredUserTransactions({functionFilter}: {functionFilter: string}) {
       <Box sx={{display: "flex", justifyContent: "center", py: 4}}>
         <CircularProgress size={28} />
       </Box>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Alert severity="error">
+        Failed to filter transactions by function. The function ID may be
+        invalid or the indexer may be temporarily unavailable.
+      </Alert>
     );
   }
 

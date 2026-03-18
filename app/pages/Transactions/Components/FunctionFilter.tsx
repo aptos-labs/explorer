@@ -7,7 +7,8 @@ import {
   Tooltip,
   useTheme,
 } from "@mui/material";
-import {useCallback, useEffect, useState} from "react";
+import type {KeyboardEvent} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 
 type FunctionFilterProps = {
   value: string;
@@ -22,17 +23,21 @@ export default function FunctionFilter({
 }: FunctionFilterProps) {
   const theme = useTheme();
   const [inputValue, setInputValue] = useState(value);
+  const isClearing = useRef(false);
 
   useEffect(() => {
     setInputValue(value);
   }, [value]);
 
   const handleSubmit = useCallback(() => {
-    onChange(inputValue.trim());
-  }, [inputValue, onChange]);
+    const trimmed = inputValue.trim();
+    if (trimmed !== value) {
+      onChange(trimmed);
+    }
+  }, [inputValue, value, onChange]);
 
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
         handleSubmit();
       }
@@ -40,7 +45,16 @@ export default function FunctionFilter({
     [handleSubmit],
   );
 
+  const handleBlur = useCallback(() => {
+    if (isClearing.current) {
+      isClearing.current = false;
+      return;
+    }
+    handleSubmit();
+  }, [handleSubmit]);
+
   const handleClear = useCallback(() => {
+    isClearing.current = true;
     setInputValue("");
     onChange("");
   }, [onChange]);
@@ -54,7 +68,7 @@ export default function FunctionFilter({
       value={inputValue}
       onChange={(e) => setInputValue(e.target.value)}
       onKeyDown={handleKeyDown}
-      onBlur={handleSubmit}
+      onBlur={handleBlur}
       variant="outlined"
       slotProps={{
         input: {
@@ -71,6 +85,7 @@ export default function FunctionFilter({
             <InputAdornment position="end">
               <IconButton
                 aria-label="Clear filter"
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={handleClear}
                 edge="end"
                 size="small"

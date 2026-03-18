@@ -125,12 +125,12 @@ export function useGetUserTransactionVersionsByFunction(
   functionFilter: string,
   startVersion?: number,
   offset?: number,
-): {versions: number[]; isLoading: boolean} {
+): {versions: number[]; isLoading: boolean; isError: boolean} {
   const client = useSdkV2Client();
   const networkValue = useNetworkValue();
   const topTxnsOnly = startVersion === undefined || offset === undefined;
 
-  const {data, isLoading} = useQuery({
+  const {data, isLoading, isError} = useQuery({
     queryKey: [
       "userTransactionVersionsByFunction",
       limit,
@@ -157,7 +157,7 @@ export function useGetUserTransactionVersionsByFunction(
   });
 
   if (!data) {
-    return {versions: [], isLoading};
+    return {versions: [], isLoading, isError};
   }
 
   return {
@@ -165,5 +165,6 @@ export function useGetUserTransactionVersionsByFunction(
       (txn: {version: number}) => txn.version,
     ),
     isLoading,
+    isError,
   };
 }

@@ -182,12 +182,12 @@ export function useGetAccountTransactionVersionsByFunction(
   functionFilter: string,
   limit: number,
   offset?: number,
-): {versions: number[]; isLoading: boolean} {
+): {versions: number[]; isLoading: boolean; isError: boolean} {
   const addr64Hash = tryStandardizeAddress(address);
   const client = useSdkV2Client();
   const networkValue = useNetworkValue();
 
-  const {data, isLoading} = useQuery({
+  const {data, isLoading, isError} = useQuery({
     queryKey: [
       "accountTxnVersionsByFn",
       addr64Hash,
@@ -213,11 +213,12 @@ export function useGetAccountTransactionVersionsByFunction(
     enabled: !!addr64Hash && functionFilter.length > 0,
   });
 
-  if (!data) return {versions: [], isLoading};
+  if (!data) return {versions: [], isLoading, isError};
   return {
     versions: data.user_transactions.map(
       (txn: {version: number}) => txn.version,
     ),
     isLoading,
+    isError,
   };
 }
