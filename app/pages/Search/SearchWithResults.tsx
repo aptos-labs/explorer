@@ -198,6 +198,12 @@ interface SearchWithResultsProps {
    * Set to false on the landing page so the URL stays at `/`.
    */
   updateUrl?: boolean;
+  /**
+   * Called when the visible result state changes.
+   * `true` = results (or a "no results" message) are displayed.
+   * Lets the parent conditionally show/hide surrounding content.
+   */
+  onResultsChange?: (hasResults: boolean) => void;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -205,6 +211,7 @@ interface SearchWithResultsProps {
 export default function SearchWithResults({
   initialQuery,
   updateUrl = true,
+  onResultsChange,
 }: SearchWithResultsProps) {
   const navigate = useNavigate();
   const networkName = useNetworkName();
@@ -227,6 +234,10 @@ export default function SearchWithResults({
     !(results.length === 1 && results[0] === NotFoundResult);
   const isEmpty =
     status === "done" && results.length === 1 && results[0] === NotFoundResult;
+
+  useEffect(() => {
+    onResultsChange?.(hasResults || isEmpty);
+  }, [hasResults, isEmpty, onResultsChange]);
 
   // Seed from initialQuery on mount
   useEffect(() => {

@@ -7,13 +7,6 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- Search -->
-  <url>
-    <loc>https://explorer.aptoslabs.com/search</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
   <!-- Transactions -->
   <url>
     <loc>https://explorer.aptoslabs.com/transactions</loc>

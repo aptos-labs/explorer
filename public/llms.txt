@@ -40,7 +40,6 @@ All URLs default to mainnet. Append `?network=testnet` or `?network=devnet` for 
 - Blocks list: `/blocks`
 - Transactions list: `/transactions`
 - Verification: `/verification`
-- Search: `/search?q={query}` — full-page search with inline results; auto-detects input type
 
 ## Key Addresses
 
@@ -63,7 +62,7 @@ All URLs default to mainnet. Append `?network=testnet` or `?network=devnet` for 
 | APT coin info | `/coin/0x1::aptos_coin::AptosCoin` |
 | Network analytics | `/analytics` |
 | Same on testnet | append `?network=testnet` to any URL |
-| General search / unknown input | `/search?q={query}` — full-page results; auto-detects address, hash, ANS name, coin type |
+| General search / unknown input | `/?search={query}` — pre-fills the search bar on the home page; auto-detects address, hash, ANS name, coin type |
 
 ## Quick Data Reference
 
