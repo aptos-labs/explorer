@@ -39,6 +39,7 @@ All URLs default to mainnet. Append `?network=testnet` or `?network=devnet` for 
 - Analytics: `/analytics`
 - Blocks list: `/blocks`
 - Transactions list: `/transactions`
+  - Filter by function: `/transactions?type=user&fn={entry_function_id}` (e.g. `?fn=0x1::coin::transfer`)
 - Verification: `/verification`
 
 ## Key Addresses
@@ -62,6 +63,7 @@ All URLs default to mainnet. Append `?network=testnet` or `?network=devnet` for 
 | APT coin info | `/coin/0x1::aptos_coin::AptosCoin` |
 | Network analytics | `/analytics` |
 | Same on testnet | append `?network=testnet` to any URL |
+| All 0x1::coin::transfer txns | `/transactions?type=user&fn=0x1::coin::transfer` |
 | General search / unknown input | `/?search={query}` — pre-fills the search bar on the home page; auto-detects address, hash, ANS name, coin type |
 
 ## Quick Data Reference

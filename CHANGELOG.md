@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Function filter on transaction tables — filter by entry function ID (e.g. `0x1::coin::transfer`) via `?fn=` URL parameter across User Transactions (server-side), All Transactions (client-side), and Account Transactions (server-side) views
 - Progressive Web App (PWA) support with service worker for offline caching
 - Enhanced manifest.json with full PWA configuration (icons, screenshots, categories)
 - Service worker with intelligent caching strategies for static assets, fonts, and API calls

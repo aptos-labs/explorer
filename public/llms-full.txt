@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-17 (rev 4)
+> Last updated: 2026-03-18 (rev 5)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -38,6 +38,9 @@ Each detail page has tabs accessible via path segments:
 
 #### Transactions
 - `/transactions` — paginated list of recent transactions
+  - `?type=user` — show only user transactions (default when indexer is available)
+  - `?type=all` — show all transaction types (user, block_metadata, state_checkpoint)
+  - `?fn={entry_function_id}` — filter by entry function (e.g. `?fn=0x1::coin::transfer`). On the User Transactions view this is server-side filtering via the indexer; on the All Transactions view it filters client-side on the current page.
 - `/txn/{version}` — transaction by version number (integer)
 - `/txn/{hash}` — transaction by hash (0x-prefixed hex)
 - Tab paths: `/txn/{id}/userTxnOverview`, `/txn/{id}/events`, `/txn/{id}/payload`, `/txn/{id}/changes`, `/txn/{id}/balanceChange`
@@ -45,7 +48,7 @@ Each detail page has tabs accessible via path segments:
 #### Accounts
 - `/account/{address}` — account overview (redirects to `/account/{address}/transactions`)
 - Tab paths:
-  - `/account/{address}/transactions` — full transaction history
+  - `/account/{address}/transactions` — full transaction history (supports `?fn={entry_function_id}` to filter by function, server-side via indexer)
   - `/account/{address}/coins` — fungible token balances
   - `/account/{address}/tokens` — NFTs owned by this account
   - `/account/{address}/resources` — raw Move resources stored under the account
@@ -201,6 +204,12 @@ A: 250000000 ÷ 100000000 = 2.5 APT. The explorer shows converted values automat
 **Q: "I have a string but I'm not sure if it's an address or a transaction hash"**
 A: Use `https://explorer.aptoslabs.com/?search={string}` — the home page search bar detects the input type and shows matching results inline, grouped by entity type (accounts, transactions, blocks, coins, etc.).
 
+**Q: "Show me all coin transfer transactions"**
+A: Visit `https://explorer.aptoslabs.com/transactions?type=user&fn=0x1::coin::transfer` — this filters user transactions to only show calls to the `0x1::coin::transfer` function using the indexer.
+
+**Q: "What functions did account 0xabc…123 call?"**
+A: Visit `https://explorer.aptoslabs.com/account/0xabc…123/transactions` — the transactions tab shows all transactions. Use `?fn=0x1::aptos_account::transfer` to filter to a specific function.
+
 **Q: "What is alice.apt's address?"**
 A: Enter `alice.apt` in the explorer search bar — it resolves the ANS name and navigates to the associated account page.
 
@@ -271,6 +280,8 @@ Charts and metrics for:
 
 - `network` — Select network: mainnet (default), testnet, devnet
 - `search` — On the home page (`/?search={query}`), pre-fills the search bar and executes the query immediately. Results are displayed inline on the page below the search input. Use this when the exact entity type is unknown — the explorer will auto-detect and show matching results grouped by type (accounts, transactions, blocks, coins, etc.). On Enter or a single unambiguous result, navigates directly to the entity page.
+- `fn` — On `/transactions` and `/account/{address}/transactions`, filters transactions by entry function ID (e.g. `?fn=0x1::coin::transfer`). The value must be a fully qualified Move function identifier (`{address}::{module}::{function}`). On the User Transactions view and account transactions view, this filters server-side via the GraphQL indexer. On the All Transactions view, this filters client-side on the currently loaded page.
+- `type` — On `/transactions`, selects between `user` (user transactions only, default) and `all` (all transaction types)
 - Page/tab selection is path-based (e.g., `/account/0x1/modules`), not query-param-based
 
 ---
