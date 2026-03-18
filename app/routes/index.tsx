@@ -1,10 +1,8 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import {createFileRoute} from "@tanstack/react-router";
-import {useState} from "react";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import NetworkInfo from "../pages/Analytics/NetworkInfo/NetworkInfo";
-import UserTransactionsPreview from "../pages/LandingPage/UserTransactionsPreview";
 import SearchWithResults from "../pages/Search/SearchWithResults";
 
 const DESCRIPTION =
@@ -43,7 +41,6 @@ export const Route = createFileRoute("/")({
 
 function LandingPage() {
   const {search: initialSearch} = Route.useSearch();
-  const [hasSearchResults, setHasSearchResults] = useState(false);
 
   return (
     <Box>
@@ -64,12 +61,7 @@ function LandingPage() {
         Aptos Explorer
       </Typography>
       <NetworkInfo isOnHomePage />
-      <SearchWithResults
-        initialQuery={initialSearch}
-        updateUrl={false}
-        onResultsChange={setHasSearchResults}
-      />
-      {!hasSearchResults && <UserTransactionsPreview />}
+      <SearchWithResults initialQuery={initialSearch} updateUrl={false} />
     </Box>
   );
 }
