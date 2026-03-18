@@ -12,9 +12,9 @@ export default function TotalTransactions() {
   const {data: ledgerData} = useQuery({
     queryKey: ["ledgerInfo", networkValue],
     queryFn: () => getLedgerInfo(aptosClient),
-    refetchInterval: 10000,
-    // Match staleTime to refetch interval to prevent unnecessary fetches on mount
-    staleTime: 10000,
+    refetchInterval: 30000,
+    staleTime: 30000,
+    refetchOnWindowFocus: false,
   });
   const ledgerVersion = ledgerData?.ledger_version;
 

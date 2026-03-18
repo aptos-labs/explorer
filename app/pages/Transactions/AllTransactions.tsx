@@ -218,8 +218,8 @@ export default function AllTransactions() {
     queryKey: ["ledgerInfo", networkValue],
     queryFn: () => getLedgerInfo(aptosClient),
     refetchInterval: 10000,
-    // Match staleTime to refetch interval to prevent unnecessary fetches on mount
     staleTime: 10000,
+    refetchOnWindowFocus: false,
   });
 
   return <TransactionsPageInner {...result} />;

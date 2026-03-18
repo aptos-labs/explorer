@@ -1,7 +1,8 @@
 import {createFileRoute} from "@tanstack/react-router";
-import {getClientFromSearch} from "../api/createClient";
+import {getClientFromSearch, getNetworkFromSearch} from "../api/createClient";
 import {blockQueryOptions} from "../api/queries";
 import {PagePending} from "../components/NavigationPending";
+import {networks} from "../constants";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import BlockPage from "../pages/Block/Index";
 
@@ -14,13 +15,12 @@ export const Route = createFileRoute("/block/$height/$tab")({
       new URLSearchParams(location.search),
     ) as Record<string, string>;
     const client = getClientFromSearch(search);
+    const networkName = getNetworkFromSearch(search);
+    const networkValue = networks[networkName];
 
-    // Prefetch block data - blocks are immutable so they cache very well
-    queryClient
-      .prefetchQuery(blockQueryOptions(params.height, client))
-      .catch(() => {
-        // Prefetch failures are non-critical - the component will fetch if needed
-      });
+    await queryClient.ensureQueryData(
+      blockQueryOptions(params.height, client, networkValue),
+    );
 
     return {};
   },

@@ -22,11 +22,15 @@ export function transactionsQueryOptions(client: Aptos) {
 }
 
 // Ledger info query
-export function ledgerInfoQueryOptions(client: Aptos) {
+export function ledgerInfoQueryOptions(
+  client: Aptos,
+  networkKey: string,
+  staleTime: number = 1000,
+) {
   return queryOptions({
-    queryKey: ["ledgerInfo"],
+    queryKey: ["ledgerInfo", networkKey],
     queryFn: () => client.getLedgerInfo(),
-    staleTime: 5 * 1000, // 5 seconds
+    staleTime,
   });
 }
 
@@ -60,19 +64,23 @@ export function blocksQueryOptions(client: Aptos, currentBlockHeight: number) {
 export function transactionQueryOptions(
   txnHashOrVersion: string,
   client: Aptos,
-  networkName: string,
+  networkKey: string,
 ) {
   return queryOptions({
-    queryKey: ["transaction", txnHashOrVersion, networkName],
+    queryKey: ["transaction", {txnHashOrVersion}, networkKey],
     queryFn: () => getTransaction(txnHashOrVersion, client),
     staleTime: 60 * 60 * 1000, // 1 hour - transactions are immutable
   });
 }
 
 // Single block query
-export function blockQueryOptions(height: string, client: Aptos) {
+export function blockQueryOptions(
+  height: string,
+  client: Aptos,
+  networkKey: string,
+) {
   return queryOptions({
-    queryKey: ["block", height],
+    queryKey: ["block", Number(height), true, networkKey],
     queryFn: () =>
       client.getBlockByHeight({
         blockHeight: Number(height),
@@ -83,9 +91,13 @@ export function blockQueryOptions(height: string, client: Aptos) {
 }
 
 // Account info query
-export function accountInfoQueryOptions(address: string, client: Aptos) {
+export function accountInfoQueryOptions(
+  address: string,
+  client: Aptos,
+  networkKey: string,
+) {
   return queryOptions({
-    queryKey: ["account", address],
+    queryKey: ["account", {address}, networkKey],
     queryFn: async () => {
       try {
         const account = await client.getAccountInfo({
@@ -101,9 +113,13 @@ export function accountInfoQueryOptions(address: string, client: Aptos) {
 }
 
 // Account resources query
-export function accountResourcesQueryOptions(address: string, client: Aptos) {
+export function accountResourcesQueryOptions(
+  address: string,
+  client: Aptos,
+  networkKey: string,
+) {
   return queryOptions({
-    queryKey: ["accountResources", address],
+    queryKey: ["accountResources", {address}, networkKey],
     queryFn: async () => {
       try {
         const resources = await client.getAccountResources({

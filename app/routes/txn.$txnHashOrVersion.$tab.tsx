@@ -2,6 +2,7 @@ import {createFileRoute} from "@tanstack/react-router";
 import {getClientFromSearch, getNetworkFromSearch} from "../api/createClient";
 import {transactionQueryOptions} from "../api/queries";
 import {PagePending} from "../components/NavigationPending";
+import {networks} from "../constants";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import TransactionPage from "../pages/Transaction/Index";
 import {truncateAddress} from "../utils";
@@ -16,16 +17,11 @@ export const Route = createFileRoute("/txn/$txnHashOrVersion/$tab")({
     ) as Record<string, string>;
     const client = getClientFromSearch(search);
     const networkName = getNetworkFromSearch(search);
+    const networkValue = networks[networkName];
 
-    // Prefetch transaction data - don't await to avoid blocking navigation
-    // Transactions are immutable so they cache very well
-    queryClient
-      .prefetchQuery(
-        transactionQueryOptions(params.txnHashOrVersion, client, networkName),
-      )
-      .catch(() => {
-        // Prefetch failures are non-critical - the component will fetch if needed
-      });
+    await queryClient.ensureQueryData(
+      transactionQueryOptions(params.txnHashOrVersion, client, networkValue),
+    );
 
     return {networkName};
   },

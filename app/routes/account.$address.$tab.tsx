@@ -1,7 +1,8 @@
 import {createFileRoute} from "@tanstack/react-router";
 import {getClientFromSearch, getNetworkFromSearch} from "../api/createClient";
-import {accountInfoQueryOptions} from "../api/queries";
+import {accountResourcesQueryOptions} from "../api/queries";
 import {PagePending} from "../components/NavigationPending";
+import {networks} from "../constants";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import AccountPage from "../pages/Account/Index";
 import {truncateAddress} from "../utils";
@@ -16,14 +17,11 @@ export const Route = createFileRoute("/account/$address/$tab")({
     ) as Record<string, string>;
     const client = getClientFromSearch(search);
     const networkName = getNetworkFromSearch(search);
+    const networkValue = networks[networkName];
 
-    // Prefetch account info - don't await to avoid blocking navigation
-    // This runs in parallel with rendering
-    queryClient
-      .prefetchQuery(accountInfoQueryOptions(params.address, client))
-      .catch(() => {
-        // Prefetch failures are non-critical - the component will fetch if needed
-      });
+    await queryClient.ensureQueryData(
+      accountResourcesQueryOptions(params.address, client, networkValue),
+    );
 
     return {networkName};
   },

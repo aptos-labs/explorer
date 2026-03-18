@@ -15,10 +15,10 @@ export function useGetTPS() {
   const {data: ledgerData} = useQuery({
     queryKey: ["ledgerInfo", networkValue],
     queryFn: () => getLedgerInfo(aptosClient),
-    refetchInterval: 10000,
-    // Real-time data - no stale time, but keep in cache briefly
-    staleTime: 0,
+    refetchInterval: 1000,
+    staleTime: 1000,
     gcTime: 30 * 1000, // Keep in cache for 30 seconds
+    refetchOnWindowFocus: false,
   });
   const currentBlockHeight = ledgerData?.block_height;
   const blockHeight =

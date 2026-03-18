@@ -15,7 +15,7 @@ export function useGetBlockByHeight({
   const sdkV2Client = useSdkV2Client();
 
   return useQuery<Block, ResponseError>({
-    queryKey: ["block", height, networkValue],
+    queryKey: ["block", height, withTransactions, networkValue],
     queryFn: () => getBlockByHeight({height, withTransactions}, sdkV2Client),
     refetchInterval: 1200000,
     // Block data is relatively static once confirmed
@@ -35,7 +35,7 @@ export function useGetBlockByVersion({
   const sdkV2Client = useSdkV2Client();
 
   return useQuery<Block, ResponseError>({
-    queryKey: ["block", version, networkValue],
+    queryKey: ["blockByVersion", version, withTransactions, networkValue],
     queryFn: () => getBlockByVersion({version, withTransactions}, sdkV2Client),
     // Block by version is static - cache longer
     staleTime: 60 * 60 * 1000, // 1 hour
