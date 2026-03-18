@@ -51,7 +51,7 @@ export function useGetMostRecentBlocks(
   );
 
   const {isLoading, data: blocks} = useQuery<Types.Block[]>({
-    queryKey: ["recentBlocks", currentBlockHeight, count, networkValue],
+    queryKey: ["recentBlocksIndexer", currentBlockHeight, count, networkValue],
     queryFn: async () => {
       if (!Number.isFinite(currentBlockHeight) || !ledgerData?.ledger_version) {
         return [];
