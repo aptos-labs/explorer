@@ -83,22 +83,32 @@ export function getTransactionCounterparty(
   const isTokenV2MintSoulbound =
     payload.function === "0x4::aptos_token::mint_soul_bound";
 
-  if (isCoinTransfer) {
+  if (isCoinTransfer && payload.arguments.length >= 1) {
+    const arg = payload.arguments[0];
+    const standardized =
+      typeof arg === "string" ? tryStandardizeAddress(arg) : undefined;
     return {
-      address: standardizeAddress(payload.arguments[0]),
+      address: standardized ?? String(arg),
       role: "receiver",
     };
   }
 
-  if (isObjectTransfer) {
+  if (isObjectTransfer && payload.arguments.length >= 2) {
+    const arg = payload.arguments[1];
+    const standardized =
+      typeof arg === "string" ? tryStandardizeAddress(arg) : undefined;
     return {
-      address: standardizeAddress(payload.arguments[1]),
+      address: standardized ?? String(arg),
       role: "receiver",
     };
   }
-  if (isTokenV2MintSoulbound) {
+
+  if (isTokenV2MintSoulbound && payload.arguments.length >= 8) {
+    const arg = payload.arguments[7];
+    const standardized =
+      typeof arg === "string" ? tryStandardizeAddress(arg) : undefined;
     return {
-      address: standardizeAddress(payload.arguments[7]),
+      address: standardized ?? String(arg),
       role: "receiver",
     };
   }

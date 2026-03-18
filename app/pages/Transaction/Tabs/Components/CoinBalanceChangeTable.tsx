@@ -45,6 +45,11 @@ type BalanceChangeCellProps = {
   transaction: Types.UserTransaction;
 };
 
+const getDisplayAddress = (address: string): string => {
+  const standardized = tryStandardizeAddress(address) ?? address;
+  return `${standardized.slice(0, 8)}...${standardized.slice(-6)}`;
+};
+
 function AddressCell({balanceChange}: BalanceChangeCellProps) {
   return (
     <GeneralTableCell>
@@ -486,12 +491,7 @@ function BalanceChangeCard({balanceChange, onClick}: BalanceChangeCardProps) {
               }}
             >
               {balanceChange.address
-                ? (() => {
-                    const addr =
-                      tryStandardizeAddress(balanceChange.address) ??
-                      balanceChange.address;
-                    return `${addr.slice(0, 8)}...${addr.slice(-6)}`;
-                  })()
+                ? getDisplayAddress(balanceChange.address)
                 : "-"}
             </Typography>
           </Stack>
