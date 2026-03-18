@@ -1,32 +1,67 @@
 /**
- * AIP-140 Gas Impact Analysis
+ * AIP-141 Gas Impact Analysis
  *
- * AIP-140 proposes a 10x gas cost increase on Aptos. These utilities help
+ * AIP-141 proposes a 10x gas cost increase on Aptos. These utilities help
  * determine which transactions would exceed their max gas limit under the
  * new pricing.
+ *
+ * There are three eras to consider:
+ *  1. Before the 100x gas reduction — transactions used the old (high) gas
+ *     schedule. AIP-141's net effect on these is actually a ~10x *decrease*
+ *     (100x down then 10x up), so they should NOT be flagged.
+ *  2. After the 100x gas reduction but before AIP-141 — transactions use
+ *     the reduced schedule. The 10x multiplier projects what gas would look
+ *     like once AIP-141 is live.
+ *  3. After AIP-141 enablement — gas is already raised. The 10x multiplier
+ *     checks whether a further 10x increase would exceed the limit.
  */
 
-export const AIP140_CONFIG = {
-  /** Set to false to disable all AIP-140 UI across the app */
+export const AIP141_CONFIG = {
+  /** Set to false to disable all AIP-141 UI across the app */
   enabled: true,
-  /** The proposed gas cost multiplier */
+  /** The gas cost multiplier to project */
   gasMultiplier: 10n,
+  /**
+   * Mainnet version at which the 100x gas reduction took effect.
+   * Transactions *before* this version used the old high-gas schedule and
+   * should not be flagged (AIP-141 would net-reduce their gas).
+   * Set to 0n to treat all transactions as post-reduction (default).
+   */
+  gasReductionVersion: 0n,
+  /**
+   * Mainnet version at which AIP-141 takes effect.
+   * After this version gas is already raised; the 10x check guards against
+   * a further increase.  Set to 0n while AIP-141 is not yet enabled.
+   */
+  aip141EnablementVersion: 0n,
 };
 
+/** @deprecated Use AIP141_CONFIG instead */
+export const AIP140_CONFIG = AIP141_CONFIG;
+
 /**
- * Returns true if a transaction's gas usage, multiplied by the AIP-140
- * gas multiplier, would exceed its max gas amount.
+ * Returns true when a transaction's gas usage — projected through the
+ * AIP-141 multiplier — would exceed its max gas amount.
  *
- * Only meaningful for user transactions which have both gas_used and
- * max_gas_amount fields.
+ * Pass the transaction `version` so that pre-gas-reduction transactions
+ * (which would actually *benefit* from AIP-141) are excluded.
  */
 export function wouldExceedGasLimit(
   gasUsed: string,
   maxGasAmount: string,
+  version?: string,
 ): boolean {
-  if (!AIP140_CONFIG.enabled) return false;
+  if (!AIP141_CONFIG.enabled) return false;
   try {
-    const projected = BigInt(gasUsed) * AIP140_CONFIG.gasMultiplier;
+    if (
+      version &&
+      AIP141_CONFIG.gasReductionVersion > 0n &&
+      BigInt(version) < AIP141_CONFIG.gasReductionVersion
+    ) {
+      return false;
+    }
+
+    const projected = BigInt(gasUsed) * AIP141_CONFIG.gasMultiplier;
     return projected > BigInt(maxGasAmount);
   } catch {
     return false;

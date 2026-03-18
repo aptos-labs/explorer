@@ -221,7 +221,11 @@ function TransactionAmountGasCell({
     transaction.type === TransactionTypeName.User &&
     "gas_used" in transaction &&
     "max_gas_amount" in transaction &&
-    wouldExceedGasLimit(transaction.gas_used, transaction.max_gas_amount);
+    wouldExceedGasLimit(
+      transaction.gas_used,
+      transaction.max_gas_amount,
+      "version" in transaction ? transaction.version : undefined,
+    );
 
   return (
     <GeneralTableCell sx={{paddingY: 1}}>
@@ -236,11 +240,11 @@ function TransactionAmountGasCell({
               justifyContent="flex-end"
             >
               {showAIP140Warning && (
-                <Tooltip title="Would exceed max gas under AIP-140 (10x)">
+                <Tooltip title="Would exceed max gas under AIP-141 (10x)">
                   <Box
                     component="span"
                     tabIndex={0}
-                    aria-label="Transaction would exceed max gas under AIP-140 (10x)"
+                    aria-label="Transaction would exceed max gas under AIP-141 (10x)"
                   >
                     <WarningAmberIcon
                       sx={{fontSize: 14, color: theme.palette.warning.main}}
@@ -653,12 +657,13 @@ function TransactionCard({transaction, address}: TransactionCardProps) {
                   wouldExceedGasLimit(
                     transaction.gas_used,
                     transaction.max_gas_amount,
+                    "version" in transaction ? transaction.version : undefined,
                   ) && (
-                    <Tooltip title="Would exceed max gas under AIP-140 (10x)">
+                    <Tooltip title="Would exceed max gas under AIP-141 (10x)">
                       <Box
                         component="span"
                         tabIndex={0}
-                        aria-label="Transaction would exceed max gas under AIP-140 (10x)"
+                        aria-label="Transaction would exceed max gas under AIP-141 (10x)"
                       >
                         <WarningAmberIcon
                           sx={{

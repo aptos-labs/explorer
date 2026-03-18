@@ -1,5 +1,5 @@
 import {createContext, useContext, useState} from "react";
-import {AIP140_CONFIG} from "../utils/aip140";
+import {AIP141_CONFIG} from "../utils/aip140";
 
 type AIP140ContextType = {
   showWarnings: boolean;
@@ -19,7 +19,7 @@ export function AIP140Provider({
   defaultEnabled?: boolean;
 }) {
   const [showWarnings, setShowWarnings] = useState(
-    AIP140_CONFIG.enabled && defaultEnabled,
+    AIP141_CONFIG.enabled && defaultEnabled,
   );
 
   return (

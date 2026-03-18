@@ -1,5 +1,5 @@
 import {useGetIsGraphqlClientSupported} from "../../../api/hooks/useGraphqlClient";
-import {AIP140_CONFIG} from "../../../utils/aip140";
+import {AIP141_CONFIG} from "../../../utils/aip140";
 import type {TabValue} from "../Tabs";
 
 const TAB_VALUES_FULL: TabValue[] = [
@@ -67,7 +67,7 @@ export function getTabValues(
   } else {
     tabs = isGraphqlClientSupported ? [...TAB_VALUES_FULL] : [...TAB_VALUES];
   }
-  if (AIP140_CONFIG.enabled && !isObject) {
+  if (AIP141_CONFIG.enabled && !isObject) {
     tabs.push("gas-impact");
   }
   return tabs;

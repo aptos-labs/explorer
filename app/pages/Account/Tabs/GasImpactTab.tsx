@@ -23,7 +23,7 @@ import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeader
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import {TransactionTypeName} from "../../../components/TransactionType";
 import {Link} from "../../../routing";
-import {AIP140_CONFIG, wouldExceedGasLimit} from "../../../utils/aip140";
+import {AIP141_CONFIG, wouldExceedGasLimit} from "../../../utils/aip140";
 import TransactionFunction from "../../Transaction/Tabs/Components/TransactionFunction";
 import {
   getPageStartSequenceNumbers,
@@ -42,8 +42,12 @@ function GasImpactRow({transaction}: GasImpactRowProps) {
   const userTxn = transaction as Types.Transaction_UserTransaction;
 
   const gasUsed = BigInt(userTxn.gas_used);
-  const projected = gasUsed * AIP140_CONFIG.gasMultiplier;
-  const exceeds = wouldExceedGasLimit(userTxn.gas_used, userTxn.max_gas_amount);
+  const projected = gasUsed * AIP141_CONFIG.gasMultiplier;
+  const exceeds = wouldExceedGasLimit(
+    userTxn.gas_used,
+    userTxn.max_gas_amount,
+    userTxn.version,
+  );
 
   return (
     <GeneralTableRow to={`/txn/${userTxn.version}`}>
@@ -152,7 +156,7 @@ function GasImpactTable({address, sequenceNum}: GasImpactTableProps) {
     data?.filter((t) => t.type === TransactionTypeName.User) ?? [];
   const affectedCount = userTxns.filter((t) => {
     const ut = t as Types.Transaction_UserTransaction;
-    return wouldExceedGasLimit(ut.gas_used, ut.max_gas_amount);
+    return wouldExceedGasLimit(ut.gas_used, ut.max_gas_amount, ut.version);
   }).length;
 
   return (
@@ -163,7 +167,7 @@ function GasImpactTable({address, sequenceNum}: GasImpactTableProps) {
           sx={{mb: 2}}
         >
           {affectedCount} of {userTxns.length} transactions on this page would
-          exceed their max gas limit under AIP-140 (10x gas costs).
+          exceed their max gas limit under AIP-141 (10x gas costs).
         </Alert>
       )}
 
