@@ -4,7 +4,7 @@ import {AIP141_CONFIG, isAip141Executed, wouldExceedGasLimit} from "./aip140";
 describe("aip141", () => {
   afterEach(() => {
     AIP141_CONFIG.enabled = true;
-    AIP141_CONFIG.gasReductionVersion = 0n;
+    AIP141_CONFIG.gasReductionVersion = 116277493n;
     AIP141_CONFIG.aip141GasScheduleVersion = 46;
   });
 
@@ -40,19 +40,16 @@ describe("aip141", () => {
       expect(wouldExceedGasLimit("abc", "2000000")).toBe(false);
     });
 
-    it("skips transactions before the gas reduction version", () => {
-      AIP141_CONFIG.gasReductionVersion = 1000n;
-      expect(wouldExceedGasLimit("300000", "2000000", "500")).toBe(false);
+    it("skips transactions before the AIP-17 gas reduction (v116277493)", () => {
+      expect(wouldExceedGasLimit("300000", "2000000", "100000000")).toBe(false);
     });
 
     it("flags transactions at or after the gas reduction version", () => {
-      AIP141_CONFIG.gasReductionVersion = 1000n;
-      expect(wouldExceedGasLimit("300000", "2000000", "1000")).toBe(true);
-      expect(wouldExceedGasLimit("300000", "2000000", "2000")).toBe(true);
+      expect(wouldExceedGasLimit("300000", "2000000", "116277493")).toBe(true);
+      expect(wouldExceedGasLimit("300000", "2000000", "200000000")).toBe(true);
     });
 
     it("still applies 10x check when no version is provided", () => {
-      AIP141_CONFIG.gasReductionVersion = 1000n;
       expect(wouldExceedGasLimit("300000", "2000000")).toBe(true);
     });
   });
@@ -85,8 +82,8 @@ describe("aip141", () => {
       expect(AIP141_CONFIG.gasMultiplier).toBe(10n);
     });
 
-    it("defaults gasReductionVersion to 0n", () => {
-      expect(AIP141_CONFIG.gasReductionVersion).toBe(0n);
+    it("has gasReductionVersion set to AIP-17 version", () => {
+      expect(AIP141_CONFIG.gasReductionVersion).toBe(116277493n);
     });
 
     it("has aip141GasScheduleVersion set to 46", () => {
