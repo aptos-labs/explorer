@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {useSdkV2Client} from "../../global-config";
+import {useNetworkValue, useSdkV2Client} from "../../global-config";
 import {tryStandardizeAddress} from "../../utils";
 import type {ResponseError} from "../client";
 
@@ -38,9 +38,10 @@ const COIN_COUNT_QUERY = `
 export function useGetAccountCoinCount(address: string) {
   const sdkV2Client = useSdkV2Client();
   const standardizedAddress = tryStandardizeAddress(address);
+  const networkValue = useNetworkValue();
 
   return useQuery<number, ResponseError>({
-    queryKey: ["coinCount", address],
+    queryKey: ["coinCount", standardizedAddress ?? address, networkValue],
     queryFn: async (): Promise<number> => {
       if (!standardizedAddress) {
         return 0;
@@ -59,6 +60,11 @@ export function useGetAccountCoinCount(address: string) {
 
       return response.current_fungible_asset_balances_aggregate.aggregate.count;
     },
+    enabled: !!standardizedAddress,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 
@@ -80,9 +86,16 @@ export function useGetAccountCoins(
 ) {
   const sdkV2Client = useSdkV2Client();
   const standardizedAddress = tryStandardizeAddress(address);
+  const networkValue = useNetworkValue();
 
   return useQuery<FaBalance[], ResponseError>({
-    queryKey: ["coinQuery", address, limit, offset],
+    queryKey: [
+      "coinQuery",
+      standardizedAddress ?? address,
+      limit,
+      offset,
+      networkValue,
+    ],
     queryFn: async (): Promise<FaBalance[]> => {
       if (!standardizedAddress) {
         return [];
@@ -103,6 +116,11 @@ export function useGetAccountCoins(
 
       return response.current_fungible_asset_balances;
     },
+    enabled: !!standardizedAddress,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 
@@ -110,6 +128,7 @@ export function useGetAccountCoins(
 export function useGetAllAccountCoins(address: string) {
   const sdkV2Client = useSdkV2Client();
   const standardizedAddress = tryStandardizeAddress(address);
+  const networkValue = useNetworkValue();
 
   // Get count first
   const count = useGetAccountCoinCount(address);
@@ -118,9 +137,14 @@ export function useGetAllAccountCoins(address: string) {
   const PAGE_SIZE = 100;
 
   return useQuery<FaBalance[], ResponseError>({
-    queryKey: ["allCoinsQuery", address, count.data],
+    queryKey: [
+      "allCoinsQuery",
+      standardizedAddress ?? address,
+      count.data,
+      networkValue,
+    ],
     queryFn: async (): Promise<FaBalance[]> => {
-      if (!address || !count.data) {
+      if (!standardizedAddress || !count.data) {
         return [];
       }
 
@@ -145,5 +169,10 @@ export function useGetAllAccountCoins(address: string) {
       const responses = await Promise.all(promises);
       return responses.flatMap((r) => r.current_fungible_asset_balances);
     },
+    enabled: !!standardizedAddress && count.data !== undefined,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }

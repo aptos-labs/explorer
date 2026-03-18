@@ -1,6 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {useMemo} from "react";
 import type {CoinDescription} from "./useGetCoinList";
+import {useNetworkName} from "../../global-config";
 
 const COINGECKO_API_ENDPOINT = "https://api.coingecko.com/api/v3/coins/markets";
 
@@ -105,6 +106,7 @@ export async function getCoinMarketData(
  * Returns a map of coinGeckoId -> market data, along with loading and error states.
  */
 export function useGetCoinMarketData(coins: CoinDescription[]) {
+  const networkName = useNetworkName();
   // Extract unique CoinGecko IDs from the coin list and sort them for stable query key
   const sortedUniqueIds = useMemo(() => {
     const coinGeckoIds = coins
@@ -116,12 +118,14 @@ export function useGetCoinMarketData(coins: CoinDescription[]) {
 
   const queryResult = useQuery<CoinMarketDataResult>({
     // Use array directly as query key - React Query handles array comparisons efficiently
-    queryKey: ["coinMarketData", sortedUniqueIds],
+    queryKey: ["coinMarketData", networkName, sortedUniqueIds],
     queryFn: () => getCoinMarketData(sortedUniqueIds),
-    enabled: sortedUniqueIds.length > 0,
-    // Market data is somewhat dynamic - cache for 5 minutes
-    staleTime: 5 * 60 * 1000,
-    gcTime: 30 * 60 * 1000,
+    enabled: networkName === "mainnet" && sortedUniqueIds.length > 0,
+    // Market data moves, but it does not need to refetch on every revisit.
+    staleTime: 30 * 60 * 1000,
+    gcTime: 6 * 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     // Retry once on failure with delay
     retry: 1,
     retryDelay: 3000,
