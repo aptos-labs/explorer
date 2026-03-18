@@ -15,8 +15,8 @@ export function useGetTPS() {
   const {data: ledgerData} = useQuery({
     queryKey: ["ledgerInfo", networkValue],
     queryFn: () => getLedgerInfo(aptosClient),
-    refetchInterval: 1000,
-    staleTime: 1000,
+    refetchInterval: 10000,
+    staleTime: 10000,
     gcTime: 30 * 1000, // Keep in cache for 30 seconds
     refetchOnWindowFocus: false,
   });

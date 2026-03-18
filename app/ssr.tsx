@@ -24,7 +24,12 @@ function getSsrCacheControl(request: Request) {
     return "public, max-age=0, s-maxage=15, stale-while-revalidate=60";
   }
 
-  if (pathname === "/blocks" || pathname.startsWith("/validators/")) {
+  if (
+    pathname === "/blocks" ||
+    pathname === "/validators" ||
+    pathname === "/validators-enhanced" ||
+    pathname.startsWith("/validators/")
+  ) {
     return "public, max-age=0, s-maxage=60, stale-while-revalidate=300";
   }
 

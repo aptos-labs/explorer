@@ -19,9 +19,16 @@ export const Route = createFileRoute("/txn/$txnHashOrVersion/$tab")({
     const networkName = getNetworkFromSearch(search);
     const networkValue = networks[networkName];
 
-    await queryClient.ensureQueryData(
-      transactionQueryOptions(params.txnHashOrVersion, client, networkValue),
-    );
+    try {
+      await queryClient.ensureQueryData(
+        transactionQueryOptions(params.txnHashOrVersion, client, networkValue),
+      );
+    } catch (error) {
+      // Ignore prefetch errors here so that transaction page-level error handling
+      // (e.g., TransactionError) can handle query failures without triggering
+      // the router error boundary. Optionally log for debugging:
+      // console.error("Failed to prefetch transaction data", error);
+    }
 
     return {networkName};
   },

@@ -43,7 +43,7 @@ export function useGetMostRecentBlocks(
     staleTime: 60 * 1000,
     gcTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
   });
   const currentBlockHeight = parseInt(
     start ?? ledgerData?.block_height ?? "",
@@ -82,9 +82,9 @@ export function useGetMostRecentBlocks(
         const nextFirstVersion =
           index === 0
             ? sentinel
-              ? BigInt(sentinel.version)
+              ? BigInt(String(sentinel.version))
               : BigInt(ledgerData.ledger_version) + 1n
-            : BigInt(recentRows[index - 1].version);
+            : BigInt(String(recentRows[index - 1].version));
 
         return {
           block_height: row.block_height.toString(),
@@ -100,7 +100,7 @@ export function useGetMostRecentBlocks(
     staleTime: 60 * 1000,
     gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
   });
 
   // Calculate recentBlocks during render instead of using useEffect
