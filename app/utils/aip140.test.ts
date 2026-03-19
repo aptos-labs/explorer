@@ -5,6 +5,7 @@ describe("aip141", () => {
   afterEach(() => {
     AIP141_CONFIG.enabled = true;
     AIP141_CONFIG.gasReductionVersion = 116277493n;
+    AIP141_CONFIG.warningCutoffVersion = 2113286341n;
     AIP141_CONFIG.aip141GasScheduleVersion = 46;
   });
 
@@ -52,6 +53,24 @@ describe("aip141", () => {
     it("still applies 10x check when no version is provided", () => {
       expect(wouldExceedGasLimit("300000", "2000000")).toBe(true);
     });
+
+    it("skips transactions at or after the warning cutoff version", () => {
+      expect(wouldExceedGasLimit("300000", "2000000", "2113286341")).toBe(
+        false,
+      );
+      expect(wouldExceedGasLimit("300000", "2000000", "3000000000")).toBe(
+        false,
+      );
+    });
+
+    it("still flags transactions just before the warning cutoff", () => {
+      expect(wouldExceedGasLimit("300000", "2000000", "2113286340")).toBe(true);
+    });
+
+    it("disables cutoff when warningCutoffVersion is 0n", () => {
+      AIP141_CONFIG.warningCutoffVersion = 0n;
+      expect(wouldExceedGasLimit("300000", "2000000", "9999999999")).toBe(true);
+    });
   });
 
   describe("isAip141Executed", () => {
@@ -84,6 +103,10 @@ describe("aip141", () => {
 
     it("has gasReductionVersion set to AIP-17 version", () => {
       expect(AIP141_CONFIG.gasReductionVersion).toBe(116277493n);
+    });
+
+    it("has warningCutoffVersion set", () => {
+      expect(AIP141_CONFIG.warningCutoffVersion).toBe(2113286341n);
     });
 
     it("has aip141GasScheduleVersion set to 46", () => {

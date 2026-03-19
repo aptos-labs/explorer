@@ -10,15 +10,19 @@
  * schedule version reaches `aip141GasScheduleVersion`, AIP-141 is live
  * and the UI switches to "executed / current impact" messaging.
  *
- * There are three eras to consider:
+ * There are four eras to consider:
  *  1. Before the 100x gas reduction — transactions used the old (high) gas
  *     schedule. AIP-141's net effect on these is actually a ~10x *decrease*
  *     (100x down then 10x up), so they should NOT be flagged.
  *  2. After the 100x gas reduction but before AIP-141 — transactions use
  *     the reduced schedule. The 10x multiplier projects what gas would look
  *     like once AIP-141 is live.
- *  3. After AIP-141 enablement — gas is already raised. The 10x multiplier
- *     checks whether a further 10x increase would exceed the limit.
+ *  3. After AIP-141 enablement but before the warning cutoff — gas is
+ *     already raised. The 10x multiplier checks whether a further 10x
+ *     increase would exceed the limit.
+ *  4. At or after `warningCutoffVersion` — the 10x warning is suppressed
+ *     because the new gas schedule is already in effect and users have
+ *     adapted. Set to 0n to disable the cutoff (warn for all versions).
  */
 
 export const AIP141_CONFIG = {
@@ -34,6 +38,12 @@ export const AIP141_CONFIG = {
    * net-reduce their gas).
    */
   gasReductionVersion: 116277493n,
+  /**
+   * Ledger version at or after which the 10x fee warning is suppressed.
+   * Transactions at or after this version will never be flagged. Set to
+   * 0n to disable the cutoff and warn for all eligible versions.
+   */
+  warningCutoffVersion: 2113286341n,
   /**
    * The gas schedule `feature_version` at which AIP-141 takes effect.
    * The next gas schedule version bump enables AIP-141. When the on-chain
@@ -60,7 +70,9 @@ export function isAip141Executed(currentGasScheduleVersion: number): boolean {
  * AIP-141 multiplier — would exceed its max gas amount.
  *
  * Pass the transaction `version` so that pre-gas-reduction transactions
- * (which would actually *benefit* from AIP-141) are excluded.
+ * (which would actually *benefit* from AIP-141) are excluded, and
+ * post-cutoff transactions (where the new schedule is already the norm)
+ * are also excluded.
  */
 export function wouldExceedGasLimit(
   gasUsed: string,
@@ -69,12 +81,20 @@ export function wouldExceedGasLimit(
 ): boolean {
   if (!AIP141_CONFIG.enabled) return false;
   try {
-    if (
-      version &&
-      AIP141_CONFIG.gasReductionVersion > 0n &&
-      BigInt(version) < AIP141_CONFIG.gasReductionVersion
-    ) {
-      return false;
+    if (version) {
+      const v = BigInt(version);
+      if (
+        AIP141_CONFIG.gasReductionVersion > 0n &&
+        v < AIP141_CONFIG.gasReductionVersion
+      ) {
+        return false;
+      }
+      if (
+        AIP141_CONFIG.warningCutoffVersion > 0n &&
+        v >= AIP141_CONFIG.warningCutoffVersion
+      ) {
+        return false;
+      }
     }
 
     const projected = BigInt(gasUsed) * AIP141_CONFIG.gasMultiplier;
