@@ -15,6 +15,7 @@ import {
   isValidUrl,
   octaToApt,
   standardizeAddress,
+  timestampDisplay,
   toIpfsDisplayUrl,
   toIpfsUrl,
   truncateAddress,
@@ -370,5 +371,34 @@ describe("Error utilities", () => {
       expect(isRateLimitError(null)).toBe(false);
       expect(isRateLimitError(undefined)).toBe(false);
     });
+  });
+});
+
+describe("timestampDisplay", () => {
+  // Fixed UTC moment: 2024-03-19 17:40:05.123 UTC
+  // Use Date.UTC so the test is timezone-independent.
+  const fixedDate = new Date(Date.UTC(2024, 2, 19, 17, 40, 5, 123));
+
+  it("formatted is always UTC regardless of local timezone", () => {
+    expect(timestampDisplay(fixedDate).formatted).toBe(
+      "03/19/24 17:40:05.123 UTC",
+    );
+  });
+
+  it("formatted zero-pads month, day, year, hours, minutes, seconds", () => {
+    // 2007-01-02 03:04:05.006 UTC
+    const d = new Date(Date.UTC(2007, 0, 2, 3, 4, 5, 6));
+    expect(timestampDisplay(d).formatted).toBe("01/02/07 03:04:05.006 UTC");
+  });
+
+  it("local_formatted uses full 4-digit year", () => {
+    const result = timestampDisplay(fixedDate).local_formatted;
+    expect(result).toMatch(/2024/);
+  });
+
+  it("local_formatted_short uses 2-digit year", () => {
+    const result = timestampDisplay(fixedDate).local_formatted_short;
+    expect(result).toMatch(/24/);
+    expect(result).not.toMatch(/2024/);
   });
 });
