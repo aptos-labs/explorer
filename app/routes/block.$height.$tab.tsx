@@ -22,7 +22,7 @@ export const Route = createFileRoute("/block/$height/$tab")({
       await queryClient.ensureQueryData(
         blockQueryOptions(params.height, client, networkValue),
       );
-    } catch (error) {
+    } catch {
       // Swallow prefetch errors so that block-specific error UI can handle them
       // during normal query usage instead of triggering the router error boundary.
     }

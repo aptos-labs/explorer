@@ -54,7 +54,7 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
             : `Fungible Asset ${shortAddress}`
         }
         description={`View ${assetSymbol || "fungible asset"} on Aptos. ${metadata?.name ? `${metadata.name}. ` : ""}See token supply, decimals, holders, metadata, and transaction history.`}
-        type="coin"
+        type="fungible_asset"
         keywords={[
           "fungible asset",
           "FA",

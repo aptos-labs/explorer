@@ -28,7 +28,17 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://explorer.aptoslabs.com/validators/all</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://explorer.aptoslabs.com/validators/delegation</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://explorer.aptoslabs.com/validators/enhanced_delegation</loc>
     <changefreq>hourly</changefreq>
     <priority>0.8</priority>
   </url>

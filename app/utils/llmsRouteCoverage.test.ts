@@ -1,0 +1,43 @@
+import {readFileSync} from "node:fs";
+import {dirname, join} from "node:path";
+import {fileURLToPath} from "node:url";
+import {describe, expect, it} from "vitest";
+
+/**
+ * Core path prefixes that should stay documented for LLM / crawler discoverability.
+ * When adding a major top-level route, extend this list and update public/llms*.txt.
+ */
+const REQUIRED_PATH_SNIPPETS = [
+  "/txn/",
+  "/account/",
+  "/block/",
+  "/validators",
+  "/validator/",
+  "/coin/",
+  "/fungible_asset/",
+  "/token/",
+  "/object/",
+  "/coins",
+  "/analytics",
+  "/blocks",
+  "/transactions",
+  "/verification",
+  "/?search=",
+] as const;
+
+const _dirname = dirname(fileURLToPath(import.meta.url));
+const publicDir = join(_dirname, "..", "..", "public");
+
+describe("LLM docs route coverage", () => {
+  it("llms.txt and llms-full.txt mention core explorer path patterns", () => {
+    const shortDoc = readFileSync(join(publicDir, "llms.txt"), "utf8");
+    const fullDoc = readFileSync(join(publicDir, "llms-full.txt"), "utf8");
+    const combined = `${shortDoc}\n${fullDoc}`;
+
+    for (const snippet of REQUIRED_PATH_SNIPPETS) {
+      expect(combined, `Expected llms docs to include "${snippet}"`).toContain(
+        snippet,
+      );
+    }
+  });
+});

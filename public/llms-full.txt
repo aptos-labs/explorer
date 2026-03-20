@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-18 (rev 5)
+> Last updated: 2026-03-20 (rev 6)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -31,6 +31,8 @@ Aptos is a Layer 1 blockchain built with Move, a resource-oriented programming l
 **Base URL**: `https://explorer.aptoslabs.com`
 
 All URLs default to **mainnet**. To specify a network, append `?network=testnet`, `?network=devnet`, or `?network=local`.
+
+**Crawlers and canonical links**: The explorer’s [`robots.txt`](/robots.txt) disallows many bots from fetching URLs that include `?network=testnet`, `?network=devnet`, or `?network=local`. When generating links for search indexes, AI crawlers, or other automated fetchers, **use mainnet paths without a `network` query parameter** unless you intentionally target another network. Humans can still switch networks in the UI or by appending `?network=...` as below.
 
 ### Page Routes and Tabs
 
@@ -97,6 +99,7 @@ Append to any URL:
 - `?network=mainnet` (default, can be omitted)
 - `?network=testnet`
 - `?network=devnet`
+- `?network=local`
 
 Example: `https://explorer.aptoslabs.com/account/0x1/modules?network=testnet`
 
@@ -278,7 +281,7 @@ Charts and metrics for:
 
 ## Common Query Parameters
 
-- `network` — Select network: mainnet (default), testnet, devnet
+- `network` — Select network: mainnet (default), testnet, devnet, local
 - `search` — On the home page (`/?search={query}`), pre-fills the search bar and executes the query immediately. Results are displayed inline on the page below the search input. Use this when the exact entity type is unknown — the explorer will auto-detect and show matching results grouped by type (accounts, transactions, blocks, coins, etc.). On Enter or a single unambiguous result, navigates directly to the entity page.
 - `fn` — On `/transactions` and `/account/{address}/transactions`, filters transactions by entry function ID (e.g. `?fn=0x1::coin::transfer`). The value must be a fully qualified Move function identifier (`{address}::{module}::{function}`). On the User Transactions view and account transactions view, this filters server-side via the GraphQL indexer. On the All Transactions view, this filters client-side on the currently loaded page.
 - `type` — On `/transactions`, selects between `user` (user transactions only, default) and `all` (all transaction types)

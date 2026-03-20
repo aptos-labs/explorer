@@ -9,12 +9,17 @@ import TitleHashButton, {
   HashType,
   NameType,
 } from "../../components/TitleHashButton";
+import {getAccountTabHeadLabel} from "./accountTabLabels";
 import {useIsDaaAccount} from "./hooks/useIsDaaAccount";
 
 type AccountTitleProps = {
   address: string;
   isMultisig?: boolean;
   isObject?: boolean;
+  /** True when rendered under `/object/...` (not `/account/...`) */
+  objectRoute?: boolean;
+  /** Path tab segment (`transactions`, `coins`, …) when URL includes it */
+  pathTab?: string;
   isDeleted?: boolean;
   isToken?: boolean;
 };
@@ -24,6 +29,8 @@ export default function AccountTitle({
   isMultisig = false,
   isToken = false,
   isObject = false,
+  objectRoute = false,
+  pathTab,
   isDeleted = false,
 }: AccountTitleProps) {
   const isDAA = useIsDaaAccount(address);
@@ -48,6 +55,7 @@ export default function AccountTitle({
       description = `View token object ${address} on the Aptos blockchain. See token metadata, ownership, and transfer history.`;
     }
   } else if (isObject) {
+    pageType = "object";
     if (isDeleted) {
       title = "Deleted Object";
       description = `This object ${address} has been deleted from the Aptos blockchain.`;
@@ -65,14 +73,30 @@ export default function AccountTitle({
   // Truncate address for title to keep it reasonable
   const shortAddress = `${address.slice(0, 10)}...${address.slice(-8)}`;
 
+  const tab = pathTab ?? "transactions";
+  const tabHead = getAccountTabHeadLabel(pathTab);
+  const canonicalPath = objectRoute
+    ? `/object/${address}/${tab}`
+    : `/account/${address}/${tab}`;
+
+  const metadataTitle =
+    pathTab !== undefined
+      ? `${tabHead} | ${title} ${shortAddress}`
+      : `${title} ${shortAddress}`;
+
+  const metadataDescription =
+    pathTab !== undefined && address && !isDeleted
+      ? `View ${tabHead.toLowerCase()} for ${objectRoute ? "object" : "account"} ${address} on the Aptos blockchain.`
+      : description;
+
   return (
     <Stack direction="column" spacing={2} marginX={1}>
       <PageMetadata
-        title={`${title} ${shortAddress}`}
-        description={description}
+        title={metadataTitle}
+        description={metadataDescription}
         type={pageType}
         keywords={keywords}
-        canonicalPath={`/account/${address}`}
+        canonicalPath={canonicalPath}
       />
       <Typography variant="h3" component="h1">
         {title}

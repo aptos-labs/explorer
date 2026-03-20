@@ -32,8 +32,10 @@ export type PageType =
   | "transaction"
   | "block"
   | "account"
+  | "object"
   | "token"
   | "coin"
+  | "fungible_asset"
   | "validator";
 
 interface PageMetadataProps {
@@ -125,6 +127,14 @@ function generateBreadcrumbList(
     "@type": "BreadcrumbList",
     itemListElement: items,
   };
+}
+
+function pathnameFromCanonicalUrl(canonicalUrl: string): string {
+  try {
+    return new URL(canonicalUrl).pathname;
+  } catch {
+    return "";
+  }
 }
 
 /**
@@ -225,6 +235,23 @@ function generateStructuredData(
         },
       });
       break;
+    case "object":
+      structuredDataItems.push({
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        name: fullTitle,
+        url: canonicalUrl,
+        description: props.description,
+        mainEntity: {
+          "@type": "Thing",
+          additionalType: "https://schema.org/DefinedTerm",
+          name: fullTitle,
+          url: canonicalUrl,
+          identifier:
+            canonicalUrl.split("/object/")[1]?.split("/")[0] ?? undefined,
+        },
+      });
+      break;
     case "block":
       structuredDataItems.push({
         "@context": "https://schema.org",
@@ -251,9 +278,13 @@ function generateStructuredData(
         url: canonicalUrl,
         description: props.description,
         additionalType: "https://schema.org/DigitalArt",
-        // Token ID extracted from the canonical URL
-        identifier:
-          canonicalUrl.split("/token/")[1]?.split("/")[0] ?? undefined,
+        identifier: (() => {
+          const path = pathnameFromCanonicalUrl(canonicalUrl);
+          if (path.startsWith("/object/")) {
+            return path.split("/object/")[1]?.split("/")[0];
+          }
+          return canonicalUrl.split("/token/")[1]?.split("/")[0];
+        })(),
         isAccessibleForFree: true,
       });
       break;
@@ -275,6 +306,24 @@ function generateStructuredData(
         },
       });
       break;
+    case "fungible_asset":
+      structuredDataItems.push({
+        "@context": "https://schema.org",
+        "@type": "FinancialProduct",
+        name: fullTitle,
+        url: canonicalUrl,
+        description: props.description,
+        category: "Cryptocurrency",
+        identifier:
+          canonicalUrl.split("/fungible_asset/")[1]?.split("/")[0] ?? undefined,
+        isAccessibleForFree: true,
+        provider: {
+          "@type": "Organization",
+          name: "Aptos Labs",
+          url: "https://aptoslabs.com",
+        },
+      });
+      break;
     case "validator":
       structuredDataItems.push({
         "@context": "https://schema.org",
@@ -283,9 +332,10 @@ function generateStructuredData(
         url: canonicalUrl,
         description: props.description,
         serviceType: "Blockchain Validation",
-        // Validator address identifier
-        identifier:
-          canonicalUrl.split("/validator")[1]?.split("/")[1] ?? undefined,
+        // Validator address: path is /validator/{address} (not /validators/...)
+        identifier: /^\/validator\/([^/]+)/.exec(
+          pathnameFromCanonicalUrl(canonicalUrl),
+        )?.[1],
         provider: {
           "@type": "Organization",
           name: "Aptos Network",
@@ -337,8 +387,10 @@ function getKeywords(props: PageMetadataProps): string {
     transaction: ["transaction", "transfer", "tx", "hash"],
     block: ["block", "height", "timestamp", "epoch"],
     account: ["account", "address", "balance", "tokens", "NFTs"],
+    object: ["object", "Move", "on-chain", "resource"],
     token: ["NFT", "token", "digital collectible", "digital asset"],
     coin: ["coin", "fungible token", "cryptocurrency"],
+    fungible_asset: ["fungible asset", "FA", "token", "cryptocurrency"],
     validator: ["validator", "staking", "delegation", "APT"],
   };
 
@@ -393,6 +445,7 @@ export function PageMetadata(props: PageMetadataProps) {
     switch (type) {
       case "profile":
       case "account":
+      case "object":
         return "profile";
       case "article":
         return "article";

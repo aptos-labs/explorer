@@ -38,7 +38,10 @@ export default function AccountPage({
   children,
 }: AccountPageProps) {
   const navigate = useNavigate();
-  const params = useParams({strict: false}) as {address?: string};
+  const params = useParams({strict: false}) as {
+    address?: string;
+    tab?: string;
+  };
   const maybeAddress = params.address;
 
   // Check if this is an ANS name
@@ -139,6 +142,8 @@ export default function AccountPage({
     isMultisig,
   );
 
+  const pathTab = params.tab ?? (children ? "modules" : undefined);
+
   const accountTabs = (
     <AccountTabs
       address={address}
@@ -164,6 +169,8 @@ export default function AccountPage({
           address={address}
           isMultisig={isMultisig}
           isObject={isObject}
+          objectRoute={alreadyIsObject}
+          pathTab={pathTab}
           isDeleted={isDeleted}
           isToken={isToken}
         />

@@ -23,7 +23,7 @@ export const Route = createFileRoute("/txn/$txnHashOrVersion/$tab")({
       await queryClient.ensureQueryData(
         transactionQueryOptions(params.txnHashOrVersion, client, networkValue),
       );
-    } catch (error) {
+    } catch {
       // Ignore prefetch errors here so that transaction page-level error handling
       // (e.g., TransactionError) can handle query failures without triggering
       // the router error boundary. Optionally log for debugging:
