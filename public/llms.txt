@@ -15,7 +15,9 @@
 
 ## URL Templates
 
-All URLs default to mainnet. Append `?network=testnet` or `?network=devnet` for other networks.
+All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?network=local` for other networks.
+
+**Crawlers and automated fetchers:** The site’s `robots.txt` disallows many bots from URLs that include `?network=testnet`, `?network=devnet`, or `?network=local`. Use plain mainnet paths (no `network` query param) when linking for tools that crawl pages; humans can still switch network via the query param or UI.
 
 - Transaction: `/txn/{version}` or `/txn/{hash}`
   - Tabs: `/txn/{id}/userTxnOverview`, `/txn/{id}/events`, `/txn/{id}/payload`, `/txn/{id}/changes`, `/txn/{id}/balanceChange`
