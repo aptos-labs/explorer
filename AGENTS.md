@@ -321,6 +321,7 @@ Role-specific rules are available in tool-native formats:
 | Tool         | Location               |
 | ------------ | ---------------------- |
 | Cursor       | `.cursor/rules/*.mdc`  |
+| Cursor skills | `.cursor/skills/aptos-explorer-llm-seo/SKILL.md` (LLM & SEO checklist) |
 | Antigravity  | `.agent/rules/*.md`    |
 | Mistral Vibe | `.vibe/agents/*.toml`  |
 | OpenCode     | `.opencode/agent/*.md` |

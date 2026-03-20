@@ -2,6 +2,8 @@
 
 Contributors should keep AI systems and search engines aligned with how the explorer routes and describes pages.
 
+**Cursor:** the project skill [`.cursor/skills/aptos-explorer-llm-seo/SKILL.md`](../.cursor/skills/aptos-explorer-llm-seo/SKILL.md) summarizes this workflow for coding agents.
+
 ## Checklist when adding or changing routes or tabs
 
 See **LLM / AI Accessibility** in the repo root [`AGENTS.md`](../AGENTS.md) (and `CLAUDE.md`): update `public/llms.txt`, `public/llms-full.txt`, and `public/sitemap.xml` where appropriate, plus structured data in [`app/components/hooks/usePageMetadata.tsx`](../app/components/hooks/usePageMetadata.tsx) for new page types.
