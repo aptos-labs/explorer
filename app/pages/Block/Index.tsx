@@ -7,7 +7,10 @@ import BlockTabs from "./Tabs";
 import BlockTitle from "./Title";
 
 export default function BlockPage() {
-  const params = useParams({strict: false}) as {height?: string};
+  const params = useParams({strict: false}) as {
+    height?: string;
+    tab?: string;
+  };
   const height = params?.height;
   const actualHeight = parseInt(height ?? "", 10);
 
@@ -38,7 +41,7 @@ export default function BlockPage() {
       <PageHeader />
       <Grid size={{xs: 12}}>
         <Stack direction="column" spacing={4} marginTop={2}>
-          <BlockTitle height={actualHeight} />
+          <BlockTitle height={actualHeight} pathTab={params.tab} />
           <BlockTabs data={data} />
         </Stack>
       </Grid>
