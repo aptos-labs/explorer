@@ -327,7 +327,10 @@ function Contract({
     return <EmptyTabContent />;
   }
 
-  const module = modules.find((m) => m.abi?.name === selectedModuleName)?.abi;
+  const selectedModuleBytecode = modules.find(
+    (m) => m.abi?.name === selectedModuleName,
+  );
+  const module = selectedModuleBytecode?.abi;
   const fn = selectedModuleName
     ? moduleAndFnsGroup[selectedModuleName]?.find(
         (fn) => fn.name === selectedFnName,
@@ -399,7 +402,10 @@ function Contract({
                 >
                   Source Code
                 </Typography>
-                <Code bytecode={selectedModule?.source} />
+                <Code
+                  sourceBytecode={selectedModule?.source}
+                  moduleBytecode={selectedModuleBytecode?.bytecode}
+                />
               </Box>
             </>
           )}

@@ -37,7 +37,7 @@ interface ModuleSidebarProps {
 interface ModuleContentProps {
   address: string;
   moduleName: string;
-  bytecode: string;
+  sourceBytecode: string;
 }
 
 function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
@@ -100,7 +100,7 @@ function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
           <ModuleContent
             address={address}
             moduleName={selectedModuleName}
-            bytecode={selectedModule.source}
+            sourceBytecode={selectedModule.source}
           />
         )}
       </Grid>
@@ -182,8 +182,16 @@ function ModuleSidebar({
   );
 }
 
-function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
+function ModuleContent({
+  address,
+  moduleName,
+  sourceBytecode,
+}: ModuleContentProps) {
   const theme = useTheme();
+  const {data: moduleBytecodeResponse} = useGetAccountModule(
+    address,
+    moduleName,
+  );
   return (
     <Stack
       direction="column"
@@ -194,7 +202,10 @@ function ModuleContent({address, moduleName, bytecode}: ModuleContentProps) {
     >
       <ModuleHeader address={address} moduleName={moduleName} />
       <Divider />
-      <Code bytecode={bytecode} />
+      <Code
+        sourceBytecode={sourceBytecode}
+        moduleBytecode={moduleBytecodeResponse?.bytecode}
+      />
       <Divider />
       <ABI address={address} moduleName={moduleName} />
     </Stack>
