@@ -347,6 +347,8 @@ export const mainnetKnownAddresses: Record<string, string> = {
     "UFC Strike",
   "0x05fabd1b12e39967a3c24e91b7b8f67719a6dacee74f3c8b9fb7d93e855437d2":
     "WLFI USD",
+  "0x50ead22afd6ffd9769e3b3d6e0e64a2a350d68e8b102c4e72e33d0b8cfdfdb06":
+    "Decibel",
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
 };
