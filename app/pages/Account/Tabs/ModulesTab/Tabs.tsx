@@ -5,7 +5,7 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {Box, useTheme} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import type React from "react";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
 import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
@@ -14,6 +14,7 @@ import {assertNever} from "../../../../utils";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 import Contract from "./Contract";
+import ModuleVersionSelector from "./ModuleVersionSelector";
 import Packages from "./Packages";
 import ViewCode from "./ViewCode";
 
@@ -60,6 +61,7 @@ type TabPanelProps = {
   value: TabValue;
   address: string;
   isObject: boolean;
+  ledgerVersion?: number;
 };
 
 function RunContract({
@@ -68,6 +70,7 @@ function RunContract({
 }: {
   address: string;
   isObject: boolean;
+  ledgerVersion?: number;
 }) {
   return <Contract address={address} isObject={isObject} isRead={false} />;
 }
@@ -78,13 +81,20 @@ function ReadContract({
 }: {
   address: string;
   isObject: boolean;
+  ledgerVersion?: number;
 }) {
   return <Contract address={address} isObject={isObject} isRead={true} />;
 }
 
-function TabPanel({value, address, isObject}: TabPanelProps) {
+function TabPanel({value, address, isObject, ledgerVersion}: TabPanelProps) {
   const TabComponent = TabComponents[value];
-  return <TabComponent address={address} isObject={isObject} />;
+  return (
+    <TabComponent
+      address={address}
+      isObject={isObject}
+      ledgerVersion={ledgerVersion}
+    />
+  );
 }
 
 /**
@@ -120,6 +130,9 @@ function ModulesTabs({
 }) {
   const theme = useTheme();
   const tabValues = Object.keys(TabComponents) as TabValue[];
+  const [ledgerVersion, setLedgerVersion] = useState<number | undefined>(
+    undefined,
+  );
 
   // Parse path params from splat route
   const {modulesTab, selectedModuleName, selectedFnName} =
@@ -127,7 +140,7 @@ function ModulesTabs({
 
   const navigate = useNavigate();
   const logEvent = useLogEventWithBasic();
-  const sortedPackages = useGetAccountPackages(address);
+  const sortedPackages = useGetAccountPackages(address, ledgerVersion);
   const value =
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
@@ -234,10 +247,7 @@ function ModulesTabs({
           width: "8px",
           height: "8px",
         },
-        "& *::-webkit-scrollbar-track": {
-          // boxShadow: "inset 0 0 5px grey",
-          // borderRadius: "10px",
-        },
+        "& *::-webkit-scrollbar-track": {},
         "& *::-webkit-scrollbar-thumb": {
           background:
             theme.palette.mode === "dark"
@@ -264,22 +274,34 @@ function ModulesTabs({
         borderRadius={1}
         bgcolor={theme.palette.background.paper}
       >
-        <StyledTabs value={value} onChange={handleChange}>
-          {tabValues.map((value, i) => (
-            <StyledTab
-              secondary
-              key={value}
-              value={value}
-              icon={getTabIcon(value)}
-              label={getTabLabel(value)}
-              isFirst={i === 0}
-              isLast={i === tabValues.length - 1}
-            />
-          ))}
-        </StyledTabs>
+        <ModuleVersionSelector
+          address={address}
+          selectedVersion={ledgerVersion}
+          onVersionChange={setLedgerVersion}
+        />
+        <Box mt={2}>
+          <StyledTabs value={value} onChange={handleChange}>
+            {tabValues.map((value, i) => (
+              <StyledTab
+                secondary
+                key={value}
+                value={value}
+                icon={getTabIcon(value)}
+                label={getTabLabel(value)}
+                isFirst={i === 0}
+                isLast={i === tabValues.length - 1}
+              />
+            ))}
+          </StyledTabs>
+        </Box>
       </Box>
       <Box>
-        <TabPanel value={value} address={address} isObject={isObject} />
+        <TabPanel
+          value={value}
+          address={address}
+          isObject={isObject}
+          ledgerVersion={ledgerVersion}
+        />
       </Box>
     </Box>
   );

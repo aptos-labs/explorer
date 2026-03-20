@@ -37,8 +37,19 @@ interface PackageContentProps {
   packageName: string;
 }
 
-function Packages({address, isObject}: {address: string; isObject: boolean}) {
-  const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
+function Packages({
+  address,
+  isObject,
+  ledgerVersion,
+}: {
+  address: string;
+  isObject: boolean;
+  ledgerVersion?: number;
+}) {
+  const sortedPackages: PackageMetadata[] = useGetAccountPackages(
+    address,
+    ledgerVersion,
+  );
 
   const navigate = useNavigate();
 

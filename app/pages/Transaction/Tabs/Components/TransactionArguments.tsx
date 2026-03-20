@@ -116,6 +116,7 @@ export default function TransactionArguments({
   const {data: moduleData} = useGetAccountModule(
     address ?? "",
     moduleName ?? "",
+    undefined,
     {enabled: hasValidFunction},
   );
 
