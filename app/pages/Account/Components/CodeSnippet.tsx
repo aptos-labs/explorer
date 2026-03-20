@@ -18,8 +18,8 @@ import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../components/StyledTooltip";
 import {
-  type DecompilationResult,
-  decompileModuleBytecode,
+  type DecompilationView,
+  getDecompiledCodeView,
 } from "../../../utils/moveDecompiler";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
@@ -40,6 +40,11 @@ type CodeView =
   | "published-source"
   | "decompiled-source"
   | "bytecode-disassembly";
+
+type BytecodeViewState = {
+  bytecodeKey: string;
+  code: string;
+};
 
 function ExpandCode({
   codeToDisplay,
@@ -155,10 +160,12 @@ export function Code({
   const [activeView, setActiveView] = useState<CodeView>(() =>
     hasPublishedSourceCode ? "published-source" : "decompiled-source",
   );
-  const [decompilationResult, setDecompilationResult] =
-    useState<DecompilationResult | null>(null);
+  const [decompiledSource, setDecompiledSource] = useState<BytecodeViewState>();
+  const [bytecodeDisassembly, setBytecodeDisassembly] =
+    useState<BytecodeViewState>();
   const [decompilationError, setDecompilationError] = useState<string>();
   const [isDecompiling, setIsDecompiling] = useState(false);
+  const moduleBytecodeKey = moduleBytecode?.toLowerCase();
 
   useEffect(() => {
     if (!hasPublishedSourceCode && hasModuleBytecode) {
@@ -167,31 +174,25 @@ export function Code({
   }, [hasPublishedSourceCode, hasModuleBytecode]);
 
   useEffect(() => {
-    if (moduleBytecode) {
-      setDecompilationResult(null);
-      setDecompilationError(undefined);
-      return;
-    }
+    const missingActiveViewCode =
+      activeView === "decompiled-source"
+        ? !decompiledSource ||
+          decompiledSource.bytecodeKey !== moduleBytecodeKey
+        : activeView === "bytecode-disassembly"
+          ? !bytecodeDisassembly ||
+            bytecodeDisassembly.bytecodeKey !== moduleBytecodeKey
+          : false;
 
-    setDecompilationResult(null);
-    setDecompilationError(undefined);
-  }, [moduleBytecode]);
-
-  useEffect(() => {
     if (
       !hasModuleBytecode ||
-      !moduleBytecode ||
-      decompilationResult ||
-      activeView === "published-source"
+      !moduleBytecodeKey ||
+      activeView === "published-source" ||
+      !missingActiveViewCode
     ) {
       return;
     }
 
-    const moduleBytecodeHex = moduleBytecode;
-    if (!moduleBytecodeHex) {
-      return;
-    }
-
+    const currentModuleBytecodeKey = moduleBytecodeKey;
     let cancelled = false;
 
     async function runDecompilation() {
@@ -199,9 +200,29 @@ export function Code({
       setDecompilationError(undefined);
 
       try {
-        const result = await decompileModuleBytecode(moduleBytecodeHex);
+        const decompilationView: DecompilationView =
+          activeView === "decompiled-source"
+            ? "decompiled-source"
+            : "bytecode-disassembly";
+
+        // Let loading UI render before running CPU-intensive WASM work.
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        const result = await getDecompiledCodeView(
+          currentModuleBytecodeKey,
+          decompilationView,
+        );
         if (!cancelled) {
-          setDecompilationResult(result);
+          if (decompilationView === "decompiled-source") {
+            setDecompiledSource({
+              bytecodeKey: currentModuleBytecodeKey,
+              code: result,
+            });
+          } else {
+            setBytecodeDisassembly({
+              bytecodeKey: currentModuleBytecodeKey,
+              code: result,
+            });
+          }
         }
       } catch (error) {
         if (!cancelled) {
@@ -222,15 +243,27 @@ export function Code({
     return () => {
       cancelled = true;
     };
-  }, [activeView, decompilationResult, hasModuleBytecode, moduleBytecode]);
+  }, [
+    activeView,
+    bytecodeDisassembly,
+    decompiledSource,
+    hasModuleBytecode,
+    moduleBytecodeKey,
+  ]);
 
   let displayedCode: string | undefined;
   if (activeView === "published-source") {
     displayedCode = publishedSourceCode;
   } else if (activeView === "decompiled-source") {
-    displayedCode = decompilationResult?.decompiledSource;
+    displayedCode =
+      decompiledSource?.bytecodeKey === moduleBytecodeKey
+        ? decompiledSource?.code
+        : undefined;
   } else {
-    displayedCode = decompilationResult?.disassembly;
+    displayedCode =
+      bytecodeDisassembly?.bytecodeKey === moduleBytecodeKey
+        ? bytecodeDisassembly?.code
+        : undefined;
   }
 
   const startingLineNumber = useStartingLineNumber(
@@ -239,6 +272,7 @@ export function Code({
 
   async function copyCode() {
     if (!displayedCode) return;
+    if (typeof window === "undefined") return; // Skip during SSR
 
     await navigator.clipboard.writeText(displayedCode);
     setTooltipOpen(true);
