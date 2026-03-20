@@ -35,6 +35,10 @@ export default function TokenTitle({
   }
 
   const canonicalTokenId = tryStandardizeAddress(urlTokenId) ?? urlTokenId;
+  const hasTokenId = Boolean(canonicalTokenId.trim());
+  const canonicalPath = hasTokenId
+    ? `/token/${canonicalTokenId}/${pathTab}`
+    : undefined;
   const tabHead = getTokenTabHeadLabel(pathTab);
   const metadataTitle = `${tabHead} | Token ${truncateAddress(canonicalTokenId)}`;
   const metadataDescription = `View ${tabHead.toLowerCase()} for NFT token ${canonicalTokenId} on the Aptos blockchain.`;
@@ -53,7 +57,7 @@ export default function TokenTitle({
           "digital collectible",
           "Aptos NFT",
         ].filter(Boolean)}
-        canonicalPath={`/token/${canonicalTokenId}/${pathTab}`}
+        {...(canonicalPath ? {canonicalPath} : {})}
         image={imageUrl}
       />
       <Typography variant="h3" component="h1">

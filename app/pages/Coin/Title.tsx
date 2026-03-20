@@ -52,6 +52,8 @@ export default function CoinTitle({
       : struct;
 
   const tab = pathTab ?? "info";
+  const hasStruct = Boolean(struct.trim());
+  const canonicalPath = hasStruct ? `/coin/${struct}/${tab}` : "/coins";
   const tabHead = getCoinTabHeadLabel(pathTab);
   const baseMetaTitle = assetSymbol
     ? `${assetSymbol} - Aptos Coin`
@@ -75,7 +77,7 @@ export default function CoinTitle({
           "cryptocurrency",
           "fungible token",
         ].filter(Boolean)}
-        canonicalPath={`/coin/${struct}/${tab}`}
+        canonicalPath={canonicalPath}
         image={coinData?.logoUrl}
       />
       <Typography variant="h3" component="h1">

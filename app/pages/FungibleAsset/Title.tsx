@@ -56,6 +56,10 @@ export default function FATitle({
   const canonicalAddress = tryStandardizeAddress(address) ?? address;
   const displayAddr = truncateAddress(canonicalAddress);
   const tab = pathTab ?? "info";
+  const hasCanonicalAddress = Boolean(canonicalAddress.trim());
+  const canonicalPath = hasCanonicalAddress
+    ? `/fungible_asset/${canonicalAddress}/${tab}`
+    : "/coins";
   const tabHead = getFungibleAssetTabHeadLabel(pathTab);
   const baseMetaTitle = assetSymbol
     ? `${assetSymbol} - Fungible Asset`
@@ -81,7 +85,7 @@ export default function FATitle({
           metadata?.name || "",
           "cryptocurrency",
         ].filter(Boolean)}
-        canonicalPath={`/fungible_asset/${canonicalAddress}/${tab}`}
+        canonicalPath={canonicalPath}
         image={metadata?.icon_uri || coinData?.logoUrl}
       />
       <Typography variant="h3" component="h1">

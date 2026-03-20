@@ -75,9 +75,12 @@ export default function AccountTitle({
 
   const tab = pathTab ?? "transactions";
   const tabHead = getAccountTabHeadLabel(pathTab);
-  const canonicalPath = objectRoute
-    ? `/object/${address}/${tab}`
-    : `/account/${address}/${tab}`;
+  const trimmedAddress = address.trim();
+  const canonicalPath = trimmedAddress
+    ? objectRoute
+      ? `/object/${trimmedAddress}/${tab}`
+      : `/account/${trimmedAddress}/${tab}`
+    : undefined;
 
   const metadataTitle =
     pathTab !== undefined
@@ -96,7 +99,7 @@ export default function AccountTitle({
         description={metadataDescription}
         type={pageType}
         keywords={keywords}
-        canonicalPath={canonicalPath}
+        {...(canonicalPath ? {canonicalPath} : {})}
       />
       <Typography variant="h3" component="h1">
         {title}

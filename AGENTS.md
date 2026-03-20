@@ -5,6 +5,7 @@ This document serves as the canonical source of truth for AI coding assistants w
 ## Quick Reference
 
 ```bash
+# Node: see `.node-version` (matches CI via actions/setup-node node-version-file)
 pnpm install          # Install dependencies
 pnpm routes:generate  # TanStack route tree (also runs before dev/build/lint/test via pre* scripts)
 pnpm dev              # Dev server on port 3030
