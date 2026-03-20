@@ -310,7 +310,8 @@ type AddLiquidity = {
   actionType: "add liquidity";
   dex:
     | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c" // "Hyperion"
-    | "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a"; // "Tapp"
+    | "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a" // "Tapp"
+    | "0x075b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920"; // "ThalaSwap CL"
   assetData: AssetData[];
 };
 
@@ -318,7 +319,8 @@ type RemoveLiquidity = {
   actionType: "remove liquidity";
   dex:
     | "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c" // "Hyperion"
-    | "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a"; // "Tapp"
+    | "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a" // "Tapp"
+    | "0x075b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920"; // "ThalaSwap CL"
   assetData: AssetData[];
 };
 
@@ -412,7 +414,7 @@ const parsers = [
   // swap / liquidity actions
   parseThalaSwapV1Event,
   parseThalaSwapV2Event,
-  parseThalaSwapCLEvent,
+  parseThalaCLEvent,
   (event: Types.Event) =>
     parseLiquidswapV0Event(
       event,
@@ -1765,34 +1767,67 @@ function parseThalaSwapV2Event(event: Types.Event): Swap | undefined {
   };
 }
 
-function parseThalaSwapCLEvent(event: Types.Event): Swap | undefined {
-  if (
-    event.type !==
-    "0x075b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920::pool::SwapEvent"
-  ) {
-    return undefined;
+function parseThalaCLEvent(
+  event: Types.Event,
+): Swap | AddLiquidity | RemoveLiquidity | undefined {
+  const dex =
+    "0x075b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920";
+  const eventTypeToAction: Record<
+    string,
+    "swap" | "add liquidity" | "remove liquidity"
+  > = {
+    "0x75b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920::pool::SwapEvent":
+      "swap",
+    "0x75b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920::pool::IncreaseLiquidityEvent":
+      "add liquidity",
+    "0x75b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920::pool::RemoveLiquidityEvent":
+      "remove liquidity",
+  };
+
+  const actionType = eventTypeToAction[event.type];
+  if (!actionType) return undefined;
+
+  if (actionType === "swap") {
+    const data: {
+      amount_in: string;
+      amount_out: string;
+      metadata_0: {inner: string};
+      metadata_1: {inner: string};
+      zero_for_one: boolean;
+    } = event.data;
+    const amountIn = Number(data.amount_in);
+    const amountOut = Number(data.amount_out);
+    const [assetIn, assetOut] = data.zero_for_one
+      ? [data.metadata_0.inner, data.metadata_1.inner]
+      : [data.metadata_1.inner, data.metadata_0.inner];
+
+    return {
+      actionType: "swap",
+      dex: "0x075b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920",
+      amountIn,
+      amountOut,
+      assetIn,
+      assetOut,
+    };
   }
 
+  // processing liquidity events
   const data: {
-    amount_in: string;
-    amount_out: string;
+    amount_0: string;
+    amount_1: string;
     metadata_0: {inner: string};
     metadata_1: {inner: string};
-    zero_for_one: boolean;
   } = event.data;
-  const amountIn = Number(data.amount_in);
-  const amountOut = Number(data.amount_out);
-  const [assetIn, assetOut] = data.zero_for_one
-    ? [data.metadata_0.inner, data.metadata_1.inner]
-    : [data.metadata_1.inner, data.metadata_0.inner];
+
+  const assetData: AssetData[] = [
+    {asset: data.metadata_0.inner, amount: Number(data.amount_0)},
+    {asset: data.metadata_1.inner, amount: Number(data.amount_1)},
+  ];
 
   return {
-    actionType: "swap",
-    dex: "0x075b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920",
-    amountIn,
-    amountOut,
-    assetIn,
-    assetOut,
+    actionType,
+    dex,
+    assetData,
   };
 }
 
