@@ -184,7 +184,8 @@ export default function JsonViewCard({
 
   // Value color: cool blue tone (primary color)
   const valueColor = theme.palette.primary.main;
-  const secondaryTextColor = alpha(theme.palette.primary.main, 0.3);
+  // Solid muted tone — alpha(primary) was ~2.1:1 on light code panels (WCAG)
+  const secondaryTextColor = semanticColors.codeBlock.textSecondary;
 
   const {
     tooltipOpen,

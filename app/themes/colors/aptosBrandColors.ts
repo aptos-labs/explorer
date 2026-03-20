@@ -21,6 +21,37 @@ export const brandColors = {
 } as const;
 
 /**
+ * WCAG 2.1 AA text contrast (≥4.5:1) on {@link brandColors.white} and
+ * {@link brandColors.creme} (light) or {@link brandColors.black} / {@link brandColors.ink}
+ * (dark). Pure brand mint/babyBlue/coral are kept above for fills and dark mode;
+ * these tokens tune foreground / light-mode UI hues for readability.
+ */
+const a11y = {
+  light: {
+    /** Links, primary actions, info — was #5A9BC8 (~2.85:1 on white) */
+    interactiveBlue: "#34648F",
+    interactiveBlueHover: "#2E5C85",
+    /** Success / secondary text & filled buttons — was #7BC47F (~2:1 as text) */
+    successGreen: "#2F7D38",
+    /** Error text on light bg — brand coral stays for fills / dark mode */
+    errorText: "#B84722",
+    /** Warning text (distinct from error on light surfaces) */
+    warningText: "#9D5A16",
+    /** Muted / disabled copy on white & creme */
+    disabledText: "#6A6252",
+    /** JSON keys on creme paper */
+    jsonKey: "#A84318",
+    /** Null / brackets in JSON on tinted code panels */
+    codeMutedBlue: "#4F6F88",
+  },
+  dark: {
+    /** Disabled on near-black / ink — was graphite (~1.4:1) */
+    disabledText: "#8C8680",
+    codeMutedBlue: "#7BA3B8",
+  },
+} as const;
+
+/**
  * Semantic color mappings for light and dark modes
  */
 export const getSemanticColors = (mode: PaletteMode) => {
@@ -28,9 +59,8 @@ export const getSemanticColors = (mode: PaletteMode) => {
 
   return {
     // Primary colors for interactive elements
-    // Use darker variant for light mode to ensure visibility
-    primary: isDark ? brandColors.babyBlue : "#5A9BC8", // Darker blue for light mode contrast
-    secondary: isDark ? brandColors.mint : "#7BC47F", // Darker green for light mode contrast
+    primary: isDark ? brandColors.babyBlue : a11y.light.interactiveBlue,
+    secondary: isDark ? brandColors.mint : a11y.light.successGreen,
 
     // Background colors
     background: {
@@ -43,7 +73,7 @@ export const getSemanticColors = (mode: PaletteMode) => {
     text: {
       primary: isDark ? brandColors.white : brandColors.black,
       secondary: isDark ? brandColors.creme : brandColors.graphite,
-      disabled: isDark ? brandColors.graphite : brandColors.tan,
+      disabled: isDark ? a11y.dark.disabledText : a11y.light.disabledText,
     },
 
     // Border and line colors
@@ -53,18 +83,18 @@ export const getSemanticColors = (mode: PaletteMode) => {
       dark: isDark ? brandColors.ink : brandColors.graphite,
     },
 
-    // Status colors - use darker variants for light mode
+    // Status colors — light-mode text uses a11y reds/greens; fills still use brand elsewhere
     status: {
-      success: isDark ? brandColors.mint : "#7BC47F", // Darker green for light mode
-      error: brandColors.coral,
-      warning: brandColors.coral,
-      info: isDark ? brandColors.babyBlue : "#5A9BC8", // Darker blue for light mode
+      success: isDark ? brandColors.mint : a11y.light.successGreen,
+      error: isDark ? brandColors.coral : a11y.light.errorText,
+      warning: isDark ? brandColors.coral : a11y.light.warningText,
+      info: isDark ? brandColors.babyBlue : a11y.light.interactiveBlue,
     },
 
-    // Link colors - use darker variant for light mode
+    // Link colors
     link: {
-      main: isDark ? brandColors.babyBlue : "#5A9BC8", // Darker blue for light mode contrast
-      hover: isDark ? brandColors.mint : "#4A8BB8", // Even darker on hover for light mode
+      main: isDark ? brandColors.babyBlue : a11y.light.interactiveBlue,
+      hover: isDark ? brandColors.mint : a11y.light.interactiveBlueHover,
     },
 
     // Code block colors - ensure good contrast in both modes
@@ -75,16 +105,16 @@ export const getSemanticColors = (mode: PaletteMode) => {
       backgroundRgb: isDark
         ? alpha(brandColors.babyBlue, 0.15)
         : alpha(brandColors.babyBlue, 0.08),
-      // Use link color for text (defined above)
-      text: isDark ? brandColors.babyBlue : "#5A9BC8",
-      textSecondary: alpha(isDark ? brandColors.babyBlue : "#5A9BC8", 0.5),
+      text: isDark ? brandColors.babyBlue : a11y.light.interactiveBlue,
+      // Solid muted blue — semi-transparent primary failed (~2.1:1) on light code panels
+      textSecondary: isDark
+        ? a11y.dark.codeMutedBlue
+        : a11y.light.codeMutedBlue,
     },
 
     // JSON viewer colors - for JsonViewCard component
     jsonView: {
-      // Key color: warm coral tone for visual distinction from values
-      // Uses darker coral in light mode for better contrast
-      key: isDark ? "#FF9676" : "#E85A30",
+      key: isDark ? "#FF9676" : a11y.light.jsonKey,
     },
   };
 };
