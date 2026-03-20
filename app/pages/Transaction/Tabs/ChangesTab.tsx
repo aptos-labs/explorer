@@ -6,6 +6,10 @@ import type {
   WriteSetChange_DeleteTableItem,
   WriteSetChange_WriteTableItem,
 } from "~/types/aptos";
+import {
+  useGetTableItemsData,
+  useGetTableItemsMetadata,
+} from "../../../api/hooks/useGetTableItemData";
 import HashButton, {HashType} from "../../../components/HashButton";
 import useExpandedList from "../../../components/hooks/useExpandedList";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
@@ -165,9 +169,11 @@ function DecodedValueDisplay({value}: {value: unknown}) {
 function TableItemDetails({
   change,
   enclosingAccounts,
+  isEnriching = false,
 }: {
   change: TableItemChange;
   enclosingAccounts: EnclosingAccount[];
+  isEnriching?: boolean;
 }) {
   const theme = useTheme();
   const hasDecodedData = !!change.data;
@@ -203,6 +209,20 @@ function TableItemDetails({
                 </Stack>
               ))}
             </Stack>
+          }
+        />
+      )}
+
+      {isEnriching && !hasDecodedData && (
+        <ContentRow
+          title="Decoded Data:"
+          value={
+            <Typography
+              variant="body2"
+              sx={{color: mutedColor, fontStyle: "italic", fontSize: "0.85rem"}}
+            >
+              Loading decoded data from indexer…
+            </Typography>
           }
         />
       )}
@@ -290,15 +310,84 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
   const changes: Types.WriteSetChange[] =
     "changes" in transaction ? transaction.changes : [];
 
+  const transactionVersion =
+    "version" in transaction ? (transaction.version as string) : undefined;
+
+  const tableHandles = useMemo(() => {
+    const handles = new Set<string>();
+    for (const change of changes) {
+      if (isTableItemChange(change) && change.data == null) {
+        handles.add(change.handle);
+      }
+    }
+    return [...handles];
+  }, [changes]);
+
+  const hasUnenrichedTableItems = tableHandles.length > 0;
+
+  const {data: tableItemsResponse, isLoading: isLoadingItems} =
+    useGetTableItemsData(
+      hasUnenrichedTableItems ? transactionVersion : undefined,
+    );
+  const {data: tableMetadataResponse, isLoading: isLoadingMetadata} =
+    useGetTableItemsMetadata(hasUnenrichedTableItems ? tableHandles : []);
+
+  const enrichedChanges = useMemo(() => {
+    if (!tableItemsResponse || !tableMetadataResponse) return changes;
+
+    const tableItems = tableItemsResponse.table_items ?? [];
+    const tableMetadatas = tableMetadataResponse.table_metadatas ?? [];
+
+    if (tableItems.length === 0 && tableMetadatas.length === 0) return changes;
+
+    const metadataByHandle = new Map(tableMetadatas.map((m) => [m.handle, m]));
+    const tableItemByIndex = new Map(
+      tableItems.map((item) => [Number(item.write_set_change_index), item]),
+    );
+
+    return changes.map((change, i) => {
+      if (!isTableItemChange(change) || change.data != null) return change;
+
+      const indexerItem = tableItemByIndex.get(i);
+      const metadata = metadataByHandle.get(change.handle);
+      if (!indexerItem || !metadata) return change;
+
+      if (isWriteTableItem(change)) {
+        return {
+          ...change,
+          data: {
+            key: indexerItem.decoded_key,
+            key_type: metadata.key_type,
+            value: indexerItem.decoded_value,
+            value_type: metadata.value_type,
+          },
+        };
+      }
+
+      return {
+        ...change,
+        data: {
+          key: indexerItem.decoded_key,
+          key_type: metadata.key_type,
+          value: indexerItem.decoded_value,
+          value_type: metadata.value_type,
+        },
+      };
+    });
+  }, [changes, tableItemsResponse, tableMetadataResponse]);
+
+  const isEnriching =
+    hasUnenrichedTableItems && (isLoadingItems || isLoadingMetadata);
+
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
-    useExpandedList(changes.length);
+    useExpandedList(enrichedChanges.length);
 
   const handleToAccounts = useMemo(
-    () => buildHandleToAccountsIndex(changes),
-    [changes],
+    () => buildHandleToAccountsIndex(enrichedChanges),
+    [enrichedChanges],
   );
 
-  if (changes.length === 0) {
+  if (enrichedChanges.length === 0) {
     return <EmptyTabContent />;
   }
 
@@ -308,7 +397,7 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
       expandAll={expandAll}
       collapseAll={collapseAll}
     >
-      {changes.map((change, i) => (
+      {enrichedChanges.map((change, i) => (
         <CollapsibleCard
           key={change.state_key_hash}
           titleKey="Index:"
@@ -356,6 +445,7 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
             <TableItemDetails
               change={change}
               enclosingAccounts={handleToAccounts.get(change.handle) ?? []}
+              isEnriching={isEnriching && change.data == null}
             />
           )}
 
