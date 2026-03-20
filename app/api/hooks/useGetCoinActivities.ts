@@ -9,7 +9,12 @@ export type FAActivity = {
   amount: number | null;
 };
 
-export type ActivityTypeFilter = "all" | "mint" | "burn" | "transfer";
+export type ActivityTypeFilter =
+  | "all"
+  | "deposit"
+  | "withdraw"
+  | "mint"
+  | "burn";
 
 const COIN_ACTIVITIES_QUERY = `
   query GetFungibleAssetActivities($asset: String, $limit: Int, $offset: Int) {

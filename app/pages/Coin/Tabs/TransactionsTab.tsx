@@ -61,16 +61,14 @@ function matchesFilter(activity: FAActivity, filter: ActivityTypeFilter) {
   if (filter === "all") return true;
   const t = activity.type.toLowerCase();
   switch (filter) {
+    case "deposit":
+      return t.includes("deposit");
+    case "withdraw":
+      return t.includes("withdraw");
     case "mint":
       return t.includes("mint");
     case "burn":
       return t.includes("burn");
-    case "transfer":
-      return (
-        t.includes("deposit") ||
-        t.includes("withdraw") ||
-        t.includes("transfer")
-      );
   }
 }
 
@@ -143,9 +141,10 @@ export default function TransactionsTab({
             onChange={handleFilterChange}
           >
             <MenuItem value="all">All</MenuItem>
+            <MenuItem value="deposit">Deposit</MenuItem>
+            <MenuItem value="withdraw">Withdraw</MenuItem>
             <MenuItem value="mint">Mint</MenuItem>
             <MenuItem value="burn">Burn</MenuItem>
-            <MenuItem value="transfer">Transfer</MenuItem>
           </Select>
         </FormControl>
       </Stack>
