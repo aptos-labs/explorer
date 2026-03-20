@@ -240,19 +240,25 @@ const HashButtonInner = memo(function HashButtonInner({
       <Button
         sx={{
           textTransform: "none",
+          // Light: paper rows use creme (`background.paper`); chips must not use
+          // `neutralShade.darker` (also creme) or the pill is invisible.
           backgroundColor:
             theme.palette.mode === "dark"
               ? theme.palette.neutralShade.lighter
-              : theme.palette.neutralShade.darker,
+              : theme.palette.background.default,
           display: "flex",
           borderRadius: 1,
           color: "inherit",
           padding: "0.15rem 0.5rem 0.15rem 1rem",
+          border:
+            theme.palette.mode === "light"
+              ? `1px solid ${theme.palette.divider}`
+              : undefined,
           "&:hover": {
             backgroundColor:
               theme.palette.mode === "dark"
                 ? theme.palette.neutralShade.main
-                : theme.palette.neutralShade.main,
+                : theme.palette.action.hover,
           },
           minWidth: 141,
         }}
@@ -297,7 +303,7 @@ const HashButtonInner = memo(function HashButtonInner({
             backgroundColor:
               theme.palette.mode === "dark"
                 ? theme.palette.neutralShade.lighter
-                : theme.palette.neutralShade.darker,
+                : theme.palette.background.default,
             px: 2,
             py: "0.15rem",
             fontSize: "14px",
