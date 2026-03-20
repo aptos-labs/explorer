@@ -4,10 +4,12 @@ import {
   Alert,
   Box,
   Button,
+  FormControlLabel,
   InputAdornment,
   Paper,
   Skeleton,
   Stack,
+  Switch,
   Table,
   TableHead,
   TableRow,
@@ -433,6 +435,7 @@ export default function CoinsListTable({
     getInitialFilter(networkName),
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const [showEmojicoins, setShowEmojicoins] = useState(false);
 
   // Fetch market data from CoinGecko
   const {
@@ -484,6 +487,13 @@ export default function CoinsListTable({
   // Filter and search logic
   const filteredCoins = useMemo(() => {
     let filtered = coinsWithMarketData;
+
+    // Hide emojicoins unless the user opts in
+    if (!showEmojicoins) {
+      filtered = filtered.filter(
+        (coin) => !coin.panoraTags.includes("Emojicoin"),
+      );
+    }
 
     // Apply verification filter
     switch (verificationFilter) {
@@ -567,6 +577,7 @@ export default function CoinsListTable({
     searchQuery,
     coinVerifications,
     getCoinId,
+    showEmojicoins,
   ]);
 
   const selectedTextColor = theme.palette.primary.main;
@@ -665,6 +676,23 @@ export default function CoinsListTable({
     </Stack>
   );
 
+  const emojicoinToggle = (
+    <FormControlLabel
+      control={
+        <Switch
+          size="small"
+          checked={showEmojicoins}
+          onChange={(e) => setShowEmojicoins(e.target.checked)}
+        />
+      }
+      label="Show Emojicoins"
+      componentsProps={{
+        typography: {fontSize: 12, fontWeight: 600, color: unselectedTextColor},
+      }}
+      sx={{mr: 0}}
+    />
+  );
+
   // Memoize coin rows for virtualization
   const coinRows = useMemo(() => {
     return filteredCoins.map((coin, i) => {
@@ -733,7 +761,14 @@ export default function CoinsListTable({
               },
             }}
           />
-          {filterSelector}
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            {emojicoinToggle}
+            {filterSelector}
+          </Stack>
         </Stack>
         {showMarketDataError && (
           <Alert severity="warning" sx={{mb: 2}}>
@@ -795,7 +830,10 @@ export default function CoinsListTable({
             },
           }}
         />
-        {filterSelector}
+        <Stack direction="row" alignItems="center" spacing={2}>
+          {emojicoinToggle}
+          {filterSelector}
+        </Stack>
       </Stack>
       {showMarketDataError && (
         <Alert severity="warning" sx={{mb: 2}}>

@@ -104,6 +104,7 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
     // Coin list is static metadata - cache for 1 hour
     staleTime: 60 * 60 * 1000,
     gcTime: 24 * 60 * 60 * 1000, // Keep in cache for 24 hours
+    refetchOnWindowFocus: false,
   });
 }
 
