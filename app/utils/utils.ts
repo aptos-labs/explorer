@@ -579,8 +579,9 @@ export function timestampDisplay(timestamp: Date): TimestampDisplay {
   // Build the UTC string manually so it is always accurate regardless of the
   // browser's local timezone.
   const pad = (n: number, len = 2) => String(n).padStart(len, "0");
+  const year2 = timestamp.getUTCFullYear() % 100;
   const utcFormatted =
-    `${pad(timestamp.getUTCMonth() + 1)}/${pad(timestamp.getUTCDate())}/${String(timestamp.getUTCFullYear()).slice(-2)} ` +
+    `${pad(timestamp.getUTCMonth() + 1)}/${pad(timestamp.getUTCDate())}/${pad(year2)} ` +
     `${pad(timestamp.getUTCHours())}:${pad(timestamp.getUTCMinutes())}:${pad(timestamp.getUTCSeconds())}.${pad(timestamp.getUTCMilliseconds(), 3)} UTC`;
 
   return {

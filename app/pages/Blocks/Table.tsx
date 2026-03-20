@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import * as React from "react";
-import {useEffect, useMemo, useState} from "react";
+import {useContext, useEffect, useMemo, useState} from "react";
 import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../components/HashButton";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
@@ -24,6 +24,9 @@ import {
 } from "../../routing";
 import {assertNever} from "../../utils";
 import {getTimeDiffInSeconds, parseTimestamp} from "../utils";
+
+// Single shared clock so all age cells re-render from one interval, not N.
+const NowContext = React.createContext<Date>(new Date());
 
 function formatAge(seconds: number): string {
   if (seconds < 60) {
@@ -40,29 +43,13 @@ function formatAge(seconds: number): string {
   }
 }
 
-function useBlockAge(block: Types.Block): string {
-  const blockTimestamp = React.useMemo(
-    () => parseTimestamp(block.block_timestamp),
-    [block.block_timestamp],
+function blockAge(block: Types.Block, now: Date): string {
+  const blockTimestamp = parseTimestamp(block.block_timestamp);
+  const durationInSec = Math.max(
+    0,
+    Math.floor(getTimeDiffInSeconds(blockTimestamp, now)),
   );
-
-  const calcAge = React.useCallback(() => {
-    const durationInSec = Math.max(
-      0,
-      Math.floor(getTimeDiffInSeconds(blockTimestamp, new Date())),
-    );
-    return formatAge(durationInSec);
-  }, [blockTimestamp]);
-
-  const [age, setAge] = useState(calcAge);
-
-  useEffect(() => {
-    setAge(calcAge());
-    const id = setInterval(() => setAge(calcAge()), 1000);
-    return () => clearInterval(id);
-  }, [calcAge]);
-
-  return age;
+  return formatAge(durationInSec);
 }
 
 type BlockCellProps = {
@@ -80,8 +67,12 @@ function BlockHeightCell({block}: BlockCellProps) {
 }
 
 function BlockAgeCell({block}: BlockCellProps) {
-  const age = useBlockAge(block);
-  return <GeneralTableCell sx={{textAlign: "left"}}>{age}</GeneralTableCell>;
+  const now = useContext(NowContext);
+  return (
+    <GeneralTableCell sx={{textAlign: "left"}}>
+      {blockAge(block, now)}
+    </GeneralTableCell>
+  );
 }
 
 function BlockHashCell({block}: BlockCellProps) {
@@ -171,7 +162,8 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
-  const age = useBlockAge(block);
+  const now = useContext(NowContext);
+  const age = blockAge(block, now);
 
   const numTransactions = (
     BigInt(block.last_version) -
@@ -311,6 +303,13 @@ export default function BlocksTable({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
+  // Single 1-second timer shared by all age cells via NowContext.
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
   // TODO: Fix this better than this change here, this seems to be a bug elsewhere that I'm trying to fix on first load of page
   if (blocks == null) {
     blocks = [];
@@ -330,32 +329,36 @@ export default function BlocksTable({
   // Mobile card view
   if (isMobile) {
     return (
-      <Box>
-        {blocks.map((block: Types.Block) => (
-          <BlockCard key={block.block_height} block={block} />
-        ))}
-      </Box>
+      <NowContext.Provider value={now}>
+        <Box>
+          {blocks.map((block: Types.Block) => (
+            <BlockCard key={block.block_height} block={block} />
+          ))}
+        </Box>
+      </NowContext.Provider>
     );
   }
 
   // Desktop table view
   return (
-    <Box sx={{overflowX: "auto"}}>
-      <Table aria-label="Blocks" data-entity-type="block">
-        <TableHead>
-          <TableRow>
-            {columns.map((column) => (
-              <BlockHeaderCell key={column} column={column} />
-            ))}
-          </TableRow>
-        </TableHead>
-        <VirtualizedTableBody
-          estimatedRowHeight={65}
-          virtualizationThreshold={15}
-        >
-          {blockRows}
-        </VirtualizedTableBody>
-      </Table>
-    </Box>
+    <NowContext.Provider value={now}>
+      <Box sx={{overflowX: "auto"}}>
+        <Table aria-label="Blocks" data-entity-type="block">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <BlockHeaderCell key={column} column={column} />
+              ))}
+            </TableRow>
+          </TableHead>
+          <VirtualizedTableBody
+            estimatedRowHeight={65}
+            virtualizationThreshold={15}
+          >
+            {blockRows}
+          </VirtualizedTableBody>
+        </Table>
+      </Box>
+    </NowContext.Provider>
   );
 }
