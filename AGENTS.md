@@ -6,9 +6,11 @@ This document serves as the canonical source of truth for AI coding assistants w
 
 ```bash
 pnpm install          # Install dependencies
+pnpm routes:generate  # TanStack route tree (also runs before dev/build/lint/test via pre* scripts)
 pnpm dev              # Dev server on port 3030
 pnpm start            # Dev server on port 3000
 pnpm build            # Production build
+pnpm ci:verify        # Local CI: generate routes, lint, test, production build
 pnpm test             # Run Vitest
 pnpm lint             # TypeScript + Biome lint checks
 pnpm fmt              # Apply Biome formatting

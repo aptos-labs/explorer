@@ -32,3 +32,10 @@ Searched the app route tree for per-route `head:` callbacks (TanStack Router fil
 | `public/sitemap.xml` | Discoverable URLs including `llms.txt` / `llms-full.txt` |
 
 Root [`app/routes/__root.tsx`](../app/routes/__root.tsx) exposes `<link rel="help">` / `alternate` hints to the LLM text files.
+
+## Generated TanStack Router route tree
+
+[`app/routeTree.gen.ts`](../app/routeTree.gen.ts) is **generated** (gitignored). Config: [`tsr.config.json`](../tsr.config.json) (must stay aligned with `TanStackRouterVite` in [`vite.config.ts`](../vite.config.ts)).
+
+- **Local:** `pnpm routes:generate`, or it runs automatically before `dev`, `start`, `build`, `lint`, `test`, and `check` via `pre*` scripts.
+- **CI / Netlify:** `pnpm build` and [`pnpm ci:verify`](../package.json) run generation first; clone + `pnpm install` then `pnpm lint` (or any of the above) recreates the file.
