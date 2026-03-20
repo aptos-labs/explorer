@@ -71,12 +71,8 @@ export default function Footer() {
             <Grid container direction="row" padding="0" spacing={2}>
               <Typography
                 sx={{
-                  textAlign: {
-                    xs: "center",
-                    md: "left",
-                    fontFamily:
-                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                  },
+                  textAlign: {xs: "center", md: "left"},
+                  fontFamily: theme.typography.fontFamily,
                 }}
                 fontSize="0.8rem"
               >
@@ -97,8 +93,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   sx={{
                     fontSize: "0.8rem",
-                    fontFamily:
-                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    fontFamily: theme.typography.fontFamily,
                   }}
                 >
                   Privacy
@@ -110,8 +105,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   sx={{
                     fontSize: "0.8rem",
-                    fontFamily:
-                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    fontFamily: theme.typography.fontFamily,
                   }}
                 >
                   Terms
@@ -121,8 +115,7 @@ export default function Footer() {
                   to="/verification"
                   sx={{
                     fontSize: "0.8rem",
-                    fontFamily:
-                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                    fontFamily: theme.typography.fontFamily,
                   }}
                 >
                   Token & Address Verification

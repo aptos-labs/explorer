@@ -98,8 +98,7 @@ export default function Footer() {
   const footerLinkSx = {
     color: "inherit",
     fontSize: "0.8rem",
-    fontFamily:
-      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    fontFamily: theme.typography.fontFamily,
     textDecoration: "none",
     transition: "opacity 0.2s ease",
     "&:hover": {
@@ -160,12 +159,8 @@ export default function Footer() {
             <Grid container direction="row" padding="0" spacing={2}>
               <Typography
                 sx={{
-                  textAlign: {
-                    xs: "center",
-                    md: "left",
-                    fontFamily:
-                      '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                  },
+                  textAlign: {xs: "center", md: "left"},
+                  fontFamily: theme.typography.fontFamily,
                 }}
                 fontSize="0.8rem"
               >

@@ -1,4 +1,4 @@
-import {Autocomplete, Typography} from "@mui/material";
+import {Autocomplete, Typography, useTheme} from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
@@ -57,6 +57,7 @@ interface HeaderSearchProps {
 }
 
 export default function HeaderSearch({initialSearch}: HeaderSearchProps) {
+  const theme = useTheme();
   const navigate = useNavigate();
   const networkName = useNetworkName();
   const networkValue = useNetworkValue();
@@ -442,8 +443,7 @@ export default function HeaderSearch({initialSearch}: HeaderSearchProps) {
           opacity: "0",
           mt: 0.5,
           mb: 0,
-          fontFamily:
-            '"IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+          fontFamily: theme.typography.fontFamily,
           fontWeight: "light",
         },
         "&.Mui-focused .MuiFormHelperText-root": {

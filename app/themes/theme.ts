@@ -2,6 +2,7 @@ import {alpha, type PaletteMode} from "@mui/material";
 import type {ThemeOptions} from "@mui/material/styles";
 import type React from "react";
 import {brandColors, getSemanticColors} from "./colors/aptosBrandColors";
+import {fontFamilyMono, fontFamilySans} from "./typography";
 
 // Button variants
 declare module "@mui/material/Button" {
@@ -67,36 +68,43 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
     },
 
     typography: {
-      fontFamily: `"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"`,
+      fontFamily: fontFamilySans,
       fontWeightLight: 300,
       fontWeightRegular: 400,
       fontWeightBold: 600,
       h1: {
         fontWeight: "600",
+        letterSpacing: "-0.02em",
       },
       h2: {
         fontWeight: "600",
+        letterSpacing: "-0.02em",
       },
       h3: {
         fontWeight: "600",
+        letterSpacing: "-0.015em",
       },
       h4: {
         fontWeight: "600",
+        letterSpacing: "-0.015em",
       },
       h5: {
         fontWeight: "600",
+        letterSpacing: "-0.01em",
       },
       h6: {
         fontWeight: "600",
+        letterSpacing: "-0.01em",
       },
       stats: {
-        fontFamily: `"IBM Plex Mono",ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace`,
+        fontFamily: fontFamilyMono,
         fontWeight: "400",
       },
       subtitle1: {
-        fontWeight: 400,
+        fontWeight: 500,
         textTransform: "uppercase",
         lineHeight: "1.25",
+        letterSpacing: "0.06em",
       },
       subtitle2: {
         fontWeight: 400,
@@ -129,6 +137,17 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
 
             warning: {
               main: semanticColors.status.warning,
+            },
+
+            info: {
+              main: semanticColors.status.info,
+            },
+
+            divider: semanticColors.border.light,
+
+            action: {
+              hover: alpha(semanticColors.primary, 0.06),
+              selected: alpha(semanticColors.primary, 0.1),
             },
 
             background: {
@@ -174,6 +193,17 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
               main: semanticColors.status.warning,
             },
 
+            info: {
+              main: semanticColors.status.info,
+            },
+
+            divider: semanticColors.border.light,
+
+            action: {
+              hover: alpha(semanticColors.primary, 0.08),
+              selected: alpha(semanticColors.primary, 0.14),
+            },
+
             background: {
               default: semanticColors.background.default,
               paper: semanticColors.background.paper,
@@ -198,6 +228,14 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
     },
 
     components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          body: {
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale",
+          },
+        },
+      },
       // Typography overrides
       MuiTypography: {
         styleOverrides: {

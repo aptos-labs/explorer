@@ -50,6 +50,7 @@ import {GlobalConfigProvider} from "../global-config";
 import {useHashToPathRedirect} from "../hooks/useHashToPathRedirect";
 import {useOldUrlRedirect} from "../hooks/useOldUrlRedirect";
 import {BASE_URL} from "../lib/constants";
+import {googleFontsStylesheetHref} from "../themes/typography";
 import {ExplorerSettingsProvider} from "../settings";
 
 // Router context type
@@ -98,10 +99,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         crossOrigin: "anonymous",
       },
       {
-        // Optimized: Only load font weights actually used in the app (300, 400, 500, 600, 700)
-        // Reduced from 28 font variants to 10, saving ~200-300KB bandwidth
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        href: googleFontsStylesheetHref,
       },
       // Favicons
       {rel: "icon", href: "/favicon-light.svg", type: "image/svg+xml"},

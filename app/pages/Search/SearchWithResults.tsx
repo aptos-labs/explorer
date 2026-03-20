@@ -17,6 +17,7 @@ import {
   Paper,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
 import {useCallback, useEffect, useRef, useState} from "react";
@@ -109,6 +110,8 @@ function typeLabel(type?: string): string {
 // ─── Individual result row ────────────────────────────────────────────────────
 
 function SearchResultRow({result}: {result: SearchResult}) {
+  const theme = useTheme();
+
   if (result.isGroupHeader) {
     return (
       <Box sx={{px: 2, py: 1, bgcolor: "action.hover"}}>
@@ -174,7 +177,7 @@ function SearchResultRow({result}: {result: SearchResult}) {
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
-          fontFamily: '"IBM Plex Mono", monospace',
+          fontFamily: theme.typography.stats.fontFamily,
           fontSize: "0.9rem",
         }}
       >
