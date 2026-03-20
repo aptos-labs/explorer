@@ -2,8 +2,10 @@ import {Network} from "@aptos-labs/ts-sdk";
 import {
   Box,
   Button,
+  FormControlLabel,
   Paper,
   Stack,
+  Switch,
   Table,
   TableHead,
   TableRow,
@@ -304,6 +306,8 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   const [verificationFilter, setVerificationFilter] = React.useState(
     CoinVerificationFilterType.NONE,
   );
+  // 記錄是否顯示 0 餘額的狀態 (State to track if zero balance coins should be shown)
+  const [showZeroBalance, setShowZeroBalance] = React.useState(false);
 
   // Set default filter based on network
   React.useEffect(() => {
@@ -353,12 +357,19 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
     (
       coinsToFilter: CoinDescriptionPlusAmount[],
       filter: CoinVerificationFilterType,
+      showZero: boolean,
     ): CoinDescriptionPlusAmount[] => {
       let filtered: CoinDescriptionPlusAmount[];
 
+      let baseCoins = coinsToFilter;
+      // 過濾餘額為 0 的 coin (Filter out coins with 0 balance based on toggle)
+      if (!showZero) {
+        baseCoins = baseCoins.filter((coin) => coin.amount > 0);
+      }
+
       switch (filter) {
         case CoinVerificationFilterType.VERIFIED:
-          filtered = coinsToFilter.filter((coin) => {
+          filtered = baseCoins.filter((coin) => {
             const coinId = getCoinId(coin);
             if (coinId && coinVerifications[coinId]) {
               const level = coinVerifications[coinId];
@@ -372,7 +383,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
           });
           break;
         case CoinVerificationFilterType.RECOGNIZED:
-          filtered = coinsToFilter.filter((coin) => {
+          filtered = baseCoins.filter((coin) => {
             const coinId = getCoinId(coin);
             if (coinId && coinVerifications[coinId]) {
               const level = coinVerifications[coinId];
@@ -387,7 +398,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
           });
           break;
         default:
-          filtered = coinsToFilter;
+          filtered = baseCoins;
           break;
       }
 
@@ -398,8 +409,8 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
 
   // Memoize filtered and sorted coins
   const filteredCoins = useMemo(
-    () => filterCoins(coins, verificationFilter),
-    [coins, verificationFilter, filterCoins],
+    () => filterCoins(coins, verificationFilter, showZeroBalance),
+    [coins, verificationFilter, showZeroBalance, filterCoins],
   );
 
   const selectedTextColor = theme.palette.primary.main;
@@ -413,88 +424,107 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
     <Stack
       direction="row"
       justifyContent="flex-end"
-      spacing={1}
-      marginY={0.5}
-      height={16}
+      alignItems="center"
+      spacing={2}
+      marginY={1}
     >
-      <Button
-        variant="text"
-        onClick={() =>
-          setVerificationFilter(CoinVerificationFilterType.VERIFIED)
+      {verificationFilter !== CoinVerificationFilterType.NONE && (
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Button
+            variant="text"
+            onClick={() =>
+              setVerificationFilter(CoinVerificationFilterType.VERIFIED)
+            }
+            sx={{
+              fontSize: 12,
+              fontWeight: 600,
+              color:
+                CoinVerificationFilterType.VERIFIED === verificationFilter
+                  ? selectedTextColor
+                  : unselectedTextColor,
+              padding: 0,
+              "&:hover": {
+                background: "transparent",
+              },
+            }}
+          >
+            Verified
+          </Button>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: dividerTextColor,
+            }}
+          >
+            |
+          </Typography>
+          <Button
+            variant="text"
+            onClick={() =>
+              setVerificationFilter(CoinVerificationFilterType.RECOGNIZED)
+            }
+            sx={{
+              fontSize: 12,
+              fontWeight: 600,
+              color:
+                CoinVerificationFilterType.RECOGNIZED === verificationFilter
+                  ? selectedTextColor
+                  : unselectedTextColor,
+              padding: 0,
+              "&:hover": {
+                background: "transparent",
+              },
+            }}
+          >
+            Recognized
+          </Button>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: dividerTextColor,
+            }}
+          >
+            |
+          </Typography>
+          <Button
+            variant="text"
+            onClick={() =>
+              setVerificationFilter(CoinVerificationFilterType.ALL)
+            }
+            sx={{
+              fontSize: 12,
+              fontWeight: 600,
+              color:
+                CoinVerificationFilterType.ALL === verificationFilter
+                  ? selectedTextColor
+                  : unselectedTextColor,
+              padding: 0,
+              "&:hover": {
+                background: "transparent",
+              },
+            }}
+          >
+            All
+          </Button>
+        </Stack>
+      )}
+
+      <FormControlLabel
+        control={
+          <Switch
+            size="small"
+            checked={showZeroBalance}
+            onChange={(e) => setShowZeroBalance(e.target.checked)}
+          />
         }
-        sx={{
-          fontSize: 12,
-          fontWeight: 600,
-          color:
-            CoinVerificationFilterType.VERIFIED === verificationFilter
-              ? selectedTextColor
-              : unselectedTextColor,
-          padding: 0,
-          "&:hover": {
-            background: "transparent",
-          },
-        }}
-      >
-        Verified
-      </Button>
-      <Typography
-        variant="subtitle1"
-        sx={{
-          fontSize: 11,
-          fontWeight: 600,
-          color: dividerTextColor,
-        }}
-      >
-        |
-      </Typography>
-      <Button
-        variant="text"
-        onClick={() =>
-          setVerificationFilter(CoinVerificationFilterType.RECOGNIZED)
-        }
-        sx={{
-          fontSize: 12,
-          fontWeight: 600,
-          color:
-            CoinVerificationFilterType.RECOGNIZED === verificationFilter
-              ? selectedTextColor
-              : unselectedTextColor,
-          padding: 0,
-          "&:hover": {
-            background: "transparent",
-          },
-        }}
-      >
-        Recognized
-      </Button>
-      <Typography
-        variant="subtitle1"
-        sx={{
-          fontSize: 11,
-          fontWeight: 600,
-          color: dividerTextColor,
-        }}
-      >
-        |
-      </Typography>
-      <Button
-        variant="text"
-        onClick={() => setVerificationFilter(CoinVerificationFilterType.ALL)}
-        sx={{
-          fontSize: 12,
-          fontWeight: 600,
-          color:
-            CoinVerificationFilterType.ALL === verificationFilter
-              ? selectedTextColor
-              : unselectedTextColor,
-          padding: 0,
-          "&:hover": {
-            background: "transparent",
-          },
-        }}
-      >
-        All
-      </Button>
+        label="Show Zero Balance"
+        slotProps={{typography: {variant: "body2"}}}
+        sx={{margin: 0}}
+      />
     </Stack>
   );
 
@@ -539,8 +569,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   if (isMobile) {
     return (
       <>
-        {verificationFilter !== CoinVerificationFilterType.NONE &&
-          filterSelector}
+        {filterSelector}
         <Box>
           {filteredCoins.length > 0 ? (
             filteredCoins.map((coin, i) => (
@@ -567,7 +596,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   // Desktop table view
   return (
     <>
-      {verificationFilter !== CoinVerificationFilterType.NONE && filterSelector}
+      {filterSelector}
       <Box sx={{overflowX: "auto"}}>
         <Table aria-label="Account coins" data-entity-type="coin">
           <TableHead>
