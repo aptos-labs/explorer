@@ -1803,7 +1803,7 @@ function parseThalaCLEvent(
 
     return {
       actionType: "swap",
-      dex: "0x075b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920",
+      dex,
       amountIn,
       amountOut,
       assetIn,
