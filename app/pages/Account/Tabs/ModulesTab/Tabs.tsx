@@ -7,6 +7,7 @@ import {useParams} from "@tanstack/react-router";
 import type React from "react";
 import {useEffect, useState} from "react";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
+import {useGetModulePublishHistory} from "../../../../api/hooks/useGetModulePublishHistory";
 import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
 import {useNavigate} from "../../../../routing";
@@ -14,6 +15,7 @@ import {assertNever} from "../../../../utils";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 import Contract from "./Contract";
+import ModuleDiffView from "./ModuleDiffView";
 import ModuleVersionSelector from "./ModuleVersionSelector";
 import Packages from "./Packages";
 import ViewCode from "./ViewCode";
@@ -131,6 +133,15 @@ function ModulesTabs({
   const [ledgerVersion, setLedgerVersion] = useState<number | undefined>(
     undefined,
   );
+  const [diffMode, setDiffMode] = useState(false);
+  const [diffBaseVersion, setDiffBaseVersion] = useState<number | undefined>(
+    undefined,
+  );
+  const [diffCompareVersion, setDiffCompareVersion] = useState<
+    number | undefined
+  >(undefined);
+
+  const {data: publishHistory} = useGetModulePublishHistory(address);
 
   const handleVersionChange = (version: number | undefined) => {
     setLedgerVersion(version);
@@ -138,6 +149,15 @@ function ModulesTabs({
       const path = `/${accountPagePath(isObject)}/${address}/modules/code`;
       navigate({to: path, replace: true});
     }
+  };
+
+  const handleDiffModeToggle = () => {
+    if (!diffMode && publishHistory && publishHistory.length >= 2) {
+      setDiffBaseVersion(publishHistory[1].version);
+      setDiffCompareVersion(undefined);
+      setLedgerVersion(undefined);
+    }
+    setDiffMode(!diffMode);
   };
 
   // Parse path params from splat route
@@ -284,6 +304,8 @@ function ModulesTabs({
           address={address}
           selectedVersion={ledgerVersion}
           onVersionChange={handleVersionChange}
+          diffMode={diffMode}
+          onDiffModeToggle={handleDiffModeToggle}
         />
         <Box mt={2}>
           <StyledTabs value={value} onChange={handleChange}>
@@ -320,12 +342,24 @@ function ModulesTabs({
         </Box>
       </Box>
       <Box>
-        <TabPanel
-          value={value}
-          address={address}
-          isObject={isObject}
-          ledgerVersion={ledgerVersion}
-        />
+        {diffMode && publishHistory && publishHistory.length >= 2 ? (
+          <ModuleDiffView
+            address={address}
+            moduleName={selectedModuleName || ""}
+            publishHistory={publishHistory}
+            baseVersion={diffBaseVersion}
+            compareVersion={diffCompareVersion}
+            onBaseVersionChange={setDiffBaseVersion}
+            onCompareVersionChange={setDiffCompareVersion}
+          />
+        ) : (
+          <TabPanel
+            value={value}
+            address={address}
+            isObject={isObject}
+            ledgerVersion={ledgerVersion}
+          />
+        )}
       </Box>
     </Box>
   );

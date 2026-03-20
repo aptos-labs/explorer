@@ -1,6 +1,8 @@
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import {
   Box,
+  Button,
   Chip,
   CircularProgress,
   MenuItem,
@@ -10,13 +12,19 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {useGetModulePublishHistory} from "../../../../api/hooks/useGetModulePublishHistory";
+import {
+  type ModulePublishTransaction,
+  useGetModulePublishHistory,
+} from "../../../../api/hooks/useGetModulePublishHistory";
 import {Link} from "../../../../routing";
 
 interface ModuleVersionSelectorProps {
   address: string;
   selectedVersion: number | undefined;
   onVersionChange: (version: number | undefined) => void;
+  diffMode?: boolean;
+  onDiffModeToggle?: () => void;
+  publishHistory?: ModulePublishTransaction[];
 }
 
 const utcFormatter = new Intl.DateTimeFormat("en-US", {
@@ -68,10 +76,13 @@ export default function ModuleVersionSelector({
   address,
   selectedVersion,
   onVersionChange,
+  diffMode,
+  onDiffModeToggle,
 }: ModuleVersionSelectorProps) {
   const theme = useTheme();
   const {data: publishHistory, isLoading} = useGetModulePublishHistory(address);
   const hasHistory = publishHistory && publishHistory.length > 0;
+  const canCompare = hasHistory && publishHistory.length >= 2;
 
   if (isLoading && selectedVersion === undefined) {
     return (
@@ -158,6 +169,17 @@ export default function ModuleVersionSelector({
           selectedVersion={selectedVersion}
           onVersionChange={onVersionChange}
         />
+      )}
+      {canCompare && onDiffModeToggle && (
+        <Button
+          size="small"
+          variant={diffMode ? "contained" : "outlined"}
+          onClick={onDiffModeToggle}
+          startIcon={<CompareArrowsIcon />}
+          sx={{textTransform: "none", ml: 1}}
+        >
+          {diffMode ? "Exit Diff" : "Compare"}
+        </Button>
       )}
     </Stack>
   );
