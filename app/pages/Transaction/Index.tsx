@@ -16,7 +16,10 @@ import TransactionTitle from "./Title";
 export default function TransactionPage() {
   const networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
-  const params = useParams({strict: false}) as {txnHashOrVersion?: string};
+  const params = useParams({strict: false}) as {
+    txnHashOrVersion?: string;
+    tab?: string;
+  };
   const txnHashOrVersion = params?.txnHashOrVersion ?? "";
 
   const {isLoading, data, error} = useQuery<Types.Transaction, ResponseError>({
@@ -50,7 +53,11 @@ export default function TransactionPage() {
       <PageHeader />
       <Grid size={{xs: 12}}>
         <Stack direction="column" spacing={4} marginTop={2}>
-          <TransactionTitle transaction={data} />
+          <TransactionTitle
+            transaction={data}
+            urlTxnHashOrVersion={txnHashOrVersion}
+            pathTab={params.tab}
+          />
           <TransactionTabs transaction={data} />
         </Stack>
       </Grid>

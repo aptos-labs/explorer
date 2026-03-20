@@ -3,27 +3,34 @@ import type {Types} from "~/types/aptos";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {TransactionType} from "../../components/TransactionType";
+import {truncateAddress} from "../../utils";
+import {getTransactionTabHeadLabel} from "./transactionTabMeta";
 
 type TransactionTitleProps = {
   transaction: Types.Transaction;
+  /** Raw `txnHashOrVersion` path param (preserves URL form for canonical) */
+  urlTxnHashOrVersion: string;
+  /** Tab segment from `/txn/:id/:tab` */
+  pathTab?: string;
 };
 
-export default function TransactionTitle({transaction}: TransactionTitleProps) {
+export default function TransactionTitle({
+  transaction,
+  urlTxnHashOrVersion,
+  pathTab = "userTxnOverview",
+}: TransactionTitleProps) {
   const version = "version" in transaction ? transaction.version : undefined;
-  const shortHash = `${transaction.hash.slice(0, 10)}...${transaction.hash.slice(-8)}`;
 
-  let title = `Transaction ${shortHash}`;
-  if (version) {
-    title = `Transaction #${version}`;
-  }
-
-  const description = `View Aptos transaction ${version ? `#${version}` : shortHash}. See transaction details, type (${transaction.type}), gas fees, events, and state changes.`;
+  const tabHead = getTransactionTabHeadLabel(pathTab);
+  const displayId = truncateAddress(urlTxnHashOrVersion);
+  const metadataTitle = `${tabHead} | Transaction ${displayId}`;
+  const metadataDescription = `View ${tabHead.toLowerCase()} for transaction ${urlTxnHashOrVersion} on the Aptos blockchain.`;
 
   return (
     <Stack direction="column" spacing={2} marginX={1}>
       <PageMetadata
-        title={title}
-        description={description}
+        title={metadataTitle}
+        description={metadataDescription}
         type="transaction"
         keywords={[
           "transaction",
@@ -31,7 +38,7 @@ export default function TransactionTitle({transaction}: TransactionTitleProps) {
           transaction.type,
           version ? `version ${version}` : "",
         ].filter(Boolean)}
-        canonicalPath={version ? `/txn/${version}` : `/txn/${transaction.hash}`}
+        canonicalPath={`/txn/${urlTxnHashOrVersion}/${pathTab}`}
       />
       <Typography variant="h3" component="h1">
         Transaction
