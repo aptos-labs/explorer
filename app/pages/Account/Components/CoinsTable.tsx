@@ -1,14 +1,17 @@
 import {Network} from "@aptos-labs/ts-sdk";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import {
   Box,
   Button,
   FormControlLabel,
+  IconButton,
   Paper,
   Stack,
   Switch,
   Table,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -148,6 +151,44 @@ const CoinVerifiedCell = React.memo(function CoinVerifiedCell({
   });
 });
 
+const CoinTransactionsCell = React.memo(function CoinTransactionsCell({
+  data,
+  ownerAddress,
+}: {
+  data: CoinDescriptionPlusAmount;
+  ownerAddress: string;
+}) {
+  const navigate = useNavigate();
+  const augmentTo = useAugmentToWithGlobalSearchParams();
+
+  const assetId = data.tokenAddress ?? data.faAddress;
+  const isFA = data.tokenStandard === "v2";
+  const linkTo = isFA
+    ? `/fungible_asset/${assetId}/transactions?owner=${ownerAddress}`
+    : `/coin/${assetId}/transactions?owner=${ownerAddress}`;
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (assetId) {
+      navigate({to: augmentTo(linkTo)});
+    }
+  };
+
+  return (
+    <GeneralTableCell sx={{textAlign: "center"}}>
+      <Tooltip title="View transactions for this asset">
+        <IconButton
+          aria-label="View coin transactions"
+          size="small"
+          onClick={handleClick}
+        >
+          <ReceiptLongIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+    </GeneralTableCell>
+  );
+});
+
 enum CoinVerificationFilterType {
   VERIFIED,
   RECOGNIZED,
@@ -167,9 +208,11 @@ export type CoinDescriptionPlusAmount = {
 function CoinCard({
   coin,
   networkName,
+  ownerAddress,
 }: {
   coin: CoinDescriptionPlusAmount;
   networkName: string;
+  ownerAddress?: string;
 }) {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -287,20 +330,46 @@ function CoinCard({
             {symbol}
           </Typography>
         </Typography>
-        <Typography sx={{fontSize: "0.85rem", color: "text.secondary"}}>
-          {coin.usdValue !== null && inMainnet
-            ? `$${coin.usdValue.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              })}`
-            : ""}
-        </Typography>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography sx={{fontSize: "0.85rem", color: "text.secondary"}}>
+            {coin.usdValue !== null && inMainnet
+              ? `$${coin.usdValue.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}`
+              : ""}
+          </Typography>
+          {ownerAddress && assetId && (
+            <Tooltip title="View transactions">
+              <IconButton
+                aria-label="View coin transactions"
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const txnLink = isFA
+                    ? `/fungible_asset/${assetId}/transactions?owner=${ownerAddress}`
+                    : `/coin/${assetId}/transactions?owner=${ownerAddress}`;
+                  navigate({to: augmentTo(txnLink)});
+                }}
+                sx={{p: 0.5}}
+              >
+                <ReceiptLongIcon sx={{fontSize: 16}} />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Stack>
       </Stack>
     </Paper>
   );
 }
 
-export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
+export function CoinsTable({
+  coins,
+  ownerAddress,
+}: {
+  coins: CoinDescriptionPlusAmount[];
+  ownerAddress?: string;
+}) {
   const theme = useTheme();
   const networkName = useNetworkName();
   const [verificationFilter, setVerificationFilter] = React.useState(
@@ -558,10 +627,13 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
             )}
           />
           <USDCell amount={coinDesc.usdValue} />
+          {ownerAddress && (
+            <CoinTransactionsCell data={coinDesc} ownerAddress={ownerAddress} />
+          )}
         </GeneralTableRow>
       );
     });
-  }, [filteredCoins]);
+  }, [filteredCoins, ownerAddress]);
 
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -577,6 +649,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
                 key={coin.tokenAddress ?? coin.faAddress ?? `coin-${i}`}
                 coin={coin}
                 networkName={networkName}
+                ownerAddress={ownerAddress}
               />
             ))
           ) : (
@@ -611,6 +684,12 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
               />
               <GeneralTableHeaderCell header="Amount" />
               <GeneralTableHeaderCell header="USD Value" />
+              {ownerAddress && (
+                <GeneralTableHeaderCell
+                  header="Txns"
+                  sx={{textAlign: "center", width: 60}}
+                />
+              )}
             </TableRow>
           </TableHead>
           {filteredCoins.length > 0 ? (
@@ -623,7 +702,10 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
           ) : (
             <GeneralTableBody>
               <TableRow>
-                <GeneralTableCell colSpan={6} sx={{textAlign: "center", py: 3}}>
+                <GeneralTableCell
+                  colSpan={ownerAddress ? 7 : 6}
+                  sx={{textAlign: "center", py: 3}}
+                >
                   <Typography variant="body1" color="text.secondary">
                     No coins found
                   </Typography>

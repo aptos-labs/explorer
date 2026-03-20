@@ -107,5 +107,5 @@ export default function CoinsTab({address}: TokenTabsProps) {
       });
   }
 
-  return <CoinsTable coins={parse_coins()} />;
+  return <CoinsTable coins={parse_coins()} ownerAddress={address} />;
 }

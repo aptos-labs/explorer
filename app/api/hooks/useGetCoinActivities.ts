@@ -1,5 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
+import {tryStandardizeAddress} from "../../utils";
 
 export type FAActivity = {
   transaction_version: number;
@@ -225,5 +226,105 @@ export function useGetFirstCoinActivity(asset: string): {
   return {
     isLoading,
     data: data?.fungible_asset_activities?.[0],
+  };
+}
+
+const COIN_ACTIVITIES_BY_OWNER_FIRST_PAGE_QUERY = `
+  query GetFAActivitiesByOwnerFirstPage($asset: String, $owner: String, $limit: Int) {
+    fungible_asset_activities(
+      where: {
+        asset_type: {_eq: $asset}
+        owner_address: {_eq: $owner}
+        type: {_neq: "0x1::aptos_coin::GasFeeEvent"}
+      }
+      limit: $limit
+      order_by: [{transaction_version: desc}, {event_index: desc}]
+    ) {
+      transaction_version
+      event_index
+      owner_address
+      type
+      amount
+    }
+  }
+`;
+
+const COIN_ACTIVITIES_BY_OWNER_CURSOR_QUERY = `
+  query GetFAActivitiesByOwnerCursor($asset: String, $owner: String, $limit: Int, $cursor: bigint) {
+    fungible_asset_activities(
+      where: {
+        asset_type: {_eq: $asset}
+        owner_address: {_eq: $owner}
+        type: {_neq: "0x1::aptos_coin::GasFeeEvent"}
+        transaction_version: {_lt: $cursor}
+      }
+      limit: $limit
+      order_by: [{transaction_version: desc}, {event_index: desc}]
+    ) {
+      transaction_version
+      event_index
+      owner_address
+      type
+      amount
+    }
+  }
+`;
+
+/**
+ * Cursor-based pagination for coin/FA activities filtered by owner address.
+ * Combines asset_type + owner_address filtering to show all transactions
+ * for a specific coin for a specific user.
+ */
+export function useGetCoinActivitiesByOwnerCursor(
+  asset: string,
+  owner: string,
+  limit: number = 25,
+  cursor?: number,
+): {
+  isLoading: boolean;
+  error: Error | undefined;
+  data: FAActivity[] | undefined;
+  hasNextPage: boolean;
+} {
+  const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
+  const standardizedOwner = tryStandardizeAddress(owner);
+  const isFirstPage = cursor === undefined;
+
+  const {isLoading, error, data} = useQuery({
+    queryKey: [
+      "coinActivitiesByOwnerCursor",
+      asset,
+      standardizedOwner,
+      limit,
+      cursor ?? "first",
+      networkValue,
+    ],
+    queryFn: () =>
+      client.queryIndexer<{
+        fungible_asset_activities: FAActivity[];
+      }>({
+        query: {
+          query: isFirstPage
+            ? COIN_ACTIVITIES_BY_OWNER_FIRST_PAGE_QUERY
+            : COIN_ACTIVITIES_BY_OWNER_CURSOR_QUERY,
+          variables: isFirstPage
+            ? {asset, owner: standardizedOwner, limit: limit + 1}
+            : {asset, owner: standardizedOwner, limit: limit + 1, cursor},
+        },
+      }),
+    enabled: !!standardizedOwner && !!asset,
+    staleTime: 10_000,
+  });
+
+  const activities = data?.fungible_asset_activities;
+  const hasNextPage = (activities?.length ?? 0) > limit;
+  const pageData = activities?.slice(0, limit);
+
+  return {
+    isLoading,
+    error: error ? (error as Error) : undefined,
+    data: pageData,
+    hasNextPage,
   };
 }
