@@ -24,6 +24,7 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
 - Account: `/account/{address}`
   - Tabs: `/account/{address}/transactions`, `/account/{address}/coins`, `/account/{address}/tokens`, `/account/{address}/resources`, `/account/{address}/modules`, `/account/{address}/multisig`, `/account/{address}/gas-impact`, `/account/{address}/info`
   - Module source: `/account/{address}/modules/{moduleName}`
+  - Historical module code: the Modules tab includes a version selector to view packages and source at any previous publish transaction
 - Block: `/block/{height}`
   - Tabs: `/block/{height}/overview`, `/block/{height}/transactions`
 - Validators: `/validators`

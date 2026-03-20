@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-20 (rev 6)
+> Last updated: 2026-03-20 (rev 7)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -54,7 +54,7 @@ Each detail page has tabs accessible via path segments:
   - `/account/{address}/coins` — fungible token balances
   - `/account/{address}/tokens` — NFTs owned by this account
   - `/account/{address}/resources` — raw Move resources stored under the account
-  - `/account/{address}/modules` — Move smart contract modules deployed here
+  - `/account/{address}/modules` — Move smart contract modules deployed here (includes a version selector to browse historical publish versions and view code at any past ledger version)
   - `/account/{address}/multisig` — multisig transaction queue (if account is a multisig)
   - `/account/{address}/gas-impact` — AIP-140 gas cost impact analysis for recent transactions
   - `/account/{address}/info` — sequence number, authentication key, account type
@@ -219,6 +219,9 @@ A: Enter `alice.apt` in the explorer search bar — it resolves the ANS name and
 **Q: "How can I see the APT fungible asset (not the coin)?"**
 A: The APT fungible asset metadata lives at address `0xa` (the paired FA for `0x1::aptos_coin::AptosCoin`). Visit `https://explorer.aptoslabs.com/fungible_asset/0xa` for its info and holders.
 
+**Q: "Can I see how a module looked before it was upgraded?"**
+A: Yes — visit the account's Modules tab and use the version selector dropdown to pick a previous publish transaction. The explorer fetches the packages, source code, and ABI as they existed at that ledger version.
+
 ---
 
 ## Explorer Page Types
@@ -240,7 +243,7 @@ Tabs include:
 - **Coins**: Fungible token balances (both legacy coins and FA-standard tokens)
 - **Tokens**: NFTs owned by this account (Token v2 / Digital Asset standard)
 - **Resources**: Raw Move resources stored under the account (JSON view)
-- **Modules**: Smart contract code deployed by this account (with source if verified)
+- **Modules**: Smart contract code deployed by this account (with source if verified). A version selector lets you browse the full publish history and view packages, source, and ABI at any previous ledger version.
 - **Multisig**: Pending and completed multisig transactions (if applicable)
 - **Gas Impact**: AIP-140 gas cost analysis for recent transactions
 - **Info**: Account sequence number, authentication key, account type
@@ -296,7 +299,7 @@ The explorer fetches data from these Aptos APIs (for reference — these are not
 ### REST API (Node/Fullnode)
 - `GET /accounts/{address}` — Account info (sequence number, auth key)
 - `GET /accounts/{address}/resources` — All Move resources
-- `GET /accounts/{address}/modules` — All Move modules
+- `GET /accounts/{address}/modules` — All Move modules (supports `?ledger_version={version}` for historical state)
 - `GET /transactions` — Recent transaction list
 - `GET /transactions/by_hash/{hash}` — Transaction by hash
 - `GET /transactions/by_version/{version}` — Transaction by version
@@ -321,7 +324,7 @@ The explorer **cannot** do the following:
 - **No cross-chain data**: Only Aptos L1 is supported — no bridged asset tracking or multi-chain views
 - **No wallet signing**: The explorer is read-only for browsing; it does not initiate or sign transactions on your behalf
 - **No full-text search of code**: Module source can be viewed but not searched across all accounts
-- **No time-range queries**: Transaction/event history is paginated, not filterable by date range
+- **No time-range queries**: Transaction/event history is paginated, not filterable by date range (exception: the Modules tab lets you browse historical code by publish transaction version)
 - **No private/encrypted data**: Only public on-chain state is displayed
 - **Testnet/devnet data resets**: These networks reset periodically; historical data may be unavailable
 - **No historical balance snapshots**: Only current balances are shown
