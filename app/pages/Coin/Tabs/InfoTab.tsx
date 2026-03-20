@@ -3,6 +3,7 @@ import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {Box} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
+import {useGetFirstCoinActivity} from "../../../api/hooks/useGetCoinActivities";
 import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {SupplyType} from "../../../api/hooks/useGetCoinSupplyLimit";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -28,6 +29,7 @@ export default function InfoTab({
   pairedFa,
   coinData,
 }: InfoTabProps) {
+  const {data: firstActivity} = useGetFirstCoinActivity(struct);
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
   }
@@ -154,6 +156,18 @@ export default function InfoTab({
                   size="large"
                   hash={pairedFa}
                   type={HashType.FUNGIBLE_ASSET}
+                />
+              }
+            />
+          )}
+          {firstActivity && (
+            <ContentRow
+              title={"First Activity:"}
+              value={
+                <HashButton
+                  size="large"
+                  hash={firstActivity.transaction_version.toString()}
+                  type={HashType.TRANSACTION}
                 />
               }
             />
