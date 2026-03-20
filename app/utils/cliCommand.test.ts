@@ -267,7 +267,7 @@ describe("extractEntryFunctionPayload", () => {
           code: {bytecode: "0xabc"},
           type_arguments: [],
           arguments: [],
-        } as any,
+        } as never,
       },
       events: [],
       timestamp: "0",
