@@ -30,6 +30,7 @@ import type {CoinData} from "../Components/CoinData";
 type TransactionsTabProps = {
   struct: string;
   data: CoinData | undefined;
+  pairedFa: string | null;
 };
 
 const LIMIT = 25;
@@ -73,7 +74,11 @@ function matchesFilter(activity: FAActivity, filter: ActivityTypeFilter) {
   }
 }
 
-export default function TransactionsTab({struct, data}: TransactionsTabProps) {
+export default function TransactionsTab({
+  struct,
+  data,
+  pairedFa,
+}: TransactionsTabProps) {
   const [cursorStack, setCursorStack] = useState<number[]>([]);
   const [filter, setFilter] = useState<ActivityTypeFilter>("all");
   const [prevStruct, setPrevStruct] = useState(struct);
@@ -84,9 +89,10 @@ export default function TransactionsTab({struct, data}: TransactionsTabProps) {
     setFilter("all");
   }
 
+  const asset = pairedFa ?? struct;
   const cursor =
     cursorStack.length > 0 ? cursorStack[cursorStack.length - 1] : undefined;
-  const activityData = useGetCoinActivitiesCursor(struct, LIMIT, cursor);
+  const activityData = useGetCoinActivitiesCursor(asset, LIMIT, cursor);
 
   const handleNextPage = useCallback(() => {
     if (activityData.data && activityData.data.length > 0) {

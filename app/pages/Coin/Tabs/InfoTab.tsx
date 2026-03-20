@@ -29,7 +29,7 @@ export default function InfoTab({
   pairedFa,
   coinData,
 }: InfoTabProps) {
-  const {data: firstActivity} = useGetFirstCoinActivity(struct);
+  const {data: firstActivity} = useGetFirstCoinActivity(pairedFa ?? struct);
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
   }
