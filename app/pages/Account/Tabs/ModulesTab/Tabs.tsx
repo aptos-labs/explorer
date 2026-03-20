@@ -2,7 +2,7 @@ import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import InventoryOutlinedIcon from "@mui/icons-material/InventoryOutlined";
 import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import {Box, useTheme} from "@mui/material";
+import {Box, Tooltip, useTheme} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import type React from "react";
 import {useEffect, useState} from "react";
@@ -70,7 +70,6 @@ function RunContract({
 }: {
   address: string;
   isObject: boolean;
-  ledgerVersion?: number;
 }) {
   return <Contract address={address} isObject={isObject} isRead={false} />;
 }
@@ -81,7 +80,6 @@ function ReadContract({
 }: {
   address: string;
   isObject: boolean;
-  ledgerVersion?: number;
 }) {
   return <Contract address={address} isObject={isObject} isRead={true} />;
 }
@@ -133,6 +131,14 @@ function ModulesTabs({
   const [ledgerVersion, setLedgerVersion] = useState<number | undefined>(
     undefined,
   );
+
+  const handleVersionChange = (version: number | undefined) => {
+    setLedgerVersion(version);
+    if (version !== undefined && (value === "run" || value === "view")) {
+      const path = `/${accountPagePath(isObject)}/${address}/modules/code`;
+      navigate({to: path, replace: true});
+    }
+  };
 
   // Parse path params from splat route
   const {modulesTab, selectedModuleName, selectedFnName} =
@@ -277,21 +283,39 @@ function ModulesTabs({
         <ModuleVersionSelector
           address={address}
           selectedVersion={ledgerVersion}
-          onVersionChange={setLedgerVersion}
+          onVersionChange={handleVersionChange}
         />
         <Box mt={2}>
           <StyledTabs value={value} onChange={handleChange}>
-            {tabValues.map((value, i) => (
-              <StyledTab
-                secondary
-                key={value}
-                value={value}
-                icon={getTabIcon(value)}
-                label={getTabLabel(value)}
-                isFirst={i === 0}
-                isLast={i === tabValues.length - 1}
-              />
-            ))}
+            {tabValues.map((tabKey, i) => {
+              const isDisabled =
+                ledgerVersion !== undefined &&
+                (tabKey === "run" || tabKey === "view");
+              const tab = (
+                <StyledTab
+                  secondary
+                  key={tabKey}
+                  value={tabKey}
+                  icon={getTabIcon(tabKey)}
+                  label={getTabLabel(tabKey)}
+                  isFirst={i === 0}
+                  isLast={i === tabValues.length - 1}
+                  disabled={isDisabled}
+                />
+              );
+              if (isDisabled) {
+                return (
+                  <Tooltip
+                    key={tabKey}
+                    title="Run and View are not available for historical versions"
+                    arrow
+                  >
+                    <span>{tab}</span>
+                  </Tooltip>
+                );
+              }
+              return tab;
+            })}
           </StyledTabs>
         </Box>
       </Box>

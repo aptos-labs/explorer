@@ -19,16 +19,49 @@ interface ModuleVersionSelectorProps {
   onVersionChange: (version: number | undefined) => void;
 }
 
+const utcFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "UTC",
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
 function formatTimestamp(timestamp: string): string {
-  if (typeof window === "undefined") return "-";
   const date = new Date(timestamp);
-  return date.toLocaleString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  return `${utcFormatter.format(date)} UTC`;
+}
+
+function SelectedVersionIndicator({
+  selectedVersion,
+  onVersionChange,
+}: {
+  selectedVersion: number;
+  onVersionChange: (version: number | undefined) => void;
+}) {
+  return (
+    <>
+      <Box>
+        <Chip
+          label={`Viewing historical version ${selectedVersion.toLocaleString()}`}
+          color="warning"
+          size="small"
+          variant="outlined"
+          onDelete={() => onVersionChange(undefined)}
+        />
+      </Box>
+      <Link to={`/txn/${selectedVersion}`} style={{textDecoration: "none"}}>
+        <Typography
+          variant="caption"
+          color="primary"
+          sx={{cursor: "pointer", "&:hover": {textDecoration: "underline"}}}
+        >
+          View Transaction
+        </Typography>
+      </Link>
+    </>
+  );
 }
 
 export default function ModuleVersionSelector({
@@ -38,8 +71,9 @@ export default function ModuleVersionSelector({
 }: ModuleVersionSelectorProps) {
   const theme = useTheme();
   const {data: publishHistory, isLoading} = useGetModulePublishHistory(address);
+  const hasHistory = publishHistory && publishHistory.length > 0;
 
-  if (isLoading) {
+  if (isLoading && selectedVersion === undefined) {
     return (
       <Stack direction="row" alignItems="center" spacing={1}>
         <HistoryOutlinedIcon fontSize="small" color="action" />
@@ -48,8 +82,25 @@ export default function ModuleVersionSelector({
     );
   }
 
-  if (!publishHistory || publishHistory.length === 0) {
+  if (!hasHistory && selectedVersion === undefined) {
     return null;
+  }
+
+  if (!hasHistory && selectedVersion !== undefined) {
+    return (
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1.5}
+        sx={{flexWrap: "wrap"}}
+      >
+        <HistoryOutlinedIcon fontSize="small" color="action" />
+        <SelectedVersionIndicator
+          selectedVersion={selectedVersion}
+          onVersionChange={onVersionChange}
+        />
+      </Stack>
+    );
   }
 
   const handleChange = (event: SelectChangeEvent<string>) => {
@@ -89,7 +140,7 @@ export default function ModuleVersionSelector({
             <Chip label="current" size="small" color="primary" />
           </Stack>
         </MenuItem>
-        {publishHistory.map((txn) => (
+        {publishHistory?.map((txn) => (
           <MenuItem key={txn.version} value={txn.version.toString()}>
             <Stack direction="column">
               <Typography variant="body2">
@@ -103,26 +154,10 @@ export default function ModuleVersionSelector({
         ))}
       </Select>
       {selectedVersion !== undefined && (
-        <Box>
-          <Chip
-            label={`Viewing historical version ${selectedVersion.toLocaleString()}`}
-            color="warning"
-            size="small"
-            variant="outlined"
-            onDelete={() => onVersionChange(undefined)}
-          />
-        </Box>
-      )}
-      {selectedVersion !== undefined && (
-        <Link to={`/txn/${selectedVersion}`} style={{textDecoration: "none"}}>
-          <Typography
-            variant="caption"
-            color="primary"
-            sx={{cursor: "pointer", "&:hover": {textDecoration: "underline"}}}
-          >
-            View Transaction
-          </Typography>
-        </Link>
+        <SelectedVersionIndicator
+          selectedVersion={selectedVersion}
+          onVersionChange={onVersionChange}
+        />
       )}
     </Stack>
   );
