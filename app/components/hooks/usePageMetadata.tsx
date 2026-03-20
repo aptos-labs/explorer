@@ -137,6 +137,60 @@ function pathnameFromCanonicalUrl(canonicalUrl: string): string {
   }
 }
 
+function decodePathSegment(segment: string): string {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
+}
+
+/** Move type segment between `/coin/` and optional `/{tab}` (supports URL-encoded `::`). */
+function entityIdFromCoinPath(pathname: string): string | undefined {
+  const m = /^\/coin\/([^/]+)(?:\/[^/]+)?\/?$/.exec(pathname);
+  return m ? decodePathSegment(m[1]) : undefined;
+}
+
+/** FA metadata address between `/fungible_asset/` and optional tab. */
+function entityIdFromFungibleAssetPath(pathname: string): string | undefined {
+  const m = /^\/fungible_asset\/([^/]+)(?:\/[^/]+)?\/?$/.exec(pathname);
+  return m ? decodePathSegment(m[1]) : undefined;
+}
+
+/** Token id between `/token/` and optional tab (supports encoded ids). */
+function entityIdFromTokenPath(pathname: string): string | undefined {
+  const m = /^\/token\/([^/]+)(?:\/[^/]+)?\/?$/.exec(pathname);
+  return m ? decodePathSegment(m[1]) : undefined;
+}
+
+/** CollectionPage for major list hubs (type `website` + exact path). */
+function hubCollectionPageSchema(
+  pathname: string,
+  canonicalUrl: string,
+  description: string | undefined,
+): StructuredDataProps | null {
+  const hubs: Record<string, {name: string}> = {
+    "/transactions": {name: "Transactions"},
+    "/blocks": {name: "Latest Blocks"},
+    "/coins": {name: "Coins & Fungible Assets"},
+  };
+  const config = hubs[pathname];
+  if (!config) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: config.name,
+    headline: config.name,
+    url: canonicalUrl,
+    description,
+    isPartOf: {
+      "@type": "WebSite",
+      name: SITE_NAME,
+      url: BASE_URL,
+    },
+  };
+}
+
 /**
  * Generate JSON-LD structured data for the page
  */
@@ -283,7 +337,7 @@ function generateStructuredData(
           if (path.startsWith("/object/")) {
             return path.split("/object/")[1]?.split("/")[0];
           }
-          return canonicalUrl.split("/token/")[1]?.split("/")[0];
+          return entityIdFromTokenPath(path);
         })(),
         isAccessibleForFree: true,
       });
@@ -296,8 +350,9 @@ function generateStructuredData(
         url: canonicalUrl,
         description: props.description,
         category: "Cryptocurrency",
-        // Move type identifier for the coin (e.g. 0x1::aptos_coin::AptosCoin)
-        identifier: canonicalUrl.split("/coin/")[1]?.split("/")[0] ?? undefined,
+        identifier: entityIdFromCoinPath(
+          pathnameFromCanonicalUrl(canonicalUrl),
+        ),
         isAccessibleForFree: true,
         provider: {
           "@type": "Organization",
@@ -314,8 +369,9 @@ function generateStructuredData(
         url: canonicalUrl,
         description: props.description,
         category: "Cryptocurrency",
-        identifier:
-          canonicalUrl.split("/fungible_asset/")[1]?.split("/")[0] ?? undefined,
+        identifier: entityIdFromFungibleAssetPath(
+          pathnameFromCanonicalUrl(canonicalUrl),
+        ),
         isAccessibleForFree: true,
         provider: {
           "@type": "Organization",
@@ -345,6 +401,14 @@ function generateStructuredData(
       break;
     default:
       break;
+  }
+
+  if (props.type === "website") {
+    const path = pathnameFromCanonicalUrl(canonicalUrl);
+    const hub = hubCollectionPageSchema(path, canonicalUrl, props.description);
+    if (hub) {
+      structuredDataItems.push(hub);
+    }
   }
 
   return structuredDataItems;

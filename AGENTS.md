@@ -339,6 +339,8 @@ The explorer maintains dedicated documentation for AI systems and LLM-powered to
 | `public/sitemap.xml` | Static URL list for crawlers | New high-value static or semi-static pages |
 | `app/components/hooks/usePageMetadata.tsx` | JSON-LD structured data per page type | New page types or schema improvements |
 | `app/routes/__root.tsx` | Root `<head>` AI meta tags and LLM doc link hints | Site-level description or topic changes |
+| `docs/LLM_ACCESS.md` | Contributor quick reference (metadata SSOT, drift tests) | When LLM/SEO workflow changes |
+| `app/utils/llmsRouteCoverage.test.ts` | Ensures `llms.txt` / `llms-full.txt` keep core path snippets | When extending documented routes |
 
 ### Route / Tab Checklist
 
@@ -373,5 +375,5 @@ When you **remove or rename a route**, remove or update the corresponding entrie
 - **Deployment**: Check `netlify.toml` and `RATE_LIMITING.md`
 - **Caching & refresh times**: See `CACHING.md`
 - **Context optimization**: See `CONTEXT_OPTIMIZATION.md`
-- **LLM/AI discoverability**: See `public/llms.txt`, `public/llms-full.txt`, and `public/robots.txt`
+- **LLM/AI discoverability**: See `docs/LLM_ACCESS.md`, `public/llms.txt`, `public/llms-full.txt`, and `public/robots.txt`
 - **Search URL for AI links**: `/?search={query}` — the home page search bar accepts this param and shows inline results
