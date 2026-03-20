@@ -27,6 +27,15 @@ const REQUIRED_PATH_SNIPPETS = [
   "gas-impact",
   /** Account/object modules tab */
   "/modules",
+  /** Validator list default tab */
+  "/validators/all",
+  /** Transaction detail tab */
+  "userTxnOverview",
+  "balanceChange",
+  /** Account multisig tab */
+  "/multisig",
+  /** Validators enhanced delegation tab */
+  "enhanced_delegation",
 ] as const;
 
 const _dirname = dirname(fileURLToPath(import.meta.url));

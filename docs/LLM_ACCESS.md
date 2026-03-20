@@ -14,6 +14,14 @@ Prefer a **single source** for `<title>`, canonical URL, Open Graph, Twitter, an
 
 [`app/utils/llmsRouteCoverage.test.ts`](../app/utils/llmsRouteCoverage.test.ts) asserts that core path snippets appear in **both** `llms.txt` and `llms-full.txt`. When you add a major top-level area, extend `REQUIRED_PATH_SNIPPETS` and update the public docs.
 
+## TanStack Router `head()` audit (2026-03-20)
+
+Searched the app route tree for per-route `head:` callbacks (TanStack Router file routes under `app/routes/`).
+
+**Finding:** Only [`app/routes/__root.tsx`](../app/routes/__root.tsx) defines `head()`. It sets global defaults (charset, viewport, baseline title/description, AI meta hints, font links). **No child route duplicates** `head()`; page-specific SEO and JSON-LD should continue to use [`PageMetadata`](../app/components/hooks/usePageMetadata.tsx) (`react-helmet-async`) so titles and canonical URLs stay in one place.
+
+**When adding a route:** Prefer `PageMetadata` in the page component. Do not reintroduce route-level `head()` for the same tags unless there is no suitable layout component yet.
+
 ## Public reference files
 
 | File | Role |

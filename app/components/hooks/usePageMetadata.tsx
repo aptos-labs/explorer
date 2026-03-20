@@ -163,18 +163,54 @@ function entityIdFromTokenPath(pathname: string): string | undefined {
   return m ? decodePathSegment(m[1]) : undefined;
 }
 
-/** CollectionPage for major list hubs (type `website` + exact path). */
+/** Human-readable hub title for `/validators/{tab}` JSON-LD. */
+function validatorsHubCollectionName(tab: string): string {
+  switch (tab) {
+    case "delegation":
+      return "Delegation Nodes";
+    case "enhanced_delegation":
+      return "Enhanced Delegation";
+    case "all":
+      return "Validators";
+    default:
+      return "Validators";
+  }
+}
+
+/** CollectionPage for major list hubs (type `website` + path match). */
 function hubCollectionPageSchema(
   pathname: string,
   canonicalUrl: string,
   description: string | undefined,
 ): StructuredDataProps | null {
+  const normalized = pathname.replace(/\/$/, "") || "/";
+
+  const validatorsMatch = /^\/validators\/([^/]+)$/.exec(normalized);
+  if (validatorsMatch) {
+    const tab = validatorsMatch[1];
+    const name = validatorsHubCollectionName(tab);
+    return {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name,
+      headline: name,
+      url: canonicalUrl,
+      description,
+      isPartOf: {
+        "@type": "WebSite",
+        name: SITE_NAME,
+        url: BASE_URL,
+      },
+    };
+  }
+
   const hubs: Record<string, {name: string}> = {
     "/transactions": {name: "Transactions"},
     "/blocks": {name: "Latest Blocks"},
     "/coins": {name: "Coins & Fungible Assets"},
+    "/analytics": {name: "Network Analytics"},
   };
-  const config = hubs[pathname];
+  const config = hubs[normalized];
   if (!config) return null;
   return {
     "@context": "https://schema.org",
