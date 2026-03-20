@@ -29,13 +29,21 @@ const _dirname = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(_dirname, "..", "..", "public");
 
 describe("LLM docs route coverage", () => {
-  it("llms.txt and llms-full.txt mention core explorer path patterns", () => {
-    const shortDoc = readFileSync(join(publicDir, "llms.txt"), "utf8");
-    const fullDoc = readFileSync(join(publicDir, "llms-full.txt"), "utf8");
-    const combined = `${shortDoc}\n${fullDoc}`;
+  const shortDoc = readFileSync(join(publicDir, "llms.txt"), "utf8");
+  const fullDoc = readFileSync(join(publicDir, "llms-full.txt"), "utf8");
 
+  it("llms-full.txt documents every core path pattern", () => {
     for (const snippet of REQUIRED_PATH_SNIPPETS) {
-      expect(combined, `Expected llms docs to include "${snippet}"`).toContain(
+      expect(
+        fullDoc,
+        `Expected llms-full.txt to include "${snippet}"`,
+      ).toContain(snippet);
+    }
+  });
+
+  it("llms.txt documents every core path pattern", () => {
+    for (const snippet of REQUIRED_PATH_SNIPPETS) {
+      expect(shortDoc, `Expected llms.txt to include "${snippet}"`).toContain(
         snippet,
       );
     }
