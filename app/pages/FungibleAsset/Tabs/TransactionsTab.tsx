@@ -187,7 +187,7 @@ export function FAActivityTable({activities}: {activities: FAActivity[]}) {
         {activities.map((activity) => {
           return (
             <GeneralTableRow
-              key={`${activity.transaction_version}-${activity.type}`}
+              key={`${activity.transaction_version}-${activity.event_index}`}
             >
               <GeneralTableCell>
                 <HashButton

@@ -3,6 +3,7 @@ import {useNetworkValue, useSdkV2Client} from "../../global-config";
 
 export type FAActivity = {
   transaction_version: number;
+  event_index: number;
   owner_address: string;
   type: string;
   amount: number | null;
@@ -49,10 +50,10 @@ const COIN_ACTIVITIES_CURSOR_QUERY = `
         transaction_version: {_lt: $cursor}
       }
       limit: $limit
-      order_by: {transaction_version: desc}
-      distinct_on: transaction_version
+      order_by: [{transaction_version: desc}, {event_index: desc}]
     ) {
       transaction_version
+      event_index
       owner_address
       type
       amount
@@ -68,10 +69,10 @@ const COIN_ACTIVITIES_FIRST_PAGE_QUERY = `
         type: {_neq: "0x1::aptos_coin::GasFeeEvent"}
       }
       limit: $limit
-      order_by: {transaction_version: desc}
-      distinct_on: transaction_version
+      order_by: [{transaction_version: desc}, {event_index: desc}]
     ) {
       transaction_version
+      event_index
       owner_address
       type
       amount
@@ -120,7 +121,9 @@ export function useGetCoinActivities(
 
 /**
  * Cursor-based pagination for coin/FA activities.
- * Uses transaction_version as cursor instead of offset, avoiding expensive count queries.
+ * Uses transaction_version as cursor instead of offset, avoiding expensive
+ * count and distinct_on queries. Returns individual activity rows
+ * (deposits, withdraws, mints, burns) rather than unique transactions.
  */
 export function useGetCoinActivitiesCursor(
   asset: string,
