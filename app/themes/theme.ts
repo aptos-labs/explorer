@@ -2,7 +2,7 @@ import {alpha, type PaletteMode} from "@mui/material";
 import type {ThemeOptions} from "@mui/material/styles";
 import type React from "react";
 import {brandColors, getSemanticColors} from "./colors/aptosBrandColors";
-import {fontFamilyMono, fontFamilySans} from "./typography";
+import {fontFamilyMono, fontFamilySans, fontFamilySerif} from "./typography";
 
 // Button variants
 declare module "@mui/material/Button" {
@@ -73,26 +73,32 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
       fontWeightRegular: 400,
       fontWeightBold: 600,
       h1: {
+        fontFamily: fontFamilySerif,
         fontWeight: "600",
         letterSpacing: "-0.02em",
       },
       h2: {
+        fontFamily: fontFamilySerif,
         fontWeight: "600",
         letterSpacing: "-0.02em",
       },
       h3: {
+        fontFamily: fontFamilySerif,
         fontWeight: "600",
         letterSpacing: "-0.015em",
       },
       h4: {
+        fontFamily: fontFamilySans,
         fontWeight: "600",
         letterSpacing: "-0.015em",
       },
       h5: {
+        fontFamily: fontFamilySans,
         fontWeight: "600",
         letterSpacing: "-0.01em",
       },
       h6: {
+        fontFamily: fontFamilySans,
         fontWeight: "600",
         letterSpacing: "-0.01em",
       },
