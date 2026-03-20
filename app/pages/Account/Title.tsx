@@ -9,6 +9,7 @@ import TitleHashButton, {
   HashType,
   NameType,
 } from "../../components/TitleHashButton";
+import {truncateAddress} from "../../utils";
 import {getAccountTabHeadLabel} from "./accountTabLabels";
 import {useIsDaaAccount} from "./hooks/useIsDaaAccount";
 
@@ -70,8 +71,7 @@ export default function AccountTitle({
     keywords = ["DAA", "derivable", "cross-chain", "account"];
   }
 
-  // Truncate address for title to keep it reasonable
-  const shortAddress = `${address.slice(0, 10)}...${address.slice(-8)}`;
+  const displayAddr = truncateAddress(address);
 
   const tab = pathTab ?? "transactions";
   const tabHead = getAccountTabHeadLabel(pathTab);
@@ -81,8 +81,8 @@ export default function AccountTitle({
 
   const metadataTitle =
     pathTab !== undefined
-      ? `${tabHead} | ${title} ${shortAddress}`
-      : `${title} ${shortAddress}`;
+      ? `${tabHead} | ${title} ${displayAddr}`
+      : `${title} ${displayAddr}`;
 
   const metadataDescription =
     pathTab !== undefined && address && !isDeleted
