@@ -50,9 +50,16 @@ function _subscribeToNow(onStoreChange: () => void) {
 }
 
 const _getNowSnapshot = () => _nowSnapshot;
+// On the server there is no live clock; return epoch so SSR output is stable
+// and hydration never mismatches the client's first snapshot.
+const _getServerNowSnapshot = () => new Date(0);
 
 function useNow(): Date {
-  return useSyncExternalStore(_subscribeToNow, _getNowSnapshot);
+  return useSyncExternalStore(
+    _subscribeToNow,
+    _getNowSnapshot,
+    _getServerNowSnapshot,
+  );
 }
 
 function formatAge(seconds: number): string {
@@ -70,8 +77,7 @@ function formatAge(seconds: number): string {
   }
 }
 
-function blockAge(block: Types.Block, now: Date): string {
-  const blockTimestamp = parseTimestamp(block.block_timestamp);
+function calcAge(blockTimestamp: Date, now: Date): string {
   const durationInSec = Math.max(
     0,
     Math.floor(getTimeDiffInSeconds(blockTimestamp, now)),
@@ -95,9 +101,13 @@ function BlockHeightCell({block}: BlockCellProps) {
 
 function BlockAgeCell({block}: BlockCellProps) {
   const now = useNow();
+  const blockTimestamp = useMemo(
+    () => parseTimestamp(block.block_timestamp),
+    [block.block_timestamp],
+  );
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      {blockAge(block, now)}
+      {calcAge(blockTimestamp, now)}
     </GeneralTableCell>
   );
 }
@@ -189,7 +199,12 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
-  const age = blockAge(block, useNow());
+  const now = useNow();
+  const blockTimestamp = useMemo(
+    () => parseTimestamp(block.block_timestamp),
+    [block.block_timestamp],
+  );
+  const age = calcAge(blockTimestamp, now);
 
   const numTransactions = (
     BigInt(block.last_version) -
