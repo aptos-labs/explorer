@@ -16,15 +16,27 @@ export const Route = createFileRoute("/")({
   component: LandingPage,
 });
 
+const SEARCH_TITLE_MAX = 72;
+
 function LandingPage() {
   const {search: initialSearch} = Route.useSearch();
   const [searching, setSearching] = useState(!!initialSearch);
 
+  const q = initialSearch?.trim() ?? "";
+  const title = q
+    ? `Search · ${
+        q.length > SEARCH_TITLE_MAX ? `${q.slice(0, SEARCH_TITLE_MAX)}…` : q
+      }`
+    : "Aptos Explorer - Blockchain Explorer";
+  const description = q
+    ? `Aptos Explorer search for “${q.length > 200 ? `${q.slice(0, 200)}…` : q}”. Results load inline on this page; use the search bar to refine or follow detected links.`
+    : "Explore transactions, accounts, blocks, validators, NFTs, and network activity on the Aptos blockchain. Real-time data, analytics, and the official block explorer for the Aptos Network.";
+
   return (
     <>
       <PageMetadata
-        title="Aptos Explorer - Blockchain Explorer"
-        description="Explore transactions, accounts, blocks, validators, NFTs, and network activity on the Aptos blockchain. Real-time data, analytics, and the official block explorer for the Aptos Network."
+        title={title}
+        description={description}
         type="website"
         keywords={[
           "Aptos",
@@ -35,8 +47,10 @@ function LandingPage() {
           "validators",
           "NFTs",
           "web3",
+          ...(q ? ["search", "lookup"] : []),
         ]}
         canonicalPath="/"
+        searchQuery={q || undefined}
       />
       <Box>
         <Typography variant="h1" sx={{mb: 2, textAlign: "center"}}>

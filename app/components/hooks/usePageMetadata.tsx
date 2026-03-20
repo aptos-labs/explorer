@@ -51,6 +51,8 @@ interface PageMetadataProps {
   structuredData?: StructuredDataProps;
   // Disable indexing for certain pages
   noIndex?: boolean;
+  /** When set with home (`/`) `website` metadata, JSON-LD `WebPage.about` carries the active search query (align with `?search=`). */
+  searchQuery?: string;
 }
 
 interface StructuredDataProps {
@@ -228,9 +230,9 @@ function hubCollectionPageSchema(
 }
 
 /**
- * Generate JSON-LD structured data for the page
+ * Generate JSON-LD structured data for the page (exported for unit tests).
  */
-function generateStructuredData(
+export function generateStructuredData(
   props: PageMetadataProps,
   fullTitle: string,
   canonicalUrl: string,
@@ -257,6 +259,7 @@ function generateStructuredData(
   };
 
   // WebPage schema for the current page
+  const homePath = pathnameFromCanonicalUrl(canonicalUrl);
   const webPageSchema: StructuredDataProps = {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -269,6 +272,19 @@ function generateStructuredData(
       name: SITE_NAME,
     },
   };
+
+  const trimmedSearch = props.searchQuery?.trim();
+  if (
+    props.type === "website" &&
+    trimmedSearch &&
+    (homePath === "/" || homePath === "")
+  ) {
+    webPageSchema.about = {
+      "@type": "Thing",
+      name: "Aptos Explorer search",
+      description: trimmedSearch,
+    };
+  }
 
   structuredDataItems.push(websiteSchema);
   structuredDataItems.push(webPageSchema);
@@ -432,6 +448,31 @@ function generateStructuredData(
           "@type": "Organization",
           name: "Aptos Network",
           url: "https://aptoslabs.com",
+        },
+      });
+      break;
+    case "article":
+      structuredDataItems.push({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: fullTitle,
+        name: fullTitle,
+        url: canonicalUrl,
+        description: props.description,
+        author: {
+          "@type": "Organization",
+          name: "Aptos Labs",
+          url: "https://aptoslabs.com",
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "Aptos Labs",
+          url: "https://aptoslabs.com",
+        },
+        isAccessibleForFree: true,
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": canonicalUrl,
         },
       });
       break;
