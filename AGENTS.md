@@ -371,6 +371,7 @@ When you **remove or rename a route**, remove or update the corresponding entrie
 - **Data fetching**: See patterns in `app/api/hooks/`
 - **Styling**: Review existing components in `app/components/`
 - **Deployment**: Check `netlify.toml` and `RATE_LIMITING.md`
+- **Caching & refresh times**: See `CACHING.md`
 - **Context optimization**: See `CONTEXT_OPTIMIZATION.md`
 - **LLM/AI discoverability**: See `public/llms.txt`, `public/llms-full.txt`, and `public/robots.txt`
 - **Search URL for AI links**: `/?search={query}` — the home page search bar accepts this param and shows inline results
