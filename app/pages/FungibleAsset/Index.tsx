@@ -35,7 +35,7 @@ export type FACombinedData = {
 
 export default function FAPage() {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
-  const params = useParams({strict: false}) as {address?: string};
+  const params = useParams({strict: false}) as {address?: string; tab?: string};
   const maybeAddress = params?.address;
   let address: string = "";
   let error: ResponseError | null = null;
@@ -84,6 +84,7 @@ export default function FAPage() {
           address={address}
           metadata={metadata ?? undefined}
           coinData={coinData}
+          pathTab={params.tab}
         />
       </Grid>
       <Grid size={{xs: 12}} sx={{mt: 2}}>

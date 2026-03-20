@@ -23,6 +23,8 @@ const REQUIRED_PATH_SNIPPETS = [
   "/transactions",
   "/verification",
   "/?search=",
+  /** Account tab documented for AIP-140 tooling */
+  "gas-impact",
 ] as const;
 
 const _dirname = dirname(fileURLToPath(import.meta.url));

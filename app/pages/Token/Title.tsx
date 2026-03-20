@@ -3,19 +3,24 @@ import {Stack, Typography} from "@mui/material";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import StyledTooltip from "../../components/StyledTooltip";
 import {labsBannedCollections} from "../../constants";
+import {truncateAddress, tryStandardizeAddress} from "../../utils";
+import {getTokenTabHeadLabel} from "./tokenTabMeta";
 
 type TokenTitleProps = {
   name: string;
-  tokenDataId: string;
   tokenCollection: string;
   imageUrl?: string;
+  /** Raw `tokenId` path param for canonical URL */
+  urlTokenId: string;
+  pathTab?: string;
 };
 
 export default function TokenTitle({
   name,
-  tokenDataId,
   tokenCollection,
   imageUrl,
+  urlTokenId,
+  pathTab = "overview",
 }: TokenTitleProps) {
   let badge = null;
   const reason = labsBannedCollections[tokenCollection];
@@ -29,11 +34,16 @@ export default function TokenTitle({
     );
   }
 
+  const canonicalTokenId = tryStandardizeAddress(urlTokenId) ?? urlTokenId;
+  const tabHead = getTokenTabHeadLabel(pathTab);
+  const metadataTitle = `${tabHead} | Token ${truncateAddress(canonicalTokenId)}`;
+  const metadataDescription = `View ${tabHead.toLowerCase()} for NFT token ${canonicalTokenId} on the Aptos blockchain.`;
+
   return (
     <Stack direction="row" alignItems="center" spacing={2} marginX={1}>
       <PageMetadata
-        title={`${name} - NFT Token`}
-        description={`View NFT "${name}" from the ${tokenCollection || "unknown"} collection on Aptos. See token metadata, ownership history, properties, and collection details.`}
+        title={metadataTitle}
+        description={metadataDescription}
         type="token"
         keywords={[
           "NFT",
@@ -43,7 +53,7 @@ export default function TokenTitle({
           "digital collectible",
           "Aptos NFT",
         ].filter(Boolean)}
-        canonicalPath={`/token/${tokenDataId}`}
+        canonicalPath={`/token/${canonicalTokenId}/${pathTab}`}
         image={imageUrl}
       />
       <Typography variant="h3" component="h1">

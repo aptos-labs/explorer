@@ -22,7 +22,7 @@ export default function BlocksPage() {
       <PageMetadata
         title="Latest Blocks"
         description="View the latest blocks produced on the Aptos blockchain. Monitor block height, epoch, round, timestamps, proposers, and included transactions. Real-time block explorer."
-        type="block"
+        type="website"
         keywords={[
           "blocks",
           "block height",

@@ -23,7 +23,7 @@ const TAB_VALUES: TabValue[] = ["info"];
 
 export default function CoinPage() {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
-  const params = useParams({strict: false}) as {struct?: string};
+  const params = useParams({strict: false}) as {struct?: string; tab?: string};
   const maybeStruct = params?.struct;
   let address = "";
   let struct: string = "";
@@ -73,6 +73,7 @@ export default function CoinPage() {
           struct={struct}
           coinData={coinData}
           symbol={(data as CoinData)?.data?.symbol}
+          pathTab={params.tab}
         />
       </Grid>
       <Grid size={{xs: 12}} sx={{mt: 2}}>

@@ -9,14 +9,21 @@ import {
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {getAssetSymbol} from "../../utils";
+import {getCoinTabHeadLabel} from "./coinTabMeta";
 
 type CoinTitleProps = {
   struct: string;
   coinData?: CoinDescription;
   symbol?: string;
+  pathTab?: string;
 };
 
-export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
+export default function CoinTitle({
+  struct,
+  coinData,
+  symbol,
+  pathTab,
+}: CoinTitleProps) {
   const assetSymbol = getAssetSymbol(
     coinData?.panoraSymbol,
     coinData?.bridge,
@@ -44,13 +51,21 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
       ? `${struct.slice(0, 20)}...${struct.slice(-15)}`
       : struct;
 
+  const tab = pathTab ?? "info";
+  const tabHead = getCoinTabHeadLabel(pathTab);
+  const baseMetaTitle = assetSymbol
+    ? `${assetSymbol} - Aptos Coin`
+    : `Coin ${shortStruct}`;
+  const metadataTitle = struct ? `${tabHead} | Coin ${struct}` : baseMetaTitle;
+  const metadataDescription = struct
+    ? `View ${tabHead.toLowerCase()} for coin ${struct} on the Aptos blockchain.`
+    : `View ${assetSymbol || "coin"} on Aptos. ${coinData?.name ? `${coinData.name}. ` : ""}See token supply, holders, price, transactions, and market information.`;
+
   return (
     <Stack direction="column" spacing={2} marginX={1}>
       <PageMetadata
-        title={
-          assetSymbol ? `${assetSymbol} - Aptos Coin` : `Coin ${shortStruct}`
-        }
-        description={`View ${assetSymbol || "coin"} on Aptos. ${coinData?.name ? `${coinData.name}. ` : ""}See token supply, holders, price, transactions, and market information.`}
+        title={metadataTitle}
+        description={metadataDescription}
         type="coin"
         keywords={[
           "coin",
@@ -60,7 +75,7 @@ export default function CoinTitle({struct, coinData, symbol}: CoinTitleProps) {
           "cryptocurrency",
           "fungible token",
         ].filter(Boolean)}
-        canonicalPath={`/coin/${struct}`}
+        canonicalPath={`/coin/${struct}/${tab}`}
         image={coinData?.logoUrl}
       />
       <Typography variant="h3" component="h1">

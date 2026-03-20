@@ -9,7 +9,10 @@ import TokenTabs from "./Tabs";
 import TokenTitle from "./Title";
 
 export default function TokenPage() {
-  const params = useParams({strict: false}) as {tokenId?: string};
+  const params = useParams({strict: false}) as {
+    tokenId?: string;
+    tab?: string;
+  };
   const tokenId = params?.tokenId ?? "";
   const {data, isLoading, error} = useGetTokenData(tokenId);
 
@@ -80,8 +83,9 @@ export default function TokenPage() {
         <Stack direction="column" spacing={4} marginTop={2}>
           <TokenTitle
             name={token?.token_name ?? ""}
-            tokenDataId={token?.token_data_id ?? ""}
             tokenCollection={token?.collection_id ?? ""}
+            urlTokenId={tokenId}
+            pathTab={params.tab}
           />
           <TokenTabs data={token} />
         </Stack>

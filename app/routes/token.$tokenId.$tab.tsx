@@ -1,8 +1,6 @@
 import {createFileRoute, redirect} from "@tanstack/react-router";
 import {PagePending} from "../components/NavigationPending";
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../lib/constants";
 import TokenPage from "../pages/Token/Index";
-import {truncateAddress, tryStandardizeAddress} from "../utils";
 
 // Primary route for token with tab in path
 // Also handles backward compatibility for old /token/:tokenId/:propertyVersion routes
@@ -25,48 +23,6 @@ export const Route = createFileRoute("/token/$tokenId/$tab")({
     }
     // Continue with normal route handling if it's a valid tab
     return;
-  },
-  head: ({params}) => {
-    const tabTitle = params.tab === "activities" ? "Activities" : "Overview";
-    const tokenId = tryStandardizeAddress(params.tokenId) ?? params.tokenId;
-    return {
-      meta: [
-        {
-          title: `${tabTitle} | Token ${truncateAddress(tokenId)} | Aptos Explorer`,
-        },
-        {
-          name: "description",
-          content: `View ${tabTitle.toLowerCase()} for NFT token ${tokenId} on the Aptos blockchain.`,
-        },
-        {
-          property: "og:title",
-          content: `${tabTitle} | Token ${truncateAddress(tokenId)} | Aptos Explorer`,
-        },
-        {
-          property: "og:description",
-          content: `View ${tabTitle.toLowerCase()} for NFT token ${tokenId} on the Aptos blockchain.`,
-        },
-        {
-          property: "og:url",
-          content: `${BASE_URL}/token/${tokenId}/${params.tab}`,
-        },
-        {property: "og:image", content: DEFAULT_OG_IMAGE},
-        {
-          name: "twitter:title",
-          content: `${tabTitle} | Token ${truncateAddress(tokenId)} | Aptos Explorer`,
-        },
-        {
-          name: "twitter:description",
-          content: `View ${tabTitle.toLowerCase()} for NFT token ${tokenId} on the Aptos blockchain.`,
-        },
-      ],
-      links: [
-        {
-          rel: "canonical",
-          href: `${BASE_URL}/token/${tokenId}/${params.tab}`,
-        },
-      ],
-    };
   },
   pendingComponent: PagePending,
   component: TokenPage,

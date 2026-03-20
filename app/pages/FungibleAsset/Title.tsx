@@ -9,15 +9,26 @@ import {
 } from "../../components/Table/VerifiedCell";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {useNetworkName} from "../../global-config/GlobalConfig";
-import {getAssetSymbol} from "../../utils";
+import {
+  getAssetSymbol,
+  truncateAddress,
+  tryStandardizeAddress,
+} from "../../utils";
+import {getFungibleAssetTabHeadLabel} from "./fungibleAssetTabMeta";
 
 type FATitleProps = {
   address: string;
   coinData: CoinDescription | undefined;
   metadata: FaMetadata | undefined;
+  pathTab?: string;
 };
 
-export default function FATitle({address, metadata, coinData}: FATitleProps) {
+export default function FATitle({
+  address,
+  metadata,
+  coinData,
+  pathTab,
+}: FATitleProps) {
   function title() {
     return "Fungible Asset";
   }
@@ -42,18 +53,25 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
     networkName,
   );
 
-  // Truncate address for title readability
-  const shortAddress = `${address.slice(0, 10)}...${address.slice(-8)}`;
+  const canonicalAddress = tryStandardizeAddress(address) ?? address;
+  const displayAddr = truncateAddress(canonicalAddress);
+  const tab = pathTab ?? "info";
+  const tabHead = getFungibleAssetTabHeadLabel(pathTab);
+  const baseMetaTitle = assetSymbol
+    ? `${assetSymbol} - Fungible Asset`
+    : `Fungible Asset ${displayAddr}`;
+  const metadataTitle = canonicalAddress
+    ? `${tabHead} | Fungible Asset ${displayAddr}`
+    : baseMetaTitle;
+  const metadataDescription = canonicalAddress
+    ? `View ${tabHead.toLowerCase()} for fungible asset ${canonicalAddress} on the Aptos blockchain.`
+    : `View ${assetSymbol || "fungible asset"} on Aptos. ${metadata?.name ? `${metadata.name}. ` : ""}See token supply, decimals, holders, metadata, and transaction history.`;
 
   return (
     <Stack direction="column" spacing={2} marginX={1}>
       <PageMetadata
-        title={
-          assetSymbol
-            ? `${assetSymbol} - Fungible Asset`
-            : `Fungible Asset ${shortAddress}`
-        }
-        description={`View ${assetSymbol || "fungible asset"} on Aptos. ${metadata?.name ? `${metadata.name}. ` : ""}See token supply, decimals, holders, metadata, and transaction history.`}
+        title={metadataTitle}
+        description={metadataDescription}
         type="fungible_asset"
         keywords={[
           "fungible asset",
@@ -63,7 +81,7 @@ export default function FATitle({address, metadata, coinData}: FATitleProps) {
           metadata?.name || "",
           "cryptocurrency",
         ].filter(Boolean)}
-        canonicalPath={`/fungible_asset/${address}`}
+        canonicalPath={`/fungible_asset/${canonicalAddress}/${tab}`}
         image={metadata?.icon_uri || coinData?.logoUrl}
       />
       <Typography variant="h3" component="h1">
