@@ -86,10 +86,17 @@ export function useGetMostRecentBlocks(
               : BigInt(ledgerData.ledger_version) + 1n
             : BigInt(String(recentRows[index - 1].version));
 
+        // Hasura returns timestamps without timezone suffix (e.g. "2024-03-19T17:40:00").
+        // Without an explicit timezone, new Date() treats the string as *local* time, which
+        // shifts the value by the user's UTC offset. Append "Z" when no timezone is present
+        // so the string is always interpreted as UTC.
+        const rawTs = row.timestamp as string;
+        const utcTs = /Z$|[+-]\d{2}:\d{2}$/.test(rawTs) ? rawTs : `${rawTs}Z`;
+
         return {
           block_height: row.block_height.toString(),
           block_hash: row.id,
-          block_timestamp: new Date(row.timestamp).getTime().toString(),
+          block_timestamp: new Date(utcTs).getTime().toString(),
           first_version: row.version.toString(),
           last_version: (nextFirstVersion - 1n).toString(),
         };

@@ -10,7 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import * as React from "react";
-import {useMemo} from "react";
+import {useEffect, useMemo, useState} from "react";
 import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../components/HashButton";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
@@ -40,14 +40,29 @@ function formatAge(seconds: number): string {
   }
 }
 
-function getBlockAge(block: Types.Block): string {
-  const blockTimestamp = parseTimestamp(block.block_timestamp);
-  const nowTimestamp = new Date();
-  const durationInSec = Math.max(
-    0,
-    Math.floor(getTimeDiffInSeconds(blockTimestamp, nowTimestamp)),
+function useBlockAge(block: Types.Block): string {
+  const blockTimestamp = React.useMemo(
+    () => parseTimestamp(block.block_timestamp),
+    [block.block_timestamp],
   );
-  return formatAge(durationInSec);
+
+  const calcAge = React.useCallback(() => {
+    const durationInSec = Math.max(
+      0,
+      Math.floor(getTimeDiffInSeconds(blockTimestamp, new Date())),
+    );
+    return formatAge(durationInSec);
+  }, [blockTimestamp]);
+
+  const [age, setAge] = useState(calcAge);
+
+  useEffect(() => {
+    setAge(calcAge());
+    const id = setInterval(() => setAge(calcAge()), 1000);
+    return () => clearInterval(id);
+  }, [calcAge]);
+
+  return age;
 }
 
 type BlockCellProps = {
@@ -65,11 +80,8 @@ function BlockHeightCell({block}: BlockCellProps) {
 }
 
 function BlockAgeCell({block}: BlockCellProps) {
-  return (
-    <GeneralTableCell sx={{textAlign: "left"}}>
-      {getBlockAge(block)}
-    </GeneralTableCell>
-  );
+  const age = useBlockAge(block);
+  return <GeneralTableCell sx={{textAlign: "left"}}>{age}</GeneralTableCell>;
 }
 
 function BlockHashCell({block}: BlockCellProps) {
@@ -159,6 +171,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
+  const age = useBlockAge(block);
 
   const numTransactions = (
     BigInt(block.last_version) -
@@ -205,7 +218,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
           Block {block.block_height}
         </Typography>
         <Typography variant="caption" color="text.secondary">
-          {getBlockAge(block)}
+          {age}
         </Typography>
       </Stack>
 
