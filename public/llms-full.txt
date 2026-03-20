@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-20 (rev 7)
+> Last updated: 2026-03-20 (rev 8)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -220,7 +220,7 @@ A: Enter `alice.apt` in the explorer search bar — it resolves the ANS name and
 A: The APT fungible asset metadata lives at address `0xa` (the paired FA for `0x1::aptos_coin::AptosCoin`). Visit `https://explorer.aptoslabs.com/fungible_asset/0xa` for its info and holders.
 
 **Q: "Can I see how a module looked before it was upgraded?"**
-A: Yes — visit the account's Modules tab and use the version selector dropdown to pick a previous publish transaction. The explorer fetches the packages, source code, and ABI as they existed at that ledger version.
+A: Yes — visit the account's Modules tab and use the version selector dropdown to pick a previous publish transaction. The explorer fetches the packages, source code, and ABI as they existed at that ledger version. Click "Compare" to see a line-by-line diff between any two versions.
 
 ---
 
@@ -243,7 +243,7 @@ Tabs include:
 - **Coins**: Fungible token balances (both legacy coins and FA-standard tokens)
 - **Tokens**: NFTs owned by this account (Token v2 / Digital Asset standard)
 - **Resources**: Raw Move resources stored under the account (JSON view)
-- **Modules**: Smart contract code deployed by this account (with source if verified). A version selector lets you browse the full publish history and view packages, source, and ABI at any previous ledger version.
+- **Modules**: Smart contract code deployed by this account (with source if verified). A version selector lets you browse the full publish history and view packages, source, and ABI at any previous ledger version. A "Compare" button opens a side-by-side diff view to see exactly what changed between two versions.
 - **Multisig**: Pending and completed multisig transactions (if applicable)
 - **Gas Impact**: AIP-140 gas cost analysis for recent transactions
 - **Info**: Account sequence number, authentication key, account type
