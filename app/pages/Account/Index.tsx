@@ -14,6 +14,7 @@ import {useNavigate} from "../../routing";
 import PageHeader from "../layout/PageHeader";
 import BalanceCard from "./BalanceCard";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
+import {DefunctProtocolBanner} from "./Components/DefunctProtocolBanner";
 import {PetraVaultBanner} from "./Components/PetraVaultBanner";
 import AccountError from "./Error";
 import {useAccountTabValues} from "./hooks/useAccountTabValues";
@@ -180,6 +181,9 @@ export default function AccountPage({
       </Grid>
       <Grid size={{xs: 12, md: 8, lg: 12}} marginTop={4} alignSelf="center">
         {networkName === Network.MAINNET && <AptosNamesBanner />}
+        {networkName === Network.MAINNET && (
+          <DefunctProtocolBanner address={address} />
+        )}
         {isMultisig && <PetraVaultBanner address={address} />}
       </Grid>
       <Grid size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
