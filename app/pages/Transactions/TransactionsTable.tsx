@@ -21,7 +21,6 @@ import {useMemo} from "react";
 import type {Types} from "~/types/aptos";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 import HashButton, {HashType} from "../../components/HashButton";
-import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
@@ -39,16 +38,12 @@ import {
   useAugmentToWithGlobalSearchParams,
   useNavigate,
 } from "../../routing";
-import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import {assertNever, standardizeAddress} from "../../utils";
 import {wouldExceedGasLimit} from "../../utils/aip140";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
-import {
-  getCoinBalanceChangeForAccount,
-  getTransactionAmount,
-  getTransactionCounterparty,
-} from "../Transaction/utils";
+import {getTransactionCounterparty} from "../Transaction/utils";
 import {getTableFormattedTimestamp, truncateAddress} from "../utils";
+import TokenTransferDisplay from "./Components/TokenTransferDisplay";
 import TransactionTypeTooltip from "./Components/TransactionTypeTooltip";
 
 type TransactionCellProps = {
@@ -166,47 +161,14 @@ function TransactionFunctionCell({transaction}: TransactionCellProps) {
   );
 }
 
-function TransactionAmount({
+function TransactionTokenTransfer({
   transaction,
   address,
 }: {
   transaction: Types.Transaction;
   address?: string;
 }) {
-  const theme = useTheme();
-  const semanticColors = getSemanticColors(theme.palette.mode);
-  if (address !== undefined) {
-    const amount = getCoinBalanceChangeForAccount(transaction, address);
-    if (amount !== undefined) {
-      let amountAbs = amount;
-      let color: string | undefined;
-      if (amount > 0) {
-        color = semanticColors.status.info;
-      } else if (amount < 0) {
-        color = semanticColors.status.error;
-        amountAbs = -amount;
-      }
-
-      return (
-        <Box sx={{color: color}}>
-          {amount > 0 && <>+</>}
-          {amount < 0 && <>-</>}
-          <APTCurrencyValue amount={amountAbs.toString()} />
-        </Box>
-      );
-    }
-  } else {
-    const amount = getTransactionAmount(transaction);
-    if (amount !== undefined) {
-      return (
-        <Box>
-          <APTCurrencyValue amount={amount.toString()} />
-        </Box>
-      );
-    }
-  }
-
-  return null;
+  return <TokenTransferDisplay transaction={transaction} address={address} />;
 }
 
 function TransactionAmountGasCell({
@@ -230,7 +192,7 @@ function TransactionAmountGasCell({
   return (
     <GeneralTableCell sx={{paddingY: 1}}>
       <Stack sx={{textAlign: "right"}}>
-        <TransactionAmount transaction={transaction} address={address} />
+        <TransactionTokenTransfer transaction={transaction} address={address} />
         <Box sx={{fontSize: 11, color: theme.palette.text.secondary}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
             <Stack
@@ -296,7 +258,6 @@ function TransactionDetailDialog({
   address,
 }: TransactionDetailDialogProps) {
   const theme = useTheme();
-  const semanticColors = getSemanticColors(theme.palette.mode);
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
   const [copiedField, setCopiedField] = React.useState<string | null>(null);
@@ -475,21 +436,12 @@ function TransactionDetailDialog({
             <Typography variant="body2" color="text.secondary" sx={{mb: 0.5}}>
               Amount
             </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                fontWeight: 500,
-                color: address
-                  ? getCoinBalanceChangeForAccount(transaction, address) > 0
-                    ? semanticColors.status.info
-                    : getCoinBalanceChangeForAccount(transaction, address) < 0
-                      ? semanticColors.status.error
-                      : undefined
-                  : undefined,
-              }}
-            >
-              <TransactionAmount transaction={transaction} address={address} />
-            </Typography>
+            <Box sx={{fontWeight: 500}}>
+              <TransactionTokenTransfer
+                transaction={transaction}
+                address={address}
+              />
+            </Box>
           </Box>
 
           {/* Gas Fee */}
@@ -648,7 +600,10 @@ function TransactionCard({transaction, address}: TransactionCardProps) {
             alignItems="center"
             sx={{flexShrink: 0}}
           >
-            <TransactionAmount transaction={transaction} address={address} />
+            <TransactionTokenTransfer
+              transaction={transaction}
+              address={address}
+            />
             {"gas_used" in transaction && "gas_unit_price" in transaction && (
               <Stack direction="row" spacing={0.5} alignItems="center">
                 {showWarnings &&

@@ -175,7 +175,7 @@ function isAptCoinEvent(
 }
 
 // Parse raw transaction events as a fallback when indexer returns no FA activities
-function parseRawEventsForBalanceChanges(
+export function parseRawEventsForBalanceChanges(
   transaction: Types.Transaction,
   coinData: CoinDescription[] | undefined,
 ): BalanceChange[] {
