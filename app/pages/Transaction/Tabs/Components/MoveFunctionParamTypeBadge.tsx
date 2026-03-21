@@ -3,13 +3,18 @@ import {getParamTypeDisplay} from "./moveParamTypeDisplay";
 
 type MoveFunctionParamTypeBadgeProps = {
   typeStr: string;
-  /** When false, match legacy Typography styling (function args table). */
-  variant?: "table" | "card";
+  /**
+   * Layout and plain (non-chip) type color:
+   * - `functionArgTable`: function-args table — monospace plain types use primary (legacy).
+   * - `typeArgTable`: type-args value column — plain types use default table text color.
+   * - `card`: stacked mobile card — slightly smaller chip; plain types use primary.
+   */
+  variant?: "functionArgTable" | "typeArgTable" | "card";
 };
 
 export default function MoveFunctionParamTypeBadge({
   typeStr,
-  variant = "table",
+  variant = "functionArgTable",
 }: MoveFunctionParamTypeBadgeProps) {
   const theme = useTheme();
   const display = getParamTypeDisplay(typeStr);
@@ -30,13 +35,15 @@ export default function MoveFunctionParamTypeBadge({
   } as const;
 
   if (display.kind === "plain") {
+    const plainColor =
+      variant === "typeArgTable" ? undefined : theme.palette.primary.main;
     return (
       <Typography
         component="span"
         variant="caption"
         sx={{
           fontFamily: "monospace",
-          color: theme.palette.primary.main,
+          ...(plainColor !== undefined ? {color: plainColor} : {}),
         }}
       >
         {display.text}
@@ -56,10 +63,10 @@ export default function MoveFunctionParamTypeBadge({
 
   return (
     <Tooltip title={display.tooltip} placement="top" enterDelay={300}>
-      {variant === "table" ? (
-        <span style={{display: "inline-flex", maxWidth: "100%"}}>{chip}</span>
-      ) : (
+      {variant === "card" ? (
         chip
+      ) : (
+        <span style={{display: "inline-flex", maxWidth: "100%"}}>{chip}</span>
       )}
     </Tooltip>
   );

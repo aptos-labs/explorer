@@ -293,7 +293,10 @@ export default function TransactionArguments({
                               borderBottom: `1px solid ${theme.palette.divider}`,
                             }}
                           >
-                            <MoveFunctionParamTypeBadge typeStr={typeArg} />
+                            <MoveFunctionParamTypeBadge
+                              typeStr={typeArg}
+                              variant="typeArgTable"
+                            />
                           </TableCell>
                         </TableRow>
                       ))}

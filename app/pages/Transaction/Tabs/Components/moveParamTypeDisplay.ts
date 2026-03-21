@@ -68,7 +68,7 @@ export type ParamTypeDisplay =
 export function getParamTypeDisplay(typeStr: string): ParamTypeDisplay {
   const trimmed = typeStr.trim();
   if (!trimmed || trimmed === "unknown") {
-    return {kind: "plain", text: typeStr};
+    return {kind: "plain", text: trimmed};
   }
 
   try {
@@ -113,6 +113,6 @@ export function getParamTypeDisplay(typeStr: string): ParamTypeDisplay {
 
     return {kind: "plain", text: trimmed};
   } catch {
-    return {kind: "plain", text: typeStr};
+    return {kind: "plain", text: trimmed};
   }
 }

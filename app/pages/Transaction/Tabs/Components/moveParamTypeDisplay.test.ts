@@ -74,6 +74,13 @@ describe("getParamTypeDisplay", () => {
       text: "unknown",
     });
   });
+
+  it("normalizes whitespace for unknown placeholder", () => {
+    expect(getParamTypeDisplay("  unknown  ")).toEqual({
+      kind: "plain",
+      text: "unknown",
+    });
+  });
 });
 
 describe("shortenTypeTagForBadge", () => {
