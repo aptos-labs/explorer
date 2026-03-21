@@ -16,7 +16,7 @@ import LoadingModal from "../../components/LoadingModal";
 import VerificationBanner from "../../components/VerificationBanner";
 import {getAssetSymbol} from "../../utils";
 import PageHeader from "../layout/PageHeader";
-import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
+import {findCoinData} from "../Transaction/utils";
 import {isValidAccountAddress} from "../utils";
 import FungibleAssetError from "./Error";
 import FATabs, {type TabValue} from "./Tabs";

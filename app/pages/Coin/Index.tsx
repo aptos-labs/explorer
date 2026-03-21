@@ -10,7 +10,7 @@ import LoadingModal from "../../components/LoadingModal";
 import VerificationBanner from "../../components/VerificationBanner";
 import {getAssetSymbol} from "../../utils";
 import PageHeader from "../layout/PageHeader";
-import {findCoinData} from "../Transaction/Tabs/BalanceChangeTab";
+import {findCoinData} from "../Transaction/utils";
 import {isValidStruct} from "../utils";
 import type {CoinData} from "./Components/CoinData";
 import CoinError from "./Error";

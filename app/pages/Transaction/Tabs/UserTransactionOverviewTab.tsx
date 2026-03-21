@@ -23,8 +23,11 @@ import {standardizeAddress, tryStandardizeAddress} from "../../../utils";
 import {extractEntryFunctionPayload} from "../../../utils/cliCommand";
 import {parseExpirationTimestamp} from "../../utils";
 import {getLearnMoreTooltip} from "../helpers";
-import {getTransactionAmount, getTransactionCounterparty} from "../utils";
-import {findCoinData} from "./BalanceChangeTab";
+import {
+  findCoinData,
+  getTransactionAmount,
+  getTransactionCounterparty,
+} from "../utils";
 import TransactionArguments from "./Components/TransactionArguments";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import TransactionFunction from "./Components/TransactionFunction";

@@ -5,7 +5,7 @@ import {
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {findCoinData} from "../../Transaction/Tabs/BalanceChangeTab";
+import {findCoinData} from "../../Transaction/utils";
 import {coinOrderIndex} from "../../utils";
 import {
   type CoinDescriptionPlusAmount,
