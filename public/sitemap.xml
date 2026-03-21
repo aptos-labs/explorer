@@ -14,13 +14,6 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- Decibel Transactions -->
-  <url>
-    <loc>https://explorer.aptoslabs.com/transactions/decibel</loc>
-    <changefreq>always</changefreq>
-    <priority>0.7</priority>
-  </url>
-
   <!-- Blocks -->
   <url>
     <loc>https://explorer.aptoslabs.com/blocks</loc>

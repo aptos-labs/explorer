@@ -46,7 +46,6 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
 - Blocks list: `/blocks`
 - Transactions list: `/transactions`
   - Filter by function: `/transactions?type=user&fn={entry_function_id}` (e.g. `?fn=0x1::coin::transfer`)
-- Decibel transactions: `/transactions/decibel` — detailed transaction browser for the Decibel network
 - Verification: `/verification`
 
 ## Key Addresses
