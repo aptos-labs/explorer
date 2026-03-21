@@ -33,6 +33,24 @@ describe("getParamTypeDisplay", () => {
     });
   });
 
+  it("returns vector badge with shortened inner and full tooltip", () => {
+    const t = "vector<0x1::string::String>";
+    expect(getParamTypeDisplay(t)).toEqual({
+      kind: "badge",
+      label: "vector<String>",
+      tooltip: t,
+    });
+  });
+
+  it("prefixes vector badge when type is a reference", () => {
+    const t = "vector<u8>";
+    expect(getParamTypeDisplay(`&${t}`)).toEqual({
+      kind: "badge",
+      label: "&vector<u8>",
+      tooltip: `&${t}`,
+    });
+  });
+
   it("prefixes label when type is a reference", () => {
     const t =
       "&0x1::object::Object<0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>>";

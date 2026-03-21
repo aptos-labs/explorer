@@ -13,7 +13,7 @@ function unwrapTypeTagRefs(tag: TypeTag): {inner: TypeTag; refPrefix: string} {
 
 /**
  * Shortens a Move type for compact badges (e.g. Option inner type).
- * Uses friendly names for std Object / String / Option and truncates long addresses.
+ * Uses friendly names for std Object / String / Option / vector and truncates long addresses.
  */
 export function shortenTypeTagForBadge(tag: TypeTag): string {
   const {inner, refPrefix} = unwrapTypeTagRefs(tag);
@@ -63,7 +63,7 @@ export type ParamTypeDisplay =
   | {kind: "plain"; text: string};
 
 /**
- * Maps a Move type string to either a badge (Object, String, Option…) or plain monospace text.
+ * Maps a Move type string to either a badge (Object, String, Option, vector…) or plain monospace text.
  */
 export function getParamTypeDisplay(typeStr: string): ParamTypeDisplay {
   const trimmed = typeStr.trim();
@@ -99,6 +99,14 @@ export function getParamTypeDisplay(typeStr: string): ParamTypeDisplay {
       return {
         kind: "badge",
         label,
+        tooltip: trimmed,
+      };
+    }
+
+    if (inner.isVector()) {
+      return {
+        kind: "badge",
+        label: `${refPrefix}vector<${shortenTypeTagForBadge(inner.value)}>`,
         tooltip: trimmed,
       };
     }
