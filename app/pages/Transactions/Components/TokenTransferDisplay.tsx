@@ -22,8 +22,10 @@ import {
 import {useNetworkName} from "../../../global-config/GlobalConfig";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {tryStandardizeAddress} from "../../../utils";
-import {parseRawEventsForBalanceChanges} from "../../Transaction/Tabs/BalanceChangeTab";
-import type {BalanceChange} from "../../Transaction/utils";
+import {
+  type BalanceChange,
+  parseRawEventsForBalanceChanges,
+} from "../../Transaction/utils";
 
 export type AggregatedTokenTransfer = {
   asset: BalanceChange["asset"];
@@ -171,8 +173,10 @@ export function TokenTransferModalProvider({
     setModalData(null);
   }, []);
 
+  const contextValue = useMemo(() => ({showModal}), [showModal]);
+
   return (
-    <TokenTransferModalContext.Provider value={{showModal}}>
+    <TokenTransferModalContext.Provider value={contextValue}>
       {children}
       {modalData && (
         <VerifiedTokensModal
@@ -229,6 +233,7 @@ function VerifiedTokensModal({
           Token Transfers
         </Typography>
         <IconButton
+          aria-label="Close"
           onClick={onClose}
           size="small"
           sx={{color: theme.palette.text.secondary}}

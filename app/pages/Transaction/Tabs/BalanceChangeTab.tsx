@@ -8,20 +8,19 @@ import {
 } from "@mui/material";
 import React from "react";
 import type {Types} from "~/types/aptos";
-import {
-  type CoinDescription,
-  useGetCoinList,
-} from "../../../api/hooks/useGetCoinList";
+import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {
   VerifiedType,
   verifiedLevel,
 } from "../../../components/Table/VerifiedCell";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
-import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
+import {getAssetSymbol} from "../../../utils";
 import {
   type BalanceChange,
   type FungibleAssetActivity,
+  findCoinData,
+  parseRawEventsForBalanceChanges,
   useTransactionBalanceChanges,
 } from "../utils";
 import {CoinBalanceChangeTable} from "./Components/CoinBalanceChangeTable";
@@ -107,210 +106,6 @@ function AggregatedBalanceTable({
       transaction={transaction}
     />
   );
-}
-
-// Type definitions for parsing write set changes
-type FungibleStoreChangeData = {
-  type: string;
-  data?: {
-    type?: string;
-    data?: {
-      metadata?: {inner: string};
-    };
-  };
-};
-
-type ObjectCoreChangeData = {
-  type: string;
-  data?: {
-    type?: string;
-    data?: {
-      owner?: string;
-    };
-  };
-};
-
-// Helper to check if a coin event is for APT
-function isAptCoinEvent(
-  event: Types.Event,
-  transaction: Types.Transaction,
-): boolean {
-  const txnChanges: Types.WriteSetChange[] =
-    "changes" in transaction ? transaction.changes : [];
-
-  // Check if there's an APT CoinStore change for this account
-  return txnChanges.some((change) => {
-    if (
-      "address" in change &&
-      change.address &&
-      tryStandardizeAddress(change.address) ===
-        tryStandardizeAddress(event.guid.account_address) &&
-      "data" in change &&
-      change.data &&
-      "type" in change.data &&
-      change.data.type === "0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>"
-    ) {
-      // Verify the event creation number matches the change's deposit/withdraw events
-      const data = change.data as {
-        data?: {
-          deposit_events?: {guid: {id: {creation_num: string}}};
-          withdraw_events?: {guid: {id: {creation_num: string}}};
-        };
-      };
-      if (data.data) {
-        const eventCreationNum = event.guid.creation_number;
-        if (event.type === "0x1::coin::DepositEvent") {
-          return (
-            data.data.deposit_events?.guid.id.creation_num === eventCreationNum
-          );
-        } else if (event.type === "0x1::coin::WithdrawEvent") {
-          return (
-            data.data.withdraw_events?.guid.id.creation_num === eventCreationNum
-          );
-        }
-      }
-    }
-    return false;
-  });
-}
-
-// Parse raw transaction events as a fallback when indexer returns no FA activities
-export function parseRawEventsForBalanceChanges(
-  transaction: Types.Transaction,
-  coinData: CoinDescription[] | undefined,
-): BalanceChange[] {
-  if (!("events" in transaction)) {
-    return [];
-  }
-
-  const events = transaction.events;
-  const changes: BalanceChange[] = [];
-
-  // Group changes by address for easier lookup
-  const changesByAddress: Record<string, Types.WriteSetChange[]> = {};
-  if ("changes" in transaction) {
-    for (const change of transaction.changes) {
-      if (
-        (change.type === "write_resource" ||
-          change.type === "create_resource") &&
-        "address" in change
-      ) {
-        const addr = tryStandardizeAddress(change.address);
-        if (addr) {
-          if (!changesByAddress[addr]) {
-            changesByAddress[addr] = [];
-          }
-          changesByAddress[addr].push(change);
-        }
-      }
-    }
-  }
-
-  for (const event of events) {
-    // Handle FA v2 module events
-    if (
-      event.type === "0x1::fungible_asset::Deposit" ||
-      event.type === "0x1::fungible_asset::Withdraw"
-    ) {
-      const data = event.data as {
-        store: string;
-        amount: string;
-      };
-
-      const storeAddress = tryStandardizeAddress(data.store);
-      if (!storeAddress) continue;
-
-      const isDeposit = event.type === "0x1::fungible_asset::Deposit";
-      const amount = BigInt(data.amount);
-
-      // Look up changes for this store address
-      const storeChanges = changesByAddress[storeAddress] ?? [];
-
-      // Find the FungibleStore to get the asset type
-      let assetType = storeAddress; // Default placeholder
-      const faStoreChange = storeChanges.find((change) => {
-        const changeData = change as FungibleStoreChangeData;
-        return changeData.data?.type === "0x1::fungible_asset::FungibleStore";
-      });
-
-      if (faStoreChange) {
-        const faData = faStoreChange as FungibleStoreChangeData;
-        if (faData.data?.data?.metadata?.inner) {
-          assetType =
-            tryStandardizeAddress(faData.data.data.metadata.inner) || assetType;
-        }
-      }
-
-      // Find the ObjectCore to get the owner address
-      let ownerAddress = storeAddress; // Default to store address if owner not found
-      const objectCoreChange = storeChanges.find((change) => {
-        const changeData = change as ObjectCoreChangeData;
-        return changeData.data?.type === "0x1::object::ObjectCore";
-      });
-
-      if (objectCoreChange) {
-        const objData = objectCoreChange as ObjectCoreChangeData;
-        if (objData.data?.data?.owner) {
-          ownerAddress =
-            tryStandardizeAddress(objData.data.data.owner) || ownerAddress;
-        }
-      }
-
-      const entry = findCoinData(coinData, assetType);
-
-      changes.push({
-        address: ownerAddress,
-        amount: isDeposit ? amount : -amount,
-        type: isDeposit ? "Deposit" : "Withdraw",
-        asset: {
-          decimals: entry?.decimals ?? 8,
-          symbol: entry?.symbol ?? "FA",
-          type: "v2",
-          id: entry?.tokenAddress ?? assetType,
-        },
-        known: entry !== undefined,
-        isInPanoraTokenList: entry?.isInPanoraTokenList,
-        isBanned: entry?.isBanned,
-        logoUrl: entry?.logoUrl,
-      });
-    }
-
-    // Handle legacy coin events - only for APT
-    if (
-      event.type === "0x1::coin::DepositEvent" ||
-      event.type === "0x1::coin::WithdrawEvent"
-    ) {
-      // Only process APT coin events to avoid incorrect balance display
-      if (!isAptCoinEvent(event, transaction)) {
-        continue;
-      }
-
-      const data = event.data as {amount: string};
-      const isDeposit = event.type === "0x1::coin::DepositEvent";
-      const amount = BigInt(data.amount);
-      const address = tryStandardizeAddress(event.guid.account_address);
-
-      if (!address) continue;
-
-      changes.push({
-        address,
-        amount: isDeposit ? amount : -amount,
-        type: isDeposit ? "Deposit" : "Withdraw",
-        asset: {
-          decimals: 8,
-          symbol: "APT",
-          type: "v1",
-          id: "0x1::aptos_coin::AptosCoin",
-        },
-        known: true,
-        isInPanoraTokenList: true,
-        isBanned: false,
-        logoUrl: "https://assets.panora.exchange/tokens/aptos/APT.svg",
-      });
-    }
-  }
-
-  return changes;
 }
 
 export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
@@ -671,28 +466,4 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
       )}
     </>
   );
-}
-
-export function findCoinData(
-  coinData: CoinDescription[] | undefined,
-  asset_type: string,
-): CoinDescription | undefined {
-  if (!asset_type) {
-    return undefined;
-  }
-  let entry: CoinDescription | undefined;
-  if (coinData) {
-    const coinType = asset_type.includes("::") ? asset_type : undefined;
-    const faAddress = asset_type && tryStandardizeAddress(asset_type);
-    entry = coinData.find((c) => {
-      const isMatchingFa =
-        faAddress &&
-        c.faAddress &&
-        tryStandardizeAddress(faAddress) === tryStandardizeAddress(c.faAddress);
-      const isMatchingCoin =
-        coinType && c.tokenAddress && c.tokenAddress === coinType;
-      return isMatchingCoin || isMatchingFa;
-    });
-  }
-  return entry;
 }
