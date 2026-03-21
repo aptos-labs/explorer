@@ -103,6 +103,13 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
     setTokenFlowSaveError(null);
 
     try {
+      if (geomiHasChanges) {
+        setExplorerSettings(draftSettings);
+        clearCachedV2Clients();
+        clearCachedSearchClients();
+        await queryClient.invalidateQueries();
+      }
+
       if (tokenFlowHasChanges && isAccountTokenFlowTabBuildEnabled()) {
         const baseline = tokenFlowBaselineRef.current;
         const required = getAccountTokenFlowTabAccessKeyFromEnv();
@@ -116,7 +123,6 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
           setTokenFlowSaveError(
             "Token tracking requires the access key configured for this deployment.",
           );
-          setIsSaving(false);
           return;
         }
         persistTokenFlowGraphSettings({
@@ -128,13 +134,7 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
         setTokenFlowDraft((d) => ({...d, accessKeyInput: ""}));
       }
 
-      if (geomiHasChanges) {
-        setExplorerSettings(draftSettings);
-        clearCachedV2Clients();
-        clearCachedSearchClients();
-        await queryClient.invalidateQueries();
-        await router.invalidate();
-      } else if (tokenFlowHasChanges) {
+      if (geomiHasChanges || tokenFlowHasChanges) {
         await router.invalidate();
       }
       onClose();
