@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-20 (rev 9)
+> Last updated: 2026-03-21 (rev 10)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -43,6 +43,7 @@ Each detail page has tabs accessible via path segments:
   - `?type=user` — show only user transactions (default when indexer is available)
   - `?type=all` — show all transaction types (user, block_metadata, state_checkpoint)
   - `?fn={entry_function_id}` — filter by entry function (e.g. `?fn=0x1::coin::transfer`). On the User Transactions view this is server-side filtering via the indexer; on the All Transactions view it filters client-side on the current page.
+- `/transactions/decibel` — detailed transaction browser for the Aptos Decibel network. Shows a network status banner (chain ID, epoch, ledger version, block height) and rich transaction cards with expandable details (events, payload, state changes, VM status). Connects directly to the Decibel network API. Append `?start={version}` for pagination.
 - `/txn/{version}` — transaction by version number (integer)
 - `/txn/{hash}` — transaction by hash (0x-prefixed hex)
 - Tab paths: `/txn/{id}/userTxnOverview`, `/txn/{id}/events`, `/txn/{id}/payload`, `/txn/{id}/changes`, `/txn/{id}/balanceChange`

@@ -38,6 +38,8 @@ const REQUIRED_PATH_SNIPPETS = [
   "/multisig",
   /** Validators enhanced delegation tab */
   "enhanced_delegation",
+  /** Decibel network transactions */
+  "/transactions/decibel",
 ] as const;
 
 const _dirname = dirname(fileURLToPath(import.meta.url));
