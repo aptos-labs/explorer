@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-20 (rev 9)
+> Last updated: 2026-03-21 (rev 10)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -52,6 +52,7 @@ Each detail page has tabs accessible via path segments:
 - Tab paths:
   - `/account/{address}/transactions` — full transaction history (supports `?fn={entry_function_id}` to filter by function, server-side via indexer)
   - `/account/{address}/coins` — fungible token balances
+  - `/account/{address}/token-flow` — optional D3 graph of inbound/outbound fungible-asset transfers for a chosen asset and timeline; uses indexer data and caches edges in browser local storage when the deployment enables it and the user opts in under Settings → Token tracking
   - `/account/{address}/tokens` — NFTs owned by this account
   - `/account/{address}/resources` — raw Move resources stored under the account
   - `/account/{address}/modules` — Move smart contract modules deployed here (includes a version selector to browse historical publish versions and view code at any past ledger version)
@@ -89,7 +90,7 @@ Each detail page has tabs accessible via path segments:
 
 #### Move Objects
 - `/object/{address}` — Move object detail page (objects implementing the Aptos Object model)
-  - Tab paths: `/object/{address}/info`, `/object/{address}/transactions`, `/object/{address}/coins`, `/object/{address}/tokens`, `/object/{address}/resources`, `/object/{address}/modules`
+  - Tab paths: `/object/{address}/info`, `/object/{address}/transactions`, `/object/{address}/coins`, `/object/{address}/token-flow`, `/object/{address}/tokens`, `/object/{address}/resources`, `/object/{address}/modules` (same `token-flow` availability rules as accounts)
   - Modules sub-tabs:
     - `/object/{address}/modules/packages`
     - `/object/{address}/modules/code/{moduleName}`

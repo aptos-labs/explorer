@@ -64,6 +64,13 @@ interface ImportMetaEnv {
     | "branch-deploy";
   // Cache busting version for validator stats (bump to force fresh data)
   readonly VITE_VALIDATOR_STATS_CACHE_VERSION?: string;
+  /** Set to "true" to ship the optional account Token flow graph tab (still requires Settings opt-in). */
+  readonly VITE_ENABLE_ACCOUNT_TOKEN_FLOW_TAB?: string;
+  /**
+   * When set, users must enter this value under Settings → Token tracking before
+   * the tab appears (the string is exposed in the client bundle).
+   */
+  readonly VITE_ACCOUNT_TOKEN_FLOW_TAB_ACCESS_KEY?: string;
 }
 
 interface ImportMeta {

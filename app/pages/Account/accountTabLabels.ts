@@ -9,6 +9,8 @@ export function getAccountTabHeadLabel(tab: string | undefined): string {
       return "Assets";
     case "tokens":
       return "NFTs";
+    case "token-flow":
+      return "Token flow";
     case "resources":
       return "Resources";
     case "modules":

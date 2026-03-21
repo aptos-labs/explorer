@@ -3,6 +3,7 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import ExtensionIcon from "@mui/icons-material/Extension";
 import GroupIcon from "@mui/icons-material/Group";
+import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
 import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import WysiwygIcon from "@mui/icons-material/Wysiwyg";
@@ -22,6 +23,7 @@ import ModulesTab from "./Tabs/ModulesTab";
 import MultisigTab from "./Tabs/MultisigTab";
 import ResourcesTab from "./Tabs/ResourcesTab";
 import TokensTab from "./Tabs/TokensTab";
+import TokenFlowGraphTab from "./Tabs/TokenFlowGraphTab";
 import TransactionsTab from "./Tabs/TransactionsTab";
 
 const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
@@ -30,6 +32,7 @@ const TabComponents = Object.freeze({
   transactions: TransactionsTab,
   coins: CoinsTab,
   tokens: TokensTab,
+  "token-flow": TokenFlowGraphTab,
   multisig: MultisigTab,
   resources: ResourcesTab,
   modules: ModulesTab,
@@ -47,6 +50,8 @@ function getTabLabel(value: TabValue): string {
       return "Assets";
     case "tokens":
       return "NFTs";
+    case "token-flow":
+      return "Token flow";
     case "multisig":
       return "Multisig";
     case "resources":
@@ -70,6 +75,8 @@ function getTabIcon(value: TabValue) {
       return <MonetizationOnOutlinedIcon fontSize="small" />;
     case "tokens":
       return <AccountBalanceWalletOutlinedIcon fontSize="small" />;
+    case "token-flow":
+      return <AccountTreeOutlinedIcon fontSize="small" />;
     case "multisig":
       return <GroupIcon fontSize="small" />;
     case "resources":

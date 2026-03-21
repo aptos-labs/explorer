@@ -25,6 +25,7 @@ const REQUIRED_PATH_SNIPPETS = [
   "/?search=",
   /** Account tab documented for AIP-140 tooling */
   "gas-impact",
+  "token-flow",
   /** Account/object modules tab */
   "/modules",
   /** Module code sub-tab (published/decompiled/disassembly) */

@@ -27,6 +27,13 @@ import {
   normalizeGeomiDevApiKeyOverride,
   useExplorerSettings,
 } from "../../settings";
+import {
+  getAccountTokenFlowTabAccessKeyFromEnv,
+  isAccountTokenFlowTabBuildEnabled,
+  loadTokenFlowGraphSettings,
+  notifyTokenFlowGraphSettingsChanged,
+  persistTokenFlowGraphSettings,
+} from "../../settings/tokenFlowGraphSettings";
 
 type SettingsDialogProps = {
   onClose: () => void;
@@ -41,17 +48,32 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
     useState<ExplorerClientSettings>(settings);
   const [isSaving, setIsSaving] = useState(false);
   const [showGeomiDevApiKey, setShowGeomiDevApiKey] = useState(false);
+  const [tokenFlowDraft, setTokenFlowDraft] = useState({
+    userEnabled: false,
+    accessKeyInput: "",
+  });
+  const [tokenFlowSaveError, setTokenFlowSaveError] = useState<string | null>(
+    null,
+  );
+  const tokenFlowBaselineRef = useRef(loadTokenFlowGraphSettings());
   const wasOpenRef = useRef(open);
 
   useEffect(() => {
     if (open && !wasOpenRef.current) {
       setDraftSettings(settings);
       setShowGeomiDevApiKey(false);
+      setTokenFlowSaveError(null);
+      const tf = loadTokenFlowGraphSettings();
+      tokenFlowBaselineRef.current = tf;
+      setTokenFlowDraft({
+        userEnabled: tf.userEnabled,
+        accessKeyInput: "",
+      });
     }
     wasOpenRef.current = open;
   }, [open, settings]);
 
-  const hasChanges = useMemo(
+  const geomiHasChanges = useMemo(
     () =>
       normalizeGeomiDevApiKeyOverride(draftSettings.geomiDevApiKeyOverride) !==
         settings.geomiDevApiKeyOverride ||
@@ -60,6 +82,17 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
     [draftSettings, settings],
   );
 
+  const tokenFlowHasChanges = useMemo(() => {
+    const baseline = tokenFlowBaselineRef.current;
+    if (tokenFlowDraft.userEnabled !== baseline.userEnabled) {
+      return true;
+    }
+    const trimmed = tokenFlowDraft.accessKeyInput.trim();
+    return trimmed !== "" && trimmed !== baseline.storedAccessKey;
+  }, [tokenFlowDraft]);
+
+  const hasChanges = geomiHasChanges || tokenFlowHasChanges;
+
   const handleSave = async () => {
     if (!hasChanges) {
       onClose();
@@ -67,13 +100,43 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
     }
 
     setIsSaving(true);
+    setTokenFlowSaveError(null);
 
     try {
-      setExplorerSettings(draftSettings);
-      clearCachedV2Clients();
-      clearCachedSearchClients();
-      await queryClient.invalidateQueries();
-      await router.invalidate();
+      if (tokenFlowHasChanges && isAccountTokenFlowTabBuildEnabled()) {
+        const baseline = tokenFlowBaselineRef.current;
+        const required = getAccountTokenFlowTabAccessKeyFromEnv();
+        const nextStoredKey =
+          tokenFlowDraft.accessKeyInput.trim() || baseline.storedAccessKey;
+        if (
+          tokenFlowDraft.userEnabled &&
+          required &&
+          nextStoredKey !== required
+        ) {
+          setTokenFlowSaveError(
+            "Token tracking requires the access key configured for this deployment.",
+          );
+          setIsSaving(false);
+          return;
+        }
+        persistTokenFlowGraphSettings({
+          userEnabled: tokenFlowDraft.userEnabled,
+          storedAccessKey: tokenFlowDraft.userEnabled ? nextStoredKey : "",
+        });
+        notifyTokenFlowGraphSettingsChanged();
+        tokenFlowBaselineRef.current = loadTokenFlowGraphSettings();
+        setTokenFlowDraft((d) => ({...d, accessKeyInput: ""}));
+      }
+
+      if (geomiHasChanges) {
+        setExplorerSettings(draftSettings);
+        clearCachedV2Clients();
+        clearCachedSearchClients();
+        await queryClient.invalidateQueries();
+        await router.invalidate();
+      } else if (tokenFlowHasChanges) {
+        await router.invalidate();
+      }
       onClose();
     } finally {
       setIsSaving(false);
@@ -170,6 +233,58 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
             Existing data will refresh after save so new requests use the
             updated key immediately.
           </Alert>
+
+          {isAccountTokenFlowTabBuildEnabled() ? (
+            <Box>
+              <Typography variant="overline" color="text.secondary">
+                Token tracking
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{mb: 1}}>
+                Enables the optional account &quot;Token flow&quot; tab (D3
+                graph). Graph edges are cached in this browser&apos;s local
+                storage per network, account, asset, and direction.
+              </Typography>
+              {getAccountTokenFlowTabAccessKeyFromEnv() ? (
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  sx={{mb: 1.5}}
+                  label="Token flow access key"
+                  type="password"
+                  value={tokenFlowDraft.accessKeyInput}
+                  onChange={(e) =>
+                    setTokenFlowDraft((d) => ({
+                      ...d,
+                      accessKeyInput: e.target.value,
+                    }))
+                  }
+                  placeholder="Required to enable token tracking"
+                  slotProps={{
+                    htmlInput: {spellCheck: false},
+                  }}
+                />
+              ) : null}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={tokenFlowDraft.userEnabled}
+                    onChange={(event) =>
+                      setTokenFlowDraft((d) => ({
+                        ...d,
+                        userEnabled: event.target.checked,
+                      }))
+                    }
+                  />
+                }
+                label="Enable token tracking (account token flow graph)"
+              />
+              {tokenFlowSaveError ? (
+                <Alert severity="error" sx={{mt: 1}}>
+                  {tokenFlowSaveError}
+                </Alert>
+              ) : null}
+            </Box>
+          ) : null}
         </Stack>
       </DialogContent>
       <DialogActions sx={{px: 3, pb: 3}}>
