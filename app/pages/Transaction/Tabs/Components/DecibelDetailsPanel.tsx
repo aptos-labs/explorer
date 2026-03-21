@@ -1,7 +1,18 @@
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InventoryOutlinedIcon from "@mui/icons-material/InventoryOutlined";
-import {Box, Chip, Divider, Stack, Typography, useTheme} from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Chip,
+  Divider,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
@@ -542,25 +553,29 @@ export default function DecibelDetailsPanel({
     "payload" in transaction && "function" in transaction.payload;
 
   return (
-    <Box
+    <Accordion
+      defaultExpanded={false}
+      disableGutters
       sx={{
         mb: 2,
-        borderRadius: `${theme.shape.borderRadius}px`,
+        borderRadius: `${theme.shape.borderRadius}px !important`,
         backgroundColor: theme.palette.background.paper,
         border: `1px solid ${theme.palette.primary.main}`,
         overflow: "hidden",
+        "&:before": {display: "none"},
+        "&.Mui-expanded": {mb: 2},
       }}
     >
-      {/* Header */}
-      <Box
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
         sx={{
           px: 3,
-          py: 1.5,
+          py: 0.5,
           backgroundColor:
             theme.palette.mode === "dark"
               ? "rgba(255,255,255,0.03)"
               : "rgba(0,0,0,0.02)",
-          borderBottom: `1px solid ${theme.palette.divider}`,
+          "& .MuiAccordionSummary-content": {margin: "8px 0"},
         }}
       >
         <Stack direction="row" spacing={1.5} alignItems="center">
@@ -577,11 +592,10 @@ export default function DecibelDetailsPanel({
             Enhanced transaction details
           </Typography>
         </Stack>
-      </Box>
+      </AccordionSummary>
 
-      <Box sx={{p: 3}}>
+      <AccordionDetails sx={{p: 3, pt: 2}}>
         <Stack spacing={3}>
-          {/* Events Timeline */}
           {events.length > 0 && (
             <Box>
               <SectionHeader
@@ -597,7 +611,6 @@ export default function DecibelDetailsPanel({
 
           {events.length > 0 && hasPayload && <Divider />}
 
-          {/* Payload Breakdown */}
           {hasPayload && (
             <Box>
               <SectionHeader
@@ -614,7 +627,6 @@ export default function DecibelDetailsPanel({
             <Divider />
           )}
 
-          {/* State Changes */}
           {changes.length > 0 && (
             <Box>
               <SectionHeader
@@ -628,7 +640,7 @@ export default function DecibelDetailsPanel({
             </Box>
           )}
         </Stack>
-      </Box>
-    </Box>
+      </AccordionDetails>
+    </Accordion>
   );
 }
