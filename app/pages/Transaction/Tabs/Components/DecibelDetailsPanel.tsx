@@ -5,6 +5,59 @@ import {Box, Chip, Divider, Stack, Typography, useTheme} from "@mui/material";
 import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
+import {tryStandardizeAddress} from "../../../../utils";
+
+const DECIBEL_ADDRESS =
+  "0x50ead22afd6ffd9769e3b3d6e0e64a2a350d68e8b102c4e72e33d0b8cfdfdb06";
+
+/**
+ * Detect whether a transaction involves the Decibel contract.
+ * Checks the sender, the payload function target, and event sources.
+ */
+export function isDecibelTransaction(transaction: Types.Transaction): boolean {
+  const normalizedDecibel = tryStandardizeAddress(DECIBEL_ADDRESS);
+  if (!normalizedDecibel) return false;
+
+  // Check sender
+  if (
+    "sender" in transaction &&
+    tryStandardizeAddress(transaction.sender) === normalizedDecibel
+  ) {
+    return true;
+  }
+
+  // Check payload function target
+  if ("payload" in transaction && "function" in transaction.payload) {
+    const fnAddr = transaction.payload.function.split("::")[0];
+    if (tryStandardizeAddress(fnAddr) === normalizedDecibel) {
+      return true;
+    }
+  }
+
+  // Check events
+  if ("events" in transaction) {
+    for (const event of transaction.events) {
+      const eventAddr = event.type.split("::")[0];
+      if (tryStandardizeAddress(eventAddr) === normalizedDecibel) {
+        return true;
+      }
+    }
+  }
+
+  // Check if any change addresses match
+  if ("changes" in transaction) {
+    for (const change of transaction.changes) {
+      if (
+        "address" in change &&
+        tryStandardizeAddress(change.address) === normalizedDecibel
+      ) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
 
 type DecibelDetailsPanelProps = {
   transaction: Types.Transaction_UserTransaction;
@@ -512,7 +565,7 @@ export default function DecibelDetailsPanel({
       >
         <Stack direction="row" spacing={1.5} alignItems="center">
           <Chip
-            label="Decibel Network"
+            label="Decibel"
             color="primary"
             size="small"
             sx={{fontWeight: 600}}

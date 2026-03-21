@@ -3,8 +3,8 @@ import type {Types} from "~/types/aptos";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {TransactionType} from "../../components/TransactionType";
-import {useNetworkName} from "../../global-config/GlobalConfig";
 import {truncateAddress} from "../../utils";
+import {isDecibelTransaction} from "./Tabs/Components/DecibelDetailsPanel";
 import {getTransactionTabHeadLabel} from "./transactionTabMeta";
 
 type TransactionTitleProps = {
@@ -21,8 +21,7 @@ export default function TransactionTitle({
   pathTab = "userTxnOverview",
 }: TransactionTitleProps) {
   const version = "version" in transaction ? transaction.version : undefined;
-  const networkName = useNetworkName();
-  const isDecibel = networkName === "decibel";
+  const isDecibel = isDecibelTransaction(transaction);
 
   const tabHead = getTransactionTabHeadLabel(pathTab);
   const displayId = truncateAddress(urlTxnHashOrVersion);
@@ -30,7 +29,7 @@ export default function TransactionTitle({
     ? `${tabHead} | Decibel Transaction ${displayId}`
     : `${tabHead} | Transaction ${displayId}`;
   const metadataDescription = isDecibel
-    ? `View ${tabHead.toLowerCase()} for Decibel network transaction ${urlTxnHashOrVersion}.`
+    ? `View ${tabHead.toLowerCase()} for Decibel transaction ${urlTxnHashOrVersion} on the Aptos blockchain.`
     : `View ${tabHead.toLowerCase()} for transaction ${urlTxnHashOrVersion} on the Aptos blockchain.`;
 
   return (
@@ -44,7 +43,7 @@ export default function TransactionTitle({
           "tx",
           transaction.type,
           version ? `version ${version}` : "",
-          ...(isDecibel ? ["decibel", "decibel network"] : []),
+          ...(isDecibel ? ["decibel"] : []),
         ].filter(Boolean)}
         canonicalPath={`/txn/${urlTxnHashOrVersion}/${pathTab}`}
       />
@@ -54,7 +53,7 @@ export default function TransactionTitle({
         </Typography>
         {isDecibel && (
           <Chip
-            label="Decibel Network"
+            label="Decibel"
             color="primary"
             size="small"
             sx={{fontWeight: 600}}

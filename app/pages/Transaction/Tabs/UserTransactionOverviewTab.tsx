@@ -19,7 +19,6 @@ import TimestampValue from "../../../components/IndividualPageContent/ContentVal
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {TransactionStatus} from "../../../components/TransactionStatus";
-import {useNetworkName} from "../../../global-config/GlobalConfig";
 import {standardizeAddress, tryStandardizeAddress} from "../../../utils";
 import {extractEntryFunctionPayload} from "../../../utils/cliCommand";
 import {parseExpirationTimestamp} from "../../utils";
@@ -29,7 +28,9 @@ import {
   getTransactionAmount,
   getTransactionCounterparty,
 } from "../utils";
-import DecibelDetailsPanel from "./Components/DecibelDetailsPanel";
+import DecibelDetailsPanel, {
+  isDecibelTransaction,
+} from "./Components/DecibelDetailsPanel";
 import TransactionArguments from "./Components/TransactionArguments";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import TransactionFunction from "./Components/TransactionFunction";
@@ -738,8 +739,7 @@ export default function UserTransactionOverviewTab({
   transaction,
 }: UserTransactionOverviewTabProps) {
   const theme = useTheme();
-  const networkName = useNetworkName();
-  const isDecibel = networkName === "decibel";
+  const isDecibel = isDecibelTransaction(transaction);
   // TODO: Get off SDK V1, this is just a patch
   const transactionData = transaction as Types.Transaction_UserTransaction & {
     replay_protection_nonce?: string;
