@@ -26,6 +26,7 @@ import {
   extractEntryFunctionPayload,
   generateCliCommand,
 } from "../../../../utils/cliCommand";
+import MoveFunctionParamTypeBadge from "./MoveFunctionParamTypeBadge";
 
 const TOOLTIP_TIME = 2000;
 
@@ -64,17 +65,7 @@ function ArgumentCard({
         >
           {isTypeArg ? `T${index}` : `#${index}`}
         </Typography>
-        {type && (
-          <Typography
-            variant="caption"
-            sx={{
-              fontFamily: "monospace",
-              color: theme.palette.primary.main,
-            }}
-          >
-            {type}
-          </Typography>
-        )}
+        {type && <MoveFunctionParamTypeBadge typeStr={type} variant="card" />}
       </Stack>
       <Typography
         variant="body2"
@@ -298,13 +289,11 @@ export default function TransactionArguments({
                           <TableCell
                             sx={{
                               ...cellSx,
-                              fontFamily: "monospace",
                               overflowWrap: "anywhere",
-                              wordBreak: "break-all",
                               borderBottom: `1px solid ${theme.palette.divider}`,
                             }}
                           >
-                            {typeArg}
+                            <MoveFunctionParamTypeBadge typeStr={typeArg} />
                           </TableCell>
                         </TableRow>
                       ))}
@@ -402,13 +391,13 @@ export default function TransactionArguments({
                             <TableCell
                               sx={{
                                 ...cellSx,
-                                fontFamily: "monospace",
-                                color: theme.palette.primary.main,
                                 borderBottom: `1px solid ${theme.palette.divider}`,
                                 overflowWrap: "anywhere",
                               }}
                             >
-                              {filteredParams[i] ?? "unknown"}
+                              <MoveFunctionParamTypeBadge
+                                typeStr={filteredParams[i] ?? "unknown"}
+                              />
                             </TableCell>
                           )}
                           <TableCell
