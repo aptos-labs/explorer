@@ -309,18 +309,29 @@ export default function TokenTransferDisplay({
         />
         {moreCount > 0 && (
           <Box
-            component="span"
+            component="button"
+            type="button"
+            onMouseDown={(e: React.MouseEvent) => {
+              e.stopPropagation();
+            }}
             onClick={(e: React.MouseEvent) => {
               e.preventDefault();
               e.stopPropagation();
               setModalOpen(true);
             }}
             sx={{
+              background: "none",
+              border: "none",
+              padding: "0 4px",
+              font: "inherit",
               color: theme.palette.primary.main,
               cursor: "pointer",
               "&:hover": {textDecoration: "underline"},
-              ml: 0.5,
+              ml: 0.25,
               fontSize: "inherit",
+              lineHeight: "inherit",
+              verticalAlign: "baseline",
+              display: "inline",
             }}
           >
             &amp; {moreCount} more
