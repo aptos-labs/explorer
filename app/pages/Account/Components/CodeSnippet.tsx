@@ -72,11 +72,15 @@ function ExpandCode({
   const codeBoxScrollRef = useRef<{scrollTop: number} | null>(null);
   const LINE_HEIGHT_IN_PX = 24;
   useEffect(() => {
+    if (!isModalOpen) {
+      return;
+    }
+
     if (codeBoxScrollRef.current) {
       codeBoxScrollRef.current.scrollTop =
         LINE_HEIGHT_IN_PX * startingLineNumber;
     }
-  });
+  }, [isModalOpen, startingLineNumber]);
 
   return (
     <Box>
@@ -288,7 +292,7 @@ export function Code({
       codeBoxScrollRef.current.scrollTop =
         LINE_HEIGHT_IN_PX * startingLineNumber;
     }
-  });
+  }, [startingLineNumber]);
 
   return (
     <Box>

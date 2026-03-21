@@ -44,12 +44,17 @@ async function loadMoveDecompilerWasm() {
   }
 
   if (!moveDecompilerModulePromise) {
-    moveDecompilerModulePromise = import(
-      "../wasm/move_decompiler_wasm.js"
-    ).then(async (module) => {
-      await module.default();
-      return module;
-    });
+    moveDecompilerModulePromise = (async () => {
+      try {
+        const module = await import("../wasm/move_decompiler_wasm.js");
+        await module.default();
+        return module;
+      } catch (error) {
+        // Retry initialization on the next request if a transient load error occurs.
+        moveDecompilerModulePromise = null;
+        throw error;
+      }
+    })();
   }
 
   return moveDecompilerModulePromise;

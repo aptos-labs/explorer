@@ -27,6 +27,8 @@ const REQUIRED_PATH_SNIPPETS = [
   "gas-impact",
   /** Account/object modules tab */
   "/modules",
+  /** Module code sub-tab (published/decompiled/disassembly) */
+  "/modules/code/",
   /** Validator list default tab */
   "/validators/all",
   /** Transaction detail tab */
