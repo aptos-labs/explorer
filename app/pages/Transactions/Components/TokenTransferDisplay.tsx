@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import type * as React from "react";
-import {useMemo, useState} from "react";
+import {createContext, useCallback, useContext, useMemo, useState} from "react";
 import type {Types} from "~/types/aptos";
 import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
 import CurrencyValue from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
@@ -140,6 +140,54 @@ export function getVerifiedTokenTransfers(
   return result;
 }
 
+// --- Modal context for lifting state up to the table level ---
+
+type TokenTransferModalData = {
+  transfers: AggregatedTokenTransfer[];
+  address?: string;
+};
+
+type TokenTransferModalContextValue = {
+  showModal: (data: TokenTransferModalData) => void;
+};
+
+const TokenTransferModalContext =
+  createContext<TokenTransferModalContextValue | null>(null);
+
+export function TokenTransferModalProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [modalData, setModalData] = useState<TokenTransferModalData | null>(
+    null,
+  );
+
+  const showModal = useCallback((data: TokenTransferModalData) => {
+    setModalData(data);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setModalData(null);
+  }, []);
+
+  return (
+    <TokenTransferModalContext.Provider value={{showModal}}>
+      {children}
+      {modalData && (
+        <VerifiedTokensModal
+          open={true}
+          onClose={handleClose}
+          transfers={modalData.transfers}
+          address={modalData.address}
+        />
+      )}
+    </TokenTransferModalContext.Provider>
+  );
+}
+
+// --- Modal component ---
+
 type VerifiedTokensModalProps = {
   open: boolean;
   onClose: () => void;
@@ -252,6 +300,8 @@ function VerifiedTokensModal({
   );
 }
 
+// --- Inline display component ---
+
 type TokenTransferDisplayProps = {
   transaction: Types.Transaction;
   address?: string;
@@ -264,7 +314,7 @@ export default function TokenTransferDisplay({
   const theme = useTheme();
   const networkName = useNetworkName();
   const {data: coinData} = useGetCoinList();
-  const [modalOpen, setModalOpen] = useState(false);
+  const modalCtx = useContext(TokenTransferModalContext);
   const semanticColors = getSemanticColors(theme.palette.mode);
 
   const balanceChanges = useMemo(() => {
@@ -298,54 +348,44 @@ export default function TokenTransferDisplay({
     : undefined;
 
   return (
-    <>
-      <Box sx={{color: amountColor}}>
-        {address && primary.amount > 0 && <>+</>}
-        {address && primary.amount < 0 && <>-</>}
-        <CurrencyValue
-          amount={primaryAbs.toString()}
-          decimals={primary.asset.decimals}
-          currencyCode={primary.asset.symbol}
-        />
-        {moreCount > 0 && (
-          <Box
-            component="button"
-            type="button"
-            onMouseDown={(e: React.MouseEvent) => {
-              e.stopPropagation();
-            }}
-            onClick={(e: React.MouseEvent) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setModalOpen(true);
-            }}
-            sx={{
-              background: "none",
-              border: "none",
-              padding: "0 4px",
-              font: "inherit",
-              color: theme.palette.primary.main,
-              cursor: "pointer",
-              "&:hover": {textDecoration: "underline"},
-              ml: 0.25,
-              fontSize: "inherit",
-              lineHeight: "inherit",
-              verticalAlign: "baseline",
-              display: "inline",
-            }}
-          >
-            &amp; {moreCount} more
-          </Box>
-        )}
-      </Box>
-      {modalOpen && (
-        <VerifiedTokensModal
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
-          transfers={verifiedTransfers}
-          address={address}
-        />
+    <Box sx={{color: amountColor}}>
+      {address && primary.amount > 0 && <>+</>}
+      {address && primary.amount < 0 && <>-</>}
+      <CurrencyValue
+        amount={primaryAbs.toString()}
+        decimals={primary.asset.decimals}
+        currencyCode={primary.asset.symbol}
+      />
+      {moreCount > 0 && (
+        <Box
+          component="button"
+          type="button"
+          onMouseDown={(e: React.MouseEvent) => {
+            e.stopPropagation();
+          }}
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            modalCtx?.showModal({transfers: verifiedTransfers, address});
+          }}
+          sx={{
+            background: "none",
+            border: "none",
+            padding: "0 4px",
+            font: "inherit",
+            color: theme.palette.primary.main,
+            cursor: "pointer",
+            "&:hover": {textDecoration: "underline"},
+            ml: 0.25,
+            fontSize: "inherit",
+            lineHeight: "inherit",
+            verticalAlign: "baseline",
+            display: "inline",
+          }}
+        >
+          &amp; {moreCount} more
+        </Box>
       )}
-    </>
+    </Box>
   );
 }

@@ -43,7 +43,9 @@ import {wouldExceedGasLimit} from "../../utils/aip140";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
 import {getTransactionCounterparty} from "../Transaction/utils";
 import {getTableFormattedTimestamp, truncateAddress} from "../utils";
-import TokenTransferDisplay from "./Components/TokenTransferDisplay";
+import TokenTransferDisplay, {
+  TokenTransferModalProvider,
+} from "./Components/TokenTransferDisplay";
 import TransactionTypeTooltip from "./Components/TransactionTypeTooltip";
 
 type TransactionCellProps = {
@@ -784,37 +786,41 @@ export default function TransactionsTable({
   // Mobile card view
   if (isMobile) {
     return (
-      <Box>
-        {transactions.map((transaction) => (
-          <TransactionCard
-            key={transaction.hash}
-            transaction={transaction}
-            address={address}
-          />
-        ))}
-      </Box>
+      <TokenTransferModalProvider>
+        <Box>
+          {transactions.map((transaction) => (
+            <TransactionCard
+              key={transaction.hash}
+              transaction={transaction}
+              address={address}
+            />
+          ))}
+        </Box>
+      </TokenTransferModalProvider>
     );
   }
 
   // Desktop table view
   return (
-    <Box sx={{overflowX: "auto"}}>
-      <Table aria-label="Transactions" data-entity-type="transaction">
-        <TableHead>
-          <TableRow>
-            {columns.map((column) => (
-              <TransactionHeaderCell key={column} column={column} />
-            ))}
-          </TableRow>
-        </TableHead>
-        <VirtualizedTableBody
-          estimatedRowHeight={65}
-          virtualizationThreshold={15}
-        >
-          {rows}
-        </VirtualizedTableBody>
-      </Table>
-    </Box>
+    <TokenTransferModalProvider>
+      <Box sx={{overflowX: "auto"}}>
+        <Table aria-label="Transactions" data-entity-type="transaction">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TransactionHeaderCell key={column} column={column} />
+              ))}
+            </TableRow>
+          </TableHead>
+          <VirtualizedTableBody
+            estimatedRowHeight={65}
+            virtualizationThreshold={15}
+          >
+            {rows}
+          </VirtualizedTableBody>
+        </Table>
+      </Box>
+    </TokenTransferModalProvider>
   );
 }
 
@@ -854,40 +860,44 @@ export function UserTransactionsTable({
   // Mobile card view
   if (isMobile) {
     return (
-      <Box>
-        {versions.map((version) => (
-          <UserTransactionCard
-            key={version}
-            version={version}
-            address={address}
-          />
-        ))}
-      </Box>
+      <TokenTransferModalProvider>
+        <Box>
+          {versions.map((version) => (
+            <UserTransactionCard
+              key={version}
+              version={version}
+              address={address}
+            />
+          ))}
+        </Box>
+      </TokenTransferModalProvider>
     );
   }
 
   // Desktop table view
   return (
-    <Table aria-label="Transactions" data-entity-type="transaction">
-      <TableHead>
-        <TableRow>
-          {columns.map((column) => (
-            <TransactionHeaderCell key={column} column={column} />
-          ))}
-        </TableRow>
-      </TableHead>
-      <GeneralTableBody>
-        {versions.map((version) => {
-          return (
-            <UserTransactionRow
-              key={version}
-              version={version}
-              columns={columns}
-              address={address}
-            />
-          );
-        })}
-      </GeneralTableBody>
-    </Table>
+    <TokenTransferModalProvider>
+      <Table aria-label="Transactions" data-entity-type="transaction">
+        <TableHead>
+          <TableRow>
+            {columns.map((column) => (
+              <TransactionHeaderCell key={column} column={column} />
+            ))}
+          </TableRow>
+        </TableHead>
+        <GeneralTableBody>
+          {versions.map((version) => {
+            return (
+              <UserTransactionRow
+                key={version}
+                version={version}
+                columns={columns}
+                address={address}
+              />
+            );
+          })}
+        </GeneralTableBody>
+      </Table>
+    </TokenTransferModalProvider>
   );
 }
