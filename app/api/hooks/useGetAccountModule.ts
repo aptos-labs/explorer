@@ -7,14 +7,20 @@ import type {ResponseError} from "../client";
 export function useGetAccountModule(
   address: string,
   moduleName: string,
+  ledgerVersion?: number,
   options?: {enabled?: boolean},
 ): UseQueryResult<Types.MoveModuleBytecode, ResponseError> {
   const networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
 
   return useQuery<Types.MoveModuleBytecode, ResponseError>({
-    queryKey: ["accountModule", {address, moduleName}, networkValue],
-    queryFn: () => getAccountModule({address, moduleName}, aptosClient),
+    queryKey: [
+      "accountModule",
+      {address, moduleName, ledgerVersion},
+      networkValue,
+    ],
+    queryFn: () =>
+      getAccountModule({address, moduleName, ledgerVersion}, aptosClient),
     refetchOnWindowFocus: false,
     enabled: options?.enabled,
   });

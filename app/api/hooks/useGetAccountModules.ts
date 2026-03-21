@@ -6,15 +6,15 @@ import type {ResponseError} from "../client";
 
 export function useGetAccountModules(
   address: string,
+  ledgerVersion?: number,
 ): UseQueryResult<Types.MoveModuleBytecode[], ResponseError> {
   const networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
 
   return useQuery<Array<Types.MoveModuleBytecode>, ResponseError>({
-    queryKey: ["accountModules", {address}, networkValue],
-    queryFn: () => getAccountModules({address}, aptosClient),
-    // Module code is semi-static - cache for 5 minutes
+    queryKey: ["accountModules", {address, ledgerVersion}, networkValue],
+    queryFn: () => getAccountModules({address, ledgerVersion}, aptosClient),
     staleTime: 5 * 60 * 1000,
-    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+    gcTime: 60 * 60 * 1000,
   });
 }

@@ -2,11 +2,12 @@ import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import InventoryOutlinedIcon from "@mui/icons-material/InventoryOutlined";
 import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import {Box, useTheme} from "@mui/material";
+import {Box, Tooltip, useTheme} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import type React from "react";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
+import {useGetModulePublishHistory} from "../../../../api/hooks/useGetModulePublishHistory";
 import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
 import {useNavigate} from "../../../../routing";
@@ -14,6 +15,8 @@ import {assertNever} from "../../../../utils";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 import Contract from "./Contract";
+import ModuleDiffView from "./ModuleDiffView";
+import ModuleVersionSelector from "./ModuleVersionSelector";
 import Packages from "./Packages";
 import ViewCode from "./ViewCode";
 
@@ -60,6 +63,7 @@ type TabPanelProps = {
   value: TabValue;
   address: string;
   isObject: boolean;
+  ledgerVersion?: number;
 };
 
 function RunContract({
@@ -82,9 +86,15 @@ function ReadContract({
   return <Contract address={address} isObject={isObject} isRead={true} />;
 }
 
-function TabPanel({value, address, isObject}: TabPanelProps) {
+function TabPanel({value, address, isObject, ledgerVersion}: TabPanelProps) {
   const TabComponent = TabComponents[value];
-  return <TabComponent address={address} isObject={isObject} />;
+  return (
+    <TabComponent
+      address={address}
+      isObject={isObject}
+      ledgerVersion={ledgerVersion}
+    />
+  );
 }
 
 /**
@@ -120,6 +130,35 @@ function ModulesTabs({
 }) {
   const theme = useTheme();
   const tabValues = Object.keys(TabComponents) as TabValue[];
+  const [ledgerVersion, setLedgerVersion] = useState<number | undefined>(
+    undefined,
+  );
+  const [diffMode, setDiffMode] = useState(false);
+  const [diffBaseVersion, setDiffBaseVersion] = useState<number | undefined>(
+    undefined,
+  );
+  const [diffCompareVersion, setDiffCompareVersion] = useState<
+    number | undefined
+  >(undefined);
+
+  const {data: publishHistory} = useGetModulePublishHistory(address);
+
+  const handleVersionChange = (version: number | undefined) => {
+    setLedgerVersion(version);
+    if (version !== undefined && (value === "run" || value === "view")) {
+      const path = `/${accountPagePath(isObject)}/${address}/modules/code`;
+      navigate({to: path, replace: true});
+    }
+  };
+
+  const handleDiffModeToggle = () => {
+    if (!diffMode && publishHistory && publishHistory.length >= 2) {
+      setDiffBaseVersion(publishHistory[1].version);
+      setDiffCompareVersion(undefined);
+      setLedgerVersion(undefined);
+    }
+    setDiffMode(!diffMode);
+  };
 
   // Parse path params from splat route
   const {modulesTab, selectedModuleName, selectedFnName} =
@@ -127,7 +166,7 @@ function ModulesTabs({
 
   const navigate = useNavigate();
   const logEvent = useLogEventWithBasic();
-  const sortedPackages = useGetAccountPackages(address);
+  const sortedPackages = useGetAccountPackages(address, ledgerVersion);
   const value =
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
@@ -234,10 +273,7 @@ function ModulesTabs({
           width: "8px",
           height: "8px",
         },
-        "& *::-webkit-scrollbar-track": {
-          // boxShadow: "inset 0 0 5px grey",
-          // borderRadius: "10px",
-        },
+        "& *::-webkit-scrollbar-track": {},
         "& *::-webkit-scrollbar-thumb": {
           background:
             theme.palette.mode === "dark"
@@ -264,22 +300,66 @@ function ModulesTabs({
         borderRadius={1}
         bgcolor={theme.palette.background.paper}
       >
-        <StyledTabs value={value} onChange={handleChange}>
-          {tabValues.map((value, i) => (
-            <StyledTab
-              secondary
-              key={value}
-              value={value}
-              icon={getTabIcon(value)}
-              label={getTabLabel(value)}
-              isFirst={i === 0}
-              isLast={i === tabValues.length - 1}
-            />
-          ))}
-        </StyledTabs>
+        <ModuleVersionSelector
+          address={address}
+          selectedVersion={ledgerVersion}
+          onVersionChange={handleVersionChange}
+          diffMode={diffMode}
+          onDiffModeToggle={handleDiffModeToggle}
+        />
+        <Box mt={2}>
+          <StyledTabs value={value} onChange={handleChange}>
+            {tabValues.map((tabKey, i) => {
+              const isDisabled =
+                ledgerVersion !== undefined &&
+                (tabKey === "run" || tabKey === "view");
+              const tab = (
+                <StyledTab
+                  secondary
+                  key={tabKey}
+                  value={tabKey}
+                  icon={getTabIcon(tabKey)}
+                  label={getTabLabel(tabKey)}
+                  isFirst={i === 0}
+                  isLast={i === tabValues.length - 1}
+                  disabled={isDisabled}
+                />
+              );
+              if (isDisabled) {
+                return (
+                  <Tooltip
+                    key={tabKey}
+                    title="Run and View are not available for historical versions"
+                    arrow
+                  >
+                    <span>{tab}</span>
+                  </Tooltip>
+                );
+              }
+              return tab;
+            })}
+          </StyledTabs>
+        </Box>
       </Box>
       <Box>
-        <TabPanel value={value} address={address} isObject={isObject} />
+        {diffMode && publishHistory && publishHistory.length >= 2 ? (
+          <ModuleDiffView
+            address={address}
+            moduleName={selectedModuleName || ""}
+            publishHistory={publishHistory}
+            baseVersion={diffBaseVersion}
+            compareVersion={diffCompareVersion}
+            onBaseVersionChange={setDiffBaseVersion}
+            onCompareVersionChange={setDiffCompareVersion}
+          />
+        ) : (
+          <TabPanel
+            value={value}
+            address={address}
+            isObject={isObject}
+            ledgerVersion={ledgerVersion}
+          />
+        )}
       </Box>
     </Box>
   );

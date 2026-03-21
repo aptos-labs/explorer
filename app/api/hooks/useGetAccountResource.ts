@@ -33,33 +33,38 @@ export type PackageMetadata = {
 export function useGetAccountResource(
   address: string | undefined,
   resource: string,
+  ledgerVersion?: number,
 ): UseQueryResult<Types.MoveResource, ResponseError> {
   const networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
 
   return useQuery<Types.MoveResource, ResponseError>({
-    queryKey: ["accountResource", {address, resource}, networkValue],
+    queryKey: [
+      "accountResource",
+      {address, resource, ledgerVersion},
+      networkValue,
+    ],
     queryFn: async () => {
       if (!address) {
         throw new Error("Address is undefined");
       }
       return await getAccountResource(
-        {address, resourceType: resource},
+        {address, resourceType: resource, ledgerVersion},
         aptosClient,
       );
     },
     refetchOnWindowFocus: false,
     enabled: !!address,
-    // Account resources are semi-static - cache for 5 minutes
     staleTime: 5 * 60 * 1000,
-    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+    gcTime: 60 * 60 * 1000,
   });
 }
 
-export function useGetAccountPackages(address: string) {
+export function useGetAccountPackages(address: string, ledgerVersion?: number) {
   const {data: registry} = useGetAccountResource(
     address,
     "0x1::code::PackageRegistry",
+    ledgerVersion,
   );
 
   const registryData = registry?.data as {

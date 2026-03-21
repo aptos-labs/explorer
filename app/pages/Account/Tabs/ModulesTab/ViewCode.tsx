@@ -38,10 +38,22 @@ interface ModuleContentProps {
   address: string;
   moduleName: string;
   sourceBytecode: string;
+  ledgerVersion?: number;
 }
 
-function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
-  const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
+function ViewCode({
+  address,
+  isObject,
+  ledgerVersion,
+}: {
+  address: string;
+  isObject: boolean;
+  ledgerVersion?: number;
+}) {
+  const sortedPackages: PackageMetadata[] = useGetAccountPackages(
+    address,
+    ledgerVersion,
+  );
 
   const navigate = useNavigate();
 
@@ -101,6 +113,7 @@ function ViewCode({address, isObject}: {address: string; isObject: boolean}) {
             address={address}
             moduleName={selectedModuleName}
             sourceBytecode={selectedModule.source}
+            ledgerVersion={ledgerVersion}
           />
         )}
       </Grid>
@@ -186,11 +199,13 @@ function ModuleContent({
   address,
   moduleName,
   sourceBytecode,
+  ledgerVersion,
 }: ModuleContentProps) {
   const theme = useTheme();
   const {data: moduleBytecodeResponse} = useGetAccountModule(
     address,
     moduleName,
+    ledgerVersion,
   );
   return (
     <Stack
@@ -200,14 +215,22 @@ function ModuleContent({
       bgcolor={theme.palette.background.paper}
       borderRadius={1}
     >
-      <ModuleHeader address={address} moduleName={moduleName} />
+      <ModuleHeader
+        address={address}
+        moduleName={moduleName}
+        ledgerVersion={ledgerVersion}
+      />
       <Divider />
       <Code
         sourceBytecode={sourceBytecode}
         moduleBytecode={moduleBytecodeResponse?.bytecode}
       />
       <Divider />
-      <ABI address={address} moduleName={moduleName} />
+      <ABI
+        address={address}
+        moduleName={moduleName}
+        ledgerVersion={ledgerVersion}
+      />
     </Stack>
   );
 }
@@ -215,11 +238,17 @@ function ModuleContent({
 function ModuleHeader({
   address,
   moduleName,
+  ledgerVersion,
 }: {
   address: string;
   moduleName: string;
+  ledgerVersion?: number;
 }) {
-  const {data: module} = useGetAccountModule(address, moduleName);
+  const {data: module} = useGetAccountModule(
+    address,
+    moduleName,
+    ledgerVersion,
+  );
 
   return (
     <Box
@@ -244,12 +273,20 @@ function ModuleHeader({
   );
 }
 
-function ABI({address, moduleName}: {address: string; moduleName: string}) {
+function ABI({
+  address,
+  moduleName,
+  ledgerVersion,
+}: {
+  address: string;
+  moduleName: string;
+  ledgerVersion?: number;
+}) {
   const {
     data: module,
     isLoading,
     error,
-  } = useGetAccountModule(address, moduleName);
+  } = useGetAccountModule(address, moduleName, ledgerVersion);
 
   if (isLoading) {
     return null;
