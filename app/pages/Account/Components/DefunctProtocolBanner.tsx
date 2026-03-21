@@ -2,16 +2,12 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
   Alert,
-  alpha,
   Box,
   Button,
   Chip,
   DialogTitle,
   Divider,
-  Stack,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import {useState} from "react";
 import {Banner} from "../../../components/Banner";
@@ -20,7 +16,6 @@ import {
   getDefunctProtocol,
   getWithdrawalPlugin,
 } from "../../../data/defunctProtocols";
-import {brandColors} from "../../../themes/colors/aptosBrandColors";
 import type {WithdrawalPlugin} from "../../../types/defunctProtocol";
 import {MIN_OWNER_WITHDRAWAL_PERCENT} from "../../../types/defunctProtocol";
 
@@ -44,54 +39,33 @@ function DefunctBannerInner({
   protocolName: string;
   plugin: ReturnType<typeof getWithdrawalPlugin>;
 }) {
-  const theme = useTheme();
-  const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const withdrawButton = plugin ? (
     <Button
-      variant="contained"
-      color="primary"
+      variant="outlined"
       size="small"
       startIcon={<AccountBalanceWalletIcon />}
       onClick={() => setDialogOpen(true)}
-      sx={{
-        backgroundColor: alpha(brandColors.white, 0.2),
-        color: brandColors.white,
-        "&:hover": {
-          backgroundColor: alpha(brandColors.white, 0.3),
-        },
-        textTransform: "none",
-        fontWeight: 600,
-      }}
+      sx={{textTransform: "none", fontWeight: 600, whiteSpace: "nowrap"}}
     >
       Withdraw Funds
     </Button>
   ) : null;
 
-  const action = isOnMobile ? null : withdrawButton;
   const text = plugin
     ? `This protocol (${protocolName}) may be defunct. A withdrawal plugin is available to recover your funds.`
     : `This protocol (${protocolName}) may be defunct and is no longer actively maintained.`;
-
-  const children = isOnMobile ? (
-    <Stack direction="column" spacing={1}>
-      {text}
-      {withdrawButton}
-    </Stack>
-  ) : (
-    text
-  );
 
   return (
     <>
       <Banner
         pillText="MAY BE DEFUNCT"
         pillColor="warning"
-        action={action}
+        action={withdrawButton}
         sx={{marginBottom: 2}}
       >
-        {children}
+        {text}
       </Banner>
 
       {plugin && (
