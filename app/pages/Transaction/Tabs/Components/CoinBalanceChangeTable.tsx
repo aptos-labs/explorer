@@ -481,8 +481,10 @@ function BalanceChangeCard({balanceChange, onClick}: BalanceChangeCardProps) {
                 }}
               >
                 <IdenticonImg
+                  key={`${balanceChange.address}:${accountIcon ?? ""}`}
                   address={balanceChange.address}
                   iconSrc={accountIcon}
+                  sizePx={20}
                 />
               </Box>
             )}

@@ -132,7 +132,11 @@ const AccountHashButtonInner = memo(function AccountHashButtonInner({
 
   return (
     <Stack direction="row" alignItems={"center"} spacing={1}>
-      <IdenticonImg address={address} iconSrc={knownAddressIcon} />
+      <IdenticonImg
+        key={`${address}:${knownAddressIcon ?? ""}`}
+        address={address}
+        iconSrc={knownAddressIcon}
+      />
       <Link
         to={getHashLinkStr(address, type)}
         sx={{

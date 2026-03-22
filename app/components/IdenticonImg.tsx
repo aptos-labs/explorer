@@ -1,31 +1,35 @@
 import {createIcon} from "@download/blockies";
-import React, {memo} from "react";
+import type React from "react";
+import {memo, useMemo, useState} from "react";
 
 interface IdenticonImgProps {
   address: string;
   /** When set, shown instead of a blockie (e.g. a known-address brand mark). */
   iconSrc?: string | null;
+  /**
+   * Rendered width/height in CSS pixels. Defaults to the blockie canvas size
+   * so layout matches generated identicons; use a smaller value when the parent
+   * reserves a tighter box (e.g. mobile tables).
+   */
+  sizePx?: number;
 }
 
-/** Must match `createIcon` `size` × `scale` so blockies and overrides share one box. */
+/** Must match `createIcon` `size` × `scale` so blockies and overrides share one default box. */
 const BLOCKIE_SIZE = 6;
 const BLOCKIE_SCALE = 5;
 const IDENTICON_PX = BLOCKIE_SIZE * BLOCKIE_SCALE;
 
-const baseImgStyle: React.CSSProperties = {
-  width: IDENTICON_PX,
-  height: IDENTICON_PX,
-  borderRadius: 2,
-  display: "block",
-  flexShrink: 0,
-};
-
 const IdenticonImg = memo(function IdenticonImg({
   address,
   iconSrc,
+  sizePx = IDENTICON_PX,
 }: IdenticonImgProps) {
-  const blockieSrc = React.useMemo(() => {
-    if (iconSrc) {
+  const [iconErrored, setIconErrored] = useState(false);
+
+  const useOverride = Boolean(iconSrc) && !iconErrored;
+
+  const blockieSrc = useMemo(() => {
+    if (useOverride) {
       return undefined;
     }
     const iconCanvas = createIcon({
@@ -34,23 +38,36 @@ const IdenticonImg = memo(function IdenticonImg({
       scale: BLOCKIE_SCALE,
     });
     return iconCanvas.toDataURL();
-  }, [address, iconSrc]);
+  }, [address, useOverride]);
 
-  const src = iconSrc || blockieSrc;
+  const src = (useOverride && iconSrc) || blockieSrc;
   if (!src) {
     return null;
   }
 
-  const style: React.CSSProperties = iconSrc
-    ? {...baseImgStyle, objectFit: "contain"}
-    : baseImgStyle;
+  const boxStyle: React.CSSProperties = {
+    width: sizePx,
+    height: sizePx,
+    borderRadius: 2,
+    display: "block",
+    flexShrink: 0,
+  };
+
+  const style: React.CSSProperties = useOverride
+    ? {...boxStyle, objectFit: "contain"}
+    : boxStyle;
 
   return (
     <img
       src={src}
-      alt={iconSrc ? "" : "Account identicon"}
+      alt={useOverride ? "" : "Account identicon"}
       style={style}
       loading="lazy"
+      onError={() => {
+        if (iconSrc) {
+          setIconErrored(true);
+        }
+      }}
     />
   );
 });
