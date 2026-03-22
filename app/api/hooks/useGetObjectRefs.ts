@@ -141,11 +141,22 @@ export function detectRefsInTransaction(
   return result;
 }
 
-export function useGetObjectRefs(address: string): {
+const NO_REFS: ObjectRefs = {
+  hasTransferRef: false,
+  hasDeleteRef: false,
+  hasExtendRef: false,
+  creationTransactionVersion: null,
+};
+
+export function useGetObjectRefs(
+  address: string,
+  options?: {enabled?: boolean},
+): {
   data: ObjectRefs | undefined;
   isLoading: boolean;
   error: unknown;
 } {
+  const enabled = options?.enabled ?? true;
   const normalizedAddress = tryStandardizeAddress(address);
   const sdkClient = useSdkV2Client();
   const aptosClient = useAptosClient();
@@ -154,6 +165,7 @@ export function useGetObjectRefs(address: string): {
   const {
     data: creationData,
     isLoading: creationLoading,
+    isSuccess: creationSuccess,
     error: creationError,
   } = useQuery({
     queryKey: ["objectCreationTx", normalizedAddress, networkValue],
@@ -166,13 +178,15 @@ export function useGetObjectRefs(address: string): {
           variables: {address: normalizedAddress},
         },
       }),
-    enabled: !!normalizedAddress,
+    enabled: enabled && !!normalizedAddress,
     staleTime: 24 * 60 * 60 * 1000,
     gcTime: 24 * 60 * 60 * 1000,
   });
 
   const creationVersion =
     creationData?.account_transactions?.[0]?.transaction_version ?? null;
+
+  const hasCreationTx = creationVersion !== null;
 
   const {
     data: refsData,
@@ -181,13 +195,8 @@ export function useGetObjectRefs(address: string): {
   } = useQuery({
     queryKey: ["objectRefs", normalizedAddress, creationVersion, networkValue],
     queryFn: async (): Promise<ObjectRefs> => {
-      if (creationVersion === null || !normalizedAddress) {
-        return {
-          hasTransferRef: false,
-          hasDeleteRef: false,
-          hasExtendRef: false,
-          creationTransactionVersion: null,
-        };
+      if (!hasCreationTx || !normalizedAddress) {
+        return NO_REFS;
       }
 
       const tx = await getTransaction(
@@ -201,14 +210,14 @@ export function useGetObjectRefs(address: string): {
         creationTransactionVersion: creationVersion,
       };
     },
-    enabled: creationVersion !== null && !!normalizedAddress,
+    enabled: enabled && !!normalizedAddress && creationSuccess,
     staleTime: 24 * 60 * 60 * 1000,
     gcTime: 24 * 60 * 60 * 1000,
   });
 
   return {
     data: refsData,
-    isLoading: creationLoading || refsLoading,
+    isLoading: enabled ? creationLoading || refsLoading : false,
     error: creationError || refsError,
   };
 }

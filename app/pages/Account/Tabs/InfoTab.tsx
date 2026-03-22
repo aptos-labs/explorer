@@ -1,4 +1,11 @@
-import {Box, Chip, CircularProgress, Typography, useTheme} from "@mui/material";
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Link,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import type {Types} from "~/types/aptos";
 import {useGetObjectRefs} from "../../../api/hooks/useGetObjectRefs";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -32,7 +39,11 @@ export default function InfoTab({
   objectData,
 }: InfoTabProps) {
   const theme = useTheme();
-  const {data: objectRefs, isLoading: refsLoading} = useGetObjectRefs(address);
+  const {
+    data: objectRefs,
+    isLoading: refsLoading,
+    error: refsError,
+  } = useGetObjectRefs(address, {enabled: !!objectData});
 
   if (!accountData && !objectData) {
     return <EmptyTabContent />;
@@ -167,6 +178,18 @@ export default function InfoTab({
                 />
               )}
             </>
+          ) : refsError ? (
+            <Typography variant="body2" color="error">
+              Failed to load object capabilities.{" "}
+              <Link
+                component="button"
+                variant="body2"
+                onClick={() => window.location.reload()}
+                sx={{verticalAlign: "baseline"}}
+              >
+                Retry
+              </Link>
+            </Typography>
           ) : (
             <Typography variant="body2" color="text.secondary">
               Unable to determine object capabilities
