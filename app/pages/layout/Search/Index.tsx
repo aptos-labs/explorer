@@ -531,6 +531,7 @@ export default function HeaderSearch({initialSearch}: HeaderSearchProps) {
               to={option.to}
               text={option.label}
               image={option.image}
+              identiconKey={option.identiconKey}
             />
           </li>
         );

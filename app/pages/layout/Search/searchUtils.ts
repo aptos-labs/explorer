@@ -28,6 +28,11 @@ export type SearchResult = {
   label: string;
   to: string | null;
   image?: string;
+  /**
+   * Seed for search-row identicons: standardized account address when applicable,
+   * or any stable string (e.g. coin type) for blockies when there is no `image`.
+   */
+  identiconKey?: string;
   type?: string; // Asset type for grouping: 'account', 'coin', 'transaction', 'block', 'fungible-asset', 'object', 'address'
   isGroupHeader?: boolean; // True if this is a group header
 };
@@ -140,9 +145,11 @@ export async function handleAnsName(
     const address = ansName?.registered_address ?? ansName?.owner_address;
 
     if (ansName && address) {
+      const std = tryStandardizeAddress(address) ?? address;
       return {
         label: `Account ${truncateAddress(address)} ${searchText}`,
         to: `/account/${address}`,
+        identiconKey: std,
         type: "account",
       };
     }
@@ -168,9 +175,12 @@ export async function handleCoin(
       {address, resourceType: `0x1::coin::CoinInfo<${searchText}>`},
       sdkV2Client,
     );
+    const moduleAddr = searchText.split("::")[0];
+    const stdMod = tryStandardizeAddress(moduleAddr);
     return {
       label: `Coin ${searchText}`,
       to: `/coin/${searchText}`,
+      identiconKey: stdMod ?? searchText,
       type: "coin",
     };
   } catch {
@@ -284,6 +294,7 @@ export async function handleAddress(
     results.push({
       label: `Account ${address}`,
       to: `/account/${address}`,
+      identiconKey: address,
       type: "account",
     });
   } catch {
@@ -300,6 +311,7 @@ export async function handleAddress(
         (): SearchResult => ({
           label: `Fungible Asset ${address}`,
           to: `/fungible_asset/${address}`,
+          identiconKey: address,
           type: "fungible-asset",
         }),
       )
@@ -312,6 +324,7 @@ export async function handleAddress(
         (): SearchResult => ({
           label: `Object ${address}`,
           to: `/object/${address}`,
+          identiconKey: address,
           type: "object",
         }),
       )
@@ -321,6 +334,7 @@ export async function handleAddress(
         (): SearchResult => ({
           label: `Address ${address}`,
           to: `/account/${address}`,
+          identiconKey: address,
           type: "address",
         }),
       )
@@ -356,6 +370,7 @@ export async function anyOwnedObjects(
       return {
         label: `Address ${address}`,
         to: `/account/${address}`,
+        identiconKey: address,
         type: "address",
       };
     }
@@ -381,6 +396,7 @@ export function handleLabelLookup(
       searchResults.push({
         label: `Account ${truncateAddress(address)} ${knownName}`,
         to: `/account/${address}`,
+        identiconKey: address,
         type: "account",
       });
     }
@@ -417,17 +433,23 @@ export function handleCoinLookup(
     })
     .map((coin: CoinDescription) => {
       if (coin.tokenAddress) {
+        const key =
+          tryStandardizeAddress(coin.tokenAddress) ?? coin.tokenAddress;
         return {
           label: `${coin.name} - ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
           to: `/coin/${coin.tokenAddress}`,
           image: coin.logoUrl,
+          identiconKey: key,
           type: "coin",
         };
       } else {
+        const fa = coin.faAddress ?? "";
+        const key = tryStandardizeAddress(fa) ?? fa;
         return {
           label: `${coin.name} - ${getAssetSymbol(coin.panoraSymbol, coin.bridge, coin.symbol)}`,
           to: `/fungible_asset/${coin.faAddress}`,
           image: coin.logoUrl,
+          identiconKey: key,
           type: "fungible-asset",
         };
       }
@@ -449,6 +471,7 @@ export function createFallbackAddressResult(
   return {
     label: `Address ${address}`,
     to: `/account/${address}`,
+    identiconKey: address,
     type: "address",
   };
 }
@@ -472,15 +495,19 @@ export async function handleEmojiCoinLookup(
   const {marketAddress, coin, lp} = emojicoinData;
   try {
     await getAccountV2({address: marketAddress.toString()}, sdkV2Client);
+    const coinIconKey = tryStandardizeAddress(coin.split("::")[0]) ?? coin;
+    const lpIconKey = tryStandardizeAddress(lp.split("::")[0]) ?? lp;
     return [
       {
         label: `${searchText} emojicoin`,
         to: `/coin/${coin}`,
+        identiconKey: coinIconKey,
         type: "coin",
       },
       {
         label: `${searchText} emojicoin LP`,
         to: `/coin/${lp}`,
+        identiconKey: lpIconKey,
         type: "coin",
       },
     ];

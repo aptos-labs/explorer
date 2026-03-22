@@ -55,6 +55,7 @@ import {
   normalizeSearchInput,
   type SearchResult,
 } from "../layout/Search/searchUtils";
+import {SearchResultAvatar} from "../layout/Search/SearchResultAvatar";
 
 // ─── Type chip helpers ────────────────────────────────────────────────────────
 
@@ -157,14 +158,11 @@ function SearchResultRow({result}: {result: SearchResult}) {
         },
       }}
     >
-      {result.image ? (
-        <Box
-          component="img"
-          src={result.image}
-          alt=""
-          sx={{width: 24, height: 24, borderRadius: "50%", flexShrink: 0}}
-        />
-      ) : null}
+      <SearchResultAvatar
+        image={result.image}
+        identiconKey={result.identiconKey}
+        sizePx={24}
+      />
       <Chip
         label={typeLabel(result.type)}
         color={typeChipColor(result.type)}
