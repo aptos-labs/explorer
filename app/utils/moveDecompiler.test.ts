@@ -3,7 +3,18 @@ import {
   bytecodeHexToBytes,
   getDecompiledCodeView,
   getDecompiledScriptCodeView,
+  normalizeBytecodeHex,
 } from "./moveDecompiler";
+
+describe("normalizeBytecodeHex", () => {
+  it("adds 0x prefix and lowercases when missing", () => {
+    expect(normalizeBytecodeHex("00FF")).toBe("0x00ff");
+  });
+
+  it("lowercases when 0x prefix is present", () => {
+    expect(normalizeBytecodeHex("0xAbCd")).toBe("0xabcd");
+  });
+});
 
 describe("bytecodeHexToBytes", () => {
   it("converts prefixed hex bytecode to bytes", () => {

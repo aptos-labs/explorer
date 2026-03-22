@@ -22,6 +22,15 @@ function bytecodeCacheKey(kind: BytecodeKind, normalizedBytecodeHex: string) {
 
 export type DecompilationView = "decompiled-source" | "bytecode-disassembly";
 
+/**
+ * Canonical lowercase `0x`-prefixed bytecode hex (matches decompiler cache keys).
+ */
+export function normalizeBytecodeHex(bytecodeHex: string): string {
+  return bytecodeHex.startsWith("0x")
+    ? bytecodeHex.toLowerCase()
+    : `0x${bytecodeHex.toLowerCase()}`;
+}
+
 export function bytecodeHexToBytes(bytecodeHex: string): Uint8Array {
   if (!bytecodeHex) {
     throw new Error("Bytecode is empty");
@@ -36,12 +45,6 @@ export function bytecodeHexToBytes(bytecodeHex: string): Uint8Array {
   } catch {
     throw new Error("Invalid bytecode hex");
   }
-}
-
-function getNormalizedBytecodeHex(bytecodeHex: string): string {
-  return bytecodeHex.startsWith("0x")
-    ? bytecodeHex.toLowerCase()
-    : `0x${bytecodeHex.toLowerCase()}`;
 }
 
 async function loadMoveDecompilerWasm() {
@@ -85,7 +88,7 @@ export async function getDecompiledCodeView(
   bytecodeHex: string,
   view: DecompilationView,
 ): Promise<string> {
-  const normalizedBytecodeHex = getNormalizedBytecodeHex(bytecodeHex);
+  const normalizedBytecodeHex = normalizeBytecodeHex(bytecodeHex);
   const cacheKey = bytecodeCacheKey("module", normalizedBytecodeHex);
   const cachedEntry = decompilationCache.get(cacheKey);
   if (cachedEntry) {
@@ -122,7 +125,7 @@ export async function getDecompiledScriptCodeView(
   bytecodeHex: string,
   view: DecompilationView,
 ): Promise<string> {
-  const normalizedBytecodeHex = getNormalizedBytecodeHex(bytecodeHex);
+  const normalizedBytecodeHex = normalizeBytecodeHex(bytecodeHex);
   const cacheKey = bytecodeCacheKey("script", normalizedBytecodeHex);
   const cachedEntry = decompilationCache.get(cacheKey);
   if (cachedEntry) {

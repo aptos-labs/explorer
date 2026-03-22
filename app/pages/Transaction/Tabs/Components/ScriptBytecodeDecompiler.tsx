@@ -21,6 +21,7 @@ import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 import {
   type DecompilationView,
   getDecompiledScriptCodeView,
+  normalizeBytecodeHex,
 } from "../../../../utils/moveDecompiler";
 import {useLogEventWithBasic} from "../../../Account/hooks/useLogEventWithBasic";
 
@@ -105,10 +106,9 @@ export default function ScriptBytecodeDecompiler({
   const logEvent = useLogEventWithBasic();
   const TOOLTIP_TIME = 2000;
 
-  const hasBytecode =
-    typeof bytecodeHex === "string" &&
-    bytecodeHex !== "0x" &&
-    bytecodeHex.length > 2;
+  const canonicalBytecodeHex = normalizeBytecodeHex(bytecodeHex.trim());
+  /** At least one byte after `0x` (two hex digits). */
+  const hasBytecode = canonicalBytecodeHex.length > 3;
 
   const [activeView, setActiveView] =
     useState<DecompilationView>("decompiled-source");
@@ -124,7 +124,7 @@ export default function ScriptBytecodeDecompiler({
   const [isDecompiling, setIsDecompiling] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const bytecodeKey = bytecodeHex.toLowerCase();
+  const bytecodeKey = canonicalBytecodeHex;
 
   useEffect(() => {
     const missingActiveViewCode =
@@ -148,8 +148,11 @@ export default function ScriptBytecodeDecompiler({
           activeView === "decompiled-source"
             ? "decompiled-source"
             : "bytecode-disassembly";
+
+        // Let loading UI render before running CPU-intensive WASM work.
+        await new Promise((resolve) => setTimeout(resolve, 0));
         const result = await getDecompiledScriptCodeView(
-          bytecodeHex,
+          currentBytecodeKey,
           decompilationView,
         );
         if (cancelled) {
@@ -183,7 +186,6 @@ export default function ScriptBytecodeDecompiler({
   }, [
     activeView,
     bytecodeDisassembly,
-    bytecodeHex,
     bytecodeKey,
     decompiledSource,
     hasBytecode,
