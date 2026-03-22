@@ -9,7 +9,7 @@ import TitleHashButton, {
   HashType,
   NameType,
 } from "../../components/TitleHashButton";
-import {useKnownAddressBranding} from "../../constants";
+import {useKnownAddressBranding, useKnownAddressName} from "../../constants";
 import {truncateAddress} from "../../utils";
 import {getAccountTabHeadLabel} from "./accountTabLabels";
 import {useIsDaaAccount} from "./hooks/useIsDaaAccount";
@@ -37,6 +37,7 @@ export default function AccountTitle({
 }: AccountTitleProps) {
   const isDAA = useIsDaaAccount(address);
   const knownBranding = useKnownAddressBranding(address);
+  const knownLabel = useKnownAddressName(address);
 
   let title = "Account";
   let description = `View details for Aptos account ${address}. See transactions, resources, modules, coins, and NFTs owned by this account.`;
@@ -71,6 +72,14 @@ export default function AccountTitle({
     title = "Derivable Aptos Account";
     description = `View derivable Aptos account ${address}. Cross-chain account derived from another blockchain address.`;
     keywords = ["DAA", "derivable", "cross-chain", "account"];
+  }
+
+  if (knownLabel) {
+    if (title === "Account") {
+      title = `${knownLabel} - Account`;
+    } else if (title === "Object") {
+      title = `${knownLabel} - Object`;
+    }
   }
 
   if (
