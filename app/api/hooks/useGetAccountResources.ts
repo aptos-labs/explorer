@@ -8,6 +8,7 @@ export function useGetAccountResources(
   address: string,
   options?: {
     retry?: number | boolean;
+    enabled?: boolean;
   },
 ): UseQueryResult<Types.MoveResource[], ResponseError> {
   const networkValue = useNetworkValue();
@@ -17,8 +18,8 @@ export function useGetAccountResources(
     queryKey: ["accountResources", {address}, networkValue],
     queryFn: () => getAccountResources({address}, aptosClient),
     retry: options?.retry ?? false,
-    // Account resources are semi-static - cache for 5 minutes
+    enabled: options?.enabled,
     staleTime: 5 * 60 * 1000,
-    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
+    gcTime: 60 * 60 * 1000,
   });
 }

@@ -32,7 +32,7 @@ export default function InfoTab({
   coinData,
 }: InfoTabProps) {
   const {data: firstActivity} = useGetFirstCoinActivity(pairedFa ?? struct);
-  const {data: faProperties} = useGetFaProperties(pairedFa ?? "");
+  const {data: faProperties} = useGetFaProperties(pairedFa ?? undefined);
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
   }

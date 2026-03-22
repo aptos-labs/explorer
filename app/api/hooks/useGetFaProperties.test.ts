@@ -164,4 +164,34 @@ describe("deriveProperties", () => {
       untransferable: true,
     });
   });
+
+  it("ignores primitive field values matching ref patterns", () => {
+    const resources = [
+      mkResource("0x1::fungible_asset::Metadata", {}),
+      mkResource("0xabc::module::Caps", {
+        mint_ref: "some_string_value",
+        burn_ref: 42,
+        transfer_ref: true,
+      }),
+    ];
+    const result = deriveProperties(resources);
+    expect(result?.mintable).toBe(false);
+    expect(result?.burnable).toBe(false);
+    expect(result?.freezable).toBe(false);
+  });
+
+  it("finds refs nested inside wrapper objects", () => {
+    const resources = [
+      mkResource("0x1::fungible_asset::Metadata", {}),
+      mkResource("0xabc::module::Wrapper", {
+        inner: {
+          mint_ref: {metadata: {inner: "0xabc"}},
+          burn_ref: {vec: [{metadata: {inner: "0xabc"}}]},
+        },
+      }),
+    ];
+    const result = deriveProperties(resources);
+    expect(result?.mintable).toBe(true);
+    expect(result?.burnable).toBe(true);
+  });
 });

@@ -46,7 +46,7 @@ const REF_FIELD_PATTERNS: Array<{
   {key: "freezable", pattern: /transfer[_\s]?ref|freeze[_\s]?ref/i},
 ];
 
-function deepScanForRefs(
+function scanFieldsForRefs(
   // biome-ignore lint/suspicious/noExplicitAny: resource data is untyped
   data: any,
   depth = 0,
@@ -57,17 +57,25 @@ function deepScanForRefs(
   if (typeof data === "object" && !Array.isArray(data)) {
     for (const [fieldName, fieldValue] of Object.entries(data)) {
       for (const {key, pattern} of REF_FIELD_PATTERNS) {
-        if (pattern.test(fieldName) && fieldValue != null) {
+        if (
+          pattern.test(fieldName) &&
+          typeof fieldValue === "object" &&
+          fieldValue !== null
+        ) {
           const val = fieldValue as OptionVec | Record<string, unknown>;
           if ("vec" in val) {
             result[key] = isOptionSome(val as OptionVec);
-          } else if (
-            typeof val === "object" &&
-            "metadata" in (val as Record<string, unknown>)
-          ) {
+          } else if ("metadata" in val) {
             result[key] = true;
           }
         }
+      }
+
+      if (typeof fieldValue === "object" && fieldValue !== null) {
+        const nested = scanFieldsForRefs(fieldValue, depth + 1);
+        if (nested.mintable) result.mintable = true;
+        if (nested.burnable) result.burnable = true;
+        if (nested.freezable) result.freezable = true;
       }
     }
   }
@@ -113,7 +121,7 @@ export function deriveProperties(
       continue;
     }
 
-    const scanned = deepScanForRefs(resource.data);
+    const scanned = scanFieldsForRefs(resource.data);
     if (scanned.mintable) props.mintable = true;
     if (scanned.burnable) props.burnable = true;
     if (scanned.freezable) props.freezable = true;
@@ -122,12 +130,13 @@ export function deriveProperties(
   return props;
 }
 
-export function useGetFaProperties(address: string): {
+export function useGetFaProperties(address: string | undefined): {
   isLoading: boolean;
   data: FaProperties | null;
 } {
-  const {data: resources, isLoading} = useGetAccountResources(address, {
+  const {data: resources, isLoading} = useGetAccountResources(address ?? "", {
     retry: false,
+    enabled: !!address,
   });
 
   const properties = useMemo(() => deriveProperties(resources), [resources]);
