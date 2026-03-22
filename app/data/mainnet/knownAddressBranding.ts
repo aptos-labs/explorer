@@ -132,11 +132,6 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
     icon: "/address-icons/dex-cetus.png",
     description: "Cetus protocol (follow-on deployment) on Aptos — historical.",
   },
-  "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c": {
-    icon: "/address-icons/dex-anime.png",
-    description: "AnimeSwap AMM on Aptos (historical).",
-  },
-
   // CEX hot wallets / treasury (labels are directional, not proof of custody)
   "0xd91c64b777e51395c6ea9dec562ed79a4afa0cd6dad5a87b187c37198a1f855a": {
     icon: "/address-icons/binance.svg",
