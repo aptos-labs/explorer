@@ -962,6 +962,121 @@ function RunContractForm({
 
 const TOOLTIP_TIME = 2000;
 
+function getFieldCopyValue(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean")
+    return String(value);
+  return JSON.stringify(value, null, 2);
+}
+
+function isStructResult(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function FieldCopyButton({value}: {value: unknown}) {
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+
+  async function handleCopy(e: React.MouseEvent) {
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(getFieldCopyValue(value));
+      setTooltipOpen(true);
+      setTimeout(() => setTooltipOpen(false), TOOLTIP_TIME);
+    } catch {
+      // Clipboard API not available
+    }
+  }
+
+  return (
+    <StyledTooltip
+      title={tooltipOpen ? "Copied!" : "Copy value"}
+      placement="top"
+      open={tooltipOpen || undefined}
+      disableFocusListener={tooltipOpen}
+      disableHoverListener={tooltipOpen}
+      disableTouchListener={tooltipOpen}
+    >
+      <IconButton
+        className="field-copy-btn"
+        onClick={handleCopy}
+        size="small"
+        aria-label="Copy field value"
+        sx={{
+          opacity: 0,
+          transition: "opacity 0.15s",
+          p: 0.25,
+        }}
+      >
+        <ContentCopy sx={{fontSize: 14}} />
+      </IconButton>
+    </StyledTooltip>
+  );
+}
+
+function StructFieldRow({fieldKey, value}: {fieldKey: string; value: unknown}) {
+  const displayValue =
+    typeof value === "string"
+      ? JSON.stringify(value)
+      : JSON.stringify(value, null, 2);
+
+  return (
+    <Stack
+      direction="row"
+      alignItems="flex-start"
+      spacing={1}
+      sx={{
+        py: 0.5,
+        px: 1,
+        borderRadius: 0.5,
+        "&:hover": {bgcolor: "action.hover"},
+        "&:hover .field-copy-btn": {opacity: 1},
+      }}
+    >
+      <Typography
+        component="span"
+        sx={{
+          fontFamily: "monospace",
+          fontSize: 13,
+          color: "info.main",
+          fontWeight: 600,
+          whiteSpace: "nowrap",
+        }}
+      >
+        {fieldKey}:
+      </Typography>
+      <Typography
+        component="span"
+        sx={{
+          fontFamily: "monospace",
+          fontSize: 13,
+          flex: 1,
+          wordBreak: "break-word",
+          whiteSpace: "pre-wrap",
+        }}
+      >
+        {displayValue}
+      </Typography>
+      <FieldCopyButton value={value} />
+    </Stack>
+  );
+}
+
+function StructResultDisplay({data}: {data: Record<string, unknown>}) {
+  return (
+    <Box
+      sx={{
+        p: 1,
+        bgcolor: "action.hover",
+        borderRadius: 1,
+      }}
+    >
+      {Object.entries(data).map(([key, value]) => (
+        <StructFieldRow key={key} fieldKey={key} value={value} />
+      ))}
+    </Box>
+  );
+}
+
 function ReadContractForm({
   module,
   fn,
@@ -1115,35 +1230,55 @@ function ReadContractForm({
                       >
                         Result
                       </Typography>
-                      <Typography
-                        component="pre"
-                        sx={{
-                          fontFamily: "monospace",
-                          fontSize: 13,
-                          whiteSpace: "pre-wrap",
-                          wordBreak: "break-word",
-                          m: 0,
-                          p: 1.5,
-                          bgcolor: "action.hover",
-                          borderRadius: 1,
-                        }}
-                      >
-                        {resultString}
-                      </Typography>
+                      <Stack spacing={1.5}>
+                        {result?.map((r, idx) =>
+                          isStructResult(r) ? (
+                            <StructResultDisplay
+                              // biome-ignore lint/suspicious/noArrayIndexKey: results identified by position
+                              key={idx}
+                              data={r}
+                            />
+                          ) : (
+                            <Typography
+                              // biome-ignore lint/suspicious/noArrayIndexKey: results identified by position
+                              key={idx}
+                              component="pre"
+                              sx={{
+                                fontFamily: "monospace",
+                                fontSize: 13,
+                                whiteSpace: "pre-wrap",
+                                wordBreak: "break-word",
+                                m: 0,
+                                p: 1.5,
+                                bgcolor: "action.hover",
+                                borderRadius: 1,
+                              }}
+                            >
+                              {typeof r === "string"
+                                ? r
+                                : JSON.stringify(r, null, 2)}
+                            </Typography>
+                          ),
+                        )}
+                      </Stack>
                     </>
                   )}
                 </Box>
 
                 {!errMsg && result && (
                   <StyledTooltip
-                    title="Copied!"
+                    title={tooltipOpen ? "Copied!" : "Copy all"}
                     placement="top"
-                    open={tooltipOpen}
-                    disableFocusListener
-                    disableHoverListener
-                    disableTouchListener
+                    open={tooltipOpen || undefined}
+                    disableFocusListener={tooltipOpen}
+                    disableHoverListener={tooltipOpen}
+                    disableTouchListener={tooltipOpen}
                   >
-                    <IconButton onClick={copyValue} size="small">
+                    <IconButton
+                      onClick={copyValue}
+                      size="small"
+                      aria-label="Copy full response"
+                    >
                       <ContentCopy fontSize="small" />
                     </IconButton>
                   </StyledTooltip>
