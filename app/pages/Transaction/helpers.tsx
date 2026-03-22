@@ -202,6 +202,28 @@ export function getLearnMoreTooltip(
                link="https://github.com/PanoraExchange/Aptos-Tokens"
              />;*/
       );
+    case "transfer_ref":
+      return (
+        <LearnMoreTooltip text="A TransferRef allows the holder to transfer the object even when ungated transfer is disabled. Can only be created during object construction." />
+      );
+    case "delete_ref":
+      return (
+        <LearnMoreTooltip text="A DeleteRef allows the holder to delete the object. Can only be created during object construction." />
+      );
+    case "extend_ref":
+      return (
+        <LearnMoreTooltip text="An ExtendRef allows the holder to generate a signer for the object, enabling adding new resources. Can only be created during object construction." />
+      );
+    case "creation_transaction":
+      return (
+        <LearnMoreTooltip text="The transaction in which this object was first created." />
+      );
+    case "owner":
+      return <LearnMoreTooltip text="The current owner of the object." />;
+    case "allow_ungated_transfer":
+      return (
+        <LearnMoreTooltip text="Whether the object can be transferred by anyone without requiring a TransferRef." />
+      );
     default:
       return <LearnMoreTooltipPlaceholder />;
   }
