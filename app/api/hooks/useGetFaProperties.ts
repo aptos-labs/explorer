@@ -75,7 +75,7 @@ function deepScanForRefs(
   return result;
 }
 
-function deriveProperties(
+export function deriveProperties(
   resources: Types.MoveResource[] | undefined,
 ): FaProperties | null {
   if (!resources || resources.length === 0) return null;
