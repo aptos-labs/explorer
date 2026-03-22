@@ -74,6 +74,200 @@ type DecibelDetailsPanelProps = {
   transaction: Types.Transaction_UserTransaction;
 };
 
+/**
+ * Build a plain-English summary of a Decibel transaction.
+ * Returns an array of sentence fragments meant to be rendered as a list.
+ */
+function summariseTransaction(
+  transaction: Types.Transaction_UserTransaction,
+): string[] {
+  const lines: string[] = [];
+
+  // 1. Describe the function called
+  if ("function" in transaction.payload) {
+    const fn = transaction.payload.function;
+    const parts = fn.split("::");
+    if (parts.length === 3) {
+      const moduleName = parts[1];
+      const funcName = parts[2]
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+      lines.push(`Called ${funcName} on the ${moduleName} module.`);
+    }
+  }
+
+  // 2. Summarise events into human-readable actions
+  const events = transaction.events ?? [];
+  const deposits: {account: string; amount: string}[] = [];
+  const withdrawals: {account: string; amount: string}[] = [];
+  const transfers: {from: string; to: string; amount?: string}[] = [];
+  let gasFeeOctas: bigint | undefined;
+  let storageRefundOctas: bigint | undefined;
+  const otherActions: string[] = [];
+
+  for (const event of events) {
+    const typeLower = event.type.toLowerCase();
+    const data = event.data as Record<string, unknown> | undefined;
+
+    if (typeLower.includes("feestatement") && data) {
+      const totalFee =
+        BigInt(String(data.total_charge_gas_units ?? "0")) *
+        BigInt(transaction.gas_unit_price);
+      gasFeeOctas = totalFee;
+      if (data.storage_fee_refund_octas) {
+        storageRefundOctas = BigInt(String(data.storage_fee_refund_octas));
+      }
+      continue;
+    }
+
+    if (
+      (typeLower.includes("coin::deposit") ||
+        typeLower.includes("fungible_asset::deposit")) &&
+      data
+    ) {
+      const amount = data.amount ? String(data.amount) : undefined;
+      const account = String(
+        data.account ?? data.store ?? event.guid?.account_address ?? "",
+      );
+      if (amount) deposits.push({account, amount});
+      continue;
+    }
+
+    if (
+      (typeLower.includes("coin::withdraw") ||
+        typeLower.includes("fungible_asset::withdraw")) &&
+      data
+    ) {
+      const amount = data.amount ? String(data.amount) : undefined;
+      const account = String(
+        data.account ?? data.store ?? event.guid?.account_address ?? "",
+      );
+      if (amount) withdrawals.push({account, amount});
+      continue;
+    }
+
+    if (typeLower.includes("transfer") && data) {
+      transfers.push({
+        from: String(data.from ?? data.sender ?? ""),
+        to: String(data.to ?? data.recipient ?? ""),
+        amount: data.amount ? String(data.amount) : undefined,
+      });
+      continue;
+    }
+
+    if (typeLower.includes("swap") && data) {
+      const amtIn = data.amount_in ?? data.x_in ?? data.a_in;
+      const amtOut = data.amount_out ?? data.y_out ?? data.b_out;
+      if (amtIn && amtOut) {
+        otherActions.push(
+          `Swapped ${octasToApt(String(amtIn))} in for ${octasToApt(String(amtOut))} out.`,
+        );
+      } else {
+        otherActions.push("Performed a token swap.");
+      }
+      continue;
+    }
+
+    if (typeLower.includes("mint") && data) {
+      const amount = data.amount ? octasToApt(String(data.amount)) : "";
+      otherActions.push(amount ? `Minted ${amount} tokens.` : "Minted tokens.");
+      continue;
+    }
+
+    if (typeLower.includes("burn") && data) {
+      const amount = data.amount ? octasToApt(String(data.amount)) : "";
+      otherActions.push(amount ? `Burned ${amount} tokens.` : "Burned tokens.");
+    }
+  }
+
+  // Aggregate transfers
+  if (transfers.length === 1) {
+    const t = transfers[0];
+    const amt = t.amount ? ` of ${octasToApt(t.amount)}` : "";
+    lines.push(`Transferred${amt} to ${truncateAddr(t.to)}.`);
+  } else if (transfers.length > 1) {
+    lines.push(`Performed ${transfers.length} transfers.`);
+  }
+
+  if (deposits.length > 0 && withdrawals.length > 0) {
+    const totalDeposit = deposits.reduce(
+      (s, d) => s + safeBigInt(d.amount),
+      0n,
+    );
+    const totalWithdraw = withdrawals.reduce(
+      (s, w) => s + safeBigInt(w.amount),
+      0n,
+    );
+    if (totalDeposit > 0n || totalWithdraw > 0n) {
+      lines.push(
+        `Moved ${octasToApt(totalWithdraw.toString())} out and ${octasToApt(totalDeposit.toString())} in across ${deposits.length + withdrawals.length} operations.`,
+      );
+    }
+  } else if (deposits.length > 0) {
+    const total = deposits.reduce((s, d) => s + safeBigInt(d.amount), 0n);
+    lines.push(
+      `Received ${octasToApt(total.toString())} across ${deposits.length} deposit${deposits.length > 1 ? "s" : ""}.`,
+    );
+  } else if (withdrawals.length > 0) {
+    const total = withdrawals.reduce((s, w) => s + safeBigInt(w.amount), 0n);
+    lines.push(
+      `Sent ${octasToApt(total.toString())} across ${withdrawals.length} withdrawal${withdrawals.length > 1 ? "s" : ""}.`,
+    );
+  }
+
+  for (const action of otherActions) {
+    lines.push(action);
+  }
+
+  // 3. Gas
+  if (gasFeeOctas !== undefined) {
+    const net =
+      storageRefundOctas !== undefined
+        ? gasFeeOctas - storageRefundOctas
+        : gasFeeOctas;
+    lines.push(`Gas fee: ${octasToApt(net.toString())} APT.`);
+  }
+
+  // 4. State changes count
+  const changes = transaction.changes ?? [];
+  if (changes.length > 0) {
+    lines.push(
+      `Modified ${changes.length} on-chain resource${changes.length > 1 ? "s" : ""}.`,
+    );
+  }
+
+  if (lines.length === 0) {
+    lines.push("Transaction processed on the Decibel contract.");
+  }
+
+  return lines;
+}
+
+function safeBigInt(value: string): bigint {
+  try {
+    return BigInt(value);
+  } catch {
+    return 0n;
+  }
+}
+
+function octasToApt(octas: string): string {
+  try {
+    const n = BigInt(octas);
+    const decimal = Number(n) / 1e8;
+    if (decimal === 0) return "0";
+    if (Math.abs(decimal) < 0.0001) return `${decimal.toExponential(2)} APT`;
+    return `${decimal.toLocaleString(undefined, {maximumFractionDigits: 8})} APT`;
+  } catch {
+    return octas;
+  }
+}
+
+function truncateAddr(addr: string): string {
+  if (addr.length <= 10) return addr;
+  return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+}
+
 function SectionHeader({
   icon,
   title,
@@ -551,6 +745,7 @@ export default function DecibelDetailsPanel({
   const changes = transaction.changes ?? [];
   const hasPayload =
     "payload" in transaction && "function" in transaction.payload;
+  const summary = summariseTransaction(transaction);
 
   return (
     <Accordion
@@ -578,24 +773,69 @@ export default function DecibelDetailsPanel({
           "& .MuiAccordionSummary-content": {margin: "8px 0"},
         }}
       >
-        <Stack direction="row" spacing={1.5} alignItems="center">
-          <Chip
-            label="Decibel"
-            color="primary"
-            size="small"
-            sx={{fontWeight: 600}}
-          />
-          <Typography
-            variant="body2"
-            sx={{color: theme.palette.text.secondary}}
-          >
-            Enhanced transaction details
-          </Typography>
+        <Stack spacing={0.25}>
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            <Chip
+              label="Decibel"
+              color="primary"
+              size="small"
+              sx={{fontWeight: 600}}
+            />
+            <Typography
+              variant="body2"
+              sx={{color: theme.palette.text.secondary}}
+            >
+              {summary[0]}
+            </Typography>
+          </Stack>
+          {summary.length > 1 && (
+            <Typography
+              variant="caption"
+              sx={{
+                color: theme.palette.text.secondary,
+                pl: 0.5,
+                opacity: 0.8,
+              }}
+            >
+              {summary.slice(1, 3).join(" ")}{" "}
+              {summary.length > 3 ? `(+${summary.length - 3} more)` : ""}
+            </Typography>
+          )}
         </Stack>
       </AccordionSummary>
 
       <AccordionDetails sx={{p: 3, pt: 2}}>
         <Stack spacing={3}>
+          {/* What Happened summary */}
+          <Box>
+            <SectionHeader
+              icon={
+                <Typography sx={{fontSize: "1rem", lineHeight: 1}}>
+                  💡
+                </Typography>
+              }
+              title="What Happened"
+            />
+            <Stack
+              component="ul"
+              spacing={0.5}
+              sx={{mt: 1, pl: 2.5, mb: 0, listStyleType: "disc"}}
+            >
+              {summary.map((line) => (
+                <Typography
+                  component="li"
+                  key={line}
+                  variant="body2"
+                  sx={{pl: 0.5}}
+                >
+                  {line}
+                </Typography>
+              ))}
+            </Stack>
+          </Box>
+
+          <Divider />
+
           {events.length > 0 && (
             <Box>
               <SectionHeader
