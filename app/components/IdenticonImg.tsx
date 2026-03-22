@@ -1,6 +1,6 @@
 import {createIcon} from "@download/blockies";
 import type React from "react";
-import {memo, useMemo, useState} from "react";
+import {memo, useEffect, useMemo, useState} from "react";
 
 interface IdenticonImgProps {
   address: string;
@@ -25,6 +25,11 @@ const IdenticonImg = memo(function IdenticonImg({
   sizePx = IDENTICON_PX,
 }: IdenticonImgProps) {
   const [iconErrored, setIconErrored] = useState(false);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: props must reset load-error state when identity changes (Biome misreads memo props as outer scope)
+  useEffect(() => {
+    setIconErrored(false);
+  }, [address, iconSrc]);
 
   const useOverride = Boolean(iconSrc) && !iconErrored;
 
@@ -64,7 +69,7 @@ const IdenticonImg = memo(function IdenticonImg({
       style={style}
       loading="lazy"
       onError={() => {
-        if (iconSrc) {
+        if (useOverride) {
           setIconErrored(true);
         }
       }}
