@@ -6,6 +6,8 @@ import Tooltip from "@mui/material/Tooltip";
 import {useGetFirstCoinActivity} from "../../../api/hooks/useGetCoinActivities";
 import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {SupplyType} from "../../../api/hooks/useGetCoinSupplyLimit";
+import {useGetFaProperties} from "../../../api/hooks/useGetFaProperties";
+import FaPropertiesDisplay from "../../../components/FaPropertiesDisplay";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
@@ -30,6 +32,7 @@ export default function InfoTab({
   coinData,
 }: InfoTabProps) {
   const {data: firstActivity} = useGetFirstCoinActivity(pairedFa ?? struct);
+  const {data: faProperties} = useGetFaProperties(pairedFa ?? "");
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
   }
@@ -158,6 +161,12 @@ export default function InfoTab({
                   type={HashType.FUNGIBLE_ASSET}
                 />
               }
+            />
+          )}
+          {faProperties && (
+            <ContentRow
+              title={"Properties:"}
+              value={<FaPropertiesDisplay properties={faProperties} />}
             />
           )}
           {firstActivity && (

@@ -2,6 +2,8 @@ import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {Box} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import {useGetFirstCoinActivity} from "../../../api/hooks/useGetCoinActivities";
+import {useGetFaProperties} from "../../../api/hooks/useGetFaProperties";
+import FaPropertiesDisplay from "../../../components/FaPropertiesDisplay";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
@@ -38,6 +40,7 @@ function ExtraInfo({address}: {address: string}) {
 
 export default function InfoTab({address, data}: InfoTabProps) {
   const {data: firstActivity} = useGetFirstCoinActivity(address);
+  const {data: faProperties} = useGetFaProperties(address);
 
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
@@ -143,6 +146,12 @@ export default function InfoTab({address, data}: InfoTabProps) {
                   type={HashType.COIN}
                 />
               }
+            />
+          )}
+          {faProperties && (
+            <ContentRow
+              title={"Properties:"}
+              value={<FaPropertiesDisplay properties={faProperties} />}
             />
           )}
           {firstActivity && (
