@@ -20,7 +20,7 @@ import {
   type CoinDescription,
   useGetCoinList,
 } from "../api/hooks/useGetCoinList";
-import {useKnownAddressIcon} from "../constants";
+import {useKnownAddressBranding} from "../constants";
 import {
   isValidAccountAddress,
   truncate,
@@ -109,7 +109,7 @@ const AccountHashButtonInner = memo(function AccountHashButtonInner({
   const name = useGetNameFromAddress(address, false, isValidator, undefined, {
     enabled: resolveName,
   });
-  const knownAddressIcon = useKnownAddressIcon(address);
+  const knownAddressBranding = useKnownAddressBranding(address);
   const truncateHash =
     size === "large"
       ? truncateAddressMiddle(address)
@@ -133,9 +133,10 @@ const AccountHashButtonInner = memo(function AccountHashButtonInner({
   return (
     <Stack direction="row" alignItems={"center"} spacing={1}>
       <IdenticonImg
-        key={`${address}:${knownAddressIcon ?? ""}`}
+        key={`${address}:${knownAddressBranding?.icon ?? ""}:${knownAddressBranding?.iconBadge ?? ""}`}
         address={address}
-        iconSrc={knownAddressIcon}
+        iconSrc={knownAddressBranding?.icon}
+        iconBadge={knownAddressBranding?.iconBadge}
       />
       <Link
         to={getHashLinkStr(address, type)}

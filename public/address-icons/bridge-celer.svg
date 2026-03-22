@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Celer">
+  <circle cx="32" cy="32" r="30" fill="#0066ff"/>
+  <path d="M16 36c10-10 22-10 32 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M16 44c10-8 22-8 32 0" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.9"/>
+</svg>

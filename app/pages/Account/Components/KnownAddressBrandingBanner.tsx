@@ -53,6 +53,7 @@ export function KnownAddressBrandingBanner({
             alignItems: "center",
             justifyContent: "center",
             p: 1,
+            position: "relative",
           }}
         >
           <img
@@ -63,6 +64,29 @@ export function KnownAddressBrandingBanner({
             style={{objectFit: "contain", display: "block"}}
             loading="lazy"
           />
+          {branding.iconBadge ? (
+            <Typography
+              component="span"
+              variant="caption"
+              sx={{
+                position: "absolute",
+                top: 6,
+                left: 0,
+                right: 0,
+                textAlign: "center",
+                fontWeight: 700,
+                lineHeight: 1,
+                color: "#fff",
+                textShadow:
+                  "0 0 2px #000, 0 1px 2px rgba(0,0,0,0.95), 0 -1px 1px rgba(0,0,0,0.5)",
+                pointerEvents: "none",
+                fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+                fontSize: "0.7rem",
+              }}
+            >
+              {branding.iconBadge}
+            </Typography>
+          ) : null}
         </Box>
         {branding.description ? (
           <Typography

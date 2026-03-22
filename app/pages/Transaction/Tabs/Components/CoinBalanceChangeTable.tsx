@@ -34,7 +34,7 @@ import {
   VerifiedAsset,
   VerifiedCoinCell,
 } from "../../../../components/Table/VerifiedCell";
-import {useKnownAddressIcon} from "../../../../constants";
+import {useKnownAddressBranding} from "../../../../constants";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 import {assertNever, tryStandardizeAddress} from "../../../../utils";
 import {isValidAccountAddress} from "../../../utils";
@@ -369,7 +369,7 @@ function BalanceChangeCard({balanceChange, onClick}: BalanceChangeCardProps) {
 
   const logoUrl = balanceChange.logoUrl || metadata?.icon_uri;
 
-  const accountIcon = useKnownAddressIcon(balanceChange.address);
+  const accountBranding = useKnownAddressBranding(balanceChange.address);
 
   return (
     <Paper
@@ -481,9 +481,10 @@ function BalanceChangeCard({balanceChange, onClick}: BalanceChangeCardProps) {
                 }}
               >
                 <IdenticonImg
-                  key={`${balanceChange.address}:${accountIcon ?? ""}`}
+                  key={`${balanceChange.address}:${accountBranding?.icon ?? ""}:${accountBranding?.iconBadge ?? ""}`}
                   address={balanceChange.address}
-                  iconSrc={accountIcon}
+                  iconSrc={accountBranding?.icon}
+                  iconBadge={accountBranding?.iconBadge}
                   sizePx={20}
                 />
               </Box>

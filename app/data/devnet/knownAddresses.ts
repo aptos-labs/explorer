@@ -10,8 +10,8 @@ export const devnetKnownAddresses: Record<string, string> = {
     "Legacy Token (0x3)",
   "0x0000000000000000000000000000000000000000000000000000000000000004":
     "Digital Assets (0x4)",
-  "0x000000000000000000000000000000000000000000000000000000000000000A":
-    "Aptos Coin Fungible Asset",
+  "0x000000000000000000000000000000000000000000000000000000000000000a":
+    "Aptos Coin Fungible Asset (0xA)",
 
   // Burn Address
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
