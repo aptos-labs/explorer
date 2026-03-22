@@ -21,6 +21,7 @@ import {
   devnetVerifiedTokens,
 } from "./devnet/assets";
 // Devnet data
+import {devnetKnownAddressIcons} from "./devnet/knownAddressIcons";
 import {
   devnetKnownAddresses,
   devnetScamAddresses,
@@ -36,6 +37,7 @@ import {
   mainnetVerifiedTokens,
 } from "./mainnet/assets";
 // Mainnet data
+import {mainnetKnownAddressIcons} from "./mainnet/knownAddressIcons";
 import {
   mainnetKnownAddresses,
   mainnetScamAddresses,
@@ -51,6 +53,7 @@ import {
   testnetVerifiedTokens,
 } from "./testnet/assets";
 // Testnet data
+import {testnetKnownAddressIcons} from "./testnet/knownAddressIcons";
 import {
   testnetKnownAddresses,
   testnetScamAddresses,
@@ -59,6 +62,8 @@ import {
 // Type definitions for data structures
 export interface NetworkData {
   knownAddresses: Record<string, string>;
+  /** Optional image URLs (or site-relative paths) for known labeled addresses */
+  knownAddressIcons: Record<string, string>;
   scamAddresses: Record<string, string>;
   hardCodedCoins: Record<string, CoinDescription>;
   nativeTokens: Record<string, string>;
@@ -74,6 +79,7 @@ export interface NetworkData {
 const networkDataRegistry: Record<string, NetworkData> = {
   mainnet: {
     knownAddresses: mainnetKnownAddresses,
+    knownAddressIcons: mainnetKnownAddressIcons,
     scamAddresses: mainnetScamAddresses,
     hardCodedCoins: mainnetHardCodedCoins,
     nativeTokens: mainnetNativeTokens,
@@ -86,6 +92,7 @@ const networkDataRegistry: Record<string, NetworkData> = {
   },
   testnet: {
     knownAddresses: testnetKnownAddresses,
+    knownAddressIcons: testnetKnownAddressIcons,
     scamAddresses: testnetScamAddresses,
     hardCodedCoins: testnetHardCodedCoins,
     nativeTokens: testnetNativeTokens,
@@ -98,6 +105,7 @@ const networkDataRegistry: Record<string, NetworkData> = {
   },
   devnet: {
     knownAddresses: devnetKnownAddresses,
+    knownAddressIcons: devnetKnownAddressIcons,
     scamAddresses: devnetScamAddresses,
     hardCodedCoins: devnetHardCodedCoins,
     nativeTokens: devnetNativeTokens,
@@ -127,6 +135,25 @@ export function getKnownAddresses(
   networkName: NetworkName,
 ): Record<string, string> {
   return getNetworkData(networkName).knownAddresses;
+}
+
+/**
+ * Icons for known labeled addresses (standardized 0x… address → URL or site path).
+ */
+export function getKnownAddressIcons(
+  networkName: NetworkName,
+): Record<string, string> {
+  return getNetworkData(networkName).knownAddressIcons;
+}
+
+/**
+ * Resolved icon for a standardized address, if configured for the network.
+ */
+export function getKnownAddressIcon(
+  networkName: NetworkName,
+  standardizedAddress: string,
+): string | undefined {
+  return getKnownAddressIcons(networkName)[standardizedAddress];
 }
 
 /**
@@ -213,6 +240,7 @@ export function getSupplyLimitOverrides(
 // Re-export mainnet data for backward compatibility
 // TODO: Migrate all consumers to use network-specific functions
 export {mainnetKnownAddresses as knownAddresses};
+export {mainnetKnownAddressIcons as knownAddressIcons};
 export {mainnetScamAddresses as scamAddresses};
 export {mainnetHardCodedCoins as HardCodedCoins};
 export {mainnetNativeTokens as nativeTokens};

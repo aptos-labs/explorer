@@ -12,6 +12,8 @@ export {
   getBannedTokenSymbols,
   getBannedTokens,
   getHardCodedCoins,
+  getKnownAddressIcon,
+  getKnownAddressIcons,
   getKnownAddresses,
   getNativeTokens,
   // Network-specific getters
@@ -21,6 +23,7 @@ export {
   getVerifiedTokens,
   HardCodedCoins,
   // Backward compatible exports (mainnet by default)
+  knownAddressIcons,
   knownAddresses,
   labsBannedAddresses,
   labsBannedCollections,
@@ -48,6 +51,7 @@ export {
   useIsTokenBanned,
   useIsTokenSymbolBanned,
   useIsTokenVerified,
+  useKnownAddressIcon,
   useKnownAddresses,
   useKnownAddressName,
   useNativeTokens,
