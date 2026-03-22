@@ -31,8 +31,6 @@ export interface DefunctProtocol {
   defunctDate?: string;
   /** External URL for more information (docs, post-mortem, etc.) */
   infoUrl?: string;
-  /** Whether a withdrawal plugin is available */
-  hasWithdrawalPlugin: boolean;
 }
 
 /**
@@ -64,7 +62,8 @@ export const MIN_OWNER_WITHDRAWAL_PERCENT = 90;
 
 /**
  * Validates that a withdrawal plugin meets the 90% owner requirement.
- * Returns true if valid, false otherwise.
+ * Returns an object with a `valid` flag and an optional `error` message
+ * describing why validation failed.
  */
 export function validateWithdrawalPlugin(plugin: WithdrawalPlugin): {
   valid: boolean;

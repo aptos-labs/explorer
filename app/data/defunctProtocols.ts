@@ -5,10 +5,11 @@ import {validateWithdrawalPlugin} from "../types/defunctProtocol";
  * Registry of defunct protocols on Aptos Mainnet.
  *
  * To mark a protocol as defunct, add an entry here with at minimum:
- * - address, name, category, status, description, hasWithdrawalPlugin
+ * - address, name, category, status, description
  *
- * If a withdrawal plugin is available, add it to the `withdrawalPlugins` map
- * below. The plugin must satisfy the 90% owner requirement (validated at load).
+ * If a withdrawal plugin is available, add it to the `withdrawalPluginsRaw`
+ * map below. The plugin must satisfy the 90% owner requirement (validated at
+ * load).
  */
 export const defunctProtocols: DefunctProtocol[] = [
   {
@@ -19,7 +20,6 @@ export const defunctProtocols: DefunctProtocol[] = [
     status: "defunct",
     description:
       "Decentralized exchange that ceased operations on Aptos. Liquidity pools may still hold user funds.",
-    hasWithdrawalPlugin: false,
   },
   {
     address:
@@ -28,7 +28,6 @@ export const defunctProtocols: DefunctProtocol[] = [
     category: "DEX",
     status: "defunct",
     description: "Early Aptos DEX that is no longer operational.",
-    hasWithdrawalPlugin: false,
   },
   {
     address:
@@ -37,7 +36,6 @@ export const defunctProtocols: DefunctProtocol[] = [
     category: "DEX",
     status: "defunct",
     description: "Automated market maker and order book DEX that shut down.",
-    hasWithdrawalPlugin: false,
   },
   {
     address:
@@ -47,7 +45,6 @@ export const defunctProtocols: DefunctProtocol[] = [
     status: "defunct",
     description:
       "First deployment of Cetus concentrated liquidity DEX (superseded by newer deployment).",
-    hasWithdrawalPlugin: false,
   },
   {
     address:
@@ -57,7 +54,6 @@ export const defunctProtocols: DefunctProtocol[] = [
     status: "defunct",
     description:
       "Second deployment of Cetus concentrated liquidity DEX (superseded).",
-    hasWithdrawalPlugin: false,
   },
   {
     address:
@@ -66,7 +62,6 @@ export const defunctProtocols: DefunctProtocol[] = [
     category: "DEX",
     status: "defunct",
     description: "Intent-based DEX that is no longer active on Aptos.",
-    hasWithdrawalPlugin: false,
   },
   {
     address:
@@ -75,13 +70,12 @@ export const defunctProtocols: DefunctProtocol[] = [
     category: "DEX",
     status: "defunct",
     description: "Anime-themed DEX on Aptos that ceased operations.",
-    hasWithdrawalPlugin: false,
   },
 ];
 
 /**
  * Withdrawal plugins registered for defunct protocols.
- * Keyed by protocol address.
+ * Keyed by protocol address (will be lowercased at load time).
  *
  * Every plugin is validated at module load time to ensure the 90%
  * owner-withdrawal invariant is satisfied. Invalid plugins throw
@@ -91,9 +85,8 @@ export const defunctProtocols: DefunctProtocol[] = [
  * 1. Add an entry here keyed by the protocol address
  * 2. Set ownerPercentage >= 90
  * 3. Provide the entry function that handles the withdrawal
- * 4. Set hasWithdrawalPlugin: true on the corresponding DefunctProtocol
  */
-export const withdrawalPlugins: Record<string, WithdrawalPlugin> = {
+const withdrawalPluginsRaw: Record<string, WithdrawalPlugin> = {
   // Example (commented out) — uncomment and fill in when a real plugin exists:
   // "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c": {
   //   protocolAddress: "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c",
@@ -103,13 +96,26 @@ export const withdrawalPlugins: Record<string, WithdrawalPlugin> = {
   // },
 };
 
-// Validate all registered plugins at load time
-for (const [addr, plugin] of Object.entries(withdrawalPlugins)) {
-  const result = validateWithdrawalPlugin(plugin);
-  if (!result.valid) {
-    throw new Error(`Invalid withdrawal plugin for ${addr}: ${result.error}`);
+/**
+ * Normalized withdrawal plugin map with lowercased keys for O(1) lookup.
+ * Built once at module load after validation.
+ */
+export const withdrawalPlugins: ReadonlyMap<string, WithdrawalPlugin> = (() => {
+  const map = new Map<string, WithdrawalPlugin>();
+  for (const [addr, plugin] of Object.entries(withdrawalPluginsRaw)) {
+    const result = validateWithdrawalPlugin(plugin);
+    if (!result.valid) {
+      throw new Error(`Invalid withdrawal plugin for ${addr}: ${result.error}`);
+    }
+    if (addr.toLowerCase() !== plugin.protocolAddress.toLowerCase()) {
+      throw new Error(
+        `Withdrawal plugin key "${addr}" does not match protocolAddress "${plugin.protocolAddress}".`,
+      );
+    }
+    map.set(addr.toLowerCase(), plugin);
   }
-}
+  return map;
+})();
 
 /** Look up a defunct protocol by address */
 export function getDefunctProtocol(
@@ -120,12 +126,9 @@ export function getDefunctProtocol(
   );
 }
 
-/** Look up a withdrawal plugin by protocol address */
+/** Look up a withdrawal plugin by protocol address (O(1) via normalized map) */
 export function getWithdrawalPlugin(
   protocolAddress: string,
 ): WithdrawalPlugin | undefined {
-  const key = Object.keys(withdrawalPlugins).find(
-    (k) => k.toLowerCase() === protocolAddress.toLowerCase(),
-  );
-  return key ? withdrawalPlugins[key] : undefined;
+  return withdrawalPlugins.get(protocolAddress.toLowerCase());
 }

@@ -47,7 +47,11 @@ function DefunctBannerInner({
       size="small"
       startIcon={<AccountBalanceWalletIcon />}
       onClick={() => setDialogOpen(true)}
-      sx={{textTransform: "none", fontWeight: 600, whiteSpace: "nowrap"}}
+      sx={{
+        textTransform: "none",
+        fontWeight: 600,
+        whiteSpace: {xs: "normal", sm: "nowrap"},
+      }}
     >
       Withdraw Funds
     </Button>

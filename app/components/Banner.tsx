@@ -8,6 +8,7 @@ import {
   type SxProps,
   type Theme,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import type React from "react";
@@ -62,14 +63,14 @@ export function Banner({
   const [open, setOpen] = useState(true);
   const theme = useTheme();
   const accent = useAccentColor(pillColor);
+  const isSmall = !useMediaQuery(theme.breakpoints.up("sm"));
 
   const pill = pillText ? (
     <Typography
       component="span"
       sx={{
         backgroundColor: accent,
-        color:
-          theme.palette.mode === "dark" ? brandColors.black : brandColors.white,
+        color: theme.palette.getContrastText(accent),
         borderRadius: "6px",
         px: 1.25,
         py: 0.25,
@@ -92,8 +93,9 @@ export function Banner({
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
-            gap: 2,
+            flexDirection: isSmall ? "column" : "row",
+            alignItems: isSmall ? "flex-start" : "center",
+            gap: isSmall ? 1.5 : 2,
             px: 2.5,
             py: 1.75,
             borderRadius: `${theme.shape.borderRadius}px`,
@@ -128,7 +130,10 @@ export function Banner({
             direction="row"
             spacing={1}
             alignItems="center"
-            sx={{flex: "0 0 auto"}}
+            sx={{
+              flex: "0 0 auto",
+              alignSelf: isSmall ? "flex-end" : "center",
+            }}
           >
             {action}
             <IconButton

@@ -19,7 +19,6 @@ describe("defunctProtocols registry", () => {
       expect(p.category).toBeTruthy();
       expect(p.status).toBeTruthy();
       expect(p.description).toBeTruthy();
-      expect(typeof p.hasWithdrawalPlugin).toBe("boolean");
     }
   });
 
@@ -29,20 +28,17 @@ describe("defunctProtocols registry", () => {
   });
 
   it("every withdrawal plugin should satisfy the 90% owner requirement", () => {
-    for (const [addr, plugin] of Object.entries(withdrawalPlugins)) {
+    for (const [addr, plugin] of withdrawalPlugins) {
       expect(plugin.ownerPercentage).toBeGreaterThanOrEqual(
         MIN_OWNER_WITHDRAWAL_PERCENT,
       );
-      expect(plugin.protocolAddress.toLowerCase()).toBe(addr.toLowerCase());
+      expect(plugin.protocolAddress.toLowerCase()).toBe(addr);
     }
   });
 
-  it("protocols with hasWithdrawalPlugin=true should have a registered plugin", () => {
-    for (const p of defunctProtocols) {
-      if (p.hasWithdrawalPlugin) {
-        const plugin = getWithdrawalPlugin(p.address);
-        expect(plugin).toBeDefined();
-      }
+  it("withdrawal plugin keys should be lowercased", () => {
+    for (const [key] of withdrawalPlugins) {
+      expect(key).toBe(key.toLowerCase());
     }
   });
 });

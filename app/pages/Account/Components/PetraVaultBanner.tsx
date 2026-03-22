@@ -21,7 +21,11 @@ export function PetraVaultBanner({address}: PetraVaultBannerProps) {
           onClick={() =>
             window.open(petraVaultUrl, "_blank", "noopener,noreferrer")
           }
-          sx={{textTransform: "none", fontWeight: 600, whiteSpace: "nowrap"}}
+          sx={{
+            textTransform: "none",
+            fontWeight: 600,
+            whiteSpace: {xs: "normal", sm: "nowrap"},
+          }}
         >
           Open in Petra Vault
         </Button>
