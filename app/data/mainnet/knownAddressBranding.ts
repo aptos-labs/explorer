@@ -28,7 +28,7 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
       "LayerZero token / OFT-style bridging contracts deployed on Aptos.",
   },
   "0x8d87a65ba30e09357fa2edea2c80dbac296e5dec2b18287113500b902942929d": {
-    icon: "/address-icons/bridge-celer.svg",
+    icon: "/address-icons/bridge-celer.png",
     description: "Celer cBridge and inter-chain liquidity contracts on Aptos.",
   },
 
@@ -39,24 +39,24 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
       "PancakeSwap deployment and pool logic on Aptos (AMM and related modules).",
   },
   "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af": {
-    icon: "/address-icons/dex-thala.svg",
+    icon: "/address-icons/dex-thala.png",
     description: "ThalaSwap v1 protocol contracts on Aptos.",
   },
   "0x007730cd28ee1cdc9e999336cbc430f99e7c44397c0aa77516f6f23a78559bb5": {
-    icon: "/address-icons/dex-thala.svg",
+    icon: "/address-icons/dex-thala.png",
     description: "ThalaSwap v2 AMM deployment on Aptos.",
   },
   "0x075b4890de3e312d9425408c43d9a9752b64ab3562a30e89a55bdc568c645920": {
-    icon: "/address-icons/dex-thala.svg",
+    icon: "/address-icons/dex-thala.png",
     description:
       "ThalaSwap concentrated-liquidity (CL) pools and routing on Aptos.",
   },
   "0x6b3720cd988adeaf721ed9d4730da4324d52364871a68eac62b46d21e4d2fa99": {
-    icon: "/address-icons/dex-thala.svg",
+    icon: "/address-icons/dex-thala.png",
     description: "Thala liquidity mining / farm contracts on Aptos.",
   },
   "0xcb8365dc9f7ac6283169598aaad7db9c7b12f52da127007f37fa4565170ff59c": {
-    icon: "/address-icons/dex-thala.svg",
+    icon: "/address-icons/dex-thala.png",
     description: "ThalaSwap CL farm and reward distribution on Aptos.",
   },
   "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12": {
