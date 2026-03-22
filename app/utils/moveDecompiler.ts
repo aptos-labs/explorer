@@ -14,6 +14,12 @@ type DecompilationCacheEntry = {
 const MAX_DECOMPILATION_CACHE_SIZE = 30;
 const decompilationCache = new Map<string, DecompilationCacheEntry>();
 
+type BytecodeKind = "module" | "script";
+
+function bytecodeCacheKey(kind: BytecodeKind, normalizedBytecodeHex: string) {
+  return `${kind}:${normalizedBytecodeHex}`;
+}
+
 export type DecompilationView = "decompiled-source" | "bytecode-disassembly";
 
 export function bytecodeHexToBytes(bytecodeHex: string): Uint8Array {
@@ -61,10 +67,10 @@ async function loadMoveDecompilerWasm() {
 }
 
 function touchDecompilationCache(
-  normalizedBytecodeHex: string,
+  cacheKey: string,
   cacheEntry: DecompilationCacheEntry,
 ) {
-  decompilationCache.set(normalizedBytecodeHex, cacheEntry);
+  decompilationCache.set(cacheKey, cacheEntry);
   if (decompilationCache.size <= MAX_DECOMPILATION_CACHE_SIZE) {
     return;
   }
@@ -80,7 +86,8 @@ export async function getDecompiledCodeView(
   view: DecompilationView,
 ): Promise<string> {
   const normalizedBytecodeHex = getNormalizedBytecodeHex(bytecodeHex);
-  const cachedEntry = decompilationCache.get(normalizedBytecodeHex);
+  const cacheKey = bytecodeCacheKey("module", normalizedBytecodeHex);
+  const cachedEntry = decompilationCache.get(cacheKey);
   if (cachedEntry) {
     if (view === "decompiled-source" && cachedEntry.decompiledSource) {
       return cachedEntry.decompiledSource;
@@ -98,11 +105,48 @@ export async function getDecompiledCodeView(
   const nextEntry: DecompilationCacheEntry = cachedEntry ?? {};
   if (view === "decompiled-source") {
     nextEntry.decompiledSource = wasmModule.decompile_module(bytecodeBytes);
-    touchDecompilationCache(normalizedBytecodeHex, nextEntry);
+    touchDecompilationCache(cacheKey, nextEntry);
     return nextEntry.decompiledSource;
   }
 
   nextEntry.disassembly = wasmModule.disassemble_module(bytecodeBytes);
-  touchDecompilationCache(normalizedBytecodeHex, nextEntry);
+  touchDecompilationCache(cacheKey, nextEntry);
+  return nextEntry.disassembly;
+}
+
+/**
+ * Decompile or disassemble Move **script** bytecode (e.g. from a `script_payload`).
+ * Uses `verify_script` / `decompile_script` / `disassemble_script` in WASM.
+ */
+export async function getDecompiledScriptCodeView(
+  bytecodeHex: string,
+  view: DecompilationView,
+): Promise<string> {
+  const normalizedBytecodeHex = getNormalizedBytecodeHex(bytecodeHex);
+  const cacheKey = bytecodeCacheKey("script", normalizedBytecodeHex);
+  const cachedEntry = decompilationCache.get(cacheKey);
+  if (cachedEntry) {
+    if (view === "decompiled-source" && cachedEntry.decompiledSource) {
+      return cachedEntry.decompiledSource;
+    }
+    if (view === "bytecode-disassembly" && cachedEntry.disassembly) {
+      return cachedEntry.disassembly;
+    }
+  }
+
+  const wasmModule = await loadMoveDecompilerWasm();
+  const bytecodeBytes = bytecodeHexToBytes(bytecodeHex);
+
+  wasmModule.verify_script(bytecodeBytes);
+
+  const nextEntry: DecompilationCacheEntry = cachedEntry ?? {};
+  if (view === "decompiled-source") {
+    nextEntry.decompiledSource = wasmModule.decompile_script(bytecodeBytes);
+    touchDecompilationCache(cacheKey, nextEntry);
+    return nextEntry.decompiledSource;
+  }
+
+  nextEntry.disassembly = wasmModule.disassemble_script(bytecodeBytes);
+  touchDecompilationCache(cacheKey, nextEntry);
   return nextEntry.disassembly;
 }

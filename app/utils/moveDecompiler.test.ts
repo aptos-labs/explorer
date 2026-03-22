@@ -1,5 +1,9 @@
 import {describe, expect, it} from "vitest";
-import {bytecodeHexToBytes, getDecompiledCodeView} from "./moveDecompiler";
+import {
+  bytecodeHexToBytes,
+  getDecompiledCodeView,
+  getDecompiledScriptCodeView,
+} from "./moveDecompiler";
 
 describe("bytecodeHexToBytes", () => {
   it("converts prefixed hex bytecode to bytes", () => {
@@ -28,6 +32,14 @@ describe("getDecompiledCodeView", () => {
   it("throws in non-browser environments", async () => {
     await expect(
       getDecompiledCodeView("0x00", "decompiled-source"),
+    ).rejects.toThrow("Move decompiler is only available in the browser");
+  });
+});
+
+describe("getDecompiledScriptCodeView", () => {
+  it("throws in non-browser environments", async () => {
+    await expect(
+      getDecompiledScriptCodeView("0x00", "decompiled-source"),
     ).rejects.toThrow("Move decompiler is only available in the browser");
   });
 });
