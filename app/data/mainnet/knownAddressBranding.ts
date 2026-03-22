@@ -179,7 +179,7 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
       "Address commonly associated with Binance deposit and withdrawal flows on Aptos.",
   },
   "0x81701e60a8e783aecf4dd5e5c9eb76f70a4431bb7441309dc3c6099f2c9e63d5": {
-    icon: "/address-icons/cex-binance-us.svg",
+    icon: "/address-icons/cex-binance-us.png",
     description: "Address commonly associated with Binance.US flows on Aptos.",
   },
   "0x0b3581f46ac8a6920fc9b87fecb7b459b9b39c177e65233826a7b4978bad41cd": {
@@ -223,42 +223,42 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
       "Address commonly associated with OKX deposit and withdrawal flows on Aptos.",
   },
   "0x84b1675891d370d5de8f169031f9c3116d7add256ecf50a4bc71e3135ddba6e0": {
-    icon: "/address-icons/cex-bybit.svg",
+    icon: "/address-icons/cex-bybit.png",
     description:
       "Address commonly associated with Bybit deposit and withdrawal flows on Aptos.",
   },
   "0xfd9192f8ad8dc60c483a884f0fbc8940f5b8618f3cf2bbf91693982b373dfdea": {
-    icon: "/address-icons/cex-bitfinex.svg",
+    icon: "/address-icons/cex-bitfinex.png",
     description:
       "Address commonly associated with Bitfinex-related settlement on Aptos.",
   },
   "0xdc7adffa09da5736ce1303f7441f4367fa423617c6822ad2fbc8522d9efd8fa4": {
-    icon: "/address-icons/cex-kraken.svg",
+    icon: "/address-icons/cex-kraken.png",
     description:
       "Address commonly associated with Kraken deposit and withdrawal flows on Aptos.",
   },
   "0x7ec963a7f9a4ee5d87e9431f5646162626c35774c799f4181d574f0ba938bf38": {
-    icon: "/address-icons/cex-kraken.svg",
+    icon: "/address-icons/cex-kraken.png",
     description:
       "Address commonly associated with Kraken staking or treasury flows on Aptos.",
   },
   "0x0cf869189c785beaaad2f5c636ced4805aeae9cbf49070dc93aed2f16b99012a": {
-    icon: "/address-icons/cex-gate.svg",
+    icon: "/address-icons/cex-gate.png",
     description:
       "Address commonly associated with Gate.io deposit and withdrawal flows on Aptos.",
   },
   "0xe8ca094fec460329aaccc2a644dc73c5e39f1a2ad6e97f82b6cbdc1a5949b9ea": {
-    icon: "/address-icons/cex-mexc.svg",
+    icon: "/address-icons/cex-mexc.png",
     description:
       "Address commonly associated with MEXC deposit and withdrawal flows on Aptos.",
   },
   "0xde084991b91637a08e4da2f1b398f5f935e1393b65d13cc99c597ec5dc105b6b": {
-    icon: "/address-icons/cex-cryptocom.svg",
+    icon: "/address-icons/cex-cryptocom.png",
     description:
       "Address commonly associated with Crypto.com customer flows on Aptos.",
   },
   "0x0613f31af70ce983b9dca574e033a52351fd2e67b1959bf48574c6e9c956f95e": {
-    icon: "/address-icons/cex-flipster.svg",
+    icon: "/address-icons/cex-flipster.png",
     description:
       "Address commonly associated with Flipster / trading-platform flows on Aptos.",
   },

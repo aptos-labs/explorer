@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Known-address branding (per network): optional `icon` and `description` replace blockies where configured, render an account-page banner, and enrich metadata; Decibel on mainnet is the first entry (`app/data/mainnet/knownAddressBranding.ts`)
 - Known-address `iconBadge` (e.g. `0x1` on the Aptos mark) for framework accounts; mainnet icons/descriptions for bridges, DEX deployers, and CEX-labeled wallets; framework branding shared on testnet/devnet (`app/data/aptosFrameworkAddressBranding.ts`, `public/address-icons/*`)
+- CEX icons (Bybit, Bitfinex, Kraken, Gate.io, MEXC, Crypto.com, Flipster, Binance US): profile images from official X handles via `unavatar.io/twitter/...`, vendored as PNG under `public/address-icons/`
 - Search (header autocomplete and inline `/` + `/search` results): token logos when available, otherwise blockies or known-address brand marks via `identiconKey` on `SearchResult` (`SearchResultAvatar`, `searchUtils.ts`)
 - Known-address DEX/bridge marks: vendor favicons (or official SVG/avatars) for Tapp, Sushi, Panora, PancakeSwap, Liquidswap, Kana, Hyperion, Cellana, Cetus, Aux, Wormhole, LayerZero; Econia via @EconiaLabs (unavatar); AptoSwap via GitHub org avatar; AnimeSwap via @AnimeSwapAptos (unavatar); remove Obric from named-address list and branding (`defunctProtocols` unchanged)
 - GitHub Actions workflow **CI** (`pnpm ci:verify`: generate TanStack route tree, lint, test, production build)
