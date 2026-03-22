@@ -140,6 +140,10 @@ export function clearReloadAttempts(): void {
  * Exported for testing purposes.
  */
 export function forceReload(): void {
+  if (typeof window === "undefined" || !window.location) {
+    return;
+  }
+
   // Add a cache-busting query parameter to ensure the browser fetches fresh assets
   // Combine timestamp with random value to make the parameter unpredictable
   const cacheBuster = `${Date.now()}-${Math.random().toString(16).slice(2)}`;

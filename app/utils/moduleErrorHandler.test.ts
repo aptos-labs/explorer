@@ -1,7 +1,14 @@
-/**
- * @vitest-environment jsdom
- */
-import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
+import {JSDOM} from "jsdom";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 describe("moduleErrorHandler", () => {
   // We need to dynamically import the module after setting up mocks
@@ -15,21 +22,32 @@ describe("moduleErrorHandler", () => {
   // Track location.replace calls
   const replaceMock = vi.fn();
 
+  beforeAll(() => {
+    // CI runs this file in a Node-like Vitest context (no `window`). JSDOM
+    // provides a real Storage implementation; `location` is a plain object so
+    // we can swap `replace` (JSDOM's Location is not configurable / spyable).
+    const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
+      url: "https://explorer.aptoslabs.com/",
+    });
+    const {sessionStorage: jsdomSessionStorage} = dom.window;
+    vi.stubGlobal("sessionStorage", jsdomSessionStorage);
+    vi.stubGlobal("window", {
+      sessionStorage: jsdomSessionStorage,
+      location: {
+        href: "https://explorer.aptoslabs.com/",
+        replace: replaceMock,
+      },
+    } as unknown as Window);
+  });
+
+  afterAll(() => {
+    vi.unstubAllGlobals();
+  });
+
   beforeEach(async () => {
     // Clear sessionStorage
     sessionStorage.clear();
 
-    // Mock location.replace
-    Object.defineProperty(window, "location", {
-      value: {
-        ...window.location,
-        href: "https://explorer.aptoslabs.com/",
-        replace: replaceMock,
-      },
-      writable: true,
-    });
-
-    // Clear all mocks
     vi.clearAllMocks();
 
     // Reset module cache and reimport
