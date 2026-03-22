@@ -1,4 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kana Labs">
-  <circle cx="32" cy="32" r="30" fill="#0f766e"/>
-  <text x="32" y="42" text-anchor="middle" font-family="system-ui,sans-serif" font-size="28" font-weight="800" fill="#fff">K</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="26" height="34" viewBox="0 0 26 34" fill="none">
+	<g id="Logo">
+		<g id="Group 6">
+			<path id="Ellipse 54" d="M16.7905 1.70828C16.7905 1.14052 16.3298 0.67689 15.7632 0.71263C13.9714 0.825646 12.2082 1.23371 10.5452 1.92253C8.56518 2.74268 6.7661 3.94479 5.25067 5.46023C3.73523 6.97566 2.53312 8.77474 1.71297 10.7548C0.892827 12.7348 0.470703 14.8569 0.470703 17.0001C0.470703 19.1432 0.892828 21.2654 1.71298 23.2454C2.53312 25.2254 3.73523 27.0245 5.25067 28.5399C6.7661 30.0554 8.56519 31.2575 10.5452 32.0776C12.2082 32.7664 13.9714 33.1745 15.7632 33.2875C16.3298 33.3233 16.7905 32.8596 16.7905 32.2919L16.7905 1.70828Z" fill="url(#paint0_linear_2074_8642)"/>
+			<path id="Ellipse 55" d="M25.5284 5.04973C25.5284 4.48197 25.0673 4.0173 24.5014 4.06403C21.5034 4.31163 18.6753 5.63727 16.5328 7.8231C14.147 10.2571 12.8066 13.5583 12.8066 17.0005C12.8066 20.4426 14.147 23.7438 16.5328 26.1778C18.6753 28.3636 21.5034 29.6893 24.5014 29.9369C25.0673 29.9836 25.5284 29.5189 25.5284 28.9512V5.04973Z" fill="url(#paint1_linear_2074_8642)"/>
+		</g>
+	</g>
+	<defs>
+		<linearGradient id="paint0_linear_2074_8642" x1="0.272802" y1="36.7496" x2="25.8135" y2="-3.39804" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#0194FF"/>
+			<stop offset="1" stop-color="#1FF8D1"/>
+		</linearGradient>
+		<linearGradient id="paint1_linear_2074_8642" x1="12.6524" y1="32.6888" x2="33.1007" y2="1.14615" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#0194FF"/>
+			<stop offset="1" stop-color="#1FF8D1"/>
+		</linearGradient>
+	</defs>
 </svg>

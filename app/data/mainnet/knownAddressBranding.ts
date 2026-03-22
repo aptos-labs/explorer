@@ -8,22 +8,22 @@ import {aptosFrameworkAddressBranding} from "../aptosFrameworkAddressBranding";
 const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
   // Bridges
   "0x5bc11445584a763c1fa7ed39081f1b920954da14e04b32440cba863d03e19625": {
-    icon: "/address-icons/bridge-wormhole.svg",
+    icon: "/address-icons/bridge-wormhole.png",
     description:
       "Wormhole bridge contracts on Aptos: cross-chain messaging and the portal used to move assets across networks.",
   },
   "0x576410486a2da45eee6c949c995670112ddf2fbeedab20350d506328eefc9d4f": {
-    icon: "/address-icons/bridge-wormhole.svg",
+    icon: "/address-icons/bridge-wormhole.png",
     description:
       "Wormhole-related token / wrapped asset factory and portal logic on Aptos.",
   },
   "0x54ad3d30af77b60d939ae356e6606de9a4da67583f02b962d2d3f2e481484e90": {
-    icon: "/address-icons/bridge-layerzero.svg",
+    icon: "/address-icons/bridge-layerzero.png",
     description:
       "LayerZero endpoint and bridge infrastructure on Aptos for omnichain messaging.",
   },
   "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa": {
-    icon: "/address-icons/bridge-layerzero.svg",
+    icon: "/address-icons/bridge-layerzero.png",
     description:
       "LayerZero token / OFT-style bridging contracts deployed on Aptos.",
   },
@@ -34,7 +34,7 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
 
   // DEX & AMM deployers
   "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa": {
-    icon: "/address-icons/dex-pancakeswap.svg",
+    icon: "/address-icons/dex-pancakeswap.png",
     description:
       "PancakeSwap deployment and pool logic on Aptos (AMM and related modules).",
   },
@@ -60,50 +60,50 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
     description: "ThalaSwap CL farm and reward distribution on Aptos.",
   },
   "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12": {
-    icon: "/address-icons/dex-liquidswap.svg",
+    icon: "/address-icons/dex-liquidswap.png",
     description:
       "LiquidSwap v0 (Pontem) AMM deployment — historical early Aptos DEX version.",
   },
   "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e": {
-    icon: "/address-icons/dex-liquidswap.svg",
+    icon: "/address-icons/dex-liquidswap.png",
     description: "LiquidSwap v0.5 AMM upgrade on Aptos (historical).",
   },
   "0x54cb0bb2c18564b86e34539b9f89cfe1186e39d89fce54e1cd007b8e61673a85": {
-    icon: "/address-icons/dex-liquidswap.svg",
+    icon: "/address-icons/dex-liquidswap.png",
     description: "LiquidSwap v1 pools and swaps on Aptos.",
   },
   "0xb247ddeee87e848315caf9a33b8e4c71ac53db888cb88143d62d2370cca0ead2": {
-    icon: "/address-icons/dex-liquidswap.svg",
+    icon: "/address-icons/dex-liquidswap.png",
     description: "LiquidSwap v1 farming and incentives on Aptos.",
   },
   "0x80273859084bc47f92a6c2d3e9257ebb2349668a1b0fb3db1d759a04c7628855": {
-    icon: "/address-icons/dex-liquidswap.svg",
+    icon: "/address-icons/dex-liquidswap.png",
     description: "LiquidSwap router and aggregation entry points on Aptos.",
   },
   "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c": {
-    icon: "/address-icons/dex-sushiswap.svg",
+    icon: "/address-icons/dex-sushiswap.png",
     description:
       "SushiSwap on Aptos (historical / defunct deployment for this address).",
   },
   "0xa5d3ac4d429052674ed38adc62d010e52d7c24ca159194d17ddc196ddb7e480b": {
-    icon: "/address-icons/dex-aptoswap.svg",
+    icon: "/address-icons/dex-aptoswap.png",
     description: "AptoSwap protocol account on Aptos (historical).",
   },
   "0xbd35135844473187163ca197ca93b2ab014370587bb0ed3befff9e902d6bb541": {
-    icon: "/address-icons/dex-aux.svg",
+    icon: "/address-icons/dex-aux.png",
     description: "Aux Exchange on Aptos (historical).",
   },
   "0x4bf51972879e3b95c4781a5cdcb9e1ee24ef483e7d22f2d903626f126df62bd1": {
-    icon: "/address-icons/dex-cellana.svg",
+    icon: "/address-icons/dex-cellana.png",
     description:
       "Cellana Finance AMM and liquidity pools on Aptos (Uniswap-v3-style hooks).",
   },
   "0xea098f1fa9245447c792d18c069433f5da2904358e1e340c55bdc68a8f5fe037": {
-    icon: "/address-icons/dex-cellana.svg",
+    icon: "/address-icons/dex-cellana.png",
     description: "Cellana rewards, staking, and emissions contracts on Aptos.",
   },
   "0x1c3206329806286fd2223647c9f9b130e66baeb6d7224a18c1f642ffe48f3b4c": {
-    icon: "/address-icons/dex-panora.svg",
+    icon: "/address-icons/dex-panora.png",
     description:
       "Panora Exchange: swap aggregation and trading infrastructure on Aptos.",
   },
@@ -112,32 +112,28 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
     description: "Kana Labs trading and bot infrastructure contracts on Aptos.",
   },
   "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c": {
-    icon: "/address-icons/dex-econia.svg",
+    icon: "/address-icons/dex-econia.png",
     description:
-      "Econia on-chain order book (CLOB) deployment on Aptos (historical label for this address).",
+      "Econia Labs on-chain order book (CLOB) on Aptos — defunct / historical for this address. Logo from @EconiaLabs on X (via unavatar.io).",
   },
   "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c": {
-    icon: "/address-icons/dex-hyperion.svg",
+    icon: "/address-icons/dex-hyperion.png",
     description: "Hyperion DEX and liquidity modules on Aptos.",
   },
   "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a": {
-    icon: "/address-icons/dex-tapp.svg",
+    icon: "/address-icons/dex-tapp.png",
     description: "Tapp Exchange AMM and pool contracts on Aptos.",
   },
   "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba": {
-    icon: "/address-icons/dex-cetus.svg",
+    icon: "/address-icons/dex-cetus.png",
     description: "Cetus protocol (earlier deployment) on Aptos — historical.",
   },
   "0xa7f01413d33ba919441888637ca1607ca0ddcbfa3c0a9ddea64743aaa560e498": {
-    icon: "/address-icons/dex-cetus.svg",
+    icon: "/address-icons/dex-cetus.png",
     description: "Cetus protocol (follow-on deployment) on Aptos — historical.",
   },
-  "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b": {
-    icon: "/address-icons/dex-obric.svg",
-    description: "Obric DEX-related contracts on Aptos (historical).",
-  },
   "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c": {
-    icon: "/address-icons/dex-anime.svg",
+    icon: "/address-icons/dex-anime.png",
     description: "AnimeSwap AMM on Aptos (historical).",
   },
 

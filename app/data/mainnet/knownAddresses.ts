@@ -75,7 +75,7 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0x9538c839fe490ccfaf32ad9f7491b5e84e610ff6edc110ff883f06ebde82463d":
     "KanaLabs",
   "0xc0deb00c405f84c85dc13442e305df75d1288100cdd82675695f6148c7ece51c":
-    "Econia Labs",
+    "Econia Labs", // defunct
   "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c":
     "Hyperion",
   "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a":
@@ -84,7 +84,6 @@ export const mainnetKnownAddresses: Record<string, string> = {
     "Cetus 1", // defunct
   "0xa7f01413d33ba919441888637ca1607ca0ddcbfa3c0a9ddea64743aaa560e498":
     "Cetus 2", // defunct
-  "0xc7ea756470f72ae761b7986e4ed6fd409aad183b1b2d3d2f674d979852f45c4b": "Obric", // defunct
   "0x16fe2df00ea7dde4a63409201f7f4e536bde7bb7335526a35d05111e68aa322c":
     "AnimeSwap", // defunct
 
