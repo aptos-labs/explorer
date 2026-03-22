@@ -60,6 +60,7 @@ import SidebarItem from "../../Components/SidebarItem";
 import ErrorPage from "../../Error";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
+import {getFieldCopyValue, isStructResult} from "./contractResultUtils";
 import {useModulesPathParams} from "./Tabs";
 
 /**
@@ -962,17 +963,6 @@ function RunContractForm({
 
 const TOOLTIP_TIME = 2000;
 
-function getFieldCopyValue(value: unknown): string {
-  if (typeof value === "string") return value;
-  if (typeof value === "number" || typeof value === "boolean")
-    return String(value);
-  return JSON.stringify(value, null, 2);
-}
-
-function isStructResult(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
 function FieldCopyButton({value}: {value: unknown}) {
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
@@ -1005,6 +995,7 @@ function FieldCopyButton({value}: {value: unknown}) {
           opacity: 0,
           transition: "opacity 0.15s",
           p: 0.25,
+          "&:focus-visible": {opacity: 1},
         }}
       >
         <ContentCopy sx={{fontSize: 14}} />
@@ -1029,7 +1020,10 @@ function StructFieldRow({fieldKey, value}: {fieldKey: string; value: unknown}) {
         px: 1,
         borderRadius: 0.5,
         "&:hover": {bgcolor: "action.hover"},
-        "&:hover .field-copy-btn": {opacity: 1},
+        "&:hover .field-copy-btn, &:focus-within .field-copy-btn": {opacity: 1},
+        "@media (pointer: coarse)": {
+          "& .field-copy-btn": {opacity: 0.7},
+        },
       }}
     >
       <Typography

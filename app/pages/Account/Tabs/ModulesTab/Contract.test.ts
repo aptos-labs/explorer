@@ -1,23 +1,5 @@
 import {describe, expect, it} from "vitest";
-
-/**
- * These helpers are defined in Contract.tsx. We re-implement them here for
- * testing since the module has heavy React/MUI dependencies that make direct
- * imports impractical without a full render test setup.
- *
- * The canonical implementations live in Contract.tsx – keep these in sync.
- */
-
-function getFieldCopyValue(value: unknown): string {
-  if (typeof value === "string") return value;
-  if (typeof value === "number" || typeof value === "boolean")
-    return String(value);
-  return JSON.stringify(value, null, 2);
-}
-
-function isStructResult(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
+import {getFieldCopyValue, isStructResult} from "./contractResultUtils";
 
 describe("getFieldCopyValue", () => {
   it("returns raw string without JSON escaping for string values", () => {
@@ -50,8 +32,16 @@ describe("getFieldCopyValue", () => {
     expect(getFieldCopyValue(arr)).toBe(JSON.stringify(arr, null, 2));
   });
 
-  it("returns JSON for null", () => {
-    expect(getFieldCopyValue(null)).toBe("null");
+  it("returns empty string for null", () => {
+    expect(getFieldCopyValue(null)).toBe("");
+  });
+
+  it("returns empty string for undefined", () => {
+    expect(getFieldCopyValue(undefined)).toBe("");
+  });
+
+  it("returns string representation for bigint", () => {
+    expect(getFieldCopyValue(BigInt(123))).toBe("123");
   });
 
   it("preserves quotes inside strings without adding backslashes", () => {
@@ -61,6 +51,14 @@ describe("getFieldCopyValue", () => {
     expect(result).not.toContain("\\");
     expect(result).toContain('"USDC"');
     expect(result).toContain('"APT"');
+  });
+
+  it("handles non-serialisable values gracefully", () => {
+    const circular: Record<string, unknown> = {};
+    circular.self = circular;
+    const result = getFieldCopyValue(circular);
+    expect(typeof result).toBe("string");
+    expect(result.length).toBeGreaterThan(0);
   });
 });
 
