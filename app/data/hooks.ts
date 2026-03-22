@@ -9,13 +9,14 @@ import {useMemo} from "react";
 import type {CoinDescription} from "../api/hooks/useGetCoinList";
 import {useNetworkName} from "../global-config/GlobalConfig";
 import {tryStandardizeAddress} from "../utils";
+import type {KnownAddressBranding} from "./knownAddressBranding";
 import {
   getBannedAddresses,
   getBannedCollections,
   getBannedTokenSymbols,
   getBannedTokens,
   getHardCodedCoins,
-  getKnownAddressIcons,
+  getKnownAddressBranding,
   getKnownAddresses,
   getNativeTokens,
   getNetworkData,
@@ -42,19 +43,28 @@ export function useKnownAddresses(): Record<string, string> {
 }
 
 /**
- * Icon URL or site-relative path for a known labeled address, if configured.
+ * Branding (icon + optional description) for a known labeled address, if configured.
  */
-export function useKnownAddressIcon(
+export function useKnownAddressBranding(
   address: string | undefined,
-): string | undefined {
+): KnownAddressBranding | undefined {
   const networkName = useNetworkName();
   const standardized = address ? tryStandardizeAddress(address) : undefined;
   return useMemo(() => {
     if (!standardized) {
       return undefined;
     }
-    return getKnownAddressIcons(networkName)[standardized];
+    return getKnownAddressBranding(networkName, standardized);
   }, [networkName, standardized]);
+}
+
+/**
+ * Icon URL or site-relative path for a known labeled address, if configured.
+ */
+export function useKnownAddressIcon(
+  address: string | undefined,
+): string | undefined {
+  return useKnownAddressBranding(address)?.icon;
 }
 
 /**

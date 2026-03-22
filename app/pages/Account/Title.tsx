@@ -9,6 +9,7 @@ import TitleHashButton, {
   HashType,
   NameType,
 } from "../../components/TitleHashButton";
+import {useKnownAddressBranding} from "../../constants";
 import {truncateAddress} from "../../utils";
 import {getAccountTabHeadLabel} from "./accountTabLabels";
 import {useIsDaaAccount} from "./hooks/useIsDaaAccount";
@@ -35,6 +36,7 @@ export default function AccountTitle({
   isDeleted = false,
 }: AccountTitleProps) {
   const isDAA = useIsDaaAccount(address);
+  const knownBranding = useKnownAddressBranding(address);
 
   let title = "Account";
   let description = `View details for Aptos account ${address}. See transactions, resources, modules, coins, and NFTs owned by this account.`;
@@ -71,6 +73,16 @@ export default function AccountTitle({
     keywords = ["DAA", "derivable", "cross-chain", "account"];
   }
 
+  if (
+    knownBranding?.description &&
+    !isMultisig &&
+    !isToken &&
+    !isObject &&
+    !isDAA
+  ) {
+    description = `${knownBranding.description} ${description}`;
+  }
+
   const displayAddr = truncateAddress(address);
 
   const tab = pathTab ?? "transactions";
@@ -87,9 +99,20 @@ export default function AccountTitle({
       ? `${tabHead} | ${title} ${displayAddr}`
       : `${title} ${displayAddr}`;
 
-  const metadataDescription =
+  const tabSpecificDescription =
     pathTab !== undefined && address && !isDeleted
       ? `View ${tabHead.toLowerCase()} for ${objectRoute ? "object" : "account"} ${address} on the Aptos blockchain.`
+      : null;
+
+  const metadataDescription =
+    tabSpecificDescription !== null
+      ? knownBranding?.description &&
+        !isMultisig &&
+        !isToken &&
+        !isObject &&
+        !isDAA
+        ? `${knownBranding.description} ${tabSpecificDescription}`
+        : tabSpecificDescription
       : description;
 
   return (

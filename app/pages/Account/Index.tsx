@@ -15,6 +15,7 @@ import PageHeader from "../layout/PageHeader";
 import BalanceCard from "./BalanceCard";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
 import {DefunctProtocolBanner} from "./Components/DefunctProtocolBanner";
+import {KnownAddressBrandingBanner} from "./Components/KnownAddressBrandingBanner";
 import {PetraVaultBanner} from "./Components/PetraVaultBanner";
 import AccountError from "./Error";
 import {useAccountTabValues} from "./hooks/useAccountTabValues";
@@ -180,6 +181,7 @@ export default function AccountPage({
         <BalanceCard address={address} />
       </Grid>
       <Grid size={{xs: 12, md: 8, lg: 12}} marginTop={4} alignSelf="center">
+        {address ? <KnownAddressBrandingBanner address={address} /> : null}
         {networkName === Network.MAINNET && <AptosNamesBanner />}
         {networkName === Network.MAINNET && (
           <DefunctProtocolBanner address={address} />

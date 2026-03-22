@@ -2,6 +2,7 @@
 
 // Re-export CoinDescription type for consumers
 export type {CoinDescription} from "./api/hooks/useGetCoinList";
+export type {KnownAddressBranding} from "./data";
 
 // Re-export network-specific data from data module
 // These exports provide backward compatibility while supporting network-specific data
@@ -12,8 +13,9 @@ export {
   getBannedTokenSymbols,
   getBannedTokens,
   getHardCodedCoins,
+  getKnownAddressBranding,
+  getKnownAddressBrandingMap,
   getKnownAddressIcon,
-  getKnownAddressIcons,
   getKnownAddresses,
   getNativeTokens,
   // Network-specific getters
@@ -23,7 +25,7 @@ export {
   getVerifiedTokens,
   HardCodedCoins,
   // Backward compatible exports (mainnet by default)
-  knownAddressIcons,
+  knownAddressBranding,
   knownAddresses,
   labsBannedAddresses,
   labsBannedCollections,
@@ -51,6 +53,7 @@ export {
   useIsTokenBanned,
   useIsTokenSymbolBanned,
   useIsTokenVerified,
+  useKnownAddressBranding,
   useKnownAddressIcon,
   useKnownAddresses,
   useKnownAddressName,
