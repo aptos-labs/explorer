@@ -99,6 +99,8 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 
 > **When adding or removing routes/tabs**: Update `public/llms.txt`, `public/llms-full.txt`, and `public/sitemap.xml`. See the [LLM / AI Accessibility](#llm--ai-accessibility) section for the full checklist.
 
+> **When adding a named address** (an entry in `app/data/{mainnet,testnet,devnet}/knownAddresses.ts`): Ask the user whether they also want **branding** for that address—specifically an **icon** (site-relative path under `public/address-icons/` or an absolute URL) and an optional **short description**—and add them to the matching network’s `knownAddressBranding.ts` (and `aptosFrameworkAddressBranding.ts` when the account is a shared framework address on all networks). Use `iconBadge` only when appropriate (e.g. framework accounts on the Aptos mark).
+
 ---
 
 ### 3. Reviewer
