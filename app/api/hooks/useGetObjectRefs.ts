@@ -27,18 +27,34 @@ const OBJECT_CREATION_TX_QUERY = `
   }
 `;
 
-type RefKey = "transfer" | "delete" | "extend";
+export type RefKey = "transfer" | "delete" | "extend";
 
-const REF_FIELD_PATTERNS: Record<RefKey, RegExp> = {
-  transfer: /transfer/i,
-  delete: /delete/i,
-  extend: /extend/i,
-};
+function classifyRefFromKeyPath(keyPath: string[]): Set<RefKey> {
+  const found = new Set<RefKey>();
+  const hasKey = (pattern: RegExp) => keyPath.some((k) => pattern.test(k));
 
-function scanForRefs(
+  if (hasKey(/transfer(?!_event)/i)) {
+    found.add("transfer");
+  }
+  if (hasKey(/delete/i)) {
+    found.add("delete");
+  }
+  if (hasKey(/extend/i)) {
+    found.add("extend");
+  }
+
+  // AptosToken stores DeleteRef as burn_ref.self (not burn_ref.inner)
+  if (hasKey(/burn/i) && !hasKey(/^inner$/)) {
+    found.add("delete");
+  }
+
+  return found;
+}
+
+export function scanForRefs(
   data: unknown,
   objectAddress: string,
-  parentKey: string,
+  keyPath: string[],
 ): Set<RefKey> {
   const found = new Set<RefKey>();
 
@@ -48,7 +64,7 @@ function scanForRefs(
 
   if (Array.isArray(data)) {
     for (const item of data) {
-      for (const ref of scanForRefs(item, objectAddress, parentKey)) {
+      for (const ref of scanForRefs(item, objectAddress, keyPath)) {
         found.add(ref);
       }
     }
@@ -64,10 +80,8 @@ function scanForRefs(
   ) {
     const normalizedSelf = tryStandardizeAddress(record.self);
     if (normalizedSelf === objectAddress) {
-      for (const [refKey, pattern] of Object.entries(REF_FIELD_PATTERNS)) {
-        if (pattern.test(parentKey)) {
-          found.add(refKey as RefKey);
-        }
+      for (const ref of classifyRefFromKeyPath(keyPath)) {
+        found.add(ref);
       }
     }
     return found;
@@ -75,7 +89,7 @@ function scanForRefs(
 
   if ("vec" in record && Array.isArray(record.vec)) {
     for (const item of record.vec) {
-      for (const ref of scanForRefs(item, objectAddress, parentKey)) {
+      for (const ref of scanForRefs(item, objectAddress, keyPath)) {
         found.add(ref);
       }
     }
@@ -83,7 +97,7 @@ function scanForRefs(
 
   for (const [key, value] of Object.entries(record)) {
     if (key === "vec") continue;
-    for (const ref of scanForRefs(value, objectAddress, key)) {
+    for (const ref of scanForRefs(value, objectAddress, [...keyPath, key])) {
       found.add(ref);
     }
   }
@@ -91,7 +105,7 @@ function scanForRefs(
   return found;
 }
 
-function detectRefsInTransaction(
+export function detectRefsInTransaction(
   transaction: Types.Transaction,
   objectAddress: string,
 ): Omit<ObjectRefs, "creationTransactionVersion"> {
@@ -114,7 +128,7 @@ function detectRefsInTransaction(
     }
 
     const c = change as {address: string; data: {type: string; data: unknown}};
-    const refs = scanForRefs(c.data.data, objectAddress, "");
+    const refs = scanForRefs(c.data.data, objectAddress, []);
     for (const ref of refs) {
       allFoundRefs.add(ref);
     }
