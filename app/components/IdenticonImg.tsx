@@ -7,7 +7,18 @@ interface IdenticonImgProps {
   iconSrc?: string | null;
 }
 
-const imgStyle = {borderRadius: 2} as const;
+/** Must match `createIcon` `size` × `scale` so blockies and overrides share one box. */
+const BLOCKIE_SIZE = 6;
+const BLOCKIE_SCALE = 5;
+const IDENTICON_PX = BLOCKIE_SIZE * BLOCKIE_SCALE;
+
+const baseImgStyle: React.CSSProperties = {
+  width: IDENTICON_PX,
+  height: IDENTICON_PX,
+  borderRadius: 2,
+  display: "block",
+  flexShrink: 0,
+};
 
 const IdenticonImg = memo(function IdenticonImg({
   address,
@@ -19,8 +30,8 @@ const IdenticonImg = memo(function IdenticonImg({
     }
     const iconCanvas = createIcon({
       seed: address,
-      size: 6,
-      scale: 5,
+      size: BLOCKIE_SIZE,
+      scale: BLOCKIE_SCALE,
     });
     return iconCanvas.toDataURL();
   }, [address, iconSrc]);
@@ -30,9 +41,9 @@ const IdenticonImg = memo(function IdenticonImg({
     return null;
   }
 
-  const style = iconSrc
-    ? ({...imgStyle, objectFit: "contain" as const} as const)
-    : imgStyle;
+  const style: React.CSSProperties = iconSrc
+    ? {...baseImgStyle, objectFit: "contain"}
+    : baseImgStyle;
 
   return (
     <img
