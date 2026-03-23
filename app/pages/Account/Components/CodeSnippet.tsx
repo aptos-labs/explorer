@@ -1,5 +1,6 @@
-import {ContentCopy, OpenInFull} from "@mui/icons-material";
+import {ContentCopy, FileDownload, OpenInFull} from "@mui/icons-material";
 import {
+  alpha,
   Box,
   Button,
   CircularProgress,
@@ -27,7 +28,12 @@ import {
   getDecompiledCodeView,
 } from "../../../utils/moveDecompiler";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
-import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
+import {
+  downloadTextFile,
+  getPublicFunctionLineNumber,
+  sanitizeDownloadFilename,
+  transformCode,
+} from "../../../utils";
 import {
   injectMoveCodeLinksInHighlightRows,
   MOVE_CODE_FN_LINK_DATA_ATTR,
@@ -116,9 +122,9 @@ function useMoveCodeQualifiedLinkHandlers(
     }
 
     const onClick = (e: React.MouseEvent<HTMLElement>) => {
-      const el = (e.target as HTMLElement).closest(attrSelector) as
-        | HTMLElement
-        | null;
+      const el = (e.target as HTMLElement).closest(
+        attrSelector,
+      ) as HTMLElement | null;
       if (!el) {
         return;
       }
@@ -131,9 +137,9 @@ function useMoveCodeQualifiedLinkHandlers(
       if (e.key !== "Enter" && e.key !== " ") {
         return;
       }
-      const el = (e.target as HTMLElement).closest(attrSelector) as
-        | HTMLElement
-        | null;
+      const el = (e.target as HTMLElement).closest(
+        attrSelector,
+      ) as HTMLElement | null;
       if (!el) {
         return;
       }
@@ -166,6 +172,20 @@ type BytecodeViewState = {
   bytecodeKey: string;
   code: string;
 };
+
+function moduleCodeDownloadFilename(
+  moduleName: string | undefined,
+  activeView: CodeView,
+): string {
+  const base = sanitizeDownloadFilename(moduleName ?? "module");
+  if (activeView === "published-source") {
+    return `${base}.move`;
+  }
+  if (activeView === "decompiled-source") {
+    return `${base}-decompiled.move`;
+  }
+  return `${base}-disassembly.txt`;
+}
 
 function ExpandCode({
   codeToDisplay,
@@ -222,7 +242,18 @@ function ExpandCode({
       >
         <OpenInFull style={{height: "1.25rem", width: "1.25rem"}} />
       </Button>
-      <Modal open={isModalOpen} onClose={handleCloseModal}>
+      <Modal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: alpha("#000000", 0.88),
+              backdropFilter: "blur(4px)",
+            },
+          },
+        }}
+      >
         <Box
           sx={{
             position: "absolute",
@@ -233,6 +264,7 @@ function ExpandCode({
             width: "80%",
             overflowY: "auto",
             borderRadius: 1,
+            backgroundColor: semanticColors.codeBlock.background,
           }}
           ref={codeBoxScrollRef}
           {...moveCodeLinkHandlers}
@@ -436,6 +468,16 @@ export function Code({
     }, TOOLTIP_TIME);
   }
 
+  function downloadCode() {
+    if (!displayedCode) {
+      return;
+    }
+    downloadTextFile(
+      displayedCode,
+      moduleCodeDownloadFilename(selectedModuleName, activeView),
+    );
+  }
+
   const codeBoxScrollRef = useRef<{scrollTop: number} | null>(null);
   const LINE_HEIGHT_IN_PX = 24;
   useEffect(() => {
@@ -501,6 +543,31 @@ export function Code({
                 </Typography>
               </Button>
             </StyledTooltip>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                logEvent("download_code_button_clicked", selectedModuleName);
+                downloadCode();
+              }}
+              disabled={!displayedCode}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                height: "2rem",
+                borderRadius: "0.5rem",
+              }}
+            >
+              <FileDownload style={{height: "1.25rem", width: "1.25rem"}} />
+              <Typography
+                marginLeft={1}
+                sx={{
+                  display: "inline",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                download
+              </Typography>
+            </Button>
             <ExpandCode
               codeToDisplay={displayedCode}
               startingLineNumber={startingLineNumber}

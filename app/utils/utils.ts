@@ -949,3 +949,46 @@ export function downloadCSV(csvContent: string, filename: string): void {
 
   URL.revokeObjectURL(url);
 }
+
+const DOWNLOAD_FILENAME_FORBIDDEN = new Set('<>:"/\\|?*');
+
+/** Strips characters that are invalid or risky in common download filenames. */
+export function sanitizeDownloadFilename(name: string): string {
+  const chars: string[] = [];
+  for (const ch of name) {
+    const code = ch.codePointAt(0) ?? 0;
+    if (code < 32 || DOWNLOAD_FILENAME_FORBIDDEN.has(ch)) {
+      chars.push("_");
+    } else {
+      chars.push(ch);
+    }
+  }
+  const cleaned = chars.join("").trim();
+  const withoutTrailingDots = cleaned.replace(/\.+$/, "");
+  return withoutTrailingDots.length > 0 ? withoutTrailingDots : "download";
+}
+
+export function downloadTextFile(
+  content: string,
+  filename: string,
+  mimeType = "text/plain;charset=utf-8",
+): void {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  const safeName = sanitizeDownloadFilename(filename);
+  const blob = new Blob([content], {type: mimeType});
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", safeName);
+  link.style.visibility = "hidden";
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(url);
+}

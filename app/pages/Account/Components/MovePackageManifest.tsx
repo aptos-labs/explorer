@@ -1,5 +1,13 @@
-import {ContentCopy, OpenInFull} from "@mui/icons-material";
-import {Box, Button, Modal, Stack, Typography, useTheme} from "@mui/material";
+import {ContentCopy, FileDownload, OpenInFull} from "@mui/icons-material";
+import {
+  alpha,
+  Box,
+  Button,
+  Modal,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import {Suspense, useEffect, useRef, useState} from "react";
 import {
   CodeLoadingFallback,
@@ -8,7 +16,11 @@ import {
 } from "../../../components/CodeHighlighter";
 import StyledTooltip from "../../../components/StyledTooltip";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
-import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
+import {
+  downloadTextFile,
+  getPublicFunctionLineNumber,
+  transformCode,
+} from "../../../utils";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
@@ -64,7 +76,18 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
       >
         <OpenInFull style={{height: "1.25rem", width: "1.25rem"}} />
       </Button>
-      <Modal open={isModalOpen} onClose={handleCloseModal}>
+      <Modal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: alpha("#000000", 0.88),
+              backdropFilter: "blur(4px)",
+            },
+          },
+        }}
+      >
         <Box
           sx={{
             position: "absolute",
@@ -75,6 +98,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
             width: "80%",
             overflowY: "auto",
             borderRadius: 1,
+            backgroundColor: semanticColors.codeBlock.background,
           }}
           ref={codeBoxScrollRef}
         >
@@ -125,6 +149,13 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
     setTimeout(() => {
       setTooltipOpen(false);
     }, TOOLTIP_TIME);
+  }
+
+  function downloadManifest() {
+    if (!sourceCode) {
+      return;
+    }
+    downloadTextFile(sourceCode, "Move.toml", "text/plain;charset=utf-8");
   }
 
   const startingLineNumber = useStartingLineNumber(sourceCode);
@@ -192,6 +223,31 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
                 </Typography>
               </Button>
             </StyledTooltip>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                logEvent("download_code_button_clicked", selectedModuleName);
+                downloadManifest();
+              }}
+              disabled={!sourceCode}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                height: "2rem",
+                borderRadius: "0.5rem",
+              }}
+            >
+              <FileDownload style={{height: "1.25rem", width: "1.25rem"}} />
+              <Typography
+                marginLeft={1}
+                sx={{
+                  display: "inline",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                download
+              </Typography>
+            </Button>
             <ExpandCode sourceCode={sourceCode} />
           </Stack>
         )}

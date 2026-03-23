@@ -1,5 +1,6 @@
-import {ContentCopy, OpenInFull} from "@mui/icons-material";
+import {ContentCopy, FileDownload, OpenInFull} from "@mui/icons-material";
 import {
+  alpha,
   Box,
   Button,
   CircularProgress,
@@ -18,6 +19,7 @@ import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../../components/StyledTooltip";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
+import {downloadTextFile} from "../../../../utils";
 import {
   type DecompilationView,
   getDecompiledScriptCodeView,
@@ -58,7 +60,18 @@ function ExpandScriptCode({
       >
         <OpenInFull style={{height: "1.25rem", width: "1.25rem"}} />
       </Button>
-      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: alpha("#000000", 0.88),
+              backdropFilter: "blur(4px)",
+            },
+          },
+        }}
+      >
         <Box
           sx={{
             position: "absolute",
@@ -69,6 +82,7 @@ function ExpandScriptCode({
             width: "80%",
             overflowY: "auto",
             borderRadius: 1,
+            backgroundColor: semanticColors.codeBlock.background,
           }}
         >
           <Suspense fallback={<CodeLoadingFallback />}>
@@ -213,6 +227,17 @@ export default function ScriptBytecodeDecompiler({
     setTimeout(() => setTooltipOpen(false), TOOLTIP_TIME);
   }
 
+  function downloadScriptCode() {
+    if (!displayedCode) {
+      return;
+    }
+    const filename =
+      activeView === "decompiled-source"
+        ? "script-decompiled.move"
+        : "script-disassembly.txt";
+    downloadTextFile(displayedCode, filename);
+  }
+
   if (!hasBytecode) {
     return null;
   }
@@ -262,6 +287,25 @@ export default function ScriptBytecodeDecompiler({
                 </Typography>
               </Button>
             </StyledTooltip>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                logEvent("download_code_button_clicked", "transaction_script");
+                downloadScriptCode();
+              }}
+              disabled={!displayedCode}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                height: "2rem",
+                borderRadius: "0.5rem",
+              }}
+            >
+              <FileDownload style={{height: "1.25rem", width: "1.25rem"}} />
+              <Typography marginLeft={1} sx={{whiteSpace: "nowrap"}}>
+                download
+              </Typography>
+            </Button>
             <ExpandScriptCode codeToDisplay={displayedCode} />
           </Stack>
         )}
