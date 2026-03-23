@@ -10,7 +10,6 @@
 
 import type {CoinDescription} from "../api/hooks/useGetCoinList";
 import type {NetworkName} from "../lib/constants";
-import type {KnownAddressBranding} from "./knownAddressBranding";
 import {
   devnetBannedAddresses,
   devnetBannedCollections,
@@ -27,6 +26,7 @@ import {
   devnetKnownAddresses,
   devnetScamAddresses,
 } from "./devnet/knownAddresses";
+import type {KnownAddressBranding} from "./knownAddressBranding";
 import {
   mainnetBannedAddresses,
   mainnetBannedCollections,
@@ -248,20 +248,22 @@ export function getSupplyLimitOverrides(
   return getNetworkData(networkName).supplyLimitOverrides;
 }
 
+export type {KnownAddressBranding} from "./knownAddressBranding";
 // Re-export mainnet data for backward compatibility
 // TODO: Migrate all consumers to use network-specific functions
-export {mainnetKnownAddresses as knownAddresses};
-export type {KnownAddressBranding} from "./knownAddressBranding";
-export {mainnetKnownAddressBranding as knownAddressBranding};
-export {mainnetScamAddresses as scamAddresses};
-export {mainnetHardCodedCoins as HardCodedCoins};
-export {mainnetNativeTokens as nativeTokens};
-export {mainnetVerifiedTokens as manuallyVerifiedTokens};
-export {mainnetBannedTokens as labsBannedTokens};
-export {mainnetBannedAddresses as labsBannedAddresses};
-export {mainnetBannedTokenSymbols as labsBannedTokenSymbols};
-export {mainnetBannedCollections as labsBannedCollections};
-export {mainnetSupplyLimitOverrides as supplyLimitOverrides};
+export {
+  mainnetBannedAddresses as labsBannedAddresses,
+  mainnetBannedCollections as labsBannedCollections,
+  mainnetBannedTokenSymbols as labsBannedTokenSymbols,
+  mainnetBannedTokens as labsBannedTokens,
+  mainnetHardCodedCoins as HardCodedCoins,
+  mainnetKnownAddressBranding as knownAddressBranding,
+  mainnetKnownAddresses as knownAddresses,
+  mainnetNativeTokens as nativeTokens,
+  mainnetScamAddresses as scamAddresses,
+  mainnetSupplyLimitOverrides as supplyLimitOverrides,
+  mainnetVerifiedTokens as manuallyVerifiedTokens,
+};
 
 // Export MARKED_AS_SCAM constant
 export const MARKED_AS_SCAM = "Marked as scam";

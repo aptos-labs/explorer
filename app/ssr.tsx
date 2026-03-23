@@ -1,8 +1,8 @@
+import {defineHandlerCallback} from "@tanstack/react-router/ssr/server";
 import {
   createStartHandler,
   defaultRenderHandler,
 } from "@tanstack/react-start/server";
-import {defineHandlerCallback} from "@tanstack/react-router/ssr/server";
 
 function getSsrCacheControl(request: Request) {
   if (request.method !== "GET" && request.method !== "HEAD") {

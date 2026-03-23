@@ -36,6 +36,7 @@ import {
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
 } from "../../utils/cacheManager";
+import {SearchResultAvatar} from "../layout/Search/SearchResultAvatar";
 import {
   anyOwnedObjects,
   createFallbackAddressResult,
@@ -55,7 +56,6 @@ import {
   normalizeSearchInput,
   type SearchResult,
 } from "../layout/Search/searchUtils";
-import {SearchResultAvatar} from "../layout/Search/SearchResultAvatar";
 
 // ─── Type chip helpers ────────────────────────────────────────────────────────
 

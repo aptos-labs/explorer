@@ -39,8 +39,8 @@ import GenesisTransactionOverviewTab from "./Tabs/GenesisTransactionOverviewTab"
 import PayloadTab from "./Tabs/PayloadTab";
 import PendingTransactionOverviewTab from "./Tabs/PendingTransactionOverviewTab";
 import StateCheckpointOverviewTab from "./Tabs/StateCheckpointOverviewTab";
-import UnknownTab from "./Tabs/UnknownTab";
 import TransactionTraceTab from "./Tabs/TransactionTraceTab";
+import UnknownTab from "./Tabs/UnknownTab";
 import UserTransactionOverviewTab from "./Tabs/UserTransactionOverviewTab";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
 

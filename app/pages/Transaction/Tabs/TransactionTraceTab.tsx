@@ -11,12 +11,12 @@ import {
 } from "@mui/material";
 import type React from "react";
 import {useState} from "react";
+import type {Types} from "~/types/aptos";
 import {useSentioCallTrace} from "../../../api/hooks/useSentioCallTrace";
-import {TransactionTypeName} from "../../../components/TransactionType";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {TransactionTypeName} from "../../../components/TransactionType";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
-import type {Types} from "~/types/aptos";
 import {
   getSentioCallTraceNetworkId,
   getSentioTransactionTraceViewerUrl,

@@ -39,10 +39,10 @@ import {
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
-import {lookupFunctionArgumentNameOverride} from "../../../../data/functionArgumentNameOverrides";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import StyledTooltip from "../../../../components/StyledTooltip";
 import {WalletConnector} from "../../../../components/WalletConnector";
+import {lookupFunctionArgumentNameOverride} from "../../../../data/functionArgumentNameOverrides";
 import {
   useAptosClient,
   useNetworkName,

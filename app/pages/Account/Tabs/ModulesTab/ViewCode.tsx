@@ -10,6 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {useEffect, useMemo} from "react";
+import type {Types} from "~/types/aptos";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {
   type PackageMetadata,
@@ -21,7 +22,6 @@ import {getBytecodeSizeInKB} from "../../../../utils";
 import {Code} from "../../Components/CodeSnippet";
 import SidebarItem from "../../Components/SidebarItem";
 import AccountError from "../../Error";
-import type {Types} from "~/types/aptos";
 import {accountPagePath} from "../../Index";
 import {useModulesPathParams} from "./Tabs";
 

@@ -9,9 +9,10 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import createElement from "react-syntax-highlighter/dist/cjs/create-element.js";
 import type React from "react";
 import {Suspense, useEffect, useMemo, useRef, useState} from "react";
+import createElement from "react-syntax-highlighter/dist/cjs/create-element.js";
+import type {Types} from "~/types/aptos";
 import {
   CodeLoadingFallback,
   SyntaxHighlighter,
@@ -22,11 +23,6 @@ import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../components/StyledTooltip";
 import {useNavigate} from "../../../routing";
-import type {Types} from "~/types/aptos";
-import {
-  type DecompilationView,
-  getDecompiledCodeView,
-} from "../../../utils/moveDecompiler";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {
   downloadTextFile,
@@ -39,6 +35,10 @@ import {
   MOVE_CODE_FN_LINK_DATA_ATTR,
   type MoveCodeLinkContext,
 } from "../../../utils/moveCodeNavigation";
+import {
+  type DecompilationView,
+  getDecompiledCodeView,
+} from "../../../utils/moveDecompiler";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 

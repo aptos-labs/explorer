@@ -9,7 +9,6 @@ import {useMemo} from "react";
 import type {CoinDescription} from "../api/hooks/useGetCoinList";
 import {useNetworkName} from "../global-config/GlobalConfig";
 import {tryStandardizeAddress} from "../utils";
-import type {KnownAddressBranding} from "./knownAddressBranding";
 import {
   getBannedAddresses,
   getBannedCollections,
@@ -25,6 +24,7 @@ import {
   getVerifiedTokens,
   type NetworkData,
 } from "./index";
+import type {KnownAddressBranding} from "./knownAddressBranding";
 
 /**
  * Hook to get all network data for the current network

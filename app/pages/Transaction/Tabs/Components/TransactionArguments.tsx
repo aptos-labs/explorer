@@ -25,14 +25,14 @@ import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
 import {lookupFunctionArgumentNameOverride} from "../../../../data/functionArgumentNameOverrides";
 import {
-  extractEntryFunctionPayload,
-  generateCliCommand,
-} from "../../../../utils/cliCommand";
-import {
   extractFunctionParamNames,
   extractFunctionTypeParamNames,
   transformCode,
 } from "../../../../utils";
+import {
+  extractEntryFunctionPayload,
+  generateCliCommand,
+} from "../../../../utils/cliCommand";
 import MoveFunctionParamTypeBadge from "./MoveFunctionParamTypeBadge";
 
 const TOOLTIP_TIME = 2000;

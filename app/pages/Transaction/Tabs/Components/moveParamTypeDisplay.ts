@@ -1,4 +1,4 @@
-import {parseTypeTag, TypeTagReference, type TypeTag} from "@aptos-labs/ts-sdk";
+import {parseTypeTag, type TypeTag, TypeTagReference} from "@aptos-labs/ts-sdk";
 import {truncateAddress} from "../../../../utils/utils";
 
 function unwrapTypeTagRefs(tag: TypeTag): {inner: TypeTag; refPrefix: string} {

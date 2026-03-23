@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {useMemo} from "react";
-import type {CoinDescription} from "./useGetCoinList";
 import {useNetworkName} from "../../global-config";
+import type {CoinDescription} from "./useGetCoinList";
 
 const COINGECKO_API_ENDPOINT = "https://api.coingecko.com/api/v3/coins/markets";
 

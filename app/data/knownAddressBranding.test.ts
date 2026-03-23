@@ -1,8 +1,8 @@
 import {describe, expect, it} from "vitest";
 import {
   getKnownAddressBranding,
-  getKnownAddressIcon,
   getKnownAddresses,
+  getKnownAddressIcon,
 } from "./index";
 
 const DECIBEL =

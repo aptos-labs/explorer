@@ -11,6 +11,30 @@ declare module "@download/blockies" {
   }): HTMLCanvasElement;
 }
 
+// The @types/react-syntax-highlighter package declares these ambient modules but
+// moduleResolution:"bundler" + pnpm's strict node_modules layout prevents
+// TypeScript from matching them. Redeclare the subpaths we actually use.
+declare module "react-syntax-highlighter/dist/esm/light" {
+  import type * as React from "react";
+  import type {SyntaxHighlighterProps} from "react-syntax-highlighter";
+  export default class SyntaxHighlighter extends React.Component<SyntaxHighlighterProps> {
+    static registerLanguage(name: string, func: unknown): void;
+  }
+}
+
+declare module "react-syntax-highlighter/dist/esm/languages/hljs/ini" {
+  const language: unknown;
+  export default language;
+}
+
+declare module "react-syntax-highlighter/dist/esm/styles/hljs" {
+  import type {CSSProperties} from "react";
+  type Style = Record<string, CSSProperties>;
+  export const solarizedDark: Style;
+  export const solarizedLight: Style;
+  // only declaring styles we use; full list in @types/react-syntax-highlighter
+}
+
 declare module "react-syntax-highlighter/dist/cjs/create-element.js" {
   import type {CSSProperties, ReactNode} from "react";
 

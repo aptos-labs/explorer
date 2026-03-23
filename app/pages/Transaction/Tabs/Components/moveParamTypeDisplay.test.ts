@@ -1,9 +1,9 @@
+import {parseTypeTag} from "@aptos-labs/ts-sdk";
 import {describe, expect, it} from "vitest";
 import {
   getParamTypeDisplay,
   shortenTypeTagForBadge,
 } from "./moveParamTypeDisplay";
-import {parseTypeTag} from "@aptos-labs/ts-sdk";
 
 describe("getParamTypeDisplay", () => {
   it("returns Object badge for std object type", () => {

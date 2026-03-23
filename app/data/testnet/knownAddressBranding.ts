@@ -1,5 +1,5 @@
-import type {KnownAddressBranding} from "../knownAddressBranding";
 import {aptosFrameworkAddressBranding} from "../aptosFrameworkAddressBranding";
+import type {KnownAddressBranding} from "../knownAddressBranding";
 
 export const testnetKnownAddressBranding: Record<string, KnownAddressBranding> =
   {

@@ -50,8 +50,8 @@ import {GlobalConfigProvider} from "../global-config";
 import {useHashToPathRedirect} from "../hooks/useHashToPathRedirect";
 import {useOldUrlRedirect} from "../hooks/useOldUrlRedirect";
 import {BASE_URL} from "../lib/constants";
-import {googleFontsStylesheetHref} from "../themes/typography";
 import {ExplorerSettingsProvider} from "../settings";
+import {googleFontsStylesheetHref} from "../themes/typography";
 
 // Router context type
 interface RouterContext {
