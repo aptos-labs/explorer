@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Chip,
   CircularProgress,
   MenuItem,
@@ -10,10 +11,20 @@ import {
   useTheme,
 } from "@mui/material";
 import {diffLines} from "diff";
-import {useMemo} from "react";
+import {useEffect, useMemo, useState} from "react";
+import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
 import type {ModulePublishTransaction} from "../../../../api/hooks/useGetModulePublishHistory";
 import {transformCode} from "../../../../utils";
+import {
+  type DecompilationView,
+  getDecompiledCodeView,
+} from "../../../../utils/moveDecompiler";
+
+type DiffViewType =
+  | "published-source"
+  | "decompiled-source"
+  | "bytecode-disassembly";
 
 interface ModuleDiffViewProps {
   address: string;
@@ -218,6 +229,69 @@ function DiffRenderer({diffLines}: {diffLines: DiffLine[]}) {
   );
 }
 
+function useDecompiledCode(
+  bytecode: string | undefined,
+  view: DecompilationView,
+  enabled: boolean,
+): {code: string | undefined; isLoading: boolean; error?: string} {
+  const [code, setCode] = useState<string | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
+
+  const bytecodeKey = bytecode?.toLowerCase();
+  const hasBytecode =
+    enabled && !!bytecodeKey && bytecodeKey !== "0x" && bytecodeKey.length > 2;
+
+  useEffect(() => {
+    if (!hasBytecode || !bytecodeKey) {
+      setCode(undefined);
+      setIsLoading(false);
+      setError(undefined);
+      return;
+    }
+
+    let cancelled = false;
+    setIsLoading(true);
+    setError(undefined);
+
+    (async () => {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        const result = await getDecompiledCodeView(bytecodeKey, view);
+        if (!cancelled) {
+          setCode(result);
+          setIsLoading(false);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setCode(undefined);
+          setIsLoading(false);
+          setError(
+            e instanceof Error ? e.message : "Failed to decompile module",
+          );
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [bytecodeKey, view, hasBytecode]);
+
+  return {code, isLoading, error};
+}
+
+function getViewLabel(view: DiffViewType): string {
+  switch (view) {
+    case "published-source":
+      return "Published Source";
+    case "decompiled-source":
+      return "Decompiled";
+    case "bytecode-disassembly":
+      return "Disassembly";
+  }
+}
+
 export default function ModuleDiffView({
   address,
   moduleName,
@@ -228,11 +302,13 @@ export default function ModuleDiffView({
   onCompareVersionChange,
 }: ModuleDiffViewProps) {
   const theme = useTheme();
+  const [activeView, setActiveView] =
+    useState<DiffViewType>("published-source");
 
   const basePackages = useGetAccountPackages(address, baseVersion);
   const comparePackages = useGetAccountPackages(address, compareVersion);
 
-  const baseSource = useMemo(() => {
+  const basePublishedSource = useMemo(() => {
     const mod = basePackages
       .flatMap((pkg) => pkg.modules)
       .find((m) => m.name === moduleName);
@@ -240,7 +316,7 @@ export default function ModuleDiffView({
     return transformCode(mod.source);
   }, [basePackages, moduleName]);
 
-  const compareSource = useMemo(() => {
+  const comparePublishedSource = useMemo(() => {
     const mod = comparePackages
       .flatMap((pkg) => pkg.modules)
       .find((m) => m.name === moduleName);
@@ -248,15 +324,67 @@ export default function ModuleDiffView({
     return transformCode(mod.source);
   }, [comparePackages, moduleName]);
 
-  const isLoading = basePackages.length === 0 || comparePackages.length === 0;
+  const hasPublishedSource =
+    basePublishedSource !== "" || comparePublishedSource !== "";
+
+  const needsBytecode = activeView !== "published-source";
+  const {data: baseModule, isLoading: baseModuleLoading} = useGetAccountModule(
+    address,
+    moduleName,
+    baseVersion,
+    {
+      enabled: needsBytecode && !!moduleName,
+    },
+  );
+  const {data: compareModule, isLoading: compareModuleLoading} =
+    useGetAccountModule(address, moduleName, compareVersion, {
+      enabled: needsBytecode && !!moduleName,
+    });
+
+  const decompView: DecompilationView =
+    activeView === "bytecode-disassembly"
+      ? "bytecode-disassembly"
+      : "decompiled-source";
+
+  const baseDecompiled = useDecompiledCode(
+    baseModule?.bytecode,
+    decompView,
+    needsBytecode,
+  );
+  const compareDecompiled = useDecompiledCode(
+    compareModule?.bytecode,
+    decompView,
+    needsBytecode,
+  );
+
+  let baseCode: string;
+  let compareCode: string;
+  let isLoading: boolean;
+  let decompError: string | undefined;
+
+  if (activeView === "published-source") {
+    baseCode = basePublishedSource;
+    compareCode = comparePublishedSource;
+    isLoading = basePackages.length === 0 || comparePackages.length === 0;
+  } else {
+    baseCode = baseDecompiled.code ?? "";
+    compareCode = compareDecompiled.code ?? "";
+    isLoading =
+      baseModuleLoading ||
+      compareModuleLoading ||
+      baseDecompiled.isLoading ||
+      compareDecompiled.isLoading;
+    decompError = baseDecompiled.error || compareDecompiled.error;
+  }
+
   const baseLabel = baseVersion ? `v${baseVersion.toLocaleString()}` : "Latest";
   const compareLabel = compareVersion
     ? `v${compareVersion.toLocaleString()}`
     : "Latest";
 
   const diff = useMemo(
-    () => computeDiffLines(baseSource, compareSource),
-    [baseSource, compareSource],
+    () => computeDiffLines(baseCode, compareCode),
+    [baseCode, compareCode],
   );
 
   const stats = useMemo(() => {
@@ -268,6 +396,12 @@ export default function ModuleDiffView({
     }
     return {added, removed};
   }, [diff]);
+
+  const viewTypes: DiffViewType[] = [
+    "published-source",
+    "decompiled-source",
+    "bytecode-disassembly",
+  ];
 
   return (
     <Stack spacing={2}>
@@ -289,11 +423,59 @@ export default function ModuleDiffView({
         />
       </Stack>
 
+      <Stack direction="row" spacing={1} flexWrap="wrap">
+        {viewTypes.map((vt) => (
+          <Button
+            key={vt}
+            size="small"
+            variant={activeView === vt ? "contained" : "outlined"}
+            onClick={() => setActiveView(vt)}
+            sx={{textTransform: "none"}}
+          >
+            {getViewLabel(vt)}
+          </Button>
+        ))}
+      </Stack>
+
+      {activeView === "published-source" &&
+        !hasPublishedSource &&
+        !isLoading && (
+          <Box
+            p={3}
+            bgcolor={theme.palette.background.paper}
+            borderRadius={1}
+            textAlign="center"
+          >
+            <Typography color="text.secondary">
+              Published source is not available for module{" "}
+              <strong>{moduleName}</strong> at these versions. Try the
+              Decompiled or Disassembly view instead.
+            </Typography>
+          </Box>
+        )}
+
+      {decompError && (
+        <Box p={2} bgcolor={theme.palette.background.paper} borderRadius={1}>
+          <Typography color="error.main" variant="body2">
+            Decompilation error: {decompError}
+          </Typography>
+        </Box>
+      )}
+
       {isLoading ? (
         <Box display="flex" justifyContent="center" py={4}>
-          <CircularProgress size={24} />
+          <Stack spacing={1} alignItems="center">
+            <CircularProgress size={24} />
+            {needsBytecode && (
+              <Typography variant="caption" color="text.secondary">
+                {baseModuleLoading || compareModuleLoading
+                  ? "Fetching module bytecode…"
+                  : "Decompiling…"}
+              </Typography>
+            )}
+          </Stack>
         </Box>
-      ) : baseSource === compareSource ? (
+      ) : baseCode === compareCode ? (
         <Box
           p={3}
           bgcolor={theme.palette.background.paper}
@@ -303,6 +485,9 @@ export default function ModuleDiffView({
           <Typography color="text.secondary">
             No differences between {baseLabel} and {compareLabel} for module{" "}
             <strong>{moduleName}</strong>
+            {activeView !== "published-source" && (
+              <> ({getViewLabel(activeView)} view)</>
+            )}
           </Typography>
         </Box>
       ) : (
@@ -334,7 +519,7 @@ export default function ModuleDiffView({
               sx={{fontFamily: "monospace"}}
             />
             <Typography variant="caption" color="text.secondary">
-              {baseLabel} → {compareLabel}
+              {baseLabel} → {compareLabel} ({getViewLabel(activeView)})
             </Typography>
           </Stack>
           <DiffRenderer diffLines={diff} />
