@@ -1,6 +1,6 @@
 import {AccountAddress, Network} from "@aptos-labs/ts-sdk";
 import {Grid} from "@mui/material";
-import {useParams} from "@tanstack/react-router";
+import {useLocation, useParams} from "@tanstack/react-router";
 import type React from "react";
 import {useEffect} from "react";
 import type {Types} from "~/types/aptos";
@@ -40,6 +40,7 @@ export default function AccountPage({
   children,
 }: AccountPageProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const params = useParams({strict: false}) as {
     address?: string;
     tab?: string;
@@ -124,7 +125,14 @@ export default function AccountPage({
     if (!isLoading) {
       // TODO: Handle where it's both an object and an account
       if (!alreadyIsObject && isObject && !isAccount) {
-        navigate({to: `/object/${address}/transactions`, replace: true});
+        const objectPath = location.pathname.replace(
+          /^\/account\//,
+          "/object/",
+        );
+        navigate({
+          to: `${objectPath}${location.search}`,
+          replace: true,
+        });
       }
     }
 
@@ -136,7 +144,15 @@ export default function AccountPage({
     //   const newPath = currentPath.replace(`/account/${maybeAddress}`, `/account/${address}`);
     //   navigate(newPath, { replace: true });
     // }
-  }, [address, alreadyIsObject, isObject, isLoading, navigate, isAccount]);
+  }, [
+    alreadyIsObject,
+    isObject,
+    isLoading,
+    navigate,
+    isAccount,
+    location.pathname,
+    location.search,
+  ]);
 
   const networkName = useNetworkName();
   const tabValues = useAccountTabValues(

@@ -12,6 +12,7 @@ import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
 import {useNavigate} from "../../../../routing";
 import {assertNever} from "../../../../utils";
+import {pathSplatToSegments} from "../../../../utils/routerParams";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 import Contract from "./Contract";
@@ -105,10 +106,10 @@ function TabPanel({value, address, isObject, ledgerVersion}: TabPanelProps) {
 export function useModulesPathParams() {
   const params = useParams({strict: false}) as {
     address?: string;
-    _splat?: string;
+    _splat?: unknown;
   };
 
-  const splatParts = params._splat?.split("/").filter(Boolean) ?? [];
+  const splatParts = pathSplatToSegments(params._splat);
 
   const modulesTab = splatParts[0] as TabValue | undefined;
   const selectedModuleName = splatParts[1];

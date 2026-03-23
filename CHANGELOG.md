@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Module Code (and Run/View source panel): qualified `module::function` and `0x..::module::function` references in highlighted Move source navigate to the Code tab for that module/function (Cmd/Ctrl+click opens in a new tab)
 - Known-address branding (per network): optional `icon` and `description` replace blockies where configured, render an account-page banner, and enrich metadata; Decibel on mainnet is the first entry (`app/data/mainnet/knownAddressBranding.ts`)
 - Known-address `iconBadge` (e.g. `0x1` on the Aptos mark) for framework accounts; mainnet icons/descriptions for bridges, DEX deployers, and CEX-labeled wallets; framework branding shared on testnet/devnet (`app/data/aptosFrameworkAddressBranding.ts`, `public/address-icons/*`)
 - CEX icons (Bybit, Bitfinex, Kraken, Gate.io, MEXC, Crypto.com, Flipster, Binance US): profile images from official X handles via `unavatar.io/twitter/...`, vendored as PNG under `public/address-icons/`
@@ -42,6 +43,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Transaction page: the collapsible **Transaction Debug Info** block (full JSON + API link) appears only on the **Overview** tab, not under Events, Changes, Payload, etc.
+- Module Code SSR/runtime: guard `_splat` parsing and highlight.js AST props so malformed router params or DOM attributes cannot trigger “Cannot convert object to primitive value”; normalize `className` to string arrays before `react-syntax-highlighter`’s `createElement`
+- Module Code links: anchor `resolveMoveCodeLinkPath` regex with a non-capturing group; keyboard (Enter/Space) activates the same navigation as click; injected spans use `role="link"` + focusable `tabIndex` + `aria-label`
+- SSR / Netlify functions: import `react-syntax-highlighter`’s **CJS** `create-element` helper (not the ESM subpath) so Node does not throw “Cannot use import statement outside a module” when rendering module code
+- Account URL → object URL redirect preserves the path (e.g. `/modules/code/...`) instead of always landing on Transactions, so links to object-published module code resolve correctly
 
 ### Changed
 
