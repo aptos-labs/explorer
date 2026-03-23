@@ -116,7 +116,9 @@ function useMoveCodeQualifiedLinkHandlers(
     }
 
     const onClick = (e: React.MouseEvent<HTMLElement>) => {
-      const el = (e.target as HTMLElement).closest(attrSelector);
+      const el = (e.target as HTMLElement).closest(attrSelector) as
+        | HTMLElement
+        | null;
       if (!el) {
         return;
       }
@@ -129,7 +131,9 @@ function useMoveCodeQualifiedLinkHandlers(
       if (e.key !== "Enter" && e.key !== " ") {
         return;
       }
-      const el = (e.target as HTMLElement).closest(attrSelector);
+      const el = (e.target as HTMLElement).closest(attrSelector) as
+        | HTMLElement
+        | null;
       if (!el) {
         return;
       }

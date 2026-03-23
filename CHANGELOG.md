@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Module Code SSR/runtime: guard `_splat` parsing and highlight.js AST props so malformed router params or DOM attributes cannot trigger “Cannot convert object to primitive value”; normalize `className` to string arrays before `react-syntax-highlighter`’s `createElement`
+- Module Code links: anchor `resolveMoveCodeLinkPath` regex with a non-capturing group; keyboard (Enter/Space) activates the same navigation as click; injected spans use `role="link"` + focusable `tabIndex` + `aria-label`
 - SSR / Netlify functions: import `react-syntax-highlighter`’s **CJS** `create-element` helper (not the ESM subpath) so Node does not throw “Cannot use import statement outside a module” when rendering module code
 - Account URL → object URL redirect preserves the path (e.g. `/modules/code/...`) instead of always landing on Transactions, so links to object-published module code resolve correctly
 
