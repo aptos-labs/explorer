@@ -6,12 +6,15 @@ import {
   Button,
   Drawer,
   IconButton,
+  Link as MuiLink,
   Stack,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import {emitOpenSettings, useRateLimit} from "../context/rate-limit";
+
+const GEOMI_DEV_URL = "https://geomi.dev";
 
 export default function RateLimitDrawer() {
   const {isRateLimited, dismissRateLimit} = useRateLimit();
@@ -87,6 +90,17 @@ export default function RateLimitDrawer() {
             </Typography>
           </Box>
         </Stack>
+
+        <Typography variant="body2" color="text.secondary">
+          Don&apos;t have a key?{" "}
+          <MuiLink
+            href={GEOMI_DEV_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Get one at geomi.dev
+          </MuiLink>
+        </Typography>
       </Stack>
     </Drawer>
   );

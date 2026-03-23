@@ -12,6 +12,7 @@ import {
   FormControlLabel,
   IconButton,
   InputAdornment,
+  Link as MuiLink,
   Stack,
   TextField,
   Typography,
@@ -138,6 +139,17 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
             type={showGeomiDevApiKey ? "text" : "password"}
             value={draftSettings.geomiDevApiKeyOverride}
           />
+
+          <Typography variant="body2" color="text.secondary">
+            Don&apos;t have a key?{" "}
+            <MuiLink
+              href="https://geomi.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Get one at geomi.dev
+            </MuiLink>
+          </Typography>
 
           <FormControlLabel
             control={
