@@ -247,8 +247,7 @@ const HashButtonInner = memo(function HashButtonInner({
       <Button
         sx={{
           textTransform: "none",
-          // Light: paper rows use creme (`background.paper`); chips must not use
-          // `neutralShade.darker` (also creme) or the pill is invisible.
+          // Light: paper rows are white; chips use canvas grey so the pill reads on the row.
           backgroundColor:
             theme.palette.mode === "dark"
               ? theme.palette.neutralShade.lighter

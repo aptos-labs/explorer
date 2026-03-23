@@ -1,7 +1,11 @@
 import {alpha, type PaletteMode} from "@mui/material";
 import type {ThemeOptions} from "@mui/material/styles";
 import type React from "react";
-import {brandColors, getSemanticColors} from "./colors/aptosBrandColors";
+import {
+  brandColors,
+  getSemanticColors,
+  lightSurfaces,
+} from "./colors/aptosBrandColors";
 import {fontFamilyMono, fontFamilySans, fontFamilySerif} from "./typography";
 
 // Button variants
@@ -172,9 +176,9 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
             },
 
             neutralShade: {
-              main: brandColors.white,
-              lighter: brandColors.white,
-              darker: brandColors.creme,
+              main: lightSurfaces.fieldHover,
+              lighter: lightSurfaces.raised,
+              darker: lightSurfaces.field,
             },
           }
         : {

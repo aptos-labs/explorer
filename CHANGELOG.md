@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Light theme**: neutral grey app background (`#ECEEF2`), white cards/panels, cooler borders, and soft grey stripes for tables and filled inputs instead of warm cream-on-bright-off-white; primary body text uses ink (`#171612`) for slightly softer contrast than pure black. Light `theme-color` meta updated to match the canvas.
+
 ### Fixed
 
 - Object account pages (e.g. Decibel perp DEX) crashing with "Cannot convert object to primitive value" — the `/account/` → `/object/` redirect now correctly passes TanStack Router's parsed search params instead of interpolating the search object in a URL template literal

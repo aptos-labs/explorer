@@ -21,8 +21,29 @@ export const brandColors = {
 } as const;
 
 /**
- * WCAG 2.1 AA text contrast (≥4.5:1) on {@link brandColors.white} and
- * {@link brandColors.creme} (light) or {@link brandColors.black} / {@link brandColors.ink}
+ * Light-mode surfaces: neutral grey canvas with white cards (traditional app chrome),
+ * instead of bright cream-on-bright-warm-white. Keeps brand accents via semantic tokens.
+ */
+export const lightSurfaces = {
+  /** Page / app background */
+  canvas: "#ECEEF2",
+  /** Cards, panels, modals */
+  raised: "#FFFFFF",
+  /** Filled inputs at rest (subtle vs. {@link lightSurfaces.raised}) */
+  field: "#F3F5F7",
+  /** Filled inputs on hover */
+  fieldHover: "#E8EBEF",
+} as const;
+
+const lightBorders = {
+  /** Dividers and outlines on neutral surfaces */
+  main: "#C5CAD4",
+  subtle: "#D9DDE5",
+} as const;
+
+/**
+ * WCAG 2.1 AA text contrast (≥4.5:1) on light surfaces ({@link lightSurfaces.canvas},
+ * {@link lightSurfaces.raised}) or {@link brandColors.black} / {@link brandColors.ink}
  * (dark). Pure brand mint/babyBlue/coral are kept above for fills and dark mode;
  * these tokens tune foreground / light-mode UI hues for readability.
  */
@@ -32,7 +53,7 @@ const a11y = {
     interactiveBlue: "#34648F",
     interactiveBlueHover: "#2E5C85",
     /** Success / secondary text & filled buttons — was #7BC47F (~2:1 as text) */
-    successGreen: "#2F7D38",
+    successGreen: "#256B2E",
     /** Error text on light bg — brand coral stays for fills / dark mode */
     errorText: "#B84722",
     /** Warning text (distinct from error on light surfaces) */
@@ -42,7 +63,7 @@ const a11y = {
     /** JSON keys on creme paper */
     jsonKey: "#A84318",
     /** Null / brackets in JSON on tinted code panels */
-    codeMutedBlue: "#4F6F88",
+    codeMutedBlue: "#45647A",
   },
   dark: {
     /** Disabled on near-black / ink — was graphite (~1.4:1) */
@@ -64,22 +85,22 @@ export const getSemanticColors = (mode: PaletteMode) => {
 
     // Background colors
     background: {
-      default: isDark ? brandColors.black : brandColors.white,
-      paper: isDark ? brandColors.ink : brandColors.creme,
-      elevated: isDark ? brandColors.coal : brandColors.white,
+      default: isDark ? brandColors.black : lightSurfaces.canvas,
+      paper: isDark ? brandColors.ink : lightSurfaces.raised,
+      elevated: isDark ? brandColors.coal : lightSurfaces.raised,
     },
 
     // Text colors
     text: {
-      primary: isDark ? brandColors.white : brandColors.black,
+      primary: isDark ? brandColors.white : brandColors.ink,
       secondary: isDark ? brandColors.creme : brandColors.graphite,
       disabled: isDark ? a11y.dark.disabledText : a11y.light.disabledText,
     },
 
     // Border and line colors
     border: {
-      main: isDark ? brandColors.coal : brandColors.tan, // Use tan instead of sand for better visibility
-      light: isDark ? brandColors.graphite : brandColors.tan,
+      main: isDark ? brandColors.coal : lightBorders.main,
+      light: isDark ? brandColors.graphite : lightBorders.subtle,
       dark: isDark ? brandColors.ink : brandColors.graphite,
     },
 
