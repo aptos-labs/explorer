@@ -224,6 +224,9 @@ export const tryStandardizeAddress = (
 };
 
 function escapeRegExp(regexpString: string) {
+  if (typeof regexpString !== "string") {
+    return "";
+  }
   return regexpString.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
@@ -231,6 +234,9 @@ export function getPublicFunctionLineNumber(
   sourceCode: string,
   functionName: string,
 ) {
+  if (typeof functionName !== "string" || functionName.length === 0) {
+    return 0;
+  }
   const lines = sourceCode.split("\n");
   const publicEntryFunRegexp = new RegExp(
     `\\s*public\\s*(entry\\s*)?fun\\s*${escapeRegExp(functionName)}\\s*(?:<|\\()`,

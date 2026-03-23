@@ -9,7 +9,8 @@ export const Route = createFileRoute("/account/$address/modules/$")({
 });
 
 function ModulesPage() {
-  const {address} = useParams({strict: false}) as {address: string};
+  const params = useParams({strict: false}) as {address?: unknown};
+  const address = typeof params.address === "string" ? params.address : "";
 
   return (
     <AccountPage>
