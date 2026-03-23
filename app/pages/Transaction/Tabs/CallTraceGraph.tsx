@@ -19,6 +19,7 @@ import {Link} from "../../../routing";
 import type {SentioCallTraceNode} from "../../../utils/sentioCallTrace";
 import {
   buildAccountModuleRunPath,
+  formatTraceError,
   isNodeFailed,
   normalizeSentioAddress,
   parseMoveFunctionParts,
@@ -162,9 +163,9 @@ const TraceSubtree = memo(function TraceSubtree({
                   node.functionName
                 )}
               </Typography>
-              {failed && (
+              {failed && node.error && (
                 <Chip
-                  label={node.pcError}
+                  label={formatTraceError(node.error)}
                   size="small"
                   color="error"
                   variant="outlined"

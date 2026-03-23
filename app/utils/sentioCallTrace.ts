@@ -4,7 +4,15 @@ import {tryStandardizeAddress} from "~/utils/utils";
 export const SENTIO_CALL_TRACE_API =
   "https://app.sentio.xyz/api/v1/move/call_trace";
 
-/** One node in Sentio’s Move call_trace tree (matches their public API shape). */
+/** Error info attached by Sentio when a call aborted (Move abort / VM error). */
+export type SentioCallTraceError = {
+  major_status: number;
+  sub_status: number | null;
+  message: string | null;
+  location: string | null;
+};
+
+/** One node in Sentio's Move call_trace tree (matches their public API shape). */
 export type SentioCallTraceNode = {
   from: string;
   to: string;
@@ -16,7 +24,7 @@ export type SentioCallTraceNode = {
   calls: SentioCallTraceNode[];
   gasUsed: number;
   /** Present when this call aborted (e.g. Move abort or VM error). */
-  pcError?: string;
+  error?: SentioCallTraceError;
 };
 
 export function isSentioCallTraceNode(
@@ -42,15 +50,31 @@ export function isSentioCallTraceNode(
   return d.calls.every((child) => isSentioCallTraceNode(child));
 }
 
-/** True when this node itself aborted (has a non-empty `pcError`). */
+/** True when this node itself aborted (has an `error` object from Sentio). */
 export function isNodeFailed(node: SentioCallTraceNode): boolean {
-  return typeof node.pcError === "string" && node.pcError.length > 0;
+  return node.error != null && typeof node.error === "object";
 }
 
-/** True when this node or any descendant carries a `pcError`. */
+/** True when this node or any descendant carries an `error`. */
 export function subtreeHasFailure(node: SentioCallTraceNode): boolean {
   if (isNodeFailed(node)) return true;
   return node.calls.some(subtreeHasFailure);
+}
+
+/** Human-readable summary of a Sentio call trace error. */
+export function formatTraceError(err: SentioCallTraceError): string {
+  const parts: string[] = [];
+  parts.push(`status ${err.major_status}`);
+  if (err.sub_status != null) {
+    parts.push(`sub ${err.sub_status}`);
+  }
+  if (err.message) {
+    parts.push(err.message);
+  }
+  if (err.location) {
+    parts.push(`at ${err.location}`);
+  }
+  return parts.join(" \u2013 ");
 }
 
 /**
@@ -76,7 +100,7 @@ export function normalizeSentioAddress(addr: string): string | undefined {
   return tryStandardizeAddress(withPrefix);
 }
 
-/** Path to the explorer “Run” tab for a module function on an account. */
+/** Path to the explorer "Run" tab for a module function on an account. */
 export function buildAccountModuleRunPath(
   accountAddress: string,
   module: string,

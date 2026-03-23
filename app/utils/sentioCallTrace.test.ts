@@ -3,6 +3,7 @@ import type {SentioCallTraceNode} from "./sentioCallTrace";
 import {
   buildAccountModuleCodePath,
   buildAccountModuleRunPath,
+  formatTraceError,
   getSentioCallTraceNetworkId,
   getSentioTransactionTraceViewerUrl,
   isNodeFailed,
@@ -78,6 +79,13 @@ describe("normalizeSentioAddress", () => {
   });
 });
 
+const SAMPLE_ERROR = {
+  major_status: 4016,
+  sub_status: 4,
+  message: null,
+  location: null,
+};
+
 function makeNode(
   overrides?: Partial<SentioCallTraceNode>,
 ): SentioCallTraceNode {
@@ -96,39 +104,59 @@ function makeNode(
 }
 
 describe("isNodeFailed", () => {
-  it("returns false for a node without pcError", () => {
+  it("returns false for a node without error", () => {
     expect(isNodeFailed(makeNode())).toBe(false);
   });
 
-  it("returns false for a node with empty pcError", () => {
-    expect(isNodeFailed(makeNode({pcError: ""}))).toBe(false);
-  });
-
-  it("returns true for a node with pcError", () => {
-    expect(isNodeFailed(makeNode({pcError: "ABORTED (code 0x1)"}))).toBe(true);
+  it("returns true for a node with error object", () => {
+    expect(isNodeFailed(makeNode({error: SAMPLE_ERROR}))).toBe(true);
   });
 });
 
 describe("subtreeHasFailure", () => {
-  it("returns false when no node has pcError", () => {
+  it("returns false when no node has error", () => {
     const root = makeNode({calls: [makeNode(), makeNode()]});
     expect(subtreeHasFailure(root)).toBe(false);
   });
 
-  it("returns true when root itself has pcError", () => {
-    const root = makeNode({pcError: "error"});
+  it("returns true when root itself has error", () => {
+    const root = makeNode({error: SAMPLE_ERROR});
     expect(subtreeHasFailure(root)).toBe(true);
   });
 
-  it("returns true when a deeply nested child has pcError", () => {
+  it("returns true when a deeply nested child has error", () => {
     const root = makeNode({
       calls: [
         makeNode({
-          calls: [makeNode({pcError: "ABORTED"})],
+          calls: [makeNode({error: SAMPLE_ERROR})],
         }),
       ],
     });
     expect(subtreeHasFailure(root)).toBe(true);
+  });
+});
+
+describe("formatTraceError", () => {
+  it("formats error with major and sub status", () => {
+    expect(formatTraceError(SAMPLE_ERROR)).toBe("status 4016 \u2013 sub 4");
+  });
+
+  it("includes message when present", () => {
+    expect(formatTraceError({...SAMPLE_ERROR, message: "abort reason"})).toBe(
+      "status 4016 \u2013 sub 4 \u2013 abort reason",
+    );
+  });
+
+  it("includes location when present", () => {
+    expect(formatTraceError({...SAMPLE_ERROR, location: "0x1::module"})).toBe(
+      "status 4016 \u2013 sub 4 \u2013 at 0x1::module",
+    );
+  });
+
+  it("omits sub_status when null", () => {
+    expect(formatTraceError({...SAMPLE_ERROR, sub_status: null})).toBe(
+      "status 4016",
+    );
   });
 });
 
@@ -154,7 +182,7 @@ describe("isSentioCallTraceNode", () => {
     expect(isSentioCallTraceNode("x")).toBe(false);
   });
 
-  it("accepts a node with pcError field", () => {
+  it("accepts a node with error field", () => {
     expect(
       isSentioCallTraceNode({
         from: "0x1",
@@ -166,7 +194,7 @@ describe("isSentioCallTraceNode", () => {
         typeArgs: [],
         calls: [],
         gasUsed: 0,
-        pcError: "ABORTED (code 0x1)",
+        error: SAMPLE_ERROR,
       }),
     ).toBe(true);
   });
