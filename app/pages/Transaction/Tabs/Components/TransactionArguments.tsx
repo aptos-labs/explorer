@@ -23,6 +23,7 @@ import {useCallback, useMemo, useState} from "react";
 import type {Types} from "~/types/aptos";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
+import {lookupFunctionArgumentNameOverride} from "../../../../data/functionArgumentNameOverrides";
 import {
   extractEntryFunctionPayload,
   generateCliCommand,
@@ -149,45 +150,71 @@ export default function TransactionArguments({
   }, [packages, moduleName]);
 
   const {functionArgNames, typeArgNames} = useMemo(() => {
-    if (!payload || !moduleSource || !functionName) {
+    if (!payload || !functionName) {
       return {
         functionArgNames: null as string[] | null,
         typeArgNames: null as string[] | null,
       };
     }
-    const decoded = transformCode(moduleSource);
-    const rawParamNames = extractFunctionParamNames(decoded, functionName);
-    const rawTypeNames = extractFunctionTypeParamNames(decoded, functionName);
 
-    const typeNames =
-      rawTypeNames && rawTypeNames.length === payload.type_arguments.length
-        ? rawTypeNames
+    const fromOverride =
+      address && moduleName
+        ? lookupFunctionArgumentNameOverride(
+            address,
+            moduleName,
+            functionName,
+            payload.arguments.length,
+          )
         : null;
 
-    if (!moveFunction || !filteredParams) {
-      return {functionArgNames: null, typeArgNames: typeNames};
-    }
-
-    // Map source names to serialized args by ABI position: drop every signer
-    // slot (not only a single leading signer).
+    let typeNames: string[] | null = null;
     let fnArgNames: string[] | null = null;
-    if (rawParamNames && rawParamNames.length === moveFunction.params.length) {
-      const nonSignerIndices = moveFunction.params.reduce<number[]>(
-        (indices, param, index) => {
-          if (param !== "signer" && param !== "&signer") {
-            indices.push(index);
+
+    if (moduleSource) {
+      const decoded = transformCode(moduleSource);
+      const rawTypeNames = extractFunctionTypeParamNames(decoded, functionName);
+      typeNames =
+        rawTypeNames && rawTypeNames.length === payload.type_arguments.length
+          ? rawTypeNames
+          : null;
+
+      if (moveFunction && filteredParams) {
+        const rawParamNames = extractFunctionParamNames(decoded, functionName);
+        // Map source names to serialized args by ABI position: drop every signer
+        // slot (not only a single leading signer).
+        if (
+          rawParamNames &&
+          rawParamNames.length === moveFunction.params.length
+        ) {
+          const nonSignerIndices = moveFunction.params.reduce<number[]>(
+            (indices, param, index) => {
+              if (param !== "signer" && param !== "&signer") {
+                indices.push(index);
+              }
+              return indices;
+            },
+            [],
+          );
+          if (nonSignerIndices.length === filteredParams.length) {
+            fnArgNames = nonSignerIndices.map((idx) => rawParamNames[idx]);
           }
-          return indices;
-        },
-        [],
-      );
-      if (nonSignerIndices.length === filteredParams.length) {
-        fnArgNames = nonSignerIndices.map((idx) => rawParamNames[idx]);
+        }
       }
     }
 
-    return {functionArgNames: fnArgNames, typeArgNames: typeNames};
-  }, [payload, moduleSource, functionName, moveFunction, filteredParams]);
+    return {
+      functionArgNames: fromOverride ?? fnArgNames,
+      typeArgNames: typeNames,
+    };
+  }, [
+    payload,
+    moduleSource,
+    functionName,
+    moveFunction,
+    filteredParams,
+    address,
+    moduleName,
+  ]);
 
   const cliCommand = payload
     ? generateCliCommand(payload, paramTypes)

@@ -39,6 +39,7 @@ import {
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
+import {lookupFunctionArgumentNameOverride} from "../../../../data/functionArgumentNameOverrides";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import StyledTooltip from "../../../../components/StyledTooltip";
 import {WalletConnector} from "../../../../components/WalletConnector";
@@ -1578,8 +1579,16 @@ function ContractForm({
     }
   }
 
-  // Extract parameter names from source code if available
+  // Extract parameter names from source code if available; registry overrides win
   const paramNames = useMemo(() => {
+    const fromOverride = lookupFunctionArgumentNameOverride(
+      module.address,
+      module.name,
+      fn.name,
+      fnParams.length,
+    );
+    if (fromOverride) return fromOverride;
+
     if (!sourceCode) return null;
     const decodedSource = transformCode(sourceCode);
     if (!decodedSource) return null;
@@ -1589,7 +1598,14 @@ function ContractForm({
       return names.slice(1);
     }
     return names;
-  }, [sourceCode, fn.name, hasSigner]);
+  }, [
+    module.address,
+    module.name,
+    fn.name,
+    fnParams.length,
+    sourceCode,
+    hasSigner,
+  ]);
 
   // Extract type parameter names from source code if available
   const typeParamNames = useMemo(() => {
