@@ -1,6 +1,5 @@
 import netlify from "@netlify/vite-plugin-tanstack-start";
 import {tanstackStart} from "@tanstack/react-start/plugin/vite";
-import {tanstackRouter} from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react-swc";
 import {visualizer} from "rollup-plugin-visualizer";
 import {defineConfig, type PluginOption} from "vite";
@@ -9,13 +8,7 @@ import viteSvgr from "vite-plugin-svgr";
 
 export default defineConfig({
   plugins: [
-    tanstackRouter({
-      routesDirectory: "./app/routes",
-      generatedRouteTree: "./app/routeTree.gen.ts",
-      autoCodeSplitting: true,
-    }),
     tanstackStart({
-      // Configure entry points for the app directory structure
       srcDirectory: "app",
       router: {
         routesDirectory: "routes",
