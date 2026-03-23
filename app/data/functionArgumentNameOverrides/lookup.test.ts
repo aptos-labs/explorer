@@ -38,7 +38,7 @@ describe("lookupFunctionArgumentNameOverride", () => {
         "initialize",
         2,
       ),
-    ).toEqual(["arg0", "arg1"]);
+    ).toEqual(["collateral_asset", "backstop_liquidator"]);
   });
 
   it("matches registry keys regardless of address casing in input", () => {
@@ -49,6 +49,6 @@ describe("lookupFunctionArgumentNameOverride", () => {
         "activate_vault",
         1,
       ),
-    ).toEqual(["arg0"]);
+    ).toEqual(["vault"]);
   });
 });
