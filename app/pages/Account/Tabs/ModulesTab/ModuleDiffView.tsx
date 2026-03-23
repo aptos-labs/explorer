@@ -328,44 +328,59 @@ export default function ModuleDiffView({
     basePublishedSource !== "" || comparePublishedSource !== "";
 
   const needsBytecode = activeView !== "published-source";
-  const {data: baseModule, isLoading: baseModuleLoading} = useGetAccountModule(
-    address,
-    moduleName,
-    baseVersion,
-    {
-      enabled: needsBytecode && !!moduleName,
-    },
-  );
-  const {data: compareModule, isLoading: compareModuleLoading} =
-    useGetAccountModule(address, moduleName, compareVersion, {
-      enabled: needsBytecode && !!moduleName,
-    });
+  const {
+    data: baseModule,
+    isLoading: baseModuleLoading,
+    isError: isBaseModuleError,
+    error: baseModuleError,
+  } = useGetAccountModule(address, moduleName, baseVersion, {
+    enabled: needsBytecode && !!moduleName,
+  });
+  const {
+    data: compareModule,
+    isLoading: compareModuleLoading,
+    isError: isCompareModuleError,
+    error: compareModuleError,
+  } = useGetAccountModule(address, moduleName, compareVersion, {
+    enabled: needsBytecode && !!moduleName,
+  });
 
+  const hasModuleError = isBaseModuleError || isCompareModuleError;
   const decompView: DecompilationView =
     activeView === "bytecode-disassembly"
       ? "bytecode-disassembly"
       : "decompiled-source";
+  const shouldDecompile = needsBytecode && !hasModuleError;
 
   const baseDecompiled = useDecompiledCode(
     baseModule?.bytecode,
     decompView,
-    needsBytecode,
+    shouldDecompile,
   );
   const compareDecompiled = useDecompiledCode(
     compareModule?.bytecode,
     decompView,
-    needsBytecode,
+    shouldDecompile,
   );
 
   let baseCode: string;
   let compareCode: string;
   let isLoading: boolean;
   let decompError: string | undefined;
+  let moduleError: string | undefined;
 
   if (activeView === "published-source") {
     baseCode = basePublishedSource;
     compareCode = comparePublishedSource;
     isLoading = basePackages.length === 0 || comparePackages.length === 0;
+  } else if (hasModuleError) {
+    baseCode = "";
+    compareCode = "";
+    isLoading = false;
+    moduleError =
+      (baseModuleError as Error | null)?.message ||
+      (compareModuleError as Error | null)?.message ||
+      "Failed to fetch module bytecode";
   } else {
     baseCode = baseDecompiled.code ?? "";
     compareCode = compareDecompiled.code ?? "";
@@ -454,7 +469,15 @@ export default function ModuleDiffView({
           </Box>
         )}
 
-      {decompError && (
+      {moduleError && (
+        <Box p={2} bgcolor={theme.palette.background.paper} borderRadius={1}>
+          <Typography color="error.main" variant="body2">
+            Failed to load module bytecode: {moduleError}
+          </Typography>
+        </Box>
+      )}
+
+      {decompError && !moduleError && (
         <Box p={2} bgcolor={theme.palette.background.paper} borderRadius={1}>
           <Typography color="error.main" variant="body2">
             Decompilation error: {decompError}
@@ -462,7 +485,7 @@ export default function ModuleDiffView({
         </Box>
       )}
 
-      {isLoading ? (
+      {moduleError ? null : isLoading ? (
         <Box display="flex" justifyContent="center" py={4}>
           <Stack spacing={1} alignItems="center">
             <CircularProgress size={24} />
