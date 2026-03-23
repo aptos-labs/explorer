@@ -50,15 +50,43 @@ export function isSentioCallTraceNode(
   return d.calls.every((child) => isSentioCallTraceNode(child));
 }
 
-/** True when this node itself aborted (has an `error` object from Sentio). */
+/** Type guard: validates that a value has the expected `SentioCallTraceError` shape. */
+export function isSentioCallTraceError(v: unknown): v is SentioCallTraceError {
+  if (!v || typeof v !== "object") return false;
+  const o = v as Record<string, unknown>;
+  return typeof o.major_status === "number";
+}
+
+/** True when this node itself aborted (has a valid `error` object from Sentio). */
 export function isNodeFailed(node: SentioCallTraceNode): boolean {
-  return node.error != null && typeof node.error === "object";
+  return isSentioCallTraceError(node.error);
 }
 
 /** True when this node or any descendant carries an `error`. */
 export function subtreeHasFailure(node: SentioCallTraceNode): boolean {
   if (isNodeFailed(node)) return true;
   return node.calls.some(subtreeHasFailure);
+}
+
+/**
+ * Single O(n) post-order traversal that marks each node as "subtree contains a
+ * failure". Use the returned map in render to avoid per-node recursive walks.
+ */
+export function buildFailureMap(
+  root: SentioCallTraceNode,
+): WeakMap<SentioCallTraceNode, boolean> {
+  const map = new WeakMap<SentioCallTraceNode, boolean>();
+  function walk(node: SentioCallTraceNode): boolean {
+    let childHasFailure = false;
+    for (const child of node.calls) {
+      if (walk(child)) childHasFailure = true;
+    }
+    const has = isNodeFailed(node) || childHasFailure;
+    map.set(node, has);
+    return has;
+  }
+  walk(root);
+  return map;
 }
 
 /** Human-readable summary of a Sentio call trace error. */

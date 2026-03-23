@@ -13,17 +13,17 @@ import {
   useTheme,
 } from "@mui/material";
 import type React from "react";
-import {memo, useState} from "react";
+import {memo, useMemo, useState} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {Link} from "../../../routing";
 import type {SentioCallTraceNode} from "../../../utils/sentioCallTrace";
 import {
   buildAccountModuleRunPath,
+  buildFailureMap,
   formatTraceError,
   isNodeFailed,
   normalizeSentioAddress,
   parseMoveFunctionParts,
-  subtreeHasFailure,
 } from "../../../utils/sentioCallTrace";
 
 type TraceSubtreeProps = {
@@ -32,6 +32,7 @@ type TraceSubtreeProps = {
   defaultExpanded: boolean;
   childIndex: number;
   txFailed: boolean;
+  failureMap: WeakMap<SentioCallTraceNode, boolean>;
 };
 
 function formatGas(gas: number): string {
@@ -47,6 +48,7 @@ const TraceSubtree = memo(function TraceSubtree({
   defaultExpanded,
   childIndex,
   txFailed,
+  failureMap,
 }: TraceSubtreeProps): React.JSX.Element {
   const theme = useTheme();
   const [open, setOpen] = useState(defaultExpanded);
@@ -60,7 +62,7 @@ const TraceSubtree = memo(function TraceSubtree({
       : null;
 
   const failed = isNodeFailed(node);
-  const onFailurePath = !failed && txFailed && subtreeHasFailure(node);
+  const onFailurePath = !failed && txFailed && (failureMap.get(node) ?? false);
 
   const errorColor = theme.palette.error.main;
   const defaultBorderColor = theme.palette.divider;
@@ -286,6 +288,7 @@ const TraceSubtree = memo(function TraceSubtree({
                 defaultExpanded={depth + 1 < 2}
                 childIndex={i}
                 txFailed={txFailed}
+                failureMap={failureMap}
               />
             ))}
           </Box>
@@ -300,11 +303,17 @@ type CallTraceGraphProps = {
   txFailed?: boolean;
 };
 
+const EMPTY_FAILURE_MAP = new WeakMap<SentioCallTraceNode, boolean>();
+
 export default function CallTraceGraph({
   root,
   txFailed = false,
 }: CallTraceGraphProps): React.JSX.Element {
   const theme = useTheme();
+  const failureMap = useMemo(
+    () => (txFailed ? buildFailureMap(root) : EMPTY_FAILURE_MAP),
+    [root, txFailed],
+  );
 
   return (
     <Box
@@ -324,6 +333,7 @@ export default function CallTraceGraph({
         defaultExpanded
         childIndex={0}
         txFailed={txFailed}
+        failureMap={failureMap}
       />
     </Box>
   );

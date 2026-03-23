@@ -3,10 +3,12 @@ import type {SentioCallTraceNode} from "./sentioCallTrace";
 import {
   buildAccountModuleCodePath,
   buildAccountModuleRunPath,
+  buildFailureMap,
   formatTraceError,
   getSentioCallTraceNetworkId,
   getSentioTransactionTraceViewerUrl,
   isNodeFailed,
+  isSentioCallTraceError,
   isSentioCallTraceNode,
   normalizeSentioAddress,
   parseMoveFunctionParts,
@@ -103,13 +105,41 @@ function makeNode(
   };
 }
 
+describe("isSentioCallTraceError", () => {
+  it("accepts a valid error object", () => {
+    expect(isSentioCallTraceError(SAMPLE_ERROR)).toBe(true);
+  });
+
+  it("rejects null", () => {
+    expect(isSentioCallTraceError(null)).toBe(false);
+  });
+
+  it("rejects an empty object (missing major_status)", () => {
+    expect(isSentioCallTraceError({})).toBe(false);
+  });
+
+  it("rejects an array", () => {
+    expect(isSentioCallTraceError([])).toBe(false);
+  });
+
+  it("rejects string", () => {
+    expect(isSentioCallTraceError("error")).toBe(false);
+  });
+});
+
 describe("isNodeFailed", () => {
   it("returns false for a node without error", () => {
     expect(isNodeFailed(makeNode())).toBe(false);
   });
 
-  it("returns true for a node with error object", () => {
+  it("returns true for a node with valid error object", () => {
     expect(isNodeFailed(makeNode({error: SAMPLE_ERROR}))).toBe(true);
+  });
+
+  it("returns false for a node with malformed error (missing major_status)", () => {
+    const node = makeNode();
+    (node as Record<string, unknown>).error = {};
+    expect(isNodeFailed(node)).toBe(false);
   });
 });
 
@@ -133,6 +163,36 @@ describe("subtreeHasFailure", () => {
       ],
     });
     expect(subtreeHasFailure(root)).toBe(true);
+  });
+});
+
+describe("buildFailureMap", () => {
+  it("marks all nodes false when no failures exist", () => {
+    const child = makeNode();
+    const root = makeNode({calls: [child]});
+    const map = buildFailureMap(root);
+    expect(map.get(root)).toBe(false);
+    expect(map.get(child)).toBe(false);
+  });
+
+  it("marks the failed node and ancestors as true", () => {
+    const leaf = makeNode({error: SAMPLE_ERROR});
+    const mid = makeNode({calls: [leaf]});
+    const root = makeNode({calls: [mid]});
+    const map = buildFailureMap(root);
+    expect(map.get(root)).toBe(true);
+    expect(map.get(mid)).toBe(true);
+    expect(map.get(leaf)).toBe(true);
+  });
+
+  it("marks only the branch with the failure", () => {
+    const failLeaf = makeNode({error: SAMPLE_ERROR});
+    const okLeaf = makeNode();
+    const root = makeNode({calls: [failLeaf, okLeaf]});
+    const map = buildFailureMap(root);
+    expect(map.get(root)).toBe(true);
+    expect(map.get(failLeaf)).toBe(true);
+    expect(map.get(okLeaf)).toBe(false);
   });
 });
 
