@@ -144,11 +144,17 @@ function ModulesTabs({
 
   const {data: publishHistory} = useGetModulePublishHistory(address);
 
-  const handleVersionChange = (version: number | undefined) => {
-    setLedgerVersion(version);
-    if (version !== undefined && (value === "run" || value === "view")) {
+  const navigateToCodeTab = () => {
+    if (value !== "code") {
       const path = `/${accountPagePath(isObject)}/${address}/modules/code`;
       navigate({to: path, replace: true});
+    }
+  };
+
+  const handleVersionChange = (version: number | undefined) => {
+    setLedgerVersion(version);
+    if (version !== undefined) {
+      navigateToCodeTab();
     }
   };
 
@@ -157,6 +163,7 @@ function ModulesTabs({
       setDiffBaseVersion(publishHistory[1].version);
       setDiffCompareVersion(undefined);
       setLedgerVersion(undefined);
+      navigateToCodeTab();
     }
     setDiffMode(!diffMode);
   };
