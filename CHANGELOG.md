@@ -39,6 +39,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Task and issue templates in `.agents/templates/`
 - Browser-persisted Settings dialog with a client-side geomi.dev API key override
 
+### Fixed
+
+- Transaction page: the collapsible **Transaction Debug Info** block (full JSON + API link) appears only on the **Overview** tab, not under Events, Changes, Payload, etc.
+
 ### Changed
 
 - Hash “pill” buttons (`HashType.OTHERS`, e.g. block hash) in light mode use `background.default` plus a hairline border so they read clearly on creme table rows (previously matched `neutralShade.darker` == `background.paper`)

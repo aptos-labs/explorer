@@ -319,10 +319,12 @@ export default function TransactionTabs({
       <Box>
         <TabPanel value={value} transaction={transaction} />
       </Box>
-      <TransactionDebugInfo
-        transaction={transaction}
-        networkName={networkName}
-      />
+      {value === defaultTab && (
+        <TransactionDebugInfo
+          transaction={transaction}
+          networkName={networkName}
+        />
+      )}
     </Box>
   );
 }
