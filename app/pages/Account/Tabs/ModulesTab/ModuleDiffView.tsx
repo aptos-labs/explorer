@@ -15,11 +15,13 @@ import {useEffect, useMemo, useState} from "react";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
 import type {ModulePublishTransaction} from "../../../../api/hooks/useGetModulePublishHistory";
+import DecompilationConsentGate from "../../../../components/DecompilationConsentGate";
 import {transformCode} from "../../../../utils";
 import {
   type DecompilationView,
   getDecompiledCodeView,
 } from "../../../../utils/moveDecompiler";
+import {useDecompilationConsent} from "../../../../utils/useDecompilationConsent";
 
 type DiffViewType =
   | "published-source"
@@ -302,8 +304,12 @@ export default function ModuleDiffView({
   onCompareVersionChange,
 }: ModuleDiffViewProps) {
   const theme = useTheme();
+  const {consented: decompConsented} = useDecompilationConsent();
   const [activeView, setActiveView] =
     useState<DiffViewType>("published-source");
+
+  const needsDecompConsent =
+    activeView === "decompiled-source" && !decompConsented;
 
   const basePackages = useGetAccountPackages(address, baseVersion);
   const comparePackages = useGetAccountPackages(address, compareVersion);
@@ -327,7 +333,8 @@ export default function ModuleDiffView({
   const hasPublishedSource =
     basePublishedSource !== "" || comparePublishedSource !== "";
 
-  const needsBytecode = activeView !== "published-source";
+  const needsBytecode =
+    activeView !== "published-source" && !needsDecompConsent;
   const {
     data: baseModule,
     isLoading: baseModuleLoading,
@@ -467,7 +474,10 @@ export default function ModuleDiffView({
         </Box>
       )}
 
-      {moduleName &&
+      {needsDecompConsent && moduleName && <DecompilationConsentGate />}
+
+      {!needsDecompConsent &&
+        moduleName &&
         activeView === "published-source" &&
         !hasPublishedSource &&
         !isLoading && (
@@ -485,7 +495,7 @@ export default function ModuleDiffView({
           </Box>
         )}
 
-      {moduleError && (
+      {!needsDecompConsent && moduleError && (
         <Box p={2} bgcolor={theme.palette.background.paper} borderRadius={1}>
           <Typography color="error.main" variant="body2">
             Failed to load module bytecode: {moduleError}
@@ -493,7 +503,7 @@ export default function ModuleDiffView({
         </Box>
       )}
 
-      {decompError && !moduleError && (
+      {!needsDecompConsent && decompError && !moduleError && (
         <Box p={2} bgcolor={theme.palette.background.paper} borderRadius={1}>
           <Typography color="error.main" variant="body2">
             Decompilation error: {decompError}
@@ -501,7 +511,7 @@ export default function ModuleDiffView({
         </Box>
       )}
 
-      {!moduleName || hasError ? null : isLoading ? (
+      {needsDecompConsent || !moduleName || hasError ? null : isLoading ? (
         <Box display="flex" justifyContent="center" py={4}>
           <Stack spacing={1} alignItems="center">
             <CircularProgress size={24} />

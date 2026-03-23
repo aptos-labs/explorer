@@ -18,6 +18,7 @@ import {
   SyntaxHighlighter,
   useHighlighterStyles,
 } from "../../../components/CodeHighlighter";
+import DecompilationConsentGate from "../../../components/DecompilationConsentGate";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
@@ -39,6 +40,7 @@ import {
   type DecompilationView,
   getDecompiledCodeView,
 } from "../../../utils/moveDecompiler";
+import {useDecompilationConsent} from "../../../utils/useDecompilationConsent";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
@@ -332,6 +334,8 @@ export function Code({
   const hasModuleBytecode =
     typeof moduleBytecode === "string" && moduleBytecode !== "0x";
 
+  const {consented: decompConsented} = useDecompilationConsent();
+
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
@@ -344,6 +348,9 @@ export function Code({
   const [decompilationError, setDecompilationError] = useState<string>();
   const [isDecompiling, setIsDecompiling] = useState(false);
   const moduleBytecodeKey = moduleBytecode?.toLowerCase();
+
+  const needsDecompConsent =
+    activeView === "decompiled-source" && !decompConsented;
 
   useEffect(() => {
     if (!hasPublishedSourceCode && hasModuleBytecode) {
@@ -360,6 +367,10 @@ export function Code({
   }, [activeView, moduleQuery, hasPublishedSourceCode]);
 
   useEffect(() => {
+    if (needsDecompConsent) {
+      return;
+    }
+
     const missingActiveViewCode =
       activeView === "decompiled-source"
         ? !decompiledSource ||
@@ -392,7 +403,6 @@ export function Code({
             ? "decompiled-source"
             : "bytecode-disassembly";
 
-        // Let loading UI render before running CPU-intensive WASM work.
         await new Promise((resolve) => setTimeout(resolve, 0));
         const result = await getDecompiledCodeView(
           currentModuleBytecodeKey,
@@ -436,6 +446,7 @@ export function Code({
     decompiledSource,
     hasModuleBytecode,
     moduleBytecodeKey,
+    needsDecompConsent,
   ]);
 
   let displayedCode: string | undefined;
@@ -659,7 +670,9 @@ export function Code({
           Module ABI metadata returned by the node for this on-chain module.
         </Typography>
       )}
-      {activeView === "abi" && moduleQuery ? (
+      {needsDecompConsent ? (
+        <DecompilationConsentGate />
+      ) : activeView === "abi" && moduleQuery ? (
         moduleQuery.isSuccess ? (
           <JsonViewCard data={moduleQuery.data?.abi} />
         ) : (

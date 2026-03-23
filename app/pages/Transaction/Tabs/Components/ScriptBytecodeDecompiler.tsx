@@ -15,6 +15,7 @@ import {
   SyntaxHighlighter,
   useHighlighterStyles,
 } from "../../../../components/CodeHighlighter";
+import DecompilationConsentGate from "../../../../components/DecompilationConsentGate";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../../components/StyledTooltip";
@@ -25,6 +26,7 @@ import {
   getDecompiledScriptCodeView,
   normalizeBytecodeHex,
 } from "../../../../utils/moveDecompiler";
+import {useDecompilationConsent} from "../../../../utils/useDecompilationConsent";
 import {useLogEventWithBasic} from "../../../Account/hooks/useLogEventWithBasic";
 
 type ScriptBytecodeDecompilerProps = {
@@ -120,8 +122,9 @@ export default function ScriptBytecodeDecompiler({
   const logEvent = useLogEventWithBasic();
   const TOOLTIP_TIME = 2000;
 
+  const {consented: decompConsented} = useDecompilationConsent();
+
   const canonicalBytecodeHex = normalizeBytecodeHex(bytecodeHex.trim());
-  /** At least one byte after `0x` (two hex digits). */
   const hasBytecode = canonicalBytecodeHex.length > 3;
 
   const [activeView, setActiveView] =
@@ -139,8 +142,14 @@ export default function ScriptBytecodeDecompiler({
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
   const bytecodeKey = canonicalBytecodeHex;
+  const needsDecompConsent =
+    activeView === "decompiled-source" && !decompConsented;
 
   useEffect(() => {
+    if (needsDecompConsent) {
+      return;
+    }
+
     const missingActiveViewCode =
       activeView === "decompiled-source"
         ? !decompiledSource || decompiledSource.bytecodeKey !== bytecodeKey
@@ -163,7 +172,6 @@ export default function ScriptBytecodeDecompiler({
             ? "decompiled-source"
             : "bytecode-disassembly";
 
-        // Let loading UI render before running CPU-intensive WASM work.
         await new Promise((resolve) => setTimeout(resolve, 0));
         const result = await getDecompiledScriptCodeView(
           currentBytecodeKey,
@@ -203,6 +211,7 @@ export default function ScriptBytecodeDecompiler({
     bytecodeKey,
     decompiledSource,
     hasBytecode,
+    needsDecompConsent,
   ]);
 
   let displayedCode: string | undefined;
@@ -340,7 +349,9 @@ export default function ScriptBytecodeDecompiler({
         This view is generated from on-chain bytecode using the Move decompiler
         WASM.
       </Typography>
-      {isDecompiling ? (
+      {needsDecompConsent ? (
+        <DecompilationConsentGate />
+      ) : isDecompiling ? (
         <Stack direction="row" spacing={1.5} alignItems="center" py={2}>
           <CircularProgress size={18} />
           <Typography variant="body2" color="text.secondary">
