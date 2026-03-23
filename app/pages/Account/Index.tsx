@@ -130,7 +130,8 @@ export default function AccountPage({
           "/object/",
         );
         navigate({
-          to: `${objectPath}${location.search}`,
+          to: objectPath,
+          search: location.search,
           replace: true,
         });
       }

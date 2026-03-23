@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Object account pages (e.g. Decibel perp DEX) crashing with "Cannot convert object to primitive value" — the `/account/` → `/object/` redirect now correctly passes TanStack Router's parsed search params instead of interpolating the search object in a URL template literal
+
 ### Removed
 
 - AIP-141 gas impact UI: account **Gas Impact** tab, gas warnings on account transaction lists, and the user-transaction overview banner; removed `useGetGasScheduleVersion` and related utilities.
