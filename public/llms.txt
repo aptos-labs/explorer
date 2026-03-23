@@ -23,7 +23,7 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
 - Transaction: `/txn/{version}` or `/txn/{hash}`
   - Tabs: `/txn/{id}/userTxnOverview`, `/txn/{id}/events`, `/txn/{id}/payload`, `/txn/{id}/changes`, `/txn/{id}/balanceChange`, `/txn/{id}/trace` (experimental Sentio Move call trace, mainnet)
 - Account: `/account/{address}`
-  - Tabs: `/account/{address}/transactions`, `/account/{address}/coins`, `/account/{address}/tokens`, `/account/{address}/resources`, `/account/{address}/modules`, `/account/{address}/multisig`, `/account/{address}/gas-impact`, `/account/{address}/info`
+  - Tabs: `/account/{address}/transactions`, `/account/{address}/coins`, `/account/{address}/tokens`, `/account/{address}/resources`, `/account/{address}/modules`, `/account/{address}/multisig`, `/account/{address}/info`
   - Modules sub-tabs: `/account/{address}/modules/packages`, `/account/{address}/modules/code/{moduleName}`, `/account/{address}/modules/run/{moduleName}/{functionName}`, `/account/{address}/modules/view/{moduleName}/{functionName}`
   - Code view includes: published source, decompiled bytecode, disassembly
   - Historical module code: the Modules tab includes a version selector to view packages and source at any previous publish transaction

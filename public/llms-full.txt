@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-23 (rev 10)
+> Last updated: 2026-03-23 (rev 11)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -61,7 +61,6 @@ Each detail page has tabs accessible via path segments:
     - `/account/{address}/modules/run/{moduleName}/{functionName}` — execute entry functions
     - `/account/{address}/modules/view/{moduleName}/{functionName}` — call read-only view functions
   - `/account/{address}/multisig` — multisig transaction queue (if account is a multisig)
-  - `/account/{address}/gas-impact` — AIP-140 gas cost impact analysis for recent transactions
   - `/account/{address}/info` — sequence number, authentication key, account type
 
 #### Blocks
@@ -172,10 +171,6 @@ Example: `https://explorer.aptoslabs.com/account/0x1/modules?network=testnet`
 - The explorer resolves ANS names: an account's primary `.apt` name is displayed alongside the address
 - Enter an ANS name in the search bar to navigate to the associated account
 
-### Gas Impact (AIP-140)
-- The `gas-impact` tab on account pages shows how AIP-140 (proposed 10x gas cost increase) would affect recent transactions
-- Useful for developers auditing transaction gas efficiency before potential protocol changes
-
 ---
 
 ## Example Prompts and Answers
@@ -257,7 +252,6 @@ Tabs include:
 - **Modules**: Smart contract code deployed by this account (with source if verified). A version selector lets you browse the full publish history and view packages, source, and ABI at any previous ledger version. A "Compare" button opens a side-by-side diff view to see exactly what changed between two versions.
   - Code tab supports Published Source, Decompiled (client-side WASM), and Disassembly views
 - **Multisig**: Pending and completed multisig transactions (if applicable)
-- **Gas Impact**: AIP-140 gas cost analysis for recent transactions
 - **Info**: Account sequence number, authentication key, account type
 
 ### Block Pages (`/block/{height}`)

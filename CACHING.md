@@ -78,7 +78,6 @@ Used by route loaders **and** components. When a route loader pre-fetches data, 
 **Hooks delegating to `useGetAccountResource`** (inherit its 5 min / 1 h / no-refocus config):
 - `useGetValidatorSet` — `0x1::stake::ValidatorSet`
 - `useGetEpochTime` — `0x1::reconfiguration::Configuration` + `0x1::block::BlockResource`
-- `useGetGasScheduleVersion` — `0x1::gas_schedule::GasScheduleV2`
 - `useGetCoinMetadata` — coin info for a given coin type
 - `useGetAccountPackages` — `0x1::code::PackageRegistry`
 
@@ -275,7 +274,6 @@ Some hooks disable themselves based on network:
 | `useGetAnalyticsData` | Not mainnet | `enabled: false` |
 | `useGetANS` | Invalid network or address | Returns `null` immediately |
 | `useGetChainIdAndCache` | Non-local network | Caches to localStorage |
-| `useGetGasScheduleVersion` | `enabled` parameter (default `true`) | Can be disabled by caller |
 
 ---
 

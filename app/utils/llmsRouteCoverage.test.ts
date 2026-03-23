@@ -23,8 +23,6 @@ const REQUIRED_PATH_SNIPPETS = [
   "/transactions",
   "/verification",
   "/?search=",
-  /** Account tab documented for AIP-140 tooling */
-  "gas-impact",
   /** Account/object modules tab */
   "/modules",
   /** Module code sub-tab (published/decompiled/disassembly) */

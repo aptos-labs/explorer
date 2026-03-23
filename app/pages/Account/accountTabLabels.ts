@@ -15,8 +15,6 @@ export function getAccountTabHeadLabel(tab: string | undefined): string {
       return "Modules";
     case "multisig":
       return "Multisig";
-    case "gas-impact":
-      return "Gas Impact";
     case "info":
       return "Info";
     default:

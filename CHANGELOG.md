@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- AIP-141 gas impact UI: account **Gas Impact** tab, gas warnings on account transaction lists, and the user-transaction overview banner; removed `useGetGasScheduleVersion` and related utilities.
+
 ## [1.1.0] - 2026-03-23
 
 ### Added

@@ -3,7 +3,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import OpenInNew from "@mui/icons-material/OpenInNew";
 import TextSnippetOutlined from "@mui/icons-material/TextSnippetOutlined";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import {Box, Paper, Stack, useMediaQuery, useTheme} from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -32,14 +31,12 @@ import {
   TableTransactionType,
   TransactionTypeName,
 } from "../../components/TransactionType";
-import {useAIP140Warnings} from "../../context/AIP140Context";
 import {
   Link,
   useAugmentToWithGlobalSearchParams,
   useNavigate,
 } from "../../routing";
 import {assertNever, standardizeAddress} from "../../utils";
-import {wouldExceedGasLimit} from "../../utils/aip140";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
 import {getTransactionCounterparty} from "../Transaction/utils";
 import {getTableFormattedTimestamp, truncateAddress} from "../utils";
@@ -178,18 +175,6 @@ function TransactionAmountGasCell({
   address,
 }: TransactionCellProps) {
   const theme = useTheme();
-  const {showWarnings} = useAIP140Warnings();
-
-  const showAIP141Warning =
-    showWarnings &&
-    transaction.type === TransactionTypeName.User &&
-    "gas_used" in transaction &&
-    "max_gas_amount" in transaction &&
-    wouldExceedGasLimit(
-      transaction.gas_used,
-      transaction.max_gas_amount,
-      "version" in transaction ? transaction.version : undefined,
-    );
 
   return (
     <GeneralTableCell sx={{paddingY: 1}}>
@@ -197,36 +182,15 @@ function TransactionAmountGasCell({
         <TransactionTokenTransfer transaction={transaction} address={address} />
         <Box sx={{fontSize: 11, color: theme.palette.text.secondary}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
-            <Stack
-              direction="row"
-              spacing={0.5}
-              alignItems="center"
-              justifyContent="flex-end"
-            >
-              {showAIP141Warning && (
-                <Tooltip title="Would exceed max gas under AIP-141 (10x)">
-                  <Box
-                    component="span"
-                    tabIndex={0}
-                    aria-label="Transaction would exceed max gas under AIP-141 (10x)"
-                  >
-                    <WarningAmberIcon
-                      sx={{fontSize: 14, color: theme.palette.warning.main}}
-                      aria-hidden
-                    />
-                  </Box>
-                </Tooltip>
-              )}
-              <span>
-                Gas{" "}
-                <GasFeeValue
-                  gasUsed={transaction.gas_used}
-                  gasUnitPrice={transaction.gas_unit_price}
-                  transactionData={transaction}
-                  netGasCost
-                />
-              </span>
-            </Stack>
+            <span>
+              Gas{" "}
+              <GasFeeValue
+                gasUsed={transaction.gas_used}
+                gasUnitPrice={transaction.gas_unit_price}
+                transactionData={transaction}
+                netGasCost
+              />
+            </span>
           ) : null}
         </Box>
       </Stack>
@@ -488,7 +452,6 @@ type TransactionCardProps = {
 
 function TransactionCard({transaction, address}: TransactionCardProps) {
   const theme = useTheme();
-  const {showWarnings} = useAIP140Warnings();
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const version = "version" in transaction ? transaction.version : null;
@@ -607,46 +570,20 @@ function TransactionCard({transaction, address}: TransactionCardProps) {
               address={address}
             />
             {"gas_used" in transaction && "gas_unit_price" in transaction && (
-              <Stack direction="row" spacing={0.5} alignItems="center">
-                {showWarnings &&
-                  transaction.type === TransactionTypeName.User &&
-                  "max_gas_amount" in transaction &&
-                  wouldExceedGasLimit(
-                    transaction.gas_used,
-                    transaction.max_gas_amount,
-                    "version" in transaction ? transaction.version : undefined,
-                  ) && (
-                    <Tooltip title="Would exceed max gas under AIP-141 (10x)">
-                      <Box
-                        component="span"
-                        tabIndex={0}
-                        aria-label="Transaction would exceed max gas under AIP-141 (10x)"
-                      >
-                        <WarningAmberIcon
-                          sx={{
-                            fontSize: 12,
-                            color: theme.palette.warning.main,
-                          }}
-                          aria-hidden
-                        />
-                      </Box>
-                    </Tooltip>
-                  )}
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: theme.palette.text.secondary,
-                    fontSize: "0.75rem",
-                  }}
-                >
-                  <GasFeeValue
-                    gasUsed={transaction.gas_used}
-                    gasUnitPrice={transaction.gas_unit_price}
-                    transactionData={transaction}
-                    netGasCost
-                  />
-                </Typography>
-              </Stack>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: theme.palette.text.secondary,
+                  fontSize: "0.75rem",
+                }}
+              >
+                <GasFeeValue
+                  gasUsed={transaction.gas_used}
+                  gasUnitPrice={transaction.gas_unit_price}
+                  transactionData={transaction}
+                  netGasCost
+                />
+              </Typography>
             )}
           </Stack>
         </Stack>
