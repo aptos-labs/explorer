@@ -56,7 +56,8 @@ export default function TransactionTraceTab({
           </Typography>
           <Typography variant="body2" color="text.secondary">
             Execution tree from Sentio’s traced fullnode (experimental). Links
-            go to this explorer: callee account and the module Run / Code tabs.
+            go to this explorer: caller and callee accounts, module Run / Code
+            tabs, plus Sentio’s viewer below.
           </Typography>
           {viewerUrl ? (
             <SentioTraceExternalLink

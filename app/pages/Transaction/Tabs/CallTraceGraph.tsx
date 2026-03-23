@@ -47,6 +47,7 @@ function TraceSubtree({
   const theme = useTheme();
   const [open, setOpen] = useState(defaultExpanded);
   const hasKids = node.calls.length > 0;
+  const caller = normalizeSentioAddress(node.from);
   const callee = normalizeSentioAddress(node.to);
   const parts = parseMoveFunctionParts(node.functionName);
   const runPath =
@@ -129,9 +130,24 @@ function TraceSubtree({
             alignItems="center"
             flexWrap="wrap"
             columnGap={0.75}
+            rowGap={0.25}
             sx={{mt: 0.25}}
           >
             <Typography variant="caption" color="text.secondary">
+              Caller
+            </Typography>
+            {caller ? (
+              <HashButton hash={caller} type={HashType.ACCOUNT} size="small" />
+            ) : (
+              <Typography
+                variant="caption"
+                color="text.disabled"
+                component="span"
+              >
+                {node.from}
+              </Typography>
+            )}
+            <Typography variant="caption" color="text.secondary" sx={{ml: 1}}>
               Callee
             </Typography>
             {callee ? (
