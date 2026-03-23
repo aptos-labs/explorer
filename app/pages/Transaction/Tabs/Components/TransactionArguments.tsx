@@ -19,13 +19,19 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {useCallback, useState} from "react";
+import {useCallback, useMemo, useState} from "react";
 import type {Types} from "~/types/aptos";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
+import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
 import {
   extractEntryFunctionPayload,
   generateCliCommand,
 } from "../../../../utils/cliCommand";
+import {
+  extractFunctionParamNames,
+  extractFunctionTypeParamNames,
+  transformCode,
+} from "../../../../utils";
 import MoveFunctionParamTypeBadge from "./MoveFunctionParamTypeBadge";
 
 const TOOLTIP_TIME = 2000;
@@ -39,13 +45,19 @@ function ArgumentCard({
   type,
   value,
   isTypeArg,
+  paramName,
 }: {
   index: number;
   type?: string;
   value: string;
   isTypeArg?: boolean;
+  /** From Move source when available (same idea as the account run tab). */
+  paramName?: string | null;
 }) {
   const theme = useTheme();
+  const positionLabel = isTypeArg
+    ? (paramName ?? `T${index}`)
+    : (paramName ?? `#${index}`);
   return (
     <Box
       sx={{
@@ -63,7 +75,7 @@ function ArgumentCard({
             minWidth: 24,
           }}
         >
-          {isTypeArg ? `T${index}` : `#${index}`}
+          {positionLabel}
         </Typography>
         {type && <MoveFunctionParamTypeBadge typeStr={type} variant="card" />}
       </Stack>
@@ -104,12 +116,19 @@ export default function TransactionArguments({
 
   const hasValidFunction = !!(address && moduleName && functionName);
 
+  const ledgerVersion =
+    "version" in transaction && transaction.version !== undefined
+      ? Number(transaction.version)
+      : undefined;
+
   const {data: moduleData} = useGetAccountModule(
     address ?? "",
     moduleName ?? "",
-    undefined,
+    ledgerVersion,
     {enabled: hasValidFunction},
   );
+
+  const packages = useGetAccountPackages(address ?? "", ledgerVersion);
 
   const moveFunction = moduleData?.abi?.exposed_functions?.find(
     (fn) => fn.name === functionName,
@@ -119,6 +138,47 @@ export default function TransactionArguments({
   const filteredParams = paramTypes?.filter(
     (p) => p !== "&signer" && p !== "signer",
   );
+
+  const moduleSource = useMemo(() => {
+    if (!moduleName) return undefined;
+    for (const pkg of packages) {
+      const mod = pkg.modules.find((m) => m.name === moduleName);
+      if (mod?.source) return mod.source;
+    }
+    return undefined;
+  }, [packages, moduleName]);
+
+  const {functionArgNames, typeArgNames} = useMemo(() => {
+    if (!payload || !moduleSource || !functionName) {
+      return {
+        functionArgNames: null as string[] | null,
+        typeArgNames: null as string[] | null,
+      };
+    }
+    const decoded = transformCode(moduleSource);
+    const rawParamNames = extractFunctionParamNames(decoded, functionName);
+    const rawTypeNames = extractFunctionTypeParamNames(decoded, functionName);
+
+    const typeNames =
+      rawTypeNames && rawTypeNames.length === payload.type_arguments.length
+        ? rawTypeNames
+        : null;
+
+    if (!moveFunction || !filteredParams) {
+      return {functionArgNames: null, typeArgNames: typeNames};
+    }
+
+    const hasSigner =
+      moveFunction.params.length !==
+      moveFunction.params.filter((p) => p !== "signer" && p !== "&signer")
+        .length;
+    const adjusted =
+      rawParamNames && (hasSigner ? rawParamNames.slice(1) : rawParamNames);
+    const fnArgNames =
+      adjusted && adjusted.length === filteredParams.length ? adjusted : null;
+
+    return {functionArgNames: fnArgNames, typeArgNames: typeNames};
+  }, [payload, moduleSource, functionName, moveFunction, filteredParams]);
 
   const cliCommand = payload
     ? generateCliCommand(payload, paramTypes)
@@ -141,6 +201,8 @@ export default function TransactionArguments({
   }
 
   const argCount = payload.arguments.length + payload.type_arguments.length;
+  const showTypeArgNames = typeArgNames !== null;
+  const showFunctionArgNames = functionArgNames !== null;
 
   return (
     <Box sx={{width: "100%"}}>
@@ -195,6 +257,7 @@ export default function TransactionArguments({
                       key={`type-arg-${i}`}
                       index={i}
                       isTypeArg
+                      paramName={typeArgNames?.[i]}
                       type={
                         moveFunction?.generic_type_params[i]?.constraints
                           ?.length
@@ -222,10 +285,10 @@ export default function TransactionArguments({
                             fontSize: "0.75rem",
                             color: theme.palette.text.secondary,
                             borderBottom: `1px solid ${theme.palette.divider}`,
-                            width: 40,
+                            width: showTypeArgNames ? 100 : 40,
                           }}
                         >
-                          #
+                          {showTypeArgNames ? "Name" : "#"}
                         </TableCell>
                         {moveFunction &&
                           moveFunction.generic_type_params.length > 0 && (
@@ -264,9 +327,10 @@ export default function TransactionArguments({
                               ...cellSx,
                               fontFamily: "monospace",
                               borderBottom: `1px solid ${theme.palette.divider}`,
+                              overflowWrap: "anywhere",
                             }}
                           >
-                            T{i}
+                            {typeArgNames?.[i] ?? `T${i}`}
                           </TableCell>
                           {moveFunction &&
                             moveFunction.generic_type_params.length > 0 && (
@@ -322,6 +386,7 @@ export default function TransactionArguments({
                       // biome-ignore lint/suspicious/noArrayIndexKey: positional, never reordered
                       key={`arg-${i}`}
                       index={i}
+                      paramName={functionArgNames?.[i]}
                       type={filteredParams?.[i]}
                       value={
                         typeof arg === "object"
@@ -346,10 +411,10 @@ export default function TransactionArguments({
                             fontSize: "0.75rem",
                             color: theme.palette.text.secondary,
                             borderBottom: `1px solid ${theme.palette.divider}`,
-                            width: 40,
+                            width: showFunctionArgNames ? 100 : 40,
                           }}
                         >
-                          #
+                          {showFunctionArgNames ? "Name" : "#"}
                         </TableCell>
                         {filteredParams && (
                           <TableCell
@@ -386,9 +451,10 @@ export default function TransactionArguments({
                             sx={{
                               ...cellSx,
                               borderBottom: `1px solid ${theme.palette.divider}`,
+                              overflowWrap: "anywhere",
                             }}
                           >
-                            {i}
+                            {functionArgNames?.[i] ?? `#${i}`}
                           </TableCell>
                           {filteredParams && (
                             <TableCell
