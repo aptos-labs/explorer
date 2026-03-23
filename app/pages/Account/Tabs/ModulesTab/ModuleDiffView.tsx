@@ -308,9 +308,6 @@ export default function ModuleDiffView({
   const [activeView, setActiveView] =
     useState<DiffViewType>("published-source");
 
-  const needsDecompConsent =
-    activeView === "decompiled-source" && !decompConsented;
-
   const basePackages = useGetAccountPackages(address, baseVersion);
   const comparePackages = useGetAccountPackages(address, compareVersion);
 
@@ -332,6 +329,11 @@ export default function ModuleDiffView({
 
   const hasPublishedSource =
     basePublishedSource !== "" || comparePublishedSource !== "";
+
+  const needsDecompConsent =
+    activeView === "decompiled-source" &&
+    !decompConsented &&
+    !hasPublishedSource;
 
   const needsBytecode =
     activeView !== "published-source" && !needsDecompConsent;

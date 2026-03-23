@@ -350,7 +350,9 @@ export function Code({
   const moduleBytecodeKey = moduleBytecode?.toLowerCase();
 
   const needsDecompConsent =
-    activeView === "decompiled-source" && !decompConsented;
+    activeView === "decompiled-source" &&
+    !decompConsented &&
+    !hasPublishedSourceCode;
 
   useEffect(() => {
     if (!hasPublishedSourceCode && hasModuleBytecode) {
