@@ -1,5 +1,13 @@
 import {ContentCopy, OpenInFull} from "@mui/icons-material";
-import {Box, Button, Modal, Stack, Typography, useTheme} from "@mui/material";
+import {
+  alpha,
+  Box,
+  Button,
+  Modal,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import {Suspense, useEffect, useRef, useState} from "react";
 import {
   CodeLoadingFallback,
@@ -64,7 +72,18 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
       >
         <OpenInFull style={{height: "1.25rem", width: "1.25rem"}} />
       </Button>
-      <Modal open={isModalOpen} onClose={handleCloseModal}>
+      <Modal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: alpha("#000000", 0.88),
+              backdropFilter: "blur(4px)",
+            },
+          },
+        }}
+      >
         <Box
           sx={{
             position: "absolute",
@@ -75,6 +94,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
             width: "80%",
             overflowY: "auto",
             borderRadius: 1,
+            backgroundColor: semanticColors.codeBlock.background,
           }}
           ref={codeBoxScrollRef}
         >

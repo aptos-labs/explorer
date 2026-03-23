@@ -1,5 +1,6 @@
 import {ContentCopy, OpenInFull} from "@mui/icons-material";
 import {
+  alpha,
   Box,
   Button,
   CircularProgress,
@@ -58,7 +59,18 @@ function ExpandScriptCode({
       >
         <OpenInFull style={{height: "1.25rem", width: "1.25rem"}} />
       </Button>
-      <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: alpha("#000000", 0.88),
+              backdropFilter: "blur(4px)",
+            },
+          },
+        }}
+      >
         <Box
           sx={{
             position: "absolute",
@@ -69,6 +81,7 @@ function ExpandScriptCode({
             width: "80%",
             overflowY: "auto",
             borderRadius: 1,
+            backgroundColor: semanticColors.codeBlock.background,
           }}
         >
           <Suspense fallback={<CodeLoadingFallback />}>
