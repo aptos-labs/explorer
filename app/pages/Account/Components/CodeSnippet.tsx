@@ -41,6 +41,7 @@ import {
 } from "../../../utils/moveDecompiler";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
+import BytecodeVerificationBanner from "./BytecodeVerificationBanner";
 
 function defaultSyntaxHighlighterRenderer({
   rows,
@@ -577,6 +578,10 @@ export function Code({
           </Stack>
         )}
       </Stack>
+      <BytecodeVerificationBanner
+        moduleBytecodeHex={moduleBytecode}
+        publishedSourceHex={sourceBytecode}
+      />
       <Stack direction="row" spacing={1} marginBottom={2}>
         {hasPublishedSourceCode && (
           <Button

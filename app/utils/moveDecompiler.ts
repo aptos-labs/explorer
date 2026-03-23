@@ -11,6 +11,15 @@ type DecompilationCacheEntry = {
   disassembly?: string;
 };
 
+export type ModuleMetadataResult = {
+  name: string;
+  address: string | undefined;
+  version: number;
+  functionCount: number;
+  structCount: number;
+  dependencies: string[];
+};
+
 const MAX_DECOMPILATION_CACHE_SIZE = 30;
 const decompilationCache = new Map<string, DecompilationCacheEntry>();
 
@@ -115,6 +124,46 @@ export async function getDecompiledCodeView(
   nextEntry.disassembly = wasmModule.disassemble_module(bytecodeBytes);
   touchDecompilationCache(cacheKey, nextEntry);
   return nextEntry.disassembly;
+}
+
+/**
+ * Extract metadata from Move module bytecode using the WASM decompiler.
+ * Returns module name, address, bytecode version, function/struct counts, and dependencies.
+ */
+export async function getModuleMetadata(
+  bytecodeHex: string,
+): Promise<ModuleMetadataResult> {
+  const wasmModule = await loadMoveDecompilerWasm();
+  const bytecodeBytes = bytecodeHexToBytes(bytecodeHex);
+  const metadata = wasmModule.get_module_metadata(bytecodeBytes);
+
+  try {
+    const depsJson = metadata.getDependencies();
+    const deps: string[] = JSON.parse(depsJson);
+    return {
+      name: metadata.name,
+      address: metadata.address,
+      version: metadata.version,
+      functionCount: metadata.functionCount,
+      structCount: metadata.structCount,
+      dependencies: deps,
+    };
+  } finally {
+    metadata.free();
+  }
+}
+
+/**
+ * Verify Move module bytecode integrity using the WASM decompiler.
+ * Returns `true` if the bytecode passes structural verification.
+ * Throws if the WASM module cannot be loaded.
+ */
+export async function verifyModuleIntegrity(
+  bytecodeHex: string,
+): Promise<boolean> {
+  const wasmModule = await loadMoveDecompilerWasm();
+  const bytecodeBytes = bytecodeHexToBytes(bytecodeHex);
+  return wasmModule.verify_module(bytecodeBytes);
 }
 
 /**
