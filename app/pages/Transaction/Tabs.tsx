@@ -41,6 +41,7 @@ import StateCheckpointOverviewTab from "./Tabs/StateCheckpointOverviewTab";
 import UnknownTab from "./Tabs/UnknownTab";
 import UserTransactionOverviewTab from "./Tabs/UserTransactionOverviewTab";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
+import TransactionExperimentalCallTrace from "./TransactionExperimentalCallTrace";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -323,6 +324,12 @@ export default function TransactionTabs({
         transaction={transaction}
         networkName={networkName}
       />
+      {transaction.type === TransactionTypeName.User ? (
+        <TransactionExperimentalCallTrace
+          txHash={transaction.hash}
+          networkName={networkName}
+        />
+      ) : null}
     </Box>
   );
 }
