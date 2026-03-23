@@ -341,29 +341,34 @@ function buildNamedAddressMap(
 function summarizeCompileErrors(errors: string[]): string {
   if (errors.length === 0) return "Recompilation failed: unknown error";
 
-  const dedupErrors = [...new Set(errors)];
-  const hasUnboundModule = dedupErrors.some((e) =>
-    e.toLowerCase().includes("unbound module"),
-  );
+  const lc = (s: string) => s.toLowerCase();
+  const buckets: Record<string, {count: number; label: string}> = {
+    unboundModule: {count: 0, label: "unbound module (missing dependency)"},
+    unknownAttr: {count: 0, label: "unknown attribute (framework-specific)"},
+    addrNoValue: {count: 0, label: "address with no value"},
+    unusedAlias: {count: 0, label: "unused alias"},
+  };
 
-  if (hasUnboundModule) {
-    const unboundCount = errors.filter((e) =>
-      e.toLowerCase().includes("unbound module"),
-    ).length;
-    const otherErrors = dedupErrors.filter(
-      (e) => !e.toLowerCase().includes("unbound module"),
-    );
-    const parts = [
-      `${unboundCount} unbound module error(s) — module depends on other packages not available during standalone recompilation`,
-    ];
-    if (otherErrors.length > 0) {
-      parts.push(`${otherErrors.length} other error(s)`);
-    }
-    return `Recompilation failed with ${errors.length} error(s): ${parts.join("; ")}`;
+  const other: string[] = [];
+  for (const e of errors) {
+    const el = lc(e);
+    if (el.includes("unbound module")) buckets.unboundModule.count++;
+    else if (el.includes("unknown attribute")) buckets.unknownAttr.count++;
+    else if (el.includes("address with no value")) buckets.addrNoValue.count++;
+    else if (el.includes("unused alias")) buckets.unusedAlias.count++;
+    else other.push(e);
   }
 
-  const preview = dedupErrors.slice(0, 3).join("; ");
-  return `Recompilation failed with ${errors.length} error(s): ${preview}`;
+  const parts: string[] = [];
+  for (const b of Object.values(buckets)) {
+    if (b.count > 0) parts.push(`${b.count} ${b.label}`);
+  }
+  if (other.length > 0) {
+    const dedupOther = [...new Set(other)];
+    parts.push(`${other.length} other: ${dedupOther.slice(0, 2).join("; ")}`);
+  }
+
+  return `Recompilation failed with ${errors.length} issue(s): ${parts.join(" · ")}`;
 }
 
 /**
