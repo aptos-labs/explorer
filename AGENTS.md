@@ -60,7 +60,7 @@ The app is a **TanStack Start** (SSR-capable) SPA built with **Vite**, **TanStac
 
 ### From filename to URL
 
-- **Dot segments** become path segments: e.g. `account.$address.$tab.tsx` → `/account/:address/:tab`.
+- **Dot segments** become path segments: e.g. `account.$address.$tab.tsx` → `/account/$address/$tab`.
 - **Index**: `app/routes/index.tsx` is the home route.
 - **Layout routes** use a path prefix and render an `<Outlet />` for child routes. Some parent routes use `beforeLoad` to **redirect** legacy or shorthand URLs to the canonical path (for example, `?tab=` query params → `/$tab` in the path, or default tab when the path is “incomplete”).
 - **Root layout**: `app/routes/__root.tsx` registers global `head` metadata, error and not-found UI, and wraps the app with providers (React Query, MUI theme, wallet, GraphQL client, settings). It renders `Header`, `Footer`, and `<Outlet />` for page content. **Backward-compatibility redirects** for old hostnames and hash-based tab URLs run here via `useOldUrlRedirect` and `useHashToPathRedirect`.
