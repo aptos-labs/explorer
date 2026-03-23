@@ -96,4 +96,20 @@ describe("isSentioCallTraceNode", () => {
     expect(isSentioCallTraceNode(null)).toBe(false);
     expect(isSentioCallTraceNode("x")).toBe(false);
   });
+
+  it("rejects a node with an invalid child call", () => {
+    expect(
+      isSentioCallTraceNode({
+        from: "0x1",
+        to: "0x1",
+        contractName: "c",
+        functionName: "m::f",
+        inputs: [],
+        returnValue: [],
+        typeArgs: [],
+        calls: [{}],
+        gasUsed: 0,
+      }),
+    ).toBe(false);
+  });
 });

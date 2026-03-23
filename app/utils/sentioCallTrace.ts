@@ -24,17 +24,20 @@ export function isSentioCallTraceNode(
     return false;
   }
   const d = data as Record<string, unknown>;
-  return (
-    typeof d.from === "string" &&
-    typeof d.to === "string" &&
-    typeof d.contractName === "string" &&
-    typeof d.functionName === "string" &&
-    typeof d.gasUsed === "number" &&
-    Array.isArray(d.calls) &&
-    Array.isArray(d.inputs) &&
-    Array.isArray(d.returnValue) &&
-    Array.isArray(d.typeArgs)
-  );
+  if (
+    typeof d.from !== "string" ||
+    typeof d.to !== "string" ||
+    typeof d.contractName !== "string" ||
+    typeof d.functionName !== "string" ||
+    typeof d.gasUsed !== "number" ||
+    !Array.isArray(d.calls) ||
+    !Array.isArray(d.inputs) ||
+    !Array.isArray(d.returnValue) ||
+    !Array.isArray(d.typeArgs)
+  ) {
+    return false;
+  }
+  return d.calls.every((child) => isSentioCallTraceNode(child));
 }
 
 /**
@@ -112,20 +115,32 @@ export async function fetchSentioCallTrace(
 
   const res = await fetch(url.toString(), {signal});
   if (!res.ok) {
-    let detail = res.statusText;
+    let detail = "";
     try {
-      const body: unknown = await res.json();
-      if (body && typeof body === "object" && "message" in body) {
-        detail = String((body as {message: unknown}).message);
+      const rawText = await res.text();
+      if (rawText) {
+        try {
+          const body: unknown = JSON.parse(rawText);
+          if (body && typeof body === "object" && "message" in body) {
+            detail = String((body as {message: unknown}).message);
+          } else {
+            detail = rawText;
+          }
+        } catch {
+          detail = rawText;
+        }
       }
     } catch {
-      try {
-        detail = await res.text();
-      } catch {
-        /* ignore */
-      }
+      detail = res.statusText;
     }
-    throw new Error(detail || `Request failed (${res.status})`);
+    const statusInfo =
+      res.statusText && res.statusText.length > 0
+        ? `${res.status} ${res.statusText}`
+        : String(res.status);
+    const message = detail
+      ? `Sentio call trace error (HTTP ${statusInfo}): ${detail}`
+      : `Sentio call trace error (HTTP ${statusInfo})`;
+    throw new Error(message);
   }
   return res.json();
 }

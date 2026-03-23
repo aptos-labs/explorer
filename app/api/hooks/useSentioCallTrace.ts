@@ -15,11 +15,10 @@ export function useSentioCallTrace(opts: {
   return useQuery({
     queryKey: ["sentioCallTrace", opts.networkName, opts.txHash],
     queryFn: async ({signal}) => {
-      const id = getSentioCallTraceNetworkId(opts.networkName);
-      if (id === undefined) {
+      if (networkId === undefined) {
         throw new Error("Unsupported network for Sentio call trace");
       }
-      return fetchSentioCallTrace(id, opts.txHash, signal);
+      return fetchSentioCallTrace(networkId, opts.txHash, signal);
     },
     enabled: Boolean(opts.enabled && networkId !== undefined && opts.txHash),
     staleTime: 60 * 60 * 1000,
