@@ -14,9 +14,11 @@ import {
   SyntaxHighlighter,
   useHighlighterStyles,
 } from "../../../components/CodeHighlighter";
+import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../components/StyledTooltip";
+import type {Types} from "~/types/aptos";
 import {
   type DecompilationView,
   getDecompiledCodeView,
@@ -39,7 +41,8 @@ function useStartingLineNumber(sourceCode?: string) {
 type CodeView =
   | "published-source"
   | "decompiled-source"
-  | "bytecode-disassembly";
+  | "bytecode-disassembly"
+  | "abi";
 
 type BytecodeViewState = {
   bytecodeKey: string;
@@ -137,12 +140,21 @@ function ExpandCode({
   );
 }
 
+export type CodeModuleQueryProps = {
+  address: string;
+  data: Types.MoveModuleBytecode | undefined;
+  isLoading: boolean;
+  isSuccess: boolean;
+};
+
 export function Code({
   sourceBytecode,
   moduleBytecode,
+  moduleQuery,
 }: {
   sourceBytecode?: string;
   moduleBytecode?: string;
+  moduleQuery?: CodeModuleQueryProps;
 }) {
   const {selectedModuleName} = useModulesPathParams();
   const logEvent = useLogEventWithBasic();
@@ -178,6 +190,14 @@ export function Code({
   }, [hasPublishedSourceCode, hasModuleBytecode]);
 
   useEffect(() => {
+    if (activeView === "abi" && !moduleQuery) {
+      setActiveView(
+        hasPublishedSourceCode ? "published-source" : "decompiled-source",
+      );
+    }
+  }, [activeView, moduleQuery, hasPublishedSourceCode]);
+
+  useEffect(() => {
     const missingActiveViewCode =
       activeView === "decompiled-source"
         ? !decompiledSource ||
@@ -191,6 +211,7 @@ export function Code({
       !hasModuleBytecode ||
       !moduleBytecodeKey ||
       activeView === "published-source" ||
+      activeView === "abi" ||
       !missingActiveViewCode
     ) {
       return;
@@ -391,6 +412,15 @@ export function Code({
             </Button>
           </>
         )}
+        {moduleQuery && (
+          <Button
+            size="small"
+            variant={activeView === "abi" ? "contained" : "outlined"}
+            onClick={() => setActiveView("abi")}
+          >
+            ABI
+          </Button>
+        )}
       </Stack>
       {activeView === "published-source" && displayedCode && (
         <Typography
@@ -404,7 +434,22 @@ export function Code({
           different from the actual bytecode.
         </Typography>
       )}
-      {activeView !== "published-source" && (
+      {activeView !== "published-source" &&
+        activeView !== "abi" &&
+        (activeView === "decompiled-source" ||
+          activeView === "bytecode-disassembly") && (
+          <Typography
+            variant="body1"
+            fontSize={14}
+            fontWeight={400}
+            marginBottom={"16px"}
+            color={theme.palette.text.secondary}
+          >
+            This view is generated from on-chain bytecode using the Move
+            decompiler WASM.
+          </Typography>
+        )}
+      {activeView === "abi" && moduleQuery && (
         <Typography
           variant="body1"
           fontSize={14}
@@ -412,11 +457,21 @@ export function Code({
           marginBottom={"16px"}
           color={theme.palette.text.secondary}
         >
-          This view is generated from on-chain bytecode using the Move
-          decompiler WASM.
+          Module ABI metadata returned by the node for this on-chain module.
         </Typography>
       )}
-      {!hasPublishedSourceCode && !hasModuleBytecode ? (
+      {activeView === "abi" && moduleQuery ? (
+        moduleQuery.isSuccess ? (
+          <JsonViewCard data={moduleQuery.data?.abi} />
+        ) : (
+          <Stack direction="row" spacing={1.5} alignItems="center" py={2}>
+            <CircularProgress size={18} />
+            <Typography variant="body2" color="text.secondary">
+              Loading module ABI...
+            </Typography>
+          </Stack>
+        )
+      ) : !hasPublishedSourceCode && !hasModuleBytecode ? (
         <Box>
           This module does not expose published source or bytecode for
           decompilation.

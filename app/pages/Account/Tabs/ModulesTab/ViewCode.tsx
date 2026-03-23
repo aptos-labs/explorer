@@ -16,12 +16,12 @@ import {
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import {useNavigate} from "../../../../routing";
 import {getBytecodeSizeInKB} from "../../../../utils";
 import {Code} from "../../Components/CodeSnippet";
 import SidebarItem from "../../Components/SidebarItem";
 import AccountError from "../../Error";
+import type {Types} from "~/types/aptos";
 import {accountPagePath} from "../../Index";
 import {useModulesPathParams} from "./Tabs";
 
@@ -202,11 +202,12 @@ function ModuleContent({
   ledgerVersion,
 }: ModuleContentProps) {
   const theme = useTheme();
-  const {data: moduleBytecodeResponse} = useGetAccountModule(
-    address,
-    moduleName,
-    ledgerVersion,
-  );
+  const {
+    data: moduleData,
+    isLoading: isModuleLoading,
+    isSuccess: isModuleSuccess,
+    error: moduleError,
+  } = useGetAccountModule(address, moduleName, ledgerVersion);
   return (
     <Stack
       direction="column"
@@ -215,41 +216,34 @@ function ModuleContent({
       bgcolor={theme.palette.background.paper}
       borderRadius={1}
     >
-      <ModuleHeader
-        address={address}
-        moduleName={moduleName}
-        ledgerVersion={ledgerVersion}
-      />
+      <ModuleHeader module={moduleData} moduleName={moduleName} />
       <Divider />
+      {moduleError && <AccountError address={address} error={moduleError} />}
       <Code
         sourceBytecode={sourceBytecode}
-        moduleBytecode={moduleBytecodeResponse?.bytecode}
-      />
-      <Divider />
-      <ABI
-        address={address}
-        moduleName={moduleName}
-        ledgerVersion={ledgerVersion}
+        moduleBytecode={moduleData?.bytecode}
+        moduleQuery={
+          moduleError
+            ? undefined
+            : {
+                address,
+                data: moduleData,
+                isLoading: isModuleLoading,
+                isSuccess: isModuleSuccess,
+              }
+        }
       />
     </Stack>
   );
 }
 
 function ModuleHeader({
-  address,
+  module,
   moduleName,
-  ledgerVersion,
 }: {
-  address: string;
+  module: Types.MoveModuleBytecode | undefined;
   moduleName: string;
-  ledgerVersion?: number;
 }) {
-  const {data: module} = useGetAccountModule(
-    address,
-    moduleName,
-    ledgerVersion,
-  );
-
   return (
     <Box
       display="flex"
@@ -261,51 +255,14 @@ function ModuleHeader({
         {moduleName}
       </Typography>
       <Box>
-        {module && (
+        {module ? (
           <Typography fontSize={10}>
             {module.abi?.exposed_functions?.filter((fn) => fn.is_entry)?.length}{" "}
             entry functions | Bytecode: {getBytecodeSizeInKB(module.bytecode)}{" "}
             KB
           </Typography>
-        )}
+        ) : null}
       </Box>
-    </Box>
-  );
-}
-
-function ABI({
-  address,
-  moduleName,
-  ledgerVersion,
-}: {
-  address: string;
-  moduleName: string;
-  ledgerVersion?: number;
-}) {
-  const {
-    data: module,
-    isLoading,
-    error,
-  } = useGetAccountModule(address, moduleName, ledgerVersion);
-
-  if (isLoading) {
-    return null;
-  }
-
-  if (error) {
-    return <AccountError address={address} error={error} />;
-  }
-
-  if (!module) {
-    return <EmptyTabContent />;
-  }
-
-  return (
-    <Box>
-      <Typography fontSize={20} fontWeight={700} marginY={"16px"}>
-        ABI
-      </Typography>
-      <JsonViewCard data={module.abi} />
     </Box>
   );
 }
