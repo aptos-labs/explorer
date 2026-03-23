@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Known address **Greg** (greg.apt → `0xc675…edce9e`) with vendored profile image from @greg_nazario for explorer identicon and account banner (`public/address-icons/greg-nazario.jpg`)
 - Module Code (and Run/View source panel): qualified `module::function` and `0x..::module::function` references in highlighted Move source navigate to the Code tab for that module/function (Cmd/Ctrl+click opens in a new tab)
 - Known-address branding (per network): optional `icon` and `description` replace blockies where configured, render an account-page banner, and enrich metadata; Decibel on mainnet is the first entry (`app/data/mainnet/knownAddressBranding.ts`)
 - Known-address `iconBadge` (e.g. `0x1` on the Aptos mark) for framework accounts; mainnet icons/descriptions for bridges, DEX deployers, and CEX-labeled wallets; framework branding shared on testnet/devnet (`app/data/aptosFrameworkAddressBranding.ts`, `public/address-icons/*`)

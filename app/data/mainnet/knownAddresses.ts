@@ -24,6 +24,8 @@ export const mainnetKnownAddresses: Record<string, string> = {
     "Aptos yr2: NFT",
   "0xee443c3b5ae14baaee87ea410a4badba1227dae386a616936aad88d053849638":
     "Aptos Hongbao",
+  // Primary ANS: greg.apt
+  "0xc67545d6f3d36ed01efc9b28cbfd0c1ae326d5d262dd077a29539bcee0edce9e": "Greg",
 
   // Bridges
   "0x5bc11445584a763c1fa7ed39081f1b920954da14e04b32440cba863d03e19625":

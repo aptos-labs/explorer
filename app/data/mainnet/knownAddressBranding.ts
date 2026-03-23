@@ -273,4 +273,9 @@ export const mainnetKnownAddressBranding: Record<string, KnownAddressBranding> =
       description:
         "Decibel is an onchain trading engine on Aptos for spot, perpetuals, and unified margin—built for transparent execution and deep liquidity.",
     },
+    "0xc67545d6f3d36ed01efc9b28cbfd0c1ae326d5d262dd077a29539bcee0edce9e": {
+      icon: "/address-icons/greg-nazario.jpg",
+      description:
+        "Greg Nazario (@greg_nazario); primary Aptos Name: greg.apt.",
+    },
   };
