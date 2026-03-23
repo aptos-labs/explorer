@@ -29,6 +29,10 @@ export const testnetKnownAddresses: Record<string, string> = {
   "0xbd7912c555a06809c2e385eab635ff0ef52b1fa062ce865c785c67694a12bb12":
     "Aave Testnet Pool",
 
+  // Shelby (Testnet)
+  "0xc63d6a5efb0080a6029403131715bd4971e1149f7cc099aac69bb0069b3ddbf5":
+    "Shelby",
+
   // Burn Address
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",

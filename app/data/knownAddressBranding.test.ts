@@ -7,6 +7,9 @@ const DECIBEL =
 const FRAMEWORK_0X1 =
   "0x0000000000000000000000000000000000000000000000000000000000000001";
 
+const SHELBY_TESTNET =
+  "0xc63d6a5efb0080a6029403131715bd4971e1149f7cc099aac69bb0069b3ddbf5";
+
 describe("known address branding", () => {
   it("returns icon and description for Decibel on mainnet", () => {
     expect(getKnownAddressBranding("mainnet", DECIBEL)).toEqual({
@@ -24,6 +27,16 @@ describe("known address branding", () => {
       iconBadge: "0x1",
       description: expect.stringContaining("framework"),
     });
+  });
+
+  it("returns Shelby branding on testnet", () => {
+    expect(getKnownAddressBranding("testnet", SHELBY_TESTNET)).toEqual({
+      icon: "/address-icons/shelby.ico",
+      description: expect.stringContaining("Shelby"),
+    });
+    expect(getKnownAddressIcon("testnet", SHELBY_TESTNET)).toBe(
+      "/address-icons/shelby.ico",
+    );
   });
 
   it("returns undefined when not configured", () => {
