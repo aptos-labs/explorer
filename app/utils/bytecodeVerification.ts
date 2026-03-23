@@ -1,134 +1,73 @@
 import {Hex} from "@aptos-labs/ts-sdk";
 import pako from "pako";
 import type {PackageMetadata} from "../api/hooks/useGetAccountResource";
-import type {ModuleMetadataResult} from "./moveDecompiler";
 
-/**
- * Move 2 introduced bytecode version 6+. Modules compiled before Move 2
- * may produce decompiled output that cannot be faithfully re-compiled,
- * so source-level verification is unreliable for older formats.
- */
 export const MOVE_2_MIN_BYTECODE_VERSION = 6;
 
-export type VerificationStatus =
-  | "verified"
-  | "partial"
-  | "unverified"
-  | "error";
+export type VerificationStatus = "verified" | "mismatch" | "error";
 
-export type VerificationCheck = {
+export type VerificationStep = {
   label: string;
-  passed: boolean;
-  detail: string;
-};
-
-export type NamedAddress = {
-  name: string;
-  address: string;
+  status: "pending" | "running" | "done" | "error";
+  detail?: string;
 };
 
 export type BytecodeVerificationResult = {
   status: VerificationStatus;
-  statusLabel: string;
-  checks: VerificationCheck[];
-  metadata: ModuleMetadataResult | null;
-  namedAddresses: NamedAddress[];
-  isPreMove2: boolean;
-  compilerAvailable: boolean;
+  steps: VerificationStep[];
   error?: string;
 };
 
 /**
- * Runs the full bytecode verification pipeline for a single module.
+ * Verify a module's published source matches its on-chain bytecode.
  *
- * Steps:
- *  1. Bytecode integrity – `verify_module` from the decompiler WASM.
- *  2. Metadata extraction – bytecode version, address, dependencies.
- *  3. Source availability – checks that the deployer published source.
- *  4. Decompile round-trip – decompiles and structurally compares with published source.
- *  5. (Future) Compile & compare – requires compiler WASM from the PR.
+ * Flow:
+ *  1. Decompile the on-chain bytecode back to Move source.
+ *  2. Compile the decompiled source → "reference bytecode".
+ *  3. Compile the published source → "published bytecode".
+ *  4. Compare: if reference == published the source is verified.
+ *
+ * The `onProgress` callback is invoked after each step so the UI can
+ * show a live progress indicator.
  */
 export async function verifyModuleBytecode(opts: {
   moduleBytecodeHex: string;
-  publishedSourceHex?: string;
+  publishedSourceHex: string;
   allPackages?: PackageMetadata[];
   moduleAddress?: string;
+  onProgress?: (steps: VerificationStep[]) => void;
 }): Promise<BytecodeVerificationResult> {
-  const {moduleBytecodeHex, publishedSourceHex, allPackages, moduleAddress} =
-    opts;
+  const {
+    moduleBytecodeHex,
+    publishedSourceHex,
+    allPackages,
+    moduleAddress,
+    onProgress,
+  } = opts;
 
-  const checks: VerificationCheck[] = [];
-  let metadata: ModuleMetadataResult | null = null;
-  let namedAddresses: NamedAddress[] = [];
-  let isPreMove2 = false;
+  const steps: VerificationStep[] = [
+    {label: "Decompile on-chain bytecode", status: "pending"},
+    {label: "Compile decompiled source", status: "pending"},
+    {label: "Compile published source", status: "pending"},
+    {label: "Compare bytecodes", status: "pending"},
+  ];
+
+  const emit = () => onProgress?.([...steps]);
 
   try {
-    const {
-      getModuleMetadata,
-      normalizeBytecodeHex,
-      getDecompiledCodeView,
-      verifyModuleIntegrity,
-    } = await import("./moveDecompiler");
+    const {getModuleMetadata, normalizeBytecodeHex, getDecompiledCodeView} =
+      await import("./moveDecompiler");
+    const {compileMoveModuleWithDeps} = await import("./moveCompiler");
 
-    // --- 1. Bytecode integrity ---
-    let integrityPassed = false;
-    try {
-      integrityPassed = await verifyModuleIntegrity(moduleBytecodeHex);
-    } catch {
-      // verify throws on invalid bytecode or when WASM is unavailable
-    }
-    checks.push({
-      label: "Bytecode integrity",
-      passed: integrityPassed,
-      detail: integrityPassed
-        ? "Module bytecode passed structural verification"
-        : "Module bytecode failed integrity check",
-    });
+    const metadata = await getModuleMetadata(moduleBytecodeHex);
+    const addr = moduleAddress ?? metadata.address ?? "0x1";
+    const depFiles = buildDependencyFiles(allPackages ?? [], metadata.name);
+    const extraAddresses = buildNamedAddressMap(allPackages ?? [], addr);
 
-    if (!integrityPassed) {
-      return buildResult("error", checks, metadata, namedAddresses, isPreMove2);
-    }
+    // --- Step 1: Decompile ---
+    steps[0].status = "running";
+    emit();
 
-    // --- 2. Metadata extraction ---
-    metadata = await getModuleMetadata(moduleBytecodeHex);
-    isPreMove2 = metadata.version < MOVE_2_MIN_BYTECODE_VERSION;
-
-    checks.push({
-      label: "Bytecode version",
-      passed: !isPreMove2,
-      detail: isPreMove2
-        ? `Bytecode version ${metadata.version} (pre-Move 2) – decompiled source may not round-trip faithfully`
-        : `Bytecode version ${metadata.version} (Move 2+)`,
-    });
-
-    // --- Named addresses ---
-    namedAddresses = extractNamedAddresses(metadata);
-
-    // --- 3. Source availability ---
-    const hasPublishedSource =
-      !!publishedSourceHex &&
-      publishedSourceHex !== "0x" &&
-      publishedSourceHex.length > 2;
-
-    checks.push({
-      label: "Published source",
-      passed: hasPublishedSource,
-      detail: hasPublishedSource
-        ? "Deployer published Move source code on-chain"
-        : "No source code was published with this module",
-    });
-
-    if (!hasPublishedSource) {
-      return buildResult(
-        "unverified",
-        checks,
-        metadata,
-        namedAddresses,
-        isPreMove2,
-      );
-    }
-
-    // --- 4. Decompile round-trip comparison ---
     const normalizedHex = normalizeBytecodeHex(moduleBytecodeHex);
     let decompiledSource: string;
     try {
@@ -136,169 +75,92 @@ export async function verifyModuleBytecode(opts: {
         normalizedHex,
         "decompiled-source",
       );
-    } catch {
-      checks.push({
-        label: "Decompilation",
-        passed: false,
-        detail: "Failed to decompile bytecode for source comparison",
-      });
-      return buildResult(
-        "partial",
-        checks,
-        metadata,
-        namedAddresses,
-        isPreMove2,
-      );
+    } catch (e) {
+      steps[0].status = "error";
+      steps[0].detail = `Decompilation failed: ${e instanceof Error ? e.message : String(e)}`;
+      emit();
+      return {status: "error", steps, error: steps[0].detail};
     }
+    steps[0].status = "done";
+    steps[0].detail = `Decompiled ${decompiledSource.length} chars of Move source`;
+    emit();
+
+    // --- Step 2: Compile decompiled source → reference bytecode ---
+    steps[1].status = "running";
+    emit();
+
+    const refResult = await compileMoveModuleWithDeps(
+      decompiledSource,
+      addr,
+      metadata.name,
+      depFiles,
+      extraAddresses,
+    );
+    if (!refResult.success || refResult.bytecode.length === 0) {
+      const summary = summarizeCompileErrors(refResult.errors);
+      steps[1].status = "error";
+      steps[1].detail = `Decompiled source failed to compile: ${summary}`;
+      emit();
+      return {status: "error", steps, error: steps[1].detail};
+    }
+    steps[1].status = "done";
+    steps[1].detail = `Compiled to ${refResult.bytecode.length} bytes`;
+    emit();
+
+    // --- Step 3: Compile published source → published bytecode ---
+    steps[2].status = "running";
+    emit();
 
     const publishedDecoded = decodeHexSource(publishedSourceHex);
-    const similarity = computeStructuralSimilarity(
-      publishedDecoded,
-      decompiledSource,
-    );
-    const similarityPct = Math.round(similarity * 100);
-
-    checks.push({
-      label: "Source comparison",
-      passed: similarity >= 0.7,
-      detail:
-        similarity >= 0.9
-          ? `Published source structurally matches decompiled output (${similarityPct}%)`
-          : similarity >= 0.7
-            ? `Published source partially matches decompiled output (${similarityPct}%)`
-            : `Published source differs significantly from decompiled output (${similarityPct}%)`,
-    });
-
-    // --- 5. Compilation verification ---
-    let compilationPassed = false;
-    try {
-      const {compileMoveModuleWithDeps} = await import("./moveCompiler");
-      const addr = moduleAddress ?? metadata.address ?? "0x1";
-
-      const depFiles = buildDependencyFiles(allPackages ?? [], metadata.name);
-      const extraAddresses = buildNamedAddressMap(allPackages ?? [], addr);
-
-      const compileResult = await compileMoveModuleWithDeps(
-        publishedDecoded,
-        addr,
-        metadata.name,
-        depFiles,
-        extraAddresses,
-      );
-
-      if (compileResult.success && compileResult.bytecode.length > 0) {
-        const {bytecodeHexToBytes} = await import("./moveDecompiler");
-        const onChainBytes = bytecodeHexToBytes(moduleBytecodeHex);
-        const compiledBytes = compileResult.bytecode;
-
-        const bytecodeMatch =
-          onChainBytes.length === compiledBytes.length &&
-          onChainBytes.every((b, i) => b === compiledBytes[i]);
-
-        compilationPassed = bytecodeMatch;
-        checks.push({
-          label: "Compilation verification",
-          passed: bytecodeMatch,
-          detail: bytecodeMatch
-            ? "Published source recompiles to identical on-chain bytecode"
-            : `Recompiled bytecode differs from on-chain (${compiledBytes.length} vs ${onChainBytes.length} bytes)`,
-        });
-      } else {
-        const detail = summarizeCompileErrors(compileResult.errors);
-        checks.push({
-          label: "Compilation verification",
-          passed: false,
-          detail,
-        });
-      }
-    } catch {
-      checks.push({
-        label: "Compilation verification",
-        passed: false,
-        detail:
-          "Move compiler WASM could not be loaded for recompilation check",
-      });
+    if (!publishedDecoded) {
+      steps[2].status = "error";
+      steps[2].detail = "Failed to decode published source";
+      emit();
+      return {status: "error", steps, error: steps[2].detail};
     }
 
-    const allCorePassed = checks.every((c) => c.passed);
-    const status: VerificationStatus = allCorePassed
-      ? "verified"
-      : compilationPassed
-        ? "verified"
-        : similarity >= 0.7
-          ? "partial"
-          : "unverified";
-
-    return buildResult(
-      status,
-      checks,
-      metadata,
-      namedAddresses,
-      isPreMove2,
-      true,
+    const pubResult = await compileMoveModuleWithDeps(
+      publishedDecoded,
+      addr,
+      metadata.name,
+      depFiles,
+      extraAddresses,
     );
+    if (!pubResult.success || pubResult.bytecode.length === 0) {
+      const summary = summarizeCompileErrors(pubResult.errors);
+      steps[2].status = "error";
+      steps[2].detail = `Published source failed to compile: ${summary}`;
+      emit();
+      return {status: "error", steps, error: steps[2].detail};
+    }
+    steps[2].status = "done";
+    steps[2].detail = `Compiled to ${pubResult.bytecode.length} bytes`;
+    emit();
+
+    // --- Step 4: Compare ---
+    steps[3].status = "running";
+    emit();
+
+    const refBytes = refResult.bytecode;
+    const pubBytes = pubResult.bytecode;
+
+    const match =
+      refBytes.length === pubBytes.length &&
+      refBytes.every((b, i) => b === pubBytes[i]);
+
+    steps[3].status = "done";
+    steps[3].detail = match
+      ? `Bytecodes match (${refBytes.length} bytes)`
+      : `Bytecodes differ (decompiled: ${refBytes.length} bytes, published: ${pubBytes.length} bytes)`;
+    emit();
+
+    return {status: match ? "verified" : "mismatch", steps};
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
-    return {
-      status: "error",
-      statusLabel: "Verification error",
-      checks,
-      metadata,
-      namedAddresses,
-      isPreMove2,
-      compilerAvailable: false,
-      error: msg,
-    };
+    return {status: "error", steps, error: msg};
   }
 }
 
-function buildResult(
-  status: VerificationStatus,
-  checks: VerificationCheck[],
-  metadata: ModuleMetadataResult | null,
-  namedAddresses: NamedAddress[],
-  isPreMove2: boolean,
-  compilerAvailable = false,
-): BytecodeVerificationResult {
-  const labelMap: Record<VerificationStatus, string> = {
-    verified: "Bytecode verified",
-    partial: "Partially verified",
-    unverified: "Unverified",
-    error: "Verification failed",
-  };
-  return {
-    status,
-    statusLabel: labelMap[status],
-    checks,
-    metadata,
-    namedAddresses,
-    isPreMove2,
-    compilerAvailable,
-  };
-}
-
-function extractNamedAddresses(metadata: ModuleMetadataResult): NamedAddress[] {
-  const addresses: NamedAddress[] = [];
-  if (metadata.address) {
-    addresses.push({name: metadata.name, address: metadata.address});
-  }
-  for (const dep of metadata.dependencies) {
-    const parts = dep.split("::");
-    if (parts.length >= 2 && parts[0].startsWith("0x")) {
-      const existing = addresses.find((a) => a.address === parts[0]);
-      if (!existing) {
-        addresses.push({name: parts[1], address: parts[0]});
-      }
-    }
-  }
-  return addresses;
-}
-
-/**
- * Collect all OTHER module sources from the account's packages as
- * dependency files for the compiler.  This lets intra-account `use`
- * imports resolve (e.g. `0x1::coin` can see `0x1::account`).
- */
 function buildDependencyFiles(
   packages: PackageMetadata[],
   targetModuleName: string,
@@ -316,10 +178,6 @@ function buildDependencyFiles(
   return deps;
 }
 
-/**
- * Extract named address mappings from published source `module` declarations.
- * e.g. `module aptos_framework::coin` → `aptos_framework` = address.
- */
 function buildNamedAddressMap(
   packages: PackageMetadata[],
   address: string,
@@ -339,42 +197,33 @@ function buildNamedAddressMap(
 }
 
 function summarizeCompileErrors(errors: string[]): string {
-  if (errors.length === 0) return "Recompilation failed: unknown error";
+  if (errors.length === 0) return "unknown error";
 
   const lc = (s: string) => s.toLowerCase();
   const buckets: Record<string, {count: number; label: string}> = {
-    unboundModule: {count: 0, label: "unbound module (missing dependency)"},
-    unknownAttr: {count: 0, label: "unknown attribute (framework-specific)"},
+    unboundModule: {count: 0, label: "unbound module"},
+    unknownAttr: {count: 0, label: "unknown attribute"},
     addrNoValue: {count: 0, label: "address with no value"},
-    unusedAlias: {count: 0, label: "unused alias"},
   };
 
-  const other: string[] = [];
+  let otherCount = 0;
   for (const e of errors) {
     const el = lc(e);
     if (el.includes("unbound module")) buckets.unboundModule.count++;
     else if (el.includes("unknown attribute")) buckets.unknownAttr.count++;
     else if (el.includes("address with no value")) buckets.addrNoValue.count++;
-    else if (el.includes("unused alias")) buckets.unusedAlias.count++;
-    else other.push(e);
+    else otherCount++;
   }
 
   const parts: string[] = [];
   for (const b of Object.values(buckets)) {
     if (b.count > 0) parts.push(`${b.count} ${b.label}`);
   }
-  if (other.length > 0) {
-    const dedupOther = [...new Set(other)];
-    parts.push(`${other.length} other: ${dedupOther.slice(0, 2).join("; ")}`);
-  }
+  if (otherCount > 0) parts.push(`${otherCount} other`);
 
-  return `Recompilation failed with ${errors.length} issue(s): ${parts.join(" · ")}`;
+  return `${errors.length} issue(s): ${parts.join(", ")}`;
 }
 
-/**
- * Decode hex-encoded published source.
- * Aptos PackageRegistry stores module source as gzip-compressed hex.
- */
 function decodeHexSource(hexStr: string): string {
   try {
     return pako.ungzip(Hex.fromHexString(hexStr).toUint8Array(), {
@@ -383,49 +232,4 @@ function decodeHexSource(hexStr: string): string {
   } catch {
     return "";
   }
-}
-
-/**
- * Structural similarity between two Move source strings.
- *
- * Normalises both inputs (strip comments, collapse whitespace) then
- * extracts "signature lines" (module/fun/struct/use declarations) and
- * computes Jaccard similarity on those lines.  A value of 1.0 means
- * identical structural signatures; 0.0 means no overlap.
- */
-function computeStructuralSimilarity(a: string, b: string): number {
-  const sigsA = extractSignatures(a);
-  const sigsB = extractSignatures(b);
-
-  if (sigsA.size === 0 && sigsB.size === 0) return 1;
-  if (sigsA.size === 0 || sigsB.size === 0) return 0;
-
-  let intersection = 0;
-  for (const sig of sigsA) {
-    if (sigsB.has(sig)) intersection++;
-  }
-  const union = new Set([...sigsA, ...sigsB]).size;
-  return union === 0 ? 1 : intersection / union;
-}
-
-function extractSignatures(source: string): Set<string> {
-  const normalized = source
-    .replace(/\/\/[^\n]*/g, "")
-    .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  const sigs = new Set<string>();
-  const patterns = [
-    /(?:public\s+)?(?:entry\s+)?fun\s+\w+[^{]*/g,
-    /struct\s+\w+[^{]*/g,
-    /module\s+[\w:]+/g,
-    /use\s+[\w:]+/g,
-  ];
-  for (const pattern of patterns) {
-    for (const match of normalized.matchAll(pattern)) {
-      sigs.add(match[0].trim().replace(/\s+/g, " "));
-    }
-  }
-  return sigs;
 }

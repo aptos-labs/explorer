@@ -8,14 +8,13 @@ describe("MOVE_2_MIN_BYTECODE_VERSION", () => {
 });
 
 describe("verifyModuleBytecode", () => {
-  it("returns an error-like result in non-browser environments", async () => {
+  it("returns an error when WASM is unavailable (non-browser)", async () => {
     const {verifyModuleBytecode} = await import("./bytecodeVerification");
     const result = await verifyModuleBytecode({
       moduleBytecodeHex: "0x00",
+      publishedSourceHex: "0x1f8b0800000000000000",
     });
-    // In non-browser (no `window`), WASM loader throws; verification
-    // still returns a result with bytecode integrity failed.
-    expect(["error", "unverified", "partial"]).toContain(result.status);
-    expect(result.checks.length).toBeGreaterThanOrEqual(1);
+    expect(result.status).toBe("error");
+    expect(result.error).toBeDefined();
   });
 });
