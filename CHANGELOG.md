@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Rate-limit drawer: a bottom sheet appears when any API request receives HTTP 429, informing the user they have been rate-limited and offering a button to open Settings and set an API key override or wait ~5 minutes for the limit to reset
+- Decompilation consent gate: a "Decompile Source" button and disclaimer dialog now appear before decompiling on-chain bytecode; users must acknowledge the disclaimer before decompiled output is shown (disassembly views remain ungated)
 
 ### Changed
 
