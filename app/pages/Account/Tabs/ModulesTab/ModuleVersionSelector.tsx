@@ -93,10 +93,6 @@ export default function ModuleVersionSelector({
     );
   }
 
-  if (!hasHistory && selectedVersion === undefined) {
-    return null;
-  }
-
   if (!hasHistory && selectedVersion !== undefined) {
     return (
       <Stack
@@ -110,6 +106,36 @@ export default function ModuleVersionSelector({
           selectedVersion={selectedVersion}
           onVersionChange={onVersionChange}
         />
+      </Stack>
+    );
+  }
+
+  if (!hasHistory) {
+    return (
+      <Stack direction="row" alignItems="center" spacing={1}>
+        <HistoryOutlinedIcon fontSize="small" color="action" />
+        <Typography variant="body2" color="text.secondary">
+          Version: Latest (only latest available)
+        </Typography>
+      </Stack>
+    );
+  }
+
+  if (publishHistory.length === 1) {
+    return (
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={1.5}
+        sx={{flexWrap: "wrap"}}
+      >
+        <HistoryOutlinedIcon fontSize="small" color="action" />
+        <Typography variant="body2" color="text.secondary">
+          Version: Latest
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          (1 publish transaction)
+        </Typography>
       </Stack>
     );
   }
@@ -151,7 +177,7 @@ export default function ModuleVersionSelector({
             <Chip label="current" size="small" color="primary" />
           </Stack>
         </MenuItem>
-        {publishHistory?.map((txn) => (
+        {publishHistory.map((txn) => (
           <MenuItem key={txn.version} value={txn.version.toString()}>
             <Stack direction="column">
               <Typography variant="body2">
