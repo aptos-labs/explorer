@@ -195,11 +195,11 @@ export async function verifyModuleBytecode(opts: {
             : `Recompiled bytecode differs from on-chain (${compiledBytes.length} vs ${onChainBytes.length} bytes)`,
         });
       } else {
-        const errSummary = compileResult.errors.slice(0, 2).join("; ");
+        const detail = summarizeCompileErrors(compileResult.errors);
         checks.push({
           label: "Compilation verification",
           passed: false,
-          detail: `Recompilation failed: ${errSummary || "unknown error"}`,
+          detail,
         });
       }
     } catch {
@@ -283,6 +283,34 @@ function extractNamedAddresses(metadata: ModuleMetadataResult): NamedAddress[] {
     }
   }
   return addresses;
+}
+
+function summarizeCompileErrors(errors: string[]): string {
+  if (errors.length === 0) return "Recompilation failed: unknown error";
+
+  const dedupErrors = [...new Set(errors)];
+  const hasUnboundModule = dedupErrors.some((e) =>
+    e.toLowerCase().includes("unbound module"),
+  );
+
+  if (hasUnboundModule) {
+    const unboundCount = errors.filter((e) =>
+      e.toLowerCase().includes("unbound module"),
+    ).length;
+    const otherErrors = dedupErrors.filter(
+      (e) => !e.toLowerCase().includes("unbound module"),
+    );
+    const parts = [
+      `${unboundCount} unbound module error(s) — module depends on other packages not available during standalone recompilation`,
+    ];
+    if (otherErrors.length > 0) {
+      parts.push(`${otherErrors.length} other error(s)`);
+    }
+    return `Recompilation failed with ${errors.length} error(s): ${parts.join("; ")}`;
+  }
+
+  const preview = dedupErrors.slice(0, 3).join("; ");
+  return `Recompilation failed with ${errors.length} error(s): ${preview}`;
 }
 
 /**
