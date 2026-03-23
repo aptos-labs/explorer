@@ -15,6 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {useEffect, useState} from "react";
+import type {PackageMetadata} from "../../../api/hooks/useGetAccountResource";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import type {
   BytecodeVerificationResult,
@@ -24,11 +25,15 @@ import type {
 type Props = {
   moduleBytecodeHex: string | undefined;
   publishedSourceHex: string | undefined;
+  allPackages?: PackageMetadata[];
+  moduleAddress?: string;
 };
 
 function useVerification(
   moduleBytecodeHex: string | undefined,
   publishedSourceHex: string | undefined,
+  allPackages?: PackageMetadata[],
+  moduleAddress?: string,
 ) {
   const [result, setResult] = useState<BytecodeVerificationResult | null>(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -50,6 +55,8 @@ function useVerification(
         const res = await verifyModuleBytecode({
           moduleBytecodeHex,
           publishedSourceHex,
+          allPackages,
+          moduleAddress,
         });
         if (!cancelled) setResult(res);
       } catch {
@@ -73,7 +80,7 @@ function useVerification(
     return () => {
       cancelled = true;
     };
-  }, [moduleBytecodeHex, publishedSourceHex]);
+  }, [moduleBytecodeHex, publishedSourceHex, allPackages, moduleAddress]);
 
   return {result, isRunning};
 }
@@ -111,12 +118,16 @@ function StatusIcon({status}: {status: VerificationStatus}) {
 export default function BytecodeVerificationBanner({
   moduleBytecodeHex,
   publishedSourceHex,
+  allPackages,
+  moduleAddress,
 }: Props) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const {result, isRunning} = useVerification(
     moduleBytecodeHex,
     publishedSourceHex,
+    allPackages,
+    moduleAddress,
   );
 
   if (!moduleBytecodeHex || moduleBytecodeHex === "0x") return null;

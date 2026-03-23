@@ -17,6 +17,18 @@ export const compile_module: (
   e: number,
   f: number,
 ) => number;
+export const compile_module_with_deps: (
+  a: number,
+  b: number,
+  c: number,
+  d: number,
+  e: number,
+  f: number,
+  g: number,
+  h: number,
+  i: number,
+  j: number,
+) => number;
 export const compile_script: (
   a: number,
   b: number,

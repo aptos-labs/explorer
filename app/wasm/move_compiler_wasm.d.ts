@@ -121,6 +121,23 @@ export function compile_module(
 ): CompilationResult;
 
 /**
+ * Compile a single Move module with additional dependency sources.
+ *
+ * `deps_json` is a JSON array of `{"path":"...", "content":"..."}` objects.
+ * These are treated as library sources (dependencies) so the compiler can
+ * resolve `use` imports that are not part of the bundled move-stdlib.
+ *
+ * `extra_named_addresses_json` is a JSON object like `{"name":"0x1",...}`.
+ */
+export function compile_module_with_deps(
+  source: string,
+  address: string,
+  module_name: string,
+  deps_json: string,
+  extra_named_addresses_json: string,
+): CompilationResult;
+
+/**
  * Compile a Move script from source code (filesystem-free!)
  */
 export function compile_script(
@@ -162,6 +179,18 @@ export interface InitOutput {
     d: number,
     e: number,
     f: number,
+  ) => number;
+  readonly compile_module_with_deps: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number,
+    g: number,
+    h: number,
+    i: number,
+    j: number,
   ) => number;
   readonly compile_script: (
     a: number,

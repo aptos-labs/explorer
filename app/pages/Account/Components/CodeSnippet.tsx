@@ -13,6 +13,7 @@ import type React from "react";
 import {Suspense, useEffect, useMemo, useRef, useState} from "react";
 import createElement from "react-syntax-highlighter/dist/cjs/create-element.js";
 import type {Types} from "~/types/aptos";
+import type {PackageMetadata} from "../../../api/hooks/useGetAccountResource";
 import {
   CodeLoadingFallback,
   SyntaxHighlighter,
@@ -309,12 +310,14 @@ export function Code({
   moduleBytecode,
   moduleQuery,
   codeLinkContext,
+  allPackages,
 }: {
   sourceBytecode?: string;
   moduleBytecode?: string;
   moduleQuery?: CodeModuleQueryProps;
   /** When set, `module::function` and `0x..::module::function` in source become links to the Code tab. */
   codeLinkContext?: MoveCodeLinkContext;
+  allPackages?: PackageMetadata[];
 }) {
   const {selectedModuleName} = useModulesPathParams();
   const logEvent = useLogEventWithBasic();
@@ -581,6 +584,8 @@ export function Code({
       <BytecodeVerificationBanner
         moduleBytecodeHex={moduleBytecode}
         publishedSourceHex={sourceBytecode}
+        allPackages={allPackages}
+        moduleAddress={moduleQuery?.address}
       />
       <Stack direction="row" spacing={1} marginBottom={2}>
         {hasPublishedSourceCode && (

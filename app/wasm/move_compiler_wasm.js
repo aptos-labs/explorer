@@ -411,6 +411,73 @@ export function compile_module(source, address, module_name) {
 }
 
 /**
+ * Compile a single Move module with additional dependency sources.
+ *
+ * `deps_json` is a JSON array of `{"path":"...", "content":"..."}` objects.
+ * These are treated as library sources (dependencies) so the compiler can
+ * resolve `use` imports that are not part of the bundled move-stdlib.
+ *
+ * `extra_named_addresses_json` is a JSON object like `{"name":"0x1",...}`.
+ * @param {string} source
+ * @param {string} address
+ * @param {string} module_name
+ * @param {string} deps_json
+ * @param {string} extra_named_addresses_json
+ * @returns {CompilationResult}
+ */
+export function compile_module_with_deps(
+  source,
+  address,
+  module_name,
+  deps_json,
+  extra_named_addresses_json,
+) {
+  const ptr0 = passStringToWasm0(
+    source,
+    wasm.__wbindgen_export2,
+    wasm.__wbindgen_export3,
+  );
+  const len0 = WASM_VECTOR_LEN;
+  const ptr1 = passStringToWasm0(
+    address,
+    wasm.__wbindgen_export2,
+    wasm.__wbindgen_export3,
+  );
+  const len1 = WASM_VECTOR_LEN;
+  const ptr2 = passStringToWasm0(
+    module_name,
+    wasm.__wbindgen_export2,
+    wasm.__wbindgen_export3,
+  );
+  const len2 = WASM_VECTOR_LEN;
+  const ptr3 = passStringToWasm0(
+    deps_json,
+    wasm.__wbindgen_export2,
+    wasm.__wbindgen_export3,
+  );
+  const len3 = WASM_VECTOR_LEN;
+  const ptr4 = passStringToWasm0(
+    extra_named_addresses_json,
+    wasm.__wbindgen_export2,
+    wasm.__wbindgen_export3,
+  );
+  const len4 = WASM_VECTOR_LEN;
+  const ret = wasm.compile_module_with_deps(
+    ptr0,
+    len0,
+    ptr1,
+    len1,
+    ptr2,
+    len2,
+    ptr3,
+    len3,
+    ptr4,
+    len4,
+  );
+  return CompilationResult.__wrap(ret);
+}
+
+/**
  * Compile a Move script from source code (filesystem-free!)
  * @param {string} source
  * @param {string} address

@@ -40,6 +40,7 @@ interface ModuleContentProps {
   sourceBytecode: string;
   ledgerVersion?: number;
   isObject: boolean;
+  allPackages: PackageMetadata[];
 }
 
 function ViewCode({
@@ -116,6 +117,7 @@ function ViewCode({
             sourceBytecode={selectedModule.source}
             ledgerVersion={ledgerVersion}
             isObject={isObject}
+            allPackages={sortedPackages}
           />
         )}
       </Grid>
@@ -203,6 +205,7 @@ function ModuleContent({
   sourceBytecode,
   ledgerVersion,
   isObject,
+  allPackages,
 }: ModuleContentProps) {
   const theme = useTheme();
   const {
@@ -236,6 +239,7 @@ function ModuleContent({
               }
         }
         codeLinkContext={{packageAddress: address, isObject}}
+        allPackages={allPackages}
       />
     </Stack>
   );

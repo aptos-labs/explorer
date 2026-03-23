@@ -1,5 +1,6 @@
 import {Hex} from "@aptos-labs/ts-sdk";
 import pako from "pako";
+import type {PackageMetadata} from "../api/hooks/useGetAccountResource";
 import type {ModuleMetadataResult} from "./moveDecompiler";
 
 /**
@@ -50,8 +51,11 @@ export type BytecodeVerificationResult = {
 export async function verifyModuleBytecode(opts: {
   moduleBytecodeHex: string;
   publishedSourceHex?: string;
+  allPackages?: PackageMetadata[];
+  moduleAddress?: string;
 }): Promise<BytecodeVerificationResult> {
-  const {moduleBytecodeHex, publishedSourceHex} = opts;
+  const {moduleBytecodeHex, publishedSourceHex, allPackages, moduleAddress} =
+    opts;
 
   const checks: VerificationCheck[] = [];
   let metadata: ModuleMetadataResult | null = null;
@@ -168,13 +172,18 @@ export async function verifyModuleBytecode(opts: {
     // --- 5. Compilation verification ---
     let compilationPassed = false;
     try {
-      const {compileMoveModule} = await import("./moveCompiler");
-      const moduleAddress = metadata.address ?? "0x1";
+      const {compileMoveModuleWithDeps} = await import("./moveCompiler");
+      const addr = moduleAddress ?? metadata.address ?? "0x1";
 
-      const compileResult = await compileMoveModule(
+      const depFiles = buildDependencyFiles(allPackages ?? [], metadata.name);
+      const extraAddresses = buildNamedAddressMap(allPackages ?? [], addr);
+
+      const compileResult = await compileMoveModuleWithDeps(
         publishedDecoded,
-        moduleAddress,
+        addr,
         metadata.name,
+        depFiles,
+        extraAddresses,
       );
 
       if (compileResult.success && compileResult.bytecode.length > 0) {
@@ -283,6 +292,50 @@ function extractNamedAddresses(metadata: ModuleMetadataResult): NamedAddress[] {
     }
   }
   return addresses;
+}
+
+/**
+ * Collect all OTHER module sources from the account's packages as
+ * dependency files for the compiler.  This lets intra-account `use`
+ * imports resolve (e.g. `0x1::coin` can see `0x1::account`).
+ */
+function buildDependencyFiles(
+  packages: PackageMetadata[],
+  targetModuleName: string,
+): Array<{path: string; content: string}> {
+  const deps: Array<{path: string; content: string}> = [];
+  for (const pkg of packages) {
+    for (const mod of pkg.modules) {
+      if (mod.name === targetModuleName) continue;
+      const decoded = decodeHexSource(mod.source);
+      if (decoded) {
+        deps.push({path: `${mod.name}.move`, content: decoded});
+      }
+    }
+  }
+  return deps;
+}
+
+/**
+ * Extract named address mappings from published source `module` declarations.
+ * e.g. `module aptos_framework::coin` → `aptos_framework` = address.
+ */
+function buildNamedAddressMap(
+  packages: PackageMetadata[],
+  address: string,
+): Record<string, string> {
+  const map: Record<string, string> = {};
+  for (const pkg of packages) {
+    for (const mod of pkg.modules) {
+      const decoded = decodeHexSource(mod.source);
+      if (!decoded) continue;
+      const match = decoded.match(/module\s+(\w+)::\w+/);
+      if (match?.[1] && !match[1].startsWith("0x")) {
+        map[match[1]] = address;
+      }
+    }
+  }
+  return map;
 }
 
 function summarizeCompileErrors(errors: string[]): string {
