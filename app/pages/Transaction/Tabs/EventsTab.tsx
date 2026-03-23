@@ -56,10 +56,12 @@ export default function EventsTab({transaction}: EventsTabProps) {
           !Array.isArray(event.data)
             ? (event.data as Record<string, unknown>)
             : null;
-        const feeStatementTable =
+        const feeStatementData =
           event.type === FEE_STATEMENT_EVENT_TYPE &&
           eventDataObject !== null &&
-          shouldRenderFeeStatementTable(eventDataObject);
+          shouldRenderFeeStatementTable(eventDataObject)
+            ? eventDataObject
+            : null;
 
         return (
           <CollapsibleCard
@@ -97,9 +99,9 @@ export default function EventsTab({transaction}: EventsTabProps) {
             <ContentRow
               title="Data:"
               value={
-                feeStatementTable && eventDataObject ? (
+                feeStatementData ? (
                   <FeeStatementEventView
-                    data={eventDataObject}
+                    data={feeStatementData}
                     gasUnitPrice={gasUnitPrice}
                   />
                 ) : (

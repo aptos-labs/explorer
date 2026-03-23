@@ -37,7 +37,12 @@ function isFeeStatementShape(data: unknown): data is Record<string, unknown> {
     return false;
   }
   const record = data as Record<string, unknown>;
-  return KNOWN_FIELD_ORDER.some((k) => k in record && isUIntString(record[k]));
+  if (!isUIntString(record.total_charge_gas_units)) {
+    return false;
+  }
+  return KNOWN_FIELD_ORDER.every(
+    (key) => !(key in record) || isUIntString(record[key]),
+  );
 }
 
 function gasUnitsToOctas(gasUnits: string, gasUnitPrice: string): string {
