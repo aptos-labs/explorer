@@ -14,16 +14,18 @@ export function useSentioCallTrace(opts: {
 
   return useQuery({
     queryKey: ["sentioCallTrace", opts.networkName, opts.txHash],
-    queryFn: async () => {
+    queryFn: async ({signal}) => {
       const id = getSentioCallTraceNetworkId(opts.networkName);
       if (id === undefined) {
         throw new Error("Unsupported network for Sentio call trace");
       }
-      return fetchSentioCallTrace(id, opts.txHash);
+      return fetchSentioCallTrace(id, opts.txHash, signal);
     },
     enabled: Boolean(opts.enabled && networkId !== undefined && opts.txHash),
     staleTime: 60 * 60 * 1000,
     gcTime: 24 * 60 * 60 * 1000,
     retry: 1,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 }

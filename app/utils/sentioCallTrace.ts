@@ -103,13 +103,14 @@ export function getSentioTransactionTraceViewerUrl(
 export async function fetchSentioCallTrace(
   networkId: number,
   txHash: string,
+  signal?: AbortSignal,
 ): Promise<unknown> {
   const normalized = txHash.startsWith("0x") ? txHash : `0x${txHash}`;
   const url = new URL(SENTIO_CALL_TRACE_API);
   url.searchParams.set("networkId", String(networkId));
   url.searchParams.set("txHash", normalized);
 
-  const res = await fetch(url.toString());
+  const res = await fetch(url.toString(), {signal});
   if (!res.ok) {
     let detail = res.statusText;
     try {

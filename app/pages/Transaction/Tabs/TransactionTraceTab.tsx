@@ -1,5 +1,16 @@
-import {Alert, Box, CircularProgress, Stack, Typography} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Alert,
+  Box,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 import type React from "react";
+import {useState} from "react";
 import {useSentioCallTrace} from "../../../api/hooks/useSentioCallTrace";
 import {TransactionTypeName} from "../../../components/TransactionType";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -23,6 +34,7 @@ export default function TransactionTraceTab({
   const networkName = useNetworkName();
   const isUser = transaction.type === TransactionTypeName.User;
   const supported = getSentioCallTraceNetworkId(networkName) !== undefined;
+  const [rawExpanded, setRawExpanded] = useState(false);
 
   const traceQuery = useSentioCallTrace({
     networkName,
@@ -33,7 +45,7 @@ export default function TransactionTraceTab({
   if (!isUser) {
     return (
       <Box marginBottom={3}>
-        <ContentBox padding={4}>
+        <ContentBox padding={{xs: 2, sm: 4}}>
           <Typography color="text.secondary">
             Call trace is only available for user transactions.
           </Typography>
@@ -49,15 +61,15 @@ export default function TransactionTraceTab({
 
   return (
     <Box marginBottom={3}>
-      <ContentBox padding={4}>
+      <ContentBox padding={{xs: 2, sm: 4}}>
         <Stack spacing={2}>
           <Typography variant="body1" fontWeight={600}>
             Move call trace
           </Typography>
           <Typography variant="body2" color="text.secondary">
             Execution tree from Sentio’s traced fullnode (experimental). Links
-            go to this explorer: caller and callee accounts, module Run / Code
-            tabs, plus Sentio’s viewer below.
+            open caller and callee accounts and the module Run tab in this
+            explorer; Sentio’s viewer is linked below.
           </Typography>
           {viewerUrl ? (
             <SentioTraceExternalLink
@@ -81,18 +93,30 @@ export default function TransactionTraceTab({
             </Alert>
           ) : traceQuery.isSuccess ? (
             isSentioCallTraceNode(traceQuery.data) ? (
-              <Stack spacing={3}>
+              <Stack spacing={2}>
                 <CallTraceGraph root={traceQuery.data} />
-                <Box>
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{display: "block", mb: 1}}
-                  >
-                    Raw response
-                  </Typography>
-                  <JsonViewCard data={traceQuery.data} collapsedByDefault />
-                </Box>
+                <Accordion
+                  expanded={rawExpanded}
+                  onChange={(_e, exp) => setRawExpanded(exp)}
+                  disableGutters
+                  elevation={0}
+                  sx={{
+                    border: (t) => `1px solid ${t.palette.divider}`,
+                    borderRadius: 1,
+                    "&:before": {display: "none"},
+                  }}
+                >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography variant="body2" color="text.secondary">
+                      Raw response (JSON)
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails sx={{pt: 0}}>
+                    {rawExpanded ? (
+                      <JsonViewCard data={traceQuery.data} collapsedByDefault />
+                    ) : null}
+                  </AccordionDetails>
+                </Accordion>
               </Stack>
             ) : (
               <Alert severity="warning">
