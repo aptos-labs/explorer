@@ -1,5 +1,5 @@
 import {Box, Paper, Stack, Typography, useTheme} from "@mui/material";
-import {useKnownAddressBranding} from "../../../constants";
+import {useKnownAddressBranding} from "../../../data/hooks";
 
 type KnownAddressBrandingBannerProps = {
   address: string;

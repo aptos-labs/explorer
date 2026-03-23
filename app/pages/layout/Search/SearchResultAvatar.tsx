@@ -1,7 +1,7 @@
 import {Box} from "@mui/material";
 import type React from "react";
 import IdenticonImg from "../../../components/IdenticonImg";
-import {useKnownAddressBranding} from "../../../constants";
+import {useKnownAddressBranding} from "../../../data/hooks";
 import {tryStandardizeAddress} from "../../../utils";
 
 type SearchResultAvatarProps = {

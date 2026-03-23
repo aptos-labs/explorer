@@ -20,7 +20,7 @@ import {
   type CoinDescription,
   useGetCoinList,
 } from "../api/hooks/useGetCoinList";
-import {useKnownAddressBranding} from "../constants";
+import {useKnownAddressBranding} from "../data/hooks";
 import {
   isValidAccountAddress,
   truncate,

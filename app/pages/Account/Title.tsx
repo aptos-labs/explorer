@@ -9,7 +9,7 @@ import TitleHashButton, {
   HashType,
   NameType,
 } from "../../components/TitleHashButton";
-import {useKnownAddressBranding, useKnownAddressName} from "../../constants";
+import {useKnownAddressBranding, useKnownAddressName} from "../../data/hooks";
 import {truncateAddress} from "../../utils";
 import {getAccountTabHeadLabel} from "./accountTabLabels";
 import {useIsDaaAccount} from "./hooks/useIsDaaAccount";

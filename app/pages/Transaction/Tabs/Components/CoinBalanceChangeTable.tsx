@@ -34,7 +34,7 @@ import {
   VerifiedAsset,
   VerifiedCoinCell,
 } from "../../../../components/Table/VerifiedCell";
-import {useKnownAddressBranding} from "../../../../constants";
+import {useKnownAddressBranding} from "../../../../data/hooks";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 import {assertNever, tryStandardizeAddress} from "../../../../utils";
 import {isValidAccountAddress} from "../../../utils";
