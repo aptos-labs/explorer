@@ -6,6 +6,10 @@ import CollapsibleCards from "../../../components/IndividualPageContent/Collapsi
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import FeeStatementEventView, {
+  FEE_STATEMENT_EVENT_TYPE,
+  shouldRenderFeeStatementTable,
+} from "./Components/FeeStatementEventView";
 
 type EventsTabProps = {
   transaction: Types.Transaction;
@@ -28,6 +32,9 @@ export default function EventsTab({transaction}: EventsTabProps) {
   const events: Types.Event[] =
     "events" in transaction ? transaction.events : [];
 
+  const gasUnitPrice =
+    "gas_unit_price" in transaction ? transaction.gas_unit_price : undefined;
+
   const {expandedList, toggleExpandedAt, expandAll, collapseAll} =
     useExpandedList(events.length);
 
@@ -43,6 +50,17 @@ export default function EventsTab({transaction}: EventsTabProps) {
     >
       {events.map((event, i) => {
         const hideZeroFields = isModuleEvent(event);
+        const eventDataObject =
+          typeof event.data === "object" &&
+          event.data !== null &&
+          !Array.isArray(event.data)
+            ? (event.data as Record<string, unknown>)
+            : null;
+        const feeStatementTable =
+          event.type === FEE_STATEMENT_EVENT_TYPE &&
+          eventDataObject !== null &&
+          shouldRenderFeeStatementTable(eventDataObject);
+
         return (
           <CollapsibleCard
             // biome-ignore lint/suspicious/noArrayIndexKey: events lack unique identifier
@@ -79,13 +97,20 @@ export default function EventsTab({transaction}: EventsTabProps) {
             <ContentRow
               title="Data:"
               value={
-                <JsonViewCard
-                  data={
-                    typeof event.data === "object"
-                      ? event.data
-                      : {__PLACEHOLDER__: event.data}
-                  }
-                />
+                feeStatementTable && eventDataObject ? (
+                  <FeeStatementEventView
+                    data={eventDataObject}
+                    gasUnitPrice={gasUnitPrice}
+                  />
+                ) : (
+                  <JsonViewCard
+                    data={
+                      typeof event.data === "object"
+                        ? event.data
+                        : {__PLACEHOLDER__: event.data}
+                    }
+                  />
+                )
               }
             />
           </CollapsibleCard>
