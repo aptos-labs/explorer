@@ -7,12 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Rate-limit drawer: a bottom sheet appears when any API request receives HTTP 429, informing the user they have been rate-limited and offering a button to open Settings and set an API key override or wait ~5 minutes for the limit to reset
+
 ### Changed
 
 - **Light theme**: neutral grey app background (`#ECEEF2`), white cards/panels, cooler borders, and soft grey stripes for tables and filled inputs instead of warm cream-on-bright-off-white; primary body text uses ink (`#171612`) for slightly softer contrast than pure black. Light `theme-color` meta updated to match the canvas.
-
-### Added
-- Registry for optional Move **function argument display names** (`app/data/functionArgumentNameOverrides/`), used in transaction payload arguments and the account Run / View contract tab; Decibel mainnet public entry/view functions ship with positional stubs (`arg0`, …) ready to replace with real labels
 
 ### Fixed
 

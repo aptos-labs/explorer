@@ -44,7 +44,9 @@ import LocalnetUnavailableModal from "../components/LocalnetUnavailableModal";
 import {Fallback} from "../components/layout/Fallback";
 import Footer from "../components/layout/Footer";
 import Header from "../components/layout/Header";
+import RateLimitDrawer from "../components/RateLimitDrawer";
 import {ProvideColorMode} from "../context/color-mode";
+import {RateLimitProvider} from "../context/rate-limit";
 import {WalletAdapterProvider} from "../context/wallet-adapter";
 import {GlobalConfigProvider} from "../global-config";
 import {useHashToPathRedirect} from "../hooks/useHashToPathRedirect";
@@ -156,70 +158,73 @@ function RootComponent() {
             <QueryClientProvider client={queryClient}>
               <ProvideColorMode>
                 <CssBaseline />
-                <ExplorerSettingsProvider>
-                  <GlobalConfigProvider>
-                    <LocalnetUnavailableModal />
-                    <GraphqlClientProvider>
-                      <WalletAdapterProvider>
-                        <Box
-                          sx={{
-                            minHeight: "100vh",
-                            backgroundColor: "transparent",
-                            flexGrow: 1,
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
+                <RateLimitProvider>
+                  <ExplorerSettingsProvider>
+                    <GlobalConfigProvider>
+                      <LocalnetUnavailableModal />
+                      <RateLimitDrawer />
+                      <GraphqlClientProvider>
+                        <WalletAdapterProvider>
                           <Box
-                            component="a"
-                            href="#main-content"
                             sx={{
-                              position: "absolute",
-                              top: "-100%",
-                              left: "50%",
-                              transform: "translateX(-50%)",
-                              zIndex: 9999,
-                              px: 3,
-                              py: 1.5,
-                              borderRadius: 1,
-                              fontWeight: 600,
-                              fontSize: "0.9rem",
-                              textDecoration: "none",
-                              color: "background.default",
-                              bgcolor: "text.primary",
-                              border: "2px solid",
-                              borderColor: "background.default",
-                              outline: "none",
-                              transition: "top 0.1s",
-                              "&:focus": {
-                                top: "1rem",
-                              },
-                            }}
-                          >
-                            Skip to main content
-                          </Box>
-                          <Header />
-                          <Container
-                            id="main-content"
-                            component="main"
-                            maxWidth="xl"
-                            sx={{
+                              minHeight: "100vh",
+                              backgroundColor: "transparent",
+                              flexGrow: 1,
                               display: "flex",
                               flexDirection: "column",
-                              flexGrow: 4,
-                              paddingTop: "2rem",
                             }}
                           >
-                            <Suspense fallback={<Fallback />}>
-                              <Outlet />
-                            </Suspense>
-                          </Container>
-                          <Footer />
-                        </Box>
-                      </WalletAdapterProvider>
-                    </GraphqlClientProvider>
-                  </GlobalConfigProvider>
-                </ExplorerSettingsProvider>
+                            <Box
+                              component="a"
+                              href="#main-content"
+                              sx={{
+                                position: "absolute",
+                                top: "-100%",
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                zIndex: 9999,
+                                px: 3,
+                                py: 1.5,
+                                borderRadius: 1,
+                                fontWeight: 600,
+                                fontSize: "0.9rem",
+                                textDecoration: "none",
+                                color: "background.default",
+                                bgcolor: "text.primary",
+                                border: "2px solid",
+                                borderColor: "background.default",
+                                outline: "none",
+                                transition: "top 0.1s",
+                                "&:focus": {
+                                  top: "1rem",
+                                },
+                              }}
+                            >
+                              Skip to main content
+                            </Box>
+                            <Header />
+                            <Container
+                              id="main-content"
+                              component="main"
+                              maxWidth="xl"
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                flexGrow: 4,
+                                paddingTop: "2rem",
+                              }}
+                            >
+                              <Suspense fallback={<Fallback />}>
+                                <Outlet />
+                              </Suspense>
+                            </Container>
+                            <Footer />
+                          </Box>
+                        </WalletAdapterProvider>
+                      </GraphqlClientProvider>
+                    </GlobalConfigProvider>
+                  </ExplorerSettingsProvider>
+                </RateLimitProvider>
               </ProvideColorMode>
               {isDev && (
                 <Suspense fallback={null}>

@@ -1,4 +1,5 @@
 import type {Aptos} from "@aptos-labs/ts-sdk";
+import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
 
 export enum ResponseErrorType {
   NOT_FOUND = "Not Found",
@@ -29,6 +30,7 @@ export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
         throw {type: ResponseErrorType.NOT_FOUND};
       }
       if (response.status === 429) {
+        emitRateLimit();
         throw {type: ResponseErrorType.TOO_MANY_REQUESTS};
       }
       if (response.status === 400) {
@@ -45,6 +47,7 @@ export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
       if (
         errorMessage.includes(ResponseErrorType.TOO_MANY_REQUESTS.toLowerCase())
       ) {
+        emitRateLimit();
         throw {
           type: ResponseErrorType.TOO_MANY_REQUESTS,
         };

@@ -1,0 +1,93 @@
+import CloseIcon from "@mui/icons-material/Close";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import TimerOutlinedIcon from "@mui/icons-material/TimerOutlined";
+import {
+  Box,
+  Button,
+  Drawer,
+  IconButton,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import {emitOpenSettings, useRateLimit} from "../context/rate-limit";
+
+export default function RateLimitDrawer() {
+  const {isRateLimited, dismissRateLimit} = useRateLimit();
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const handleOpenSettings = () => {
+    dismissRateLimit();
+    emitOpenSettings();
+  };
+
+  return (
+    <Drawer
+      anchor="bottom"
+      open={isRateLimited}
+      onClose={dismissRateLimit}
+      slotProps={{
+        paper: {
+          sx: {
+            borderTopLeftRadius: 12,
+            borderTopRightRadius: 12,
+            px: {xs: 2, sm: 3},
+            py: 2,
+            maxWidth: 720,
+            mx: "auto",
+          },
+          role: "alert",
+        },
+      }}
+    >
+      <Stack spacing={1.5}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <TimerOutlinedIcon color="warning" />
+            <Typography variant="subtitle1" fontWeight={600}>
+              Rate limited
+            </Typography>
+          </Stack>
+          <IconButton
+            size="small"
+            onClick={dismissRateLimit}
+            aria-label="Dismiss rate limit notice"
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </Stack>
+
+        <Typography variant="body2" color="text.secondary">
+          The API returned a rate-limit response (HTTP 429). Data on this page
+          may be incomplete or stale until the limit resets.
+        </Typography>
+
+        <Stack
+          direction={isSmall ? "column" : "row"}
+          spacing={1.5}
+          alignItems={isSmall ? "stretch" : "center"}
+        >
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<SettingsOutlinedIcon />}
+            onClick={handleOpenSettings}
+          >
+            Set API key override
+          </Button>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              or wait ~5 minutes for the rate limit to reset.
+            </Typography>
+          </Box>
+        </Stack>
+      </Stack>
+    </Drawer>
+  );
+}

@@ -8,6 +8,7 @@ import {
 } from "@aptos-labs/ts-sdk";
 import type {Types} from "~/types/aptos";
 import {OCTA} from "../constants";
+import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
 import {isNumeric} from "../pages/utils";
 import {sortTransactions} from "../utils/utils";
 import {AptosClient} from "./legacyClient";
@@ -17,7 +18,19 @@ export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
   try {
     return await promise;
   } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "status" in error &&
+      (error as {status: number}).status === 429
+    ) {
+      emitRateLimit();
+    }
+
     if (error instanceof Error) {
+      if (error.message.toLowerCase().includes("too many requests")) {
+        emitRateLimit();
+      }
       error.message = `Request failed: ${error.message}`;
       throw error;
     }

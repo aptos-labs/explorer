@@ -13,13 +13,14 @@ import {
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
 import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";
 import IconDark from "../../assets/svg/icon_dark.svg?react";
 import IconLight from "../../assets/svg/icon_light.svg?react";
 import {useColorMode} from "../../context/color-mode";
+import {onOpenSettings} from "../../context/rate-limit";
 import {useNetworkName} from "../../global-config";
 import {useInView} from "../../hooks/useInView";
 import {useLogEventWithBasic} from "../../pages/Account/hooks/useLogEventWithBasic";
@@ -58,6 +59,10 @@ export default function Header() {
 
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const openSettings = useCallback(() => setIsSettingsOpen(true), []);
+
+  useEffect(() => onOpenSettings(openSettings), [openSettings]);
+
   const networkName = useNetworkName();
   const {account, wallet, network} = useWallet();
   const navigate = useNavigate();
