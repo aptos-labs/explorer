@@ -21,7 +21,7 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
 **Crawlers and automated fetchers:** The site’s `robots.txt` disallows many bots from URLs that include `?network=testnet`, `?network=devnet`, or `?network=local`. Use plain mainnet paths (no `network` query param) when linking for tools that crawl pages; humans can still switch network via the query param or UI.
 
 - Transaction: `/txn/{version}` or `/txn/{hash}`
-  - Tabs: `/txn/{id}/userTxnOverview`, `/txn/{id}/events`, `/txn/{id}/payload`, `/txn/{id}/changes`, `/txn/{id}/balanceChange`
+  - Tabs: `/txn/{id}/userTxnOverview`, `/txn/{id}/events`, `/txn/{id}/payload`, `/txn/{id}/changes`, `/txn/{id}/balanceChange`, `/txn/{id}/trace` (experimental Sentio Move call trace, mainnet)
 - Account: `/account/{address}`
   - Tabs: `/account/{address}/transactions`, `/account/{address}/coins`, `/account/{address}/tokens`, `/account/{address}/resources`, `/account/{address}/modules`, `/account/{address}/multisig`, `/account/{address}/gas-impact`, `/account/{address}/info`
   - Modules sub-tabs: `/account/{address}/modules/packages`, `/account/{address}/modules/code/{moduleName}`, `/account/{address}/modules/run/{moduleName}/{functionName}`, `/account/{address}/modules/view/{moduleName}/{functionName}`

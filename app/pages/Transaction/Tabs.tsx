@@ -1,5 +1,6 @@
 import {ErrorOutline} from "@mui/icons-material";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
+import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import CallMergeOutlinedIcon from "@mui/icons-material/CallMergeOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
@@ -39,9 +40,9 @@ import PayloadTab from "./Tabs/PayloadTab";
 import PendingTransactionOverviewTab from "./Tabs/PendingTransactionOverviewTab";
 import StateCheckpointOverviewTab from "./Tabs/StateCheckpointOverviewTab";
 import UnknownTab from "./Tabs/UnknownTab";
+import TransactionTraceTab from "./Tabs/TransactionTraceTab";
 import UserTransactionOverviewTab from "./Tabs/UserTransactionOverviewTab";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
-import TransactionExperimentalCallTrace from "./TransactionExperimentalCallTrace";
 
 function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -52,6 +53,7 @@ function getTabValues(transaction: Types.Transaction): TabValue[] {
         "events",
         "payload",
         "changes",
+        "trace",
       ];
     case TransactionTypeName.BlockMetadata:
       return ["blockMetadataOverview", "events", "changes"];
@@ -82,6 +84,7 @@ const TabComponents = Object.freeze({
   events: EventsTab,
   payload: PayloadTab,
   changes: ChangesTab,
+  trace: TransactionTraceTab,
   unknown: UnknownTab,
 });
 
@@ -106,6 +109,8 @@ function getTabLabel(value: TabValue): string {
       return "Payload";
     case "changes":
       return "Changes";
+    case "trace":
+      return "Trace";
     default:
       return assertNever(value);
   }
@@ -129,6 +134,8 @@ function getTabIcon(value: TabValue): React.JSX.Element {
       return <FileCopyOutlinedIcon fontSize="small" />;
     case "changes":
       return <CodeOutlinedIcon fontSize="small" />;
+    case "trace":
+      return <AccountTreeOutlinedIcon fontSize="small" />;
     case "unknown":
       return <HelpOutlineOutlinedIcon fontSize="small" />;
     default:
@@ -324,12 +331,6 @@ export default function TransactionTabs({
         transaction={transaction}
         networkName={networkName}
       />
-      {transaction.type === TransactionTypeName.User ? (
-        <TransactionExperimentalCallTrace
-          txHash={transaction.hash}
-          networkName={networkName}
-        />
-      ) : null}
     </Box>
   );
 }

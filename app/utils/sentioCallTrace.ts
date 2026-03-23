@@ -1,7 +1,80 @@
 import type {NetworkName} from "~/lib/constants";
+import {tryStandardizeAddress} from "~/utils/utils";
 
 export const SENTIO_CALL_TRACE_API =
   "https://app.sentio.xyz/api/v1/move/call_trace";
+
+/** One node in Sentio’s Move call_trace tree (matches their public API shape). */
+export type SentioCallTraceNode = {
+  from: string;
+  to: string;
+  contractName: string;
+  functionName: string;
+  inputs: unknown[];
+  returnValue: unknown[];
+  typeArgs: string[];
+  calls: SentioCallTraceNode[];
+  gasUsed: number;
+};
+
+export function isSentioCallTraceNode(
+  data: unknown,
+): data is SentioCallTraceNode {
+  if (!data || typeof data !== "object") {
+    return false;
+  }
+  const d = data as Record<string, unknown>;
+  return (
+    typeof d.from === "string" &&
+    typeof d.to === "string" &&
+    typeof d.contractName === "string" &&
+    typeof d.functionName === "string" &&
+    typeof d.gasUsed === "number" &&
+    Array.isArray(d.calls) &&
+    Array.isArray(d.inputs) &&
+    Array.isArray(d.returnValue) &&
+    Array.isArray(d.typeArgs)
+  );
+}
+
+/**
+ * Sentio uses `module::function` in `functionName` (e.g. `coin::transfer`).
+ */
+export function parseMoveFunctionParts(
+  functionName: string,
+): {module: string; fn: string} | null {
+  const parts = functionName.split("::");
+  if (parts.length < 2) {
+    return null;
+  }
+  const module = parts[0];
+  const fn = parts.slice(1).join("::");
+  if (!module || !fn) {
+    return null;
+  }
+  return {module, fn};
+}
+
+export function normalizeSentioAddress(addr: string): string | undefined {
+  const withPrefix = addr.startsWith("0x") ? addr : `0x${addr}`;
+  return tryStandardizeAddress(withPrefix);
+}
+
+/** Path to the explorer “Run” tab for a module function on an account. */
+export function buildAccountModuleRunPath(
+  accountAddress: string,
+  module: string,
+  fn: string,
+): string {
+  return `/account/${accountAddress}/modules/run/${encodeURIComponent(module)}/${encodeURIComponent(fn)}`;
+}
+
+export function buildAccountModuleCodePath(
+  accountAddress: string,
+  module: string,
+): string {
+  return `/account/${accountAddress}/modules/code/${encodeURIComponent(module)}`;
+}
 
 /**
  * Sentio `networkId` for the public call_trace API. Currently only mainnet is
