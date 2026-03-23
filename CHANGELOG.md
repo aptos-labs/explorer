@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Features Specification (`docs/FEATURES_SPECIFICATION.md`): canonical catalog of every user-facing explorer feature with unique `FEAT-*` identifiers, test coverage map (Appendix B), and prioritized coverage gaps (Appendix C)
+- `AGENTS.md`: regression prevention rules requiring agents to reference `docs/FEATURES_SPECIFICATION.md` when adding, modifying, or removing features and to keep the spec in sync with the codebase
 - Rate-limit drawer: a bottom sheet appears when any API request receives HTTP 429, informing the user they have been rate-limited and offering a button to open Settings and set an API key override or wait ~5 minutes for the limit to reset
 - **Trace tab failure highlighting**: when a transaction failed, the Trace tab shows an error banner with the VM status and visually highlights the failed call (red background, error chip with the abort reason) along with a dashed-red path from the root to the failing node
 

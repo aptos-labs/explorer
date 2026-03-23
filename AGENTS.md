@@ -119,6 +119,31 @@ This repository is often modified by automated agents. The following bar keeps t
 
 - **Do not call real Aptos APIs** from unit tests; mock at the hook or fetch layer. Prefer behavioral assertions over snapshot noise.
 
+### Features Specification and regression prevention
+
+The explorer maintains a **canonical Features Specification** at **`docs/FEATURES_SPECIFICATION.md`**. This document catalogs every user-facing feature with a unique identifier (e.g. `FEAT-SEARCH-002`, `FEAT-ACCOUNT-005`). It is the reference for what the explorer does and what must not break.
+
+**Rules for all agents:**
+
+- **Read the spec** before making changes. Understand which feature IDs your change touches.
+- **Never remove or degrade a feature** listed in the spec without explicit user approval. If a refactor changes behavior, verify every affected feature ID still works.
+- **Update the spec** in the same PR when you add, change, or remove a feature. The spec must always reflect the current state of the codebase.
+- **Reference feature IDs in tests**: When writing tests, add a comment like `// Covers FEAT-SEARCH-002` so coverage can be traced back to the spec.
+- **Check coverage gaps**: The spec's Appendix C lists features that lack automated tests. When working near those features, consider adding tests to close the gaps.
+- **Run `pnpm test --run`** after any change that touches testable logic. Tests are the safety net that prevents regressions.
+
+**When adding a new feature:**
+
+1. Add a `FEAT-*` entry to `docs/FEATURES_SPECIFICATION.md` with all testable behaviors documented.
+2. Write tests covering the feature's core behaviors (at minimum, unit tests for logic; integration or E2E tests for user flows).
+3. Add the test to Appendix B of the spec.
+
+**When modifying an existing feature:**
+
+1. Verify all existing tests for the feature still pass.
+2. Update the spec entry if behavior changed.
+3. Add new tests if the change introduces new branches or edge cases.
+
 ### Documentation drift
 
 - Route, tab, or major behavior changes must stay aligned with **LLM/SEO** artifacts and any user-facing docs the project already maintains for that area (see checklist above).
@@ -205,6 +230,7 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 - [ ] Accessible (proper ARIA attributes, keyboard navigation)
 - [ ] If routes/tabs were added or changed: `llms.txt`, `llms-full.txt`, and `sitemap.xml` updated
 - [ ] If the PR is user-visible or release-worthy: `CHANGELOG.md` updated under **[Unreleased]**
+- [ ] If a feature was added, changed, or removed: `docs/FEATURES_SPECIFICATION.md` updated with the corresponding `FEAT-*` entry
 
 **Outputs**: Review feedback, approval or change requests
 
@@ -221,6 +247,8 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 - Design E2E test scenarios for critical user flows
 - Set up visual regression tests for UI components
 - Maintain test fixtures and mocks
+- **Use `docs/FEATURES_SPECIFICATION.md` as the test plan**: every `FEAT-*` ID is a testable behavior. Prioritize coverage gaps listed in Appendix C of the spec.
+- **Reference feature IDs** in test descriptions (e.g. `describe("FEAT-SEARCH-002 — Search types", ...)` or inline comments).
 
 **Testing Guidelines**:
 
@@ -228,6 +256,7 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 - Mock network calls - never hit real Aptos endpoints in tests
 - Focus on behavior, not implementation details
 - Target formatting helpers, query transformers, and edge cases
+- Consult `docs/FEATURES_SPECIFICATION.md` Appendix B for current coverage and Appendix C for gaps
 
 **Commands**:
 
@@ -429,6 +458,7 @@ The explorer maintains dedicated documentation for AI systems and LLM-powered to
 | `app/routes/__root.tsx` | Root `<head>` AI meta tags and LLM doc link hints | Site-level description or topic changes |
 | `docs/LLM_ACCESS.md` | Contributor quick reference (metadata SSOT, drift tests) | When LLM/SEO workflow changes |
 | `app/utils/llmsRouteCoverage.test.ts` | Ensures `llms.txt` / `llms-full.txt` keep core path snippets | When extending documented routes |
+| `docs/FEATURES_SPECIFICATION.md` | Canonical feature catalog with `FEAT-*` IDs and test coverage map | Any feature added, changed, or removed |
 
 ### Route / Tab Checklist
 
@@ -464,4 +494,5 @@ When you **remove or rename a route**, remove or update the corresponding entrie
 - **Caching & refresh times**: See `CACHING.md`
 - **Context optimization**: See `CONTEXT_OPTIMIZATION.md`
 - **LLM/AI discoverability**: See `docs/LLM_ACCESS.md`, `public/llms.txt`, `public/llms-full.txt`, and `public/robots.txt`
+- **Features & test coverage**: See `docs/FEATURES_SPECIFICATION.md` for the full feature catalog with `FEAT-*` IDs, existing test coverage (Appendix B), and coverage gaps (Appendix C)
 - **Search URL for AI links**: `/?search={query}` — the home page search bar accepts this param and shows inline results
