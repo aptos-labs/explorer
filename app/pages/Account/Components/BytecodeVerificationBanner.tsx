@@ -1,11 +1,16 @@
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CloseIcon from "@mui/icons-material/Close";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import {
   Box,
   Button,
+  ButtonBase,
   Chip,
   CircularProgress,
+  Divider,
+  IconButton,
+  Modal,
   Stack,
   Typography,
   useTheme,
@@ -25,13 +30,132 @@ type Props = {
   moduleAddress?: string;
 };
 
-function StepRow({step}: {step: VerificationStep}) {
+function ErrorDetailModal({
+  step,
+  open,
+  onClose,
+}: {
+  step: VerificationStep;
+  open: boolean;
+  onClose: () => void;
+}) {
+  const theme = useTheme();
+  const semanticColors = getSemanticColors(theme.palette.mode);
+  const errors = step.rawErrors ?? [];
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: {xs: "95%", sm: "80%", md: "60%"},
+          maxHeight: "80vh",
+          bgcolor: semanticColors.background.elevated,
+          borderRadius: 2,
+          boxShadow: 24,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{px: 3, py: 2}}
+        >
+          <Stack direction="row" spacing={1} alignItems="center">
+            <ErrorOutlineIcon
+              sx={{fontSize: 20, color: semanticColors.status.error}}
+            />
+            <Typography variant="subtitle1" fontWeight={700}>
+              {step.label}
+            </Typography>
+          </Stack>
+          <IconButton size="small" onClick={onClose}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </Stack>
+
+        <Divider />
+
+        <Box sx={{px: 3, py: 2}}>
+          <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
+            {step.detail}
+          </Typography>
+        </Box>
+
+        {errors.length > 0 && (
+          <>
+            <Divider />
+            <Box
+              sx={{
+                px: 3,
+                py: 2,
+                overflow: "auto",
+                flex: 1,
+                maxHeight: "50vh",
+              }}
+            >
+              <Typography variant="body2" fontWeight={600} sx={{mb: 1}}>
+                {errors.length} error{errors.length !== 1 ? "s" : ""}
+              </Typography>
+              <Stack
+                spacing={0}
+                sx={{
+                  fontFamily: "monospace",
+                  fontSize: 12,
+                  lineHeight: 1.6,
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word",
+                }}
+              >
+                {errors.map((err, i) => (
+                  <Typography
+                    key={`${i}-${err.slice(0, 30)}`}
+                    variant="body2"
+                    sx={{
+                      fontFamily: "monospace",
+                      fontSize: 12,
+                      py: 0.25,
+                      color: err.toLowerCase().startsWith("warning")
+                        ? semanticColors.status.warning
+                        : semanticColors.status.error,
+                    }}
+                  >
+                    {err}
+                  </Typography>
+                ))}
+              </Stack>
+            </Box>
+          </>
+        )}
+      </Box>
+    </Modal>
+  );
+}
+
+function StepRow({
+  step,
+  onClickError,
+}: {
+  step: VerificationStep;
+  onClickError?: () => void;
+}) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const iconSx = {fontSize: 16};
+  const isClickable = step.status === "error" && !!step.rawErrors?.length;
 
-  return (
-    <Stack direction="row" spacing={1} alignItems="flex-start">
+  const content = (
+    <Stack
+      direction="row"
+      spacing={1}
+      alignItems="flex-start"
+      sx={{width: "100%"}}
+    >
       <Box sx={{mt: "2px", width: 16, height: 16, flexShrink: 0}}>
         {step.status === "pending" && (
           <Box
@@ -57,7 +181,7 @@ function StepRow({step}: {step: VerificationStep}) {
           />
         )}
       </Box>
-      <Box sx={{minWidth: 0}}>
+      <Box sx={{minWidth: 0, flex: 1, textAlign: "left"}}>
         <Typography
           variant="body2"
           fontWeight={600}
@@ -71,7 +195,7 @@ function StepRow({step}: {step: VerificationStep}) {
             color="text.secondary"
             sx={{
               wordBreak: "break-word",
-              maxHeight: 60,
+              maxHeight: 40,
               overflow: "hidden",
               textOverflow: "ellipsis",
             }}
@@ -79,9 +203,40 @@ function StepRow({step}: {step: VerificationStep}) {
             {step.detail}
           </Typography>
         )}
+        {isClickable && (
+          <Typography
+            variant="caption"
+            sx={{
+              color: semanticColors.link.main,
+              cursor: "pointer",
+              "&:hover": {textDecoration: "underline"},
+            }}
+          >
+            Click for details
+          </Typography>
+        )}
       </Box>
     </Stack>
   );
+
+  if (isClickable) {
+    return (
+      <ButtonBase
+        onClick={onClickError}
+        sx={{
+          display: "block",
+          width: "100%",
+          borderRadius: 1,
+          p: 0.5,
+          "&:hover": {bgcolor: "action.hover"},
+        }}
+      >
+        {content}
+      </ButtonBase>
+    );
+  }
+
+  return <Box sx={{p: 0.5}}>{content}</Box>;
 }
 
 export default function BytecodeVerificationBanner({
@@ -95,6 +250,7 @@ export default function BytecodeVerificationBanner({
   const [result, setResult] = useState<BytecodeVerificationResult | null>(null);
   const [liveSteps, setLiveSteps] = useState<VerificationStep[] | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [modalStep, setModalStep] = useState<VerificationStep | null>(null);
   const cancelledRef = useRef(false);
 
   const hasSource =
@@ -156,7 +312,13 @@ export default function BytecodeVerificationBanner({
         p: 2,
       }}
     >
-      <Stack direction="row" spacing={1.5} alignItems="center" flexWrap="wrap">
+      <Stack
+        direction="row"
+        spacing={1.5}
+        alignItems="center"
+        flexWrap="wrap"
+        useFlexGap
+      >
         <Button
           size="small"
           variant="outlined"
@@ -221,21 +383,15 @@ export default function BytecodeVerificationBanner({
       </Stack>
 
       {steps && steps.length > 0 && (
-        <Stack spacing={1} sx={{mt: 2}}>
+        <Stack spacing={0.5} sx={{mt: 2}}>
           {steps.map((step) => (
-            <StepRow key={step.label} step={step} />
+            <StepRow
+              key={step.label}
+              step={step}
+              onClickError={() => setModalStep(step)}
+            />
           ))}
         </Stack>
-      )}
-
-      {showResult && result.error && (
-        <Typography
-          variant="body2"
-          color="error"
-          sx={{mt: 1.5, wordBreak: "break-word"}}
-        >
-          {result.error}
-        </Typography>
       )}
 
       <Typography
@@ -247,6 +403,14 @@ export default function BytecodeVerificationBanner({
         decompiles on-chain bytecode, recompiles both decompiled and published
         source, and compares the outputs.
       </Typography>
+
+      {modalStep && (
+        <ErrorDetailModal
+          step={modalStep}
+          open
+          onClose={() => setModalStep(null)}
+        />
+      )}
     </Box>
   );
 }

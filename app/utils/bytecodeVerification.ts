@@ -10,6 +10,7 @@ export type VerificationStep = {
   label: string;
   status: "pending" | "running" | "done" | "error";
   detail?: string;
+  rawErrors?: string[];
 };
 
 export type BytecodeVerificationResult = {
@@ -76,8 +77,10 @@ export async function verifyModuleBytecode(opts: {
         "decompiled-source",
       );
     } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
       steps[0].status = "error";
-      steps[0].detail = `Decompilation failed: ${e instanceof Error ? e.message : String(e)}`;
+      steps[0].detail = `Decompilation failed: ${msg}`;
+      steps[0].rawErrors = [msg];
       emit();
       return {status: "error", steps, error: steps[0].detail};
     }
@@ -100,6 +103,7 @@ export async function verifyModuleBytecode(opts: {
       const summary = summarizeCompileErrors(refResult.errors);
       steps[1].status = "error";
       steps[1].detail = `Decompiled source failed to compile: ${summary}`;
+      steps[1].rawErrors = refResult.errors;
       emit();
       return {status: "error", steps, error: steps[1].detail};
     }
@@ -130,6 +134,7 @@ export async function verifyModuleBytecode(opts: {
       const summary = summarizeCompileErrors(pubResult.errors);
       steps[2].status = "error";
       steps[2].detail = `Published source failed to compile: ${summary}`;
+      steps[2].rawErrors = pubResult.errors;
       emit();
       return {status: "error", steps, error: steps[2].detail};
     }
