@@ -948,17 +948,18 @@ const DOWNLOAD_FILENAME_FORBIDDEN = new Set('<>:"/\\|?*');
 
 /** Strips characters that are invalid or risky in common download filenames. */
 export function sanitizeDownloadFilename(name: string): string {
-  let out = "";
+  const chars: string[] = [];
   for (const ch of name) {
     const code = ch.codePointAt(0) ?? 0;
     if (code < 32 || DOWNLOAD_FILENAME_FORBIDDEN.has(ch)) {
-      out += "_";
+      chars.push("_");
     } else {
-      out += ch;
+      chars.push(ch);
     }
   }
-  const cleaned = out.trim();
-  return cleaned.length > 0 ? cleaned : "download";
+  const cleaned = chars.join("").trim();
+  const withoutTrailingDots = cleaned.replace(/\.+$/, "");
+  return withoutTrailingDots.length > 0 ? withoutTrailingDots : "download";
 }
 
 export function downloadTextFile(

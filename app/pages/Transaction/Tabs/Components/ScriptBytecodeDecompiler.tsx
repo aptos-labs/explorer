@@ -228,7 +228,7 @@ export default function ScriptBytecodeDecompiler({
   }
 
   function downloadScriptCode() {
-    if (!displayedCode || typeof document === "undefined") {
+    if (!displayedCode) {
       return;
     }
     const filename =

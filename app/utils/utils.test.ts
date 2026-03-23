@@ -1,5 +1,6 @@
-import {describe, expect, it} from "vitest";
+import {afterEach, describe, expect, it, vi} from "vitest";
 import {
+  downloadTextFile,
   ensureBigInt,
   ensureBoolean,
   ensureMillisecondTimestamp,
@@ -14,6 +15,7 @@ import {
   isValidStruct,
   isValidUrl,
   octaToApt,
+  sanitizeDownloadFilename,
   standardizeAddress,
   timestampDisplay,
   toIpfsDisplayUrl,
@@ -21,7 +23,6 @@ import {
   truncateAddress,
   truncateAddressMiddle,
   tryStandardizeAddress,
-  sanitizeDownloadFilename,
 } from "./utils";
 
 describe("Address utilities", () => {
@@ -389,6 +390,87 @@ describe("sanitizeDownloadFilename", () => {
 
   it("falls back when empty after trim", () => {
     expect(sanitizeDownloadFilename("   ")).toBe("download");
+  });
+
+  it("strips trailing dots for cross-platform filenames", () => {
+    expect(sanitizeDownloadFilename("mod.")).toBe("mod");
+    expect(sanitizeDownloadFilename("a...")).toBe("a");
+    expect(sanitizeDownloadFilename("...")).toBe("download");
+  });
+});
+
+describe("downloadTextFile", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  it("no-ops without document (SSR / Node)", () => {
+    const createUrl = vi.spyOn(URL, "createObjectURL");
+    const revokeUrl = vi.spyOn(URL, "revokeObjectURL");
+    vi.stubGlobal("document", undefined);
+
+    downloadTextFile("body", "file.txt");
+
+    expect(createUrl).not.toHaveBeenCalled();
+    expect(revokeUrl).not.toHaveBeenCalled();
+  });
+
+  it("creates a blob URL, triggers download, and revokes the URL", async () => {
+    const objectUrl = "blob:mock-url";
+    vi.spyOn(URL, "createObjectURL").mockReturnValue(objectUrl);
+    const revokeUrl = vi.spyOn(URL, "revokeObjectURL");
+
+    const click = vi.fn();
+    const appendChild = vi.fn();
+    const removeChild = vi.fn();
+    const link = {
+      setAttribute: vi.fn(),
+      style: {visibility: ""},
+      click,
+    };
+
+    vi.stubGlobal("document", {
+      createElement: vi.fn(() => link),
+      body: {appendChild, removeChild},
+    });
+
+    downloadTextFile("hello", "out.txt", "text/plain");
+
+    expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
+    const blobArg = vi.mocked(URL.createObjectURL).mock.calls[0][0] as Blob;
+    expect(blobArg).toBeInstanceOf(Blob);
+    expect(await blobArg.text()).toBe("hello");
+
+    expect(link.setAttribute).toHaveBeenCalledWith("href", objectUrl);
+    expect(link.setAttribute).toHaveBeenCalledWith("download", "out.txt");
+    expect(appendChild).toHaveBeenCalledWith(link);
+    expect(click).toHaveBeenCalledTimes(1);
+    expect(removeChild).toHaveBeenCalledWith(link);
+    expect(revokeUrl).toHaveBeenCalledWith(objectUrl);
+  });
+
+  it("applies sanitizeDownloadFilename to the download attribute", () => {
+    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:x");
+    vi.spyOn(URL, "revokeObjectURL");
+
+    const link = {
+      setAttribute: vi.fn(),
+      style: {},
+      click: vi.fn(),
+    };
+
+    vi.stubGlobal("document", {
+      createElement: () => link,
+      body: {
+        appendChild: vi.fn(),
+        removeChild: vi.fn(),
+      },
+    });
+
+    downloadTextFile("x", "bad:name?.txt");
+
+    expect(link.setAttribute).toHaveBeenCalledWith("download", "bad_name_.txt");
   });
 });
 

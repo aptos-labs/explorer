@@ -152,7 +152,7 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
   }
 
   function downloadManifest() {
-    if (!sourceCode || typeof document === "undefined") {
+    if (!sourceCode) {
       return;
     }
     downloadTextFile(sourceCode, "Move.toml", "text/plain;charset=utf-8");

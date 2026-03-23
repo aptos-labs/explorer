@@ -339,7 +339,7 @@ export function Code({
   }
 
   function downloadCode() {
-    if (!displayedCode || typeof document === "undefined") {
+    if (!displayedCode) {
       return;
     }
     downloadTextFile(
