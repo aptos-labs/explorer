@@ -97,6 +97,9 @@ interface ImportMetaEnv {
     | "production"
     | "deploy-preview"
     | "branch-deploy";
+  // Feature tier: "prod" | "dev" | "earlydev" — controls the dev-mode banner
+  // and dev-only UI. Also overridable at runtime via a "feature_name" cookie.
+  readonly VITE_FEATURE_NAME?: string;
   // Cache busting version for validator stats (bump to force fresh data)
   readonly VITE_VALIDATOR_STATS_CACHE_VERSION?: string;
 }

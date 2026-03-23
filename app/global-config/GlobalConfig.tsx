@@ -4,9 +4,12 @@ import Cookies from "js-cookie";
 import React, {createContext, type ReactNode, useContext, useMemo} from "react";
 import {AptosClient} from "../api/legacyClient";
 import {
+  defaultFeatureName,
   defaultNetworkName,
+  type FeatureName,
   getApiKey,
   getGraphqlURI,
+  isValidFeatureName,
   isValidNetworkName,
   type NetworkName,
   networks,
@@ -301,10 +304,39 @@ export function useSdkV2Client(): Aptos {
   return useAptosClientV2();
 }
 
+const FEATURE_COOKIE_NAME = "feature_name";
+
+function getFeatureNameFromEnv(): FeatureName | null {
+  try {
+    const envValue = import.meta.env.VITE_FEATURE_NAME;
+    if (envValue && isValidFeatureName(envValue)) {
+      return envValue;
+    }
+  } catch {
+    // import.meta.env may not be available in all contexts
+  }
+  return null;
+}
+
+function getFeatureNameFromCookie(): FeatureName | null {
+  if (typeof window === "undefined") return null;
+  const cookie = Cookies.get(FEATURE_COOKIE_NAME);
+  if (cookie && isValidFeatureName(cookie)) {
+    return cookie;
+  }
+  return null;
+}
+
 /**
  * Hook to get the feature name from environment or cookie.
+ *
+ * Priority: cookie override > VITE_FEATURE_NAME env var > default ("prod").
+ *
+ * Set the cookie via `document.cookie = "feature_name=dev"` or by adding
+ * `VITE_FEATURE_NAME=dev` to `.env.local` for a build-time default.
  */
-export function useFeatureName(): string {
-  // Default to "prod" - can be enhanced to read from cookie/env
-  return "prod";
+export function useFeatureName(): FeatureName {
+  return (
+    getFeatureNameFromCookie() ?? getFeatureNameFromEnv() ?? defaultFeatureName
+  );
 }

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Dev mode**: `useFeatureName()` now reads from a `feature_name` cookie or the `VITE_FEATURE_NAME` env var instead of always returning `"prod"` — the Development Mode banner, Early Development Mode banner, and dev-only UI (e.g. Aptos Names banner) are functional again
 - Transaction overview **Arguments** table: column widths follow content again (no fixed 100px/140px layout), so long argument names no longer overlap type chips; type badges stay on one line where possible; the **Arguments:** label row uses a compact title column so the table has more horizontal room
 - Object account pages (e.g. Decibel perp DEX) crashing with "Cannot convert object to primitive value" — the `/account/` → `/object/` redirect now correctly passes TanStack Router's parsed search params instead of interpolating the search object in a URL template literal
 
