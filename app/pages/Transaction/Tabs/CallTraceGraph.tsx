@@ -1,8 +1,11 @@
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
+  alpha,
   Box,
+  Chip,
   Collapse,
   IconButton,
   Stack,
@@ -16,8 +19,10 @@ import {Link} from "../../../routing";
 import type {SentioCallTraceNode} from "../../../utils/sentioCallTrace";
 import {
   buildAccountModuleRunPath,
+  isNodeFailed,
   normalizeSentioAddress,
   parseMoveFunctionParts,
+  subtreeHasFailure,
 } from "../../../utils/sentioCallTrace";
 
 type TraceSubtreeProps = {
@@ -25,6 +30,7 @@ type TraceSubtreeProps = {
   depth: number;
   defaultExpanded: boolean;
   childIndex: number;
+  txFailed: boolean;
 };
 
 function formatGas(gas: number): string {
@@ -39,6 +45,7 @@ const TraceSubtree = memo(function TraceSubtree({
   depth,
   defaultExpanded,
   childIndex,
+  txFailed,
 }: TraceSubtreeProps): React.JSX.Element {
   const theme = useTheme();
   const [open, setOpen] = useState(defaultExpanded);
@@ -51,14 +58,26 @@ const TraceSubtree = memo(function TraceSubtree({
       ? buildAccountModuleRunPath(callee, parts.module, parts.fn)
       : null;
 
-  const borderColor = theme.palette.divider;
+  const failed = isNodeFailed(node);
+  const onFailurePath = !failed && txFailed && subtreeHasFailure(node);
+
+  const errorColor = theme.palette.error.main;
+  const defaultBorderColor = theme.palette.divider;
+
+  const leftBorderColor = failed
+    ? errorColor
+    : onFailurePath
+      ? alpha(errorColor, 0.45)
+      : defaultBorderColor;
+  const leftBorderStyle = failed ? "solid" : onFailurePath ? "dashed" : "solid";
 
   return (
     <Box
       sx={{
         marginLeft: depth > 0 ? {xs: 0.5, sm: 1.5} : 0,
         paddingLeft: depth > 0 ? {xs: 1, sm: 1.5} : 0,
-        borderLeft: depth > 0 ? `1px solid ${borderColor}` : "none",
+        borderLeft:
+          depth > 0 ? `2px ${leftBorderStyle} ${leftBorderColor}` : "none",
         minWidth: 0,
       }}
     >
@@ -67,7 +86,16 @@ const TraceSubtree = memo(function TraceSubtree({
           direction="row"
           alignItems="flex-start"
           spacing={0.5}
-          sx={{minWidth: 0}}
+          sx={{
+            minWidth: 0,
+            ...(failed && {
+              backgroundColor: alpha(errorColor, 0.08),
+              borderRadius: 1,
+              px: 1,
+              py: 0.5,
+              mx: -1,
+            }),
+          }}
         >
           <Box
             sx={{
@@ -96,28 +124,62 @@ const TraceSubtree = memo(function TraceSubtree({
                   <ChevronRightIcon fontSize="small" />
                 )}
               </IconButton>
+            ) : failed ? (
+              <ErrorOutlineIcon
+                fontSize="small"
+                sx={{color: errorColor, mt: {xs: 0.5, sm: 0.25}}}
+                titleAccess="This call failed"
+              />
             ) : null}
           </Box>
           <Box sx={{flex: 1, minWidth: 0}}>
-            <Typography
-              component="div"
-              variant="body2"
-              fontWeight={600}
-              sx={{
-                fontSize: {xs: "0.8rem", sm: undefined},
-                lineHeight: 1.35,
-                wordBreak: "break-word",
-                overflowWrap: "anywhere",
-              }}
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={1}
+              sx={{flexWrap: "wrap"}}
             >
-              {runPath ? (
-                <Link to={runPath} style={{color: "inherit"}}>
-                  {node.functionName}
-                </Link>
-              ) : (
-                node.functionName
+              <Typography
+                component="div"
+                variant="body2"
+                fontWeight={600}
+                sx={{
+                  fontSize: {xs: "0.8rem", sm: undefined},
+                  lineHeight: 1.35,
+                  wordBreak: "break-word",
+                  overflowWrap: "anywhere",
+                  ...(failed && {color: errorColor}),
+                }}
+              >
+                {runPath ? (
+                  <Link
+                    to={runPath}
+                    style={{color: failed ? errorColor : "inherit"}}
+                  >
+                    {node.functionName}
+                  </Link>
+                ) : (
+                  node.functionName
+                )}
+              </Typography>
+              {failed && (
+                <Chip
+                  label={node.pcError}
+                  size="small"
+                  color="error"
+                  variant="outlined"
+                  sx={{
+                    height: 20,
+                    fontSize: "0.7rem",
+                    maxWidth: {xs: "100%", sm: 360},
+                    "& .MuiChip-label": {
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    },
+                  }}
+                />
               )}
-            </Typography>
+            </Stack>
             <Stack
               direction={{xs: "column", sm: "row"}}
               alignItems={{xs: "flex-start", sm: "center"}}
@@ -222,6 +284,7 @@ const TraceSubtree = memo(function TraceSubtree({
                 depth={depth + 1}
                 defaultExpanded={depth + 1 < 2}
                 childIndex={i}
+                txFailed={txFailed}
               />
             ))}
           </Box>
@@ -233,10 +296,12 @@ const TraceSubtree = memo(function TraceSubtree({
 
 type CallTraceGraphProps = {
   root: SentioCallTraceNode;
+  txFailed?: boolean;
 };
 
 export default function CallTraceGraph({
   root,
+  txFailed = false,
 }: CallTraceGraphProps): React.JSX.Element {
   const theme = useTheme();
 
@@ -252,7 +317,13 @@ export default function CallTraceGraph({
         WebkitOverflowScrolling: "touch",
       }}
     >
-      <TraceSubtree node={root} depth={0} defaultExpanded childIndex={0} />
+      <TraceSubtree
+        node={root}
+        depth={0}
+        defaultExpanded
+        childIndex={0}
+        txFailed={txFailed}
+      />
     </Box>
   );
 }

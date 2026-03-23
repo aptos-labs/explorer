@@ -15,6 +15,8 @@ export type SentioCallTraceNode = {
   typeArgs: string[];
   calls: SentioCallTraceNode[];
   gasUsed: number;
+  /** Present when this call aborted (e.g. Move abort or VM error). */
+  pcError?: string;
 };
 
 export function isSentioCallTraceNode(
@@ -38,6 +40,17 @@ export function isSentioCallTraceNode(
     return false;
   }
   return d.calls.every((child) => isSentioCallTraceNode(child));
+}
+
+/** True when this node itself aborted (has a non-empty `pcError`). */
+export function isNodeFailed(node: SentioCallTraceNode): boolean {
+  return typeof node.pcError === "string" && node.pcError.length > 0;
+}
+
+/** True when this node or any descendant carries a `pcError`. */
+export function subtreeHasFailure(node: SentioCallTraceNode): boolean {
+  if (isNodeFailed(node)) return true;
+  return node.calls.some(subtreeHasFailure);
 }
 
 /**

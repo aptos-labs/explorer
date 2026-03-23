@@ -33,6 +33,13 @@ export default function TransactionTraceTab({
 }: TransactionTraceTabProps): React.JSX.Element {
   const networkName = useNetworkName();
   const isUser = transaction.type === TransactionTypeName.User;
+  const txFailed =
+    "success" in transaction &&
+    (transaction as {success: boolean}).success === false;
+  const vmStatus =
+    "vm_status" in transaction
+      ? (transaction as {vm_status: string}).vm_status
+      : undefined;
   const supported = getSentioCallTraceNetworkId(networkName) !== undefined;
   const [rawExpanded, setRawExpanded] = useState(false);
 
@@ -94,7 +101,14 @@ export default function TransactionTraceTab({
           ) : traceQuery.isSuccess ? (
             isSentioCallTraceNode(traceQuery.data) ? (
               <Stack spacing={2}>
-                <CallTraceGraph root={traceQuery.data} />
+                {txFailed && (
+                  <Alert severity="error">
+                    Transaction failed
+                    {vmStatus ? `: ${vmStatus}` : ""}. The failed call is
+                    highlighted below.
+                  </Alert>
+                )}
+                <CallTraceGraph root={traceQuery.data} txFailed={txFailed} />
                 <Accordion
                   expanded={rawExpanded}
                   onChange={(_e, exp) => setRawExpanded(exp)}

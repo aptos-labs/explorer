@@ -1,12 +1,15 @@
 import {describe, expect, it} from "vitest";
+import type {SentioCallTraceNode} from "./sentioCallTrace";
 import {
   buildAccountModuleCodePath,
   buildAccountModuleRunPath,
   getSentioCallTraceNetworkId,
   getSentioTransactionTraceViewerUrl,
+  isNodeFailed,
   isSentioCallTraceNode,
   normalizeSentioAddress,
   parseMoveFunctionParts,
+  subtreeHasFailure,
 } from "./sentioCallTrace";
 
 describe("getSentioCallTraceNetworkId", () => {
@@ -75,6 +78,60 @@ describe("normalizeSentioAddress", () => {
   });
 });
 
+function makeNode(
+  overrides?: Partial<SentioCallTraceNode>,
+): SentioCallTraceNode {
+  return {
+    from: "0x1",
+    to: "0x1",
+    contractName: "c",
+    functionName: "m::f",
+    inputs: [],
+    returnValue: [],
+    typeArgs: [],
+    calls: [],
+    gasUsed: 0,
+    ...overrides,
+  };
+}
+
+describe("isNodeFailed", () => {
+  it("returns false for a node without pcError", () => {
+    expect(isNodeFailed(makeNode())).toBe(false);
+  });
+
+  it("returns false for a node with empty pcError", () => {
+    expect(isNodeFailed(makeNode({pcError: ""}))).toBe(false);
+  });
+
+  it("returns true for a node with pcError", () => {
+    expect(isNodeFailed(makeNode({pcError: "ABORTED (code 0x1)"}))).toBe(true);
+  });
+});
+
+describe("subtreeHasFailure", () => {
+  it("returns false when no node has pcError", () => {
+    const root = makeNode({calls: [makeNode(), makeNode()]});
+    expect(subtreeHasFailure(root)).toBe(false);
+  });
+
+  it("returns true when root itself has pcError", () => {
+    const root = makeNode({pcError: "error"});
+    expect(subtreeHasFailure(root)).toBe(true);
+  });
+
+  it("returns true when a deeply nested child has pcError", () => {
+    const root = makeNode({
+      calls: [
+        makeNode({
+          calls: [makeNode({pcError: "ABORTED"})],
+        }),
+      ],
+    });
+    expect(subtreeHasFailure(root)).toBe(true);
+  });
+});
+
 describe("isSentioCallTraceNode", () => {
   it("accepts a minimal valid node", () => {
     expect(
@@ -95,6 +152,23 @@ describe("isSentioCallTraceNode", () => {
   it("rejects non-objects", () => {
     expect(isSentioCallTraceNode(null)).toBe(false);
     expect(isSentioCallTraceNode("x")).toBe(false);
+  });
+
+  it("accepts a node with pcError field", () => {
+    expect(
+      isSentioCallTraceNode({
+        from: "0x1",
+        to: "0x1",
+        contractName: "c",
+        functionName: "m::f",
+        inputs: [],
+        returnValue: [],
+        typeArgs: [],
+        calls: [],
+        gasUsed: 0,
+        pcError: "ABORTED (code 0x1)",
+      }),
+    ).toBe(true);
   });
 
   it("rejects a node with an invalid child call", () => {
