@@ -418,6 +418,8 @@ export default function ModuleDiffView({
     "bytecode-disassembly",
   ];
 
+  const hasError = !!moduleError || !!decompError;
+
   return (
     <Stack spacing={2}>
       <Stack direction="row" spacing={2} alignItems="flex-end" flexWrap="wrap">
@@ -452,7 +454,21 @@ export default function ModuleDiffView({
         ))}
       </Stack>
 
-      {activeView === "published-source" &&
+      {!moduleName && (
+        <Box
+          p={3}
+          bgcolor={theme.palette.background.paper}
+          borderRadius={1}
+          textAlign="center"
+        >
+          <Typography color="text.secondary">
+            Select a module from the sidebar to compare versions.
+          </Typography>
+        </Box>
+      )}
+
+      {moduleName &&
+        activeView === "published-source" &&
         !hasPublishedSource &&
         !isLoading && (
           <Box
@@ -485,7 +501,7 @@ export default function ModuleDiffView({
         </Box>
       )}
 
-      {moduleError ? null : isLoading ? (
+      {!moduleName || hasError ? null : isLoading ? (
         <Box display="flex" justifyContent="center" py={4}>
           <Stack spacing={1} alignItems="center">
             <CircularProgress size={24} />

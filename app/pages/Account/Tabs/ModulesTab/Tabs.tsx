@@ -144,9 +144,39 @@ function ModulesTabs({
 
   const {data: publishHistory} = useGetModulePublishHistory(address);
 
+  // Parse path params from splat route
+  const {modulesTab, selectedModuleName, selectedFnName} =
+    useModulesPathParams();
+
+  const navigate = useNavigate();
+  const logEvent = useLogEventWithBasic();
+  const sortedPackages = useGetAccountPackages(address, ledgerVersion);
+  const value =
+    modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
+
+  const resolveModuleNameForCodeTab = (): string => {
+    if (value !== "packages" && selectedModuleName) {
+      return selectedModuleName;
+    }
+    if (value === "packages" && selectedModuleName) {
+      const pkg = sortedPackages.find((p) => p.name === selectedModuleName);
+      if (pkg && pkg.modules.length > 0) {
+        return pkg.modules[0].name;
+      }
+    }
+    if (sortedPackages.length > 0 && sortedPackages[0].modules.length > 0) {
+      return sortedPackages[0].modules[0].name;
+    }
+    return "";
+  };
+
   const navigateToCodeTab = () => {
     if (value !== "code") {
-      const path = `/${accountPagePath(isObject)}/${address}/modules/code`;
+      const moduleName = resolveModuleNameForCodeTab();
+      let path = `/${accountPagePath(isObject)}/${address}/modules/code`;
+      if (moduleName) {
+        path += `/${moduleName}`;
+      }
       navigate({to: path, replace: true});
     }
   };
@@ -167,16 +197,6 @@ function ModulesTabs({
     }
     setDiffMode(!diffMode);
   };
-
-  // Parse path params from splat route
-  const {modulesTab, selectedModuleName, selectedFnName} =
-    useModulesPathParams();
-
-  const navigate = useNavigate();
-  const logEvent = useLogEventWithBasic();
-  const sortedPackages = useGetAccountPackages(address, ledgerVersion);
-  const value =
-    modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     let eventName = "";
