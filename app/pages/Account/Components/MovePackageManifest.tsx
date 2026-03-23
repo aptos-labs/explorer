@@ -1,4 +1,4 @@
-import {ContentCopy, OpenInFull} from "@mui/icons-material";
+import {ContentCopy, FileDownload, OpenInFull} from "@mui/icons-material";
 import {
   alpha,
   Box,
@@ -16,7 +16,11 @@ import {
 } from "../../../components/CodeHighlighter";
 import StyledTooltip from "../../../components/StyledTooltip";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
-import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
+import {
+  downloadTextFile,
+  getPublicFunctionLineNumber,
+  transformCode,
+} from "../../../utils";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
@@ -147,6 +151,13 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
     }, TOOLTIP_TIME);
   }
 
+  function downloadManifest() {
+    if (!sourceCode || typeof document === "undefined") {
+      return;
+    }
+    downloadTextFile(sourceCode, "Move.toml", "text/plain;charset=utf-8");
+  }
+
   const startingLineNumber = useStartingLineNumber(sourceCode);
   const codeBoxScrollRef = useRef<{scrollTop: number} | null>(null);
   const LINE_HEIGHT_IN_PX = 24;
@@ -212,6 +223,31 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
                 </Typography>
               </Button>
             </StyledTooltip>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                logEvent("download_code_button_clicked", selectedModuleName);
+                downloadManifest();
+              }}
+              disabled={!sourceCode}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                height: "2rem",
+                borderRadius: "0.5rem",
+              }}
+            >
+              <FileDownload style={{height: "1.25rem", width: "1.25rem"}} />
+              <Typography
+                marginLeft={1}
+                sx={{
+                  display: "inline",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                download
+              </Typography>
+            </Button>
             <ExpandCode sourceCode={sourceCode} />
           </Stack>
         )}

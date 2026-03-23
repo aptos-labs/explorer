@@ -21,6 +21,7 @@ import {
   truncateAddress,
   truncateAddressMiddle,
   tryStandardizeAddress,
+  sanitizeDownloadFilename,
 } from "./utils";
 
 describe("Address utilities", () => {
@@ -371,6 +372,23 @@ describe("Error utilities", () => {
       expect(isRateLimitError(null)).toBe(false);
       expect(isRateLimitError(undefined)).toBe(false);
     });
+  });
+});
+
+describe("sanitizeDownloadFilename", () => {
+  it("preserves safe names including dots", () => {
+    expect(sanitizeDownloadFilename("base_pool.move")).toBe("base_pool.move");
+    expect(sanitizeDownloadFilename("Move.toml")).toBe("Move.toml");
+  });
+
+  it("replaces unsafe characters", () => {
+    expect(sanitizeDownloadFilename('a<b>c:d"e\\f|g?h')).toBe(
+      "a_b_c_d_e_f_g_h",
+    );
+  });
+
+  it("falls back when empty after trim", () => {
+    expect(sanitizeDownloadFilename("   ")).toBe("download");
   });
 });
 

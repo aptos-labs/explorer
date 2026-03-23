@@ -1,4 +1,4 @@
-import {ContentCopy, OpenInFull} from "@mui/icons-material";
+import {ContentCopy, FileDownload, OpenInFull} from "@mui/icons-material";
 import {
   alpha,
   Box,
@@ -25,7 +25,12 @@ import {
   getDecompiledCodeView,
 } from "../../../utils/moveDecompiler";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
-import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
+import {
+  downloadTextFile,
+  getPublicFunctionLineNumber,
+  sanitizeDownloadFilename,
+  transformCode,
+} from "../../../utils";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
@@ -49,6 +54,20 @@ type BytecodeViewState = {
   bytecodeKey: string;
   code: string;
 };
+
+function moduleCodeDownloadFilename(
+  moduleName: string | undefined,
+  activeView: CodeView,
+): string {
+  const base = sanitizeDownloadFilename(moduleName ?? "module");
+  if (activeView === "published-source") {
+    return `${base}.move`;
+  }
+  if (activeView === "decompiled-source") {
+    return `${base}-decompiled.move`;
+  }
+  return `${base}-disassembly.txt`;
+}
 
 function ExpandCode({
   codeToDisplay,
@@ -319,6 +338,16 @@ export function Code({
     }, TOOLTIP_TIME);
   }
 
+  function downloadCode() {
+    if (!displayedCode || typeof document === "undefined") {
+      return;
+    }
+    downloadTextFile(
+      displayedCode,
+      moduleCodeDownloadFilename(selectedModuleName, activeView),
+    );
+  }
+
   const codeBoxScrollRef = useRef<{scrollTop: number} | null>(null);
   const LINE_HEIGHT_IN_PX = 24;
   useEffect(() => {
@@ -384,6 +413,31 @@ export function Code({
                 </Typography>
               </Button>
             </StyledTooltip>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                logEvent("download_code_button_clicked", selectedModuleName);
+                downloadCode();
+              }}
+              disabled={!displayedCode}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                height: "2rem",
+                borderRadius: "0.5rem",
+              }}
+            >
+              <FileDownload style={{height: "1.25rem", width: "1.25rem"}} />
+              <Typography
+                marginLeft={1}
+                sx={{
+                  display: "inline",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                download
+              </Typography>
+            </Button>
             <ExpandCode
               codeToDisplay={displayedCode}
               startingLineNumber={startingLineNumber}
