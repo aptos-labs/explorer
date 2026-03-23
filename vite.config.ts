@@ -12,7 +12,7 @@ export default defineConfig({
     TanStackRouterVite({
       routesDirectory: "./app/routes",
       generatedRouteTree: "./app/routeTree.gen.ts",
-      autoCodeSplitting: true,
+      autoCodeSplitting: false,
     }),
     tanstackStart({
       // Configure entry points for the app directory structure
