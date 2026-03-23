@@ -14,7 +14,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import type React from "react";
 import {useState} from "react";
 import {useGetNameFromAddress} from "../api/hooks/useGetANS";
-import {scamAddresses} from "../constants";
+import {useScamAddresses} from "../constants";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 import {tryStandardizeAddress} from "../utils";
@@ -143,6 +143,7 @@ function Name({
 }) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
+  const scamAddresses = useScamAddresses();
   const name = useGetNameFromAddress(address, true, isValidator, nameType);
 
   if (!name) {

@@ -1,6 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
 import {NameType} from "../../components/TitleHashButton";
-import {knownAddresses, type NetworkName, scamAddresses} from "../../constants";
+import {
+  getKnownAddresses,
+  getScamAddresses,
+  type NetworkName,
+} from "../../constants";
 import {getCachedV2Client, useNetworkName} from "../../global-config";
 import {
   getLocalStorageWithExpiry,
@@ -112,11 +116,13 @@ export function useGetNameFromAddress(
       }
       const lowercaseStandardizedAddress = standardizedAddress.toLowerCase();
       if (nameType !== NameType.ANS) {
-        const knownName = knownAddresses[lowercaseStandardizedAddress];
+        const knownName =
+          getKnownAddresses(networkName)[lowercaseStandardizedAddress];
         if (knownName) {
           return knownName;
         }
-        const scamName = scamAddresses[lowercaseStandardizedAddress];
+        const scamName =
+          getScamAddresses(networkName)[lowercaseStandardizedAddress];
         if (scamName) {
           return scamName;
         }

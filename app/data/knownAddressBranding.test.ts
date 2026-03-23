@@ -1,5 +1,9 @@
 import {describe, expect, it} from "vitest";
-import {getKnownAddressBranding, getKnownAddressIcon} from "./index";
+import {
+  getKnownAddressBranding,
+  getKnownAddressIcon,
+  getKnownAddresses,
+} from "./index";
 
 const DECIBEL =
   "0x50ead22afd6ffd9769e3b3d6e0e64a2a350d68e8b102c4e72e33d0b8cfdfdb06";
@@ -37,6 +41,11 @@ describe("known address branding", () => {
     expect(getKnownAddressIcon("testnet", SHELBY_TESTNET)).toBe(
       "/address-icons/shelby.ico",
     );
+  });
+
+  it("lists Shelby only on testnet known-address maps (label resolution is network-scoped)", () => {
+    expect(getKnownAddresses("testnet")[SHELBY_TESTNET]).toBe("Shelby");
+    expect(getKnownAddresses("mainnet")[SHELBY_TESTNET]).toBeUndefined();
   });
 
   it("returns undefined when not configured", () => {

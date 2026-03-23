@@ -145,7 +145,13 @@ export function useSupplyLimitOverrides(): Record<string, bigint> {
  */
 export function useKnownAddressName(address: string): string | undefined {
   const knownAddresses = useKnownAddresses();
-  return useMemo(() => knownAddresses[address], [knownAddresses, address]);
+  const standardized = tryStandardizeAddress(address);
+  return useMemo(() => {
+    if (!standardized) {
+      return undefined;
+    }
+    return knownAddresses[standardized];
+  }, [knownAddresses, standardized]);
 }
 
 /**
