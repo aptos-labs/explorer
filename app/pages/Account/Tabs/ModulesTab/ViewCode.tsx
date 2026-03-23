@@ -39,6 +39,7 @@ interface ModuleContentProps {
   moduleName: string;
   sourceBytecode: string;
   ledgerVersion?: number;
+  isObject: boolean;
 }
 
 function ViewCode({
@@ -114,6 +115,7 @@ function ViewCode({
             moduleName={selectedModuleName}
             sourceBytecode={selectedModule.source}
             ledgerVersion={ledgerVersion}
+            isObject={isObject}
           />
         )}
       </Grid>
@@ -200,6 +202,7 @@ function ModuleContent({
   moduleName,
   sourceBytecode,
   ledgerVersion,
+  isObject,
 }: ModuleContentProps) {
   const theme = useTheme();
   const {
@@ -232,6 +235,7 @@ function ModuleContent({
                 isSuccess: isModuleSuccess,
               }
         }
+        codeLinkContext={{packageAddress: address, isObject}}
       />
     </Stack>
   );

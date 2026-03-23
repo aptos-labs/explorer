@@ -406,6 +406,7 @@ function Contract({
                 <Code
                   sourceBytecode={selectedModule?.source}
                   moduleBytecode={selectedModuleBytecode?.bytecode}
+                  codeLinkContext={{packageAddress: address, isObject}}
                 />
               </Box>
             </>

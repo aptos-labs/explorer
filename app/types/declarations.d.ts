@@ -11,6 +11,17 @@ declare module "@download/blockies" {
   }): HTMLCanvasElement;
 }
 
+declare module "react-syntax-highlighter/dist/cjs/create-element.js" {
+  import type {CSSProperties, ReactNode} from "react";
+
+  export default function createElement(props: {
+    node: unknown;
+    stylesheet: Record<string, CSSProperties>;
+    useInlineStyles: boolean;
+    key?: string;
+  }): ReactNode;
+}
+
 declare module "highlightjs-move/v10" {
   // highlight.js v10-compatible language definition for Move on Aptos
   // https://github.com/gregnazario/highlightjs-move

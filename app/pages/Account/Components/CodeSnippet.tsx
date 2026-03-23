@@ -8,7 +8,9 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {Suspense, useEffect, useRef, useState} from "react";
+import createElement from "react-syntax-highlighter/dist/cjs/create-element.js";
+import type React from "react";
+import {Suspense, useEffect, useMemo, useRef, useState} from "react";
 import {
   CodeLoadingFallback,
   SyntaxHighlighter,
@@ -18,6 +20,7 @@ import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../components/StyledTooltip";
+import {useNavigate} from "../../../routing";
 import type {Types} from "~/types/aptos";
 import {
   type DecompilationView,
@@ -25,8 +28,119 @@ import {
 } from "../../../utils/moveDecompiler";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {getPublicFunctionLineNumber, transformCode} from "../../../utils";
+import {
+  injectMoveCodeLinksInHighlightRows,
+  MOVE_CODE_FN_LINK_DATA_ATTR,
+  type MoveCodeLinkContext,
+} from "../../../utils/moveCodeNavigation";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
+
+function defaultSyntaxHighlighterRenderer({
+  rows,
+  stylesheet,
+  useInlineStyles,
+}: {
+  rows: Parameters<typeof injectMoveCodeLinksInHighlightRows>[0];
+  stylesheet: Record<string, React.CSSProperties>;
+  useInlineStyles: boolean;
+}) {
+  return rows.map((node, i) =>
+    createElement({
+      node,
+      stylesheet,
+      useInlineStyles,
+      key: `code-segment-${i}`,
+    }),
+  );
+}
+
+function useMoveCodeSyntaxRenderer(
+  codeLinkContext: MoveCodeLinkContext | undefined,
+) {
+  return useMemo(() => {
+    if (!codeLinkContext) {
+      return undefined;
+    }
+    return function moveCodeRenderer({
+      rows,
+      stylesheet,
+      useInlineStyles,
+    }: {
+      rows: Parameters<typeof injectMoveCodeLinksInHighlightRows>[0];
+      stylesheet: Record<string, React.CSSProperties>;
+      useInlineStyles: boolean;
+    }) {
+      const linkedRows = injectMoveCodeLinksInHighlightRows(
+        rows,
+        codeLinkContext,
+      );
+      return defaultSyntaxHighlighterRenderer({
+        rows: linkedRows,
+        stylesheet,
+        useInlineStyles,
+      });
+    };
+  }, [codeLinkContext]);
+}
+
+function useMoveCodeQualifiedLinkHandlers(
+  codeLinkContext: MoveCodeLinkContext | undefined,
+) {
+  const navigate = useNavigate();
+  return useMemo(() => {
+    if (!codeLinkContext) {
+      return {};
+    }
+    const attrSelector = `[${MOVE_CODE_FN_LINK_DATA_ATTR}]`;
+
+    function activateMoveLink(
+      el: HTMLElement,
+      modifiers: {ctrlKey?: boolean; metaKey?: boolean},
+    ) {
+      const to = el.getAttribute(MOVE_CODE_FN_LINK_DATA_ATTR);
+      if (!to) {
+        return;
+      }
+      if (modifiers.ctrlKey || modifiers.metaKey) {
+        const search =
+          typeof window !== "undefined" ? window.location.search : "";
+        window.open(
+          `${window.location.origin}${to}${search}`,
+          "_blank",
+          "noopener,noreferrer",
+        );
+        return;
+      }
+      navigate({to});
+    }
+
+    const onClick = (e: React.MouseEvent<HTMLElement>) => {
+      const el = (e.target as HTMLElement).closest(attrSelector);
+      if (!el) {
+        return;
+      }
+      e.preventDefault();
+      e.stopPropagation();
+      activateMoveLink(el, e);
+    };
+
+    const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+      if (e.key !== "Enter" && e.key !== " ") {
+        return;
+      }
+      const el = (e.target as HTMLElement).closest(attrSelector);
+      if (!el) {
+        return;
+      }
+      e.preventDefault();
+      e.stopPropagation();
+      activateMoveLink(el, e);
+    };
+
+    return {onClick, onKeyDown};
+  }, [codeLinkContext, navigate]);
+}
 
 function useStartingLineNumber(sourceCode?: string) {
   const {selectedFnName} = useModulesPathParams();
@@ -52,9 +166,13 @@ type BytecodeViewState = {
 function ExpandCode({
   codeToDisplay,
   startingLineNumber,
+  moveCodeRenderer,
+  moveCodeLinkHandlers,
 }: {
   codeToDisplay: string | undefined;
   startingLineNumber: number;
+  moveCodeRenderer?: ReturnType<typeof useMoveCodeSyntaxRenderer>;
+  moveCodeLinkHandlers?: ReturnType<typeof useMoveCodeQualifiedLinkHandlers>;
 }) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
@@ -113,6 +231,7 @@ function ExpandCode({
             borderRadius: 1,
           }}
           ref={codeBoxScrollRef}
+          {...moveCodeLinkHandlers}
         >
           <Suspense fallback={<CodeLoadingFallback />}>
             {styles && (
@@ -129,6 +248,7 @@ function ExpandCode({
                   backgroundColor: semanticColors.codeBlock.backgroundRgb,
                 }}
                 showLineNumbers
+                {...(moveCodeRenderer ? {renderer: moveCodeRenderer} : {})}
               >
                 {codeToDisplay ?? ""}
               </SyntaxHighlighter>
@@ -151,13 +271,19 @@ export function Code({
   sourceBytecode,
   moduleBytecode,
   moduleQuery,
+  codeLinkContext,
 }: {
   sourceBytecode?: string;
   moduleBytecode?: string;
   moduleQuery?: CodeModuleQueryProps;
+  /** When set, `module::function` and `0x..::module::function` in source become links to the Code tab. */
+  codeLinkContext?: MoveCodeLinkContext;
 }) {
   const {selectedModuleName} = useModulesPathParams();
   const logEvent = useLogEventWithBasic();
+  const moveCodeRenderer = useMoveCodeSyntaxRenderer(codeLinkContext);
+  const moveCodeLinkHandlers =
+    useMoveCodeQualifiedLinkHandlers(codeLinkContext);
   const styles = useHighlighterStyles();
 
   const TOOLTIP_TIME = 2000; // 2s
@@ -374,6 +500,8 @@ export function Code({
             <ExpandCode
               codeToDisplay={displayedCode}
               startingLineNumber={startingLineNumber}
+              moveCodeRenderer={moveCodeRenderer}
+              moveCodeLinkHandlers={moveCodeLinkHandlers}
             />
           </Stack>
         )}
@@ -502,6 +630,7 @@ export function Code({
             backgroundColor: semanticColors.codeBlock.background,
           }}
           ref={codeBoxScrollRef}
+          {...moveCodeLinkHandlers}
         >
           <Suspense fallback={<CodeLoadingFallback />}>
             {styles && (
@@ -515,6 +644,7 @@ export function Code({
                 }
                 customStyle={{margin: 0, backgroundColor: "unset"}}
                 showLineNumbers
+                {...(moveCodeRenderer ? {renderer: moveCodeRenderer} : {})}
               >
                 {displayedCode}
               </SyntaxHighlighter>
