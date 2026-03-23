@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Rate-limit drawer: a bottom sheet appears when any API request receives HTTP 429, informing the user they have been rate-limited and offering a button to open Settings and set an API key override or wait ~5 minutes for the limit to reset
 
+### Improved
+
+- Rate-limit drawer is now non-blocking (persistent banner instead of modal overlay) so users can still interact with the page, settings, and navigation while the notice is visible
+- Saving an API key in Settings automatically dismisses the rate-limit drawer and suppresses re-triggering for 10 seconds, preventing stale in-flight 429 responses from immediately re-showing the drawer
+
 ### Changed
 
 - **Light theme**: neutral grey app background (`#ECEEF2`), white cards/panels, cooler borders, and soft grey stripes for tables and filled inputs instead of warm cream-on-bright-off-white; primary body text uses ink (`#171612`) for slightly softer contrast than pure black. Light `theme-color` meta updated to match the canvas.

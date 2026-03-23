@@ -4,6 +4,7 @@ import type {ReactNode} from "react";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {RateLimitProvider, useRateLimit} from "./RateLimitContext";
 import {emitRateLimit} from "./rateLimitEvents";
+import {emitApiKeySaved} from "./settingsEvents";
 
 function wrapper({children}: {children: ReactNode}) {
   return <RateLimitProvider>{children}</RateLimitProvider>;
@@ -75,6 +76,50 @@ describe("RateLimitContext", () => {
     });
     expect(result.current.isRateLimited).toBe(false);
 
+    act(() => {
+      emitRateLimit();
+    });
+    expect(result.current.isRateLimited).toBe(true);
+  });
+
+  it("clears rate-limit state when API key is saved", () => {
+    const {result} = renderHook(() => useRateLimit(), {wrapper});
+
+    act(() => {
+      emitRateLimit();
+    });
+    expect(result.current.isRateLimited).toBe(true);
+
+    act(() => {
+      emitApiKeySaved();
+    });
+    expect(result.current.isRateLimited).toBe(false);
+    expect(result.current.rateLimitedAt).toBeNull();
+  });
+
+  it("suppresses 429 events during grace period after API key save", () => {
+    const {result} = renderHook(() => useRateLimit(), {wrapper});
+
+    act(() => {
+      emitApiKeySaved();
+    });
+
+    act(() => {
+      emitRateLimit();
+    });
+    expect(result.current.isRateLimited).toBe(false);
+
+    act(() => {
+      vi.advanceTimersByTime(5_000);
+    });
+    act(() => {
+      emitRateLimit();
+    });
+    expect(result.current.isRateLimited).toBe(false);
+
+    act(() => {
+      vi.advanceTimersByTime(5_001);
+    });
     act(() => {
       emitRateLimit();
     });

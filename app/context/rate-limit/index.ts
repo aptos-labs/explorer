@@ -4,4 +4,9 @@ export {
   isRateLimitLike,
   onRateLimit,
 } from "./rateLimitEvents";
-export {emitOpenSettings, onOpenSettings} from "./settingsEvents";
+export {
+  emitApiKeySaved,
+  emitOpenSettings,
+  onApiKeySaved,
+  onOpenSettings,
+} from "./settingsEvents";

@@ -31,6 +31,7 @@ export default function RateLimitDrawer() {
       anchor="bottom"
       open={isRateLimited}
       onClose={dismissRateLimit}
+      variant="persistent"
       slotProps={{
         paper: {
           sx: {
@@ -40,6 +41,7 @@ export default function RateLimitDrawer() {
             py: 2,
             maxWidth: 720,
             mx: "auto",
+            boxShadow: theme.shadows[8],
           },
           role: "alert",
         },

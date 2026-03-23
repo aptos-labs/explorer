@@ -21,6 +21,7 @@ import {useQueryClient} from "@tanstack/react-query";
 import {useRouter} from "@tanstack/react-router";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {clearCachedSearchClients} from "../../api/createClient";
+import {emitApiKeySaved} from "../../context/rate-limit";
 import {clearCachedV2Clients} from "../../global-config";
 import {
   defaultExplorerClientSettings,
@@ -70,7 +71,13 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
     setIsSaving(true);
 
     try {
+      const hasApiKey =
+        normalizeGeomiDevApiKeyOverride(draftSettings.geomiDevApiKeyOverride)
+          .length > 0;
       setExplorerSettings(draftSettings);
+      if (hasApiKey) {
+        emitApiKeySaved();
+      }
       clearCachedV2Clients();
       clearCachedSearchClients();
       await queryClient.invalidateQueries();
