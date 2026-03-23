@@ -174,19 +174,25 @@ export default function BytecodeVerificationBanner({
               sx={{height: 22, fontSize: 11}}
             />
           )}
-          {!result.compilerAvailable && (
-            <Chip
-              label="Compiler not yet available"
-              size="small"
-              variant="outlined"
-              sx={{
-                height: 22,
-                fontSize: 11,
-                color: semanticColors.text.disabled,
-                borderColor: semanticColors.border.light,
-              }}
-            />
-          )}
+          <Chip
+            label={
+              result.compilerAvailable
+                ? "Compiler loaded"
+                : "Compiler not loaded"
+            }
+            size="small"
+            variant="outlined"
+            sx={{
+              height: 22,
+              fontSize: 11,
+              color: result.compilerAvailable
+                ? semanticColors.status.success
+                : semanticColors.text.disabled,
+              borderColor: result.compilerAvailable
+                ? semanticColors.status.success
+                : semanticColors.border.light,
+            }}
+          />
         </Stack>
       </AccordionSummary>
       <AccordionDetails sx={{px: 2, pt: 0, pb: 2}}>

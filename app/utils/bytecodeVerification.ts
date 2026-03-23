@@ -165,25 +165,69 @@ export async function verifyModuleBytecode(opts: {
             : `Published source differs significantly from decompiled output (${similarityPct}%)`,
     });
 
-    // --- 5. Compiler verification (future) ---
-    checks.push({
-      label: "Compilation verification",
-      passed: false,
-      detail:
-        "Full bytecode verification via recompilation requires the Move compiler WASM (not yet available)",
-    });
+    // --- 5. Compilation verification ---
+    let compilationPassed = false;
+    try {
+      const {compileMoveModule} = await import("./moveCompiler");
+      const moduleAddress = metadata.address ?? "0x1";
 
-    const allCorePassed = checks
-      .filter((c) => c.label !== "Compilation verification")
-      .every((c) => c.passed);
+      const compileResult = await compileMoveModule(
+        publishedDecoded,
+        moduleAddress,
+        metadata.name,
+      );
 
+      if (compileResult.success && compileResult.bytecode.length > 0) {
+        const {bytecodeHexToBytes} = await import("./moveDecompiler");
+        const onChainBytes = bytecodeHexToBytes(moduleBytecodeHex);
+        const compiledBytes = compileResult.bytecode;
+
+        const bytecodeMatch =
+          onChainBytes.length === compiledBytes.length &&
+          onChainBytes.every((b, i) => b === compiledBytes[i]);
+
+        compilationPassed = bytecodeMatch;
+        checks.push({
+          label: "Compilation verification",
+          passed: bytecodeMatch,
+          detail: bytecodeMatch
+            ? "Published source recompiles to identical on-chain bytecode"
+            : `Recompiled bytecode differs from on-chain (${compiledBytes.length} vs ${onChainBytes.length} bytes)`,
+        });
+      } else {
+        const errSummary = compileResult.errors.slice(0, 2).join("; ");
+        checks.push({
+          label: "Compilation verification",
+          passed: false,
+          detail: `Recompilation failed: ${errSummary || "unknown error"}`,
+        });
+      }
+    } catch {
+      checks.push({
+        label: "Compilation verification",
+        passed: false,
+        detail:
+          "Move compiler WASM could not be loaded for recompilation check",
+      });
+    }
+
+    const allCorePassed = checks.every((c) => c.passed);
     const status: VerificationStatus = allCorePassed
-      ? "partial"
-      : similarity >= 0.7
-        ? "partial"
-        : "unverified";
+      ? "verified"
+      : compilationPassed
+        ? "verified"
+        : similarity >= 0.7
+          ? "partial"
+          : "unverified";
 
-    return buildResult(status, checks, metadata, namedAddresses, isPreMove2);
+    return buildResult(
+      status,
+      checks,
+      metadata,
+      namedAddresses,
+      isPreMove2,
+      true,
+    );
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return {
@@ -205,6 +249,7 @@ function buildResult(
   metadata: ModuleMetadataResult | null,
   namedAddresses: NamedAddress[],
   isPreMove2: boolean,
+  compilerAvailable = false,
 ): BytecodeVerificationResult {
   const labelMap: Record<VerificationStatus, string> = {
     verified: "Bytecode verified",
@@ -219,7 +264,7 @@ function buildResult(
     metadata,
     namedAddresses,
     isPreMove2,
-    compilerAvailable: false,
+    compilerAvailable,
   };
 }
 

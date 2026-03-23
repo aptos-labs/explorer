@@ -1,57 +1,48 @@
 /**
  * Dynamic loader for the Move compiler WASM module.
  *
- * The compiler WASM is being developed in
- * https://github.com/gregnazario/aptos-core/pull/4  (branch: wasm-eval-aptos-move-cli).
+ * Built from https://github.com/gregnazario/aptos-core/pull/4
+ * (branch: wasm-eval-aptos-move-cli, crate: aptos-move/move-compiler-wasm).
  *
- * Once the WASM binary is available it should be placed in `app/wasm/` alongside
- * the existing decompiler WASM and this loader updated to reference it.
- *
- * The compiler is intentionally loaded lazily – it is only fetched when the user
- * explicitly requests bytecode verification that requires recompilation.
+ * The compiler is loaded lazily — it is only fetched when the user
+ * explicitly triggers bytecode verification that requires recompilation.
  */
+
+type MoveCompilerWasmModule = typeof import("../wasm/move_compiler_wasm.js");
+
+let compilerModulePromise: Promise<MoveCompilerWasmModule> | null = null;
 
 export type CompileResult = {
   success: boolean;
-  bytecode?: Uint8Array;
-  errors?: string[];
+  bytecode: Uint8Array;
+  errors: string[];
+  warnings: string[];
 };
 
 export type NamedAddressMap = Record<string, string>;
 
-let compilerModulePromise: Promise<MoveCompilerWasmModule | null> | null = null;
-
-type MoveCompilerWasmModule = {
-  compile_move_source: (
-    source: string,
-    namedAddresses: string,
-  ) => CompileResult;
-};
-
 export function isCompilerAvailable(): boolean {
-  return false;
+  return true;
 }
 
 /**
- * Attempt to load the Move compiler WASM module.
- * Returns `null` if the module is not yet available (i.e. the WASM binary
- * has not been added to the project).
+ * Dynamically load the Move compiler WASM module.
+ * Browser-only – throws if `window` is undefined.
  */
-export async function loadMoveCompilerWasm(): Promise<MoveCompilerWasmModule | null> {
-  if (typeof window === "undefined") return null;
+export async function loadMoveCompilerWasm(): Promise<MoveCompilerWasmModule> {
+  if (typeof window === "undefined") {
+    throw new Error("Move compiler is only available in the browser");
+  }
 
   if (!compilerModulePromise) {
     compilerModulePromise = (async () => {
       try {
-        // When the compiler WASM is added, update this import path.
-        // The module should expose a `compile_move_source(source, namedAddresses)` function.
-        // const mod = await import("../wasm/move_compiler_wasm.js");
-        // await mod.default();
-        // return mod as unknown as MoveCompilerWasmModule;
-        return null;
-      } catch {
+        const module = await import("../wasm/move_compiler_wasm.js");
+        await module.default();
+        return module;
+      } catch (error) {
         compilerModulePromise = null;
-        return null;
+        throw error;
       }
     })();
   }
@@ -60,15 +51,28 @@ export async function loadMoveCompilerWasm(): Promise<MoveCompilerWasmModule | n
 }
 
 /**
- * Compile Move source code to bytecode using the compiler WASM.
- * Returns `null` if the compiler is not available.
+ * Compile a single Move module from source code using the compiler WASM.
+ *
+ * @param source   – Move source code
+ * @param address  – Module address (e.g. "0x1")
+ * @param moduleName – Module name (e.g. "coin")
  */
-export async function compileMoveSource(
+export async function compileMoveModule(
   source: string,
-  namedAddresses: NamedAddressMap,
-): Promise<CompileResult | null> {
+  address: string,
+  moduleName: string,
+): Promise<CompileResult> {
   const compiler = await loadMoveCompilerWasm();
-  if (!compiler) return null;
+  const result = compiler.compile_module(source, address, moduleName);
 
-  return compiler.compile_move_source(source, JSON.stringify(namedAddresses));
+  try {
+    return {
+      success: result.success,
+      bytecode: result.bytecode,
+      errors: JSON.parse(result.errors || "[]"),
+      warnings: JSON.parse(result.warnings || "[]"),
+    };
+  } finally {
+    result.free();
+  }
 }
