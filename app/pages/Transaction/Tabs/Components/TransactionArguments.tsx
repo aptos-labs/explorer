@@ -168,14 +168,23 @@ export default function TransactionArguments({
       return {functionArgNames: null, typeArgNames: typeNames};
     }
 
-    const hasSigner =
-      moveFunction.params.length !==
-      moveFunction.params.filter((p) => p !== "signer" && p !== "&signer")
-        .length;
-    const adjusted =
-      rawParamNames && (hasSigner ? rawParamNames.slice(1) : rawParamNames);
-    const fnArgNames =
-      adjusted && adjusted.length === filteredParams.length ? adjusted : null;
+    // Map source names to serialized args by ABI position: drop every signer
+    // slot (not only a single leading signer).
+    let fnArgNames: string[] | null = null;
+    if (rawParamNames && rawParamNames.length === moveFunction.params.length) {
+      const nonSignerIndices = moveFunction.params.reduce<number[]>(
+        (indices, param, index) => {
+          if (param !== "signer" && param !== "&signer") {
+            indices.push(index);
+          }
+          return indices;
+        },
+        [],
+      );
+      if (nonSignerIndices.length === filteredParams.length) {
+        fnArgNames = nonSignerIndices.map((idx) => rawParamNames[idx]);
+      }
+    }
 
     return {functionArgNames: fnArgNames, typeArgNames: typeNames};
   }, [payload, moduleSource, functionName, moveFunction, filteredParams]);
