@@ -48,6 +48,82 @@ explorer/
 
 ---
 
+## Routing and navigation
+
+The app is a **TanStack Start** (SSR-capable) SPA built with **Vite**, **TanStack Router** (file-based routes), and **TanStack Query**. Treat this section as the map for how URLs, tabs, and global state in the address bar fit together.
+
+### How routes are defined
+
+- **Source of truth**: Files under `app/routes/`. Each file exports a `Route` created with `createFileRoute(...)`.
+- **Generated tree**: `pnpm routes:generate` runs the TanStack Router CLI (`tsr generate` per `tsr.config.json`) and writes `app/routeTree.gen.ts`. **`app/routeTree.gen.ts` is generated—never edit it by hand.** It is imported by `app/router.tsx`.
+- **Pre-scripts**: `predev`, `prelint`, `pretest`, `prebuild`, etc. run route generation so the tree stays in sync. If you add or rename route files and see type or import errors, run `pnpm routes:generate`.
+
+### From filename to URL
+
+- **Dot segments** become path segments: e.g. `account.$address.$tab.tsx` → `/account/:address/:tab`.
+- **Index**: `app/routes/index.tsx` is the home route.
+- **Layout routes** use a path prefix and render an `<Outlet />` for child routes. Some parent routes use `beforeLoad` to **redirect** legacy or shorthand URLs to the canonical path (for example, `?tab=` query params → `/$tab` in the path, or default tab when the path is “incomplete”).
+- **Root layout**: `app/routes/__root.tsx` registers global `head` metadata, error and not-found UI, and wraps the app with providers (React Query, MUI theme, wallet, GraphQL client, settings). It renders `Header`, `Footer`, and `<Outlet />` for page content. **Backward-compatibility redirects** for old hostnames and hash-based tab URLs run here via `useOldUrlRedirect` and `useHashToPathRedirect`.
+
+### Network and search params
+
+- The selected chain is carried in the URL as **`?network=...`** (alongside other search params). Many loaders read the current client via helpers such as `getClientFromSearch` / `getNetworkFromSearch` (see `app/api/createClient`).
+- **Always prefer** the shared **`Link`** and **`useNavigate`** from `app/routing.tsx` when building in-app navigation. They **merge the current `network` into `search`** so users stay on the same network when clicking links or navigating programmatically. Using raw `@tanstack/react-router` navigation without that merge can drop `network` and misroute users.
+- **`useSearchParams`** in `app/routing.tsx` is a compatibility helper that also preserves `network` when updating query strings.
+- **`useAugmentToWithGlobalSearchParams`** appends `network` to string `to` paths when you cannot use the `Link` search merge.
+
+### Where UI lives vs. where routes live
+
+- **Route files** should stay thin: `loader` / `beforeLoad` / `pendingComponent` / `component` wiring.
+- **Screens** live under `app/pages/` (and shared pieces under `app/components/`). Pages typically read **`useParams`** and **`useSearch`** from `@tanstack/react-router` (or hooks re-exported from `app/routing.tsx`).
+
+### Data loading and navigation UX
+
+- **`app/router.tsx`** creates a per-request `QueryClient` on the server and a singleton on the client. It sets router defaults: preload on intent, scroll restoration, and a **`defaultPendingComponent`** (`NavigationPending`) with minimum display times to reduce flicker.
+- Routes often **`ensureQueryData` / prefetch in `loader`** using `context.queryClient` so data is ready when the page paints. Respect existing **stale times and retry** behavior defined on the router’s `QueryClient` when adding queries.
+
+### Building links and paths
+
+- **`buildPath`** / **`parsePath`** in `app/routing.tsx` help with entity prefixes (`account`, `txn`, `block`, etc.). Prefer existing helpers and patterns when linking to explorer entities.
+- **Main nav** (`app/components/layout/Nav.tsx`) uses **`Link` from `app/routing.tsx`** and `useLocation` for active styling. New top-level destinations should follow the same pattern.
+
+### Canonical URLs and discoverability
+
+- Favor **path-based tabs** (`/account/0x…/transactions`) as the canonical shape. When you add or change routes or tabs, follow the **[LLM / AI Accessibility](#llm--ai-accessibility)** checklist (`llms.txt`, `llms-full.txt`, `sitemap.xml`, metadata).
+
+---
+
+## Quality expectations for AI-generated changes
+
+This repository is often modified by automated agents. The following bar keeps the product consistent, safe, and shippable.
+
+### Before you change code
+
+- **Read neighboring files** and match existing naming, imports, error handling, and component structure. Prefer extending existing utilities over duplicating logic.
+- **Scope**: Change only what the task requires. Avoid drive-by refactors, unrelated formatting sweeps, or new dependencies unless the task demands them.
+
+### After you change code
+
+- Run **`pnpm fmt`** and **`pnpm lint`**. If you touched tests or testable logic, run **`pnpm test --run`**.
+- After any **`app/routes/`** edit, ensure **`pnpm routes:generate`** has been run (usually automatic via pre-scripts; commit the updated `app/routeTree.gen.ts` when it changes).
+- **Typecheck** must pass (`pnpm lint` includes `tsc --noEmit`).
+
+### Product and UX
+
+- **Loading and errors**: Follow existing patterns (`pendingComponent`, suspense fallbacks, error boundaries). Do not leave new async paths without a user-visible state.
+- **Accessibility**: Preserve landmarks, labels, focus behavior, and skip links. Interactive elements should remain keyboard usable.
+- **Security**: No secrets in source; use `import.meta.env` for client-safe config. Sanitize user-controlled strings before dangerous sinks; external links should use `rel="noopener noreferrer"` where appropriate.
+
+### Tests and mocks
+
+- **Do not call real Aptos APIs** from unit tests; mock at the hook or fetch layer. Prefer behavioral assertions over snapshot noise.
+
+### Documentation drift
+
+- Route, tab, or major behavior changes must stay aligned with **LLM/SEO** artifacts and any user-facing docs the project already maintains for that area (see checklist above).
+
+---
+
 ## Agent Roles
 
 This repository uses a multi-agent workflow with 7 specialized roles. Each role has specific responsibilities and outputs.
@@ -375,7 +451,7 @@ When you **remove or rename a route**, remove or update the corresponding entrie
 
 ## Getting Help
 
-- **Architecture questions**: Check `app/router.tsx` and route files
+- **Routing and URLs**: Read [Routing and navigation](#routing-and-navigation) above, then `app/router.tsx`, `app/routing.tsx`, and `app/routes/`
 - **Data fetching**: See patterns in `app/api/hooks/`
 - **Styling**: Review existing components in `app/components/`
 - **Deployment**: Check `netlify.toml` and `RATE_LIMITING.md`
