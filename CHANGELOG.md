@@ -10,13 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Light theme**: neutral grey app background (`#ECEEF2`), white cards/panels, cooler borders, and soft grey stripes for tables and filled inputs instead of warm cream-on-bright-off-white; primary body text uses ink (`#171612`) for slightly softer contrast than pure black. Light `theme-color` meta updated to match the canvas.
-||||||| parent of 766c6302 (feat(data): add function argument name overrides with Decibel stubs)
 
 ### Added
 - Registry for optional Move **function argument display names** (`app/data/functionArgumentNameOverrides/`), used in transaction payload arguments and the account Run / View contract tab; Decibel mainnet public entry/view functions ship with positional stubs (`arg0`, …) ready to replace with real labels
 
 ### Fixed
 
+- Transaction overview **Arguments** table: column widths follow content again (no fixed 100px/140px layout), so long argument names no longer overlap type chips; type badges stay on one line where possible; the **Arguments:** label row uses a compact title column so the table has more horizontal room
 - Object account pages (e.g. Decibel perp DEX) crashing with "Cannot convert object to primitive value" — the `/account/` → `/object/` redirect now correctly passes TanStack Router's parsed search params instead of interpolating the search object in a URL template literal
 
 ### Removed

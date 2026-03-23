@@ -22,12 +22,13 @@ export default function MoveFunctionParamTypeBadge({
   const chipSx = {
     fontFamily: "monospace",
     fontSize: variant === "card" ? "0.7rem" : "0.75rem",
-    maxWidth: 240,
+    // Table cells size to content; card layout keeps a max width for narrow viewports.
+    maxWidth: variant === "card" ? 240 : "none",
     height: "auto",
     minHeight: 24,
     "& .MuiChip-label": {
       display: "block",
-      whiteSpace: "normal",
+      whiteSpace: variant === "card" ? "normal" : "nowrap",
       textAlign: "left",
       lineHeight: 1.25,
       py: 0.5,

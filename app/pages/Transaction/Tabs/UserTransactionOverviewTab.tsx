@@ -267,6 +267,7 @@ function TransactionArgumentsRow({
   return (
     <ContentRow
       title="Arguments:"
+      titleLayout="fit"
       value={<TransactionArguments transaction={transaction} />}
       tooltip={getLearnMoreTooltip("arguments")}
     />

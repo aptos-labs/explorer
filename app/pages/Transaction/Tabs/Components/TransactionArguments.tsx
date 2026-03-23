@@ -100,6 +100,7 @@ const cellSx = {
   fontSize: "0.8rem",
   py: 1,
   px: 1.5,
+  verticalAlign: "top",
 } as const;
 
 export default function TransactionArguments({
@@ -307,11 +308,8 @@ export default function TransactionArguments({
                   ))}
                 </Box>
               ) : (
-                <TableContainer sx={{maxWidth: "100%"}}>
-                  <Table
-                    size="small"
-                    sx={{tableLayout: "fixed", width: "100%"}}
-                  >
+                <TableContainer sx={{maxWidth: "100%", overflowX: "auto"}}>
+                  <Table size="small" sx={{tableLayout: "auto", width: "100%"}}>
                     <TableHead>
                       <TableRow>
                         <TableCell
@@ -321,7 +319,8 @@ export default function TransactionArguments({
                             fontSize: "0.75rem",
                             color: theme.palette.text.secondary,
                             borderBottom: `1px solid ${theme.palette.divider}`,
-                            width: showTypeArgNames ? 100 : 40,
+                            whiteSpace: "nowrap",
+                            width: showTypeArgNames ? undefined : "1%",
                           }}
                         >
                           {showTypeArgNames ? "Name" : "#"}
@@ -335,7 +334,7 @@ export default function TransactionArguments({
                                 fontSize: "0.75rem",
                                 color: theme.palette.text.secondary,
                                 borderBottom: `1px solid ${theme.palette.divider}`,
-                                width: 120,
+                                whiteSpace: "nowrap",
                               }}
                             >
                               Constraint
@@ -433,11 +432,8 @@ export default function TransactionArguments({
                   ))}
                 </Box>
               ) : (
-                <TableContainer sx={{maxWidth: "100%"}}>
-                  <Table
-                    size="small"
-                    sx={{tableLayout: "fixed", width: "100%"}}
-                  >
+                <TableContainer sx={{maxWidth: "100%", overflowX: "auto"}}>
+                  <Table size="small" sx={{tableLayout: "auto", width: "100%"}}>
                     <TableHead>
                       <TableRow>
                         <TableCell
@@ -447,7 +443,8 @@ export default function TransactionArguments({
                             fontSize: "0.75rem",
                             color: theme.palette.text.secondary,
                             borderBottom: `1px solid ${theme.palette.divider}`,
-                            width: showFunctionArgNames ? 100 : 40,
+                            whiteSpace: "nowrap",
+                            width: showFunctionArgNames ? undefined : "1%",
                           }}
                         >
                           {showFunctionArgNames ? "Name" : "#"}
@@ -460,7 +457,7 @@ export default function TransactionArguments({
                               fontSize: "0.75rem",
                               color: theme.palette.text.secondary,
                               borderBottom: `1px solid ${theme.palette.divider}`,
-                              width: 140,
+                              whiteSpace: "nowrap",
                             }}
                           >
                             Type
