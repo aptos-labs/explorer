@@ -5,6 +5,10 @@
 
 import type {Aptos} from "@aptos-labs/ts-sdk";
 import {queryOptions} from "@tanstack/react-query";
+import {
+  emitRateLimit,
+  isRateLimitLike,
+} from "../context/rate-limit/rateLimitEvents";
 import {getTransaction} from "./client";
 
 // Transactions list query
@@ -104,7 +108,8 @@ export function accountInfoQueryOptions(
           accountAddress: address,
         });
         return account;
-      } catch {
+      } catch (error) {
+        if (isRateLimitLike(error)) emitRateLimit();
         return null;
       }
     },
@@ -126,7 +131,8 @@ export function accountResourcesQueryOptions(
           accountAddress: address,
         });
         return resources;
-      } catch {
+      } catch (error) {
+        if (isRateLimitLike(error)) emitRateLimit();
         return [];
       }
     },
@@ -144,7 +150,8 @@ export function accountModulesQueryOptions(address: string, client: Aptos) {
           accountAddress: address,
         });
         return modules;
-      } catch {
+      } catch (error) {
+        if (isRateLimitLike(error)) emitRateLimit();
         return [];
       }
     },
@@ -166,7 +173,8 @@ export function accountTransactionsQueryOptions(
           options: {limit: 25},
         });
         return transactions;
-      } catch {
+      } catch (error) {
+        if (isRateLimitLike(error)) emitRateLimit();
         return [];
       }
     },

@@ -1,11 +1,22 @@
-import {QueryClient} from "@tanstack/react-query";
+import {QueryCache, QueryClient} from "@tanstack/react-query";
 import {createRouter as createTanStackRouter} from "@tanstack/react-router";
 import {NavigationPending} from "./components/NavigationPending";
+import {
+  emitRateLimit,
+  isRateLimitLike,
+} from "./context/rate-limit/rateLimitEvents";
 import {routeTree} from "./routeTree.gen";
 
 // Create a new QueryClient for each request (SSR safety)
 function createQueryClient() {
   return new QueryClient({
+    queryCache: new QueryCache({
+      onError: (error) => {
+        if (typeof window !== "undefined" && isRateLimitLike(error)) {
+          emitRateLimit();
+        }
+      },
+    }),
     defaultOptions: {
       queries: {
         // Default staleTime: 30 seconds for dynamic data
@@ -16,13 +27,15 @@ function createQueryClient() {
         refetchOnWindowFocus: true,
         // Custom retry logic
         retry: (failureCount, error) => {
-          // Don't retry on 404 errors
           if (
             error &&
             typeof error === "object" &&
             "type" in error &&
             (error as {type: string}).type === "Not Found"
           ) {
+            return false;
+          }
+          if (isRateLimitLike(error)) {
             return false;
           }
           // Retry other errors once
