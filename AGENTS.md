@@ -107,6 +107,7 @@ This repository is often modified by automated agents. The following bar keeps t
 - Run **`pnpm fmt`** and **`pnpm lint`**. If you touched tests or testable logic, run **`pnpm test --run`**.
 - After any **`app/routes/`** edit, ensure **`pnpm routes:generate`** has been run (usually automatic via pre-scripts; commit the updated `app/routeTree.gen.ts` when it changes).
 - **Typecheck** must pass (`pnpm lint` includes `tsc --noEmit`).
+- **`CHANGELOG.md`**: Add an entry under **[Unreleased]** when the change is **user-visible**, **behavior-changing**, or otherwise **worth calling out in release notes** (features, fixes, notable refactors, dependency upgrades that affect the app). Skip churn-only edits (typos, internal-only refactors) unless they matter to operators or contributors—use the existing section style (keep a reasonable level of detail).
 
 ### Product and UX
 
@@ -121,6 +122,7 @@ This repository is often modified by automated agents. The following bar keeps t
 ### Documentation drift
 
 - Route, tab, or major behavior changes must stay aligned with **LLM/SEO** artifacts and any user-facing docs the project already maintains for that area (see checklist above).
+- Match **release visibility** in **`CHANGELOG.md`** (see bullet above): if users or deployers would care, document it there in the same PR when practical.
 
 ---
 
@@ -175,6 +177,8 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 
 > **When adding or removing routes/tabs**: Update `public/llms.txt`, `public/llms-full.txt`, and `public/sitemap.xml`. See the [LLM / AI Accessibility](#llm--ai-accessibility) section for the full checklist.
 
+> **CHANGELOG**: For **user-visible** or **release-note-worthy** work (features, fixes, notable behavior changes), add an entry under **`CHANGELOG.md` → [Unreleased]** in the same PR. Use judgment for internal-only churn; see [Quality expectations for AI-generated changes](#quality-expectations-for-ai-generated-changes).
+
 > **When adding a named address** (an entry in `app/data/{mainnet,testnet,devnet}/knownAddresses.ts`): Ask the user whether they also want **branding** for that address—specifically an **icon** (site-relative path under `public/address-icons/` or an absolute URL) and an optional **short description**—and add them to the matching network’s `knownAddressBranding.ts` (and `aptosFrameworkAddressBranding.ts` when the account is a shared framework address on all networks). Use `iconBadge` only when appropriate (e.g. framework accounts on the Aptos mark).
 
 ---
@@ -200,6 +204,7 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 - [ ] No hardcoded values that should be constants
 - [ ] Accessible (proper ARIA attributes, keyboard navigation)
 - [ ] If routes/tabs were added or changed: `llms.txt`, `llms-full.txt`, and `sitemap.xml` updated
+- [ ] If the PR is user-visible or release-worthy: `CHANGELOG.md` updated under **[Unreleased]**
 
 **Outputs**: Review feedback, approval or change requests
 
@@ -375,7 +380,8 @@ chore(deps): update tanstack-query to v5
 1. Run `pnpm fmt` to format code
 2. Run `pnpm lint` to check for errors
 3. Run `pnpm test --run` if you modified testable code
-4. Write a descriptive commit message
+4. Update **`CHANGELOG.md`** when the change is notable for users or release notes (see [Quality expectations for AI-generated changes](#quality-expectations-for-ai-generated-changes))
+5. Write a descriptive commit message
 
 ---
 
