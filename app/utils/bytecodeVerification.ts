@@ -1,3 +1,5 @@
+import {Hex} from "@aptos-labs/ts-sdk";
+import pako from "pako";
 import type {ModuleMetadataResult} from "./moveDecompiler";
 
 /**
@@ -238,12 +240,18 @@ function extractNamedAddresses(metadata: ModuleMetadataResult): NamedAddress[] {
   return addresses;
 }
 
+/**
+ * Decode hex-encoded published source.
+ * Aptos PackageRegistry stores module source as gzip-compressed hex.
+ */
 function decodeHexSource(hexStr: string): string {
-  const cleaned = hexStr.startsWith("0x") ? hexStr.slice(2) : hexStr;
-  const bytes = new Uint8Array(
-    cleaned.match(/.{1,2}/g)?.map((byte) => Number.parseInt(byte, 16)) ?? [],
-  );
-  return new TextDecoder().decode(bytes);
+  try {
+    return pako.ungzip(Hex.fromHexString(hexStr).toUint8Array(), {
+      to: "string",
+    });
+  } catch {
+    return "";
+  }
 }
 
 /**
