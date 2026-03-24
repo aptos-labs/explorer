@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import {diffLines} from "diff";
 import {useEffect, useMemo, useState} from "react";
+import {useExplorerDevQuery} from "../../../../hooks/useExplorerDevQuery";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
 import type {ModulePublishTransaction} from "../../../../api/hooks/useGetModulePublishHistory";
@@ -302,8 +303,15 @@ export default function ModuleDiffView({
   onCompareVersionChange,
 }: ModuleDiffViewProps) {
   const theme = useTheme();
+  const decompilationEnabled = useExplorerDevQuery();
   const [activeView, setActiveView] =
     useState<DiffViewType>("published-source");
+
+  useEffect(() => {
+    if (!decompilationEnabled && activeView === "decompiled-source") {
+      setActiveView("bytecode-disassembly");
+    }
+  }, [decompilationEnabled, activeView]);
 
   const basePackages = useGetAccountPackages(address, baseVersion);
   const comparePackages = useGetAccountPackages(address, compareVersion);
@@ -350,7 +358,10 @@ export default function ModuleDiffView({
     activeView === "bytecode-disassembly"
       ? "bytecode-disassembly"
       : "decompiled-source";
-  const shouldDecompile = needsBytecode && !hasModuleError;
+  const shouldDecompile =
+    needsBytecode &&
+    !hasModuleError &&
+    (decompView !== "decompiled-source" || decompilationEnabled);
 
   const baseDecompiled = useDecompiledCode(
     baseModule?.bytecode,
@@ -412,11 +423,9 @@ export default function ModuleDiffView({
     return {added, removed};
   }, [diff]);
 
-  const viewTypes: DiffViewType[] = [
-    "published-source",
-    "decompiled-source",
-    "bytecode-disassembly",
-  ];
+  const viewTypes: DiffViewType[] = decompilationEnabled
+    ? ["published-source", "decompiled-source", "bytecode-disassembly"]
+    : ["published-source", "bytecode-disassembly"];
 
   const hasError = !!moduleError || !!decompError;
 
@@ -479,8 +488,15 @@ export default function ModuleDiffView({
           >
             <Typography color="text.secondary">
               Published source is not available for module{" "}
-              <strong>{moduleName}</strong> at these versions. Try the
-              Decompiled or Disassembly view instead.
+              <strong>{moduleName}</strong> at these versions. Try the{" "}
+              {decompilationEnabled ? (
+                <>Decompiled or Disassembly view instead.</>
+              ) : (
+                <>
+                  Disassembly view instead (add <code>?dev=true</code> to the
+                  URL for Decompiled).
+                </>
+              )}
             </Typography>
           </Box>
         )}
@@ -509,7 +525,9 @@ export default function ModuleDiffView({
               <Typography variant="caption" color="text.secondary">
                 {baseModuleLoading || compareModuleLoading
                   ? "Fetching module bytecode…"
-                  : "Decompiling…"}
+                  : activeView === "bytecode-disassembly"
+                    ? "Disassembling…"
+                    : "Decompiling…"}
               </Typography>
             )}
           </Stack>

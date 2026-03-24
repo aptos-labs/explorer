@@ -22,6 +22,7 @@ import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../components/StyledTooltip";
+import {useExplorerDevQuery} from "../../../hooks/useExplorerDevQuery";
 import {useNavigate} from "../../../routing";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {
@@ -316,6 +317,7 @@ export function Code({
   codeLinkContext?: MoveCodeLinkContext;
 }) {
   const {selectedModuleName} = useModulesPathParams();
+  const decompilationEnabled = useExplorerDevQuery();
   const logEvent = useLogEventWithBasic();
   const moveCodeRenderer = useMoveCodeSyntaxRenderer(codeLinkContext);
   const moveCodeLinkHandlers =
@@ -335,9 +337,19 @@ export function Code({
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
-  const [activeView, setActiveView] = useState<CodeView>(() =>
-    hasPublishedSourceCode ? "published-source" : "decompiled-source",
-  );
+  const [activeView, setActiveView] = useState<CodeView>(() => {
+    if (publishedSourceCode) {
+      return "published-source";
+    }
+    if (
+      typeof moduleBytecode === "string" &&
+      moduleBytecode !== "0x" &&
+      !decompilationEnabled
+    ) {
+      return "bytecode-disassembly";
+    }
+    return "decompiled-source";
+  });
   const [decompiledSource, setDecompiledSource] = useState<BytecodeViewState>();
   const [bytecodeDisassembly, setBytecodeDisassembly] =
     useState<BytecodeViewState>();
@@ -347,17 +359,33 @@ export function Code({
 
   useEffect(() => {
     if (!hasPublishedSourceCode && hasModuleBytecode) {
-      setActiveView("decompiled-source");
+      setActiveView(
+        decompilationEnabled ? "decompiled-source" : "bytecode-disassembly",
+      );
     }
-  }, [hasPublishedSourceCode, hasModuleBytecode]);
+  }, [hasPublishedSourceCode, hasModuleBytecode, decompilationEnabled]);
 
   useEffect(() => {
     if (activeView === "abi" && !moduleQuery) {
       setActiveView(
-        hasPublishedSourceCode ? "published-source" : "decompiled-source",
+        hasPublishedSourceCode
+          ? "published-source"
+          : decompilationEnabled
+            ? "decompiled-source"
+            : "bytecode-disassembly",
       );
     }
-  }, [activeView, moduleQuery, hasPublishedSourceCode]);
+  }, [activeView, moduleQuery, hasPublishedSourceCode, decompilationEnabled]);
+
+  useEffect(() => {
+    if (
+      !decompilationEnabled &&
+      activeView === "decompiled-source" &&
+      hasModuleBytecode
+    ) {
+      setActiveView("bytecode-disassembly");
+    }
+  }, [decompilationEnabled, activeView, hasModuleBytecode]);
 
   useEffect(() => {
     const missingActiveViewCode =
@@ -374,6 +402,7 @@ export function Code({
       !moduleBytecodeKey ||
       activeView === "published-source" ||
       activeView === "abi" ||
+      (activeView === "decompiled-source" && !decompilationEnabled) ||
       !missingActiveViewCode
     ) {
       return;
@@ -436,6 +465,7 @@ export function Code({
     decompiledSource,
     hasModuleBytecode,
     moduleBytecodeKey,
+    decompilationEnabled,
   ]);
 
   let displayedCode: string | undefined;
@@ -591,15 +621,17 @@ export function Code({
         )}
         {hasModuleBytecode && (
           <>
-            <Button
-              size="small"
-              variant={
-                activeView === "decompiled-source" ? "contained" : "outlined"
-              }
-              onClick={() => setActiveView("decompiled-source")}
-            >
-              Decompiled
-            </Button>
+            {decompilationEnabled && (
+              <Button
+                size="small"
+                variant={
+                  activeView === "decompiled-source" ? "contained" : "outlined"
+                }
+                onClick={() => setActiveView("decompiled-source")}
+              >
+                Decompiled
+              </Button>
+            )}
             <Button
               size="small"
               variant={
@@ -679,7 +711,9 @@ export function Code({
         <Stack direction="row" spacing={1.5} alignItems="center" py={2}>
           <CircularProgress size={18} />
           <Typography variant="body2" color="text.secondary">
-            Decompiling module bytecode...
+            {activeView === "bytecode-disassembly"
+              ? "Disassembling module bytecode..."
+              : "Decompiling module bytecode..."}
           </Typography>
         </Stack>
       ) : activeView !== "published-source" && decompilationError ? (

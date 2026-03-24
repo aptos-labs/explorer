@@ -25,6 +25,7 @@ import {
   getDecompiledScriptCodeView,
   normalizeBytecodeHex,
 } from "../../../../utils/moveDecompiler";
+import {useExplorerDevQuery} from "../../../../hooks/useExplorerDevQuery";
 import {useLogEventWithBasic} from "../../../Account/hooks/useLogEventWithBasic";
 
 type ScriptBytecodeDecompilerProps = {
@@ -118,14 +119,22 @@ export default function ScriptBytecodeDecompiler({
   const semanticColors = getSemanticColors(theme.palette.mode);
   const styles = useHighlighterStyles();
   const logEvent = useLogEventWithBasic();
+  const decompilationEnabled = useExplorerDevQuery();
   const TOOLTIP_TIME = 2000;
 
   const canonicalBytecodeHex = normalizeBytecodeHex(bytecodeHex.trim());
   /** At least one byte after `0x` (two hex digits). */
   const hasBytecode = canonicalBytecodeHex.length > 3;
 
-  const [activeView, setActiveView] =
-    useState<DecompilationView>("decompiled-source");
+  const [activeView, setActiveView] = useState<DecompilationView>(() =>
+    decompilationEnabled ? "decompiled-source" : "bytecode-disassembly",
+  );
+
+  useEffect(() => {
+    if (!decompilationEnabled && activeView === "decompiled-source") {
+      setActiveView("bytecode-disassembly");
+    }
+  }, [decompilationEnabled, activeView]);
   const [decompiledSource, setDecompiledSource] = useState<{
     bytecodeKey: string;
     code: string;
@@ -147,7 +156,12 @@ export default function ScriptBytecodeDecompiler({
         : !bytecodeDisassembly ||
           bytecodeDisassembly.bytecodeKey !== bytecodeKey;
 
-    if (!hasBytecode || !bytecodeKey || !missingActiveViewCode) {
+    if (
+      !hasBytecode ||
+      !bytecodeKey ||
+      !missingActiveViewCode ||
+      (activeView === "decompiled-source" && !decompilationEnabled)
+    ) {
       return;
     }
 
@@ -203,6 +217,7 @@ export default function ScriptBytecodeDecompiler({
     bytecodeKey,
     decompiledSource,
     hasBytecode,
+    decompilationEnabled,
   ]);
 
   let displayedCode: string | undefined;
@@ -311,15 +326,17 @@ export default function ScriptBytecodeDecompiler({
         )}
       </Stack>
       <Stack direction="row" spacing={1} marginBottom={2}>
-        <Button
-          size="small"
-          variant={
-            activeView === "decompiled-source" ? "contained" : "outlined"
-          }
-          onClick={() => setActiveView("decompiled-source")}
-        >
-          Decompiled
-        </Button>
+        {decompilationEnabled && (
+          <Button
+            size="small"
+            variant={
+              activeView === "decompiled-source" ? "contained" : "outlined"
+            }
+            onClick={() => setActiveView("decompiled-source")}
+          >
+            Decompiled
+          </Button>
+        )}
         <Button
           size="small"
           variant={
@@ -344,7 +361,9 @@ export default function ScriptBytecodeDecompiler({
         <Stack direction="row" spacing={1.5} alignItems="center" py={2}>
           <CircularProgress size={18} />
           <Typography variant="body2" color="text.secondary">
-            Processing script bytecode...
+            {activeView === "bytecode-disassembly"
+              ? "Disassembling script bytecode..."
+              : "Processing script bytecode..."}
           </Typography>
         </Stack>
       ) : decompilationError ? (
