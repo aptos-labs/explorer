@@ -4,6 +4,14 @@ import type {PackageMetadata} from "../api/hooks/useGetAccountResource";
 
 export const MOVE_2_MIN_BYTECODE_VERSION = 6;
 
+const FRAMEWORK_ADDRESS = "0x1";
+
+const APTOS_API_URLS: Record<string, string> = {
+  mainnet: "https://fullnode.mainnet.aptoslabs.com/v1",
+  testnet: "https://fullnode.testnet.aptoslabs.com/v1",
+  devnet: "https://fullnode.devnet.aptoslabs.com/v1",
+};
+
 export type VerificationStatus = "verified" | "mismatch" | "error";
 
 export type VerificationStep = {
@@ -36,6 +44,7 @@ export async function verifyModuleBytecode(opts: {
   publishedSourceHex: string;
   allPackages?: PackageMetadata[];
   moduleAddress?: string;
+  networkName?: string;
   onProgress?: (steps: VerificationStep[]) => void;
 }): Promise<BytecodeVerificationResult> {
   const {
@@ -43,6 +52,7 @@ export async function verifyModuleBytecode(opts: {
     publishedSourceHex,
     allPackages,
     moduleAddress,
+    networkName,
     onProgress,
   } = opts;
 
@@ -62,8 +72,15 @@ export async function verifyModuleBytecode(opts: {
 
     const metadata = await getModuleMetadata(moduleBytecodeHex);
     const addr = moduleAddress ?? metadata.address ?? "0x1";
-    const depFiles = buildDependencyFiles(allPackages ?? [], metadata.name);
-    const extraAddresses = buildNamedAddressMap(allPackages ?? [], addr);
+
+    let allDeps = allPackages ?? [];
+    if (addr.toLowerCase() !== FRAMEWORK_ADDRESS) {
+      const frameworkPkgs = await fetchFrameworkPackages(networkName);
+      allDeps = [...allDeps, ...frameworkPkgs];
+    }
+
+    const depFiles = buildDependencyFiles(allDeps, metadata.name);
+    const extraAddresses = buildNamedAddressMap(allDeps, addr);
 
     // --- Step 1: Decompile ---
     steps[0].status = "running";
@@ -166,6 +183,41 @@ export async function verifyModuleBytecode(opts: {
   }
 }
 
+let frameworkPackagesCache: PackageMetadata[] | null = null;
+
+async function fetchFrameworkPackages(
+  networkName?: string,
+): Promise<PackageMetadata[]> {
+  if (frameworkPackagesCache) return frameworkPackagesCache;
+
+  const network = networkName ?? "mainnet";
+  const baseUrl = APTOS_API_URLS[network] ?? APTOS_API_URLS.mainnet;
+
+  try {
+    const resp = await fetch(
+      `${baseUrl}/accounts/${FRAMEWORK_ADDRESS}/resource/0x1::code::PackageRegistry`,
+    );
+    if (!resp.ok) return [];
+
+    const json = await resp.json();
+    const pkgs: PackageMetadata[] = (json?.data?.packages ?? []).map(
+      (pkg: PackageMetadata) => ({
+        name: pkg.name,
+        modules: pkg.modules ?? [],
+        upgrade_policy: pkg.upgrade_policy,
+        upgrade_number: pkg.upgrade_number,
+        source_digest: pkg.source_digest,
+        manifest: pkg.manifest,
+      }),
+    );
+
+    frameworkPackagesCache = pkgs;
+    return pkgs;
+  } catch {
+    return [];
+  }
+}
+
 function buildDependencyFiles(
   packages: PackageMetadata[],
   targetModuleName: string,
@@ -183,9 +235,17 @@ function buildDependencyFiles(
   return deps;
 }
 
+const WELL_KNOWN_FRAMEWORK_NAMES = new Set([
+  "std",
+  "aptos_std",
+  "aptos_framework",
+  "aptos_token",
+  "aptos_token_objects",
+]);
+
 function buildNamedAddressMap(
   packages: PackageMetadata[],
-  address: string,
+  ownerAddress: string,
 ): Record<string, string> {
   const map: Record<string, string> = {};
   for (const pkg of packages) {
@@ -193,9 +253,10 @@ function buildNamedAddressMap(
       const decoded = decodeHexSource(mod.source);
       if (!decoded) continue;
       const match = decoded.match(/module\s+(\w+)::\w+/);
-      if (match?.[1] && !match[1].startsWith("0x")) {
-        map[match[1]] = address;
-      }
+      if (!match?.[1] || match[1].startsWith("0x")) continue;
+      map[match[1]] = WELL_KNOWN_FRAMEWORK_NAMES.has(match[1])
+        ? FRAMEWORK_ADDRESS
+        : ownerAddress;
     }
   }
   return map;

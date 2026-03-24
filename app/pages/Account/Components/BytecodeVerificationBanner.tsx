@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import {useCallback, useRef, useState} from "react";
 import type {PackageMetadata} from "../../../api/hooks/useGetAccountResource";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import type {
   BytecodeVerificationResult,
@@ -41,7 +42,12 @@ function ErrorDetailModal({
 }) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
-  const errors = step.rawErrors ?? [];
+  const rawErrors = step.rawErrors ?? [];
+  const errorCounts = new Map<string, number>();
+  for (const e of rawErrors) {
+    errorCounts.set(e, (errorCounts.get(e) ?? 0) + 1);
+  }
+  const errors = [...errorCounts.entries()];
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -100,7 +106,8 @@ function ErrorDetailModal({
               }}
             >
               <Typography variant="body2" fontWeight={600} sx={{mb: 1}}>
-                {errors.length} error{errors.length !== 1 ? "s" : ""}
+                {rawErrors.length} issue{rawErrors.length !== 1 ? "s" : ""} (
+                {errors.length} unique)
               </Typography>
               <Stack
                 spacing={0}
@@ -112,20 +119,21 @@ function ErrorDetailModal({
                   wordBreak: "break-word",
                 }}
               >
-                {errors.map((err, i) => (
+                {errors.map(([msg, count]) => (
                   <Typography
-                    key={`${i}-${err.slice(0, 30)}`}
+                    key={msg}
                     variant="body2"
                     sx={{
                       fontFamily: "monospace",
                       fontSize: 12,
                       py: 0.25,
-                      color: err.toLowerCase().startsWith("warning")
+                      color: msg.toLowerCase().startsWith("warning")
                         ? semanticColors.status.warning
                         : semanticColors.status.error,
                     }}
                   >
-                    {err}
+                    {count > 1 ? `(x${count}) ` : ""}
+                    {msg}
                   </Typography>
                 ))}
               </Stack>
@@ -252,6 +260,7 @@ export default function BytecodeVerificationBanner({
   const [isRunning, setIsRunning] = useState(false);
   const [modalStep, setModalStep] = useState<VerificationStep | null>(null);
   const cancelledRef = useRef(false);
+  const networkName = useNetworkName();
 
   const hasSource =
     !!publishedSourceHex &&
@@ -277,6 +286,7 @@ export default function BytecodeVerificationBanner({
         publishedSourceHex,
         allPackages,
         moduleAddress,
+        networkName,
         onProgress: (steps) => {
           if (!cancelledRef.current) setLiveSteps([...steps]);
         },
@@ -296,7 +306,13 @@ export default function BytecodeVerificationBanner({
     } finally {
       if (!cancelledRef.current) setIsRunning(false);
     }
-  }, [moduleBytecodeHex, publishedSourceHex, allPackages, moduleAddress]);
+  }, [
+    moduleBytecodeHex,
+    publishedSourceHex,
+    allPackages,
+    moduleAddress,
+    networkName,
+  ]);
 
   if (!moduleBytecodeHex || moduleBytecodeHex === "0x") return null;
 
