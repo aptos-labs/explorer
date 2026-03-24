@@ -34,8 +34,13 @@
 20. [Network Selection](#20-network-selection)
 21. [Routing & Navigation](#21-routing--navigation)
 22. [Error Handling](#22-error-handling)
-23. [SEO / LLM Accessibility](#23-seo--llm-accessibility)
-24. [Feature Flags & Conditional Behavior](#24-feature-flags--conditional-behavior)
+23. [Rate Limiting](#23-rate-limiting)
+24. [SEO / LLM Accessibility](#24-seo--llm-accessibility)
+25. [Feature Flags & Conditional Behavior](#25-feature-flags--conditional-behavior)
+26. [Data Integration & Caching](#26-data-integration--caching)
+27. [PWA / Service Worker](#27-pwa--service-worker)
+28. [Shared UI Components](#28-shared-ui-components)
+29. [Analytics & Telemetry](#29-analytics--telemetry)
 
 ---
 
@@ -53,9 +58,9 @@ The app shell that wraps every page.
 | **Search** | Header autocomplete search (see FEAT-SEARCH). |
 | **Network selector** | Dropdown to switch `?network=` param (see FEAT-NETWORK). |
 | **Theme toggle** | Light/dark icon button (see FEAT-THEME). |
-| **Settings** | Gear icon opens `SettingsDialog` (see FEAT-SETTINGS). |
+| **Settings** | Gear icon opens `SettingsDialog` (see FEAT-SETTINGS). Can also be triggered programmatically via `emitOpenSettings()` (e.g. from Rate Limit Drawer). |
 | **Wallet connector** | Connect/disconnect wallet button (see FEAT-WALLET). |
-| **Feature bar** | Colored banner when running on a non-production feature branch. |
+| **Feature bar** | Colored banner when running on a non-production feature branch (see FEAT-FLAGS-004). |
 
 ### FEAT-CHROME-002 — Footer
 
@@ -71,6 +76,20 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Behavior** | Global `defaultPendingComponent` shows a loading indicator during route transitions with minimum display time to reduce flicker. |
+
+### FEAT-CHROME-004 — Go Back Button
+
+| Aspect | Detail |
+|--------|--------|
+| **Behavior** | Renders a Back button in PageHeader only when `window.history.state.idx > 0`. Otherwise hidden. |
+
+### FEAT-CHROME-005 — Localnet Unavailable Modal
+
+| Aspect | Detail |
+|--------|--------|
+| **Condition** | `networkName === "local"` and local node at `http://127.0.0.1:8080/v1` is unreachable. |
+| **Detection** | Polls local node every 30s with 2s timeout, checks for `chain_id` in response. |
+| **Display** | Modal with "Cannot connect to local node", `aptos node run-local-testnet --with-indexer-api` command, "Switch to Mainnet" button. |
 
 ---
 
@@ -91,13 +110,13 @@ The app shell that wraps every page.
 
 | Input Pattern | Search Behavior |
 |---------------|-----------------|
-| `.apt` / `.petra` suffix | ANS name lookup → account link |
-| Valid Move struct | Coin lookup via `CoinInfo` resource + Panora coin list |
+| `.apt` / `.petra` suffix | ANS name lookup via ts-sdk (`getPrimaryName`, `getName`) → account link |
+| Valid Move struct | Coin lookup via `CoinInfo` resource + Panora coin list prefix match |
 | Numeric | Parallel: block by height, transaction by version, block by version |
 | 32-byte hex | Parallel: transaction hash, account address, coin list |
-| Valid account address | Account, FA metadata, object core, resources, coin list |
-| Emoji-only | Emojicoin market lookup |
-| Generic text (length > 2) | Coin list + known address label match |
+| Valid account address | Account, FA metadata, object core, resources, coin list, owned objects fallback |
+| Emoji-only (`/^\p{Emoji}+$/gu`) | Emojicoin market lookup: derives market address from `EMOJICOIN_REGISTRY_ADDRESS` via `createNamedObjectAddress`, verifies on-chain, returns coin + LP results |
+| Generic text (length > 2) | Coin list name/symbol match + known address label match |
 
 ### FEAT-SEARCH-003 — Search Results
 
@@ -106,8 +125,9 @@ The app shell that wraps every page.
 | **Result types** | Account, Address, Transaction, Block, Coin, Fungible Asset, Object. |
 | **Grouping** | Results grouped by type with section headers. |
 | **Deduplication** | Prefer coin list coin over struct coin; drop redundant "Address" when Account/FA/Object exists. |
-| **Avatars** | Token logos, known-address brand marks, blockies fallback. |
-| **Fallback** | Valid-looking address with no on-chain hits → still link to `/account/...`. |
+| **Avatars** | Token logos, known-address brand marks via `identiconKey`, blockies fallback. |
+| **Fallback** | Valid-looking address with no on-chain hits → `anyOwnedObjects` check → still link to `/account/...` via `createFallbackAddressResult`. |
+| **GTM event** | `searchStats` event with `network`, `searchText`, `searchResult` ("notFound" or "success"), `duration`. |
 
 ### FEAT-SEARCH-004 — Home Page (non-search state)
 
@@ -137,12 +157,13 @@ The app shell that wraps every page.
 | **Server-side** | Applied on User Transactions and Account Transactions views. |
 | **Client-side** | Applied on All Transactions view. |
 
-### FEAT-TXLIST-003 — Table Columns
+### FEAT-TXLIST-003 — Table Columns & Virtualization
 
 | Aspect | Detail |
 |--------|--------|
 | **Columns** | Version, type, timestamp, sender, function, gas. |
 | **Pagination** | Cursor-based pagination with start param. |
+| **Virtualization** | Uses `@tanstack/react-virtual` via `VirtualizedTableBody` when row count > 20. |
 
 ---
 
@@ -154,7 +175,7 @@ The app shell that wraps every page.
 
 | Transaction Type | Available Tabs |
 |------------------|----------------|
-| User | Overview, Balance Change, Events, Payload, Changes |
+| User | Overview, Balance Change, Events, Payload, Changes, Trace |
 | Block metadata | Overview, Events, Changes |
 | State checkpoint | Overview |
 | Pending | Overview, Payload |
@@ -168,21 +189,21 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Key fields** | Version, status, sender, fee payer, secondary signers, function, arguments, amount. |
-| **Transfer/interaction** | Rich parsing of DEX swaps, LSD operations, Econia-style events. |
+| **Actions section** | Rich parsing of DEX swaps, LSD operations, liquidity events (see FEAT-TXN-009). |
 | **Gas** | Gas fee, storage refund, net gas, gas unit price, max gas, VM status. |
-| **AIP-141 banner** | Gas impact warning when AIP-141 is enabled. |
 | **Block** | Link to parent block. |
 | **Timestamps** | Expiration and execution timestamp. |
 | **Signature** | JSON display of signature data. |
 | **Hashes** | State, event, and accumulator root hashes. |
+| **Replay protection** | Nonce display when applicable (vs sequence number). |
 
 ### FEAT-TXN-003 — Balance Change Tab
 
 | Aspect | Detail |
 |--------|--------|
-| **Data source** | Indexer fungible asset activities when available, fallback to raw event parsing. |
+| **Data source** | Indexer fungible asset activities when available, fallback to raw event parsing (`parseRawEventsForBalanceChanges`). |
 | **Views** | Aggregated and non-aggregated balance changes. |
-| **Verification filter** | Mainnet: Verified / Recognized / All asset filter. |
+| **Verification filter** | Mainnet: Verified / Recognized / All asset filter via `VerifiedCell`. |
 | **Table** | Address, asset, amount, type columns. |
 
 ### FEAT-TXN-004 — Events Tab
@@ -198,7 +219,7 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Display** | Collapsible payload with JSON view. |
-| **Script decompile** | For `script_payload`, embeds `ScriptBytecodeDecompiler`. |
+| **Script decompile** | For `script_payload`, embeds `ScriptBytecodeDecompiler` — decompiles hex bytecode via WASM Move decompiler, shows decompiled Move or bytecode disassembly with copy/download/expand modal. |
 
 ### FEAT-TXN-006 — Changes Tab
 
@@ -211,7 +232,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Accordion at bottom with raw JSON and fullnode API link. |
+| **Display** | Accordion at bottom of Overview tab with raw JSON and fullnode API link. |
 
 ### FEAT-TXN-008 — Default Tab Redirect
 
@@ -219,6 +240,33 @@ The app shell that wraps every page.
 |--------|--------|
 | **Behavior** | `/txn/$hash` → `/txn/$hash/userTxnOverview`; client-side correction for non-user transactions. |
 | **Invalid tab** | Redirects to the first tab for the transaction type. |
+
+### FEAT-TXN-009 — Transaction Actions Parsing
+
+| Aspect | Detail |
+|--------|--------|
+| **Location** | `UserTransactionOverviewTab.tsx` → `TransactionActionsRow`. |
+| **DEX swaps** | ThalaSwap (v1, v2, CL), Liquidswap (v0, v0.5), PancakeSwap, SushiSwap, AnimeSwap, Obric, Aux Exchange, Cellana Finance, Thetis Market, Cetus, Hyperion, Tapp, Earnium. |
+| **LSD/staking** | Amnis, TruFi, ThalaLSD, Kofi. |
+| **Other actions** | Econia order/fill, Wormhole burn, token mint/burn, object transfer, fungible transfers, legacy token deposit/withdraw, claim fees/rewards, add/remove liquidity. |
+
+### FEAT-TXN-010 — Transaction Trace Tab (Sentio)
+
+| Aspect | Detail |
+|--------|--------|
+| **Condition** | User transactions only. Trace data fetched only on mainnet (Sentio `networkId: 1`). |
+| **Data source** | Sentio call trace API (`https://app.sentio.xyz/api/v1/move/call_trace`). |
+| **Display** | `CallTraceGraph` tree rendering `SentioCallTraceNode` with module/function links, gas info. |
+| **Fallback** | Non-mainnet: info alert "traces are only fetched for Aptos mainnet". |
+| **External link** | Link to Sentio's transaction trace viewer for mainnet transactions. |
+
+### FEAT-TXN-011 — Argument Display
+
+| Aspect | Detail |
+|--------|--------|
+| **Name resolution** | Function argument name overrides registry (see FEAT-DATA-003) → Move source extraction → positional fallback. |
+| **Type badges** | `MoveFunctionParamTypeBadge` with shortened type tags (Object, String, Option, vector, etc.). |
+| **Layout** | Desktop: auto-layout table with compact columns. Mobile: `ArgumentCard` stack. |
 
 ---
 
@@ -233,6 +281,7 @@ The app shell that wraps every page.
 | **Data** | Ledger info + indexer `block_metadata_transactions`. |
 | **Pagination** | `?start=` cursor. |
 | **Columns** | Block height (linked), proposer, timestamp, transaction count. |
+| **Virtualization** | Uses `VirtualizedTableBody` for large result sets. |
 
 ---
 
@@ -264,38 +313,40 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Behavior** | `.apt` names resolved to addresses via `useGetANS`. Primary name shown in title when available. |
+| **Behavior** | `.apt` names resolved to addresses via ts-sdk (`getPrimaryName`, `getAccountNames`, `getName`). Primary name shown in title when available. Mainnet/testnet only. |
+| **Scam check** | Known scam addresses filtered from ANS display. |
 
 ### FEAT-ACCOUNT-002 — Balance Card
 
 | Aspect | Detail |
 |--------|--------|
 | **APT balance** | Formatted APT balance via `useGetAccountAPTBalance`. |
-| **USD estimate** | On mainnet, fetches CoinGecko price and shows fiat estimate. |
-| **DeFi links** | Dropdown: Lightscan, Yield AI portfolio links. |
+| **USD estimate** | On mainnet, fetches CoinGecko price (see FEAT-DATA-001) and shows fiat estimate with tooltip showing rate. |
+| **DeFi links** | Dropdown: Lightscan (`aptos.lightscan.one/portfolio/$address`), Yield AI (`yieldai.app/portfolio/$address`). Default: Yield AI. External links with `rel="noopener noreferrer"`. |
 
 ### FEAT-ACCOUNT-003 — Banners
 
 | Banner | Condition | Content |
 |--------|-----------|---------|
-| Known address branding | `useKnownAddressBranding` match | Logo, optional badge overlay, description. |
-| Defunct protocol | Mainnet, `getDefunctProtocol` match | Warning + optional Withdraw Funds dialog. |
-| Aptos Names promo | `useGetInDevMode` true | ANS claim CTA. |
-| Petra Vault (multisig) | Account is multisig | "MULTISIG" pill + Petra Vault link. |
+| Known address branding | `useKnownAddressBranding` match | Logo (with optional `iconBadge` overlay, e.g. "0x1"), description. Per-network data from `knownAddressBranding.ts`. |
+| Defunct protocol | Mainnet, `getDefunctProtocol` match | "MAY BE DEFUNCT" warning. "Withdraw Funds" button if withdrawal plugin exists (currently no plugins registered). Dialog shows owner %, operator fee, entry function, but no in-app tx submission. |
+| Aptos Names promo | `useGetInDevMode` true (dev/earlydev mode) | ANS claim CTA. |
+| Petra Vault (multisig) | Account is multisig | "MULTISIG" pill + Petra Vault onboarding link. |
 
 ### FEAT-ACCOUNT-004 — Object Detection & Redirect
 
 | Aspect | Detail |
 |--------|--------|
-| **Behavior** | If address at `/account/...` is a pure object → redirect to `/object/...`. |
+| **Behavior** | If address at `/account/...` is a pure object (has `ObjectCore` but no `0x1::account::Account` resource) → redirect to `/object/...`. |
+| **Path preservation** | Uses `pathname.replace(/^\/account\//, "/object/")` so the full path (including `/modules/code/...` suffixes) and query string are preserved. |
 
 ### FEAT-ACCOUNT-005 — Tab Set (Account)
 
 | Condition | Tabs |
 |-----------|------|
-| GraphQL on | transactions, coins (Assets), tokens (NFTs), resources, modules, info, gas-impact (if AIP-141 enabled) |
-| GraphQL off | transactions, resources, modules, info, gas-impact (if AIP-141 enabled) |
-| Multisig + GraphQL | transactions, multisig, coins, tokens, resources, modules, info, gas-impact |
+| GraphQL on | transactions, coins (Assets), tokens (NFTs), resources, modules, info |
+| GraphQL off | transactions, resources, modules, info |
+| Multisig + GraphQL | transactions, multisig, coins, tokens, resources, modules, info |
 | Object + GraphQL | transactions, coins, tokens, resources, modules, info |
 | Object − GraphQL | transactions, resources, modules, info |
 
@@ -303,17 +354,17 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Modes** | Sender-only (REST) vs all involvement (GraphQL) with toggle. |
-| **AIP-141 toggle** | Optional gas impact column on transactions table. |
+| **Mode selection** | Implicit — GraphQL available → `AccountAllTransactions` (all involvement); otherwise → `AccountTransactions` (sender-only via REST). No user-facing toggle. |
 | **Function filter** | `?fn=` filter support. |
 | **Pagination** | Cursor-based. |
+| **Rate limit handling** | GraphQL path has retry + exponential backoff + user message on 429. |
 
 ### FEAT-ACCOUNT-007 — Assets (Coins) Tab
 
 | Aspect | Detail |
 |--------|--------|
 | **Data** | `useGetAllAccountCoins` merged with Panora/coin list. |
-| **Table** | Asset name, symbol, balance, type. |
+| **Table** | Asset name, symbol, balance, type. Virtualized for large sets. |
 
 ### FEAT-ACCOUNT-008 — NFTs (Tokens) Tab
 
@@ -321,14 +372,14 @@ The app shell that wraps every page.
 |--------|--------|
 | **Data** | `useGetAccountTokens` with count. |
 | **Table** | Token name, collection, property version, amount. |
-| **Scam detection** | Collections in `labsBannedCollections` → "Dangerous" icon + tooltip. |
+| **Scam detection** | Collections in `labsBannedCollections` → "Dangerous" icon with tooltip (reason text). |
 | **Pagination** | `?page=` param, 20 per page. |
 
 ### FEAT-ACCOUNT-009 — Resources Tab
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Collapsible cards per Move resource type with JSON viewer. |
+| **Display** | Collapsible cards per Move resource type with JSON viewer (`JsonViewCard`). |
 
 ### FEAT-ACCOUNT-010 — Info Tab
 
@@ -336,29 +387,21 @@ The app shell that wraps every page.
 |--------|--------|
 | **Account info** | Sequence number, auth key (rotation hint). |
 | **Object info** | Owner, transferability. |
-| **Object refs** | Transfer/delete/extend ref chips via `useGetObjectRefs`. |
+| **Object refs** | Transfer/delete/extend ref chips via `useGetObjectRefs` (scans nested structures in transaction data). |
 
-### FEAT-ACCOUNT-011 — Gas Impact Tab
-
-| Aspect | Detail |
-|--------|--------|
-| **Condition** | `AIP141_CONFIG.enabled` and not an object. |
-| **Table** | Version, function, gas used, projected (10x), max gas limit, status (would exceed?). |
-| **Context** | Uses `useGetGasScheduleVersion` and `isAip141Executed` for alert text. |
-
-### FEAT-ACCOUNT-012 — Multisig Tab
+### FEAT-ACCOUNT-011 — Multisig Tab
 
 | Aspect | Detail |
 |--------|--------|
 | **Data** | `0x1::multisig_account::MultisigAccount` resource. |
-| **Display** | Required signatures, next sequence, owners, pending transactions, event counters, raw JSON. |
+| **Display** | Required signatures, next sequence number, owners (hash buttons), pending transactions (creator, time, votes), event counters (create/execute/reject/vote/add/remove owners/update threshold), raw JSON. |
 
-### FEAT-ACCOUNT-013 — Default Tab Redirect
+### FEAT-ACCOUNT-012 — Default Tab Redirect
 
 | Aspect | Detail |
 |--------|--------|
-| **Behavior** | `/account/$address` → `/account/$address/transactions`. |
-| **Legacy params** | `?tab=` → `/$tab`; `?modulesTab=`, `?selectedModuleName=`, `?selectedFnName=` → path-based modules routes. |
+| **Behavior** | `/account/$address` → `/account/$address/transactions`. Same for `/object/$address`. |
+| **Legacy params** | `?tab=` → `/$tab`; `?modulesTab=` on exact 2-segment path → modules route. Network param preserved. |
 
 ---
 
@@ -396,7 +439,24 @@ The app shell that wraps every page.
 | **Caching** | Decompilation results cached. |
 | **Views** | Published source, decompiled Move, bytecode disassembly. |
 
-### FEAT-MODULES-005 — Default Redirect
+### FEAT-MODULES-005 — Cross-Module Code Navigation
+
+| Aspect | Detail |
+|--------|--------|
+| **Detection** | Regex matches `module::function` and `0x..::module::function` references in highlighted Move source. |
+| **Injection** | `injectMoveCodeLinksInHighlightRows` wraps matches with `<span>` elements with `data-move-fn-link`, `role="link"`, keyboard accessibility (Enter/Space). |
+| **Navigation** | Click: in-app navigate to `/account/<addr>/modules/code/<module>/<function>`. Cmd/Ctrl+click: open in new tab. |
+| **SSR safety** | `sanitizeHljsAstForReactDom` normalizes highlight.js AST for React DOM compatibility. |
+
+### FEAT-MODULES-006 — Function Argument Names
+
+| Aspect | Detail |
+|--------|--------|
+| **Registry** | `app/data/functionArgumentNameOverrides/` — per-address/module/function argument name overrides. |
+| **Resolution order** | Override registry → Move source extraction (ABI alignment, signer slots dropped) → positional fallback (`#0`, `#1`, ...). |
+| **Display** | Named columns in Run/View forms and transaction argument tables. |
+
+### FEAT-MODULES-007 — Default Redirect
 
 | Aspect | Detail |
 |--------|--------|
@@ -420,6 +480,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
+| **Data** | GCS `validator_stats_v2.json` (mainnet/testnet) + on-chain `ValidatorSet`. |
 | **Columns** | Staking pool address, operator address, voting power (sortable), rewards performance %, last epoch performance, location (city, country). |
 | **Sorting** | Filters zero voting power by default. |
 | **Mobile** | Card layout. |
@@ -429,17 +490,18 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Columns** | Status, commission, delegator count, rewards earned, delegated amount. |
-| **Wallet-aware** | "My deposit" column when wallet connected. |
+| **Wallet-aware** | "My deposit" column when wallet connected (`DEFAULT_COLUMNS` vs `COLUMNS_WITHOUT_WALLET_CONNECTION`). |
+| **Virtualization** | Uses `VirtualizedTableBody`. |
 
 ### FEAT-VALIDATORS-004 — Validators Map
 
 | Aspect | Detail |
 |--------|--------|
 | **Condition** | Mainnet only. |
-| **Technology** | `react-simple-maps` (`ComposableMap`). |
+| **Technology** | `react-simple-maps` (`ComposableMap`), client-only dynamic import. |
 | **Toggle** | By City / By Country grouping. |
 | **Markers** | Circle size scales with node count; country mode shows city breakdown in tooltip. |
-| **Metrics** | `MapMetrics` beside/below map (epoch, validator count, etc.). |
+| **Metrics** | `MapMetrics` beside/below map (epoch via `useGetEpochTime`, validator count, etc.). |
 
 ### FEAT-VALIDATORS-005 — Out-of-Commission Banner
 
@@ -453,6 +515,13 @@ The app shell that wraps every page.
 |--------|--------|
 | **Behavior** | `/validators` → `/validators/all`. `/validators-enhanced` → `/validators/all`. `/validators-enhanced/$tab` → `/validators/$tab`. |
 
+### FEAT-VALIDATORS-007 — Epoch Display
+
+| Aspect | Detail |
+|--------|--------|
+| **Data** | `useGetEpochTime` — reads `0x1` reconfiguration resources for epoch number, interval, and time. |
+| **Display** | `IntervalBar` component with `EPOCH` mode showing hours/minutes/seconds countdown. Tooltip on completion: "Please refresh the page." |
+
 ---
 
 ## 10. Validator Detail (Delegatory)
@@ -464,13 +533,13 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Data** | `0x1::stake::StakePool` resource + `useGetValidators` + delegation pool list. |
-| **Display** | `ValidatorTitle`, `ValidatorDetailCard` (operator, performance, delegation state, time bars). |
+| **Display** | `ValidatorTitle`, `ValidatorDetailCard` (operator, performance, delegation state, time bars via `IntervalBar` with `UNLOCK_COUNTDOWN` mode). |
 
 ### FEAT-VALDEL-002 — Commission Change Banner
 
 | Aspect | Detail |
 |--------|--------|
-| **Condition** | Pending commission change. |
+| **Condition** | Pending commission change detected. |
 | **Display** | Banner with commission change details. |
 
 ### FEAT-VALDEL-003 — Staking Bar & Operations
@@ -479,7 +548,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Display** | `ValidatorStakingBar` with metrics + "Stake" CTA. |
 | **Operations** | `add_stake`, `unlock`, `reactivate_stake`, `withdraw` via `0x1::delegation_pool`. |
-| **Dialog** | `StakeOperationDialog` with amount validation, wallet integration. |
+| **Dialog** | `StakeOperationDialog` with amount validation (`useAmountInput`, `getStakeOperationAPTRequirement`), wallet integration. |
 
 ### FEAT-VALDEL-004 — My Deposits
 
@@ -498,7 +567,8 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Sortable table of coins and fungible assets. |
+| **Display** | Sortable table of coins and fungible assets. Virtualized. |
+| **Market data** | On mainnet, CoinGecko market data merged when `coinGeckoId` available (see FEAT-DATA-001). Panora price fallback. |
 | **States** | Loading, error, and empty states handled. |
 
 ---
@@ -518,14 +588,15 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Data** | `CoinInfo` resource, supply limit, paired FA. |
+| **Data** | `CoinInfo` resource, supply limit, paired FA via `useGetCoinPairedFa`. |
 | **Display** | Coin name, symbol, decimals, supply, paired fungible asset link. |
 
 ### FEAT-COIN-003 — Verification Banner
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Banner indicating verification status (verified, recognized, unverified). |
+| **Levels** | Native Token, Labs Verified, Community Verified → green alert. Recognized → warning "recognized but not fully verified". Unrecognized → warning "not verified" + "Get Verified" link to `/verification`. |
+| **Data** | `VerifiedCell` logic using Panora/coin list + FA pairing. |
 
 ### FEAT-COIN-004 — Holders Tab
 
@@ -538,7 +609,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Data** | Coin activity history. |
+| **Data** | Coin activity history via indexer. |
 
 ### FEAT-COIN-006 — Default Tab Redirect
 
@@ -563,14 +634,15 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Data** | FA metadata, supply, paired coin. |
-| **Display** | Name, symbol, decimals, supply, icon, paired coin link, FA properties (mint/burn/transfer flags). |
+| **Data** | FA metadata, supply, paired coin via `useGetFaPairedCoin`. |
+| **Display** | Name, symbol, decimals, supply, icon, paired coin link. |
+| **Properties** | `FaPropertiesDisplay` — mint/burn/transfer flags derived from resource data. |
 
 ### FEAT-FA-003 — Verification Banner
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Same verification banner as Coin pages. |
+| **Display** | Same verification banner levels as Coin pages (FEAT-COIN-003). |
 
 ### FEAT-FA-004 — Default Tab Redirect
 
@@ -596,7 +668,7 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Metadata** | Name, collection name, creator address, collection ID, token ID. |
-| **Image** | Fetches metadata JSON to resolve image URL (including `ipfs://` support). |
+| **Image** | Fetches metadata JSON to resolve image URL (including `ipfs://` → gateway URL support). Loading states. |
 | **Properties** | `token_properties` JSON display. |
 | **Stats** | Largest property version (v1), supply, max supply, last transaction. |
 | **Token standard** | v1 vs v2 differences in displayed fields. |
@@ -659,14 +731,14 @@ The app shell that wraps every page.
 |--------|--------|
 | Total Supply | `useGetCoinSupplyLimit` |
 | Total Stake | On-chain |
-| TPS (current + peak 30d) | `useGetTPS` / `useGetPeakTPS` |
+| TPS (current + peak 30d) | `useGetTPS` / `useGetPeakTPS` (mainnet peak from analytics JSON) |
 | Active Nodes | Live chain hook |
 
 ### FEAT-ANALYTICS-005 — Data Source
 
 | Aspect | Detail |
 |--------|--------|
-| **URL** | GCS `chain_stats_v2.json` with cache busting. |
+| **URL** | GCS `chain_stats_v2.json` with cache version busting. |
 | **Caching** | React Query: stale 10min, GC 1h, 1 retry. |
 
 ---
@@ -692,8 +764,9 @@ The app shell that wraps every page.
 | **Package** | `@aptos-labs/wallet-adapter-react`. |
 | **UI** | `WalletConnector` → `WalletButton` → `WalletModel` / `WalletMenu`. |
 | **Auto-connect** | Enabled. |
-| **Network sync** | Wallet network synced to `useNetworkName()`. |
+| **Network sync** | Wallet network synced to `useNetworkName()`. Hidden networks → `"local"` for adapter compatibility. |
 | **Aptos Connect** | Supports Aptos Connect dApp ID. |
+| **Wallet sorting** | Petra sorted first via `sortPetraFirst`. |
 
 ### FEAT-WALLET-002 — Transaction Submission
 
@@ -701,13 +774,14 @@ The app shell that wraps every page.
 |--------|--------|
 | **Hook** | `useSubmitTransaction`. |
 | **Validation** | Enforces wallet network matches explorer network (exception for Google Aptos Connect). |
-| **Flow** | Signs via wallet adapter, confirms via explorer's Aptos client. |
+| **Flow** | Signs via wallet adapter, confirms via explorer's Aptos client polling. |
 
 ### FEAT-WALLET-003 — Account Navigation
 
 | Aspect | Detail |
 |--------|--------|
 | **Behavior** | On connect, navigates to connected account page. |
+| **GTM event** | `walletConnection` event with `walletAddress`, `walletName`, `network`. |
 
 ---
 
@@ -717,9 +791,10 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **API key override** | Masked input for geomi.dev API key. |
+| **API key override** | Masked input for geomi.dev API key with show/hide toggle. |
 | **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. |
-| **On save** | Clears cached clients, invalidates all React Query queries, invalidates router. |
+| **On save** | Clears cached SDK clients (`clearCachedV2Clients`, `clearCachedSearchClients`), invalidates all React Query queries, invalidates router. If non-empty API key saved, fires `emitApiKeySaved()` to dismiss rate-limit drawer (see FEAT-RATELIMIT-001). |
+| **External trigger** | Can be opened programmatically via `emitOpenSettings()` (used by Rate Limit Drawer). |
 
 ---
 
@@ -730,9 +805,12 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Toggle** | Icon button in header. |
-| **Persistence** | Cookie + system preference detection (`COLOR_MODE_COOKIE`). |
+| **Persistence** | Cookie (`COLOR_MODE_COOKIE`) + system preference detection. |
 | **Implementation** | MUI `ThemeProvider` via `ProvideColorMode`. |
-| **WCAG** | Semantic colors tuned for WCAG 2.1 AA contrast (regression tested). |
+| **Light theme** | Neutral grey app background (`#ECEEF2`), white cards/panels, cooler borders, soft grey stripes for tables and filled inputs. Body text ink (`#171612`). |
+| **Dark theme** | Dark canvas with brand colors. |
+| **WCAG** | Semantic colors tuned for WCAG 2.1 AA contrast (regression tested in `aptosBrandColors.a11y.test.ts`). |
+| **Typography** | IBM Plex Sans (UI), IBM Plex Serif (display headings), IBM Plex Mono (data/code). |
 
 ---
 
@@ -744,15 +822,16 @@ The app shell that wraps every page.
 |--------|--------|
 | **Param** | `?network=` in URL. |
 | **Behavior** | Navigate to same path with new network param, `replace: true`. |
-| **Options** | Visible networks + localnet (`local`); some networks hidden (`hiddenNetworks`). |
-| **Persistence** | Cookie fallback when no URL param. |
+| **Visible networks** | mainnet, testnet, devnet + localnet (`local`) shown separately. |
+| **Hidden networks** | `decibel`, `shelbynet` — in `networks` map but filtered from dropdown. Wallet adapter sees them as `"local"`. |
+| **Persistence** | Cookie fallback when no URL param. SSR special-cases `local`. |
 | **Sync** | All data hooks read network from URL/global config. Client cache is per-network. |
 
 ### FEAT-NETWORK-002 — Network Preserved on Navigation
 
 | Aspect | Detail |
 |--------|--------|
-| **Behavior** | Custom `Link` and `useNavigate` from `app/routing.tsx` merge current `network` into `search` on every navigation. |
+| **Behavior** | Custom `Link` and `useNavigate` from `app/routing.tsx` merge current `network` into `search` on every navigation. `useSearchParams` and `useAugmentToWithGlobalSearchParams` also preserve it. |
 
 ---
 
@@ -762,7 +841,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **System** | TanStack Router file-based routing. Dot segments = path segments. |
+| **System** | TanStack Router file-based routing (30 route files). Dot segments = path segments. |
 | **Generated tree** | `app/routeTree.gen.ts` — never edit by hand. |
 | **Regeneration** | `pnpm routes:generate` (auto via pre-scripts). |
 
@@ -780,6 +859,7 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Functions** | `buildPath` / `parsePath` for `account`, `txn`, `block`, etc. entity prefixes. |
+| **Splat parsing** | `pathSplatToSegments` normalizes TanStack Router's `_splat` catch-all into path segments (handles strings, arrays, null). |
 
 ### FEAT-ROUTING-004 — Scroll Restoration
 
@@ -802,8 +882,8 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Chunk errors** | "Update Available" card with Refresh + native home link (avoids router). |
-| **General errors** | "Something went wrong" + error message, dev-only stack, Try Again, Go Home. |
+| **Chunk errors** | `isModuleFetchError` detection → "Update Available" card with Refresh + native home link (avoids router if broken). |
+| **General errors** | "Something went wrong" + error message, dev-only stack trace, Try Again (if `reset` provided), Go Home. |
 
 ### FEAT-ERROR-002 — Not Found
 
@@ -811,15 +891,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Display** | 404 page with Go Home link. |
 
-### FEAT-ERROR-003 — Rate Limiting
-
-| Aspect | Detail |
-|--------|--------|
-| **Detection** | HTTP 429 → `ResponseErrorType.TOO_MANY_REQUESTS`. |
-| **Client throttle** | Token-bucket per-endpoint queue with retry + exponential backoff. |
-| **Per-feature** | Account transactions (GraphQL retry + user message), CoinGecko (batching + delays). No single global toast. |
-
-### FEAT-ERROR-004 — Suspense Fallback
+### FEAT-ERROR-003 — Suspense Fallback
 
 | Aspect | Detail |
 |--------|--------|
@@ -827,14 +899,42 @@ The app shell that wraps every page.
 
 ---
 
-## 23. SEO / LLM Accessibility
+## 23. Rate Limiting
+
+### FEAT-RATELIMIT-001 — Rate Limit Drawer
+
+| Aspect | Detail |
+|--------|--------|
+| **Trigger** | HTTP 429 or "Too Many Requests" error detected in API client, queries, or router error handler via `emitRateLimit()`. |
+| **Display** | Persistent bottom `Drawer` (non-blocking) informing user of rate limit, offering "Set API key override" button (opens Settings) or wait ~5 minutes. Link to geomi.dev for key. |
+| **Auto-clear** | Rate limit state auto-clears after 5 minutes (`RATE_LIMIT_WINDOW_MS`). |
+| **Dismiss** | Close icon dismisses drawer while timer continues. |
+| **API key grace** | On saving an API key in Settings, rate-limit state clears and new 429 handling is suppressed for 10 seconds (`API_KEY_GRACE_MS`) to prevent stale in-flight 429s from re-triggering. |
+
+### FEAT-RATELIMIT-002 — Client-Side Throttling
+
+| Aspect | Detail |
+|--------|--------|
+| **Mechanism** | Token-bucket per-endpoint queue with retry + exponential backoff in `app/utils/rateLimiter.ts`. |
+| **Per-feature handling** | Account transactions GraphQL path: retry + backoff + user message. CoinGecko: batching (250/request) + 1500ms inter-batch delay + 429 handling. |
+
+### FEAT-RATELIMIT-003 — API Error Classification
+
+| Aspect | Detail |
+|--------|--------|
+| **Hook** | `withResponseError` in `app/api/client.ts`. |
+| **Mappings** | 429 → `TOO_MANY_REQUESTS` + `emitRateLimit()`; 404 → `NOT_FOUND`; 400 → `INVALID_INPUT`; Error with "too many requests" → rate limit; other → `UNHANDLED`. |
+
+---
+
+## 24. SEO / LLM Accessibility
 
 ### FEAT-SEO-001 — Page Metadata
 
 | Aspect | Detail |
 |--------|--------|
 | **Hook** | `usePageMetadata` sets title, description, canonical URL, JSON-LD structured data per page type. |
-| **JSON-LD types** | `WebSite` (home), `Article`, `WebPage`, `CollectionPage`, entity-specific schemas. |
+| **JSON-LD types** | `WebSite` (home with `SearchAction`), `Article`, `WebPage`, `CollectionPage`, entity-specific schemas. |
 | **Search action** | `/?search={search_term_string}`. |
 
 ### FEAT-SEO-002 — LLM Documentation
@@ -843,7 +943,7 @@ The app shell that wraps every page.
 |------|---------|
 | `public/llms.txt` | Short LLM reference (llmstxt.org standard). |
 | `public/llms-full.txt` | Full reference with API docs and examples. |
-| `public/robots.txt` | Bot crawl rules including AI crawlers. |
+| `public/robots.txt` | Bot crawl rules including named AI crawlers. |
 | `public/sitemap.xml` | Static URL list for crawlers. |
 
 ### FEAT-SEO-003 — Drift Tests
@@ -854,24 +954,16 @@ The app shell that wraps every page.
 
 ---
 
-## 24. Feature Flags & Conditional Behavior
+## 25. Feature Flags & Conditional Behavior
 
-### FEAT-FLAGS-001 — AIP-141 Gas Impact
-
-| Aspect | Detail |
-|--------|--------|
-| **Config** | `AIP141_CONFIG` in `app/utils/aip140.ts`. |
-| **Controls** | `enabled`, `gasMultiplier`, version cutoffs, `aip141GasScheduleVersion`. |
-| **Affects** | Gas Impact tab on accounts, AIP-141 banner on transactions, gas-impact toggle on tx tables. |
-
-### FEAT-FLAGS-002 — GraphQL / Indexer Support
+### FEAT-FLAGS-001 — GraphQL / Indexer Support
 
 | Aspect | Detail |
 |--------|--------|
 | **Check** | `useGetIsGraphqlClientSupported` — true when indexer URL configured for network. |
 | **Affects** | Coin/FA holders+transactions tabs, account coins+tokens tabs, account all-transactions mode, balance changes, table items, search enrichment. |
 
-### FEAT-FLAGS-003 — Mainnet-Only Features
+### FEAT-FLAGS-002 — Mainnet-Only Features
 
 | Feature | Detail |
 |---------|--------|
@@ -881,21 +973,126 @@ The app shell that wraps every page.
 | Peak TPS | Only on mainnet. |
 | Analytics data | GCS JSON only fetched on mainnet. |
 | Defunct protocol banners | Only on mainnet. |
+| Transaction trace (Sentio) | Only on mainnet. |
 
-### FEAT-FLAGS-004 — Dev Mode
+### FEAT-FLAGS-003 — Dev Mode / Feature Name
 
 | Aspect | Detail |
 |--------|--------|
 | **Check** | `useGetInDevMode` / `useFeatureName()`. |
-| **Current state** | Always returns `"prod"` — dev mode features are inactive. |
-| **Affects** | Aptos Names promo banner (only shown in dev mode). |
+| **Resolution** | Priority: `feature_name` cookie → `VITE_FEATURE_NAME` env var → default `"prod"`. |
+| **Valid values** | `"prod"` (default), `"dev"` (Development Mode), `"earlydev"` (Early Development Mode). |
+| **Feature bar** | Non-prod → red banner: "This is the {featureLabel}." |
+| **Affects** | Aptos Names promo banner (only in dev/earlydev mode). |
 
-### FEAT-FLAGS-005 — Netlify Preview
+### FEAT-FLAGS-004 — Netlify Preview
 
 | Aspect | Detail |
 |--------|--------|
 | **Check** | `isNetlifyPreview`. |
 | **Affects** | Suppresses VITE_* API keys on preview/branch deploy builds. |
+
+---
+
+## 26. Data Integration & Caching
+
+### FEAT-DATA-001 — CoinGecko Price Integration
+
+| Aspect | Detail |
+|--------|--------|
+| **Simple price** | `useGetPrice` — single coin ID (default "aptos") from CoinGecko simple/price API. Used in balance card for APT/USD. |
+| **Market data** | `useGetCoinMarketData` — batch market data (250/request, 1500ms inter-batch). Mainnet only. Stale 30min, GC 6h, no refetch on window focus/mount, retry 1. |
+| **Display** | Coins table merges CoinGecko data via `coinGeckoId`. Panora price fallback. |
+
+### FEAT-DATA-002 — Known Address System
+
+| Aspect | Detail |
+|--------|--------|
+| **Registry** | Per-network `knownAddresses` (label map) + `knownAddressBranding` (icon, description, `iconBadge`). Networks: mainnet, testnet, devnet. Unknown networks fall back to mainnet. |
+| **Display** | Hash buttons: ANS + known name + scam check via `useGetNameFromAddress`. Account titles: `useKnownAddressName` / `useKnownAddressBranding`. Search: `handleLabelLookup` matches against known address labels. |
+| **Branding** | Icons under `public/address-icons/`. Framework accounts share `aptosFrameworkAddressBranding.ts`. `iconBadge` overlays short text on brand icons (e.g. `0x1`). |
+
+### FEAT-DATA-003 — Function Argument Name Overrides
+
+| Aspect | Detail |
+|--------|--------|
+| **Registry** | `app/data/functionArgumentNameOverrides/` — maps `stdAddr::module::function` → argument name arrays. |
+| **Lookup** | `lookupFunctionArgumentNameOverride(moduleAddress, moduleName, functionName, nonSignerArgCount)`. Uses last N entries when count matches. |
+| **Consumers** | Transaction argument table (`TransactionArguments.tsx`), Run/View contract forms (`Contract.tsx`). |
+
+### FEAT-DATA-004 — Identicons
+
+| Aspect | Detail |
+|--------|--------|
+| **Technology** | `@download/blockies` — generates seed-based identicon images from addresses. |
+| **Overrides** | Optional `iconSrc` from branding; falls back to blockie on load error. Optional `iconBadge` overlay. |
+| **Usage** | `HashButton`, `SearchResultAvatar`, `CoinBalanceChangeTable`. |
+
+### FEAT-DATA-005 — Emojicoin Registry
+
+| Aspect | Detail |
+|--------|--------|
+| **Address** | `EMOJICOIN_REGISTRY_ADDRESS` in `app/data/index.ts`. |
+| **Market derivation** | `deriveEmojicoinPublisherAddress` via `createNamedObjectAddress({ creator: REGISTRY, seed: symbolBytes })`. |
+| **Usage** | Search: emoji input → derive market address → verify on-chain → coin + LP results. Verification: `VerifiedCell` classifies emoji symbol coins. |
+
+---
+
+## 27. PWA / Service Worker
+
+### FEAT-PWA-001 — Progressive Web App
+
+| Aspect | Detail |
+|--------|--------|
+| **Manifest** | `public/manifest.json` — standalone display, Aptos theme colors (`#0F0E0B`), icons, screenshots, categories. |
+| **Service worker** | `public/sw.js` — manual registration (not Vite plugin, for SSR compatibility). Caches static assets (favicons, manifest), fetch handler with Aptos Labs domain checks, install/activate lifecycle. |
+| **Registration** | `index.html` registers `/sw.js` with `navigator.serviceWorker.register`. |
+
+---
+
+## 28. Shared UI Components
+
+### FEAT-UI-001 — Table Virtualization
+
+| Aspect | Detail |
+|--------|--------|
+| **Component** | `VirtualizedTableBody` using `@tanstack/react-virtual`. |
+| **Threshold** | Virtualizes when row count > 20 (configurable). |
+| **Consumers** | Transactions, Blocks, Coins, Account Assets, Account Tokens, Delegation Validators tables. |
+
+### FEAT-UI-002 — Verification Cell
+
+| Aspect | Detail |
+|--------|--------|
+| **Levels** | `NATIVE_TOKEN`, `LABS_VERIFIED`, `COMMUNITY_VERIFIED`, `RECOGNIZED`, `UNRECOGNIZED`, `LABS_BANNED`, `COMMUNITY_BANNED`, `DISABLED`. |
+| **Display** | Verification badges/icons on coin/FA tables. Emojicoin market detection via registry address. |
+
+### FEAT-UI-003 — Interval Bar
+
+| Aspect | Detail |
+|--------|--------|
+| **Modes** | `EPOCH` (hours/minutes/seconds countdown), `UNLOCK_COUNTDOWN` (days-heavy for staking locks). |
+| **Completion** | Tooltip: "Please refresh the page…" |
+| **Usage** | Validators epoch display, delegatory validator unlock countdown. |
+
+### FEAT-UI-004 — Side Drawer
+
+| Aspect | Detail |
+|--------|--------|
+| **Component** | MUI `Drawer`, anchor right, 80% width mobile, 33% desktop. |
+| **Usage** | `StakingDrawer` (Delegated Staking FAQ with accordion sections — currently not wired into routes). |
+
+---
+
+## 29. Analytics & Telemetry
+
+### FEAT-TELEMETRY-001 — Google Tag Manager
+
+| Aspect | Detail |
+|--------|--------|
+| **Script** | GTM injected via `initGTM` (defined in `useGoogleTagManager.ts`). |
+| **Events** | `walletConnection` (address, name, network) on wallet connect. `searchStats` (network, text, result, duration) on search completion. |
+| **Data layer** | Pushes to `window.dataLayer`. |
 
 ---
 
@@ -927,24 +1124,32 @@ The app shell that wraps every page.
 | Test File | Covers |
 |-----------|--------|
 | `app/utils/utils.test.ts` | Address utilities, formatting, validation, timestamps |
-| `app/utils/aip140.test.ts` | FEAT-FLAGS-001 (AIP-141 helpers) |
 | `app/utils/cliCommand.test.ts` | CLI command generation from payloads |
 | `app/utils/moveDecompiler.test.ts` | FEAT-MODULES-004 (decompiler helpers) |
-| `app/utils/moduleErrorHandler.test.ts` | FEAT-ERROR-001 (chunk error handling) |
+| `app/utils/moveCodeNavigation.test.ts` | FEAT-MODULES-005 (cross-module link path building and resolution) |
+| `app/utils/moduleErrorHandler.test.ts` | FEAT-ERROR-001 (chunk error handling, reload behavior) |
 | `app/utils/llmsRouteCoverage.test.ts` | FEAT-SEO-003 (LLM doc drift) |
-| `app/data/knownAddressBranding.test.ts` | FEAT-ACCOUNT-003 (known address branding) |
-| `app/data/defunctProtocols.test.ts` | FEAT-ACCOUNT-003 (defunct protocol registry) |
-| `app/types/defunctProtocol.test.ts` | Defunct protocol validation |
-| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence) |
-| `app/themes/colors/aptosBrandColors.a11y.test.ts` | FEAT-THEME-001 (WCAG contrast) |
+| `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
+| `app/utils/sentioCallTrace.test.ts` | FEAT-TXN-010 (Sentio helpers: network ID, paths, address normalization, node validation) |
+| `app/api/client.test.ts` | FEAT-RATELIMIT-003 (API error classification, 429 → `emitRateLimit`) |
+| `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |
+| `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation from resources) |
+| `app/context/rate-limit/RateLimitContext.test.tsx` | FEAT-RATELIMIT-001 (rate limit context state management) |
+| `app/context/rate-limit/rateLimitEvents.test.ts` | FEAT-RATELIMIT-001 (rate limit event detection) |
+| `app/context/rate-limit/settingsEvents.test.ts` | FEAT-SETTINGS-001 / FEAT-RATELIMIT-001 (settings ↔ rate-limit event bridge) |
+| `app/global-config/useFeatureName.test.ts` | FEAT-FLAGS-003 (cookie → env → default resolution) |
+| `app/data/knownAddressBranding.test.ts` | FEAT-DATA-002 (known address branding lookups per network) |
+| `app/data/defunctProtocols.test.ts` | FEAT-ACCOUNT-003 (defunct protocol registry shape, uniqueness) |
+| `app/data/functionArgumentNameOverrides/lookup.test.ts` | FEAT-DATA-003 / FEAT-MODULES-006 (argument name override lookup) |
+| `app/types/defunctProtocol.test.ts` | FEAT-ACCOUNT-003 (withdrawal plugin validation) |
+| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization) |
+| `app/themes/colors/aptosBrandColors.a11y.test.ts` | FEAT-THEME-001 (WCAG contrast regression) |
 | `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation) |
-| `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting |
+| `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty, balance changes) |
-| `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | Move type display badges |
-| `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities) |
+| `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
+| `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results) |
-| `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection) |
-| `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation) |
 
 ## Appendix C: Test Coverage Gaps
 
@@ -954,35 +1159,39 @@ The following features lack automated test coverage and should be prioritized:
 
 | Feature ID | Feature | Suggested Test Type |
 |------------|---------|---------------------|
-| FEAT-SEARCH-002 | Search type detection & routing | Unit: `detectInputType()` comprehensive tests |
+| FEAT-SEARCH-002 | Search type detection & routing | Unit: `detectInputType()` comprehensive tests for all input patterns |
 | FEAT-SEARCH-003 | Search result grouping & dedup | Unit: `groupSearchResults`, `filterSearchResults` |
-| FEAT-TXLIST-001 | User vs All toggle | Integration: component renders correct mode |
-| FEAT-ACCOUNT-005 | Tab set computation | Unit: `useAccountTabValues` with all flag combos |
-| FEAT-ACCOUNT-013 | Default tab redirects | Unit: `beforeLoad` redirect logic |
-| FEAT-TXN-001 | Tab selection by type | Unit: `getTabValues` for each transaction type |
+| FEAT-TXN-001 | Tab selection by type | Unit: `getTabValues` for each transaction type (including trace tab for user txns) |
+| FEAT-TXN-009 | Transaction actions parsing | Unit: DEX/LSD event parsing for each supported protocol |
+| FEAT-ACCOUNT-005 | Tab set computation | Unit: `useAccountTabValues` with all flag combinations (GraphQL on/off, multisig, object) |
+| FEAT-ACCOUNT-012 | Default tab redirects | Unit: `beforeLoad` redirect logic for all entity types |
 | FEAT-ROUTING-002 | Legacy URL redirects | Integration: old URLs → new paths |
 
 ### Medium Priority (Important Features)
 
 | Feature ID | Feature | Suggested Test Type |
 |------------|---------|---------------------|
+| FEAT-TXLIST-001 | User vs All toggle | Integration: `?type=` renders correct component |
 | FEAT-NETWORK-001 | Network switching | Integration: URL param + data refetch |
 | FEAT-NETWORK-002 | Network preserved on nav | Unit: custom `Link` merges `network` |
 | FEAT-VALIDATORS-001 | Validator tab set | Unit/integration |
-| FEAT-BLOCK-001 | Block detail tabs | Integration |
 | FEAT-COIN-001 | Coin tab gating | Unit: GraphQL on/off |
 | FEAT-FA-001 | FA tab gating | Unit: GraphQL on/off |
 | FEAT-TOKEN-004 | Legacy token URL redirect | Unit: numeric tab → overview |
 | FEAT-WALLET-002 | Tx submission network check | Unit: wallet/explorer network mismatch |
+| FEAT-COIN-003 | Verification banner levels | Unit: each verification level → correct alert type/message |
+| FEAT-DATA-005 | Emojicoin market derivation | Unit: emoji input → correct derived address |
 
 ### Lower Priority (Edge Cases & Polish)
 
 | Feature ID | Feature | Suggested Test Type |
 |------------|---------|---------------------|
-| FEAT-ACCOUNT-004 | Object detection redirect | Integration |
+| FEAT-ACCOUNT-004 | Object detection & path-preserving redirect | Integration |
 | FEAT-ACCOUNT-008 | Scam collection detection | Unit: `labsBannedCollections` check |
-| FEAT-ERROR-003 | Rate limit handling | Unit: token bucket, retry logic |
+| FEAT-CHROME-005 | Localnet unavailable modal | Unit: detection logic |
 | FEAT-ANALYTICS-001 | Mainnet gate | Unit: non-mainnet shows message |
-| FEAT-FLAGS-002 | GraphQL support check | Unit: with/without indexer URL |
+| FEAT-FLAGS-001 | GraphQL support check | Unit: with/without indexer URL |
 | FEAT-CHROME-002 | Footer cache clear | Integration |
 | FEAT-VALIDATORS-004 | Map data grouping | Unit: geo data → city/country groups |
+| FEAT-TXN-005 | Script bytecode decompiler | Unit: decompile triggers for script_payload |
+| FEAT-DATA-001 | CoinGecko batch delay logic | Unit: batching + 429 handling |
