@@ -44,7 +44,7 @@ import UnknownTab from "./Tabs/UnknownTab";
 import UserTransactionOverviewTab from "./Tabs/UserTransactionOverviewTab";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
 
-function getTabValues(transaction: Types.Transaction): TabValue[] {
+export function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
     case TransactionTypeName.User:
       return [
@@ -88,7 +88,7 @@ const TabComponents = Object.freeze({
   unknown: UnknownTab,
 });
 
-type TabValue = keyof typeof TabComponents;
+export type TabValue = keyof typeof TabComponents;
 
 function getTabLabel(value: TabValue): string {
   switch (value) {

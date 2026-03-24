@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Features Specification (`docs/FEATURES_SPECIFICATION.md`): canonical catalog of every user-facing explorer feature with unique `FEAT-*` identifiers, test coverage map (Appendix B), and prioritized coverage gaps (Appendix C)
 - `AGENTS.md`: regression prevention rules requiring agents to reference `docs/FEATURES_SPECIFICATION.md` when adding, modifying, or removing features and to keep the spec in sync with the codebase
+- Behavioral tests for 10+ spec features: search type detection (`FEAT-SEARCH-002`), search result filtering/grouping (`FEAT-SEARCH-003`), transaction tab selection (`FEAT-TXN-001`), account tab computation (`FEAT-ACCOUNT-005`), verification levels (`FEAT-COIN-003`), network config (`FEAT-NETWORK-001`), GraphQL URI gating (`FEAT-FLAGS-001`), feature name validation (`FEAT-FLAGS-003`), known address system (`FEAT-DATA-002`), emojicoin registry (`FEAT-DATA-005`)
 - Rate-limit drawer: a bottom sheet appears when any API request receives HTTP 429, informing the user they have been rate-limited and offering a button to open Settings and set an API key override or wait ~5 minutes for the limit to reset
 - **Trace tab failure highlighting**: when a transaction failed, the Trace tab shows an error banner with the VM status and visually highlights the failed call (red background, error chip with the abort reason) along with a dashed-red path from the root to the failing node
 

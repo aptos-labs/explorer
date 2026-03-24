@@ -1139,6 +1139,7 @@ The app shell that wraps every page.
 | `app/context/rate-limit/settingsEvents.test.ts` | FEAT-SETTINGS-001 / FEAT-RATELIMIT-001 (settings ↔ rate-limit event bridge) |
 | `app/global-config/useFeatureName.test.ts` | FEAT-FLAGS-003 (cookie → env → default resolution) |
 | `app/data/knownAddressBranding.test.ts` | FEAT-DATA-002 (known address branding lookups per network) |
+| `app/data/knownAddresses.test.ts` | FEAT-DATA-002 (known address system: labels, branding, fallback), FEAT-DATA-005 (emojicoin registry address) |
 | `app/data/defunctProtocols.test.ts` | FEAT-ACCOUNT-003 (defunct protocol registry shape, uniqueness) |
 | `app/data/functionArgumentNameOverrides/lookup.test.ts` | FEAT-DATA-003 / FEAT-MODULES-006 (argument name override lookup) |
 | `app/types/defunctProtocol.test.ts` | FEAT-ACCOUNT-003 (withdrawal plugin validation) |
@@ -1146,10 +1147,19 @@ The app shell that wraps every page.
 | `app/themes/colors/aptosBrandColors.a11y.test.ts` | FEAT-THEME-001 (WCAG contrast regression) |
 | `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation) |
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
+| `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
 | `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty, balance changes) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
+| `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns) |
+| `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
+| `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results) |
+| `app/pages/layout/Search/searchDetection.test.ts` | FEAT-SEARCH-002 (all input type detection: ANS, struct, numeric, hex, address, emoji, generic) |
+| `app/pages/layout/Search/searchFiltering.test.ts` | FEAT-SEARCH-003 (result filtering/deduplication, grouping with headers and type ordering) |
+| `app/lib/networks.test.ts` | FEAT-NETWORK-001 (network config, hidden networks, localnet), FEAT-FLAGS-003 (feature labels) |
+| `app/lib/graphqlSupport.test.ts` | FEAT-FLAGS-001 (GraphQL URI per network), FEAT-COIN-001/FEAT-FA-001 (tab gating logic) |
+| `app/lib/validators.test.ts` | FEAT-NETWORK-001 (network name validation), FEAT-FLAGS-003 (feature name validation), well-known constants |
 
 ## Appendix C: Test Coverage Gaps
 
@@ -1159,11 +1169,7 @@ The following features lack automated test coverage and should be prioritized:
 
 | Feature ID | Feature | Suggested Test Type |
 |------------|---------|---------------------|
-| FEAT-SEARCH-002 | Search type detection & routing | Unit: `detectInputType()` comprehensive tests for all input patterns |
-| FEAT-SEARCH-003 | Search result grouping & dedup | Unit: `groupSearchResults`, `filterSearchResults` |
-| FEAT-TXN-001 | Tab selection by type | Unit: `getTabValues` for each transaction type (including trace tab for user txns) |
-| FEAT-TXN-009 | Transaction actions parsing | Unit: DEX/LSD event parsing for each supported protocol |
-| FEAT-ACCOUNT-005 | Tab set computation | Unit: `useAccountTabValues` with all flag combinations (GraphQL on/off, multisig, object) |
+| FEAT-TXN-009 | Transaction actions parsing — individual protocol event parsers | Unit: DEX/LSD event parsing for each supported protocol |
 | FEAT-ACCOUNT-012 | Default tab redirects | Unit: `beforeLoad` redirect logic for all entity types |
 | FEAT-ROUTING-002 | Legacy URL redirects | Integration: old URLs → new paths |
 
@@ -1172,15 +1178,10 @@ The following features lack automated test coverage and should be prioritized:
 | Feature ID | Feature | Suggested Test Type |
 |------------|---------|---------------------|
 | FEAT-TXLIST-001 | User vs All toggle | Integration: `?type=` renders correct component |
-| FEAT-NETWORK-001 | Network switching | Integration: URL param + data refetch |
 | FEAT-NETWORK-002 | Network preserved on nav | Unit: custom `Link` merges `network` |
-| FEAT-VALIDATORS-001 | Validator tab set | Unit/integration |
-| FEAT-COIN-001 | Coin tab gating | Unit: GraphQL on/off |
-| FEAT-FA-001 | FA tab gating | Unit: GraphQL on/off |
+| FEAT-VALIDATORS-001 | Validator tab set and devnet variant | Unit/integration |
 | FEAT-TOKEN-004 | Legacy token URL redirect | Unit: numeric tab → overview |
 | FEAT-WALLET-002 | Tx submission network check | Unit: wallet/explorer network mismatch |
-| FEAT-COIN-003 | Verification banner levels | Unit: each verification level → correct alert type/message |
-| FEAT-DATA-005 | Emojicoin market derivation | Unit: emoji input → correct derived address |
 
 ### Lower Priority (Edge Cases & Polish)
 
@@ -1190,7 +1191,6 @@ The following features lack automated test coverage and should be prioritized:
 | FEAT-ACCOUNT-008 | Scam collection detection | Unit: `labsBannedCollections` check |
 | FEAT-CHROME-005 | Localnet unavailable modal | Unit: detection logic |
 | FEAT-ANALYTICS-001 | Mainnet gate | Unit: non-mainnet shows message |
-| FEAT-FLAGS-001 | GraphQL support check | Unit: with/without indexer URL |
 | FEAT-CHROME-002 | Footer cache clear | Integration |
 | FEAT-VALIDATORS-004 | Map data grouping | Unit: geo data → city/country groups |
 | FEAT-TXN-005 | Script bytecode decompiler | Unit: decompile triggers for script_payload |
