@@ -12,6 +12,7 @@ import {
   EXPLORER_SETTINGS_STORAGE_KEY,
   type ExplorerClientSettings,
   loadExplorerClientSettings,
+  persistDisplayPrefs,
   persistExplorerClientSettings,
   sanitizeExplorerClientSettings,
 } from "./clientSettings";
@@ -52,6 +53,9 @@ export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
 
   const setExplorerSettings = useCallback((value: ExplorerClientSettings) => {
     const nextSettings = sanitizeExplorerClientSettings(value);
+    persistDisplayPrefs({
+      defaultJsonViewMode: nextSettings.defaultJsonViewMode,
+    });
     if (!nextSettings.geomiDevApiKeyOverride) {
       clearExplorerClientSettings();
     } else {

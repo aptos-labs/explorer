@@ -68,6 +68,7 @@ describe("clientSettings", () => {
       ).toEqual({
         geomiDevApiKeyOverride: "override-key",
         rememberGeomiDevApiKeyOverride: true,
+        defaultJsonViewMode: "table",
       });
     });
 
@@ -84,6 +85,23 @@ describe("clientSettings", () => {
       expect(sanitizeExplorerClientSettings(undefined)).toEqual(
         defaultExplorerClientSettings,
       );
+    });
+
+    it("normalizes invalid defaultJsonViewMode to table", () => {
+      expect(
+        sanitizeExplorerClientSettings({
+          defaultJsonViewMode: "invalid" as "json",
+        }),
+      ).toEqual(defaultExplorerClientSettings);
+    });
+
+    it("preserves valid defaultJsonViewMode", () => {
+      expect(
+        sanitizeExplorerClientSettings({defaultJsonViewMode: "json"}),
+      ).toEqual({
+        ...defaultExplorerClientSettings,
+        defaultJsonViewMode: "json",
+      });
     });
   });
 
@@ -109,6 +127,7 @@ describe("clientSettings", () => {
       expect(loadExplorerClientSettings(storages)).toEqual({
         geomiDevApiKeyOverride: "session-key",
         rememberGeomiDevApiKeyOverride: false,
+        defaultJsonViewMode: "table",
       });
     });
 
@@ -122,6 +141,7 @@ describe("clientSettings", () => {
       expect(loadExplorerClientSettings(storages)).toEqual({
         geomiDevApiKeyOverride: "saved-key",
         rememberGeomiDevApiKeyOverride: true,
+        defaultJsonViewMode: "table",
       });
     });
   });
@@ -134,6 +154,7 @@ describe("clientSettings", () => {
         {
           geomiDevApiKeyOverride: "  persisted-key  ",
           rememberGeomiDevApiKeyOverride: false,
+          defaultJsonViewMode: "table",
         },
         storages,
       );
@@ -141,6 +162,7 @@ describe("clientSettings", () => {
       expect(loadExplorerClientSettings(storages)).toEqual({
         geomiDevApiKeyOverride: "persisted-key",
         rememberGeomiDevApiKeyOverride: false,
+        defaultJsonViewMode: "table",
       });
     });
 
@@ -151,6 +173,7 @@ describe("clientSettings", () => {
         {
           geomiDevApiKeyOverride: "persisted-key",
           rememberGeomiDevApiKeyOverride: true,
+          defaultJsonViewMode: "table",
         },
         storages,
       );
@@ -158,6 +181,7 @@ describe("clientSettings", () => {
       expect(loadExplorerClientSettings(storages)).toEqual({
         geomiDevApiKeyOverride: "persisted-key",
         rememberGeomiDevApiKeyOverride: true,
+        defaultJsonViewMode: "table",
       });
     });
 
@@ -175,6 +199,7 @@ describe("clientSettings", () => {
         {
           geomiDevApiKeyOverride: "",
           rememberGeomiDevApiKeyOverride: false,
+          defaultJsonViewMode: "table",
         },
         storages,
       );
@@ -209,6 +234,7 @@ describe("clientSettings", () => {
           {
             geomiDevApiKeyOverride: "persisted-key",
             rememberGeomiDevApiKeyOverride: true,
+            defaultJsonViewMode: "table",
           },
           storages,
         ),

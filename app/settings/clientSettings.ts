@@ -1,13 +1,18 @@
+export type JsonViewMode = "json" | "table";
+
 export interface ExplorerClientSettings {
   geomiDevApiKeyOverride: string;
   rememberGeomiDevApiKeyOverride: boolean;
+  defaultJsonViewMode: JsonViewMode;
 }
 
 export const EXPLORER_SETTINGS_STORAGE_KEY = "aptos-explorer-settings";
+const DISPLAY_PREFS_STORAGE_KEY = "aptos-explorer-display-prefs";
 
 export const defaultExplorerClientSettings: ExplorerClientSettings = {
   geomiDevApiKeyOverride: "",
   rememberGeomiDevApiKeyOverride: false,
+  defaultJsonViewMode: "table",
 };
 
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
@@ -58,6 +63,10 @@ export function normalizeGeomiDevApiKeyOverride(
   return value?.trim() ?? "";
 }
 
+function normalizeJsonViewMode(value: unknown): JsonViewMode {
+  return value === "json" || value === "table" ? value : "table";
+}
+
 export function sanitizeExplorerClientSettings(
   value: Partial<ExplorerClientSettings> | null | undefined,
 ): ExplorerClientSettings {
@@ -72,6 +81,7 @@ export function sanitizeExplorerClientSettings(
       normalizeRememberGeomiDevApiKeyOverride(
         value?.rememberGeomiDevApiKeyOverride,
       ),
+    defaultJsonViewMode: normalizeJsonViewMode(value?.defaultJsonViewMode),
   };
 }
 
@@ -113,6 +123,8 @@ export function clearExplorerClientSettings(
 export function loadExplorerClientSettings(
   storages: ExplorerSettingsStorage = getAvailableStorages(),
 ): ExplorerClientSettings {
+  const displayPrefs = loadDisplayPrefs();
+
   const sessionSettings = loadStoredExplorerClientSettings(
     storages.sessionStorage,
   );
@@ -120,6 +132,7 @@ export function loadExplorerClientSettings(
     return sanitizeExplorerClientSettings({
       ...sessionSettings,
       rememberGeomiDevApiKeyOverride: false,
+      defaultJsonViewMode: displayPrefs.defaultJsonViewMode,
     });
   }
 
@@ -128,10 +141,14 @@ export function loadExplorerClientSettings(
     return sanitizeExplorerClientSettings({
       ...localSettings,
       rememberGeomiDevApiKeyOverride: true,
+      defaultJsonViewMode: displayPrefs.defaultJsonViewMode,
     });
   }
 
-  return defaultExplorerClientSettings;
+  return {
+    ...defaultExplorerClientSettings,
+    defaultJsonViewMode: displayPrefs.defaultJsonViewMode,
+  };
 }
 
 export function persistExplorerClientSettings(
@@ -166,4 +183,35 @@ export function persistExplorerClientSettings(
 export function getGeomiDevApiKeyOverride(): string | undefined {
   const apiKeyOverride = loadExplorerClientSettings().geomiDevApiKeyOverride;
   return apiKeyOverride || undefined;
+}
+
+interface DisplayPrefs {
+  defaultJsonViewMode: JsonViewMode;
+}
+
+export function loadDisplayPrefs(): DisplayPrefs {
+  const ls = getLocalStorage();
+  if (!ls) return {defaultJsonViewMode: "table"};
+
+  try {
+    const raw = ls.getItem(DISPLAY_PREFS_STORAGE_KEY);
+    if (!raw) return {defaultJsonViewMode: "table"};
+    const parsed = JSON.parse(raw) as Partial<DisplayPrefs>;
+    return {
+      defaultJsonViewMode: normalizeJsonViewMode(parsed.defaultJsonViewMode),
+    };
+  } catch {
+    return {defaultJsonViewMode: "table"};
+  }
+}
+
+export function persistDisplayPrefs(prefs: DisplayPrefs) {
+  const ls = getLocalStorage();
+  if (!ls) return;
+
+  try {
+    ls.setItem(DISPLAY_PREFS_STORAGE_KEY, JSON.stringify(prefs));
+  } catch {
+    // Ignore storage write failures
+  }
 }

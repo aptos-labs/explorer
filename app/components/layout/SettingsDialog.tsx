@@ -1,3 +1,5 @@
+import DataObjectIcon from "@mui/icons-material/DataObject";
+import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
@@ -15,6 +17,8 @@ import {
   Link as MuiLink,
   Stack,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
@@ -26,6 +30,7 @@ import {clearCachedV2Clients} from "../../global-config";
 import {
   defaultExplorerClientSettings,
   type ExplorerClientSettings,
+  type JsonViewMode,
   normalizeGeomiDevApiKeyOverride,
   useExplorerSettings,
 } from "../../settings";
@@ -58,7 +63,8 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
       normalizeGeomiDevApiKeyOverride(draftSettings.geomiDevApiKeyOverride) !==
         settings.geomiDevApiKeyOverride ||
       draftSettings.rememberGeomiDevApiKeyOverride !==
-        settings.rememberGeomiDevApiKeyOverride,
+        settings.rememberGeomiDevApiKeyOverride ||
+      draftSettings.defaultJsonViewMode !== settings.defaultJsonViewMode,
     [draftSettings, settings],
   );
 
@@ -98,6 +104,40 @@ export default function SettingsDialog({onClose, open}: SettingsDialogProps) {
       <DialogTitle>Settings</DialogTitle>
       <DialogContent>
         <Stack spacing={2.5} sx={{pt: 1}}>
+          <Box>
+            <Typography variant="overline" color="text.secondary">
+              Display preferences
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{mb: 1.5}}>
+              Choose how structured data is displayed throughout the explorer.
+            </Typography>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Typography variant="body2">Default JSON view:</Typography>
+              <ToggleButtonGroup
+                value={draftSettings.defaultJsonViewMode}
+                exclusive
+                onChange={(_event, value: JsonViewMode | null) => {
+                  if (value) {
+                    setDraftSettings((prev) => ({
+                      ...prev,
+                      defaultJsonViewMode: value,
+                    }));
+                  }
+                }}
+                size="small"
+              >
+                <ToggleButton value="table" aria-label="Table view">
+                  <TableChartOutlinedIcon sx={{fontSize: 18, mr: 0.5}} />
+                  Table
+                </ToggleButton>
+                <ToggleButton value="json" aria-label="JSON view">
+                  <DataObjectIcon sx={{fontSize: 18, mr: 0.5}} />
+                  JSON
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Stack>
+          </Box>
+
           <Box>
             <Typography variant="overline" color="text.secondary">
               API overrides

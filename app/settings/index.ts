@@ -3,6 +3,7 @@ export {
   EXPLORER_SETTINGS_STORAGE_KEY,
   type ExplorerClientSettings,
   getGeomiDevApiKeyOverride,
+  type JsonViewMode,
   loadExplorerClientSettings,
   normalizeGeomiDevApiKeyOverride,
   persistExplorerClientSettings,

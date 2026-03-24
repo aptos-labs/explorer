@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import type React from "react";
 import {lazy, Suspense, useCallback, useEffect, useRef, useState} from "react";
+import {type JsonViewMode, useExplorerSettings} from "../../settings";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
 import JsonTableView from "./JsonTableView";
@@ -23,8 +24,6 @@ const JsonView = lazy(() => import("@uiw/react-json-view"));
 const MAX_CARD_HEIGHT = 500;
 const HOVER_DELAY_MS = 500;
 const COPIED_DISPLAY_MS = 1500;
-
-type ViewMode = "json" | "table";
 
 type JsonViewCardProps = {
   data: unknown;
@@ -192,7 +191,10 @@ export default function JsonViewCard({
 }: JsonViewCardProps) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
-  const [viewMode, setViewMode] = useState<ViewMode>("json");
+  const {settings} = useExplorerSettings();
+  const [viewMode, setViewMode] = useState<JsonViewMode>(
+    settings.defaultJsonViewMode,
+  );
 
   const keyColor = semanticColors.jsonView.key;
   const valueColor = theme.palette.primary.main;
