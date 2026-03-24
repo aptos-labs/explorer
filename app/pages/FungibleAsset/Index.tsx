@@ -22,7 +22,7 @@ import FungibleAssetError from "./Error";
 import FATabs, {type TabValue} from "./Tabs";
 import FATitle from "./Title";
 
-const TAB_VALUES_FULL: TabValue[] = ["info", "holders", "transactions"];
+const TAB_VALUES_FULL: TabValue[] = ["info", "holders"];
 
 const TAB_VALUES: TabValue[] = ["info"];
 

@@ -10,12 +10,10 @@ import {assertNever} from "../../utils";
 import type {FACombinedData} from "./Index";
 import HoldersTab from "./Tabs/HoldersTab";
 import InfoTab from "./Tabs/InfoTab";
-import TransactionsTab from "./Tabs/TransactionsTab";
 
-const TAB_VALUES: TabValue[] = ["info", "holders", "transactions"];
+const TAB_VALUES: TabValue[] = ["info", "holders"];
 
 const TabComponents = Object.freeze({
-  transactions: TransactionsTab,
   holders: HoldersTab,
   info: InfoTab,
 });
@@ -27,9 +25,7 @@ function getTabLabel(value: TabValue): string {
     case "info":
       return "Info";
     case "holders":
-      return "Beta - Holders";
-    case "transactions":
-      return "Beta - Transactions";
+      return "Holders";
     default:
       return assertNever(value);
   }
@@ -40,8 +36,6 @@ function getTabIcon(value: TabValue): React.JSX.Element {
     case "info":
       return <DescriptionOutlinedIcon fontSize="small" />;
     case "holders":
-      return <WysiwygIcon fontSize="small" />;
-    case "transactions":
       return <WysiwygIcon fontSize="small" />;
     default:
       return assertNever(value);
@@ -65,7 +59,6 @@ type FATabsProps = {
   tabValues?: TabValue[];
 };
 
-// TODO: create reusable Tabs for all pages
 export default function FATabs({
   address,
   data,

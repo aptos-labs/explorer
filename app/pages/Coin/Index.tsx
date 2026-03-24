@@ -17,7 +17,7 @@ import CoinError from "./Error";
 import CoinTabs, {type TabValue} from "./Tabs";
 import CoinTitle from "./Title";
 
-const TAB_VALUES_FULL: TabValue[] = ["info", "holders", "transactions"];
+const TAB_VALUES_FULL: TabValue[] = ["info", "holders"];
 
 const TAB_VALUES: TabValue[] = ["info"];
 

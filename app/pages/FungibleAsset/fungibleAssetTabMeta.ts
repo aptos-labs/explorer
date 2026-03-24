@@ -3,8 +3,6 @@
  */
 export function getFungibleAssetTabHeadLabel(tab: string | undefined): string {
   switch (tab ?? "info") {
-    case "transactions":
-      return "Transactions";
     case "holders":
       return "Holders";
     default:

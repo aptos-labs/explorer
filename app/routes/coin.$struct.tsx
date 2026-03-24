@@ -1,20 +1,33 @@
 import {createFileRoute, Outlet, redirect} from "@tanstack/react-router";
 
+const VALID_TABS = new Set(["info", "holders"]);
+
 // Layout route for /coin/:struct/*
 // Handles backward compatibility redirects from query params to path-based tabs
 export const Route = createFileRoute("/coin/$struct")({
   beforeLoad: ({params, search, location}) => {
     const searchParams = search as {tab?: string; network?: string};
 
-    // Check if we're on the exact /coin/:struct path (no child route)
     const pathSegments = location.pathname.split("/").filter(Boolean);
     const isExactMatch = pathSegments.length === 2; // ["coin", "struct"]
 
-    // If there's a tab query param, redirect to path-based route
-    if (searchParams?.tab) {
+    // Redirect removed "transactions" tab → info
+    if (pathSegments.length === 3 && !VALID_TABS.has(pathSegments[2])) {
       throw redirect({
         to: "/coin/$struct/$tab",
-        params: {struct: params.struct, tab: searchParams.tab},
+        params: {struct: params.struct, tab: "info"},
+        search: searchParams?.network
+          ? {network: searchParams.network}
+          : undefined,
+      });
+    }
+
+    // If there's a tab query param, redirect to path-based route
+    if (searchParams?.tab) {
+      const tab = VALID_TABS.has(searchParams.tab) ? searchParams.tab : "info";
+      throw redirect({
+        to: "/coin/$struct/$tab",
+        params: {struct: params.struct, tab},
         search: searchParams.network
           ? {network: searchParams.network}
           : undefined,

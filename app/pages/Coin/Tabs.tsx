@@ -12,12 +12,10 @@ import {assertNever} from "../../utils";
 import type {CoinData} from "./Components/CoinData";
 import HoldersTab from "./Tabs/HoldersTab";
 import InfoTab from "./Tabs/InfoTab";
-import TransactionsTab from "./Tabs/TransactionsTab";
 
-const TAB_VALUES: TabValue[] = ["info", "holders", "transactions"];
+const TAB_VALUES: TabValue[] = ["info", "holders"];
 
 const TabComponents = Object.freeze({
-  transactions: TransactionsTab,
   holders: HoldersTab,
   info: InfoTab,
 });
@@ -28,10 +26,8 @@ function getTabLabel(value: TabValue): string {
   switch (value) {
     case "info":
       return "Info";
-    case "transactions":
-      return "Beta - Transactions";
     case "holders":
-      return "Beta - Holders";
+      return "Holders";
     default:
       return assertNever(value);
   }
@@ -41,8 +37,6 @@ function getTabIcon(value: TabValue) {
   switch (value) {
     case "info":
       return <DescriptionOutlinedIcon fontSize="small" />;
-    case "transactions":
-      return <WysiwygIcon fontSize="small" />;
     case "holders":
       return <WysiwygIcon fontSize="small" />;
     default:
@@ -88,7 +82,6 @@ type CoinTabsProps = {
   coinData: CoinDescription | undefined;
 };
 
-// TODO: create reusable Tabs for all pages
 export default function CoinTabs({
   struct,
   data,

@@ -12,6 +12,7 @@ import Box from "@mui/material/Box";
 import React from "react";
 import type {Types} from "~/types/aptos";
 import {getTransaction} from "../../../api";
+import useAssetFilter from "../../../api/hooks/useAssetFilter";
 import useFunctionFilter from "../../../api/hooks/useFunctionFilter";
 import {
   useGetAccountAllTransactionCount,
@@ -29,6 +30,8 @@ import FunctionFilter from "../../Transactions/Components/FunctionFilter";
 import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
 import {downloadCSV, transactionsToCSV} from "../../utils";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
+import AssetFilter from "./AssetFilter";
+import AssetFilteredTransactions from "./AssetFilteredTransactions";
 
 // Maximum transactions we can display due to indexer query performance constraints
 const MAX_DISPLAYABLE_TRANSACTIONS = 10000;
@@ -194,6 +197,7 @@ export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
   const {functionFilter, handleFunctionFilterChange} = useFunctionFilter();
+  const {assetFilter, handleAssetFilterChange} = useAssetFilter();
 
   const rawTxnCount = useGetAccountAllTransactionCount(address);
 
@@ -203,13 +207,18 @@ export default function AccountAllTransactions({
   const countPerPage = 25;
   const numPages = Math.ceil(txnCount / countPerPage);
 
+  const hasActiveFilter = !!functionFilter || !!assetFilter;
+
   return (
     <Stack spacing={2}>
-      <FunctionFilter
-        value={functionFilter}
-        onChange={handleFunctionFilterChange}
-      />
-      {!functionFilter && isCountUnknown && (
+      <Stack spacing={1}>
+        <FunctionFilter
+          value={functionFilter}
+          onChange={handleFunctionFilterChange}
+        />
+        <AssetFilter value={assetFilter} onChange={handleAssetFilterChange} />
+      </Stack>
+      {!hasActiveFilter && isCountUnknown && (
         <Alert
           severity="info"
           icon={<InfoOutlined />}
@@ -227,7 +236,12 @@ export default function AccountAllTransactions({
           still be accessed directly by their version number.
         </Alert>
       )}
-      {functionFilter ? (
+      {assetFilter ? (
+        <AssetFilteredTransactions
+          address={address}
+          assetFilter={assetFilter}
+        />
+      ) : functionFilter ? (
         <FilteredAccountTransactions
           address={address}
           functionFilter={functionFilter}
