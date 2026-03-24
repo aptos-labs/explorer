@@ -4,6 +4,7 @@ import type {Types} from "~/types/aptos";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import ScriptBytecodeDecompiler from "./Components/ScriptBytecodeDecompiler";
 
 type PayloadTabProps = {
   transaction: Types.Transaction;
@@ -29,6 +30,13 @@ export default function PayloadTab({transaction}: PayloadTabProps) {
         expanded={expanded}
         toggleExpanded={toggleExpanded}
       >
+        {transaction.payload.type === "script_payload" &&
+          "code" in transaction.payload &&
+          typeof transaction.payload.code?.bytecode === "string" && (
+            <ScriptBytecodeDecompiler
+              bytecodeHex={transaction.payload.code.bytecode}
+            />
+          )}
         <JsonViewCard data={transaction.payload} />
       </CollapsibleCard>
     </Box>

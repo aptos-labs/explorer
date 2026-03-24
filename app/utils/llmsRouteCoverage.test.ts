@@ -25,7 +25,7 @@ const REQUIRED_PATH_SNIPPETS = [
   "/?search=",
   /** Account/object modules tab */
   "/modules",
-  /** Module code sub-tab */
+  /** Module code sub-tab (published/decompiled/disassembly) */
   "/modules/code/",
   /** Validator list default tab */
   "/validators/all",

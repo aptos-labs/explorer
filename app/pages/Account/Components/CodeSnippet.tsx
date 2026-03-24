@@ -19,7 +19,9 @@ import {
   useHighlighterStyles,
 } from "../../../components/CodeHighlighter";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
-import StyledTooltip from "../../../components/StyledTooltip";
+import StyledTooltip, {
+  StyledLearnMoreTooltip,
+} from "../../../components/StyledTooltip";
 import {useNavigate} from "../../../routing";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {
@@ -33,6 +35,10 @@ import {
   MOVE_CODE_FN_LINK_DATA_ATTR,
   type MoveCodeLinkContext,
 } from "../../../utils/moveCodeNavigation";
+import {
+  type DecompilationView,
+  getDecompiledCodeView,
+} from "../../../utils/moveDecompiler";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
@@ -156,11 +162,29 @@ function useStartingLineNumber(sourceCode?: string) {
   return getPublicFunctionLineNumber(sourceCode, functionToHighlight);
 }
 
-type CodeView = "published-source" | "abi";
+type CodeView =
+  | "published-source"
+  | "decompiled-source"
+  | "bytecode-disassembly"
+  | "abi";
 
-function moduleCodeDownloadFilename(moduleName: string | undefined): string {
+type BytecodeViewState = {
+  bytecodeKey: string;
+  code: string;
+};
+
+function moduleCodeDownloadFilename(
+  moduleName: string | undefined,
+  activeView: CodeView,
+): string {
   const base = sanitizeDownloadFilename(moduleName ?? "module");
-  return `${base}.move`;
+  if (activeView === "published-source") {
+    return `${base}.move`;
+  }
+  if (activeView === "decompiled-source") {
+    return `${base}-decompiled.move`;
+  }
+  return `${base}-disassembly.txt`;
 }
 
 function ExpandCode({
@@ -281,10 +305,12 @@ export type CodeModuleQueryProps = {
 
 export function Code({
   sourceBytecode,
+  moduleBytecode,
   moduleQuery,
   codeLinkContext,
 }: {
   sourceBytecode?: string;
+  moduleBytecode?: string;
   moduleQuery?: CodeModuleQueryProps;
   /** When set, `module::function` and `0x..::module::function` in source become links to the Code tab. */
   codeLinkContext?: MoveCodeLinkContext;
@@ -303,26 +329,137 @@ export function Code({
       ? transformCode(sourceBytecode)
       : undefined;
   const hasPublishedSourceCode = !!publishedSourceCode;
+  const hasModuleBytecode =
+    typeof moduleBytecode === "string" && moduleBytecode !== "0x";
 
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
-  const [activeView, setActiveView] = useState<CodeView>("published-source");
+  const [activeView, setActiveView] = useState<CodeView>(() =>
+    hasPublishedSourceCode ? "published-source" : "decompiled-source",
+  );
+  const [decompiledSource, setDecompiledSource] = useState<BytecodeViewState>();
+  const [bytecodeDisassembly, setBytecodeDisassembly] =
+    useState<BytecodeViewState>();
+  const [decompilationError, setDecompilationError] = useState<string>();
+  const [isDecompiling, setIsDecompiling] = useState(false);
+  const moduleBytecodeKey = moduleBytecode?.toLowerCase();
+
+  useEffect(() => {
+    if (!hasPublishedSourceCode && hasModuleBytecode) {
+      setActiveView("decompiled-source");
+    }
+  }, [hasPublishedSourceCode, hasModuleBytecode]);
 
   useEffect(() => {
     if (activeView === "abi" && !moduleQuery) {
-      setActiveView("published-source");
+      setActiveView(
+        hasPublishedSourceCode ? "published-source" : "decompiled-source",
+      );
     }
-  }, [activeView, moduleQuery]);
+  }, [activeView, moduleQuery, hasPublishedSourceCode]);
 
-  const displayedCode =
-    activeView === "published-source" ? publishedSourceCode : undefined;
+  useEffect(() => {
+    const missingActiveViewCode =
+      activeView === "decompiled-source"
+        ? !decompiledSource ||
+          decompiledSource.bytecodeKey !== moduleBytecodeKey
+        : activeView === "bytecode-disassembly"
+          ? !bytecodeDisassembly ||
+            bytecodeDisassembly.bytecodeKey !== moduleBytecodeKey
+          : false;
 
-  const startingLineNumber = useStartingLineNumber(displayedCode);
+    if (
+      !hasModuleBytecode ||
+      !moduleBytecodeKey ||
+      activeView === "published-source" ||
+      activeView === "abi" ||
+      !missingActiveViewCode
+    ) {
+      return;
+    }
+
+    const currentModuleBytecodeKey = moduleBytecodeKey;
+    let cancelled = false;
+
+    async function runDecompilation() {
+      setIsDecompiling(true);
+      setDecompilationError(undefined);
+
+      try {
+        const decompilationView: DecompilationView =
+          activeView === "decompiled-source"
+            ? "decompiled-source"
+            : "bytecode-disassembly";
+
+        // Let loading UI render before running CPU-intensive WASM work.
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        const result = await getDecompiledCodeView(
+          currentModuleBytecodeKey,
+          decompilationView,
+        );
+        if (!cancelled) {
+          if (decompilationView === "decompiled-source") {
+            setDecompiledSource({
+              bytecodeKey: currentModuleBytecodeKey,
+              code: result,
+            });
+          } else {
+            setBytecodeDisassembly({
+              bytecodeKey: currentModuleBytecodeKey,
+              code: result,
+            });
+          }
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setDecompilationError(
+            error instanceof Error
+              ? error.message
+              : "Failed to decompile module",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsDecompiling(false);
+        }
+      }
+    }
+
+    runDecompilation();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    activeView,
+    bytecodeDisassembly,
+    decompiledSource,
+    hasModuleBytecode,
+    moduleBytecodeKey,
+  ]);
+
+  let displayedCode: string | undefined;
+  if (activeView === "published-source") {
+    displayedCode = publishedSourceCode;
+  } else if (activeView === "decompiled-source") {
+    displayedCode =
+      decompiledSource?.bytecodeKey === moduleBytecodeKey
+        ? decompiledSource?.code
+        : undefined;
+  } else {
+    displayedCode =
+      bytecodeDisassembly?.bytecodeKey === moduleBytecodeKey
+        ? bytecodeDisassembly?.code
+        : undefined;
+  }
+
+  const startingLineNumber = useStartingLineNumber(
+    activeView === "published-source" ? displayedCode : undefined,
+  );
 
   async function copyCode() {
     if (!displayedCode) return;
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") return; // Skip during SSR
 
     await navigator.clipboard.writeText(displayedCode);
     setTooltipOpen(true);
@@ -337,7 +474,7 @@ export function Code({
     }
     downloadTextFile(
       displayedCode,
-      moduleCodeDownloadFilename(selectedModuleName),
+      moduleCodeDownloadFilename(selectedModuleName, activeView),
     );
   }
 
@@ -368,6 +505,7 @@ export function Code({
           <Typography fontSize={20} fontWeight={700}>
             Code
           </Typography>
+          <StyledLearnMoreTooltip text="Published source can differ from on-chain bytecode. Decompiled output is generated directly from on-chain bytecode with the Move decompiler WASM." />
         </Stack>
         {displayedCode && (
           <Stack direction="row" spacing={2}>
@@ -451,6 +589,28 @@ export function Code({
             Published Source
           </Button>
         )}
+        {hasModuleBytecode && (
+          <>
+            <Button
+              size="small"
+              variant={
+                activeView === "decompiled-source" ? "contained" : "outlined"
+              }
+              onClick={() => setActiveView("decompiled-source")}
+            >
+              Decompiled
+            </Button>
+            <Button
+              size="small"
+              variant={
+                activeView === "bytecode-disassembly" ? "contained" : "outlined"
+              }
+              onClick={() => setActiveView("bytecode-disassembly")}
+            >
+              Disassembly
+            </Button>
+          </>
+        )}
         {moduleQuery && (
           <Button
             size="small"
@@ -473,6 +633,21 @@ export function Code({
           different from the actual bytecode.
         </Typography>
       )}
+      {activeView !== "published-source" &&
+        activeView !== "abi" &&
+        (activeView === "decompiled-source" ||
+          activeView === "bytecode-disassembly") && (
+          <Typography
+            variant="body1"
+            fontSize={14}
+            fontWeight={400}
+            marginBottom={"16px"}
+            color={theme.palette.text.secondary}
+          >
+            This view is generated from on-chain bytecode using the Move
+            decompiler WASM.
+          </Typography>
+        )}
       {activeView === "abi" && moduleQuery && (
         <Typography
           variant="body1"
@@ -495,10 +670,28 @@ export function Code({
             </Typography>
           </Stack>
         )
-      ) : !hasPublishedSourceCode ? (
-        <Box>Published source is not available for this module.</Box>
+      ) : !hasPublishedSourceCode && !hasModuleBytecode ? (
+        <Box>
+          This module does not expose published source or bytecode for
+          decompilation.
+        </Box>
+      ) : activeView !== "published-source" && isDecompiling ? (
+        <Stack direction="row" spacing={1.5} alignItems="center" py={2}>
+          <CircularProgress size={18} />
+          <Typography variant="body2" color="text.secondary">
+            Decompiling module bytecode...
+          </Typography>
+        </Stack>
+      ) : activeView !== "published-source" && decompilationError ? (
+        <Box color={theme.palette.error.main}>
+          Failed to decompile module bytecode: {decompilationError}
+        </Box>
       ) : !displayedCode ? (
-        <Box>Published source is not available for this module.</Box>
+        <Box>
+          {activeView === "published-source"
+            ? "Published source is not available for this module."
+            : "Module bytecode is not available for decompilation."}
+        </Box>
       ) : (
         <Box
           sx={{
