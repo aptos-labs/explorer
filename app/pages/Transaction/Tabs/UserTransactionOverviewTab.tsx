@@ -302,7 +302,10 @@ type EventAction =
   | FungibleAssetTransfer
   | LegacyTokenDeposit
   | LegacyTokenWithdraw
-  | Wormhole;
+  | Wormhole
+  | DecibelPerpOrder
+  | DecibelPerpDeposit
+  | DecibelPerpWithdraw;
 
 type Swap = {
   actionType: "swap";
@@ -428,6 +431,35 @@ type LegacyTokenWithdraw = {
   };
 };
 
+const DECIBEL_CONTRACT =
+  "0x50ead22afd6ffd9769e3b3d6e0e64a2a350d68e8b102c4e72e33d0b8cfdfdb06";
+
+type DecibelPerpOrder = {
+  actionType: "perp order";
+  dex: typeof DECIBEL_CONTRACT;
+  orderType: "limit" | "market" | "cancel" | "bulk" | "twap";
+  side: "buy" | "sell" | undefined;
+  market: string;
+  size: string | undefined;
+  price: string | undefined;
+};
+
+type DecibelPerpDeposit = {
+  actionType: "perp deposit";
+  dex: typeof DECIBEL_CONTRACT;
+  amount: string;
+  asset: string;
+  subaccount: string;
+};
+
+type DecibelPerpWithdraw = {
+  actionType: "perp withdraw";
+  dex: typeof DECIBEL_CONTRACT;
+  amount: string;
+  asset: string;
+  subaccount: string;
+};
+
 const parsers = [
   parseTokenMintEvent,
   parseTokenBurnEvent,
@@ -479,6 +511,9 @@ const parsers = [
   parseTruFiLSDEvent,
   parseThalaLSDEvent,
   parseKofiLSDEvent,
+
+  // perps
+  parseDecibelOrderEvent,
 ];
 
 function extractObjectInner(arg: unknown): string {
@@ -685,6 +720,12 @@ function TransactionActionsRow({
     }
   }
 
+  // Parse Decibel perps actions from payload
+  const decibelResult = parseDecibelPerpFromPayload(transaction);
+  if (decibelResult) {
+    actions.push(decibelResult);
+  }
+
   const {data: coinData} = useGetCoinList();
 
   return (
@@ -719,6 +760,12 @@ function TransactionActionsRow({
             return legacyTokenDepositAction(action, i);
           case "wormhole burn":
             return wormholeBurnAction(transaction.hash, coinData, action, i);
+          case "perp order":
+            return decibelPerpOrderAction(action, i);
+          case "perp deposit":
+            return decibelPerpDepositAction(coinData, action, i);
+          case "perp withdraw":
+            return decibelPerpWithdrawAction(coinData, action, i);
         }
       })}
       tooltip={
@@ -2843,3 +2890,347 @@ function parseWormholeBurnEvent(event: Types.Event): Wormhole | undefined {
     assetData,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Decibel Perps
+// ---------------------------------------------------------------------------
+
+function parseDecibelOrderEvent(
+  event: Types.Event,
+): DecibelPerpOrder | undefined {
+  if (event.type !== `${DECIBEL_CONTRACT}::market_types::OrderEvent`) {
+    return undefined;
+  }
+
+  const data: {
+    is_bid: boolean;
+    market: string;
+    orig_size: string;
+    price: string;
+    status: {__variant__: string};
+    time_in_force: {__variant__: string};
+  } = event.data;
+
+  const statusVariant = data.status?.__variant__ ?? "";
+  const isCancelled =
+    statusVariant === "CANCELLED" || statusVariant === "CANCELED";
+
+  const tif = data.time_in_force?.__variant__ ?? "";
+  const isMarket = tif === "IOC" || tif === "FOK";
+
+  return {
+    actionType: "perp order",
+    dex: DECIBEL_CONTRACT,
+    orderType: isCancelled ? "cancel" : isMarket ? "market" : "limit",
+    side: data.is_bid ? "buy" : "sell",
+    market: data.market,
+    size: data.orig_size,
+    price: isCancelled || isMarket ? undefined : data.price,
+  };
+}
+
+function parseDecibelPerpFromPayload(
+  transaction: Types.Transaction,
+): DecibelPerpOrder | DecibelPerpDeposit | DecibelPerpWithdraw | undefined {
+  if (
+    !("payload" in transaction) ||
+    !("success" in transaction) ||
+    !transaction.success
+  ) {
+    return undefined;
+  }
+
+  const payload = transaction.payload;
+  if (
+    payload.type !== "entry_function_payload" ||
+    !("function" in payload) ||
+    !("arguments" in payload)
+  ) {
+    return undefined;
+  }
+
+  const typedPayload = payload as Types.TransactionPayload_EntryFunctionPayload;
+  const fn = typedPayload.function;
+  const args = typedPayload.arguments;
+
+  if (!fn.startsWith(`${DECIBEL_CONTRACT}::dex_accounts_entry::`)) {
+    return undefined;
+  }
+
+  const fnName = fn.split("::").pop() ?? "";
+
+  if (fnName === "deposit_to_subaccount_at") {
+    if (args.length < 3) return undefined;
+    return {
+      actionType: "perp deposit",
+      dex: DECIBEL_CONTRACT,
+      subaccount: String(args[0]),
+      asset: extractObjectInner(args[1]),
+      amount: String(args[2]),
+    };
+  }
+
+  if (fnName === "deposit_to_isolated_position_collateral") {
+    if (args.length < 5) return undefined;
+    return {
+      actionType: "perp deposit",
+      dex: DECIBEL_CONTRACT,
+      subaccount: extractObjectInner(args[1]),
+      asset: extractObjectInner(args[3]),
+      amount: String(args[4]),
+    };
+  }
+
+  if (
+    fnName === "withdraw_from_subaccount" ||
+    fnName === "withdraw_from_cross_collateral" ||
+    fnName === "withdraw_from_non_collateral" ||
+    fnName === "withdraw_from_isolated_position_collateral"
+  ) {
+    if (args.length < 4) return undefined;
+    return {
+      actionType: "perp withdraw",
+      dex: DECIBEL_CONTRACT,
+      subaccount: extractObjectInner(args[1]),
+      asset: extractObjectInner(args[2]),
+      amount: String(args[3]),
+    };
+  }
+
+  if (fnName === "place_bulk_orders_to_subaccount") {
+    if (args.length < 3) return undefined;
+    return {
+      actionType: "perp order",
+      dex: DECIBEL_CONTRACT,
+      orderType: "bulk",
+      side: undefined,
+      market: extractObjectInner(args[1]),
+      size: undefined,
+      price: undefined,
+    };
+  }
+
+  if (
+    fnName === "place_twap_order_to_subaccount" ||
+    fnName === "place_twap_order_to_subaccount_v2"
+  ) {
+    if (args.length < 5) return undefined;
+    return {
+      actionType: "perp order",
+      dex: DECIBEL_CONTRACT,
+      orderType: "twap",
+      side: args[4] === true || args[4] === "true" ? "buy" : "sell",
+      market: extractObjectInner(args[1]),
+      size: String(args[2]),
+      price: undefined,
+    };
+  }
+
+  if (
+    fnName === "cancel_order_to_subaccount" ||
+    fnName === "cancel_client_order_to_subaccount" ||
+    fnName === "cancel_bulk_order_to_subaccount" ||
+    fnName === "cancel_twap_orders_to_subaccount" ||
+    fnName === "cancel_tp_sl_order_for_position"
+  ) {
+    if (args.length < 3) return undefined;
+    const market =
+      fnName === "cancel_bulk_order_to_subaccount"
+        ? extractObjectInner(args[2])
+        : fnName === "cancel_order_to_subaccount"
+          ? extractObjectInner(args[3])
+          : fnName === "cancel_client_order_to_subaccount"
+            ? extractObjectInner(args[3])
+            : extractObjectInner(args[2]);
+    return {
+      actionType: "perp order",
+      dex: DECIBEL_CONTRACT,
+      orderType: "cancel",
+      side: undefined,
+      market,
+      size: undefined,
+      price: undefined,
+    };
+  }
+
+  return undefined;
+}
+
+const DECIBEL_ORDER_EMOJI: Record<DecibelPerpOrder["orderType"], string> = {
+  limit: "📋",
+  market: "⚡",
+  cancel: "❌",
+  bulk: "📦",
+  twap: "⏱️",
+};
+
+const DECIBEL_ORDER_LABEL: Record<DecibelPerpOrder["orderType"], string> = {
+  limit: "Limit Order",
+  market: "Market Order",
+  cancel: "Cancel Order",
+  bulk: "Bulk Orders",
+  twap: "TWAP Order",
+};
+
+const decibelPerpOrderAction = (action: DecibelPerpOrder, i: number) => {
+  const emoji = DECIBEL_ORDER_EMOJI[action.orderType];
+  const label = DECIBEL_ORDER_LABEL[action.orderType];
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>
+          {emoji} {label}
+        </span>
+        {action.side && <span>{action.side === "buy" ? "Buy" : "Sell"}</span>}
+        {action.size && <span>size {action.size}</span>}
+        {action.price && <span>@ {action.price}</span>}
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>on</span>
+        <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+      </Box>
+    </Box>
+  );
+};
+
+const DecibelDepositWithdrawContent = ({
+  action,
+  coinData,
+}: {
+  action: DecibelPerpDeposit | DecibelPerpWithdraw;
+  coinData: {data: CoinDescription[]} | undefined;
+}) => {
+  const {data: assetMetadata} = useGetAssetMetadata(action.asset);
+  const assetCoin = findCoinData(coinData?.data ?? [], action.asset);
+  const decimals = assetCoin?.decimals ?? assetMetadata?.decimals ?? 0;
+
+  return (
+    <React.Fragment>
+      {Number(action.amount) / 10 ** decimals}
+      <HashButton
+        hash={action.asset}
+        type={
+          action.asset.includes("::") ? HashType.COIN : HashType.FUNGIBLE_ASSET
+        }
+        img={assetCoin?.logoUrl}
+        size="small"
+      />
+    </React.Fragment>
+  );
+};
+
+const decibelPerpDepositAction = (
+  coinData: {data: CoinDescription[]} | undefined,
+  action: DecibelPerpDeposit,
+  i: number,
+) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>{"📥 Deposit"}</span>
+        <DecibelDepositWithdrawContent action={action} coinData={coinData} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>on</span>
+        <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+      </Box>
+    </Box>
+  );
+};
+
+const decibelPerpWithdrawAction = (
+  coinData: {data: CoinDescription[]} | undefined,
+  action: DecibelPerpWithdraw,
+  i: number,
+) => {
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>{"📤 Withdraw"}</span>
+        <DecibelDepositWithdrawContent action={action} coinData={coinData} />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        <span>on</span>
+        <HashButton hash={action.dex} type={HashType.ACCOUNT} />
+      </Box>
+    </Box>
+  );
+};
