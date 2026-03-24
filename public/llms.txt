@@ -12,11 +12,11 @@
 - Check network analytics (TPS, daily active users, gas, supply)
 - Resolve Aptos Name Service (ANS) `.apt` names to addresses
 - View Move objects (on-chain resources implementing the Object model)
-- Disassemble on-chain Move module bytecode in-browser (WASM); optional **Decompiled** (reconstructed source) view when `?dev=true` is in the URL
+- Disassemble on-chain Move module bytecode in-browser (WASM); optional **Decompiled** (reconstructed source) tab when `?dev=true` is in the URL (transaction **script** bytecode still offers Decompiled and Disassembly without that flag)
 
 ## URL Templates
 
-All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?network=local` for other networks. Append `?dev=true` (combine with `&` when other params exist) to enable the **Decompiled** bytecode view alongside **Disassembly** on module/script code UIs.
+All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?network=local` for other networks. Append `?dev=true` (combine with `&` when other params exist) to enable the **Decompiled** module bytecode tab alongside **Disassembly** on account module code (script bytecode on transaction payloads always offers both views).
 
 **Crawlers and automated fetchers:** The site’s `robots.txt` disallows many bots from URLs that include `?network=testnet`, `?network=devnet`, or `?network=local`. Use plain mainnet paths (no `network` query param) when linking for tools that crawl pages; humans can still switch network via the query param or UI.
 

@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Module and script bytecode UI**: the **Decompiled** view (WASM reconstruction of Move source) is hidden unless the URL includes `?dev=true` (or `&dev=true` with other params). **Disassembly** remains available without that flag; module version **Compare** follows the same rule.
+- **Module bytecode UI**: the **Decompiled** tab (WASM reconstruction of Move source) is hidden unless the URL includes `?dev=true` (or `&dev=true` with other params). **Disassembly** remains available without that flag; module version **Compare** follows the same rule. **Script** bytecode on transaction payloads still offers **Decompiled** and **Disassembly** without the flag.
 - **Light theme**: neutral grey app background (`#ECEEF2`), white cards/panels, cooler borders, and soft grey stripes for tables and filled inputs instead of warm cream-on-bright-off-white; primary body text uses ink (`#171612`) for slightly softer contrast than pure black. Light `theme-color` meta updated to match the canvas.
 
 ### Fixed
