@@ -1157,41 +1157,45 @@ The app shell that wraps every page.
 | `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results) |
 | `app/pages/layout/Search/searchDetection.test.ts` | FEAT-SEARCH-002 (all input type detection: ANS, struct, numeric, hex, address, emoji, generic) |
 | `app/pages/layout/Search/searchFiltering.test.ts` | FEAT-SEARCH-003 (result filtering/deduplication, grouping with headers and type ordering) |
+| `app/pages/layout/Search/searchHelpers.test.ts` | FEAT-SEARCH-001 (normalization, cache keys), FEAT-SEARCH-002 (label lookup, coin lookup), FEAT-SEARCH-003 (definitiveResult) |
 | `app/lib/networks.test.ts` | FEAT-NETWORK-001 (network config, hidden networks, localnet), FEAT-FLAGS-003 (feature labels) |
 | `app/lib/graphqlSupport.test.ts` | FEAT-FLAGS-001 (GraphQL URI per network), FEAT-COIN-001/FEAT-FA-001 (tab gating logic) |
 | `app/lib/validators.test.ts` | FEAT-NETWORK-001 (network name validation), FEAT-FLAGS-003 (feature name validation), well-known constants |
+| `app/utils/routeRedirects.test.ts` | FEAT-ACCOUNT-012 (entity default tab redirects for all route types), FEAT-TOKEN-004 (legacy numeric redirect), FEAT-VALIDATORS-006 (validators/validators-enhanced redirects), FEAT-SEARCH-001 (header search navigation), FEAT-WALLET-002 (wallet network mismatch), FEAT-ACCOUNT-002 (DeFi portfolio URLs) |
+| `app/utils/rateLimiter.test.ts` | FEAT-RATELIMIT-002 (rate limit error detection, URL endpoint extraction) |
+| `app/utils/utilsCoverage.test.ts` | FEAT-ROUTING-003 (isValidStruct), FEAT-TXN-002 (sortTransactions), FEAT-WALLET-001 (sortPetraFirst), FEAT-MODULES-004 (bytecode size), FEAT-MODULES-001 (param names, function line numbers), isValidUrl, assertNever |
+| `app/data/bannedCollections.test.ts` | FEAT-ACCOUNT-008 (scam collection detection: registry shape, hex keys, reason strings) |
+| `app/data/knownAddresses.test.ts` | FEAT-DATA-002 (known address system: labels, branding, fallback), FEAT-DATA-005 (emojicoin registry address) |
+| `app/pages/Validators/validatorTabs.test.ts` | FEAT-VALIDATORS-001 (tab enum values, uniqueness) |
+| `app/pages/Analytics/analyticsGate.test.ts` | FEAT-ANALYTICS-001 (mainnet gate), FEAT-ANALYTICS-005 (GCS data URL) |
+| `app/hooks/localnetDetection.test.ts` | FEAT-CHROME-005 (localnet URL shape: localhost, port, path) |
+| `app/api/hooks/useGoogleTagManager.test.ts` | FEAT-TELEMETRY-001 (GTM event name constants) |
 
-## Appendix C: Test Coverage Gaps
+## Appendix C: Remaining Test Coverage Gaps
 
-The following features lack automated test coverage and should be prioritized:
+Features that require React component rendering, async I/O mocking, or extraction of currently file-private logic to be fully testable. Most pure-function paths are now covered.
 
-### High Priority (Core User Flows)
+### Requires Component / Integration Testing
 
-| Feature ID | Feature | Suggested Test Type |
-|------------|---------|---------------------|
-| FEAT-TXN-009 | Transaction actions parsing — individual protocol event parsers | Unit: DEX/LSD event parsing for each supported protocol |
-| FEAT-ACCOUNT-012 | Default tab redirects | Unit: `beforeLoad` redirect logic for all entity types |
-| FEAT-ROUTING-002 | Legacy URL redirects | Integration: old URLs → new paths |
+| Feature ID | Feature | Blocker |
+|------------|---------|---------|
+| FEAT-TXLIST-001 | User vs All toggle | Needs component render to test `?type=` → correct child component |
+| FEAT-NETWORK-002 | Network preserved on nav | Custom `Link` / `useNavigate` wrapper requires router context |
+| FEAT-ACCOUNT-004 | Object detection redirect | Needs `Account/Index.tsx` component render with mocked resources |
+| FEAT-CHROME-002 | Footer cache clear | Integration test with localStorage |
+| FEAT-VALIDATORS-004 | Map geo data grouping | Needs component render or extraction of `useGetValidatorSetGeoData` logic |
 
-### Medium Priority (Important Features)
+### Requires Extraction of File-Private Logic
 
-| Feature ID | Feature | Suggested Test Type |
-|------------|---------|---------------------|
-| FEAT-TXLIST-001 | User vs All toggle | Integration: `?type=` renders correct component |
-| FEAT-NETWORK-002 | Network preserved on nav | Unit: custom `Link` merges `network` |
-| FEAT-VALIDATORS-001 | Validator tab set and devnet variant | Unit/integration |
-| FEAT-TOKEN-004 | Legacy token URL redirect | Unit: numeric tab → overview |
-| FEAT-WALLET-002 | Tx submission network check | Unit: wallet/explorer network mismatch |
+| Feature ID | Feature | Blocker |
+|------------|---------|---------|
+| FEAT-TXN-009 | Transaction actions parsing — per-protocol DEX/LSD event parsers | Parsers (`parseThalaSwapV1Event`, `parseLiquidswapV0Event`, etc.) are module-private in `UserTransactionOverviewTab.tsx`; extract to a dedicated module to unit test |
+| FEAT-TXN-005 | Script bytecode decompiler trigger | `ScriptBytecodeDecompiler` is a React component; trigger condition (payload type check) is inline |
+| FEAT-ROUTING-002 | Hash-to-path and old-hostname redirects | `useHashToPathRedirect`, `useOldUrlRedirect` are React hooks in root layout |
 
-### Lower Priority (Edge Cases & Polish)
+### Would Benefit from Async/Timer Mocking
 
-| Feature ID | Feature | Suggested Test Type |
-|------------|---------|---------------------|
-| FEAT-ACCOUNT-004 | Object detection & path-preserving redirect | Integration |
-| FEAT-ACCOUNT-008 | Scam collection detection | Unit: `labsBannedCollections` check |
-| FEAT-CHROME-005 | Localnet unavailable modal | Unit: detection logic |
-| FEAT-ANALYTICS-001 | Mainnet gate | Unit: non-mainnet shows message |
-| FEAT-CHROME-002 | Footer cache clear | Integration |
-| FEAT-VALIDATORS-004 | Map data grouping | Unit: geo data → city/country groups |
-| FEAT-TXN-005 | Script bytecode decompiler | Unit: decompile triggers for script_payload |
-| FEAT-DATA-001 | CoinGecko batch delay logic | Unit: batching + 429 handling |
+| Feature ID | Feature | Blocker |
+|------------|---------|---------|
+| FEAT-DATA-001 | CoinGecko batch delay logic | Async with 1500ms inter-batch delays; needs fake timers |
+| FEAT-RATELIMIT-002 | `retryWithBackoff` / `withRateLimit` full flow | Async with random jitter; needs mocked `Math.random` + fake timers |
