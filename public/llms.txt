@@ -33,9 +33,9 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
   - Tabs: `/validators/all`, `/validators/delegation`, `/validators/enhanced_delegation`
 - Individual validator: `/validator/{address}`
 - Coin: `/coin/{type}` — e.g., `/coin/0x1::aptos_coin::AptosCoin`
-  - Tabs: `/coin/{type}/info`, `/coin/{type}/transactions`, `/coin/{type}/holders`
+  - Tabs: `/coin/{type}/info`, `/coin/{type}/holders`
 - Fungible asset: `/fungible_asset/{address}`
-  - Tabs: `/fungible_asset/{address}/info`, `/fungible_asset/{address}/transactions`, `/fungible_asset/{address}/holders`
+  - Tabs: `/fungible_asset/{address}/info`, `/fungible_asset/{address}/holders`
 - NFT token: `/token/{tokenId}`
   - Tabs: `/token/{tokenId}/overview`, `/token/{tokenId}/activities`
 - Move object: `/object/{address}`

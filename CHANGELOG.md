@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Rate-limit drawer: a bottom sheet appears when any API request receives HTTP 429, informing the user they have been rate-limited and offering a button to open Settings and set an API key override or wait ~5 minutes for the limit to reset
 - **Trace tab failure highlighting**: when a transaction failed, the Trace tab shows an error banner with the VM status and visually highlights the failed call (red background, error chip with the abort reason) along with a dashed-red path from the root to the failing node
+- **Coin/FA holders**: top-100 holders displayed on the Holders tab; "Export All Holders CSV" button paginates through every holder with rate-limit-aware backoff and streams a CSV download
+- **Account asset filter**: new `?asset=` search-param filter on account transactions tab shows only deposit/withdrawal/mint/burn activity for a specific coin type or fungible asset address
 
 ### Improved
 
@@ -31,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - AIP-141 gas impact UI: account **Gas Impact** tab, gas warnings on account transaction lists, and the user-transaction overview banner; removed `useGetGasScheduleVersion` and related utilities.
+- **Coin/FA transactions tab**: removed the "Beta - Transactions" tab from coin and fungible asset detail pages; per-account coin activity is now accessible via the asset filter on the account transactions tab. Old `/coin/{type}/transactions` and `/fungible_asset/{address}/transactions` URLs redirect to the info tab.
 
 ## [1.1.0] - 2026-03-23
 

@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-23 (rev 11)
+> Last updated: 2026-03-24 (rev 12)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -51,7 +51,7 @@ Each detail page has tabs accessible via path segments:
 #### Accounts
 - `/account/{address}` — account overview (redirects to `/account/{address}/transactions`)
 - Tab paths:
-  - `/account/{address}/transactions` — full transaction history (supports `?fn={entry_function_id}` to filter by function, server-side via indexer)
+  - `/account/{address}/transactions` — full transaction history (supports `?fn={entry_function_id}` to filter by function, and `?asset={coin_type_or_fa_address}` to filter by coin/fungible asset — both server-side via indexer)
   - `/account/{address}/coins` — fungible token balances
   - `/account/{address}/tokens` — NFTs owned by this account
   - `/account/{address}/resources` — raw Move resources stored under the account
@@ -79,9 +79,11 @@ Each detail page has tabs accessible via path segments:
 #### Coins and Fungible Assets
 - `/coins` — list of known coins and fungible assets
 - `/coin/{type}` — coin details by Move type (e.g., `/coin/0x1::aptos_coin::AptosCoin`)
-  - Tab paths: `/coin/{type}/info`, `/coin/{type}/transactions`, `/coin/{type}/holders`
+  - Tab paths: `/coin/{type}/info`, `/coin/{type}/holders`
+  - Holders tab shows top 100 by balance; full list available via CSV export
 - `/fungible_asset/{address}` — fungible asset by metadata address
-  - Tab paths: `/fungible_asset/{address}/info`, `/fungible_asset/{address}/transactions`, `/fungible_asset/{address}/holders`
+  - Tab paths: `/fungible_asset/{address}/info`, `/fungible_asset/{address}/holders`
+  - Holders tab shows top 100 by balance; full list available via CSV export
 
 #### Tokens (NFTs)
 - `/token/{tokenId}` — individual NFT/token details
@@ -190,7 +192,7 @@ A: Visit `https://explorer.aptoslabs.com/account/0x1/modules` — this lists all
 A: Yes. Open a module code page such as `https://explorer.aptoslabs.com/account/0x1/modules/code/coin` and select **Decompiled** or **Disassembly**. These are generated client-side in the browser using Move decompiler WASM.
 
 **Q: "Is there an APT coin page?"**
-A: Yes — `https://explorer.aptoslabs.com/coin/0x1::aptos_coin::AptosCoin` shows supply, metadata, and recent transactions for native APT.
+A: Yes — `https://explorer.aptoslabs.com/coin/0x1::aptos_coin::AptosCoin` shows supply, metadata, and top holders for native APT. To see coin-specific transactions for a particular account, use the asset filter on the account's transactions tab (e.g. `/account/{address}/transactions?asset=0x1::aptos_coin::AptosCoin`).
 
 **Q: "What's the current TPS on Aptos?"**
 A: Visit `https://explorer.aptoslabs.com/analytics` — the analytics page shows real-time and historical TPS charts along with other network metrics.
@@ -293,6 +295,7 @@ Charts and metrics for:
 - `network` — Select network: mainnet (default), testnet, devnet, local
 - `search` — On the home page (`/?search={query}`), pre-fills the search bar and executes the query immediately. Results are displayed inline on the page below the search input. Use this when the exact entity type is unknown — the explorer will auto-detect and show matching results grouped by type (accounts, transactions, blocks, coins, etc.). On Enter or a single unambiguous result, navigates directly to the entity page.
 - `fn` — On `/transactions` and `/account/{address}/transactions`, filters transactions by entry function ID (e.g. `?fn=0x1::coin::transfer`). The value must be a fully qualified Move function identifier (`{address}::{module}::{function}`). On the User Transactions view and account transactions view, this filters server-side via the GraphQL indexer. On the All Transactions view, this filters client-side on the currently loaded page.
+- `asset` — On `/account/{address}/transactions`, filters to show only activity (deposits, withdrawals, mints, burns) for a specific coin type or fungible asset address (e.g. `?asset=0x1::aptos_coin::AptosCoin`). Server-side via the GraphQL indexer.
 - `type` — On `/transactions`, selects between `user` (user transactions only, default) and `all` (all transaction types)
 - Page/tab selection is path-based (e.g., `/account/0x1/modules`), not query-param-based
 
