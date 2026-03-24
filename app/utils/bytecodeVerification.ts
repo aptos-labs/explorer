@@ -6,11 +6,10 @@ export const MOVE_2_MIN_BYTECODE_VERSION = 6;
 
 const FRAMEWORK_ADDRESS = "0x1";
 
-const APTOS_API_URLS: Record<string, string> = {
-  mainnet: "https://fullnode.mainnet.aptoslabs.com/v1",
-  testnet: "https://fullnode.testnet.aptoslabs.com/v1",
-  devnet: "https://fullnode.devnet.aptoslabs.com/v1",
-};
+function isFrameworkAddress(addr: string): boolean {
+  const normalized = addr.toLowerCase().replace(/^0x0*/, "0x");
+  return normalized === "0x1";
+}
 
 export type VerificationStatus = "verified" | "mismatch" | "error";
 
@@ -74,13 +73,18 @@ export async function verifyModuleBytecode(opts: {
     const addr = moduleAddress ?? metadata.address ?? "0x1";
 
     let allDeps = allPackages ?? [];
-    if (addr.toLowerCase() !== FRAMEWORK_ADDRESS) {
+    if (!isFrameworkAddress(addr)) {
       const frameworkPkgs = await fetchFrameworkPackages(networkName);
       allDeps = [...allDeps, ...frameworkPkgs];
     }
 
     const depFiles = buildDependencyFiles(allDeps, metadata.name);
     const extraAddresses = buildNamedAddressMap(allDeps, addr);
+
+    const totalDepModules = allDeps.reduce(
+      (n, pkg) => n + pkg.modules.length,
+      0,
+    );
 
     // --- Step 1: Decompile ---
     steps[0].status = "running";
@@ -102,7 +106,7 @@ export async function verifyModuleBytecode(opts: {
       return {status: "error", steps, error: steps[0].detail};
     }
     steps[0].status = "done";
-    steps[0].detail = `Decompiled ${decompiledSource.length} chars of Move source`;
+    steps[0].detail = `Decompiled ${decompiledSource.length} chars (${totalDepModules} dep modules, ${Object.keys(extraAddresses).length} named addrs)`;
     emit();
 
     // --- Step 2: Compile decompiled source → reference bytecode ---
@@ -190,8 +194,9 @@ async function fetchFrameworkPackages(
 ): Promise<PackageMetadata[]> {
   if (frameworkPackagesCache) return frameworkPackagesCache;
 
+  const {networks} = await import("../lib/constants");
   const network = networkName ?? "mainnet";
-  const baseUrl = APTOS_API_URLS[network] ?? APTOS_API_URLS.mainnet;
+  const baseUrl = (networks[network] ?? networks.mainnet).replace(/\/$/, "");
 
   try {
     const resp = await fetch(
