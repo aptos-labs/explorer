@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-23 (rev 11)
+> Last updated: 2026-03-24 (rev 12)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -57,7 +57,7 @@ Each detail page has tabs accessible via path segments:
   - `/account/{address}/resources` — raw Move resources stored under the account
   - `/account/{address}/modules` — Move smart contract modules deployed here (includes a version selector to browse historical publish versions and view code at any past ledger version)
     - `/account/{address}/modules/packages` — package-level module grouping
-    - `/account/{address}/modules/code/{moduleName}` — code viewer for one module (published source + client-side WASM decompiled bytecode + disassembly)
+    - `/account/{address}/modules/code/{moduleName}` — code viewer for one module (published source)
     - `/account/{address}/modules/run/{moduleName}/{functionName}` — execute entry functions
     - `/account/{address}/modules/view/{moduleName}/{functionName}` — call read-only view functions
   - `/account/{address}/multisig` — multisig transaction queue (if account is a multisig)
@@ -186,8 +186,8 @@ A: Visit `https://explorer.aptoslabs.com/account/0xce46…7798/coins` — the co
 **Q: "What modules does the Aptos Framework have?"**
 A: Visit `https://explorer.aptoslabs.com/account/0x1/modules` — this lists all Move modules deployed at address 0x1 with viewable source code.
 
-**Q: "Can Explorer decompile module bytecode?"**
-A: Yes. Open a module code page such as `https://explorer.aptoslabs.com/account/0x1/modules/code/coin` and select **Decompiled** or **Disassembly**. These are generated client-side in the browser using Move decompiler WASM.
+**Q: "Can I view module source code?"**
+A: Yes. Open a module code page such as `https://explorer.aptoslabs.com/account/0x1/modules/code/coin` to view the published source code and ABI.
 
 **Q: "Is there an APT coin page?"**
 A: Yes — `https://explorer.aptoslabs.com/coin/0x1::aptos_coin::AptosCoin` shows supply, metadata, and recent transactions for native APT.
@@ -250,7 +250,7 @@ Tabs include:
 - **Tokens**: NFTs owned by this account (Token v2 / Digital Asset standard)
 - **Resources**: Raw Move resources stored under the account (JSON view)
 - **Modules**: Smart contract code deployed by this account (with source if verified). A version selector lets you browse the full publish history and view packages, source, and ABI at any previous ledger version. A "Compare" button opens a side-by-side diff view to see exactly what changed between two versions.
-  - Code tab supports Published Source, Decompiled (client-side WASM), and Disassembly views
+  - Code tab supports Published Source and ABI views
 - **Multisig**: Pending and completed multisig transactions (if applicable)
 - **Info**: Account sequence number, authentication key, account type
 

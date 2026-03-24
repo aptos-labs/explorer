@@ -12,7 +12,6 @@
 - Check network analytics (TPS, daily active users, gas, supply)
 - Resolve Aptos Name Service (ANS) `.apt` names to addresses
 - View Move objects (on-chain resources implementing the Object model)
-- Decompile on-chain Move module bytecode in-browser (WASM, no decompile backend)
 
 ## URL Templates
 
@@ -25,7 +24,7 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
 - Account: `/account/{address}`
   - Tabs: `/account/{address}/transactions`, `/account/{address}/coins`, `/account/{address}/tokens`, `/account/{address}/resources`, `/account/{address}/modules`, `/account/{address}/multisig`, `/account/{address}/info`
   - Modules sub-tabs: `/account/{address}/modules/packages`, `/account/{address}/modules/code/{moduleName}`, `/account/{address}/modules/run/{moduleName}/{functionName}`, `/account/{address}/modules/view/{moduleName}/{functionName}`
-  - Code view includes: published source, decompiled bytecode, disassembly
+  - Code view includes: published source
   - Historical module code: the Modules tab includes a version selector to view packages and source at any previous publish transaction
 - Block: `/block/{height}`
   - Tabs: `/block/{height}/overview`, `/block/{height}/transactions`

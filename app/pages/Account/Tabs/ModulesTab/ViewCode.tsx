@@ -224,7 +224,6 @@ function ModuleContent({
       {moduleError && <AccountError address={address} error={moduleError} />}
       <Code
         sourceBytecode={sourceBytecode}
-        moduleBytecode={moduleData?.bytecode}
         moduleQuery={
           moduleError
             ? undefined
