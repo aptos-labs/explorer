@@ -1,15 +1,21 @@
+import DataObjectIcon from "@mui/icons-material/DataObject";
+import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import {
   alpha,
   Box,
   CircularProgress,
+  IconButton,
   Paper,
   Popper,
+  Stack,
+  Tooltip,
   useTheme,
 } from "@mui/material";
 import type React from "react";
 import {lazy, Suspense, useCallback, useEffect, useRef, useState} from "react";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
+import JsonTableView from "./JsonTableView";
 
 // Dynamically import @uiw/react-json-view only on client side (React 19 compatible)
 const JsonView = lazy(() => import("@uiw/react-json-view"));
@@ -17,6 +23,8 @@ const JsonView = lazy(() => import("@uiw/react-json-view"));
 const MAX_CARD_HEIGHT = 500;
 const HOVER_DELAY_MS = 500;
 const COPIED_DISPLAY_MS = 1500;
+
+type ViewMode = "json" | "table";
 
 type JsonViewCardProps = {
   data: unknown;
@@ -172,19 +180,22 @@ function useCopyTooltip() {
   };
 }
 
+function isTableRenderable(data: unknown): boolean {
+  if (!data || typeof data !== "object") return false;
+  if (Array.isArray(data)) return data.length > 0;
+  return Object.keys(data as Record<string, unknown>).length > 0;
+}
+
 export default function JsonViewCard({
   data,
   collapsedByDefault,
 }: JsonViewCardProps) {
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
+  const [viewMode, setViewMode] = useState<ViewMode>("json");
 
-  // Key color: warm coral tone for visual distinction from values (from theme)
   const keyColor = semanticColors.jsonView.key;
-
-  // Value color: cool blue tone (primary color)
   const valueColor = theme.palette.primary.main;
-  // Solid muted tone — alpha(primary) was ~2.1:1 on light code panels (WCAG)
   const secondaryTextColor = semanticColors.codeBlock.textSecondary;
 
   const {
@@ -202,14 +213,14 @@ export default function JsonViewCard({
     return <EmptyValue />;
   }
 
-  // Common hover styles - base properties shared by all clickable elements
+  const canShowTable = isTableRenderable(data);
+
   const baseHoverStyle = {
     cursor: "pointer",
     borderRadius: "2px",
     transition: "background-color 0.15s ease",
   };
 
-  // Key hover style (coral-based)
   const keyHoverStyle = {
     ...baseHoverStyle,
     "&:hover": {
@@ -217,7 +228,6 @@ export default function JsonViewCard({
     },
   };
 
-  // Value hover style (blue-based)
   const valueHoverStyle = {
     ...baseHoverStyle,
     "&:hover": {
@@ -226,79 +236,136 @@ export default function JsonViewCard({
   };
 
   return (
-    <Box
-      sx={{
-        backgroundColor: semanticColors.codeBlock.background,
-        overflow: "auto",
-        maxHeight: MAX_CARD_HEIGHT,
-        position: "relative",
-        // Keys: coral-based hover (matches JS selector [class*="object-key"])
-        '& [class*="object-key"]': keyHoverStyle,
-        // All value types: blue-based hover (matches JS selector [class*="value"])
-        // Covers: string, int, float, bool, null, undefined, bigint, nan, date, url, etc.
-        '& [class*="-value"]': valueHoverStyle,
-      }}
-      padding={2}
-      borderRadius={1}
-      onClick={handleClick}
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseOut}
-      onMouseLeave={handleMouseLeave}
-    >
-      <Popper
-        open={tooltipOpen}
-        anchorEl={anchor}
-        placement="top"
-        sx={{zIndex: theme.zIndex.tooltip}}
-      >
-        <Paper
+    <Box sx={{position: "relative", width: "100%"}}>
+      {canShowTable && (
+        <Stack
+          direction="row"
+          spacing={0.5}
           sx={{
-            px: 1,
-            py: 0.5,
-            fontSize: "0.75rem",
-            backgroundColor: isError
-              ? theme.palette.error.main
-              : theme.palette.grey[800],
-            color: theme.palette.common.white,
+            position: "absolute",
+            top: 4,
+            right: 4,
+            zIndex: 1,
           }}
         >
-          {tooltipText}
-        </Paper>
-      </Popper>
-      <Suspense fallback={<CircularProgress size={24} />}>
-        <JsonView
-          value={data as object}
-          collapsed={collapsedByDefault ? 1 : false}
-          displayDataTypes={false}
-          displayObjectSize={false}
-          enableClipboard={false}
-          indentWidth={24}
-          shortenTextAfterLength={80}
-          style={
-            {
-              fontFamily: theme.typography.fontFamily,
-              fontSize: theme.typography.fontSize,
-              lineHeight: 1.6,
-              backgroundColor: "transparent",
-              // Custom colors using CSS variables
-              // Key: warm coral tone for visual distinction
-              "--w-rjv-key-string": keyColor,
-              // Values: cool blue tone
-              "--w-rjv-type-string-color": valueColor,
-              "--w-rjv-type-int-color": valueColor,
-              "--w-rjv-type-float-color": valueColor,
-              "--w-rjv-type-boolean-color": valueColor,
-              // Secondary elements: muted
-              "--w-rjv-type-null-color": secondaryTextColor,
-              "--w-rjv-arrow-color": secondaryTextColor,
-              "--w-rjv-brackets-color": secondaryTextColor,
-              "--w-rjv-colon-color": secondaryTextColor,
-              "--w-rjv-ellipsis-color": secondaryTextColor,
-              "--w-rjv-info-color": secondaryTextColor,
-            } as React.CSSProperties
-          }
-        />
-      </Suspense>
+          <Tooltip title="JSON view" placement="top">
+            <IconButton
+              size="small"
+              onClick={() => setViewMode("json")}
+              sx={{
+                borderRadius: 1,
+                backgroundColor:
+                  viewMode === "json"
+                    ? alpha(theme.palette.primary.main, 0.12)
+                    : "transparent",
+                color:
+                  viewMode === "json"
+                    ? theme.palette.primary.main
+                    : theme.palette.text.secondary,
+                "&:hover": {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                },
+              }}
+            >
+              <DataObjectIcon sx={{fontSize: 18}} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Table view" placement="top">
+            <IconButton
+              size="small"
+              onClick={() => setViewMode("table")}
+              sx={{
+                borderRadius: 1,
+                backgroundColor:
+                  viewMode === "table"
+                    ? alpha(theme.palette.primary.main, 0.12)
+                    : "transparent",
+                color:
+                  viewMode === "table"
+                    ? theme.palette.primary.main
+                    : theme.palette.text.secondary,
+                "&:hover": {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                },
+              }}
+            >
+              <TableChartOutlinedIcon sx={{fontSize: 18}} />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      )}
+
+      {viewMode === "table" && canShowTable ? (
+        <JsonTableView data={data} />
+      ) : (
+        <Box
+          sx={{
+            backgroundColor: semanticColors.codeBlock.background,
+            overflow: "auto",
+            maxHeight: MAX_CARD_HEIGHT,
+            position: "relative",
+            '& [class*="object-key"]': keyHoverStyle,
+            '& [class*="-value"]': valueHoverStyle,
+          }}
+          padding={2}
+          borderRadius={1}
+          onClick={handleClick}
+          onMouseOver={handleMouseOver}
+          onMouseOut={handleMouseOut}
+          onMouseLeave={handleMouseLeave}
+        >
+          <Popper
+            open={tooltipOpen}
+            anchorEl={anchor}
+            placement="top"
+            sx={{zIndex: theme.zIndex.tooltip}}
+          >
+            <Paper
+              sx={{
+                px: 1,
+                py: 0.5,
+                fontSize: "0.75rem",
+                backgroundColor: isError
+                  ? theme.palette.error.main
+                  : theme.palette.grey[800],
+                color: theme.palette.common.white,
+              }}
+            >
+              {tooltipText}
+            </Paper>
+          </Popper>
+          <Suspense fallback={<CircularProgress size={24} />}>
+            <JsonView
+              value={data as object}
+              collapsed={collapsedByDefault ? 1 : false}
+              displayDataTypes={false}
+              displayObjectSize={false}
+              enableClipboard={false}
+              indentWidth={24}
+              shortenTextAfterLength={80}
+              style={
+                {
+                  fontFamily: theme.typography.fontFamily,
+                  fontSize: theme.typography.fontSize,
+                  lineHeight: 1.6,
+                  backgroundColor: "transparent",
+                  "--w-rjv-key-string": keyColor,
+                  "--w-rjv-type-string-color": valueColor,
+                  "--w-rjv-type-int-color": valueColor,
+                  "--w-rjv-type-float-color": valueColor,
+                  "--w-rjv-type-boolean-color": valueColor,
+                  "--w-rjv-type-null-color": secondaryTextColor,
+                  "--w-rjv-arrow-color": secondaryTextColor,
+                  "--w-rjv-brackets-color": secondaryTextColor,
+                  "--w-rjv-colon-color": secondaryTextColor,
+                  "--w-rjv-ellipsis-color": secondaryTextColor,
+                  "--w-rjv-info-color": secondaryTextColor,
+                } as React.CSSProperties
+              }
+            />
+          </Suspense>
+        </Box>
+      )}
     </Box>
   );
 }
