@@ -791,7 +791,8 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **API key override** | Masked input for geomi.dev API key with show/hide toggle. |
+| **API key overrides** | One optional masked geomi.dev API key field per network (mainnet, testnet, devnet, decibel, shelbynet, local); shared show/hide toggle for all fields. Empty network uses the build default key (if any). |
+| **Migration** | Previously saved single-key settings load as the same key applied to every network until the user saves again. |
 | **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. |
 | **On save** | Clears cached SDK clients (`clearCachedV2Clients`, `clearCachedSearchClients`), invalidates all React Query queries, invalidates router. If non-empty API key saved, fires `emitApiKeySaved()` to dismiss rate-limit drawer (see FEAT-RATELIMIT-001). |
 | **External trigger** | Can be opened programmatically via `emitOpenSettings()` (used by Rate Limit Drawer). |

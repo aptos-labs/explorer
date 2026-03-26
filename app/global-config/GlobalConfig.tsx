@@ -165,7 +165,7 @@ export function useNetworkValue(): string {
 // Create Aptos clients
 function createAptosClient(
   networkName: NetworkName,
-  apiKeyOverride = getGeomiDevApiKeyOverride(),
+  apiKeyOverride?: string,
 ): AptosClient {
   const nodeUrl = networks[networkName];
   const apiKey = getApiKey(networkName, apiKeyOverride);
@@ -178,7 +178,7 @@ function createAptosClient(
 
 function createAptosV2Client(
   networkName: NetworkName,
-  apiKeyOverride = getGeomiDevApiKeyOverride(),
+  apiKeyOverride?: string,
 ): Aptos {
   const nodeUrl = networks[networkName];
   const apiKey = getApiKey(networkName, apiKeyOverride);
@@ -229,7 +229,7 @@ export function clearCachedV2Clients() {
 
 export function getCachedV2Client(
   networkName: NetworkName,
-  apiKeyOverride = getGeomiDevApiKeyOverride(),
+  apiKeyOverride = getGeomiDevApiKeyOverride(networkName),
 ): Aptos {
   const cacheKey = getClientCacheKey(networkName, apiKeyOverride);
   const existing = clientCache.get(cacheKey);
@@ -243,24 +243,26 @@ export function getCachedV2Client(
 export function useAptosClient(): AptosClient {
   const networkName = useNetworkName();
   const {
-    settings: {geomiDevApiKeyOverride},
+    settings: {geomiDevApiKeyOverridesByNetwork},
   } = useExplorerSettings();
+  const apiKeyOverride = geomiDevApiKeyOverridesByNetwork[networkName];
 
   return useMemo(
-    () => createAptosClient(networkName, geomiDevApiKeyOverride),
-    [networkName, geomiDevApiKeyOverride],
+    () => createAptosClient(networkName, apiKeyOverride),
+    [networkName, apiKeyOverride],
   );
 }
 
 export function useAptosClientV2(): Aptos {
   const networkName = useNetworkName();
   const {
-    settings: {geomiDevApiKeyOverride},
+    settings: {geomiDevApiKeyOverridesByNetwork},
   } = useExplorerSettings();
+  const apiKeyOverride = geomiDevApiKeyOverridesByNetwork[networkName];
 
   return useMemo(
-    () => getCachedV2Client(networkName, geomiDevApiKeyOverride),
-    [networkName, geomiDevApiKeyOverride],
+    () => getCachedV2Client(networkName, apiKeyOverride),
+    [networkName, apiKeyOverride],
   );
 }
 
@@ -279,11 +281,12 @@ export function useGlobalState(): GlobalState {
   const networkName = useNetworkName();
   const networkValue = networks[networkName];
   const {
-    settings: {geomiDevApiKeyOverride},
+    settings: {geomiDevApiKeyOverridesByNetwork},
   } = useExplorerSettings();
+  const apiKeyOverride = geomiDevApiKeyOverridesByNetwork[networkName];
   const sdk_v2_client = useMemo(
-    () => getCachedV2Client(networkName, geomiDevApiKeyOverride),
-    [networkName, geomiDevApiKeyOverride],
+    () => getCachedV2Client(networkName, apiKeyOverride),
+    [networkName, apiKeyOverride],
   );
 
   return useMemo(

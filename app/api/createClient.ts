@@ -62,7 +62,10 @@ export function createAptosClient(
   const apiKey =
     typeof window === "undefined"
       ? getServerApiKey(networkName)
-      : getApiKey(networkName, apiKeyOverride ?? getGeomiDevApiKeyOverride());
+      : getApiKey(
+          networkName,
+          apiKeyOverride ?? getGeomiDevApiKeyOverride(networkName),
+        );
   const indexerUri = getGraphqlURI(networkName);
 
   // Map network name to SDK Network enum
@@ -113,7 +116,9 @@ export function clearCachedSearchClients() {
  */
 export function getCachedClient(networkName: NetworkName): Aptos {
   const apiKeyOverride =
-    typeof window === "undefined" ? undefined : getGeomiDevApiKeyOverride();
+    typeof window === "undefined"
+      ? undefined
+      : getGeomiDevApiKeyOverride(networkName);
   const cacheKey = getClientCacheKey(networkName, apiKeyOverride);
 
   if (!clientCache.has(cacheKey)) {

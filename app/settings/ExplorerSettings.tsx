@@ -52,7 +52,9 @@ export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
 
   const setExplorerSettings = useCallback((value: ExplorerClientSettings) => {
     const nextSettings = sanitizeExplorerClientSettings(value);
-    if (!nextSettings.geomiDevApiKeyOverride) {
+    if (
+      Object.keys(nextSettings.geomiDevApiKeyOverridesByNetwork).length === 0
+    ) {
       clearExplorerClientSettings();
     } else {
       persistExplorerClientSettings(nextSettings);

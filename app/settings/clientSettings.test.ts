@@ -59,25 +59,60 @@ describe("clientSettings", () => {
   });
 
   describe("sanitizeExplorerClientSettings", () => {
-    it("normalizes the geomi override value", () => {
+    it("normalizes per-network override values", () => {
       expect(
         sanitizeExplorerClientSettings({
-          geomiDevApiKeyOverride: "  override-key  ",
+          geomiDevApiKeyOverridesByNetwork: {
+            mainnet: "  override-key  ",
+            testnet: "",
+          },
           rememberGeomiDevApiKeyOverride: true,
         }),
       ).toEqual({
-        geomiDevApiKeyOverride: "override-key",
+        geomiDevApiKeyOverridesByNetwork: {mainnet: "override-key"},
         rememberGeomiDevApiKeyOverride: true,
       });
     });
 
-    it("forces remember to false when the key is empty", () => {
+    it("forces remember to false when no keys are set", () => {
       expect(
         sanitizeExplorerClientSettings({
-          geomiDevApiKeyOverride: "   ",
+          geomiDevApiKeyOverridesByNetwork: {},
           rememberGeomiDevApiKeyOverride: true,
         }),
       ).toEqual(defaultExplorerClientSettings);
+    });
+
+    it("migrates legacy single key to all networks", () => {
+      expect(
+        sanitizeExplorerClientSettings({
+          geomiDevApiKeyOverride: "  legacy  ",
+          rememberGeomiDevApiKeyOverride: true,
+        }),
+      ).toEqual({
+        geomiDevApiKeyOverridesByNetwork: {
+          mainnet: "legacy",
+          testnet: "legacy",
+          devnet: "legacy",
+          decibel: "legacy",
+          shelbynet: "legacy",
+          local: "legacy",
+        },
+        rememberGeomiDevApiKeyOverride: true,
+      });
+    });
+
+    it("does not use legacy key when per-network map is present", () => {
+      expect(
+        sanitizeExplorerClientSettings({
+          geomiDevApiKeyOverride: "ignored",
+          geomiDevApiKeyOverridesByNetwork: {mainnet: "only-main"},
+          rememberGeomiDevApiKeyOverride: true,
+        }),
+      ).toEqual({
+        geomiDevApiKeyOverridesByNetwork: {mainnet: "only-main"},
+        rememberGeomiDevApiKeyOverride: true,
+      });
     });
 
     it("falls back to the default settings shape", () => {
@@ -98,16 +133,16 @@ describe("clientSettings", () => {
     it("prefers session settings over local settings", () => {
       const storages = createStorageCollection({
         localValue: JSON.stringify({
-          geomiDevApiKeyOverride: "local-key",
+          geomiDevApiKeyOverridesByNetwork: {mainnet: "local-key"},
           rememberGeomiDevApiKeyOverride: true,
         }),
         sessionValue: JSON.stringify({
-          geomiDevApiKeyOverride: "  session-key  ",
+          geomiDevApiKeyOverridesByNetwork: {testnet: "  session-key  "},
         }),
       });
 
       expect(loadExplorerClientSettings(storages)).toEqual({
-        geomiDevApiKeyOverride: "session-key",
+        geomiDevApiKeyOverridesByNetwork: {testnet: "session-key"},
         rememberGeomiDevApiKeyOverride: false,
       });
     });
@@ -115,14 +150,28 @@ describe("clientSettings", () => {
     it("reads and sanitizes remembered local settings", () => {
       const storages = createStorageCollection({
         localValue: JSON.stringify({
-          geomiDevApiKeyOverride: "  saved-key  ",
+          geomiDevApiKeyOverridesByNetwork: {devnet: "  saved-key  "},
         }),
       });
 
       expect(loadExplorerClientSettings(storages)).toEqual({
-        geomiDevApiKeyOverride: "saved-key",
+        geomiDevApiKeyOverridesByNetwork: {devnet: "saved-key"},
         rememberGeomiDevApiKeyOverride: true,
       });
+    });
+
+    it("migrates legacy persisted shape on load", () => {
+      const storages = createStorageCollection({
+        localValue: JSON.stringify({
+          geomiDevApiKeyOverride: "one-key",
+          rememberGeomiDevApiKeyOverride: true,
+        }),
+      });
+
+      const loaded = loadExplorerClientSettings(storages);
+      expect(loaded.geomiDevApiKeyOverridesByNetwork.mainnet).toBe("one-key");
+      expect(loaded.geomiDevApiKeyOverridesByNetwork.local).toBe("one-key");
+      expect(loaded.rememberGeomiDevApiKeyOverride).toBe(true);
     });
   });
 
@@ -132,14 +181,14 @@ describe("clientSettings", () => {
 
       persistExplorerClientSettings(
         {
-          geomiDevApiKeyOverride: "  persisted-key  ",
+          geomiDevApiKeyOverridesByNetwork: {mainnet: "  persisted-key  "},
           rememberGeomiDevApiKeyOverride: false,
         },
         storages,
       );
 
       expect(loadExplorerClientSettings(storages)).toEqual({
-        geomiDevApiKeyOverride: "persisted-key",
+        geomiDevApiKeyOverridesByNetwork: {mainnet: "persisted-key"},
         rememberGeomiDevApiKeyOverride: false,
       });
     });
@@ -149,31 +198,31 @@ describe("clientSettings", () => {
 
       persistExplorerClientSettings(
         {
-          geomiDevApiKeyOverride: "persisted-key",
+          geomiDevApiKeyOverridesByNetwork: {testnet: "persisted-key"},
           rememberGeomiDevApiKeyOverride: true,
         },
         storages,
       );
 
       expect(loadExplorerClientSettings(storages)).toEqual({
-        geomiDevApiKeyOverride: "persisted-key",
+        geomiDevApiKeyOverridesByNetwork: {testnet: "persisted-key"},
         rememberGeomiDevApiKeyOverride: true,
       });
     });
 
-    it("clears stored settings when the key is emptied", () => {
+    it("clears stored settings when all keys are emptied", () => {
       const storages = createStorageCollection({
         localValue: JSON.stringify({
-          geomiDevApiKeyOverride: "persisted-key",
+          geomiDevApiKeyOverridesByNetwork: {mainnet: "persisted-key"},
         }),
         sessionValue: JSON.stringify({
-          geomiDevApiKeyOverride: "session-key",
+          geomiDevApiKeyOverridesByNetwork: {testnet: "session-key"},
         }),
       });
 
       persistExplorerClientSettings(
         {
-          geomiDevApiKeyOverride: "",
+          geomiDevApiKeyOverridesByNetwork: {},
           rememberGeomiDevApiKeyOverride: false,
         },
         storages,
@@ -187,10 +236,10 @@ describe("clientSettings", () => {
     it("clears keys from both local and session storage", () => {
       const storages = createStorageCollection({
         localValue: JSON.stringify({
-          geomiDevApiKeyOverride: "persisted-key",
+          geomiDevApiKeyOverridesByNetwork: {mainnet: "persisted-key"},
         }),
         sessionValue: JSON.stringify({
-          geomiDevApiKeyOverride: "session-key",
+          geomiDevApiKeyOverridesByNetwork: {testnet: "session-key"},
         }),
       });
 
@@ -207,7 +256,7 @@ describe("clientSettings", () => {
       expect(() =>
         persistExplorerClientSettings(
           {
-            geomiDevApiKeyOverride: "persisted-key",
+            geomiDevApiKeyOverridesByNetwork: {mainnet: "persisted-key"},
             rememberGeomiDevApiKeyOverride: true,
           },
           storages,

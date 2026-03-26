@@ -1,12 +1,21 @@
+import {networks, type NetworkName} from "../lib/constants";
+
+/** Per-network geomi.dev API key overrides (trimmed non-empty strings only). */
+export type GeomiDevApiKeyOverridesByNetwork = Partial<
+  Record<NetworkName, string>
+>;
+
 export interface ExplorerClientSettings {
-  geomiDevApiKeyOverride: string;
+  geomiDevApiKeyOverridesByNetwork: GeomiDevApiKeyOverridesByNetwork;
   rememberGeomiDevApiKeyOverride: boolean;
 }
 
 export const EXPLORER_SETTINGS_STORAGE_KEY = "aptos-explorer-settings";
 
+const ALL_NETWORK_NAMES = Object.keys(networks) as NetworkName[];
+
 export const defaultExplorerClientSettings: ExplorerClientSettings = {
-  geomiDevApiKeyOverride: "",
+  geomiDevApiKeyOverridesByNetwork: {},
   rememberGeomiDevApiKeyOverride: false,
 };
 
@@ -58,26 +67,87 @@ export function normalizeGeomiDevApiKeyOverride(
   return value?.trim() ?? "";
 }
 
+function sanitizeOverrides(value: unknown): GeomiDevApiKeyOverridesByNetwork {
+  const out: GeomiDevApiKeyOverridesByNetwork = {};
+  if (!value || typeof value !== "object") {
+    return out;
+  }
+
+  const raw = value as Record<string, unknown>;
+  for (const network of ALL_NETWORK_NAMES) {
+    const entry = raw[network];
+    const trimmed = normalizeGeomiDevApiKeyOverride(
+      typeof entry === "string" ? entry : "",
+    );
+    if (trimmed) {
+      out[network] = trimmed;
+    }
+  }
+  return out;
+}
+
+function hasStoredPerNetworkOverrides(value: unknown): boolean {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const raw = (value as {geomiDevApiKeyOverridesByNetwork?: unknown})
+    .geomiDevApiKeyOverridesByNetwork;
+  return typeof raw === "object" && raw !== null && Object.keys(raw).length > 0;
+}
+
+function migrateLegacySingleKey(
+  legacyKey: string,
+): GeomiDevApiKeyOverridesByNetwork {
+  const out: GeomiDevApiKeyOverridesByNetwork = {};
+  for (const network of ALL_NETWORK_NAMES) {
+    out[network] = legacyKey;
+  }
+  return out;
+}
+
+function hasAnyApiKeyOverride(
+  overrides: GeomiDevApiKeyOverridesByNetwork,
+): boolean {
+  return Object.keys(overrides).length > 0;
+}
+
 export function sanitizeExplorerClientSettings(
-  value: Partial<ExplorerClientSettings> | null | undefined,
+  value:
+    | (Partial<ExplorerClientSettings> & {
+        geomiDevApiKeyOverride?: string;
+      })
+    | null
+    | undefined,
 ): ExplorerClientSettings {
-  const geomiDevApiKeyOverride = normalizeGeomiDevApiKeyOverride(
+  let geomiDevApiKeyOverridesByNetwork = sanitizeOverrides(
+    value?.geomiDevApiKeyOverridesByNetwork,
+  );
+
+  const legacyKey = normalizeGeomiDevApiKeyOverride(
     value?.geomiDevApiKeyOverride,
   );
 
+  if (!hasStoredPerNetworkOverrides(value) && legacyKey.length > 0) {
+    geomiDevApiKeyOverridesByNetwork = migrateLegacySingleKey(legacyKey);
+  }
+
+  const rememberGeomiDevApiKeyOverride =
+    hasAnyApiKeyOverride(geomiDevApiKeyOverridesByNetwork) &&
+    normalizeRememberGeomiDevApiKeyOverride(
+      value?.rememberGeomiDevApiKeyOverride,
+    );
+
   return {
-    geomiDevApiKeyOverride,
-    rememberGeomiDevApiKeyOverride:
-      geomiDevApiKeyOverride.length > 0 &&
-      normalizeRememberGeomiDevApiKeyOverride(
-        value?.rememberGeomiDevApiKeyOverride,
-      ),
+    geomiDevApiKeyOverridesByNetwork,
+    rememberGeomiDevApiKeyOverride,
   };
 }
 
 function loadStoredExplorerClientSettings(
   storage: StorageLike | null,
-): Partial<ExplorerClientSettings> | null {
+):
+  | (Partial<ExplorerClientSettings> & {geomiDevApiKeyOverride?: string})
+  | null {
   if (!storage) {
     return null;
   }
@@ -88,7 +158,9 @@ function loadStoredExplorerClientSettings(
       return null;
     }
 
-    return JSON.parse(rawSettings) as Partial<ExplorerClientSettings>;
+    return JSON.parse(rawSettings) as Partial<ExplorerClientSettings> & {
+      geomiDevApiKeyOverride?: string;
+    };
   } catch {
     return null;
   }
@@ -141,7 +213,9 @@ export function persistExplorerClientSettings(
   const sanitizedSettings = sanitizeExplorerClientSettings(settings);
   clearExplorerClientSettings(storages);
 
-  if (!sanitizedSettings.geomiDevApiKeyOverride) {
+  if (
+    !hasAnyApiKeyOverride(sanitizedSettings.geomiDevApiKeyOverridesByNetwork)
+  ) {
     return;
   }
 
@@ -163,7 +237,10 @@ export function persistExplorerClientSettings(
   }
 }
 
-export function getGeomiDevApiKeyOverride(): string | undefined {
-  const apiKeyOverride = loadExplorerClientSettings().geomiDevApiKeyOverride;
-  return apiKeyOverride || undefined;
+export function getGeomiDevApiKeyOverride(
+  networkName: NetworkName,
+): string | undefined {
+  const key =
+    loadExplorerClientSettings().geomiDevApiKeyOverridesByNetwork[networkName];
+  return key || undefined;
 }
