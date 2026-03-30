@@ -22,7 +22,7 @@ import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../components/StyledTooltip";
-import {useNavigate} from "../../../routing";
+import {Link, useNavigate} from "../../../routing";
 import {useDecompilationEnabled} from "../../../settings";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {
@@ -331,10 +331,9 @@ export function Code({
       ? transformCode(sourceBytecode)
       : undefined;
   const hasPublishedSourceCode = !!publishedSourceCode;
-  const hasModuleBytecode =
-    decompilationEnabled &&
-    typeof moduleBytecode === "string" &&
-    moduleBytecode !== "0x";
+  const rawModuleBytecodeAvailable =
+    typeof moduleBytecode === "string" && moduleBytecode !== "0x";
+  const hasModuleBytecode = decompilationEnabled && rawModuleBytecodeAvailable;
 
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
@@ -622,6 +621,17 @@ export function Code({
             onClick={() => setActiveView("abi")}
           >
             ABI
+          </Button>
+        )}
+        {!decompilationEnabled && rawModuleBytecodeAvailable && (
+          <Button
+            component={Link}
+            to="/settings"
+            size="small"
+            variant="text"
+            sx={{textTransform: "none"}}
+          >
+            Enable decompilation in Settings
           </Button>
         )}
       </Stack>

@@ -18,6 +18,7 @@ import {
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../../components/StyledTooltip";
+import {Link} from "../../../../routing";
 import {useDecompilationEnabled} from "../../../../settings";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 import {downloadTextFile} from "../../../../utils";
@@ -124,7 +125,8 @@ export default function ScriptBytecodeDecompiler({
   const decompilationEnabled = useDecompilationEnabled();
   const canonicalBytecodeHex = normalizeBytecodeHex(bytecodeHex.trim());
   /** At least one byte after `0x` (two hex digits). */
-  const hasBytecode = decompilationEnabled && canonicalBytecodeHex.length > 3;
+  const rawBytecodeAvailable = canonicalBytecodeHex.length > 3;
+  const hasBytecode = decompilationEnabled && rawBytecodeAvailable;
 
   const [activeView, setActiveView] =
     useState<DecompilationView>("decompiled-source");
@@ -241,6 +243,26 @@ export default function ScriptBytecodeDecompiler({
   }
 
   if (!hasBytecode) {
+    if (!decompilationEnabled && rawBytecodeAvailable) {
+      return (
+        <Box marginBottom={3}>
+          <Stack direction="row" spacing={1} marginY="16px" alignItems="center">
+            <Typography fontSize={20} fontWeight={700}>
+              Script bytecode
+            </Typography>
+          </Stack>
+          <Button
+            component={Link}
+            to="/settings"
+            size="small"
+            variant="text"
+            sx={{textTransform: "none"}}
+          >
+            Enable decompilation in Settings
+          </Button>
+        </Box>
+      );
+    }
     return null;
   }
 

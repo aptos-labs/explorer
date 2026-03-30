@@ -15,6 +15,7 @@ import {useEffect, useMemo, useState} from "react";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
 import type {ModulePublishTransaction} from "../../../../api/hooks/useGetModulePublishHistory";
+import {Link} from "../../../../routing";
 import {useDecompilationEnabled} from "../../../../settings";
 import {transformCode} from "../../../../utils";
 import {
@@ -441,7 +442,7 @@ export default function ModuleDiffView({
         />
       </Stack>
 
-      <Stack direction="row" spacing={1} flexWrap="wrap">
+      <Stack direction="row" spacing={1} flexWrap="wrap" alignItems="center">
         {viewTypes.map((vt) => (
           <Button
             key={vt}
@@ -453,6 +454,17 @@ export default function ModuleDiffView({
             {getViewLabel(vt)}
           </Button>
         ))}
+        {!decompilationEnabled && (
+          <Button
+            component={Link}
+            to="/settings"
+            size="small"
+            variant="text"
+            sx={{textTransform: "none"}}
+          >
+            Enable decompilation in Settings
+          </Button>
+        )}
       </Stack>
 
       {!moduleName && (
