@@ -12,7 +12,7 @@
 - Check network analytics (TPS, daily active users, gas, supply)
 - Resolve Aptos Name Service (ANS) `.apt` names to addresses
 - View Move objects (on-chain resources implementing the Object model)
-- Decompile on-chain Move module bytecode in-browser (WASM, no decompile backend)
+- Decompile on-chain Move module bytecode in-browser (WASM, no decompile backend; requires opt-in at `/settings`)
 
 ## URL Templates
 
@@ -47,6 +47,7 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
 - Transactions list: `/transactions`
   - Filter by function: `/transactions?type=user&fn={entry_function_id}` (e.g. `?fn=0x1::coin::transfer`)
 - Verification: `/verification`
+- Settings: `/settings` — configure explorer preferences (decompilation opt-in, API key overrides)
 
 ## Key Addresses
 

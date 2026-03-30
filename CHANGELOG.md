@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Settings page** (`/settings`): dedicated full-page settings replacing the old header popup dialog. Includes API key overrides (per network) and a new Move Bytecode Decompilation opt-in toggle
+- **Decompilation opt-in**: decompiled and disassembly code views now require explicit user opt-in at `/settings`. Users must acknowledge a disclaimer that decompiled output may not match original source before the feature is enabled
 - **Settings**: optional geomi.dev API key override can be set **per network** (instead of one key for all networks). Existing saved single keys are migrated to all networks on load until you save again.
 - Features Specification (`docs/FEATURES_SPECIFICATION.md`): canonical catalog of every user-facing explorer feature with unique `FEAT-*` identifiers, test coverage map (Appendix B), and prioritized coverage gaps (Appendix C)
 - `AGENTS.md`: regression prevention rules requiring agents to reference `docs/FEATURES_SPECIFICATION.md` when adding, modifying, or removing features and to keep the spec in sync with the codebase

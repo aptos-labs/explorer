@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-23 (rev 11)
+> Last updated: 2026-03-30 (rev 12)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -96,6 +96,11 @@ Each detail page has tabs accessible via path segments:
     - `/object/{address}/modules/run/{moduleName}/{functionName}`
     - `/object/{address}/modules/view/{moduleName}/{functionName}`
 
+#### Settings
+- `/settings` — configure explorer preferences stored locally in the browser
+  - **Move Bytecode Decompilation**: opt-in toggle to enable client-side decompilation of on-chain Move bytecode (Decompiled and Disassembly views on module code pages). Disabled by default; users must accept a disclaimer before enabling.
+  - **API Key Overrides**: per-network geomi.dev API keys (same functionality previously in the header settings dialog)
+
 #### Other Pages
 - `/analytics` — network analytics charts (TPS, DAU, gas, supply, new accounts)
 - `/verification` — on-chain verification tools
@@ -187,7 +192,7 @@ A: Visit `https://explorer.aptoslabs.com/account/0xce46…7798/coins` — the co
 A: Visit `https://explorer.aptoslabs.com/account/0x1/modules` — this lists all Move modules deployed at address 0x1 with viewable source code.
 
 **Q: "Can Explorer decompile module bytecode?"**
-A: Yes. Open a module code page such as `https://explorer.aptoslabs.com/account/0x1/modules/code/coin` and select **Decompiled** or **Disassembly**. These are generated client-side in the browser using Move decompiler WASM.
+A: Yes, after opting in. Visit `https://explorer.aptoslabs.com/settings` and enable **Move Bytecode Decompilation** (you must accept the disclaimer). Then open a module code page such as `https://explorer.aptoslabs.com/account/0x1/modules/code/coin` and select **Decompiled** or **Disassembly**. These are generated client-side in the browser using Move decompiler WASM.
 
 **Q: "Is there an APT coin page?"**
 A: Yes — `https://explorer.aptoslabs.com/coin/0x1::aptos_coin::AptosCoin` shows supply, metadata, and recent transactions for native APT.

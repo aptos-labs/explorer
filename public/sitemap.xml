@@ -119,6 +119,13 @@
     <priority>0.5</priority>
   </url>
 
+  <!-- Settings -->
+  <url>
+    <loc>https://explorer.aptoslabs.com/settings</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
   <!-- LLM documentation (discoverable) -->
   <url>
     <loc>https://explorer.aptoslabs.com/llms.txt</loc>

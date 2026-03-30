@@ -58,7 +58,7 @@ The app shell that wraps every page.
 | **Search** | Header autocomplete search (see FEAT-SEARCH). |
 | **Network selector** | Dropdown to switch `?network=` param (see FEAT-NETWORK). |
 | **Theme toggle** | Light/dark icon button (see FEAT-THEME). |
-| **Settings** | Gear icon opens `SettingsDialog` (see FEAT-SETTINGS). Can also be triggered programmatically via `emitOpenSettings()` (e.g. from Rate Limit Drawer). |
+| **Settings** | Gear icon links to `/settings` page (see FEAT-SETTINGS-001). Rate Limit Drawer also links to `/settings`. |
 | **Wallet connector** | Connect/disconnect wallet button (see FEAT-WALLET). |
 | **Feature bar** | Colored banner when running on a non-production feature branch (see FEAT-FLAGS-004). |
 
@@ -787,15 +787,25 @@ The app shell that wraps every page.
 
 ## 18. Settings
 
-### FEAT-SETTINGS-001 — Settings Dialog
+### FEAT-SETTINGS-001 — Settings Page
 
 | Aspect | Detail |
 |--------|--------|
+| **Route** | `/settings` — dedicated full-page settings (replaced the former header popup dialog). |
+| **Navigation** | Header gear icon and mobile nav "Settings" item link to `/settings`. Rate Limit Drawer "Set API key override" button also links there. |
 | **API key overrides** | One optional masked geomi.dev API key field per network (mainnet, testnet, devnet, decibel, shelbynet, local); shared show/hide toggle for all fields. Empty network uses the build default key (if any). |
 | **Migration** | Previously saved single-key settings load as the same key applied to every network until the user saves again. |
-| **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. |
+| **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. Non-API-key preferences (e.g. decompilation) persist to localStorage. |
 | **On save** | Clears cached SDK clients (`clearCachedV2Clients`, `clearCachedSearchClients`), invalidates all React Query queries, invalidates router. If non-empty API key saved, fires `emitApiKeySaved()` to dismiss rate-limit drawer (see FEAT-RATELIMIT-001). |
-| **External trigger** | Can be opened programmatically via `emitOpenSettings()` (used by Rate Limit Drawer). |
+
+### FEAT-SETTINGS-002 — Decompilation Opt-In
+
+| Aspect | Detail |
+|--------|--------|
+| **Toggle** | "Move Bytecode Decompilation" switch on the Settings page. Disabled by default. |
+| **Disclaimer** | Warning alert explaining decompiled output may not match original source; user must acknowledge that output is as-is and they accept responsibility for use. |
+| **Gating** | When disabled, "Decompiled" and "Disassembly" view buttons are hidden on module code pages, script bytecode decompiler, and module diff view. Only "Published Source" and "ABI" remain visible. |
+| **Persistence** | Stored in `enableDecompilation` field of `ExplorerClientSettings` in localStorage. |
 
 ---
 
