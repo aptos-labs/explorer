@@ -8,7 +8,6 @@ import {
   useState,
 } from "react";
 import {
-  clearExplorerClientSettings,
   EXPLORER_SETTINGS_STORAGE_KEY,
   type ExplorerClientSettings,
   loadExplorerClientSettings,
@@ -52,13 +51,7 @@ export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
 
   const setExplorerSettings = useCallback((value: ExplorerClientSettings) => {
     const nextSettings = sanitizeExplorerClientSettings(value);
-    if (
-      Object.keys(nextSettings.geomiDevApiKeyOverridesByNetwork).length === 0
-    ) {
-      clearExplorerClientSettings();
-    } else {
-      persistExplorerClientSettings(nextSettings);
-    }
+    persistExplorerClientSettings(nextSettings);
     setSettings(nextSettings);
   }, []);
 
@@ -87,4 +80,8 @@ export function useExplorerSettings() {
   }
 
   return context;
+}
+
+export function useDecompilationEnabled(): boolean {
+  return useExplorerSettings().settings.enableDecompilation;
 }

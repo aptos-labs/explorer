@@ -23,6 +23,7 @@ import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../components/StyledTooltip";
 import {useNavigate} from "../../../routing";
+import {useDecompilationEnabled} from "../../../settings";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {
   downloadTextFile,
@@ -321,6 +322,7 @@ export function Code({
   const moveCodeLinkHandlers =
     useMoveCodeQualifiedLinkHandlers(codeLinkContext);
   const styles = useHighlighterStyles();
+  const decompilationEnabled = useDecompilationEnabled();
 
   const TOOLTIP_TIME = 2000; // 2s
 
@@ -330,7 +332,9 @@ export function Code({
       : undefined;
   const hasPublishedSourceCode = !!publishedSourceCode;
   const hasModuleBytecode =
-    typeof moduleBytecode === "string" && moduleBytecode !== "0x";
+    decompilationEnabled &&
+    typeof moduleBytecode === "string" &&
+    moduleBytecode !== "0x";
 
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);

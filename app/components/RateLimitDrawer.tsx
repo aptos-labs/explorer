@@ -12,7 +12,8 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {emitOpenSettings, useRateLimit} from "../context/rate-limit";
+import {useRateLimit} from "../context/rate-limit";
+import {Link} from "../routing";
 
 const GEOMI_DEV_URL = "https://geomi.dev";
 
@@ -20,11 +21,6 @@ export default function RateLimitDrawer() {
   const {isRateLimited, dismissRateLimit} = useRateLimit();
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
-
-  const handleOpenSettings = () => {
-    dismissRateLimit();
-    emitOpenSettings();
-  };
 
   return (
     <Drawer
@@ -79,10 +75,12 @@ export default function RateLimitDrawer() {
           alignItems={isSmall ? "stretch" : "center"}
         >
           <Button
+            component={Link}
+            to="/settings"
             variant="contained"
             size="small"
             startIcon={<SettingsOutlinedIcon />}
-            onClick={handleOpenSettings}
+            onClick={dismissRateLimit}
           >
             Set API key override
           </Button>

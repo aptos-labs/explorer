@@ -11,5 +11,6 @@ export {
 } from "./clientSettings";
 export {
   ExplorerSettingsProvider,
+  useDecompilationEnabled,
   useExplorerSettings,
 } from "./ExplorerSettings";

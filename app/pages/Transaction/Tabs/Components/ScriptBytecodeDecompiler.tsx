@@ -18,6 +18,7 @@ import {
 import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../../../components/StyledTooltip";
+import {useDecompilationEnabled} from "../../../../settings";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 import {downloadTextFile} from "../../../../utils";
 import {
@@ -120,9 +121,10 @@ export default function ScriptBytecodeDecompiler({
   const logEvent = useLogEventWithBasic();
   const TOOLTIP_TIME = 2000;
 
+  const decompilationEnabled = useDecompilationEnabled();
   const canonicalBytecodeHex = normalizeBytecodeHex(bytecodeHex.trim());
   /** At least one byte after `0x` (two hex digits). */
-  const hasBytecode = canonicalBytecodeHex.length > 3;
+  const hasBytecode = decompilationEnabled && canonicalBytecodeHex.length > 3;
 
   const [activeView, setActiveView] =
     useState<DecompilationView>("decompiled-source");

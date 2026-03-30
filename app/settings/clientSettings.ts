@@ -1,4 +1,4 @@
-import {networks, type NetworkName} from "../lib/constants";
+import {type NetworkName, networks} from "../lib/constants";
 
 /** Per-network geomi.dev API key overrides (trimmed non-empty strings only). */
 export type GeomiDevApiKeyOverridesByNetwork = Partial<
@@ -8,6 +8,7 @@ export type GeomiDevApiKeyOverridesByNetwork = Partial<
 export interface ExplorerClientSettings {
   geomiDevApiKeyOverridesByNetwork: GeomiDevApiKeyOverridesByNetwork;
   rememberGeomiDevApiKeyOverride: boolean;
+  enableDecompilation: boolean;
 }
 
 export const EXPLORER_SETTINGS_STORAGE_KEY = "aptos-explorer-settings";
@@ -17,6 +18,7 @@ const ALL_NETWORK_NAMES = Object.keys(networks) as NetworkName[];
 export const defaultExplorerClientSettings: ExplorerClientSettings = {
   geomiDevApiKeyOverridesByNetwork: {},
   rememberGeomiDevApiKeyOverride: false,
+  enableDecompilation: false,
 };
 
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
@@ -137,9 +139,12 @@ export function sanitizeExplorerClientSettings(
       value?.rememberGeomiDevApiKeyOverride,
     );
 
+  const enableDecompilation = value?.enableDecompilation === true;
+
   return {
     geomiDevApiKeyOverridesByNetwork,
     rememberGeomiDevApiKeyOverride,
+    enableDecompilation,
   };
 }
 
@@ -206,6 +211,13 @@ export function loadExplorerClientSettings(
   return defaultExplorerClientSettings;
 }
 
+function hasNonDefaultSettings(settings: ExplorerClientSettings): boolean {
+  return (
+    hasAnyApiKeyOverride(settings.geomiDevApiKeyOverridesByNetwork) ||
+    settings.enableDecompilation
+  );
+}
+
 export function persistExplorerClientSettings(
   settings: ExplorerClientSettings,
   storages: ExplorerSettingsStorage = getAvailableStorages(),
@@ -213,16 +225,30 @@ export function persistExplorerClientSettings(
   const sanitizedSettings = sanitizeExplorerClientSettings(settings);
   clearExplorerClientSettings(storages);
 
-  if (
-    !hasAnyApiKeyOverride(sanitizedSettings.geomiDevApiKeyOverridesByNetwork)
-  ) {
+  if (!hasNonDefaultSettings(sanitizedSettings)) {
     return;
   }
 
-  const targetStorage = sanitizedSettings.rememberGeomiDevApiKeyOverride
+  const hasApiKeys = hasAnyApiKeyOverride(
+    sanitizedSettings.geomiDevApiKeyOverridesByNetwork,
+  );
+  const apiKeyStorage = sanitizedSettings.rememberGeomiDevApiKeyOverride
     ? storages.localStorage
     : storages.sessionStorage;
 
+  if (hasApiKeys && apiKeyStorage) {
+    try {
+      apiKeyStorage.setItem(
+        EXPLORER_SETTINGS_STORAGE_KEY,
+        JSON.stringify(sanitizedSettings),
+      );
+    } catch {
+      // Ignore storage write failures so settings UI changes do not crash the app.
+    }
+    return;
+  }
+
+  const targetStorage = storages.localStorage ?? storages.sessionStorage;
   if (!targetStorage) {
     return;
   }
