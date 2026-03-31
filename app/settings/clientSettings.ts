@@ -12,6 +12,7 @@ export interface ExplorerClientSettings {
 }
 
 export const EXPLORER_SETTINGS_STORAGE_KEY = "aptos-explorer-settings";
+const DECOMPILATION_STORAGE_KEY = "aptos-explorer-enable-decompilation";
 
 const ALL_NETWORK_NAMES = Object.keys(networks) as NetworkName[];
 
@@ -184,38 +185,82 @@ export function clearExplorerClientSettings(
     } catch {
       // Ignore storage removal failures so settings UI changes do not crash the app.
     }
+
+    try {
+      storage.removeItem(DECOMPILATION_STORAGE_KEY);
+    } catch {
+      // Ignore storage removal failures.
+    }
+  }
+}
+
+function loadDecompilationFlag(
+  storages: ExplorerSettingsStorage,
+): boolean | undefined {
+  const storage = storages.localStorage ?? storages.sessionStorage;
+  if (!storage) return undefined;
+  try {
+    const raw = storage.getItem(DECOMPILATION_STORAGE_KEY);
+    if (raw === "true") return true;
+    if (raw === "false") return false;
+    return undefined;
+  } catch {
+    return undefined;
   }
 }
 
 export function loadExplorerClientSettings(
   storages: ExplorerSettingsStorage = getAvailableStorages(),
 ): ExplorerClientSettings {
+  const decompFlag = loadDecompilationFlag(storages);
+
   const sessionSettings = loadStoredExplorerClientSettings(
     storages.sessionStorage,
   );
   if (sessionSettings) {
-    return sanitizeExplorerClientSettings({
+    const settings = sanitizeExplorerClientSettings({
       ...sessionSettings,
       rememberGeomiDevApiKeyOverride: false,
     });
+    if (decompFlag !== undefined) {
+      settings.enableDecompilation = decompFlag;
+    }
+    return settings;
   }
 
   const localSettings = loadStoredExplorerClientSettings(storages.localStorage);
   if (localSettings) {
-    return sanitizeExplorerClientSettings({
+    const settings = sanitizeExplorerClientSettings({
       ...localSettings,
       rememberGeomiDevApiKeyOverride: true,
     });
+    if (decompFlag !== undefined) {
+      settings.enableDecompilation = decompFlag;
+    }
+    return settings;
   }
 
-  return defaultExplorerClientSettings;
+  return {
+    ...defaultExplorerClientSettings,
+    enableDecompilation: decompFlag ?? false,
+  };
 }
 
-function hasNonDefaultSettings(settings: ExplorerClientSettings): boolean {
-  return (
-    hasAnyApiKeyOverride(settings.geomiDevApiKeyOverridesByNetwork) ||
-    settings.enableDecompilation
-  );
+function persistDecompilationFlag(
+  enabled: boolean,
+  storages: ExplorerSettingsStorage,
+) {
+  const storage = storages.localStorage ?? storages.sessionStorage;
+  if (!storage) return;
+  try {
+    if (enabled) {
+      storage.setItem(DECOMPILATION_STORAGE_KEY, "true");
+    } else {
+      storage.removeItem(DECOMPILATION_STORAGE_KEY);
+    }
+  } catch {
+    // Ignore storage write failures.
+  }
 }
 
 export function persistExplorerClientSettings(
@@ -225,30 +270,18 @@ export function persistExplorerClientSettings(
   const sanitizedSettings = sanitizeExplorerClientSettings(settings);
   clearExplorerClientSettings(storages);
 
-  if (!hasNonDefaultSettings(sanitizedSettings)) {
+  persistDecompilationFlag(sanitizedSettings.enableDecompilation, storages);
+
+  if (
+    !hasAnyApiKeyOverride(sanitizedSettings.geomiDevApiKeyOverridesByNetwork)
+  ) {
     return;
   }
 
-  const hasApiKeys = hasAnyApiKeyOverride(
-    sanitizedSettings.geomiDevApiKeyOverridesByNetwork,
-  );
-  const apiKeyStorage = sanitizedSettings.rememberGeomiDevApiKeyOverride
+  const targetStorage = sanitizedSettings.rememberGeomiDevApiKeyOverride
     ? storages.localStorage
     : storages.sessionStorage;
 
-  if (hasApiKeys && apiKeyStorage) {
-    try {
-      apiKeyStorage.setItem(
-        EXPLORER_SETTINGS_STORAGE_KEY,
-        JSON.stringify(sanitizedSettings),
-      );
-    } catch {
-      // Ignore storage write failures so settings UI changes do not crash the app.
-    }
-    return;
-  }
-
-  const targetStorage = storages.localStorage ?? storages.sessionStorage;
   if (!targetStorage) {
     return;
   }
