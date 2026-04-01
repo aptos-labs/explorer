@@ -7,6 +7,17 @@ import {
 import {useVirtualizer} from "@tanstack/react-virtual";
 import React, {useCallback, useMemo, useRef} from "react";
 
+/** Ensures list children have keys when `renderRow` omits them (non-virtualized path). */
+function ensureRowElementKey(
+  row: React.ReactElement,
+  index: number,
+): React.ReactElement {
+  if (row.key != null) {
+    return row;
+  }
+  return React.cloneElement(row, {key: index});
+}
+
 type VirtualizedTableBodyBaseProps = Omit<TableBodyProps, "children"> & {
   /**
    * Estimated height of each row in pixels.
@@ -84,7 +95,7 @@ export default function VirtualizedTableBody(props: VirtualizedTableBodyProps) {
     children,
     rowCount: rowCountProp,
     renderRow: renderRowProp,
-    ...tableBodyProps
+    ...tableBodySpread
   } = props as VirtualizedTableBodyBaseProps & {
     children?: React.ReactNode;
     rowCount?: number;
@@ -92,7 +103,16 @@ export default function VirtualizedTableBody(props: VirtualizedTableBodyProps) {
   };
 
   const isRenderMode = typeof renderRowProp === "function";
-  const rowCount = isRenderMode ? (rowCountProp ?? 0) : 0;
+  if (isRenderMode && !Number.isFinite(rowCountProp)) {
+    console.error(
+      "[VirtualizedTableBody] `renderRow` requires a finite numeric `rowCount`; got " +
+        `${String(rowCountProp)}. No rows will render.`,
+    );
+  }
+  const rowCount =
+    isRenderMode && Number.isFinite(rowCountProp)
+      ? (rowCountProp as number)
+      : 0;
   const renderRow = isRenderMode ? renderRowProp : null;
 
   const parentRef = useRef<HTMLTableSectionElement>(null);
@@ -104,8 +124,6 @@ export default function VirtualizedTableBody(props: VirtualizedTableBodyProps) {
     }
     return React.Children.toArray(children);
   }, [children, isRenderMode]);
-
-  const tableBodySpread = tableBodyProps as Omit<TableBodyProps, "children">;
 
   const count = isRenderMode ? rowCount : rows.length;
 
@@ -157,7 +175,14 @@ export default function VirtualizedTableBody(props: VirtualizedTableBodyProps) {
         {...tableBodySpread}
       >
         {isRenderMode && renderRow
-          ? Array.from({length: rowCount}, (_, i) => renderRow(i))
+          ? Array.from({length: rowCount}, (_, i) => {
+              const row = renderRow(i);
+              if (React.isValidElement(row)) {
+                return ensureRowElementKey(row, i);
+              }
+              // biome-ignore lint/suspicious/noArrayIndexKey: fallback when renderRow returns non-element; index is the only stable id
+              return <React.Fragment key={i}>{row}</React.Fragment>;
+            })
           : children}
       </TableBody>
     );

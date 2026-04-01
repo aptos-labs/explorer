@@ -699,8 +699,9 @@ export default function CoinsListTable({
     (index: number) => {
       const coin = filteredCoins[index];
       if (!coin) {
-        return <GeneralTableRow />;
+        return <GeneralTableRow key={`coin-row-missing-${index}`} />;
       }
+      const rowKey = coin.tokenAddress ?? coin.faAddress ?? `coin-row-${index}`;
       const symbol = getAssetSymbol(
         coin.panoraSymbol,
         coin.bridge,
@@ -708,7 +709,7 @@ export default function CoinsListTable({
       );
       const displayPrice = coin.marketPrice ?? coin.usdPrice;
       return (
-        <GeneralTableRow>
+        <GeneralTableRow key={rowKey}>
           <CoinLogoCell coin={coin} />
           <CoinNameCell name={coin.name} symbol={symbol} />
           <CoinTypeCell coin={coin} />
