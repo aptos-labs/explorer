@@ -567,7 +567,8 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Sortable table of coins and fungible assets. Virtualized. |
+| **Display** | Sortable table of coins and fungible assets. Virtualized. Desktop body scrolls inside a max-height container (`min(70vh, 720px)`) so the virtualizer has a stable scroll element. |
+| **Filters** | Verified / Recognized / All and optional “Show Emojicoins” toggle; search by name, symbol, or address. |
 | **Market data** | On mainnet, CoinGecko market data merged when `coinGeckoId` available (see FEAT-DATA-001). Panora price fallback. |
 | **States** | Loading, error, and empty states handled. |
 
@@ -1068,7 +1069,8 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Component** | `VirtualizedTableBody` using `@tanstack/react-virtual`. |
-| **Threshold** | Virtualizes when row count > 20 (configurable). |
+| **Threshold** | Virtualizes when row count > 20 (configurable per call site, e.g. 15). |
+| **Render mode** | Optional `rowCount` + `renderRow(index)` so large lists do not pre-build a React child per row (used on `/coins`). |
 | **Consumers** | Transactions, Blocks, Coins, Account Assets, Account Tokens, Delegation Validators tables. |
 
 ### FEAT-UI-002 — Verification Cell

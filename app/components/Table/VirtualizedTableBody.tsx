@@ -7,8 +7,7 @@ import {
 import {useVirtualizer} from "@tanstack/react-virtual";
 import React, {useCallback, useMemo, useRef} from "react";
 
-interface VirtualizedTableBodyProps extends Omit<TableBodyProps, "children"> {
-  children: React.ReactNode[];
+type VirtualizedTableBodyBaseProps = Omit<TableBodyProps, "children"> & {
   /**
    * Estimated height of each row in pixels.
    * Used for initial calculations. Actual height will be measured.
@@ -32,8 +31,26 @@ interface VirtualizedTableBodyProps extends Omit<TableBodyProps, "children"> {
    * Ref to the scrollable parent element.
    * If not provided, will look for a parent with overflow: auto/scroll.
    */
-  scrollElementRef?: React.RefObject<HTMLElement>;
-}
+  scrollElementRef?: React.RefObject<HTMLElement | null>;
+};
+
+export type VirtualizedTableBodyProps = VirtualizedTableBodyBaseProps &
+  (
+    | {
+        children: React.ReactNode;
+        rowCount?: never;
+        renderRow?: never;
+      }
+    | {
+        /**
+         * Row count when using `renderRow` instead of pre-built `children`.
+         * Avoids creating thousands of React elements when filters change (e.g. coins list).
+         */
+        rowCount: number;
+        renderRow: (index: number) => React.ReactElement;
+        children?: never;
+      }
+  );
 
 /**
  * VirtualizedTableBody - A virtualized table body component that only renders
@@ -58,23 +75,42 @@ interface VirtualizedTableBodyProps extends Omit<TableBodyProps, "children"> {
  * </Box>
  * ```
  */
-export default function VirtualizedTableBody({
-  children,
-  estimatedRowHeight = 60,
-  virtualizationThreshold = 20,
-  scrollElementRef,
-  sx,
-  ...tableBodyProps
-}: VirtualizedTableBodyProps) {
+export default function VirtualizedTableBody(props: VirtualizedTableBodyProps) {
+  const {
+    estimatedRowHeight = 60,
+    virtualizationThreshold = 20,
+    scrollElementRef,
+    sx,
+    children,
+    rowCount: rowCountProp,
+    renderRow: renderRowProp,
+    ...tableBodyProps
+  } = props as VirtualizedTableBodyBaseProps & {
+    children?: React.ReactNode;
+    rowCount?: number;
+    renderRow?: (index: number) => React.ReactElement;
+  };
+
+  const isRenderMode = typeof renderRowProp === "function";
+  const rowCount = isRenderMode ? (rowCountProp ?? 0) : 0;
+  const renderRow = isRenderMode ? renderRowProp : null;
+
   const parentRef = useRef<HTMLTableSectionElement>(null);
 
-  // Convert children to array if needed
+  // Convert children to array if needed (pre-built row elements)
   const rows = useMemo(() => {
+    if (isRenderMode || children == null) {
+      return [] as React.ReactNode[];
+    }
     return React.Children.toArray(children);
-  }, [children]);
+  }, [children, isRenderMode]);
+
+  const tableBodySpread = tableBodyProps as Omit<TableBodyProps, "children">;
+
+  const count = isRenderMode ? rowCount : rows.length;
 
   // Only virtualize if we have more than the threshold
-  const shouldVirtualize = rows.length > virtualizationThreshold;
+  const shouldVirtualize = count > virtualizationThreshold;
 
   // Find scrollable parent - memoized to satisfy react-hooks rules
   const getScrollElement = useCallback(() => {
@@ -99,7 +135,7 @@ export default function VirtualizedTableBody({
   }, [scrollElementRef]);
 
   const virtualizer = useVirtualizer({
-    count: rows.length,
+    count,
     getScrollElement,
     estimateSize: () => estimatedRowHeight,
     overscan: 5, // Render 5 extra rows above and below visible area
@@ -118,9 +154,11 @@ export default function VirtualizedTableBody({
           },
           ...(Array.isArray(sx) ? sx : [sx]),
         ]}
-        {...tableBodyProps}
+        {...tableBodySpread}
       >
-        {children}
+        {isRenderMode && renderRow
+          ? Array.from({length: rowCount}, (_, i) => renderRow(i))
+          : children}
       </TableBody>
     );
   }
@@ -139,7 +177,7 @@ export default function VirtualizedTableBody({
         },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
-      {...tableBodyProps}
+      {...tableBodySpread}
     >
       {/* Top spacer */}
       {virtualItems.length > 0 && virtualItems[0] && (
@@ -148,8 +186,18 @@ export default function VirtualizedTableBody({
       )}
       {/* Render only visible rows */}
       {virtualItems.map((virtualItem) => {
+        if (isRenderMode && renderRow) {
+          const row = renderRow(virtualItem.index);
+          return React.cloneElement(
+            row as React.ReactElement<Record<string, unknown>>,
+            {
+              key: virtualItem.key,
+              "data-index": virtualItem.index,
+              ref: virtualizer.measureElement,
+            },
+          );
+        }
         const row = rows[virtualItem.index];
-        // Clone the row element and add measurement attributes
         if (React.isValidElement(row)) {
           return React.cloneElement(
             row as React.ReactElement<Record<string, unknown>>,

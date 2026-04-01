@@ -19,7 +19,7 @@ import {
   useTheme,
 } from "@mui/material";
 import * as React from "react";
-import {useCallback, useMemo, useState} from "react";
+import {useCallback, useMemo, useRef, useState} from "react";
 import type {CoinDescription} from "../../api/hooks/useGetCoinList";
 import {
   type CoinMarketData,
@@ -436,6 +436,7 @@ export default function CoinsListTable({
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [showEmojicoins, setShowEmojicoins] = useState(false);
+  const coinsTableScrollRef = useRef<HTMLDivElement>(null);
 
   // Fetch market data from CoinGecko
   const {
@@ -693,18 +694,21 @@ export default function CoinsListTable({
     />
   );
 
-  // Memoize coin rows for virtualization
-  const coinRows = useMemo(() => {
-    return filteredCoins.map((coin, i) => {
+  // Render one row on demand so toggling filters does not allocate thousands of elements at once.
+  const renderCoinRow = useCallback(
+    (index: number) => {
+      const coin = filteredCoins[index];
+      if (!coin) {
+        return <GeneralTableRow />;
+      }
       const symbol = getAssetSymbol(
         coin.panoraSymbol,
         coin.bridge,
         coin.symbol,
       );
-      // Use market price from CoinGecko if available, otherwise use Panora price
       const displayPrice = coin.marketPrice ?? coin.usdPrice;
       return (
-        <GeneralTableRow key={coin.tokenAddress ?? coin.faAddress ?? i}>
+        <GeneralTableRow>
           <CoinLogoCell coin={coin} />
           <CoinNameCell name={coin.name} symbol={symbol} />
           <CoinTypeCell coin={coin} />
@@ -713,8 +717,9 @@ export default function CoinsListTable({
           <MarketCapCell marketCap={coin.marketCap} />
         </GeneralTableRow>
       );
-    });
-  }, [filteredCoins]);
+    },
+    [filteredCoins],
+  );
 
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -844,7 +849,14 @@ export default function CoinsListTable({
         {filteredCoins.length} coins found
         {isMarketDataLoading && " (loading market data...)"}
       </Typography>
-      <Box sx={{overflowX: "auto"}}>
+      <Box
+        ref={coinsTableScrollRef}
+        sx={{
+          overflowX: "auto",
+          overflowY: "auto",
+          maxHeight: "min(70vh, 720px)",
+        }}
+      >
         <Table aria-label="Coins" data-entity-type="coin">
           <TableHead>
             <TableRow>
@@ -868,9 +880,10 @@ export default function CoinsListTable({
             <VirtualizedTableBody
               estimatedRowHeight={60}
               virtualizationThreshold={15}
-            >
-              {coinRows}
-            </VirtualizedTableBody>
+              scrollElementRef={coinsTableScrollRef}
+              rowCount={filteredCoins.length}
+              renderRow={renderCoinRow}
+            />
           ) : (
             <GeneralTableBody>
               <TableRow>
