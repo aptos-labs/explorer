@@ -793,7 +793,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Route** | `/settings` — dedicated full-page settings (replaced the former header popup dialog). |
 | **Navigation** | Header gear icon and mobile nav "Settings" item link to `/settings`. Rate Limit Drawer "Set API key override" button also links there. |
-| **API key overrides** | One optional masked geomi.dev API key field per network (mainnet, testnet, devnet, decibel, shelbynet, local); shared show/hide toggle for all fields. Empty network uses the build default key (if any). |
+| **API key overrides** | One optional masked geomi.dev API key field per network (mainnet, testnet, devnet, decibel, shelbynet, local); shared show/hide toggle for all fields. Empty network uses the build default key (if any). An info icon next to the section title opens a popover explaining that a personal key provides a dedicated rate limit (useful for heavy use or after HTTP 429) and links to geomi.dev. |
 | **Migration** | Previously saved single-key settings load as the same key applied to every network until the user saves again. |
 | **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. Non-API-key preferences (e.g. decompilation) persist to localStorage. |
 | **On save** | Clears cached SDK clients (`clearCachedV2Clients`, `clearCachedSearchClients`), invalidates all React Query queries, invalidates router. If non-empty API key saved, fires `emitApiKeySaved()` to dismiss rate-limit drawer (see FEAT-RATELIMIT-001). |

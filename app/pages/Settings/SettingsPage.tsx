@@ -1,3 +1,4 @@
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
@@ -13,6 +14,7 @@ import {
   InputAdornment,
   Link as MuiLink,
   Paper,
+  Popover,
   Stack,
   Switch,
   TextField,
@@ -72,6 +74,9 @@ export default function SettingsPage() {
     useState<ExplorerClientSettings>(settings);
   const [isSaving, setIsSaving] = useState(false);
   const [showApiKeys, setShowApiKeys] = useState(false);
+  const [apiKeyInfoAnchor, setApiKeyInfoAnchor] = useState<HTMLElement | null>(
+    null,
+  );
   const initialSettingsRef = useRef(settings);
 
   useEffect(() => {
@@ -227,9 +232,54 @@ export default function SettingsPage() {
           <Paper variant="outlined" sx={{p: 3}}>
             <Stack spacing={2.5}>
               <Box>
-                <Typography variant="h6" fontWeight={600}>
-                  API Key Overrides
-                </Typography>
+                <Stack direction="row" alignItems="center" spacing={0.5}>
+                  <Typography variant="h6" fontWeight={600} component="span">
+                    API Key Overrides
+                  </Typography>
+                  <IconButton
+                    size="small"
+                    aria-label="Why use your own API key?"
+                    aria-expanded={Boolean(apiKeyInfoAnchor)}
+                    aria-haspopup="true"
+                    onClick={(event) =>
+                      setApiKeyInfoAnchor(
+                        apiKeyInfoAnchor ? null : event.currentTarget,
+                      )
+                    }
+                    sx={{color: "text.secondary"}}
+                  >
+                    <InfoOutlinedIcon fontSize="small" />
+                  </IconButton>
+                </Stack>
+                <Popover
+                  open={Boolean(apiKeyInfoAnchor)}
+                  anchorEl={apiKeyInfoAnchor}
+                  onClose={() => setApiKeyInfoAnchor(null)}
+                  anchorOrigin={{vertical: "bottom", horizontal: "left"}}
+                  transformOrigin={{vertical: "top", horizontal: "left"}}
+                  slotProps={{
+                    paper: {
+                      sx: {maxWidth: 360, p: 2},
+                    },
+                  }}
+                >
+                  <Typography variant="body2" sx={{mb: 1.5}}>
+                    The explorer uses a shared geomi.dev API key by default.
+                    Adding your own key gives you a dedicated rate limit, which
+                    helps if you browse heavily or hit HTTP 429 responses.
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Create and manage keys at{" "}
+                    <MuiLink
+                      href="https://geomi.dev"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      geomi.dev
+                    </MuiLink>
+                    .
+                  </Typography>
+                </Popover>
                 <Typography
                   variant="body2"
                   color="text.secondary"

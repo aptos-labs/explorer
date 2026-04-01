@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Improved
 
+- **Settings**: API Key Overrides section includes an info icon with a short explanation of why to use your own geomi.dev key (dedicated rate limits) and a link to geomi.dev
 - Rate-limit drawer is now non-blocking (persistent banner instead of modal overlay) so users can still interact with the page, settings, and navigation while the notice is visible
 - Saving an API key in Settings automatically dismisses the rate-limit drawer and suppresses re-triggering for 10 seconds, preventing stale in-flight 429 responses from immediately re-showing the drawer
 
