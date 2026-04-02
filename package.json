@@ -20,7 +20,9 @@
       "d3-interpolate": ">=3.0.0",
       "d3-timer": ">=3.0.0",
       "d3-transition": ">=3.0.0",
-      "@tootallnate/once": "^3.0.1"
+      "@tootallnate/once": "^3.0.1",
+      "lodash@^4": "^4.18.0",
+      "node-forge@^1": "^1.4.0"
     },
     "onlyBuiltDependencies": [
       "@swc/core",
@@ -37,9 +39,9 @@
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
     "@noble/hashes": "^2.0.1",
-    "@tanstack/react-query": "^5.95.2",
-    "@tanstack/react-router": "^1.168.3",
-    "@tanstack/react-start": "^1.167.5",
+    "@tanstack/react-query": "^5.96.1",
+    "@tanstack/react-router": "^1.168.10",
+    "@tanstack/react-start": "^1.167.16",
     "@tanstack/react-virtual": "^3.13.23",
     "@uiw/react-json-view": "2.0.0-alpha.41",
     "chart.js": "^4.5.1",
