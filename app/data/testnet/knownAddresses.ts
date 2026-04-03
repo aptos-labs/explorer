@@ -33,6 +33,10 @@ export const testnetKnownAddresses: Record<string, string> = {
   "0xc63d6a5efb0080a6029403131715bd4971e1149f7cc099aac69bb0069b3ddbf5":
     "Shelby",
 
+  // Decibel
+  "0xe7da2794b1d8af76532ed95f38bfdf1136abfd8ea3a240189971988a83101b7f":
+    "Decibel",
+
   // Burn Address
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
