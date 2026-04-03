@@ -7,7 +7,6 @@ import {
   collectionV2Address,
   DEFAULT_DESCRIPTION,
   defaultFeatureName,
-  defaultNetworkName,
   faMetadataResource,
   isValidFeatureName,
   isValidNetworkName,

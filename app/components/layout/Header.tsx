@@ -13,7 +13,7 @@ import {
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef} from "react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
 import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";

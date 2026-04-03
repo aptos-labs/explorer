@@ -270,7 +270,7 @@ export function extractFunctionParamNames(
     );
 
     const match = sourceCode.match(funcRegex);
-    if (!match || !match[1]) return null;
+    if (!match?.[1]) return null;
 
     const paramsStr = match[1].trim();
     if (!paramsStr) return [];
@@ -349,7 +349,7 @@ export function extractFunctionTypeParamNames(
     );
 
     const match = sourceCode.match(funcRegex);
-    if (!match || !match[1]) return null;
+    if (!match?.[1]) return null;
 
     const typeParamsStr = match[1].trim();
     if (!typeParamsStr) return [];

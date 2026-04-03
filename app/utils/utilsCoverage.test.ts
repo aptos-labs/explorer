@@ -110,14 +110,14 @@ describe("isValidUrl", () => {
 
 describe("FEAT-MODULES-004 — getBytecodeSizeInKB", () => {
   it("returns a number for hex bytecode", () => {
-    const hex = "0x" + "ab".repeat(512);
+    const hex = `0x${"ab".repeat(512)}`;
     const result = getBytecodeSizeInKB(hex);
     expect(typeof result).toBe("number");
     expect(result).toBeGreaterThan(0);
   });
 
   it("computes correct KB for known size", () => {
-    const hex = "0x" + "ab".repeat(1024);
+    const hex = `0x${"ab".repeat(1024)}`;
     const result = getBytecodeSizeInKB(hex);
     expect(result).toBe(1);
   });

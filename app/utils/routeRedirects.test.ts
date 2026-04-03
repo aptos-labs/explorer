@@ -234,7 +234,7 @@ describe("FEAT-VALIDATORS-006 — resolveValidatorsEnhancedRedirect", () => {
 
 describe("FEAT-SEARCH-001 — resolveHeaderSearchNavigation", () => {
   it("routes 64-char hex to txn", () => {
-    const hash = "0x" + "a".repeat(64);
+    const hash = `0x${"a".repeat(64)}`;
     expect(resolveHeaderSearchNavigation(hash)).toEqual({
       kind: "txn",
       value: hash,

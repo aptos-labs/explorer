@@ -159,7 +159,7 @@ export function useGetAddressFromName(name: string) {
     staleTime: 30 * 60 * 1000,
     gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
     queryFn: async (): Promise<string | null> => {
-      if (!normalizedName || !normalizedName.endsWith(".apt")) {
+      if (!normalizedName?.endsWith(".apt")) {
         return null;
       }
 

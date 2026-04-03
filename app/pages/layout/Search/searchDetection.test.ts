@@ -63,7 +63,7 @@ describe("FEAT-SEARCH-002 — detectInputType", () => {
 
   describe("32-byte hex (transaction hash)", () => {
     it("detects 64-char hex with 0x prefix", () => {
-      const hash = "0x" + "a".repeat(64);
+      const hash = `0x${"a".repeat(64)}`;
       const result = detectInputType(hash);
       expect(result.is32Hex).toBe(true);
     });
@@ -135,7 +135,7 @@ describe("FEAT-SEARCH-002 — detectInputType", () => {
 
   describe("mutual exclusivity and overlap", () => {
     it("full 64-char hex matches both is32Hex and isValidAccountAddr", () => {
-      const hex = "0x" + "a".repeat(64);
+      const hex = `0x${"a".repeat(64)}`;
       const result = detectInputType(hex);
       expect(result.is32Hex).toBe(true);
       expect(result.isValidAccountAddr).toBe(true);

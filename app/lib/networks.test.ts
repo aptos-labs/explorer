@@ -5,7 +5,6 @@ import {
   defaultNetworkName,
   features,
   hiddenNetworks,
-  type NetworkName,
   networks,
 } from "./constants";
 
@@ -37,7 +36,7 @@ describe("FEAT-NETWORK-001 — Network configuration", () => {
   });
 
   it("all network values are valid URLs", () => {
-    for (const [name, url] of Object.entries(networks)) {
+    for (const [_name, url] of Object.entries(networks)) {
       expect(url).toMatch(/^https?:\/\//);
     }
   });
