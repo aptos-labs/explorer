@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Improved
 
-- **Transaction Payload tab**: structured breakdown (type, function, multisig address, arguments with the same rich table as the overview, script type/value args, script decompiler) with raw JSON collapsed at the bottom — aligned with the Fee Statement style structured layout instead of only a large JSON block
+- **Transaction Payload tab**: structured breakdown (type, function, multisig address, arguments with the same rich table as the overview, script type/value args, script decompiler) with raw JSON collapsed at the bottom — aligned with the Fee Statement style structured layout instead of only a large JSON block; multisig inner `transaction_payload` supports `script_payload` (decompiler + script args) with a fallback for other inner types; raw JSON omits script bytecode for nested multisig script payloads as well as top-level scripts
 - **Transaction Events tab**: every event shows structured field tables (same visual pattern as Fee Statement) with account links for addresses and `{ inner }` wrappers; collapsible raw JSON remains under each event
 - **Mobile layout**: transaction payload and events use responsive padding on `ContentBox` / `CollapsibleCard`; event data and Fee Statement tables stack label above value on narrow viewports; `ContentRow` values get `minWidth: 0` so wide content wraps; `JsonViewCard` uses smaller indent on small screens
 - **Settings**: API Key Overrides section includes an info icon with a short explanation of why to use your own geomi.dev key (dedicated rate limits) and a link to geomi.dev
