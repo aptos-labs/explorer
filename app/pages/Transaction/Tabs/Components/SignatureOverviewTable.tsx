@@ -110,6 +110,16 @@ function isHexString(value: unknown): value is string {
   return typeof value === "string" && /^0x[0-9a-fA-F]+$/.test(value);
 }
 
+function secondarySignerAuthenticatorKey(
+  addresses: unknown[] | undefined,
+  index: number,
+): string {
+  const addr = addresses?.[index];
+  return typeof addr === "string"
+    ? `secondary-signer-${addr}-${index}`
+    : `secondary-signer-${index}`;
+}
+
 function humanizeSignatureType(type: string): string {
   const map: Record<string, string> = {
     ed25519_signature: "Ed25519",
@@ -216,17 +226,17 @@ function AccountSignatureRows({sig}: {sig: unknown}): React.ReactNode {
 
   if (t === "single_sender") {
     const pk = o.public_key;
-    const sig = o.signature;
+    const signaturePayload = o.signature;
     if (
       pk &&
       typeof pk === "object" &&
       !Array.isArray(pk) &&
-      sig &&
-      typeof sig === "object" &&
-      !Array.isArray(sig)
+      signaturePayload &&
+      typeof signaturePayload === "object" &&
+      !Array.isArray(signaturePayload)
     ) {
       const pkRec = pk as Record<string, unknown>;
-      const sigRec = sig as Record<string, unknown>;
+      const sigRec = signaturePayload as Record<string, unknown>;
       return (
         <>
           <SignatureFieldRow label="Scheme">
@@ -350,7 +360,10 @@ export default function SignatureOverviewTable({
             {(s.secondary_signer_addresses as unknown[]).map((addr, i) =>
               typeof addr === "string" ? (
                 <SignatureFieldRow
-                  key={addr}
+                  key={
+                    // biome-ignore lint/suspicious/noArrayIndexKey: same address may appear twice; index disambiguates list position
+                    `secondary-address-${addr}-${i}`
+                  }
                   label={`Secondary signer ${i + 1} (address)`}
                 >
                   <HashButton hash={addr} type={HashType.ACCOUNT} />
@@ -359,7 +372,10 @@ export default function SignatureOverviewTable({
             )}
             {(s.secondary_signers as unknown[]).map((sub, i) => (
               <SignatureFieldRow
-                key={JSON.stringify(sub)}
+                key={secondarySignerAuthenticatorKey(
+                  s.secondary_signer_addresses as unknown[] | undefined,
+                  i,
+                )}
                 label={`Secondary signer ${i + 1}`}
                 description="Authenticator for this secondary address."
               >
@@ -411,7 +427,10 @@ export default function SignatureOverviewTable({
             {(s.secondary_signer_addresses as unknown[]).map((addr, i) =>
               typeof addr === "string" ? (
                 <SignatureFieldRow
-                  key={addr}
+                  key={
+                    // biome-ignore lint/suspicious/noArrayIndexKey: same address may appear twice; index disambiguates list position
+                    `secondary-address-${addr}-${i}`
+                  }
                   label={`Secondary signer ${i + 1} (address)`}
                 >
                   <HashButton hash={addr} type={HashType.ACCOUNT} />
@@ -420,7 +439,10 @@ export default function SignatureOverviewTable({
             )}
             {(s.secondary_signers as unknown[]).map((sub, i) => (
               <SignatureFieldRow
-                key={JSON.stringify(sub)}
+                key={secondarySignerAuthenticatorKey(
+                  s.secondary_signer_addresses as unknown[] | undefined,
+                  i,
+                )}
                 label={`Secondary signer ${i + 1}`}
               >
                 <Paper
