@@ -18,8 +18,14 @@
       "d3-drag": ">=3.0.0",
       "d3-ease": ">=3.0.0",
       "d3-interpolate": ">=3.0.0",
+      "brace-expansion": ">=5.0.5",
+      "defu": ">=6.1.5",
+      "h3-v2": "npm:h3@2.0.1-rc.18",
+      "d3-geo": ">=3.0.0",
+      "d3-selection": ">=3.0.0",
       "d3-timer": ">=3.0.0",
       "d3-transition": ">=3.0.0",
+      "d3-zoom": ">=3.0.0",
       "@tootallnate/once": "^3.0.1",
       "lodash@^4": "^4.18.0",
       "node-forge@^1": "^1.4.0"
@@ -119,7 +125,7 @@
     "lint-staged": "^16.4.0",
     "rollup-plugin-visualizer": "^7.0.1",
     "typescript": "^6.0.2",
-    "vite": "^7.3.1",
+    "vite": "^7.3.2",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-svgr": "^4.5.0",
     "vitest": "^4.1.1"
