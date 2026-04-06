@@ -218,8 +218,9 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Collapsible payload with JSON view. |
+| **Display** | Structured `ContentBox` + `ContentRow` layout (same pattern as overview rows and event FeeStatement tables): payload type, function (entry / multisig inner / script label), multisig address when applicable, arguments (reuses overview `TransactionArguments` for entry functions), script type args and value args, then collapsible raw JSON. |
 | **Script decompile** | For `script_payload`, embeds `ScriptBytecodeDecompiler` — decompiles hex bytecode via WASM Move decompiler, shows decompiled Move or bytecode disassembly with copy/download/expand modal. |
+| **Raw JSON** | Full payload JSON in a collapsed `JsonViewCard`; script bytecode in JSON is replaced by an omission note when the decompiler section is shown (avoids huge duplicate hex). |
 
 ### FEAT-TXN-006 — Changes Tab
 
@@ -1165,6 +1166,7 @@ The app shell that wraps every page.
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns) |
 | `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
+| `app/pages/Transaction/Tabs/Components/payloadRawJson.test.ts` | FEAT-TXN-005 (raw JSON view omits duplicate script bytecode) |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results) |
