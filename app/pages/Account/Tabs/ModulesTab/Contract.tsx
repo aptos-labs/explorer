@@ -336,22 +336,17 @@ function Contract({
   }
 
   if (error) {
-    if (
-      error.type === ResponseErrorType.NOT_FOUND &&
-      modulesFetched &&
-      packagesFetched &&
-      sortedPackages.length === 0
-    ) {
+    if (error.type === ResponseErrorType.NOT_FOUND && modulesFetched) {
       return (
         <ErrorPage
           address={address}
           error={error}
-          notFoundTitle="No move modules"
+          notFoundTitle="No modules found"
           notFoundMessage={
             <>
-              This address has no published Move modules on this network, and no
-              package registry entry. If you expected modules here, confirm the
-              address and network, or try again later.
+              No Move modules were returned for this address on this network
+              (HTTP 404 from the modules API). If you expected modules here,
+              confirm the address and network, or try again later.
             </>
           }
         />

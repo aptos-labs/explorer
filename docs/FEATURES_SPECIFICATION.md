@@ -470,7 +470,8 @@ The app shell that wraps every page.
 | **Loading** | While package registry is pending, Packages and Code show a centered spinner instead of an empty “No Data” state. |
 | **Registry fetch error** | Non-404 failures render `AccountError` (same pattern as other account resources). |
 | **Empty registry (404)** | After a successful fetch with no resource, show explanatory copy: modules may still exist on chain; point users to the Code or Run/View tab and REST module endpoints as appropriate. |
-| **No modules (404 on modules API)** | When the modules list is empty and the registry is also empty, Run/View show a dedicated empty state; a bare modules 404 uses the error component with title “No move modules” instead of “Account Not Found”. |
+| **No modules (404 on modules API)** | Run/View show **“No modules found”** (modules API 404) with explanatory copy. |
+| **Modules route + account resources 404** | On `/account/.../modules/...` or `/object/.../modules/...`, a 404 from the account resources list does not show the layout **“Account Not Found”** banner so tab content can show the correct modules empty/error state. |
 | **Diff mode** | Published-source diff waits on package queries (`isPending`) instead of treating empty package lists as loading forever; package query errors surface via `AccountError`. |
 
 ---
