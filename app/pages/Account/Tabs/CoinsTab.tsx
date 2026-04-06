@@ -1,9 +1,14 @@
 import type {Types} from "~/types/aptos";
 import {useGetAllAccountCoins} from "../../../api/hooks/useGetAccountCoins";
+import {useGetAccountAPTBalance} from "../../../api/hooks/useGetAccountAPTBalance";
 import {
   type CoinDescription,
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
+import {
+  type FaBalanceRow,
+  mergeOnChainAptIntoIndexerRows,
+} from "../accountCoinsMerge";
 import {findCoinData} from "../../Transaction/utils";
 import {coinOrderIndex} from "../../utils";
 import {
@@ -19,9 +24,11 @@ type TokenTabsProps = {
 export default function CoinsTab({address}: TokenTabsProps) {
   const {data: coinData} = useGetCoinList();
 
-  const {isLoading, error, data} = useGetAllAccountCoins(address);
+  const {isLoading: coinsLoading, error, data} = useGetAllAccountCoins(address);
+  const {data: aptBalance, isLoading: aptLoading} =
+    useGetAccountAPTBalance(address);
 
-  if (isLoading) {
+  if (coinsLoading || aptLoading) {
     return null;
   }
 
@@ -30,14 +37,20 @@ export default function CoinsTab({address}: TokenTabsProps) {
     return null;
   }
 
-  const rawCoins = data ?? [];
+  const rawCoins = mergeOnChainAptIntoIndexerRows(data ?? [], aptBalance);
 
   function parse_coins(): CoinDescriptionPlusAmount[] {
     if (!rawCoins || rawCoins.length <= 0) {
       return [];
     }
     return rawCoins
-      .filter((coin) => Boolean(coin.metadata))
+      .filter(
+        (
+          coin,
+        ): coin is FaBalanceRow & {
+          metadata: NonNullable<FaBalanceRow["metadata"]>;
+        } => coin.metadata != null,
+      )
       .map((coin): CoinDescriptionPlusAmount => {
         const foundCoin = findCoinData(coinData?.data ?? [], coin.asset_type);
 
@@ -102,10 +115,20 @@ export default function CoinsTab({address}: TokenTabsProps) {
       });
   }
 
+  const indexerHadNoRows = (data ?? []).length === 0;
+  let onChainAptOctas = 0n;
+  if (aptBalance !== undefined) {
+    try {
+      onChainAptOctas = BigInt(aptBalance);
+    } catch {
+      onChainAptOctas = 0n;
+    }
+  }
+
   return (
     <CoinsTable
       coins={parse_coins()}
-      indexerReturnedNoRows={rawCoins.length === 0}
+      indexerReturnedNoRows={indexerHadNoRows && onChainAptOctas === 0n}
     />
   );
 }

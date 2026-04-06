@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Account Assets tab**: verification filters and “Show Zero Balance” now appear even when the indexer returns no fungible-asset rows (previously the tab showed only “No Data Found” and hid those controls). An info note clarifies that the sidebar APT balance can still come from on-chain coin state.
+- **Account Assets tab**: when native APT exists in `0x1::coin` but the indexer omits it (or returns an APT row without metadata), the explorer merges the on-chain `coin::balance` amount so APT shows in the Assets table alongside indexer-backed fungible assets.
 - **Coins page** (`/coins`): changing verification filters or the Emojicoins toggle no longer freezes the tab when thousands of assets match — the table virtualizes rows via an on-demand `renderRow` path and scrolls inside a bounded-height container instead of allocating every row up front
 - **Dev mode**: `useFeatureName()` now reads from a `feature_name` cookie or the `VITE_FEATURE_NAME` env var instead of always returning `"prod"` — the Development Mode banner, Early Development Mode banner, and dev-only UI (e.g. Aptos Names banner) are functional again
 - **SSR dev server**: removed duplicate `tanstackRouter()` plugin from `vite.config.ts` — it conflicted with the code-splitting plugins already bundled inside `tanstackStart()`, causing `ReferenceError: TSRSplitComponent is not defined` on every SSR request during `pnpm dev`

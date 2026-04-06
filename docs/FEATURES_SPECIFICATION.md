@@ -366,6 +366,7 @@ The app shell that wraps every page.
 | **Data** | `useGetAllAccountCoins` merged with Panora/coin list. |
 | **Table** | Asset name, symbol, balance, type. Virtualized for large sets. |
 | **Empty indexer** | Verification filter controls and “Show Zero Balance” remain visible when the indexer returns no rows; an info note explains that the sidebar APT card may still reflect on-chain coin state. |
+| **Native APT fallback** | When `0x1::coin::balance` for `0x1::aptos_coin::AptosCoin` is non-zero but the indexer has no APT row (or returns APT with null metadata), the tab merges that on-chain balance so APT appears in the table. |
 
 ### FEAT-ACCOUNT-008 — NFTs (Tokens) Tab
 
@@ -1167,6 +1168,7 @@ The app shell that wraps every page.
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns) |
 | `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
+| `app/pages/Account/accountCoinsMerge.test.ts` | FEAT-ACCOUNT-007 (merge on-chain APT when indexer omits or lacks metadata) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results) |
 | `app/pages/layout/Search/searchDetection.test.ts` | FEAT-SEARCH-002 (all input type detection: ANS, struct, numeric, hex, address, emoji, generic) |
