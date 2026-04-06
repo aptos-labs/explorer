@@ -210,8 +210,9 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Collapsible list per event, JSON view. |
-| **FeeStatement** | Special `FeeStatementEventView` for `0x1::transaction_fee::FeeStatement`. |
+| **Display** | Collapsible list per event. Each event shows structured event data in a FeeStatement-style table (`EventDataStructuredView`: sorted fields, nested objects as nested tables, string addresses and `{ inner }` object addresses as account links, depth-capped recursion with JSON fallback). |
+| **FeeStatement** | Special `FeeStatementEventView` for `0x1::transaction_fee::FeeStatement` (gas-unit pricing rows); raw JSON still available below. |
+| **Raw JSON** | Collapsed `JsonViewCard` under each event’s structured data (and under FeeStatement). |
 | **Module events** | Hide zero GUID fields. |
 
 ### FEAT-TXN-005 — Payload Tab
@@ -1167,6 +1168,7 @@ The app shell that wraps every page.
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns) |
 | `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
 | `app/pages/Transaction/Tabs/Components/payloadRawJson.test.ts` | FEAT-TXN-005 (raw JSON view omits duplicate script bytecode) |
+| `app/pages/Transaction/Tabs/Components/eventDataStructuredViewUtils.test.ts` | FEAT-TXN-004 (event data table helpers: plain object, `{inner}` addresses, sorted keys) |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results) |

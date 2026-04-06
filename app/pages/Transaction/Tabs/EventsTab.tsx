@@ -1,3 +1,4 @@
+import {Box, Stack, Typography, useTheme} from "@mui/material";
 import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../../components/HashButton";
 import useExpandedList from "../../../components/hooks/useExpandedList";
@@ -6,6 +7,7 @@ import CollapsibleCards from "../../../components/IndividualPageContent/Collapsi
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import EventDataStructuredView from "./Components/EventDataStructuredView";
 import FeeStatementEventView, {
   FEE_STATEMENT_EVENT_TYPE,
   shouldRenderFeeStatementTable,
@@ -29,6 +31,7 @@ function isModuleEvent(event: Types.Event): boolean {
 }
 
 export default function EventsTab({transaction}: EventsTabProps) {
+  const theme = useTheme();
   const events: Types.Event[] =
     "events" in transaction ? transaction.events : [];
 
@@ -99,20 +102,36 @@ export default function EventsTab({transaction}: EventsTabProps) {
             <ContentRow
               title="Data:"
               value={
-                feeStatementData ? (
-                  <FeeStatementEventView
-                    data={feeStatementData}
-                    gasUnitPrice={gasUnitPrice}
-                  />
-                ) : (
-                  <JsonViewCard
-                    data={
-                      typeof event.data === "object"
-                        ? event.data
-                        : {__PLACEHOLDER__: event.data}
-                    }
-                  />
-                )
+                <Stack spacing={2} sx={{width: "100%"}}>
+                  {feeStatementData ? (
+                    <FeeStatementEventView
+                      data={feeStatementData}
+                      gasUnitPrice={gasUnitPrice}
+                    />
+                  ) : (
+                    <EventDataStructuredView data={event.data} />
+                  )}
+                  <Box>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        color: theme.palette.text.secondary,
+                        fontWeight: 600,
+                        mb: 1,
+                      }}
+                    >
+                      Raw JSON
+                    </Typography>
+                    <JsonViewCard
+                      data={
+                        typeof event.data === "object"
+                          ? event.data
+                          : {__PLACEHOLDER__: event.data}
+                      }
+                      collapsedByDefault
+                    />
+                  </Box>
+                </Stack>
               }
             />
           </CollapsibleCard>
