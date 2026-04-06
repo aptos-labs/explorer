@@ -365,6 +365,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Data** | `useGetAllAccountCoins` merged with Panora/coin list. |
 | **Table** | Asset name, symbol, balance, type. Virtualized for large sets. |
+| **Empty indexer** | Verification filter controls and “Show Zero Balance” remain visible when the indexer returns no rows; an info note explains that the sidebar APT card may still reflect on-chain coin state. |
 
 ### FEAT-ACCOUNT-008 — NFTs (Tokens) Tab
 

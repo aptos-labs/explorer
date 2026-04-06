@@ -1,5 +1,6 @@
 import {Network} from "@aptos-labs/ts-sdk";
 import {
+  Alert,
   Box,
   Button,
   FormControlLabel,
@@ -300,7 +301,16 @@ function CoinCard({
   );
 }
 
-export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
+type CoinsTableProps = {
+  coins: CoinDescriptionPlusAmount[];
+  /** True when the indexer returned zero balance rows (sidebar APT may still show via on-chain coin view). */
+  indexerReturnedNoRows?: boolean;
+};
+
+export function CoinsTable({
+  coins,
+  indexerReturnedNoRows = false,
+}: CoinsTableProps) {
   const theme = useTheme();
   const networkName = useNetworkName();
   const [verificationFilter, setVerificationFilter] = React.useState(
@@ -419,6 +429,14 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
     theme.palette.mode === "dark"
       ? theme.palette.neutralShade.lighter
       : theme.palette.neutralShade.darker;
+
+  const indexerEmptyHint = indexerReturnedNoRows ? (
+    <Alert severity="info" sx={{mb: 1}}>
+      The indexer has no fungible asset balance rows for this account yet. The
+      APT total in the balance card uses on-chain coin state and can differ from
+      what appears here.
+    </Alert>
+  ) : null;
 
   const filterSelector = (
     <Stack
@@ -569,6 +587,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   if (isMobile) {
     return (
       <>
+        {indexerEmptyHint}
         {filterSelector}
         <Box>
           {filteredCoins.length > 0 ? (
@@ -596,6 +615,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   // Desktop table view
   return (
     <>
+      {indexerEmptyHint}
       {filterSelector}
       <Box sx={{overflowX: "auto"}}>
         <Table aria-label="Account coins" data-entity-type="coin">

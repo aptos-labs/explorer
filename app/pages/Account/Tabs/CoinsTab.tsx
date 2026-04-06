@@ -4,7 +4,6 @@ import {
   type CoinDescription,
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {findCoinData} from "../../Transaction/utils";
 import {coinOrderIndex} from "../../utils";
 import {
@@ -31,17 +30,13 @@ export default function CoinsTab({address}: TokenTabsProps) {
     return null;
   }
 
-  const coins = data ?? [];
-
-  if (coins.length === 0) {
-    return <EmptyTabContent />;
-  }
+  const rawCoins = data ?? [];
 
   function parse_coins(): CoinDescriptionPlusAmount[] {
-    if (!coins || coins.length <= 0) {
+    if (!rawCoins || rawCoins.length <= 0) {
       return [];
     }
-    return coins
+    return rawCoins
       .filter((coin) => Boolean(coin.metadata))
       .map((coin): CoinDescriptionPlusAmount => {
         const foundCoin = findCoinData(coinData?.data ?? [], coin.asset_type);
@@ -107,5 +102,10 @@ export default function CoinsTab({address}: TokenTabsProps) {
       });
   }
 
-  return <CoinsTable coins={parse_coins()} />;
+  return (
+    <CoinsTable
+      coins={parse_coins()}
+      indexerReturnedNoRows={rawCoins.length === 0}
+    />
+  );
 }
