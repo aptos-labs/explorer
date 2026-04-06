@@ -21,7 +21,7 @@ function MultisigInnerPayloadSection({
   inner,
 }: {
   transaction: Types.Transaction;
-  inner: Types.TransactionPayload_EntryFunctionPayload | undefined;
+  inner: Types.TransactionPayload | undefined;
 }) {
   const theme = useTheme();
   if (!inner) {
@@ -37,20 +37,51 @@ function MultisigInnerPayloadSection({
     );
   }
 
-  const syntheticTxn = {
-    ...transaction,
-    payload: inner,
-  } as Types.Transaction;
+  if (inner.type === "entry_function_payload") {
+    const syntheticTxn = {
+      ...transaction,
+      payload: inner,
+    } as Types.Transaction;
+
+    return (
+      <>
+        <ContentRow
+          title="Function:"
+          value={<TransactionFunction transaction={syntheticTxn} />}
+          tooltip={getLearnMoreTooltip("function")}
+        />
+        <TransactionArgumentsRow transaction={syntheticTxn} />
+      </>
+    );
+  }
+
+  if (
+    inner.type === "script_payload" &&
+    "code" in inner &&
+    typeof inner.code?.bytecode === "string"
+  ) {
+    return (
+      <>
+        <ContentRow title="Inner payload type:" value={inner.type} />
+        <ScriptBytecodeDecompiler bytecodeHex={inner.code.bytecode} />
+        <ScriptTypeAndValueArgs
+          typeArguments={inner.type_arguments}
+          arguments={inner.arguments}
+        />
+      </>
+    );
+  }
 
   return (
-    <>
-      <ContentRow
-        title="Function:"
-        value={<TransactionFunction transaction={syntheticTxn} />}
-        tooltip={getLearnMoreTooltip("function")}
-      />
-      <TransactionArgumentsRow transaction={syntheticTxn} />
-    </>
+    <ContentRow
+      title="Inner payload:"
+      value={
+        <Typography variant="body2" color={theme.palette.text.secondary}>
+          Type: {inner.type}. Structured fields for this inner payload are not
+          shown here; use Raw JSON below for the full payload.
+        </Typography>
+      }
+    />
   );
 }
 

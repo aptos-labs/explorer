@@ -220,9 +220,9 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Structured `ContentBox` + `ContentRow` layout (same pattern as overview rows and event FeeStatement tables): payload type, function (entry / multisig inner / script label), multisig address when applicable, arguments (reuses overview `TransactionArguments` for entry functions), script type args and value args, then collapsible raw JSON. |
+| **Display** | Structured `ContentBox` + `ContentRow` layout (same pattern as overview rows and event FeeStatement tables): payload type, function (entry / multisig inner / script label), multisig address when applicable, arguments (reuses overview `TransactionArguments` for entry functions), script type args and value args, then collapsible raw JSON. **Multisig inner** `transaction_payload`: entry function uses the same function + arguments rows as top-level entry; `script_payload` inner shows decompiler + script type/value args; other inner types fall back to a short message and raw JSON. |
 | **Script decompile** | For `script_payload`, embeds `ScriptBytecodeDecompiler` — decompiles hex bytecode via WASM Move decompiler, shows decompiled Move or bytecode disassembly with copy/download/expand modal. |
-| **Raw JSON** | Full payload JSON in a collapsed `JsonViewCard`; script bytecode in JSON is replaced by an omission note when the decompiler section is shown (avoids huge duplicate hex). |
+| **Raw JSON** | Full payload JSON in a collapsed `JsonViewCard`; script bytecode in JSON is replaced by an omission note when the decompiler section is shown (avoids huge duplicate hex), including for **nested** `multisig_payload.transaction_payload` script payloads. |
 | **Small screens** | `ContentBox` / collapsible event cards use responsive padding; payload wrapper constrains width; same `ContentRow` overflow fix as events. |
 
 ### FEAT-TXN-006 — Changes Tab

@@ -190,7 +190,10 @@ export interface TransactionPayload_ScriptPayload {
 export interface TransactionPayload_MultisigPayload {
   type: "multisig_payload";
   multisig_address: string;
-  transaction_payload?: TransactionPayload_EntryFunctionPayload;
+  /** Inner payload executed by the multisig; API may return entry or script (not only entry). */
+  transaction_payload?:
+    | TransactionPayload_EntryFunctionPayload
+    | TransactionPayload_ScriptPayload;
 }
 
 export type TransactionPayload =

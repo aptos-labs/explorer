@@ -25,4 +25,24 @@ describe("payloadForRawJsonView", () => {
     };
     expect(payloadForRawJsonView(payload)).toEqual(payload);
   });
+
+  it("replaces nested multisig script bytecode with a pointer string", () => {
+    const payload = {
+      type: "multisig_payload" as const,
+      multisig_address: "0x123",
+      transaction_payload: {
+        type: "script_payload" as const,
+        code: {bytecode: "0xdeadbeef"},
+        type_arguments: [] as string[],
+        arguments: [] as unknown[],
+      },
+    };
+    const view = payloadForRawJsonView(payload) as {
+      transaction_payload: {
+        code: {bytecode: string};
+      };
+    };
+    expect(view.transaction_payload.code.bytecode).toContain("omitted");
+    expect(view.transaction_payload.code.bytecode).not.toContain("deadbeef");
+  });
 });

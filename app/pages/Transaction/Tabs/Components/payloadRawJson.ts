@@ -28,5 +28,21 @@ export function payloadForRawJsonView(
       },
     };
   }
+
+  if (
+    payload.type === "multisig_payload" &&
+    "transaction_payload" in payload &&
+    payload.transaction_payload &&
+    typeof payload.transaction_payload === "object" &&
+    "type" in payload.transaction_payload
+  ) {
+    return {
+      ...payload,
+      transaction_payload: payloadForRawJsonView(
+        payload.transaction_payload as Types.TransactionPayload,
+      ),
+    };
+  }
+
   return payload;
 }
