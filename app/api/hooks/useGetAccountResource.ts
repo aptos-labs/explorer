@@ -60,14 +60,30 @@ export function useGetAccountResource(
   });
 }
 
-export function useGetAccountPackages(address: string, ledgerVersion?: number) {
-  const {data: registry} = useGetAccountResource(
+export type AccountPackagesQuery = {
+  packages: PackageMetadata[];
+  isPending: boolean;
+  isError: boolean;
+  error: ResponseError | null;
+  isFetched: boolean;
+};
+
+/**
+ * Package metadata from `0x1::code::PackageRegistry`. When the resource is
+ * missing (404), `packages` is empty and `isError` is false — use `isFetched`
+ * to tell "loaded successfully, none" from still loading.
+ */
+export function useGetAccountPackages(
+  address: string,
+  ledgerVersion?: number,
+): AccountPackagesQuery {
+  const registryQuery = useGetAccountResource(
     address,
     "0x1::code::PackageRegistry",
     ledgerVersion,
   );
 
-  const registryData = registry?.data as {
+  const registryData = registryQuery.data?.data as {
     packages?: PackageMetadata[];
   };
 
@@ -84,5 +100,11 @@ export function useGetAccountPackages(address: string, ledgerVersion?: number) {
       };
     }) || [];
 
-  return orderBy(packages, ["name"], ["asc"]);
+  return {
+    packages: orderBy(packages, ["name"], ["asc"]),
+    isPending: registryQuery.isPending,
+    isError: registryQuery.isError,
+    error: registryQuery.error ?? null,
+    isFetched: registryQuery.isFetched,
+  };
 }

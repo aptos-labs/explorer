@@ -1,6 +1,7 @@
 import {
   Autocomplete,
   Box,
+  CircularProgress,
   Divider,
   Grid,
   Stack,
@@ -18,6 +19,7 @@ import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyT
 import {useNavigate} from "../../../../routing";
 import {MovePackageManifest} from "../../Components/MovePackageManifest";
 import SidebarItem from "../../Components/SidebarItem";
+import AccountError from "../../Error";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 import {useModulesPathParams} from "./Tabs";
@@ -46,10 +48,13 @@ function Packages({
   isObject: boolean;
   ledgerVersion?: number;
 }) {
-  const sortedPackages: PackageMetadata[] = useGetAccountPackages(
-    address,
-    ledgerVersion,
-  );
+  const {
+    packages: sortedPackages,
+    isPending,
+    isError,
+    error: packagesError,
+    isFetched,
+  } = useGetAccountPackages(address, ledgerVersion);
 
   const navigate = useNavigate();
 
@@ -59,6 +64,8 @@ function Packages({
 
   useEffect(() => {
     if (
+      !isPending &&
+      !isError &&
       !selectedPackageName &&
       sortedPackages.length > 0 &&
       sortedPackages[0].modules.length > 0
@@ -69,7 +76,42 @@ function Packages({
         replace: true,
       });
     }
-  }, [selectedPackageName, sortedPackages, address, navigate, isObject]);
+  }, [
+    selectedPackageName,
+    sortedPackages,
+    address,
+    navigate,
+    isObject,
+    isPending,
+    isError,
+  ]);
+
+  if (isPending) {
+    return (
+      <Box display="flex" justifyContent="center" py={8}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isError && packagesError) {
+    return <AccountError error={packagesError} address={address} />;
+  }
+
+  if (sortedPackages.length === 0 && isFetched) {
+    return (
+      <EmptyTabContent
+        message={
+          <>
+            No published package metadata for this address. Move modules may
+            still exist on chain (for example legacy publishes); try the{" "}
+            <strong>Code</strong> tab, or use the REST API{" "}
+            <code>/accounts/&#123;address&#125;/modules</code>.
+          </>
+        }
+      />
+    );
+  }
 
   if (sortedPackages.length === 0) {
     return <EmptyTabContent />;
