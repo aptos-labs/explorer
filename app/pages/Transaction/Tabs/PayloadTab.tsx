@@ -152,8 +152,16 @@ export default function PayloadTab({transaction}: PayloadTabProps) {
   const {payload} = transaction;
 
   return (
-    <Box marginTop={3}>
-      <ContentBox>
+    <Box
+      marginTop={3}
+      sx={{
+        width: "100%",
+        maxWidth: "100%",
+        minWidth: 0,
+        boxSizing: "border-box",
+      }}
+    >
+      <ContentBox sx={{maxWidth: "100%", minWidth: 0, boxSizing: "border-box"}}>
         <ContentRow title="Type:" value={payload.type} />
         {payload.type === "entry_function_payload" && (
           <>

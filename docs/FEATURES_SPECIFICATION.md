@@ -213,6 +213,7 @@ The app shell that wraps every page.
 | **Display** | Collapsible list per event. Each event shows structured event data in a FeeStatement-style table (`EventDataStructuredView`: sorted fields, nested objects as nested tables, string addresses and `{ inner }` object addresses as account links, depth-capped recursion with JSON fallback). |
 | **FeeStatement** | Special `FeeStatementEventView` for `0x1::transaction_fee::FeeStatement` (gas-unit pricing rows); raw JSON still available below. |
 | **Raw JSON** | Collapsed `JsonViewCard` under each event’s structured data (and under FeeStatement). |
+| **Small screens** | Below `sm`, event data tables stack label above value per row; horizontal scroll wrapper + tighter padding on cards; `ContentRow` value column uses `minWidth: 0` so flex children wrap instead of overflowing. |
 | **Module events** | Hide zero GUID fields. |
 
 ### FEAT-TXN-005 — Payload Tab
@@ -222,6 +223,7 @@ The app shell that wraps every page.
 | **Display** | Structured `ContentBox` + `ContentRow` layout (same pattern as overview rows and event FeeStatement tables): payload type, function (entry / multisig inner / script label), multisig address when applicable, arguments (reuses overview `TransactionArguments` for entry functions), script type args and value args, then collapsible raw JSON. |
 | **Script decompile** | For `script_payload`, embeds `ScriptBytecodeDecompiler` — decompiles hex bytecode via WASM Move decompiler, shows decompiled Move or bytecode disassembly with copy/download/expand modal. |
 | **Raw JSON** | Full payload JSON in a collapsed `JsonViewCard`; script bytecode in JSON is replaced by an omission note when the decompiler section is shown (avoids huge duplicate hex). |
+| **Small screens** | `ContentBox` / collapsible event cards use responsive padding; payload wrapper constrains width; same `ContentRow` overflow fix as events. |
 
 ### FEAT-TXN-006 — Changes Tab
 

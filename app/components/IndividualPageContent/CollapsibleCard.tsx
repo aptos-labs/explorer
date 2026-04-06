@@ -29,12 +29,12 @@ export default function CollapsibleCard({
   return (
     <Box {...props}>
       <Box
-        paddingX={4}
-        paddingY={2}
         sx={{
           color: theme.palette.text.secondary,
           backgroundColor: titleBackgroundColor,
           borderRadius: expanded ? "10px 10px 0px 0px" : "10px 10px 10px 10px",
+          px: {xs: 2, sm: 3, md: 4},
+          py: 2,
         }}
         onClick={toggleExpanded}
       >
@@ -72,10 +72,11 @@ export default function CollapsibleCard({
       </Box>
       {expanded && (
         <Box
-          padding={4}
           sx={{
             backgroundColor: contentBackgroundColor,
             borderRadius: "0px 0px 10px 10px",
+            px: {xs: 2, sm: 3, md: 4},
+            py: {xs: 2, sm: 3, md: 4},
           }}
         >
           <Stack direction="column" spacing={2}>

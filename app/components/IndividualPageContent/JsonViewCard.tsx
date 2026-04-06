@@ -4,6 +4,7 @@ import {
   CircularProgress,
   Paper,
   Popper,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import type React from "react";
@@ -177,6 +178,7 @@ export default function JsonViewCard({
   collapsedByDefault,
 }: JsonViewCardProps) {
   const theme = useTheme();
+  const isNarrow = useMediaQuery(theme.breakpoints.down("sm"));
   const semanticColors = getSemanticColors(theme.palette.mode);
 
   // Key color: warm coral tone for visual distinction from values (from theme)
@@ -232,13 +234,16 @@ export default function JsonViewCard({
         overflow: "auto",
         maxHeight: MAX_CARD_HEIGHT,
         position: "relative",
+        px: {xs: 1.5, sm: 2},
+        py: {xs: 1.5, sm: 2},
+        maxWidth: "100%",
+        boxSizing: "border-box",
         // Keys: coral-based hover (matches JS selector [class*="object-key"])
         '& [class*="object-key"]': keyHoverStyle,
         // All value types: blue-based hover (matches JS selector [class*="value"])
         // Covers: string, int, float, bool, null, undefined, bigint, nan, date, url, etc.
         '& [class*="-value"]': valueHoverStyle,
       }}
-      padding={2}
       borderRadius={1}
       onClick={handleClick}
       onMouseOver={handleMouseOver}
@@ -272,7 +277,7 @@ export default function JsonViewCard({
           displayDataTypes={false}
           displayObjectSize={false}
           enableClipboard={false}
-          indentWidth={24}
+          indentWidth={isNarrow ? 12 : 24}
           shortenTextAfterLength={80}
           style={
             {

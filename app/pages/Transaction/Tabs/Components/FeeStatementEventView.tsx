@@ -1,4 +1,11 @@
-import {Box, Paper, Table, Typography, useTheme} from "@mui/material";
+import {
+  Box,
+  Paper,
+  Table,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import type React from "react";
 import {APTCurrencyValue} from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../../components/IndividualPageContent/ContentValue/GasValue";
@@ -53,10 +60,54 @@ type FeeRowProps = {
   label: string;
   children: React.ReactNode;
   description?: string;
+  stackOnNarrow: boolean;
 };
 
-function FeeRow({label, children, description}: FeeRowProps) {
+function FeeRow({label, children, description, stackOnNarrow}: FeeRowProps) {
   const theme = useTheme();
+  if (stackOnNarrow) {
+    return (
+      <GeneralTableRow>
+        <GeneralTableCell
+          colSpan={2}
+          sx={{
+            verticalAlign: "top",
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            py: 1.5,
+            px: {xs: 1.5, sm: 2},
+          }}
+        >
+          <Typography
+            component="div"
+            variant="caption"
+            sx={{
+              fontWeight: 600,
+              color: theme.palette.text.secondary,
+              display: "block",
+              mb: description ? 0.5 : 0.75,
+            }}
+          >
+            {label}
+          </Typography>
+          {description ? (
+            <Typography
+              component="div"
+              variant="caption"
+              sx={{
+                display: "block",
+                color: theme.palette.text.secondary,
+                mb: 0.75,
+              }}
+            >
+              {description}
+            </Typography>
+          ) : null}
+          <Box sx={{minWidth: 0, maxWidth: "100%"}}>{children}</Box>
+        </GeneralTableCell>
+      </GeneralTableRow>
+    );
+  }
+
   return (
     <GeneralTableRow>
       <GeneralTableCell
@@ -67,6 +118,10 @@ function FeeRow({label, children, description}: FeeRowProps) {
           fontWeight: 600,
           color: "text.primary",
           width: "38%",
+          maxWidth: {sm: "42%"},
+          px: {xs: 1.5, sm: 2},
+          wordBreak: "break-word",
+          overflowWrap: "anywhere",
         }}
       >
         {label}
@@ -84,7 +139,14 @@ function FeeRow({label, children, description}: FeeRowProps) {
           </Typography>
         ) : null}
       </GeneralTableCell>
-      <GeneralTableCell sx={{verticalAlign: "top"}}>
+      <GeneralTableCell
+        sx={{
+          verticalAlign: "top",
+          minWidth: 0,
+          maxWidth: "100%",
+          px: {xs: 1.5, sm: 2},
+        }}
+      >
         {children}
       </GeneralTableCell>
     </GeneralTableRow>
@@ -148,75 +210,102 @@ export default function FeeStatementEventView({
   data,
   gasUnitPrice,
 }: FeeStatementEventViewProps) {
+  const theme = useTheme();
+  const stackOnNarrow = useMediaQuery(theme.breakpoints.down("sm"));
   const extraEntries = Object.entries(data).filter(
     ([key]) => !KNOWN_FIELD_ORDER.includes(key as KnownField),
   );
 
   return (
-    <Paper variant="outlined" sx={{overflow: "hidden"}}>
-      <Table size="small" sx={{tableLayout: "fixed"}}>
-        <GeneralTableBody>
-          {KNOWN_FIELD_ORDER.map((key) => {
-            const raw = data[key];
-            if (!isUIntString(raw)) {
-              return null;
-            }
-            const label = FIELD_LABELS[key];
-            if (
-              key === "storage_fee_octas" ||
-              key === "storage_fee_refund_octas"
-            ) {
+    <Paper
+      variant="outlined"
+      sx={{
+        overflow: "hidden",
+        maxWidth: "100%",
+      }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        <Table
+          size="small"
+          sx={{
+            tableLayout: stackOnNarrow ? "auto" : "fixed",
+            minWidth: stackOnNarrow ? "100%" : undefined,
+            width: "100%",
+          }}
+        >
+          <GeneralTableBody>
+            {KNOWN_FIELD_ORDER.map((key) => {
+              const raw = data[key];
+              if (!isUIntString(raw)) {
+                return null;
+              }
+              const label = FIELD_LABELS[key];
+              if (
+                key === "storage_fee_octas" ||
+                key === "storage_fee_refund_octas"
+              ) {
+                return (
+                  <FeeRow
+                    key={key}
+                    stackOnNarrow={stackOnNarrow}
+                    label={label}
+                    description={
+                      key === "storage_fee_refund_octas"
+                        ? "Credited when storage is released; not part of gas_used."
+                        : "Charged for net new state; priced in octas."
+                    }
+                  >
+                    <OctasRowValue octas={raw} />
+                  </FeeRow>
+                );
+              }
               return (
                 <FeeRow
                   key={key}
+                  stackOnNarrow={stackOnNarrow}
                   label={label}
                   description={
-                    key === "storage_fee_refund_octas"
-                      ? "Credited when storage is released; not part of gas_used."
-                      : "Charged for net new state; priced in octas."
+                    key === "total_charge_gas_units"
+                      ? "Sum of execution, I/O, and storage (as gas units). Matches gas_used on the transaction."
+                      : undefined
                   }
                 >
-                  <OctasRowValue octas={raw} />
+                  <GasUnitsWithOptionalApt
+                    gasUnits={raw}
+                    gasUnitPrice={gasUnitPrice}
+                  />
                 </FeeRow>
               );
-            }
-            return (
-              <FeeRow
-                key={key}
-                label={label}
-                description={
-                  key === "total_charge_gas_units"
-                    ? "Sum of execution, I/O, and storage (as gas units). Matches gas_used on the transaction."
-                    : undefined
-                }
-              >
-                <GasUnitsWithOptionalApt
-                  gasUnits={raw}
-                  gasUnitPrice={gasUnitPrice}
-                />
+            })}
+            {extraEntries.map(([key, value]) => (
+              <FeeRow key={key} stackOnNarrow={stackOnNarrow} label={key}>
+                <Typography
+                  component="pre"
+                  variant="body2"
+                  sx={{
+                    m: 0,
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
+                    fontFamily: "monospace",
+                    maxWidth: "100%",
+                    overflowX: "auto",
+                  }}
+                >
+                  {typeof value === "string"
+                    ? value
+                    : JSON.stringify(value, null, 2)}
+                </Typography>
               </FeeRow>
-            );
-          })}
-          {extraEntries.map(([key, value]) => (
-            <FeeRow key={key} label={key}>
-              <Typography
-                component="pre"
-                variant="body2"
-                sx={{
-                  m: 0,
-                  whiteSpace: "pre-wrap",
-                  wordBreak: "break-word",
-                  fontFamily: "monospace",
-                }}
-              >
-                {typeof value === "string"
-                  ? value
-                  : JSON.stringify(value, null, 2)}
-              </Typography>
-            </FeeRow>
-          ))}
-        </GeneralTableBody>
-      </Table>
+            ))}
+          </GeneralTableBody>
+        </Table>
+      </Box>
     </Paper>
   );
 }

@@ -102,7 +102,10 @@ export default function EventsTab({transaction}: EventsTabProps) {
             <ContentRow
               title="Data:"
               value={
-                <Stack spacing={2} sx={{width: "100%"}}>
+                <Stack
+                  spacing={2}
+                  sx={{width: "100%", maxWidth: "100%", minWidth: 0}}
+                >
                   {feeStatementData ? (
                     <FeeStatementEventView
                       data={feeStatementData}

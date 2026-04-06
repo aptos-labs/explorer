@@ -1,4 +1,11 @@
-import {Box, Paper, Table, Typography, useTheme} from "@mui/material";
+import {
+  Box,
+  Paper,
+  Table,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import type React from "react";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
@@ -22,9 +29,44 @@ const MONO = {
 type FieldRowProps = {
   fieldKey: string;
   children: React.ReactNode;
+  stackOnNarrow: boolean;
 };
 
-function FieldRow({fieldKey, children}: FieldRowProps) {
+function FieldRow({fieldKey, children, stackOnNarrow}: FieldRowProps) {
+  const theme = useTheme();
+  if (stackOnNarrow) {
+    return (
+      <GeneralTableRow>
+        <GeneralTableCell
+          colSpan={2}
+          sx={{
+            verticalAlign: "top",
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            py: 1.5,
+            px: {xs: 1.5, sm: 2},
+          }}
+        >
+          <Typography
+            component="div"
+            variant="caption"
+            sx={{
+              fontWeight: 600,
+              color: theme.palette.text.secondary,
+              textTransform: "none",
+              letterSpacing: 0,
+              mb: 0.75,
+              wordBreak: "break-word",
+              overflowWrap: "anywhere",
+            }}
+          >
+            {fieldKey}
+          </Typography>
+          <Box sx={{minWidth: 0, maxWidth: "100%"}}>{children}</Box>
+        </GeneralTableCell>
+      </GeneralTableRow>
+    );
+  }
+
   return (
     <GeneralTableRow>
       <GeneralTableCell
@@ -35,11 +77,22 @@ function FieldRow({fieldKey, children}: FieldRowProps) {
           fontWeight: 600,
           color: "text.primary",
           width: "32%",
+          maxWidth: {sm: "40%"},
+          px: {xs: 1.5, sm: 2},
+          wordBreak: "break-word",
+          overflowWrap: "anywhere",
         }}
       >
         {fieldKey}
       </GeneralTableCell>
-      <GeneralTableCell sx={{verticalAlign: "top"}}>
+      <GeneralTableCell
+        sx={{
+          verticalAlign: "top",
+          minWidth: 0,
+          maxWidth: "100%",
+          px: {xs: 1.5, sm: 2},
+        }}
+      >
         {children}
       </GeneralTableCell>
     </GeneralTableRow>
@@ -49,7 +102,11 @@ function FieldRow({fieldKey, children}: FieldRowProps) {
 function renderScalarString(s: string): React.ReactNode {
   const standardized = tryStandardizeAddress(s);
   if (standardized !== undefined) {
-    return <HashButton hash={standardized} type={HashType.ACCOUNT} />;
+    return (
+      <Box sx={{maxWidth: "100%", minWidth: 0}}>
+        <HashButton hash={standardized} type={HashType.ACCOUNT} />
+      </Box>
+    );
   }
   return (
     <Typography component="span" variant="body2" sx={MONO}>
@@ -61,9 +118,14 @@ function renderScalarString(s: string): React.ReactNode {
 type RenderValueProps = {
   value: unknown;
   depth: number;
+  stackOnNarrow: boolean;
 };
 
-function RenderValue({value, depth}: RenderValueProps): React.ReactNode {
+function RenderValue({
+  value,
+  depth,
+  stackOnNarrow,
+}: RenderValueProps): React.ReactNode {
   const theme = useTheme();
 
   if (value === null || value === undefined) {
@@ -105,6 +167,8 @@ function RenderValue({value, depth}: RenderValueProps): React.ReactNode {
             m: 0,
             whiteSpace: "pre-wrap",
             wordBreak: "break-word",
+            maxWidth: "100%",
+            overflowX: "auto",
           }}
         >
           {JSON.stringify(value, null, 2)}
@@ -118,7 +182,7 @@ function RenderValue({value, depth}: RenderValueProps): React.ReactNode {
         <Box>
           {value.map((item, i) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: positional list
-            <Box key={i} sx={{py: 0.25}}>
+            <Box key={i} sx={{py: 0.25, minWidth: 0}}>
               {renderScalarString(item as string)}
             </Box>
           ))}
@@ -137,8 +201,12 @@ function RenderValue({value, depth}: RenderValueProps): React.ReactNode {
             >
               [{i}]
             </Typography>
-            <Box sx={{pl: 1.5, pt: 0.25}}>
-              <RenderValue value={item} depth={depth + 1} />
+            <Box sx={{pl: {xs: 1, sm: 1.5}, pt: 0.25, minWidth: 0}}>
+              <RenderValue
+                value={item}
+                depth={depth + 1}
+                stackOnNarrow={stackOnNarrow}
+              />
             </Box>
           </Box>
         ))}
@@ -150,10 +218,12 @@ function RenderValue({value, depth}: RenderValueProps): React.ReactNode {
     const addrInner = tryObjectAddressInner(value);
     if (addrInner !== undefined) {
       return (
-        <HashButton
-          hash={tryStandardizeAddress(addrInner) ?? addrInner}
-          type={HashType.ACCOUNT}
-        />
+        <Box sx={{maxWidth: "100%", minWidth: 0}}>
+          <HashButton
+            hash={tryStandardizeAddress(addrInner) ?? addrInner}
+            type={HashType.ACCOUNT}
+          />
+        </Box>
       );
     }
 
@@ -167,6 +237,8 @@ function RenderValue({value, depth}: RenderValueProps): React.ReactNode {
             m: 0,
             whiteSpace: "pre-wrap",
             wordBreak: "break-word",
+            maxWidth: "100%",
+            overflowX: "auto",
           }}
         >
           {JSON.stringify(value, null, 2)}
@@ -174,7 +246,13 @@ function RenderValue({value, depth}: RenderValueProps): React.ReactNode {
       );
     }
 
-    return <NestedObjectTable data={value} depth={depth + 1} />;
+    return (
+      <NestedObjectTable
+        data={value}
+        depth={depth + 1}
+        stackOnNarrow={stackOnNarrow}
+      />
+    );
   }
 
   return (
@@ -186,6 +264,8 @@ function RenderValue({value, depth}: RenderValueProps): React.ReactNode {
         m: 0,
         whiteSpace: "pre-wrap",
         wordBreak: "break-word",
+        maxWidth: "100%",
+        overflowX: "auto",
       }}
     >
       {JSON.stringify(value, null, 2)}
@@ -196,18 +276,30 @@ function RenderValue({value, depth}: RenderValueProps): React.ReactNode {
 function NestedObjectTable({
   data,
   depth,
+  stackOnNarrow,
 }: {
   data: Record<string, unknown>;
   depth: number;
+  stackOnNarrow: boolean;
 }) {
   const keys = sortedKeys(data);
   return (
     <Paper variant="outlined" sx={{overflow: "hidden", mt: 0.5}}>
-      <Table size="small" sx={{tableLayout: "fixed"}}>
+      <Table
+        size="small"
+        sx={{
+          tableLayout: stackOnNarrow ? "auto" : "fixed",
+          width: "100%",
+        }}
+      >
         <GeneralTableBody>
           {keys.map((k) => (
-            <FieldRow key={k} fieldKey={k}>
-              <RenderValue value={data[k]} depth={depth} />
+            <FieldRow key={k} fieldKey={k} stackOnNarrow={stackOnNarrow}>
+              <RenderValue
+                value={data[k]}
+                depth={depth}
+                stackOnNarrow={stackOnNarrow}
+              />
             </FieldRow>
           ))}
         </GeneralTableBody>
@@ -227,6 +319,9 @@ type EventDataStructuredViewProps = {
 export default function EventDataStructuredView({
   data,
 }: EventDataStructuredViewProps) {
+  const theme = useTheme();
+  const stackOnNarrow = useMediaQuery(theme.breakpoints.down("sm"));
+
   if (!isPlainObject(data)) {
     return (
       <Typography
@@ -237,6 +332,8 @@ export default function EventDataStructuredView({
           m: 0,
           whiteSpace: "pre-wrap",
           wordBreak: "break-word",
+          maxWidth: "100%",
+          overflowX: "auto",
         }}
       >
         {typeof data === "string" ? data : JSON.stringify(data, null, 2)}
@@ -247,16 +344,41 @@ export default function EventDataStructuredView({
   const keys = sortedKeys(data);
 
   return (
-    <Paper variant="outlined" sx={{overflow: "hidden"}}>
-      <Table size="small" sx={{tableLayout: "fixed"}}>
-        <GeneralTableBody>
-          {keys.map((k) => (
-            <FieldRow key={k} fieldKey={k}>
-              <RenderValue value={data[k]} depth={0} />
-            </FieldRow>
-          ))}
-        </GeneralTableBody>
-      </Table>
+    <Paper
+      variant="outlined"
+      sx={{
+        overflow: "hidden",
+        maxWidth: "100%",
+      }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
+        <Table
+          size="small"
+          sx={{
+            tableLayout: stackOnNarrow ? "auto" : "fixed",
+            minWidth: stackOnNarrow ? "100%" : undefined,
+            width: "100%",
+          }}
+        >
+          <GeneralTableBody>
+            {keys.map((k) => (
+              <FieldRow key={k} fieldKey={k} stackOnNarrow={stackOnNarrow}>
+                <RenderValue
+                  value={data[k]}
+                  depth={0}
+                  stackOnNarrow={stackOnNarrow}
+                />
+              </FieldRow>
+            ))}
+          </GeneralTableBody>
+        </Table>
+      </Box>
     </Paper>
   );
 }

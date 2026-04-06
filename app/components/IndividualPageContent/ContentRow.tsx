@@ -76,8 +76,28 @@ const ContentRow = memo(function ContentRow({
             </Box>
           </Box>
         </Grid>
-        <Grid size={valueSize} sx={valueGridStyle}>
-          {value ? <Box sx={valueBoxStyle}>{value}</Box> : <EmptyValue />}
+        <Grid
+          size={valueSize}
+          sx={{
+            ...valueGridStyle,
+            minWidth: 0,
+            maxWidth: "100%",
+          }}
+        >
+          {value ? (
+            <Box
+              sx={{
+                ...valueBoxStyle,
+                minWidth: 0,
+                maxWidth: "100%",
+                width: "100%",
+              }}
+            >
+              {value}
+            </Box>
+          ) : (
+            <EmptyValue />
+          )}
         </Grid>
       </Grid>
     </Box>
