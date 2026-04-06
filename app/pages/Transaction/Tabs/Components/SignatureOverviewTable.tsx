@@ -1,10 +1,27 @@
-import {Paper, Table, TableRow, Typography, useTheme} from "@mui/material";
+import {Box, Paper, Table, TableRow, Typography, useTheme} from "@mui/material";
 import type React from "react";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import EmptyValue from "../../../../components/IndividualPageContent/ContentValue/EmptyValue";
+
+/** Lets wide hash chips / JSON scroll horizontally on narrow screens without clipping. */
+const signatureTableScrollBoxSx = {
+  width: "100%",
+  maxWidth: "100%",
+  minWidth: 0,
+  overflowX: "auto",
+  WebkitOverflowScrolling: "touch",
+} as const;
+
+const signatureValueCellSx = {
+  verticalAlign: "top",
+  minWidth: 0,
+  maxWidth: "100%",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
+} as const;
 
 type SignatureFieldRowProps = {
   label: string;
@@ -21,6 +38,7 @@ function SignatureFieldRow({
   return (
     <TableRow
       sx={{
+        display: {xs: "block", sm: "table-row"},
         backgroundColor: theme.palette.background.paper,
       }}
     >
@@ -28,10 +46,14 @@ function SignatureFieldRow({
         component="th"
         scope="row"
         sx={{
+          display: {xs: "block", sm: "table-cell"},
+          width: {xs: "100%", sm: "38%"},
+          boxSizing: "border-box",
           verticalAlign: "top",
           fontWeight: 600,
           color: "text.primary",
-          width: "38%",
+          borderBottom: {xs: 0, sm: undefined},
+          pb: {xs: 0, sm: undefined},
         }}
       >
         {label}
@@ -49,10 +71,38 @@ function SignatureFieldRow({
           </Typography>
         ) : null}
       </GeneralTableCell>
-      <GeneralTableCell sx={{verticalAlign: "top"}}>
-        {children}
+      <GeneralTableCell
+        sx={{
+          display: {xs: "block", sm: "table-cell"},
+          width: {xs: "100%", sm: "62%"},
+          boxSizing: "border-box",
+          pb: {xs: 2, sm: undefined},
+          pt: {xs: 0.5, sm: undefined},
+          ...signatureValueCellSx,
+          "& .MuiStack-root": {maxWidth: "100%"},
+          "& .MuiButton-root": {maxWidth: "100%"},
+        }}
+      >
+        <Box sx={{minWidth: 0, maxWidth: "100%"}}>{children}</Box>
       </GeneralTableCell>
     </TableRow>
+  );
+}
+
+function SignatureNestedTable({children}: {children: React.ReactNode}) {
+  return (
+    <Box sx={{...signatureTableScrollBoxSx, mt: {xs: 0, sm: 0.5}}}>
+      <Table
+        size="small"
+        sx={{
+          tableLayout: {xs: "auto", sm: "fixed"},
+          width: "100%",
+          minWidth: 0,
+        }}
+      >
+        {children}
+      </Table>
+    </Box>
   );
 }
 
@@ -226,7 +276,10 @@ export default function SignatureOverviewTable({
 }: SignatureOverviewTableProps) {
   if (signature === undefined || signature === null) {
     return (
-      <Paper variant="outlined" sx={{overflow: "hidden", p: 2}}>
+      <Paper
+        variant="outlined"
+        sx={{overflow: "hidden", maxWidth: "100%", p: 2}}
+      >
         <EmptyValue />
       </Paper>
     );
@@ -234,14 +287,23 @@ export default function SignatureOverviewTable({
 
   if (typeof signature !== "object" || Array.isArray(signature)) {
     return (
-      <Paper variant="outlined" sx={{overflow: "hidden"}}>
-        <Table size="small" sx={{tableLayout: "fixed"}}>
-          <GeneralTableBody>
-            <SignatureFieldRow label="Raw">
-              <JsonViewCard data={signature} collapsedByDefault />
-            </SignatureFieldRow>
-          </GeneralTableBody>
-        </Table>
+      <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
+        <Box sx={signatureTableScrollBoxSx}>
+          <Table
+            size="small"
+            sx={{
+              tableLayout: {xs: "auto", sm: "fixed"},
+              width: "100%",
+              minWidth: 0,
+            }}
+          >
+            <GeneralTableBody>
+              <SignatureFieldRow label="Raw">
+                <JsonViewCard data={signature} collapsedByDefault />
+              </SignatureFieldRow>
+            </GeneralTableBody>
+          </Table>
+        </Box>
       </Paper>
     );
   }
@@ -271,12 +333,15 @@ export default function SignatureOverviewTable({
           label="Sender"
           description="Primary signer authenticator."
         >
-          <Paper variant="outlined" sx={{overflow: "hidden", mt: 0.5}}>
-            <Table size="small" sx={{tableLayout: "fixed"}}>
+          <Paper
+            variant="outlined"
+            sx={{overflow: "hidden", maxWidth: "100%", mt: 0.5}}
+          >
+            <SignatureNestedTable>
               <GeneralTableBody>
                 <AccountSignatureRows sig={s.sender} />
               </GeneralTableBody>
-            </Table>
+            </SignatureNestedTable>
           </Paper>
         </SignatureFieldRow>
         {Array.isArray(s.secondary_signer_addresses) &&
@@ -298,12 +363,15 @@ export default function SignatureOverviewTable({
                 label={`Secondary signer ${i + 1}`}
                 description="Authenticator for this secondary address."
               >
-                <Paper variant="outlined" sx={{overflow: "hidden", mt: 0.5}}>
-                  <Table size="small" sx={{tableLayout: "fixed"}}>
+                <Paper
+                  variant="outlined"
+                  sx={{overflow: "hidden", maxWidth: "100%", mt: 0.5}}
+                >
+                  <SignatureNestedTable>
                     <GeneralTableBody>
                       <AccountSignatureRows sig={sub} />
                     </GeneralTableBody>
-                  </Table>
+                  </SignatureNestedTable>
                 </Paper>
               </SignatureFieldRow>
             ))}
@@ -326,12 +394,15 @@ export default function SignatureOverviewTable({
           label="Sender"
           description="Primary signer authenticator."
         >
-          <Paper variant="outlined" sx={{overflow: "hidden", mt: 0.5}}>
-            <Table size="small" sx={{tableLayout: "fixed"}}>
+          <Paper
+            variant="outlined"
+            sx={{overflow: "hidden", maxWidth: "100%", mt: 0.5}}
+          >
+            <SignatureNestedTable>
               <GeneralTableBody>
                 <AccountSignatureRows sig={s.sender} />
               </GeneralTableBody>
-            </Table>
+            </SignatureNestedTable>
           </Paper>
         </SignatureFieldRow>
         {Array.isArray(s.secondary_signer_addresses) &&
@@ -352,12 +423,15 @@ export default function SignatureOverviewTable({
                 key={JSON.stringify(sub)}
                 label={`Secondary signer ${i + 1}`}
               >
-                <Paper variant="outlined" sx={{overflow: "hidden", mt: 0.5}}>
-                  <Table size="small" sx={{tableLayout: "fixed"}}>
+                <Paper
+                  variant="outlined"
+                  sx={{overflow: "hidden", maxWidth: "100%", mt: 0.5}}
+                >
+                  <SignatureNestedTable>
                     <GeneralTableBody>
                       <AccountSignatureRows sig={sub} />
                     </GeneralTableBody>
-                  </Table>
+                  </SignatureNestedTable>
                 </Paper>
               </SignatureFieldRow>
             ))}
@@ -367,12 +441,15 @@ export default function SignatureOverviewTable({
           label="Fee payer signer"
           description="Authenticator used by the fee payer."
         >
-          <Paper variant="outlined" sx={{overflow: "hidden", mt: 0.5}}>
-            <Table size="small" sx={{tableLayout: "fixed"}}>
+          <Paper
+            variant="outlined"
+            sx={{overflow: "hidden", maxWidth: "100%", mt: 0.5}}
+          >
+            <SignatureNestedTable>
               <GeneralTableBody>
                 <AccountSignatureRows sig={s.fee_payer_signer} />
               </GeneralTableBody>
-            </Table>
+            </SignatureNestedTable>
           </Paper>
         </SignatureFieldRow>
       </>
@@ -416,10 +493,19 @@ export default function SignatureOverviewTable({
   }
 
   return (
-    <Paper variant="outlined" sx={{overflow: "hidden"}}>
-      <Table size="small" sx={{tableLayout: "fixed"}}>
-        <GeneralTableBody>{body}</GeneralTableBody>
-      </Table>
+    <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
+      <Box sx={signatureTableScrollBoxSx}>
+        <Table
+          size="small"
+          sx={{
+            tableLayout: {xs: "auto", sm: "fixed"},
+            width: "100%",
+            minWidth: 0,
+          }}
+        >
+          <GeneralTableBody>{body}</GeneralTableBody>
+        </Table>
+      </Box>
     </Paper>
   );
 }
