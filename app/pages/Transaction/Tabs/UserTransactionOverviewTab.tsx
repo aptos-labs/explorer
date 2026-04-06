@@ -15,7 +15,7 @@ import {APTCurrencyValue} from "../../../components/IndividualPageContent/Conten
 import GasFeeValue from "../../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
-import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import SignatureOverviewTable from "./Components/SignatureOverviewTable";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {standardizeAddress, tryStandardizeAddress} from "../../../utils";
@@ -961,7 +961,7 @@ export default function UserTransactionOverviewTab({
         <ContentRow
           title="Signature:"
           value={
-            <JsonViewCard data={transactionData.signature} collapsedByDefault />
+            <SignatureOverviewTable signature={transactionData.signature} />
           }
           tooltip={getLearnMoreTooltip("signature")}
         />

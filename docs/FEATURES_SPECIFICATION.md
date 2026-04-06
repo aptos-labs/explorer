@@ -193,7 +193,7 @@ The app shell that wraps every page.
 | **Gas** | Gas fee, storage refund, net gas, gas unit price, max gas, VM status. |
 | **Block** | Link to parent block. |
 | **Timestamps** | Expiration and execution timestamp. |
-| **Signature** | JSON display of signature data. |
+| **Signature** | Table-style breakdown (same layout family as FeeStatement on Events); hex fields use expandable hash chips; nested or unknown shapes fall back to JSON. |
 | **Hashes** | State, event, and accumulator root hashes. |
 | **Replay protection** | Nonce display when applicable (vs sequence number). |
 
@@ -1162,6 +1162,7 @@ The app shell that wraps every page.
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
 | `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty, balance changes) |
+| `app/pages/Transaction/Tabs/Components/SignatureOverviewTable.test.tsx` | FEAT-TXN-002 (signature overview table: Ed25519 rows, empty state) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns) |
 | `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
