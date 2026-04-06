@@ -3,7 +3,7 @@ import {orderBy} from "es-toolkit";
 import type {Types} from "~/types/aptos";
 import {useAptosClient, useNetworkValue} from "../../global-config";
 import {getAccountResource} from "..";
-import type {ResponseError} from "../client";
+import {type ResponseError, ResponseErrorType} from "../client";
 
 export type ModuleMetadata = {
   name: string;
@@ -69,19 +69,23 @@ export type AccountPackagesQuery = {
 };
 
 /**
- * Package metadata from `0x1::code::PackageRegistry`. When the resource is
- * missing (404), `packages` is empty and `isError` is false — use `isFetched`
- * to tell "loaded successfully, none" from still loading.
+ * Maps the PackageRegistry resource query into packages tab state.
+ *
+ * When the resource is missing (HTTP 404 → `NOT_FOUND`), `packages` is empty,
+ * `isError` is false, and `error` is null — use `isFetched` to distinguish
+ * “loaded, no registry” from still loading. Other errors are forwarded.
+ *
+ * @internal Exported for unit tests.
  */
-export function useGetAccountPackages(
-  address: string,
-  ledgerVersion?: number,
+export function mapRegistryQueryToAccountPackages(
+  registryQuery: Pick<
+    UseQueryResult<Types.MoveResource, ResponseError>,
+    "data" | "isPending" | "isError" | "error" | "isFetched"
+  >,
 ): AccountPackagesQuery {
-  const registryQuery = useGetAccountResource(
-    address,
-    "0x1::code::PackageRegistry",
-    ledgerVersion,
-  );
+  const isRegistryNotFound =
+    registryQuery.isError &&
+    registryQuery.error?.type === ResponseErrorType.NOT_FOUND;
 
   const registryData = registryQuery.data?.data as {
     packages?: PackageMetadata[];
@@ -101,10 +105,24 @@ export function useGetAccountPackages(
     }) || [];
 
   return {
-    packages: orderBy(packages, ["name"], ["asc"]),
+    packages: isRegistryNotFound ? [] : orderBy(packages, ["name"], ["asc"]),
     isPending: registryQuery.isPending,
-    isError: registryQuery.isError,
-    error: registryQuery.error ?? null,
+    isError: isRegistryNotFound ? false : registryQuery.isError,
+    error: isRegistryNotFound ? null : (registryQuery.error ?? null),
     isFetched: registryQuery.isFetched,
   };
+}
+
+/** Package metadata from `0x1::code::PackageRegistry` (see `mapRegistryQueryToAccountPackages`). */
+export function useGetAccountPackages(
+  address: string,
+  ledgerVersion?: number,
+): AccountPackagesQuery {
+  const registryQuery = useGetAccountResource(
+    address,
+    "0x1::code::PackageRegistry",
+    ledgerVersion,
+  );
+
+  return mapRegistryQueryToAccountPackages(registryQuery);
 }
