@@ -7,9 +7,18 @@ import ContentBox from "../../components/IndividualPageContent/ContentBox";
 type ErrorProps = {
   error: ResponseError;
   address?: string;
+  /** When set, replaces the default title for NOT_FOUND errors */
+  notFoundTitle?: string;
+  /** When set, replaces the default body for NOT_FOUND errors */
+  notFoundMessage?: React.ReactNode;
 };
 
-export default function AccountError({error, address}: ErrorProps) {
+export default function AccountError({
+  error,
+  address,
+  notFoundTitle,
+  notFoundMessage,
+}: ErrorProps) {
   const theme = useTheme();
 
   const renderErrorContent = (title: string, message: React.ReactNode) => (
@@ -37,18 +46,20 @@ export default function AccountError({error, address}: ErrorProps) {
   switch (error.type) {
     case ResponseErrorType.NOT_FOUND:
       return renderErrorContent(
-        "Account Not Found",
-        <>
-          {error.message && (
-            <>
-              {error.message}
-              <br />
-            </>
-          )}
-          Account not found. Please take a look at the Coins and Token tabs. The
-          account has never submitted a transaction, but it may still hold
-          assets.
-        </>,
+        notFoundTitle ?? "Account Not Found",
+        notFoundMessage ?? (
+          <>
+            {error.message && (
+              <>
+                {error.message}
+                <br />
+              </>
+            )}
+            Account not found. Please take a look at the Coins and Token tabs.
+            The account has never submitted a transaction, but it may still hold
+            assets.
+          </>
+        ),
       );
     case ResponseErrorType.INVALID_INPUT:
       return renderErrorContent(

@@ -163,6 +163,9 @@ export default function AccountPage({
 
   const pathTab = params.tab ?? (children ? "modules" : undefined);
 
+  /** `/account/.../modules/...` or `/object/.../modules/...` — resources 404 is often “no account resource row” while modules tab still loads via other APIs */
+  const isModulesRoute = location.pathname.includes("/modules/");
+
   const accountTabs = (
     <AccountTabs
       address={address}
@@ -206,7 +209,8 @@ export default function AccountPage({
         {isMultisig && <PetraVaultBanner address={address} />}
       </Grid>
       <Grid size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
-        {error ? (
+        {error &&
+        !(isModulesRoute && error.type === ResponseErrorType.NOT_FOUND) ? (
           <>
             {accountTabs}
             <AccountError address={address} error={error} />

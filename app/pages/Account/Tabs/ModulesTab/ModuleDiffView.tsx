@@ -14,6 +14,7 @@ import {diffLines} from "diff";
 import {useEffect, useMemo, useState} from "react";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
+import AccountError from "../../Error";
 import type {ModulePublishTransaction} from "../../../../api/hooks/useGetModulePublishHistory";
 import {Link} from "../../../../routing";
 import {useDecompilationEnabled} from "../../../../settings";
@@ -308,8 +309,10 @@ export default function ModuleDiffView({
   const [activeView, setActiveView] =
     useState<DiffViewType>("published-source");
 
-  const basePackages = useGetAccountPackages(address, baseVersion);
-  const comparePackages = useGetAccountPackages(address, compareVersion);
+  const basePk = useGetAccountPackages(address, baseVersion);
+  const comparePk = useGetAccountPackages(address, compareVersion);
+  const basePackages = basePk.packages;
+  const comparePackages = comparePk.packages;
 
   const basePublishedSource = useMemo(() => {
     const mod = basePackages
@@ -376,7 +379,7 @@ export default function ModuleDiffView({
   if (activeView === "published-source") {
     baseCode = basePublishedSource;
     compareCode = comparePublishedSource;
-    isLoading = basePackages.length === 0 || comparePackages.length === 0;
+    isLoading = basePk.isPending || comparePk.isPending;
   } else if (hasModuleError) {
     baseCode = "";
     compareCode = "";
@@ -421,6 +424,13 @@ export default function ModuleDiffView({
     : ["published-source"];
 
   const hasError = !!moduleError || !!decompError;
+
+  if (basePk.isError && basePk.error) {
+    return <AccountError error={basePk.error} address={address} />;
+  }
+  if (comparePk.isError && comparePk.error) {
+    return <AccountError error={comparePk.error} address={address} />;
+  }
 
   return (
     <Stack spacing={2}>

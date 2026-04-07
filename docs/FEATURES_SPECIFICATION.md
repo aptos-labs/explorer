@@ -462,6 +462,18 @@ The app shell that wraps every page.
 |--------|--------|
 | **Behavior** | `/account/$address/modules` → `/account/$address/modules/packages`. |
 
+### FEAT-MODULES-008 — Missing package metadata and modules
+
+| Aspect | Detail |
+|--------|--------|
+| **Data** | Packages/Code use `0x1::code::PackageRegistry`; Run/View also use `/accounts/{address}/modules`. |
+| **Loading** | While package registry is pending, Packages and Code show a centered spinner instead of an empty “No Data” state. |
+| **Registry fetch error** | Non-404 failures render `AccountError` (same pattern as other account resources). |
+| **Empty registry (404)** | Missing `PackageRegistry` (HTTP 404) is treated as an empty package list (`isError` false), then explanatory copy: modules may still exist on chain; point users to the Code or Run/View tab and REST module endpoints as appropriate. |
+| **No modules (404 on modules API)** | Run/View show **“No modules found”** (modules API 404) with explanatory copy. |
+| **Modules route + account resources 404** | On `/account/.../modules/...` or `/object/.../modules/...`, a 404 from the account resources list does not show the layout **“Account Not Found”** banner so tab content can show the correct modules empty/error state. |
+| **Diff mode** | Published-source diff waits on package queries (`isPending`) instead of treating empty package lists as loading forever; package query errors surface via `AccountError`. |
+
 ---
 
 ## 9. Validators List
@@ -1146,6 +1158,7 @@ The app shell that wraps every page.
 | `app/utils/sentioCallTrace.test.ts` | FEAT-TXN-010 (Sentio helpers: network ID, paths, address normalization, node validation) |
 | `app/api/client.test.ts` | FEAT-RATELIMIT-003 (API error classification, 429 → `emitRateLimit`) |
 | `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |
+| `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation from resources) |
 | `app/context/rate-limit/RateLimitContext.test.tsx` | FEAT-RATELIMIT-001 (rate limit context state management) |
 | `app/context/rate-limit/rateLimitEvents.test.ts` | FEAT-RATELIMIT-001 (rate limit event detection) |
@@ -1168,6 +1181,7 @@ The app shell that wraps every page.
 | `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
+| `app/pages/Account/Error.test.tsx` | FEAT-MODULES-008 (`AccountError` optional NOT_FOUND title/message) |
 | `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results) |
 | `app/pages/layout/Search/searchDetection.test.ts` | FEAT-SEARCH-002 (all input type detection: ANS, struct, numeric, hex, address, emoji, generic) |
 | `app/pages/layout/Search/searchFiltering.test.ts` | FEAT-SEARCH-003 (result filtering/deduplication, grouping with headers and type ordering) |

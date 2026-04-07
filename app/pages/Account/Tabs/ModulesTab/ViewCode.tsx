@@ -1,6 +1,7 @@
 import {
   Autocomplete,
   Box,
+  CircularProgress,
   Divider,
   Grid,
   Stack,
@@ -51,10 +52,13 @@ function ViewCode({
   isObject: boolean;
   ledgerVersion?: number;
 }) {
-  const sortedPackages: PackageMetadata[] = useGetAccountPackages(
-    address,
-    ledgerVersion,
-  );
+  const {
+    packages: sortedPackages,
+    isPending,
+    isError,
+    error: packagesError,
+    isFetched,
+  } = useGetAccountPackages(address, ledgerVersion);
 
   const navigate = useNavigate();
 
@@ -64,6 +68,8 @@ function ViewCode({
 
   useEffect(() => {
     if (
+      !isPending &&
+      !isError &&
       !selectedModuleName &&
       sortedPackages.length > 0 &&
       sortedPackages[0].modules.length > 0
@@ -74,7 +80,43 @@ function ViewCode({
         replace: true,
       });
     }
-  }, [selectedModuleName, sortedPackages, address, navigate, isObject]);
+  }, [
+    selectedModuleName,
+    sortedPackages,
+    address,
+    navigate,
+    isObject,
+    isPending,
+    isError,
+  ]);
+
+  if (isPending) {
+    return (
+      <Box display="flex" justifyContent="center" py={8}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isError && packagesError) {
+    return <AccountError error={packagesError} address={address} />;
+  }
+
+  if (sortedPackages.length === 0 && isFetched) {
+    return (
+      <EmptyTabContent
+        message={
+          <>
+            No published source in package metadata for this address. If this
+            account has Move modules on chain, open the <strong>Run</strong> or{" "}
+            <strong>View</strong> tab (module list comes from the modules API),
+            or fetch bytecode via{" "}
+            <code>/accounts/&#123;address&#125;/module/&#123;name&#125;</code>.
+          </>
+        }
+      />
+    );
+  }
 
   if (sortedPackages.length === 0) {
     return <EmptyTabContent />;
