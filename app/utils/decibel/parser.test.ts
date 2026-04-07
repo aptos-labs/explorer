@@ -170,17 +170,55 @@ describe("parseDecibelTransaction", () => {
     });
 
     it("parses twap order from payload", () => {
+      // API args (signer stripped): [subaccount, market, size, is_buy, ...]
       const txn = makeUserTxn({
         payload: {
           type: "entry_function_payload",
           function: `${MAINNET_CONTRACT}::dex_accounts_entry::place_twap_order_to_subaccount`,
-          arguments: ["sub1", {inner: "0xmarket1"}, "500", "data", "true"],
+          arguments: [
+            {inner: "sub1"},
+            {inner: "0xmarket1"},
+            "500",
+            "true",
+            "false",
+            "60",
+            "3600",
+            "0x0",
+            "0",
+          ],
         },
       });
       const summary = parseDecibelTransaction(txn);
       expect(summary.orders[0].orderType).toBe("twap");
       expect(summary.orders[0].side).toBe("buy");
       expect(summary.orders[0].size).toBe("500");
+    });
+
+    it("parses cancel_order_to_subaccount from payload", () => {
+      // API args (signer stripped): [subaccount, order_id, market]
+      const txn = makeUserTxn({
+        payload: {
+          type: "entry_function_payload",
+          function: `${MAINNET_CONTRACT}::dex_accounts_entry::cancel_order_to_subaccount`,
+          arguments: [
+            {
+              inner:
+                "0x418abee2561e6eae64b826b152eccbd1b0781693b5d9a7ef12c96f2ce03fe607",
+            },
+            "170141599249866109911302405644884115456",
+            {
+              inner:
+                "0xd62d10d1ef0cbe2103b5bd479691ac38222a85140fcbe7c2dc66ed23bdef58ae",
+            },
+          ],
+        },
+      });
+      const summary = parseDecibelTransaction(txn);
+      expect(summary.orders).toHaveLength(1);
+      expect(summary.orders[0].orderType).toBe("cancel");
+      expect(summary.orders[0].market).toBe(
+        "0xd62d10d1ef0cbe2103b5bd479691ac38222a85140fcbe7c2dc66ed23bdef58ae",
+      );
     });
   });
 
@@ -204,14 +242,14 @@ describe("parseDecibelTransaction", () => {
     });
 
     it("parses deposit_to_isolated_position_collateral", () => {
+      // API args (signer stripped): [subaccount, market, metadata, amount]
       const txn = makeUserTxn({
         payload: {
           type: "entry_function_payload",
           function: `${MAINNET_CONTRACT}::dex_accounts_entry::deposit_to_isolated_position_collateral`,
           arguments: [
-            "signer",
             {inner: "sub1"},
-            "pos",
+            {inner: "0xmarket1"},
             {inner: "0xasset1"},
             "2000000",
           ],
@@ -227,11 +265,12 @@ describe("parseDecibelTransaction", () => {
 
   describe("withdrawals", () => {
     it("parses withdraw_from_subaccount", () => {
+      // API args (signer stripped): [subaccount, metadata, amount]
       const txn = makeUserTxn({
         payload: {
           type: "entry_function_payload",
           function: `${MAINNET_CONTRACT}::dex_accounts_entry::withdraw_from_subaccount`,
-          arguments: ["signer", {inner: "sub1"}, {inner: "0xasset1"}, "500000"],
+          arguments: [{inner: "sub1"}, {inner: "0xasset1"}, "500000"],
         },
       });
       const summary = parseDecibelTransaction(txn);
@@ -245,11 +284,12 @@ describe("parseDecibelTransaction", () => {
     });
 
     it("parses withdraw_from_cross_collateral", () => {
+      // API args (signer stripped): [subaccount, metadata, amount]
       const txn = makeUserTxn({
         payload: {
           type: "entry_function_payload",
           function: `${MAINNET_CONTRACT}::dex_accounts_entry::withdraw_from_cross_collateral`,
-          arguments: ["signer", {inner: "sub1"}, {inner: "0xasset2"}, "300000"],
+          arguments: [{inner: "sub1"}, {inner: "0xasset2"}, "300000"],
         },
       });
       const summary = parseDecibelTransaction(txn);

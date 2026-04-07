@@ -2959,6 +2959,12 @@ function parseDecibelPerpFromPayload(
 
   const fnName = fn.split("::").pop() ?? "";
 
+  // NOTE: The Aptos API strips the `&signer` argument from entry function
+  // payloads, so all arg indices are offset by -1 from the Move function
+  // signature.
+
+  // deposit_to_subaccount_at(owner, subaccount, metadata, amount)
+  // API args: [subaccount(0), metadata(1), amount(2)]
   if (fnName === "deposit_to_subaccount_at") {
     if (args.length < 3) return undefined;
     return {
@@ -2970,35 +2976,55 @@ function parseDecibelPerpFromPayload(
     };
   }
 
+  // deposit_to_isolated_position_collateral(owner, subaccount, market, metadata, amount)
+  // API args: [subaccount(0), market(1), metadata(2), amount(3)]
   if (fnName === "deposit_to_isolated_position_collateral") {
-    if (args.length < 5) return undefined;
+    if (args.length < 4) return undefined;
     return {
       actionType: "perp deposit",
       dex: DECIBEL_CONTRACT,
-      subaccount: extractObjectInner(args[1]),
-      asset: extractObjectInner(args[3]),
-      amount: String(args[4]),
-    };
-  }
-
-  if (
-    fnName === "withdraw_from_subaccount" ||
-    fnName === "withdraw_from_cross_collateral" ||
-    fnName === "withdraw_from_non_collateral" ||
-    fnName === "withdraw_from_isolated_position_collateral"
-  ) {
-    if (args.length < 4) return undefined;
-    return {
-      actionType: "perp withdraw",
-      dex: DECIBEL_CONTRACT,
-      subaccount: extractObjectInner(args[1]),
+      subaccount: extractObjectInner(args[0]),
       asset: extractObjectInner(args[2]),
       amount: String(args[3]),
     };
   }
 
-  if (fnName === "place_bulk_orders_to_subaccount") {
+  // withdraw_from_subaccount(owner, subaccount, metadata, amount)
+  // withdraw_from_cross_collateral(owner, subaccount, metadata, amount)
+  // withdraw_from_non_collateral(owner, subaccount, metadata, amount)
+  // API args: [subaccount(0), metadata(1), amount(2)]
+  if (
+    fnName === "withdraw_from_subaccount" ||
+    fnName === "withdraw_from_cross_collateral" ||
+    fnName === "withdraw_from_non_collateral"
+  ) {
     if (args.length < 3) return undefined;
+    return {
+      actionType: "perp withdraw",
+      dex: DECIBEL_CONTRACT,
+      subaccount: extractObjectInner(args[0]),
+      asset: extractObjectInner(args[1]),
+      amount: String(args[2]),
+    };
+  }
+
+  // withdraw_from_isolated_position_collateral(owner, subaccount, market, metadata, amount)
+  // API args: [subaccount(0), market(1), metadata(2), amount(3)]
+  if (fnName === "withdraw_from_isolated_position_collateral") {
+    if (args.length < 4) return undefined;
+    return {
+      actionType: "perp withdraw",
+      dex: DECIBEL_CONTRACT,
+      subaccount: extractObjectInner(args[0]),
+      asset: extractObjectInner(args[2]),
+      amount: String(args[3]),
+    };
+  }
+
+  // place_bulk_orders_to_subaccount(auth, subaccount, market, ...)
+  // API args: [subaccount(0), market(1), ...]
+  if (fnName === "place_bulk_orders_to_subaccount") {
+    if (args.length < 2) return undefined;
     return {
       actionType: "perp order",
       dex: DECIBEL_CONTRACT,
@@ -3010,44 +3036,59 @@ function parseDecibelPerpFromPayload(
     };
   }
 
+  // place_twap_order_to_subaccount(auth, subaccount, market, size, is_buy, ...)
+  // API args: [subaccount(0), market(1), size(2), is_buy(3), ...]
   if (
     fnName === "place_twap_order_to_subaccount" ||
     fnName === "place_twap_order_to_subaccount_v2"
   ) {
-    if (args.length < 5) return undefined;
+    if (args.length < 4) return undefined;
     return {
       actionType: "perp order",
       dex: DECIBEL_CONTRACT,
       orderType: "twap",
-      side: args[4] === true || args[4] === "true" ? "buy" : "sell",
+      side: args[3] === true || args[3] === "true" ? "buy" : "sell",
       market: extractObjectInner(args[1]),
       size: String(args[2]),
       price: undefined,
     };
   }
 
+  // cancel_order_to_subaccount(auth, subaccount, order_id, market)
+  // cancel_client_order_to_subaccount(auth, subaccount, client_order_id, market)
+  // API args: [subaccount(0), order_id(1), market(2)]
   if (
     fnName === "cancel_order_to_subaccount" ||
-    fnName === "cancel_client_order_to_subaccount" ||
-    fnName === "cancel_bulk_order_to_subaccount" ||
-    fnName === "cancel_twap_orders_to_subaccount" ||
-    fnName === "cancel_tp_sl_order_for_position"
+    fnName === "cancel_client_order_to_subaccount"
   ) {
     if (args.length < 3) return undefined;
-    const market =
-      fnName === "cancel_bulk_order_to_subaccount"
-        ? extractObjectInner(args[2])
-        : fnName === "cancel_order_to_subaccount"
-          ? extractObjectInner(args[3])
-          : fnName === "cancel_client_order_to_subaccount"
-            ? extractObjectInner(args[3])
-            : extractObjectInner(args[2]);
     return {
       actionType: "perp order",
       dex: DECIBEL_CONTRACT,
       orderType: "cancel",
       side: undefined,
-      market,
+      market: extractObjectInner(args[2]),
+      size: undefined,
+      price: undefined,
+    };
+  }
+
+  // cancel_bulk_order_to_subaccount(auth, subaccount, market)
+  // cancel_twap_orders_to_subaccount(auth, subaccount, market, order_id)
+  // cancel_tp_sl_order_for_position(auth, subaccount, market, order_id)
+  // API args: [subaccount(0), market(1), ...]
+  if (
+    fnName === "cancel_bulk_order_to_subaccount" ||
+    fnName === "cancel_twap_orders_to_subaccount" ||
+    fnName === "cancel_tp_sl_order_for_position"
+  ) {
+    if (args.length < 2) return undefined;
+    return {
+      actionType: "perp order",
+      dex: DECIBEL_CONTRACT,
+      orderType: "cancel",
+      side: undefined,
+      market: extractObjectInner(args[1]),
       size: undefined,
       price: undefined,
     };
