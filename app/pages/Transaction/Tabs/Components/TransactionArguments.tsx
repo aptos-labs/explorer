@@ -130,7 +130,7 @@ export default function TransactionArguments({
     {enabled: hasValidFunction},
   );
 
-  const packages = useGetAccountPackages(address ?? "", ledgerVersion);
+  const {packages} = useGetAccountPackages(address ?? "", ledgerVersion);
 
   const moveFunction = moduleData?.abi?.exposed_functions?.find(
     (fn) => fn.name === functionName,

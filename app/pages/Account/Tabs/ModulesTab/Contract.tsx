@@ -33,11 +33,9 @@ import React, {type ReactNode, useEffect, useMemo, useState} from "react";
 import {Controller, type SubmitHandler, useForm} from "react-hook-form";
 import type {Types} from "~/types/aptos";
 import {view} from "../../../../api";
+import {ResponseErrorType} from "../../../../api/client";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
-import {
-  type PackageMetadata,
-  useGetAccountPackages,
-} from "../../../../api/hooks/useGetAccountResource";
+import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
 import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import StyledTooltip from "../../../../components/StyledTooltip";
@@ -277,13 +275,25 @@ function Contract({
   isRead: boolean;
 }) {
   const theme = useTheme();
-  const {data, isLoading, error} = useGetAccountModules(address);
+  const {
+    data,
+    isLoading: modulesLoading,
+    error,
+    isFetched: modulesFetched,
+  } = useGetAccountModules(address);
 
   // Get selected module and function from path params
   const {selectedModuleName, selectedFnName} = useModulesPathParams();
 
-  const sortedPackages: PackageMetadata[] = useGetAccountPackages(address);
+  const {
+    packages: sortedPackages,
+    isPending: packagesPending,
+    isError: packagesIsError,
+    error: packagesError,
+    isFetched: packagesFetched,
+  } = useGetAccountPackages(address);
   const modules = useMemo(() => data ?? [], [data]);
+  const isLoading = packagesPending || modulesLoading;
 
   const moduleAndFnsGroup = useMemo(
     () =>
@@ -321,11 +331,43 @@ function Contract({
     );
   }
 
+  if (packagesIsError && packagesError) {
+    return <ErrorPage address={address} error={packagesError} />;
+  }
+
   if (error) {
+    if (error.type === ResponseErrorType.NOT_FOUND && modulesFetched) {
+      return (
+        <ErrorPage
+          address={address}
+          error={error}
+          notFoundTitle="No modules found"
+          notFoundMessage={
+            <>
+              No Move modules were returned for this address on this network
+              (HTTP 404 from the modules API). If you expected modules here,
+              confirm the address and network, or try again later.
+            </>
+          }
+        />
+      );
+    }
     return <ErrorPage address={address} error={error} />;
   }
 
   if (modules.length === 0) {
+    if (packagesFetched && sortedPackages.length === 0 && modulesFetched) {
+      return (
+        <EmptyTabContent
+          message={
+            <>
+              No Move modules and no package metadata for this address on this
+              network.
+            </>
+          }
+        />
+      );
+    }
     return <EmptyTabContent />;
   }
 

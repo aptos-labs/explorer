@@ -6,7 +6,7 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
-import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import SignatureOverviewTable from "./Components/SignatureOverviewTable";
 import {parseExpirationTimestamp} from "../../utils";
 import {getLearnMoreTooltip} from "../helpers";
 
@@ -59,7 +59,7 @@ export default function PendingTransactionOverviewTab({
         <ContentRow
           title="Signature:"
           value={
-            <JsonViewCard data={transactionData.signature} collapsedByDefault />
+            <SignatureOverviewTable signature={transactionData.signature} />
           }
           tooltip={getLearnMoreTooltip("signature")}
         />

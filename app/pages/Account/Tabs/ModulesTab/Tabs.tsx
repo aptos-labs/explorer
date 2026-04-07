@@ -150,7 +150,10 @@ function ModulesTabs({
 
   const navigate = useNavigate();
   const logEvent = useLogEventWithBasic();
-  const sortedPackages = useGetAccountPackages(address, ledgerVersion);
+  const {packages: sortedPackages} = useGetAccountPackages(
+    address,
+    ledgerVersion,
+  );
   const value =
     modulesTab === undefined ? tabValues[0] : (modulesTab as TabValue);
 
