@@ -1,4 +1,11 @@
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
+import FlashOnOutlinedIcon from "@mui/icons-material/FlashOnOutlined";
+import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
+import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
+import UploadOutlinedIcon from "@mui/icons-material/UploadOutlined";
+import ViewInArOutlinedIcon from "@mui/icons-material/ViewInArOutlined";
 import {
   Box,
   Chip,
@@ -31,11 +38,18 @@ import type {
   DecibelWithdraw,
 } from "../../../utils/decibel";
 import {
-  ORDER_TYPE_EMOJIS,
   ORDER_TYPE_LABELS,
   parseDecibelTransaction,
 } from "../../../utils/decibel";
 import {findCoinData} from "../utils";
+
+const ORDER_TYPE_ICONS: Record<string, React.ReactElement> = {
+  limit: <ListAltOutlinedIcon fontSize="small" />,
+  market: <FlashOnOutlinedIcon fontSize="small" />,
+  cancel: <CancelOutlinedIcon fontSize="small" />,
+  bulk: <ViewInArOutlinedIcon fontSize="small" />,
+  twap: <ScheduleOutlinedIcon fontSize="small" />,
+};
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -124,13 +138,13 @@ function humanizeFunctionName(fnName: string): string {
 // ---------------------------------------------------------------------------
 
 function OrderRow({order}: {order: DecibelOrder}) {
-  const emoji = ORDER_TYPE_EMOJIS[order.orderType] ?? "";
+  const icon = ORDER_TYPE_ICONS[order.orderType] ?? null;
   const label = ORDER_TYPE_LABELS[order.orderType] ?? order.orderType;
 
   return (
     <GeneralTableRow>
       <GeneralTableCell>
-        {emoji} {label}
+        {icon} {label}
       </GeneralTableCell>
       <GeneralTableCell>
         <SideChip side={order.side} />
@@ -169,7 +183,7 @@ function OrderRow({order}: {order: DecibelOrder}) {
 }
 
 function OrderCard({order}: {order: DecibelOrder}) {
-  const emoji = ORDER_TYPE_EMOJIS[order.orderType] ?? "";
+  const icon = ORDER_TYPE_ICONS[order.orderType] ?? null;
   const label = ORDER_TYPE_LABELS[order.orderType] ?? order.orderType;
 
   return (
@@ -181,7 +195,7 @@ function OrderCard({order}: {order: DecibelOrder}) {
           alignItems="center"
         >
           <Typography variant="subtitle2">
-            {emoji} {label}
+            {icon} {label}
           </Typography>
           <SideChip side={order.side} />
         </Stack>
@@ -302,7 +316,10 @@ function DepositCard({
   return (
     <Paper sx={{p: 2, mb: 1.5}}>
       <Stack spacing={1}>
-        <Typography variant="subtitle2">📥 Deposit</Typography>
+        <Stack direction="row" alignItems="center" spacing={0.5}>
+          <DownloadOutlinedIcon fontSize="small" />
+          <Typography variant="subtitle2">Deposit</Typography>
+        </Stack>
         <KeyValue label="Amount">
           <AmountWithAsset
             asset={deposit.asset}
@@ -410,7 +427,10 @@ function WithdrawCard({
   return (
     <Paper sx={{p: 2, mb: 1.5}}>
       <Stack spacing={1}>
-        <Typography variant="subtitle2">📤 Withdraw</Typography>
+        <Stack direction="row" alignItems="center" spacing={0.5}>
+          <UploadOutlinedIcon fontSize="small" />
+          <Typography variant="subtitle2">Withdraw</Typography>
+        </Stack>
         <KeyValue label="Amount">
           <AmountWithAsset
             asset={withdraw.asset}

@@ -10,11 +10,3 @@ export const ORDER_TYPE_LABELS: Record<string, string> = {
   bulk: "Bulk Orders",
   twap: "TWAP Order",
 };
-
-export const ORDER_TYPE_EMOJIS: Record<string, string> = {
-  limit: "📋",
-  market: "⚡",
-  cancel: "❌",
-  bulk: "📦",
-  twap: "⏱️",
-};

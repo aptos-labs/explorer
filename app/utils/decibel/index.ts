@@ -1,8 +1,4 @@
-export {
-  DECIBEL_CONTRACTS,
-  ORDER_TYPE_EMOJIS,
-  ORDER_TYPE_LABELS,
-} from "./constants";
+export {DECIBEL_CONTRACTS, ORDER_TYPE_LABELS} from "./constants";
 export {isDecibelTransaction, parseDecibelTransaction} from "./parser";
 export type {
   DecibelDeposit,
