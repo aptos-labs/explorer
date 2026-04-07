@@ -3,6 +3,8 @@
  */
 export function getTransactionTabHeadLabel(tab: string | undefined): string {
   switch (tab) {
+    case "decibelDetail":
+      return "Decibel";
     case "balanceChange":
       return "Balance Change";
     case "events":

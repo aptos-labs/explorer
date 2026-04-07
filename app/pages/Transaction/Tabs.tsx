@@ -7,6 +7,7 @@ import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import ShowChartOutlinedIcon from "@mui/icons-material/ShowChartOutlined";
 import {
   Accordion,
   AccordionDetails,
@@ -29,11 +30,13 @@ import {TransactionTypeName} from "../../components/TransactionType";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useNavigate} from "../../routing";
 import {assertNever} from "../../utils";
+import {isDecibelTransaction} from "../../utils/decibel";
 import {getLearnMoreTooltip} from "./helpers";
 import BalanceChangeTab from "./Tabs/BalanceChangeTab";
 import BlockEpilogueOverviewTab from "./Tabs/BlockEpilogueOverviewTab";
 import BlockMetadataOverviewTab from "./Tabs/BlockMetadataOverviewTab";
 import ChangesTab from "./Tabs/ChangesTab";
+import DecibelTab from "./Tabs/DecibelTab";
 import EventsTab from "./Tabs/EventsTab";
 import GenesisTransactionOverviewTab from "./Tabs/GenesisTransactionOverviewTab";
 import PayloadTab from "./Tabs/PayloadTab";
@@ -46,15 +49,14 @@ import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
 
 export function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
-    case TransactionTypeName.User:
-      return [
-        "userTxnOverview",
-        "balanceChange",
-        "events",
-        "payload",
-        "changes",
-        "trace",
-      ];
+    case TransactionTypeName.User: {
+      const tabs: TabValue[] = ["userTxnOverview"];
+      if (isDecibelTransaction(transaction)) {
+        tabs.push("decibelDetail");
+      }
+      tabs.push("balanceChange", "events", "payload", "changes", "trace");
+      return tabs;
+    }
     case TransactionTypeName.BlockMetadata:
       return ["blockMetadataOverview", "events", "changes"];
     case TransactionTypeName.StateCheckpoint:
@@ -80,6 +82,7 @@ const TabComponents = Object.freeze({
   pendingTxnOverview: PendingTransactionOverviewTab,
   genesisTxnOverview: GenesisTransactionOverviewTab,
   validatorTxnOverview: ValidatorTransactionTab,
+  decibelDetail: DecibelTab,
   balanceChange: BalanceChangeTab,
   events: EventsTab,
   payload: PayloadTab,
@@ -101,6 +104,8 @@ function getTabLabel(value: TabValue): string {
     case "validatorTxnOverview":
     case "unknown":
       return "Overview";
+    case "decibelDetail":
+      return "Decibel";
     case "balanceChange":
       return "Balance Change";
     case "events":
@@ -126,6 +131,8 @@ function getTabIcon(value: TabValue): React.JSX.Element {
     case "genesisTxnOverview":
     case "validatorTxnOverview":
       return <BarChartOutlinedIcon fontSize="small" />;
+    case "decibelDetail":
+      return <ShowChartOutlinedIcon fontSize="small" />;
     case "balanceChange":
       return <AccountBalanceWalletOutlinedIcon fontSize="small" />;
     case "events":

@@ -20,6 +20,26 @@ describe("FEAT-TXN-001 — getTabValues", () => {
     ]);
   });
 
+  it("includes decibelDetail tab for Decibel user transactions", () => {
+    const decibelTxn = {
+      type: TransactionTypeName.User,
+      events: [
+        {
+          type: "0x50ead22afd6ffd9769e3b3d6e0e64a2a350d68e8b102c4e72e33d0b8cfdfdb06::market_types::OrderEvent",
+          data: {},
+        },
+      ],
+    } as Parameters<typeof getTabValues>[0];
+    const tabs = getTabValues(decibelTxn);
+    expect(tabs).toContain("decibelDetail");
+    expect(tabs.indexOf("decibelDetail")).toBe(1); // after overview
+  });
+
+  it("excludes decibelDetail tab for non-Decibel user transactions", () => {
+    const tabs = getTabValues(makeTxn(TransactionTypeName.User));
+    expect(tabs).not.toContain("decibelDetail");
+  });
+
   it("returns overview, events, changes for block metadata", () => {
     const tabs = getTabValues(makeTxn(TransactionTypeName.BlockMetadata));
     expect(tabs).toEqual(["blockMetadataOverview", "events", "changes"]);
