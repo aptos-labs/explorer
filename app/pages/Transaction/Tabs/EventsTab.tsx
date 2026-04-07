@@ -6,6 +6,7 @@ import CollapsibleCards from "../../../components/IndividualPageContent/Collapsi
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import DecibelEventView, {isDecibelEvent} from "./Components/DecibelEventView";
 import FeeStatementEventView, {
   FEE_STATEMENT_EVENT_TYPE,
   shouldRenderFeeStatementTable,
@@ -103,6 +104,11 @@ export default function EventsTab({transaction}: EventsTabProps) {
                   <FeeStatementEventView
                     data={feeStatementData}
                     gasUnitPrice={gasUnitPrice}
+                  />
+                ) : isDecibelEvent(event.type) && eventDataObject ? (
+                  <DecibelEventView
+                    eventType={event.type}
+                    data={eventDataObject}
                   />
                 ) : (
                   <JsonViewCard
