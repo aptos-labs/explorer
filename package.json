@@ -9,7 +9,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@aptos-labs/aptos-client": "^3.0.1",
+      "@aptos-labs/aptos-client": "^3.0.2",
       "@aptos-labs/wallet-standard": "^1.0.0",
       "@aptos-labs/ts-sdk": "^6.3.0",
       "d3-array": ">=3.0.0",
