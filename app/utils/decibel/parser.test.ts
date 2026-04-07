@@ -219,6 +219,61 @@ describe("parseDecibelTransaction", () => {
       expect(summary.orders[0].market).toBe(
         "0xd62d10d1ef0cbe2103b5bd479691ac38222a85140fcbe7c2dc66ed23bdef58ae",
       );
+      expect(summary.orders[0].orderId).toBe(
+        "170141599249866109911302405644884115456",
+      );
+      expect(summary.orders[0].subaccount).toBe(
+        "0x418abee2561e6eae64b826b152eccbd1b0781693b5d9a7ef12c96f2ce03fe607",
+      );
+    });
+
+    it("merges event and payload data for cancel orders", () => {
+      // Real scenario: event has side/size/status, payload has orderId/subaccount
+      const txn = makeUserTxn({
+        events: [
+          {
+            type: `${MAINNET_CONTRACT}::market_types::OrderEvent`,
+            data: {
+              is_bid: true,
+              market:
+                "0xd62d10d1ef0cbe2103b5bd479691ac38222a85140fcbe7c2dc66ed23bdef58ae",
+              orig_size: "2000000",
+              price: "89850",
+              status: {__variant__: "CANCELLED"},
+              time_in_force: {__variant__: "GTC"},
+            },
+          } as unknown as Types.Event,
+        ],
+        payload: {
+          type: "entry_function_payload",
+          function: `${MAINNET_CONTRACT}::dex_accounts_entry::cancel_order_to_subaccount`,
+          arguments: [
+            {
+              inner:
+                "0x418abee2561e6eae64b826b152eccbd1b0781693b5d9a7ef12c96f2ce03fe607",
+            },
+            "170141599249866109911302405644884115456",
+            {
+              inner:
+                "0xd62d10d1ef0cbe2103b5bd479691ac38222a85140fcbe7c2dc66ed23bdef58ae",
+            },
+          ],
+        },
+      });
+      const summary = parseDecibelTransaction(txn);
+      // Should produce ONE merged order, not two
+      expect(summary.orders).toHaveLength(1);
+      const order = summary.orders[0];
+      // From event
+      expect(order.side).toBe("buy");
+      expect(order.size).toBe("2000000");
+      expect(order.status).toBe("CANCELLED");
+      expect(order.timeInForce).toBe("GTC");
+      // From payload (merged in)
+      expect(order.orderId).toBe("170141599249866109911302405644884115456");
+      expect(order.subaccount).toBe(
+        "0x418abee2561e6eae64b826b152eccbd1b0781693b5d9a7ef12c96f2ce03fe607",
+      );
     });
   });
 

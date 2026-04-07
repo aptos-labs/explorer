@@ -6,6 +6,8 @@ export type DecibelOrder = {
   price: string | undefined;
   status: string | undefined;
   timeInForce: string | undefined;
+  orderId: string | undefined;
+  subaccount: string | undefined;
 };
 
 export type DecibelDeposit = {

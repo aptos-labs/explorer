@@ -67,6 +67,8 @@ function parseOrderEvent(event: Types.Event): DecibelOrder | undefined {
     price: isCancelled || isMarket ? undefined : data.price,
     status: statusVariant || undefined,
     timeInForce: tif || undefined,
+    orderId: undefined,
+    subaccount: undefined,
   };
 }
 
@@ -170,6 +172,8 @@ function parsePayloadAction(
       price: undefined,
       status: undefined,
       timeInForce: undefined,
+      orderId: undefined,
+      subaccount: extractObjectInner(args[0]),
     } satisfies DecibelOrder;
   }
 
@@ -188,10 +192,13 @@ function parsePayloadAction(
       price: undefined,
       status: undefined,
       timeInForce: undefined,
+      orderId: undefined,
+      subaccount: extractObjectInner(args[0]),
     } satisfies DecibelOrder;
   }
 
   // cancel_order_to_subaccount(auth, subaccount, order_id, market)
+  // cancel_client_order_to_subaccount(auth, subaccount, client_order_id, market)
   // API args: [subaccount(0), order_id(1), market(2)]
   if (
     fnName === "cancel_order_to_subaccount" ||
@@ -206,6 +213,8 @@ function parsePayloadAction(
       price: undefined,
       status: undefined,
       timeInForce: undefined,
+      orderId: String(args[1]),
+      subaccount: extractObjectInner(args[0]),
     } satisfies DecibelOrder;
   }
 
@@ -227,6 +236,8 @@ function parsePayloadAction(
       price: undefined,
       status: undefined,
       timeInForce: undefined,
+      orderId: args.length >= 3 ? String(args[2]) : undefined,
+      subaccount: extractObjectInner(args[0]),
     } satisfies DecibelOrder;
   }
 
@@ -252,7 +263,20 @@ export function parseDecibelTransaction(
   const payloadAction = parsePayloadAction(transaction);
   if (payloadAction) {
     if ("orderType" in payloadAction) {
-      orders.push(payloadAction);
+      // Merge payload data (orderId, subaccount) into event-parsed orders
+      // rather than creating a duplicate entry
+      if (orders.length > 0) {
+        for (const order of orders) {
+          if (!order.orderId && payloadAction.orderId) {
+            order.orderId = payloadAction.orderId;
+          }
+          if (!order.subaccount && payloadAction.subaccount) {
+            order.subaccount = payloadAction.subaccount;
+          }
+        }
+      } else {
+        orders.push(payloadAction);
+      }
     } else if ("functionName" in payloadAction) {
       if (payloadAction.functionName.startsWith("deposit")) {
         deposits.push(payloadAction as DecibelDeposit);

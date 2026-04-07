@@ -118,6 +118,35 @@ function OrderRow({order}: {order: DecibelOrder}) {
         )}
       </GeneralTableCell>
       <GeneralTableCell>{order.timeInForce ?? "—"}</GeneralTableCell>
+      <GeneralTableCell>
+        {order.subaccount ? (
+          <HashButton
+            hash={order.subaccount}
+            type={HashType.ACCOUNT}
+            size="small"
+          />
+        ) : (
+          "—"
+        )}
+      </GeneralTableCell>
+      <GeneralTableCell>
+        {order.orderId ? (
+          <Typography
+            variant="body2"
+            sx={{
+              maxWidth: 150,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+            title={order.orderId}
+          >
+            {order.orderId}
+          </Typography>
+        ) : (
+          "—"
+        )}
+      </GeneralTableCell>
     </GeneralTableRow>
   );
 }
@@ -154,6 +183,22 @@ function OrderCard({order}: {order: DecibelOrder}) {
         {order.timeInForce && (
           <KeyValue label="Time in Force">{order.timeInForce}</KeyValue>
         )}
+        {order.subaccount && (
+          <KeyValue label="Subaccount">
+            <HashButton
+              hash={order.subaccount}
+              type={HashType.ACCOUNT}
+              size="small"
+            />
+          </KeyValue>
+        )}
+        {order.orderId && (
+          <KeyValue label="Order ID">
+            <Typography variant="body2" sx={{wordBreak: "break-all"}}>
+              {order.orderId}
+            </Typography>
+          </KeyValue>
+        )}
       </Stack>
     </Paper>
   );
@@ -183,6 +228,8 @@ function OrdersSection({orders}: {orders: DecibelOrder[]}) {
               <GeneralTableHeaderCell header="Price" />
               <GeneralTableHeaderCell header="Status" />
               <GeneralTableHeaderCell header="Time in Force" />
+              <GeneralTableHeaderCell header="Subaccount" />
+              <GeneralTableHeaderCell header="Order ID" />
             </TableRow>
           </TableHead>
           <TableBody>
