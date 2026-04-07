@@ -1,3 +1,4 @@
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {
   Box,
   Chip,
@@ -7,11 +8,12 @@ import {
   TableBody,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import type * as React from "react";
+import * as React from "react";
 import type {Types} from "~/types/aptos";
 import {useGetAssetMetadata} from "../../../api/hooks/useGetAssetMetadata";
 import {
@@ -48,6 +50,39 @@ function SideChip({side}: {side: "buy" | "sell" | undefined}) {
       color={side === "buy" ? "success" : "error"}
       sx={{fontWeight: 600}}
     />
+  );
+}
+
+function TruncatedCopyId({value}: {value: string}) {
+  const [copied, setCopied] = React.useState(false);
+  const truncated =
+    value.length > 8 ? `${value.slice(0, 4)}…${value.slice(-4)}` : value;
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
+  return (
+    <Tooltip title={copied ? "Copied!" : value} arrow>
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={0.5}
+        sx={{cursor: "pointer"}}
+        onClick={handleCopy}
+      >
+        <Typography
+          variant="body2"
+          component="span"
+          sx={{fontFamily: "monospace"}}
+        >
+          {truncated}
+        </Typography>
+        <ContentCopyIcon sx={{fontSize: 14, opacity: 0.6}} />
+      </Stack>
+    </Tooltip>
   );
 }
 
@@ -127,22 +162,7 @@ function OrderRow({order}: {order: DecibelOrder}) {
         )}
       </GeneralTableCell>
       <GeneralTableCell>
-        {order.orderId ? (
-          <Typography
-            variant="body2"
-            sx={{
-              maxWidth: 150,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-            title={order.orderId}
-          >
-            {order.orderId}
-          </Typography>
-        ) : (
-          "—"
-        )}
+        {order.orderId ? <TruncatedCopyId value={order.orderId} /> : "—"}
       </GeneralTableCell>
     </GeneralTableRow>
   );
@@ -191,9 +211,7 @@ function OrderCard({order}: {order: DecibelOrder}) {
         )}
         {order.orderId && (
           <KeyValue label="Order ID">
-            <Typography variant="body2" sx={{wordBreak: "break-all"}}>
-              {order.orderId}
-            </Typography>
+            <TruncatedCopyId value={order.orderId} />
           </KeyValue>
         )}
       </Stack>
