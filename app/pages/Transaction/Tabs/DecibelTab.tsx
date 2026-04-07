@@ -45,11 +45,8 @@ function SideChip({side}: {side: "buy" | "sell" | undefined}) {
     <Chip
       label={side === "buy" ? "Buy" : "Sell"}
       size="small"
-      sx={{
-        fontWeight: 600,
-        color: "#fff",
-        backgroundColor: side === "buy" ? "success.main" : "error.main",
-      }}
+      color={side === "buy" ? "success" : "error"}
+      sx={{fontWeight: 600}}
     />
   );
 }
