@@ -1,15 +1,20 @@
+import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
+import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
 import {
   Box,
   Chip,
+  IconButton,
   Paper,
   Stack,
   Table,
   TableBody,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
+import * as React from "react";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
@@ -87,12 +92,37 @@ function Row({label, children}: {label: string; children: React.ReactNode}) {
   );
 }
 
-function EventTable({children}: {children: React.ReactNode}) {
+function EventTable({
+  children,
+  rawData,
+}: {
+  children: React.ReactNode;
+  rawData: Record<string, unknown>;
+}) {
+  const [showRaw, setShowRaw] = React.useState(false);
+
   return (
     <Paper variant="outlined" sx={{overflow: "hidden"}}>
-      <Table size="small" sx={{tableLayout: "fixed"}}>
-        <TableBody>{children}</TableBody>
-      </Table>
+      <Stack direction="row" justifyContent="flex-end" sx={{px: 1, pt: 0.5}}>
+        <Tooltip title={showRaw ? "Formatted view" : "Raw JSON"}>
+          <IconButton size="small" onClick={() => setShowRaw((v) => !v)}>
+            {showRaw ? (
+              <TableChartOutlinedIcon fontSize="small" />
+            ) : (
+              <CodeOutlinedIcon fontSize="small" />
+            )}
+          </IconButton>
+        </Tooltip>
+      </Stack>
+      {showRaw ? (
+        <Box sx={{p: 1, pt: 0}}>
+          <JsonViewCard data={rawData} />
+        </Box>
+      ) : (
+        <Table size="small" sx={{tableLayout: "fixed"}}>
+          <TableBody>{children}</TableBody>
+        </Table>
+      )}
     </Paper>
   );
 }
@@ -162,7 +192,7 @@ function OrderEventView({data}: {data: Record<string, unknown>}) {
     | undefined;
 
   return (
-    <EventTable>
+    <EventTable rawData={data}>
       <Row label="Side">
         <SideLabel isBid={isBid} />
         {data.is_taker === true && (
@@ -276,7 +306,7 @@ function BulkOrderPlacedEventView({data}: {data: Record<string, unknown>}) {
   const cancelledAskSizes = (data.cancelled_ask_sizes as string[]) ?? [];
 
   return (
-    <EventTable>
+    <EventTable rawData={data}>
       <Row label="Market">
         <ObjectValue hash={String(data.market)} />
       </Row>
@@ -344,7 +374,7 @@ function BulkOrderFilledEventView({data}: {data: Record<string, unknown>}) {
   const isBid = data.is_bid === true;
 
   return (
-    <EventTable>
+    <EventTable rawData={data}>
       <Row label="Side">
         <SideLabel isBid={isBid} />
       </Row>
@@ -385,7 +415,7 @@ function TradeEventView({data}: {data: Record<string, unknown>}) {
   const source = extractVariant(data.source);
 
   return (
-    <EventTable>
+    <EventTable rawData={data}>
       {action && (
         <Row label="Action">
           <Chip label={action} size="small" variant="outlined" />
@@ -444,7 +474,7 @@ function CollateralBalanceChangeEventView({
   const balMarket = balanceType ? extractInner(balanceType.market) : undefined;
 
   return (
-    <EventTable>
+    <EventTable rawData={data}>
       {changeType && (
         <Row label="Change Type">
           <Chip label={changeType} size="small" variant="outlined" />
@@ -481,7 +511,7 @@ function PositionUpdateEventView({data}: {data: Record<string, unknown>}) {
   const market = extractInner(data.market);
 
   return (
-    <EventTable>
+    <EventTable rawData={data}>
       <Row label="User">
         <AddressValue hash={String(data.user)} />
       </Row>
@@ -514,7 +544,7 @@ function OpenInterestUpdateEventView({data}: {data: Record<string, unknown>}) {
   const market = extractInner(data.market);
 
   return (
-    <EventTable>
+    <EventTable rawData={data}>
       {market && (
         <Row label="Market">
           <ObjectValue hash={market} />
@@ -531,12 +561,43 @@ function OpenInterestUpdateEventView({data}: {data: Record<string, unknown>}) {
 // PriceUpdateEvent
 // ---------------------------------------------------------------------------
 
+const FUNDING_LABELS: Record<string, string> = {
+  funding_index: "Funding Index",
+  funding_period_us: "Funding Period",
+  funding_timestamp_us: "Funding Timestamp",
+  instant_daily_funding_rate: "Daily Funding Rate",
+  outstanding_funding: "Outstanding Funding",
+  outstanding_funding_timestamp_us: "Outstanding Timestamp",
+};
+
+function FundingView({funding}: {funding: Record<string, unknown>}) {
+  const entries = Object.entries(funding).filter(
+    ([key]) => key !== "__variant__",
+  );
+  return (
+    <Stack spacing={0.5}>
+      {entries.map(([key, value]) => (
+        <Stack key={key} direction="row" spacing={1} alignItems="baseline">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{minWidth: 140, flexShrink: 0}}
+          >
+            {FUNDING_LABELS[key] ?? key}
+          </Typography>
+          <MonoText>{String(value)}</MonoText>
+        </Stack>
+      ))}
+    </Stack>
+  );
+}
+
 function PriceUpdateEventView({data}: {data: Record<string, unknown>}) {
   const market =
     typeof data.market === "string" ? data.market : extractInner(data.market);
 
   return (
-    <EventTable>
+    <EventTable rawData={data}>
       {market && (
         <Row label="Market">
           <ObjectValue hash={market} />
@@ -558,11 +619,17 @@ function PriceUpdateEventView({data}: {data: Record<string, unknown>}) {
           <MonoText>{String(data.impact_ask_px)}</MonoText>
         </Row>
       )}
-      {data.funding !== undefined && (
+      {data.funding !== undefined &&
+      typeof data.funding === "object" &&
+      data.funding !== null ? (
+        <Row label="Funding">
+          <FundingView funding={data.funding as Record<string, unknown>} />
+        </Row>
+      ) : data.funding !== undefined ? (
         <Row label="Funding">
           <MonoText>{String(data.funding)}</MonoText>
         </Row>
-      )}
+      ) : null}
     </EventTable>
   );
 }
