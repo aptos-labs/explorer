@@ -27,6 +27,7 @@ import {
   type CoinDescription,
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
+import {useGetDecibelMarketName} from "../../../api/hooks/useGetDecibelMarketName";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
@@ -129,6 +130,20 @@ function AmountWithAsset({
   );
 }
 
+function MarketValue({hash}: {hash: string}) {
+  const {data: name} = useGetDecibelMarketName(hash);
+  return (
+    <Stack direction="row" alignItems="center" spacing={1}>
+      {name && (
+        <Typography variant="body2" sx={{fontWeight: 600}}>
+          {name}
+        </Typography>
+      )}
+      <HashButton hash={hash} type={HashType.OBJECT} size="small" />
+    </Stack>
+  );
+}
+
 function humanizeFunctionName(fnName: string): string {
   return fnName.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
@@ -150,7 +165,7 @@ function OrderRow({order}: {order: DecibelOrder}) {
         <SideChip side={order.side} />
       </GeneralTableCell>
       <GeneralTableCell>
-        <HashButton hash={order.market} type={HashType.OBJECT} size="small" />
+        <MarketValue hash={order.market} />
       </GeneralTableCell>
       <GeneralTableCell>{order.size ?? "—"}</GeneralTableCell>
       <GeneralTableCell>
@@ -200,7 +215,7 @@ function OrderCard({order}: {order: DecibelOrder}) {
           <SideChip side={order.side} />
         </Stack>
         <KeyValue label="Market">
-          <HashButton hash={order.market} type={HashType.OBJECT} size="small" />
+          <MarketValue hash={order.market} />
         </KeyValue>
         {order.size && <KeyValue label="Size">{order.size}</KeyValue>}
         <KeyValue label="Price">

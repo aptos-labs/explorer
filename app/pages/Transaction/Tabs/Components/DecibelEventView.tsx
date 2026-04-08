@@ -15,6 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import * as React from "react";
+import {useGetDecibelMarketName} from "../../../../api/hooks/useGetDecibelMarketName";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
@@ -146,6 +147,20 @@ function ObjectValue({hash}: {hash: string}) {
   return <HashButton hash={hash} type={HashType.OBJECT} size="small" />;
 }
 
+function MarketValue({hash}: {hash: string}) {
+  const {data: name} = useGetDecibelMarketName(hash);
+  return (
+    <Stack direction="row" alignItems="center" spacing={1}>
+      {name && (
+        <Typography variant="body2" sx={{fontWeight: 600}}>
+          {name}
+        </Typography>
+      )}
+      <HashButton hash={hash} type={HashType.OBJECT} size="small" />
+    </Stack>
+  );
+}
+
 function extractInner(val: unknown): string | undefined {
   if (typeof val === "object" && val !== null && "inner" in val) {
     return (val as {inner: string}).inner;
@@ -200,7 +215,7 @@ function OrderEventView({data}: {data: Record<string, unknown>}) {
         )}
       </Row>
       <Row label="Market">
-        <ObjectValue hash={String(data.market)} />
+        <MarketValue hash={String(data.market)} />
       </Row>
       <Row label="Price">
         <MonoText>{String(data.price)}</MonoText>
@@ -308,7 +323,7 @@ function BulkOrderPlacedEventView({data}: {data: Record<string, unknown>}) {
   return (
     <EventTable rawData={data}>
       <Row label="Market">
-        <ObjectValue hash={String(data.market)} />
+        <MarketValue hash={String(data.market)} />
       </Row>
       <Row label="Order ID">
         <MonoText>{String(data.order_id)}</MonoText>
@@ -379,7 +394,7 @@ function BulkOrderFilledEventView({data}: {data: Record<string, unknown>}) {
         <SideLabel isBid={isBid} />
       </Row>
       <Row label="Market">
-        <ObjectValue hash={String(data.market)} />
+        <MarketValue hash={String(data.market)} />
       </Row>
       <Row label="Price">
         <MonoText>{String(data.price)}</MonoText>
@@ -426,7 +441,7 @@ function TradeEventView({data}: {data: Record<string, unknown>}) {
       )}
       {market && (
         <Row label="Market">
-          <ObjectValue hash={market} />
+          <MarketValue hash={market} />
         </Row>
       )}
       <Row label="Price">
@@ -496,7 +511,7 @@ function CollateralBalanceChangeEventView({
       )}
       {balMarket && (
         <Row label="Market">
-          <ObjectValue hash={balMarket} />
+          <MarketValue hash={balMarket} />
         </Row>
       )}
     </EventTable>
@@ -517,7 +532,7 @@ function PositionUpdateEventView({data}: {data: Record<string, unknown>}) {
       </Row>
       {market && (
         <Row label="Market">
-          <ObjectValue hash={market} />
+          <MarketValue hash={market} />
         </Row>
       )}
       <Row label="Side">
@@ -547,7 +562,7 @@ function OpenInterestUpdateEventView({data}: {data: Record<string, unknown>}) {
     <EventTable rawData={data}>
       {market && (
         <Row label="Market">
-          <ObjectValue hash={market} />
+          <MarketValue hash={market} />
         </Row>
       )}
       <Row label="Current Open Interest">
@@ -600,7 +615,7 @@ function PriceUpdateEventView({data}: {data: Record<string, unknown>}) {
     <EventTable rawData={data}>
       {market && (
         <Row label="Market">
-          <ObjectValue hash={market} />
+          <MarketValue hash={market} />
         </Row>
       )}
       <Row label="Oracle Price">
