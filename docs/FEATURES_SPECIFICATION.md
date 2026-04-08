@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-03-23
+> **Last updated**: 2026-04-08
 
 ---
 
@@ -213,7 +213,7 @@ The app shell that wraps every page.
 | **Display** | Collapsible list per event, JSON view. |
 | **FeeStatement** | Special `FeeStatementEventView` for `0x1::transaction_fee::FeeStatement`. |
 | **Module events** | Hide zero GUID fields. |
-| **Small screens** | Below the `md` breakpoint, Fee Statement and Decibel formatted views use stacked label/value blocks instead of fixed two-column tables; nested bid/ask price tables stack rows; `JsonViewCard` stays within the content width. Event type uses a fit-width title column (`ContentRow` `titleLayout="fit"`) so long types wrap cleanly. |
+| **Small screens** | Below the `md` breakpoint, Fee Statement and Decibel formatted views use stacked label/value blocks instead of fixed two-column tables; nested bid/ask price tables stack rows; `JsonViewCard` stays within the content width. Event type uses a fit-width title column (`ContentRow` `titleLayout="fit"`) so long types wrap cleanly. Layout uses shared `ResponsiveKeyValueTable` / `ResponsiveKeyValueRow` (see FEAT-UI-005). |
 
 ### FEAT-TXN-005 — Payload Tab
 
@@ -1107,6 +1107,14 @@ The app shell that wraps every page.
 |--------|--------|
 | **Component** | MUI `Drawer`, anchor right, 80% width mobile, 33% desktop. |
 | **Usage** | `StakingDrawer` (Delegated Staking FAQ with accordion sections — currently not wired into routes). |
+
+### FEAT-UI-005 — Responsive Key/Value Table
+
+| Aspect | Detail |
+|--------|--------|
+| **Components** | `ResponsiveKeyValueTable`, `ResponsiveKeyValueRow` in `app/components/Table/ResponsiveKeyValueTable.tsx`. |
+| **Behavior** | Wide viewports: `Table` + `TableContainer` with label column ~38% width. Below `stackBelow` (default `md`): vertical stack with label (`body2` semibold), optional `description` (`caption`), then value. Rows support optional `description` under the label in both modes. Nested key/value grids: render another `ResponsiveKeyValueTable` inside a row’s value; each instance has its own context and breakpoint (optional smaller `stackBelow` on the inner table). Value cells use `minWidth: 0` so nested tables can shrink and scroll. |
+| **Consumers** | Transaction Events tab: Fee Statement (`FeeStatementEventView`) and Decibel formatted views (`DecibelEventView` / `EventTable`). |
 
 ---
 

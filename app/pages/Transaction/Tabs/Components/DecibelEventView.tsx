@@ -23,6 +23,10 @@ import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewC
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../../../components/Table/GeneralTableRow";
+import {
+  ResponsiveKeyValueRow,
+  ResponsiveKeyValueTable,
+} from "../../../../components/Table/ResponsiveKeyValueTable";
 import {DECIBEL_CONTRACTS} from "../../../../utils/decibel";
 
 // ---------------------------------------------------------------------------
@@ -72,55 +76,7 @@ export default function DecibelEventView({
 // Shared helpers
 // ---------------------------------------------------------------------------
 
-/** When true, `Row` renders label above value (narrow viewports). */
-const EventNarrowLayoutContext = React.createContext(false);
-
-function Row({label, children}: {label: string; children: React.ReactNode}) {
-  const isNarrow = React.useContext(EventNarrowLayoutContext);
-  const theme = useTheme();
-  if (isNarrow) {
-    return (
-      <Box
-        sx={{
-          py: 1.5,
-          borderBottom: `1px solid ${theme.palette.divider}`,
-          "&:last-of-type": {borderBottom: "none"},
-        }}
-      >
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          fontWeight={600}
-          sx={{display: "block", mb: 0.5}}
-        >
-          {label}
-        </Typography>
-        <Box sx={{minWidth: 0, width: "100%", maxWidth: "100%"}}>
-          {children}
-        </Box>
-      </Box>
-    );
-  }
-  return (
-    <GeneralTableRow>
-      <GeneralTableCell
-        component="th"
-        scope="row"
-        sx={{
-          verticalAlign: "top",
-          fontWeight: 600,
-          color: "text.primary",
-          width: "38%",
-        }}
-      >
-        {label}
-      </GeneralTableCell>
-      <GeneralTableCell sx={{verticalAlign: "top"}}>
-        {children}
-      </GeneralTableCell>
-    </GeneralTableRow>
-  );
-}
+const Row = ResponsiveKeyValueRow;
 
 function EventTable({
   children,
@@ -129,41 +85,35 @@ function EventTable({
   children: React.ReactNode;
   rawData: Record<string, unknown>;
 }) {
-  const theme = useTheme();
-  const isNarrow = useMediaQuery(theme.breakpoints.down("md"));
   const [showRaw, setShowRaw] = React.useState(false);
 
   return (
-    <EventNarrowLayoutContext.Provider value={isNarrow}>
-      <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
-        <Stack direction="row" justifyContent="flex-end" sx={{px: 1, pt: 0.5}}>
-          <Tooltip title={showRaw ? "Formatted view" : "Raw JSON"}>
-            <IconButton size="small" onClick={() => setShowRaw((v) => !v)}>
-              {showRaw ? (
-                <TableChartOutlinedIcon fontSize="small" />
-              ) : (
-                <CodeOutlinedIcon fontSize="small" />
-              )}
-            </IconButton>
-          </Tooltip>
-        </Stack>
-        {showRaw ? (
-          <Box sx={{p: 1, pt: 0, maxWidth: "100%", minWidth: 0}}>
-            <JsonViewCard data={rawData} />
-          </Box>
-        ) : isNarrow ? (
-          <Box sx={{px: 1.5, pb: 1, maxWidth: "100%", minWidth: 0}}>
-            {children}
-          </Box>
-        ) : (
-          <TableContainer sx={{maxWidth: "100%"}}>
-            <Table size="small" sx={{tableLayout: "fixed"}}>
-              <TableBody>{children}</TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </Paper>
-    </EventNarrowLayoutContext.Provider>
+    <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
+      <Stack direction="row" justifyContent="flex-end" sx={{px: 1, pt: 0.5}}>
+        <Tooltip title={showRaw ? "Formatted view" : "Raw JSON"}>
+          <IconButton size="small" onClick={() => setShowRaw((v) => !v)}>
+            {showRaw ? (
+              <TableChartOutlinedIcon fontSize="small" />
+            ) : (
+              <CodeOutlinedIcon fontSize="small" />
+            )}
+          </IconButton>
+        </Tooltip>
+      </Stack>
+      {showRaw ? (
+        <Box sx={{p: 1, pt: 0, maxWidth: "100%", minWidth: 0}}>
+          <JsonViewCard data={rawData} />
+        </Box>
+      ) : (
+        <ResponsiveKeyValueTable
+          size="small"
+          tableLayout="fixed"
+          stackContainerSx={{px: 1.5, pb: 1, pt: 0}}
+        >
+          {children}
+        </ResponsiveKeyValueTable>
+      )}
+    </Paper>
   );
 }
 

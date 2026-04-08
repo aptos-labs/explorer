@@ -1,19 +1,10 @@
-import {
-  Box,
-  Paper,
-  Stack,
-  Table,
-  TableContainer,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
-import type React from "react";
+import {Box, Paper, Typography, useTheme} from "@mui/material";
 import {APTCurrencyValue} from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../../components/IndividualPageContent/ContentValue/GasValue";
-import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
-import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
-import GeneralTableRow from "../../../../components/Table/GeneralTableRow";
+import {
+  ResponsiveKeyValueRow,
+  ResponsiveKeyValueTable,
+} from "../../../../components/Table/ResponsiveKeyValueTable";
 
 /** Module event type emitted with transaction fee breakdown (Aptos Framework). */
 export const FEE_STATEMENT_EVENT_TYPE =
@@ -56,82 +47,6 @@ function isFeeStatementShape(data: unknown): data is Record<string, unknown> {
 
 function gasUnitsToOctas(gasUnits: string, gasUnitPrice: string): string {
   return (BigInt(gasUnits) * BigInt(gasUnitPrice)).toString();
-}
-
-type FeeRowProps = {
-  label: string;
-  children: React.ReactNode;
-  description?: string;
-};
-
-function FeeRow({label, children, description}: FeeRowProps) {
-  const theme = useTheme();
-  return (
-    <GeneralTableRow>
-      <GeneralTableCell
-        component="th"
-        scope="row"
-        sx={{
-          verticalAlign: "top",
-          fontWeight: 600,
-          color: "text.primary",
-          width: "38%",
-        }}
-      >
-        {label}
-        {description ? (
-          <Typography
-            component="div"
-            variant="caption"
-            sx={{
-              display: "block",
-              color: theme.palette.text.secondary,
-              mt: 0.5,
-            }}
-          >
-            {description}
-          </Typography>
-        ) : null}
-      </GeneralTableCell>
-      <GeneralTableCell sx={{verticalAlign: "top"}}>
-        {children}
-      </GeneralTableCell>
-    </GeneralTableRow>
-  );
-}
-
-type MobileFeeBlockProps = {
-  label: string;
-  description?: string;
-  children: React.ReactNode;
-};
-
-function MobileFeeBlock({label, children, description}: MobileFeeBlockProps) {
-  const theme = useTheme();
-  return (
-    <Box
-      sx={{
-        py: 1.5,
-        borderBottom: `1px solid ${theme.palette.divider}`,
-        "&:last-child": {borderBottom: "none"},
-      }}
-    >
-      <Typography variant="body2" fontWeight={600} color="text.primary">
-        {label}
-      </Typography>
-      {description ? (
-        <Typography
-          variant="caption"
-          display="block"
-          color="text.secondary"
-          sx={{mt: 0.25}}
-        >
-          {description}
-        </Typography>
-      ) : null}
-      <Box sx={{mt: 1, minWidth: 0, maxWidth: "100%"}}>{children}</Box>
-    </Box>
-  );
 }
 
 function GasUnitsWithOptionalApt({
@@ -178,6 +93,13 @@ function OctasRowValue({octas}: {octas: string}) {
   );
 }
 
+const extraValueTypography = {
+  m: 0,
+  whiteSpace: "pre-wrap",
+  wordBreak: "break-word",
+  fontFamily: "monospace",
+} as const;
+
 type FeeStatementEventViewProps = {
   data: Record<string, unknown>;
   /** When set (user transactions), gas rows also show an APT estimate at this price. */
@@ -191,8 +113,6 @@ export default function FeeStatementEventView({
   data,
   gasUnitPrice,
 }: FeeStatementEventViewProps) {
-  const theme = useTheme();
-  const isNarrow = useMediaQuery(theme.breakpoints.down("md"));
   const extraEntries = Object.entries(data).filter(
     ([key]) => !KNOWN_FIELD_ORDER.includes(key as KnownField),
   );
@@ -208,82 +128,41 @@ export default function FeeStatementEventView({
         key === "storage_fee_refund_octas"
           ? "Credited when storage is released; not part of gas_used."
           : "Charged for net new state; priced in octas.";
-      return isNarrow ? (
-        <MobileFeeBlock key={key} label={label} description={description}>
+      return (
+        <ResponsiveKeyValueRow
+          key={key}
+          label={label}
+          description={description}
+        >
           <OctasRowValue octas={raw} />
-        </MobileFeeBlock>
-      ) : (
-        <FeeRow key={key} label={label} description={description}>
-          <OctasRowValue octas={raw} />
-        </FeeRow>
+        </ResponsiveKeyValueRow>
       );
     }
     const description =
       key === "total_charge_gas_units"
         ? "Sum of execution, I/O, and storage (as gas units). Matches gas_used on the transaction."
         : undefined;
-    return isNarrow ? (
-      <MobileFeeBlock key={key} label={label} description={description}>
+    return (
+      <ResponsiveKeyValueRow key={key} label={label} description={description}>
         <GasUnitsWithOptionalApt gasUnits={raw} gasUnitPrice={gasUnitPrice} />
-      </MobileFeeBlock>
-    ) : (
-      <FeeRow key={key} label={label} description={description}>
-        <GasUnitsWithOptionalApt gasUnits={raw} gasUnitPrice={gasUnitPrice} />
-      </FeeRow>
+      </ResponsiveKeyValueRow>
     );
   });
 
-  const extraNodes = extraEntries.map(([key, value]) =>
-    isNarrow ? (
-      <MobileFeeBlock key={key} label={key}>
-        <Typography
-          component="pre"
-          variant="body2"
-          sx={{
-            m: 0,
-            whiteSpace: "pre-wrap",
-            wordBreak: "break-word",
-            fontFamily: "monospace",
-          }}
-        >
-          {typeof value === "string" ? value : JSON.stringify(value, null, 2)}
-        </Typography>
-      </MobileFeeBlock>
-    ) : (
-      <FeeRow key={key} label={key}>
-        <Typography
-          component="pre"
-          variant="body2"
-          sx={{
-            m: 0,
-            whiteSpace: "pre-wrap",
-            wordBreak: "break-word",
-            fontFamily: "monospace",
-          }}
-        >
-          {typeof value === "string" ? value : JSON.stringify(value, null, 2)}
-        </Typography>
-      </FeeRow>
-    ),
-  );
+  const extraNodes = extraEntries.map(([key, value]) => (
+    <ResponsiveKeyValueRow key={key} label={key}>
+      <Typography component="pre" variant="body2" sx={extraValueTypography}>
+        {typeof value === "string" ? value : JSON.stringify(value, null, 2)}
+      </Typography>
+    </ResponsiveKeyValueRow>
+  ));
 
   return (
     <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
-      {isNarrow ? (
-        <Stack sx={{px: 1.5, py: 0.5}}>
-          {knownNodes}
-          {extraNodes}
-        </Stack>
-      ) : (
-        <TableContainer sx={{maxWidth: "100%"}}>
-          <Table size="small" sx={{tableLayout: "fixed"}}>
-            <GeneralTableBody>
-              {knownNodes}
-              {extraNodes}
-            </GeneralTableBody>
-          </Table>
-        </TableContainer>
-      )}
+      <ResponsiveKeyValueTable size="small" tableLayout="fixed">
+        {knownNodes}
+        {extraNodes}
+      </ResponsiveKeyValueTable>
     </Paper>
   );
 }
