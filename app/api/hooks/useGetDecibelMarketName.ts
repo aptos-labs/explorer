@@ -4,16 +4,6 @@ import {DECIBEL_CONTRACTS} from "../../utils/decibel";
 
 const PERP_MARKET_CONFIG_TYPE = "::perp_market_config::PerpMarketConfiguration";
 
-function getResourceType(networkValue: string): string | undefined {
-  // Pick the contract address matching the current network
-  for (const addr of DECIBEL_CONTRACTS) {
-    // Mainnet contract is index 0, testnet is index 1.
-    // We try the resource with each — the query will fail gracefully if wrong.
-    return `${addr}${PERP_MARKET_CONFIG_TYPE}`;
-  }
-  return undefined;
-}
-
 export function useGetDecibelMarketName(marketAddress: string): {
   isLoading: boolean;
   data: string | undefined;

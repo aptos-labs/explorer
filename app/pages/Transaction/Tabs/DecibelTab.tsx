@@ -8,6 +8,7 @@ import UploadOutlinedIcon from "@mui/icons-material/UploadOutlined";
 import ViewInArOutlinedIcon from "@mui/icons-material/ViewInArOutlined";
 import {
   Box,
+  ButtonBase,
   Chip,
   Paper,
   Stack,
@@ -30,9 +31,11 @@ import {
 import {useGetDecibelMarketName} from "../../../api/hooks/useGetDecibelMarketName";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
+import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
+import {isValidAccountAddress} from "../../../utils";
 import type {
   DecibelDeposit,
   DecibelOrder,
@@ -81,12 +84,16 @@ function TruncatedCopyId({value}: {value: string}) {
 
   return (
     <Tooltip title={copied ? "Copied!" : value} arrow>
-      <Stack
-        direction="row"
-        alignItems="center"
-        spacing={0.5}
-        sx={{cursor: "pointer"}}
+      <ButtonBase
         onClick={handleCopy}
+        aria-label={`Copy ${value}`}
+        sx={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 0.5,
+          borderRadius: 0.5,
+          px: 0.5,
+        }}
       >
         <Typography
           variant="body2"
@@ -96,7 +103,7 @@ function TruncatedCopyId({value}: {value: string}) {
           {truncated}
         </Typography>
         <ContentCopyIcon sx={{fontSize: 14, opacity: 0.6}} />
-      </Stack>
+      </ButtonBase>
     </Tooltip>
   );
 }
@@ -113,7 +120,7 @@ function AmountWithAsset({
   const {data: assetMetadata} = useGetAssetMetadata(asset);
   const assetCoin = findCoinData(coinData, asset);
   const decimals = assetCoin?.decimals ?? assetMetadata?.decimals ?? 0;
-  const displayAmount = Number(amount) / 10 ** decimals;
+  const displayAmount = getFormattedBalanceStr(amount, decimals);
 
   return (
     <Stack direction="row" alignItems="center" spacing={1} flexWrap="wrap">
@@ -141,6 +148,17 @@ function MarketValue({hash}: {hash: string}) {
       )}
       <HashButton hash={hash} type={HashType.OBJECT} size="small" />
     </Stack>
+  );
+}
+
+function SafeAccountLink({hash}: {hash: string}) {
+  if (isValidAccountAddress(hash)) {
+    return <HashButton hash={hash} type={HashType.ACCOUNT} size="small" />;
+  }
+  return (
+    <Typography variant="body2" sx={{fontFamily: "monospace"}}>
+      {hash}
+    </Typography>
   );
 }
 
@@ -180,15 +198,7 @@ function OrderRow({order}: {order: DecibelOrder}) {
       </GeneralTableCell>
       <GeneralTableCell>{order.timeInForce ?? "—"}</GeneralTableCell>
       <GeneralTableCell>
-        {order.subaccount ? (
-          <HashButton
-            hash={order.subaccount}
-            type={HashType.ACCOUNT}
-            size="small"
-          />
-        ) : (
-          "—"
-        )}
+        {order.subaccount ? <SafeAccountLink hash={order.subaccount} /> : "—"}
       </GeneralTableCell>
       <GeneralTableCell>
         {order.orderId ? <TruncatedCopyId value={order.orderId} /> : "—"}
@@ -260,6 +270,7 @@ function OrdersSection({orders}: {orders: DecibelOrder[]}) {
         Orders
       </Typography>
       {isMobile ? (
+        // biome-ignore lint/suspicious/noArrayIndexKey: orders lack a guaranteed unique identifier
         orders.map((order, i) => <OrderCard key={i} order={order} />)
       ) : (
         <Table>
@@ -278,6 +289,7 @@ function OrdersSection({orders}: {orders: DecibelOrder[]}) {
           </TableHead>
           <TableBody>
             {orders.map((order, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: orders lack a guaranteed unique identifier
               <OrderRow key={i} order={order} />
             ))}
           </TableBody>
@@ -308,11 +320,7 @@ function DepositRow({
         />
       </GeneralTableCell>
       <GeneralTableCell>
-        <HashButton
-          hash={deposit.subaccount}
-          type={HashType.ACCOUNT}
-          size="small"
-        />
+        <SafeAccountLink hash={deposit.subaccount} />
       </GeneralTableCell>
       <GeneralTableCell>
         {humanizeFunctionName(deposit.functionName)}
@@ -376,6 +384,7 @@ function DepositsSection({
       </Typography>
       {isMobile ? (
         deposits.map((d, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: deposits lack a unique identifier
           <DepositCard key={i} deposit={d} coinData={coinData} />
         ))
       ) : (
@@ -389,6 +398,7 @@ function DepositsSection({
           </TableHead>
           <TableBody>
             {deposits.map((d, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: deposits lack a unique identifier
               <DepositRow key={i} deposit={d} coinData={coinData} />
             ))}
           </TableBody>
@@ -419,11 +429,7 @@ function WithdrawRow({
         />
       </GeneralTableCell>
       <GeneralTableCell>
-        <HashButton
-          hash={withdraw.subaccount}
-          type={HashType.ACCOUNT}
-          size="small"
-        />
+        <SafeAccountLink hash={withdraw.subaccount} />
       </GeneralTableCell>
       <GeneralTableCell>
         {humanizeFunctionName(withdraw.functionName)}
@@ -487,6 +493,7 @@ function WithdrawalsSection({
       </Typography>
       {isMobile ? (
         withdrawals.map((w, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: withdrawals lack a unique identifier
           <WithdrawCard key={i} withdraw={w} coinData={coinData} />
         ))
       ) : (
@@ -500,6 +507,7 @@ function WithdrawalsSection({
           </TableHead>
           <TableBody>
             {withdrawals.map((w, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: withdrawals lack a unique identifier
               <WithdrawRow key={i} withdraw={w} coinData={coinData} />
             ))}
           </TableBody>

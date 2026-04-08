@@ -101,7 +101,7 @@ describe("parseDecibelTransaction", () => {
       });
       const summary = parseDecibelTransaction(txn);
       expect(summary.orders).toHaveLength(1);
-      expect(summary.orders[0]).toEqual({
+      expect(summary.orders[0]).toMatchObject({
         orderType: "limit",
         side: "buy",
         market: "0xmarket1",
@@ -379,6 +379,18 @@ describe("parseDecibelTransaction", () => {
       });
       const summary = parseDecibelTransaction(txn);
       expect(summary.deposits).toHaveLength(0);
+    });
+
+    it("returns empty for cancel with insufficient args", () => {
+      const txn = makeUserTxn({
+        payload: {
+          type: "entry_function_payload",
+          function: `${MAINNET_CONTRACT}::dex_accounts_entry::cancel_order_to_subaccount`,
+          arguments: [{inner: "sub1"}],
+        },
+      });
+      const summary = parseDecibelTransaction(txn);
+      expect(summary.orders).toHaveLength(0);
     });
 
     it("handles transaction with no events array", () => {

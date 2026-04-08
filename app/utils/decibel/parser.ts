@@ -51,6 +51,8 @@ function parseOrderEvent(event: Types.Event): DecibelOrder | undefined {
     price: string;
     status: {__variant__: string};
     time_in_force: {__variant__: string};
+    order_id?: string;
+    user?: string;
   } = event.data;
 
   const statusVariant = data.status?.__variant__ ?? "";
@@ -67,8 +69,8 @@ function parseOrderEvent(event: Types.Event): DecibelOrder | undefined {
     price: isCancelled || isMarket ? undefined : data.price,
     status: statusVariant || undefined,
     timeInForce: tif || undefined,
-    orderId: undefined,
-    subaccount: undefined,
+    orderId: typeof data.order_id === "string" ? data.order_id : undefined,
+    subaccount: typeof data.user === "string" ? data.user : undefined,
   };
 }
 
@@ -115,7 +117,7 @@ function parsePayloadAction(
     return {
       asset: extractObjectInner(args[1]),
       amount: String(args[2]),
-      subaccount: String(args[0]),
+      subaccount: extractObjectInner(args[0]),
       functionName: fnName,
     } satisfies DecibelDeposit;
   }

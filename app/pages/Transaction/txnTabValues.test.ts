@@ -1,6 +1,7 @@
 // Covers FEAT-TXN-001 — Transaction tab selection by type
 import {describe, expect, it} from "vitest";
 import {TransactionTypeName} from "../../components/TransactionType";
+import {DECIBEL_CONTRACTS} from "../../utils/decibel";
 import {getTabValues} from "./Tabs";
 
 function makeTxn(type: string) {
@@ -25,7 +26,7 @@ describe("FEAT-TXN-001 — getTabValues", () => {
       type: TransactionTypeName.User,
       events: [
         {
-          type: "0x50ead22afd6ffd9769e3b3d6e0e64a2a350d68e8b102c4e72e33d0b8cfdfdb06::market_types::OrderEvent",
+          type: `${DECIBEL_CONTRACTS[0]}::market_types::OrderEvent`,
           data: {},
         },
       ],

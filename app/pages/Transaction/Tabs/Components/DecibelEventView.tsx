@@ -71,7 +71,6 @@ export default function DecibelEventView({
 // ---------------------------------------------------------------------------
 
 function Row({label, children}: {label: string; children: React.ReactNode}) {
-  const theme = useTheme();
   return (
     <GeneralTableRow>
       <GeneralTableCell
@@ -294,16 +293,19 @@ function PriceSizeTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {prices.map((price, i) => (
-            <GeneralTableRow key={i}>
-              <GeneralTableCell>
-                <MonoText>{price}</MonoText>
-              </GeneralTableCell>
-              <GeneralTableCell>
-                <MonoText>{sizes[i] ?? "—"}</MonoText>
-              </GeneralTableCell>
-            </GeneralTableRow>
-          ))}
+          {prices.map((price, i) => {
+            const size = sizes[i] ?? "—";
+            return (
+              <GeneralTableRow key={`${price}-${size}`}>
+                <GeneralTableCell>
+                  <MonoText>{price}</MonoText>
+                </GeneralTableCell>
+                <GeneralTableCell>
+                  <MonoText>{size}</MonoText>
+                </GeneralTableCell>
+              </GeneralTableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </Box>
