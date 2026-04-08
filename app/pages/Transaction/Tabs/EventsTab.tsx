@@ -96,7 +96,7 @@ export default function EventsTab({transaction}: EventsTabProps) {
                 value={event.sequence_number}
               />
             )}
-            <ContentRow title="Type:" value={event.type} />
+            <ContentRow title="Type:" value={event.type} titleLayout="fit" />
             <ContentRow
               title="Data:"
               value={

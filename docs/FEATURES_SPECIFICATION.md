@@ -213,6 +213,7 @@ The app shell that wraps every page.
 | **Display** | Collapsible list per event, JSON view. |
 | **FeeStatement** | Special `FeeStatementEventView` for `0x1::transaction_fee::FeeStatement`. |
 | **Module events** | Hide zero GUID fields. |
+| **Small screens** | Below the `md` breakpoint, Fee Statement and Decibel formatted views use stacked label/value blocks instead of fixed two-column tables; nested bid/ask price tables stack rows; `JsonViewCard` stays within the content width. Event type uses a fit-width title column (`ContentRow` `titleLayout="fit"`) so long types wrap cleanly. |
 
 ### FEAT-TXN-005 — Payload Tab
 

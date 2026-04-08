@@ -230,6 +230,7 @@ export default function JsonViewCard({
       sx={{
         backgroundColor: semanticColors.codeBlock.background,
         overflow: "auto",
+        maxWidth: "100%",
         maxHeight: MAX_CARD_HEIGHT,
         position: "relative",
         // Keys: coral-based hover (matches JS selector [class*="object-key"])

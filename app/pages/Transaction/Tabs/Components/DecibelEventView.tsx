@@ -8,10 +8,12 @@ import {
   Stack,
   Table,
   TableBody,
+  TableContainer,
   TableHead,
   TableRow,
   Tooltip,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import * as React from "react";
@@ -70,7 +72,35 @@ export default function DecibelEventView({
 // Shared helpers
 // ---------------------------------------------------------------------------
 
+/** When true, `Row` renders label above value (narrow viewports). */
+const EventNarrowLayoutContext = React.createContext(false);
+
 function Row({label, children}: {label: string; children: React.ReactNode}) {
+  const isNarrow = React.useContext(EventNarrowLayoutContext);
+  const theme = useTheme();
+  if (isNarrow) {
+    return (
+      <Box
+        sx={{
+          py: 1.5,
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          "&:last-of-type": {borderBottom: "none"},
+        }}
+      >
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          fontWeight={600}
+          sx={{display: "block", mb: 0.5}}
+        >
+          {label}
+        </Typography>
+        <Box sx={{minWidth: 0, width: "100%", maxWidth: "100%"}}>
+          {children}
+        </Box>
+      </Box>
+    );
+  }
   return (
     <GeneralTableRow>
       <GeneralTableCell
@@ -99,31 +129,41 @@ function EventTable({
   children: React.ReactNode;
   rawData: Record<string, unknown>;
 }) {
+  const theme = useTheme();
+  const isNarrow = useMediaQuery(theme.breakpoints.down("md"));
   const [showRaw, setShowRaw] = React.useState(false);
 
   return (
-    <Paper variant="outlined" sx={{overflow: "hidden"}}>
-      <Stack direction="row" justifyContent="flex-end" sx={{px: 1, pt: 0.5}}>
-        <Tooltip title={showRaw ? "Formatted view" : "Raw JSON"}>
-          <IconButton size="small" onClick={() => setShowRaw((v) => !v)}>
-            {showRaw ? (
-              <TableChartOutlinedIcon fontSize="small" />
-            ) : (
-              <CodeOutlinedIcon fontSize="small" />
-            )}
-          </IconButton>
-        </Tooltip>
-      </Stack>
-      {showRaw ? (
-        <Box sx={{p: 1, pt: 0}}>
-          <JsonViewCard data={rawData} />
-        </Box>
-      ) : (
-        <Table size="small" sx={{tableLayout: "fixed"}}>
-          <TableBody>{children}</TableBody>
-        </Table>
-      )}
-    </Paper>
+    <EventNarrowLayoutContext.Provider value={isNarrow}>
+      <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
+        <Stack direction="row" justifyContent="flex-end" sx={{px: 1, pt: 0.5}}>
+          <Tooltip title={showRaw ? "Formatted view" : "Raw JSON"}>
+            <IconButton size="small" onClick={() => setShowRaw((v) => !v)}>
+              {showRaw ? (
+                <TableChartOutlinedIcon fontSize="small" />
+              ) : (
+                <CodeOutlinedIcon fontSize="small" />
+              )}
+            </IconButton>
+          </Tooltip>
+        </Stack>
+        {showRaw ? (
+          <Box sx={{p: 1, pt: 0, maxWidth: "100%", minWidth: 0}}>
+            <JsonViewCard data={rawData} />
+          </Box>
+        ) : isNarrow ? (
+          <Box sx={{px: 1.5, pb: 1, maxWidth: "100%", minWidth: 0}}>
+            {children}
+          </Box>
+        ) : (
+          <TableContainer sx={{maxWidth: "100%"}}>
+            <Table size="small" sx={{tableLayout: "fixed"}}>
+              <TableBody>{children}</TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </Paper>
+    </EventNarrowLayoutContext.Provider>
   );
 }
 
@@ -149,13 +189,20 @@ function ObjectValue({hash}: {hash: string}) {
 function MarketValue({hash}: {hash: string}) {
   const {data: name} = useGetDecibelMarketName(hash);
   return (
-    <Stack direction="row" alignItems="center" spacing={1}>
+    <Stack
+      direction={{xs: "column", sm: "row"}}
+      alignItems={{xs: "flex-start", sm: "center"}}
+      spacing={1}
+      sx={{width: "100%", minWidth: 0}}
+    >
       {name && (
         <Typography variant="body2" sx={{fontWeight: 600}}>
           {name}
         </Typography>
       )}
-      <HashButton hash={hash} type={HashType.OBJECT} size="small" />
+      <Box sx={{minWidth: 0, maxWidth: "100%"}}>
+        <HashButton hash={hash} type={HashType.OBJECT} size="small" />
+      </Box>
     </Stack>
   );
 }
@@ -275,7 +322,55 @@ function PriceSizeTable({
   color: "success" | "error";
 }) {
   const theme = useTheme();
+  const isNarrow = useMediaQuery(theme.breakpoints.down("md"));
   if (prices.length === 0) return null;
+
+  if (isNarrow) {
+    return (
+      <Box sx={{mb: 1, width: "100%", minWidth: 0}}>
+        <Typography
+          variant="subtitle2"
+          sx={{mb: 0.5, color: theme.palette[color].main}}
+        >
+          {label} ({prices.length})
+        </Typography>
+        <Stack spacing={0.75}>
+          {prices.map((price, i) => {
+            const size = sizes[i] ?? "—";
+            return (
+              <Stack
+                key={`${price}-${size}`}
+                direction="row"
+                justifyContent="space-between"
+                alignItems="baseline"
+                spacing={1}
+                sx={{
+                  flexWrap: "wrap",
+                  gap: 0.5,
+                  py: 0.5,
+                  borderBottom: `1px solid ${theme.palette.divider}`,
+                  "&:last-of-type": {borderBottom: "none"},
+                }}
+              >
+                <Box sx={{minWidth: 0, overflowWrap: "anywhere"}}>
+                  <MonoText>{price}</MonoText>
+                </Box>
+                <Box
+                  sx={{
+                    minWidth: 0,
+                    overflowWrap: "anywhere",
+                    textAlign: "right",
+                  }}
+                >
+                  <MonoText>{size}</MonoText>
+                </Box>
+              </Stack>
+            );
+          })}
+        </Stack>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{mb: 1}}>
@@ -285,29 +380,31 @@ function PriceSizeTable({
       >
         {label} ({prices.length})
       </Typography>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <GeneralTableHeaderCell header="Price" />
-            <GeneralTableHeaderCell header="Size" />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {prices.map((price, i) => {
-            const size = sizes[i] ?? "—";
-            return (
-              <GeneralTableRow key={`${price}-${size}`}>
-                <GeneralTableCell>
-                  <MonoText>{price}</MonoText>
-                </GeneralTableCell>
-                <GeneralTableCell>
-                  <MonoText>{size}</MonoText>
-                </GeneralTableCell>
-              </GeneralTableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+      <TableContainer sx={{maxWidth: "100%"}}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <GeneralTableHeaderCell header="Price" />
+              <GeneralTableHeaderCell header="Size" />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {prices.map((price, i) => {
+              const size = sizes[i] ?? "—";
+              return (
+                <GeneralTableRow key={`${price}-${size}`}>
+                  <GeneralTableCell>
+                    <MonoText>{price}</MonoText>
+                  </GeneralTableCell>
+                  <GeneralTableCell>
+                    <MonoText>{size}</MonoText>
+                  </GeneralTableCell>
+                </GeneralTableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 }
@@ -592,17 +689,30 @@ function FundingView({funding}: {funding: Record<string, unknown>}) {
     ([key]) => key !== "__variant__",
   );
   return (
-    <Stack spacing={0.5}>
+    <Stack spacing={0.75}>
       {entries.map(([key, value]) => (
-        <Stack key={key} direction="row" spacing={1} alignItems="baseline">
+        <Stack
+          key={key}
+          direction={{xs: "column", sm: "row"}}
+          spacing={{xs: 0.25, sm: 1}}
+          alignItems={{xs: "stretch", sm: "baseline"}}
+        >
           <Typography
             variant="body2"
             color="text.secondary"
-            sx={{minWidth: 140, flexShrink: 0}}
+            sx={{minWidth: {xs: 0, sm: 140}, flexShrink: 0}}
           >
             {FUNDING_LABELS[key] ?? key}
           </Typography>
-          <MonoText>{String(value)}</MonoText>
+          <Box
+            sx={{
+              minWidth: 0,
+              overflowWrap: "anywhere",
+              wordBreak: "break-word",
+            }}
+          >
+            <MonoText>{String(value)}</MonoText>
+          </Box>
         </Stack>
       ))}
     </Stack>
