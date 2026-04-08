@@ -88,7 +88,7 @@ function Packages({
 
   if (isPending) {
     return (
-      <Box display="flex" justifyContent="center" py={8}>
+      <Box sx={{display: "flex", justifyContent: "center", py: 8}}>
         <CircularProgress />
       </Box>
     );
@@ -170,14 +170,18 @@ function PackagesSidebar({
 
   return (
     <Box
-      sx={{padding: "24px", maxHeight: "100vh", overflowY: "auto"}}
-      bgcolor={theme.palette.background.paper}
-      borderRadius={1}
+      sx={{
+        padding: "24px",
+        maxHeight: "100vh",
+        overflowY: "auto",
+        bgcolor: theme.palette.background.paper,
+        borderRadius: 1,
+      }}
     >
       {isWideScreen ? (
         sortedPackages.map((pkg) => {
           return (
-            <Box marginBottom={3} key={pkg.name}>
+            <Box sx={{marginBottom: 3}} key={pkg.name}>
               <SidebarItem
                 key={pkg.name}
                 linkTo={getLinkToPackage(pkg.name)}
@@ -222,9 +226,11 @@ function PackageContent({address, packageMetadata}: PackageContentProps) {
     <Stack
       direction="column"
       spacing={2}
-      padding={"24px"}
-      bgcolor={theme.palette.background.paper}
-      borderRadius={1}
+      sx={{
+        padding: "24px",
+        bgcolor: theme.palette.background.paper,
+        borderRadius: 1,
+      }}
     >
       <PackageHeader packageName={packageMetadata.name} />
       <Divider />
@@ -236,12 +242,14 @@ function PackageContent({address, packageMetadata}: PackageContentProps) {
 function PackageHeader({packageName}: {packageName: string}) {
   return (
     <Box
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      flexWrap={"wrap"}
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexWrap: "wrap",
+      }}
     >
-      <Typography fontSize={24} fontWeight={700}>
+      <Typography sx={{fontSize: 24, fontWeight: 700}}>
         {packageName}
       </Typography>
     </Box>
@@ -259,10 +267,8 @@ function PackageInfo({
 
   return (
     <Box>
-      <Box marginTop={2}>
-        <Typography fontSize={14} fontWeight={600}>
-          Modules
-        </Typography>
+      <Box sx={{marginTop: 2}}>
+        <Typography sx={{fontSize: 14, fontWeight: 600}}>Modules</Typography>
         <Autocomplete
           disableClearable
           options={packageMetadata.modules}
@@ -279,26 +285,26 @@ function PackageInfo({
           )}
         />
       </Box>
-      <Box marginTop={2}>
-        <Typography fontSize={14} fontWeight={600}>
+      <Box sx={{marginTop: 2}}>
+        <Typography sx={{fontSize: 14, fontWeight: 600}}>
           Package Name
         </Typography>
         <Typography>{packageMetadata.name}</Typography>
       </Box>
-      <Box marginTop={2}>
-        <Typography fontSize={14} fontWeight={600}>
+      <Box sx={{marginTop: 2}}>
+        <Typography sx={{fontSize: 14, fontWeight: 600}}>
           Upgrade Policy
         </Typography>
         {upgrade_policy(packageMetadata.upgrade_policy.policy)}
       </Box>
-      <Box marginTop={2}>
-        <Typography fontSize={14} fontWeight={600}>
+      <Box sx={{marginTop: 2}}>
+        <Typography sx={{fontSize: 14, fontWeight: 600}}>
           Upgrade Number
         </Typography>
         <Typography>{packageMetadata.upgrade_number}</Typography>
       </Box>
-      <Box marginTop={2}>
-        <Typography fontSize={14} fontWeight={600}>
+      <Box sx={{marginTop: 2}}>
+        <Typography sx={{fontSize: 14, fontWeight: 600}}>
           Source Digest
         </Typography>
         <Typography>{packageMetadata.source_digest}</Typography>

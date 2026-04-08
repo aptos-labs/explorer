@@ -25,7 +25,7 @@ export default function MainnetAnalytics() {
 
   if (!data) {
     return (
-      <Grid container spacing={3} marginTop={3}>
+      <Grid container spacing={3} sx={{marginTop: 3}}>
         <Grid size={{xs: 12}}>
           <Alert severity="warning">
             Analytics data is not available at this time. Please try again
@@ -37,8 +37,8 @@ export default function MainnetAnalytics() {
   }
 
   return (
-    <Grid container spacing={3} marginTop={3}>
-      <Grid size={{xs: 12, md: 12, lg: 12}} marginBottom={2}>
+    <Grid container spacing={3} sx={{marginTop: 3}}>
+      <Grid size={{xs: 12, md: 12, lg: 12}} sx={{marginBottom: 2}}>
         <NetworkInfo />
       </Grid>
       <Grid size={{xs: 12, md: 12, lg: 12}}>

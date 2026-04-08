@@ -51,12 +51,14 @@ function MapMarker({
   return (
     <LightTooltip
       title={
-        <Box margin={1}>
+        <Box sx={{margin: 1}}>
           <Stack
             direction="row"
-            justifyContent="space-between"
             spacing={4}
-            marginBottom={isCountryMode && cities?.length ? 1 : 0.5}
+            sx={{
+              justifyContent: "space-between",
+              marginBottom: isCountryMode && cities?.length ? 1 : 0.5,
+            }}
           >
             <Typography variant="body2">
               {isCountryMode ? country : `${city}, ${country}`}
@@ -68,10 +70,12 @@ function MapMarker({
               <Stack
                 key={c.name}
                 direction="row"
-                justifyContent="space-between"
                 spacing={4}
-                sx={{fontSize: 11}}
-                marginBottom={0.5}
+                sx={{
+                  justifyContent: "space-between",
+                  fontSize: 11,
+                  marginBottom: 0.5,
+                }}
               >
                 <Box>{c.name}</Box>
                 <Box>{c.count}</Box>
@@ -122,7 +126,7 @@ export default function ValidatorMap({validatorGeoGroups, groupBy}: MapProps) {
   const theme = useTheme();
 
   return (
-    <Box width="100%" height="100%">
+    <Box sx={{width: "100%", height: "100%"}}>
       <ComposableMap
         projectionConfig={{
           rotate: [0, 10, 0],

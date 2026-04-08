@@ -6,9 +6,9 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
-import SignatureOverviewTable from "./Components/SignatureOverviewTable";
 import {parseExpirationTimestamp} from "../../utils";
 import {getLearnMoreTooltip} from "../helpers";
+import SignatureOverviewTable from "./Components/SignatureOverviewTable";
 
 type PendingTransactionOverviewTabProps = {
   transaction: Types.Transaction;
@@ -20,7 +20,7 @@ export default function PendingTransactionOverviewTab({
   const transactionData = transaction as Types.Transaction_PendingTransaction;
 
   return (
-    <Box marginBottom={3}>
+    <Box sx={{marginBottom: 3}}>
       <ContentBox>
         <ContentRow
           title="Sender:"

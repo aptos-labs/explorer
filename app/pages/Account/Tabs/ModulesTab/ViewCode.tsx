@@ -92,7 +92,7 @@ function ViewCode({
 
   if (isPending) {
     return (
-      <Box display="flex" justifyContent="center" py={8}>
+      <Box sx={{display: "flex", justifyContent: "center", py: 8}}>
         <CircularProgress />
       </Box>
     );
@@ -183,15 +183,19 @@ function ModuleSidebar({
 
   return (
     <Box
-      sx={{padding: "24px", maxHeight: "100vh", overflowY: "auto"}}
-      bgcolor={theme.palette.background.paper}
-      borderRadius={1}
+      sx={{
+        padding: "24px",
+        maxHeight: "100vh",
+        overflowY: "auto",
+        bgcolor: theme.palette.background.paper,
+        borderRadius: 1,
+      }}
     >
       {isWideScreen ? (
         sortedPackages.map((pkg) => {
           return (
-            <Box marginBottom={3} key={pkg.name}>
-              <Typography fontSize={14} fontWeight={600} marginY={"12px"}>
+            <Box sx={{marginBottom: 3}} key={pkg.name}>
+              <Typography sx={{fontSize: 14, fontWeight: 600, marginY: "12px"}}>
                 {pkg.name}
               </Typography>
               <Box>
@@ -257,9 +261,11 @@ function ModuleContent({
     <Stack
       direction="column"
       spacing={2}
-      padding={"24px"}
-      bgcolor={theme.palette.background.paper}
-      borderRadius={1}
+      sx={{
+        padding: "24px",
+        bgcolor: theme.palette.background.paper,
+        borderRadius: 1,
+      }}
     >
       <ModuleHeader module={moduleData} moduleName={moduleName} />
       <Divider />
@@ -292,17 +298,17 @@ function ModuleHeader({
 }) {
   return (
     <Box
-      display="flex"
-      justifyContent="space-between"
-      alignItems="center"
-      flexWrap={"wrap"}
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexWrap: "wrap",
+      }}
     >
-      <Typography fontSize={24} fontWeight={700}>
-        {moduleName}
-      </Typography>
+      <Typography sx={{fontSize: 24, fontWeight: 700}}>{moduleName}</Typography>
       <Box>
         {module ? (
-          <Typography fontSize={10}>
+          <Typography sx={{fontSize: 10}}>
             {module.abi?.exposed_functions?.filter((fn) => fn.is_entry)?.length}{" "}
             entry functions | Bytecode: {getBytecodeSizeInKB(module.bytecode)}{" "}
             KB

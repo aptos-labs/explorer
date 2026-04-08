@@ -29,9 +29,9 @@ export default function CollapsibleCard({
   return (
     <Box {...props}>
       <Box
-        paddingX={4}
-        paddingY={2}
         sx={{
+          paddingX: 4,
+          paddingY: 2,
           color: theme.palette.text.secondary,
           backgroundColor: titleBackgroundColor,
           borderRadius: expanded ? "10px 10px 0px 0px" : "10px 10px 10px 10px",
@@ -40,9 +40,9 @@ export default function CollapsibleCard({
       >
         <Grid
           container
-          direction={{xs: "column", md: "row"}}
           rowSpacing={1}
           columnSpacing={4}
+          sx={{flexDirection: {xs: "column", md: "row"}}}
         >
           <Grid size={{md: 3}}>
             <Typography variant="body2" color={theme.palette.text.secondary}>
@@ -51,15 +51,15 @@ export default function CollapsibleCard({
           </Grid>
           <Grid
             size={{md: 9}}
-            width={{xs: 1, md: 0.75}}
             sx={{
+              width: {xs: 1, md: 0.75},
               fontSize: 13.5,
               overflow: "hidden",
               wordBreak: "break-word",
               overflowWrap: "anywhere",
             }}
           >
-            <Stack direction="row" justifyContent="space-between">
+            <Stack direction="row" sx={{justifyContent: "space-between"}}>
               {titleValue}
               {expanded ? (
                 <ExpandLessIcon fontSize="small" />
@@ -72,8 +72,8 @@ export default function CollapsibleCard({
       </Box>
       {expanded && (
         <Box
-          padding={4}
           sx={{
+            padding: 4,
             backgroundColor: contentBackgroundColor,
             borderRadius: "0px 0px 10px 10px",
           }}

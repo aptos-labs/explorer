@@ -229,15 +229,12 @@ function CoinCard({
       {/* Row 1: Logo, Name, Type, Verified badge */}
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 0.75}}
+        sx={{justifyContent: "space-between", alignItems: "center", mb: 0.75}}
       >
         <Stack
           direction="row"
           spacing={1.5}
-          alignItems="center"
-          sx={{flex: 1, minWidth: 0}}
+          sx={{alignItems: "center", flex: 1, minWidth: 0}}
         >
           {coin.logoUrl && (
             <Box
@@ -277,7 +274,10 @@ function CoinCard({
       </Stack>
 
       {/* Row 2: Amount + Symbol, USD Value */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack
+        direction="row"
+        sx={{justifyContent: "space-between", alignItems: "center"}}
+      >
         <Typography sx={{fontSize: "0.85rem"}}>
           {formattedAmount !== null ? formattedAmount.toLocaleString() : "-"}
           <Typography
@@ -423,13 +423,11 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
   const filterSelector = (
     <Stack
       direction="row"
-      justifyContent="flex-end"
-      alignItems="center"
       spacing={2}
-      marginY={1}
+      sx={{justifyContent: "flex-end", alignItems: "center", marginY: 1}}
     >
       {verificationFilter !== CoinVerificationFilterType.NONE && (
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
           <Button
             variant="text"
             onClick={() =>

@@ -38,11 +38,13 @@ function NetworkAndChainIdCached({
   return (
     <Stack
       direction="row"
-      alignItems="center"
-      justifyContent="space-between"
       spacing={3}
-      width="100%"
-      paddingY={0.75}
+      sx={{
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+        paddingY: 0.75,
+      }}
     >
       <Typography>{networkName}</Typography>
       <Typography variant="body2" sx={{color: theme.palette.text.disabled}}>
@@ -123,18 +125,20 @@ export default function NetworkSelect() {
           // dropdown container overrides
           MenuProps={{
             disableScrollLock: true,
-            PaperProps: {
-              sx: {
-                minWidth: 240,
-                boxShadow: `0 25px 50px -12px ${alpha(theme.palette.text.primary, 0.25)}`,
-                marginTop: 0.5,
-                "& .MuiMenuItem-root.Mui-selected": {
-                  backgroundColor: `${
-                    theme.palette.mode === "dark"
-                      ? theme.palette.neutralShade.lighter
-                      : theme.palette.neutralShade.darker
-                  }!important`,
-                  pointerEvents: "none",
+            slotProps: {
+              paper: {
+                sx: {
+                  minWidth: 240,
+                  boxShadow: `0 25px 50px -12px ${alpha(theme.palette.text.primary, 0.25)}`,
+                  marginTop: 0.5,
+                  "& .MuiMenuItem-root.Mui-selected": {
+                    backgroundColor: `${
+                      theme.palette.mode === "dark"
+                        ? theme.palette.neutralShade.lighter
+                        : theme.palette.neutralShade.darker
+                    }!important`,
+                    pointerEvents: "none",
+                  },
                 },
               },
             },
@@ -143,11 +147,13 @@ export default function NetworkSelect() {
           <MenuItem disabled value="">
             <Stack
               direction="row"
-              alignItems="center"
-              justifyContent="space-between"
               spacing={3}
-              width="100%"
-              color={theme.palette.text.secondary}
+              sx={{
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                color: theme.palette.text.secondary,
+              }}
             >
               <Typography variant="body2">Network</Typography>
               <Typography variant="body2">Chain ID</Typography>

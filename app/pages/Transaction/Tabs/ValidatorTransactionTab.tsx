@@ -29,8 +29,8 @@ export default function ValidatorTransactionTab({
   };
 
   return (
-    <Box marginBottom={3}>
-      <ContentBox padding={4}>
+    <Box sx={{marginBottom: 3}}>
+      <ContentBox sx={{padding: 4}}>
         <ContentRow
           title={"Version:"}
           value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}

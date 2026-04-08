@@ -95,7 +95,7 @@ export default function TransactionSucceededDialog({
 
   return (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
-      <DialogTitle variant="h5" textAlign="center">
+      <DialogTitle variant="h5" sx={{textAlign: "center"}}>
         <Stack spacing={2}>
           <div>Congratulations!</div>
           {getDialogSubtext()}

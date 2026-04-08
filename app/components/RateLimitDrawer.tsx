@@ -46,12 +46,11 @@ export default function RateLimitDrawer() {
       <Stack spacing={1.5}>
         <Stack
           direction="row"
-          alignItems="center"
-          justifyContent="space-between"
+          sx={{alignItems: "center", justifyContent: "space-between"}}
         >
-          <Stack direction="row" alignItems="center" spacing={1}>
+          <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
             <TimerOutlinedIcon color="warning" />
-            <Typography variant="subtitle1" fontWeight={600}>
+            <Typography variant="subtitle1" sx={{fontWeight: 600}}>
               Rate limited
             </Typography>
           </Stack>
@@ -72,7 +71,7 @@ export default function RateLimitDrawer() {
         <Stack
           direction={isSmall ? "column" : "row"}
           spacing={1.5}
-          alignItems={isSmall ? "stretch" : "center"}
+          sx={{alignItems: isSmall ? "stretch" : "center"}}
         >
           <Button
             component={Link}

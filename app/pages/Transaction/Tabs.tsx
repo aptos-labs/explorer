@@ -1,4 +1,4 @@
-import {ErrorOutline} from "@mui/icons-material";
+import {ErrorOutlined} from "@mui/icons-material";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
@@ -161,8 +161,8 @@ function TabPanel({value, transaction}: TabPanelProps): React.JSX.Element {
   if (!TabComponent) {
     return (
       <ContentBox>
-        <Stack direction="row" spacing={2} alignItems="flex-start">
-          <ErrorOutline
+        <Stack direction="row" spacing={2} sx={{alignItems: "flex-start"}}>
+          <ErrorOutlined
             sx={{
               color: theme.palette.error.main,
               fontSize: 28,

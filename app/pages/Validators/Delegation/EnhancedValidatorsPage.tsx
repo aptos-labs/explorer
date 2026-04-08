@@ -37,7 +37,7 @@ export default function EnhancedValidatorsPage() {
         canonicalPath={`/validators/${tab}`}
       />
       <PageHeader />
-      <Typography variant="h3" marginBottom={2}>
+      <Typography variant="h3" sx={{marginBottom: 2}}>
         Validators
       </Typography>
       <OutOfCommissionPoolsBanner />

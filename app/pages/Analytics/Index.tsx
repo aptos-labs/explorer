@@ -9,7 +9,7 @@ export default function AnalyticsPage() {
   const networkName = useNetworkName();
 
   const titleComponent = (
-    <Typography variant="h3" component="h1" marginBottom={2}>
+    <Typography variant="h3" component="h1" sx={{marginBottom: 2}}>
       Network Analytics
     </Typography>
   );

@@ -110,8 +110,8 @@ function StakingBarContent({
           fixedDecimalPlaces={0}
         />
       </Typography>
-      <Stack direction="row" alignItems="center" spacing={0.5}>
-        <Typography variant="body2" color={theme.palette.text.secondary}>
+      <Stack direction="row" sx={{alignItems: "center"}} spacing={0.5}>
+        <Typography variant="body2" sx={{color: theme.palette.text.secondary}}>
           Delegated Stake Amount
         </Typography>
         <StyledLearnMoreTooltip text="The total amount of delegated stake in this stake pool" />
@@ -122,7 +122,7 @@ function StakingBarContent({
   const delegatedStakePercentage = (
     <Stack direction="column" spacing={0.5}>
       <Typography sx={{fontWeight: 600}}>{networkPercentage}%</Typography>
-      <Typography variant="body2" color={theme.palette.text.secondary}>
+      <Typography variant="body2" sx={{color: theme.palette.text.secondary}}>
         Of Network
       </Typography>
     </Stack>
@@ -136,8 +136,8 @@ function StakingBarContent({
           decimals={0}
         />
       </Typography>
-      <Stack direction="row" alignItems="center" spacing={0.5}>
-        <Typography variant="body2" color={theme.palette.text.secondary}>
+      <Stack direction="row" sx={{alignItems: "center"}} spacing={0.5}>
+        <Typography variant="body2" sx={{color: theme.palette.text.secondary}}>
           Rewards Earned So Far
         </Typography>
         <StyledLearnMoreTooltip text="Amount of rewards earned by this stake pool to date" />
@@ -196,18 +196,18 @@ function StakingBarContent({
 
   const stakingBarOnMobile = (
     <Stack direction="column" spacing={4}>
-      <Stack direction="row" spacing={4} justifyContent="space-between">
+      <Stack direction="row" spacing={4} sx={{justifyContent: "space-between"}}>
         {stakeAmount}
         {delegatedStakePercentage}
       </Stack>
-      <Stack direction="row" justifyContent="space-between">
+      <Stack direction="row" sx={{justifyContent: "space-between"}}>
         {rewardsEarned}
       </Stack>
     </Stack>
   );
 
   const stakingBarOnWeb = (
-    <Stack direction="row" spacing={4} justifyContent="space-between">
+    <Stack direction="row" spacing={4} sx={{justifyContent: "space-between"}}>
       <Stack direction="row" spacing={4}>
         {stakeAmount}
         {delegatedStakePercentage}

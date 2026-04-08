@@ -15,7 +15,6 @@ import {APTCurrencyValue} from "../../../components/IndividualPageContent/Conten
 import GasFeeValue from "../../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
-import SignatureOverviewTable from "./Components/SignatureOverviewTable";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {standardizeAddress, tryStandardizeAddress} from "../../../utils";
@@ -27,6 +26,7 @@ import {
   getTransactionAmount,
   getTransactionCounterparty,
 } from "../utils";
+import SignatureOverviewTable from "./Components/SignatureOverviewTable";
 import TransactionArguments from "./Components/TransactionArguments";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
 import TransactionFunction from "./Components/TransactionFunction";
@@ -809,8 +809,8 @@ export default function UserTransactionOverviewTab({
   }
 
   return (
-    <Box marginBottom={3}>
-      <ContentBox padding={4}>
+    <Box sx={{marginBottom: 3}}>
+      <ContentBox sx={{padding: 4}}>
         <ContentRow
           title={"Version:"}
           value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
@@ -2855,7 +2855,7 @@ const wormholeBurnAction = (
           <Link
             href={`https://wormholescan.io/#/tx/${hash}?network=Mainnet`}
             underline="none"
-            fontSize={12}
+            sx={{fontSize: 12}}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Open WormholeScan in new tab`}

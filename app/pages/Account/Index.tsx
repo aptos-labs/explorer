@@ -186,7 +186,7 @@ export default function AccountPage({
       <Grid size={{xs: 12, md: 12, lg: 12}}>
         <PageHeader />
       </Grid>
-      <Grid size={{xs: 12, md: 8, lg: 9}} alignSelf="center">
+      <Grid size={{xs: 12, md: 8, lg: 9}} sx={{alignSelf: "center"}}>
         <AccountTitle
           address={address}
           isMultisig={isMultisig}
@@ -197,10 +197,13 @@ export default function AccountPage({
           isToken={isToken}
         />
       </Grid>
-      <Grid size={{xs: 12, md: 4, lg: 3}} marginTop={{md: 0, xs: 2}}>
+      <Grid size={{xs: 12, md: 4, lg: 3}} sx={{marginTop: {md: 0, xs: 2}}}>
         <BalanceCard address={address} />
       </Grid>
-      <Grid size={{xs: 12, md: 8, lg: 12}} marginTop={4} alignSelf="center">
+      <Grid
+        size={{xs: 12, md: 8, lg: 12}}
+        sx={{marginTop: 4, alignSelf: "center"}}
+      >
         {address ? <KnownAddressBrandingBanner address={address} /> : null}
         {networkName === Network.MAINNET && <AptosNamesBanner />}
         {networkName === Network.MAINNET && (
@@ -208,7 +211,7 @@ export default function AccountPage({
         )}
         {isMultisig && <PetraVaultBanner address={address} />}
       </Grid>
-      <Grid size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
+      <Grid size={{xs: 12, md: 12, lg: 12}} sx={{marginTop: 4}}>
         {error &&
         !(isModulesRoute && error.type === ResponseErrorType.NOT_FOUND) ? (
           <>

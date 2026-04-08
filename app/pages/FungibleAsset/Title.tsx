@@ -72,7 +72,7 @@ export default function FATitle({
     : `View ${assetSymbol || "fungible asset"} on Aptos. ${metadata?.name ? `${metadata.name}. ` : ""}See token supply, decimals, holders, metadata, and transaction history.`;
 
   return (
-    <Stack direction="column" spacing={2} marginX={1}>
+    <Stack direction="column" spacing={2} sx={{marginX: 1}}>
       <PageMetadata
         title={metadataTitle}
         description={metadataDescription}

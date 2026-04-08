@@ -128,9 +128,12 @@ export default function TransactionsTab({
     <Box>
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{px: 2, py: 1}}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          px: 2,
+          py: 1,
+        }}
       >
         <FormControl size="small" sx={{minWidth: 140}}>
           <InputLabel id="activity-filter-label">Activity Type</InputLabel>
@@ -155,9 +158,8 @@ export default function TransactionsTab({
       )}
       <Stack
         direction="row"
-        justifyContent="center"
         spacing={2}
-        sx={{padding: 2}}
+        sx={{justifyContent: "center", padding: 2}}
       >
         <Button
           variant="outlined"

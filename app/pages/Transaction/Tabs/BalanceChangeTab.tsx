@@ -295,10 +295,8 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
   const verificationSelector = (
     <Stack
       direction="row"
-      justifyContent="flex-end"
       spacing={1}
-      marginY={0.5}
-      height={16}
+      sx={{justifyContent: "flex-end", marginY: 0.5, height: 16}}
     >
       <Button
         variant="text"
@@ -380,10 +378,8 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
   const viewSelector = (
     <Stack
       direction="row"
-      justifyContent="flex-end"
       spacing={1}
-      marginY={0.5}
-      height={16}
+      sx={{justifyContent: "flex-end", marginY: 0.5, height: 16}}
     >
       <Button
         variant="text"
@@ -443,10 +439,12 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
     <>
       <Stack
         direction={isMobile ? "column" : "row"}
-        justifyContent={isMobile ? "flex-start" : "space-between"}
-        alignItems={isMobile ? "stretch" : "center"}
         spacing={isMobile ? 1 : 0}
-        sx={{mb: isMobile ? 1 : 0}}
+        sx={{
+          justifyContent: isMobile ? "flex-start" : "space-between",
+          alignItems: isMobile ? "stretch" : "center",
+          mb: isMobile ? 1 : 0,
+        }}
       >
         {isMobile && networkName === Network.MAINNET && verificationSelector}
         {viewSelector}

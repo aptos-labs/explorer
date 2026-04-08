@@ -52,7 +52,7 @@ export default function TransactionPage() {
     <Grid container>
       <PageHeader />
       <Grid size={{xs: 12}}>
-        <Stack direction="column" spacing={4} marginTop={2}>
+        <Stack direction="column" spacing={4} sx={{marginTop: 2}}>
           <TransactionTitle
             transaction={data}
             urlTxnHashOrVersion={txnHashOrVersion}

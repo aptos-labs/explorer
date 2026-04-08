@@ -16,7 +16,7 @@ export default function BlockTitle({height, pathTab}: BlockTitleProps) {
   const metadataDescription = `View ${tabHead.toLowerCase()} for block ${heightLabel} on the Aptos blockchain.`;
 
   return (
-    <Stack direction="row" alignItems="center" spacing={2} marginX={1}>
+    <Stack direction="row" spacing={2} sx={{alignItems: "center", marginX: 1}}>
       <PageMetadata
         title={metadataTitle}
         description={metadataDescription}

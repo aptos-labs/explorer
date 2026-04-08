@@ -79,7 +79,7 @@ export default function FAPage() {
       <Grid size={{xs: 12, md: 12, lg: 12}}>
         <PageHeader />
       </Grid>
-      <Grid size={{xs: 12, md: 8, lg: 9}} alignSelf="center">
+      <Grid size={{xs: 12, md: 8, lg: 9}} sx={{alignSelf: "center"}}>
         <FATitle
           address={address}
           metadata={metadata ?? undefined}
@@ -104,7 +104,7 @@ export default function FAPage() {
           }
         />
       </Grid>
-      <Grid size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
+      <Grid size={{xs: 12, md: 12, lg: 12}} sx={{marginTop: 4}}>
         {error ? (
           <>
             <FATabs address={address} data={data} tabValues={tabValues} />

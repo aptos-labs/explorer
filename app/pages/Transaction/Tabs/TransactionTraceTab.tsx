@@ -51,8 +51,8 @@ export default function TransactionTraceTab({
 
   if (!isUser) {
     return (
-      <Box marginBottom={3}>
-        <ContentBox padding={{xs: 2, sm: 4}}>
+      <Box sx={{marginBottom: 3}}>
+        <ContentBox sx={{padding: {xs: 2, sm: 4}}}>
           <Typography color="text.secondary">
             Call trace is only available for user transactions.
           </Typography>
@@ -67,10 +67,10 @@ export default function TransactionTraceTab({
   );
 
   return (
-    <Box marginBottom={3}>
-      <ContentBox padding={{xs: 2, sm: 4}}>
+    <Box sx={{marginBottom: 3}}>
+      <ContentBox sx={{padding: {xs: 2, sm: 4}}}>
         <Stack spacing={2}>
-          <Typography variant="body1" fontWeight={600}>
+          <Typography variant="body1" sx={{fontWeight: 600}}>
             Move call trace
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -89,7 +89,7 @@ export default function TransactionTraceTab({
               Call traces are only fetched for Aptos mainnet in this build.
             </Alert>
           ) : traceQuery.isPending ? (
-            <Box display="flex" justifyContent="center" py={4}>
+            <Box sx={{display: "flex", justifyContent: "center", py: 4}}>
               <CircularProgress />
             </Box>
           ) : traceQuery.isError ? (

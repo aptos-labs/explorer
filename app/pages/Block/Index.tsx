@@ -40,7 +40,7 @@ export default function BlockPage() {
     <Grid container spacing={1}>
       <PageHeader />
       <Grid size={{xs: 12}}>
-        <Stack direction="column" spacing={4} marginTop={2}>
+        <Stack direction="column" spacing={4} sx={{marginTop: 2}}>
           <BlockTitle height={actualHeight} pathTab={params.tab} />
           <BlockTabs data={data} />
         </Stack>

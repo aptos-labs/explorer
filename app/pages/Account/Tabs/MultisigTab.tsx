@@ -159,9 +159,9 @@ function MultisigContent({
             <Stack
               key={owner}
               direction="row"
-              alignItems="center"
               spacing={2}
               sx={{
+                alignItems: "center",
                 mb: 1,
                 p: 1.5,
                 borderRadius: 1,

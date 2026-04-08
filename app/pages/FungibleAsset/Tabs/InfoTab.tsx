@@ -69,7 +69,7 @@ export default function InfoTab({address, data}: InfoTabProps) {
   );
 
   return (
-    <Box marginBottom={3}>
+    <Box sx={{marginBottom: 3}}>
       {data && (
         <ContentBox>
           <ContentRow title={"Name:"} value={data?.metadata?.name} />

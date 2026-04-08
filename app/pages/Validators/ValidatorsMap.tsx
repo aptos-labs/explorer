@@ -159,10 +159,12 @@ export default function ValidatorsMap() {
       {isOnMobile ? (
         <Stack
           direction="column"
-          justifyContent="space-between"
-          marginY={4}
-          sx={{backgroundColor: backgroundColor}}
-          overflow="hidden"
+          sx={{
+            justifyContent: "space-between",
+            marginY: 4,
+            backgroundColor: backgroundColor,
+            overflow: "hidden",
+          }}
         >
           {toggle}
           <ClientOnlyMap validatorGeoGroups={activeGroups} groupBy={groupBy} />
@@ -175,10 +177,12 @@ export default function ValidatorsMap() {
       ) : (
         <Stack
           direction="row"
-          justifyContent="space-between"
-          marginY={4}
-          sx={{backgroundColor: backgroundColor}}
-          overflow="hidden"
+          sx={{
+            justifyContent: "space-between",
+            marginY: 4,
+            backgroundColor: backgroundColor,
+            overflow: "hidden",
+          }}
         >
           <MapMetrics
             validatorGeoMetric={validatorGeoMetric}

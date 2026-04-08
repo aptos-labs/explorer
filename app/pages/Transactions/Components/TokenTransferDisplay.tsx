@@ -214,10 +214,12 @@ function VerifiedTokensModal({
       onClose={onClose}
       fullWidth
       maxWidth="xs"
-      PaperProps={{
-        sx: {
-          borderRadius: 2,
-          backgroundColor: theme.palette.background.paper,
+      slotProps={{
+        paper: {
+          sx: {
+            borderRadius: 2,
+            backgroundColor: theme.palette.background.paper,
+          },
         },
       }}
     >
@@ -229,7 +231,7 @@ function VerifiedTokensModal({
           pb: 1,
         }}
       >
-        <Typography variant="h6" fontWeight={600}>
+        <Typography variant="h6" sx={{fontWeight: 600}}>
           Token Transfers
         </Typography>
         <IconButton
@@ -254,16 +256,16 @@ function VerifiedTokensModal({
               <Stack
                 key={transfer.asset.id}
                 direction="row"
-                justifyContent="space-between"
-                alignItems="center"
                 sx={{
+                  justifyContent: "space-between",
+                  alignItems: "center",
                   py: 1,
                   px: 1.5,
                   borderRadius: 1,
                   backgroundColor: theme.palette.background.default,
                 }}
               >
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
                   {transfer.logoUrl && (
                     <img
                       src={transfer.logoUrl}
@@ -271,14 +273,14 @@ function VerifiedTokensModal({
                       style={{width: 24, height: 24, borderRadius: 12}}
                     />
                   )}
-                  <Typography variant="body2" fontWeight={500}>
+                  <Typography variant="body2" sx={{fontWeight: 500}}>
                     {transfer.asset.symbol}
                   </Typography>
                 </Stack>
                 <Typography
                   variant="body2"
-                  fontWeight={600}
                   sx={{
+                    fontWeight: 600,
                     color: address
                       ? isPositive
                         ? semanticColors.status.info

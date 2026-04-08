@@ -223,9 +223,8 @@ export function RewardsPerformanceCell({validator}: ValidatorCellProps) {
       {validator.rewards_growth === undefined ? null : (
         <Stack
           direction="row"
-          alignItems="center"
           spacing={1}
-          justifyContent="flex-end"
+          sx={{alignItems: "center", justifyContent: "flex-end"}}
         >
           <Box>{`${validator.rewards_growth.toFixed(2)} %`}</Box>
         </Stack>
@@ -309,10 +308,12 @@ function ValidatorCard({validator}: {validator: ValidatorData}) {
       {/* Stats */}
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        flexWrap="wrap"
-        gap={1}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 1,
+        }}
       >
         <Box>
           <Typography variant="caption" sx={{color: "text.secondary"}}>

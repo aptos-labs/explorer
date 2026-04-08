@@ -245,9 +245,13 @@ export default function ScriptBytecodeDecompiler({
   if (!hasBytecode) {
     if (!decompilationEnabled && rawBytecodeAvailable) {
       return (
-        <Box marginBottom={3}>
-          <Stack direction="row" spacing={1} marginY="16px" alignItems="center">
-            <Typography fontSize={20} fontWeight={700}>
+        <Box sx={{marginBottom: 3}}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{marginY: "16px", alignItems: "center"}}
+          >
+            <Typography sx={{fontSize: 20, fontWeight: 700}}>
               Script bytecode
             </Typography>
           </Stack>
@@ -267,16 +271,22 @@ export default function ScriptBytecodeDecompiler({
   }
 
   return (
-    <Box marginBottom={3}>
+    <Box sx={{marginBottom: 3}}>
       <Stack
         direction="row"
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
         spacing={1}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
       >
-        <Stack direction="row" spacing={1} marginY="16px" alignItems="center">
-          <Typography fontSize={20} fontWeight={700}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{marginY: "16px", alignItems: "center"}}
+        >
+          <Typography sx={{fontSize: 20, fontWeight: 700}}>
             Script bytecode
           </Typography>
           <StyledLearnMoreTooltip text="Decompiled and disassembly views are generated from on-chain script bytecode using the Move decompiler WASM (same engine as module code pages)." />
@@ -306,7 +316,7 @@ export default function ScriptBytecodeDecompiler({
                 }}
               >
                 <ContentCopy style={{height: "1.25rem", width: "1.25rem"}} />
-                <Typography marginLeft={1} sx={{whiteSpace: "nowrap"}}>
+                <Typography sx={{marginLeft: 1, whiteSpace: "nowrap"}}>
                   copy code
                 </Typography>
               </Button>
@@ -326,7 +336,7 @@ export default function ScriptBytecodeDecompiler({
               }}
             >
               <FileDownload style={{height: "1.25rem", width: "1.25rem"}} />
-              <Typography marginLeft={1} sx={{whiteSpace: "nowrap"}}>
+              <Typography sx={{marginLeft: 1, whiteSpace: "nowrap"}}>
                 download
               </Typography>
             </Button>
@@ -334,7 +344,7 @@ export default function ScriptBytecodeDecompiler({
           </Stack>
         )}
       </Stack>
-      <Stack direction="row" spacing={1} marginBottom={2}>
+      <Stack direction="row" spacing={1} sx={{marginBottom: 2}}>
         <Button
           size="small"
           variant={
@@ -356,23 +366,25 @@ export default function ScriptBytecodeDecompiler({
       </Stack>
       <Typography
         variant="body1"
-        fontSize={14}
-        fontWeight={400}
-        marginBottom="16px"
-        color={theme.palette.text.secondary}
+        sx={{
+          fontSize: 14,
+          fontWeight: 400,
+          marginBottom: "16px",
+          color: theme.palette.text.secondary,
+        }}
       >
         This view is generated from on-chain bytecode using the Move decompiler
         WASM.
       </Typography>
       {isDecompiling ? (
-        <Stack direction="row" spacing={1.5} alignItems="center" py={2}>
+        <Stack direction="row" spacing={1.5} sx={{alignItems: "center", py: 2}}>
           <CircularProgress size={18} />
           <Typography variant="body2" color="text.secondary">
             Processing script bytecode...
           </Typography>
         </Stack>
       ) : decompilationError ? (
-        <Box color={theme.palette.error.main}>
+        <Box sx={{color: theme.palette.error.main}}>
           Failed to process script bytecode: {decompilationError}
         </Box>
       ) : !displayedCode ? (

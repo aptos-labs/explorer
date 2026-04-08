@@ -109,8 +109,7 @@ export function Banner({
           <Stack
             direction="row"
             spacing={1.5}
-            alignItems="center"
-            sx={{flex: 1, minWidth: 0, flexWrap: "wrap"}}
+            sx={{alignItems: "center", flex: 1, minWidth: 0, flexWrap: "wrap"}}
           >
             {pill}
             <Typography
@@ -129,8 +128,8 @@ export function Banner({
           <Stack
             direction="row"
             spacing={1}
-            alignItems="center"
             sx={{
+              alignItems: "center",
               flex: "0 0 auto",
               alignSelf: isSmall ? "flex-end" : "center",
             }}

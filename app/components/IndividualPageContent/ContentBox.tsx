@@ -11,9 +11,9 @@ export default function ContentBox({children, ...props}: ContentBoxProps) {
 
   return (
     <Box
-      padding={4}
-      marginTop={3}
       sx={{
+        padding: 4,
+        marginTop: 3,
         backgroundColor: backgroundColor,
         borderRadius: `${theme.shape.borderRadius}px`,
       }}

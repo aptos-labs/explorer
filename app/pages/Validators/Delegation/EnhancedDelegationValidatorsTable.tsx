@@ -470,8 +470,7 @@ function MyDepositCell({validator}: {validator: ValidatorWithExtendedData}) {
         <Stack
           direction="row"
           spacing={1.5}
-          alignItems="center"
-          justifyContent="flex-end"
+          sx={{alignItems: "center", justifyContent: "flex-end"}}
         >
           <CheckCircleIcon
             sx={{color: theme.palette.success.main}}
@@ -613,7 +612,7 @@ function EnhancedDelegationValidatorCard({
       }}
     >
       {/* Status */}
-      <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1}}>
+      <Stack direction="row" spacing={1} sx={{alignItems: "center", mb: 1}}>
         <ValidatorStatusIcon validatorStatus={validatorStatus} />
         <Typography variant="body2" sx={{fontWeight: 500}}>
           {validatorStatus}
@@ -654,11 +653,13 @@ function EnhancedDelegationValidatorCard({
       {/* Row 2: Key metrics */}
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        flexWrap="wrap"
-        gap={1.5}
-        sx={{mb: connected ? 1 : 0}}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          flexWrap: "wrap",
+          gap: 1.5,
+          mb: connected ? 1 : 0,
+        }}
       >
         <Box>
           <Typography variant="caption" sx={{color: "text.secondary"}}>
@@ -722,9 +723,9 @@ function EnhancedDelegationValidatorCard({
       {connected && (
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
           sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
             pt: 1,
             borderTop: `1px solid ${theme.palette.divider}`,
           }}
@@ -733,7 +734,7 @@ function EnhancedDelegationValidatorCard({
             My Deposit
           </Typography>
           {validator.userStake !== undefined && validator.userStake > 0 ? (
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
               <CheckCircleIcon
                 sx={{color: theme.palette.success.main}}
                 fontSize="small"
@@ -852,7 +853,10 @@ export function EnhancedDelegationValidatorsTable() {
               <Skeleton variant="text" width={100} height={24} sx={{mb: 1}} />
               <Skeleton variant="text" width="60%" height={20} sx={{mb: 0.5}} />
               <Skeleton variant="text" width="50%" height={20} sx={{mb: 1.5}} />
-              <Stack direction="row" justifyContent="space-between" gap={1}>
+              <Stack
+                direction="row"
+                sx={{justifyContent: "space-between", gap: 1}}
+              >
                 <Skeleton variant="text" width={70} height={40} />
                 <Skeleton variant="text" width={60} height={40} />
                 <Skeleton variant="text" width={50} height={40} />

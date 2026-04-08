@@ -237,11 +237,13 @@ export default function AccountAllTransactions({
         <>
           <Stack
             direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{my: isCountUnknown ? 0 : 2}}
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              my: isCountUnknown ? 0 : 2,
+            }}
           >
-            <Typography variant="body1" fontWeight="medium">
+            <Typography variant="body1" sx={{fontWeight: "medium"}}>
               {isCountUnknown
                 ? `Showing up to ${txnCount.toLocaleString()} transactions`
                 : `${txnCount.toLocaleString()} transactions`}

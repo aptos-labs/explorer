@@ -22,7 +22,7 @@ export default function Staking({isSkeletonLoading}: StakingProps) {
 
   return !isSkeletonLoading ? (
     <MetricSection>
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
         <Subtitle>
           {totalVotingPower
             ? getFormattedBalanceStr(totalVotingPower, undefined, 0)
@@ -30,7 +30,7 @@ export default function Staking({isSkeletonLoading}: StakingProps) {
         </Subtitle>
         <Body color="inherit">APT Staked</Body>
       </Stack>
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
         <Body>{`${rewardsRateYearly}% APR Reward`}</Body>{" "}
         <StyledLearnMoreTooltip
           text={REWARDS_TOOLTIP_TEXT}
@@ -40,10 +40,10 @@ export default function Staking({isSkeletonLoading}: StakingProps) {
     </MetricSection>
   ) : (
     <MetricSection>
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
         <Skeleton width={190} />
       </Stack>
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
         <Skeleton width={150} />
       </Stack>
     </MetricSection>

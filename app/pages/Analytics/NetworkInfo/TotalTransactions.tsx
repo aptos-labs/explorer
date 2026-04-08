@@ -20,7 +20,7 @@ export default function TotalTransactions() {
 
   return (
     <Stack direction="column">
-      <Typography variant="body2" alignSelf="flex-end">
+      <Typography variant="body2" sx={{alignSelf: "flex-end"}}>
         {`TOTAL TRANSACTIONS: ${
           ledgerVersion
             ? parseInt(ledgerVersion, 10).toLocaleString("en-US")

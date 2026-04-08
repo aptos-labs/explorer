@@ -17,8 +17,8 @@ export default function UnknownTab({transaction}: UnknownTabProps) {
     transaction as Types.Transaction_BlockMetadataTransaction;
 
   return (
-    <Box marginBottom={3}>
-      <ContentBox padding={4}>
+    <Box sx={{marginBottom: 3}}>
+      <ContentBox sx={{padding: 4}}>
         <Alert severity="warning">{`Unknown transaction type: "${transaction.type}"`}</Alert>
         <ContentRow
           title={"Version:"}

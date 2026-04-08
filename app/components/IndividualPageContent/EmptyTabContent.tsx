@@ -8,7 +8,7 @@ type EmptyTabContentProps = {
 
 export default function EmptyTabContent({message}: EmptyTabContentProps) {
   return (
-    <Box marginBottom={3}>
+    <Box sx={{marginBottom: 3}}>
       <ContentBox>{message ?? `No Data Found`}</ContentBox>
     </Box>
   );

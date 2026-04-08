@@ -163,7 +163,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
   const showImage = resolvedImageUrl && imageState !== "failed";
 
   return (
-    <Box marginBottom={3}>
+    <Box sx={{marginBottom: 3}}>
       <ContentBox>
         <ContentRow title={"Token Name:"} value={data?.token_name} />
         <OwnersRow />
@@ -187,8 +187,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
               {/* Always show the display URL first (ipfs:// for IPFS links) */}
               {metadataDisplayUrl && (
                 <Typography
-                  fontSize="0.8rem"
-                  sx={{wordBreak: "break-all"}}
+                  sx={{fontSize: "0.8rem", wordBreak: "break-all"}}
                   component="div"
                 >
                   {isValidUrl(metadataLoadUrl) ? (
@@ -209,7 +208,9 @@ export default function OverviewTab({data}: OverviewTabProps) {
               {isLoadingMetadata && (
                 <Box sx={{display: "flex", alignItems: "center", gap: 1}}>
                   <CircularProgress size={16} />
-                  <Typography fontSize="0.75rem" color="text.secondary">
+                  <Typography
+                    sx={{fontSize: "0.75rem", color: "text.secondary"}}
+                  >
                     Loading metadata...
                   </Typography>
                 </Box>

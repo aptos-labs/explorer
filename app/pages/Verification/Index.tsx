@@ -23,8 +23,8 @@ export default function VerificationPage() {
         ]}
         canonicalPath="/verification"
       />
-      <Box maxWidth="lg" mx="auto" px={3}>
-        <Typography variant="h3" component="h1" mb={4}>
+      <Box sx={{maxWidth: "lg", mx: "auto", px: 3}}>
+        <Typography variant="h3" component="h1" sx={{mb: 4}}>
           Token & Address Verification Instructions
         </Typography>
 
@@ -36,7 +36,7 @@ export default function VerificationPage() {
         </Alert>
 
         <Paper sx={{p: 4, mb: 4}}>
-          <Typography variant="h4" component="h2" mb={3}>
+          <Typography variant="h4" component="h2" sx={{mb: 3}}>
             Token Verification
           </Typography>
 
@@ -53,15 +53,15 @@ export default function VerificationPage() {
             repository, not through this explorer directly.
           </Alert>
 
-          <Typography variant="body1" mb={2}>
+          <Typography variant="body1" sx={{mb: 2}}>
             To get your token verified on Aptos Explorer, you must be added to
             the community-maintained Panora token list.
           </Typography>
 
-          <Typography variant="h6" component="h3" mt={3} mb={2}>
+          <Typography variant="h6" component="h3" sx={{mt: 3, mb: 2}}>
             1. Community Verification (Panora Token List)
           </Typography>
-          <Typography variant="body1" mb={2}>
+          <Typography variant="body1" sx={{mb: 2}}>
             Submit your token to the Panora community token list:
           </Typography>
           <Box sx={{pl: 2, mb: 2}}>
@@ -74,10 +74,10 @@ export default function VerificationPage() {
             </Link>
           </Box>
 
-          <Typography variant="h6" component="h3" mt={3} mb={2}>
+          <Typography variant="h6" component="h3" sx={{mt: 3, mb: 2}}>
             2. Labs Verification (Manual Process)
           </Typography>
-          <Typography variant="body1" mb={2}>
+          <Typography variant="body1" sx={{mb: 2}}>
             For special cases, tokens can be manually verified by the Aptos Labs
             team. This process is reserved for:
           </Typography>
@@ -88,7 +88,7 @@ export default function VerificationPage() {
             <li>Tokens with special significance to the Aptos ecosystem</li>
           </Box>
 
-          <Typography variant="h6" component="h3" mt={3} mb={2}>
+          <Typography variant="h6" component="h3" sx={{mt: 3, mb: 2}}>
             3. Verification Levels
           </Typography>
           <Box component="ul" sx={{pl: 3, mb: 2}}>
@@ -116,19 +116,19 @@ export default function VerificationPage() {
         </Paper>
 
         <Paper sx={{p: 4, mb: 4}}>
-          <Typography variant="h4" component="h2" mb={3}>
+          <Typography variant="h4" component="h2" sx={{mb: 3}}>
             Address Verification
           </Typography>
-          <Typography variant="body1" mb={2}>
+          <Typography variant="body1" sx={{mb: 2}}>
             Address verification helps users identify legitimate project
             addresses and avoid scams. Address verification requests are handled
             directly through the explorer's GitHub repository.
           </Typography>
 
-          <Typography variant="h6" component="h3" mt={3} mb={2}>
+          <Typography variant="h6" component="h3" sx={{mt: 3, mb: 2}}>
             1. Submission Process
           </Typography>
-          <Typography variant="body1" mb={2}>
+          <Typography variant="body1" sx={{mb: 2}}>
             Create a verification request using the GitHub issue template:
           </Typography>
           <Box sx={{pl: 2, mb: 2}}>
@@ -141,7 +141,7 @@ export default function VerificationPage() {
             </Link>
           </Box>
 
-          <Typography variant="h6" component="h3" mt={3} mb={2}>
+          <Typography variant="h6" component="h3" sx={{mt: 3, mb: 2}}>
             2. Required Information
           </Typography>
           <Box component="ul" sx={{pl: 3, mb: 2}}>
@@ -159,7 +159,7 @@ export default function VerificationPage() {
             </li>
           </Box>
 
-          <Typography variant="h6" component="h3" mt={3} mb={2}>
+          <Typography variant="h6" component="h3" sx={{mt: 3, mb: 2}}>
             3. Eligible Addresses
           </Typography>
           <Box component="ul" sx={{pl: 3, mb: 2}}>
@@ -171,10 +171,10 @@ export default function VerificationPage() {
             <li>DeFi protocol addresses</li>
           </Box>
 
-          <Typography variant="h6" component="h3" mt={3} mb={2}>
+          <Typography variant="h6" component="h3" sx={{mt: 3, mb: 2}}>
             4. Verification Documentation
           </Typography>
-          <Typography variant="body1" mb={2}>
+          <Typography variant="body1" sx={{mb: 2}}>
             Provide comprehensive documentation to verify the address:
           </Typography>
           <Box component="ul" sx={{pl: 3, mb: 2}}>
@@ -187,7 +187,7 @@ export default function VerificationPage() {
         </Paper>
 
         <Paper sx={{p: 4}}>
-          <Typography variant="h4" component="h2" mb={3}>
+          <Typography variant="h4" component="h2" sx={{mb: 3}}>
             Important Security Information
           </Typography>
 
@@ -198,35 +198,35 @@ export default function VerificationPage() {
             handled through official GitHub repositories.
           </Alert>
 
-          <Typography variant="h6" component="h3" mt={2} mb={2}>
+          <Typography variant="h6" component="h3" sx={{mt: 2, mb: 2}}>
             Network Availability
           </Typography>
-          <Typography variant="body1" mb={2}>
+          <Typography variant="body1" sx={{mb: 2}}>
             Verification badges are only displayed on Mainnet. Other networks
             (testnet, devnet) show "No Verification" status.
           </Typography>
 
-          <Typography variant="h6" component="h3" mt={2} mb={2}>
+          <Typography variant="h6" component="h3" sx={{mt: 2, mb: 2}}>
             Banned Assets
           </Typography>
-          <Typography variant="body1" mb={2}>
+          <Typography variant="body1" sx={{mb: 2}}>
             Assets can be marked as banned if they are identified as scams or
             dangerous. Banned assets display red warning badges.
           </Typography>
 
-          <Typography variant="h6" component="h3" mt={2} mb={2}>
+          <Typography variant="h6" component="h3" sx={{mt: 2, mb: 2}}>
             Processing Time
           </Typography>
-          <Typography variant="body1" mb={2}>
+          <Typography variant="body1" sx={{mb: 2}}>
             Address verification requests are typically reviewed within 1-2
             weeks. Token verification through Panora follows their community
             review process.
           </Typography>
 
-          <Typography variant="h6" component="h3" mt={2} mb={2}>
+          <Typography variant="h6" component="h3" sx={{mt: 2, mb: 2}}>
             Support
           </Typography>
-          <Typography variant="body1" mb={2}>
+          <Typography variant="body1" sx={{mb: 2}}>
             For questions about verification:
           </Typography>
           <Box component="ul" sx={{pl: 3}}>

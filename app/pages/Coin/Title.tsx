@@ -64,7 +64,7 @@ export default function CoinTitle({
     : `View ${assetSymbol || "coin"} on Aptos. ${coinData?.name ? `${coinData.name}. ` : ""}See token supply, holders, price, transactions, and market information.`;
 
   return (
-    <Stack direction="column" spacing={2} marginX={1}>
+    <Stack direction="column" spacing={2} sx={{marginX: 1}}>
       <PageMetadata
         title={metadataTitle}
         description={metadataDescription}

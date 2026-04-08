@@ -36,7 +36,7 @@ export function KnownAddressBrandingBanner({
       <Stack
         direction={{xs: "column", sm: "row"}}
         spacing={2}
-        alignItems={{sm: "flex-start"}}
+        sx={{alignItems: {sm: "flex-start"}}}
       >
         <Box
           sx={{

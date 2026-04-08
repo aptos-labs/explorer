@@ -48,7 +48,7 @@ export default function WalletButton({
               src={wallet?.icon}
               sx={{width: 24, height: 24}}
             />
-            <Typography noWrap ml={2}>
+            <Typography noWrap sx={{ml: 2}}>
               {account?.ansName ||
                 truncateAddress(account?.address?.toString()) ||
                 "Unknown"}

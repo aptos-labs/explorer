@@ -37,8 +37,8 @@ export default function TimestampValue({
   };
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
-      <Typography fontSize="inherit">{timestamp_display}</Typography>
+    <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
+      <Typography sx={{fontSize: "inherit"}}>{timestamp_display}</Typography>
       <StyledTooltip
         title="Timestamp copied"
         placement="right"

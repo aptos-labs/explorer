@@ -389,7 +389,7 @@ function MyDepositCell({validator}: ValidatorCellProps) {
           />
         </Stack>
       ) : (
-        <Stack textAlign="center">
+        <Stack sx={{textAlign: "center"}}>
           <Typography>N/A</Typography>
         </Stack>
       )}
@@ -477,7 +477,7 @@ function DelegationValidatorCard({
       }}
     >
       {/* Status */}
-      <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1}}>
+      <Stack direction="row" spacing={1} sx={{alignItems: "center", mb: 1}}>
         <ValidatorStatusIcon validatorStatus={validatorStatus} />
         <Typography variant="body2" sx={{fontWeight: 500}}>
           {validatorStatus}
@@ -513,11 +513,13 @@ function DelegationValidatorCard({
       {/* Row 2: Key metrics */}
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        flexWrap="wrap"
-        gap={1.5}
-        sx={{mb: connected && account ? 1 : 0}}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          flexWrap: "wrap",
+          gap: 1.5,
+          mb: connected && account ? 1 : 0,
+        }}
       >
         <Box>
           <Typography variant="caption" sx={{color: "text.secondary"}}>
@@ -575,9 +577,9 @@ function DelegationValidatorCard({
       {connected && account && (
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
           sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
             pt: 1,
             borderTop: `1px solid ${theme.palette.divider}`,
           }}
@@ -586,7 +588,7 @@ function DelegationValidatorCard({
             My Deposit
           </Typography>
           {totalDeposit !== undefined && Number(totalDeposit) !== 0 ? (
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} sx={{alignItems: "center"}}>
               <CheckCircleIcon
                 sx={{color: theme.palette.primary.main}}
                 fontSize="small"

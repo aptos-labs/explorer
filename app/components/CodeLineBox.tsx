@@ -39,11 +39,11 @@ export function CodeLineBox({
             : {
                 borderStyle: "solid",
               }),
+          borderColor: codeBlockBg,
+          borderRadius: 50,
         },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
-      borderColor={codeBlockBg}
-      borderRadius={50}
     >
       {children}
     </Box>

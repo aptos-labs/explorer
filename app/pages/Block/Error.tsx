@@ -1,4 +1,4 @@
-import {ErrorOutline} from "@mui/icons-material";
+import {ErrorOutlined} from "@mui/icons-material";
 import {Stack, Typography, useTheme} from "@mui/material";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
@@ -14,8 +14,8 @@ export default function BlockError({error, height}: ErrorProps) {
   if (error.type === ResponseErrorType.NOT_FOUND) {
     return (
       <ContentBox>
-        <Stack direction="row" spacing={2} alignItems="flex-start">
-          <ErrorOutline
+        <Stack direction="row" spacing={2} sx={{alignItems: "flex-start"}}>
+          <ErrorOutlined
             sx={{
               color: theme.palette.error.main,
               fontSize: 28,
@@ -37,8 +37,8 @@ export default function BlockError({error, height}: ErrorProps) {
   } else {
     return (
       <ContentBox>
-        <Stack direction="row" spacing={2} alignItems="flex-start">
-          <ErrorOutline
+        <Stack direction="row" spacing={2} sx={{alignItems: "flex-start"}}>
+          <ErrorOutlined
             sx={{
               color: theme.palette.error.main,
               fontSize: 28,

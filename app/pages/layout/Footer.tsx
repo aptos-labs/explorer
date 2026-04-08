@@ -42,17 +42,21 @@ export default function Footer() {
       <Container maxWidth="xl" sx={{paddingTop: "2rem", paddingBottom: "2rem"}}>
         <Grid
           container
-          gap={4}
-          alignContent="center"
-          alignItems="center"
-          direction={{xs: "column", md: "row"}}
+          sx={{
+            flexDirection: {xs: "column", md: "row"},
+            gap: 4,
+            alignContent: "center",
+            alignItems: "center",
+          }}
         >
           <Grid
             size={{xs: "auto"}}
-            gap={1}
             container
-            alignItems={{xs: "center", md: "start"}}
-            direction="column"
+            sx={{
+              flexDirection: "column",
+              gap: 1,
+              alignItems: {xs: "center", md: "start"},
+            }}
           >
             <Link
               color="inherit"
@@ -68,13 +72,13 @@ export default function Footer() {
                 <LogoFullLight width="8rem" height="3rem" />
               )}
             </Link>
-            <Grid container direction="row" padding="0" spacing={2}>
+            <Grid container direction="row" spacing={2} sx={{padding: "0"}}>
               <Typography
                 sx={{
                   textAlign: {xs: "center", md: "left"},
                   fontFamily: theme.typography.fontFamily,
+                  fontSize: "0.8rem",
                 }}
-                fontSize="0.8rem"
               >
                 © {new Date().getFullYear()}{" "}
                 <Box component="span" sx={{whiteSpace: "nowrap"}}>
@@ -84,7 +88,7 @@ export default function Footer() {
               <Stack
                 direction="row"
                 spacing={1}
-                justifyContent={{xs: "center", md: "start"}}
+                sx={{justifyContent: {xs: "center", md: "start"}}}
               >
                 <Link
                   color="inherit"
@@ -126,15 +130,14 @@ export default function Footer() {
 
           <Grid
             size={{xs: "auto"}}
-            sx={{marginLeft: {xs: "0", md: "auto"}}}
+            sx={{marginLeft: {xs: "0", md: "auto"}, justifyContent: "end"}}
             container
-            justifyContent="end"
           >
             <Grid
               container
-              justifyContent={{xs: "center", md: "end"}}
               spacing={3}
               direction="row"
+              sx={{justifyContent: {xs: "center", md: "end"}}}
             >
               {socialLinks.map((link) => (
                 <Grid key={link.title}>

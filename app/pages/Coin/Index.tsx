@@ -68,7 +68,7 @@ export default function CoinPage() {
       <Grid size={{xs: 12, md: 12, lg: 12}}>
         <PageHeader />
       </Grid>
-      <Grid size={{xs: 12, md: 8, lg: 9}} alignSelf="center">
+      <Grid size={{xs: 12, md: 8, lg: 9}} sx={{alignSelf: "center"}}>
         <CoinTitle
           struct={struct}
           coinData={coinData}
@@ -88,7 +88,7 @@ export default function CoinPage() {
           )}
         />
       </Grid>
-      <Grid size={{xs: 12, md: 12, lg: 12}} marginTop={4}>
+      <Grid size={{xs: 12, md: 12, lg: 12}} sx={{marginTop: 4}}>
         {error ? (
           <>
             <CoinTabs

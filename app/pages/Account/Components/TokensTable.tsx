@@ -179,15 +179,12 @@ function TokenCard({token}: {token: TokenOwnership}) {
       {/* Row 1: Token Name, Type badge, Warning if banned */}
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 0.75}}
+        sx={{justifyContent: "space-between", alignItems: "center", mb: 0.75}}
       >
         <Stack
           direction="row"
           spacing={1}
-          alignItems="center"
-          sx={{flex: 1, minWidth: 0}}
+          sx={{alignItems: "center", flex: 1, minWidth: 0}}
         >
           <Typography
             sx={{
@@ -226,7 +223,10 @@ function TokenCard({token}: {token: TokenOwnership}) {
       </Stack>
 
       {/* Row 2: Collection, Amount */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack
+        direction="row"
+        sx={{justifyContent: "space-between", alignItems: "center"}}
+      >
         <Typography
           sx={{
             fontSize: "0.85rem",

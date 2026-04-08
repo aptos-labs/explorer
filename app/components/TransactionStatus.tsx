@@ -25,14 +25,14 @@ export const TransactionStatus = memo(function TransactionStatus({
     <Stack
       direction="row"
       spacing={1}
-      paddingY={0.7}
-      alignItems="center"
-      justifyContent="center"
       sx={{
+        paddingY: 0.7,
+        alignItems: "center",
+        justifyContent: "center",
         backgroundColor: successBackgroundColor,
         width: 114,
+        borderRadius: 1,
       }}
-      borderRadius={1}
     >
       <CheckCircleIcon
         fontSize="small"
@@ -47,14 +47,14 @@ export const TransactionStatus = memo(function TransactionStatus({
     <Stack
       direction="row"
       spacing={1}
-      paddingY={0.7}
-      alignItems="center"
-      justifyContent="center"
       sx={{
+        paddingY: 0.7,
+        alignItems: "center",
+        justifyContent: "center",
         backgroundColor: errorBackgroundColor,
         width: 90,
+        borderRadius: 1,
       }}
-      borderRadius={1}
     >
       <ErrorOutlinedIcon
         fontSize="small"

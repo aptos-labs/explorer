@@ -91,7 +91,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
 
   return (
     blockTxn && (
-      <Box marginBottom={3}>
+      <Box sx={{marginBottom: 3}}>
         <ContentBox>
           <ContentRow
             title={"Block Height:"}

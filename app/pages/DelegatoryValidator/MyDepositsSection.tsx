@@ -369,7 +369,7 @@ function MyDepositSectionContent({
     <MyDepositSectionSkeleton />
   ) : hasStakes ? (
     <Stack>
-      <Typography variant="h5" marginX={1}>
+      <Typography variant="h5" sx={{marginX: 1}}>
         My Deposits
       </Typography>
       <Table aria-label="My deposits" data-entity-type="deposit">

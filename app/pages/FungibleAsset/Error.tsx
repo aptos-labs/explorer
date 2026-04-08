@@ -1,4 +1,4 @@
-import {ErrorOutline} from "@mui/icons-material";
+import {ErrorOutlined} from "@mui/icons-material";
 import {Stack, Typography, useTheme} from "@mui/material";
 import type React from "react";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
@@ -14,8 +14,8 @@ export default function FungibleAssetError({error, address}: ErrorProps) {
 
   const renderErrorContent = (title: string, message: React.ReactNode) => (
     <ContentBox>
-      <Stack direction="row" spacing={2} alignItems="flex-start">
-        <ErrorOutline
+      <Stack direction="row" spacing={2} sx={{alignItems: "flex-start"}}>
+        <ErrorOutlined
           sx={{
             color: theme.palette.error.main,
             fontSize: 28,

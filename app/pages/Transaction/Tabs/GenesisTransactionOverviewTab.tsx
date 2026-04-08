@@ -16,7 +16,7 @@ export default function GenesisTransactionOverviewTab({
   const transactionData = transaction as Types.Transaction_GenesisTransaction;
 
   return (
-    <Box marginBottom={3}>
+    <Box sx={{marginBottom: 3}}>
       <ContentBox>
         <ContentRow
           title={"Version:"}

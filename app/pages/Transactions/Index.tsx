@@ -49,8 +49,11 @@ export default function TransactionsPage() {
         canonicalPath="/transactions"
       />
       <PageHeader />
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography variant="h3" component="h1" marginBottom={2}>
+      <Stack
+        direction="row"
+        sx={{justifyContent: "space-between", alignItems: "center"}}
+      >
+        <Typography variant="h3" component="h1" sx={{marginBottom: 2}}>
           {allTxnOnly ? "All Transactions" : "User Transactions"}
         </Typography>
         {isGraphqlClientSupported && (

@@ -238,9 +238,9 @@ export default function JsonViewCard({
         // All value types: blue-based hover (matches JS selector [class*="value"])
         // Covers: string, int, float, bool, null, undefined, bigint, nan, date, url, etc.
         '& [class*="-value"]': valueHoverStyle,
+        padding: 2,
+        borderRadius: 1,
       }}
-      padding={2}
-      borderRadius={1}
       onClick={handleClick}
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}

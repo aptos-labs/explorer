@@ -178,15 +178,12 @@ function CoinCard({
       {/* Row 1: Logo, Name, Symbol, Verified badge */}
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 0.75}}
+        sx={{justifyContent: "space-between", alignItems: "center", mb: 0.75}}
       >
         <Stack
           direction="row"
           spacing={1.5}
-          alignItems="center"
-          sx={{flex: 1, minWidth: 0}}
+          sx={{alignItems: "center", flex: 1, minWidth: 0}}
         >
           {coin.logoUrl && (
             <Box
@@ -219,7 +216,7 @@ function CoinCard({
             </Typography>
           </Box>
         </Stack>
-        <Stack direction="row" alignItems="center" spacing={1}>
+        <Stack direction="row" sx={{alignItems: "center"}} spacing={1}>
           <Typography
             variant="caption"
             sx={{
@@ -241,8 +238,7 @@ function CoinCard({
       {inMainnet && (
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+          sx={{justifyContent: "space-between", alignItems: "center"}}
         >
           <Box>
             <Typography
@@ -591,10 +587,8 @@ export default function CoinsListTable({
   const filterSelector = (
     <Stack
       direction="row"
-      justifyContent="flex-end"
+      sx={{justifyContent: "flex-end", marginY: 0.5, height: 16}}
       spacing={1}
-      marginY={0.5}
-      height={16}
     >
       <Button
         variant="text"
@@ -687,8 +681,10 @@ export default function CoinsListTable({
         />
       }
       label="Show Emojicoins"
-      componentsProps={{
-        typography: {fontSize: 12, fontWeight: 600, color: unselectedTextColor},
+      slotProps={{
+        typography: {
+          sx: {fontSize: 12, fontWeight: 600, color: unselectedTextColor},
+        },
       }}
       sx={{mr: 0}}
     />
@@ -754,12 +750,14 @@ export default function CoinsListTable({
             placeholder="Search by name, symbol, or address..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{color: "text.secondary"}} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{color: "text.secondary"}} />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{
               "& .MuiOutlinedInput-root": {
@@ -769,8 +767,7 @@ export default function CoinsListTable({
           />
           <Stack
             direction="row"
-            justifyContent="space-between"
-            alignItems="center"
+            sx={{justifyContent: "space-between", alignItems: "center"}}
           >
             {emojicoinToggle}
             {filterSelector}
@@ -813,21 +810,21 @@ export default function CoinsListTable({
     <>
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 2}}
+        sx={{justifyContent: "space-between", alignItems: "center", mb: 2}}
       >
         <TextField
           size="small"
           placeholder="Search by name, symbol, or address..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{color: "text.secondary"}} />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{color: "text.secondary"}} />
+                </InputAdornment>
+              ),
+            },
           }}
           sx={{
             width: 350,
@@ -836,7 +833,7 @@ export default function CoinsListTable({
             },
           }}
         />
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack direction="row" sx={{alignItems: "center"}} spacing={2}>
           {emojicoinToggle}
           {filterSelector}
         </Stack>

@@ -190,9 +190,8 @@ function TableItemDetails({
                 <Stack
                   key={`${account.address}::${account.resourceType}`}
                   direction="row"
-                  alignItems="center"
                   spacing={1}
-                  flexWrap="wrap"
+                  sx={{alignItems: "center", flexWrap: "wrap"}}
                 >
                   <HashButton hash={account.address} type={HashType.ACCOUNT} />
                   <Typography

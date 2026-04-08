@@ -137,7 +137,7 @@ export default function SettingsPage() {
       />
       <PageHeader />
       <Container maxWidth="md" sx={{py: 4}}>
-        <Typography variant="h4" fontWeight={700} gutterBottom>
+        <Typography variant="h4" sx={{fontWeight: 700}} gutterBottom>
           Settings
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{mb: 4}}>
@@ -159,11 +159,10 @@ export default function SettingsPage() {
             <Stack spacing={2}>
               <Stack
                 direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
+                sx={{justifyContent: "space-between", alignItems: "flex-start"}}
               >
                 <Box>
-                  <Typography variant="h6" fontWeight={600}>
+                  <Typography variant="h6" sx={{fontWeight: 600}}>
                     Move Bytecode Decompilation
                   </Typography>
                   <Typography
@@ -184,8 +183,10 @@ export default function SettingsPage() {
                       enableDecompilation: event.target.checked,
                     }))
                   }
-                  inputProps={{
-                    "aria-label": "Enable Move bytecode decompilation",
+                  slotProps={{
+                    input: {
+                      "aria-label": "Enable Move bytecode decompilation",
+                    },
                   }}
                 />
               </Stack>
@@ -194,7 +195,7 @@ export default function SettingsPage() {
                 severity="warning"
                 icon={<WarningAmberIcon fontSize="small" />}
               >
-                <Typography variant="body2" fontWeight={600} gutterBottom>
+                <Typography variant="body2" sx={{fontWeight: 600}} gutterBottom>
                   Disclaimer — Please read before enabling
                 </Typography>
                 <Typography variant="body2">
@@ -232,8 +233,16 @@ export default function SettingsPage() {
           <Paper variant="outlined" sx={{p: 3}}>
             <Stack spacing={2.5}>
               <Box>
-                <Stack direction="row" alignItems="center" spacing={0.5}>
-                  <Typography variant="h6" fontWeight={600} component="span">
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  sx={{alignItems: "center"}}
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{fontWeight: 600}}
+                    component="span"
+                  >
                     API Key Overrides
                   </Typography>
                   <IconButton
@@ -383,7 +392,7 @@ export default function SettingsPage() {
           <Divider />
 
           {/* Save / Reset actions */}
-          <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Stack direction="row" spacing={2} sx={{justifyContent: "flex-end"}}>
             <Button
               onClick={handleReset}
               disabled={isSaving || !hasChanges}

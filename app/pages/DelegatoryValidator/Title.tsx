@@ -27,7 +27,7 @@ export default function ValidatorTitle({
   return isSkeletonLoading ? (
     ValidatorTitleSkeleton()
   ) : (
-    <Stack direction="column" spacing={4} marginX={1}>
+    <Stack direction="column" spacing={4} sx={{marginX: 1}}>
       <PageMetadata
         title={`Validator ${shortAddress}`}
         description={`View Aptos validator ${shortAddress}. Status: ${statusText}. See delegation pool, commission rates, stake amounts, voting power, rewards, and performance metrics.`}

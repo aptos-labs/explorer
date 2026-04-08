@@ -8,7 +8,7 @@ import ContentCopy from "@mui/icons-material/ContentCopy";
 import ErrorIcon from "@mui/icons-material/Error";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import HelpOutline from "@mui/icons-material/HelpOutline";
+import HelpOutline from "@mui/icons-material/HelpOutlined";
 import OpenInNew from "@mui/icons-material/OpenInNew";
 import Search from "@mui/icons-material/Search";
 import {
@@ -325,7 +325,7 @@ function Contract({
 
   if (isLoading) {
     return (
-      <Box display="flex" justifyContent="center" py={8}>
+      <Box sx={{display: "flex", justifyContent: "center", py: 8}}>
         <CircularProgress />
       </Box>
     );
@@ -410,7 +410,7 @@ function Contract({
           }}
         >
           {!module || !fn ? (
-            <Box textAlign="center" py={6}>
+            <Box sx={{textAlign: "center", py: 6}}>
               <Typography variant="h6" color="text.secondary" gutterBottom>
                 Select a function to {isRead ? "view" : "run"}
               </Typography>
@@ -530,12 +530,14 @@ function ContractSidebar({
             placeholder="Search functions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search fontSize="small" color="action" />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search fontSize="small" color="action" />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{mb: 2}}
           />
@@ -554,12 +556,12 @@ function ContractSidebar({
             {Object.entries(filteredModuleAndFns)
               .sort((a, b) => a[0].localeCompare(b[0]))
               .map(([moduleName, fns]) => (
-                <Box key={moduleName} mb={2}>
+                <Box key={moduleName} sx={{mb: 2}}>
                   <Typography
                     variant="caption"
-                    fontWeight={600}
                     color="text.secondary"
                     sx={{
+                      fontWeight: 600,
                       display: "block",
                       mb: 1,
                       textTransform: "uppercase",
@@ -594,8 +596,7 @@ function ContractSidebar({
               <Typography
                 variant="body2"
                 color="text.secondary"
-                textAlign="center"
-                py={4}
+                sx={{textAlign: "center", py: 4}}
               >
                 No functions match "{searchQuery}"
               </Typography>
@@ -888,7 +889,11 @@ function RunContractForm({
 
             {ansError && (
               <ResultCard success={false} sx={{mt: 3}}>
-                <Stack direction="row" spacing={1} alignItems="flex-start">
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{alignItems: "flex-start"}}
+                >
                   <ErrorIcon color="error" fontSize="small" />
                   <Box>
                     <Typography variant="subtitle2" color="error">
@@ -904,13 +909,17 @@ function RunContractForm({
 
             {!transactionInProcess && transactionResponse && !ansError && (
               <ResultCard success={isFunctionSuccess} sx={{mt: 3}}>
-                <Stack direction="row" spacing={1} alignItems="flex-start">
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{alignItems: "flex-start"}}
+                >
                   {isFunctionSuccess ? (
                     <CheckCircle color="success" fontSize="small" />
                   ) : (
                     <ErrorIcon color="error" fontSize="small" />
                   )}
-                  <Box flex={1}>
+                  <Box sx={{flex: 1}}>
                     <Typography
                       variant="subtitle2"
                       color={isFunctionSuccess ? "success.main" : "error"}
@@ -935,13 +944,12 @@ function RunContractForm({
                         <Stack
                           direction="row"
                           spacing={1}
-                          alignItems="center"
-                          sx={{mt: 1}}
+                          sx={{alignItems: "center", mt: 1}}
                         >
                           <Typography
                             variant="body2"
-                            fontFamily="monospace"
                             sx={{
+                              fontFamily: "monospace",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                             }}
@@ -974,7 +982,11 @@ function RunContractForm({
 
             {!simulationInProcess && simulationError && !ansError && (
               <ResultCard success={false} sx={{mt: 3}}>
-                <Stack direction="row" spacing={1} alignItems="flex-start">
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{alignItems: "flex-start"}}
+                >
                   <ErrorIcon color="error" fontSize="small" />
                   <Box>
                     <Typography variant="subtitle2" color="error">
@@ -989,7 +1001,7 @@ function RunContractForm({
             )}
           </Box>
         ) : (
-          <Stack direction="row" spacing={2} alignItems="center">
+          <Stack direction="row" spacing={2} sx={{alignItems: "center"}}>
             <WalletConnector
               networkSupport={networkName}
               sortInstallableWallets={sortPetraFirst}
@@ -1057,9 +1069,9 @@ function StructFieldRow({fieldKey, value}: {fieldKey: string; value: unknown}) {
   return (
     <Stack
       direction="row"
-      alignItems="flex-start"
       spacing={1}
       sx={{
+        alignItems: "flex-start",
         py: 0.5,
         px: 1,
         borderRadius: 0.5,
@@ -1243,12 +1255,15 @@ function ReadContractForm({
             <ResultCard success={!errMsg} sx={{mt: 3}}>
               <Stack
                 direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
+                sx={{justifyContent: "space-between", alignItems: "flex-start"}}
               >
-                <Box flex={1} overflow="auto" maxHeight={400}>
+                <Box sx={{flex: 1, overflow: "auto", maxHeight: 400}}>
                   {errMsg ? (
-                    <Stack direction="row" spacing={1} alignItems="flex-start">
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{alignItems: "flex-start"}}
+                    >
                       <ErrorIcon color="error" fontSize="small" />
                       <Box>
                         <Typography variant="subtitle2" color="error">
@@ -1362,13 +1377,17 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
   return (
     <Box sx={{mt: 3}}>
       <ResultCard success={isSuccess}>
-        <Stack direction="row" spacing={1} alignItems="flex-start" mb={2}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{alignItems: "flex-start", mb: 2}}
+        >
           {isSuccess ? (
             <CheckCircle color="success" fontSize="small" />
           ) : (
             <ErrorIcon color="error" fontSize="small" />
           )}
-          <Box flex={1}>
+          <Box sx={{flex: 1}}>
             <Typography
               variant="subtitle2"
               color={isSuccess ? "success.main" : "error"}
@@ -1395,13 +1414,13 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
           </StyledTooltip>
         </Stack>
 
-        <Stack direction="row" spacing={3} mb={2}>
+        <Stack direction="row" spacing={3} sx={{mb: 2}}>
           {gasUsed && (
             <Box>
               <Typography variant="caption" color="text.secondary">
                 Gas Used
               </Typography>
-              <Typography variant="body2" fontWeight={600}>
+              <Typography variant="body2" sx={{fontWeight: 600}}>
                 {gasUsed}
               </Typography>
             </Box>
@@ -1410,7 +1429,7 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
             <Typography variant="caption" color="text.secondary">
               Events
             </Typography>
-            <Typography variant="body2" fontWeight={600}>
+            <Typography variant="body2" sx={{fontWeight: 600}}>
               {events.length}
             </Typography>
           </Box>
@@ -1418,7 +1437,7 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
             <Typography variant="caption" color="text.secondary">
               Changes
             </Typography>
-            <Typography variant="body2" fontWeight={600}>
+            <Typography variant="body2" sx={{fontWeight: 600}}>
               {changes.length}
             </Typography>
           </Box>
@@ -1551,12 +1570,16 @@ function HelpSection() {
               <Box key={item.title}>
                 <Typography
                   variant="caption"
-                  fontWeight={600}
                   color="text.primary"
+                  sx={{fontWeight: 600}}
                 >
                   {item.title}
                 </Typography>
-                <Typography variant="caption" color="text.secondary" ml={1}>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ml: 1}}
+                >
                   — {item.desc}
                 </Typography>
               </Box>
@@ -1665,9 +1688,9 @@ function ContractForm({
     <form onSubmit={handleSubmit(onSubmit)}>
       <Box>
         {/* Function Header */}
-        <Box mb={3}>
-          <Stack direction="row" spacing={1} alignItems="center" mb={1}>
-            <Typography variant="h6" fontWeight={600}>
+        <Box sx={{mb: 3}}>
+          <Stack direction="row" spacing={1} sx={{alignItems: "center", mb: 1}}>
+            <Typography variant="h6" sx={{fontWeight: 600}}>
               {fn.name}
             </Typography>
             <StyledTooltip
@@ -1710,7 +1733,11 @@ function ContractForm({
               overflow: "auto",
             }}
           >
-            <Typography component="span" color="primary.main" fontWeight={600}>
+            <Typography
+              component="span"
+              color="primary.main"
+              sx={{fontWeight: 600}}
+            >
               {fn.name}
             </Typography>
             {fn.generic_type_params.length > 0 && (
@@ -1832,8 +1859,10 @@ function ContractForm({
                     disabled
                     fullWidth
                     size="small"
-                    InputProps={{
-                      sx: {fontFamily: "monospace", fontSize: 13},
+                    slotProps={{
+                      input: {
+                        sx: {fontFamily: "monospace", fontSize: 13},
+                      },
                     }}
                   />
                 )}
@@ -1861,29 +1890,31 @@ function ContractForm({
                           placeholder={placeholder}
                           fullWidth
                           size="small"
-                          InputLabelProps={{shrink: true}}
+                          slotProps={{
+                            inputLabel: {shrink: true},
+                            input: {
+                              endAdornment: isOption ? (
+                                <InputAdornment position="end">
+                                  <Chip
+                                    label="optional"
+                                    size="small"
+                                    variant="outlined"
+                                    sx={{height: 20, fontSize: 10}}
+                                  />
+                                </InputAdornment>
+                              ) : undefined,
+                            },
+                          }}
                           helperText={
                             <Typography
                               component="span"
                               variant="caption"
-                              fontFamily="monospace"
                               color="text.secondary"
+                              sx={{fontFamily: "monospace"}}
                             >
                               {param}
                             </Typography>
                           }
-                          InputProps={{
-                            endAdornment: isOption ? (
-                              <InputAdornment position="end">
-                                <Chip
-                                  label="optional"
-                                  size="small"
-                                  variant="outlined"
-                                  sx={{height: 20, fontSize: 10}}
-                                />
-                              </InputAdornment>
-                            ) : undefined,
-                          }}
                         />
                       )}
                     />

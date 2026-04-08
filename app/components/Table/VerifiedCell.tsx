@@ -269,8 +269,8 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
     <Stack
       direction="row"
       spacing={1}
-      alignItems="center"
       sx={{
+        alignItems: "center",
         ...(data.banner ? bannerTheme : {}),
         padding: 1,
       }}

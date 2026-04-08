@@ -80,40 +80,38 @@ const IntervalBar = memo(function IntervalBar({
   }, [intervalType, days, hours, minutes, seconds]);
 
   const intervalBar = (
-    <Stack direction="row" width={182} height={16}>
+    <Stack direction="row" sx={{width: 182, height: 16}}>
       <Stack
-        width={`${percentage}%`}
         sx={{
+          width: `${percentage}%`,
           backgroundColor: barColor,
           borderRadius:
             percentage < 100 ? "4px 0px 0px 4px" : "4px 4px 4px 4px",
+          justifyContent: "center",
         }}
-        justifyContent="center"
       >
         {percentage >= 50 && (
           <Typography
             color={theme.palette.common.white}
-            sx={typographyStyle}
-            marginX={0.5}
+            sx={{...typographyStyle, marginX: 0.5}}
           >
             {renderTime()}
           </Typography>
         )}
       </Stack>
       <Stack
-        width={`${100 - percentage}%`}
         sx={{
+          width: `${100 - percentage}%`,
           backgroundColor: barBackgroundColor,
           borderRadius: percentage > 0 ? "0px 4px 4px 0px" : "4px 4px 4px 4px",
+          alignItems: "flex-end",
+          justifyContent: "center",
         }}
-        alignItems="flex-end"
-        justifyContent="center"
       >
         {percentage < 50 && (
           <Typography
             color={theme.palette.text.secondary}
-            sx={typographyStyle}
-            marginX={0.5}
+            sx={{...typographyStyle, marginX: 0.5}}
           >
             {renderTime()}
           </Typography>

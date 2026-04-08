@@ -80,7 +80,7 @@ export default function TokenPage() {
     <Grid container spacing={1}>
       <PageHeader />
       <Grid size={{xs: 12}}>
-        <Stack direction="column" spacing={4} marginTop={2}>
+        <Stack direction="column" spacing={4} sx={{marginTop: 2}}>
           <TokenTitle
             name={token?.token_name ?? ""}
             tokenCollection={token?.collection_id ?? ""}

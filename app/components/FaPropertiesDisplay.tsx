@@ -1,4 +1,4 @@
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlined";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {Box, Chip, Stack, Tooltip} from "@mui/material";
 import type {FaProperties} from "../api/hooks/useGetFaProperties";
@@ -41,7 +41,7 @@ type Props = {
 export default function FaPropertiesDisplay({properties}: Props) {
   return (
     <Box>
-      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+      <Stack direction="row" spacing={1} sx={{flexWrap: "wrap"}}>
         {PROPERTY_DEFS.map(({key, label, tooltip}) => {
           const enabled = properties[key];
           return (

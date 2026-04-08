@@ -16,13 +16,14 @@ export default function SearchInput({loading, ...params}: SearchInputProps) {
       <TextField
         {...params}
         slotProps={{
+          ...params.slotProps,
           input: {
+            ...params.slotProps?.input,
             sx: {
               fontSize: "1.1rem",
               lineHeight: "1.1rem",
             },
             "aria-label": "search",
-            ...params.InputProps,
             startAdornment: (
               <InputAdornment
                 position="start"

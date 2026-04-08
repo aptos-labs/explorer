@@ -220,7 +220,9 @@ function Name({
 
   return (
     <Box>
-      <Stack justifyContent="center" sx={isAns ? ansStyle : knownNameStyle}>
+      <Stack
+        sx={{justifyContent: "center", ...(isAns ? ansStyle : knownNameStyle)}}
+      >
         {content}
       </Stack>
     </Box>

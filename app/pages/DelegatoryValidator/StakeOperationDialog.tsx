@@ -286,7 +286,7 @@ function StakeOperationDialogContent({
   const isAmountValid = validateAmountInput(min, max);
   const stakeDialog = (
     <StyledDialog handleDialogClose={handleClose} open={isDialogOpen}>
-      <DialogTitle variant="h5" textAlign="center">
+      <DialogTitle variant="h5" sx={{textAlign: "center"}}>
         Stake Into The Pool
       </DialogTitle>
       <DialogContent>
@@ -353,9 +353,8 @@ function StakeOperationDialogContent({
       <DialogContent sx={{textAlign: "center"}}>
         {commission === 100 ? (
           <TooltipTypography
-            textAlign="center"
             variant="body2"
-            color={semanticColors.status.error}
+            sx={{textAlign: "center", color: semanticColors.status.error}}
           >
             The commission rate for this pool is 100%, you will not receive
             rewards.
@@ -370,7 +369,7 @@ function StakeOperationDialogContent({
           disableHoverListener={isAmountValid}
           placement="top"
         >
-          <Box width="100%" marginRight={"2rem"}>
+          <Box sx={{width: "100%", marginRight: "2rem"}}>
             <Button
               onClick={onSubmitClick}
               variant="primary"
@@ -384,7 +383,10 @@ function StakeOperationDialogContent({
         </StyledTooltip>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
-        <Typography variant="caption" color={theme.palette.text.secondary}>
+        <Typography
+          variant="caption"
+          sx={{color: theme.palette.text.secondary}}
+        >
           <div>
             Please do your own research. Aptos Labs is not responsible for the
             performance of the validator nodes displayed here, or the security
@@ -397,7 +399,7 @@ function StakeOperationDialogContent({
 
   const UnlockOrReactivateDialog = (
     <StyledDialog handleDialogClose={handleClose} open={isDialogOpen}>
-      <DialogTitle variant="h5" textAlign="center">
+      <DialogTitle variant="h5" sx={{textAlign: "center"}}>
         {stakeOperation === StakeOperation.UNLOCK
           ? "Unstake Funds"
           : "Restake Funds"}
@@ -445,7 +447,10 @@ function StakeOperationDialogContent({
         </Button>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
-        <Typography variant="caption" color={theme.palette.text.secondary}>
+        <Typography
+          variant="caption"
+          sx={{color: theme.palette.text.secondary}}
+        >
           <div>
             Please do your own research. Aptos Labs is not responsible for the
             security of your funds
@@ -460,7 +465,7 @@ function StakeOperationDialogContent({
     : stakes[1];
   const WithdrawDialog = (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
-      <DialogTitle variant="h5" textAlign="center">
+      <DialogTitle variant="h5" sx={{textAlign: "center"}}>
         Withdraw Your Funds
       </DialogTitle>
       <DialogContent>
@@ -497,7 +502,10 @@ function StakeOperationDialogContent({
         </Button>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
-        <Typography variant="caption" color={theme.palette.text.secondary}>
+        <Typography
+          variant="caption"
+          sx={{color: theme.palette.text.secondary}}
+        >
           <div>
             Please do your own research. Aptos Labs is not responsible for the
             security of your funds

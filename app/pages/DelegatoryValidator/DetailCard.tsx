@@ -64,7 +64,9 @@ function ValidatorDetailCardContent({
     validatorDetailCardSkeleton({isOnMobile})
   ) : (
     <Stack direction={isOnMobile ? "column" : "row"} spacing={4}>
-      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
+      <ContentBoxSpaceBetween
+        sx={{width: isOnMobile ? "100%" : "50%", marginTop: 0}}
+      >
         <ContentRowSpaceBetween
           title={"Operator"}
           value={
@@ -102,7 +104,9 @@ function ValidatorDetailCardContent({
           }
         />
       </ContentBoxSpaceBetween>
-      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
+      <ContentBoxSpaceBetween
+        sx={{width: isOnMobile ? "100%" : "50%", marginTop: 0}}
+      >
         <ContentRowSpaceBetween
           title={"Stake Pool Address"}
           value={
@@ -138,13 +142,17 @@ function ValidatorDetailCardContent({
 function validatorDetailCardSkeleton({isOnMobile}: {isOnMobile: boolean}) {
   return (
     <Stack direction={isOnMobile ? "column" : "row"} spacing={4}>
-      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
+      <ContentBoxSpaceBetween
+        sx={{width: isOnMobile ? "100%" : "50%", marginTop: 0}}
+      >
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
       </ContentBoxSpaceBetween>
-      <ContentBoxSpaceBetween width={isOnMobile ? "100%" : "50%"} marginTop={0}>
+      <ContentBoxSpaceBetween
+        sx={{width: isOnMobile ? "100%" : "50%", marginTop: 0}}
+      >
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
         <Skeleton></Skeleton>
