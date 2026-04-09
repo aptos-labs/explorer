@@ -6,29 +6,12 @@ import {
   useSdkV2Client,
 } from "../../global-config";
 import {getLedgerInfo} from "..";
+import {getRecentBlocks} from "../v2";
 
-const RECENT_BLOCKS_QUERY = `
-  query RecentBlocks($maxBlockHeight: bigint!, $limit: Int!) {
-    block_metadata_transactions(
-      where: {block_height: {_lte: $maxBlockHeight}}
-      order_by: {block_height: desc}
-      limit: $limit
-    ) {
-      block_height
-      id
-      timestamp
-      version
-    }
-  }
-`;
-
-type BlockMetadataTransactionSummary = {
-  block_height: number | string;
-  id: string;
-  timestamp: string;
-  version: number | string;
-};
-
+/**
+ * Recent blocks for `/blocks`. Uses the same REST `getBlockByHeight` data as block
+ * detail pages so hash, timestamps, and version ranges stay consistent with the API.
+ */
 export function useGetMostRecentBlocks(
   start: string | undefined,
   count: number,
@@ -51,66 +34,31 @@ export function useGetMostRecentBlocks(
   );
 
   const {isLoading, data: blocks} = useQuery<Types.Block[]>({
-    queryKey: ["recentBlocksIndexer", currentBlockHeight, count, networkValue],
+    queryKey: ["recentBlocksRest", currentBlockHeight, count, networkValue],
     queryFn: async () => {
-      if (!Number.isFinite(currentBlockHeight) || !ledgerData?.ledger_version) {
+      if (!Number.isFinite(currentBlockHeight)) {
         return [];
       }
-      const upperBound = currentBlockHeight + 1;
-      const response = await sdkV2Client.queryIndexer<{
-        block_metadata_transactions: BlockMetadataTransactionSummary[];
-      }>({
-        query: {
-          query: RECENT_BLOCKS_QUERY,
-          variables: {
-            maxBlockHeight: upperBound,
-            limit: count + 1,
-          },
-        },
-      });
-
-      const rows = response.block_metadata_transactions ?? [];
-      const sentinel =
-        rows.length > 0 && Number(rows[0].block_height) > currentBlockHeight
-          ? rows[0]
-          : undefined;
-      const recentRows = sentinel
-        ? rows.slice(1, count + 1)
-        : rows.slice(0, count);
-
-      return recentRows.map((row, index) => {
-        const nextFirstVersion =
-          index === 0
-            ? sentinel
-              ? BigInt(String(sentinel.version))
-              : BigInt(ledgerData.ledger_version) + 1n
-            : BigInt(String(recentRows[index - 1].version));
-
-        // Hasura returns timestamps without timezone suffix (e.g. "2024-03-19T17:40:00").
-        // Without an explicit timezone, new Date() treats the string as *local* time, which
-        // shifts the value by the user's UTC offset. Append "Z" when no timezone is present
-        // so the string is always interpreted as UTC.
-        const rawTs = row.timestamp as string;
-        const utcTs = /Z$|[+-]\d{2}:\d{2}$/.test(rawTs) ? rawTs : `${rawTs}Z`;
-
-        return {
-          block_height: row.block_height.toString(),
-          block_hash: row.id,
-          block_timestamp: new Date(utcTs).getTime().toString(),
-          first_version: row.version.toString(),
-          last_version: (nextFirstVersion - 1n).toString(),
-        };
-      });
+      const restBlocks = await getRecentBlocks(
+        currentBlockHeight,
+        count,
+        sdkV2Client,
+      );
+      return restBlocks.map((b) => ({
+        block_height: b.block_height,
+        block_hash: b.block_hash,
+        block_timestamp: b.block_timestamp,
+        first_version: b.first_version,
+        last_version: b.last_version,
+      }));
     },
-    enabled:
-      Number.isFinite(currentBlockHeight) && !!ledgerData?.ledger_version,
+    enabled: Number.isFinite(currentBlockHeight),
     staleTime: 60 * 1000,
     gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: true,
   });
 
-  // Calculate recentBlocks during render instead of using useEffect
   const recentBlocks =
     currentBlockHeight !== undefined &&
     !isLoadingLedgerData &&

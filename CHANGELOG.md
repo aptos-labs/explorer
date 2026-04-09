@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Blocks list** (`/blocks`): recent rows now use the same REST block API as block detail pages, so block hash, timestamps, and transaction version ranges match what you see after opening a block (previously the indexer `block_metadata_transactions` row was mislabeled as the block hash and version bounds could disagree with the node).
 - **Coins page** (`/coins`): changing verification filters or the Emojicoins toggle no longer freezes the tab when thousands of assets match — the table virtualizes rows via an on-demand `renderRow` path and scrolls inside a bounded-height container instead of allocating every row up front
 - **Dev mode**: `useFeatureName()` now reads from a `feature_name` cookie or the `VITE_FEATURE_NAME` env var instead of always returning `"prod"` — the Development Mode banner, Early Development Mode banner, and dev-only UI (e.g. Aptos Names banner) are functional again
 - **SSR dev server**: removed duplicate `tanstackRouter()` plugin from `vite.config.ts` — it conflicted with the code-splitting plugins already bundled inside `tanstackStart()`, causing `ReferenceError: TSRSplitComponent is not defined` on every SSR request during `pnpm dev`

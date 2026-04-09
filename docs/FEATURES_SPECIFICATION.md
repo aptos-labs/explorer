@@ -279,7 +279,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Data** | Ledger info + indexer `block_metadata_transactions`. |
+| **Data** | Ledger info (cursor height) + REST `getBlockByHeight` for each row (same source as block detail). |
 | **Pagination** | `?start=` cursor. |
 | **Columns** | Block height (linked), proposer, timestamp, transaction count. |
 | **Virtualization** | Uses `VirtualizedTableBody` for large result sets. |

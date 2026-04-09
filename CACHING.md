@@ -54,7 +54,7 @@ Used by route loaders **and** components. When a route loader pre-fetches data, 
 | `useGetBlockByHeight` | `useGetBlock.ts` | 30 s | 10 min | 20 min | — | Confirmed blocks |
 | `useGetBlockByVersion` | `useGetBlock.ts` | 1 h | 24 h | — | — | Immutable |
 | `useGetMostRecentBlocks` (ledger) | `useGetMostRecentBlocks.ts` | 60 s | 5 min | — | `refetchOnWindowFocus: false` | Ledger info for block height |
-| `useGetMostRecentBlocks` (blocks) | `useGetMostRecentBlocks.ts` | 60 s | 10 min | — | `refetchOnWindowFocus: false` | Indexer-based recent blocks |
+| `useGetMostRecentBlocks` (blocks) | `useGetMostRecentBlocks.ts` | 60 s | 10 min | — | `refetchOnWindowFocus: false` | REST `getBlockByHeight` batch for recent blocks |
 
 ### Transactions
 
