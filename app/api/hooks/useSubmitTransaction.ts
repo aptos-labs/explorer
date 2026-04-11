@@ -5,6 +5,7 @@ import {
 import {useState} from "react";
 import {FailedTransactionError} from "~/types/aptos";
 import {useAptosClient, useNetworkName} from "../../global-config";
+import {allowsCustomNetworkForLocalExplorer} from "../../utils/walletNetwork";
 
 export type TransactionResponse =
   | TransactionResponseOnSubmission
@@ -33,8 +34,17 @@ const useSubmitTransaction = () => {
   const {signAndSubmitTransaction, wallet, network} = useWallet();
 
   async function submitTransaction(transaction: InputTransactionData) {
+    const walletNet = network?.name.toLocaleLowerCase();
+    const explorerNet = networkName.toLocaleLowerCase();
+    const customLocalOk = allowsCustomNetworkForLocalExplorer(
+      wallet?.name,
+      walletNet,
+      network?.url,
+      explorerNet,
+    );
     if (
-      network?.name.toLocaleLowerCase() !== networkName &&
+      walletNet !== explorerNet &&
+      !customLocalOk &&
       // TODO: This is a hack to get around network being cached
       wallet?.name !== "Google (AptosConnect)"
     ) {

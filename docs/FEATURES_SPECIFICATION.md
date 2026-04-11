@@ -787,7 +787,7 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Hook** | `useSubmitTransaction`. |
-| **Validation** | Enforces wallet network matches explorer network (exception for Google Aptos Connect). |
+| **Validation** | Enforces wallet network matches explorer network (exceptions: Google Aptos Connect; for **non-Petra** wallets, wallet `custom` with a **loopback** REST URL is treated as compatible with explorer **local**). |
 | **Flow** | Signs via wallet adapter, confirms via explorer's Aptos client polling. |
 
 ### FEAT-WALLET-003 — Account Navigation
@@ -1199,6 +1199,7 @@ The app shell that wraps every page.
 | `app/lib/graphqlSupport.test.ts` | FEAT-FLAGS-001 (GraphQL URI per network), FEAT-COIN-001/FEAT-FA-001 (tab gating logic) |
 | `app/lib/validators.test.ts` | FEAT-NETWORK-001 (network name validation), FEAT-FLAGS-003 (feature name validation), well-known constants |
 | `app/utils/routeRedirects.test.ts` | FEAT-ACCOUNT-012 (entity default tab redirects for all route types), FEAT-TOKEN-004 (legacy numeric redirect), FEAT-VALIDATORS-006 (validators/validators-enhanced redirects), FEAT-SEARCH-001 (header search navigation), FEAT-WALLET-002 (wallet network mismatch), FEAT-ACCOUNT-002 (DeFi portfolio URLs) |
+| `app/utils/walletNetwork.test.ts` | FEAT-WALLET-002 (loopback RPC + `custom` vs explorer `local` for non-Petra) |
 | `app/utils/rateLimiter.test.ts` | FEAT-RATELIMIT-002 (rate limit error detection, URL endpoint extraction) |
 | `app/utils/utilsCoverage.test.ts` | FEAT-ROUTING-003 (isValidStruct), FEAT-TXN-002 (sortTransactions), FEAT-WALLET-001 (sortPetraFirst), FEAT-MODULES-004 (bytecode size), FEAT-MODULES-001 (param names, function line numbers), isValidUrl, assertNever |
 | `app/data/bannedCollections.test.ts` | FEAT-ACCOUNT-008 (scam collection detection: registry shape, hex keys, reason strings) |

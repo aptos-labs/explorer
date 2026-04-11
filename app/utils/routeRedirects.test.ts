@@ -304,6 +304,39 @@ describe("FEAT-WALLET-002 — shouldBlockWalletSubmission", () => {
       true,
     );
   });
+
+  it("allows non-Petra custom + loopback URL when explorer is local", () => {
+    expect(
+      shouldBlockWalletSubmission(
+        "custom",
+        "local",
+        "Nightly",
+        "http://127.0.0.1:8080/v1",
+      ),
+    ).toBe(false);
+  });
+
+  it("still blocks Petra custom even with loopback URL", () => {
+    expect(
+      shouldBlockWalletSubmission(
+        "custom",
+        "local",
+        "Petra",
+        "http://127.0.0.1:8080/v1",
+      ),
+    ).toBe(true);
+  });
+
+  it("blocks non-Petra custom when URL is not loopback", () => {
+    expect(
+      shouldBlockWalletSubmission(
+        "custom",
+        "local",
+        "Nightly",
+        "https://api.testnet.staging.aptoslabs.com/v1",
+      ),
+    ).toBe(true);
+  });
 });
 
 describe("FEAT-ACCOUNT-002 — getPortfolioUrl", () => {
