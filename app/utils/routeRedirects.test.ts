@@ -287,6 +287,9 @@ describe("FEAT-WALLET-002 — shouldBlockWalletSubmission", () => {
     expect(shouldBlockWalletSubmission("Mainnet", "mainnet", "Petra")).toBe(
       false,
     );
+    expect(shouldBlockWalletSubmission("mainnet", "Mainnet", "Petra")).toBe(
+      false,
+    );
   });
 
   it("never blocks Google AptosConnect", () => {

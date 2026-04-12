@@ -28,7 +28,11 @@ export function isLoopbackHostname(hostname: string): boolean {
 export function isLoopbackRpcUrl(url: string | undefined): boolean {
   if (!url?.trim()) return false;
   try {
-    return isLoopbackHostname(new URL(url).hostname);
+    const parsed = new URL(url);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return false;
+    }
+    return isLoopbackHostname(parsed.hostname);
   } catch {
     return false;
   }

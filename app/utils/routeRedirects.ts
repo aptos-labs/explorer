@@ -131,7 +131,7 @@ export function shouldBlockWalletSubmission(
   ) {
     return false;
   }
-  return walletNetworkName?.toLocaleLowerCase() !== explorerNetworkName;
+  return walletNetworkName?.toLowerCase() !== explorerNetworkName.toLowerCase();
 }
 
 export type PortfolioProvider = "lightscan" | "yieldai";

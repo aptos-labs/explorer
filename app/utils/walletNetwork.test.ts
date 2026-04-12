@@ -34,6 +34,11 @@ describe("isLoopbackRpcUrl", () => {
     expect(isLoopbackRpcUrl("http://localhost:8080/v1")).toBe(true);
   });
 
+  it("rejects non-http(s) schemes even when hostname is loopback", () => {
+    expect(isLoopbackRpcUrl("file://localhost/etc/passwd")).toBe(false);
+    expect(isLoopbackRpcUrl("ws://127.0.0.1:8080/v1")).toBe(false);
+  });
+
   it("returns false for empty or invalid", () => {
     expect(isLoopbackRpcUrl(undefined)).toBe(false);
     expect(isLoopbackRpcUrl("")).toBe(false);

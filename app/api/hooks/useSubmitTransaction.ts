@@ -34,8 +34,8 @@ const useSubmitTransaction = () => {
   const {signAndSubmitTransaction, wallet, network} = useWallet();
 
   async function submitTransaction(transaction: InputTransactionData) {
-    const walletNet = network?.name.toLocaleLowerCase();
-    const explorerNet = networkName.toLocaleLowerCase();
+    const walletNet = network?.name.toLowerCase();
+    const explorerNet = networkName.toLowerCase();
     const customLocalOk = allowsCustomNetworkForLocalExplorer(
       wallet?.name,
       walletNet,
