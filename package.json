@@ -12,6 +12,7 @@
       "@aptos-labs/aptos-client": "^3.0.2",
       "@aptos-labs/wallet-standard": "^1.0.0",
       "@aptos-labs/ts-sdk": "^6.3.0",
+      "axios": "1.15.0",
       "d3-array": ">=3.0.0",
       "d3-color": ">=3.1.0",
       "d3-dispatch": ">=3.0.0",
