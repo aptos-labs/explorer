@@ -378,12 +378,16 @@ function BulkOrderInlineDetail({
   const hasPlaced = placedEvents.length > 0;
   const hasFills = filledEvents.length > 0;
 
+  const [expanded, setExpanded] = React.useState(false);
+
   if (!hasDetail && !hasPlaced && !hasFills) return null;
 
   return (
     <Accordion
       disableGutters
       elevation={0}
+      expanded={expanded}
+      onChange={() => setExpanded((prev) => !prev)}
       sx={{
         "&::before": {display: "none"},
         backgroundColor: "transparent",
@@ -391,6 +395,9 @@ function BulkOrderInlineDetail({
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
+        aria-label={
+          expanded ? "Hide bulk order details" : "Show bulk order details"
+        }
         sx={{
           minHeight: 36,
           px: 0,
@@ -398,7 +405,7 @@ function BulkOrderInlineDetail({
         }}
       >
         <Typography variant="body2" color="primary" sx={{fontWeight: 600}}>
-          More Details
+          {expanded ? "Hide details" : "Show details"}
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={{px: 0, pt: 0}}>
