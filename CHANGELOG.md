@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Decibel bulk order detail**: the Decibel tab on transaction pages now displays full bid/ask price-size ladders parsed from `place_bulk_orders_to_subaccount` payload arguments, structured `BulkOrderPlacedEvent` data (including cancelled orders), and `BulkOrderFilledEvent` fill tables — previously only the market name and subaccount were shown for bulk orders
 - **Settings page** (`/settings`): dedicated full-page settings replacing the old header popup dialog. Includes API key overrides (per network) and a new Move Bytecode Decompilation opt-in toggle
 - **Decompilation opt-in**: decompiled and disassembly code views now require explicit user opt-in at `/settings`. Users must acknowledge a disclaimer that decompiled output may not match original source before the feature is enabled
 - **Settings**: optional geomi.dev API key override can be set **per network** (instead of one key for all networks). Existing saved single keys are migrated to all networks on load until you save again.

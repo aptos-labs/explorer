@@ -37,6 +37,10 @@ import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeader
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import {isValidAccountAddress} from "../../../utils";
 import type {
+  BulkOrderLeg,
+  DecibelBulkOrderDetail,
+  DecibelBulkOrderFilledEvent,
+  DecibelBulkOrderPlacedEvent,
   DecibelDeposit,
   DecibelOrder,
   DecibelWithdraw,
@@ -542,6 +546,420 @@ function KeyValue({
   );
 }
 
+function MonoText({children}: {children: React.ReactNode}) {
+  return (
+    <Typography variant="body2" sx={{fontFamily: "monospace"}}>
+      {children}
+    </Typography>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Bulk Order Ladder Table
+// ---------------------------------------------------------------------------
+
+function LegTable({
+  legs,
+  label,
+  color,
+  isMobile,
+}: {
+  legs: BulkOrderLeg[];
+  label: string;
+  color: "success" | "error";
+  isMobile: boolean;
+}) {
+  const theme = useTheme();
+  if (legs.length === 0) return null;
+
+  const totalSize = legs.reduce((acc, leg) => acc + (Number(leg.size) || 0), 0);
+
+  if (isMobile) {
+    return (
+      <Box sx={{mb: 1}}>
+        <Stack direction="row" alignItems="baseline" spacing={1} sx={{mb: 1}}>
+          <Typography
+            variant="subtitle2"
+            sx={{color: theme.palette[color].main}}
+          >
+            {label} ({legs.length})
+          </Typography>
+          {totalSize > 0 && (
+            <Typography variant="caption" color="text.secondary">
+              Total: {totalSize}
+            </Typography>
+          )}
+        </Stack>
+        <Stack spacing={0.5}>
+          {legs.map((leg, i) => (
+            <Stack
+              // biome-ignore lint/suspicious/noArrayIndexKey: legs may share identical price-size pairs
+              key={`${leg.price}-${leg.size}-${i}`}
+              direction="row"
+              justifyContent="space-between"
+              alignItems="baseline"
+              sx={{
+                py: 0.5,
+                borderBottom: `1px solid ${theme.palette.divider}`,
+                "&:last-of-type": {borderBottom: "none"},
+              }}
+            >
+              <MonoText>{leg.price}</MonoText>
+              <MonoText>{leg.size}</MonoText>
+            </Stack>
+          ))}
+        </Stack>
+      </Box>
+    );
+  }
+
+  return (
+    <Box sx={{mb: 1}}>
+      <Stack direction="row" alignItems="baseline" spacing={1} sx={{mb: 0.5}}>
+        <Typography variant="subtitle2" sx={{color: theme.palette[color].main}}>
+          {label} ({legs.length})
+        </Typography>
+        {totalSize > 0 && (
+          <Typography variant="caption" color="text.secondary">
+            Total size: {totalSize}
+          </Typography>
+        )}
+      </Stack>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <GeneralTableHeaderCell header="#" />
+            <GeneralTableHeaderCell header="Price" />
+            <GeneralTableHeaderCell header="Size" />
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {legs.map((leg, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: legs may share identical price-size pairs
+            <GeneralTableRow key={`${leg.price}-${leg.size}-${i}`}>
+              <GeneralTableCell>
+                <Typography variant="body2" color="text.secondary">
+                  {i + 1}
+                </Typography>
+              </GeneralTableCell>
+              <GeneralTableCell>
+                <MonoText>{leg.price}</MonoText>
+              </GeneralTableCell>
+              <GeneralTableCell>
+                <MonoText>{leg.size}</MonoText>
+              </GeneralTableCell>
+            </GeneralTableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Box>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Bulk Order Detail (from payload arguments)
+// ---------------------------------------------------------------------------
+
+function BulkOrderDetailSection({detail}: {detail: DecibelBulkOrderDetail}) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  return (
+    <Box>
+      <Typography variant="h6" sx={{mb: 1.5}}>
+        Bulk Order Detail
+      </Typography>
+      <Paper variant="outlined" sx={{p: 2}}>
+        <Stack spacing={2}>
+          <KeyValue label="Market">
+            <MarketValue hash={detail.market} />
+          </KeyValue>
+          {detail.subaccount && (
+            <KeyValue label="Subaccount">
+              <SafeAccountLink hash={detail.subaccount} />
+            </KeyValue>
+          )}
+          {detail.sequenceNumber && (
+            <KeyValue label="Sequence #">
+              <MonoText>{detail.sequenceNumber}</MonoText>
+            </KeyValue>
+          )}
+          {detail.builderAddress && (
+            <KeyValue label="Builder">
+              <SafeAccountLink hash={detail.builderAddress} />
+            </KeyValue>
+          )}
+          {detail.builderFees && (
+            <KeyValue label="Builder Fee">
+              <MonoText>{detail.builderFees}</MonoText>
+            </KeyValue>
+          )}
+          <Stack
+            direction={isMobile ? "column" : "row"}
+            spacing={2}
+            sx={{mt: 1}}
+          >
+            <Box sx={{flex: 1}}>
+              <LegTable
+                legs={detail.bids}
+                label="Bids"
+                color="success"
+                isMobile={isMobile}
+              />
+            </Box>
+            <Box sx={{flex: 1}}>
+              <LegTable
+                legs={detail.asks}
+                label="Asks"
+                color="error"
+                isMobile={isMobile}
+              />
+            </Box>
+          </Stack>
+        </Stack>
+      </Paper>
+    </Box>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Bulk Order Placed Events
+// ---------------------------------------------------------------------------
+
+function BulkOrderPlacedSection({
+  events,
+}: {
+  events: DecibelBulkOrderPlacedEvent[];
+}) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  if (events.length === 0) return null;
+
+  return (
+    <Box>
+      <Typography variant="h6" sx={{mb: 1.5}}>
+        Bulk Order Placed {events.length > 1 ? `(${events.length})` : ""}
+      </Typography>
+      <Stack spacing={2}>
+        {events.map((evt, idx) => (
+          <Paper
+            // biome-ignore lint/suspicious/noArrayIndexKey: events lack a guaranteed unique identifier
+            key={`placed-${evt.orderId}-${idx}`}
+            variant="outlined"
+            sx={{p: 2}}
+          >
+            <Stack spacing={1.5}>
+              <KeyValue label="Market">
+                <MarketValue hash={evt.market} />
+              </KeyValue>
+              <KeyValue label="Order ID">
+                <TruncatedCopyId value={evt.orderId} />
+              </KeyValue>
+              <KeyValue label="User">
+                <SafeAccountLink hash={evt.user} />
+              </KeyValue>
+              <KeyValue label="Sequence #">
+                <Stack direction="row" spacing={1} alignItems="baseline">
+                  <MonoText>{evt.sequenceNumber}</MonoText>
+                  {evt.previousSeqNum !== undefined && (
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      component="span"
+                    >
+                      (prev: {evt.previousSeqNum})
+                    </Typography>
+                  )}
+                </Stack>
+              </KeyValue>
+              <Stack
+                direction={isMobile ? "column" : "row"}
+                spacing={2}
+                sx={{mt: 1}}
+              >
+                <Box sx={{flex: 1}}>
+                  <LegTable
+                    legs={evt.bids}
+                    label="Bids"
+                    color="success"
+                    isMobile={isMobile}
+                  />
+                </Box>
+                <Box sx={{flex: 1}}>
+                  <LegTable
+                    legs={evt.asks}
+                    label="Asks"
+                    color="error"
+                    isMobile={isMobile}
+                  />
+                </Box>
+              </Stack>
+              {(evt.cancelledBids.length > 0 ||
+                evt.cancelledAsks.length > 0) && (
+                <Box>
+                  <Typography
+                    variant="subtitle2"
+                    color="text.secondary"
+                    sx={{mb: 1}}
+                  >
+                    Cancelled Orders
+                  </Typography>
+                  <Stack direction={isMobile ? "column" : "row"} spacing={2}>
+                    <Box sx={{flex: 1}}>
+                      <LegTable
+                        legs={evt.cancelledBids}
+                        label="Cancelled Bids"
+                        color="success"
+                        isMobile={isMobile}
+                      />
+                    </Box>
+                    <Box sx={{flex: 1}}>
+                      <LegTable
+                        legs={evt.cancelledAsks}
+                        label="Cancelled Asks"
+                        color="error"
+                        isMobile={isMobile}
+                      />
+                    </Box>
+                  </Stack>
+                </Box>
+              )}
+            </Stack>
+          </Paper>
+        ))}
+      </Stack>
+    </Box>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Bulk Order Filled Events
+// ---------------------------------------------------------------------------
+
+function BulkOrderFilledRow({fill}: {fill: DecibelBulkOrderFilledEvent}) {
+  return (
+    <GeneralTableRow>
+      <GeneralTableCell>
+        <SideChip side={fill.side} />
+      </GeneralTableCell>
+      <GeneralTableCell>
+        <MarketValue hash={fill.market} />
+      </GeneralTableCell>
+      <GeneralTableCell>
+        <MonoText>{fill.price}</MonoText>
+      </GeneralTableCell>
+      <GeneralTableCell>
+        <MonoText>{fill.filledSize}</MonoText>
+      </GeneralTableCell>
+      {fill.origPrice && (
+        <GeneralTableCell>
+          <MonoText>{fill.origPrice}</MonoText>
+        </GeneralTableCell>
+      )}
+      <GeneralTableCell>
+        <TruncatedCopyId value={fill.orderId} />
+      </GeneralTableCell>
+      <GeneralTableCell>
+        <TruncatedCopyId value={fill.fillId} />
+      </GeneralTableCell>
+      <GeneralTableCell>
+        <SafeAccountLink hash={fill.user} />
+      </GeneralTableCell>
+    </GeneralTableRow>
+  );
+}
+
+function BulkOrderFilledCard({fill}: {fill: DecibelBulkOrderFilledEvent}) {
+  return (
+    <Paper sx={{p: 2, mb: 1.5}}>
+      <Stack spacing={1}>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography variant="subtitle2">Fill</Typography>
+          <SideChip side={fill.side} />
+        </Stack>
+        <KeyValue label="Market">
+          <MarketValue hash={fill.market} />
+        </KeyValue>
+        <KeyValue label="Price">
+          <MonoText>{fill.price}</MonoText>
+        </KeyValue>
+        <KeyValue label="Filled Size">
+          <MonoText>{fill.filledSize}</MonoText>
+        </KeyValue>
+        {fill.origPrice && (
+          <KeyValue label="Orig Price">
+            <MonoText>{fill.origPrice}</MonoText>
+          </KeyValue>
+        )}
+        <KeyValue label="Order ID">
+          <TruncatedCopyId value={fill.orderId} />
+        </KeyValue>
+        <KeyValue label="Fill ID">
+          <TruncatedCopyId value={fill.fillId} />
+        </KeyValue>
+        <KeyValue label="User">
+          <SafeAccountLink hash={fill.user} />
+        </KeyValue>
+      </Stack>
+    </Paper>
+  );
+}
+
+function BulkOrderFilledSection({
+  fills,
+}: {
+  fills: DecibelBulkOrderFilledEvent[];
+}) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const hasOrigPrice = fills.some((f) => f.origPrice);
+
+  if (fills.length === 0) return null;
+
+  return (
+    <Box>
+      <Typography variant="h6" sx={{mb: 1.5}}>
+        Bulk Order Fills ({fills.length})
+      </Typography>
+      {isMobile ? (
+        fills.map((fill, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: fills lack a guaranteed unique identifier
+          <BulkOrderFilledCard key={`fill-${fill.fillId}-${i}`} fill={fill} />
+        ))
+      ) : (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <GeneralTableHeaderCell header="Side" />
+              <GeneralTableHeaderCell header="Market" />
+              <GeneralTableHeaderCell header="Price" />
+              <GeneralTableHeaderCell header="Filled Size" />
+              {hasOrigPrice && <GeneralTableHeaderCell header="Orig Price" />}
+              <GeneralTableHeaderCell header="Order ID" />
+              <GeneralTableHeaderCell header="Fill ID" />
+              <GeneralTableHeaderCell header="User" />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {fills.map((fill, i) => (
+              <BulkOrderFilledRow
+                // biome-ignore lint/suspicious/noArrayIndexKey: fills lack a guaranteed unique identifier
+                key={`fill-${fill.fillId}-${i}`}
+                fill={fill}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </Box>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Main Tab
 // ---------------------------------------------------------------------------
@@ -557,7 +975,10 @@ export default function DecibelTab({
   const hasContent =
     summary.orders.length > 0 ||
     summary.deposits.length > 0 ||
-    summary.withdrawals.length > 0;
+    summary.withdrawals.length > 0 ||
+    summary.bulkOrderDetail !== undefined ||
+    summary.bulkOrderPlacedEvents.length > 0 ||
+    summary.bulkOrderFilledEvents.length > 0;
 
   if (!hasContent) {
     return (
@@ -573,6 +994,11 @@ export default function DecibelTab({
     <ContentBox>
       <Stack spacing={3}>
         <OrdersSection orders={summary.orders} />
+        {summary.bulkOrderDetail && (
+          <BulkOrderDetailSection detail={summary.bulkOrderDetail} />
+        )}
+        <BulkOrderPlacedSection events={summary.bulkOrderPlacedEvents} />
+        <BulkOrderFilledSection fills={summary.bulkOrderFilledEvents} />
         <DepositsSection
           deposits={summary.deposits}
           coinData={coinData?.data}
