@@ -468,6 +468,52 @@ describe("parseDecibelTransaction", () => {
       expect(summary.bulkOrderDetail?.builderFees).toBeUndefined();
     });
 
+    it("unwraps Option<address> builder from {vec: [...]} envelope", () => {
+      const txn = makeUserTxn({
+        payload: {
+          type: "entry_function_payload",
+          function: `${MAINNET_CONTRACT}::dex_accounts_entry::place_bulk_orders_to_subaccount`,
+          arguments: [
+            "sub1",
+            {inner: "0xmarket1"},
+            "1",
+            ["5000"],
+            ["100"],
+            [],
+            [],
+            {vec: ["0xbuilder_addr"]},
+            {vec: ["500"]},
+          ],
+        },
+      });
+      const summary = parseDecibelTransaction(txn);
+      expect(summary.bulkOrderDetail?.builderAddress).toBe("0xbuilder_addr");
+      expect(summary.bulkOrderDetail?.builderFees).toBe("500");
+    });
+
+    it("handles empty Option<> vec for builder", () => {
+      const txn = makeUserTxn({
+        payload: {
+          type: "entry_function_payload",
+          function: `${MAINNET_CONTRACT}::dex_accounts_entry::place_bulk_orders_to_subaccount`,
+          arguments: [
+            "sub1",
+            {inner: "0xmarket1"},
+            "1",
+            ["5000"],
+            ["100"],
+            [],
+            [],
+            {vec: []},
+            {vec: []},
+          ],
+        },
+      });
+      const summary = parseDecibelTransaction(txn);
+      expect(summary.bulkOrderDetail?.builderAddress).toBeUndefined();
+      expect(summary.bulkOrderDetail?.builderFees).toBeUndefined();
+    });
+
     it("returns undefined bulkOrderDetail for non-bulk payloads", () => {
       const txn = makeUserTxn({
         payload: {

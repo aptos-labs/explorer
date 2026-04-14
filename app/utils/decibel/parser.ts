@@ -264,6 +264,16 @@ function zipLegs(prices: unknown, sizes: unknown): BulkOrderLeg[] {
   return legs;
 }
 
+function extractOptionValue(val: unknown): string | undefined {
+  if (typeof val === "object" && val !== null && "vec" in val) {
+    const vec = (val as {vec: unknown[]}).vec;
+    if (vec.length > 0) return String(vec[0]);
+    return undefined;
+  }
+  if (typeof val === "string") return val;
+  return undefined;
+}
+
 function parseBulkOrderPayloadDetail(
   transaction: Types.Transaction,
 ): DecibelBulkOrderDetail | undefined {
@@ -301,6 +311,9 @@ function parseBulkOrderPayloadDetail(
   //   builder_address(7), builder_fees(8)]
   if (args.length < 7) return undefined;
 
+  const builderAddr = args.length > 7 ? extractOptionValue(args[7]) : undefined;
+  const builderFee = args.length > 8 ? extractOptionValue(args[8]) : undefined;
+
   return {
     market: extractObjectInner(args[1]),
     subaccount: extractObjectInner(args[0]),
@@ -308,13 +321,8 @@ function parseBulkOrderPayloadDetail(
     bids: zipLegs(args[3], args[4]),
     asks: zipLegs(args[5], args[6]),
     builderAddress:
-      args.length > 7 && args[7] && String(args[7]) !== "0x0"
-        ? String(args[7])
-        : undefined,
-    builderFees:
-      args.length > 8 && args[8] && String(args[8]) !== "0"
-        ? String(args[8])
-        : undefined,
+      builderAddr && builderAddr !== "0x0" ? builderAddr : undefined,
+    builderFees: builderFee && builderFee !== "0" ? builderFee : undefined,
   };
 }
 
