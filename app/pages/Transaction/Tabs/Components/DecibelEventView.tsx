@@ -381,14 +381,7 @@ function BulkOrderPlacedEventView({data}: {data: Record<string, unknown>}) {
         <AddressValue hash={String(data.user)} />
       </Row>
       <Row label="Sequence">
-        <MonoText>
-          {String(data.sequence_number)}{" "}
-          {data.previous_seq_num !== undefined && (
-            <Typography component="span" variant="body2" color="text.secondary">
-              (prev: {String(data.previous_seq_num)})
-            </Typography>
-          )}
-        </MonoText>
+        <MonoText>{String(data.sequence_number)}</MonoText>
       </Row>
       <Row label="Bids">
         <PriceSizeTable

@@ -478,22 +478,7 @@ function BulkOrderInlineDetail({
                         <SafeAccountLink hash={evt.user} />
                       </KeyValue>
                       <KeyValue label="Sequence #">
-                        <Stack
-                          direction="row"
-                          spacing={1}
-                          alignItems="baseline"
-                        >
-                          <MonoText>{evt.sequenceNumber}</MonoText>
-                          {evt.previousSeqNum !== undefined && (
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              component="span"
-                            >
-                              (prev: {evt.previousSeqNum})
-                            </Typography>
-                          )}
-                        </Stack>
+                        <MonoText>{evt.sequenceNumber}</MonoText>
                       </KeyValue>
                       <Stack
                         direction={isMobile ? "column" : "row"}
