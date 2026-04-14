@@ -4,10 +4,22 @@ import {DECIBEL_CONTRACTS} from "../../utils/decibel";
 
 const PERP_MARKET_CONFIG_TYPE = "::perp_market_config::PerpMarketConfiguration";
 
+const PRICE_DECIMALS = 6;
+
 export type DecibelMarketConfig = {
   name: string | undefined;
-  szDecimals: number | undefined;
-  tickerSize: number | undefined;
+  baseAsset: string | undefined;
+  quoteAsset: string | undefined;
+  szDecimals: number;
+  priceDecimals: number;
+};
+
+type PerpMarketConfigResource = {
+  info?: {name?: string};
+  precision?: {
+    sz_precision?: {decimals?: number};
+    ticker_size?: string;
+  };
 };
 
 function fetchMarketConfig(
@@ -21,21 +33,30 @@ function fetchMarketConfig(
           marketAddress,
           `${addr}${PERP_MARKET_CONFIG_TYPE}`,
         );
-        const data = resource.data as {
-          info?: {name?: string; sz_decimals?: string; ticker_size?: string};
-        };
-        const szDec = data?.info?.sz_decimals;
-        const ticker = data?.info?.ticker_size;
+        const data = resource.data as PerpMarketConfigResource;
+        const name = data?.info?.name ?? undefined;
+        const szDec = data?.precision?.sz_precision?.decimals;
+        const [baseAsset, quoteAsset] = name?.includes("/")
+          ? name.split("/", 2)
+          : [undefined, undefined];
         return {
-          name: data?.info?.name ?? undefined,
-          szDecimals: szDec !== undefined ? Number(szDec) : undefined,
-          tickerSize: ticker !== undefined ? Number(ticker) : undefined,
+          name,
+          baseAsset,
+          quoteAsset,
+          szDecimals: szDec ?? 0,
+          priceDecimals: PRICE_DECIMALS,
         };
       } catch {
         // Try next contract address
       }
     }
-    return {name: undefined, szDecimals: undefined, tickerSize: undefined};
+    return {
+      name: undefined,
+      baseAsset: undefined,
+      quoteAsset: undefined,
+      szDecimals: 0,
+      priceDecimals: PRICE_DECIMALS,
+    };
   };
 }
 

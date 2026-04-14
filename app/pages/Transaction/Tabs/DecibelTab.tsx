@@ -68,8 +68,6 @@ const ORDER_TYPE_ICONS: Record<string, React.ReactElement> = {
   twap: <ScheduleOutlinedIcon fontSize="small" />,
 };
 
-const PRICE_DECIMALS = 5;
-
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -185,14 +183,23 @@ function formatDecibelPrice(
   raw: string,
   config: DecibelMarketConfig | undefined,
 ): string {
-  return getFormattedBalanceStr(raw, config?.szDecimals ?? PRICE_DECIMALS);
+  const decimals = config?.priceDecimals ?? 6;
+  const formatted = getFormattedBalanceStr(raw, decimals);
+  const quote = config?.quoteAsset;
+  if (quote === "USD" || quote === "USDC") return `$${formatted}`;
+  if (quote) return `${formatted} ${quote}`;
+  return formatted;
 }
 
 function formatDecibelSize(
   raw: string,
   config: DecibelMarketConfig | undefined,
 ): string {
-  return getFormattedBalanceStr(raw, config?.szDecimals ?? PRICE_DECIMALS);
+  const decimals = config?.szDecimals ?? 0;
+  const formatted = getFormattedBalanceStr(raw, decimals);
+  const base = config?.baseAsset;
+  if (base) return `${formatted} ${base}`;
+  return formatted;
 }
 
 function MonoText({children}: {children: React.ReactNode}) {
@@ -311,8 +318,20 @@ function LegTable({
         <TableHead>
           <TableRow>
             <GeneralTableHeaderCell header="#" />
-            <GeneralTableHeaderCell header="Price" />
-            <GeneralTableHeaderCell header="Size" />
+            <GeneralTableHeaderCell
+              header={
+                marketConfig?.quoteAsset
+                  ? `Price (${marketConfig.quoteAsset})`
+                  : "Price"
+              }
+            />
+            <GeneralTableHeaderCell
+              header={
+                marketConfig?.baseAsset
+                  ? `Size (${marketConfig.baseAsset})`
+                  : "Size"
+              }
+            />
           </TableRow>
         </TableHead>
         <TableBody>
