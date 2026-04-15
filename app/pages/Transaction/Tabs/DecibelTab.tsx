@@ -254,12 +254,18 @@ function LegTable({
   const formattedLegs = legs.map((leg) => ({
     price: formatDecibelPrice(leg.price, marketConfig),
     size: formatDecibelSize(leg.size, marketConfig),
-    rawSize: Number(leg.size) || 0,
   }));
 
-  const totalRawSize = formattedLegs.reduce((acc, leg) => acc + leg.rawSize, 0);
+  let totalRawSize = BigInt(0);
+  try {
+    for (const leg of legs) {
+      totalRawSize += BigInt(leg.size);
+    }
+  } catch {
+    totalRawSize = BigInt(0);
+  }
   const totalSize =
-    totalRawSize > 0
+    totalRawSize > BigInt(0)
       ? formatDecibelSize(String(totalRawSize), marketConfig)
       : undefined;
 
@@ -360,6 +366,73 @@ function LegTable({
 // ---------------------------------------------------------------------------
 // Inline Bulk Order Detail (expandable under bulk order row)
 // ---------------------------------------------------------------------------
+
+function FillsDesktopTable({
+  fills,
+  marketConfig,
+}: {
+  fills: DecibelBulkOrderFilledEvent[];
+  marketConfig: DecibelMarketConfig | undefined;
+}) {
+  const hasOrigPrice = fills.some((f) => f.origPrice != null);
+  return (
+    <Table size="small">
+      <TableHead>
+        <TableRow>
+          <GeneralTableHeaderCell header="Side" />
+          <GeneralTableHeaderCell header="Price" />
+          <GeneralTableHeaderCell header="Filled Size" />
+          {hasOrigPrice && <GeneralTableHeaderCell header="Orig Price" />}
+          <GeneralTableHeaderCell header="Order ID" />
+          <GeneralTableHeaderCell header="Fill ID" />
+          <GeneralTableHeaderCell header="User" />
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {fills.map((fill, i) => (
+          <GeneralTableRow
+            // biome-ignore lint/suspicious/noArrayIndexKey: fills lack a guaranteed unique identifier
+            key={`fill-${fill.fillId}-${i}`}
+          >
+            <GeneralTableCell>
+              <SideChip side={fill.side} />
+            </GeneralTableCell>
+            <GeneralTableCell>
+              <MonoText>
+                {formatDecibelPrice(fill.price, marketConfig)}
+              </MonoText>
+            </GeneralTableCell>
+            <GeneralTableCell>
+              <MonoText>
+                {formatDecibelSize(fill.filledSize, marketConfig)}
+              </MonoText>
+            </GeneralTableCell>
+            {hasOrigPrice && (
+              <GeneralTableCell>
+                {fill.origPrice ? (
+                  <MonoText>
+                    {formatDecibelPrice(fill.origPrice, marketConfig)}
+                  </MonoText>
+                ) : (
+                  "—"
+                )}
+              </GeneralTableCell>
+            )}
+            <GeneralTableCell>
+              <TruncatedCopyId value={fill.orderId} />
+            </GeneralTableCell>
+            <GeneralTableCell>
+              <TruncatedCopyId value={fill.fillId} />
+            </GeneralTableCell>
+            <GeneralTableCell>
+              <SafeAccountLink hash={fill.user} />
+            </GeneralTableCell>
+          </GeneralTableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
 
 function BulkOrderInlineDetail({
   detail,
@@ -589,7 +662,7 @@ function BulkOrderInlineDetail({
                             {formatDecibelSize(fill.filledSize, marketConfig)}
                           </MonoText>
                         </KeyValue>
-                        {fill.origPrice && (
+                        {fill.origPrice != null && (
                           <KeyValue label="Orig Price">
                             <MonoText>
                               {formatDecibelPrice(fill.origPrice, marketConfig)}
@@ -610,49 +683,10 @@ function BulkOrderInlineDetail({
                   ))}
                 </Stack>
               ) : (
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <GeneralTableHeaderCell header="Side" />
-                      <GeneralTableHeaderCell header="Price" />
-                      <GeneralTableHeaderCell header="Filled Size" />
-                      <GeneralTableHeaderCell header="Order ID" />
-                      <GeneralTableHeaderCell header="Fill ID" />
-                      <GeneralTableHeaderCell header="User" />
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {filledEvents.map((fill, i) => (
-                      <GeneralTableRow
-                        // biome-ignore lint/suspicious/noArrayIndexKey: fills lack a guaranteed unique identifier
-                        key={`fill-${fill.fillId}-${i}`}
-                      >
-                        <GeneralTableCell>
-                          <SideChip side={fill.side} />
-                        </GeneralTableCell>
-                        <GeneralTableCell>
-                          <MonoText>
-                            {formatDecibelPrice(fill.price, marketConfig)}
-                          </MonoText>
-                        </GeneralTableCell>
-                        <GeneralTableCell>
-                          <MonoText>
-                            {formatDecibelSize(fill.filledSize, marketConfig)}
-                          </MonoText>
-                        </GeneralTableCell>
-                        <GeneralTableCell>
-                          <TruncatedCopyId value={fill.orderId} />
-                        </GeneralTableCell>
-                        <GeneralTableCell>
-                          <TruncatedCopyId value={fill.fillId} />
-                        </GeneralTableCell>
-                        <GeneralTableCell>
-                          <SafeAccountLink hash={fill.user} />
-                        </GeneralTableCell>
-                      </GeneralTableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <FillsDesktopTable
+                  fills={filledEvents}
+                  marketConfig={marketConfig}
+                />
               )}
             </Box>
           )}

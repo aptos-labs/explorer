@@ -253,12 +253,12 @@ function parsePayloadAction(
 function zipLegs(prices: unknown, sizes: unknown): BulkOrderLeg[] {
   const p = Array.isArray(prices) ? prices : [];
   const s = Array.isArray(sizes) ? sizes : [];
-  const len = Math.max(p.length, s.length);
+  const len = Math.min(p.length, s.length);
   const legs: BulkOrderLeg[] = [];
   for (let i = 0; i < len; i++) {
     legs.push({
-      price: String(p[i] ?? "0"),
-      size: String(s[i] ?? "0"),
+      price: String(p[i]),
+      size: String(s[i]),
     });
   }
   return legs;
@@ -367,7 +367,7 @@ function parseBulkOrderFilledEvent(
     fillId: String(data.fill_id ?? ""),
     side: data.is_bid === true ? "buy" : "sell",
     price: String(data.price ?? ""),
-    origPrice: data.orig_price ? String(data.orig_price) : undefined,
+    origPrice: data.orig_price != null ? String(data.orig_price) : undefined,
     filledSize: String(data.filled_size ?? ""),
   };
 }
