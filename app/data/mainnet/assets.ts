@@ -506,6 +506,29 @@ export const mainnetHardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Native", "Verified"],
   },
+  "0x96401f1e3ab3245d056d5a1ba67eef066ac3edc4d5f1b16adc5d567e79a845b0": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0x96401f1e3ab3245d056d5a1ba67eef066ac3edc4d5f1b16adc5d567e79a845b0",
+    name: "Decibel Dollar",
+    symbol: "usDCBL",
+    decimals: 6,
+    panoraSymbol: null,
+    bridge: null,
+    logoUrl: "https://token-metadata.bridge.xyz/images/usDCBL.png",
+    websiteUrl: "https://decibel.trade/",
+    category: "Native",
+    isInPanoraTokenList: false,
+    isBanned: false,
+    panoraOrderIndex: 999999998,
+    panoraIndex: 999999998,
+    coinGeckoId: null,
+    coinMarketCapId: null,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Verified"],
+  },
 };
 
 /**
@@ -556,6 +579,8 @@ export const mainnetVerifiedTokens: Record<string, string> = {
     "ELON",
   "0xe50684a338db732d8fb8a3ac71c4b8633878bd0193bca5de2ebc852a83b35099::propbase_coin::PROPS":
     "PROPS",
+  "0x96401f1e3ab3245d056d5a1ba67eef066ac3edc4d5f1b16adc5d567e79a845b0":
+    "usDCBL",
 };
 
 /**
