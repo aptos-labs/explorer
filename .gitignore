@@ -30,7 +30,12 @@ yarn-error.log*
 # Local Netlify folder
 .netlify
 
-dist/
+dist
+
+# Playwright
+/playwright-report/
+/test-results/
+/blob-report/
 .tanstack/
 stats.html
 

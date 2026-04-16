@@ -2,9 +2,10 @@ import netlify from "@netlify/vite-plugin-tanstack-start";
 import {tanstackStart} from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react-swc";
 import {visualizer} from "rollup-plugin-visualizer";
-import {defineConfig, type PluginOption} from "vite";
+import type {PluginOption} from "vite";
 import compression from "vite-plugin-compression";
 import viteSvgr from "vite-plugin-svgr";
+import {configDefaults, defineConfig} from "vitest/config";
 
 export default defineConfig({
   plugins: [
@@ -100,5 +101,8 @@ export default defineConfig({
       // Ignore the generated route tree to prevent infinite loops
       ignored: ["**/routeTree.gen.ts"],
     },
+  },
+  test: {
+    exclude: [...configDefaults.exclude, "e2e/**"],
   },
 });

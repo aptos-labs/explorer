@@ -15,6 +15,15 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    # One secret per network: map the same value to VITE_* (client) and APTOS_* (SSR)
+    # so preview tests do not split traffic across two API key identities.
+    env:
+      VITE_APTOS_MAINNET_API_KEY: ${{ secrets.APTOS_MAINNET_API_KEY }}
+      APTOS_MAINNET_API_KEY: ${{ secrets.APTOS_MAINNET_API_KEY }}
+      VITE_APTOS_TESTNET_API_KEY: ${{ secrets.APTOS_TESTNET_API_KEY }}
+      APTOS_TESTNET_API_KEY: ${{ secrets.APTOS_TESTNET_API_KEY }}
+      VITE_APTOS_DEVNET_API_KEY: ${{ secrets.APTOS_DEVNET_API_KEY }}
+      APTOS_DEVNET_API_KEY: ${{ secrets.APTOS_DEVNET_API_KEY }}
     steps:
       - uses: actions/checkout@v6
 

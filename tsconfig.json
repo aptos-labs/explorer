@@ -32,6 +32,6 @@
     /* Type declarations */
     "typeRoots": ["./node_modules/@types", "./app/types"]
   },
-  "include": ["app", "*.config.ts", "app/types"],
+  "include": ["app", "e2e", "*.config.ts", "app/types"],
   "exclude": ["node_modules", "build", ".output"]
 }
