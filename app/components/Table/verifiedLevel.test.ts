@@ -1,6 +1,10 @@
 // Covers FEAT-COIN-003 / FEAT-UI-002 — Verification level determination
 import {describe, expect, it} from "vitest";
+import {manuallyVerifiedTokens} from "../../constants";
 import {VerifiedType, verifiedLevel} from "./VerifiedCell";
+
+const USDCBL_FA =
+  "0x96401f1e3ab3245d056d5a1ba67eef066ac3edc4d5f1b16adc5d567e79a845b0";
 
 describe("FEAT-COIN-003 / FEAT-UI-002 — verifiedLevel", () => {
   it("returns NATIVE_TOKEN for APT", () => {
@@ -86,5 +90,11 @@ describe("FEAT-COIN-003 / FEAT-UI-002 — verifiedLevel", () => {
       "mainnet",
     );
     expect(result.level).toBe(VerifiedType.UNVERIFIED);
+  });
+
+  it("returns LABS_VERIFIED for manually listed usDCBL fungible asset", () => {
+    expect(manuallyVerifiedTokens[USDCBL_FA]).toBe("usDCBL");
+    const result = verifiedLevel({id: USDCBL_FA, known: false}, "mainnet");
+    expect(result.level).toBe(VerifiedType.LABS_VERIFIED);
   });
 });
