@@ -46,4 +46,4 @@ jobs:
         run: pnpm test:e2e:install
 
       - name: Playwright smoke tests
-        run: pnpm test:e2e
+        run: pnpm exec playwright test
