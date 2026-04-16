@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@aptos-labs/aptos-client': ^3.0.2
+  '@aptos-labs/aptos-client': ^4.0.0
   '@aptos-labs/wallet-standard': ^1.0.0
   '@aptos-labs/ts-sdk': ^6.3.0
   axios: 1.15.0
@@ -32,14 +32,14 @@ importers:
   .:
     dependencies:
       '@aptos-labs/aptos-client':
-        specifier: ^3.0.2
-        version: 3.0.2(undici@7.24.6)
+        specifier: ^4.0.0
+        version: 4.0.0
       '@aptos-labs/ts-sdk':
         specifier: ^6.3.0
-        version: 6.3.1(undici@7.24.6)
+        version: 6.3.1
       '@aptos-labs/wallet-adapter-react':
         specifier: ^8.3.2
-        version: 8.3.2(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@telegram-apps/bridge@1.9.2)(@types/react@19.2.14)(@wallet-standard/core@1.1.1)(react@19.2.4)
+        version: 8.3.2(@aptos-labs/ts-sdk@6.3.1)(@telegram-apps/bridge@1.9.2)(@types/react@19.2.14)(@wallet-standard/core@1.1.1)(react@19.2.4)
       '@download/blockies':
         specifier: ^1.0.3
         version: 1.0.3
@@ -221,14 +221,9 @@ packages:
     resolution: {integrity: sha512-sB7CokCM6s76SLJmccysbnFR+MDik6udKfj2+9ZsmTLV0/t73veIeCDKbvWJmbW267ibx4HiGbPI7L+1+yjEbQ==}
     hasBin: true
 
-  '@aptos-labs/aptos-client@3.0.2':
-    resolution: {integrity: sha512-DH3Zh7k3mQCzqCHtDX7yVCMHCKWAF4n0ii38Jm85EUUbpYIzJG07a1q7AvMUqktsIsEYpZaaLQK9mLcKQgtJTA==}
+  '@aptos-labs/aptos-client@4.0.0':
+    resolution: {integrity: sha512-hj2X9S932oq+bgXka+mZrBnPzYORutXugdRBsGBIGAOkhwunaroDeQVq6z2WqvwxDnBsxXxcWcchIWJmJnokww==}
     engines: {node: '>=22.0.0'}
-    peerDependencies:
-      undici: ^7.24.1
-    peerDependenciesMeta:
-      undici:
-        optional: true
 
   '@aptos-labs/ts-sdk@6.3.1':
     resolution: {integrity: sha512-1C13IaHgNIo6MHMTQEcDzeuqTNv++evdY+Ph3IAGLnHlG7Yevdxw50W0nyAJRf4bLzQDI20wfJ66wD2qMg7Rew==}
@@ -4934,6 +4929,10 @@ packages:
     resolution: {integrity: sha512-Xi4agocCbRzt0yYMZGMA6ApD7gvtUFaxm4ZmeacWI4cZxaF6C+8I8QfofC20NAePiB/IcvZmzkJ7XPa471AEtA==}
     engines: {node: '>=20.18.1'}
 
+  undici@7.25.0:
+    resolution: {integrity: sha512-xXnp4kTyor2Zq+J1FfPI6Eq3ew5h6Vl0F/8d9XU5zZQf1tX9s2Su1/3PiMmUANFULpmksxkClamIZcaUqryHsQ==}
+    engines: {node: '>=20.18.1'}
+
   unicorn-magic@0.1.0:
     resolution: {integrity: sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==}
     engines: {node: '>=18'}
@@ -5317,31 +5316,31 @@ packages:
 
 snapshots:
 
-  '@aptos-connect/wallet-adapter-plugin@3.0.2(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)':
+  '@aptos-connect/wallet-adapter-plugin@3.0.2(@aptos-labs/ts-sdk@6.3.1)(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)':
     dependencies:
-      '@aptos-connect/wallet-api': 0.6.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)
-      '@aptos-labs/ts-sdk': 6.3.1(undici@7.24.6)
-      '@aptos-labs/wallet-standard': 1.0.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)
-      '@identity-connect/crypto': 0.3.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)
-      '@identity-connect/dapp-sdk': 0.16.1(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@aptos-labs/wallet-standard@1.0.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)
+      '@aptos-connect/wallet-api': 0.6.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
+      '@aptos-labs/ts-sdk': 6.3.1
+      '@aptos-labs/wallet-standard': 1.0.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
+      '@identity-connect/crypto': 0.3.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
+      '@identity-connect/dapp-sdk': 0.16.1(@aptos-labs/ts-sdk@6.3.1)(@aptos-labs/wallet-standard@1.0.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)
     transitivePeerDependencies:
       - '@telegram-apps/bridge'
       - '@wallet-standard/core'
       - debug
 
-  '@aptos-connect/wallet-api@0.6.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)':
+  '@aptos-connect/wallet-api@0.6.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)':
     dependencies:
-      '@aptos-labs/ts-sdk': 6.3.1(undici@7.24.6)
-      '@aptos-labs/wallet-standard': 1.0.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)
+      '@aptos-labs/ts-sdk': 6.3.1
+      '@aptos-labs/wallet-standard': 1.0.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
       '@identity-connect/api': 0.8.0
     transitivePeerDependencies:
       - '@wallet-standard/core'
 
-  '@aptos-connect/web-transport@0.6.1(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@aptos-labs/wallet-standard@1.0.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)':
+  '@aptos-connect/web-transport@0.6.1(@aptos-labs/ts-sdk@6.3.1)(@aptos-labs/wallet-standard@1.0.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)':
     dependencies:
-      '@aptos-connect/wallet-api': 0.6.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)
-      '@aptos-labs/ts-sdk': 6.3.1(undici@7.24.6)
-      '@aptos-labs/wallet-standard': 1.0.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)
+      '@aptos-connect/wallet-api': 0.6.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
+      '@aptos-labs/ts-sdk': 6.3.1
+      '@aptos-labs/wallet-standard': 1.0.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
       '@telegram-apps/bridge': 1.9.2
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -5351,14 +5350,14 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@aptos-labs/aptos-client@3.0.2(undici@7.24.6)':
-    optionalDependencies:
-      undici: 7.24.6
+  '@aptos-labs/aptos-client@4.0.0':
+    dependencies:
+      undici: 7.25.0
 
-  '@aptos-labs/ts-sdk@6.3.1(undici@7.24.6)':
+  '@aptos-labs/ts-sdk@6.3.1':
     dependencies:
       '@aptos-labs/aptos-cli': 1.1.1
-      '@aptos-labs/aptos-client': 3.0.2(undici@7.24.6)
+      '@aptos-labs/aptos-client': 4.0.0
       '@noble/curves': 1.9.7
       '@noble/hashes': 1.8.0
       '@scure/bip32': 1.7.0
@@ -5367,14 +5366,12 @@ snapshots:
       js-base64: 3.7.8
       jwt-decode: 4.0.0
       poseidon-lite: 0.2.1
-    transitivePeerDependencies:
-      - undici
 
-  '@aptos-labs/wallet-adapter-core@8.5.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)':
+  '@aptos-labs/wallet-adapter-core@8.5.0(@aptos-labs/ts-sdk@6.3.1)(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)':
     dependencies:
-      '@aptos-connect/wallet-adapter-plugin': 3.0.2(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)
-      '@aptos-labs/ts-sdk': 6.3.1(undici@7.24.6)
-      '@aptos-labs/wallet-standard': 1.0.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)
+      '@aptos-connect/wallet-adapter-plugin': 3.0.2(@aptos-labs/ts-sdk@6.3.1)(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)
+      '@aptos-labs/ts-sdk': 6.3.1
+      '@aptos-labs/wallet-standard': 1.0.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
       buffer: 6.0.3
       eventemitter3: 4.0.7
       tweetnacl: 1.0.3
@@ -5383,9 +5380,9 @@ snapshots:
       - '@wallet-standard/core'
       - debug
 
-  '@aptos-labs/wallet-adapter-react@8.3.2(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@telegram-apps/bridge@1.9.2)(@types/react@19.2.14)(@wallet-standard/core@1.1.1)(react@19.2.4)':
+  '@aptos-labs/wallet-adapter-react@8.3.2(@aptos-labs/ts-sdk@6.3.1)(@telegram-apps/bridge@1.9.2)(@types/react@19.2.14)(@wallet-standard/core@1.1.1)(react@19.2.4)':
     dependencies:
-      '@aptos-labs/wallet-adapter-core': 8.5.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)
+      '@aptos-labs/wallet-adapter-core': 8.5.0(@aptos-labs/ts-sdk@6.3.1)(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)
       '@radix-ui/react-slot': 1.2.4(@types/react@19.2.14)(react@19.2.4)
       react: 19.2.4
     transitivePeerDependencies:
@@ -5395,9 +5392,9 @@ snapshots:
       - '@wallet-standard/core'
       - debug
 
-  '@aptos-labs/wallet-standard@1.0.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)':
+  '@aptos-labs/wallet-standard@1.0.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)':
     dependencies:
-      '@aptos-labs/ts-sdk': 6.3.1(undici@7.24.6)
+      '@aptos-labs/ts-sdk': 6.3.1
       '@wallet-standard/core': 1.1.1
 
   '@asamuzakjp/css-color@5.0.1':
@@ -5881,25 +5878,25 @@ snapshots:
 
   '@identity-connect/api@0.8.0': {}
 
-  '@identity-connect/crypto@0.3.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)':
+  '@identity-connect/crypto@0.3.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)':
     dependencies:
-      '@aptos-connect/wallet-api': 0.6.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)
-      '@aptos-labs/ts-sdk': 6.3.1(undici@7.24.6)
+      '@aptos-connect/wallet-api': 0.6.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
+      '@aptos-labs/ts-sdk': 6.3.1
       '@noble/hashes': 1.8.0
       ed2curve: 0.3.0
       tweetnacl: 1.0.3
     transitivePeerDependencies:
       - '@wallet-standard/core'
 
-  '@identity-connect/dapp-sdk@0.16.1(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@aptos-labs/wallet-standard@1.0.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)':
+  '@identity-connect/dapp-sdk@0.16.1(@aptos-labs/ts-sdk@6.3.1)(@aptos-labs/wallet-standard@1.0.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)':
     dependencies:
-      '@aptos-connect/wallet-api': 0.6.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)
-      '@aptos-connect/web-transport': 0.6.1(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@aptos-labs/wallet-standard@1.0.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)
-      '@aptos-labs/ts-sdk': 6.3.1(undici@7.24.6)
-      '@aptos-labs/wallet-standard': 1.0.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)
+      '@aptos-connect/wallet-api': 0.6.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
+      '@aptos-connect/web-transport': 0.6.1(@aptos-labs/ts-sdk@6.3.1)(@aptos-labs/wallet-standard@1.0.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1))(@telegram-apps/bridge@1.9.2)(@wallet-standard/core@1.1.1)
+      '@aptos-labs/ts-sdk': 6.3.1
+      '@aptos-labs/wallet-standard': 1.0.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
       '@identity-connect/api': 0.8.0
-      '@identity-connect/crypto': 0.3.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))(@wallet-standard/core@1.1.1)
-      '@identity-connect/wallet-api': 0.2.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))
+      '@identity-connect/crypto': 0.3.0(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
+      '@identity-connect/wallet-api': 0.2.0(@aptos-labs/ts-sdk@6.3.1)
       axios: 1.15.0
       uuid: 9.0.1
     transitivePeerDependencies:
@@ -5907,9 +5904,9 @@ snapshots:
       - '@wallet-standard/core'
       - debug
 
-  '@identity-connect/wallet-api@0.2.0(@aptos-labs/ts-sdk@6.3.1(undici@7.24.6))':
+  '@identity-connect/wallet-api@0.2.0(@aptos-labs/ts-sdk@6.3.1)':
     dependencies:
-      '@aptos-labs/ts-sdk': 6.3.1(undici@7.24.6)
+      '@aptos-labs/ts-sdk': 6.3.1
 
   '@img/colour@1.1.0': {}
 
@@ -10381,6 +10378,8 @@ snapshots:
   undici@7.24.5: {}
 
   undici@7.24.6: {}
+
+  undici@7.25.0: {}
 
   unicorn-magic@0.1.0: {}
 
