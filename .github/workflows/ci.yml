@@ -41,3 +41,9 @@ jobs:
 
       - name: Lint, test, and build
         run: pnpm ci:verify
+
+      - name: Install Playwright Chromium
+        run: pnpm test:e2e:install
+
+      - name: Playwright smoke tests
+        run: pnpm test:e2e
