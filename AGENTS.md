@@ -480,13 +480,24 @@ The explorer maintains dedicated documentation for AI systems and LLM-powered to
 | --------------------------------- | -------------------------------------------------- | ---------------------------------------- |
 | `public/llms.txt` | Short LLM reference (llmstxt.org standard) | Any route or tab is added/changed/removed |
 | `public/llms-full.txt` | Full LLM reference with API docs and examples | Same as above, plus stack/feature changes |
-| `public/robots.txt` | Bot crawl rules including named AI crawlers | New AI crawler agents become prominent |
-| `public/sitemap.xml` | Static URL list for crawlers | New high-value static or semi-static pages |
+| `public/robots.txt` | Bot crawl rules, Content Signals (`ai-train`, `search`, `ai-input`), and named AI crawler groups | New AI crawler becomes prominent, or site-wide AI consent changes |
+| `public/sitemap.xml` | Static URL list for crawlers (includes `/llms*.txt` and `/.well-known/*` entries) | New high-value static or semi-static pages |
+| `public/.well-known/api-catalog` | RFC 9727 API catalog (`application/linkset+json`) advertising upstream Aptos REST/GraphQL APIs | A new upstream API is consumed, a chain/network is added/retired, or OpenAPI/doc/status URLs change |
+| `public/.well-known/agent-skills/index.json` | Agent Skills Discovery RFC v0.2.0 index with SHA-256 digests | Any `SKILL.md` under `public/.well-known/agent-skills/*/` is added, edited, or removed — run `node scripts/update-agent-skills-index.mjs` |
+| `public/.well-known/agent-skills/*/SKILL.md` | Individual agent skills (URL routing, search, etc.) | Feature/routing changes that affect how agents should link into the explorer |
+| `netlify.toml` | `Link` response headers (RFC 8288), `Vary: Accept`, well-known Content-Types, and edge-function registration | New discovery resources, new well-known paths, or changes to the discovery URL list |
+| `netlify/edge-functions/markdown-negotiation.ts` | Returns `/llms.txt` as `Content-Type: text/markdown` when the request has `Accept: text/markdown` | The markdown-for-agents contract changes, or the source file for the markdown view moves |
+| `app/utils/acceptMarkdown.ts` | Pure `Accept`-header parser mirrored in the edge function | Keep in sync with `markdown-negotiation.ts` whenever the negotiation logic changes |
+| `app/components/WebMCPProvider.tsx` + `app/components/webMcpTools.ts` | WebMCP tools registered on `navigator.modelContext` | A major new top-level route becomes important for agent navigation, or tool schemas need to change |
+| `scripts/update-agent-skills-index.mjs` | Regenerates `SHA-256` digests in the agent-skills index | Any change to a `SKILL.md` under `public/.well-known/agent-skills/*/` |
 | `app/components/hooks/usePageMetadata.tsx` | JSON-LD structured data per page type | New page types or schema improvements |
-| `app/routes/__root.tsx` | Root `<head>` AI meta tags and LLM doc link hints | Site-level description or topic changes |
-| `docs/LLM_ACCESS.md` | Contributor quick reference (metadata SSOT, drift tests) | When LLM/SEO workflow changes |
+| `app/routes/__root.tsx` | Root `<head>` AI meta tags, LLM doc link hints, and `<WebMCPProvider />` mount | Site-level description, topic changes, or agent-discovery providers |
+| `docs/LLM_ACCESS.md` | Contributor quick reference (metadata SSOT, drift tests, agent-skills regen) | When LLM/SEO/agent-discovery workflow changes |
 | `app/utils/llmsRouteCoverage.test.ts` | Ensures `llms.txt` / `llms-full.txt` keep core path snippets | When extending documented routes |
-| `docs/FEATURES_SPECIFICATION.md` | Canonical feature catalog with `FEAT-*` IDs and test coverage map | Any feature added, changed, or removed |
+| `app/utils/agentSkillsIndex.test.ts` | Drift test: agent-skills schema, digests, frontmatter | When editing a `SKILL.md` or the index schema version |
+| `app/utils/acceptMarkdown.test.ts` | Unit tests for `prefersMarkdown` | When the `Accept`-header parse rules change |
+| `app/components/webMcpTools.test.ts` | Unit tests for the WebMCP tool factory | When a tool is added, removed, or its input schema changes |
+| `docs/FEATURES_SPECIFICATION.md` | Canonical feature catalog with `FEAT-*` IDs and test coverage map (see `FEAT-SEO-004` for agent discovery) | Any feature added, changed, or removed |
 
 ### Route / Tab Checklist
 
@@ -511,6 +522,18 @@ When you **remove or rename a route**, remove or update the corresponding entrie
 - Every new **page type** (e.g., a new entity like "collection" or "multisig") should get a `case` in `generateStructuredData()` in `usePageMetadata.tsx` with an appropriate schema.org type and an `identifier` field extracted from the canonical URL.
 - The `WebSite` schema's `potentialAction: SearchAction` uses `/?search={search_term_string}` — update the `urlTemplate` if the search URL pattern changes.
 
+### Agent Discovery Checklist
+
+Machine-readable metadata for autonomous agents lives alongside the LLM docs. Keep it accurate — agents consume these surfaces directly:
+
+- [ ] **New route, tab, or entity type**: consider whether the `aptos-explorer-urls` skill (`public/.well-known/agent-skills/aptos-explorer-urls/SKILL.md`) needs a new bullet under **Entity → URL template**. After editing any `SKILL.md`, run `node scripts/update-agent-skills-index.mjs` to refresh digests — the drift test `app/utils/agentSkillsIndex.test.ts` will fail otherwise.
+- [ ] **New top-level navigation surface**: if an agent should be able to open it programmatically, add a tool to `app/components/webMcpTools.ts` (with a JSON Schema `inputSchema` and `readOnlyHint: true`) and cover it in `app/components/webMcpTools.test.ts`. Do **not** add tools that mutate state or sign transactions — WebMCP tools here are strictly navigation-only.
+- [ ] **New upstream API** (new chain, new indexer, a price/analytics feed): add an `anchor` entry to `public/.well-known/api-catalog` with `service-desc` (OpenAPI URL), `service-doc`, and `status` links. Also add it to the "API Endpoints Used by the Explorer" section of `public/llms-full.txt`.
+- [ ] **New discovery resource** (anything under `/.well-known/…`): add it to both `Link` response headers in `netlify.toml` (the `/` and `/*` entries) and to the Content-Types / Cache-Control block further down. Add a `<url>` entry to `public/sitemap.xml`.
+- [ ] **Content Signals** (`public/robots.txt`): if the `ai-train`, `search`, or `ai-input` defaults change, update the top-level `Content-Signal` line **and** the per-AI-crawler copies (they must agree).
+- [ ] **Markdown negotiation**: the homepage edge function (`netlify/edge-functions/markdown-negotiation.ts`) serves `/llms.txt` for `Accept: text/markdown`. If the canonical markdown source moves, update both the edge function and `app/utils/acceptMarkdown.ts` (they share logic but run in different runtimes — Deno vs Node/Vite).
+- [ ] **Docs + changelog**: add `FEAT-SEO-004` coverage notes to `docs/FEATURES_SPECIFICATION.md` (Appendix B) for new tests, and list user-facing discovery changes under `CHANGELOG.md` → `[Unreleased]`.
+
 ---
 
 ## Getting Help
@@ -522,5 +545,6 @@ When you **remove or rename a route**, remove or update the corresponding entrie
 - **Caching & refresh times**: See `CACHING.md`
 - **Context optimization**: See `CONTEXT_OPTIMIZATION.md`
 - **LLM/AI discoverability**: See `docs/LLM_ACCESS.md`, `public/llms.txt`, `public/llms-full.txt`, and `public/robots.txt`
+- **Agent discovery surfaces**: See `FEAT-SEO-004` in `docs/FEATURES_SPECIFICATION.md`, `public/.well-known/api-catalog`, `public/.well-known/agent-skills/index.json`, the `Link` headers in `netlify.toml`, the markdown-negotiation edge function in `netlify/edge-functions/`, and the WebMCP tools in `app/components/WebMCPProvider.tsx` / `webMcpTools.ts`
 - **Features & test coverage**: See `docs/FEATURES_SPECIFICATION.md` for the full feature catalog with `FEAT-*` IDs, existing test coverage (Appendix B), and coverage gaps (Appendix C)
 - **Search URL for AI links**: `/?search={query}` — the home page search bar accepts this param and shows inline results
