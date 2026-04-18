@@ -3,9 +3,20 @@
 [build]
   command = "pnpm build"
   publish = "dist/client"
+  edge_functions = "netlify/edge-functions"
 
 [build.environment]
   NODE_VERSION = "20"
+
+# Markdown-for-Agents negotiation on the homepage. See
+# netlify/edge-functions/markdown-negotiation.ts for details.
+[[edge_functions]]
+  function = "markdown-negotiation"
+  path = "/"
+
+[[edge_functions]]
+  function = "markdown-negotiation"
+  path = "/index.html"
 
 # Headers for security and caching
 [[headers]]
@@ -16,6 +27,18 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "geolocation=(), microphone=(), camera=(), usb=(), payment=()"
     X-XSS-Protection = "1; mode=block"
+    # RFC 8288 Link headers — advertise well-known agent-discovery resources.
+    # Kept in sync with /.well-known/api-catalog, /.well-known/agent-skills/index.json,
+    # and the LLM reference docs under /llms.txt and /llms-full.txt.
+    Link = '''</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json", </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)", </sitemap.xml>; rel="sitemap"; type="application/xml"'''
+
+# Explicit Link header for the homepage so agents probing "/" find discovery
+# resources without needing to follow an SPA route.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Link = '''</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json", </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)", </sitemap.xml>; rel="sitemap"; type="application/xml"'''
+    Vary = "Accept"
 
 [[headers]]
   for = "/assets/*"
@@ -90,6 +113,22 @@
   [headers.values]
     Cache-Control = "public, max-age=86400"
     Content-Type = "text/plain; charset=utf-8"
+
+# Well-known: API catalog (RFC 9727)
+[[headers]]
+  for = "/.well-known/api-catalog"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    Content-Type = "application/linkset+json"
+    Access-Control-Allow-Origin = "*"
+
+# Well-known: Agent Skills discovery index
+[[headers]]
+  for = "/.well-known/agent-skills/index.json"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    Content-Type = "application/json; charset=utf-8"
+    Access-Control-Allow-Origin = "*"
 
 # Environment variable configuration
 # VITE_NETLIFY_CONTEXT is baked into the client bundle at build time so that

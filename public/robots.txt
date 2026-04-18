@@ -1,94 +1,120 @@
+# Content usage preferences (Content Signals — contentsignals.org,
+# draft-romm-aipref-contentsignals). The explorer is a public blockchain
+# view layer: we allow search indexing and AI assistants that cite/ground
+# answers with attribution, but we do not consent to our pages being used
+# for AI model training.
+# Values: yes = permitted, no = not permitted. search covers building search
+# indexes; ai-input covers grounding live AI answers; ai-train covers using
+# content as AI training data.
+Content-Signal: ai-train=no, search=yes, ai-input=yes
+
 User-agent: *
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 
 # AI crawlers — explicit allow with polite crawl delay
 User-agent: GPTBot
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: OAI-SearchBot
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: ChatGPT-User
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: ClaudeBot
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: anthropic-ai
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: PerplexityBot
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: Applebot-Extended
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: GoogleOther
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: cohere-ai
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: Meta-ExternalAgent
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: Bytespider
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: CCBot
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: Amazonbot
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: DuckAssistBot
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
 Crawl-delay: 2
 
 User-agent: YouBot
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Allow: /
 Disallow: /*?network=devnet
 Disallow: /*?network=local
