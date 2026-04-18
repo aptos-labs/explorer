@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-04-28 (rev 13)
+> Last updated: 2026-04-28 (rev 14)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -372,3 +372,86 @@ The explorer **cannot** do the following:
 - Aptos GitHub: [github.com/aptos-labs](https://github.com/aptos-labs)
 - Explorer source code: [github.com/aptos-labs/explorer](https://github.com/aptos-labs/explorer)
 - Aptos Labs: [aptoslabs.com](https://aptoslabs.com)
+
+---
+
+## Agent Discovery Surfaces
+
+The explorer ships several machine-readable surfaces beyond `llms.txt` so
+autonomous agents, crawlers, and AI assistants can discover capabilities
+without scraping HTML. Everything here is additive; the SPA remains the
+canonical user experience.
+
+### Well-known URIs
+
+- **`/.well-known/api-catalog`** — RFC 9727 API catalog, served as
+  `application/linkset+json` (RFC 9264). Advertises the upstream Aptos
+  fullnode REST APIs (mainnet, testnet, devnet), the Aptos indexer GraphQL
+  API, and this explorer itself. Each entry carries `service-desc` (OpenAPI
+  spec), `service-doc` (human docs), and `status` (health endpoint) links.
+- **`/.well-known/agent-skills/index.json`** — Agent Skills Discovery RFC
+  v0.2.0 index (`$schema:
+  https://schemas.agentskills.io/discovery/0.2.0/schema.json`). Currently
+  publishes two skills:
+  - `aptos-explorer-urls` — maps on-chain questions to canonical explorer
+    URLs, tabs, and identifiers.
+  - `aptos-explorer-search` — teaches agents to use the home-page
+    `/?search={query}` auto-detection for opaque inputs.
+  Each skill entry includes a SHA-256 digest of its `SKILL.md` artifact.
+
+### HTTP Link headers (RFC 8288)
+
+The home page (and, as a fallback, every path) responds with a `Link`
+header that advertises the api-catalog, the agent-skills index, and both
+`llms.txt` / `llms-full.txt`. Example:
+
+```
+Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json",
+      </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json",
+      </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)",
+      </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)",
+      </sitemap.xml>; rel="sitemap"; type="application/xml"
+```
+
+### Markdown content negotiation
+
+When a request to `/` (or `/index.html`) includes `Accept: text/markdown`,
+a Netlify Edge Function (`netlify/edge-functions/markdown-negotiation.ts`)
+serves the contents of `/llms.txt` with `Content-Type: text/markdown;
+charset=utf-8`, a `Vary: Accept` header, and an `X-Markdown-Source` hint
+pointing to the underlying file. Browsers (which request `text/html`) are
+unaffected — they still receive the SSR HTML. For the full markdown
+reference, agents should fetch `/llms-full.txt` directly.
+
+### WebMCP tools
+
+When running in a browser that supports `navigator.modelContext`
+(Web Machine Learning CG "WebMCP" draft), the explorer registers a small
+set of read-only navigation tools so in-browser agents can open pages by
+identifier instead of by scraping the DOM. All tools are navigation-only
+and never sign transactions. Currently registered:
+
+| Tool | What it does |
+| --- | --- |
+| `search_explorer` | Navigate to `/?search={query}` with optional network. |
+| `open_transaction` | Open `/txn/{id}` (version or hash) with optional tab. |
+| `open_account` | Open `/account/{address}` (hex or `.apt`) with optional tab. |
+| `open_block` | Open `/block/{height}`. |
+| `open_coin` | Open `/coin/{type}` for a fully-qualified Move coin type. |
+
+Each tool declares a JSON Schema `inputSchema` and the `readOnlyHint`
+annotation. Registration cleans up via `AbortSignal` on unmount.
+
+### Content usage preferences
+
+`/robots.txt` declares [Content Signals](https://contentsignals.org)
+directives at both the top of the file and per `User-agent: *` / AI
+crawler group:
+
+```
+Content-Signal: ai-train=no, search=yes, ai-input=yes
+```
+
+This expresses consent for search indexing and grounded AI answers (with
+attribution), and denies consent for using explorer pages as AI training
+data.

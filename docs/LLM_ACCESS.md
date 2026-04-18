@@ -30,10 +30,25 @@ Searched the app route tree for per-route `head:` callbacks (TanStack Router fil
 |------|------|
 | `public/llms.txt` | Short llmstxt.org-style summary |
 | `public/llms-full.txt` | Full reference (routes, APIs, limitations) |
-| `public/robots.txt` | Crawler rules; note `network=` query disallowances |
+| `public/robots.txt` | Crawler rules; note `network=` query disallowances and top-level `Content-Signal` directives |
 | `public/sitemap.xml` | Discoverable URLs including `llms.txt` / `llms-full.txt` |
+| `public/.well-known/api-catalog` | RFC 9727 API catalog (`application/linkset+json`) listing upstream Aptos REST / GraphQL APIs |
+| `public/.well-known/agent-skills/index.json` | Agent Skills Discovery RFC v0.2.0 index; per-skill `SKILL.md` under `public/.well-known/agent-skills/*/` |
+| `netlify.toml` | `Link` response headers (RFC 8288) on `/` and `/*` pointing to the discovery files |
+| `netlify/edge-functions/markdown-negotiation.ts` | Serves `/llms.txt` as `Content-Type: text/markdown` when the request has `Accept: text/markdown` |
+| `app/components/WebMCPProvider.tsx` + `app/components/webMcpTools.ts` | `navigator.modelContext` tools for browser-resident agents |
 
-Root [`app/routes/__root.tsx`](../app/routes/__root.tsx) exposes `<link rel="help">` / `alternate` hints to the LLM text files.
+Root [`app/routes/__root.tsx`](../app/routes/__root.tsx) exposes `<link rel="help">` / `alternate` hints to the LLM text files and mounts `<WebMCPProvider />`.
+
+### Regenerating the agent-skills index
+
+When you edit any `SKILL.md` under `public/.well-known/agent-skills/`, run:
+
+```bash
+node scripts/update-agent-skills-index.mjs
+```
+
+to refresh `index.json` SHA-256 digests. The drift test `app/utils/agentSkillsIndex.test.ts` fails if digests are stale.
 
 ## Generated TanStack Router route tree
 
