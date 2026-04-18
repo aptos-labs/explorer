@@ -1,0 +1,133 @@
+{
+  "$schema": "https://www.rfc-editor.org/rfc/rfc9264",
+  "_comment": "Aptos Explorer API catalog (RFC 9727 / RFC 9264). Lists the upstream Aptos Labs public APIs the explorer is a UI for, so agents can programmatically discover service descriptions, documentation, and health endpoints. The explorer itself does not expose its own REST API beyond static /llms*.txt discovery files. See https://www.rfc-editor.org/rfc/rfc9727 for the catalog format.",
+  "linkset": [
+    {
+      "anchor": "https://api.mainnet.aptoslabs.com/v1",
+      "service-desc": [
+        {
+          "href": "https://api.mainnet.aptoslabs.com/v1/spec.yaml",
+          "type": "application/yaml",
+          "title": "Aptos Fullnode REST API — OpenAPI 3 spec (mainnet)"
+        },
+        {
+          "href": "https://api.mainnet.aptoslabs.com/v1/spec.json",
+          "type": "application/json",
+          "title": "Aptos Fullnode REST API — OpenAPI 3 spec (mainnet, JSON)"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://aptos.dev/en/build/apis/fullnode-rest-api",
+          "type": "text/html",
+          "title": "Aptos Fullnode REST API documentation"
+        },
+        {
+          "href": "https://api.mainnet.aptoslabs.com/v1/spec.html",
+          "type": "text/html",
+          "title": "Aptos Fullnode REST API — interactive spec (mainnet)"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://api.mainnet.aptoslabs.com/v1/-/healthy",
+          "type": "application/json",
+          "title": "Aptos mainnet fullnode health"
+        }
+      ],
+      "service-meta": [
+        {
+          "href": "https://api.mainnet.aptoslabs.com/v1",
+          "title": "Aptos mainnet fullnode REST API base URL"
+        }
+      ]
+    },
+    {
+      "anchor": "https://api.testnet.aptoslabs.com/v1",
+      "service-desc": [
+        {
+          "href": "https://api.testnet.aptoslabs.com/v1/spec.yaml",
+          "type": "application/yaml",
+          "title": "Aptos Fullnode REST API — OpenAPI 3 spec (testnet)"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://aptos.dev/en/build/apis/fullnode-rest-api",
+          "type": "text/html",
+          "title": "Aptos Fullnode REST API documentation"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://api.testnet.aptoslabs.com/v1/-/healthy",
+          "type": "application/json",
+          "title": "Aptos testnet fullnode health"
+        }
+      ]
+    },
+    {
+      "anchor": "https://api.devnet.aptoslabs.com/v1",
+      "service-desc": [
+        {
+          "href": "https://api.devnet.aptoslabs.com/v1/spec.yaml",
+          "type": "application/yaml",
+          "title": "Aptos Fullnode REST API — OpenAPI 3 spec (devnet)"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://aptos.dev/en/build/apis/fullnode-rest-api",
+          "type": "text/html",
+          "title": "Aptos Fullnode REST API documentation"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://api.devnet.aptoslabs.com/v1/-/healthy",
+          "type": "application/json",
+          "title": "Aptos devnet fullnode health"
+        }
+      ]
+    },
+    {
+      "anchor": "https://api.mainnet.aptoslabs.com/v1/graphql",
+      "service-desc": [
+        {
+          "href": "https://aptos.dev/en/build/indexer/indexer-api",
+          "type": "text/html",
+          "title": "Aptos Indexer GraphQL API — schema and usage"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://aptos.dev/en/build/indexer/indexer-api",
+          "type": "text/html",
+          "title": "Aptos Indexer GraphQL API documentation (mainnet)"
+        }
+      ]
+    },
+    {
+      "anchor": "https://explorer.aptoslabs.com/",
+      "describedby": [
+        {
+          "href": "https://explorer.aptoslabs.com/llms-full.txt",
+          "type": "text/plain",
+          "title": "Aptos Explorer — full LLM reference"
+        },
+        {
+          "href": "https://explorer.aptoslabs.com/llms.txt",
+          "type": "text/plain",
+          "title": "Aptos Explorer — LLM reference (summary)"
+        }
+      ],
+      "sitemap": [
+        {
+          "href": "https://explorer.aptoslabs.com/sitemap.xml",
+          "type": "application/xml",
+          "title": "Aptos Explorer sitemap"
+        }
+      ]
+    }
+  ]
+}
