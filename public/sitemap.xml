@@ -132,38 +132,38 @@
   <!-- Verification -->
   <url>
     <loc>https://explorer.aptoslabs.com/verification</loc>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <!-- Settings -->
   <url>
     <loc>https://explorer.aptoslabs.com/settings</loc>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <!-- LLM documentation (discoverable) -->
   <url>
     <loc>https://explorer.aptoslabs.com/llms.txt</loc>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://explorer.aptoslabs.com/llms-full.txt</loc>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <!-- Agent discovery (RFC 8615 well-known URIs) -->
   <url>
     <loc>https://explorer.aptoslabs.com/.well-known/api-catalog</loc>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
     <loc>https://explorer.aptoslabs.com/.well-known/agent-skills/index.json</loc>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.3</priority>
   </url>
 </urlset>
