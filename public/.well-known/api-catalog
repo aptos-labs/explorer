@@ -1,6 +1,5 @@
 {
-  "$schema": "https://www.rfc-editor.org/rfc/rfc9264",
-  "_comment": "Aptos Explorer API catalog (RFC 9727 / RFC 9264). Lists the upstream Aptos Labs public APIs the explorer is a UI for, so agents can programmatically discover service descriptions, documentation, and health endpoints. The explorer itself does not expose its own REST API beyond static /llms*.txt discovery files. See https://www.rfc-editor.org/rfc/rfc9727 for the catalog format.",
+  "_comment": "Aptos Explorer API catalog (RFC 9727) served as application/linkset+json (RFC 9264). Lists the upstream Aptos Labs public APIs the explorer is a UI for, so agents can programmatically discover service descriptions, documentation, and health endpoints. The explorer itself does not expose its own REST API beyond static /llms*.txt discovery files.",
   "linkset": [
     {
       "anchor": "https://api.mainnet.aptoslabs.com/v1",
