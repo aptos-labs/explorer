@@ -2,8 +2,8 @@ import {describe, expect, it, vi} from "vitest";
 import {
   buildWebMcpTools,
   isAddressLike,
-  networkSearch,
   type NavigateFn,
+  networkSearch,
 } from "./webMcpTools";
 
 function setup() {
@@ -14,11 +14,16 @@ function setup() {
 }
 
 describe("networkSearch", () => {
-  it("returns empty object for mainnet / undefined", () => {
-    expect(networkSearch()).toEqual({});
-    expect(networkSearch("mainnet")).toEqual({});
+  it("returns empty object only for undefined (preserve current network)", () => {
+    expect(networkSearch(undefined)).toEqual({});
   });
-  it("passes through non-mainnet networks", () => {
+
+  it("forwards every explicit network including mainnet", () => {
+    // Regression: dropping 'mainnet' here would silently keep the user on a
+    // previously-selected testnet/devnet because the app's custom useNavigate
+    // preserves search.network when omitted. Forwarding 'mainnet' lets a tool
+    // caller explicitly switch back.
+    expect(networkSearch("mainnet")).toEqual({network: "mainnet"});
     expect(networkSearch("testnet")).toEqual({network: "testnet"});
     expect(networkSearch("devnet")).toEqual({network: "devnet"});
     expect(networkSearch("local")).toEqual({network: "local"});
@@ -86,16 +91,33 @@ describe("buildWebMcpTools", () => {
         to: "/",
         search: {search: "alice.apt", network: "testnet"},
       });
-      expect(result).toEqual({ok: true, path: "/?search=alice.apt"});
+      expect(result).toEqual({
+        ok: true,
+        path: "/?search=alice.apt&network=testnet",
+      });
     });
 
-    it("omits network for mainnet", async () => {
+    it("forwards explicit mainnet so it can override the current network", async () => {
       const {navigate, byName} = setup();
-      await byName.search_explorer.execute({query: "0x1"});
+      const result = await byName.search_explorer.execute({
+        query: "0x1",
+        network: "mainnet",
+      });
+      expect(navigate).toHaveBeenCalledWith({
+        to: "/",
+        search: {search: "0x1", network: "mainnet"},
+      });
+      expect(result.path).toBe("/?search=0x1&network=mainnet");
+    });
+
+    it("omits network when the caller does not provide one", async () => {
+      const {navigate, byName} = setup();
+      const result = await byName.search_explorer.execute({query: "0x1"});
       expect(navigate).toHaveBeenCalledWith({
         to: "/",
         search: {search: "0x1"},
       });
+      expect(result.path).toBe("/?search=0x1");
     });
 
     it("throws when query is missing", async () => {
@@ -117,9 +139,9 @@ describe("buildWebMcpTools", () => {
       expect(r.path).toBe("/txn/123456789");
     });
 
-    it("accepts a hex hash and tab", async () => {
+    it("accepts a hex hash and tab, and encodes network in the returned path", async () => {
       const {navigate, byName} = setup();
-      await byName.open_transaction.execute({
+      const r = await byName.open_transaction.execute({
         id: "0xabcdef",
         tab: "events",
         network: "testnet",
@@ -128,6 +150,7 @@ describe("buildWebMcpTools", () => {
         to: "/txn/0xabcdef/events",
         search: {network: "testnet"},
       });
+      expect(r.path).toBe("/txn/0xabcdef/events?network=testnet");
     });
 
     it("rejects junk ids", async () => {
@@ -141,7 +164,7 @@ describe("buildWebMcpTools", () => {
   describe("open_account", () => {
     it("navigates to address page", async () => {
       const {navigate, byName} = setup();
-      await byName.open_account.execute({
+      const r = await byName.open_account.execute({
         address: "0x1",
         tab: "modules",
       });
@@ -149,15 +172,20 @@ describe("buildWebMcpTools", () => {
         to: "/account/0x1/modules",
         search: {},
       });
+      expect(r.path).toBe("/account/0x1/modules");
     });
 
-    it("accepts ANS names", async () => {
+    it("accepts ANS names and echoes network in the path", async () => {
       const {navigate, byName} = setup();
-      await byName.open_account.execute({address: "alice.apt"});
+      const r = await byName.open_account.execute({
+        address: "alice.apt",
+        network: "devnet",
+      });
       expect(navigate).toHaveBeenCalledWith({
         to: "/account/alice.apt",
-        search: {},
+        search: {network: "devnet"},
       });
+      expect(r.path).toBe("/account/alice.apt?network=devnet");
     });
 
     it("rejects invalid inputs", async () => {
@@ -171,8 +199,9 @@ describe("buildWebMcpTools", () => {
   describe("open_block", () => {
     it("accepts a non-negative integer", async () => {
       const {navigate, byName} = setup();
-      await byName.open_block.execute({height: 42});
+      const r = await byName.open_block.execute({height: 42});
       expect(navigate).toHaveBeenCalledWith({to: "/block/42", search: {}});
+      expect(r.path).toBe("/block/42");
     });
 
     it("rejects negatives / non-integers / non-numbers", async () => {
@@ -186,13 +215,25 @@ describe("buildWebMcpTools", () => {
   describe("open_coin", () => {
     it("accepts a fully-qualified Move type", async () => {
       const {navigate, byName} = setup();
-      await byName.open_coin.execute({
+      const r = await byName.open_coin.execute({
         coinType: "0x1::aptos_coin::AptosCoin",
       });
-      expect(navigate).toHaveBeenCalledWith({
-        to: `/coin/${encodeURIComponent("0x1::aptos_coin::AptosCoin")}`,
-        search: {},
+      const expectedTo = `/coin/${encodeURIComponent(
+        "0x1::aptos_coin::AptosCoin",
+      )}`;
+      expect(navigate).toHaveBeenCalledWith({to: expectedTo, search: {}});
+      expect(r.path).toBe(expectedTo);
+    });
+
+    it("encodes network in the returned path when provided", async () => {
+      const {byName} = setup();
+      const r = await byName.open_coin.execute({
+        coinType: "0x1::aptos_coin::AptosCoin",
+        network: "local",
       });
+      expect(r.path).toBe(
+        `/coin/${encodeURIComponent("0x1::aptos_coin::AptosCoin")}?network=local`,
+      );
     });
 
     it("rejects partial types", async () => {

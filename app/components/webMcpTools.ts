@@ -27,14 +27,42 @@ const ANS_NAME_RE = /^[a-z0-9-]{1,63}\.apt$/;
 const MOVE_TYPE_RE =
   /^0x[0-9a-fA-F]+::[A-Za-z_][A-Za-z0-9_]*::[A-Za-z_][A-Za-z0-9_]*/;
 
+const NETWORK_DESCRIPTION =
+  "Aptos network. When set, the tool navigates to this network explicitly (including mainnet, which will override a previously selected testnet/devnet/local). When omitted, the explorer preserves the user's current network.";
+
 export function isAddressLike(value: string): boolean {
   return HEX_ADDRESS_RE.test(value) || ANS_NAME_RE.test(value);
 }
 
-export function networkSearch(network?: NetworkName): Record<string, string> {
-  if (!network || network === "mainnet") return {};
+/**
+ * Build the `search` object passed to the router for a given network choice.
+ *
+ * The explorer's `useNavigate` wrapper preserves the current `?network=`
+ * whenever the caller omits `search.network`. That means passing
+ * `{network: undefined}` keeps the user on their current network, while
+ * passing `{network: "mainnet"}` explicitly switches them to mainnet. For
+ * that reason we forward every explicitly-provided network (including
+ * `"mainnet"`) rather than dropping it.
+ */
+export function networkSearch(
+  network: NetworkName | undefined,
+): Record<string, string> {
+  if (!network) return {};
   return {network};
 }
+
+function buildPath(to: string, search: Record<string, string>): string {
+  const entries = Object.entries(search);
+  if (entries.length === 0) return to;
+  const qs = new URLSearchParams(entries).toString();
+  return `${to}?${qs}`;
+}
+
+const NETWORK_SCHEMA = {
+  type: "string",
+  enum: ["mainnet", "testnet", "devnet", "local"],
+  description: NETWORK_DESCRIPTION,
+} as const;
 
 export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
   return [
@@ -54,11 +82,7 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
             description:
               "Free-form input to search for (address, transaction hash/version, ANS name, coin type, or block height).",
           },
-          network: {
-            type: "string",
-            enum: ["mainnet", "testnet", "devnet", "local"],
-            description: "Aptos network. Defaults to mainnet.",
-          },
+          network: NETWORK_SCHEMA,
         },
       },
       annotations: {readOnlyHint: true},
@@ -68,11 +92,9 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
         if (typeof query !== "string" || query.length === 0) {
           throw new Error("search_explorer: 'query' is required");
         }
-        await navigate({
-          to: "/",
-          search: {search: query, ...networkSearch(network)},
-        });
-        return {ok: true, path: `/?search=${encodeURIComponent(query)}`};
+        const search = {search: query, ...networkSearch(network)};
+        await navigate({to: "/", search});
+        return {ok: true, path: buildPath("/", search)};
       },
     },
     {
@@ -101,10 +123,7 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
               "trace",
             ],
           },
-          network: {
-            type: "string",
-            enum: ["mainnet", "testnet", "devnet", "local"],
-          },
+          network: NETWORK_SCHEMA,
         },
       },
       annotations: {readOnlyHint: true},
@@ -125,9 +144,10 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
             "open_transaction: 'id' must be a decimal version or a 0x-prefixed hex hash",
           );
         }
-        const path = tab ? `/txn/${id}/${tab}` : `/txn/${id}`;
-        await navigate({to: path, search: networkSearch(network)});
-        return {ok: true, path};
+        const to = tab ? `/txn/${id}/${tab}` : `/txn/${id}`;
+        const search = networkSearch(network);
+        await navigate({to, search});
+        return {ok: true, path: buildPath(to, search)};
       },
     },
     {
@@ -156,10 +176,7 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
               "info",
             ],
           },
-          network: {
-            type: "string",
-            enum: ["mainnet", "testnet", "devnet", "local"],
-          },
+          network: NETWORK_SCHEMA,
         },
       },
       annotations: {readOnlyHint: true},
@@ -175,9 +192,10 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
             "open_account: 'address' must be a 0x-prefixed hex address or .apt name",
           );
         }
-        const path = tab ? `/account/${address}/${tab}` : `/account/${address}`;
-        await navigate({to: path, search: networkSearch(network)});
-        return {ok: true, path};
+        const to = tab ? `/account/${address}/${tab}` : `/account/${address}`;
+        const search = networkSearch(network);
+        await navigate({to, search});
+        return {ok: true, path: buildPath(to, search)};
       },
     },
     {
@@ -195,10 +213,7 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
             minimum: 0,
             description: "Block height",
           },
-          network: {
-            type: "string",
-            enum: ["mainnet", "testnet", "devnet", "local"],
-          },
+          network: NETWORK_SCHEMA,
         },
       },
       annotations: {readOnlyHint: true},
@@ -214,9 +229,10 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
             "open_block: 'height' must be a non-negative integer",
           );
         }
-        const path = `/block/${height}`;
-        await navigate({to: path, search: networkSearch(network)});
-        return {ok: true, path};
+        const to = `/block/${height}`;
+        const search = networkSearch(network);
+        await navigate({to, search});
+        return {ok: true, path: buildPath(to, search)};
       },
     },
     {
@@ -233,10 +249,7 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
             type: "string",
             description: "Move coin type, e.g. 0x1::aptos_coin::AptosCoin",
           },
-          network: {
-            type: "string",
-            enum: ["mainnet", "testnet", "devnet", "local"],
-          },
+          network: NETWORK_SCHEMA,
         },
       },
       annotations: {readOnlyHint: true},
@@ -248,9 +261,10 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
             "open_coin: 'coinType' must be a fully-qualified Move type like 0x1::aptos_coin::AptosCoin",
           );
         }
-        const path = `/coin/${encodeURIComponent(coinType)}`;
-        await navigate({to: path, search: networkSearch(network)});
-        return {ok: true, path};
+        const to = `/coin/${encodeURIComponent(coinType)}`;
+        const search = networkSearch(network);
+        await navigate({to, search});
+        return {ok: true, path: buildPath(to, search)};
       },
     },
   ];
