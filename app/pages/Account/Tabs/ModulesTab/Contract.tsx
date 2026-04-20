@@ -643,22 +643,12 @@ function RunContractForm({
 }) {
   const networkName = useNetworkName();
   const sdkV2Client = useSdkV2Client();
-  const {connected, account} = useWallet();
+  const {connected} = useWallet();
   const logEvent = useLogEventWithBasic();
   const [formValid, setFormValid] = useState(false);
   const [ansError, setAnsError] = useState<string | undefined>();
-  const {
-    submitTransaction,
-    transactionResponse,
-    transactionInProcess,
-    clearTransactionResponse,
-  } = useSubmitTransaction();
-
-  const [simulationInProcess, setSimulationInProcess] = useState(false);
-  const [simulationResult, setSimulationResult] = useState<unknown[] | null>(
-    null,
-  );
-  const [simulationError, setSimulationError] = useState<string | undefined>();
+  const {submitTransaction, transactionResponse, transactionInProcess} =
+    useSubmitTransaction();
 
   const fnParams = removeSignerParam(fn);
 
@@ -707,79 +697,9 @@ function RunContractForm({
     return arg;
   };
 
-  const handleSimulate = async (data: ContractFormType) => {
-    logEvent("simulate_button_clicked", fn.name);
-    setAnsError(undefined);
-    setSimulationResult(null);
-    setSimulationError(undefined);
-    clearTransactionResponse();
-    setSimulationInProcess(true);
-
-    let resolvedArgs: string[];
-    try {
-      resolvedArgs = await resolveAnsInArguments(
-        data.args,
-        fnParams,
-        sdkV2Client,
-      );
-    } catch (e: unknown) {
-      const errorMsg =
-        e instanceof Error ? e.message : "Failed to resolve ANS name";
-      setAnsError(errorMsg);
-      setSimulationInProcess(false);
-      return;
-    }
-
-    if (!account?.address || !account?.publicKey) {
-      setSimulationError("Wallet account not available for simulation");
-      setSimulationInProcess(false);
-      return;
-    }
-
-    try {
-      const transaction = await sdkV2Client.transaction.build.simple({
-        sender: account.address,
-        data: {
-          function: `${module.address}::${module.name}::${fn.name}`,
-          typeArguments: data.typeArgs,
-          functionArguments: resolvedArgs.map((arg, i) => {
-            const type = fnParams[i];
-            return convertArgument(arg, type) as unknown as
-              | string
-              | number
-              | boolean
-              | Uint8Array
-              | (string | number | boolean | Uint8Array)[];
-          }),
-        },
-      });
-
-      const result = await sdkV2Client.transaction.simulate.simple({
-        signerPublicKey: account.publicKey,
-        transaction,
-      });
-
-      setSimulationResult(result as unknown[]);
-      logEvent("function_simulated", fn.name, {
-        txn_status: (result[0] as Record<string, unknown>)?.success
-          ? "success"
-          : "failed",
-      });
-    } catch (error) {
-      setSimulationError(
-        error instanceof Error ? error.message : "Simulation failed",
-      );
-      logEvent("function_simulated", fn.name, {txn_status: "error"});
-    }
-
-    setSimulationInProcess(false);
-  };
-
   const onSubmit: SubmitHandler<ContractFormType> = async (data) => {
     logEvent("write_button_clicked", fn.name);
     setAnsError(undefined);
-    setSimulationResult(null);
-    setSimulationError(undefined);
 
     let resolvedArgs: string[];
     try {
@@ -831,15 +751,13 @@ function RunContractForm({
       setFormValid={setFormValid}
       isView={false}
       sourceCode={sourceCode}
-      result={(formHandleSubmit) =>
+      result={() =>
         connected ? (
           <Box>
             <Stack direction="row" spacing={2}>
               <Button
                 type="submit"
-                disabled={
-                  transactionInProcess || simulationInProcess || !formValid
-                }
+                disabled={transactionInProcess || !formValid}
                 variant="contained"
                 size="large"
                 sx={{
@@ -854,29 +772,9 @@ function RunContractForm({
                   "Execute"
                 )}
               </Button>
-              <Button
-                type="button"
-                disabled={
-                  transactionInProcess || simulationInProcess || !formValid
-                }
-                variant="outlined"
-                size="large"
-                onClick={formHandleSubmit(handleSimulate)}
-                sx={{
-                  minWidth: 140,
-                  height: 48,
-                  fontWeight: 600,
-                }}
-              >
-                {simulationInProcess ? (
-                  <CircularProgress size={24} color="inherit" />
-                ) : (
-                  "Simulate"
-                )}
-              </Button>
             </Stack>
 
-            {!formValid && !transactionInProcess && !simulationInProcess && (
+            {!formValid && !transactionInProcess && (
               <Typography
                 variant="caption"
                 color="text.secondary"
@@ -963,26 +861,6 @@ function RunContractForm({
                           </Link>
                         </Stack>
                       )}
-                  </Box>
-                </Stack>
-              </ResultCard>
-            )}
-
-            {!simulationInProcess && simulationResult && !ansError && (
-              <SimulationResultDisplay result={simulationResult} />
-            )}
-
-            {!simulationInProcess && simulationError && !ansError && (
-              <ResultCard success={false} sx={{mt: 3}}>
-                <Stack direction="row" spacing={1} alignItems="flex-start">
-                  <ErrorIcon color="error" fontSize="small" />
-                  <Box>
-                    <Typography variant="subtitle2" color="error">
-                      Simulation Failed
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {simulationError}
-                    </Typography>
                   </Box>
                 </Stack>
               </ResultCard>
@@ -1327,136 +1205,6 @@ function ReadContractForm({
         </Box>
       )}
     />
-  );
-}
-
-function SimulationResultDisplay({result}: {result: unknown[]}) {
-  const theme = useTheme();
-  const [expanded, setExpanded] = useState(true);
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-
-  const txn = (Array.isArray(result) ? result[0] : result) as Record<
-    string,
-    unknown
-  >;
-  if (!txn) return null;
-
-  const isSuccess = txn.success === true;
-  const gasUsed = txn.gas_used as string | undefined;
-  const vmStatus = txn.vm_status as string | undefined;
-  const events = (txn.events as unknown[]) ?? [];
-  const changes = (txn.changes as unknown[]) ?? [];
-
-  const fullJson = JSON.stringify(result, null, 2);
-
-  async function copyJson() {
-    try {
-      await navigator.clipboard.writeText(fullJson);
-      setTooltipOpen(true);
-      setTimeout(() => setTooltipOpen(false), TOOLTIP_TIME);
-    } catch {
-      // Clipboard API not available
-    }
-  }
-
-  return (
-    <Box sx={{mt: 3}}>
-      <ResultCard success={isSuccess}>
-        <Stack direction="row" spacing={1} alignItems="flex-start" mb={2}>
-          {isSuccess ? (
-            <CheckCircle color="success" fontSize="small" />
-          ) : (
-            <ErrorIcon color="error" fontSize="small" />
-          )}
-          <Box flex={1}>
-            <Typography
-              variant="subtitle2"
-              color={isSuccess ? "success.main" : "error"}
-            >
-              Simulation {isSuccess ? "Successful" : "Failed"}
-            </Typography>
-            {vmStatus && (
-              <Typography variant="body2" color="text.secondary" sx={{mt: 0.5}}>
-                {vmStatus}
-              </Typography>
-            )}
-          </Box>
-          <StyledTooltip
-            title={tooltipOpen ? "Copied!" : "Copy full response"}
-            placement="top"
-            open={tooltipOpen || undefined}
-            disableFocusListener={tooltipOpen}
-            disableHoverListener={tooltipOpen}
-            disableTouchListener={tooltipOpen}
-          >
-            <IconButton onClick={copyJson} size="small">
-              <ContentCopy fontSize="small" />
-            </IconButton>
-          </StyledTooltip>
-        </Stack>
-
-        <Stack direction="row" spacing={3} mb={2}>
-          {gasUsed && (
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                Gas Used
-              </Typography>
-              <Typography variant="body2" fontWeight={600}>
-                {gasUsed}
-              </Typography>
-            </Box>
-          )}
-          <Box>
-            <Typography variant="caption" color="text.secondary">
-              Events
-            </Typography>
-            <Typography variant="body2" fontWeight={600}>
-              {events.length}
-            </Typography>
-          </Box>
-          <Box>
-            <Typography variant="caption" color="text.secondary">
-              Changes
-            </Typography>
-            <Typography variant="body2" fontWeight={600}>
-              {changes.length}
-            </Typography>
-          </Box>
-        </Stack>
-
-        <Button
-          size="small"
-          onClick={() => setExpanded(!expanded)}
-          endIcon={expanded ? <ExpandLess /> : <ExpandMore />}
-          sx={{textTransform: "none", mb: expanded ? 1 : 0}}
-        >
-          {expanded ? "Hide" : "Show"} Full Response
-        </Button>
-
-        <Collapse in={expanded}>
-          <Typography
-            component="pre"
-            sx={{
-              fontFamily: "monospace",
-              fontSize: 12,
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-              m: 0,
-              p: 2,
-              bgcolor:
-                theme.palette.mode === "dark"
-                  ? "rgba(255,255,255,0.03)"
-                  : "rgba(0,0,0,0.02)",
-              borderRadius: 1,
-              maxHeight: 500,
-              overflow: "auto",
-            }}
-          >
-            {fullJson}
-          </Typography>
-        </Collapse>
-      </ResultCard>
-    </Box>
   );
 }
 

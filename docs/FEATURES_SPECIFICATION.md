@@ -416,7 +416,7 @@ The app shell that wraps every page.
 |---------|-------------|---------|
 | Packages | `packages` | Package sidebar, `MovePackageManifest`, version-aware via ledger version. |
 | Code | `code` | Module selector, `ModuleHeader` (entry fn count, bytecode size), source vs decompiled Move vs disassembly. |
-| Run | `run` | Wallet-connected entry function execution forms (type args, args, ANS address resolution, `useSubmitTransaction`). Disabled for historical versions. |
+| Run | `run` | Wallet-connected entry function execution forms (type args, args, ANS address resolution, `useSubmitTransaction`). No **Simulate** / `simulate` preview—only **Execute** submits a signed transaction. Disabled for historical versions. |
 | View | `view` | View function calls via `view` API with result display/copy. Disabled for historical versions. |
 
 ### FEAT-MODULES-002 — Module Version Selector
