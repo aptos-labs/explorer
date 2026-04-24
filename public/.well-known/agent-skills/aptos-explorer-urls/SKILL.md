@@ -7,7 +7,7 @@ description: Map questions about Aptos blockchain entities (transactions, accoun
 
 Canonical URL templates for [Aptos Explorer](https://explorer.aptoslabs.com). All paths default to mainnet; append `?network=testnet`, `?network=devnet`, or `?network=local` for other networks.
 
-> **For crawlers / automated fetchers**: the site's `robots.txt` disallows many bots from URLs that include `?network=testnet|devnet|local`. When generating links for indexing agents, prefer plain mainnet paths (no `network` query param).
+> **For crawlers / automated fetchers**: the site's `robots.txt` disallows many bots from URLs that include `?network=devnet` or `?network=local`. When generating links for indexing agents, prefer plain mainnet paths (no `network` query param); testnet links are crawlable but generally less useful for citation.
 
 ## Entity → URL template
 

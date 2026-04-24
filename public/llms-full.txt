@@ -32,7 +32,7 @@ Aptos is a Layer 1 blockchain built with Move, a resource-oriented programming l
 
 All URLs default to **mainnet**. To specify a network, append `?network=testnet`, `?network=devnet`, or `?network=local`.
 
-**Crawlers and canonical links**: The explorer’s [`robots.txt`](/robots.txt) disallows many bots from fetching URLs that include `?network=testnet`, `?network=devnet`, or `?network=local`. When generating links for search indexes, AI crawlers, or other automated fetchers, **use mainnet paths without a `network` query parameter** unless you intentionally target another network. Humans can still switch networks in the UI or by appending `?network=...` as below.
+**Crawlers and canonical links**: The explorer’s [`robots.txt`](/robots.txt) disallows many bots from fetching URLs that include `?network=devnet` or `?network=local` (testnet is crawlable but rarely the canonical reference). When generating links for search indexes, AI crawlers, or other automated fetchers, **use mainnet paths without a `network` query parameter** unless you intentionally target another network. Humans can still switch networks in the UI or by appending `?network=...` as below.
 
 ### Page Routes and Tabs
 
