@@ -17,6 +17,31 @@ interface AptosClientConfig {
   HEADERS?: Record<string, string>;
 }
 
+const MAX_ERROR_BODY_CHARS = 800;
+
+/**
+ * Keep API error messages readable when the server returns an HTML error page
+ * (e.g. CDN / edge 429) instead of JSON.
+ */
+function formatErrorResponseBody(body: string): string {
+  const trimmed = body.trim();
+  const lower = trimmed.toLowerCase();
+  const looksHtml =
+    trimmed.startsWith("<!") ||
+    lower.includes("<!doctype html") ||
+    lower.includes("<html");
+  if (looksHtml) {
+    const oneLine = trimmed.replace(/\s+/g, " ");
+    const snippet = oneLine.slice(0, 280);
+    const suffix = oneLine.length > 280 ? "…" : "";
+    return `${snippet}${suffix} (HTML error page, not JSON — often edge or CDN rate limiting)`;
+  }
+  if (trimmed.length > MAX_ERROR_BODY_CHARS) {
+    return `${trimmed.slice(0, MAX_ERROR_BODY_CHARS)}…`;
+  }
+  return trimmed;
+}
+
 export class AptosClient {
   private readonly baseUrl: string;
   private readonly headers: Record<string, string>;
@@ -43,7 +68,8 @@ export class AptosClient {
       },
     });
     if (!resp.ok) {
-      const body = await resp.text().catch(() => "");
+      const rawBody = await resp.text().catch(() => "");
+      const body = formatErrorResponseBody(rawBody);
       throw new Error(`Aptos API error ${resp.status}: ${body}`);
     }
     return resp.json() as Promise<T>;

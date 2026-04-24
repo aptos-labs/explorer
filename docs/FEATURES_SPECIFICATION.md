@@ -930,7 +930,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Trigger** | HTTP 429 or "Too Many Requests" error detected in API client, queries, or router error handler via `emitRateLimit()`. |
+| **Trigger** | HTTP 429, "Too Many Requests", or error text that indicates HTTP 429 (including HTML error pages from an edge/CDN) detected in API client, queries, or router error handler via `emitRateLimit()`. |
 | **Display** | Persistent bottom `Drawer` (non-blocking) informing user of rate limit, offering "Set API key override" button (opens Settings) or wait ~5 minutes. Link to geomi.dev for key. |
 | **Auto-clear** | Rate limit state auto-clears after 5 minutes (`RATE_LIMIT_WINDOW_MS`). |
 | **Dismiss** | Close icon dismisses drawer while timer continues. |
@@ -947,8 +947,8 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Hook** | `withResponseError` in `app/api/client.ts`. |
-| **Mappings** | 429 → `TOO_MANY_REQUESTS` + `emitRateLimit()`; 404 → `NOT_FOUND`; 400 → `INVALID_INPUT`; Error with "too many requests" → rate limit; other → `UNHANDLED`. |
+| **Hook** | `withResponseError` in `app/api/client.ts` (TS SDK paths) and `withResponseError` in `app/api/index.ts` (legacy REST `AptosClient`). |
+| **Mappings** | 429 → `TOO_MANY_REQUESTS` + `emitRateLimit()`; 404 → `NOT_FOUND`; 400 → `INVALID_INPUT`; rate-limit-like errors (including messages containing `429` from HTML edge responses) → `emitRateLimit()` on legacy REST; other → `UNHANDLED`. |
 
 ---
 
@@ -1166,6 +1166,8 @@ The app shell that wraps every page.
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/utils/sentioCallTrace.test.ts` | FEAT-TXN-010 (Sentio helpers: network ID, paths, address normalization, node validation) |
 | `app/api/client.test.ts` | FEAT-RATELIMIT-003 (API error classification, 429 → `emitRateLimit`) |
+| `app/api/index.test.ts` | FEAT-RATELIMIT-003 (legacy REST `withResponseError`: HTML/CDN 429 body → `emitRateLimit`) |
+| `app/api/legacyClient.test.ts` | FEAT-RATELIMIT-003 (REST client truncates HTML error bodies on non-OK responses) |
 | `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation from resources) |
