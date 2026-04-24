@@ -1209,6 +1209,7 @@ The app shell that wraps every page.
 | `app/pages/Analytics/analyticsGate.test.ts` | FEAT-ANALYTICS-001 (mainnet gate), FEAT-ANALYTICS-005 (GCS data URL) |
 | `app/hooks/localnetDetection.test.ts` | FEAT-CHROME-005 (localnet URL shape: localhost, port, path) |
 | `app/api/hooks/useGoogleTagManager.test.ts` | FEAT-TELEMETRY-001 (GTM event name constants) |
+| `e2e/aptosGatewayAuth.spec.ts` | FEAT-SETTINGS-001 (Playwright: mainnet `api.mainnet.aptoslabs.com` requests use `api-key` for embedded `AG-*` key, not `Authorization: Bearer`) |
 
 ## Appendix C: Remaining Test Coverage Gaps
 
