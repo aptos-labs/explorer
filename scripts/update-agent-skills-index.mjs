@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import {createHash} from "node:crypto";
 import {readFileSync, writeFileSync} from "node:fs";
-import {dirname, resolve} from "node:path";
+import {dirname, isAbsolute, relative, resolve} from "node:path";
 import {fileURLToPath} from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -39,9 +39,12 @@ function main() {
       );
     }
     // Resolve against repoRoot/public, then assert the final path stays
-    // inside the skills root to defeat any ".." components.
+    // inside the skills root to defeat any ".." components. Use
+    // path.relative()/isAbsolute() so the check is separator-agnostic
+    // (Windows uses '\' while POSIX uses '/').
     const filePath = resolve(repoRoot, "public", skill.url.replace(/^\//, ""));
-    if (filePath !== SKILLS_ROOT && !filePath.startsWith(`${SKILLS_ROOT}/`)) {
+    const rel = relative(SKILLS_ROOT, filePath);
+    if (rel.startsWith("..") || isAbsolute(rel)) {
       throw new Error(
         `skill ${skill.name} resolves to "${filePath}" which escapes ${SKILLS_ROOT}.`,
       );
