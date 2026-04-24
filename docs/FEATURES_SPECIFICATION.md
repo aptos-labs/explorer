@@ -201,7 +201,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Data source** | Indexer fungible asset activities when available, fallback to raw event parsing (`parseRawEventsForBalanceChanges`). |
+| **Data source** | Indexer `fungible_asset_activities` (GraphQL `transaction_version` as `bigint`, matching the schema); when that response is empty or has no usable `amount` values, fallback to raw event parsing (`parseRawEventsForBalanceChanges`). |
 | **Views** | Aggregated and non-aggregated balance changes. |
 | **Verification filter** | Mainnet: Verified / Recognized / All asset filter via `VerifiedCell`. |
 | **Table** | Address, asset, amount, type columns. |

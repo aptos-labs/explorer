@@ -178,8 +178,12 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
   const balanceChanges: BalanceChange[] = React.useMemo(() => {
     const indexerActivities =
       transactionChangesResponse?.fungible_asset_activities ?? [];
+    const fromRawEvents = parseRawEventsForBalanceChanges(
+      transaction,
+      coinData?.data,
+    );
 
-    // If indexer has activities, use them
+    // If indexer has activities, use them when they carry usable amounts.
     if (indexerActivities.length > 0) {
       const changes: BalanceChange[] = indexerActivities
         .filter((a) => a.amount !== null)
@@ -231,11 +235,13 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
         });
       }
 
-      return changes;
+      if (changes.length > 0) {
+        return changes;
+      }
+      // Indexer returned rows but no usable amounts (e.g. legacy null columns); fall back.
     }
 
-    // Fallback: Parse raw transaction events when indexer has no activities
-    return parseRawEventsForBalanceChanges(transaction, coinData?.data);
+    return fromRawEvents;
   }, [
     transactionChangesResponse,
     coinData,

@@ -461,8 +461,10 @@ export interface FungibleAssetActivity {
   };
 }
 
-const TRANSACTION_BALANCE_CHANGES_QUERY = `
-  query TransactionQuery($txn_version: String) {
+// `transaction_version` is `bigint` in the indexer schema. Declaring `$txn_version` as
+// `String` makes Hasura reject the query, so the Balance Change tab stays empty.
+export const TRANSACTION_BALANCE_CHANGES_QUERY = `
+  query TransactionQuery($txn_version: bigint!) {
     fungible_asset_activities(
       where: {transaction_version: {_eq: $txn_version}}
     ) {
