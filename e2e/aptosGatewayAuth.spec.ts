@@ -1,5 +1,16 @@
 import {expect, test} from "@playwright/test";
 
+const MAINNET_GATEWAY_HOST = "api.mainnet.aptoslabs.com" as const;
+
+function isMainnetAptosLabsGatewayRequest(urlString: string): boolean {
+  try {
+    const u = new URL(urlString);
+    return u.protocol === "https:" && u.hostname === MAINNET_GATEWAY_HOST;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Must match the value baked into `dist/client` during `vite build`.
  * CI sets this via workflow env before `pnpm ci:verify` and Playwright.
@@ -22,7 +33,7 @@ test.describe("Aptos mainnet API gateway auth (e2e)", () => {
 
     page.on("request", (request) => {
       const url = request.url();
-      if (!url.includes("api.mainnet.aptoslabs.com")) return;
+      if (!isMainnetAptosLabsGatewayRequest(url)) return;
       const h = request.headers();
       captured.push({
         url,
@@ -36,8 +47,7 @@ test.describe("Aptos mainnet API gateway auth (e2e)", () => {
 
     await expect
       .poll(() => captured.some((r) => r.apiKey === MAINNET_API_KEY), {
-        message:
-          "Expected at least one browser request to api.mainnet.aptoslabs.com with api-key matching VITE_APTOS_MAINNET_API_KEY",
+        message: `Expected at least one browser request to https://${MAINNET_GATEWAY_HOST}/ with api-key matching VITE_APTOS_MAINNET_API_KEY`,
         timeout: 60_000,
       })
       .toBe(true);
