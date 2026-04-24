@@ -4,6 +4,7 @@
  */
 import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import Cookies from "js-cookie";
+import {aptosGatewayApiKeyHeaders} from "../lib/aptosGatewayAuth";
 import {
   defaultNetworkName,
   getApiKey,
@@ -90,9 +91,7 @@ export function createAptosClient(
     indexer: indexerUri,
     clientConfig: apiKey
       ? {
-          HEADERS: {
-            Authorization: `Bearer ${apiKey}`,
-          },
+          HEADERS: aptosGatewayApiKeyHeaders(apiKey),
         }
       : undefined,
   });

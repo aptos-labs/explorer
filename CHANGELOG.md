@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Aptos API Gateway (geomi) key usage**: embedded and user override `AG-*` keys are now sent with the `api-key` header instead of `Authorization: Bearer`, matching the Aptos Labs gateway so requests succeed with a key and usage appears in Geomi dashboards (Bearer was rejected with 401).
 - **Wallet transactions on localnet**: non-Petra wallets that report a **custom** network name but use a **loopback** REST URL (for example `http://127.0.0.1:8080/v1`) are no longer blocked when the explorer is on the **local** network; submission still requires a real loopback endpoint match.
 - **Blocks list** (`/blocks`): recent rows now use the same REST block API as block detail pages, so block hash, timestamps, and transaction version ranges match what you see after opening a block (previously the indexer `block_metadata_transactions` row was mislabeled as the block hash and version bounds could disagree with the node).
 - **Coins page** (`/coins`): changing verification filters or the Emojicoins toggle no longer freezes the tab when thousands of assets match — the table virtualizes rows via an on-demand `renderRow` path and scrolls inside a bounded-height container instead of allocating every row up front

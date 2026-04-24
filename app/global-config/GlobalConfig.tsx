@@ -3,6 +3,7 @@ import {useSearch} from "@tanstack/react-router";
 import Cookies from "js-cookie";
 import React, {createContext, type ReactNode, useContext, useMemo} from "react";
 import {AptosClient} from "../api/legacyClient";
+import {aptosGatewayApiKeyHeaders} from "../lib/aptosGatewayAuth";
 import {
   defaultFeatureName,
   defaultNetworkName,
@@ -169,10 +170,7 @@ function createAptosClient(
 ): AptosClient {
   const nodeUrl = networks[networkName];
   const apiKey = getApiKey(networkName, apiKeyOverride);
-  const headers: Record<string, string> = {};
-  if (apiKey) {
-    headers.Authorization = `Bearer ${apiKey}`;
-  }
+  const headers = apiKey ? aptosGatewayApiKeyHeaders(apiKey) : {};
   return new AptosClient(nodeUrl, {HEADERS: headers});
 }
 
@@ -206,9 +204,7 @@ function createAptosV2Client(
     indexer: indexerUrl,
     clientConfig: apiKey
       ? {
-          HEADERS: {
-            Authorization: `Bearer ${apiKey}`,
-          },
+          HEADERS: aptosGatewayApiKeyHeaders(apiKey),
         }
       : undefined,
   });
