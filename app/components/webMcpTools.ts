@@ -138,10 +138,13 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
           throw new Error("open_transaction: 'id' is required");
         }
         const isVersion = /^\d+$/.test(id);
-        const isHash = /^0x[0-9a-fA-F]+$/.test(id);
+        // Transaction hashes are SHA3-256 → 32 bytes → 64 hex chars.
+        // Keep this strict so the tool never produces a /txn/{id} URL for
+        // shapes the explorer's search would not classify as a hash.
+        const isHash = /^0x[0-9a-fA-F]{64}$/.test(id);
         if (!isVersion && !isHash) {
           throw new Error(
-            "open_transaction: 'id' must be a decimal version or a 0x-prefixed hex hash",
+            "open_transaction: 'id' must be a decimal version or a 0x-prefixed 64-char hex hash",
           );
         }
         const to = tab ? `/txn/${id}/${tab}` : `/txn/${id}`;
