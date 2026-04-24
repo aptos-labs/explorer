@@ -139,18 +139,33 @@ describe("buildWebMcpTools", () => {
       expect(r.path).toBe("/txn/123456789");
     });
 
-    it("accepts a hex hash and tab, and encodes network in the returned path", async () => {
+    it("accepts a 64-char hex hash and tab, and encodes network in the returned path", async () => {
       const {navigate, byName} = setup();
+      const hash = `0x${"a".repeat(64)}`;
       const r = await byName.open_transaction.execute({
-        id: "0xabcdef",
+        id: hash,
         tab: "events",
         network: "testnet",
       });
       expect(navigate).toHaveBeenCalledWith({
-        to: "/txn/0xabcdef/events",
+        to: `/txn/${hash}/events`,
         search: {network: "testnet"},
       });
-      expect(r.path).toBe("/txn/0xabcdef/events?network=testnet");
+      expect(r.path).toBe(`/txn/${hash}/events?network=testnet`);
+    });
+
+    it("rejects non-64-char hex strings (too short / too long)", async () => {
+      const {byName} = setup();
+      // Short 0x-prefixed hex is not a valid Aptos transaction hash shape.
+      await expect(
+        byName.open_transaction.execute({id: "0xabcdef"}),
+      ).rejects.toThrow();
+      await expect(
+        byName.open_transaction.execute({id: `0x${"a".repeat(63)}`}),
+      ).rejects.toThrow();
+      await expect(
+        byName.open_transaction.execute({id: `0x${"a".repeat(65)}`}),
+      ).rejects.toThrow();
     });
 
     it("rejects junk ids", async () => {
