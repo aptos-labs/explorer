@@ -257,5 +257,19 @@ describe("buildWebMcpTools", () => {
         byName.open_coin.execute({coinType: "0x1::coin"}),
       ).rejects.toThrow();
     });
+
+    it("rejects trailing junk after the third segment", async () => {
+      // Anchored regex prevents shapes like 0x1::a::b::garbage from
+      // producing a /coin/{type} URL the explorer cannot resolve.
+      const {byName} = setup();
+      await expect(
+        byName.open_coin.execute({coinType: "0x1::a::b::garbage"}),
+      ).rejects.toThrow();
+      await expect(
+        byName.open_coin.execute({
+          coinType: "0x1::aptos_coin::AptosCoin trailing",
+        }),
+      ).rejects.toThrow();
+    });
   });
 });
