@@ -20,11 +20,6 @@
           "href": "https://aptos.dev/en/build/apis/fullnode-rest-api",
           "type": "text/html",
           "title": "Aptos Fullnode REST API documentation"
-        },
-        {
-          "href": "https://api.mainnet.aptoslabs.com/v1/spec.html",
-          "type": "text/html",
-          "title": "Aptos Fullnode REST API — interactive spec (mainnet)"
         }
       ],
       "status": [
