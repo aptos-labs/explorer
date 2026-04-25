@@ -76,6 +76,11 @@ declare module "*.png" {
 
 // Add Vite's ImportMeta.env types
 interface ImportMetaEnv {
+  /** Vite built-in */
+  readonly MODE: string;
+  readonly DEV: boolean;
+  readonly PROD: boolean;
+  readonly SSR: boolean;
   readonly APTOS_DEVNET_URL?: string;
   readonly VITE_GRAPHQL_ENDPOINT?: string;
   readonly VITE_REST_ENDPOINT?: string;
@@ -102,6 +107,17 @@ interface ImportMetaEnv {
   readonly VITE_FEATURE_NAME?: string;
   // Cache busting version for validator stats (bump to force fresh data)
   readonly VITE_VALIDATOR_STATS_CACHE_VERSION?: string;
+  /** Sentry browser DSN (optional). When set, client-side rate-limit and selected REST errors are reported. */
+  readonly VITE_SENTRY_DSN?: string;
+  /** Sentry environment name (e.g. production). Defaults to Vite mode. */
+  readonly VITE_SENTRY_ENVIRONMENT?: string;
+  /** Release identifier for Sentry (e.g. git SHA). */
+  readonly VITE_SENTRY_RELEASE?: string;
+  /**
+   * Optional label for how SSR resolves `APTOS_*_API_KEY` (set in CI for Sentry tags only;
+   * never put secret key material here).
+   */
+  readonly VITE_SENTRY_SSR_API_KEY_TAG?: string;
 }
 
 interface ImportMeta {

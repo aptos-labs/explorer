@@ -13,7 +13,7 @@ function createQueryClient() {
     queryCache: new QueryCache({
       onError: (error) => {
         if (typeof window !== "undefined" && isRateLimitLike(error)) {
-          emitRateLimit();
+          emitRateLimit(error);
         }
       },
     }),

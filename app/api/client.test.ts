@@ -17,6 +17,9 @@ describe("withResponseError", () => {
       type: ResponseErrorType.TOO_MANY_REQUESTS,
     });
     expect(emitRateLimit).toHaveBeenCalledTimes(1);
+    expect(emitRateLimit).toHaveBeenCalledWith(
+      expect.objectContaining({message: expect.stringContaining("HTTP 429")}),
+    );
   });
 
   it("emits rate limit event on Error with 'too many requests' message", async () => {
@@ -25,6 +28,7 @@ describe("withResponseError", () => {
       type: ResponseErrorType.TOO_MANY_REQUESTS,
     });
     expect(emitRateLimit).toHaveBeenCalledTimes(1);
+    expect(emitRateLimit).toHaveBeenCalledWith(error);
   });
 
   it("does not emit on 404", async () => {

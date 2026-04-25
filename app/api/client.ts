@@ -30,7 +30,11 @@ export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
         throw {type: ResponseErrorType.NOT_FOUND};
       }
       if (response.status === 429) {
-        emitRateLimit();
+        emitRateLimit(
+          new Error(
+            `HTTP ${response.status} ${response.statusText || "Too Many Requests"}`,
+          ),
+        );
         throw {type: ResponseErrorType.TOO_MANY_REQUESTS};
       }
       if (response.status === 400) {
@@ -47,7 +51,7 @@ export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
       if (
         errorMessage.includes(ResponseErrorType.TOO_MANY_REQUESTS.toLowerCase())
       ) {
-        emitRateLimit();
+        emitRateLimit(error);
         throw {
           type: ResponseErrorType.TOO_MANY_REQUESTS,
         };

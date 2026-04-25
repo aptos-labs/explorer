@@ -173,7 +173,10 @@ function createAptosClient(
   if (apiKey) {
     headers.Authorization = `Bearer ${apiKey}`;
   }
-  return new AptosClient(nodeUrl, {HEADERS: headers});
+  return new AptosClient(nodeUrl, {
+    HEADERS: headers,
+    telemetryNetwork: networkName,
+  });
 }
 
 function createAptosV2Client(

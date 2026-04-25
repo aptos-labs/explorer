@@ -58,6 +58,9 @@ importers:
       '@noble/hashes':
         specifier: ^2.2.0
         version: 2.2.0
+      '@sentry/browser':
+        specifier: ^9.47.1
+        version: 9.47.1
       '@tanstack/react-query':
         specifier: ^5.99.0
         version: 5.99.0(react@19.2.5)
@@ -1674,6 +1677,30 @@ packages:
 
   '@scure/bip39@1.6.0':
     resolution: {integrity: sha512-+lF0BbLiJNwVlev4eKelw1WWLaiKXw7sSl8T6FvBlWkdX+94aGJ4o8XjUdlyhTCjd8c+B3KT3JfS8P0bLRNU6A==}
+
+  '@sentry-internal/browser-utils@9.47.1':
+    resolution: {integrity: sha512-twv6YhrUlPkvKz4/iQDH4KHgcv9t4cMjmZPf4/dCSCXn4/GOjzjx2d74c1w+1KOdS7lcsQzI+MtbK6SeYLiGfQ==}
+    engines: {node: '>=18'}
+
+  '@sentry-internal/feedback@9.47.1':
+    resolution: {integrity: sha512-xJ4vKvIpAT8e+Sz80YrsNinPU0XV7jPxPjdZ4ex8R2mMvx7pM0gq8JiR/sIVmNiOE0WiUDr6VwLDE8j2APSRMA==}
+    engines: {node: '>=18'}
+
+  '@sentry-internal/replay-canvas@9.47.1':
+    resolution: {integrity: sha512-r9nve+l5+elGB9NXSN1+PUgJy790tXN1e8lZNH2ziveoU91jW4yYYt34mHZ30fU9tOz58OpaRMj3H3GJ/jYZVA==}
+    engines: {node: '>=18'}
+
+  '@sentry-internal/replay@9.47.1':
+    resolution: {integrity: sha512-O9ZEfySpstGtX1f73m3NbdbS2utwPikaFt6sgp74RG4ZX4LlXe99VAjKR464xKECpYsLmj2bYpiK4opURF0pBA==}
+    engines: {node: '>=18'}
+
+  '@sentry/browser@9.47.1':
+    resolution: {integrity: sha512-at5JOLziw5QpVYytxTDU6xijdV6lDQ/Rxp/qXJaHXud3gIK4suv2cXW+tupJfwoUoHFCnDNfccjCmPmP0yRqiA==}
+    engines: {node: '>=18'}
+
+  '@sentry/core@9.47.1':
+    resolution: {integrity: sha512-KX62+qIt4xgy8eHKHiikfhz2p5fOciXd0Cl+dNzhgPFq8klq4MGMNaf148GB3M/vBqP4nw/eFvRMAayFCgdRQw==}
+    engines: {node: '>=18'}
 
   '@so-ric/colorspace@1.1.6':
     resolution: {integrity: sha512-/KiKkpHNOBgkFJwu9sh48LkHSMYGyuTcSFK/qMBdnOAlrRJzRSXAOFB5qwzaVQuDl8wAvHVMkaASQDReTahxuw==}
@@ -6793,6 +6820,34 @@ snapshots:
     dependencies:
       '@noble/hashes': 1.8.0
       '@scure/base': 1.2.6
+
+  '@sentry-internal/browser-utils@9.47.1':
+    dependencies:
+      '@sentry/core': 9.47.1
+
+  '@sentry-internal/feedback@9.47.1':
+    dependencies:
+      '@sentry/core': 9.47.1
+
+  '@sentry-internal/replay-canvas@9.47.1':
+    dependencies:
+      '@sentry-internal/replay': 9.47.1
+      '@sentry/core': 9.47.1
+
+  '@sentry-internal/replay@9.47.1':
+    dependencies:
+      '@sentry-internal/browser-utils': 9.47.1
+      '@sentry/core': 9.47.1
+
+  '@sentry/browser@9.47.1':
+    dependencies:
+      '@sentry-internal/browser-utils': 9.47.1
+      '@sentry-internal/feedback': 9.47.1
+      '@sentry-internal/replay': 9.47.1
+      '@sentry-internal/replay-canvas': 9.47.1
+      '@sentry/core': 9.47.1
+
+  '@sentry/core@9.47.1': {}
 
   '@so-ric/colorspace@1.1.6':
     dependencies:

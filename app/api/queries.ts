@@ -109,7 +109,7 @@ export function accountInfoQueryOptions(
         });
         return account;
       } catch (error) {
-        if (isRateLimitLike(error)) emitRateLimit();
+        if (isRateLimitLike(error)) emitRateLimit(error);
         return null;
       }
     },
@@ -132,7 +132,7 @@ export function accountResourcesQueryOptions(
         });
         return resources;
       } catch (error) {
-        if (isRateLimitLike(error)) emitRateLimit();
+        if (isRateLimitLike(error)) emitRateLimit(error);
         return [];
       }
     },
@@ -151,7 +151,7 @@ export function accountModulesQueryOptions(address: string, client: Aptos) {
         });
         return modules;
       } catch (error) {
-        if (isRateLimitLike(error)) emitRateLimit();
+        if (isRateLimitLike(error)) emitRateLimit(error);
         return [];
       }
     },
@@ -174,7 +174,7 @@ export function accountTransactionsQueryOptions(
         });
         return transactions;
       } catch (error) {
-        if (isRateLimitLike(error)) emitRateLimit();
+        if (isRateLimitLike(error)) emitRateLimit(error);
         return [];
       }
     },

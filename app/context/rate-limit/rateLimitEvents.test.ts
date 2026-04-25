@@ -10,9 +10,19 @@ describe("rateLimitEvents", () => {
     const listener = vi.fn();
     const unsubscribe = onRateLimit(listener);
 
-    emitRateLimit();
+    const err = new Error("429");
+    emitRateLimit(err);
     expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenCalledWith(err);
 
+    unsubscribe();
+  });
+
+  it("passes undefined to listener when emitRateLimit has no argument", () => {
+    const listener = vi.fn();
+    const unsubscribe = onRateLimit(listener);
+    emitRateLimit();
+    expect(listener).toHaveBeenCalledWith(undefined);
     unsubscribe();
   });
 

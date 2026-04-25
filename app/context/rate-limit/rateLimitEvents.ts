@@ -1,4 +1,4 @@
-type RateLimitListener = () => void;
+type RateLimitListener = (error?: unknown) => void;
 
 const listeners = new Set<RateLimitListener>();
 
@@ -9,9 +9,9 @@ export function onRateLimit(listener: RateLimitListener): () => void {
   };
 }
 
-export function emitRateLimit(): void {
+export function emitRateLimit(error?: unknown): void {
   for (const listener of listeners) {
-    listener();
+    listener(error);
   }
 }
 

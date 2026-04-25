@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Optional Sentry (browser)**: when `VITE_SENTRY_DSN` is set in the deploy environment, the client reports rate-limit events and selected legacy REST failures (401/403/429/5xx) with **tags only** — `network` (from `?network=`), `aptos_client_api_key_source` (user override vs embedded vs preview/no key), optional `aptos_ssr_api_key_tag` (non-secret label from `VITE_SENTRY_SSR_API_KEY_TAG`). No API key values are sent. See `.env.example` and `docs/FEATURES_SPECIFICATION.md` (FEAT-TELEMETRY-002).
 - **Decibel bulk order detail**: the Decibel tab on transaction pages now displays full bid/ask price-size ladders parsed from `place_bulk_orders_to_subaccount` payload arguments, structured `BulkOrderPlacedEvent` data (including cancelled orders), and `BulkOrderFilledEvent` fill tables — previously only the market name and subaccount were shown for bulk orders
 - **Labs verified token**: Decibel Dollar fungible asset (`usDCBL`, metadata object `0x9640…45b0` on mainnet) is included in the explorer manual verification list and coin metadata merge so it shows the Labs verified badge and correct branding where supported
 - **Dev tooling**: Playwright (`@playwright/test`, `playwright.config.ts`, `test:e2e` / `test:e2e:install`); Vitest excludes `e2e/**` from unit runs; **CI** maps each `APTOS_<NETWORK>_API_KEY` repository secret to both `VITE_APTOS_<NETWORK>_API_KEY` and `APTOS_<NETWORK>_API_KEY` on the verify job so builds use one API key identity for client and SSR

@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-04-08
+> **Last updated**: 2026-04-24
 
 ---
 
@@ -930,7 +930,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Trigger** | HTTP 429 or "Too Many Requests" error detected in API client, queries, or router error handler via `emitRateLimit()`. |
+| **Trigger** | HTTP 429, "Too Many Requests", or error text indicating HTTP 429 (including HTML edge/CDN bodies) detected in API client, queries, or router error handler via `emitRateLimit(error?)`. |
 | **Display** | Persistent bottom `Drawer` (non-blocking) informing user of rate limit, offering "Set API key override" button (opens Settings) or wait ~5 minutes. Link to geomi.dev for key. |
 | **Auto-clear** | Rate limit state auto-clears after 5 minutes (`RATE_LIMIT_WINDOW_MS`). |
 | **Dismiss** | Close icon dismisses drawer while timer continues. |
@@ -947,8 +947,8 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Hook** | `withResponseError` in `app/api/client.ts`. |
-| **Mappings** | 429 → `TOO_MANY_REQUESTS` + `emitRateLimit()`; 404 → `NOT_FOUND`; 400 → `INVALID_INPUT`; Error with "too many requests" → rate limit; other → `UNHANDLED`. |
+| **Hook** | `withResponseError` in `app/api/client.ts` (TS SDK) and `withResponseError` in `app/api/index.ts` (legacy REST `AptosClient`). |
+| **Mappings** | 429 → `TOO_MANY_REQUESTS` + `emitRateLimit(error)`; 404 → `NOT_FOUND`; 400 → `INVALID_INPUT`; rate-limit-like errors (including messages containing `429` from HTML edge responses) → `emitRateLimit(error)` on legacy REST; other → `UNHANDLED`. |
 
 ---
 
@@ -1128,6 +1128,15 @@ The app shell that wraps every page.
 | **Events** | `walletConnection` (address, name, network) on wallet connect. `searchStats` (network, text, result, duration) on search completion. |
 | **Data layer** | Pushes to `window.dataLayer`. |
 
+### FEAT-TELEMETRY-002 — Sentry (optional browser)
+
+| Aspect | Detail |
+|--------|--------|
+| **Enable** | Set `VITE_SENTRY_DSN` in the deploy environment. Optional: `VITE_SENTRY_ENVIRONMENT`, `VITE_SENTRY_RELEASE`, `VITE_SENTRY_SSR_API_KEY_TAG` (non-secret label only). |
+| **Init** | `initSentryBrowser()` from `app/telemetry/sentryClient.ts` runs in `app/client.tsx` before hydration. |
+| **Rate limits** | Subscribes to `onRateLimit` and sends a grouped warning (`explorer_error_kind: rate_limit`) with tags: `network` (from `?network=`), `aptos_client_api_key_source` (`user_override` \| `default_embedded` \| `none_preview_build` \| `none_missing`), optional `aptos_ssr_api_key_tag`. No API key values or bearer tokens. |
+| **REST errors** | Legacy `AptosClient` reports browser-only 401, 403, 429, and 5xx with `explorer_error_kind` (`api_key_or_auth` \| `rate_limit` \| `server_error`), `http_status`, `rest_path`, same network/key-source tags, and a short `message_preview` (HTML bodies truncated). |
+
 ---
 
 ## Appendix A: URL Pattern Reference
@@ -1166,6 +1175,9 @@ The app shell that wraps every page.
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/utils/sentioCallTrace.test.ts` | FEAT-TXN-010 (Sentio helpers: network ID, paths, address normalization, node validation) |
 | `app/api/client.test.ts` | FEAT-RATELIMIT-003 (API error classification, 429 → `emitRateLimit`) |
+| `app/api/index.test.ts` | FEAT-RATELIMIT-003 (legacy REST `withResponseError`: HTML/CDN 429 body → `emitRateLimit`) |
+| `app/api/legacyClient.test.ts` | FEAT-RATELIMIT-003 (REST client truncates HTML error bodies on non-OK responses) |
+| `app/telemetry/apiKeyTelemetry.test.ts` | FEAT-TELEMETRY-002 (`getClientApiKeyTelemetrySource`: user override vs default) |
 | `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation from resources) |

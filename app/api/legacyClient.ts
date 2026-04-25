@@ -11,19 +11,45 @@
 
 // biome-ignore-all lint/suspicious/noExplicitAny: legacy REST client wraps untyped API responses
 
+import type {NetworkName} from "~/lib/constants";
 import type {Types} from "~/types/aptos";
 
 interface AptosClientConfig {
   HEADERS?: Record<string, string>;
+  /** When set, Sentry (if enabled) tags REST errors with this network + API key source. */
+  telemetryNetwork?: NetworkName;
+}
+
+const MAX_ERROR_BODY_CHARS = 800;
+
+function formatErrorResponseBody(body: string): string {
+  const trimmed = body.trim();
+  const lower = trimmed.toLowerCase();
+  const looksHtml =
+    trimmed.startsWith("<!") ||
+    lower.includes("<!doctype html") ||
+    lower.includes("<html");
+  if (looksHtml) {
+    const oneLine = trimmed.replace(/\s+/g, " ");
+    const snippet = oneLine.slice(0, 280);
+    const suffix = oneLine.length > 280 ? "…" : "";
+    return `${snippet}${suffix} (HTML error page, not JSON — often edge or CDN rate limiting)`;
+  }
+  if (trimmed.length > MAX_ERROR_BODY_CHARS) {
+    return `${trimmed.slice(0, MAX_ERROR_BODY_CHARS)}…`;
+  }
+  return trimmed;
 }
 
 export class AptosClient {
   private readonly baseUrl: string;
   private readonly headers: Record<string, string>;
+  private readonly telemetryNetwork?: NetworkName;
 
   constructor(nodeUrl: string, config?: AptosClientConfig) {
     // Strip trailing slash
     this.baseUrl = nodeUrl.replace(/\/+$/, "");
+    this.telemetryNetwork = config?.telemetryNetwork;
     this.headers = {
       "Content-Type": "application/json",
       ...config?.HEADERS,
@@ -43,7 +69,26 @@ export class AptosClient {
       },
     });
     if (!resp.ok) {
-      const body = await resp.text().catch(() => "");
+      const rawBody = await resp.text().catch(() => "");
+      const body = formatErrorResponseBody(rawBody);
+      if (
+        typeof window !== "undefined" &&
+        (resp.status === 401 ||
+          resp.status === 403 ||
+          resp.status === 429 ||
+          resp.status >= 500)
+      ) {
+        void import("~/telemetry/sentryClient").then(
+          ({captureRestClientErrorTelemetry}) => {
+            captureRestClientErrorTelemetry(
+              resp.status,
+              body,
+              path,
+              this.telemetryNetwork,
+            );
+          },
+        );
+      }
       throw new Error(`Aptos API error ${resp.status}: ${body}`);
     }
     return resp.json() as Promise<T>;
