@@ -41,4 +41,12 @@ describe("prefersMarkdown", () => {
   it("ignores unrelated text/* types", () => {
     expect(prefersMarkdown("text/plain, text/html")).toBe(false);
   });
+
+  it("rejects media types that merely start with 'text/markdown'", () => {
+    // Defensive: ensure we don't match a hypothetical "text/markdown-foo"
+    // media range. The parser must compare the full media type, not a
+    // prefix.
+    expect(prefersMarkdown("text/markdown-foo")).toBe(false);
+    expect(prefersMarkdown("text/markdown2")).toBe(false);
+  });
 });

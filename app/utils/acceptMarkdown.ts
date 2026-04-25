@@ -11,8 +11,8 @@ export function prefersMarkdown(accept: string | null | undefined): boolean {
   if (!accept) return false;
   const ranges = accept.split(",").map((part) => part.trim().toLowerCase());
   for (const range of ranges) {
-    if (!range.startsWith("text/markdown")) continue;
-    const params = range.split(";").slice(1);
+    const [mediaType, ...params] = range.split(";");
+    if (mediaType.trim() !== "text/markdown") continue;
     const qParam = params.map((p) => p.trim()).find((p) => p.startsWith("q="));
     if (!qParam) return true;
     const q = Number.parseFloat(qParam.slice(2));
