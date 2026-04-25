@@ -25,7 +25,7 @@ export type WebMCPTool = {
 const HEX_ADDRESS_RE = /^0x[0-9a-fA-F]{1,64}$/;
 const ANS_NAME_RE = /^[a-z0-9-]{1,63}\.apt$/;
 const MOVE_TYPE_RE =
-  /^0x[0-9a-fA-F]+::[A-Za-z_][A-Za-z0-9_]*::[A-Za-z_][A-Za-z0-9_]*/;
+  /^0x[0-9a-fA-F]+::[A-Za-z_][A-Za-z0-9_]*::[A-Za-z_][A-Za-z0-9_]*$/;
 
 const NETWORK_DESCRIPTION =
   "Aptos network. When set, the tool navigates to this network explicitly (including mainnet, which will override a previously selected testnet/devnet/local). When omitted, the explorer preserves the user's current network.";
@@ -110,7 +110,7 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
           id: {
             type: "string",
             description:
-              "Transaction version (digits) or hash (0x-prefixed hex).",
+              "Transaction version (decimal digits) or transaction hash (0x-prefixed, exactly 64 hex chars).",
           },
           tab: {
             type: "string",
