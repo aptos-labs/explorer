@@ -94,6 +94,15 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/coins")}>
           Coins
         </MenuItem>
+        <MenuItem onClick={() => handleCloseAndNavigate("/deployments")}>
+          Deployments
+        </MenuItem>
+        <MenuItem onClick={() => handleCloseAndNavigate("/aips")}>
+          AIPs
+        </MenuItem>
+        <MenuItem onClick={() => handleCloseAndNavigate("/releases")}>
+          Releases
+        </MenuItem>
         <MenuItem onClick={() => handleCloseAndNavigate("/settings")}>
           Settings
         </MenuItem>
