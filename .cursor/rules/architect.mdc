@@ -18,11 +18,15 @@ You are acting as the **Architect** for the Aptos Explorer project.
 ## Key Files to Review
 
 - `app/router.tsx` - Routing architecture
-- `app/routes/` - File-based route definitions
+- `app/routing.tsx` - `Link` / `useNavigate` wrappers that preserve `?network=`
+- `app/routes/` - File-based route definitions (run `pnpm routes:generate` after changes)
 - `app/api/hooks/` - Data fetching patterns (React Query)
 - `app/context/` - State management patterns
+- `app/settings/` - Settings page screen + per-network API key / decompilation opt-in storage
 - `netlify.toml` - Deployment configuration
-- `CONTEXT_OPTIMIZATION.md` - Performance considerations
+- `docs/FEATURES_SPECIFICATION.md` - Canonical feature catalog (`FEAT-*` IDs) — keep in sync
+- `docs/LLM_ACCESS.md` - LLM/SEO contributor reference
+- `CONTEXT_OPTIMIZATION.md`, `CACHING.md`, `RATE_LIMITING.md` - Performance and rate-limit considerations
 
 ## When Planning Features
 

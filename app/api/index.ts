@@ -13,6 +13,7 @@ import {
   isRateLimitLike,
 } from "../context/rate-limit/rateLimitEvents";
 import {isNumeric} from "../pages/utils";
+import {mapWithConcurrencyLimit} from "../utils/mapWithConcurrencyLimit";
 import {sortTransactions} from "../utils/utils";
 import {AptosClient} from "./legacyClient";
 
@@ -221,13 +222,14 @@ export async function getRecentBlocks(
   currentBlockHeight: number,
   count: number,
   client: AptosClient,
+  options?: {maxConcurrency?: number},
 ): Promise<Types.Block[]> {
-  const blockPromises = [];
-  for (let i = 0; i < count; i++) {
-    const block = client.getBlockByHeight(currentBlockHeight - i, false);
-    blockPromises.push(block);
-  }
-  return Promise.all(blockPromises);
+  const heights = Array.from({length: count}, (_, i) => currentBlockHeight - i);
+  return mapWithConcurrencyLimit(
+    heights,
+    options?.maxConcurrency ?? 8,
+    (height) => client.getBlockByHeight(height, false),
+  );
 }
 
 export async function getBalance(

@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-04-24
+> **Last updated**: 2026-04-27
 
 ---
 
@@ -279,7 +279,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Data** | Ledger info (cursor height) + REST `getBlockByHeight` for each row (same source as block detail). |
+| **Data** | Ledger info (cursor height) + REST `getBlockByHeight` for each row (same source as block detail). Block fetches use the same API key as the rest of the app (embedded `VITE_*` key or per-network Settings override on `useSdkV2Client` / `useAptosClient`). React Query keys include a **non-secret** API key identity so changing the override does not reuse cached responses from the old key. Requests are **limited concurrency** (not all rows in parallel) to reduce edge/CDN 429s when refreshing. Default page size is **20** rows. |
 | **Pagination** | `?start=` cursor. |
 | **Columns** | Block height (linked), proposer, timestamp, transaction count. |
 | **Virtualization** | Uses `VirtualizedTableBody` for large result sets. |
@@ -1173,6 +1173,7 @@ The app shell that wraps every page.
 | `app/utils/moduleErrorHandler.test.ts` | FEAT-ERROR-001 (chunk error handling, reload behavior) |
 | `app/utils/llmsRouteCoverage.test.ts` | FEAT-SEO-003 (LLM doc drift) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
+| `app/utils/mapWithConcurrencyLimit.test.ts` | FEAT-BLOCKS-001 (bounded concurrency for batched REST fetches) |
 | `app/utils/sentioCallTrace.test.ts` | FEAT-TXN-010 (Sentio helpers: network ID, paths, address normalization, node validation) |
 | `app/api/client.test.ts` | FEAT-RATELIMIT-003 (API error classification, 429 → `emitRateLimit`) |
 | `app/api/index.test.ts` | FEAT-RATELIMIT-003 (legacy REST `withResponseError`: HTML/CDN 429 body → `emitRateLimit`) |

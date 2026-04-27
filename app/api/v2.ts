@@ -1,7 +1,11 @@
 import {AccountAddress, type Aptos, type Block} from "@aptos-labs/ts-sdk";
 import type {Types} from "~/types/aptos";
 import {isNumeric} from "../pages/utils";
+import {mapWithConcurrencyLimit} from "../utils/mapWithConcurrencyLimit";
 import {withResponseError} from "./client";
+
+/** Avoid bursting dozens of parallel `getBlockByHeight` calls (edge/CDN rate limits). */
+const DEFAULT_BLOCKS_REST_CONCURRENCY = 8;
 
 export function getBlockByHeight(
   requestParameters: {height: number; withTransactions: boolean},
@@ -30,17 +34,24 @@ export async function getRecentBlocks(
   currentBlockHeight: bigint | number,
   count: bigint | number,
   aptos: Aptos,
+  options?: {maxConcurrency?: number},
 ): Promise<Block[]> {
-  const blockPromises = [];
-  // Don't await here, or they'll be in serial
-  for (let i = BigInt(0); i < BigInt(count); i++) {
-    const block = aptos.getBlockByHeight({
-      blockHeight: BigInt(currentBlockHeight) - i,
-      options: {withTransactions: false}, // Always false, or this will take forever
-    });
-    blockPromises.push(block);
-  }
-  return Promise.all(blockPromises);
+  const n = Number(count);
+  if (!Number.isFinite(n) || n <= 0) return [];
+
+  const heights = Array.from({length: n}, (_, i) => {
+    return BigInt(currentBlockHeight) - BigInt(i);
+  });
+
+  const maxConcurrency =
+    options?.maxConcurrency ?? DEFAULT_BLOCKS_REST_CONCURRENCY;
+
+  return mapWithConcurrencyLimit(heights, maxConcurrency, (blockHeight) =>
+    aptos.getBlockByHeight({
+      blockHeight,
+      options: {withTransactions: false},
+    }),
+  );
 }
 
 /**

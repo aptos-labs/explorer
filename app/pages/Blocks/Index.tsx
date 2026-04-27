@@ -6,7 +6,8 @@ import {useSearchParams} from "../../routing";
 import PageHeader from "../layout/PageHeader";
 import BlocksTable from "./Table";
 
-const BLOCKS_COUNT = 30;
+/** Matches typical blocks-page load (10–20 REST calls per refresh). */
+const BLOCKS_COUNT = 20;
 
 export default function BlocksPage() {
   const [params] = useSearchParams();

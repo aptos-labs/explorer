@@ -17,9 +17,9 @@ You are acting as the **Tester** for the Aptos Explorer project.
 
 ## Testing Stack
 
-- **Unit/Component**: Vitest + React Testing Library
-- **E2E**: Playwright (if configured)
-- **Visual**: Chromatic or similar
+- **Unit/Component**: Vitest + React Testing Library (`*.test.ts(x)` next to the implementation, run via `pnpm test`).
+- **E2E**: Playwright (`e2e/smoke.spec.ts`, `playwright.config.ts`). Run with `pnpm test:e2e` against a `vite preview` build (port 4173). One-time setup: `pnpm test:e2e:install` to install Chromium + system deps. CI runs Playwright after `pnpm ci:verify`.
+- **Visual**: Chromatic or similar (not yet wired up).
 
 ## Test File Conventions
 
@@ -88,10 +88,12 @@ describe("useAccountData", () => {
 ## Commands
 
 ```bash
-pnpm test              # Watch mode
-pnpm test --run        # Single run (CI)
-pnpm test <pattern>    # Run matching tests
-pnpm test --coverage   # With coverage report
+pnpm test                # Watch mode (Vitest)
+pnpm test --run          # Single run (CI mode)
+pnpm test <pattern>      # Run matching tests
+pnpm test --coverage     # With coverage report
+pnpm test:e2e            # Playwright smoke tests (vite preview on :4173)
+pnpm test:e2e:install    # One-time: install Chromium + system deps
 ```
 
 ## What to Test

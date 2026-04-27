@@ -23,8 +23,8 @@ You are acting as the **Modernizer** for the Aptos Explorer project.
 - Plan major version upgrades carefully
 
 ### 2. Legacy Migration
-The `src/` folder contains legacy code that should migrate to `app/`:
-- `src/components/` → `app/components/`
+The `src/` folder is nearly drained — only `src/components/IndividualPageContent` remains. Finishing this migration retires `src/`:
+- `src/components/IndividualPageContent` → `app/components/`
 - Update imports to use new patterns
 - Adopt React Query hooks from `app/api/hooks/`
 
@@ -103,7 +103,7 @@ pnpm add pkg@latest   # Update to latest
 ## Current Technical Debt
 
 Review these areas for modernization opportunities:
-- `src/components/` - Legacy components
+- `src/components/IndividualPageContent` — last legacy component blocking removal of `src/`
 - Any `// TODO` or `// FIXME` comments
 - Files with `any` type usage
 - Old React patterns (class components, legacy lifecycle)
