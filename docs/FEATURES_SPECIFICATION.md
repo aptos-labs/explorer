@@ -201,7 +201,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Data source** | Indexer fungible asset activities when available, fallback to raw event parsing (`parseRawEventsForBalanceChanges`). |
+| **Data source** | Indexer `fungible_asset_activities` (GraphQL `transaction_version` as `bigint`, matching the schema); when that response is empty or has no usable `amount` values, fallback to raw event parsing (`parseRawEventsForBalanceChanges`). |
 | **Views** | Aggregated and non-aggregated balance changes. |
 | **Verification filter** | Mainnet: Verified / Recognized / All asset filter via `VerifiedCell`. |
 | **Table** | Address, asset, amount, type columns. |
@@ -1185,6 +1185,7 @@ The app shell that wraps every page.
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
 | `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty, balance changes) |
+| `e2e/transaction-balance-change.spec.ts` | FEAT-TXN-003 (Playwright: testnet Balance Change tab loads indexer FA activities; asserts gas-fee row; skips outside CI when testnet gateway returns 401 for local preview origin) |
 | `app/pages/Transaction/Tabs/Components/SignatureOverviewTable.test.tsx` | FEAT-TXN-002 (signature overview: Ed25519, multi-Ed25519, single_sender, multi_agent, fee_payer, fallbacks; stable keys for duplicate secondary addresses) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns) |

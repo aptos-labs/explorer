@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Labs verified token**: Decibel Dollar fungible asset (`usDCBL`, metadata object `0x9640…45b0` on mainnet) is included in the explorer manual verification list and coin metadata merge so it shows the Labs verified badge and correct branding where supported
 - **Dev tooling**: Playwright (`@playwright/test`, `playwright.config.ts`, `test:e2e` / `test:e2e:install`); Vitest excludes `e2e/**` from unit runs; **CI** maps each `APTOS_<NETWORK>_API_KEY` repository secret to both `VITE_APTOS_<NETWORK>_API_KEY` and `APTOS_<NETWORK>_API_KEY` on the verify job so builds use one API key identity for client and SSR
 - **CI**: Playwright smoke tests (home, network query param, Blocks nav) run after `pnpm ci:verify`
+- **CI / e2e**: Playwright regression for **FEAT-TXN-003** — testnet transaction Balance Change tab loads indexer fungible-asset data (`e2e/transaction-balance-change.spec.ts`; outside CI, skips when the gateway returns 401 for the local preview origin so local `pnpm exec playwright test` is not flaky)
 - **Settings page** (`/settings`): dedicated full-page settings replacing the old header popup dialog. Includes API key overrides (per network) and a new Move Bytecode Decompilation opt-in toggle
 - **Decompilation opt-in**: decompiled and disassembly code views now require explicit user opt-in at `/settings`. Users must acknowledge a disclaimer that decompiled output may not match original source before the feature is enabled
 - **Settings**: optional geomi.dev API key override can be set **per network** (instead of one key for all networks). Existing saved single keys are migrated to all networks on load until you save again.
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Transaction Balance Change tab**: the indexer GraphQL query now types `transaction_version` as `bigint` (matching the schema). The previous `String` variable caused Hasura validation errors, so fungible-asset activities never loaded and the tab appeared empty even when the indexer had data (for example gas fee rows on testnet).
 - **Wallet transactions on localnet**: non-Petra wallets that report a **custom** network name but use a **loopback** REST URL (for example `http://127.0.0.1:8080/v1`) are no longer blocked when the explorer is on the **local** network; submission still requires a real loopback endpoint match.
 - **Blocks list** (`/blocks`): recent rows now use the same REST block API as block detail pages, so block hash, timestamps, and transaction version ranges match what you see after opening a block (previously the indexer `block_metadata_transactions` row was mislabeled as the block hash and version bounds could disagree with the node).
 - **Coins page** (`/coins`): changing verification filters or the Emojicoins toggle no longer freezes the tab when thousands of assets match — the table virtualizes rows via an on-demand `renderRow` path and scrolls inside a bounded-height container instead of allocating every row up front

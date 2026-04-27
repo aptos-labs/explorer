@@ -4,6 +4,7 @@ import {
   getCoinBalanceChangeForAccount,
   getTransactionAmount,
   getTransactionCounterparty,
+  TRANSACTION_BALANCE_CHANGES_QUERY,
 } from "./utils";
 
 function makeUserTx(
@@ -659,5 +660,17 @@ describe("getTransactionAmount", () => {
     } as unknown as Types.Transaction;
 
     expect(getTransactionAmount(txn)).toBe(undefined);
+  });
+});
+
+// FEAT-TXN-003 — Balance Change tab loads indexer `fungible_asset_activities`
+describe("TRANSACTION_BALANCE_CHANGES_QUERY", () => {
+  it("uses bigint for transaction_version (Hasura rejects String)", () => {
+    expect(TRANSACTION_BALANCE_CHANGES_QUERY).toMatch(
+      /\$txn_version:\s*bigint!/,
+    );
+    expect(TRANSACTION_BALANCE_CHANGES_QUERY).not.toMatch(
+      /\$txn_version:\s*String/,
+    );
   });
 });
