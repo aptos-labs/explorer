@@ -113,10 +113,8 @@ MUI `Grid` of cards — one card per tool/SDK.
 | Python SDK | PyPI | `GET https://pypi.org/pypi/aptos-sdk/json` → `info.version` | pypi.org package page |
 | Rust SDK | crates.io | `GET https://crates.io/api/v1/crates/aptos-sdk` → `crate.newest_version` | crates.io package page |
 | Go SDK | Go proxy | `GET https://proxy.golang.org/github.com/aptos-labs/aptos-go-sdk/@latest` → `Version` | pkg.go.dev page |
-| Unity SDK | GitHub Releases | `GET /repos/aptos-labs/Aptos-Unity-SDK/releases/latest` | GitHub release page |
-| Swift SDK | GitHub Releases | `GET /repos/aptos-labs/aptos-swift-sdk/releases/latest` | GitHub release page |
 
-CLI and node use GitHub releases (binaries, no package registry). SDKs use their respective package registries as the source of truth. Unity and Swift fall back to GitHub releases as no standard public registry exists for those ecosystems.
+CLI and node use GitHub releases (binaries, no package registry). SDKs use their respective package registries as the source of truth.
 
 ### Data per card
 - Tool name + icon
