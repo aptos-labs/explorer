@@ -3,17 +3,17 @@ import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {Box} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
-import {useGetFirstCoinActivity} from "../../../api/hooks/useGetCoinActivities";
-import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
-import {SupplyType} from "../../../api/hooks/useGetCoinSupplyLimit";
-import {useGetFaProperties} from "../../../api/hooks/useGetFaProperties";
-import FaPropertiesDisplay from "../../../components/FaPropertiesDisplay";
-import HashButton, {HashType} from "../../../components/HashButton";
-import ContentBox from "../../../components/IndividualPageContent/ContentBox";
-import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {assertNever, getAssetSymbol} from "../../../utils";
+import {useGetFirstCoinActivity} from "~/api/hooks/useGetCoinActivities";
+import type {CoinDescription} from "~/api/hooks/useGetCoinList";
+import {SupplyType} from "~/api/hooks/useGetCoinSupplyLimit";
+import {useGetFaProperties} from "~/api/hooks/useGetFaProperties";
+import FaPropertiesDisplay from "~/components/FaPropertiesDisplay";
+import HashButton, {HashType} from "~/components/HashButton";
+import ContentBox from "~/components/IndividualPageContent/ContentBox";
+import ContentRow from "~/components/IndividualPageContent/ContentRow";
+import {getFormattedBalanceStr} from "~/components/IndividualPageContent/ContentValue/CurrencyValue";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
+import {assertNever, getAssetSymbol} from "~/utils";
 import type {CoinData} from "../Components/CoinData";
 
 type InfoTabProps = {

@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
-import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
+import {emitRateLimit} from "~/context/rate-limit/rateLimitEvents";
 import {ResponseErrorType, withResponseError} from "./client";
 
 vi.mock("../context/rate-limit/rateLimitEvents", () => ({

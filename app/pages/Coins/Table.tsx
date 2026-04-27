@@ -20,27 +20,27 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import {useCallback, useMemo, useRef, useState} from "react";
-import type {CoinDescription} from "../../api/hooks/useGetCoinList";
+import type {CoinDescription} from "~/api/hooks/useGetCoinList";
 import {
   type CoinMarketData,
   useGetCoinMarketData,
-} from "../../api/hooks/useGetCoinMarketData";
-import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
-import HashButton, {HashType} from "../../components/HashButton";
-import GeneralTableBody from "../../components/Table/GeneralTableBody";
-import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
-import GeneralTableRow from "../../components/Table/GeneralTableRow";
+} from "~/api/hooks/useGetCoinMarketData";
+import {useGetInMainnet} from "~/api/hooks/useGetInMainnet";
+import HashButton, {HashType} from "~/components/HashButton";
+import GeneralTableBody from "~/components/Table/GeneralTableBody";
+import GeneralTableCell from "~/components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "~/components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "~/components/Table/GeneralTableRow";
 import {
   getVerifiedMessageAndIcon,
   VerifiedCoinCell,
   VerifiedType,
   verifiedLevel,
-} from "../../components/Table/VerifiedCell";
-import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
-import {useNetworkName} from "../../global-config/GlobalConfig";
-import {useAugmentToWithGlobalSearchParams, useNavigate} from "../../routing";
-import {getAssetSymbol} from "../../utils";
+} from "~/components/Table/VerifiedCell";
+import VirtualizedTableBody from "~/components/Table/VirtualizedTableBody";
+import {useNetworkName} from "~/global-config/GlobalConfig";
+import {useAugmentToWithGlobalSearchParams, useNavigate} from "~/routing";
+import {getAssetSymbol} from "~/utils";
 import {getLearnMoreTooltip} from "../Transaction/helpers";
 
 enum CoinVerificationFilterType {
@@ -146,7 +146,7 @@ function CoinCard({
 
   const handleClick = () => {
     if (assetId) {
-      navigate({to: augmentTo(linkTo)});
+      navigate({to: augmentTo(linkTo)}).catch(console.error);
     }
   };
 
@@ -687,7 +687,7 @@ export default function CoinsListTable({
         />
       }
       label="Show Emojicoins"
-      componentsProps={{
+      slotProps={{
         typography: {fontSize: 12, fontWeight: 600, color: unselectedTextColor},
       }}
       sx={{mr: 0}}
@@ -754,12 +754,14 @@ export default function CoinsListTable({
             placeholder="Search by name, symbol, or address..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{color: "text.secondary"}} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{color: "text.secondary"}} />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{
               "& .MuiOutlinedInput-root": {
@@ -822,12 +824,14 @@ export default function CoinsListTable({
           placeholder="Search by name, symbol, or address..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{color: "text.secondary"}} />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{color: "text.secondary"}} />
+                </InputAdornment>
+              ),
+            },
           }}
           sx={{
             width: 350,

@@ -1,8 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
+import {getAccount} from "~/api";
+import type {ResponseError} from "~/api/client";
+import {useAptosClient, useNetworkValue} from "~/global-config";
 import type {Types} from "~/types/aptos";
-import {useAptosClient, useNetworkValue} from "../../global-config";
-import {getAccount} from "..";
-import type {ResponseError} from "../client";
 
 export function useGetAccount(
   address: string,

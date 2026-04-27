@@ -1,5 +1,5 @@
 import {type SxProps, TableRow, useTheme} from "@mui/material";
-import {type PropsWithChildren, useCallback, useMemo} from "react";
+import React, {type PropsWithChildren, useCallback, useMemo} from "react";
 import {useAugmentToWithGlobalSearchParams, useNavigate} from "../../routing";
 
 export default function GeneralTableRow({
@@ -45,9 +45,9 @@ export default function GeneralTableRow({
     ],
   );
 
-  const handleClick = useCallback(() => {
+  const handleClick = useCallback(async () => {
     if (to) {
-      navigate({to: augmentTo(to)});
+      await navigate({to: augmentTo(to)});
     }
     if (onClick) {
       onClick();
@@ -55,10 +55,10 @@ export default function GeneralTableRow({
   }, [to, navigate, augmentTo, onClick]);
 
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLTableRowElement>) => {
+    async (e: React.KeyboardEvent<HTMLTableRowElement>) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        handleClick();
+        await handleClick();
       }
     },
     [handleClick],

@@ -1,6 +1,6 @@
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {Button} from "@mui/material";
-import {Banner} from "../../../components/Banner";
+import {Banner} from "~/components/Banner";
 
 interface PetraVaultBannerProps {
   address: string;

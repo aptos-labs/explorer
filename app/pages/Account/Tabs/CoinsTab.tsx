@@ -1,10 +1,7 @@
+import {useGetAllAccountCoins} from "~/api/hooks/useGetAccountCoins";
+import {type CoinDescription, useGetCoinList} from "~/api/hooks/useGetCoinList";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
 import type {Types} from "~/types/aptos";
-import {useGetAllAccountCoins} from "../../../api/hooks/useGetAccountCoins";
-import {
-  type CoinDescription,
-  useGetCoinList,
-} from "../../../api/hooks/useGetCoinList";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {findCoinData} from "../../Transaction/utils";
 import {coinOrderIndex} from "../../utils";
 import {

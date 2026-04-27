@@ -3,12 +3,12 @@ import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import {Box} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import type * as React from "react";
-import type {CoinDescription} from "../../api/hooks/useGetCoinList";
-import type {SupplyType} from "../../api/hooks/useGetCoinSupplyLimit";
-import StyledTab from "../../components/StyledTab";
-import StyledTabs from "../../components/StyledTabs";
-import {useNavigate} from "../../routing";
-import {assertNever} from "../../utils";
+import type {CoinDescription} from "~/api/hooks/useGetCoinList";
+import type {SupplyType} from "~/api/hooks/useGetCoinSupplyLimit";
+import StyledTab from "~/components/StyledTab";
+import StyledTabs from "~/components/StyledTabs";
+import {useNavigate} from "~/routing";
+import {assertNever} from "~/utils";
 import type {CoinData} from "./Components/CoinData";
 import HoldersTab from "./Tabs/HoldersTab";
 import InfoTab from "./Tabs/InfoTab";
@@ -112,7 +112,7 @@ export default function CoinTabs({
       to: "/coin/$struct/$tab",
       params: {struct, tab: newValue},
       replace: true,
-    });
+    }).catch(console.error);
   };
 
   return (

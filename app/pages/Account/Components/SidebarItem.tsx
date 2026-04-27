@@ -1,5 +1,5 @@
 import {Box, useTheme} from "@mui/material";
-import {Link} from "../../../routing";
+import {Link} from "~/routing";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 interface SidebarItemProps {

@@ -1,6 +1,6 @@
 import {APTOS_COIN} from "@aptos-labs/ts-sdk";
-import {useGetCoinSupplyLimit} from "../../../api/hooks/useGetCoinSupplyLimit";
-import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {useGetCoinSupplyLimit} from "~/api/hooks/useGetCoinSupplyLimit";
+import {getFormattedBalanceStr} from "~/components/IndividualPageContent/ContentValue/CurrencyValue";
 import MetricCard from "./MetricCard";
 
 export default function TotalSupply() {

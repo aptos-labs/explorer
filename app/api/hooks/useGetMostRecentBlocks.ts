@@ -1,21 +1,18 @@
 import {useQuery} from "@tanstack/react-query";
-import type {Types} from "~/types/aptos";
+import {getLedgerInfo} from "~/api";
+import {getRecentBlocks} from "~/api/v2";
 import {
   useAptosClient,
   useNetworkName,
   useNetworkValue,
   useSdkV2Client,
-} from "../../global-config";
-import {
-  normalizeGeomiDevApiKeyOverride,
-  useExplorerSettings,
-} from "../../settings";
-import {getLedgerInfo} from "..";
-import {getRecentBlocks} from "../v2";
+} from "~/global-config";
+import {normalizeGeomiDevApiKeyOverride, useExplorerSettings} from "~/settings";
+import type {Types} from "~/types/aptos";
 
 /**
  * Recent blocks for `/blocks`. Uses the same REST `getBlockByHeight` data as block
- * detail pages so hash, timestamps, and version ranges stay consistent with the API.
+ * detail pages, so hash, timestamps, and version ranges stay consistent with the API.
  */
 export function useGetMostRecentBlocks(
   start: string | undefined,

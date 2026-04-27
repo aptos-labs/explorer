@@ -1,8 +1,8 @@
 import {Box, Typography} from "@mui/material";
-import {useGetMostRecentBlocks} from "../../api/hooks/useGetMostRecentBlocks";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
-import LoadingModal from "../../components/LoadingModal";
-import {useSearchParams} from "../../routing";
+import {useGetMostRecentBlocks} from "~/api/hooks/useGetMostRecentBlocks";
+import {PageMetadata} from "~/components/hooks/usePageMetadata";
+import LoadingModal from "~/components/LoadingModal";
+import {useSearchParams} from "~/routing";
 import PageHeader from "../layout/PageHeader";
 import BlocksTable from "./Table";
 

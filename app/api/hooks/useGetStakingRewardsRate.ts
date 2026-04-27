@@ -5,7 +5,7 @@ export function useGetStakingRewardsRate() {
   if (response.data && response.data.length === 2) {
     const [numerator, denominator] = response.data;
     // TODO: Note, that if the epoch length changes, this changes.
-    // 4380 is 2 hour epochs, 12 times a day for 365 days
+    // 4380 is 2-hour epochs, 12 times a day for 365 days
     const rate =
       (100 * 4380 * parseInt(numerator as string, 10)) /
       parseInt(denominator as string, 10);

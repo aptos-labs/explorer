@@ -12,8 +12,8 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {useRateLimit} from "../context/rate-limit";
-import {Link} from "../routing";
+import {useRateLimit} from "~/context/rate-limit";
+import {Link} from "~/routing";
 
 const GEOMI_DEV_URL = "https://geomi.dev";
 

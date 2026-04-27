@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import {render, screen} from "@testing-library/react";
 import {describe, expect, it} from "vitest";
-import {ResponseErrorType} from "../../api/client";
+import {ResponseErrorType} from "~/api/client";
 import AccountError from "./Error";
 
 describe("AccountError", () => {

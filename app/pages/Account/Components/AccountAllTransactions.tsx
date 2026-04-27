@@ -10,24 +10,20 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import React from "react";
-import type {Types} from "~/types/aptos";
-import {getTransaction} from "../../../api";
-import useFunctionFilter from "../../../api/hooks/useFunctionFilter";
+import {getTransaction} from "~/api";
+import useFunctionFilter from "~/api/hooks/useFunctionFilter";
 import {
   useGetAccountAllTransactionCount,
   useGetAccountAllTransactionVersions,
   useGetAccountTransactionsByFunctionCount,
   useGetAccountTransactionVersionsByFunction,
-} from "../../../api/hooks/useGetAccountAllTransactions";
-import {
-  useAptosClient,
-  useSdkV2Client,
-} from "../../../global-config/GlobalConfig";
-import {useSearchParams} from "../../../routing";
-import {tryStandardizeAddress} from "../../../utils";
+} from "~/api/hooks/useGetAccountAllTransactions";
+import {useAptosClient, useSdkV2Client} from "~/global-config/GlobalConfig";
+import {useSearchParams} from "~/routing";
+import type {Types} from "~/types/aptos";
+import {downloadCSV, transactionsToCSV, tryStandardizeAddress} from "~/utils";
 import FunctionFilter from "../../Transactions/Components/FunctionFilter";
 import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
-import {downloadCSV, transactionsToCSV} from "../../utils";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 // Maximum transactions we can display due to indexer query performance constraints

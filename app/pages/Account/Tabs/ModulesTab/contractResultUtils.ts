@@ -3,7 +3,7 @@
  *
  * Strings are returned raw (no JSON escaping), primitives are stringified,
  * and objects/arrays are pretty-printed as JSON. Handles edge cases like
- * undefined, null, bigint, symbols, and non-serialisable values gracefully.
+ * undefined, null, bigint, symbols, and non-serializable values gracefully.
  */
 export function getFieldCopyValue(value: unknown): string {
   if (value === null || value === undefined) {

@@ -1,9 +1,9 @@
 import {Box, CircularProgress, Pagination} from "@mui/material";
 import type React from "react";
 import {useState} from "react";
+import {useGetAccountTransactions} from "~/api/hooks/useGetAccountTransactions";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
 import type {Types} from "~/types/aptos";
-import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import TransactionsTable from "../../Transactions/TransactionsTable";
 import AccountError from "../Error";
 

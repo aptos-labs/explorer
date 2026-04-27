@@ -1,4 +1,4 @@
-import {useGetUserTransactionFunctionInfo} from "../../../api/hooks/useUserTransactionFunctionInfo";
+import {useGetUserTransactionFunctionInfo} from "~/api/hooks/useUserTransactionFunctionInfo";
 
 const DAA_FUNCTION_INFOS = new Set([
   "0000000000000000000000000000000000000000000000000000000000000001::solana_derivable_account::authenticate",
@@ -16,15 +16,11 @@ export function useIsDaaAccount(address: string): boolean {
     useGetUserTransactionFunctionInfo(1, address);
 
   // Check if this is a known DAA type (Solana or Ethereum derivable account)
-  if (
+  return !!(
     userTransactionFunctionInfos &&
     userTransactionFunctionInfos.length > 0 &&
     DAA_FUNCTION_INFOS.has(
       userTransactionFunctionInfos[0].signature.function_info,
     )
-  ) {
-    return true;
-  }
-
-  return false;
+  );
 }

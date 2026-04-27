@@ -1,5 +1,5 @@
-import type {DailyActiveUserData} from "../../../api/hooks/useGetAnalyticsData";
-import {CardOutline} from "../../../components/Card";
+import type {DailyActiveUserData} from "~/api/hooks/useGetAnalyticsData";
+import {CardOutline} from "~/components/Card";
 import BarChart from "../Components/BarChart";
 import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";

@@ -1,8 +1,8 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {IconButton, Stack, Typography, useTheme} from "@mui/material";
 import {useState} from "react";
-import {parseTimestampString} from "../../../pages/utils";
-import StyledTooltip from "../../StyledTooltip";
+import StyledTooltip from "~/components/StyledTooltip";
+import {parseTimestampString} from "~/pages/utils";
 import EmptyValue from "./EmptyValue";
 
 const TOOLTIP_TIME = 2000; // 2s

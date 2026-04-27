@@ -1,4 +1,4 @@
-import type {DailyAnalyticsData} from "../../api/hooks/useGetAnalyticsData";
+import type {DailyAnalyticsData} from "~/api/hooks/useGetAnalyticsData";
 
 export function numberFormatter(num: number, digits: number) {
   const lookup = [

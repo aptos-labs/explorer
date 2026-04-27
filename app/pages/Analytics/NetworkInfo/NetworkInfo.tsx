@@ -1,8 +1,8 @@
 import {Grid} from "@mui/material";
 import type React from "react";
 import {createContext} from "react";
-import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
-import {Link} from "../../../routing";
+import {useGetInMainnet} from "~/api/hooks/useGetInMainnet";
+import {Link} from "~/routing";
 import ActiveNodes from "./ActiveNodes";
 import TotalStake from "./TotalStake";
 import TotalSupply from "./TotalSupply";

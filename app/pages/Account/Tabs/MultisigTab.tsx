@@ -1,10 +1,10 @@
 import {Box, Stack, Typography, useTheme} from "@mui/material";
 import type React from "react";
+import HashButton, {HashType} from "~/components/HashButton";
+import ContentBox from "~/components/IndividualPageContent/ContentBox";
+import ContentRow from "~/components/IndividualPageContent/ContentRow";
+import JsonViewCard from "~/components/IndividualPageContent/JsonViewCard";
 import type {Types} from "~/types/aptos";
-import HashButton, {HashType} from "../../../components/HashButton";
-import ContentBox from "../../../components/IndividualPageContent/ContentBox";
-import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 
 const MULTISIG_ACCOUNT_RESOURCE = "0x1::multisig_account::MultisigAccount";
 

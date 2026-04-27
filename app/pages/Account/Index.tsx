@@ -3,14 +3,14 @@ import {Grid} from "@mui/material";
 import {useLocation, useParams} from "@tanstack/react-router";
 import type React from "react";
 import {useEffect} from "react";
+import {type ResponseError, ResponseErrorType} from "~/api/client";
+import {useGetAccountResources} from "~/api/hooks/useGetAccountResources";
+import {useGetAddressFromName} from "~/api/hooks/useGetANS";
+import LoadingModal from "~/components/LoadingModal";
+import {objectCoreResource} from "~/constants";
+import {useNetworkName} from "~/global-config";
+import {useNavigate} from "~/routing";
 import type {Types} from "~/types/aptos";
-import {type ResponseError, ResponseErrorType} from "../../api/client";
-import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
-import {useGetAddressFromName} from "../../api/hooks/useGetANS";
-import LoadingModal from "../../components/LoadingModal";
-import {objectCoreResource} from "../../constants";
-import {useNetworkName} from "../../global-config";
-import {useNavigate} from "../../routing";
 import PageHeader from "../layout/PageHeader";
 import BalanceCard from "./BalanceCard";
 import {AptosNamesBanner} from "./Components/AptosNamesBanner";
@@ -24,7 +24,7 @@ import AccountTitle from "./Title";
 
 type AccountPageProps = {
   isObject?: boolean;
-  /** Custom content to render instead of the default tab panel (used for modules sub-routes) */
+  /** Custom content to render instead of the default tab panel (used for module sub-routes) */
   children?: React.ReactNode;
 };
 
@@ -133,7 +133,7 @@ export default function AccountPage({
           to: objectPath,
           search: location.search,
           replace: true,
-        });
+        }).catch(console.error);
       }
     }
 
@@ -163,7 +163,7 @@ export default function AccountPage({
 
   const pathTab = params.tab ?? (children ? "modules" : undefined);
 
-  /** `/account/.../modules/...` or `/object/.../modules/...` — resources 404 is often “no account resource row” while modules tab still loads via other APIs */
+  /** `/account/.../modules/...` or `/object/.../modules/...` — resources 404 is often “no account resource row” while the modules tab still loads via other APIs */
   const isModulesRoute = location.pathname.includes("/modules/");
 
   const accountTabs = (

@@ -1,5 +1,5 @@
 import type {Block} from "@aptos-labs/ts-sdk";
-import {getTimeDiffInSeconds, parseTimestamp} from "../../pages/utils";
+import {getTimeDiffInSeconds, parseTimestamp} from "~/pages/utils";
 import {useGetBlockByHeight} from "./useGetBlock";
 
 const TPS_FREQUENCY = 600; // calculate TPS every 600 blocks

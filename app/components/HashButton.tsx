@@ -15,21 +15,18 @@ import {
 } from "@mui/material";
 import type React from "react";
 import {memo, useCallback, useState} from "react";
-import {useGetNameFromAddress} from "../api/hooks/useGetANS";
-import {
-  type CoinDescription,
-  useGetCoinList,
-} from "../api/hooks/useGetCoinList";
-import {useKnownAddressBranding} from "../data/hooks";
+import {useGetNameFromAddress} from "~/api/hooks/useGetANS";
+import {type CoinDescription, useGetCoinList} from "~/api/hooks/useGetCoinList";
+import {useKnownAddressBranding} from "~/data/hooks";
 import {
   isValidAccountAddress,
   truncate,
   truncateAddress,
   truncateAddressMiddle,
-} from "../pages/utils";
-import {Link} from "../routing";
-import {getSemanticColors} from "../themes/colors/aptosBrandColors";
-import {assertNever, standardizeAddress} from "../utils";
+} from "~/pages/utils";
+import {Link} from "~/routing";
+import {getSemanticColors} from "~/themes/colors/aptosBrandColors";
+import {assertNever, standardizeAddress} from "~/utils";
 import IdenticonImg from "./IdenticonImg";
 
 export enum HashType {
@@ -247,7 +244,7 @@ const HashButtonInner = memo(function HashButtonInner({
       <Button
         sx={{
           textTransform: "none",
-          // Light: paper rows are white; chips use canvas grey so the pill reads on the row.
+          // Light: paper rows are white; chips use canvas gray so the pill reads on the row.
           backgroundColor:
             theme.palette.mode === "dark"
               ? theme.palette.neutralShade.lighter

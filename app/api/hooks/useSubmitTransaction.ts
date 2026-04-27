@@ -3,15 +3,15 @@ import {
   useWallet,
 } from "@aptos-labs/wallet-adapter-react";
 import {useState} from "react";
+import {useAptosClient, useNetworkName} from "~/global-config";
 import {FailedTransactionError} from "~/types/aptos";
-import {useAptosClient, useNetworkName} from "../../global-config";
-import {allowsCustomNetworkForLocalExplorer} from "../../utils/walletNetwork";
+import {allowsCustomNetworkForLocalExplorer} from "~/utils/walletNetwork";
 
 export type TransactionResponse =
   | TransactionResponseOnSubmission
   | TransactionResponseOnError;
 
-// "submission" here means that the transaction is posted on chain and gas is paid.
+// "submission" here means that the transaction is posted on-chain and gas is paid.
 // However, the status of the transaction might not be "success".
 export type TransactionResponseOnSubmission = {
   transactionSubmitted: true;

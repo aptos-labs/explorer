@@ -14,9 +14,9 @@ import {useEffect} from "react";
 import {
   type PackageMetadata,
   useGetAccountPackages,
-} from "../../../../api/hooks/useGetAccountResource";
-import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import {useNavigate} from "../../../../routing";
+} from "~/api/hooks/useGetAccountResource";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
+import {useNavigate} from "~/routing";
 import {MovePackageManifest} from "../../Components/MovePackageManifest";
 import SidebarItem from "../../Components/SidebarItem";
 import AccountError from "../../Error";
@@ -74,7 +74,7 @@ function Packages({
       navigate({
         to: `/${accountPagePath(isObject)}/${address}/modules/packages/${sortedPackages[0].name}`,
         replace: true,
-      });
+      }).catch(console.error);
     }
   }, [
     selectedPackageName,
@@ -128,7 +128,7 @@ function Packages({
   function navigateToPackage(packageName: string) {
     navigate({
       to: `/${accountPagePath(isObject)}/${address}/modules/packages/${packageName}`,
-    });
+    }).catch(console.error);
   }
 
   return (
@@ -272,7 +272,7 @@ function PackageInfo({
             // Navigate to code view for the selected module
             navigate({
               to: `/${accountPagePath(false)}/${address}/modules/code/${value.name}`,
-            });
+            }).catch(console.error);
           }}
           renderInput={(params) => (
             <TextField {...params} variant="outlined" size="small" />

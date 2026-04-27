@@ -8,7 +8,7 @@ type CombinedQueryResultState = {
 
 /**
  * Combines multiple react-query queries into a single query state.
- * This is useful if your component needs to make multiple API calls concurrently in order to render the desires data.
+ * This is useful if your component needs to make multiple API calls concurrently to render the desired data.
  * @param queries
  * @returns
  * @example

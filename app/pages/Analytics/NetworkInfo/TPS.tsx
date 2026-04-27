@@ -1,6 +1,6 @@
 import {Box, Stack} from "@mui/material";
-import {useGetPeakTPS, useGetTPS} from "../../../api/hooks/useGetTPS";
-import {useNetworkName} from "../../../global-config/GlobalConfig";
+import {useGetPeakTPS, useGetTPS} from "~/api/hooks/useGetTPS";
+import {useNetworkName} from "~/global-config/GlobalConfig";
 import MetricCard, {DoubleMetricCard} from "./MetricCard";
 
 function getFormattedTPS(tps: number) {

@@ -10,7 +10,7 @@
  * - JSON-LD structured data
  */
 
-import {useEffect, useMemo} from "react";
+import {useMemo} from "react";
 // Universal import pattern for ESM/CJS compatibility
 import * as ReactHelmetAsync from "react-helmet-async";
 
@@ -19,7 +19,7 @@ const Helmet = ((ReactHelmetAsync as {Helmet?: typeof ReactHelmetAsync.Helmet})
   (ReactHelmetAsync as {default?: typeof ReactHelmetAsync}).default
     ?.Helmet) as typeof ReactHelmetAsync.Helmet;
 
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../../lib/constants";
+import {BASE_URL, DEFAULT_OG_IMAGE} from "~/lib/constants";
 
 const SITE_NAME = "Aptos Explorer";
 const TWITTER_HANDLE = "@aptaboratories";
@@ -63,28 +63,8 @@ interface StructuredDataProps {
   identifier?: string;
   dateCreated?: string;
   dateModified?: string;
+
   [key: string]: unknown;
-}
-
-/**
- * Hook to set page metadata - for use in non-component contexts
- * For component usage, use the PageMetadata component instead
- */
-export function usePageMetadata({
-  title,
-  description,
-  image,
-  url,
-}: PageMetadataProps) {
-  useEffect(() => {
-    if (title && typeof document !== "undefined") {
-      document.title = title.includes(SITE_NAME)
-        ? title
-        : `${title} | ${SITE_NAME}`;
-    }
-  }, [title]);
-
-  return {title, description, image, url};
 }
 
 /**
@@ -147,19 +127,19 @@ function decodePathSegment(segment: string): string {
   }
 }
 
-/** Move type segment between `/coin/` and optional `/{tab}` (supports URL-encoded `::`). */
+/** Move-type segment between `/coin/` and optional `/{tab}` (supports URL-encoded `::`). */
 function entityIdFromCoinPath(pathname: string): string | undefined {
   const m = /^\/coin\/([^/]+)(?:\/[^/]+)?\/?$/.exec(pathname);
   return m ? decodePathSegment(m[1]) : undefined;
 }
 
-/** FA metadata address between `/fungible_asset/` and optional tab. */
+/** FA metadata address between `/fungible_asset/` and an optional tab. */
 function entityIdFromFungibleAssetPath(pathname: string): string | undefined {
   const m = /^\/fungible_asset\/([^/]+)(?:\/[^/]+)?\/?$/.exec(pathname);
   return m ? decodePathSegment(m[1]) : undefined;
 }
 
-/** Token id between `/token/` and optional tab (supports encoded ids). */
+/** Token id between `/token/` and an optional tab (supports encoded ids). */
 function entityIdFromTokenPath(pathname: string): string | undefined {
   const m = /^\/token\/([^/]+)(?:\/[^/]+)?\/?$/.exec(pathname);
   return m ? decodePathSegment(m[1]) : undefined;
@@ -303,7 +283,7 @@ export function generateStructuredData(
     });
   }
 
-  // Add page-type specific schemas
+  // Add page type-specific schemas
   switch (props.type) {
     case "transaction":
       structuredDataItems.push({
@@ -492,7 +472,7 @@ export function generateStructuredData(
 }
 
 /**
- * Get page-specific OG image based on page type
+ * Get a page-specific OG image based on the page type
  */
 function getOgImage(props: PageMetadataProps): string {
   // If a custom image is provided, use it
@@ -509,7 +489,7 @@ function getOgImage(props: PageMetadataProps): string {
 }
 
 /**
- * Get default keywords based on page type
+ * Get default keywords based on the page type
  */
 function getKeywords(props: PageMetadataProps): string {
   const baseKeywords = [
@@ -644,18 +624,5 @@ export function PageMetadata(props: PageMetadataProps) {
         </script>
       ))}
     </Helmet>
-  );
-}
-
-/**
- * Default metadata for pages that don't set their own
- */
-export function DefaultPageMetadata() {
-  return (
-    <PageMetadata
-      title="Aptos Explorer"
-      description="Explore transactions, accounts, blocks, validators, and activity on the Aptos blockchain. The official block explorer for the Aptos network."
-      type="website"
-    />
   );
 }

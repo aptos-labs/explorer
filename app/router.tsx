@@ -1,10 +1,10 @@
 import {QueryCache, QueryClient} from "@tanstack/react-query";
 import {createRouter as createTanStackRouter} from "@tanstack/react-router";
-import {NavigationPending} from "./components/NavigationPending";
+import {NavigationPending} from "~/components/NavigationPending";
 import {
   emitRateLimit,
   isRateLimitLike,
-} from "./context/rate-limit/rateLimitEvents";
+} from "~/context/rate-limit/rateLimitEvents";
 import {routeTree} from "./routeTree.gen";
 
 // Create a new QueryClient for each request (SSR safety)
@@ -38,7 +38,7 @@ function createQueryClient() {
           if (isRateLimitLike(error)) {
             return false;
           }
-          // Retry other errors once
+          // Retry other errors one time
           return failureCount < 1;
         },
         // Exponential backoff for retries
@@ -70,7 +70,7 @@ function getQueryClient() {
 export function createRouter() {
   const queryClient = getQueryClient();
 
-  const router = createTanStackRouter({
+  return createTanStackRouter({
     routeTree,
     context: {
       queryClient,
@@ -85,8 +85,6 @@ export function createRouter() {
     // Wait before showing pending component for fast navigations
     defaultPendingMs: 100,
   });
-
-  return router;
 }
 
 // Export getRouter for TanStack Start compatibility

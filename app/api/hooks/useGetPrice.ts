@@ -1,12 +1,10 @@
-import {useQuery} from "@tanstack/react-query";
-
 const COINGECKO_API_ENDPOINT = "https://api.coingecko.com/api/v3/simple/price";
 
 /**
  * Fetches the USD price for a cryptocurrency using its CoinGecko ID.
  *
  * Common CoinGecko IDs:
- * - "aptos" : Aptos (APT)
+ * - "aptos": Aptos (APT)
  * - "bitcoin": Bitcoin (BTC)
  * - "ethereum": Ethereum (ETH)
  * - "solana": Solana (SOL)
@@ -46,17 +44,4 @@ export async function getPrice(
     console.error(`Error fetching ${coinId} price from CoinGecko:`, error);
     return null;
   }
-}
-
-/**
- * Fetches the USD price for a cryptocurrency using its CoinGecko ID.
- *
- * @param coinId - The CoinGecko ID of the cryptocurrency (defaults to "aptos")
- * @returns React Query result object containing the price data and query state
- */
-export function useGetPrice(coinId: string = "aptos") {
-  return useQuery({
-    queryKey: ["price", coinId],
-    queryFn: () => getPrice(coinId),
-  });
 }

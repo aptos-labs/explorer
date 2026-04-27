@@ -15,26 +15,23 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import {useCallback, useMemo} from "react";
-import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
-import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
-import HashButton, {HashType} from "../../../components/HashButton";
-import GeneralTableBody from "../../../components/Table/GeneralTableBody";
-import GeneralTableCell from "../../../components/Table/GeneralTableCell";
-import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
-import GeneralTableRow from "../../../components/Table/GeneralTableRow";
+import type {CoinDescription} from "~/api/hooks/useGetCoinList";
+import {useGetInMainnet} from "~/api/hooks/useGetInMainnet";
+import HashButton, {HashType} from "~/components/HashButton";
+import GeneralTableBody from "~/components/Table/GeneralTableBody";
+import GeneralTableCell from "~/components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "~/components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "~/components/Table/GeneralTableRow";
 import {
   getVerifiedMessageAndIcon,
   VerifiedCoinCell,
   VerifiedType,
   verifiedLevel,
-} from "../../../components/Table/VerifiedCell";
-import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
-import {useNetworkName} from "../../../global-config/GlobalConfig";
-import {
-  useAugmentToWithGlobalSearchParams,
-  useNavigate,
-} from "../../../routing";
-import {getAssetSymbol} from "../../../utils";
+} from "~/components/Table/VerifiedCell";
+import VirtualizedTableBody from "~/components/Table/VirtualizedTableBody";
+import {useNetworkName} from "~/global-config/GlobalConfig";
+import {useAugmentToWithGlobalSearchParams, useNavigate} from "~/routing";
+import {getAssetSymbol} from "~/utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 
 const CoinNameCell = React.memo(function CoinNameCell({name}: {name: string}) {
@@ -200,7 +197,7 @@ function CoinCard({
 
   const handleClick = () => {
     if (assetId) {
-      navigate({to: augmentTo(linkTo)});
+      navigate({to: augmentTo(linkTo)}).catch(console.error);
     }
   };
 
@@ -362,7 +359,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
       let filtered: CoinDescriptionPlusAmount[];
 
       let baseCoins = coinsToFilter;
-      // 過濾餘額為 0 的 coin (Filter out coins with 0 balance based on toggle)
+      // 過濾餘額為 0 的 coin (Filter out coins with zero balance based on toggle)
       if (!showZero) {
         baseCoins = baseCoins.filter((coin) => coin.amount > 0);
       }

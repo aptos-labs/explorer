@@ -1,10 +1,10 @@
 import type React from "react";
+import useExpandedList from "~/components/hooks/useExpandedList";
+import CollapsibleCard from "~/components/IndividualPageContent/CollapsibleCard";
+import CollapsibleCards from "~/components/IndividualPageContent/CollapsibleCards";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
+import JsonViewCard from "~/components/IndividualPageContent/JsonViewCard";
 import type {Types} from "~/types/aptos";
-import useExpandedList from "../../../components/hooks/useExpandedList";
-import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
-import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 
 function ResourcesContent({
   resourceData,

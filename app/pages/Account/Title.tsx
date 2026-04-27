@@ -1,16 +1,13 @@
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {Box, Link, Stack, Typography} from "@mui/material";
-import {
-  PageMetadata,
-  type PageType,
-} from "../../components/hooks/usePageMetadata";
-import StyledTooltip from "../../components/StyledTooltip";
+import {PageMetadata, type PageType} from "~/components/hooks/usePageMetadata";
+import StyledTooltip from "~/components/StyledTooltip";
 import TitleHashButton, {
   HashType,
   NameType,
-} from "../../components/TitleHashButton";
-import {useKnownAddressBranding, useKnownAddressName} from "../../data/hooks";
-import {truncateAddress} from "../../utils";
+} from "~/components/TitleHashButton";
+import {useKnownAddressBranding, useKnownAddressName} from "~/data/hooks";
+import {truncateAddress} from "~/utils";
 import {getAccountTabHeadLabel} from "./accountTabLabels";
 import {useIsDaaAccount} from "./hooks/useIsDaaAccount";
 

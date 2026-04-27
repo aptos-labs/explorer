@@ -13,14 +13,14 @@ import {
   CodeLoadingFallback,
   SyntaxHighlighter,
   useHighlighterStyles,
-} from "../../../components/CodeHighlighter";
-import StyledTooltip from "../../../components/StyledTooltip";
-import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
+} from "~/components/CodeHighlighter";
+import StyledTooltip from "~/components/StyledTooltip";
+import {getSemanticColors} from "~/themes/colors/aptosBrandColors";
 import {
   downloadTextFile,
   getPublicFunctionLineNumber,
   transformCode,
-} from "../../../utils";
+} from "~/utils";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
@@ -201,7 +201,7 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
                 variant="outlined"
                 onClick={() => {
                   logEvent("copy_code_button_clicked", selectedModuleName);
-                  copyCode();
+                  copyCode().catch(console.error);
                 }}
                 disabled={!sourceCode}
                 sx={{

@@ -11,12 +11,12 @@ import {
   useTheme,
 } from "@mui/material";
 import {useEffect, useState} from "react";
-import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
-import {getPrice} from "../../api/hooks/useGetPrice";
-import {Card} from "../../components/Card";
-import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import StyledTooltip from "../../components/StyledTooltip";
-import {useNetworkName} from "../../global-config/GlobalConfig";
+import {useGetAccountAPTBalance} from "~/api/hooks/useGetAccountAPTBalance";
+import {getPrice} from "~/api/hooks/useGetPrice";
+import {Card} from "~/components/Card";
+import {getFormattedBalanceStr} from "~/components/IndividualPageContent/ContentValue/CurrencyValue";
+import StyledTooltip from "~/components/StyledTooltip";
+import {useNetworkName} from "~/global-config/GlobalConfig";
 
 type BalanceCardProps = {
   address: string;
@@ -57,7 +57,7 @@ export default function BalanceCard({address}: BalanceCardProps) {
       }
     };
 
-    fetchPrice();
+    fetchPrice().catch(console.error);
   }, []);
 
   const handleProviderChange = (event: SelectChangeEvent) => {

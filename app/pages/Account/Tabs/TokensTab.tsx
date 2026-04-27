@@ -1,12 +1,12 @@
 import {Box, Pagination, Stack} from "@mui/material";
 import type React from "react";
-import type {Types} from "~/types/aptos";
 import {
   useGetAccountTokens,
   useGetAccountTokensCount,
-} from "../../../api/hooks/useGetAccountTokens";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {useSearchParams} from "../../../routing";
+} from "~/api/hooks/useGetAccountTokens";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
+import {useSearchParams} from "~/routing";
+import type {Types} from "~/types/aptos";
 import {TokensTable} from "../Components/TokensTable";
 
 const LIMIT = 20;

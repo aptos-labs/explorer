@@ -1,5 +1,5 @@
 import type {Aptos} from "@aptos-labs/ts-sdk";
-import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
+import {emitRateLimit} from "~/context/rate-limit/rateLimitEvents";
 
 export enum ResponseErrorType {
   NOT_FOUND = "Not Found",
@@ -70,15 +70,12 @@ export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
  * Check if an error is a rate limit error
  */
 export function isRateLimitError(error: unknown): boolean {
-  if (
+  return !!(
     error &&
     typeof error === "object" &&
     "type" in error &&
     (error as ResponseError).type === ResponseErrorType.TOO_MANY_REQUESTS
-  ) {
-    return true;
-  }
-  return false;
+  );
 }
 
 /**
@@ -93,60 +90,6 @@ export async function getTransaction(txnHashOrVersion: string, client: Aptos) {
   }
   return withResponseError(
     client.getTransactionByHash({transactionHash: txnHashOrVersion}),
-  );
-}
-
-/**
- * Fetch account info
- */
-export async function getAccount(address: string, client: Aptos) {
-  return withResponseError(client.getAccountInfo({accountAddress: address}));
-}
-
-/**
- * Fetch account resources
- */
-export async function getAccountResources(address: string, client: Aptos) {
-  return withResponseError(
-    client.getAccountResources({accountAddress: address}),
-  );
-}
-
-/**
- * Fetch account modules
- */
-export async function getAccountModules(address: string, client: Aptos) {
-  return withResponseError(client.getAccountModules({accountAddress: address}));
-}
-
-/**
- * Fetch block by height
- */
-export async function getBlockByHeight(height: number, client: Aptos) {
-  return withResponseError(
-    client.getBlockByHeight({
-      blockHeight: height,
-      options: {withTransactions: true},
-    }),
-  );
-}
-
-/**
- * Fetch latest block
- */
-export async function getLedgerInfo(client: Aptos) {
-  return withResponseError(client.getLedgerInfo());
-}
-
-/**
- * Fetch validators
- */
-export async function getValidators(client: Aptos) {
-  return withResponseError(
-    client.getAccountResource({
-      accountAddress: "0x1",
-      resourceType: "0x1::stake::ValidatorSet",
-    }),
   );
 }
 

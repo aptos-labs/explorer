@@ -1,5 +1,5 @@
 import {useCallback} from "react";
-import {useSearchParams} from "../../routing";
+import {useSearchParams} from "~/routing";
 
 export default function useFunctionFilter(): {
   functionFilter: string;

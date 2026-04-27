@@ -1,9 +1,9 @@
 import {type UseQueryResult, useQuery} from "@tanstack/react-query";
 import {orderBy} from "es-toolkit";
+import {getAccountResource} from "~/api";
+import {type ResponseError, ResponseErrorType} from "~/api/client";
+import {useAptosClient, useNetworkValue} from "~/global-config";
 import type {Types} from "~/types/aptos";
-import {useAptosClient, useNetworkValue} from "../../global-config";
-import {getAccountResource} from "..";
-import {type ResponseError, ResponseErrorType} from "../client";
 
 export type ModuleMetadata = {
   name: string;
@@ -11,7 +11,7 @@ export type ModuleMetadata = {
 };
 
 export type UpgradePolicy = {
-  // 0 is arbitrary, i.e. publisher can upgrade anyway they want, they need to migrate the data manually
+  // 0 is arbitrary, i.e., publisher can upgrade anyway they want, they need to migrate the data manually
   // 1 is compatible
   // 2 is immutable
   policy: number;
@@ -24,7 +24,7 @@ export type PackageMetadata = {
   // The numbers of times this module has been upgraded. Also serves as the on-chain version.
   upgrade_number: string;
   // The source digest of the sources in the package. This is constructed by first building the
-  // sha256 of each individual source, than sorting them alphabetically, and sha256 them again.
+  // sha256 of each individual source, then sorting them alphabetically, and sha256 them again.
   source_digest: string;
   // Move.toml file
   manifest: string;
@@ -69,7 +69,7 @@ export type AccountPackagesQuery = {
 };
 
 /**
- * Maps the PackageRegistry resource query into packages tab state.
+ * Maps the PackageRegistry resource query into the package tab state.
  *
  * When the resource is missing (HTTP 404 → `NOT_FOUND`), `packages` is empty,
  * `isError` is false, and `error` is null — use `isFetched` to distinguish

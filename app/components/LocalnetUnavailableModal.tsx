@@ -8,9 +8,9 @@ import {
   DialogTitle,
   Typography,
 } from "@mui/material";
-import {defaultNetworkName} from "../constants";
-import {useNetworkSelector} from "../global-config";
-import {useLocalnetDetection} from "../hooks/useLocalnetDetection";
+import {defaultNetworkName} from "~/constants";
+import {useNetworkSelector} from "~/global-config";
+import {useLocalnetDetection} from "~/hooks/useLocalnetDetection";
 
 export default function LocalnetUnavailableModal() {
   const [networkName, setNetworkName] = useNetworkSelector();

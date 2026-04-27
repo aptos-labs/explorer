@@ -12,34 +12,34 @@ import {
 import type React from "react";
 import {Suspense, useEffect, useMemo, useRef, useState} from "react";
 import createElement from "react-syntax-highlighter/dist/cjs/create-element.js";
-import type {Types} from "~/types/aptos";
 import {
   CodeLoadingFallback,
   SyntaxHighlighter,
   useHighlighterStyles,
-} from "../../../components/CodeHighlighter";
-import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+} from "~/components/CodeHighlighter";
+import JsonViewCard from "~/components/IndividualPageContent/JsonViewCard";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
-} from "../../../components/StyledTooltip";
-import {Link, useNavigate} from "../../../routing";
-import {useDecompilationEnabled} from "../../../settings";
-import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
+} from "~/components/StyledTooltip";
+import {Link, useNavigate} from "~/routing";
+import {useDecompilationEnabled} from "~/settings";
+import {getSemanticColors} from "~/themes/colors/aptosBrandColors";
+import type {Types} from "~/types/aptos";
 import {
   downloadTextFile,
   getPublicFunctionLineNumber,
   sanitizeDownloadFilename,
   transformCode,
-} from "../../../utils";
+} from "~/utils";
 import {
   injectMoveCodeLinksInHighlightRows,
   MOVE_CODE_FN_LINK_DATA_ATTR,
   type MoveCodeLinkContext,
-} from "../../../utils/moveCodeNavigation";
+} from "~/utils/moveCodeNavigation";
 import {
   type DecompilationView,
   getDecompiledCodeView,
-} from "../../../utils/moveDecompiler";
+} from "~/utils/moveDecompiler";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
@@ -119,7 +119,7 @@ function useMoveCodeQualifiedLinkHandlers(
         );
         return;
       }
-      navigate({to});
+      navigate({to}).catch(() => console.error);
     }
 
     const onClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -313,7 +313,7 @@ export function Code({
   sourceBytecode?: string;
   moduleBytecode?: string;
   moduleQuery?: CodeModuleQueryProps;
-  /** When set, `module::function` and `0x..::module::function` in source become links to the Code tab. */
+  /** When set, `module::function` and `0x...::module::function` in source become links to the Code tab. */
   codeLinkContext?: MoveCodeLinkContext;
 }) {
   const {selectedModuleName} = useModulesPathParams();
@@ -429,7 +429,7 @@ export function Code({
       }
     }
 
-    runDecompilation();
+    runDecompilation().catch(console.error);
     return () => {
       cancelled = true;
     };
@@ -524,7 +524,7 @@ export function Code({
                 variant="outlined"
                 onClick={() => {
                   logEvent("copy_code_button_clicked", selectedModuleName);
-                  copyCode();
+                  copyCode().catch(console.error);
                 }}
                 disabled={!displayedCode}
                 sx={{

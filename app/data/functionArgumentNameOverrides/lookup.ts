@@ -1,4 +1,4 @@
-import {tryStandardizeAddress} from "../../utils/utils";
+import {tryStandardizeAddress} from "~/utils/utils";
 import {FUNCTION_ARGUMENT_NAME_OVERRIDES} from "./registry";
 
 /**

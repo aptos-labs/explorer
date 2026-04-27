@@ -6,12 +6,12 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import type React from "react";
 import {useState} from "react";
-import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
-import CloseIcon from "../../assets/svg/icon_close.svg?react";
-import HamburgerIcon from "../../assets/svg/icon_hamburger.svg?react";
-import {useNetworkName} from "../../global-config";
-import {useNavigate} from "../../routing";
-import {sortPetraFirst} from "../../utils";
+import {useGetInMainnet} from "~/api/hooks/useGetInMainnet";
+import CloseIcon from "~/assets/svg/icon_close.svg?react";
+import HamburgerIcon from "~/assets/svg/icon_hamburger.svg?react";
+import {useNetworkName} from "~/global-config";
+import {useNavigate} from "~/routing";
+import {sortPetraFirst} from "~/utils";
 import {WalletConnector} from "../WalletConnector";
 
 export default function NavMobile() {
@@ -32,7 +32,9 @@ export default function NavMobile() {
 
   const handleCloseAndNavigate = (to: string) => {
     setMenuAnchorEl(null);
-    navigate({to});
+    navigate({to}).catch(() => {
+      console.error("Failed to navigate to", to);
+    });
   };
 
   return (
@@ -63,11 +65,13 @@ export default function NavMobile() {
         anchorEl={menuAnchorEl}
         open={menuOpen}
         onClose={handleMenuClose}
-        MenuListProps={{
-          "aria-labelledby": "nav-mobile-button",
-          sx: {
-            minWidth: 240,
-            padding: "1rem",
+        slotProps={{
+          list: {
+            "aria-labelledby": "nav-mobile-button",
+            sx: {
+              minWidth: 240,
+              padding: "1rem",
+            },
           },
         }}
         sx={{

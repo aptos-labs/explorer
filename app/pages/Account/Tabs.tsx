@@ -8,11 +8,11 @@ import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import {Box} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import type * as React from "react";
+import StyledTab from "~/components/StyledTab";
+import StyledTabs from "~/components/StyledTabs";
+import {useNavigate} from "~/routing";
 import type {Types} from "~/types/aptos";
-import StyledTab from "../../components/StyledTab";
-import StyledTabs from "../../components/StyledTabs";
-import {useNavigate} from "../../routing";
-import {assertNever} from "../../utils";
+import {assertNever} from "~/utils";
 import {accountPagePath} from "./Index";
 import CoinsTab from "./Tabs/CoinsTab";
 import InfoTab from "./Tabs/InfoTab";
@@ -154,13 +154,13 @@ export default function AccountTabs({
       navigate({
         to: `/${basePath}/${address}/modules/packages`,
         replace: true,
-      });
+      }).catch(console.error);
     } else {
       navigate({
         to: `/${basePath}/$address/$tab`,
         params: {address, tab: newValue},
         replace: true,
-      });
+      }).catch(console.error);
     }
   };
 

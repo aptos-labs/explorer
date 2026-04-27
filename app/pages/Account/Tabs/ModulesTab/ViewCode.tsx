@@ -11,15 +11,15 @@ import {
   useTheme,
 } from "@mui/material";
 import {useEffect, useMemo} from "react";
-import type {Types} from "~/types/aptos";
-import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
+import {useGetAccountModule} from "~/api/hooks/useGetAccountModule";
 import {
   type PackageMetadata,
   useGetAccountPackages,
-} from "../../../../api/hooks/useGetAccountResource";
-import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import {useNavigate} from "../../../../routing";
-import {getBytecodeSizeInKB} from "../../../../utils";
+} from "~/api/hooks/useGetAccountResource";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
+import {useNavigate} from "~/routing";
+import type {Types} from "~/types/aptos";
+import {getBytecodeSizeInKB} from "~/utils";
 import {Code} from "../../Components/CodeSnippet";
 import SidebarItem from "../../Components/SidebarItem";
 import AccountError from "../../Error";
@@ -78,7 +78,7 @@ function ViewCode({
       navigate({
         to: `/${accountPagePath(isObject)}/${address}/modules/code/${sortedPackages[0].modules[0].name}`,
         replace: true,
-      });
+      }).catch(console.error);
     }
   }, [
     selectedModuleName,
@@ -133,7 +133,7 @@ function ViewCode({
   function navigateToModule(moduleName: string) {
     navigate({
       to: `/${accountPagePath(isObject)}/${address}/modules/code/${moduleName}`,
-    });
+    }).catch(console.error);
   }
 
   return (

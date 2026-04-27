@@ -6,13 +6,13 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import {useGetObjectRefs} from "~/api/hooks/useGetObjectRefs";
+import HashButton, {HashType} from "~/components/HashButton";
+import ContentBox from "~/components/IndividualPageContent/ContentBox";
+import ContentRow from "~/components/IndividualPageContent/ContentRow";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
 import type {Types} from "~/types/aptos";
-import {useGetObjectRefs} from "../../../api/hooks/useGetObjectRefs";
-import HashButton, {HashType} from "../../../components/HashButton";
-import ContentBox from "../../../components/IndividualPageContent/ContentBox";
-import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {tryStandardizeAddress} from "../../../utils";
+import {tryStandardizeAddress} from "~/utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 
 type InfoTabProps = {

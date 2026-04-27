@@ -11,20 +11,16 @@ import {
   useTheme,
 } from "@mui/material";
 import {useMemo} from "react";
-import type {TokenOwnership} from "../../../api/hooks/useGetAccountTokens";
-import StyledTooltip from "../../../components/StyledTooltip";
-import GeneralTableBody from "../../../components/Table/GeneralTableBody";
-import GeneralTableCell from "../../../components/Table/GeneralTableCell";
-import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
-import GeneralTableRow from "../../../components/Table/GeneralTableRow";
-import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
-import {labsBannedCollections} from "../../../constants";
-import {
-  Link,
-  useAugmentToWithGlobalSearchParams,
-  useNavigate,
-} from "../../../routing";
-import {assertNever} from "../../../utils";
+import type {TokenOwnership} from "~/api/hooks/useGetAccountTokens";
+import StyledTooltip from "~/components/StyledTooltip";
+import GeneralTableBody from "~/components/Table/GeneralTableBody";
+import GeneralTableCell from "~/components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "~/components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "~/components/Table/GeneralTableRow";
+import VirtualizedTableBody from "~/components/Table/VirtualizedTableBody";
+import {labsBannedCollections} from "~/constants";
+import {Link, useAugmentToWithGlobalSearchParams, useNavigate} from "~/routing";
+import {assertNever} from "~/utils";
 
 type TokenCellProps = {
   token: TokenOwnership;
@@ -150,7 +146,7 @@ function TokenCard({token}: {token: TokenOwnership}) {
 
   const handleClick = () => {
     if (tokenDataId) {
-      navigate({to: augmentTo(linkTo)});
+      navigate({to: augmentTo(linkTo)}).catch(console.error);
     }
   };
 

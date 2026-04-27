@@ -13,7 +13,7 @@ interface UseLocalnetDetectionOptions {
   /**
    * Whether to actively check for localnet availability.
    * When false, the hook will not make any network requests.
-   * Defaults to false to avoid prompting users about local device connections
+   * Defaults with false to avoid prompting users about local device connections
    * unless they explicitly select the local network.
    */
   enabled?: boolean;
@@ -70,7 +70,7 @@ export function useLocalnetDetection(
     };
 
     // Initial check
-    checkLocalnet();
+    checkLocalnet().catch(console.error);
 
     // Periodic re-check
     const interval = setInterval(checkLocalnet, CHECK_INTERVAL);

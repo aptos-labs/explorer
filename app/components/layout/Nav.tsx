@@ -1,8 +1,8 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import {useLocation} from "@tanstack/react-router";
-import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
-import {Link} from "../../routing";
+import {useGetInMainnet} from "~/api/hooks/useGetInMainnet";
+import {Link} from "~/routing";
 
 function NavButton({
   to,

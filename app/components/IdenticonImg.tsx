@@ -4,14 +4,14 @@ import {memo, useEffect, useMemo, useState} from "react";
 
 interface IdenticonImgProps {
   address: string;
-  /** When set, shown instead of a blockie (e.g. a known-address brand mark). */
+  /** When set, shown instead of a blockie (e.g., a known-address brand mark). */
   iconSrc?: string | null;
-  /** Short text overlaid at the top of a custom icon (e.g. `0x1` for framework). */
+  /** Short text overlaid at the top of a custom icon (e.g., `0x1` for the framework). */
   iconBadge?: string | null;
   /**
-   * Rendered width/height in CSS pixels. Defaults to the blockie canvas size
-   * so layout matches generated identicons; use a smaller value when the parent
-   * reserves a tighter box (e.g. mobile tables).
+   * Rendered width/height in CSS pixels. Defaults to the blockie canvas size,
+   * so the layout matches generated identicons; use a smaller value when the parent
+   * reserves a tighter box (e.g., mobile tables).
    */
   sizePx?: number;
 }

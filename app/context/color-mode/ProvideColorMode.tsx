@@ -41,7 +41,7 @@ export const useColorMode = (): ColorModeContext => {
 
 /**
  * Hook to get only the theme
- * Component will only re-render when theme changes
+ * Component will only re-render when the theme changes
  */
 export const useThemeFromContext = () => {
   const context = useContext(themeContext);

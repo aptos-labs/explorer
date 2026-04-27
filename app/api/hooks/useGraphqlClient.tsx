@@ -1,6 +1,6 @@
 import type React from "react";
-import {getGraphqlURI, type NetworkName} from "../../constants";
-import {useNetworkName} from "../../global-config";
+import {getGraphqlURI, type NetworkName} from "~/constants";
+import {useNetworkName} from "~/global-config";
 
 function getIsGraphqlClientSupportedFor(networkName: NetworkName): boolean {
   const graphqlUri = getGraphqlURI(networkName);

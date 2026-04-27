@@ -5,11 +5,11 @@ import {
   type TransactionResponse,
 } from "@aptos-labs/ts-sdk";
 import {Box} from "@mui/material";
-import HashButton, {HashType} from "../../../components/HashButton";
-import ContentBox from "../../../components/IndividualPageContent/ContentBox";
-import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
-import {Link} from "../../../routing";
+import HashButton, {HashType} from "~/components/HashButton";
+import ContentBox from "~/components/IndividualPageContent/ContentBox";
+import ContentRow from "~/components/IndividualPageContent/ContentRow";
+import TimestampValue from "~/components/IndividualPageContent/ContentValue/TimestampValue";
+import {Link} from "~/routing";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 
 function VersionValue({data}: {data: Block}) {

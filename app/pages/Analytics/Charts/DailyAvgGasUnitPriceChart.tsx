@@ -1,7 +1,7 @@
 import type {TooltipItem} from "chart.js";
-import type {DailyAvgGasData} from "../../../api/hooks/useGetAnalyticsData";
-import {CardOutline} from "../../../components/Card";
-import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import type {DailyAvgGasData} from "~/api/hooks/useGetAnalyticsData";
+import {CardOutline} from "~/components/Card";
+import {getFormattedBalanceStr} from "~/components/IndividualPageContent/ContentValue/CurrencyValue";
 import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
 import LineChart from "../Components/LineChart";

@@ -135,6 +135,6 @@ export function useHashToPathRedirect(): void {
       search:
         Object.keys(searchParamsObj).length > 0 ? searchParamsObj : undefined,
       replace: true,
-    });
+    }).catch(console.error);
   }, [location.pathname, navigate]);
 }

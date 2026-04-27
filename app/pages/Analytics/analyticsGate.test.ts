@@ -1,7 +1,7 @@
 // Covers FEAT-ANALYTICS-001 — Mainnet gate
 // Covers FEAT-ANALYTICS-005 — Data source URL
 import {describe, expect, it} from "vitest";
-import {defaultNetworkName} from "../../lib/constants";
+import {defaultNetworkName} from "~/lib/constants";
 
 describe("FEAT-ANALYTICS-001 — Mainnet gate", () => {
   it("defaultNetworkName is mainnet (analytics only render on default)", () => {

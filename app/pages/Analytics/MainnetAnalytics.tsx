@@ -1,6 +1,6 @@
 import {Alert, Grid} from "@mui/material";
 import {useState} from "react";
-import {useGetAnalyticsData} from "../../api/hooks/useGetAnalyticsData";
+import {useGetAnalyticsData} from "~/api/hooks/useGetAnalyticsData";
 import DailyActiveUserChart from "./Charts/DailyActiveUserChart";
 import DailyAvgGasUnitPriceChart from "./Charts/DailyAvgGasUnitPriceChart";
 import DailyBlockGapChart from "./Charts/DailyBlockGapChart";

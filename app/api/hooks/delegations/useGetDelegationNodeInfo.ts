@@ -1,10 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
+import {getValidatorCommission, getValidatorState} from "~/api";
+import type {ResponseError} from "~/api/client";
+import {useGetNumberOfDelegators} from "~/api/hooks";
+import {combineQueries} from "~/api/query-utils";
+import {useAptosClient} from "~/global-config";
 import type {Types} from "~/types/aptos";
-import {useAptosClient} from "../../../global-config";
-import {getValidatorCommission, getValidatorState} from "../..";
-import type {ResponseError} from "../../client";
-import {combineQueries} from "../../query-utils";
-import {useGetNumberOfDelegators} from "./useGetNumberOfDelegators";
 
 // CombinedGraphQLErrors replaced with Error after Apollo removal
 

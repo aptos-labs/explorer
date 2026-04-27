@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {ResponseErrorType} from "../client";
+import {ResponseErrorType} from "~/api/client";
 import {
   mapRegistryQueryToAccountPackages,
   type PackageMetadata,

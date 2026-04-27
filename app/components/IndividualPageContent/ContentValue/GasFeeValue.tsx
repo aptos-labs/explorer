@@ -1,6 +1,6 @@
 import {useTheme} from "@mui/material";
+import {getSemanticColors} from "~/themes/colors/aptosBrandColors";
 import type {Types} from "~/types/aptos";
-import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {APTCurrencyValue} from "./CurrencyValue";
 import GasValue from "./GasValue";
 

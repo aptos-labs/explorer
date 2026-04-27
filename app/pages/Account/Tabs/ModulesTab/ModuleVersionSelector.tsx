@@ -15,8 +15,8 @@ import {
 import {
   type ModulePublishTransaction,
   useGetModulePublishHistory,
-} from "../../../../api/hooks/useGetModulePublishHistory";
-import {Link} from "../../../../routing";
+} from "~/api/hooks/useGetModulePublishHistory";
+import {Link} from "~/routing";
 
 interface ModuleVersionSelectorProps {
   address: string;
@@ -140,7 +140,7 @@ export default function ModuleVersionSelector({
     );
   }
 
-  const handleChange = (event: SelectChangeEvent<string>) => {
+  const handleChange = (event: SelectChangeEvent) => {
     const value = event.target.value;
     onVersionChange(value === "latest" ? undefined : Number(value));
   };

@@ -1,6 +1,6 @@
 /**
  * Lightweight GTM integration replacing react-gtm-module.
- * Uses native script injection (~15 lines vs ~8KB package).
+ * Uses native script injection (~15 lines vs. ~8KB package).
  */
 
 // Extend Window to include dataLayer

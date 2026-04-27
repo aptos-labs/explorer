@@ -1,7 +1,7 @@
 import {AccountAddress, type Aptos, type Block} from "@aptos-labs/ts-sdk";
+import {isNumeric} from "~/pages/utils";
 import type {Types} from "~/types/aptos";
-import {isNumeric} from "../pages/utils";
-import {mapWithConcurrencyLimit} from "../utils/mapWithConcurrencyLimit";
+import {mapWithConcurrencyLimit} from "~/utils/mapWithConcurrencyLimit";
 import {withResponseError} from "./client";
 
 /** Avoid bursting dozens of parallel `getBlockByHeight` calls (edge/CDN rate limits). */

@@ -1,8 +1,8 @@
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {Stack, Typography, useTheme} from "@mui/material";
 import type React from "react";
-import {CardWithStyle} from "../../../components/Card";
-import StyledTooltip from "../../../components/StyledTooltip";
+import {CardWithStyle} from "~/components/Card";
+import StyledTooltip from "~/components/StyledTooltip";
 
 function Data({children}: {children: React.ReactNode}) {
   return (

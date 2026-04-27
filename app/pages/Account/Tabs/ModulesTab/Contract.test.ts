@@ -53,7 +53,7 @@ describe("getFieldCopyValue", () => {
     expect(result).toContain('"APT"');
   });
 
-  it("handles non-serialisable values gracefully", () => {
+  it("handles non-serializable values gracefully", () => {
     const circular: Record<string, unknown> = {};
     circular.self = circular;
     const result = getFieldCopyValue(circular);

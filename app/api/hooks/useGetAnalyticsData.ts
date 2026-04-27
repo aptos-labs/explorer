@@ -1,8 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
-import {defaultNetworkName} from "../../constants";
+import {defaultNetworkName} from "~/constants";
 // Using selective hook - component will only re-render when network_name changes
 // instead of re-rendering on any global state change
-import {useNetworkName} from "../../global-config";
+import {useNetworkName} from "~/global-config";
 
 export const ANALYTICS_DATA_URL =
   "https://storage.googleapis.com/aptos-mainnet/explorer/chain_stats_v2.json?cache-version=0";
@@ -95,7 +95,7 @@ const ANALYTICS_DATA_STALE_TIME = 10 * 60 * 1000;
 const ANALYTICS_DATA_GC_TIME = 60 * 60 * 1000;
 
 export function useGetAnalyticsData() {
-  // Only subscribe to network_name changes - prevents re-renders when other state changes
+  // Only subscribe to network_name changes - prevents re-renders with other state changes
   const networkName = useNetworkName();
   const isEnabled = networkName === defaultNetworkName;
 
@@ -106,7 +106,7 @@ export function useGetAnalyticsData() {
       if (!response.ok) {
         throw new Error(`Failed to fetch analytics data: ${response.status}`);
       }
-      return response.json() as Promise<AnalyticsData>;
+      return await response.json();
     },
     enabled: isEnabled,
     staleTime: ANALYTICS_DATA_STALE_TIME,

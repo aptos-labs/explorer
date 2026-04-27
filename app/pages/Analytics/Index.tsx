@@ -1,7 +1,7 @@
 import {Box, Typography} from "@mui/material";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
-import {defaultNetworkName} from "../../constants";
-import {useNetworkName} from "../../global-config/GlobalConfig";
+import {PageMetadata} from "~/components/hooks/usePageMetadata";
+import {defaultNetworkName} from "~/constants";
+import {useNetworkName} from "~/global-config/GlobalConfig";
 import PageHeader from "../layout/PageHeader";
 import MainnetAnalytics from "./MainnetAnalytics";
 

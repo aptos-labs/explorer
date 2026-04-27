@@ -11,23 +11,18 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import {useMemo, useSyncExternalStore} from "react";
+import HashButton, {HashType} from "~/components/HashButton";
+import GeneralTableCell from "~/components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "~/components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "~/components/Table/GeneralTableRow";
+import VirtualizedTableBody from "~/components/Table/VirtualizedTableBody";
+import {Link, useAugmentToWithGlobalSearchParams, useNavigate} from "~/routing";
 import type {Types} from "~/types/aptos";
-import HashButton, {HashType} from "../../components/HashButton";
-import GeneralTableCell from "../../components/Table/GeneralTableCell";
-import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
-import GeneralTableRow from "../../components/Table/GeneralTableRow";
-import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
-import {
-  Link,
-  useAugmentToWithGlobalSearchParams,
-  useNavigate,
-} from "../../routing";
-import {assertNever} from "../../utils";
-import {getTimeDiffInSeconds, parseTimestamp} from "../utils";
+import {assertNever, getTimeDiffInSeconds, parseTimestamp} from "~/utils";
 
 // Module-level clock store. The interval is started on the first subscriber and
 // stopped when the last subscriber unsubscribes, so BlocksTable itself never
-// needs to hold clock state – only the age cells re-render every second.
+// needs to hold the clock state – only the age cells re-render every second.
 let _nowSnapshot = new Date();
 const _clockListeners = new Set<() => void>();
 let _clockIntervalId: ReturnType<typeof setInterval> | null = null;
@@ -213,7 +208,9 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
   ).toString();
 
   const handleClick = () => {
-    navigate({to: augmentTo(`/block/${block.block_height}`)});
+    navigate({to: augmentTo(`/block/${block.block_height}`)}).catch(
+      console.error,
+    );
   };
 
   return (

@@ -1,9 +1,9 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useEffect, useState} from "react";
-import {getValidatorCommission} from "../api";
-import {useGetDelegatedStaking} from "../api/hooks/delegations/useGetDelegatedStaking";
-import {useAptosClient} from "../global-config/GlobalConfig";
-import {addressFromWallet} from "../utils";
+import {getValidatorCommission} from "~/api";
+import {useGetDelegatedStaking} from "~/api/hooks/delegations/useGetDelegatedStaking";
+import {useAptosClient} from "~/global-config/GlobalConfig";
+import {addressFromWallet} from "~/utils";
 import {Banner} from "./Banner";
 
 /**
@@ -73,7 +73,7 @@ export function OutOfCommissionPoolsBanner() {
       }
     };
 
-    checkPools();
+    checkPools().catch(console.error);
 
     return () => {
       cancelled = true;

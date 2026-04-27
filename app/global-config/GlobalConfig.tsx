@@ -2,7 +2,7 @@ import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import {useSearch} from "@tanstack/react-router";
 import Cookies from "js-cookie";
 import React, {createContext, type ReactNode, useContext, useMemo} from "react";
-import {AptosClient} from "../api/legacyClient";
+import {AptosClient} from "~/api/legacyClient";
 import {
   defaultFeatureName,
   defaultNetworkName,
@@ -13,12 +13,12 @@ import {
   isValidNetworkName,
   type NetworkName,
   networks,
-} from "../constants";
+} from "~/constants";
 import {
   getGeomiDevApiKeyOverride,
   normalizeGeomiDevApiKeyOverride,
   useExplorerSettings,
-} from "../settings";
+} from "~/settings";
 
 const NETWORK_COOKIE_NAME = "network";
 
@@ -77,7 +77,7 @@ export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
   const hasAddedNetworkParam = React.useRef(false);
 
   // Sync cookie with URL param when URL has a valid network
-  // This ensures the cookie stays in sync for hidden networks accessed via URL
+  // This ensures the cookie stays in sync with hidden networks accessed via URL
   React.useEffect(() => {
     if (networkFromUrl && networkFromUrl !== savedNetworkName) {
       setSavedNetworkName(networkFromUrl);
@@ -331,7 +331,7 @@ function getFeatureNameFromCookie(): FeatureName | null {
 }
 
 /**
- * Hook to get the feature name from environment or cookie.
+ * Hook to get the feature name from the environment or cookie.
  *
  * Priority: cookie override > VITE_FEATURE_NAME env var > default ("prod").
  *

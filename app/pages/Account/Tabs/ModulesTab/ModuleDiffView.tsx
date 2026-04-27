@@ -12,17 +12,17 @@ import {
 } from "@mui/material";
 import {diffLines} from "diff";
 import {useEffect, useMemo, useState} from "react";
-import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
-import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
-import AccountError from "../../Error";
-import type {ModulePublishTransaction} from "../../../../api/hooks/useGetModulePublishHistory";
-import {Link} from "../../../../routing";
-import {useDecompilationEnabled} from "../../../../settings";
-import {transformCode} from "../../../../utils";
+import {useGetAccountModule} from "~/api/hooks/useGetAccountModule";
+import {useGetAccountPackages} from "~/api/hooks/useGetAccountResource";
+import type {ModulePublishTransaction} from "~/api/hooks/useGetModulePublishHistory";
+import {Link} from "~/routing";
+import {useDecompilationEnabled} from "~/settings";
+import {transformCode} from "~/utils";
 import {
   type DecompilationView,
   getDecompiledCodeView,
-} from "../../../../utils/moveDecompiler";
+} from "~/utils/moveDecompiler";
+import AccountError from "../../Error";
 
 type DiffViewType =
   | "published-source"
@@ -52,7 +52,7 @@ function VersionSelect({
 }) {
   const theme = useTheme();
 
-  const handleChange = (event: SelectChangeEvent<string>) => {
+  const handleChange = (event: SelectChangeEvent) => {
     const val = event.target.value;
     onChange(val === "latest" ? undefined : Number(val));
   };

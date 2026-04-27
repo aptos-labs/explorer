@@ -10,14 +10,11 @@ import {
   Typography,
 } from "@mui/material";
 import {useState} from "react";
-import {Banner} from "../../../components/Banner";
-import StyledDialog from "../../../components/StyledDialog";
-import {
-  getDefunctProtocol,
-  getWithdrawalPlugin,
-} from "../../../data/defunctProtocols";
-import type {WithdrawalPlugin} from "../../../types/defunctProtocol";
-import {MIN_OWNER_WITHDRAWAL_PERCENT} from "../../../types/defunctProtocol";
+import {Banner} from "~/components/Banner";
+import StyledDialog from "~/components/StyledDialog";
+import {getDefunctProtocol, getWithdrawalPlugin} from "~/data/defunctProtocols";
+import type {WithdrawalPlugin} from "~/types/defunctProtocol";
+import {MIN_OWNER_WITHDRAWAL_PERCENT} from "~/types/defunctProtocol";
 
 interface DefunctProtocolBannerProps {
   address: string;

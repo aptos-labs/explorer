@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
-import {useNetworkValue, useSdkV2Client} from "../../global-config";
-import {tryStandardizeAddress} from "../../utils";
+import {useNetworkValue, useSdkV2Client} from "~/global-config";
+import {tryStandardizeAddress} from "~/utils";
 
 export type ModulePublishTransaction = {
   version: number;

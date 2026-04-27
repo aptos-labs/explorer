@@ -1,5 +1,5 @@
-import {aptosFrameworkAddressBranding} from "../aptosFrameworkAddressBranding";
-import type {KnownAddressBranding} from "../knownAddressBranding";
+import {aptosFrameworkAddressBranding} from "~/data/aptosFrameworkAddressBranding";
+import type {KnownAddressBranding} from "~/data/knownAddressBranding.ts";
 
 /**
  * Branding for well-known mainnet accounts (bridges, DEX deployers, CEX hot wallets, etc.).

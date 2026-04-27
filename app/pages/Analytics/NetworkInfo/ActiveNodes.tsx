@@ -1,6 +1,6 @@
 import {Box, Stack} from "@mui/material";
-import {useGetFullnodeCount} from "../../../api/hooks/useGetFullnodeCount";
-import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
+import {useGetFullnodeCount} from "~/api/hooks/useGetFullnodeCount";
+import {useGetValidatorSet} from "~/api/hooks/useGetValidatorSet";
 import {DoubleMetricCard} from "./MetricCard";
 
 export default function ActiveNodes() {

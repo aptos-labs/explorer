@@ -1,6 +1,6 @@
+import {useGetIsGraphqlClientSupported} from "~/api/hooks/useGraphqlClient";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
 import type {Types} from "~/types/aptos";
-import {useGetIsGraphqlClientSupported} from "../../../api/hooks/useGraphqlClient";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import AccountAllTransactions from "../Components/AccountAllTransactions";
 import AccountTransactions from "../Components/AccountTransactions";
 

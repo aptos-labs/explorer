@@ -5,6 +5,10 @@
 import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import Cookies from "js-cookie";
 import {
+  getGeomiDevApiKeyOverride,
+  normalizeGeomiDevApiKeyOverride,
+} from "~/settings";
+import {
   defaultNetworkName,
   getApiKey,
   getGraphqlURI,
@@ -13,10 +17,6 @@ import {
   type NetworkName,
   networks,
 } from "../lib/constants";
-import {
-  getGeomiDevApiKeyOverride,
-  normalizeGeomiDevApiKeyOverride,
-} from "../settings";
 
 const NETWORK_COOKIE_NAME = "network";
 

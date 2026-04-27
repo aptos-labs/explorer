@@ -31,29 +31,29 @@ import {
 } from "@mui/material";
 import React, {type ReactNode, useEffect, useMemo, useState} from "react";
 import {Controller, type SubmitHandler, useForm} from "react-hook-form";
-import type {Types} from "~/types/aptos";
-import {view} from "../../../../api";
-import {ResponseErrorType} from "../../../../api/client";
-import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
-import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
-import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
-import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
-import StyledTooltip from "../../../../components/StyledTooltip";
-import {WalletConnector} from "../../../../components/WalletConnector";
-import {lookupFunctionArgumentNameOverride} from "../../../../data/functionArgumentNameOverrides";
+import {view} from "~/api";
+import {ResponseErrorType} from "~/api/client";
+import {useGetAccountModules} from "~/api/hooks/useGetAccountModules";
+import {useGetAccountPackages} from "~/api/hooks/useGetAccountResource";
+import useSubmitTransaction from "~/api/hooks/useSubmitTransaction";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
+import StyledTooltip from "~/components/StyledTooltip";
+import {WalletConnector} from "~/components/WalletConnector";
+import {lookupFunctionArgumentNameOverride} from "~/data/functionArgumentNameOverrides";
 import {
   useAptosClient,
   useNetworkName,
   useSdkV2Client,
-} from "../../../../global-config/GlobalConfig";
-import {Link, useNavigate} from "../../../../routing";
+} from "~/global-config/GlobalConfig";
+import {Link, useNavigate} from "~/routing";
+import type {Types} from "~/types/aptos";
 import {
   encodeInputArgsForViewRequest,
   extractFunctionParamNames,
   extractFunctionTypeParamNames,
   sortPetraFirst,
   transformCode,
-} from "../../../../utils";
+} from "~/utils";
 import {Code} from "../../Components/CodeSnippet";
 import SidebarItem from "../../Components/SidebarItem";
 import ErrorPage from "../../Error";
@@ -261,7 +261,9 @@ interface ContractSidebarProps {
   selectedModuleName: string | undefined;
   selectedFnName: string | undefined;
   moduleAndFnsGroup: Record<string, Types.MoveFunction[]>;
+
   getLinkToFn(moduleName: string, fnName: string, isObject: boolean): string;
+
   isObject: boolean;
 }
 
@@ -530,12 +532,14 @@ function ContractSidebar({
             placeholder="Search functions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search fontSize="small" color="action" />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search fontSize="small" color="action" />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{mb: 2}}
           />
@@ -614,7 +618,9 @@ function ContractSidebar({
           onChange={(_, fn) => {
             if (fn) {
               logEvent("function_name_clicked", fn.fnName);
-              navigate({to: getLinkToFn(fn.moduleName, fn.fnName, isObject)});
+              navigate({
+                to: getLinkToFn(fn.moduleName, fn.fnName, isObject),
+              }).catch(console.error);
             }
           }}
           value={
@@ -695,11 +701,7 @@ function RunContractForm({
         if (arg === "") {
           return undefined as unknown as Types.MoveValue;
         } else {
-          const converted = convertArgument(
-            arg,
-            typeTag.value.typeArgs[0].toString(),
-          );
-          return converted;
+          return convertArgument(arg, typeTag.value.typeArgs[0].toString());
         }
       }
     }
@@ -1832,8 +1834,10 @@ function ContractForm({
                     disabled
                     fullWidth
                     size="small"
-                    InputProps={{
-                      sx: {fontFamily: "monospace", fontSize: 13},
+                    slotProps={{
+                      input: {
+                        sx: {fontFamily: "monospace", fontSize: 13},
+                      },
                     }}
                   />
                 )}
@@ -1861,7 +1865,6 @@ function ContractForm({
                           placeholder={placeholder}
                           fullWidth
                           size="small"
-                          InputLabelProps={{shrink: true}}
                           helperText={
                             <Typography
                               component="span"
@@ -1872,17 +1875,22 @@ function ContractForm({
                               {param}
                             </Typography>
                           }
-                          InputProps={{
-                            endAdornment: isOption ? (
-                              <InputAdornment position="end">
-                                <Chip
-                                  label="optional"
-                                  size="small"
-                                  variant="outlined"
-                                  sx={{height: 20, fontSize: 10}}
-                                />
-                              </InputAdornment>
-                            ) : undefined,
+                          slotProps={{
+                            inputLabel: {
+                              shrink: true,
+                            },
+                            input: {
+                              endAdornment: isOption ? (
+                                <InputAdornment position="end">
+                                  <Chip
+                                    label="optional"
+                                    size="small"
+                                    variant="outlined"
+                                    sx={{height: 20, fontSize: 10}}
+                                  />
+                                </InputAdornment>
+                              ) : undefined,
+                            },
                           }}
                         />
                       )}

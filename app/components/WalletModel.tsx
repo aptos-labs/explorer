@@ -327,7 +327,11 @@ function WalletRow({wallet, onConnect}: WalletRowProps) {
           <Box component={WalletItem.Icon} sx={{width: 32, height: 32}} />
           <ListItemText
             primary={wallet.name}
-            primaryTypographyProps={{fontSize: "1.125rem"}}
+            slotProps={{
+              primary: {
+                fontSize: "1.125rem",
+              },
+            }}
           />
           {isInstallRequired(wallet) ? (
             <WalletItem.InstallLink asChild>

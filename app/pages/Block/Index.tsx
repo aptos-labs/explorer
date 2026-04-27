@@ -1,6 +1,6 @@
 import {Alert, Grid, Stack} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
-import {useGetBlockByHeight} from "../../api/hooks/useGetBlock";
+import {useGetBlockByHeight} from "~/api/hooks/useGetBlock";
 import PageHeader from "../layout/PageHeader";
 import BlockError from "./Error";
 import BlockTabs from "./Tabs";

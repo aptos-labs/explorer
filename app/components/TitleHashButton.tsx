@@ -13,11 +13,11 @@ import {
 import useMediaQuery from "@mui/material/useMediaQuery";
 import type React from "react";
 import {useState} from "react";
-import {useGetNameFromAddress} from "../api/hooks/useGetANS";
-import {useScamAddresses} from "../constants";
-import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
-import {getSemanticColors} from "../themes/colors/aptosBrandColors";
-import {tryStandardizeAddress} from "../utils";
+import {useGetNameFromAddress} from "~/api/hooks/useGetANS";
+import {useScamAddresses} from "~/constants";
+import {truncateAddress, truncateAddressMiddle} from "~/pages/utils";
+import {getSemanticColors} from "~/themes/colors/aptosBrandColors";
+import {tryStandardizeAddress} from "~/utils";
 
 export const BUTTON_HEIGHT = 34;
 export const TOOLTIP_TIME = 2000; // 2s

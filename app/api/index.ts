@@ -6,13 +6,12 @@ import {
   TypeTagAddress,
   TypeTagU64,
 } from "@aptos-labs/ts-sdk";
+import {AptosClient} from "~/api/legacyClient";
+import {OCTA} from "~/constants";
+import {emitRateLimit} from "~/context/rate-limit/rateLimitEvents";
+import {isNumeric} from "~/pages/utils";
 import type {Types} from "~/types/aptos";
-import {OCTA} from "../constants";
-import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
-import {isNumeric} from "../pages/utils";
-import {mapWithConcurrencyLimit} from "../utils/mapWithConcurrencyLimit";
-import {sortTransactions} from "../utils/utils";
-import {AptosClient} from "./legacyClient";
+import {sortTransactions} from "~/utils/utils";
 
 // Error wrapper
 export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
@@ -213,28 +212,6 @@ export function view(
   }
 
   return client.view(request, parsedVersion);
-}
-
-export function getTableItem(
-  requestParameters: {tableHandle: string; data: Types.TableItemRequest},
-  client: AptosClient,
-): Promise<unknown> {
-  const {tableHandle, data} = requestParameters;
-  return withResponseError(client.getTableItem(tableHandle, data));
-}
-
-export async function getRecentBlocks(
-  currentBlockHeight: number,
-  count: number,
-  client: AptosClient,
-  options?: {maxConcurrency?: number},
-): Promise<Types.Block[]> {
-  const heights = Array.from({length: count}, (_, i) => currentBlockHeight - i);
-  return mapWithConcurrencyLimit(
-    heights,
-    options?.maxConcurrency ?? 8,
-    (height) => client.getBlockByHeight(height, false),
-  );
 }
 
 export async function getBalance(

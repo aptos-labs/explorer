@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import type React from "react";
 import {lazy, Suspense, useCallback, useEffect, useRef, useState} from "react";
-import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
+import {getSemanticColors} from "~/themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 // Dynamically import @uiw/react-json-view only on client side (React 19 compatible)
@@ -71,7 +71,7 @@ function useCopyTooltip() {
     }
   }, []);
 
-  // Cleanup timers on unmount
+  // Cleanup timers at unmount
   useEffect(() => {
     return () => {
       if (hoverTimer.current) window.clearTimeout(hoverTimer.current);

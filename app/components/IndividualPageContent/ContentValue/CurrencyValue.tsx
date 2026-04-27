@@ -14,7 +14,7 @@ export function getFormattedBalanceStr(
   decimals?: number,
   fixedDecimalPlaces?: number,
 ): string {
-  // If balance is zero or decimals is 0, just return it
+  // If balance is zero or decimals are 0, just return it
   if (balance === "0" || (decimals !== undefined && decimals === 0)) {
     return balance;
   }
@@ -22,7 +22,7 @@ export function getFormattedBalanceStr(
   const len = balance.length;
   decimals = decimals || APTOS_DECIMALS;
 
-  // If length is less than decimals, pad with 0s to decimals length and return
+  // If length is less than decimals, pad with 0s to decimal length and return
   if (len <= decimals) {
     return `0.${trimRight("0".repeat(decimals - len) + balance) || "0"}`;
   }

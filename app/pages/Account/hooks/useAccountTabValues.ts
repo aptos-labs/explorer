@@ -1,4 +1,4 @@
-import {useGetIsGraphqlClientSupported} from "../../../api/hooks/useGraphqlClient";
+import {useGetIsGraphqlClientSupported} from "~/api/hooks/useGraphqlClient";
 import type {TabValue} from "../Tabs";
 
 const TAB_VALUES_FULL: TabValue[] = [
@@ -71,7 +71,7 @@ export function getTabValues(
 
 /**
  * Hook to get the correct tab values for an account/object page.
- * Use this when you already have isObject and isMultisig from parent component.
+ * Use this when you already have isObject and isMultisig from a parent component.
  */
 export function useAccountTabValues(isObject: boolean, isMultisig: boolean) {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();

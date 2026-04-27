@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {BASE_URL} from "../../lib/constants";
+import {BASE_URL} from "~/lib/constants";
 import {generateStructuredData} from "./usePageMetadata";
 
 describe("generateStructuredData", () => {

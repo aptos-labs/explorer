@@ -6,13 +6,13 @@ import {Box, Tooltip, useTheme} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import type React from "react";
 import {useEffect, useState} from "react";
-import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
-import {useGetModulePublishHistory} from "../../../../api/hooks/useGetModulePublishHistory";
-import StyledTab from "../../../../components/StyledTab";
-import StyledTabs from "../../../../components/StyledTabs";
-import {useNavigate} from "../../../../routing";
-import {assertNever} from "../../../../utils";
-import {pathSplatToSegments} from "../../../../utils/routerParams";
+import {useGetAccountPackages} from "~/api/hooks/useGetAccountResource";
+import {useGetModulePublishHistory} from "~/api/hooks/useGetModulePublishHistory";
+import StyledTab from "~/components/StyledTab";
+import StyledTabs from "~/components/StyledTabs";
+import {useNavigate} from "~/routing";
+import {assertNever} from "~/utils";
+import {pathSplatToSegments} from "~/utils/routerParams";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
 import {accountPagePath} from "../../Index";
 import Contract from "./Contract";
@@ -180,7 +180,7 @@ function ModulesTabs({
       if (moduleName) {
         path += `/${moduleName}`;
       }
-      navigate({to: path, replace: true});
+      navigate({to: path, replace: true}).catch(console.error);
     }
   };
 
@@ -272,7 +272,7 @@ function ModulesTabs({
     navigate({
       to: path,
       replace: true,
-    });
+    }).catch(console.error);
   };
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import type {Block} from "@aptos-labs/ts-sdk";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
 import type {Types} from "~/types/aptos";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import TransactionsTable from "../../Transactions/TransactionsTable";
 
 type TransactionsTabProps = {

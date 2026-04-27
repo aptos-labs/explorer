@@ -6,18 +6,11 @@ import {
 } from "@mui/icons-material";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {Alert, AlertTitle, Box, Button, Stack, useTheme} from "@mui/material";
-import {
-  type CoinDescription,
-  useGetCoinList,
-} from "../api/hooks/useGetCoinList";
-import {useGetFaPairedCoin} from "../api/hooks/useGetFaPairedCoin";
-import {useNetworkName} from "../global-config/GlobalConfig";
-import {Link} from "../routing";
-import {
-  type VerifiedLevelInfo,
-  VerifiedType,
-  verifiedLevel,
-} from "./Table/VerifiedCell";
+import {type CoinDescription, useGetCoinList} from "~/api/hooks/useGetCoinList";
+import {useGetFaPairedCoin} from "~/api/hooks/useGetFaPairedCoin";
+import {useNetworkName} from "~/global-config/GlobalConfig";
+import {Link} from "~/routing";
+import {VerifiedType, verifiedLevel} from "./Table/VerifiedCell";
 
 type VerificationBannerProps = {
   id: string;
@@ -39,10 +32,7 @@ export default function VerificationBanner({
   const {data: pairedCoin} = useGetFaPairedCoin(id);
   const {data: coinList} = useGetCoinList();
 
-  let {level}: VerifiedLevelInfo = {
-    level: VerifiedType.UNVERIFIED,
-    reason: undefined,
-  };
+  let level: VerifiedType;
 
   if (!isCoin && pairedCoin && coinList) {
     const matchedCoin = coinList.data.find(

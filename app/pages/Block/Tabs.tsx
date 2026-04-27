@@ -4,10 +4,10 @@ import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import {Box} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import type * as React from "react";
-import StyledTab from "../../components/StyledTab";
-import StyledTabs from "../../components/StyledTabs";
-import {useNavigate} from "../../routing";
-import {assertNever} from "../../utils";
+import StyledTab from "~/components/StyledTab";
+import StyledTabs from "~/components/StyledTabs";
+import {useNavigate} from "~/routing";
+import {assertNever} from "~/utils";
 import OverviewTab from "./Tabs/OverviewTab";
 import TransactionsTab from "./Tabs/TransactionsTab";
 
@@ -72,7 +72,7 @@ export default function BlockTabs({
       to: "/block/$height/$tab",
       params: {height: height ?? "", tab: newValue},
       replace: true,
-    });
+    }).catch(console.error);
   };
 
   return (

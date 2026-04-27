@@ -1,14 +1,14 @@
 import {Stack, Typography} from "@mui/material";
-import type {CoinDescription} from "../../api/hooks/useGetCoinList";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import type {CoinDescription} from "~/api/hooks/useGetCoinList";
+import {PageMetadata} from "~/components/hooks/usePageMetadata";
 import {
   isBannedType,
   VerifiedAsset,
   verifiedLevel,
-} from "../../components/Table/VerifiedCell";
-import TitleHashButton, {HashType} from "../../components/TitleHashButton";
-import {useNetworkName} from "../../global-config/GlobalConfig";
-import {getAssetSymbol} from "../../utils";
+} from "~/components/Table/VerifiedCell";
+import TitleHashButton, {HashType} from "~/components/TitleHashButton";
+import {useNetworkName} from "~/global-config/GlobalConfig";
+import {getAssetSymbol} from "~/utils";
 import {getCoinTabHeadLabel} from "./coinTabMeta";
 
 type CoinTitleProps = {

@@ -1,7 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import {IconButton} from "@mui/material";
-import {useGetTransaction} from "../../api/hooks/useGetTransaction";
-import type {TransactionResponse} from "../../api/hooks/useSubmitTransaction";
+import {useGetTransaction} from "~/api/hooks/useGetTransaction";
+import type {TransactionResponse} from "~/api/hooks/useSubmitTransaction";
 import ErrorSnackbar from "./ErrorSnackbar";
 import FailureSnackbar from "./FailureSnackbar";
 
@@ -66,8 +66,7 @@ function TransactionStatusSnackbar({
 
   if (!data) return null;
 
-  const isTransactionSuccess =
-    data && "success" in data && data.success === true;
+  const isTransactionSuccess = data && "success" in data && data.success;
 
   return (
     <>

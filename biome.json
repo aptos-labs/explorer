@@ -40,15 +40,28 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "security": {
+        "noDangerouslySetInnerHtmlWithChildren": "error",
+        "noBlankTarget": "error",
+        "noDangerouslySetInnerHtml": "error",
+        "noGlobalEval": "error"
+      },
       "correctness": {
         "noUnusedVariables": "warn",
         "noUnusedImports": "warn",
         "useExhaustiveDependencies": "warn",
         "useHookAtTopLevel": "error",
         "useJsxKeyInIterable": "warn",
-        "noEmptyCharacterClassInRegex": "warn"
+        "noEmptyCharacterClassInRegex": "warn",
+        "noChildrenProp": "warn",
+        "noConstantCondition": "error",
+        "noConstantMathMinMaxClamp": "error",
+        "noConstAssign": "error",
+        "noConstructorReturn": "error",
+        "noEmptyPattern": "error"
       },
       "suspicious": {
+        "recommended": true,
         "noExplicitAny": "warn",
         "noArrayIndexKey": "warn",
         "noShadowRestrictedNames": "warn",
@@ -57,17 +70,21 @@
         "noMisleadingCharacterClass": "warn"
       },
       "complexity": {
+        "recommended": true,
         "noUselessFragments": "warn"
       },
       "style": {
+        "recommended": true,
         "noNonNullAssertion": "warn",
         "useConst": "error",
         "useImportType": "warn"
       },
       "a11y": {
+        "recommended": true,
         "noSvgWithoutTitle": "warn"
       },
       "performance": {
+        "recommended": true,
         "noAccumulatingSpread": "warn"
       }
     }

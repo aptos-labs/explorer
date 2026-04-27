@@ -1,6 +1,6 @@
 import {Box, Stack, Typography, useTheme} from "@mui/material";
-import {defaultFeatureName, type FeatureName, features} from "../../constants";
-import {useFeatureName} from "../../global-config";
+import {defaultFeatureName, type FeatureName, features} from "~/constants";
+import {useFeatureName} from "~/global-config";
 
 /**
  * This is the information bar on top of the screen when the current feature is not "prod".

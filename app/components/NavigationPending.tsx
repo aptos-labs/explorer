@@ -1,5 +1,5 @@
 /**
- * Navigation pending component shown during route transitions.
+ * Navigation-pending component shown during route transitions.
  * This is displayed when navigating between routes while data is loading.
  */
 

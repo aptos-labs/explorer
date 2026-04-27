@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {useNetworkValue, useSdkV2Client} from "../../global-config";
+import {useNetworkValue, useSdkV2Client} from "~/global-config";
 import {useGetIsGraphqlClientSupported} from "./useGraphqlClient";
 
 const TABLE_ITEMS_DATA_QUERY = `

@@ -2,13 +2,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import {Box, IconButton, InputAdornment, Paper, TextField} from "@mui/material";
 import type React from "react";
 import {useCallback, useState} from "react";
-import {useNavigate} from "../../routing";
+import {useNavigate} from "~/routing";
 
 export default function HeaderSearch() {
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = useCallback(() => {
+  const handleSearch = useCallback(async () => {
     const trimmedValue = searchValue.trim();
     if (!trimmedValue) return;
 
@@ -16,31 +16,37 @@ export default function HeaderSearch() {
     if (/^0x[a-fA-F0-9]{64}$/.test(trimmedValue)) {
       // Could be a transaction hash or address
       // Try transaction first
-      navigate({
+      await navigate({
         to: "/txn/$txnHashOrVersion",
         params: {txnHashOrVersion: trimmedValue},
       });
     } else if (/^\d+$/.test(trimmedValue)) {
       // Could be a transaction version or block height
-      navigate({
+      await navigate({
         to: "/txn/$txnHashOrVersion",
         params: {txnHashOrVersion: trimmedValue},
       });
     } else if (/^0x[a-fA-F0-9]+$/.test(trimmedValue)) {
       // Likely an address
-      navigate({to: "/account/$address", params: {address: trimmedValue}});
+      await navigate({
+        to: "/account/$address",
+        params: {address: trimmedValue},
+      });
     } else {
       // Could be an ANS name or something else
-      navigate({to: "/account/$address", params: {address: trimmedValue}});
+      await navigate({
+        to: "/account/$address",
+        params: {address: trimmedValue},
+      });
     }
 
     setSearchValue("");
   }, [searchValue, navigate]);
 
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    async (e: React.KeyboardEvent) => {
       if (e.key === "Enter") {
-        handleSearch();
+        await handleSearch();
       }
     },
     [handleSearch],

@@ -1,5 +1,5 @@
 import {Stack, Typography} from "@mui/material";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import {PageMetadata} from "~/components/hooks/usePageMetadata";
 import {getBlockTabHeadLabel} from "./blockTabMeta";
 
 type BlockTitleProps = {

@@ -6,9 +6,9 @@ import {
   useTheme,
 } from "@mui/material";
 import {useLocation} from "@tanstack/react-router";
-import {hiddenNetworks, type NetworkName, networks} from "../../constants";
-import {useNetworkSelector} from "../../global-config";
-import {useNavigate} from "../../routing";
+import {hiddenNetworks, type NetworkName, networks} from "~/constants";
+import {useNetworkSelector} from "~/global-config";
+import {useNavigate} from "~/routing";
 
 export default function NetworkSelect() {
   const theme = useTheme();
@@ -26,7 +26,18 @@ export default function NetworkSelect() {
       to: location.pathname,
       search: {network: newNetwork},
       replace: true,
-    });
+    })
+      .then(() => {
+        console.debug(
+          `Switched to network: ${newNetwork}, updated URL search params accordingly.`,
+        );
+      })
+      .catch((error) => {
+        console.error(
+          `Failed to switch to network: ${newNetwork}. Error:`,
+          error,
+        );
+      });
   };
 
   // Filter out hidden networks and "local" (shown separately as "Localnet")

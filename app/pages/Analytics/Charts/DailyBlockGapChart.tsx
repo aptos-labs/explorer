@@ -1,6 +1,6 @@
 import type {TooltipItem} from "chart.js";
-import type {DailyBlockGapData} from "../../../api/hooks/useGetAnalyticsData";
-import {CardOutline} from "../../../components/Card";
+import type {DailyBlockGapData} from "~/api/hooks/useGetAnalyticsData";
+import {CardOutline} from "~/components/Card";
 import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
 import LineChart from "../Components/LineChart";

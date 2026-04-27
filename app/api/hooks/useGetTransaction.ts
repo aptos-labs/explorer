@@ -1,8 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
+import {getTransaction} from "~/api";
+import {useAptosClient, useNetworkValue} from "~/global-config";
 import type {Types} from "~/types/aptos";
-import {useAptosClient, useNetworkValue} from "../../global-config";
 import type {ResponseError} from "../client";
-import {getTransaction} from "../index";
 
 export function useGetTransaction(txnHashOrVersion: string) {
   const networkValue = useNetworkValue();

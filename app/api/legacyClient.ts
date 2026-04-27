@@ -3,7 +3,7 @@
  *
  * This is a thin fetch wrapper around the Aptos REST API used by functions
  * in `app/api/index.ts`.  It exposes only the methods the explorer actually
- * calls, keeping bundle size close to zero.
+ * calls, keeping the bundle size close to zero.
  *
  * NOTE: The base URL passed to the constructor is expected to already include
  * the `/v1` path segment (e.g. `https://api.mainnet.aptoslabs.com/v1`).
@@ -46,7 +46,7 @@ export class AptosClient {
       const body = await resp.text().catch(() => "");
       throw new Error(`Aptos API error ${resp.status}: ${body}`);
     }
-    return resp.json() as Promise<T>;
+    return await resp.json();
   }
 
   private qs(
@@ -154,31 +154,6 @@ export class AptosClient {
       method: "POST",
       body: JSON.stringify(request),
     });
-  }
-
-  // ------------------------------------------------------------------
-  // Table
-  // ------------------------------------------------------------------
-  async getTableItem(
-    tableHandle: string,
-    data: Types.TableItemRequest,
-  ): Promise<unknown> {
-    return this.request(`/tables/${tableHandle}/item`, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-  }
-
-  // ------------------------------------------------------------------
-  // Blocks
-  // ------------------------------------------------------------------
-  async getBlockByHeight(
-    height: number,
-    withTransactions?: boolean,
-  ): Promise<Types.Block> {
-    return this.request(
-      `/blocks/by_height/${height}${this.qs({with_transactions: withTransactions})}`,
-    );
   }
 
   // ------------------------------------------------------------------

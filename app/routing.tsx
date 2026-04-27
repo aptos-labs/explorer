@@ -1,6 +1,6 @@
 /**
  * Routing utilities for TanStack Router
- * Re-exports from TanStack Router for backward compatibility
+ * Reexports from TanStack Router for backward compatibility
  */
 
 import Box from "@mui/material/Box";
@@ -26,7 +26,7 @@ function useCurrentNetwork(): string | undefined {
 
 /**
  * Custom useNavigate hook that preserves the network search param.
- * Uses a ref to avoid recreating the callback when network changes.
+ * Uses a ref to avoid recreating the callback when the network changes.
  */
 export function useNavigate() {
   const tanstackNavigate = useTanStackNavigate();
@@ -235,14 +235,14 @@ export function useSearchParams(): [
         newSearch.network = currentNetwork;
       }
 
-      // Navigate with search params - using type assertion for TanStack Router compatibility
+      // Navigate with search-params - using type assertion for TanStack Router compatibility
       // The search type is dynamically typed based on route definitions, but we need generic support
       navigate({
         search: newSearch as unknown as Parameters<
           typeof navigate
         >[0]["search"],
         replace: options?.replace,
-      });
+      }).catch(console.error);
     },
     [navigate, currentNetwork],
   );

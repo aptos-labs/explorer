@@ -6,9 +6,9 @@
  */
 
 import {useMemo} from "react";
-import type {CoinDescription} from "../api/hooks/useGetCoinList";
-import {useNetworkName} from "../global-config/GlobalConfig";
-import {tryStandardizeAddress} from "../utils";
+import type {CoinDescription} from "~/api/hooks/useGetCoinList";
+import {useNetworkName} from "~/global-config/GlobalConfig";
+import {tryStandardizeAddress} from "~/utils";
 import {
   getBannedAddresses,
   getBannedCollections,
@@ -43,7 +43,7 @@ export function useKnownAddresses(): Record<string, string> {
 }
 
 /**
- * Branding (icon + optional description) for a known labeled address, if configured.
+ * Branding (icon and optional description) for a known labeled address, if configured.
  */
 export function useKnownAddressBranding(
   address: string | undefined,
@@ -56,15 +56,6 @@ export function useKnownAddressBranding(
     }
     return getKnownAddressBranding(networkName, standardized);
   }, [networkName, standardized]);
-}
-
-/**
- * Icon URL or site-relative path for a known labeled address, if configured.
- */
-export function useKnownAddressIcon(
-  address: string | undefined,
-): string | undefined {
-  return useKnownAddressBranding(address)?.icon;
 }
 
 /**

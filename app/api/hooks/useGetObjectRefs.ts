@@ -1,12 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
+import {getTransaction} from "~/api";
+import {useAptosClient, useNetworkValue, useSdkV2Client} from "~/global-config";
 import type {Types} from "~/types/aptos";
-import {
-  useAptosClient,
-  useNetworkValue,
-  useSdkV2Client,
-} from "../../global-config";
-import {tryStandardizeAddress} from "../../utils";
-import {getTransaction} from "../index";
+import {tryStandardizeAddress} from "~/utils";
 
 export interface ObjectRefs {
   hasTransferRef: boolean;

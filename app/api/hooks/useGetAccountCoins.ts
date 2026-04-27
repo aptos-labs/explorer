@@ -1,7 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
-import {useNetworkValue, useSdkV2Client} from "../../global-config";
-import {tryStandardizeAddress} from "../../utils";
-import type {ResponseError} from "../client";
+import type {ResponseError} from "~/api/client";
+import {useNetworkValue, useSdkV2Client} from "~/global-config";
+import {tryStandardizeAddress} from "~/utils";
 
 const COINS_QUERY = `
     query CoinsData($owner_address: String, $limit: Int, $offset: Int) {
@@ -78,51 +78,6 @@ type FaBalance = {
     token_standard: string;
   };
 };
-
-export function useGetAccountCoins(
-  address: string,
-  limit: number = 100,
-  offset: number = 0,
-) {
-  const sdkV2Client = useSdkV2Client();
-  const standardizedAddress = tryStandardizeAddress(address);
-  const networkValue = useNetworkValue();
-
-  return useQuery<FaBalance[], ResponseError>({
-    queryKey: [
-      "coinQuery",
-      standardizedAddress ?? address,
-      limit,
-      offset,
-      networkValue,
-    ],
-    queryFn: async (): Promise<FaBalance[]> => {
-      if (!standardizedAddress) {
-        return [];
-      }
-
-      const response = await sdkV2Client.queryIndexer<{
-        current_fungible_asset_balances: FaBalance[];
-      }>({
-        query: {
-          query: COINS_QUERY,
-          variables: {
-            owner_address: standardizedAddress,
-            limit,
-            offset,
-          },
-        },
-      });
-
-      return response.current_fungible_asset_balances;
-    },
-    enabled: !!standardizedAddress,
-    staleTime: 10 * 60 * 1000,
-    gcTime: 60 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-  });
-}
 
 // Legacy function that fetches all coins at once for backward compatibility
 export function useGetAllAccountCoins(address: string) {

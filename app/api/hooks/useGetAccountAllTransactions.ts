@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
-import {useNetworkValue, useSdkV2Client} from "../../global-config";
-import {tryStandardizeAddress} from "../../utils";
+import {useNetworkValue, useSdkV2Client} from "~/global-config";
+import {tryStandardizeAddress} from "~/utils";
 
 const ACCOUNT_TRANSACTIONS_COUNT_QUERY = `
   query AccountTransactionsCount($address: String) {
@@ -76,46 +76,6 @@ export function useGetAccountAllTransactionVersions(
   return data.account_transactions.map(
     (resource: {transaction_version: number}) => resource.transaction_version,
   );
-}
-
-export function useGetAllAccountTransactionVersions(address: string): {
-  versions: number[];
-  loading: boolean;
-  error: unknown;
-} {
-  const addr64Hash = tryStandardizeAddress(address);
-  const client = useSdkV2Client();
-  const networkValue = useNetworkValue();
-
-  const {isLoading, error, data} = useQuery({
-    queryKey: ["allAccountTxnVersions", addr64Hash, networkValue],
-    queryFn: () =>
-      client.queryIndexer<{
-        account_transactions: {transaction_version: number}[];
-      }>({
-        query: {
-          query: ACCOUNT_TRANSACTIONS_QUERY,
-          variables: {address: addr64Hash, limit: 10000, offset: 0},
-        },
-      }),
-    enabled: !!addr64Hash,
-  });
-
-  if (!addr64Hash || error) {
-    return {versions: [], loading: isLoading, error};
-  }
-
-  if (isLoading || !data) {
-    return {versions: [], loading: true, error: null};
-  }
-
-  return {
-    versions: data.account_transactions.map(
-      (r: {transaction_version: number}) => r.transaction_version,
-    ),
-    loading: false,
-    error: null,
-  };
 }
 
 const ACCOUNT_USER_TRANSACTIONS_BY_FUNCTION_QUERY = `

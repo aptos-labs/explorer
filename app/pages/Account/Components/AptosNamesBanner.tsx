@@ -1,5 +1,5 @@
-import {useGetInDevMode} from "../../../api/hooks/useGetInDevMode";
-import {Banner} from "../../../components/Banner";
+import {useGetInDevMode} from "~/api/hooks/useGetInDevMode";
+import {Banner} from "~/components/Banner";
 
 export function AptosNamesBanner() {
   const inDev = useGetInDevMode();

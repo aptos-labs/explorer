@@ -1,8 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
+import {getValidatorCommissionChange} from "~/api";
+import type {ResponseError} from "~/api/client";
+import {useAptosClient} from "~/global-config";
 import type {Types} from "~/types/aptos";
-import {useAptosClient} from "../../../global-config";
-import {getValidatorCommissionChange} from "../..";
-import type {ResponseError} from "../../client";
 
 type DelegationNodeCommissionChangeProps = {
   validatorAddress: Types.Address;

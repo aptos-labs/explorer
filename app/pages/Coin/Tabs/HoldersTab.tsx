@@ -6,14 +6,14 @@ import {useReducer} from "react";
 import {
   type CoinHolder,
   useGetCoinHolders,
-} from "../../../api/hooks/useGetCoinHolders";
-import HashButton, {HashType} from "../../../components/HashButton";
-import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import GeneralTableBody from "../../../components/Table/GeneralTableBody";
-import GeneralTableCell from "../../../components/Table/GeneralTableCell";
-import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
-import GeneralTableRow from "../../../components/Table/GeneralTableRow";
+} from "~/api/hooks/useGetCoinHolders";
+import HashButton, {HashType} from "~/components/HashButton";
+import {getFormattedBalanceStr} from "~/components/IndividualPageContent/ContentValue/CurrencyValue";
+import EmptyTabContent from "~/components/IndividualPageContent/EmptyTabContent";
+import GeneralTableBody from "~/components/Table/GeneralTableBody";
+import GeneralTableCell from "~/components/Table/GeneralTableCell";
+import GeneralTableHeaderCell from "~/components/Table/GeneralTableHeaderCell";
+import GeneralTableRow from "~/components/Table/GeneralTableRow";
 import type {CoinData} from "../Components/CoinData";
 
 type HoldersTabProps = {

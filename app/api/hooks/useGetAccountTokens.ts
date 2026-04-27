@@ -2,8 +2,8 @@
 
 import type {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 import {useQuery} from "@tanstack/react-query";
-import {useNetworkValue, useSdkV2Client} from "../../global-config";
-import {tryStandardizeAddress} from "../../utils";
+import {useNetworkValue, useSdkV2Client} from "~/global-config";
+import {tryStandardizeAddress} from "~/utils";
 
 // --- Inlined queries from former IndexerClient ---
 

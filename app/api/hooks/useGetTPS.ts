@@ -1,10 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
-import {
-  useAptosClient,
-  useNetworkName,
-  useNetworkValue,
-} from "../../global-config";
-import {getLedgerInfo} from "..";
+import {getLedgerInfo} from "~/api";
+import {useAptosClient, useNetworkName, useNetworkValue} from "~/global-config";
 import {useGetAnalyticsData} from "./useGetAnalyticsData";
 import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
 

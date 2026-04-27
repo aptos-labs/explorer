@@ -1,4 +1,4 @@
-import {useFeatureName} from "../../global-config";
+import {useFeatureName} from "~/global-config";
 
 export function useGetInDevMode(): boolean {
   const featureName = useFeatureName();

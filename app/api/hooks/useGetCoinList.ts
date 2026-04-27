@@ -1,9 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
-import {getHardCodedCoins} from "../../data";
-import {useNetworkName} from "../../global-config/GlobalConfig";
-import type {NetworkName} from "../../lib/constants";
-import {tryStandardizeAddress} from "../../utils";
-import type {ResponseError} from "../client";
+import type {ResponseError} from "~/api/client";
+import {getHardCodedCoins} from "~/data";
+import {useNetworkName} from "~/global-config/GlobalConfig";
+import {tryStandardizeAddress} from "~/utils";
 
 export type CoinDescription = {
   chainId: number; // Chain id (1 if mainnet) TODO: Handle across all of explorer to filter based on testnet / mainnet
@@ -106,14 +105,4 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
     gcTime: 24 * 60 * 60 * 1000, // Keep in cache for 24 hours
     refetchOnWindowFocus: false,
   });
-}
-
-/**
- * Non-hook version for use outside of React components
- * Requires network name to be passed explicitly
- */
-export function getCoinListForNetwork(
-  networkName: NetworkName,
-): CoinDescription[] {
-  return Object.values(getHardCodedCoins(networkName));
 }

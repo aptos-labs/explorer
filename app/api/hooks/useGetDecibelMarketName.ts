@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
-import {useAptosClient, useNetworkValue} from "../../global-config";
-import {DECIBEL_CONTRACTS} from "../../utils/decibel";
+import {useAptosClient, useNetworkValue} from "~/global-config";
+import {DECIBEL_CONTRACTS} from "~/utils/decibel";
 
 const PERP_MARKET_CONFIG_TYPE = "::perp_market_config::PerpMarketConfiguration";
 
