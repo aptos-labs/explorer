@@ -22,35 +22,33 @@ export async function fetchNetworkStatus(
 
   const res = await fetch(`${baseUrl}/`, {headers});
   if (!res.ok) throw new Error(`Fullnode returned ${res.status}`);
-  const ledger = await res.json();
+  type LedgerInfo = {
+    epoch: number | string;
+    block_height: number | string;
+    ledger_version: number | string;
+    chain_id: number | string;
+  };
+  const ledger = (await res.json()) as LedgerInfo;
+
+  const [vResult, sResult] = await Promise.allSettled([
+    fetch(`${baseUrl}/accounts/0x1/resource/0x1::version::Version`, {headers}),
+    fetch(`${baseUrl}/accounts/0x1/resource/0x1::stake::ValidatorSet`, {
+      headers,
+    }),
+  ]);
 
   let frameworkVersion: number | null = null;
-  try {
-    const vRes = await fetch(
-      `${baseUrl}/accounts/0x1/resource/0x1::version::Version`,
-      {headers},
-    );
-    if (vRes.ok) {
-      const v = await vRes.json();
-      frameworkVersion = Number((v.data as {major: string}).major);
-    }
-  } catch {
-    // optional field — not all networks expose this
+  if (vResult.status === "fulfilled" && vResult.value.ok) {
+    const v = (await vResult.value.json()) as {data: {major: string}};
+    frameworkVersion = Number(v.data.major);
   }
 
   let validatorCount: number | null = null;
-  try {
-    const sRes = await fetch(
-      `${baseUrl}/accounts/0x1/resource/0x1::stake::ValidatorSet`,
-      {headers},
-    );
-    if (sRes.ok) {
-      const s = await sRes.json();
-      validatorCount = (s.data as {active_validators: unknown[]})
-        .active_validators.length;
-    }
-  } catch {
-    // optional field
+  if (sResult.status === "fulfilled" && sResult.value.ok) {
+    const s = (await sResult.value.json()) as {
+      data: {active_validators: unknown[]};
+    };
+    validatorCount = s.data.active_validators.length;
   }
 
   return {
