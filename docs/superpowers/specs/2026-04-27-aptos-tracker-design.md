@@ -105,25 +105,27 @@ Show the latest release version for every official Aptos tool and SDK in one pla
 MUI `Grid` of cards — one card per tool/SDK.
 
 ### Tools tracked
-| Tool | GitHub repo | Notes |
-|---|---|---|
-| Aptos CLI | `aptos-labs/aptos-core` | Filter releases tagged `aptos-cli-v*` |
-| aptos-node | `aptos-labs/aptos-core` | Filter releases tagged `aptos-node-v*` |
-| TypeScript SDK | `aptos-labs/aptos-ts-sdk` | `/releases/latest` |
-| Python SDK | `aptos-labs/aptos-python-sdk` | `/releases/latest` |
-| Rust SDK | crates.io | `GET https://crates.io/api/v1/crates/aptos-sdk` → `crate.newest_version` |
-| Go SDK | `aptos-labs/aptos-go-sdk` | `/releases/latest` |
-| Unity SDK | `aptos-labs/Aptos-Unity-SDK` | `/releases/latest` |
-| Swift SDK | `aptos-labs/aptos-swift-sdk` | `/releases/latest` |
+| Tool | Registry | API endpoint | Link target |
+|---|---|---|---|
+| Aptos CLI | GitHub Releases | `GET /repos/aptos-labs/aptos-core/releases` → filter `aptos-cli-v*` | GitHub release page |
+| aptos-node | GitHub Releases | `GET /repos/aptos-labs/aptos-core/releases` → filter `aptos-node-v*` | GitHub release page |
+| TypeScript SDK | npm | `GET https://registry.npmjs.org/@aptos-labs/ts-sdk/latest` → `version` | npmjs.com package page |
+| Python SDK | PyPI | `GET https://pypi.org/pypi/aptos-sdk/json` → `info.version` | pypi.org package page |
+| Rust SDK | crates.io | `GET https://crates.io/api/v1/crates/aptos-sdk` → `crate.newest_version` | crates.io package page |
+| Go SDK | Go proxy | `GET https://proxy.golang.org/github.com/aptos-labs/aptos-go-sdk/@latest` → `Version` | pkg.go.dev page |
+| Unity SDK | GitHub Releases | `GET /repos/aptos-labs/Aptos-Unity-SDK/releases/latest` | GitHub release page |
+| Swift SDK | GitHub Releases | `GET /repos/aptos-labs/aptos-swift-sdk/releases/latest` | GitHub release page |
+
+CLI and node use GitHub releases (binaries, no package registry). SDKs use their respective package registries as the source of truth. Unity and Swift fall back to GitHub releases as no standard public registry exists for those ecosystems.
 
 ### Data per card
 - Tool name + icon
 - Latest version tag
 - Release date (relative: "3 days ago")
-- Link to GitHub release page
+- Link to registry/release page
 
 ### Data source
-GitHub API via server function — `GET /repos/{owner}/{repo}/releases/latest` per repo, batched in a single `createServerFn` call.
+A single `createServerFn` batches all fetches. npm, PyPI, crates.io, and Go proxy calls need no auth token. GitHub calls for CLI/node/Unity/Swift use the server-side `GITHUB_TOKEN` if set.
 
 ### Caching
 - `staleTime: 5 * 60_000` (5 minutes)
