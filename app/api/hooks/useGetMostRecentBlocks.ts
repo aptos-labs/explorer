@@ -2,9 +2,14 @@ import {useQuery} from "@tanstack/react-query";
 import type {Types} from "~/types/aptos";
 import {
   useAptosClient,
+  useNetworkName,
   useNetworkValue,
   useSdkV2Client,
 } from "../../global-config";
+import {
+  normalizeGeomiDevApiKeyOverride,
+  useExplorerSettings,
+} from "../../settings";
 import {getLedgerInfo} from "..";
 import {getRecentBlocks} from "../v2";
 
@@ -16,12 +21,19 @@ export function useGetMostRecentBlocks(
   start: string | undefined,
   count: number,
 ) {
+  const networkName = useNetworkName();
   const networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
   const sdkV2Client = useSdkV2Client();
+  const {
+    settings: {geomiDevApiKeyOverridesByNetwork},
+  } = useExplorerSettings();
+  const apiKeyIdentity = normalizeGeomiDevApiKeyOverride(
+    geomiDevApiKeyOverridesByNetwork[networkName],
+  );
 
   const {isLoading: isLoadingLedgerData, data: ledgerData} = useQuery({
-    queryKey: ["ledgerInfo", networkValue],
+    queryKey: ["ledgerInfo", networkValue, apiKeyIdentity],
     queryFn: () => getLedgerInfo(aptosClient),
     staleTime: 60 * 1000,
     gcTime: 5 * 60 * 1000,
@@ -34,7 +46,13 @@ export function useGetMostRecentBlocks(
   );
 
   const {isLoading, data: blocks} = useQuery<Types.Block[]>({
-    queryKey: ["recentBlocksRest", currentBlockHeight, count, networkValue],
+    queryKey: [
+      "recentBlocksRest",
+      currentBlockHeight,
+      count,
+      networkValue,
+      apiKeyIdentity,
+    ],
     queryFn: async () => {
       if (!Number.isFinite(currentBlockHeight)) {
         return [];
