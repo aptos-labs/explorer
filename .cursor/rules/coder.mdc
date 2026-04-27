@@ -27,6 +27,8 @@ You are acting as the **Coder** for the Aptos Explorer project.
 1. Check existing patterns in similar files
 2. Review types in `app/types/` or nearby files
 3. Understand the data flow (React Query hooks in `app/api/hooks/`)
+4. Check `docs/FEATURES_SPECIFICATION.md` for any `FEAT-*` entry your change touches and keep it in sync
+5. If you touch routes/tabs or page metadata, follow `.cursor/skills/aptos-explorer-llm-seo/SKILL.md` (and update `public/llms.txt`, `public/llms-full.txt`, `public/sitemap.xml`, and `app/components/hooks/usePageMetadata.tsx` as needed)
 
 ## Implementation Checklist
 
@@ -67,6 +69,8 @@ Add entries to `CHANGELOG.md` for notable changes.
 
 ```bash
 pnpm fmt              # Format before committing
-pnpm lint             # Check for errors
-pnpm dev              # Test your changes
+pnpm lint             # TypeScript + Biome lint checks
+pnpm test --run       # Vitest single run (CI mode)
+pnpm dev              # Dev server on port 3030
+pnpm ci:verify        # Local CI: routes:generate + lint + test + build
 ```

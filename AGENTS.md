@@ -6,16 +6,19 @@ This document serves as the canonical source of truth for AI coding assistants w
 
 ```bash
 # Node: see `.node-version` (matches CI via actions/setup-node node-version-file)
-pnpm install          # Install dependencies
-pnpm routes:generate  # TanStack route tree (also runs before dev/build/lint/test via pre* scripts)
-pnpm dev              # Dev server on port 3030
-pnpm start            # Dev server on port 3000
-pnpm build            # Production build
-pnpm ci:verify        # Local CI: generate routes, lint, test, production build
-pnpm test             # Run Vitest
-pnpm lint             # TypeScript + Biome lint checks
-pnpm fmt              # Apply Biome formatting
-pnpm check            # Biome lint + format + organize imports
+pnpm install            # Install dependencies
+pnpm routes:generate    # TanStack route tree (also runs before dev/build/lint/test via pre* scripts)
+pnpm dev                # Dev server on port 3030
+pnpm start              # Dev server on port 3000
+pnpm build              # Production build
+pnpm ci:verify          # Local CI: generate routes, lint, test, production build
+pnpm test               # Run Vitest (watch mode)
+pnpm test --run         # Vitest single run (CI mode)
+pnpm test:e2e           # Playwright smoke tests against `vite preview` (port 4173)
+pnpm test:e2e:install   # Install Playwright Chromium browser + system deps
+pnpm lint               # TypeScript + Biome lint checks
+pnpm fmt                # Apply Biome formatting
+pnpm check              # Biome lint + format + organize imports
 ```
 
 **Before committing**: Always run `pnpm fmt && pnpm lint` to ensure code quality.
@@ -27,19 +30,29 @@ pnpm check            # Biome lint + format + organize imports
 ```
 explorer/
 ├── app/                    # TanStack Start application
-│   ├── routes/             # File-based routing
-│   ├── components/         # Shared UI components
-│   ├── api/hooks/          # React Query data hooks
+│   ├── routes/             # File-based routing (TanStack Router)
+│   ├── components/         # Shared UI components (incl. `components/hooks/`)
+│   ├── api/                # Aptos clients + React Query hooks (`api/hooks/`)
 │   ├── context/            # React context providers
-│   ├── pages/              # Page components
-│   ├── utils/              # Utility functions
+│   ├── pages/              # Page-level screens used by route components
+│   ├── settings/           # Settings page screen + storage utilities
+│   ├── data/               # Per-network static data (known addresses, branding)
+│   ├── hooks/              # App-wide hooks not tied to data fetching
+│   ├── lib/                # Cross-cutting helpers (e.g. wallet, Decibel parsers)
+│   ├── utils/              # Utility functions (incl. drift tests)
 │   ├── types/              # Shared TypeScript types
-│   └── themes/             # Theme configuration
-├── src/                    # Legacy/compat code (prefer app/)
-├── public/                 # Static assets
+│   ├── themes/             # MUI theme configuration
+│   ├── wasm/               # Move decompiler / disassembler WASM bindings
+│   └── global-config/      # Static runtime configuration
+├── src/                    # Legacy/compat code (prefer app/) — only `IndividualPageContent` remains
+├── public/                 # Static assets, `llms*.txt`, `sitemap.xml`, `robots.txt`
 ├── analytics/              # SQL analytics queries
-├── .agents/                # Task management (Kanban)
-├── .cursor/                # Cursor IDE configuration
+├── docs/                   # Contributor docs (`FEATURES_SPECIFICATION.md`, `LLM_ACCESS.md`)
+├── e2e/                    # Playwright smoke tests (`smoke.spec.ts`)
+├── scripts/                # One-off shell scripts (e.g. `generate-icons.sh`)
+├── typings/                # Ambient type declarations
+├── .agents/                # Task management (Kanban) and issue tracker
+├── .cursor/                # Cursor IDE configuration (rules, notepads, skills)
 ├── .agent/                 # Antigravity rules
 ├── .vibe/                  # Mistral Vibe agents
 ├── .opencode/              # OpenCode agents
@@ -118,6 +131,8 @@ This repository is often modified by automated agents. The following bar keeps t
 ### Tests and mocks
 
 - **Do not call real Aptos APIs** from unit tests; mock at the hook or fetch layer. Prefer behavioral assertions over snapshot noise.
+- Unit tests live next to the implementation as `*.test.ts(x)` and run with **Vitest**. The `pretest` script regenerates the route tree first.
+- End-to-end smoke tests live in `e2e/` and run with **Playwright** against a `vite preview` build (`pnpm test:e2e`). The `e2e/**` glob is excluded from Vitest. CI runs Playwright after `pnpm ci:verify` and maps each `APTOS_<NETWORK>_API_KEY` repository secret to both `VITE_APTOS_<NETWORK>_API_KEY` (client bundle) and `APTOS_<NETWORK>_API_KEY` (SSR) so client and server share one identity.
 
 ### Features Specification and regression prevention
 
@@ -348,7 +363,7 @@ pnpm test <pattern>    # Run specific tests
 - React, TanStack Router/Query version updates
 - Vite and build tooling upgrades
 - TypeScript strict mode improvements
-- Legacy component migration from `src/components/`
+- Legacy component migration from `src/components/` (only `IndividualPageContent` remains — finishing this migration retires `src/`)
 
 **Outputs**: Migration PRs, upgrade guides, deprecation removal
 
@@ -416,15 +431,28 @@ chore(deps): update tanstack-query to v5
 
 ## Environment Configuration
 
-Copy `.env.local` to `.env` and configure:
+Copy `.env.example` to `.env.local` and uncomment the variables you need. Common overrides:
 
 ```bash
-VITE_API_URL=...           # Aptos API endpoint
-VITE_GRAPHQL_URL=...       # GraphQL endpoint
-# Add other VITE_* or REACT_APP_* variables as needed
+# Per-network Aptos API Gateway keys (client bundle).
+# VITE_APTOS_MAINNET_API_KEY=AG-...
+# VITE_APTOS_TESTNET_API_KEY=AG-...
+# VITE_APTOS_DEVNET_API_KEY=AG-...
+
+# Per-network Aptos API Gateway keys (SSR / server). Set the same value as the
+# matching VITE_* variable so the browser and server share one identity.
+# APTOS_MAINNET_API_KEY=AG-...
+# APTOS_TESTNET_API_KEY=AG-...
+
+# Optional custom endpoints / analytics.
+# APTOS_DEVNET_URL=https://api.devnet.staging.aptoslabs.com/v1
+# REACT_APP_GTM_ID=GTM-XXXXXXX
+
+# Feature tier banner — also overridable at runtime via the `feature_name` cookie.
+# VITE_FEATURE_NAME=prod   # values: prod | dev | earlydev
 ```
 
-**Never commit secrets** - use runtime environment variables.
+Vite exposes variables prefixed with `VITE_` (and `REACT_APP_` for compatibility) to the client bundle; everything else is server-only. Users can also set per-network API keys at runtime via **Settings** (`/settings`). **Never commit secrets** — use runtime environment variables.
 
 ---
 

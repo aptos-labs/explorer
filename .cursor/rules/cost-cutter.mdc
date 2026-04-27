@@ -60,7 +60,8 @@ You are acting as the **Cost Cutter** for the Aptos Explorer project, focused on
 ### Faster Builds
 ```toml
 [build.environment]
-  NODE_VERSION = "20"
+  # Match `.node-version` (currently Node 24)
+  NODE_VERSION = "24"
   # Enable build caching
   NETLIFY_USE_YARN = "false"
   NPM_FLAGS = "--prefer-offline"
