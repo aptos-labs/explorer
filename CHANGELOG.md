@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **AIPs status — strip trailing comments**: AIP frontmatter sometimes annotates the `Status:` field with a YAML-style comment like `Status: Draft # discussion: https://...`. The explorer's lightweight frontmatter parser now drops the ` #` and everything after it (for unquoted scalar values, matching YAML 1.2 semantics), so the AIPs table shows `Draft` rather than the full annotated string. Quoted values that contain `#` characters are preserved verbatim.
+- **AIPs author — strip emails and github links**: AIP authors are written in many shapes (`Alice <alice@example.com>`, `[Alice](https://github.com/alice)`, `Alice (@alice)`, etc.). The AIPs table now runs each comma-separated author through a cleanup pass that drops angle-bracketed emails/URLs, parenthesized URLs and `@handles`, markdown link wrappers (keeping the link text), and bare `https://...` URLs, so each row shows just the names — e.g. `Alice <a@b.io>, Bob (@bob)` becomes `Alice, Bob`. Plain handles (`davidiw, wrwg, msmouse`) flow through unchanged.
 
 ### Added
 

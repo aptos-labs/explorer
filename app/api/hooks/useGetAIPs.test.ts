@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
-import {fetchAIPs} from "./useGetAIPs";
+import {cleanAuthors, fetchAIPs} from "./useGetAIPs";
 
 const MOCK_TREE = {
   tree: [
@@ -33,6 +33,44 @@ Content here.
 
 afterEach(() => {
   vi.restoreAllMocks();
+});
+
+describe("cleanAuthors", () => {
+  it("passes plain comma-separated handles through verbatim", () => {
+    expect(cleanAuthors("davidiw, wrwg, msmouse")).toBe(
+      "davidiw, wrwg, msmouse",
+    );
+  });
+
+  it("strips angle-bracketed emails", () => {
+    expect(
+      cleanAuthors("Alice <alice@example.com>, Bob <bob@example.com>"),
+    ).toBe("Alice, Bob");
+  });
+
+  it("strips angle-bracketed URLs (github links etc.)", () => {
+    expect(cleanAuthors("Alice <https://github.com/alice>")).toBe("Alice");
+  });
+
+  it("strips parenthesized github links and @handles", () => {
+    expect(cleanAuthors("Alice (https://github.com/alice), Bob (@bob)")).toBe(
+      "Alice, Bob",
+    );
+  });
+
+  it("collapses markdown links to the link text", () => {
+    expect(
+      cleanAuthors("[Alice](https://github.com/alice), [Bob](mailto:b@x.io)"),
+    ).toBe("Alice, Bob");
+  });
+
+  it("strips bare URLs that aren't wrapped in punctuation", () => {
+    expect(cleanAuthors("Alice https://github.com/alice")).toBe("Alice");
+  });
+
+  it("collapses extra whitespace and drops empty tokens", () => {
+    expect(cleanAuthors("Alice  ,   ,  Bob")).toBe("Alice, Bob");
+  });
 });
 
 describe("fetchAIPs", () => {
@@ -74,6 +112,9 @@ describe("fetchAIPs", () => {
     // number comes from frontmatter `aip: 42`.
     expect(result[1].number).toBe(42);
     expect(result[1].githubUrl).toContain("aip-042-on-chain-randomness.md");
+    // The frontmatter author was `Bob <bob@example.com>` — the explorer
+    // strips the angle-bracketed email so the table shows only the name.
+    expect(result[1].author).toBe("Bob");
   });
 
   it("throws RATE_LIMITED when GitHub returns 403", async () => {
