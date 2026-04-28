@@ -1,5 +1,6 @@
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   Box,
@@ -14,6 +15,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
@@ -50,15 +52,28 @@ const FILTERS: ReadonlyArray<{value: FilterMode; label: string}> = [
   {value: "disabled", label: "Disabled (everywhere)"},
 ];
 
-type CellState = "loading" | "enabled" | "disabled";
+type CellState = "loading" | "enabled" | "disabled" | "unknown";
 
 function FeatureCell({state}: {state: CellState}) {
   if (state === "loading") {
-    return <CircularProgress size={14} />;
+    return <CircularProgress size={14} aria-label="Loading" />;
   }
   if (state === "enabled") {
     return (
       <CheckCircleIcon color="success" fontSize="small" aria-label="Enabled" />
+    );
+  }
+  if (state === "unknown") {
+    // Distinct from the disabled "X" so a network outage doesn't masquerade
+    // as a feature being explicitly off.
+    return (
+      <Tooltip title="Network unreachable — value unknown">
+        <HelpOutlineIcon
+          color="warning"
+          fontSize="small"
+          aria-label="Unknown — network unreachable"
+        />
+      </Tooltip>
     );
   }
   return <CancelIcon color="disabled" fontSize="small" aria-label="Disabled" />;
@@ -115,8 +130,12 @@ export function FeatureFlagsTable() {
 
   const cellState = (network: ComparedNetwork, id: number): CellState => {
     const set = enabledSets[network];
-    if (set === null) return "loading";
-    return set.has(id) ? "enabled" : "disabled";
+    if (set !== null) return set.has(id) ? "enabled" : "disabled";
+    // No data yet: distinguish a still-fetching query (spinner) from one
+    // that errored out (warning icon). Without this an outage would render
+    // identically to a loading state forever.
+    if (queries[network].isError) return "unknown";
+    return "loading";
   };
 
   const visibleIds = useMemo(() => {
