@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-04-28 (rev 14)
+> Last updated: 2026-04-28 (rev 15)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -437,6 +437,7 @@ and never sign transactions. Currently registered:
 | `open_transaction` | Open `/txn/{id}` (version or hash) with optional tab. |
 | `open_account` | Open `/account/{address}` (hex or `.apt`) with optional tab. |
 | `open_block` | Open `/block/{height}`. |
+| `open_releases` | Open `/releases` (or `/releases/networks|aips|sdks`). |
 | `open_coin` | Open `/coin/{type}` for a fully-qualified Move coin type. |
 
 Each tool declares a JSON Schema `inputSchema` and the `readOnlyHint`

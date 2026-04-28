@@ -989,7 +989,7 @@ top of the HTML site.
 | **Agent Skills index** | `public/.well-known/agent-skills/index.json` conforms to cloudflare/agent-skills-discovery-rfc v0.2.0. Publishes `aptos-explorer-urls` and `aptos-explorer-search` skills, each with a SHA-256 `digest`. Regenerate via `node scripts/update-agent-skills-index.mjs`. |
 | **Content Signals** | `public/robots.txt` declares `Content-Signal: ai-train=no, search=yes, ai-input=yes` at the top of the file and inside every AI-crawler `User-agent` group (contentsignals.org / draft-romm-aipref-contentsignals). |
 | **Markdown negotiation** | Netlify Edge Function `netlify/edge-functions/markdown-negotiation.ts` returns `/llms.txt` contents with `Content-Type: text/markdown` when the homepage request has `Accept: text/markdown`; HTML remains the default for browsers. Helper: `app/utils/acceptMarkdown.ts` (`prefersMarkdown`). |
-| **WebMCP** | `app/components/WebMCPProvider.tsx` registers read-only navigation tools (`search_explorer`, `open_transaction`, `open_account`, `open_block`, `open_coin`) on `navigator.modelContext` when supported. Tool definitions live in `app/components/webMcpTools.ts`; registration is cleaned up via `AbortSignal` on unmount. |
+| **WebMCP** | `app/components/WebMCPProvider.tsx` registers read-only navigation tools (`search_explorer`, `open_transaction`, `open_account`, `open_block`, `open_releases`, `open_coin`) on `navigator.modelContext` when supported. Tool definitions live in `app/components/webMcpTools.ts`; registration is cleaned up via `AbortSignal` on unmount. |
 
 ---
 
