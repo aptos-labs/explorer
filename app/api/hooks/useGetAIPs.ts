@@ -46,13 +46,19 @@ export async function fetchAIPs(): Promise<AIP[]> {
   };
   if (tree.truncated) throw new Error("AIP tree response was truncated");
 
-  const aipFiles = tree.tree.filter((f) => /^aips\/aip-\d+\.md$/.test(f.path));
+  // AIP files in the repo are named like `aips/aip-001-some-slug.md` (with
+  // leading-zero-padded numbers and a kebab-case slug). Older versions of the
+  // repo also used `aips/aip-42.md`, so accept both shapes. The canonical AIP
+  // number is taken from frontmatter (`aip: N`) where available, falling back
+  // to the digits in the filename.
+  const FILENAME_RE = /^aips\/aip-(\d+)(?:-[^/]*)?\.md$/;
+  const aipFiles = tree.tree.filter((f) => FILENAME_RE.test(f.path));
 
   const fetchFile = async (file: {path: string}): Promise<AIP | null> => {
     try {
-      const m = file.path.match(/aip-(\d+)\.md$/);
+      const m = file.path.match(FILENAME_RE);
       if (!m) return null;
-      const number = parseInt(m[1], 10);
+      const filenameNumber = parseInt(m[1], 10);
 
       const rawRes = await fetch(
         `https://raw.githubusercontent.com/aptos-foundation/AIPs/main/${file.path}`,
@@ -61,6 +67,11 @@ export async function fetchAIPs(): Promise<AIP[]> {
       if (!rawRes.ok) return null;
       const content = await rawRes.text();
       const fm = parseFrontmatter(content);
+
+      const frontmatterNumber = fm.aip ? parseInt(fm.aip, 10) : NaN;
+      const number = Number.isFinite(frontmatterNumber)
+        ? frontmatterNumber
+        : filenameNumber;
 
       return {
         number,
