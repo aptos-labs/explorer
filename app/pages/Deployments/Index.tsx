@@ -4,6 +4,7 @@ import {useQueryClient} from "@tanstack/react-query";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import type {NetworkName} from "../../lib/constants";
 import PageHeader from "../layout/PageHeader";
+import {FeatureFlagsTable} from "./FeatureFlagsTable";
 import {NetworkCard} from "./NetworkCard";
 
 const NETWORKS: readonly NetworkName[] = [
@@ -55,13 +56,14 @@ export default function DeploymentsPage() {
           Refresh All
         </Button>
       </Box>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{mb: 4}}>
         {NETWORKS.map((network) => (
           <Grid key={network} size={{xs: 12, md: 4}}>
             <NetworkCard network={network} />
           </Grid>
         ))}
       </Grid>
+      <FeatureFlagsTable />
     </Box>
   );
 }
