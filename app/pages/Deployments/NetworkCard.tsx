@@ -40,7 +40,7 @@ function StatusRow({
 
 export function NetworkCard({network}: {network: NetworkName}) {
   const queryClient = useQueryClient();
-  const {data, isLoading, isError} = useGetNetworkStatus(network);
+  const {data, isFetching, isError} = useGetNetworkStatus(network);
 
   const handleRefresh = () => {
     queryClient.invalidateQueries({
@@ -55,8 +55,8 @@ export function NetworkCard({network}: {network: NetworkName}) {
           <Typography variant="h6" sx={{flexGrow: 1}}>
             {NETWORK_LABEL[network] ?? network}
           </Typography>
-          {isLoading && <CircularProgress size={16} />}
-          {!isLoading && (
+          {isFetching && <CircularProgress size={16} />}
+          {!isFetching && (
             <Chip
               label={isError ? "Down" : "Up"}
               color={isError ? "error" : "success"}

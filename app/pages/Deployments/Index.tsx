@@ -2,10 +2,15 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import {Box, Button, Grid, Typography} from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import type {NetworkName} from "../../lib/constants";
 import PageHeader from "../layout/PageHeader";
 import {NetworkCard} from "./NetworkCard";
 
-const NETWORKS = ["mainnet", "testnet", "devnet"] as const;
+const NETWORKS: readonly NetworkName[] = [
+  "mainnet",
+  "testnet",
+  "devnet",
+] as const;
 
 export default function DeploymentsPage() {
   const queryClient = useQueryClient();
