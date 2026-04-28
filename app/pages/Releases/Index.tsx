@@ -1,5 +1,12 @@
 import RefreshIcon from "@mui/icons-material/Refresh";
-import {Box, Button, CircularProgress, Grid, Typography} from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
 import {useGetReleases} from "../../api/hooks/useGetReleases";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
@@ -17,7 +24,7 @@ const RELEASE_META = [
 
 export default function ReleasesPage() {
   const queryClient = useQueryClient();
-  const {data, isLoading} = useGetReleases();
+  const {data, isLoading, isError} = useGetReleases();
 
   return (
     <Box>
@@ -61,7 +68,13 @@ export default function ReleasesPage() {
 
       {isLoading && <CircularProgress />}
 
-      {data && (
+      {isError && (
+        <Alert severity="error" sx={{mb: 2}}>
+          Failed to load release data. Please try again.
+        </Alert>
+      )}
+
+      {!isLoading && !isError && data && (
         <Grid container spacing={3}>
           {RELEASE_META.map(({key, name, registry}) => (
             <Grid key={key} size={{xs: 12, sm: 6, md: 4}}>
