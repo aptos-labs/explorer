@@ -60,6 +60,7 @@ describe("buildWebMcpTools", () => {
       "open_transaction",
       "open_account",
       "open_block",
+      "open_releases",
       "open_coin",
     ]);
   });
@@ -224,6 +225,38 @@ describe("buildWebMcpTools", () => {
       await expect(byName.open_block.execute({height: -1})).rejects.toThrow();
       await expect(byName.open_block.execute({height: 1.5})).rejects.toThrow();
       await expect(byName.open_block.execute({height: "42"})).rejects.toThrow();
+    });
+  });
+
+  describe("open_releases", () => {
+    it("defaults to the /releases hub when no tab is given", async () => {
+      const {navigate, byName} = setup();
+      const r = await byName.open_releases.execute({});
+      expect(navigate).toHaveBeenCalledWith({to: "/releases", search: {}});
+      expect(r.path).toBe("/releases");
+    });
+
+    it("routes to a specific tab", async () => {
+      const {navigate, byName} = setup();
+      const r = await byName.open_releases.execute({tab: "aips"});
+      expect(navigate).toHaveBeenCalledWith({
+        to: "/releases/aips",
+        search: {},
+      });
+      expect(r.path).toBe("/releases/aips");
+    });
+
+    it("forwards explicit network in the search and the returned path", async () => {
+      const {navigate, byName} = setup();
+      const r = await byName.open_releases.execute({
+        tab: "networks",
+        network: "testnet",
+      });
+      expect(navigate).toHaveBeenCalledWith({
+        to: "/releases/networks",
+        search: {network: "testnet"},
+      });
+      expect(r.path).toBe("/releases/networks?network=testnet");
     });
   });
 

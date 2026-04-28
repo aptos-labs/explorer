@@ -239,6 +239,34 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
       },
     },
     {
+      name: "open_releases",
+      title: "Open releases hub",
+      description:
+        "Open the Aptos Explorer releases hub at /releases. This page consolidates live network deployment status (per-chain aptos-node version + git commit + feature-flag comparison), the AIPs index, and SDK/tool releases under one URL with three tabs. Use when the user asks about deployed network versions, feature flags across mainnet/testnet/devnet, AIP status, or the latest CLI / SDK releases.",
+      inputSchema: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          tab: {
+            type: "string",
+            enum: ["networks", "aips", "sdks"],
+            description:
+              "Releases tab to land on. Defaults to 'networks' (the chain deployment view) when omitted.",
+          },
+          network: NETWORK_SCHEMA,
+        },
+      },
+      annotations: {readOnlyHint: true},
+      execute: async (input) => {
+        const {tab, network} =
+          (input as {tab?: string; network?: NetworkName}) ?? {};
+        const to = tab ? `/releases/${tab}` : "/releases";
+        const search = networkSearch(network);
+        await navigate({to, search});
+        return {ok: true, path: buildPath(to, search)};
+      },
+    },
+    {
       name: "open_coin",
       title: "Open coin",
       description:
