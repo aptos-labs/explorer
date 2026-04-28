@@ -72,18 +72,8 @@ export default function Nav() {
         label="Coins"
       />
       <NavButton
-        to="/deployments"
-        title="View Network Deployments"
-        label="Deployments"
-      />
-      <NavButton
-        to="/aips"
-        title="View Aptos Improvement Proposals"
-        label="AIPs"
-      />
-      <NavButton
         to="/releases"
-        title="View SDK & Tool Releases"
+        title="View Network Deployments, AIPs, and SDK & Tool Releases"
         label="Releases"
       />
     </Box>

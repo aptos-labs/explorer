@@ -47,6 +47,12 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
 - Transactions list: `/transactions`
   - Filter by function: `/transactions?type=user&fn={entry_function_id}` (e.g. `?fn=0x1::coin::transfer`)
 - Verification: `/verification`
+- Releases hub: `/releases` (redirects to default tab `networks`)
+  - Tabs: `/releases/networks`, `/releases/aips`, `/releases/sdks`
+  - Networks tab — live deployment status (epoch, block height, framework version, node release, node commit, validators, feature flag comparison) for mainnet, testnet, and devnet
+  - AIPs tab — Aptos Improvement Proposals index sourced from `aptos-foundation/AIPs` (number, title, status, author, link)
+  - SDKs & Tools tab — latest stable releases for the Aptos CLI, `aptos-node`, and the TypeScript / Python / Rust / Go SDKs, with a drill-in list of recent versions per registry
+  - Legacy paths `/deployments` and `/aips` redirect to `/releases/networks` and `/releases/aips` respectively
 - Settings: `/settings` — configure explorer preferences (decompilation opt-in, API key overrides)
 
 ## Key Addresses

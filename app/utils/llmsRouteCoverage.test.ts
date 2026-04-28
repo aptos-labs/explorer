@@ -40,6 +40,12 @@ const REQUIRED_PATH_SNIPPETS = [
   "enhanced_delegation",
   /** Settings page */
   "/settings",
+  /** Releases hub */
+  "/releases",
+  /** Releases sub-tabs (network deployments, AIPs index, SDK & tool releases) */
+  "/releases/networks",
+  "/releases/aips",
+  "/releases/sdks",
 ] as const;
 
 const _dirname = dirname(fileURLToPath(import.meta.url));

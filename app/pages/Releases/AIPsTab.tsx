@@ -20,8 +20,6 @@ import {
 import {useQueryClient} from "@tanstack/react-query";
 import {useState} from "react";
 import {type AIP, useGetAIPs} from "../../api/hooks/useGetAIPs";
-import {PageMetadata} from "../../components/hooks/usePageMetadata";
-import PageHeader from "../layout/PageHeader";
 
 type StatusColor =
   | "default"
@@ -52,7 +50,7 @@ const STATUS_FILTERS = [
 
 type SortField = keyof Pick<AIP, "number" | "title" | "status" | "author">;
 
-export default function AIpsPage() {
+export default function AIpsTab() {
   const queryClient = useQueryClient();
   const {data, isLoading, isError, error} = useGetAIPs();
   const [statusFilter, setStatusFilter] = useState("All");
@@ -85,25 +83,7 @@ export default function AIpsPage() {
 
   return (
     <Box>
-      <PageMetadata
-        title="Aptos Improvement Proposals"
-        description="Track all Aptos Improvement Proposals (AIPs) — status, authors, and links to source."
-        type="website"
-        keywords={["AIP", "improvement proposals", "governance", "Aptos"]}
-        canonicalPath="/aips"
-      />
-      <PageHeader />
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 2,
-        }}
-      >
-        <Typography variant="h3" component="h1">
-          Improvement Proposals
-        </Typography>
+      <Box sx={{display: "flex", justifyContent: "flex-end", mb: 2}}>
         <Button
           startIcon={<RefreshIcon />}
           variant="outlined"

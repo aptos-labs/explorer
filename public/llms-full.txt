@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-03-30 (rev 12)
+> Last updated: 2026-04-28 (rev 13)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -100,6 +100,19 @@ Each detail page has tabs accessible via path segments:
 - `/settings` — configure explorer preferences stored locally in the browser
   - **Move Bytecode Decompilation**: opt-in toggle to enable client-side decompilation of on-chain Move bytecode (Decompiled and Disassembly views on module code pages). Disabled by default; users must accept a disclaimer before enabling.
   - **API Key Overrides**: per-network geomi.dev API keys (same functionality previously in the header settings dialog)
+
+#### Releases Hub
+- `/releases` — top-level hub for everything network-version-related; redirects to the `networks` tab by default
+  - `/releases/networks` — live deployment status across mainnet / testnet / devnet
+    - Per-network card: epoch, block height, ledger version, chain ID, framework version (`0x1::version::Version`), node release (e.g. `v1.43.2`, resolved from `git_hash` via the GitHub commit message), node commit (short hash linked to `aptos-labs/aptos-core`), validator count, healthy/down chip
+    - **Feature Flags by Network** comparison table sourced from `0x1::features::Features`; default view shows only flags whose enabled state differs across mainnet/testnet/devnet, with chip filters for All / Differences / Enabled (anywhere) / Disabled (everywhere). Names mirror the `FeatureFlag` Rust enum in `aptos-core`
+  - `/releases/aips` — Aptos Improvement Proposals index sourced from `aptos-foundation/AIPs`
+    - Sortable by AIP #, title, status, author; status filter chips (Draft / Last Call / Accepted / Final / Withdrawn / Living); each row deep-links to the proposal markdown on GitHub
+    - Author column strips `<email>`, `(@handle)`, github URLs, and markdown links so each row shows just the names
+  - `/releases/sdks` — latest stable releases for the Aptos CLI, `aptos-node`, and official SDKs
+    - Sources: GitHub Releases (CLI, node), npm (`@aptos-labs/ts-sdk`), PyPI (`aptos-sdk`), crates.io (`aptos-sdk`), Go module proxy (`pkg.go.dev/github.com/aptos-labs/aptos-go-sdk`)
+    - Each card shows the latest **stable** SemVer release (excluding `-rc`, `-alpha`, `-beta`, etc.) as the headline; a "Recent releases" accordion lists up to 25 recent versions per registry with publish dates and a "Pre-release" badge on each non-stable entry
+- Legacy: `/deployments` redirects to `/releases/networks`, `/aips` redirects to `/releases/aips`
 
 #### Other Pages
 - `/analytics` — network analytics charts (TPS, DAU, gas, supply, new accounts)

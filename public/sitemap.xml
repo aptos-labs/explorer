@@ -112,6 +112,23 @@
     <priority>0.6</priority>
   </url>
 
+  <!-- Releases hub (deployments, AIPs, SDK & tool releases) -->
+  <url>
+    <loc>https://explorer.aptoslabs.com/releases/networks</loc>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://explorer.aptoslabs.com/releases/aips</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://explorer.aptoslabs.com/releases/sdks</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <!-- Verification -->
   <url>
     <loc>https://explorer.aptoslabs.com/verification</loc>
