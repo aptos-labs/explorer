@@ -165,31 +165,41 @@ export default function AIpsPage() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filtered.map((aip) => (
-                <TableRow key={aip.number} hover>
-                  <TableCell>{aip.number}</TableCell>
-                  <TableCell>{aip.title}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={aip.status}
-                      size="small"
-                      color={
-                        STATUS_COLORS[aip.status.toLowerCase()] ?? "default"
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>{aip.author}</TableCell>
-                  <TableCell>
-                    <Link
-                      href={aip.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      View →
-                    </Link>
+              {filtered.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} align="center" sx={{py: 4}}>
+                    <Typography color="text.secondary">
+                      No AIPs match the selected filter
+                    </Typography>
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                filtered.map((aip) => (
+                  <TableRow key={aip.number} hover>
+                    <TableCell>{aip.number}</TableCell>
+                    <TableCell>{aip.title}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={aip.status}
+                        size="small"
+                        color={
+                          STATUS_COLORS[aip.status.toLowerCase()] ?? "default"
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>{aip.author}</TableCell>
+                    <TableCell>
+                      <Link
+                        href={aip.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View →
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
