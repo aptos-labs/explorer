@@ -120,12 +120,14 @@ export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
                     Recent releases ({result.recent.length})
                   </Typography>
                 </AccordionSummary>
-                <AccordionDetails sx={{px: 0, pt: 0}}>
+                <AccordionDetails sx={{px: 0, pt: 0, overflowX: "auto"}}>
                   <Table size="small" aria-label={`Recent ${name} releases`}>
                     <TableHead>
                       <TableRow>
                         <TableCell sx={{pl: 0}}>Version</TableCell>
-                        <TableCell>Published</TableCell>
+                        <TableCell sx={{whiteSpace: "nowrap"}}>
+                          Published
+                        </TableCell>
                         <TableCell sx={{pr: 0}} align="right">
                           Link
                         </TableCell>
@@ -134,11 +136,17 @@ export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
                     <TableBody>
                       {result.recent.map((entry) => (
                         <TableRow key={entry.version} hover>
-                          <TableCell sx={{pl: 0, fontFamily: "monospace"}}>
+                          <TableCell
+                            sx={{
+                              pl: 0,
+                              fontFamily: "monospace",
+                              wordBreak: "break-word",
+                            }}
+                          >
                             {entry.version}
                             {entry.isPrerelease && <PrereleaseBadge />}
                           </TableCell>
-                          <TableCell>
+                          <TableCell sx={{whiteSpace: "nowrap"}}>
                             <RelativeDate iso={entry.publishedAt} />
                           </TableCell>
                           <TableCell sx={{pr: 0}} align="right">
@@ -146,6 +154,7 @@ export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
                               href={entry.link}
                               target="_blank"
                               rel="noopener noreferrer"
+                              underline="hover"
                             >
                               View
                             </Link>

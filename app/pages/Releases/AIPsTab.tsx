@@ -1,3 +1,4 @@
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   Alert,
@@ -5,7 +6,7 @@ import {
   Button,
   Chip,
   CircularProgress,
-  Link,
+  IconButton,
   Paper,
   Stack,
   Table,
@@ -15,7 +16,10 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  Tooltip,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
 import {useState} from "react";
@@ -52,6 +56,11 @@ type SortField = keyof Pick<AIP, "number" | "title" | "status" | "author">;
 
 export default function AIpsTab() {
   const queryClient = useQueryClient();
+  const theme = useTheme();
+  // Below `sm` (~600px) we hide the Author column to keep the row dense and
+  // the title readable; the full author list is still in the source on
+  // GitHub which the leftmost link surfaces.
+  const showAuthor = useMediaQuery(theme.breakpoints.up("sm"));
   const {data, isLoading, isError, error} = useGetAIPs();
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortField, setSortField] = useState<SortField>("number");
@@ -80,6 +89,16 @@ export default function AIpsTab() {
       if (sortField === "number") return dir * (a.number - b.number);
       return dir * String(a[sortField]).localeCompare(String(b[sortField]));
     });
+
+  // Pinned columns rendered after the leading link icon. We keep `author`
+  // out of the loop and condition it on the responsive breakpoint below to
+  // avoid leaving an empty column at narrow widths.
+  const SORTABLE_COLUMNS: {field: SortField; label: string}[] = [
+    {field: "number", label: "AIP #"},
+    {field: "title", label: "Title"},
+    {field: "status", label: "Status"},
+  ];
+  const totalCols = 1 + SORTABLE_COLUMNS.length + (showAuthor ? 1 : 0);
 
   return (
     <Box>
@@ -120,18 +139,21 @@ export default function AIpsTab() {
 
       {!isLoading && !isError && (
         <TableContainer component={Paper} variant="outlined">
-          <Table size="small">
+          <Table size="small" sx={{tableLayout: "fixed"}}>
             <TableHead>
               <TableRow>
-                {(
-                  [
-                    {field: "number", label: "AIP #"},
-                    {field: "title", label: "Title"},
-                    {field: "status", label: "Status"},
-                    {field: "author", label: "Author"},
-                  ] as {field: SortField; label: string}[]
-                ).map(({field, label}) => (
-                  <TableCell key={field}>
+                <TableCell sx={{width: 48, pr: 0}} aria-label="Source link" />
+                {SORTABLE_COLUMNS.map(({field, label}) => (
+                  <TableCell
+                    key={field}
+                    sx={
+                      field === "number"
+                        ? {width: 72}
+                        : field === "status"
+                          ? {width: 116}
+                          : undefined
+                    }
+                  >
                     <TableSortLabel
                       active={sortField === field}
                       direction={sortField === field ? sortDir : "asc"}
@@ -141,13 +163,23 @@ export default function AIpsTab() {
                     </TableSortLabel>
                   </TableCell>
                 ))}
-                <TableCell>Link</TableCell>
+                {showAuthor && (
+                  <TableCell sx={{width: "30%"}}>
+                    <TableSortLabel
+                      active={sortField === "author"}
+                      direction={sortField === "author" ? sortDir : "asc"}
+                      onClick={() => handleSort("author")}
+                    >
+                      Author
+                    </TableSortLabel>
+                  </TableCell>
+                )}
               </TableRow>
             </TableHead>
             <TableBody>
               {filtered.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{py: 4}}>
+                  <TableCell colSpan={totalCols} align="center" sx={{py: 4}}>
                     <Typography color="text.secondary">
                       No AIPs match the selected filter
                     </Typography>
@@ -156,8 +188,29 @@ export default function AIpsTab() {
               ) : (
                 filtered.map((aip) => (
                   <TableRow key={aip.number} hover>
+                    <TableCell sx={{pr: 0}}>
+                      <Tooltip title="Open on GitHub">
+                        <IconButton
+                          size="small"
+                          component="a"
+                          href={aip.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Open AIP-${aip.number} on GitHub`}
+                        >
+                          <OpenInNewIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
                     <TableCell>{aip.number}</TableCell>
-                    <TableCell>{aip.title}</TableCell>
+                    <TableCell
+                      sx={{
+                        wordBreak: "break-word",
+                        whiteSpace: "normal",
+                      }}
+                    >
+                      {aip.title}
+                    </TableCell>
                     <TableCell>
                       <Chip
                         label={aip.status}
@@ -165,18 +218,14 @@ export default function AIpsTab() {
                         color={
                           STATUS_COLORS[aip.status.toLowerCase()] ?? "default"
                         }
+                        sx={{maxWidth: "100%"}}
                       />
                     </TableCell>
-                    <TableCell>{aip.author}</TableCell>
-                    <TableCell>
-                      <Link
-                        href={aip.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        View →
-                      </Link>
-                    </TableCell>
+                    {showAuthor && (
+                      <TableCell sx={{wordBreak: "break-word"}}>
+                        {aip.author}
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))
               )}

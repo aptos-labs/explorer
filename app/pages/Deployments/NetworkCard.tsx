@@ -24,15 +24,31 @@ const NETWORK_LABEL: Record<string, string> = {
 
 function StatusRow({label, value}: {label: string; value: ReactNode}) {
   return (
-    <Box sx={{display: "flex", justifyContent: "space-between", py: 0.5}}>
-      <Typography variant="body2" color="text.secondary">
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "baseline",
+        gap: 1,
+        py: 0.5,
+      }}
+    >
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{flexShrink: 0, whiteSpace: "nowrap"}}
+      >
         {label}
       </Typography>
       <Typography
         variant="body2"
         fontFamily="monospace"
         component="div"
-        sx={{textAlign: "right"}}
+        sx={{
+          textAlign: "right",
+          wordBreak: "break-word",
+          minWidth: 0,
+        }}
       >
         {value ?? "—"}
       </Typography>
