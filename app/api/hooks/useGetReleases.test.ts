@@ -144,5 +144,9 @@ describe("fetchReleases", () => {
     const result = await fetchReleases();
     expect(result.typescript.status).toBe("error");
     expect(result.python.status).toBe("success");
+    expect(result.rust.status).toBe("success");
+    expect(result.go.status).toBe("success");
+    expect(result.cli.status).toBe("error");
+    expect(result.node.status).toBe("error");
   });
 });

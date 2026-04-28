@@ -104,7 +104,7 @@ async function fetchGitHubCoreReleases(): Promise<{
   node: ReleaseResult;
 }> {
   try {
-    const githubToken = import.meta.env.VITE_GITHUB_TOKEN;
+    const githubToken = import.meta.env.VITE_GITHUB_TOKEN as string | undefined;
     const headers: Record<string, string> = {
       Accept: "application/vnd.github.v3+json",
     };
