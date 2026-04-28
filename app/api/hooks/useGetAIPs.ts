@@ -53,6 +53,7 @@ export async function fetchAIPs(): Promise<AIP[]> {
 
         const rawRes = await fetch(
           `https://raw.githubusercontent.com/aptos-foundation/AIPs/main/${file.path}`,
+          {headers},
         );
         if (!rawRes.ok) return null;
         const content = await rawRes.text();
