@@ -95,6 +95,42 @@ describe("fetchAIPs", () => {
     await expect(fetchAIPs()).rejects.toThrow("truncated");
   });
 
+  it("strips trailing YAML-style ' # comment' annotations from frontmatter values", async () => {
+    // Some AIPs decorate the status with a discussion link, e.g.
+    //   Status: Draft # discussion: https://github.com/.../issues/123
+    // The explorer should show "Draft", not the whole annotated string.
+    const ANNOTATED = `---
+aip: 7
+title: Annotated Example # not a real header
+author: Carol
+Status: Draft # discussion: https://example.com/issues/1
+quoted: "Has #hash in quotes"
+---
+Body.
+`;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation((url: string) => {
+        if (url.includes("git/trees")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({tree: [{path: "aips/aip-007-annotated.md"}]}),
+          });
+        }
+        return Promise.resolve({
+          ok: true,
+          text: () => Promise.resolve(ANNOTATED),
+        });
+      }),
+    );
+
+    const result = await fetchAIPs();
+    expect(result).toHaveLength(1);
+    expect(result[0].status).toBe("Draft");
+    expect(result[0].title).toBe("Annotated Example");
+  });
+
   it("skips files whose raw content fails without aborting the whole fetch", async () => {
     vi.stubGlobal(
       "fetch",
