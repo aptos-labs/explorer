@@ -1,6 +1,17 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
 import {fetchReleases} from "./useGetReleases";
 
+/**
+ * Parse a fetched URL and return its hostname for exact-match dispatch.
+ * Using `new URL().hostname === "..."` avoids the "Incomplete URL substring
+ * sanitization" CodeQL pattern that `url.includes("registry.npmjs.org")`
+ * triggers — `includes` would also match attacker-controlled URLs like
+ * `https://evil.example/?x=registry.npmjs.org`.
+ */
+function host(url: string): string {
+  return new URL(url).hostname;
+}
+
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -10,7 +21,7 @@ describe("fetchReleases", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockImplementation((url: string) => {
-        if (url.includes("registry.npmjs.org")) {
+        if (host(url) === "registry.npmjs.org") {
           return Promise.resolve({
             ok: true,
             json: () =>
@@ -29,7 +40,7 @@ describe("fetchReleases", () => {
               }),
           });
         }
-        if (url.includes("pypi.org")) {
+        if (host(url) === "pypi.org") {
           return Promise.resolve({
             ok: true,
             json: () =>
@@ -49,7 +60,7 @@ describe("fetchReleases", () => {
               }),
           });
         }
-        if (url.includes("crates.io")) {
+        if (host(url) === "crates.io") {
           return Promise.resolve({
             ok: true,
             json: () =>
@@ -75,7 +86,7 @@ describe("fetchReleases", () => {
               }),
           });
         }
-        if (url.includes("proxy.golang.org")) {
+        if (host(url) === "proxy.golang.org") {
           return Promise.resolve({
             ok: true,
             json: () =>
@@ -85,7 +96,7 @@ describe("fetchReleases", () => {
               }),
           });
         }
-        if (url.includes("api.github.com")) {
+        if (host(url) === "api.github.com") {
           return Promise.resolve({
             ok: true,
             json: () =>
@@ -186,7 +197,7 @@ describe("fetchReleases", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockImplementation((url: string) => {
-        if (url.includes("registry.npmjs.org")) {
+        if (host(url) === "registry.npmjs.org") {
           return Promise.resolve({
             ok: true,
             json: () =>
@@ -219,10 +230,10 @@ describe("fetchReleases", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockImplementation((url: string) => {
-        if (url.includes("registry.npmjs.org")) {
+        if (host(url) === "registry.npmjs.org") {
           return Promise.reject(new Error("Network error"));
         }
-        if (url.includes("pypi.org")) {
+        if (host(url) === "pypi.org") {
           return Promise.resolve({
             ok: true,
             json: () =>
@@ -236,7 +247,7 @@ describe("fetchReleases", () => {
               }),
           });
         }
-        if (url.includes("crates.io")) {
+        if (host(url) === "crates.io") {
           return Promise.resolve({
             ok: true,
             json: () =>
@@ -249,7 +260,7 @@ describe("fetchReleases", () => {
               }),
           });
         }
-        if (url.includes("proxy.golang.org")) {
+        if (host(url) === "proxy.golang.org") {
           return Promise.resolve({
             ok: true,
             json: () =>
@@ -259,7 +270,7 @@ describe("fetchReleases", () => {
               }),
           });
         }
-        if (url.includes("api.github.com")) {
+        if (host(url) === "api.github.com") {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve([]),
@@ -282,7 +293,7 @@ describe("fetchReleases", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockImplementation((url: string) => {
-        if (url.includes("registry.npmjs.org")) {
+        if (host(url) === "registry.npmjs.org") {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve({}),

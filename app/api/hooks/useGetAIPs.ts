@@ -42,17 +42,49 @@ function stripYamlComment(value: string): string {
  * directory of contact details — strip emails and github links so each row
  * shows just the name(s).
  */
+/**
+ * Apply a regex replacement repeatedly until the string stops changing.
+ * This is the standard mitigation for "incomplete multi-character
+ * sanitization" — a single pass of `<[^>]*>` would still leak `<script>`
+ * out of an input like `<<script>>`, but a fixed-point loop reduces such
+ * nested patterns to empty.
+ */
+function replaceUntilStable(input: string, pattern: RegExp): string {
+  let prev = input;
+  // Cap iterations defensively in case a regex's replacement re-introduces
+  // a match (none of ours do, but better safe than spinning forever).
+  for (let i = 0; i < 16; i++) {
+    const next = prev.replace(pattern, "");
+    if (next === prev) return next;
+    prev = next;
+  }
+  return prev;
+}
+
 export function cleanAuthors(raw: string): string {
   return raw
     .split(",")
     .map((token) => {
       let t = token;
-      // `[Name](url)` → `Name`
-      t = t.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
-      // Drop `<...>` (catches both `<email>` and `<url>`).
-      t = t.replace(/<[^>]*>/g, "");
+      // `[Name](url)` → `Name`. Loop in case of nested-bracket trickery
+      // like `[[Name](url)](url)`.
+      let prev = t;
+      for (let i = 0; i < 16; i++) {
+        const next = prev.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+        if (next === prev) break;
+        prev = next;
+      }
+      t = prev;
+      // Drop `<...>` (catches both `<email>` and `<url>`). Loop until the
+      // string stabilizes so nested patterns like `<<script>>` reduce
+      // completely (CodeQL "incomplete multi-character sanitization").
+      t = replaceUntilStable(t, /<[^>]*>/g);
       // Drop `(...)` (catches `(https://...)` and `(@handle)`).
-      t = t.replace(/\([^)]*\)/g, "");
+      t = replaceUntilStable(t, /\([^)]*\)/g);
+      // Drop any stray brackets/parens left over (e.g. unbalanced `>`
+      // from inputs like `<<script>>`). Author names never legitimately
+      // contain these characters in the AIP corpus.
+      t = t.replace(/[<>()]/g, "");
       // Drop bare URLs that aren't wrapped in punctuation.
       t = t.replace(/https?:\/\/\S+/g, "");
       return t.replace(/\s+/g, " ").trim();

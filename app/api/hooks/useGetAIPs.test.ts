@@ -71,6 +71,16 @@ describe("cleanAuthors", () => {
   it("collapses extra whitespace and drops empty tokens", () => {
     expect(cleanAuthors("Alice  ,   ,  Bob")).toBe("Alice, Bob");
   });
+
+  it("strips nested brackets/parens via fixed-point loop (CodeQL multi-char sanitization)", () => {
+    // A single pass of `<[^>]*>` would leak the inner `<script>` out of
+    // `<<script>>`. Looping until stable reduces it to nothing — the
+    // CodeQL mitigation for "Incomplete multi-character sanitization".
+    expect(cleanAuthors("Alice <<script>>")).toBe("Alice");
+    expect(cleanAuthors("Bob ((nested))")).toBe("Bob");
+    // Markdown link wrapping that would survive a single pass:
+    expect(cleanAuthors("[[Alice](https://x.io)](https://x.io)")).toBe("Alice");
+  });
 });
 
 describe("fetchAIPs", () => {
