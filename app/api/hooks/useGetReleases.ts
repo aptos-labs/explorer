@@ -111,7 +111,7 @@ async function fetchGitHubCoreReleases(): Promise<{
     if (githubToken) headers["Authorization"] = `Bearer ${githubToken}`;
 
     const res = await fetch(
-      "https://api.github.com/repos/aptos-labs/aptos-core/releases?per_page=50",
+      "https://api.github.com/repos/aptos-labs/aptos-core/releases?per_page=100",
       {headers},
     );
     if (!res.ok) throw new Error(`GitHub returned ${res.status}`);
@@ -136,7 +136,7 @@ async function fetchGitHubCoreReleases(): Promise<{
             publishedAt: cliRelease.published_at,
             link: cliRelease.html_url,
           }
-        : {status: "error", message: "No CLI release found in last 50"},
+        : {status: "error", message: "No CLI release found in last 100"},
       node: nodeRelease
         ? {
             status: "success",
@@ -144,7 +144,7 @@ async function fetchGitHubCoreReleases(): Promise<{
             publishedAt: nodeRelease.published_at,
             link: nodeRelease.html_url,
           }
-        : {status: "error", message: "No node release found in last 50"},
+        : {status: "error", message: "No node release found in last 100"},
     };
   } catch (e) {
     const msg = String(e);

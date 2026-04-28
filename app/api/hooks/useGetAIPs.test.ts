@@ -76,6 +76,19 @@ describe("fetchAIPs", () => {
     await expect(fetchAIPs()).rejects.toThrow("RATE_LIMITED");
   });
 
+  it("throws when the GitHub tree response is truncated", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve({tree: [{path: "aips/aip-1.md"}], truncated: true}),
+      }),
+    );
+
+    await expect(fetchAIPs()).rejects.toThrow("truncated");
+  });
+
   it("skips files whose raw content fails without aborting the whole fetch", async () => {
     vi.stubGlobal(
       "fetch",

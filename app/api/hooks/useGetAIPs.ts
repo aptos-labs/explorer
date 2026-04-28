@@ -40,37 +40,49 @@ export async function fetchAIPs(): Promise<AIP[]> {
     if (treeRes.status === 403) throw new Error("RATE_LIMITED");
     throw new Error(`GitHub API error: ${treeRes.status}`);
   }
-  const tree = (await treeRes.json()) as {tree: {path: string}[]};
+  const tree = (await treeRes.json()) as {
+    tree: {path: string}[];
+    truncated: boolean;
+  };
+  if (tree.truncated) throw new Error("AIP tree response was truncated");
 
   const aipFiles = tree.tree.filter((f) => /^aips\/aip-\d+\.md$/.test(f.path));
 
-  const results = await Promise.all(
-    aipFiles.map(async (file): Promise<AIP | null> => {
-      try {
-        const m = file.path.match(/aip-(\d+)\.md$/);
-        if (!m) return null;
-        const number = parseInt(m[1], 10);
+  const fetchFile = async (file: {path: string}): Promise<AIP | null> => {
+    try {
+      const m = file.path.match(/aip-(\d+)\.md$/);
+      if (!m) return null;
+      const number = parseInt(m[1], 10);
 
-        const rawRes = await fetch(
-          `https://raw.githubusercontent.com/aptos-foundation/AIPs/main/${file.path}`,
-          {headers},
-        );
-        if (!rawRes.ok) return null;
-        const content = await rawRes.text();
-        const fm = parseFrontmatter(content);
+      const rawRes = await fetch(
+        `https://raw.githubusercontent.com/aptos-foundation/AIPs/main/${file.path}`,
+        {headers},
+      );
+      if (!rawRes.ok) return null;
+      const content = await rawRes.text();
+      const fm = parseFrontmatter(content);
 
-        return {
-          number,
-          title: fm.title ?? `AIP-${number}`,
-          status: fm.status ?? "Unknown",
-          author: fm.author ?? "",
-          githubUrl: `https://github.com/aptos-foundation/AIPs/blob/main/${file.path}`,
-        };
-      } catch {
-        return null;
-      }
-    }),
-  );
+      return {
+        number,
+        title: fm.title ?? `AIP-${number}`,
+        status: fm.status ?? "Unknown",
+        author: fm.author ?? "",
+        githubUrl: `https://github.com/aptos-foundation/AIPs/blob/main/${file.path}`,
+      };
+    } catch {
+      return null;
+    }
+  };
+
+  // Batch requests to avoid bursting the GitHub rate limit
+  const BATCH_SIZE = 20;
+  const allResults: (AIP | null)[] = [];
+  for (let i = 0; i < aipFiles.length; i += BATCH_SIZE) {
+    const batch = aipFiles.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(batch.map(fetchFile));
+    allResults.push(...batchResults);
+  }
+  const results = allResults;
 
   return results
     .filter((a): a is AIP => a !== null)
