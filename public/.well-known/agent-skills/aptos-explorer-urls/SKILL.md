@@ -23,6 +23,11 @@ Canonical URL templates for [Aptos Explorer](https://explorer.aptoslabs.com). Al
 - **Fungible asset**: `/fungible_asset/{address}`; tabs `/info`, `/transactions`, `/holders`
 - **NFT token (Digital Asset v2)**: `/token/{tokenId}`; tabs `/overview`, `/activities`
 - **Move object**: `/object/{address}`; tabs `/info`, `/transactions`, `/coins`, `/tokens`, `/resources`, `/modules`
+- **Releases hub**: `/releases` (redirects to default tab `networks`); tabs `/releases/networks`, `/releases/aips`, `/releases/sdks`
+  - `/releases/networks` — live network deployment status, `aptos-node` git commit/version per chain, and a "Feature Flags by Network" comparison table
+  - `/releases/aips` — Aptos Improvement Proposals index sourced from `aptos-foundation/AIPs`
+  - `/releases/sdks` — latest stable releases for the Aptos CLI, `aptos-node`, and official SDKs
+  - Legacy: `/deployments` redirects to `/releases/networks`, `/aips` redirects to `/releases/aips`
 - **Lists**: `/coins`, `/blocks`, `/transactions`, `/validators`, `/analytics`, `/verification`, `/settings`
 - **Filtered txns**: `/transactions?type=user&fn={entry_function_id}` (e.g. `?fn=0x1::coin::transfer`)
 - **Unknown input / general search**: `/?search={query}` — pre-fills the search bar, auto-detects address / hash / ANS `.apt` / coin type.
