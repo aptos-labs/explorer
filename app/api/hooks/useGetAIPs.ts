@@ -26,6 +26,41 @@ function stripYamlComment(value: string): string {
   return idx === -1 ? value : value.slice(0, idx).trimEnd();
 }
 
+/**
+ * Clean up the AIP `author:` frontmatter for display. AIP authors are written
+ * in many shapes:
+ *
+ *   - bare github handle:           `igor-aptos`
+ *   - comma-separated handles:      `davidiw, wrwg, msmouse`
+ *   - name + email:                 `Alice <alice@example.com>`
+ *   - markdown link:                `[Alice](https://github.com/alice)`
+ *   - parenthesized url or handle:  `Alice (https://github.com/alice)` /
+ *                                   `Alice (@alice)`
+ *   - angle-bracketed url:          `Alice <https://github.com/alice>`
+ *
+ * The explorer's AIP table is supposed to be a glanceable index, not a
+ * directory of contact details — strip emails and github links so each row
+ * shows just the name(s).
+ */
+export function cleanAuthors(raw: string): string {
+  return raw
+    .split(",")
+    .map((token) => {
+      let t = token;
+      // `[Name](url)` → `Name`
+      t = t.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+      // Drop `<...>` (catches both `<email>` and `<url>`).
+      t = t.replace(/<[^>]*>/g, "");
+      // Drop `(...)` (catches `(https://...)` and `(@handle)`).
+      t = t.replace(/\([^)]*\)/g, "");
+      // Drop bare URLs that aren't wrapped in punctuation.
+      t = t.replace(/https?:\/\/\S+/g, "");
+      return t.replace(/\s+/g, " ").trim();
+    })
+    .filter((t) => t.length > 0)
+    .join(", ");
+}
+
 function parseFrontmatter(content: string): Record<string, string> {
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   if (!match) return {};
@@ -93,7 +128,7 @@ export async function fetchAIPs(): Promise<AIP[]> {
         number,
         title: fm.title ?? `AIP-${number}`,
         status: fm.status ?? "Unknown",
-        author: fm.author ?? "",
+        author: fm.author ? cleanAuthors(fm.author) : "",
         githubUrl: `https://github.com/aptos-foundation/AIPs/blob/main/${file.path}`,
       };
     } catch {
