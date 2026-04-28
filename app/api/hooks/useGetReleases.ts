@@ -1,10 +1,36 @@
 import {useQuery} from "@tanstack/react-query";
+import {compareSemverDesc, isStableSemver} from "./semver";
 
-export type ReleaseSuccess = {
-  status: "success";
+/**
+ * Hard cap on how many recent releases we render per registry. We keep the
+ * limit modest because the data is only used to populate the drill-in list
+ * shown when a user expands a card; rendering hundreds of rows is wasteful and
+ * exposes us to churn from very chatty release feeds (npm in particular has
+ * hundreds of versions for `@aptos-labs/ts-sdk`).
+ */
+const RECENT_LIMIT = 25;
+
+export type ReleaseEntry = {
   version: string;
   publishedAt: string | null;
   link: string;
+  isPrerelease: boolean;
+};
+
+export type ReleaseSuccess = {
+  status: "success";
+  /**
+   * Headline version shown on the card. Resolves to the latest stable SemVer
+   * release where one is available within `recent`, falling back to the most
+   * recent release otherwise (in which case `isStable` is false).
+   */
+  version: string;
+  publishedAt: string | null;
+  link: string;
+  /** True when the headline `version` is a stable SemVer release. */
+  isStable: boolean;
+  /** Recent releases (newest first), capped at `RECENT_LIMIT`. */
+  recent: ReleaseEntry[];
 };
 
 export type ReleaseError = {
@@ -23,18 +49,69 @@ export type ReleasesData = {
   go: ReleaseResult;
 };
 
+/**
+ * Pick the latest stable release from a sorted-by-date list. Falls back to
+ * the first entry when no stable exists, so the card always renders something
+ * the user can act on.
+ */
+function pickHeadline(recent: ReleaseEntry[]): {
+  entry: ReleaseEntry;
+  isStable: boolean;
+} | null {
+  if (recent.length === 0) return null;
+  const stable = recent.find((r) => !r.isPrerelease);
+  if (stable) return {entry: stable, isStable: true};
+  return {entry: recent[0], isStable: false};
+}
+
 async function fetchNpm(): Promise<ReleaseResult> {
   try {
-    const res = await fetch(
-      "https://registry.npmjs.org/@aptos-labs/ts-sdk/latest",
-    );
+    // Hit the full registry document so we can resolve publish timestamps via
+    // `time[version]` and enumerate every published version. The `dist-tags`
+    // field tells us the maintainer's current `latest` tag (which we use as a
+    // sanity check, not as the headline — the headline is the most recent
+    // *stable* SemVer release, which can differ when the maintainer publishes
+    // a prerelease under `latest`).
+    const res = await fetch("https://registry.npmjs.org/@aptos-labs/ts-sdk");
     if (!res.ok) throw new Error(`npm returned ${res.status}`);
-    const data = (await res.json()) as {version: string};
+    const data = (await res.json()) as {
+      "dist-tags"?: {latest?: string};
+      time?: Record<string, string>;
+      versions?: Record<string, unknown>;
+    };
+    const versionsMap = data.versions ?? {};
+    const versionList = Object.keys(versionsMap);
+    if (versionList.length === 0) {
+      throw new Error("npm response had no versions");
+    }
+    const recent: ReleaseEntry[] = versionList
+      .map((version) => {
+        const publishedAt = data.time?.[version] ?? null;
+        return {
+          version,
+          publishedAt,
+          link: `https://www.npmjs.com/package/@aptos-labs/ts-sdk/v/${version}`,
+          isPrerelease: !isStableSemver(version),
+        };
+      })
+      .sort((a, b) => {
+        // Prefer publish date for ordering when both have one (matches what
+        // users see on npmjs.com); fall back to SemVer comparison otherwise.
+        if (a.publishedAt && b.publishedAt) {
+          return b.publishedAt.localeCompare(a.publishedAt);
+        }
+        return compareSemverDesc(a.version, b.version);
+      })
+      .slice(0, RECENT_LIMIT);
+    const headline = pickHeadline(recent);
+    if (!headline) throw new Error("npm returned no usable versions");
     return {
       status: "success",
-      version: data.version,
-      publishedAt: null,
-      link: `https://www.npmjs.com/package/@aptos-labs/ts-sdk/v/${data.version}`,
+      version: headline.entry.version,
+      publishedAt: headline.entry.publishedAt,
+      link: headline.entry.link,
+      isStable: headline.isStable,
+      recent,
     };
   } catch (e) {
     return {status: "error", message: String(e)};
@@ -45,13 +122,57 @@ async function fetchPyPI(): Promise<ReleaseResult> {
   try {
     const res = await fetch("https://pypi.org/pypi/aptos-sdk/json");
     if (!res.ok) throw new Error(`PyPI returned ${res.status}`);
-    const data = (await res.json()) as {info: {version: string}};
-    const {version} = data.info;
+    const data = (await res.json()) as {
+      info: {version: string};
+      releases?: Record<
+        string,
+        Array<{upload_time_iso_8601?: string; yanked?: boolean}> | undefined
+      >;
+    };
+    const releasesMap = data.releases ?? {};
+    const recent: ReleaseEntry[] = Object.entries(releasesMap)
+      // Skip versions with no uploaded files (entry === []), and versions
+      // where every file was yanked.
+      .filter(
+        ([, files]) =>
+          Array.isArray(files) &&
+          files.length > 0 &&
+          !files.every((f) => f.yanked === true),
+      )
+      .map(([version, files]) => ({
+        version,
+        publishedAt: files?.[0]?.upload_time_iso_8601 ?? null,
+        link: `https://pypi.org/project/aptos-sdk/${version}/`,
+        isPrerelease: !isStableSemver(version),
+      }))
+      .sort((a, b) => {
+        if (a.publishedAt && b.publishedAt) {
+          return b.publishedAt.localeCompare(a.publishedAt);
+        }
+        return compareSemverDesc(a.version, b.version);
+      })
+      .slice(0, RECENT_LIMIT);
+    const headline = pickHeadline(recent);
+    if (!headline) {
+      // Fall back to PyPI's own `info.version` if our enumeration came up
+      // empty (e.g. project metadata only); this matches the previous behavior.
+      const {version} = data.info;
+      return {
+        status: "success",
+        version,
+        publishedAt: null,
+        link: `https://pypi.org/project/aptos-sdk/${version}/`,
+        isStable: isStableSemver(version),
+        recent: [],
+      };
+    }
     return {
       status: "success",
-      version,
-      publishedAt: null,
-      link: `https://pypi.org/project/aptos-sdk/${version}/`,
+      version: headline.entry.version,
+      publishedAt: headline.entry.publishedAt,
+      link: headline.entry.link,
+      isStable: headline.isStable,
+      recent,
     };
   } catch (e) {
     return {status: "error", message: String(e)};
@@ -68,13 +189,49 @@ async function fetchCratesIo(): Promise<ReleaseResult> {
     if (!res.ok) throw new Error(`crates.io returned ${res.status}`);
     const data = (await res.json()) as {
       crate: {newest_version: string; updated_at: string};
+      versions?: Array<{
+        num: string;
+        created_at: string;
+        yanked?: boolean;
+      }>;
     };
-    const version = data.crate.newest_version;
+    const recent: ReleaseEntry[] = (data.versions ?? [])
+      .filter((v) => v.yanked !== true)
+      .map((v) => ({
+        version: v.num,
+        publishedAt: v.created_at,
+        link: `https://crates.io/crates/aptos-sdk/${v.num}`,
+        isPrerelease: !isStableSemver(v.num),
+      }))
+      .sort((a, b) => {
+        if (a.publishedAt && b.publishedAt) {
+          return b.publishedAt.localeCompare(a.publishedAt);
+        }
+        return compareSemverDesc(a.version, b.version);
+      })
+      .slice(0, RECENT_LIMIT);
+    const headline = pickHeadline(recent);
+    if (!headline) {
+      // crates.io always ships a `versions` array on this endpoint, but if it
+      // were ever empty fall back to `crate.newest_version` so the card still
+      // shows a number rather than an error.
+      const version = data.crate.newest_version;
+      return {
+        status: "success",
+        version,
+        publishedAt: data.crate.updated_at,
+        link: `https://crates.io/crates/aptos-sdk/${version}`,
+        isStable: isStableSemver(version),
+        recent: [],
+      };
+    }
     return {
       status: "success",
-      version,
-      publishedAt: data.crate.updated_at,
-      link: `https://crates.io/crates/aptos-sdk/${version}`,
+      version: headline.entry.version,
+      publishedAt: headline.entry.publishedAt,
+      link: headline.entry.link,
+      isStable: headline.isStable,
+      recent,
     };
   } catch (e) {
     return {status: "error", message: String(e)};
@@ -83,16 +240,29 @@ async function fetchCratesIo(): Promise<ReleaseResult> {
 
 async function fetchGoProxy(): Promise<ReleaseResult> {
   try {
+    // The Go module proxy `@latest` endpoint only returns the single most
+    // recent version — there is no documented "list" endpoint we can rely on
+    // without scraping pkg.go.dev. We surface that one entry both as the
+    // headline and as the only `recent` item; the drill-in list is therefore
+    // intentionally short for Go.
     const res = await fetch(
       "https://proxy.golang.org/github.com/aptos-labs/aptos-go-sdk/@latest",
     );
     if (!res.ok) throw new Error(`Go proxy returned ${res.status}`);
     const data = (await res.json()) as {Version: string; Time: string};
-    return {
-      status: "success",
+    const entry: ReleaseEntry = {
       version: data.Version,
       publishedAt: data.Time,
       link: `https://pkg.go.dev/github.com/aptos-labs/aptos-go-sdk@${data.Version}`,
+      isPrerelease: !isStableSemver(data.Version),
+    };
+    return {
+      status: "success",
+      version: entry.version,
+      publishedAt: entry.publishedAt,
+      link: entry.link,
+      isStable: !entry.isPrerelease,
+      recent: [entry],
     };
   } catch (e) {
     return {status: "error", message: String(e)};
@@ -108,43 +278,64 @@ async function fetchGitHubCoreReleases(): Promise<{
     const headers: Record<string, string> = {
       Accept: "application/vnd.github.v3+json",
     };
-    if (githubToken) headers["Authorization"] = `Bearer ${githubToken}`;
+    if (githubToken) headers.Authorization = `Bearer ${githubToken}`;
 
     const res = await fetch(
       "https://api.github.com/repos/aptos-labs/aptos-core/releases?per_page=100",
       {headers},
     );
     if (!res.ok) throw new Error(`GitHub returned ${res.status}`);
-    const releases = (await res.json()) as {
+    const releases = (await res.json()) as Array<{
       tag_name: string;
       html_url: string;
       published_at: string;
-    }[];
+      prerelease?: boolean;
+      draft?: boolean;
+    }>;
 
-    const cliRelease = releases.find((r) =>
-      r.tag_name.startsWith("aptos-cli-v"),
-    );
-    const nodeRelease = releases.find((r) =>
-      r.tag_name.startsWith("aptos-node-v"),
-    );
+    const buildSubset = (tagPrefix: string, label: string): ReleaseResult => {
+      const recent: ReleaseEntry[] = releases
+        .filter((r) => !r.draft && r.tag_name.startsWith(tagPrefix))
+        .map((r) => {
+          const version = r.tag_name.slice(tagPrefix.length - 1); // keep the leading "v"
+          // GitHub's `prerelease` flag is operator-controlled; combine with a
+          // SemVer pre-release suffix check so we treat both as not stable.
+          const isPrerelease =
+            r.prerelease === true || !isStableSemver(version);
+          return {
+            version,
+            publishedAt: r.published_at,
+            link: r.html_url,
+            isPrerelease,
+          };
+        })
+        .sort((a, b) => {
+          if (a.publishedAt && b.publishedAt) {
+            return b.publishedAt.localeCompare(a.publishedAt);
+          }
+          return compareSemverDesc(a.version, b.version);
+        })
+        .slice(0, RECENT_LIMIT);
+      const headline = pickHeadline(recent);
+      if (!headline) {
+        return {
+          status: "error",
+          message: `No ${label} release found in last 100`,
+        };
+      }
+      return {
+        status: "success",
+        version: headline.entry.version,
+        publishedAt: headline.entry.publishedAt,
+        link: headline.entry.link,
+        isStable: headline.isStable,
+        recent,
+      };
+    };
 
     return {
-      cli: cliRelease
-        ? {
-            status: "success",
-            version: cliRelease.tag_name.replace("aptos-cli-", ""),
-            publishedAt: cliRelease.published_at,
-            link: cliRelease.html_url,
-          }
-        : {status: "error", message: "No CLI release found in last 100"},
-      node: nodeRelease
-        ? {
-            status: "success",
-            version: nodeRelease.tag_name.replace("aptos-node-", ""),
-            publishedAt: nodeRelease.published_at,
-            link: nodeRelease.html_url,
-          }
-        : {status: "error", message: "No node release found in last 100"},
+      cli: buildSubset("aptos-cli-v", "CLI"),
+      node: buildSubset("aptos-node-v", "node"),
     };
   } catch (e) {
     const msg = String(e);
