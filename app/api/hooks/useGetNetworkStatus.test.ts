@@ -6,6 +6,7 @@ const mockLedger = {
   block_height: "5000000",
   ledger_version: "10000000",
   chain_id: 1,
+  git_hash: "9bd3d6d15afcf579d4745b761fe8913026354f9d",
 };
 
 afterEach(() => {
@@ -38,6 +39,13 @@ describe("fetchNetworkStatus", () => {
               }),
           });
         }
+        if (url.includes("0x1::features::Features")) {
+          return Promise.resolve({
+            ok: true,
+            // 0x220082 → features 1, 5, 17, 23 enabled (matches Move test)
+            json: () => Promise.resolve({data: {features: "0x220082"}}),
+          });
+        }
         return Promise.resolve({ok: false, status: 404});
       }),
     );
@@ -49,8 +57,10 @@ describe("fetchNetworkStatus", () => {
     expect(result.blockHeight).toBe("5000000");
     expect(result.ledgerVersion).toBe("10000000");
     expect(result.chainId).toBe("1");
+    expect(result.gitHash).toBe("9bd3d6d15afcf579d4745b761fe8913026354f9d");
     expect(result.frameworkVersion).toBe(6);
     expect(result.validatorCount).toBe(104);
+    expect(result.enabledFeatures).toEqual([1, 5, 17, 23]);
   });
 
   it("throws when fullnode is unreachable", async () => {
@@ -87,5 +97,33 @@ describe("fetchNetworkStatus", () => {
     expect(result.healthy).toBe(true);
     expect(result.frameworkVersion).toBeNull();
     expect(result.validatorCount).toBeNull();
+    expect(result.enabledFeatures).toBeNull();
+    // The mock ledger always supplies a git_hash; gitHash should pass through.
+    expect(result.gitHash).toBe("9bd3d6d15afcf579d4745b761fe8913026354f9d");
+  });
+
+  it("returns null gitHash when the ledger response omits it", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation((url: string) => {
+        if (url.endsWith("/")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                epoch: "1",
+                block_height: "1",
+                ledger_version: "1",
+                chain_id: 1,
+                // git_hash intentionally omitted
+              }),
+          });
+        }
+        return Promise.resolve({ok: false, status: 404});
+      }),
+    );
+
+    const result = await fetchNetworkStatus("devnet");
+    expect(result.gitHash).toBeNull();
   });
 });
