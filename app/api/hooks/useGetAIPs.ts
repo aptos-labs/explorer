@@ -109,15 +109,20 @@ function parseFrontmatter(content: string): Record<string, string> {
 }
 
 export async function fetchAIPs(): Promise<AIP[]> {
+  // GitHub authentication is only honored on the GitHub API host
+  // (`api.github.com`). `raw.githubusercontent.com` doesn't accept it, and
+  // sending a custom `Authorization` header from the browser triggers a CORS
+  // preflight the raw host doesn't answer — which would silently drop most
+  // AIP rows. Keep API headers scoped to the API host.
   const githubToken = import.meta.env.VITE_GITHUB_TOKEN as string | undefined;
-  const headers: Record<string, string> = {
+  const apiHeaders: Record<string, string> = {
     Accept: "application/vnd.github.v3+json",
   };
-  if (githubToken) headers["Authorization"] = `Bearer ${githubToken}`;
+  if (githubToken) apiHeaders.Authorization = `Bearer ${githubToken}`;
 
   const treeRes = await fetch(
     "https://api.github.com/repos/aptos-foundation/AIPs/git/trees/main?recursive=1",
-    {headers},
+    {headers: apiHeaders},
   );
   if (!treeRes.ok) {
     if (treeRes.status === 403) throw new Error("RATE_LIMITED");
@@ -143,9 +148,10 @@ export async function fetchAIPs(): Promise<AIP[]> {
       if (!m) return null;
       const filenameNumber = parseInt(m[1], 10);
 
+      // No `apiHeaders` here — `raw.githubusercontent.com` doesn't accept
+      // GitHub-API auth and the preflight would fail on cross-origin.
       const rawRes = await fetch(
         `https://raw.githubusercontent.com/aptos-foundation/AIPs/main/${file.path}`,
-        {headers},
       );
       if (!rawRes.ok) return null;
       const content = await rawRes.text();
