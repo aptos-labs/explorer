@@ -3,10 +3,13 @@ import {fetchAIPs} from "./useGetAIPs";
 
 const MOCK_TREE = {
   tree: [
+    // legacy filename shape (pre-2024)
     {path: "aips/aip-1.md", sha: "abc"},
-    {path: "aips/aip-42.md", sha: "def"},
+    // current filename shape: zero-padded number + slug
+    {path: "aips/aip-042-on-chain-randomness.md", sha: "def"},
     {path: "README.md", sha: "ghi"}, // should be filtered out
     {path: "aips/template.md", sha: "jkl"}, // should be filtered out
+    {path: "aips/TEMPLATE.md", sha: "mno"}, // should be filtered out
   ],
 };
 
@@ -49,7 +52,7 @@ describe("fetchAIPs", () => {
             text: () => Promise.resolve(AIP_1_CONTENT),
           });
         }
-        if (url.includes("aip-42.md")) {
+        if (url.includes("aip-042-on-chain-randomness.md")) {
           return Promise.resolve({
             ok: true,
             text: () => Promise.resolve(AIP_42_CONTENT),
@@ -67,7 +70,10 @@ describe("fetchAIPs", () => {
     expect(result[0].status).toBe("Final");
     expect(result[0].author).toBe("Alice");
     expect(result[0].githubUrl).toContain("aip-1.md");
+    // Even though the filename uses zero-padding (042), the canonical AIP
+    // number comes from frontmatter `aip: 42`.
     expect(result[1].number).toBe(42);
+    expect(result[1].githubUrl).toContain("aip-042-on-chain-randomness.md");
   });
 
   it("throws RATE_LIMITED when GitHub returns 403", async () => {
@@ -99,19 +105,19 @@ describe("fetchAIPs", () => {
             json: () =>
               Promise.resolve({
                 tree: [
-                  {path: "aips/aip-1.md", sha: "abc"},
-                  {path: "aips/aip-2.md", sha: "xyz"},
+                  {path: "aips/aip-001-proposer.md", sha: "abc"},
+                  {path: "aips/aip-002-something.md", sha: "xyz"},
                 ],
               }),
           });
         }
-        if (url.includes("aip-1.md")) {
+        if (url.includes("aip-001-proposer.md")) {
           return Promise.resolve({
             ok: true,
             text: () => Promise.resolve(AIP_1_CONTENT),
           });
         }
-        // aip-2 fails
+        // aip-002 fails
         return Promise.resolve({ok: false, status: 500});
       }),
     );
