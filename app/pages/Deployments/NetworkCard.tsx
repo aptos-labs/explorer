@@ -13,6 +13,7 @@ import {
 import {useQueryClient} from "@tanstack/react-query";
 import type {ReactNode} from "react";
 import {useGetNetworkStatus} from "../../api/hooks/useGetNetworkStatus";
+import {useGetNodeReleaseFromCommit} from "../../api/hooks/useGetNodeReleaseFromCommit";
 import type {NetworkName} from "../../lib/constants";
 
 const NETWORK_LABEL: Record<string, string> = {
@@ -51,6 +52,17 @@ export function NetworkCard({network}: {network: NetworkName}) {
 
   const gitHash = data?.gitHash ?? null;
   const shortHash = gitHash ? gitHash.slice(0, 7) : null;
+  const {data: release, isFetching: releaseFetching} =
+    useGetNodeReleaseFromCommit(gitHash);
+
+  const releaseLabel = release?.fullVersion
+    ? `v${release.fullVersion}`
+    : release?.branchVersion
+      ? `v${release.branchVersion}.x`
+      : null;
+  const releaseBranchUrl = release?.branchVersion
+    ? `https://github.com/aptos-labs/aptos-core/tree/aptos-release-v${release.branchVersion}`
+    : null;
 
   return (
     <Card variant="outlined" sx={{height: "100%"}}>
@@ -92,6 +104,23 @@ export function NetworkCard({network}: {network: NetworkName}) {
                 data.frameworkVersion !== null
                   ? `v${data.frameworkVersion}`
                   : null
+              }
+            />
+            <StatusRow
+              label="Node Release"
+              value={
+                releaseFetching && gitHash ? (
+                  <CircularProgress size={12} />
+                ) : releaseLabel && releaseBranchUrl ? (
+                  <Link
+                    href={releaseBranchUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    underline="hover"
+                  >
+                    {releaseLabel}
+                  </Link>
+                ) : null
               }
             />
             <StatusRow
