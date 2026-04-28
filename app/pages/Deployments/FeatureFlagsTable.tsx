@@ -212,13 +212,24 @@ export function FeatureFlagsTable() {
       )}
 
       <TableContainer component={Paper} variant="outlined">
-        <Table size="small" aria-label="Feature flags by network">
+        <Table
+          size="small"
+          aria-label="Feature flags by network"
+          // Below `sm` we let the table scroll horizontally rather than
+          // letting names crush together. The min-width keeps the network
+          // columns at a tappable size while the name column stays readable.
+          sx={{minWidth: 560}}
+        >
           <TableHead>
             <TableRow>
               <TableCell sx={{width: 64}}>ID</TableCell>
-              <TableCell>Name</TableCell>
+              <TableCell sx={{minWidth: 200}}>Name</TableCell>
               {NETWORKS.map((network) => (
-                <TableCell key={network} align="center" sx={{width: 96}}>
+                <TableCell
+                  key={network}
+                  align="center"
+                  sx={{width: 88, minWidth: 72}}
+                >
                   {NETWORK_LABEL[network] ?? network}
                 </TableCell>
               ))}
@@ -243,7 +254,11 @@ export function FeatureFlagsTable() {
               visibleIds.map((id) => (
                 <TableRow key={id} hover>
                   <TableCell sx={{fontFamily: "monospace"}}>{id}</TableCell>
-                  <TableCell>{getFeatureFlagName(id)}</TableCell>
+                  <TableCell
+                    sx={{wordBreak: "break-word", whiteSpace: "normal"}}
+                  >
+                    {getFeatureFlagName(id)}
+                  </TableCell>
                   {NETWORKS.map((network) => (
                     <TableCell key={network} align="center">
                       <FeatureCell state={cellState(network, id)} />
