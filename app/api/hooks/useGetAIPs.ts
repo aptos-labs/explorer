@@ -8,6 +8,24 @@ export type AIP = {
   githubUrl: string;
 };
 
+/**
+ * Strip a trailing YAML-style comment (` #...` — space then hash, to end of
+ * line) from an *unquoted* scalar value. AIP frontmatter sometimes annotates
+ * fields like `Status: Draft # discussion: <url>`; the `#` and everything
+ * after it is meta, not data, so the explorer should ignore it. Quoted
+ * strings preserve their `#` characters (which is also what YAML 1.2 does).
+ */
+function stripYamlComment(value: string): string {
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    return value;
+  }
+  const idx = value.indexOf(" #");
+  return idx === -1 ? value : value.slice(0, idx).trimEnd();
+}
+
 function parseFrontmatter(content: string): Record<string, string> {
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   if (!match) return {};
@@ -16,10 +34,8 @@ function parseFrontmatter(content: string): Record<string, string> {
     const colon = line.indexOf(":");
     if (colon === -1) continue;
     const key = line.slice(0, colon).trim().toLowerCase();
-    const value = line
-      .slice(colon + 1)
-      .trim()
-      .replace(/^["']|["']$/g, "");
+    const rawValue = line.slice(colon + 1).trim();
+    const value = stripYamlComment(rawValue).replace(/^["']|["']$/g, "");
     if (key && value) result[key] = value;
   }
   return result;

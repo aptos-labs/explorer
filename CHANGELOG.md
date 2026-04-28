@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **AIPs status — strip trailing comments**: AIP frontmatter sometimes annotates the `Status:` field with a YAML-style comment like `Status: Draft # discussion: https://...`. The explorer's lightweight frontmatter parser now drops the ` #` and everything after it (for unquoted scalar values, matching YAML 1.2 semantics), so the AIPs table shows `Draft` rather than the full annotated string. Quoted values that contain `#` characters are preserved verbatim.
+
 ### Added
 
 - **Network deployments — feature flag comparison table**: a new "Feature Flags by Network" table on `/deployments` shows every known `0x1::features::Features` flag side-by-side across mainnet, testnet, and devnet (with check/cross/spinner cells per network). The default view is "Differences" so flags that aren't in sync across environments are immediately visible, with chip filters to switch to "All", "Enabled (anywhere)", or "Disabled (everywhere)". Unknown flag IDs that are enabled on chain but not in our static name registry still surface as `Feature #N` rows so nothing is silently hidden. The static registry now mirrors every flag in `aptos-core`'s canonical `FeatureFlag` Rust enum (IDs 1..=111), including deprecated and "rolled-out" slots, so users see real names everywhere instead of `Feature #N` placeholders
