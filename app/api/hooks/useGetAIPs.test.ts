@@ -182,6 +182,45 @@ Body.
     expect(result[0].title).toBe("Annotated Example");
   });
 
+  it("does not send Authorization headers to raw.githubusercontent.com", async () => {
+    // `raw.githubusercontent.com` doesn't accept GitHub-API auth headers and a
+    // cross-origin preflight on Authorization would fail there, silently
+    // dropping AIP rows. Make sure the fetcher only sends auth to api.github.com.
+    vi.stubEnv("VITE_GITHUB_TOKEN", "ghp_test_token");
+    const fetchMock = vi.fn().mockImplementation((url: string) => {
+      if (url.includes("git/trees")) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(MOCK_TREE),
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        text: () => Promise.resolve(AIP_1_CONTENT),
+      });
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await fetchAIPs();
+
+    for (const call of fetchMock.mock.calls) {
+      const [url, init] = call as [string, RequestInit | undefined];
+      const headers = (init?.headers ?? {}) as Record<string, string>;
+      if (url.startsWith("https://raw.githubusercontent.com/")) {
+        expect(headers.Authorization).toBeUndefined();
+      }
+    }
+    // The api.github.com call must still carry the Authorization header.
+    const apiCall = fetchMock.mock.calls.find(([u]) =>
+      (u as string).startsWith("https://api.github.com/"),
+    );
+    expect(apiCall).toBeDefined();
+    const apiHeaders = (apiCall?.[1] as RequestInit | undefined)?.headers as
+      | Record<string, string>
+      | undefined;
+    expect(apiHeaders?.Authorization).toBe("Bearer ghp_test_token");
+  });
+
   it("skips files whose raw content fails without aborting the whole fetch", async () => {
     vi.stubGlobal(
       "fetch",
