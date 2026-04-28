@@ -102,6 +102,7 @@ interface ImportMetaEnv {
   readonly VITE_FEATURE_NAME?: string;
   // Cache busting version for validator stats (bump to force fresh data)
   readonly VITE_VALIDATOR_STATS_CACHE_VERSION?: string;
+  readonly VITE_GITHUB_TOKEN?: string;
 }
 
 interface ImportMeta {

@@ -124,7 +124,7 @@ export default function AIpsPage() {
         </Alert>
       )}
 
-      <Stack direction="row" spacing={1} sx={{mb: 2, flexWrap: "wrap", gap: 1}}>
+      <Stack direction="row" sx={{mb: 2, flexWrap: "wrap", gap: 1}}>
         {STATUS_FILTERS.map((s) => (
           <Chip
             key={s}
@@ -180,7 +180,11 @@ export default function AIpsPage() {
                   </TableCell>
                   <TableCell>{aip.author}</TableCell>
                   <TableCell>
-                    <Link href={aip.githubUrl} target="_blank" rel="noopener">
+                    <Link
+                      href={aip.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       View →
                     </Link>
                   </TableCell>
