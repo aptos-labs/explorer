@@ -139,7 +139,9 @@ A single `createServerFn` batches all fetches. npm, PyPI, crates.io, and Go prox
 
 | Variable | Purpose | Visibility |
 |---|---|---|
-| `GITHUB_TOKEN` | Server-side GitHub API auth (avoids rate limits) | Server only (no `VITE_` prefix) |
+| `VITE_GITHUB_TOKEN` | GitHub API auth (avoids 60 req/hr anonymous rate limit) | Client-visible (browser bundle) |
+
+> **Implementation note:** The spec originally specified a server-only `GITHUB_TOKEN` via `createServerFn`. The explorer is a pure Vite SPA — `createServerFn` is not available. `VITE_GITHUB_TOKEN` follows the existing `VITE_APTOS_*_API_KEY` pattern in the codebase. The token should be a no-scope, public-repo-read-only PAT; exposure in the bundle is low risk for this scope.
 
 ---
 
@@ -152,8 +154,7 @@ app/routes/releases.tsx
 app/pages/Deployments/Index.tsx
 app/pages/AIPs/Index.tsx
 app/pages/Releases/Index.tsx
-app/api/hooks/useGetNetworkStatus.ts
-app/api/hooks/useGetFrameworkVersion.ts
+app/api/hooks/useGetNetworkStatus.ts  (useGetFrameworkVersion merged in here)
 app/api/hooks/useGetAIPs.ts
 app/api/hooks/useGetReleases.ts
 app/api/server/github.ts          (createServerFn for GitHub API)
