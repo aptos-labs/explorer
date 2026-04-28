@@ -35,12 +35,16 @@ describe("parseNodeReleaseFromCommitMessage", () => {
     });
   });
 
-  it("handles release tags with a patch suffix (e.g. v1.43.1) without crashing", () => {
-    // Some bump commits include the patch in the branch tag too.
+  it("rejects malformed three-component release tags (vX.Y.Z) entirely", () => {
+    // Aptos only cuts release branches per minor (`aptos-release-vX.Y`); a
+    // commit message that includes a three-component tag is malformed.
+    // Accepting it would mean rendering "v1.43.1.x" on the network card
+    // and linking to a non-existent `aptos-release-v1.43.1` branch — much
+    // worse than dropping the row, so the parser refuses the whole thing.
     const msg = "[aptos-release-v1.43.1] Bump version to 1.43.2";
     expect(parseNodeReleaseFromCommitMessage(msg, COMMIT_URL)).toEqual({
-      fullVersion: "1.43.2",
-      branchVersion: "1.43.1",
+      fullVersion: null,
+      branchVersion: null,
       commitUrl: COMMIT_URL,
     });
   });

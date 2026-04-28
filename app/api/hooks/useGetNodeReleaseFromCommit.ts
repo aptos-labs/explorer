@@ -24,15 +24,26 @@ export type NodeRelease = {
    */
   fullVersion: string | null;
   /**
-   * Minor release branch (e.g. `"1.43"`). `null` when the commit is not on
-   * a release branch (typically a `main` or feature build).
+   * Minor release branch in `X.Y` form (e.g. `"1.43"`). `null` when the
+   * commit is not on a release branch (typically a `main` or feature
+   * build). Always exactly two numeric components — never a patched
+   * `X.Y.Z` — because Aptos cuts release branches per minor and the
+   * matching GitHub branch URL is `aptos-release-vX.Y`. The parser
+   * deliberately ignores commits with a malformed three-component tag
+   * so callers don't end up rendering `v1.43.1.x` or linking to a
+   * non-existent `aptos-release-v1.43.1` branch.
    */
   branchVersion: string | null;
   /** GitHub URL pointing at the commit, for click-through verification. */
   commitUrl: string;
 };
 
-const RELEASE_BRANCH_RE = /\[aptos-release-v(\d+\.\d+(?:\.\d+)?)\]/;
+// Strict `vX.Y` — Aptos never cuts patched release branches (the patch
+// number lives in the `Bump version to X.Y.Z` line below). A loose match
+// like `\d+\.\d+(?:\.\d+)?` would let a malformed `[aptos-release-v1.43.1]`
+// flow through as `branchVersion = "1.43.1"`, which would then render
+// `v1.43.1.x` and link to a non-existent branch.
+const RELEASE_BRANCH_RE = /\[aptos-release-v(\d+\.\d+)\]/;
 const BUMP_VERSION_RE = /Bump version to (\d+\.\d+\.\d+)/;
 
 /**

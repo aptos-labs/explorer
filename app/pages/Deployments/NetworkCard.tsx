@@ -71,13 +71,22 @@ export function NetworkCard({network}: {network: NetworkName}) {
   const {data: release, isFetching: releaseFetching} =
     useGetNodeReleaseFromCommit(gitHash);
 
+  // `branchVersion` is contractually `X.Y` (the parser refuses malformed
+  // three-component tags). Guard at the consumer too: anything that isn't
+  // exactly `digits.digits` falls back to the commit-only display rather
+  // than rendering `v1.43.1.x` or linking to a non-existent
+  // `aptos-release-v1.43.1` branch.
+  const branchVersion =
+    release?.branchVersion && /^\d+\.\d+$/.test(release.branchVersion)
+      ? release.branchVersion
+      : null;
   const releaseLabel = release?.fullVersion
     ? `v${release.fullVersion}`
-    : release?.branchVersion
-      ? `v${release.branchVersion}.x`
+    : branchVersion
+      ? `v${branchVersion}.x`
       : null;
-  const releaseBranchUrl = release?.branchVersion
-    ? `https://github.com/aptos-labs/aptos-core/tree/aptos-release-v${release.branchVersion}`
+  const releaseBranchUrl = branchVersion
+    ? `https://github.com/aptos-labs/aptos-core/tree/aptos-release-v${branchVersion}`
     : null;
 
   return (
