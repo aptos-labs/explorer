@@ -137,11 +137,11 @@ A single `createServerFn` batches all fetches. npm, PyPI, crates.io, and Go prox
 
 ## Environment Variables
 
-| Variable | Purpose | Visibility |
-|---|---|---|
-| `VITE_GITHUB_TOKEN` | GitHub API auth (avoids 60 req/hr anonymous rate limit) | Client-visible (browser bundle) |
+| Variable | Purpose | Visibility | Recommended use |
+|---|---|---|---|
+| `VITE_GITHUB_TOKEN` | GitHub API auth (avoids the 60 req/hr unauthenticated rate limit) | Client-visible (browser bundle) | **Local development only.** Never set in a deployed environment. |
 
-> **Implementation note:** The spec originally specified a server-only `GITHUB_TOKEN` via `createServerFn`. The explorer is a pure Vite SPA — `createServerFn` is not available. `VITE_GITHUB_TOKEN` follows the existing `VITE_APTOS_*_API_KEY` pattern in the codebase. The token should be a no-scope, public-repo-read-only PAT; exposure in the bundle is low risk for this scope.
+> **Implementation note:** The spec originally proposed a server-only `GITHUB_TOKEN` via `createServerFn`. The explorer is a pure Vite SPA — `createServerFn` is not available. `VITE_GITHUB_TOKEN` follows the existing `VITE_APTOS_*_API_KEY` env-var pattern in the codebase, but unlike the Aptos API gateway keys (which are public client identifiers), a GitHub PAT is a **secret credential** that can be exfiltrated and abused once it ships in client JS (rate-limit burning, account attribution, repo/org enumeration). The repository's `.env.example` therefore restricts `VITE_GITHUB_TOKEN` to local-dev use only. Production should rely on unauthenticated GitHub requests with graceful rate-limit handling, or proxy through a server-side function if authenticated access becomes necessary.
 
 ---
 
