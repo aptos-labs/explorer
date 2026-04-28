@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- **AIPs author cleanup — defense-in-depth against incomplete sanitization**: the `cleanAuthors` helper now runs its `<...>` and `(...)` strip regexes in a fixed-point loop (until the string stops changing) and finishes with a sweep that removes any stray angle brackets/parens, addressing the CodeQL "Incomplete multi-character sanitization" finding. Author values are still rendered as React text (never as HTML), but the explorer now reduces nested patterns like `<<script>>` cleanly to nothing instead of leaving a stray `>`. Test mocks in `useGetReleases.test.ts` were also tightened from `url.includes("registry.npmjs.org")` to exact `new URL(url).hostname === "registry.npmjs.org"` checks (CodeQL "Incomplete URL substring sanitization").
+
 ### Fixed
 
 - **AIPs status — strip trailing comments**: AIP frontmatter sometimes annotates the `Status:` field with a YAML-style comment like `Status: Draft # discussion: https://...`. The explorer's lightweight frontmatter parser now drops the ` #` and everything after it (for unquoted scalar values, matching YAML 1.2 semantics), so the AIPs table shows `Draft` rather than the full annotated string. Quoted values that contain `#` characters are preserved verbatim.
