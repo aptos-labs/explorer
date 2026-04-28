@@ -66,12 +66,17 @@ function pickHeadline(recent: ReleaseEntry[]): {
 
 async function fetchNpm(): Promise<ReleaseResult> {
   try {
-    // Hit the full registry document so we can resolve publish timestamps via
-    // `time[version]` and enumerate every published version. The `dist-tags`
-    // field tells us the maintainer's current `latest` tag (which we use as a
-    // sanity check, not as the headline — the headline is the most recent
-    // *stable* SemVer release, which can differ when the maintainer publishes
-    // a prerelease under `latest`).
+    // We deliberately hit the *full* registry document rather than the
+    // abbreviated `application/vnd.npm.install-v1+json` variant: the
+    // abbreviated response **does not include the `time` field**, which is
+    // exactly what we need to render publish dates older than React Query's
+    // cache window. Without `time` we'd lose the relative-date column on
+    // every drill-in row — the regression we recently fixed.
+    //
+    // The full doc can be large (`@aptos-labs/ts-sdk` has hundreds of
+    // versions), but it's gzipped on the wire, served from npm's CDN, and
+    // fetched at most once per `staleTime` window. We only read the fields
+    // we need (`time` and `versions` keys) and discard the rest.
     const res = await fetch("https://registry.npmjs.org/@aptos-labs/ts-sdk");
     if (!res.ok) throw new Error(`npm returned ${res.status}`);
     const data = (await res.json()) as {
