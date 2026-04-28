@@ -6,10 +6,12 @@ import {
   Chip,
   CircularProgress,
   IconButton,
+  Link,
   Tooltip,
   Typography,
 } from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
+import type {ReactNode} from "react";
 import {useGetNetworkStatus} from "../../api/hooks/useGetNetworkStatus";
 import type {NetworkName} from "../../lib/constants";
 
@@ -19,19 +21,18 @@ const NETWORK_LABEL: Record<string, string> = {
   devnet: "Devnet",
 };
 
-function StatusRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number | null;
-}) {
+function StatusRow({label, value}: {label: string; value: ReactNode}) {
   return (
     <Box sx={{display: "flex", justifyContent: "space-between", py: 0.5}}>
       <Typography variant="body2" color="text.secondary">
         {label}
       </Typography>
-      <Typography variant="body2" fontFamily="monospace">
+      <Typography
+        variant="body2"
+        fontFamily="monospace"
+        component="div"
+        sx={{textAlign: "right"}}
+      >
         {value ?? "—"}
       </Typography>
     </Box>
@@ -47,6 +48,9 @@ export function NetworkCard({network}: {network: NetworkName}) {
       queryKey: ["deployments", "networkStatus", network],
     });
   };
+
+  const gitHash = data?.gitHash ?? null;
+  const shortHash = gitHash ? gitHash.slice(0, 7) : null;
 
   return (
     <Card variant="outlined" sx={{height: "100%"}}>
@@ -88,6 +92,23 @@ export function NetworkCard({network}: {network: NetworkName}) {
                 data.frameworkVersion !== null
                   ? `v${data.frameworkVersion}`
                   : null
+              }
+            />
+            <StatusRow
+              label="Node Commit"
+              value={
+                gitHash && shortHash ? (
+                  <Tooltip title={gitHash}>
+                    <Link
+                      href={`https://github.com/aptos-labs/aptos-core/commit/${gitHash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      underline="hover"
+                    >
+                      {shortHash}
+                    </Link>
+                  </Tooltip>
+                ) : null
               }
             />
             <StatusRow label="Validators" value={data.validatorCount} />
