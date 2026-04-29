@@ -166,4 +166,9 @@
     <changefreq>weekly</changefreq>
     <priority>0.3</priority>
   </url>
+  <url>
+    <loc>https://explorer.aptoslabs.com/.well-known/mcp/server-card.json</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.3</priority>
+  </url>
 </urlset>

@@ -29,8 +29,9 @@
     X-XSS-Protection = "1; mode=block"
     # RFC 8288 Link headers — advertise well-known agent-discovery resources.
     # Kept in sync with /.well-known/api-catalog, /.well-known/agent-skills/index.json,
-    # and the LLM reference docs under /llms.txt and /llms-full.txt.
-    Link = '''</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json", </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)", </sitemap.xml>; rel="sitemap"; type="application/xml"'''
+    # /.well-known/mcp/server-card.json, and the LLM reference docs under /llms.txt
+    # and /llms-full.txt.
+    Link = '''</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json", </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="MCP Server Card", </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)", </sitemap.xml>; rel="sitemap"; type="application/xml"'''
 
 # Homepage Vary header so caches key on Accept (used by the
 # markdown-negotiation edge function below). Link headers come from the
@@ -125,6 +126,14 @@
 # Well-known: Agent Skills discovery index
 [[headers]]
   for = "/.well-known/agent-skills/index.json"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    Content-Type = "application/json; charset=utf-8"
+    Access-Control-Allow-Origin = "*"
+
+# Well-known: MCP Server Card (SEP-1649 / SEP-2127 draft)
+[[headers]]
+  for = "/.well-known/mcp/server-card.json"
   [headers.values]
     Cache-Control = "public, max-age=3600"
     Content-Type = "application/json; charset=utf-8"

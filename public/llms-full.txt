@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-04-29 (rev 17)
+> Last updated: 2026-04-29 (rev 18)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -398,16 +398,21 @@ canonical user experience.
   - `aptos-explorer-search` — teaches agents to use the home-page
     `/?search={query}` auto-detection for opaque inputs.
   Each skill entry includes a SHA-256 digest of its `SKILL.md` artifact.
+- **`/.well-known/mcp/server-card.json`** — MCP Server Card (SEP-1649 /
+  SEP-2127 draft), served as `application/json`. Publishes `serverInfo`,
+  the WebMCP transport endpoint (`https://explorer.aptoslabs.com/`), and
+  the read-only navigation tool capabilities exposed by the Explorer.
 
 ### HTTP Link headers (RFC 8288)
 
 The home page (and, as a fallback, every path) responds with a `Link`
-header that advertises the api-catalog, the agent-skills index, and both
-`llms.txt` / `llms-full.txt`. Example:
+header that advertises the api-catalog, the MCP Server Card, the
+agent-skills index, and both `llms.txt` / `llms-full.txt`. Example:
 
 ```
 Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json",
       </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json",
+      </.well-known/mcp/server-card.json>; rel="https://modelcontextprotocol.io/rel/server-card"; type="application/json",
       </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)",
       </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)",
       </sitemap.xml>; rel="sitemap"; type="application/xml"
