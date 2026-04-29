@@ -125,19 +125,20 @@ export function NetworkCard({network}: {network: NetworkName}) {
             <StatusRow label="Chain ID" value={data.chainId} />
             <StatusRow
               label="Framework Release"
-              value={
-                data.frameworkRelease !== null ? (
-                  data.gasFeatureVersion !== null ? (
-                    <Tooltip
-                      title={`Gas schedule feature_version ${data.gasFeatureVersion} (aptos-core gas_feature_versions in aptos-gas-schedule/src/ver.rs)`}
-                    >
-                      <span>{data.frameworkRelease}</span>
-                    </Tooltip>
-                  ) : (
-                    <span>{data.frameworkRelease}</span>
-                  )
-                ) : null
-              }
+              value={(() => {
+                if (data.gasFeatureVersion === null) return null;
+                const mapped = data.frameworkRelease;
+                const display =
+                  mapped ?? `gas ${data.gasFeatureVersion} (unmapped)`;
+                const tooltip = mapped
+                  ? `Gas schedule feature_version ${data.gasFeatureVersion} (aptos-core gas_feature_versions in aptos-gas-schedule/src/ver.rs)`
+                  : `Gas schedule feature_version ${data.gasFeatureVersion} is not mapped to a known framework release in this explorer — update GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE`;
+                return (
+                  <Tooltip title={tooltip}>
+                    <span>{display}</span>
+                  </Tooltip>
+                );
+              })()}
             />
             <StatusRow
               label="Protocol Major"

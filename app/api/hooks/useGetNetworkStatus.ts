@@ -15,8 +15,10 @@ export type NetworkStatus = {
   /** Aptos node software git commit hash from `GET /v1/` `git_hash`. */
   gitHash: string | null;
   /**
-   * Framework release train matched from `0x1::gas_schedule::GasScheduleV2.feature_version`
-   * (maps to aptos-core `gas_feature_versions` in `aptos-gas-schedule/src/ver.rs`).
+   * Mapped framework release train from `gasFeatureVersion` (e.g. `"1.43"`).
+   * **`null`** when `gasFeatureVersion` is unknown **or** not yet listed in
+   * `GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE` — use `gasFeatureVersion` and show an
+   * unmapped label in the UI when appropriate.
    */
   frameworkRelease: string | null;
   /**
@@ -80,9 +82,7 @@ export async function fetchNetworkStatus(
 
   let frameworkRelease: string | null = null;
   if (gasFeatureVersion !== null) {
-    frameworkRelease =
-      frameworkReleaseFromGasFeatureVersion(gasFeatureVersion) ??
-      `gas ${gasFeatureVersion} (unmapped)`;
+    frameworkRelease = frameworkReleaseFromGasFeatureVersion(gasFeatureVersion);
   }
 
   let validatorCount: number | null = null;
@@ -107,7 +107,10 @@ export async function fetchNetworkStatus(
   let protocolMajorVersion: number | null = null;
   if (protoResult.status === "fulfilled" && protoResult.value.ok) {
     const v = (await protoResult.value.json()) as {data: {major: string}};
-    protocolMajorVersion = Number(v.data.major);
+    const parsedProtocolMajor = Number(v.data.major);
+    protocolMajorVersion = Number.isFinite(parsedProtocolMajor)
+      ? parsedProtocolMajor
+      : null;
   }
 
   return {

@@ -53,8 +53,10 @@ export const GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE: Readonly<
 
 /**
  * IDs from `FeatureFlag` in aptos-core `types/src/on_chain_config/aptos_features.rs`
- * for **VM Binary Format vN** (Move module bytecode format). When flag K is enabled,
- * bytecode up to version K is accepted (flags roll forward cumulatively on production nets).
+ * for **VM Binary Format vN** (Move module bytecode format). Each entry pairs a
+ * `flagId` with the corresponding Move bytecode **`formatVersion`** that flag enables
+ * (the IDs are not the bytecode version numbers). Production nets enable these
+ * cumulatively; we take the maximum `formatVersion` among enabled flags.
  */
 const VM_BINARY_FORMAT_FLAG_IDS: ReadonlyArray<{
   flagId: number;

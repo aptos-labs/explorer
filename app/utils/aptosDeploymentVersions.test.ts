@@ -1,3 +1,4 @@
+// Covers FEAT-RELEASES-001 (network deployment version helpers)
 import {describe, expect, it} from "vitest";
 import {
   frameworkReleaseFromGasFeatureVersion,
