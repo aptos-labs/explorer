@@ -1,5 +1,9 @@
 import {useQuery} from "@tanstack/react-query";
 import {getApiKey, type NetworkName, networks} from "../../lib/constants";
+import {
+  frameworkReleaseFromGasFeatureVersion,
+  maxBytecodeFormatVersionFromFlags,
+} from "../../utils/aptosDeploymentVersions";
 import {decodeFeatureBitmap} from "./aptosFeatureFlags";
 
 export type NetworkStatus = {
@@ -10,8 +14,23 @@ export type NetworkStatus = {
   chainId: string;
   /** Aptos node software git commit hash from `GET /v1/` `git_hash`. */
   gitHash: string | null;
-  /** Aptos framework on-chain version (`0x1::version::Version.major`). */
-  frameworkVersion: number | null;
+  /**
+   * Framework release train matched from `0x1::gas_schedule::GasScheduleV2.feature_version`
+   * (maps to aptos-core `gas_feature_versions` in `aptos-gas-schedule/src/ver.rs`).
+   */
+  frameworkRelease: string | null;
+  /**
+   * Raw gas schedule feature version from chain — useful when the explorer's mapping
+   * table is behind a new aptos-core release.
+   */
+  gasFeatureVersion: number | null;
+  /** Highest Move bytecode format version enabled (from VM Binary Format v* feature flags). */
+  bytecodeFormatVersion: number | null;
+  /**
+   * Blockchain protocol major version (`0x1::version::Version.major`) — unrelated to
+   * framework semver; kept for diagnostics next to the framework release.
+   */
+  protocolMajorVersion: number | null;
   validatorCount: number | null;
   /** Sorted list of enabled feature flag IDs from `0x1::features::Features`. */
   enabledFeatures: number[] | null;
@@ -37,20 +56,33 @@ export async function fetchNetworkStatus(
   };
   const ledger = (await res.json()) as LedgerInfo;
 
-  const [vResult, sResult, fResult] = await Promise.allSettled([
-    fetch(`${baseUrl}/accounts/0x1/resource/0x1::version::Version`, {headers}),
+  const [gasResult, sResult, fResult, protoResult] = await Promise.allSettled([
+    fetch(`${baseUrl}/accounts/0x1/resource/0x1::gas_schedule::GasScheduleV2`, {
+      headers,
+    }),
     fetch(`${baseUrl}/accounts/0x1/resource/0x1::stake::ValidatorSet`, {
       headers,
     }),
     fetch(`${baseUrl}/accounts/0x1/resource/0x1::features::Features`, {
       headers,
     }),
+    fetch(`${baseUrl}/accounts/0x1/resource/0x1::version::Version`, {headers}),
   ]);
 
-  let frameworkVersion: number | null = null;
-  if (vResult.status === "fulfilled" && vResult.value.ok) {
-    const v = (await vResult.value.json()) as {data: {major: string}};
-    frameworkVersion = Number(v.data.major);
+  let gasFeatureVersion: number | null = null;
+  if (gasResult.status === "fulfilled" && gasResult.value.ok) {
+    const g = (await gasResult.value.json()) as {
+      data: {feature_version: string};
+    };
+    const parsed = Number(g.data.feature_version);
+    gasFeatureVersion = Number.isFinite(parsed) ? parsed : null;
+  }
+
+  let frameworkRelease: string | null = null;
+  if (gasFeatureVersion !== null) {
+    frameworkRelease =
+      frameworkReleaseFromGasFeatureVersion(gasFeatureVersion) ??
+      `gas ${gasFeatureVersion} (unmapped)`;
   }
 
   let validatorCount: number | null = null;
@@ -67,6 +99,17 @@ export async function fetchNetworkStatus(
     enabledFeatures = decodeFeatureBitmap(f.data.features);
   }
 
+  let bytecodeFormatVersion: number | null = null;
+  if (enabledFeatures) {
+    bytecodeFormatVersion = maxBytecodeFormatVersionFromFlags(enabledFeatures);
+  }
+
+  let protocolMajorVersion: number | null = null;
+  if (protoResult.status === "fulfilled" && protoResult.value.ok) {
+    const v = (await protoResult.value.json()) as {data: {major: string}};
+    protocolMajorVersion = Number(v.data.major);
+  }
+
   return {
     healthy: true,
     epoch: String(ledger.epoch),
@@ -74,7 +117,10 @@ export async function fetchNetworkStatus(
     ledgerVersion: String(ledger.ledger_version),
     chainId: String(ledger.chain_id),
     gitHash: ledger.git_hash ?? null,
-    frameworkVersion,
+    frameworkRelease,
+    gasFeatureVersion,
+    bytecodeFormatVersion,
+    protocolMajorVersion,
     validatorCount,
     enabledFeatures,
   };
