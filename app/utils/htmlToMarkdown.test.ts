@@ -30,6 +30,16 @@ describe("htmlToMarkdown", () => {
     expect(markdown).not.toContain("<main>");
   });
 
+  it("escapes angle brackets from text content", () => {
+    // Covers FEAT-SEO-004.
+    const markdown = htmlToMarkdown(
+      `<html><body><p>&lt;script&gt;alert("xss")&lt;/script&gt;</p></body></html>`,
+    );
+
+    expect(markdown).toBe('&lt;script&gt;alert("xss")&lt;/script&gt;');
+    expect(markdown).not.toContain("<script>");
+  });
+
   it("estimates token count for the markdown response header", () => {
     // Covers FEAT-SEO-004.
     expect(estimateMarkdownTokens("")).toBe(0);
