@@ -124,11 +124,39 @@ export function NetworkCard({network}: {network: NetworkName}) {
             <StatusRow label="Ledger Version" value={data.ledgerVersion} />
             <StatusRow label="Chain ID" value={data.chainId} />
             <StatusRow
-              label="Framework Version"
+              label="Framework Release"
               value={
-                data.frameworkVersion !== null
-                  ? `v${data.frameworkVersion}`
-                  : null
+                data.frameworkRelease !== null ? (
+                  data.gasFeatureVersion !== null ? (
+                    <Tooltip
+                      title={`Gas schedule feature_version ${data.gasFeatureVersion} (aptos-core gas_feature_versions in aptos-gas-schedule/src/ver.rs)`}
+                    >
+                      <span>{data.frameworkRelease}</span>
+                    </Tooltip>
+                  ) : (
+                    <span>{data.frameworkRelease}</span>
+                  )
+                ) : null
+              }
+            />
+            <StatusRow
+              label="Protocol Major"
+              value={
+                data.protocolMajorVersion !== null ? (
+                  <Tooltip title="Blockchain protocol version from 0x1::version::Version — not the framework semver">
+                    <span>v{data.protocolMajorVersion}</span>
+                  </Tooltip>
+                ) : null
+              }
+            />
+            <StatusRow
+              label="Bytecode Format (max)"
+              value={
+                data.bytecodeFormatVersion !== null ? (
+                  <Tooltip title="Highest Move module bytecode format enabled via VM Binary Format feature flags on chain">
+                    <span>v{data.bytecodeFormatVersion}</span>
+                  </Tooltip>
+                ) : null
               }
             />
             <StatusRow

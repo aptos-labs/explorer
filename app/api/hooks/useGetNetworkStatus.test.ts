@@ -24,10 +24,17 @@ describe("fetchNetworkStatus", () => {
             json: () => Promise.resolve(mockLedger),
           });
         }
+        if (url.includes("0x1::gas_schedule::GasScheduleV2")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({data: {feature_version: "47", entries: []}}),
+          });
+        }
         if (url.includes("0x1::version::Version")) {
           return Promise.resolve({
             ok: true,
-            json: () => Promise.resolve({data: {major: "6"}}),
+            json: () => Promise.resolve({data: {major: "4"}}),
           });
         }
         if (url.includes("0x1::stake::ValidatorSet")) {
@@ -42,7 +49,7 @@ describe("fetchNetworkStatus", () => {
         if (url.includes("0x1::features::Features")) {
           return Promise.resolve({
             ok: true,
-            // 0x220082 → features 1, 5, 17, 23 enabled (matches Move test)
+            // 0x220082 → features 1, 5, 17, 23 enabled (matches Move test); flag 5 ⇒ bytecode v6+
             json: () => Promise.resolve({data: {features: "0x220082"}}),
           });
         }
@@ -58,7 +65,10 @@ describe("fetchNetworkStatus", () => {
     expect(result.ledgerVersion).toBe("10000000");
     expect(result.chainId).toBe("1");
     expect(result.gitHash).toBe("9bd3d6d15afcf579d4745b761fe8913026354f9d");
-    expect(result.frameworkVersion).toBe(6);
+    expect(result.frameworkRelease).toBe("1.43");
+    expect(result.gasFeatureVersion).toBe(47);
+    expect(result.bytecodeFormatVersion).toBe(6);
+    expect(result.protocolMajorVersion).toBe(4);
     expect(result.validatorCount).toBe(104);
     expect(result.enabledFeatures).toEqual([1, 5, 17, 23]);
   });
@@ -95,7 +105,10 @@ describe("fetchNetworkStatus", () => {
 
     const result = await fetchNetworkStatus("devnet");
     expect(result.healthy).toBe(true);
-    expect(result.frameworkVersion).toBeNull();
+    expect(result.frameworkRelease).toBeNull();
+    expect(result.gasFeatureVersion).toBeNull();
+    expect(result.bytecodeFormatVersion).toBeNull();
+    expect(result.protocolMajorVersion).toBeNull();
     expect(result.validatorCount).toBeNull();
     expect(result.enabledFeatures).toBeNull();
     // The mock ledger always supplies a git_hash; gitHash should pass through.
