@@ -1196,6 +1196,7 @@ top of the HTML site.
 | `app/utils/moduleErrorHandler.test.ts` | FEAT-ERROR-001 (chunk error handling, reload behavior) |
 | `app/utils/llmsRouteCoverage.test.ts` | FEAT-SEO-003 (LLM doc drift) |
 | `app/utils/agentSkillsIndex.test.ts` | FEAT-SEO-004 (agent-skills index schema, digest integrity, frontmatter) |
+| `app/utils/netlifyHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers) |
 | `app/utils/acceptMarkdown.test.ts` | FEAT-SEO-004 (`Accept: text/markdown` negotiation helper) |
 | `app/components/webMcpTools.test.ts` | FEAT-SEO-004 (WebMCP navigation tools: routing, validation) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
