@@ -2,6 +2,7 @@ import {describe, expect, it} from "vitest";
 import {prefersMarkdown} from "./acceptMarkdown";
 
 describe("prefersMarkdown", () => {
+  // Covers FEAT-SEO-004.
   it("returns false for null / empty Accept", () => {
     expect(prefersMarkdown(null)).toBe(false);
     expect(prefersMarkdown("")).toBe(false);
