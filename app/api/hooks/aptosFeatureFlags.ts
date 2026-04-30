@@ -2,7 +2,7 @@
  * Names for known Aptos on-chain feature flags. The canonical list lives in
  * the `FeatureFlag` enum at
  * `aptos-core/types/src/on_chain_config/aptos_features.rs`; this file mirrors
- * those numeric IDs (1..=111 at time of writing) so the explorer can render
+ * those numeric IDs (1..=112 at time of writing) so the explorer can render
  * human-readable names without a runtime dependency on aptos-core.
  *
  * The on-chain `0x1::features::Features` resource stores enabled flags in a
@@ -138,11 +138,16 @@ export const APTOS_FEATURE_FLAGS: ReadonlyArray<AptosFeatureFlag> = [
   {id: 109, name: "Public Struct & Enum Args"},
   {id: 110, name: "Multisig Script"},
   {id: 111, name: "Transaction Limits"},
+  {id: 112, name: "Versioned Transaction Validation"},
 ];
 
 const FEATURE_FLAG_NAME_BY_ID = new Map<number, string>(
   APTOS_FEATURE_FLAGS.map((f) => [f.id, f.name]),
 );
+
+export function hasStaticFeatureFlagLabel(id: number): boolean {
+  return FEATURE_FLAG_NAME_BY_ID.has(id);
+}
 
 export function getFeatureFlagName(id: number): string {
   return FEATURE_FLAG_NAME_BY_ID.get(id) ?? `Feature #${id}`;
