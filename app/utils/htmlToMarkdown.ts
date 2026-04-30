@@ -122,10 +122,20 @@ function safeMarkdownUrl(value: string | undefined): string | undefined {
   const trimmed = value?.trim();
   if (!trimmed || trimmed.startsWith("#")) return undefined;
   if (hasControlCharacter(trimmed)) return undefined;
+  if (trimmed.startsWith("\\")) return undefined;
+
+  if (trimmed.startsWith("/")) {
+    return trimmed.startsWith("//") ? undefined : trimmed;
+  }
 
   try {
+    const lowerTrimmed = trimmed.toLowerCase();
     const parsed = new URL(trimmed, "https://explorer.aptoslabs.com");
-    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+    if (
+      (lowerTrimmed.startsWith("http://") ||
+        lowerTrimmed.startsWith("https://")) &&
+      (parsed.protocol === "http:" || parsed.protocol === "https:")
+    ) {
       return trimmed;
     }
   } catch {
@@ -223,6 +233,7 @@ function parseTag(raw: string): HtmlToken | undefined {
 
 function tokenizeHtml(html: string): HtmlToken[] {
   const tokens: HtmlToken[] = [];
+  const lowerHtml = html.toLowerCase();
   let i = 0;
 
   while (i < html.length) {
@@ -256,7 +267,7 @@ function tokenizeHtml(html: string): HtmlToken[] {
 
     if (tag.type === "tag" && !tag.closing && RAW_TEXT_TAGS.has(tag.name)) {
       const closeNeedle = `</${tag.name}`;
-      const rawCloseStart = html.toLowerCase().indexOf(closeNeedle, i);
+      const rawCloseStart = lowerHtml.indexOf(closeNeedle, i);
       if (rawCloseStart === -1) {
         i = html.length;
         continue;
