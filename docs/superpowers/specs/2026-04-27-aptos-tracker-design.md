@@ -46,7 +46,7 @@ Show all three Aptos networks side-by-side. This page **ignores** the global `?n
 | Block height | `getLedgerInfo()` → `block_height` |
 | Ledger version | `getLedgerInfo()` → `ledger_version` |
 | Chain ID | `getLedgerInfo()` → `chain_id` |
-| Framework version | `GET /accounts/0x1/resource/0x1::version::Version` → `data.major` |
+| Framework release | `GET /accounts/0x1/resource/0x1::gas_schedule::GasScheduleV2` → `data.feature_version`, mapped via aptos-core `gas_feature_versions` |
 | Validator count | Reuse `useGetValidatorSet` logic (already exists) |
 
 ### Caching
@@ -58,7 +58,7 @@ Each network card is an independent query. One network failing shows an error st
 
 ### Hooks
 - `useGetNetworkStatus(network: Network)` — new hook, runs three instances in parallel (one per network)
-- `useGetFrameworkVersion(network: Network)` — new hook, fetches `0x1::version::Version` resource
+- `useGetFrameworkRelease(network: Network)` — new hook, fetches `0x1::gas_schedule::GasScheduleV2` and maps `feature_version`
 
 ---
 

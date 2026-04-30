@@ -5,8 +5,7 @@
  * (`gas_feature_versions` + `LATEST_GAS_FEATURE_VERSION`).
  *
  * The value in `0x1::gas_schedule::GasScheduleV2.feature_version` tracks gas-related
- * VM behavior — unlike `0x1::version::Version.major`, which is the blockchain
- * protocol major version (often shown as "v4"), not the framework semver.
+ * VM behavior rather than semantic versioning directly.
  */
 export const GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE: Readonly<
   Record<number, string>

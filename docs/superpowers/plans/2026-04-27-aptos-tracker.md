@@ -207,12 +207,6 @@ describe("fetchNetworkStatus", () => {
             json: () => Promise.resolve(mockLedger),
           });
         }
-        if (url.includes("0x1::version::Version")) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({ data: { major: "6" } }),
-          });
-        }
         if (url.includes("0x1::stake::ValidatorSet")) {
           return Promise.resolve({
             ok: true,
@@ -233,7 +227,6 @@ describe("fetchNetworkStatus", () => {
     expect(result.blockHeight).toBe("5000000");
     expect(result.ledgerVersion).toBe("10000000");
     expect(result.chainId).toBe("1");
-    expect(result.frameworkVersion).toBe(6);
     expect(result.validatorCount).toBe(104);
   });
 
@@ -253,7 +246,7 @@ describe("fetchNetworkStatus", () => {
     );
   });
 
-  it("returns null frameworkVersion and validatorCount when optional resources fail", async () => {
+  it("returns null validatorCount when optional resources fail", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockImplementation((url: string) => {
@@ -269,7 +262,6 @@ describe("fetchNetworkStatus", () => {
 
     const result = await fetchNetworkStatus("devnet");
     expect(result.healthy).toBe(true);
-    expect(result.frameworkVersion).toBeNull();
     expect(result.validatorCount).toBeNull();
   });
 });
@@ -296,7 +288,6 @@ export type NetworkStatus = {
   blockHeight: string;
   ledgerVersion: string;
   chainId: string;
-  frameworkVersion: number | null;
   validatorCount: number | null;
 };
 
@@ -312,20 +303,6 @@ export async function fetchNetworkStatus(
   const res = await fetch(`${baseUrl}/`, { headers });
   if (!res.ok) throw new Error(`Fullnode returned ${res.status}`);
   const ledger = await res.json();
-
-  let frameworkVersion: number | null = null;
-  try {
-    const vRes = await fetch(
-      `${baseUrl}/accounts/0x1/resource/0x1::version::Version`,
-      { headers },
-    );
-    if (vRes.ok) {
-      const v = await vRes.json();
-      frameworkVersion = Number((v.data as { major: string }).major);
-    }
-  } catch {
-    // optional field — not all networks expose this
-  }
 
   let validatorCount: number | null = null;
   try {
@@ -349,7 +326,6 @@ export async function fetchNetworkStatus(
     blockHeight: String(ledger.block_height),
     ledgerVersion: String(ledger.ledger_version),
     chainId: String(ledger.chain_id),
-    frameworkVersion,
     validatorCount,
   };
 }
@@ -476,12 +452,6 @@ export function NetworkCard({ network }: { network: NetworkName }) {
             <StatusRow label="Block Height" value={data.blockHeight} />
             <StatusRow label="Ledger Version" value={data.ledgerVersion} />
             <StatusRow label="Chain ID" value={data.chainId} />
-            <StatusRow
-              label="Framework Version"
-              value={
-                data.frameworkVersion !== null ? `v${data.frameworkVersion}` : null
-              }
-            />
             <StatusRow label="Validators" value={data.validatorCount} />
           </>
         )}

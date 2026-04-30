@@ -49,7 +49,7 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
 - Verification: `/verification`
 - Releases hub: `/releases` (redirects to default tab `networks`)
   - Tabs: `/releases/networks`, `/releases/aips`, `/releases/sdks`
-  - Networks tab — live deployment status (epoch, block height, framework release from gas schedule, protocol major, max Move bytecode format, node release, node commit, validators, feature flag comparison) for mainnet, testnet, and devnet
+  - Networks tab — live deployment status (epoch, block height, framework release from gas schedule, max Move bytecode format, node release, node commit, validators, feature flag comparison) for mainnet, testnet, and devnet
   - AIPs tab — Aptos Improvement Proposals index sourced from `aptos-foundation/AIPs` (number, title, status, author, link)
   - SDKs & Tools tab — latest stable releases for the Aptos CLI, `aptos-node`, and the TypeScript / Python / Rust / Go SDKs, with a drill-in list of recent versions per registry
   - Legacy paths `/deployments` and `/aips` redirect to `/releases/networks` and `/releases/aips` respectively

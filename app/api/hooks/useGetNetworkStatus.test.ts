@@ -13,7 +13,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-// Covers FEAT-RELEASES-001 (fetchNetworkStatus: framework release, gas feature version, bytecode format, protocol major)
+// Covers FEAT-RELEASES-001 (fetchNetworkStatus: framework release, gas feature version, bytecode format)
 describe("fetchNetworkStatus", () => {
   it("returns healthy status with gas schedule framework release and related fields", async () => {
     vi.stubGlobal(
@@ -30,12 +30,6 @@ describe("fetchNetworkStatus", () => {
             ok: true,
             json: () =>
               Promise.resolve({data: {feature_version: "47", entries: []}}),
-          });
-        }
-        if (url.includes("0x1::version::Version")) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({data: {major: "4"}}),
           });
         }
         if (url.includes("0x1::stake::ValidatorSet")) {
@@ -69,7 +63,6 @@ describe("fetchNetworkStatus", () => {
     expect(result.frameworkRelease).toBe("1.43");
     expect(result.gasFeatureVersion).toBe(47);
     expect(result.bytecodeFormatVersion).toBe(6);
-    expect(result.protocolMajorVersion).toBe(4);
     expect(result.validatorCount).toBe(104);
     expect(result.enabledFeatures).toEqual([1, 5, 17, 23]);
   });
@@ -109,7 +102,6 @@ describe("fetchNetworkStatus", () => {
     expect(result.frameworkRelease).toBeNull();
     expect(result.gasFeatureVersion).toBeNull();
     expect(result.bytecodeFormatVersion).toBeNull();
-    expect(result.protocolMajorVersion).toBeNull();
     expect(result.validatorCount).toBeNull();
     expect(result.enabledFeatures).toBeNull();
     // The mock ledger always supplies a git_hash; gitHash should pass through.
@@ -135,12 +127,6 @@ describe("fetchNetworkStatus", () => {
               }),
           });
         }
-        if (url.includes("0x1::version::Version")) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({data: {major: "4"}}),
-          });
-        }
         if (url.includes("0x1::stake::ValidatorSet")) {
           return Promise.resolve({
             ok: true,
@@ -160,44 +146,6 @@ describe("fetchNetworkStatus", () => {
     const result = await fetchNetworkStatus("mainnet");
     expect(result.frameworkRelease).toBeNull();
     expect(result.gasFeatureVersion).toBe(99999);
-  });
-
-  it("returns null protocolMajorVersion when Version.major is non-numeric", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockImplementation((url: string) => {
-        if (url.endsWith("/")) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(mockLedger),
-          });
-        }
-        if (url.includes("0x1::gas_schedule::GasScheduleV2")) {
-          return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({data: {feature_version: "47", entries: []}}),
-          });
-        }
-        if (url.includes("0x1::version::Version")) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({data: {major: "not-a-number"}}),
-          });
-        }
-        if (url.includes("0x1::stake::ValidatorSet")) {
-          return Promise.resolve({ok: false, status: 404});
-        }
-        if (url.includes("0x1::features::Features")) {
-          return Promise.resolve({ok: false, status: 404});
-        }
-        return Promise.resolve({ok: false, status: 404});
-      }),
-    );
-
-    const result = await fetchNetworkStatus("mainnet");
-    expect(result.protocolMajorVersion).toBeNull();
-    expect(result.frameworkRelease).toBe("1.43");
   });
 
   it("returns null gitHash when the ledger response omits it", async () => {

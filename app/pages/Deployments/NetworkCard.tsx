@@ -141,16 +141,6 @@ export function NetworkCard({network}: {network: NetworkName}) {
               })()}
             />
             <StatusRow
-              label="Protocol Major"
-              value={
-                data.protocolMajorVersion !== null ? (
-                  <Tooltip title="Blockchain protocol version from 0x1::version::Version — not the framework semver">
-                    <span>v{data.protocolMajorVersion}</span>
-                  </Tooltip>
-                ) : null
-              }
-            />
-            <StatusRow
               label="Bytecode Format (max)"
               value={
                 data.bytecodeFormatVersion !== null ? (

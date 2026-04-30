@@ -28,11 +28,6 @@ export type NetworkStatus = {
   gasFeatureVersion: number | null;
   /** Highest Move bytecode format version enabled (from VM Binary Format v* feature flags). */
   bytecodeFormatVersion: number | null;
-  /**
-   * Blockchain protocol major version (`0x1::version::Version.major`) — unrelated to
-   * framework semver; kept for diagnostics next to the framework release.
-   */
-  protocolMajorVersion: number | null;
   validatorCount: number | null;
   /** Sorted list of enabled feature flag IDs from `0x1::features::Features`. */
   enabledFeatures: number[] | null;
@@ -58,7 +53,7 @@ export async function fetchNetworkStatus(
   };
   const ledger = (await res.json()) as LedgerInfo;
 
-  const [gasResult, sResult, fResult, protoResult] = await Promise.allSettled([
+  const [gasResult, sResult, fResult] = await Promise.allSettled([
     fetch(`${baseUrl}/accounts/0x1/resource/0x1::gas_schedule::GasScheduleV2`, {
       headers,
     }),
@@ -68,7 +63,6 @@ export async function fetchNetworkStatus(
     fetch(`${baseUrl}/accounts/0x1/resource/0x1::features::Features`, {
       headers,
     }),
-    fetch(`${baseUrl}/accounts/0x1/resource/0x1::version::Version`, {headers}),
   ]);
 
   let gasFeatureVersion: number | null = null;
@@ -104,15 +98,6 @@ export async function fetchNetworkStatus(
     bytecodeFormatVersion = maxBytecodeFormatVersionFromFlags(enabledFeatures);
   }
 
-  let protocolMajorVersion: number | null = null;
-  if (protoResult.status === "fulfilled" && protoResult.value.ok) {
-    const v = (await protoResult.value.json()) as {data: {major: string}};
-    const parsedProtocolMajor = Number(v.data.major);
-    protocolMajorVersion = Number.isFinite(parsedProtocolMajor)
-      ? parsedProtocolMajor
-      : null;
-  }
-
   return {
     healthy: true,
     epoch: String(ledger.epoch),
@@ -123,7 +108,6 @@ export async function fetchNetworkStatus(
     frameworkRelease,
     gasFeatureVersion,
     bytecodeFormatVersion,
-    protocolMajorVersion,
     validatorCount,
     enabledFeatures,
   };
