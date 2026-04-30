@@ -34,9 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Agent-readiness discovery surfaces**: the explorer now ships structured metadata for autonomous agents and LLM-powered crawlers:
-  - `Link` response headers (RFC 8288) on `/` and `/*` advertising the API catalog, the Agent Skills index, `llms.txt`, `llms-full.txt`, and the sitemap
+  - `Link` response headers (RFC 8288) on `/` and `/*` advertising the API catalog, the Agent Skills index, MCP Server Card, `llms.txt`, `llms-full.txt`, and the sitemap
   - `/.well-known/api-catalog` (RFC 9727 / RFC 9264 linkset JSON) pointing to the upstream Aptos fullnode REST APIs (mainnet/testnet/devnet), the indexer GraphQL API, and the explorer itself
   - `/.well-known/agent-skills/index.json` plus per-skill `SKILL.md` bundles (`aptos-explorer-urls`, `aptos-explorer-search`) following the Agent Skills Discovery RFC v0.2.0, with SHA-256 digests
+  - `/.well-known/mcp/server-card.json` (SEP-1649 / SEP-2127 draft) describing the Explorer server, WebMCP transport endpoint, and read-only navigation tool capabilities for pre-connection MCP agent discovery
   - `scripts/update-agent-skills-index.mjs` helper to regenerate the discovery index when skills change
   - `robots.txt` `Content-Signal` directives — `ai-train=no, search=yes, ai-input=yes` — at the top of the file and inside every AI-crawler group (contentsignals.org / draft-romm-aipref-contentsignals)
   - Netlify Edge Function (`netlify/edge-functions/markdown-negotiation.ts`) that serves the homepage as `Content-Type: text/markdown` (backed by `/llms.txt`) when the request includes `Accept: text/markdown`; HTML remains the default for browsers

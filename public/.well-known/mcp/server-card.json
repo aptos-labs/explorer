@@ -1,0 +1,70 @@
+{
+  "mcpCard": "0.1",
+  "serverInfo": {
+    "name": "aptos-explorer",
+    "version": "1.1.0"
+  },
+  "name": "com.aptoslabs.explorer",
+  "version": "1.1.0",
+  "title": "Aptos Explorer",
+  "description": "Official Aptos blockchain explorer with read-only WebMCP navigation tools for opening transactions, accounts, blocks, releases, coins, and search results.",
+  "websiteUrl": "https://explorer.aptoslabs.com",
+  "transport": {
+    "type": "webmcp",
+    "endpoint": "https://explorer.aptoslabs.com/",
+    "description": "Open the explorer in a browser that supports navigator.modelContext. The page registers the tools listed in this card as read-only WebMCP navigation tools."
+  },
+  "remotes": [
+    {
+      "type": "webmcp",
+      "url": "https://explorer.aptoslabs.com/",
+      "name": "aptos-explorer-webmcp",
+      "title": "Aptos Explorer WebMCP",
+      "description": "Client-side WebMCP tools registered on explorer.aptoslabs.com for read-only Aptos Explorer navigation."
+    }
+  ],
+  "capabilities": {
+    "tools": {
+      "listChanged": false,
+      "readOnly": true
+    },
+    "resources": false,
+    "prompts": false
+  },
+  "tools": [
+    {
+      "name": "search_explorer",
+      "title": "Search Aptos Explorer",
+      "description": "Route the explorer home-page search to an on-chain entity. Supports addresses, transaction versions or hashes, ANS .apt names, coin types, and block heights."
+    },
+    {
+      "name": "open_transaction",
+      "title": "Open transaction",
+      "description": "Open the Aptos Explorer transaction page for a version number or transaction hash, with an optional detail tab."
+    },
+    {
+      "name": "open_account",
+      "title": "Open account",
+      "description": "Open the Aptos Explorer account page for a 0x-prefixed address or ANS .apt name, with an optional account tab."
+    },
+    {
+      "name": "open_block",
+      "title": "Open block",
+      "description": "Open the Aptos Explorer block page for a block height."
+    },
+    {
+      "name": "open_releases",
+      "title": "Open releases hub",
+      "description": "Open the releases hub for network deployment status, AIPs, or SDK and tool releases."
+    },
+    {
+      "name": "open_coin",
+      "title": "Open coin",
+      "description": "Open the Aptos Explorer coin page for a fully-qualified Move coin type."
+    }
+  ],
+  "_meta": {
+    "specification": "SEP-1649 / SEP-2127 draft MCP Server Cards",
+    "generatedFrom": "app/components/webMcpTools.ts"
+  }
+}
