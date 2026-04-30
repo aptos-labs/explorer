@@ -40,6 +40,32 @@ describe("htmlToMarkdown", () => {
     expect(markdown).not.toContain("<script>");
   });
 
+  it("only emits markdown links and images for safe URL schemes", () => {
+    // Covers FEAT-SEO-004.
+    const markdown = htmlToMarkdown(
+      `<html><body>
+        <a href="https://explorer.aptoslabs.com/txn/1">Transaction</a>
+        <a href="/account/0x1">Account</a>
+        <a href="javascript:alert(1)">Script link</a>
+        <a href="data:text/html,alert(1)">Data link</a>
+        <img src="https://example.com/logo.png" alt="Logo">
+        <img src="vbscript:alert(1)" alt="Bad image">
+      </body></html>`,
+    );
+
+    expect(markdown).toContain(
+      "[Transaction](https://explorer.aptoslabs.com/txn/1)",
+    );
+    expect(markdown).toContain("[Account](/account/0x1)");
+    expect(markdown).toContain("Script link");
+    expect(markdown).toContain("Data link");
+    expect(markdown).toContain("![Logo](https://example.com/logo.png)");
+    expect(markdown).not.toContain("javascript:");
+    expect(markdown).not.toContain("data:text/html");
+    expect(markdown).not.toContain("vbscript:");
+    expect(markdown).not.toContain("Bad image");
+  });
+
   it("estimates token count for the markdown response header", () => {
     // Covers FEAT-SEO-004.
     expect(estimateMarkdownTokens("")).toBe(0);

@@ -110,6 +110,31 @@ function normalizeInline(value: string): string {
   return normalizeWhitespace(value).replace(/[ \t]+/g, " ");
 }
 
+function hasControlCharacter(value: string): boolean {
+  for (let i = 0; i < value.length; i += 1) {
+    const code = value.charCodeAt(i);
+    if (code <= 0x1f || code === 0x7f) return true;
+  }
+  return false;
+}
+
+function safeMarkdownUrl(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed || trimmed.startsWith("#")) return undefined;
+  if (hasControlCharacter(trimmed)) return undefined;
+
+  try {
+    const parsed = new URL(trimmed, "https://explorer.aptoslabs.com");
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") {
+      return trimmed;
+    }
+  } catch {
+    return undefined;
+  }
+
+  return undefined;
+}
+
 function appendText(target: RenderContext[] | {buffer: string}, value: string) {
   if (Array.isArray(target)) {
     const context = target.at(-1);
@@ -282,14 +307,8 @@ function renderContext(context: RenderContext): string {
   if (context.tag === "a") {
     const text = normalizeInline(context.buffer);
     if (!text) return "";
-    const href = context.href?.trim();
-    if (
-      !href ||
-      href.startsWith("#") ||
-      href.toLowerCase().startsWith("javascript:")
-    ) {
-      return text;
-    }
+    const href = safeMarkdownUrl(context.href);
+    if (!href) return text;
     return `[${text}](${href})`;
   }
   if (context.tag === "li") {
@@ -365,7 +384,7 @@ function renderTokens(tokens: HtmlToken[]): string {
     } else if (token.name === "pre") {
       stack.push({buffer: "", tag: "pre"});
     } else if (token.name === "img") {
-      const src = token.attrs.src?.trim();
+      const src = safeMarkdownUrl(token.attrs.src);
       if (src)
         appendText(
           stack.length > 0 ? stack : root,
