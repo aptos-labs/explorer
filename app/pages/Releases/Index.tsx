@@ -10,7 +10,7 @@ import ReleasesPageTabs, {
 
 const TAB_DESCRIPTIONS: Record<string, string> = {
   networks:
-    "Live on-chain status for Aptos mainnet, testnet, and devnet — epoch, block height, framework release (from gas schedule), protocol major, max bytecode format, node release, and feature-flag comparison.",
+    "Live on-chain status for Aptos mainnet, testnet, and devnet — epoch, block height, framework release (from gas schedule), max bytecode format, node release, and feature-flag comparison.",
   aips: "Track all Aptos Improvement Proposals (AIPs) — status, authors, and links to source.",
   sdks: "Latest release versions for the Aptos CLI, node software, and all official SDKs — TypeScript, Python, Rust, and Go.",
 };

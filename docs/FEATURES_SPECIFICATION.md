@@ -1155,7 +1155,6 @@ top of the HTML site.
 | Aspect | Detail |
 |--------|--------|
 | **Framework release** | Shown per network from `0x1::gas_schedule::GasScheduleV2.feature_version`, mapped to a framework train via aptos-core `gas_feature_versions` (`app/utils/aptosDeploymentVersions.ts`). When unmapped, UI shows `gas N (unmapped)` and `frameworkRelease` in API data is `null`. |
-| **Protocol major** | Separate row from `0x1::version::Version.major` (blockchain protocol — not framework semver). |
 | **Bytecode format (max)** | Highest Move module bytecode format enabled, derived from VM Binary Format feature flags (see `maxBytecodeFormatVersionFromFlags`). |
 | **Data hook** | `fetchNetworkStatus` in `app/api/hooks/useGetNetworkStatus.ts`. |
 

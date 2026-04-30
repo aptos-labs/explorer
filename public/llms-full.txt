@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-04-29 (rev 17)
+> Last updated: 2026-04-30 (rev 18)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -104,7 +104,7 @@ Each detail page has tabs accessible via path segments:
 #### Releases Hub
 - `/releases` — top-level hub for everything network-version-related; redirects to the `networks` tab by default
   - `/releases/networks` — live deployment status across mainnet / testnet / devnet
-    - Per-network card: epoch, block height, ledger version, chain ID, **framework release** derived from `0x1::gas_schedule::GasScheduleV2.feature_version` (mapped to aptos-core `gas_feature_versions` in `aptos-gas-schedule/src/ver.rs`, e.g. `1.43`; unmapped versions show as `gas N (unmapped)`), **protocol major** from `0x1::version::Version` (blockchain protocol bump — not framework semver), **bytecode format (max)** from VM Binary Format feature flags (highest Move module bytecode version accepted), node release (e.g. `v1.43.2`, resolved from `git_hash` via the GitHub commit message), node commit (short hash linked to `aptos-labs/aptos-core`), validator count, healthy/down chip
+    - Per-network card: epoch, block height, ledger version, chain ID, **framework release** derived from `0x1::gas_schedule::GasScheduleV2.feature_version` (mapped to aptos-core `gas_feature_versions` in `aptos-gas-schedule/src/ver.rs`, e.g. `1.43`; unmapped versions show as `gas N (unmapped)`), **bytecode format (max)** from VM Binary Format feature flags (highest Move module bytecode version accepted), node release (e.g. `v1.43.2`, resolved from `git_hash` via the GitHub commit message), node commit (short hash linked to `aptos-labs/aptos-core`), validator count, healthy/down chip
     - **Feature Flags by Network** comparison table sourced from `0x1::features::Features`; default view shows only flags whose enabled state differs across mainnet/testnet/devnet, with chip filters for All / Differences / Enabled (anywhere) / Disabled (everywhere). Names mirror the `FeatureFlag` Rust enum in `aptos-core`
   - `/releases/aips` — Aptos Improvement Proposals index sourced from `aptos-foundation/AIPs`
     - Sortable by AIP #, title, status, author; status filter chips (Draft / Last Call / Accepted / Final / Withdrawn / Living); each row deep-links to the proposal markdown on GitHub
