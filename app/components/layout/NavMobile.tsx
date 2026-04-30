@@ -36,7 +36,7 @@ export default function NavMobile() {
   };
 
   return (
-    <Box sx={{display: {xs: "block", md: "none"}}}>
+    <Box sx={{display: {xs: "block", lg: "none"}}}>
       <Button
         id="nav-mobile-button"
         aria-label="Navigation menu"

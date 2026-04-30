@@ -42,10 +42,10 @@ export default function Nav() {
       component="nav"
       aria-label="Main navigation"
       sx={{
-        display: {xs: "none", md: "flex"},
+        display: {xs: "none", lg: "flex"},
         alignItems: "center",
-        gap: {md: 3, lg: 8},
-        marginRight: {md: "2rem", lg: "3.5rem"},
+        gap: {lg: 3, xl: 8},
+        marginRight: {lg: "2rem", xl: "3.5rem"},
       }}
     >
       <NavButton
