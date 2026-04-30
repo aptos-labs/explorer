@@ -23,7 +23,9 @@ import {useMemo, useState} from "react";
 import {
   APTOS_FEATURE_FLAGS,
   getFeatureFlagName,
+  hasStaticFeatureFlagLabel,
 } from "../../api/hooks/aptosFeatureFlags";
+import {useAptosFeatureFlagUpstreamNames} from "../../api/hooks/useAptosFeatureFlagUpstreamNames";
 import {useGetNetworkStatus} from "../../api/hooks/useGetNetworkStatus";
 
 // The deployments page only ever shows the three production networks; we
@@ -81,6 +83,7 @@ function FeatureCell({state}: {state: CellState}) {
 
 export function FeatureFlagsTable() {
   const queryClient = useQueryClient();
+  const upstreamNames = useAptosFeatureFlagUpstreamNames();
 
   // useQuery is keyed per-network; calling the hook three times is the
   // existing pattern (same as the cards). React Query dedups them naturally.
@@ -101,6 +104,9 @@ export function FeatureFlagsTable() {
 
   const handleRefresh = () => {
     queryClient.invalidateQueries({queryKey: ["deployments"]});
+    queryClient.invalidateQueries({
+      queryKey: ["aptos-feature-flag-names-upstream"],
+    });
   };
 
   // Union of every flag ID we either know about statically or have observed
@@ -174,6 +180,17 @@ export function FeatureFlagsTable() {
   );
   const anyError = NETWORKS.some((n) => queries[n].isError);
 
+  const resolveFeatureDisplayName = (id: number): string => {
+    if (hasStaticFeatureFlagLabel(id)) return getFeatureFlagName(id);
+    const fromUpstream = upstreamNames.data?.get(id);
+    if (fromUpstream) return fromUpstream;
+    return getFeatureFlagName(id);
+  };
+
+  const showUpstreamHint =
+    upstreamNames.isSuccess &&
+    featureIds.some((id) => !hasStaticFeatureFlagLabel(id));
+
   return (
     <Box>
       <Box
@@ -197,6 +214,17 @@ export function FeatureFlagsTable() {
             </Box>
             . The "Differences" view highlights flags that are not in sync
             across networks.
+            {showUpstreamHint ? (
+              <>
+                {" "}
+                Names for flags not yet in this explorer&apos;s static list are
+                resolved from{" "}
+                <Box component="span" sx={{fontFamily: "monospace"}}>
+                  aptos-core
+                </Box>{" "}
+                when available.
+              </>
+            ) : null}
           </Typography>
         </Box>
         <Button
@@ -276,7 +304,12 @@ export function FeatureFlagsTable() {
                   <TableCell
                     sx={{wordBreak: "break-word", whiteSpace: "normal"}}
                   >
-                    {getFeatureFlagName(id)}
+                    {!hasStaticFeatureFlagLabel(id) &&
+                    upstreamNames.isLoading ? (
+                      <CircularProgress size={14} aria-label="Loading name" />
+                    ) : (
+                      resolveFeatureDisplayName(id)
+                    )}
                   </TableCell>
                   {NETWORKS.map((network) => (
                     <TableCell key={network} align="center">

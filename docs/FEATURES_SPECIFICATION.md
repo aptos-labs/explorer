@@ -1158,7 +1158,7 @@ top of the HTML site.
 | **Framework release** | Shown per network from `0x1::gas_schedule::GasScheduleV2.feature_version`, mapped to a framework train via aptos-core `gas_feature_versions` (`app/utils/aptosDeploymentVersions.ts`). When unmapped, UI shows `gas N (unmapped)` and `frameworkRelease` in API data is `null`. |
 | **Protocol major** | Separate row from `0x1::version::Version.major` (blockchain protocol — not framework semver). |
 | **Bytecode format (max)** | Highest Move module bytecode format enabled, derived from VM Binary Format feature flags (see `maxBytecodeFormatVersionFromFlags`). |
-| **Data hook** | `fetchNetworkStatus` in `app/api/hooks/useGetNetworkStatus.ts`. |
+| **Feature flags** | Table compares on-chain `0x1::features::Features` per network. Static labels mirror aptos-core `FeatureFlag`; labels not yet in the static list are filled from live aptos-core source when available (jsDelivr mirror). |
 
 ---
 
@@ -1201,7 +1201,7 @@ top of the HTML site.
 | `app/utils/acceptMarkdown.test.ts` | FEAT-SEO-004 (`Accept: text/markdown` negotiation helper) |
 | `app/components/webMcpTools.test.ts` | FEAT-SEO-004 (WebMCP navigation tools: routing, validation) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
-| `app/utils/aptosDeploymentVersions.test.ts` | FEAT-RELEASES-001 (gas → framework mapping, bytecode format from flags) |
+| `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |
 | `app/api/hooks/useGetNetworkStatus.test.ts` | FEAT-RELEASES-001 (`fetchNetworkStatus`) |
 | `app/utils/mapWithConcurrencyLimit.test.ts` | FEAT-BLOCKS-001 (bounded concurrency for batched REST fetches) |
 | `app/utils/sentioCallTrace.test.ts` | FEAT-TXN-010 (Sentio helpers: network ID, paths, address normalization, node validation) |

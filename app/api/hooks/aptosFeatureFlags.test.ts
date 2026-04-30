@@ -1,5 +1,9 @@
 import {describe, expect, it} from "vitest";
-import {decodeFeatureBitmap, getFeatureFlagName} from "./aptosFeatureFlags";
+import {
+  decodeFeatureBitmap,
+  getFeatureFlagName,
+  hasStaticFeatureFlagLabel,
+} from "./aptosFeatureFlags";
 
 describe("decodeFeatureBitmap", () => {
   it("returns empty array for empty input", () => {
@@ -45,9 +49,17 @@ describe("getFeatureFlagName", () => {
   it("returns the registered name for known IDs", () => {
     expect(getFeatureFlagName(9)).toBe("Resource Groups");
     expect(getFeatureFlagName(46)).toBe("Keyless Accounts");
+    expect(getFeatureFlagName(112)).toBe("Versioned Transaction Validation");
   });
 
   it("returns a fallback for unknown IDs so they are still surfaced", () => {
     expect(getFeatureFlagName(9999)).toBe("Feature #9999");
+  });
+});
+
+describe("hasStaticFeatureFlagLabel", () => {
+  it("is true for curated IDs and false for unknown", () => {
+    expect(hasStaticFeatureFlagLabel(112)).toBe(true);
+    expect(hasStaticFeatureFlagLabel(9999)).toBe(false);
   });
 });
