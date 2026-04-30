@@ -55,7 +55,7 @@ export default function Header() {
     threshold: 0,
   });
 
-  const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
+  const isOnMobile = !useMediaQuery(theme.breakpoints.up("lg"));
 
   const networkName = useNetworkName();
   const {account, wallet, network} = useWallet();
