@@ -95,9 +95,10 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
 
 ## Agent Discovery
 
+- MCP Server Card (SEP-1649 / SEP-2127 draft): [/.well-known/mcp/server-card.json](https://explorer.aptoslabs.com/.well-known/mcp/server-card.json) — describes the Explorer server, WebMCP transport endpoint, and read-only navigation tool capabilities for pre-connection agent discovery.
 - API catalog (RFC 9727, `application/linkset+json`): [/.well-known/api-catalog](https://explorer.aptoslabs.com/.well-known/api-catalog) — lists upstream Aptos REST and Indexer GraphQL APIs with `service-desc` / `service-doc` / `status` links.
 - Agent Skills discovery index (cloudflare/agent-skills-discovery-rfc v0.2.0): [/.well-known/agent-skills/index.json](https://explorer.aptoslabs.com/.well-known/agent-skills/index.json) — published skills for routing Aptos lookups to explorer URLs.
-- HTTP `Link` response header: the homepage advertises `api-catalog`, the agent-skills index, and both `llms.txt` / `llms-full.txt` via RFC 8288 `Link` headers so agents can discover resources without parsing HTML.
+- HTTP `Link` response header: the homepage advertises the MCP Server Card, `api-catalog`, the agent-skills index, and both `llms.txt` / `llms-full.txt` via RFC 8288 `Link` headers so agents can discover resources without parsing HTML.
 - Markdown content negotiation: the homepage responds with a markdown view (`Content-Type: text/markdown`) when the request includes `Accept: text/markdown`; HTML remains the default for browsers.
 - WebMCP: when the user's browser supports `navigator.modelContext`, the Explorer registers read-only navigation tools (`search_explorer`, `open_transaction`, `open_account`, `open_block`, `open_releases`, `open_coin`) so in-browser agents can open pages by identifier.
 - Content usage: [/robots.txt](https://explorer.aptoslabs.com/robots.txt) declares Content Signals — `ai-train=no, search=yes, ai-input=yes`.
