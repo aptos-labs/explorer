@@ -186,6 +186,17 @@ describe("fetchNetworkStatus", () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockImplementation((url: string) => {
+        // Validator probes use GET …/v1/ on operator DNS names — match before the
+        // generic "/" branch or they'd receive mockLedger.
+        if (url.includes("aptos.bison.run")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                git_hash: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              }),
+          });
+        }
         if (url.endsWith("/")) {
           return Promise.resolve({
             ok: true,
@@ -216,16 +227,6 @@ describe("fetchNetworkStatus", () => {
           return Promise.resolve({
             ok: true,
             json: () => Promise.resolve({data: {features: "0x220082"}}),
-          });
-        }
-        if (url.includes("aptos.bison.run")) {
-          return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({
-                git_hash:
-                  "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
-              }),
           });
         }
         return Promise.resolve({ok: false, status: 404});
