@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Markdown for Agents — HTML routes negotiate to markdown without 500s**: the Netlify Edge Function now runs as middleware for HTML routes and converts the downstream SSR/static HTML response to `Content-Type: text/markdown` when agents send `Accept: text/markdown`. Browser requests still receive HTML by default, and markdown responses include an `X-Markdown-Tokens` estimate header.
 - **Network deployments — framework release uses gas schedule**: `/releases/networks` cards no longer label `0x1::version::Version.major` as “framework version”. The UI now shows **Framework Release** from `0x1::gas_schedule::GasScheduleV2.feature_version`, mapped to the framework train per aptos-core `gas_feature_versions`, plus **Bytecode Format (max)** from VM Binary Format feature flags.
 
 - **Network deployments — release branch URL never points to a non-existent branch**: the commit-message parser used to accept three-component release tags like `[aptos-release-v1.43.1]` (the patch-suffixed form is malformed; Aptos cuts release branches per minor only). When such a tag slipped through, the network card on `/releases/networks` rendered `v1.43.1.x` and linked to `aptos-release-v1.43.1`, which 404s. The parser now only accepts the canonical `[aptos-release-vX.Y]` form and the consumer adds a defensive `^\d+\.\d+$` guard, so malformed tags fall back to the commit-only display rather than producing a broken link.

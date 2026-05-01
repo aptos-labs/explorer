@@ -486,7 +486,7 @@ The explorer maintains dedicated documentation for AI systems and LLM-powered to
 | `public/.well-known/agent-skills/index.json` | Agent Skills Discovery RFC v0.2.0 index with SHA-256 digests | Any `SKILL.md` under `public/.well-known/agent-skills/*/` is added, edited, or removed — run `node scripts/update-agent-skills-index.mjs` |
 | `public/.well-known/agent-skills/*/SKILL.md` | Individual agent skills (URL routing, search, etc.) | Feature/routing changes that affect how agents should link into the explorer |
 | `netlify.toml` | `Link` response headers (RFC 8288), `Vary: Accept`, well-known Content-Types, and edge-function registration | New discovery resources, new well-known paths, or changes to the discovery URL list |
-| `netlify/edge-functions/markdown-negotiation.ts` | Converts HTML route responses to `Content-Type: text/markdown` when the request has `Accept: text/markdown` | The markdown-for-agents contract changes, or the source file for the markdown view moves |
+| `netlify/edge-functions/markdown-negotiation.ts` | Returns `/llms.txt` as `Content-Type: text/markdown` when the request has `Accept: text/markdown` | The markdown-for-agents contract changes, or the source file for the markdown view moves |
 | `app/utils/acceptMarkdown.ts` | Pure `Accept`-header parser mirrored in the edge function | Keep in sync with `markdown-negotiation.ts` whenever the negotiation logic changes |
 | `app/components/WebMCPProvider.tsx` + `app/components/webMcpTools.ts` | WebMCP tools registered on `navigator.modelContext` | A major new top-level route becomes important for agent navigation, or tool schemas need to change |
 | `scripts/update-agent-skills-index.mjs` | Regenerates `SHA-256` digests in the agent-skills index | Any change to a `SKILL.md` under `public/.well-known/agent-skills/*/` |
@@ -531,7 +531,7 @@ Machine-readable metadata for autonomous agents lives alongside the LLM docs. Ke
 - [ ] **New upstream API** (new chain, new indexer, a price/analytics feed): add an `anchor` entry to `public/.well-known/api-catalog` with `service-desc` (OpenAPI URL), `service-doc`, and `status` links. Also add it to the "API Endpoints Used by the Explorer" section of `public/llms-full.txt`.
 - [ ] **New discovery resource** (anything under `/.well-known/…`): add it to both `Link` response headers in `netlify.toml` (the `/` and `/*` entries) and to the Content-Types / Cache-Control block further down. Add a `<url>` entry to `public/sitemap.xml`.
 - [ ] **Content Signals** (`public/robots.txt`): if the `ai-train`, `search`, or `ai-input` defaults change, update the top-level `Content-Signal` line **and** the per-AI-crawler copies (they must agree).
-- [ ] **Markdown negotiation**: the HTML route edge function (`netlify/edge-functions/markdown-negotiation.ts`) converts downstream HTML to markdown for `Accept: text/markdown`. If the markdown conversion contract changes, update the edge function, `app/utils/acceptMarkdown.ts`, and related conversion tests.
+- [ ] **Markdown negotiation**: the homepage edge function (`netlify/edge-functions/markdown-negotiation.ts`) serves `/llms.txt` for `Accept: text/markdown`. If the canonical markdown source moves, update both the edge function and `app/utils/acceptMarkdown.ts` (they share logic but run in different runtimes — Deno vs Node/Vite).
 - [ ] **Docs + changelog**: add `FEAT-SEO-004` coverage notes to `docs/FEATURES_SPECIFICATION.md` (Appendix B) for new tests, and list user-facing discovery changes under `CHANGELOG.md` → `[Unreleased]`.
 
 ---

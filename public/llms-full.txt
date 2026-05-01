@@ -420,15 +420,13 @@ Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+j
 
 ### Markdown content negotiation
 
-When an HTML route request includes `Accept: text/markdown`, a Netlify Edge
-Function (`netlify/edge-functions/markdown-negotiation.ts`) fetches the normal
-HTML response, converts it to markdown, and returns it with
-`Content-Type: text/markdown; charset=utf-8`, `Vary: Accept`,
-`X-Markdown-Source: html-response`, and `X-Markdown-Tokens`. Browsers (which
-request `text/html`) are unaffected — they still receive the SSR HTML. Static
-assets, APIs, and direct text files pass through with their original response
-types. For the full markdown reference, agents should fetch `/llms-full.txt`
-directly.
+When a request to `/` (or `/index.html`) includes `Accept: text/markdown`,
+a Netlify Edge Function (`netlify/edge-functions/markdown-negotiation.ts`)
+serves the contents of `/llms.txt` with `Content-Type: text/markdown;
+charset=utf-8`, a `Vary: Accept` header, and an `X-Markdown-Source` hint
+pointing to the underlying file. Browsers (which request `text/html`) are
+unaffected — they still receive the SSR HTML. For the full markdown
+reference, agents should fetch `/llms-full.txt` directly.
 
 ### WebMCP tools
 
