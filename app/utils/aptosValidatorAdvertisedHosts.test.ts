@@ -21,7 +21,7 @@ describe("normalizeAptosCoreGitHash", () => {
 
   it("rejects wrong length and non-hex", () => {
     expect(normalizeAptosCoreGitHash("abc")).toBeNull();
-    expect(normalizeAptosCoreGitHash("g" + "0".repeat(39))).toBeNull();
+    expect(normalizeAptosCoreGitHash(`g${"0".repeat(39)}`)).toBeNull();
     expect(normalizeAptosCoreGitHash(null)).toBeNull();
   });
 });

@@ -18,11 +18,11 @@ export function extractAdvertisedHostnameFromAddressBlob(
   if (!hex || hex.length % 2 !== 0 || !/^[0-9a-fA-F]*$/.test(hex)) {
     return null;
   }
+  const bytePairs = hex.match(/.{1,2}/g);
+  if (!bytePairs) return null;
   let raw: Uint8Array;
   try {
-    raw = Uint8Array.from(
-      hex.match(/.{1,2}/g)!.map((byte) => Number.parseInt(byte, 16)),
-    );
+    raw = Uint8Array.from(bytePairs.map((pair) => Number.parseInt(pair, 16)));
   } catch {
     return null;
   }
@@ -31,9 +31,10 @@ export function extractAdvertisedHostnameFromAddressBlob(
   let best: string | null = null;
   let bestLen = 0;
   HOSTNAME_SUBSTRING_RE.lastIndex = 0;
-  let m: RegExpExecArray | null;
-  while ((m = HOSTNAME_SUBSTRING_RE.exec(latin1)) !== null) {
-    const host = m[0];
+  for (;;) {
+    const match = HOSTNAME_SUBSTRING_RE.exec(latin1);
+    if (match === null) break;
+    const host = match[0];
     if (host.length >= bestLen) {
       bestLen = host.length;
       best = host;
@@ -111,7 +112,9 @@ export async function mapWithConcurrency<T, R>(
     for (;;) {
       const i = next++;
       if (i >= items.length) return;
-      results[i] = await fn(items[i]!, i);
+      const item = items[i];
+      if (item === undefined) return;
+      results[i] = await fn(item, i);
     }
   }
 
