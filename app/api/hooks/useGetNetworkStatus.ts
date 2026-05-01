@@ -4,7 +4,18 @@ import {
   frameworkReleaseFromGasFeatureVersion,
   maxBytecodeFormatVersionFromFlags,
 } from "../../utils/aptosDeploymentVersions";
+import {
+  extractAdvertisedHostnameFromAddressBlob,
+  fetchGitHashFromAdvertisedHostname,
+  mapWithConcurrency,
+  modeGitHash,
+  normalizeAptosCoreGitHash,
+} from "../../utils/aptosValidatorAdvertisedHosts";
 import {decodeFeatureBitmap} from "./aptosFeatureFlags";
+
+/** Sample size + concurrency for probing validators' advertised REST endpoints. */
+const VALIDATOR_GIT_HASH_SAMPLE = 12;
+const VALIDATOR_PROBE_CONCURRENCY = 4;
 
 export type NetworkStatus = {
   healthy: boolean;
@@ -12,7 +23,23 @@ export type NetworkStatus = {
   blockHeight: string;
   ledgerVersion: string;
   chainId: string;
-  /** Aptos node software git commit hash from `GET /v1/` `git_hash`. */
+  /**
+   * `git_hash` from the configured Aptos API gateway / fullnode (`GET …/v1/`).
+   * This reflects whichever node backs the explorer's REST URL, not an individual
+   * validator.
+   */
+  fullnodeGitHash: string | null;
+  /**
+   * Representative `git_hash` for the active validator set: sampled from
+   * on-chain `ValidatorSet` by probing a few operators' advertised hostnames
+   * (see `network_addresses` / `fullnode_addresses` blobs) for `GET /v1/`.
+   * `null` when we could not reach any sampled endpoint.
+   */
+  validatorSetGitHash: string | null;
+  /**
+   * @deprecated Use `fullnodeGitHash` (API endpoint) or `validatorSetGitHash`
+   * (validator set). Kept as an alias of `fullnodeGitHash` for older consumers.
+   */
   gitHash: string | null;
   /**
    * Mapped framework release train from `gasFeatureVersion` (e.g. `"1.43"`).
@@ -80,11 +107,43 @@ export async function fetchNetworkStatus(
   }
 
   let validatorCount: number | null = null;
+  let validatorSetGitHash: string | null = null;
   if (sResult.status === "fulfilled" && sResult.value.ok) {
     const s = (await sResult.value.json()) as {
-      data: {active_validators: unknown[]};
+      data: {
+        active_validators: Array<{
+          config?: {
+            network_addresses?: string;
+            fullnode_addresses?: string;
+          };
+        }>;
+      };
     };
     validatorCount = s.data.active_validators.length;
+
+    const hostnames = new Set<string>();
+    for (const v of s.data.active_validators.slice(0, VALIDATOR_GIT_HASH_SAMPLE)) {
+      const cfg = v.config;
+      if (!cfg) continue;
+      for (const key of [
+        "network_addresses",
+        "fullnode_addresses",
+      ] as const) {
+        const hex = cfg[key];
+        if (typeof hex !== "string") continue;
+        const host = extractAdvertisedHostnameFromAddressBlob(hex);
+        if (host) hostnames.add(host);
+      }
+    }
+
+    if (hostnames.size > 0) {
+      const hashes = await mapWithConcurrency(
+        [...hostnames],
+        VALIDATOR_PROBE_CONCURRENCY,
+        (hostname) => fetchGitHashFromAdvertisedHostname(hostname),
+      );
+      validatorSetGitHash = modeGitHash(hashes.filter((h): h is string => !!h));
+    }
   }
 
   let enabledFeatures: number[] | null = null;
@@ -98,13 +157,17 @@ export async function fetchNetworkStatus(
     bytecodeFormatVersion = maxBytecodeFormatVersionFromFlags(enabledFeatures);
   }
 
+  const fullnodeGitHash = normalizeAptosCoreGitHash(ledger.git_hash);
+
   return {
     healthy: true,
     epoch: String(ledger.epoch),
     blockHeight: String(ledger.block_height),
     ledgerVersion: String(ledger.ledger_version),
     chainId: String(ledger.chain_id),
-    gitHash: ledger.git_hash ?? null,
+    fullnodeGitHash,
+    validatorSetGitHash,
+    gitHash: fullnodeGitHash,
     frameworkRelease,
     gasFeatureVersion,
     bytecodeFormatVersion,
@@ -115,9 +178,10 @@ export async function fetchNetworkStatus(
 
 export function useGetNetworkStatus(networkName: NetworkName) {
   return useQuery({
-    queryKey: ["deployments", "networkStatus", networkName],
+    queryKey: ["deployments", "networkStatus", "v2", networkName],
     queryFn: () => fetchNetworkStatus(networkName),
-    staleTime: 60_000,
+    // Validator probes hit third-party operator endpoints — avoid hammering them on rapid refetch.
+    staleTime: 5 * 60_000,
     retry: 1,
   });
 }

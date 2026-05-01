@@ -59,7 +59,11 @@ describe("fetchNetworkStatus", () => {
     expect(result.blockHeight).toBe("5000000");
     expect(result.ledgerVersion).toBe("10000000");
     expect(result.chainId).toBe("1");
-    expect(result.gitHash).toBe("9bd3d6d15afcf579d4745b761fe8913026354f9d");
+    expect(result.fullnodeGitHash).toBe(
+      "9bd3d6d15afcf579d4745b761fe8913026354f9d",
+    );
+    expect(result.validatorSetGitHash).toBeNull();
+    expect(result.gitHash).toBe(result.fullnodeGitHash);
     expect(result.frameworkRelease).toBe("1.43");
     expect(result.gasFeatureVersion).toBe(47);
     expect(result.bytecodeFormatVersion).toBe(6);
@@ -104,8 +108,9 @@ describe("fetchNetworkStatus", () => {
     expect(result.bytecodeFormatVersion).toBeNull();
     expect(result.validatorCount).toBeNull();
     expect(result.enabledFeatures).toBeNull();
-    // The mock ledger always supplies a git_hash; gitHash should pass through.
-    expect(result.gitHash).toBe("9bd3d6d15afcf579d4745b761fe8913026354f9d");
+    expect(result.fullnodeGitHash).toBe(mockLedger.git_hash);
+    expect(result.validatorSetGitHash).toBeNull();
+    expect(result.gitHash).toBe(result.fullnodeGitHash);
   });
 
   it("uses null frameworkRelease when gas feature_version is unmapped", async () => {
@@ -170,6 +175,67 @@ describe("fetchNetworkStatus", () => {
     );
 
     const result = await fetchNetworkStatus("devnet");
+    expect(result.fullnodeGitHash).toBeNull();
+    expect(result.validatorSetGitHash).toBeNull();
     expect(result.gitHash).toBeNull();
+  });
+
+  it("sets validatorSetGitHash from probing advertised validator REST endpoints", async () => {
+    const validatorHex =
+      "016804023d76616c696461746f722e62626237366432642d303262352d346533652d626663332d3966313061326536393834392e6170746f732e6269736f6e2e72756e05241807203601215a079b0114a32104bd02149cf2258a206c8f8c79790e0684f4adfeae400800";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation((url: string) => {
+        if (url.endsWith("/")) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve(mockLedger),
+          });
+        }
+        if (url.includes("0x1::gas_schedule::GasScheduleV2")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({data: {feature_version: "47", entries: []}}),
+          });
+        }
+        if (url.includes("0x1::stake::ValidatorSet")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                data: {
+                  active_validators: [
+                    {config: {network_addresses: validatorHex}},
+                  ],
+                },
+              }),
+          });
+        }
+        if (url.includes("0x1::features::Features")) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({data: {features: "0x220082"}}),
+          });
+        }
+        if (url.includes("aptos.bison.run")) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                git_hash:
+                  "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              }),
+          });
+        }
+        return Promise.resolve({ok: false, status: 404});
+      }),
+    );
+
+    const result = await fetchNetworkStatus("mainnet");
+    expect(result.validatorSetGitHash).toBe(
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    );
+    expect(result.fullnodeGitHash).toBe(mockLedger.git_hash);
   });
 });

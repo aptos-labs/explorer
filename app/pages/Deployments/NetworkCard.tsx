@@ -66,28 +66,36 @@ export function NetworkCard({network}: {network: NetworkName}) {
     });
   };
 
-  const gitHash = data?.gitHash ?? null;
-  const shortHash = gitHash ? gitHash.slice(0, 7) : null;
-  const {data: release, isFetching: releaseFetching} =
-    useGetNodeReleaseFromCommit(gitHash);
-
-  // `branchVersion` is contractually `X.Y` (the parser refuses malformed
-  // three-component tags). Guard at the consumer too: anything that isn't
-  // exactly `digits.digits` falls back to the commit-only display rather
-  // than rendering `v1.43.1.x` or linking to a non-existent
-  // `aptos-release-v1.43.1` branch.
-  const branchVersion =
-    release?.branchVersion && /^\d+\.\d+$/.test(release.branchVersion)
-      ? release.branchVersion
-      : null;
-  const releaseLabel = release?.fullVersion
-    ? `v${release.fullVersion}`
-    : branchVersion
-      ? `v${branchVersion}.x`
-      : null;
-  const releaseBranchUrl = branchVersion
-    ? `https://github.com/aptos-labs/aptos-core/tree/aptos-release-v${branchVersion}`
+  const fullnodeGitHash = data?.fullnodeGitHash ?? data?.gitHash ?? null;
+  const validatorSetGitHash = data?.validatorSetGitHash ?? null;
+  const fullnodeShort = fullnodeGitHash ? fullnodeGitHash.slice(0, 7) : null;
+  const validatorShort = validatorSetGitHash
+    ? validatorSetGitHash.slice(0, 7)
     : null;
+
+  const {data: fullnodeRelease, isFetching: fullnodeReleaseFetching} =
+    useGetNodeReleaseFromCommit(fullnodeGitHash);
+  const {data: validatorRelease, isFetching: validatorReleaseFetching} =
+    useGetNodeReleaseFromCommit(validatorSetGitHash);
+
+  function releasePresentation(release: typeof fullnodeRelease) {
+    const branchVersion =
+      release?.branchVersion && /^\d+\.\d+$/.test(release.branchVersion)
+        ? release.branchVersion
+        : null;
+    const releaseLabel = release?.fullVersion
+      ? `v${release.fullVersion}`
+      : branchVersion
+        ? `v${branchVersion}.x`
+        : null;
+    const releaseBranchUrl = branchVersion
+      ? `https://github.com/aptos-labs/aptos-core/tree/aptos-release-v${branchVersion}`
+      : null;
+    return {releaseLabel, releaseBranchUrl};
+  }
+
+  const fullnodeRel = releasePresentation(fullnodeRelease);
+  const validatorRel = releasePresentation(validatorRelease);
 
   return (
     <Card variant="outlined" sx={{height: "100%"}}>
@@ -151,37 +159,78 @@ export function NetworkCard({network}: {network: NetworkName}) {
               }
             />
             <StatusRow
-              label="Node Release"
+              label="Fullnode Release"
               value={
-                releaseFetching && gitHash ? (
+                fullnodeReleaseFetching && fullnodeGitHash ? (
                   <CircularProgress size={12} />
-                ) : releaseLabel && releaseBranchUrl ? (
+                ) : fullnodeRel.releaseLabel && fullnodeRel.releaseBranchUrl ? (
                   <Link
-                    href={releaseBranchUrl}
+                    href={fullnodeRel.releaseBranchUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     underline="hover"
                   >
-                    {releaseLabel}
+                    {fullnodeRel.releaseLabel}
                   </Link>
                 ) : null
               }
             />
             <StatusRow
-              label="Node Commit"
+              label="Fullnode Commit"
               value={
-                gitHash && shortHash ? (
-                  <Tooltip title={gitHash}>
+                fullnodeGitHash && fullnodeShort ? (
+                  <Tooltip title={fullnodeGitHash}>
                     <Link
-                      href={`https://github.com/aptos-labs/aptos-core/commit/${gitHash}`}
+                      href={`https://github.com/aptos-labs/aptos-core/commit/${fullnodeGitHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       underline="hover"
                     >
-                      {shortHash}
+                      {fullnodeShort}
                     </Link>
                   </Tooltip>
                 ) : null
+              }
+            />
+            <StatusRow
+              label="Validator Set Release"
+              value={
+                <Tooltip title="Most common git_hash among a sample of active validators, by probing on-chain advertised REST hostnames (not the API gateway fullnode).">
+                  <span>
+                    {validatorReleaseFetching && validatorSetGitHash ? (
+                      <CircularProgress size={12} />
+                    ) : validatorRel.releaseLabel &&
+                      validatorRel.releaseBranchUrl ? (
+                      <Link
+                        href={validatorRel.releaseBranchUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        underline="hover"
+                      >
+                        {validatorRel.releaseLabel}
+                      </Link>
+                    ) : null}
+                  </span>
+                </Tooltip>
+              }
+            />
+            <StatusRow
+              label="Validator Set Commit"
+              value={
+                <Tooltip title="Most common git_hash among a sample of active validators (see Validator Set Release).">
+                  <span>
+                    {validatorSetGitHash && validatorShort ? (
+                      <Link
+                        href={`https://github.com/aptos-labs/aptos-core/commit/${validatorSetGitHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        underline="hover"
+                      >
+                        {validatorShort}
+                      </Link>
+                    ) : null}
+                  </span>
+                </Tooltip>
               }
             />
             <StatusRow label="Validators" value={data.validatorCount} />

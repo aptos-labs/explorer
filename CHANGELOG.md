@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Network deployments — separate fullnode vs validator node software**: `/releases/networks` cards now label **Fullnode** release/commit from the explorer's configured Aptos REST URL (`GET …/v1/` `git_hash`) and show **Validator set** release/commit separately by sampling active validators: DNS names are parsed from on-chain `network_addresses` / `fullnode_addresses`, a handful of hosts are probed for `git_hash`, and the most common hash drives the row (tooltips explain the sampling). This avoids treating the API gateway fullnode as representative of validator binaries.
+
 - **Releases / Feature flags**: Registered Aptos feature flag **112** as “Versioned Transaction Validation”. For IDs not yet in the explorer’s static list, names are now resolved on the fly from the aptos-core `FeatureFlag` enum (via a CORS-friendly mirror), falling back to “Feature #N” only when that fetch fails.
 
 - **Header — compact layout earlier on medium widths**: the main nav, wallet, and settings now switch to the hamburger menu at the `lg` breakpoint (~1200px) instead of `md` (~900px), so the top bar no longer crowds or clips between those widths.
