@@ -367,6 +367,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Data** | `useGetAllAccountCoins` merged with Panora/coin list. |
 | **Table** | Asset name, symbol, balance, type. Virtualized for large sets. |
+| **Confidential** | For fungible assets (v2), and for legacy coins when Panora lists a paired FA metadata address, the explorer calls `0x1::confidential_asset::has_confidential_store`. When true, the amount column shows **Confidential balance (amount N/A)** and USD shows **N/A** (individual balances are private). |
 
 ### FEAT-ACCOUNT-008 — NFTs (Tokens) Tab
 
@@ -605,6 +606,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Data** | `CoinInfo` resource, supply limit, paired FA via `useGetCoinPairedFa`. |
 | **Display** | Coin name, symbol, decimals, supply, paired fungible asset link. |
+| **Confidential supply** | When a paired FA metadata address is known (on-chain `paired_metadata` or Panora `faAddress` for this coin type), **Confidential supply (pool)** shows `0x1::confidential_asset::get_total_confidential_supply` (public aggregate in the protocol pool). |
 
 ### FEAT-COIN-003 — Verification Banner
 
@@ -651,6 +653,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Data** | FA metadata, supply, paired coin via `useGetFaPairedCoin`. |
 | **Display** | Name, symbol, decimals, supply, icon, paired coin link. |
+| **Confidential supply** | **Confidential supply (pool)** — `0x1::confidential_asset::get_total_confidential_supply` for this metadata object (public aggregate). |
 | **Properties** | `FaPropertiesDisplay` — mint/burn/transfer flags derived from resource data. |
 
 ### FEAT-FA-003 — Verification Banner
@@ -1210,6 +1213,7 @@ top of the HTML site.
 | `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation from resources) |
+| `app/api/hooks/confidentialAssetViews.test.ts` | FEAT-FA-002 / FEAT-COIN-002 / FEAT-ACCOUNT-007 (confidential-asset view response parsing) |
 | `app/context/rate-limit/RateLimitContext.test.tsx` | FEAT-RATELIMIT-001 (rate limit context state management) |
 | `app/context/rate-limit/rateLimitEvents.test.ts` | FEAT-RATELIMIT-001 (rate limit event detection) |
 | `app/context/rate-limit/settingsEvents.test.ts` | FEAT-SETTINGS-001 / FEAT-RATELIMIT-001 (settings ↔ rate-limit event bridge) |

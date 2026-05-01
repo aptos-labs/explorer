@@ -3,6 +3,7 @@ import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {Box} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
+import {useGetConfidentialFASupply} from "../../../api/hooks/useGetConfidentialFASupply";
 import {useGetFirstCoinActivity} from "../../../api/hooks/useGetCoinActivities";
 import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {SupplyType} from "../../../api/hooks/useGetCoinSupplyLimit";
@@ -31,8 +32,21 @@ export default function InfoTab({
   pairedFa,
   coinData,
 }: InfoTabProps) {
+  const metadataForConfidential =
+    pairedFa ??
+    (coinData?.tokenAddress === struct ? coinData.faAddress : null);
+
+  const {
+    data: confidentialSupply,
+    isLoading: confidentialSupplyLoading,
+    isError: confidentialSupplyError,
+  } = useGetConfidentialFASupply(metadataForConfidential ?? "");
+
+  const confidentialRowEnabled = Boolean(metadataForConfidential);
+
   const {data: firstActivity} = useGetFirstCoinActivity(pairedFa ?? struct);
   const {data: faProperties} = useGetFaProperties(pairedFa ?? undefined);
+
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
   }
@@ -127,6 +141,34 @@ export default function InfoTab({
             </>
           ) : (
             <ContentRow title={"Total supply:"} value={supplyIcon} />
+          )}
+          {confidentialRowEnabled && (
+            <ContentRow
+              title={"Confidential supply (pool):"}
+              value={
+                confidentialSupplyError ? (
+                  "—"
+                ) : confidentialSupplyLoading ? (
+                  "…"
+                ) : confidentialSupply !== null ? (
+                  <Tooltip
+                    title={
+                      "Tokens held in the on-chain confidential-asset pool for the paired fungible asset (public aggregate). Individual balances stay private."
+                    }
+                  >
+                    <span>
+                      {getFormattedBalanceStr(
+                        confidentialSupply.toString(),
+                        data.data.decimals,
+                      )}{" "}
+                      {data.data.symbol}
+                    </span>
+                  </Tooltip>
+                ) : (
+                  "—"
+                )
+              }
+            />
           )}
           <ContentRow
             title={"Icon:"}

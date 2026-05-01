@@ -37,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Confidential assets — aggregate supply and account hints**: fungible asset and coin info tabs show **Confidential supply (pool)** from `0x1::confidential_asset::get_total_confidential_supply` when the view succeeds. The account **Coins** tab calls `has_confidential_store` per FA metadata (v2 balances, or v1 when Panora lists a paired `faAddress`); when initialized, the row shows **Confidential balance (amount N/A)** and USD as **N/A**.
+
 - **Agent-readiness discovery surfaces**: the explorer now ships structured metadata for autonomous agents and LLM-powered crawlers:
   - `Link` response headers (RFC 8288) on `/` and `/*` advertising the API catalog, the Agent Skills index, MCP Server Card, `llms.txt`, `llms-full.txt`, and the sitemap
   - `/.well-known/api-catalog` (RFC 9727 / RFC 9264 linkset JSON) pointing to the upstream Aptos fullnode REST APIs (mainnet/testnet/devnet), the indexer GraphQL API, and the explorer itself

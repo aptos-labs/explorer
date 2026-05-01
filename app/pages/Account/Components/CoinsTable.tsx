@@ -22,6 +22,7 @@ import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
+import type {ConfidentialStoreQueryState} from "../../../api/hooks/useAccountHasConfidentialStores";
 import {
   getVerifiedMessageAndIcon,
   VerifiedCoinCell,
@@ -56,12 +57,27 @@ const AmountCell = React.memo(function AmountCell({
   amount,
   decimals,
   symbol,
+  confidential,
 }: {
   amount: number | null | undefined;
   decimals: number | null | undefined;
   symbol: string;
+  confidential?: ConfidentialStoreQueryState;
 }) {
   const theme = useTheme();
+  if (confidential?.pending) {
+    return <GeneralTableCell>…</GeneralTableCell>;
+  }
+  if (confidential?.hasStore === true) {
+    return (
+      <GeneralTableCell>
+        <span>Confidential balance</span>
+        <span style={{marginLeft: 8, color: theme.palette.text.secondary}}>
+          (amount N/A)
+        </span>
+      </GeneralTableCell>
+    );
+  }
   if (amount == null || decimals == null) {
     return <GeneralTableCell>-</GeneralTableCell>;
   }
@@ -79,11 +95,19 @@ const AmountCell = React.memo(function AmountCell({
 
 const USDCell = React.memo(function USDCell({
   amount,
+  confidential,
 }: {
   amount: number | null | undefined;
+  confidential?: ConfidentialStoreQueryState;
 }) {
   const theme = useTheme();
   const inMainnet = useGetInMainnet();
+  if (confidential?.pending) {
+    return <GeneralTableCell>…</GeneralTableCell>;
+  }
+  if (confidential?.hasStore === true) {
+    return <GeneralTableCell>N/A</GeneralTableCell>;
+  }
   if (amount === null || amount === undefined || !inMainnet) {
     return <GeneralTableCell>N/A</GeneralTableCell>;
   }
@@ -161,15 +185,21 @@ export type CoinDescriptionPlusAmount = {
   usdValue: number | null;
   assetType: string;
   assetVersion: string;
+  /** FA metadata object address for `0x1::confidential_asset::has_confidential_store` (v2: asset_type; v1: paired FA when known). */
+  confidentialMetadataKey: string | null;
 } & CoinDescription;
 
 // Mobile card component for coins
 function CoinCard({
   coin,
   networkName,
+  getConfidentialStore,
 }: {
   coin: CoinDescriptionPlusAmount;
   networkName: string;
+  getConfidentialStore: (
+    key: string | null | undefined,
+  ) => ConfidentialStoreQueryState;
 }) {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -180,8 +210,13 @@ function CoinCard({
   const isFA = coin.tokenStandard === "v2";
   const linkTo = isFA ? `/fungible_asset/${assetId}` : `/coin/${assetId}`;
 
+  const confidential = getConfidentialStore(coin.confidentialMetadataKey);
+
   const formattedAmount =
-    coin.amount != null && coin.decimals != null
+    !confidential.pending &&
+    confidential.hasStore !== true &&
+    coin.amount != null &&
+    coin.decimals != null
       ? coin.amount / 10 ** coin.decimals
       : null;
 
@@ -279,13 +314,31 @@ function CoinCard({
       {/* Row 2: Amount + Symbol, USD Value */}
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography sx={{fontSize: "0.85rem"}}>
-          {formattedAmount !== null ? formattedAmount.toLocaleString() : "-"}
-          <Typography
-            component="span"
-            sx={{ml: 0.75, color: "text.secondary", fontSize: "0.85rem"}}
-          >
-            {symbol}
-          </Typography>
+          {confidential.pending ? (
+            "…"
+          ) : confidential.hasStore === true ? (
+            <>
+              Confidential balance
+              <Typography
+                component="span"
+                sx={{ml: 0.75, color: "text.secondary", fontSize: "0.85rem"}}
+              >
+                (amount N/A)
+              </Typography>
+            </>
+          ) : formattedAmount !== null ? (
+            <>
+              {formattedAmount.toLocaleString()}
+              <Typography
+                component="span"
+                sx={{ml: 0.75, color: "text.secondary", fontSize: "0.85rem"}}
+              >
+                {symbol}
+              </Typography>
+            </>
+          ) : (
+            "-"
+          )}
         </Typography>
         <Typography sx={{fontSize: "0.85rem", color: "text.secondary"}}>
           {coin.usdValue !== null && inMainnet
@@ -300,7 +353,15 @@ function CoinCard({
   );
 }
 
-export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
+export function CoinsTable({
+  coins,
+  getConfidentialStore,
+}: {
+  coins: CoinDescriptionPlusAmount[];
+  getConfidentialStore: (
+    key: string | null | undefined,
+  ) => ConfidentialStoreQueryState;
+}) {
   const theme = useTheme();
   const networkName = useNetworkName();
   const [verificationFilter, setVerificationFilter] = React.useState(
@@ -364,7 +425,16 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
       let baseCoins = coinsToFilter;
       // 過濾餘額為 0 的 coin (Filter out coins with 0 balance based on toggle)
       if (!showZero) {
-        baseCoins = baseCoins.filter((coin) => coin.amount > 0);
+        baseCoins = baseCoins.filter((coin) => {
+          const c = getConfidentialStore(coin.confidentialMetadataKey);
+          if (c.pending) {
+            return true;
+          }
+          if (c.hasStore === true) {
+            return true;
+          }
+          return coin.amount > 0;
+        });
       }
 
       switch (filter) {
@@ -404,7 +474,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
 
       return filtered.sort((a, b) => toIndex(a) - toIndex(b));
     },
-    [coinVerifications, getCoinId, toIndex],
+    [coinVerifications, getCoinId, getConfidentialStore, toIndex],
   );
 
   // Memoize filtered and sorted coins
@@ -556,12 +626,16 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
               coinDesc.bridge,
               coinDesc.symbol,
             )}
+            confidential={getConfidentialStore(coinDesc.confidentialMetadataKey)}
           />
-          <USDCell amount={coinDesc.usdValue} />
+          <USDCell
+            amount={coinDesc.usdValue}
+            confidential={getConfidentialStore(coinDesc.confidentialMetadataKey)}
+          />
         </GeneralTableRow>
       );
     });
-  }, [filteredCoins]);
+  }, [filteredCoins, getConfidentialStore]);
 
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -577,6 +651,7 @@ export function CoinsTable({coins}: {coins: CoinDescriptionPlusAmount[]}) {
                 key={coin.tokenAddress ?? coin.faAddress ?? `coin-${i}`}
                 coin={coin}
                 networkName={networkName}
+                getConfidentialStore={getConfidentialStore}
               />
             ))
           ) : (
