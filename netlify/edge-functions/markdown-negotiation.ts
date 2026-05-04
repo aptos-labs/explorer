@@ -1,9 +1,4 @@
 import type {Config, Context} from "@netlify/edge-functions";
-// Shared with the app (unit-tested in app/utils/acceptMarkdown.test.ts).
-// Netlify Edge Functions run under Deno and support TypeScript imports from
-// inside the repo, so we re-use the single implementation instead of keeping
-// a drift-prone copy here.
-import {prefersMarkdown} from "../../app/utils/acceptMarkdown.ts";
 
 /**
  * Markdown negotiation for AI agents.
@@ -25,6 +20,26 @@ import {prefersMarkdown} from "../../app/utils/acceptMarkdown.ts";
  */
 
 const MARKDOWN_ROUTES: ReadonlySet<string> = new Set(["/", "/index.html"]);
+
+/**
+ * Inlined copy of prefersMarkdown() in app/utils/acceptMarkdown.ts. Netlify
+ * Edge Functions are bundled independently from the app, so we keep the
+ * logic here in sync with the unit-tested helper in the main app. If you
+ * change this, update that file too (and vice versa).
+ */
+function prefersMarkdown(accept: string | null): boolean {
+  if (!accept) return false;
+  const ranges = accept.split(",").map((part) => part.trim().toLowerCase());
+  for (const range of ranges) {
+    if (!range.startsWith("text/markdown")) continue;
+    const params = range.split(";").slice(1);
+    const qParam = params.map((p) => p.trim()).find((p) => p.startsWith("q="));
+    if (!qParam) return true;
+    const q = Number.parseFloat(qParam.slice(2));
+    if (Number.isFinite(q) && q > 0) return true;
+  }
+  return false;
+}
 
 export default async function handler(
   request: Request,
@@ -65,7 +80,6 @@ export default async function handler(
     [
       '</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"',
       '</.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json"',
-      '</.well-known/mcp/server-card.json>; rel="https://modelcontextprotocol.io/rel/server-card"; type="application/json"',
       '</llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)"',
       '</sitemap.xml>; rel="sitemap"; type="application/xml"',
     ].join(", "),

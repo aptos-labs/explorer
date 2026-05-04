@@ -27,6 +27,11 @@ overrides:
   lodash@^4: ^4.18.0
   node-forge@^1: ^1.4.0
 
+patchedDependencies:
+  '@netlify/edge-functions-dev@1.0.16':
+    hash: 4039f20dfebae2ee10d7df7765b5f152186faae98af49d0657029d6a92dc3a0b
+    path: patches/@netlify__edge-functions-dev@1.0.16.patch
+
 importers:
 
   .:
@@ -6213,7 +6218,7 @@ snapshots:
       '@netlify/config': 24.5.0
       '@netlify/database-dev': 0.8.0
       '@netlify/dev-utils': 4.4.3
-      '@netlify/edge-functions-dev': 1.0.16
+      '@netlify/edge-functions-dev': 1.0.16(patch_hash=4039f20dfebae2ee10d7df7765b5f152186faae98af49d0657029d6a92dc3a0b)
       '@netlify/functions-dev': 1.2.6(rollup@4.60.1)
       '@netlify/headers': 2.1.8
       '@netlify/images': 1.3.7(@netlify/blobs@10.7.4)(srvx@0.11.15)
@@ -6275,7 +6280,7 @@ snapshots:
 
   '@netlify/edge-functions-bootstrap@2.16.0': {}
 
-  '@netlify/edge-functions-dev@1.0.16':
+  '@netlify/edge-functions-dev@1.0.16(patch_hash=4039f20dfebae2ee10d7df7765b5f152186faae98af49d0657029d6a92dc3a0b)':
     dependencies:
       '@netlify/dev-utils': 4.4.3
       '@netlify/edge-bundler': 14.10.0
