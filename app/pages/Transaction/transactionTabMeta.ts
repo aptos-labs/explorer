@@ -11,6 +11,8 @@ export function getTransactionTabHeadLabel(tab: string | undefined): string {
       return "Events";
     case "payload":
       return "Payload";
+    case "modules":
+      return "Modules";
     case "changes":
       return "Changes";
     default:

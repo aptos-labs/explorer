@@ -176,14 +176,14 @@ The app shell that wraps every page.
 
 | Transaction Type | Available Tabs |
 |------------------|----------------|
-| User | Overview, Balance Change, Events, Payload, Changes, Trace |
-| Block metadata | Overview, Events, Changes |
+| User | Overview, Balance Change, Events, Payload, Modules (when package/modules changed), Changes, Trace |
+| Block metadata | Overview, Events, Modules (when applicable), Changes |
 | State checkpoint | Overview |
 | Pending | Overview, Payload |
-| Genesis | Overview, Events, Payload, Changes |
-| Validator | Overview, Events, Changes |
-| Block epilogue | Overview, Events, Changes |
-| Unknown | Overview, Events, Changes |
+| Genesis | Overview, Events, Payload, Modules (when applicable), Changes |
+| Validator | Overview, Events, Modules (when applicable), Changes |
+| Block epilogue | Overview, Events, Modules (when applicable), Changes |
+| Unknown | Overview, Events, Modules (when applicable), Changes |
 
 ### FEAT-TXN-002 — User Transaction Overview
 
@@ -206,6 +206,14 @@ The app shell that wraps every page.
 | **Views** | Aggregated and non-aggregated balance changes. |
 | **Verification filter** | Mainnet: Verified / Recognized / All asset filter via `VerifiedCell`. |
 | **Table** | Address, asset, amount, type columns. |
+
+### FEAT-TXN-012 — Modules Tab (package / bytecode changes)
+
+| Aspect | Detail |
+|--------|--------|
+| **Visibility** | Shown only when the transaction has at least one `0x1::code::PublishPackage`-style event (type suffix `::code::PublishPackage`) or write-set rows `write_module` / `delete_module`. Inserted immediately before **Changes** when present (user, genesis, validator, block metadata/epilogue, unknown types). |
+| **Publish rows** | Lists `code_address` and **New publish** vs **Upgrade** from event `is_upgrade`. |
+| **Bytecode rows** | Lists each `write_module` / `delete_module` with account address and module name (from module ABI when available). **Code** link opens `/account/{address}/modules/code/{module}` for successful writes with a known module name. |
 
 ### FEAT-TXN-004 — Events Tab
 
@@ -1231,7 +1239,8 @@ top of the HTML site.
 | `e2e/transaction-balance-change.spec.ts` | FEAT-TXN-003 (Playwright: testnet Balance Change tab loads indexer FA activities; asserts gas-fee row; skips outside CI when testnet gateway returns 401 for local preview origin) |
 | `app/pages/Transaction/Tabs/Components/SignatureOverviewTable.test.tsx` | FEAT-TXN-002 (signature overview: Ed25519, multi-Ed25519, single_sender, multi_agent, fee_payer, fallbacks; stable keys for duplicate secondary addresses) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
-| `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns) |
+| `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns), FEAT-TXN-012 (conditional Modules tab) |
+| `app/pages/Transaction/transactionModuleChanges.test.ts` | FEAT-TXN-012 (parse PublishPackage events and module write-set rows) |
 | `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |

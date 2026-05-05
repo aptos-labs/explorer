@@ -1,8 +1,10 @@
 // Covers FEAT-TXN-001 — Transaction tab selection by type
+// Covers FEAT-TXN-012 — Conditional Modules tab for package / bytecode changes
 import {describe, expect, it} from "vitest";
 import {TransactionTypeName} from "../../components/TransactionType";
 import {DECIBEL_CONTRACTS} from "../../utils/decibel";
 import {getTabValues} from "./Tabs";
+import {PUBLISH_PACKAGE_EVENT_TYPE_SUFFIX} from "./transactionModuleChanges";
 
 function makeTxn(type: string) {
   return {type} as Parameters<typeof getTabValues>[0];
@@ -19,6 +21,47 @@ describe("FEAT-TXN-001 — getTabValues", () => {
       "changes",
       "trace",
     ]);
+  });
+
+  it("includes modules tab before changes when write_module changes exist", () => {
+    const txn = {
+      type: TransactionTypeName.User,
+      changes: [
+        {
+          type: "write_module",
+          address: "0x1",
+          state_key_hash: "0x",
+          data: {
+            bytecode: "0x",
+            abi: {
+              address: "0x1",
+              name: "m",
+              friends: [],
+              exposed_functions: [],
+              structs: [],
+            },
+          },
+        },
+      ],
+    } as unknown as Parameters<typeof getTabValues>[0];
+    const tabs = getTabValues(txn);
+    expect(tabs).toContain("modules");
+    expect(tabs.indexOf("modules")).toBe(tabs.indexOf("changes") - 1);
+  });
+
+  it("includes modules tab when PublishPackage events exist", () => {
+    const txn = {
+      type: TransactionTypeName.User,
+      events: [
+        {
+          guid: {creation_number: "0", account_address: "0x0"},
+          sequence_number: "0",
+          type: `0x1${PUBLISH_PACKAGE_EVENT_TYPE_SUFFIX}`,
+          data: {code_address: "0x2", is_upgrade: false},
+        },
+      ],
+    } as unknown as Parameters<typeof getTabValues>[0];
+    expect(getTabValues(txn)).toContain("modules");
   });
 
   it("includes decibelDetail tab for Decibel user transactions", () => {
