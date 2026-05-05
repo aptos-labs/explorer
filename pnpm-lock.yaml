@@ -8,7 +8,7 @@ overrides:
   '@aptos-labs/aptos-client': ^4.0.0
   '@aptos-labs/wallet-standard': ^1.0.0
   '@aptos-labs/ts-sdk': ^6.3.0
-  axios: 1.15.0
+  axios: 1.15.2
   d3-array: '>=3.0.0'
   d3-color: '>=3.1.0'
   d3-dispatch: '>=3.0.0'
@@ -2404,8 +2404,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  axios@1.15.0:
-    resolution: {integrity: sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==}
+  axios@1.15.2:
+    resolution: {integrity: sha512-wLrXxPtcrPTsNlJmKjkPnNPK2Ihe0hn0wGSaTEiHRPxwjvJwT3hKmXF4dpqxmPO9SoNb2FsYXj/xEo0gHN+D5A==}
 
   b4a@1.8.0:
     resolution: {integrity: sha512-qRuSmNSkGQaHwNbM7J78Wwy+ghLEYF1zNrSeMxj4Kgw6y33O3mXcQ6Ie9fRvfU/YnxWkOchPXbaLb73TkIsfdg==}
@@ -5041,6 +5041,7 @@ packages:
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   validate-npm-package-license@3.0.4:
@@ -5892,7 +5893,7 @@ snapshots:
       '@identity-connect/api': 0.8.0
       '@identity-connect/crypto': 0.3.1(@aptos-labs/ts-sdk@6.3.1)(@wallet-standard/core@1.1.1)
       '@identity-connect/wallet-api': 0.2.0(@aptos-labs/ts-sdk@6.3.1)
-      axios: 1.15.0
+      axios: 1.15.2
       uuid: 9.0.1
     transitivePeerDependencies:
       - '@telegram-apps/bridge'
@@ -7634,7 +7635,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios@1.15.0:
+  axios@1.15.2:
     dependencies:
       follow-redirects: 1.16.0
       form-data: 4.0.5
