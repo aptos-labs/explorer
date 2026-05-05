@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Confidential assets — aggregate supply and account hints**: fungible asset and coin info tabs show **Confidential supply (pool)** from `0x1::confidential_asset::get_total_confidential_supply` when the view succeeds. The account **Coins** tab calls `has_confidential_store` per FA metadata (v2 balances, or v1 when Panora lists a paired `faAddress`); when initialized, the row shows **Confidential balance (amount N/A)** and USD as **N/A**.
+- **Confidential assets — aggregate supply and account hints**: fungible asset and coin info tabs show **Confidential supply (pool)** from `0x1::confidential_asset::get_total_confidential_supply` when the view succeeds. The account **Coins** tab calls `has_confidential_store` per FA metadata (v2 balances, or v1 when Panora lists a paired `faAddress`); when initialized, the row shows the actual visible balance/USD and a new **Confidential** column displays a `VisibilityOff` icon (with tooltip) signalling that an additional encrypted balance exists. Mobile card view shows the same icon next to the verification badge.
 
 - **Agent-readiness discovery surfaces**: the explorer now ships structured metadata for autonomous agents and LLM-powered crawlers:
   - `Link` response headers (RFC 8288) on `/` and `/*` advertising the API catalog, the Agent Skills index, MCP Server Card, `llms.txt`, `llms-full.txt`, and the sitemap
