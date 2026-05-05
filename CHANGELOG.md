@@ -36,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Transaction detail — Modules tab**: When a transaction publishes or upgrades Move packages (`PublishPackage` events) or touches module bytecode (`write_module` / `delete_module` write-set changes), the explorer shows a **Modules** tab before **Changes** with publish addresses and per-module rows (with links to the account module code view when the module name is known).
+
 - **Confidential assets — aggregate supply and account hints**: fungible asset and coin info tabs show **Confidential supply (pool)** from `0x1::confidential_asset::get_total_confidential_supply` when the view succeeds. The account **Coins** tab calls `has_confidential_store` per FA metadata (v2 balances, or v1 when Panora lists a paired `faAddress`); when initialized, the row shows the actual visible balance/USD and a new **Confidential** column displays a `VisibilityOff` icon (with tooltip) signalling that an additional encrypted balance exists. Mobile card view shows the same icon next to the verification badge.
 
 - **Agent-readiness discovery surfaces**: the explorer now ships structured metadata for autonomous agents and LLM-powered crawlers:

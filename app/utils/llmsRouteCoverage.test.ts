@@ -34,6 +34,8 @@ const REQUIRED_PATH_SNIPPETS = [
   "balanceChange",
   /** User transaction Sentio call trace tab */
   "/trace",
+  /** Conditional transaction tab — Move package / module changes */
+  "/modules",
   /** Account multisig tab */
   "/multisig",
   /** Validators enhanced delegation tab */

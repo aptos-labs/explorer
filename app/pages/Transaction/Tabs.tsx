@@ -8,6 +8,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import ShowChartOutlinedIcon from "@mui/icons-material/ShowChartOutlined";
+import ViewModuleOutlinedIcon from "@mui/icons-material/ViewModuleOutlined";
 import {
   Accordion,
   AccordionDetails,
@@ -42,10 +43,27 @@ import GenesisTransactionOverviewTab from "./Tabs/GenesisTransactionOverviewTab"
 import PayloadTab from "./Tabs/PayloadTab";
 import PendingTransactionOverviewTab from "./Tabs/PendingTransactionOverviewTab";
 import StateCheckpointOverviewTab from "./Tabs/StateCheckpointOverviewTab";
+import TransactionModulesTab from "./Tabs/TransactionModulesTab";
 import TransactionTraceTab from "./Tabs/TransactionTraceTab";
 import UnknownTab from "./Tabs/UnknownTab";
 import UserTransactionOverviewTab from "./Tabs/UserTransactionOverviewTab";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
+import {transactionHasModuleSummary} from "./transactionModuleChanges";
+
+function insertModulesTabBeforeChanges(tabs: TabValue[]): TabValue[] {
+  const i = tabs.indexOf("changes");
+  if (i === -1) return [...tabs, "modules"];
+  return [...tabs.slice(0, i), "modules", ...tabs.slice(i)];
+}
+
+function withModulesTabWhenApplicable(
+  transaction: Types.Transaction,
+  tabs: TabValue[],
+): TabValue[] {
+  return transactionHasModuleSummary(transaction)
+    ? insertModulesTabBeforeChanges(tabs)
+    : tabs;
+}
 
 export function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
@@ -55,22 +73,43 @@ export function getTabValues(transaction: Types.Transaction): TabValue[] {
         tabs.push("decibelDetail");
       }
       tabs.push("balanceChange", "events", "payload", "changes", "trace");
-      return tabs;
+      return withModulesTabWhenApplicable(transaction, tabs);
     }
     case TransactionTypeName.BlockMetadata:
-      return ["blockMetadataOverview", "events", "changes"];
+      return withModulesTabWhenApplicable(transaction, [
+        "blockMetadataOverview",
+        "events",
+        "changes",
+      ]);
     case TransactionTypeName.StateCheckpoint:
       return ["stateCheckpointOverview"];
     case TransactionTypeName.Pending:
       return ["pendingTxnOverview", "payload"];
     case TransactionTypeName.Genesis:
-      return ["genesisTxnOverview", "events", "payload", "changes"];
+      return withModulesTabWhenApplicable(transaction, [
+        "genesisTxnOverview",
+        "events",
+        "payload",
+        "changes",
+      ]);
     case TransactionTypeName.Validator:
-      return ["validatorTxnOverview", "events", "changes"];
+      return withModulesTabWhenApplicable(transaction, [
+        "validatorTxnOverview",
+        "events",
+        "changes",
+      ]);
     case TransactionTypeName.BlockEpilogue:
-      return ["blockEpilogueOverview", "events", "changes"];
+      return withModulesTabWhenApplicable(transaction, [
+        "blockEpilogueOverview",
+        "events",
+        "changes",
+      ]);
     default:
-      return ["unknown", "events", "changes"];
+      return withModulesTabWhenApplicable(transaction, [
+        "unknown",
+        "events",
+        "changes",
+      ]);
   }
 }
 
@@ -86,6 +125,7 @@ const TabComponents = Object.freeze({
   balanceChange: BalanceChangeTab,
   events: EventsTab,
   payload: PayloadTab,
+  modules: TransactionModulesTab,
   changes: ChangesTab,
   trace: TransactionTraceTab,
   unknown: UnknownTab,
@@ -112,6 +152,8 @@ function getTabLabel(value: TabValue): string {
       return "Events";
     case "payload":
       return "Payload";
+    case "modules":
+      return "Modules";
     case "changes":
       return "Changes";
     case "trace":
@@ -139,6 +181,8 @@ function getTabIcon(value: TabValue): React.JSX.Element {
       return <CallMergeOutlinedIcon fontSize="small" />;
     case "payload":
       return <FileCopyOutlinedIcon fontSize="small" />;
+    case "modules":
+      return <ViewModuleOutlinedIcon fontSize="small" />;
     case "changes":
       return <CodeOutlinedIcon fontSize="small" />;
     case "trace":
