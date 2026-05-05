@@ -30,7 +30,7 @@
   for = "/"
   [headers.values]
     Vary = "Accept"
-    Link = '''</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json", </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)", </sitemap.xml>; rel="sitemap"; type="application/xml"'''
+    Link = '''</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json", </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="MCP Server Card", </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)", </sitemap.xml>; rel="sitemap"; type="application/xml"'''
 
 [[headers]]
   for = "/assets/*"

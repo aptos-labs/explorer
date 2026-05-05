@@ -32,13 +32,15 @@ export default function InfoTab({
   pairedFa,
   coinData,
 }: InfoTabProps) {
+  const faMetadataAddress = pairedFa ?? coinData?.faAddress ?? null;
+
   const {
     data: confidentialSupply,
     isLoading: confidentialSupplyLoading,
     isError: confidentialSupplyError,
-  } = useGetConfidentialFASupply(pairedFa ?? "");
+  } = useGetConfidentialFASupply(faMetadataAddress ?? "");
 
-  const confidentialRowEnabled = Boolean(!confidentialSupplyError);
+  const confidentialRowEnabled = Boolean(faMetadataAddress);
 
   const {data: firstActivity} = useGetFirstCoinActivity(pairedFa ?? struct);
   const {data: faProperties} = useGetFaProperties(pairedFa ?? undefined);

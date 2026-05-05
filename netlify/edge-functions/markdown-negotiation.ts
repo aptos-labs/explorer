@@ -80,6 +80,7 @@ export default async function handler(
     [
       '</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"',
       '</.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json"',
+      '</.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="MCP Server Card"',
       '</llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)"',
       '</sitemap.xml>; rel="sitemap"; type="application/xml"',
     ].join(", "),

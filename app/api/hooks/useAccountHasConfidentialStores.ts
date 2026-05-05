@@ -28,9 +28,14 @@ export function useAccountHasConfidentialStores(
   const networkValue = useNetworkValue();
   const standardizedUser = tryStandardizeAddress(userAddress);
 
+  // Cap at 20 to avoid a large fan-out of per-asset view calls that can trip
+  // upstream rate limits on accounts with many different token types.
+  const MAX_CONFIDENTIAL_QUERIES = 20;
   const dedupedFa = useMemo(
     () =>
-      [...new Set(faMetadataAddresses)].filter((a) => isValidAccountAddress(a)),
+      [...new Set(faMetadataAddresses)]
+        .filter((a) => isValidAccountAddress(a))
+        .slice(0, MAX_CONFIDENTIAL_QUERIES),
     [faMetadataAddresses],
   );
 
@@ -65,7 +70,9 @@ export function useAccountHasConfidentialStores(
       const q = queryResults[i];
       const key = tryStandardizeAddress(fa) ?? fa;
       m.set(key, {
-        pending: q.isPending || q.isLoading,
+        // Treat errors as pending so zero-balance rows aren't incorrectly
+        // filtered out when the view call fails transiently.
+        pending: q.isPending || q.isLoading || q.isError,
         hasStore: q.isError ? undefined : q.data,
       });
     });

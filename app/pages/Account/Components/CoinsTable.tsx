@@ -352,7 +352,7 @@ function CoinCard({
           )}
         </Typography>
         <Typography sx={{fontSize: "0.85rem", color: "text.secondary"}}>
-          {coin.usdValue !== null && inMainnet
+          {formattedAmount !== null && coin.usdValue !== null && inMainnet
             ? `$${coin.usdValue.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
@@ -367,11 +367,13 @@ function CoinCard({
 export function CoinsTable({
   coins,
   getConfidentialStore,
+  coinDataLoading = false,
 }: {
   coins: CoinDescriptionPlusAmount[];
   getConfidentialStore: (
     key: string | null | undefined,
   ) => ConfidentialStoreQueryState;
+  coinDataLoading?: boolean;
 }) {
   const theme = useTheme();
   const networkName = useNetworkName();
@@ -437,6 +439,12 @@ export function CoinsTable({
       // 過濾餘額為 0 的 coin (Filter out coins with 0 balance based on toggle)
       if (!showZero) {
         baseCoins = baseCoins.filter((coin) => {
+          // v1 coins derive their confidential key from Panora data; keep them
+          // visible until that data finishes loading so we don't incorrectly
+          // drop zero-balance confidential rows.
+          if (coinDataLoading && coin.tokenStandard === "v1") {
+            return true;
+          }
           const c = getConfidentialStore(coin.confidentialMetadataKey);
           if (c.pending) {
             return true;
@@ -485,7 +493,13 @@ export function CoinsTable({
 
       return filtered.sort((a, b) => toIndex(a) - toIndex(b));
     },
-    [coinVerifications, getCoinId, getConfidentialStore, toIndex],
+    [
+      coinVerifications,
+      getCoinId,
+      getConfidentialStore,
+      toIndex,
+      coinDataLoading,
+    ],
   );
 
   // Memoize filtered and sorted coins

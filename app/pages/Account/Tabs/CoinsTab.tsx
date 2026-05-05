@@ -20,7 +20,7 @@ type TokenTabsProps = {
 };
 
 export default function CoinsTab({address}: TokenTabsProps) {
-  const {data: coinData} = useGetCoinList();
+  const {data: coinData, isLoading: coinDataLoading} = useGetCoinList();
 
   const {isLoading, error, data} = useGetAllAccountCoins(address);
 
@@ -129,6 +129,7 @@ export default function CoinsTab({address}: TokenTabsProps) {
     <CoinsTable
       coins={parsedCoins}
       getConfidentialStore={getConfidentialStore}
+      coinDataLoading={coinDataLoading}
     />
   );
 }
