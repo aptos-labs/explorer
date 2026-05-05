@@ -3,10 +3,10 @@ import QuestionMarkOutlined from "@mui/icons-material/QuestionMarkOutlined";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {Box} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
-import {useGetConfidentialFASupply} from "../../../api/hooks/useGetConfidentialFASupply";
 import {useGetFirstCoinActivity} from "../../../api/hooks/useGetCoinActivities";
 import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {SupplyType} from "../../../api/hooks/useGetCoinSupplyLimit";
+import {useGetConfidentialFASupply} from "../../../api/hooks/useGetConfidentialFASupply";
 import {useGetFaProperties} from "../../../api/hooks/useGetFaProperties";
 import FaPropertiesDisplay from "../../../components/FaPropertiesDisplay";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -32,17 +32,13 @@ export default function InfoTab({
   pairedFa,
   coinData,
 }: InfoTabProps) {
-  const metadataForConfidential =
-    pairedFa ??
-    (coinData?.tokenAddress === struct ? coinData.faAddress : null);
-
   const {
     data: confidentialSupply,
     isLoading: confidentialSupplyLoading,
     isError: confidentialSupplyError,
-  } = useGetConfidentialFASupply(metadataForConfidential ?? "");
+  } = useGetConfidentialFASupply(pairedFa ?? "");
 
-  const confidentialRowEnabled = Boolean(metadataForConfidential);
+  const confidentialRowEnabled = Boolean(!confidentialSupplyError);
 
   const {data: firstActivity} = useGetFirstCoinActivity(pairedFa ?? struct);
   const {data: faProperties} = useGetFaProperties(pairedFa ?? undefined);

@@ -2,10 +2,10 @@ import {useQueries} from "@tanstack/react-query";
 import {useCallback, useMemo} from "react";
 import type {Types} from "~/types/aptos";
 import {useAptosClient, useNetworkValue} from "../../global-config";
-import {tryStandardizeAddress} from "../../utils";
 import {isValidAccountAddress} from "../../pages/utils";
-import {parseConfidentialStoreBool} from "./confidentialAssetViews";
+import {tryStandardizeAddress} from "../../utils";
 import {view} from "../index";
+import {parseConfidentialStoreBool} from "./confidentialAssetViews";
 
 export type ConfidentialStoreQueryState = {
   pending: boolean;
@@ -39,7 +39,7 @@ export function useAccountHasConfidentialStores(
       const standardizedFa = tryStandardizeAddress(fa) ?? fa;
       const request: Types.ViewRequest = {
         function: "0x1::confidential_asset::has_confidential_store",
-        type_arguments: ["0x1::object::ObjectCore"],
+        type_arguments: [],
         arguments: [standardizedUser ?? userAddress, standardizedFa],
       };
       return {
@@ -73,7 +73,9 @@ export function useAccountHasConfidentialStores(
   }, [dedupedFa, queryResults]);
 
   const getConfidentialStore = useCallback(
-    (metadataAddress: string | null | undefined): ConfidentialStoreQueryState => {
+    (
+      metadataAddress: string | null | undefined,
+    ): ConfidentialStoreQueryState => {
       if (!metadataAddress || !standardizedUser) {
         return {pending: false, hasStore: undefined};
       }

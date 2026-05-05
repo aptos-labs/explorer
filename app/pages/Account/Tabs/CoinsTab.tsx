@@ -1,5 +1,5 @@
-import type {Types} from "~/types/aptos";
 import {useMemo} from "react";
+import type {Types} from "~/types/aptos";
 import {useAccountHasConfidentialStores} from "../../../api/hooks/useAccountHasConfidentialStores";
 import {useGetAllAccountCoins} from "../../../api/hooks/useGetAccountCoins";
 import {
@@ -126,6 +126,9 @@ export default function CoinsTab({address}: TokenTabsProps) {
   }
 
   return (
-    <CoinsTable coins={parsedCoins} getConfidentialStore={getConfidentialStore} />
+    <CoinsTable
+      coins={parsedCoins}
+      getConfidentialStore={getConfidentialStore}
+    />
   );
 }

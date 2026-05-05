@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import * as React from "react";
 import {useCallback, useMemo} from "react";
+import type {ConfidentialStoreQueryState} from "../../../api/hooks/useAccountHasConfidentialStores";
 import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -22,7 +23,6 @@ import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
-import type {ConfidentialStoreQueryState} from "../../../api/hooks/useAccountHasConfidentialStores";
 import {
   getVerifiedMessageAndIcon,
   VerifiedCoinCell,
@@ -626,11 +626,15 @@ export function CoinsTable({
               coinDesc.bridge,
               coinDesc.symbol,
             )}
-            confidential={getConfidentialStore(coinDesc.confidentialMetadataKey)}
+            confidential={getConfidentialStore(
+              coinDesc.confidentialMetadataKey,
+            )}
           />
           <USDCell
             amount={coinDesc.usdValue}
-            confidential={getConfidentialStore(coinDesc.confidentialMetadataKey)}
+            confidential={getConfidentialStore(
+              coinDesc.confidentialMetadataKey,
+            )}
           />
         </GeneralTableRow>
       );

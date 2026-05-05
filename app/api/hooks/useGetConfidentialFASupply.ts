@@ -13,7 +13,7 @@ export function useGetConfidentialFASupply(metadataAddress: string): {
 } {
   const {data, isLoading, isError} = useViewFunction(
     "0x1::confidential_asset::get_total_confidential_supply",
-    ["0x1::object::ObjectCore"],
+    [],
     [metadataAddress],
     {
       enabled: isValidAccountAddress(metadataAddress),
