@@ -1,64 +1,44 @@
 import type {Config, Context} from "@netlify/edge-functions";
-import {
-  estimateMarkdownTokens,
-  htmlToMarkdown,
-} from "../../app/utils/htmlToMarkdown.ts";
-// Shared with the app (unit-tested in app/utils/acceptMarkdown.test.ts).
-// Netlify Edge Functions run under Deno and support TypeScript imports from
-// inside the repo, so we re-use the single implementation instead of keeping
-// a drift-prone copy here.
-import {prefersMarkdown} from "../../app/utils/acceptMarkdown.ts";
 
 /**
  * Markdown negotiation for AI agents.
  *
  * When a client sends `Accept: text/markdown` (or `text/markdown` appears
  * anywhere in the Accept header with non-zero q-value, e.g. Cloudflare's
- * "Markdown for Agents" pattern), we ask the normal SSR/static handler for
- * HTML and convert that HTML response to markdown at the edge.
+ * "Markdown for Agents" pattern), we return a pre-rendered markdown view of
+ * the page instead of the HTML SPA shell.
  *
  * Strategy:
- *  - Requests without a markdown preference fall through unchanged.
- *  - Markdown requests keep the default browser behavior downstream by sending
- *    `Accept: text/html`; this avoids SSR/content-type negotiation surprises.
- *  - Only HTML responses are transformed. Assets, API responses, and direct
- *    text files pass through unchanged.
+ *  - `/` (and a small set of top-level landing paths) → serve the short LLM
+ *    reference (`/llms.txt`) with `Content-Type: text/markdown`.
+ *  - Fall through to the default HTML handler for all other paths and for
+ *    requests without a markdown preference in Accept.
  *
- * This gives AI agents a markdown representation of the same route browsers
- * see while preserving HTML as the default.
+ * This gives AI agents a stable, concise markdown summary of the Explorer
+ * without shipping a full HTML→markdown converter at the edge. The full LLM
+ * reference stays available at `/llms-full.txt`.
  */
-function appendVary(headers: Headers, value: string) {
-  const current = headers.get("Vary");
-  if (!current) {
-    headers.set("Vary", value);
-    return;
+
+const MARKDOWN_ROUTES: ReadonlySet<string> = new Set(["/", "/index.html"]);
+
+/**
+ * Inlined copy of prefersMarkdown() in app/utils/acceptMarkdown.ts. Netlify
+ * Edge Functions are bundled independently from the app, so we keep the
+ * logic here in sync with the unit-tested helper in the main app. If you
+ * change this, update that file too (and vice versa).
+ */
+function prefersMarkdown(accept: string | null): boolean {
+  if (!accept) return false;
+  const ranges = accept.split(",").map((part) => part.trim().toLowerCase());
+  for (const range of ranges) {
+    if (!range.startsWith("text/markdown")) continue;
+    const params = range.split(";").slice(1);
+    const qParam = params.map((p) => p.trim()).find((p) => p.startsWith("q="));
+    if (!qParam) return true;
+    const q = Number.parseFloat(qParam.slice(2));
+    if (Number.isFinite(q) && q > 0) return true;
   }
-
-  const values = current.split(",").map((part) => part.trim().toLowerCase());
-  if (!values.includes(value.toLowerCase())) {
-    headers.set("Vary", `${current}, ${value}`);
-  }
-}
-
-function isHtmlResponse(response: Response): boolean {
-  return response.headers.get("Content-Type")?.includes("text/html") ?? false;
-}
-
-function createHtmlRequest(request: Request): Request {
-  const headers = new Headers(request.headers);
-  headers.set(
-    "Accept",
-    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-  );
-
-  if (request.method === "HEAD") {
-    return new Request(request.url, {
-      headers,
-      method: "GET",
-    });
-  }
-
-  return new Request(request, {headers});
+  return false;
 }
 
 export default async function handler(
@@ -70,46 +50,46 @@ export default async function handler(
   const accept = request.headers.get("accept");
   if (!prefersMarkdown(accept)) return undefined;
 
-  const response = await context.next(createHtmlRequest(request));
-  if (!isHtmlResponse(response)) return response;
+  const url = new URL(request.url);
+  if (!MARKDOWN_ROUTES.has(url.pathname)) {
+    // For non-landing paths we still let the HTML handler respond. Agents that
+    // want full markdown reference should fetch /llms-full.txt directly.
+    return undefined;
+  }
 
-  const headers = new Headers(response.headers);
+  const llmsUrl = new URL("/llms.txt", url.origin);
+  const upstream = await context.fetch(llmsUrl.toString(), {
+    headers: {Accept: "text/plain"},
+  });
 
+  if (!upstream.ok) {
+    // Fall through to the default HTML renderer rather than returning 500.
+    return undefined;
+  }
+
+  const body = request.method === "HEAD" ? null : await upstream.text();
+  const headers = new Headers();
   headers.set("Content-Type", "text/markdown; charset=utf-8");
+  headers.set(
+    "Cache-Control",
+    "public, max-age=0, s-maxage=300, stale-while-revalidate=86400",
+  );
+  headers.set("Vary", "Accept");
   headers.set(
     "Link",
     [
       '</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"',
       '</.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json"',
-      '</.well-known/mcp/server-card.json>; rel="https://modelcontextprotocol.io/rel/server-card"; type="application/json"',
+      '</.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="MCP Server Card"',
       '</llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)"',
       '</sitemap.xml>; rel="sitemap"; type="application/xml"',
     ].join(", "),
   );
-  headers.set("X-Markdown-Source", "html-response");
-  appendVary(headers, "Accept");
-  headers.delete("Content-Encoding");
-  headers.delete("Content-Length");
+  headers.set("X-Markdown-Source", "/llms.txt");
 
-  if (request.method === "HEAD") {
-    return new Response(null, {
-      headers,
-      status: response.status,
-      statusText: response.statusText,
-    });
-  }
-
-  const html = await response.text();
-  const markdown = htmlToMarkdown(html, request.url);
-  headers.set("X-Markdown-Tokens", String(estimateMarkdownTokens(markdown)));
-
-  return new Response(markdown, {
-    headers,
-    status: response.status,
-    statusText: response.statusText,
-  });
+  return new Response(body, {status: 200, headers});
 }
 
 export const config: Config = {
-  path: "/*",
+  path: ["/", "/index.html"],
 };

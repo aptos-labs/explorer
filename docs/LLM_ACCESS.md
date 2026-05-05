@@ -35,7 +35,7 @@ Searched the app route tree for per-route `head:` callbacks (TanStack Router fil
 | `public/.well-known/api-catalog` | RFC 9727 API catalog (`application/linkset+json`) listing upstream Aptos REST / GraphQL APIs |
 | `public/.well-known/agent-skills/index.json` | Agent Skills Discovery RFC v0.2.0 index; per-skill `SKILL.md` under `public/.well-known/agent-skills/*/` |
 | `netlify.toml` | `Link` response headers (RFC 8288) on `/` and `/*` pointing to the discovery files |
-| `netlify/edge-functions/markdown-negotiation.ts` | Converts HTML route responses to `Content-Type: text/markdown` when the request has `Accept: text/markdown`; browser HTML remains the default |
+| `netlify/edge-functions/markdown-negotiation.ts` | Serves `/llms.txt` as `Content-Type: text/markdown` for homepage requests (`/` and `/index.html`) when the client sends `Accept: text/markdown` |
 | `app/components/WebMCPProvider.tsx` + `app/components/webMcpTools.ts` | `navigator.modelContext` tools for browser-resident agents |
 
 Root [`app/routes/__root.tsx`](../app/routes/__root.tsx) exposes `<link rel="help">` / `alternate` hints to the LLM text files and mounts `<WebMCPProvider />`.

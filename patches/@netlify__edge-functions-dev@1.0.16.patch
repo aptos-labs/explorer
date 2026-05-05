@@ -1,0 +1,18 @@
+diff --git a/dist/node/main.js b/dist/node/main.js
+index 4d66fb56936f7c8148b46ffeb8f398d2a16e06f0..c3b3b8dd2e344bd5212d82e7fd59fafb2114f780 100644
+--- a/dist/node/main.js
++++ b/dist/node/main.js
+@@ -230,7 +230,12 @@ var EdgeFunctionsHandler = class {
+           url: originServerAddress
+         };
+         request2.headers.set(headers.Site, base64Encode(site));
+-        const response = await fetch(url, request2);
++        const response = await fetch(url, {
++          method: request2.method,
++          headers: Object.fromEntries(request2.headers.entries()),
++          body: request2.body,
++          duplex: "half"
++        });
+         const isUncaughtError = response.headers.has(headers.UncaughtError);
+         if (isUncaughtError) {
+           return await this.renderError(await response.text(), acceptsHTML);

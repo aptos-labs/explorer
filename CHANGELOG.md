@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Markdown for Agents — HTML routes negotiate to markdown without 500s**: the Netlify Edge Function now runs as middleware for HTML routes and converts the downstream SSR/static HTML response to `Content-Type: text/markdown` when agents send `Accept: text/markdown`. Browser requests still receive HTML by default, and markdown responses include an `X-Markdown-Tokens` estimate header.
 - **Network deployments — framework release uses gas schedule**: `/releases/networks` cards no longer label `0x1::version::Version.major` as “framework version”. The UI now shows **Framework Release** from `0x1::gas_schedule::GasScheduleV2.feature_version`, mapped to the framework train per aptos-core `gas_feature_versions`, plus **Bytecode Format (max)** from VM Binary Format feature flags.
 
 - **Network deployments — release branch URL never points to a non-existent branch**: the commit-message parser used to accept three-component release tags like `[aptos-release-v1.43.1]` (the patch-suffixed form is malformed; Aptos cuts release branches per minor only). When such a tag slipped through, the network card on `/releases/networks` rendered `v1.43.1.x` and linked to `aptos-release-v1.43.1`, which 404s. The parser now only accepts the canonical `[aptos-release-vX.Y]` form and the consumer adds a defensive `^\d+\.\d+$` guard, so malformed tags fall back to the commit-only display rather than producing a broken link.
@@ -36,6 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Releases hub consolidates Deployments, AIPs, and SDK & Tool Releases under one nav entry** (`/releases`): the previously separate top-level pages `/deployments`, `/aips`, and `/releases` are now sub-tabs of a single Releases page (`/releases/networks`, `/releases/aips`, `/releases/sdks`). The header nav exposes a single **Releases** entry instead of three. Bare `/releases` redirects to the default `networks` tab; `/deployments` and `/aips` permanently redirect to `/releases/networks` and `/releases/aips` so existing bookmarks and external links keep working. `llms.txt`, `llms-full.txt`, `sitemap.xml`, and the LLM-doc drift test were updated to document the new paths.
 
 ### Added
+
+- **Confidential assets — aggregate supply and account hints**: fungible asset and coin info tabs show **Confidential supply (pool)** from `0x1::confidential_asset::get_total_confidential_supply` when the view succeeds. The account **Coins** tab calls `has_confidential_store` per FA metadata (v2 balances, or v1 when Panora lists a paired `faAddress`); when initialized, the row shows the actual visible balance/USD and a new **Confidential** column displays a `VisibilityOff` icon (with tooltip) signalling that an additional encrypted balance exists. Mobile card view shows the same icon next to the verification badge.
 
 - **Agent-readiness discovery surfaces**: the explorer now ships structured metadata for autonomous agents and LLM-powered crawlers:
   - `Link` response headers (RFC 8288) on `/` and `/*` advertising the API catalog, the Agent Skills index, MCP Server Card, `llms.txt`, `llms-full.txt`, and the sitemap

@@ -1,6 +1,7 @@
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {Box} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
+import {useGetConfidentialFASupply} from "../../../api/hooks/useGetConfidentialFASupply";
 import {useGetFirstCoinActivity} from "../../../api/hooks/useGetCoinActivities";
 import {useGetFaProperties} from "../../../api/hooks/useGetFaProperties";
 import FaPropertiesDisplay from "../../../components/FaPropertiesDisplay";
@@ -41,6 +42,11 @@ function ExtraInfo({address}: {address: string}) {
 export default function InfoTab({address, data}: InfoTabProps) {
   const {data: firstActivity} = useGetFirstCoinActivity(address);
   const {data: faProperties} = useGetFaProperties(address);
+  const {
+    data: confidentialSupply,
+    isLoading: confidentialSupplyLoading,
+    isError: confidentialSupplyError,
+  } = useGetConfidentialFASupply(address);
 
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
@@ -92,6 +98,32 @@ export default function InfoTab({address, data}: InfoTabProps) {
                 {`${formattedSupply} `}
                 {supplyIcon}
               </>
+            }
+          />
+          <ContentRow
+            title={"Confidential supply (pool):"}
+            value={
+              confidentialSupplyError ? (
+                "—"
+              ) : confidentialSupplyLoading ? (
+                "…"
+              ) : confidentialSupply !== null ? (
+                <Tooltip
+                  title={
+                    "Tokens held in the on-chain confidential-asset pool for this metadata object (public aggregate). Individual balances stay private."
+                  }
+                >
+                  <span>
+                    {getFormattedBalanceStr(
+                      confidentialSupply.toString(),
+                      data.metadata?.decimals,
+                    )}{" "}
+                    {data.metadata?.symbol}
+                  </span>
+                </Tooltip>
+              ) : (
+                "—"
+              )
             }
           />
           {marketCap ? (

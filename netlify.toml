@@ -8,12 +8,6 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Markdown-for-Agents negotiation for HTML routes. See
-# netlify/edge-functions/markdown-negotiation.ts for details.
-[[edge_functions]]
-  function = "markdown-negotiation"
-  path = "/*"
-
 # Headers for security and caching
 [[headers]]
   for = "/*"

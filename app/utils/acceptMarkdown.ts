@@ -4,8 +4,8 @@
  *
  * Returns true when `text/markdown` appears as a media range with a non-zero
  * q-value (or with no explicit q-value — defaulting to 1 per RFC 9110). This
- * is used by the edge markdown-negotiation function to serve markdown views of
- * HTML routes for AI agents without affecting browser requests.
+ * is used by the edge markdown-negotiation function to serve a markdown view
+ * of the homepage for AI agents without affecting browser requests.
  */
 export function prefersMarkdown(accept: string | null | undefined): boolean {
   if (!accept) return false;

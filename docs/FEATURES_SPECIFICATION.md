@@ -367,6 +367,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Data** | `useGetAllAccountCoins` merged with Panora/coin list. |
 | **Table** | Asset name, symbol, balance, type. Virtualized for large sets. |
+| **Confidential** | For fungible assets (v2), and for legacy coins when Panora lists a paired FA metadata address, the explorer calls `0x1::confidential_asset::has_confidential_store`. When true, the amount column shows **Confidential balance (amount N/A)** and USD shows **N/A** (individual balances are private). |
 
 ### FEAT-ACCOUNT-008 — NFTs (Tokens) Tab
 
@@ -605,6 +606,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Data** | `CoinInfo` resource, supply limit, paired FA via `useGetCoinPairedFa`. |
 | **Display** | Coin name, symbol, decimals, supply, paired fungible asset link. |
+| **Confidential supply** | When a paired FA metadata address is known (on-chain `paired_metadata` or Panora `faAddress` for this coin type), **Confidential supply (pool)** shows `0x1::confidential_asset::get_total_confidential_supply` (public aggregate in the protocol pool). |
 
 ### FEAT-COIN-003 — Verification Banner
 
@@ -651,6 +653,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Data** | FA metadata, supply, paired coin via `useGetFaPairedCoin`. |
 | **Display** | Name, symbol, decimals, supply, icon, paired coin link. |
+| **Confidential supply** | **Confidential supply (pool)** — `0x1::confidential_asset::get_total_confidential_supply` for this metadata object (public aggregate). |
 | **Properties** | `FaPropertiesDisplay` — mint/burn/transfer flags derived from resource data. |
 
 ### FEAT-FA-003 — Verification Banner
@@ -990,7 +993,7 @@ top of the HTML site.
 | **Agent Skills index** | `public/.well-known/agent-skills/index.json` conforms to cloudflare/agent-skills-discovery-rfc v0.2.0. Publishes `aptos-explorer-urls` and `aptos-explorer-search` skills, each with a SHA-256 `digest`. Regenerate via `node scripts/update-agent-skills-index.mjs`. |
 | **MCP Server Card** | `public/.well-known/mcp/server-card.json` publishes a draft SEP-1649 / SEP-2127 MCP Server Card with `serverInfo`, a WebMCP transport endpoint, read-only tool capabilities, and the currently exposed browser WebMCP navigation tools. Served as `application/json` with CORS enabled for agent discovery. |
 | **Content Signals** | `public/robots.txt` declares `Content-Signal: ai-train=no, search=yes, ai-input=yes` at the top of the file and inside every AI-crawler `User-agent` group (contentsignals.org / draft-romm-aipref-contentsignals). |
-| **Markdown negotiation** | Netlify Edge Function `netlify/edge-functions/markdown-negotiation.ts` intercepts HTML routes when the request has `Accept: text/markdown`, asks the normal SSR/static handler for HTML, converts that response to markdown, and returns `Content-Type: text/markdown` plus `X-Markdown-Tokens`; HTML remains the default for browsers. Helpers: `app/utils/acceptMarkdown.ts` (`prefersMarkdown`) and `app/utils/htmlToMarkdown.ts`. |
+| **Markdown negotiation** | Netlify Edge Function `netlify/edge-functions/markdown-negotiation.ts` returns `/llms.txt` contents with `Content-Type: text/markdown` when the homepage request has `Accept: text/markdown`; HTML remains the default for browsers. Helper: `app/utils/acceptMarkdown.ts` (`prefersMarkdown`). |
 | **WebMCP** | `app/components/WebMCPProvider.tsx` registers read-only navigation tools (`search_explorer`, `open_transaction`, `open_account`, `open_block`, `open_releases`, `open_coin`) on `navigator.modelContext` when supported. Tool definitions live in `app/components/webMcpTools.ts`; registration is cleaned up via `AbortSignal` on unmount. |
 
 ---
@@ -1199,7 +1202,6 @@ top of the HTML site.
 | `app/utils/netlifyHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers) |
 | `app/utils/mcpServerCard.test.ts` | FEAT-SEO-004 (MCP Server Card minimum fields and advertised WebMCP tools) |
 | `app/utils/acceptMarkdown.test.ts` | FEAT-SEO-004 (`Accept: text/markdown` negotiation helper) |
-| `app/utils/htmlToMarkdown.test.ts` | FEAT-SEO-004 (HTML-response-to-markdown conversion and `X-Markdown-Tokens` estimate) |
 | `app/components/webMcpTools.test.ts` | FEAT-SEO-004 (WebMCP navigation tools: routing, validation) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |
@@ -1210,6 +1212,7 @@ top of the HTML site.
 | `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation from resources) |
+| `app/api/hooks/confidentialAssetViews.test.ts` | FEAT-FA-002 / FEAT-COIN-002 / FEAT-ACCOUNT-007 (confidential-asset view response parsing) |
 | `app/context/rate-limit/RateLimitContext.test.tsx` | FEAT-RATELIMIT-001 (rate limit context state management) |
 | `app/context/rate-limit/rateLimitEvents.test.ts` | FEAT-RATELIMIT-001 (rate limit event detection) |
 | `app/context/rate-limit/settingsEvents.test.ts` | FEAT-SETTINGS-001 / FEAT-RATELIMIT-001 (settings ↔ rate-limit event bridge) |
