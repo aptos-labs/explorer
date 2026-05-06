@@ -65,4 +65,17 @@ const cacheAwareRenderHandler = defineHandlerCallback(async (ctx) => {
 // - defaultRenderHandler uses renderRouterToString which includes <!DOCTYPE html>
 // - defaultStreamHandler uses renderRouterToStream which does NOT include DOCTYPE
 // This prevents Quirks Mode issues
-export default createStartHandler(cacheAwareRenderHandler);
+const fetch = createStartHandler(cacheAwareRenderHandler);
+
+// `@netlify/vite-plugin` (used via `@netlify/vite-plugin-tanstack-start`) writes
+// a Netlify Function wrapper that does `serverEntrypoint.fetch` on this
+// module's default export — see the framework's own `default-entry/server.js`
+// which wraps the handler in `{ fetch }` for the same reason. Exporting the
+// raw handler here causes the deployed lambda to throw
+// `TypeError: y.handler is not a function` at runtime because
+// `serverEntrypoint.fetch` resolves to `undefined`.
+export default {
+  async fetch(...args: Parameters<typeof fetch>) {
+    return fetch(...args);
+  },
+};
