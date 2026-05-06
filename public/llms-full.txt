@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-05-05 (rev 19)
+> Last updated: 2026-05-06 (rev 20)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -421,12 +421,12 @@ Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+j
 ### Markdown content negotiation
 
 When a request to `/` (or `/index.html`) includes `Accept: text/markdown`,
-a Netlify Edge Function (`netlify/edge-functions/markdown-negotiation.ts`)
-serves the contents of `/llms.txt` with `Content-Type: text/markdown;
-charset=utf-8`, a `Vary: Accept` header, and an `X-Markdown-Source` hint
-pointing to the underlying file. Browsers (which request `text/html`) are
-unaffected — they still receive the SSR HTML. For the full markdown
-reference, agents should fetch `/llms-full.txt` directly.
+TanStack Start SSR (`app/ssr.tsx` / `app/utils/markdownHomeNegotiation.ts`)
+serves the same content as `/llms.txt` (bundled at build time) with
+`Content-Type: text/markdown; charset=utf-8`, a `Vary: Accept` header, and an
+`X-Markdown-Source` hint pointing to the underlying file. Browsers (which
+request `text/html`) are unaffected — they still receive the SSR HTML. For the
+full markdown reference, agents should fetch `/llms-full.txt` directly.
 
 ### WebMCP tools
 

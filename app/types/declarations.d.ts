@@ -74,6 +74,11 @@ declare module "*.png" {
   export default src;
 }
 
+declare module "*.txt?raw" {
+  const content: string;
+  export default content;
+}
+
 // Add Vite's ImportMeta.env types
 interface ImportMetaEnv {
   readonly APTOS_DEVNET_URL?: string;
