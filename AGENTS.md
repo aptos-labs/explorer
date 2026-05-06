@@ -122,6 +122,11 @@ This repository is often modified by automated agents. The following bar keeps t
 - **Typecheck** must pass (`pnpm lint` includes `tsc --noEmit`).
 - **`CHANGELOG.md`**: Add an entry under **[Unreleased]** when the change is **user-visible**, **behavior-changing**, or otherwise **worth calling out in release notes** (features, fixes, notable refactors, dependency upgrades that affect the app). Skip churn-only edits (typos, internal-only refactors) unless they matter to operators or contributors—use the existing section style (keep a reasonable level of detail).
 
+### Netlify and Edge Functions
+
+- **Do not use Netlify Edge Functions** for this project unless there is explicit human approval. Avoid adding Edge middleware or Edge-deployed handlers (for example `netlify/edge-functions/`, `[[edge_functions]]` in `netlify.toml`, or plugins that register Edge Functions). The explorer’s deployment model is TanStack Start SSR and Netlify Functions; Edge adds a different runtime, operational surface, and cost profile.
+- **Check deployment diffs**: When a change touches `netlify.toml`, files under `netlify/functions/`, `netlify/edge-functions/`, or Netlify-related build plugins, review it for accidental Edge Function adoption.
+
 ### Product and UX
 
 - **Loading and errors**: Follow existing patterns (`pendingComponent`, suspense fallbacks, error boundaries). Do not leave new async paths without a user-visible state.
@@ -246,6 +251,7 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 - [ ] If routes/tabs were added or changed: `llms.txt`, `llms-full.txt`, and `sitemap.xml` updated
 - [ ] If the PR is user-visible or release-worthy: `CHANGELOG.md` updated under **[Unreleased]**
 - [ ] If a feature was added, changed, or removed: `docs/FEATURES_SPECIFICATION.md` updated with the corresponding `FEAT-*` entry
+- [ ] If Netlify deployment files changed: no new Netlify Edge Functions without explicit approval (see [Netlify and Edge Functions](#netlify-and-edge-functions))
 
 **Outputs**: Review feedback, approval or change requests
 
@@ -332,7 +338,7 @@ pnpm test <pattern>    # Run specific tests
 **Optimization Areas**:
 
 - **Bandwidth**: Aggressive caching headers, Brotli compression, image optimization
-- **Functions**: Minimize SSR payload, reduce cold start time, edge functions
+- **Functions**: Minimize SSR payload and Netlify Function cold starts; do **not** introduce Netlify Edge Functions (see [Netlify and Edge Functions](#netlify-and-edge-functions))
 - **Build**: Incremental builds, dependency caching, parallel tasks
 
 **Key Files**:
