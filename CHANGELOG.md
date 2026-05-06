@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Netlify markdown Edge Function — `context.fetch` not a function**: Production logs showed `TypeError: context.fetch is not a function` inside `markdown-negotiation` when the handler tried to load `/llms.txt` via Netlify’s `Context.fetch` API. That runtime mismatch caused the edge layer to error for affected homepage requests (for example, clients sending `Accept: text/markdown`) instead of falling through to SSR. Markdown negotiation was moved to TanStack Start SSR with bundled `llms.txt`, which avoids `context.fetch` entirely.
+
 - **Network deployments — framework release uses gas schedule**: `/releases/networks` cards no longer label `0x1::version::Version.major` as “framework version”. The UI now shows **Framework Release** from `0x1::gas_schedule::GasScheduleV2.feature_version`, mapped to the framework train per aptos-core `gas_feature_versions`, plus **Bytecode Format (max)** from VM Binary Format feature flags.
 
 - **Network deployments — release branch URL never points to a non-existent branch**: the commit-message parser used to accept three-component release tags like `[aptos-release-v1.43.1]` (the patch-suffixed form is malformed; Aptos cuts release branches per minor only). When such a tag slipped through, the network card on `/releases/networks` rendered `v1.43.1.x` and linked to `aptos-release-v1.43.1`, which 404s. The parser now only accepts the canonical `[aptos-release-vX.Y]` form and the consumer adds a defensive `^\d+\.\d+$` guard, so malformed tags fall back to the commit-only display rather than producing a broken link.
