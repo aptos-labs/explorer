@@ -1001,7 +1001,8 @@ top of the HTML site.
 | **Agent Skills index** | `public/.well-known/agent-skills/index.json` conforms to cloudflare/agent-skills-discovery-rfc v0.2.0. Publishes `aptos-explorer-urls` and `aptos-explorer-search` skills, each with a SHA-256 `digest`. Regenerate via `node scripts/update-agent-skills-index.mjs`. |
 | **MCP Server Card** | `public/.well-known/mcp/server-card.json` publishes a draft SEP-1649 / SEP-2127 MCP Server Card with `serverInfo`, a WebMCP transport endpoint, read-only tool capabilities, and the currently exposed browser WebMCP navigation tools. Served as `application/json` with CORS enabled for agent discovery. |
 | **Content Signals** | `public/robots.txt` declares `Content-Signal: ai-train=no, search=yes, ai-input=yes` at the top of the file and inside every AI-crawler `User-agent` group (contentsignals.org / draft-romm-aipref-contentsignals). |
-| **Markdown negotiation** | TanStack Start SSR (`app/ssr.tsx` via `app/utils/markdownHomeNegotiation.ts`) returns bundled `public/llms.txt` with `Content-Type: text/markdown` when the homepage request has `Accept: text/markdown`; HTML remains the default for browsers. Helper: `app/utils/acceptMarkdown.ts` (`prefersMarkdown`). |
+| **Markdown negotiation** | The TanStack Start server entry (`app/ssr.tsx` via `app/utils/markdownHomeNegotiation.ts`) returns bundled `public/llms.txt` with `Content-Type: text/markdown` before HTML-only SSR handling when the homepage request has `Accept: text/markdown`; HTML remains the default for browsers. Helper: `app/utils/acceptMarkdown.ts` (`prefersMarkdown`). |
+| **SSR server entry** | `app/ssr.tsx` exports TanStack Start's `ServerEntry` shape with a `fetch` handler so Netlify's Vite adapter can generate the SSR Function without falling back to legacy Lambda handler semantics. |
 | **WebMCP** | `app/components/WebMCPProvider.tsx` registers read-only navigation tools (`search_explorer`, `open_transaction`, `open_account`, `open_block`, `open_releases`, `open_coin`) on `navigator.modelContext` when supported. Tool definitions live in `app/components/webMcpTools.ts`; registration is cleaned up via `AbortSignal` on unmount. |
 
 ---
@@ -1207,7 +1208,8 @@ top of the HTML site.
 | `app/utils/moduleErrorHandler.test.ts` | FEAT-ERROR-001 (chunk error handling, reload behavior) |
 | `app/utils/llmsRouteCoverage.test.ts` | FEAT-SEO-003 (LLM doc drift) |
 | `app/utils/agentSkillsIndex.test.ts` | FEAT-SEO-004 (agent-skills index schema, digest integrity, frontmatter) |
-| `app/utils/netlifyHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers) |
+| `app/utils/netlifyHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers, Netlify build Node alignment, no Edge Function config) |
+| `app/ssr.test.ts` | FEAT-SEO-004 (TanStack Start `ServerEntry` fetch export for Netlify SSR) |
 | `app/utils/mcpServerCard.test.ts` | FEAT-SEO-004 (MCP Server Card minimum fields and advertised WebMCP tools) |
 | `app/utils/acceptMarkdown.test.ts` | FEAT-SEO-004 (`Accept: text/markdown` negotiation helper) |
 | `app/utils/markdownHomeNegotiation.test.ts` | FEAT-SEO-004 (SSR homepage markdown response headers and routing) |

@@ -3,6 +3,7 @@ import {
   createStartHandler,
   defaultRenderHandler,
 } from "@tanstack/react-start/server";
+import {createServerEntry} from "@tanstack/react-start/server-entry";
 import llmsReference from "../public/llms.txt?raw";
 import {negotiateMarkdownHomepage} from "./utils/markdownHomeNegotiation";
 
@@ -54,9 +55,6 @@ function getSsrCacheControl(request: Request) {
 }
 
 const cacheAwareRenderHandler = defineHandlerCallback(async (ctx) => {
-  const markdown = negotiateMarkdownHomepage(ctx.request, llmsReference);
-  if (markdown) return markdown;
-
   ctx.responseHeaders.set("Cache-Control", getSsrCacheControl(ctx.request));
   return defaultRenderHandler(ctx);
 });
@@ -65,4 +63,13 @@ const cacheAwareRenderHandler = defineHandlerCallback(async (ctx) => {
 // - defaultRenderHandler uses renderRouterToString which includes <!DOCTYPE html>
 // - defaultStreamHandler uses renderRouterToStream which does NOT include DOCTYPE
 // This prevents Quirks Mode issues
-export default createStartHandler(cacheAwareRenderHandler);
+const startFetch = createStartHandler(cacheAwareRenderHandler);
+
+export default createServerEntry({
+  fetch(request, opts) {
+    const markdown = negotiateMarkdownHomepage(request, llmsReference);
+    if (markdown) return markdown;
+
+    return startFetch(request, opts);
+  },
+});

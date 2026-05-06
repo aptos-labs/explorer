@@ -1,4 +1,4 @@
-import {readFileSync} from "node:fs";
+import {existsSync, readFileSync} from "node:fs";
 import {dirname, join} from "node:path";
 import {fileURLToPath} from "node:url";
 import {describe, expect, it} from "vitest";
@@ -50,5 +50,40 @@ describe("Netlify discovery Link headers", () => {
     for (const link of REQUIRED_DISCOVERY_LINKS) {
       expect(globalHeaders).toContain(link);
     }
+  });
+});
+
+describe("Netlify build environment", () => {
+  const config = readFileSync(join(repoRoot, "netlify.toml"), "utf8");
+
+  it("uses the same Node major version as CI and local development", () => {
+    // Covers FEAT-SEO-004: SSR-hosted discovery surfaces deploy on the supported runtime.
+    const configuredNodeVersion = config.match(
+      /^\s*NODE_VERSION\s*=\s*"(?<version>\d+)"/m,
+    )?.groups?.version;
+    const repoNodeVersion = readFileSync(
+      join(repoRoot, ".node-version"),
+      "utf8",
+    )
+      .trim()
+      .replace(/^v/, "");
+
+    expect(configuredNodeVersion).toBe(repoNodeVersion);
+  });
+});
+
+describe("Netlify runtime mode", () => {
+  const config = readFileSync(join(repoRoot, "netlify.toml"), "utf8");
+  const viteConfig = readFileSync(join(repoRoot, "vite.config.ts"), "utf8");
+
+  it("does not register Edge Functions for SSR", () => {
+    // Covers FEAT-SEO-004: markdown negotiation and SSR stay on Netlify Functions.
+    expect(config).not.toMatch(/\[\[edge_functions\]\]/);
+    expect(config).not.toMatch(/\bedge_functions\b/);
+    expect(viteConfig).not.toMatch(/\bedgeSSR\s*:\s*true\b/);
+    expect(viteConfig).not.toMatch(
+      /\bedgeFunctions\s*:\s*\{[\s\S]*enabled\s*:\s*true/,
+    );
+    expect(existsSync(join(repoRoot, "netlify", "edge-functions"))).toBe(false);
   });
 });

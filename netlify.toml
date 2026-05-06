@@ -5,7 +5,7 @@
   publish = "dist/client"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "24"
 
 # Headers for security and caching
 [[headers]]
