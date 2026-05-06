@@ -15,6 +15,11 @@ export default defineConfig({
         routesDirectory: "routes",
         generatedRouteTree: "routeTree.gen.ts",
       },
+      // Use `app/ssr.tsx` (not the framework default `server.tsx`) for SSR:
+      // cache-aware HTML responses and homepage `Accept: text/markdown` handling.
+      server: {
+        entry: "ssr",
+      },
     }),
     react(),
     viteSvgr(),

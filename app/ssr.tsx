@@ -3,6 +3,8 @@ import {
   createStartHandler,
   defaultRenderHandler,
 } from "@tanstack/react-start/server";
+import llmsReference from "../public/llms.txt?raw";
+import {negotiateMarkdownHomepage} from "./utils/markdownHomeNegotiation";
 
 function getSsrCacheControl(request: Request) {
   if (request.method !== "GET" && request.method !== "HEAD") {
@@ -51,7 +53,10 @@ function getSsrCacheControl(request: Request) {
   return "public, max-age=0, s-maxage=30, stale-while-revalidate=120";
 }
 
-const cacheAwareRenderHandler = defineHandlerCallback((ctx) => {
+const cacheAwareRenderHandler = defineHandlerCallback(async (ctx) => {
+  const markdown = negotiateMarkdownHomepage(ctx.request, llmsReference);
+  if (markdown) return markdown;
+
   ctx.responseHeaders.set("Cache-Control", getSsrCacheControl(ctx.request));
   return defaultRenderHandler(ctx);
 });

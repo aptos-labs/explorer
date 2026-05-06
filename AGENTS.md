@@ -485,9 +485,9 @@ The explorer maintains dedicated documentation for AI systems and LLM-powered to
 | `public/.well-known/api-catalog` | RFC 9727 API catalog (`application/linkset+json`) advertising upstream Aptos REST/GraphQL APIs | A new upstream API is consumed, a chain/network is added/retired, or OpenAPI/doc/status URLs change |
 | `public/.well-known/agent-skills/index.json` | Agent Skills Discovery RFC v0.2.0 index with SHA-256 digests | Any `SKILL.md` under `public/.well-known/agent-skills/*/` is added, edited, or removed — run `node scripts/update-agent-skills-index.mjs` |
 | `public/.well-known/agent-skills/*/SKILL.md` | Individual agent skills (URL routing, search, etc.) | Feature/routing changes that affect how agents should link into the explorer |
-| `netlify.toml` | `Link` response headers (RFC 8288), `Vary: Accept`, well-known Content-Types, and edge-function registration | New discovery resources, new well-known paths, or changes to the discovery URL list |
-| `netlify/edge-functions/markdown-negotiation.ts` | Returns `/llms.txt` as `Content-Type: text/markdown` for homepage requests (`/` and `/index.html`) when the client sends `Accept: text/markdown` | The markdown-for-agents contract changes, or the source file for the markdown view moves |
-| `app/utils/acceptMarkdown.ts` | Pure `Accept`-header parser mirrored in the edge function | Keep in sync with `markdown-negotiation.ts` whenever the negotiation logic changes |
+| `netlify.toml` | `Link` response headers (RFC 8288), `Vary: Accept`, well-known Content-Types | New discovery resources, new well-known paths, or changes to the discovery URL list |
+| `app/ssr.tsx` + `app/utils/markdownHomeNegotiation.ts` | SSR serves bundled `public/llms.txt` as `Content-Type: text/markdown` for homepage requests (`/` and `/index.html`) when the client sends `Accept: text/markdown` | The markdown-for-agents contract changes, or the canonical `llms.txt` source moves |
+| `app/utils/acceptMarkdown.ts` | Pure `Accept`-header parser (`prefersMarkdown`) used by SSR markdown negotiation | When negotiation rules change, update tests in `acceptMarkdown.test.ts` and `markdownHomeNegotiation.test.ts` |
 | `app/components/WebMCPProvider.tsx` + `app/components/webMcpTools.ts` | WebMCP tools registered on `navigator.modelContext` | A major new top-level route becomes important for agent navigation, or tool schemas need to change |
 | `scripts/update-agent-skills-index.mjs` | Regenerates `SHA-256` digests in the agent-skills index | Any change to a `SKILL.md` under `public/.well-known/agent-skills/*/` |
 | `app/components/hooks/usePageMetadata.tsx` | JSON-LD structured data per page type | New page types or schema improvements |
@@ -531,7 +531,7 @@ Machine-readable metadata for autonomous agents lives alongside the LLM docs. Ke
 - [ ] **New upstream API** (new chain, new indexer, a price/analytics feed): add an `anchor` entry to `public/.well-known/api-catalog` with `service-desc` (OpenAPI URL), `service-doc`, and `status` links. Also add it to the "API Endpoints Used by the Explorer" section of `public/llms-full.txt`.
 - [ ] **New discovery resource** (anything under `/.well-known/…`): add it to both `Link` response headers in `netlify.toml` (the `/` and `/*` entries) and to the Content-Types / Cache-Control block further down. Add a `<url>` entry to `public/sitemap.xml`.
 - [ ] **Content Signals** (`public/robots.txt`): if the `ai-train`, `search`, or `ai-input` defaults change, update the top-level `Content-Signal` line **and** the per-AI-crawler copies (they must agree).
-- [ ] **Markdown negotiation**: the homepage edge function (`netlify/edge-functions/markdown-negotiation.ts`) serves `/llms.txt` for `Accept: text/markdown`. If the canonical markdown source moves, update both the edge function and `app/utils/acceptMarkdown.ts` (they share logic but run in different runtimes — Deno vs Node/Vite).
+- [ ] **Markdown negotiation**: SSR (`app/ssr.tsx` / `app/utils/markdownHomeNegotiation.ts`) serves bundled `llms.txt` for `Accept: text/markdown` on `/` and `/index.html`. If the canonical markdown source moves, update the bundled import and `app/utils/acceptMarkdown.ts` if parsing rules change.
 - [ ] **Docs + changelog**: add `FEAT-SEO-004` coverage notes to `docs/FEATURES_SPECIFICATION.md` (Appendix B) for new tests, and list user-facing discovery changes under `CHANGELOG.md` → `[Unreleased]`.
 
 ---
@@ -545,6 +545,6 @@ Machine-readable metadata for autonomous agents lives alongside the LLM docs. Ke
 - **Caching & refresh times**: See `CACHING.md`
 - **Context optimization**: See `CONTEXT_OPTIMIZATION.md`
 - **LLM/AI discoverability**: See `docs/LLM_ACCESS.md`, `public/llms.txt`, `public/llms-full.txt`, and `public/robots.txt`
-- **Agent discovery surfaces**: See `FEAT-SEO-004` in `docs/FEATURES_SPECIFICATION.md`, `public/.well-known/api-catalog`, `public/.well-known/agent-skills/index.json`, the `Link` headers in `netlify.toml`, the markdown-negotiation edge function in `netlify/edge-functions/`, and the WebMCP tools in `app/components/WebMCPProvider.tsx` / `webMcpTools.ts`
+- **Agent discovery surfaces**: See `FEAT-SEO-004` in `docs/FEATURES_SPECIFICATION.md`, `public/.well-known/api-catalog`, `public/.well-known/agent-skills/index.json`, the `Link` headers in `netlify.toml`, SSR markdown negotiation (`app/utils/markdownHomeNegotiation.ts`), and the WebMCP tools in `app/components/WebMCPProvider.tsx` / `webMcpTools.ts`
 - **Features & test coverage**: See `docs/FEATURES_SPECIFICATION.md` for the full feature catalog with `FEAT-*` IDs, existing test coverage (Appendix B), and coverage gaps (Appendix C)
 - **Search URL for AI links**: `/?search={query}` — the home page search bar accepts this param and shows inline results
