@@ -662,7 +662,7 @@ The app shell that wraps every page.
 | **Data** | FA metadata, supply, paired coin via `useGetFaPairedCoin`. |
 | **Display** | Name, symbol, decimals, supply, icon, paired coin link. |
 | **Confidential supply** | **Confidential supply (pool)** — `0x1::confidential_asset::get_total_confidential_supply` for this metadata object (public aggregate). |
-| **Properties** | `FaPropertiesDisplay` — mint/burn/transfer flags derived from resource data. |
+| **Properties** | `FaPropertiesDisplay` — mint/burn/transfer flags derived from resource data. Curated **manual overrides** (per network, keyed by coin struct or FA address) live in `app/data/{mainnet,testnet,devnet}/coinPropertyOverrides.ts` and are merged on top of the derived flags via `applyCoinPropertyOverride` so issuers whose on-chain refs do not match real-world capabilities (e.g. mainnet `PROPS`) display the corrected chips. |
 
 ### FEAT-FA-003 — Verification Banner
 
@@ -1221,6 +1221,7 @@ top of the HTML site.
 | `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation from resources) |
+| `app/data/coinPropertyOverrides.test.ts` | FEAT-FA-002 / FEAT-COIN-002 (per-network manual overrides for FA mint/burn/freeze/dispatch chips, including mainnet PROPS) |
 | `app/api/hooks/confidentialAssetViews.test.ts` | FEAT-FA-002 / FEAT-COIN-002 / FEAT-ACCOUNT-007 (confidential-asset view response parsing) |
 | `app/context/rate-limit/RateLimitContext.test.tsx` | FEAT-RATELIMIT-001 (rate limit context state management) |
 | `app/context/rate-limit/rateLimitEvents.test.ts` | FEAT-RATELIMIT-001 (rate limit event detection) |
