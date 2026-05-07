@@ -152,8 +152,13 @@ export function useGetFaProperties(
       coinStruct,
       faAddress: address ?? null,
     });
+
+    if (override && derived === null && address && isLoading) {
+      return null;
+    }
+
     return applyCoinPropertyOverride(derived, override);
-  }, [resources, networkName, coinStruct, address]);
+  }, [resources, networkName, coinStruct, address, isLoading]);
 
   return {isLoading, data: properties};
 }
