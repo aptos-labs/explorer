@@ -28,6 +28,13 @@ export function getLearnMoreTooltip(
       return (
         <LearnMoreTooltip text="The authentication key is a hash of the public key for an account" />
       );
+    case "key_type":
+      return (
+        <LearnMoreTooltip
+          text="Authentication scheme inferred from the latest transaction submitted by this account. For MultiKey accounts the constituent sub-key types are listed in order."
+          link="https://aptos.dev/en/build/sdks/ts-sdk/account#multikey"
+        />
+      );
     case "block_height":
       return (
         <LearnMoreTooltip
