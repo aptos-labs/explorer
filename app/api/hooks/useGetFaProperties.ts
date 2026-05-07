@@ -1,5 +1,7 @@
 import {useMemo} from "react";
 import type {Types} from "~/types/aptos";
+import {applyCoinPropertyOverride, getCoinPropertyOverride} from "../../data";
+import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useGetAccountResources} from "./useGetAccountResources";
 
 export type FaProperties = {
@@ -130,16 +132,28 @@ export function deriveProperties(
   return props;
 }
 
-export function useGetFaProperties(address: string | undefined): {
+export function useGetFaProperties(
+  address: string | undefined,
+  options?: {coinStruct?: string},
+): {
   isLoading: boolean;
   data: FaProperties | null;
 } {
+  const networkName = useNetworkName();
   const {data: resources, isLoading} = useGetAccountResources(address ?? "", {
     retry: false,
     enabled: !!address,
   });
 
-  const properties = useMemo(() => deriveProperties(resources), [resources]);
+  const coinStruct = options?.coinStruct;
+  const properties = useMemo(() => {
+    const derived = deriveProperties(resources);
+    const override = getCoinPropertyOverride(networkName, {
+      coinStruct,
+      faAddress: address ?? null,
+    });
+    return applyCoinPropertyOverride(derived, override);
+  }, [resources, networkName, coinStruct, address]);
 
   return {isLoading, data: properties};
 }

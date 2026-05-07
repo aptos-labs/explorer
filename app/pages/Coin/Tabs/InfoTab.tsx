@@ -43,7 +43,9 @@ export default function InfoTab({
   const confidentialRowEnabled = Boolean(faMetadataAddress);
 
   const {data: firstActivity} = useGetFirstCoinActivity(pairedFa ?? struct);
-  const {data: faProperties} = useGetFaProperties(pairedFa ?? undefined);
+  const {data: faProperties} = useGetFaProperties(pairedFa ?? undefined, {
+    coinStruct: struct,
+  });
 
   if (!data || Array.isArray(data)) {
     return <EmptyTabContent />;
