@@ -29,7 +29,7 @@ Canonical URL templates for [Aptos Explorer](https://explorer.aptoslabs.com). Al
   - `/releases/sdks` — latest stable releases for the Aptos CLI, `aptos-node`, and official SDKs
   - Legacy: `/deployments` redirects to `/releases/networks`, `/aips` redirects to `/releases/aips`
 - **Lists**: `/coins`, `/blocks`, `/transactions`, `/validators`, `/analytics`, `/verification`, `/settings`
-- **Filtered txns**: `/transactions?type=user&fn={entry_function_id}` (e.g. `?fn=0x1::coin::transfer`)
+- **Filtered txns**: `/transactions?type=user&fn_addr={address}&fn_module={module}&fn_name={function}` (e.g. `?fn_addr=0x1&fn_module=coin&fn_name=transfer`; progressive — module requires address, function requires module; legacy `?fn=` auto-migrated)
 - **Unknown input / general search**: `/?search={query}` — pre-fills the search bar, auto-detects address / hash / ANS `.apt` / coin type.
 
 ## Identifier rules

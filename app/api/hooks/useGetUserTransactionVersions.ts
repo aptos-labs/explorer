@@ -1,5 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
+import {tryStandardizeAddress} from "../../utils";
+import type {FunctionFilterParams} from "./useFunctionFilter";
 
 const USER_TRANSACTIONS_QUERY = `
   query UserTransactions($limit: Int, $start_version: bigint, $offset: Int) {
@@ -22,14 +24,68 @@ const TOP_USER_TRANSACTIONS_QUERY = `
   }
 `;
 
-const USER_TRANSACTIONS_FUNCTION_QUERY = `
-  query UserTransactionsByFunction($limit: Int, $start_version: bigint, $offset: Int, $entry_function_id_str: String) {
+function buildFunctionWhereClause(filter: FunctionFilterParams): string {
+  const conditions: string[] = [];
+  if (filter.address) {
+    conditions.push(
+      `entry_function_contract_address: {_eq: $entry_function_contract_address}`,
+    );
+  }
+  if (filter.module) {
+    conditions.push(
+      `entry_function_module_name: {_eq: $entry_function_module_name}`,
+    );
+  }
+  if (filter.functionName) {
+    conditions.push(
+      `entry_function_function_name: {_eq: $entry_function_function_name}`,
+    );
+  }
+  return conditions.join("\n        ");
+}
+
+function buildFunctionVarDecls(filter: FunctionFilterParams): string {
+  const decls: string[] = [];
+  if (filter.address) {
+    decls.push("$entry_function_contract_address: String");
+  }
+  if (filter.module) {
+    decls.push("$entry_function_module_name: String");
+  }
+  if (filter.functionName) {
+    decls.push("$entry_function_function_name: String");
+  }
+  return decls.join(", ");
+}
+
+function buildFunctionVariables(
+  filter: FunctionFilterParams,
+): Record<string, string> {
+  const vars: Record<string, string> = {};
+  if (filter.address) {
+    vars.entry_function_contract_address =
+      tryStandardizeAddress(filter.address) ?? filter.address;
+  }
+  if (filter.module) {
+    vars.entry_function_module_name = filter.module;
+  }
+  if (filter.functionName) {
+    vars.entry_function_function_name = filter.functionName;
+  }
+  return vars;
+}
+
+function buildUserTransactionsFunctionQuery(
+  filter: FunctionFilterParams,
+): string {
+  return `
+  query UserTransactionsByFunction($limit: Int, $start_version: bigint, $offset: Int, ${buildFunctionVarDecls(filter)}) {
     user_transactions(
       limit: $limit
       order_by: {version: desc}
       where: {
         version: {_lte: $start_version}
-        entry_function_id_str: {_eq: $entry_function_id_str}
+        ${buildFunctionWhereClause(filter)}
       }
       offset: $offset
     ) {
@@ -37,23 +93,31 @@ const USER_TRANSACTIONS_FUNCTION_QUERY = `
     }
   }
 `;
+}
 
-const TOP_USER_TRANSACTIONS_FUNCTION_QUERY = `
-  query UserTransactionsByFunction($limit: Int, $entry_function_id_str: String) {
+function buildTopUserTransactionsFunctionQuery(
+  filter: FunctionFilterParams,
+): string {
+  return `
+  query UserTransactionsByFunction($limit: Int, ${buildFunctionVarDecls(filter)}) {
     user_transactions(
       limit: $limit
       order_by: {version: desc}
-      where: {entry_function_id_str: {_eq: $entry_function_id_str}}
+      where: {${buildFunctionWhereClause(filter)}}
     ) {
       version
     }
   }
 `;
+}
 
-const USER_TRANSACTIONS_FUNCTION_COUNT_QUERY = `
-  query UserTransactionsByFunctionCount($entry_function_id_str: String) {
+function buildUserTransactionsFunctionCountQuery(
+  filter: FunctionFilterParams,
+): string {
+  return `
+  query UserTransactionsByFunctionCount(${buildFunctionVarDecls(filter)}) {
     user_transactions_aggregate(
-      where: {entry_function_id_str: {_eq: $entry_function_id_str}}
+      where: {${buildFunctionWhereClause(filter)}}
     ) {
       aggregate {
         count
@@ -61,6 +125,7 @@ const USER_TRANSACTIONS_FUNCTION_COUNT_QUERY = `
     }
   }
 `;
+}
 
 export default function useGetUserTransactionVersions(
   limit: number,
@@ -98,10 +163,14 @@ export default function useGetUserTransactionVersions(
 }
 
 export function useGetUserTransactionsByFunctionCount(
-  functionFilter: string,
+  functionFilter: FunctionFilterParams,
 ): number | undefined {
   const client = useSdkV2Client();
   const networkValue = useNetworkValue();
+  const filterActive =
+    functionFilter.address !== "" ||
+    functionFilter.module !== "" ||
+    functionFilter.functionName !== "";
 
   const {data} = useQuery({
     queryKey: ["userTransactionsByFunctionCount", functionFilter, networkValue],
@@ -110,11 +179,11 @@ export function useGetUserTransactionsByFunctionCount(
         user_transactions_aggregate: {aggregate: {count: number}};
       }>({
         query: {
-          query: USER_TRANSACTIONS_FUNCTION_COUNT_QUERY,
-          variables: {entry_function_id_str: functionFilter},
+          query: buildUserTransactionsFunctionCountQuery(functionFilter),
+          variables: buildFunctionVariables(functionFilter),
         },
       }),
-    enabled: functionFilter.length > 0,
+    enabled: filterActive,
   });
 
   return data?.user_transactions_aggregate?.aggregate?.count;
@@ -122,13 +191,17 @@ export function useGetUserTransactionsByFunctionCount(
 
 export function useGetUserTransactionVersionsByFunction(
   limit: number,
-  functionFilter: string,
+  functionFilter: FunctionFilterParams,
   startVersion?: number,
   offset?: number,
 ): {versions: number[]; isLoading: boolean; isError: boolean} {
   const client = useSdkV2Client();
   const networkValue = useNetworkValue();
   const topTxnsOnly = startVersion === undefined || offset === undefined;
+  const filterActive =
+    functionFilter.address !== "" ||
+    functionFilter.module !== "" ||
+    functionFilter.functionName !== "";
 
   const {data, isLoading, isError} = useQuery({
     queryKey: [
@@ -143,17 +216,17 @@ export function useGetUserTransactionVersionsByFunction(
       client.queryIndexer<{user_transactions: {version: number}[]}>({
         query: {
           query: topTxnsOnly
-            ? TOP_USER_TRANSACTIONS_FUNCTION_QUERY
-            : USER_TRANSACTIONS_FUNCTION_QUERY,
+            ? buildTopUserTransactionsFunctionQuery(functionFilter)
+            : buildUserTransactionsFunctionQuery(functionFilter),
           variables: {
             limit,
             start_version: startVersion,
             offset,
-            entry_function_id_str: functionFilter,
+            ...buildFunctionVariables(functionFilter),
           },
         },
       }),
-    enabled: functionFilter.length > 0,
+    enabled: filterActive,
   });
 
   if (!data) {

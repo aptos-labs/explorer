@@ -154,9 +154,10 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Parameter** | `?fn=` — filter by entry function ID (e.g. `0x1::coin::transfer`). |
-| **Server-side** | Applied on User Transactions and Account Transactions views. |
-| **Client-side** | Applied on All Transactions view. |
+| **Parameters** | `?fn_addr=` (contract address), `?fn_module=` (module name), `?fn_name=` (function name). Legacy `?fn=addr::mod::func` is auto-migrated. |
+| **Progressive disclosure** | Module field requires address; function field requires module. Matches the composite DB index prefix rule. |
+| **Server-side** | Applied on User Transactions and Account Transactions views via indexed columns. |
+| **Client-side** | Applied on All Transactions view (exact match on current page). |
 
 ### FEAT-TXLIST-003 — Table Columns & Virtualization
 
@@ -365,7 +366,7 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Mode selection** | Implicit — GraphQL available → `AccountAllTransactions` (all involvement); otherwise → `AccountTransactions` (sender-only via REST). No user-facing toggle. |
-| **Function filter** | `?fn=` filter support. |
+| **Function filter** | `?fn_addr=`, `?fn_module=`, `?fn_name=` filter support (queries `user_transactions` by sender, not full account history). |
 | **Pagination** | Cursor-based. |
 | **Rate limit handling** | GraphQL path has retry + exponential backoff + user message on 429. |
 

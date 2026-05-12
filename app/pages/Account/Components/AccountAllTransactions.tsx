@@ -12,7 +12,9 @@ import Box from "@mui/material/Box";
 import React from "react";
 import type {Types} from "~/types/aptos";
 import {getTransaction} from "../../../api";
-import useFunctionFilter from "../../../api/hooks/useFunctionFilter";
+import useFunctionFilter, {
+  type FunctionFilterParams,
+} from "../../../api/hooks/useFunctionFilter";
 import {
   useGetAccountAllTransactionCount,
   useGetAccountAllTransactionVersions,
@@ -30,7 +32,6 @@ import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
 import {downloadCSV, transactionsToCSV} from "../../utils";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
-// Maximum transactions we can display due to indexer query performance constraints
 const MAX_DISPLAYABLE_TRANSACTIONS = 10000;
 
 function RenderPagination({
@@ -50,7 +51,6 @@ function RenderPagination({
     searchParams.set("page", newPageNum.toString());
     setSearchParams(searchParams);
 
-    // logging
     logEvent("go_to_new_page", newPageNum, {
       current_page_num: currentPage.toString(),
       new_page_num: newPageNum.toString(),
@@ -110,7 +110,7 @@ export function AccountAllTransactionsWithPagination({
 
 type FilteredAccountTransactionsProps = {
   address: string;
-  functionFilter: string;
+  functionFilter: FunctionFilterParams;
   countPerPage: number;
 };
 
@@ -149,7 +149,7 @@ function FilteredAccountTransactions({
   if (isError) {
     return (
       <Alert severity="error">
-        Failed to filter transactions by function. The function ID may be
+        Failed to filter transactions by function. The filter values may be
         invalid or the indexer may be temporarily unavailable.
       </Alert>
     );
@@ -159,7 +159,7 @@ function FilteredAccountTransactions({
     return (
       <Box sx={{py: 4, textAlign: "center"}}>
         <Typography color="text.secondary">
-          No transactions found for function "{functionFilter}" sent by this
+          No transactions found matching the filter criteria sent by this
           account
         </Typography>
       </Box>
@@ -193,7 +193,12 @@ type AccountAllTransactionsProps = {
 export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
-  const {functionFilter, handleFunctionFilterChange} = useFunctionFilter();
+  const {
+    functionFilter,
+    handleFunctionFilterChange,
+    clearFunctionFilter,
+    isFilterActive,
+  } = useFunctionFilter();
 
   const rawTxnCount = useGetAccountAllTransactionCount(address);
 
@@ -208,8 +213,10 @@ export default function AccountAllTransactions({
       <FunctionFilter
         value={functionFilter}
         onChange={handleFunctionFilterChange}
+        onClear={clearFunctionFilter}
+        isFilterActive={isFilterActive}
       />
-      {!functionFilter && isCountUnknown && (
+      {!isFilterActive && isCountUnknown && (
         <Alert
           severity="info"
           icon={<InfoOutlined />}
@@ -227,12 +234,18 @@ export default function AccountAllTransactions({
           still be accessed directly by their version number.
         </Alert>
       )}
-      {functionFilter ? (
-        <FilteredAccountTransactions
-          address={address}
-          functionFilter={functionFilter}
-          countPerPage={countPerPage}
-        />
+      {isFilterActive ? (
+        <>
+          <Typography variant="caption" color="text.secondary">
+            Function filter searches transactions sent by this account only, not
+            all transactions involving it.
+          </Typography>
+          <FilteredAccountTransactions
+            address={address}
+            functionFilter={functionFilter}
+            countPerPage={countPerPage}
+          />
+        </>
       ) : (
         <>
           <Stack
@@ -264,7 +277,6 @@ export default function AccountAllTransactions({
   );
 }
 
-// GraphQL query for fetching transaction versions
 const ACCOUNT_TRANSACTIONS_QUERY = `
   query AccountTransactionsData($address: String, $limit: Int, $offset: Int) {
     account_transactions(
@@ -278,7 +290,6 @@ const ACCOUNT_TRANSACTIONS_QUERY = `
   }
 `;
 
-// CSV Export Button Component
 function CSVExportButton({
   address,
   totalTransactionCount,
@@ -292,11 +303,9 @@ function CSVExportButton({
   const logEvent = useLogEventWithBasic();
   const sdkV2Client = useSdkV2Client();
 
-  // Helper function to check if error is a rate limit error
   const isRateLimitError = (error: unknown): boolean => {
     if (error && typeof error === "object") {
       const errorObj = error as Record<string, unknown>;
-      // Check for HTTP 429 status
       if (
         errorObj.statusCode === 429 ||
         (errorObj.networkError &&
@@ -305,7 +314,6 @@ function CSVExportButton({
       ) {
         return true;
       }
-      // Check for rate limit in error message
       const message =
         typeof errorObj.message === "string"
           ? errorObj.message.toLowerCase()
@@ -313,7 +321,6 @@ function CSVExportButton({
       if (message.includes("rate limit")) {
         return true;
       }
-      // Check nested network error messages
       if (errorObj.networkError && typeof errorObj.networkError === "object") {
         const networkError = errorObj.networkError as Record<string, unknown>;
         if (networkError.result && typeof networkError.result === "object") {
@@ -338,12 +345,10 @@ function CSVExportButton({
     return false;
   };
 
-  // Helper function to sleep/delay
   const sleep = (ms: number): Promise<void> => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
 
-  // Retry function with exponential backoff
   const retryWithBackoff = async <T,>(
     fn: () => Promise<T>,
     maxRetries: number = 3,
@@ -358,7 +363,6 @@ function CSVExportButton({
         const isRateLimit = isRateLimitError(error);
 
         if (isRateLimit && attempt < maxRetries - 1) {
-          // Exponential backoff: 1s, 2s, 4s for rate limits
           const delay = baseDelay * 2 ** attempt;
           if (process.env.NODE_ENV === "development") {
             console.warn(
@@ -367,7 +371,6 @@ function CSVExportButton({
           }
           await sleep(delay);
         } else if (!isRateLimit && attempt < maxRetries - 1) {
-          // Shorter delay for other errors
           const delay = baseDelay * (attempt + 1);
           if (process.env.NODE_ENV === "development") {
             console.warn(
@@ -377,7 +380,6 @@ function CSVExportButton({
           }
           await sleep(delay);
         } else {
-          // Last attempt failed or non-retryable error
           throw error;
         }
       }
@@ -385,7 +387,6 @@ function CSVExportButton({
     throw lastError;
   };
 
-  // Function to fetch all transaction versions with pagination and retry logic
   const fetchAllTransactionVersions = async (
     maxCount: number,
   ): Promise<number[]> => {
@@ -395,7 +396,7 @@ function CSVExportButton({
     }
 
     const allVersions: number[] = [];
-    const pageSize = 100; // GraphQL API limit per page
+    const pageSize = 100;
     let offset = 0;
     let hasMore = true;
     let consecutiveErrors = 0;
@@ -426,7 +427,7 @@ function CSVExportButton({
           (txn) => txn.transaction_version,
         );
 
-        consecutiveErrors = 0; // Reset error counter on success
+        consecutiveErrors = 0;
 
         if (versions.length === 0) {
           hasMore = false;
@@ -434,23 +435,19 @@ function CSVExportButton({
           allVersions.push(...versions);
           offset += pageSize;
 
-          // Update progress for fetching versions
           const fetchProgress = Math.min(
-            Math.round((allVersions.length / maxCount) * 50), // First 50% is for fetching versions
+            Math.round((allVersions.length / maxCount) * 50),
             50,
           );
           setExportProgress(fetchProgress);
 
-          // If we got fewer than pageSize, we've reached the end
           if (versions.length < pageSize) {
             hasMore = false;
           }
         }
 
-        // Add delay between GraphQL queries to avoid rate limiting
-        // Only delay if we're not at the last page
         if (hasMore && allVersions.length < maxCount) {
-          await sleep(200); // 200ms delay between GraphQL queries
+          await sleep(200);
         }
       } catch (error) {
         consecutiveErrors++;
@@ -459,21 +456,18 @@ function CSVExportButton({
           error,
         );
 
-        // If we've had too many consecutive errors, stop trying
         if (consecutiveErrors >= maxConsecutiveErrors) {
           console.error(
             `Stopping after ${maxConsecutiveErrors} consecutive errors fetching transaction versions`,
           );
           hasMore = false;
         } else {
-          // Wait before retrying
-          const delay = 1000 * consecutiveErrors; // Increasing delay: 1s, 2s, 3s
+          const delay = 1000 * consecutiveErrors;
           await sleep(delay);
         }
       }
     }
 
-    // Limit to maxCount
     return allVersions.slice(0, maxCount);
   };
 
@@ -491,7 +485,6 @@ function CSVExportButton({
     });
 
     try {
-      // Step 1: Fetch all transaction versions with pagination
       setExportProgress(0);
       const versions = await fetchAllTransactionVersions(maxTransactions);
 
@@ -501,10 +494,9 @@ function CSVExportButton({
         return;
       }
 
-      // Step 2: Fetch transaction data using the existing API with retry logic
       const transactions: Types.Transaction[] = [];
       const failedVersions: number[] = [];
-      const batchSize = 10; // Process transactions in batches
+      const batchSize = 10;
 
       for (let i = 0; i < versions.length; i += batchSize) {
         const batch = versions.slice(i, i + batchSize);
@@ -518,8 +510,8 @@ function CSVExportButton({
                   aptosClient,
                 );
               },
-              3, // max retries
-              500, // base delay (shorter for transaction fetches)
+              3,
+              500,
             );
           } catch (error) {
             console.error(
@@ -537,21 +529,17 @@ function CSVExportButton({
         );
         transactions.push(...validTransactions);
 
-        // Update progress (50-100% is for fetching transaction details)
         const processedSoFar = i + batchSize;
         const fetchProgress =
           50 + Math.round((processedSoFar / versions.length) * 50);
         setExportProgress(Math.min(fetchProgress, 100));
 
-        // Delay between batches to avoid overwhelming the API
-        // Longer delay if we had failures in this batch
         if (i + batchSize < versions.length) {
           const delay = validTransactions.length < batch.length ? 300 : 100;
           await sleep(delay);
         }
       }
 
-      // Log warning if some transactions failed
       if (failedVersions.length > 0) {
         if (process.env.NODE_ENV === "development") {
           console.warn(
@@ -574,14 +562,11 @@ function CSVExportButton({
         return;
       }
 
-      // Convert to CSV
       const csvContent = transactionsToCSV(transactions, address);
 
-      // Download the CSV
       const filename = `account_transactions_${address.slice(-8)}_${new Date().toISOString().split("T")[0]}.csv`;
       downloadCSV(csvContent, filename);
 
-      // Show success message with warning if some transactions failed
       if (failedVersions.length > 0) {
         alert(
           `Exported ${transactions.length} transactions successfully. ` +

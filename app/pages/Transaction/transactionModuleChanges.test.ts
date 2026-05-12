@@ -102,9 +102,9 @@ describe("FEAT-TXN-012 — getTransactionModuleSummary", () => {
         },
       ],
     });
-    expect(
-      getTransactionModuleSummary(txn)?.moduleChanges[0]?.moduleName,
-    ).toBe("(module name unavailable)");
+    expect(getTransactionModuleSummary(txn)?.moduleChanges[0]?.moduleName).toBe(
+      "(module name unavailable)",
+    );
   });
 
   it("collects delete_module rows", () => {

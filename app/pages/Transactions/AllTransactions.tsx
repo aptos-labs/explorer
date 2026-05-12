@@ -16,12 +16,15 @@ import {useMemo} from "react";
 import type {Types} from "~/types/aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
-import useFunctionFilter from "../../api/hooks/useFunctionFilter";
+import useFunctionFilter, {
+  type FunctionFilterParams,
+} from "../../api/hooks/useFunctionFilter";
 import {
   useAptosClient,
   useNetworkValue,
 } from "../../global-config/GlobalConfig";
 import {useSearchParams} from "../../routing";
+import {tryStandardizeAddress} from "../../utils";
 import FunctionFilter from "./Components/FunctionFilter";
 import TransactionsError from "./Error";
 import TransactionsTable from "./TransactionsTable";
@@ -43,6 +46,27 @@ function getEntryFunctionId(transaction: Types.Transaction): string | null {
     return payload.transaction_payload.function;
   }
   return null;
+}
+
+function matchesFunctionFilter(
+  fnId: string,
+  filter: FunctionFilterParams,
+): boolean {
+  const parts = fnId.split("::");
+  if (filter.address) {
+    const normalizedFilter =
+      tryStandardizeAddress(filter.address) ?? filter.address;
+    const normalizedPart =
+      tryStandardizeAddress(parts[0] ?? "") ?? parts[0] ?? "";
+    if (normalizedPart !== normalizedFilter) return false;
+  }
+  if (filter.module && (parts[1] ?? "") !== filter.module) {
+    return false;
+  }
+  if (filter.functionName && (parts[2] ?? "") !== filter.functionName) {
+    return false;
+  }
+  return true;
 }
 
 function maxStart(maxVersion: number, limit: number) {
@@ -98,20 +122,22 @@ function TransactionContent({
   isLoading,
   error,
   functionFilter,
+  isFilterActive,
 }: {
   data: Array<Types.Transaction> | undefined;
   isLoading: boolean;
   error: ResponseError | null | undefined;
-  functionFilter: string;
+  functionFilter: FunctionFilterParams;
+  isFilterActive: boolean;
 }) {
   const filteredData = useMemo(() => {
-    if (!data || !functionFilter) return data;
+    if (!data || !isFilterActive) return data;
     return data.filter((txn) => {
       const fnId = getEntryFunctionId(txn);
       if (!fnId) return false;
-      return fnId.toLowerCase().includes(functionFilter.toLowerCase());
+      return matchesFunctionFilter(fnId, functionFilter);
     });
-  }, [data, functionFilter]);
+  }, [data, functionFilter, isFilterActive]);
 
   if (isLoading) {
     return (
@@ -139,12 +165,12 @@ function TransactionContent({
   }
 
   if (!filteredData || filteredData.length === 0) {
-    if (functionFilter && data && data.length > 0) {
+    if (isFilterActive && data && data.length > 0) {
       return (
         <Box sx={{py: 4, textAlign: "center"}}>
           <Typography color="text.secondary">
-            No transactions matching "{functionFilter}" on this page. Try the
-            User Transactions tab for server-side filtering.
+            No transactions matching the filter on this page. Try the User
+            Transactions tab for server-side filtering.
           </Typography>
         </Box>
       );
@@ -164,7 +190,12 @@ function TransactionsPageInner({
   const aptosClient = useAptosClient();
   const [searchParams] = useSearchParams();
 
-  const {functionFilter, handleFunctionFilterChange} = useFunctionFilter();
+  const {
+    functionFilter,
+    handleFunctionFilterChange,
+    clearFunctionFilter,
+    isFilterActive,
+  } = useFunctionFilter();
 
   const maxVersion = data?.ledger_version
     ? parseInt(data.ledger_version, 10)
@@ -221,9 +252,10 @@ function TransactionsPageInner({
       <FunctionFilter
         value={functionFilter}
         onChange={handleFunctionFilterChange}
-        placeholder="Filter by function on current page (e.g. 0x1::coin::transfer)"
+        onClear={clearFunctionFilter}
+        isFilterActive={isFilterActive}
       />
-      {functionFilter && (
+      {isFilterActive && (
         <Typography variant="caption" color="text.secondary">
           Showing matches on current page only. Switch to User Transactions for
           full server-side filtering.
@@ -234,6 +266,7 @@ function TransactionsPageInner({
           data={result.data}
           isLoading={result.isLoading}
           functionFilter={functionFilter}
+          isFilterActive={isFilterActive}
           error={
             result.error
               ? typeof result.error === "object" &&
