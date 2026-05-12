@@ -1,6 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
 import {tryStandardizeAddress} from "../../utils";
+import type {FunctionFilterParams} from "./useFunctionFilter";
 
 const ACCOUNT_TRANSACTIONS_COUNT_QUERY = `
   query AccountTransactionsCount($address: String) {
@@ -118,12 +119,66 @@ export function useGetAllAccountTransactionVersions(address: string): {
   };
 }
 
-const ACCOUNT_USER_TRANSACTIONS_BY_FUNCTION_QUERY = `
-  query AccountUserTransactionsByFunction($sender: String, $entry_function_id_str: String, $limit: Int, $offset: Int) {
+function buildAccountFunctionWhereClause(filter: FunctionFilterParams): string {
+  const conditions: string[] = ["sender: {_eq: $sender}"];
+  if (filter.address) {
+    conditions.push(
+      `entry_function_contract_address: {_eq: $entry_function_contract_address}`,
+    );
+  }
+  if (filter.module) {
+    conditions.push(
+      `entry_function_module_name: {_eq: $entry_function_module_name}`,
+    );
+  }
+  if (filter.functionName) {
+    conditions.push(
+      `entry_function_function_name: {_eq: $entry_function_function_name}`,
+    );
+  }
+  return conditions.join("\n        ");
+}
+
+function buildAccountFunctionVarDecls(filter: FunctionFilterParams): string {
+  const decls: string[] = ["$sender: String"];
+  if (filter.address) {
+    decls.push("$entry_function_contract_address: String");
+  }
+  if (filter.module) {
+    decls.push("$entry_function_module_name: String");
+  }
+  if (filter.functionName) {
+    decls.push("$entry_function_function_name: String");
+  }
+  return decls.join(", ");
+}
+
+function buildAccountFunctionVariables(
+  sender: string,
+  filter: FunctionFilterParams,
+): Record<string, string> {
+  const vars: Record<string, string> = {sender};
+  if (filter.address) {
+    vars.entry_function_contract_address =
+      tryStandardizeAddress(filter.address) ?? filter.address;
+  }
+  if (filter.module) {
+    vars.entry_function_module_name = filter.module;
+  }
+  if (filter.functionName) {
+    vars.entry_function_function_name = filter.functionName;
+  }
+  return vars;
+}
+
+function buildAccountUserTransactionsByFunctionQuery(
+  filter: FunctionFilterParams,
+): string {
+  return `
+  query AccountUserTransactionsByFunction(${buildAccountFunctionVarDecls(filter)}, $limit: Int, $offset: Int) {
     user_transactions(
       where: {
-        sender: {_eq: $sender}
-        entry_function_id_str: {_eq: $entry_function_id_str}
+        ${buildAccountFunctionWhereClause(filter)}
       }
       order_by: {version: desc}
       limit: $limit
@@ -133,13 +188,16 @@ const ACCOUNT_USER_TRANSACTIONS_BY_FUNCTION_QUERY = `
     }
   }
 `;
+}
 
-const ACCOUNT_USER_TRANSACTIONS_BY_FUNCTION_COUNT_QUERY = `
-  query AccountUserTransactionsByFunctionCount($sender: String, $entry_function_id_str: String) {
+function buildAccountUserTransactionsByFunctionCountQuery(
+  filter: FunctionFilterParams,
+): string {
+  return `
+  query AccountUserTransactionsByFunctionCount(${buildAccountFunctionVarDecls(filter)}) {
     user_transactions_aggregate(
       where: {
-        sender: {_eq: $sender}
-        entry_function_id_str: {_eq: $entry_function_id_str}
+        ${buildAccountFunctionWhereClause(filter)}
       }
     ) {
       aggregate {
@@ -148,14 +206,19 @@ const ACCOUNT_USER_TRANSACTIONS_BY_FUNCTION_COUNT_QUERY = `
     }
   }
 `;
+}
 
 export function useGetAccountTransactionsByFunctionCount(
   address: string,
-  functionFilter: string,
+  functionFilter: FunctionFilterParams,
 ): number | undefined {
   const addr64Hash = tryStandardizeAddress(address);
   const client = useSdkV2Client();
   const networkValue = useNetworkValue();
+  const filterActive =
+    functionFilter.address !== "" ||
+    functionFilter.module !== "" ||
+    functionFilter.functionName !== "";
 
   const {data} = useQuery({
     queryKey: ["accountTxnByFnCount", addr64Hash, functionFilter, networkValue],
@@ -164,14 +227,15 @@ export function useGetAccountTransactionsByFunctionCount(
         user_transactions_aggregate: {aggregate: {count: number}};
       }>({
         query: {
-          query: ACCOUNT_USER_TRANSACTIONS_BY_FUNCTION_COUNT_QUERY,
-          variables: {
-            sender: addr64Hash,
-            entry_function_id_str: functionFilter,
-          },
+          query:
+            buildAccountUserTransactionsByFunctionCountQuery(functionFilter),
+          variables: buildAccountFunctionVariables(
+            addr64Hash ?? "",
+            functionFilter,
+          ),
         },
       }),
-    enabled: !!addr64Hash && functionFilter.length > 0,
+    enabled: !!addr64Hash && filterActive,
   });
 
   return data?.user_transactions_aggregate?.aggregate?.count;
@@ -179,13 +243,17 @@ export function useGetAccountTransactionsByFunctionCount(
 
 export function useGetAccountTransactionVersionsByFunction(
   address: string,
-  functionFilter: string,
+  functionFilter: FunctionFilterParams,
   limit: number,
   offset?: number,
 ): {versions: number[]; isLoading: boolean; isError: boolean} {
   const addr64Hash = tryStandardizeAddress(address);
   const client = useSdkV2Client();
   const networkValue = useNetworkValue();
+  const filterActive =
+    functionFilter.address !== "" ||
+    functionFilter.module !== "" ||
+    functionFilter.functionName !== "";
 
   const {data, isLoading, isError} = useQuery({
     queryKey: [
@@ -201,16 +269,15 @@ export function useGetAccountTransactionVersionsByFunction(
         user_transactions: {version: number}[];
       }>({
         query: {
-          query: ACCOUNT_USER_TRANSACTIONS_BY_FUNCTION_QUERY,
+          query: buildAccountUserTransactionsByFunctionQuery(functionFilter),
           variables: {
-            sender: addr64Hash,
-            entry_function_id_str: functionFilter,
+            ...buildAccountFunctionVariables(addr64Hash ?? "", functionFilter),
             limit,
             offset,
           },
         },
       }),
-    enabled: !!addr64Hash && functionFilter.length > 0,
+    enabled: !!addr64Hash && filterActive,
   });
 
   if (!data) return {versions: [], isLoading, isError};

@@ -77,7 +77,9 @@ export default function TransactionModulesTab({
             </TableHead>
             <TableBody>
               {publishPackageEvents.map((row) => (
-                <TableRow key={`publish:${row.codeAddress}:${String(row.isUpgrade)}`}>
+                <TableRow
+                  key={`publish:${row.codeAddress}:${String(row.isUpgrade)}`}
+                >
                   <TableCell>
                     <HashButton
                       hash={row.codeAddress}

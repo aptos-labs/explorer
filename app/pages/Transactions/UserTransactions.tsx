@@ -7,7 +7,9 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import type React from "react";
-import useFunctionFilter from "../../api/hooks/useFunctionFilter";
+import useFunctionFilter, {
+  type FunctionFilterParams,
+} from "../../api/hooks/useFunctionFilter";
 import useGetUserTransactionVersions, {
   useGetUserTransactionsByFunctionCount,
   useGetUserTransactionVersionsByFunction,
@@ -52,7 +54,11 @@ function RenderPagination({
   );
 }
 
-function FilteredUserTransactions({functionFilter}: {functionFilter: string}) {
+function FilteredUserTransactions({
+  functionFilter,
+}: {
+  functionFilter: FunctionFilterParams;
+}) {
   const [searchParams] = useSearchParams();
   const currentPage = parseInt(searchParams.get("page") ?? "1", 10);
   const offset = (currentPage - 1) * LIMIT;
@@ -81,7 +87,7 @@ function FilteredUserTransactions({functionFilter}: {functionFilter: string}) {
   if (isError) {
     return (
       <Alert severity="error">
-        Failed to filter transactions by function. The function ID may be
+        Failed to filter transactions by function. The filter values may be
         invalid or the indexer may be temporarily unavailable.
       </Alert>
     );
@@ -91,7 +97,7 @@ function FilteredUserTransactions({functionFilter}: {functionFilter: string}) {
     return (
       <Box sx={{py: 4, textAlign: "center"}}>
         <Typography color="text.secondary">
-          No transactions found for function "{functionFilter}"
+          No transactions found matching the filter criteria
         </Typography>
       </Box>
     );
@@ -138,15 +144,22 @@ function UnfilteredUserTransactions() {
 }
 
 export default function UserTransactions() {
-  const {functionFilter, handleFunctionFilterChange} = useFunctionFilter();
+  const {
+    functionFilter,
+    handleFunctionFilterChange,
+    clearFunctionFilter,
+    isFilterActive,
+  } = useFunctionFilter();
 
   return (
     <Stack spacing={2}>
       <FunctionFilter
         value={functionFilter}
         onChange={handleFunctionFilterChange}
+        onClear={clearFunctionFilter}
+        isFilterActive={isFilterActive}
       />
-      {functionFilter ? (
+      {isFilterActive ? (
         <FilteredUserTransactions functionFilter={functionFilter} />
       ) : (
         <UnfilteredUserTransactions />
