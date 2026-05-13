@@ -50,7 +50,7 @@ export default function ShareButton({
     } else if (outcome === "error") {
       setSnackbar({
         open: true,
-        message: "Sharing isn't supported on this device",
+        message: "Unable to share or copy the link",
       });
     }
     // "shared" and "cancelled" intentionally show no toast — the system UI
