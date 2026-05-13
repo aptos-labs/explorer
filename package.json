@@ -11,7 +11,7 @@
     "overrides": {
       "@aptos-labs/aptos-client": "4.0.0",
       "@aptos-labs/wallet-standard": "1.0.0",
-      "@aptos-labs/ts-sdk": "6.3.1",
+      "@aptos-labs/ts-sdk": "7.0.0",
       "axios": "1.16.0",
       "d3-array": "3.2.4",
       "d3-color": "3.1.0",
@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@aptos-labs/aptos-client": "4.0.0",
-    "@aptos-labs/ts-sdk": "6.3.1",
+    "@aptos-labs/ts-sdk": "7.0.0",
     "@aptos-labs/wallet-adapter-react": "8.3.3",
     "@download/blockies": "1.0.3",
     "@emotion/react": "11.14.0",
