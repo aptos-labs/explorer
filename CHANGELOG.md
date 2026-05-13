@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **PWA share button**: When the explorer is launched as an installed Progressive Web App (display-mode `standalone` or `window-controls-overlay`, plus legacy iOS `navigator.standalone`), the persistent header now shows a Share icon on every page. Tapping it opens the OS share sheet via `navigator.share` with the current page URL and title; on platforms without Web Share, it falls back to copying the URL to the clipboard and shows a "Link copied to clipboard" snackbar. The button is hidden in regular browser tabs to avoid duplicating the address-bar share/copy action. New `useIsStandalonePWA` hook (`app/hooks/useIsStandalonePWA.ts`) and `sharePage` helper (`app/components/layout/sharePage.ts`) cover the detection and share/clipboard logic with unit tests.
+
 ### Changed
 
 - **Coin / FA properties — manual override registry**: The "Mintable / Burnable / Freezable / Dispatchable" chips on Coin and Fungible Asset detail pages can now be overridden per network via `app/data/{mainnet,testnet,devnet}/coinPropertyOverrides.ts`. Overrides are partial (any flag you omit still falls back to the value derived from on-chain refs) and can key off either the legacy coin struct (e.g. `0x…::propbase_coin::PROPS`) or the FA metadata object address. First override: **Propbase PROPS** on mainnet now displays as not mintable, not burnable, and not freezable to reflect the issuer's destroyed `MintRef` / `BurnRef` / `TransferRef` capabilities, even though the on-chain resources would otherwise mark those refs as present.

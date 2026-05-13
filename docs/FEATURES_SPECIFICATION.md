@@ -1101,6 +1101,16 @@ top of the HTML site.
 | **Service worker** | `public/sw.js` — manual registration (not Vite plugin, for SSR compatibility). Caches static assets (favicons, manifest), fetch handler with Aptos Labs domain checks, install/activate lifecycle. |
 | **Registration** | `index.html` registers `/sw.js` with `navigator.serviceWorker.register`. |
 
+### FEAT-PWA-002 — PWA share button
+
+| Aspect | Detail |
+|--------|--------|
+| **Detection** | `app/hooks/useIsStandalonePWA.ts` — true when `matchMedia('(display-mode: standalone)')` or `'(display-mode: window-controls-overlay)'` matches, or legacy iOS `navigator.standalone === true`. SSR-safe (returns `false` server-side and on first client render). |
+| **Trigger** | `app/components/layout/ShareButton.tsx` — `IosShareIcon` `IconButton` rendered in the persistent `Header` on every page when the explorer runs as an installed PWA. Hidden in regular browser tabs (the browser already exposes a share/copy URL action). |
+| **Behavior** | Calls `navigator.share({ url, title })` with the current `window.location.href` and `document.title`. Falls back to `navigator.clipboard.writeText(url)` and shows a "Link copied to clipboard" snackbar when Web Share is unavailable, the platform's `canShare` returns false, or `navigator.share` rejects with a non-`AbortError`. User-cancelled `AbortError` shows no toast. |
+| **Helper** | `app/components/layout/sharePage.ts` — pure async helper returning `"shared" \| "copied" \| "cancelled" \| "error"` so the logic is unit-testable without a real browser. |
+| **Why PWA-only** | An installed PWA hides the address bar, so the OS-level "share" gesture is harder to reach; surfacing a Share action in the app shell preserves shareability without cluttering the desktop browser chrome. |
+
 ---
 
 ## 28. Shared UI Components
@@ -1264,6 +1274,8 @@ top of the HTML site.
 | `app/pages/Validators/validatorTabs.test.ts` | FEAT-VALIDATORS-001 (tab enum values, uniqueness) |
 | `app/pages/Analytics/analyticsGate.test.ts` | FEAT-ANALYTICS-001 (mainnet gate), FEAT-ANALYTICS-005 (GCS data URL) |
 | `app/hooks/localnetDetection.test.ts` | FEAT-CHROME-005 (localnet URL shape: localhost, port, path) |
+| `app/hooks/useIsStandalonePWA.test.ts` | FEAT-PWA-002 (PWA standalone detection: display-mode, window-controls-overlay, iOS `navigator.standalone`, runtime change events) |
+| `app/components/layout/sharePage.test.ts` | FEAT-PWA-002 (Web Share helper: navigator.share success, AbortError cancellation, clipboard fallback, error paths) |
 | `app/api/hooks/useGoogleTagManager.test.ts` | FEAT-TELEMETRY-001 (GTM event name constants) |
 
 ## Appendix C: Remaining Test Coverage Gaps
