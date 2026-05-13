@@ -150,4 +150,24 @@ describe("FEAT-PWA-002 — useIsStandalonePWA", () => {
     });
     expect(result.current).toBe(true);
   });
+
+  it("updates when window-controls-overlay flips at runtime", () => {
+    // Regression: previously only the standalone MQL was subscribed to, so a
+    // runtime flip of WCO (desktop PWA toggling its title-bar overlay) would
+    // not re-trigger compute(). Both queries must be tracked.
+    const standaloneMql = makeMql("(display-mode: standalone)", false);
+    const wcoMql = makeMql("(display-mode: window-controls-overlay)", false);
+    installMatchMedia({
+      "(display-mode: standalone)": standaloneMql,
+      "(display-mode: window-controls-overlay)": wcoMql,
+    });
+    const {result} = renderHook(() => useIsStandalonePWA());
+    expect(result.current).toBe(false);
+
+    act(() => {
+      wcoMql.matches = true;
+      wcoMql.fire();
+    });
+    expect(result.current).toBe(true);
+  });
 });

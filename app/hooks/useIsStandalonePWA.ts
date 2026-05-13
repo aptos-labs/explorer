@@ -1,6 +1,9 @@
 import {useEffect, useState} from "react";
 
-const STANDALONE_QUERY = "(display-mode: standalone)";
+const DISPLAY_MODE_QUERIES = [
+  "(display-mode: standalone)",
+  "(display-mode: window-controls-overlay)",
+] as const;
 
 /**
  * Returns true when the explorer is running in PWA "standalone" mode —
@@ -13,38 +16,47 @@ const STANDALONE_QUERY = "(display-mode: standalone)";
  *
  * SSR-safe: returns `false` on the server and during the first client render,
  * then re-renders with the real value once mounted. Subscribes to
- * `matchMedia.change` so toggling between browser tab and installed app
- * (rare, but possible on desktop) updates the result.
+ * `matchMedia.change` on **every** tracked display-mode query so that toggling
+ * either standalone or window-controls-overlay at runtime updates the result.
  */
 export function useIsStandalonePWA(): boolean {
   const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    const compute = () => {
-      const standaloneByMedia =
-        typeof window.matchMedia === "function" &&
-        (window.matchMedia(STANDALONE_QUERY).matches ||
-          window.matchMedia("(display-mode: window-controls-overlay)").matches);
+    if (typeof window.matchMedia !== "function") {
       const standaloneByIos =
         (window.navigator as Navigator & {standalone?: boolean}).standalone ===
         true;
-      setIsStandalone(Boolean(standaloneByMedia || standaloneByIos));
+      setIsStandalone(standaloneByIos);
+      return;
+    }
+
+    const mqls = DISPLAY_MODE_QUERIES.map((q) => window.matchMedia(q));
+
+    const compute = () => {
+      const standaloneByMedia = mqls.some((mql) => mql.matches);
+      const standaloneByIos =
+        (window.navigator as Navigator & {standalone?: boolean}).standalone ===
+        true;
+      setIsStandalone(standaloneByMedia || standaloneByIos);
     };
 
     compute();
 
-    if (typeof window.matchMedia !== "function") return;
-    const mql = window.matchMedia(STANDALONE_QUERY);
     const listener = () => compute();
-    if (typeof mql.addEventListener === "function") {
-      mql.addEventListener("change", listener);
-      return () => mql.removeEventListener("change", listener);
-    }
-    // Older Safari fallback.
-    mql.addListener(listener);
-    return () => mql.removeListener(listener);
+    const cleanups = mqls.map((mql) => {
+      if (typeof mql.addEventListener === "function") {
+        mql.addEventListener("change", listener);
+        return () => mql.removeEventListener("change", listener);
+      }
+      // Older Safari fallback.
+      mql.addListener(listener);
+      return () => mql.removeListener(listener);
+    });
+    return () => {
+      for (const cleanup of cleanups) cleanup();
+    };
   }, []);
 
   return isStandalone;
