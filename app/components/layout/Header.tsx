@@ -22,6 +22,7 @@ import IconLight from "../../assets/svg/icon_light.svg?react";
 import {useColorMode} from "../../context/color-mode";
 import {useNetworkName} from "../../global-config";
 import {useInView} from "../../hooks/useInView";
+import {useIsStandalonePWA} from "../../hooks/useIsStandalonePWA";
 import {useLogEventWithBasic} from "../../pages/Account/hooks/useLogEventWithBasic";
 import {Link, useNavigate} from "../../routing";
 import {addressFromWallet, sortPetraFirst} from "../../utils";
@@ -30,6 +31,7 @@ import FeatureBar from "./FeatureBar";
 import Nav from "./Nav";
 import NavMobile from "./NavMobile";
 import NetworkSelect from "./NetworkSelect";
+import ShareButton from "./ShareButton";
 
 export default function Header() {
   const scrollTop = () => {
@@ -56,6 +58,7 @@ export default function Header() {
   });
 
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("lg"));
+  const isStandalonePWA = useIsStandalonePWA();
 
   const networkName = useNetworkName();
   const {account, wallet, network} = useWallet();
@@ -169,6 +172,7 @@ export default function Header() {
 
             <Nav />
             <NetworkSelect />
+            {isStandalonePWA && <ShareButton />}
             {!isOnMobile && (
               <IconButton
                 component={Link}
@@ -183,25 +187,27 @@ export default function Header() {
               </IconButton>
             )}
 
-            <Button
-              onClick={toggleColorMode}
-              aria-label="Toggle dark mode"
-              sx={{
-                width: "30px",
-                height: "30px",
-                display: "flex",
-                alignItems: "center",
-                justifyItems: "center",
-                padding: "0",
-                minWidth: "30px",
-                marginLeft: "1rem",
-                color: "inherit",
-                "&:hover": {background: "transparent", opacity: "0.8"},
-              }}
-            >
-              {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
-            </Button>
-            <NavMobile />
+            {!(isStandalonePWA && isOnMobile) && (
+              <Button
+                onClick={toggleColorMode}
+                aria-label="Toggle dark mode"
+                sx={{
+                  width: "30px",
+                  height: "30px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyItems: "center",
+                  padding: "0",
+                  minWidth: "30px",
+                  marginLeft: "1rem",
+                  color: "inherit",
+                  "&:hover": {background: "transparent", opacity: "0.8"},
+                }}
+              >
+                {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
+              </Button>
+            )}
+            <NavMobile showDarkModeToggle={isStandalonePWA && isOnMobile} />
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector
