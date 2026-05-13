@@ -1,5 +1,5 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {Divider, useTheme} from "@mui/material";
+import {Divider, ListItemIcon, ListItemText, useTheme} from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -8,20 +8,34 @@ import type React from "react";
 import {useState} from "react";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import CloseIcon from "../../assets/svg/icon_close.svg?react";
+import IconDark from "../../assets/svg/icon_dark.svg?react";
 import HamburgerIcon from "../../assets/svg/icon_hamburger.svg?react";
+import IconLight from "../../assets/svg/icon_light.svg?react";
+import {useColorMode} from "../../context/color-mode";
 import {useNetworkName} from "../../global-config";
 import {useNavigate} from "../../routing";
 import {sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
 
-export default function NavMobile() {
+interface NavMobileProps {
+  /**
+   * When true, includes a "Switch to light/dark mode" item in the menu.
+   * Used in PWA standalone mode where the toolbar's dedicated dark-mode
+   * button is hidden to free up space (see `Header.tsx`).
+   */
+  showDarkModeToggle?: boolean;
+}
+
+export default function NavMobile({showDarkModeToggle}: NavMobileProps = {}) {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const navigate = useNavigate();
   const networkName = useNetworkName();
   const inMainnet = useGetInMainnet();
   const {account} = useWallet();
+  const {toggleColorMode} = useColorMode();
   const menuOpen = Boolean(menuAnchorEl);
+  const isDark = theme.palette.mode === "dark";
 
   const handleIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setMenuAnchorEl(event.currentTarget);
@@ -33,6 +47,11 @@ export default function NavMobile() {
   const handleCloseAndNavigate = (to: string) => {
     setMenuAnchorEl(null);
     navigate({to});
+  };
+
+  const handleToggleColorMode = () => {
+    toggleColorMode();
+    setMenuAnchorEl(null);
   };
 
   return (
@@ -100,6 +119,25 @@ export default function NavMobile() {
         <MenuItem onClick={() => handleCloseAndNavigate("/settings")}>
           Settings
         </MenuItem>
+        {showDarkModeToggle && (
+          <MenuItem
+            onClick={handleToggleColorMode}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            <ListItemIcon
+              sx={{minWidth: "1.75rem", color: theme.palette.text.primary}}
+            >
+              {isDark ? (
+                <IconLight width={16} height={16} />
+              ) : (
+                <IconDark width={16} height={16} />
+              )}
+            </ListItemIcon>
+            <ListItemText>
+              {isDark ? "Switch to light mode" : "Switch to dark mode"}
+            </ListItemText>
+          </MenuItem>
+        )}
         <Divider />
         <WalletConnector
           networkSupport={networkName}

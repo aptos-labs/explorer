@@ -1101,7 +1101,7 @@ top of the HTML site.
 | **Service worker** | `public/sw.js` — manual registration (not Vite plugin, for SSR compatibility). Caches static assets (favicons, manifest), fetch handler with Aptos Labs domain checks, install/activate lifecycle. |
 | **Registration** | `index.html` registers `/sw.js` with `navigator.serviceWorker.register`. |
 
-### FEAT-PWA-002 — PWA share button
+### FEAT-PWA-002 — PWA share button & header layout
 
 | Aspect | Detail |
 |--------|--------|
@@ -1110,6 +1110,7 @@ top of the HTML site.
 | **Behavior** | Calls `navigator.share({ url, title })` with the current `window.location.href` and `document.title`. Falls back to `navigator.clipboard.writeText(url)` and shows a "Link copied to clipboard" snackbar when Web Share is unavailable, the platform's `canShare` returns false, or `navigator.share` rejects with a non-`AbortError`. User-cancelled `AbortError` shows no toast. |
 | **Helper** | `app/components/layout/sharePage.ts` — pure async helper returning `"shared" \| "copied" \| "cancelled" \| "error"` so the logic is unit-testable without a real browser. |
 | **Why PWA-only** | An installed PWA hides the address bar, so the OS-level "share" gesture is harder to reach; surfacing a Share action in the app shell preserves shareability without cluttering the desktop browser chrome. |
+| **Mobile PWA header layout** | When `isStandalonePWA && isOnMobile`, `Header.tsx` hides the standalone dark-mode toggle button to free up toolbar space, and `NavMobile` is passed `showDarkModeToggle` so the hamburger menu instead renders a "Switch to light/dark mode" `MenuItem` (with `IconLight` / `IconDark` icon, sun/moon swapped to indicate the destination mode). The toggle remains in the toolbar on desktop and in non-PWA mobile, where space isn't constrained. |
 
 ---
 

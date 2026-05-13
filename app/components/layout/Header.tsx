@@ -187,25 +187,27 @@ export default function Header() {
               </IconButton>
             )}
 
-            <Button
-              onClick={toggleColorMode}
-              aria-label="Toggle dark mode"
-              sx={{
-                width: "30px",
-                height: "30px",
-                display: "flex",
-                alignItems: "center",
-                justifyItems: "center",
-                padding: "0",
-                minWidth: "30px",
-                marginLeft: "1rem",
-                color: "inherit",
-                "&:hover": {background: "transparent", opacity: "0.8"},
-              }}
-            >
-              {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
-            </Button>
-            <NavMobile />
+            {!(isStandalonePWA && isOnMobile) && (
+              <Button
+                onClick={toggleColorMode}
+                aria-label="Toggle dark mode"
+                sx={{
+                  width: "30px",
+                  height: "30px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyItems: "center",
+                  padding: "0",
+                  minWidth: "30px",
+                  marginLeft: "1rem",
+                  color: "inherit",
+                  "&:hover": {background: "transparent", opacity: "0.8"},
+                }}
+              >
+                {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
+              </Button>
+            )}
+            <NavMobile showDarkModeToggle={isStandalonePWA && isOnMobile} />
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector

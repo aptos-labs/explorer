@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Mobile PWA header layout**: To keep the toolbar from getting crowded once the Share button is added, the dark-mode toggle now moves into the hamburger menu when the explorer is running as a mobile PWA. The hamburger menu gains a "Switch to light mode" / "Switch to dark mode" item (with sun/moon icon) so the toggle is still one tap away. Desktop and regular-browser-tab mobile users see no change — the toolbar dark-mode button remains where it was.
+
+### Changed
+
 - **Coin / FA properties — manual override registry**: The "Mintable / Burnable / Freezable / Dispatchable" chips on Coin and Fungible Asset detail pages can now be overridden per network via `app/data/{mainnet,testnet,devnet}/coinPropertyOverrides.ts`. Overrides are partial (any flag you omit still falls back to the value derived from on-chain refs) and can key off either the legacy coin struct (e.g. `0x…::propbase_coin::PROPS`) or the FA metadata object address. First override: **Propbase PROPS** on mainnet now displays as not mintable, not burnable, and not freezable to reflect the issuer's destroyed `MintRef` / `BurnRef` / `TransferRef` capabilities, even though the on-chain resources would otherwise mark those refs as present.
 - **Deploy / markdown negotiation**: Homepage `Accept: text/markdown` handling now runs in the TanStack Start SSR handler (bundled `llms.txt` via `app/utils/markdownHomeNegotiation.ts`) instead of a Netlify Edge Function, so deploys no longer register `netlify/edge-functions`.
 - **SSR server entry**: `vite.config.ts` now sets `server.entry: "ssr"` so production uses `app/ssr.tsx` (cache-aware `Cache-Control` and markdown negotiation) instead of the framework default server stub.
