@@ -62,7 +62,7 @@
       "style": {
         "noNonNullAssertion": "warn",
         "useConst": "error",
-        "useImportType": "warn"
+        "useImportType": "error"
       },
       "a11y": {
         "noSvgWithoutTitle": "warn"
