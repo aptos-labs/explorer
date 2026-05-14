@@ -15,10 +15,10 @@
     "jsx": "react-jsx",
 
     /* Linting - can enable stricter options incrementally:
-     * "verbatimModuleSyntax": true,      // Requires `import type` for types
      * "noUncheckedIndexedAccess": true,  // Safer array access
      * "exactOptionalPropertyTypes": true // Stricter optional props
      */
+    "verbatimModuleSyntax": true,
     "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,

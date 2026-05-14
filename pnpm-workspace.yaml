@@ -1,0 +1,51 @@
+registry: https://registry.npmjs.org/
+
+autoInstallPeers: true
+strictPeerDependencies: false
+
+# Supply-chain mitigation: refuse to install package versions newer than this
+# many minutes. 10080 minutes = 7 days, giving the npm registry / community
+# time to detect compromised or malicious releases before they enter our
+# dependency graph. See https://pnpm.io/settings#minimumreleaseage
+minimumReleaseAge: 10080
+
+# Narrow exceptions for packages whose currently-locked version sits inside
+# the 7-day window. Audit each entry on bump and remove it once the locked
+# version is comfortably older than the cutoff. See
+# https://pnpm.io/settings#minimumreleaseageexclude
+minimumReleaseAgeExclude:
+  - fast-uri
+  - "@aptos-labs/ts-sdk"
+
+allowBuilds:
+  "@parcel/watcher": false
+  "@swc/core": true
+  esbuild: true
+  sharp: false
+
+overrides:
+  "@aptos-labs/wallet-standard": 1.0.0
+  "@aptos-labs/ts-sdk": 7.0.0
+  axios: 1.16.0
+  d3-array: 3.2.4
+  d3-color: 3.1.0
+  d3-dispatch: 3.0.1
+  d3-drag: 3.0.0
+  d3-ease: 3.0.1
+  d3-interpolate: 3.0.1
+  brace-expansion: 5.0.5
+  defu: 6.1.7
+  fast-uri: 3.1.2
+  h3-v2: npm:h3@2.0.1-rc.18
+  d3-geo: 3.1.1
+  d3-selection: 3.0.0
+  d3-timer: 3.0.1
+  d3-transition: 3.0.1
+  d3-zoom: 3.0.0
+  "@tootallnate/once": 3.0.1
+  lodash: 4.18.1
+  node-forge: 1.4.0
+  uuid: 14.0.0
+
+patchedDependencies:
+  "@netlify/edge-functions-dev@1.0.16": patches/@netlify__edge-functions-dev@1.0.16.patch
