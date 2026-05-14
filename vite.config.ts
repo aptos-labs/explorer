@@ -71,22 +71,44 @@ export default defineConfig({
   environments: {
     client: {
       build: {
-        rollupOptions: {
+        // Vite 8 uses Rolldown. The object form `output.manualChunks` is no
+        // longer supported; use Rolldown's `codeSplitting.groups` instead.
+        // Each group's `test` regex is matched against the resolved module id.
+        rolldownOptions: {
           output: {
-            // Manual chunks for better caching - these libraries rarely change
-            manualChunks: {
-              // React core - very stable
-              "vendor-react": ["react", "react-dom"],
-              // MUI - large bundle, rarely changes
-              "vendor-mui": ["@mui/material", "@mui/icons-material"],
-              // Charts - only needed on analytics pages
-              "vendor-charts": ["chart.js", "react-chartjs-2"],
-              // Aptos SDK - core blockchain functionality
-              "vendor-aptos": ["@aptos-labs/ts-sdk"],
-              // Data fetching - stable utilities
-              "vendor-query": ["@tanstack/react-query"],
-              // Wallet adapters - only needed for wallet interactions
-              "vendor-wallet": ["@aptos-labs/wallet-adapter-react"],
+            codeSplitting: {
+              groups: [
+                // React core - very stable
+                {
+                  name: "vendor-react",
+                  test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+                },
+                // MUI - large bundle, rarely changes
+                {
+                  name: "vendor-mui",
+                  test: /[\\/]node_modules[\\/]@mui[\\/](material|icons-material)[\\/]/,
+                },
+                // Charts - only needed on analytics pages
+                {
+                  name: "vendor-charts",
+                  test: /[\\/]node_modules[\\/](chart\.js|react-chartjs-2)[\\/]/,
+                },
+                // Aptos SDK - core blockchain functionality
+                {
+                  name: "vendor-aptos",
+                  test: /[\\/]node_modules[\\/]@aptos-labs[\\/]ts-sdk[\\/]/,
+                },
+                // Data fetching - stable utilities
+                {
+                  name: "vendor-query",
+                  test: /[\\/]node_modules[\\/]@tanstack[\\/]react-query[\\/]/,
+                },
+                // Wallet adapters - only needed for wallet interactions
+                {
+                  name: "vendor-wallet",
+                  test: /[\\/]node_modules[\\/]@aptos-labs[\\/]wallet-adapter-react[\\/]/,
+                },
+              ],
             },
           },
         },
