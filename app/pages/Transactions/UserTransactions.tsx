@@ -1,12 +1,5 @@
-import {
-  Alert,
-  CircularProgress,
-  Pagination,
-  Stack,
-  Typography,
-} from "@mui/material";
+import {Alert, CircularProgress, Stack, Typography} from "@mui/material";
 import Box from "@mui/material/Box";
-import type React from "react";
 import useFunctionFilter, {
   type FunctionFilterParams,
 } from "../../api/hooks/useFunctionFilter";
@@ -14,45 +7,14 @@ import useGetUserTransactionVersions, {
   useGetUserTransactionsByFunctionCount,
   useGetUserTransactionVersionsByFunction,
 } from "../../api/hooks/useGetUserTransactionVersions";
-import {useSearchParams} from "../../routing";
+import PageNumberPagination, {
+  useCurrentPage,
+} from "../../components/PageNumberPagination";
 import FunctionFilter from "./Components/FunctionFilter";
 import {UserTransactionsTable} from "./TransactionsTable";
 
 const LIMIT = 20;
 const NUM_PAGES = 100;
-
-function RenderPagination({
-  currentPage,
-  numPages,
-}: {
-  currentPage: number;
-  numPages: number;
-}) {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const handleChange = (
-    _event: React.ChangeEvent<unknown>,
-    newPageNum: number,
-  ) => {
-    searchParams.set("page", newPageNum.toString());
-    setSearchParams(searchParams);
-  };
-
-  return (
-    <Pagination
-      sx={{mt: 3}}
-      count={numPages}
-      variant="outlined"
-      showFirstButton
-      showLastButton
-      page={currentPage}
-      siblingCount={4}
-      boundaryCount={0}
-      shape="rounded"
-      onChange={handleChange}
-    />
-  );
-}
 
 /** Shared by User Transactions and All Transactions when a function filter is active. */
 export function FilteredUserTransactionsByFunction({
@@ -60,8 +22,7 @@ export function FilteredUserTransactionsByFunction({
 }: {
   functionFilter: FunctionFilterParams;
 }) {
-  const [searchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") ?? "1", 10);
+  const currentPage = useCurrentPage();
   const offset = (currentPage - 1) * LIMIT;
 
   const startVersion = useGetUserTransactionVersions(1)[0];
@@ -126,17 +87,14 @@ export function FilteredUserTransactionsByFunction({
         <UserTransactionsTable versions={versions} />
       </Box>
       {numPages > 1 && (
-        <Box sx={{display: "flex", justifyContent: "center"}}>
-          <RenderPagination currentPage={currentPage} numPages={numPages} />
-        </Box>
+        <PageNumberPagination currentPage={currentPage} numPages={numPages} />
       )}
     </Stack>
   );
 }
 
 function UnfilteredUserTransactions() {
-  const [searchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") ?? "1", 10);
+  const currentPage = useCurrentPage();
   const offset = (currentPage - 1) * LIMIT;
 
   const startVersion = useGetUserTransactionVersions(1)[0];
@@ -147,9 +105,7 @@ function UnfilteredUserTransactions() {
       <Box sx={{width: "auto", overflowX: "auto"}}>
         <UserTransactionsTable versions={versions} />
       </Box>
-      <Box sx={{display: "flex", justifyContent: "center"}}>
-        <RenderPagination currentPage={currentPage} numPages={NUM_PAGES} />
-      </Box>
+      <PageNumberPagination currentPage={currentPage} numPages={NUM_PAGES} />
     </Stack>
   );
 }
