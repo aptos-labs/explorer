@@ -17,39 +17,45 @@ export function CardWithStyle({children, ...props}: CardProps) {
   );
 }
 
-export function Card({children, ...props}: CardProps) {
+export function Card({children, sx, ...props}: CardProps) {
   const theme = useTheme();
 
   return (
     <Box
-      sx={{
-        background: theme.palette.background.paper,
-        padding: 2.5,
-        borderRadius: 1,
-      }}
       {...props}
+      sx={[
+        {
+          background: theme.palette.background.paper,
+          padding: 2.5,
+          borderRadius: 1,
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
     >
       {children}
     </Box>
   );
 }
 
-export function CardOutline({children, ...props}: CardProps) {
+export function CardOutline({children, sx, ...props}: CardProps) {
   const theme = useTheme();
 
   return (
     <Box
-      sx={{
-        padding: 2.5,
-        borderRadius: 1,
-        boxShadow: `0px 0px 5px 2px ${alpha(
-          theme.palette.mode === "dark"
-            ? theme.palette.common.white
-            : theme.palette.common.black,
-          theme.palette.mode === "dark" ? 0.15 : 0.05,
-        )}`,
-      }}
       {...props}
+      sx={[
+        {
+          padding: 2.5,
+          borderRadius: 1,
+          boxShadow: `0px 0px 5px 2px ${alpha(
+            theme.palette.mode === "dark"
+              ? theme.palette.common.white
+              : theme.palette.common.black,
+            theme.palette.mode === "dark" ? 0.15 : 0.05,
+          )}`,
+        },
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
     >
       {children}
     </Box>
