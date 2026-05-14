@@ -159,7 +159,12 @@ export default function useGetUserTransactionVersions(
     return [];
   }
 
-  return data.user_transactions.map((txn: {version: number}) => txn.version);
+  const rows = data.user_transactions;
+  if (!Array.isArray(rows)) {
+    return [];
+  }
+
+  return rows.map((txn: {version: number}) => txn.version);
 }
 
 export function useGetUserTransactionsByFunctionCount(
@@ -186,7 +191,9 @@ export function useGetUserTransactionsByFunctionCount(
     enabled: filterActive,
   });
 
-  return data?.user_transactions_aggregate?.aggregate?.count;
+  return typeof data?.user_transactions_aggregate?.aggregate?.count === "number"
+    ? data.user_transactions_aggregate.aggregate.count
+    : undefined;
 }
 
 export function useGetUserTransactionVersionsByFunction(
@@ -233,10 +240,13 @@ export function useGetUserTransactionVersionsByFunction(
     return {versions: [], isLoading, isError};
   }
 
+  const rows = data.user_transactions;
+  const versions = Array.isArray(rows)
+    ? rows.map((txn: {version: number}) => txn.version)
+    : [];
+
   return {
-    versions: data.user_transactions.map(
-      (txn: {version: number}) => txn.version,
-    ),
+    versions,
     isLoading,
     isError,
   };

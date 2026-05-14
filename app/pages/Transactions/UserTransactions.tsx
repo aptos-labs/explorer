@@ -54,7 +54,8 @@ function RenderPagination({
   );
 }
 
-function FilteredUserTransactions({
+/** Shared by User Transactions and All Transactions when a function filter is active. */
+export function FilteredUserTransactionsByFunction({
   functionFilter,
 }: {
   functionFilter: FunctionFilterParams;
@@ -101,7 +102,8 @@ function FilteredUserTransactions({
             color: "text.secondary",
           }}
         >
-          No transactions found matching the filter criteria
+          No transactions found matching the filter. The indexer returned no
+          matching user transactions for this network.
         </Typography>
       </Box>
     );
@@ -169,7 +171,7 @@ export default function UserTransactions() {
         isFilterActive={isFilterActive}
       />
       {isFilterActive ? (
-        <FilteredUserTransactions functionFilter={functionFilter} />
+        <FilteredUserTransactionsByFunction functionFilter={functionFilter} />
       ) : (
         <UnfilteredUserTransactions />
       )}

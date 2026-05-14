@@ -34,7 +34,10 @@ export function useGetAccountAllTransactionCount(
     enabled: !!addr64Hash,
   });
 
-  return data?.account_transactions_aggregate?.aggregate?.count;
+  return typeof data?.account_transactions_aggregate?.aggregate?.count ===
+    "number"
+    ? data.account_transactions_aggregate.aggregate.count
+    : undefined;
 }
 
 const ACCOUNT_TRANSACTIONS_QUERY = `
@@ -74,7 +77,11 @@ export function useGetAccountAllTransactionVersions(
   });
 
   if (!data) return [];
-  return data.account_transactions.map(
+  const rows = data.account_transactions;
+  if (!Array.isArray(rows)) {
+    return [];
+  }
+  return rows.map(
     (resource: {transaction_version: number}) => resource.transaction_version,
   );
 }
@@ -110,10 +117,13 @@ export function useGetAllAccountTransactionVersions(address: string): {
     return {versions: [], loading: true, error: null};
   }
 
+  const rows = data.account_transactions;
+  const versions = Array.isArray(rows)
+    ? rows.map((r: {transaction_version: number}) => r.transaction_version)
+    : [];
+
   return {
-    versions: data.account_transactions.map(
-      (r: {transaction_version: number}) => r.transaction_version,
-    ),
+    versions,
     loading: false,
     error: null,
   };
@@ -238,7 +248,9 @@ export function useGetAccountTransactionsByFunctionCount(
     enabled: !!addr64Hash && filterActive,
   });
 
-  return data?.user_transactions_aggregate?.aggregate?.count;
+  return typeof data?.user_transactions_aggregate?.aggregate?.count === "number"
+    ? data.user_transactions_aggregate.aggregate.count
+    : undefined;
 }
 
 export function useGetAccountTransactionVersionsByFunction(
@@ -281,10 +293,14 @@ export function useGetAccountTransactionVersionsByFunction(
   });
 
   if (!data) return {versions: [], isLoading, isError};
+
+  const rows = data.user_transactions;
+  const versions = Array.isArray(rows)
+    ? rows.map((txn: {version: number}) => txn.version)
+    : [];
+
   return {
-    versions: data.user_transactions.map(
-      (txn: {version: number}) => txn.version,
-    ),
+    versions,
     isLoading,
     isError,
   };
