@@ -82,14 +82,15 @@ function useGetValidatorsRawData() {
         const operator_address = tryStandardizeAddress(
           validatorData.operator_address,
         );
-        if (!owner_address || !operator_address) {
-          return validatorData;
-        }
 
+        // Standardize whichever side parsed cleanly. Leaving owner_address
+        // unstandardized when only operator_address is missing would prevent
+        // joining the row against the on-chain `0x1::stake::StakePool`
+        // operator-address patch below.
         return {
           ...validatorData,
-          owner_address,
-          operator_address,
+          owner_address: owner_address ?? validatorData.owner_address,
+          operator_address: operator_address ?? validatorData.operator_address,
         };
       });
     },
@@ -105,12 +106,36 @@ function useGetValidatorsRawData() {
 }
 
 /**
+ * Returns true when a raw `operator_address` from the stats JSON should be
+ * patched from the on-chain `0x1::stake::StakePool` resource. We treat the
+ * value as missing if it cannot be standardized as an address, is the empty
+ * string / null / undefined, or standardizes to the zero address — all of
+ * which surface in the UI as a blank operator avatar.
+ *
+ * @internal Exported for unit tests.
+ */
+export function isOperatorAddressMissing(value: unknown): boolean {
+  if (value == null) return true;
+  if (typeof value !== "string") return true;
+  if (value.trim() === "") return true;
+  const standardized = tryStandardizeAddress(value);
+  if (!standardized) return true;
+  return /^0x0+$/.test(standardized);
+}
+
+/**
  * Merges off-chain validator stats (when present) with on-chain voting power.
  * When the stats JSON is empty or unavailable, builds one row per active
  * validator from `0x1::stake::ValidatorSet` so the All Nodes table still works.
  *
- * For chain-only rows, pass `operatorByPool` (pool address → operator address)
- * from `0x1::stake::StakePool` so the operator column matches on-chain state.
+ * `operatorByPool` (pool address → operator address, sourced from
+ * `0x1::stake::StakePool`) is consulted in two cases:
+ *   1. Chain-only fallback rows (no stats JSON): always preferred over the
+ *      pool address as the operator column value.
+ *   2. Stats-JSON rows whose `operator_address` is missing / invalid / zero
+ *      (see {@link isOperatorAddressMissing}): patched so the operator column
+ *      and avatar reflect the on-chain operator. Present operator addresses
+ *      are never overwritten.
  *
  * @internal Exported for unit tests.
  */
@@ -142,50 +167,62 @@ export function buildValidatorsFromSources(
     const activeValidator = activeValidators.find(
       (active) => active.addr === validator.owner_address,
     );
+    const patchedOperator =
+      isOperatorAddressMissing(validator.operator_address) &&
+      operatorByPool?.[validator.owner_address]
+        ? operatorByPool[validator.owner_address]
+        : validator.operator_address;
     return {
       ...validator,
+      operator_address: patchedOperator,
       voting_power: activeValidator?.voting_power ?? "0",
     };
   });
 }
 
 /**
- * Loads `current_staking_pool.operator_address` for each pool (validator `addr`
- * in the active set). Used only when off-chain stats JSON is empty.
+ * Loads `0x1::stake::StakePool.operator_address` for each pool in
+ * `poolAddresses`. Failed fetches and unstandardizable operator addresses are
+ * omitted so callers can keep their existing value (or use the pool address
+ * as a last-resort placeholder).
  *
  * @internal Exported for unit tests.
  */
-export async function fetchStakePoolOperatorsForPools(
+export async function fetchStakePoolOperators(
   client: AptosClient,
-  activeValidators: readonly Validator[],
+  poolAddresses: readonly string[],
 ): Promise<Record<string, string>> {
-  if (activeValidators.length === 0) {
+  if (poolAddresses.length === 0) {
     return {};
   }
 
+  const unique = Array.from(new Set(poolAddresses));
+
   const pairs = await mapWithConcurrencyLimit(
-    activeValidators,
+    unique,
     STAKE_POOL_OPERATOR_FETCH_CONCURRENCY,
-    async (active) => {
-      const poolAddr = active.addr;
+    async (poolAddr) => {
       try {
         const resource = await getAccountResource(
           {address: poolAddr, resourceType: STAKE_POOL_RESOURCE},
           client,
         );
-        const data = resource.data as {
-          current_staking_pool?: {operator_address?: string};
-        };
-        const rawOp = data.current_staking_pool?.operator_address;
-        const op = tryStandardizeAddress(rawOp);
-        return [poolAddr, op ?? poolAddr] as const;
+        const data = resource.data as {operator_address?: string};
+        const operator = tryStandardizeAddress(data.operator_address);
+        return [poolAddr, operator] as const;
       } catch {
-        return [poolAddr, poolAddr] as const;
+        return [poolAddr, undefined] as const;
       }
     },
   );
 
-  return Object.fromEntries(pairs);
+  const out: Record<string, string> = {};
+  for (const [pool, operator] of pairs) {
+    if (operator) {
+      out[pool] = operator;
+    }
+  }
+  return out;
 }
 
 export function useGetValidators() {
@@ -198,22 +235,47 @@ export function useGetValidators() {
   const isMainnetOrTestnet =
     networkName === Network.MAINNET || networkName === Network.TESTNET;
 
-  const shouldFetchStakePoolOperators =
-    isValidatorStatsFetched &&
-    validatorsRawData.length === 0 &&
-    activeValidators.length > 0 &&
-    isMainnetOrTestnet;
+  // Pool addresses needing on-chain operator resolution:
+  //   1. When the stats JSON is empty: every active validator (chain-only
+  //      fallback used by the All Nodes table when the GCS bucket is empty).
+  //   2. When the stats JSON is present but a row has a missing / invalid /
+  //      zero operator address: just that row's owner address. Rows with a
+  //      valid operator address are left untouched so we do not over-fetch.
+  const poolsNeedingOperator = useMemo<string[]>(() => {
+    if (!isMainnetOrTestnet || !isValidatorStatsFetched) return [];
+    if (activeValidators.length === 0) return [];
 
-  const activePoolAddrKey = useMemo(
-    () => activeValidators.map((v) => v.addr).join("|"),
-    [activeValidators],
+    if (validatorsRawData.length === 0) {
+      return activeValidators.map((v) => v.addr);
+    }
+
+    const missing: string[] = [];
+    for (const row of validatorsRawData) {
+      if (!isOperatorAddressMissing(row.operator_address)) continue;
+      const owner = tryStandardizeAddress(row.owner_address);
+      if (owner) missing.push(owner);
+    }
+    return missing;
+  }, [
+    activeValidators,
+    validatorsRawData,
+    isValidatorStatsFetched,
+    isMainnetOrTestnet,
+  ]);
+
+  const poolsNeedingOperatorKey = useMemo(
+    () => poolsNeedingOperator.join("|"),
+    [poolsNeedingOperator],
   );
 
   const {data: operatorByPool} = useQuery({
-    queryKey: ["validatorStakePoolOperators", networkName, activePoolAddrKey],
-    queryFn: () =>
-      fetchStakePoolOperatorsForPools(aptosClient, activeValidators),
-    enabled: shouldFetchStakePoolOperators,
+    queryKey: [
+      "validatorStakePoolOperators",
+      networkName,
+      poolsNeedingOperatorKey,
+    ],
+    queryFn: () => fetchStakePoolOperators(aptosClient, poolsNeedingOperator),
+    enabled: poolsNeedingOperator.length > 0,
     staleTime: VALIDATOR_STATS_STALE_TIME,
     gcTime: VALIDATOR_STATS_GC_TIME,
   });
