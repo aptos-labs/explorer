@@ -156,8 +156,8 @@ The app shell that wraps every page.
 |--------|--------|
 | **Parameters** | `?fn_addr=` (contract address), `?fn_module=` (module name), `?fn_name=` (function name). Legacy `?fn=addr::mod::func` is auto-migrated. |
 | **Progressive disclosure** | Module field requires address; function field requires module. Matches the composite DB index prefix rule. |
-| **Server-side** | Applied on User Transactions and Account Transactions views via indexed columns. |
-| **Client-side** | Applied on All Transactions view (exact match on current page). |
+| **Server-side** | Applied on User Transactions, Account Transactions, and **All Transactions** (when any filter field is set) via indexer columns `entry_function_contract_address`, `entry_function_module_name`, and `entry_function_function_name`. |
+| **All Transactions (unfiltered)** | Shows the mixed ledger stream from the REST API (`getTransactions`); no function filter. |
 
 ### FEAT-TXLIST-003 — Table Columns & Virtualization
 

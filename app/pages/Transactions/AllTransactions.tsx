@@ -12,62 +12,21 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import type React from "react";
-import {useMemo} from "react";
 import type {Types} from "~/types/aptos";
 import {getLedgerInfo, getTransactions} from "../../api";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
-import useFunctionFilter, {
-  type FunctionFilterParams,
-} from "../../api/hooks/useFunctionFilter";
+import useFunctionFilter from "../../api/hooks/useFunctionFilter";
 import {
   useAptosClient,
   useNetworkValue,
 } from "../../global-config/GlobalConfig";
 import {useSearchParams} from "../../routing";
-import {tryStandardizeAddress} from "../../utils";
 import FunctionFilter from "./Components/FunctionFilter";
 import TransactionsError from "./Error";
 import TransactionsTable from "./TransactionsTable";
+import {FilteredUserTransactionsByFunction} from "./UserTransactions";
 
 const LIMIT = 20;
-
-function getEntryFunctionId(transaction: Types.Transaction): string | null {
-  if (!("payload" in transaction)) return null;
-  const payload = transaction.payload;
-  if (payload.type === "entry_function_payload" && "function" in payload) {
-    return payload.function;
-  }
-  if (
-    payload.type === "multisig_payload" &&
-    "transaction_payload" in payload &&
-    payload.transaction_payload &&
-    "function" in payload.transaction_payload
-  ) {
-    return payload.transaction_payload.function;
-  }
-  return null;
-}
-
-function matchesFunctionFilter(
-  fnId: string,
-  filter: FunctionFilterParams,
-): boolean {
-  const parts = fnId.split("::");
-  if (filter.address) {
-    const normalizedFilter =
-      tryStandardizeAddress(filter.address) ?? filter.address;
-    const normalizedPart =
-      tryStandardizeAddress(parts[0] ?? "") ?? parts[0] ?? "";
-    if (normalizedPart !== normalizedFilter) return false;
-  }
-  if (filter.module && (parts[1] ?? "") !== filter.module) {
-    return false;
-  }
-  if (filter.functionName && (parts[2] ?? "") !== filter.functionName) {
-    return false;
-  }
-  return true;
-}
 
 function maxStart(maxVersion: number, limit: number) {
   return 1 + maxVersion - limit;
@@ -121,24 +80,11 @@ function TransactionContent({
   data,
   isLoading,
   error,
-  functionFilter,
-  isFilterActive,
 }: {
   data: Array<Types.Transaction> | undefined;
   isLoading: boolean;
   error: ResponseError | null | undefined;
-  functionFilter: FunctionFilterParams;
-  isFilterActive: boolean;
 }) {
-  const filteredData = useMemo(() => {
-    if (!data || !isFilterActive) return data;
-    return data.filter((txn) => {
-      const fnId = getEntryFunctionId(txn);
-      if (!fnId) return false;
-      return matchesFunctionFilter(fnId, functionFilter);
-    });
-  }, [data, functionFilter, isFilterActive]);
-
   if (isLoading) {
     return (
       <Box sx={{display: "flex", justifyContent: "center", py: 4}}>
@@ -164,25 +110,11 @@ function TransactionContent({
     return <TransactionsError error={responseError} />;
   }
 
-  if (!filteredData || filteredData.length === 0) {
-    if (isFilterActive && data && data.length > 0) {
-      return (
-        <Box sx={{py: 4, textAlign: "center"}}>
-          <Typography
-            sx={{
-              color: "text.secondary",
-            }}
-          >
-            No transactions matching the filter on this page. Try the User
-            Transactions tab for server-side filtering.
-          </Typography>
-        </Box>
-      );
-    }
+  if (!data || data.length === 0) {
     return null;
   }
 
-  return <TransactionsTable transactions={filteredData} />;
+  return <TransactionsTable transactions={data} />;
 }
 
 function TransactionsPageInner({
@@ -215,8 +147,31 @@ function TransactionsPageInner({
     queryKey: ["transactions", {start, limit}, networkValue],
     queryFn: () => getTransactions({start, limit}, aptosClient),
     placeholderData: keepPreviousData,
-    enabled: !!data?.ledger_version,
+    enabled: !!data?.ledger_version && !isFilterActive,
   });
+
+  if (isFilterActive) {
+    return (
+      <Stack spacing={2}>
+        <FunctionFilter
+          value={functionFilter}
+          onChange={handleFunctionFilterChange}
+          onClear={clearFunctionFilter}
+          isFilterActive={isFilterActive}
+        />
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
+          Entry function filters apply to user transactions. Results use the
+          same indexer query as the User Transactions tab.
+        </Typography>
+        <FilteredUserTransactionsByFunction functionFilter={functionFilter} />
+      </Stack>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -259,23 +214,10 @@ function TransactionsPageInner({
         onClear={clearFunctionFilter}
         isFilterActive={isFilterActive}
       />
-      {isFilterActive && (
-        <Typography
-          variant="caption"
-          sx={{
-            color: "text.secondary",
-          }}
-        >
-          Showing matches on current page only. Switch to User Transactions for
-          full server-side filtering.
-        </Typography>
-      )}
       <Box sx={{width: "auto", overflowX: "auto"}}>
         <TransactionContent
           data={result.data}
           isLoading={result.isLoading}
-          functionFilter={functionFilter}
-          isFilterActive={isFilterActive}
           error={
             result.error
               ? typeof result.error === "object" &&
