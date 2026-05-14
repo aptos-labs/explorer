@@ -1,5 +1,11 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {Divider, ListItemIcon, ListItemText, useTheme} from "@mui/material";
+import {
+  Divider,
+  ListItemIcon,
+  ListItemText,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -17,16 +23,17 @@ import {useNavigate} from "../../routing";
 import {sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
 
-interface NavMobileProps {
-  /**
-   * When true, includes a "Switch to light/dark mode" item in the menu.
-   * Used in PWA standalone mode where the toolbar's dedicated dark-mode
-   * button is hidden to free up space (see `Header.tsx`).
-   */
-  showDarkModeToggle?: boolean;
-}
-
-export default function NavMobile({showDarkModeToggle}: NavMobileProps = {}) {
+/**
+ * Header overflow menu. Always renders the dark-mode toggle so that the
+ * theme switch lives in a single, predictable place across viewports and
+ * standalone-PWA / iframe embeddings.
+ *
+ * On compact viewports (`xs`–`md`) it also doubles as the primary nav menu
+ * (mirroring the inline `Nav` links and the wallet connector). On wide
+ * viewports (`lg+`) those duplicate entries are suppressed and the menu acts
+ * as a small "preferences" drop-down anchored next to the Settings icon.
+ */
+export default function NavMobile() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const navigate = useNavigate();
@@ -36,6 +43,8 @@ export default function NavMobile({showDarkModeToggle}: NavMobileProps = {}) {
   const {toggleColorMode} = useColorMode();
   const menuOpen = Boolean(menuAnchorEl);
   const isDark = theme.palette.mode === "dark";
+  const isWideViewport = useMediaQuery(theme.breakpoints.up("lg"));
+  const showCompactItems = !isWideViewport;
 
   const handleIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setMenuAnchorEl(event.currentTarget);
@@ -55,10 +64,10 @@ export default function NavMobile({showDarkModeToggle}: NavMobileProps = {}) {
   };
 
   return (
-    <Box sx={{display: {xs: "block", lg: "none"}}}>
+    <Box sx={{display: "block"}}>
       <Button
         id="nav-mobile-button"
-        aria-label="Navigation menu"
+        aria-label={showCompactItems ? "Navigation menu" : "Preferences menu"}
         aria-controls={menuOpen ? "nav-mobile-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={menuOpen ? "true" : undefined}
@@ -98,56 +107,82 @@ export default function NavMobile({showDarkModeToggle}: NavMobileProps = {}) {
           maxWidth: "none",
         }}
       >
-        <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
-          Transactions
-        </MenuItem>
-        {inMainnet && (
-          <MenuItem onClick={() => handleCloseAndNavigate("/analytics")}>
-            Analytics
-          </MenuItem>
-        )}
-        <MenuItem onClick={() => handleCloseAndNavigate("/validators")}>
-          Validators
-        </MenuItem>
-        <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
-          Blocks
-        </MenuItem>
-        <MenuItem onClick={() => handleCloseAndNavigate("/coins")}>
-          Coins
-        </MenuItem>
-        <MenuItem onClick={() => handleCloseAndNavigate("/releases")}>
-          Releases
-        </MenuItem>
-        <MenuItem onClick={() => handleCloseAndNavigate("/settings")}>
-          Settings
-        </MenuItem>
-        {showDarkModeToggle && (
+        {showCompactItems && [
           <MenuItem
-            onClick={handleToggleColorMode}
-            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            key="transactions"
+            onClick={() => handleCloseAndNavigate("/transactions")}
           >
-            <ListItemIcon
-              sx={{minWidth: "1.75rem", color: theme.palette.text.primary}}
+            Transactions
+          </MenuItem>,
+          inMainnet ? (
+            <MenuItem
+              key="analytics"
+              onClick={() => handleCloseAndNavigate("/analytics")}
             >
-              {isDark ? (
-                <IconLight width={16} height={16} />
-              ) : (
-                <IconDark width={16} height={16} />
-              )}
-            </ListItemIcon>
-            <ListItemText>
-              {isDark ? "Switch to light mode" : "Switch to dark mode"}
-            </ListItemText>
-          </MenuItem>
-        )}
-        <Divider />
-        <WalletConnector
-          networkSupport={networkName}
-          handleNavigate={() => navigate({to: `/account/${account?.address}`})}
-          sortAvailableWallets={sortPetraFirst}
-          sortInstallableWallets={sortPetraFirst}
-          modalMaxWidth="sm"
-        />
+              Analytics
+            </MenuItem>
+          ) : null,
+          <MenuItem
+            key="validators"
+            onClick={() => handleCloseAndNavigate("/validators")}
+          >
+            Validators
+          </MenuItem>,
+          <MenuItem
+            key="blocks"
+            onClick={() => handleCloseAndNavigate("/blocks")}
+          >
+            Blocks
+          </MenuItem>,
+          <MenuItem
+            key="coins"
+            onClick={() => handleCloseAndNavigate("/coins")}
+          >
+            Coins
+          </MenuItem>,
+          <MenuItem
+            key="releases"
+            onClick={() => handleCloseAndNavigate("/releases")}
+          >
+            Releases
+          </MenuItem>,
+          <MenuItem
+            key="settings"
+            onClick={() => handleCloseAndNavigate("/settings")}
+          >
+            Settings
+          </MenuItem>,
+        ]}
+        <MenuItem
+          onClick={handleToggleColorMode}
+          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+        >
+          <ListItemIcon
+            sx={{minWidth: "1.75rem", color: theme.palette.text.primary}}
+          >
+            {isDark ? (
+              <IconLight width={16} height={16} />
+            ) : (
+              <IconDark width={16} height={16} />
+            )}
+          </ListItemIcon>
+          <ListItemText>
+            {isDark ? "Switch to light mode" : "Switch to dark mode"}
+          </ListItemText>
+        </MenuItem>
+        {showCompactItems && [
+          <Divider key="wallet-divider" />,
+          <WalletConnector
+            key="wallet"
+            networkSupport={networkName}
+            handleNavigate={() =>
+              navigate({to: `/account/${account?.address}`})
+            }
+            sortAvailableWallets={sortPetraFirst}
+            sortInstallableWallets={sortPetraFirst}
+            modalMaxWidth="sm"
+          />,
+        ]}
       </Menu>
     </Box>
   );

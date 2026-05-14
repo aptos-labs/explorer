@@ -842,7 +842,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Toggle** | Icon button in header. |
+| **Toggle** | "Switch to light/dark mode" `MenuItem` rendered inside the header overflow menu (`NavMobile`). The menu is shown on every viewport — on compact viewports it doubles as the primary nav menu; on wide viewports (`lg+`) it collapses to a "preferences" drop-down next to the Settings icon containing just the theme toggle. There is no longer a dedicated dark-mode `Button` in the toolbar. |
 | **Persistence** | Cookie (`COLOR_MODE_COOKIE`) + system preference detection. |
 | **Implementation** | MUI `ThemeProvider` via `ProvideColorMode`. |
 | **Light theme** | Neutral grey app background (`#ECEEF2`), white cards/panels, cooler borders, soft grey stripes for tables and filled inputs. Body text ink (`#171612`). |
@@ -1105,12 +1105,13 @@ top of the HTML site.
 
 | Aspect | Detail |
 |--------|--------|
-| **Detection** | `app/hooks/useIsStandalonePWA.ts` — true when `matchMedia('(display-mode: standalone)')` or `'(display-mode: window-controls-overlay)'` matches, or legacy iOS `navigator.standalone === true`. SSR-safe (returns `false` server-side and on first client render). |
-| **Trigger** | `app/components/layout/ShareButton.tsx` — `IosShareIcon` `IconButton` rendered in the persistent `Header` on every page when the explorer runs as an installed PWA. Hidden in regular browser tabs (the browser already exposes a share/copy URL action). |
+| **PWA detection** | `app/hooks/useIsStandalonePWA.ts` — true when `matchMedia('(display-mode: standalone)')` or `'(display-mode: window-controls-overlay)'` matches, or legacy iOS `navigator.standalone === true`. SSR-safe (returns `false` server-side and on first client render). |
+| **Iframe detection** | `app/hooks/useIsInIframe.ts` — true when `window.self !== window.top`, or when accessing `window.top` throws (cross-origin frame). SSR-safe (returns `false` server-side and on first client render). |
+| **Trigger** | `app/components/layout/ShareButton.tsx` — `IosShareIcon` `IconButton` rendered in the persistent `Header` on every page when the explorer runs as an installed PWA **or** when the explorer is loaded inside an iframe. Hidden in regular top-level browser tabs (the browser already exposes a share/copy URL action there). |
 | **Behavior** | Calls `navigator.share({ url, title })` with the current `window.location.href` and `document.title`. Falls back to `navigator.clipboard.writeText(url)` and shows a "Link copied to clipboard" snackbar when Web Share is unavailable, the platform's `canShare` returns false, or `navigator.share` rejects with a non-`AbortError`. User-cancelled `AbortError` shows no toast. |
 | **Helper** | `app/components/layout/sharePage.ts` — pure async helper returning `"shared" \| "copied" \| "cancelled" \| "error"` so the logic is unit-testable without a real browser. |
-| **Why PWA-only** | An installed PWA hides the address bar, so the OS-level "share" gesture is harder to reach; surfacing a Share action in the app shell preserves shareability without cluttering the desktop browser chrome. |
-| **Mobile PWA header layout** | When `isStandalonePWA && isOnMobile`, `Header.tsx` hides the standalone dark-mode toggle button to free up toolbar space, and `NavMobile` is passed `showDarkModeToggle` so the hamburger menu instead renders a "Switch to light/dark mode" `MenuItem` (with `IconLight` / `IconDark` icon, sun/moon swapped to indicate the destination mode). The toggle remains in the toolbar on desktop and in non-PWA mobile, where space isn't constrained. |
+| **Why these contexts** | An installed PWA hides the address bar, and an iframe hides the embedding browser's chrome from the embedded document; surfacing a Share action in the app shell preserves shareability without cluttering the desktop browser chrome on regular tabs. |
+| **Header layout** | The dark-mode toggle is no longer a dedicated toolbar `Button`. It lives inside `NavMobile` on every viewport — see FEAT-THEME-001. This keeps the toolbar layout consistent regardless of whether the Share button is present (PWA / iframe) or hidden (regular browser tab). |
 
 ---
 
@@ -1277,6 +1278,7 @@ top of the HTML site.
 | `app/pages/Analytics/analyticsGate.test.ts` | FEAT-ANALYTICS-001 (mainnet gate), FEAT-ANALYTICS-005 (GCS data URL) |
 | `app/hooks/localnetDetection.test.ts` | FEAT-CHROME-005 (localnet URL shape: localhost, port, path) |
 | `app/hooks/useIsStandalonePWA.test.ts` | FEAT-PWA-002 (PWA standalone detection: display-mode, window-controls-overlay, iOS `navigator.standalone`, runtime change events) |
+| `app/hooks/useIsInIframe.test.ts` | FEAT-PWA-002 (iframe detection: top-level browsing context, same-origin frame, cross-origin frame `window.top` access throws) |
 | `app/components/layout/sharePage.test.ts` | FEAT-PWA-002 (Web Share helper: navigator.share success, AbortError cancellation, clipboard fallback, error paths) |
 | `app/api/hooks/useGoogleTagManager.test.ts` | FEAT-TELEMETRY-001 (GTM event name constants) |
 
