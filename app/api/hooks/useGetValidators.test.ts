@@ -2,6 +2,7 @@ import {describe, expect, it} from "vitest";
 import {
   type ValidatorData,
   buildValidatorsFromSources,
+  isOperatorAddressMissing,
 } from "./useGetValidators";
 import type {Validator} from "./useGetValidatorSet";
 
@@ -96,5 +97,133 @@ describe("buildValidatorsFromSources", () => {
     expect(rows[0]?.voting_power).toBe("1000000");
     expect(rows[0]?.rewards_growth).toBe(12.34);
     expect(rows[0]?.operator_address).toContain("cccccccc");
+  });
+
+  it("patches missing operator_address on stats JSON rows from on-chain map", () => {
+    const poolA =
+      "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    const poolB =
+      "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+    const operatorForA =
+      "0x1111111111111111111111111111111111111111111111111111111111111111";
+    const presentOperatorForB =
+      "0x2222222222222222222222222222222222222222222222222222222222222222";
+    const raw: ValidatorData[] = [
+      {
+        owner_address: poolA,
+        // Stats JSON shipped an empty operator_address for this pool.
+        operator_address: "",
+        voting_power: "0",
+        governance_voting_record: "",
+        last_epoch: 0,
+        last_epoch_performance: "",
+        liveness: 0,
+        rewards_growth: 0,
+        apt_rewards_distributed: 0,
+      },
+      {
+        owner_address: poolB,
+        // This row already has a valid operator address and must not change.
+        operator_address: presentOperatorForB,
+        voting_power: "0",
+        governance_voting_record: "",
+        last_epoch: 0,
+        last_epoch_performance: "",
+        liveness: 0,
+        rewards_growth: 0,
+        apt_rewards_distributed: 0,
+      },
+    ];
+    const rows = buildValidatorsFromSources(sampleActive, raw, {
+      [poolA]: operatorForA,
+      [poolB]: operatorForA, // should be ignored — row B already has one.
+    });
+    expect(rows[0]?.operator_address).toBe(operatorForA);
+    expect(rows[1]?.operator_address).toBe(presentOperatorForB);
+  });
+
+  it("treats the zero address as a missing operator_address", () => {
+    const poolA =
+      "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    const operatorForA =
+      "0x3333333333333333333333333333333333333333333333333333333333333333";
+    const raw: ValidatorData[] = [
+      {
+        owner_address: poolA,
+        operator_address:
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+        voting_power: "0",
+        governance_voting_record: "",
+        last_epoch: 0,
+        last_epoch_performance: "",
+        liveness: 0,
+        rewards_growth: 0,
+        apt_rewards_distributed: 0,
+      },
+    ];
+    const rows = buildValidatorsFromSources(sampleActive, raw, {
+      [poolA]: operatorForA,
+    });
+    expect(rows[0]?.operator_address).toBe(operatorForA);
+  });
+
+  it("keeps the existing operator_address when no patch is available", () => {
+    const poolA =
+      "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    const raw: ValidatorData[] = [
+      {
+        owner_address: poolA,
+        operator_address: "",
+        voting_power: "0",
+        governance_voting_record: "",
+        last_epoch: 0,
+        last_epoch_performance: "",
+        liveness: 0,
+        rewards_growth: 0,
+        apt_rewards_distributed: 0,
+      },
+    ];
+    const rows = buildValidatorsFromSources(sampleActive, raw, {});
+    expect(rows[0]?.operator_address).toBe("");
+  });
+});
+
+describe("isOperatorAddressMissing", () => {
+  it("treats null/undefined/empty/whitespace as missing", () => {
+    expect(isOperatorAddressMissing(null)).toBe(true);
+    expect(isOperatorAddressMissing(undefined)).toBe(true);
+    expect(isOperatorAddressMissing("")).toBe(true);
+    expect(isOperatorAddressMissing("   ")).toBe(true);
+  });
+
+  it("treats non-string values as missing", () => {
+    expect(isOperatorAddressMissing(0)).toBe(true);
+    expect(isOperatorAddressMissing(false)).toBe(true);
+    expect(isOperatorAddressMissing({})).toBe(true);
+  });
+
+  it("treats unstandardizable addresses as missing", () => {
+    expect(isOperatorAddressMissing("nope")).toBe(true);
+    expect(isOperatorAddressMissing("0xZZZ")).toBe(true);
+  });
+
+  it("treats the zero address as missing", () => {
+    expect(isOperatorAddressMissing("0x0")).toBe(true);
+    expect(
+      isOperatorAddressMissing(
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+      ),
+    ).toBe(true);
+  });
+
+  it("treats a real address as present", () => {
+    expect(
+      isOperatorAddressMissing(
+        "0x1111111111111111111111111111111111111111111111111111111111111111",
+      ),
+    ).toBe(false);
+    // Short-form addresses are accepted because tryStandardizeAddress expands
+    // them to their canonical 32-byte form.
+    expect(isOperatorAddressMissing("0x1")).toBe(false);
   });
 });
