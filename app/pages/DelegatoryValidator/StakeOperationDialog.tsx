@@ -286,7 +286,7 @@ function StakeOperationDialogContent({
   const isAmountValid = validateAmountInput(min, max);
   const stakeDialog = (
     <StyledDialog handleDialogClose={handleClose} open={isDialogOpen}>
-      <DialogTitle variant="h5" textAlign="center">
+      <DialogTitle variant="h5" sx={{textAlign: "center"}}>
         Stake Into The Pool
       </DialogTitle>
       <DialogContent>
@@ -353,7 +353,7 @@ function StakeOperationDialogContent({
       <DialogContent sx={{textAlign: "center"}}>
         {commission === 100 ? (
           <TooltipTypography
-            textAlign="center"
+            sx={{textAlign: "center"}}
             variant="body2"
             color={semanticColors.status.error}
           >
@@ -370,7 +370,12 @@ function StakeOperationDialogContent({
           disableHoverListener={isAmountValid}
           placement="top"
         >
-          <Box width="100%" marginRight={"2rem"}>
+          <Box
+            sx={{
+              width: "100%",
+              marginRight: "2rem",
+            }}
+          >
             <Button
               onClick={onSubmitClick}
               variant="primary"
@@ -397,7 +402,7 @@ function StakeOperationDialogContent({
 
   const UnlockOrReactivateDialog = (
     <StyledDialog handleDialogClose={handleClose} open={isDialogOpen}>
-      <DialogTitle variant="h5" textAlign="center">
+      <DialogTitle variant="h5" sx={{textAlign: "center"}}>
         {stakeOperation === StakeOperation.UNLOCK
           ? "Unstake Funds"
           : "Restake Funds"}
@@ -460,7 +465,7 @@ function StakeOperationDialogContent({
     : stakes[1];
   const WithdrawDialog = (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
-      <DialogTitle variant="h5" textAlign="center">
+      <DialogTitle variant="h5" sx={{textAlign: "center"}}>
         Withdraw Your Funds
       </DialogTitle>
       <DialogContent>

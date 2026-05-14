@@ -6,7 +6,12 @@ import StyledTooltip from "../../../components/StyledTooltip";
 
 function Data({children}: {children: React.ReactNode}) {
   return (
-    <Typography fontSize={20} fontWeight={400}>
+    <Typography
+      sx={{
+        fontSize: 20,
+        fontWeight: 400,
+      }}
+    >
       {children}
     </Typography>
   );
@@ -15,7 +20,12 @@ function Data({children}: {children: React.ReactNode}) {
 function SubLabel({children}: {children: React.ReactNode}) {
   const theme = useTheme();
   return (
-    <Typography fontSize={10} color={theme.palette.text.secondary}>
+    <Typography
+      color={theme.palette.text.secondary}
+      sx={{
+        fontSize: 10,
+      }}
+    >
       {children}
     </Typography>
   );
@@ -32,10 +42,22 @@ function MetricCardComponent({
 }) {
   const theme = useTheme();
   return (
-    <CardWithStyle height={120}>
+    <CardWithStyle sx={{height: 120}}>
       <Stack spacing={2}>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Typography fontSize={12}>{label}</Typography>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: 12,
+            }}
+          >
+            {label}
+          </Typography>
           <StyledTooltip title={tooltip} placement="top">
             <InfoOutlinedIcon
               sx={{fontSize: 15, color: theme.palette.text.secondary}}
@@ -81,12 +103,25 @@ export function DoubleMetricCard({
 }: DoubleMetricCardProps) {
   return (
     <MetricCardComponent label={cardLabel} tooltip={tooltip}>
-      <Stack direction="row" width="100%">
-        <Stack width="50%">
+      <Stack
+        direction="row"
+        sx={{
+          width: "100%",
+        }}
+      >
+        <Stack
+          sx={{
+            width: "50%",
+          }}
+        >
           <Data>{data1}</Data>
           <SubLabel>{label1}</SubLabel>
         </Stack>
-        <Stack width="50%">
+        <Stack
+          sx={{
+            width: "50%",
+          }}
+        >
           <Data>{data2}</Data>
           <SubLabel>{label2}</SubLabel>
         </Stack>

@@ -135,7 +135,13 @@ function SearchResultRow({result}: {result: SearchResult}) {
   if (!result.to) {
     return (
       <Box sx={{px: 2, py: 2}}>
-        <Typography color="text.secondary">{result.label}</Typography>
+        <Typography
+          sx={{
+            color: "text.secondary",
+          }}
+        >
+          {result.label}
+        </Typography>
       </Box>
     );
   }
@@ -467,7 +473,6 @@ export default function SearchWithResults({
         }}
         sx={{"& .MuiOutlinedInput-root": {borderRadius: 2}}}
       />
-
       {/* Inline results */}
       {(hasResults || isEmpty) && (
         <Paper
@@ -478,13 +483,23 @@ export default function SearchWithResults({
         >
           {isEmpty ? (
             <Box sx={{px: 2, py: 2.5, textAlign: "center"}}>
-              <Typography color="text.secondary">
+              <Typography
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
                 No results for{" "}
                 <Box component="span" sx={{fontWeight: 600}}>
                   "{query}"
                 </Box>
               </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{mt: 0.5}}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  mt: 0.5,
+                }}
+              >
                 Try an account address, transaction hash or version, block
                 height, ANS name, or coin type.
               </Typography>

@@ -382,7 +382,6 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
         styleOverrides: {
           root: {
             padding: 5,
-            mt: 5,
           },
         },
       },

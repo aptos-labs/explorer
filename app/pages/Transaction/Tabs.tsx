@@ -1,4 +1,4 @@
-import {ErrorOutline} from "@mui/icons-material";
+import {ErrorOutlineOutlined as ErrorOutline} from "@mui/icons-material";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import AccountTreeOutlinedIcon from "@mui/icons-material/AccountTreeOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
@@ -205,7 +205,13 @@ function TabPanel({value, transaction}: TabPanelProps): React.JSX.Element {
   if (!TabComponent) {
     return (
       <ContentBox>
-        <Stack direction="row" spacing={2} alignItems="flex-start">
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{
+            alignItems: "flex-start",
+          }}
+        >
           <ErrorOutline
             sx={{
               color: theme.palette.error.main,
@@ -217,7 +223,12 @@ function TabPanel({value, transaction}: TabPanelProps): React.JSX.Element {
             <Typography variant="h6" color="error">
               Invalid Tab
             </Typography>
-            <Typography variant="body1" color="text.secondary">
+            <Typography
+              variant="body1"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
               The tab "{value}" is not valid for this transaction type.
             </Typography>
           </Stack>

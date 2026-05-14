@@ -89,7 +89,14 @@ function EventTable({
 
   return (
     <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
-      <Stack direction="row" justifyContent="flex-end" sx={{px: 1, pt: 0.5}}>
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: "flex-end",
+          px: 1,
+          pt: 0.5,
+        }}
+      >
         <Tooltip title={showRaw ? "Formatted view" : "Raw JSON"}>
           <IconButton size="small" onClick={() => setShowRaw((v) => !v)}>
             {showRaw ? (
@@ -141,9 +148,12 @@ function MarketValue({hash}: {hash: string}) {
   return (
     <Stack
       direction={{xs: "column", sm: "row"}}
-      alignItems={{xs: "flex-start", sm: "center"}}
       spacing={1}
-      sx={{width: "100%", minWidth: 0}}
+      sx={{
+        alignItems: {xs: "flex-start", sm: "center"},
+        width: "100%",
+        minWidth: 0,
+      }}
     >
       {name && (
         <Typography variant="body2" sx={{fontWeight: 600}}>
@@ -291,10 +301,10 @@ function PriceSizeTable({
               <Stack
                 key={`${price}-${size}`}
                 direction="row"
-                justifyContent="space-between"
-                alignItems="baseline"
                 spacing={1}
                 sx={{
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
                   flexWrap: "wrap",
                   gap: 0.5,
                   py: 0.5,
@@ -638,12 +648,17 @@ function FundingView({funding}: {funding: Record<string, unknown>}) {
           key={key}
           direction={{xs: "column", sm: "row"}}
           spacing={{xs: 0.25, sm: 1}}
-          alignItems={{xs: "stretch", sm: "baseline"}}
+          sx={{
+            alignItems: {xs: "stretch", sm: "baseline"},
+          }}
         >
           <Typography
             variant="body2"
-            color="text.secondary"
-            sx={{minWidth: {xs: 0, sm: 140}, flexShrink: 0}}
+            sx={{
+              color: "text.secondary",
+              minWidth: {xs: 0, sm: 140},
+              flexShrink: 0,
+            }}
           >
             {FUNDING_LABELS[key] ?? key}
           </Typography>

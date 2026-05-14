@@ -35,16 +35,19 @@ function StatusRow({label, value}: {label: string; value: ReactNode}) {
     >
       <Typography
         variant="body2"
-        color="text.secondary"
-        sx={{flexShrink: 0, whiteSpace: "nowrap"}}
+        sx={{
+          color: "text.secondary",
+          flexShrink: 0,
+          whiteSpace: "nowrap",
+        }}
       >
         {label}
       </Typography>
       <Typography
         variant="body2"
-        fontFamily="monospace"
         component="div"
         sx={{
+          fontFamily: "monospace",
           textAlign: "right",
           wordBreak: "break-word",
           minWidth: 0,

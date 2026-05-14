@@ -1,4 +1,4 @@
-import {ErrorOutline} from "@mui/icons-material";
+import {ErrorOutlineOutlined as ErrorOutline} from "@mui/icons-material";
 import {Stack, Typography, useTheme} from "@mui/material";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
 
@@ -7,7 +7,13 @@ export default function NotFoundPage() {
 
   return (
     <ContentBox>
-      <Stack direction="row" spacing={2} alignItems="flex-start">
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          alignItems: "flex-start",
+        }}
+      >
         <ErrorOutline
           sx={{
             color: theme.palette.error.main,
@@ -19,7 +25,12 @@ export default function NotFoundPage() {
           <Typography variant="h6" color="error">
             Page Not Found (404)
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography
+            variant="body1"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             Maybe the page you are looking for has been removed, or you typed in
             the wrong URL.
             <br />

@@ -1,4 +1,4 @@
-import {ErrorOutline} from "@mui/icons-material";
+import {ErrorOutlineOutlined as ErrorOutline} from "@mui/icons-material";
 import {Stack, Typography, useTheme} from "@mui/material";
 import type React from "react";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
@@ -13,7 +13,13 @@ export default function TransactionsError({error}: ErrorProps) {
 
   const renderErrorContent = (title: string, message: React.ReactNode) => (
     <ContentBox>
-      <Stack direction="row" spacing={2} alignItems="flex-start">
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{
+          alignItems: "flex-start",
+        }}
+      >
         <ErrorOutline
           sx={{
             color: theme.palette.error.main,
@@ -25,7 +31,12 @@ export default function TransactionsError({error}: ErrorProps) {
           <Typography variant="h6" color="error">
             {title}
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography
+            variant="body1"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             {message}
           </Typography>
         </Stack>

@@ -17,8 +17,19 @@ export default function FeatureBar() {
   const featureLabel = features[featureName as FeatureName] || featureName;
 
   return (
-    <Box sx={{backgroundColor: theme.palette.error.main}} padding={1}>
-      <Stack direction="row" alignItems="center" justifyContent="center">
+    <Box
+      sx={{
+        padding: 1,
+        backgroundColor: theme.palette.error.main,
+      }}
+    >
+      <Stack
+        direction="row"
+        sx={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Typography>{`This is the ${featureLabel}.`}</Typography>
       </Stack>
     </Box>

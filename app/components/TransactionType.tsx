@@ -134,7 +134,7 @@ export const TooltipTransactionType = memo(function TooltipTransactionType({
     <Box sx={tooltipTransactionTypeStyle}>
       {getTypeIcon(type, "inherit")}
       <Stack spacing={0.5}>
-        <TooltipTypography variant="subtitle2" fontWeight={600}>
+        <TooltipTypography variant="subtitle2" sx={{fontWeight: 600}}>
           {getTypeLabel(type)}
         </TooltipTypography>
         <TooltipTypography variant="body2">

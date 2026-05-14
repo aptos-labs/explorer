@@ -111,7 +111,6 @@ export default function AIpsTab() {
           Refresh
         </Button>
       </Box>
-
       {isRateLimited && (
         <Alert severity="warning" sx={{mb: 2}}>
           GitHub API rate limited — try again in a few minutes
@@ -122,7 +121,6 @@ export default function AIpsTab() {
           Failed to load AIPs
         </Alert>
       )}
-
       <Stack direction="row" sx={{mb: 2, flexWrap: "wrap", gap: 1}}>
         {STATUS_FILTERS.map((s) => (
           <Chip
@@ -134,9 +132,7 @@ export default function AIpsTab() {
           />
         ))}
       </Stack>
-
       {isLoading && <CircularProgress />}
-
       {!isLoading && !isError && (
         <TableContainer component={Paper} variant="outlined">
           <Table size="small" sx={{tableLayout: "fixed"}}>
@@ -180,7 +176,11 @@ export default function AIpsTab() {
               {filtered.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={totalCols} align="center" sx={{py: 4}}>
-                    <Typography color="text.secondary">
+                    <Typography
+                      sx={{
+                        color: "text.secondary",
+                      }}
+                    >
                       No AIPs match the selected filter
                     </Typography>
                   </TableCell>

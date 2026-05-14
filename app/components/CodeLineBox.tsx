@@ -20,6 +20,10 @@ export function CodeLineBox({
     <Box
       sx={[
         {
+          borderColor: codeBlockBg,
+          borderRadius: 50,
+        },
+        {
           width: "max-content",
           color: theme.palette.primary.main,
           padding: "0.35rem 1rem 0.35rem 1rem",
@@ -42,8 +46,6 @@ export function CodeLineBox({
         },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
-      borderColor={codeBlockBg}
-      borderRadius={50}
     >
       {children}
     </Box>

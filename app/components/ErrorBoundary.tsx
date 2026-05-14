@@ -36,7 +36,13 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
             <Typography variant="h4" gutterBottom color="primary">
               Update Available
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{mb: 3}}>
+            <Typography
+              variant="body1"
+              sx={{
+                color: "text.secondary",
+                mb: 3,
+              }}
+            >
               A new version of the explorer has been deployed. Please refresh
               the page to load the latest version.
             </Typography>
@@ -76,7 +82,13 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
           <Typography variant="h4" gutterBottom color="error">
             Something went wrong
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{mb: 3}}>
+          <Typography
+            variant="body1"
+            sx={{
+              color: "text.secondary",
+              mb: 3,
+            }}
+          >
             {error.message || "An unexpected error occurred"}
           </Typography>
           {process.env.NODE_ENV === "development" && (
@@ -131,7 +143,13 @@ export function NotFoundError() {
           <Typography variant="h4" gutterBottom>
             Page Not Found
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{mb: 3}}>
+          <Typography
+            variant="body1"
+            sx={{
+              color: "text.secondary",
+              mb: 3,
+            }}
+          >
             The page you're looking for doesn't exist or has been moved.
           </Typography>
           <Button component={Link} to="/" variant="contained">

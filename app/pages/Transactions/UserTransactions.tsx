@@ -96,7 +96,11 @@ function FilteredUserTransactions({
   if (versions.length === 0) {
     return (
       <Box sx={{py: 4, textAlign: "center"}}>
-        <Typography color="text.secondary">
+        <Typography
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           No transactions found matching the filter criteria
         </Typography>
       </Box>
@@ -106,7 +110,12 @@ function FilteredUserTransactions({
   return (
     <Stack spacing={2}>
       {txnCount !== undefined && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           {txnCount.toLocaleString()} matching transaction
           {txnCount !== 1 ? "s" : ""}
         </Typography>

@@ -82,7 +82,11 @@ function ClientOnlyMap({
           justifyContent: "center",
         }}
       >
-        <Typography color="text.secondary">
+        <Typography
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           Failed to load map component
         </Typography>
       </Box>
@@ -159,10 +163,12 @@ export default function ValidatorsMap() {
       {isOnMobile ? (
         <Stack
           direction="column"
-          justifyContent="space-between"
-          marginY={4}
-          sx={{backgroundColor: backgroundColor}}
-          overflow="hidden"
+          sx={{
+            justifyContent: "space-between",
+            marginY: 4,
+            overflow: "hidden",
+            backgroundColor: backgroundColor,
+          }}
         >
           {toggle}
           <ClientOnlyMap validatorGeoGroups={activeGroups} groupBy={groupBy} />
@@ -175,10 +181,12 @@ export default function ValidatorsMap() {
       ) : (
         <Stack
           direction="row"
-          justifyContent="space-between"
-          marginY={4}
-          sx={{backgroundColor: backgroundColor}}
-          overflow="hidden"
+          sx={{
+            justifyContent: "space-between",
+            marginY: 4,
+            overflow: "hidden",
+            backgroundColor: backgroundColor,
+          }}
         >
           <MapMetrics
             validatorGeoMetric={validatorGeoMetric}

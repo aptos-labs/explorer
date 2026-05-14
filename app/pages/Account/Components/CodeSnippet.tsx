@@ -494,18 +494,27 @@ export function Code({
     <Box>
       <Stack
         direction="row"
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
         spacing={1}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
       >
         <Stack
           direction="row"
           spacing={1}
-          marginY={"16px"}
-          alignItems={"center"}
+          sx={{
+            marginY: "16px",
+            alignItems: "center",
+          }}
         >
-          <Typography fontSize={20} fontWeight={700}>
+          <Typography
+            sx={{
+              fontSize: 20,
+              fontWeight: 700,
+            }}
+          >
             Code
           </Typography>
           <StyledLearnMoreTooltip text="Published source can differ from on-chain bytecode. Decompiled output is generated directly from on-chain bytecode with the Move decompiler WASM." />
@@ -536,8 +545,8 @@ export function Code({
               >
                 <ContentCopy style={{height: "1.25rem", width: "1.25rem"}} />
                 <Typography
-                  marginLeft={1}
                   sx={{
+                    marginLeft: 1,
                     display: "inline",
                     whiteSpace: "nowrap",
                   }}
@@ -562,8 +571,8 @@ export function Code({
             >
               <FileDownload style={{height: "1.25rem", width: "1.25rem"}} />
               <Typography
-                marginLeft={1}
                 sx={{
+                  marginLeft: 1,
                   display: "inline",
                   whiteSpace: "nowrap",
                 }}
@@ -580,7 +589,13 @@ export function Code({
           </Stack>
         )}
       </Stack>
-      <Stack direction="row" spacing={1} marginBottom={2}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          marginBottom: 2,
+        }}
+      >
         {hasPublishedSourceCode && (
           <Button
             size="small"
@@ -638,10 +653,12 @@ export function Code({
       {activeView === "published-source" && displayedCode && (
         <Typography
           variant="body1"
-          fontSize={14}
-          fontWeight={400}
-          marginBottom={"16px"}
           color={theme.palette.text.secondary}
+          sx={{
+            fontSize: 14,
+            fontWeight: 400,
+            marginBottom: "16px",
+          }}
         >
           The source code is plain text uploaded by the deployer, which can be
           different from the actual bytecode.
@@ -653,10 +670,12 @@ export function Code({
           activeView === "bytecode-disassembly") && (
           <Typography
             variant="body1"
-            fontSize={14}
-            fontWeight={400}
-            marginBottom={"16px"}
             color={theme.palette.text.secondary}
+            sx={{
+              fontSize: 14,
+              fontWeight: 400,
+              marginBottom: "16px",
+            }}
           >
             This view is generated from on-chain bytecode using the Move
             decompiler WASM.
@@ -665,10 +684,12 @@ export function Code({
       {activeView === "abi" && moduleQuery && (
         <Typography
           variant="body1"
-          fontSize={14}
-          fontWeight={400}
-          marginBottom={"16px"}
           color={theme.palette.text.secondary}
+          sx={{
+            fontSize: 14,
+            fontWeight: 400,
+            marginBottom: "16px",
+          }}
         >
           Module ABI metadata returned by the node for this on-chain module.
         </Typography>
@@ -677,9 +698,21 @@ export function Code({
         moduleQuery.isSuccess ? (
           <JsonViewCard data={moduleQuery.data?.abi} />
         ) : (
-          <Stack direction="row" spacing={1.5} alignItems="center" py={2}>
+          <Stack
+            direction="row"
+            spacing={1.5}
+            sx={{
+              alignItems: "center",
+              py: 2,
+            }}
+          >
             <CircularProgress size={18} />
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
               Loading module ABI...
             </Typography>
           </Stack>
@@ -690,14 +723,30 @@ export function Code({
           decompilation.
         </Box>
       ) : activeView !== "published-source" && isDecompiling ? (
-        <Stack direction="row" spacing={1.5} alignItems="center" py={2}>
+        <Stack
+          direction="row"
+          spacing={1.5}
+          sx={{
+            alignItems: "center",
+            py: 2,
+          }}
+        >
           <CircularProgress size={18} />
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             Decompiling module bytecode...
           </Typography>
         </Stack>
       ) : activeView !== "published-source" && decompilationError ? (
-        <Box color={theme.palette.error.main}>
+        <Box
+          sx={{
+            color: theme.palette.error.main,
+          }}
+        >
           Failed to decompile module bytecode: {decompilationError}
         </Box>
       ) : !displayedCode ? (

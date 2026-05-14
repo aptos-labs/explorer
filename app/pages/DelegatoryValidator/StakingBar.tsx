@@ -110,7 +110,13 @@ function StakingBarContent({
           fixedDecimalPlaces={0}
         />
       </Typography>
-      <Stack direction="row" alignItems="center" spacing={0.5}>
+      <Stack
+        direction="row"
+        spacing={0.5}
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Typography variant="body2" color={theme.palette.text.secondary}>
           Delegated Stake Amount
         </Typography>
@@ -136,7 +142,13 @@ function StakingBarContent({
           decimals={0}
         />
       </Typography>
-      <Stack direction="row" alignItems="center" spacing={0.5}>
+      <Stack
+        direction="row"
+        spacing={0.5}
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Typography variant="body2" color={theme.palette.text.secondary}>
           Rewards Earned So Far
         </Typography>
@@ -196,18 +208,35 @@ function StakingBarContent({
 
   const stakingBarOnMobile = (
     <Stack direction="column" spacing={4}>
-      <Stack direction="row" spacing={4} justifyContent="space-between">
+      <Stack
+        direction="row"
+        spacing={4}
+        sx={{
+          justifyContent: "space-between",
+        }}
+      >
         {stakeAmount}
         {delegatedStakePercentage}
       </Stack>
-      <Stack direction="row" justifyContent="space-between">
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: "space-between",
+        }}
+      >
         {rewardsEarned}
       </Stack>
     </Stack>
   );
 
   const stakingBarOnWeb = (
-    <Stack direction="row" spacing={4} justifyContent="space-between">
+    <Stack
+      direction="row"
+      spacing={4}
+      sx={{
+        justifyContent: "space-between",
+      }}
+    >
       <Stack direction="row" spacing={4}>
         {stakeAmount}
         {delegatedStakePercentage}

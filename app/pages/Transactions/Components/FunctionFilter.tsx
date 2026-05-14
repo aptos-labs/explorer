@@ -240,7 +240,14 @@ export default function FunctionFilter({
 
   return (
     <Box>
-      <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1}}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: "center",
+          mb: 1,
+        }}
+      >
         <Tooltip title="Filter transactions by entry function fields (press Enter or Tab to apply each field)">
           <FilterListIcon
             sx={{fontSize: 20, color: theme.palette.text.secondary}}
@@ -248,8 +255,10 @@ export default function FunctionFilter({
         </Tooltip>
         <Typography
           variant="body2"
-          color="text.secondary"
-          sx={{fontWeight: 500}}
+          sx={{
+            color: "text.secondary",
+            fontWeight: 500,
+          }}
         >
           Filter by Entry Function
         </Typography>
@@ -267,7 +276,9 @@ export default function FunctionFilter({
       <Stack
         direction={{xs: "column", sm: "row"}}
         spacing={1.5}
-        alignItems="flex-start"
+        sx={{
+          alignItems: "flex-start",
+        }}
       >
         {FIELDS.map((field) => (
           <FilterField

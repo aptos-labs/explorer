@@ -86,7 +86,13 @@ export default function ModuleVersionSelector({
 
   if (isLoading && selectedVersion === undefined) {
     return (
-      <Stack direction="row" alignItems="center" spacing={1}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <HistoryOutlinedIcon fontSize="small" color="action" />
         <CircularProgress size={16} />
       </Stack>
@@ -97,9 +103,11 @@ export default function ModuleVersionSelector({
     return (
       <Stack
         direction="row"
-        alignItems="center"
         spacing={1.5}
-        sx={{flexWrap: "wrap"}}
+        sx={{
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
       >
         <HistoryOutlinedIcon fontSize="small" color="action" />
         <SelectedVersionIndicator
@@ -112,9 +120,20 @@ export default function ModuleVersionSelector({
 
   if (!hasHistory) {
     return (
-      <Stack direction="row" alignItems="center" spacing={1}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <HistoryOutlinedIcon fontSize="small" color="action" />
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           Version: Latest (only latest available)
         </Typography>
       </Stack>
@@ -125,15 +144,27 @@ export default function ModuleVersionSelector({
     return (
       <Stack
         direction="row"
-        alignItems="center"
         spacing={1.5}
-        sx={{flexWrap: "wrap"}}
+        sx={{
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
       >
         <HistoryOutlinedIcon fontSize="small" color="action" />
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           Version: Latest
         </Typography>
-        <Typography variant="caption" color="text.secondary">
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           (1 publish transaction)
         </Typography>
       </Stack>
@@ -148,12 +179,19 @@ export default function ModuleVersionSelector({
   return (
     <Stack
       direction="row"
-      alignItems="center"
       spacing={1.5}
-      sx={{flexWrap: "wrap"}}
+      sx={{
+        alignItems: "center",
+        flexWrap: "wrap",
+      }}
     >
       <HistoryOutlinedIcon fontSize="small" color="action" />
-      <Typography variant="body2" color="text.secondary">
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+        }}
+      >
         Version:
       </Typography>
       <Select
@@ -169,9 +207,11 @@ export default function ModuleVersionSelector({
         <MenuItem value="latest">
           <Stack
             direction="row"
-            alignItems="center"
             spacing={1}
-            sx={{width: "100%"}}
+            sx={{
+              alignItems: "center",
+              width: "100%",
+            }}
           >
             <Typography variant="body2">Latest</Typography>
             <Chip label="current" size="small" color="primary" />
@@ -183,7 +223,12 @@ export default function ModuleVersionSelector({
               <Typography variant="body2">
                 Version {txn.version.toLocaleString()}
               </Typography>
-              <Typography variant="caption" color="text.secondary">
+              <Typography
+                variant="caption"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
                 {formatTimestamp(txn.timestamp)}
               </Typography>
             </Stack>

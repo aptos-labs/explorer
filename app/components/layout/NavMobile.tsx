@@ -82,11 +82,13 @@ export default function NavMobile({showDarkModeToggle}: NavMobileProps = {}) {
         anchorEl={menuAnchorEl}
         open={menuOpen}
         onClose={handleMenuClose}
-        MenuListProps={{
-          "aria-labelledby": "nav-mobile-button",
-          sx: {
-            minWidth: 240,
-            padding: "1rem",
+        slotProps={{
+          list: {
+            "aria-labelledby": "nav-mobile-button",
+            sx: {
+              minWidth: 240,
+              padding: "1rem",
+            },
           },
         }}
         sx={{

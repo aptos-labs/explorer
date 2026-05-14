@@ -105,23 +105,30 @@ function WithdrawalDialog({
       <DialogTitle sx={{px: 0, pt: 0}}>
         Withdraw from {protocolName}
       </DialogTitle>
-
       <Alert severity="info" icon={<InfoOutlinedIcon />} sx={{mb: 2}}>
         At least {MIN_OWNER_WITHDRAWAL_PERCENT}% of withdrawn funds will be
         returned to the original owner / requester.
       </Alert>
-
       <Box sx={{mb: 2}}>
-        <Typography variant="body2" color="text.secondary" gutterBottom>
+        <Typography
+          variant="body2"
+          gutterBottom
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           {plugin.description}
         </Typography>
       </Box>
-
       <Divider sx={{my: 2}} />
-
       <Box sx={{display: "flex", flexDirection: "column", gap: 1.5}}>
         <Box sx={{display: "flex", justifyContent: "space-between"}}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             Owner receives
           </Typography>
           <Chip
@@ -133,7 +140,12 @@ function WithdrawalDialog({
         </Box>
         {plugin.ownerPercentage < 100 && (
           <Box sx={{display: "flex", justifyContent: "space-between"}}>
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
               Operator fee
             </Typography>
             <Chip
@@ -144,7 +156,12 @@ function WithdrawalDialog({
           </Box>
         )}
         <Box sx={{display: "flex", justifyContent: "space-between"}}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             Entry function
           </Typography>
           <Typography
@@ -161,15 +178,12 @@ function WithdrawalDialog({
           </Typography>
         </Box>
       </Box>
-
       <Divider sx={{my: 2}} />
-
       <Alert severity="warning" sx={{mb: 2}}>
         Connect your wallet and interact with the protocol&apos;s contract
         directly to execute the withdrawal. Verify the transaction details
         carefully before signing.
       </Alert>
-
       <Button variant="outlined" fullWidth onClick={onClose}>
         Close
       </Button>

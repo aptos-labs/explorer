@@ -136,7 +136,14 @@ function AmountWithAsset({
   const displayAmount = getFormattedBalanceStr(amount, decimals);
 
   return (
-    <Stack direction="row" alignItems="center" spacing={1} flexWrap="wrap">
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        alignItems: "center",
+        flexWrap: "wrap",
+      }}
+    >
       <Typography variant="body2" component="span">
         {displayAmount}
       </Typography>
@@ -153,7 +160,13 @@ function AmountWithAsset({
 function MarketValue({hash}: {hash: string}) {
   const {data: name} = useGetDecibelMarketName(hash);
   return (
-    <Stack direction="row" alignItems="center" spacing={1}>
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        alignItems: "center",
+      }}
+    >
       {name && (
         <Typography variant="body2" sx={{fontWeight: 600}}>
           {name}
@@ -218,11 +231,21 @@ function KeyValue({
   children: React.ReactNode;
 }) {
   return (
-    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        alignItems: "center",
+        flexWrap: "wrap",
+      }}
+    >
       <Typography
         variant="body2"
-        color="text.secondary"
-        sx={{minWidth: 100, flexShrink: 0}}
+        sx={{
+          color: "text.secondary",
+          minWidth: 100,
+          flexShrink: 0,
+        }}
       >
         {label}
       </Typography>
@@ -272,7 +295,14 @@ function LegTable({
   if (isMobile) {
     return (
       <Box sx={{mb: 1}}>
-        <Stack direction="row" alignItems="baseline" spacing={1} sx={{mb: 1}}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            alignItems: "baseline",
+            mb: 1,
+          }}
+        >
           <Typography
             variant="subtitle2"
             sx={{color: theme.palette[color].main}}
@@ -280,7 +310,12 @@ function LegTable({
             {label} ({legs.length})
           </Typography>
           {totalSize && (
-            <Typography variant="caption" color="text.secondary">
+            <Typography
+              variant="caption"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
               Total: {totalSize}
             </Typography>
           )}
@@ -291,9 +326,9 @@ function LegTable({
               // biome-ignore lint/suspicious/noArrayIndexKey: legs may share identical price-size pairs
               key={`${leg.price}-${leg.size}-${i}`}
               direction="row"
-              justifyContent="space-between"
-              alignItems="baseline"
               sx={{
+                justifyContent: "space-between",
+                alignItems: "baseline",
                 py: 0.5,
                 borderBottom: `1px solid ${theme.palette.divider}`,
                 "&:last-of-type": {borderBottom: "none"},
@@ -310,12 +345,24 @@ function LegTable({
 
   return (
     <Box sx={{mb: 1}}>
-      <Stack direction="row" alignItems="baseline" spacing={1} sx={{mb: 0.5}}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: "baseline",
+          mb: 0.5,
+        }}
+      >
         <Typography variant="subtitle2" sx={{color: theme.palette[color].main}}>
           {label} ({legs.length})
         </Typography>
         {totalSize && (
-          <Typography variant="caption" color="text.secondary">
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             Total size: {totalSize}
           </Typography>
         )}
@@ -345,7 +392,12 @@ function LegTable({
             // biome-ignore lint/suspicious/noArrayIndexKey: legs may share identical price-size pairs
             <GeneralTableRow key={`${leg.price}-${leg.size}-${i}`}>
               <GeneralTableCell>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   {i + 1}
                 </Typography>
               </GeneralTableCell>
@@ -589,8 +641,10 @@ function BulkOrderInlineDetail({
                         <Box>
                           <Typography
                             variant="subtitle2"
-                            color="text.secondary"
-                            sx={{mb: 1}}
+                            sx={{
+                              color: "text.secondary",
+                              mb: 1,
+                            }}
                           >
                             Cancelled Orders
                           </Typography>
@@ -644,10 +698,17 @@ function BulkOrderInlineDetail({
                       <Stack spacing={0.75}>
                         <Stack
                           direction="row"
-                          justifyContent="space-between"
-                          alignItems="center"
+                          sx={{
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
                         >
-                          <Typography variant="body2" fontWeight={600}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontWeight: 600,
+                            }}
+                          >
                             Fill
                           </Typography>
                           <SideChip side={fill.side} />
@@ -774,8 +835,10 @@ function OrderCard({
       <Stack spacing={1}>
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
           <Typography variant="subtitle2">
             {icon} {label}
@@ -932,7 +995,13 @@ function DepositCard({
   return (
     <Paper sx={{p: 2, mb: 1.5}}>
       <Stack spacing={1}>
-        <Stack direction="row" alignItems="center" spacing={0.5}>
+        <Stack
+          direction="row"
+          spacing={0.5}
+          sx={{
+            alignItems: "center",
+          }}
+        >
           <DownloadOutlinedIcon fontSize="small" />
           <Typography variant="subtitle2">Deposit</Typography>
         </Stack>
@@ -1041,7 +1110,13 @@ function WithdrawCard({
   return (
     <Paper sx={{p: 2, mb: 1.5}}>
       <Stack spacing={1}>
-        <Stack direction="row" alignItems="center" spacing={0.5}>
+        <Stack
+          direction="row"
+          spacing={0.5}
+          sx={{
+            alignItems: "center",
+          }}
+        >
           <UploadOutlinedIcon fontSize="small" />
           <Typography variant="subtitle2">Withdraw</Typography>
         </Stack>
@@ -1133,7 +1208,11 @@ export default function DecibelTab({
   if (!hasContent) {
     return (
       <ContentBox>
-        <Typography color="text.secondary">
+        <Typography
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           No Decibel activity found in this transaction.
         </Typography>
       </ContentBox>

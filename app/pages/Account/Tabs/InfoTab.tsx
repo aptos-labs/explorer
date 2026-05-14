@@ -56,7 +56,11 @@ export default function InfoTab({
       tryStandardizeAddress(accountData.authentication_key);
 
     accountInfo = (
-      <Box marginBottom={3}>
+      <Box
+        sx={{
+          marginBottom: 3,
+        }}
+      >
         <ContentBox>
           <ContentRow
             title={"Sequence Number:"}
@@ -97,7 +101,11 @@ export default function InfoTab({
       allow_ungated_transfer: boolean;
     };
     objectInfo = (
-      <Box marginBottom={3}>
+      <Box
+        sx={{
+          marginBottom: 3,
+        }}
+      >
         <ContentBox>
           <ContentRow
             title={"Owner:"}
@@ -117,19 +125,37 @@ export default function InfoTab({
   let objectRefsInfo = null;
   if (objectData) {
     objectRefsInfo = (
-      <Box marginBottom={3}>
+      <Box
+        sx={{
+          marginBottom: 3,
+        }}
+      >
         <Typography
           variant="subtitle1"
-          fontWeight={600}
-          sx={{mb: 1, color: theme.palette.text.primary}}
+          sx={{
+            fontWeight: 600,
+            mb: 1,
+            color: theme.palette.text.primary,
+          }}
         >
           Object Capabilities
         </Typography>
         <ContentBox>
           {refsLoading ? (
-            <Box display="flex" alignItems="center" gap={1}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
               <CircularProgress size={16} />
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
                 Scanning creation transaction...
               </Typography>
             </Box>
@@ -191,7 +217,12 @@ export default function InfoTab({
               </Link>
             </Typography>
           ) : (
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
               Unable to determine object capabilities
             </Typography>
           )}

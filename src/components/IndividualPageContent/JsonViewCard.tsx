@@ -267,25 +267,27 @@ export default function JsonViewCard({
 
   return (
     <Box
-      sx={{
-        backgroundColor: semanticColors.codeBlock.background,
-        overflow: "auto",
-        maxHeight: MAX_CARD_HEIGHT,
-        position: "relative",
-        // Keep react-json-view copy button always visible when hovering the card
-        "&:hover .copy-to-clipboard-container": {
-          display: "inline-block !important",
-        },
-        "& .object-key, & .array-key": clickableHoverStyle,
-        "& .string-value": clickableHoverStyle,
-        "& .variable-value > span:first-of-type": clickableHoverStyle,
-      }}
-      padding={2}
-      borderRadius={1}
       onClick={handleClick}
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
       onMouseLeave={handleMouseLeave}
+      sx={{
+        padding: 2,
+        borderRadius: 1,
+        backgroundColor: semanticColors.codeBlock.background,
+        overflow: "auto",
+        maxHeight: MAX_CARD_HEIGHT,
+        position: "relative",
+
+        // Keep react-json-view copy button always visible when hovering the card
+        "&:hover .copy-to-clipboard-container": {
+          display: "inline-block !important",
+        },
+
+        "& .object-key, & .array-key": clickableHoverStyle,
+        "& .string-value": clickableHoverStyle,
+        "& .variable-value > span:first-of-type": clickableHoverStyle,
+      }}
     >
       <Popper
         open={tooltipOpen}

@@ -16,6 +16,8 @@ minimumReleaseAge: 10080
 minimumReleaseAgeExclude:
   - fast-uri
   - "@aptos-labs/ts-sdk"
+  - "@mui/material"
+  - "@mui/icons-material"
 
 allowBuilds:
   "@parcel/watcher": false

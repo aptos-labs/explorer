@@ -43,8 +43,10 @@ export default function NetworkInfo({isOnHomePage}: NetworkInfoProps) {
         container
         spacing={3}
         direction="row"
-        sx={{alignContent: "flex-start"}}
-        marginBottom={onHomePage ? 6 : 0}
+        sx={{
+          marginBottom: onHomePage ? 6 : 0,
+          alignContent: "flex-start",
+        }}
       >
         {onHomePage && (
           <Grid size={{xs: 12, md: 12, lg: 12}}>

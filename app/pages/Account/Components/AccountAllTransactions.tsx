@@ -158,7 +158,11 @@ function FilteredAccountTransactions({
   if (versions.length === 0) {
     return (
       <Box sx={{py: 4, textAlign: "center"}}>
-        <Typography color="text.secondary">
+        <Typography
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           No transactions found matching the filter criteria sent by this
           account
         </Typography>
@@ -169,7 +173,12 @@ function FilteredAccountTransactions({
   return (
     <Stack spacing={2}>
       {txnCount !== undefined && (
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           {txnCount.toLocaleString()} matching transaction
           {txnCount !== 1 ? "s" : ""} (sent by this account)
         </Typography>
@@ -236,7 +245,12 @@ export default function AccountAllTransactions({
       )}
       {isFilterActive ? (
         <>
-          <Typography variant="caption" color="text.secondary">
+          <Typography
+            variant="caption"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             Function filter searches transactions sent by this account only, not
             all transactions involving it.
           </Typography>
@@ -250,11 +264,18 @@ export default function AccountAllTransactions({
         <>
           <Stack
             direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{my: isCountUnknown ? 0 : 2}}
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              my: isCountUnknown ? 0 : 2,
+            }}
           >
-            <Typography variant="body1" fontWeight="medium">
+            <Typography
+              variant="body1"
+              sx={{
+                fontWeight: "medium",
+              }}
+            >
               {isCountUnknown
                 ? `Showing up to ${txnCount.toLocaleString()} transactions`
                 : `${txnCount.toLocaleString()} transactions`}

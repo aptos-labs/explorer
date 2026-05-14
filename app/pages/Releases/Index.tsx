@@ -41,7 +41,13 @@ export default function ReleasesPage() {
         canonicalPath={`/releases/${tab}`}
       />
       <PageHeader />
-      <Typography variant="h3" component="h1" marginBottom={2}>
+      <Typography
+        variant="h3"
+        component="h1"
+        sx={{
+          marginBottom: 2,
+        }}
+      >
         Releases
       </Typography>
       <ReleasesPageTabs />

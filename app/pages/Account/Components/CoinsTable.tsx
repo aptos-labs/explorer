@@ -276,15 +276,20 @@ function CoinCard({
       {/* Row 1: Logo, Name, Type, Verified badge */}
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 0.75}}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 0.75,
+        }}
       >
         <Stack
           direction="row"
           spacing={1.5}
-          alignItems="center"
-          sx={{flex: 1, minWidth: 0}}
+          sx={{
+            alignItems: "center",
+            flex: 1,
+            minWidth: 0,
+          }}
         >
           {coin.logoUrl && (
             <Box
@@ -320,7 +325,13 @@ function CoinCard({
             {isFA ? "FA" : "Coin"}
           </Typography>
         </Stack>
-        <Stack direction="row" spacing={0.5} alignItems="center">
+        <Stack
+          direction="row"
+          spacing={0.5}
+          sx={{
+            alignItems: "center",
+          }}
+        >
           {confidential.hasStore === true && (
             <StyledTooltip title={CONFIDENTIAL_TOOLTIP_MESSAGE}>
               <VisibilityOffOutlined
@@ -333,9 +344,14 @@ function CoinCard({
           {getVerifiedMessageAndIcon(verification.level).icon}
         </Stack>
       </Stack>
-
       {/* Row 2: Amount + Symbol, USD Value */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Typography sx={{fontSize: "0.85rem"}}>
           {formattedAmount !== null ? (
             <>
@@ -518,13 +534,21 @@ export function CoinsTable({
   const filterSelector = (
     <Stack
       direction="row"
-      justifyContent="flex-end"
-      alignItems="center"
       spacing={2}
-      marginY={1}
+      sx={{
+        justifyContent: "flex-end",
+        alignItems: "center",
+        marginY: 1,
+      }}
     >
       {verificationFilter !== CoinVerificationFilterType.NONE && (
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            alignItems: "center",
+          }}
+        >
           <Button
             variant="text"
             onClick={() =>
@@ -683,8 +707,11 @@ export function CoinsTable({
           ) : (
             <Typography
               variant="body1"
-              color="text.secondary"
-              sx={{textAlign: "center", py: 3}}
+              sx={{
+                color: "text.secondary",
+                textAlign: "center",
+                py: 3,
+              }}
             >
               No coins found
             </Typography>
@@ -732,7 +759,12 @@ export function CoinsTable({
             <GeneralTableBody>
               <TableRow>
                 <GeneralTableCell colSpan={7} sx={{textAlign: "center", py: 3}}>
-                  <Typography variant="body1" color="text.secondary">
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: "text.secondary",
+                    }}
+                  >
                     No coins found
                   </Typography>
                 </GeneralTableCell>

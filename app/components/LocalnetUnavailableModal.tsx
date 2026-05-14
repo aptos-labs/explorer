@@ -59,7 +59,13 @@ export default function LocalnetUnavailableModal() {
             Unable to connect to a local Aptos node at{" "}
             <code>http://127.0.0.1:8080</code>.
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{mt: 2}}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              mt: 2,
+            }}
+          >
             To use localnet, start a local Aptos node with:
           </Typography>
           <Box
@@ -75,7 +81,13 @@ export default function LocalnetUnavailableModal() {
           >
             aptos node run-local-testnet --with-indexer-api
           </Box>
-          <Typography variant="body2" color="text.secondary" sx={{mt: 2}}>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+              mt: 2,
+            }}
+          >
             Or switch to a different network below.
           </Typography>
         </Box>

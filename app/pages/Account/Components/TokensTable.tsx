@@ -179,15 +179,20 @@ function TokenCard({token}: {token: TokenOwnership}) {
       {/* Row 1: Token Name, Type badge, Warning if banned */}
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 0.75}}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 0.75,
+        }}
       >
         <Stack
           direction="row"
           spacing={1}
-          alignItems="center"
-          sx={{flex: 1, minWidth: 0}}
+          sx={{
+            alignItems: "center",
+            flex: 1,
+            minWidth: 0,
+          }}
         >
           <Typography
             sx={{
@@ -224,9 +229,14 @@ function TokenCard({token}: {token: TokenOwnership}) {
           {token?.token_standard}
         </Typography>
       </Stack>
-
       {/* Row 2: Collection, Amount */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Typography
           sx={{
             fontSize: "0.85rem",
@@ -343,8 +353,11 @@ export function TokensTable({
         ) : (
           <Typography
             variant="body1"
-            color="text.secondary"
-            sx={{textAlign: "center", py: 3}}
+            sx={{
+              color: "text.secondary",
+              textAlign: "center",
+              py: 3,
+            }}
           >
             No tokens found
           </Typography>
@@ -378,7 +391,12 @@ export function TokensTable({
                 colSpan={columns.length}
                 sx={{textAlign: "center", py: 3}}
               >
-                <Typography variant="body1" color="text.secondary">
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   No tokens found
                 </Typography>
               </GeneralTableCell>
