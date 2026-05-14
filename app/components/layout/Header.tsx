@@ -25,8 +25,8 @@ import {Link, useNavigate} from "../../routing";
 import {addressFromWallet, sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
 import FeatureBar from "./FeatureBar";
+import HeaderOverflowMenu from "./HeaderOverflowMenu";
 import Nav from "./Nav";
-import NavMobile from "./NavMobile";
 import NetworkSelect from "./NetworkSelect";
 import ShareButton from "./ShareButton";
 
@@ -185,7 +185,7 @@ export default function Header() {
               </IconButton>
             )}
 
-            <NavMobile />
+            <HeaderOverflowMenu />
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector

@@ -32,8 +32,11 @@ import {WalletConnector} from "../WalletConnector";
  * (mirroring the inline `Nav` links and the wallet connector). On wide
  * viewports (`lg+`) those duplicate entries are suppressed and the menu acts
  * as a small "preferences" drop-down anchored next to the Settings icon.
+ *
+ * Previously named `NavMobile`. Renamed to a viewport-neutral name once the
+ * component started rendering on all viewports (not just mobile).
  */
-export default function NavMobile() {
+export default function HeaderOverflowMenu() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const navigate = useNavigate();
@@ -66,9 +69,9 @@ export default function NavMobile() {
   return (
     <Box sx={{display: "block"}}>
       <Button
-        id="nav-mobile-button"
+        id="header-overflow-menu-button"
         aria-label={showCompactItems ? "Navigation menu" : "Preferences menu"}
-        aria-controls={menuOpen ? "nav-mobile-menu" : undefined}
+        aria-controls={menuOpen ? "header-overflow-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={menuOpen ? "true" : undefined}
         onClick={handleIconClick}
@@ -93,7 +96,7 @@ export default function NavMobile() {
         onClose={handleMenuClose}
         slotProps={{
           list: {
-            "aria-labelledby": "nav-mobile-button",
+            "aria-labelledby": "header-overflow-menu-button",
             sx: {
               minWidth: 240,
               padding: "1rem",

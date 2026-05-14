@@ -1,50 +1,49 @@
-// @vitest-environment jsdom
 // Covers FEAT-PWA-002 — Iframe detection for share button surfacing
-import {renderHook} from "@testing-library/react";
-import {afterEach, describe, expect, it} from "vitest";
-import {useIsInIframe} from "./useIsInIframe";
+//
+// Tests target the pure `detectIsInIframe` helper so we don't have to mutate
+// `window.top` (jsdom exposes it as an unforgeable / non-configurable
+// accessor in some versions). The React hook is a one-line wrapper around
+// the helper plus `useState` / `useEffect`, so covering the helper is
+// sufficient for the detection branches.
+import {describe, expect, it} from "vitest";
+import {detectIsInIframe} from "./useIsInIframe";
 
-const originalDescriptor = Object.getOwnPropertyDescriptor(window, "top");
+describe("FEAT-PWA-002 — detectIsInIframe", () => {
+  it("returns false when no window is provided (SSR fallback)", () => {
+    expect(detectIsInIframe(undefined)).toBe(false);
+  });
 
-afterEach(() => {
-  if (originalDescriptor) {
-    Object.defineProperty(window, "top", originalDescriptor);
-  } else {
-    Object.defineProperty(window, "top", {
-      configurable: true,
-      get: () => window,
-    });
-  }
-});
-
-describe("FEAT-PWA-002 — useIsInIframe", () => {
   it("returns false when window.self === window.top (top-level browsing context)", () => {
-    Object.defineProperty(window, "top", {
-      configurable: true,
-      get: () => window,
-    });
-    const {result} = renderHook(() => useIsInIframe());
-    expect(result.current).toBe(false);
+    const win = {} as Window;
+    // biome-ignore lint/suspicious/noExplicitAny: stubbing window self/top for test
+    (win as any).self = win;
+    // biome-ignore lint/suspicious/noExplicitAny: stubbing window self/top for test
+    (win as any).top = win;
+    expect(detectIsInIframe(win)).toBe(false);
   });
 
   it("returns true when window.self !== window.top (same-origin iframe)", () => {
     const fakeTop = {} as Window;
-    Object.defineProperty(window, "top", {
-      configurable: true,
-      get: () => fakeTop,
-    });
-    const {result} = renderHook(() => useIsInIframe());
-    expect(result.current).toBe(true);
+    const win = {} as Window;
+    // biome-ignore lint/suspicious/noExplicitAny: stubbing window self/top for test
+    (win as any).self = win;
+    // biome-ignore lint/suspicious/noExplicitAny: stubbing window self/top for test
+    (win as any).top = fakeTop;
+    expect(detectIsInIframe(win)).toBe(true);
   });
 
   it("returns true when accessing window.top throws (cross-origin iframe)", () => {
-    Object.defineProperty(window, "top", {
+    const win = {} as Window;
+    Object.defineProperty(win, "self", {
+      configurable: true,
+      get: () => win,
+    });
+    Object.defineProperty(win, "top", {
       configurable: true,
       get: () => {
         throw new Error("SecurityError: cross-origin frame");
       },
     });
-    const {result} = renderHook(() => useIsInIframe());
-    expect(result.current).toBe(true);
+    expect(detectIsInIframe(win)).toBe(true);
   });
 });
