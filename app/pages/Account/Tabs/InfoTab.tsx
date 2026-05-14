@@ -3,10 +3,13 @@ import {
   Chip,
   CircularProgress,
   Link,
+  Stack,
   Typography,
   useTheme,
 } from "@mui/material";
+import type React from "react";
 import type {Types} from "~/types/aptos";
+import {useGetAccountKeyType} from "../../../api/hooks/useGetAccountKeyType";
 import {useGetObjectRefs} from "../../../api/hooks/useGetObjectRefs";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
@@ -45,6 +48,14 @@ export default function InfoTab({
     error: refsError,
   } = useGetObjectRefs(address, {enabled: !!objectData});
 
+  const {
+    data: keyTypeResult,
+    isLoading: keyTypeLoading,
+    error: keyTypeError,
+  } = useGetAccountKeyType(address, accountData?.sequence_number, {
+    enabled: !!accountData,
+  });
+
   if (!accountData && !objectData) {
     return <EmptyTabContent />;
   }
@@ -54,6 +65,140 @@ export default function InfoTab({
     const keyRotated =
       tryStandardizeAddress(address) !==
       tryStandardizeAddress(accountData.authentication_key);
+
+    const sequenceNumber = Number.parseInt(accountData.sequence_number, 10);
+    const hasSubmittedTransactions =
+      Number.isFinite(sequenceNumber) && sequenceNumber > 0;
+
+    let keyTypeValue: React.ReactNode;
+    if (!hasSubmittedTransactions) {
+      keyTypeValue = (
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
+          No transactions submitted yet
+        </Typography>
+      );
+    } else if (keyTypeLoading) {
+      keyTypeValue = (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <CircularProgress size={16} />
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
+            Inspecting latest transaction...
+          </Typography>
+        </Box>
+      );
+    } else if (keyTypeError) {
+      keyTypeValue = (
+        <Typography
+          variant="body2"
+          sx={{
+            color: "error",
+          }}
+        >
+          Failed to determine key type.{" "}
+          <Link
+            component="button"
+            variant="body2"
+            onClick={() => window.location.reload()}
+            sx={{verticalAlign: "baseline"}}
+          >
+            Retry
+          </Link>
+        </Typography>
+      );
+    } else if (keyTypeResult?.keyType) {
+      const k = keyTypeResult.keyType;
+      const headline =
+        k.scheme === "Single Key" && k.innerType
+          ? `${k.scheme} (${k.innerType})`
+          : k.scheme === "MultiKey" || k.scheme === "Multi-Ed25519"
+            ? k.signaturesRequired !== undefined && k.totalKeys !== undefined
+              ? `${k.scheme} (${k.signaturesRequired}-of-${k.totalKeys})`
+              : k.scheme
+            : k.scheme;
+      const showSubKeys =
+        (k.scheme === "MultiKey" || k.scheme === "Multi-Ed25519") &&
+        k.subKeys &&
+        k.subKeys.length > 0;
+      keyTypeValue = (
+        <Stack
+          spacing={0.75}
+          sx={{
+            alignItems: "flex-start",
+          }}
+        >
+          <Chip
+            label={headline}
+            size="small"
+            color="primary"
+            variant="outlined"
+            sx={{fontWeight: 500}}
+          />
+          {showSubKeys ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 0.5,
+                alignItems: "center",
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{color: theme.palette.text.secondary, mr: 0.5}}
+              >
+                Sub-keys:
+              </Typography>
+              {k.subKeys?.map((sub, i) => (
+                <Chip
+                  // biome-ignore lint/suspicious/noArrayIndexKey: sub-keys are positional and may repeat
+                  key={`${sub.type}-${i}`}
+                  label={`${i + 1}. ${sub.display}`}
+                  size="small"
+                  variant="outlined"
+                  sx={{fontWeight: 500}}
+                />
+              ))}
+            </Box>
+          ) : null}
+          {keyTypeResult.transactionVersion ? (
+            <Typography
+              variant="caption"
+              sx={{color: theme.palette.text.secondary}}
+            >
+              Inferred from transaction version{" "}
+              {keyTypeResult.transactionVersion}
+            </Typography>
+          ) : null}
+        </Stack>
+      );
+    } else {
+      keyTypeValue = (
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
+          Unable to determine from latest transaction
+        </Typography>
+      );
+    }
 
     accountInfo = (
       <Box
@@ -89,6 +234,11 @@ export default function InfoTab({
               tooltip={getLearnMoreTooltip("authentication_key")}
             />
           )}
+          <ContentRow
+            title={"Key Type:"}
+            value={keyTypeValue}
+            tooltip={getLearnMoreTooltip("key_type")}
+          />
         </ContentBox>
       </Box>
     );

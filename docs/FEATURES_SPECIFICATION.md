@@ -397,7 +397,8 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Account info** | Sequence number, auth key (rotation hint). |
+| **Account info** | Sequence number, auth key (rotation hint), key type. |
+| **Key type** | Authentication scheme inferred from the latest transaction submitted by the account via `useGetAccountKeyType`. Recognizes `ed25519_signature` (Ed25519), `multi_ed25519_signature` (Multi-Ed25519, K-of-N), and `single_sender` in both SingleKey (`public_key.type`) and MultiKey (`public_keys[]`, `signatures_required`) variants. Multi-agent and fee-payer authenticators are unwrapped to the primary signer first. For MultiKey / Multi-Ed25519, each constituent sub-key type is listed in order. Loading, error, and "no transactions yet" (sequence number 0) states are handled. |
 | **Object info** | Owner, transferability. |
 | **Object refs** | Transfer/delete/extend ref chips via `useGetObjectRefs` (scans nested structures in transaction data). |
 
@@ -1232,6 +1233,7 @@ top of the HTML site.
 | `app/utils/sentioCallTrace.test.ts` | FEAT-TXN-010 (Sentio helpers: network ID, paths, address normalization, node validation) |
 | `app/api/client.test.ts` | FEAT-RATELIMIT-003 (API error classification, 429 → `emitRateLimit`) |
 | `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |
+| `app/pages/Account/utils/accountKeyType.test.ts` | FEAT-ACCOUNT-010 (key type extraction from latest transaction signature: Ed25519, Multi-Ed25519, Single Key, MultiKey, multi-agent / fee-payer unwrap) |
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetValidators.test.ts` | FEAT-VALIDATORS-002 (`buildValidatorsFromSources`: empty stats JSON → chain-only rows + optional operator map; merge when JSON present) |
 | `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation from resources) |
