@@ -4,7 +4,6 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import {
   alpha,
   Box,
-  Button,
   IconButton,
   Typography,
   useMediaQuery,
@@ -17,19 +16,17 @@ import {useEffect, useRef} from "react";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
 import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";
-import IconDark from "../../assets/svg/icon_dark.svg?react";
-import IconLight from "../../assets/svg/icon_light.svg?react";
-import {useColorMode} from "../../context/color-mode";
 import {useNetworkName} from "../../global-config";
 import {useInView} from "../../hooks/useInView";
+import {useIsInIframe} from "../../hooks/useIsInIframe";
 import {useIsStandalonePWA} from "../../hooks/useIsStandalonePWA";
 import {useLogEventWithBasic} from "../../pages/Account/hooks/useLogEventWithBasic";
 import {Link, useNavigate} from "../../routing";
 import {addressFromWallet, sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
 import FeatureBar from "./FeatureBar";
+import HeaderOverflowMenu from "./HeaderOverflowMenu";
 import Nav from "./Nav";
-import NavMobile from "./NavMobile";
 import NetworkSelect from "./NetworkSelect";
 import ShareButton from "./ShareButton";
 
@@ -47,7 +44,6 @@ export default function Header() {
     }
   };
 
-  const {toggleColorMode} = useColorMode();
   const theme = useTheme();
   const logEvent = useLogEventWithBasic();
   const isDark = theme.palette.mode === "dark";
@@ -59,6 +55,8 @@ export default function Header() {
 
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("lg"));
   const isStandalonePWA = useIsStandalonePWA();
+  const isInIframe = useIsInIframe();
+  const showShareButton = isStandalonePWA || isInIframe;
 
   const networkName = useNetworkName();
   const {account, wallet, network} = useWallet();
@@ -172,7 +170,7 @@ export default function Header() {
 
             <Nav />
             <NetworkSelect />
-            {isStandalonePWA && <ShareButton />}
+            {showShareButton && <ShareButton />}
             {!isOnMobile && (
               <IconButton
                 component={Link}
@@ -187,27 +185,7 @@ export default function Header() {
               </IconButton>
             )}
 
-            {!(isStandalonePWA && isOnMobile) && (
-              <Button
-                onClick={toggleColorMode}
-                aria-label="Toggle dark mode"
-                sx={{
-                  width: "30px",
-                  height: "30px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyItems: "center",
-                  padding: "0",
-                  minWidth: "30px",
-                  marginLeft: "1rem",
-                  color: "inherit",
-                  "&:hover": {background: "transparent", opacity: "0.8"},
-                }}
-              >
-                {theme.palette.mode === "light" ? <IconLight /> : <IconDark />}
-              </Button>
-            )}
-            <NavMobile showDarkModeToggle={isStandalonePWA && isOnMobile} />
+            <HeaderOverflowMenu />
             {!isOnMobile && (
               <Box sx={{marginLeft: "1rem"}}>
                 <WalletConnector
