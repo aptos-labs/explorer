@@ -1,9 +1,10 @@
-import {Box, CircularProgress, Pagination} from "@mui/material";
-import type React from "react";
-import {useState} from "react";
+import {Box, CircularProgress} from "@mui/material";
 import type {Types} from "~/types/aptos";
 import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import PageNumberPagination, {
+  useCurrentPage,
+} from "../../../components/PageNumberPagination";
 import TransactionsTable from "../../Transactions/TransactionsTable";
 import AccountError from "../Error";
 
@@ -32,10 +33,15 @@ function TransactionsPaginationTable({
   address,
   sequenceNum,
 }: TransactionsPaginationTableProps) {
-  // TODO: make `start` a search param like the other transactions page
-  const [currentPageNum, setCurrentPageNum] = useState<number>(1);
-
   const numOfPages = Math.ceil(sequenceNum / TXN_PER_PAGE);
+  const currentPageRaw = useCurrentPage();
+  // Clamp `?page=` to the available range so a stale or shared URL still
+  // renders the closest valid page instead of an empty / errored table.
+  const currentPageNum = Math.min(
+    Math.max(1, currentPageRaw),
+    Math.max(1, numOfPages),
+  );
+
   const pageStarts = getPageStartSequenceNumbers(sequenceNum);
 
   const start = pageStarts[currentPageNum - 1];
@@ -54,13 +60,6 @@ function TransactionsPaginationTable({
     return <AccountError address={address} error={error} />;
   }
 
-  const handleChange = (
-    _event: React.ChangeEvent<unknown>,
-    newPageNum: number,
-  ) => {
-    setCurrentPageNum(newPageNum);
-  };
-
   if (isLoading) {
     return (
       <Box sx={{display: "flex", justifyContent: "center", py: 4}}>
@@ -77,20 +76,10 @@ function TransactionsPaginationTable({
         <TransactionsTable transactions={data ?? []} />
       )}
       {numOfPages > 1 && (
-        <Box sx={{display: "flex", justifyContent: "center"}}>
-          <Pagination
-            sx={{mt: 3}}
-            count={numOfPages}
-            variant="outlined"
-            showFirstButton
-            showLastButton
-            page={currentPageNum}
-            siblingCount={4}
-            boundaryCount={0}
-            shape="rounded"
-            onChange={handleChange}
-          />
-        </Box>
+        <PageNumberPagination
+          currentPage={currentPageNum}
+          numPages={numOfPages}
+        />
       )}
     </>
   );

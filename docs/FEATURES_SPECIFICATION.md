@@ -366,8 +366,8 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Mode selection** | Implicit — GraphQL available → `AccountAllTransactions` (all involvement); otherwise → `AccountTransactions` (sender-only via REST). No user-facing toggle. |
-| **Function filter** | `?fn_addr=`, `?fn_module=`, `?fn_name=` filter support (queries `user_transactions` by sender, not full account history). |
-| **Pagination** | Cursor-based. |
+| **Function filter** | `?fn_addr=`, `?fn_module=`, `?fn_name=` filter support (queries `user_transactions` by sender, not full account history). Changing the filter resets `?page=` to 1. |
+| **Pagination** | URL-driven via `?page=` for both the GraphQL path (filtered and unfiltered) and the REST fallback. Other search params (`type`, `network`, `fn_*`) are preserved across pagination clicks. The shared `PageNumberPagination` component (`app/components/PageNumberPagination.tsx`) drops the redundant `?page=1` so canonical URLs stay short. The REST fallback clamps an out-of-range `?page=` to the available pages (so a shared deep link still renders the closest valid page). |
 | **Rate limit handling** | GraphQL path has retry + exponential backoff + user message on 429. |
 
 ### FEAT-ACCOUNT-007 — Assets (Coins) Tab
@@ -1283,6 +1283,8 @@ top of the HTML site.
 | `app/hooks/useIsInIframe.test.ts` | FEAT-PWA-002 (`detectIsInIframe` helper: SSR fallback, top-level browsing context, same-origin frame, cross-origin frame `window.top` access throws) |
 | `app/components/layout/sharePage.test.ts` | FEAT-PWA-002 (Web Share helper: navigator.share success, AbortError cancellation, clipboard fallback, error paths) |
 | `app/api/hooks/useGoogleTagManager.test.ts` | FEAT-TELEMETRY-001 (GTM event name constants) |
+| `app/components/PageNumberPagination.test.tsx` | FEAT-ACCOUNT-006 / FEAT-TXN-001 (URL-driven `?page=` round-trip: writes new page on click, preserves filter + network params, drops `?page=1` for canonical URLs, no-ops on current page, fires analytics callback) |
+| `app/api/hooks/useFunctionFilter.test.ts` | FEAT-ACCOUNT-006 / FEAT-TXN-001 (entry-function filter: read from `fn_addr` / `fn_module` / `fn_name`, legacy `?fn=` migration, cascade clear, reset `?page=` and `?start=` on filter change, full clear preserves unrelated params) |
 
 ## Appendix C: Remaining Test Coverage Gaps
 

@@ -4,7 +4,6 @@ import {
   AlertTitle,
   Button,
   CircularProgress,
-  Pagination,
   Stack,
   Typography,
 } from "@mui/material";
@@ -21,11 +20,13 @@ import {
   useGetAccountTransactionsByFunctionCount,
   useGetAccountTransactionVersionsByFunction,
 } from "../../../api/hooks/useGetAccountAllTransactions";
+import PageNumberPagination, {
+  useCurrentPage,
+} from "../../../components/PageNumberPagination";
 import {
   useAptosClient,
   useSdkV2Client,
 } from "../../../global-config/GlobalConfig";
-import {useSearchParams} from "../../../routing";
 import {tryStandardizeAddress} from "../../../utils";
 import FunctionFilter from "../../Transactions/Components/FunctionFilter";
 import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
@@ -34,42 +35,16 @@ import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 
 const MAX_DISPLAYABLE_TRANSACTIONS = 10000;
 
-function RenderPagination({
-  currentPage,
-  numPages,
-}: {
-  currentPage: number;
-  numPages: number;
-}) {
-  const [searchParams, setSearchParams] = useSearchParams();
+function useTransactionsPaginationCallback() {
   const logEvent = useLogEventWithBasic();
-
-  const handleChange = (
-    _event: React.ChangeEvent<unknown>,
-    newPageNum: number,
-  ) => {
-    searchParams.set("page", newPageNum.toString());
-    setSearchParams(searchParams);
-
-    logEvent("go_to_new_page", newPageNum, {
-      current_page_num: currentPage.toString(),
-      new_page_num: newPageNum.toString(),
-    });
-  };
-
-  return (
-    <Pagination
-      sx={{mt: 3}}
-      count={numPages}
-      variant="outlined"
-      showFirstButton
-      showLastButton
-      page={currentPage}
-      siblingCount={4}
-      boundaryCount={0}
-      shape="rounded"
-      onChange={handleChange}
-    />
+  return React.useCallback(
+    (newPageNum: number, currentPage: number) => {
+      logEvent("go_to_new_page", newPageNum, {
+        current_page_num: currentPage.toString(),
+        new_page_num: newPageNum.toString(),
+      });
+    },
+    [logEvent],
   );
 }
 
@@ -84,9 +59,9 @@ export function AccountAllTransactionsWithPagination({
   numPages,
   countPerPage,
 }: AccountAllTransactionsWithPaginationProps) {
-  const [searchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") ?? "1", 10);
+  const currentPage = useCurrentPage();
   const offset = (currentPage - 1) * countPerPage;
+  const onPageChange = useTransactionsPaginationCallback();
 
   const versions = useGetAccountAllTransactionVersions(
     address,
@@ -100,9 +75,11 @@ export function AccountAllTransactionsWithPagination({
         <UserTransactionsTable versions={versions} address={address} />
       </Box>
       {numPages > 1 && (
-        <Box sx={{display: "flex", justifyContent: "center"}}>
-          <RenderPagination currentPage={currentPage} numPages={numPages} />
-        </Box>
+        <PageNumberPagination
+          currentPage={currentPage}
+          numPages={numPages}
+          onPageChange={onPageChange}
+        />
       )}
     </Stack>
   );
@@ -119,9 +96,9 @@ function FilteredAccountTransactions({
   functionFilter,
   countPerPage,
 }: FilteredAccountTransactionsProps) {
-  const [searchParams] = useSearchParams();
-  const currentPage = parseInt(searchParams.get("page") ?? "1", 10);
+  const currentPage = useCurrentPage();
   const offset = (currentPage - 1) * countPerPage;
+  const onPageChange = useTransactionsPaginationCallback();
 
   const txnCount = useGetAccountTransactionsByFunctionCount(
     address,
@@ -187,9 +164,11 @@ function FilteredAccountTransactions({
         <UserTransactionsTable versions={versions} address={address} />
       </Box>
       {numPages > 1 && (
-        <Box sx={{display: "flex", justifyContent: "center"}}>
-          <RenderPagination currentPage={currentPage} numPages={numPages} />
-        </Box>
+        <PageNumberPagination
+          currentPage={currentPage}
+          numPages={numPages}
+          onPageChange={onPageChange}
+        />
       )}
     </Stack>
   );
