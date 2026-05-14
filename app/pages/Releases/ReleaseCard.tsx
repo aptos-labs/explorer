@@ -39,7 +39,12 @@ function PrereleaseBadge() {
 function RelativeDate({iso}: {iso: string | null}) {
   if (!iso) return null;
   return (
-    <Typography variant="caption" color="text.secondary">
+    <Typography
+      variant="caption"
+      sx={{
+        color: "text.secondary",
+      }}
+    >
       {formatDistanceToNow(new Date(iso), {addSuffix: true})}
     </Typography>
   );
@@ -54,9 +59,11 @@ export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
         </Typography>
         <Typography
           variant="caption"
-          color="text.secondary"
-          display="block"
-          mb={1}
+          sx={{
+            color: "text.secondary",
+            display: "block",
+            mb: 1,
+          }}
         >
           {registry}
         </Typography>
@@ -68,7 +75,12 @@ export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
         ) : (
           <Box>
             <Box sx={{display: "flex", alignItems: "center", flexWrap: "wrap"}}>
-              <Typography variant="h5" fontFamily="monospace">
+              <Typography
+                variant="h5"
+                sx={{
+                  fontFamily: "monospace",
+                }}
+              >
                 {result.version}
               </Typography>
               {!result.isStable && <PrereleaseBadge />}
@@ -81,18 +93,22 @@ export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
             {result.isStable ? (
               <Typography
                 variant="caption"
-                color="text.secondary"
-                display="block"
-                mb={1}
+                sx={{
+                  color: "text.secondary",
+                  display: "block",
+                  mb: 1,
+                }}
               >
                 Latest stable release
               </Typography>
             ) : (
               <Typography
                 variant="caption"
-                color="warning.main"
-                display="block"
-                mb={1}
+                sx={{
+                  color: "warning.main",
+                  display: "block",
+                  mb: 1,
+                }}
               >
                 No stable release found — showing latest pre-release
               </Typography>
@@ -116,7 +132,12 @@ export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
                   expandIcon={<ExpandMoreIcon fontSize="small" />}
                   sx={{px: 0, minHeight: 32}}
                 >
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "text.secondary",
+                    }}
+                  >
                     Recent releases ({result.recent.length})
                   </Typography>
                 </AccordionSummary>

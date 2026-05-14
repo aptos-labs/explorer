@@ -46,7 +46,13 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
   }, [lastEpochTime, epochInterval]);
   return !isSkeletonLoading ? (
     <MetricSection>
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Subtitle>{`Epoch ${curEpoch}`}</Subtitle>
         <StyledLearnMoreTooltip
           text={EPOCH_TOOLTIP_TEXT}
@@ -62,7 +68,13 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
     </MetricSection>
   ) : (
     <MetricSection>
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: "center",
+        }}
+      >
         <Skeleton width={140} />
       </Stack>
       <Skeleton width={180} />

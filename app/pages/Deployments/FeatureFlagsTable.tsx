@@ -1,6 +1,6 @@
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutlineOutlined";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {
   Box,
@@ -207,7 +207,12 @@ export function FeatureFlagsTable() {
           <Typography variant="h5" component="h2">
             Feature Flags by Network
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             On-chain feature flags decoded from{" "}
             <Box component="code" sx={{fontFamily: "monospace"}}>
               0x1::features::Features
@@ -236,7 +241,6 @@ export function FeatureFlagsTable() {
           Refresh
         </Button>
       </Box>
-
       <Stack direction="row" sx={{flexWrap: "wrap", gap: 1, mb: 2}}>
         {FILTERS.map(({value, label}) => (
           <Chip
@@ -250,14 +254,12 @@ export function FeatureFlagsTable() {
         ))}
         {anyLoading && <CircularProgress size={16} sx={{ml: 1}} />}
       </Stack>
-
       {anyError && (
         <Typography variant="body2" color="error" sx={{mb: 1}}>
           One or more networks could not be reached. Cells for those networks
           show as unknown.
         </Typography>
       )}
-
       <TableContainer component={Paper} variant="outlined">
         <Table
           size="small"
@@ -288,8 +290,10 @@ export function FeatureFlagsTable() {
                 <TableCell colSpan={2 + NETWORKS.length} align="center">
                   <Typography
                     variant="body2"
-                    color="text.secondary"
-                    sx={{py: 2}}
+                    sx={{
+                      color: "text.secondary",
+                      py: 2,
+                    }}
                   >
                     {filter === "differences"
                       ? "All networks agree on every known feature flag."

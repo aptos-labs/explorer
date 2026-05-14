@@ -1,5 +1,5 @@
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {
@@ -87,10 +87,11 @@ const TraceSubtree = memo(function TraceSubtree({
       <Stack spacing={{xs: 0.5, sm: 0.25}} sx={{py: {xs: 0.5, sm: 0.35}}}>
         <Stack
           direction="row"
-          alignItems="flex-start"
           spacing={0.5}
           sx={{
+            alignItems: "flex-start",
             minWidth: 0,
+
             ...(failed && {
               backgroundColor: alpha(errorColor, 0.08),
               borderRadius: 1,
@@ -138,15 +139,17 @@ const TraceSubtree = memo(function TraceSubtree({
           <Box sx={{flex: 1, minWidth: 0}}>
             <Stack
               direction="row"
-              alignItems="center"
               spacing={1}
-              sx={{flexWrap: "wrap"}}
+              sx={{
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
             >
               <Typography
                 component="div"
                 variant="body2"
-                fontWeight={600}
                 sx={{
+                  fontWeight: 600,
                   fontSize: {xs: "0.8rem", sm: undefined},
                   lineHeight: 1.35,
                   wordBreak: "break-word",
@@ -185,20 +188,30 @@ const TraceSubtree = memo(function TraceSubtree({
             </Stack>
             <Stack
               direction={{xs: "column", sm: "row"}}
-              alignItems={{xs: "flex-start", sm: "center"}}
-              flexWrap="wrap"
-              columnGap={0.75}
-              rowGap={{xs: 0.75, sm: 0.25}}
-              sx={{mt: {xs: 0.75, sm: 0.25}}}
+              sx={{
+                alignItems: {xs: "flex-start", sm: "center"},
+                flexWrap: "wrap",
+                columnGap: 0.75,
+                rowGap: {xs: 0.75, sm: 0.25},
+                mt: {xs: 0.75, sm: 0.25},
+              }}
             >
               <Stack
                 direction="row"
-                alignItems="center"
-                flexWrap="wrap"
-                columnGap={0.5}
-                sx={{minWidth: 0, maxWidth: "100%"}}
+                sx={{
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  columnGap: 0.5,
+                  minWidth: 0,
+                  maxWidth: "100%",
+                }}
               >
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   Caller
                 </Typography>
                 {caller ? (
@@ -212,9 +225,11 @@ const TraceSubtree = memo(function TraceSubtree({
                 ) : (
                   <Typography
                     variant="caption"
-                    color="text.disabled"
                     component="span"
-                    sx={{wordBreak: "break-all"}}
+                    sx={{
+                      color: "text.disabled",
+                      wordBreak: "break-all",
+                    }}
                   >
                     {node.from}
                   </Typography>
@@ -222,12 +237,20 @@ const TraceSubtree = memo(function TraceSubtree({
               </Stack>
               <Stack
                 direction="row"
-                alignItems="center"
-                flexWrap="wrap"
-                columnGap={0.5}
-                sx={{minWidth: 0, maxWidth: "100%"}}
+                sx={{
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  columnGap: 0.5,
+                  minWidth: 0,
+                  maxWidth: "100%",
+                }}
               >
-                <Typography variant="caption" color="text.secondary">
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
                   Callee
                 </Typography>
                 {callee ? (
@@ -241,9 +264,11 @@ const TraceSubtree = memo(function TraceSubtree({
                 ) : (
                   <Typography
                     variant="caption"
-                    color="text.disabled"
                     component="span"
-                    sx={{wordBreak: "break-all"}}
+                    sx={{
+                      color: "text.disabled",
+                      wordBreak: "break-all",
+                    }}
                   >
                     {node.to}
                   </Typography>
@@ -253,8 +278,8 @@ const TraceSubtree = memo(function TraceSubtree({
           </Box>
           <Typography
             variant="caption"
-            color="text.secondary"
             sx={{
+              color: "text.secondary",
               flexShrink: 0,
               pt: {xs: 0, sm: 0.35},
               display: {xs: "none", sm: "block"},
@@ -266,8 +291,8 @@ const TraceSubtree = memo(function TraceSubtree({
         </Stack>
         <Typography
           variant="caption"
-          color="text.secondary"
           sx={{
+            color: "text.secondary",
             display: {xs: "block", sm: "none"},
             alignSelf: "flex-end",
             pr: 0.5,

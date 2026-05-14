@@ -50,14 +50,20 @@ export function StyledLearnMoreTooltip({
     <StyledTooltip
       placement="bottom-start"
       title={
-        <Stack alignItems="flex-end">
+        <Stack
+          sx={{
+            alignItems: "flex-end",
+          }}
+        >
           {linkToText ? (
             <Link
-              alignSelf="flex-end"
               href={link}
               target="_blank"
               rel="noopener noreferrer"
               color="inherit"
+              sx={{
+                alignSelf: "flex-end",
+              }}
             >
               {text}
             </Link>
@@ -66,11 +72,13 @@ export function StyledLearnMoreTooltip({
               <Typography variant="inherit">{text}</Typography>
               {link && (
                 <Link
-                  alignSelf="flex-end"
                   href={link}
                   color="inherit"
                   target="_blank"
                   rel="noopener noreferrer"
+                  sx={{
+                    alignSelf: "flex-end",
+                  }}
                 >
                   Learn More
                 </Link>

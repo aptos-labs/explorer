@@ -139,17 +139,14 @@ function MultisigContent({
           </Typography>
         }
       />
-
       <ContentRow
         title="Required Signatures:"
         value={safeGet(multisigData, "num_signatures_required")}
       />
-
       <ContentRow
         title="Next Sequence Number:"
         value={safeGet(multisigData, "next_sequence_number")}
       />
-
       {multisigData.owners && Array.isArray(multisigData.owners) && (
         <Box sx={{mt: 2, mb: 2}}>
           <Typography variant="h6" sx={{mb: 1}}>
@@ -159,9 +156,9 @@ function MultisigContent({
             <Stack
               key={owner}
               direction="row"
-              alignItems="center"
               spacing={2}
               sx={{
+                alignItems: "center",
                 mb: 1,
                 p: 1.5,
                 borderRadius: 1,
@@ -185,7 +182,6 @@ function MultisigContent({
           ))}
         </Box>
       )}
-
       {/* Check for pending transactions - try different possible structures */}
       {(() => {
         // Access transactions directly from typed data structure
@@ -291,7 +287,6 @@ function MultisigContent({
         }
         return null;
       })()}
-
       <Box sx={{mt: 3}}>
         <Typography variant="h6" sx={{mb: 2}}>
           Event Counters
@@ -339,7 +334,6 @@ function MultisigContent({
           />
         </Box>
       </Box>
-
       <Box sx={{mt: 3}}>
         <Typography variant="h6" sx={{mb: 2}}>
           Raw Multisig Data

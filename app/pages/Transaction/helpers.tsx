@@ -185,7 +185,10 @@ export function getLearnMoreTooltip(
                 >
                   {icon}
                   <Stack spacing={0.5}>
-                    <TooltipTypography variant="subtitle2" fontWeight={600}>
+                    <TooltipTypography
+                      variant="subtitle2"
+                      sx={{fontWeight: 600}}
+                    >
                       {level}
                     </TooltipTypography>
                     <TooltipTypography variant="body2">

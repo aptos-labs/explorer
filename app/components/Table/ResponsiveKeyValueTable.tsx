@@ -125,15 +125,23 @@ export function ResponsiveKeyValueRow({
           "&:last-child": {borderBottom: "none"},
         }}
       >
-        <Typography variant="body2" fontWeight={600} color="text.primary">
+        <Typography
+          variant="body2"
+          sx={{
+            fontWeight: 600,
+            color: "text.primary",
+          }}
+        >
           {label}
         </Typography>
         {hasDescription ? (
           <Typography
             variant="caption"
-            display="block"
-            color="text.secondary"
-            sx={{mt: 0.25}}
+            sx={{
+              display: "block",
+              color: "text.secondary",
+              mt: 0.25,
+            }}
           >
             {description}
           </Typography>

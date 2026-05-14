@@ -137,10 +137,22 @@ export default function SettingsPage() {
       />
       <PageHeader />
       <Container maxWidth="md" sx={{py: 4}}>
-        <Typography variant="h4" fontWeight={700} gutterBottom>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{
+            fontWeight: 700,
+          }}
+        >
           Settings
         </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{mb: 4}}>
+        <Typography
+          variant="body1"
+          sx={{
+            color: "text.secondary",
+            mb: 4,
+          }}
+        >
           Manage your explorer preferences. Settings are stored locally in your
           browser.
         </Typography>
@@ -159,17 +171,26 @@ export default function SettingsPage() {
             <Stack spacing={2}>
               <Stack
                 direction="row"
-                justifyContent="space-between"
-                alignItems="flex-start"
+                sx={{
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                }}
               >
                 <Box>
-                  <Typography variant="h6" fontWeight={600}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                    }}
+                  >
                     Move Bytecode Decompilation
                   </Typography>
                   <Typography
                     variant="body2"
-                    color="text.secondary"
-                    sx={{mt: 0.5}}
+                    sx={{
+                      color: "text.secondary",
+                      mt: 0.5,
+                    }}
                   >
                     Enable client-side decompilation of on-chain Move bytecode
                     into human-readable source. Runs entirely in your browser
@@ -184,8 +205,10 @@ export default function SettingsPage() {
                       enableDecompilation: event.target.checked,
                     }))
                   }
-                  inputProps={{
-                    "aria-label": "Enable Move bytecode decompilation",
+                  slotProps={{
+                    input: {
+                      "aria-label": "Enable Move bytecode decompilation",
+                    },
                   }}
                 />
               </Stack>
@@ -194,7 +217,13 @@ export default function SettingsPage() {
                 severity="warning"
                 icon={<WarningAmberIcon fontSize="small" />}
               >
-                <Typography variant="body2" fontWeight={600} gutterBottom>
+                <Typography
+                  variant="body2"
+                  gutterBottom
+                  sx={{
+                    fontWeight: 600,
+                  }}
+                >
                   Disclaimer — Please read before enabling
                 </Typography>
                 <Typography variant="body2">
@@ -232,8 +261,20 @@ export default function SettingsPage() {
           <Paper variant="outlined" sx={{p: 3}}>
             <Stack spacing={2.5}>
               <Box>
-                <Stack direction="row" alignItems="center" spacing={0.5}>
-                  <Typography variant="h6" fontWeight={600} component="span">
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  sx={{
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    component="span"
+                    sx={{
+                      fontWeight: 600,
+                    }}
+                  >
                     API Key Overrides
                   </Typography>
                   <IconButton
@@ -268,7 +309,12 @@ export default function SettingsPage() {
                     Adding your own key gives you a dedicated rate limit, which
                     helps if you browse heavily or hit HTTP 429 responses.
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "text.secondary",
+                    }}
+                  >
                     Create and manage keys at{" "}
                     <MuiLink
                       href="https://geomi.dev"
@@ -282,8 +328,10 @@ export default function SettingsPage() {
                 </Popover>
                 <Typography
                   variant="body2"
-                  color="text.secondary"
-                  sx={{mt: 0.5}}
+                  sx={{
+                    color: "text.secondary",
+                    mt: 0.5,
+                  }}
                 >
                   Optional geomi.dev API keys per network. Used only in your
                   browser. Leave a network empty to use the default key from the
@@ -334,7 +382,12 @@ export default function SettingsPage() {
                 />
               ))}
 
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
                 Don&apos;t have a key?{" "}
                 <MuiLink
                   href="https://geomi.dev"
@@ -383,7 +436,13 @@ export default function SettingsPage() {
           <Divider />
 
           {/* Save / Reset actions */}
-          <Stack direction="row" spacing={2} justifyContent="flex-end">
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              justifyContent: "flex-end",
+            }}
+          >
             <Button
               onClick={handleReset}
               disabled={isSaving || !hasChanges}

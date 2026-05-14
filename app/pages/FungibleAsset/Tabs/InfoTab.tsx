@@ -1,8 +1,8 @@
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
 import {Box} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
-import {useGetConfidentialFASupply} from "../../../api/hooks/useGetConfidentialFASupply";
 import {useGetFirstCoinActivity} from "../../../api/hooks/useGetCoinActivities";
+import {useGetConfidentialFASupply} from "../../../api/hooks/useGetConfidentialFASupply";
 import {useGetFaProperties} from "../../../api/hooks/useGetFaProperties";
 import FaPropertiesDisplay from "../../../components/FaPropertiesDisplay";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -75,7 +75,11 @@ export default function InfoTab({address, data}: InfoTabProps) {
   );
 
   return (
-    <Box marginBottom={3}>
+    <Box
+      sx={{
+        marginBottom: 3,
+      }}
+    >
       {data && (
         <ContentBox>
           <ContentRow title={"Name:"} value={data?.metadata?.name} />

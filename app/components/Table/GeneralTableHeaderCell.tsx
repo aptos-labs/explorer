@@ -73,8 +73,10 @@ export default function GeneralTableHeaderCell({
     <Stack
       direction="row"
       spacing={isTableTooltip ? 0.2 : 1}
-      justifyContent={textAlignRight ? "flex-end" : "flex-start"}
-      alignItems="center"
+      sx={{
+        justifyContent: textAlignRight ? "flex-end" : "flex-start",
+        alignItems: "center",
+      }}
     >
       {headerSortLabel}
       {tooltip}

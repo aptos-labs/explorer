@@ -131,7 +131,13 @@ const AccountHashButtonInner = memo(function AccountHashButtonInner({
   );
 
   return (
-    <Stack direction="row" alignItems={"center"} spacing={1}>
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        alignItems: "center",
+      }}
+    >
       <IdenticonImg
         key={`${address}:${knownAddressBranding?.icon ?? ""}:${knownAddressBranding?.iconBadge ?? ""}`}
         address={address}
@@ -428,7 +434,13 @@ const AssetHashButtonInner = memo(function AssetHashButtonInner({
   }
 
   return (
-    <Stack direction="row" alignItems={"center"} spacing={1}>
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        alignItems: "center",
+      }}
+    >
       {icon}
       <Link
         to={getHashLinkStr(coinName, type)}

@@ -457,7 +457,12 @@ function MyDepositCell({validator}: {validator: ValidatorWithExtendedData}) {
   if (!account || validator.userStake === undefined) {
     return (
       <GeneralTableCell sx={{paddingRight: 5, textAlign: "right"}}>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           -
         </Typography>
       </GeneralTableCell>
@@ -470,8 +475,10 @@ function MyDepositCell({validator}: {validator: ValidatorWithExtendedData}) {
         <Stack
           direction="row"
           spacing={1.5}
-          alignItems="center"
-          justifyContent="flex-end"
+          sx={{
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
         >
           <CheckCircleIcon
             sx={{color: theme.palette.success.main}}
@@ -486,7 +493,12 @@ function MyDepositCell({validator}: {validator: ValidatorWithExtendedData}) {
           </Typography>
         </Stack>
       ) : (
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           N/A
         </Typography>
       )}
@@ -613,13 +625,19 @@ function EnhancedDelegationValidatorCard({
       }}
     >
       {/* Status */}
-      <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1}}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          alignItems: "center",
+          mb: 1,
+        }}
+      >
         <ValidatorStatusIcon validatorStatus={validatorStatus} />
         <Typography variant="body2" sx={{fontWeight: 500}}>
           {validatorStatus}
         </Typography>
       </Stack>
-
       {/* Pool Address */}
       <Box sx={{mb: 1}}>
         <Typography
@@ -634,7 +652,6 @@ function EnhancedDelegationValidatorCard({
           resolveName={false}
         />
       </Box>
-
       {/* Operator Address */}
       <Box sx={{mb: 1.5}}>
         <Typography
@@ -650,15 +667,16 @@ function EnhancedDelegationValidatorCard({
           resolveName={false}
         />
       </Box>
-
       {/* Row 2: Key metrics */}
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        flexWrap="wrap"
-        gap={1.5}
-        sx={{mb: connected ? 1 : 0}}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          flexWrap: "wrap",
+          gap: 1.5,
+          mb: connected ? 1 : 0,
+        }}
       >
         <Box>
           <Typography variant="caption" sx={{color: "text.secondary"}}>
@@ -717,14 +735,13 @@ function EnhancedDelegationValidatorCard({
           </Typography>
         </Box>
       </Stack>
-
       {/* Row 3: My Deposit (if connected) */}
       {connected && (
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
           sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
             pt: 1,
             borderTop: `1px solid ${theme.palette.divider}`,
           }}
@@ -733,7 +750,13 @@ function EnhancedDelegationValidatorCard({
             My Deposit
           </Typography>
           {validator.userStake !== undefined && validator.userStake > 0 ? (
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignItems: "center",
+              }}
+            >
               <CheckCircleIcon
                 sx={{color: theme.palette.success.main}}
                 fontSize="small"
@@ -852,7 +875,13 @@ export function EnhancedDelegationValidatorsTable() {
               <Skeleton variant="text" width={100} height={24} sx={{mb: 1}} />
               <Skeleton variant="text" width="60%" height={20} sx={{mb: 0.5}} />
               <Skeleton variant="text" width="50%" height={20} sx={{mb: 1.5}} />
-              <Stack direction="row" justifyContent="space-between" gap={1}>
+              <Stack
+                direction="row"
+                sx={{
+                  justifyContent: "space-between",
+                  gap: 1,
+                }}
+              >
                 <Skeleton variant="text" width={70} height={40} />
                 <Skeleton variant="text" width={60} height={40} />
                 <Skeleton variant="text" width={50} height={40} />
@@ -871,7 +900,12 @@ export function EnhancedDelegationValidatorsTable() {
             }}
           >
             <CircularProgress size={24} />
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
               Loading validators...
             </Typography>
           </Box>
@@ -934,7 +968,12 @@ export function EnhancedDelegationValidatorsTable() {
           }}
         >
           <CircularProgress size={24} />
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             Loading validators...
           </Typography>
         </Box>
@@ -954,7 +993,12 @@ export function EnhancedDelegationValidatorsTable() {
           />
         }
         label={
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             Show inactive validators (for unstaking)
           </Typography>
         }
@@ -969,7 +1013,12 @@ export function EnhancedDelegationValidatorsTable() {
         <Box>
           {InactiveValidatorsToggle}
           <Box sx={{textAlign: "center", py: 3}}>
-            <Typography variant="body1" color="text.secondary">
+            <Typography
+              variant="body1"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
               No validators found
             </Typography>
           </Box>
@@ -1026,7 +1075,12 @@ export function EnhancedDelegationValidatorsTable() {
                   colSpan={columns.length}
                   sx={{textAlign: "center", py: 3}}
                 >
-                  <Typography variant="body1" color="text.secondary">
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: "text.secondary",
+                    }}
+                  >
                     No validators found
                   </Typography>
                 </GeneralTableCell>

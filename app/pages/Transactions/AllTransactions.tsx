@@ -168,7 +168,11 @@ function TransactionContent({
     if (isFilterActive && data && data.length > 0) {
       return (
         <Box sx={{py: 4, textAlign: "center"}}>
-          <Typography color="text.secondary">
+          <Typography
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             No transactions matching the filter on this page. Try the User
             Transactions tab for server-side filtering.
           </Typography>
@@ -256,7 +260,12 @@ function TransactionsPageInner({
         isFilterActive={isFilterActive}
       />
       {isFilterActive && (
-        <Typography variant="caption" color="text.secondary">
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           Showing matches on current page only. Switch to User Transactions for
           full server-side filtering.
         </Typography>
@@ -287,7 +296,6 @@ function TransactionsPageInner({
           }
         />
       </Box>
-
       <Box sx={{display: "flex", justifyContent: "center"}}>
         <RenderPagination
           {...{

@@ -96,7 +96,11 @@ export default function InfoTab({
   }
 
   return (
-    <Box marginBottom={3}>
+    <Box
+      sx={{
+        marginBottom: 3,
+      }}
+    >
       {data && (
         <ContentBox>
           <ContentRow title={"Name:"} value={data?.data?.name} />

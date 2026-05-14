@@ -46,12 +46,25 @@ export default function RateLimitDrawer() {
       <Stack spacing={1.5}>
         <Stack
           direction="row"
-          alignItems="center"
-          justifyContent="space-between"
+          sx={{
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
-          <Stack direction="row" alignItems="center" spacing={1}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+            }}
+          >
             <TimerOutlinedIcon color="warning" />
-            <Typography variant="subtitle1" fontWeight={600}>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 600,
+              }}
+            >
               Rate limited
             </Typography>
           </Stack>
@@ -64,7 +77,12 @@ export default function RateLimitDrawer() {
           </IconButton>
         </Stack>
 
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           The API returned a rate-limit response (HTTP 429). Data on this page
           may be incomplete or stale until the limit resets.
         </Typography>
@@ -72,7 +90,9 @@ export default function RateLimitDrawer() {
         <Stack
           direction={isSmall ? "column" : "row"}
           spacing={1.5}
-          alignItems={isSmall ? "stretch" : "center"}
+          sx={{
+            alignItems: isSmall ? "stretch" : "center",
+          }}
         >
           <Button
             component={Link}
@@ -85,13 +105,23 @@ export default function RateLimitDrawer() {
             Set API key override
           </Button>
           <Box>
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
               or wait ~5 minutes for the rate limit to reset.
             </Typography>
           </Box>
         </Stack>
 
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           Don&apos;t have a key?{" "}
           <MuiLink
             href={GEOMI_DEV_URL}

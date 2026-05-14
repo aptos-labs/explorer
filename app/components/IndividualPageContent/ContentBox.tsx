@@ -11,13 +11,16 @@ export default function ContentBox({children, ...props}: ContentBoxProps) {
 
   return (
     <Box
-      padding={4}
-      marginTop={3}
-      sx={{
-        backgroundColor: backgroundColor,
-        borderRadius: `${theme.shape.borderRadius}px`,
-      }}
       {...props}
+      sx={[
+        {
+          padding: 4,
+          marginTop: 3,
+          backgroundColor: backgroundColor,
+          borderRadius: `${theme.shape.borderRadius}px`,
+        },
+        ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
+      ]}
     >
       <Stack direction="column" spacing={4}>
         {children}

@@ -39,9 +39,10 @@ describe("FEAT-ROUTING-003 — isValidStruct", () => {
 
 describe("FEAT-TXN-002 — sortTransactions (comparator)", () => {
   const makeTxn = (version: string) =>
-    ({type: "user_transaction", version}) as Parameters<
-      typeof sortTransactions
-    >[0];
+    ({
+      type: "user_transaction",
+      version,
+    }) as Parameters<typeof sortTransactions>[0];
 
   it("sorts higher version before lower", () => {
     expect(sortTransactions(makeTxn("3"), makeTxn("1"))).toBe(-1);

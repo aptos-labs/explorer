@@ -119,9 +119,11 @@ export default function VerificationBanner({
       >
         <Stack
           direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{width: "100%"}}
+          sx={{
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
         >
           <Box>
             <strong>
@@ -162,10 +164,12 @@ export default function VerificationBanner({
       </AlertTitle>
       <Stack
         direction={{xs: "column", sm: "row"}}
-        alignItems={{xs: "flex-start", sm: "center"}}
-        justifyContent="space-between"
         spacing={2}
-        sx={{width: "100%"}}
+        sx={{
+          alignItems: {xs: "flex-start", sm: "center"},
+          justifyContent: "space-between",
+          width: "100%",
+        }}
       >
         <Box>
           {isRecognized

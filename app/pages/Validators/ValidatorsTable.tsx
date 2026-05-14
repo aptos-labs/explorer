@@ -223,9 +223,11 @@ export function RewardsPerformanceCell({validator}: ValidatorCellProps) {
       {validator.rewards_growth === undefined ? null : (
         <Stack
           direction="row"
-          alignItems="center"
           spacing={1}
-          justifyContent="flex-end"
+          sx={{
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
         >
           <Box>{`${validator.rewards_growth.toFixed(2)} %`}</Box>
         </Stack>
@@ -290,7 +292,6 @@ function ValidatorCard({validator}: {validator: ValidatorData}) {
         </Typography>
         <HashButton hash={validator.owner_address} type={HashType.ACCOUNT} />
       </Box>
-
       {/* Operator Address */}
       <Box sx={{mb: 1.5}}>
         <Typography
@@ -305,14 +306,15 @@ function ValidatorCard({validator}: {validator: ValidatorData}) {
           isValidator
         />
       </Box>
-
       {/* Stats */}
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        flexWrap="wrap"
-        gap={1}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 1,
+        }}
       >
         <Box>
           <Typography variant="caption" sx={{color: "text.secondary"}}>

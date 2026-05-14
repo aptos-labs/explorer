@@ -178,15 +178,20 @@ function CoinCard({
       {/* Row 1: Logo, Name, Symbol, Verified badge */}
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 0.75}}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 0.75,
+        }}
       >
         <Stack
           direction="row"
           spacing={1.5}
-          alignItems="center"
-          sx={{flex: 1, minWidth: 0}}
+          sx={{
+            alignItems: "center",
+            flex: 1,
+            minWidth: 0,
+          }}
         >
           {coin.logoUrl && (
             <Box
@@ -219,7 +224,13 @@ function CoinCard({
             </Typography>
           </Box>
         </Stack>
-        <Stack direction="row" alignItems="center" spacing={1}>
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{
+            alignItems: "center",
+          }}
+        >
           <Typography
             variant="caption"
             sx={{
@@ -236,13 +247,14 @@ function CoinCard({
           {getVerifiedMessageAndIcon(verification.level).icon}
         </Stack>
       </Stack>
-
       {/* Row 2: Price and Market Cap */}
       {inMainnet && (
         <Stack
           direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
           <Box>
             <Typography
@@ -591,10 +603,12 @@ export default function CoinsListTable({
   const filterSelector = (
     <Stack
       direction="row"
-      justifyContent="flex-end"
       spacing={1}
-      marginY={0.5}
-      height={16}
+      sx={{
+        justifyContent: "flex-end",
+        marginY: 0.5,
+        height: 16,
+      }}
     >
       <Button
         variant="text"
@@ -687,8 +701,10 @@ export default function CoinsListTable({
         />
       }
       label="Show Emojicoins"
-      componentsProps={{
-        typography: {fontSize: 12, fontWeight: 600, color: unselectedTextColor},
+      slotProps={{
+        typography: {
+          sx: {fontSize: 12, fontWeight: 600, color: unselectedTextColor},
+        },
       }}
       sx={{mr: 0}}
     />
@@ -754,12 +770,14 @@ export default function CoinsListTable({
             placeholder="Search by name, symbol, or address..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{color: "text.secondary"}} />
-                </InputAdornment>
-              ),
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{color: "text.secondary"}} />
+                  </InputAdornment>
+                ),
+              },
             }}
             sx={{
               "& .MuiOutlinedInput-root": {
@@ -769,8 +787,10 @@ export default function CoinsListTable({
           />
           <Stack
             direction="row"
-            justifyContent="space-between"
-            alignItems="center"
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
             {emojicoinToggle}
             {filterSelector}
@@ -781,7 +801,13 @@ export default function CoinsListTable({
             Unable to load market data. Price and market cap may be unavailable.
           </Alert>
         )}
-        <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+            mb: 2,
+          }}
+        >
           {filteredCoins.length} coins found
           {isMarketDataLoading && " (loading market data...)"}
         </Typography>
@@ -797,8 +823,11 @@ export default function CoinsListTable({
           ) : (
             <Typography
               variant="body1"
-              color="text.secondary"
-              sx={{textAlign: "center", py: 3}}
+              sx={{
+                color: "text.secondary",
+                textAlign: "center",
+                py: 3,
+              }}
             >
               No coins found
             </Typography>
@@ -813,21 +842,25 @@ export default function CoinsListTable({
     <>
       <Stack
         direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{mb: 2}}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
       >
         <TextField
           size="small"
           placeholder="Search by name, symbol, or address..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{color: "text.secondary"}} />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{color: "text.secondary"}} />
+                </InputAdornment>
+              ),
+            },
           }}
           sx={{
             width: 350,
@@ -836,7 +869,13 @@ export default function CoinsListTable({
             },
           }}
         />
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{
+            alignItems: "center",
+          }}
+        >
           {emojicoinToggle}
           {filterSelector}
         </Stack>
@@ -846,7 +885,13 @@ export default function CoinsListTable({
           Unable to load market data. Price and market cap may be unavailable.
         </Alert>
       )}
-      <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          mb: 2,
+        }}
+      >
         {filteredCoins.length} coins found
         {isMarketDataLoading && " (loading market data...)"}
       </Typography>
@@ -894,7 +939,12 @@ export default function CoinsListTable({
                   }
                   sx={{textAlign: "center", py: 3}}
                 >
-                  <Typography variant="body1" color="text.secondary">
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: "text.secondary",
+                    }}
+                  >
                     No coins found
                   </Typography>
                 </GeneralTableCell>

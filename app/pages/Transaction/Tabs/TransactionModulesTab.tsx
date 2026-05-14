@@ -45,24 +45,48 @@ export default function TransactionModulesTab({
       <Alert severity="info" icon={<InfoOutlined />}>
         <Typography variant="body2" component="span">
           Package publishes are inferred from{" "}
-          <Typography component="span" variant="body2" fontFamily="monospace">
+          <Typography
+            component="span"
+            variant="body2"
+            sx={{
+              fontFamily: "monospace",
+            }}
+          >
             PublishPackage
           </Typography>{" "}
           events. Module installs and removals come from{" "}
-          <Typography component="span" variant="body2" fontFamily="monospace">
+          <Typography
+            component="span"
+            variant="body2"
+            sx={{
+              fontFamily: "monospace",
+            }}
+          >
             write_module
           </Typography>{" "}
           and{" "}
-          <Typography component="span" variant="body2" fontFamily="monospace">
+          <Typography
+            component="span"
+            variant="body2"
+            sx={{
+              fontFamily: "monospace",
+            }}
+          >
             delete_module
           </Typography>{" "}
           write-set changes (same source as the Changes tab).
         </Typography>
       </Alert>
-
       {publishPackageEvents.length > 0 && (
         <Box>
-          <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1.5}}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+              mb: 1.5,
+            }}
+          >
             <ViewModuleOutlinedIcon fontSize="small" color="action" />
             <Typography variant="h6" component="h2">
               Package publish
@@ -100,10 +124,16 @@ export default function TransactionModulesTab({
           </Table>
         </Box>
       )}
-
       {moduleChanges.length > 0 && (
         <Box>
-          <Stack direction="row" spacing={1} alignItems="center" sx={{mb: 1.5}}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+              alignItems: "center",
+              mb: 1.5,
+            }}
+          >
             <ViewModuleOutlinedIcon fontSize="small" color="action" />
             <Typography variant="h6" component="h2">
               Module bytecode changes
@@ -135,7 +165,12 @@ export default function TransactionModulesTab({
                     <HashButton hash={row.address} type={HashType.ACCOUNT} />
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2" fontFamily="monospace">
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "monospace",
+                      }}
+                    >
                       {row.moduleName}
                     </Typography>
                   </TableCell>
@@ -149,7 +184,12 @@ export default function TransactionModulesTab({
                         Code
                       </Link>
                     ) : (
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: "text.secondary",
+                        }}
+                      >
                         —
                       </Typography>
                     )}

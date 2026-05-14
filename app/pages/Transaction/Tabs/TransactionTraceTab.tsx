@@ -51,9 +51,17 @@ export default function TransactionTraceTab({
 
   if (!isUser) {
     return (
-      <Box marginBottom={3}>
-        <ContentBox padding={{xs: 2, sm: 4}}>
-          <Typography color="text.secondary">
+      <Box
+        sx={{
+          marginBottom: 3,
+        }}
+      >
+        <ContentBox sx={{padding: {xs: 2, sm: 4}}}>
+          <Typography
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             Call trace is only available for user transactions.
           </Typography>
         </ContentBox>
@@ -67,13 +75,27 @@ export default function TransactionTraceTab({
   );
 
   return (
-    <Box marginBottom={3}>
-      <ContentBox padding={{xs: 2, sm: 4}}>
+    <Box
+      sx={{
+        marginBottom: 3,
+      }}
+    >
+      <ContentBox sx={{padding: {xs: 2, sm: 4}}}>
         <Stack spacing={2}>
-          <Typography variant="body1" fontWeight={600}>
+          <Typography
+            variant="body1"
+            sx={{
+              fontWeight: 600,
+            }}
+          >
             Move call trace
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: "text.secondary",
+            }}
+          >
             Execution tree from Sentio’s traced fullnode (experimental). Links
             open caller and callee accounts and the module Run tab in this
             explorer; Sentio’s viewer is linked below.
@@ -89,7 +111,13 @@ export default function TransactionTraceTab({
               Call traces are only fetched for Aptos mainnet in this build.
             </Alert>
           ) : traceQuery.isPending ? (
-            <Box display="flex" justifyContent="center" py={4}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                py: 4,
+              }}
+            >
               <CircularProgress />
             </Box>
           ) : traceQuery.isError ? (
@@ -121,7 +149,12 @@ export default function TransactionTraceTab({
                   }}
                 >
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "text.secondary",
+                      }}
+                    >
                       Raw response (JSON)
                     </Typography>
                   </AccordionSummary>

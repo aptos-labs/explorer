@@ -33,7 +33,16 @@ const ResultLink = memo(function ResultLink({
 }: ResultLinkProps): React.JSX.Element {
   if (!to) {
     return (
-      <Typography color="inherit" sx={resultLinkStyle}>
+      <Typography
+        sx={[
+          {
+            color: "inherit",
+          },
+          ...(Array.isArray(resultLinkStyle)
+            ? resultLinkStyle
+            : [resultLinkStyle]),
+        ]}
+      >
         {text}
       </Typography>
     );

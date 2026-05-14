@@ -33,6 +33,7 @@ yarn-error.log*
 dist
 
 # Playwright
+/.playwright-mcp/
 /playwright-report/
 /test-results/
 /blob-report/
@@ -46,3 +47,4 @@ app/routeTree.gen.ts
 REMAINING_APTOS_DEPENDENCIES.md
 TRANSACTION_MIGRATION_ANALYSIS.md
 FUTURE_CLEANUP.md
+

@@ -19,10 +19,12 @@ export default function MapMetrics({
     <Grid
       container
       direction="row"
-      marginX={2}
-      marginTop={0.5}
-      marginBottom={4}
       spacing={2}
+      sx={{
+        marginX: 2,
+        marginTop: 0.5,
+        marginBottom: 4,
+      }}
     >
       <Grid size={{xs: 12, sm: 6}}>
         <NodeCountsSection
@@ -39,11 +41,13 @@ export default function MapMetrics({
     </Grid>
   ) : (
     <Stack
-      marginY={4}
-      marginLeft={4}
       spacing={4}
-      justifyContent="center"
-      minWidth={232}
+      sx={{
+        marginY: 4,
+        marginLeft: 4,
+        justifyContent: "center",
+        minWidth: 232,
+      }}
     >
       <NodeCountsSection
         validatorGeoMetric={validatorGeoMetric}

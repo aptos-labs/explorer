@@ -1,10 +1,10 @@
 import {Box, Paper, Table, TableRow, Typography, useTheme} from "@mui/material";
 import type React from "react";
 import HashButton, {HashType} from "../../../../components/HashButton";
+import EmptyValue from "../../../../components/IndividualPageContent/ContentValue/EmptyValue";
+import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import GeneralTableBody from "../../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../../components/Table/GeneralTableCell";
-import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
-import EmptyValue from "../../../../components/IndividualPageContent/ContentValue/EmptyValue";
 
 /** Lets wide hash chips / JSON scroll horizontally on narrow screens without clipping. */
 const signatureTableScrollBoxSx = {
@@ -136,7 +136,12 @@ function AccountSignatureRows({sig}: {sig: unknown}): React.ReactNode {
   if (!sig || typeof sig !== "object" || Array.isArray(sig)) {
     return (
       <SignatureFieldRow label="Signer">
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
           <EmptyValue />
         </Typography>
       </SignatureFieldRow>

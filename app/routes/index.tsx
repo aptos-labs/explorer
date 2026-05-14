@@ -58,8 +58,11 @@ function LandingPage() {
         </Typography>
         <Typography
           variant="h5"
-          color="text.secondary"
-          sx={{mb: 4, textAlign: "center"}}
+          sx={{
+            color: "text.secondary",
+            mb: 4,
+            textAlign: "center",
+          }}
         >
           Search the chain, then jump straight to transactions, blocks,
           validators, or analytics.
@@ -79,7 +82,9 @@ function LandingPage() {
             <Stack
               direction={{xs: "column", sm: "row"}}
               spacing={2}
-              justifyContent="center"
+              sx={{
+                justifyContent: "center",
+              }}
             >
               <Button component={Link} to="/transactions" variant="primary">
                 Browse Transactions

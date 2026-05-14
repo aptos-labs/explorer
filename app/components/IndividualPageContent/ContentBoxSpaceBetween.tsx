@@ -14,12 +14,15 @@ export default function ContentBoxSpaceBetween({
 
   return (
     <Box
-      padding={3}
-      sx={{
-        backgroundColor: backgroundColor,
-        borderRadius: `${theme.shape.borderRadius}px`,
-      }}
       {...props}
+      sx={[
+        {
+          padding: 3,
+          backgroundColor: backgroundColor,
+          borderRadius: `${theme.shape.borderRadius}px`,
+        },
+        ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
+      ]}
     >
       <Stack direction="column" spacing={2}>
         {children}
