@@ -504,7 +504,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Data** | GCS `validator_stats_v2.json` (mainnet/testnet) merged with on-chain `0x1::stake::ValidatorSet` for voting power. If the JSON is missing or empty, the table falls back to one row per active validator from the on-chain set (voting power only; rewards / epoch perf / geo columns show empty or placeholders until stats return). |
+| **Data** | GCS `validator_stats_v2.json` (mainnet/testnet) merged with on-chain `0x1::stake::ValidatorSet` for voting power. If the JSON is missing or empty, the table falls back to one row per active validator from the on-chain set (voting power; operator from each pool’s `0x1::stake::StakePool` when available; rewards / epoch perf / geo columns stay sparse until stats return). |
 | **Columns** | Staking pool address, operator address, voting power (sortable), rewards performance %, last epoch performance, location (city, country). |
 | **Sorting** | Filters zero voting power by default. |
 | **Mobile** | Card layout. |
@@ -1232,7 +1232,7 @@ top of the HTML site.
 | `app/api/client.test.ts` | FEAT-RATELIMIT-003 (API error classification, 429 → `emitRateLimit`) |
 | `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
-| `app/api/hooks/useGetValidators.test.ts` | FEAT-VALIDATORS-002 (`buildValidatorsFromSources`: empty stats JSON → chain-only rows; merge when JSON present) |
+| `app/api/hooks/useGetValidators.test.ts` | FEAT-VALIDATORS-002 (`buildValidatorsFromSources`: empty stats JSON → chain-only rows + optional operator map; merge when JSON present) |
 | `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation from resources) |
 | `app/data/coinPropertyOverrides.test.ts` | FEAT-FA-002 / FEAT-COIN-002 (per-network manual overrides for FA mint/burn/freeze/dispatch chips, including mainnet PROPS) |
 | `app/api/hooks/confidentialAssetViews.test.ts` | FEAT-FA-002 / FEAT-COIN-002 / FEAT-ACCOUNT-007 (confidential-asset view response parsing) |

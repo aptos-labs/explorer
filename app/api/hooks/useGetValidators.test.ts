@@ -62,6 +62,19 @@ describe("buildValidatorsFromSources", () => {
     expect(rows[1]?.voting_power).toBe("500000");
   });
 
+  it("uses operator map for chain-only rows when provided", () => {
+    const poolAddr =
+      "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    const operatorAddr =
+      "0x1111111111111111111111111111111111111111111111111111111111111111";
+    const rows = buildValidatorsFromSources(sampleActive, [], {
+      [poolAddr]: operatorAddr,
+    });
+    expect(rows[0]?.owner_address).toBe(poolAddr);
+    expect(rows[0]?.operator_address).toBe(operatorAddr);
+    expect(rows[1]?.operator_address).toBe(sampleActive[1]?.addr);
+  });
+
   it("merges stats JSON with active set voting power when JSON is present", () => {
     const raw: ValidatorData[] = [
       {
