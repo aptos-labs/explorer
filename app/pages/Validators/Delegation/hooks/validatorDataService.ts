@@ -64,50 +64,56 @@ export async function getBatchDelegatorCounts(
   }
 }
 
+async function fetchSingleUserStake(
+  userAddress: Types.Address,
+  validatorAddress: Types.Address,
+  client: AptosClient,
+): Promise<number> {
+  try {
+    const payload = {
+      function: "0x1::delegation_pool::get_stake",
+      type_arguments: [],
+      arguments: [validatorAddress, userAddress],
+    };
+
+    const response = (await client.view(payload)) as Types.MoveValue[];
+
+    if (Array.isArray(response) && response.length > 0) {
+      let sum = 0;
+      for (const stake of response) {
+        sum += Number(stake.toString());
+      }
+      return Math.floor(sum) / 100000000;
+    }
+    return 0;
+  } catch (error) {
+    console.error(
+      `Error fetching user stake for validator ${validatorAddress}:`,
+      error,
+    );
+    return 0;
+  }
+}
+
 /**
- * Process validator addresses in batches
+ * Process validator addresses in concurrent batches to avoid overwhelming the API
+ * while still being significantly faster than serial execution.
  */
 async function processUserStakesBatched(
   userAddress: Types.Address,
   validatorAddresses: Types.Address[],
   client: AptosClient,
-  batchSize: number = 10,
+  batchSize: number = 25,
 ): Promise<number[]> {
   const results: number[] = [];
 
   for (let i = 0; i < validatorAddresses.length; i += batchSize) {
     const batch = validatorAddresses.slice(i, i + batchSize);
-    const batchResults: number[] = [];
-
-    for (const validatorAddress of batch) {
-      try {
-        const payload = {
-          function: "0x1::delegation_pool::get_stake",
-          type_arguments: [],
-          arguments: [validatorAddress, userAddress],
-        };
-
-        const response = (await client.view(payload)) as Types.MoveValue[];
-
-        if (Array.isArray(response) && response.length > 0) {
-          let sum = 0;
-          for (const stake of response) {
-            sum += Number(stake.toString());
-          }
-          const totalStake = Math.floor(sum) / 100000000;
-          batchResults.push(totalStake);
-        } else {
-          batchResults.push(0);
-        }
-      } catch (error) {
-        console.error(
-          `Error fetching user stake for validator ${validatorAddress}:`,
-          error,
-        );
-        batchResults.push(0);
-      }
-    }
-
+    const batchResults = await Promise.all(
+      batch.map((validatorAddress) =>
+        fetchSingleUserStake(userAddress, validatorAddress, client),
+      ),
+    );
     results.push(...batchResults);
   }
 
