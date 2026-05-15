@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Validators page: minute-long load with wallet connected**: The Delegation tab (`/validators/delegation` and `/validators/enhanced_delegation`) no longer waits up to a minute to display the validator list when a wallet is connected. Previously, `useValidatorDelegationData` triggered one sequential `0x1::delegation_pool::get_stake` view call per validator (~150 on mainnet) just to populate the "My Deposit" column, and the entire table render was gated on those calls finishing. `getBatchUserStakes` now first asks the indexer (`delegator_distinct_pool`) which pools the connected wallet actually has positions in — typically a handful — and only issues `get_stake` view calls for that subset, in parallel. The validator list itself no longer waits on this query at all: it renders immediately whether the wallet is connected, disconnected, or still loading, and the "My Deposit" column populates progressively. If the indexer call fails or any view call errors out, individual rows fall back to a neutral `0` instead of blocking the whole page.
+
 ### Added
 
 - **PWA share button**: When the explorer is launched as an installed Progressive Web App (display-mode `standalone` or `window-controls-overlay`, plus legacy iOS `navigator.standalone`), the persistent header now shows a Share icon on every page. Tapping it opens the OS share sheet via `navigator.share` with the current page URL and title; on platforms without Web Share, it falls back to copying the URL to the clipboard and shows a "Link copied to clipboard" snackbar. The button is hidden in regular browser tabs to avoid duplicating the address-bar share/copy action. New `useIsStandalonePWA` hook (`app/hooks/useIsStandalonePWA.ts`) and `sharePage` helper (`app/components/layout/sharePage.ts`) cover the detection and share/clipboard logic with unit tests.

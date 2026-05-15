@@ -143,40 +143,50 @@ export function useValidatorDelegationData() {
         accountAddress,
         validatorAddresses,
         aptosClient,
+        networkName,
       );
     },
     enabled:
       connected &&
       !!accountAddress &&
       validatorAddresses.length > 0 &&
-      !!aptosClient,
+      !!aptosClient &&
+      !!networkName,
     staleTime: 60 * 1000,
     gcTime: 10 * 60 * 1000,
   });
 
-  // Combine all data
+  // Combine all data. While user stakes are still loading we leave
+  // `userStake` undefined so `MyDepositCell` shows its neutral placeholder
+  // ("-") instead of briefly flashing "N/A" before the real number arrives.
+  const userStakesPending = connected && !!accountAddress && userStakesLoading;
   const combinedValidators: ValidatorWithExtendedData[] =
     validatorsWithCommissionAndState?.map((validator, index) => {
-      // Ensure validator is treated as an object before spreading
       const validatorObj = validator as unknown as ValidatorData & {
         commission: number;
         status: number;
       };
+      const userStake = userStakesPending
+        ? undefined
+        : (userStakes?.[index] ?? 0);
       return {
         ...validatorObj,
         delegatorCount: delegatorCounts?.[index] || 0,
-        userStake: userStakes?.[index] || 0,
+        userStake,
       };
     }) || [];
 
-  // Determine loading state
-  const isLoading =
-    poolsLoading ||
-    commissionLoading ||
-    delegatorCountsLoading ||
-    (connected && userStakesLoading);
+  // Determine loading state.
+  //
+  // Note: user stakes are intentionally NOT part of the gating loading state.
+  // Previously, blocking on `userStakesLoading` while it issued ~150 sequential
+  // `get_stake` view calls caused the validator list to take up to a minute
+  // to appear whenever a wallet was connected. The "My Deposit" column will
+  // simply show its default placeholder until the per-user data arrives.
+  const isLoading = poolsLoading || commissionLoading || delegatorCountsLoading;
 
-  // Combine errors
+  // Combine errors. We still surface user-stake errors when connected, but
+  // they do not block initial render of the validator list.
   const error =
     commissionError ||
     delegatorCountsError ||
