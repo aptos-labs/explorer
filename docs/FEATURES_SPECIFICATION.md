@@ -517,6 +517,7 @@ The app shell that wraps every page.
 | **Columns** | Status, commission, delegator count, rewards earned, delegated amount. |
 | **Wallet-aware** | "My deposit" column when wallet connected (`DEFAULT_COLUMNS` vs `COLUMNS_WITHOUT_WALLET_CONNECTION`). |
 | **Virtualization** | Uses `VirtualizedTableBody`. |
+| **Loading independence** | Table render is **not** gated on per-wallet deposit data: connecting a wallet must not delay or block the validator list. `getBatchUserStakes` first asks the indexer (`delegator_distinct_pool`) which pools the wallet has any position in, then issues `0x1::delegation_pool::get_stake` view calls only for that small subset in parallel, defaulting all other rows to `0`. If the indexer call fails, every row defaults to `0` so the list still renders. |
 
 ### FEAT-VALIDATORS-004 — Validators Map
 
@@ -1236,6 +1237,7 @@ top of the HTML site.
 | `app/pages/Account/utils/accountKeyType.test.ts` | FEAT-ACCOUNT-010 (key type extraction from latest transaction signature: Ed25519, Multi-Ed25519, Single Key, MultiKey, multi-agent / fee-payer unwrap) |
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetValidators.test.ts` | FEAT-VALIDATORS-002 (`buildValidatorsFromSources`: empty stats JSON → chain-only rows + optional operator map; merge when JSON present; patch missing/zero operator_address rows from `0x1::stake::StakePool`; `isOperatorAddressMissing` heuristic) |
+| `app/pages/Validators/Delegation/hooks/validatorDataService.test.ts` | FEAT-VALIDATORS-003 (`getBatchUserStakes`: indexer-first lookup of pools the wallet delegates to; per-row view calls only for that subset in parallel; zero-fallback when indexer fails or individual view calls error; empty-input guard) |
 | `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation from resources) |
 | `app/data/coinPropertyOverrides.test.ts` | FEAT-FA-002 / FEAT-COIN-002 (per-network manual overrides for FA mint/burn/freeze/dispatch chips, including mainnet PROPS) |
 | `app/api/hooks/confidentialAssetViews.test.ts` | FEAT-FA-002 / FEAT-COIN-002 / FEAT-ACCOUNT-007 (confidential-asset view response parsing) |
