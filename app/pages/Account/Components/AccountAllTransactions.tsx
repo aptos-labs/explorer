@@ -11,6 +11,9 @@ import Box from "@mui/material/Box";
 import React from "react";
 import type {Types} from "~/types/aptos";
 import {getTransaction} from "../../../api";
+import ApiKeyConfirmDialog from "../../../components/ApiKeyConfirmDialog";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
+import {useExplorerSettings} from "../../../settings";
 import useFunctionFilter, {
   type FunctionFilterParams,
 } from "../../../api/hooks/useFunctionFilter";
@@ -290,6 +293,14 @@ const ACCOUNT_TRANSACTIONS_QUERY = `
   }
 `;
 
+/**
+ * Above this estimated request count, we ask the user to confirm and/or
+ * configure an API key before kicking off the export. The number is
+ * deliberately conservative — even a few hundred unauthenticated
+ * requests are often enough to be throttled on a shared IP.
+ */
+const CSV_EXPORT_API_KEY_WARNING_THRESHOLD = 200;
+
 function CSVExportButton({
   address,
   totalTransactionCount,
@@ -299,9 +310,15 @@ function CSVExportButton({
 }) {
   const [isExporting, setIsExporting] = React.useState(false);
   const [exportProgress, setExportProgress] = React.useState(0);
+  const [showApiKeyConfirm, setShowApiKeyConfirm] = React.useState(false);
   const aptosClient = useAptosClient();
   const logEvent = useLogEventWithBasic();
   const sdkV2Client = useSdkV2Client();
+  const networkName = useNetworkName();
+  const {settings} = useExplorerSettings();
+  const hasApiKey = Boolean(
+    settings.geomiDevApiKeyOverridesByNetwork[networkName],
+  );
 
   const isRateLimitError = (error: unknown): boolean => {
     if (error && typeof error === "object") {
@@ -658,21 +675,54 @@ function CSVExportButton({
     }
   };
 
+  const handleClick = () => {
+    const exportable = Math.min(
+      totalTransactionCount,
+      MAX_DISPLAYABLE_TRANSACTIONS,
+    );
+    // The batched implementation issues roughly `ceil(span / 100)` range
+    // fetches plus per-version REST fallbacks for sparse rows. Use the
+    // version-count as a worst-case proxy so the warning over-estimates
+    // rather than under-estimates request volume.
+    if (!hasApiKey && exportable >= CSV_EXPORT_API_KEY_WARNING_THRESHOLD) {
+      setShowApiKeyConfirm(true);
+      return;
+    }
+    handleExport();
+  };
+
+  const exportable = Math.min(
+    totalTransactionCount,
+    MAX_DISPLAYABLE_TRANSACTIONS,
+  );
+
   return (
-    <Button
-      variant="outlined"
-      startIcon={
-        isExporting ? <CircularProgress size={16} /> : <DownloadIcon />
-      }
-      onClick={handleExport}
-      disabled={isExporting}
-      size="small"
-    >
-      {isExporting
-        ? totalTransactionCount > 100
-          ? `Exporting... ${exportProgress}%`
-          : "Exporting..."
-        : `Export CSV (${Math.min(totalTransactionCount, MAX_DISPLAYABLE_TRANSACTIONS).toLocaleString()})`}
-    </Button>
+    <>
+      <Button
+        variant="outlined"
+        startIcon={
+          isExporting ? <CircularProgress size={16} /> : <DownloadIcon />
+        }
+        onClick={handleClick}
+        disabled={isExporting}
+        size="small"
+      >
+        {isExporting
+          ? totalTransactionCount > 100
+            ? `Exporting... ${exportProgress}%`
+            : "Exporting..."
+          : `Export CSV (${exportable.toLocaleString()})`}
+      </Button>
+      <ApiKeyConfirmDialog
+        open={showApiKeyConfirm}
+        actionLabel={`export up to ${exportable.toLocaleString()} transactions`}
+        estimatedRequests={exportable}
+        onContinue={() => {
+          setShowApiKeyConfirm(false);
+          handleExport();
+        }}
+        onCancel={() => setShowApiKeyConfirm(false)}
+      />
+    </>
   );
 }
