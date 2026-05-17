@@ -1,9 +1,6 @@
 import {createFileRoute} from "@tanstack/react-router";
 import {getClientFromSearch, getNetworkFromSearch} from "../api/createClient";
-import {
-  ledgerInfoQueryOptions,
-  recentBlocksQueryOptions,
-} from "../api/queries";
+import {ledgerInfoQueryOptions, recentBlocksQueryOptions} from "../api/queries";
 import {PagePending} from "../components/NavigationPending";
 import {networks} from "../constants";
 import BlocksPage from "../pages/Blocks/Index";

@@ -122,8 +122,7 @@ export function useAccountHasConfidentialStores(
           // the tab and come back the next day still avoid the view fan-out.
           // React Query owns the in-memory cache (staleTime / gcTime) for
           // the duration of the page visit.
-          const cached =
-            getLocalStorageWithExpiry<Types.MoveValue[]>(lsKey);
+          const cached = getLocalStorageWithExpiry<Types.MoveValue[]>(lsKey);
           if (cached) return cached;
           const result = await view(request, aptosClient);
           setLocalStorageWithExpiry(
