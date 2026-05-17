@@ -18,7 +18,10 @@ import Typography from "@mui/material/Typography";
 import * as React from "react";
 import {useMemo} from "react";
 import type {Types} from "~/types/aptos";
-import {useGetTransaction} from "../../api/hooks/useGetTransaction";
+import {
+  useBatchPrimeTransactionsByVersion,
+  useGetTransaction,
+} from "../../api/hooks/useGetTransaction";
 import HashButton, {HashType} from "../../components/HashButton";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
@@ -881,6 +884,14 @@ export function UserTransactionsTable({
 }: UserTransactionsTableProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  // Collapse the per-row N+1 by pre-warming React Query's per-transaction
+  // cache with one batched `/v1/transactions?start=X&limit=Y` REST call
+  // when the version range fits within `BATCH_PRIME_MAX_SPAN`. Each
+  // `<UserTransactionRow>` then reads from cache instead of issuing its
+  // own `/v1/transactions/by_version/<n>` call. Falls back transparently
+  // to per-row fetches when the versions are too sparse to batch.
+  useBatchPrimeTransactionsByVersion(versions);
 
   // Mobile card view
   if (isMobile) {
