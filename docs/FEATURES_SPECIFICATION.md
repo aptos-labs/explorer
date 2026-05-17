@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-04-29
+> **Last updated**: 2026-05-17
 
 ---
 
@@ -355,11 +355,13 @@ The app shell that wraps every page.
 
 | Condition | Tabs |
 |-----------|------|
-| GraphQL on | transactions, coins (Assets), tokens (NFTs), resources, modules, info |
+| GraphQL on | transactions, portfolio, coins (Assets), tokens (NFTs), resources, modules, info |
 | GraphQL off | transactions, resources, modules, info |
-| Multisig + GraphQL | transactions, multisig, coins, tokens, resources, modules, info |
+| Multisig + GraphQL | transactions, multisig, portfolio, coins, tokens, resources, modules, info |
 | Object + GraphQL | transactions, coins, tokens, resources, modules, info |
 | Object − GraphQL | transactions, resources, modules, info |
+
+The Portfolio tab is intentionally **omitted for objects** (the underlying Decibel queries are scoped to user accounts) and requires GraphQL because the wallet-asset listing relies on the indexer-backed `useGetAllAccountCoins` hook.
 
 ### FEAT-ACCOUNT-006 — Transactions Tab
 
@@ -369,6 +371,19 @@ The app shell that wraps every page.
 | **Function filter** | `?fn_addr=`, `?fn_module=`, `?fn_name=` filter support (queries `user_transactions` by sender, not full account history). Changing the filter resets `?page=` to 1. |
 | **Pagination** | URL-driven via `?page=` for both the GraphQL path (filtered and unfiltered) and the REST fallback. Other search params (`type`, `network`, `fn_*`) are preserved across pagination clicks. The shared `PageNumberPagination` component (`app/components/PageNumberPagination.tsx`) drops the redundant `?page=1` so canonical URLs stay short. The REST fallback clamps an out-of-range `?page=` to the available pages (so a shared deep link still renders the closest valid page). |
 | **Rate limit handling** | GraphQL path has retry + exponential backoff + user message on 429. |
+
+### FEAT-ACCOUNT-013 — Portfolio Tab
+
+| Aspect | Detail |
+|--------|--------|
+| **Route** | `/account/{address}/portfolio` |
+| **Wallet section** | Reuses the Assets (Coins) tab content to list wallet fungible asset balances (`useGetAllAccountCoins`). |
+| **Decibel section — networks** | Shown only on mainnet and testnet (per `getDecibelContractForNetwork`). Other networks render only the Wallet section. |
+| **Decibel section — gating** | A view call to `dex_accounts::primary_subaccount(owner_addr)` decides whether the account participates in Decibel. Aborted view calls (e.g. `MOVE_ABORT`, `not found`) are treated as "no Decibel activity"; the section is hidden / replaced with an informational note. |
+| **Decibel section — summary** | Three metric cards: primary subaccount address (linked), net asset value (`perp_engine::get_account_net_asset_value`), and cross collateral (`perp_engine::get_cross_total_collateral_value`), both formatted with 6 decimal places (Decibel's quote precision) and a `$` prefix. |
+| **Decibel section — collateral** | Renders `CoinsTab` against the subaccount address so users see the same FA balance experience for Decibel deposits as for wallet assets. |
+| **Decibel section — positions** | `perp_engine::list_positions(subaccount)` returns the market addresses with an open position. Each market gets a row showing market name + address, side (long / short via `get_position_is_long`), size (formatted with `market_sz_decimals` from `PerpMarketConfiguration`), and margin mode (isolated vs cross via `is_position_isolated`). Per-market view calls run in parallel via `useQueries`. |
+| **Error semantics** | All Decibel view calls swallow expected "no position / no subaccount" aborts and continue rendering the rest of the tab; only unexpected errors propagate. |
 
 ### FEAT-ACCOUNT-007 — Assets (Coins) Tab
 
@@ -1262,7 +1277,8 @@ top of the HTML site.
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns), FEAT-TXN-012 (conditional Modules tab) |
 | `app/pages/Transaction/transactionModuleChanges.test.ts` | FEAT-TXN-012 (parse PublishPackage events and module write-set rows) |
 | `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
-| `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
+| `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants), FEAT-ACCOUNT-013 (portfolio visibility: GraphQL-gated, hidden for objects) |
+| `app/utils/decibel/constants.test.ts` | FEAT-ACCOUNT-013 (Decibel contract resolution: mainnet, testnet, devnet/local/custom return undefined) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/Account/Error.test.tsx` | FEAT-MODULES-008 (`AccountError` optional NOT_FOUND title/message) |
 | `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results) |

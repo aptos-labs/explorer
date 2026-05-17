@@ -4,6 +4,7 @@ import DynamicFeedIcon from "@mui/icons-material/DynamicFeed";
 import ExtensionIcon from "@mui/icons-material/Extension";
 import GroupIcon from "@mui/icons-material/Group";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import PieChartOutlineIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import WysiwygIcon from "@mui/icons-material/Wysiwyg";
 import {Box} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
@@ -18,6 +19,7 @@ import CoinsTab from "./Tabs/CoinsTab";
 import InfoTab from "./Tabs/InfoTab";
 import ModulesTab from "./Tabs/ModulesTab";
 import MultisigTab from "./Tabs/MultisigTab";
+import PortfolioTab from "./Tabs/PortfolioTab";
 import ResourcesTab from "./Tabs/ResourcesTab";
 import TokensTab from "./Tabs/TokensTab";
 import TransactionsTab from "./Tabs/TransactionsTab";
@@ -26,6 +28,7 @@ const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 
 const TabComponents = Object.freeze({
   transactions: TransactionsTab,
+  portfolio: PortfolioTab,
   coins: CoinsTab,
   tokens: TokensTab,
   multisig: MultisigTab,
@@ -40,6 +43,8 @@ function getTabLabel(value: TabValue): string {
   switch (value) {
     case "transactions":
       return "Transactions";
+    case "portfolio":
+      return "Portfolio";
     case "coins":
       return "Assets";
     case "tokens":
@@ -61,6 +66,8 @@ function getTabIcon(value: TabValue) {
   switch (value) {
     case "transactions":
       return <WysiwygIcon fontSize="small" />;
+    case "portfolio":
+      return <PieChartOutlineIcon fontSize="small" />;
     case "coins":
       return <MonetizationOnOutlinedIcon fontSize="small" />;
     case "tokens":

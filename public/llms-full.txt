@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-05-14 (rev 22)
+> Last updated: 2026-05-17 (rev 23)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -52,6 +52,7 @@ Each detail page has tabs accessible via path segments:
 - `/account/{address}` — account overview (redirects to `/account/{address}/transactions`)
 - Tab paths:
   - `/account/{address}/transactions` — full transaction history (supports `?fn_addr=&fn_module=&fn_name=` to filter by function, server-side via indexed columns; filters sender-only transactions)
+  - `/account/{address}/portfolio` — consolidated portfolio view: held wallet assets plus any assets and open positions this account has stored in [Decibel](https://decibel.xyz) (perpetual DEX). The Decibel section is shown on mainnet and testnet only, and only when the account has a Decibel primary subaccount.
   - `/account/{address}/coins` — fungible token balances
   - `/account/{address}/tokens` — NFTs owned by this account
   - `/account/{address}/resources` — raw Move resources stored under the account

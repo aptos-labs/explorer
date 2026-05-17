@@ -16,7 +16,7 @@ import {
 
 type TokenTabsProps = {
   address: string;
-  resourceData: Types.MoveResource[] | undefined;
+  resourceData?: Types.MoveResource[] | undefined;
 };
 
 export default function CoinsTab({address}: TokenTabsProps) {
