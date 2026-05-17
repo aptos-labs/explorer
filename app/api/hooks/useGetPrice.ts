@@ -1,6 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-
-const COINGECKO_API_ENDPOINT = "https://api.coingecko.com/api/v3/simple/price";
+import {resolveCoingeckoUrl} from "./coingeckoProxy";
 
 /**
  * Fetches the USD price for a cryptocurrency using its CoinGecko ID.
@@ -22,13 +21,11 @@ const COINGECKO_API_ENDPOINT = "https://api.coingecko.com/api/v3/simple/price";
 export async function getPrice(
   coinId: string = "aptos",
 ): Promise<number | null> {
-  const query = {
+  const query = new URLSearchParams({
     ids: coinId,
     vs_currencies: "usd",
-  };
-
-  const queryString = new URLSearchParams(query);
-  const url = `${COINGECKO_API_ENDPOINT}?${queryString}`;
+  });
+  const url = resolveCoingeckoUrl("price", "/simple/price", query.toString());
 
   try {
     const response = await fetch(url, {
