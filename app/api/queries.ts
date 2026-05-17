@@ -9,6 +9,7 @@ import {
   emitRateLimit,
   isRateLimitLike,
 } from "../context/rate-limit/rateLimitEvents";
+import {getRecentBlocks} from "./v2";
 import {getTransaction} from "./client";
 
 // Transactions list query
@@ -156,6 +157,99 @@ export function accountModulesQueryOptions(address: string, client: Aptos) {
       }
     },
     staleTime: 60 * 1000, // 1 minute - modules change less frequently
+  });
+}
+
+// Recent blocks list (used by /blocks loader). Must key identically to
+// `useGetMostRecentBlocks` so the SSR pre-fetch is reused on hydration.
+// The fifth key slot is the explorer's per-user API key override
+// identity, which is the empty string when no override is configured
+// (matches `normalizeGeomiDevApiKeyOverride(undefined)`).
+export function recentBlocksQueryOptions(
+  client: Aptos,
+  networkKey: string,
+  currentBlockHeight: number,
+  count: number,
+  apiKeyIdentity: string = "",
+) {
+  return queryOptions({
+    queryKey: [
+      "recentBlocksRest",
+      currentBlockHeight,
+      count,
+      networkKey,
+      apiKeyIdentity,
+    ],
+    queryFn: () => getRecentBlocks(currentBlockHeight, count, client),
+    staleTime: 60 * 1000,
+  });
+}
+
+// Generic view-function query, used by loaders to pre-warm `useViewFunction`
+// (whose key shape this matches exactly).
+export function viewFunctionQueryOptions(
+  functionName: string,
+  typeArgs: string[],
+  args: string[],
+  client: Aptos,
+  networkKey: string,
+  opts?: {staleTime?: number; gcTime?: number},
+) {
+  return queryOptions({
+    queryKey: ["viewFunction", {functionName, typeArgs, args}, networkKey],
+    queryFn: async () => {
+      try {
+        const result = await client.view({
+          payload: {
+            function: functionName as `${string}::${string}::${string}`,
+            typeArguments: typeArgs,
+            functionArguments: args,
+          },
+        });
+        return result;
+      } catch (error) {
+        if (isRateLimitLike(error)) emitRateLimit();
+        throw error;
+      }
+    },
+    staleTime: opts?.staleTime ?? 5 * 60 * 1000,
+    gcTime: opts?.gcTime ?? 30 * 60 * 1000,
+  });
+}
+
+// Generic single-resource query, used by loaders to pre-warm
+// `useGetAccountResource` (whose key shape this matches exactly).
+export function accountResourceQueryOptions(
+  address: string,
+  resourceType: string,
+  client: Aptos,
+  networkKey: string,
+  ledgerVersion?: number,
+) {
+  return queryOptions({
+    queryKey: [
+      "accountResource",
+      {address, resource: resourceType, ledgerVersion},
+      networkKey,
+    ],
+    queryFn: async () => {
+      try {
+        const resource = await client.getAccountResource({
+          accountAddress: address,
+          resourceType: resourceType as `0x${string}::${string}::${string}`,
+          options:
+            ledgerVersion !== undefined
+              ? {ledgerVersion: BigInt(ledgerVersion)}
+              : undefined,
+        });
+        return resource;
+      } catch (error) {
+        if (isRateLimitLike(error)) emitRateLimit();
+        throw error;
+      }
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
   });
 }
 
