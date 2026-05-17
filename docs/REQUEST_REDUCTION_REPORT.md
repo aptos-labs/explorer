@@ -450,6 +450,11 @@ amortized CDN cost.
 
 ## 6. Cross-references
 
+- [`docs/UPSTREAM_READ_PERFORMANCE_REPORT.md`](UPSTREAM_READ_PERFORMANCE_REPORT.md)
+  — the **upstream** counterpart to this document. Catalogs the indexer
+  schema, REST API, SDK, and analytics-pipeline changes the explorer needs
+  from external teams to push request reduction further than what is
+  reachable from this codebase alone.
 - [`RATE_LIMITING.md`](../RATE_LIMITING.md) — current rate-limit utility, retry
   policy, React Query integration.
 - [`CACHING.md`](../CACHING.md) — every cache / polling interval in the app.
