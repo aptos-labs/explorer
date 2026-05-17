@@ -1,8 +1,12 @@
-import {describe, expect, it} from "vitest";
+// @vitest-environment jsdom
+import {beforeEach, describe, expect, it} from "vitest";
 import {
-  type ValidatorData,
   buildValidatorsFromSources,
   isOperatorAddressMissing,
+  operatorsFromStats,
+  readCachedOperators,
+  type ValidatorData,
+  writeCachedOperators,
 } from "./useGetValidators";
 import type {Validator} from "./useGetValidatorSet";
 
@@ -225,5 +229,90 @@ describe("isOperatorAddressMissing", () => {
     // Short-form addresses are accepted because tryStandardizeAddress expands
     // them to their canonical 32-byte form.
     expect(isOperatorAddressMissing("0x1")).toBe(false);
+  });
+});
+
+describe("operatorsFromStats", () => {
+  it("returns standardized owner→operator mapping for rows with a real operator", () => {
+    const raw: ValidatorData[] = [
+      {
+        owner_address:
+          "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        operator_address:
+          "0x1111111111111111111111111111111111111111111111111111111111111111",
+        voting_power: "0",
+        governance_voting_record: "",
+        last_epoch: 0,
+        last_epoch_performance: "",
+        liveness: 0,
+        apt_rewards_distributed: 0,
+      },
+      // Row with a missing operator must be skipped (it is a candidate for
+      // the on-chain patch fallback, not for the cache).
+      {
+        owner_address:
+          "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        operator_address: "",
+        voting_power: "0",
+        governance_voting_record: "",
+        last_epoch: 0,
+        last_epoch_performance: "",
+        liveness: 0,
+        apt_rewards_distributed: 0,
+      },
+    ];
+    const map = operatorsFromStats(raw);
+    expect(Object.keys(map)).toEqual([
+      "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    ]);
+    expect(
+      map[
+        "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ],
+    ).toBe(
+      "0x1111111111111111111111111111111111111111111111111111111111111111",
+    );
+  });
+
+  it("returns empty when input is empty", () => {
+    expect(operatorsFromStats([])).toEqual({});
+  });
+});
+
+describe("operator cache (localStorage)", () => {
+  beforeEach(() => {
+    // Vitest runs jsdom by default; localStorage is available.
+    localStorage.clear();
+  });
+
+  it("readCachedOperators returns {} when nothing is cached", () => {
+    expect(readCachedOperators("mainnet")).toEqual({});
+  });
+
+  it("writeCachedOperators then readCachedOperators round-trips", () => {
+    const map = {
+      "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa":
+        "0x1111111111111111111111111111111111111111111111111111111111111111",
+    };
+    writeCachedOperators("mainnet", map);
+    expect(readCachedOperators("mainnet")).toEqual(map);
+  });
+
+  it("writeCachedOperators is a no-op for empty maps so transient empty stats does not clobber the cache", () => {
+    const map = {
+      "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa":
+        "0x1111111111111111111111111111111111111111111111111111111111111111",
+    };
+    writeCachedOperators("mainnet", map);
+    writeCachedOperators("mainnet", {});
+    expect(readCachedOperators("mainnet")).toEqual(map);
+  });
+
+  it("scopes the cache per network", () => {
+    writeCachedOperators("mainnet", {
+      "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa":
+        "0x1111111111111111111111111111111111111111111111111111111111111111",
+    });
+    expect(readCachedOperators("testnet")).toEqual({});
   });
 });
