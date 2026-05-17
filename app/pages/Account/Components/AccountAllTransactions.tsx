@@ -561,7 +561,8 @@ function CSVExportButton({
         }
 
         cursor = end + 1;
-        const fetchProgress = 50 + Math.round((cursor / sortedVersions.length) * 50);
+        const fetchProgress =
+          50 + Math.round((cursor / sortedVersions.length) * 50);
         setExportProgress(Math.min(fetchProgress, 100));
 
         if (cursor < sortedVersions.length) {

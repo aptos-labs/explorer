@@ -43,7 +43,8 @@ Used by route loaders **and** components. When a route loader pre-fetches data, 
 
 | Hook | File | staleTime | gcTime | refetchInterval | Overrides | Notes |
 |---|---|---|---|---|---|---|
-| `useGetTPS` | `useGetTPS.ts` | 10 s | 30 s | 10 s | `refetchOnWindowFocus: false` | Real-time polling |
+| `useGetLedgerInfo` | `useGetLedgerInfo.ts` | 10 s | 60 s | 15 s | `refetchOnWindowFocus: false` | **Single shared poller for the `["ledgerInfo", networkValue]` query key.** Callers (`useGetTPS`, `useGetMostRecentBlocks`, `AllTransactions`, `TotalTransactions`) all consume this hook so the previous "most-aggressive `refetchInterval` wins" duplication is gone. TanStack Query v5 pauses `refetchInterval` automatically when the document is hidden. |
+| `useGetTPS` | `useGetTPS.ts` | — | — | — | — | Delegates to `useGetLedgerInfo` and `useGetTPSByBlockHeight`. |
 | `useGetPeakTPS` | `useGetTPS.ts` | — | — | — | — | Delegates to `useGetAnalyticsData` |
 | `useGetTPSByBlockHeight` | `useGetTPSByBlockHeight.ts` | — | — | — | — | Delegates to `useGetBlockByHeight`; `TPS_FREQUENCY = 600` blocks |
 
@@ -53,14 +54,15 @@ Used by route loaders **and** components. When a route loader pre-fetches data, 
 |---|---|---|---|---|---|---|
 | `useGetBlockByHeight` | `useGetBlock.ts` | 30 s | 10 min | 20 min | — | Confirmed blocks |
 | `useGetBlockByVersion` | `useGetBlock.ts` | 1 h | 24 h | — | — | Immutable |
-| `useGetMostRecentBlocks` (ledger) | `useGetMostRecentBlocks.ts` | 60 s | 5 min | — | `refetchOnWindowFocus: false` | Ledger info for block height |
-| `useGetMostRecentBlocks` (blocks) | `useGetMostRecentBlocks.ts` | 60 s | 10 min | — | `refetchOnWindowFocus: false` | REST `getBlockByHeight` batch for recent blocks |
+| `useGetMostRecentBlocks` (ledger) | `useGetMostRecentBlocks.ts` | 60 s | 5 min | shared | via `useGetLedgerInfo` | Subscribes to the shared ledger-info hook (no duplicate poller). |
+| `useGetMostRecentBlocks` (blocks) | `useGetMostRecentBlocks.ts` | 60 s | 10 min | — | `refetchOnWindowFocus: false` | REST `getBlockByHeight` batch for recent blocks. Pre-warmed by the `/blocks` route loader using `recentBlocksQueryOptions`. |
 
 ### Transactions
 
 | Hook | File | staleTime | gcTime | Overrides | Notes |
 |---|---|---|---|---|---|
 | `useGetTransaction` | `useGetTransaction.ts` | 1 h | 24 h | — | Immutable — long cache |
+| `useBatchPrimeTransactionsByVersion` | `useGetTransaction.ts` | — | — | — | Pre-warms the per-version cache with a single batched `/v1/transactions?start=X&limit=Y` REST call when the row range fits within `BATCH_PRIME_MAX_SPAN` (200). Driven from `<UserTransactionsTable>`; per-row `useGetTransaction(version)` then reads from cache. |
 | `useGetAccountTransactions` | `useGetAccountTransactions.ts` | 30 s | 5 min | — | Dynamic list |
 
 ### Accounts
@@ -222,6 +224,8 @@ All indexer transaction hooks use **global defaults** with no overrides:
 |---|---|---|---|
 | ANS names | `useGetANS.ts` | 30 min | ANS address → name mapping |
 | Chain IDs | `useGetNetworkChainIds.ts` | 1 h | Per-network chain ID |
+| Validator operator addresses | `useGetValidators.ts` | 7 d | `validatorOperators:<network>` → `Record<ownerAddress, operatorAddress>`. Backup for the All Nodes table when the upstream `validator_stats_v2.json` GCS bucket is empty or stale. |
+| Confidential-store flags | `useAccountHasConfidentialStores.ts` | 24 h | `hasConfidentialStore:<network>:<user>:<fa>` → cached `view` result. |
 
 ---
 

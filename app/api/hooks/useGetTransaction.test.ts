@@ -34,7 +34,9 @@ describe("planTransactionsPrimeBatch", () => {
 
   it("returns null on non-finite inputs (defensive)", () => {
     expect(planTransactionsPrimeBatch([Number.NaN])).toBeNull();
-    expect(planTransactionsPrimeBatch([Number.POSITIVE_INFINITY, 1])).toBeNull();
+    expect(
+      planTransactionsPrimeBatch([Number.POSITIVE_INFINITY, 1]),
+    ).toBeNull();
   });
 
   it("handles the dense default page (25 sequential versions)", () => {

@@ -266,9 +266,7 @@ describe("operatorsFromStats", () => {
       "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     ]);
     expect(
-      map[
-        "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-      ],
+      map["0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
     ).toBe(
       "0x1111111111111111111111111111111111111111111111111111111111111111",
     );
