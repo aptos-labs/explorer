@@ -7,6 +7,26 @@ import compression from "vite-plugin-compression";
 import viteSvgr from "vite-plugin-svgr";
 import {configDefaults, defineConfig} from "vitest/config";
 
+// Mirror APTOS_<NETWORK>_API_KEY → VITE_APTOS_<NETWORK>_API_KEY at build time
+// so deployments that only set the server-side variable still bake a key into
+// the client bundle.  Both variables are public gateway client IDs (see
+// .env.example); CI already maps the same secret to both names but Netlify /
+// other platforms may only set the non-VITE_ variant.
+for (const network of [
+  "MAINNET",
+  "TESTNET",
+  "DEVNET",
+  "DECIBEL",
+  "SHELBYNET",
+  "LOCAL",
+]) {
+  const viteKey = `VITE_APTOS_${network}_API_KEY`;
+  const serverKey = `APTOS_${network}_API_KEY`;
+  if (!process.env[viteKey] && process.env[serverKey]) {
+    process.env[viteKey] = process.env[serverKey];
+  }
+}
+
 export default defineConfig({
   plugins: [
     tanstackStart({
