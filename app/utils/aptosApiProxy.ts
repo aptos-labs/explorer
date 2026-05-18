@@ -45,18 +45,14 @@ export function getProxyIndexerUrl(networkName: NetworkName): string {
   return `${PROXY_PREFIX}${networkName}/v1/graphql`;
 }
 
-function stripBaseUrl(url: string): string {
-  try {
-    return new URL(url).pathname.replace(/\/v1\/?$/, "");
-  } catch {
-    return url.replace(/\/v1\/?$/, "");
-  }
-}
-
-function getTargetBaseUrl(networkName: NetworkName): string | undefined {
+function getTargetOrigin(networkName: NetworkName): string | undefined {
   const fullnodeUrl = networks[networkName];
   if (!fullnodeUrl) return undefined;
-  return stripBaseUrl(fullnodeUrl);
+  try {
+    return new URL(fullnodeUrl).origin;
+  } catch {
+    return undefined;
+  }
 }
 
 export async function handleApiProxy(request: Request): Promise<Response> {
@@ -76,15 +72,15 @@ export async function handleApiProxy(request: Request): Promise<Response> {
     });
   }
 
-  const targetBase = getTargetBaseUrl(networkName);
-  if (!targetBase) {
+  const targetOrigin = getTargetOrigin(networkName);
+  if (!targetOrigin) {
     return new Response(JSON.stringify({error: "Network not configured"}), {
       status: 400,
       headers: {"Content-Type": "application/json"},
     });
   }
 
-  const targetUrl = `${targetBase}${restPath}${url.search}`;
+  const targetUrl = `${targetOrigin}${restPath}${url.search}`;
 
   const apiKey = getServerApiKey(networkName);
 
