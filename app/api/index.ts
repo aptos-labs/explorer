@@ -12,7 +12,7 @@ import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
 import {isNumeric} from "../pages/utils";
 import {mapWithConcurrencyLimit} from "../utils/mapWithConcurrencyLimit";
 import {sortTransactions} from "../utils/utils";
-import {AptosClient} from "./legacyClient";
+import type {AptosClient} from "./legacyClient";
 
 // Error wrapper
 export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
@@ -112,13 +112,6 @@ export function getLedgerInfo(
   client: AptosClient,
 ): Promise<Types.IndexResponse> {
   return withResponseError(client.getLedgerInfo());
-}
-
-export function getLedgerInfoWithoutResponseError(
-  nodeUrl: string,
-): Promise<Types.IndexResponse> {
-  const client = new AptosClient(nodeUrl);
-  return client.getLedgerInfo();
 }
 
 export function getAccount(

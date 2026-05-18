@@ -1,10 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
 import {type NetworkName, networks} from "../../constants";
+import {getCachedV2Client} from "../../global-config";
 import {
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
 } from "../../utils";
-import {getLedgerInfoWithoutResponseError} from "..";
 
 const TTL = 3600000; // 1 hour
 
@@ -15,7 +15,10 @@ export function useGetChainIdCached(networkName: NetworkName): string | null {
 export function useGetChainIdAndCache(networkName: NetworkName): string | null {
   const {data} = useQuery({
     queryKey: ["ledgerInfo", networks[networkName]],
-    queryFn: () => getLedgerInfoWithoutResponseError(networks[networkName]),
+    queryFn: async () => {
+      const client = getCachedV2Client(networkName);
+      return client.getLedgerInfo();
+    },
     staleTime: TTL,
     gcTime: TTL,
     refetchOnWindowFocus: false,
@@ -24,8 +27,6 @@ export function useGetChainIdAndCache(networkName: NetworkName): string | null {
 
   const chainId = data?.chain_id ? data?.chain_id.toString() : null;
 
-  // cache network chain ids (except local) to `localStorage` to avoid refetching chain data
-  // as the chain ids for those networks won't be changed very often
   if (chainId !== null && networkName !== "local") {
     setLocalStorageWithExpiry(`${networkName}ChainId`, chainId, TTL);
   }

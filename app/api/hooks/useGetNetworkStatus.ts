@@ -5,6 +5,7 @@ import {
   type NetworkName,
   networks,
 } from "../../lib/constants";
+import {getGeomiDevApiKeyOverride} from "../../settings";
 import {
   frameworkReleaseFromGasFeatureVersion,
   maxBytecodeFormatVersionFromFlags,
@@ -40,12 +41,13 @@ export type NetworkStatus = {
 
 export async function fetchNetworkStatus(
   networkName: NetworkName,
+  apiKeyOverride?: string,
 ): Promise<NetworkStatus> {
   const baseUrl = networks[networkName];
   const apiKey =
     typeof window === "undefined"
       ? getServerApiKey(networkName)
-      : getApiKey(networkName);
+      : getApiKey(networkName, apiKeyOverride);
   const headers: Record<string, string> = apiKey
     ? {Authorization: `Bearer ${apiKey}`}
     : {};
@@ -122,9 +124,10 @@ export async function fetchNetworkStatus(
 }
 
 export function useGetNetworkStatus(networkName: NetworkName) {
+  const apiKeyOverride = getGeomiDevApiKeyOverride(networkName);
   return useQuery({
     queryKey: ["deployments", "networkStatus", networkName],
-    queryFn: () => fetchNetworkStatus(networkName),
+    queryFn: () => fetchNetworkStatus(networkName, apiKeyOverride),
     staleTime: 60_000,
     retry: 1,
   });
