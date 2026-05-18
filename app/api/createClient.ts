@@ -17,6 +17,7 @@ import {
   getGeomiDevApiKeyOverride,
   normalizeGeomiDevApiKeyOverride,
 } from "../settings";
+import {getProxyFullnodeUrl, getProxyIndexerUrl} from "../utils/aptosApiProxy";
 
 const NETWORK_COOKIE_NAME = "network";
 
@@ -51,53 +52,71 @@ export function getNetworkFromSearch(
   return defaultNetworkName;
 }
 
+function sdkNetworkFor(networkName: NetworkName): SdkNetwork {
+  switch (networkName) {
+    case "mainnet":
+      return SdkNetwork.MAINNET;
+    case "testnet":
+      return SdkNetwork.TESTNET;
+    case "devnet":
+      return SdkNetwork.DEVNET;
+    default:
+      return SdkNetwork.CUSTOM;
+  }
+}
+
 /**
  * Create an Aptos v2 client for the given network.
+ *
+ * - SSR: direct connection with server-only APTOS_*_API_KEY.
+ * - Client with user override: direct connection with user's key.
+ * - Client without key: routes through /api/aptos/ proxy so the key
+ *   never appears in the browser.
  */
 export function createAptosClient(
   networkName: NetworkName,
   apiKeyOverride?: string,
 ): Aptos {
-  const nodeUrl = networks[networkName];
-  const apiKey =
-    typeof window === "undefined"
-      ? getServerApiKey(networkName)
-      : getApiKey(
-          networkName,
-          apiKeyOverride ?? getGeomiDevApiKeyOverride(networkName),
-        );
-  const indexerUri = getGraphqlURI(networkName);
+  const isServer = typeof window === "undefined";
+  const network = sdkNetworkFor(networkName);
 
-  // Map network name to SDK Network enum
-  let network: SdkNetwork;
-  switch (networkName) {
-    case "mainnet":
-      network = SdkNetwork.MAINNET;
-      break;
-    case "testnet":
-      network = SdkNetwork.TESTNET;
-      break;
-    case "devnet":
-      network = SdkNetwork.DEVNET;
-      break;
-    default:
-      network = SdkNetwork.CUSTOM;
+  if (isServer) {
+    const apiKey = getServerApiKey(networkName);
+    return new Aptos(
+      new AptosConfig({
+        network,
+        fullnode: networks[networkName],
+        indexer: getGraphqlURI(networkName),
+        clientConfig: apiKey
+          ? {HEADERS: {Authorization: `Bearer ${apiKey}`}}
+          : undefined,
+      }),
+    );
   }
 
-  const config = new AptosConfig({
-    network,
-    fullnode: nodeUrl,
-    indexer: indexerUri,
-    clientConfig: apiKey
-      ? {
-          HEADERS: {
-            Authorization: `Bearer ${apiKey}`,
-          },
-        }
-      : undefined,
-  });
+  const userKey = getApiKey(
+    networkName,
+    apiKeyOverride ?? getGeomiDevApiKeyOverride(networkName),
+  );
 
-  return new Aptos(config);
+  if (userKey) {
+    return new Aptos(
+      new AptosConfig({
+        network,
+        fullnode: networks[networkName],
+        indexer: getGraphqlURI(networkName),
+        clientConfig: {HEADERS: {Authorization: `Bearer ${userKey}`}},
+      }),
+    );
+  }
+
+  return new Aptos(
+    new AptosConfig({
+      network,
+      fullnode: getProxyFullnodeUrl(networkName),
+      indexer: getProxyIndexerUrl(networkName),
+    }),
+  );
 }
 
 // Cache clients to avoid recreating them

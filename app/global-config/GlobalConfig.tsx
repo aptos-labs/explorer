@@ -20,6 +20,7 @@ import {
   normalizeGeomiDevApiKeyOverride,
   useExplorerSettings,
 } from "../settings";
+import {getProxyFullnodeUrl, getProxyIndexerUrl} from "../utils/aptosApiProxy";
 
 const NETWORK_COOKIE_NAME = "network";
 
@@ -168,59 +169,83 @@ function createAptosClient(
   networkName: NetworkName,
   apiKeyOverride?: string,
 ): AptosClient {
-  const nodeUrl = networks[networkName];
-  const apiKey =
-    typeof window === "undefined"
-      ? getServerApiKey(networkName)
-      : getApiKey(networkName, apiKeyOverride);
-  const headers: Record<string, string> = {};
-  if (apiKey) {
-    headers.Authorization = `Bearer ${apiKey}`;
+  const isServer = typeof window === "undefined";
+
+  if (isServer) {
+    const apiKey = getServerApiKey(networkName);
+    const headers: Record<string, string> = {};
+    if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
+    return new AptosClient(networks[networkName], {HEADERS: headers});
   }
-  return new AptosClient(nodeUrl, {HEADERS: headers});
+
+  const userKey = getApiKey(networkName, apiKeyOverride);
+  if (userKey) {
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${userKey}`,
+    };
+    return new AptosClient(networks[networkName], {HEADERS: headers});
+  }
+
+  // No user key — route through server-side proxy (key hidden from browser)
+  return new AptosClient(getProxyFullnodeUrl(networkName));
+}
+
+function sdkNetworkFor(networkName: NetworkName): SdkNetwork {
+  switch (networkName) {
+    case "mainnet":
+      return SdkNetwork.MAINNET;
+    case "testnet":
+      return SdkNetwork.TESTNET;
+    case "devnet":
+      return SdkNetwork.DEVNET;
+    default:
+      return SdkNetwork.CUSTOM;
+  }
 }
 
 function createAptosV2Client(
   networkName: NetworkName,
   apiKeyOverride?: string,
 ): Aptos {
-  const nodeUrl = networks[networkName];
-  const apiKey =
-    typeof window === "undefined"
-      ? getServerApiKey(networkName)
-      : getApiKey(networkName, apiKeyOverride);
-  const indexerUrl = getGraphqlURI(networkName);
+  const isServer = typeof window === "undefined";
+  const network = sdkNetworkFor(networkName);
 
-  // Map network name to SDK Network enum
-  let network: SdkNetwork;
-  switch (networkName) {
-    case "mainnet":
-      network = SdkNetwork.MAINNET;
-      break;
-    case "testnet":
-      network = SdkNetwork.TESTNET;
-      break;
-    case "devnet":
-      network = SdkNetwork.DEVNET;
-      break;
-    default:
-      network = SdkNetwork.CUSTOM;
+  if (isServer) {
+    // SSR: direct connection with server-only key
+    const apiKey = getServerApiKey(networkName);
+    return new Aptos(
+      new AptosConfig({
+        network,
+        fullnode: networks[networkName],
+        indexer: getGraphqlURI(networkName),
+        clientConfig: apiKey
+          ? {HEADERS: {Authorization: `Bearer ${apiKey}`}}
+          : undefined,
+      }),
+    );
   }
 
-  const config = new AptosConfig({
-    network,
-    fullnode: nodeUrl,
-    indexer: indexerUrl,
-    clientConfig: apiKey
-      ? {
-          HEADERS: {
-            Authorization: `Bearer ${apiKey}`,
-          },
-        }
-      : undefined,
-  });
+  const userKey = getApiKey(networkName, apiKeyOverride);
+  if (userKey) {
+    // Client with user's own key: direct connection
+    return new Aptos(
+      new AptosConfig({
+        network,
+        fullnode: networks[networkName],
+        indexer: getGraphqlURI(networkName),
+        clientConfig: {HEADERS: {Authorization: `Bearer ${userKey}`}},
+      }),
+    );
+  }
 
-  return new Aptos(config);
+  // Client without key: route through server-side proxy (key stays hidden)
+  return new Aptos(
+    new AptosConfig({
+      network,
+      fullnode: getProxyFullnodeUrl(networkName),
+      indexer: getProxyIndexerUrl(networkName),
+    }),
+  );
 }
 
 // Client cache to prevent unnecessary recreations

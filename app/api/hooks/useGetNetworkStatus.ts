@@ -6,6 +6,7 @@ import {
   networks,
 } from "../../lib/constants";
 import {getGeomiDevApiKeyOverride} from "../../settings";
+import {getProxyFullnodeUrl} from "../../utils/aptosApiProxy";
 import {
   frameworkReleaseFromGasFeatureVersion,
   maxBytecodeFormatVersionFromFlags,
@@ -43,14 +44,22 @@ export async function fetchNetworkStatus(
   networkName: NetworkName,
   apiKeyOverride?: string,
 ): Promise<NetworkStatus> {
-  const baseUrl = networks[networkName];
-  const apiKey =
-    typeof window === "undefined"
-      ? getServerApiKey(networkName)
-      : getApiKey(networkName, apiKeyOverride);
-  const headers: Record<string, string> = apiKey
-    ? {Authorization: `Bearer ${apiKey}`}
-    : {};
+  const isServer = typeof window === "undefined";
+  const userKey = isServer ? undefined : getApiKey(networkName, apiKeyOverride);
+  const useProxy = !isServer && !userKey;
+
+  const baseUrl = useProxy
+    ? getProxyFullnodeUrl(networkName)
+    : networks[networkName];
+
+  const headers: Record<string, string> = {};
+  if (isServer) {
+    const serverKey = getServerApiKey(networkName);
+    if (serverKey) headers.Authorization = `Bearer ${serverKey}`;
+  } else if (userKey) {
+    headers.Authorization = `Bearer ${userKey}`;
+  }
+  // When useProxy is true, no Authorization header needed — proxy adds it
 
   const res = await fetch(`${baseUrl}/`, {headers});
   if (!res.ok) throw new Error(`Fullnode returned ${res.status}`);

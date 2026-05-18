@@ -4,6 +4,7 @@ import {
   defaultRenderHandler,
 } from "@tanstack/react-start/server";
 import llmsReference from "../public/llms.txt?raw";
+import {handleApiProxy, isProxyRequest} from "./utils/aptosApiProxy";
 import {negotiateMarkdownHomepage} from "./utils/markdownHomeNegotiation";
 
 function getSsrCacheControl(request: Request) {
@@ -76,6 +77,11 @@ const fetch = createStartHandler(cacheAwareRenderHandler);
 // `serverEntrypoint.fetch` resolves to `undefined`.
 export default {
   async fetch(...args: Parameters<typeof fetch>) {
+    const request = args[0] as Request;
+    const url = new URL(request.url);
+    if (isProxyRequest(url.pathname)) {
+      return handleApiProxy(request);
+    }
     return fetch(...args);
   },
 };
