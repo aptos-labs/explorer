@@ -39,12 +39,18 @@ type ApiKeys = {
  * Do NOT rename or remove these env vars — see the
  * "Never rename or remove an environment variable" section in AGENTS.md.
  */
+// `|| undefined` normalizes empty-string env vars to `undefined` so the
+// missing-key warning path triggers consistently. CI workflows that map
+// `VITE_APTOS_<NETWORK>_API_KEY: ${{ secrets.APTOS_<NETWORK>_API_KEY }}`
+// resolve to an empty string when the secret is not set (e.g. on PRs from
+// forks that can't read repo secrets), and an empty Authorization header
+// would otherwise be sent to the API gateway.
 const clientApiKeys: ApiKeys = {
-  mainnet: import.meta.env.VITE_APTOS_MAINNET_API_KEY,
-  testnet: import.meta.env.VITE_APTOS_TESTNET_API_KEY,
-  devnet: import.meta.env.VITE_APTOS_DEVNET_API_KEY,
-  decibel: import.meta.env.VITE_APTOS_DECIBEL_API_KEY,
-  shelbynet: import.meta.env.VITE_APTOS_SHELBYNET_API_KEY,
+  mainnet: import.meta.env.VITE_APTOS_MAINNET_API_KEY || undefined,
+  testnet: import.meta.env.VITE_APTOS_TESTNET_API_KEY || undefined,
+  devnet: import.meta.env.VITE_APTOS_DEVNET_API_KEY || undefined,
+  decibel: import.meta.env.VITE_APTOS_DECIBEL_API_KEY || undefined,
+  shelbynet: import.meta.env.VITE_APTOS_SHELBYNET_API_KEY || undefined,
   local: import.meta.env.VITE_APTOS_LOCAL_API_KEY || undefined,
 };
 

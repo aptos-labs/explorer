@@ -57,7 +57,11 @@ describe("getApiKey", () => {
 
   it("emits a console.error when no env var is set for mainnet", () => {
     const key = getApiKey("mainnet");
-    if (key === undefined) {
+    // CI workflows may map a non-existent secret to an empty string for the
+    // env var. `clientApiKeys` normalizes that to `undefined`, so use a
+    // truthiness check rather than `=== undefined` so this test is robust
+    // whether `VITE_APTOS_MAINNET_API_KEY` is unset, empty, or set.
+    if (!key) {
       expect(console.error).toHaveBeenCalledTimes(1);
       const [msg] = (console.error as ReturnType<typeof vi.fn>).mock.calls[0];
       expect(String(msg)).toContain("No Aptos API key configured");
