@@ -123,10 +123,10 @@ export async function handleApiProxy(request: Request): Promise<Response> {
       statusText: upstream.statusText,
       headers: responseHeaders,
     });
-  } catch (err) {
-    return new Response(
-      JSON.stringify({error: "Proxy error", message: String(err)}),
-      {status: 502, headers: {"Content-Type": "application/json"}},
-    );
+  } catch {
+    return new Response(JSON.stringify({error: "Upstream request failed"}), {
+      status: 502,
+      headers: {"Content-Type": "application/json"},
+    });
   }
 }
