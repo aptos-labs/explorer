@@ -460,6 +460,18 @@ Copy `.env.example` to `.env.local` and uncomment the variables you need. Common
 
 Vite exposes variables prefixed with `VITE_` (and `REACT_APP_` for compatibility) to the client bundle; everything else is server-only. Users can also set per-network API keys at runtime via **Settings** (`/settings`). **Never commit secrets** — use runtime environment variables.
 
+### Never rename or remove an environment variable
+
+Environment variables in this repository are a **contract with deployments** (Netlify, GitHub Actions CI, contributors' `.env.local` files, downstream forks). Renaming or removing one in code does **not** unset it in those deployments — it just silently breaks behavior that depended on it, and the breakage is often invisible until users hit a regression in production (a recent example: removing the hardcoded public client-ID fallback in `app/lib/constants.ts` caused the client bundle to ship without `VITE_APTOS_<NETWORK>_API_KEY` on deployments that hadn't wired the variable, dropping every browser request into the shared anonymous rate-limit bucket).
+
+**Rules for all agents:**
+
+- **Do not rename** an existing env var (e.g. `VITE_APTOS_MAINNET_API_KEY` → `VITE_APTOS_MAINNET_TOKEN`). Add the new name as an additional alias if a rename is truly needed, and keep reading both for at least one release cycle with a deprecation note in `CHANGELOG.md`.
+- **Do not remove** an env var that the code reads (`import.meta.env.X`, `process.env.X`) unless you have explicit human approval **and** have verified no deployment, CI workflow, `.env.example`, or downstream consumer still sets it. Removing the read site silently turns the deployment's still-set variable into dead config.
+- **Do not remove a hardcoded default that backs an env var** without restoring an equivalent safe default. The env var pattern `import.meta.env.X || "<default>"` is load-bearing: the `||` branch is what keeps the app working when the variable is unset.
+- **When adding a new env var**: document it in `.env.example` with a comment explaining what it controls, declare its TypeScript type in `app/types/declarations.d.ts` if it is `VITE_`-prefixed, and add it to `.github/workflows/ci.yml` if CI needs it.
+- **When you must rename or remove an env var**: search the entire repo (`rg VITE_FOO`, `rg APTOS_FOO`), update `.env.example`, `app/types/declarations.d.ts`, `.github/workflows/*.yml`, `netlify.toml`, and any docs in the same PR, **and** call it out under `CHANGELOG.md` → `[Unreleased]` so operators know to update their dashboards.
+
 ---
 
 ## Tool-Specific Rules
