@@ -12,8 +12,10 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {
   getApiKey,
+  getServerApiKey,
   resetMissingApiKeyWarnings,
   warnIfClientMissingApiKey,
+  warnIfServerMissingApiKey,
 } from "./constants";
 
 describe("getApiKey", () => {
@@ -114,5 +116,131 @@ describe("warnIfClientMissingApiKey", () => {
   it("does not warn for local (no public key expected)", () => {
     warnIfClientMissingApiKey("local");
     expect(console.error).not.toHaveBeenCalled();
+  });
+});
+
+describe("warnIfServerMissingApiKey", () => {
+  const originalWindow = globalThis.window;
+
+  beforeEach(() => {
+    resetMissingApiKeyWarnings();
+    // Force the "server" branch: ensure `window` is undefined.
+    if (typeof globalThis.window !== "undefined") {
+      // biome-ignore lint/suspicious/noExplicitAny: test stub
+      delete (globalThis as any).window;
+    }
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    // biome-ignore lint/suspicious/noExplicitAny: restore stub
+    (globalThis as any).window = originalWindow;
+  });
+
+  it("logs a console.error for networks expected to have a key", () => {
+    warnIfServerMissingApiKey("mainnet");
+    expect(console.error).toHaveBeenCalledTimes(1);
+    const [msg] = (console.error as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(String(msg)).toContain("No Aptos API key configured");
+    expect(String(msg)).toContain("on the server");
+    expect(String(msg)).toContain("mainnet");
+    expect(String(msg)).toContain("APTOS_MAINNET_API_KEY");
+    // Should also reference the matching client env var so operators
+    // configure both at once.
+    expect(String(msg)).toContain("VITE_APTOS_MAINNET_API_KEY");
+  });
+
+  it("warns once per network even when called multiple times", () => {
+    warnIfServerMissingApiKey("mainnet");
+    warnIfServerMissingApiKey("mainnet");
+    warnIfServerMissingApiKey("mainnet");
+    expect(console.error).toHaveBeenCalledTimes(1);
+  });
+
+  it("warns independently for each network", () => {
+    warnIfServerMissingApiKey("mainnet");
+    warnIfServerMissingApiKey("testnet");
+    expect(console.error).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not warn for local", () => {
+    warnIfServerMissingApiKey("local");
+    expect(console.error).not.toHaveBeenCalled();
+  });
+
+  it("does not fire on the client (window defined)", () => {
+    // biome-ignore lint/suspicious/noExplicitAny: minimal test stub
+    (globalThis as any).window = {};
+    warnIfServerMissingApiKey("mainnet");
+    expect(console.error).not.toHaveBeenCalled();
+  });
+});
+
+describe("getServerApiKey", () => {
+  const originalWindow = globalThis.window;
+  const originalEnv = {...process.env};
+
+  beforeEach(() => {
+    resetMissingApiKeyWarnings();
+    if (typeof globalThis.window !== "undefined") {
+      // biome-ignore lint/suspicious/noExplicitAny: test stub
+      delete (globalThis as any).window;
+    }
+    // Clear all APTOS_*_API_KEY env vars + CONTEXT for a deterministic
+    // baseline; restore in afterEach.
+    for (const key of Object.keys(process.env)) {
+      if (
+        key === "CONTEXT" ||
+        (key.startsWith("APTOS_") && key.endsWith("_API_KEY"))
+      ) {
+        delete process.env[key];
+      }
+    }
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    process.env = {...originalEnv};
+    // biome-ignore lint/suspicious/noExplicitAny: restore stub
+    (globalThis as any).window = originalWindow;
+  });
+
+  it("returns the APTOS_<NETWORK>_API_KEY env var when set", () => {
+    process.env.APTOS_MAINNET_API_KEY = "AG-SERVER-KEY";
+    expect(getServerApiKey("mainnet")).toBe("AG-SERVER-KEY");
+    expect(console.error).not.toHaveBeenCalled();
+  });
+
+  it("emits a console.error when no server key is configured and no client fallback exists", () => {
+    // The client fallback path uses build-time `VITE_APTOS_<NETWORK>_API_KEY`,
+    // which can be set in CI / cloud runners (e.g. via injected secrets).
+    // Branch on whether the test runtime actually has one:
+    const result = getServerApiKey("mainnet");
+    if (result === undefined) {
+      // No client fallback either → warning should fire.
+      expect(console.error).toHaveBeenCalledTimes(1);
+      const [msg] = (console.error as ReturnType<typeof vi.fn>).mock.calls[0];
+      expect(String(msg)).toContain("on the server");
+      expect(String(msg)).toContain("APTOS_MAINNET_API_KEY");
+    } else {
+      // The build-time client key was available and returned as a
+      // fallback; no warning should have been emitted in that case.
+      expect(console.error).not.toHaveBeenCalled();
+    }
+  });
+
+  it("emits a console.error on Netlify preview contexts (deploy-preview)", () => {
+    process.env.CONTEXT = "deploy-preview";
+    process.env.APTOS_MAINNET_API_KEY = "AG-SHOULD-BE-IGNORED";
+    expect(getServerApiKey("mainnet")).toBeUndefined();
+    expect(console.error).toHaveBeenCalledTimes(1);
+  });
+
+  it("emits a console.error on Netlify preview contexts (branch-deploy)", () => {
+    process.env.CONTEXT = "branch-deploy";
+    expect(getServerApiKey("testnet")).toBeUndefined();
+    expect(console.error).toHaveBeenCalledTimes(1);
   });
 });

@@ -94,12 +94,39 @@ export function warnIfClientMissingApiKey(network_name: NetworkName): void {
   );
 }
 
+const warnedNetworksMissingServerApiKey = new Set<NetworkName>();
+
 /**
- * Test-only helper: clear the per-network "already warned" set so multiple
- * test cases can observe the warning behavior independently.
+ * Emit a one-time `console.error` on the server (SSR / Netlify Functions)
+ * when `getServerApiKey` cannot find an `APTOS_<NETWORK>_API_KEY` for a
+ * network that normally has one. Mirrors `warnIfClientMissingApiKey` for
+ * the backend, so missing-key misconfigurations show up loudly in
+ * function logs (Netlify, Sentry, etc.) instead of silently dropping
+ * SSR / GraphQL traffic into the anonymous rate-limit bucket.
+ *
+ * Like the client warning, this fires at most once per network per
+ * process so logs aren't flooded.
+ */
+export function warnIfServerMissingApiKey(network_name: NetworkName): void {
+  if (typeof window !== "undefined") return;
+  if (networksWithoutDefaultClientKey.has(network_name)) return;
+  if (warnedNetworksMissingServerApiKey.has(network_name)) return;
+  warnedNetworksMissingServerApiKey.add(network_name);
+  console.error(
+    `[aptos-explorer] No Aptos API key configured for network "${network_name}" on the server. ` +
+      `SSR and proxied requests will share the anonymous rate-limit bucket and may be throttled. ` +
+      `Set APTOS_${network_name.toUpperCase()}_API_KEY in the deployment environment ` +
+      `(and the matching VITE_APTOS_${network_name.toUpperCase()}_API_KEY for the client bundle).`,
+  );
+}
+
+/**
+ * Test-only helper: clear the per-network "already warned" sets so
+ * multiple test cases can observe the warning behavior independently.
  */
 export function resetMissingApiKeyWarnings(): void {
   warnedNetworksMissingApiKey.clear();
+  warnedNetworksMissingServerApiKey.clear();
 }
 
 /**
@@ -137,6 +164,12 @@ export function getApiKey(
  * Reads from APTOS_<NETWORK>_API_KEY (no VITE_ prefix, never sent to browser).
  * Falls back to the client key if no server key is configured.
  * Returns undefined on Netlify preview builds (checked via the CONTEXT runtime var).
+ *
+ * Emits a one-time `console.error` in the server process when no server
+ * key (and no client-side fallback) is available for a network that
+ * normally has one, so missing-key misconfigurations surface in
+ * Netlify Function logs / Sentry instead of silently shifting SSR
+ * traffic into the anonymous rate-limit bucket.
  */
 export function getServerApiKey(network_name: NetworkName): string | undefined {
   // Netlify sets CONTEXT at SSR function runtime; suppress keys for preview contexts.
@@ -146,6 +179,7 @@ export function getServerApiKey(network_name: NetworkName): string | undefined {
     netlifyContext === "deploy-preview" ||
     netlifyContext === "branch-deploy"
   ) {
+    warnIfServerMissingApiKey(network_name);
     return undefined;
   }
 
@@ -154,7 +188,11 @@ export function getServerApiKey(network_name: NetworkName): string | undefined {
     const serverKey = process.env[envKey];
     if (serverKey) return serverKey;
   }
-  return clientApiKeys[network_name];
+  const fallback = clientApiKeys[network_name];
+  if (!fallback) {
+    warnIfServerMissingApiKey(network_name);
+  }
+  return fallback;
 }
 
 export function isValidNetworkName(value: string): value is NetworkName {
