@@ -26,16 +26,61 @@ type ApiKeys = {
 };
 
 /**
+ * Default public client IDs (API keys) from the Aptos API Gateway.
+ *
+ * These are PUBLIC client identifiers used for per-application rate limit
+ * accounting on the Aptos API Gateway. They are intentionally safe to ship
+ * in the browser bundle — they only identify "the Aptos Explorer" so the
+ * gateway can give it its own quota instead of throwing every anonymous
+ * request into one shared bucket.
+ *
+ * History: These hardcoded defaults were originally added in `fac17279`
+ * (2026-01-02) and removed in `102d50045bac79083030ed3edd151e5613c4f9e3`
+ * (2026-01-03, "[refactor] Move API keys to environment variables") so that
+ * preview builds wouldn't reuse prod keys. The removal had the side effect
+ * that any deployment which forgot to set `VITE_APTOS_<NETWORK>_API_KEY`
+ * shipped a client bundle with NO API key, sending every user's traffic to
+ * the anonymous bucket and causing widespread rate limiting. They are
+ * restored here as a safety net; deployments that want their own keys can
+ * still override via the env var.
+ *
+ * Do NOT remove or rename these env vars — see AGENTS.md "Environment
+ * Variables" section.
+ */
+const defaultPublicClientApiKeys: ApiKeys = {
+  mainnet: "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
+  testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
+  devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
+  decibel: "AG-JAG5SGHTW6VICWAU1IAQ3ZTODVHBYDWGV",
+  shelbynet: "AG-MGQQAXV57YJVDQANQPBQDFJVFMUY912EC",
+  local: undefined,
+};
+
+/**
  * Client API keys (VITE_ prefixed) - exposed in the browser bundle.
  * Use these for client-side API calls only.
  * Set via: VITE_APTOS_<NETWORK>_API_KEY
+ *
+ * Falls back to `defaultPublicClientApiKeys` when the env var is unset so
+ * deployments that forget to wire the env var still get a per-app rate
+ * limit bucket instead of joining the shared anonymous bucket.
  */
 const clientApiKeys: ApiKeys = {
-  mainnet: import.meta.env.VITE_APTOS_MAINNET_API_KEY,
-  testnet: import.meta.env.VITE_APTOS_TESTNET_API_KEY,
-  devnet: import.meta.env.VITE_APTOS_DEVNET_API_KEY,
-  decibel: import.meta.env.VITE_APTOS_DECIBEL_API_KEY,
-  shelbynet: import.meta.env.VITE_APTOS_SHELBYNET_API_KEY,
+  mainnet:
+    import.meta.env.VITE_APTOS_MAINNET_API_KEY ||
+    defaultPublicClientApiKeys.mainnet,
+  testnet:
+    import.meta.env.VITE_APTOS_TESTNET_API_KEY ||
+    defaultPublicClientApiKeys.testnet,
+  devnet:
+    import.meta.env.VITE_APTOS_DEVNET_API_KEY ||
+    defaultPublicClientApiKeys.devnet,
+  decibel:
+    import.meta.env.VITE_APTOS_DECIBEL_API_KEY ||
+    defaultPublicClientApiKeys.decibel,
+  shelbynet:
+    import.meta.env.VITE_APTOS_SHELBYNET_API_KEY ||
+    defaultPublicClientApiKeys.shelbynet,
   local: import.meta.env.VITE_APTOS_LOCAL_API_KEY || undefined,
 };
 
@@ -50,10 +95,58 @@ const isNetlifyPreview =
   import.meta.env.VITE_NETLIFY_CONTEXT === "branch-deploy";
 
 /**
+ * Networks that intentionally do not have a default client API key:
+ * - `local`: runs against the developer's own node (no public rate limit).
+ *
+ * Warnings are suppressed for these networks so the console isn't spammed
+ * with expected misses.
+ */
+const networksWithoutDefaultClientKey: ReadonlySet<NetworkName> = new Set([
+  "local",
+]);
+
+const warnedNetworksMissingApiKey = new Set<NetworkName>();
+
+/**
+ * Emit a one-time `console.error` when the browser builds an Aptos client
+ * without an API key for a network where we *expect* one. Each network
+ * fires at most once per page session so the message is visible but doesn't
+ * flood the console.
+ *
+ * Exposed for tests via `resetMissingApiKeyWarnings`.
+ */
+export function warnIfClientMissingApiKey(network_name: NetworkName): void {
+  if (typeof window === "undefined") return;
+  if (networksWithoutDefaultClientKey.has(network_name)) return;
+  if (warnedNetworksMissingApiKey.has(network_name)) return;
+  warnedNetworksMissingApiKey.add(network_name);
+  // Error level so it shows up in browser devtools filters and Sentry
+  // breadcrumbs — missing keys drop every browser request into the shared
+  // anonymous rate-limit bucket and cause widespread 429s.
+  console.error(
+    `[aptos-explorer] No Aptos API key configured for network "${network_name}". ` +
+      `All requests will share the anonymous rate-limit bucket and may be throttled. ` +
+      `Set VITE_APTOS_${network_name.toUpperCase()}_API_KEY at build time, or add a key under Settings → API Keys.`,
+  );
+}
+
+/**
+ * Test-only helper: clear the per-network "already warned" set so multiple
+ * test cases can observe the warning behavior independently.
+ */
+export function resetMissingApiKeyWarnings(): void {
+  warnedNetworksMissingApiKey.clear();
+}
+
+/**
  * Get the client-side API key for a network.
  * This key is safe to expose in the browser (client API key).
  * Returns undefined on Netlify preview builds unless an explicit override is
  * provided by the user in the browser.
+ *
+ * Emits a one-time `console.error` on the client when no key is available
+ * for a network that normally has one (so missing-key misconfigurations are
+ * visible to operators in browser devtools).
  */
 export function getApiKey(
   network_name: NetworkName,
@@ -64,8 +157,15 @@ export function getApiKey(
     return normalizedOverride;
   }
 
-  if (isNetlifyPreview) return undefined;
-  return clientApiKeys[network_name];
+  if (isNetlifyPreview) {
+    warnIfClientMissingApiKey(network_name);
+    return undefined;
+  }
+  const key = clientApiKeys[network_name];
+  if (!key) {
+    warnIfClientMissingApiKey(network_name);
+  }
+  return key;
 }
 
 /**
