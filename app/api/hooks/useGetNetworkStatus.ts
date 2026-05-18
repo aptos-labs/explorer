@@ -1,5 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
-import {getApiKey, type NetworkName, networks} from "../../lib/constants";
+import {
+  getApiKey,
+  getServerApiKey,
+  type NetworkName,
+  networks,
+} from "../../lib/constants";
 import {
   frameworkReleaseFromGasFeatureVersion,
   maxBytecodeFormatVersionFromFlags,
@@ -37,7 +42,10 @@ export async function fetchNetworkStatus(
   networkName: NetworkName,
 ): Promise<NetworkStatus> {
   const baseUrl = networks[networkName];
-  const apiKey = getApiKey(networkName);
+  const apiKey =
+    typeof window === "undefined"
+      ? getServerApiKey(networkName)
+      : getApiKey(networkName);
   const headers: Record<string, string> = apiKey
     ? {Authorization: `Bearer ${apiKey}`}
     : {};

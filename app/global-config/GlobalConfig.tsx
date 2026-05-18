@@ -9,6 +9,7 @@ import {
   type FeatureName,
   getApiKey,
   getGraphqlURI,
+  getServerApiKey,
   isValidFeatureName,
   isValidNetworkName,
   type NetworkName,
@@ -168,7 +169,10 @@ function createAptosClient(
   apiKeyOverride?: string,
 ): AptosClient {
   const nodeUrl = networks[networkName];
-  const apiKey = getApiKey(networkName, apiKeyOverride);
+  const apiKey =
+    typeof window === "undefined"
+      ? getServerApiKey(networkName)
+      : getApiKey(networkName, apiKeyOverride);
   const headers: Record<string, string> = {};
   if (apiKey) {
     headers.Authorization = `Bearer ${apiKey}`;
@@ -181,7 +185,10 @@ function createAptosV2Client(
   apiKeyOverride?: string,
 ): Aptos {
   const nodeUrl = networks[networkName];
-  const apiKey = getApiKey(networkName, apiKeyOverride);
+  const apiKey =
+    typeof window === "undefined"
+      ? getServerApiKey(networkName)
+      : getApiKey(networkName, apiKeyOverride);
   const indexerUrl = getGraphqlURI(networkName);
 
   // Map network name to SDK Network enum
