@@ -12,6 +12,7 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: legacy REST client wraps untyped API responses
 
 import type {Types} from "~/types/aptos";
+import {classifyRpcUrl, recordRpcRequest} from "./rpcMonitor";
 
 interface AptosClientConfig {
   HEADERS?: Record<string, string>;
@@ -35,18 +36,60 @@ export class AptosClient {
   // ------------------------------------------------------------------
   private async request<T>(path: string, options?: RequestInit): Promise<T> {
     const url = `${this.baseUrl}${path}`;
-    const resp = await fetch(url, {
-      ...options,
-      headers: {
-        ...this.headers,
-        ...((options?.headers as Record<string, string>) ?? {}),
-      },
-    });
-    if (!resp.ok) {
-      const body = await resp.text().catch(() => "");
-      throw new Error(`Aptos API error ${resp.status}: ${body}`);
+    const method = options?.method ?? "GET";
+    const startedAt =
+      typeof performance !== "undefined" ? performance.now() : Date.now();
+
+    try {
+      const resp = await fetch(url, {
+        ...options,
+        headers: {
+          ...this.headers,
+          ...((options?.headers as Record<string, string>) ?? {}),
+        },
+      });
+
+      const durationMs =
+        (typeof performance !== "undefined" ? performance.now() : Date.now()) -
+        startedAt;
+
+      recordRpcRequest({
+        source: "legacy",
+        api: classifyRpcUrl(url),
+        method,
+        path,
+        url,
+        status: resp.ok ? "success" : "error",
+        statusCode: resp.status,
+        durationMs,
+      });
+
+      if (!resp.ok) {
+        const body = await resp.text().catch(() => "");
+        throw new Error(`Aptos API error ${resp.status}: ${body}`);
+      }
+      return resp.json() as Promise<T>;
+    } catch (err) {
+      const durationMs =
+        (typeof performance !== "undefined" ? performance.now() : Date.now()) -
+        startedAt;
+
+      if (
+        !(err instanceof Error && err.message.startsWith("Aptos API error"))
+      ) {
+        recordRpcRequest({
+          source: "legacy",
+          api: classifyRpcUrl(url),
+          method,
+          path,
+          url,
+          status: "error",
+          durationMs,
+        });
+      }
+
+      throw err;
     }
-    return resp.json() as Promise<T>;
   }
 
   private qs(

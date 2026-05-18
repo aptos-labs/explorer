@@ -45,6 +45,7 @@ import {Fallback} from "../components/layout/Fallback";
 import Footer from "../components/layout/Footer";
 import Header from "../components/layout/Header";
 import RateLimitDrawer from "../components/RateLimitDrawer";
+import RpcMonitorPanel from "../components/RpcMonitorPanel";
 import {WebMCPProvider} from "../components/WebMCPProvider";
 import {ProvideColorMode} from "../context/color-mode";
 import {RateLimitProvider} from "../context/rate-limit";
@@ -234,6 +235,7 @@ function RootComponent() {
                   <TanStackRouterDevtools position="bottom-right" />
                 </Suspense>
               )}
+              <RpcMonitorPanel />
             </QueryClientProvider>
           </HelmetProvider>
         </div>

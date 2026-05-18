@@ -2,7 +2,7 @@
  * Create Aptos client for route loaders.
  * Used to create a client based on network from URL search params or cookies.
  */
-import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
+import type {Aptos} from "@aptos-labs/ts-sdk";
 import Cookies from "js-cookie";
 import {
   defaultNetworkName,
@@ -17,6 +17,7 @@ import {
   getGeomiDevApiKeyOverride,
   normalizeGeomiDevApiKeyOverride,
 } from "../settings";
+import {createMonitoredAptosClient} from "./aptosClientFactory";
 
 const NETWORK_COOKIE_NAME = "network";
 
@@ -68,26 +69,10 @@ export function createAptosClient(
         );
   const indexerUri = getGraphqlURI(networkName);
 
-  // Map network name to SDK Network enum
-  let network: SdkNetwork;
-  switch (networkName) {
-    case "mainnet":
-      network = SdkNetwork.MAINNET;
-      break;
-    case "testnet":
-      network = SdkNetwork.TESTNET;
-      break;
-    case "devnet":
-      network = SdkNetwork.DEVNET;
-      break;
-    default:
-      network = SdkNetwork.CUSTOM;
-  }
-
-  const config = new AptosConfig({
-    network,
-    fullnode: nodeUrl,
-    indexer: indexerUri,
+  return createMonitoredAptosClient({
+    networkName,
+    nodeUrl,
+    indexerUri,
     clientConfig: apiKey
       ? {
           HEADERS: {
@@ -96,8 +81,6 @@ export function createAptosClient(
         }
       : undefined,
   });
-
-  return new Aptos(config);
 }
 
 // Cache clients to avoid recreating them

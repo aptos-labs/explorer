@@ -1,7 +1,8 @@
-import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
+import type {Aptos} from "@aptos-labs/ts-sdk";
 import {useSearch} from "@tanstack/react-router";
 import Cookies from "js-cookie";
 import React, {createContext, type ReactNode, useContext, useMemo} from "react";
+import {createMonitoredAptosClient} from "../api/aptosClientFactory";
 import {AptosClient} from "../api/legacyClient";
 import {
   defaultFeatureName,
@@ -184,26 +185,10 @@ function createAptosV2Client(
   const apiKey = getApiKey(networkName, apiKeyOverride);
   const indexerUrl = getGraphqlURI(networkName);
 
-  // Map network name to SDK Network enum
-  let network: SdkNetwork;
-  switch (networkName) {
-    case "mainnet":
-      network = SdkNetwork.MAINNET;
-      break;
-    case "testnet":
-      network = SdkNetwork.TESTNET;
-      break;
-    case "devnet":
-      network = SdkNetwork.DEVNET;
-      break;
-    default:
-      network = SdkNetwork.CUSTOM;
-  }
-
-  const config = new AptosConfig({
-    network,
-    fullnode: nodeUrl,
-    indexer: indexerUrl,
+  return createMonitoredAptosClient({
+    networkName,
+    nodeUrl,
+    indexerUri: indexerUrl,
     clientConfig: apiKey
       ? {
           HEADERS: {
@@ -212,8 +197,6 @@ function createAptosV2Client(
         }
       : undefined,
   });
-
-  return new Aptos(config);
 }
 
 // Client cache to prevent unnecessary recreations

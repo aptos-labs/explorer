@@ -108,6 +108,10 @@ interface ImportMetaEnv {
   // Cache busting version for validator stats (bump to force fresh data)
   readonly VITE_VALIDATOR_STATS_CACHE_VERSION?: string;
   readonly VITE_GITHUB_TOKEN?: string;
+  /** When "true", show the in-app RPC monitor panel outside development builds. */
+  readonly VITE_RPC_MONITOR?: string;
+  /** Set to "false" to silence `[RPC #N]` console logs while keeping the panel. */
+  readonly VITE_RPC_MONITOR_LOG?: string;
 }
 
 interface ImportMeta {
