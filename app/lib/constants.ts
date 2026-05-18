@@ -26,61 +26,25 @@ type ApiKeys = {
 };
 
 /**
- * Default public client IDs (API keys) from the Aptos API Gateway.
- *
- * These are PUBLIC client identifiers used for per-application rate limit
- * accounting on the Aptos API Gateway. They are intentionally safe to ship
- * in the browser bundle — they only identify "the Aptos Explorer" so the
- * gateway can give it its own quota instead of throwing every anonymous
- * request into one shared bucket.
- *
- * History: These hardcoded defaults were originally added in `fac17279`
- * (2026-01-02) and removed in `102d50045bac79083030ed3edd151e5613c4f9e3`
- * (2026-01-03, "[refactor] Move API keys to environment variables") so that
- * preview builds wouldn't reuse prod keys. The removal had the side effect
- * that any deployment which forgot to set `VITE_APTOS_<NETWORK>_API_KEY`
- * shipped a client bundle with NO API key, sending every user's traffic to
- * the anonymous bucket and causing widespread rate limiting. They are
- * restored here as a safety net; deployments that want their own keys can
- * still override via the env var.
- *
- * Do NOT remove or rename these env vars — see AGENTS.md "Environment
- * Variables" section.
- */
-const defaultPublicClientApiKeys: ApiKeys = {
-  mainnet: "AG-4SNLEBS1PFZ3PCMUCA3T3MW5WWF5JWLJX",
-  testnet: "AG-6ZFXBNIVINVKOKLNAHNTFPDHY8WMBBD3X",
-  devnet: "AG-GA6I9F6H8NM1ACW8ZVJGMPUTJUKZ5KN6A",
-  decibel: "AG-JAG5SGHTW6VICWAU1IAQ3ZTODVHBYDWGV",
-  shelbynet: "AG-MGQQAXV57YJVDQANQPBQDFJVFMUY912EC",
-  local: undefined,
-};
-
-/**
  * Client API keys (VITE_ prefixed) - exposed in the browser bundle.
  * Use these for client-side API calls only.
  * Set via: VITE_APTOS_<NETWORK>_API_KEY
  *
- * Falls back to `defaultPublicClientApiKeys` when the env var is unset so
- * deployments that forget to wire the env var still get a per-app rate
- * limit bucket instead of joining the shared anonymous bucket.
+ * No hardcoded fallback: deployments **must** set the env var (or a per-user
+ * Settings override) for the network to be rate-limited under a dedicated
+ * client ID. When unset, `getApiKey` emits a one-time `console.error` so
+ * the misconfiguration is loud instead of silent (see
+ * `warnIfClientMissingApiKey` below).
+ *
+ * Do NOT rename or remove these env vars — see the
+ * "Never rename or remove an environment variable" section in AGENTS.md.
  */
 const clientApiKeys: ApiKeys = {
-  mainnet:
-    import.meta.env.VITE_APTOS_MAINNET_API_KEY ||
-    defaultPublicClientApiKeys.mainnet,
-  testnet:
-    import.meta.env.VITE_APTOS_TESTNET_API_KEY ||
-    defaultPublicClientApiKeys.testnet,
-  devnet:
-    import.meta.env.VITE_APTOS_DEVNET_API_KEY ||
-    defaultPublicClientApiKeys.devnet,
-  decibel:
-    import.meta.env.VITE_APTOS_DECIBEL_API_KEY ||
-    defaultPublicClientApiKeys.decibel,
-  shelbynet:
-    import.meta.env.VITE_APTOS_SHELBYNET_API_KEY ||
-    defaultPublicClientApiKeys.shelbynet,
+  mainnet: import.meta.env.VITE_APTOS_MAINNET_API_KEY,
+  testnet: import.meta.env.VITE_APTOS_TESTNET_API_KEY,
+  devnet: import.meta.env.VITE_APTOS_DEVNET_API_KEY,
+  decibel: import.meta.env.VITE_APTOS_DECIBEL_API_KEY,
+  shelbynet: import.meta.env.VITE_APTOS_SHELBYNET_API_KEY,
   local: import.meta.env.VITE_APTOS_LOCAL_API_KEY || undefined,
 };
 

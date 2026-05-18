@@ -1,12 +1,14 @@
-// Covers FEAT-RATE-LIMIT (client API key fallback behavior).
+// Covers client-side API key behavior and the missing-key console.error.
 // These tests pin the contract that:
-//   1. `getApiKey` returns a non-undefined value for every non-`local`
-//      network even when no `VITE_APTOS_<NETWORK>_API_KEY` env var is set
-//      (so the client bundle always carries an API key for rate-limit
-//      bucketing).
-//   2. An explicit override always wins.
-//   3. `warnIfClientMissingApiKey` emits a one-time `console.error` when
-//      the client has no API key for a network that normally has one.
+//   1. `getApiKey` returns whatever the `VITE_APTOS_<NETWORK>_API_KEY` env
+//      var was set to at build time (or `undefined` when it wasn't).
+//      The repo intentionally does NOT carry a hardcoded default — every
+//      deployment is responsible for configuring its own key.
+//   2. An explicit override always wins, and a blank override falls back
+//      to the env var (or `undefined`).
+//   3. `warnIfClientMissingApiKey` emits a one-time `console.error` on the
+//      client when the env var is unset for a network that normally has
+//      one, naming the env var so the misconfiguration is actionable.
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {
   getApiKey,
@@ -14,39 +16,56 @@ import {
   warnIfClientMissingApiKey,
 } from "./constants";
 
-describe("client API key fallbacks", () => {
-  it("returns a non-empty default key for mainnet when no env var or override is set", () => {
-    const key = getApiKey("mainnet");
-    expect(key).toBeTruthy();
-    expect(typeof key).toBe("string");
-    // Aptos Gateway client IDs are prefixed with "AG-".
-    expect(key).toMatch(/^AG-/);
+describe("getApiKey", () => {
+  const originalWindow = globalThis.window;
+
+  beforeEach(() => {
+    resetMissingApiKeyWarnings();
+    if (typeof globalThis.window === "undefined") {
+      // biome-ignore lint/suspicious/noExplicitAny: minimal test stub
+      (globalThis as any).window = {};
+    }
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
-  it("returns a non-empty default key for testnet", () => {
-    const key = getApiKey("testnet");
-    expect(key).toBeTruthy();
-    expect(key).toMatch(/^AG-/);
+  afterEach(() => {
+    vi.restoreAllMocks();
+    if (typeof originalWindow === "undefined") {
+      // biome-ignore lint/suspicious/noExplicitAny: restore stub
+      delete (globalThis as any).window;
+    }
   });
 
-  it("returns a non-empty default key for devnet", () => {
-    const key = getApiKey("devnet");
-    expect(key).toBeTruthy();
-    expect(key).toMatch(/^AG-/);
+  it("prefers an explicit override over the env var", () => {
+    const override = "AG-USER-OVERRIDE-KEY";
+    expect(getApiKey("mainnet", override)).toBe(override);
+    // An accepted override means the missing-key warning must NOT fire.
+    expect(console.error).not.toHaveBeenCalled();
+  });
+
+  it("trims whitespace from an override and falls back when blank", () => {
+    expect(getApiKey("mainnet", "   ")).toBe(getApiKey("mainnet"));
   });
 
   it("returns undefined for local (no public API key expected)", () => {
     const key = getApiKey("local");
     expect(key).toBeUndefined();
+    expect(console.error).not.toHaveBeenCalled();
   });
 
-  it("prefers an explicit override over the default", () => {
-    const override = "AG-USER-OVERRIDE-KEY";
-    expect(getApiKey("mainnet", override)).toBe(override);
-  });
-
-  it("trims whitespace from an override and falls back to the default when blank", () => {
-    expect(getApiKey("mainnet", "   ")).toBe(getApiKey("mainnet"));
+  it("emits a console.error when no env var is set for mainnet", () => {
+    const key = getApiKey("mainnet");
+    if (key === undefined) {
+      expect(console.error).toHaveBeenCalledTimes(1);
+      const [msg] = (console.error as ReturnType<typeof vi.fn>).mock.calls[0];
+      expect(String(msg)).toContain("No Aptos API key configured");
+      expect(String(msg)).toContain("mainnet");
+      expect(String(msg)).toContain("VITE_APTOS_MAINNET_API_KEY");
+    } else {
+      // Vitest run with a real VITE_APTOS_MAINNET_API_KEY (e.g. in CI):
+      // the key flows through unchanged and the warning is suppressed.
+      expect(console.error).not.toHaveBeenCalled();
+    }
   });
 });
 
@@ -55,7 +74,6 @@ describe("warnIfClientMissingApiKey", () => {
 
   beforeEach(() => {
     resetMissingApiKeyWarnings();
-    // Force the "client" branch on by giving globalThis a minimal window.
     if (typeof globalThis.window === "undefined") {
       // biome-ignore lint/suspicious/noExplicitAny: minimal test stub
       (globalThis as any).window = {};
