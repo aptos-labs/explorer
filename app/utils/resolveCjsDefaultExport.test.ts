@@ -1,3 +1,4 @@
+// Covers FEAT-MODULES-001 — CJS default export interop for module code highlighting
 import {describe, expect, it} from "vitest";
 import {resolveCjsDefaultExport} from "./resolveCjsDefaultExport";
 
@@ -21,7 +22,15 @@ describe("resolveCjsDefaultExport", () => {
   it("throws when no callable export is found", () => {
     expect(() =>
       resolveCjsDefaultExport({default: {foo: 1}}, "test-module"),
-    ).toThrow(/callable default export.*test-module/);
+    ).toThrow(
+      /callable default export.*test-module.*interop shape: root=object, default=object, default\.default=undefined/,
+    );
+  });
+
+  it("throws with null in interop shape description", () => {
+    expect(() => resolveCjsDefaultExport(null, "null-module")).toThrow(
+      /interop shape: null/,
+    );
   });
 });
 
