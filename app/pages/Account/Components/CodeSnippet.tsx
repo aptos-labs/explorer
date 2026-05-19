@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import type React from "react";
 import {Suspense, useEffect, useMemo, useRef, useState} from "react";
-import createElement from "react-syntax-highlighter/dist/cjs/create-element.js";
 import type {Types} from "~/types/aptos";
 import {
   CodeLoadingFallback,
@@ -40,6 +39,7 @@ import {
   type DecompilationView,
   getDecompiledCodeView,
 } from "../../../utils/moveDecompiler";
+import {syntaxHighlighterCreateElement} from "../../../utils/syntaxHighlighterCreateElement";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
@@ -53,7 +53,7 @@ function defaultSyntaxHighlighterRenderer({
   useInlineStyles: boolean;
 }) {
   return rows.map((node, i) =>
-    createElement({
+    syntaxHighlighterCreateElement({
       node,
       stylesheet,
       useInlineStyles,

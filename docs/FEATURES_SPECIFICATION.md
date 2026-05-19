@@ -1219,6 +1219,8 @@ top of the HTML site.
 | `app/utils/cliCommand.test.ts` | CLI command generation from payloads |
 | `app/utils/moveDecompiler.test.ts` | FEAT-MODULES-004 (decompiler helpers) |
 | `app/utils/moveCodeNavigation.test.ts` | FEAT-MODULES-005 (cross-module link path building and resolution) |
+| `app/utils/resolveCjsDefaultExport.test.ts` | FEAT-MODULES-001 (CJS default export interop for syntax highlighter) |
+| `app/utils/syntaxHighlighterCreateElement.test.ts` | FEAT-MODULES-001 (module code view syntax highlighting) |
 | `app/utils/moduleErrorHandler.test.ts` | FEAT-ERROR-001 (chunk error handling, reload behavior) |
 | `app/utils/llmsRouteCoverage.test.ts` | FEAT-SEO-003 (LLM doc drift) |
 | `app/utils/agentSkillsIndex.test.ts` | FEAT-SEO-004 (agent-skills index schema, digest integrity, frontmatter) |
