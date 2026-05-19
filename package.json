@@ -50,6 +50,7 @@
     "start": "vite dev --port 3000",
     "dev": "vite dev --port 3030",
     "build": "vite build",
+    "build:vercel": "node scripts/build-vercel-output.mjs",
     "serve": "vite preview",
     "lint": "tsc --noEmit && biome lint .",
     "fmt": "biome format --write .",

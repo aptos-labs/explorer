@@ -1,0 +1,15 @@
+# Files not needed by the Vercel build / runtime.
+# The build emits `.vercel/output/` which is what Vercel actually deploys.
+
+.netlify/
+node_modules/
+e2e/
+docs/
+analytics/
+.agents/
+.cursor/
+.agent/
+.vibe/
+.opencode/
+stats.html
+*.log

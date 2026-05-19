@@ -127,6 +127,24 @@ This repository is often modified by automated agents. The following bar keeps t
 - **Do not use Netlify Edge Functions** for this project unless there is explicit human approval. Avoid adding Edge middleware or Edge-deployed handlers (for example `netlify/edge-functions/`, `[[edge_functions]]` in `netlify.toml`, or plugins that register Edge Functions). The explorer’s deployment model is TanStack Start SSR and Netlify Functions; Edge adds a different runtime, operational surface, and cost profile.
 - **Check deployment diffs**: When a change touches `netlify.toml`, files under `netlify/functions/`, `netlify/edge-functions/`, or Netlify-related build plugins, review it for accidental Edge Function adoption.
 
+### Vercel and Netlify dual deploy
+
+The explorer currently deploys to **both Netlify and Vercel** during the migration window. Netlify remains the primary host; Vercel runs in parallel for parity validation. Both targets consume the **same** `pnpm build` output (`dist/client/` for static assets, `dist/server/ssr.js` for the SSR handler) — the platform-specific glue lives in two files:
+
+| Host | Config | What it does |
+| --- | --- | --- |
+| Netlify | `netlify.toml` + `@netlify/vite-plugin-tanstack-start` | The plugin writes `.netlify/v1/functions/server.mjs` (a 13-line wrapper around `dist/server/ssr.js`); `netlify.toml` declares headers, redirects, and cache rules. |
+| Vercel | `vercel.ts` + `scripts/build-vercel-output.mjs` | The script emits the Build Output API v3 layout (`.vercel/output/static/` + `.vercel/output/functions/index.func/` + `.vercel/output/config.json`). `vercel.ts` just points `buildCommand` at the script and sets `framework: null`. |
+
+**Rules for all agents:**
+
+- **Header / redirect / cache parity**: When you add or change a header, redirect, or cache rule, update **both** `netlify.toml` **and** `scripts/build-vercel-output.mjs` in the same PR. The two configs are the source of truth for their respective hosts and silently diverge otherwise.
+- **No Vercel Edge Functions** without explicit human approval (same rationale as the Netlify Edge restriction). The SSR handler runs on Fluid Compute Node.js, which already shares one identity with the Node lambda Netlify generates. Edge adds a different runtime profile and breaks the "one SSR bundle for both hosts" property.
+- **Preview-context API key suppression** is host-neutral. Vercel sets `VERCEL_ENV` (`production` | `preview` | `development`); `scripts/build-vercel-output.mjs` maps that to `VITE_VERCEL_CONTEXT` for the client bundle. `app/lib/constants.ts → isHostedPreview` checks both `VITE_NETLIFY_CONTEXT` (`deploy-preview` / `branch-deploy`) and `VITE_VERCEL_CONTEXT` (`preview`) before suppressing keys.
+- **Local development is unchanged**: `pnpm dev`, `pnpm start`, `pnpm test`, `pnpm test:e2e`, and `pnpm ci:verify` keep working identically. The Vercel layout is only emitted when you run `pnpm build:vercel`.
+- **Don't remove the Netlify config** during the dual-deploy window. The plan is to validate Vercel against `explorer.aptoslabs.com` parity first, then cut DNS over. Until that explicit cutover, both `netlify.toml` and `vercel.ts` must remain functional.
+- **Don't rename `VITE_NETLIFY_CONTEXT` or `VITE_VERCEL_CONTEXT`** during the dual-deploy window — they're load-bearing env vars on both hosts (see [Never rename or remove an environment variable](#never-rename-or-remove-an-environment-variable)).
+
 ### Product and UX
 
 - **Loading and errors**: Follow existing patterns (`pendingComponent`, suspense fallbacks, error boundaries). Do not leave new async paths without a user-visible state.

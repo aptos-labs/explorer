@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aptos Explorer — Vercel deployment setup</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --fg: #1c1c1e;
+        --muted: #6b6b70;
+        --accent: #0a66ff;
+        --border: #e5e5e7;
+        --code-bg: #f4f4f6;
+        --warn-bg: #fff7e6;
+        --warn-border: #f0c14b;
+        --ok-bg: #ecfdf5;
+        --ok-border: #10b981;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fg: #f2f2f4;
+          --muted: #a1a1a6;
+          --border: #2c2c2e;
+          --code-bg: #1c1c1e;
+          --warn-bg: #2a2310;
+          --warn-border: #c08a1a;
+          --ok-bg: #0f2920;
+          --ok-border: #10b981;
+        }
+        body {
+          background: #0d0d0f;
+        }
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+          Arial, sans-serif;
+        color: var(--fg);
+        max-width: 820px;
+        margin: 2rem auto;
+        padding: 0 1.25rem 4rem;
+        line-height: 1.55;
+      }
+      h1 {
+        margin: 0 0 0.25rem;
+        font-size: 1.75rem;
+      }
+      h2 {
+        margin: 2.5rem 0 0.75rem;
+        font-size: 1.25rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid var(--border);
+      }
+      h3 {
+        margin: 1.5rem 0 0.5rem;
+        font-size: 1rem;
+      }
+      p,
+      li {
+        margin: 0.4rem 0;
+      }
+      ol,
+      ul {
+        padding-left: 1.4rem;
+      }
+      code {
+        background: var(--code-bg);
+        padding: 0.1rem 0.35rem;
+        border-radius: 4px;
+        font-family:
+          ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        font-size: 0.9em;
+      }
+      pre {
+        background: var(--code-bg);
+        padding: 0.9rem 1rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-size: 0.85rem;
+      }
+      pre code {
+        background: transparent;
+        padding: 0;
+      }
+      .lede {
+        color: var(--muted);
+        margin: 0.25rem 0 1rem;
+      }
+      .callout {
+        border-left: 3px solid var(--warn-border);
+        background: var(--warn-bg);
+        padding: 0.75rem 1rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+      }
+      .callout.ok {
+        border-left-color: var(--ok-border);
+        background: var(--ok-bg);
+      }
+      .callout strong {
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0.75rem 0;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.95rem;
+      }
+      th {
+        font-weight: 600;
+        color: var(--muted);
+      }
+      a {
+        color: var(--accent);
+      }
+      .filelist code {
+        font-size: 0.85rem;
+      }
+      footer {
+        margin-top: 3rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+        border-top: 1px solid var(--border);
+        padding-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Aptos Explorer — Vercel deployment setup</h1>
+    <p class="lede">
+      Steps to stand up the explorer on Vercel alongside the existing Netlify
+      deployment. Netlify keeps serving production until you explicitly cut DNS
+      over.
+    </p>
+
+    <div class="callout ok">
+      <strong>What the repo already has</strong>
+      Code changes are in place: <code>vercel.ts</code> + a build script
+      (<code>scripts/build-vercel-output.mjs</code>) that emits Vercel's
+      <a href="https://vercel.com/docs/build-output-api/v3">Build Output API v3</a>
+      layout, plus <code>VITE_VERCEL_CONTEXT</code> wiring for preview-deploy API
+      key suppression. Nothing about Netlify changed. See AGENTS.md →
+      <em>"Vercel and Netlify dual deploy"</em> for the parity rules.
+    </div>
+
+    <h2>1. Create the Vercel project</h2>
+    <ol>
+      <li>
+        In the Vercel dashboard, click <strong>Add New… → Project</strong> and
+        import the <code>aptos-explorer</code> GitHub repo.
+      </li>
+      <li>
+        On the configuration screen:
+        <ul>
+          <li><strong>Framework Preset:</strong> <code>Other</code></li>
+          <li>
+            <strong>Build Command:</strong> leave blank — <code>vercel.ts</code>
+            sets <code>buildCommand: "node scripts/build-vercel-output.mjs"</code>.
+          </li>
+          <li>
+            <strong>Output Directory:</strong> leave blank —
+            <code>vercel.ts</code> sets <code>outputDirectory: ".vercel/output"</code>.
+          </li>
+          <li>
+            <strong>Install Command:</strong> leave blank —
+            <code>vercel.ts</code> sets
+            <code>installCommand: "pnpm install --frozen-lockfile"</code>.
+          </li>
+          <li>
+            <strong>Node.js Version:</strong> <code>24.x</code> (or higher). The
+            SSR function pins <code>nodejs24.x</code>; the build itself should
+            run on the same major.
+          </li>
+        </ul>
+      </li>
+      <li>
+        Do <strong>not</strong> deploy yet — environment variables need to be
+        in place first.
+      </li>
+    </ol>
+
+    <h2>2. Set environment variables</h2>
+    <p>
+      Mirror everything from Netlify. Set scope to
+      <strong>Production, Preview, and Development</strong> unless noted.
+    </p>
+
+    <h3>Aptos API keys (required)</h3>
+    <p>
+      Each network needs both a client-side <code>VITE_*</code> key (baked into
+      the browser bundle at build) and a server-side key (read by SSR at runtime).
+      The values should be <em>identical</em> per network so browser and server
+      share one identity / rate-limit bucket.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Client (browser bundle)</th>
+          <th>Server (SSR)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>VITE_APTOS_MAINNET_API_KEY</code></td>
+          <td><code>APTOS_MAINNET_API_KEY</code></td>
+        </tr>
+        <tr>
+          <td><code>VITE_APTOS_TESTNET_API_KEY</code></td>
+          <td><code>APTOS_TESTNET_API_KEY</code></td>
+        </tr>
+        <tr>
+          <td><code>VITE_APTOS_DEVNET_API_KEY</code></td>
+          <td><code>APTOS_DEVNET_API_KEY</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Preview deploys</strong>
+      The keys are scoped to <code>explorer.aptoslabs.com</code>, so Vercel
+      preview URLs (<code>*.vercel.app</code>) will hit rate limits. That's
+      expected — the client code already detects
+      <code>VITE_VERCEL_CONTEXT === "preview"</code> and suppresses keys so the
+      browser falls back to anonymous rate limits with a loud console warning,
+      matching Netlify's deploy-preview behavior.
+    </div>
+
+    <h3>Optional: analytics &amp; feature flags</h3>
+    <table>
+      <thead>
+        <tr><th>Variable</th><th>Purpose</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>REACT_APP_GTM_ID</code></td>
+          <td>Google Tag Manager ID (Production only).</td>
+        </tr>
+        <tr>
+          <td><code>VITE_FEATURE_NAME</code></td>
+          <td>
+            Feature tier banner — <code>prod</code> / <code>dev</code> /
+            <code>earlydev</code>. Defaults to <code>prod</code>.
+          </td>
+        </tr>
+        <tr>
+          <td><code>VITE_VALIDATOR_STATS_CACHE_VERSION</code></td>
+          <td>Cache-bust string for validator stats.</td>
+        </tr>
+        <tr>
+          <td><code>VITE_GITHUB_TOKEN</code></td>
+          <td>Higher rate limit on GitHub-source queries (optional).</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Auto-injected (do not set manually)</h3>
+    <ul>
+      <li>
+        <code>VERCEL_ENV</code> — Vercel sets this to
+        <code>production</code>/<code>preview</code>/<code>development</code>.
+        The build script reads it and exports
+        <code>VITE_VERCEL_CONTEXT</code> for the client bundle.
+      </li>
+    </ul>
+
+    <h2>3. Trigger the first preview deploy</h2>
+    <ol>
+      <li>
+        Click <strong>Deploy</strong>. Vercel will run
+        <code>pnpm install --frozen-lockfile</code>, then
+        <code>node scripts/build-vercel-output.mjs</code> (which itself runs
+        <code>pnpm routes:generate</code> + <code>vite build</code> + emits
+        <code>.vercel/output/</code>).
+      </li>
+      <li>
+        Expected build time: roughly the same as Netlify — Vite build dominates.
+      </li>
+      <li>
+        Once green, open the preview URL and watch the
+        <strong>Functions</strong> tab in the deployment view to confirm the SSR
+        function (<code>index.func</code>) is invoked on page loads.
+      </li>
+    </ol>
+
+    <h2>4. Parity checklist</h2>
+    <p>
+      Before considering Vercel ready for production, validate parity with a few
+      spot checks. Replace <code>{preview}</code> with the Vercel URL.
+    </p>
+
+    <h3>SSR cache headers</h3>
+    <pre><code>curl -sI https://{preview}/ | grep -i cache-control
+# expect:  Cache-Control: public, max-age=0, s-maxage=15, stale-while-revalidate=60
+
+curl -sI https://{preview}/txn/1 | grep -i cache-control
+# expect:  Cache-Control: public, max-age=0, s-maxage=3600, stale-while-revalidate=86400
+
+curl -sI https://{preview}/account/0x1 | grep -i cache-control
+# expect:  Cache-Control: public, max-age=0, s-maxage=30, stale-while-revalidate=120</code></pre>
+
+    <h3>Security &amp; agent-discovery headers</h3>
+    <pre><code>curl -sI https://{preview}/ | grep -iE 'x-frame|x-content|referrer|permissions|link|vary'
+# expect: X-Frame-Options, X-Content-Type-Options, Referrer-Policy,
+#         Permissions-Policy, Link (api-catalog, agent-skills, llms, sitemap),
+#         and Vary: Accept</code></pre>
+
+    <h3>Well-known files</h3>
+    <pre><code>curl -sI https://{preview}/.well-known/api-catalog | grep -iE 'content-type|access-control'
+# expect: Content-Type: application/linkset+json
+#         Access-Control-Allow-Origin: *
+
+curl -sI https://{preview}/llms.txt | grep -iE 'content-type|cache-control|x-robots-tag'
+# expect: Content-Type: text/plain; charset=utf-8
+#         Cache-Control: public, max-age=86400
+#         X-Robots-Tag: noarchive</code></pre>
+
+    <h3>Markdown homepage negotiation</h3>
+    <pre><code>curl -s -H 'Accept: text/markdown' https://{preview}/ | head -3
+# expect: the contents of public/llms.txt (not the SSR HTML)</code></pre>
+
+    <h3>Legacy host redirects (only verifiable after DNS)</h3>
+    <pre><code># Once you point explorer.devnet.aptos.dev at Vercel:
+curl -sI https://explorer.devnet.aptos.dev/account/0x1
+# expect: 301 → https://explorer.aptoslabs.com/account/0x1?network=devnet</code></pre>
+
+    <h2>5. Hook up a stable preview hostname (recommended)</h2>
+    <p>
+      Add a CNAME like <code>explorer-vercel.aptoslabs.com</code> → Vercel for
+      ongoing parity validation while Netlify keeps the canonical traffic. In
+      the Vercel project: <strong>Settings → Domains → Add</strong>.
+    </p>
+
+    <h2>6. Production cutover (when ready)</h2>
+    <ol>
+      <li>
+        Run the parity checklist on a Vercel preview that's been live for at
+        least a few days.
+      </li>
+      <li>
+        Move <code>explorer.aptoslabs.com</code> (and the legacy
+        <code>*.aptos.dev</code> subdomains) DNS records over to Vercel.
+      </li>
+      <li>
+        Keep Netlify running for at least a week as a fallback — both configs
+        (<code>netlify.toml</code> and <code>vercel.ts</code>) must stay in sync
+        until then. See AGENTS.md for the parity rules.
+      </li>
+      <li>
+        Once you're confident, file a separate PR to remove Netlify
+        configuration: <code>netlify.toml</code>,
+        <code>@netlify/vite-plugin-tanstack-start</code> in
+        <code>vite.config.ts</code>, the <code>VITE_NETLIFY_CONTEXT</code> type,
+        and the half of <code>isHostedPreview</code> that checks it.
+      </li>
+    </ol>
+
+    <h2>Troubleshooting</h2>
+
+    <h3>"y.handler is not a function"</h3>
+    <p>
+      Means the SSR function's default export wasn't a callable. The wrapper at
+      <code>.vercel/output/functions/index.func/index.mjs</code> must be
+      <code>export default ssr.fetch;</code> — if you see this error, confirm
+      <code>dist/server/ssr.js</code> still exports
+      <code>default { fetch }</code> (the same contract Netlify relies on).
+    </p>
+
+    <h3>API keys leak into preview URLs</h3>
+    <p>
+      Confirm the build log printed something like
+      <code>VITE_VERCEL_CONTEXT=preview</code>. If not, the build script didn't
+      see <code>VERCEL_ENV</code> — open an issue and check
+      <code>scripts/build-vercel-output.mjs</code>.
+    </p>
+
+    <h3>504 timeouts on slow pages</h3>
+    <p>
+      Unlikely — the SSR function is configured for
+      <code>maxDuration: 300</code>. Active CPU billing means longer timeouts
+      are essentially free unless the handler is CPU-bound, which TanStack
+      Start's SSR isn't. If you do see 504s, the upstream Aptos API is the
+      first place to look.
+    </p>
+
+    <h2>Files involved</h2>
+    <ul class="filelist">
+      <li>
+        <code>vercel.ts</code> — Vercel project config (build command, install
+        command, output directory; no framework preset).
+      </li>
+      <li>
+        <code>scripts/build-vercel-output.mjs</code> — runs
+        <code>pnpm run build</code>, then emits
+        <code>.vercel/output/</code> (static assets, SSR function, routes /
+        headers / redirects).
+      </li>
+      <li><code>.vercelignore</code> — keeps Netlify output out of the upload.</li>
+      <li>
+        <code>app/lib/constants.ts</code> — <code>isHostedPreview</code> checks
+        both <code>VITE_NETLIFY_CONTEXT</code> and
+        <code>VITE_VERCEL_CONTEXT</code>.
+      </li>
+      <li>
+        <code>app/types/declarations.d.ts</code> — TypeScript type for
+        <code>VITE_VERCEL_CONTEXT</code>.
+      </li>
+    </ul>
+
+    <footer>
+      For implementation details and the dual-deploy parity contract, see
+      <code>AGENTS.md</code> → <em>"Vercel and Netlify dual deploy"</em>.
+    </footer>
+  </body>
+</html>

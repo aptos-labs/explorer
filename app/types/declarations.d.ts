@@ -102,6 +102,12 @@ interface ImportMetaEnv {
     | "production"
     | "deploy-preview"
     | "branch-deploy";
+  // Vercel build context baked in at build time (production | preview).
+  // Set by `scripts/build-vercel-output.mjs` from Vercel's `VERCEL_ENV`.
+  // Undefined for local development and Netlify builds. Mirrors
+  // VITE_NETLIFY_CONTEXT so preview-deploy API-key suppression works on
+  // both hosts during the Netlify → Vercel transition.
+  readonly VITE_VERCEL_CONTEXT?: "production" | "preview";
   // Feature tier: "prod" | "dev" | "earlydev" — controls the dev-mode banner
   // and dev-only UI. Also overridable at runtime via a "feature_name" cookie.
   readonly VITE_FEATURE_NAME?: string;

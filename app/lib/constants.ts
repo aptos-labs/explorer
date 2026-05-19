@@ -55,14 +55,16 @@ const clientApiKeys: ApiKeys = {
 };
 
 /**
- * True when the build was produced by a Netlify preview deployment (deploy-preview
- * or branch-deploy context). API keys are intentionally suppressed for these
- * contexts because the keys are not scoped to preview deployment URLs.
- * Local development and production builds are unaffected.
+ * True when the build was produced by a hosted preview deployment on either
+ * Netlify (deploy-preview / branch-deploy) or Vercel (preview). API keys are
+ * intentionally suppressed for these contexts because the keys are not scoped
+ * to preview deployment URLs. Local development and production builds are
+ * unaffected.
  */
-const isNetlifyPreview =
+const isHostedPreview =
   import.meta.env.VITE_NETLIFY_CONTEXT === "deploy-preview" ||
-  import.meta.env.VITE_NETLIFY_CONTEXT === "branch-deploy";
+  import.meta.env.VITE_NETLIFY_CONTEXT === "branch-deploy" ||
+  import.meta.env.VITE_VERCEL_CONTEXT === "preview";
 
 /**
  * Networks that intentionally do not have a default client API key:
@@ -154,7 +156,7 @@ export function getApiKey(
     return normalizedOverride;
   }
 
-  if (isNetlifyPreview) {
+  if (isHostedPreview) {
     warnIfClientMissingApiKey(network_name);
     return undefined;
   }
