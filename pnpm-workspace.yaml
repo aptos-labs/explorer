@@ -29,17 +29,17 @@ allowBuilds:
 overrides:
   "@aptos-labs/wallet-standard": 1.0.0
   "@aptos-labs/ts-sdk": 7.1.0
-  axios: 1.16.0
+  axios: 1.16.1
   d3-array: 3.2.4
   d3-color: 3.1.0
   d3-dispatch: 3.0.1
   d3-drag: 3.0.0
   d3-ease: 3.0.1
   d3-interpolate: 3.0.1
-  brace-expansion: 5.0.5
+  brace-expansion: 5.0.6
   defu: 6.1.7
   fast-uri: 3.1.2
-  h3-v2: npm:h3@2.0.1-rc.18
+  h3-v2: npm:h3@2.0.1-rc.22
   d3-geo: 3.1.1
   d3-selection: 3.0.0
   d3-timer: 3.0.1
