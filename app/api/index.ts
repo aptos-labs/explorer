@@ -1,7 +1,6 @@
 import {
   type AccountAddressInput,
   APTOS_COIN,
-  type Aptos,
   type InputViewFunctionData,
   TypeTagAddress,
   TypeTagU64,
@@ -12,6 +11,7 @@ import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
 import {isNumeric} from "../pages/utils";
 import {mapWithConcurrencyLimit} from "../utils/mapWithConcurrencyLimit";
 import {sortTransactions} from "../utils/utils";
+import type {AptosComposedClient} from "./aptosComposedClient";
 import {AptosClient} from "./legacyClient";
 
 // Error wrapper
@@ -238,7 +238,7 @@ export async function getRecentBlocks(
 }
 
 export async function getBalance(
-  client: Aptos,
+  client: AptosComposedClient,
   address: AccountAddressInput,
   coinType?: `0x${string}::${string}::${string}`,
 ): Promise<string> {

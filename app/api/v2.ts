@@ -1,7 +1,8 @@
-import {AccountAddress, type Aptos, type Block} from "@aptos-labs/ts-sdk";
+import {AccountAddress, type Block} from "@aptos-labs/ts-sdk";
 import type {Types} from "~/types/aptos";
 import {isNumeric} from "../pages/utils";
 import {mapWithConcurrencyLimit} from "../utils/mapWithConcurrencyLimit";
+import type {AptosComposedClient} from "./aptosComposedClient";
 import {withResponseError} from "./client";
 
 /** Avoid bursting dozens of parallel `getBlockByHeight` calls (edge/CDN rate limits). */
@@ -9,7 +10,7 @@ const DEFAULT_BLOCKS_REST_CONCURRENCY = 8;
 
 export function getBlockByHeight(
   requestParameters: {height: number; withTransactions: boolean},
-  aptos: Aptos,
+  aptos: AptosComposedClient,
 ): Promise<Block> {
   const {height, withTransactions} = requestParameters;
   return withResponseError(
@@ -19,7 +20,7 @@ export function getBlockByHeight(
 
 export function getBlockByVersion(
   requestParameters: {version: number; withTransactions: boolean},
-  aptos: Aptos,
+  aptos: AptosComposedClient,
 ): Promise<Block> {
   const {version, withTransactions} = requestParameters;
   return withResponseError(
@@ -33,7 +34,7 @@ export function getBlockByVersion(
 export async function getRecentBlocks(
   currentBlockHeight: bigint | number,
   count: bigint | number,
-  aptos: Aptos,
+  aptos: AptosComposedClient,
   options?: {maxConcurrency?: number},
 ): Promise<Block[]> {
   const n = Number(count);
@@ -59,7 +60,7 @@ export async function getRecentBlocks(
  */
 export async function getAccountV2(
   requestParameters: {address: string},
-  aptos: Aptos,
+  aptos: AptosComposedClient,
 ): Promise<Types.AccountData> {
   const {address} = requestParameters;
   const accountAddress = AccountAddress.from(address, {maxMissingChars: 63});
@@ -81,7 +82,7 @@ export async function getAccountV2(
  */
 export async function getAccountResourcesV2(
   requestParameters: {address: string; ledgerVersion?: number},
-  aptos: Aptos,
+  aptos: AptosComposedClient,
 ): Promise<Types.MoveResource[]> {
   const {address, ledgerVersion} = requestParameters;
   const accountAddress = AccountAddress.from(address, {maxMissingChars: 63});
@@ -110,7 +111,7 @@ export async function getAccountResourceV2(
     resourceType: string;
     ledgerVersion?: number;
   },
-  aptos: Aptos,
+  aptos: AptosComposedClient,
 ): Promise<Types.MoveResource> {
   const {address, resourceType, ledgerVersion} = requestParameters;
   const accountAddress = AccountAddress.from(address, {maxMissingChars: 63});
@@ -136,7 +137,7 @@ export async function getAccountResourceV2(
  */
 export async function getTransactionV2(
   requestParameters: {txnHashOrVersion: string | number},
-  aptos: Aptos,
+  aptos: AptosComposedClient,
 ): Promise<Types.Transaction> {
   const {txnHashOrVersion} = requestParameters;
   if (typeof txnHashOrVersion === "number" || isNumeric(txnHashOrVersion)) {
