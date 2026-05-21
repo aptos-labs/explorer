@@ -19,6 +19,8 @@ minimumReleaseAgeExclude:
   - "@aptos-labs/aptos-client"
   - "@mui/material"
   - "@mui/icons-material"
+  # Renovate security update: js-cookie@3.0.7
+  - js-cookie@3.0.7
 
 allowBuilds:
   "@parcel/watcher": false
