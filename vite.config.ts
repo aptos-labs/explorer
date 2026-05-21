@@ -126,6 +126,11 @@ export default defineConfig({
   resolve: {
     alias: {
       "~": "/app",
+      // Stub out poseidon-lite (Keyless ZKP hash library) from the client bundle.
+      // The explorer does not use Keyless accounts; this eliminates ~610 KB of
+      // ZKP lookup tables from the vendor-aptos chunk. Keyless paths in the SDK
+      // are reached only via dynamic import() at runtime and will throw if called.
+      "poseidon-lite": "/app/stubs/poseidon-lite.ts",
     },
   },
   optimizeDeps: {
