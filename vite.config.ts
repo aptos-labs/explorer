@@ -4,6 +4,7 @@ import {tanstackStart} from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react-swc";
 import {visualizer} from "rollup-plugin-visualizer";
 import type {PluginOption} from "vite";
+import {perEnvironmentPlugin} from "vite";
 import compression from "vite-plugin-compression";
 import viteSvgr from "vite-plugin-svgr";
 import {configDefaults, defineConfig} from "vitest/config";
@@ -37,12 +38,20 @@ export default defineConfig({
     }) as PluginOption,
     // PWA: Service worker is manually configured in public/sw.js
     // This ensures compatibility with TanStack Start SSR
-    // Codecov bundle analysis — must be last in plugins array
-    codecovVitePlugin({
-      enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
-      bundleName: "aptos-explorer",
-      uploadToken: process.env.CODECOV_TOKEN,
-      telemetry: false,
+    // Codecov bundle analysis — runs per environment so client and server are
+    // tracked separately in Codecov's bundle UI (aptos-explorer-client vs. -server).
+    perEnvironmentPlugin("codecov-bundle-analysis", (env) => {
+      if (!process.env.CODECOV_TOKEN) return false;
+      const bundleName =
+        env.name === "client"
+          ? "aptos-explorer-client"
+          : "aptos-explorer-server";
+      return codecovVitePlugin({
+        enableBundleAnalysis: true,
+        bundleName,
+        uploadToken: process.env.CODECOV_TOKEN,
+        telemetry: false,
+      });
     }),
   ],
   // Support both VITE_ and REACT_APP_ prefixed environment variables
