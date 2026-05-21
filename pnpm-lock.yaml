@@ -6,7 +6,7 @@ settings:
 
 overrides:
   '@aptos-labs/wallet-standard': 1.0.0
-  '@aptos-labs/ts-sdk': 7.0.0
+  '@aptos-labs/ts-sdk': 7.1.0
   axios: 1.16.0
   d3-array: 3.2.4
   d3-color: 3.1.0
