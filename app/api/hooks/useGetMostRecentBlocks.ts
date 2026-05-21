@@ -1,7 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import type {Types} from "~/types/aptos";
 import {
-  useAptosClient,
   useNetworkName,
   useNetworkValue,
   useSdkV2Client,
@@ -10,8 +9,8 @@ import {
   normalizeGeomiDevApiKeyOverride,
   useExplorerSettings,
 } from "../../settings";
-import {getLedgerInfo} from "..";
 import {getRecentBlocks} from "../v2";
+import {useGetLedgerInfo} from "./useGetLedgerInfo";
 
 /**
  * Recent blocks for `/blocks`. Uses the same REST `getBlockByHeight` data as block
@@ -23,7 +22,6 @@ export function useGetMostRecentBlocks(
 ) {
   const networkName = useNetworkName();
   const networkValue = useNetworkValue();
-  const aptosClient = useAptosClient();
   const sdkV2Client = useSdkV2Client();
   const {
     settings: {geomiDevApiKeyOverridesByNetwork},
@@ -32,13 +30,12 @@ export function useGetMostRecentBlocks(
     geomiDevApiKeyOverridesByNetwork[networkName],
   );
 
-  const {isLoading: isLoadingLedgerData, data: ledgerData} = useQuery({
-    queryKey: ["ledgerInfo", networkValue, apiKeyIdentity],
-    queryFn: () => getLedgerInfo(aptosClient),
-    staleTime: 60 * 1000,
-    gcTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: true,
+  // Shared ledger-info polling. The `/blocks` page is also typically open
+  // with the TPS pill (which polls every 15 s) so this just subscribes to
+  // the same shared query rather than spinning up a duplicate poller.
+  const {isLoading: isLoadingLedgerData, data: ledgerData} = useGetLedgerInfo({
+    staleTimeMs: 60 * 1000,
+    gcTimeMs: 5 * 60 * 1000,
   });
   const currentBlockHeight = parseInt(
     start ?? ledgerData?.block_height ?? "",
