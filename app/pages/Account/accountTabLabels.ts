@@ -5,6 +5,8 @@ export function getAccountTabHeadLabel(tab: string | undefined): string {
   switch (tab ?? "transactions") {
     case "transactions":
       return "Transactions";
+    case "portfolio":
+      return "Portfolio";
     case "coins":
       return "Assets";
     case "tokens":
