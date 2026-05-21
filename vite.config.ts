@@ -1,3 +1,4 @@
+import {codecovVitePlugin} from "@codecov/vite-plugin";
 import netlify from "@netlify/vite-plugin-tanstack-start";
 import {tanstackStart} from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react-swc";
@@ -36,6 +37,13 @@ export default defineConfig({
     }) as PluginOption,
     // PWA: Service worker is manually configured in public/sw.js
     // This ensures compatibility with TanStack Start SSR
+    // Codecov bundle analysis — must be last in plugins array
+    codecovVitePlugin({
+      enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
+      bundleName: "aptos-explorer",
+      uploadToken: process.env.CODECOV_TOKEN,
+      telemetry: false,
+    }),
   ],
   // Support both VITE_ and REACT_APP_ prefixed environment variables
   envPrefix: ["VITE_", "REACT_APP_"],
@@ -131,5 +139,16 @@ export default defineConfig({
   },
   test: {
     exclude: [...configDefaults.exclude, "e2e/**"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "lcov"],
+      exclude: [
+        ...(configDefaults.coverage.exclude ?? []),
+        "app/routeTree.gen.ts",
+        "e2e/**",
+        "scripts/**",
+        "analytics/**",
+      ],
+    },
   },
 });
