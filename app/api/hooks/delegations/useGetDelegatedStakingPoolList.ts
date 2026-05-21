@@ -1,6 +1,6 @@
-import type {Aptos} from "@aptos-labs/ts-sdk";
 import {useQuery} from "@tanstack/react-query";
 import {useNetworkValue, useSdkV2Client} from "../../../global-config";
+import type {AptosComposedClient} from "../../aptosComposedClient";
 
 export interface DelegatedStakingPool {
   staking_pool_address: string;
@@ -29,7 +29,7 @@ const VALIDATOR_LIST_QUERY = `
 `;
 
 async function fetchAllDelegationPools(
-  client: Aptos,
+  client: AptosComposedClient,
 ): Promise<DelegatedStakingPool[]> {
   const LIMIT = 100;
   let offset = 0;

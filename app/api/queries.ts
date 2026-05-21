@@ -3,16 +3,16 @@
  * These can be shared between route loaders and components.
  */
 
-import type {Aptos} from "@aptos-labs/ts-sdk";
 import {queryOptions} from "@tanstack/react-query";
 import {
   emitRateLimit,
   isRateLimitLike,
 } from "../context/rate-limit/rateLimitEvents";
+import type {AptosComposedClient} from "./aptosComposedClient";
 import {getTransaction} from "./client";
 
 // Transactions list query
-export function transactionsQueryOptions(client: Aptos) {
+export function transactionsQueryOptions(client: AptosComposedClient) {
   return queryOptions({
     queryKey: ["transactions", "latest"],
     queryFn: async () => {
@@ -27,7 +27,7 @@ export function transactionsQueryOptions(client: Aptos) {
 
 // Ledger info query
 export function ledgerInfoQueryOptions(
-  client: Aptos,
+  client: AptosComposedClient,
   networkKey: string,
   staleTime: number = 1000,
 ) {
@@ -39,7 +39,10 @@ export function ledgerInfoQueryOptions(
 }
 
 // Blocks list query (depends on block height)
-export function blocksQueryOptions(client: Aptos, currentBlockHeight: number) {
+export function blocksQueryOptions(
+  client: AptosComposedClient,
+  currentBlockHeight: number,
+) {
   return queryOptions({
     queryKey: ["blocks", currentBlockHeight],
     queryFn: async () => {
@@ -67,7 +70,7 @@ export function blocksQueryOptions(client: Aptos, currentBlockHeight: number) {
 // Single transaction query
 export function transactionQueryOptions(
   txnHashOrVersion: string,
-  client: Aptos,
+  client: AptosComposedClient,
   networkKey: string,
 ) {
   return queryOptions({
@@ -80,7 +83,7 @@ export function transactionQueryOptions(
 // Single block query
 export function blockQueryOptions(
   height: string,
-  client: Aptos,
+  client: AptosComposedClient,
   networkKey: string,
 ) {
   return queryOptions({
@@ -97,7 +100,7 @@ export function blockQueryOptions(
 // Account info query
 export function accountInfoQueryOptions(
   address: string,
-  client: Aptos,
+  client: AptosComposedClient,
   networkKey: string,
 ) {
   return queryOptions({
@@ -120,7 +123,7 @@ export function accountInfoQueryOptions(
 // Account resources query
 export function accountResourcesQueryOptions(
   address: string,
-  client: Aptos,
+  client: AptosComposedClient,
   networkKey: string,
 ) {
   return queryOptions({
@@ -141,7 +144,10 @@ export function accountResourcesQueryOptions(
 }
 
 // Account modules query
-export function accountModulesQueryOptions(address: string, client: Aptos) {
+export function accountModulesQueryOptions(
+  address: string,
+  client: AptosComposedClient,
+) {
   return queryOptions({
     queryKey: ["accountModules", address],
     queryFn: async () => {
@@ -162,7 +168,7 @@ export function accountModulesQueryOptions(address: string, client: Aptos) {
 // Account transactions query
 export function accountTransactionsQueryOptions(
   address: string,
-  client: Aptos,
+  client: AptosComposedClient,
 ) {
   return queryOptions({
     queryKey: ["accountTransactions", address],

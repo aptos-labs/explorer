@@ -1,5 +1,5 @@
-import type {Aptos} from "@aptos-labs/ts-sdk";
 import type {QueryClient} from "@tanstack/react-query";
+import type {AptosComposedClient} from "~/api/aptosComposedClient";
 import type {Types} from "~/types/aptos";
 import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {
@@ -131,7 +131,7 @@ export function prefixMatchLongerThan3(
  */
 export async function handleAnsName(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosComposedClient,
   signal?: AbortSignal,
 ): Promise<SearchResult | null> {
   if (signal?.aborted) return null;
@@ -164,7 +164,7 @@ export async function handleAnsName(
  */
 export async function handleCoin(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosComposedClient,
   signal?: AbortSignal,
 ): Promise<SearchResult | null> {
   if (signal?.aborted) return null;
@@ -193,7 +193,7 @@ export async function handleCoin(
  */
 export async function handleBlockHeightOrVersion(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosComposedClient,
   signal?: AbortSignal,
 ): Promise<SearchResult[]> {
   if (signal?.aborted) return [];
@@ -243,7 +243,7 @@ export async function handleBlockHeightOrVersion(
  */
 export async function handleTransaction(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosComposedClient,
   signal?: AbortSignal,
 ): Promise<SearchResult | null> {
   if (signal?.aborted) return null;
@@ -265,7 +265,7 @@ export async function handleTransaction(
  */
 export async function handleAddress(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosComposedClient,
   queryClient: QueryClient,
   networkValue: string,
   signal?: AbortSignal,
@@ -352,7 +352,7 @@ export async function handleAddress(
  */
 export async function anyOwnedObjects(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosComposedClient,
   signal?: AbortSignal,
 ): Promise<SearchResult | null> {
   if (signal?.aborted) return null;
@@ -481,7 +481,7 @@ export function createFallbackAddressResult(
  */
 export async function handleEmojiCoinLookup(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosComposedClient,
   signal?: AbortSignal,
 ): Promise<SearchResult[]> {
   if (signal?.aborted) return [];
