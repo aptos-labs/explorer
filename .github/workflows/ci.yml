@@ -24,6 +24,7 @@ jobs:
       APTOS_TESTNET_API_KEY: ${{ secrets.APTOS_TESTNET_API_KEY }}
       VITE_APTOS_DEVNET_API_KEY: ${{ secrets.APTOS_DEVNET_API_KEY }}
       APTOS_DEVNET_API_KEY: ${{ secrets.APTOS_DEVNET_API_KEY }}
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     steps:
       - uses: actions/checkout@v6
 
@@ -41,6 +42,13 @@ jobs:
 
       - name: Lint, test, and build
         run: pnpm ci:verify
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
 
       - name: Install Playwright Chromium
         run: pnpm test:e2e:install
