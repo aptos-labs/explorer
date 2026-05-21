@@ -1,4 +1,4 @@
-import {type Aptos, Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
+import {Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
 import {
   type InputTransactionData,
   useWallet,
@@ -31,6 +31,7 @@ import {
 } from "@mui/material";
 import React, {type ReactNode, useEffect, useMemo, useState} from "react";
 import {Controller, type SubmitHandler, useForm} from "react-hook-form";
+import type {AptosComposedClient} from "~/api/aptosComposedClient";
 import type {Types} from "~/types/aptos";
 import {view} from "../../../../api";
 import {ResponseErrorType} from "../../../../api/client";
@@ -94,7 +95,7 @@ function hexToBytes(hexString: string): Uint8Array {
  */
 async function resolveAnsName(
   name: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosComposedClient,
 ): Promise<string> {
   const ansName = await sdkV2Client.getName({name});
   const address = ansName?.registered_address ?? ansName?.owner_address;
@@ -110,7 +111,7 @@ async function resolveAnsName(
 async function resolveAnsInArgument(
   arg: string | null | undefined,
   type: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosComposedClient,
 ): Promise<string> {
   if (typeof arg !== "string" || !arg.trim()) {
     return arg ?? "";
@@ -177,7 +178,7 @@ async function resolveAnsInArgument(
 async function resolveAnsInArguments(
   args: (string | undefined)[],
   paramTypes: string[],
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosComposedClient,
 ): Promise<string[]> {
   return Promise.all(
     args.map((arg, i) => resolveAnsInArgument(arg, paramTypes[i], sdkV2Client)),

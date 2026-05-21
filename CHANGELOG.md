@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Performance
+
+- **Eliminate poseidon-lite (~610 KB source) from the client bundle**: The `Aptos` convenience class statically imports the `Keyless` namespace at module initialisation, pulling the entire `poseidon-lite` hash library into the client bundle even when no keyless operations are used. Replaced `new Aptos(config)` with `createAptosComposedClient()` in `GlobalConfig.tsx` and `createClient.ts`, which composes individual namespace classes (`General`, `Account`, `Transaction`, `ANS`, `Coin`, `FungibleAsset`, `DigitalAsset`, `Staking`, `Table`) via sub-path imports (`@aptos-labs/ts-sdk/general`, etc.). Each namespace class uses dynamic `import()` for keyless paths, so the static Keyless→poseidon-lite chain is completely absent from the client chunk. The new `AptosComposedClient` type is a drop-in structural replacement for `Aptos` throughout the codebase.
+
 ### Fixed
 
 - **Account modules View/Run — `(0 , aa.default) is not a function`** ([#1646](https://github.com/aptos-labs/explorer/issues/1646)): Deep links such as `/account/0x1/.../modules/view/primary_fungible_store/balance` crashed with the root error boundary ("Something went wrong") when the selected function rendered Move source in `CodeSnippet`. Rolldown's CJS→ESM interop for `react-syntax-highlighter/dist/cjs/create-element.js` exposed the module namespace as `default` instead of the inner `createElement` function, so production bundles called a non-callable object. A shared `resolveCjsDefaultExport` helper now unwraps one or two interop layers before rendering highlighted code.
