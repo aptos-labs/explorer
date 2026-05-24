@@ -54,6 +54,10 @@ import {
   sortPetraFirst,
   transformCode,
 } from "../../../../utils";
+import {
+  type AptosApiErrorDisplay,
+  formatAptosApiErrorForDisplay,
+} from "../../../../utils/aptosApiErrorMessage";
 import {Code} from "../../Components/CodeSnippet";
 import SidebarItem from "../../Components/SidebarItem";
 import ErrorPage from "../../Error";
@@ -694,7 +698,8 @@ function RunContractForm({
   const [simulationResult, setSimulationResult] = useState<unknown[] | null>(
     null,
   );
-  const [simulationError, setSimulationError] = useState<string | undefined>();
+  const [simulationError, setSimulationError] =
+    useState<AptosApiErrorDisplay | null>(null);
 
   const fnParams = removeSignerParam(fn);
 
@@ -747,7 +752,7 @@ function RunContractForm({
     logEvent("simulate_button_clicked", fn.name);
     setAnsError(undefined);
     setSimulationResult(null);
-    setSimulationError(undefined);
+    setSimulationError(null);
     clearTransactionResponse();
     setSimulationInProcess(true);
 
@@ -767,7 +772,10 @@ function RunContractForm({
     }
 
     if (!account?.address || !account?.publicKey) {
-      setSimulationError("Wallet account not available for simulation");
+      setSimulationError({
+        message: "Wallet account not available for simulation",
+        suggestSettings: false,
+      });
       setSimulationInProcess(false);
       return;
     }
@@ -802,9 +810,7 @@ function RunContractForm({
           : "failed",
       });
     } catch (error) {
-      setSimulationError(
-        error instanceof Error ? error.message : "Simulation failed",
-      );
+      setSimulationError(formatAptosApiErrorForDisplay(error));
       logEvent("function_simulated", fn.name, {txn_status: "error"});
     }
 
@@ -815,7 +821,7 @@ function RunContractForm({
     logEvent("write_button_clicked", fn.name);
     setAnsError(undefined);
     setSimulationResult(null);
-    setSimulationError(undefined);
+    setSimulationError(null);
 
     let resolvedArgs: string[];
     try {
@@ -1056,8 +1062,21 @@ function RunContractForm({
                         color: "text.secondary",
                       }}
                     >
-                      {simulationError}
+                      {simulationError.message}
                     </Typography>
+                    {simulationError.suggestSettings && (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "text.secondary",
+                          mt: 1,
+                        }}
+                      >
+                        Check <Link to="/settings">API keys in Settings</Link>.
+                        An invalid or expired mainnet override replaces the
+                        built-in key used for simulation.
+                      </Typography>
+                    )}
                   </Box>
                 </Stack>
               </ResultCard>
