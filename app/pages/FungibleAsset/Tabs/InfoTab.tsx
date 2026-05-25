@@ -1,6 +1,5 @@
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
-import {Box, Chip} from "@mui/material";
+import {Box} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import {useGetFirstCoinActivity} from "../../../api/hooks/useGetCoinActivities";
 import {useGetConfidentialFASupply} from "../../../api/hooks/useGetConfidentialFASupply";
@@ -12,6 +11,7 @@ import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {getAssetSymbol} from "../../../utils";
 import type {FACombinedData} from "../Index";
+import DispatchablePropertiesValue from "./DispatchablePropertiesValue";
 
 type InfoTabProps = {
   address: string;
@@ -41,7 +41,7 @@ function ExtraInfo({address}: {address: string}) {
 
 export default function InfoTab({address, data}: InfoTabProps) {
   const {data: firstActivity} = useGetFirstCoinActivity(address);
-  const {data: isDispatchable} = useGetFaIsDispatchable(address);
+  const {data: dispatchInfo} = useGetFaIsDispatchable(address);
   const {
     data: confidentialSupply,
     isLoading: confidentialSupplyLoading,
@@ -184,25 +184,10 @@ export default function InfoTab({address, data}: InfoTabProps) {
               }
             />
           )}
-          {isDispatchable && (
+          {dispatchInfo?.isDispatchable && (
             <ContentRow
               title={"Properties:"}
-              value={
-                <Tooltip
-                  title={
-                    "Custom dispatch functions are registered for transfers (withdraw/deposit/balance)"
-                  }
-                  arrow
-                >
-                  <Chip
-                    size="small"
-                    icon={<CheckCircleOutlineIcon fontSize="small" />}
-                    label={"Dispatchable"}
-                    variant="outlined"
-                    color={"success"}
-                  />
-                </Tooltip>
-              }
+              value={<DispatchablePropertiesValue info={dispatchInfo} />}
             />
           )}
           {firstActivity && (
