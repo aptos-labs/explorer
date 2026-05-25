@@ -1,7 +1,20 @@
+// @vitest-environment jsdom
 // Covers FEAT-FA-002 — FA dispatchable detection and function-info parsing
-import {describe, expect, it} from "vitest";
+import {renderHook} from "@testing-library/react";
+import {describe, expect, it, vi} from "vitest";
 import type {Types} from "~/types/aptos";
-import {deriveDispatchInfo} from "./useGetFaIsDispatchable";
+
+const useGetAccountResourcesMock = vi.fn();
+vi.mock("./useGetAccountResources", () => ({
+  useGetAccountResources: (
+    ...args: Parameters<typeof useGetAccountResourcesMock>
+  ) => useGetAccountResourcesMock(...args),
+}));
+
+import {
+  deriveDispatchInfo,
+  useGetFaIsDispatchable,
+} from "./useGetFaIsDispatchable";
 
 function mkResource(type: string, data: unknown = {}): Types.MoveResource {
   return {type, data} as Types.MoveResource;
@@ -152,5 +165,48 @@ describe("deriveDispatchInfo", () => {
       }),
     ];
     expect(deriveDispatchInfo(resources)).toBeNull();
+  });
+});
+
+describe("useGetFaIsDispatchable", () => {
+  it("returns null data when the underlying resource query is loading", () => {
+    useGetAccountResourcesMock.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+    });
+    const {result} = renderHook(() => useGetFaIsDispatchable("0xabc"));
+    expect(result.current.isLoading).toBe(true);
+    expect(result.current.data).toBeNull();
+  });
+
+  it("memoizes the derived dispatch info from the fetched resources", () => {
+    useGetAccountResourcesMock.mockReturnValue({
+      data: [
+        mkResource(STORE_TYPE, {
+          withdraw_function: {
+            vec: [
+              {
+                module_address: "0xabc",
+                module_name: "issuer",
+                function_name: "withdraw_hook",
+              },
+            ],
+          },
+          deposit_function: {vec: []},
+          derived_balance_function: {vec: []},
+        }),
+      ],
+      isLoading: false,
+    });
+    const {result} = renderHook(() => useGetFaIsDispatchable("0xabc"));
+    expect(result.current.isLoading).toBe(false);
+    expect(result.current.data?.isDispatchable).toBe(true);
+    expect(result.current.data?.functions).toHaveLength(1);
+    expect(result.current.data?.functions[0]).toMatchObject({
+      hook: "withdraw",
+      moduleAddress: "0xabc",
+      moduleName: "issuer",
+      functionName: "withdraw_hook",
+    });
   });
 });
