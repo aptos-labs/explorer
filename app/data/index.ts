@@ -8,14 +8,8 @@
  * - Supply limit overrides
  */
 
-import type {FaProperties} from "../api/hooks/useGetFaProperties";
 import type {CoinDescription} from "../api/hooks/useGetCoinList";
 import type {NetworkName} from "../lib/constants";
-import {
-  type CoinPropertyOverrideMap,
-  type FaPropertyOverride,
-  lookupCoinPropertyOverride,
-} from "./coinPropertyOverrides";
 import {
   devnetBannedAddresses,
   devnetBannedCollections,
@@ -26,7 +20,6 @@ import {
   devnetSupplyLimitOverrides,
   devnetVerifiedTokens,
 } from "./devnet/assets";
-import {devnetCoinPropertyOverrides} from "./devnet/coinPropertyOverrides";
 // Devnet data
 import {devnetKnownAddressBranding} from "./devnet/knownAddressBranding";
 import {
@@ -44,7 +37,6 @@ import {
   mainnetSupplyLimitOverrides,
   mainnetVerifiedTokens,
 } from "./mainnet/assets";
-import {mainnetCoinPropertyOverrides} from "./mainnet/coinPropertyOverrides";
 // Mainnet data
 import {mainnetKnownAddressBranding} from "./mainnet/knownAddressBranding";
 import {
@@ -61,7 +53,6 @@ import {
   testnetSupplyLimitOverrides,
   testnetVerifiedTokens,
 } from "./testnet/assets";
-import {testnetCoinPropertyOverrides} from "./testnet/coinPropertyOverrides";
 // Testnet data
 import {testnetKnownAddressBranding} from "./testnet/knownAddressBranding";
 import {
@@ -83,7 +74,6 @@ export interface NetworkData {
   bannedTokenSymbols: Record<string, string>;
   bannedCollections: Record<string, string>;
   supplyLimitOverrides: Record<string, bigint>;
-  coinPropertyOverrides: CoinPropertyOverrideMap;
 }
 
 // Network data registry
@@ -100,7 +90,6 @@ const networkDataRegistry: Record<string, NetworkData> = {
     bannedTokenSymbols: mainnetBannedTokenSymbols,
     bannedCollections: mainnetBannedCollections,
     supplyLimitOverrides: mainnetSupplyLimitOverrides,
-    coinPropertyOverrides: mainnetCoinPropertyOverrides,
   },
   testnet: {
     knownAddresses: testnetKnownAddresses,
@@ -114,7 +103,6 @@ const networkDataRegistry: Record<string, NetworkData> = {
     bannedTokenSymbols: testnetBannedTokenSymbols,
     bannedCollections: testnetBannedCollections,
     supplyLimitOverrides: testnetSupplyLimitOverrides,
-    coinPropertyOverrides: testnetCoinPropertyOverrides,
   },
   devnet: {
     knownAddresses: devnetKnownAddresses,
@@ -128,7 +116,6 @@ const networkDataRegistry: Record<string, NetworkData> = {
     bannedTokenSymbols: devnetBannedTokenSymbols,
     bannedCollections: devnetBannedCollections,
     supplyLimitOverrides: devnetSupplyLimitOverrides,
-    coinPropertyOverrides: devnetCoinPropertyOverrides,
   },
 };
 
@@ -261,59 +248,7 @@ export function getSupplyLimitOverrides(
   return getNetworkData(networkName).supplyLimitOverrides;
 }
 
-/**
- * Get the manual FA-property override map for a specific network.
- */
-export function getCoinPropertyOverrideMap(
-  networkName: NetworkName,
-): CoinPropertyOverrideMap {
-  return getNetworkData(networkName).coinPropertyOverrides;
-}
-
-/**
- * Resolve a manual FA-property override for the given coin struct or
- * fungible asset metadata address on the specified network.
- *
- * Returns `null` when no override is configured.
- */
-export function getCoinPropertyOverride(
-  networkName: NetworkName,
-  keys: {coinStruct?: string | null; faAddress?: string | null},
-): FaPropertyOverride | null {
-  return lookupCoinPropertyOverride(
-    getCoinPropertyOverrideMap(networkName),
-    keys,
-  );
-}
-
-/**
- * Apply a manual FA-property override (if any) on top of derived properties.
- *
- * - If derived is `null` and an override exists, returns a baseline
- *   `FaProperties` (all `false`) with the override applied.
- * - If derived is `null` and no override exists, returns `null`.
- * - Otherwise, returns derived with any override fields applied last.
- */
-export function applyCoinPropertyOverride(
-  derived: FaProperties | null,
-  override: FaPropertyOverride | null,
-): FaProperties | null {
-  if (!override) return derived;
-  const base: FaProperties = derived ?? {
-    mintable: false,
-    burnable: false,
-    freezable: false,
-    dispatchable: false,
-    untransferable: false,
-  };
-  return {...base, ...override};
-}
-
 export type {KnownAddressBranding} from "./knownAddressBranding";
-export type {
-  CoinPropertyOverrideMap,
-  FaPropertyOverride,
-} from "./coinPropertyOverrides";
 // Re-export mainnet data for backward compatibility
 // TODO: Migrate all consumers to use network-specific functions
 export {

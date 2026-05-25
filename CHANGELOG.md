@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **Coin / Fungible Asset detail — Mintable / Burnable / Freezable / Dispatchable property chips**: The "Properties" row that displayed mint, burn, freeze, and dispatchable capability chips on Coin (`/coin/$struct/info`) and Fungible Asset (`/fungible_asset/$address/info`) detail pages has been removed. The resource-derived flags were frequently misleading — on-chain `MintRef` / `BurnRef` / `TransferRef` entries do not always reflect the issuer's actual ability to exercise those capabilities (some are stored but unreachable, transferred, or otherwise neutralized), and there is no general on-chain signal the explorer can use to distinguish the two cases. The supporting `FaPropertiesDisplay` component, the `useGetFaProperties` hook, and the per-network `app/data/{mainnet,testnet,devnet}/coinPropertyOverrides.ts` manual-override registry (including the previous mainnet `PROPS` override) are all gone, along with their tests. The matching `FEAT-FA-002` "Properties" sub-row has been removed from `docs/FEATURES_SPECIFICATION.md`.
+
 ### Fixed
 
 - **Account modules View/Run — `(0 , aa.default) is not a function`** ([#1646](https://github.com/aptos-labs/explorer/issues/1646)): Deep links such as `/account/0x1/.../modules/view/primary_fungible_store/balance` crashed with the root error boundary ("Something went wrong") when the selected function rendered Move source in `CodeSnippet`. Rolldown's CJS→ESM interop for `react-syntax-highlighter/dist/cjs/create-element.js` exposed the module namespace as `default` instead of the inner `createElement` function, so production bundles called a non-callable object. A shared `resolveCjsDefaultExport` helper now unwraps one or two interop layers before rendering highlighted code.
