@@ -1,8 +1,10 @@
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
-import {Box} from "@mui/material";
+import {Box, Chip} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import {useGetFirstCoinActivity} from "../../../api/hooks/useGetCoinActivities";
 import {useGetConfidentialFASupply} from "../../../api/hooks/useGetConfidentialFASupply";
+import {useGetFaIsDispatchable} from "../../../api/hooks/useGetFaIsDispatchable";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
@@ -39,6 +41,7 @@ function ExtraInfo({address}: {address: string}) {
 
 export default function InfoTab({address, data}: InfoTabProps) {
   const {data: firstActivity} = useGetFirstCoinActivity(address);
+  const {data: isDispatchable} = useGetFaIsDispatchable(address);
   const {
     data: confidentialSupply,
     isLoading: confidentialSupplyLoading,
@@ -178,6 +181,27 @@ export default function InfoTab({address, data}: InfoTabProps) {
                   hash={data.pairedCoin}
                   type={HashType.COIN}
                 />
+              }
+            />
+          )}
+          {isDispatchable && (
+            <ContentRow
+              title={"Properties:"}
+              value={
+                <Tooltip
+                  title={
+                    "Custom dispatch functions are registered for transfers (withdraw/deposit/balance)"
+                  }
+                  arrow
+                >
+                  <Chip
+                    size="small"
+                    icon={<CheckCircleOutlineIcon fontSize="small" />}
+                    label={"Dispatchable"}
+                    variant="outlined"
+                    color={"success"}
+                  />
+                </Tooltip>
               }
             />
           )}

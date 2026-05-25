@@ -665,6 +665,7 @@ The app shell that wraps every page.
 | **Data** | FA metadata, supply, paired coin via `useGetFaPairedCoin`. |
 | **Display** | Name, symbol, decimals, supply, icon, paired coin link. |
 | **Confidential supply** | **Confidential supply (pool)** — `0x1::confidential_asset::get_total_confidential_supply` for this metadata object (public aggregate). |
+| **Dispatchable indicator** | When the FA metadata object owns a `0x1::fungible_asset::DispatchFunctionStore` resource (custom withdraw/deposit/balance dispatch functions registered), a **Properties** row renders a single "Dispatchable" chip. No chip is shown when the resource is absent. Mint / burn / freeze chips were intentionally removed — see `CHANGELOG.md → [Unreleased] → Removed`. |
 
 ### FEAT-FA-003 — Verification Banner
 
@@ -1239,6 +1240,7 @@ top of the HTML site.
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetValidators.test.ts` | FEAT-VALIDATORS-002 (`buildValidatorsFromSources`: empty stats JSON → chain-only rows + optional operator map; merge when JSON present; patch missing/zero operator_address rows from `0x1::stake::StakePool`; `isOperatorAddressMissing` heuristic) |
 | `app/pages/Validators/Delegation/hooks/validatorDataService.test.ts` | FEAT-VALIDATORS-003 (`getBatchUserStakes`: indexer-first lookup of pools the wallet delegates to; per-row view calls only for that subset in parallel; zero-fallback when indexer fails or individual view calls error; empty-input guard) |
+| `app/api/hooks/useGetFaIsDispatchable.test.ts` | FEAT-FA-002 (FA dispatchable detection from `0x1::fungible_asset::DispatchFunctionStore`) |
 | `app/api/hooks/confidentialAssetViews.test.ts` | FEAT-FA-002 / FEAT-COIN-002 / FEAT-ACCOUNT-007 (confidential-asset view response parsing) |
 | `app/context/rate-limit/RateLimitContext.test.tsx` | FEAT-RATELIMIT-001 (rate limit context state management) |
 | `app/context/rate-limit/rateLimitEvents.test.ts` | FEAT-RATELIMIT-001 (rate limit event detection) |
