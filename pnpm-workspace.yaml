@@ -13,7 +13,7 @@ strictPeerDependencies: false
 # the 7-day window. Audit each entry on bump and remove it once the locked
 # version is comfortably older than the cutoff. See
 # https://pnpm.io/settings#minimumreleaseageexclude
-minimumReleaseAgeExclude:
+minimumReleaseAgeExclude: []
 
 allowBuilds:
   "@parcel/watcher": false
