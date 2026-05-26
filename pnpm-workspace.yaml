@@ -4,10 +4,10 @@ autoInstallPeers: true
 strictPeerDependencies: false
 
 # Supply-chain mitigation: refuse to install package versions newer than this
-# many minutes. 10080 minutes = 7 days, giving the npm registry / community
+# many minutes. 7200 minutes = 5 days, giving the npm registry / community
 # time to detect compromised or malicious releases before they enter our
 # dependency graph. See https://pnpm.io/settings#minimumreleaseage
-# minimumReleaseAge: 10080
+minimumReleaseAge: 7200
 
 # Narrow exceptions for packages whose currently-locked version sits inside
 # the 7-day window. Audit each entry on bump and remove it once the locked
