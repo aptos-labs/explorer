@@ -17,16 +17,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Install pnpm
-        id: pnpm-install
-        uses: pnpm/action-setup@v6
-      - name: Install Node.js
-        id: node-install
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-          cache: pnpm
-          registry-url: "https://registry.npmjs.org"
+      - uses: ./.github/actions/setup-node-pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run linter
@@ -36,16 +27,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Install pnpm
-        id: pnpm-install
-        uses: pnpm/action-setup@v6
-      - name: Install Node.js
-        id: node-install
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-          cache: pnpm
-          registry-url: "https://registry.npmjs.org"
+      - uses: ./.github/actions/setup-node-pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run test

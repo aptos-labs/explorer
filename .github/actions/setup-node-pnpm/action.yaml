@@ -1,0 +1,24 @@
+name: "Setup Node, pnpm, and safe-chain"
+description: |
+  Install Node (from .node-version), pnpm (from packageManager in package.json),
+  and AikidoSec Safe Chain. Run this before any pnpm install step.
+
+runs:
+  using: composite
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v6
+
+    - name: Setup Node
+      uses: actions/setup-node@v6
+      with:
+        node-version-file: .node-version
+        cache: pnpm
+        registry-url: "https://registry.npmjs.org"
+
+    - name: Allow first-party @aptos-labs/* packages through safe-chain age check
+      shell: bash
+      run: echo "SAFE_CHAIN_MINIMUM_PACKAGE_AGE_EXCLUSIONS=@aptos-labs/*" >> "${GITHUB_ENV}"
+
+    - name: Setup AikidoSec Safe Chain
+      uses: aptos-labs/actions/aikidosec-safe-chain@fdd3a3a628c840d5c35086a87e9cc3141b635505 # pin@main
