@@ -5,7 +5,7 @@
   "packageManager": "pnpm@11.1.1",
   "type": "module",
   "engines": {
-    "node": ">=24"
+    "node": "^24 || ^25"
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "7.1.0",
@@ -16,7 +16,7 @@
     "@mui/icons-material": "9.0.1",
     "@mui/material": "9.0.1",
     "@noble/hashes": "2.2.0",
-    "@tanstack/react-query": "5.99.0",
+    "@tanstack/react-query": "5.100.11",
     "@tanstack/react-router": "1.170.7",
     "@tanstack/react-start": "1.168.10",
     "@tanstack/react-virtual": "3.13.25",

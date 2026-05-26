@@ -10,10 +10,11 @@ strictPeerDependencies: false
 minimumReleaseAge: 7200
 
 # Narrow exceptions for packages whose currently-locked version sits inside
-# the 7-day window. Audit each entry on bump and remove it once the locked
+# the 5-day window. Audit each entry on bump and remove it once the locked
 # version is comfortably older than the cutoff. See
 # https://pnpm.io/settings#minimumreleaseageexclude
-minimumReleaseAgeExclude: []
+minimumReleaseAgeExclude:
+  - "@tanstack/react-query@5.100.11"
 
 allowBuilds:
   "@parcel/watcher": false
