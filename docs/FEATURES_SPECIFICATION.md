@@ -665,7 +665,7 @@ The app shell that wraps every page.
 | **Data** | FA metadata, supply, paired coin via `useGetFaPairedCoin`. |
 | **Display** | Name, symbol, decimals, supply, icon, paired coin link. |
 | **Confidential supply** | **Confidential supply (pool)** — `0x1::confidential_asset::get_total_confidential_supply` for this metadata object (public aggregate). |
-| **Properties** | `FaPropertiesDisplay` — mint/burn/transfer flags derived from resource data. Curated **manual overrides** (per network, keyed by coin struct or FA address) live in `app/data/{mainnet,testnet,devnet}/coinPropertyOverrides.ts` and are merged on top of the derived flags via `applyCoinPropertyOverride` so issuers whose on-chain refs do not match real-world capabilities (e.g. mainnet `PROPS`) display the corrected chips. |
+| **Dispatchable indicator** | When the FA metadata object owns a `0x1::fungible_asset::DispatchFunctionStore` resource (custom withdraw/deposit/derived_balance dispatch functions registered), a **Properties** row renders a "Dispatchable" chip plus one source link per registered hook. Each link uses the parsed `FunctionInfo` (`module_address`, `module_name`, `function_name`) and points at `/account/{module_address}/modules/code/{module_name}` so operators can jump straight to the issuer's Move source. The optional `derived_supply` hook is read from the separate `0x1::fungible_asset::DeriveSupply` resource and rendered the same way. No chip is shown when `DispatchFunctionStore` is absent. Mint / burn / freeze chips were intentionally removed — see `CHANGELOG.md → [Unreleased] → Removed`. |
 
 ### FEAT-FA-003 — Verification Banner
 
@@ -1240,8 +1240,8 @@ top of the HTML site.
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetValidators.test.ts` | FEAT-VALIDATORS-002 (`buildValidatorsFromSources`: empty stats JSON → chain-only rows + optional operator map; merge when JSON present; patch missing/zero operator_address rows from `0x1::stake::StakePool`; `isOperatorAddressMissing` heuristic) |
 | `app/pages/Validators/Delegation/hooks/validatorDataService.test.ts` | FEAT-VALIDATORS-003 (`getBatchUserStakes`: indexer-first lookup of pools the wallet delegates to; per-row view calls only for that subset in parallel; zero-fallback when indexer fails or individual view calls error; empty-input guard) |
-| `app/api/hooks/useGetFaProperties.test.ts` | FEAT-FA-002 (FA property derivation from resources) |
-| `app/data/coinPropertyOverrides.test.ts` | FEAT-FA-002 / FEAT-COIN-002 (per-network manual overrides for FA mint/burn/freeze/dispatch chips, including mainnet PROPS) |
+| `app/api/hooks/useGetFaIsDispatchable.test.ts` | FEAT-FA-002 (FA dispatch detection: `0x1::fungible_asset::DispatchFunctionStore` presence + parsing of withdraw/deposit/derived_balance `FunctionInfo`, plus `derived_supply` from `0x1::fungible_asset::DeriveSupply`, with malformed-entry rejection; React hook wrapper loading/loaded states via mocked `useGetAccountResources`) |
+| `app/pages/FungibleAsset/Tabs/DispatchablePropertiesValue.test.tsx` | FEAT-FA-002 (Dispatchable chip rendering + per-hook source links pointing at `/account/{module_address}/modules/code/{module_name}`) |
 | `app/api/hooks/confidentialAssetViews.test.ts` | FEAT-FA-002 / FEAT-COIN-002 / FEAT-ACCOUNT-007 (confidential-asset view response parsing) |
 | `app/context/rate-limit/RateLimitContext.test.tsx` | FEAT-RATELIMIT-001 (rate limit context state management) |
 | `app/context/rate-limit/rateLimitEvents.test.ts` | FEAT-RATELIMIT-001 (rate limit event detection) |

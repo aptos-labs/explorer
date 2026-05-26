@@ -3,8 +3,7 @@ import {Box} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import {useGetFirstCoinActivity} from "../../../api/hooks/useGetCoinActivities";
 import {useGetConfidentialFASupply} from "../../../api/hooks/useGetConfidentialFASupply";
-import {useGetFaProperties} from "../../../api/hooks/useGetFaProperties";
-import FaPropertiesDisplay from "../../../components/FaPropertiesDisplay";
+import {useGetFaIsDispatchable} from "../../../api/hooks/useGetFaIsDispatchable";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
@@ -12,6 +11,7 @@ import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {getAssetSymbol} from "../../../utils";
 import type {FACombinedData} from "../Index";
+import DispatchablePropertiesValue from "./DispatchablePropertiesValue";
 
 type InfoTabProps = {
   address: string;
@@ -41,7 +41,7 @@ function ExtraInfo({address}: {address: string}) {
 
 export default function InfoTab({address, data}: InfoTabProps) {
   const {data: firstActivity} = useGetFirstCoinActivity(address);
-  const {data: faProperties} = useGetFaProperties(address);
+  const {data: dispatchInfo} = useGetFaIsDispatchable(address);
   const {
     data: confidentialSupply,
     isLoading: confidentialSupplyLoading,
@@ -184,10 +184,10 @@ export default function InfoTab({address, data}: InfoTabProps) {
               }
             />
           )}
-          {faProperties && (
+          {dispatchInfo?.isDispatchable && (
             <ContentRow
               title={"Properties:"}
-              value={<FaPropertiesDisplay properties={faProperties} />}
+              value={<DispatchablePropertiesValue info={dispatchInfo} />}
             />
           )}
           {firstActivity && (
