@@ -8,6 +8,8 @@ runs:
   steps:
     - name: Setup pnpm
       uses: pnpm/action-setup@v6
+      with:
+        version: "11.1.1"
 
     - name: Setup Node
       uses: actions/setup-node@v6
