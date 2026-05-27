@@ -6,7 +6,7 @@
       "type": "skill-md",
       "description": "Map questions about Aptos blockchain entities (transactions, accounts, blocks, validators, coins, fungible assets, NFTs, Move objects, ANS names) to canonical Aptos Explorer URLs at explorer.aptoslabs.com. Use when a user asks to look up on-chain data on Aptos, wants to share or generate an explorer link, or needs to decide between transaction version, hash, account address, ANS name, or coin type identifiers.",
       "url": "/.well-known/agent-skills/aptos-explorer-urls/SKILL.md",
-      "digest": "sha256:9cd03d2d2749ae807239c64a34a5ac49801f72c652a2b48138973edb524652b6"
+      "digest": "sha256:ec5576e0d222a99710ae16e2faa5e52d196e7659ea2ee80ed3203998d860b691"
     },
     {
       "name": "aptos-explorer-search",

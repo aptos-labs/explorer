@@ -8,6 +8,7 @@ describe("FEAT-ACCOUNT-005 — getTabValues", () => {
       const tabs = getTabValues(true, false, false);
       expect(tabs).toEqual([
         "transactions",
+        "portfolio",
         "coins",
         "tokens",
         "resources",
@@ -28,6 +29,7 @@ describe("FEAT-ACCOUNT-005 — getTabValues", () => {
       expect(tabs).toEqual([
         "transactions",
         "multisig",
+        "portfolio",
         "coins",
         "tokens",
         "resources",
@@ -96,6 +98,21 @@ describe("FEAT-ACCOUNT-005 — getTabValues", () => {
           const tabs = getTabValues(false, obj, ms);
           expect(tabs).not.toContain("coins");
           expect(tabs).not.toContain("tokens");
+        }
+      }
+    });
+
+    it("portfolio appears only when GraphQL is on and only for user accounts", () => {
+      // Standard account + GraphQL on → portfolio visible
+      expect(getTabValues(true, false, false)).toContain("portfolio");
+      // Multisig + GraphQL on → portfolio visible alongside multisig tab
+      expect(getTabValues(true, false, true)).toContain("portfolio");
+      // Object + GraphQL on → portfolio hidden (Decibel queries are user-only)
+      expect(getTabValues(true, true, false)).not.toContain("portfolio");
+      // Any account + GraphQL off → portfolio hidden (asset list relies on indexer)
+      for (const obj of [true, false]) {
+        for (const ms of [true, false]) {
+          expect(getTabValues(false, obj, ms)).not.toContain("portfolio");
         }
       }
     });

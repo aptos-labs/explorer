@@ -14,8 +14,9 @@ Canonical URL templates for [Aptos Explorer](https://explorer.aptoslabs.com). Al
 - **Transaction**: `/txn/{version}` or `/txn/{hash}`
   - Tabs: `/txn/{id}/userTxnOverview`, `/events`, `/payload`, `/modules` (when applicable), `/changes`, `/balanceChange`, `/trace`
 - **Account**: `/account/{address}` (redirects to `/transactions`)
-  - Tabs: `/transactions`, `/coins`, `/tokens`, `/resources`, `/modules`, `/multisig`, `/info`
+  - Tabs: `/transactions`, `/portfolio`, `/coins`, `/tokens`, `/resources`, `/modules`, `/multisig`, `/info`
   - Modules: `/modules/packages`, `/modules/code/{moduleName}`, `/modules/run/{moduleName}/{functionName}`, `/modules/view/{moduleName}/{functionName}`
+  - `/portfolio` consolidates the wallet's held assets with assets stored in Decibel (mainnet + testnet). The Decibel section is omitted on other networks and when the account never used Decibel.
 - **Block**: `/block/{height}`; tabs `/overview`, `/transactions`
 - **Validators list**: `/validators/all` | `/validators/delegation` | `/validators/enhanced_delegation`
 - **Individual validator**: `/validator/{address}`

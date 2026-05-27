@@ -3,6 +3,7 @@ import type {TabValue} from "../Tabs";
 
 const TAB_VALUES_FULL: TabValue[] = [
   "transactions",
+  "portfolio",
   "coins",
   "tokens",
   "resources",
@@ -15,6 +16,7 @@ const TAB_VALUES: TabValue[] = ["transactions", "resources", "modules", "info"];
 const TAB_VALUES_MULTISIG_FULL: TabValue[] = [
   "transactions",
   "multisig",
+  "portfolio",
   "coins",
   "tokens",
   "resources",
@@ -30,6 +32,10 @@ const TAB_VALUES_MULTISIG: TabValue[] = [
   "info",
 ];
 
+// Objects (`/object/{address}`) currently do not show the Portfolio tab because
+// "object as Decibel user" is not a real shape — the Decibel portfolio section
+// queries `dex_accounts::primary_subaccount(owner_addr)` which is only valid for
+// user accounts. Wallet asset listing (`coins`) covers the on-chain balance case.
 const OBJECT_VALUES_FULL: TabValue[] = [
   "transactions",
   "coins",
