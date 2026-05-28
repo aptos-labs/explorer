@@ -391,7 +391,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Collapsible cards per Move resource type. Most resources use `JsonViewCard`; `0x1::decryption::PerEpochEncryptionKey` uses a structured summary (epoch, key status, byte length, copyable hex) with collapsible raw JSON. |
+| **Display** | Collapsible cards per Move resource type. Most resources use `JsonViewCard`; `0x1::decryption::PerEpochEncryptionKey` uses a structured summary (epoch, key status, copyable hex) with collapsible raw JSON. |
 
 ### FEAT-ACCOUNT-010 — Info Tab
 
