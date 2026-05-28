@@ -4,7 +4,7 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import ResourceDataView from "../../../components/IndividualPageContent/ResourceDataView";
 
 function ResourcesContent({
   resourceData,
@@ -34,7 +34,7 @@ function ResourcesContent({
           expanded={expandedList[i]}
           toggleExpanded={() => toggleExpandedAt(i)}
         >
-          <JsonViewCard data={resource.data} />
+          <ResourceDataView resourceType={resource.type} data={resource.data} />
         </CollapsibleCard>
       ))}
     </CollapsibleCards>

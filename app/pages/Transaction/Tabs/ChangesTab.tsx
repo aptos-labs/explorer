@@ -17,6 +17,7 @@ import CollapsibleCards from "../../../components/IndividualPageContent/Collapsi
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import ResourceDataView from "../../../components/IndividualPageContent/ResourceDataView";
 import {
   collectionV2Address,
   objectCoreResource,
@@ -51,6 +52,16 @@ type EnclosingAccount = {address: string; resourceType: string};
 function isTableItemChange(change: WriteSetChange): change is TableItemChange {
   return (
     change.type === "write_table_item" || change.type === "delete_table_item"
+  );
+}
+
+function isMoveResourcePayload(data: unknown): data is Types.MoveResource {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    "type" in data &&
+    typeof (data as Types.MoveResource).type === "string" &&
+    "data" in data
   );
 }
 
@@ -432,7 +443,16 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
           {"data" in change && change.data && !isTableItemChange(change) && (
             <ContentRow
               title="Data:"
-              value={<JsonViewCard data={change.data} />}
+              value={
+                isMoveResourcePayload(change.data) ? (
+                  <ResourceDataView
+                    resourceType={change.data.type}
+                    data={change.data.data}
+                  />
+                ) : (
+                  <JsonViewCard data={change.data} />
+                )
+              }
             />
           )}
           {"handle" in change && (
