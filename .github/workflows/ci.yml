@@ -43,8 +43,7 @@ jobs:
           files: ./coverage/lcov.info
           fail_ci_if_error: false
 
-      - name: Install Playwright Chromium
-        run: pnpm test:e2e:install
-
-      - name: Playwright smoke tests
-        run: pnpm exec playwright test
+      # Playwright smoke tests are intentionally excluded from CI — they require
+      # installing a full Chromium binary and running against a vite preview build,
+      # making them too expensive for per-PR runs. Run them locally with:
+      #   pnpm test:e2e:install && pnpm test:e2e
