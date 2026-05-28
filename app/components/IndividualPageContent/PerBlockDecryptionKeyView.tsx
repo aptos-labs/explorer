@@ -3,31 +3,31 @@ import {
   ResponsiveKeyValueRow,
   ResponsiveKeyValueTable,
 } from "../Table/ResponsiveKeyValueTable";
-import type {ParsedPerEpochEncryptionKey} from "../../utils/perEpochEncryptionKey";
+import type {ParsedPerBlockDecryptionKey} from "../../utils/perBlockDecryptionKey";
 import HexBytesValue from "./HexBytesValue";
 import JsonViewCard from "./JsonViewCard";
 
 const FRAMEWORK_DECRYPTION_DOCS =
   "https://aptos.dev/move-reference/mainnet/aptos-framework/decryption";
 
-type PerEpochEncryptionKeyViewProps = {
-  parsed: ParsedPerEpochEncryptionKey;
+type PerBlockDecryptionKeyViewProps = {
+  parsed: ParsedPerBlockDecryptionKey;
   rawData: unknown;
 };
 
-export default function PerEpochEncryptionKeyView({
+export default function PerBlockDecryptionKeyView({
   parsed,
   rawData,
-}: PerEpochEncryptionKeyViewProps) {
+}: PerBlockDecryptionKeyViewProps) {
   const epochNumber = BigInt(parsed.epoch);
-  const hasKey = parsed.encryptionKeyHex != null;
+  const roundNumber = BigInt(parsed.round);
+  const hasKey = parsed.decryptionKeyHex != null;
 
   return (
     <Box>
       <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
-        Epoch-scoped encryption key from Chunky DKG, used for encrypted
-        transactions during that epoch. Stored on the Aptos framework account;
-        see{" "}
+        Per-block decryption key updated in each block prologue; used to decrypt
+        encrypted transactions in that block. See{" "}
         <Link
           href={FRAMEWORK_DECRYPTION_DOCS}
           target="_blank"
@@ -42,7 +42,7 @@ export default function PerEpochEncryptionKeyView({
         <ResponsiveKeyValueTable size="small" tableLayout="fixed">
           <ResponsiveKeyValueRow
             label="Epoch"
-            description="Epoch this key is valid for."
+            description="Epoch of the block this key applies to."
           >
             <Typography variant="body1" component="span" sx={{fontWeight: 600}}>
               {epochNumber.toLocaleString()}
@@ -50,8 +50,17 @@ export default function PerEpochEncryptionKeyView({
           </ResponsiveKeyValueRow>
 
           <ResponsiveKeyValueRow
-            label="Encryption key"
-            description="Derived from the DKG result; None until the epoch key is installed."
+            label="Round"
+            description="Consensus round within the epoch."
+          >
+            <Typography variant="body1" component="span" sx={{fontWeight: 600}}>
+              {roundNumber.toLocaleString()}
+            </Typography>
+          </ResponsiveKeyValueRow>
+
+          <ResponsiveKeyValueRow
+            label="Decryption key"
+            description="Key for this block; None until the prologue installs one."
           >
             <Chip
               label={hasKey ? "Set" : "Not set"}
@@ -61,11 +70,11 @@ export default function PerEpochEncryptionKeyView({
             />
           </ResponsiveKeyValueRow>
 
-          {hasKey && parsed.encryptionKeyHex && (
+          {hasKey && parsed.decryptionKeyHex && (
             <ResponsiveKeyValueRow label="Key bytes (hex)">
               <HexBytesValue
-                hex={parsed.encryptionKeyHex}
-                copyAriaLabel="Copy encryption key bytes"
+                hex={parsed.decryptionKeyHex}
+                copyAriaLabel="Copy decryption key bytes"
               />
             </ResponsiveKeyValueRow>
           )}
