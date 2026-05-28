@@ -7,7 +7,6 @@ export const PER_EPOCH_ENCRYPTION_KEY_RESOURCE =
 export type ParsedPerEpochEncryptionKey = {
   epoch: string;
   encryptionKeyHex: string | null;
-  encryptionKeyByteLength: number | null;
 };
 
 export function isPerEpochEncryptionKeyResource(type: string): boolean {
@@ -51,21 +50,6 @@ function normalizeBytesToHex(value: unknown): string | null {
   return null;
 }
 
-export function hexByteLength(hex: string): number | null {
-  let body = hex.trim();
-  if (body.startsWith("0x") || body.startsWith("0X")) {
-    body = body.slice(2);
-  }
-  if (
-    body.length === 0 ||
-    body.length % 2 !== 0 ||
-    !/^[0-9a-fA-F]*$/.test(body)
-  ) {
-    return null;
-  }
-  return body.length / 2;
-}
-
 export function parsePerEpochEncryptionKeyData(
   data: unknown,
 ): ParsedPerEpochEncryptionKey | null {
@@ -86,8 +70,5 @@ export function parsePerEpochEncryptionKeyData(
   return {
     epoch: record.epoch,
     encryptionKeyHex,
-    encryptionKeyByteLength: encryptionKeyHex
-      ? hexByteLength(encryptionKeyHex)
-      : null,
   };
 }

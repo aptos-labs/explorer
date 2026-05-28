@@ -102,22 +102,10 @@ export default function PerEpochEncryptionKeyView({
         <ResponsiveKeyValueTable size="small" tableLayout="fixed">
           <ResponsiveKeyValueRow
             label="Epoch"
-            description="Epoch this key is valid for (matches the on-chain u64)."
+            description="Epoch this key is valid for."
           >
-            <Typography
-              variant="body1"
-              component="span"
-              sx={{fontWeight: 600}}
-            >
+            <Typography variant="body1" component="span" sx={{fontWeight: 600}}>
               {epochNumber.toLocaleString()}
-            </Typography>
-            <Typography
-              component="span"
-              variant="body2"
-              color="text.secondary"
-              sx={{display: "block", mt: 0.25}}
-            >
-              ({parsed.epoch})
             </Typography>
           </ResponsiveKeyValueRow>
 
@@ -134,21 +122,9 @@ export default function PerEpochEncryptionKeyView({
           </ResponsiveKeyValueRow>
 
           {hasKey && parsed.encryptionKeyHex && (
-            <>
-              <ResponsiveKeyValueRow
-                label="Key size"
-                description="Length of the serialized public key material (bytes)."
-              >
-                <Typography variant="body2">
-                  {parsed.encryptionKeyByteLength != null
-                    ? `${parsed.encryptionKeyByteLength.toLocaleString()} bytes`
-                    : "—"}
-                </Typography>
-              </ResponsiveKeyValueRow>
-              <ResponsiveKeyValueRow label="Key bytes (hex)">
-                <HexBytesValue hex={parsed.encryptionKeyHex} />
-              </ResponsiveKeyValueRow>
-            </>
+            <ResponsiveKeyValueRow label="Key bytes (hex)">
+              <HexBytesValue hex={parsed.encryptionKeyHex} />
+            </ResponsiveKeyValueRow>
           )}
         </ResponsiveKeyValueTable>
       </Paper>

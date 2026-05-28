@@ -1,6 +1,5 @@
 import {describe, expect, it} from "vitest";
 import {
-  hexByteLength,
   parsePerEpochEncryptionKeyData,
   PER_EPOCH_ENCRYPTION_KEY_RESOURCE,
 } from "./perEpochEncryptionKey";
@@ -25,7 +24,6 @@ describe("PerEpochEncryptionKey parsing", () => {
       epoch: "33105",
       encryptionKeyHex:
         "0x60a63c08ed80495373d2874f1443d4bcd7f75d8698ca709fbc21410441b7af38",
-      encryptionKeyByteLength: 32,
     });
   });
 
@@ -37,7 +35,6 @@ describe("PerEpochEncryptionKey parsing", () => {
     expect(parsed).toEqual({
       epoch: "0",
       encryptionKeyHex: null,
-      encryptionKeyByteLength: null,
     });
   });
 
@@ -47,7 +44,6 @@ describe("PerEpochEncryptionKey parsing", () => {
       encryption_key: {vec: [[1, 2, 3]]},
     });
     expect(parsed?.encryptionKeyHex).toBe("0x010203");
-    expect(parsed?.encryptionKeyByteLength).toBe(3);
   });
 
   it("returns null for invalid shapes", () => {
@@ -59,14 +55,6 @@ describe("PerEpochEncryptionKey parsing", () => {
     expect(parsePerEpochEncryptionKeyData({epoch: "1"})).toEqual({
       epoch: "1",
       encryptionKeyHex: null,
-      encryptionKeyByteLength: null,
     });
-  });
-
-  it("computes hex byte length", () => {
-    expect(hexByteLength("0x0102")).toBe(2);
-    expect(hexByteLength("0102")).toBe(2);
-    expect(hexByteLength("0x0")).toBeNull();
-    expect(hexByteLength("0x123")).toBeNull();
   });
 });
