@@ -110,11 +110,15 @@ describe("FEAT-ACCOUNT-012 / FEAT-ROUTING-002 — resolveEntityRedirect", () => 
   });
 
   describe("different entity default tabs", () => {
-    it("txn defaults to userTxnOverview", () => {
-      const result = resolveEntityRedirect("/txn/0xabc", {}, "userTxnOverview");
+    // NOTE: transaction routes no longer use this generic default-tab redirect.
+    // The transaction Overview is served from the canonical base path `/txn/{id}`
+    // (see FEAT-TXN-008); this case only exercises the generic helper with a
+    // hash-style entity id.
+    it("returns the provided default tab for a 2-segment path", () => {
+      const result = resolveEntityRedirect("/txn/0xabc", {}, "overview");
       expect(result).toEqual({
         kind: "default",
-        tab: "userTxnOverview",
+        tab: "overview",
         search: {},
       });
     });

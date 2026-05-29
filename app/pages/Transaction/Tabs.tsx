@@ -351,23 +351,36 @@ export default function TransactionTabs({
   const defaultTab = tabValues[0];
   const value = isValidTab(tab) ? tab : defaultTab;
 
-  // Redirect to valid tab if invalid tab was provided
-  useEffect(() => {
-    if (tab && !isValidTab(tab)) {
+  // Navigate to a tab. The Overview (default) tab lives at the canonical base
+  // path `/txn/:id` with no explicit segment; every other tab uses `/:tab`.
+  const navigateToTab = React.useCallback(
+    (newValue: TabValue) => {
+      if (newValue === defaultTab) {
+        navigate({
+          to: "/txn/$txnHashOrVersion",
+          params: {txnHashOrVersion: txnHashOrVersion ?? ""},
+          replace: true,
+        });
+        return;
+      }
       navigate({
         to: "/txn/$txnHashOrVersion/$tab",
-        params: {txnHashOrVersion: txnHashOrVersion ?? "", tab: defaultTab},
+        params: {txnHashOrVersion: txnHashOrVersion ?? "", tab: newValue},
         replace: true,
       });
+    },
+    [defaultTab, navigate, txnHashOrVersion],
+  );
+
+  // Redirect to the Overview base path if an invalid tab was provided.
+  useEffect(() => {
+    if (tab && !isValidTab(tab)) {
+      navigateToTab(defaultTab);
     }
-  }, [tab, txnHashOrVersion, defaultTab, navigate, isValidTab]);
+  }, [tab, defaultTab, navigateToTab, isValidTab]);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
-    navigate({
-      to: "/txn/$txnHashOrVersion/$tab",
-      params: {txnHashOrVersion: txnHashOrVersion ?? "", tab: newValue},
-      replace: true,
-    });
+    navigateToTab(newValue);
   };
 
   return (

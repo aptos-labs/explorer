@@ -4,7 +4,7 @@ import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {TransactionType} from "../../components/TransactionType";
 import {truncateAddress} from "../../utils";
-import {getTransactionTabHeadLabel} from "./transactionTabMeta";
+import {getTransactionTabHeadLabel, isOverviewTab} from "./transactionTabMeta";
 
 type TransactionTitleProps = {
   transaction: Types.Transaction;
@@ -17,7 +17,7 @@ type TransactionTitleProps = {
 export default function TransactionTitle({
   transaction,
   urlTxnHashOrVersion,
-  pathTab = "userTxnOverview",
+  pathTab,
 }: TransactionTitleProps) {
   const version = "version" in transaction ? transaction.version : undefined;
 
@@ -25,6 +25,12 @@ export default function TransactionTitle({
   const displayId = truncateAddress(urlTxnHashOrVersion);
   const metadataTitle = `${tabHead} | Transaction ${displayId}`;
   const metadataDescription = `View ${tabHead.toLowerCase()} for transaction ${urlTxnHashOrVersion} on the Aptos blockchain.`;
+
+  // The Overview lives at the base path `/txn/:id`; other tabs append `/:tab`.
+  const canonicalPath =
+    !pathTab || isOverviewTab(pathTab)
+      ? `/txn/${urlTxnHashOrVersion}`
+      : `/txn/${urlTxnHashOrVersion}/${pathTab}`;
 
   return (
     <Stack
@@ -44,7 +50,7 @@ export default function TransactionTitle({
           transaction.type,
           version ? `version ${version}` : "",
         ].filter(Boolean)}
-        canonicalPath={`/txn/${urlTxnHashOrVersion}/${pathTab}`}
+        canonicalPath={canonicalPath}
       />
       <Typography variant="h3" component="h1">
         Transaction

@@ -1,39 +1,36 @@
 import {createFileRoute, Outlet, redirect} from "@tanstack/react-router";
+import {isOverviewTab} from "../pages/Transaction/transactionTabMeta";
 
 // Layout route for /txn/:txnHashOrVersion/*
-// Handles backward compatibility redirects from query params to path-based tabs
+// Handles backward compatibility redirects from query params to path-based tabs.
+// The exact `/txn/:txnHashOrVersion` path is served by the index route, which
+// renders the per-type Overview directly (no explicit overview tab segment).
 export const Route = createFileRoute("/txn/$txnHashOrVersion")({
-  beforeLoad: ({params, search, location}) => {
+  beforeLoad: ({params, search}) => {
     const searchParams = search as {tab?: string; network?: string};
 
-    // Check if we're on the exact /txn/:txnHashOrVersion path (no child route)
-    const pathSegments = location.pathname.split("/").filter(Boolean);
-    const isExactMatch = pathSegments.length === 2; // ["txn", "txnHashOrVersion"]
-
-    // If there's a tab query param, redirect to path-based route
+    // Backward compatibility: `?tab=` query param → path-based route.
     if (searchParams?.tab) {
+      const networkSearch = searchParams.network
+        ? {network: searchParams.network}
+        : undefined;
+
+      // Overview tabs have no URL segment — send them to the base path.
+      if (isOverviewTab(searchParams.tab)) {
+        throw redirect({
+          to: "/txn/$txnHashOrVersion",
+          params: {txnHashOrVersion: params.txnHashOrVersion},
+          search: networkSearch,
+        });
+      }
+
       throw redirect({
         to: "/txn/$txnHashOrVersion/$tab",
         params: {
           txnHashOrVersion: params.txnHashOrVersion,
           tab: searchParams.tab,
         },
-        search: searchParams.network
-          ? {network: searchParams.network}
-          : undefined,
-      });
-    }
-    // Default: redirect to "userTxnOverview" tab only if on exact path
-    if (isExactMatch) {
-      throw redirect({
-        to: "/txn/$txnHashOrVersion/$tab",
-        params: {
-          txnHashOrVersion: params.txnHashOrVersion,
-          tab: "userTxnOverview",
-        },
-        search: searchParams?.network
-          ? {network: searchParams.network}
-          : undefined,
+        search: networkSearch,
       });
     }
   },
