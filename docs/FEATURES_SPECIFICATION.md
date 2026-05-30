@@ -125,6 +125,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Result types** | Account, Address, Transaction, Block, Coin, Fungible Asset, Object. |
 | **Grouping** | Results grouped by type with section headers. |
+| **Relevance ranking** | Coin/fungible-asset and known-address label results are ordered by match quality (exact address match > exact symbol/name > prefix > word-boundary prefix > substring), with the static popularity index (`coinOrderIndex`) as a tie-breaker. Symbol matches edge out equally-tiered name matches. |
 | **Deduplication** | Prefer coin list coin over struct coin; drop redundant "Address" when Account/FA/Object exists. |
 | **Avatars** | Token logos, known-address brand marks via `identiconKey`, blockies fallback. |
 | **Fallback** | Valid-looking address with no on-chain hits → `anyOwnedObjects` check → still link to `/account/...` via `createFallbackAddressResult`. |
@@ -1271,6 +1272,7 @@ top of the HTML site.
 | `app/pages/layout/Search/searchDetection.test.ts` | FEAT-SEARCH-002 (all input type detection: ANS, struct, numeric, hex, address, emoji, generic) |
 | `app/pages/layout/Search/searchFiltering.test.ts` | FEAT-SEARCH-003 (result filtering/deduplication, grouping with headers and type ordering) |
 | `app/pages/layout/Search/searchHelpers.test.ts` | FEAT-SEARCH-001 (normalization, cache keys), FEAT-SEARCH-002 (label lookup, coin lookup), FEAT-SEARCH-003 (definitiveResult) |
+| `app/pages/layout/Search/searchRanking.test.ts` | FEAT-SEARCH-002/FEAT-SEARCH-003 (relevance scoring and ordering for coin/asset and label results) |
 | `app/lib/networks.test.ts` | FEAT-NETWORK-001 (network config, hidden networks, localnet), FEAT-FLAGS-003 (feature labels) |
 | `app/lib/graphqlSupport.test.ts` | FEAT-FLAGS-001 (GraphQL URI per network), FEAT-COIN-001/FEAT-FA-001 (tab gating logic) |
 | `app/lib/validators.test.ts` | FEAT-NETWORK-001 (network name validation), FEAT-FLAGS-003 (feature name validation), well-known constants |

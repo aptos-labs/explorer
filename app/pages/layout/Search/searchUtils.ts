@@ -127,6 +127,106 @@ export function prefixMatchLongerThan3(
 }
 
 /**
+ * Relevance tiers for ranking text matches. Higher is more relevant. These are
+ * spaced apart so that a small per-field weight (see {@link scoreCoinRelevance})
+ * can break ties without letting a weaker match tier overtake a stronger one.
+ */
+export const MATCH_RELEVANCE = {
+  none: 0,
+  substring: 25,
+  wordPrefix: 50,
+  prefix: 75,
+  exact: 100,
+} as const;
+
+/**
+ * Score how well a query matches a single candidate string. The score reflects
+ * match quality (exact > prefix > word-boundary prefix > substring) rather than
+ * just whether the strings overlap, so the most intentional matches rank first.
+ */
+export function scoreTextMatch(
+  query: string,
+  candidate: string | null | undefined,
+): number {
+  if (!candidate) {
+    return MATCH_RELEVANCE.none;
+  }
+  const q = query.trim().toLowerCase();
+  const c = candidate.trim().toLowerCase();
+  if (!q || !c) {
+    return MATCH_RELEVANCE.none;
+  }
+  if (c === q) {
+    return MATCH_RELEVANCE.exact;
+  }
+  if (c.startsWith(q)) {
+    return MATCH_RELEVANCE.prefix;
+  }
+  // A word inside the candidate starts with the query (e.g. "usd" in "Wrapped USD").
+  if (c.split(/[\s\-_/.]+/).some((word) => word.startsWith(q))) {
+    return MATCH_RELEVANCE.wordPrefix;
+  }
+  if (c.includes(q)) {
+    return MATCH_RELEVANCE.substring;
+  }
+  return MATCH_RELEVANCE.none;
+}
+
+/**
+ * Relevance score for an account label (known-address name) match. Used to rank
+ * known-address results so the closest label match surfaces first.
+ */
+export function scoreLabelRelevance(
+  searchText: string,
+  label: string | null | undefined,
+): number {
+  return scoreTextMatch(searchText, label);
+}
+
+// An exact address match is the strongest possible signal: the user pasted the
+// asset's own address, so it should outrank any name/symbol text match.
+const ADDRESS_MATCH_RELEVANCE = 1000;
+// Symbol matches edge out equally-tiered name matches because the ticker is the
+// most intentional way to search for a token (e.g. "USDC" should prefer the coin
+// whose symbol is USDC over a coin merely named "... USDC ...").
+const SYMBOL_FIELD_BONUS = 1;
+
+/**
+ * Relevance score for a coin/fungible-asset list entry. Combines exact address
+ * matches with the best text match across the coin's symbol, Panora symbol, and
+ * name so that ranking reflects how well the entry matches the query.
+ */
+export function scoreCoinRelevance(
+  searchText: string,
+  coin: CoinDescription,
+): number {
+  const q = searchText.trim().toLowerCase();
+  if (!q) {
+    return MATCH_RELEVANCE.none;
+  }
+
+  const standardizedQuery = tryStandardizeAddress(searchText);
+  const matchesAddress =
+    (coin.faAddress != null &&
+      standardizedQuery != null &&
+      tryStandardizeAddress(coin.faAddress) === standardizedQuery) ||
+    coin.tokenAddress === searchText;
+  if (matchesAddress) {
+    return ADDRESS_MATCH_RELEVANCE;
+  }
+
+  const symbolScore = Math.max(
+    scoreTextMatch(q, coin.symbol),
+    scoreTextMatch(q, coin.panoraSymbol),
+  );
+  const nameScore = scoreTextMatch(q, coin.name);
+  const weightedSymbolScore =
+    symbolScore > 0 ? symbolScore + SYMBOL_FIELD_BONUS : 0;
+
+  return Math.max(weightedSymbolScore, nameScore);
+}
+
+/**
  * Handle ANS name lookup using React Query cache
  */
 export async function handleAnsName(
@@ -388,20 +488,26 @@ export function handleLabelLookup(
   searchText: string,
   networkName: NetworkName,
 ): SearchResult[] {
-  const searchResults: SearchResult[] = [];
   const searchLowerCase = searchText.toLowerCase();
   const knownAddresses = getKnownAddresses(networkName);
+  const matches: {result: SearchResult; relevance: number}[] = [];
   Object.entries(knownAddresses).forEach(([address, knownName]) => {
     if (prefixMatchLongerThan3(searchLowerCase, knownName)) {
-      searchResults.push({
-        label: `Account ${truncateAddress(address)} ${knownName}`,
-        to: `/account/${address}`,
-        identiconKey: address,
-        type: "account",
+      matches.push({
+        result: {
+          label: `Account ${truncateAddress(address)} ${knownName}`,
+          to: `/account/${address}`,
+          identiconKey: address,
+          type: "account",
+        },
+        relevance: scoreLabelRelevance(searchLowerCase, knownName),
       });
     }
   });
-  return searchResults;
+  // Surface the closest label match first (exact > prefix > substring).
+  return matches
+    .sort((a, b) => b.relevance - a.relevance)
+    .map((match) => match.result);
 }
 
 /**
@@ -429,6 +535,14 @@ export function handleCoinLookup(
           coin.tokenAddress === searchText),
     )
     .sort((coin: CoinDescription, coin2: CoinDescription) => {
+      // Rank by how well each coin matches the query first, then fall back to
+      // the static popularity index so equally-relevant coins keep their order.
+      const relevanceDiff =
+        scoreCoinRelevance(searchLowerCase, coin2) -
+        scoreCoinRelevance(searchLowerCase, coin);
+      if (relevanceDiff !== 0) {
+        return relevanceDiff;
+      }
       return coinOrderIndex(coin) - coinOrderIndex(coin2);
     })
     .map((coin: CoinDescription) => {
