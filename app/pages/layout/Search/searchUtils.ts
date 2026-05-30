@@ -289,6 +289,34 @@ export async function handleCoin(
 }
 
 /**
+ * Combine the three numeric lookups (block-by-height, transaction-by-version,
+ * block-by-version) into an ordered, de-duplicated result list.
+ *
+ * A bare number is ambiguous: it can be a block height, a transaction version,
+ * or a version contained by some block. We surface every interpretation that
+ * resolves, but drop the "block containing this version" entry when it points
+ * to the same block as the height lookup, so we never render two identical
+ * block rows for the same query.
+ */
+export function buildNumericSearchResults(
+  blockByHeight: SearchResult | null,
+  txnByVersion: SearchResult | null,
+  blockByVersion: SearchResult | null,
+): SearchResult[] {
+  const results: SearchResult[] = [];
+  if (blockByHeight) {
+    results.push(blockByHeight);
+  }
+  if (txnByVersion) {
+    results.push(txnByVersion);
+  }
+  if (blockByVersion && blockByVersion.to !== blockByHeight?.to) {
+    results.push(blockByVersion);
+  }
+  return results;
+}
+
+/**
  * Handle block height or version lookup
  */
 export async function handleBlockHeightOrVersion(
@@ -299,10 +327,9 @@ export async function handleBlockHeightOrVersion(
   if (signal?.aborted) return [];
 
   const num = parseInt(searchText, 10);
-  const results: SearchResult[] = [];
 
   // Try block by height, transaction by version, and block by version in parallel
-  const promises = [
+  const [blockByHeight, txnByVersion, blockByVersion] = await Promise.all([
     getBlockByHeight({height: num, withTransactions: false}, sdkV2Client)
       .then(
         (): SearchResult => ({
@@ -330,12 +357,9 @@ export async function handleBlockHeightOrVersion(
         }),
       )
       .catch(() => null),
-  ];
+  ]);
 
-  const resolved = await Promise.all(promises);
-  results.push(...resolved.filter((r): r is SearchResult => r !== null));
-
-  return results;
+  return buildNumericSearchResults(blockByHeight, txnByVersion, blockByVersion);
 }
 
 /**

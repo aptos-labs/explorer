@@ -113,7 +113,7 @@ The app shell that wraps every page.
 |---------------|-----------------|
 | `.apt` / `.petra` suffix | ANS name lookup via ts-sdk (`getPrimaryName`, `getName`) → account link |
 | Valid Move struct | Coin lookup via `CoinInfo` resource + Panora coin list prefix match |
-| Numeric | Parallel: block by height, transaction by version, block by version |
+| Numeric | Parallel: block by height (`/block/N`), transaction by version (`/txn/N`), and the block containing version `N` (`/block/{containing height}`). The containing-block result is dropped when it resolves to the same block as the height lookup, so a query never yields two identical block rows. Default grouping surfaces the transaction version ahead of the block rows. |
 | 32-byte hex | Parallel: transaction hash, account address, coin list. A 64-char hex is ambiguous (transaction hash vs 32-byte address), so results are grouped **transaction-first**: a confirmed transaction match wins the Enter-key / single-result auto-navigate over a same-hash address/asset match. |
 | Valid account address | Account, FA metadata, object core, resources, coin list, owned objects fallback |
 | Emoji-only (`/^\p{Emoji}+$/gu`) | Emojicoin market lookup: derives market address from `EMOJICOIN_REGISTRY_ADDRESS` via `createNamedObjectAddress`, verifies on-chain, returns coin + LP results |
@@ -1270,7 +1270,7 @@ top of the HTML site.
 | `app/pages/Account/Error.test.tsx` | FEAT-MODULES-008 (`AccountError` optional NOT_FOUND title/message) |
 | `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results) |
 | `app/pages/layout/Search/searchDetection.test.ts` | FEAT-SEARCH-002 (all input type detection: ANS, struct, numeric, hex, address, emoji, generic) |
-| `app/pages/layout/Search/searchFiltering.test.ts` | FEAT-SEARCH-003 (result filtering/deduplication, grouping with headers and type ordering) |
+| `app/pages/layout/Search/searchFiltering.test.ts` | FEAT-SEARCH-003 (result filtering/deduplication, grouping with headers and type ordering, transaction-first ordering for ambiguous hex), FEAT-SEARCH-002 (numeric block/version assembly + dedup) |
 | `app/pages/layout/Search/searchHelpers.test.ts` | FEAT-SEARCH-001 (normalization, cache keys), FEAT-SEARCH-002 (label lookup, coin lookup), FEAT-SEARCH-003 (definitiveResult) |
 | `app/pages/layout/Search/searchRanking.test.ts` | FEAT-SEARCH-002/FEAT-SEARCH-003 (relevance scoring and ordering for coin/asset and label results) |
 | `app/lib/networks.test.ts` | FEAT-NETWORK-001 (network config, hidden networks, localnet), FEAT-FLAGS-003 (feature labels) |
