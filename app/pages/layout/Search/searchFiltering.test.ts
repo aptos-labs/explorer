@@ -117,3 +117,65 @@ describe("FEAT-SEARCH-003 — groupSearchResults", () => {
     expect(coinIdx).toBeLessThan(accountIdx);
   });
 });
+
+// Covers FEAT-SEARCH-002/FEAT-SEARCH-003 — ambiguous 64-char hex disambiguation
+describe("FEAT-SEARCH-003 — groupSearchResults prioritizeTransactions", () => {
+  it("keeps assets before transactions by default", () => {
+    const results: SearchResult[] = [
+      makeResult("Transaction 0xabc", "transaction"),
+      makeResult("Coin APT", "coin"),
+    ];
+    const nonHeaders = groupSearchResults(results).filter(
+      (r) => !r.isGroupHeader,
+    );
+    const txnIdx = nonHeaders.findIndex((r) => r.type === "transaction");
+    const assetIdx = nonHeaders.findIndex((r) => r.type === "coin");
+    expect(assetIdx).toBeLessThan(txnIdx);
+  });
+
+  it("surfaces transactions first when prioritizeTransactions is set", () => {
+    const results: SearchResult[] = [
+      makeResult("Coin APT", "coin"),
+      makeResult("Account 0x1", "account"),
+      makeResult("Transaction 0xabc", "transaction"),
+    ];
+    const nonHeaders = groupSearchResults(results, {
+      prioritizeTransactions: true,
+    }).filter((r) => !r.isGroupHeader);
+    const txnIdx = nonHeaders.findIndex((r) => r.type === "transaction");
+    const assetIdx = nonHeaders.findIndex((r) => r.type === "coin");
+    const accountIdx = nonHeaders.findIndex((r) => r.type === "account");
+    expect(txnIdx).toBe(0);
+    expect(txnIdx).toBeLessThan(assetIdx);
+    expect(txnIdx).toBeLessThan(accountIdx);
+  });
+
+  it("makes a transaction the first selectable Enter target for ambiguous hex", () => {
+    // Simulates a 64-char hex that resolves to both a transaction and an
+    // address/asset: the transaction must be the first navigable result.
+    const results: SearchResult[] = [
+      makeResult("Address 0xhash", "address"),
+      makeResult("Transaction 0xhash", "transaction", "/txn/0xhash"),
+    ];
+    const grouped = groupSearchResults(results, {
+      prioritizeTransactions: true,
+    });
+    const firstSelectable = grouped.find((r) => r.to && !r.isGroupHeader);
+    expect(firstSelectable?.type).toBe("transaction");
+    expect(firstSelectable?.to).toBe("/txn/0xhash");
+  });
+
+  it("preserves type grouping when prioritizing transactions", () => {
+    const results: SearchResult[] = [
+      makeResult("Transaction 0xa", "transaction", "/txn/0xa"),
+      makeResult("Account 0x1", "account"),
+      makeResult("Transaction 0xb", "transaction", "/txn/0xb"),
+    ];
+    const grouped = groupSearchResults(results, {
+      prioritizeTransactions: true,
+    });
+    const headers = grouped.filter((r) => r.isGroupHeader);
+    // One header per type, no duplicates.
+    expect(headers.filter((h) => h.type === "transaction")).toHaveLength(1);
+  });
+});

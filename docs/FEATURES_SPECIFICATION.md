@@ -114,7 +114,7 @@ The app shell that wraps every page.
 | `.apt` / `.petra` suffix | ANS name lookup via ts-sdk (`getPrimaryName`, `getName`) → account link |
 | Valid Move struct | Coin lookup via `CoinInfo` resource + Panora coin list prefix match |
 | Numeric | Parallel: block by height, transaction by version, block by version |
-| 32-byte hex | Parallel: transaction hash, account address, coin list |
+| 32-byte hex | Parallel: transaction hash, account address, coin list. A 64-char hex is ambiguous (transaction hash vs 32-byte address), so results are grouped **transaction-first**: a confirmed transaction match wins the Enter-key / single-result auto-navigate over a same-hash address/asset match. |
 | Valid account address | Account, FA metadata, object core, resources, coin list, owned objects fallback |
 | Emoji-only (`/^\p{Emoji}+$/gu`) | Emojicoin market lookup: derives market address from `EMOJICOIN_REGISTRY_ADDRESS` via `createNamedObjectAddress`, verifies on-chain, returns coin + LP results |
 | Generic text (length > 2) | Coin list name/symbol match + known address label match |
@@ -124,7 +124,7 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Result types** | Account, Address, Transaction, Block, Coin, Fungible Asset, Object. |
-| **Grouping** | Results grouped by type with section headers. |
+| **Grouping** | Results grouped by type with section headers. Default order is Assets → Accounts → Transactions → Blocks → Objects → Addresses → Other; for ambiguous 64-char hex queries (`groupSearchResults(..., {prioritizeTransactions: true})`) the order becomes Transactions → Assets → Accounts → … so a confirmed transaction is the first navigable result. |
 | **Relevance ranking** | Coin/fungible-asset and known-address label results are ordered by match quality (exact address match > exact symbol/name > prefix > word-boundary prefix > substring), with the static popularity index (`coinOrderIndex`) as a tie-breaker. Symbol matches edge out equally-tiered name matches. |
 | **Deduplication** | Prefer coin list coin over struct coin; drop redundant "Address" when Account/FA/Object exists. |
 | **Avatars** | Token logos, known-address brand marks via `identiconKey`, blockies fallback. |

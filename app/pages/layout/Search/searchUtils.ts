@@ -729,10 +729,46 @@ export function filterSearchResults(
     .filter((result): result is SearchResult => !!result);
 }
 
+export type GroupSearchResultsOptions = {
+  /**
+   * Surface transaction results before everything else. Used for ambiguous
+   * 64-character hex queries, where a fully-expanded hash is most commonly a
+   * transaction hash rather than an account/object address — so a confirmed
+   * transaction match should win the Enter-key / single-result auto-navigate
+   * instead of being buried beneath asset/account matches.
+   */
+  prioritizeTransactions?: boolean;
+};
+
+// Default type ordering — assets (coins/fungible assets) first.
+const DEFAULT_TYPE_ORDER = [
+  "asset",
+  "account",
+  "transaction",
+  "block",
+  "object",
+  "address",
+  "other",
+];
+
+// Ordering for ambiguous hex queries — confirmed transactions first.
+const TRANSACTION_FIRST_TYPE_ORDER = [
+  "transaction",
+  "asset",
+  "account",
+  "block",
+  "object",
+  "address",
+  "other",
+];
+
 /**
  * Group search results by asset type
  */
-export function groupSearchResults(results: SearchResult[]): SearchResult[] {
+export function groupSearchResults(
+  results: SearchResult[],
+  options?: GroupSearchResultsOptions,
+): SearchResult[] {
   if (results.length === 0) {
     return results;
   }
@@ -755,16 +791,9 @@ export function groupSearchResults(results: SearchResult[]): SearchResult[] {
     }
   }
 
-  // Define priority order for types - assets (coins/fungible assets) first
-  const typeOrder = [
-    "asset",
-    "account",
-    "transaction",
-    "block",
-    "object",
-    "address",
-    "other",
-  ];
+  const typeOrder = options?.prioritizeTransactions
+    ? TRANSACTION_FIRST_TYPE_ORDER
+    : DEFAULT_TYPE_ORDER;
 
   // Build grouped results array with headers
   const groupedResults: SearchResult[] = [];
