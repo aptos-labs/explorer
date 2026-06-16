@@ -15,6 +15,8 @@ minimumReleaseAge: 7200
 # https://pnpm.io/settings#minimumreleaseageexclude
 minimumReleaseAgeExclude:
   - "@tanstack/react-query@5.100.11"
+  # Renovate security update: vite@8.0.16
+  - vite@8.0.16
 
 allowBuilds:
   "@parcel/watcher": false
