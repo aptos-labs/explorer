@@ -202,7 +202,9 @@ function MonoText({children}: {children: React.ReactNode}) {
 
 function hexByteLength(hex: string): number | undefined {
   if (!/^0x[0-9a-fA-F]*$/.test(hex)) return undefined;
-  return (hex.length - 2) / 2;
+  const nibbles = hex.length - 2;
+  if (nibbles % 2 !== 0) return undefined;
+  return nibbles / 2;
 }
 
 function HexPayloadValue({value}: {value: unknown}) {
