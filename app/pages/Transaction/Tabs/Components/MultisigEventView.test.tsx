@@ -50,6 +50,15 @@ vi.mock("../../../../api/hooks/useGetAccountModule", () => ({
   useGetAccountModule: (...args: unknown[]) => useGetAccountModuleMock(...args),
 }));
 
+const useEntryFunctionArgNamesMock = vi.fn(
+  (..._args: unknown[]) =>
+    ({functionArgNames: null, typeArgNames: null}) as unknown,
+);
+vi.mock("./useEntryFunctionArgNames", () => ({
+  useEntryFunctionArgNames: (...args: unknown[]) =>
+    useEntryFunctionArgNamesMock(...args),
+}));
+
 vi.mock("../../../../components/HashButton", () => ({
   default: function HashButtonStub({hash}: {hash: string}) {
     return <span data-testid="hash-stub">{hash}</span>;
@@ -77,6 +86,10 @@ describe("MultisigEventView — FEAT-TXN-004", () => {
   afterEach(() => {
     cleanup();
     useGetAccountModuleMock.mockReturnValue({data: undefined} as unknown);
+    useEntryFunctionArgNamesMock.mockReturnValue({
+      functionArgNames: null,
+      typeArgNames: null,
+    } as unknown);
   });
 
   describe("isMultisigEvent", () => {
@@ -168,6 +181,40 @@ describe("MultisigEventView — FEAT-TXN-004", () => {
 
     // The `address` parameter type badge is rendered alongside the value.
     expect(screen.getByText("address")).toBeTruthy();
+  });
+
+  it("labels decoded arguments with resolved names from Move source", () => {
+    useGetAccountModuleMock.mockReturnValue({
+      data: {
+        abi: {
+          exposed_functions: [
+            {name: "remove_owner", params: ["&signer", "address"]},
+          ],
+        },
+      },
+    } as unknown);
+    useEntryFunctionArgNamesMock.mockReturnValue({
+      functionArgNames: ["owner_to_remove"],
+      typeArgNames: null,
+    } as unknown);
+
+    render(
+      withTheme(
+        <MultisigEventView
+          eventType="0x1::multisig_account::TransactionExecutionSucceeded"
+          data={{
+            multisig_account: "0xabc",
+            executor: "0xdef",
+            sequence_number: "1",
+            num_approvals: "1",
+            transaction_payload:
+              "0x000000000000000000000000000000000000000000000000000000000000000001106d756c74697369675f6163636f756e740c72656d6f76655f6f776e6572000120794b17ff4abc6e98dec576d0ac5d7bd0bd5fb92177f66f971b273b5292d7f21b",
+          }}
+        />,
+      ),
+    );
+
+    expect(screen.getByText("owner_to_remove")).toBeTruthy();
   });
 
   it("decodes the inner payload of a CreateTransaction event", () => {

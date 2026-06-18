@@ -19,21 +19,15 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import {useCallback, useMemo, useState} from "react";
+import {useCallback, useState} from "react";
 import type {Types} from "~/types/aptos";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
-import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
-import {lookupFunctionArgumentNameOverride} from "../../../../data/functionArgumentNameOverrides";
-import {
-  extractFunctionParamNames,
-  extractFunctionTypeParamNames,
-  transformCode,
-} from "../../../../utils";
 import {
   extractEntryFunctionPayload,
   generateCliCommand,
 } from "../../../../utils/cliCommand";
 import MoveFunctionParamTypeBadge from "./MoveFunctionParamTypeBadge";
+import {useEntryFunctionArgNames} from "./useEntryFunctionArgNames";
 
 const TOOLTIP_TIME = 2000;
 
@@ -137,8 +131,6 @@ export default function TransactionArguments({
     {enabled: hasValidFunction},
   );
 
-  const {packages} = useGetAccountPackages(address ?? "", ledgerVersion);
-
   const moveFunction = moduleData?.abi?.exposed_functions?.find(
     (fn) => fn.name === functionName,
   );
@@ -148,81 +140,15 @@ export default function TransactionArguments({
     (p) => p !== "&signer" && p !== "signer",
   );
 
-  const moduleSource = useMemo(() => {
-    if (!moduleName) return undefined;
-    for (const pkg of packages) {
-      const mod = pkg.modules.find((m) => m.name === moduleName);
-      if (mod?.source) return mod.source;
-    }
-    return undefined;
-  }, [packages, moduleName]);
-
-  const {functionArgNames, typeArgNames} = useMemo(() => {
-    if (!payload || !functionName) {
-      return {
-        functionArgNames: null as string[] | null,
-        typeArgNames: null as string[] | null,
-      };
-    }
-
-    const fromOverride =
-      address && moduleName
-        ? lookupFunctionArgumentNameOverride(
-            address,
-            moduleName,
-            functionName,
-            payload.arguments.length,
-          )
-        : null;
-
-    let typeNames: string[] | null = null;
-    let fnArgNames: string[] | null = null;
-
-    if (moduleSource) {
-      const decoded = transformCode(moduleSource);
-      const rawTypeNames = extractFunctionTypeParamNames(decoded, functionName);
-      typeNames =
-        rawTypeNames && rawTypeNames.length === payload.type_arguments.length
-          ? rawTypeNames
-          : null;
-
-      if (moveFunction && filteredParams) {
-        const rawParamNames = extractFunctionParamNames(decoded, functionName);
-        // Map source names to serialized args by ABI position: drop every signer
-        // slot (not only a single leading signer).
-        if (
-          rawParamNames &&
-          rawParamNames.length === moveFunction.params.length
-        ) {
-          const nonSignerIndices = moveFunction.params.reduce<number[]>(
-            (indices, param, index) => {
-              if (param !== "signer" && param !== "&signer") {
-                indices.push(index);
-              }
-              return indices;
-            },
-            [],
-          );
-          if (nonSignerIndices.length === filteredParams.length) {
-            fnArgNames = nonSignerIndices.map((idx) => rawParamNames[idx]);
-          }
-        }
-      }
-    }
-
-    return {
-      functionArgNames: fromOverride ?? fnArgNames,
-      typeArgNames: typeNames,
-    };
-  }, [
-    payload,
-    moduleSource,
-    functionName,
-    moveFunction,
-    filteredParams,
+  const {functionArgNames, typeArgNames} = useEntryFunctionArgNames({
     address,
     moduleName,
-  ]);
+    functionName,
+    ledgerVersion,
+    argCount: payload?.arguments.length ?? 0,
+    typeArgCount: payload?.type_arguments.length ?? 0,
+    moveFunction,
+  });
 
   const cliCommand = payload
     ? generateCliCommand(payload, paramTypes)
