@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import * as React from "react";
+import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
 import {
@@ -19,10 +20,12 @@ import {
 } from "../../../../components/Table/ResponsiveKeyValueTable";
 import {Link} from "../../../../routing";
 import {parseTimestampString, tryStandardizeAddress} from "../../../../utils";
+import {type DecodedMoveValue, decodeMoveArguments} from "./decodeMoveArgument";
 import {
   type DecodedMultisigPayload,
   decodeMultisigTransactionPayload,
 } from "./decodeMultisigPayload";
+import MoveFunctionParamTypeBadge from "./MoveFunctionParamTypeBadge";
 
 // ---------------------------------------------------------------------------
 // Detection
@@ -259,6 +262,47 @@ function FunctionLink({fn}: {fn: string}) {
   );
 }
 
+/** Renders a typed (ABI-decoded) Move argument value, recursing into containers. */
+function ArgValueView({value}: {value: DecodedMoveValue}) {
+  switch (value.kind) {
+    case "address":
+      return (
+        <HashButton hash={value.value} type={HashType.ACCOUNT} size="small" />
+      );
+    case "object":
+      return (
+        <HashButton hash={value.value} type={HashType.OBJECT} size="small" />
+      );
+    case "string":
+      return <MonoText>"{value.value}"</MonoText>;
+    case "bool":
+      return <MonoText>{String(value.value)}</MonoText>;
+    case "number":
+      return <MonoText>{value.value}</MonoText>;
+    case "bytes":
+      return <MonoText>{value.value}</MonoText>;
+    case "option":
+      return value.value === null ? (
+        <MonoText>None</MonoText>
+      ) : (
+        <ArgValueView value={value.value} />
+      );
+    case "vector":
+      return value.value.length === 0 ? (
+        <MonoText>[]</MonoText>
+      ) : (
+        <Stack spacing={0.5} sx={{alignItems: "flex-start"}}>
+          {value.value.map((item, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: positional items
+            <ArgValueView key={i} value={item} />
+          ))}
+        </Stack>
+      );
+    default:
+      return null;
+  }
+}
+
 /** Decoded entry-function view for a multisig payload, with raw-bytes toggle. */
 function DecodedPayloadView({
   decoded,
@@ -268,6 +312,33 @@ function DecodedPayloadView({
   rawHex: string;
 }) {
   const [showRaw, setShowRaw] = React.useState(false);
+
+  const [rawAddress, moduleName, functionName] = decoded.function.split("::");
+  const address = tryStandardizeAddress(rawAddress) ?? rawAddress;
+  const canFetchAbi = Boolean(address && moduleName && functionName);
+
+  // Fetch the module ABI so we can decode raw argument bytes into typed values.
+  const {data: moduleData} = useGetAccountModule(
+    address,
+    moduleName ?? "",
+    undefined,
+    {enabled: canFetchAbi},
+  );
+
+  const paramTypes = React.useMemo(() => {
+    const moveFunction = moduleData?.abi?.exposed_functions?.find(
+      (fn) => fn.name === functionName,
+    );
+    return moveFunction?.params?.filter(
+      (p) => p !== "&signer" && p !== "signer",
+    );
+  }, [moduleData, functionName]);
+
+  const decodedArgs = React.useMemo(
+    () => decodeMoveArguments(decoded.arguments, paramTypes),
+    [decoded.arguments, paramTypes],
+  );
+
   return (
     <Stack spacing={1} sx={{minWidth: 0, maxWidth: "100%"}}>
       <Stack
@@ -302,27 +373,47 @@ function DecodedPayloadView({
           <MonoText>None</MonoText>
         ) : (
           <Stack spacing={0.5}>
-            {decoded.arguments.map((arg, i) => (
-              <Box
-                // biome-ignore lint/suspicious/noArrayIndexKey: positional args
-                key={i}
-                sx={{
-                  p: 0.75,
-                  borderRadius: 1,
-                  bgcolor: (theme) => theme.palette.action.hover,
-                }}
-              >
-                <MonoText>{arg}</MonoText>
-              </Box>
-            ))}
+            {decoded.arguments.map((arg, i) => {
+              const typeStr = paramTypes?.[i];
+              const decodedArg = decodedArgs[i];
+              return (
+                <Box
+                  // biome-ignore lint/suspicious/noArrayIndexKey: positional args
+                  key={i}
+                  sx={{
+                    p: 0.75,
+                    borderRadius: 1,
+                    bgcolor: (theme) => theme.palette.action.hover,
+                  }}
+                >
+                  {typeStr ? (
+                    <Box sx={{mb: 0.5}}>
+                      <MoveFunctionParamTypeBadge
+                        typeStr={typeStr}
+                        variant="card"
+                      />
+                    </Box>
+                  ) : null}
+                  <Box sx={{minWidth: 0, maxWidth: "100%"}}>
+                    {decodedArg ? (
+                      <ArgValueView value={decodedArg} />
+                    ) : (
+                      <MonoText>{arg}</MonoText>
+                    )}
+                  </Box>
+                </Box>
+              );
+            })}
           </Stack>
         )}
-        <Typography
-          variant="caption"
-          sx={{display: "block", color: "text.secondary", mt: 0.5}}
-        >
-          Raw BCS argument bytes; decode with the module ABI for typed values.
-        </Typography>
+        {paramTypes === undefined && decoded.arguments.length > 0 ? (
+          <Typography
+            variant="caption"
+            sx={{display: "block", color: "text.secondary", mt: 0.5}}
+          >
+            Raw BCS argument bytes; module ABI unavailable for typed values.
+          </Typography>
+        ) : null}
       </Box>
       <Box>
         <Typography

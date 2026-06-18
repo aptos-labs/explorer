@@ -43,6 +43,13 @@ vi.mock("../../../../routing", () => ({
   },
 }));
 
+const useGetAccountModuleMock = vi.fn(
+  (..._args: unknown[]) => ({data: undefined}) as unknown,
+);
+vi.mock("../../../../api/hooks/useGetAccountModule", () => ({
+  useGetAccountModule: (...args: unknown[]) => useGetAccountModuleMock(...args),
+}));
+
 vi.mock("../../../../components/HashButton", () => ({
   default: function HashButtonStub({hash}: {hash: string}) {
     return <span data-testid="hash-stub">{hash}</span>;
@@ -69,6 +76,7 @@ function withTheme(ui: ReactNode) {
 describe("MultisigEventView — FEAT-TXN-004", () => {
   afterEach(() => {
     cleanup();
+    useGetAccountModuleMock.mockReturnValue({data: undefined} as unknown);
   });
 
   describe("isMultisigEvent", () => {
@@ -129,6 +137,37 @@ describe("MultisigEventView — FEAT-TXN-004", () => {
     expect(
       screen.getByText("0x1::multisig_account::remove_owner"),
     ).toBeTruthy();
+  });
+
+  it("renders ABI-decoded argument types when the module ABI is available", () => {
+    useGetAccountModuleMock.mockReturnValue({
+      data: {
+        abi: {
+          exposed_functions: [
+            {name: "remove_owner", params: ["&signer", "address"]},
+          ],
+        },
+      },
+    } as unknown);
+
+    render(
+      withTheme(
+        <MultisigEventView
+          eventType="0x1::multisig_account::TransactionExecutionSucceeded"
+          data={{
+            multisig_account: "0xabc",
+            executor: "0xdef",
+            sequence_number: "1",
+            num_approvals: "1",
+            transaction_payload:
+              "0x000000000000000000000000000000000000000000000000000000000000000001106d756c74697369675f6163636f756e740c72656d6f76655f6f776e6572000120794b17ff4abc6e98dec576d0ac5d7bd0bd5fb92177f66f971b273b5292d7f21b",
+          }}
+        />,
+      ),
+    );
+
+    // The `address` parameter type badge is rendered alongside the value.
+    expect(screen.getByText("address")).toBeTruthy();
   });
 
   it("decodes the inner payload of a CreateTransaction event", () => {
