@@ -1,4 +1,4 @@
-import {Autocomplete, Typography, useTheme} from "@mui/material";
+import {Autocomplete, useTheme} from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
@@ -17,8 +17,9 @@ import {
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
 } from "../../../utils/cacheManager";
-import ResultLink from "./ResultLink";
 import SearchInput from "./SearchInput";
+import {SearchResultGroupHeader, SearchResultRow} from "./SearchResultRow";
+import {SEARCH_DEBOUNCE_MS} from "./searchConstants";
 import {
   anyOwnedObjects,
   createFallbackAddressResult,
@@ -419,7 +420,7 @@ export default function HeaderSearch({initialSearch}: HeaderSearchProps) {
     if (inputValue.trim().length > 0) {
       timer = setTimeout(() => {
         fetchDataRef.current(inputValue.trim(), abortController.signal);
-      }, 500); // Debounce set to 500ms to balance responsiveness and API efficiency
+      }, SEARCH_DEBOUNCE_MS);
     }
 
     return () => {
@@ -506,33 +507,13 @@ export default function HeaderSearch({initialSearch}: HeaderSearchProps) {
                 cursor: "default",
               }}
             >
-              <Typography
-                variant="caption"
-                sx={{
-                  display: "block",
-                  px: 2,
-                  py: 0.75,
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.05em",
-                  color: "text.secondary",
-                  backgroundColor: "action.hover",
-                }}
-              >
-                {option.label}
-              </Typography>
+              <SearchResultGroupHeader label={option.label} />
             </li>
           );
         }
         return (
-          <li {...props} key={props.id}>
-            <ResultLink
-              to={option.to}
-              text={option.label}
-              image={option.image}
-              identiconKey={option.identiconKey}
-            />
+          <li {...props} key={props.id} style={{padding: 0}}>
+            <SearchResultRow result={option} />
           </li>
         );
       }}

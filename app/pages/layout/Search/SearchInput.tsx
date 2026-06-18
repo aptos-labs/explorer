@@ -5,6 +5,12 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
+import {
+  SEARCH_HELPER_TEXT,
+  SEARCH_ICON_COLOR,
+  SEARCH_INPUT_FONT_SIZE,
+  SEARCH_PLACEHOLDER,
+} from "./searchConstants";
 
 interface SearchInputProps extends AutocompleteRenderInputParams {
   loading?: boolean;
@@ -20,8 +26,8 @@ export default function SearchInput({loading, ...params}: SearchInputProps) {
           input: {
             ...params.slotProps.input,
             sx: {
-              fontSize: "1.1rem",
-              lineHeight: "1.1rem",
+              fontSize: SEARCH_INPUT_FONT_SIZE,
+              lineHeight: SEARCH_INPUT_FONT_SIZE,
             },
             "aria-label": "search",
             startAdornment: (
@@ -29,7 +35,7 @@ export default function SearchInput({loading, ...params}: SearchInputProps) {
                 position="start"
                 sx={{ml: 0.5, marginTop: "0!important"}}
               >
-                <SearchIcon fontSize="large" color="secondary" />
+                <SearchIcon fontSize="large" color={SEARCH_ICON_COLOR} />
               </InputAdornment>
             ),
             endAdornment: loading && (
@@ -39,8 +45,8 @@ export default function SearchInput({loading, ...params}: SearchInputProps) {
             ),
           },
         }}
-        placeholder="Search Explorer"
-        helperText="Account Name or Address / Txn Hash or Version / Block Height or Version"
+        placeholder={SEARCH_PLACEHOLDER}
+        helperText={SEARCH_HELPER_TEXT}
         fullWidth
       />
     </form>

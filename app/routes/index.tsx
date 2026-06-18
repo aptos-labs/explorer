@@ -70,7 +70,6 @@ function LandingPage() {
         <Box sx={{maxWidth: 980, mx: "auto", mb: 3}}>
           <SearchWithResults
             initialQuery={initialSearch}
-            updateUrl={false}
             onResultsChange={setSearching}
           />
         </Box>
