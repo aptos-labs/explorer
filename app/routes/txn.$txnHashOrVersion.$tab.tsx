@@ -1,34 +1,33 @@
-import {createFileRoute} from "@tanstack/react-router";
-import {getClientFromSearch, getNetworkFromSearch} from "../api/createClient";
-import {transactionQueryOptions} from "../api/queries";
+import {createFileRoute, redirect} from "@tanstack/react-router";
 import {PagePending} from "../components/NavigationPending";
-import {networks} from "../constants";
 import TransactionPage from "../pages/Transaction/Index";
+import {prefetchTransactionData} from "../pages/Transaction/transactionRouteLoader";
+import {isOverviewTab} from "../pages/Transaction/transactionTabMeta";
 
-// Primary route for transaction with tab in path
+// Route for a transaction with an explicit tab segment in the path.
 export const Route = createFileRoute("/txn/$txnHashOrVersion/$tab")({
-  // Prefetch transaction data during navigation for faster perceived load
+  beforeLoad: ({params, search}) => {
+    // Overview views have no URL segment — collapse any legacy
+    // `/txn/:id/<type>Overview` (or `/unknown`) link to the canonical base path.
+    if (isOverviewTab(params.tab)) {
+      const searchParams = search as {network?: string};
+      throw redirect({
+        to: "/txn/$txnHashOrVersion",
+        params: {txnHashOrVersion: params.txnHashOrVersion},
+        search: searchParams?.network
+          ? {network: searchParams.network}
+          : undefined,
+      });
+    }
+  },
+  // Prefetch transaction data during navigation for faster perceived load.
   loader: async ({params, context, location}) => {
     const {queryClient} = context;
-    const search = Object.fromEntries(
-      new URLSearchParams(location.search),
-    ) as Record<string, string>;
-    const client = getClientFromSearch(search);
-    const networkName = getNetworkFromSearch(search);
-    const networkValue = networks[networkName];
-
-    try {
-      await queryClient.ensureQueryData(
-        transactionQueryOptions(params.txnHashOrVersion, client, networkValue),
-      );
-    } catch {
-      // Ignore prefetch errors here so that transaction page-level error handling
-      // (e.g., TransactionError) can handle query failures without triggering
-      // the router error boundary. Optionally log for debugging:
-      // console.error("Failed to prefetch transaction data", error);
-    }
-
-    return {networkName};
+    return prefetchTransactionData(
+      params.txnHashOrVersion,
+      queryClient,
+      location.search,
+    );
   },
   pendingComponent: PagePending,
   component: TransactionPage,

@@ -173,7 +173,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 ## 4. Transaction Detail
 
-**Route**: `/txn/$txnHashOrVersion/$tab`
+**Route**: `/txn/$txnHashOrVersion` (Overview) and `/txn/$txnHashOrVersion/$tab` (other tabs)
 
 ### FEAT-TXN-001 — Tab Selection by Type
 
@@ -247,12 +247,14 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Display** | Accordion at bottom of Overview tab with raw JSON and fullnode API link. |
 
-### FEAT-TXN-008 — Default Tab Redirect
+### FEAT-TXN-008 — Overview at Base Path
 
 | Aspect | Detail |
 |--------|--------|
-| **Behavior** | `/txn/$hash` → `/txn/$hash/userTxnOverview`; client-side correction for non-user transactions. |
-| **Invalid tab** | Redirects to the first tab for the transaction type. |
+| **Behavior** | The per-type Overview is served from the canonical base path `/txn/$hash` — there is **no** explicit overview tab segment (no `/userTxnOverview`, `/blockMetadataOverview`, …). |
+| **Legacy redirect** | Old overview URLs (`/txn/$hash/userTxnOverview`, `/blockMetadataOverview`, `/pendingTxnOverview`, `/genesisTxnOverview`, `/validatorTxnOverview`, `/stateCheckpointOverview`, `/blockEpilogueOverview`, `/unknown`) and `?tab=<overview>` redirect to `/txn/$hash`, preserving `network`. |
+| **Tab navigation** | Selecting the Overview tab navigates to `/txn/$hash`; every other tab uses `/txn/$hash/$tab`. |
+| **Invalid tab** | Redirects to the Overview base path for the transaction type. |
 
 ### FEAT-TXN-009 — Transaction Actions Parsing
 
@@ -1205,6 +1207,7 @@ top of the HTML site.
 | `/object/$address/$tab` | FEAT-ACCOUNT-005 |
 | `/account/$address/modules/$splat` | FEAT-MODULES-001 |
 | `/object/$address/modules/$splat` | FEAT-MODULES-001 |
+| `/txn/$txnHashOrVersion` (Overview) | FEAT-TXN-001 / FEAT-TXN-008 |
 | `/txn/$txnHashOrVersion/$tab` | FEAT-TXN-001 |
 | `/block/$height/$tab` | FEAT-BLOCK-001 |
 | `/coin/$struct/$tab` | FEAT-COIN-001 |
@@ -1264,6 +1267,7 @@ top of the HTML site.
 | `app/pages/Transaction/Tabs/Components/SignatureOverviewTable.test.tsx` | FEAT-TXN-002 (signature overview: Ed25519, multi-Ed25519, single_sender, multi_agent, fee_payer, fallbacks; stable keys for duplicate secondary addresses) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns), FEAT-TXN-012 (conditional Modules tab) |
+| `app/pages/Transaction/transactionTabMeta.test.ts` | FEAT-TXN-008 (overview tab detection: every per-type overview tab maps to the base `/txn/{id}` path; detail tab head labels) |
 | `app/pages/Transaction/transactionModuleChanges.test.ts` | FEAT-TXN-012 (parse PublishPackage events and module write-set rows) |
 | `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |

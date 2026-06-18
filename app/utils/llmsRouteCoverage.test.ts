@@ -29,8 +29,7 @@ const REQUIRED_PATH_SNIPPETS = [
   "/modules/code/",
   /** Validator list default tab */
   "/validators/all",
-  /** Transaction detail tab */
-  "userTxnOverview",
+  /** Transaction detail tab (Overview lives at the base /txn/{id} path) */
   "balanceChange",
   /** User transaction Sentio call trace tab */
   "/trace",

@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-05-14 (rev 22)
+> Last updated: 2026-06-18 (rev 23)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -43,9 +43,9 @@ Each detail page has tabs accessible via path segments:
   - `?type=user` — show only user transactions (default when indexer is available)
   - `?type=all` — show all transaction types (user, block_metadata, state_checkpoint)
   - `?fn_addr={address}&fn_module={module}&fn_name={function}` — filter by entry function fields (e.g. `?fn_addr=0x1&fn_module=coin&fn_name=transfer`). Each field is optional but progressive: module requires address, function requires module. On the User Transactions view this is server-side filtering via indexed columns; on the All Transactions view it filters client-side on the current page. Legacy `?fn=0x1::coin::transfer` URLs are auto-migrated.
-- `/txn/{version}` — transaction by version number (integer)
+- `/txn/{version}` — transaction by version number (integer); the base path shows the per-type **Overview** (there is no explicit overview tab segment)
 - `/txn/{hash}` — transaction by hash (0x-prefixed hex)
-- Tab paths: `/txn/{id}/userTxnOverview`, `/txn/{id}/events`, `/txn/{id}/payload`, `/txn/{id}/modules` (when the transaction emits package-publish signals or includes module write-set changes), `/txn/{id}/changes`, `/txn/{id}/balanceChange`, `/txn/{id}/trace`
+- Tab paths: `/txn/{id}/events`, `/txn/{id}/payload`, `/txn/{id}/modules` (when the transaction emits package-publish signals or includes module write-set changes), `/txn/{id}/changes`, `/txn/{id}/balanceChange`, `/txn/{id}/trace`. Legacy overview URLs (e.g. `/txn/{id}/userTxnOverview`) redirect to the base `/txn/{id}` path.
   - **Trace** (`/txn/{id}/trace`): experimental **Move call trace** for user transactions (mainnet only). Fetches execution tree from Sentio’s public API when you open the tab; links into this explorer (callee account, module **Run** and **Code** tabs) plus Sentio’s interactive viewer.
 
 #### Accounts
