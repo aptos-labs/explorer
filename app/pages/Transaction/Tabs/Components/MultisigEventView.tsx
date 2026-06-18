@@ -26,6 +26,7 @@ import {
   decodeMultisigTransactionPayload,
 } from "./decodeMultisigPayload";
 import MoveFunctionParamTypeBadge from "./MoveFunctionParamTypeBadge";
+import {useEntryFunctionArgNames} from "./useEntryFunctionArgNames";
 
 // ---------------------------------------------------------------------------
 // Detection
@@ -325,14 +326,29 @@ function DecodedPayloadView({
     {enabled: canFetchAbi},
   );
 
-  const paramTypes = React.useMemo(() => {
-    const moveFunction = moduleData?.abi?.exposed_functions?.find(
-      (fn) => fn.name === functionName,
-    );
-    return moveFunction?.params?.filter(
-      (p) => p !== "&signer" && p !== "signer",
-    );
-  }, [moduleData, functionName]);
+  const moveFunction = React.useMemo(
+    () =>
+      moduleData?.abi?.exposed_functions?.find(
+        (fn) => fn.name === functionName,
+      ),
+    [moduleData, functionName],
+  );
+
+  const paramTypes = React.useMemo(
+    () =>
+      moveFunction?.params?.filter((p) => p !== "&signer" && p !== "signer"),
+    [moveFunction],
+  );
+
+  // Resolve argument / type-parameter names from the module's Move source.
+  const {functionArgNames, typeArgNames} = useEntryFunctionArgNames({
+    address: canFetchAbi ? address : undefined,
+    moduleName,
+    functionName,
+    argCount: decoded.arguments.length,
+    typeArgCount: decoded.typeArguments.length,
+    moveFunction,
+  });
 
   const decodedArgs = React.useMemo(
     () => decodeMoveArguments(decoded.arguments, paramTypes),
@@ -361,9 +377,25 @@ function DecodedPayloadView({
         <Box>
           <FieldCaption>Type Arguments</FieldCaption>
           <Stack spacing={0.25}>
-            {decoded.typeArguments.map((tag) => (
-              <MonoText key={tag}>{tag}</MonoText>
-            ))}
+            {decoded.typeArguments.map((tag, i) => {
+              const name = typeArgNames?.[i];
+              return (
+                <Stack
+                  key={tag}
+                  direction="row"
+                  spacing={1}
+                  sx={{alignItems: "baseline", flexWrap: "wrap"}}
+                >
+                  <Typography
+                    variant="caption"
+                    sx={{color: "text.secondary", fontFamily: "monospace"}}
+                  >
+                    {name ?? `T${i}`}:
+                  </Typography>
+                  <MonoText>{tag}</MonoText>
+                </Stack>
+              );
+            })}
           </Stack>
         </Box>
       )}
@@ -376,6 +408,7 @@ function DecodedPayloadView({
             {decoded.arguments.map((arg, i) => {
               const typeStr = paramTypes?.[i];
               const decodedArg = decodedArgs[i];
+              const name = functionArgNames?.[i];
               return (
                 <Box
                   // biome-ignore lint/suspicious/noArrayIndexKey: positional args
@@ -386,14 +419,28 @@ function DecodedPayloadView({
                     bgcolor: (theme) => theme.palette.action.hover,
                   }}
                 >
-                  {typeStr ? (
-                    <Box sx={{mb: 0.5}}>
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{alignItems: "baseline", flexWrap: "wrap", mb: 0.5}}
+                  >
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: "text.secondary",
+                        fontWeight: 600,
+                        fontFamily: "monospace",
+                      }}
+                    >
+                      {name ?? `#${i}`}
+                    </Typography>
+                    {typeStr ? (
                       <MoveFunctionParamTypeBadge
                         typeStr={typeStr}
                         variant="card"
                       />
-                    </Box>
-                  ) : null}
+                    ) : null}
+                  </Stack>
                   <Box sx={{minWidth: 0, maxWidth: "100%"}}>
                     {decodedArg ? (
                       <ArgValueView value={decodedArg} />
