@@ -37,6 +37,12 @@ vi.mock("../../../../components/Table/ResponsiveKeyValueTable", () => ({
   ),
 }));
 
+vi.mock("../../../../routing", () => ({
+  Link: function LinkStub({children}: {children: ReactNode}) {
+    return <span data-testid="link-stub">{children}</span>;
+  },
+}));
+
 vi.mock("../../../../components/HashButton", () => ({
   default: function HashButtonStub({hash}: {hash: string}) {
     return <span data-testid="hash-stub">{hash}</span>;
@@ -100,6 +106,60 @@ describe("MultisigEventView — FEAT-TXN-004", () => {
     expect(screen.getByText("Sequence Number")).toBeTruthy();
     // Byte length annotation for the payload (0x1234 -> 2 bytes)
     expect(screen.getByText("2 bytes")).toBeTruthy();
+  });
+
+  it("decodes the transaction_payload of an execution event into a function", () => {
+    render(
+      withTheme(
+        <MultisigEventView
+          eventType="0x1::multisig_account::TransactionExecutionSucceeded"
+          data={{
+            multisig_account: "0xabc",
+            executor: "0xdef",
+            sequence_number: "1",
+            num_approvals: "1",
+            transaction_payload:
+              "0x000000000000000000000000000000000000000000000000000000000000000001106d756c74697369675f6163636f756e740c72656d6f76655f6f776e6572000120794b17ff4abc6e98dec576d0ac5d7bd0bd5fb92177f66f971b273b5292d7f21b",
+          }}
+        />,
+      ),
+    );
+
+    expect(screen.getByText("Decoded")).toBeTruthy();
+    expect(
+      screen.getByText("0x1::multisig_account::remove_owner"),
+    ).toBeTruthy();
+  });
+
+  it("decodes the inner payload of a CreateTransaction event", () => {
+    render(
+      withTheme(
+        <MultisigEventView
+          eventType="0x1::multisig_account::CreateTransactionEvent"
+          data={{
+            creator: "0xcreator",
+            sequence_number: "1",
+            multisig_account: "0xabc",
+            transaction: {
+              creation_time_secs: "1685997892",
+              creator: "0xcreator",
+              payload: {
+                vec: [
+                  "0x000000000000000000000000000000000000000000000000000000000000000001106d756c74697369675f6163636f756e740c72656d6f76655f6f776e6572000120794b17ff4abc6e98dec576d0ac5d7bd0bd5fb92177f66f971b273b5292d7f21b",
+                ],
+              },
+              payload_hash: {vec: []},
+              votes: {data: [{key: "0xcreator", value: true}]},
+            },
+          }}
+        />,
+      ),
+    );
+
+    expect(
+      screen.getByText("0x1::multisig_account::remove_owner"),
+    ).toBeTruthy();
+    expect(screen.getByText("Approved")).toBeTruthy();
   });
 
   it("renders an Approved chip for a Vote event", () => {
