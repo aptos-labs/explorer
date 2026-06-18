@@ -1,23 +1,24 @@
 /**
  * SearchWithResults — self-contained search input + inline result list.
  *
- * Used in two contexts:
- *  - Landing page (/): updateUrl=false, onResultsChange to toggle surrounding content
- *  - Search page (/search): updateUrl=true so the URL reflects the current query
+ * Used on the landing page (/): seeds from the `?search=` URL parameter and
+ * calls `onResultsChange` so the page can hide its CTAs while results show.
+ *
+ * Shares its input tokens (placeholder, helper text, debounce, font, icon
+ * color) and its result-row / group-header presentation with the per-page
+ * header autocomplete (`app/pages/layout/Search/Index.tsx`) so the two search
+ * surfaces stay visually consistent.
  */
 
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
-  Chip,
   CircularProgress,
   Divider,
   InputAdornment,
   Paper,
   TextField,
   Typography,
-  useTheme,
 } from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
 import {useCallback, useEffect, useRef, useState} from "react";
@@ -27,16 +28,22 @@ import {
   useNetworkValue,
   useSdkV2Client,
 } from "../../global-config/GlobalConfig";
-import {
-  Link,
-  useAugmentToWithGlobalSearchParams,
-  useNavigate,
-} from "../../routing";
+import {useAugmentToWithGlobalSearchParams, useNavigate} from "../../routing";
 import {
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
 } from "../../utils/cacheManager";
-import {SearchResultAvatar} from "../layout/Search/SearchResultAvatar";
+import {
+  SearchResultGroupHeader,
+  SearchResultRow,
+} from "../layout/Search/SearchResultRow";
+import {
+  SEARCH_DEBOUNCE_MS,
+  SEARCH_HELPER_TEXT,
+  SEARCH_ICON_COLOR,
+  SEARCH_INPUT_FONT_SIZE,
+  SEARCH_PLACEHOLDER,
+} from "../layout/Search/searchConstants";
 import {
   anyOwnedObjects,
   createFallbackAddressResult,
@@ -57,154 +64,11 @@ import {
   type SearchResult,
 } from "../layout/Search/searchUtils";
 
-// ─── Type chip helpers ────────────────────────────────────────────────────────
-
-type ChipColor =
-  | "default"
-  | "primary"
-  | "secondary"
-  | "error"
-  | "info"
-  | "success"
-  | "warning";
-
-function typeChipColor(type?: string): ChipColor {
-  switch (type) {
-    case "account":
-    case "address":
-      return "primary";
-    case "transaction":
-      return "success";
-    case "block":
-      return "info";
-    case "coin":
-    case "fungible-asset":
-      return "warning";
-    case "object":
-      return "secondary";
-    default:
-      return "default";
-  }
-}
-
-function typeLabel(type?: string): string {
-  switch (type) {
-    case "account":
-      return "Account";
-    case "address":
-      return "Address";
-    case "transaction":
-      return "Transaction";
-    case "block":
-      return "Block";
-    case "coin":
-      return "Coin";
-    case "fungible-asset":
-      return "Fungible Asset";
-    case "object":
-      return "Object";
-    default:
-      return "Result";
-  }
-}
-
-// ─── Individual result row ────────────────────────────────────────────────────
-
-function SearchResultRow({result}: {result: SearchResult}) {
-  const theme = useTheme();
-
-  if (result.isGroupHeader) {
-    return (
-      <Box sx={{px: 2, py: 1, bgcolor: "action.hover"}}>
-        <Typography
-          variant="caption"
-          sx={{
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
-            color: "text.secondary",
-            fontSize: "0.7rem",
-          }}
-        >
-          {result.label}
-        </Typography>
-      </Box>
-    );
-  }
-
-  if (!result.to) {
-    return (
-      <Box sx={{px: 2, py: 2}}>
-        <Typography
-          sx={{
-            color: "text.secondary",
-          }}
-        >
-          {result.label}
-        </Typography>
-      </Box>
-    );
-  }
-
-  return (
-    <Link
-      to={result.to}
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 1.5,
-        px: 2,
-        py: 1.5,
-        color: "text.primary",
-        textDecoration: "none",
-        transition: "background-color 0.15s",
-        "&:hover": {
-          bgcolor: "action.hover",
-          opacity: 1,
-        },
-      }}
-    >
-      <SearchResultAvatar
-        image={result.image}
-        identiconKey={result.identiconKey}
-        sizePx={24}
-      />
-      <Chip
-        label={typeLabel(result.type)}
-        color={typeChipColor(result.type)}
-        size="small"
-        sx={{flexShrink: 0, fontWeight: 600, fontSize: "0.7rem"}}
-      />
-      <Typography
-        sx={{
-          flexGrow: 1,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          fontFamily: theme.typography.stats.fontFamily,
-          fontSize: "0.9rem",
-        }}
-      >
-        {result.label}
-      </Typography>
-      <ArrowForwardIosIcon
-        sx={{flexShrink: 0, fontSize: "0.85rem", color: "text.disabled"}}
-      />
-    </Link>
-  );
-}
-
 // ─── Props ────────────────────────────────────────────────────────────────────
 
 interface SearchWithResultsProps {
   /** Pre-populate the search box and fire an immediate search. */
   initialQuery?: string;
-  /**
-   * When true the URL is updated to `/search?q=<query>` as the user types
-   * (using history replace so the back button is not polluted).
-   * Set to false on the landing page so the URL stays at `/`.
-   */
-  updateUrl?: boolean;
   /**
    * Called when the visible result state changes.
    * `true` = results (or a "no results" message) are displayed.
@@ -217,7 +81,6 @@ interface SearchWithResultsProps {
 
 export default function SearchWithResults({
   initialQuery,
-  updateUrl = true,
   onResultsChange,
 }: SearchWithResultsProps) {
   const navigate = useNavigate();
@@ -409,7 +272,7 @@ export default function SearchWithResults({
     ],
   );
 
-  // Debounce: optionally update URL, then fire search
+  // Debounce, then fire search
   useEffect(() => {
     if (abortRef.current) abortRef.current.abort();
     const controller = new AbortController();
@@ -422,17 +285,14 @@ export default function SearchWithResults({
     }
 
     const timer = setTimeout(() => {
-      if (updateUrl) {
-        navigate({to: "/search", search: {q: query.trim()}, replace: true});
-      }
       runSearch(query.trim(), controller.signal);
-    }, 400);
+    }, SEARCH_DEBOUNCE_MS);
 
     return () => {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [query, navigate, runSearch, updateUrl]);
+  }, [query, runSearch]);
 
   // Enter key: navigate to first result immediately
   const handleKeyDown = useCallback(
@@ -453,13 +313,14 @@ export default function SearchWithResults({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Address, transaction hash, version, block height, ANS name, coin type…"
+        placeholder={SEARCH_PLACEHOLDER}
+        helperText={SEARCH_HELPER_TEXT}
         aria-label="Search the Aptos Explorer"
         slotProps={{
           input: {
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon color="action" />
+                <SearchIcon color={SEARCH_ICON_COLOR} />
               </InputAdornment>
             ),
             endAdornment:
@@ -468,7 +329,7 @@ export default function SearchWithResults({
                   <CircularProgress size={20} />
                 </InputAdornment>
               ) : undefined,
-            sx: {fontSize: "1.05rem"},
+            sx: {fontSize: SEARCH_INPUT_FONT_SIZE},
           },
         }}
         sx={{"& .MuiOutlinedInput-root": {borderRadius: 2}}}
@@ -507,7 +368,11 @@ export default function SearchWithResults({
           ) : (
             results.map((result, idx) => (
               <Box key={result.to ?? `header-${result.label}`}>
-                <SearchResultRow result={result} />
+                {result.isGroupHeader ? (
+                  <SearchResultGroupHeader label={result.label} />
+                ) : (
+                  <SearchResultRow result={result} showChevron />
+                )}
                 {idx < results.length - 1 && !result.isGroupHeader && (
                   <Divider />
                 )}
