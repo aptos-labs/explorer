@@ -114,6 +114,42 @@ type CoinWithMarketData = CoinDescription & {
   marketPrice?: number | null;
 };
 
+// Shared search input for the coins list (rendered in both the mobile card
+// view and the desktop table view).
+function CoinSearchField({
+  value,
+  onChange,
+  width,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  width?: number;
+}) {
+  return (
+    <TextField
+      size="small"
+      placeholder="Search by name, symbol, or address..."
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      slotProps={{
+        input: {
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon sx={{color: "text.secondary"}} />
+            </InputAdornment>
+          ),
+        },
+      }}
+      sx={{
+        ...(width !== undefined && {width}),
+        "& .MuiOutlinedInput-root": {
+          borderRadius: 2,
+        },
+      }}
+    />
+  );
+}
+
 // Mobile card component for coins
 function CoinCard({
   coin,
@@ -765,26 +801,7 @@ export default function CoinsListTable({
     return (
       <>
         <Stack direction="column" spacing={2} sx={{mb: 2}}>
-          <TextField
-            size="small"
-            placeholder="Search by name, symbol, or address..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{color: "text.secondary"}} />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-              },
-            }}
-          />
+          <CoinSearchField value={searchQuery} onChange={setSearchQuery} />
           <Stack
             direction="row"
             sx={{
@@ -848,26 +865,10 @@ export default function CoinsListTable({
           mb: 2,
         }}
       >
-        <TextField
-          size="small"
-          placeholder="Search by name, symbol, or address..."
+        <CoinSearchField
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{color: "text.secondary"}} />
-                </InputAdornment>
-              ),
-            },
-          }}
-          sx={{
-            width: 350,
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 2,
-            },
-          }}
+          onChange={setSearchQuery}
+          width={350}
         />
         <Stack
           direction="row"
