@@ -1,5 +1,8 @@
 import type {QueryClient} from "@tanstack/react-query";
-import {getClientFromSearch, getNetworkFromSearch} from "../../api/createClient";
+import {
+  getClientFromSearch,
+  getNetworkFromSearch,
+} from "../../api/createClient";
 import {transactionQueryOptions} from "../../api/queries";
 import {networks} from "../../constants";
 
@@ -14,8 +17,14 @@ import {networks} from "../../constants";
 export async function prefetchTransactionData(
   txnHashOrVersion: string,
   queryClient: QueryClient,
-  search: Record<string, string | undefined>,
+  locationSearch: ConstructorParameters<typeof URLSearchParams>[0],
 ): Promise<{networkName: string}> {
+  // Normalize through URLSearchParams so this works whether the router hands us
+  // a raw query string or an already-parsed search object (matches the pattern
+  // used by the account routes).
+  const search = Object.fromEntries(
+    new URLSearchParams(locationSearch),
+  ) as Record<string, string>;
   const client = getClientFromSearch(search);
   const networkName = getNetworkFromSearch(search);
   const networkValue = networks[networkName];

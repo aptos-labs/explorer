@@ -96,16 +96,17 @@ The app shell that wraps every page.
 
 ## 2. Home / Search
 
-**Route**: `/`
-**Route (dedicated)**: `/search?q=...`
+**Route**: `/` (full-page search via the `?search=` param)
 
 ### FEAT-SEARCH-001 — Search Input
 
+Both search surfaces share their input tokens (placeholder, helper text, debounce, font size, icon color) via `app/pages/layout/Search/searchConstants.ts` and their result-row / group-header presentation via `app/pages/layout/Search/SearchResultRow.tsx`, so they stay visually consistent.
+
 | Aspect | Detail |
 |--------|--------|
-| **Header autocomplete** | MUI `Autocomplete` with 500ms debounce, abort on new input, localStorage result cache (1h for tx/block-only results, 5min otherwise). |
-| **Full-page search** | 400ms debounce, `?search=` param on `/`, `?q=` on `/search`. Enter navigates to first result. |
-| **Single-result auto-navigate** | If URL provides `?search=` and exactly one navigable result, navigate immediately. |
+| **Header autocomplete** | MUI `Autocomplete` (per-page header via `PageHeader`) with a shared `SEARCH_DEBOUNCE_MS` (400ms) debounce, abort on new input, localStorage result cache (1h for tx/block-only results, 5min otherwise), GTM `searchStats` tracking. |
+| **Full-page search** | Home page (`/`) inline `TextField` + result list, same shared 400ms debounce, `?search=` param on `/`. Enter navigates to first result. |
+| **Single-result auto-navigate** | If URL provides `?search=` and exactly one navigable result, navigate immediately (header autocomplete). |
 
 ### FEAT-SEARCH-002 — Search Types
 
@@ -124,7 +125,8 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Result types** | Account, Address, Transaction, Block, Coin, Fungible Asset, Object. |
-| **Grouping** | Results grouped by type with section headers. |
+| **Result row** | Shared `SearchResultRow`: leading avatar + colored type chip + label, with a trailing chevron on the spacious home-page list. Used by both the header dropdown and the home inline list. |
+| **Grouping** | Results grouped by type with section headers (shared `SearchResultGroupHeader`). |
 | **Deduplication** | Prefer coin list coin over struct coin; drop redundant "Address" when Account/FA/Object exists. |
 | **Avatars** | Token logos, known-address brand marks via `identiconKey`, blockies fallback. |
 | **Fallback** | Valid-looking address with no on-chain hits → `anyOwnedObjects` check → still link to `/account/...` via `createFallbackAddressResult`. |
@@ -1193,8 +1195,8 @@ top of the HTML site.
 
 | URL Pattern | Feature ID |
 |-------------|------------|
-| `/` | FEAT-SEARCH-004 |
-| `/search?q=...` | FEAT-SEARCH-001 |
+| `/` | FEAT-SEARCH-001, FEAT-SEARCH-004 |
+| `/?search=...` | FEAT-SEARCH-001 |
 | `/transactions` | FEAT-TXLIST-001 |
 | `/blocks` | FEAT-BLOCKS-001 |
 | `/coins` | FEAT-COINS-001 |
@@ -1271,6 +1273,7 @@ top of the HTML site.
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/Account/Error.test.tsx` | FEAT-MODULES-008 (`AccountError` optional NOT_FOUND title/message) |
+| `app/pages/layout/Search/searchConstants.test.ts` | FEAT-SEARCH-001 (shared input tokens: placeholder, helper text, debounce, font, icon color), FEAT-SEARCH-003 (result-row type chip colors and labels) |
 | `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results) |
 | `app/pages/layout/Search/searchDetection.test.ts` | FEAT-SEARCH-002 (all input type detection: ANS, struct, numeric, hex, address, emoji, generic) |
 | `app/pages/layout/Search/searchFiltering.test.ts` | FEAT-SEARCH-003 (result filtering/deduplication, grouping with headers and type ordering) |

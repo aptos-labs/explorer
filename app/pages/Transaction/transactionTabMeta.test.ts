@@ -55,6 +55,6 @@ describe("getTransactionTabHeadLabel", () => {
   it("labels detail tabs by name", () => {
     expect(getTransactionTabHeadLabel("events")).toBe("Events");
     expect(getTransactionTabHeadLabel("balanceChange")).toBe("Balance Change");
-    expect(getTransactionTabHeadLabel("trace")).toBe("Overview"); // trace has no explicit head label
+    expect(getTransactionTabHeadLabel("trace")).toBe("Trace");
   });
 });

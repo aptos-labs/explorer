@@ -39,6 +39,8 @@ export function getTransactionTabHeadLabel(tab: string | undefined): string {
       return "Modules";
     case "changes":
       return "Changes";
+    case "trace":
+      return "Trace";
     default:
       return "Overview";
   }

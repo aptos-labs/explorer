@@ -26,7 +26,7 @@ export const Route = createFileRoute("/txn/$txnHashOrVersion/$tab")({
     return prefetchTransactionData(
       params.txnHashOrVersion,
       queryClient,
-      location.search as Record<string, string | undefined>,
+      location.search,
     );
   },
   pendingComponent: PagePending,
