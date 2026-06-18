@@ -4,6 +4,7 @@ import {
   getCoinBalanceChangeForAccount,
   getTransactionAmount,
   getTransactionCounterparty,
+  isMultisigTransaction,
   TRANSACTION_BALANCE_CHANGES_QUERY,
 } from "./utils";
 
@@ -75,6 +76,48 @@ const POOL_ADDR =
   "0x06099edbe54f242bad50020dfd67646b1e46282999483e7064e70f02f7ea3c15";
 const RECEIVER_ADDR =
   "0x0000000000000000000000000000000000000000000000000000000000000055";
+
+// Covers FEAT-TXN-013 (multisig transaction identification)
+describe("isMultisigTransaction", () => {
+  it("returns true for multisig_payload transactions", () => {
+    const tx = {
+      type: "user_transaction",
+      payload: {
+        type: "multisig_payload",
+        multisig_address: "0xabc",
+      },
+      events: [],
+    };
+    expect(isMultisigTransaction(tx as never)).toBe(true);
+  });
+
+  it("returns true when a 0x1::multisig_account event is emitted", () => {
+    const tx = makeUserTransaction({
+      events: [
+        {
+          guid: {
+            creation_number: "0",
+            account_address: "0x0",
+          },
+          sequence_number: "0",
+          type: "0x1::multisig_account::TransactionExecutionSucceeded",
+          data: {},
+        } as never,
+      ],
+    });
+    expect(isMultisigTransaction(tx)).toBe(true);
+  });
+
+  it("returns false for ordinary entry function transactions", () => {
+    const tx = makeUserTransaction();
+    expect(isMultisigTransaction(tx)).toBe(false);
+  });
+
+  it("returns false for transactions without a payload or events", () => {
+    const tx = {type: "block_metadata_transaction"};
+    expect(isMultisigTransaction(tx as never)).toBe(false);
+  });
+});
 
 describe("getTransactionCounterparty", () => {
   it("returns undefined for non-user transactions", () => {

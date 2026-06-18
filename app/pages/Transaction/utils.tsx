@@ -61,6 +61,29 @@ function resolveStoreOwner(
   return undefined;
 }
 
+/** Event/payload module that identifies multisig (multi-signature) activity. */
+const MULTISIG_ACCOUNT_MODULE = "0x1::multisig_account";
+
+/**
+ * True when a transaction is a multisig (multi-signature) transaction: either it
+ * executes a multisig payload (`multisig_payload`) or it emits a
+ * `0x1::multisig_account::*` event (e.g. `TransactionExecutionSucceeded`).
+ */
+export function isMultisigTransaction(transaction: Types.Transaction): boolean {
+  if (
+    "payload" in transaction &&
+    transaction.payload?.type === "multisig_payload"
+  ) {
+    return true;
+  }
+  if ("events" in transaction) {
+    return transaction.events.some((event) =>
+      event.type.startsWith(`${MULTISIG_ACCOUNT_MODULE}::`),
+    );
+  }
+  return false;
+}
+
 export function getTransactionCounterparty(
   transaction: Types.Transaction,
 ): TransactionCounterparty | undefined {

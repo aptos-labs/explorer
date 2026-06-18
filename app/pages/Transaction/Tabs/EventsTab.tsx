@@ -11,6 +11,9 @@ import FeeStatementEventView, {
   FEE_STATEMENT_EVENT_TYPE,
   shouldRenderFeeStatementTable,
 } from "./Components/FeeStatementEventView";
+import MultisigEventView, {
+  isMultisigEvent,
+} from "./Components/MultisigEventView";
 
 type EventsTabProps = {
   transaction: Types.Transaction;
@@ -107,6 +110,11 @@ export default function EventsTab({transaction}: EventsTabProps) {
                   />
                 ) : isDecibelEvent(event.type) && eventDataObject ? (
                   <DecibelEventView
+                    eventType={event.type}
+                    data={eventDataObject}
+                  />
+                ) : isMultisigEvent(event.type) && eventDataObject ? (
+                  <MultisigEventView
                     eventType={event.type}
                     data={eventDataObject}
                   />
