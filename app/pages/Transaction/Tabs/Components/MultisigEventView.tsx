@@ -17,6 +17,12 @@ import {
   ResponsiveKeyValueRow,
   ResponsiveKeyValueTable,
 } from "../../../../components/Table/ResponsiveKeyValueTable";
+import {Link} from "../../../../routing";
+import {parseTimestampString, tryStandardizeAddress} from "../../../../utils";
+import {
+  type DecodedMultisigPayload,
+  decodeMultisigTransactionPayload,
+} from "./decodeMultisigPayload";
 
 // ---------------------------------------------------------------------------
 // Detection
@@ -54,6 +60,7 @@ type FieldKind =
   | "vote"
   | "hexPayload"
   | "executionError"
+  | "multisigTransaction"
   | "json";
 
 type FieldConfig = {
@@ -121,7 +128,7 @@ const EVENT_CONFIGS: Record<string, EventConfig> = {
       {key: "multisig_account", label: "Multisig Account", kind: "address"},
       {key: "creator", label: "Creator", kind: "address"},
       {key: "sequence_number", label: "Sequence Number", kind: "count"},
-      {key: "transaction", label: "Transaction", kind: "json"},
+      {key: "transaction", label: "Transaction", kind: "multisigTransaction"},
     ],
   },
   Vote: {
@@ -223,6 +230,252 @@ function HexPayloadValue({value}: {value: unknown}) {
   );
 }
 
+function FieldCaption({children}: {children: React.ReactNode}) {
+  return (
+    <Typography
+      variant="caption"
+      sx={{display: "block", color: "text.secondary", mb: 0.5}}
+    >
+      {children}
+    </Typography>
+  );
+}
+
+/** Links a decoded `addr::module::function` id to its on-chain Move source. */
+function FunctionLink({fn}: {fn: string}) {
+  const [rawAddress, moduleName, functionName] = fn.split("::");
+  const address = tryStandardizeAddress(rawAddress) ?? rawAddress;
+  if (!moduleName || !functionName) {
+    return <MonoText>{fn}</MonoText>;
+  }
+  return (
+    <Link
+      to={`/account/${address}/modules/code/${moduleName}/${functionName}`}
+      underline="hover"
+      style={{color: "inherit"}}
+    >
+      <MonoText>{fn}</MonoText>
+    </Link>
+  );
+}
+
+/** Decoded entry-function view for a multisig payload, with raw-bytes toggle. */
+function DecodedPayloadView({
+  decoded,
+  rawHex,
+}: {
+  decoded: DecodedMultisigPayload;
+  rawHex: string;
+}) {
+  const [showRaw, setShowRaw] = React.useState(false);
+  return (
+    <Stack spacing={1} sx={{minWidth: 0, maxWidth: "100%"}}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{alignItems: "center", flexWrap: "wrap"}}
+      >
+        <Chip
+          label="Decoded"
+          size="small"
+          color="success"
+          variant="outlined"
+          sx={{fontWeight: 600}}
+        />
+        <Box sx={{minWidth: 0}}>
+          <FunctionLink fn={decoded.function} />
+        </Box>
+      </Stack>
+      {decoded.typeArguments.length > 0 && (
+        <Box>
+          <FieldCaption>Type Arguments</FieldCaption>
+          <Stack spacing={0.25}>
+            {decoded.typeArguments.map((tag) => (
+              <MonoText key={tag}>{tag}</MonoText>
+            ))}
+          </Stack>
+        </Box>
+      )}
+      <Box>
+        <FieldCaption>Arguments ({decoded.arguments.length})</FieldCaption>
+        {decoded.arguments.length === 0 ? (
+          <MonoText>None</MonoText>
+        ) : (
+          <Stack spacing={0.5}>
+            {decoded.arguments.map((arg, i) => (
+              <Box
+                // biome-ignore lint/suspicious/noArrayIndexKey: positional args
+                key={i}
+                sx={{
+                  p: 0.75,
+                  borderRadius: 1,
+                  bgcolor: (theme) => theme.palette.action.hover,
+                }}
+              >
+                <MonoText>{arg}</MonoText>
+              </Box>
+            ))}
+          </Stack>
+        )}
+        <Typography
+          variant="caption"
+          sx={{display: "block", color: "text.secondary", mt: 0.5}}
+        >
+          Raw BCS argument bytes; decode with the module ABI for typed values.
+        </Typography>
+      </Box>
+      <Box>
+        <Typography
+          component="button"
+          type="button"
+          onClick={() => setShowRaw((v) => !v)}
+          variant="caption"
+          sx={{
+            p: 0,
+            border: 0,
+            background: "none",
+            cursor: "pointer",
+            color: "primary.main",
+            textAlign: "left",
+          }}
+        >
+          {showRaw ? "Hide encoded bytes" : "Show encoded bytes"}
+        </Typography>
+        {showRaw && (
+          <Box sx={{mt: 0.5}}>
+            <HexPayloadValue value={rawHex} />
+          </Box>
+        )}
+      </Box>
+    </Stack>
+  );
+}
+
+/** Renders a multisig payload (hex) as a decoded entry function when possible. */
+function PayloadValue({value}: {value: unknown}) {
+  const hex = typeof value === "string" ? value : undefined;
+  const decoded = React.useMemo(
+    () => decodeMultisigTransactionPayload(hex),
+    [hex],
+  );
+  if (hex === undefined) {
+    return <MonoText>{String(value)}</MonoText>;
+  }
+  if (!decoded) {
+    return <HexPayloadValue value={value} />;
+  }
+  return <DecodedPayloadView decoded={decoded} rawHex={hex} />;
+}
+
+function optionVecFirst(value: unknown): string | undefined {
+  if (typeof value === "object" && value !== null && "vec" in value) {
+    const vec = (value as {vec: unknown[]}).vec;
+    if (Array.isArray(vec) && vec.length > 0 && typeof vec[0] === "string") {
+      return vec[0];
+    }
+  }
+  return undefined;
+}
+
+function SubRow({
+  label,
+  children,
+}: {
+  label: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <Box>
+      <FieldCaption>{label}</FieldCaption>
+      <Box sx={{minWidth: 0, maxWidth: "100%"}}>{children}</Box>
+    </Box>
+  );
+}
+
+/** Renders the `MultisigTransaction` object carried by a `CreateTransaction` event. */
+function MultisigTransactionValue({value}: {value: unknown}) {
+  if (typeof value !== "object" || value === null) {
+    return <MonoText>{String(value)}</MonoText>;
+  }
+  const obj = value as Record<string, unknown>;
+  const creator = typeof obj.creator === "string" ? obj.creator : undefined;
+  const created =
+    typeof obj.creation_time_secs === "string"
+      ? obj.creation_time_secs
+      : undefined;
+  const payloadHex = optionVecFirst(obj.payload);
+  const payloadHash = optionVecFirst(obj.payload_hash);
+  const votes =
+    typeof obj.votes === "object" &&
+    obj.votes !== null &&
+    "data" in obj.votes &&
+    Array.isArray((obj.votes as {data: unknown}).data)
+      ? ((obj.votes as {data: Array<{key?: string; value?: boolean}>}).data ??
+        [])
+      : [];
+
+  return (
+    <Stack spacing={1.5} sx={{minWidth: 0, maxWidth: "100%"}}>
+      {creator && (
+        <SubRow label="Creator">
+          <HashButton hash={creator} type={HashType.ACCOUNT} size="small" />
+        </SubRow>
+      )}
+      {created && (
+        <SubRow label="Created">
+          <MonoText>{parseTimestampString(created)}</MonoText>
+        </SubRow>
+      )}
+      <SubRow label="Payload">
+        {payloadHex !== undefined ? (
+          <PayloadValue value={payloadHex} />
+        ) : payloadHash !== undefined ? (
+          <Stack spacing={0.5}>
+            <Chip
+              label="Payload hash only"
+              size="small"
+              variant="outlined"
+              sx={{alignSelf: "flex-start"}}
+            />
+            <HexPayloadValue value={payloadHash} />
+          </Stack>
+        ) : (
+          <MonoText>None</MonoText>
+        )}
+      </SubRow>
+      {votes.length > 0 && (
+        <SubRow label={`Votes (${votes.length})`}>
+          <Stack spacing={0.5}>
+            {votes.map((vote, i) => (
+              <Stack
+                // biome-ignore lint/suspicious/noArrayIndexKey: voters may repeat
+                key={`${vote.key ?? "vote"}-${i}`}
+                direction="row"
+                spacing={1}
+                sx={{alignItems: "center", flexWrap: "wrap"}}
+              >
+                {vote.key && (
+                  <HashButton
+                    hash={vote.key}
+                    type={HashType.ACCOUNT}
+                    size="small"
+                  />
+                )}
+                <Chip
+                  label={vote.value ? "Approved" : "Rejected"}
+                  size="small"
+                  color={vote.value ? "success" : "error"}
+                  sx={{fontWeight: 600}}
+                />
+              </Stack>
+            ))}
+          </Stack>
+        </SubRow>
+      )}
+    </Stack>
+  );
+}
+
 function ExecutionErrorValue({value}: {value: unknown}) {
   if (typeof value !== "object" || value === null) {
     return <MonoText>{String(value)}</MonoText>;
@@ -292,9 +545,11 @@ function renderFieldValue(kind: FieldKind, value: unknown): React.ReactNode {
         />
       );
     case "hexPayload":
-      return <HexPayloadValue value={value} />;
+      return <PayloadValue value={value} />;
     case "executionError":
       return <ExecutionErrorValue value={value} />;
+    case "multisigTransaction":
+      return <MultisigTransactionValue value={value} />;
     case "json":
       return (
         <Box sx={{minWidth: 0, maxWidth: "100%"}}>
