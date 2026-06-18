@@ -49,6 +49,7 @@ import UnknownTab from "./Tabs/UnknownTab";
 import UserTransactionOverviewTab from "./Tabs/UserTransactionOverviewTab";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
 import {transactionHasModuleSummary} from "./transactionModuleChanges";
+import {getTransactionTabNavigation} from "./transactionTabMeta";
 
 function insertModulesTabBeforeChanges(tabs: TabValue[]): TabValue[] {
   const i = tabs.indexOf("changes");
@@ -355,17 +356,12 @@ export default function TransactionTabs({
   // path `/txn/:id` with no explicit segment; every other tab uses `/:tab`.
   const navigateToTab = React.useCallback(
     (newValue: TabValue) => {
-      if (newValue === defaultTab) {
-        navigate({
-          to: "/txn/$txnHashOrVersion",
-          params: {txnHashOrVersion: txnHashOrVersion ?? ""},
-          replace: true,
-        });
-        return;
-      }
       navigate({
-        to: "/txn/$txnHashOrVersion/$tab",
-        params: {txnHashOrVersion: txnHashOrVersion ?? "", tab: newValue},
+        ...getTransactionTabNavigation(
+          txnHashOrVersion ?? "",
+          newValue,
+          defaultTab,
+        ),
         replace: true,
       });
     },

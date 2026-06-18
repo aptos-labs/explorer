@@ -2,6 +2,7 @@
 import {describe, expect, it} from "vitest";
 import {
   getTransactionTabHeadLabel,
+  getTransactionTabNavigation,
   isOverviewTab,
   OVERVIEW_TAB_VALUES,
 } from "./transactionTabMeta";
@@ -43,6 +44,47 @@ describe("FEAT-TXN-008 — isOverviewTab", () => {
   it("exposes the overview tab set", () => {
     expect(OVERVIEW_TAB_VALUES.has("userTxnOverview")).toBe(true);
     expect(OVERVIEW_TAB_VALUES.has("events")).toBe(false);
+  });
+});
+
+describe("FEAT-TXN-008 — getTransactionTabNavigation", () => {
+  it("routes the default (Overview) tab to the base path with no segment", () => {
+    expect(
+      getTransactionTabNavigation("123", "userTxnOverview", "userTxnOverview"),
+    ).toEqual({
+      to: "/txn/$txnHashOrVersion",
+      params: {txnHashOrVersion: "123"},
+    });
+  });
+
+  it("routes a non-default tab to the /:tab path", () => {
+    expect(
+      getTransactionTabNavigation("0xabc", "events", "userTxnOverview"),
+    ).toEqual({
+      to: "/txn/$txnHashOrVersion/$tab",
+      params: {txnHashOrVersion: "0xabc", tab: "events"},
+    });
+  });
+
+  it("treats whatever the type's first tab is as the base-path Overview", () => {
+    // Pending transactions default to pendingTxnOverview.
+    expect(
+      getTransactionTabNavigation(
+        "5",
+        "pendingTxnOverview",
+        "pendingTxnOverview",
+      ),
+    ).toEqual({
+      to: "/txn/$txnHashOrVersion",
+      params: {txnHashOrVersion: "5"},
+    });
+    // A detail tab on the same transaction still uses the /:tab path.
+    expect(
+      getTransactionTabNavigation("5", "payload", "pendingTxnOverview"),
+    ).toEqual({
+      to: "/txn/$txnHashOrVersion/$tab",
+      params: {txnHashOrVersion: "5", tab: "payload"},
+    });
   });
 });
 
