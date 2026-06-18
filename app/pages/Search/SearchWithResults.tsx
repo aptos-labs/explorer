@@ -370,7 +370,12 @@ export default function SearchWithResults({
           if (fallback) filtered = [fallback];
         }
 
-        const grouped = groupSearchResults(filtered);
+        // For ambiguous 64-char hex queries, surface transaction matches first
+        // so a confirmed transaction wins the Enter-key navigate over a
+        // same-hash address/asset match.
+        const grouped = groupSearchResults(filtered, {
+          prioritizeTransactions: inputType.is32Hex,
+        });
 
         const ttl =
           grouped.length > 0 &&

@@ -183,8 +183,11 @@ export default function HeaderSearch({initialSearch}: HeaderSearchProps) {
       const cachedResults = getLocalStorageWithExpiry<SearchResult[]>(cacheKey);
 
       if (cachedResults && cachedResults.length > 0) {
-        // Apply grouping to cached results as well
-        const groupedCachedResults = groupSearchResults(cachedResults);
+        // Apply grouping to cached results as well, preserving the
+        // transaction-first ordering used for ambiguous 64-char hex queries.
+        const groupedCachedResults = groupSearchResults(cachedResults, {
+          prioritizeTransactions: detectInputType(normalizedInput).is32Hex,
+        });
         const results = groupedCachedResults.map((result) => {
           if (result.to) {
             return {...result, to: augmentToWithGlobalSearchParams(result.to)};
@@ -375,8 +378,12 @@ export default function HeaderSearch({initialSearch}: HeaderSearchProps) {
           }
         }
 
-        // Group results by asset type
-        const groupedResults = groupSearchResults(filteredResults);
+        // Group results by asset type. For ambiguous 64-char hex queries,
+        // surface transaction matches first so a confirmed transaction wins the
+        // Enter-key / auto-navigate over a same-hash address/asset match.
+        const groupedResults = groupSearchResults(filteredResults, {
+          prioritizeTransactions: inputType.is32Hex,
+        });
 
         await finalizeResults(groupedResults, normalizedSearchText, cacheKey);
       } catch (error) {
