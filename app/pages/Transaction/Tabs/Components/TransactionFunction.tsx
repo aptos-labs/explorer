@@ -2,6 +2,7 @@ import {Network} from "@aptos-labs/ts-sdk";
 import {WaterDropOutlined} from "@mui/icons-material";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import {Box, Stack, type SxProps, type Theme, useTheme} from "@mui/material";
 import type React from "react";
 import type {Types} from "~/types/aptos";
@@ -56,6 +57,23 @@ function ScriptCodeLine({sx}: {sx?: SxProps<Theme>}): React.JSX.Element {
       >
         <DescriptionOutlinedIcon sx={{fontSize: 17, padding: 0}} />
         <Box>{`Script`}</Box>
+      </Stack>
+    </CodeLineBox>
+  );
+}
+
+function MultisigCodeLine({sx}: {sx?: SxProps<Theme>}): React.JSX.Element {
+  return (
+    <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+      <Stack
+        direction="row"
+        spacing={1.5}
+        sx={{
+          alignItems: "center",
+        }}
+      >
+        <GroupsOutlinedIcon sx={{fontSize: 17, padding: 0}} />
+        <Box>{`Multisig Transaction`}</Box>
       </Stack>
     </CodeLineBox>
   );
@@ -125,8 +143,7 @@ export default function TransactionFunction({
     ) {
       functionFullStr = transaction.payload.transaction_payload.function;
     } else {
-      // TODO: change this to something more useful for these multisig executions
-      return "Multisig Transaction";
+      return <MultisigCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />;
     }
   } else if ("function" in transaction.payload) {
     functionFullStr = transaction.payload.function;

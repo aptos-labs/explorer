@@ -224,6 +224,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Display** | Collapsible list per event, JSON view. |
 | **FeeStatement** | Special `FeeStatementEventView` for `0x1::transaction_fee::FeeStatement`. |
+| **Multisig events** | Special `MultisigEventView` for `0x1::multisig_account::*` events (e.g. `TransactionExecutionSucceeded`, `TransactionExecutionFailed`, `ExecuteRejectedTransaction`, `CreateTransaction`, `Vote`, `AddOwners`, `RemoveOwners`, `UpdateSignaturesRequired`, `MetadataUpdated`). Renders a colored summary chip, labeled rows (addresses as `HashButton`s, vote as Approved/Rejected chip, payload bytes with length, execution error breakdown), a raw-JSON toggle, and surfaces unconfigured fields. Normalizes the v1 `*Event` suffix and the v2 module-event name to the same renderer. Unknown `0x1::multisig_account::*` event types fall back to the raw JSON view. |
 | **Module events** | Hide zero GUID fields. |
 | **Small screens** | Below the `md` breakpoint, Fee Statement and Decibel formatted views use stacked label/value blocks instead of fixed two-column tables; nested bid/ask price tables stack rows; `JsonViewCard` stays within the content width. Event type uses a fit-width title column (`ContentRow` `titleLayout="fit"`) so long types wrap cleanly. Layout uses shared `ResponsiveKeyValueTable` / `ResponsiveKeyValueRow` (see FEAT-UI-005). |
 
@@ -280,6 +281,15 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Name resolution** | Function argument name overrides registry (see FEAT-DATA-003) → Move source extraction → positional fallback. |
 | **Type badges** | `MoveFunctionParamTypeBadge` with shortened type tags (Object, String, Option, vector, etc.). |
 | **Layout** | Desktop: auto-layout table with compact columns. Mobile: `ArgumentCard` stack. |
+
+### FEAT-TXN-013 — Multisig Transaction Identification
+
+| Aspect | Detail |
+|--------|--------|
+| **Detection** | `isMultisigTransaction` (`app/pages/Transaction/utils.tsx`): true when the transaction has a `multisig_payload`, or when it emits any `0x1::multisig_account::*` event. |
+| **Title** | `Transaction/Title.tsx` renders the heading as **"Multisig Transaction"** with a primary outlined **"Multisig"** chip (groups icon) next to the `<h1>` when detected. |
+| **Metadata** | Page `<title>`, description, and keywords (`multisig`, `multi-signature`) reflect multisig transactions. |
+| **Function label** | `TransactionFunction.tsx` renders a styled **"Multisig Transaction"** `CodeLineBox` (groups icon) for multisig executions without an inner entry-function payload. |
 
 ---
 
@@ -1158,7 +1168,7 @@ top of the HTML site.
 |--------|--------|
 | **Components** | `ResponsiveKeyValueTable`, `ResponsiveKeyValueRow` in `app/components/Table/ResponsiveKeyValueTable.tsx`. |
 | **Behavior** | Wide viewports: `Table` + `TableContainer` with label column ~38% width. Below `stackBelow` (default `md`): vertical stack with label (`body2` semibold), optional `description` (`caption`), then value. Rows support optional `description` under the label in both modes. Nested key/value grids: render another `ResponsiveKeyValueTable` inside a row’s value; each instance has its own context and breakpoint (optional smaller `stackBelow` on the inner table). Value cells use `minWidth: 0` so nested tables can shrink and scroll. |
-| **Consumers** | Transaction Events tab: Fee Statement (`FeeStatementEventView`) and Decibel formatted views (`DecibelEventView` / `EventTable`). |
+| **Consumers** | Transaction Events tab: Fee Statement (`FeeStatementEventView`), Decibel formatted views (`DecibelEventView` / `EventTable`), and Multisig events (`MultisigEventView`). |
 
 ---
 
@@ -1259,7 +1269,8 @@ top of the HTML site.
 | `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation) |
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
-| `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty, balance changes) |
+| `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty, balance changes), FEAT-TXN-013 (multisig transaction detection) |
+| `app/pages/Transaction/Tabs/Components/MultisigEventView.test.tsx` | FEAT-TXN-004 (multisig event detection, formatted summary/rows, v1/v2 name normalization, raw-JSON fallback, extra-field surfacing) |
 | `e2e/transaction-balance-change.spec.ts` | FEAT-TXN-003 (Playwright: testnet Balance Change tab loads indexer FA activities; asserts gas-fee row; skips outside CI when testnet gateway returns 401 for local preview origin) |
 | `app/pages/Transaction/Tabs/Components/SignatureOverviewTable.test.tsx` | FEAT-TXN-002 (signature overview: Ed25519, multi-Ed25519, single_sender, multi_agent, fee_payer, fallbacks; stable keys for duplicate secondary addresses) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
