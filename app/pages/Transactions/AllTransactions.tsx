@@ -13,9 +13,10 @@ import {
 } from "@tanstack/react-query";
 import type React from "react";
 import type {Types} from "~/types/aptos";
-import {getLedgerInfo, getTransactions} from "../../api";
+import {getTransactions} from "../../api";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
 import useFunctionFilter from "../../api/hooks/useFunctionFilter";
+import {useGetLedgerInfo} from "../../api/hooks/useGetLedgerInfo";
 import {
   useAptosClient,
   useNetworkValue,
@@ -252,16 +253,9 @@ function TransactionsPageInner({
 }
 
 export default function AllTransactions() {
-  const networkValue = useNetworkValue();
-  const aptosClient = useAptosClient();
-
-  const result = useQuery<Types.IndexResponse, ResponseError>({
-    queryKey: ["ledgerInfo", networkValue],
-    queryFn: () => getLedgerInfo(aptosClient),
-    refetchInterval: 10000,
-    staleTime: 10000,
-    refetchOnWindowFocus: false,
-  });
-
+  // Shared ledger-info polling — see `useGetLedgerInfo` for cadence and
+  // background-pause behavior. Avoids spinning up a second poller on
+  // `/transactions` when the TPS pill (`useGetTPS`) is already running.
+  const result = useGetLedgerInfo();
   return <TransactionsPageInner {...result} />;
 }

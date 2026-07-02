@@ -10,9 +10,9 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
-import {getPrice} from "../../api/hooks/useGetPrice";
+import {useGetPrice} from "../../api/hooks/useGetPrice";
 import {Card} from "../../components/Card";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import StyledTooltip from "../../components/StyledTooltip";
@@ -42,23 +42,14 @@ export default function BalanceCard({address}: BalanceCardProps) {
   const theme = useTheme();
   const balance = useGetAccountAPTBalance(address);
   const networkName = useNetworkName();
-  const [price, setPrice] = useState<number | null>(null);
+  // Use the shared React-Query–backed hook so the APT price is cached and
+  // reused across pages — previously this component called `getPrice()`
+  // inside a `useEffect` on every mount, re-issuing a CoinGecko request
+  // on every account-page navigation.
+  const {data: priceData} = useGetPrice();
+  const price = priceData ?? null;
   const [portfolioProvider, setPortfolioProvider] =
     useState<PortfolioProvider>("yieldai");
-
-  useEffect(() => {
-    const fetchPrice = async () => {
-      try {
-        const fetchedPrice = await getPrice();
-        setPrice(fetchedPrice);
-      } catch (error) {
-        console.error("Error fetching APT price:", error);
-        setPrice(null);
-      }
-    };
-
-    fetchPrice();
-  }, []);
 
   const handleProviderChange = (event: SelectChangeEvent) => {
     setPortfolioProvider(event.target.value as PortfolioProvider);

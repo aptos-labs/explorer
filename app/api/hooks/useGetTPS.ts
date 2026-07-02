@@ -1,25 +1,10 @@
-import {useQuery} from "@tanstack/react-query";
-import {
-  useAptosClient,
-  useNetworkName,
-  useNetworkValue,
-} from "../../global-config";
-import {getLedgerInfo} from "..";
+import {useNetworkName} from "../../global-config";
 import {useGetAnalyticsData} from "./useGetAnalyticsData";
+import {useGetLedgerInfo} from "./useGetLedgerInfo";
 import {useGetTPSByBlockHeight} from "./useGetTPSByBlockHeight";
 
 export function useGetTPS() {
-  const networkValue = useNetworkValue();
-  const aptosClient = useAptosClient();
-
-  const {data: ledgerData} = useQuery({
-    queryKey: ["ledgerInfo", networkValue],
-    queryFn: () => getLedgerInfo(aptosClient),
-    refetchInterval: 10000,
-    staleTime: 10000,
-    gcTime: 30 * 1000, // Keep in cache for 30 seconds
-    refetchOnWindowFocus: false,
-  });
+  const {data: ledgerData} = useGetLedgerInfo();
   const currentBlockHeight = ledgerData?.block_height;
   const blockHeight =
     currentBlockHeight !== undefined

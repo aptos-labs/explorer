@@ -76,7 +76,14 @@ export function createRouter() {
       queryClient,
     },
     defaultPreload: "intent",
-    defaultPreloadStaleTime: 0,
+    // Reuse cached query data during preload-on-intent so the same hover does
+    // not refire requests that are still fresh (was `0`, which made every
+    // hover spawn a new upstream call to whatever the loader fetches).
+    defaultPreloadStaleTime: 30 * 1000,
+    // Delay preload-on-intent by a short interval so a glancing hover over a
+    // long list does not fire dozens of speculative loaders. Users who pause
+    // long enough to actually consider clicking still pay no perceived cost.
+    defaultPreloadDelay: 150,
     scrollRestoration: true,
     // Show pending component during navigation
     defaultPendingComponent: NavigationPending,

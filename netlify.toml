@@ -7,6 +7,13 @@
 [build.environment]
   NODE_VERSION = "24"
 
+# Regular Netlify Functions (NOT Edge Functions — see AGENTS.md). Used to
+# proxy external APIs (CoinGecko) through the CDN so each user is not
+# rate-limited individually.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 # Headers for security and caching
 [[headers]]
   for = "/*"
@@ -145,6 +152,14 @@
 [context.branch-deploy.environment]
   NODE_ENV = "production"
   VITE_NETLIFY_CONTEXT = "branch-deploy"
+
+# CoinGecko proxy redirect — keeps client URLs short and lets us swap the
+# upstream without touching every caller. See `netlify/functions/coingecko.ts`.
+[[redirects]]
+  from = "/api/coingecko/*"
+  to = "/.netlify/functions/coingecko/:splat"
+  status = 200
+  force = true
 
 # Redirects for old subdomain-based URLs (2022 format) to new query parameter format
 # These ensure backward compatibility for old bookmarks and links
