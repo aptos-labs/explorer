@@ -16,7 +16,7 @@ const DELEGATED_STAKING_ACTIVITY_QUERY = `
   query getDelegatedStakingActivities($address: String!, $pool: String) {
     delegated_staking_activities(
       where: {delegator_address: {_eq: $address}, pool_address: {_eq: $pool}}
-      order_by: {transaction_version: desc}
+      order_by: [{transaction_version: asc}, {event_index: asc}]
     ) {
       amount
       delegator_address

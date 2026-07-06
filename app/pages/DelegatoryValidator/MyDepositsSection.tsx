@@ -41,6 +41,7 @@ import StakeOperationDialog from "./StakeOperationDialog";
 import {
   getStakeOperationAPTRequirement,
   getStakeOperationPrincipals,
+  getStakeRewardsEarned,
   type StakePrincipals,
 } from "./utils";
 import WalletConnectionDialog from "./WalletConnectionDialog";
@@ -152,10 +153,7 @@ function RewardEarnedCell({
         ? stakePrincipals?.pendingInactivePrincipals
         : undefined;
 
-  const rewardsEarned =
-    principalsAmount && Number(stake) > principalsAmount
-      ? Number(stake) - principalsAmount
-      : undefined;
+  const rewardsEarned = getStakeRewardsEarned(stake, principalsAmount);
 
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
