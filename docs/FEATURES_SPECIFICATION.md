@@ -763,6 +763,8 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Daily Avg Gas Unit Price | `daily_average_gas_unit_price` |
 | Daily Block Gap | `daily_block_gap` |
 
+**Display note**: The Daily Block Gap chart is shown in milliseconds and preserves decimal-scale y-axis labels when adjacent medians fall within the same whole-millisecond range.
+
 ### FEAT-ANALYTICS-003 — Date Range
 
 | Aspect | Detail |
