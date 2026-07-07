@@ -33,12 +33,13 @@ export default function DailyBlockGapChart({
       <LineChart
         labels={labels}
         dataset={dataset}
+        decimals={1}
         tooltipsLabelFunc={(context: TooltipItem<"line">) => {
           const yValue = context.parsed.y;
           if (yValue === null || yValue === undefined) {
             return "N/A";
           }
-          const milliseconds = Math.round(yValue);
+          const milliseconds = Number(yValue.toFixed(1));
           return `${milliseconds} ms`;
         }}
       />
