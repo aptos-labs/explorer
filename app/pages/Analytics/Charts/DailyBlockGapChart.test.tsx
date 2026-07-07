@@ -7,6 +7,13 @@ import {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import DailyBlockGapChart from "./DailyBlockGapChart";
 
 const lineChartSpy = vi.fn();
+const getLabelsMock = vi.fn(
+  (_data: DailyBlockGapData[], _days: ChartRangeDays) => [
+    "06-29",
+    "06-30",
+    "07-01",
+  ],
+);
 let capturedProps: {
   dataset: number[];
   decimals?: number;
@@ -15,6 +22,19 @@ let capturedProps: {
     parsed: {y: number | null | undefined};
   }) => string;
 } | null = null;
+
+vi.mock("../../../components/Card", () => ({
+  CardOutline: ({children}: {children: React.ReactNode}) => children,
+}));
+
+vi.mock("../Components/ChartTitle", () => ({
+  default: () => null,
+}));
+
+vi.mock("../utils", () => ({
+  getLabels: (data: DailyBlockGapData[], days: ChartRangeDays) =>
+    getLabelsMock(data, days),
+}));
 
 vi.mock("../Components/LineChart", () => ({
   default: (props: {
@@ -34,6 +54,7 @@ vi.mock("../Components/LineChart", () => ({
 describe("FEAT-ANALYTICS-002 — Daily Block Gap chart", () => {
   afterEach(() => {
     capturedProps = null;
+    getLabelsMock.mockClear();
     lineChartSpy.mockClear();
   });
 
@@ -49,6 +70,10 @@ describe("FEAT-ANALYTICS-002 — Daily Block Gap chart", () => {
     );
 
     expect(lineChartSpy).toHaveBeenCalledTimes(1);
+    expect(getLabelsMock).toHaveBeenCalledWith(
+      data,
+      ChartRangeDays.DEFAULT_RANGE,
+    );
     expect(capturedProps).not.toBeNull();
     expect(capturedProps?.decimals).toBe(1);
     expect(capturedProps?.dataset).toEqual([24.3, 24.5, 24.9]);
