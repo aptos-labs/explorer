@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-04-29
+> **Last updated**: 2026-07-08
 
 ---
 
@@ -597,6 +597,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Condition** | Wallet connected. |
 | **Display** | `MyDepositsSection` showing user's staked amounts and available operations. |
+| **Reward math** | Reward/principal estimation replays delegated staking activities in `(transaction_version, event_index)` order and keeps indexer `amount` values in `bigint` form so balances above JavaScript `Number.MAX_SAFE_INTEGER` do not lose precision. |
 
 ---
 

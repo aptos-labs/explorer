@@ -4,13 +4,21 @@ import {useNetworkValue, useSdkV2Client} from "../../../global-config";
 import {tryStandardizeAddress} from "../../../utils";
 
 export interface DelegatedStakingActivity {
-  amount: number;
+  amount: bigint;
   delegator_address: Types.Address;
   event_index: number;
   event_type: string;
   pool_address: Types.Address;
   transaction_version: bigint;
 }
+
+type RawDelegatedStakingActivity = Omit<
+  DelegatedStakingActivity,
+  "amount" | "transaction_version"
+> & {
+  amount: number | string | bigint;
+  transaction_version: number | string | bigint;
+};
 
 const DELEGATED_STAKING_ACTIVITY_QUERY = `
   query getDelegatedStakingActivities($address: String!, $pool: String) {
@@ -48,9 +56,9 @@ export function useGetDelegatedStakeOperationActivities(
       poolAddress64Hash,
       networkValue,
     ],
-    queryFn: () =>
-      client.queryIndexer<{
-        delegated_staking_activities: DelegatedStakingActivity[];
+    queryFn: async () => {
+      const response = await client.queryIndexer<{
+        delegated_staking_activities: RawDelegatedStakingActivity[];
       }>({
         query: {
           query: DELEGATED_STAKING_ACTIVITY_QUERY,
@@ -59,7 +67,18 @@ export function useGetDelegatedStakeOperationActivities(
             pool: poolAddress64Hash,
           },
         },
-      }),
+      });
+
+      return {
+        delegated_staking_activities: response.delegated_staking_activities.map(
+          (activity) => ({
+            ...activity,
+            amount: BigInt(activity.amount),
+            transaction_version: BigInt(activity.transaction_version),
+          }),
+        ),
+      };
+    },
     enabled: !!delegatorAddress64Hash && !!poolAddress64Hash,
   });
 

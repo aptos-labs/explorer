@@ -25,19 +25,20 @@ export function getLockedUtilSecs(
 }
 
 export type StakePrincipals = {
-  activePrincipals: number;
-  pendingInactivePrincipals: number;
+  activePrincipals: bigint;
+  pendingInactivePrincipals: bigint;
 };
 
 export function getStakeRewardsEarned(
   stake: Types.MoveValue,
-  principalsAmount: number | undefined,
+  principalsAmount: bigint | undefined,
 ) {
   if (principalsAmount === undefined) {
     return undefined;
   }
 
-  return Math.max(Number(stake) - principalsAmount, 0);
+  const stakeAmount = BigInt(stake.toString());
+  return stakeAmount > principalsAmount ? stakeAmount - principalsAmount : 0n;
 }
 
 function normalizeDelegatedStakeEventType(eventType: string) {
@@ -99,15 +100,17 @@ export function getStakeOperationPrincipals(activities: {
     return {stakePrincipals: undefined, isLoading: activities.loading};
   }
 
-  let activePrincipals = 0;
-  let pendingInactivePrincipals = 0;
+  let activePrincipals = 0n;
+  let pendingInactivePrincipals = 0n;
 
   [...activities.activities]
-    .sort(
-      (a, b) =>
-        Number(a.transaction_version) - Number(b.transaction_version) ||
-        a.event_index - b.event_index,
-    )
+    .sort((a, b) => {
+      if (a.transaction_version === b.transaction_version) {
+        return a.event_index - b.event_index;
+      }
+
+      return a.transaction_version < b.transaction_version ? -1 : 1;
+    })
     .forEach((activity: DelegatedStakingActivity) => {
       const eventType = normalizeDelegatedStakeEventType(activity.event_type);
       const amount = activity.amount;
@@ -127,9 +130,9 @@ export function getStakeOperationPrincipals(activities: {
           pendingInactivePrincipals -= amount;
           break;
       }
-      activePrincipals = activePrincipals < 0 ? 0 : activePrincipals;
+      activePrincipals = activePrincipals < 0n ? 0n : activePrincipals;
       pendingInactivePrincipals =
-        pendingInactivePrincipals < 0 ? 0 : pendingInactivePrincipals;
+        pendingInactivePrincipals < 0n ? 0n : pendingInactivePrincipals;
     });
 
   return {
