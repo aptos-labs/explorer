@@ -25,9 +25,38 @@ export function getLockedUtilSecs(
 }
 
 export type StakePrincipals = {
-  activePrincipals: number;
-  pendingInactivePrincipals: number;
+  activePrincipals: bigint;
+  pendingInactivePrincipals: bigint;
 };
+
+export function getStakeRewardsEarned(
+  stake: Types.MoveValue,
+  principalsAmount: bigint | undefined,
+) {
+  if (principalsAmount === undefined) {
+    return undefined;
+  }
+
+  const stakeAmount = BigInt(stake.toString());
+  return stakeAmount > principalsAmount ? stakeAmount - principalsAmount : 0n;
+}
+
+function normalizeDelegatedStakeEventType(eventType: string) {
+  const delegatedEventType = eventType.split("::")[2];
+  if (!delegatedEventType) {
+    return undefined;
+  }
+
+  switch (delegatedEventType.replace(/Event$/, "")) {
+    case "AddStake":
+    case "UnlockStake":
+    case "ReactivateStake":
+    case "WithdrawStake":
+      return delegatedEventType.replace(/Event$/, "");
+    default:
+      return undefined;
+  }
+}
 
 /**
  *
@@ -43,16 +72,17 @@ export type StakePrincipals = {
  *    Active_principal
  *    Loop through all events in sequence (transaction_version asc, event_index asc)
  *    Maintain a current active_principal variable, start with 0
- *    Every time you see AddStakeEvent, add to active_principal
- *    Every time you see UnlockStakeEvent, subtract from active_principal
- *    Every time you see ReactivateStakeEvent, add to active_principal
+ *    Every time you see AddStake / AddStakeEvent, add to active_principal
+ *    Every time you see UnlockStake / UnlockStakeEvent, subtract from active_principal
+ *    Every time you see ReactivateStake / ReactivateStakeEvent, add to active_principal
  *    If at any point during the loop active_principal < 0, reset to 0
  *
  *    Pending_inactive_principal
  *    Loop through all events in sequence (transaction_version asc, event_index asc)
  *    Maintain a current pending_inactive_principal variable, start with 0
- *    Every time you see UnlockStakeEvent, add to pending_inactive_principal
- *    Every time you see ReactivateStakeEvent, subtract from pending_inactive_principal
+ *    Every time you see UnlockStake / UnlockStakeEvent, add to pending_inactive_principal
+ *    Every time you see ReactivateStake / ReactivateStakeEvent, subtract from pending_inactive_principal
+ *    Every time you see WithdrawStake / WithdrawStakeEvent, subtract from pending_inactive_principal
  *    If at any point during the loop pending_inactive_principal < 0, reset to 0
  *
  * Step 3
@@ -70,36 +100,39 @@ export function getStakeOperationPrincipals(activities: {
     return {stakePrincipals: undefined, isLoading: activities.loading};
   }
 
-  let activePrincipals = 0;
-  let pendingInactivePrincipals = 0;
+  let activePrincipals = 0n;
+  let pendingInactivePrincipals = 0n;
 
-  const activitiesCopy: DelegatedStakingActivity[] = JSON.parse(
-    JSON.stringify(activities.activities),
-  );
+  [...activities.activities]
+    .sort((a, b) => {
+      if (a.transaction_version === b.transaction_version) {
+        return a.event_index - b.event_index;
+      }
 
-  activitiesCopy
-    .sort(
-      (a, b) => Number(a.transaction_version) - Number(b.transaction_version),
-    )
+      return a.transaction_version < b.transaction_version ? -1 : 1;
+    })
     .forEach((activity: DelegatedStakingActivity) => {
-      const eventType = activity.event_type.split("::")[2];
+      const eventType = normalizeDelegatedStakeEventType(activity.event_type);
       const amount = activity.amount;
       switch (eventType) {
-        case "AddStakeEvent":
+        case "AddStake":
           activePrincipals += amount;
           break;
-        case "UnlockStakeEvent":
+        case "UnlockStake":
           activePrincipals -= amount;
           pendingInactivePrincipals += amount;
           break;
-        case "ReactivateStakeEvent":
+        case "ReactivateStake":
           activePrincipals += amount;
           pendingInactivePrincipals -= amount;
           break;
+        case "WithdrawStake":
+          pendingInactivePrincipals -= amount;
+          break;
       }
-      activePrincipals = activePrincipals < 0 ? 0 : activePrincipals;
+      activePrincipals = activePrincipals < 0n ? 0n : activePrincipals;
       pendingInactivePrincipals =
-        pendingInactivePrincipals < 0 ? 0 : pendingInactivePrincipals;
+        pendingInactivePrincipals < 0n ? 0n : pendingInactivePrincipals;
     });
 
   return {
