@@ -76,6 +76,11 @@ export default function Nav() {
         title="View Network Deployments, AIPs, and SDK & Tool Releases"
         label="Releases"
       />
+      <NavButton
+        to="/run-script"
+        title="Build, Simulate, and Execute a Move Script (Advanced)"
+        label="Run Script"
+      />
     </Box>
   );
 }

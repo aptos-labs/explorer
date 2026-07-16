@@ -143,6 +143,13 @@
     <priority>0.3</priority>
   </url>
 
+  <!-- Run Script (advanced tool) -->
+  <url>
+    <loc>https://explorer.aptoslabs.com/run-script</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
   <!-- LLM documentation (discoverable) -->
   <url>
     <loc>https://explorer.aptoslabs.com/llms.txt</loc>

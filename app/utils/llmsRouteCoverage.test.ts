@@ -42,6 +42,8 @@ const REQUIRED_PATH_SNIPPETS = [
   "enhanced_delegation",
   /** Settings page */
   "/settings",
+  /** Run Script advanced tool */
+  "/run-script",
   /** Releases hub */
   "/releases",
   /** Releases sub-tabs (network deployments, AIPs index, SDK & tool releases) */

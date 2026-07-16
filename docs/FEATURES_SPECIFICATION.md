@@ -1205,6 +1205,28 @@ top of the HTML site.
 
 ---
 
+## 31. Run Script (Advanced)
+
+**Route**: `/run-script`
+
+### FEAT-SCRIPT-001 — Raw Move Script Execution
+
+| Aspect | Detail |
+|--------|--------|
+| **Page** | `app/pages/RunScript/Index.tsx`. Top-level page reachable from the main `Nav` and the `HeaderOverflowMenu` ("Run Script"). |
+| **Purpose** | Build, simulate, and execute a raw Move **script transaction** (`InputScriptData`) from the connected wallet. Distinct from FEAT-MODULES-001 "Run", which calls published entry functions. |
+| **Input mode** | **Bytecode only.** The user pastes compiled Move script bytecode as a hex string (e.g. output of `aptos move compile-script`). Compiler-based "source mode" is intentionally not offered (no in-browser Move compiler / WASM). |
+| **Type arguments** | Dynamic add/remove list of type-tag strings (e.g. `0x1::aptos_coin::AptosCoin`), passed as `typeArguments`. |
+| **Function arguments** | Dynamic add/remove list. Because a script has no on-chain ABI, each argument's Move type must be declared explicitly via a dropdown (`address`, `bool`, `u8`–`u256`, `0x1::string::String`, `vector<u8>`, `vector<address>`, `vector<u64>`, or a free-form **Custom type**). Values are converted to typed BCS arguments by `convertScriptFunctionArguments` in `app/pages/RunScript/scriptArguments.ts`. `signer` / `&signer` params are **not** entered — the wallet supplies them. |
+| **Bytecode validation** | `normalizeScriptBytecode` adds a `0x` prefix if missing and rejects empty, non-hex, or odd-length input. |
+| **Simulate** | Requires a connected wallet. Builds via `sdkV2Client.transaction.build.simple({sender, data})` then `transaction.simulate.simple({signerPublicKey, transaction})`; renders status, gas used, event/change counts, and the full JSON response. |
+| **Execute** | Signs and submits the script `InputTransactionData` via `useSubmitTransaction` (FEAT-WALLET-002); on success shows the tx hash with a link to `/txn/{hash}/userTxnOverview`. |
+| **Warnings** | Two prominent alerts: an **error** alert stating this is an advanced, potentially irreversible action (a malicious script can move assets), and a **warning** alert urging the user to simulate first and read the simulation output (status, gas, events, changes) carefully. |
+| **Wallet gating** | When disconnected, shows `WalletConnector` instead of the action buttons. Network match is enforced by `useSubmitTransaction`. |
+| **Metadata** | `PageMetadata` with `noIndex` (advanced tool, not indexed). |
+
+---
+
 ## Appendix A: URL Pattern Reference
 
 | URL Pattern | Feature ID |
@@ -1228,6 +1250,7 @@ top of the HTML site.
 | `/token/$tokenId/$tab` | FEAT-TOKEN-001 |
 | `/validator/$address` | FEAT-VALDEL-001 |
 | `/releases/$tab` | FEAT-RELEASES-001 |
+| `/run-script` | FEAT-SCRIPT-001 |
 
 ## Appendix B: Existing Test Coverage
 
@@ -1237,6 +1260,7 @@ top of the HTML site.
 | `app/utils/cliCommand.test.ts` | CLI command generation from payloads |
 | `app/utils/moveDecompiler.test.ts` | FEAT-MODULES-004 (decompiler helpers) |
 | `app/utils/moveCodeNavigation.test.ts` | FEAT-MODULES-005 (cross-module link path building and resolution) |
+| `app/pages/RunScript/scriptArguments.test.ts` | FEAT-SCRIPT-001 (script argument BCS encoding, bytecode normalization) |
 | `app/utils/resolveCjsDefaultExport.test.ts` | FEAT-MODULES-001 (CJS default export interop for syntax highlighter) |
 | `app/utils/syntaxHighlighterCreateElement.test.ts` | FEAT-MODULES-001 (module code view syntax highlighting) |
 | `app/utils/moduleErrorHandler.test.ts` | FEAT-ERROR-001 (chunk error handling, reload behavior) |
