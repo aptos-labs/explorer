@@ -54,6 +54,7 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
   - SDKs & Tools tab — latest stable releases for the Aptos CLI, `aptos-node`, and the TypeScript / Python / Rust / Go SDKs, with a drill-in list of recent versions per registry
   - Legacy paths `/deployments` and `/aips` redirect to `/releases/networks` and `/releases/aips` respectively
 - Settings: `/settings` — configure explorer preferences (decompilation opt-in, API key overrides)
+- Run Script: `/run-script` — advanced tool to paste compiled Move script bytecode, supply typed arguments, then simulate and execute the script transaction from a connected wallet
 
 ## Key Addresses
 

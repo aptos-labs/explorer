@@ -150,6 +150,12 @@ export default function HeaderOverflowMenu() {
             Releases
           </MenuItem>,
           <MenuItem
+            key="run-script"
+            onClick={() => handleCloseAndNavigate("/run-script")}
+          >
+            Run Script
+          </MenuItem>,
+          <MenuItem
             key="settings"
             onClick={() => handleCloseAndNavigate("/settings")}
           >
