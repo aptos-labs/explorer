@@ -228,13 +228,19 @@ export interface InitOutput {
     b: number,
   ) => [number, number, number];
   readonly get_version_info: () => [number, number];
-  readonly init_panic_hook: () => void;
   readonly verify_module: (a: number, b: number) => [number, number, number];
   readonly verify_script: (a: number, b: number) => [number, number, number];
-  readonly __wbindgen_externrefs: WebAssembly.Table;
+  readonly init_panic_hook: () => void;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
-  readonly __externref_table_dealloc: (a: number) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
+  readonly __wbindgen_realloc: (
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+  ) => number;
+  readonly __wbindgen_externrefs: WebAssembly.Table;
+  readonly __externref_table_dealloc: (a: number) => void;
   readonly __wbindgen_start: () => void;
 }
 

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Move decompiler WASM — bytecode v10 support**: Upgraded the bundled Move decompiler/disassembler WASM (`app/wasm/move_decompiler_wasm*`) to a build that supports **bytecode format version 10**. The rebuilt module reports `max_bytecode_version: 10` via `get_version_info()`, and `verify_module` / `decompile_module` / `disassemble_module` (and their `_script` counterparts) now correctly handle v10 modules and scripts across the decompiler views (Account **Code** tab, module diff view, and the transaction script-bytecode decompiler). The regenerated wasm-bindgen glue (`move_decompiler_wasm.js`) also gains the `console_error_panic_hook` host imports for clearer error messages.
+
 ### Added
 
 - **Run Script page (`/run-script`)**: A new advanced tool for building, simulating, and executing a raw Move **script transaction** from a connected wallet — similar to the module "Run" tab, but for scripts rather than published entry functions. Paste compiled Move script bytecode (hex), declare each type argument and each typed function argument (a script has no on-chain ABI, so argument types must be supplied explicitly via a dropdown or a custom type field; `signer` params are added automatically by the wallet), then **Simulate** (build + simulate with the connected wallet's public key) and **Execute** (sign and submit via `useSubmitTransaction`). The page shows prominent warnings that this is an advanced, potentially irreversible action and that the simulation output (status, gas, events, and resource changes) must be reviewed carefully before executing. Only bytecode input is supported — there is no in-browser Move compiler, so a compiler-based "source mode" is intentionally omitted. Reachable from the main navigation and the header overflow menu. See `FEAT-SCRIPT-001` in `docs/FEATURES_SPECIFICATION.md`.
