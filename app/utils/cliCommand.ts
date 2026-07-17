@@ -1,4 +1,5 @@
 import type {Types} from "~/types/aptos";
+import {extractDisplayableEntryFunctionPayload} from "./transactionPayload";
 
 /**
  * Escapes a string for use inside single-quoted POSIX shell arguments.
@@ -72,22 +73,5 @@ export function generateCliCommand(
 export function extractEntryFunctionPayload(
   transaction: Types.Transaction,
 ): Types.TransactionPayload_EntryFunctionPayload | undefined {
-  if (!("payload" in transaction)) return undefined;
-
-  const payload = transaction.payload;
-
-  if (payload.type === "entry_function_payload") {
-    return payload as Types.TransactionPayload_EntryFunctionPayload;
-  }
-
-  if (
-    payload.type === "multisig_payload" &&
-    "transaction_payload" in payload &&
-    payload.transaction_payload &&
-    payload.transaction_payload.type === "entry_function_payload"
-  ) {
-    return payload.transaction_payload as Types.TransactionPayload_EntryFunctionPayload;
-  }
-
-  return undefined;
+  return extractDisplayableEntryFunctionPayload(transaction);
 }

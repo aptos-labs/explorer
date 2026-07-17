@@ -192,7 +192,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Key fields** | Version, status, sender, fee payer, secondary signers, function, arguments, amount. |
+| **Key fields** | Version, status, sender, fee payer, secondary signers, function, arguments, amount. For protocol-decrypted `encrypted_transaction_payload` values, these fields use the fullnode-provided decrypted entry function; ciphertext is never decrypted in the browser. |
 | **Actions section** | Rich parsing of DEX swaps, LSD operations, liquidity events (see FEAT-TXN-009). |
 | **Gas** | Gas fee, storage refund, net gas, gas unit price, max gas, VM status. |
 | **Block** | Link to parent block. |
@@ -235,7 +235,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Collapsible payload with JSON view. |
+| **Display** | Collapsible payload with JSON view. Encrypted payloads show encrypted/decrypted state, encryption epoch, separate decrypted-payload JSON when supplied by the fullnode, and the original encrypted payload JSON. |
 | **Script decompile** | For `script_payload`, embeds `ScriptBytecodeDecompiler` — decompiles hex bytecode via WASM Move decompiler, shows decompiled Move or bytecode disassembly with copy/download/expand modal. |
 
 ### FEAT-TXN-006 — Changes Tab
@@ -263,7 +263,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Aspect | Detail |
 |--------|--------|
 | **Location** | `UserTransactionOverviewTab.tsx` → `TransactionActionsRow`. |
-| **DEX swaps** | ThalaSwap (v1, v2, CL), Liquidswap (v0, v0.5), PancakeSwap, SushiSwap, AnimeSwap, Obric, Aux Exchange, Cellana Finance, Thetis Market, Cetus, Hyperion, Tapp, Earnium. |
+| **DEX swaps** | ThalaSwap (v1, v2, CL), Liquidswap (v0, v0.5), PancakeSwap, SushiSwap, AnimeSwap, Obric, Aux Exchange, Cellana Finance, Thetis Market, Cetus, Hyperion, Tapp, Earnium. The same parsers apply to fullnode-decrypted encrypted entry-function payloads. |
 | **LSD/staking** | Amnis, TruFi, ThalaLSD, Kofi. |
 | **Other actions** | Econia order/fill, Wormhole burn, token mint/burn, object transfer, fungible transfers, legacy token deposit/withdraw, claim fees/rewards, add/remove liquidity. |
 

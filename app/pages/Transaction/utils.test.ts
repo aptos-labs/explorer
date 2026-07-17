@@ -138,6 +138,105 @@ describe("getTransactionCounterparty", () => {
     expect(getTransactionCounterparty(tx as never)).toBeUndefined();
   });
 
+  // Covers FEAT-TXN-002 — fullnode-decrypted encrypted transaction payloads.
+  it("parses the decrypted entry function from encrypted transaction payloads", () => {
+    const tx = makeUserTransaction({
+      sender:
+        "0x669291ab678028bea9473c65e30f2288704b99363b0aa9f5742a7bf41e1c988e",
+      payload: {
+        type: "encrypted_transaction_payload",
+        payload_hash:
+          "0x7defbf110ee5b97003b0837d195f4e7c7ed4e308ee723e64b11b32f8b6f040e4",
+        ciphertext: "0x01",
+        encryption_epoch: "34294",
+        encrypted_state: "decrypted",
+        decryption_nonce: "0xdf02f1eacd7d27557974501fe618a872",
+        decrypted_payload: {
+          type: "entry_function_payload",
+          function: "0x1::coin::transfer",
+          type_arguments: ["0x1::aptos_coin::AptosCoin"],
+          arguments: [
+            "0x4164f8b7373197e41f0d89fafc5a733bce2f368e2d41ac2b804b467d8a26bf4b",
+            "1",
+          ],
+        },
+      },
+      changes: [
+        {
+          type: "write_resource",
+          address:
+            "0x3f543a372c70f62a6aaac32cb981f587b7c75c75b45f49a236e3990f20cc20e9",
+          data: {
+            type: "0x1::fungible_asset::FungibleStore",
+            data: {metadata: {inner: "0xa"}},
+          },
+        },
+        {
+          type: "write_resource",
+          address:
+            "0x3f543a372c70f62a6aaac32cb981f587b7c75c75b45f49a236e3990f20cc20e9",
+          data: {
+            type: "0x1::object::ObjectCore",
+            data: {
+              owner:
+                "0x669291ab678028bea9473c65e30f2288704b99363b0aa9f5742a7bf41e1c988e",
+            },
+          },
+        },
+        {
+          type: "write_resource",
+          address:
+            "0x9b5cb82c100be68941eaa4dbec9aac5126e8cf6b88cb098d5088773d73f82ca",
+          data: {
+            type: "0x1::fungible_asset::FungibleStore",
+            data: {metadata: {inner: "0xa"}},
+          },
+        },
+        {
+          type: "write_resource",
+          address:
+            "0x9b5cb82c100be68941eaa4dbec9aac5126e8cf6b88cb098d5088773d73f82ca",
+          data: {
+            type: "0x1::object::ObjectCore",
+            data: {
+              owner:
+                "0x4164f8b7373197e41f0d89fafc5a733bce2f368e2d41ac2b804b467d8a26bf4b",
+            },
+          },
+        },
+      ] as never,
+      events: [
+        {
+          guid: {creation_number: "0", account_address: "0x0"},
+          sequence_number: "0",
+          type: "0x1::fungible_asset::Withdraw",
+          data: {
+            amount: "1",
+            store:
+              "0x3f543a372c70f62a6aaac32cb981f587b7c75c75b45f49a236e3990f20cc20e9",
+          },
+        },
+        {
+          guid: {creation_number: "0", account_address: "0x0"},
+          sequence_number: "0",
+          type: "0x1::fungible_asset::Deposit",
+          data: {
+            amount: "1",
+            store:
+              "0x9b5cb82c100be68941eaa4dbec9aac5126e8cf6b88cb098d5088773d73f82ca",
+          },
+        },
+      ] as never,
+    });
+
+    expect(getTransactionCounterparty(tx)).toEqual({
+      address:
+        "0x4164f8b7373197e41f0d89fafc5a733bce2f368e2d41ac2b804b467d8a26bf4b",
+      role: "receiver",
+    });
+    expect(getTransactionAmount(tx)).toBe(BigInt(1));
+  });
+
   describe("coin transfers (receiver at arguments[0])", () => {
     it("parses 0x1::coin::transfer", () => {
       const tx = makeUserTx(
