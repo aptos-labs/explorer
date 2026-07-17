@@ -1,4 +1,4 @@
-import {Box} from "@mui/material";
+import {Box, Chip, Stack, Typography} from "@mui/material";
 import {useState} from "react";
 import type {Types} from "~/types/aptos";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
@@ -41,6 +41,42 @@ export default function PayloadTab({transaction}: PayloadTabProps) {
               bytecodeHex={transaction.payload.code.bytecode}
             />
           )}
+        {transaction.payload.type === "encrypted_transaction_payload" && (
+          <Stack spacing={1}>
+            <Stack
+              direction="row"
+              spacing={1}
+              useFlexGap
+              sx={{flexWrap: "wrap"}}
+            >
+              <Chip label="Encrypted transaction" size="small" />
+              <Chip
+                color={
+                  transaction.payload.encrypted_state === "decrypted"
+                    ? "success"
+                    : "default"
+                }
+                label={
+                  transaction.payload.encrypted_state === "decrypted"
+                    ? "Decrypted"
+                    : transaction.payload.encrypted_state
+                }
+                size="small"
+                variant="outlined"
+              />
+            </Stack>
+            <Typography variant="body2" color="text.secondary">
+              Encryption epoch: {transaction.payload.encryption_epoch}
+            </Typography>
+            {transaction.payload.decrypted_payload && (
+              <>
+                <Typography variant="subtitle2">Decrypted payload</Typography>
+                <JsonViewCard data={transaction.payload.decrypted_payload} />
+              </>
+            )}
+            <Typography variant="subtitle2">Encrypted payload</Typography>
+          </Stack>
+        )}
         <JsonViewCard data={transaction.payload} />
       </CollapsibleCard>
     </Box>

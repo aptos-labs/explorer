@@ -206,15 +206,10 @@ function UserTransferOrInteractionRows({
   transaction: Types.Transaction;
 }) {
   const counterparty = getTransactionCounterparty(transaction);
+  const payload = extractEntryFunctionPayload(transaction);
   let smartContractAddress: string | undefined;
-  if (
-    "payload" in transaction &&
-    "function" in transaction.payload &&
-    transaction.payload.function.includes("::")
-  ) {
-    smartContractAddress = standardizeAddress(
-      transaction.payload.function.split("::")[0],
-    );
+  if (payload?.function.includes("::")) {
+    smartContractAddress = standardizeAddress(payload.function.split("::")[0]);
   }
   return (
     <>
@@ -584,7 +579,6 @@ function parseFungibleAssetTransferFromPayload(
   transaction: Types.Transaction,
 ): FungibleAssetTransfer | FungibleAssetTransfer[] | undefined {
   if (
-    !("payload" in transaction) ||
     !("sender" in transaction) ||
     !("success" in transaction) ||
     !transaction.success
@@ -592,19 +586,11 @@ function parseFungibleAssetTransferFromPayload(
     return undefined;
   }
 
-  const payload = transaction.payload;
-  if (
-    payload.type !== "entry_function_payload" ||
-    !("function" in payload) ||
-    !("arguments" in payload)
-  ) {
-    return undefined;
-  }
-
-  const typedPayload = payload as Types.TransactionPayload_EntryFunctionPayload;
-  const args = typedPayload.arguments;
+  const payload = extractEntryFunctionPayload(transaction);
+  if (!payload) return undefined;
+  const args = payload.arguments;
   const sender = (transaction as {sender: string}).sender;
-  const fn = typedPayload.function;
+  const fn = payload.function;
 
   // 0x1::aptos_account::transfer_fungible_assets(metadata, to, amount)
   // 0x1::primary_fungible_store::transfer(metadata, recipient, amount)
@@ -2938,26 +2924,14 @@ function parseDecibelOrderEvent(
 function parseDecibelPerpFromPayload(
   transaction: Types.Transaction,
 ): DecibelPerpOrder | DecibelPerpDeposit | DecibelPerpWithdraw | undefined {
-  if (
-    !("payload" in transaction) ||
-    !("success" in transaction) ||
-    !transaction.success
-  ) {
+  if (!("success" in transaction) || !transaction.success) {
     return undefined;
   }
 
-  const payload = transaction.payload;
-  if (
-    payload.type !== "entry_function_payload" ||
-    !("function" in payload) ||
-    !("arguments" in payload)
-  ) {
-    return undefined;
-  }
-
-  const typedPayload = payload as Types.TransactionPayload_EntryFunctionPayload;
-  const fn = typedPayload.function;
-  const args = typedPayload.arguments;
+  const payload = extractEntryFunctionPayload(transaction);
+  if (!payload) return undefined;
+  const fn = payload.function;
+  const args = payload.arguments;
 
   if (!fn.startsWith(`${DECIBEL_CONTRACT}::dex_accounts_entry::`)) {
     return undefined;
