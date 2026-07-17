@@ -305,6 +305,65 @@ describe("extractEntryFunctionPayload", () => {
     expect(extractEntryFunctionPayload(txn)).toBeUndefined();
   });
 
+  // Covers FEAT-TXN-002 / FEAT-TXN-005 — uses the fullnode-provided result only.
+  it("extracts a decrypted encrypted transaction payload", () => {
+    const txn = {
+      type: "user_transaction",
+      payload: {
+        type: "encrypted_transaction_payload",
+        payload_hash: "0xhash",
+        ciphertext: "0xciphertext",
+        encryption_epoch: "34294",
+        encrypted_state: "decrypted",
+        decryption_nonce: "0xnonce",
+        decrypted_payload: {
+          type: "entry_function_payload",
+          function: "0x1::coin::transfer",
+          type_arguments: ["0x1::aptos_coin::AptosCoin"],
+          arguments: ["0xreceiver", "1"],
+        },
+      },
+    } as never;
+
+    expect(extractEntryFunctionPayload(txn)).toEqual({
+      type: "entry_function_payload",
+      function: "0x1::coin::transfer",
+      type_arguments: ["0x1::aptos_coin::AptosCoin"],
+      arguments: ["0xreceiver", "1"],
+    });
+  });
+
+  it("does not use encrypted payloads that are not decrypted or malformed", () => {
+    const encryptedPayload = {
+      type: "encrypted_transaction_payload",
+      payload_hash: "0xhash",
+      ciphertext: "0xciphertext",
+      encryption_epoch: "34294",
+    };
+
+    expect(
+      extractEntryFunctionPayload({
+        type: "user_transaction",
+        payload: {...encryptedPayload, encrypted_state: "encrypted"},
+      } as never),
+    ).toBeUndefined();
+    expect(
+      extractEntryFunctionPayload({
+        type: "user_transaction",
+        payload: {
+          ...encryptedPayload,
+          encrypted_state: "decrypted",
+          decrypted_payload: {
+            type: "entry_function_payload",
+            function: "0x1::coin::transfer",
+            type_arguments: "not-an-array",
+            arguments: [],
+          },
+        },
+      } as never),
+    ).toBeUndefined();
+  });
+
   it("returns undefined for script_payload", () => {
     const txn = {
       type: "user_transaction" as const,

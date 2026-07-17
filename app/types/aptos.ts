@@ -193,10 +193,26 @@ export interface TransactionPayload_MultisigPayload {
   transaction_payload?: TransactionPayload_EntryFunctionPayload;
 }
 
+/**
+ * Payloads encrypted by the protocol. Fullnodes expose the inner payload only
+ * after it has been decrypted; the explorer must never attempt decryption.
+ */
+export interface TransactionPayload_EncryptedTransactionPayload {
+  type: "encrypted_transaction_payload";
+  payload_hash: string;
+  ciphertext: HexEncodedBytes;
+  encryption_epoch: string;
+  encrypted_state: string;
+  claimed_entry_fun?: string | null;
+  decryption_nonce?: HexEncodedBytes | null;
+  decrypted_payload?: TransactionPayload | null;
+}
+
 export type TransactionPayload =
   | TransactionPayload_EntryFunctionPayload
   | TransactionPayload_ScriptPayload
-  | TransactionPayload_MultisigPayload;
+  | TransactionPayload_MultisigPayload
+  | TransactionPayload_EncryptedTransactionPayload;
 
 // ---------------------------------------------------------------------------
 // Signatures

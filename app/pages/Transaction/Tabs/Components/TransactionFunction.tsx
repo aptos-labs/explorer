@@ -11,6 +11,7 @@ import {useNetworkName} from "../../../../global-config/GlobalConfig";
 import {Link} from "../../../../routing";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 import {tryStandardizeAddress} from "../../../../utils";
+import {extractDisplayableEntryFunctionPayload} from "../../../../utils/transactionPayload";
 
 function CoinTransferCodeLine({
   sx,
@@ -134,22 +135,13 @@ export default function TransactionFunction({
     return <ScriptCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />;
   }
 
-  let functionFullStr: string;
-  if (transaction.payload.type === "multisig_payload") {
-    if (
-      "transaction_payload" in transaction.payload &&
-      transaction.payload.transaction_payload &&
-      "function" in transaction.payload.transaction_payload
-    ) {
-      functionFullStr = transaction.payload.transaction_payload.function;
-    } else {
-      return <MultisigCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />;
-    }
-  } else if ("function" in transaction.payload) {
-    functionFullStr = transaction.payload.function;
-  } else {
-    return null;
+  const payload = extractDisplayableEntryFunctionPayload(transaction);
+  if (!payload) {
+    return transaction.payload.type === "multisig_payload" ? (
+      <MultisigCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />
+    ) : null;
   }
+  const functionFullStr = payload.function;
 
   const [rawAddress, moduleName, functionName] = functionFullStr.split("::");
   const address = tryStandardizeAddress(rawAddress) ?? rawAddress;

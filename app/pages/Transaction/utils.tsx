@@ -4,6 +4,7 @@ import type {CoinDescription} from "../../api/hooks/useGetCoinList";
 import {TransactionTypeName} from "../../components/TransactionType";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
 import {standardizeAddress, tryStandardizeAddress} from "../../utils";
+import {extractDisplayableEntryFunctionPayload} from "../../utils/transactionPayload";
 
 // Type definitions for specific Move resource structures
 type FungibleStoreResource = Types.MoveResource & {
@@ -91,26 +92,8 @@ export function getTransactionCounterparty(
     return undefined;
   }
 
-  if (!("payload" in transaction)) {
-    return undefined;
-  }
-
-  let payload: Types.TransactionPayload_EntryFunctionPayload;
-  if (transaction.payload.type === "entry_function_payload") {
-    payload =
-      transaction.payload as Types.TransactionPayload_EntryFunctionPayload;
-  } else if (
-    transaction.payload.type === "multisig_payload" &&
-    "transaction_payload" in transaction.payload &&
-    transaction.payload.transaction_payload &&
-    "type" in transaction.payload.transaction_payload &&
-    transaction.payload.transaction_payload.type === "entry_function_payload"
-  ) {
-    payload = transaction.payload
-      .transaction_payload as Types.TransactionPayload_EntryFunctionPayload;
-  } else {
-    return undefined;
-  }
+  const payload = extractDisplayableEntryFunctionPayload(transaction);
+  if (!payload) return undefined;
 
   // Coin transfers: receiver is the first argument
   const isCoinTransfer =
