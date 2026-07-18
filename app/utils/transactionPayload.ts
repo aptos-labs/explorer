@@ -17,6 +17,30 @@ function isEntryFunctionPayload(
   );
 }
 
+export function isEncryptedTransactionPayload(
+  payload: Types.TransactionPayload,
+): payload is Types.TransactionPayload_EncryptedTransactionPayload {
+  return payload.type === "encrypted_transaction_payload";
+}
+
+/**
+ * Formats a claimed entry function for display (module::name when name is set).
+ */
+export function formatClaimedEntryFunction(
+  claimed: Types.ClaimedEntryFunction | null | undefined,
+): string | undefined {
+  if (!claimed?.module) return undefined;
+  return claimed.name ? `${claimed.module}::${claimed.name}` : claimed.module;
+}
+
+export function encryptedStateLabel(
+  state: Types.TransactionPayload_EncryptedTransactionPayload["encrypted_state"],
+): string {
+  if (state === "decrypted") return "Decrypted";
+  if (state === "failed_decryption") return "Decryption failed";
+  return "Encrypted";
+}
+
 /**
  * Returns the entry function that the explorer can safely display. This accepts
  * direct and multisig payloads plus a fullnode-provided decrypted payload, but
@@ -38,7 +62,7 @@ export function extractDisplayableEntryFunctionPayload(
   }
 
   if (
-    payload.type === "encrypted_transaction_payload" &&
+    isEncryptedTransactionPayload(payload) &&
     payload.encrypted_state === "decrypted" &&
     isEntryFunctionPayload(payload.decrypted_payload)
   ) {

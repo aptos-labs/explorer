@@ -1,5 +1,5 @@
 import {Network} from "@aptos-labs/ts-sdk";
-import {WaterDropOutlined} from "@mui/icons-material";
+import {LockOutlined, WaterDropOutlined} from "@mui/icons-material";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
@@ -11,7 +11,12 @@ import {useNetworkName} from "../../../../global-config/GlobalConfig";
 import {Link} from "../../../../routing";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 import {tryStandardizeAddress} from "../../../../utils";
-import {extractDisplayableEntryFunctionPayload} from "../../../../utils/transactionPayload";
+import {
+  encryptedStateLabel,
+  extractDisplayableEntryFunctionPayload,
+  formatClaimedEntryFunction,
+  isEncryptedTransactionPayload,
+} from "../../../../utils/transactionPayload";
 
 function CoinTransferCodeLine({
   sx,
@@ -80,6 +85,34 @@ function MultisigCodeLine({sx}: {sx?: SxProps<Theme>}): React.JSX.Element {
   );
 }
 
+function EncryptedCodeLine({
+  sx,
+  state,
+  claimedLabel,
+}: {
+  sx?: SxProps<Theme>;
+  state: Types.TransactionPayload_EncryptedTransactionPayload["encrypted_state"];
+  claimedLabel?: string;
+}): React.JSX.Element {
+  const label = claimedLabel
+    ? `Encrypted (${encryptedStateLabel(state)}): ${claimedLabel}`
+    : `Encrypted Transaction (${encryptedStateLabel(state)})`;
+  return (
+    <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
+      <Stack
+        direction="row"
+        spacing={1.5}
+        sx={{
+          alignItems: "center",
+        }}
+      >
+        <LockOutlined sx={{fontSize: 17, padding: 0}} />
+        <Box>{label}</Box>
+      </Stack>
+    </CodeLineBox>
+  );
+}
+
 function FaucetCodeLine({sx}: {sx?: SxProps<Theme>}): React.JSX.Element {
   return (
     <CodeLineBox sx={[...(Array.isArray(sx) ? sx : [sx])]}>
@@ -137,6 +170,17 @@ export default function TransactionFunction({
 
   const payload = extractDisplayableEntryFunctionPayload(transaction);
   if (!payload) {
+    if (isEncryptedTransactionPayload(transaction.payload)) {
+      return (
+        <EncryptedCodeLine
+          sx={[...(Array.isArray(sx) ? sx : [sx])]}
+          state={transaction.payload.encrypted_state}
+          claimedLabel={formatClaimedEntryFunction(
+            transaction.payload.claimed_entry_fun,
+          )}
+        />
+      );
+    }
     return transaction.payload.type === "multisig_payload" ? (
       <MultisigCodeLine sx={[...(Array.isArray(sx) ? sx : [sx])]} />
     ) : null;
