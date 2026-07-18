@@ -72,6 +72,13 @@ export function getLearnMoreTooltip(
       return (
         <LearnMoreTooltip text="Move function executed in the transaction." />
       );
+    case "encrypted_payload":
+      return (
+        <LearnMoreTooltip
+          text="This transaction was submitted with an encrypted mempool payload (AIP-144). The explorer shows the decrypted entry function only when the fullnode has already decrypted it; ciphertext is never decrypted in the browser."
+          link="https://aptos.dev/build/guides/encrypted-pending-transactions"
+        />
+      );
     case "arguments":
       return (
         <LearnMoreTooltip text="Type and function arguments passed to the entry function. Includes a copyable CLI command." />

@@ -194,18 +194,39 @@ export interface TransactionPayload_MultisigPayload {
 }
 
 /**
- * Payloads encrypted by the protocol. Fullnodes expose the inner payload only
- * after it has been decrypted; the explorer must never attempt decryption.
+ * Optional claim about the entry function inside an encrypted payload
+ * (`claimed_entry_fun` in aptos-core / TS SDK).
+ */
+export interface ClaimedEntryFunction {
+  module: string;
+  name?: string;
+}
+
+/**
+ * Payloads encrypted by the protocol (AIP-144 encrypted mempool). Fullnodes
+ * expose the inner payload only after decryption; the explorer must never
+ * attempt decryption in the browser.
+ *
+ * Discriminate on `encrypted_state`:
+ * - `"encrypted"` / `"failed_decryption"` — ciphertext only (pending or failed)
+ * - `"decrypted"` — includes `decrypted_payload` + `decryption_nonce`
  */
 export interface TransactionPayload_EncryptedTransactionPayload {
   type: "encrypted_transaction_payload";
   payload_hash: string;
   ciphertext: HexEncodedBytes;
-  encryption_epoch: string;
-  encrypted_state: string;
-  claimed_entry_fun?: string | null;
+  encrypted_state: "encrypted" | "failed_decryption" | "decrypted";
+  claimed_entry_fun?: ClaimedEntryFunction | null;
+  /** Ledger epoch hint for the encryption key (aptos-core `encryption_epoch`). */
+  encryption_epoch?: string;
   decryption_nonce?: HexEncodedBytes | null;
-  decrypted_payload?: TransactionPayload | null;
+  decrypted_payload?:
+    | TransactionPayload_EntryFunctionPayload
+    | TransactionPayload_ScriptPayload
+    | TransactionPayload_MultisigPayload
+    | null;
+  /** Present when `encrypted_state` is `failed_decryption` (reserved / future API). */
+  decryption_failure_reason?: string;
 }
 
 export type TransactionPayload =
@@ -464,6 +485,10 @@ export namespace Types {
   export type TransactionPayload = import("~/types/aptos").TransactionPayload;
   export type TransactionPayload_EntryFunctionPayload =
     import("~/types/aptos").TransactionPayload_EntryFunctionPayload;
+  export type TransactionPayload_EncryptedTransactionPayload =
+    import("~/types/aptos").TransactionPayload_EncryptedTransactionPayload;
+  export type ClaimedEntryFunction =
+    import("~/types/aptos").ClaimedEntryFunction;
   export type TransactionSignature =
     import("~/types/aptos").TransactionSignature;
   export type Block = import("~/types/aptos").Block;

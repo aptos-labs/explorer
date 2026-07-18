@@ -192,7 +192,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Key fields** | Version, status, sender, fee payer, secondary signers, function, arguments, amount. For protocol-decrypted `encrypted_transaction_payload` values, these fields use the fullnode-provided decrypted entry function; ciphertext is never decrypted in the browser. |
+| **Key fields** | Version, status, sender, fee payer, secondary signers, function, arguments, amount. For protocol-decrypted `encrypted_transaction_payload` values, these fields use the fullnode-provided decrypted entry function; ciphertext is never decrypted in the browser. An **Encryption** row (chips for encrypted state and epoch) appears when the payload type is `encrypted_transaction_payload`. Pending or failed-decryption payloads show an "Encrypted Transaction" function line (and any `claimed_entry_fun`) instead of a blank function. |
 | **Actions section** | Rich parsing of DEX swaps, LSD operations, liquidity events (see FEAT-TXN-009). |
 | **Gas** | Gas fee, storage refund, net gas, gas unit price, max gas, VM status. |
 | **Block** | Link to parent block. |
@@ -235,7 +235,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Collapsible payload with JSON view. Encrypted payloads show encrypted/decrypted state, encryption epoch, separate decrypted-payload JSON when supplied by the fullnode, and the original encrypted payload JSON. |
+| **Display** | Collapsible payload with JSON view. Encrypted payloads show encrypted / decrypted / decryption-failed state chips, encryption epoch, optional claimed entry function, separate decrypted-payload JSON when supplied by the fullnode, and the original encrypted payload JSON. |
 | **Script decompile** | For `script_payload`, embeds `ScriptBytecodeDecompiler` — decompiles hex bytecode via WASM Move decompiler, shows decompiled Move or bytecode disassembly with copy/download/expand modal. |
 
 ### FEAT-TXN-006 — Changes Tab
@@ -1257,7 +1257,8 @@ top of the HTML site.
 | Test File | Covers |
 |-----------|--------|
 | `app/utils/utils.test.ts` | Address utilities, formatting, validation, timestamps |
-| `app/utils/cliCommand.test.ts` | CLI command generation from payloads |
+| `app/utils/cliCommand.test.ts` | CLI command generation from payloads; FEAT-TXN-002/005 (extract decrypted encrypted entry functions) |
+| `app/utils/transactionPayload.test.ts` | FEAT-TXN-002 / FEAT-TXN-005 (encrypted payload helpers: displayable entry extraction, claimed entry formatting, state labels) |
 | `app/utils/moveDecompiler.test.ts` | FEAT-MODULES-004 (decompiler helpers) |
 | `app/utils/moveCodeNavigation.test.ts` | FEAT-MODULES-005 (cross-module link path building and resolution) |
 | `app/pages/RunScript/scriptArguments.test.ts` | FEAT-SCRIPT-001 (script argument BCS encoding, bytecode normalization) |
@@ -1300,7 +1301,7 @@ top of the HTML site.
 | `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation) |
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
-| `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty, balance changes), FEAT-TXN-013 (multisig transaction detection) |
+| `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty including decrypted encrypted payloads, balance changes), FEAT-TXN-013 (multisig transaction detection) |
 | `app/pages/Transaction/Tabs/Components/MultisigEventView.test.tsx` | FEAT-TXN-004 (multisig event detection, formatted summary/rows, v1/v2 name normalization, raw-JSON fallback, extra-field surfacing, payload decoding in execution and CreateTransaction events) |
 | `app/pages/Transaction/Tabs/Components/decodeMultisigPayload.test.ts` | FEAT-TXN-004 (BCS decoding of multisig payload bytes into an entry function; empty/invalid fallbacks) |
 | `app/pages/Transaction/Tabs/Components/decodeMoveArgument.test.ts` | FEAT-TXN-011 / FEAT-TXN-004 (ABI-typed BCS argument decoding: address, ints, bool, String, vector, Object, Option; positional alignment and invalid/leftover fallbacks) |

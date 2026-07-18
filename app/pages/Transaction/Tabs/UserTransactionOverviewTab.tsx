@@ -1,6 +1,6 @@
 import {Hex} from "@aptos-labs/ts-sdk";
-import {OpenInNew} from "@mui/icons-material";
-import {Box, Link, useTheme} from "@mui/material";
+import {LockOutlined, OpenInNew} from "@mui/icons-material";
+import {Box, Chip, Link, Stack, useTheme} from "@mui/material";
 import * as React from "react";
 import type {Types} from "~/types/aptos";
 import {useGetAssetMetadata} from "../../../api/hooks/useGetAssetMetadata";
@@ -19,6 +19,10 @@ import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnM
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {standardizeAddress, tryStandardizeAddress} from "../../../utils";
 import {extractEntryFunctionPayload} from "../../../utils/cliCommand";
+import {
+  encryptedStateLabel,
+  isEncryptedTransactionPayload,
+} from "../../../utils/transactionPayload";
 import {parseExpirationTimestamp} from "../../utils";
 import {getLearnMoreTooltip} from "../helpers";
 import {
@@ -245,6 +249,55 @@ function TransactionFunctionRow({
       title="Function:"
       value={<TransactionFunction transaction={transaction} />}
       tooltip={getLearnMoreTooltip("function")}
+    />
+  );
+}
+
+function TransactionEncryptionRow({
+  transaction,
+}: {
+  transaction: Types.Transaction;
+}) {
+  if (
+    !("payload" in transaction) ||
+    !isEncryptedTransactionPayload(transaction.payload)
+  ) {
+    return null;
+  }
+  const {payload} = transaction;
+  const stateColor =
+    payload.encrypted_state === "decrypted"
+      ? "success"
+      : payload.encrypted_state === "failed_decryption"
+        ? "warning"
+        : "default";
+  return (
+    <ContentRow
+      title="Encryption:"
+      value={
+        <Stack direction="row" spacing={1} useFlexGap sx={{flexWrap: "wrap"}}>
+          <Chip
+            icon={<LockOutlined />}
+            label="Encrypted payload"
+            size="small"
+          />
+          <Chip
+            color={stateColor}
+            label={encryptedStateLabel(payload.encrypted_state)}
+            size="small"
+            variant="outlined"
+          />
+          {payload.encryption_epoch != null &&
+            payload.encryption_epoch !== "" && (
+              <Chip
+                label={`Epoch ${payload.encryption_epoch}`}
+                size="small"
+                variant="outlined"
+              />
+            )}
+        </Stack>
+      }
+      tooltip={getLearnMoreTooltip("encrypted_payload")}
     />
   );
 }
@@ -840,6 +893,7 @@ export default function UserTransactionOverviewTab({
         )}
         <UserTransferOrInteractionRows transaction={transactionData} />
         <TransactionFunctionRow transaction={transactionData} />
+        <TransactionEncryptionRow transaction={transactionData} />
         <TransactionArgumentsRow transaction={transactionData} />
         <TransactionAmountRow transaction={transactionData} />
         <TransactionActionsRow transaction={transactionData} />

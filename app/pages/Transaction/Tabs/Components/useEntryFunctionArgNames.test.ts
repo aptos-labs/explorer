@@ -4,7 +4,9 @@ import {renderHook} from "@testing-library/react";
 import pako from "pako";
 import {afterEach, describe, expect, it, vi} from "vitest";
 
-const packagesMock = vi.fn((..._args: unknown[]) => ({packages: []}) as unknown);
+const packagesMock = vi.fn(
+  (..._args: unknown[]) => ({packages: []}) as unknown,
+);
 vi.mock("../../../../api/hooks/useGetAccountResource", () => ({
   useGetAccountPackages: (...args: unknown[]) => packagesMock(...args),
 }));
