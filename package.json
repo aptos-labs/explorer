@@ -59,6 +59,9 @@
     "ci:verify": "pnpm routes:generate && tsc --noEmit && biome lint . && vitest --run --coverage && vite build",
     "test:e2e": "playwright test",
     "test:e2e:install": "playwright install --with-deps chromium",
+    "test:localnet:encrypted": "APTOS_LOCALNET=1 vitest --run app/utils/transactionPayload.localnet.test.ts",
+    "test:localnet:encrypted:script": "node scripts/test-encrypted-txn-localnet.mjs",
+    "test:e2e:localnet:encrypted": "APTOS_LOCALNET=1 playwright test e2e/encrypted-transaction-localnet.spec.ts",
     "prepare": "husky"
   },
   "lint-staged": {
