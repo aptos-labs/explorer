@@ -1259,6 +1259,7 @@ top of the HTML site.
 | `app/utils/utils.test.ts` | Address utilities, formatting, validation, timestamps |
 | `app/utils/cliCommand.test.ts` | CLI command generation from payloads; FEAT-TXN-002/005 (extract decrypted encrypted entry functions) |
 | `app/utils/transactionPayload.test.ts` | FEAT-TXN-002 / FEAT-TXN-005 (encrypted payload helpers: displayable entry extraction, claimed entry formatting, state labels) |
+| `app/utils/transactionPayload.localnet.test.ts` | FEAT-TXN-002 / FEAT-TXN-005 (live localnet: submit encrypted transfer, assert pending ciphertext + decrypted entry parsing; gated by `APTOS_LOCALNET=1`) |
 | `app/utils/moveDecompiler.test.ts` | FEAT-MODULES-004 (decompiler helpers) |
 | `app/utils/moveCodeNavigation.test.ts` | FEAT-MODULES-005 (cross-module link path building and resolution) |
 | `app/pages/RunScript/scriptArguments.test.ts` | FEAT-SCRIPT-001 (script argument BCS encoding, bytecode normalization) |
@@ -1307,6 +1308,7 @@ top of the HTML site.
 | `app/pages/Transaction/Tabs/Components/decodeMoveArgument.test.ts` | FEAT-TXN-011 / FEAT-TXN-004 (ABI-typed BCS argument decoding: address, ints, bool, String, vector, Object, Option; positional alignment and invalid/leftover fallbacks) |
 | `app/pages/Transaction/Tabs/Components/useEntryFunctionArgNames.test.ts` | FEAT-TXN-011 (entry function arg / type-param name resolution from Move source, signer-slot dropping, no-source fallback) |
 | `e2e/transaction-balance-change.spec.ts` | FEAT-TXN-003 (Playwright: testnet Balance Change tab loads indexer FA activities; asserts gas-fee row; skips outside CI when testnet gateway returns 401 for local preview origin) |
+| `e2e/encrypted-transaction-localnet.spec.ts` | FEAT-TXN-002 / FEAT-TXN-005 (Playwright: submit encrypted transfer on localnet, assert overview Encryption chips + Coin Transfer + Payload tab; gated by `APTOS_LOCALNET=1`) |
 | `app/pages/Transaction/Tabs/Components/SignatureOverviewTable.test.tsx` | FEAT-TXN-002 (signature overview: Ed25519, multi-Ed25519, single_sender, multi_agent, fee_payer, fallbacks; stable keys for duplicate secondary addresses) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns), FEAT-TXN-012 (conditional Modules tab) |
