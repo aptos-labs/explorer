@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **TypeScript 6 → 7 upgrade**: Bumped `typescript` from `6.0.3` to `7.0.2`, the native Go-based compiler. `pnpm lint` / `tsc --noEmit` now use the TypeScript 7 `tsc` binary (typically much faster type-checking). No `tsconfig.json` or source changes were required; Vite 8 / Biome do not depend on the legacy TypeScript programmatic API, so the side-by-side `@typescript/typescript6` compatibility package is not needed for this repo.
 - **Move decompiler WASM — bytecode v10 support**: Upgraded the bundled Move decompiler/disassembler WASM (`app/wasm/move_decompiler_wasm*`) to a build that supports **bytecode format version 10**. The rebuilt module reports `max_bytecode_version: 10` via `get_version_info()`, and `verify_module` / `decompile_module` / `disassemble_module` (and their `_script` counterparts) now correctly handle v10 modules and scripts across the decompiler views (Account **Code** tab, module diff view, and the transaction script-bytecode decompiler). The regenerated wasm-bindgen glue (`move_decompiler_wasm.js`) also gains the `console_error_panic_hook` host imports for clearer error messages.
 
 ### Added
