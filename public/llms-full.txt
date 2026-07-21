@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-07-16 (rev 23)
+> Last updated: 2026-07-21 (rev 24)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -358,7 +358,7 @@ The explorer **cannot** do the following:
 
 ## Technical Stack
 
-- **Frontend**: React 19 with TypeScript 5.9
+- **Frontend**: React 19 with TypeScript 7.0
 - **Routing**: TanStack Router (file-based routing) with SSR via TanStack Start
 - **Data Fetching**: TanStack Query v5 (React Query) with prefetching and caching
 - **UI**: Material-UI (MUI) v7
