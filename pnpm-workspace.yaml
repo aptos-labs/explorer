@@ -15,6 +15,8 @@ minimumReleaseAge: 7200
 # https://pnpm.io/settings#minimumreleaseageexclude
 minimumReleaseAgeExclude:
   - "@tanstack/react-query@5.100.11"
+  # Renovate security update: brace-expansion@5.0.7
+  - brace-expansion@5.0.7
 
 allowBuilds:
   "@parcel/watcher": false
@@ -39,7 +41,7 @@ overrides:
   d3-drag: 3.0.0
   d3-ease: 3.0.1
   d3-interpolate: 3.0.1
-  brace-expansion: 5.0.6
+  brace-expansion: 5.0.7
   defu: 6.1.7
   fast-uri: 3.1.2
   h3-v2: npm:h3@2.0.1-rc.18
